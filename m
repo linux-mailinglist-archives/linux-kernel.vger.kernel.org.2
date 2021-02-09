@@ -2,323 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A613B315858
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BDC315871
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234327AbhBIVJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:09:19 -0500
-Received: from mail-pj1-f53.google.com ([209.85.216.53]:40196 "EHLO
-        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233491AbhBISyb (ORCPT
+        id S234397AbhBIVPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 16:15:05 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10256 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233046AbhBISzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 13:54:31 -0500
-Received: by mail-pj1-f53.google.com with SMTP id z9so2202021pjl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 10:53:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3x8SHWviOX06noXl3VoCAEVkKd/3xhRiiOCeeg42KP0=;
-        b=Dn7GyQnVYajP6+xC4ERnX1PCYc7UYdEMvUqGxIUE7x2Q7Pc6vSTnfr0iFgH9y7IS6e
-         YpTIMeYSL3zbFtNTRcTVPB5oo+M/ElqWN4sUgRHrt3ysFkS0/FGKx99xHrOkLV1ofakE
-         /VvAIhp7PFqJSweBfxyTcTS1ObXdTr7aZ5lKo/hzYzdH2crmKzNT3Y09ZGibZLuudGWp
-         UrUuCKplMBjnlwVBeSpTZlZWs8UH+DrZEljBnRDtwg8tgwivOdIXKi5O2Wi2JTsqtW24
-         sTehAoBzcFNEu6neQcEQauaOI5FxJdOAb1B5FyBt7bFnst73e8C20RLQVqirPiUY0aH/
-         2wOA==
-X-Gm-Message-State: AOAM533UDnJfdVAfAzSKk820ddy6ic+drmPsfTX+KJAWtv1ZCknJWgja
-        2xNlO6wxto5JDtG+9w/teiE=
-X-Google-Smtp-Source: ABdhPJwZVdfjNVUGRwkBl370CX/LHOszp4Jlj5KSRT0z7W0XHTPZ0DpFanbL2vGMkHnENEY0dX6P4w==
-X-Received: by 2002:a17:90b:1804:: with SMTP id lw4mr5499762pjb.141.1612896802116;
-        Tue, 09 Feb 2021 10:53:22 -0800 (PST)
-Received: from karthik-strix-linux.karthek.com ([192.140.154.47])
-        by smtp.gmail.com with ESMTPSA id 18sm3643628pfy.46.2021.02.09.10.53.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 10:53:21 -0800 (PST)
-Date:   Wed, 10 Feb 2021 00:23:17 +0530
-From:   karthik alapati <mail@karthek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8723bs: fix block comments alignment
-Message-ID: <YCLaHXD/sUKM5HZE@karthik-strix-linux.karthek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Tue, 9 Feb 2021 13:55:01 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 119Is5NB159419;
+        Tue, 9 Feb 2021 13:54:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=KsS616KzO5Bal73MlGgUUqj7I48GoUA7L3FoYTnLe3c=;
+ b=riAh0b+njCigF5vrxymDSQ+qpDL4sOeRCOhai0zcuZ4sc5VshVO0TZi6u81bIPDRLQRz
+ WvAE0Rh495jliu3Uxy01g5m5YxbWFNliiB34SmeXB+8B5VUj/k/HYvCH46dF2aAKhro1
+ BIh8o3LucKz6z9rxG1CPqko/oef3CjD88a0N2YlALe52o9cZNBzhYEf2FaQ+5IPP7vTF
+ h9mjbKRWxk1Tk9Ikp15lerXMj4zqRLZ5ppBussdvJoYVClCIeYORFzi+jLvo4pgDVSkD
+ BKZ4RLFTwRF698LvSMN++SQ/5MqwFzNFjgYT/2DEPnx1AdxxVWgZXgiaZYZnt+3s+krx 8w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36kycu99a9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 13:54:14 -0500
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 119IsDIT160458;
+        Tue, 9 Feb 2021 13:54:13 -0500
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36kycu994f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 13:54:13 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 119IkxF4012350;
+        Tue, 9 Feb 2021 18:54:01 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 36hjr89x4s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 18:54:00 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 119IrwJH27394458
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Feb 2021 18:53:58 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A1BCF5204E;
+        Tue,  9 Feb 2021 18:53:58 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.79.210])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 75F275204F;
+        Tue,  9 Feb 2021 18:53:56 +0000 (GMT)
+Message-ID: <38ba5889d517ee010a6bf370f8892059dd7d3bfe.camel@linux.ibm.com>
+Subject: Re: [PATCH 0/3] support for duplicate measurement of integrity
+ critical data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Tue, 09 Feb 2021 13:53:55 -0500
+In-Reply-To: <c5ecccbe-9e23-f297-8a79-2a9dd62a40fb@linux.microsoft.com>
+References: <20210130004519.25106-1-tusharsu@linux.microsoft.com>
+         <27f73411fc1d6ce6dd16a29344d729d9aa760250.camel@linux.ibm.com>
+         <27a4592c3b75861d2b9c8fb1511f593aa987222c.camel@linux.ibm.com>
+         <c5ecccbe-9e23-f297-8a79-2a9dd62a40fb@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-09_05:2021-02-09,2021-02-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 mlxlogscore=999 spamscore=0 impostorscore=0 bulkscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 adultscore=0 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102090086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix checkpatch.pl warning for "block comments should align the * on each line"
+On Tue, 2021-02-09 at 10:23 -0800, Tushar Sugandhi wrote:
+> > On Mon, 2021-02-08 at 15:22 -0500, Mimi Zohar wrote:
+> >> On Fri, 2021-01-29 at 16:45 -0800, Tushar Sugandhi wrote:
+> >>> IMA does not measure duplicate buffer data since TPM extend is a very
+> >>> expensive operation.  However, in some cases for integrity critical
+> >>> data, the measurement of duplicate data is necessary to accurately
+> >>> determine the current state of the system.  Eg, SELinux state changing
+> >>> from 'audit', to 'enforcing', and back to 'audit' again.  In this
+> >>> example, currently, IMA will not measure the last state change to
+> >>> 'audit'.  This limits the ability of attestation services to accurately
+> >>> determine the current state of the integrity critical data on the
+> >>> system.
+> >>>
+> >>> This series addresses this gap by providing the ability to measure
+> >>> duplicate entries for integrity critical data, driven by policy.
+> >>
+> >> The same reason for re-measuring buffer data is equally applicable to
+> >> files.  In both cases, the file or the buffer isn't re-measured if it
+> >> already exists in the htable.   Please don't limit this patch set to
+> >> just buffer data.
+> > 
+> Agreed.  I wasn't sure if you wanted the support for files, or other 
+> buffer measurement scenarios, except critical data.  So I started the 
+> implementation with supporting just critical data.  Happy to extend it 
+> to files and other buffer measurement scenarios as you suggested.
+> 
+> > Instead of making the change on a per measurement rule basis, disabling
+> > "htable" would be the simplest way of forcing re-measurements.  All
+> > that would be needed is a new Kconfig (e.g. CONFIG_IMA_DISABLE_HTABLE)
+> > and the associated test in ima_add_template_entry().
+> > 
+> Agreed.  Earlier I wasn't sure if you wanted allow_dup support for all 
+> the scenarios.  Now that it is clear,  I will implement it as you 
+> suggested.  Thank you so much for the pointers.  Appreciate it.
 
-Signed-off-by: karthik alapati <mail@karthek.com>
----
- .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   | 204 +++++++++---------
- 1 file changed, 102 insertions(+), 102 deletions(-)
+There are two different solutions - per measurement rule, disabling
+htable - being discussed.   Disabling htable requires miminumal
+changes.  Which version are you thinking of implementing?
 
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-index cf23414d7..003f954c2 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-@@ -20,16 +20,16 @@
- #define MAX_DOZE_WAITING_TIMES_9x 64
- 
- /**
--* Function:	phy_CalculateBitShift
--*
--* OverView:	Get shifted position of the BitMask
--*
--* Input:
--*		u32 	BitMask,
--*
--* Output:	none
--* Return:		u32 	Return the shift bit bit position of the mask
--*/
-+ * Function:	phy_CalculateBitShift
-+ *
-+ * OverView:	Get shifted position of the BitMask
-+ *
-+ * Input:
-+ *		u32 	BitMask,
-+ *
-+ * Output:	none
-+ * Return:		u32 	Return the shift bit bit position of the mask
-+ */
- static	u32 phy_CalculateBitShift(u32 BitMask)
- {
- 	u32 i;
-@@ -43,19 +43,19 @@ static	u32 phy_CalculateBitShift(u32 BitMask)
- 
- 
- /**
--* Function:	PHY_QueryBBReg
--*
--* OverView:	Read "specific bits" from BB register
--*
--* Input:
--*		struct adapter *	Adapter,
--*		u32 		RegAddr,	The target address to be readback
--*		u32 		BitMask		The target bit position in the target address
--*							to be readback
--* Output:	None
--* Return:		u32 		Data		The readback register value
--* Note:		This function is equal to "GetRegSetting" in PHY programming guide
--*/
-+ * Function:	PHY_QueryBBReg
-+ *
-+ * OverView:	Read "specific bits" from BB register
-+ *
-+ * Input:
-+ *		struct adapter *	Adapter,
-+ *		u32 		RegAddr,	The target address to be readback
-+ *		u32 		BitMask		The target bit position in the target address
-+ *							to be readback
-+ * Output:	None
-+ * Return:		u32 		Data		The readback register value
-+ * Note:		This function is equal to "GetRegSetting" in PHY programming guide
-+ */
- u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask)
- {
- 	u32 OriginalValue, BitShift;
-@@ -75,22 +75,22 @@ u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask)
- 
- 
- /**
--* Function:	PHY_SetBBReg
--*
--* OverView:	Write "Specific bits" to BB register (page 8~)
--*
--* Input:
--*		struct adapter *	Adapter,
--*		u32 		RegAddr,	The target address to be modified
--*		u32 		BitMask		The target bit position in the target address
--*								to be modified
--*		u32 		Data		The new register value in the target bit position
--*								of the target address
--*
--* Output:	None
--* Return:		None
--* Note:		This function is equal to "PutRegSetting" in PHY programming guide
--*/
-+ * Function:	PHY_SetBBReg
-+ *
-+ * OverView:	Write "Specific bits" to BB register (page 8~)
-+ *
-+ * Input:
-+ *		struct adapter *	Adapter,
-+ *		u32 		RegAddr,	The target address to be modified
-+ *		u32 		BitMask		The target bit position in the target address
-+ *								to be modified
-+ *		u32 		Data		The new register value in the target bit position
-+ *								of the target address
-+ *
-+ * Output:	None
-+ * Return:		None
-+ * Note:		This function is equal to "PutRegSetting" in PHY programming guide
-+ */
- 
- void PHY_SetBBReg_8723B(
- 	struct adapter *Adapter,
-@@ -184,25 +184,25 @@ static u32 phy_RFSerialRead_8723B(
- }
- 
- /**
--* Function:	phy_RFSerialWrite_8723B
--*
--* OverView:	Write data to RF register (page 8~)
--*
--* Input:
--*		struct adapter *	Adapter,
--*		RF_PATH			eRFPath,	Radio path of A/B/C/D
--*		u32 		Offset,		The target address to be read
--*		u32 		Data		The new register Data in the target bit position
--*								of the target to be read
--*
--* Output:	None
--* Return:		None
--* Note:		Threre are three types of serial operations:
--*		1. Software serial write
--*		2. Hardware LSSI-Low Speed Serial Interface
--*		3. Hardware HSSI-High speed
--*		serial write. Driver need to implement (1) and (2).
--*		This function is equal to the combination of RF_ReadReg() and  RFLSSIRead()
-+ * Function:	phy_RFSerialWrite_8723B
-+ *
-+ * OverView:	Write data to RF register (page 8~)
-+ *
-+ * Input:
-+ *		struct adapter *	Adapter,
-+ *		RF_PATH			eRFPath,	Radio path of A/B/C/D
-+ *		u32 		Offset,		The target address to be read
-+ *		u32 		Data		The new register Data in the target bit position
-+ *								of the target to be read
-+ *
-+ * Output:	None
-+ * Return:		None
-+ * Note:		Threre are three types of serial operations:
-+ *		1. Software serial write
-+ *		2. Hardware LSSI-Low Speed Serial Interface
-+ *		3. Hardware HSSI-High speed
-+ *		serial write. Driver need to implement (1) and (2).
-+ *		This function is equal to the combination of RF_ReadReg() and  RFLSSIRead()
-  *
-  * Note:		  For RF8256 only
-  *		 The total count of RTL8256(Zebra4) register is around 36 bit it only employs
-@@ -225,7 +225,7 @@ static u32 phy_RFSerialRead_8723B(
-  *
-  *
-  *
--*/
-+ */
- static void phy_RFSerialWrite_8723B(
- 	struct adapter *Adapter,
- 	enum RF_PATH eRFPath,
-@@ -261,21 +261,21 @@ static void phy_RFSerialWrite_8723B(
- 
- 
- /**
--* Function:	PHY_QueryRFReg
--*
--* OverView:	Query "Specific bits" to RF register (page 8~)
--*
--* Input:
--*		struct adapter *	Adapter,
--*		RF_PATH			eRFPath,	Radio path of A/B/C/D
--*		u32 		RegAddr,	The target address to be read
--*		u32 		BitMask		The target bit position in the target address
--*								to be read
--*
--* Output:	None
--* Return:		u32 		Readback value
--* Note:		This function is equal to "GetRFRegSetting" in PHY programming guide
--*/
-+ * Function:	PHY_QueryRFReg
-+ *
-+ * OverView:	Query "Specific bits" to RF register (page 8~)
-+ *
-+ * Input:
-+ *		struct adapter *	Adapter,
-+ *		RF_PATH			eRFPath,	Radio path of A/B/C/D
-+ *		u32 		RegAddr,	The target address to be read
-+ *		u32 		BitMask		The target bit position in the target address
-+ *								to be read
-+ *
-+ * Output:	None
-+ * Return:		u32 		Readback value
-+ * Note:		This function is equal to "GetRFRegSetting" in PHY programming guide
-+ */
- u32 PHY_QueryRFReg_8723B(
- 	struct adapter *Adapter,
- 	u8 eRFPath,
-@@ -296,23 +296,23 @@ u32 PHY_QueryRFReg_8723B(
- }
- 
- /**
--* Function:	PHY_SetRFReg
--*
--* OverView:	Write "Specific bits" to RF register (page 8~)
--*
--* Input:
--*		struct adapter *	Adapter,
--*		RF_PATH			eRFPath,	Radio path of A/B/C/D
--*		u32 		RegAddr,	The target address to be modified
--*		u32 		BitMask		The target bit position in the target address
--*								to be modified
--*		u32 		Data		The new register Data in the target bit position
--*								of the target address
--*
--* Output:	None
--* Return:		None
--* Note:		This function is equal to "PutRFRegSetting" in PHY programming guide
--*/
-+ * Function:	PHY_SetRFReg
-+ *
-+ * OverView:	Write "Specific bits" to RF register (page 8~)
-+ *
-+ * Input:
-+ *		struct adapter *	Adapter,
-+ *		RF_PATH			eRFPath,	Radio path of A/B/C/D
-+ *		u32 		RegAddr,	The target address to be modified
-+ *		u32 		BitMask		The target bit position in the target address
-+ *								to be modified
-+ *		u32 		Data		The new register Data in the target bit position
-+ *								of the target address
-+ *
-+ * Output:	None
-+ * Return:		None
-+ * Note:		This function is equal to "PutRFRegSetting" in PHY programming guide
-+ */
- void PHY_SetRFReg_8723B(
- 	struct adapter *Adapter,
- 	u8 eRFPath,
-@@ -369,17 +369,17 @@ s32 PHY_MACConfig8723B(struct adapter *Adapter)
- }
- 
- /**
--* Function:	phy_InitBBRFRegisterDefinition
--*
--* OverView:	Initialize Register definition offset for Radio Path A/B/C/D
--*
--* Input:
--*		struct adapter *	Adapter,
--*
--* Output:	None
--* Return:		None
--* Note:		The initialization value is constant and it should never be changes
--*/
-+ * Function:	phy_InitBBRFRegisterDefinition
-+ *
-+ * OverView:	Initialize Register definition offset for Radio Path A/B/C/D
-+ *
-+ * Input:
-+ *		struct adapter *	Adapter,
-+ *
-+ * Output:	None
-+ * Return:		None
-+ * Note:		The initialization value is constant and it should never be changes
-+ */
- static void phy_InitBBRFRegisterDefinition(struct adapter *Adapter)
- {
- 	struct hal_com_data		*pHalData = GET_HAL_DATA(Adapter);
--- 
-2.30.0
+thanks,
+
+Mimi
 
