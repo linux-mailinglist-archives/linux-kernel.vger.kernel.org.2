@@ -2,66 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D743144FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8AC314503
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhBIAl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 19:41:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
+        id S229996AbhBIAmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 19:42:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBIAlT (ORCPT
+        with ESMTP id S229716AbhBIAmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:41:19 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C8BC061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 16:40:39 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id e1so14630705ilu.0
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 16:40:39 -0800 (PST)
+        Mon, 8 Feb 2021 19:42:33 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9B4C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 16:41:52 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id f1so25843378lfu.3
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 16:41:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=jTVlfIINqTw0v4Efkeelt0x7KWMArOQ/VsKT2nrF4AQ=;
-        b=Y916e99Jd4Z1MX0dLQ/EOr6xbdu5jtzOnb7BVojOgl3edBx9kvS3WYQKH1t+mM3Igs
-         255Flh/bPoy/Ty/+i+omaB3uwt0nEukupFa+u/0QJDwwcbavNcoJolorLccN7ixCai42
-         2G4hDmKI7G9ms0/NZ8k2NCHLiQXPrWB9dzd7Ni98ZXdZK9E4xqNToyPvhRZSEvYdOkAl
-         EPAzPtcmjThys5Bx+cmAy9LkZcT+Xc8lgyHJ26ftx5QmrS9RCY7FE5SRkG4nMm4yYYFt
-         +Nzzy0ecQk29obZA5Z27pt03zMbKL+pVhEaBCA+VL2BkBK7bnncz3D3sAldve2QGDTG5
-         GCSQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hnyQftUsUdmfOLazvXtPW1VO1AUg/vKYWfKvMCCcu6w=;
+        b=U6awMA4cXNtdet7bCDrR3Qk6BJBJ2ztV1rTJfubntFbyiL1QD1RXNk09yJh5/+OGbp
+         foNv37aNd+SZMKQrJlDtlBVGy2WP0tS8b35RGtpzxLhYsVtwiIvBFf/rT763ScDdJB6C
+         apGR0PqUc1TwgCUaZYL+eg+9A7ea4WyrU+6cIu/kyjyHympM3GvBKGUvL2rsVUfLXTyp
+         FyjKrMSgdIWH/8C1EKc1m5yP0/WqouD9ba3g5OsEthm9asktTbQBoHQkGlNNryrXpvBu
+         VFVk5DG0aZrSwRwqR37T5xWx6oOYuCBjdeDMZsSYuuwATOK8SY1FiYfSYEMrBwPKD7b2
+         YU+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=jTVlfIINqTw0v4Efkeelt0x7KWMArOQ/VsKT2nrF4AQ=;
-        b=N16pGpREl+lgp1UnCYeMzP1uT/+gEWlqsQZQlOF4KdlvJw1yGy0Zrc1LUwdBvWs2ZL
-         l5IGwL5Gfa4ZsDWa+Uy2iDMYsSOE8UcFDqJJMfqxIv7MIpg6E/HvM1OLFy3/FGOiTiYy
-         iRIs+vKH7Z1oqGF6yEesR54PTnDkklqMXQrV7OQeUTn/hCWIvg3LEOsNsSKPgo7wxut0
-         Usej/g0mg74VYd3ejI9UWaYvAClXcUlwD3PgEWjVK555HYW4EqKojgvV6jv0lVo6xQA1
-         zHSuZq/XZhVINBPDCmcDoKy/DSaydupekcOwS/bL9BsmZvOQ+Jevj/WzxiSNeRfA1MVe
-         Trvw==
-X-Gm-Message-State: AOAM530oXl7Rqr0DPvErWdBEWjuZ8S9XulKkYWctMrhbyXE/XEQJfv9y
-        Ka7tXJDtEsAGkeAJtLCCPnu8Y3KaOOGRvq34tyw=
-X-Google-Smtp-Source: ABdhPJxmThvi5xCkLU4ZhchZo2my9PeYQY/47YeAxGMk+mdyJ8tICnHg5mxH6nBz0z9GBa3Utz9HHe8BSTonu04gTvI=
-X-Received: by 2002:a92:660d:: with SMTP id a13mr17130436ilc.268.1612831239215;
- Mon, 08 Feb 2021 16:40:39 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hnyQftUsUdmfOLazvXtPW1VO1AUg/vKYWfKvMCCcu6w=;
+        b=Zj6M+moz3MQwQwbZCsYTgyXMzezIBPmml5Di3NNUettzbBhkLTrZ2RyxGRrdFA6hyO
+         oK3ns4YnV4d0ViNph9jbrs1yL4IDV8ZTt2Tz1jSduv5pQs++wNHQdHDmSgxZ2c67IA2/
+         6F7Tv3s5Wpmr6OaXhf3ojeoJFNDxqedEHUqotcZYPXK7VB5tPVgfRZocpXIdkJLyyzNu
+         /uvMBhz3VySB2Mg7YnbJZbvhDXchz9GglT3ZlQzFrALJ+TYsdUSI3CrVF5j6kZZvKyLr
+         NiAYPRVAvZVRKorvUxXyFFI2wW/gSXiSCg55vMaHuZ/qdoJJLih9io3T0pVKF/XNduIg
+         TOsA==
+X-Gm-Message-State: AOAM531vsLPFFf81dZmqC4gK1idfLzEl7S1CEYeJCzF+k4/GUrb28wT/
+        /E1WnEgBYF1bURShEXrA3W7i3yQFSED9rjBE+pGdAg==
+X-Google-Smtp-Source: ABdhPJxmvREYZe/j/mTilj3dXr4kXQEEgQvJ9oEP19f5WVJ+wvbVOuUZyBzc0YCy4VkLcvv4ywulg04905i8ILzhwmc=
+X-Received: by 2002:a05:6512:38af:: with SMTP id o15mr1388887lft.70.1612831305577;
+ Mon, 08 Feb 2021 16:41:45 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:ac0:9dc2:0:0:0:0:0 with HTTP; Mon, 8 Feb 2021 16:40:38 -0800 (PST)
-Reply-To: charlesjacksonjrc@gmail.com
-From:   Charles Jackson Jr <jamesdonneljohnson@gmail.com>
-Date:   Mon, 8 Feb 2021 16:40:38 -0800
-Message-ID: <CAJt12UgWqJDe5vWcBbK3ZEgGGoO6ke14EJ3EzMD97zPqFYvt3g@mail.gmail.com>
-Subject: =?UTF-8?Q?Antworte_zur=C3=BCck_f=C3=BCr_den_sofortigen_Anspruch_auf_de?=
-        =?UTF-8?Q?in_gespendetes_Geld_und_gratuliere_dir_=2E=2E=2E=2E=2E=2E?=
-To:     undisclosed-recipients:;
+References: <20210121213641.3477522-1-willmcvicker@google.com>
+ <YBrFSLASG5yiqtZT@gunter> <YBrHPqlQHppzBPpn@kroah.com>
+In-Reply-To: <YBrHPqlQHppzBPpn@kroah.com>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Mon, 8 Feb 2021 16:41:29 -0800
+Message-ID: <CABYd82bb-BiY2pQ3ghNYV3wtPeR8vJR5-nH6GH=oHB+ALFAw5w@mail.gmail.com>
+Subject: Re: [PATCH v6] modules: introduce the MODULE_SCMVERSION config
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jessica Yu <jeyu@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Christoph Hellwig <hch@infradead.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-IHR E-MAIL-KONTO WURDE F=C3=9CR EINE SPENDE VON 3.500.000,00 USD F=C3=9CR
-CHARITY AUSGEW=C3=84HLT. Antworten Sie auf die folgende E-Mail, um weitere
-Informationen zu erhalten
+Thanks Jessica for all the reviews. I guess we can let this die here
+and I'll carry it downstream. At least it's all here for others to
+see.
 
-E-Mail: charlesjacksonjrc@gmail.com
+Thanks,
+Will
+
+On Wed, Feb 3, 2021 at 7:54 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Feb 03, 2021 at 04:46:16PM +0100, Jessica Yu wrote:
+> > +++ Will McVicker [21/01/21 21:36 +0000]:
+> > > Config MODULE_SCMVERSION introduces a new module attribute --
+> > > `scmversion` -- which can be used to identify a given module's SCM
+> > > version.  This is very useful for developers that update their kernel
+> > > independently from their kernel modules or vice-versa since the SCM
+> > > version provided by UTS_RELEASE (`uname -r`) will now differ from the
+> > > module's vermagic attribute.
+> > >
+> > > For example, we have a CI setup that tests new kernel changes on the
+> > > hikey960 and db845c devices without updating their kernel modules. When
+> > > these tests fail, we need to be able to identify the exact device
+> > > configuration the test was using. By including MODULE_SCMVERSION, we can
+> > > identify the exact kernel and modules' SCM versions for debugging the
+> > > failures.
+> > >
+> > > Additionally, by exposing the SCM version via the sysfs node
+> > > /sys/module/MODULENAME/scmversion, one can also verify the SCM versions
+> > > of the modules loaded from the initramfs. Currently, modinfo can only
+> > > retrieve module attributes from the module's ko on disk and not from the
+> > > actual module that is loaded in RAM.
+> > >
+> > > You can retrieve the SCM version in two ways,
+> > >
+> > > 1) By using modinfo:
+> > >    > modinfo -F scmversion MODULENAME
+> > > 2) By module sysfs node:
+> > >    > cat /sys/module/MODULENAME/scmversion
+> >
+> > Hi Will,
+> >
+> > First off, thanks for being patient and being responsive throughout the patch
+> > review process.
+> >
+> > Personally, I am rather neutral towards this feature. We already provide
+> > CONFIG_MODULE_SRCVERSION to provide a checksum of a module's source files and I
+> > think the SCMVERSION is a nicer alternative. I can see how an optional
+> > scmversion field might be helpful information for distro developers in testing
+> > environments and in situations where it is possible for the kernel and modules
+> > to be updated/packaged separately (for instance, the kernel selftest modules
+> > under lib/ are in-tree modules that are provided as a separate kernel module
+> > package in SLE).
+> >
+> > Generally, out of principle, I do not want to merge a patch that's been NAK'd
+> > repeatedly; even if I take the patch it'd likely be contested all the way up to
+> > the merge window. So this boils down to whether Christoph (and maybe Greg) are
+> > fine with this being a debug option that's not enabled by default.
+>
+> I am neutral on this, I don't care one way or the other.
+>
+> thanks,
+>
+> greg k-h
