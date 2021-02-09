@@ -2,254 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7F3314F4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFA1314F64
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhBIMmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:42:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230269AbhBIMk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:40:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 298E764E88;
-        Tue,  9 Feb 2021 12:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612874415;
-        bh=7aTIqFoEfAOdw1PwcXhIYfI7/U0vD9InuzazfdqFO/c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H/NUi3Thh3c0+B+SQMpHgjgyMy1PuSD2dJvZi2yHkrCg4DBs2jH7L3FWabt/cB69D
-         iY9qP9ti5p37sIyjR4XpKs1gQ1Qt7OdnwsKGsEEC+6GWUnim67jsR1EZHbgRvyVEWP
-         shdP0r3Jy6B1BEhq64eY1vduIjizDIdx2RpREuvaucwqo5JbD9fEGKAJckzenbptYq
-         AFur2rbrpyvmTUsu9nNHAAKPIZ2MhsYX1v7gCfNaflhz9r21tKGYNtmbkjSKbRFgst
-         AO/eDspsnOw408qtCmRfiaoqgIRoXiGY2/3BPoObKHsP3bIZsRVPrJvf+0pnhx81EM
-         wossehp2RwWIw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DB70C40513; Tue,  9 Feb 2021 09:40:09 -0300 (-03)
-Date:   Tue, 9 Feb 2021 09:40:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Kemeng Shi <shikemeng@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, ndesaulniers@google.com, irogers@google.com,
-        tmricht@linux.ibm.com, hushiyuan@huawei.com, hewenliang4@huawei.com
-Subject: Re: [PATCH] perf report: Fix arm64 gap between kernel start and
- module end
-Message-ID: <20210209124009.GA1018564@kernel.org>
-References: <33fd24c4-0d5a-9d93-9b62-dffa97c992ca@huawei.com>
- <20200330131129.GB31702@kernel.org>
- <20200330131810.GC31702@kernel.org>
+        id S230384AbhBIMqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:46:10 -0500
+Received: from mx1.opensynergy.com ([217.66.60.4]:62935 "EHLO
+        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230359AbhBIMmt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:42:49 -0500
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
+        by mx1.opensynergy.com (Proxmox) with ESMTP id 33D9EA1618;
+        Tue,  9 Feb 2021 13:41:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:from:from:in-reply-to:message-id:mime-version:references
+        :reply-to:subject:subject:to:to; s=srmailgate02; bh=B79S6sH5omLI
+        dQE+cuOqmuW1TdXpm9AJoCLKV7+bV+A=; b=swg8rGNMMwECyYJIvkOXYGbIG37z
+        fTNSJpqNaLG68mDyw1n2rLOvKG1TTmP658l+DPpuXmXW04LP47jlF4idgj5lwNEg
+        NCsbybCnmHdIWTMxMgi8bNxlfNzuUlsvkY+qZgpqLMjcMQvNrigao2+hz0jZ0RRg
+        eGZXTwC8uMxZOuz9saPhhBeiYpYw7rjQipYhrtB4AYigJ0BpfPeuyYxrkGTZmka9
+        9d0M6Tr5pA7oOTKaOpmAIIocxomSw/0pvLJN7e/CS/+NQQ3pObh7+nkGvP6YJv9w
+        uARIRgjo7x8Q0HiCOd4QIOKkblG8f2Omrv/2wHqWzn9yBA7FkjBtjbtQrg==
+From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
+To:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 8/9] ALSA: virtio: introduce PCM channel map support
+Date:   Tue, 9 Feb 2021 13:40:09 +0100
+Message-ID: <20210209124011.1224628-9-anton.yakovlev@opensynergy.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210209124011.1224628-1-anton.yakovlev@opensynergy.com>
+References: <20210209124011.1224628-1-anton.yakovlev@opensynergy.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200330131810.GC31702@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Mar 30, 2020 at 10:18:10AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, Mar 30, 2020 at 10:11:29AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Mon, Mar 30, 2020 at 03:41:11PM +0800, Kemeng Shi escreveu:
-> > > diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
-> > > index 393b9895c..37cbfa5e9 100644
-> > > --- a/tools/perf/arch/arm64/util/Build
-> > > +++ b/tools/perf/arch/arm64/util/Build
-> > > @@ -2,6 +2,7 @@ libperf-y += header.o
-> > >  libperf-y += tsc.o
-> > >  libperf-y += sym-handling.o
-> > >  libperf-y += kvm-stat.o
-> > > +libperf-y += machine.o
-> > 
-> > You made the patch against an old perf codebase, right? This libperf-y
-> > above was changed to perf-y here:
-> > 
-> > commit 5ff328836dfde0cef9f28c8b8791a90a36d7a183
-> > Author: Jiri Olsa <jolsa@kernel.org>
-> > Date:   Wed Feb 13 13:32:39 2019 +0100
-> > 
-> >     perf tools: Rename build libperf to perf
-> > 
-> > ----
-> > 
-> > I'm fixing this up, please check my perf/core branch later to see that
-> > all is working as intended.
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
-> 
-> Here it is:
-> 
-> 
-> From 829b915d7d7eeafbe4af76dce19ccbdc743a43c8 Mon Sep 17 00:00:00 2001
-> From: Kemeng Shi <shikemeng@huawei.com>
-> Date: Mon, 30 Mar 2020 15:41:11 +0800
-> Subject: [PATCH 1/1] perf symbols: Fix arm64 gap between kernel start and
->  module end
-> 
-> During execution of command 'perf report' in my arm64 virtual machine,
-> this error message is showed:
-> 
-> failed to process sample
-> 
-> __symbol__inc_addr_samples(860): ENOMEM! sym->name=__this_module,
->     start=0x1477100, addr=0x147dbd8, end=0x80002000, func: 0
-> 
-> The error is caused with path:
-> cmd_report
->  __cmd_report
->   perf_session__process_events
->    __perf_session__process_events
->     ordered_events__flush
->      __ordered_events__flush
->       oe->deliver (ordered_events__deliver_event)
->        perf_session__deliver_event
->         machines__deliver_event
->          perf_evlist__deliver_sample
->           tool->sample (process_sample_event)
->            hist_entry_iter__add
->             iter->add_entry_cb(hist_iter__report_callback)
->              hist_entry__inc_addr_samples
->               symbol__inc_addr_samples
->                __symbol__inc_addr_samples
->                 h = annotated_source__histogram(src, evidx) (NULL)
-> 
-> annotated_source__histogram failed is caused with path:
-> ...
->  hist_entry__inc_addr_samples
->   symbol__inc_addr_samples
->    symbol__hists
->     annotated_source__alloc_histograms
->      src->histograms = calloc(nr_hists, sizeof_sym_hist) (failed)
-> 
-> Calloc failed as the symbol__size(sym) is too huge. As show in error
-> message: start=0x1477100, end=0x80002000, size of symbol is about 2G.
-> 
-> This is the same problem as 'perf annotate: Fix s390 gap between kernel
-> end and module start (b9c0a64901d5bd)'. Perf gets symbol information from
-> /proc/kallsyms in __dso__load_kallsyms. A part of symbol in /proc/kallsyms
-> from my virtual machine is as follows:
->  #cat /proc/kallsyms | sort
->  ...
->  ffff000001475080 d rpfilter_mt_reg      [ip6t_rpfilter]
->  ffff000001475100 d $d   [ip6t_rpfilter]
->  ffff000001475100 d __this_module        [ip6t_rpfilter]
->  ffff000080080000 t _head
->  ffff000080080000 T _text
->  ffff000080080040 t pe_header
->  ...
-> 
-> Take line 'ffff000001475100 d __this_module [ip6t_rpfilter]' as example.
-> The start and end of symbol are both set to ffff000001475100 in
-> dso__load_all_kallsyms. Then symbols__fixup_end will set the end of symbol
-> to next big address to ffff000001475100 in /proc/kallsyms, ffff000080080000
-> in this example. Then sizeof of symbol will be about 2G and cause the
-> problem.
-> 
-> The start of module in my machine is
->  ffff000000a62000 t $x   [dm_mod]
-> 
-> The start of kernel in my machine is
->  ffff000080080000 t _head
-> 
-> There is a big gap between end of module and begin of kernel if a samll
-> amount of memory is used by module. And the last symbol in module will
-> have a large address range as caotaining the big gap.
-> 
-> Give that the module and kernel text segment sequence may change in
-> the future, fix this by limiting range of last symbol in module and kernel
-> to 4K in arch arm64.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huawei.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Hu Shiyuan <hushiyuan@huawei.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Richter <tmricht@linux.ibm.com>
-> Cc: hewenliang4@huawei.com
-> Link: http://lore.kernel.org/lkml/33fd24c4-0d5a-9d93-9b62-dffa97c992ca@huawei.com
-> [ refreshed the patch on current codebase ]
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->  tools/perf/arch/arm64/util/Build     |  1 +
->  tools/perf/arch/arm64/util/machine.c | 26 ++++++++++++++++++++++++++
->  2 files changed, 27 insertions(+)
->  create mode 100644 tools/perf/arch/arm64/util/machine.c
-> 
-> diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
-> index 789956f76d85..5c13438c7bd4 100644
-> --- a/tools/perf/arch/arm64/util/Build
-> +++ b/tools/perf/arch/arm64/util/Build
-> @@ -1,4 +1,5 @@
->  perf-y += header.o
-> +perf-y += machine.o
->  perf-y += perf_regs.o
->  perf-$(CONFIG_DWARF)     += dwarf-regs.o
->  perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
-> diff --git a/tools/perf/arch/arm64/util/machine.c b/tools/perf/arch/arm64/util/machine.c
-> new file mode 100644
-> index 000000000000..94745131e89a
-> --- /dev/null
-> +++ b/tools/perf/arch/arm64/util/machine.c
-> @@ -0,0 +1,26 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <stdio.h>
-> +#include "debug.h"
-> +#include "symbol.h"
-> +
-> +/* On arm64, kernel text segment start at high memory address,
-> + * for example 0xffff 0000 8xxx xxxx. Modules start at a low memory
-> + * address, like 0xffff 0000 00ax xxxx. When only samll amount of
-> + * memory is used by modules, gap between end of module's text segment
-> + * and start of kernel text segment may be reach 2G.
-> + * Therefore do not fill this gap and do not assign it to the kernel dso map.
-> + */
-> +
-> +#define SYMBOL_LIMIT (1 << 12) /* 4K */
-> +
-> +void arch__symbols__fixup_end(struct symbol *p, struct symbol *c)
-> +{
-> +	if ((strchr(p->name, '[') && strchr(c->name, '[') == NULL) ||
-> +			(strchr(p->name, '[') == NULL && strchr(c->name, '[')))
-> +		/* Limit range of last symbol in module and kernel */
-> +		p->end += SYMBOL_LIMIT;
-> +	else
-> +		p->end = c->start;
-> +	pr_debug4("%s sym:%s end:%#lx\n", __func__, p->name, p->end);
-> +}
+Enumerate all available PCM channel maps and create ALSA controls.
 
-This breaks the build on powerpc 32-bit, I'm fixing it using the proper "%#" PRIx64 " style.
+Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+---
+ sound/virtio/Makefile       |   1 +
+ sound/virtio/virtio_card.c  |  10 ++
+ sound/virtio/virtio_card.h  |   8 ++
+ sound/virtio/virtio_chmap.c | 219 ++++++++++++++++++++++++++++++++++++
+ sound/virtio/virtio_pcm.h   |   4 +
+ 5 files changed, 242 insertions(+)
+ create mode 100644 sound/virtio/virtio_chmap.c
 
-- Arnaldo
+diff --git a/sound/virtio/Makefile b/sound/virtio/Makefile
+index 09f485291285..2742bddb8874 100644
+--- a/sound/virtio/Makefile
++++ b/sound/virtio/Makefile
+@@ -4,6 +4,7 @@ obj-$(CONFIG_SND_VIRTIO) += virtio_snd.o
+ 
+ virtio_snd-objs := \
+ 	virtio_card.o \
++	virtio_chmap.o \
+ 	virtio_ctl_msg.o \
+ 	virtio_jack.o \
+ 	virtio_pcm.o \
+diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
+index 4578d0ce0726..787a4dec1da8 100644
+--- a/sound/virtio/virtio_card.c
++++ b/sound/virtio/virtio_card.c
+@@ -222,6 +222,10 @@ static int virtsnd_build_devs(struct virtio_snd *snd)
+ 	if (rc)
+ 		return rc;
+ 
++	rc = virtsnd_chmap_parse_cfg(snd);
++	if (rc)
++		return rc;
++
+ 	if (snd->njacks) {
+ 		rc = virtsnd_jack_build_devs(snd);
+ 		if (rc)
+@@ -234,6 +238,12 @@ static int virtsnd_build_devs(struct virtio_snd *snd)
+ 			return rc;
+ 	}
+ 
++	if (snd->nchmaps) {
++		rc = virtsnd_chmap_build_devs(snd);
++		if (rc)
++			return rc;
++	}
++
+ 	return snd_card_register(snd->card);
+ }
+ 
+diff --git a/sound/virtio/virtio_card.h b/sound/virtio/virtio_card.h
+index 9e6cd79eda25..8ec8bc3ea75e 100644
+--- a/sound/virtio/virtio_card.h
++++ b/sound/virtio/virtio_card.h
+@@ -44,6 +44,8 @@ struct virtio_snd_queue {
+  * @njacks: Number of jacks.
+  * @substreams: VirtIO PCM substreams.
+  * @nsubstreams: Number of PCM substreams.
++ * @chmaps: VirtIO channel maps.
++ * @nchmaps: Number of channel maps.
+  */
+ struct virtio_snd {
+ 	struct virtio_device *vdev;
+@@ -57,6 +59,8 @@ struct virtio_snd {
+ 	unsigned int njacks;
+ 	struct virtio_pcm_substream *substreams;
+ 	unsigned int nsubstreams;
++	struct virtio_snd_chmap_info *chmaps;
++	unsigned int nchmaps;
+ };
+ 
+ /* Message completion timeout in milliseconds (module parameter). */
+@@ -102,4 +106,8 @@ int virtsnd_jack_build_devs(struct virtio_snd *snd);
+ void virtsnd_jack_event(struct virtio_snd *snd,
+ 			struct virtio_snd_event *event);
+ 
++int virtsnd_chmap_parse_cfg(struct virtio_snd *snd);
++
++int virtsnd_chmap_build_devs(struct virtio_snd *snd);
++
+ #endif /* VIRTIO_SND_CARD_H */
+diff --git a/sound/virtio/virtio_chmap.c b/sound/virtio/virtio_chmap.c
+new file mode 100644
+index 000000000000..c54d7daa13e3
+--- /dev/null
++++ b/sound/virtio/virtio_chmap.c
+@@ -0,0 +1,219 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * virtio-snd: Virtio sound device
++ * Copyright (C) 2021 OpenSynergy GmbH
++ */
++#include <linux/virtio_config.h>
++
++#include "virtio_card.h"
++
++/* VirtIO->ALSA channel position map */
++static const u8 g_v2a_position_map[] = {
++	[VIRTIO_SND_CHMAP_NONE] = SNDRV_CHMAP_UNKNOWN,
++	[VIRTIO_SND_CHMAP_NA] = SNDRV_CHMAP_NA,
++	[VIRTIO_SND_CHMAP_MONO] = SNDRV_CHMAP_MONO,
++	[VIRTIO_SND_CHMAP_FL] = SNDRV_CHMAP_FL,
++	[VIRTIO_SND_CHMAP_FR] = SNDRV_CHMAP_FR,
++	[VIRTIO_SND_CHMAP_RL] = SNDRV_CHMAP_RL,
++	[VIRTIO_SND_CHMAP_RR] = SNDRV_CHMAP_RR,
++	[VIRTIO_SND_CHMAP_FC] = SNDRV_CHMAP_FC,
++	[VIRTIO_SND_CHMAP_LFE] = SNDRV_CHMAP_LFE,
++	[VIRTIO_SND_CHMAP_SL] = SNDRV_CHMAP_SL,
++	[VIRTIO_SND_CHMAP_SR] = SNDRV_CHMAP_SR,
++	[VIRTIO_SND_CHMAP_RC] = SNDRV_CHMAP_RC,
++	[VIRTIO_SND_CHMAP_FLC] = SNDRV_CHMAP_FLC,
++	[VIRTIO_SND_CHMAP_FRC] = SNDRV_CHMAP_FRC,
++	[VIRTIO_SND_CHMAP_RLC] = SNDRV_CHMAP_RLC,
++	[VIRTIO_SND_CHMAP_RRC] = SNDRV_CHMAP_RRC,
++	[VIRTIO_SND_CHMAP_FLW] = SNDRV_CHMAP_FLW,
++	[VIRTIO_SND_CHMAP_FRW] = SNDRV_CHMAP_FRW,
++	[VIRTIO_SND_CHMAP_FLH] = SNDRV_CHMAP_FLH,
++	[VIRTIO_SND_CHMAP_FCH] = SNDRV_CHMAP_FCH,
++	[VIRTIO_SND_CHMAP_FRH] = SNDRV_CHMAP_FRH,
++	[VIRTIO_SND_CHMAP_TC] = SNDRV_CHMAP_TC,
++	[VIRTIO_SND_CHMAP_TFL] = SNDRV_CHMAP_TFL,
++	[VIRTIO_SND_CHMAP_TFR] = SNDRV_CHMAP_TFR,
++	[VIRTIO_SND_CHMAP_TFC] = SNDRV_CHMAP_TFC,
++	[VIRTIO_SND_CHMAP_TRL] = SNDRV_CHMAP_TRL,
++	[VIRTIO_SND_CHMAP_TRR] = SNDRV_CHMAP_TRR,
++	[VIRTIO_SND_CHMAP_TRC] = SNDRV_CHMAP_TRC,
++	[VIRTIO_SND_CHMAP_TFLC] = SNDRV_CHMAP_TFLC,
++	[VIRTIO_SND_CHMAP_TFRC] = SNDRV_CHMAP_TFRC,
++	[VIRTIO_SND_CHMAP_TSL] = SNDRV_CHMAP_TSL,
++	[VIRTIO_SND_CHMAP_TSR] = SNDRV_CHMAP_TSR,
++	[VIRTIO_SND_CHMAP_LLFE] = SNDRV_CHMAP_LLFE,
++	[VIRTIO_SND_CHMAP_RLFE] = SNDRV_CHMAP_RLFE,
++	[VIRTIO_SND_CHMAP_BC] = SNDRV_CHMAP_BC,
++	[VIRTIO_SND_CHMAP_BLC] = SNDRV_CHMAP_BLC,
++	[VIRTIO_SND_CHMAP_BRC] = SNDRV_CHMAP_BRC
++};
++
++/**
++ * virtsnd_chmap_parse_cfg() - Parse the channel map configuration.
++ * @snd: VirtIO sound device.
++ *
++ * This function is called during initial device initialization.
++ *
++ * Context: Any context that permits to sleep.
++ * Return: 0 on success, -errno on failure.
++ */
++int virtsnd_chmap_parse_cfg(struct virtio_snd *snd)
++{
++	struct virtio_device *vdev = snd->vdev;
++	unsigned int i;
++	int rc;
++
++	virtio_cread(vdev, struct virtio_snd_config, chmaps, &snd->nchmaps);
++	if (!snd->nchmaps)
++		return 0;
++
++	snd->chmaps = devm_kcalloc(&vdev->dev, snd->nchmaps,
++				   sizeof(*snd->chmaps), GFP_KERNEL);
++	if (!snd->chmaps)
++		return -ENOMEM;
++
++	rc = virtsnd_ctl_query_info(snd, VIRTIO_SND_R_CHMAP_INFO, 0,
++				    snd->nchmaps, sizeof(*snd->chmaps),
++				    snd->chmaps);
++	if (rc)
++		return rc;
++
++	/* Count the number of channel maps per each PCM device/stream. */
++	for (i = 0; i < snd->nchmaps; ++i) {
++		struct virtio_snd_chmap_info *info = &snd->chmaps[i];
++		unsigned int nid = le32_to_cpu(info->hdr.hda_fn_nid);
++		struct virtio_pcm *vpcm;
++		struct virtio_pcm_stream *vs;
++
++		vpcm = virtsnd_pcm_find_or_create(snd, nid);
++		if (IS_ERR(vpcm))
++			return PTR_ERR(vpcm);
++
++		switch (info->direction) {
++		case VIRTIO_SND_D_OUTPUT:
++			vs = &vpcm->streams[SNDRV_PCM_STREAM_PLAYBACK];
++			break;
++		case VIRTIO_SND_D_INPUT:
++			vs = &vpcm->streams[SNDRV_PCM_STREAM_CAPTURE];
++			break;
++		default:
++			dev_err(&vdev->dev,
++				"chmap #%u: unknown direction (%u)\n", i,
++				info->direction);
++			return -EINVAL;
++		}
++
++		vs->nchmaps++;
++	}
++
++	return 0;
++}
++
++/**
++ * virtsnd_chmap_add_ctls() - Create an ALSA control for channel maps.
++ * @pcm: ALSA PCM device.
++ * @direction: PCM stream direction (SNDRV_PCM_STREAM_XXX).
++ * @vs: VirtIO PCM stream.
++ *
++ * Context: Any context.
++ * Return: 0 on success, -errno on failure.
++ */
++static int virtsnd_chmap_add_ctls(struct snd_pcm *pcm, int direction,
++				  struct virtio_pcm_stream *vs)
++{
++	unsigned int i;
++	int max_channels = 0;
++
++	for (i = 0; i < vs->nchmaps; i++)
++		if (max_channels < vs->chmaps[i].channels)
++			max_channels = vs->chmaps[i].channels;
++
++	return snd_pcm_add_chmap_ctls(pcm, direction, vs->chmaps, max_channels,
++				      0, NULL);
++}
++
++/**
++ * virtsnd_chmap_build_devs() - Build ALSA controls for channel maps.
++ * @snd: VirtIO sound device.
++ *
++ * Context: Any context.
++ * Return: 0 on success, -errno on failure.
++ */
++int virtsnd_chmap_build_devs(struct virtio_snd *snd)
++{
++	struct virtio_device *vdev = snd->vdev;
++	struct virtio_pcm *vpcm;
++	struct virtio_pcm_stream *vs;
++	unsigned int i;
++	int rc;
++
++	/* Allocate channel map elements per each PCM device/stream. */
++	list_for_each_entry(vpcm, &snd->pcm_list, list) {
++		for (i = 0; i < ARRAY_SIZE(vpcm->streams); ++i) {
++			vs = &vpcm->streams[i];
++
++			if (!vs->nchmaps)
++				continue;
++
++			vs->chmaps = devm_kcalloc(&vdev->dev, vs->nchmaps + 1,
++						  sizeof(*vs->chmaps),
++						  GFP_KERNEL);
++			if (!vs->chmaps)
++				return -ENOMEM;
++
++			vs->nchmaps = 0;
++		}
++	}
++
++	/* Initialize channel maps per each PCM device/stream. */
++	for (i = 0; i < snd->nchmaps; ++i) {
++		struct virtio_snd_chmap_info *info = &snd->chmaps[i];
++		unsigned int channels = info->channels;
++		unsigned int ch;
++		struct snd_pcm_chmap_elem *chmap;
++
++		vpcm = virtsnd_pcm_find(snd, le32_to_cpu(info->hdr.hda_fn_nid));
++		if (IS_ERR(vpcm))
++			return PTR_ERR(vpcm);
++
++		if (info->direction == VIRTIO_SND_D_OUTPUT)
++			vs = &vpcm->streams[SNDRV_PCM_STREAM_PLAYBACK];
++		else
++			vs = &vpcm->streams[SNDRV_PCM_STREAM_CAPTURE];
++
++		chmap = &vs->chmaps[vs->nchmaps++];
++
++		if (channels > ARRAY_SIZE(chmap->map))
++			channels = ARRAY_SIZE(chmap->map);
++
++		chmap->channels = channels;
++
++		for (ch = 0; ch < channels; ++ch) {
++			u8 position = info->positions[ch];
++
++			if (position >= ARRAY_SIZE(g_v2a_position_map))
++				return -EINVAL;
++
++			chmap->map[ch] = g_v2a_position_map[position];
++		}
++	}
++
++	/* Create an ALSA control per each PCM device/stream. */
++	list_for_each_entry(vpcm, &snd->pcm_list, list) {
++		if (!vpcm->pcm)
++			continue;
++
++		for (i = 0; i < ARRAY_SIZE(vpcm->streams); ++i) {
++			vs = &vpcm->streams[i];
++
++			if (!vs->nchmaps)
++				continue;
++
++			rc = virtsnd_chmap_add_ctls(vpcm->pcm, i, vs);
++			if (rc)
++				return rc;
++		}
++	}
++
++	return 0;
++}
+diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
+index 4378918b441a..ed864b57a55b 100644
+--- a/sound/virtio/virtio_pcm.h
++++ b/sound/virtio/virtio_pcm.h
+@@ -64,10 +64,14 @@ struct virtio_pcm_substream {
+  * struct virtio_pcm_stream - VirtIO PCM stream.
+  * @substreams: VirtIO substreams belonging to the stream.
+  * @nsubstreams: Number of substreams.
++ * @chmaps: Kernel channel maps belonging to the stream.
++ * @nchmaps: Number of channel maps.
+  */
+ struct virtio_pcm_stream {
+ 	struct virtio_pcm_substream **substreams;
+ 	unsigned int nsubstreams;
++	struct snd_pcm_chmap_elem *chmaps;
++	unsigned int nchmaps;
+ };
+ 
+ /**
+-- 
+2.30.0
 
-
-  72    13.69 ubuntu:18.04-x-powerpc        : FAIL powerpc-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-    arch/powerpc/util/machine.c: In function 'arch__symbols__fixup_end':
-    arch/powerpc/util/machine.c:23:12: error: format '%lx' expects argument of type 'long unsigned int', but argument 6 has type 'u64 {aka long long unsigned int}' [-Werror=format=]
-      pr_debug4("%s sym:%s end:%#lx\n", __func__, p->name, p->end);
-                ^
-    /git/linux/tools/perf/util/debug.h:18:21: note: in definition of macro 'pr_fmt'
-     #define pr_fmt(fmt) fmt
-                         ^~~
-    /git/linux/tools/perf/util/debug.h:33:29: note: in expansion of macro 'pr_debugN'
-     #define pr_debug4(fmt, ...) pr_debugN(4, pr_fmt(fmt), ##__VA_ARGS__)
-                                 ^~~~~~~~~
-    /git/linux/tools/perf/util/debug.h:33:42: note: in expansion of macro 'pr_fmt'
-     #define pr_debug4(fmt, ...) pr_debugN(4, pr_fmt(fmt), ##__VA_ARGS__)
-                                              ^~~~~~
-    arch/powerpc/util/machine.c:23:2: note: in expansion of macro 'pr_debug4'
-      pr_debug4("%s sym:%s end:%#lx\n", __func__, p->name, p->end);
-      ^~~~~~~~~
-    cc1: all warnings being treated as errors
-    /git/linux/tools/build/Makefile.build:139: recipe for target 'util' failed
-    make[5]: *** [util] Error 2
-    /git/linux/tools/build/Makefile.build:139: recipe for target 'powerpc' failed
-    make[4]: *** [powerpc] Error 2
-    /git/linux/tools/build/Makefile.build:139: recipe for target 'arch' failed
-    make[3]: *** [arch] Error 2
-  73    30.47 ubuntu:18.04-x-powerpc64      : Ok   powerpc64-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
 
