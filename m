@@ -2,90 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D90314DDB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41055314DDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbhBILHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:07:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25873 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232299AbhBILCK (ORCPT
+        id S232375AbhBILHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:07:36 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:60449 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232322AbhBILDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:02:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612868438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ifbx9nIqRn7LlNK27PJEsCYzKJr0fEzLeJSH+NkfLB0=;
-        b=VjDaxD9a8bpsP7AbrUNO2Bsn+CBLJu18JcyP7W0Ub8PwMTabBQ0bpuX8pu2nQI/UQO8PC0
-        17gOWyEQGutCPiU2wwq+C0KdxZsR52QnxNIc77oNAwcWjVdlZFVnvaAdsL1j1dtlctdOmA
-        0i5XL8NixoPJqgq91wi7Xg/K69o8cvs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-9_VWYtS5MXmem_hG6Akytg-1; Tue, 09 Feb 2021 06:00:34 -0500
-X-MC-Unique: 9_VWYtS5MXmem_hG6Akytg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECAAB804023;
-        Tue,  9 Feb 2021 11:00:31 +0000 (UTC)
-Received: from [10.36.113.141] (ovpn-113-141.ams2.redhat.com [10.36.113.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0501C60C04;
-        Tue,  9 Feb 2021 11:00:28 +0000 (UTC)
-Subject: Re: [PATCH v4 3/3] vsprintf: dump full information of page flags in
- pGp
-To:     Yafang Shao <laoar.shao@gmail.com>, willy@infradead.org,
-        andriy.shevchenko@linux.intel.com, linmiaohe@huawei.com,
-        vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, joe@perches.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210209105613.42747-1-laoar.shao@gmail.com>
- <20210209105613.42747-4-laoar.shao@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a448afd5-16e5-1744-54d2-142be05b0313@redhat.com>
-Date:   Tue, 9 Feb 2021 12:00:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 9 Feb 2021 06:03:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612868579; x=1644404579;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=W9uQIBmMbhOJI5EB5t0XL0RgU8AIWyZX4YDNWFP3Br4=;
+  b=Dsd2a74E2/LKAgCeJ/BYrL8vYxyo1/Bk9tqf22kULvLOtXDAxF6DoaIN
+   2/9x0aXzJ2hfZMcAoeOsOxWJjDgGJ6m0akmjpc4X1NZbt1WBtzGsOqS3S
+   AzTeQsJB1kIRuDpG0NvTTHt/fNSjiNbmo45swW2Oc23FS6Rypfwj1sDUJ
+   9saLzOTL2NBvw3+tX3fAOgqxDwxaMEka3kxR2/NpwKyCs/aGeMObmP7dn
+   vm38SKF4D789MTE+mOwOndDe80Y95DQSE/Z+JlZMynS6kEOl2pEKKAFqc
+   5ABKQO4fW8sQt8PVbyRpxYogWEGyof/vGQ7P/tuVP85WkuQY759tLOJi+
+   A==;
+IronPort-SDR: vV5/rJCZXvsBr1YtRxaK2d5GX2y09KEhs46aIHJFKUfM5olZXcpqPGjc2vmfX0kg+Ifer557wP
+ /f6g+yX92+4BDmI67vA4W+gzol6NSYPyU0MrmY1Mv9YsLVMeWCqWWl8XWNunpFrvXezjYe8vda
+ hKes3RxgysrwwxybcO4nJ8PFejY4NIE11dxp9pSJw2nYodjnPZuT/dLUF4+YCmsb29r91+EhV9
+ A5Atw1kfTLbZIr68PlqEheGc5O2qC0gy6NHtraXu463DfS8yRrkLoNvzNTIIp89mV3Hg56TEBe
+ ZOc=
+X-IronPort-AV: E=Sophos;i="5.81,164,1610434800"; 
+   d="scan'208";a="105958094"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Feb 2021 04:01:43 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 9 Feb 2021 04:01:43 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 9 Feb 2021 04:01:23 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <sre@kernel.org>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        kernel test robot <lkp@intel.com>,
+        "Dan Carpenter" <dan.carpenter@oracle.com>
+Subject: [PATCH] power: reset: at91-reset: free resources on exit path
+Date:   Tue, 9 Feb 2021 13:01:09 +0200
+Message-ID: <20210209110109.906034-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210209105613.42747-4-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.02.21 11:56, Yafang Shao wrote:
-> Currently the pGp only shows the names of page flags, rather than
-> the full information including section, node, zone, last cpupid and
-> kasan tag. While it is not easy to parse these information manually
-> because there're so many flavors. Let's interpret them in pGp as well.
-> 
-> To be compitable with the existed format of pGp, the new introduced ones
-> also use '|' as the separator, then the user tools parsing pGp won't
-> need to make change, suggested by Matthew. The new information is
-> tracked onto the end of the existed one.
-> 
-> On example of the output in mm/slub.c as follows,
-> - Before the patch,
-> [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
-> 
-> - After the patch,
-> [ 8838.835456] Slab 0x000000002828b78a objects=33 used=3 fp=0x00000000d04efc88 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+Free resources on exit path (failure path of probe and remove).
 
-Did not review in detail, but LGTM.
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/power/reset/at91-reset.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-Thanks, this will be very helpful!
-
-
+diff --git a/drivers/power/reset/at91-reset.c b/drivers/power/reset/at91-reset.c
+index 3ff9d93a5226..2ff7833153b6 100644
+--- a/drivers/power/reset/at91-reset.c
++++ b/drivers/power/reset/at91-reset.c
+@@ -206,7 +206,8 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+ 			if (!reset->ramc_base[idx]) {
+ 				dev_err(&pdev->dev, "Could not map ram controller address\n");
+ 				of_node_put(np);
+-				return -ENODEV;
++				ret = -ENODEV;
++				goto unmap;
+ 			}
+ 			idx++;
+ 		}
+@@ -218,13 +219,15 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+ 	reset->args = (u32)match->data;
+ 
+ 	reset->sclk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(reset->sclk))
+-		return PTR_ERR(reset->sclk);
++	if (IS_ERR(reset->sclk)) {
++		ret = PTR_ERR(reset->sclk);
++		goto unmap;
++	}
+ 
+ 	ret = clk_prepare_enable(reset->sclk);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not enable slow clock\n");
+-		return ret;
++		goto unmap;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, reset);
+@@ -239,21 +242,33 @@ static int __init at91_reset_probe(struct platform_device *pdev)
+ 	ret = register_restart_handler(&reset->nb);
+ 	if (ret) {
+ 		clk_disable_unprepare(reset->sclk);
+-		return ret;
++		goto unmap;
+ 	}
+ 
+ 	at91_reset_status(pdev, reset->rstc_base);
+ 
+ 	return 0;
++
++unmap:
++	iounmap(reset->rstc_base);
++	for (idx = 0; idx < ARRAY_SIZE(reset->ramc_base); idx++)
++		iounmap(reset->ramc_base[idx]);
++
++	return ret;
+ }
+ 
+ static int __exit at91_reset_remove(struct platform_device *pdev)
+ {
+ 	struct at91_reset *reset = platform_get_drvdata(pdev);
++	int idx;
+ 
+ 	unregister_restart_handler(&reset->nb);
+ 	clk_disable_unprepare(reset->sclk);
+ 
++	iounmap(reset->rstc_base);
++	for (idx = 0; idx < ARRAY_SIZE(reset->ramc_base); idx++)
++		iounmap(reset->ramc_base[idx]);
++
+ 	return 0;
+ }
+ 
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
