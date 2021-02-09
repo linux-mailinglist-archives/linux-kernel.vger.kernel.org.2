@@ -2,155 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2099F315121
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA47315123
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhBIOBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:01:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59208 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230000AbhBIOBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:01:03 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DA66EAFE2;
-        Tue,  9 Feb 2021 14:00:19 +0000 (UTC)
-Message-ID: <56e237a8d0646c03d4ff44e439d1b0f81c800a9b.camel@suse.de>
-Subject: Re: [RFC/PATCH v2 09/16] soc: bcm: bcm2835-power: Add support for
- BCM2711's Argon ASB
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Phil Elwell <phil@raspberrypi.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>, wahrenst@gmx.net,
-        linux-arm-kernel@lists.infradead.org, mripard@kernel.org,
-        eric@anholt.net
-Date:   Tue, 09 Feb 2021 15:00:18 +0100
-In-Reply-To: <CAMEGJJ3i_hEAnO4rDQ+emqB=OYXetLyKh1kMRwAbUnYZ1e48VA@mail.gmail.com>
-References: <20210209125912.3398-1-nsaenzjulienne@suse.de>
-         <20210209125912.3398-10-nsaenzjulienne@suse.de>
-         <CAMEGJJ3i_hEAnO4rDQ+emqB=OYXetLyKh1kMRwAbUnYZ1e48VA@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-vLmExgH5XDAroXW33oQ4"
-User-Agent: Evolution 3.38.3 
+        id S231951AbhBIOCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:02:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231723AbhBIOBY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 09:01:24 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75012C061786;
+        Tue,  9 Feb 2021 06:00:43 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id l18so1698345pji.3;
+        Tue, 09 Feb 2021 06:00:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BFxMSD/AQcmkX+KoxgHYBz0TzhP10uzovcwUnUn+wN8=;
+        b=eyV9zl6SE/ri3+RNlNsKXI2uB3FofVMItlp3gcCFSzlmYkkFhqon77AophZbGpI0EC
+         gnuChfUSJDSKyKDILuHAJiy8G+l5yZ+3Ef+/ADu8zXmjlm7ThAf0p3M7+DYp4y+Rt9wA
+         92wpAaCBjiwybDqquWolhVfRzQnFgqawGxf/BVUHaIeXoV8HPiMJhZHpwUOY35hZ8TIn
+         5kvqeYBFcErqbpRAv3kST3MNhzTtH/g/hkYh8MYS3EmQMR5fcQfuQvxLZwyps5EXNDlo
+         PgV+MkSEhvpg5w0lTFnn+5sdkm5SMaYguubwti6DKFbUn6rNV5iYAn2nYdwxSZ76FnTJ
+         WeNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BFxMSD/AQcmkX+KoxgHYBz0TzhP10uzovcwUnUn+wN8=;
+        b=VYHB0p02Vm4oyX52hfruRfZ/RhEiNQWOwbI1mgrgwNkFJOdKHEsKcbhn7WyZos1cFN
+         a2BBG+Voul0FIS9hmERyyYKM7/vEYwvpzAbDd2RLJXWTk7HEc09ycdeADKp7gtgHmWFK
+         LxGqoEQYzTHZ0tm5NtoVDUkwdfjwZzVxWER8pSRP8et2FwslJLyC88tD1VJdsPfpxQX8
+         xjy8w+HOmH8ADcRLZGaR3jjF7ANAWKWqW3HbIuDX0iIs2CaE3cjtyHoDk2FGGF4Qrw95
+         6UTeS2zI21jFhb7EM4bLgmY/wuFkIjjmvNVBbLzyRt1wl9xTuzuXiovyJuAFijV1eY8j
+         EI8A==
+X-Gm-Message-State: AOAM531WRj6vKmknf19o1XBErwlqx/HYwH64k1jqTrr+4BbRQZcOhYFQ
+        F4LvWwrbXCFkrfyZjCxzA2MyOrbYg+s97GIPGh8=
+X-Google-Smtp-Source: ABdhPJzlfJkFzgUvSIvVuwhq3+ETrxIHUAGWLUaEcxYlTfscXzSZAM4CTn9MsztDb6bIGZvlcZ/y6VPbCnEIuKJQ6hg=
+X-Received: by 2002:a17:902:b190:b029:df:fff2:c345 with SMTP id
+ s16-20020a170902b190b02900dffff2c345mr20733584plr.17.1612879241613; Tue, 09
+ Feb 2021 06:00:41 -0800 (PST)
 MIME-Version: 1.0
+References: <20210209133110.7383-1-nikita.shubin@maquefel.me> <20210209133110.7383-2-nikita.shubin@maquefel.me>
+In-Reply-To: <20210209133110.7383-2-nikita.shubin@maquefel.me>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 9 Feb 2021 16:00:25 +0200
+Message-ID: <CAHp75VeLJy4zG2U2jbRnGr0f8k0F5LD_zY66W2YwJA4kC2iofQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/7] gpio: ep93xx: fix BUG_ON port F usage
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 9, 2021 at 3:31 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
 
---=-vLmExgH5XDAroXW33oQ4
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Tue, 2021-02-09 at 13:19 +0000, Phil Elwell wrote:
-> Hi Nicolas,
->=20
-> On Tue, 9 Feb 2021 at 13:00, Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> >=20
-> > In BCM2711 the new ARGON ASB took over V3D. The old ASB is still presen=
-t
-> > with the ISP and H264 bits, and V3D is in the same place in the new ASB
-> > as the old one.
-> >=20
-> > Use the fact that 'pm->argon_asb' is populated as a hint that we're on
-> > BCM2711. On top of that introduce the macro ASB_BASE() which will selec=
-t
-> > the correct ASB register base, based on whether we're trying to access
-> > V3D and which platform we're on.
->=20
-> Please don't refer to this block as ARGON - it is the IP of Raspberry
-> Pi Trading and it's name is RPiVid.
+> +               .irq            = _irq,                         \
 
-OK, sorry for that. I, again, mixed both ASB names. I'll rename the Argon A=
-SB
-to RPiVid. How should I call the one present in older RPis?
+>                 .has_irq        = _has_irq,                     \
+>                 .has_hierarchical_irq = _has_hier,              \
 
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> >=20
-> > ---
-> >=20
-> > Changes since v1:
-> > =C2=A0- Correct names
-> >=20
-> > =C2=A0drivers/soc/bcm/bcm2835-power.c | 68 ++++++++++++++++++++--------=
------
-> > =C2=A01 file changed, 42 insertions(+), 26 deletions(-)
-> >=20
-> > diff --git a/drivers/soc/bcm/bcm2835-power.c b/drivers/soc/bcm/bcm2835-=
-power.c
-> > index 59b8abfc5617..42e105758b47 100644
-> > --- a/drivers/soc/bcm/bcm2835-power.c
+Just a side note for the further cleanup. No need to resend or update
+right now! (of course if you or maintainers feel otherwise...)
 
-[...]
+Now you have the duplicate information, i.e. irq covers has_irq. Hence
+you may drop has_irq, rename has_hierarchival_irq to
+is_irq_hierarchical and update below table.
 
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case BCM2835_POWER_DOMA=
-IN_USB:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0PM_WRITE(PM_USB, 0);
-> > @@ -626,13 +633,22 @@ static int bcm2835_power_probe(struct platform_de=
-vice *pdev)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0power->dev =3D dev;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0power->base =3D pm->bas=
-e;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0power->rpivid_asb =3D p=
-m->rpivid_asb;
-> > +       power->argon_asb =3D pm->argon_asb;
-> >=20
-> > -       id =3D ASB_READ(ASB_AXI_BRDG_ID);
-> > +       id =3D ASB_READ(ASB_AXI_BRDG_ID, false);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (id !=3D 0x62726467 =
-/* "BRDG" */) {
-> > -               dev_err(dev, "ASB register ID returned 0x%08x\n", id);
-> > +               dev_err(dev, "RPiVid ASB register ID returned 0x%08x\n"=
-, id);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ENODEV;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> >=20
-> > +       if (pm->argon_asb) {
-> > +               id =3D ASB_READ(ASB_AXI_BRDG_ID, true);
-> > +               if (id !=3D 0x62726467 /* "BRDG" */) {
-> > +                       dev_err(dev, "Argon ASB register ID returned 0x=
-%08x\n", id);
-> > +                       return -ENODEV;
-> > +               }
-> > +       }
-> > +
->
-> Surely these are the same register. Is this the result of a bad merge?
+>  static struct ep93xx_gpio_bank ep93xx_gpio_banks[] = {
+>         /* Bank A has 8 IRQs */
+> -       EP93XX_GPIO_BANK("A", 0x00, 0x10, 0, true, false, 64),
+> +       EP93XX_GPIO_BANK("A", 0x00, 0x10, 0x90, 0, true, false, 64),
+>         /* Bank B has 8 IRQs */
+> -       EP93XX_GPIO_BANK("B", 0x04, 0x14, 8, true, false, 72),
+> -       EP93XX_GPIO_BANK("C", 0x08, 0x18, 40, false, false, 0),
+> -       EP93XX_GPIO_BANK("D", 0x0c, 0x1c, 24, false, false, 0),
+> -       EP93XX_GPIO_BANK("E", 0x20, 0x24, 32, false, false, 0),
+> +       EP93XX_GPIO_BANK("B", 0x04, 0x14, 0xac, 8, true, false, 72),
+> +       EP93XX_GPIO_BANK("C", 0x08, 0x18, 0x00, 40, false, false, 0),
+> +       EP93XX_GPIO_BANK("D", 0x0c, 0x1c, 0x00, 24, false, false, 0),
+> +       EP93XX_GPIO_BANK("E", 0x20, 0x24, 0x00, 32, false, false, 0),
+>         /* Bank F has 8 IRQs */
+> -       EP93XX_GPIO_BANK("F", 0x30, 0x34, 16, false, true, 0),
+> -       EP93XX_GPIO_BANK("G", 0x38, 0x3c, 48, false, false, 0),
+> -       EP93XX_GPIO_BANK("H", 0x40, 0x44, 56, false, false, 0),
+> +       EP93XX_GPIO_BANK("F", 0x30, 0x34, 0x4c, 16, false, true, 0),
+> +       EP93XX_GPIO_BANK("G", 0x38, 0x3c, 0x00, 48, false, false, 0),
+> +       EP93XX_GPIO_BANK("H", 0x40, 0x44, 0x00, 56, false, false, 0),
+>  };
 
-AFAIU There are two ASBs the old one at 0x7e00a000 and the new RPiVid one a=
-t
-0x7ec11000. They both can be checked for valid IDs. Note the new argument i=
-n
-ASB_READ().
-
-Regards,
-Nicolas
-
-
---=-vLmExgH5XDAroXW33oQ4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAilXIACgkQlfZmHno8
-x/4YiQf+IWndOxKAscGGPf/kslh7HScKXnZucnff76qyQ3qV4RdHObcPRF9xgDoY
-B3SFOOxIxcmRLHBDt7ze2OWr/hpC1JxDIcHEsAgQe91zC6TD/53HXdS3aX0nAO56
-4XFP0VS1zvr7iJPbOsxrDdM13Jv6bU0K20O0AraVvoiDUGMs0ZniH7/7AgpmtZDe
-yEFSun6M9UmmVY9uYRzHkk8XPRhXpECxnMewrEHfm1IUFId6Kmw7I4HwPArvTPf9
-kDOi+rSofxS9ZIUgxFpWV3tRxxYAjxSx8mEHEbiF2cQZ08Vy0U4559tKS6flGh44
-D1Mo6eq/KrsBsJ88VRcpKB6NcmWWug==
-=PFPS
------END PGP SIGNATURE-----
-
---=-vLmExgH5XDAroXW33oQ4--
-
+-- 
+With Best Regards,
+Andy Shevchenko
