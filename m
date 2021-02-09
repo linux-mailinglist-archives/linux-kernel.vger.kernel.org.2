@@ -2,149 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9FB314B16
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF01314B1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhBIJBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:01:45 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:58123 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhBII6q (ORCPT
+        id S230381AbhBIJDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:03:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41123 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230176AbhBIJAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:58:46 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210209085745euoutp018e0d1fd80b889359c71f88abbd776d14~iCJgRbSOv0042000420euoutp01n
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:57:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210209085745euoutp018e0d1fd80b889359c71f88abbd776d14~iCJgRbSOv0042000420euoutp01n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612861065;
-        bh=gsa0796qs2tF26mzxamPCLDFS263O5nP2xeA+S968SY=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=e7nllApZTnWnSy/SRSsfGJXxfoBILYxUstDhq1iKQ7N7sOXbpej/RJlJflljJgaLp
-         x6moZer3HLeB/eY6tHV3/qeuVUFgqU+5ufZ3MiCicF54vHbKENW8NuYZx6wS/j3aF5
-         4tkK1jVakvOtdGxBgy3jDEZ1RgFo7iJIWKZCEeu8=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210209085745eucas1p2bff2e224d77f2913c8422214e9d13dc4~iCJgCa-IV3112931129eucas1p2r;
-        Tue,  9 Feb 2021 08:57:45 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 5B.FA.45488.98E42206; Tue,  9
-        Feb 2021 08:57:45 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210209085745eucas1p2a4db55275e1ec3a629310483290e70a7~iCJfpk9B-3112931129eucas1p2q;
-        Tue,  9 Feb 2021 08:57:45 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210209085745eusmtrp1e74a08cefc9d3fa0192bd31c97c16f2c~iCJfo-opo1341213412eusmtrp1U;
-        Tue,  9 Feb 2021 08:57:45 +0000 (GMT)
-X-AuditID: cbfec7f5-c5fff7000000b1b0-61-60224e898942
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 4A.11.21957.88E42206; Tue,  9
-        Feb 2021 08:57:45 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210209085744eusmtip2d8171f159a888904ee80e4dbce67f26b~iCJfTXi6J3267832678eusmtip2C;
-        Tue,  9 Feb 2021 08:57:44 +0000 (GMT)
-Subject: Re: [PATCH] misc: fastrpc: fix incorrect usage of dma_map_sgtable
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <90d01919-859d-d46d-e357-3f94a0187cbe@samsung.com>
-Date:   Tue, 9 Feb 2021 09:57:45 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.7.0
+        Tue, 9 Feb 2021 04:00:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612861131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KhbSJj/u7/Klvaf0H1NUS1T/THomFeB/0I+b8lFOAhk=;
+        b=GLROGT2nyv/pBH0NuJ+2XaxWJ0SBjjmXnnCpt5MmbbxftM7ACarlvgDNDkWBdaXCRn+Uvb
+        fWw7/97Fudq3z7qAbStJTKKowNwrtaNH2yGEXZzpvEjGis72uAGXnCQjPW4C9PJvsR+J+5
+        adcp86hEzZUVtJRRW65/Vw57YsU4JNc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-307-Gqub-l8MPVicwhB55id2jA-1; Tue, 09 Feb 2021 03:58:50 -0500
+X-MC-Unique: Gqub-l8MPVicwhB55id2jA-1
+Received: by mail-ed1-f72.google.com with SMTP id f21so14177835edx.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 00:58:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KhbSJj/u7/Klvaf0H1NUS1T/THomFeB/0I+b8lFOAhk=;
+        b=Z03DljT6b0Ql/h2UVESPcq6N+zPhLd4wrK5BGJuG/5pYMK1v7+MtJYDY4bfjxi3Q7L
+         1/Dxh5Ey4cH+6yBvf0KWa3Wf1wgfsNmBgsjZTv1Uh86IrfEsjdMvXamGHsKl7j3NaSVD
+         alwwQHd9FrFpMf6sHvcmMBK7NXIawJMw4n0M547Wv0uAqriCLDRtvJWlv3BKL1vBYjTV
+         eZ/DxKY4OhTaPCWoTD0+go+DHl+fkHCZa8WBj0Iz4UQedLL6l3p6IwKWXOsqp/JevrmI
+         ec563f4gV3XmmY1gGcIYcxUcGrdv1wGhAYl92Kh1XaqeWkkCtinc4+cxZqG7mU27r7IZ
+         Z75g==
+X-Gm-Message-State: AOAM533FFC9pMXNbfkNangx9LT04frRCDTDKM5uvCAz72mYI+8/z2Pfl
+        XO8U0G9LeaQkUgXdgJ65XgsRa9/31eqVCEPNcK1R61pA0FKocTtPWMQI2fcJeEXsJbxUm9gIp/p
+        gpUYfxETXi9w1OwdVsqqsRn3T
+X-Received: by 2002:a50:ec06:: with SMTP id g6mr21664789edr.12.1612861128702;
+        Tue, 09 Feb 2021 00:58:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJymcI9SAwF3UFCLc61KiBRA73aQgsEZsgY8MckX3xcIQCybfwa4DFmWwXMZJgFEzdRLQKkl3g==
+X-Received: by 2002:a50:ec06:: with SMTP id g6mr21664777edr.12.1612861128479;
+        Tue, 09 Feb 2021 00:58:48 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id du6sm9918346ejc.78.2021.02.09.00.58.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 00:58:47 -0800 (PST)
+Date:   Tue, 9 Feb 2021 09:58:45 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Parav Pandit <parav@nvidia.com>, Eli Cohen <elic@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vdpa/mlx5: fix param validation in mlx5_vdpa_get_config()
+Message-ID: <20210209085845.5zwtxacfgnbmnlot@steredhat>
+References: <20210208161741.104939-1-sgarzare@redhat.com>
+ <20210208133312-mutt-send-email-mst@kernel.org>
+ <fc523fbe-b742-0ebe-84d1-2b7e5529f00b@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210208200401.31100-1-jonathan@marek.ca>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnleLIzCtJLcpLzFFi42LZduznOd1OP6UEg2nTZCz+TjrGbtG8eD2b
-        xdQ9GxktJu4/y25xedccNgdWj9+/JjF67J+7ht3j8bEXrB6fN8kFsERx2aSk5mSWpRbp2yVw
-        Zczo/cRSsJ2zoveCXwPjMfYuRk4OCQETic7WH8xdjFwcQgIrGCUeXb/PCuF8YZQ4fGovI4Tz
-        mVFiypXHLDAtC+bsYYJILGeUWDv1BwuE85FR4uvDl4wgVcICXhLN3z+DdYgIuEocOjcTbCGz
-        QJ3E9YlTwGw2AUOJrrddbCA2r4CdxNPpLawgNouAisTe7gtgNaICSRLLb/5hgqgRlDg58wnY
-        TE4Bc4nTXVOZIGbKS2x/O4cZwhaXuPVkPth1EgIHOCTOT1/JBnG2i8SMl11QXwtLvDq+BcqW
-        kTg9uYcFoqGZUeLhubXsEE4Po8TlphmMEFXWEnfO/QKaxAG0QlNi/S59iLCjxJnL25lAwhIC
-        fBI33gpCHMEnMWnbdGaIMK9ER5sQRLWaxKzj6+DWHrxwiXkCo9IsJK/NQvLOLCTvzELYu4CR
-        ZRWjeGppcW56arFxXmq5XnFibnFpXrpecn7uJkZgmjn97/jXHYwrXn3UO8TIxMF4iFGCg1lJ
-        hDewUy5BiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+urWvihQTSE0tSs1NTC1KLYLJMHJxSDUzZ
-        zgwVBtM61BdtTwgsK7Qqc+5Ys2X5rLQ9XQsXqdVKbmoRExLPN0pfYyEwiXXLHpvwz3calB9E
-        56kbHLCco5Sz13ZjYwnHZ/GNCnt25L28nH1QfUlA5nphfk7vlaLHBbm7fIWuPNggHRO9ZFG7
-        slXilYh3/z2CXzE2iRu/22mfy/VJXj91hfPshcqbwo5lqazbnbhAN5Bz2iGlivzuouSt2nan
-        pskKt86Z6MkosuFIi3KepuG+kpW8aRNXRHbNu+pUwOLfz2f+lln1WVwNj8gH6RP7QvPNX/eH
-        6RdxBeU89Fgg2+064aXwxeQfL/5/2Hmv6o7J1K/Tcw8bZ777NfN95I2zn42UXORf99ipKrEU
-        ZyQaajEXFScCANbYzimiAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsVy+t/xe7qdfkoJBm2fGS3+TjrGbtG8eD2b
-        xdQ9GxktJu4/y25xedccNgdWj9+/JjF67J+7ht3j8bEXrB6fN8kFsETp2RTll5akKmTkF5fY
-        KkUbWhjpGVpa6BmZWOoZGpvHWhmZKunb2aSk5mSWpRbp2yXoZczo/cRSsJ2zoveCXwPjMfYu
-        Rk4OCQETiQVz9jB1MXJxCAksZZQ4OP8ZC0RCRuLktAZWCFtY4s+1LjaIoveMEtu75rGBJIQF
-        vCSav38GaxARcJU4dG4m2FRmgQZGiZ4pghANXYwSS661gyXYBAwlut52gTXzCthJPJ3eAraB
-        RUBFYm/3BbAaUYEkice37jNB1AhKnJz5BGwBp4C5xOmuqUwQC8wk5m1+yAxhy0tsfzsHyhaX
-        uPVkPtMERqFZSNpnIWmZhaRlFpKWBYwsqxhFUkuLc9Nziw31ihNzi0vz0vWS83M3MQLjatux
-        n5t3MM579VHvECMTB+MhRgkOZiUR3sBOuQQh3pTEyqrUovz4otKc1OJDjKZA/0xklhJNzgdG
-        dl5JvKGZgamhiZmlgamlmbGSOO/WuWvihQTSE0tSs1NTC1KLYPqYODilGph0lvzKMK+5MdvM
-        3DamItI4529AUom88XeBewd4E/wuOMq/Va7QWC/FFP1Fdkv0q4urJk71d7tsdYrXYP7R84y2
-        M5+/eloeL8lXUi8ZabKo9HKeYOPUSJtiG+WbyzI+Rfc0W0+7vCXq9dENZcy/Jtv9mbKr5PFP
-        vs7WvqmOldd3CFZmrj0hPPVwrYJId/+VCVdZj/FX8csophvt/ug2g9f24rHS+Mi6w9smCD9r
-        C9A67Hoi4VD0v52e0ps0JuRJ1s3OLr5f6py28/Cq72v55IS3rueQ5PlsL3pd9fe393alB8My
-        Y3Rfn5J7+Cjz1F67RXwL/vA+eJPdmRZ++7h/426PL09Nv/6fGys0c8PcrRlKLMUZiYZazEXF
-        iQDe/k+pNAMAAA==
-X-CMS-MailID: 20210209085745eucas1p2a4db55275e1ec3a629310483290e70a7
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210208200719eucas1p2e865a1368c6bc64bcc95a7ebe4af35ff
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210208200719eucas1p2e865a1368c6bc64bcc95a7ebe4af35ff
-References: <CGME20210208200719eucas1p2e865a1368c6bc64bcc95a7ebe4af35ff@eucas1p2.samsung.com>
-        <20210208200401.31100-1-jonathan@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fc523fbe-b742-0ebe-84d1-2b7e5529f00b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On 08.02.2021 21:04, Jonathan Marek wrote:
-> dma_map_sgtable() returns 0 on success, which is the opposite of what this
-> code was doing.
+On Tue, Feb 09, 2021 at 11:24:03AM +0800, Jason Wang wrote:
 >
-> Fixes: 7cd7edb89437 ("misc: fastrpc: fix common struct sg_table related issues")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-
-Right, I'm really sorry for this regression.
-
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-> ---
->   drivers/misc/fastrpc.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
+>On 2021/2/9 上午2:38, Michael S. Tsirkin wrote:
+>>On Mon, Feb 08, 2021 at 05:17:41PM +0100, Stefano Garzarella wrote:
+>>>It's legal to have 'offset + len' equal to
+>>>sizeof(struct virtio_net_config), since 'ndev->config' is a
+>>>'struct virtio_net_config', so we can safely copy its content under
+>>>this condition.
+>>>
+>>>Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+>>>Cc: stable@vger.kernel.org
+>>>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>>>---
+>>>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>>diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>index dc88559a8d49..10e9b09932eb 100644
+>>>--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>@@ -1820,7 +1820,7 @@ static void mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset,
+>>>  	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+>>>  	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+>>>-	if (offset + len < sizeof(struct virtio_net_config))
+>>>+	if (offset + len <= sizeof(struct virtio_net_config))
+>>>  		memcpy(buf, (u8 *)&ndev->config + offset, len);
+>>>  }
+>>Actually first I am not sure we need these checks at all.
+>>vhost_vdpa_config_validate already validates the values, right?
 >
-> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-> index 70eb5ed942d0..f12e909034ac 100644
-> --- a/drivers/misc/fastrpc.c
-> +++ b/drivers/misc/fastrpc.c
-> @@ -520,12 +520,13 @@ fastrpc_map_dma_buf(struct dma_buf_attachment *attachment,
->   {
->   	struct fastrpc_dma_buf_attachment *a = attachment->priv;
->   	struct sg_table *table;
-> +	int ret;
->   
->   	table = &a->sgt;
->   
-> -	if (!dma_map_sgtable(attachment->dev, table, dir, 0))
-> -		return ERR_PTR(-ENOMEM);
-> -
-> +	ret = dma_map_sgtable(attachment->dev, table, dir, 0);
-> +	if (ret)
-> +		table = ERR_PTR(ret);
->   	return table;
->   }
->   
+>
+>I think they're working at different levels. There's no guarantee that 
+>vhost-vdpa is the driver for this vdpa device.
+>
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Maybe we can do these checks in the vdpa_get_config() helper and we can 
+also add a vdpa_set_config() to do the same.
+
+Thanks,
+Stefano
+
+>
+>>
+>>Second, what will happen when we extend the struct and then
+>>run new userspace on an old kernel? Looks like it will just
+>>fail right? So what is the plan?
+>
+>
+>In this case, get_config() should match the spec behaviour. That is to 
+>say the size of config space depends on the feature negotiated.
+>
+>Thanks
+>
+>
+>>  I think we should
+>>allow a bigger size, and return the copied config size to userspace.
+>>
+>>
+>>>-- 
+>>>2.29.2
+>
 
