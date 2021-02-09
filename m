@@ -2,78 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAFD315B13
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7D9315AE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234882AbhBJAYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:24:55 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:41472 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234070AbhBIUuP (ORCPT
+        id S234842AbhBJASV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:18:21 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:14072 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234072AbhBIUuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:50:15 -0500
-Received: by mail-ot1-f49.google.com with SMTP id s107so18743239otb.8;
-        Tue, 09 Feb 2021 12:49:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/W1Gn4hxQtNB99JBDiBpqMrtEUA7Z2tTBFo11od6Dq0=;
-        b=e0wjo6JbWO5w7RpB2Cp7t80sFbYZvnl3QN41i9wqoCCsgPObGi9+7PRU5WvLskivBa
-         QzmrD/dE+4+hXUFmlSdiushUxmm8KbFbbCqUHBrokF9ms9j/7Ef+u8dLGan5jaVqENvY
-         ggaSfI8xrANBuzTx1meOXCTIJqHmH55gybHIZ/nCuEQhWeKPwMoDJqPnNync0/HZGBJH
-         4FruLVDTSEoPFw+dggEN5sk6eQqOeJSmT6eYEbhPptmWBpGcLHW7opU/L+adI3zQAeQv
-         7WN022zhREcibtlbhbg0uyAg3UjYcjKZ/ZM3aWcEt+LM8nv16hsgbfChIPegWfp5n5Ki
-         Es4A==
-X-Gm-Message-State: AOAM530Ld87GckTcFMNIEDL9b+peUWdntJbqKKonjaT2wYvTul4uE82/
-        Ta94Au7nybyc12EUNxx9/A==
-X-Google-Smtp-Source: ABdhPJyPT+UqiQpXCouB4drib6QDW/Lva0rnlvUnEysuBk1EhC8ytPiq8quZZkYVCOhE67HMCZ96EA==
-X-Received: by 2002:a05:6830:2316:: with SMTP id u22mr4610464ote.324.1612903773115;
-        Tue, 09 Feb 2021 12:49:33 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a63sm4594300otc.75.2021.02.09.12.49.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 12:49:32 -0800 (PST)
-Received: (nullmailer pid 152989 invoked by uid 1000);
-        Tue, 09 Feb 2021 20:49:30 -0000
-Date:   Tue, 9 Feb 2021 14:49:30 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Min Guo <min.guo@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH next v3 06/16] dt-bindings: usb: mtk-xhci: add optional
- assigned clock properties
-Message-ID: <20210209204930.GA152956@robh.at.kernel.org>
-References: <20210201070016.41721-1-chunfeng.yun@mediatek.com>
- <20210201070016.41721-6-chunfeng.yun@mediatek.com>
+        Tue, 9 Feb 2021 15:50:20 -0500
+Date:   Tue, 09 Feb 2021 20:49:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612903778; bh=hDcvm3I1usK8Mp4wrfq9qJ216nYvewc8ajVIpsly8xw=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=Q1r9YNcKYVYQN30xsJRU37z3WfBhThWeGyroYTGTYZsFOS8Bowbel0iNEptyiJ4x9
+         h/jKzie6Rx0DIezVZLUdJCAc/U8ooUMMCEV6sityGhDGGNrpDMvrYqdRZyoEzxCh1h
+         0XMD8/XjF0RaHmEBvkzbVUNuguv7mRTQLV4qC3roT3VZg3nM62COwkqcWTB+gWOtib
+         v8K1gyqD5VC9B10akYBpbxSOxYe3eRLiH5swFlB+yFq/hCcVq8Gr/z6PbHLR5EEyv7
+         0DadsEajDkH96mqsg0YOZnkqKRhTx63xworLuuPc5NAxC37Rp4EYHBlLGnZs5hgWmA
+         /hs8LvwwTaPYA==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [v3 net-next 10/10] skbuff: queue NAPI_MERGED_FREE skbs into NAPI cache instead of freeing
+Message-ID: <20210209204533.327360-11-alobakin@pm.me>
+In-Reply-To: <20210209204533.327360-1-alobakin@pm.me>
+References: <20210209204533.327360-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201070016.41721-6-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Feb 2021 15:00:06 +0800, Chunfeng Yun wrote:
-> Add optional property "assigned-clock" and "assigned-clock-parents"
-> used by mt7629.
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v3: no changes
-> v2: separate compatible out of the patch
-> ---
->  .../devicetree/bindings/usb/mediatek,mtk-xhci.yaml        | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
+napi_frags_finish() and napi_skb_finish() can only be called inside
+NAPI Rx context, so we can feed NAPI cache with skbuff_heads that
+got NAPI_MERGED_FREE verdict instead of immediate freeing.
+Replace __kfree_skb() with __kfree_skb_defer() in napi_skb_finish()
+and move napi_skb_free_stolen_head() to skbuff.c, so it can drop skbs
+to NAPI cache.
+As many drivers call napi_alloc_skb()/napi_get_frags() on their
+receive path, this becomes especially useful.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ include/linux/skbuff.h |  1 +
+ net/core/dev.c         |  9 +--------
+ net/core/skbuff.c      | 12 +++++++++---
+ 3 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 5bb443d37bf4..f8737ad91cc7 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -2919,6 +2919,7 @@ static inline struct sk_buff *napi_alloc_skb(struct n=
+api_struct *napi,
+ }
+ void napi_consume_skb(struct sk_buff *skb, int budget);
+=20
++void napi_skb_free_stolen_head(struct sk_buff *skb);
+ void __kfree_skb_defer(struct sk_buff *skb);
+=20
+ /**
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 135d46c0c3c7..68ad03382f6a 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6056,13 +6056,6 @@ struct packet_offload *gro_find_complete_by_type(__b=
+e16 type)
+ }
+ EXPORT_SYMBOL(gro_find_complete_by_type);
+=20
+-static void napi_skb_free_stolen_head(struct sk_buff *skb)
+-{
+-=09skb_dst_drop(skb);
+-=09skb_ext_put(skb);
+-=09kmem_cache_free(skbuff_head_cache, skb);
+-}
+-
+ static gro_result_t napi_skb_finish(struct napi_struct *napi,
+ =09=09=09=09    struct sk_buff *skb,
+ =09=09=09=09    gro_result_t ret)
+@@ -6076,7 +6069,7 @@ static gro_result_t napi_skb_finish(struct napi_struc=
+t *napi,
+ =09=09if (NAPI_GRO_CB(skb)->free =3D=3D NAPI_GRO_FREE_STOLEN_HEAD)
+ =09=09=09napi_skb_free_stolen_head(skb);
+ =09=09else
+-=09=09=09__kfree_skb(skb);
++=09=09=09__kfree_skb_defer(skb);
+ =09=09break;
+=20
+ =09case GRO_HELD:
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 8850086f8605..6dbc486c1d68 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -872,9 +872,6 @@ static void napi_skb_cache_put(struct sk_buff *skb)
+ =09struct napi_alloc_cache *nc =3D this_cpu_ptr(&napi_alloc_cache);
+ =09u32 i;
+=20
+-=09/* drop skb->head and call any destructors for packet */
+-=09skb_release_all(skb);
+-
+ =09kasan_poison_object_data(skbuff_head_cache, skb);
+ =09nc->skb_cache[nc->skb_count++] =3D skb;
+=20
+@@ -891,6 +888,14 @@ static void napi_skb_cache_put(struct sk_buff *skb)
+=20
+ void __kfree_skb_defer(struct sk_buff *skb)
+ {
++=09skb_release_all(skb);
++=09napi_skb_cache_put(skb);
++}
++
++void napi_skb_free_stolen_head(struct sk_buff *skb)
++{
++=09skb_dst_drop(skb);
++=09skb_ext_put(skb);
+ =09napi_skb_cache_put(skb);
+ }
+=20
+@@ -916,6 +921,7 @@ void napi_consume_skb(struct sk_buff *skb, int budget)
+ =09=09return;
+ =09}
+=20
++=09skb_release_all(skb);
+ =09napi_skb_cache_put(skb);
+ }
+ EXPORT_SYMBOL(napi_consume_skb);
+--=20
+2.30.0
+
+
