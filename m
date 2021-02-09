@@ -2,60 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7050A3150B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D5C3150B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhBINri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:47:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:51872 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231596AbhBINpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:45:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC68FED1;
-        Tue,  9 Feb 2021 05:44:50 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D9183F73D;
-        Tue,  9 Feb 2021 05:44:48 -0800 (PST)
-Subject: Re: [PATCH 1/6] sched/fair: remove update of blocked load from
- newidle_balance
-To:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, fweisbec@gmail.com,
-        tglx@linutronix.de, bristot@redhat.com,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org
-Cc:     qais.yousef@arm.com
-References: <20210205114830.781-1-vincent.guittot@linaro.org>
- <20210205114830.781-2-vincent.guittot@linaro.org>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <8cea2836-aedd-0925-4359-a04c8e8729e6@arm.com>
-Date:   Tue, 9 Feb 2021 14:44:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230285AbhBINrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231625AbhBINpV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:45:21 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F228C06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:44:41 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id c1so12958066qtc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:44:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m0aWzSj+LY+Pm6/iOhWj1FnuzMBYaB0PeiOpmIEzYlc=;
+        b=m0ZybclIto8FDXMo+Xc6M8LWQUVcr4Fdfd7ghcLIyxKTwH8BTQxyYtMUbUih8tWECV
+         2VT+6s7hE8CBSiZqN6bkvw24Uac8MmLDDi12B1jeZRjtOHllqcD/cupL4eo+uhYRxZN2
+         XofmcdPW3z+B4YCZnjGgWp75JMipYH0r7LH38gPu9CVXeJXQ4b1p3ExIpExO2Iz18RiX
+         aSE40sCfQ2T9u25TW9dPn2rmDnvbpisbwQQGBqLSCL+xzXgXzET0NMzRjKIe/+v41lcz
+         06dZa8ip1rgW6T8XpAe3Ap1llZSkK/tUofjeynu9J8T6nOGeeaa6PrERHkyYyDfqrS/d
+         Uv+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m0aWzSj+LY+Pm6/iOhWj1FnuzMBYaB0PeiOpmIEzYlc=;
+        b=ZtPxMbERbafKWxN7iqvAwqhwNdy90BV9c1dm4pM+yGGVmxJ219iVcxIuA82zeTJOQ1
+         d0/u2FryP8TfzERy/+0LdM7VIQ2kKPWBmByac/Zj1WNToggQQeBRyTGnxYkDprngbECZ
+         /UVEklYXPAAZRYitUNvwxLEEoSYOcXUvp6FnsTvPYnPpfMgZM3lmhIWIS9QmX+T2R7px
+         aiFOO+YCdNLOK8k7CN+yuzbQsBNbFrycR5Fpr/fvbPJmwtp7GgHgNYiunY8jCq2RUydl
+         +UszHpKfJZTdFQoydMyvVK+SnhghIc+gNmiQTvlK55qRfG5pQXfACTQDjHe6DW4zK78v
+         bZtw==
+X-Gm-Message-State: AOAM532F8PXRWv+j8iuEDjZ9APQwjL8hWKfX3k6VJRLIWA3lw7L7PmtO
+        H2ZNw/d6PntmJikB6Fa7e5QoljdXXIZPNSMs
+X-Google-Smtp-Source: ABdhPJxsSPzRdXtHpbbQb8PSJ12WAOa9MW0LcEJBQn0Vx0sdyHcridZpcWDX5XcVOrwu+wtw66I+OA==
+X-Received: by 2002:ac8:1190:: with SMTP id d16mr19704724qtj.125.1612878279800;
+        Tue, 09 Feb 2021 05:44:39 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id t6sm14169555qkd.127.2021.02.09.05.44.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 05:44:39 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l9TJm-005RQR-Sq; Tue, 09 Feb 2021 09:44:38 -0400
+Date:   Tue, 9 Feb 2021 09:44:38 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Alistair Popple <apopple@nvidia.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Nouveau Dev <nouveau@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kvm-ppc@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Jerome Glisse <jglisse@redhat.com>
+Subject: Re: [PATCH 0/9] Add support for SVM atomics in Nouveau
+Message-ID: <20210209134438.GE4718@ziepe.ca>
+References: <20210209010722.13839-1-apopple@nvidia.com>
+ <CAKMK7uGwg2-DTU7Zrco=TSkcR4yTqN1AF0hvVYEAbuj4BUYi5Q@mail.gmail.com>
+ <3426910.QXTomnrpqD@nvdebian>
+ <20210209133520.GB4718@ziepe.ca>
+ <CAKMK7uGR44pSdL7FOui4XE6hRY8pMs7d0bPbgHHoprRG4tGmFQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205114830.781-2-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uGR44pSdL7FOui4XE6hRY8pMs7d0bPbgHHoprRG4tGmFQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/2021 12:48, Vincent Guittot wrote:
-> newidle_balance runs with both preempt and irq disabled which prevent
-> local irq to run during this period. The duration for updating of the
-> blocked load of CPUs varies according to the number of cgroups and
+On Tue, Feb 09, 2021 at 02:39:51PM +0100, Daniel Vetter wrote:
 
-Maybe s/number of cgroups/number of CPU cgroups with non-decayed
-cfs_rq's (i.e. cfs_rq within the leaf cfs_rq list)
+> Either way ZONE_DEVICE for not vram/device memory sounds wrong. Is
+> that really going on here?
 
-> extends this critical period to an uncontrolled level.
-> 
-> Remove the update from newidle_balance and trigger a normal ILB that
-> will take care of the update instead.
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+My read was this was doing non-coherent atomics on CPU memory.
 
-otherwise, LGTM.
+Atomics on GPU memory is just called migration to GPU memory, it
+doesn't need to be special for atomics. In that case it can free the
+CPU struct page completely as the data now lives in the ZONE_DEVICE
+page so no need for a pin, no problem with movable
 
-[...]
+Jason
