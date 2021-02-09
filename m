@@ -2,73 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D377315E30
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 05:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 133C2315E56
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 05:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhBJE03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 23:26:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhBJE0Q (ORCPT
+        id S230332AbhBJEtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 23:49:17 -0500
+Received: from www-5.netcourrier.com ([213.182.55.200]:60930 "EHLO
+        www-5.mailo.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhBJEtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 23:26:16 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF600C06174A;
-        Tue,  9 Feb 2021 20:25:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=9jRCQI9OhZDLEzydyVbxcrW0qpE+alslMt9EqC76+6s=; b=PFSHo8AHmc+ORSS2V6BYX0LaTf
-        KcSIohTAe8FmbV+PgFekePqTtcMCVlpd+PfqkrJzoqoZm2u/8Sm3YSK8jjDpjU57O0gQ+WK/sbFoF
-        TLjEqJb80/hUau5st6/qs/X9VYpvrCQkQjdF1g51NaeMYffLce2B1fgzQVWwXk34cTnbssAgrhrt1
-        ph5PEALiGfi2jxMsrMFYm5a2LCCCYVZyJyt3D3m/wLBI3B05041Q+f7JzxRZlF56jkj4gPhe8EQfc
-        hT/2+Gtx7SFTGVul8qcf0nv5b7bgHpVYbZG7OiJHQ39ilzcldc/rv0d72mw2vKf2NNOFJYwsB4+y7
-        lkyaQiyw==;
-Received: from [2601:1c0:6280:3f0::cf3b] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9h4H-0001Fi-8E; Wed, 10 Feb 2021 04:25:33 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 2/2] Docs: add fs/eventpoll to docbooks
-Date:   Tue,  9 Feb 2021 20:25:26 -0800
-Message-Id: <20210210042526.23174-2-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210210042526.23174-1-rdunlap@infradead.org>
-References: <20210210042526.23174-1-rdunlap@infradead.org>
+        Tue, 9 Feb 2021 23:49:10 -0500
+X-Greylist: delayed 1258 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Feb 2021 23:49:08 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1612897114; bh=V3ccey8WzD2XM7AIsQttYEM9eTcmjZ4r0L//q+ngfDY=;
+        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+         References:Content-Type:MIME-Version:Content-Transfer-Encoding;
+        b=EuwOSoBSYeNTUosXXdJcfv6d/N0BqOdiTnMD29Ho55Q6IP51jmzYzDrgbX+sLfdhX
+         nhCp3nsZlcxop2yWVl6UYSTnvA5bHXWnqGFeg/ruG9BLkSidOYhviXz5ubrzgubHZQ
+         ZyeOCOCKi4yeAgVXj9qPxJS39khz9axAY5H7jvzc=
+Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Tue,  9 Feb 2021 19:58:34 +0100 (CET)
+X-EA-Auth: miDhEH5cip3PJigdiPHecsZKJftJVBmcIk/mjlO+sZYfQ82rAqPsLR+iXZKaGjd+Fg+sq5g9isTz3qrMVpIRrbEk72TO8fzfsr7vDETcAvM=
+Message-ID: <07cac63721a9ca63733617e461d640e8927a78f3.camel@mailoo.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: input/touchscreen: add bindings for
+ msg26xx
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Michael Srba <Michael.Srba@seznam.cz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Date:   Tue, 09 Feb 2021 19:58:33 +0100
+In-Reply-To: <20210209161319.GA3849081@robh.at.kernel.org>
+References: <20210121174359.1455393-1-vincent.knecht@mailoo.org>
+         <20210209161319.GA3849081@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add fs/eventpoll.c to the filesystem api-summary book.
+Le mardi 09 f=C3=A9vrier 2021 =C3=A0 10:13 -0600, Rob Herring a =C3=A9crit=
+=C2=A0:
+> On Thu, Jan 21, 2021 at 06:43:47PM +0100, Vincent Knecht wrote:
+> > This adds dts bindings for the mstar msg26xx touchscreen.
+> >=20
+> > Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+> > ---
+> > Changed in v3:
+> > - added `touchscreen-size-x: true` and `touchscreen-size-y: true` prope=
+rties
+> > Changed in v2:
+> > - changed M-Star to MStar in title line
+> > - changed reset gpio to active-low in example section
+> > ---
+> > =C2=A0.../input/touchscreen/mstar,msg26xx.yaml=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 | 69 +++++++++++++++++++
+> > =C2=A01 file changed, 69 insertions(+)
+> > =C2=A0create mode 100644 Documentation/devicetree/bindings/input/touchs=
+creen/mstar,msg26xx.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/input/touchscreen/mstar,=
+msg26xx.yaml
+> > b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yam=
+l
+> > new file mode 100644
+> > index 000000000000..5d26a1008bf1
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx=
+.yaml
+> > @@ -0,0 +1,69 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/input/touchscreen/mstar,msg26xx.yam=
+l#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: MStar msg26xx touchscreen controller Bindings
+> > +
+> > +maintainers:
+> > +=C2=A0 - Vincent Knecht <vincent.knecht@mailoo.org>
+> > +
+> > +allOf:
+> > +=C2=A0 - $ref: touchscreen.yaml#
+> > +
+> > +properties:
+> > +=C2=A0 compatible:
+> > +=C2=A0=C2=A0=C2=A0 const: mstar,msg26xx
+>=20
+> Don't use wildcards in compatible strings.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
----
- Documentation/filesystems/api-summary.rst |    6 ++++++
- 1 file changed, 6 insertions(+)
+Thank you for the input...
 
---- linux-next-20210205.orig/Documentation/filesystems/api-summary.rst
-+++ linux-next-20210205/Documentation/filesystems/api-summary.rst
-@@ -122,6 +122,12 @@ Events based on file descriptors
- .. kernel-doc:: fs/eventfd.c
-    :export:
- 
-+eventpoll (epoll) interfaces
-+============================
-+
-+.. kernel-doc:: fs/eventpoll.c
-+   :internal:
-+
- The Filesystem for Exporting Kernel Objects
- ===========================================
- 
+Let's say I set it to "mstar,msg2638", is it better to rename the driver fi=
+le and functions too ?
+According to downstream source file naming, msg2638 is the model I have and=
+ test this driver with.
+
+
+There's a possibility this driver works as-is or with minor mods for msg263=
+3 too,
+and a more remote one for msg21xx and msg22xx...
+
+
+
+
+
+
