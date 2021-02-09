@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5958314C1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60BE314C12
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhBIJty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:49:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
+        id S230170AbhBIJse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:48:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhBIJrI (ORCPT
+        with ESMTP id S230439AbhBIJqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:47:08 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8C2C061797
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:46:26 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id y134so2826673wmd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:46:26 -0800 (PST)
+        Tue, 9 Feb 2021 04:46:11 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D406EC061786
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:45:30 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id e17so914345ljl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:45:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NtiOGrIIJ5Mm3MgDZJonQ2tOQT3ZSoFpEI0CN22UV14=;
-        b=u5g39gXJIngfU1XExmEXBx8hqDny5vGFigabTUxsM0TPFIQA7FuqkLq0j7YwYUBp6f
-         RskGlhaj1idVZ2wvXZ8yQTiP3S9PHjWg8ozxjUDFRsBgVrFd5AfAQmR7nnCt/DGONGs4
-         PixCihIg+INClWp6UZmF0QmAgarFGkpMiuEJKNqSYrWxq1QSM8qh8xlnsItfRD5blKdO
-         fG+QiD70qlCXlqR69gS+qAvpyV4uUPjl5p/+cqCeBSt67lGXPQ4ysvYYbnF6g86WPdSw
-         oKS++DcM+hWzFUS1AICMoY0DQcI13BDLhDmVE1aviSr6fFaZNllS38oPY66PjFL6aBy0
-         Xn6g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PZp1dVLkIeux9Nv08C/jazpBGe6lhi4xYwkYq47447U=;
+        b=EvzwZr+sLMLPkvb6CWFa5w2TZ3BbtM0M0/BlIO+oWsOUVBnERLh4Np18tIhHHhxr16
+         sNFJvrj7jA+1TNchkK6+zHw49mnVKu36vPhkGZLbbQ8uWrPg+V3i8QVpDYOfV1dgwuoM
+         OfioAjNHgIUd3ImfI1YTChhbZj6tgk5tT0ywyqWtVpw6fwI06WVPmj7gdhwnXeszW+o4
+         f/dq+HAPAHZ3kxhKHFOhvbBEFSmX1Mw8QHikYoH8ViPEyno1BykWGq1D5eZBFiVDn8ej
+         bDyNCw/wA4JEEO8L4da+SxMD71F46SI468JLtA1PKhRleZ5kDourIaDBS/uGPBoameGa
+         BW/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NtiOGrIIJ5Mm3MgDZJonQ2tOQT3ZSoFpEI0CN22UV14=;
-        b=DuwhdsqfqT3G/EEb8iIQBPYOcBW7XFk2SUY5OW6avzkLv1L35MsZHp/KphdvjFMBTm
-         IUMECmRcYVI86tSNk41axJSli9R2eOkmQcNpKVTBW8p2Xrai/Ljt3zCcpYRX/Ev5Gcbp
-         pbae+oPkUwUL4m8gcFOnUTZweEIPnZygfYE4Vn9zuniT+vVa6QNj8M0lX8wB5QB5QB5S
-         Y3Q9cLyAeI4V0KN9e9NPF8vqEloK4EE5xlBQzv03mlVyGFVD+Y+ud1loqtG5XsZMd/or
-         Hm8TTWJDoQtiU/DNO3EaNStHAO6zI4UERBlQlRRd7SnbxPxmlDdGL3ehjdFvSpE4WJGx
-         kjQw==
-X-Gm-Message-State: AOAM533LbVKFcZHjV+7K+XpyNdI+wOiCbeo5WqRRr3QLLDzrnhYi/mmK
-        BmVwAhAJbhV8PEL3D2OaMVEPEzjrQbcZCoEl
-X-Google-Smtp-Source: ABdhPJxXQSPqb96K9C+tjUdGhrW9PVpw7siPtQwZ7h3AN8rn+JLKNtGm276sUZjhB5XDOFTFY1HKPA==
-X-Received: by 2002:a1c:f70f:: with SMTP id v15mr2554723wmh.38.1612863980176;
-        Tue, 09 Feb 2021 01:46:20 -0800 (PST)
-Received: from localhost.localdomain (hst-221-63.medicom.bg. [84.238.221.63])
-        by smtp.gmail.com with ESMTPSA id u14sm1509627wro.10.2021.02.09.01.46.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PZp1dVLkIeux9Nv08C/jazpBGe6lhi4xYwkYq47447U=;
+        b=ropD1jqIIad38jM66SD0q3vJUo+wS7dUaJB02skNaqHzPmaLW2LKefvQOo85dvsKgg
+         L53iXkga1gOTmlMvrH1S/DUNqAdRUDEeJj4keYStzgK6aHbddwNxICiU2eRBUdCWrJ5S
+         TYdDptH7ykP9ZDtYyQ4NIyI3wKcKvI8lgMxmynMvVZQC3A+OMSE+krDnum5b5bfBOyp4
+         pn2J3i/SEhSpfkGt94lo0sfPT/P2yVG2J6e8awXTbkEG0M9r+W2m4jis49L7qgl9Bm0D
+         mDnoJUQ38WeifLjfQe5BnVPEuP58ijc4V+2LMI7uVsw97jl48cngEkk+X04PKWREBsN/
+         6zGw==
+X-Gm-Message-State: AOAM531zpqHtZ75d3vQaKZ78Be7P8uBHzivRELMvaeqQ/yEGayuvPiLE
+        W1Iy1OFo1y8Njwcesqh3DxU=
+X-Google-Smtp-Source: ABdhPJx3dFHb+DM+yb90TIvB0Czh41yS1Ze9oe81WvjX3S036uTI1qIpxRL4iqRXd6pMjmFarI1aCg==
+X-Received: by 2002:a2e:9c93:: with SMTP id x19mr14362091lji.351.1612863928939;
+        Tue, 09 Feb 2021 01:45:28 -0800 (PST)
+Received: from localhost.localdomain ([146.158.65.228])
+        by smtp.googlemail.com with ESMTPSA id m9sm2448604lfl.63.2021.02.09.01.45.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 01:46:19 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH 0/2] Add decoder conceal color ctrl
-Date:   Tue,  9 Feb 2021 11:45:25 +0200
-Message-Id: <20210209094527.2173690-1-stanimir.varbanov@linaro.org>
+        Tue, 09 Feb 2021 01:45:28 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     alex.dewar90@gmail.com
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, snovitoll@gmail.com,
+        syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
+Subject: [PATCH v3] drivers/misc/vmw_vmci: restrict too big queue size in
+Date:   Tue,  9 Feb 2021 15:45:25 +0600
+Message-Id: <20210209094525.2099687-1-snovitoll@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <a10296cf-4545-c7f3-1d3c-31fbd05c3f6c@gmail.com>
+References: <a10296cf-4545-c7f3-1d3c-31fbd05c3f6c@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> syzbot found WARNING in qp_broker_alloc[1] in qp_host_alloc_queue()
+> when num_pages is 0x100001, giving queue_size + queue_page_size
+> bigger than KMALLOC_MAX_SIZE for kzalloc(), resulting order >= MAX_ORDER
+> condition.
+>
+> queue_size + queue_page_size=0x8000d8, where KMALLOC_MAX_SIZE=0x400000.
+>
+Reported-by: syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+> ---
+>>> As this is controllable by userspace, you just provided a way to flood
+>>> the kernel logs.
+>>>
+>>> Please make this a dev_dbg() call instead, if you really want to see it.
+>>> Otherwise just return NULL, no need to report anything, right?
+>> Thanks, removed pr_warn().
 
-The first patch is adding a new control for conceal error color and the
-second adds support for it in the Venus decoder driver.
+>Looks like you forgot to take out the opening brace.
 
-Comments are welcome!
+Cringe moment. Sorry, should've checked it properly first.
 
-regards,
-Stan
+v3: Removed opening brace.
+---
+ drivers/misc/vmw_vmci/vmci_queue_pair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Stanimir Varbanov (2):
-  v4l2-ctrl: Add decoder conceal color control
-  venus: vdec: Add support for conceal control
-
- .../media/v4l/ext-ctrls-codec.rst             | 20 +++++++++++++++++++
- drivers/media/platform/qcom/venus/core.h      |  1 +
- drivers/media/platform/qcom/venus/hfi_cmds.c  | 18 +++++++++++++++--
- .../media/platform/qcom/venus/hfi_helper.h    | 10 ++++++++++
- drivers/media/platform/qcom/venus/vdec.c      | 11 +++++++++-
- .../media/platform/qcom/venus/vdec_ctrls.c    |  7 +++++++
- drivers/media/v4l2-core/v4l2-ctrls.c          |  9 +++++++++
- include/uapi/linux/v4l2-controls.h            |  1 +
- 8 files changed, 74 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+index ea16df73cde0..024dcdbd9d01 100644
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -537,7 +537,7 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
+ 
+ 	queue_page_size = num_pages * sizeof(*queue->kernel_if->u.h.page);
+ 
+-	if (queue_size + queue_page_size > KMALLOC_MAX_SIZE) {
++	if (queue_size + queue_page_size > KMALLOC_MAX_SIZE)
+ 		return NULL;
+ 
+ 	queue = kzalloc(queue_size + queue_page_size, GFP_KERNEL);
 -- 
 2.25.1
 
