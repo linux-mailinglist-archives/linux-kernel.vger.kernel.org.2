@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38560315279
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F222831524F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhBIPQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:16:12 -0500
-Received: from m12-14.163.com ([220.181.12.14]:55559 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231682AbhBIPQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:16:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=LlShF
-        b2fSb2NOGUMw55RoD2ItAjMgTWh0BuqH5OEWqo=; b=qAAWi7Y/bXWN4HmZfD5xX
-        VYDwi3hQdr2eGgQ+oFBuLQH266FPZ08cwrDfyDyDV17Vu9KM7XztIzLOkAPwmn56
-        TS/pqd8KfAPSqqCiJsFhcSdqiZ45KVJHAn8/XQiVEaL6znMDRTEAvGE37gZXLuR6
-        d6IzuTCYwty147HxfplmZs=
-Received: from [192.168.31.187] (unknown [223.87.231.49])
-        by smtp10 (Coremail) with SMTP id DsCowAAXvPh+myJgpQbxkA--.3568S2;
-        Tue, 09 Feb 2021 22:26:08 +0800 (CST)
-Subject: Re: [PATCH] pinctrl: renesas:fix possible null pointer dereference
- struct pinmux_range *
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Zhang Kun <zhangkun@cdjrlc.com>
-References: <20210207150736.24382-1-alex_luca@163.com>
- <CAMuHMdV445RaAydwgd=Sx6Y+jLJ-PpPSut8wi=Mj-qznYWi84g@mail.gmail.com>
-From:   Alex <alex_luca@163.com>
-Message-ID: <b2642624-f7d9-3e50-1880-1115988343a8@163.com>
-Date:   Tue, 9 Feb 2021 22:26:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232277AbhBIPDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:03:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44100 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230357AbhBIPDk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 10:03:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612882933;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3tgkguWc5COknhf3MfpndDObNvyg3XXCqrTvWwHzWnQ=;
+        b=Xm+eBPKOLIhKoOuxsAbHnoKq32i7idAKZMt00riJc9aCOq3wyf5DJyo+JxnWcAMWpvChUr
+        dSRbPZ+yo8i0Iphq1s3M5EXb7Vyedum5uyCC4o5iTDeAxb8gp2vEvNz00OWVIeSKdN90EP
+        3wqQLcac81nv5yL1d63IBfBkcaWtiT0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-QzklC8vMMpepi8KAWww_jw-1; Tue, 09 Feb 2021 10:02:09 -0500
+X-MC-Unique: QzklC8vMMpepi8KAWww_jw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21BBB19611A0;
+        Tue,  9 Feb 2021 15:02:08 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6AD096062F;
+        Tue,  9 Feb 2021 15:02:06 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH net-next] rxrpc: Fix missing dependency on NET_UDP_TUNNEL
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Vadim Fedorenko <vfedorenko@novek.ru>,
+        Xin Long <lucien.xin@gmail.com>, alaa@dev.mellanox.co.il,
+        Jakub Kicinski <kuba@kernel.org>, dhowells@redhat.com,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lucien.xin@gmail.com, vfedorenko@novek.ru
+Date:   Tue, 09 Feb 2021 15:02:05 +0000
+Message-ID: <161288292553.585687.14447945995623785380.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdV445RaAydwgd=Sx6Y+jLJ-PpPSut8wi=Mj-qznYWi84g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: DsCowAAXvPh+myJgpQbxkA--.3568S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKw15uryDCF1kKw1UZryrWFg_yoW3XrX_u3
-        98Kry7C3W5C3W3C3Zxur1FvrnrJan5uFWkX3ykJ393tr9aqFsxJF1kWr18A3yfGrW8Gw4q
-        kayFvr4jqrW7ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnEfO7UUUUU==
-X-Originating-IP: [223.87.231.49]
-X-CM-SenderInfo: xdoh5spoxftqqrwthudrp/1tbiHgk0ylSIsv9QawABsC
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 10:12 PM, Geert Uytterhoeven wrote:
-> Hi Alex,
-> 
-> Thanks for your patch!
-> 
-> On Sun, Feb 7, 2021 at 4:08 PM <alex_luca@163.com> wrote:
->> From: Zhang Kun <zhangkun@cdjrlc.com>
->>
->> The parameters of  sh_pfc_enum_in_range() pinmux_range *r should be checked
->> first for possible null ponter, especially when PINMUX_TYPE_FUNCTION as the
->> pinmux_type was passed by sh_pfc_config_mux().
-> 
-> If pinmux_type in sh_pfc_config_mux() is PINMUX_TYPE_FUNCTION or
-> PINMUX_TYPE_GPIO, range is indeed NULL.
-> But as the call
-> 
->     in_range = sh_pfc_enum_in_range(enum_id, range);
-> 
-> is not done in case of these pinmux types, I don't see where the
-> problem is.  What am I missing?
-> 
+The changes to make rxrpc create the udp socket missed a bit to add the
+Kconfig dependency on the udp tunnel code to do this.
 
-Oh, you are right. I think I know what I missed.
-Thank you.
+Fix this by adding making AF_RXRPC select NET_UDP_TUNNEL.
 
-Alex
+Fixes: 1a9b86c9fd95 ("rxrpc: use udp tunnel APIs instead of open code in rxrpc_open_socket")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Xin Long <lucien.xin@gmail.com>
+cc: alaa@dev.mellanox.co.il
+cc: Jakub Kicinski <kuba@kernel.org>
+---
+
+ net/rxrpc/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/rxrpc/Kconfig b/net/rxrpc/Kconfig
+index d706bb408365..0885b22e5c0e 100644
+--- a/net/rxrpc/Kconfig
++++ b/net/rxrpc/Kconfig
+@@ -8,6 +8,7 @@ config AF_RXRPC
+ 	depends on INET
+ 	select CRYPTO
+ 	select KEYS
++	select NET_UDP_TUNNEL
+ 	help
+ 	  Say Y or M here to include support for RxRPC session sockets (just
+ 	  the transport part, not the presentation part: (un)marshalling is
+
 
