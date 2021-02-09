@@ -2,156 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CFC314637
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 344EC31463D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbhBICY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:24:59 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:36510 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbhBICYa (ORCPT
+        id S230014AbhBICZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 21:25:55 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:45610 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230518AbhBICZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:24:30 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1191JUbU012706;
-        Tue, 9 Feb 2021 02:23:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=RgIqZtG/nZVbWIwxvviwscpOFhvpcyCoO0paH1fyDG4=;
- b=nVx6AbKtMKr6qSTITCeX2axrEk0VkEdNd1ZGg+mpaukYQ1jTqrNKuooxJWoNhjajs6/0
- F3nkCsjkyf7EYiGW87B0VrK4dWSrs+CUB9ShQS7yzhfZDiBIoG65RoE4dFPjI1fXeOth
- YE8UEJgr2NoAT1J6wVMZ6o+6FvDkKWC+LYZkLpQZPoXRl2aXlEtmQuQWXz5prk3dCM+O
- o1xOMNJfg1RcdyE77UcQjfp4ZWDRWAp3/AV8p0e4SJTVOU9RzbHvRmtWSIVM/rbhdGN2
- xfxosGkOfxJpcXT2fwNg2wMnd2zp6L/0Cax+WeQ0Z+L2Qh9lf8ucpKaolpyQdIKy6PSj fQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 36hk2ke0rq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Feb 2021 02:23:21 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1191KpNd089753;
-        Tue, 9 Feb 2021 02:23:20 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-        by userp3020.oracle.com with ESMTP id 36j4vqnx58-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Feb 2021 02:23:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KvBCf1JpVnvWWGvCVGQRTVkc3gIw3px+6C666G5o2rRXijhkM/YatNYeYXJd0rVm1LANLImYQqpqMej1noMhwQax9ueyCXeAgQuZJqXK/LqBbWGp0A40Dl6k2dPMt3jFQgGPmZdM2UgnaLz5RenVTModGDQURKbz3xx9YiNfQexPRx6fn0hK6lXXhzidfDsBV8AgeSNvySS4Sh3K5S5FsH4n1PNRZTGyjCOcTwCzimvPx9tqeTiMFs6EazpIC/bnyQKFxwYu4mEhMvTwyWHjzfn7/81RpMv923PebHYadB1In6PkLBORZ2q9Pc27yGezKa9TPUAa4M1eru7oPTmA2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RgIqZtG/nZVbWIwxvviwscpOFhvpcyCoO0paH1fyDG4=;
- b=kIOKTRpzveGod9JZhTFUNgFj+k4GZdbnVNznBtTsQ+U90vKDgkysUyVp43ebnFdB31Pwexq3OjVOKlctQ1fsgCtqvDwrOS0FGpjpkuQ3dDCWs1F+gHZZSjrjQabG6/bqeXwIw4PvhbgZmlnwM4vsFm6EbBvVp43JtyLPO2FtpB2uhbP8NAIEAjRI/ZSD9/+uLRQzzrRrS6SwRlCE5IpcJhTmX7j3JbFSCbG8wv0oeveSjVLoryMS63lFPTGHab/Pjm+nrDLL/Zs2olQ0UyC2LG2PBLtyeEyN2wS0cUiur4BEKt3eOMxdtUlH0ryZCZ0iMBFRJIxC3CBKuvlvOs24aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RgIqZtG/nZVbWIwxvviwscpOFhvpcyCoO0paH1fyDG4=;
- b=edEZAbnZ9Wv5XqXW0FpSz7JDvY+yQ0NkFDpDC5cAvqok1EefH297QfP2GYkSFYyMqARicHG3cCG1yHG6jg5+qo8BbYQ5BdAgpd7/VITf1d0bmBd7erlD0AYeOYnQ76IonGiz43S0/oKH8xMczmPFLoEUv2xMw+tcRjpBmD1/TBc=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4678.namprd10.prod.outlook.com (2603:10b6:510:3b::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Tue, 9 Feb
- 2021 02:23:18 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
- 02:23:17 +0000
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Satish Kharat <satishkh@cisco.com>,
-        Lee Duncan <lduncan@suse.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: pmcraid: fix 'ioarcb' alignment warning
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1r1lqrncl.fsf@ca-mkp.ca.oracle.com>
-References: <20210204163020.3286210-1-arnd@kernel.org>
-Date:   Mon, 08 Feb 2021 21:23:14 -0500
-In-Reply-To: <20210204163020.3286210-1-arnd@kernel.org> (Arnd Bergmann's
-        message of "Thu, 4 Feb 2021 17:30:14 +0100")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: BYAPR01CA0043.prod.exchangelabs.com (2603:10b6:a03:94::20)
- To PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+        Mon, 8 Feb 2021 21:25:35 -0500
+Received: by mail-ot1-f48.google.com with SMTP id o12so16121776ote.12;
+        Mon, 08 Feb 2021 18:25:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b7/hT9qbKAcCgZkulvczbazF0JMvvFDDT1MyfQbTV/M=;
+        b=W31bc+xcS/bA58mbT2xVR1DMqrwuRzRVbmfarxA+cC4q564g1JEw/ArgbfW18gWwO1
+         alji95NP3Gztys35UdF436cdutfBAYmLouBPY7+Y/4geSr2A48Ij5HzFP1OLivN8I/LH
+         RaIJqc9v0pTYC2//Pr6LL6Wm5nKAW4kwESfZTq62lobjmPonMDR4DMJdt21xfEHN3xeD
+         HE9G0WuDB3xUCr/lvCESlrV0rEhF6axsd0CZD4n1ej5yovewtYU5N/jFNkq8nFTmNpY0
+         a3hTavaVFxrHraz91vyzux/0bd2zYXUb16Yym4UPVOeFtPK54/WvdWuN9zjXsJrpfOKo
+         7oXw==
+X-Gm-Message-State: AOAM531znoxuIot3kwIztkxenXsGi3LtOftgqChELF33XN4INrGZTCuI
+        zn2dE3PwE+iF6gECOieC8w==
+X-Google-Smtp-Source: ABdhPJy88N6V2wn9GJhtKVQ+tIkvLGUG1M5/zEyTsNwVfQ8Z2M1/lSfT54EuY+fusEa/liPnIQVLkw==
+X-Received: by 2002:a9d:32f4:: with SMTP id u107mr8469829otb.308.1612837492791;
+        Mon, 08 Feb 2021 18:24:52 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 69sm4068450otc.76.2021.02.08.18.24.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 18:24:51 -0800 (PST)
+Received: (nullmailer pid 2549095 invoked by uid 1000);
+        Tue, 09 Feb 2021 02:24:50 -0000
+Date:   Mon, 8 Feb 2021 20:24:50 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     mazziesaccount@gmail.com, Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v2 06/17] dt_bindings: regulator: Add ROHM BD71815 PMIC
+ regulators
+Message-ID: <20210209022450.GA2546257@robh.at.kernel.org>
+References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+ <950a87e680822ab6457ff95bba96730fed93e14d.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BYAPR01CA0043.prod.exchangelabs.com (2603:10b6:a03:94::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Tue, 9 Feb 2021 02:23:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2c585b61-968c-4eff-1843-08d8cca1a971
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4678:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4678330981DEEB5B9F4B87D18E8E9@PH0PR10MB4678.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BX5hoitoNsN1qc/83e3g/PqiMVAAenbNOtvOi5RubHHiN8e5/DtlSQ03vacm/f1f/bnon33wHXZokXq+sz1ZMlwzYCVCZdXzyXSAbF9oBFTSQhfb6HgjbWGcbhagjH9rKorZCAaRdIVAhbsq2C9/jGp0Id/RjM54ZY1o4VSErqyAa/iVl3UgmcGmgPk/W5ONDxqYxVUgOkJjx1TTLzYigfEFniXZOHmG0UBgBMiPoxba/EX3vw1Nl5j2NZAYAUQb3fYofDrQzQN4VC1ZXeAP9eomyEPfhuoEXN41j/Qz1KDBRaYrO1c3fLfz0xMFG3EbzdEIIQb4eEwH9KH4Mv+8mx/C3Mnfh0cV/r8ML+Hd1w2UriaPmjqg3Isl0L0E0WxfvKYF0q1yTWORyqipF77KoVaXcCM6+7m8d/qOhhpwg9hndZE7D9NAjPvlskAgjp5mOac+eS/p5r41iBvqlP7HALy6YZ0LwNGub+7ehWKRp2IvS4+12E5nanvPs0FPuJXpHZ/mtYWKhg2ezVmP9VsCag==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(346002)(39860400002)(396003)(86362001)(54906003)(5660300002)(55016002)(8936002)(6666004)(478600001)(16526019)(26005)(6916009)(956004)(66476007)(4326008)(316002)(66556008)(36916002)(66946007)(52116002)(2906002)(186003)(7696005)(8676002)(558084003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ro3XjzuK76dXUcYowG/hVcZYZCsLh4SnrmX6lqw23N5x0oAZXZD6UxFJx7Zm?=
- =?us-ascii?Q?eyLvs2DFnq4Q1Oraaz9sMgnqT4+yJPMF5CYjMpB/gp4Vx0T0oOl1A4A+pmdi?=
- =?us-ascii?Q?TCUdlGyQrDwTIGjaYoMk5Mer3WU3Baoh+ZcXbxhfzxKQsbWaV9uLKRZoF+gb?=
- =?us-ascii?Q?wkNpAqri3reVeBo54ogRwebRZlQ4nZbcwIBNWSSZ4CFno4s1560DAQxVVmQn?=
- =?us-ascii?Q?AeqQNrvl2UrD2IFl8ooAF/X/4oRw8igt7tgLznJq+5J09eIeFQ2gqU2b3v4c?=
- =?us-ascii?Q?8La2DP+9PLVJEB4yfkC9DWM/2TLekI2pochl1GgYWUcPY2i1tiw0BLyMfrZl?=
- =?us-ascii?Q?t3z96a5v0YsV7S1rJ66B5u8OzVjGhXuEEQjhaCD/deCtn7oaUhJBwLJhmtv0?=
- =?us-ascii?Q?9rFfCLTrctm0HcvLVH+v4JgNGgKohoHnq/3epHbcF9vorZv8pPGnc/0eTN7N?=
- =?us-ascii?Q?OuC+igM98Nz0jAiL/5wFsMqD+rNFd//KGMKl7i9Ya+wkeLhdi6+6QUhC3K0o?=
- =?us-ascii?Q?pZXCyFVlvu1ZQ40fqmhtqO3DZ36aPj8PaAp6laJKOWU0gPrTuPQBfXAANZrL?=
- =?us-ascii?Q?3EAtUceOI8iernB5VbeZ+AeN53XVB+POQ78qkgbTl5Q3r8C/ZeTDpYahqaeB?=
- =?us-ascii?Q?dLCJzSbFrqCEvGYblaoH3ZjawBatdnGQkAXQ0K37sV6KwEU1k8EzKy66kFX4?=
- =?us-ascii?Q?8XRQazFtf/kYOZC6F9+V5fSoDEWCgqP2N88cOcEB8HnxIY7Cpjc2NPpAtBHe?=
- =?us-ascii?Q?DTFzs87qkpYZbbEPFTWPiEdc3h3T23SuDBY2kWA8eNfOuYpzyWFfWFsSB3El?=
- =?us-ascii?Q?vhqc0qtdO398tGaPWLYNaigm1TSM0yaFD9BtvTjWKiCQ6yxre8FihGvWlDab?=
- =?us-ascii?Q?0P9HnrWeGnwZFvDcmD9id6K4CMCxpmojUVd0T5xUprXWVluTw1/NHvmqPRaw?=
- =?us-ascii?Q?WO94OKMUBMITcY6RGJPKcGfGcsAiRWsShh3sPdUwZrT+fzR9w+DRx5qcRNrL?=
- =?us-ascii?Q?LRmovztH4l6T2ZaEyU12Yna0pKwoiZVUeSoWfc7fNqORuj3Rg3JCmT/IJ/fg?=
- =?us-ascii?Q?XzVvPsCokkgq+/GV1wIwekT8qpM+zKwWJEoJ9RzvlgA/zJpU3QqLe2gSPkJe?=
- =?us-ascii?Q?iVDlRKHdKWFupSvyIAhA0MN4PLkgDWkvKVujc5T/MztQVWIzDgatJgg5b59H?=
- =?us-ascii?Q?PGM8JMErijMqvFIo2oSnEV/l8bpLl3YKm2URmw2EilhU0JQWodxSttYsWNsy?=
- =?us-ascii?Q?D7OFlG3Dnd3UKFbb4Yp5o285woKtXFq63Jq0fKuh8EReicdCjqYgqJFfsMjt?=
- =?us-ascii?Q?RiInXqSBziSP8j78tRypxd4u?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c585b61-968c-4eff-1843-08d8cca1a971
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2021 02:23:17.8453
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i6aiF9R88p8rmTwHoTdhcSEJnztIy1fU/L4XCY3gT6FG/k7XGfvBkAXCYly/kCrIH+EAk+RgnyBHy0D/tgCvSqpJQAbQb9uwUvSVMILkOus=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4678
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9889 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102090002
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9889 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 clxscore=1011 impostorscore=0 lowpriorityscore=0
- bulkscore=0 suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102090002
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <950a87e680822ab6457ff95bba96730fed93e14d.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 19, 2021 at 09:17:09AM +0200, Matti Vaittinen wrote:
+> Add binding documentation for regulators on ROHM BD71815 PMIC.
+> 5 bucks, 7 LDOs and a boost for LED.
+> 
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
+> 
+> Changes since v1:
+> - Changed patch order to fix ref dependecy
+> - Added missing schema for nodes wled, ldodvref, ldolpsr
+> 
+>  .../regulator/rohm,bd71815-regulator.yaml     | 116 ++++++++++++++++++
+>  1 file changed, 116 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
+> new file mode 100644
+> index 000000000000..7d0adb74a396
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
+> @@ -0,0 +1,116 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/regulator/rohm,bd71815-regulator.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ROHM BD71815 Power Management Integrated Circuit regulators
+> +
+> +maintainers:
+> +  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> +
+> +description: |
+> +  This module is part of the ROHM BD718215 MFD device. For more details
+> +  see Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml.
+> +
+> +  The regulator controller is represented as a sub-node of the PMIC node
+> +  on the device tree.
+> +
+> +  The valid names for BD71815 regulator nodes are
+> +  buck1, buck2, buck3, buck4, buck5,
+> +  ldo1, ldo2, ldo3, ldo4, ldo5,
+> +  ldodvref, ldolpsr, wled
+> +
+> +properties:
+> +  wled:
+> +    type: object
+> +    description:
+> +      properties for wled regulator
+> +    $ref: regulator.yaml#
+> +
+> +    properties:
+> +      regulator-name:
+> +        const: wled
+> +
+> +patternProperties:
+> +  "^((ldo|buck)[1-5]|ldolpsr|ldodvref)$":
+> +    type: object
+> +    description:
+> +      Properties for single LDO/BUCK regulator.
+> +    $ref: regulator.yaml#
+> +
+> +    properties:
+> +      regulator-name:
+> +        pattern: "^((ldo|buck)[1-5]|ldolpsr|ldodvref)$"
+> +        description:
+> +          should be "ldo1", ..., "ldo5", "buck1", ..., "buck5" and "ldolpsr"
+> +          for ldolpsr regulator, "ldodvref" for ldodvref reglator.
+> +
+> +      rohm,vsel-gpios:
+> +        description:
+> +          GPIO used to control ldo4 state (when ldo4 is controlled by GPIO).
+> +
+> +      rohm,dvs-run-voltage:
 
-Arnd,
+Use standard unit suffix.
 
-> Building with 'make W=1' enables -Wpacked-not-aligned, and this warns
-> about pmcraid because of incompatible alignment constraints for
-> pmcraid_passthrough_ioctl_buffer:
+> +        description:
+> +          PMIC "RUN" state voltage in uV when PMIC HW states are used. See
+> +          comments below for bucks/LDOs which support this. 0 means
+> +          regulator should be disabled at RUN state.
+> +        $ref: "/schemas/types.yaml#/definitions/uint32"
 
-Applied to 5.12/scsi-staging, thanks!
+And then drop this.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> +        minimum: 0
+> +        maximum: 3300000
+> +
+> +      rohm,dvs-snvs-voltage:
+> +        description:
+> +          Whether to keep regulator enabled at "SNVS" state or not.
+> +          0 means regulator should be disabled at SNVS state, non zero voltage
+> +          keeps regulator enabled. BD71815 does not change voltage level
+> +          when PMIC transitions to SNVS.SNVS voltage depends on the previous
+> +          state (from which the PMIC transitioned to SNVS).
+> +        $ref: "/schemas/types.yaml#/definitions/uint32"
+
+Same here.
+
+> +        minimum: 0
+> +        maximum: 3300000
+> +
+> +      rohm,dvs-suspend-voltage:
+> +        description:
+> +          PMIC "SUSPEND" state voltage in uV when PMIC HW states are used. See
+> +          comments below for bucks/LDOs which support this. 0 means
+> +          regulator should be disabled at SUSPEND state.
+> +        $ref: "/schemas/types.yaml#/definitions/uint32"
+
+And here.
+
+> +        minimum: 0
+> +        maximum: 3300000
+> +
+> +      rohm,dvs-lpsr-voltage:
+> +        description:
+> +          PMIC "LPSR" state voltage in uV when PMIC HW states are used. See
+> +          comments below for bucks/LDOs which support this. 0 means
+> +          regulator should be disabled at LPSR state.
+> +        $ref: "/schemas/types.yaml#/definitions/uint32"
+> +        minimum: 0
+> +        maximum: 3300000
+> +
+> +        # Bucks 1 and 2 support giving separate voltages for operational states
+> +        # (RUN /CLEAN according to data-sheet) and non operational states
+> +        # (LPSR/SUSPEND). The voltage is automatically changed when HW
+> +        # state changes. Omitting these properties from bucks 1 and 2 leave
+> +        # buck voltages to not be toggled by HW state. Enable status may still
+> +        # be toggled by state changes depending on HW default settings.
+> +        #
+> +        # Bucks 3-5 and ldos 1-5 support setting the RUN state voltage here.
+> +        # Given RUN voltage is used at all states if regulator is enabled at
+> +        # given state.
+> +        # Values given for other states are regarded as enable/disable at
+> +        # given state (see below).
+> +        #
+> +        # All regulators except WLED support specifying enable/disable status
+> +        # for each of the HW states (RUN/SNVS/SUSPEND/LPSR). HW defaults can
+> +        # be overridden by setting voltage to 0 (regulator disabled at given
+> +        # state) or non-zero (regulator enabled at given state). Please note
+> +        # that setting non zero voltages for bucks 1/2 will also enable voltage
+> +        # changes according to state change.
+> +
+> +    required:
+> +      - regulator-name
+> +
+> +    unevaluatedProperties: false
+> +
+> +additionalProperties: false
+> -- 
+> 2.25.4
+> 
+> 
+> -- 
+> Matti Vaittinen, Linux device drivers
+> ROHM Semiconductors, Finland SWDC
+> Kiviharjunlenkki 1E
+> 90220 OULU
+> FINLAND
+> 
+> ~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+> Simon says - in Latin please.
+> ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+> Thanks to Simon Glass for the translation =] 
