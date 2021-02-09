@@ -2,137 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8913151BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4E63151C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhBIOe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:34:58 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:56019 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232111AbhBIOdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:33:04 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DZlhv0RfBz9v4gr;
-        Tue,  9 Feb 2021 15:32:15 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id fOs53EM4PmCr; Tue,  9 Feb 2021 15:32:14 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZlht6RVKz9v4gp;
-        Tue,  9 Feb 2021 15:32:14 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 489CD8B764;
-        Tue,  9 Feb 2021 15:32:16 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id t8r2w_52bFFl; Tue,  9 Feb 2021 15:32:16 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BCB058B7E7;
-        Tue,  9 Feb 2021 15:32:15 +0100 (CET)
-Subject: Re: [PATCH v5 19/22] powerpc/syscall: Optimise checks in beginning of
- system_call_exception()
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
- <3e48bb439357c6f72ae4343bf93bd29f0980eeb1.1612796617.git.christophe.leroy@csgroup.eu>
- <1612836170.502t0sssvi.astroid@bobo.none>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <bd96ae5e-d4f7-8b3c-7617-adc15ab9e73e@csgroup.eu>
-Date:   Tue, 9 Feb 2021 15:32:15 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232103AbhBIOfO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Feb 2021 09:35:14 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:39863 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232091AbhBIOdc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 09:33:32 -0500
+Received: by mail-ot1-f43.google.com with SMTP id d7so15357766otq.6;
+        Tue, 09 Feb 2021 06:33:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dxDnC1Zz5HK79WzEP7wBzhcdkf8+JiVvyiK/PaMB65U=;
+        b=IePbOSEC7QGmtTgRlIRx7ClboUD12sS4xc0/u+EH8xcaPiwTuKad4CTQyWT2EWFGyk
+         wjgeNP0SRcFIOkvzhzUpsQUC+EiIwz2iBR2FayKEgBslXP7/iyY6tG1sUWNfCOPioJ61
+         +O+uVY4f18TvhTbSr+a7wMVAEQkZ5OJOn2rdhM6PFVmiT2dXYDaTuHjCE4lTfyX+Rm7M
+         hbhYfsDmVUrj2zHrCnf2g211TOWDYTJl+hCv6/oZzNV/pw8UYkRTJ/7QOD8VFmSGLyjB
+         +V1ladv1MJDkJsVPfkK3zx+v2ZQQqm0ZWyZlXY/KHruvX0aIRQB3dPtJsmqzXxQ14aQ3
+         dKdA==
+X-Gm-Message-State: AOAM532pYqfwIPPM9h825OOdTnTEIyG/qaS9HtS1AY8DVhibW7dNFIMZ
+        8YXSBlPa6pSDrhjGjx5Dg2o+j4uKV7vwoonhd5XZ5b6k
+X-Google-Smtp-Source: ABdhPJwCvfZqdipzCsaXpiZaEb5d4aRE7XskSSQXmgvN3yqT/jdADqL7ri6vhKZT5x2GjuoOulZ23ePtmf6vRrFC/PY=
+X-Received: by 2002:a05:6830:1481:: with SMTP id s1mr4673179otq.206.1612881171389;
+ Tue, 09 Feb 2021 06:32:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1612836170.502t0sssvi.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210205115153.799dc024@canb.auug.org.au> <CAHp75VfiyAtxg+wqZ30kSzCfFFsLndLjzrUc1njZG0x6vQeyBQ@mail.gmail.com>
+ <CAHp75Vdrnmnu3vfmtEmnU=dH9tjoZtSZUtgDNXp29E90tT+j7A@mail.gmail.com>
+ <3936997.7vkU7uULjK@kreacher> <CAHp75VcUP1475T_jWQkZkjhZrfNEZ6UaOopm5v1WBOPoriTE3Q@mail.gmail.com>
+ <CAHp75VfS=LgZfY6KTZeM7B+PgKpV3x_4zytszdaS=43A7BJEZQ@mail.gmail.com>
+In-Reply-To: <CAHp75VfS=LgZfY6KTZeM7B+PgKpV3x_4zytszdaS=43A7BJEZQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 9 Feb 2021 15:32:38 +0100
+Message-ID: <CAJZ5v0jbg8KWmmiAV0YrvndcbaY3CApUbPsTYVgxH-0HspZW3A@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the pm tree
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 8, 2021 at 8:48 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Feb 8, 2021 at 9:47 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Mon, Feb 8, 2021 at 9:30 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> > >
+> > > On Friday, February 5, 2021 12:15:22 PM CET Andy Shevchenko wrote:
+> > > > On Fri, Feb 5, 2021 at 11:14 AM Andy Shevchenko
+> > > > <andy.shevchenko@gmail.com> wrote:
+> > > > > On Friday, February 5, 2021, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > >
+> > > > >> After merging the pm tree, today's linux-next build (x86_64 allmodconfig)
+> > > > >> failed like this:
+> > > > >>
+> > > > >
+> > > > > Rafael, maybe I was unclear when explaining to you the dependencies with the series of series, but all three parts should go ordered. In any case it’s easy to fix. I will send you a PR late today of the immutable tag (part 1) that needs to be included in order to avoid the above.
+> > > >
+> > > > PR had just been sent to linux-acpi@ and Rafael in Cc.
+> > >
+> > > I haven't seen that PR, though, in any of my inboxes etc.
+> > >
+> > > Can you please point me to an archive or similar where I can find it?
+> >
+> > Sure, lore has it
+> >
+> > https://lore.kernel.org/linux-acpi/YB0mPPgpIpQzhNXS@smile.fi.intel.com/T/#u
+>
+> If it is possible, please pull that PR and on top of that (re-)apply
+> the MFD related series.
 
+Done (merged into the bleeding-edge branch).
 
-Le 09/02/2021 à 03:06, Nicholas Piggin a écrit :
-> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
->> Combine all tests of regs->msr into a single logical one.
-> 
-> Okay by me unless we choose to do the config option and put these all
-> under it. I think I would prefer that because sometimes the registers
-> are in a state you can't easily see what the values in the expression
-> were. In this case it doesn't matter so much because they should be in
-> regs in the interrupt frame.
-
-Yes indeed. I reword the commit log and tell that.
-
-> 
-> Thanks,
-> Nick
-> 
->>
->> Before the patch:
->>
->>     0:	81 6a 00 84 	lwz     r11,132(r10)
->>     4:	90 6a 00 88 	stw     r3,136(r10)
->>     8:	69 60 00 02 	xori    r0,r11,2
->>     c:	54 00 ff fe 	rlwinm  r0,r0,31,31,31
->>    10:	0f 00 00 00 	twnei   r0,0
->>    14:	69 63 40 00 	xori    r3,r11,16384
->>    18:	54 63 97 fe 	rlwinm  r3,r3,18,31,31
->>    1c:	0f 03 00 00 	twnei   r3,0
->>    20:	69 6b 80 00 	xori    r11,r11,32768
->>    24:	55 6b 8f fe 	rlwinm  r11,r11,17,31,31
->>    28:	0f 0b 00 00 	twnei   r11,0
->>
->> After the patch:
->>
->>     0:	81 6a 00 84 	lwz     r11,132(r10)
->>     4:	90 6a 00 88 	stw     r3,136(r10)
->>     8:	7d 6b 58 f8 	not     r11,r11
->>     c:	71 6b c0 02 	andi.   r11,r11,49154
->>    10:	0f 0b 00 00 	twnei   r11,0
->>
->> 6 cycles less on powerpc 8xx (328 => 322 cycles).
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   arch/powerpc/kernel/interrupt.c | 10 +++++++---
->>   1 file changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
->> index 55e1aa18cdb9..8c38e8c95be2 100644
->> --- a/arch/powerpc/kernel/interrupt.c
->> +++ b/arch/powerpc/kernel/interrupt.c
->> @@ -28,6 +28,7 @@ notrace long system_call_exception(long r3, long r4, long r5,
->>   				   unsigned long r0, struct pt_regs *regs)
->>   {
->>   	syscall_fn f;
->> +	unsigned long expected_msr;
->>   
->>   	regs->orig_gpr3 = r3;
->>   
->> @@ -39,10 +40,13 @@ notrace long system_call_exception(long r3, long r4, long r5,
->>   
->>   	trace_hardirqs_off(); /* finish reconciling */
->>   
->> +	expected_msr = MSR_PR;
->>   	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
->> -		BUG_ON(!(regs->msr & MSR_RI));
->> -	BUG_ON(!(regs->msr & MSR_PR));
->> -	BUG_ON(arch_irq_disabled_regs(regs));
->> +		expected_msr |= MSR_RI;
->> +	if (IS_ENABLED(CONFIG_PPC32))
->> +		expected_msr |= MSR_EE;
->> +	BUG_ON((regs->msr & expected_msr) ^ expected_msr);
->> +	BUG_ON(IS_ENABLED(CONFIG_PPC64) && arch_irq_disabled_regs(regs));
->>   
->>   #ifdef CONFIG_PPC_PKEY
->>   	if (mmu_has_feature(MMU_FTR_PKEY)) {
->> -- 
->> 2.25.0
->>
->>
+I was confused by it apparently asking Linus to pull. :-)
