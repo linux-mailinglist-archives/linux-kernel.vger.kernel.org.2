@@ -2,312 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0E8314D63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FF8314D4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231917AbhBIKpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:45:53 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:24912 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230466AbhBIKhA (ORCPT
+        id S232011AbhBIKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:43:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230132AbhBIKgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:37:00 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119AZhO6007522;
-        Tue, 9 Feb 2021 02:35:57 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=FvYLMYKKtMZHtOZT/7Apcj+WHGbRI4JLXo1yKeDjM3c=;
- b=byxspKSpRKmKELG8LP8899ROvyoxqFhALEbtwL9TdNkrIxlLzNXOHK53YY4O7LQZdnZs
- ZuaHx6Xgqqst0RjKn1DBzA7CaVLXhxpeu+AAzpqn0sMt64Ys9LJGPfKj871YjhPGuiGs
- Ec0CHQeNhSs2/IVlIwg04oWBe7N88X0p0i9NQgFRoBQKCLTODqxhMNbDgy5tE4QwYFlI
- QXwyMIGkS/odmoaZI+hhzJ+CHzM3Nj99punHRLgp5881tWuq3DWKRkqhFqldmNpiit1H
- gATH56VeXg6cR9LMf6FUpxq4168UPgPJg2cYyE26At7QGYIfLQr0ioISzZOO6giQkYAK QA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36hugq7ud2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 09 Feb 2021 02:35:57 -0800
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
- 2021 02:35:55 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
- 2021 02:35:54 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 9 Feb 2021 02:35:54 -0800
-Received: from hyd1soter2.marvell.com (unknown [10.29.37.45])
-        by maili.marvell.com (Postfix) with ESMTP id 9BC9B3F703F;
-        Tue,  9 Feb 2021 02:35:50 -0800 (PST)
-From:   Hariprasad Kelam <hkelam@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>,
-        <willemdebruijn.kernel@gmail.com>, <andrew@lunn.ch>,
-        <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
-        <hkelam@marvell.com>
-Subject: [Patch v4 net-next 4/7] octeontx2-af: Physical link configuration support
-Date:   Tue, 9 Feb 2021 16:05:28 +0530
-Message-ID: <1612866931-79299-5-git-send-email-hkelam@marvell.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612866931-79299-1-git-send-email-hkelam@marvell.com>
-References: <1612866931-79299-1-git-send-email-hkelam@marvell.com>
+        Tue, 9 Feb 2021 05:36:16 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F6EC061788
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 02:35:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TR9KySGPrVEPFHq9xTT60kdyppdvtvIMXnHHCxSctyE=; b=fdYO2ThEXPPvDbgecpMVKtur5H
+        rPwHNUT0W3/DQF8x5EHEwO0KeCsoaYvIIR7E+OBqWWhzIRtTyzeYlftZ8Rc8f+WlGDYTryI63miZG
+        Gqhhx+5kFQ1p66KBtqJIIQOFdgwEZoqxN8OohX40CMCq8Ls2a7vg9u3pqHvWm8nctzEktOG1LT1Wt
+        ZLr4NzGnthr0g12LmqENnlIgIb6FROEcsT5JWw7FE8QcxZKNBlPK9wrr3P4a1GwUVwBYiDZA/OqA7
+        4S4sKe1p6V1ihI6YiMWEXL6Ye4krdhaF4yAwfix/HsslVTn+Hb4odvau+fm57Q/DKVUUWr+l8PkWT
+        mvR3lZ1g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l9QMj-0000DX-N3; Tue, 09 Feb 2021 10:35:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 65E4B3010D2;
+        Tue,  9 Feb 2021 11:35:28 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4D7B12D4E46ED; Tue,  9 Feb 2021 11:35:28 +0100 (CET)
+Date:   Tue, 9 Feb 2021 11:35:28 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] objtool: Support stack-swizzle
+Message-ID: <YCJlcI5fYRoX/sOA@hirez.programming.kicks-ass.net>
+References: <20210209091600.075402197@infradead.org>
+ <20210209093521.994069508@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_03:2021-02-09,2021-02-09 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209093521.994069508@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christina Jacob <cjacob@marvell.com>
+On Tue, Feb 09, 2021 at 10:16:03AM +0100, Peter Zijlstra wrote:
+> @@ -2193,6 +2232,12 @@ static int update_cfi_state(struct instr
+>  			/* mov reg, disp(%rsp) */
+>  			save_reg(cfi, op->src.reg, CFI_CFA,
+>  				 op->dest.offset - cfi->stack_size);
+> +
+> +		} else if (op->src.reg == CFI_SP && op->dest.offset == 0) {
+> +
+> +			/* mov %rsp, (%reg); # setup a stack swizzle. */
+> +			cfi->vals[op->dest.reg].base = CFI_SP_INDIRECT;
+> +			cfi->vals[op->dest.reg].offset = cfi->cfa.offset;
 
-CGX LMAC, the physical interface support link configuration parameters
-like speed, auto negotiation, duplex  etc. Firmware saves these into
-memory region shared between firmware and this driver.
+I'll change that to:
 
-This patch adds mailbox handler set_link_mode, fw_data_get to
-configure and read these parameters.
+			cfi->vals[op->dest.reg].offset = cfa->offset;
 
-Signed-off-by: Christina Jacob <cjacob@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/cgx.c    | 58 +++++++++++++++++++++-
- drivers/net/ethernet/marvell/octeontx2/af/cgx.h    |  2 +
- .../net/ethernet/marvell/octeontx2/af/cgx_fw_if.h  | 18 ++++++-
- drivers/net/ethernet/marvell/octeontx2/af/mbox.h   | 21 ++++++++
- .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    | 17 +++++++
- 5 files changed, 113 insertions(+), 3 deletions(-)
+To be more consistent with the rest of the code.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-index b636341..5b7d858 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-@@ -660,6 +660,39 @@ static inline void cgx_link_usertable_init(void)
- 	cgx_lmactype_string[LMAC_MODE_USXGMII] = "USXGMII";
- }
-
-+static int cgx_link_usertable_index_map(int speed)
-+{
-+	switch (speed) {
-+	case SPEED_10:
-+		return CGX_LINK_10M;
-+	case SPEED_100:
-+		return CGX_LINK_100M;
-+	case SPEED_1000:
-+		return CGX_LINK_1G;
-+	case SPEED_2500:
-+		return CGX_LINK_2HG;
-+	case SPEED_5000:
-+		return CGX_LINK_5G;
-+	case SPEED_10000:
-+		return CGX_LINK_10G;
-+	case SPEED_20000:
-+		return CGX_LINK_20G;
-+	case SPEED_25000:
-+		return CGX_LINK_25G;
-+	case SPEED_40000:
-+		return CGX_LINK_40G;
-+	case SPEED_50000:
-+		return CGX_LINK_50G;
-+	case 80000:
-+		return CGX_LINK_80G;
-+	case SPEED_100000:
-+		return CGX_LINK_100G;
-+	case SPEED_UNKNOWN:
-+		return CGX_LINK_NONE;
-+	}
-+	return CGX_LINK_NONE;
-+}
-+
- static inline void link_status_user_format(u64 lstat,
- 					   struct cgx_link_user_info *linfo,
- 					   struct cgx *cgx, u8 lmac_id)
-@@ -669,6 +702,7 @@ static inline void link_status_user_format(u64 lstat,
- 	linfo->link_up = FIELD_GET(RESP_LINKSTAT_UP, lstat);
- 	linfo->full_duplex = FIELD_GET(RESP_LINKSTAT_FDUPLEX, lstat);
- 	linfo->speed = cgx_speed_mbps[FIELD_GET(RESP_LINKSTAT_SPEED, lstat)];
-+	linfo->an = FIELD_GET(RESP_LINKSTAT_AN, lstat);
- 	linfo->fec = FIELD_GET(RESP_LINKSTAT_FEC, lstat);
- 	linfo->lmac_type_id = cgx_get_lmac_type(cgx, lmac_id);
- 	lmac_string = cgx_lmactype_string[linfo->lmac_type_id];
-@@ -697,6 +731,9 @@ static inline void cgx_link_change_handler(u64 lstat,
- 	lmac->link_info = event.link_uinfo;
- 	linfo = &lmac->link_info;
-
-+	if (err_type == CGX_ERR_SPEED_CHANGE_INVALID)
-+		return;
-+
- 	/* Ensure callback doesn't get unregistered until we finish it */
- 	spin_lock(&lmac->event_cb_lock);
-
-@@ -725,7 +762,8 @@ static inline bool cgx_cmdresp_is_linkevent(u64 event)
-
- 	id = FIELD_GET(EVTREG_ID, event);
- 	if (id == CGX_CMD_LINK_BRING_UP ||
--	    id == CGX_CMD_LINK_BRING_DOWN)
-+	    id == CGX_CMD_LINK_BRING_DOWN ||
-+	    id == CGX_CMD_MODE_CHANGE)
- 		return true;
- 	else
- 		return false;
-@@ -840,6 +878,24 @@ int cgx_get_fwdata_base(u64 *base)
- 	return err;
- }
-
-+int cgx_set_link_mode(void *cgxd, struct cgx_set_link_mode_args args,
-+		      int cgx_id, int lmac_id)
-+{
-+	struct cgx *cgx = cgxd;
-+	u64 req = 0, resp;
-+
-+	if (!cgx)
-+		return -ENODEV;
-+
-+	req = FIELD_SET(CMDREG_ID, CGX_CMD_MODE_CHANGE, req);
-+	req = FIELD_SET(CMDMODECHANGE_SPEED,
-+			cgx_link_usertable_index_map(args.speed), req);
-+	req = FIELD_SET(CMDMODECHANGE_DUPLEX, args.duplex, req);
-+	req = FIELD_SET(CMDMODECHANGE_AN, args.an, req);
-+	req = FIELD_SET(CMDMODECHANGE_PORT, args.ports, req);
-+	req = FIELD_SET(CMDMODECHANGE_FLAGS, args.flags, req);
-+	return cgx_fwi_cmd_generic(req, &resp, cgx, lmac_id);
-+}
- int cgx_set_fec(u64 fec, int cgx_id, int lmac_id)
- {
- 	u64 req = 0, resp;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-index c5294b7..b458ad0 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-@@ -155,5 +155,7 @@ u8 cgx_lmac_get_p2x(int cgx_id, int lmac_id);
- int cgx_set_fec(u64 fec, int cgx_id, int lmac_id);
- int cgx_get_fec_stats(void *cgxd, int lmac_id, struct cgx_fec_stats_rsp *rsp);
- int cgx_get_phy_fec_stats(void *cgxd, int lmac_id);
-+int cgx_set_link_mode(void *cgxd, struct cgx_set_link_mode_args args,
-+		      int cgx_id, int lmac_id);
-
- #endif /* CGX_H */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx_fw_if.h b/drivers/net/ethernet/marvell/octeontx2/af/cgx_fw_if.h
-index 65f832a..70610e7 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx_fw_if.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx_fw_if.h
-@@ -43,7 +43,13 @@ enum cgx_error_type {
- 	CGX_ERR_TRAINING_FAIL,
- 	CGX_ERR_RX_EQU_FAIL,
- 	CGX_ERR_SPUX_BER_FAIL,
--	CGX_ERR_SPUX_RSFEC_ALGN_FAIL,   /* = 22 */
-+	CGX_ERR_SPUX_RSFEC_ALGN_FAIL,
-+	CGX_ERR_SPUX_MARKER_LOCK_FAIL,
-+	CGX_ERR_SET_FEC_INVALID,
-+	CGX_ERR_SET_FEC_FAIL,
-+	CGX_ERR_MODULE_INVALID,
-+	CGX_ERR_MODULE_NOT_PRESENT,
-+	CGX_ERR_SPEED_CHANGE_INVALID,
- };
-
- /* LINK speed types */
-@@ -59,6 +65,7 @@ enum cgx_link_speed {
- 	CGX_LINK_25G,
- 	CGX_LINK_40G,
- 	CGX_LINK_50G,
-+	CGX_LINK_80G,
- 	CGX_LINK_100G,
- 	CGX_LINK_SPEED_MAX,
- };
-@@ -75,7 +82,7 @@ enum cgx_cmd_id {
- 	CGX_CMD_INTERNAL_LBK,
- 	CGX_CMD_EXTERNAL_LBK,
- 	CGX_CMD_HIGIG,
--	CGX_CMD_LINK_STATE_CHANGE,
-+	CGX_CMD_LINK_STAT_CHANGE,
- 	CGX_CMD_MODE_CHANGE,		/* hot plug support */
- 	CGX_CMD_INTF_SHUTDOWN,
- 	CGX_CMD_GET_MKEX_PRFL_SIZE,
-@@ -219,4 +226,11 @@ struct cgx_lnk_sts {
- #define CMDLINKCHANGE_SPEED	GENMASK_ULL(13, 10)
-
- #define CMDSETFEC			GENMASK_ULL(9, 8)
-+/* command argument to be passed for cmd ID - CGX_CMD_MODE_CHANGE */
-+#define CMDMODECHANGE_SPEED		GENMASK_ULL(11, 8)
-+#define CMDMODECHANGE_DUPLEX		GENMASK_ULL(12, 12)
-+#define CMDMODECHANGE_AN		GENMASK_ULL(13, 13)
-+#define CMDMODECHANGE_PORT		GENMASK_ULL(21, 14)
-+#define CMDMODECHANGE_FLAGS		GENMASK_ULL(29, 22)
-+
- #endif /* __CGX_FW_INTF_H__ */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index b8b8cd3..4fc4ca7 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -153,6 +153,8 @@ M(CGX_FEC_SET,		0x210, cgx_set_fec_param, fec_mode, fec_mode)   \
- M(CGX_FEC_STATS,	0x211, cgx_fec_stats, msg_req, cgx_fec_stats_rsp) \
- M(CGX_GET_PHY_FEC_STATS, 0x212, cgx_get_phy_fec_stats, msg_req, msg_rsp) \
- M(CGX_FW_DATA_GET,	0x213, cgx_get_aux_link_info, msg_req, cgx_fw_data) \
-+M(CGX_SET_LINK_MODE,	0x214, cgx_set_link_mode, cgx_set_link_mode_req,\
-+			       cgx_set_link_mode_rsp)	\
-  /* NPA mbox IDs (range 0x400 - 0x5FF) */				\
- /* NPA mbox IDs (range 0x400 - 0x5FF) */				\
- M(NPA_LF_ALLOC,		0x400, npa_lf_alloc,				\
-@@ -383,6 +385,7 @@ struct cgx_link_user_info {
- 	uint64_t full_duplex:1;
- 	uint64_t lmac_type_id:4;
- 	uint64_t speed:20; /* speed in Mbps */
-+	uint64_t an:1;		/* AN supported or not */
- 	uint64_t fec:2;	 /* FEC type if enabled else 0 */
- #define LMACTYPE_STR_LEN 16
- 	char lmac_type[LMACTYPE_STR_LEN];
-@@ -456,6 +459,24 @@ struct cgx_fw_data {
- 	struct cgx_lmac_fwdata_s fwdata;
- };
-
-+struct cgx_set_link_mode_args {
-+	u32 speed;
-+	u8 duplex;
-+	u8 an;
-+	u8 ports;
-+	u8 flags;
-+};
-+
-+struct cgx_set_link_mode_req {
-+	struct mbox_msghdr hdr;
-+	struct cgx_set_link_mode_args args;
-+};
-+
-+struct cgx_set_link_mode_rsp {
-+	struct mbox_msghdr hdr;
-+	int status;
-+};
-+
- /* NPA mbox message formats */
-
- /* NPA mailbox error codes
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index 38ff973..be4a82c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -832,3 +832,20 @@ int rvu_mbox_handler_cgx_get_aux_link_info(struct rvu *rvu, struct msg_req *req,
- 	       sizeof(struct cgx_lmac_fwdata_s));
- 	return 0;
- }
-+
-+int rvu_mbox_handler_cgx_set_link_mode(struct rvu *rvu,
-+				       struct cgx_set_link_mode_req *req,
-+				       struct cgx_set_link_mode_rsp *rsp)
-+{
-+	int pf = rvu_get_pf(req->hdr.pcifunc);
-+	u8 cgx_idx, lmac;
-+	void *cgxd;
-+
-+	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-+		return -EPERM;
-+
-+	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_idx, &lmac);
-+	cgxd = rvu_cgx_pdata(cgx_idx, rvu);
-+	rsp->status = cgx_set_link_mode(cgxd, req->args, cgx_idx, lmac);
-+	return 0;
-+}
---
-2.7.4
+>  		}
+>  
+>  		break;
+> 
+> 
