@@ -2,178 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05E6314DCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3080314DD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhBILEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:04:35 -0500
-Received: from mx01-sz.bfs.de ([194.94.69.67]:34556 "EHLO mx01-sz.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232080AbhBIK6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:58:50 -0500
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx01-sz.bfs.de (Postfix) with ESMTPS id DABFE2076E;
-        Tue,  9 Feb 2021 11:57:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1612868252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F1DfsCqs88iiQXx9DWuj57ZejBv/iB8OwGlMzxeON1g=;
-        b=L+XB+9cKSQKPGfxZSR9SZuyPfdtlbofqolBjxsYSYkQtzW0FtR5MScz8D3qZ3c2xRn/0sV
-        +Ej7sWzVqYbx+Qc/bHWjYvIKEozDvX6Sm9kIQ1u43f/Noc2sATXR09ggbiSnDsZ8EADFm+
-        Tcn5Rsec2RYzMpPYc1gduwH6C5LyRb9PowHLp26kqTTv49t2ACE3UoyB/PdljEC6QevGff
-        FxT5qN+DSAtEwUfgWW+IKU7eiE/GWXik59pkL0zsEazLhb+2dyWpkKlxlTPKHusnOu/1CZ
-        3MZQFWfi+SWgvmG6Mv75oKtr4QHuocgfg+6B8zCkbTZf6ENFBVHyP1AKVZhLyg==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2176.2; Tue, 9 Feb 2021
- 11:57:32 +0100
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%13]) with mapi id
- 15.01.2176.002; Tue, 9 Feb 2021 11:57:32 +0100
-From:   Walter Harms <wharms@bfs.de>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Will Deacon <will@kernel.org>
-CC:     Colin King <colin.king@canonical.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Anan sun <anan.sun@mediatek.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Chao Hao <chao.hao@mediatek.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: AW: [PATCH][next] iommu/mediatek: Fix unsigned domid comparison with
- less than zero
-Thread-Topic: [PATCH][next] iommu/mediatek: Fix unsigned domid comparison with
- less than zero
-Thread-Index: AQHW+jVw6vQF7iLM7kGMzk6JKLJ0oqpHqk8AgAfZ0YCAACsEgg==
-Date:   Tue, 9 Feb 2021 10:57:32 +0000
-Message-ID: <c6b3b6beeb1e439f881bc3ff4d39f27a@bfs.de>
-References: <20210203135936.23016-1-colin.king@canonical.com>
- <20210204092558.GA20244@willie-the-truck>,<20210209091923.GO2696@kadam>
-In-Reply-To: <20210209091923.GO2696@kadam>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.39]
-x-tm-as-product-ver: SMEX-14.0.0.3080-8.6.1012-25962.007
-x-tm-as-result: No-10--7.431600-5.000000
-x-tmase-matchedrid: qqoVTVjx6YDRubRCcrbc5grcxrzwsv5u3dCmvEa6IiHgYNP0+4v1nizy
-        bVqWyY2NjrJzIoPQuMw+otRoIV3vSHVgBjkrax/H52zh+cq/0JuQBbTqDF++CmOMyb1Ixq8VUDG
-        dbyXu/ma30GP8pin5GSKkzMT7+4ooN9rojbjxBkzXA3LnlKuVLMqFE6gRdROb+nlefiwGml8hlG
-        9iTcYtaqNIXC+Evb2D1qIE4CfpJ4zBm5Pnp+5TT/SG/+sPtZVkJih/yo+OvlXk6Qbi+9i6D0MmJ
-        6dGmSIy2JDeaNwtlNBVVkf0bJfBjyxppiUy9o4cGjzBgnFZvQ4vV5f7P0HVDETqq9Xa45y5XJvT
-        MgAKYypb2hQcAFTn3WnsfYyMrTTf6Ne/nacGH0HM0ihsfYPMYdFTR6mnbN4LvGAx/1ATZ5sJetz
-        2R9zIsefqkkwronku/Sj/WnCM/LO/WXZS/HqJ2gtuKBGekqUpbGVEmIfjf3vt19sHZWTQhkfEDy
-        E6wbBxQsEUiq7rfWGPfhLI9kH4wx7PLpUeWnT+
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--7.431600-5.000000
-x-tmase-version: SMEX-14.0.0.3080-8.6.1012-25962.007
-x-tm-snts-smtp: 8C502E7B3B6532B6AC707D8C4AE56DFF89CE4B2F07035BEC56FE6C2324B7857A2000:9
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232279AbhBILF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:05:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232133AbhBIK6y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:58:54 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0134CC061788;
+        Tue,  9 Feb 2021 02:57:39 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id f18so2291523qvm.9;
+        Tue, 09 Feb 2021 02:57:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=skhiqf6XHdrL85W8XLfMMk82wIY2NH/2YVOEeXuwU+Y=;
+        b=f2OpeBCHl+zFdH0iUc9cip0quELq/fMwsKCque7GtLZ86SCbDhvgt7NtMgHcTJn1cD
+         JWPSSZNaBXiVcziAw2X3vtUwR2RL18ND+Ua9ks2gN5PT97XhjprWkpkJZGVjbGx0isaS
+         9OvX9T8F53Q6I4RZU6OWRByJGL6oi9956SD4BEL9846tU6FDt7PQb2DntVZr0Qqu1TQO
+         lQdiLX2/H3VI50tRZIeNwDyBziHDqqoz/tui5MzaWTBBvTlLpgmPIH9VBA8jFaS26HDY
+         70RYPHdgWSNdZZePCR9bZurYF/iOxfl1kA9QM3v8aB+aF2lK7ObyTLAIrXWtJkm20eaG
+         BQIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=skhiqf6XHdrL85W8XLfMMk82wIY2NH/2YVOEeXuwU+Y=;
+        b=kqHzfGxAtvnOwoTSATXgaM5aSOwu6SB2kYH/DUYP4mHM36a5I+AVFdxphj9cNNcSWk
+         Sss6nItE3z6KHNeuinOaFfcsxidV/ZfrcI4p0u9N1oM3SwFxiRXHZUL1kw1ZEo3/cJPH
+         Q7fFOHzzf2JEaxVqC/BPLvMpA+cooqI/rQZE9oX8rfXBBryDliRtP2Y7OWdL51CKvR5+
+         BkEl7+Q5klfVCErwyBEByUJyWy+Gj8fgOm1JMdwG6KnG8PBA9UM5/4jkgw2cpA9m9BEk
+         0k5mxDLGh+62sJ+OzsF1FB+J3Lwys+c+pFVOFc3XHdxuoWsM4C3fY+ovIv2XOypc0K8l
+         uIVw==
+X-Gm-Message-State: AOAM530cIMyr+P9LW27rBHQAhKyjeocXp+4f8QFf7p7rosfeRrqYTMsE
+        6HkGYx+e7Yg747VikHc8MSLdRGVcqQVoWWvukQ+ttGPmqkVbVQ==
+X-Google-Smtp-Source: ABdhPJxIbKfoTixoS4iXNDPO8uY5uI5VE4CGlZN6BQyn9WcQnpIcw3CeHGojZGJ4F8+S8CuvzTw+jB8P0LX40p9ueG4=
+X-Received: by 2002:a05:6214:10e7:: with SMTP id q7mr13191326qvt.16.1612868258202;
+ Tue, 09 Feb 2021 02:57:38 -0800 (PST)
 MIME-Version: 1.0
-X-Spam-Status: No, score=0.82
-X-Spamd-Result: default: False [0.82 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         MID_RHS_MATCH_FROM(0.00)[];
-         DKIM_SIGNED(0.00)[bfs.de:s=dkim201901];
-         BAYES_HAM(-0.68)[83.00%];
-         RCPT_COUNT_TWELVE(0.00)[14];
-         NEURAL_HAM(-0.00)[-1.000];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[canonical.com,8bytes.org,gmail.com,mediatek.com,chromium.org,lists.linux-foundation.org,lists.infradead.org,vger.kernel.org];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
-Authentication-Results: mx01-sz.bfs.de;
-        none
+References: <1612785064-3072-1-git-send-email-orsonzhai@gmail.com>
+ <1612785064-3072-2-git-send-email-orsonzhai@gmail.com> <CADBw62qJRoDGdaY8jB1pppgd8S6JnJ+A5sT+c00uXDO9wXucmg@mail.gmail.com>
+ <20210209040855.GA25057@lenovo>
+In-Reply-To: <20210209040855.GA25057@lenovo>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Tue, 9 Feb 2021 18:57:33 +0800
+Message-ID: <CADBw62pmsnyX9KjQyjA2_Jf-wviPJfUW6pyB-v_1L+MipJQxsA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mailbox: sprd: Add supplementary inbox support
+To:     Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Haidong Yao <haidong.yao@unisoc.com>,
+        Orson Zhai <orson.zhai@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I second that ...
-
-Having i unsigned violates the rule of "least surprise".
-If you need it unsigned make it clearly visible, also adding
-a simple comment may help.
-
-jm2c,
- wh
-________________________________________
-Von: Dan Carpenter <dan.carpenter@oracle.com>
-Gesendet: Dienstag, 9. Februar 2021 10:19:23
-An: Will Deacon
-Cc: Colin King; Joerg Roedel; Matthias Brugger; Anan sun; Yong Wu; Chao Hao=
-; Tomasz Figa; iommu@lists.linux-foundation.org; linux-arm-kernel@lists.inf=
-radead.org; linux-mediatek@lists.infradead.org; kernel-janitors@vger.kernel=
-.org; linux-kernel@vger.kernel.org
-Betreff: Re: [PATCH][next] iommu/mediatek: Fix unsigned domid comparison wi=
-th less than zero
-
-On Thu, Feb 04, 2021 at 09:25:58AM +0000, Will Deacon wrote:
-> On Wed, Feb 03, 2021 at 01:59:36PM +0000, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > Currently the check for domid < 0 is always false because domid
-> > is unsigned.  Fix this by making it signed.
-> >
-> > Addresses-CoverityL ("Unsigned comparison against 0")
+On Tue, Feb 9, 2021 at 12:09 PM Orson Zhai <orsonzhai@gmail.com> wrote:
 >
-> Typo here ('L' instead of ':')
->
-> > Fixes: ab1d5281a62b ("iommu/mediatek: Add iova reserved function")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  drivers/iommu/mtk_iommu.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon, Feb 08, 2021 at 10:27:47PM +0800, Baolin Wang wrote:
+> > On Mon, Feb 8, 2021 at 7:52 PM Orson Zhai <orsonzhai@gmail.com> wrote:
+> > >
+> > > From: Orson Zhai <orson.zhai@unisoc.com>
+> > >
+> > > Some sensors connected to Unisoc mailbox will send data very frequently.
+> > > This makes channel 0 very busy and the messages from other remote cores
+> > > not able to be handled as soon as possible.
+> > >
+> > > Then a supplementary inbox is added to the host core side for transferring
+> > > mass but not emergency messages from the remote cores, such as step
+> > > counting sensor, with an independent FIFO and interrupt.
 > >
-> > diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> > index 0ad14a7604b1..823d719945b2 100644
-> > --- a/drivers/iommu/mtk_iommu.c
-> > +++ b/drivers/iommu/mtk_iommu.c
-> > @@ -640,7 +640,7 @@ static void mtk_iommu_get_resv_regions(struct devic=
-e *dev,
-> >                                    struct list_head *head)
-> >  {
-> >     struct mtk_iommu_data *data =3D dev_iommu_priv_get(dev);
-> > -   unsigned int domid =3D mtk_iommu_get_domain_id(dev, data->plat_data=
-), i;
-> > +   int domid =3D mtk_iommu_get_domain_id(dev, data->plat_data), i;
+> > So this is another part of the mailbox hardware, containing a batch of
+> > hardware channels?
 >
-> Not sure if it's intentional, but this also makes 'i' signed. It probably
-> should remain 'unsigned' to match 'iova_region_nr' in
-> 'struct mtk_iommu_plat_data'.
+> No. Actually it is an inbox assigned to one of the remote cores before but
+> being exposed to host cpu core for now.
+>
+> > I did not see it before, its function is similar
+> > with inbox/outbox?
+>
+> Exactly same with any other channel.
+> But only the part of outbox is exposed to host side. Inbox part of this channel
+> is still kept for original remote core to use.
+>
+> It's a trick (un-documented) from our ASIC designers to resolve some special requirements.
+> I was also shocked when hearing it :)
+
+Understood :)
+
+>
+> I guess other vendors will add another mailbox module to resovle this, but our guys might
+> consider the hardware cost...
+
+OK. Thanks for your explanation. It will be helpful if you can add
+these backgroud into the comments in case someone else will be
+confusing again for the new supplementary inbox :)
+
+> > >
+> > > Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
+> > > ---
+> > >  drivers/mailbox/sprd-mailbox.c | 93 ++++++++++++++++++++++++++++++++++--------
+> > >  1 file changed, 75 insertions(+), 18 deletions(-)
+> > >
+> > > diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
+> > > index e606f52..74648db 100644
+> > > --- a/drivers/mailbox/sprd-mailbox.c
+> > > +++ b/drivers/mailbox/sprd-mailbox.c
+> > > @@ -11,6 +11,7 @@
+> > >  #include <linux/io.h>
+> > >  #include <linux/mailbox_controller.h>
+> > >  #include <linux/module.h>
+> > > +#include <linux/of_device.h>
+> > >  #include <linux/platform_device.h>
+> > >  #include <linux/clk.h>
+> > >
+> > > @@ -50,13 +51,17 @@
+> > >  #define SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ         BIT(0)
+> > >  #define SPRD_OUTBOX_FIFO_IRQ_MASK              GENMASK(4, 0)
+> > >
+> > > +#define SPRD_OUTBOX_BASE_SPAN                  0x1000
+> > >  #define SPRD_MBOX_CHAN_MAX                     8
+> > > +#define SPRD_SUPP_INBOX_ID_SC9860              6
+> > >
+> > >  struct sprd_mbox_priv {
+> > >         struct mbox_controller  mbox;
+> > >         struct device           *dev;
+> > >         void __iomem            *inbox_base;
+> > >         void __iomem            *outbox_base;
+> > > +       /*  Base register address for supplementary outbox */
+> > > +       void __iomem            *supp_base;
+> > >         struct clk              *clk;
+> > >         u32                     outbox_fifo_depth;
+> > >
+> > > @@ -96,14 +101,13 @@ static u32 sprd_mbox_get_fifo_len(struct sprd_mbox_priv *priv, u32 fifo_sts)
+> > >         return fifo_len;
+> > >  }
+> > >
+> > > -static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
+> > > +static inline irqreturn_t do_outbox_isr(void __iomem *base, struct sprd_mbox_priv *priv)
+> >
+> > No need to add an explicit 'inline' tag, the compiler can do the smart
+> > things than us.
+>
+> I thought it will help to increase perfermance of isr execution before.
+>
+> Will fix at next.
+>
+> >
+> > >  {
+> > > -       struct sprd_mbox_priv *priv = data;
+> > >         struct mbox_chan *chan;
+> > >         u32 fifo_sts, fifo_len, msg[2];
+> > >         int i, id;
+> > >
+> > > -       fifo_sts = readl(priv->outbox_base + SPRD_MBOX_FIFO_STS);
+> > > +       fifo_sts = readl(base + SPRD_MBOX_FIFO_STS);
+> > >
+> > >         fifo_len = sprd_mbox_get_fifo_len(priv, fifo_sts);
+> > >         if (!fifo_len) {
+> > > @@ -112,23 +116,41 @@ static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
+> > >         }
+> > >
+> > >         for (i = 0; i < fifo_len; i++) {
+> > > -               msg[0] = readl(priv->outbox_base + SPRD_MBOX_MSG_LOW);
+> > > -               msg[1] = readl(priv->outbox_base + SPRD_MBOX_MSG_HIGH);
+> > > -               id = readl(priv->outbox_base + SPRD_MBOX_ID);
+> > > +               msg[0] = readl(base + SPRD_MBOX_MSG_LOW);
+> > > +               msg[1] = readl(base + SPRD_MBOX_MSG_HIGH);
+> > > +               id = readl(base + SPRD_MBOX_ID);
+> > >
+> > >                 chan = &priv->chan[id];
+> > > -               mbox_chan_received_data(chan, (void *)msg);
+> > > +               if (chan->cl)
+> > > +                       mbox_chan_received_data(chan, (void *)msg);
+> > > +               else
+> > > +                       dev_warn_ratelimited(priv->dev,
+> > > +                                   "message's been dropped at ch[%d]\n", id);
+> > >
+> > >                 /* Trigger to update outbox FIFO pointer */
+> > > -               writel(0x1, priv->outbox_base + SPRD_MBOX_TRIGGER);
+> > > +               writel(0x1, base + SPRD_MBOX_TRIGGER);
+> > >         }
+> > >
+> > >         /* Clear irq status after reading all message. */
+> > > -       writel(SPRD_MBOX_IRQ_CLR, priv->outbox_base + SPRD_MBOX_IRQ_STS);
+> > > +       writel(SPRD_MBOX_IRQ_CLR, base + SPRD_MBOX_IRQ_STS);
+> > >
+> > >         return IRQ_HANDLED;
+> > >  }
+> > >
+> > > +static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
+> > > +{
+> > > +       struct sprd_mbox_priv *priv = data;
+> > > +
+> > > +       return do_outbox_isr(priv->outbox_base, priv);
+> > > +}
+> > > +
+> > > +static irqreturn_t sprd_mbox_supp_isr(int irq, void *data)
+> > > +{
+> > > +       struct sprd_mbox_priv *priv = data;
+> > > +
+> > > +       return do_outbox_isr(priv->supp_base, priv);
+> > > +}
+> > > +
+> > >  static irqreturn_t sprd_mbox_inbox_isr(int irq, void *data)
+> > >  {
+> > >         struct sprd_mbox_priv *priv = data;
+> > > @@ -231,6 +253,14 @@ static int sprd_mbox_startup(struct mbox_chan *chan)
+> > >                 val = readl(priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> > >                 val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
+> > >                 writel(val, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> > > +
+> > > +               /* Enable supplementary outbox as the fundamental one */
+> > > +               if (priv->supp_base) {
+> > > +                       writel(0x0, priv->supp_base + SPRD_MBOX_FIFO_RST);
+> > > +                       val = readl(priv->supp_base + SPRD_MBOX_IRQ_MSK);
+> > > +                       val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
+> > > +                       writel(val, priv->supp_base + SPRD_MBOX_IRQ_MSK);
+> > > +               }
+> > >         }
+> > >         mutex_unlock(&priv->lock);
+> > >
+> > > @@ -246,6 +276,10 @@ static void sprd_mbox_shutdown(struct mbox_chan *chan)
+> > >                 /* Disable inbox & outbox interrupt */
+> > >                 writel(SPRD_INBOX_FIFO_IRQ_MASK, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> > >                 writel(SPRD_OUTBOX_FIFO_IRQ_MASK, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> > > +
+> > > +               if (priv->supp_base)
+> > > +                       writel(SPRD_OUTBOX_FIFO_IRQ_MASK,
+> > > +                              priv->supp_base + SPRD_MBOX_IRQ_MSK);
+> > >         }
+> > >         mutex_unlock(&priv->lock);
+> > >  }
+> > > @@ -268,8 +302,8 @@ static int sprd_mbox_probe(struct platform_device *pdev)
+> > >  {
+> > >         struct device *dev = &pdev->dev;
+> > >         struct sprd_mbox_priv *priv;
+> > > -       int ret, inbox_irq, outbox_irq;
+> > > -       unsigned long id;
+> > > +       int ret, inbox_irq, outbox_irq, supp_irq;
+> > > +       unsigned long id, supp;
+> > >
+> > >         priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> > >         if (!priv)
+> > > @@ -280,11 +314,15 @@ static int sprd_mbox_probe(struct platform_device *pdev)
+> > >         mutex_init(&priv->lock);
+> > >
+> > >         /*
+> > > -        * The Spreadtrum mailbox uses an inbox to send messages to the target
+> > > -        * core, and uses an outbox to receive messages from other cores.
+> > > +        * Unisoc mailbox uses an inbox to send messages to the target
+> > > +        * core, and uses (an) outbox(es) to receive messages from other
+> > > +        * cores.
+> > > +        *
+> > > +        * Thus in general the mailbox controller supplies 2 different
+> > > +        * register addresses and IRQ numbers for inbox and outbox.
+> > >          *
+> > > -        * Thus the mailbox controller supplies 2 different register addresses
+> > > -        * and IRQ numbers for inbox and outbox.
+> > > +        * If necessary, a supplementary inbox could be enabled optionally
+> > > +        * with an independent FIFO and an extra interrupt.
+> > >          */
+> > >         priv->inbox_base = devm_platform_ioremap_resource(pdev, 0);
+> > >         if (IS_ERR(priv->inbox_base))
+> > > @@ -310,7 +348,7 @@ static int sprd_mbox_probe(struct platform_device *pdev)
+> > >                 return ret;
+> > >         }
+> > >
+> > > -       inbox_irq = platform_get_irq(pdev, 0);
+> > > +       inbox_irq = platform_get_irq_byname(pdev, "inbox");
+> >
+> > I think you should put the dt changes before this patch.
+>
+> OK.
+>
+> Thanks,
+> Orson
+> >
+> > >         if (inbox_irq < 0)
+> > >                 return inbox_irq;
+> > >
+> > > @@ -321,7 +359,7 @@ static int sprd_mbox_probe(struct platform_device *pdev)
+> > >                 return ret;
+> > >         }
+> > >
+> > > -       outbox_irq = platform_get_irq(pdev, 1);
+> > > +       outbox_irq = platform_get_irq_byname(pdev, "outbox");
+> > >         if (outbox_irq < 0)
+> > >                 return outbox_irq;
+> > >
+> > > @@ -332,6 +370,24 @@ static int sprd_mbox_probe(struct platform_device *pdev)
+> > >                 return ret;
+> > >         }
+> > >
+> > > +       /* Supplementary outbox IRQ is optional */
+> > > +       supp_irq = platform_get_irq_byname(pdev, "supp-outbox");
+> > > +       if (supp_irq > 0) {
+> > > +               ret = devm_request_irq(dev, supp_irq, sprd_mbox_supp_isr,
+> > > +                                      IRQF_NO_SUSPEND, dev_name(dev), priv);
+> > > +               if (ret) {
+> > > +                       dev_err(dev, "failed to request outbox IRQ: %d\n", ret);
+> > > +                       return ret;
+> > > +               }
+> > > +
+> > > +               supp = (unsigned long) of_device_get_match_data(dev);
+> > > +               if (!supp) {
+> > > +                       dev_err(dev, "no supplementary outbox specified\n");
+> > > +                       return -ENODEV;
+> > > +               }
+> > > +               priv->supp_base = priv->outbox_base + (SPRD_OUTBOX_BASE_SPAN * supp);
+> > > +       }
+> > > +
+> > >         /* Get the default outbox FIFO depth */
+> > >         priv->outbox_fifo_depth =
+> > >                 readl(priv->outbox_base + SPRD_MBOX_FIFO_DEPTH) + 1;
+> > > @@ -354,7 +410,8 @@ static int sprd_mbox_probe(struct platform_device *pdev)
+> > >  }
+> > >
+> > >  static const struct of_device_id sprd_mbox_of_match[] = {
+> > > -       { .compatible = "sprd,sc9860-mailbox", },
+> > > +       { .compatible = "sprd,sc9860-mailbox",
+> > > +         .data = (void *)SPRD_SUPP_INBOX_ID_SC9860 },
+> > >         { },
+> > >  };
+> > >  MODULE_DEVICE_TABLE(of, sprd_mbox_of_match);
+> > > --
+> > > 2.7.4
+> > >
+> >
+> >
+> > --
+> > Baolin Wang
 
 
-iova_region_nr is either 1 or 5 so unsigned doesn't matter.
 
-I once almost introduced a bug where the iterator was supposed to be
-size_t.  I fixed a bug by making it signed but I ended up introducing a
-new bug.  But generally that's pretty rare.  The more common case is
-that making iterators unsigned introduces bugs.
-
-It's better to default to "int i;" and if more complicated types are
-required that should stand out.  "size_t pg_idx;" or whatever.
-
-regards,
-dan carpenter
+-- 
+Baolin Wang
