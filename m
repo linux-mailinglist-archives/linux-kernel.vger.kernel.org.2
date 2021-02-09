@@ -2,95 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF103149D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BA73149E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhBIH7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 02:59:03 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:29167 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhBIH6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:58:39 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612857500; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=HlLCxrME5LL6cQqOWNNXfJ9eXlWM3eHBp2+kv5xNFDM=;
- b=P1Ezr6TKt3Ss1LPxIDI4JviUCdZAF2OtfzHC+5ff5SAfG7E1Q3IpIcGMBf8qt0ye1eEp4BVd
- aWnXtnLAPISLraKTvkptLFJfH/hkKoVaUA9TDutb8U0ZCkrIs01gaOyB16SSBiZamF82/SdH
- Yfz47upS9gGmzqHTDtFG3MifhNM=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60224075e3df861f4b5786f8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 09 Feb 2021 07:57:41
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B1AD2C43464; Tue,  9 Feb 2021 07:57:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 754BEC433C6;
-        Tue,  9 Feb 2021 07:57:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 754BEC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S229753AbhBIIAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:00:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhBIH7l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 02:59:41 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F53C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 23:58:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:Message-ID:References:
+        In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=Fxdm02vMDANFITPepmem+ipILVHOG5tGKEVvchxGCqQ=; b=0p8FKw8dQeSWWBt2I1luC0LLOJ
+        Ywm0Z6RM85QbVQKOEC9f0it5H7EB6fTRTRpPA3hgnBVjN6hfX6X+Z5E4OvD4mhdmXfLy1KVHBaGHT
+        92SxPRzDKEgOWyhOAVlWTPCkhvTyZrix6I+EYg31mRbLq65GOP8xQzs8Pubtw6LBvPY4Lz+pXkZrI
+        nSTfOgoID12jL9n7SnN922vK2lhXlo2A3moT7O+0ygsBlhLjxdyeZ9H9iab+98AvyLraDx7VkjkEH
+        FdpUrjrfW8Cw58Nw+7/2qazUh29I9Jb+2hdyORUUsXh1yH2Zi29BnuWB80i8e3a13aOQgZmmKih03
+        K97cRbew==;
+Received: from webng-gw.kapsi.fi ([91.232.154.200] helo=roundcube.kapsi.fi)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <jyri.sarha@iki.fi>)
+        id 1l9Nv5-0002ox-HL; Tue, 09 Feb 2021 09:58:47 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] brcmfmac: add support for CQM RSSI notifications
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210208125738.3546557-1-alsi@bang-olufsen.dk>
-References: <20210208125738.3546557-1-alsi@bang-olufsen.dk>
-To:     =?utf-8?q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
-Cc:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?utf-8?q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210209075740.B1AD2C43464@smtp.codeaurora.org>
-Date:   Tue,  9 Feb 2021 07:57:40 +0000 (UTC)
+Date:   Tue, 09 Feb 2021 09:58:45 +0200
+From:   Jyri Sarha <jyri.sarha@iki.fi>
+To:     "quanyang.wang" <quanyang.wang@windriver.com>
+Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/tilcdc: send vblank event when disabling crtc
+In-Reply-To: <40037f81-2444-1fe0-f5da-194f2a3d3f22@windriver.com>
+References: <20210129055831.1702862-1-quanyang.wang@windriver.com>
+ <1c6bd553-ee27-c93b-59e6-8d3c8368213a@ideasonboard.com>
+ <40037f81-2444-1fe0-f5da-194f2a3d3f22@windriver.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <d38abc6d22590f0eea1aa7aae3ff754f@iki.fi>
+X-Sender: jyri.sarha@iki.fi
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 91.232.154.200
+X-SA-Exim-Mail-From: jyri.sarha@iki.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alvin Šipraga <ALSI@bang-olufsen.dk> wrote:
-
-> Add support for CQM RSSI measurement reporting and advertise the
-> NL80211_EXT_FEATURE_CQM_RSSI_LIST feature. This enables a userspace
-> supplicant such as iwd to be notified of changes in the RSSI for roaming
-> and signal monitoring purposes.
+On 2021-02-09 5:09, quanyang.wang wrote:
+> Ping.
 > 
-> Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
-> Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
 
-Patch applied to wireless-drivers-next.git, thanks.
+Could you resend the original patch (I have not received it) so I can 
+easily test and merge it?
 
-7dd56ea45a66 brcmfmac: add support for CQM RSSI notifications
+I'll find some time to do it soon.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210208125738.3546557-1-alsi@bang-olufsen.dk/
+Best regards,
+Jyri
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+> On 1/29/21 3:58 PM, Tomi Valkeinen wrote:
+>> Dropped the @ti.com addresses and added the new ones.
+>> 
+>>   Tomi
+>> 
+>> On 29/01/2021 07:58, quanyang.wang@windriver.com wrote:
+>>> From: Quanyang Wang <quanyang.wang@windriver.com>
+>>> 
+>>> When run xrandr to change resolution on Beaglebone Black board, it 
+>>> will
+>>> print the error information:
+>>> 
+>>> root@beaglebone:~# xrandr -display :0 --output HDMI-1 --mode 720x400
+>>> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+>>> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:32:tilcdc 
+>>> crtc] commit wait timed out
+>>> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+>>> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* 
+>>> [CONNECTOR:34:HDMI-A-1] commit wait timed out
+>>> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+>>> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* 
+>>> [PLANE:31:plane-0] commit wait timed out
+>>> tilcdc 4830e000.lcdc: already pending page flip!
+>>> 
+>>> This is because there is operation sequence as below:
+>>> 
+>>> drm_atomic_connector_commit_dpms(mode is DRM_MODE_DPMS_OFF):
+>>>      ...
+>>>      drm_atomic_helper_setup_commit <- 
+>>> init_completion(commit_A->flip_done)
+>>>      drm_atomic_helper_commit_tail
+>>>          tilcdc_crtc_atomic_disable
+>>>          tilcdc_plane_atomic_update <- drm_crtc_send_vblank_event in 
+>>> tilcdc_crtc_irq
+>>>                                        is skipped since 
+>>> tilcdc_crtc->enabled is 0
+>>>          tilcdc_crtc_atomic_flush   <- drm_crtc_send_vblank_event is 
+>>> skipped since
+>>>                                        crtc->state->event is set to 
+>>> be NULL in
+>>>                                        tilcdc_plane_atomic_update
+>>> drm_mode_setcrtc:
+>>>      ...
+>>>      drm_atomic_helper_setup_commit <- 
+>>> init_completion(commit_B->flip_done)
+>>>      drm_atomic_helper_wait_for_dependencies
+>>>          drm_crtc_commit_wait   <- wait for commit_A->flip_done 
+>>> completing
+>>> 
+>>> Just as shown above, the steps which could complete 
+>>> commit_A->flip_done
+>>> are all skipped and commit_A->flip_done will never be completed. This 
+>>> will
+>>> result a time-out ERROR when drm_crtc_commit_wait check the 
+>>> commit_A->flip_done.
+>>> So add drm_crtc_send_vblank_event in tilcdc_crtc_atomic_disable to
+>>> complete commit_A->flip_done.
+>>> 
+>>> Fixes: cb345decb4d2 ("drm/tilcdc: Use standard 
+>>> drm_atomic_helper_commit")
+>>> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+>>> ---
+>>>   drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++++++
+>>>   1 file changed, 9 insertions(+)
+>>> 
+>>> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c 
+>>> b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+>>> index 30213708fc99..d99afd19ca08 100644
+>>> --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+>>> +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+>>> @@ -515,6 +515,15 @@ static void tilcdc_crtc_off(struct drm_crtc 
+>>> *crtc, bool shutdown)
+>>>     	drm_crtc_vblank_off(crtc);
+>>>   +	spin_lock_irq(&crtc->dev->event_lock);
+>>> +
+>>> +	if (crtc->state->event) {
+>>> +		drm_crtc_send_vblank_event(crtc, crtc->state->event);
+>>> +		crtc->state->event = NULL;
+>>> +	}
+>>> +
+>>> +	spin_unlock_irq(&crtc->dev->event_lock);
+>>> +
+>>>   	tilcdc_crtc_disable_irqs(dev);
+>>>     	pm_runtime_put_sync(dev->dev);
+>>> 
