@@ -2,55 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BA4314E34
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8710314E3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhBILZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:25:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
+        id S229760AbhBIL2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhBILYT (ORCPT
+        with ESMTP id S229733AbhBIL1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:24:19 -0500
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A4908C061794;
-        Tue,  9 Feb 2021 03:23:19 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 053939200B4; Tue,  9 Feb 2021 12:23:11 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id F37559200B3;
-        Tue,  9 Feb 2021 12:23:11 +0100 (CET)
-Date:   Tue, 9 Feb 2021 12:23:11 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Christoph Hellwig <hch@lst.de>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 5/6] driver core: lift dma_default_coherent into common
- code
-In-Reply-To: <20210208161043.GA14083@lst.de>
-Message-ID: <alpine.DEB.2.21.2102091213070.35623@angie.orcam.me.uk>
-References: <20210208145024.3320420-1-hch@lst.de> <20210208145024.3320420-6-hch@lst.de> <alpine.DEB.2.21.2102081654060.35623@angie.orcam.me.uk> <20210208161043.GA14083@lst.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Tue, 9 Feb 2021 06:27:52 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB2FC06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 03:27:12 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id n17so2145761wmk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 03:27:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=A5PjxBocm6GkKPxXcYzX2e1AeHxW0gP+W7kFc8REg2E=;
+        b=ofP339Bc5incCy4OVOMtxQ6ESTNMLP3Fc6EZ7VuXFsN0nYTCQuk3+Saa2UBlwztZ04
+         8ZfX/NKW7MwxFkaStBW0GBGHv5nyLJClX5a4HNKpwvY8aZKkDqS18qOB5fmuiBzgx1lx
+         k9IKdZGVfB6c+hJ98cgN3nh35iDKtooVTgyWjrRxFLw76X9Yg3G93wWrLoIHORVj/wj0
+         9isSi7YjzfOrQGavjf96/f69AWde9QdwEmcAULfGVvVM90BSaujuIMkxeAzRh81H4aGE
+         +n/UGB58fR+evj/4F7nqI10mVBlmJZ9H5/m2oUXnCrvGaHiaY6QFyMXllL0MV+R+pFrf
+         4vzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=A5PjxBocm6GkKPxXcYzX2e1AeHxW0gP+W7kFc8REg2E=;
+        b=EC79sWLOgKmZWiar4SKScu/NwVKyXLxRgcKR57uALB1Zm7cQwFn4oIQI3UMkixzJQe
+         KKjZ/o2gPrIs8XcM0+e47T6aPROQ26lNSSQqGaqAbjUbc5quISHXcuKeF/A8Y5T6+Wyr
+         xnX+LXsYKb9w3ab09eGTqtVl39XBre91aBcwlNU6YRsYHTkF0atM4elEAWfGmAQbuj8x
+         kRv2J01Z5yeBed03hVT/tRGpM1TflMvYEwnlmoO2JWT8MEN+hvNLK375Bdb7M/X714y3
+         09hpsG7wZg73Ddl5cvDrAUV53xBP2eIDYe6TKMFkFJXnuF2FCQ7WsmTmiMvMQtIJqPMp
+         gPRA==
+X-Gm-Message-State: AOAM531XOx77thVUHzdhVRgf4Z5PUl+4J+Fj0RIPBU5QJtdWTjc77pPb
+        jknM6as4DKimlFTeLEKpzR4g0QsMEw==
+X-Google-Smtp-Source: ABdhPJy71wYx5F5tGmoACI6FT7+5mPXDTjIjyxo+ykfIRjL5SWm/BBNye+fcUz68j74/ZTvvlLPyboqWrg==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:51c9:b9a4:3e29:2cd0])
+ (user=elver job=sendgmr) by 2002:a05:600c:35c9:: with SMTP id
+ r9mr396002wmq.0.1612870029964; Tue, 09 Feb 2021 03:27:09 -0800 (PST)
+Date:   Tue,  9 Feb 2021 12:27:01 +0100
+Message-Id: <20210209112701.3341724-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH] bpf_lru_list: Read double-checked variable once without lock
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kasan-dev@googlegroups.com, paulmck@kernel.org, dvyukov@google.com,
+        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
+        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021, Christoph Hellwig wrote:
+For double-checked locking in bpf_common_lru_push_free(), node->type is
+read outside the critical section and then re-checked under the lock.
+However, concurrent writes to node->type result in data races.
 
-> >  Do you need to have this verified anyhow?  I only have a non-coherent 5Kc 
-> > Malta though.
-> 
-> If you get a chance to test this logic, that would be great.
+For example, the following concurrent access was observed by KCSAN:
 
- I'll try to give it a hit in the next few days then.  Installed in my 
-Malta I have a DEFPA, which is about as serious a DMA user as a piece of 
-classic PCI hardware could be.  I need to debug the issue of another DEFPA 
-not working with my POWER9 system, possibly due to an IOMMU handling bug 
-(hopefully not broken host hardware), so I'll take the opportunity and do 
-it all at once.
+  write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
+   __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
+   __local_list_flush            kernel/bpf/bpf_lru_list.c:298
+   ...
+  read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
+   bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
+   bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
+   ...
 
-  Maciej
+Fix the data races where node->type is read outside the critical section
+(for double-checked locking) by marking the access with READ_ONCE() as
+well as ensuring the variable is only accessed once.
+
+Reported-by: syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com
+Reported-by: syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
+Signed-off-by: Marco Elver <elver@google.com>
+---
+Detailed reports:
+	https://groups.google.com/g/syzkaller-upstream-moderation/c/PwsoQ7bfi8k/m/NH9Ni2WxAQAJ
+	https://groups.google.com/g/syzkaller-upstream-moderation/c/-fXQO9ehxSM/m/RmQEcI2oAQAJ
+---
+ kernel/bpf/bpf_lru_list.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
+index 1b6b9349cb85..d99e89f113c4 100644
+--- a/kernel/bpf/bpf_lru_list.c
++++ b/kernel/bpf/bpf_lru_list.c
+@@ -502,13 +502,14 @@ struct bpf_lru_node *bpf_lru_pop_free(struct bpf_lru *lru, u32 hash)
+ static void bpf_common_lru_push_free(struct bpf_lru *lru,
+ 				     struct bpf_lru_node *node)
+ {
++	u8 node_type = READ_ONCE(node->type);
+ 	unsigned long flags;
+ 
+-	if (WARN_ON_ONCE(node->type == BPF_LRU_LIST_T_FREE) ||
+-	    WARN_ON_ONCE(node->type == BPF_LRU_LOCAL_LIST_T_FREE))
++	if (WARN_ON_ONCE(node_type == BPF_LRU_LIST_T_FREE) ||
++	    WARN_ON_ONCE(node_type == BPF_LRU_LOCAL_LIST_T_FREE))
+ 		return;
+ 
+-	if (node->type == BPF_LRU_LOCAL_LIST_T_PENDING) {
++	if (node_type == BPF_LRU_LOCAL_LIST_T_PENDING) {
+ 		struct bpf_lru_locallist *loc_l;
+ 
+ 		loc_l = per_cpu_ptr(lru->common_lru.local_list, node->cpu);
+-- 
+2.30.0.478.g8a0d178c01-goog
+
