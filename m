@@ -2,191 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732393146E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 04:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2130F3146EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 04:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhBIDRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 22:17:30 -0500
-Received: from mail-co1nam11on2040.outbound.protection.outlook.com ([40.107.220.40]:16075
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229843AbhBIDKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 22:10:24 -0500
+        id S230319AbhBIDTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 22:19:22 -0500
+Received: from mga11.intel.com ([192.55.52.93]:8955 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230149AbhBIDMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 22:12:51 -0500
+IronPort-SDR: est6+2rRzW7/ftEToPNNJ6MEpXHNZMZQB3RoC0mW6OKne5ymxi/j4OM4C217O3+GhcCAf8RPos
+ YasyRsOdzLdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="178310696"
+X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
+   d="scan'208";a="178310696"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 19:12:04 -0800
+IronPort-SDR: nzyN4BP/seT6DeNWSuwh0Sgm2MNlH5QkVLlgZpoQlaT+kRQ0zY4c4Rt1ush7Tr46qGlbFLL2FZ
+ ih5XTfPd3ieA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
+   d="scan'208";a="361688887"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga006.jf.intel.com with ESMTP; 08 Feb 2021 19:12:03 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 8 Feb 2021 19:12:03 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 8 Feb 2021 19:12:02 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Mon, 8 Feb 2021 19:12:02 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Mon, 8 Feb 2021 19:12:01 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TiFPOz4T7dxwT8tzU8PdOSpoiLOf/eYkXpwTI8JSM5U17Se7ZR9noVE4Z2xhLhqYXRRD6o9hL9uHPAZQbEcXc+64rYPe76b8LvT3MXPT2n0QLIhHQax7Sv1KyC2wA4RTrryMe7py7O9HuyQ/VszZtzOqVbn8PoaOcXoW+jqZk5VjlVijh9/pC71eXwT29n9WLGqDtQ1cMRbpwV3GslTf6YCwAQoZM3fahA7xRoq3LOmd5VfynatPDQDl/2LYU1JEBpe1Akr5I1nMtwy9iIfXZcxuwlRuxhqLVhbU8T9GrLeFsdm5tA4ZoKAQTBR5Fk5M/DCpGIubSrXrsebW1QYpaQ==
+ b=S8gAHAzuoXo94PzekPVT0fMqyx2pDLHs2F3CD8Nb5hZCQCj82HVWcsm/BTsnJtTM7i/asdH/P5TfX9RsuTFV0Qw/TEtNbCUNQ3o3V6SfSC+OGGC7bYCogNiW2QnmBx1VoovnTWiw88eMGd7RHSNGTDiSujgcJczspW4Y/loLggNmLZX/Nn3jjUzwHCS4HOxGBdveqPCMl3myJfSy38Kjut1AnuJQfBquHaTGLeMyFDjsD+joGofWKqgAyVXbbraOOUegg0oa5a/Xio2vBBrencIfOtzrehvqTvjDGuwkEqRupdG91hAjdevjBrCgzGeIO3ylOsgpb7bgq3rXgNoapg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LVay+iM5ekvb8keR5decgIqoUQTYbnOWlBS795ARz70=;
- b=D00Ig65BXJYBiZgP8RK8vsIGeurQo4Nr9R8RzMcQ0mmecqXq1ZoqN5gdfUFFAUdgYip2pP2gVaGszUsxEg0B1U6jnp/V+4+mTxhBC+KxCuQz+ArUYV98P90xYzB8H1mOdl5gCvTCVFkS1GKRQsr2IxTaEC8k26aGUmbu0asyHFACSnQgEs/z4t/FmmO7DFt5O7VPK5wTgFDZYipTqyZGnfWifOrwsiHJc5yZRuL2RwDTI2wAmgmzlULq3x9tXkHrw0tAt6D9W1AlKJrmCJXQDhrKL5nBetFWAj92nTToGEXUG6Nlir8mwB68i9Kz8lOt+7u/fZYDsjCVB3n3VNgnPg==
+ bh=s0Q7OwEkRX0BpY+TZ/+8l2GJcc99of3NdyxwYL7rTbo=;
+ b=QsGmRz5iIP5YND/m8PsCjlsMTLSJMIgkqQlqmsDeqjHDJxWn59vpEFxnofZA7blCIj3dlRHwBsemkNKX8swHu6Z2sfDHH2d7Q+qCj8qQwPqInEIc5Dr7uRbdLEjMvKXoElKV0BwauhmH7DL0SXXRDpoyox3wYmbNw5RoyDvpqIsF/g6XJz7Ftpc2K5IWzTrWCO1yw0+5MOt9gXkVOt3g+nqohLOzJnnVEGJkzNf6luwyRgkZXaaJ3txdiCuKOEnBLGmG63B2rU5Tb7z72FJKxCMv03/kCYLBQ2+UHbzo+ZoNHJT2HSx7QvDkXPAlQA1HzEzrllLkCkSpc8vLvU1Xag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LVay+iM5ekvb8keR5decgIqoUQTYbnOWlBS795ARz70=;
- b=OmkHimhyjtQ15l8qQDo14xToEoTcMqnFVIp4lCjGyLozSrnjopB6XFIxBcxsL+xSHsC36SAD7Y4uRBX6VG1XeXwnR+c0lzLTwTxhvtiwAGwIjpnF31A2EbfFWSFfrSk6WRJCasl8KQUFISpZ2wESGLmGu2HgA7YZ2aHuU6M9PeQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB0070.namprd11.prod.outlook.com (2603:10b6:910:78::16) with
+ bh=s0Q7OwEkRX0BpY+TZ/+8l2GJcc99of3NdyxwYL7rTbo=;
+ b=X6li1B/YEc/QJv7xftTirA/5g0yvmEWeuUjpPnCO+4T+CpjW8nBMC/77WiIEuqhpYgjHW2MWyLu0aGsE24f3PkyoqEbkaPxfuDvPjC+KYmBbe21Rgr5cf3c15neD2omxAR6Zc6DPDZ/pOoaQPapxGJOCMXSlHIzzXkGPXuq6o90=
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by PH0PR11MB4853.namprd11.prod.outlook.com (2603:10b6:510:40::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Tue, 9 Feb
- 2021 03:09:28 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::5003:3066:e469:80a0]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::5003:3066:e469:80a0%7]) with mapi id 15.20.3784.027; Tue, 9 Feb 2021
- 03:09:28 +0000
-Subject: Re: [PATCH] drm/tilcdc: send vblank event when disabling crtc
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jyri Sarha <jyri.sarha@iki.fi>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210129055831.1702862-1-quanyang.wang@windriver.com>
- <1c6bd553-ee27-c93b-59e6-8d3c8368213a@ideasonboard.com>
-From:   "quanyang.wang" <quanyang.wang@windriver.com>
-Message-ID: <40037f81-2444-1fe0-f5da-194f2a3d3f22@windriver.com>
-Date:   Tue, 9 Feb 2021 11:09:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-In-Reply-To: <1c6bd553-ee27-c93b-59e6-8d3c8368213a@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.24; Tue, 9 Feb
+ 2021 03:11:57 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::78e6:b455:ce90:fcb0]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::78e6:b455:ce90:fcb0%6]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
+ 03:11:57 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     "Sang, Oliver" <oliver.sang@intel.com>
+CC:     lkp <lkp@intel.com>, Jann Horn <jannh@google.com>,
+        "Brown, Len" <len.brown@intel.com>, Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>, "bp@suse.de" <bp@suse.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "Dave.Martin@arm.com" <Dave.Martin@arm.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "carlos@redhat.com" <carlos@redhat.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>
+Subject: Re: [x86/signal]  dc8df6e85d: kernel-selftests.sigaltstack.sas.fail
+Thread-Topic: [x86/signal]  dc8df6e85d: kernel-selftests.sigaltstack.sas.fail
+Thread-Index: AQHW/owyRCwKddBWB02TNKMvt4NmOapPJYwA
+Date:   Tue, 9 Feb 2021 03:11:57 +0000
+Message-ID: <9C40F926-C765-4897-9F9D-A2460D03FB2B@intel.com>
+References: <20210209025021.GA13872@xsang-OptiPlex-9020>
+In-Reply-To: <20210209025021.GA13872@xsang-OptiPlex-9020>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: SJ0PR13CA0014.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::19) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.189.248.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8b04996b-cfc2-4893-7887-08d8cca87593
+x-ms-traffictypediagnostic: PH0PR11MB4853:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB4853261C713B7C44C7ED711AD88E9@PH0PR11MB4853.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3KqhtMejH3P9q2DQutOSqAS4W2Y3V7L80zuNAwdKjf1LXMIqEsYvcI8BiCIM2aod3eclxnK8UwP3lH9GD/plaYtDEzPm1EOW+BGcoUGAIywOCT3T/oLepiFSO3z18X40EyhFjtUup8Uq0zhnfzt+Uaxvk+XdBXDNkjGekWHmKshjdNdRLaX5GhfyXz4w1bmV7y5Y7MDeyMXDj68e+hM3MgmHa/w8fhdxMhk4/xUswcgZHLbt9ko/hGwEYZOtyu7bQrIAlBAq64kXRGKd5rUEm0j8ytWp8eUxrUwjGXMHfoG+s1HzZCI69evQAt9nZqzT+nkAfDSRqnkfEwRWWzwI7bqx53KlGLIu51UCeyszmHEUR77uh06ezz5LTmP9E/24BRI6/d2gZf6/URApovgDeLKEHnspw5Z+Mkj5W3gZzaNnwokCnHINSMPoz9417f1+uqaQvgViynWtZeDzJemgh4GdcOwQlKkyZkeVUVg0DhQHe9NzlKGD6ecGBY9kMAHF9V/qm+xE1/YCGQx7lhRrOAqkmgICebQ+OY9/onZ/euPy+3RyyJNJPHVNaX042TmcD3+K/8031iAtsaBH3sHZ4Ul+1c0BvVACDYQpQLgYJw3lku3JGlqQAUMw+nFWW0BbevoLonwm/GF+bzFPugZn7kUWertd5HDdEHKX1L5YLnY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(396003)(136003)(346002)(366004)(4326008)(64756008)(6506007)(2906002)(478600001)(71200400001)(966005)(66446008)(86362001)(66556008)(33656002)(26005)(8936002)(36756003)(186003)(66946007)(66476007)(316002)(54906003)(5660300002)(6486002)(37006003)(558084003)(8676002)(6862004)(6636002)(2616005)(7416002)(76116006)(6512007)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Pahwg4A35drlELAsC38ZVMEUBgpIP/TMr61jyyt5CPyuhvN1x17hSGgZ9vz+?=
+ =?us-ascii?Q?oQd+uJMEXEN1W/ei1mN0cznBmI6r5Vmevjxjng0jVYECjPYqiF1jbDL+dyvX?=
+ =?us-ascii?Q?1tL2Lq6uhvXD2z/vv1qb+pSXVU+RXXV2RgiLYbUOMvnqhAsBsMSVIadHlFAv?=
+ =?us-ascii?Q?rrH9LPdXI8m1iXSGsEiHyiLkw7a86oskM6scAhh+Ic55gk0ZkbLovrHg9Asj?=
+ =?us-ascii?Q?JnE7yZDW1opsHa18nc7sd78dXXZkzbXeyCJxZeUZDuKasMkal8AJ5+hxEb2V?=
+ =?us-ascii?Q?wuV4P/MRaYJ0MLYTzXi3afREQKItPl7su+n9Z0O5sIe2PMYUEc+8AMUYYeH/?=
+ =?us-ascii?Q?iSIf2b0erJT2FoiDskJWbiEcoLDB21U3kKdb6u+ufsqrFNJ3xSbfeYMW5yvb?=
+ =?us-ascii?Q?dC+G+nTT69CfhPbKrQhGllbuiMvqrpAiztkNhKkQNBQ8rw0YgRkZ0eAX7xKG?=
+ =?us-ascii?Q?pmxxM6PwEDok3DWhXy8IDzbEcTe6XcUsYOZRrYIw8Xse2d2uDYzoMck3iJoW?=
+ =?us-ascii?Q?JP5XuKX9K5cuS6sRnYQw16jmzB3/8i7Ksrzgztx7gOJcUA87oLjzN93pUSEC?=
+ =?us-ascii?Q?JlGwInDaNGIFwaTQogxoa6kixjnr1Kl/yow7AAR35pb8JB4VWY9LpPIeesrq?=
+ =?us-ascii?Q?Axsu8s1x1GhckxlKBOm4TfZirMNVQpObUsaHl7h6WqAPotGD1rpQznwjStUO?=
+ =?us-ascii?Q?gPE2lC6HPxpawy9XXzwXisacfoLxeYvOnwbKDw9cob7i8v/IIaOHWSTO4l4t?=
+ =?us-ascii?Q?xwMFvJRDn231lsoKsR+GP52lQaycs9Nz2LV75Rrpctuf8lW9plNJPTvkV04R?=
+ =?us-ascii?Q?wo+Fch/RWnI/a5xVohlDmDq6e4CWrPYXcGGOtwg7v0NEA7hhYhmBs7E9b/Cs?=
+ =?us-ascii?Q?USL5RsUPvucFgSMOnRavsJW6/AzGMgROJdsn3RFWevpSwA9MQyaz77ADznTu?=
+ =?us-ascii?Q?c3l0ATzDBA7FzzeqHPhvGPfvPjs597/yHidHhUCEmYuNB5TBguJXS0y0IsII?=
+ =?us-ascii?Q?qe7BIAi2WnqtIBKi/ndJ98BG19bqj/P0bwdB8VexKCyQhXLfx1GiWDyiFaBE?=
+ =?us-ascii?Q?ONIsL/D1dV9J5rG3W3LbhJmtY+PDtzQX7kjNLoK1bmuQFvCj+Fni0j3gRfhJ?=
+ =?us-ascii?Q?1nEYnKqW1le2WkCUkAg3A2+dCgssVBo+KwJnSMAdP3QGzRtWhDvLBivsZkXG?=
+ =?us-ascii?Q?7EPOqlmmyt4r7DzUSfoFtdF+Ac4Ew1F7Kxd2eNHIqUTlk2NYjuowFWez8sFm?=
+ =?us-ascii?Q?EQAtirmoLUhBEdWcLAY3MCm8tn/2wxMGVFrADMLanzznrs/69pQdF9IaP79c?=
+ =?us-ascii?Q?tjdObO+a1rAmMCyYh2yO7DA9?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9353580218DFAC49BE9A071511A9D0B1@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.199] (60.247.85.82) by SJ0PR13CA0014.namprd13.prod.outlook.com (2603:10b6:a03:2c0::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Tue, 9 Feb 2021 03:09:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d57f7b39-5c65-48bd-2214-08d8cca81c79
-X-MS-TrafficTypeDiagnostic: CY4PR11MB0070:
-X-Microsoft-Antispam-PRVS: <CY4PR11MB00703BC427DF4EAF7D1B73B6F08E9@CY4PR11MB0070.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:411;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 02Hcfw72PDwKE+uKd8ZmUP7x/e+/pXS39p46ZfC4PM4shcdp/up9dxMNhWdrTXw5Z6pO8+IARDnHKpy5H37HJCNMUpHZPDp3/hbH747xHlw1Xeuy/UZT5rfej3Ko6BjsxH2ZIoiDFG9gi9rx/Ag51TTjX++ySepYLdc8Du5grAw+0xrSj1Wu1JPo1otZttJxxdAS6ETKZwe+Q/rDmR5yp8TysOHJUtXSoLLMydSH+uFVHGMEPj9+EILlSEMQQ34/yo4JwCgpyxfhFURLDbRMGxTGGsJNGDsw1QT2z036xpvvrwD6gVuZ4doV1gR9+Gt5644KdGHCTiqiywkT0Q/IqBw1j/utB49CdHSO+Afiwz9qiiIg26YfF2pjGPndKamoszSwBUuxnEHN1OI4enr7ChVWnaMQPs7ap8qMVcIZZptks4FqMvL12rRmewGKsQhkOHWfNC/P7KFpqElti7wJgUJLug9vFxYF2fh8Ugx5at7isp9JJ6YB2r/IHL5Ui2XPuSQ8QV2MoiaoWs2WmJ6Lpp2Q2oU5+VjB1cJIVmlhS71BsVT2+SxaX6KzVYg+0HwH+UoCb5tiNNUqcwlUZuUstT5Zt6zvPvGA9aFLslGoOHRhRrea3/dVcpvKXQfVQe1R
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39850400004)(396003)(346002)(136003)(66476007)(6486002)(8676002)(66946007)(66556008)(186003)(316002)(16576012)(110136005)(4326008)(2906002)(86362001)(26005)(52116002)(478600001)(6706004)(6666004)(5660300002)(36756003)(83380400001)(8936002)(16526019)(2616005)(31696002)(956004)(53546011)(31686004)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?alJQSEY1MUhmUkRXOEY5OVNFNm94Tm81NkhvZDF3QkFkYjBudDhCK210bU5j?=
- =?utf-8?B?ZkdibVJLTWpZOEtXdXlYbnhZd3UvLzhyQ3oxV3JaWFJIejRiY25vRm5GcDNM?=
- =?utf-8?B?eW5ScFM2NzdsMDlwVUZQaTVOSlcwaVg3cE5UdTJJenZRODVJcVNWOE9jeVdH?=
- =?utf-8?B?eWRWaHZGMzFzeDVsOGpndVArRUx5Q01DUEJmdVB2TitZN2ZYdWxSMFlyMlMy?=
- =?utf-8?B?SHJQSnM0Z2w4OUtPalliQW14TWl6QjZuSWN1MnZ0VGtHMWdTTlgwS0VTdmd5?=
- =?utf-8?B?LzVVZE1KeFd6aUNZZkkzcTFqTnJ2MFN4SzNkZ3BkRUEwbTByd1F0Ymw4NUR0?=
- =?utf-8?B?eGljNURjRmNnK2UzdjBwRUFqb1R3ZnVndXY2VnNDVEVOVTUxOGlBYU9pbGVv?=
- =?utf-8?B?VFowa2x6NTdYN3hDTWtUMnVUM2FYN1lsdzVQQ2hGVC9UOC9OQ2tWbGtkTGVh?=
- =?utf-8?B?WkRjV2xVS3ZYR0RZK0NCZFdTeUZ6ZGFZK3Q4U1FIMGU2TTZRSTlZMEhmM0pD?=
- =?utf-8?B?SGd0ZDYzUUFwWVpTaEt6T2YxSDUwdjdzcTdKcys1Q0RrUHZlMVdXNG43WFQy?=
- =?utf-8?B?bzhJQ1NEUG13blh3bUoveDBlUFZKS1BrVERVWkh3M1k0TXJNWVEyS3IyZXgz?=
- =?utf-8?B?OE8zZkRxWmJpRDJTcE9wempud3ptbHh1dWNsM2dhZEsxZFpSUUZ0TXdLM0dL?=
- =?utf-8?B?YWdBMXpLZlB1NktsdVo2NUpQanFxY0VEWkdCYm42WU5sWFFpalZnR29kMEc1?=
- =?utf-8?B?bGpyUVR3bThtdnR0ZUg3RVlNY1htejdla1ErOGtnYU1MRUFOODRrdkY2NmpE?=
- =?utf-8?B?QWJING9rOW0vVHFya2l2NE56S05GTjRibEFWNFZ4NWk1TFFmRUxnd0I0S1E0?=
- =?utf-8?B?VmlEdWNvSU05TnlUL0VHSHJsTTIxOVVaRit4US9sanlETkhmNVAvUWxnSzVP?=
- =?utf-8?B?QStkTXVxVGxHNkptUTYrWVpqNFBaTWVTa25Cd21WbkRmcTkrWnRMZXNnQkJq?=
- =?utf-8?B?ZEFEaEpaZzBybU55NHNlUnkyRXhHRnlTODRaQzlGbkJTOUxINVp4UDZuVFZw?=
- =?utf-8?B?MkpZS0UyNVpwNVpHOHhYQnNNdjlFaU1qZUFQTTFWdVcwNHUwclRkNWJIWE5m?=
- =?utf-8?B?MGQzN2JjSkwwOUprQjQwcnAya2pDWnNqZkRyTVNlckhXTXczSFhFMWFQUFA0?=
- =?utf-8?B?ZWFNQmdTQnI3aXZzY0xYbHJlSVJBWDJkMTZSaFNsQndQelhNRGNrK2h6ZjhV?=
- =?utf-8?B?Q1NlZTVjNFBlS1JkL1Q4akVxUFo0VS9FQmw3eTNoUzJPelhlMDJKak5ZNk14?=
- =?utf-8?B?SFJmSmlFWGxmWjBJcG1QdlhSRW1nWVdzYVRDcDdZUFVkcFlGWmU5dHVvdytN?=
- =?utf-8?B?VDhlTEZGQUQ5SHcxVXFVWFU2eUlJT2NtS0VVOU5FUHlWQkNYVUFoQ1NpbVE0?=
- =?utf-8?B?R3BVbEtPcnR2UnJtVlRxQTZ1RHNRSnphMDcyYUhzd2ZmWjR5TVBTeklSMzdN?=
- =?utf-8?B?VFYrT2JOQnc5dWo2UTBsVXJnZHlkcS9hK1JZSlpOVVQrc2RnZVlaNWkySVZx?=
- =?utf-8?B?WTVNcDkwc2M5QzBVNjRaN1EvNjdOMWwwa2hPaTEwMFVpbE9uc1dRalpBQkhI?=
- =?utf-8?B?Umx5RUFlK0dVd3JFa09sUEhCSE9YTjBuZDJyNUUvWmlpVmxjV2dEY3N3TEdK?=
- =?utf-8?B?QXVRYjdyVVFqb3ROdDd1Q0JhUTN0Y2xqWU5reks3b25UN3ZrQXNDMGNpS2dT?=
- =?utf-8?Q?ASAm3U/9za9F/S2S/B6ecL5S5CBAZf5HBgOzVAA?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d57f7b39-5c65-48bd-2214-08d8cca81c79
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2021 03:09:28.0665
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b04996b-cfc2-4893-7887-08d8cca87593
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2021 03:11:57.0672
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E9ETY2oR21zJcBnMK1+1XOoDex0tS0buopfBzPpbcEO0qG6FiBSQLdv2u1mzLjxjPzXcYorrK0uhUKbrrly3ClfGBY8o05x2vHsgj+GnuxM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB0070
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rydvVwNd9fepszVI8RNp5J5ZcxRdVjO8flqSPS4HZyzD5KuJ0/ztCG6jPPEVQiEEgVZ6R8CuBLZtD7ogNFh1j2j8Pv9qJge+s7U5Ylk6FUY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4853
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping.
+This is related to the SS_AUTODISARM flag [1]:
 
-On 1/29/21 3:58 PM, Tomi Valkeinen wrote:
-> Dropped the @ti.com addresses and added the new ones.
->
->   Tomi
->
-> On 29/01/2021 07:58, quanyang.wang@windriver.com wrote:
->> From: Quanyang Wang <quanyang.wang@windriver.com>
->>
->> When run xrandr to change resolution on Beaglebone Black board, it will
->> print the error information:
->>
->> root@beaglebone:~# xrandr -display :0 --output HDMI-1 --mode 720x400
->> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
->> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:32:tilcdc crtc] commit wait timed out
->> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
->> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONNECTOR:34:HDMI-A-1] commit wait timed out
->> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
->> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:31:plane-0] commit wait timed out
->> tilcdc 4830e000.lcdc: already pending page flip!
->>
->> This is because there is operation sequence as below:
->>
->> drm_atomic_connector_commit_dpms(mode is DRM_MODE_DPMS_OFF):
->>      ...
->>      drm_atomic_helper_setup_commit <- init_completion(commit_A->flip_done)
->>      drm_atomic_helper_commit_tail
->>          tilcdc_crtc_atomic_disable
->>          tilcdc_plane_atomic_update <- drm_crtc_send_vblank_event in tilcdc_crtc_irq
->>                                        is skipped since tilcdc_crtc->enabled is 0
->>          tilcdc_crtc_atomic_flush   <- drm_crtc_send_vblank_event is skipped since
->>                                        crtc->state->event is set to be NULL in
->>                                        tilcdc_plane_atomic_update
->> drm_mode_setcrtc:
->>      ...
->>      drm_atomic_helper_setup_commit <- init_completion(commit_B->flip_done)
->>      drm_atomic_helper_wait_for_dependencies
->>          drm_crtc_commit_wait   <- wait for commit_A->flip_done completing
->>
->> Just as shown above, the steps which could complete commit_A->flip_done
->> are all skipped and commit_A->flip_done will never be completed. This will
->> result a time-out ERROR when drm_crtc_commit_wait check the commit_A->flip_done.
->> So add drm_crtc_send_vblank_event in tilcdc_crtc_atomic_disable to
->> complete commit_A->flip_done.
->>
->> Fixes: cb345decb4d2 ("drm/tilcdc: Use standard drm_atomic_helper_commit")
->> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
->> ---
->>   drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
->> index 30213708fc99..d99afd19ca08 100644
->> --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
->> +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
->> @@ -515,6 +515,15 @@ static void tilcdc_crtc_off(struct drm_crtc *crtc, bool shutdown)
->>   
->>   	drm_crtc_vblank_off(crtc);
->>   
->> +	spin_lock_irq(&crtc->dev->event_lock);
->> +
->> +	if (crtc->state->event) {
->> +		drm_crtc_send_vblank_event(crtc, crtc->state->event);
->> +		crtc->state->event = NULL;
->> +	}
->> +
->> +	spin_unlock_irq(&crtc->dev->event_lock);
->> +
->>   	tilcdc_crtc_disable_irqs(dev);
->>   
->>   	pm_runtime_put_sync(dev->dev);
->>
+I will include the fix in v6.
+
+Thanks,
+Chang
+
+https://lore.kernel.org/lkml/81DF502F-9327-4365-AD17-21CFAE94ED0B@intel.com=
+/
