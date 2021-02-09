@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0624D314519
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B447131451D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhBIAuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 19:50:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhBIAus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:50:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 058F164E9C;
-        Tue,  9 Feb 2021 00:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612831807;
-        bh=M4JvpIOeBLmk0O/aUhIaXU2I/lEjDKewFQhnmsn8vYQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RbFt5eXRevJdlTFw/yTP/5pshC6Gzj9ILLzMp60gVl0hFDdZ+x6126oMDP6j87yt2
-         DYCXtnXjDK9FoJimDUkxw+ZmjMZkYpbhYwtpH1gX3FMHYTGBVb0cMgFFls3Mx1JKLR
-         h+mCP6ujdwIMjVwITUHslqlVieElTT6JWGUqvgKcG8mnrf8XJbuiKy98M6mDaIp+NO
-         du8IkstUIn0UKUdE+ji7yLwOtcsW5bwY/cnvgPjkWHFRxNzhYk9tksuyLdtx5hu7w4
-         dieCaQZ33prbfOAW6wLeFxqq4uk81kDxropV/9pEiz9GxRyRgw5AhpQc3N6lo9STfM
-         5tMrcFoDmjxAA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E15E7609D6;
-        Tue,  9 Feb 2021 00:50:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229716AbhBIAyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 19:54:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhBIAyH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 19:54:07 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139A9C061786;
+        Mon,  8 Feb 2021 16:53:27 -0800 (PST)
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 9598723E5F;
+        Tue,  9 Feb 2021 01:53:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1612832002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Xgt/MD7lKvLeSdMrNW2NdaeIS7qBuvz02NxmMJCjUuk=;
+        b=AlYYcVqr/hhtNPyBbatwGVW1XWsZlAHSXOtECFJUPb/iCr+glXWMKcUnSog50JbM8rhhSs
+        TZivp5HbbLvpVvKwM60um1j+4yDS2UJf5g4lUiPv9AyEja4rWxIDzkKa8wc1ZadhPiw2o3
+        g4oIXtgHFnHzIbNcw32BCtg0h59HOu8=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH] arm64: dts: ls1028a: add interrupt to Root Complex Event Collector
+Date:   Tue,  9 Feb 2021 01:52:59 +0100
+Message-Id: <20210209005259.29725-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/2] bridge: mrp: Fix br_mrp_port_switchdev_set_state
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161283180691.7845.8705102282874367511.git-patchwork-notify@kernel.org>
-Date:   Tue, 09 Feb 2021 00:50:06 +0000
-References: <20210206214734.1577849-1-horatiu.vultur@microchip.com>
-In-Reply-To: <20210206214734.1577849-1-horatiu.vultur@microchip.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     jiri@resnulli.us, ivecera@redhat.com, davem@davemloft.net,
-        kuba@kernel.org, roopa@nvidia.com, nikolay@nvidia.com,
-        rasmus.villemoes@prevas.dk, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+The legacy interrupt INT_A is hardwired to the event collector. RCEC is
+bascially supported starting with v5.11. Having a correct interrupt, will
+make RCEC at least probe correctly.
 
-This series was applied to netdev/net.git (refs/heads/master):
+There are still issues with how RCEC is implemented in the RCiEP on the
+LS1028A. RCEC will report an error, but it cannot find the correct
+subdevice.
 
-On Sat, 6 Feb 2021 22:47:32 +0100 you wrote:
-> Based on the discussion here[1], there was a problem with the function
-> br_mrp_port_switchdev_set_state. The problem was that it was called
-> both with BR_STATE* and BR_MRP_PORT_STATE* types. This patch series
-> fixes this issue and removes SWITCHDEV_ATTR_ID_MRP_PORT_STAT because
-> is not used anymore.
-> 
-> [1] https://www.spinics.net/lists/netdev/msg714816.html
-> 
-> [...]
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Here is the summary with links:
-  - [net,1/2] bridge: mrp: Fix the usage of br_mrp_port_switchdev_set_state
-    https://git.kernel.org/netdev/net/c/b2bdba1cbc84
-  - [net,2/2] switchdev: mrp: Remove SWITCHDEV_ATTR_ID_MRP_PORT_STAT
-    https://git.kernel.org/netdev/net/c/059d2a100498
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index 262fbad8f0ec..c1f2f402ad53 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -1114,6 +1114,12 @@
+ 					full-duplex;
+ 				};
+ 			};
++
++			rcec@1f,0 {
++				reg = <0x00f800 0 0 0 0>;
++				/* IEP INT_A */
++				interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
++			};
+ 		};
+ 
+ 		rcpm: power-controller@1e34040 {
+-- 
+2.20.1
 
