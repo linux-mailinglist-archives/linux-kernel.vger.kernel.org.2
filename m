@@ -2,69 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A859315C31
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BD4315C3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbhBJB0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:26:52 -0500
-Received: from mga07.intel.com ([134.134.136.100]:15679 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234824AbhBIXLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 18:11:37 -0500
-IronPort-SDR: Yq8K1IXHHu/P6mCAvEDC2BqIN40tfYrwnykZdJeUyQcx9HTVQkh41ZTfZf4I4VY3wDUmPiJCm9
- 486U6ndPofIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="246041830"
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="246041830"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 15:05:18 -0800
-IronPort-SDR: a6arwtBDVlPnid9+/2ah9wjbZszzK/zJLS0ONW6THj5ne4QAa+B8fBY/tZKS6ShOMB874XtM2k
- fczV6phvdBYw==
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="510117583"
-Received: from muncuer-mobl1.amr.corp.intel.com (HELO [10.209.127.55]) ([10.209.127.55])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 15:05:17 -0800
-Subject: Re: [PATCH] ASoC: soc-pcm: change error message to debug message
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <1612771965-5776-1-git-send-email-shengjiu.wang@nxp.com>
- <b7f5442d-ad21-eb8a-7d90-7a8207320541@linux.intel.com>
- <20210209222331.GD4916@sirena.org.uk>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a3cac294-4562-3042-7118-f013d6e4300b@linux.intel.com>
-Date:   Tue, 9 Feb 2021 17:05:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233554AbhBJB2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:28:55 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34368 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234247AbhBIXPt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 18:15:49 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 119N5jkk085795;
+        Tue, 9 Feb 2021 17:05:45 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612911945;
+        bh=qU877wM+24hVWpXuypQ2pX4RaadwVT/D3XrUZ7E+Jqw=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=Jyc0tZC8sStoITibAXiVSZ4wIwD10etZz8fPb74lNT7pQ9ioBB7xrxbxtsGD+CqHT
+         oX2JrcYnyWsZbWflU+oj3TCv3G31F55q40iHCsBh5kpE0pc6qIOL4jI6kinAGzJrCN
+         nOmsCszFIgxx/Xf8kmuV7YMNy8pDHSxzZ1ttCDhc=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 119N5jTB050120
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Feb 2021 17:05:45 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Feb
+ 2021 17:05:45 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 9 Feb 2021 17:05:44 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 119N5iDT072550;
+        Tue, 9 Feb 2021 17:05:44 -0600
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+To:     <sre@kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Subject: [PATCH 2/2] power: supply: bq25980: Moves properties from battery node 
+Date:   Tue, 9 Feb 2021 17:05:27 -0600
+Message-ID: <20210209230527.26712-2-r-rivera-matos@ti.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210209230527.26712-1-r-rivera-matos@ti.com>
+References: <20210209230527.26712-1-r-rivera-matos@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209222331.GD4916@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+fix: exposes POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT on the
 
+charger node
 
-On 2/9/21 4:23 PM, Mark Brown wrote:
-> On Mon, Feb 08, 2021 at 09:06:44AM -0600, Pierre-Louis Bossart wrote:
-> 
->> If you demote this to dev_dbg, we'll have to ask every single user who
->> reports 'sound is broken' to enable dynamic debug traces. I really don't see
->> the benefit, this is a clear case of 'fail big and fail early', partly
->> concealing the problem doesn't make it go away but harder to diagnose.
-> 
-> Don't you also get the same information out of the DAPM debugfs or did
-> I misread where the error is generated from?
+fix: exposes POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE on the
 
-I re-checked and I will back-pedal on my comment. I confused this error 
-message with the classic "ASoC: no backend DAIs enabled for %s".
+charger node
 
-I didn't find a single occurrence of this "ASoC: no BE found for %s" in 
-any bug report or Google search.
+fix: eliminates unnecessary set_property for the battery node
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fixes: 5069185fc18e ("power: supply: bq25980: Add support for the BQ259xx family")
+Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+---
+ drivers/power/supply/bq25980_charger.c | 40 ++++++++------------------
+ 1 file changed, 12 insertions(+), 28 deletions(-)
 
+diff --git a/drivers/power/supply/bq25980_charger.c b/drivers/power/supply/bq25980_charger.c
+index 7c489a9e8877..ac73e2c19238 100644
+--- a/drivers/power/supply/bq25980_charger.c
++++ b/drivers/power/supply/bq25980_charger.c
+@@ -641,33 +641,6 @@ static int bq25980_get_state(struct bq25980_device *bq,
+ 	return 0;
+ }
+ 
+-static int bq25980_set_battery_property(struct power_supply *psy,
+-				enum power_supply_property psp,
+-				const union power_supply_propval *val)
+-{
+-	struct bq25980_device *bq = power_supply_get_drvdata(psy);
+-	int ret = 0;
+-
+-	switch (psp) {
+-	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
+-		ret = bq25980_set_const_charge_curr(bq, val->intval);
+-		if (ret)
+-			return ret;
+-		break;
+-
+-	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
+-		ret = bq25980_set_const_charge_volt(bq, val->intval);
+-		if (ret)
+-			return ret;
+-		break;
+-
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	return ret;
+-}
+-
+ static int bq25980_get_battery_property(struct power_supply *psy,
+ 				enum power_supply_property psp,
+ 				union power_supply_propval *val)
+@@ -736,6 +709,18 @@ static int bq25980_set_charger_property(struct power_supply *psy,
+ 			return ret;
+ 		break;
+ 
++	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
++		ret = bq25980_set_const_charge_curr(bq, val->intval);
++		if (ret)
++			return ret;
++		break;
++
++	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
++		ret = bq25980_set_const_charge_volt(bq, val->intval);
++		if (ret)
++			return ret;
++		break;
++
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -957,7 +942,6 @@ static struct power_supply_desc bq25980_battery_desc = {
+ 	.name			= "bq25980-battery",
+ 	.type			= POWER_SUPPLY_TYPE_BATTERY,
+ 	.get_property		= bq25980_get_battery_property,
+-	.set_property		= bq25980_set_battery_property,
+ 	.properties		= bq25980_battery_props,
+ 	.num_properties		= ARRAY_SIZE(bq25980_battery_props),
+ 	.property_is_writeable	= bq25980_property_is_writeable,
+-- 
+2.30.0
 
