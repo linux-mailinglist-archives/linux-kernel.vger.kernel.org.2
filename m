@@ -2,22 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786C2314B3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D91AD314B3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhBIJOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhBIJMI (ORCPT
+        id S230450AbhBIJPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:15:20 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46536 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230026AbhBIJMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:12:08 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98E8C061786
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:11:27 -0800 (PST)
+        Tue, 9 Feb 2021 04:12:15 -0500
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: eballetbo)
-        with ESMTPSA id 2A1C91F44D04
+        with ESMTPSA id 59EAB1F44D07
 From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
@@ -32,79 +29,84 @@ Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
         Michael Walle <michael@walle.cc>, Nishanth Menon <nm@ti.com>,
         Shawn Guo <shawnguo@kernel.org>, Will Deacon <will@kernel.org>,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/2] arm64: defconfig: Allow mt8173-based boards to boot from usb
-Date:   Tue,  9 Feb 2021 10:11:11 +0100
-Message-Id: <20210209091112.2075478-1-enric.balletbo@collabora.com>
+Subject: [PATCH 2/2] arm64: defconfig: Enable options to support panel display for Mediatek Chromebooks
+Date:   Tue,  9 Feb 2021 10:11:12 +0100
+Message-Id: <20210209091112.2075478-2-enric.balletbo@collabora.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210209091112.2075478-1-enric.balletbo@collabora.com>
+References: <20210209091112.2075478-1-enric.balletbo@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the option necessary to boot mt8173-based boards to boot from
-usb devices, like its phy and the regulators needed to have proper
-support.
+There are some Mediatek based Chromebooks supported in the kernel. Enable the
+required config options to have the panel display working on both devices.
+This was tested on the ACER Chromebook R13 (MT8173) and the Lenovo
+Ideapad Duet (MT8183), but should also enable display support for similar
+devices.
 
 Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
 
- arch/arm64/configs/defconfig | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/configs/defconfig | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 01aa3eee90e8..30db9b50efaa 100644
+index 30db9b50efaa..7f4d70d24bb5 100644
 --- a/arch/arm64/configs/defconfig
 +++ b/arch/arm64/configs/defconfig
-@@ -444,6 +444,7 @@ CONFIG_I2C_GPIO=m
- CONFIG_I2C_IMX=y
- CONFIG_I2C_IMX_LPI2C=y
- CONFIG_I2C_MESON=y
-+CONFIG_I2C_MT65XX=y
- CONFIG_I2C_MV64XXX=y
- CONFIG_I2C_OMAP=y
- CONFIG_I2C_OWL=y
-@@ -586,6 +587,7 @@ CONFIG_MFD_EXYNOS_LPASS=m
- CONFIG_MFD_HI6421_PMIC=y
- CONFIG_MFD_HI655X_PMIC=y
- CONFIG_MFD_MAX77620=y
-+CONFIG_MFD_MT6397=y
- CONFIG_MFD_SPMI_PMIC=y
- CONFIG_MFD_RK808=y
- CONFIG_MFD_SEC_CORE=y
-@@ -602,6 +604,8 @@ CONFIG_REGULATOR_HI6421V530=y
- CONFIG_REGULATOR_HI655X=y
- CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8973=y
-+CONFIG_REGULATOR_MT6358=y
-+CONFIG_REGULATOR_MT6397=y
- CONFIG_REGULATOR_PCA9450=y
- CONFIG_REGULATOR_PFUZE100=y
- CONFIG_REGULATOR_PWM=y
-@@ -765,6 +769,7 @@ CONFIG_USB_RENESAS_USBHS_HCD=m
- CONFIG_USB_RENESAS_USBHS=m
- CONFIG_USB_ACM=m
- CONFIG_USB_STORAGE=y
-+CONFIG_USB_MTU3=y
- CONFIG_USB_MUSB_HDRC=y
- CONFIG_USB_MUSB_SUNXI=y
- CONFIG_USB_DWC3=y
-@@ -958,6 +963,7 @@ CONFIG_OWL_PM_DOMAINS=y
- CONFIG_RASPBERRYPI_POWER=y
- CONFIG_FSL_DPAA=y
- CONFIG_FSL_MC_DPIO=y
-+CONFIG_MTK_PMIC_WRAP=y
- CONFIG_QCOM_AOSS_QMP=y
- CONFIG_QCOM_COMMAND_DB=y
- CONFIG_QCOM_GENI_SE=y
-@@ -1032,6 +1038,7 @@ CONFIG_PHY_HI6220_USB=y
- CONFIG_PHY_HISTB_COMBPHY=y
- CONFIG_PHY_HISI_INNO_USB2=y
- CONFIG_PHY_MVEBU_CP110_COMPHY=y
-+CONFIG_PHY_MTK_TPHY=y
- CONFIG_PHY_QCOM_QMP=m
- CONFIG_PHY_QCOM_QUSB2=m
- CONFIG_PHY_QCOM_USB_HS=y
+@@ -676,6 +676,7 @@ CONFIG_DRM_MSM=m
+ CONFIG_DRM_TEGRA=m
+ CONFIG_DRM_PANEL_LVDS=m
+ CONFIG_DRM_PANEL_SIMPLE=m
++CONFIG_DRM_PANEL_BOE_TV101WUM_NL6=m
+ CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
+ CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
+ CONFIG_DRM_PANEL_SITRONIX_ST7703=m
+@@ -683,6 +684,7 @@ CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
+ CONFIG_DRM_DISPLAY_CONNECTOR=m
+ CONFIG_DRM_NWL_MIPI_DSI=m
+ CONFIG_DRM_LONTIUM_LT9611=m
++CONFIG_DRM_PARADE_PS8640=m
+ CONFIG_DRM_SII902X=m
+ CONFIG_DRM_SIMPLE_BRIDGE=m
+ CONFIG_DRM_THINE_THC63LVD1024=m
+@@ -696,6 +698,8 @@ CONFIG_DRM_VC4=m
+ CONFIG_DRM_ETNAVIV=m
+ CONFIG_DRM_HISI_HIBMC=m
+ CONFIG_DRM_HISI_KIRIN=m
++CONFIG_DRM_MEDIATEK=m
++CONFIG_DRM_MEDIATEK_HDMI=m
+ CONFIG_DRM_MXSFB=m
+ CONFIG_DRM_MESON=m
+ CONFIG_DRM_PL111=m
+@@ -949,6 +953,7 @@ CONFIG_ROCKCHIP_IOMMU=y
+ CONFIG_TEGRA_IOMMU_SMMU=y
+ CONFIG_ARM_SMMU=y
+ CONFIG_ARM_SMMU_V3=y
++CONFIG_MTK_IOMMU=y
+ CONFIG_QCOM_IOMMU=y
+ CONFIG_REMOTEPROC=y
+ CONFIG_QCOM_Q6V5_MSS=m
+@@ -1019,6 +1024,8 @@ CONFIG_PWM=y
+ CONFIG_PWM_BCM2835=m
+ CONFIG_PWM_CROS_EC=m
+ CONFIG_PWM_MESON=m
++CONFIG_PWM_MTK_DISP=m
++CONFIG_PWM_MEDIATEK=m
+ CONFIG_PWM_RCAR=m
+ CONFIG_PWM_ROCKCHIP=y
+ CONFIG_PWM_SAMSUNG=y
+@@ -1063,6 +1070,7 @@ CONFIG_QCOM_L3_PMU=y
+ CONFIG_NVMEM_IMX_OCOTP=y
+ CONFIG_NVMEM_IMX_OCOTP_SCU=y
+ CONFIG_QCOM_QFPROM=y
++CONFIG_MTK_EFUSE=y
+ CONFIG_ROCKCHIP_EFUSE=y
+ CONFIG_NVMEM_SUNXI_SID=y
+ CONFIG_UNIPHIER_EFUSE=y
 -- 
 2.30.0
 
