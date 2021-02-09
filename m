@@ -2,93 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BBC315BF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 374E9315BD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234783AbhBJBMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:12:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234389AbhBIWYy (ORCPT
+        id S233761AbhBJBEx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Feb 2021 20:04:53 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2895 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234352AbhBIWXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:24:54 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90132C0698D7
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 14:22:10 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id v206so8109404qkb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 14:22:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YqilSyANb2yKNyp5C84XuLtT56SS42oSdtYgcD/KNKI=;
-        b=rkk64bC3gUH20iyUq9lXg4/whibac5PNI6g9rBOp/8JLjQAVtEYBgWUgOCQhrhwtc1
-         nAYoOFQubJbwTa+qzQi04ksycVdMK7LMFKIuj/KfCuI09ixolgbSeqL+kbpbbHgFCIMN
-         LgoivRNKmLXSTnErsEeVwHAEirhpvARnUmcLCfE1DgMyssikk94rhdpjgupMncATxIuo
-         E5f8h5UaTQrw68w6sBS1VAunb/YpnJt4rznlF++DYpFiflpSboc8me+f7BlJn5SsFzLj
-         zC20W6+7uQ9DJ+W7ujnSd8tfu/irV2V6J2IjSaoLbFjMDUjbuXO1ncNnouv3F8M4H50i
-         CxUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YqilSyANb2yKNyp5C84XuLtT56SS42oSdtYgcD/KNKI=;
-        b=eA/+bpzLANarRFz0QQv4BQ/G5wpApV75XK5dGhSvcDWwSJ/yXabZtpAAfWVBkjpIjy
-         aBPDxewRuMdFJPtgG/2KOvSkV8iQAVpM60IRW6u2u9Sb+7JuCJVob/wLOI5YQWOwmzTc
-         Tkp5aOHNak/UIq9iLw1tOsugdvycRqVRGi+/JHMUNGhJOhQo2JMLj/g9Q9qMxCty3fIQ
-         2YyEGeTnipqrk2lro7Teu4wL3vg2CjrNpba8BFUFdefXsRWtY1bIX+8OXoDqWSRxtjFq
-         11E1CDJ2MftWNDNPamWMky8S3BKFf1FxeVujifKCvbzvCEjRfkVL7MYkh4Mz9ZHzdUWx
-         Ajpg==
-X-Gm-Message-State: AOAM532RprZGVkDVc+aCzFDspl3km0qxlTCip+ErA56J46nLkC+5okwg
-        snxbzzhaMJAPuEvA3LSZR6Rbsi0VCLW3UQ==
-X-Google-Smtp-Source: ABdhPJz4Zr6dJzukGC3DYAKKOMDeZ70xNoCDbVRx+hX2r3XTqUWEDeBvBquPHQaBI4BhKc9KU0ZbMw==
-X-Received: by 2002:a05:620a:2239:: with SMTP id n25mr412298qkh.46.1612909329847;
-        Tue, 09 Feb 2021 14:22:09 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id t8sm48886qkt.125.2021.02.09.14.22.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 14:22:09 -0800 (PST)
-Date:   Tue, 9 Feb 2021 17:22:08 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: Fix missing mem cgroup soft limit tree updates
-Message-ID: <YCMLEB/2IscnaGGh@cmpxchg.org>
-References: <cover.1612902157.git.tim.c.chen@linux.intel.com>
- <3b6e4e9aa8b3ee1466269baf23ed82d90a8f791c.1612902157.git.tim.c.chen@linux.intel.com>
+        Tue, 9 Feb 2021 17:23:48 -0500
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DZy5p3j1qz5KDt;
+        Wed, 10 Feb 2021 06:21:02 +0800 (CST)
+Received: from dggpemm500011.china.huawei.com (7.185.36.110) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Wed, 10 Feb 2021 06:22:48 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpemm500011.china.huawei.com (7.185.36.110) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Wed, 10 Feb 2021 06:22:47 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Wed, 10 Feb 2021 06:22:47 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     David Hildenbrand <david@redhat.com>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Topic: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Index: AQHW/SrsWWMRpilf2UC1Pz29QqsBVqpNZGQAgACtCgCAAKKukP//jqmAgADcIzCAADaMgIABCrxA
+Date:   Tue, 9 Feb 2021 22:22:47 +0000
+Message-ID: <2527b4ac8df14fa1b427bef65dace719@hisilicon.com>
+References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
+ <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <a587bd61-9194-4b46-c122-8b4da7b941a8@redhat.com>
+ <20210208183348.GV4718@ziepe.ca>
+ <0dca000a6cd34d8183062466ba7d6eaf@hisilicon.com>
+ <20210208213023.GZ4718@ziepe.ca>
+ <0868d209d7424942a46d1238674cf75d@hisilicon.com>
+ <20210209135331.GF4718@ziepe.ca>
+In-Reply-To: <20210209135331.GF4718@ziepe.ca>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.77]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3b6e4e9aa8b3ee1466269baf23ed82d90a8f791c.1612902157.git.tim.c.chen@linux.intel.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Tim,
 
-On Tue, Feb 09, 2021 at 12:29:47PM -0800, Tim Chen wrote:
-> @@ -6849,7 +6850,9 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
->  	 * exclusive access to the page.
->  	 */
->  
-> -	if (ug->memcg != page_memcg(page)) {
-> +	if (ug->memcg != page_memcg(page) ||
-> +	    /* uncharge batch update soft limit tree on a node basis */
-> +	    (ug->dummy_page && ug->nid != page_to_nid(page))) {
 
-The fix makes sense to me.
+> -----Original Message-----
+> From: Jason Gunthorpe [mailto:jgg@ziepe.ca]
+> Sent: Wednesday, February 10, 2021 2:54 AM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: David Hildenbrand <david@redhat.com>; Wangzhou (B)
+> <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
+> iommu@lists.linux-foundation.org; linux-mm@kvack.org;
+> linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
+> Morton <akpm@linux-foundation.org>; Alexander Viro <viro@zeniv.linux.org.uk>;
+> gregkh@linuxfoundation.org; kevin.tian@intel.com; jean-philippe@linaro.org;
+> eric.auger@redhat.com; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
+> zhangfei.gao@linaro.org; chensihang (A) <chensihang1@hisilicon.com>
+> Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+> pin
+> 
+> On Tue, Feb 09, 2021 at 03:01:42AM +0000, Song Bao Hua (Barry Song) wrote:
+> 
+> > On the other hand, wouldn't it be the benefit of hardware accelerators
+> > to have a lower and more stable latency zip/encryption than CPU?
+> 
+> No, I don't think so.
 
-However, unconditionally breaking up the batch by node can
-unnecessarily regress workloads in cgroups that do not have a soft
-limit configured, and cgroup2 which doesn't have soft limits at
-all. Consider an interleaving allocation policy for example.
+Fortunately or unfortunately, I think my people have this target to have
+a lower-latency and more stable zip/encryption by using accelerators,
+otherwise, they are going to use CPU directly if there is no advantage
+of accelerators.
 
-Can you please further gate on memcg->soft_limit != PAGE_COUNTER_MAX,
-or at least on !cgroup_subsys_on_dfl(memory_cgrp_subsys)?
+> 
+> If this is an important problem then it should apply equally to CPU
+> and IO jitter.
+> 
+> Honestly I find the idea that occasional migration jitters CPU and DMA
+> to not be very compelling. Such specialized applications should
+> allocate special pages to avoid this, not adding an API to be able to
+> lock down any page
+
+That is exactly what we have done to provide a hugeTLB pool so that
+applications can allocate memory from this pool.
+
++-------------------------------------------+
+ |                                           |
+ |applications using accelerators            |
+ +-------------------------------------------+
+
+
+     alloc from pool             free to pool
+           +                      ++
+           |                       |
+           |                       |
+           |                       |
+           |                       |
+           |                       |
+           |                       |
+           |                       |
++----------+-----------------------+---------+
+|                                            |
+|                                            |
+|      HugeTLB memory pool                   |
+|                                            |
+|                                            |
++--------------------------------------------+
+
+The problem is that SVA declares we can use any memory of a process
+to do I/O. And in real scenarios, we are unable to customize most
+applications to make them use the pool. So we are looking for some
+extension generically for applications such as Nginx, Ceph.
+
+I am also thinking about leveraging vm.compact_unevictable_allowed
+which David suggested and making an extension on it, for example,
+permit users to disable compaction and numa balancing on unevictable
+pages of SVA process,  which might be a smaller deal.
+
+> 
+> Jason
 
 Thanks
+Barry
+
