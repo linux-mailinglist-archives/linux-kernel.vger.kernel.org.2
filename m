@@ -2,203 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9D7314E87
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05002314E89
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbhBIL7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:59:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhBIL5m (ORCPT
+        id S230197AbhBIL7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:59:41 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12884 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229993AbhBIL7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:57:42 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324A7C06178B
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 03:57:02 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id f19so21916854ljn.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 03:57:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=+2vPllg638i7bZL/ckGFZ2O9Ryd2HDaaJ8+zMjONvJc=;
-        b=Glov3sV1W5XM/v//oXnyHOBRT2Tj5BXllW9qOhxc/5F3wszh4BdaDP1vVXrHHBMXxY
-         BGdrIuFcduDAfPCxg3t72C6yRlKJkHBbWYWvAWPsHAOOZMWWr3JAPJIC30FHRgqCT7R5
-         ehFJaJjHHcsgmwszJHsZKuU40x19/bEOj7YO17SJVuHQwaeVO2fhde0r4aS8lP1V//Px
-         P/mtk5iGk2wqNVRAus/anzQrzso51M8XuSwlP42cbnsr1uc7Vpa3GV+ufLrzQMy6/n7f
-         3uXV5YsVx/2HyVGCizDvJZQUjNg764a/bz+A26MaM+kEtwgJfqDSR+Wxxvp58s3CPT0o
-         OtUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=+2vPllg638i7bZL/ckGFZ2O9Ryd2HDaaJ8+zMjONvJc=;
-        b=fMj9u9wI3pFdYQUCKRfQIpSraT0oCgyBOgwKXga32JoyH1gUP8m9ESyzLE9p5luoxm
-         dbJNqcsVVK7FxkLxLUgGobmtFw2AIOiFwWCDE06gGickMoCJBrYrXSGuSfK3fK0pDk2i
-         IpvDfE5cUHwiHioU6HoUnkSdCMQIFBaHXUqJZZHoRtygX+X98WvS8k2Vq5IZhH0d+fSi
-         DMKfqyuVaUik7iz6b9D+mKwcc2IpNIwWlhMsBeijnaGvmaPQcX6Yj4UiKG0w+Ve0gO1c
-         bHx8Zy0Ko0B9aB4PLiof3HoKT0ZB63dQ50DkWID0a8pavpnk5We/IEotq634fJSZZpfp
-         Ud/A==
-X-Gm-Message-State: AOAM531DJGh0NhIfphGbHwDYt0RFzJew4RgsfZ+gBJo78uVFHOqWyA4X
-        9E2R6tYym+w/DIdppWT5GlLuqA==
-X-Google-Smtp-Source: ABdhPJwo1RAjGZyXQvldYO/IGwX6wDH+pozZNHU1JbZ6cvp6u8L5hWK2M01dBPrz5uXWy0KiWSRFqA==
-X-Received: by 2002:a2e:8654:: with SMTP id i20mr14117460ljj.362.1612871817208;
-        Tue, 09 Feb 2021 03:56:57 -0800 (PST)
-Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
-        by smtp.gmail.com with ESMTPSA id x1sm2439046ljh.62.2021.02.09.03.56.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 03:56:56 -0800 (PST)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        linux-kernel@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG support
-In-Reply-To: <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210203165458.28717-1-vadym.kochan@plvision.eu> <20210203165458.28717-6-vadym.kochan@plvision.eu> <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <87v9b249oq.fsf@waldekranz.com> <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Date:   Tue, 09 Feb 2021 12:56:55 +0100
-Message-ID: <87pn194fp4.fsf@waldekranz.com>
+        Tue, 9 Feb 2021 06:59:06 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DZhFm2lTgz7hpn;
+        Tue,  9 Feb 2021 19:57:00 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.87) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
+ 19:58:15 +0800
+Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+To:     Greg KH <gregkh@linuxfoundation.org>
+References: <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <ED58431F-5972-47D1-BF50-93A20AD86C46@amacapital.net>
+ <2e6cf99f-beb6-9bef-1316-5e58fb0aa86e@hisilicon.com>
+ <YCJX6QFQ4hsNRrFj@kroah.com>
+CC:     Andy Lutomirski <luto@amacapital.net>,
+        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-api@vger.kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        <song.bao.hua@hisilicon.com>, <jgg@ziepe.ca>,
+        <kevin.tian@intel.com>, <jean-philippe@linaro.org>,
+        <eric.auger@redhat.com>, <liguozhu@hisilicon.com>,
+        <zhangfei.gao@linaro.org>, Sihang Chen <chensihang1@hisilicon.com>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <f73951ba-84be-b7f8-8c79-db84bc9081f3@hisilicon.com>
+Date:   Tue, 9 Feb 2021 19:58:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YCJX6QFQ4hsNRrFj@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.188.87]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 13:05, Jakub Kicinski <kuba@kernel.org> wrote:
-> On Mon, 08 Feb 2021 20:54:29 +0100 Tobias Waldekranz wrote:
->> On Thu, Feb 04, 2021 at 21:16, Jakub Kicinski <kuba@kernel.org> wrote:
->> > On Wed,  3 Feb 2021 18:54:56 +0200 Vadym Kochan wrote:  
->> >> From: Serhiy Boiko <serhiy.boiko@plvision.eu>
->> >> 
->> >> The following features are supported:
->> >> 
->> >>     - LAG basic operations
->> >>         - create/delete LAG
->> >>         - add/remove a member to LAG
->> >>         - enable/disable member in LAG
->> >>     - LAG Bridge support
->> >>     - LAG VLAN support
->> >>     - LAG FDB support
->> >> 
->> >> Limitations:
->> >> 
->> >>     - Only HASH lag tx type is supported
->> >>     - The Hash parameters are not configurable. They are applied
->> >>       during the LAG creation stage.
->> >>     - Enslaving a port to the LAG device that already has an
->> >>       upper device is not supported.  
->> >
->> > Tobias, Vladimir, you worked on LAG support recently, would you mind
->> > taking a look at this one?  
->> 
->> I took a quick look at it, and what I found left me very puzzled. I hope
->> you do not mind me asking a generic question about the policy around
->> switchdev drivers. If someone published a driver using something similar
->> to the following configuration flow:
->> 
->> iproute2  daemon(SDK)
->>    |        ^    |
->>    :        :    : user/kernel boundary
->>    v        |    |
->> netlink     |    |
->>    |        |    |
->>    v        |    |
->>  driver     |    |
->>    |        |    |
->>    '--------'    |
->>                  : kernel/hardware boundary
->>                  v
->>                 ASIC
->> 
->> My guess is that they would be (rightly IMO) told something along the
->> lines of "we do not accept drivers that are just shims for proprietary
->> SDKs".
->> 
->> But it seems like if that same someone has enough area to spare in their
->> ASIC to embed a CPU, it is perfectly fine to run that same SDK on it,
->> call it "firmware", and then push a shim driver into the kernel tree.
->> 
->> iproute2
->>    |
->>    :               user/kernel boundary
->>    v
->> netlink
->>    |
->>    v
->>  driver
->>    |
->>    |
->>    :               kernel/hardware boundary
->>    '-------------.
->>                  v
->>              daemon(SDK)
->>                  |
->>                  v
->>                 ASIC
->> 
->> What have we, the community, gained by this? In the old world, the
->> vendor usually at least had to ship me the SDK in source form. Having
->> seen the inside of some of those sausage factories, they are not the
->> kinds of code bases that I want at the bottom of my stack; even less so
->> in binary form where I am entirely at the vendor's mercy for bugfixes.
->> 
->> We are talking about a pure Ethernet fabric here, so there is no fig
->> leaf of "regulatory requirements" to hide behind, in contrast to WiFi
->> for example.
->> 
->> Is it the opinion of the netdev community that it is OK for vendors to
->> use this model?
->
-> I ask myself that question pretty much every day. Sadly I have no clear
-> answer.
+On 2021/2/9 17:37, Greg KH wrote:
+> On Tue, Feb 09, 2021 at 05:17:46PM +0800, Zhou Wang wrote:
+>> On 2021/2/8 6:02, Andy Lutomirski wrote:
+>>>
+>>>
+>>>> On Feb 7, 2021, at 12:31 AM, Zhou Wang <wangzhou1@hisilicon.com> wrote:
+>>>>
+>>>> ﻿SVA(share virtual address) offers a way for device to share process virtual
+>>>> address space safely, which makes more convenient for user space device
+>>>> driver coding. However, IO page faults may happen when doing DMA
+>>>> operations. As the latency of IO page fault is relatively big, DMA
+>>>> performance will be affected severely when there are IO page faults.
+>>>> From a long term view, DMA performance will be not stable.
+>>>>
+>>>> In high-performance I/O cases, accelerators might want to perform
+>>>> I/O on a memory without IO page faults which can result in dramatically
+>>>> increased latency. Current memory related APIs could not achieve this
+>>>> requirement, e.g. mlock can only avoid memory to swap to backup device,
+>>>> page migration can still trigger IO page fault.
+>>>>
+>>>> Various drivers working under traditional non-SVA mode are using
+>>>> their own specific ioctl to do pin. Such ioctl can be seen in v4l2,
+>>>> gpu, infiniband, media, vfio, etc. Drivers are usually doing dma
+>>>> mapping while doing pin.
+>>>>
+>>>> But, in SVA mode, pin could be a common need which isn't necessarily
+>>>> bound with any drivers, and neither is dma mapping needed by drivers
+>>>> since devices are using the virtual address of CPU. Thus, It is better
+>>>> to introduce a new common syscall for it.
+>>>>
+>>>> This patch leverages the design of userfaultfd and adds mempinfd for pin
+>>>> to avoid messing up mm_struct. A fd will be got by mempinfd, then user
+>>>> space can do pin/unpin pages by ioctls of this fd, all pinned pages under
+>>>> one file will be unpinned in file release process. Like pin page cases in
+>>>> other places, can_do_mlock is used to check permission and input
+>>>> parameters.
+>>>
+>>>
+>>> Can you document what the syscall does?
+>>
+>> Will add related document in Documentation/vm.
+> 
+> A manpage is always good, and will be required eventually :)
 
-Thank you for your candid answer, really appreciate it. I do not envy
-you one bit, making those decisions must be extremely hard.
+manpage is maintained in another repo. Do you mean add a manpage
+patch in this series?
 
-> Silicon is cheap, you can embed a reasonable ARM or Risc-V core in the
-> chip for the area and power draw comparable to one high speed serdes
-> lane.
->
-> The drivers landing in the kernel are increasingly meaningless. My day
-> job is working for a hyperscaler. Even though we have one of the most
-> capable kernel teams on the planet most of issues with HW we face
-> result in "something is wrong with the FW, let's call the vendor".
+Best,
+Zhou
 
-Right, and being a hyperscaler probably at least gets you some attention
-when you call your vendor. My day job is working for a nanoscaler, so my
-experience is that we must be prepared to solve all issues in-house; if
-we get any help from the vendor that is just a bonus.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+> .
+> 
 
-> And even when I say "drivers landing" it is an overstatement.
-> If you look at high speed anything these days the drivers cover
-> multiple generations of hardware, seems like ~5 years ago most
-> NIC vendors reached sufficient FW saturation to cover up differences
-> between HW generations.
->
-> At the same time some FW is necessary. Certain chip functions, are 
-> best driven by a micro-controller running a tight control loop. 
-
-I agree. But I still do not understand why vendors cling to the source
-of these like it was their wallet. That is the beauty of selling
-silicon; you can fully leverage OSS and still have a very straight
-forward business model.
-
-> The complexity of FW is a spectrum, from basic to Qualcomm. 
-> The problem is there is no way for us to know what FW is hiding
-> by just looking at the driver.
->
-> Where do we draw the line? 
-
-Yeah it is a very hard problem. In this particular case though, the
-vendor explicitly said that what they have done is compiled their
-existing SDK to run on the ASIC:
-
-https://lore.kernel.org/netdev/BN6PR18MB1587EB225C6B80BF35A44EBFBA5A0@BN6PR18MB1587.namprd18.prod.outlook.com
-
-So there is no reason that it could not be done as a proper driver.
-
-> Personally I'd really like to see us pushing back stronger.
-
-Hear, hear!
