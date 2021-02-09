@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16635315B7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A524315B79
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234435AbhBJAm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:42:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46330 "EHLO mail.kernel.org"
+        id S234268AbhBJAmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:42:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233588AbhBIVKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233530AbhBIVKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Feb 2021 16:10:07 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65EA964DAF;
-        Tue,  9 Feb 2021 21:09:11 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 16:09:09 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
-        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/6] tracing: More synthetic event error fixes
-Message-ID: <20210209160909.28cc8d3b@gandalf.local.home>
-In-Reply-To: <cover.1612208610.git.zanussi@kernel.org>
-References: <cover.1612208610.git.zanussi@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CE1664E7A;
+        Tue,  9 Feb 2021 21:09:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612904956;
+        bh=zPshNYYFXKSJS1wslEtEfsCT/O2+xCNYoNiqqWCdjSw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Zn5gTsXlvY3ytFe55Gfc5Gy5WlWm8USvW8m8E+qMDs11tp/aed3zUQpJSOV/by5d9
+         S3zNFpMkFiw4U9ILxWLAiNOr0fCpunyvp44zSdIWxJ3G/V0ynIkb2S9ZIHMOguLs+/
+         Hv39MLW2gAcEoNqTvjaHvz/ohh/MIWJhDMKsa2g9wxViLdXzR80A2+tIixuWGCsy0w
+         ZprtZZNyRWEayPZjPos4SiPD8aVE6qPrEbVyIYvCXLHpbTA28kxfEmAc/0r+ctCWxl
+         RlPB4aVxrWMHnNn+unF3b6cQkeCDj0Z2Abk02VYlgL6tFjjivRkWiZoH2tAMN9nSOZ
+         eDPt992E6ZVew==
+Date:   Tue, 9 Feb 2021 15:09:15 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2] PCI: Add Silicom Denmark vendor ID
+Message-ID: <20210209210915.GA512168@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210208150158.2877414-1-mhu@silicom.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  1 Feb 2021 13:48:10 -0600
-Tom Zanussi <zanussi@kernel.org> wrote:
-
-> Hi,
+On Mon, Feb 08, 2021 at 04:01:57PM +0100, Martin Hundebøll wrote:
+> Update pci_ids.h with the vendor ID for Silicom Denmark. The define is
+> going to be referenced in driver(s) for FPGA accelerated smart NICs.
 > 
-> This is v7 of the synthetic event error fix patchset.  This version
-> addresses the comments from v6:
+> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+
+Applied to pci/misc for v5.12 with reviewed-by from Krzysztof and Tom,
+thanks!
+
+> ---
 > 
->   - moved check_command() from '[PATCH v6 3/6] tracing: Update synth
->     command errors' to '[PATCH v6 2/6] tracing: Rework synthetic event
->     command parsing'.
+> Changes since v1:
+>  * Align commit message/shortlog with similar changes to pci_ids.h
 > 
->   - in __create_synth_event(), moved mutex_lock(&event_mutex) after
->     is_good_name() check and changed related error handling.
+>  include/linux/pci_ids.h | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
->   - simplified check_command() a bit by calling argv_free() sooner as
->     suggested by Steve.
+> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+> index f968fcda338e..c119f0eb41b6 100644
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@ -2589,6 +2589,8 @@
+>  
+>  #define PCI_VENDOR_ID_REDHAT		0x1b36
+>  
+> +#define PCI_VENDOR_ID_SILICOM_DENMARK	0x1c2c
+> +
+>  #define PCI_VENDOR_ID_AMAZON_ANNAPURNA_LABS	0x1c36
+>  
+>  #define PCI_VENDOR_ID_CIRCUITCO		0x1cc8
+> -- 
+> 2.29.2
 > 
->   - added Steve's comment about check_field_version() into that
->     function and added additional comments to the caller.
-> 
-
-After applying these, the following test fails:
-
- test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-
-It appears that:
-
-  echo 'myevent char str[];; int v' > synthetic_events
-
-doesn't error after these changes.
-
--- Steve
