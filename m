@@ -2,199 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EDE3148E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C8A3148F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhBIGcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 01:32:50 -0500
-Received: from mga07.intel.com ([134.134.136.100]:37171 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230234AbhBIG0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 01:26:02 -0500
-IronPort-SDR: 2EDz5ejhWfhq895zpPlcmzxP7QNIhc3Kge3QGbbjPsxad9CoF/dehigtXnLKfvE3HFyxq/J8/e
- 9S+YDJxzkE2w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="245904371"
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="245904371"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 22:24:49 -0800
-IronPort-SDR: OzSmKVPQmDdYTFOCQwxqh9yvNm9mnyjJj/GuMrQ95ot3ycn52Uoqlrphd6Ih0RupLpcsWsKYdi
- hSGn4+yp1kag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="398681981"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.149])
-  by orsmga007.jf.intel.com with ESMTP; 08 Feb 2021 22:24:47 -0800
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH V2 4/4] scsi: ufs-debugfs: Add user-defined exception event rate limiting
-Date:   Tue,  9 Feb 2021 08:24:37 +0200
-Message-Id: <20210209062437.6954-5-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210209062437.6954-1-adrian.hunter@intel.com>
-References: <20210209062437.6954-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S230473AbhBIGgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 01:36:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231180AbhBIGdn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 01:33:43 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F36DC061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 22:33:03 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id 8so9165093plc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 22:33:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1yfWtyKyTZvhHLdRd0Os+HgXY0IXloCRl6/1X6y49yY=;
+        b=I8sAs6STSD3viziWc9zjdGpRV2Ij0huuBcH4DTqpEpqza+Sa89+jcmi0lEr6QyU3Yc
+         L7rP/rH0/RfRBI83gH4R47SJOVgSrDffjCf/VWsaIa4tSZ3K01/puYHwXeA+73O+NMbj
+         Mayn3mIGAEUCdMMblgZt8JrLoIUQfDCTzzdMQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1yfWtyKyTZvhHLdRd0Os+HgXY0IXloCRl6/1X6y49yY=;
+        b=nWQCRSWr9fvdPgLgfpVKxIYojyQpu1UJwjN4ERID/RaWUal3eMwMpfn67C2XStbkUr
+         9pMOvv/YHxjDt2FxronKp8hQL1qBEvk003cndbm3y05YXP2jeojFnwyWGcA8YeHhIdv0
+         xNUDKvrgtpRFpA41CDwqO4/WIqwbqwD/Ovss94jY4rX9ah7jJYdH9bqNCOFpIk/jzMHQ
+         AnU0FJ75o0GS+0W3jy66cYbgHOaiOJo1xCYuR3y96v7kBS3x5gkOvElH1ReBHtE9NyeX
+         Z80mQZ4plxmKlMa4EsbKFnm4oN90jSBAdzwleJaCjbPlFz/n5K1K9Hc/0iJskVRxCtyu
+         An5w==
+X-Gm-Message-State: AOAM531sfSHRn5fMCHRCY1vHaiNV9126DYRvn8s5BS00f0OrzVlEvICA
+        pwdyLAsGWwWL0eLtUdR4xDSKozrd7WOCoA==
+X-Google-Smtp-Source: ABdhPJyIIQm7rCEr9M2o5Kchx9EM7M/SQ5MngTWW0b9+AAZxoCYQLqqyZoIWEprGE9VoKWVQyyZz7w==
+X-Received: by 2002:a17:90a:5a86:: with SMTP id n6mr2699031pji.65.1612852382477;
+        Mon, 08 Feb 2021 22:33:02 -0800 (PST)
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com. [209.85.215.175])
+        by smtp.gmail.com with ESMTPSA id t22sm22158188pgm.18.2021.02.08.22.33.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 22:33:02 -0800 (PST)
+Received: by mail-pg1-f175.google.com with SMTP id m2so5104772pgq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 22:33:02 -0800 (PST)
+X-Received: by 2002:a6b:144c:: with SMTP id 73mr18274991iou.69.1612852048986;
+ Mon, 08 Feb 2021 22:27:28 -0800 (PST)
+MIME-Version: 1.0
+References: <20210106034124.30560-1-tientzu@chromium.org> <d7043239-12cf-3636-4726-2e3b90917dc6@gmail.com>
+ <CALiNf28sU1VtGB7LeTXExkMwQiCeg8N5arqyEjw0CPZP72R4dg@mail.gmail.com>
+ <78871151-947d-b085-db03-0d0bd0b55632@gmail.com> <CALiNf29_PmLJTVLksSHp3NFAaL52idqehSMOtatJ=jaM2Muq1g@mail.gmail.com>
+ <23a09b9a-70fc-a7a8-f3ea-b0bfa60507f0@gmail.com> <CAAFQd5DX=AdaYSYQbxgnrYYojkM5q7EE_Qs-BYPOiNjcQWbN1A@mail.gmail.com>
+ <c7f7941d-b8bd-f0f3-4e40-b899a77188bf@gmail.com> <CAAFQd5AGm4U8hD4jHmw10S7MRS1-ZUSq7eGgoUifMMyfZgP2NA@mail.gmail.com>
+ <7fe99ad2-79a7-9c8b-65ce-ce8353e9d9bf@gmail.com>
+In-Reply-To: <7fe99ad2-79a7-9c8b-65ce-ce8353e9d9bf@gmail.com>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Tue, 9 Feb 2021 14:27:18 +0800
+X-Gmail-Original-Message-ID: <CALiNf2_rRufFoxNN=i0_LkVvw31tXetKasm3SrzYy7O8o-sfgg@mail.gmail.com>
+Message-ID: <CALiNf2_rRufFoxNN=i0_LkVvw31tXetKasm3SrzYy7O8o-sfgg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 0/6] Restricted DMA
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Tomasz Figa <tfiga@chromium.org>, Rob Herring <robh+dt@kernel.org>,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An enabled user-specified exception event that does not clear quickly will
-repeatedly cause the handler to run. That could unduly disturb the driver
-behaviour being tested or debugged. To prevent that add debugfs file
-exception_event_rate_limit_ms. When a exception event happens, it is
-disabled, and then after a period of time (default 20ms) the exception
-event is enabled again.
-
-Note that if the driver also has that exception event enabled, it will not
-be disabled.
-
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/scsi/ufs/ufs-debugfs.c | 44 ++++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufs-debugfs.h |  2 ++
- drivers/scsi/ufs/ufshcd.c      |  5 ++--
- drivers/scsi/ufs/ufshcd.h      |  4 ++++
- 4 files changed, 53 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufs-debugfs.c b/drivers/scsi/ufs/ufs-debugfs.c
-index 59729073b569..ced9ef4d7c78 100644
---- a/drivers/scsi/ufs/ufs-debugfs.c
-+++ b/drivers/scsi/ufs/ufs-debugfs.c
-@@ -88,15 +88,59 @@ static int ee_usr_mask_set(void *data, u64 val)
- 
- DEFINE_DEBUGFS_ATTRIBUTE(ee_usr_mask_fops, ee_usr_mask_get, ee_usr_mask_set, "%#llx\n");
- 
-+void ufs_debugfs_exception_event(struct ufs_hba *hba, u16 status)
-+{
-+	bool chgd = false;
-+	u16 ee_ctrl_mask;
-+	int err = 0;
-+
-+	if (!hba->debugfs_ee_rate_limit_ms || !status)
-+		return;
-+
-+	mutex_lock(&hba->ee_ctrl_mutex);
-+	ee_ctrl_mask = hba->ee_drv_mask | (hba->ee_usr_mask & ~status);
-+	chgd = ee_ctrl_mask != hba->ee_ctrl_mask;
-+	if (chgd) {
-+		err = __ufshcd_write_ee_control(hba, ee_ctrl_mask);
-+		if (err)
-+			dev_err(hba->dev, "%s: failed to write ee control %d\n",
-+				__func__, err);
-+	}
-+	mutex_unlock(&hba->ee_ctrl_mutex);
-+
-+	if (chgd && !err) {
-+		unsigned long delay = msecs_to_jiffies(hba->debugfs_ee_rate_limit_ms);
-+
-+		queue_delayed_work(system_freezable_wq, &hba->debugfs_ee_work, delay);
-+	}
-+}
-+
-+static void ufs_debugfs_restart_ee(struct work_struct *work)
-+{
-+	struct ufs_hba *hba = container_of(work, struct ufs_hba, debugfs_ee_work.work);
-+
-+	if (!hba->ee_usr_mask || pm_runtime_suspended(hba->dev) ||
-+	    ufs_debugfs_get_user_access(hba))
-+		return;
-+	ufshcd_write_ee_control(hba);
-+	ufs_debugfs_put_user_access(hba);
-+}
-+
- void ufs_debugfs_hba_init(struct ufs_hba *hba)
- {
-+	/* Set default exception event rate limit period to 20ms */
-+	hba->debugfs_ee_rate_limit_ms = 20;
-+	INIT_DELAYED_WORK(&hba->debugfs_ee_work, ufs_debugfs_restart_ee);
- 	hba->debugfs_root = debugfs_create_dir(dev_name(hba->dev), ufs_debugfs_root);
- 	debugfs_create_file("stats", 0400, hba->debugfs_root, hba, &ufs_debugfs_stats_fops);
- 	debugfs_create_file("exception_event_mask", 0600, hba->debugfs_root,
- 			    hba, &ee_usr_mask_fops);
-+	debugfs_create_u32("exception_event_rate_limit_ms", 0600, hba->debugfs_root,
-+			   &hba->debugfs_ee_rate_limit_ms);
- }
- 
- void ufs_debugfs_hba_exit(struct ufs_hba *hba)
- {
- 	debugfs_remove_recursive(hba->debugfs_root);
-+	cancel_delayed_work_sync(&hba->debugfs_ee_work);
- }
-diff --git a/drivers/scsi/ufs/ufs-debugfs.h b/drivers/scsi/ufs/ufs-debugfs.h
-index f35b39c4b4f5..3ca29d30460a 100644
---- a/drivers/scsi/ufs/ufs-debugfs.h
-+++ b/drivers/scsi/ufs/ufs-debugfs.h
-@@ -12,11 +12,13 @@ void __init ufs_debugfs_init(void);
- void __exit ufs_debugfs_exit(void);
- void ufs_debugfs_hba_init(struct ufs_hba *hba);
- void ufs_debugfs_hba_exit(struct ufs_hba *hba);
-+void ufs_debugfs_exception_event(struct ufs_hba *hba, u16 status);
- #else
- static inline void ufs_debugfs_init(void) {}
- static inline void ufs_debugfs_exit(void) {}
- static inline void ufs_debugfs_hba_init(struct ufs_hba *hba) {}
- static inline void ufs_debugfs_hba_exit(struct ufs_hba *hba) {}
-+static inline void ufs_debugfs_exception_event(struct ufs_hba *hba, u16 status) {}
- #endif
- 
- #endif
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 065a662e7886..42d9a96a5721 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5160,14 +5160,14 @@ static irqreturn_t ufshcd_transfer_req_compl(struct ufs_hba *hba)
- 	}
- }
- 
--static int __ufshcd_write_ee_control(struct ufs_hba *hba, u32 ee_ctrl_mask)
-+int __ufshcd_write_ee_control(struct ufs_hba *hba, u32 ee_ctrl_mask)
- {
- 	return ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_WRITE_ATTR,
- 				       QUERY_ATTR_IDN_EE_CONTROL, 0, 0,
- 				       &ee_ctrl_mask);
- }
- 
--static int ufshcd_write_ee_control(struct ufs_hba *hba)
-+int ufshcd_write_ee_control(struct ufs_hba *hba)
- {
- 	int err;
- 
-@@ -5635,6 +5635,7 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
- 	if (status & hba->ee_drv_mask & MASK_EE_URGENT_BKOPS)
- 		ufshcd_bkops_exception_event_handler(hba);
- 
-+	ufs_debugfs_exception_event(hba, status);
- out:
- 	ufshcd_scsi_unblock_requests(hba);
- 	/*
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 9b7413f35def..8a52b63ad4e6 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -843,6 +843,8 @@ struct ufs_hba {
- #endif
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_root;
-+	struct delayed_work debugfs_ee_work;
-+	u32 debugfs_ee_rate_limit_ms;
- #endif
- };
- 
-@@ -1288,6 +1290,8 @@ static inline u8 ufshcd_scsi_to_upiu_lun(unsigned int scsi_lun)
- int ufshcd_dump_regs(struct ufs_hba *hba, size_t offset, size_t len,
- 		     const char *prefix);
- 
-+int __ufshcd_write_ee_control(struct ufs_hba *hba, u32 ee_ctrl_mask);
-+int ufshcd_write_ee_control(struct ufs_hba *hba);
- int ufshcd_update_ee_control(struct ufs_hba *hba, u16 *mask, u16 *other_mask,
- 			     u16 set, u16 clr);
- 
--- 
-2.17.1
-
+v4 here: https://lore.kernel.org/patchwork/cover/1378113/
