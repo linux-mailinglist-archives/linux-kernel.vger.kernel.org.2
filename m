@@ -2,230 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EA5314CC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBD0314CE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbhBIKR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:17:59 -0500
-Received: from foss.arm.com ([217.140.110.172]:48822 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231303AbhBIKCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:02:53 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5907B13D5;
-        Tue,  9 Feb 2021 01:59:35 -0800 (PST)
-Received: from e121896.arm.com (unknown [10.57.44.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 468803F73B;
-        Tue,  9 Feb 2021 01:59:32 -0800 (PST)
-From:   James Clark <james.clark@arm.com>
-To:     coresight@lists.linaro.org
-Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        James Clark <james.clark@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 5/5] perf cs-etm: split decode by aux records.
-Date:   Tue,  9 Feb 2021 11:58:57 +0200
-Message-Id: <20210209095857.28419-6-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210209095857.28419-1-james.clark@arm.com>
-References: <20210209095857.28419-1-james.clark@arm.com>
+        id S231557AbhBIKYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:24:13 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:25200 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231357AbhBIKFr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:05:47 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119A3J5D013945;
+        Tue, 9 Feb 2021 11:04:51 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=Zj/l8ff2MIZmWBD3LcqbfDM/Ef46Cl4XOGv3ADgIyNc=;
+ b=PWfDQFPyU4OuTbue0ooJSSoXsO8IztiRA3CedEem0X8kEpS4ERcnDyauK8Nuqkr7SBUr
+ ftkj86/VVHQaExX6iXMvdWn4B5NpTIHWThwgZsdyAth8YzP+OV6HbmfK0O08UkeahC2s
+ 01SYWhpKizqsqraniYg0fdQpBIua/DNWPtLmTyGdGRC54zYrPzf1r2dWCZ3u4MA+yENs
+ oWZYujdLgg5Deo4Sfb7SkF/h4TR7qcuC1N8v0zkGNj+9niF/zVBK+U39uori/8Mb8McL
+ Zyg1uEP/Z3iKVOFhzOmaNQ105TeflBzQTsNbCPrjVKr8m3XMqgk+9shKO+jBb9W+f9w0 5w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36hr31frb9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 11:04:51 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 885E110002A;
+        Tue,  9 Feb 2021 11:04:49 +0100 (CET)
+Received: from Webmail-eu.st.com (gpxdag2node6.st.com [10.75.127.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 72E9B22453E;
+        Tue,  9 Feb 2021 11:04:49 +0100 (CET)
+Received: from localhost (10.75.127.122) by GPXDAG2NODE6.st.com (10.75.127.70)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb 2021 11:04:48
+ +0100
+From:   Valentin Caron <valentin.caron@foss.st.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Erwan Le Ray <erwan.leray@foss.st.com>,
+        <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dt-bindings: serial: stm32: add examples
+Date:   Tue, 9 Feb 2021 10:59:48 +0100
+Message-ID: <20210209095948.15889-1-valentin.caron@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.122]
+X-ClientProxiedBy: GPXDAG1NODE5.st.com (10.75.127.66) To GPXDAG2NODE6.st.com
+ (10.75.127.70)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-09_02:2021-02-09,2021-02-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The trace data between aux records is not continuous, so the decoder
-must be reset between each record to ensure that parsing happens
-correctly and without any early exits.
+From: Valentin Caron <valentin.caron@st.com>
 
-Signed-off-by: James Clark <james.clark@arm.com>
+Add examples to show more use cases :
+ - uart2 with hardware flow control
+ - uart4 without flow control
+
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
 ---
- tools/perf/util/cs-etm.c | 108 ++++++++++++++++++++++++---------------
- 1 file changed, 66 insertions(+), 42 deletions(-)
+ .../bindings/serial/st,stm32-uart.yaml        | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index 0aaa1f6d2822..b0f464a50e2f 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -95,6 +95,7 @@ struct cs_etm_queue {
- 	int aux_record_list_len;
- 	int aux_record_list_idx;
- 	struct perf_record_aux *aux_record_list;
-+	bool timestamp_found;
- };
- 
- /* RB tree for quick conversion between traceID and metadata pointers */
-@@ -788,6 +789,9 @@ static int cs_etm__seach_first_timestamp(struct cs_etm_queue *etmq,
- 
- 	etmq->aux_record_list[etmq->aux_record_list_len++] = *aux_record;
- 
-+	if (etmq->timestamp_found)
-+		return 0;
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 06d5f251ec88..3a4aab5d1862 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -82,6 +82,26 @@ additionalProperties: false
+ examples:
+   - |
+     #include <dt-bindings/clock/stm32mp1-clks.h>
 +
- 	/*
- 	 * We are under a CPU-wide trace scenario.  As such we need to know
- 	 * when the code that generated the traces started to execute so that
-@@ -796,56 +800,60 @@ static int cs_etm__seach_first_timestamp(struct cs_etm_queue *etmq,
- 	 * timestamp.  The timestamp is then added to the auxtrace min heap
- 	 * in order to know what nibble (of all the etmqs) to decode first.
- 	 */
--	while (1) {
--		/*
--		 * Fetch an aux_buffer from this etmq.  Bail if no more
--		 * blocks or an error has been encountered.
--		 */
--		ret = cs_etm__get_data_block(etmq);
--		if (ret <= 0)
--			return ret;
--
--		/*
--		 * Run decoder on the trace block.  The decoder will stop when
--		 * encountering a timestamp, a full packet queue or the end of
--		 * trace for that block.
--		 */
--		ret = cs_etm__decode_data_block(etmq);
-+	/*
-+	 * Fetch an aux_buffer from this etmq.  Bail if no more
-+	 * blocks or an error has been encountered.
-+	 */
-+	if (etmq->aux_record_list[etmq->aux_record_list_idx].aux_size <= 0) {
-+		etmq->aux_record_list_idx++;
-+		ret = cs_etm_decoder__reset(etmq->decoder);
- 		if (ret)
- 			return ret;
-+	}
-+	ret = cs_etm__get_data_block(etmq);
-+	if (ret <= 0)
-+		return ret;
- 
--		/*
--		 * Function cs_etm_decoder__do_{hard|soft}_timestamp() does all
--		 * the timestamp calculation for us.
--		 */
--		timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
-+	/*
-+	 * Run decoder on the trace block.  The decoder will stop when
-+	 * encountering a timestamp, a full packet queue or the end of
-+	 * trace for that block.
-+	 */
-+	ret = cs_etm__decode_data_block(etmq);
-+	if (ret)
-+		return ret;
- 
--		/* We found a timestamp, no need to continue. */
--		if (timestamp)
--			break;
-+	/*
-+	 * Function cs_etm_decoder__do_{hard|soft}_timestamp() does all
-+	 * the timestamp calculation for us.
-+	 */
-+	timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
- 
-+	/* We found a timestamp, no need to continue. */
-+	if (timestamp) {
- 		/*
--		 * We didn't find a timestamp so empty all the traceid packet
--		 * queues before looking for another timestamp packet, either
--		 * in the current data block or a new one.  Packets that were
--		 * just decoded are useless since no timestamp has been
--		 * associated with them.  As such simply discard them.
-+		 * We have a timestamp.  Add it to the min heap to reflect when
-+		 * instructions conveyed by the range packets of this traceID queue
-+		 * started to execute.  Once the same has been done for all the traceID
-+		 * queues of each etmq, redenring and decoding can start in
-+		 * chronological order.
-+		 *
-+		 * Note that packets decoded above are still in the traceID's packet
-+		 * queue and will be processed in cs_etm__process_queues().
- 		 */
--		cs_etm__clear_all_packet_queues(etmq);
-+		etmq->timestamp_found = true;
-+		cs_queue_nr = TO_CS_QUEUE_NR(etmq->queue_nr, trace_chan_id);
-+		return auxtrace_heap__add(&etmq->etm->heap, cs_queue_nr, timestamp);
- 	}
--
- 	/*
--	 * We have a timestamp.  Add it to the min heap to reflect when
--	 * instructions conveyed by the range packets of this traceID queue
--	 * started to execute.  Once the same has been done for all the traceID
--	 * queues of each etmq, redenring and decoding can start in
--	 * chronological order.
--	 *
--	 * Note that packets decoded above are still in the traceID's packet
--	 * queue and will be processed in cs_etm__process_queues().
-+	 * We didn't find a timestamp so empty all the traceid packet
-+	 * queues before looking for another timestamp packet, either
-+	 * in the current data block or a new one.  Packets that were
-+	 * just decoded are useless since no timestamp has been
-+	 * associated with them.  As such simply discard them.
- 	 */
--	cs_queue_nr = TO_CS_QUEUE_NR(etmq->queue_nr, trace_chan_id);
--	return auxtrace_heap__add(&etmq->etm->heap, cs_queue_nr, timestamp);
-+	cs_etm__clear_all_packet_queues(etmq);
-+	return 0;
- }
- 
- static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
-@@ -2012,6 +2020,15 @@ static int cs_etm__decode_data_block(struct cs_etm_queue *etmq)
- {
- 	int ret = 0;
- 	size_t processed = 0;
-+	u64 decode_size;
++    usart4: serial@40004c00 {
++      compatible = "st,stm32-uart";
++      reg = <0x40004c00 0x400>;
++      interrupts = <52>;
++      clocks = <&clk_pclk1>;
++      pinctrl-names = "default";
++      pinctrl-0 = <&pinctrl_usart4>;
++    };
 +
-+	if (etmq->aux_record_list_idx >= etmq->aux_record_list_len ||
-+		etmq->aux_record_list[etmq->aux_record_list_idx].aux_size > etmq->buf_len) {
-+		// Assume that aux records always equally divide up the aux buffer
-+		// so aux_size should never exceed the remaining buffer to decode.
-+		ret = -1;
-+		goto out;
-+	}
- 
- 	/*
- 	 * Packets are decoded and added to the decoder's packet queue
-@@ -2020,10 +2037,11 @@ static int cs_etm__decode_data_block(struct cs_etm_queue *etmq)
- 	 * operations that stop processing are a timestamp packet or a full
- 	 * decoder buffer queue.
- 	 */
-+	decode_size = etmq->aux_record_list[etmq->aux_record_list_idx].aux_size;
- 	ret = cs_etm_decoder__process_data_block(etmq->decoder,
- 						 etmq->offset,
- 						 &etmq->buf[etmq->buf_used],
--						 etmq->buf_len,
-+						 decode_size,
- 						 &processed);
- 	if (ret)
- 		goto out;
-@@ -2031,7 +2049,7 @@ static int cs_etm__decode_data_block(struct cs_etm_queue *etmq)
- 	etmq->offset += processed;
- 	etmq->buf_used += processed;
- 	etmq->buf_len -= processed;
--
-+	etmq->aux_record_list[etmq->aux_record_list_idx].aux_size -= processed;
- out:
- 	return ret;
- }
-@@ -2247,6 +2265,12 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
- 		 * if need be.
- 		 */
- refetch:
-+		if (etmq->aux_record_list[etmq->aux_record_list_idx].aux_size <= 0) {
-+			etmq->aux_record_list_idx++;
-+			ret = cs_etm_decoder__reset(etmq->decoder);
-+			if (ret)
-+				return ret;
-+		}
- 		ret = cs_etm__get_data_block(etmq);
- 		if (ret < 0)
- 			goto out;
++    usart2: serial@40004400 {
++      compatible = "st,stm32-uart";
++      reg = <0x40004400 0x400>;
++      interrupts = <38>;
++      clocks = <&clk_pclk1>;
++      st,hw-flow-ctrl;
++      pinctrl-names = "default";
++      pinctrl-0 = <&pinctrl_usart2 &pinctrl_usart2_rtscts>;
++    };
++
+     usart1: serial@40011000 {
+       compatible = "st,stm32-uart";
+       reg = <0x40011000 0x400>;
 -- 
-2.28.0
+2.17.1
 
