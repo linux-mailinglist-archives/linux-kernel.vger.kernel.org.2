@@ -2,90 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0CA315288
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515D531528F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbhBIPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:19:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52148 "EHLO
+        id S232323AbhBIPUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:20:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231907AbhBIPTT (ORCPT
+        with ESMTP id S232010AbhBIPU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:19:19 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C66C061786
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 07:18:38 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id o63so12651046pgo.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 07:18:38 -0800 (PST)
+        Tue, 9 Feb 2021 10:20:28 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0D5C061786;
+        Tue,  9 Feb 2021 07:19:47 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id q2so21088299eds.11;
+        Tue, 09 Feb 2021 07:19:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G8z+fvqZU/74uT7CiRrXKR/wJqmxTaOLawIi73kIU2s=;
-        b=bvzxM6Qp5iy3TfLx73dO4RRCu4N5Rm8b976Dn5V5qWohqQb959MwSJjcVBffKhRX/Q
-         BnEA2PW46pj53nh1l/5OHZ2Neki5RYnxUdrXY9mL/Q7agO8tGouC0UG78bZO6mIab+Wz
-         dcyg6zh6OPZjsKVch/bD8kEfLE37UlH/YRsKzaDjNyTqRUW+Kg/tv2AA0ylD8G1n3W9C
-         IAGN09ouhC7vuOiS7jidXbVu2s9Pu0JCqiugs5tJGDwIVjPO+o69qduZ4QBvmdjSZiw3
-         Q/6mLCNaxH6ltG8NUfKhZtRBnlQSIBsufkEXwpD9B7vti/GKv9jJIbXqI4F36wABQJmI
-         pdkg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yDRspLtelsFoyIiE67CZ331AeQ0bTafkmpJeD+VF4pk=;
+        b=JC4s8djGQOzrTzuHwrVoADW5gtCbGscI01OdB+nb3cGLnM1OnabpHsTB4VGRUVRdga
+         JNMJ8mq3YA4XkJA+tzZaKBd1xO3+Lbi+FFhrCB7IEaBArX9vrRQKkeFh/TJ23+zE9Qtd
+         6D8lEGRdcKZUc5cquC8tNOrm2wI2clWRQi+tNFnlOSCZG45E9v2okcr4ziS9yPT9swq6
+         /mnw0hQt6ez8JD0vMx+6/bMAe3nS27x74d+1dtcaDY1y71L9NLYyBN/nwX7MGwLyj+Q6
+         n08dKeGS6KK7WKwNjPCnFgPvYlerVxg2jrayPTvULWk584aWaVxW0Jd16m7/7jUZVbxL
+         xsYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G8z+fvqZU/74uT7CiRrXKR/wJqmxTaOLawIi73kIU2s=;
-        b=DnpQ+tk7IFtlthHJUZJGsWQC5lQhuume7qsHKXtzKqbfB2ysNcNZ83PgGb522hkY8z
-         Dp8WcQDq7fTcIwaMSYSrLNsWjGCz+8rXWlpsmOFC0oUVUlI3dffAeFi9HAqGZ1Hhqyhr
-         0+ONPv3GWYif9xZYqf8LnUo8qCLgsK4rj4i8YUJHwpbYhxPWJR3oc4YO7K8m9mW3tpy4
-         V/eaeh3E4q53SwY/LQaMsV441Y5vknB8z5j5ro3Na+Ox/nXyg5AWwNB9pQTvaoUQMIEP
-         9cDw8X5e/UFbuAXKr+C3eWeRgNXTVFagc/TkakDr0A1K+ttUmAEaLmEBZzIOPVFek8eM
-         5BKg==
-X-Gm-Message-State: AOAM530fUHuPDp3I0ewtAQR6qqmWW7reG7oT4M/+KFfiFHsdd6OjW11K
-        l30aD0daQrQxmA0QDV4FuuxNYCdGT2hBiOa+CHxqqQ==
-X-Google-Smtp-Source: ABdhPJyUpO5az9mRsnj7tNYDjgoANXZS0oHR0ipzH5VpgZN8puZOql1OUlXDQU3c+eu4BGYEkthmYuNMUb4i0NJys9o=
-X-Received: by 2002:a63:a0d:: with SMTP id 13mr10387786pgk.130.1612883918125;
- Tue, 09 Feb 2021 07:18:38 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yDRspLtelsFoyIiE67CZ331AeQ0bTafkmpJeD+VF4pk=;
+        b=NReClCNWLC0YvDmM2F1NcSi/t4t8bsQ3bcfB36PzvV2oxW0jYEenap/DHbGTuwxalL
+         SX5+BM0FvOPD5gM4Qsgi5MMGO/S1LcXuabDJKMKz8BitiCNqiL9DSmD65eS4vnnN6fp9
+         wGsRcduLPZZpV6k0Y77xwnMp1Exapn3uQETF4EuJOy1tMyUZEQeWMbCWG1fxQquDHTjI
+         drdSV/7Fwan4BNr83CAzRMD44Qo/KNGHRB+mDbE1SRBl6BTqAgVD5bAtxNQ7rS6XXqKM
+         lf8BeD8pxZyqTwyVdQyS/0qgka6mt0lrUzVvybnTinDQ4MX0HZjPSEDgBYZqBzzpN31D
+         RgCA==
+X-Gm-Message-State: AOAM531S7vO3AVl7EenwwB3gFXSODiMwWaxr3T43jpQFCqctlzWyZjDD
+        ImkZ3/b4+0I8GepJUW7GqGQ=
+X-Google-Smtp-Source: ABdhPJwzLundh0R6SURzETYbLmh0kFOoqfJRsXMB3w/pZ7Zwn+UIs+6xV2v2qd7WGvgRpczdct2WAw==
+X-Received: by 2002:a50:9d0b:: with SMTP id v11mr23859395ede.308.1612883986717;
+        Tue, 09 Feb 2021 07:19:46 -0800 (PST)
+Received: from localhost.localdomain (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id q2sm11686108edv.93.2021.02.09.07.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 07:19:45 -0800 (PST)
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
+Subject: [PATCH v2 net-next 00/11] Cleanup in brport flags switchdev offload for DSA
+Date:   Tue,  9 Feb 2021 17:19:25 +0200
+Message-Id: <20210209151936.97382-1-olteanv@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1612538932.git.andreyknvl@google.com> <068ab897dc5e73d4a8d7c919b84339216c2f99da.1612538932.git.andreyknvl@google.com>
- <20210208174247.GA1500382@infradead.org>
-In-Reply-To: <20210208174247.GA1500382@infradead.org>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 9 Feb 2021 16:18:26 +0100
-Message-ID: <CAAeHK+yn9ggY5FmwROMZU-q+hQEMgUcqTAo_v=_aFaVhfd6VHw@mail.gmail.com>
-Subject: Re: [PATCH v2 12/12] arm64: kasan: export MTE symbols for KASAN tests
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 6:42 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Fri, Feb 05, 2021 at 04:39:13PM +0100, Andrey Konovalov wrote:
-> > Export mte_enable_kernel_sync() and mte_set_report_once() to fix:
-> >
-> > ERROR: modpost: "mte_enable_kernel_sync" [lib/test_kasan.ko] undefined!
-> > ERROR: modpost: "mte_set_report_once" [lib/test_kasan.ko] undefined!
->
-> Please put this under an ifdef for the testing option that pull the
-> symbols in.
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Sure. I'll send this change as a fix-up patch instead of resending the
-whole series.
+The initial goal of this series was to have better support for
+standalone ports mode and multiple bridges on the DSA drivers like
+ocelot/felix and sja1105. Proper support for standalone mode requires
+disabling address learning, which in turn requires interaction with the
+switchdev notifier, which is actually where most of the patches are.
 
-Thanks!
+I also noticed that most of the drivers are actually talking either to
+firmware or SPI/MDIO connected devices from the brport flags switchdev
+attribute handler, so it makes sense to actually make it sleepable
+instead of atomic.
+
+Vladimir Oltean (11):
+  net: switchdev: propagate extack to port attributes
+  net: bridge: offload all port flags at once in br_setport
+  net: bridge: don't print in br_switchdev_set_port_flag
+  net: bridge: offload initial and final port flags through switchdev
+  net: dsa: stop setting initial and final brport flags
+  net: squash switchdev attributes PRE_BRIDGE_FLAGS and BRIDGE_FLAGS
+  net: dsa: kill .port_egress_floods overengineering
+  net: bridge: put SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS on the blocking
+    call chain
+  net: mscc: ocelot: use separate flooding PGID for broadcast
+  net: mscc: ocelot: offload bridge port flags to device
+  net: dsa: sja1105: offload bridge port flags to device
+
+ drivers/net/dsa/b53/b53_common.c              |  20 +-
+ drivers/net/dsa/mv88e6xxx/chip.c              |  21 +-
+ drivers/net/dsa/ocelot/felix.c                |  10 +
+ drivers/net/dsa/sja1105/sja1105.h             |   2 +
+ drivers/net/dsa/sja1105/sja1105_main.c        | 212 +++++++++++++++++-
+ drivers/net/dsa/sja1105/sja1105_spi.c         |   6 +
+ .../marvell/prestera/prestera_switchdev.c     |  32 +--
+ .../mellanox/mlxsw/spectrum_switchdev.c       |  31 +--
+ drivers/net/ethernet/mscc/ocelot.c            |  72 +++++-
+ drivers/net/ethernet/mscc/ocelot_net.c        |   7 +-
+ drivers/net/ethernet/rocker/rocker_main.c     |  24 +-
+ drivers/net/ethernet/ti/cpsw_switchdev.c      |  35 ++-
+ drivers/staging/fsl-dpaa2/ethsw/ethsw.c       |  43 ++--
+ include/linux/if_bridge.h                     |   3 +
+ include/net/dsa.h                             |   7 +-
+ include/net/switchdev.h                       |  14 +-
+ include/soc/mscc/ocelot.h                     |  18 +-
+ net/bridge/br_if.c                            |  21 +-
+ net/bridge/br_netlink.c                       | 160 ++++++-------
+ net/bridge/br_private.h                       |   6 +-
+ net/bridge/br_switchdev.c                     |  37 ++-
+ net/dsa/dsa_priv.h                            |   8 +-
+ net/dsa/port.c                                |  42 +---
+ net/dsa/slave.c                               |  10 +-
+ net/switchdev/switchdev.c                     |  11 +-
+ 25 files changed, 556 insertions(+), 296 deletions(-)
+
+-- 
+2.25.1
+
