@@ -2,96 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B808B315134
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E44E315142
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhBIOFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:05:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35764 "EHLO
+        id S231246AbhBIOLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhBIOD1 (ORCPT
+        with ESMTP id S230177AbhBIOLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:03:27 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98B7C061786;
-        Tue,  9 Feb 2021 06:02:46 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id w18so11955474pfu.9;
-        Tue, 09 Feb 2021 06:02:46 -0800 (PST)
+        Tue, 9 Feb 2021 09:11:39 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34477C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 06:10:57 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id o24so3596204wmh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 06:10:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M7fwo48BR7BGL4KzBqbK9xjqhYe8q/AqPBmEuMWxDm0=;
-        b=Tb4S5V12uFYeUtuGWpVkw3S6swm/1gPr3h2RgGxw1J+DWaFOD0vW8ed+VCOqJWE7Bv
-         6t/uE0FULjP8nUXRnKZTYz4677hYCvTCFT5QWNoPRKX4OnJ6tH6qKdNNYg1X27zgWww8
-         7IiR1HbosYhMmHxPDqSrSrfLCdbl4jFBraQ0J4pfTqF6bZewduwzZIVi5x479FaXK8HE
-         DfMItTsVRClu1S50pFnWVNiFfV3W6k3fYa/ffQyu9rVV7v1XayBm5G36DvuM+kM2qDo/
-         9GeF/8lBSRJV2lK7EQ1zYxW+XNMltCYrT6ImKUOBhAW3pcOPcZJKbHmDrg5yAdk/lcaw
-         a78Q==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DfSxnDPOrIUn/HEZGYbaIQRBPrxMTgYuKgiiI2/TE/Q=;
+        b=InGYPcFmDfAAcGsK5hS1o03zp9pfkUSJCwwxaGZZnUe9b+/hyS6sRwowut59cNAMqE
+         0N0fS5PdrlZv7DbzJK/yLBCVYsmAnJdoxEv8Vww4croVaZUXwSBESUWVT+dEvfSZd6AO
+         M85H/fWUYtbX8u2G5L5p44aoPUgEfO0+SNhQG17Av98oQ+z++ophkCTp+rELD3DFQ/Ap
+         UA10oZ3cxnK3QSZthW1TDyo3SH1KhYUtH9ppOmPUqDzmwdKiyEox9yfrfg8qL7zOsosU
+         Jf1CkcNhkkVCWp0t/itxgXtr7P8hADQ+XqVxgQVpgNx7X+Dosym/J5zUQ7N9j7AEKs4H
+         K1Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M7fwo48BR7BGL4KzBqbK9xjqhYe8q/AqPBmEuMWxDm0=;
-        b=WvGyS+n2NvLRRasauM3jXHeaJ+inVhVYqd8eocnSSUTIZ8aXs2Pwp7hKecRvWc5PmI
-         kLAykrgCXZiGd8vQpEt+XUS+V4blLdZ9lCVeUVp9GGnmg/KDHapy7r2bo0pq+IdWSsJ5
-         9nSW0pXWJjmXOhq56b1zpK9HeT7N9zFbBtMW1JFvVyBECvQVwMz1qcG7ylRpFuu6vbQZ
-         xcZ8fya5E7RAlzKQ173i/zTXkw7O/JHaBvbHlfQTpzEeya4M8OvG9Sc+P7GjT8fdf3Ld
-         /Ku25Av84ktJJoB/WoD13tMfpZivNMhcGwZYke7ws8796UAaDIL/BiZBO6+IVG6GN6/P
-         Z+WA==
-X-Gm-Message-State: AOAM530ViycgkE8f6x+B8ZD9BIxmov5whncFFTeyJuBSudXWI1ZpAcZd
-        hkYIB8DeBvKZrN4MNzovs7Tq7Mv7deP/vDrZp48=
-X-Google-Smtp-Source: ABdhPJw4E9l8wZjcvKJN7wYBkJNAWGHaL31GoddgBws/Hck0l6YSTZXTTt0kyOmkayPOjgiCoFnjVZbP7QQol5JG73o=
-X-Received: by 2002:a65:5ac9:: with SMTP id d9mr8572065pgt.74.1612879366390;
- Tue, 09 Feb 2021 06:02:46 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DfSxnDPOrIUn/HEZGYbaIQRBPrxMTgYuKgiiI2/TE/Q=;
+        b=reHNmsP335Uk9UhXwuRkwB7IgScWBEWRUCtKy8KSptSw04uV7LaYdt0x0MsGQsYomW
+         iH5pbHcCS4Y/yAyheVA0IFuqYUSfP4tPQbmHmOzYXlX/hYj5i15tLrOtYzzLDvs/iY9E
+         5FvBrXIFK/e9LVyAjn0Rra8VxyNfGkSrxWPLYdKxClnDTj5TgPypkclYYBEzztQ20kek
+         B/8b5XMuWIwPpE4vJ/tSD29KU3mTfQxQHqzjQlkgQnvIw3umprhBtPsR9KOV/ka6UJub
+         +eCzdV9DbSrKayOpsFcsuvZ0EdPv39XGVPb9m48YwCIWjPS8ZenTTRyRVhq/TxrwUBnw
+         Rp3w==
+X-Gm-Message-State: AOAM531nzQW93k2haoLbqZx0IXRyq18KMQlYKovPP/S7e5bqMuvCwkK9
+        /3nNN9wBMNBywfvfKHJ5o5FJLQ==
+X-Google-Smtp-Source: ABdhPJy/onNmAvIvp0kgs2Fa63R01Dh05mS6q/CTgKfnQyFVLGOy/NHfhJa3xA3lQZdMfoXFpOvI6Q==
+X-Received: by 2002:a1c:1fca:: with SMTP id f193mr3685023wmf.102.1612879855283;
+        Tue, 09 Feb 2021 06:10:55 -0800 (PST)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id a84sm4443695wme.12.2021.02.09.06.10.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 06:10:54 -0800 (PST)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     romain.perier@gmail.com, apais@linux.microsoft.com,
+        singhalsimran0@gmail.com, insafonov@gmail.com,
+        ross.schm.dev@gmail.com, foxhlchen@gmail.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8723bs: remove typedefs from rtl8723b_recv.h
+Date:   Tue,  9 Feb 2021 14:10:51 +0000
+Message-Id: <20210209141051.4739-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210209133110.7383-1-nikita.shubin@maquefel.me>
-In-Reply-To: <20210209133110.7383-1-nikita.shubin@maquefel.me>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 9 Feb 2021 16:02:30 +0200
-Message-ID: <CAHp75VfVZLU_4+-=XQjPRhktJTTyeGaUOZnJmNPryp028VnFrA@mail.gmail.com>
-Subject: Re: [PATCH v6 0/7] gpio: ep93xx: fixes series patch
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 3:31 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
->
-> v2:
-> https://lore.kernel.org/linux-gpio/20210127104617.1173-1-nikita.shubin@maquefel.me/
->
-> v3:
-> https://lore.kernel.org/linux-gpio/20210128122123.25341-1-nikita.shubin@maquefel.me/
->
-> v4:
-> https://lore.kernel.org/linux-gpio/20210205080507.16007-1-nikita.shubin@maquefel.me/
->
-> v5:
-> https://lore.kernel.org/linux-gpio/20210208085954.30050-1-nikita.shubin@maquefel.me/
->
-> v5->v6 changes
->
-> [PATCH v6 2/7] gpio: ep93xx: Fix single irqchip with multi gpiochips
-> Andy Shevchenko:
-> - add devm_kasprintf() return value check and move it out from
->   ep93xx_init_irq_chip()
-> - removed ep93xx_gpio_irq_chip
-> - pass girq->chip instead of removed ep93xx_gpio_irq_chip to
->   irq_set_chip_and_handler for port F
->
-> Tested all patches on ts7250 board.
+Remove typedefs from include/rtl8723b_recv.h and convert one usage in
+hal/rtl8723bs_recv.c to use the actual structure name in its pointer
+declaration. Fixes two checkpatch warnings.
 
-Thanks!
-For the entire series:
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c    | 2 +-
+ drivers/staging/rtl8723bs/include/rtl8723b_recv.h | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c b/drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c
+index 1fbf89cb72d0..2d15a5f7648d 100644
+--- a/drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c
++++ b/drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c
+@@ -24,7 +24,7 @@ static void update_recvframe_attrib(struct adapter *padapter,
+ {
+ 	struct rx_pkt_attrib *pattrib;
+ 	struct recv_stat report;
+-	PRXREPORT prxreport = (PRXREPORT)&report;
++	struct rxreport_8723b *prxreport = (struct rxreport_8723b *)&report;
+ 
+ 	report.rxdw0 = prxstat->rxdw0;
+ 	report.rxdw1 = prxstat->rxdw1;
+diff --git a/drivers/staging/rtl8723bs/include/rtl8723b_recv.h b/drivers/staging/rtl8723bs/include/rtl8723b_recv.h
+index fad6749af768..60a1df703c8e 100644
+--- a/drivers/staging/rtl8723bs/include/rtl8723b_recv.h
++++ b/drivers/staging/rtl8723bs/include/rtl8723b_recv.h
+@@ -9,7 +9,7 @@
+ 
+ #include <rtl8192c_recv.h>
+ 
+-typedef struct rxreport_8723b {
++struct rxreport_8723b {
+ 	/* DWORD 0 */
+ 	u32 pktlen:14;
+ 	u32 crc32:1;
+@@ -79,9 +79,9 @@ typedef struct rxreport_8723b {
+ 
+ 	/* DWORD 5 */
+ 	u32 tsfl;
+-} RXREPORT, *PRXREPORT;
++};
+ 
+-typedef struct phystatus_8723b {
++struct phystatus_8723b {
+ 	u32 rxgain_a:7;
+ 	u32 trsw_a:1;
+ 	u32 rxgain_b:7;
+@@ -123,7 +123,7 @@ typedef struct phystatus_8723b {
+ 	u32 anttrainen:1;
+ 	u32 antselb:1;
+ 	u32 antsel:1;
+-} PHYSTATUS, *PPHYSTATUS;
++};
+ 
+ s32 rtl8723bs_init_recv_priv(struct adapter *padapter);
+ void rtl8723bs_free_recv_priv(struct adapter *padapter);
 -- 
-With Best Regards,
-Andy Shevchenko
+2.29.2
+
