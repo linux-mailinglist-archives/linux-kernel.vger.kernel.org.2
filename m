@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83155315910
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF99315903
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhBIV5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:57:47 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:42385 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233513AbhBIT0F (ORCPT
+        id S234268AbhBIVyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 16:54:23 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:46087 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233678AbhBIT0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Feb 2021 14:26:05 -0500
-Received: by mail-ot1-f47.google.com with SMTP id q4so8889830otm.9;
-        Tue, 09 Feb 2021 11:22:25 -0800 (PST)
+Received: by mail-ot1-f54.google.com with SMTP id r21so10032786otk.13;
+        Tue, 09 Feb 2021 11:25:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=lCKSYN1S/BMKGDmQxUAKaGzQhreo9bxAbsTabQriVq0=;
-        b=f2zXT5ZULBvInFxM4HK4YVTSndaH8nce4GGxPp4Kj/qfvhHvtSZJoZ7AKwyJPTKwIm
-         3GXiSLNWDJ4zQB7tk0h+RGWdB1o8CX51NmEEUrcNvTR66VMB3yMUrZZIpypJUDiHhpga
-         QDaVyyY+elZh9PI9vpmCzteoth9nharMDDoX480v3UQQZID/qlsT/ekxZty1v8et6G53
-         Gj509WiNX97mOuJsSxwkdwkUoFtg0QF2Rm04/ZlqwbRe9IWtpScJsk9fbtdLWBZWCJj4
-         GTsy4Q5FVsujFKZxteRge5DfAMryKpPK9EMO+f+Z1R3d244vnqIQTqsCbuwTLS/vwPVT
-         sUXw==
-X-Gm-Message-State: AOAM533TNs/yd4bSCR/FRn2sQEJ8EABNXdw111jXs3b6quh1hA/U4WNi
-        UNph4+MmiGwomm6eCDJRew==
-X-Google-Smtp-Source: ABdhPJx6BPlprKBUC+xb/5qwJuVzUFsGtm4/bQfhNhu+3WhtLx7/Y0mh++ghwg3JoeR3YOsrjneqAg==
-X-Received: by 2002:a9d:ec7:: with SMTP id 65mr17119409otj.311.1612898517920;
-        Tue, 09 Feb 2021 11:21:57 -0800 (PST)
+        bh=RB4gkqk5AYTbNT/R8winPDN2DYkri5HM/6w5VZS/1Pk=;
+        b=YMTwOcU5sv5I3cd/W/2EedHbvaPDNbt2NN//Qy3xgL5gjbEmbsNGOvR8a90JfFKR0V
+         6cXURSBaTL2nsr3PWJfqPLdZwbYqseGrS49Imjmkh8R1i1u94LgWdRMtwZ0ISUIvkt7a
+         fVFB4ByoXinmsOcUtu5z5dG23dFS4ZWu3whYkpW/KC2EyFSNu03TnDSSoxcTbuFP0Fg+
+         VdKCWoW1Brxxsm+RGOAXrqTaxwuLl5ONsadx8Y5ci957FeA2FX/4fztKebXQCRFKd7qp
+         u+qshwrFEU4lIXudnuNJKiGG/D1w7+jtqFy/b2Y5ad6sCtrecwjUHPEQOZ48uyOL1bhb
+         z7Cw==
+X-Gm-Message-State: AOAM533XAZ0Drd91lrbifqn5vQ+SYKpsc2dPCEoc2MAKwT4+Ddgd1kh6
+        2WoCXbDIg6ea2DajBfOjnA==
+X-Google-Smtp-Source: ABdhPJxxvPhM+OSfew3karFAzcYa0P9ij1U8TKfB94l0ChQ1/miK/474/lYC8+KwAEutNmXE8OfWCw==
+X-Received: by 2002:a9d:42b:: with SMTP id 40mr17437092otc.248.1612898685319;
+        Tue, 09 Feb 2021 11:24:45 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l110sm4513430otc.25.2021.02.09.11.21.55
+        by smtp.gmail.com with ESMTPSA id n7sm668778otk.48.2021.02.09.11.24.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 11:21:56 -0800 (PST)
-Received: (nullmailer pid 4191780 invoked by uid 1000);
-        Tue, 09 Feb 2021 19:21:55 -0000
-Date:   Tue, 9 Feb 2021 13:21:55 -0600
+        Tue, 09 Feb 2021 11:24:44 -0800 (PST)
+Received: (nullmailer pid 3216 invoked by uid 1000);
+        Tue, 09 Feb 2021 19:24:43 -0000
+Date:   Tue, 9 Feb 2021 13:24:43 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] thermal: qcom: tsens-v0_1: Add support for MDM9607
-Message-ID: <20210209192155.GA4191751@robh.at.kernel.org>
-References: <20210127182506.52311-1-konrad.dybcio@somainline.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>, devicetree@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: mailbox: omap: Update binding for AM64x
+ SoCs
+Message-ID: <20210209192443.GA4192418@robh.at.kernel.org>
+References: <20210127195600.23501-1-s-anna@ti.com>
+ <20210127195600.23501-2-s-anna@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127182506.52311-1-konrad.dybcio@somainline.org>
+In-Reply-To: <20210127195600.23501-2-s-anna@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 19:25:05 +0100, Konrad Dybcio wrote:
-> MDM9607 TSENS IP is very similar to the one of MSM8916, with
-> minor adjustments to various tuning values.
+On Wed, Jan 27, 2021 at 01:55:59PM -0600, Suman Anna wrote:
+> Update the existing OMAP Mailbox binding to include the info for
+> AM64x SoCs. There are some minor IP integration differences between
+> the AM64x SoCs and the previous AM65x and J721E SoC families.
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Suman Anna <s-anna@ti.com>
 > ---
-> Changes since v1:
-> - Move the defines so as not to cut into the middle of 8974 regs
+>  .../bindings/mailbox/omap-mailbox.txt         | 22 +++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 > 
->  .../bindings/thermal/qcom-tsens.yaml          |   2 +
->  drivers/thermal/qcom/tsens-v0_1.c             | 100 +++++++++++++++++-
->  drivers/thermal/qcom/tsens.c                  |   3 +
->  drivers/thermal/qcom/tsens.h                  |   2 +-
->  4 files changed, 105 insertions(+), 2 deletions(-)
-> 
+> diff --git a/Documentation/devicetree/bindings/mailbox/omap-mailbox.txt b/Documentation/devicetree/bindings/mailbox/omap-mailbox.txt
+> index 5fe80c1c19fc..c993d1a5c14a 100644
+> --- a/Documentation/devicetree/bindings/mailbox/omap-mailbox.txt
+> +++ b/Documentation/devicetree/bindings/mailbox/omap-mailbox.txt
+> @@ -28,6 +28,9 @@ SoCs has each of these instances form a cluster and combine multiple clusters
+>  into a single IP block present within the Main NavSS. The interrupt lines from
+>  all these clusters are multiplexed and routed to different processor subsystems
+>  over a limited number of common interrupt output lines of an Interrupt Router.
+> +The AM64x SoCS also uses a single IP block comprising of multiple clusters,
+> +but the number of clusters are smaller, and the interrupt output lines are
+> +connected directly to various processors.
+>  
+>  Mailbox Device Node:
+>  ====================
+> @@ -42,6 +45,7 @@ Required properties:
+>  			    "ti,omap4-mailbox" for OMAP44xx, OMAP54xx, AM33xx,
+>  						   AM43xx and DRA7xx SoCs
+>  			    "ti,am654-mailbox" for K3 AM65x and J721E SoCs
+> +			    "ti,am64-mailbox" for K3 AM64x SoCs
+>  - reg:			Contains the mailbox register address range (base
+>  			address and length)
+>  - interrupts:		Contains the interrupt information for the mailbox
+> @@ -178,3 +182,21 @@ mailbox: mailbox@480c8000 {
+>  		};
+>  	};
+>  };
+> +
+> +4. /* AM64x */
+> +&cbass_main {
 
-Acked-by: Rob Herring <robh@kernel.org>
+Please don't add examples for just a new compatible.
+
+> +	mailbox0_cluster2: mailbox@29020000 {
+> +		compatible = "ti,am64-mailbox";
+> +		reg = <0x00 0x29020000 0x00 0x200>;
+> +		interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>,
+> +		             <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+> +		#mbox-cells = <1>;
+> +		ti,mbox-num-users = <4>;
+> +		ti,mbox-num-fifos = <16>;
+> +
+> +		mbox_main_r5fss0_core0: mbox-main-r5fss0-core0 {
+> +			ti,mbox-rx = <0 0 2>;
+> +			ti,mbox-tx = <1 0 2>;
+> +		};
+> +	};
+> +};
+> -- 
+> 2.29.2
+> 
