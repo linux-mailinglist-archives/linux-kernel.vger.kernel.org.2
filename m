@@ -2,93 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8727314A74
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6508E314A75
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhBIIha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:37:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26205 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229853AbhBIIgR (ORCPT
+        id S229935AbhBIIhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:37:46 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:6404 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229851AbhBIIgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:36:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612859691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fe4ZuBAI8UR2Grpm24wf3/ZXc6K9G/enuqlpW1OLE/I=;
-        b=TcnhKw+ZQ2WM3CR0zjqHChrC/tJ0IYcIzVgttsTNSFh90NsOJ9BNv/MuNOw/xbWBKJ/aEk
-        /f14Gm/LkGDydu502i0HlMYi0aaPuqqDj+L7MJRELa4bPins1J71CchYPM/LlAak5qopH4
-        p4qJYls+RmQwp8ZX62bd5uqGQI+6YiI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-100-yHP3zjVZMfuVwAZF47x7bA-1; Tue, 09 Feb 2021 03:34:49 -0500
-X-MC-Unique: yHP3zjVZMfuVwAZF47x7bA-1
-Received: by mail-ed1-f70.google.com with SMTP id z8so5990160edr.18
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 00:34:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fe4ZuBAI8UR2Grpm24wf3/ZXc6K9G/enuqlpW1OLE/I=;
-        b=FuGGNm5Az/pDGTDbJ/x94hY80uFH8IvNKO9nE8Dgaugyhfrl00UhakywZIhwdznB7H
-         blstah3dP70z8B5nRrom4EumL1nyJDX2GTf0wjTVOn1yLxB5y/8Zvl76CC4EXa0tPVR5
-         Bw3E8lRvbdyYFO4tFg26WwbPMa363A+SH03mObrMhGKih1Za78GF331rZVdm5+uOr/uv
-         V8w4NTxZSuzTXrUJs3WF2Kj4ILrrHXMQofksidrRiECsx6C9nS5AB3dEgDuIF/sceXnh
-         5Nhu+WLhnCVD5rkp4Aad4K+jB8PYx2W18+Vh1/5DBp5Uj0jZ/6fsg+S6lSM5UOq6iAQ0
-         2P7g==
-X-Gm-Message-State: AOAM531p7/3U4U6JZRTTDJ39h4PmUnjMrd3rOhIa/uZUhOYFDCn5zTlj
-        1TWnYXuijc1rSMxvUTpsZ+FWs1VIiqegZDcElDSa5rn4M4tcj8q0l7CY8tfzTgLgA4bMcwhRZKf
-        1bTUBCdLuepilzupDGMEARsSf
-X-Received: by 2002:a05:6402:3514:: with SMTP id b20mr21125066edd.100.1612859688148;
-        Tue, 09 Feb 2021 00:34:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyCocNc5d8+bB5h5tf5dga0/EVJinBR9/sgmnfDLrauffuqpHPMZ1Ax7y+H18jBiWecZ3qFfw==
-X-Received: by 2002:a05:6402:3514:: with SMTP id b20mr21125052edd.100.1612859687959;
-        Tue, 09 Feb 2021 00:34:47 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id r11sm11077625edt.58.2021.02.09.00.34.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 00:34:47 -0800 (PST)
-Date:   Tue, 9 Feb 2021 09:34:44 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Andy King <acking@vmware.com>, Wei Liu <wei.liu@kernel.org>,
-        Dmitry Torokhov <dtor@vmware.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        George Zhang <georgezhang@vmware.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH net] vsock: fix locking in vsock_shutdown()
-Message-ID: <20210209083444.nmi73z2zcunqvche@steredhat>
-References: <20210208144307.83628-1-sgarzare@redhat.com>
- <20210208150431.jtgeyyf5qackl62b@steredhat>
- <20210208111200.467241da@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Tue, 9 Feb 2021 03:36:43 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1198XXQO027458;
+        Tue, 9 Feb 2021 09:35:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : subject : to
+ : cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=Xf58I3oc4vS+xAXxH1lhtadhjXCgDFhO3xI+liBkPK0=;
+ b=ib56VHmZDsGHys78o8FHk6nGMU47CmKDSx1mNBVu6sE9mtHc2lM6nd44t/2xyjbNZjs3
+ qDRg1Z0chYkU9V1obPQ0l2KZnT0s/FUUAZbWZiA9AM2ZepDy0Brc4OKBvdlHegrqR0sU
+ n7k99jeE3/wmJIhHgCXQ8KszDJ4Wms1/vKx5jSUlUz50MOPGcLqOlJW2BjIqx4FOJcel
+ mEGIdJqHaNERxIyeAF6+tRmdWurB1fGlggokP/7jNKWRZKg89Lj6zy5LMOeMBMpwqhT2
+ B3+a47WSiEhAMT9cbG5xJgmghnCLOJqz2nuket9vXYmK3d9H0ABDLkaiNalxpPM7ZKgW Ug== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36hrf778q4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 09:35:49 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3D1C610002A;
+        Tue,  9 Feb 2021 09:35:49 +0100 (CET)
+Received: from Webmail-eu.st.com (gpxdag2node6.st.com [10.75.127.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 24E1621CA78;
+        Tue,  9 Feb 2021 09:35:49 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.116) by GPXDAG2NODE6.st.com
+ (10.75.127.70) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
+ 2021 09:35:48 +0100
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Subject: Re: [PATCH v2] remoteproc: stm32: improve debug using dev_err_probe
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20201217144125.12903-1-arnaud.pouliquen@foss.st.com>
+Message-ID: <9d12a62c-ba39-4943-d9c4-9e3da8ef947f@foss.st.com>
+Date:   Tue, 9 Feb 2021 09:35:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210208111200.467241da@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201217144125.12903-1-arnaud.pouliquen@foss.st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.116]
+X-ClientProxiedBy: GPXDAG1NODE6.st.com (10.75.127.67) To GPXDAG2NODE6.st.com
+ (10.75.127.70)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-09_02:2021-02-09,2021-02-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 11:12:00AM -0800, Jakub Kicinski wrote:
->On Mon, 8 Feb 2021 16:04:31 +0100 Stefano Garzarella wrote:
->> What do you suggest?
->>
->> I did it this way because by modifying only the caller, we would have a
->> nested lock.
->>
->> This way instead we are sure that if we backport this patch, we don't
->> forget to touch hvs_shutdown() as well.
->
->I'm not a socket expert but the approach seems reasonable to me.
->
+Hi,
 
-Thanks, I'll send v2 fixing the warning.
+Gentle reminder, in case it has been forgotten.
 
-Stefano
+Thanks,
+Arnaud
 
+On 12/17/20 3:41 PM, Arnaud Pouliquen wrote:
+> From: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
+> 
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error.
+> The benefit is that DEFER issue will be logged in the devices_deferred
+> debugfs file.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
+> ---
+> V1 to V2: As suggested by Ahmad Fatoum use dev_err_probe to deal with
+>           deferred cases
+> 
+> V1: https://www.spinics.net/lists/kernel/msg3765884.html
+> ---
+> 
+>  drivers/remoteproc/stm32_rproc.c | 23 +++++++++++++----------
+>  1 file changed, 13 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index a180aeae9675..ccb3c14a0023 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -370,8 +370,13 @@ static int stm32_rproc_request_mbox(struct rproc *rproc)
+>  
+>  		ddata->mb[i].chan = mbox_request_channel_byname(cl, name);
+>  		if (IS_ERR(ddata->mb[i].chan)) {
+> -			if (PTR_ERR(ddata->mb[i].chan) == -EPROBE_DEFER)
+> +			if (PTR_ERR(ddata->mb[i].chan) == -EPROBE_DEFER) {
+> +				dev_err_probe(dev->parent,
+> +					      PTR_ERR(ddata->mb[i].chan),
+> +					      "failed to request mailbox %s\n",
+> +					      name);
+>  				goto err_probe;
+> +			}
+>  			dev_warn(dev, "cannot get %s mbox\n", name);
+>  			ddata->mb[i].chan = NULL;
+>  		}
+> @@ -592,15 +597,14 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
+>  
+>  	irq = platform_get_irq(pdev, 0);
+>  	if (irq == -EPROBE_DEFER)
+> -		return -EPROBE_DEFER;
+> +		return dev_err_probe(dev, irq, "failed to get interrupt\n");
+>  
+>  	if (irq > 0) {
+>  		err = devm_request_irq(dev, irq, stm32_rproc_wdg, 0,
+>  				       dev_name(dev), pdev);
+> -		if (err) {
+> -			dev_err(dev, "failed to request wdg irq\n");
+> -			return err;
+> -		}
+> +		if (err)
+> +			return dev_err_probe(dev, err,
+> +					     "failed to request wdg irq\n");
+>  
+>  		ddata->wdg_irq = irq;
+>  
+> @@ -613,10 +617,9 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
+>  	}
+>  
+>  	ddata->rst = devm_reset_control_get_by_index(dev, 0);
+> -	if (IS_ERR(ddata->rst)) {
+> -		dev_err(dev, "failed to get mcu reset\n");
+> -		return PTR_ERR(ddata->rst);
+> -	}
+> +	if (IS_ERR(ddata->rst))
+> +		return dev_err_probe(dev, PTR_ERR(ddata->rst),
+> +				     "failed to get mcu_reset\n");
+>  
+>  	/*
+>  	 * if platform is secured the hold boot bit must be written by
+> 
