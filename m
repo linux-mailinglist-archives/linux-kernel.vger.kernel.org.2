@@ -2,140 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BD4315C3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFD2315C33
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhBJB2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:28:55 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34368 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234247AbhBIXPt (ORCPT
+        id S234872AbhBJB1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:27:07 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:33981 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234773AbhBIXI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 18:15:49 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 119N5jkk085795;
-        Tue, 9 Feb 2021 17:05:45 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612911945;
-        bh=qU877wM+24hVWpXuypQ2pX4RaadwVT/D3XrUZ7E+Jqw=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Jyc0tZC8sStoITibAXiVSZ4wIwD10etZz8fPb74lNT7pQ9ioBB7xrxbxtsGD+CqHT
-         oX2JrcYnyWsZbWflU+oj3TCv3G31F55q40iHCsBh5kpE0pc6qIOL4jI6kinAGzJrCN
-         nOmsCszFIgxx/Xf8kmuV7YMNy8pDHSxzZ1ttCDhc=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 119N5jTB050120
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Feb 2021 17:05:45 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Feb
- 2021 17:05:45 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 9 Feb 2021 17:05:44 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 119N5iDT072550;
-        Tue, 9 Feb 2021 17:05:44 -0600
-From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-To:     <sre@kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Subject: [PATCH 2/2] power: supply: bq25980: Moves properties from battery node 
-Date:   Tue, 9 Feb 2021 17:05:27 -0600
-Message-ID: <20210209230527.26712-2-r-rivera-matos@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210209230527.26712-1-r-rivera-matos@ti.com>
-References: <20210209230527.26712-1-r-rivera-matos@ti.com>
+        Tue, 9 Feb 2021 18:08:59 -0500
+Received: by mail-ot1-f41.google.com with SMTP id y11so116589otq.1;
+        Tue, 09 Feb 2021 15:08:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=flen+Q6BhqZvu5yUFGM567078RbssUkrmoOHzn1oN0E=;
+        b=QN+qnROo6+hpHjnHK3QRCYoMDXDGYhJkCpWx8n8rZT21XMdK0LBl27wprmc0cmDlzN
+         1aZrQeEzgVjVM9PfzmHHUW320qqpwc7HLqiLwY3UgS8fh7GHHU1F8shtHPBKoUwhO6wB
+         l90ujsBEOFNf5n/498JfPwbHQJoOUy9OjCT7Wi+q+n1OlzdYeTG/S01OSXhS1vrkiZLa
+         HC5nrPETWFfzK/W4kvgezVOL4jL0tnAt03msMPiCA1+gHqkruIuxqVMz4qc7fpnkEs3i
+         vLaP/sJFWfrH5eOSKPw+mvzJgHXkeYm7jSiH1dLtFtSh4vtHggGFq/WRjcSgx3HPitWm
+         ed4g==
+X-Gm-Message-State: AOAM532uxxPgnwt7mpiFw0m8muRhhOYtJRiLeXw/rkfo62JVq3RnRlJG
+        39qCTNBiWQIKRPBoY6n/Lmu28tygqw==
+X-Google-Smtp-Source: ABdhPJwxZgOwm8lVG9U+3qOA69ztcXYK2Xdl9Kak65G3myAMYyBpwcpvQOGW8ZWCWZU9eSatBKyzZg==
+X-Received: by 2002:a9d:61d1:: with SMTP id h17mr6253otk.113.1612912056647;
+        Tue, 09 Feb 2021 15:07:36 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id g66sm2454otg.54.2021.02.09.15.07.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 15:07:35 -0800 (PST)
+Received: (nullmailer pid 398853 invoked by uid 1000);
+        Tue, 09 Feb 2021 23:07:34 -0000
+Date:   Tue, 9 Feb 2021 17:07:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH 14/18] dt-bindings: interrupt-controller: Add DT bindings
+ for apple-aic
+Message-ID: <20210209230734.GA387609@robh.at.kernel.org>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-15-marcan@marcan.st>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204203951.52105-15-marcan@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix: exposes POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT on the
+On Fri, Feb 05, 2021 at 05:39:47AM +0900, Hector Martin wrote:
+> AIC is the Apple Interrupt Controller found on Apple ARM SoCs, such as
+> the M1.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  .../interrupt-controller/AAPL,aic.yaml        | 88 +++++++++++++++++++
+>  MAINTAINERS                                   |  2 +
+>  .../interrupt-controller/apple-aic.h          | 14 +++
+>  3 files changed, 104 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
+>  create mode 100644 include/dt-bindings/interrupt-controller/apple-aic.h
+> 
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml b/Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
+> new file mode 100644
+> index 000000000000..7e119614275a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
+> @@ -0,0 +1,88 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/AAPL,aic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Apple Interrupt Controller
+> +
+> +maintainers:
+> +  - Hector Martin <marcan@marcan.st>
+> +
+> +description: |
+> +  The Apple Interrupt Controller is a simple interrupt controller present on
+> +  Apple ARM SoC platforms, including various iPhone and iPad devices and the
+> +  "Apple Silicon" M1 Macs.
+> +
+> +  It provides the following features:
+> +
+> +  - Level-triggered hardware IRQs wired to SoC blocks
+> +    - Single mask bit per IRQ
+> +    - Per-IRQ affinity setting
+> +    - Automatic masking on event delivery (auto-ack)
+> +    - Software triggering (ORed with hw line)
+> +  - 2 per-CPU IPIs (meant as "self" and "other", but they are interchangeable
+> +    if not symmetric)
+> +  - Automatic prioritization (single event/ack register per CPU, lower IRQs =
+> +    higher priority)
+> +  - Automatic masking on ack
+> +  - Default "this CPU" register view and explicit per-CPU views
+> +
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    contains:
+> +      enum:
+> +        - AAPL,aic
+> +        - AAPL,m1-aic
 
-charger node
+Instead of 'contains', this should be:
 
-fix: exposes POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE on the
+items:
+  - const: AAPL,m1-aic
+  - const: AAPL,aic
 
-charger node
+With 'apple' instead...
 
-fix: eliminates unnecessary set_property for the battery node
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    const: 3
+> +    description: |
+> +      The 1st cell contains the interrupt type:
+> +        - 0: Hardware IRQ
+> +        - 1: FIQ
+> +        - 2: IPI
+> +
+> +      The 2nd cell contains the interrupt number.
+> +        - HW IRQs: interrupt number
+> +        - FIQs:
+> +          - 0: physical timer
+> +          - 1: virtual timer
+> +        - IPIs:
+> +          - 0: normal/"other" IPI (used interanlly for virtual IPIs)
+> +          - 1: self IPI (normally unused)
+> +
+> +      The 3rd cell contains the interrupt flags. This is normally
+> +      IRQ_TYPE_LEVEL_HIGH (4).
+> +
+> +  reg:
+> +    description: |
+> +      Specifies base physical address and size of the AIC registers.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - '#interrupt-cells'
+> +  - interrupt-controller
+> +  - reg
+> +
+> +unevaluatedProperties: false
 
-Fixes: 5069185fc18e ("power: supply: bq25980: Add support for the BQ259xx family")
-Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
----
- drivers/power/supply/bq25980_charger.c | 40 ++++++++------------------
- 1 file changed, 12 insertions(+), 28 deletions(-)
+additionalProperties: false
 
-diff --git a/drivers/power/supply/bq25980_charger.c b/drivers/power/supply/bq25980_charger.c
-index 7c489a9e8877..ac73e2c19238 100644
---- a/drivers/power/supply/bq25980_charger.c
-+++ b/drivers/power/supply/bq25980_charger.c
-@@ -641,33 +641,6 @@ static int bq25980_get_state(struct bq25980_device *bq,
- 	return 0;
- }
- 
--static int bq25980_set_battery_property(struct power_supply *psy,
--				enum power_supply_property psp,
--				const union power_supply_propval *val)
--{
--	struct bq25980_device *bq = power_supply_get_drvdata(psy);
--	int ret = 0;
--
--	switch (psp) {
--	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
--		ret = bq25980_set_const_charge_curr(bq, val->intval);
--		if (ret)
--			return ret;
--		break;
--
--	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
--		ret = bq25980_set_const_charge_volt(bq, val->intval);
--		if (ret)
--			return ret;
--		break;
--
--	default:
--		return -EINVAL;
--	}
--
--	return ret;
--}
--
- static int bq25980_get_battery_property(struct power_supply *psy,
- 				enum power_supply_property psp,
- 				union power_supply_propval *val)
-@@ -736,6 +709,18 @@ static int bq25980_set_charger_property(struct power_supply *psy,
- 			return ret;
- 		break;
- 
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
-+		ret = bq25980_set_const_charge_curr(bq, val->intval);
-+		if (ret)
-+			return ret;
-+		break;
-+
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
-+		ret = bq25980_set_const_charge_volt(bq, val->intval);
-+		if (ret)
-+			return ret;
-+		break;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -957,7 +942,6 @@ static struct power_supply_desc bq25980_battery_desc = {
- 	.name			= "bq25980-battery",
- 	.type			= POWER_SUPPLY_TYPE_BATTERY,
- 	.get_property		= bq25980_get_battery_property,
--	.set_property		= bq25980_set_battery_property,
- 	.properties		= bq25980_battery_props,
- 	.num_properties		= ARRAY_SIZE(bq25980_battery_props),
- 	.property_is_writeable	= bq25980_property_is_writeable,
--- 
-2.30.0
+(stricter and actually has support implemented)
 
+> +
+> +examples:
+> +  - |
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        aic: interrupt-controller@23b100000 {
+> +            compatible = "AAPL,m1-aic", "AAPL,aic";
+> +            #interrupt-cells = <3>;
+> +            interrupt-controller;
+> +            reg = <0x2 0x3b100000 0x0 0x8000>;
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 91a7b33834ac..f3d4661731c8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1634,6 +1634,8 @@ B:	https://github.com/AsahiLinux/linux/issues
+>  C:	irc://chat.freenode.net/asahi-dev
+>  T:	git https://github.com/AsahiLinux/linux.git
+>  F:	Documentation/devicetree/bindings/arm/AAPL.yaml
+> +F:	Documentation/devicetree/bindings/interrupt-controller/AAPL,aic.yaml
+> +F:	include/dt-bindings/interrupt-controller/apple-aic.h
+>  
+>  ARM/ARTPEC MACHINE SUPPORT
+>  M:	Jesper Nilsson <jesper.nilsson@axis.com>
+> diff --git a/include/dt-bindings/interrupt-controller/apple-aic.h b/include/dt-bindings/interrupt-controller/apple-aic.h
+> new file mode 100644
+> index 000000000000..f54dc0cd6e9a
+> --- /dev/null
+> +++ b/include/dt-bindings/interrupt-controller/apple-aic.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
+> +#ifndef _DT_BINDINGS_INTERRUPT_CONTROLLER_APPLE_AIC_H
+> +#define _DT_BINDINGS_INTERRUPT_CONTROLLER_APPLE_AIC_H
+> +
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +#define AIC_IRQ 0
+> +#define AIC_FIQ 1
+> +#define AIC_IPI 2
+> +
+> +#define AIC_TMR_PHYS 0
+> +#define AIC_TMR_VIRT 1
+> +
+> +#endif
+> -- 
+> 2.30.0
+> 
