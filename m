@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF552314619
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 891E831461E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbhBICSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:18:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhBICSB (ORCPT
+        id S229984AbhBICTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 21:19:15 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12530 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhBICTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:18:01 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D958C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 18:17:21 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id g15so11491789pgu.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 18:17:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ik38m4IjcFLsdwQI0HpvP26246DHILYTF24fdWKk08Y=;
-        b=tmMXxTh/2F4edrYUOQigogZEfG5mpJje42FVNrAslBy3B7onZFqw4ocOUlaG2fNwd/
-         +5ZJNj8MfAnBydeOq72rMwSS2QzbDL4LpemyLMO8XMFdMX8C1fpzTF/bKGAKPFk4Nnwd
-         edQTzzW7oSw/4a/pOZFxiACvHSwJEw8eJlrew7YXdCmwNJzngd9WJywg60zvBmDOXjo0
-         yO2dylbodn/vn/hmpw4Gi+jlwQ8S9doYzqS8aJVkZXaWkasJb54ng2WU2Bx8slSCLUWo
-         NI+SgbYsoYZROOJ9x7uP7Yx9AQhaAFi+TNqnj2GHqOik+o2bsT5JLNV1KIRhPXKW7xsx
-         fBOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ik38m4IjcFLsdwQI0HpvP26246DHILYTF24fdWKk08Y=;
-        b=E8G2ywKDY/dtuXMBZPreye1Vzt34m3D4XR/qaGIQQF+hFB+V39vwtgLm78XjIRmhwj
-         vddzeHvHqiG/3awEdLwQ7McvBE/gg16VWgWAp/CxKocz7mY5ACRuA2wGSVeW4KFq6KFZ
-         0nbI0LsoNwGfGGTf/pnp1PXS4kCwziCh/LL+OSsE/AfaZkCrUmUmaEdQ2okYHX/yhX2Y
-         ze7YiLyVLFNK9mX2/n8RCx6dN/m5X9hwW8MqDjhhBqJRXGaovZNx9xoDKx3PYjsMAgAb
-         lPsUL7qd8GB5ZRIs+n0lV5sDBGclSaiQFP+WJ9bp0ydiR8UfhplL9i4jWKRPK09Z6MtX
-         6Atw==
-X-Gm-Message-State: AOAM532TK00BY4P09wdyGltnH29VQ85/AY8DXQMr5jWBAMYf5okFHp9P
-        XFiQpFrSdqdhXQg+TxJIpPg=
-X-Google-Smtp-Source: ABdhPJxjL9WDOGhDfIffN21IoL/wEQMHKr+tIuSkIgIywtF5AzY7qGhAPWaMxSD+iTRMl84d0pNHZw==
-X-Received: by 2002:a63:4521:: with SMTP id s33mr17345380pga.16.1612837040883;
-        Mon, 08 Feb 2021 18:17:20 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id h70sm18654407pfe.70.2021.02.08.18.17.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 18:17:19 -0800 (PST)
-Date:   Tue, 9 Feb 2021 11:17:18 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, "J. Avila" <elavila@google.com>
-Subject: Re: [PATCH] printk: avoid prb_first_valid_seq() where possible
-Message-ID: <YCHwruhEJ7yi/tK3@jagdpanzerIV.localdomain>
-References: <20210205141728.18117-1-john.ogness@linutronix.de>
+        Mon, 8 Feb 2021 21:19:13 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZRN85CyLzMWSj;
+        Tue,  9 Feb 2021 10:16:40 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
+ 10:18:17 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH v2] mm/hugetlb: use helper huge_page_size() to get hugepage size
+Date:   Mon, 8 Feb 2021 21:18:03 -0500
+Message-ID: <20210209021803.49211-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205141728.18117-1-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/02/05 15:23), John Ogness wrote:
-> If message sizes average larger than expected (more than 32
-> characters), the data_ring will wrap before the desc_ring. Once the
-> data_ring wraps, it will start invalidating descriptors. These
-> invalid descriptors hang around until they are eventually recycled
-> when the desc_ring wraps. Readers do not care about invalid
-> descriptors, but they still need to iterate past them. If the
-> average message size is much larger than 32 characters, then there
-> will be many invalid descriptors preceding the valid descriptors.
-> 
-> The function prb_first_valid_seq() always begins at the oldest
-> descriptor and searches for the first valid descriptor. This can
-> be rather expensive for the above scenario. And, in fact, because
-> of its heavy usage in /dev/kmsg, there have been reports of long
-> delays and even RCU stalls.
-> 
-> For code that does not need to search from the oldest record,
-> replace prb_first_valid_seq() usage with prb_read_valid_*()
-> functions, which provide a start sequence number to search from.
-> 
-> Fixes: 896fbe20b4e2333fb55 ("printk: use the lockless ringbuffer")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Reported-by: J. Avila <elavila@google.com>
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+We can use helper huge_page_size() to get the hugepage size directly to
+simplify the code slightly.
 
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+v1 -> v2
+	change huge_page_size(h) >> 10 to huge_page_size(h) / SZ_1K
+	collect Reviewed-by tag
+---
+ mm/hugetlb.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 18628f8dbfb0..06719fdf9fd6 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3199,7 +3199,7 @@ void __init hugetlb_add_hstate(unsigned int order)
+ 	BUG_ON(order == 0);
+ 	h = &hstates[hugetlb_max_hstate++];
+ 	h->order = order;
+-	h->mask = ~((1ULL << (order + PAGE_SHIFT)) - 1);
++	h->mask = ~(huge_page_size(h) - 1);
+ 	for (i = 0; i < MAX_NUMNODES; ++i)
+ 		INIT_LIST_HEAD(&h->hugepage_freelists[i]);
+ 	INIT_LIST_HEAD(&h->hugepage_activelist);
+@@ -3474,7 +3474,7 @@ void hugetlb_report_meminfo(struct seq_file *m)
+ 	for_each_hstate(h) {
+ 		unsigned long count = h->nr_huge_pages;
+ 
+-		total += (PAGE_SIZE << huge_page_order(h)) * count;
++		total += huge_page_size(h) * count;
+ 
+ 		if (h == &default_hstate)
+ 			seq_printf(m,
+@@ -3487,10 +3487,10 @@ void hugetlb_report_meminfo(struct seq_file *m)
+ 				   h->free_huge_pages,
+ 				   h->resv_huge_pages,
+ 				   h->surplus_huge_pages,
+-				   (PAGE_SIZE << huge_page_order(h)) / 1024);
++				   huge_page_size(h) / SZ_1K);
+ 	}
+ 
+-	seq_printf(m, "Hugetlb:        %8lu kB\n", total / 1024);
++	seq_printf(m, "Hugetlb:        %8lu kB\n", total / SZ_1K);
+ }
+ 
+ int hugetlb_report_node_meminfo(char *buf, int len, int nid)
+@@ -3524,7 +3524,7 @@ void hugetlb_show_meminfo(void)
+ 				h->nr_huge_pages_node[nid],
+ 				h->free_huge_pages_node[nid],
+ 				h->surplus_huge_pages_node[nid],
+-				1UL << (huge_page_order(h) + PAGE_SHIFT - 10));
++				huge_page_size(h) / SZ_1K);
+ }
+ 
+ void hugetlb_report_usage(struct seq_file *m, struct mm_struct *mm)
+@@ -3647,9 +3647,7 @@ static int hugetlb_vm_op_split(struct vm_area_struct *vma, unsigned long addr)
+ 
+ static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
+ {
+-	struct hstate *hstate = hstate_vma(vma);
+-
+-	return 1UL << huge_page_shift(hstate);
++	return huge_page_size(hstate_vma(vma));
+ }
+ 
+ /*
+-- 
+2.19.1
 
-
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 5a95c688621f..035aae771ea1 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -735,9 +735,9 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
->  		logbuf_lock_irq();
->  	}
->  
-> -	if (user->seq < prb_first_valid_seq(prb)) {
-> +	if (r->info->seq != user->seq) {
->  		/* our last seen message is gone, return error and reset */
-> -		user->seq = prb_first_valid_seq(prb);
-
-Yeah, I can see how this pattern can be expensive, it would have been
-less obvious and harder to spot had it been something like this
-
-	valid_seq = prb_first_valid_seq(prb);
-	if (user->seq < valid_seq) {
-		user->seq = valid_seq;
-		...
-	}
-
-Great analysis, John.
-
-I wonder if Intel test robot measures all test execution times; I do
-recall "we saw N% performance improvement after patch P" emails, but
-not sure if all of the tests are being tracked.
-
-	-ss
