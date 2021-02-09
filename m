@@ -2,83 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15961314D86
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64645314D90
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbhBIKv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:51:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231991AbhBIKnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:43:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD73164E9D;
-        Tue,  9 Feb 2021 10:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612867368;
-        bh=TA/pHjkDqLjfz1vZW6rtl/vtGdQ6haGdbzMOlvKPKHU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KSqfDyPG3Ai+rYKOBNaVMTBqn9NWR1sOhe1PFk7CC/BIMTD40icN98iUMI3CBUYAW
-         NzCRbC4CnqUh7LfYosF+vw24HwXhOc9o0ClmU6xS/jlNZDIj5SzuBTvx+SiY3uv/JN
-         D5NQwm/q1iPP8YFe8D9/CE7Khz3UB967zwYiFCH5/6mb2lrO8qTR3D+2IkDS9PhZ/3
-         3TND63naflVo5C0ETCosdVnqP0PeLZm/uX93tzmriF5AvRL9W0TzGeQTvnARTebkuD
-         RHmxQlcJeL9lgANf7mDUyoJwCpM4WtgEduJtOm85SLJs6Q0ThEBz/tD35LzKb09jkE
-         HuVnjm3BMjvvQ==
-Date:   Tue, 9 Feb 2021 11:42:45 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] i2c: mv64xxx: Fix check for missing clock
-Message-ID: <20210209104245.GC9698@ninjato>
-References: <20210208061922.10073-1-samuel@sholland.org>
+        id S232132AbhBIKwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:52:37 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3432 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232069AbhBIKoH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:44:07 -0500
+Received: from dggeme768-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DZfb31hTjz5QhJ;
+        Tue,  9 Feb 2021 18:41:51 +0800 (CST)
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggeme768-chm.china.huawei.com (10.3.19.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 9 Feb 2021 18:43:13 +0800
+Subject: Re: [RFC PATCH 1/2] KVM: selftests: Add a macro to get string of
+ vm_mem_backing_src_type
+To:     Sean Christopherson <seanjc@google.com>
+CC:     <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Marc Zyngier <maz@kernel.org>, Ben Gardon <bgardon@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210208090841.333724-1-wangyanan55@huawei.com>
+ <20210208090841.333724-2-wangyanan55@huawei.com>
+ <YCF4QCPtSEFg3Qv4@google.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <ce64f38e-a26e-584d-b9ac-21856713a4c2@huawei.com>
+Date:   Tue, 9 Feb 2021 18:43:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yLVHuoLXiP9kZBkt"
-Content-Disposition: inline
-In-Reply-To: <20210208061922.10073-1-samuel@sholland.org>
+In-Reply-To: <YCF4QCPtSEFg3Qv4@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
+ dggeme768-chm.china.huawei.com (10.3.19.114)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sean,
 
---yLVHuoLXiP9kZBkt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2021/2/9 1:43, Sean Christopherson wrote:
+> On Mon, Feb 08, 2021, Yanan Wang wrote:
+>> Add a macro to get string of the backing source memory type, so that
+>> application can add choices for source types in the help() function,
+>> and users can specify which type to use for testing.
+>>
+>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>> ---
+>>   tools/testing/selftests/kvm/include/kvm_util.h | 3 +++
+>>   tools/testing/selftests/kvm/lib/kvm_util.c     | 8 ++++++++
+>>   2 files changed, 11 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+>> index 5cbb861525ed..f5fc29dc9ee6 100644
+>> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+>> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+>> @@ -69,7 +69,9 @@ enum vm_guest_mode {
+>>   #define PTES_PER_MIN_PAGE	ptes_per_page(MIN_PAGE_SIZE)
+>>   
+>>   #define vm_guest_mode_string(m) vm_guest_mode_string[m]
+>> +#define vm_mem_backing_src_type_string(s) vm_mem_backing_src_type_string[s]
+> Oof, I see this is just following vm_guest_mode_string.  IMO, defining the
+> string to look like a function is unnecessary and rather mean.
+>
+>>   extern const char * const vm_guest_mode_string[];
+>> +extern const char * const vm_mem_backing_src_type_string[];
+>>   
+>>   struct vm_guest_mode_params {
+>>   	unsigned int pa_bits;
+>> @@ -83,6 +85,7 @@ enum vm_mem_backing_src_type {
+>>   	VM_MEM_SRC_ANONYMOUS,
+>>   	VM_MEM_SRC_ANONYMOUS_THP,
+>>   	VM_MEM_SRC_ANONYMOUS_HUGETLB,
+>> +	NUM_VM_BACKING_SRC_TYPES,
+>>   };
+>>   
+>>   int kvm_check_cap(long cap);
+>> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+>> index fa5a90e6c6f0..a9b651c7f866 100644
+>> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+>> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+>> @@ -165,6 +165,14 @@ const struct vm_guest_mode_params vm_guest_mode_params[] = {
+>>   _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params) == NUM_VM_MODES,
+>>   	       "Missing new mode params?");
+>>   
+>> +const char * const vm_mem_backing_src_type_string[] = {
+> A shorter name would be nice, though I don't have a good suggestion.
+>
+>> +	"VM_MEM_SRC_ANONYMOUS        ",
+>> +	"VM_MEM_SRC_ANONYMOUS_THP    ",
+>> +	"VM_MEM_SRC_ANONYMOUS_HUGETLB",
+> It'd be more robust to explicitly assign indices, that way tweaks to
+> vm_mem_backing_src_type won't cause silent breakage.  Ditto for the existing
+> vm_guest_mode_string.
+>
+> E.g. I think something like this would work (completely untested)
+>
+> const char *vm_guest_mode_string(int i)
+> {
+> 	static const char *const strings[] = {
+> 		[VM_MODE_P52V48_4K]	= "PA-bits:52,  VA-bits:48,  4K pages",
+> 		[VM_MODE_P52V48_64K]	= "PA-bits:52,  VA-bits:48, 64K pages",
+> 		[VM_MODE_P48V48_4K]	= "PA-bits:48,  VA-bits:48,  4K pages",
+> 		[VM_MODE_P48V48_64K]	= "PA-bits:48,  VA-bits:48, 64K pages",
+> 		[VM_MODE_P40V48_4K]	= "PA-bits:40,  VA-bits:48,  4K pages",
+> 		[VM_MODE_P40V48_64K]	= "PA-bits:40,  VA-bits:48, 64K pages",
+> 		[VM_MODE_PXXV48_4K]	= "PA-bits:ANY, VA-bits:48,  4K pages",
+> 	};
+>
+> 	_Static_assert(sizeof(strings)/sizeof(char *) == NUM_VM_MODES,
+> 		       "Missing new mode strings?");
+>
+> 	TEST_ASSERT(i < NUM_VM_MODES);
+>
+> 	return strings[i];
+> }
 
-On Mon, Feb 08, 2021 at 12:19:22AM -0600, Samuel Holland wrote:
-> In commit e5c02cf54154 ("i2c: mv64xxx: Add runtime PM support"), error
-> pointers to optional clocks were replaced by NULL to simplify the resume
-> callback implementation. However, that commit missed that the IS_ERR
-> check in mv64xxx_of_config should be replaced with a NULL check. As a
-> result, the check always passes, even for an invalid device tree.
->=20
-> Fixes: e5c02cf54154 ("i2c: mv64xxx: Add runtime PM support")
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+I think this is better. Moving these three staffs together into a single 
+function and check the indices here is more reasonable.
 
-Added "RPM" to $subject and applied to for-next, thanks!
+Thanks,
 
+Yanan.
 
---yLVHuoLXiP9kZBkt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAiZyUACgkQFA3kzBSg
-KbbUaw/+OHlG7eRvAJA0QRLPXAacUa1cEwYAa0cgd2OslnydlFmGYGrVr4OME0w1
-fhICkSuY+SI89RDmMkFpEpAvm5jOCloT8mOIWY2YQwOTHb7w1Fmog/ZClQqHCD4s
-A7SO8IB4CcG/Ys8JIlPJqiM88qYoeInn0+g4mdvZDr/ygLIj7RBoRri7ptbmRKTT
-0qujmpnX/fZfGjVNu4fm523up+VjnMtxCmcme+vPpmPxBRgKgGcoU4kcZT/FQjcY
-PtQV4v6Fv330BJFfYAmN3MSlxdU6kZEeD3fyKJMQCe3UDktKKWkilA9aqyN2j/FW
-B9ufNhVSS0urpcuuOml2jEr+z7vU1mkz7RU5pqWv81+mV3ruCUHJbHVWlNQwDu6b
-5E7HEMDFVsMlChbb+q24f4tTAwhcVAPtK+Jsh/MVR3EEWvNJICpt03WTs16JiCIt
-F5/xXSxSPkOekDPgGLL0JyFUzl1dWZeYSdcXzhVEHybuHmK1i8+FD7gjmOX8qHeE
-UsS92xZHZIAhtexS52T25ZbuB4VUEcSQ/USKrWxQ1hLayLqYMfFTN4qYd055qy5m
-05YWuUQCsDAVBnPqEqPbYiKfsZHlob8gY9K6Rgp/Wqx1Nq8wD+LlwN2Pit+TdULG
-mxjYro1LxYuyPtcBHivUDIsXM/jSeRRDL1+Zxqs8mK81NJWgIXI=
-=3Bhm
------END PGP SIGNATURE-----
-
---yLVHuoLXiP9kZBkt--
+>
+>> +};
+>> +_Static_assert(sizeof(vm_mem_backing_src_type_string)/sizeof(char *) == NUM_VM_BACKING_SRC_TYPES,
+>> +	       "Missing new source type strings?");
+>> +
+>>   /*
+>>    * VM Create
+>>    *
+>> -- 
+>> 2.23.0
+>>
+> .
