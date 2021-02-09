@@ -2,186 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB652315459
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E30315460
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233058AbhBIQum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:50:42 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63666 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232898AbhBIQs0 (ORCPT
+        id S233141AbhBIQvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:51:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233085AbhBIQum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:48:26 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119GXN7B001042;
-        Tue, 9 Feb 2021 08:47:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=miDT6Z7nMImlOJzcvLcJbEYxvCqwAh0gV2LOJo3HZAg=;
- b=Xc2rXK0NTA/B6A+uAL4BuRbL5EpDA26Kzb/nvzhSggLJ4IdyTN2uw28Y/U3Q4TD09Q1j
- KDH+VDpT22XSF8H6UI5xGgsFWElGUW9bKPMUfWNlYnDYPDliLACy1WaBvS3fnIB8EKIr
- RRkqSnFxw5vtWw7tFuEhuY7l++yMT0YyAcs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36jy96s5bg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 09 Feb 2021 08:47:41 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Feb 2021 08:47:40 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HAnrSakPOImMaldX7FJs3isz7StHDHF8ekYa+CkyH2BODDwesDR1tQ4kbMKdFAGUzsFLQ10HBQbbiNQYxE1zI0w+TZHdI+hPnzWKNT45gsmqDBbRQ35BD83+zYKvGhlxIszsrgb4NRMoJNjt4AZXPdKhC6MxQ3F0n8sO6dOdL/NCucfEcPCHFdDQHvIRElc6dTxnA33jjj3r0HpwftROCnot4JLtkC1Os23GfBNLAzzmqtlzk4ZhwvQgupmbl4LSjAqMwoUE/ZhXzWzG+20hOkWscYR8d8ODkFkeS2p/kIjFlZe7ZQdaADwjvEeTnPCwAndYQLp/FNZvR3P/LR5k0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=miDT6Z7nMImlOJzcvLcJbEYxvCqwAh0gV2LOJo3HZAg=;
- b=GOwX46aH7vE4g3xwKvdLteNMxScIe7tek13Sze0GSy7Y+Z6k2PBRLSdPg5vdCxnOmkOMDtQ+q7sz1/OJFnXgVdDqGWlx7llceyaLjCMjw8b87Q5StmBTxfzIL+JE8HuG9bFAOj8vn02P/vf1yXeYQ4xX/EgcNBvoLbh9vu/v5fMgJ0ZWDXSrVjUrUaHarsnCJi3oRK6GEdTxLamzcdgD17X/GigiKm7mYYyfaTFcbqBS+A5ZWj2q+3MFcKdK7XerqcX0UNKPBXfD/lnrhYPpKC6CUs7LF5ZawbI9J2oVuGWuy75p2Dvj0cTHbW/Yn5NHgv3+QBfbSuXxKGPUDLNtzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=miDT6Z7nMImlOJzcvLcJbEYxvCqwAh0gV2LOJo3HZAg=;
- b=gM+8C9t6tVZ/4qdrqmpx6HV9WzpjRsH7X6RxdSFa+WK6nmabfCuSgMpCOYHYyO3L6VA6PSIteWtceLp7OFNbeLHlTy3XL78CGD3g9wdZET9PRgEkxB5uFt5k4SiqVUjXxv3aF3rnOK0w785DdDDjpGHe25dJL1V1ujxSyHKHXeI=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2327.namprd15.prod.outlook.com (2603:10b6:a02:8e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Tue, 9 Feb
- 2021 16:47:39 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::c97:58e4:ee9:1dc0]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::c97:58e4:ee9:1dc0%7]) with mapi id 15.20.3763.019; Tue, 9 Feb 2021
- 16:47:39 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Joe Perches <joe@perches.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Andy Whitcroft <apw@canonical.com>
-Subject: Re: [PATCH] checkpatch: do not apply "initialise globals to 0" check
- to BPF progs
-Thread-Topic: [PATCH] checkpatch: do not apply "initialise globals to 0" check
- to BPF progs
-Thread-Index: AQHW/nPGy4icMgAVSk6JfHOFnzEOp6pPXQgAgACsnAA=
-Date:   Tue, 9 Feb 2021 16:47:38 +0000
-Message-ID: <A8E7D663-AD18-49CE-BC3A-E0D7AC9049FD@fb.com>
-References: <20210208234002.3294265-1-songliubraving@fb.com>
- <87ec5ac2e1a41000da9a7158491a22f83295c1a6.camel@perches.com>
-In-Reply-To: <87ec5ac2e1a41000da9a7158491a22f83295c1a6.camel@perches.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.60.0.2.21)
-authentication-results: perches.com; dkim=none (message not signed)
- header.d=none;perches.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:3a2]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cf4f1e5b-9142-4579-09f1-08d8cd1a693d
-x-ms-traffictypediagnostic: BYAPR15MB2327:
-x-microsoft-antispam-prvs: <BYAPR15MB2327BFFFA4EA0D4AF00EDEFDB38E9@BYAPR15MB2327.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Tot3Sh6FeeJA5NY2bSaQVj26zL1Zt/uhUAgsMIn20BC0WiET6jXmNsP2YRi2DOSl7RaY8hdzr+TfEqDWzKbh7t+oAcJKheGJ3f4jTt05yOoqjdjWujpJ23pi2879uZAMjRiH2KgSgwhhvtWpz4/kc27w3biZcCumffy7ZpCZSgBmGorlKiA5IpcTbtXBlCRXcXglUj/g/2lEtbI2LmMroIZXFJL8r6DwXu9kdfJGKeg3Zy4EE34xajBZeEhj5KmncXoapQOXxTpKGd/LXmuQn+CRgAEwxU2k6vEyT/WscewYaC/07tSjbvbHLnmEbPQiLqJQ9PbL/EY6+tn8Bc4GOWLci3pWUPzIVBDx2RlglN8XfYfY68iGke4dfXI6XbjTBzjQN+8IXax9sk3dcorKhNL6eoaQw+Gi2NWn4P/vHVj3X20QrhRJyE9iMjHLiJZGpOVb2mIOW/J7Us1MAVcOYmmrN0DM0JOTGuAnzkrkHFOEzg89ted4PTuktGU/CQw8NKVk1w9qJ82IxtXDsQdbfcPNkNDg2UI+S9TCwRur9qRg4pRw7cYSIIe6DFI7vTQTVNUBEY5YWuoU+y47V3/81w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(376002)(366004)(396003)(83380400001)(6506007)(53546011)(186003)(91956017)(66476007)(66556008)(64756008)(76116006)(66946007)(6916009)(54906003)(2616005)(6486002)(66446008)(6512007)(2906002)(478600001)(36756003)(8936002)(4326008)(86362001)(71200400001)(33656002)(8676002)(5660300002)(316002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ICuUFdqYpz1594+OsXaPsp1z6euf1JXRRSksDFdY1kS5ZojrX6O1A/As/6oY?=
- =?us-ascii?Q?sYIDnjINPpWIZcssFhZyiPlsi3ga5xENp1IqchR/L19j6R8WksAZZ5LLE6xx?=
- =?us-ascii?Q?MjO7fhowI9sDLfEEs0/Ty3Z2th2hs2eZHXYgrLYNeUjj++clNI403ajkwpHq?=
- =?us-ascii?Q?TU8TscU2Iu00oaRWAswyJ48dOsfjYkLxKyMoURAei+n/zLAqB3n4AUTuSZkv?=
- =?us-ascii?Q?5N/iDKtwpsNblbxlfCGUJ5ZDudibRgaLSuDDGxBXULn7WBDSPaYjL/oE401g?=
- =?us-ascii?Q?IG2TmkjhRxfx6TtAZerBj9x8oSNUeI13YlVe1o4KsaWk0RyvntnFFMko2iaI?=
- =?us-ascii?Q?FVgq/3pvBViAR7zqafAYABCuOEJ72cx8p+7/hz5pVDA3QnkuMsKVnm+NC2OH?=
- =?us-ascii?Q?JmOSfwemZr7p3zcHhk05uYaIs0U2ttvyFHEaNZi4qcz2SsyWs4lri/nQWoTB?=
- =?us-ascii?Q?MAfaovWKqQUpehKSmP1Z4G62mDc/O4yM1MrN8SBfxQDOehBrFtjm8qvZYLet?=
- =?us-ascii?Q?SpWoK+PDJXHAkmrWc6RoV7FBCIjRBHh0AomTq/gHlGURT9LeH9o28drRmbJ7?=
- =?us-ascii?Q?JMKfMWbJuMblJB1D6Az3mtjdGOpphpPbahhQ3wpVKzzpM9bGSFpROSf7PYKd?=
- =?us-ascii?Q?GVhUKuf4syZWqGwVFsdjlg/fXakQtayx/e35CWuN4C4mEXTMSf2gn+xk8lcb?=
- =?us-ascii?Q?RQe4vOX9SnBoZUD8ASQ/RoER2nci7biRhwCbTMrrNvyzV2LhEeJtJVm0ZNEM?=
- =?us-ascii?Q?hgUMkmNt3wfee4wMVhqeT4zBkeQ8vF/CWV3T2eDYmAvDMkCPFO639xbikMte?=
- =?us-ascii?Q?unKr++CXIM7Q2j0XMaK8qghgLoQbFb/baFfzkfq8Bewdt+1onSj+gVBOzLN1?=
- =?us-ascii?Q?JMh2bU6dGeOBG7UhSWN+7LjjJXRgxMbR72uvbGW9Qhk9NgmXKyVCQSi6QcjN?=
- =?us-ascii?Q?xoaj7JKP/qKSgVu9hxCRIo9BGDABQ53y2IF2hqIRxoWAJbVWZ08bFAY/r9Ji?=
- =?us-ascii?Q?+q5AyufViUFkg2SuWM5O7/6zxhCKRXROQxeqlNyeBJdy5SyzI6HngofRvdnN?=
- =?us-ascii?Q?TsG1SFZh/F+GfHwaMOcip2Ig2uZ5TxlQSF6UUnXQA5O9qA5/cMgZ8SASqL9Q?=
- =?us-ascii?Q?hc8omUwfJPUdgvC6fL/2QIEKeivHfBF/ZL9IHG43wU0CUgLN5U7hNmdbHQAu?=
- =?us-ascii?Q?85fEtrhoDdtMiZd41QcwGwejN0Yw86vg8+GeH4Xutl7ChiQyx3SUtvJJ3wRl?=
- =?us-ascii?Q?SJO7HAQfbBLFA70/Y+kNPmVfv5hp46QKIJo3qetaZJGKbXfuJw95qp226Mde?=
- =?us-ascii?Q?spoa8c3Ijd74oXfKRH7lpt2ZgRsgF5cIxVlCMhuK3ANvPoT3qwmnidFTboKO?=
- =?us-ascii?Q?A/SPwcQ=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B333D02D89FCC345BC7AD1B8D38F1CA5@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 9 Feb 2021 11:50:42 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7EBC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:50:02 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id t25so18099436otc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:50:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=aleksander-es.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dKwNo6TC+1q3oQgv5Miw/gtfysz963YICrpQOCkStJ8=;
+        b=nRmGzLhyU4G9H274uUqksm/3yq38VX5VcGp0ZwGZqNDUNETv8QvewOOKe0Y+SwksNG
+         t3oES0hFI9jU/A0sJF1MenV1DhvlYGoOkQm1Ua0A5c4uVI3uFifwp7gL0ZeWKDtQPRcJ
+         58PvjG/3BhqPJm8FAp9d2KFgOawr5WCwgRBCpaKQ4Scj51MSJ5MMqCpo9eN2/w29f27m
+         GvLP2d711dMWgtB/1BeAe4CE+0pMPPHhwj1TfIEtUh6zZIHB/wHP6xvrd8GkpL0uJviC
+         +OEkeACTEZgt2TNjef6IRGtWDcMiKQoP4oqriD/vQxpIAzciIxkAnEntXXVfAH999IC3
+         c9iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dKwNo6TC+1q3oQgv5Miw/gtfysz963YICrpQOCkStJ8=;
+        b=CWwutCWDCvNGjZnJ9oUBRBLXqXweueNkGTINklqJm5eC3TZPN4Rp3SI4yoW1I7fku6
+         Ml34zAMGbx6l7gdY5hpdaD5cwBrxNIpmp73nCshe5OfWfa+MxFEGKHljyhYeBuMDrni4
+         ksKwvrBeKL5KdZ1HLYdk4A5IAakK9owu/gz7VnQAie9QBlc3mOmNV40bH9OCLjAKnHrP
+         qKwnF+pd0FEulR7qv3ntBQqzM0DqEAQOx+8U7ndyK8te+eP+hW8fKyFY1+EvOKFS6Q09
+         +kVZoMYTTZ6QAwHWzp3GykuZ1oZnT5/iJSRCyxyvpMI2sPXFqRT4JK3GkdAO7/f3TCKH
+         8jTQ==
+X-Gm-Message-State: AOAM533Y10u42jG/3nhYPIrAHjmkpqXq9j6blBwwArCdjEYRtqVed033
+        4/wYQHXTkNo9EvtHle+41caO1ROkKQPLYyMX2PhMNg==
+X-Google-Smtp-Source: ABdhPJxi3nburzdMpmtBueqBH1zmdUHAFcqMySogLILTXDVvPm/8sGfTIrB4GvKr/ee2mYjeic1LaaWxwIWNVa+Tumg=
+X-Received: by 2002:a9d:6358:: with SMTP id y24mr16384584otk.229.1612889401486;
+ Tue, 09 Feb 2021 08:50:01 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf4f1e5b-9142-4579-09f1-08d8cd1a693d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2021 16:47:38.9917
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 76YVnxlKWTMlABuLRnOyF5fI8LKl+0nUN5yGCG1/V3tQ5lftj10zdPqawBcNaMqOapnadiw5h/f16pwrNwi0vg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2327
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_05:2021-02-09,2021-02-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 mlxscore=0 phishscore=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102090082
-X-FB-Internal: deliver
+References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
+ <20210113152625.GB30246@work> <YBGDng3VhE1Yw6zt@kroah.com>
+ <20210201105549.GB108653@thinkpad> <YBfi573Bdfxy0GBt@kroah.com>
+ <20210201121322.GC108653@thinkpad> <20210202042208.GB840@work>
+ <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org> <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com>
+ <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAAP7ucLZ5jKbKriSp39OtDLotbv72eBWKFCfqCbAF854kCBU8w@mail.gmail.com> <20210209081744.43eea7b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210209081744.43eea7b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Aleksander Morgado <aleksander@aleksander.es>
+Date:   Tue, 9 Feb 2021 17:49:50 +0100
+Message-ID: <CAAP7ucLVVTUqMX4_jFvvYNXALHgHZmcvX4WQei8cPubfUgXKGQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey,
 
+> On Tue, 9 Feb 2021 10:20:30 +0100 Aleksander Morgado wrote:
+> > This may be a stupid suggestion, but would the integration look less a
+> > backdoor if it would have been named "mhi_wwan" and it exposed already
+> > all the AT+DIAG+QMI+MBIM+NMEA possible channels as chardevs, not just
+> > QMI?
+>
+> What's DIAG?
 
-> On Feb 8, 2021, at 10:29 PM, Joe Perches <joe@perches.com> wrote:
->=20
-> On Mon, 2021-02-08 at 15:40 -0800, Song Liu wrote:
->> BPF programs explicitly initialise global variables to 0 to make sure
->> clang (v10 or older) do not put the variables in the common section.
->> Skip "initialise globals to 0" check for BPF programs to elimiate error
->> messages like:
->>=20
->>     ERROR: do not initialise globals to 0
->>     #19: FILE: samples/bpf/tracex1_kern.c:21:
-> []
->> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
->> @@ -4323,7 +4323,11 @@ sub process {
->>  		}
->> =20
->>=20
->>  # check for global initialisers.
->> -		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_ini=
-tializer)\s*;/) {
->> +# Do not apply to BPF programs (tools/testing/selftests/bpf/progs/*.c, =
-samples/bpf/*_kern.c, *.bpf.c).
->> +		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_ini=
-tializer)\s*;/ &&
->> +		    $realfile !~ /^tools\/testing\/selftests\/bpf\/progs\/.*\.c/ &&
->> +		    $realfile !~ /^samples\/bpf\/.*_kern.c/ &&
->> +		    $realfile !~ /.bpf.c$/) {
->=20
-> probably better to make this a function so when additional files are
-> added it'd be easier to update this and it will not look as complex.
->=20
-> 		if ($line =3D~ /.../ &&
-> 		    !exclude_global_initialisers($realfile))
+DIAG/QCDM is an older protocol in Qualcomm based modems; in USB based
+devices we would get a TTY that speaks this protocol. In legacy CDMA
+modems this was required for actual device control (and ModemManager
+has a libqcdm for that
+https://gitlab.freedesktop.org/mobile-broadband/ModemManager/-/tree/master/libqcdm)
+but in all newest modems I'd say this is exclusively used for modem
+trace retrieval (e.g. asking the modem to enable some internal traces
+of the LTE stack which are downloaded in the host via this port). When
+debugging issues with manufacturers, this is what they would ask you
+to do, use this port to retrieve these traces (e.g. Quectel's QLog
+program does that, each manufacturer keeps its own).
 
-Good point! I will make this a function in v2.=20
+> Who's going to remember that this is a backdoor driver
+> a year from now when Qualcomm sends a one liner patches which just
+> adds a single ID to open another channel?
 
---ignore is not ideal, because it is common for a BPF test/sample patch
-to have both BPF code and user space code. Adding --ignore will skip the
-check for user space code.=20
+I'm obviously not going to argue about that possibility; although,
+wouldn't it make more sense to discuss that whenever that happens?
+This work is implemented in a very generic way probably, but it
+focuses on WWAN control ports, which is what we need in userspace.
 
-Thanks,
-Song
+Right now this mhi_uci integration can be used for QMI control of the
+modems, and I assume once that gets merged (if ever!), more patches
+would arrive to enable AT, DIAG and MBIM control ports. The channels
+associated to these WWAN control protocols have clearly defined
+channel ids, and I believe the device itself chooses which channels
+are exposed, so a device may e.g. say that it's going to expose only
+the MBIM control port. This is also very manufacturer dependent I
+think; I know for example that WWAN modules for laptops will probably
+want to expose the MBIM channel instead of QMI, so that the same HW
+integration is used in both Linux and Windows easily. The single and
+generic mhi_uci integration for all these different WWAN control ports
+would allow any of those combinations, very much like with USB devices
+and different USB configurations.
 
+Userspace is also ready for this integration, btw; at least libmbim
+and libqmi don't have any problem with these chardevs, and
+ModemManager has a branch ready to land to support this new
+integration. A lot of new laptops that are already being sold since
+last year come now with PCIe-only WWAN modules, and unfortunately I've
+also seen different manufacturers pushing their own out-of-tree
+variants of this same mhi_uci idea with better or worse luck. I
+personally was very glad to see this work moving forward.
 
+--
+Aleksander
