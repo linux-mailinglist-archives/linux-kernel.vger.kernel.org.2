@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E59315C5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFA3315C55
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhBJBfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:35:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
+        id S234897AbhBJBeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:34:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbhBIWHM (ORCPT
+        with ESMTP id S233686AbhBIWHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Feb 2021 17:07:12 -0500
-Received: from smtp-42af.mail.infomaniak.ch (smtp-42af.mail.infomaniak.ch [IPv6:2001:1600:3:17::42af])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCCDC0698CF
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:55:19 -0800 (PST)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DZxTf2FcKzMqGbp;
-        Tue,  9 Feb 2021 22:53:10 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DZxTc3C9Szlh8TK;
-        Tue,  9 Feb 2021 22:53:08 +0100 (CET)
-Subject: =?UTF-8?Q?Re=3a_Conflict_with_Micka=c3=abl_Sala=c3=bcn=27s_blacklis?=
- =?UTF-8?Q?t_patches_=5bwas_=5bPATCH_v5_0/4=5d_Add_EFI=5fCERT=5fX509=5fGUID_?=
- =?UTF-8?Q?support_for_dbx/mokx_entries=5d?=
-To:     Eric Snowberg <eric.snowberg@oracle.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     dwmw2@infradead.org, Jarkko Sakkinen <jarkko@kernel.org>,
-        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
-        ardb@kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
-        lszubowi@redhat.com, javierm@redhat.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-References: <20210122181054.32635-1-eric.snowberg@oracle.com>
- <1103491.1612369600@warthog.procyon.org.uk>
- <10e6616e-0598-9f33-2de9-4a5268bba586@digikod.net>
- <A5B5DEC0-E47A-4C3D-8E79-AF37B6C2E565@oracle.com>
- <7924ce4c-ea94-9540-0730-bddae7c6af07@digikod.net>
- <BFC930B3-7994-4C5B-A8EF-1DD1C73F5750@oracle.com>
- <dc6a4524-3935-fda6-40a8-cebf80942cdf@digikod.net>
- <188DE1AF-A011-4631-B88A-2C4324DA013B@oracle.com>
- <99066eb7-53ac-41b0-46cf-36ea3d7f6590@digikod.net>
- <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <456712ef-1349-ffe2-9e34-7d49848980ff@digikod.net>
-Date:   Tue, 9 Feb 2021 22:53:34 +0100
-User-Agent: 
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692BDC08EB2D
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:55:29 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id v123so19636808yba.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:55:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/PGZ6373hwX21uII2yTNlUq0BGVrzE4VOh9IUqL/yOY=;
+        b=QMbKQ/jadoFRzkunArX38Q12u3yrUElD5NaALMt6Gr5sASFNErzU750CisBVhEKxbZ
+         BKsBL/FAnK6bP4RsSApVhEr6Anv9KwZcAzCeS1G5UxYly2GzVAHU4nj+zBK7fQzg9KWS
+         hkfl7KFyNbN8Fd9hOTVkK+MlD2a++rRtv0rbzXsbf6CmGOD5Z55NCopVLSQg80Mu4oam
+         hJAOgavYCPe0Z0AGKoON1zf9X5fDwPt+LVwlbW0+8R9wFlkxS77ze0Dn3fWBZ9FdZdEz
+         0aa6qtJavWGV6X8bmsNRzFp7OLc33PfIGmHAIOrdFBs0JOWb5NOoqY193QJVgrCECaYu
+         /f3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/PGZ6373hwX21uII2yTNlUq0BGVrzE4VOh9IUqL/yOY=;
+        b=OPbXncSu1HUE+cLeAqpyykJe97cTMZlL8BezVOR9wHEeaB5QoG5LFejThxTxbVb05c
+         aMvTQ78HSy8M1zmGsq052OsWB/vlbQKpAzx90OrZZTK8edTPpQXH+Az/ROxicIKw4Nx0
+         4peBf5z0dpURQTM4USfrVLtdeu9d32nDT2sE2g35BtAJdyKk036Wu8TWs7PiQ/0oIq75
+         4QOoiW6VmO/cQEtyzGo4X75XAKnFJFqJYYu47N0hQu5gDU2KeiOP3t06xA1fxbhPuzcA
+         l3c3bejHqhkGRwMFQixYn2T6IHxOuHo0wKI+la8mt4U81aF/I8g94d6axnSJ1Bj+w9nP
+         loTQ==
+X-Gm-Message-State: AOAM532hZUSaW1h6Y3U+1WtdOXHEBjywxFUg1+z4mvDXFm9odtaIiqcA
+        1BTBitQ7umY61ktQgDwPQAgDGgYjsMYtyvo1XSw60Q==
+X-Google-Smtp-Source: ABdhPJyj1xOOpj4onlG2/WW3umTyJvCVg8fQGOPytjYVlJXvUchM6BAlnaXUWge9bvj0zPdNDJIpSnxTV2zaYfiH3IQ=
+X-Received: by 2002:a25:b74c:: with SMTP id e12mr37996841ybm.20.1612907728418;
+ Tue, 09 Feb 2021 13:55:28 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210205222644.2357303-1-saravanak@google.com>
+ <20210205222644.2357303-5-saravanak@google.com> <20210209213320.GA219007@robh.at.kernel.org>
+In-Reply-To: <20210209213320.GA219007@robh.at.kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 9 Feb 2021 13:54:52 -0800
+Message-ID: <CAGETcx_gHRd9UYHvSsHX_=NFF+HEJkamJp3JcpojuJob_a8_DA@mail.gmail.com>
+Subject: Re: [PATCH v4 4/8] of: property: Add fw_devlink support for optional properties
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 9, 2021 at 1:33 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Feb 05, 2021 at 02:26:40PM -0800, Saravana Kannan wrote:
+> > Not all DT bindings are mandatory bindings. Add support for optional DT
+> > bindings and mark iommus, iommu-map, dmas as optional DT bindings.
+>
+> I don't think we can say these are optional or not. It's got to be a
+> driver decision somehow.
 
-On 09/02/2021 00:05, Eric Snowberg wrote:
-> 
->> On Feb 6, 2021, at 11:30 AM, Mickaël Salaün <mic@digikod.net> wrote:
->>
->> On 06/02/2021 02:14, Eric Snowberg wrote:
->>
->>> I have done some additional testing, I am seeing a regression. The blacklist 
->>> keyring is no longer picking up any of the hashes from the dbx during boot. 
->>> I backed out the merge with my changes  (fdbbe7ceeb95090d09c33ce0497e0394c82aa33d) 
->>> and still see the regression.  I then backed out Mickaël merge
->>> (5bf1adccf5c41dbdd51d1f4de220d335d9548598) and it fixes the regression.
->>>
->>> On a x86 with the updated dbx from uefi.org, I’d expect to see 234 bin hash entries
->>> in the blacklist keyring.  With the current merged code, there is none.
->>
->> Hum, I missed a part in refactoring (commit
->> f78e50c8f750c0ac6767ac1ed006360cf77c56c4). :/
->> Could you please test the following patch?
->>
->> diff --git a/certs/blacklist.c b/certs/blacklist.c
->> index 07c592ae5307..f998a2e85ddc 100644
->> --- a/certs/blacklist.c
->> +++ b/certs/blacklist.c
->> @@ -197,13 +197,16 @@ int mark_hash_blacklisted(const u8 *hash, size_t
->> hash_len,
->>                enum blacklist_hash_type hash_type)
->> {
->>        const char *buffer;
->> +       int err;
->>
->>        buffer = get_raw_hash(hash, hash_len, hash_type);
->>        if (IS_ERR(buffer))
->>                return PTR_ERR(buffer);
->> +       err = mark_raw_hash_blacklisted(buffer);
->>        kfree(buffer);
->> -       return 0;
->> +       return err;
->> }
-> 
-> I applied this patch, it works better, but there is still a regression. 
-> Most of the hashes show up in the blacklist keyring now.  However some 
-> do not, here is what I see in the log during boot:
-> 
-> [    2.321876] blacklist: Problem blacklisting hash (-13)
-> [    2.322729] blacklist: Problem blacklisting hash (-13)
-> [    2.323549] blacklist: Problem blacklisting hash (-13)
-> [    2.324369] blacklist: Problem blacklisting hash (-13)
-> 
->> Is it possible to test these kind of dbx blacklist with Qemu?
-> 
-> Yes, just use OVMF. 
-> 
+Right, so maybe the word "optional" isn't a good name for it. I can
+change that if you want.
 
-My changes (with the fix) don't change the previous semantic. I just
-tested without my changes and with my changes (and the fix), and I get
-the same result: 184 bin hashes with
-https://uefi.org/sites/default/files/resources/dbxupdate_x64.bin
+The point being, fw_devlink can't block the probe of this driver based
+on iommu property. We let the driver decide if it wants to
+-EPROBE_DEFER or not or however it wants to handle this.
 
-Could you please re-test and if there is still an issue bisect and share
-the certificates causing this issue?
+> For example, if IOMMU is optional, what happens with this sequence:
+>
+> driver probes without IOMMU
+> driver calls dma_map_?()
+> IOMMU driver probes
+> h/w accesses DMA buffer --> BOOM!
 
-David, do you want me to send the two new patches or an updated full
-patch series?
+Right. But how is this really related to fw_devlink? AFAICT, this is
+an issue even today. If the driver needs the IOMMU, then it needs to
+make sure the IOMMU has probed? What am I missing?
+
+-Saravana
