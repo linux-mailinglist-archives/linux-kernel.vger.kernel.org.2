@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF27E314F3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90ED9314F0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhBIMlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:41:01 -0500
-Received: from elvis.franken.de ([193.175.24.41]:36515 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230222AbhBIMj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:39:58 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l9SIV-0003IE-00; Tue, 09 Feb 2021 13:39:15 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 980DAC0DB9; Tue,  9 Feb 2021 13:11:24 +0100 (CET)
-Date:   Tue, 9 Feb 2021 13:11:24 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v2] MIPS: Make check condition for SDBBP consistent with
- EJTAG spec
-Message-ID: <20210209121124.GA11134@alpha.franken.de>
-References: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
+        id S230137AbhBIMhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:37:55 -0500
+Received: from smtpcmd0872.aruba.it ([62.149.156.72]:52401 "EHLO
+        smtpcmd0872.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhBIMhx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:37:53 -0500
+Received: from [192.168.1.56] ([79.0.204.227])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id 9S6Slz4POHTby9S6Sl0V2E; Tue, 09 Feb 2021 13:26:53 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1612873613; bh=mDUswk8o3BSLtbN9FBZukK6zJHlk4RbhcvaAExyA0nw=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=Kzl1EYSpnas8XmF09hgxgzzlq2cQfYNdikTV0R866v6FMi18rsR2jWVgS6ccBui0q
+         gu/2VBPSRuxNS3lgMEbTkGPRrXRGRpmUJIpU8OHOj7OUqzy/o8lfidC5a1IVHy9fUM
+         ifOzehfJ+swDJDepMjKUkMl/t5TLwkCGCF8VvMGb1LyCcywhjMeUBK28Q4njRQxsad
+         0jkbGPw7zasSDzwI+CIP46O5RDOafo5UjAXFJttwfb2OzRSmlB08ORdiroaLqs85Ju
+         kuFmKTN9jCV9f6jHyTt/4MLwX8PcDuEjJwfSaq5+3DPIc0QcH0oVkEme3g6U8tidQL
+         D279Xfw9JloGg==
+Subject: Re: [PATCH v2 3/4] pps: Use subdir-ccflags-* to inherit debug flag
+To:     Yicong Yang <yangyicong@hisilicon.com>, gregkh@linuxfoundation.org,
+        jdelvare@suse.com, linux@roeck-us.net, abbotti@mev.co.uk,
+        hsweeten@visionengravers.com, kw@linux.com, helgaas@kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kbuild@vger.kernel.org, masahiroy@kernel.org,
+        michal.lkml@markovi.net
+Cc:     prime.zeng@huawei.com, linuxarm@openeuler.org
+References: <1612868899-9185-1-git-send-email-yangyicong@hisilicon.com>
+ <1612868899-9185-4-git-send-email-yangyicong@hisilicon.com>
+From:   Rodolfo Giometti <giometti@enneenne.com>
+Message-ID: <36b30ed8-a930-d1c3-2725-c6653f23490c@enneenne.com>
+Date:   Tue, 9 Feb 2021 13:26:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1612868899-9185-4-git-send-email-yangyicong@hisilicon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfJOtvfcS9SDUIzmTBtbnLxCn9w5jBVsknznaedOo9e7Vr0rIPrGhQrxsiBlKpKQMo8p9WoIyfGExvxm3eRi5IThCUTGOTOoVORppicdkKLU7ntqvJoHq
+ QPY+Q4cFW3Qlnf7BXKIc2bDD9sR81IdWZPdqhWl/yG48Ze9YsxPcF4EaYAPM6n3pKPXeSqxq5W1TIuiAFAd+LM0Ova77sJiY6RuiBeRT09UY9W4NVDKR9Hkg
+ a+qYxNAviyYwMOQiB2hPv+rhKM7AMAmDD2DbOV3UaW+NIxAFUrCK/7wn4arJAwvL20rc7Plqq6DOaoxQW0IeazmOynuZjtKG7vOWanwkDv8Dy81kUXJz2TRw
+ A98aGs49XrGCwUBoSyPANKkVLIThLhFOpbFjHXJigrI56FCF4i5CPE/sW+9yft4Fzsw4/OWCNlVYtFGUPjthKo3eN1ifKBIoZCFk8NEVZgcz+/qXlqFRgWLk
+ fvmyn/dQzshzuqGfxjd+GEWY4GymmulB0+7tZhyPHgUVBJghPfRKUNyhhcq2Xu/rU808RhuuLRpvDsskEfKDqfYhLAVimMMdoa6tVgHW2u7qAUURgcKCchUZ
+ 2JbWhCTFJW3iPgCh7EQYmY8Q2NzEZomvywfunnw8/O3EJ30YCuMdQHUYzwrJkjGmuBwVkcM50nXNQsldL103nFTq8x/GsuzwHACgBRF3vE7So7UKAAsHJffY
+ D8C8+hAeAqXWlXGr71ctDJ2XrJBTtwqP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 01:05:25PM +0800, Tiezhu Yang wrote:
-> According to MIPS EJTAG Specification [1], a Debug Breakpoint
-> exception occurs when an SDBBP instruction is executed, the
-> CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
-> occurred, just check bit DBp for SDBBP is more accurate.
+On 09/02/21 12:08, Yicong Yang wrote:
+> From: Junhao He <hejunhao2@hisilicon.com>
 > 
-> [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
+> We use ccflags-$(CONFIG_PPS_DEBUG) for the debug
+> message in drivers/pps, but the DEBUG flag will not pass to
+> the subdirectory.
 > 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Considering CONFIG_HWMON_DEBUG_CHIP intends to turn on debug
+> recursively under driver/pps, so it will be clearer to use
+> subdir-ccflags-* instead of ccflags-* to inherit
+> the debug settings from Kconfig when traversing subdirectories.
+> 
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 > ---
+>  drivers/pps/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> v2: add MIPS_DEBUG_DBP definition
-> 
->  arch/mips/include/asm/mipsregs.h | 4 ++++
->  arch/mips/kernel/genex.S         | 4 ++--
->  2 files changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-> index a0e8ae5..9c8099a 100644
-> --- a/arch/mips/include/asm/mipsregs.h
-> +++ b/arch/mips/include/asm/mipsregs.h
-> @@ -1085,6 +1085,10 @@
->  #define CVMVMCONF_RMMUSIZEM1_S	0
->  #define CVMVMCONF_RMMUSIZEM1	(_U64CAST_(0xff) << CVMVMCONF_RMMUSIZEM1_S)
+> diff --git a/drivers/pps/Makefile b/drivers/pps/Makefile
+> index ceaf65c..7a2d3f7 100644
+> --- a/drivers/pps/Makefile
+> +++ b/drivers/pps/Makefile
+> @@ -8,4 +8,4 @@ pps_core-$(CONFIG_NTP_PPS)	+= kc.o
+>  obj-$(CONFIG_PPS)		:= pps_core.o
+>  obj-y				+= clients/ generators/
 >  
-> +/* Debug register field definitions */
-> +#define MIPS_DEBUG_DBP_SHIFT	1
-> +#define MIPS_DEBUG_DBP		(_ULCAST_(1) << MIPS_DEBUG_DBP_SHIFT)
-> +
->  /*
->   * Coprocessor 1 (FPU) register names
->   */
-> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-> index bcce32a..743d759 100644
-> --- a/arch/mips/kernel/genex.S
-> +++ b/arch/mips/kernel/genex.S
-> @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
->  	MTC0	k0, CP0_DESAVE
->  	mfc0	k0, CP0_DEBUG
->  
-> -	sll	k0, k0, 30	# Check for SDBBP.
-> -	bgez	k0, ejtag_return
-> +	andi	k0, k0, MIPS_DEBUG_DBP	# Check for SDBBP.
-> +	beqz	k0, ejtag_return
+> -ccflags-$(CONFIG_PPS_DEBUG) := -DDEBUG
+> +subdir-ccflags-$(CONFIG_PPS_DEBUG) := -DDEBUG
+> 
 
-IMHO both implementations are doing the same thing.
-
-Thomas.
+Acked-by: Rodolfo Giometti <giometti@enneenne.com>
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
