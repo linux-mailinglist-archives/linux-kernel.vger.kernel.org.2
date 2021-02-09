@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E884315548
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3C5315529
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbhBIRjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 12:39:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbhBIRhQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:37:16 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD050C061797;
-        Tue,  9 Feb 2021 09:36:35 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id g10so24910780eds.2;
-        Tue, 09 Feb 2021 09:36:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3IKSUC2PbMBLcmAxJNHDlsNxrnoGLUkLdRWIm40sEpc=;
-        b=LGw97nE1cdPwc3VbbdI7b3jcHyQ5rDSJXCpydItAPA5Duy7SnDry4v7J4PxhT0geS6
-         Q4VfKF0h844R3hVgCo54tdyExYyz5Mey9SqemYKef05Yhwl4eX8VZhJCjjGd2Xa90O01
-         PnHKbpH7BtHXyaPZdZzcY8cS02pRNsKUyPv6GdpdSnLDmd10xlE6NysARS0+T9Q2KY8d
-         x+HvCxriBjgv2a78wFPePpW0sqjFfX106VbA50dcMre5AA483PPmKFWlhW2zJyqeYOF0
-         C+PC6bAZ12wwNYmvAyxSoUAZXPDe8phSMQd5gPunsSFUMFjEqG1rYCstOM4qG53nb86p
-         roMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3IKSUC2PbMBLcmAxJNHDlsNxrnoGLUkLdRWIm40sEpc=;
-        b=TKcPyy6FzhnpwokROG+zMzAruQU3MC6unz5LtIjLiBBHtIJI2MZMAMQ7fHrUYZwN6o
-         lERcjUkzdhD+3kSNH616dIkJVwPJnPTNg1YwHdoqvnksFJfd/ym4SjRdw2UqolK7wMlh
-         I0Mx+uZozasC2OppyoQYH8AsKOm1KSgGpjT2AeG+Yi2OtRBaFTybIa3mQgRClMUe6Dnn
-         jx56y6zdbtQfEB5ZFCKXKspJK/fVhsS9rW34qaRBEjZNokpJqqm+Ck2vCnRqMOrfmBvi
-         ljIAH+NxzCpkX+wev3deLrdTnNraGIddZRQr2LzvT/RAHvvJnoifmv8xTlnHMIY/MV/9
-         x/EA==
-X-Gm-Message-State: AOAM5311dDX1xkSa2OF3ZOGmv5j8Lfqp8ctotWyfH9cnXBnSQRYlAjNj
-        oKRh8AAmceLbXZY7IEqGaEk=
-X-Google-Smtp-Source: ABdhPJzwBwXcr3FNir+11tzCbCmVt5tv5onkeBPfFP5BzJvTttLymfdZC3IkFLRtUk/UOK6Q6I7vng==
-X-Received: by 2002:aa7:c58e:: with SMTP id g14mr24696022edq.318.1612892194600;
-        Tue, 09 Feb 2021 09:36:34 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id z16sm6721317ejd.102.2021.02.09.09.36.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 09:36:33 -0800 (PST)
-Date:   Tue, 9 Feb 2021 19:36:31 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 03/11] net: bridge: don't print in
- br_switchdev_set_port_flag
-Message-ID: <20210209173631.c75cdjxphwzipeg5@skbuf>
-References: <20210209151936.97382-1-olteanv@gmail.com>
- <20210209151936.97382-4-olteanv@gmail.com>
+        id S232925AbhBIReE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 12:34:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:54554 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233035AbhBIRdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 12:33:52 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3B90ED1;
+        Tue,  9 Feb 2021 09:33:05 -0800 (PST)
+Received: from [10.37.8.18] (unknown [10.37.8.18])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CBEB83F73B;
+        Tue,  9 Feb 2021 09:33:02 -0800 (PST)
+Subject: Re: [PATCH v12 7/7] kasan: don't run tests in async mode
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210208165617.9977-1-vincenzo.frascino@arm.com>
+ <20210208165617.9977-8-vincenzo.frascino@arm.com>
+ <20210209120241.GF1435@arm.com>
+ <0e373526-0fa8-c5c0-fb41-5c17aa47f07c@arm.com>
+ <CAAeHK+yj9PR2Tw_xrpKKh=8GyNwgOaEu1pK8L6XL4zz0NtVs3A@mail.gmail.com>
+ <20210209170654.GH1435@arm.com>
+ <CAAeHK+wz1LWQmDgem8ts30gXc=SkwZ-HM507=a+iiNpOYM-ssw@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <79183efe-ef9e-0a31-cdfa-e1bfae39b015@arm.com>
+Date:   Tue, 9 Feb 2021 17:37:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209151936.97382-4-olteanv@gmail.com>
+In-Reply-To: <CAAeHK+wz1LWQmDgem8ts30gXc=SkwZ-HM507=a+iiNpOYM-ssw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:19:28PM +0200, Vladimir Oltean wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->
-> Currently br_switchdev_set_port_flag has two options for error handling
-> and neither is good:
-> - The driver returns -EOPNOTSUPP in PRE_BRIDGE_FLAGS if it doesn't
->   support offloading that flag, and this gets silently ignored and
->   converted to an errno of 0. Nobody does this.
-> - The driver returns some other error code, like -EINVAL, in
->   PRE_BRIDGE_FLAGS, and br_switchdev_set_port_flag shouts loudly.
->
-> The problem is that we'd like to offload some port flags during bridge
-> join and leave, but also not have the bridge shout at us if those fail.
-> But on the other hand we'd like the user to know that we can't offload
-> something when they set that through netlink. And since we can't have
-> the driver return -EOPNOTSUPP or -EINVAL depending on whether it's
-> called by the user or internally by the bridge, let's just add an extack
-> argument to br_switchdev_set_port_flag and propagate it to its callers.
-> Then, when we need offloading to really fail silently, this can simply
-> be passed a NULL argument.
->
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
+Hi Andrey,
 
-The build fails because since I started working on v2 and until I sent
-it, Jakub merged net into net-next which contained this fix:
-https://patchwork.kernel.org/project/netdevbpf/patch/20210207194733.1811529-1-olteanv@gmail.com/
-for which I couldn't change prototype due to it missing in net-next.
-I think I would like to rather wait to gather some feedback first before
-respinning v3, if possible.
+On 2/9/21 5:26 PM, Andrey Konovalov wrote:
+> On Tue, Feb 9, 2021 at 6:07 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>>
+>> On Tue, Feb 09, 2021 at 04:02:25PM +0100, Andrey Konovalov wrote:
+>>> On Tue, Feb 9, 2021 at 1:16 PM Vincenzo Frascino
+>>> <vincenzo.frascino@arm.com> wrote:
+>>>> On 2/9/21 12:02 PM, Catalin Marinas wrote:
+>>>>> On Mon, Feb 08, 2021 at 04:56:17PM +0000, Vincenzo Frascino wrote:
+>>>>>> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+>>>>>> index 7285dcf9fcc1..f82d9630cae1 100644
+>>>>>> --- a/lib/test_kasan.c
+>>>>>> +++ b/lib/test_kasan.c
+>>>>>> @@ -51,6 +51,10 @@ static int kasan_test_init(struct kunit *test)
+>>>>>>              kunit_err(test, "can't run KASAN tests with KASAN disabled");
+>>>>>>              return -1;
+>>>>>>      }
+>>>>>> +    if (kasan_flag_async) {
+>>>>>> +            kunit_err(test, "can't run KASAN tests in async mode");
+>>>>>> +            return -1;
+>>>>>> +    }
+>>>>>>
+>>>>>>      multishot = kasan_save_enable_multi_shot();
+>>>>>>      hw_set_tagging_report_once(false);
+>>>>>
+>>>>> I think we can still run the kasan tests in async mode if we check the
+>>>>> TFSR_EL1 at the end of each test by calling mte_check_tfsr_exit().
+>>>>>
+>>>>
+>>>> IIUC this was the plan for the future. But I let Andrey comment for more details.
+>>>
+>>> If it's possible to implement, then it would be good to have. Doesn't
+>>> have to be a part of this series though.
+>>
+>> I think it can be part of this series but after the 5.12 merging window
+>> (we are a few days away from final 5.11 and I don't think we should
+>> rush the MTE kernel async support in).
+>>
+>> It would be nice to have the kasan tests running with async by the time
+>> we merge the patches (at a quick look, I think it's possible but, of
+>> course, we may hit some blockers when implementing it).
+> 
+> OK, sounds good.
+> 
+> If it's possible to put an explicit check for tag faults at the end of
+> each test, then adding async support shouldn't be hard.
+> 
+> Note, that some of the tests trigger bugs that are detected via
+> explicit checks within KASAN. For example, KASAN checks that a pointer
+> that's being freed points to a start of a slab object, or that the
+> object is accessible when it gets freed, etc. I don't see this being a
+> problem, so just FYI.
+> 
+
+Once you have your patches ready please send them to me and I will repost
+another version. In the meantime I will address the remaining comments.
+
+> Thanks!
+> 
+
+-- 
+Regards,
+Vincenzo
