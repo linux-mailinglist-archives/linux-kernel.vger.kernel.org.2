@@ -2,120 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C59314B73
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2FE314B7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhBIJX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:23:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51328 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230058AbhBIJUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:20:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612862383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dai9OHgWYwN2IeScEPrXFPx2OP+WacEqDQGMmgzQewI=;
-        b=s0wHUYqQ6InM38Mz9PuMn+Qxl2JX6xVd4G6bM7evsRHc/8ynEaxFt0uMFshf63lTz6pTiU
-        uZoS5/n3hLp3xibZIHhR0k5UKyh4XqGENZqcB4Q/fbejqgdEyWWo6n3DAIRqlaZUID79Fi
-        xZHw5FGRBcMRaSaDcHdJpe4AQcoelo4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A56F9AD3E;
-        Tue,  9 Feb 2021 09:19:43 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 10:19:42 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        john.ogness@linutronix.de, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] printk: fix deadlock when kernel panic
-Message-ID: <YCJTrrirMlH7M5i7@alley>
-References: <20210206054124.6743-1-songmuchun@bytedance.com>
+        id S230292AbhBIJY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:24:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229717AbhBIJVW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:21:22 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF3FC061794
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:20:42 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id 18so7600213oiz.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:20:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=aleksander-es.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DTuMJKWknYrnZ1xNYLzvsaQ4qGCwYj1qIz7kzYoSeRA=;
+        b=Qvh2eOYXxet9fIRUiK5jbirxVA95uKvfHeqJxDuEqaqGmqez7+7SRKdVYPxjchgmS5
+         yGKUVXReARDTXcxSTTxD5WpiINvj1C4U32vy+IJZhG5H4zED5LVLlyIF+iWsFagZk/VK
+         DYWGw+cm/45qOW0SokH6DnTFC6/v4IKUXQ5xeA9agT978WkDUNGa3b/mMLnPxwy50ZAy
+         1C3w4EWLszGGsxqtHJoh9qPHc9Hha9mT98z9NHGjUyO2GSP4ywUasmWaaMrCJ+Ms7Wrp
+         t8eI1oDZhznkfM1rU5uqw8W3kS0Mn553wDxvX3bVYdD1kaLQ2y6YS1mUZNOB3g4SUZpl
+         KN2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DTuMJKWknYrnZ1xNYLzvsaQ4qGCwYj1qIz7kzYoSeRA=;
+        b=P5Kv0pD8KavFgd88ytLlYm+nFhyq7n6i9UffwH8f2fM4j36MiO7g9ZnLPPmd1c8AeP
+         fLjDf+5QqshDRPet/Afw+yDSWcA76ISxE4oHJGYFDMfMdEYf2Kk55JVK0yrRIsDoTsAM
+         hRdggzhl57XYvxRU+PmL/WM6cd0jazUGeEbVw8uUOGWRqDWlTPhZ8yzD084GJw14N905
+         DRfxHVIsZHaCLzHR4EfNEly6SLcgY1fppeUHJ257kYts+qRq5VGJL4FVSmys6AjfxCAY
+         DXZn45oAZuwxmw1JaO8SykYtejoCvIxRwEMnVKxLzuAGy0SVZnvUL9DvvUIJXHiXm9ft
+         9UQg==
+X-Gm-Message-State: AOAM532PCMSELv9pfMYWvAshCLPrqFVPum82Gb1xyXvkncAJw0LgJqSh
+        cGqNbw4BqnNWcLr/syITMZ/PU0EwFuJdEvnPC+kN1Q==
+X-Google-Smtp-Source: ABdhPJzLJ0oqa6+5bZtVfKINmAk0MnWV5DDDsEUpdQr5xU20juQWB4o82JCmg0PmqAhwFRdn8WGiuMPUsCipS3eJVOA=
+X-Received: by 2002:aca:d908:: with SMTP id q8mr1781140oig.67.1612862441549;
+ Tue, 09 Feb 2021 01:20:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210206054124.6743-1-songmuchun@bytedance.com>
+References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
+ <20210113152625.GB30246@work> <YBGDng3VhE1Yw6zt@kroah.com>
+ <20210201105549.GB108653@thinkpad> <YBfi573Bdfxy0GBt@kroah.com>
+ <20210201121322.GC108653@thinkpad> <20210202042208.GB840@work>
+ <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org> <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com> <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Aleksander Morgado <aleksander@aleksander.es>
+Date:   Tue, 9 Feb 2021 10:20:30 +0100
+Message-ID: <CAAP7ucLZ5jKbKriSp39OtDLotbv72eBWKFCfqCbAF854kCBU8w@mail.gmail.com>
+Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 2021-02-06 13:41:24, Muchun Song wrote:
-> We found a deadlock bug on our server when the kernel panic. It can be
-> described in the following diagram.
-> 
-> CPU0:                                         CPU1:
-> panic                                         rcu_dump_cpu_stacks
->   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
->     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
->                                                     __printk_safe_flush
->                                                       raw_spin_lock_irqsave(&read_lock)
->     // send NMI to other processors
->     apic_send_IPI_allbutself(NMI_VECTOR)
->                                                         // NMI interrupt, dead loop
->                                                         crash_nmi_callback
->   printk_safe_flush_on_panic
->     printk_safe_flush
->       __printk_safe_flush
->         // deadlock
->         raw_spin_lock_irqsave(&read_lock)
-> 
-> The register_nmi_handler() can be called in the __crash_kexec() or the
-> crash_smp_send_stop() on the x86-64. Because CPU1 is interrupted by the
-> NMI with holding the read_lock and crash_nmi_callback() never returns,
-> CPU0 can deadlock when printk_safe_flush_on_panic() is called.
-> 
-> When we hold the read_lock and then interrupted by the NMI, if the NMI
-> handler call nmi_panic(), it is also can lead to deadlock.
-> 
-> In order to fix it, we make read_lock global and rename it to
-> safe_read_lock. And we handle safe_read_lock the same way in
-> printk_safe_flush_on_panic() as we handle logbuf_lock there.
+Hey Jakub
 
-What about the following commit message? It uses imperative language
-and explains that the patch just prevents the deadlock. It removes
-some details. The diagram is better than many words.
+On Wed, Feb 3, 2021 at 7:41 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 3 Feb 2021 19:28:28 +0100 Loic Poulain wrote:
+> > On Wed, 3 Feb 2021 at 19:05, Jakub Kicinski <kuba@kernel.org> wrote:
+> > > On Wed, 03 Feb 2021 09:45:06 +0530 Manivannan Sadhasivam wrote:
+> > > > The current patchset only supports QMI channel so I'd request you to
+> > > > review the chardev node created for it. The QMI chardev node created
+> > > > will be unique for the MHI bus and the number of nodes depends on the
+> > > > MHI controllers in the system (typically 1 but not limited).
+> > >
+> > > If you want to add a MHI QMI driver, please write a QMI-only driver.
+> > > This generic "userspace client interface" driver is a no go. Nobody will
+> > > have the time and attention to police what you throw in there later.
+> >
+> > Think it should be seen as filtered userspace access to MHI bus
+> > (filtered because not all channels are exposed), again it's not
+> > specific to MHI, any bus in Linux offers that (i2c, spi, usb, serial,
+> > etc...). It will not be specific to QMI, since we will also need it
+> > for MBIM (modem control path), AT commands, and GPS (NMEA frames), all
+> > these protocols are usually handled by userspace tools and not linked
+> > to any internal Linux framework, so it would be better not having a
+> > dedicated chardev for each of them.
+>
+> The more people argue for this backdoor interface the more distrustful
+> of it we'll become. Keep going at your own peril.
 
-<commit message>
-printk_safe_flush_on_panic() caused the following deadlock on our server:
+Are your worries that this driver will end up being used for many more
+things than the initial wwan control port management being suggested
+here? If so, what would be the suggested alternative for this
+integration? Just a different way to access those control ports
+instead of a chardev? A per port type specific driver?
 
-CPU0:                                         CPU1:
-panic                                         rcu_dump_cpu_stacks
-  kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
-    register_nmi_handler(crash_nmi_callback)      printk_safe_flush
-                                                    __printk_safe_flush
-                                                      raw_spin_lock_irqsave(&read_lock)
-    // send NMI to other processors
-    apic_send_IPI_allbutself(NMI_VECTOR)
-                                                        // NMI interrupt, dead loop
-                                                        crash_nmi_callback
-  printk_safe_flush_on_panic
-    printk_safe_flush
-      __printk_safe_flush
-        // deadlock
-        raw_spin_lock_irqsave(&read_lock)
+This may be a stupid suggestion, but would the integration look less a
+backdoor if it would have been named "mhi_wwan" and it exposed already
+all the AT+DIAG+QMI+MBIM+NMEA possible channels as chardevs, not just
+QMI?
 
-DEADLOCK: read_lock is taken on CPU1 and will never get released.
-
-It happens when panic() stops a CPU by NMI while it has been in
-the middle of printk_safe_flush().
-
-Handle the lock the same way as logbuf_lock. The printk_safe buffers
-are flushed only when both locks can be safely taken.
-
-Note: It would actually be safe to re-init the locks when all CPUs were
-      stopped by NMI. But it would require passing this information
-      from arch-specific code. It is not worth the complexity.
-      Especially because logbuf_lock and printk_safe buffers have been
-      obsoleted by the lockless ring buffer.
-</commit message>
-
-> Fixes: cf9b1106c81c ("printk/nmi: flush NMI messages on the system panic")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-
-With an updated commit message:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+-- 
+Aleksander
