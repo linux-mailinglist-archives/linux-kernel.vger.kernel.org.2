@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729633158F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B6F3158D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhBIVsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:48:43 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:34830 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233644AbhBITQJ (ORCPT
+        id S233824AbhBIVms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 16:42:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233602AbhBITHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:16:09 -0500
-Received: by mail-ot1-f54.google.com with SMTP id k10so16150039otl.2;
-        Tue, 09 Feb 2021 11:15:13 -0800 (PST)
+        Tue, 9 Feb 2021 14:07:38 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1F2C061756;
+        Tue,  9 Feb 2021 10:36:40 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id b9so33306293ejy.12;
+        Tue, 09 Feb 2021 10:36:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h5l91mm4OgKaf6t4atmXs6oRTo1mGTbQpbu5LCCZIuM=;
+        b=PH/c8cc/nyi8SJ24Y6mtv07Cd3UG37HbaCBZFb/gGuIRXMEUpKHmM+2ZUOmF2+nqL9
+         9fP2aFSMimwDJ/NO/IJ32fpVaI6KGoscHBMhYZlu/5HDW4stPD0ZoRDcjJ4r3RQCpQsl
+         B2Lo76Uupeums/vpHZj1sNYxQyk/Bcp3sb0SLdAcfOXv1PppGyWsE4WqyVJV4FTIu8ST
+         qPHdOEJrlLS4mFyXBzjhmThK1mXDcyUEPVPzNmKCBM54ip5fAiecL0pr0Gh6mopToQ6h
+         oc3pr+iC3sOvR8LKjxp/EzHVdnrNZpvTAA66NVbpFmesm0FtAvCy+2WUP7htpdG49wUy
+         qZUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bGlaQiCrkS/pfmikGaky45h5FdObmTM7r7/TdtHHYjY=;
-        b=P67D2HWhems099t8PqM9ijg8zZ6VIWpxELzZZjfDlSiC1q7ko4797Cimd/bnXKmc7u
-         oU/Irfz+OIkg3CItWZG79Gao4O+MLZjzAbrm7JH4fWVM7GQJQNEQPgfpiUdROOsr1Q+B
-         EPlXqn24Fxhpo4SOFOXt/6e88nQ5ugUgNzwPLfdKeysQimz53bmsPZi/bvYSRlNT1/im
-         v7xwGgdFI64RqBUdvyGud/yCYuJNxV67duXyUYZbgIb1Is4MYd2L1s0Q8twu+ngSybqZ
-         IHkoYO7MESck1twO2i0v3jzaO5u/dTYi9eN5ZgA8z2YmkiaEogVXCOwGSBoW0bFyocZ+
-         VX6A==
-X-Gm-Message-State: AOAM533VRIZtDh5YY1bKroauh8SFhsgObkGwciM3JJ5RjFnJhQNScx3W
-        rL4iGyZ4GmtZqDD+a9Oz/YkfIYJTaA==
-X-Google-Smtp-Source: ABdhPJzm06lWmZKudWGvyQBUFR55324LPYHa8dAIQmNX5vOCBWP1mwgX2hra0dPnpwDKnBFLhUXJnA==
-X-Received: by 2002:a05:6830:1481:: with SMTP id s1mr5490608otq.206.1612895502055;
-        Tue, 09 Feb 2021 10:31:42 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r22sm4507917ote.12.2021.02.09.10.31.39
+        bh=h5l91mm4OgKaf6t4atmXs6oRTo1mGTbQpbu5LCCZIuM=;
+        b=hoML8Twd/QSkqK3RA8NFuvNnXAnEXbBBBkvxVQfDzXjHMHVCWYqw2wPJznhxw1mQmx
+         OfbJpgAtFTxmPiQd1Ll15xtQPul0hvu5ri6/gSOqLPK4mFG4rpNgIEHroqQdxO9a4M+9
+         SKrPRRslioxoLMp+mfy2awKkzvEzEaFBcH7htmqwS4RBYLab7Waxkn5ANBuu0ize0nG7
+         k8Jn/KLguiUbVkfzhwZI7+HlgNNu5NCNIslsbzMAlw1CEZ7U7//czzvFhcZjkT+bg06R
+         uS7yzQpeG2J8YXSPq94B2d7NEq2+xKdPU8ngzIdlr9tWxn9gugTXlp76RYz144XO+uJn
+         1owg==
+X-Gm-Message-State: AOAM533bTwY267pIfMP0TwIrMevGXqmP9WcaAj+IDnUEJMgMayqrlDT2
+        c7bztr/Yr3ngnjRwmtZXOWs=
+X-Google-Smtp-Source: ABdhPJyoe3o/Na0RHyb9qfjkzfhKzq1xxSdMlcvobWLsw4nkDyluOrrgDInbafWA2lB0jkXYy2Os2Q==
+X-Received: by 2002:a17:906:2ccb:: with SMTP id r11mr24291107ejr.39.1612895798802;
+        Tue, 09 Feb 2021 10:36:38 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id p32sm5666584edd.96.2021.02.09.10.36.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 10:31:40 -0800 (PST)
-Received: (nullmailer pid 4102619 invoked by uid 1000);
-        Tue, 09 Feb 2021 18:31:37 -0000
-Date:   Tue, 9 Feb 2021 12:31:37 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, linux-imx@nxp.com, vkoul@kernel.org,
-        dri-devel@lists.freedesktop.org, kernel@pengutronix.de,
-        narmstrong@baylibre.com, jonas@kwiboo.se, robh+dt@kernel.org,
-        kishon@ti.com, linux-media@vger.kernel.org, shawnguo@kernel.org,
-        jernej.skrabec@siol.net, a.hajda@samsung.com, airlied@linux.ie,
-        devicetree@vger.kernel.org, s.hauer@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, mchehab@kernel.org,
-        Laurent.pinchart@ideasonboard.com
-Subject: Re: [PATCH v3 11/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
- LVDS display bridge binding
-Message-ID: <20210209183137.GA4102564@robh.at.kernel.org>
-References: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
- <1611737488-2791-12-git-send-email-victor.liu@nxp.com>
+        Tue, 09 Feb 2021 10:36:37 -0800 (PST)
+Date:   Tue, 9 Feb 2021 20:36:36 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 02/11] net: bridge: offload all port flags at
+ once in br_setport
+Message-ID: <20210209183636.l5h4zyknk5q4kvgl@skbuf>
+References: <20210209151936.97382-1-olteanv@gmail.com>
+ <20210209151936.97382-3-olteanv@gmail.com>
+ <20210209182724.b4funpoqh6kgoj6z@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1611737488-2791-12-git-send-email-victor.liu@nxp.com>
+In-Reply-To: <20210209182724.b4funpoqh6kgoj6z@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 16:51:25 +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qm/qxp LVDS display bridge(LDB).
-> 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v2->v3:
-> * Drop 'fsl,syscon' property. (Rob)
-> * Mention the CSR module controls LDB.
-> 
-> v1->v2:
-> * Use graph schema. (Laurent)
-> * Side note i.MX8qxp LDB official name 'pixel mapper'. (Laurent)
-> 
->  .../bindings/display/bridge/fsl,imx8qxp-ldb.yaml   | 173 +++++++++++++++++++++
->  1 file changed, 173 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> 
+On Tue, Feb 09, 2021 at 08:27:24PM +0200, Vladimir Oltean wrote:
+> But there's an interesting side effect of allowing
+> br_switchdev_set_port_flag to run concurrently (notifier call chains use
+> a rw_semaphore and only take the read side). Basically now drivers that
+> cache the brport flags in their entirety are broken, because there isn't
+> any guarantee that bits outside the mask are valid any longer (we can
+> even enforce that by masking the flags with the mask when notifying
+> them). They would need to do the same trick of updating just the masked
+> part of their cached flags. Except for the fact that they would need
+> some sort of spinlock too, I don't think that the basic bitwise
+> operations are atomic or anything like that. I'm a bit reluctant to add
+> a spinlock in prestera, rocker, mlxsw just for this purpose. What do you
+> think?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+My take on things is that I can change those drivers to do what ocelot
+and sja1105 do, which is to just have some bool values like this:
+
+	if (flags.mask & BR_LEARNING)
+		ocelot_port->learn_ena = !!(flags.val & BR_LEARNING);
+
+which eliminates concurrency to the shared unsigned long brport_flags
+variable. No locking, no complications.
