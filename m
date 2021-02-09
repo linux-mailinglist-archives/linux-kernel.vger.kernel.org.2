@@ -2,154 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BD03147C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 06:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5743147C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 06:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhBIFCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 00:02:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
+        id S229800AbhBIFDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 00:03:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhBIFCN (ORCPT
+        with ESMTP id S229683AbhBIFDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 00:02:13 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B43C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 21:01:33 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id i20so16407917otl.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 21:01:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fPCpkVfjovuH2xLzjNVIxVsQ7nWqp6967gETifn4yFs=;
-        b=jkkHHFNNSBV/BmiP/s2hQdSjYrydl3P2pNC2VeHDwm1yhKAjgxIEgrJG1dlEU/p1E0
-         PoKFBHEvt1yK1Dzk6zwoMXEv8Kovl0MVm1a1VKR242c/OE/sgqN4wV8DY6e0to7KK9KH
-         MOm8jpmXs39ZPeNNDRCjM1eUwBQjgD3V7sqTGEaKsYltPIS37T2bX8sJF0pSO6huK2ei
-         CQYH3Or4S9ZbCSb9os1F559uylmPUH5PeJEKrbQBCrvOfKHAaA268Rg5bNOqAFun2dn8
-         1EmzBgwO2VDp6orPXbfXT2QWu1wRW/BIn/ZV9enmI0dS0e25rZovR7BXwJTBZ4jxyT5T
-         TmVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fPCpkVfjovuH2xLzjNVIxVsQ7nWqp6967gETifn4yFs=;
-        b=RQLxzrKNdMerkGA2GQ10yGMlqJOh8L+KHM3Yzy2RPJfkLn3usgtEF8UHeCTEedlHp2
-         gw+g+TXWYz0ApmZoztx5+kja9BrFoA/888NWjXmrZmmtzQIxJnSyI3yuaGYoyCfcyAaF
-         U2uH5kSMMmEmfgaH56jQg9wmtHOZsVuj9AxGs3vgz4vcit3N4ur728Ydq6vC/dgfjHB6
-         redeeYhXP+NCCywTlWs6gFh7BrzjpPeYz+snBLZmxADFvYGr49GsOvl61vW3J26PKKsE
-         IC60LNxJZ+KgdBW52MSaAKC815zgHljcVH5bZazQLVFUHe9HQ03oAhiSen7/TBv/ErPp
-         zMhQ==
-X-Gm-Message-State: AOAM531w2kWHxYXlRUKUgrK6rQWqic6I1uY4NdythujSZN+VX/tHGKg/
-        NoylcAsgVchD8cLWR+YUXrdDMg==
-X-Google-Smtp-Source: ABdhPJx7LAMxCgyYafmO+tqrCg4OiyhIKIMStx1wd2Jc0UfhSVchmsvBakWI7k5MCXJL/3XVD7EuDA==
-X-Received: by 2002:a05:6830:1110:: with SMTP id w16mr14772313otq.326.1612846892406;
-        Mon, 08 Feb 2021 21:01:32 -0800 (PST)
-Received: from alago.cortijodelrio.net (CableLink-189-219-72-83.Hosts.InterCable.net. [189.219.72.83])
-        by smtp.googlemail.com with ESMTPSA id o14sm3338831otl.68.2021.02.08.21.01.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 21:01:31 -0800 (PST)
-From:   =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Rolf Eike Beer <eb@emlix.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org (open list)
-Cc:     =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>,
-        stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: [PATCH] scripts: Fix linking extract-cert against libcrypto
-Date:   Mon,  8 Feb 2021 22:59:56 -0600
-Message-Id: <20210209050047.1958473-1-daniel.diaz@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Feb 2021 00:03:01 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FC5C061786;
+        Mon,  8 Feb 2021 21:02:21 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DZW385xCmz9sS8;
+        Tue,  9 Feb 2021 16:02:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612846939;
+        bh=Csow+kkuJ/2yUX44H5MgA6XuUlNeuqlukseReSX30x4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XE8ck3uVokA0ODM3KcFJmqOCfKM+lkfFoQ4WGkpXXpGuHpt9mvpPfSUAZv0Clzkon
+         ZWIzWQLdBU0+Zqoydovkx/CI3NpSAclytXQpyzwhj6alUBsEt2mxuO3wTwsdofgWgJ
+         JBo5IDcx6bII/LRS1P3w4Visbd4mL/WO+UCRQEkxCMHx/nAzfihqhYJHRU4yTpkanO
+         Ite0cho14Hmo3I81R713aGUOVdPfHIPHB6JAJR1E/JT8/5ZXRYwWVumIjVHLNINDG/
+         Xtna+vYh1xW+5rV3fQNRySVPY1ia6arMnV15z+Xu5iI5Mk4d4+ld0yvR3njhsU2kDh
+         gVJC/qDZe6NLg==
+Date:   Tue, 9 Feb 2021 16:02:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org,
+        linux-media <linux-media@vger.kernel.org>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Niklas =?UTF-8?B?U8O2ZGVy?= =?UTF-8?B?bHVuZA==?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Subject: Re: mmotm 2021-02-08-15-44 uploaded (drivers/media/i2c/rdacm2*.c)
+Message-ID: <20210209160208.2fc39c2b@canb.auug.org.au>
+In-Reply-To: <2a0149a9-b1ae-6d41-f4d7-04108fcd1431@infradead.org>
+References: <20210208234508.iCc6kmL1z%akpm@linux-foundation.org>
+        <2a0149a9-b1ae-6d41-f4d7-04108fcd1431@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/LCnxAV6p98/IHSm75GQt19j";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling under OpenEmbedded, the following error is seen
-as of recently:
+--Sig_/LCnxAV6p98/IHSm75GQt19j
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-  /srv/oe/build/tmp/hosttools/ld: cannot find /lib/libc.so.6 inside /
-  /srv/oe/build/tmp/hosttools/ld: cannot find /usr/lib/libc_nonshared.a inside /
-  /srv/oe/build/tmp/hosttools/ld: cannot find /lib/ld-linux-x86-64.so.2 inside /
-  collect2: error: ld returned 1 exit status
-  make[2]: *** [scripts/Makefile.host:95: scripts/extract-cert] Error 1
+Hi Randy,
 
-This is because 2cea4a7a1885 ("scripts: use pkg-config to
-locate libcrypto") now calls for `pkg-config --libs libcrypto`
-and inserts that into the Makefile rules as LDLIBS when
-building extract-cert.c.
+On Mon, 8 Feb 2021 20:20:04 -0800 Randy Dunlap <rdunlap@infradead.org> wrot=
+e:
+>
+> on x86_64:
+> CONFIG_VIDEO_RDACM20=3Dm
+> CONFIG_VIDEO_RDACM21=3Dm
+>=20
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_s=
+erial_link' exported twice. Previous export was in drivers/media/i2c/rdacm2=
+0-camera_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_confi=
+gure_i2c' exported twice. Previous export was in drivers/media/i2c/rdacm20-=
+camera_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_h=
+igh_threshold' exported twice. Previous export was in drivers/media/i2c/rda=
+cm20-camera_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_confi=
+gure_gmsl_link' exported twice. Previous export was in drivers/media/i2c/rd=
+acm20-camera_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_g=
+pios' exported twice. Previous export was in drivers/media/i2c/rdacm20-came=
+ra_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_clear=
+_gpios' exported twice. Previous export was in drivers/media/i2c/rdacm20-ca=
+mera_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_enabl=
+e_gpios' exported twice. Previous export was in drivers/media/i2c/rdacm20-c=
+amera_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_disab=
+le_gpios' exported twice. Previous export was in drivers/media/i2c/rdacm20-=
+camera_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_verif=
+y_id' exported twice. Previous export was in drivers/media/i2c/rdacm20-came=
+ra_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_a=
+ddress' exported twice. Previous export was in drivers/media/i2c/rdacm20-ca=
+mera_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_d=
+eserializer_address' exported twice. Previous export was in drivers/media/i=
+2c/rdacm20-camera_module.ko
+> WARNING: modpost: drivers/media/i2c/rdacm21-camera_module: 'max9271_set_t=
+ranslation' exported twice. Previous export was in drivers/media/i2c/rdacm2=
+0-camera_module.ko
 
-The problem is that --libs will include both -l and -L, which
-will be out of order when compiling/linking.
+This was reported in yesterday' linux-next and is being worked on.
 
-This (very ugly) command is what's produced with OpenEmbedded:
+--=20
+Cheers,
+Stephen Rothwell
 
-  gcc -Wp,-MMD,scripts/.extract-cert.d -Wall -Wmissing-prototypes -Wstrict-prototypes \
-    -O2 -fomit-frame-pointer -std=gnu89 \
-    -isystem/oe/build/tmp/work/MACHINE/linux/5.10+gitAUTOINC+b01f250d83-r0/recipe-sysroot-native/usr/include \
-    -O2 -pipe -L/oe/build/tmp/work/MACHINE/linux/5.10+gitAUTOINC+b01f250d83-r0/recipe-sysroot-native/usr/lib \
-    -L/oe/build/tmp/work/MACHINE/linux/5.10+gitAUTOINC+b01f250d83-r0/recipe-sysroot-native/lib \
-    -Wl,-rpath-link,/oe/build/tmp/work/MACHINE/linux/5.10+gitAUTOINC+b01f250d83-r0/recipe-sysroot-native/usr/lib \
-    -Wl,-rpath-link,/oe/build/tmp/work/MACHINE/linux/5.10+gitAUTOINC+b01f250d83-r0/recipe-sysroot-native/lib \
-    -Wl,-rpath,/oe/build/tmp/work/MACHINE/linux/5.10+gitAUTOINC+b01f250d83-r0/recipe-sysroot-native/usr/lib \
-    -Wl,-rpath,/oe/build/tmp/work/MACHINE/linux/5.10+gitAUTOINC+b01f250d83-r0/recipe-sysroot-native/lib \
-    -Wl,-O1 -I/oe/build/tmp/work/MACHINE/linux/5.10+gitAUTOINC+b01f250d83-r0/recipe-sysroot-native/usr/include \
-    -I ./scripts -o scripts/extract-cert \
-    /oe/build/tmp/work-shared/intel-corei7-64/kernel-source/scripts/extract-cert.c \
-    -L/oe/build/tmp/work/MACHINE/linux/5.10+gitAUTOINC+b01f250d83-r0/recipe-sysroot/usr//lib \
-    -lcrypto
+--Sig_/LCnxAV6p98/IHSm75GQt19j
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-As per `make`'s documentation:
+-----BEGIN PGP SIGNATURE-----
 
-  LDFLAGS
-    Extra flags to give to compilers when they are supposed to
-    invoke the linker, ‘ld’, such as -L. Libraries (-lfoo)
-    should be added to the LDLIBS variable instead.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAiF1AACgkQAVBC80lX
+0GzVXwf/TACeaLB1CkSR2gSOvl86oSx/35+hVAKWAKfALSEWzENXuI0vB6yDbChm
+0/Tlr0m28p9fbt9PT0lNLCnAZWHuXpg/pbgaKSlV1cw5wyGILajRxqOkPAXYlsqR
+/CwPjCAPjmgxiD7OToDKWwm7mYFI+S037QlrSrni1xE1rdnjxykHxCzyFlIecu0i
+RAq2U5hqlV57cP7Q6+XILX2MXRXEr4ofatRGB7Xi7gqQ9boPQsrIarSAYfiwHGL5
+bn1R8Am8im/0LX8uJoC3+kaJGdtbKIMt5K0b8zvNHk6wJsamZbigeXPJbh7h7lLE
+FA5/3lmrMqZicd4jUIf9pxfbVxoXmw==
+=gQzm
+-----END PGP SIGNATURE-----
 
-  LDLIBS
-    Library flags or names given to compilers when they are
-    supposed to invoke the linker, ‘ld’. LOADLIBES is a
-    deprecated (but still supported) alternative to LDLIBS.
-    Non-library linker flags, such as -L, should go in the
-    LDFLAGS variable.
-
-Fixes: 2cea4a7a1885 ("scripts: use pkg-config to locate libcrypto")
-Cc: stable@vger.kernel.org # 5.6.x
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Daniel Díaz <daniel.diaz@linaro.org>
----
- scripts/Makefile | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/Makefile b/scripts/Makefile
-index 9de3c03b94aa..4b4e938b4ba7 100644
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -3,7 +3,8 @@
- # scripts contains sources for various helper programs used throughout
- # the kernel for the build process.
- 
--CRYPTO_LIBS = $(shell pkg-config --libs libcrypto 2> /dev/null || echo -lcrypto)
-+CRYPTO_LDFLAGS = $(shell pkg-config --libs-only-L libcrypto 2> /dev/null)
-+CRYPTO_LDLIBS = $(shell pkg-config --libs-only-l libcrypto 2> /dev/null || echo -lcrypto)
- CRYPTO_CFLAGS = $(shell pkg-config --cflags libcrypto 2> /dev/null)
- 
- hostprogs-always-$(CONFIG_BUILD_BIN2C)			+= bin2c
-@@ -17,9 +18,11 @@ hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
- 
- HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
- HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
--HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
-+HOSTLDFLAGS_sign-file = $(CRYPTO_LDFLAGS)
-+HOSTLDLIBS_sign-file = $(CRYPTO_LDLIBS)
- HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
--HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
-+HOSTLDFLAGS_extract-cert = $(CRYPTO_LDFLAGS)
-+HOSTLDLIBS_extract-cert = $(CRYPTO_LDLIBS)
- 
- ifdef CONFIG_UNWINDER_ORC
- ifeq ($(ARCH),x86_64)
--- 
-2.25.1
-
+--Sig_/LCnxAV6p98/IHSm75GQt19j--
