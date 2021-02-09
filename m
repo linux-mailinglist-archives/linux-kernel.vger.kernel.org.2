@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840C331466B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFCF314674
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhBICdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:33:36 -0500
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:38027 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhBICdd (ORCPT
+        id S230043AbhBICfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 21:35:42 -0500
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:38470 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229759AbhBICfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:33:33 -0500
-Received: by mail-oi1-f182.google.com with SMTP id h6so17931203oie.5;
-        Mon, 08 Feb 2021 18:33:17 -0800 (PST)
+        Mon, 8 Feb 2021 21:35:32 -0500
+Received: by mail-oo1-f49.google.com with SMTP id f26so1633893oog.5;
+        Mon, 08 Feb 2021 18:35:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=YP9H2kzr/vTSeYjwcofC7D1lobSyVWitvsOWLEGknl4=;
-        b=DrauMqVXgug4TJj8aWoZMq9QiFqj9PTjFm0i2JFuHNxTIyZxnMOOsM3xI9BIXsF7GY
-         wZtLPYRFfujx4cqJqD9rSLv79Bczes2Ah944Snebpc/yhi6yjuZhATE0Lj7cthq/AiSs
-         WC+cI5NMZnds6pCwvYfdNeqNJY81TGrO7d8RXGjxc06OeV23IAQbxs/CmxVUOhljxvzh
-         UYfANS6zFAYCJqQGf7HMQwsXA35GxSbOPwgXwyPWiLpfcnJzkcJjXHEU5ULv9BSjcCKD
-         /BYbi5VWOMaExjJr0PqcX7lVnhhmtiia0iuIoGAA5adcuq+qgd/dnRlh8Sxxb4nUVlvW
-         vGIw==
-X-Gm-Message-State: AOAM533PgmqCnYBw8PwiFoEj2jUT/z/HoIvzWfEFW3SzO8TTWPIrA6qt
-        WTSf9Ef3PoD4xv+NELJ5ZQ==
-X-Google-Smtp-Source: ABdhPJwTjedOokuNw7WiMMGvYnGm7XHgCJ9N26N5tqJrfhaqNtdCHzRKUaXFrJkQzGWJc6jjHzsyUQ==
-X-Received: by 2002:a05:6808:1390:: with SMTP id c16mr1070281oiw.27.1612837972353;
-        Mon, 08 Feb 2021 18:32:52 -0800 (PST)
+        bh=F2Ye6uNgCoQ8O0PKZU6N1hNtpHnVIiBUypfNgjug/Cw=;
+        b=pXLX0w9EneEl0jKDwG+nQe+Ho0AHUZGJXgBxY7GYV4AdNf1FJyN5GC4WIyEisz9esi
+         k1e8vnFlkmFnLosULou33o50iDLotjVeXhT9AZhskC7ch3OID5rdfHzFy9wY38X0nkJI
+         7boe3H9tADYHoJsr/4u4WIZVLqRL9fQq2fDpDtTDcKRepN39a8JhPmsiS9iqVBovOiNw
+         McQ7wOxlj8wMAc/DMqKIFiI9VkYV3B071G42mqC2HqcNGeu0v8bOEQ4mvy+N5NOMjE/S
+         29RxDj5Qh6lR5x4p4+Sr00BzCtDtIFx1cuwZ7zANKK7sG+I8CPfT7t0EG6s6w6JQCh71
+         0pEw==
+X-Gm-Message-State: AOAM5320oFSZ2MyOKTWEmNpY94LeK7slQ8IYY5P0M44Kue67OBdg+j/f
+        QA0vrlbPHUQqdUXk/fgQXw==
+X-Google-Smtp-Source: ABdhPJyTvld0x0Z8yX/z9hAFkVrC6lTTYgqw7wfFAtDFha0itFsg/4/5YAnl+ldOcIPpebBW9+ssRw==
+X-Received: by 2002:a4a:dc99:: with SMTP id g25mr9112836oou.14.1612838088789;
+        Mon, 08 Feb 2021 18:34:48 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r4sm1984751oig.52.2021.02.08.18.32.51
+        by smtp.gmail.com with ESMTPSA id a28sm3958203ook.24.2021.02.08.18.34.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 18:32:51 -0800 (PST)
-Received: (nullmailer pid 2561689 invoked by uid 1000);
-        Tue, 09 Feb 2021 02:32:50 -0000
-Date:   Mon, 8 Feb 2021 20:32:50 -0600
+        Mon, 08 Feb 2021 18:34:48 -0800 (PST)
+Received: (nullmailer pid 2565043 invoked by uid 1000);
+        Tue, 09 Feb 2021 02:34:46 -0000
+Date:   Mon, 8 Feb 2021 20:34:46 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Olof Johansson <olof@lixom.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, soc@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: add ebang vendor prefix
-Message-ID: <20210209023250.GA2561635@robh.at.kernel.org>
-References: <20210120194033.26970-1-michael@walle.cc>
- <20210120194033.26970-2-michael@walle.cc>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: power: rpmpd: Add SC8180X to rpmpd
+ binding
+Message-ID: <20210209023446.GA2564984@robh.at.kernel.org>
+References: <20210120225037.1611353-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210120194033.26970-2-michael@walle.cc>
+In-Reply-To: <20210120225037.1611353-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 20:40:31 +0100, Michael Walle wrote:
-> Add vendor prefix for Zhejiang Ebang Communication Co., Ltd.
+On Wed, 20 Jan 2021 14:50:36 -0800, Bjorn Andersson wrote:
+> Add compatible and constants for the power domains exposed by the RPMH
+> in the Qualcomm SC8180X platform.
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+>  .../devicetree/bindings/power/qcom,rpmpd.yaml       |  1 +
+>  include/dt-bindings/power/qcom-rpmpd.h              | 13 +++++++++++++
+>  2 files changed, 14 insertions(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
