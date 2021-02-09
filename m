@@ -2,67 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6317C3153E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A68983153E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbhBIQa0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Feb 2021 11:30:26 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:43806 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbhBIQaQ (ORCPT
+        id S232912AbhBIQak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:30:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232633AbhBIQae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:30:16 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 771796083270;
-        Tue,  9 Feb 2021 17:29:34 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id o3p66GI-atgJ; Tue,  9 Feb 2021 17:29:34 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 2FAC16083272;
-        Tue,  9 Feb 2021 17:29:34 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id P7xhnPf6_h9a; Tue,  9 Feb 2021 17:29:34 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 0BE716083270;
-        Tue,  9 Feb 2021 17:29:34 +0100 (CET)
-Date:   Tue, 9 Feb 2021 17:29:33 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     Luca Risolia <luca.risolia@studio.unibo.it>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>
-Message-ID: <231074135.378774.1612888173941.JavaMail.zimbra@nod.at>
-In-Reply-To: <ad4fd822-016e-e11e-682c-077a1ced2a18@studio.unibo.it>
-References: <20210124232007.21639-1-richard@nod.at> <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com> <563952295.378372.1612881357746.JavaMail.zimbra@nod.at> <3a9c19cf-2c25-a3bf-a200-6d223952797a@studio.unibo.it> <443281182.378615.1612885278254.JavaMail.zimbra@nod.at> <b2424246-d42b-d0bc-8951-8cefdf5b681d@studio.unibo.it> <1517729157.378701.1612886684264.JavaMail.zimbra@nod.at> <ad4fd822-016e-e11e-682c-077a1ced2a18@studio.unibo.it>
-Subject: Re: [fuse-devel] [PATCH 0/8] MUSE: Userspace backed MTD v3
+        Tue, 9 Feb 2021 11:30:34 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7D2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:29:54 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id w2so32600930ejk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:29:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d0M7T0p8pfffMUPJ7UyjjBZYnrwZkHMwSr3yfUaYs3w=;
+        b=gqsLlM0eVbMPOz9pFO1uPAOcrIw3ice09Phv+k4aQDpqpNpUKGDStkNLBOpVIQ5ocd
+         iQIWoUx/5Cf7M5cLU8T30SFfkowNgr6d3iLFCbQcH9AqBmv+Kp3MsQjurmb/y2RPDTeW
+         2FCMUVsoK8g+cTP5ZfIGrSxIguISC5VNux4RPhWCB6eLVu3WOFk+ztQrEh0+przXMoib
+         PszG4+7xKsQMZUBWNGX3mxEEHGMHWKWkabVWYxCV7f6GRTpYuAxj6nVS3XjDw9o4w61f
+         7pKgRv7oWAW0ImuJiTGGxCuA4K4U1y10dmFWFOolt+/NVosIQDOFnatt4l4xp/2p4Wiy
+         iAQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d0M7T0p8pfffMUPJ7UyjjBZYnrwZkHMwSr3yfUaYs3w=;
+        b=ZQArGjrmW7GqQxXOhj1Xp1ZR2+XvJiME5BiJoLrzWLYroOrpbE+Kc6lOEeBdiKKv1W
+         afO5ZCsf8ozE60wpASoCepXcFecD8IAxouPXc+i25oks6TrECIjSnYY6qG7OloZXY1cG
+         yTKbl2YAODfk5pvCITOD/NQf/33R2O5o4Yjyq6V5KPNRMqvspdo6FScW51WmQhZQO8Cy
+         MQnhDINmt+1zSmk70gFjHDPsqLMmcacXSPpNTdrcoGEyP6rm3FZa5CISJABilsBqrLog
+         J5ngDH1uq+q9kqHvlDoCllUKSwCHB1BjqfaA8mIP/1nORc5Fz6mZpT0Qz/bezYp/v0eI
+         GtlQ==
+X-Gm-Message-State: AOAM533mVMRLT/1clNZeHx2E7stMPKJ5WUOL9V2UYKxYZpp0ho5cvi8R
+        blmwWCFFi3CCViGmWJX6MUodLfw8BMIm8k4JLgqEBw==
+X-Google-Smtp-Source: ABdhPJyHtio6KvscWCp5eNbMjWEaHGzUnl6nqLmvMUea17uwKZS8xaCbtXGlkhJ25OygnaPvJB27Cigzv5TiVYhGU+Q=
+X-Received: by 2002:a17:906:4051:: with SMTP id y17mr22987959ejj.45.1612888193510;
+ Tue, 09 Feb 2021 08:29:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: MUSE: Userspace backed MTD v3
-Thread-Index: YaE/ufkj2BTsqe2+5i1CTYJXpKF+YQ==
+References: <20210127225641.1342-1-mike.ximing.chen@intel.com>
+ <20210127225641.1342-2-mike.ximing.chen@intel.com> <YCKP5ZUL1/wMzmf4@kroah.com>
+In-Reply-To: <YCKP5ZUL1/wMzmf4@kroah.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 9 Feb 2021 08:29:41 -0800
+Message-ID: <CAPcyv4hC2dJGAXbG2ogO=2THuDUHjgYekkNy4K_zwEmQcXLcjA@mail.gmail.com>
+Subject: Re: [PATCH v10 01/20] dlb: add skeleton for DLB driver
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Mike Ximing Chen <mike.ximing.chen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Gage Eads <gage.eads@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
->> A simple (but ugly!) approach would be redirecting mmap() requests on CUSE
->> devices to /dev/mem.
->> hmm?
-> 
-> what requests are you talking about given that at the moment the CUSE
-> client interface (cuse_lowlevel_ops) does not expose mmap?
+On Tue, Feb 9, 2021 at 5:36 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jan 27, 2021 at 04:56:22PM -0600, Mike Ximing Chen wrote:
+> > Add basic driver functionality (load, unload, probe, and remove callbacks)
+> > for the DLB driver.
+> >
+> > Add documentation which describes in detail the hardware, the user
+> > interface, device interrupts, and the driver's power-management strategy.
+> > For more details about the driver see the documentation in the patch.
+> >
+> > Add a DLB entry to the MAINTAINERS file.
+> >
+> > Signed-off-by: Gage Eads <gage.eads@intel.com>
+> > Signed-off-by: Mike Ximing Chen <mike.ximing.chen@intel.com>
+> > Reviewed-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> >  Documentation/misc-devices/dlb.rst   | 259 +++++++++++++++++++++++++++
+> >  Documentation/misc-devices/index.rst |   1 +
+> >  MAINTAINERS                          |   8 +
+> >  drivers/misc/Kconfig                 |   1 +
+> >  drivers/misc/Makefile                |   1 +
+> >  drivers/misc/dlb/Kconfig             |  18 ++
+> >  drivers/misc/dlb/Makefile            |   9 +
+> >  drivers/misc/dlb/dlb_hw_types.h      |  32 ++++
+> >  drivers/misc/dlb/dlb_main.c          | 156 ++++++++++++++++
+> >  drivers/misc/dlb/dlb_main.h          |  37 ++++
+> >  10 files changed, 522 insertions(+)
+> >  create mode 100644 Documentation/misc-devices/dlb.rst
+> >  create mode 100644 drivers/misc/dlb/Kconfig
+> >  create mode 100644 drivers/misc/dlb/Makefile
+> >  create mode 100644 drivers/misc/dlb/dlb_hw_types.h
+> >  create mode 100644 drivers/misc/dlb/dlb_main.c
+> >  create mode 100644 drivers/misc/dlb/dlb_main.h
+> >
+> > diff --git a/Documentation/misc-devices/dlb.rst b/Documentation/misc-devices/dlb.rst
+> > new file mode 100644
+> > index 000000000000..aa79be07ee49
+> > --- /dev/null
+> > +++ b/Documentation/misc-devices/dlb.rst
+> > @@ -0,0 +1,259 @@
+> > +.. SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +===========================================
+> > +Intel(R) Dynamic Load Balancer Overview
+> > +===========================================
+> > +
+> > +:Authors: Gage Eads and Mike Ximing Chen
+> > +
+> > +Contents
+> > +========
+> > +
+> > +- Introduction
+> > +- Scheduling
+> > +- Queue Entry
+> > +- Port
+> > +- Queue
+> > +- Credits
+> > +- Scheduling Domain
+> > +- Interrupts
+> > +- Power Management
+> > +- User Interface
+> > +- Reset
+> > +
+> > +Introduction
+> > +============
+> > +
+> > +The Intel(r) Dynamic Load Balancer (Intel(r) DLB) is a PCIe device that
+> > +provides load-balanced, prioritized scheduling of core-to-core communication.
+> > +
+> > +Intel DLB is an accelerator for the event-driven programming model of
+> > +DPDK's Event Device Library[2]. The library is used in packet processing
+> > +pipelines that arrange for multi-core scalability, dynamic load-balancing, and
+> > +variety of packet distribution and synchronization schemes.
+>
+> As this is a networking related thing, I would like you to get the
+> proper reviews/acks from the networking maintainers before I can take
+> this.
+>
+> Or, if they think it has nothing to do with networking, that's fine too,
+> but please do not try to route around them.
 
-The mmap() call itself. Of course you need to touch code.
-Maybe just cuse_lowlevel.c, maybe kernel too.
-
-Thanks,
-//richard
+To be clear, I did not sense any attempt to route around networking
+review as it appeared generically centered around hardware accelerated
+IPC. At the same time I don't know what I don't know about how this
+might interact with networking initiatives so the review trip seems
+reasonable to me.
