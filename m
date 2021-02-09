@@ -2,102 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1F53159BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A90D315976
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234600AbhBIWxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:53:25 -0500
-Received: from mx29228.godns.net ([190.228.29.228]:58739 "HELO
-        mx2923.godns.net" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with SMTP id S233635AbhBITrp (ORCPT
+        id S234247AbhBIW3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:29:25 -0500
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:42741 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233577AbhBITmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:47:45 -0500
-Received: (qmail 27913 invoked by uid 700); 9 Feb 2021 18:36:07 -0000
-Received: from unknown (HELO web.godns.net) (192.168.3.191)
-  by 0 with SMTP; 9 Feb 2021 18:36:06 -0000
-Received: (qmail 10982 invoked by uid 11670742); 9 Feb 2021 18:36:01 -0000
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?(Abschlie=C3=9Fende_Mitteilung_f=C3=BCr_die_Zahlung)?=
-X-PHP-Originating-Script: 11670742:stream-privte.php
-Date:   Tue, 9 Feb 2021 15:36:01 -0300
-From:   El gordo de la Primitiva Lotterie Spanien 
-        <support@laboratoriopais.com.ar>
-Reply-To: santalucia.sg.es@spainmail.com
-Message-ID: <f3fa87a5cee80f2f95310252e62d30ad@laboratoriopais.com.ar>
+        Tue, 9 Feb 2021 14:42:25 -0500
+Received: by mail-oo1-f41.google.com with SMTP id g46so4525109ooi.9;
+        Tue, 09 Feb 2021 11:41:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6b5y2jfonq8mD3bhapQvrVV6hIqyDO03kDayMwI1f7o=;
+        b=qhhVuFQWDgFxXhxFA+jYBAPahLEBN6OJaY7eKhokl13lflsEp08vga+Dq67cz/5IjG
+         7dMwEPNpgy7GpeOc24V2w0MTasrf32H0w0qpnuaiVjrzMpybk/yQKPx3oXGP15TiAuNs
+         dn4D/9LqJKq9h0YbDkSVfoY3OHU/QB9MrIQ7S2Q21Ci54g5XhBcKg8i7XcdltMGp4NXJ
+         GV7Py3I3ME+0xqAszT1s/rSH6yNSfzeKiZXvs0JLeUZmE6Vz28tkHG/x3qS1HQZRCAfS
+         J6oOFG57VqE9mNqBQix2zXkYOVH5koMWxp1m4sF52MRHDQAXAt2HzG6UCl2v5o3r4FRL
+         mnpg==
+X-Gm-Message-State: AOAM530mhzl3/rgvq8t6wt7ja0Q/l69h3QGK8YI+TmYM8+ceWffJrtjF
+        U5SS4QPvUdiUIwu2NOfnNpecds2fOg==
+X-Google-Smtp-Source: ABdhPJzEb+6TOW87AfnKdxzZ9Ldho7rHViFKpHVw9B1UL+E21N3MUSbFop1cbCOjs26U1Y0Df5Qfxg==
+X-Received: by 2002:a4a:dc99:: with SMTP id g25mr11403336oou.14.1612897731815;
+        Tue, 09 Feb 2021 11:08:51 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w10sm738842ote.29.2021.02.09.11.08.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 11:08:49 -0800 (PST)
+Received: (nullmailer pid 4168444 invoked by uid 1000);
+        Tue, 09 Feb 2021 19:08:48 -0000
+Date:   Tue, 9 Feb 2021 13:08:48 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     laurent.pinchart@ideasonboard.com, airlied@linux.ie,
+        devicetree@vger.kernel.org, stefan@agner.ch, kernel@pengutronix.de,
+        dri-devel@lists.freedesktop.org, linux-imx@nxp.com, kernel@puri.sm,
+        daniel@ffwll.ch, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mxsfb: Add interconnect bindings for LCDIF
+ path
+Message-ID: <20210209190848.GA4168414@robh.at.kernel.org>
+References: <20210127114901.26259-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127114901.26259-1-martin.kepplinger@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-El Gordo de la primitiva  lotterie spanien                        
-Adresse:Calle del Príncipe de Vergara, 38, 28001
-Madrid España]     
-Kontakt aufnehmen unter:] 34602 810 185 fax 34935457490]
-E-mail:]consultants24hrs@consultant.com]
+On Wed, 27 Jan 2021 12:49:01 +0100, Martin Kepplinger wrote:
+> Add optional interconnect properties for the dram path requests.
+> 
+> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> ---
+>  Documentation/devicetree/bindings/display/fsl,lcdif.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
 
-Aktenzeichen:]P09/01/02/2021.]
-Losnummer:] ESP 4447/1146411880201]
-Datum: 06/02/2021]
-
-Hallo,         
-                  
-                             OFFIZIELLE MITTEILUNG,
-Diese El Gordo de la Primitiva Bonanza  Lotterie wurde und Ministerio de Industria, Comercio y Turismo  gesponsert um Tourismus in Spanien  zu fördern.
- 
-Wir sind erfreut Ihnen mit zu teilen, dass die Gewinner des Sonder Spanish Tourismus Promotional Draw bekannt gegeben worden sind. Die offizielle Liste der Gewinner  erschien am  Samstag der 16/01/2021. 
- 
-Ihre email adresse  mit der anhängenden Losnummer: ESP 4447/1146411880201  und mit der Seriennummer: ESP/018811-2020 zog die Glücksnummer: 6.16.18.33.47.51 Bonu:29,El Gordo de la Primitiva  Lotterie  6 /49 in der 3. Kategorie.
- 
-Sie sind damit gewinner von: €991,000.00 Euro. Die Summe ergibt sich aus einer Gewinnausschüttung von: €6937,000.00 Euro, die durch die ersten sieben (7) Gewinner aus der gleichen Kategorie geteilt wurde.  Dir gewinn ist bei einer sicherheitsfirma hinterlegt und in ihren namen/email  versichert. um keine komplikationen bei der abwicklung der zahlung zu verursachen bitten wir sie diese offizielle mitteilung , diskret zu behandeln.,es ist ein teil unseres sicherheitsprotokolls und garantiert ihnen einen reibungslosen Ablauf.
- 
-Alle gewinner wurden per computer aus Urlaubshotels, Fluggesellschaften und Reisebüros mailen Daten von fünf Millionen (5000000) Email adressen ausgewählt, als teil unserer Internationalen tourismus promotion programms, welches wir einmal im jahr veranstalten um Tourismus in Spanien zu fördern.
- 
-Bitte kontaktieren sie unseren auslands sachbearbeiter Herr Gabriel  bei der sicherheitsfirma Santalucia Sicherheitsfirma:Per Email an:beratergabriel.sp@consultant.com oder anrufen: 34 602 810 185 & Fax:  34 931 70 2120, um Ihr Geld schnell zu bekommen.
- 
-Denken Sie daran, jeder gewinnanspruch muss bis zum 27/02/2021 Angemeldete sein. Jeder nicht angemeldet Gewinnanspruch verfällt und geht zuruck an das Spanische Staatskasse.
-  
-WICHTIG: um verzögerungen und komplikationen zu vermeiden, bitte immer Aktenzeichen angeben.  Anbei ein anmeldeformular, bitte ausfüllen und zurück Per email an:beratergabriel.sp@consultant.com oder anrufen:  34 602 810185 & Fax:  34 931 70 2120 die sicherheitsfirma Santalucia Sicherheitsfirma.
- 
-HERZLICHEN GLUCKWUNSCH…!
-Mit freundlichen Grüßen
-MARIA HIDALGO
-VIZEPRÄSIDENTIN
- 
-BÜRO,SANTALUCIA SEGUROS S.A España 
-Plaza España, 15 - -16                            
-Madrid, 28008 España
-                           
- 
-ANMELDEFORMULAR ZUR GEWINNANSPRUCHS
-_____________________________________________ 
-Bitte füllen Sie das Formular sorgfältig aus und senden es per e mail:santalucia.sg.es@spainmail.com an der Santalucia Sicherheitsfirma mit Kopie Ihres Personalausweises oder Reisepasses.
-
-
-GEWINNBETRAG*__________AKTENZEICHEN:*ESP09/01/02/2021
-NAME:*____________________VORNAME:*_______________________
-GEBURTSDATUM:*_________________*NATIONALI:*________________
-LOSNUMMER*______________________*GLUCKSZAHLEN:*____________
-STRASSE*____________________________*NUMMER:*_______________
-WOHNORT*________________POSTLEITZAH*__________*LAND*________
-TELEFON*____________HANDY*_____________FAX*_________________
-BEFUF*__________FAMIELIENSTAND*_______________* (GESCHLECHT)
-EMAIL*________________________________________*Unterschrift*_
-  
- 
-WELCHE ZAHLUNGSFORM BEVORZUGEN SIE?  (A) BANKÜBERWEISUNG:  (B) BARSCHECK  
-BANKDATEN SIND NUR NOTWENDIG WENN SIE SICH FÜR EINE BANKÜBERWEISUNG ENTSCHIEDEN HABEN.
- 
-NAME DES GELDINSTITUTS:*__________________________
-KONTONUMMER:*_____________________________________
-SWIFT CODE:*______________________________________
-BANK ADDRESS:*____________________________________
-TELEFONNUMMER:*___________________________________
-FAX: NUMMER:*_____________________________________
-
- 
-     ERKLÄRUNG DES BEGÜNSTIGTEN
-ICH ___________________________BESTÄTIGE HIERMIT, DASS ALLE INFORMATIONEN, KORREKT SIND, UND DIE VERANSTALTER DER El SPANISH LOTTERY / SANTALUCIA SICHERHEITSFIRMA NICHT VERANTWORTLICH GEMACHT WERDEN, WENN ES ZU EINER UNBERECHTIGTEN ZAHLUNG DURCH UNGENAUE INFORMATIONEN, DIE ICH IN DIESEM FORMULAR ANGEBE KOMMT.DASS 10% PROVISION DER SANTA LUCIA SECURITY COMPANY GEH?REN, SOBALD SIE IHREN GEWINN FONDS ERHALTEN. DIESE ZEHN PROZENT WERDEN IHNEN SOFORT ZURÜCKGEGEBEN, SIE ERHALTEN IHREN GEWINN AUF IHREM KONTO. (ACHTUNG Wir bitten Sie, auf diese E-Mail-Adresse zu antworten(santalucia.sg.es@spainmail.com) BÜRO-KONTOINFORMATIONEN-IBAN ES17 2100 5624 1102 0011 7719 SWIFT CODE: CAIXESBBXXX.  KONTONAME,LA PLACITA DEL MIRADOR S.L SPAIN.
-Urheberrecht© 2019-2021 Multi-Staat Lotterie Verband. Alle Rechte
-
+Reviewed-by: Rob Herring <robh@kernel.org>
