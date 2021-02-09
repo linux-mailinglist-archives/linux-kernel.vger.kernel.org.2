@@ -2,293 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B6C31459D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B33E31459F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhBIB2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:28:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhBIB2C (ORCPT
+        id S230418AbhBIB2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:28:36 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:41215 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhBIB2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:28:02 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69762C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:27:20 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id s15so8818001plr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:27:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=8siXkPNiMTROtHFK2LJRHz+zINwsqI9MUnwtYtjz9jg=;
-        b=epTn12OQFyWhFY4VwnBH6Rkih8sMWPqUgPi37ev5YCZLe7IsqI2zmHAxtgnCdmdeZz
-         Uru1dTCIj91f8C1ZkPSzrZP+e+nPVJoYiRg4UzrekwGaQz60ulEZ5YxkbeKb0AFycFZg
-         sNTZGuJBc2787VbRLMNXblR43GxveKq+nAcFEXdJ+hcj8oAHU+q+ZpZMs2zYYI/1/pIM
-         r6xCzqegHdGz02f/S3i6RQNFlrvJzVSt7rPg0aw2UzTSVY2mfM4tIoKGjewDyD92zsBO
-         Owa+M8ozNKVpzHuAEEClZPAarzQZEWxnEIlks81RQ+peIOoG03P4IWZ2m/HinBau48/X
-         UN6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=8siXkPNiMTROtHFK2LJRHz+zINwsqI9MUnwtYtjz9jg=;
-        b=h7TAB7OXznN6bbL7VPeJyQVMz+ycsuHhZ0atZKGEB2esDB7UWXUdq+zUeVtaAUQ+ZG
-         WV6pSulxVHIlJX4omVWTV8l1wuHcCkL3QPQ0u42+rsja6We2rVEEE/oc51hdaDgBP4eh
-         ZY3LoWRhkyY+g1Q8JNfIP/NUrNkI/WwlqMEpQ87Oh7jhuZKkCj16OTy+Em88/TmfmLqk
-         aNOUlVINpDcFb/1G957/xbDZN9YBM3gtIXTL8Ag6GygCysNbMWq7W1ByGURHh5mhV9Rj
-         uU6C4LagIagYR3vfAF0zmLATm69VoYWDmPoh6TSVxXqATnfBWnYbSayj+tqMvlq1a9oQ
-         iOHA==
-X-Gm-Message-State: AOAM5337bFile5zmxZ/PcV43PTxBQ7AnoTZ9nJ/nNe4KhAo+M5CBgIJW
-        e6SRd3GON27FVq1x9FbhILQ=
-X-Google-Smtp-Source: ABdhPJwU3vnjfzvZCnATLnhIDpanZsM9xc+K/63rxnxz9ta6gXuqShI0eYSxeuv0hoqacKhIHX9/2w==
-X-Received: by 2002:a17:90a:701:: with SMTP id l1mr1587483pjl.154.1612834039933;
-        Mon, 08 Feb 2021 17:27:19 -0800 (PST)
-Received: from localhost ([220.240.226.199])
-        by smtp.gmail.com with ESMTPSA id f13sm614210pjj.1.2021.02.08.17.27.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 17:27:19 -0800 (PST)
-Date:   Tue, 09 Feb 2021 11:27:13 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v5 09/22] powerpc/syscall: Make interrupt.c buildable on
- PPC32
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
-        <ba073ad67bd971a88ce331b65d6655523b54c794.1612796617.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <ba073ad67bd971a88ce331b65d6655523b54c794.1612796617.git.christophe.leroy@csgroup.eu>
-MIME-Version: 1.0
-Message-Id: <1612833796.dl9doe6njg.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        Mon, 8 Feb 2021 20:28:23 -0500
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210209012739epoutp03b085fb4043aad46f9075f4df7ae3b692~h8AgiwBZo2869928699epoutp03R
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:27:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210209012739epoutp03b085fb4043aad46f9075f4df7ae3b692~h8AgiwBZo2869928699epoutp03R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612834059;
+        bh=IVTi1/fqkT4P2V5ja0EkF1goxEb7HDWuBTmQvwKKMc4=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=SaMUCF+ETp+bg7gCRr+WyNSsifS+GMzDCPZuLc0qeYPTCtQ/B+E3t+CE5gO/LAGY/
+         kMaDpSsn3cy+pCn+QZtzINJm84oJvUMPAgOlcaL0EE3VMCeLJq0XZXR8EcIgOU12cT
+         SrKv0Hy/kO5jSzpGvqb61HnICEU86th6XZgllGPM=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210209012738epcas2p47972312b144c2a8fd813774bb82dcc3e~h8AfyJhrg0963409634epcas2p49;
+        Tue,  9 Feb 2021 01:27:38 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.182]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DZQHX0wQDz4x9QD; Tue,  9 Feb
+        2021 01:27:36 +0000 (GMT)
+X-AuditID: b6c32a46-1d9ff7000000dbf8-42-6021e5074975
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        03.60.56312.705E1206; Tue,  9 Feb 2021 10:27:35 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v19 2/3] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Can Guo <cang@codeaurora.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <5b9f5edbe26930765ee4adaa786db7da@codeaurora.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210209012734epcms2p8354347b1dd71601e74b505c715d36af0@epcms2p8>
+Date:   Tue, 09 Feb 2021 10:27:34 +0900
+X-CMS-MailID: 20210209012734epcms2p8354347b1dd71601e74b505c715d36af0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrELsWRmVeSWpSXmKPExsWy7bCmhS77U8UEgxv9vBYP5m1js9jbdoLd
+        4uXPq2wWh2+/Y7eY9uEns8Wn9ctYLV4e0rRY9SDconnxejaLOWcbmCx6+7eyWSy6sY3J4vKu
+        OWwW3dd3sFksP/6PyeL2Fi6LpVtvMlp0Tl/DYrFo4W4WB2GPy1e8PS739TJ57Jx1l91jwqID
+        jB77565h92g5uZ/F4+PTWywefVtWMXp83iTn0X6gmymAK6qB0SaxKDkjsyxVITUvOT8lMy/d
+        Vik0xE3XQkkhI7+4xFYp2tDCSM/Q0lTPxFLPyDzWytDAwMhUSSEvMTfVVqlCF6pbSaEouQCo
+        uiS1uKQoNTkVKFTkUFySmJ6qV5yYW1yal66XnJ+rpFCWmFMK1Kekb2eTkZqYklqkkPCEMWPx
+        7k72go3CFVum3WNtYHzA18XIySEhYCLRsnEiM4gtJLCDUeJKv0AXIwcHr4CgxN8dwiBhYQFv
+        iV/dTUwQJUoS6y/OYoeI60nceriGEcRmE9CRmH7iPlhcRMBT4uvk1axdjFwczAINbBJtp5az
+        QuzilZjR/pQFwpaW2L58K1gzp4CdxONHR6DiGhI/lvUyQ9iiEjdXv2WHsd8fm88IYYtItN47
+        C1UjKPHg526ouKTEsd0fmCDseomtd34xghwhIdDDKHF45y2oI/QlrnVsZIF40lfixMQokDCL
+        gKrEwd3boWa6SLz7NgFsL7OAvMT2t3OYQcqZBTQl1u/SBzElBJQljtxigfmqYeNvdnQ2swCf
+        RMfhv3DxHfOeQF2mJrHu53qmCYzKsxABPQvJrlkIuxYwMq9iFEstKM5NTy02KjBCjuZNjOB0
+        r+W2g3HK2w96hxiZOBgPMUpwMCuJ8AZ2yiUI8aYkVlalFuXHF5XmpBYfYqwC+nIis5Rocj4w
+        4+SVxBuaGRiZmRqbGBubmpiSLWxqZGZmYGlqYWpmZKEkzlts8CBeSCA9sSQ1OzW1ILUIZjkT
+        B6dUA9Nm89+mkXfv8m0wtGR93rtjyo29V6cpSltIXnwl7fkjv+5a5fSYwh/GWedmSqjNZVPn
+        yS465SOsnf+gUY2f4YinjV9KnLuvoE9d63Y1wdcnePsEjk65pOnmOi39p8V9ix8POxUy+V83
+        rZj5eg7fIrak219FnundcLtte7EnpnjCajcxZYu770/Mz11teyz62pfvS7WP3d5942ax5PTY
+        pMTT/SI/d2Rwc6vYxm+c8NsgM+iy2O/eeIGIrRyKp798s5q42sJK9m3miqOHf8yM38PpXFzA
+        dKJIsPqUeeNLuRNB/bmPu/jeakw60FWsz/Hpplblr/mmz5Zs/yogox4ebxNS4cQV+Vz53Z6q
+        r937fyqxFGckGmoxFxUnAgDw+NemxQQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5
+References: <5b9f5edbe26930765ee4adaa786db7da@codeaurora.org>
+        <88b608e2e133ba7ccd5bb452898848fd@codeaurora.org>
+        <5bd43da52369a56f18867fa18efb3020@codeaurora.org>
+        <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
+        <20210129053005epcms2p323338fbb83459d2786fc0ef92701b147@epcms2p3>
+        <20210208080333epcms2p59403f0acbc9730c9a605d265836a956d@epcms2p5>
+        <20210208085346epcms2p1c11b70be9d258df66cb2ca4542835fac@epcms2p1>
+        <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p8>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
-> To allow building interrupt.c on PPC32, ifdef out specific PPC64
-> code or use helpers which are available on both PP32 and PPC64
->=20
-> Modify Makefile to always build interrupt.o
->=20
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
-> v5:
-> - Also for interrupt exit preparation
-> - Opted out kuap related code, ppc32 keeps it in ASM for the time being
-> ---
->  arch/powerpc/kernel/Makefile    |  4 ++--
->  arch/powerpc/kernel/interrupt.c | 31 ++++++++++++++++++++++++-------
->  2 files changed, 26 insertions(+), 9 deletions(-)
->=20
-> diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
-> index 26ff8c6e06b7..163755b1cef4 100644
-> --- a/arch/powerpc/kernel/Makefile
-> +++ b/arch/powerpc/kernel/Makefile
-> @@ -57,10 +57,10 @@ obj-y				:=3D cputable.o syscalls.o \
->  				   prom.o traps.o setup-common.o \
->  				   udbg.o misc.o io.o misc_$(BITS).o \
->  				   of_platform.o prom_parse.o firmware.o \
-> -				   hw_breakpoint_constraints.o
-> +				   hw_breakpoint_constraints.o interrupt.o
->  obj-y				+=3D ptrace/
->  obj-$(CONFIG_PPC64)		+=3D setup_64.o \
-> -				   paca.o nvram_64.o note.o interrupt.o
-> +				   paca.o nvram_64.o note.o
->  obj-$(CONFIG_COMPAT)		+=3D sys_ppc32.o signal_32.o
->  obj-$(CONFIG_VDSO32)		+=3D vdso32_wrapper.o
->  obj-$(CONFIG_PPC_WATCHDOG)	+=3D watchdog.o
-> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interr=
-upt.c
-> index d6be4f9a67e5..2dac4d2bb1cf 100644
-> --- a/arch/powerpc/kernel/interrupt.c
-> +++ b/arch/powerpc/kernel/interrupt.c
-> @@ -39,7 +39,7 @@ notrace long system_call_exception(long r3, long r4, lo=
-ng r5,
->  		BUG_ON(!(regs->msr & MSR_RI));
->  	BUG_ON(!(regs->msr & MSR_PR));
->  	BUG_ON(!FULL_REGS(regs));
-> -	BUG_ON(regs->softe !=3D IRQS_ENABLED);
-> +	BUG_ON(arch_irq_disabled_regs(regs));
-> =20
->  #ifdef CONFIG_PPC_PKEY
->  	if (mmu_has_feature(MMU_FTR_PKEY)) {
-> @@ -65,7 +65,9 @@ notrace long system_call_exception(long r3, long r4, lo=
-ng r5,
->  			isync();
->  	} else
->  #endif
-> +#ifdef CONFIG_PPC64
->  		kuap_check_amr();
-> +#endif
+>>>>> @@ -342,13 +1208,14 @@ void ufshpb_suspend(struct ufs_hba *hba)
+>>>>> >          struct scsi_device *sdev;
+>>>>> >
+>>>>> >          shost_for_each_device(sdev, hba->host) {
+>>>>> > -                hpb = sdev->hostdata;
+>>>>> > +                hpb = ufshpb_get_hpb_data(sdev);
+>>>>> >                  if (!hpb)
+>>>>> >                          continue;
+>>>>> >
+>>>>> >                  if (ufshpb_get_state(hpb) != HPB_PRESENT)
+>>>>> >                          continue;
+>>>>> >                  ufshpb_set_state(hpb, HPB_SUSPEND);
+>>>>> > +                ufshpb_cancel_jobs(hpb);
+>>>>> 
+>>>>> Here may have a dead lock problem - in the case of runtime suspend,
+>>>>> when ufshpb_suspend() is invoked, all of hba's children scsi devices
+>>>>> are in RPM_SUSPENDED state. When this line tries to cancel a running
+>>>>> map work, i.e. when ufshpb_get_map_req() calls below lines, it will
+>>>>> be stuck at blk_queue_enter().
+>>>>> 
+>>>>> req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
+>>>>>                       REQ_OP_SCSI_IN, 0);
+>>>>> 
+>>>>> Please check block layer power management, and see also commit
+>>>>> d55d15a33
+>>>>> ("scsi: block: Do not accept any requests while suspended").
+>>>> 
+>>>> I am agree with your comment.
+>>>> How about add BLK_MQ_REQ_NOWAIT flag on blk_get_request() to avoid
+>>>> hang?
+>>>> 
+>>> 
+>>> That won't work - BLK_MQ_REQ_NOWAIT allows one to fast fail from
+>>> blk_mq_get_tag(),
+>>> but blk_queue_enter() comes before __blk_mq_alloc_request();
+>>> 
+>> In blk_queue_enter(), BLK_MQ_REQ_NOWAIT flag can make error than wait 
+>> rpm
+>> resume. Please refer following code.
+> 
+>Oops, sorry, my memory needs to be refreshed on that part.
+> 
+>But will BLK_MQ_REQ_NOWAIT flag breaks your original purpose? When
+>runtime suspend is out of the picture, if traffic is heavy on the
+>request queue, map_work() will be stopped frequently once it is
+>not able to get a request from the queue - that shall pull down the
+>efficiency of one map_work(), that may hurt random performance...
 
-Wouldn't mind trying to get rid of these ifdefs at some point, but=20
-there's some kuap / keys changes going on recently so I'm happy enough=20
-to let this settle then look at whether we can refactor.
+I think deadlock prevention is the most important. So I want to add
+BLK_MQ_REQ_NOWAIT flag.
+Starvation of map request can be distinguish by return value of
+blk_get_request(). -EWOULDBLOCK means there is no available tags for this
+request. -EBUSY means failed on blk_queue_enter(). To overcome starvation
+of map request, we can try N times in heavy traffic situation (maybe N=3?).
 
-> =20
->  	account_cpu_user_entry();
-> =20
-> @@ -77,7 +79,7 @@ notrace long system_call_exception(long r3, long r4, lo=
-ng r5,
->  	 * frame, or if the unwinder was taught the first stack frame always
->  	 * returns to user with IRQS_ENABLED, this store could be avoided!
->  	 */
-> -	regs->softe =3D IRQS_ENABLED;
-> +	irq_soft_mask_regs_set_state(regs, IRQS_ENABLED);
-> =20
->  	local_irq_enable();
-> =20
-> @@ -151,6 +153,7 @@ static notrace inline bool __prep_irq_for_enabled_exi=
-t(bool clear_ri)
->  		__hard_EE_RI_disable();
->  	else
->  		__hard_irq_disable();
-> +#ifdef CONFIG_PPC64
->  	if (unlikely(lazy_irq_pending_nocheck())) {
->  		/* Took an interrupt, may have more exit work to do. */
->  		if (clear_ri)
-> @@ -162,7 +165,7 @@ static notrace inline bool __prep_irq_for_enabled_exi=
-t(bool clear_ri)
->  	}
->  	local_paca->irq_happened =3D 0;
->  	irq_soft_mask_set(IRQS_ENABLED);
-> -
-> +#endif
->  	return true;
->  }
-> =20
-
-Do we prefer space before return except in trivial cases?
-
-> @@ -216,7 +219,9 @@ notrace unsigned long syscall_exit_prepare(unsigned l=
-ong r3,
-> =20
->  	CT_WARN_ON(ct_state() =3D=3D CONTEXT_USER);
-> =20
-> +#ifdef CONFIG_PPC64
->  	kuap_check_amr();
-> +#endif
-> =20
->  	regs->result =3D r3;
-> =20
-> @@ -309,7 +314,7 @@ notrace unsigned long syscall_exit_prepare(unsigned l=
-ong r3,
-> =20
->  	account_cpu_user_exit();
-> =20
-> -#ifdef CONFIG_PPC_BOOK3S /* BOOK3E not yet using this */
-> +#ifdef CONFIG_PPC_BOOK3S_64 /* BOOK3E and ppc32 not using this */
->  	/*
->  	 * We do this at the end so that we do context switch with KERNEL AMR
->  	 */
-> @@ -318,7 +323,7 @@ notrace unsigned long syscall_exit_prepare(unsigned l=
-ong r3,
->  	return ret;
->  }
-> =20
-> -#ifdef CONFIG_PPC_BOOK3S /* BOOK3E not yet using this */
-> +#ifndef CONFIG_PPC_BOOK3E_64 /* BOOK3E not yet using this */
->  notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, =
-unsigned long msr)
->  {
->  #ifdef CONFIG_PPC_BOOK3E
-
-Why are you building this for 32? I don't mind if it's just to keep=20
-things similar and make it build for now, but you're not using it yet,
-right?
-=20
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-
-> @@ -333,14 +338,16 @@ notrace unsigned long interrupt_exit_user_prepare(s=
-truct pt_regs *regs, unsigned
->  		BUG_ON(!(regs->msr & MSR_RI));
->  	BUG_ON(!(regs->msr & MSR_PR));
->  	BUG_ON(!FULL_REGS(regs));
-> -	BUG_ON(regs->softe !=3D IRQS_ENABLED);
-> +	BUG_ON(arch_irq_disabled_regs(regs));
->  	CT_WARN_ON(ct_state() =3D=3D CONTEXT_USER);
-> =20
->  	/*
->  	 * We don't need to restore AMR on the way back to userspace for KUAP.
->  	 * AMR can only have been unlocked if we interrupted the kernel.
->  	 */
-> +#ifdef CONFIG_PPC64
->  	kuap_check_amr();
-> +#endif
-> =20
->  	local_irq_save(flags);
-> =20
-> @@ -407,7 +414,9 @@ notrace unsigned long interrupt_exit_user_prepare(str=
-uct pt_regs *regs, unsigned
->  	/*
->  	 * We do this at the end so that we do context switch with KERNEL AMR
->  	 */
-> +#ifdef CONFIG_PPC64
->  	kuap_user_restore(regs);
-> +#endif
->  	return ret;
->  }
-> =20
-> @@ -419,7 +428,9 @@ notrace unsigned long interrupt_exit_kernel_prepare(s=
-truct pt_regs *regs, unsign
->  	unsigned long *ti_flagsp =3D &current_thread_info()->flags;
->  	unsigned long flags;
->  	unsigned long ret =3D 0;
-> +#ifdef CONFIG_PPC64
->  	unsigned long amr;
-> +#endif
-> =20
->  	if (IS_ENABLED(CONFIG_PPC_BOOK3S) && unlikely(!(regs->msr & MSR_RI)))
->  		unrecoverable_exception(regs);
-> @@ -432,7 +443,9 @@ notrace unsigned long interrupt_exit_kernel_prepare(s=
-truct pt_regs *regs, unsign
->  	if (TRAP(regs) !=3D 0x700)
->  		CT_WARN_ON(ct_state() =3D=3D CONTEXT_USER);
-> =20
-> +#ifdef CONFIG_PPC64
->  	amr =3D kuap_get_and_check_amr();
-> +#endif
-> =20
->  	if (unlikely(*ti_flagsp & _TIF_EMULATE_STACK_STORE)) {
->  		clear_bits(_TIF_EMULATE_STACK_STORE, ti_flagsp);
-> @@ -441,7 +454,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(s=
-truct pt_regs *regs, unsign
-> =20
->  	local_irq_save(flags);
-> =20
-> -	if (regs->softe =3D=3D IRQS_ENABLED) {
-> +	if (!arch_irq_disabled_regs(regs)) {
->  		/* Returning to a kernel context with local irqs enabled. */
->  		WARN_ON_ONCE(!(regs->msr & MSR_EE));
->  again:
-> @@ -458,8 +471,10 @@ notrace unsigned long interrupt_exit_kernel_prepare(=
-struct pt_regs *regs, unsign
->  	} else {
->  		/* Returning to a kernel context with local irqs disabled. */
->  		__hard_EE_RI_disable();
-> +#ifdef CONFIG_PPC64
->  		if (regs->msr & MSR_EE)
->  			local_paca->irq_happened &=3D ~PACA_IRQ_HARD_DIS;
-> +#endif
->  	}
-> =20
-> =20
-> @@ -472,7 +487,9 @@ notrace unsigned long interrupt_exit_kernel_prepare(s=
-truct pt_regs *regs, unsign
->  	 * which would cause Read-After-Write stalls. Hence, we take the AMR
->  	 * value from the check above.
->  	 */
-> +#ifdef CONFIG_PPC64
->  	kuap_kernel_restore(regs, amr);
-> +#endif
-> =20
->  	return ret;
->  }
-> --=20
-> 2.25.0
->=20
->=20
+Thanks,
+Daejun
