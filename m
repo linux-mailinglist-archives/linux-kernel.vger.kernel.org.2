@@ -2,99 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648C7314EFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0006314F48
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhBIMgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:36:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhBIMgs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:36:48 -0500
-Received: from forward103o.mail.yandex.net (forward103o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::606])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C98C061786;
-        Tue,  9 Feb 2021 04:36:08 -0800 (PST)
-Received: from sas1-43b74f7725b7.qloud-c.yandex.net (sas1-43b74f7725b7.qloud-c.yandex.net [IPv6:2a02:6b8:c14:391a:0:640:43b7:4f77])
-        by forward103o.mail.yandex.net (Yandex) with ESMTP id 4F7BF5F80186;
-        Tue,  9 Feb 2021 15:35:59 +0300 (MSK)
-Received: from sas1-e20a8b944cac.qloud-c.yandex.net (sas1-e20a8b944cac.qloud-c.yandex.net [2a02:6b8:c14:6696:0:640:e20a:8b94])
-        by sas1-43b74f7725b7.qloud-c.yandex.net (mxback/Yandex) with ESMTP id GelvmXSRRD-ZxH0gjER;
-        Tue, 09 Feb 2021 15:35:59 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1612874159;
-        bh=Wc4fzS9kWMCQeIC8ECmYVoAUo+upjBZ8ebEELfikIaY=;
-        h=In-Reply-To:Subject:To:From:Message-ID:Cc:References:Date;
-        b=cLGYZVdsPsW+zKYxVhhcAzXcupsL1vjKMbUfXE0aG99LmYHNe4xIOc64QsLk6NoPr
-         f/PTHI5LqVRP+wVbBBI3s4rbbcJ5bpvakE3q5ECKEin6K4wYI8QJJvPMBdFR06lnOa
-         QrZQXIF7dNpK7kSUleGOcwERlE3YQVUTgSJHD9fA=
-Authentication-Results: sas1-43b74f7725b7.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by sas1-e20a8b944cac.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id S7EuFwtpNv-ZwneF2GY;
-        Tue, 09 Feb 2021 15:35:58 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/7] gpio: ep93xx: Fix single irqchip with multi gpiochips
-Date:   Tue, 09 Feb 2021 15:33:56 +0300
-Message-ID: <5450294.DvuYhMxLoT@redslave>
-In-Reply-To: <CAHp75VdV72fkpYgGqgebHfnN+VcVv04YvPxazpu1ZYsjMFP6Ow@mail.gmail.com>
-References: <20210208085954.30050-1-nikita.shubin@maquefel.me> <20210208085954.30050-3-nikita.shubin@maquefel.me> <CAHp75VdV72fkpYgGqgebHfnN+VcVv04YvPxazpu1ZYsjMFP6Ow@mail.gmail.com>
+        id S230181AbhBIMmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:42:10 -0500
+Received: from elvis.franken.de ([193.175.24.41]:36516 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230223AbhBIMj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:39:59 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l9SIV-0003IE-01; Tue, 09 Feb 2021 13:39:15 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id CB415C0DBF; Tue,  9 Feb 2021 13:34:40 +0100 (CET)
+Date:   Tue, 9 Feb 2021 13:34:40 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jinyang He <hejinyang@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] MIPS: relocatable: Provide kaslr_offset() to get
+ the kernel offset
+Message-ID: <20210209123440.GA11264@alpha.franken.de>
+References: <1612519882-16480-1-git-send-email-hejinyang@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612519882-16480-1-git-send-email-hejinyang@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy.
+On Fri, Feb 05, 2021 at 06:11:21PM +0800, Jinyang He wrote:
+> Provide kaslr_offset() to get the kernel offset when KASLR is enabled.
+> Error may occur before update_kaslr_offset(), so put it at the end of
+> the offset branch.
+> 
+> Fixes: a307a4ce9ecd ("MIPS: Loongson64: Add KASLR support")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> ---
+>  arch/mips/include/asm/page.h |  6 ++++++
+>  arch/mips/kernel/relocate.c  | 10 ++++++++++
+>  arch/mips/kernel/setup.c     |  3 +++
+>  3 files changed, 19 insertions(+)
 
-On Monday, 8 February 2021 16:20:17 MSK Andy Shevchenko wrote:
->On Mon, Feb 8, 2021 at 11:00 AM Nikita Shubin 
-<nikita.shubin@maquefel.me> wrote:
->> Fixes the following warnings which results in interrupts disabled on
->> port B/F:
->> 
->> gpio gpiochip1: (B): detected irqchip that is shared with multiple
->> gpiochips: please fix the driver. gpio gpiochip5: (F): detected
->> irqchip that is shared with multiple gpiochips: please fix the
->> driver.
->> 
->> - added separate irqchip for each interrupt capable gpiochip
->> - provided unique names for each irqchip
->
->...
->
->> +static void ep93xx_init_irq_chip(struct device *dev, struct irq_chip
->> *ic, const char *label) +{
->> 
->> +       ic->name = devm_kasprintf(dev, GFP_KERNEL, "gpio-irq-%s",
->> label);
->Is the label being NULL okay?
+applied to mips-next.
 
-The label is taken from ep93xx_gpio_banks[], so unless we explicitly 
-pass zero to ep93xx_init_irq_chip(), we are ok.
+Thomas.
 
->
->> +       ic->irq_ack = ep93xx_gpio_irq_ack;
->> +       ic->irq_mask_ack = ep93xx_gpio_irq_mask_ack;
->> +       ic->irq_mask = ep93xx_gpio_irq_mask;
->> +       ic->irq_unmask = ep93xx_gpio_irq_unmask;
->> +       ic->irq_set_type = ep93xx_gpio_irq_type;
->> +}
->
->...
->
->> -               girq->chip = &ep93xx_gpio_irq_chip;
->
->I don't see where you remove that static structure.
-
-Good catch - thank you very much, also i noticed that i forgot to switch 
-IRQ chip in irq_set_chip_and_handler() for port F.
-
-
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
