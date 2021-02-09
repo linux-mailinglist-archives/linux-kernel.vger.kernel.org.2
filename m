@@ -2,109 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFA3315C55
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD160315C47
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234897AbhBJBeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:34:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233686AbhBIWHM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:07:12 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692BDC08EB2D
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:55:29 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id v123so19636808yba.13
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:55:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/PGZ6373hwX21uII2yTNlUq0BGVrzE4VOh9IUqL/yOY=;
-        b=QMbKQ/jadoFRzkunArX38Q12u3yrUElD5NaALMt6Gr5sASFNErzU750CisBVhEKxbZ
-         BKsBL/FAnK6bP4RsSApVhEr6Anv9KwZcAzCeS1G5UxYly2GzVAHU4nj+zBK7fQzg9KWS
-         hkfl7KFyNbN8Fd9hOTVkK+MlD2a++rRtv0rbzXsbf6CmGOD5Z55NCopVLSQg80Mu4oam
-         hJAOgavYCPe0Z0AGKoON1zf9X5fDwPt+LVwlbW0+8R9wFlkxS77ze0Dn3fWBZ9FdZdEz
-         0aa6qtJavWGV6X8bmsNRzFp7OLc33PfIGmHAIOrdFBs0JOWb5NOoqY193QJVgrCECaYu
-         /f3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/PGZ6373hwX21uII2yTNlUq0BGVrzE4VOh9IUqL/yOY=;
-        b=OPbXncSu1HUE+cLeAqpyykJe97cTMZlL8BezVOR9wHEeaB5QoG5LFejThxTxbVb05c
-         aMvTQ78HSy8M1zmGsq052OsWB/vlbQKpAzx90OrZZTK8edTPpQXH+Az/ROxicIKw4Nx0
-         4peBf5z0dpURQTM4USfrVLtdeu9d32nDT2sE2g35BtAJdyKk036Wu8TWs7PiQ/0oIq75
-         4QOoiW6VmO/cQEtyzGo4X75XAKnFJFqJYYu47N0hQu5gDU2KeiOP3t06xA1fxbhPuzcA
-         l3c3bejHqhkGRwMFQixYn2T6IHxOuHo0wKI+la8mt4U81aF/I8g94d6axnSJ1Bj+w9nP
-         loTQ==
-X-Gm-Message-State: AOAM532hZUSaW1h6Y3U+1WtdOXHEBjywxFUg1+z4mvDXFm9odtaIiqcA
-        1BTBitQ7umY61ktQgDwPQAgDGgYjsMYtyvo1XSw60Q==
-X-Google-Smtp-Source: ABdhPJyj1xOOpj4onlG2/WW3umTyJvCVg8fQGOPytjYVlJXvUchM6BAlnaXUWge9bvj0zPdNDJIpSnxTV2zaYfiH3IQ=
-X-Received: by 2002:a25:b74c:: with SMTP id e12mr37996841ybm.20.1612907728418;
- Tue, 09 Feb 2021 13:55:28 -0800 (PST)
+        id S233627AbhBJBap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:30:45 -0500
+Received: from mga18.intel.com ([134.134.136.126]:22933 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233743AbhBIWHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:07:23 -0500
+IronPort-SDR: m1NEmaNxZDW8VvhwIgMYE6p1vWWtPigJch6TzLQUn46S2320ILSY8VD3qQu3nFwmYNxsBjgPo9
+ 7xZSsMvD8s0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="169647767"
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="169647767"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 14:03:30 -0800
+IronPort-SDR: IaX1CmjvJ6RI7UEhgUqKQATMdtJDd9jx86fON4jSP8M3Tp6sdBoq/7r2rlzbHvMmULvyACX/2p
+ hnT9Cv2FCTfA==
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="419836488"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 14:03:29 -0800
+Date:   Tue, 9 Feb 2021 14:03:29 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH 0/4] btrfs: Convert kmaps to core page calls
+Message-ID: <20210209220329.GF2975576@iweiny-DESK2.sc.intel.com>
+References: <20210205232304.1670522-1-ira.weiny@intel.com>
+ <20210209151123.GT1993@suse.cz>
+ <20210209110931.00f00e47d9a0529fcee2ff01@linux-foundation.org>
+ <20210209205249.GB2975576@iweiny-DESK2.sc.intel.com>
+ <20210209131103.b46e80db675fec8bec8d2ad1@linux-foundation.org>
+ <20210209215229.GC2975576@iweiny-DESK2.sc.intel.com>
+ <20210209135837.055cfd1df4e5829f2da6b062@linux-foundation.org>
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
- <20210205222644.2357303-5-saravanak@google.com> <20210209213320.GA219007@robh.at.kernel.org>
-In-Reply-To: <20210209213320.GA219007@robh.at.kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 9 Feb 2021 13:54:52 -0800
-Message-ID: <CAGETcx_gHRd9UYHvSsHX_=NFF+HEJkamJp3JcpojuJob_a8_DA@mail.gmail.com>
-Subject: Re: [PATCH v4 4/8] of: property: Add fw_devlink support for optional properties
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209135837.055cfd1df4e5829f2da6b062@linux-foundation.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 1:33 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Fri, Feb 05, 2021 at 02:26:40PM -0800, Saravana Kannan wrote:
-> > Not all DT bindings are mandatory bindings. Add support for optional DT
-> > bindings and mark iommus, iommu-map, dmas as optional DT bindings.
->
-> I don't think we can say these are optional or not. It's got to be a
-> driver decision somehow.
+On Tue, Feb 09, 2021 at 01:58:37PM -0800, Andrew Morton wrote:
+> On Tue, 9 Feb 2021 13:52:29 -0800 Ira Weiny <ira.weiny@intel.com> wrote:
+> 
+> > > 
+> > > Let's please queue this up separately.
+> > 
+> > Ok can I retain your Ack on the move part of the patch?
+> 
+> I missed that.
+> 
+> >  Note that it does change kmap_atomic() to kmap_local_page() currently.
+> > 
+> > Would you prefer a separate change for that as well?
+> 
+> Really that should be separated out as well, coming after the move, to
+> make it more easily reverted.  With a standalone changlog for this.
+> 
+> All a bit of a pain, but it's best in the long run.
 
-Right, so maybe the word "optional" isn't a good name for it. I can
-change that if you want.
+Consider it done.
 
-The point being, fw_devlink can't block the probe of this driver based
-on iommu property. We let the driver decide if it wants to
--EPROBE_DEFER or not or however it wants to handle this.
+Ira
 
-> For example, if IOMMU is optional, what happens with this sequence:
->
-> driver probes without IOMMU
-> driver calls dma_map_?()
-> IOMMU driver probes
-> h/w accesses DMA buffer --> BOOM!
+BTW does anyone know the reason this thread is not making it to lore?  I don't
+see any of the emails between Andrew and me?
 
-Right. But how is this really related to fw_devlink? AFAICT, this is
-an issue even today. If the driver needs the IOMMU, then it needs to
-make sure the IOMMU has probed? What am I missing?
+	https://lore.kernel.org/lkml/20210205232304.1670522-1-ira.weiny@intel.com/
 
--Saravana
