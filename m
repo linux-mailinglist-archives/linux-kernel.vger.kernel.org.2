@@ -2,368 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B2C315AA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AED315A91
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234943AbhBJAHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35884 "EHLO
+        id S234817AbhBJAE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233766AbhBIUib (ORCPT
+        with ESMTP id S233730AbhBIUhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:38:31 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE0FC0698CA;
-        Tue,  9 Feb 2021 12:26:23 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id t2so2361988pjq.2;
-        Tue, 09 Feb 2021 12:26:23 -0800 (PST)
+        Tue, 9 Feb 2021 15:37:00 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1D5C0698CB
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 12:26:43 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id b3so23642680wrj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 12:26:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2BWQkMPpxa9x04z6Kv/kh2y8uZYYBnvMqfwKV/uPs1Q=;
-        b=cFA8RWjoqk7kkQ02pGbF4qLdtij5PbiMSKE4eM5V9hsvjyi0brdSTqJGBf+lNQ92UE
-         BFEDL7Vhe36DdcsaMeawpTtN+1P1Qa9xck72PSmKv8MOMglClobCgYrnSDxSZw5mNxae
-         pq+JkZvPjOf0nb7k67wVRO9Ib6I95pKAMsnGFWEewqcVU70eaaRD+aDNT5HVlhFBA4+X
-         s0wb8jrnHXOKPemrFzOXCFJtfdM3eZrBgIwOl/Cr8DDKNxDkZFTgrmyjVaNg/SUwxFw8
-         KPsTcvEsAW3WOm+XTi6fwJYzIN1IPl00dXcjnledRIxbPWT35+97pUmQYMDI/9fvrvJI
-         rJwQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oTD7IFCF48qtHTJsY6kfEhXXsGhoaPhe67DMMK3vyls=;
+        b=GuZHVNfyPKDcJvFWmPCNGhi6aJ9BHNQ0tQbhdcW2yDnmIOwBmNyOVrpfmDi4xdGeL9
+         xZWd98EojMGEnEpxrgMjoEMmHzOYt7JsMHPjmaGQ/L2yLDi1g3o2/HtLMaZu81fJTlyc
+         Xx9gzXXTIE3nsSNY5ilht/xxXiuU3O9V70oVD8qqN5UeZYsAOznfLSQ//luKrMnh23Si
+         AdfKf1s/eTnqGtpe230BkOT0e7YsmXnPxoZK7nf0oKX4hLLRprej09+InJhuys4Hbsle
+         oCjOsjm/n3k9ti7zkXJR/NTAWgUoGSBUOdcdzNLkQEC0RXnlno+hvnTovpTSG9PCsCSQ
+         OnKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=2BWQkMPpxa9x04z6Kv/kh2y8uZYYBnvMqfwKV/uPs1Q=;
-        b=BKuYav/Iwu3ZLlQJL4g992YyuGXjrvRhJYT4KYkckfYkud3e2VL/1arzzgI2TJtP65
-         IhCLm6SNOZ46oHp2Z5M0Zm0qGVt0TZ8zIR9H/lYYZQgbaYBcQCOdCwTFNtNH5NrXZKmK
-         N2fXqWt18fQ1Qn7YL8gL3kW5LRnFQTfx8u2x2pCBf3PeJjbKEcKXE8ByFl6bjG1QIsoW
-         BsCdLrUjNU7qwa9ZFdC/ZhVvDv8jgrTPQOpeoJ9yMYrxaL05ctsNFXNtLUw/w+R0j1JM
-         VjKrpgHSNWiPHkjGdH4EiYABl/GUajs6iN8EBLZsK/K1CBd+dt3JfLnjwpJn+PfOAyPf
-         /NfA==
-X-Gm-Message-State: AOAM532DfcMHL3D1SuH/8kV5gNeWiTZ4VvfKFeRwStGc3X4MCrutodSQ
-        6ZPF6gfhsualuq3NEOcQ18RviWM5+iM=
-X-Google-Smtp-Source: ABdhPJyHrA8X9zLu5UkIbU+Y4fJrKVBS8QJ6CQtDNoOsJAAGAWey4xftFRkfBc+6oi8RTpiQGJQkbw==
-X-Received: by 2002:a17:902:e9c4:b029:e1:805d:7965 with SMTP id 4-20020a170902e9c4b02900e1805d7965mr22630294plk.53.1612902382975;
-        Tue, 09 Feb 2021 12:26:22 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id b27sm23275932pgb.82.2021.02.09.12.26.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 12:26:22 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hannes@cmpxchg.org
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        Bradley Bolen <bradleybolen@gmail.com>,
-        Vladimir Davydov <vdavydov@virtuozzo.com>,
-        Michal Hocko <mhocko@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Prakash Gupta <guptap@codeaurora.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org (open list:CONTROL GROUP - MEMORY RESOURCE
-        CONTROLLER (MEMCG)),
-        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
-        CONTROLLER (MEMCG))
-Subject: [PATCH stable 4.9] mm: memcontrol: fix NULL pointer crash in test_clear_page_writeback()
-Date:   Tue,  9 Feb 2021 12:26:15 -0800
-Message-Id: <20210209202616.2257512-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=oTD7IFCF48qtHTJsY6kfEhXXsGhoaPhe67DMMK3vyls=;
+        b=sqJQfpOVGB5k3hMAtVktXkADERuOBxcseX8hIhB2Yb7B1QiCp173V3gnsO5t5+r1+K
+         f/wzI421hNnqsbMTN3F7D+ThYnTc6FZyn5Vza5a4JivNOlIe5lseBC3qW/Dn19hJGowi
+         O6H1msTnjE8I1FY0U09lSHCMi1uWX24azctscEzZFHNuNIrI26QwwciSecG6oGjriAWk
+         +ZnOwhlNVdcDkQJuWwCSGh11IX0g1k8hXDjj4jIdPt6RaV6QsxbB/BeVjFG6zkrB7tht
+         QV3mcL+w/5aBNYdCdIBM8RQkXwT/nbADwFv1QFbFb9gM/y2ExmoWkBQbvLUz+rA9H9py
+         pBzQ==
+X-Gm-Message-State: AOAM532z7FqTqZlOG9z5xZLnKGkaj4R7wax8/7h9osmtWt0iTE7alPkq
+        dejfr6BQdCVrMvkYp0iEtuZisQ==
+X-Google-Smtp-Source: ABdhPJyBG7M88wR9vLHlTuEvxIPwXyFP/WaFjIzf3BFzPGrZolU5OZou5/NrzNBfq1q4F5wz1JTwyw==
+X-Received: by 2002:adf:dd83:: with SMTP id x3mr27161973wrl.421.1612902402205;
+        Tue, 09 Feb 2021 12:26:42 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:4cbf:512d:a355:e705? ([2a01:e34:ed2f:f020:4cbf:512d:a355:e705])
+        by smtp.googlemail.com with ESMTPSA id k6sm40978153wro.27.2021.02.09.12.26.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 12:26:41 -0800 (PST)
+Subject: Re: [PATCH v2 2/2] drivers/clocksource: Fixup csky,mptimer compile
+ error with CPU_CK610
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+References: <20210204074609.3553018-1-guoren@kernel.org>
+ <20210204074609.3553018-2-guoren@kernel.org>
+ <c36b816b-6d80-9542-45fc-507c5cc302fb@linaro.org>
+ <CAJF2gTSe7GUzPRvk6bK8AfQFp2uxae1Oo0w-ZtrtmcJmMWCqPw@mail.gmail.com>
+ <973602b9-83d1-8e22-60bf-cd77d606a126@linaro.org>
+ <CAJF2gTQG-o5MRtdwc8ogJhGLGsj5AWR1ja26wiGU=wrLL8X2Zw@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <a2f43b21-2e56-040f-b658-ccafa3b5fdc4@linaro.org>
+Date:   Tue, 9 Feb 2021 21:26:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAJF2gTQG-o5MRtdwc8ogJhGLGsj5AWR1ja26wiGU=wrLL8X2Zw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Weiner <hannes@cmpxchg.org>
+On 09/02/2021 17:02, Guo Ren wrote:
+> Hi Daniel,
+> 
+> On Sun, Feb 7, 2021 at 5:29 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>>
+>> On 07/02/2021 04:31, Guo Ren wrote:
+>>> Hi Daniel,
+>>>
+>>> On Thu, Feb 4, 2021 at 4:48 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>>>>
+>>>> On 04/02/2021 08:46, guoren@kernel.org wrote:
+>>>>> From: Guo Ren <guoren@linux.alibaba.com>
+>>>>>
+>>>>> The timer-mp-csky.c only could support CPU_CK860 and it will
+>>>>> compile error with CPU_CK610.
+>>>>>
+>>>>> It has been selected in arch/csky/Kconfig.
+>>>>
+>>>> It would be better if you fix the root cause of the compilation error.
+>>> The timer-mp-csky.c has used specific instructions which only
+>>> supported by CK860 and timer-mp-csky.c is only design for CK860.
+>>
+>> I guess you are referring to mfcr() ?
+>>
+>>> In arch/csky/Konfig we only select it with CK860.
+>>>         select CSKY_MPINTC if CPU_CK860
+>>>         select CSKY_MP_TIMER if CPU_CK860
+>>>
+>>> So here let's select timer-mp-csky.c in arch/csky/Kconfig, not in
+>>> drivers/clocksource/Kconfig.
+>>
+>> The COMPILE_TEST option is there to let other architecture to compile
+>> drivers and increase the compilation test coverage.
+>>
+>> The proposed change just removes the driver from this coverage.
+> When we compile the csky arch with C860, it will be selected.
+> 
+>>
+>> Ideally, it would be better to keep it with the COMPILE_TEST option, so
+>> changes impacting all the drivers can be caught before submitting the
+>> patches.
+>>
+>> By just adding
+>>
+>> #ifndef mfcr
+>> #define mfcr(a) 0
+>> #endif
+> 
+> 610 couldn't support CSKY_MP_TIMER and it's only for 860. So it's not
+> a coding skill issue.
 
-commit 739f79fc9db1b38f96b5a5109b247a650fbebf6d upstream
+I think there is a misunderstanding.
 
-Jaegeuk and Brad report a NULL pointer crash when writeback ending tries
-to update the memcg stats:
+When I want to compile on x64 all the timer drivers, I do enable
+COMPILE_TEST, then the strings appear and the drivers can be selected.
 
-    BUG: unable to handle kernel NULL pointer dereference at 00000000000003b0
-    IP: test_clear_page_writeback+0x12e/0x2c0
-    [...]
-    RIP: 0010:test_clear_page_writeback+0x12e/0x2c0
-    Call Trace:
-     <IRQ>
-     end_page_writeback+0x47/0x70
-     f2fs_write_end_io+0x76/0x180 [f2fs]
-     bio_endio+0x9f/0x120
-     blk_update_request+0xa8/0x2f0
-     scsi_end_request+0x39/0x1d0
-     scsi_io_completion+0x211/0x690
-     scsi_finish_command+0xd9/0x120
-     scsi_softirq_done+0x127/0x150
-     __blk_mq_complete_request_remote+0x13/0x20
-     flush_smp_call_function_queue+0x56/0x110
-     generic_smp_call_function_single_interrupt+0x13/0x30
-     smp_call_function_single_interrupt+0x27/0x40
-     call_function_single_interrupt+0x89/0x90
-    RIP: 0010:native_safe_halt+0x6/0x10
+If the COMPILE_TEST is not enabled, the string does not appear, it is
+not possible to enable/disable it and the platform must enable it from
+the aforementioned arch/csky/Konfig.
 
-    (gdb) l *(test_clear_page_writeback+0x12e)
-    0xffffffff811bae3e is in test_clear_page_writeback (./include/linux/memcontrol.h:619).
-    614		mod_node_page_state(page_pgdat(page), idx, val);
-    615		if (mem_cgroup_disabled() || !page->mem_cgroup)
-    616			return;
-    617		mod_memcg_state(page->mem_cgroup, idx, val);
-    618		pn = page->mem_cgroup->nodeinfo[page_to_nid(page)];
-    619		this_cpu_add(pn->lruvec_stat->count[idx], val);
-    620	}
-    621
-    622	unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
-    623							gfp_t gfp_mask,
+Actually, the timer drivers policy is : drivers can not be enabled from
+the drivers/clocksource/Kconfig, it is up to the platform Kconfig to
+select them. The exception is when the COMPILE_TEST option is set for
+testing purpose.
 
-The issue is that writeback doesn't hold a page reference and the page
-might get freed after PG_writeback is cleared (and the mapping is
-unlocked) in test_clear_page_writeback().  The stat functions looking up
-the page's node or zone are safe, as those attributes are static across
-allocation and free cycles.  But page->mem_cgroup is not, and it will
-get cleared if we race with truncation or migration.
+The timer must compile on any other archs and the stubs for the platform
+specific calls must be provided.
 
-It appears this race window has been around for a while, but less likely
-to trigger when the memcg stats were updated first thing after
-PG_writeback is cleared.  Recent changes reshuffled this code to update
-the global node stats before the memcg ones, though, stretching the race
-window out to an extent where people can reproduce the problem.
+Did I miss something with your changes ?
 
-Update test_clear_page_writeback() to look up and pin page->mem_cgroup
-before clearing PG_writeback, then not use that pointer afterward.  It
-is a partial revert of 62cccb8c8e7a ("mm: simplify lock_page_memcg()")
-but leaves the pageref-holding callsites that aren't affected alone.
 
-Link: http://lkml.kernel.org/r/20170809183825.GA26387@cmpxchg.org
-Fixes: 62cccb8c8e7a ("mm: simplify lock_page_memcg()")
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Reported-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Tested-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Reported-by: Bradley Bolen <bradleybolen@gmail.com>
-Tested-by: Brad Bolen <bradleybolen@gmail.com>
-Cc: Vladimir Davydov <vdavydov@virtuozzo.com>
-Cc: Michal Hocko <mhocko@suse.cz>
-Cc: <stable@vger.kernel.org>	[4.6+]
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-[guptap@codeaurora.org: Resolved merge conflicts]
-Signed-off-by: Prakash Gupta <guptap@codeaurora.org>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-This patch is present in a downstream Android tree:
 
-https://source.mcwhirter.io/craige/bluecross/commit/d4a742865c6b69ef931694745ef54965d7c9966c
-
-and I happened to have stumbled across the same problem too.
-
-Johannes can you review it for correctness with respect to the 4.9
-kernel? Thanks!
-
- include/linux/memcontrol.h | 33 ++++++++++++++++++++++++-----
- mm/memcontrol.c            | 43 +++++++++++++++++++++++++++-----------
- mm/page-writeback.c        | 14 ++++++++++---
- 3 files changed, 70 insertions(+), 20 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 8b35bdbdc214..fd77f8303ab9 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -490,9 +490,21 @@ bool mem_cgroup_oom_synchronize(bool wait);
- extern int do_swap_account;
- #endif
- 
--void lock_page_memcg(struct page *page);
-+struct mem_cgroup *lock_page_memcg(struct page *page);
-+void __unlock_page_memcg(struct mem_cgroup *memcg);
- void unlock_page_memcg(struct page *page);
- 
-+static inline void __mem_cgroup_update_page_stat(struct page *page,
-+						 struct mem_cgroup *memcg,
-+						 enum mem_cgroup_stat_index idx,
-+						 int val)
-+{
-+	VM_BUG_ON(!(rcu_read_lock_held() || PageLocked(page)));
-+
-+	if (memcg && memcg->stat)
-+		this_cpu_add(memcg->stat->count[idx], val);
-+}
-+
- /**
-  * mem_cgroup_update_page_stat - update page state statistics
-  * @page: the page
-@@ -508,13 +520,12 @@ void unlock_page_memcg(struct page *page);
-  *     mem_cgroup_update_page_stat(page, state, -1);
-  *   unlock_page(page) or unlock_page_memcg(page)
-  */
-+
- static inline void mem_cgroup_update_page_stat(struct page *page,
- 				 enum mem_cgroup_stat_index idx, int val)
- {
--	VM_BUG_ON(!(rcu_read_lock_held() || PageLocked(page)));
- 
--	if (page->mem_cgroup)
--		this_cpu_add(page->mem_cgroup->stat->count[idx], val);
-+	__mem_cgroup_update_page_stat(page, page->mem_cgroup, idx, val);
- }
- 
- static inline void mem_cgroup_inc_page_stat(struct page *page,
-@@ -709,7 +720,12 @@ mem_cgroup_print_oom_info(struct mem_cgroup *memcg, struct task_struct *p)
- {
- }
- 
--static inline void lock_page_memcg(struct page *page)
-+static inline struct mem_cgroup *lock_page_memcg(struct page *page)
-+{
-+	return NULL;
-+}
-+
-+static inline void __unlock_page_memcg(struct mem_cgroup *memcg)
- {
- }
- 
-@@ -745,6 +761,13 @@ static inline void mem_cgroup_update_page_stat(struct page *page,
- {
- }
- 
-+static inline void __mem_cgroup_update_page_stat(struct page *page,
-+						 struct mem_cgroup *memcg,
-+						 enum mem_cgroup_stat_index idx,
-+						 int nr)
-+{
-+}
-+
- static inline void mem_cgroup_inc_page_stat(struct page *page,
- 					    enum mem_cgroup_stat_index idx)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d4232744c59f..27b0b4f03fcd 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1638,9 +1638,13 @@ bool mem_cgroup_oom_synchronize(bool handle)
-  * @page: the page
-  *
-  * This function protects unlocked LRU pages from being moved to
-- * another cgroup and stabilizes their page->mem_cgroup binding.
-+ * another cgroup.
-+ *
-+ * It ensures lifetime of the returned memcg. Caller is responsible
-+ * for the lifetime of the page; __unlock_page_memcg() is available
-+ * when @page might get freed inside the locked section.
-  */
--void lock_page_memcg(struct page *page)
-+struct mem_cgroup *lock_page_memcg(struct page *page)
- {
- 	struct mem_cgroup *memcg;
- 	unsigned long flags;
-@@ -1649,18 +1653,24 @@ void lock_page_memcg(struct page *page)
- 	 * The RCU lock is held throughout the transaction.  The fast
- 	 * path can get away without acquiring the memcg->move_lock
- 	 * because page moving starts with an RCU grace period.
--	 */
-+	 *
-+	 * The RCU lock also protects the memcg from being freed when
-+	 * the page state that is going to change is the only thing
-+	 * preventing the page itself from being freed. E.g. writeback
-+	 * doesn't hold a page reference and relies on PG_writeback to
-+	 * keep off truncation, migration and so forth.
-+         */
- 	rcu_read_lock();
- 
- 	if (mem_cgroup_disabled())
--		return;
-+		return NULL;
- again:
- 	memcg = page->mem_cgroup;
- 	if (unlikely(!memcg))
--		return;
-+		return NULL;
- 
- 	if (atomic_read(&memcg->moving_account) <= 0)
--		return;
-+		return memcg;
- 
- 	spin_lock_irqsave(&memcg->move_lock, flags);
- 	if (memcg != page->mem_cgroup) {
-@@ -1676,18 +1686,18 @@ void lock_page_memcg(struct page *page)
- 	memcg->move_lock_task = current;
- 	memcg->move_lock_flags = flags;
- 
--	return;
-+	return memcg;
- }
- EXPORT_SYMBOL(lock_page_memcg);
- 
- /**
-- * unlock_page_memcg - unlock a page->mem_cgroup binding
-- * @page: the page
-+ * __unlock_page_memcg - unlock and unpin a memcg
-+ * @memcg: the memcg
-+ *
-+ * Unlock and unpin a memcg returned by lock_page_memcg().
-  */
--void unlock_page_memcg(struct page *page)
-+void __unlock_page_memcg(struct mem_cgroup *memcg)
- {
--	struct mem_cgroup *memcg = page->mem_cgroup;
--
- 	if (memcg && memcg->move_lock_task == current) {
- 		unsigned long flags = memcg->move_lock_flags;
- 
-@@ -1699,6 +1709,15 @@ void unlock_page_memcg(struct page *page)
- 
- 	rcu_read_unlock();
- }
-+
-+/**
-+ * unlock_page_memcg - unlock a page->mem_cgroup binding
-+ * @page: the page
-+ */
-+void unlock_page_memcg(struct page *page)
-+{
-+	__unlock_page_memcg(page->mem_cgroup);
-+}
- EXPORT_SYMBOL(unlock_page_memcg);
- 
- /*
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 462c778b9fb5..498c924f2fcd 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2717,9 +2717,10 @@ EXPORT_SYMBOL(clear_page_dirty_for_io);
- int test_clear_page_writeback(struct page *page)
- {
- 	struct address_space *mapping = page_mapping(page);
-+	struct mem_cgroup *memcg;
- 	int ret;
- 
--	lock_page_memcg(page);
-+	memcg = lock_page_memcg(page);
- 	if (mapping && mapping_use_writeback_tags(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct backing_dev_info *bdi = inode_to_bdi(inode);
-@@ -2747,13 +2748,20 @@ int test_clear_page_writeback(struct page *page)
- 	} else {
- 		ret = TestClearPageWriteback(page);
- 	}
-+	/*
-+	 * NOTE: Page might be free now! Writeback doesn't hold a page
-+	 * reference on its own, it relies on truncation to wait for
-+	 * the clearing of PG_writeback. The below can only access
-+	 * page state that is static across allocation cycles.
-+	 */
- 	if (ret) {
--		mem_cgroup_dec_page_stat(page, MEM_CGROUP_STAT_WRITEBACK);
-+		__mem_cgroup_update_page_stat(page, memcg,
-+					      MEM_CGROUP_STAT_WRITEBACK, -1);
- 		dec_node_page_state(page, NR_WRITEBACK);
- 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
- 		inc_node_page_state(page, NR_WRITTEN);
- 	}
--	unlock_page_memcg(page);
-+	__unlock_page_memcg(memcg);
- 	return ret;
- }
- 
 -- 
-2.25.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
