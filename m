@@ -2,167 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7D8314A8F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F152314A97
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbhBIIm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:42:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbhBIImf (ORCPT
+        id S230020AbhBIIoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:44:12 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:7430 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229690AbhBIInr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:42:35 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8674C06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 00:42:12 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id r65so3624796lff.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 00:42:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ChzYY0c5Iz/EDroW9Gp2d3Y4yrxj6R1o6bawn1H2xic=;
-        b=I5HLu1M62gaa5nODf3Wucx2CEMEQxfJkJgo74kx3OIL0kyZRtKHr9AK2hK36oLoFVy
-         d+444QrBQry1Z8njdHiOLYWIehYwwagVw34aY/Mft1QAmy3l0SYp717P4MxW4od7XWvX
-         pbHcYMp7eIDgZICrV9a1Jy1zNDmBDiWusMQv/2mxHjv2D2fyTKhfCsUQ1OAg3HxQu9KC
-         YkSq6X0+mazQ7iutE0+s+LuI2e44vABZSm3O7qTedU5ISeMndtv0HgqnudcYNtNtDgHL
-         QVGpu3QQz2lCXbCxtFvcxI0NkqXjLOQpCqDrpWjFF6rfTiiQBCmKNG5/QlOFjznn9INh
-         ed5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ChzYY0c5Iz/EDroW9Gp2d3Y4yrxj6R1o6bawn1H2xic=;
-        b=QKBHnhg3weKAEYyFVw5qT5niHWHF7yTX0iSO0d+d2IqQjLMaDSHz8Hpp7uwZ+pMHZC
-         D0pAbPcxUBhm0hTSV00ofUneSCvWdEE2mPXc2P607drWgGuFWrNfBa0YJiPI5aJQMntg
-         Q7CY8NvEswlsbK3V6XXxxm0yRlUEDwnFJ7+Yn8t8XSXdoD/8N0bULVuWoz0O1HzjTlJe
-         40j7xgt7kA6cUFczYPpIqSlNbi+i3+T1i3s3tAXNILdb/9FlnO3dT2FqVt41rIIrk+dz
-         w9aOFABqhndphr6EpcZPZY+XEO7bvoRtk5pXfVrgDBf8IzLFSX63j1542VdhX0ym70gb
-         04sA==
-X-Gm-Message-State: AOAM532kC13Ura7nL1Ikx4PQtQMjQxNTWg1CCiYbaJMnX/mVCHYt7zwN
-        JEGE7aOil+70fOCu9i2MpXXQTQ/D3Pn0u4HwQ2WJgQ==
-X-Google-Smtp-Source: ABdhPJyQW9NK8gPSZAT5oQKQ3PMm7Xo0rkRgQDJfPGYSQsIWKaW33NHUurl8aKOgcevOHL8G+8JQ9SMCZVE3lXmvkjk=
-X-Received: by 2002:a19:e219:: with SMTP id z25mr6148194lfg.254.1612860131181;
- Tue, 09 Feb 2021 00:42:11 -0800 (PST)
+        Tue, 9 Feb 2021 03:43:47 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1198afpp003954;
+        Tue, 9 Feb 2021 00:42:45 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=RBZH28AihrXWJ0czsh9x/Sr5BV4yon92OXbl1WE+hOA=;
+ b=KKt1buR7m9FyfKosk82NAEdPD3UhRDhXg/Kif9tWVDEoIcUCnMWypea/Ov/z1nl7yggY
+ AXf7dORFHkx+CcWr3iJLcrxORzhDRZQbUcpaYKyFKjZks4GSjremZS7cHCxrpPcKYXVp
+ VZ57C++fkrR5QCFm5GS4nq5G6MtMqfd1VmHP0Ck6lK/7I5doiJI8TmyjkhMBxVXEFe+B
+ ywChlvR64BuwG7jKc7z9w2Sg+SQBvtYdowI6R5t38zCEReJnZqP8IUBP9xMI7xJCVE9E
+ 0tpx9/fzhVMIisdp4557fGCDch/8HG3dzmtTrTtZDv1VJ7JphVFO+zQyBZxdWC4Y48XH IA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36hsbrfspc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 00:42:45 -0800
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
+ 2021 00:42:43 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
+ 2021 00:42:43 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 9 Feb 2021 00:42:43 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 255953F703F;
+        Tue,  9 Feb 2021 00:42:38 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <sebastian.hesselbarth@gmail.com>,
+        <gregory.clement@bootlin.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v11 net-next 00/15] net: mvpp2: Add TX Flow Control support
+Date:   Tue, 9 Feb 2021 10:42:16 +0200
+Message-ID: <1612860151-12275-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-References: <20210128183141.28097-1-valentin.schneider@arm.com> <20210128183141.28097-3-valentin.schneider@arm.com>
-In-Reply-To: <20210128183141.28097-3-valentin.schneider@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 9 Feb 2021 09:42:00 +0100
-Message-ID: <CAKfTPtD=QmCnTVdPiAv8v4X3wnwSm3_YiGd+vtHx2kw+DLYfPw@mail.gmail.com>
-Subject: Re: [PATCH 2/8] sched/fair: Add more sched_asym_cpucapacity static
- branch checks
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-09_02:2021-02-09,2021-02-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Jan 2021 at 19:32, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> Rik noted a while back that a handful of
->
->   sd->flags & SD_ASYM_CPUCAPACITY
->
-> & family in the CFS load-balancer code aren't guarded by the
-> sched_asym_cpucapacity static branch.
->
-> The load-balancer is already doing a humongous amount of work, but turning
-> those checks into NOPs for those who don't need it is fairly
-> straightforward, so do that.
+From: Stefan Chulski <stefanc@marvell.com>
 
-It would be good to get figures showing an improvement. We are there
-in the LB which is a slow path. Whereas using the static branch in
-fast path makes sense, I don't see the benefit there. Also why not
-doing the same for others like SD_ASYM_PACKING.
-I'm not convinced by this change which IMO doesn't provide any benefit
-but adds complexity.
+Armada hardware has a pause generation mechanism in GOP (MAC).
+The GOP generate flow control frames based on an indication programmed in Ports Control 0 Register. There is a bit per port.
+However assertion of the PortX Pause bits in the ports control 0 register only sends a one time pause.
+To complement the function the GOP has a mechanism to periodically send pause control messages based on periodic counters.
+This mechanism ensures that the pause is effective as long as the Appropriate PortX Pause is asserted.
 
->
-> Suggested-by: Rik van Riel <riel@surriel.com>
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  kernel/sched/fair.c  | 11 ++++++-----
->  kernel/sched/sched.h |  6 ++++++
->  2 files changed, 12 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 0f6a4e58ce3c..7d01fa0bfc7e 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8465,7 +8465,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->                         continue;
->
->                 /* Check for a misfit task on the cpu */
-> -               if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
-> +               if (sd_has_asym_cpucapacity(env->sd) &&
->                     sgs->group_misfit_task_load < rq->misfit_task_load) {
->                         sgs->group_misfit_task_load = rq->misfit_task_load;
->                         *sg_status |= SG_OVERLOAD;
-> @@ -8522,7 +8522,8 @@ static bool update_sd_pick_busiest(struct lb_env *env,
->          * CPUs in the group should either be possible to resolve
->          * internally or be covered by avg_load imbalance (eventually).
->          */
-> -       if (sgs->group_type == group_misfit_task &&
-> +       if (static_branch_unlikely(&sched_asym_cpucapacity) &&
-> +           sgs->group_type == group_misfit_task &&
->             (!group_smaller_max_cpu_capacity(sg, sds->local) ||
->              sds->local_stat.group_type != group_has_spare))
->                 return false;
-> @@ -8605,7 +8606,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
->          * throughput. Maximize throughput, power/energy consequences are not
->          * considered.
->          */
-> -       if ((env->sd->flags & SD_ASYM_CPUCAPACITY) &&
-> +       if (sd_has_asym_cpucapacity(env->sd) &&
->             (sgs->group_type <= group_fully_busy) &&
->             (group_smaller_min_cpu_capacity(sds->local, sg)))
->                 return false;
-> @@ -8728,7 +8729,7 @@ static inline void update_sg_wakeup_stats(struct sched_domain *sd,
->         }
->
->         /* Check if task fits in the group */
-> -       if (sd->flags & SD_ASYM_CPUCAPACITY &&
-> +       if (sd_has_asym_cpucapacity(sd) &&
->             !task_fits_capacity(p, group->sgc->max_capacity)) {
->                 sgs->group_misfit_task_load = 1;
->         }
-> @@ -9419,7 +9420,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->                  * Higher per-CPU capacity is considered better than balancing
->                  * average load.
->                  */
-> -               if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
-> +               if (sd_has_asym_cpucapacity(env->sd) &&
->                     capacity_of(env->dst_cpu) < capacity &&
->                     nr_running == 1)
->                         continue;
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 045b01064c1e..21bd71f58c06 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1482,6 +1482,12 @@ DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
->  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
->  extern struct static_key_false sched_asym_cpucapacity;
->
-> +static inline bool sd_has_asym_cpucapacity(struct sched_domain *sd)
-> +{
-> +       return static_branch_unlikely(&sched_asym_cpucapacity) &&
-> +               sd->flags & SD_ASYM_CPUCAPACITY;
-> +}
-> +
->  struct sched_group_capacity {
->         atomic_t                ref;
->         /*
-> --
-> 2.27.0
->
+Problem is that Packet Processor that actually can drop packets due to lack of resources not connected to the GOP flow control generation mechanism.
+To solve this issue Armada has firmware running on CM3 CPU dedicated for Flow Control support.
+Firmware monitors Packet Processor resources and asserts XON/XOFF by writing to Ports Control 0 Register.
+
+MSS shared SRAM memory used to communicate between CM3 firmware and PP2 driver.
+During init PP2 driver informs firmware about used BM pools, RXQs, congestion and depletion thresholds.
+
+The pause frames are generated whenever congestion or depletion in resources is detected.
+The back pressure is stopped when the resource reaches a sufficient level.
+So the congestion/depletion and sufficient level implement a hysteresis that reduces the XON/XOFF toggle frequency.
+
+Packet Processor v23 hardware introduces support for RX FIFO fill level monitor.
+Patch "add PPv23 version definition" to differ between v23 and v22 hardware.
+Patch "add TX FC firmware check" verifies that CM3 firmware supports Flow Control monitoring.
+
+v10 --> v11
+- Improve "net: mvpp2: add CM3 SRAM memory map" comment
+- Move condition check to 'net: mvpp2: always compare hw-version vs MVPP21' patch
+
+v9 --> v10
+- Add CM3 SRAM description to PPv2 documentation
+
+v8 --> v9
+- Replace generic pool allocation with devm_ioremap_resource
+
+v7 --> v8
+- Reorder "always compare hw-version vs MVPP21" and "add PPv23 version definition" commits
+- Typo fixes
+- Remove condition fix from "add RXQ flow control configurations"
+
+v6 --> v7
+- Reduce patch set from 18 to 15 patches
+ - Documentation change combined into a single patch
+ - RXQ and BM size change combined into a single patch
+ - Ring size change check moved into "add RXQ flow control configurations" commit
+
+v5 --> v6
+- No change
+
+v4 --> v5
+- Add missed Signed-off
+- Fix warnings in patches 3 and 12
+- Add revision requirement to warning message
+- Move mss_spinlock into RXQ flow control configurations patch
+- Improve FCA RXQ non occupied descriptor threshold commit message
+
+v3 --> v4
+- Remove RFC tag
+
+v2 --> v3
+- Remove inline functions
+- Add PPv2.3 description into marvell-pp2.txt
+- Improve mvpp2_interrupts_mask/unmask procedure
+- Improve FC enable/disable procedure
+- Add priv->sram_pool check
+- Remove gen_pool_destroy call
+- Reduce Flow Control timer to x100 faster
+
+v1 --> v2
+- Add memory requirements information
+- Add EPROBE_DEFER if of_gen_pool_get return NULL
+- Move Flow control configuration to mvpp2_mac_link_up callback
+- Add firmware version info with Flow control support
+
+Konstantin Porotchkin (1):
+  dts: marvell: add CM3 SRAM memory to cp11x ethernet device tree
+
+Stefan Chulski (14):
+  doc: marvell: add CM3 address space and PPv2.3 description
+  net: mvpp2: add CM3 SRAM memory map
+  net: mvpp2: always compare hw-version vs MVPP21
+  net: mvpp2: add PPv23 version definition
+  net: mvpp2: increase BM pool and RXQ size
+  net: mvpp2: add FCA periodic timer configurations
+  net: mvpp2: add FCA RXQ non occupied descriptor threshold
+  net: mvpp2: enable global flow control
+  net: mvpp2: add RXQ flow control configurations
+  net: mvpp2: add ethtool flow control configuration support
+  net: mvpp2: add BM protection underrun feature support
+  net: mvpp2: add PPv23 RX FIFO flow control
+  net: mvpp2: set 802.3x GoP Flow Control mode
+  net: mvpp2: add TX FC firmware check
+
+ Documentation/devicetree/bindings/net/marvell-pp2.txt |   6 +-
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi         |   2 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h            | 124 ++++-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c       | 526 ++++++++++++++++++--
+ 4 files changed, 609 insertions(+), 49 deletions(-)
+
+-- 
+1.9.1
+
