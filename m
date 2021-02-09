@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009A4314F36
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77127314F4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhBIMkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:40:37 -0500
-Received: from elvis.franken.de ([193.175.24.41]:36506 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhBIMj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:39:57 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l9SIV-0003IE-06; Tue, 09 Feb 2021 13:39:15 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 24C2EC0DBF; Tue,  9 Feb 2021 13:38:34 +0100 (CET)
-Date:   Tue, 9 Feb 2021 13:38:34 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "mips: Manually call fdt_init_reserved_mem()
- method"
-Message-ID: <20210209123834.GF11264@alpha.franken.de>
-References: <20210208134614.5585-1-Sergey.Semin@baikalelectronics.ru>
+        id S230140AbhBIMnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:43:07 -0500
+Received: from mx1.opensynergy.com ([217.66.60.4]:47566 "EHLO
+        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230286AbhBIMlR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:41:17 -0500
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
+        by mx1.opensynergy.com (Proxmox) with ESMTP id E2D82A15FB;
+        Tue,  9 Feb 2021 13:40:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:from:from:in-reply-to:message-id:mime-version:references
+        :reply-to:subject:subject:to:to; s=srmailgate02; bh=JMWVu00sJKNa
+        UzNO4ZqMeD8FYjdkJxYXTlplUlw+228=; b=mPwXUFMeBCUQKFHXb+RJBbh6VEJt
+        gcrdgn9BziPBCzbdN5q6V/KdFCo14KP8tcypFc9XIfQuFWMs+n7i7pe17dNkccj4
+        0wAICl4s8Yr6jl6OItvdFJ2yEEOBKPsIN3v+F8Rag5QKOC/ircJ7RGEfPE45rwLd
+        Cnv8ZiwsTKJ19lns4T0FIUy4nNTqLbsmpPdWGaSVfONw9xNomhZ7T3Sa3MM3ANX6
+        iWe8aZv3at4riOeALU00M13W270YPyO9fu3t+wIVyW4yq3jLmGCUQsxd8ALhjVxc
+        PbFZP1vm+xy5QDwHauHTlUA1xDJEn9ncM5gXjkqoSTbrHzwTXVaAIeqvhA==
+From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
+To:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jason Wang <jasowang@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 1/9] uapi: virtio_ids: add a sound device type ID from OASIS spec
+Date:   Tue, 9 Feb 2021 13:40:02 +0100
+Message-ID: <20210209124011.1224628-2-anton.yakovlev@opensynergy.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210209124011.1224628-1-anton.yakovlev@opensynergy.com>
+References: <20210209124011.1224628-1-anton.yakovlev@opensynergy.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208134614.5585-1-Sergey.Semin@baikalelectronics.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 04:46:14PM +0300, Serge Semin wrote:
-> This reverts commit 3751cbda8f223549d7ea28803cbec8ac87e43ed2.
-> 
-> Originally the patch was created to fix the reserved-memory DT-node
-> parsing failure on the early stages of the platform memory initialization.
-> That happened due to the two early memory allocators utilization that
-> time: bootmem and memblock. At first the platform-specific memory mapping
-> array was initialized. Then the early_init_fdt_scan_reserved_mem() was
-> called, which couldn't fully parse the "reserved-memory" DT-node since
-> neither memblock nor bootmem allocators hadn't been initialized at that
-> stage, so the fdt_init_reserved_mem() method failed on the memory
-> allocation calls. Only after that the platform-specific memory mapping
-> were used to create proper bootmem and memblock structures and let the
-> early memory allocations work.  That's why we had to call the
-> fdt_init_reserved_mem() method one more time to retry the initialization
-> of the features like CMA.
-> 
-> The necessity to have that fix was disappeared after the full memblock
-> support had been added to the MIPS kernel and all plat_mem_setup() had
-> been fixed to add the memory regions right into the memblock memory pool.
-> Let's revert that patch then especially after having Paul reported that
-> the second fdt_init_reserved_mem() call causes the reserved memory pool
-> being created twice bigger than implied.
-> 
-> Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
-> Reported-by: Paul Cercueil <paul@crapouillou.net>
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> ---
->  arch/mips/kernel/setup.c | 3 ---
->  1 file changed, 3 deletions(-)
+The OASIS virtio spec defines a sound device type ID that is not
+present in the header yet.
 
-applied to mips-next.
+Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+---
+ include/uapi/linux/virtio_ids.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thomas.
-
+diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
+index bc1c0621f5ed..029a2e07a7f9 100644
+--- a/include/uapi/linux/virtio_ids.h
++++ b/include/uapi/linux/virtio_ids.h
+@@ -51,6 +51,7 @@
+ #define VIRTIO_ID_PSTORE		22 /* virtio pstore device */
+ #define VIRTIO_ID_IOMMU			23 /* virtio IOMMU */
+ #define VIRTIO_ID_MEM			24 /* virtio mem */
++#define VIRTIO_ID_SOUND			25 /* virtio sound */
+ #define VIRTIO_ID_FS			26 /* virtio filesystem */
+ #define VIRTIO_ID_PMEM			27 /* virtio pmem */
+ #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.30.0
+
+
