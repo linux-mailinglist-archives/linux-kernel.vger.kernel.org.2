@@ -2,114 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA8E315A9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A90315B0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234879AbhBJAGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:06:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36476 "EHLO
+        id S234342AbhBJAXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:23:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233779AbhBIUib (ORCPT
+        with ESMTP id S234078AbhBIUwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:38:31 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6398C0611C1;
-        Tue,  9 Feb 2021 11:24:01 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id jj19so33687967ejc.4;
-        Tue, 09 Feb 2021 11:24:01 -0800 (PST)
+        Tue, 9 Feb 2021 15:52:02 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24739C061B3F
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:49:42 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id u4so23992986ljh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 11:49:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=r7BU1Ua7cwHe6jzoj7pIEXXpfnh5K4Y+YXR073vkvQE=;
-        b=bh1IT2E376Yq6oXbtlLRVU+ZZgwlQGngdXEgtoCLNApGVLxKZgNcwTXuBftb9haijP
-         IIjApj2MGOwBkU4/qoDv8H5kROC7Ft9rXktG0pwxcodKCht0kPvXTv/S5Sw/XF2cBeGd
-         qAwGBS1P4pNyT8b2GVyW1VbiAFE2pbYimxz6Wh3twMtY5kDU0JRy1UKKWpaK6ujwF9SI
-         qp3oeiRdTb0QMw0J4grCoBzbrLvAzZhdNi++4bjwbOkdPCyOyiYcuj5p8D4S+Lwffwzd
-         zTXauPyAD+rCiPkeMGS8u2Z9aqlADrMziri6dNWDPabmtIt8ewRfL1HgSNzN38rADgBh
-         he3w==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tg9bvJW7KURZqSvHpoxoxZZgRlsW1CD6yJ8HTgIrTEI=;
+        b=MSEMrSW7JE1XKfLGcssMplSx3dkONIFuFJZaQh96MU2irMExdNDlb2UUV9hJFNXJXJ
+         XGdzYXPyEcHNxCQyb5IDoshruLqD49zhqfhDRSZbRSO4+qZlUjrnqe6W88WirVg6CQ8A
+         J3g8IUxKQSM3vuI5YIU56JfXlWypqngBVxK/1Y7YSsgD/aacJfxvLfrUNftmAqvjQ8RM
+         tZ7Lkqn2hKle/1srmexZPkEtEHG64broojVHPswm8U6ydtCyja7tLY9rnI8xY0Ryr7ur
+         HV7DqWDlmCEi2HGkRIKB5Jvq/S4WuX/lPI1T/V98x0BQgyebOz5jz+kj1VVRE7jRTF4k
+         gQlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=r7BU1Ua7cwHe6jzoj7pIEXXpfnh5K4Y+YXR073vkvQE=;
-        b=g6kfxvLv+JkZ4DVu99B/nhi+DAvpqmQTrAlxgHE/mbHVHN89lM2RkxXi6X0Wi19P0y
-         lZBOPEv8Tenae+eRelrsBXyRXdqqNoaouddaEqg4OXKmkTy1OXqW9pXo8qJQ6TkQs/fm
-         IPvZIjY7CqISYvCs6qX4YXgbCqZTCIhyDdCdpKNGrx5zp7pAw5f+9OD+zq2+C2bnKE2x
-         nJugeuhMdFP6v5cAAVh/uWWFSMLCyAus55RuDWzux4ROWZdsnT9DlWWEqJRwXoRtpMIs
-         /aDOvB9vIDTz9R9a1+mueSTG1YouqUsB3bA6j5MekMZ6U/EUmq08DCz7IzZqEAU3iqlA
-         cXKQ==
-X-Gm-Message-State: AOAM530KC3v7rYkq7xYQQ8yAHAevWYTFdY+GDK7u5060b+kOuZ6ZuU1M
-        E5k5NSJ5IC9GVtHfzIjM820=
-X-Google-Smtp-Source: ABdhPJxKg0jN0s/0ilpBmiIkOppmd8gfTSX0HME5CQ924LQSHlmH/a9j412UFHOcO2XDV1B8AX7bGw==
-X-Received: by 2002:a17:906:7b8d:: with SMTP id s13mr23864808ejo.479.1612898640598;
-        Tue, 09 Feb 2021 11:24:00 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id w3sm11075779eja.52.2021.02.09.11.23.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Feb 2021 11:24:00 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/8] arm64: dts: rockchip: optimize clks for rk3399 dwc3
-Date:   Tue,  9 Feb 2021 20:23:45 +0100
-Message-Id: <20210209192350.7130-3-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210209192350.7130-1-jbx6244@gmail.com>
-References: <20210209192350.7130-1-jbx6244@gmail.com>
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tg9bvJW7KURZqSvHpoxoxZZgRlsW1CD6yJ8HTgIrTEI=;
+        b=Q1oz82b02p1ilFD2LtdOYyfLKQh/kz9sZoO6UNOZ34o/xdwurHNfXQC5yZkBUGDKzA
+         HcRCf1Zhd0DTSe+/eTUyKYlTPYB9YAlQE1gKqQ0E1tJQsvzECE1Vt33ltmRRSJPAoh7e
+         raQuMbz0oWs/OowGB8RRqcs0katxg+H5Na0R3cjXjiooVvEL7i1sc9olix/NZ/7bkp8z
+         xno5grmed28dyfvDPi7gcICHZ8KVFN7ayBYff8BETsyWEksy4oFLG4vvEBxc4yg4RrTm
+         DiRdkLhR/7cJ25aJuo5nSPrJubNjMMzVIBOQcwD8b3ygqBndVG5GBQJbMa8PJKcHoM8k
+         b4LQ==
+X-Gm-Message-State: AOAM531RU5vLxAY11d/kEXw8qe/A3khGI3XxDWUsoFAmGkxQR2/gY5PW
+        4i+0lS9MvK+3b6upiqYPxFY=
+X-Google-Smtp-Source: ABdhPJzvKlxSM2JZPmKZkX9/m1E5b8uJM4DG7ktOz4CK0yp3WohrsTQ8lv7SF8/LEPXl+YNGcag89g==
+X-Received: by 2002:a2e:8712:: with SMTP id m18mr3861223lji.60.1612900180561;
+        Tue, 09 Feb 2021 11:49:40 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id q24sm2782098ljg.117.2021.02.09.11.49.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 11:49:39 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 9 Feb 2021 20:49:37 +0100
+To:     Serapheim Dimitropoulos <serapheim.dimitro@delphix.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, osandov@osandov.com,
+        urezki@gmail.com, serapheim@delphix.com
+Subject: Re: [PATCH v2] mm/vmalloc: use rb_tree instead of list for vread()
+ lookups
+Message-ID: <20210209194937.GA2452@pc638.lan>
+References: <20210209190253.108763-1-serapheim@delphix.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209190253.108763-1-serapheim@delphix.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Liang feng <wulf@rock-chips.com>
+> vread() has been linearly searching vmap_area_list for looking up
+> vmalloc areas to read from. These same areas are also tracked by
+> a rb_tree (vmap_area_root) which offers logarithmic lookup.
+> 
+> This patch modifies vread() to use the rb_tree structure instead
+> of the list and the speedup for heavy /proc/kcore readers can
+> be pretty significant. Below are the wall clock measurements of
+> a Python application that leverages the drgn debugging library
+> to read and interpret data read from /proc/kcore.
+> 
+> Before the patch:
+> -----
+> $ time sudo sdb -e 'dbuf | head 3000 | wc'
+> (unsigned long)3000
+> 
+> real	0m22.446s
+> user	0m2.321s
+> sys	0m20.690s
+> -----
+> 
+> With the patch:
+> -----
+> $ time sudo sdb -e 'dbuf | head 3000 | wc'
+> (unsigned long)3000
+> 
+> real	0m2.104s
+> user	0m2.043s
+> sys	0m0.921s
+> -----
+> 
+> Signed-off-by: Serapheim Dimitropoulos <serapheim@delphix.com>
+> ---
+> Changed in v2:
+> 
+> - Use __find_vmap_area() for initial lookup but keep iteration via
+>   va->list.
+> 
+>  mm/vmalloc.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 49ab9b6c001d..eb133d000394 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2860,7 +2860,10 @@ long vread(char *buf, char *addr, unsigned long count)
+>  		count = -(unsigned long) addr;
+>  
+>  	spin_lock(&vmap_area_lock);
+> -	list_for_each_entry(va, &vmap_area_list, list) {
+> +	va = __find_vmap_area((unsigned long)addr);
+> +	if (!va)
+> +		goto finished;
+> +	list_for_each_entry_from(va, &vmap_area_list, list) {
+>  		if (!count)
+>  			break;
+>  
+> -- 
+> 2.17.1
+> 
+Much better :)
 
-Remove unnecessary clocks, refer to rk3399 TRM, aclk_usb3 is the
-parent of aclk_usb3otg0/1 and aclk_usb3_grf, and we will enable
-aclk_usb3otg0/1 and aclk_usb3_grf, so don't need to enable aclk_usb3
-again. In addition, the aclk_usb3_rksoc_axi_perf clk is used for usb3
-performance monitor module which we don't use now, so don't need to
-enable it.
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Signed-off-by: Wu Liang feng <wulf@rock-chips.com>
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 04f7cc5c3..b125cac89 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -399,11 +399,9 @@
- 		#size-cells = <2>;
- 		ranges;
- 		clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
--			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_RKSOC_AXI_PERF>,
--			 <&cru ACLK_USB3>, <&cru ACLK_USB3_GRF>;
-+			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
- 		clock-names = "ref_clk", "suspend_clk",
--			      "bus_clk", "aclk_usb3_rksoc_axi_perf",
--			      "aclk_usb3", "grf_clk";
-+			      "bus_clk", "grf_clk";
- 		resets = <&cru SRST_A_USB3_OTG0>;
- 		reset-names = "usb3-otg";
- 		status = "disabled";
-@@ -435,11 +433,9 @@
- 		#size-cells = <2>;
- 		ranges;
- 		clocks = <&cru SCLK_USB3OTG1_REF>, <&cru SCLK_USB3OTG1_SUSPEND>,
--			 <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_RKSOC_AXI_PERF>,
--			 <&cru ACLK_USB3>, <&cru ACLK_USB3_GRF>;
-+			 <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_GRF>;
- 		clock-names = "ref_clk", "suspend_clk",
--			      "bus_clk", "aclk_usb3_rksoc_axi_perf",
--			      "aclk_usb3", "grf_clk";
-+			      "bus_clk", "grf_clk";
- 		resets = <&cru SRST_A_USB3_OTG1>;
- 		reset-names = "usb3-otg";
- 		status = "disabled";
--- 
-2.11.0
-
+--
+Vlad Rezki
