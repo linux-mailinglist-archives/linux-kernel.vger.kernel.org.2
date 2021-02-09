@@ -2,405 +2,460 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29C8314A4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FFC314AFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhBII2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:28:55 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12602 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhBII2I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:28:08 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZbZF2b3Sz165ht;
-        Tue,  9 Feb 2021 16:25:57 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.203.241) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 9 Feb 2021 16:27:13 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <valentin.schneider@arm.com>, <vincent.guittot@linaro.org>,
-        <mgorman@suse.de>, <mingo@kernel.org>, <peterz@infradead.org>,
-        <dietmar.eggemann@arm.com>, <morten.rasmussen@arm.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@openeuler.org>, <xuwei5@huawei.com>,
-        <liguozhu@hisilicon.com>, <tiantao6@hisilicon.com>,
-        <wanghuiqiang@huawei.com>, <prime.zeng@hisilicon.com>,
-        <jonathan.cameron@huawei.com>, <guodong.xu@linaro.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Meelis Roos <mroos@linux.ee>
-Subject: [PATCH v3] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
-Date:   Tue, 9 Feb 2021 21:21:25 +1300
-Message-ID: <20210209082125.22176-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S230301AbhBII5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:57:42 -0500
+Received: from m12-11.163.com ([220.181.12.11]:49030 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230063AbhBIIsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 03:48:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=PSfy/
+        +QXOlQZc11vd+kllhwGR1ZJsPSV13Tkt44bFbQ=; b=KZoWqjm8nV5Wc7CLYsv9x
+        YGm3v3norKnmx+wH+WoIUCAMQWOVBU9qB5Y/VUQ2izPfnU8+rbVtSP5CAD49Uzl1
+        UgIHbcvVpWAA1cycVg23bknA1NS6D8bK9jyeh1EQV49472nWHAOtzs2JJTmOx0M/
+        cYmWjHm5Wo70auxpofxw+A=
+Received: from localhost.localdomain (unknown [58.33.102.73])
+        by smtp7 (Coremail) with SMTP id C8CowABnNa5zRiJg2f0CNA--.10017S4;
+        Tue, 09 Feb 2021 16:23:16 +0800 (CST)
+From:   zhou <xianrong_zhou@163.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mhocko@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
+        vbabka@suse.cz, rientjes@google.com, willy@linux.intel.com,
+        pankaj.gupta.linux@gmail.com, bhe@redhat.com, ying.huang@intel.com,
+        iamjoonsoo.kim@lge.com, minchan@kernel.org,
+        ruxian.feng@transsion.com, kai.cheng@transsion.com,
+        zhao.xu@transsion.com, yunfeng.lan@transsion.com,
+        zhouxianrong@tom.com, zhou xianrong <xianrong.zhou@transsion.com>
+Subject: [PATCH] kswapd: no need reclaim cma pages triggered by unmovable allocation
+Date:   Tue,  9 Feb 2021 16:23:13 +0800
+Message-Id: <20210209082313.21969-1-xianrong_zhou@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.203.241]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowABnNa5zRiJg2f0CNA--.10017S4
+X-Coremail-Antispam: 1Uf129KBjvAXoW3ZrWkJw1DAryDGF1xZw4ktFb_yoW8GFWUXo
+        WSkrsIyw1SgryjvwnY9FykJF4UXF1kAr4xZF1jva9xC3ZxZrWrJa90kw47JFWfXF4rtF1r
+        Xr10k3srtFs5t3Z7n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUq1v3UUUUU
+X-Originating-IP: [58.33.102.73]
+X-CM-SenderInfo: h0ld02prqjs6xkrxqiywtou0bp/xtbBzxQ0z1aD9+RkqQAAsr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As long as NUMA diameter > 2, building sched_domain by sibling's child
-domain will definitely create a sched_domain with sched_group which will
-span out of the sched_domain:
+From: zhou xianrong <xianrong.zhou@transsion.com>
 
-               +------+         +------+        +-------+       +------+
-               | node |  12     |node  | 20     | node  |  12   |node  |
-               |  0   +---------+1     +--------+ 2     +-------+3     |
-               +------+         +------+        +-------+       +------+
+For purpose of better migration cma pages are allocated after
+failure movalbe allocations and are used normally for file pages
+or anonymous pages.
 
-domain0        node0            node1            node2          node3
+In reclaim path so many cma pages if configurated are reclaimed
+from lru lists in kswapd mainly or direct reclaim triggered by
+unmovable or reclaimable allocations. But these cma pages can not
+be used by original unmovable or reclaimable allocations. So the
+reclaim are unnecessary.
 
-domain1        node0+1          node0+1          node2+3        node2+3
-                                                 +
-domain2        node0+1+2                         |
-             group: node0+1                      |
-               group:node2+3 <-------------------+
+In a same system if the cma pages were configurated to large then
+more failture unmovable (vmalloc etc.) or reclaimable (slab etc.)
+allocations are arised and then more kswapd rounds are triggered
+and then more cma pages are reclaimed.
 
-when node2 is added into the domain2 of node0, kernel is using the child
-domain of node2's domain2, which is domain1(node2+3). Node 3 is outside
-the span of the domain including node0+1+2.
+So this maybe cause vicious cycle. It causes that when we are under
+low memory and still there are many cma pages that can not be
+allocated due to unnecessary cma reclaim and cma fallback allocations
+. So cma pages are not used sufficiently.
 
-This will make load_balance() run based on screwed avg_load and group_type
-in the sched_group spanning out of the sched_domain, and it also makes
-select_task_rq_fair() pick an idle CPU outside the sched_domain.
+The modification is straightforward that skips reclaiming cma pages
+in reclaim procedure which is triggered only by unmovable or
+reclaimable allocations. This optimization can avoid ~3% unnecessary
+cma isolations (cma isolated / total isolated).
 
-Real servers which suffer from this problem include Kunpeng920 and 8-node
-Sun Fire X4600-M2, at least.
-
-Here we move to use the *child* domain of the *child* domain of node2's
-domain2 as the new added sched_group. At the same, we re-use the lower
-level sgc directly.
-               +------+         +------+        +-------+       +------+
-               | node |  12     |node  | 20     | node  |  12   |node  |
-               |  0   +---------+1     +--------+ 2     +-------+3     |
-               +------+         +------+        +-------+       +------+
-
-domain0        node0            node1          +- node2          node3
-                                               |
-domain1        node0+1          node0+1        | node2+3        node2+3
-                                               |
-domain2        node0+1+2                       |
-             group: node0+1                    |
-               group:node2 <-------------------+
-
-Tested by the below topology:
-qemu-system-aarch64  -M virt -nographic \
- -smp cpus=8 \
- -numa node,cpus=0-1,nodeid=0 \
- -numa node,cpus=2-3,nodeid=1 \
- -numa node,cpus=4-5,nodeid=2 \
- -numa node,cpus=6-7,nodeid=3 \
- -numa dist,src=0,dst=1,val=12 \
- -numa dist,src=0,dst=2,val=20 \
- -numa dist,src=0,dst=3,val=22 \
- -numa dist,src=1,dst=2,val=22 \
- -numa dist,src=2,dst=3,val=12 \
- -numa dist,src=1,dst=3,val=24 \
- -m 4G -cpu cortex-a57 -kernel arch/arm64/boot/Image
-
-w/o patch, we get lots of "groups don't span domain->span":
-[    0.802139] CPU0 attaching sched-domain(s):
-[    0.802193]  domain-0: span=0-1 level=MC
-[    0.802443]   groups: 0:{ span=0 cap=1013 }, 1:{ span=1 cap=979 }
-[    0.802693]   domain-1: span=0-3 level=NUMA
-[    0.802731]    groups: 0:{ span=0-1 cap=1992 }, 2:{ span=2-3 cap=1943 }
-[    0.802811]    domain-2: span=0-5 level=NUMA
-[    0.802829]     groups: 0:{ span=0-3 cap=3935 }, 4:{ span=4-7 cap=3937 }
-[    0.802881] ERROR: groups don't span domain->span
-[    0.803058]     domain-3: span=0-7 level=NUMA
-[    0.803080]      groups: 0:{ span=0-5 mask=0-1 cap=5843 }, 6:{ span=4-7 mask=6-7 cap=4077 }
-[    0.804055] CPU1 attaching sched-domain(s):
-[    0.804072]  domain-0: span=0-1 level=MC
-[    0.804096]   groups: 1:{ span=1 cap=979 }, 0:{ span=0 cap=1013 }
-[    0.804152]   domain-1: span=0-3 level=NUMA
-[    0.804170]    groups: 0:{ span=0-1 cap=1992 }, 2:{ span=2-3 cap=1943 }
-[    0.804219]    domain-2: span=0-5 level=NUMA
-[    0.804236]     groups: 0:{ span=0-3 cap=3935 }, 4:{ span=4-7 cap=3937 }
-[    0.804302] ERROR: groups don't span domain->span
-[    0.804520]     domain-3: span=0-7 level=NUMA
-[    0.804546]      groups: 0:{ span=0-5 mask=0-1 cap=5843 }, 6:{ span=4-7 mask=6-7 cap=4077 }
-[    0.804677] CPU2 attaching sched-domain(s):
-[    0.804687]  domain-0: span=2-3 level=MC
-[    0.804705]   groups: 2:{ span=2 cap=934 }, 3:{ span=3 cap=1009 }
-[    0.804754]   domain-1: span=0-3 level=NUMA
-[    0.804772]    groups: 2:{ span=2-3 cap=1943 }, 0:{ span=0-1 cap=1992 }
-[    0.804820]    domain-2: span=0-5 level=NUMA
-[    0.804836]     groups: 2:{ span=0-3 mask=2-3 cap=3991 }, 4:{ span=0-1,4-7 mask=4-5 cap=5985 }
-[    0.804944] ERROR: groups don't span domain->span
-[    0.805108]     domain-3: span=0-7 level=NUMA
-[    0.805134]      groups: 2:{ span=0-5 mask=2-3 cap=5899 }, 6:{ span=0-1,4-7 mask=6-7 cap=6125 }
-[    0.805223] CPU3 attaching sched-domain(s):
-[    0.805232]  domain-0: span=2-3 level=MC
-[    0.805249]   groups: 3:{ span=3 cap=1009 }, 2:{ span=2 cap=934 }
-[    0.805319]   domain-1: span=0-3 level=NUMA
-[    0.805336]    groups: 2:{ span=2-3 cap=1943 }, 0:{ span=0-1 cap=1992 }
-[    0.805383]    domain-2: span=0-5 level=NUMA
-[    0.805399]     groups: 2:{ span=0-3 mask=2-3 cap=3991 }, 4:{ span=0-1,4-7 mask=4-5 cap=5985 }
-[    0.805458] ERROR: groups don't span domain->span
-[    0.805605]     domain-3: span=0-7 level=NUMA
-[    0.805626]      groups: 2:{ span=0-5 mask=2-3 cap=5899 }, 6:{ span=0-1,4-7 mask=6-7 cap=6125 }
-[    0.805712] CPU4 attaching sched-domain(s):
-[    0.805721]  domain-0: span=4-5 level=MC
-[    0.805738]   groups: 4:{ span=4 cap=984 }, 5:{ span=5 cap=924 }
-[    0.805787]   domain-1: span=4-7 level=NUMA
-[    0.805803]    groups: 4:{ span=4-5 cap=1908 }, 6:{ span=6-7 cap=2029 }
-[    0.805851]    domain-2: span=0-1,4-7 level=NUMA
-[    0.805867]     groups: 4:{ span=4-7 cap=3937 }, 0:{ span=0-3 cap=3935 }
-[    0.805915] ERROR: groups don't span domain->span
-[    0.806108]     domain-3: span=0-7 level=NUMA
-[    0.806130]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5985 }, 2:{ span=0-3 mask=2-3 cap=3991 }
-[    0.806214] CPU5 attaching sched-domain(s):
-[    0.806222]  domain-0: span=4-5 level=MC
-[    0.806240]   groups: 5:{ span=5 cap=924 }, 4:{ span=4 cap=984 }
-[    0.806841]   domain-1: span=4-7 level=NUMA
-[    0.806866]    groups: 4:{ span=4-5 cap=1908 }, 6:{ span=6-7 cap=2029 }
-[    0.806934]    domain-2: span=0-1,4-7 level=NUMA
-[    0.806953]     groups: 4:{ span=4-7 cap=3937 }, 0:{ span=0-3 cap=3935 }
-[    0.807004] ERROR: groups don't span domain->span
-[    0.807312]     domain-3: span=0-7 level=NUMA
-[    0.807386]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5985 }, 2:{ span=0-3 mask=2-3 cap=3991 }
-[    0.807686] CPU6 attaching sched-domain(s):
-[    0.807710]  domain-0: span=6-7 level=MC
-[    0.807750]   groups: 6:{ span=6 cap=1017 }, 7:{ span=7 cap=1012 }
-[    0.807840]   domain-1: span=4-7 level=NUMA
-[    0.807870]    groups: 6:{ span=6-7 cap=2029 }, 4:{ span=4-5 cap=1908 }
-[    0.807952]    domain-2: span=0-1,4-7 level=NUMA
-[    0.807985]     groups: 6:{ span=4-7 mask=6-7 cap=4077 }, 0:{ span=0-5 mask=0-1 cap=5843 }
-[    0.808045] ERROR: groups don't span domain->span
-[    0.808257]     domain-3: span=0-7 level=NUMA
-[    0.808571]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=6125 }, 2:{ span=0-5 mask=2-3 cap=5899 }
-[    0.808848] CPU7 attaching sched-domain(s):
-[    0.808860]  domain-0: span=6-7 level=MC
-[    0.808880]   groups: 7:{ span=7 cap=1012 }, 6:{ span=6 cap=1017 }
-[    0.808953]   domain-1: span=4-7 level=NUMA
-[    0.808974]    groups: 6:{ span=6-7 cap=2029 }, 4:{ span=4-5 cap=1908 }
-[    0.809034]    domain-2: span=0-1,4-7 level=NUMA
-[    0.809055]     groups: 6:{ span=4-7 mask=6-7 cap=4077 }, 0:{ span=0-5 mask=0-1 cap=5843 }
-[    0.809128] ERROR: groups don't span domain->span
-[    0.810361]     domain-3: span=0-7 level=NUMA
-[    0.810400]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=5961 }, 2:{ span=0-5 mask=2-3 cap=5903 }
-
-w/ patch, we don't get "groups don't span domain->span" any more:
-[    1.486271] CPU0 attaching sched-domain(s):
-[    1.486820]  domain-0: span=0-1 level=MC
-[    1.500924]   groups: 0:{ span=0 cap=980 }, 1:{ span=1 cap=994 }
-[    1.515717]   domain-1: span=0-3 level=NUMA
-[    1.515903]    groups: 0:{ span=0-1 cap=1974 }, 2:{ span=2-3 cap=1989 }
-[    1.516989]    domain-2: span=0-5 level=NUMA
-[    1.517124]     groups: 0:{ span=0-3 cap=3963 }, 4:{ span=4-5 cap=1949 }
-[    1.517369]     domain-3: span=0-7 level=NUMA
-[    1.517423]      groups: 0:{ span=0-5 mask=0-1 cap=5912 }, 6:{ span=4-7 mask=6-7 cap=4054 }
-[    1.520027] CPU1 attaching sched-domain(s):
-[    1.520097]  domain-0: span=0-1 level=MC
-[    1.520184]   groups: 1:{ span=1 cap=994 }, 0:{ span=0 cap=980 }
-[    1.520429]   domain-1: span=0-3 level=NUMA
-[    1.520487]    groups: 0:{ span=0-1 cap=1974 }, 2:{ span=2-3 cap=1989 }
-[    1.520687]    domain-2: span=0-5 level=NUMA
-[    1.520744]     groups: 0:{ span=0-3 cap=3963 }, 4:{ span=4-5 cap=1949 }
-[    1.520948]     domain-3: span=0-7 level=NUMA
-[    1.521038]      groups: 0:{ span=0-5 mask=0-1 cap=5912 }, 6:{ span=4-7 mask=6-7 cap=4054 }
-[    1.522068] CPU2 attaching sched-domain(s):
-[    1.522348]  domain-0: span=2-3 level=MC
-[    1.522606]   groups: 2:{ span=2 cap=1003 }, 3:{ span=3 cap=986 }
-[    1.522832]   domain-1: span=0-3 level=NUMA
-[    1.522885]    groups: 2:{ span=2-3 cap=1989 }, 0:{ span=0-1 cap=1974 }
-[    1.523043]    domain-2: span=0-5 level=NUMA
-[    1.523092]     groups: 2:{ span=0-3 mask=2-3 cap=4037 }, 4:{ span=4-5 cap=1949 }
-[    1.523302]     domain-3: span=0-7 level=NUMA
-[    1.523352]      groups: 2:{ span=0-5 mask=2-3 cap=5986 }, 6:{ span=0-1,4-7 mask=6-7 cap=6102 }
-[    1.523748] CPU3 attaching sched-domain(s):
-[    1.523774]  domain-0: span=2-3 level=MC
-[    1.523825]   groups: 3:{ span=3 cap=986 }, 2:{ span=2 cap=1003 }
-[    1.524009]   domain-1: span=0-3 level=NUMA
-[    1.524086]    groups: 2:{ span=2-3 cap=1989 }, 0:{ span=0-1 cap=1974 }
-[    1.524281]    domain-2: span=0-5 level=NUMA
-[    1.524331]     groups: 2:{ span=0-3 mask=2-3 cap=4037 }, 4:{ span=4-5 cap=1949 }
-[    1.524534]     domain-3: span=0-7 level=NUMA
-[    1.524586]      groups: 2:{ span=0-5 mask=2-3 cap=5986 }, 6:{ span=0-1,4-7 mask=6-7 cap=6102 }
-[    1.524847] CPU4 attaching sched-domain(s):
-[    1.524873]  domain-0: span=4-5 level=MC
-[    1.524954]   groups: 4:{ span=4 cap=958 }, 5:{ span=5 cap=991 }
-[    1.525105]   domain-1: span=4-7 level=NUMA
-[    1.525153]    groups: 4:{ span=4-5 cap=1949 }, 6:{ span=6-7 cap=2006 }
-[    1.525368]    domain-2: span=0-1,4-7 level=NUMA
-[    1.525428]     groups: 4:{ span=4-7 cap=3955 }, 0:{ span=0-1 cap=1974 }
-[    1.532726]     domain-3: span=0-7 level=NUMA
-[    1.532811]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=6003 }, 2:{ span=0-3 mask=2-3 cap=4037 }
-[    1.534125] CPU5 attaching sched-domain(s):
-[    1.534159]  domain-0: span=4-5 level=MC
-[    1.534303]   groups: 5:{ span=5 cap=991 }, 4:{ span=4 cap=958 }
-[    1.534490]   domain-1: span=4-7 level=NUMA
-[    1.534572]    groups: 4:{ span=4-5 cap=1949 }, 6:{ span=6-7 cap=2006 }
-[    1.534734]    domain-2: span=0-1,4-7 level=NUMA
-[    1.534783]     groups: 4:{ span=4-7 cap=3955 }, 0:{ span=0-1 cap=1974 }
-[    1.536057]     domain-3: span=0-7 level=NUMA
-[    1.536430]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=6003 }, 2:{ span=0-3 mask=2-3 cap=3896 }
-[    1.536815] CPU6 attaching sched-domain(s):
-[    1.536846]  domain-0: span=6-7 level=MC
-[    1.536934]   groups: 6:{ span=6 cap=1005 }, 7:{ span=7 cap=1001 }
-[    1.537144]   domain-1: span=4-7 level=NUMA
-[    1.537262]    groups: 6:{ span=6-7 cap=2006 }, 4:{ span=4-5 cap=1949 }
-[    1.537553]    domain-2: span=0-1,4-7 level=NUMA
-[    1.537613]     groups: 6:{ span=4-7 mask=6-7 cap=4054 }, 0:{ span=0-1 cap=1805 }
-[    1.537872]     domain-3: span=0-7 level=NUMA
-[    1.537998]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=6102 }, 2:{ span=0-5 mask=2-3 cap=5845 }
-[    1.538448] CPU7 attaching sched-domain(s):
-[    1.538505]  domain-0: span=6-7 level=MC
-[    1.538586]   groups: 7:{ span=7 cap=1001 }, 6:{ span=6 cap=1005 }
-[    1.538746]   domain-1: span=4-7 level=NUMA
-[    1.538798]    groups: 6:{ span=6-7 cap=2006 }, 4:{ span=4-5 cap=1949 }
-[    1.539048]    domain-2: span=0-1,4-7 level=NUMA
-[    1.539111]     groups: 6:{ span=4-7 mask=6-7 cap=4054 }, 0:{ span=0-1 cap=1805 }
-[    1.539571]     domain-3: span=0-7 level=NUMA
-[    1.539610]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=6102 }, 2:{ span=0-5 mask=2-3 cap=5845 }
-
-Reported-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Meelis Roos <mroos@linux.ee>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Signed-off-by: zhou xianrong <xianrong.zhou@transsion.com>
 ---
- -v3:
- Mainly updated according to Valentin's comments. While the approach was
- started by me, Valentin contributed the most useful edit and comments.
- Thanks, Valentin!
+ include/linux/mmzone.h        |  6 ++--
+ include/trace/events/vmscan.h | 20 +++++++----
+ mm/page_alloc.c               |  5 +--
+ mm/vmscan.c                   | 63 +++++++++++++++++++++++++++++------
+ 4 files changed, 73 insertions(+), 21 deletions(-)
 
- * fixed a potential issue that re-used sgc might be located in
- a sched_domain which will be degenrated;
- * code cleanup to make it more readable
-
- While Valentin started another approach which completely removed overlapped
- sched_group, we both agree that it is better to have a solution which won't
- touch machines without 3-hops issue first:
- https://lore.kernel.org/lkml/jhjpn1a232z.mognet@arm.com/
-
- kernel/sched/topology.c | 91 +++++++++++++++++++++++++++--------------
- 1 file changed, 61 insertions(+), 30 deletions(-)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 5d3675c7a76b..ab5ebf17f30a 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -723,35 +723,6 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- 	for (tmp = sd; tmp; tmp = tmp->parent)
- 		numa_distance += !!(tmp->flags & SD_NUMA);
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index b593316bff3d..7dd38d7372b9 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -301,6 +301,8 @@ struct lruvec {
+ #define ISOLATE_ASYNC_MIGRATE	((__force isolate_mode_t)0x4)
+ /* Isolate unevictable pages */
+ #define ISOLATE_UNEVICTABLE	((__force isolate_mode_t)0x8)
++/* Isolate none cma pages */
++#define ISOLATE_NONCMA		((__force isolate_mode_t)0x10)
  
--	/*
--	 * FIXME: Diameter >=3 is misrepresented.
--	 *
--	 * Smallest diameter=3 topology is:
--	 *
--	 *   node   0   1   2   3
--	 *     0:  10  20  30  40
--	 *     1:  20  10  20  30
--	 *     2:  30  20  10  20
--	 *     3:  40  30  20  10
--	 *
--	 *   0 --- 1 --- 2 --- 3
--	 *
--	 * NUMA-3	0-3		N/A		N/A		0-3
--	 *  groups:	{0-2},{1-3}					{1-3},{0-2}
--	 *
--	 * NUMA-2	0-2		0-3		0-3		1-3
--	 *  groups:	{0-1},{1-3}	{0-2},{2-3}	{1-3},{0-1}	{2-3},{0-2}
--	 *
--	 * NUMA-1	0-1		0-2		1-3		2-3
--	 *  groups:	{0},{1}		{1},{2},{0}	{2},{3},{1}	{3},{2}
--	 *
--	 * NUMA-0	0		1		2		3
--	 *
--	 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
--	 * group span isn't a subset of the domain span.
--	 */
--	WARN_ONCE(numa_distance > 2, "Shortest NUMA path spans too many nodes\n");
--
- 	sched_domain_debug(sd, cpu);
+ /* LRU Isolation modes. */
+ typedef unsigned __bitwise isolate_mode_t;
+@@ -756,7 +758,7 @@ typedef struct pglist_data {
+ 	wait_queue_head_t pfmemalloc_wait;
+ 	struct task_struct *kswapd;	/* Protected by
+ 					   mem_hotplug_begin/end() */
+-	int kswapd_order;
++	int kswapd_order, kswapd_migratetype;
+ 	enum zone_type kswapd_highest_zoneidx;
  
- 	rq_attach_root(rq, rd);
-@@ -982,6 +953,31 @@ static void init_overlap_sched_group(struct sched_domain *sd,
- 	sg->sgc->max_capacity = SCHED_CAPACITY_SCALE;
+ 	int kswapd_failures;		/* Number of 'reclaimed == 0' runs */
+@@ -840,7 +842,7 @@ static inline bool pgdat_is_empty(pg_data_t *pgdat)
+ 
+ void build_all_zonelists(pg_data_t *pgdat);
+ void wakeup_kswapd(struct zone *zone, gfp_t gfp_mask, int order,
+-		   enum zone_type highest_zoneidx);
++		   int migratetype, enum zone_type highest_zoneidx);
+ bool __zone_watermark_ok(struct zone *z, unsigned int order, unsigned long mark,
+ 			 int highest_zoneidx, unsigned int alloc_flags,
+ 			 long free_pages);
+diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
+index 2070df64958e..41bbafdfde84 100644
+--- a/include/trace/events/vmscan.h
++++ b/include/trace/events/vmscan.h
+@@ -51,37 +51,41 @@ TRACE_EVENT(mm_vmscan_kswapd_sleep,
+ 
+ TRACE_EVENT(mm_vmscan_kswapd_wake,
+ 
+-	TP_PROTO(int nid, int zid, int order),
++	TP_PROTO(int nid, int zid, int order, int mt),
+ 
+-	TP_ARGS(nid, zid, order),
++	TP_ARGS(nid, zid, order, mt),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(	int,	nid	)
+ 		__field(	int,	zid	)
+ 		__field(	int,	order	)
++		__field(	int,	mt	)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->nid	= nid;
+ 		__entry->zid    = zid;
+ 		__entry->order	= order;
++		__entry->mt	= mt;
+ 	),
+ 
+-	TP_printk("nid=%d order=%d",
++	TP_printk("nid=%d order=%d migratetype=%d",
+ 		__entry->nid,
+-		__entry->order)
++		__entry->order,
++		__entry->mt)
+ );
+ 
+ TRACE_EVENT(mm_vmscan_wakeup_kswapd,
+ 
+-	TP_PROTO(int nid, int zid, int order, gfp_t gfp_flags),
++	TP_PROTO(int nid, int zid, int order, int mt, gfp_t gfp_flags),
+ 
+-	TP_ARGS(nid, zid, order, gfp_flags),
++	TP_ARGS(nid, zid, order, mt, gfp_flags),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(	int,	nid		)
+ 		__field(	int,	zid		)
+ 		__field(	int,	order		)
++		__field(	int,	mt		)
+ 		__field(	gfp_t,	gfp_flags	)
+ 	),
+ 
+@@ -89,12 +93,14 @@ TRACE_EVENT(mm_vmscan_wakeup_kswapd,
+ 		__entry->nid		= nid;
+ 		__entry->zid		= zid;
+ 		__entry->order		= order;
++		__entry->mt		= mt;
+ 		__entry->gfp_flags	= gfp_flags;
+ 	),
+ 
+-	TP_printk("nid=%d order=%d gfp_flags=%s",
++	TP_printk("nid=%d order=%d migratetype=%d gfp_flags=%s",
+ 		__entry->nid,
+ 		__entry->order,
++		__entry->mt,
+ 		show_gfp_flags(__entry->gfp_flags))
+ );
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 519a60d5b6f7..45ceb15721b8 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3517,7 +3517,7 @@ struct page *rmqueue(struct zone *preferred_zone,
+ 	/* Separate test+clear to avoid unnecessary atomics */
+ 	if (test_bit(ZONE_BOOSTED_WATERMARK, &zone->flags)) {
+ 		clear_bit(ZONE_BOOSTED_WATERMARK, &zone->flags);
+-		wakeup_kswapd(zone, 0, 0, zone_idx(zone));
++		wakeup_kswapd(zone, 0, 0, migratetype, zone_idx(zone));
+ 	}
+ 
+ 	VM_BUG_ON_PAGE(page && bad_range(zone, page), page);
+@@ -4426,11 +4426,12 @@ static void wake_all_kswapds(unsigned int order, gfp_t gfp_mask,
+ 	struct zone *zone;
+ 	pg_data_t *last_pgdat = NULL;
+ 	enum zone_type highest_zoneidx = ac->highest_zoneidx;
++	int migratetype = ac->migratetype;
+ 
+ 	for_each_zone_zonelist_nodemask(zone, z, ac->zonelist, highest_zoneidx,
+ 					ac->nodemask) {
+ 		if (last_pgdat != zone->zone_pgdat)
+-			wakeup_kswapd(zone, gfp_mask, order, highest_zoneidx);
++			wakeup_kswapd(zone, gfp_mask, order, migratetype, highest_zoneidx);
+ 		last_pgdat = zone->zone_pgdat;
+ 	}
  }
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index b1b574ad199d..e61ec8747a40 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -99,6 +99,9 @@ struct scan_control {
+ 	/* Can pages be swapped as part of reclaim? */
+ 	unsigned int may_swap:1;
  
-+static struct sched_domain *
-+find_descended_sibling(struct sched_domain *sd, struct sched_domain *sibling)
++	/* Can cma pages be reclaimed? */
++	unsigned int may_cma:1;
++
+ 	/*
+ 	 * Cgroups are not reclaimed below their configured memory.low,
+ 	 * unless we threaten to OOM. If any cgroups are skipped due to
+@@ -286,6 +289,11 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+ }
+ #endif
+ 
++static bool movable_reclaim(gfp_t gfp_mask)
 +{
-+	/*
-+	 * The proper descendant would be the one whose child won't span out
-+	 * of sd
-+	 */
-+	while (sibling->child &&
-+	       !cpumask_subset(sched_domain_span(sibling->child),
-+			       sched_domain_span(sd)))
-+		sibling = sibling->child;
-+
-+	/*
-+	 * As we are referencing sgc across different topology level, we need
-+	 * to go down to skip those sched_domains which don't contribute to
-+	 * scheduling because they will be degenerated in cpu_attach_domain
-+	 */
-+	while (sibling->child &&
-+	       cpumask_equal(sched_domain_span(sibling->child),
-+			     sched_domain_span(sibling)))
-+		sibling = sibling->child;
-+
-+	return sibling;
++	return is_migrate_movable(gfp_migratetype(gfp_mask));
 +}
 +
- static int
- build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- {
-@@ -1015,6 +1011,41 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- 		if (!cpumask_test_cpu(i, sched_domain_span(sibling)))
- 			continue;
+ /*
+  * This misses isolated pages which are not accounted for to save counters.
+  * As the data only determines if reclaim or compaction continues, it is
+@@ -1499,6 +1507,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+ 		.gfp_mask = GFP_KERNEL,
+ 		.priority = DEF_PRIORITY,
+ 		.may_unmap = 1,
++		.may_cma = 1,
+ 	};
+ 	struct reclaim_stat stat;
+ 	unsigned int nr_reclaimed;
+@@ -1593,6 +1602,9 @@ int __isolate_lru_page_prepare(struct page *page, isolate_mode_t mode)
+ 	if ((mode & ISOLATE_UNMAPPED) && page_mapped(page))
+ 		return ret;
  
-+		/*
-+		 * Usually we build sched_group by sibling's child sched_domain
-+		 * But for machines whose NUMA diameter are 3 or above, we move
-+		 * to build sched_group by sibling's proper descendant's child
-+		 * domain because sibling's child sched_domain will span out of
-+		 * the sched_domain being built as below.
-+		 *
-+		 * Smallest diameter=3 topology is:
-+		 *
-+		 *   node   0   1   2   3
-+		 *     0:  10  20  30  40
-+		 *     1:  20  10  20  30
-+		 *     2:  30  20  10  20
-+		 *     3:  40  30  20  10
-+		 *
-+		 *   0 --- 1 --- 2 --- 3
-+		 *
-+		 * NUMA-3       0-3             N/A             N/A             0-3
-+		 *  groups:     {0-2},{1-3}                                     {1-3},{0-2}
-+		 *
-+		 * NUMA-2       0-2             0-3             0-3             1-3
-+		 *  groups:     {0-1},{1-3}     {0-2},{2-3}     {1-3},{0-1}     {2-3},{0-2}
-+		 *
-+		 * NUMA-1       0-1             0-2             1-3             2-3
-+		 *  groups:     {0},{1}         {1},{2},{0}     {2},{3},{1}     {3},{2}
-+		 *
-+		 * NUMA-0       0               1               2               3
-+		 *
-+		 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
-+		 * group span isn't a subset of the domain span.
-+		 */
-+		if (sibling->child &&
-+		    !cpumask_subset(sched_domain_span(sibling->child), span))
-+			sibling = find_descended_sibling(sd, sibling);
++	if ((mode & ISOLATE_NONCMA) && is_migrate_cma(get_pageblock_migratetype(page)))
++		return ret;
 +
- 		sg = build_group_from_child_sched_domain(sibling, cpu);
- 		if (!sg)
- 			goto fail;
-@@ -1022,7 +1053,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- 		sg_span = sched_group_span(sg);
- 		cpumask_or(covered, covered, sg_span);
+ 	return 0;
+ }
  
--		init_overlap_sched_group(sd, sg);
-+		init_overlap_sched_group(sibling, sg);
+@@ -1647,7 +1659,10 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
+ 	unsigned long skipped = 0;
+ 	unsigned long scan, total_scan, nr_pages;
+ 	LIST_HEAD(pages_skipped);
+-	isolate_mode_t mode = (sc->may_unmap ? 0 : ISOLATE_UNMAPPED);
++	isolate_mode_t mode;
++
++	mode = (sc->may_unmap ? 0 : ISOLATE_UNMAPPED);
++	mode |= (sc->may_cma ? 0 : ISOLATE_NONCMA);
  
- 		if (!first)
- 			first = sg;
+ 	total_scan = 0;
+ 	scan = 0;
+@@ -2125,6 +2140,7 @@ unsigned long reclaim_pages(struct list_head *page_list)
+ 		.may_writepage = 1,
+ 		.may_unmap = 1,
+ 		.may_swap = 1,
++		.may_cma = 1,
+ 	};
+ 
+ 	while (!list_empty(page_list)) {
+@@ -3253,6 +3269,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+ 		.may_writepage = !laptop_mode,
+ 		.may_unmap = 1,
+ 		.may_swap = 1,
++		.may_cma = movable_reclaim(gfp_mask),
+ 	};
+ 
+ 	/*
+@@ -3298,6 +3315,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
+ 		.may_unmap = 1,
+ 		.reclaim_idx = MAX_NR_ZONES - 1,
+ 		.may_swap = !noswap,
++		.may_cma = 1,
+ 	};
+ 
+ 	WARN_ON_ONCE(!current->reclaim_state);
+@@ -3341,6 +3359,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+ 		.may_writepage = !laptop_mode,
+ 		.may_unmap = 1,
+ 		.may_swap = may_swap,
++		.may_cma = 1,
+ 	};
+ 	/*
+ 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+@@ -3548,7 +3567,7 @@ static bool kswapd_shrink_node(pg_data_t *pgdat,
+  * or lower is eligible for reclaim until at least one usable zone is
+  * balanced.
+  */
+-static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
++static int balance_pgdat(pg_data_t *pgdat, int order, int migratetype, int highest_zoneidx)
+ {
+ 	int i;
+ 	unsigned long nr_soft_reclaimed;
+@@ -3650,6 +3669,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+ 		 */
+ 		sc.may_writepage = !laptop_mode && !nr_boost_reclaim;
+ 		sc.may_swap = !nr_boost_reclaim;
++		sc.may_cma = is_migrate_movable(migratetype);
+ 
+ 		/*
+ 		 * Do some background aging of the anon list, to give
+@@ -3771,8 +3791,15 @@ static enum zone_type kswapd_highest_zoneidx(pg_data_t *pgdat,
+ 	return curr_idx == MAX_NR_ZONES ? prev_highest_zoneidx : curr_idx;
+ }
+ 
++static int kswapd_migratetype(pg_data_t *pgdat, int prev_migratetype)
++{
++	int curr_migratetype = READ_ONCE(pgdat->kswapd_migratetype);
++
++	return curr_migratetype == MIGRATE_TYPES ? prev_migratetype : curr_migratetype;
++}
++
+ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_order,
+-				unsigned int highest_zoneidx)
++				int migratetype, unsigned int highest_zoneidx)
+ {
+ 	long remaining = 0;
+ 	DEFINE_WAIT(wait);
+@@ -3807,8 +3834,8 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
+ 		remaining = schedule_timeout(HZ/10);
+ 
+ 		/*
+-		 * If woken prematurely then reset kswapd_highest_zoneidx and
+-		 * order. The values will either be from a wakeup request or
++		 * If woken prematurely then reset kswapd_highest_zoneidx, order
++		 * and migratetype. The values will either be from a wakeup request or
+ 		 * the previous request that slept prematurely.
+ 		 */
+ 		if (remaining) {
+@@ -3818,6 +3845,10 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
+ 
+ 			if (READ_ONCE(pgdat->kswapd_order) < reclaim_order)
+ 				WRITE_ONCE(pgdat->kswapd_order, reclaim_order);
++
++			if (!is_migrate_movable(READ_ONCE(pgdat->kswapd_migratetype)))
++				WRITE_ONCE(pgdat->kswapd_migratetype,
++						kswapd_migratetype(pgdat, migratetype));
+ 		}
+ 
+ 		finish_wait(&pgdat->kswapd_wait, &wait);
+@@ -3870,6 +3901,7 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
+  */
+ static int kswapd(void *p)
+ {
++	int migratetype = 0;
+ 	unsigned int alloc_order, reclaim_order;
+ 	unsigned int highest_zoneidx = MAX_NR_ZONES - 1;
+ 	pg_data_t *pgdat = (pg_data_t*)p;
+@@ -3895,23 +3927,27 @@ static int kswapd(void *p)
+ 	set_freezable();
+ 
+ 	WRITE_ONCE(pgdat->kswapd_order, 0);
++	WRITE_ONCE(pgdat->kswapd_migratetype, MIGRATE_TYPES);
+ 	WRITE_ONCE(pgdat->kswapd_highest_zoneidx, MAX_NR_ZONES);
+ 	for ( ; ; ) {
+ 		bool ret;
+ 
+ 		alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
++		migratetype = kswapd_migratetype(pgdat, migratetype);
+ 		highest_zoneidx = kswapd_highest_zoneidx(pgdat,
+ 							highest_zoneidx);
+ 
+ kswapd_try_sleep:
+ 		kswapd_try_to_sleep(pgdat, alloc_order, reclaim_order,
+-					highest_zoneidx);
++					migratetype, highest_zoneidx);
+ 
+ 		/* Read the new order and highest_zoneidx */
+ 		alloc_order = READ_ONCE(pgdat->kswapd_order);
++		migratetype = kswapd_migratetype(pgdat, migratetype);
+ 		highest_zoneidx = kswapd_highest_zoneidx(pgdat,
+ 							highest_zoneidx);
+ 		WRITE_ONCE(pgdat->kswapd_order, 0);
++		WRITE_ONCE(pgdat->kswapd_migratetype, MIGRATE_TYPES);
+ 		WRITE_ONCE(pgdat->kswapd_highest_zoneidx, MAX_NR_ZONES);
+ 
+ 		ret = try_to_freeze();
+@@ -3934,8 +3970,8 @@ static int kswapd(void *p)
+ 		 * request (alloc_order).
+ 		 */
+ 		trace_mm_vmscan_kswapd_wake(pgdat->node_id, highest_zoneidx,
+-						alloc_order);
+-		reclaim_order = balance_pgdat(pgdat, alloc_order,
++						alloc_order, migratetype);
++		reclaim_order = balance_pgdat(pgdat, alloc_order, migratetype,
+ 						highest_zoneidx);
+ 		if (reclaim_order < alloc_order)
+ 			goto kswapd_try_sleep;
+@@ -3954,10 +3990,11 @@ static int kswapd(void *p)
+  * needed.
+  */
+ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
+-		   enum zone_type highest_zoneidx)
++		   int migratetype, enum zone_type highest_zoneidx)
+ {
+ 	pg_data_t *pgdat;
+ 	enum zone_type curr_idx;
++	int curr_migratetype;
+ 
+ 	if (!managed_zone(zone))
+ 		return;
+@@ -3967,6 +4004,7 @@ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
+ 
+ 	pgdat = zone->zone_pgdat;
+ 	curr_idx = READ_ONCE(pgdat->kswapd_highest_zoneidx);
++	curr_migratetype = READ_ONCE(pgdat->kswapd_migratetype);
+ 
+ 	if (curr_idx == MAX_NR_ZONES || curr_idx < highest_zoneidx)
+ 		WRITE_ONCE(pgdat->kswapd_highest_zoneidx, highest_zoneidx);
+@@ -3974,6 +4012,9 @@ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
+ 	if (READ_ONCE(pgdat->kswapd_order) < order)
+ 		WRITE_ONCE(pgdat->kswapd_order, order);
+ 
++	if (curr_migratetype == MIGRATE_TYPES || is_migrate_movable(migratetype))
++		WRITE_ONCE(pgdat->kswapd_migratetype, migratetype);
++
+ 	if (!waitqueue_active(&pgdat->kswapd_wait))
+ 		return;
+ 
+@@ -3994,7 +4035,7 @@ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
+ 	}
+ 
+ 	trace_mm_vmscan_wakeup_kswapd(pgdat->node_id, highest_zoneidx, order,
+-				      gfp_flags);
++				      migratetype, gfp_flags);
+ 	wake_up_interruptible(&pgdat->kswapd_wait);
+ }
+ 
+@@ -4017,6 +4058,7 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
+ 		.may_writepage = 1,
+ 		.may_unmap = 1,
+ 		.may_swap = 1,
++		.may_cma = 1,
+ 		.hibernation_mode = 1,
+ 	};
+ 	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
+@@ -4176,6 +4218,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
+ 		.may_writepage = !!(node_reclaim_mode & RECLAIM_WRITE),
+ 		.may_unmap = !!(node_reclaim_mode & RECLAIM_UNMAP),
+ 		.may_swap = 1,
++		.may_cma = movable_reclaim(gfp_mask),
+ 		.reclaim_idx = gfp_zone(gfp_mask),
+ 	};
+ 
 -- 
 2.25.1
 
