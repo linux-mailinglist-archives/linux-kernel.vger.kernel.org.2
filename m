@@ -2,103 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A328C314FDB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D58314FE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhBINMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:12:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhBINLm (ORCPT
+        id S230474AbhBINNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:13:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39270 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230228AbhBINNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:11:42 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8CFC06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:11:02 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id r23so20325911ljh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:11:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P4a4UM2l4+ZyyoGENZxN5GEKK/mJFIsgmA6Mdizwpl4=;
-        b=gfIefI6fxLri8kmAeBcEjNbCvy9wmOOoXZfUHLVeRNm6oXMOl+P+faz/qFL8KdzZiB
-         eWnvX9tXA27zNnNMmBJ0MWzk2PcxC6/Q0jp4rohaq4INlQfrK3JnoF8XXZ9cBxkImzDa
-         R/a8R1iW72qC06GNwyvFhkHx4fsB+8MHQCDIovc6XL+bc98fdglW05yUcxGudD1htHv9
-         0KWgI0HEzq22MHJqPBB74nsHEIo/4RunumetXfOFXMQ+1Gps/z9BQh9oFecqWxuKeNEX
-         AmDQj0eu3cftC44iEsWQZ7SnW8asiM9gDSDmQ1trsswnYZIQZXZphCqtjSzy4Xl5nAov
-         k6gw==
+        Tue, 9 Feb 2021 08:13:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612876305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JPV4E371pW4Hi/fRCT2lEIP2ic6FNIvRlNKRhMtd+mg=;
+        b=ICYGiUnpzGfi2GAnYALp6ZWBULxUyu/A13I+l8sfiQMFTJyOXJqL5unxPrbCt22fZNWFl/
+        M7Vf/zL4+7kptxsPdvDIkmhnk/I1Ol4U57OkgkESSoIG4vy2IPsHJaMH6cuykpAXHgUSd5
+        xh31E6vL5k8uUmIOZVQMEBZ3hDX9R8Y=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-kEcy1ZJOOpaCQbIrU35_WQ-1; Tue, 09 Feb 2021 08:11:43 -0500
+X-MC-Unique: kEcy1ZJOOpaCQbIrU35_WQ-1
+Received: by mail-ej1-f70.google.com with SMTP id aq28so15350997ejc.20
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:11:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P4a4UM2l4+ZyyoGENZxN5GEKK/mJFIsgmA6Mdizwpl4=;
-        b=WDwNyRqvzgslKOTYw3PEjBR/pK/55KiN67IlN4LJLNOnl+7ynUH/7ie96d7qnYVwSE
-         R1t+d0d1DthJ+2eHtB7skhNCtYGGyl8pWqsnUHJAqgljAnkV0NgbZfQ61V3wbXTCyS4q
-         8wv7f/zXNIzGI4kCA4t+NxuQZrSvwj4KEMSMWLE6nvEq3NYtToYlt4SrkaMTXdhoAp7p
-         twZyTXhi+2D2jjwltulbKv9u7i5BVymKzhjlxQj71L+aiL28TLoglx0SJ9wL+EzM/nG+
-         HNXeO+2kb/yRGM0BES6Jnpr99VjLER0SxDj5fJOoBOBhA8r++G7MAKjm0rWETN2ESYq5
-         BQgw==
-X-Gm-Message-State: AOAM531cn4G5HVbDm2l6b0wm+AnFsT5khF2PL++NU5IO912opfjuFzzr
-        lYg+QvY8GhdDnuOuAeMk9LCuCYalh/285d9OvggFnQ==
-X-Google-Smtp-Source: ABdhPJy3nopNeZYwAZEwhv45NZ1dB1UhEyc1+24g4P5+BPLv4FUJiirEwTEbYUbbNScSCim5g26UJnCdTVq2DOlDZ3A=
-X-Received: by 2002:a2e:7007:: with SMTP id l7mr6792295ljc.176.1612876260899;
- Tue, 09 Feb 2021 05:11:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=JPV4E371pW4Hi/fRCT2lEIP2ic6FNIvRlNKRhMtd+mg=;
+        b=VnAnmS4EZmSzSFhpfT7Xl8kbmet8RU6BIouFpvTkusUVNlgj5XM7o6Cco4jMjzYgDI
+         brSjh0xC+UfhKdzM5PlPN8zcKjkzN6Yfcc9/rqqQX1BJSMnbFuK2FEusFmalXcqRReeu
+         wknJVRUUzIbnFIII5QuJF0i7HZfUEDltFvjWxMsupghNR+6u2fvwoF7wrpQJT9/tnl92
+         C7Dv5ykIYAm1bMlkFXMxtvUnA6RzHH92v+VNoQSwQzI2ySwxtfAFsMbkJ1Wm2B9ROscF
+         VuD1KSwu3jsFTY/Y9z/RCJ+j0Ww5KpOLfnT47YA7byZsJo4WrUkNCeSS8tizhvqEQjKf
+         BbTQ==
+X-Gm-Message-State: AOAM533Iyaec72EDdm2p+K3jTtZe3nmafKp0WGt4R2/btglbcrHEz4Cl
+        Ctvk2lwCaACdw8qMQLuJkz4FdcyvWkne55vLSxjcwShEUfRcZ0JeWrMePOQtHZRFH7zFFnWW88t
+        oPGIgifpkLkW6jMUoVzfvwz9X
+X-Received: by 2002:a05:6402:3514:: with SMTP id b20mr22296858edd.100.1612876302602;
+        Tue, 09 Feb 2021 05:11:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw/WK0nGkVnh7ZMDgQv1+T8dKAGFOCX5x9yCFgm4PCWOZM5WxJzeOrgpZvsyZPtdUabdzob0w==
+X-Received: by 2002:a05:6402:3514:: with SMTP id b20mr22296839edd.100.1612876302385;
+        Tue, 09 Feb 2021 05:11:42 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id hc13sm4831808ejc.5.2021.02.09.05.11.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 05:11:41 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        nunodasneves@linux.microsoft.com, wei.liu@kernel.org,
+        ligrassi@microsoft.com, kys@microsoft.com
+Subject: Re: [RFC PATCH 04/18] virt/mshv: request version ioctl
+In-Reply-To: <1605918637-12192-5-git-send-email-nunodasneves@linux.microsoft.com>
+References: <1605918637-12192-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1605918637-12192-5-git-send-email-nunodasneves@linux.microsoft.com>
+Date:   Tue, 09 Feb 2021 14:11:40 +0100
+Message-ID: <87y2fxmlmb.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20210209082125.22176-1-song.bao.hua@hisilicon.com>
- <CAKfTPtCuJoS=Z2nOmeH6y_KTSjw9=hwrZ2N78VgC-ZQwz1d8FQ@mail.gmail.com> <jhjzh0dtqf9.mognet@arm.com>
-In-Reply-To: <jhjzh0dtqf9.mognet@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 9 Feb 2021 14:10:49 +0100
-Message-ID: <CAKfTPtC=_KHRszX=ALiVh84YD0tUoCbXEr9Ru1-CyY50-JMtVQ@mail.gmail.com>
-Subject: Re: [PATCH v3] sched/topology: fix the issue groups don't span
- domain->span for NUMA diameter > 2
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org, "xuwei (O)" <xuwei5@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        tiantao6@hisilicon.com, wanghuiqiang@huawei.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        Meelis Roos <mroos@linux.ee>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Feb 2021 at 12:46, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> On 09/02/21 10:46, Vincent Guittot wrote:
-> > On Tue, 9 Feb 2021 at 09:27, Barry Song <song.bao.hua@hisilicon.com> wrote:
-> >> Real servers which suffer from this problem include Kunpeng920 and 8-node
-> >> Sun Fire X4600-M2, at least.
-> >>
-> >> Here we move to use the *child* domain of the *child* domain of node2's
-> >> domain2 as the new added sched_group. At the same, we re-use the lower
-> >> level sgc directly.
-> >
-> > Have you evaluated the impact on the imbalance and next_update fields ?
-> >
->
-> sgc->next_update is safe since it's only touched by CPUs that have the
-> group span as local group (which is never the case for CPUs where we do
-> this "grandchildren" trick).
+Nuno Das Neves <nunodasneves@linux.microsoft.com> writes:
 
-It would be good to explain this in the commit message
-
+> Reserve ioctl number in userpsace-api/ioctl/ioctl-number.rst
+> Introduce MSHV_REQUEST_VERSION ioctl.
+> Introduce documentation for /dev/mshv in Documentation/virt/mshv
 >
-> I'm a bit less clear about sgc->imbalance. I think it can be set by remote
-> CPUs, but it should only be cleared when running load_balance() by CPUs
-> that have that group span as local group, as per:
+> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+> ---
+>  .../userspace-api/ioctl/ioctl-number.rst      |  2 +
+>  Documentation/virt/mshv/api.rst               | 62 +++++++++++++++++++
+>  include/linux/mshv.h                          | 11 ++++
+>  include/uapi/linux/mshv.h                     | 19 ++++++
+>  virt/mshv/mshv_main.c                         | 49 +++++++++++++++
+>  5 files changed, 143 insertions(+)
+>  create mode 100644 Documentation/virt/mshv/api.rst
+>  create mode 100644 include/linux/mshv.h
+>  create mode 100644 include/uapi/linux/mshv.h
 >
->   int *group_imbalance = &sd_parent->groups->sgc->imbalance;
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 55a2d9b2ce33..13a4d3ecafca 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -343,6 +343,8 @@ Code  Seq#    Include File                                           Comments
+>  0xB5  00-0F  uapi/linux/rpmsg.h                                      <mailto:linux-remoteproc@vger.kernel.org>
+>  0xB6  all    linux/fpga-dfl.h
+>  0xB7  all    uapi/linux/remoteproc_cdev.h                            <mailto:linux-remoteproc@vger.kernel.org>
+> +0xB8  all    uapi/linux/mshv.h                                       Microsoft Hypervisor root partition APIs
+> +                                                                     <mailto:linux-hyperv@vger.kernel.org>
+>  0xC0  00-0F  linux/usb/iowarrior.h
+>  0xCA  00-0F  uapi/misc/cxl.h
+>  0xCA  10-2F  uapi/misc/ocxl.h
+> diff --git a/Documentation/virt/mshv/api.rst b/Documentation/virt/mshv/api.rst
+> new file mode 100644
+> index 000000000000..82e32de48d03
+> --- /dev/null
+> +++ b/Documentation/virt/mshv/api.rst
+> @@ -0,0 +1,62 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=====================================================
+> +Microsoft Hypervisor Root Partition API Documentation
+> +=====================================================
+> +
+> +1. Overview
+> +===========
+> +
+> +This document describes APIs for creating and managing guest virtual machines
+> +when running Linux as the root partition on the Microsoft Hypervisor.
+> +
+> +This API is not yet stable.
+> +
+> +2. Glossary/Terms
+> +=================
+> +
+> +hv
+> +--
+> +Short for Hyper-V. This name is used in the kernel to describe interfaces to
+> +the Microsoft Hypervisor.
+> +
+> +mshv
+> +----
+> +Short for Microsoft Hypervisor. This is the name of the userland API module
+> +described in this document.
+> +
+> +Partition
+> +---------
+> +A virtual machine running on the Microsoft Hypervisor.
+> +
+> +Root Partition
+> +--------------
+> +The partition that is created and assumes control when the machine boots. The
+> +root partition can use mshv APIs to create guest partitions.
+> +
+> +3. API description
+> +==================
+> +
+> +The module is named mshv and can be configured with CONFIG_HYPERV_ROOT_API.
+> +
+> +Mshv is file descriptor-based, following a similar pattern to KVM.
+> +
+> +To get a handle to the mshv driver, use open("/dev/mshv").
+> +
+> +3.1 MSHV_REQUEST_VERSION
+> +------------------------
+> +:Type: /dev/mshv ioctl
+> +:Parameters: pointer to a u32
+> +:Returns: 0 on success
+> +
+> +Before issuing any other ioctls, a MSHV_REQUEST_VERSION ioctl must be called to
+> +establish the interface version with the kernel module.
+> +
+> +The caller should pass the MSHV_VERSION as an argument.
+> +
+> +The kernel module will check which interface versions it supports and return 0
+> +if one of them matches.
+> +
+> +This /dev/mshv file descriptor will remain 'locked' to that version as long as
+> +it is open - this ioctl can only be called once per open.
+> +
 
-We are also safe because sd_parent remains the same as the beg of
-load_balance and LB only tries other CPUs from the local group
+KVM used to have KVM_GET_API_VERSION too but this turned out to be not
+very convenient so we use capabilities (KVM_CHECK_EXTENSION/KVM_ENABLE_CAP)
+instead.
+
+> diff --git a/include/linux/mshv.h b/include/linux/mshv.h
+> new file mode 100644
+> index 000000000000..a0982fe2c0b8
+> --- /dev/null
+> +++ b/include/linux/mshv.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef _LINUX_MSHV_H
+> +#define _LINUX_MSHV_H
+> +
+> +/*
+> + * Microsoft Hypervisor root partition driver for /dev/mshv
+> + */
+> +
+> +#include <uapi/linux/mshv.h>
+> +
+> +#endif
+> diff --git a/include/uapi/linux/mshv.h b/include/uapi/linux/mshv.h
+> new file mode 100644
+> index 000000000000..dd30fc2f0a80
+> --- /dev/null
+> +++ b/include/uapi/linux/mshv.h
+> @@ -0,0 +1,19 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +#ifndef _UAPI_LINUX_MSHV_H
+> +#define _UAPI_LINUX_MSHV_H
+> +
+> +/*
+> + * Userspace interface for /dev/mshv
+> + * Microsoft Hypervisor root partition APIs
+> + */
+> +
+> +#include <linux/types.h>
+> +
+> +#define MSHV_VERSION	0x0
+> +
+> +#define MSHV_IOCTL 0xB8
+> +
+> +/* mshv device */
+> +#define MSHV_REQUEST_VERSION	_IOW(MSHV_IOCTL, 0x00, __u32)
+> +
+> +#endif
+> diff --git a/virt/mshv/mshv_main.c b/virt/mshv/mshv_main.c
+> index ecb9089761fe..62f631f85301 100644
+> --- a/virt/mshv/mshv_main.c
+> +++ b/virt/mshv/mshv_main.c
+> @@ -11,25 +11,74 @@
+>  #include <linux/module.h>
+>  #include <linux/fs.h>
+>  #include <linux/miscdevice.h>
+> +#include <linux/slab.h>
+> +#include <linux/mshv.h>
+>  
+>  MODULE_AUTHOR("Microsoft");
+>  MODULE_LICENSE("GPL");
+>  
+> +#define MSHV_INVALID_VERSION	0xFFFFFFFF
+> +#define MSHV_CURRENT_VERSION	MSHV_VERSION
+> +
+> +static u32 supported_versions[] = {
+> +	MSHV_CURRENT_VERSION,
+> +};
+> +
+> +static long
+> +mshv_ioctl_request_version(u32 *version, void __user *user_arg)
+> +{
+> +	u32 arg;
+> +	int i;
+> +
+> +	if (copy_from_user(&arg, user_arg, sizeof(arg)))
+> +		return -EFAULT;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(supported_versions); ++i) {
+> +		if (supported_versions[i] == arg) {
+> +			*version = supported_versions[i];
+> +			return 0;
+> +		}
+> +	}
+> +	return -ENOTSUPP;
+> +}
+> +
+>  static long
+>  mshv_dev_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+>  {
+> +	u32 *version = (u32 *)filp->private_data;
+> +
+> +	if (ioctl == MSHV_REQUEST_VERSION) {
+> +		/* Version can only be set once */
+> +		if (*version != MSHV_INVALID_VERSION)
+> +			return -EBADFD;
+> +
+> +		return mshv_ioctl_request_version(version, (void __user *)arg);
+> +	}
+> +
+> +	/* Version must be set before other ioctls can be called */
+> +	if (*version == MSHV_INVALID_VERSION)
+> +		return -EBADFD;
+> +
+> +	/* TODO other ioctls */
+> +
+>  	return -ENOTTY;
+>  }
+>  
+>  static int
+>  mshv_dev_open(struct inode *inode, struct file *filp)
+>  {
+> +	filp->private_data = kmalloc(sizeof(u32), GFP_KERNEL);
+> +	if (!filp->private_data)
+> +		return -ENOMEM;
+> +	*(u32 *)filp->private_data = MSHV_INVALID_VERSION;
+> +
+>  	return 0;
+>  }
+>  
+>  static int
+>  mshv_dev_release(struct inode *inode, struct file *filp)
+>  {
+> +	kfree(filp->private_data);
+>  	return 0;
+>  }
+
+-- 
+Vitaly
+
