@@ -2,155 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA73314B52
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08122314B3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhBIJSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:18:49 -0500
-Received: from mx.socionext.com ([202.248.49.38]:50115 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230448AbhBIJP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:15:26 -0500
-X-Greylist: delayed 532 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Feb 2021 04:15:23 EST
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 09 Feb 2021 18:05:42 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 685F62059034;
-        Tue,  9 Feb 2021 18:05:42 +0900 (JST)
-Received: from 10.213.24.1 (10.213.24.1) by m-FILTER with ESMTP; Tue, 9 Feb 2021 18:05:42 +0900
-Received: from SOC-EX02V.e01.socionext.com (10.213.24.22) by
- SOC-EX02V.e01.socionext.com (10.213.24.22) with Microsoft SMTP Server (TLS)
- id 15.0.995.29; Tue, 9 Feb 2021 18:05:41 +0900
-Received: from SOC-EX02V.e01.socionext.com ([10.213.25.22]) by
- SOC-EX02V.e01.socionext.com ([10.213.25.22]) with mapi id 15.00.0995.028;
- Tue, 9 Feb 2021 18:05:41 +0900
-From:   <obayashi.yoshimasa@socionext.com>
-To:     <gregkh@linuxfoundation.org>, <sumit.garg@linaro.org>
-CC:     <hch@lst.de>, <m.szyprowski@samsung.com>, <robin.murphy@arm.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, <daniel.thompson@linaro.org>
-Subject: RE: DMA direct mapping fix for 5.4 and earlier stable branches
-Thread-Topic: DMA direct mapping fix for 5.4 and earlier stable branches
-Thread-Index: AQHW/qowxPC004ZwL0WzBboqT0yFrapOzcOAgAAQ0oCAAAGYgIAAmb8Q
-Date:   Tue, 9 Feb 2021 09:05:40 +0000
-Message-ID: <27bbe35deacb4ca49f31307f4ed551b5@SOC-EX02V.e01.socionext.com>
-References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
- <YCIym62vHfbG+dWf@kroah.com>
- <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
- <YCJCDZGa1Dhqv6Ni@kroah.com>
-In-Reply-To: <YCJCDZGa1Dhqv6Ni@kroah.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-securitypolicycheck: OK by SHieldMailChecker v2.6.1
-x-shieldmailcheckerpolicyversion: POLICY200130
-x-originating-ip: [10.213.24.1]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: base64
+        id S230418AbhBIJOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:14:32 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45608 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230073AbhBIJLj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:11:39 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11991fui072494;
+        Tue, 9 Feb 2021 04:09:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=EHJFlpAl6bxu+/XsIT5Z7pM+ru+nVQxvK4bFODgahCc=;
+ b=nC8X0qp4OoxlR6jW823vmsITpQTEAmS32wsTXOMwr6MgiMDKMF+T0SfxQmKvMS1r4tQx
+ oaHvPKwwyhjPrQ1ls9r8bXZhj9kG4LQ3+27uGJzTnyC5BDalNTsnWkQ0iERM2RfOfdzX
+ +kGQ0D7dgzoXNgDH7sjGbudmhRD5mU9T1f13R6nLcRnM+x+IlLRjaiEhMTyilsMvjA5y
+ CyOkDStqMO7H9a1vj/cHLJZwkQChdF2/TVezOOjj8gX+2PCZgLxUTZBhZth0ULMvgo2t
+ EhfllRPKgQtT9EsDS4AL7uvAPMZ1P78Sb19dUBRxkZpke+tbkT62POzf8AHb0k/yNbvE MQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36kq41ruy8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 04:09:54 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11992fU3077916;
+        Tue, 9 Feb 2021 04:09:53 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36kq41ruuj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 04:09:53 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1198Nc1g016786;
+        Tue, 9 Feb 2021 09:09:49 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 36hjr81jg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 09:09:49 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11999kO332768396
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Feb 2021 09:09:46 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B3616A405B;
+        Tue,  9 Feb 2021 09:09:46 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD9CDA4054;
+        Tue,  9 Feb 2021 09:09:40 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.178.60])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  9 Feb 2021 09:09:40 +0000 (GMT)
+Date:   Tue, 9 Feb 2021 11:09:38 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <20210209090938.GP299309@linux.ibm.com>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-8-rppt@kernel.org>
+ <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
+ <20210208212605.GX242749@kernel.org>
+ <YCJMDBss8Qhha7g9@dhcp22.suse.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCJMDBss8Qhha7g9@dhcp22.suse.cz>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-09_02:2021-02-09,2021-02-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=762
+ phishscore=0 adultscore=0 clxscore=1011 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102090040
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+IEFzIHRoZSBkcml2ZXJzIGFyZSBjdXJyZW50bHkgdW5kZXIgZGV2ZWxvcG1lbnQgYW5kIFNv
-Y2lvbmV4dCBoYXMNCj4gPiBjaG9zZW4gNS40IHN0YWJsZSBrZXJuZWwgZm9yIHRoZWlyIGRldmVs
-b3BtZW50LiBTbyBJIHdpbGwgbGV0DQo+ID4gT2JheWFzaGktc2FuIGFuc3dlciB0aGlzIGlmIGl0
-J3MgcG9zc2libGUgZm9yIHRoZW0gdG8gbWlncmF0ZSB0byA1LjEwDQo+ID4gaW5zdGVhZD8NCg0K
-ICBXZSBoYXZlIHN0YXJ0ZWQgdGhpcyBkZXZlbG9wbWVudCBwcm9qZWN0IGZyb20gbGFzdCBBdWd1
-c3QsIA0Kc28gd2UgaGF2ZSBzZWxlY3RlZCA1LjQgYXMgbW9zdCByZWNlbnQgYW5kIGxvbmdlc3Qg
-bGlmZXRpbWUgTFRTIA0KdmVyc2lvbiBhdCB0aGF0IHRpbWUuDQoNCiAgQW5kIHdlIGhhdmUgYWxy
-ZWFkeSBmaW5pc2hlZCB0byBkZXZlbG9wIG90aGVyIGRldmljZSBkcml2ZXJzLCANCmFuZCBWaWRl
-byBjb252ZXJ0ZXIgYW5kIENPREVDIGRyaXZlcnMgYXJlIG5vdyBpbiBkZXZlbG9wbWVudC4NCg0K
-PiBXaHkgcGljayBhIGtlcm5lbCB0aGF0IGRvZXNuIG5vdCBzdXBwb3J0IHRoZSBmZWF0dXJlcyB0
-aGV5IHJlcXVpcmU/DQo+IFRoYXQgc2VlbXMgdmVyeSBvZGQgYW5kIHVud2lzZS4NCg0KICBGcm9t
-IHRoZSB2aWV3IHBvaW50IG9mIFplcm9Db3B5IHVzaW5nIERNQUJVRiwgaXMgNS40IG5vdCANCm1h
-dHVyZSBlbm91Z2gsIGFuZCBpcyA1LjEwIGVub3VnaCBtYXR1cmUgPw0KICBUaGlzIGlzIHRoZSBt
-b3N0IGltcG9ydGFudCBwb2ludCBmb3IganVkZ2luZyBtaWdyYXRpb24uDQoNClJlZ2FyZHMuDQoN
-Cj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR3JlZyBLcm9haC1IYXJ0bWFu
-IDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4NCj4gU2VudDogVHVlc2RheSwgRmVicnVhcnkg
-OSwgMjAyMSA1OjA0IFBNDQo+IFRvOiBTdW1pdCBHYXJnIDxzdW1pdC5nYXJnQGxpbmFyby5vcmc+
-DQo+IENjOiBPYmF5YXNoaSwgWW9zaGltYXNhLxskQkh4TlMbKEIgGyRCQTFANRsoQiA8b2JheWFz
-aGkueW9zaGltYXNhQHNvY2lvbmV4dC5jb20+OyBoY2hAbHN0LmRlOw0KPiBtLnN6eXByb3dza2lA
-c2Ftc3VuZy5jb207IHJvYmluLm11cnBoeUBhcm0uY29tOyBpb21tdUBsaXN0cy5saW51eC1mb3Vu
-ZGF0aW9uLm9yZzsgTGludXggS2VybmVsIE1haWxpbmcNCj4gTGlzdCA8bGludXgta2VybmVsQHZn
-ZXIua2VybmVsLm9yZz47IHN0YWJsZSA8c3RhYmxlQHZnZXIua2VybmVsLm9yZz47IERhbmllbCBU
-aG9tcHNvbg0KPiA8ZGFuaWVsLnRob21wc29uQGxpbmFyby5vcmc+DQo+IFN1YmplY3Q6IFJlOiBE
-TUEgZGlyZWN0IG1hcHBpbmcgZml4IGZvciA1LjQgYW5kIGVhcmxpZXIgc3RhYmxlIGJyYW5jaGVz
-DQo+IA0KPiBPbiBUdWUsIEZlYiAwOSwgMjAyMSBhdCAwMToyODo0N1BNICswNTMwLCBTdW1pdCBH
-YXJnIHdyb3RlOg0KPiA+IFRoYW5rcyBHcmVnIGZvciB5b3VyIHJlc3BvbnNlLg0KPiA+DQo+ID4g
-T24gVHVlLCA5IEZlYiAyMDIxIGF0IDEyOjI4LCBHcmVnIEtyb2FoLUhhcnRtYW4NCj4gPiA8Z3Jl
-Z2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+IHdyb3RlOg0KPiA+ID4NCj4gPiA+IE9uIFR1ZSwgRmVi
-IDA5LCAyMDIxIGF0IDExOjM5OjI1QU0gKzA1MzAsIFN1bWl0IEdhcmcgd3JvdGU6DQo+ID4gPiA+
-IEhpIENocmlzdG9waCwgR3JlZywNCj4gPiA+ID4NCj4gPiA+ID4gQ3VycmVudGx5IHdlIGFyZSBv
-YnNlcnZpbmcgYW4gaW5jb3JyZWN0IGFkZHJlc3MgdHJhbnNsYXRpb24NCj4gPiA+ID4gY29ycmVz
-cG9uZGluZyB0byBETUEgZGlyZWN0IG1hcHBpbmcgbWV0aG9kcyBvbiA1LjQgc3RhYmxlIGtlcm5l
-bA0KPiA+ID4gPiB3aGlsZSBzaGFyaW5nIGRtYWJ1ZiBmcm9tIG9uZSBkZXZpY2UgdG8gYW5vdGhl
-ciB3aGVyZSBib3RoIGRldmljZXMNCj4gPiA+ID4gaGF2ZSB0aGVpciBvd24gY29oZXJlbnQgRE1B
-IG1lbW9yeSBwb29scy4NCj4gPiA+DQo+ID4gPiBXaGF0IGRldmljZXMgaGF2ZSB0aGlzIHByb2Js
-ZW0/DQo+ID4NCj4gPiBUaGUgcHJvYmxlbSBpcyBzZWVuIHdpdGggVjRMMiBkZXZpY2UgZHJpdmVy
-cyB3aGljaCBhcmUgY3VycmVudGx5IHVuZGVyDQo+ID4gZGV2ZWxvcG1lbnQgZm9yIFVuaVBoaWVy
-IFBYczMgUmVmZXJlbmNlIEJvYXJkIGZyb20gU29jaW9uZXh0IFsxXS4NCj4gDQo+IE9rLCBzbyBp
-dCdzIG5vdCBldmVuIGEgZHJpdmVyIGluIHRoZSA1LjQga2VybmVsIHRvZGF5LCBzbyB0aGVyZSdz
-IG5vdGhpbmcgSSBjYW4gZG8gaGVyZSBhcyB0aGVyZSBpcyBubyByZWdyZXNzaW9uDQo+IG9mIHRo
-ZSBleGlzdGluZyBzb3VyY2UgdHJlZS4NCj4gDQo+ID4gRm9sbG93aW5nIGlzIGJyaWVmIGRlc2Ny
-aXB0aW9uIG9mIHRoZSB0ZXN0IGZyYW1ld29yazoNCj4gPg0KPiA+IFRoZSBpc3N1ZSBpcyBvYnNl
-cnZlZCB3aGlsZSB0cnlpbmcgdG8gY29uc3RydWN0IGEgR3N0cmVhbWVyIHBpcGVsaW5lDQo+ID4g
-bGV2ZXJhZ2luZyBoYXJkd2FyZSB2aWRlbyBjb252ZXJ0ZXIgZW5naW5lIChWUEUgZGV2aWNlKSBh
-bmQgaGFyZHdhcmUNCj4gPiB2aWRlbyBlbmNvZGUvZGVjb2RlIGVuZ2luZSAoQ09ERUMgZGV2aWNl
-KSB3aGVyZSB3ZSB1c2UgZG1hYnVmDQo+ID4gZnJhbWV3b3JrIGZvciBaZXJvLUNvcHkuDQo+ID4N
-Cj4gPiBFeGFtcGxlIEdTdHJlYW1lciBwaXBlbGluZSBpczoNCj4gPiBnc3QtbGF1bmNoLTEuMCAt
-diAtZSB2aWRlb3Rlc3RzcmMgXA0KPiA+ID4gISB2aWRlby94LXJhdywgd2lkdGg9NDgwLCBoZWln
-aHQ9MjcwLCBmb3JtYXQ9TlYxNSBcICEgdjRsMmNvbnZlcnQNCj4gPiA+IGRldmljZT0vZGV2L3Zw
-ZTAgY2FwdHVyZS1pby1tb2RlPWRtYWJ1Zi1pbXBvcnQgXCAhIHZpZGVvL3gtcmF3LA0KPiA+ID4g
-d2lkdGg9NDgwLCBoZWlnaHQ9MjcwLCBmb3JtYXQ9TlYxMiBcICEgdjRsMmgyNjVlbmMNCj4gPiA+
-IGRldmljZT0vZGV2L2NvZGVjMCBvdXRwdXQtaW8tbW9kZT1kbWFidWYgXCAhIHZpZGVvL3gtaDI2
-NSwNCj4gPiA+IGZvcm1hdD1ieXRlLXN0cmVhbSwgd2lkdGg9NDgwLCBoZWlnaHQ9MjcwIFwgISBm
-aWxlc2luaw0KPiA+ID4gbG9jYXRpb249b3V0LmhldmMNCj4gPg0KPiA+IFVzaW5nIEdTdHJlYW1l
-cidzIFY0TDIgcGx1Z2luLA0KPiA+IC0gdjRsMmNvbnZlcnQgY29udHJvbHMgVlBFIGRyaXZlciwN
-Cj4gPiAtIHY0bDJoMjY1ZW5jIGNvbnRyb2xzIENPREVDIGRyaXZlci4NCj4gPg0KPiA+IEluIHRo
-ZSBhYm92ZSBwaXBlbGluZSwgVlBFIGRyaXZlciBpbXBvcnRzIENPREVDIGRyaXZlcidzIERNQUJV
-RiBmb3IgWmVyby1Db3B5Lg0KPiA+DQo+ID4gWzFdIGFyY2gvYXJtNjQvYm9vdC9kdHMvc29jaW9u
-ZXh0L3VuaXBoaWVyLXB4czMtcmVmLmR0cw0KPiA+DQo+ID4gPiBBbmQgd2h5IGNhbid0IHRoZW4g
-anVzdCB1c2UgNS4xMCB0bw0KPiA+ID4gc29sdmUgdGhpcyBpc3N1ZSBhcyB0aGF0IHByb2JsZW0g
-aGFzIGFsd2F5cyBiZWVuIHByZXNlbnQgZm9yIHRoZW0sDQo+ID4gPiByaWdodD8NCj4gPg0KPiA+
-IEFzIHRoZSBkcml2ZXJzIGFyZSBjdXJyZW50bHkgdW5kZXIgZGV2ZWxvcG1lbnQgYW5kIFNvY2lv
-bmV4dCBoYXMNCj4gPiBjaG9zZW4gNS40IHN0YWJsZSBrZXJuZWwgZm9yIHRoZWlyIGRldmVsb3Bt
-ZW50LiBTbyBJIHdpbGwgbGV0DQo+ID4gT2JheWFzaGktc2FuIGFuc3dlciB0aGlzIGlmIGl0J3Mg
-cG9zc2libGUgZm9yIHRoZW0gdG8gbWlncmF0ZSB0byA1LjEwDQo+ID4gaW5zdGVhZD8NCj4gDQo+
-IFdoeSBwaWNrIGEga2VybmVsIHRoYXQgZG9lc24gbm90IHN1cHBvcnQgdGhlIGZlYXR1cmVzIHRo
-ZXkgcmVxdWlyZT8NCj4gVGhhdCBzZWVtcyB2ZXJ5IG9kZCBhbmQgdW53aXNlLg0KPiANCj4gPiBC
-VFcsIHRoaXMgcHJvYmxlbSBiZWxvbmdzIHRvIHRoZSBjb21tb24gY29kZSwgc28gb3RoZXJzIG1h
-eSBleHBlcmllbmNlDQo+ID4gdGhpcyBpc3N1ZSBhcyB3ZWxsLg0KPiANCj4gVGhlbiB0aGV5IHNo
-b3VsZCBtb3ZlIHRvIDUuMTAgb3IgbmV3ZXIgYXMgdGhpcyBqdXN0IGRvZXNuJ3Qgd29yayBvbiBv
-bGRlciBrZXJuZWxzLCByaWdodD8NCj4gDQo+ID4gPiA+IEkgYW0gYWJsZSB0byByb290IGNhdXNl
-IHRoaXMgaXNzdWUgd2hpY2ggaXMgY2F1c2VkIGJ5IGluY29ycmVjdA0KPiA+ID4gPiB2aXJ0IHRv
-IHBoeXMgdHJhbnNsYXRpb24gZm9yIGFkZHJlc3NlcyBiZWxvbmdpbmcgdG8gdm1hbGxvYyBzcGFj
-ZQ0KPiA+ID4gPiB1c2luZyB2aXJ0X3RvX3BhZ2UoKS4gQnV0IHdoaWxlIGxvb2tpbmcgYXQgdGhl
-IG1haW5saW5lIGtlcm5lbCwNCj4gPiA+ID4gdGhpcyBwYXRjaCBbMV0gY2hhbmdlcyBhZGRyZXNz
-IHRyYW5zbGF0aW9uIGZyb20gdmlydC0+dG8tPnBoeXMgdG8NCj4gPiA+ID4gZG1hLT50by0+cGh5
-cyB3aGljaCBmaXhlcyB0aGUgaXNzdWUgb2JzZXJ2ZWQgb24gNS40IHN0YWJsZSBrZXJuZWwNCj4g
-PiA+ID4gYXMgd2VsbCAobWluaW1hbCBmaXggWzJdKS4NCj4gPiA+ID4NCj4gPiA+ID4gU28gSSB3
-b3VsZCBsaWtlIHRvIHNlZWsgeW91ciBzdWdnZXN0aW9uIGZvciBiYWNrcG9ydCB0byBzdGFibGUN
-Cj4gPiA+ID4ga2VybmVscw0KPiA+ID4gPiAoNS40IG9yIGVhcmxpZXIpIGFzIHRvIHdoZXRoZXIg
-d2Ugc2hvdWxkIGJhY2twb3J0IHRoZSBjb21wbGV0ZQ0KPiA+ID4gPiBtYWlubGluZSBjb21taXQg
-WzFdIG9yIHdlIHNob3VsZCBqdXN0IGFwcGx5IHRoZSBtaW5pbWFsIGZpeCBbMl0/DQo+ID4gPg0K
-PiA+ID4gV2hlbmV2ZXIgeW91IHRyeSB0byBjcmVhdGUgYSAibWluaW1hbCIgZml4LCA5MCUgb2Yg
-dGhlIHRpbWUgaXQgaXMNCj4gPiA+IHdyb25nIGFuZCBkb2VzIG5vdCB3b3JrIGFuZCBJIGVuZCB1
-cCBoYXZpbmcgdG8gZGVhbCB3aXRoIHRoZSBtZXNzLg0KPiA+DQo+ID4gSSBhZ3JlZSB3aXRoIHlv
-dXIgY29uY2VybnMgZm9yIGhhdmluZyB0byBhcHBseSBhIG5vbi1tYWlubGluZSBjb21taXQNCj4g
-PiBvbnRvIGEgc3RhYmxlIGtlcm5lbC4NCj4gPg0KPiA+ID4gIFdoYXQNCj4gPiA+IHByZXZlbnRz
-IHlvdSBmcm9tIGRvaW5nIHRoZSByZWFsIHRoaW5nIGhlcmU/ICBBcmUgdGhlIHBhdGNoZXMgdG8g
-YmlnPw0KPiA+ID4NCj4gPg0KPiA+IElNSE8sIHllcyB0aGUgbWFpbmxpbmUgcGF0Y2ggaXMgYmln
-IGVub3VnaCB0byB0b3VjaCBtdWx0aXBsZQ0KPiA+IGFyY2hpdGVjdHVyZXMuIEJ1dCBpZiB0aGF0
-J3MgdGhlIG9ubHkgd2F5IHByZWZlcnJlZCB0aGVuIEkgY2FuDQo+ID4gYmFja3BvcnQgdGhlIG1h
-aW5saW5lIHBhdGNoIGluc3RlYWQuDQo+ID4NCj4gPiA+IEFuZCBhZ2Fpbiwgd2h5IG5vdCBqdXN0
-IHVzZSA1LjEwIGZvciB0aGlzIGhhcmR3YXJlPyAgV2hhdCBoYXJkd2FyZQ0KPiA+ID4gaXMgaXQ/
-DQo+ID4gPg0KPiA+DQo+ID4gUGxlYXNlIHNlZSBteSByZXNwb25zZSBhYm92ZS4NCj4gDQo+IElm
-IGEgZmVhdHVyZSBpbiB0aGUga2VybmVsIHdhcyBub3QgcHJlc2VudCBvbiBvbGRlciBrZXJuZWxz
-LCB0cnlpbmcgdG8gc2hvZS1ob3JuIGl0IGludG8gdGhlbSBpcyBub3Qgd2lzZQ0KPiBhdCBhbGwu
-ICBZb3UgcGljayBhIGtlcm5lbCB2ZXJzaW9uIHRvIHJlZmxlY3QgdGhlIGZlYXR1cmVzL29wdGlv
-bnMgdGhhdCB5b3UgcmVxdWlyZSwgYW5kIGl0IHNvdW5kcyBsaWtlDQo+IDUuNCBqdXN0IHdpbGwg
-bm90IHdvcmsgZm9yIHRoZW0sIHNvIHRvIHN0aWNrIHdpdGggdGhhdCB3b3VsZCBiZSBxdWl0ZSBm
-b29saXNoLg0KPiANCj4gSnVzdCBtb3ZlIHRvIDUuMTAsIG11Y2ggc2ltcGxlciENCj4gDQo+IHRo
-YW5rcywNCj4gDQo+IGdyZWcgay1oDQo=
+On Tue, Feb 09, 2021 at 09:47:08AM +0100, Michal Hocko wrote:
+> On Mon 08-02-21 23:26:05, Mike Rapoport wrote:
+> > On Mon, Feb 08, 2021 at 11:49:22AM +0100, Michal Hocko wrote:
+> > > On Mon 08-02-21 10:49:17, Mike Rapoport wrote:
+> [...]
+> > > > The file descriptor based memory has several advantages over the
+> > > > "traditional" mm interfaces, such as mlock(), mprotect(), madvise(). It
+> > > > paves the way for VMMs to remove the secret memory range from the process;
+> > > 
+> > > I do not understand how it helps to remove the memory from the process
+> > > as the interface explicitly allows to add a memory that is removed from
+> > > all other processes via direct map.
+> > 
+> > The current implementation does not help to remove the memory from the
+> > process, but using fd-backed memory seems a better interface to remove
+> > guest memory from host mappings than mmap. As Andy nicely put it:
+> > 
+> > "Getting fd-backed memory into a guest will take some possibly major work in
+> > the kernel, but getting vma-backed memory into a guest without mapping it
+> > in the host user address space seems much, much worse."
+> 
+> OK, so IIUC this means that the model is to hand over memory from host
+> to guest. I thought the guest would be under control of its address
+> space and therefore it operates on the VMAs. This would benefit from
+> an additional and more specific clarification.
+
+How guest would operate on VMAs if the interface between host and guest is
+virtual hardware?
+
+If you mean qemu (or any other userspace part of VMM that uses KVM), so one
+of the points Andy mentioned back than is to remove mappings of the guest
+memory from the qemu process.
+ 
+> > > > As secret memory implementation is not an extension of tmpfs or hugetlbfs,
+> > > > usage of a dedicated system call rather than hooking new functionality into
+> > > > memfd_create(2) emphasises that memfd_secret(2) has different semantics and
+> > > > allows better upwards compatibility.
+> > > 
+> > > What is this supposed to mean? What are differences?
+> > 
+> > Well, the phrasing could be better indeed. That supposed to mean that
+> > they differ in the semantics behind the file descriptor: memfd_create
+> > implements sealing for shmem and hugetlbfs while memfd_secret implements
+> > memory hidden from the kernel.
+> 
+> Right but why memfd_create model is not sufficient for the usecase?
+> Please note that I am arguing against. To be honest I do not really care
+> much. Using an existing scheme is usually preferable from my POV but
+> there might be real reasons why shmem as a backing "storage" is not
+> appropriate.
+   
+Citing my older email:
+
+    I've hesitated whether to continue to use new flags to memfd_create() or to
+    add a new system call and I've decided to use a new system call after I've
+    started to look into man pages update. There would have been two completely
+    independent descriptions and I think it would have been very confusing.
+
+-- 
+Sincerely yours,
+Mike.
