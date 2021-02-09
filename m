@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D5431511C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E7131512D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhBIOAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:00:43 -0500
-Received: from smtp-bc0d.mail.infomaniak.ch ([45.157.188.13]:57171 "EHLO
-        smtp-bc0d.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230408AbhBIN7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:59:40 -0500
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DZkyM0ZD7zMqQlf;
-        Tue,  9 Feb 2021 14:58:51 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DZkyJ230Czlh8TN;
-        Tue,  9 Feb 2021 14:58:48 +0100 (CET)
-Subject: =?UTF-8?Q?Re=3a_Conflict_with_Micka=c3=abl_Sala=c3=bcn=27s_blacklis?=
- =?UTF-8?Q?t_patches_=5bwas_=5bPATCH_v5_0/4=5d_Add_EFI=5fCERT=5fX509=5fGUID_?=
- =?UTF-8?Q?support_for_dbx/mokx_entries=5d?=
-To:     David Howells <dhowells@redhat.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dwmw2@infradead.org, Jarkko Sakkinen <jarkko@kernel.org>,
-        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
-        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
-        ardb@kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
-        lszubowi@redhat.com, javierm@redhat.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-References: <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com>
- <20210122181054.32635-1-eric.snowberg@oracle.com>
- <1103491.1612369600@warthog.procyon.org.uk>
- <10e6616e-0598-9f33-2de9-4a5268bba586@digikod.net>
- <A5B5DEC0-E47A-4C3D-8E79-AF37B6C2E565@oracle.com>
- <7924ce4c-ea94-9540-0730-bddae7c6af07@digikod.net>
- <BFC930B3-7994-4C5B-A8EF-1DD1C73F5750@oracle.com>
- <dc6a4524-3935-fda6-40a8-cebf80942cdf@digikod.net>
- <188DE1AF-A011-4631-B88A-2C4324DA013B@oracle.com>
- <99066eb7-53ac-41b0-46cf-36ea3d7f6590@digikod.net>
- <525705.1612876446@warthog.procyon.org.uk>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <5055b9b4-2808-8816-d50c-e651bd88a7c3@digikod.net>
-Date:   Tue, 9 Feb 2021 14:59:14 +0100
-User-Agent: 
+        id S231995AbhBIODK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:03:10 -0500
+Received: from elvis.franken.de ([193.175.24.41]:36682 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231135AbhBIOCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 09:02:13 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l9Ta5-0004Ih-00; Tue, 09 Feb 2021 15:01:29 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 23E1BC0DC4; Tue,  9 Feb 2021 15:00:18 +0100 (CET)
+Date:   Tue, 9 Feb 2021 15:00:18 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] MIPS: Make check condition for SDBBP consistent with
+ EJTAG spec
+Message-ID: <20210209140018.GA13043@alpha.franken.de>
+References: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
+ <20210209121124.GA11134@alpha.franken.de>
+ <03fcfc00-acdd-a949-046c-3002195d6024@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <525705.1612876446@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <03fcfc00-acdd-a949-046c-3002195d6024@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
-
-The only commit causing issues is commit f78e50c8f750 ("certs: Factor
-out the blacklist hash creation"). I think my last patch fix the issue,
-and I'm testing with the UEFI DBX, but I don't understand why this
-change would have an impact. In the meantime you can push Eric's commits
-first, I'll adapt my changes.
-
- Mickaël
-
-
-On 09/02/2021 14:14, David Howells wrote:
+On Tue, Feb 09, 2021 at 09:09:52PM +0800, Tiezhu Yang wrote:
+> On 02/09/2021 08:11 PM, Thomas Bogendoerfer wrote:
+> > On Tue, Feb 09, 2021 at 01:05:25PM +0800, Tiezhu Yang wrote:
+> > > According to MIPS EJTAG Specification [1], a Debug Breakpoint
+> > > exception occurs when an SDBBP instruction is executed, the
+> > > CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
+> > > occurred, just check bit DBp for SDBBP is more accurate.
+> > > 
+> > > [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
+> > > 
+> > > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> > > ---
+> > > 
+> > > v2: add MIPS_DEBUG_DBP definition
+> > > 
+> > >   arch/mips/include/asm/mipsregs.h | 4 ++++
+> > >   arch/mips/kernel/genex.S         | 4 ++--
+> > >   2 files changed, 6 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+> > > index a0e8ae5..9c8099a 100644
+> > > --- a/arch/mips/include/asm/mipsregs.h
+> > > +++ b/arch/mips/include/asm/mipsregs.h
+> > > @@ -1085,6 +1085,10 @@
+> > >   #define CVMVMCONF_RMMUSIZEM1_S	0
+> > >   #define CVMVMCONF_RMMUSIZEM1	(_U64CAST_(0xff) << CVMVMCONF_RMMUSIZEM1_S)
+> > > +/* Debug register field definitions */
+> > > +#define MIPS_DEBUG_DBP_SHIFT	1
+> > > +#define MIPS_DEBUG_DBP		(_ULCAST_(1) << MIPS_DEBUG_DBP_SHIFT)
+> > > +
+> > >   /*
+> > >    * Coprocessor 1 (FPU) register names
+> > >    */
+> > > diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> > > index bcce32a..743d759 100644
+> > > --- a/arch/mips/kernel/genex.S
+> > > +++ b/arch/mips/kernel/genex.S
+> > > @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+> > >   	MTC0	k0, CP0_DESAVE
+> > >   	mfc0	k0, CP0_DEBUG
+> > > -	sll	k0, k0, 30	# Check for SDBBP.
+> > > -	bgez	k0, ejtag_return
+> > > +	andi	k0, k0, MIPS_DEBUG_DBP	# Check for SDBBP.
+> > > +	beqz	k0, ejtag_return
+> > IMHO both implementations are doing the same thing.
 > 
-> Hi Eric, Mickaël,
-> 
-> Do we have a consensus on this?  From what's written here, I don't think I can
-> ask Linus to pull the merge of your two branches.  I feel that I probably need
-> to push Eric's first as that fixes a CVE if I can't offer a merge.
-> 
-> David
-> 
+> When I read the original code, it looks a little confusing
+> at first glance, the initial aim of this patch is to make the code
+> more readable and easier to understand.
+
+which your version is, but the description sounds like there is a semantic
+change somewhere (at least to me). So with a little bit rewording I'm
+fine with applying your patch.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
