@@ -2,224 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4243154C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991B53154CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbhBIRMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 12:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233032AbhBIRMr (ORCPT
+        id S233029AbhBIROR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 12:14:17 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26358 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232963AbhBIRN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:12:47 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD24C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:11:29 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id g84so6384267oib.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:11:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/M585z7ZzYXNwMMt9gcvkTvDIHc7/LPBrsNluqsDW04=;
-        b=jjP+yMx/RnBV1Di0U/aHVSskc+93QxxwidegEwOpi9lmaTgAWGve0SttBEciPppPmA
-         DunvXxLFRfsF/2VkhyAvba3hw9JBerLbbxDb28SWYBf3G6w0+OAbduiETqQhQyU8yIBU
-         Pa+Up2445IBNhqbXnR8S/RlFeV8HU3nCYqtn3mgL6l3ttUE1UrarJvBlJ845xYtOlwik
-         dV8O0tRLCEBm/xpkLctklvcbkPF1wkCoqbSiD9h7jQjr3Q7Bb/Q+3EX5CjDrZZYt7KG+
-         72LeT6E/HjiJHn27Kjpv3ioubBhYwlW258NZTufp7uO+TykEV+IWHkf/p0Nyh/aNPYI/
-         JvxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/M585z7ZzYXNwMMt9gcvkTvDIHc7/LPBrsNluqsDW04=;
-        b=qd95dnP4CYnvEjmyhIP19MkHrVyH3uWvw1N+bBvSWpI4SN4ABq9ySKvvDQejqFyNtS
-         ErxmRPfRwsrWK+CUgkcU6ZwwaAqvF1KAC2TdfVytfMbyi9qtxdbAQ43qV+i8upJd5rmu
-         hJhgmU5rNQ7mr53otf9eF15TFFbTFeCjDuxYp/OGGhZLfRt2rSnCrh9LQEIdn8b0HLRh
-         OSe0cP0wczlrpJl7A+DofOZz5hl1+1TNmKH2I5E+dfwR4ivKCWFGA8R4FnnLckOzrjz8
-         JdLTmLmGLxffk2+hp0ARNGjpZJr7lfdEfknktWLc0by/ozYQHtB4fmPIToLM57vbTlVt
-         ryqA==
-X-Gm-Message-State: AOAM530NTzcZS4e7VuKWzcIpAxK91gH6NlOKxaMW2tSS8aCklpuLfRF5
-        cGFMFszSGJ+z5xokchcWwKYK3g==
-X-Google-Smtp-Source: ABdhPJwHt4G19lG9pP4nTma2e4koC2dEk87yls/3W9mzOMBIF8Jc/NpgIgypbQz3LP2NYfixSx9W1Q==
-X-Received: by 2002:aca:dd08:: with SMTP id u8mr3233941oig.55.1612890688863;
-        Tue, 09 Feb 2021 09:11:28 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m15sm4361297otl.11.2021.02.09.09.11.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 09:11:28 -0800 (PST)
-Date:   Tue, 9 Feb 2021 11:11:26 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
-Message-ID: <YCLCPs7T72wH2HMI@builder.lan>
-References: <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
- <CAK8P3a0Kgn9PTHjsU7MbJPC8vatvb9KYJJKWxrx7zQzTNgK10g@mail.gmail.com>
- <CAMuHMdWZ8QmiQCmiW9AvCpviNZeuaxThSo_4Xb2DGEs9hMTKMQ@mail.gmail.com>
- <YCGBIvRfoP0BeyrP@builder.lan>
- <20210208184230.onhlioflyylkx6xo@kozik-lap>
- <CAK8P3a3bsw8p2Geyo-vh1AJUfMQCCf3kpa_YB+tKmcvWHqRcEw@mail.gmail.com>
- <20210208213537.GA351084@piout.net>
- <CAK8P3a0QRcQM4rH9HgVMOHa_eATXsjRbGDXuMO7FgnA8OgPk0Q@mail.gmail.com>
- <20210208231040.GF351084@piout.net>
- <CAL_JsqJicBkH_a2kvM=+p3wde1T5Cx7C+qNR3r0WjksZfBnCKA@mail.gmail.com>
+        Tue, 9 Feb 2021 12:13:57 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 119HAZbI129481;
+        Tue, 9 Feb 2021 12:12:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=7IwLg9VTGTZoMODXIJEjmtthSyCVG2rwALKkhzMCJzA=;
+ b=Zz11wA9qXG2x9KNUAEg41hbG2TUpd9XQI2uBTtAhRspxVfqLRVNQ2Ey7MsYVoWQevF0O
+ 0bMgWDrTT0U7E9/VvyBHUT5Wr0Y9WRVPWKjLlQ7rvd7LZmfLbSomse0+JBpBVDWqMf9Z
+ 5FqNiDnZoXqT3iAKh6HAbJalFM68LqduS5pYNyyADX/EUAoFl94R2FhTxLX/zwErZVph
+ 2ZtMk0H2WjrTHN1yEdHl3IM0I7Vb22t+yG2/zn4D5kvSpVHRPhZGE87Cc1/wbt1sWNYU
+ ndrLaiPayAZlpUbHGlpTfi/u0WwtfSC1thtH+vKleBgNO9/uBpPsF1T5gC2mQ3L/AQ9S fQ== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36kx5hh39u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 12:12:48 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 119GwFMV001418;
+        Tue, 9 Feb 2021 17:12:47 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02dal.us.ibm.com with ESMTP id 36hjr9x31v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 17:12:47 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 119HCktS9700124
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 9 Feb 2021 17:12:46 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 40AA7AE05F;
+        Tue,  9 Feb 2021 17:12:46 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18771AE060;
+        Tue,  9 Feb 2021 17:12:45 +0000 (GMT)
+Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.163.58.95])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  9 Feb 2021 17:12:44 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-hwmon@vger.kernel.org
+Cc:     linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        jk@ozlabs.org, joel@jms.id.au, alistair@popple.id.au,
+        jdelvare@suse.com, linux@roeck-us.net,
+        Eddie James <eajames@linux.ibm.com>
+Subject: [PATCH 0/4] occ: fsi and hwmon: Fixes for polling un-initialized OCC
+Date:   Tue,  9 Feb 2021 11:12:31 -0600
+Message-Id: <20210209171235.20624-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJicBkH_a2kvM=+p3wde1T5Cx7C+qNR3r0WjksZfBnCKA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-09_05:2021-02-09,2021-02-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 clxscore=1011 spamscore=0 suspectscore=0
+ mlxlogscore=783 phishscore=0 impostorscore=0 malwarescore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102090082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 09 Feb 08:27 CST 2021, Rob Herring wrote:
+In the event that the OCC is not initialized when the driver sends a poll
+command, the driver may receive an invalid response. This isn't an error
+condition unless there is no valid response before the timeout expires. So
+change the starting sequence number and check for the un-initialized OCC
+state before returning the response in order to detect this condition and
+continue waiting if necessary.
 
-> On Mon, Feb 8, 2021 at 5:10 PM Alexandre Belloni
-> <alexandre.belloni@bootlin.com> wrote:
-> >
-> > On 08/02/2021 23:14:02+0100, Arnd Bergmann wrote:
-> > > On Mon, Feb 8, 2021 at 10:35 PM Alexandre Belloni
-> > > <alexandre.belloni@bootlin.com> wrote:
-> > > > On 08/02/2021 20:52:37+0100, Arnd Bergmann wrote:
-> > > > > On Mon, Feb 8, 2021 at 7:42 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > > > > Let me steer the discussion to original topic - it's about old kernel
-> > > > > > and new DTB, assuming that mainline kernel bisectability is not
-> > > > > > affected.
-> > > > > >
-> > > > > > Flow looks like this:
-> > > > > >
-> > > > > > 0. You have existing bidings and drivers.
-> > > > > > 1. Patch changing bindings (with new compatible) and drivers gets
-> > > > > >    accepted by maintainer.
-> > > > > > 2. Patch above (bindings+drivers) goes during merge window to v5.11-rc1.
-> > > > > > 3. Patch changing in-tree DTS to new compatible gets accepted by
-> > > > > >    maintainer and it is sent as v5.12-rc1 material to SoC maintainers.
-> > > > > >
-> > > > > > So again: old kernel, using old bindings, new DTB.
-> > > > > >
-> > > >
-> > > > I don't think forward compatibility was ever considered. I've seen it
-> > > > being mentioned a few times on #armlinux but honestly this simply can't
-> > > > be achieved. This would mean being able to write complete DT bindings
-> > > > for a particular SoC at day 0 which will realistically never happen. You
-> > > > may noteven have a complete datasheet and even if you have a datasheet,
-> > > > it may not be complete or it may be missing hw errata that are
-> > > > discovered later on and need a new binding to handle.
-> > >
-> > > You do not have to write the correct DT for this, the only requirement
-> > > is that any changes to a node are backward-compatible, which is
-> > > typically the case if you add properties or compatible strings without
-> > > removing the old one. A bugfix in this case is also backward-compatible.
-> > >
-> > > The part that can not happen instead is to write a DT that can expose
-> > > features that any future kernel will use.
-> > >
-> >
-> > But I think we are speaking about the other way around were you would be
-> > e.g. removing properties or splitting a node is multiple different
-> > nodes following a different understanding of the hardware.
-> > And in this case, any rework of the bindings will be forbidden, like
-> > 32b7cfbd4bb2 ("ARM: dts: at91: remove deprecated ADC properties") will
-> > break older kernels trying to use the new dtb.
-> > 761f6ed85417 ("ARM: dts: at91: sama5d4: use correct rtc compatible") is
-> > an other case.
-> > I'm not sure want to keep the older properties or the older compatible
-> > string as a fallback for this use case.
-> >
-> > > > > However, once the firmware is updated, it may no longer be possible to
-> > > > > go back to the old kernel in case the new one is busted.
-> > > > >
-> > > >
-> > > > Any serious update strategy will update both the kernel and device tree
-> > > > at the same time, exactly like you already have to update the initramfs
-> > > > with the kernel as soon as it is including kernel modules.
-> > > > I would expect any embedded platform to actually use a container format,
-> > > > like a FIT image that will ship the kernel, DT and intiramfs in a single
-> > > > image and will allow to sign all parts.
-> > >
-> > > Embedded systems that do this have no requirement for backward
-> > > or forward compatibility at all, the only requirement for these is bisectability
-> > > of git commits.
-> > >
-> >
-> > Yes and I can't see any drawbacks in this approach.
-> >
-> > > > > A similar problem can happen with the EBBR boot flow that relies on
-> > > > > a uefi-enabled firmware such as a u-boot, while using grub2 as the
-> > > > > actual boot loader. This is commonly supported across distros. While
-> > > > > grub2 can load a matching set of kernel+initrd+dtb from disk and run
-> > > > > that, this often fails in practice because u-boot needs to fill a
-> > > > > board specific set of DT properties (bootargs, detected memory,
-> > > > > mac address, ...). The usual way this gets handled is that u-boot loads
-> > > > > grub2 and the dtb from disk and then passes the modified dtb to grub,
-> > > > > which picks only kernel+initrd from disk and boots this with the dtb.
-> > > > >
-> > > > > The result is similar to case with dtb built into the firmware: after
-> > > > > upgrading the dtb that gets loaded by u-boot, grub can still pick
-> > > > > old kernels but they may not work as they did in the past. There are
-> > > > > obviously ways to work around it, but it does lead to user frustration.
-> > > > >
-> > > >
-> > > > Are there really any platforms with the dtb built into the firmware?
-> > > > I feel like this is a mythical creature used to scare people into keeping
-> > > > the DTB ABI stable. Aren't all the distribution already able to cope
-> > > > with keeping DTB and kernel in sync?
-> > >
-> > > I think most traditional PowerPC systems fall into this category, most
-> >
-> > My understanding was that the traditional PPC systems had a small device
-> > tree and usually are not affected by driver changes but I may be wrong.
-> >
-> > > systems that boot using UEFI+grub (as I explained), and anyone who
-> > > uses a distro kernel on custom hardware with their own dtb.
-> > >
-> >
-> > Aren't the ones using a distro kernel with a custom dtb more concerned
-> > by backward compatibility (i.e. new kernel with old dtb) rather than old
-> > kernel on new dtb? If they have an old dtb, an old kernel, and update to
-> > a new kernel, backward compatibility will ensure this continues to work.
-> > If then they work on updating their dtb, they still have the old one and
-> > can make the distribution match dtb and kernel. This is already handled
-> > properly by debian and I guess the other distributions as it is anyway
-> > already matching kernel and initramfs.
-> 
-> SUSE is doing the opposite AIUI. This is a bit harder because adding
-> any new provider breaks compatibility as the old kernel will wait for
-> a non-existent driver for the new provider. That was the motivation
-> for deferred probe timeouts. Of course, I wouldn't really call a
-> platform stable if you are still adding clock, pinctrl, power-domain,
-> etc. providers.
-> 
+Eddie James (4):
+  fsi: occ: Don't accept response from un-initialized OCC
+  fsi: occ: Log error for checksum failure
+  hwmon: (occ) Start sequence number at one
+  hwmon: (occ) Print response status in first poll error message
 
-IMHO "stable" in this context means that we've hit the point in
-development when these questions are no longer relevant. Either because
-the development is _done_ or more likely it's too old for anyone to
-care.
+ drivers/fsi/fsi-occ.c      | 11 ++++++++---
+ drivers/hwmon/occ/common.c |  7 +++++--
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
-Unfortunately this is the state that we're optimizing for and we're
-simply relying on luck to boot Linux on a reasonably complex machine.
+-- 
+2.27.0
 
-Regards,
-Bjorn
