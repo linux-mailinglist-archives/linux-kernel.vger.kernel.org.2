@@ -2,167 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B33E31459F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FA13145A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhBIB2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:28:36 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:41215 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhBIB2X (ORCPT
+        id S229851AbhBIBaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:30:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229615AbhBIBaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:28:23 -0500
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210209012739epoutp03b085fb4043aad46f9075f4df7ae3b692~h8AgiwBZo2869928699epoutp03R
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:27:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210209012739epoutp03b085fb4043aad46f9075f4df7ae3b692~h8AgiwBZo2869928699epoutp03R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612834059;
-        bh=IVTi1/fqkT4P2V5ja0EkF1goxEb7HDWuBTmQvwKKMc4=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=SaMUCF+ETp+bg7gCRr+WyNSsifS+GMzDCPZuLc0qeYPTCtQ/B+E3t+CE5gO/LAGY/
-         kMaDpSsn3cy+pCn+QZtzINJm84oJvUMPAgOlcaL0EE3VMCeLJq0XZXR8EcIgOU12cT
-         SrKv0Hy/kO5jSzpGvqb61HnICEU86th6XZgllGPM=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210209012738epcas2p47972312b144c2a8fd813774bb82dcc3e~h8AfyJhrg0963409634epcas2p49;
-        Tue,  9 Feb 2021 01:27:38 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.182]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4DZQHX0wQDz4x9QD; Tue,  9 Feb
-        2021 01:27:36 +0000 (GMT)
-X-AuditID: b6c32a46-1d9ff7000000dbf8-42-6021e5074975
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        03.60.56312.705E1206; Tue,  9 Feb 2021 10:27:35 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v19 2/3] scsi: ufs: L2P map management for HPB read
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <5b9f5edbe26930765ee4adaa786db7da@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210209012734epcms2p8354347b1dd71601e74b505c715d36af0@epcms2p8>
-Date:   Tue, 09 Feb 2021 10:27:34 +0900
-X-CMS-MailID: 20210209012734epcms2p8354347b1dd71601e74b505c715d36af0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrELsWRmVeSWpSXmKPExsWy7bCmhS77U8UEgxv9vBYP5m1js9jbdoLd
-        4uXPq2wWh2+/Y7eY9uEns8Wn9ctYLV4e0rRY9SDconnxejaLOWcbmCx6+7eyWSy6sY3J4vKu
-        OWwW3dd3sFksP/6PyeL2Fi6LpVtvMlp0Tl/DYrFo4W4WB2GPy1e8PS739TJ57Jx1l91jwqID
-        jB77565h92g5uZ/F4+PTWywefVtWMXp83iTn0X6gmymAK6qB0SaxKDkjsyxVITUvOT8lMy/d
-        Vik0xE3XQkkhI7+4xFYp2tDCSM/Q0lTPxFLPyDzWytDAwMhUSSEvMTfVVqlCF6pbSaEouQCo
-        uiS1uKQoNTkVKFTkUFySmJ6qV5yYW1yal66XnJ+rpFCWmFMK1Kekb2eTkZqYklqkkPCEMWPx
-        7k72go3CFVum3WNtYHzA18XIySEhYCLRsnEiM4gtJLCDUeJKv0AXIwcHr4CgxN8dwiBhYQFv
-        iV/dTUwQJUoS6y/OYoeI60nceriGEcRmE9CRmH7iPlhcRMBT4uvk1axdjFwczAINbBJtp5az
-        QuzilZjR/pQFwpaW2L58K1gzp4CdxONHR6DiGhI/lvUyQ9iiEjdXv2WHsd8fm88IYYtItN47
-        C1UjKPHg526ouKTEsd0fmCDseomtd34xghwhIdDDKHF45y2oI/QlrnVsZIF40lfixMQokDCL
-        gKrEwd3boWa6SLz7NgFsL7OAvMT2t3OYQcqZBTQl1u/SBzElBJQljtxigfmqYeNvdnQ2swCf
-        RMfhv3DxHfOeQF2mJrHu53qmCYzKsxABPQvJrlkIuxYwMq9iFEstKM5NTy02KjBCjuZNjOB0
-        r+W2g3HK2w96hxiZOBgPMUpwMCuJ8AZ2yiUI8aYkVlalFuXHF5XmpBYfYqwC+nIis5Rocj4w
-        4+SVxBuaGRiZmRqbGBubmpiSLWxqZGZmYGlqYWpmZKEkzlts8CBeSCA9sSQ1OzW1ILUIZjkT
-        B6dUA9Nm89+mkXfv8m0wtGR93rtjyo29V6cpSltIXnwl7fkjv+5a5fSYwh/GWedmSqjNZVPn
-        yS465SOsnf+gUY2f4YinjV9KnLuvoE9d63Y1wdcnePsEjk65pOnmOi39p8V9ix8POxUy+V83
-        rZj5eg7fIrak219FnundcLtte7EnpnjCajcxZYu770/Mz11teyz62pfvS7WP3d5942ax5PTY
-        pMTT/SI/d2Rwc6vYxm+c8NsgM+iy2O/eeIGIrRyKp798s5q42sJK9m3miqOHf8yM38PpXFzA
-        dKJIsPqUeeNLuRNB/bmPu/jeakw60FWsz/Hpplblr/mmz5Zs/yogox4ebxNS4cQV+Vz53Z6q
-        r937fyqxFGckGmoxFxUnAgDw+NemxQQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5
-References: <5b9f5edbe26930765ee4adaa786db7da@codeaurora.org>
-        <88b608e2e133ba7ccd5bb452898848fd@codeaurora.org>
-        <5bd43da52369a56f18867fa18efb3020@codeaurora.org>
-        <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
-        <20210129053005epcms2p323338fbb83459d2786fc0ef92701b147@epcms2p3>
-        <20210208080333epcms2p59403f0acbc9730c9a605d265836a956d@epcms2p5>
-        <20210208085346epcms2p1c11b70be9d258df66cb2ca4542835fac@epcms2p1>
-        <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p8>
+        Mon, 8 Feb 2021 20:30:02 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECACDC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:29:21 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id lw17so706006pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:29:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=3BB8r2Xh3JusOcZJw/yjA416GCYQPgxgvzDoA5TTXR0=;
+        b=CrJLNZssu+WGrZIJkQw44FIfx5dYnG8xsSrLlfBK3irS+EwMiPUZakiCgtjPe3jFJG
+         YlwtGLP2BhpTlMPjra7DfATRyrEvyh1Uc63ZvV51us03Nkgs4lZxNuZBDaXBRVjF6aNF
+         AsarGzU1tmIzxpxyC9hNEJsvZd4MRpNoGgapJZwwDEwOmkbzqbGCZqKaWD1+9IX2P/EC
+         lqFBHnHVABnkGXOJuwUvu4GdHXm0yhiOIqg1KhF3Dzk2r/SgW0I+LKUgL6z0BlIf5t9J
+         O7NtqtEVVwkHUfSjOf+Ftk24XKWHUk/ATTH1rg+/7VcbPc7Dzf4Bf7oBj0oTWQmrbcKi
+         v4Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=3BB8r2Xh3JusOcZJw/yjA416GCYQPgxgvzDoA5TTXR0=;
+        b=j34g7sH1rqavb8Qa/HsBRyu8cml1f+/dNTerOfvANGRoVx/nmNA5kyDNumIInOwLGy
+         0Ppl2nzTvwDcYqkSyfUiV/48nHKZ1TbDOV+DDN4MMW15Ke8UD3G9QiTxM0ZeLG7347b2
+         zJrQ3EqgVjzqLBgtZO7OaoQKilqFjLvAJ7f9WgAKmDrq0Hj+F9GAIWkexGWcmw+SCf7I
+         2lFnDNsJ/FRsBE+zp8g9S4NDatmoIRwtmDVUWsWBN2Z3jtheI8jkqTXHCJpNa8aH28h0
+         Ds8huhnI6PjY2cJzXP9NWuLAAl2Vk9W/srHmsdF69Bs5QTZ0WJjVBqftr8NjQ+wDKogw
+         3TRw==
+X-Gm-Message-State: AOAM530SKMHpt3t7l6ERKLfY03eFP+9cpMZhTIhUsZbshmHDow67b8BS
+        rURnAkyHKwfxMycTIoc5PsA=
+X-Google-Smtp-Source: ABdhPJxJUTJb88NIgdD4iksB3Zs6MUxdshLWdT982GjNJdD1J9N01MG9DlVMVF6FoVOFMJMt5IlMjQ==
+X-Received: by 2002:a17:90a:ca8f:: with SMTP id y15mr1536276pjt.119.1612834161575;
+        Mon, 08 Feb 2021 17:29:21 -0800 (PST)
+Received: from localhost ([220.240.226.199])
+        by smtp.gmail.com with ESMTPSA id 14sm19720222pfy.55.2021.02.08.17.29.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 17:29:20 -0800 (PST)
+Date:   Tue, 09 Feb 2021 11:29:15 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v5 10/22] powerpc/syscall: Use is_compat_task()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+        <c8094662199337a7200fea9f6e1d1f8b1b6d5f69.1612796617.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <c8094662199337a7200fea9f6e1d1f8b1b6d5f69.1612796617.git.christophe.leroy@csgroup.eu>
+MIME-Version: 1.0
+Message-Id: <1612834040.k147utsmdf.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>>> @@ -342,13 +1208,14 @@ void ufshpb_suspend(struct ufs_hba *hba)
->>>>> >          struct scsi_device *sdev;
->>>>> >
->>>>> >          shost_for_each_device(sdev, hba->host) {
->>>>> > -                hpb = sdev->hostdata;
->>>>> > +                hpb = ufshpb_get_hpb_data(sdev);
->>>>> >                  if (!hpb)
->>>>> >                          continue;
->>>>> >
->>>>> >                  if (ufshpb_get_state(hpb) != HPB_PRESENT)
->>>>> >                          continue;
->>>>> >                  ufshpb_set_state(hpb, HPB_SUSPEND);
->>>>> > +                ufshpb_cancel_jobs(hpb);
->>>>> 
->>>>> Here may have a dead lock problem - in the case of runtime suspend,
->>>>> when ufshpb_suspend() is invoked, all of hba's children scsi devices
->>>>> are in RPM_SUSPENDED state. When this line tries to cancel a running
->>>>> map work, i.e. when ufshpb_get_map_req() calls below lines, it will
->>>>> be stuck at blk_queue_enter().
->>>>> 
->>>>> req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
->>>>>                       REQ_OP_SCSI_IN, 0);
->>>>> 
->>>>> Please check block layer power management, and see also commit
->>>>> d55d15a33
->>>>> ("scsi: block: Do not accept any requests while suspended").
->>>> 
->>>> I am agree with your comment.
->>>> How about add BLK_MQ_REQ_NOWAIT flag on blk_get_request() to avoid
->>>> hang?
->>>> 
->>> 
->>> That won't work - BLK_MQ_REQ_NOWAIT allows one to fast fail from
->>> blk_mq_get_tag(),
->>> but blk_queue_enter() comes before __blk_mq_alloc_request();
->>> 
->> In blk_queue_enter(), BLK_MQ_REQ_NOWAIT flag can make error than wait 
->> rpm
->> resume. Please refer following code.
-> 
->Oops, sorry, my memory needs to be refreshed on that part.
-> 
->But will BLK_MQ_REQ_NOWAIT flag breaks your original purpose? When
->runtime suspend is out of the picture, if traffic is heavy on the
->request queue, map_work() will be stopped frequently once it is
->not able to get a request from the queue - that shall pull down the
->efficiency of one map_work(), that may hurt random performance...
+Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+> Instead of hard comparing task flags with _TIF_32BIT, use
+> is_compat_task(). The advantage is that it returns 0 on PPC32
+> allthough _TIF_32BIT is always set.
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-I think deadlock prevention is the most important. So I want to add
-BLK_MQ_REQ_NOWAIT flag.
-Starvation of map request can be distinguish by return value of
-blk_get_request(). -EWOULDBLOCK means there is no available tags for this
-request. -EBUSY means failed on blk_queue_enter(). To overcome starvation
-of map request, we can try N times in heavy traffic situation (maybe N=3?).
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
 
-Thanks,
-Daejun
+
+> ---
+>  arch/powerpc/kernel/interrupt.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interr=
+upt.c
+> index 2dac4d2bb1cf..46fd195ca659 100644
+> --- a/arch/powerpc/kernel/interrupt.c
+> +++ b/arch/powerpc/kernel/interrupt.c
+> @@ -2,6 +2,8 @@
+> =20
+>  #include <linux/context_tracking.h>
+>  #include <linux/err.h>
+> +#include <linux/compat.h>
+> +
+>  #include <asm/asm-prototypes.h>
+>  #include <asm/kup.h>
+>  #include <asm/cputime.h>
+> @@ -118,7 +120,7 @@ notrace long system_call_exception(long r3, long r4, =
+long r5,
+>  	/* May be faster to do array_index_nospec? */
+>  	barrier_nospec();
+> =20
+> -	if (unlikely(is_32bit_task())) {
+> +	if (unlikely(is_compat_task())) {
+>  		f =3D (void *)compat_sys_call_table[r0];
+> =20
+>  		r3 &=3D 0x00000000ffffffffULL;
+> --=20
+> 2.25.0
+>=20
+>=20
