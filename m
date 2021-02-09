@@ -2,82 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA835314E56
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC20314E54
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbhBILnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:43:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230243AbhBILhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:37:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7244964E7C;
-        Tue,  9 Feb 2021 11:35:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612870547;
-        bh=cxgAuJRm38/lVceJ/ps0Yb69dDCyZKfKKvBlFNDAF/A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IZ1cj4KnjSlwEEladkNVmZeb30f1KQMaWz+3kzY+NiHMnOXemEj4KsX7Yxb5oh6Xy
-         BjzafS2f9AxVu9IU5Rd5EpNwfKZkXJhlNWsA+zFZB9N5xCpJwxuRlKGT88L2fv5Yds
-         4OHcdCOsz1d9NuCYglJiDyYbJftiu2JGFDZtg0zzWZ410FwVW2SLtl31RKhlWOITbG
-         ZQI/Hre+u9VLnVZaTDEqKqKbhhR59PeCKL8Yiq8V8Nf16mzKLdb6V+IGftesZHmjDj
-         nSylNcDC6Q+2ibkdoRbxaZEEKgL3345RCIThRWTVDuqINbYqOiNNzr4B8eHcBpC1W0
-         EIjEBev/ulZiA==
-Received: by mail-ot1-f46.google.com with SMTP id t25so17184384otc.5;
-        Tue, 09 Feb 2021 03:35:47 -0800 (PST)
-X-Gm-Message-State: AOAM530wiqzIgevIyQvkEzGW9wJcWrH+4bPxPk0BHY8TRYOp7Nw7rIhJ
-        eciTNs4zltmesnBdbStaKGoYQUJ7bYuvO69gQ6Q=
-X-Google-Smtp-Source: ABdhPJyDKj0Y1Dtdu/MPQyiWZkTlTUQx+JYmtp05L9HUwi5QghIkuV68JOUMJUdTxsnglziqty9H1SeZzl5r4g+yYT0=
-X-Received: by 2002:a9d:3403:: with SMTP id v3mr6838001otb.305.1612870546669;
- Tue, 09 Feb 2021 03:35:46 -0800 (PST)
+        id S230381AbhBILmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:42:50 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:43674 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230244AbhBILhB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 06:37:01 -0500
+Date:   Tue, 9 Feb 2021 12:35:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612870535;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DixppWAKwCGRCyN3/wjo8fEQOat/YyMxvwTe82uIifQ=;
+        b=UM8QInTylCa75oFCFtfwnoIWu4ujgiNcS4dPQO8ljzOU6+DngUc1Za5W0SENKLaL/PC99O
+        FruCrcDq5ZRZrEmEObVFQlwxPnU6/hxXgjT7AKhVK3lYngtk0cyrN5MzvXMeWA83hrDGzw
+        ew2OPW9F+JgvqWDbB0+iGt/JEmeKaHqc5nk8fvGUK/rxyPPRhIlddIknb9sw68UOQEZ36H
+        Grxbz8oqOox15HG2EKYVIsJHbYPMKyu53eP84j9nHIbwOtlB+MnIZfKihFilVE1sLxhcpe
+        IX93pvAc4O5Ci2b25jF3bLyikkldSo3pcI6QHlpkkVuo2xxhgJhsvdRK5SSCuw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612870535;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DixppWAKwCGRCyN3/wjo8fEQOat/YyMxvwTe82uIifQ=;
+        b=jZHFHRvPw1zbucga3ykmn0KGytb/vEzO+JpJ0TSphrp+oLuhhls9qv2gVTxyA8ldJnFVXr
+        D2DpRxaYPHgnXaBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 1/3] smp: Process pending softirqs in
+ flush_smp_call_function_from_idle()
+Message-ID: <20210209113533.hgjztse5afs4snxz@linutronix.de>
+References: <20210123201027.3262800-1-bigeasy@linutronix.de>
+ <20210123201027.3262800-2-bigeasy@linutronix.de>
+ <YCJdoovwxhlbJ4ln@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210128170331.4f2ac87b@canb.auug.org.au> <CAMuHMdWAOXpJGTRM7O7ix4uG-hpH-kDiueN51oA0YEZ0vJdZfw@mail.gmail.com>
-In-Reply-To: <CAMuHMdWAOXpJGTRM7O7ix4uG-hpH-kDiueN51oA0YEZ0vJdZfw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 9 Feb 2021 12:35:30 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1Fv=Bei+Zkq43yn_dek=RB96_yXrtJ-ZA5K4nf06joOw@mail.gmail.com>
-Message-ID: <CAK8P3a1Fv=Bei+Zkq43yn_dek=RB96_yXrtJ-ZA5K4nf06joOw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the gpio-brgl tree with the arm-soc tree
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YCJdoovwxhlbJ4ln@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 11:01 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Jan 28, 2021 at 7:05 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On 2021-02-09 11:02:10 [+0100], Peter Zijlstra wrote:
+> Fair enough. I'll stick this in tip/sched/smp for Jens and merge that
+> into tip/sched/core.
 
-> > diff --cc arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-> > index 37da418393e0,950010a290f0..000000000000
-> > --- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-> > +++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-> > @@@ -42,7 -42,6 +42,11 @@@
-> >         clock-names = "apb_pclk";
-> >   };
-> >
-> >  +&wdt {
-> >  +      status = "okay";
-> >  +      clocks = <&wdt_clk>;
-> >  +};
-> > ++
-> > + &gpio {
-> > +       status = "okay";
-> > + };
->
-> Probably some sort order should be taken into account (gpio before uart0),
-> also avoidng the conflict?
->
+Thank you.
 
-We normally do this by asking everyone to send the dts changes for
-inclusion through the soc tree rather than the subsystem that contains
-the driver. Why is this one in the gpio-brgl tree?
+> Thanks!
 
-       Arnd
+Sebastian
