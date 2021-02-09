@@ -2,182 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C720131533B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473B331533E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhBIPyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:54:39 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:33979 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232294AbhBIPyf (ORCPT
+        id S232561AbhBIP4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:56:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232419AbhBIP4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:54:35 -0500
-Received: by mail-oi1-f169.google.com with SMTP id i3so9021062oif.1;
-        Tue, 09 Feb 2021 07:54:18 -0800 (PST)
+        Tue, 9 Feb 2021 10:56:44 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CDDC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 07:56:03 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id x9so9981234plb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 07:56:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=RLLY3Kifgt8whTtEjTDT7sURhhrgrsnEjHhUvPN+ANU=;
+        b=KwLsh6fpusewnWWexKKtZ5jK9Hz+r9MkMVjPSUeOQt4wtQLkbvzuUhMOL5jl7Nfc/3
+         3xsV/0Szxzec0zLgWs5FJiiZBR2J+Ggc3YMR5/zAJkSRTQXTR9Jv87X/Hpu5U0+0eP/l
+         Ji2WPP0t56jRBYam45Zh/bsvYge+3jkhDuWkWpvYqel0M0e/CdFSHzNDbJiXp4n9Su0Q
+         h6CzpVyyFaJNFGF2Z29LXZy/q5g5hxgImllBKNhmM7ea7e+JpoNz6BaCdF8+4DnbU9k9
+         0VJ8nL5hznLBuQ1p1YNgK0FyUuRRKZWBw8QZSCW3mv7Ai9IImnMIJVKs8vzBjKAIg7oH
+         2/yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n8RGtZJUggLSCRq7qMrNt9PC2BllhIR7lzoDCBdYMa8=;
-        b=X6gPFBPVKVC+IFk33YKFkULffR9WSmqR73auE2ZKI8QH6Zm959B9Ah9KBPAc5HIHw2
-         3m0/Ch12gU1xVMZMzE2o3kXIwROg48sz+ETGpy46Fp189slQP51ws5IY8ktiFzgjQsAZ
-         vNCq1Gk03+c9FBBjo7ukpZ+mfkJSwkCdc3kILDKmFkgLs39XquKtNYxRDF+9kTQJtqb+
-         XL656yjF8P0wwXddlgPsp8wJwuvaWFwiKSAzR7E0T7qBgV7l66BwZUlyq2zwRadQB2yk
-         C+PyKYQsFktEH+afOEc9nj2jfQ3vZ63d5CKiJmovAjUuJLkR/q0CIiGktCZS5SL+ZHmu
-         wwtA==
-X-Gm-Message-State: AOAM531lvt26+Kz089KuPI/czul41Qc9eXqZx1orEJDdiffEMtacr3x2
-        Me/K/ZO6suQ6oZgSFIAmKg==
-X-Google-Smtp-Source: ABdhPJymQc7IHN4pNsxzcoYtAeiTFpG1/W/MbAoJvQPnwIAXU6moHoTqEDDFHzxQJeoydepWxYwURg==
-X-Received: by 2002:aca:cfd0:: with SMTP id f199mr2909983oig.64.1612886032958;
-        Tue, 09 Feb 2021 07:53:52 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c20sm4384328oiw.18.2021.02.09.07.53.50
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=RLLY3Kifgt8whTtEjTDT7sURhhrgrsnEjHhUvPN+ANU=;
+        b=Q1YxP0SF+fms75YPPvW5mfYxAX2zkVPmw+uSKHwDx3C3PSFHAz/9SvrEqbfqjTODti
+         hATDfl2lfHhMGAXCeii6w2oXvq2lKjs8Wg+SR7rhNCeHFAn+lUk9el1VVJcdbcVOikba
+         mge1uZdFlVuUNPnJSxYtHDAexHupqbyls99OV91QMhWuuCFSQ+4fxh47uqJxktQV5mlQ
+         4rweT6Z4iJniQ0KAI+EO0/UkF4N3WZACJIezA+RTvl4lDGdva8U9Gm6iqvgaiBvdNnXq
+         aaCJZvnYS1tIj4kaMiAvbGe3fc+o1etb2TCXnNkqUtGzxjmQ4EvNr4NrRUd08C4hy/5P
+         aEhw==
+X-Gm-Message-State: AOAM530RHK9buQXNgcLmhL9tvbsuQpSRj9+p9u4QYy9G1m2nA4xr3MRX
+        MEJEc4FXWg8Ztl6GNytwncQ=
+X-Google-Smtp-Source: ABdhPJwY1X+a9UW2Q70a0LSbQJhTJ7xRLtjwcPyb7TRVW+yxStYhcyVczMFKyVTddKK48sBpTlWKFw==
+X-Received: by 2002:a17:90a:6589:: with SMTP id k9mr4618070pjj.100.1612886163051;
+        Tue, 09 Feb 2021 07:56:03 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:d107:fbfb:a7c8:913e])
+        by smtp.gmail.com with ESMTPSA id 25sm14762989pfh.199.2021.02.09.07.56.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 07:53:51 -0800 (PST)
-Received: (nullmailer pid 3832812 invoked by uid 1000);
-        Tue, 09 Feb 2021 15:53:50 -0000
-Date:   Tue, 9 Feb 2021 09:53:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Irui Wang <irui.wang@mediatek.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/3] dt-bindings: media: mtk-vcodec: Separating mtk
- vcodec encoder node
-Message-ID: <20210209155350.GA3827709@robh.at.kernel.org>
-References: <20210121061804.26423-1-irui.wang@mediatek.com>
+        Tue, 09 Feb 2021 07:56:01 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 9 Feb 2021 07:55:59 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, surenb@google.com,
+        joaodias@google.com, willy@infradead.org
+Subject: Re: [PATCH v2] mm: cma: support sysfs
+Message-ID: <YCKwjz0uDPBhbFr5@google.com>
+References: <20210208180142.2765456-1-minchan@kernel.org>
+ <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
+ <YCHLAdabGmm7kqSH@google.com>
+ <43cd6fc4-5bc5-50ec-0252-ffe09afd68ea@nvidia.com>
+ <YCIoHBGELFWAyfMi@kroah.com>
+ <7cc229f4-609c-71dd-9361-063ef1bf7c73@nvidia.com>
+ <cd33f8b9-89e0-05bd-2b16-85855f7541bb@nvidia.com>
+ <YCIyHuOX3E+tP+AO@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210121061804.26423-1-irui.wang@mediatek.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YCIyHuOX3E+tP+AO@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 02:18:02PM +0800, Irui Wang wrote:
-> Updates binding document since the avc and vp8 hardware encoder in
-> MT8173 are now separated. Separate "mediatek,mt8173-vcodec-enc" to
-> "mediatek,mt8173-vcodec-vp8-enc" and "mediatek,mt8173-vcodec-avc-enc".
+On Tue, Feb 09, 2021 at 07:56:30AM +0100, Greg KH wrote:
+> On Mon, Feb 08, 2021 at 10:34:51PM -0800, John Hubbard wrote:
+> > On 2/8/21 10:27 PM, John Hubbard wrote:
+> > > On 2/8/21 10:13 PM, Greg KH wrote:
+> > > > On Mon, Feb 08, 2021 at 05:57:17PM -0800, John Hubbard wrote:
+> > > > > On 2/8/21 3:36 PM, Minchan Kim wrote:
+> > > > > ...
+> > > > > > > >         char name[CMA_MAX_NAME];
+> > > > > > > > +#ifdef CONFIG_CMA_SYSFS
+> > > > > > > > +    struct cma_stat    *stat;
+> > > > > > > 
+> > > > > > > This should not be a pointer. By making it a pointer, you've added a bunch of pointless
+> > > > > > > extra code to the implementation.
+> > > > > > 
+> > > > > > Originally, I went with the object lifetime with struct cma as you
+> > > > > > suggested to make code simple. However, Greg KH wanted to have
+> > > > > > release for kobj_type since it is consistent with other kboject
+> > > > > > handling.
+> > > > > 
+> > > > > Are you talking about the kobj in your new struct cma_stat? That seems
+> > > > > like circular logic if so. I'm guessing Greg just wanted kobj methods
+> > > > > to be used *if* you are dealing with kobjects. That's a narrower point.
+> > > > > 
+> > > > > I can't imagine that he would have insisted on having additional
+> > > > > allocations just so that kobj freeing methods could be used. :)
+> > > > 
+> > > > Um, yes, I was :)
+> > > > 
+> > > > You can not add a kobject to a structure and then somehow think you can
+> > > > just ignore the reference counting issues involved.  If a kobject is
+> > > > part of a structure then the kobject is responsible for controling the
+> > > > lifespan of the memory, nothing else can be.
+> > > > 
+> > > > So by making the kobject dynamic, you properly handle that memory
+> > > > lifespan of the object, instead of having to worry about the lifespan of
+> > > > the larger object (which the original patch was not doing.)
+> > > > 
+> > > > Does that make sense?
+> > > > 
+> > > That part makes sense, yes, thanks. The part that I'm trying to straighten
+> > > out is, why was kobject even added to the struct cma_stat in the first
+> > > place? Why not just leave .stat as a static member variable, without
+> > > a kobject in it, and done?
+> > > 
+> > 
+> > Sorry, I think I get it now: this is in order to allow a separate lifetime
+> > for the .stat member. I was sort of implicitly assuming that the "right"
+> > way to do it is just have the whole object use one lifetime management,
+> > but as you say, there is no kobject being added to the parent.
+> > 
+> > I still feel odd about the allocation and freeing of something that seems
+> > to be logically the same lifetime (other than perhaps a few, briefly pending
+> > sysfs reads, at the end of life). So I'd still think that the kobject should
+> > be added to the parent...
 
-This is not a compatible change. You need to detail that and why that's 
-okay (assuming it is).
+sruct cma_stat {
+	spinlock_t lock;
+	unsigned long pages_attemtp;
+	unsigned long pages_fail;
+};
+
+struct cma {
+	..
+	..
+	struct kobject kobj;
+	struct cma_stat stat;
+};
+
+I guess this is what Johan suggested. I agree with it.
 
 > 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Signed-off-by: Maoguang Meng <maoguang.meng@mediatek.com>
-> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+> That's fine if you want to add it to the parent.  If so, then the
+> kobject controls the lifetime of the structure, nothing else can.
+
+The problem was parent object(i.e., struct cma cma_areas) is
+static arrary so kobj->release function will be NULL or just
+dummy. Is it okay? I thought it was one of the what you wanted
+to avoid it.
+
 > 
-> ---
->  .../bindings/media/mediatek-vcodec.txt        | 58 ++++++++++---------
->  1 file changed, 31 insertions(+), 27 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> index 8217424fd4bd..f85276e629bf 100644
-> --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> +++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> @@ -4,7 +4,9 @@ Mediatek Video Codec is the video codec hw present in Mediatek SoCs which
->  supports high resolution encoding and decoding functionalities.
->  
->  Required properties:
-> -- compatible : "mediatek,mt8173-vcodec-enc" for MT8173 encoder
-> +- compatible : must be one of the following string:
-> +  "mediatek,mt8173-vcodec-vp8-enc" for mt8173 vp8 encoder.
-> +  "mediatek,mt8173-vcodec-avc-enc" for mt8173 avc encoder.
->    "mediatek,mt8183-vcodec-enc" for MT8183 encoder.
->    "mediatek,mt8173-vcodec-dec" for MT8173 decoder.
->  - reg : Physical base address of the video codec registers and length of
-> @@ -13,10 +15,11 @@ Required properties:
->  - mediatek,larb : must contain the local arbiters in the current Socs.
->  - clocks : list of clock specifiers, corresponding to entries in
->    the clock-names property.
-> -- clock-names: encoder must contain "venc_sel_src", "venc_sel",,
-> -  "venc_lt_sel_src", "venc_lt_sel", decoder must contain "vcodecpll",
-> -  "univpll_d2", "clk_cci400_sel", "vdec_sel", "vdecpll", "vencpll",
-> -  "venc_lt_sel", "vdec_bus_clk_src".
-> +- clock-names:
-> +   avc venc must contain "venc_sel";
-> +   vp8 venc must contain "venc_lt_sel";
-> +   decoder  must contain "vcodecpll", "univpll_d2", "clk_cci400_sel",
-> +   "vdec_sel", "vdecpll", "vencpll", "venc_lt_sel", "vdec_bus_clk_src".
->  - iommus : should point to the respective IOMMU block with master port as
->    argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
->    for details.
-> @@ -80,14 +83,10 @@ vcodec_dec: vcodec@16000000 {
->      assigned-clock-rates = <0>, <0>, <0>, <1482000000>, <800000000>;
->    };
->  
-> -  vcodec_enc: vcodec@18002000 {
-> -    compatible = "mediatek,mt8173-vcodec-enc";
-> -    reg = <0 0x18002000 0 0x1000>,    /*VENC_SYS*/
-> -          <0 0x19002000 0 0x1000>;    /*VENC_LT_SYS*/
-> -    interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_LOW>,
-> -		 <GIC_SPI 202 IRQ_TYPE_LEVEL_LOW>;
-> -    mediatek,larb = <&larb3>,
-> -		    <&larb5>;
-> +vcodec_enc: vcodec@18002000 {
-> +    compatible = "mediatek,mt8173-vcodec-avc-enc";
-> +    reg = <0 0x18002000 0 0x1000>;
-> +    interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_LOW>;
->      iommus = <&iommu M4U_PORT_VENC_RCPU>,
->               <&iommu M4U_PORT_VENC_REC>,
->               <&iommu M4U_PORT_VENC_BSDMA>,
-> @@ -98,8 +97,20 @@ vcodec_dec: vcodec@16000000 {
->               <&iommu M4U_PORT_VENC_REF_LUMA>,
->               <&iommu M4U_PORT_VENC_REF_CHROMA>,
->               <&iommu M4U_PORT_VENC_NBM_RDMA>,
-> -             <&iommu M4U_PORT_VENC_NBM_WDMA>,
-> -             <&iommu M4U_PORT_VENC_RCPU_SET2>,
-> +             <&iommu M4U_PORT_VENC_NBM_WDMA>;
-> +    mediatek,larb = <&larb3>;
-> +    mediatek,vpu = <&vpu>;
-> +    clocks = <&topckgen CLK_TOP_VENC_SEL>;
-> +    clock-names = "venc_sel";
-> +    assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>;
-> +    assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL>;
-> +  };
-> +
-> +vcodec_enc_lt: vcodec@19002000 {
-> +    compatible = "mediatek,mt8173-vcodec-vp8-enc";
-> +    reg =  <0 0x19002000 0 0x1000>;	/* VENC_LT_SYS */
-> +    interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_LOW>;
-> +    iommus = <&iommu M4U_PORT_VENC_RCPU_SET2>,
->               <&iommu M4U_PORT_VENC_REC_FRM_SET2>,
->               <&iommu M4U_PORT_VENC_BSDMA_SET2>,
->               <&iommu M4U_PORT_VENC_SV_COMA_SET2>,
-> @@ -108,17 +119,10 @@ vcodec_dec: vcodec@16000000 {
->               <&iommu M4U_PORT_VENC_CUR_CHROMA_SET2>,
->               <&iommu M4U_PORT_VENC_REF_LUMA_SET2>,
->               <&iommu M4U_PORT_VENC_REC_CHROMA_SET2>;
-> +    mediatek,larb = <&larb5>;
->      mediatek,vpu = <&vpu>;
-> -    clocks = <&topckgen CLK_TOP_VENCPLL_D2>,
-> -             <&topckgen CLK_TOP_VENC_SEL>,
-> -             <&topckgen CLK_TOP_UNIVPLL1_D2>,
-> -             <&topckgen CLK_TOP_VENC_LT_SEL>;
-> -    clock-names = "venc_sel_src",
-> -                  "venc_sel",
-> -                  "venc_lt_sel_src",
-> -                  "venc_lt_sel";
-> -    assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>,
-> -                      <&topckgen CLK_TOP_VENC_LT_SEL>;
-> -    assigned-clock-parents = <&topckgen CLK_TOP_VENCPLL_D2>,
-> -                             <&topckgen CLK_TOP_UNIVPLL1_D2>;
-> +    clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
-> +    clock-names = "venc_lt_sel";
-> +    assigned-clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
-> +    assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL_370P5>;
->    };
-> -- 
-> 2.18.0
-> 
+> Either is fine with me, what is "forbidden" is having a kobject and
+> somehow thinking that it does not control the lifetime of the structure.
+
+Since parent object is static arrary, there is no need to control the
+lifetime so I am curious if parent object approach is okay from kobject
+handling point of view.
+
+If it's no problem, I am happy to change it.
