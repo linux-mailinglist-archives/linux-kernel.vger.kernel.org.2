@@ -2,203 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B38D315A34
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 00:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92160315A60
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 00:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234377AbhBIXpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 18:45:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233681AbhBIUd6 (ORCPT
+        id S234028AbhBIX5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 18:57:42 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:42818 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233606AbhBIUfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:33:58 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24E9C0698C7
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 12:17:04 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id u14so23652919wri.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 12:17:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WSIKXYPYAgR9bcpSSCcdKf1jjEFLRGvSegQRcPSmIHk=;
-        b=TpWVcq0cAHCjTMjUTaZgT1rftmkIZpeK/w+9IeAIZ71VrVi/eZqrSZAKHw0g3FpFjZ
-         vhhP4TAJeK4H72vQJngmfiTh0QNKw33RQeOcNqTM7j5L8ANMd4FulgcZOwFpskNLdrVU
-         W9NVwjLqcAiuIBfGCLYmtGwfUcEJ/2I3/aee3J9ypcoxx/5mZt/jkfvhc2ha7tjrVqYH
-         MC0Zy1pZHBqFVPyjuy2i2cnC5JiZpUdgR/LjCwm2P8BOLgPrsEwxo1rPvdrC50ruK7KS
-         IXaNhLs1QuEUHfVAvV0NJN3y7pc8mYTciKnRuF5CVUP2f1ct6tEu1sGbxt4iE8o/kgfq
-         5wMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WSIKXYPYAgR9bcpSSCcdKf1jjEFLRGvSegQRcPSmIHk=;
-        b=BV/lZtl/shaGWdBuRKhOfrt1tkMLmf7OBI0lR4CGCS+DzDfQpK6xAg4fWUIcmSdBwS
-         h+Iesy5IyXDfTFxhRR9venxf1Mp7V4pnwkCG3or6qhiqF1ghP9tSYTSCNyDEJcBEAvDi
-         C0XG/2uaS+NpyomtjcgsRGb21IJduN3n9tDIhkstSLaUGfZCYM/gqy0mObQhqlqdeNJ1
-         M9ZOvRMNJmKqvrZUK//YUrePXE2ZnlcBnw/bQefh1FY2GRxUyjCtWXs4IHshQRxbl9QS
-         dA45wP5DCk/iLXXKexz0w/VQdoaCDsDbJqXXl25l3wEZDxsHzBqrU3fceveBwFs6JGlE
-         5XSA==
-X-Gm-Message-State: AOAM533d77rV20f/0jA1Vn948c199Q/7t9tkK/S1jOZ27VoW2xK4bjxs
-        XI4H/0W4GmnR35Vdy3Zc+5pKsQ8hYWmJ90GLSuSu5A==
-X-Google-Smtp-Source: ABdhPJxFl7S5w0WlwAXTJ3cWL9Tbg22//Qmf0A+Qsi7vhLmYGGyDlhpZCx8wpsBET0KA36zayLM1gYCSQHD8JqHfvP8=
-X-Received: by 2002:adf:ed45:: with SMTP id u5mr27326708wro.358.1612901823243;
- Tue, 09 Feb 2021 12:17:03 -0800 (PST)
+        Tue, 9 Feb 2021 15:35:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612902908; x=1644438908;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mScHVWGIFuV1tfRo50B5fq0AL0izsRJ5iX46aUKbLLE=;
+  b=k+rkaZ+l4dQ9Dj8x20PC8gDT/bI+2OqgtHSwhZCaPmVZP1Ld2i/zajQB
+   CCMjUZM/x3zun3YZPJTr+9chF+PNIK5mR3pbtwsTmOffER89uq/JJdPVb
+   jwxsik7LqALRjJ+79JPLqawpCpK2JT6Ko6SLdmon6jPen5hEXs5FgGVr+
+   NkgSYKP0SHKErIVTmIQLNsA7UW23UXdGYYRbbPNUgwUYpY3QB8Ud5Agmq
+   1/EnF64YwboXmwMB+4stwtjs6e+Qxbcbsm7DfbFYV8KGnRQtJbj4tiB65
+   wCjRJTTAfnI5a8Ulm11Jp/Jf+gZr7z4i0n/Zoqi9IKOLn1PKSxRNXEEOw
+   g==;
+IronPort-SDR: KjYwtPOHWP5tWem3jg22SO7acL0+yz1lFMGHjo0eSG+/LPoamWxx+LdtPW6YMKnALP1of4Aytk
+ asUmOmfSttvcFGeyZ0UuuHAtS/LurkxIscutOh8fEwo3mICPV91OFl3E3FjMujLBIE713QfWTR
+ N1hAKbpk8A3u1CKBm3qjWerBUFPIhrgSjUU1bvlK3wWK6bU3NPjbnGBTymNLE1xrhhN78dWIi0
+ bCtQ4F7l6zytIusbblU0SKrT5Q7j9UTkjrrKaBgaZ+PEqR4UbPqEUa+Scgatj2uNyyY168ck+U
+ Kdc=
+X-IronPort-AV: E=Sophos;i="5.81,166,1610434800"; 
+   d="scan'208";a="106029114"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Feb 2021 13:24:16 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 9 Feb 2021 13:24:15 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 9 Feb 2021 13:24:12 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
+        <rasmus.villemoes@prevas.dk>, <andrew@lunn.ch>,
+        <vladimir.oltean@nxp.com>, <claudiu.manoil@nxp.com>,
+        <alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next v3 0/5] bridge: mrp: Extend br_mrp_switchdev_*
+Date:   Tue, 9 Feb 2021 21:21:07 +0100
+Message-ID: <20210209202112.2545325-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210205080621.3102035-1-john.stultz@linaro.org>
- <20210205080621.3102035-2-john.stultz@linaro.org> <4471b3b0-603e-6dbb-8064-ff4a95afbba9@amd.com>
- <CALAqxLWZkUFvJX5r2OU2erW4tU3j=+u==VTyzYkt+95LwwVCUA@mail.gmail.com>
- <48225879-2fe1-22ac-daae-c61d52465aea@amd.com> <a9dd7f8a-ef30-9eb4-4834-37801d43b96f@amd.com>
- <CAJuCfpE-T4Cs_h6LfrgHE+T_iOVywU2oNzLquYETudOaBMauMQ@mail.gmail.com>
- <c7df099f-27f7-adc6-4e87-9903ac00cbea@amd.com> <CAKMK7uFu27RRpwPdNFuhd-Y5R8XiCNosET9BYtCnr3u30UDs0g@mail.gmail.com>
-In-Reply-To: <CAKMK7uFu27RRpwPdNFuhd-Y5R8XiCNosET9BYtCnr3u30UDs0g@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 9 Feb 2021 12:16:51 -0800
-Message-ID: <CAJuCfpF2Q1qVkv75czc2AFRrp25eNz7hqmeO9Wx8e5VY7PvyJw@mail.gmail.com>
-Subject: Re: [RFC][PATCH v6 1/7] drm: Add a sharable drm page-pool implementation
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 12:03 PM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Tue, Feb 9, 2021 at 6:46 PM Christian K=C3=B6nig <christian.koenig@amd=
-.com> wrote:
-> >
-> >
-> >
-> > Am 09.02.21 um 18:33 schrieb Suren Baghdasaryan:
-> > > On Tue, Feb 9, 2021 at 4:57 AM Christian K=C3=B6nig <christian.koenig=
-@amd.com> wrote:
-> > >> Am 09.02.21 um 13:11 schrieb Christian K=C3=B6nig:
-> > >>> [SNIP]
-> > >>>>>> +void drm_page_pool_add(struct drm_page_pool *pool, struct page =
-*page)
-> > >>>>>> +{
-> > >>>>>> +     spin_lock(&pool->lock);
-> > >>>>>> +     list_add_tail(&page->lru, &pool->items);
-> > >>>>>> +     pool->count++;
-> > >>>>>> +     atomic_long_add(1 << pool->order, &total_pages);
-> > >>>>>> +     spin_unlock(&pool->lock);
-> > >>>>>> +
-> > >>>>>> +     mod_node_page_state(page_pgdat(page),
-> > >>>>>> NR_KERNEL_MISC_RECLAIMABLE,
-> > >>>>>> +                         1 << pool->order);
-> > >>>>> Hui what? What should that be good for?
-> > >>>> This is a carryover from the ION page pool implementation:
-> > >>>> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%=
-2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.git%=
-2Ftree%2Fdrivers%2Fstaging%2Fandroid%2Fion%2Fion_page_pool.c%3Fh%3Dv5.10%23=
-n28&amp;data=3D04%7C01%7Cchristian.koenig%40amd.com%7Cdccccff8edcd4d147a5b0=
-8d8cd20cff2%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637484888114923580=
-%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haW=
-wiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3D9%2BIBC0tezSV6Ci4S3kWfW%2BQvJm4mdunn3dF=
-6C0kyfCw%3D&amp;reserved=3D0
-> > >>>>
-> > >>>>
-> > >>>> My sense is it helps with the vmstat/meminfo accounting so folks c=
-an
-> > >>>> see the cached pages are shrinkable/freeable. This maybe falls und=
-er
-> > >>>> other dmabuf accounting/stats discussions, so I'm happy to remove =
-it
-> > >>>> for now, or let the drivers using the shared page pool logic handl=
-e
-> > >>>> the accounting themselves?
-> > >> Intentionally separated the discussion for that here.
-> > >>
-> > >> As far as I can see this is just bluntly incorrect.
-> > >>
-> > >> Either the page is reclaimable or it is part of our pool and freeabl=
-e
-> > >> through the shrinker, but never ever both.
-> > > IIRC the original motivation for counting ION pooled pages as
-> > > reclaimable was to include them into /proc/meminfo's MemAvailable
-> > > calculations. NR_KERNEL_MISC_RECLAIMABLE defined as "reclaimable
-> > > non-slab kernel pages" seems like a good place to account for them bu=
-t
-> > > I might be wrong.
-> >
-> > Yeah, that's what I see here as well. But exactly that is utterly nonse=
-nse.
-> >
-> > Those pages are not "free" in the sense that get_free_page could return
-> > them directly.
->
-> Well on Android that is kinda true, because Android has it's
-> oom-killer (way back it was just a shrinker callback, not sure how it
-> works now), which just shot down all the background apps. So at least
-> some of that (everything used by background apps) is indeed
-> reclaimable on Android.
->
-> But that doesn't hold on Linux in general, so we can't really do this
-> for common code.
->
-> Also I had a long meeting with Suren, John and other googles
-> yesterday, and the aim is now to try and support all the Android gpu
-> memory accounting needs with cgroups. That should work, and it will
-> allow Android to handle all the Android-ism in a clean way in upstream
-> code. Or that's at least the plan.
->
-> I think the only thing we identified that Android still needs on top
-> is the dma-buf sysfs stuff, so that shared buffers (which on Android
-> are always dma-buf, and always stay around as dma-buf fd throughout
-> their lifetime) can be listed/analyzed with full detail.
->
-> But aside from this the plan for all the per-process or per-heap
-> account, oom-killer integration and everything else is planned to be
-> done with cgroups.
+This patch series extends MRP switchdev to allow the SW to have a better
+understanding if the HW can implement the MRP functionality or it needs
+to help the HW to run it. There are 3 cases:
+- when HW can't implement at all the functionality.
+- when HW can implement a part of the functionality but needs the SW
+  implement the rest. For example if it can't detect when it stops
+  receiving MRP Test frames but it can copy the MRP frames to CPU to
+  allow the SW to determine this.  Another example is generating the MRP
+  Test frames. If HW can't do that then the SW is used as backup.
+- when HW can implement completely the functionality.
 
-Until cgroups are ready we probably will need to add a sysfs node to
-report the total dmabuf pool size and I think that would cover our
-current accounting need here.
-As I mentioned, not including dmabuf pools into MemAvailable would
-affect that stat and I'm wondering if pools should be considered as
-part of MemAvailable or not. Since MemAvailable includes SReclaimable
-I think it makes sense to include them but maybe there are other
-considerations that I'm missing?
+So, initially the SW tries to offload the entire functionality in HW, if
+that fails it tries offload parts of the functionality in HW and use the
+SW as helper and if also this fails then MRP can't run on this HW.
 
-> Android (for now) only needs to account overall gpu
-> memory since none of it is swappable on android drivers anyway, plus
-> no vram, so not much needed.
->
-> Cheers, Daniel
->
-> >
-> > Regards,
-> > Christian.
-> >
-> > >
-> > >> In the best case this just messes up the accounting, in the worst ca=
-se
-> > >> it can cause memory corruption.
-> > >>
-> > >> Christian.
-> >
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+Also implement the switchdev calls for Ocelot driver. This is an example
+where the HW can't run completely the functionality but it can help the SW
+to run it, by trapping all MRP frames to CPU.
+
+v3:
+ - implement the switchdev calls needed by Ocelot driver.
+v2:
+ - fix typos in comments and in commit messages
+ - remove some of the comments
+ - move repeated code in helper function
+ - fix issue when deleting a node when sw_backup was true
+
+Horatiu Vultur (5):
+  switchdev: mrp: Extend ring_role_mrp and in_role_mrp
+  bridge: mrp: Add 'enum br_mrp_hw_support'
+  bridge: mrp: Extend br_mrp_switchdev to detect better the errors
+  bridge: mrp: Update br_mrp to use new return values of
+    br_mrp_switchdev
+  net: mscc: ocelot: Add support for MRP
+
+ drivers/net/ethernet/mscc/ocelot_net.c     | 154 +++++++++++++++++++
+ drivers/net/ethernet/mscc/ocelot_vsc7514.c |   6 +
+ include/net/switchdev.h                    |   2 +
+ include/soc/mscc/ocelot.h                  |   6 +
+ net/bridge/br_mrp.c                        |  43 ++++--
+ net/bridge/br_mrp_switchdev.c              | 171 +++++++++++++--------
+ net/bridge/br_private_mrp.h                |  38 +++--
+ 7 files changed, 327 insertions(+), 93 deletions(-)
+
+-- 
+2.27.0
+
