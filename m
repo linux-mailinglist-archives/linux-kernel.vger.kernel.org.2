@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20933150B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7050A3150B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhBINq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:46:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46464 "EHLO mail.kernel.org"
+        id S230261AbhBINri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:47:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:51872 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231309AbhBINpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:45:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17EA264E0D;
-        Tue,  9 Feb 2021 13:44:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612878262;
-        bh=4h3GT5egqwm04FikNjpgIj9VjhyE6EXY+YLLVJe3RDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R2CGMQtHpql1DsKZunw3zR/88ekQ3bGZVifWAMMQZbcrbzj/NWABv4t2+iLdPa4Ds
-         NRMF3396ygWqbmUrt8D+qmg4vU9yS+mGNxsjtQwIMgTCfQR2WtsCCR1yVA/CLLJqq8
-         p616TPIdWDd8m/vaNxp8Utv+/hyTawkZFCMFcVp4=
-Date:   Tue, 9 Feb 2021 14:44:19 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        devel@driverdev.osuosl.org,
-        Helen Koike <helen.koike@collabora.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 14/36] media: rkisp1: uapi: change hist_bins
- array type from __u16 to __u32
-Message-ID: <YCKRsxE23f7zJtkO@kroah.com>
-References: <20210208175806.2091668-1-sashal@kernel.org>
- <20210208175806.2091668-14-sashal@kernel.org>
- <12c8f50e-3bba-5936-6e67-55bd928a75c7@xs4all.nl>
- <e086d0f4-c5f0-e38c-8937-593852ac0b50@collabora.com>
- <YCKH0HvTxeYKg1xf@kroah.com>
- <3413d0af-bc8e-4a9d-e0a2-eea98febd4e9@xs4all.nl>
+        id S231596AbhBINpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:45:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC68FED1;
+        Tue,  9 Feb 2021 05:44:50 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D9183F73D;
+        Tue,  9 Feb 2021 05:44:48 -0800 (PST)
+Subject: Re: [PATCH 1/6] sched/fair: remove update of blocked load from
+ newidle_balance
+To:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, fweisbec@gmail.com,
+        tglx@linutronix.de, bristot@redhat.com,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org
+Cc:     qais.yousef@arm.com
+References: <20210205114830.781-1-vincent.guittot@linaro.org>
+ <20210205114830.781-2-vincent.guittot@linaro.org>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <8cea2836-aedd-0925-4359-a04c8e8729e6@arm.com>
+Date:   Tue, 9 Feb 2021 14:44:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3413d0af-bc8e-4a9d-e0a2-eea98febd4e9@xs4all.nl>
+In-Reply-To: <20210205114830.781-2-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 02:39:41PM +0100, Hans Verkuil wrote:
-> On 09/02/2021 14:02, Greg Kroah-Hartman wrote:
-> > On Tue, Feb 09, 2021 at 01:45:35PM +0100, Dafna Hirschfeld wrote:
-> >>
-> >>
-> >> Am 08.02.21 um 21:46 schrieb Hans Verkuil:
-> >>> On 08/02/2021 18:57, Sasha Levin wrote:
-> >>>> From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> >>>>
-> >>>> [ Upstream commit 31f190e0ccac8b75d33fdc95a797c526cf9b149e ]
-> >>>>
-> >>>> Each entry in the array is a 20 bits value composed of 16 bits unsigned
-> >>>> integer and 4 bits fractional part. So the type should change to __u32.
-> >>>> In addition add a documentation of how the measurements are done.
-> >>>
-> >>> Dafna, Helen, does it make sense at all to backport these three patches to
-> >>> when rkisp1 was a staging driver?
-> >>>
-> >>> I would be inclined not to backport this.
-> >>
-> >> I also don't think it makes sense since this changes the uapi and it is not really a bug fix.
-> > 
-> > Why was it ok to change the uapi in a newer kernel and not an older one?
-> 
-> In the older kernels this was a staging driver and the driver API was not public.
-> It's debatable whether there is any benefit from trying to backport patches like
-> this to a staging driver like that.
-> 
-> Also, these backports are incomplete, there are other patches that would need to
-> be applied to make this work. Applying just these three patches without the other
-> three (commits 66d81de7ea9d, fc672d806bd7 and ef357e02b6c4) makes it very messy
-> indeed.
-> 
-> I'd just leave the staging driver in older kernels as-is. Certainly don't just
-> apply these three patches without the other three commits, that would make it
-> even worse.
+On 05/02/2021 12:48, Vincent Guittot wrote:
+> newidle_balance runs with both preempt and irq disabled which prevent
+> local irq to run during this period. The duration for updating of the
+> blocked load of CPUs varies according to the number of cgroups and
 
-Fair enough, Sasha, can you drop these?
+Maybe s/number of cgroups/number of CPU cgroups with non-decayed
+cfs_rq's (i.e. cfs_rq within the leaf cfs_rq list)
 
-thanks,
+> extends this critical period to an uncontrolled level.
+> 
+> Remove the update from newidle_balance and trigger a normal ILB that
+> will take care of the update instead.
+> 
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-greg k-h
+otherwise, LGTM.
+
+[...]
