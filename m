@@ -2,71 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F592314B96
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F822314B9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhBIJ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:28:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229770AbhBIJXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:23:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF67C64E4F;
-        Tue,  9 Feb 2021 09:23:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612862595;
-        bh=ZuzO8IlPH7OdvzOuM3hUuPGrV2BGw7BR18s5NWN+cQo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2IZd9JV5qM4aI8JsCkjZZuIE+UcwO+cZ/8Tzp/xkBac6h1v5ahUFGgLchn6WAvHWP
-         TTpbmG95sCUDlWRidU6dAfH5GDSinRQmdtdG5VZuur1DwcnrvtroT/g4T4IlgJjrY5
-         7e9KljC+q9VAdsCIo/5dP1dy/Ykm0EgIhSJoAfSo=
-Date:   Tue, 9 Feb 2021 10:23:12 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     obayashi.yoshimasa@socionext.com
-Cc:     sumit.garg@linaro.org, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        daniel.thompson@linaro.org
-Subject: Re: DMA direct mapping fix for 5.4 and earlier stable branches
-Message-ID: <YCJUgKDNVjJ4dUqM@kroah.com>
-References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
- <YCIym62vHfbG+dWf@kroah.com>
- <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
- <YCJCDZGa1Dhqv6Ni@kroah.com>
- <27bbe35deacb4ca49f31307f4ed551b5@SOC-EX02V.e01.socionext.com>
+        id S230280AbhBIJ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:29:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43972 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229799AbhBIJY7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:24:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612862610;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BVmWIv//iucXq6uCAj+vo+FMJ8H4hs+IHQRTElKDAL8=;
+        b=eBQC/mMVGpdRzBF6OYXK0aykXOHi6vzaFfEy3pkhLE6n5zLQlFzp833wiB3qBYtoTw6X/7
+        TrmPOriiu1SOj3KmIRuWvCYgSyts9KeQHefgEhKXwjLvkGClwkxdJHhwpUvP+jlkdE3ZiI
+        5mO4EsEVLVn/M05aCb0jubNDBA39FX8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-bTrr6ANwOmGAj-A9TG9bNg-1; Tue, 09 Feb 2021 04:23:28 -0500
+X-MC-Unique: bTrr6ANwOmGAj-A9TG9bNg-1
+Received: by mail-wm1-f69.google.com with SMTP id p8so2225639wmq.7
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:23:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=BVmWIv//iucXq6uCAj+vo+FMJ8H4hs+IHQRTElKDAL8=;
+        b=UAhtVcHP+TNI4+0YnQXbegSkBZUlvfgSFrf1kW0ETWycZmbogAa+YU6vO05TMY8cgX
+         fx6dd+3wz7w5++DU1zIxk+POhIYI09K34LrtdTWXEXfP1PzHYwK7J3PPCrncV0vyfyoo
+         JiGKH/Q6D+3qTG7l35iur0idUKdwB0dKwCL+ssFSH2XpJdzw4eD+GAX4fwBFwqQANHjf
+         LNpDX/MPCO1jaovSqzxMJW23z89CyvLAM9vPWuVl/dB3oilmQULFsdRf9xCHl2g4H7O3
+         lUduzNodhkvzkA8BJlBO6dlocZbo2N+FuIgSBI3OnrDlQ9tKa0HkriIdYtHtmXxBsxoz
+         qDVg==
+X-Gm-Message-State: AOAM533EyafBxtc1AnuQZoAXS906xNNuVQeEtocB4YAv2KbPSlLNep7a
+        VCdi41upPDHW1asaB/N/eTSNaxn4uYDQPSRRP+OS4xF5JQW0Wxp3W/UVv0SQ1OBE3wOU27n0S+b
+        +Ywfwjywz4tjDmAJI4peshopZ
+X-Received: by 2002:a5d:6189:: with SMTP id j9mr24283590wru.256.1612862606525;
+        Tue, 09 Feb 2021 01:23:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyEgCfd2YHE4LE5EhAHm3i1Bv4aGPtqQBNsL7PCyfGHd2rtLbahxTUalPUc43FnbGJPrFPd3w==
+X-Received: by 2002:a5d:6189:: with SMTP id j9mr24283573wru.256.1612862606374;
+        Tue, 09 Feb 2021 01:23:26 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id t17sm3415997wmi.20.2021.02.09.01.23.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 01:23:25 -0800 (PST)
+Date:   Tue, 9 Feb 2021 04:23:21 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
+        lulu@redhat.com, sgarzare@redhat.com, rdunlap@infradead.org
+Subject: Re: [PATCH V3 16/19] virtio-pci: introduce modern device module
+Message-ID: <20210209042000-mutt-send-email-mst@kernel.org>
+References: <20210104065503.199631-1-jasowang@redhat.com>
+ <20210104065503.199631-17-jasowang@redhat.com>
+ <20210205103214-mutt-send-email-mst@kernel.org>
+ <24cb3ebe-1248-3e31-0716-cf498cf1d728@redhat.com>
+ <20210208070253-mutt-send-email-mst@kernel.org>
+ <fe639f0f-d639-3c3c-e297-042127788aca@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <27bbe35deacb4ca49f31307f4ed551b5@SOC-EX02V.e01.socionext.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fe639f0f-d639-3c3c-e297-042127788aca@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 09:05:40AM +0000, obayashi.yoshimasa@socionext.com wrote:
-> > > As the drivers are currently under development and Socionext has
-> > > chosen 5.4 stable kernel for their development. So I will let
-> > > Obayashi-san answer this if it's possible for them to migrate to 5.10
-> > > instead?
+On Tue, Feb 09, 2021 at 11:29:46AM +0800, Jason Wang wrote:
 > 
->   We have started this development project from last August, 
-> so we have selected 5.4 as most recent and longest lifetime LTS 
-> version at that time.
+> On 2021/2/8 下午8:04, Michael S. Tsirkin wrote:
+> > On Mon, Feb 08, 2021 at 01:42:27PM +0800, Jason Wang wrote:
+> > > On 2021/2/5 下午11:34, Michael S. Tsirkin wrote:
+> > > > On Mon, Jan 04, 2021 at 02:55:00PM +0800, Jason Wang wrote:
+> > > > > Signed-off-by: Jason Wang<jasowang@redhat.com>
+> > > > I don't exactly get why we need to split the modern driver out,
+> > > > and it can confuse people who are used to be seeing virtio-pci.
+> > > 
+> > > The virtio-pci module still there. No user visible changes. Just some codes
+> > > that could be shared with other driver were split out.
+> > > 
+> > What I am saying is this: we can have virtio-vdpa depend on
+> > virtio-pci without splitting the common code out to an
+> > extra module.
 > 
->   And we have already finished to develop other device drivers, 
-> and Video converter and CODEC drivers are now in development.
 > 
-> > Why pick a kernel that doesn not support the features they require?
-> > That seems very odd and unwise.
+> Ok.
 > 
->   From the view point of ZeroCopy using DMABUF, is 5.4 not 
-> mature enough, and is 5.10 enough mature ?
->   This is the most important point for judging migration.
+> 
+> > 
+> > > > The vdpa thing so far looks like a development tool, why do
+> > > > we care that it depends on a bit of extra code?
+> > > 
+> > > If I'm not misunderstanding, trying to share codes is proposed by you here:
+> > > 
+> > > https://lkml.org/lkml/2020/6/10/232
+> > > 
+> > > We also had the plan to convert IFCVF to use this library.
+> > > 
+> > > Thanks
+> > If that happens then an extra module might become useful.
+> 
+> 
+> So does it make sense that I post a new version and let's merge it first.
+> Then Intel or I can convert IFCVF to use the library?
+> 
+> Thanks
 
-How do you judge "mature"?
+Generally it's best if we actually have a couple of users before we bother
+with refactoring - it's hard to predict the future,
+so we don't really know what kind of refactoring will work for IFCVF ...
 
-And again, if a feature isn't present in a specific kernel version, why
-would you think that it would be a viable solution for you to use?
+> 
+> > 
 
-good luck!
-
-greg k-h
