@@ -2,175 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FED3159C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C5C31599E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234480AbhBIW5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
+        id S234260AbhBIWnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:43:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233765AbhBITwA (ORCPT
+        with ESMTP id S233718AbhBITiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:52:00 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2C6C06121E;
-        Tue,  9 Feb 2021 11:19:32 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id es14so9230014qvb.3;
-        Tue, 09 Feb 2021 11:19:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OfTABNqV2/dgIczcIGpTslZ48bA8VW7hHVaIj/4GfsU=;
-        b=JkitmTFeJmEERO+haqbix/PAz2MfSvvtnk7W6zSTIxx8Y+1tUVd7r7IiNoMLcH3HW3
-         YNXR0G3VK0SEMJEEyQTjuybZ2b/IA5HGgyp5sGkrSKp0pInvOBcK5SXM8v+gbwmjFWgi
-         KHiXvShvgfeddE+EdtdTz6b0HgrJUD4zyeuxAHua2aI5modiGThykPiddh+bTQ9FMRVP
-         1NcJCEVQs+JM3zzTMXzBWrqRyHy9wwGVUvQK1Sea2dGWm066uCVSFkx8S8ycMr1zbHuN
-         B+MK7U+rmeAhaZTqNTrq4axpyLWd6FpngeUAd6J1SPe746dDnOCwKgKUnYOH/vbFBtcP
-         dmuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OfTABNqV2/dgIczcIGpTslZ48bA8VW7hHVaIj/4GfsU=;
-        b=jf2Zxrsg+tww3qlrCW5FU31+hAiV8Dy2kydXwZG49Kt7uE5RWDi7DfoLU8Szv38uiY
-         pb5dDfze9kSKzoJAG8CR3a8jziV5fSoqMX7XffoRQQ31W6pQNfjUu57NmQ0SQ5piA7nE
-         QMHMRZJPoXjVH+H8dC65ogD1BePB/7CJhLtqvm38VQtgjemOT7GbjX0u/wYr8dA/7j4m
-         DCIW3ii5WFETM8dYZhRymKJlWRRYUH4r6kh7uhc+w8b7XuEDNCFicbUo+AM2+Pefnpj9
-         XuDmC08TBareEbfoRuVdUoHAfMR83srK/7EDnHNoSYm7L5fBpGbmqozyanZLNVfoo0pj
-         2xeg==
-X-Gm-Message-State: AOAM531ZY1PQgnXdYROGG0rdribykR9pJPCucCeOBGv7blmwRWLoz1aw
-        OBeN7UrepL9hb10ckUQ9Gt4=
-X-Google-Smtp-Source: ABdhPJxwpTfsaltd2sTJ+PIvZKKbEuql8jMNGKrFTE7F39NpOxjAuHsIOjA6wv1M8yFV/SlghlllTA==
-X-Received: by 2002:a0c:9e50:: with SMTP id z16mr21934994qve.13.1612898371968;
-        Tue, 09 Feb 2021 11:19:31 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id v1sm3558596qki.49.2021.02.09.11.19.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Feb 2021 11:19:31 -0800 (PST)
-Subject: Re: [GIT PULL 2/3] ARM: dts: samsung: DTS for v5.12
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Tue, 9 Feb 2021 14:38:14 -0500
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA80AC061225
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:26:01 -0800 (PST)
+Received: from localhost.localdomain (abac187.neoplus.adsl.tpnet.pl [83.6.166.187])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id AEEBE1F52D;
+        Tue,  9 Feb 2021 20:25:49 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-References: <20210125191240.11278-1-krzk@kernel.org>
- <20210125191240.11278-3-krzk@kernel.org>
- <20210206134531.l5vpzlmev4v3f3uo@kozik-lap>
- <CAK8P3a0Kgn9PTHjsU7MbJPC8vatvb9KYJJKWxrx7zQzTNgK10g@mail.gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <67970952-e048-efbf-446c-a703da3bc037@gmail.com>
-Date:   Tue, 9 Feb 2021 13:19:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] thermal: qcom: tsens-v0_1: Add support for MDM9607
+Date:   Tue,  9 Feb 2021 20:25:25 +0100
+Message-Id: <20210209192526.455106-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0Kgn9PTHjsU7MbJPC8vatvb9KYJJKWxrx7zQzTNgK10g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/6/21 8:35 AM, Arnd Bergmann wrote:
-> On Sat, Feb 6, 2021 at 2:45 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->> On Mon, Jan 25, 2021 at 08:12:39PM +0100, Krzysztof Kozlowski wrote:
->>>
->>> ----------------------------------------------------------------
->>> Samsung DTS ARM changes for v5.12
->>>
->>> 1. Use new compatile to properly configure Exynos5420 USB2 PHY, fixing
->>>    it suspend/resume cycle.
->>> 2. Correct Samsung PMIC interrupt trigger levels on multiple boards.
->>> 3. Correct the voltages of Samsung GT-I9100 charger and add top-off
->>>    charger.
->>>
->>
->> Hi everyone,
->>
->> Any progress or new comments about this pull request?
-> 
-> Hi Krzysztof,
-> 
-> Sorry for not getting back to you on this earlier. I discussed this with
-> Olof the other day and we decided to merge this, I just haven't
-> gone through the pull requests over the past few days. My plan is
-> to do the next round on Monday.
-> 
-> That said, I'm still not happy about the patch we discussed in the
-> other email thread[1] and I'd like to handle it a little more strictly in
-> the future, but I agree this wasn't obvious and we have been rather
-> inconsistent about it in the past, with some platform maintainers
-> handling it way more strictly than others.
-> 
-> I've added the devicetree maintainers and a few other platform
-> maintainers to Cc here, maybe they can provide some further
-> opinions on the topic so we can come to an approach that
-> works for everyone.
-> 
-> My summary of the thread in [1] is there was a driver bug that
-> required a DT binding change. Krzysztof and the other involved
-> parties made sure the driver handles it in a backward-compatible
-> way (an old dtb file will still run into the bug but keep working
-> with new kernels), but decided that they did not need to worry
-> about the opposite case (running an old kernel with an updated
-> dtb). I noticed the compatibility break and said that I would
-> prefer this to be done in a way that is compatible both ways,
-> or at the minimum be alerted about the binding break in the
-> pull request, with an explanation about why this had to be done,
-> even when we don't think anyone is going to be affected.
-> 
-> What do others think about this? Should we generally assume
-> that breaking old kernels with new dtbs is acceptable, or should
-> we try to avoid it if possible, the same way we try to avoid
-> breaking new kernels with old dtbs? Should this be a platform
-> specific policy or should we try to handle all platforms the same
-> way?
+MDM9607 TSENS IP is very similar to the one of MSM8916, with
+minor adjustments to various tuning values.
 
-The current policy (since before 2013) is that newer kernels,
-implementing new bindings, do not break with old existing dtbs.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Acked-by: Rob Herring <robh@kernel.org>
 
-Old existing kernels are not required to work with new dtbs.
+---
+Changes since v2:
+- Address Bjorn's comments (remove redundant variable and kfree)
+ .../bindings/thermal/qcom-tsens.yaml          |  2 +
+ drivers/thermal/qcom/tsens-v0_1.c             | 99 ++++++++++++++++++-
+ drivers/thermal/qcom/tsens.c                  |  3 +
+ drivers/thermal/qcom/tsens.h                  |  2 +-
+ 4 files changed, 104 insertions(+), 2 deletions(-)
 
-See Documentation/devicetree/bindings/ABI.rst
-
-We can choose to change the rules, so I'm not saying that the
-discussion should not occur.  I'm just pointing out the
-current policy.
-
-I think that ABI.rst does not state "Old existing kernels are
-not required to work with new dtbs" clearly enough, and
-should be updated to do so.
-
-I also think it would be good to explicitly say that care
-should be taken with new bindings to not break existing
-kernels, if reasonably possible.
-
--Frank
-
-> 
->           Arnd
-> 
-> [1] https://lore.kernel.org/lkml/20210130143949.aamac2724esupt7v@kozik-lap/
-> 
+diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+index 95462e071ab4..8ad9dc139c23 100644
+--- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
++++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+@@ -22,6 +22,7 @@ properties:
+       - description: v0.1 of TSENS
+         items:
+           - enum:
++              - qcom,mdm9607-tsens
+               - qcom,msm8916-tsens
+               - qcom,msm8939-tsens
+               - qcom,msm8974-tsens
+@@ -94,6 +95,7 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - qcom,mdm9607-tsens
+               - qcom,msm8916-tsens
+               - qcom,msm8974-tsens
+               - qcom,msm8976-tsens
+diff --git a/drivers/thermal/qcom/tsens-v0_1.c b/drivers/thermal/qcom/tsens-v0_1.c
+index 4ffa2e2c0145..a9fc92a4779b 100644
+--- a/drivers/thermal/qcom/tsens-v0_1.c
++++ b/drivers/thermal/qcom/tsens-v0_1.c
+@@ -190,6 +190,39 @@
+ 
+ #define BIT_APPEND		0x3
+ 
++/* eeprom layout data for mdm9607 */
++#define MDM9607_BASE0_MASK	0x000000ff
++#define MDM9607_BASE1_MASK	0x000ff000
++#define MDM9607_BASE0_SHIFT	0
++#define MDM9607_BASE1_SHIFT	12
++
++#define MDM9607_S0_P1_MASK	0x00003f00
++#define MDM9607_S1_P1_MASK	0x03f00000
++#define MDM9607_S2_P1_MASK	0x0000003f
++#define MDM9607_S3_P1_MASK	0x0003f000
++#define MDM9607_S4_P1_MASK	0x0000003f
++
++#define MDM9607_S0_P2_MASK	0x000fc000
++#define MDM9607_S1_P2_MASK	0xfc000000
++#define MDM9607_S2_P2_MASK	0x00000fc0
++#define MDM9607_S3_P2_MASK	0x00fc0000
++#define MDM9607_S4_P2_MASK	0x00000fc0
++
++#define MDM9607_S0_P1_SHIFT	8
++#define MDM9607_S1_P1_SHIFT	20
++#define MDM9607_S2_P1_SHIFT	0
++#define MDM9607_S3_P1_SHIFT	12
++#define MDM9607_S4_P1_SHIFT	0
++
++#define MDM9607_S0_P2_SHIFT	14
++#define MDM9607_S1_P2_SHIFT	26
++#define MDM9607_S2_P2_SHIFT	6
++#define MDM9607_S3_P2_SHIFT	18
++#define MDM9607_S4_P2_SHIFT	6
++
++#define MDM9607_CAL_SEL_MASK	0x00700000
++#define MDM9607_CAL_SEL_SHIFT	20
++
+ static int calibrate_8916(struct tsens_priv *priv)
+ {
+ 	int base0 = 0, base1 = 0, i;
+@@ -452,7 +485,56 @@ static int calibrate_8974(struct tsens_priv *priv)
+ 	return 0;
+ }
+ 
+-/* v0.1: 8916, 8939, 8974 */
++static int calibrate_9607(struct tsens_priv *priv)
++{
++	int base, i;
++	u32 p1[5], p2[5];
++	int mode = 0;
++	u32 *qfprom_cdata;
++
++	qfprom_cdata = (u32 *)qfprom_read(priv->dev, "calib");
++	if (IS_ERR(qfprom_cdata))
++		return PTR_ERR(qfprom_cdata);
++
++	mode = (qfprom_cdata[2] & MDM9607_CAL_SEL_MASK) >> MDM9607_CAL_SEL_SHIFT;
++	dev_dbg(priv->dev, "calibration mode is %d\n", mode);
++
++	switch (mode) {
++	case TWO_PT_CALIB:
++		base = (qfprom_cdata[2] & MDM9607_BASE1_MASK) >> MDM9607_BASE1_SHIFT;
++		p2[0] = (qfprom_cdata[0] & MDM9607_S0_P2_MASK) >> MDM9607_S0_P2_SHIFT;
++		p2[1] = (qfprom_cdata[0] & MDM9607_S1_P2_MASK) >> MDM9607_S1_P2_SHIFT;
++		p2[2] = (qfprom_cdata[1] & MDM9607_S2_P2_MASK) >> MDM9607_S2_P2_SHIFT;
++		p2[3] = (qfprom_cdata[1] & MDM9607_S3_P2_MASK) >> MDM9607_S3_P2_SHIFT;
++		p2[4] = (qfprom_cdata[2] & MDM9607_S4_P2_MASK) >> MDM9607_S4_P2_SHIFT;
++		for (i = 0; i < priv->num_sensors; i++)
++			p2[i] = ((base + p2[i]) << 2);
++		fallthrough;
++	case ONE_PT_CALIB2:
++		base = (qfprom_cdata[0] & MDM9607_BASE0_MASK);
++		p1[0] = (qfprom_cdata[0] & MDM9607_S0_P1_MASK) >> MDM9607_S0_P1_SHIFT;
++		p1[1] = (qfprom_cdata[0] & MDM9607_S1_P1_MASK) >> MDM9607_S1_P1_SHIFT;
++		p1[2] = (qfprom_cdata[1] & MDM9607_S2_P1_MASK) >> MDM9607_S2_P1_SHIFT;
++		p1[3] = (qfprom_cdata[1] & MDM9607_S3_P1_MASK) >> MDM9607_S3_P1_SHIFT;
++		p1[4] = (qfprom_cdata[2] & MDM9607_S4_P1_MASK) >> MDM9607_S4_P1_SHIFT;
++		for (i = 0; i < priv->num_sensors; i++)
++			p1[i] = (((base) + p1[i]) << 2);
++		break;
++	default:
++		for (i = 0; i < priv->num_sensors; i++) {
++			p1[i] = 500;
++			p2[i] = 780;
++		}
++		break;
++	}
++
++	compute_intercept_slope(priv, p1, p2, mode);
++	kfree(qfprom_cdata);
++
++	return 0;
++}
++
++/* v0.1: 8916, 8939, 8974, 9607 */
+ 
+ static struct tsens_features tsens_v0_1_feat = {
+ 	.ver_major	= VER_0_1,
+@@ -540,3 +622,18 @@ struct tsens_plat_data data_8974 = {
+ 	.feat		= &tsens_v0_1_feat,
+ 	.fields	= tsens_v0_1_regfields,
+ };
++
++static const struct tsens_ops ops_9607 = {
++	.init		= init_common,
++	.calibrate	= calibrate_9607,
++	.get_temp	= get_temp_common,
++};
++
++struct tsens_plat_data data_9607 = {
++	.num_sensors	= 5,
++	.ops		= &ops_9607,
++	.hw_ids		= (unsigned int []){ 0, 1, 2, 3, 4 },
++
++	.feat		= &tsens_v0_1_feat,
++	.fields	= tsens_v0_1_regfields,
++};
+diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+index d8ce3a687b80..51c36b9e8e69 100644
+--- a/drivers/thermal/qcom/tsens.c
++++ b/drivers/thermal/qcom/tsens.c
+@@ -895,6 +895,9 @@ static SIMPLE_DEV_PM_OPS(tsens_pm_ops, tsens_suspend, tsens_resume);
+ 
+ static const struct of_device_id tsens_table[] = {
+ 	{
++		.compatible = "qcom,mdm9607-tsens",
++		.data = &data_9607,
++	}, {
+ 		.compatible = "qcom,msm8916-tsens",
+ 		.data = &data_8916,
+ 	}, {
+diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+index f40b625f897e..cba64c33b4f9 100644
+--- a/drivers/thermal/qcom/tsens.h
++++ b/drivers/thermal/qcom/tsens.h
+@@ -585,7 +585,7 @@ int get_temp_common(const struct tsens_sensor *s, int *temp);
+ extern struct tsens_plat_data data_8960;
+ 
+ /* TSENS v0.1 targets */
+-extern struct tsens_plat_data data_8916, data_8939, data_8974;
++extern struct tsens_plat_data data_8916, data_8939, data_8974, data_9607;
+ 
+ /* TSENS v1 targets */
+ extern struct tsens_plat_data data_tsens_v1, data_8976;
+-- 
+2.30.0
 
