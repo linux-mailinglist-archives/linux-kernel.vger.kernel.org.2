@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F8B314C98
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B04314CC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhBIKKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:10:54 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:33636 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhBIKCN (ORCPT
+        id S231694AbhBIKS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:18:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20316 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231320AbhBIKDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:02:13 -0500
-Received: by mail-ot1-f45.google.com with SMTP id 63so16978299oty.0;
-        Tue, 09 Feb 2021 02:01:50 -0800 (PST)
+        Tue, 9 Feb 2021 05:03:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612864899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k1i4kA2ikoqEIy73WvpsH9kR9GpwZKdO/NHE9o+wheQ=;
+        b=FjKU0y4JGGEP0fy2WK2BS32WItnIEcNU7+hACOJz1uBuHTzLx/vfKgunl3xjN7CqIS+ey1
+        HX3gmi3FEtOFBUDcXVenJB+BAEvPNuM1ntMxmBOlYe8ko8kgO+/f8iJIA/l0p8IEK8PH5Q
+        g2gf4lA45I67NdmXZuFt5IPJbrcaETU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-577-YWZannIgNSmhHCnt7mRSFQ-1; Tue, 09 Feb 2021 05:01:37 -0500
+X-MC-Unique: YWZannIgNSmhHCnt7mRSFQ-1
+Received: by mail-wm1-f69.google.com with SMTP id l21so2024702wmj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 02:01:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bKhdVSr9a9o5NhirinVW6rRyQV4KNd1sg3w4d1Klbwc=;
-        b=fX0lB+pImKJE6n1Oq5/v19cZLXfhiUIsAXn7rz94IyGCUv+EukpOhphxxqH4piQbvo
-         /ABJs/AM4UGRV7XxMg/iyyjXdbq90/YUAqpnk2hgUxVKs477+bbAtztpbAuyfHQnLDCY
-         tj2k6QvcbfWdq07lq6HykJDnqaHGnQm5tXhDKgwyyEncROyqGlRoVZEK/MUfwW57HSYW
-         2e6YuYgc8HwJ6jVqrTJPLSkzy2ekKONZAJTAvLrZJaVjD/leo76bvVt0iAkX1YWDQrYC
-         WZR48UfcSrkh0AZq/EsJltQJrlOivswY0wXsAv/ZL5BayN4PsvFFnAO16ZKFQSho8sXD
-         zAZA==
-X-Gm-Message-State: AOAM530u6LwASN4TvDWb3x70v6GWXxxr9rk+0Hb9oAraiEFxknkT9lWD
-        ahKi1YUjFjtQzqHYJ3Xj18T8ppOmi+0N98ZLxDA=
-X-Google-Smtp-Source: ABdhPJyj3h1h9HmEBPIf42K9YA77FM6YTo4MhH/qN64i09DnJcXpHv+i36nGt3U7lXBfwoncCdTc5XoVkm/lbOrez3g=
-X-Received: by 2002:a9d:3604:: with SMTP id w4mr15553100otb.107.1612864885239;
- Tue, 09 Feb 2021 02:01:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20210128170331.4f2ac87b@canb.auug.org.au>
-In-Reply-To: <20210128170331.4f2ac87b@canb.auug.org.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Feb 2021 11:01:14 +0100
-Message-ID: <CAMuHMdWAOXpJGTRM7O7ix4uG-hpH-kDiueN51oA0YEZ0vJdZfw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the gpio-brgl tree with the arm-soc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k1i4kA2ikoqEIy73WvpsH9kR9GpwZKdO/NHE9o+wheQ=;
+        b=l1M1EDeumIL97XOvs9LhKdb/j3X0u1Ow6+KGk0F6IjMiwT6Z7ZnR/V1pzMMbm7UC6U
+         8hzSV+2YJlLzYqQ48Lf0mnTLpE0qbjRzub4dbskKPhkGMtBduPrEt2G1ewUCIUmseAkQ
+         DU2jkeZkp6Y5V3dyjXCiAJ//MhFMb993u0tQPHAcItfdGBbHOyDe5meBR8yzQeUiqI/s
+         ZrEdXRo4F3+BCOe15SNo2IO1xff6jgpqDZvf3qGNHn6QSzfNNdiSjaDF6388fOvfX9cQ
+         N8wBJBZiaU/E6D7Vwk8ShYxsbmgCYcd7LADKPDmDbeq+sRl5PIAgz7VKYYOLsMV7KyS7
+         2nTA==
+X-Gm-Message-State: AOAM531IVcXN0dNz6qWd0ofVNiOJzpfrbXm08+AhHKpGgRZyiATZfbqd
+        ap82VW+psm/LsgBxJ5ydEWQoV+dH4Db2px8llXMPMAxlo4jrUcA7AKn4xMF0r78zQE6uMU+zZ+8
+        VX8Te7nJUR3OyFW1/l17Ie69l
+X-Received: by 2002:a1c:318a:: with SMTP id x132mr2667849wmx.6.1612864896708;
+        Tue, 09 Feb 2021 02:01:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxpw6BIjnxiqkkeBjvrgae2D4o30y8fHuHqIVL3LcVSiw5rpDZgzP228TVvO4qazqkSUeeNQw==
+X-Received: by 2002:a1c:318a:: with SMTP id x132mr2667839wmx.6.1612864896557;
+        Tue, 09 Feb 2021 02:01:36 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b13sm13625804wrs.35.2021.02.09.02.01.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 02:01:35 -0800 (PST)
+Subject: Re: linux-next: build warning after merge of the kvm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>, KVM <kvm@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Content-Type: text/plain; charset="UTF-8"
+        David Woodhouse <dwmw@amazon.co.uk>
+References: <20210209205950.7be889db@canb.auug.org.au>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <23ec3e79-1b6d-a116-ff52-3c5c1d0308d1@redhat.com>
+Date:   Tue, 9 Feb 2021 11:01:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210209205950.7be889db@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 7:05 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> Today's linux-next merge of the gpio-brgl tree got a conflict in:
->
->   arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
->
-> between commit:
->
->   4fd18fc38757 ("arm64: dts: visconti: Add watchdog support for TMPV7708 SoC")
->
-> from the arm-soc tree and commit:
->
->   08bc3941b6a4 ("arm: dts: visconti: Add DT support for Toshiba Visconti5 GPIO driver")
->
-> from the gpio-brgl tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-> index 37da418393e0,950010a290f0..000000000000
-> --- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-> +++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-> @@@ -42,7 -42,6 +42,11 @@@
->         clock-names = "apb_pclk";
->   };
->
->  +&wdt {
->  +      status = "okay";
->  +      clocks = <&wdt_clk>;
->  +};
-> ++
-> + &gpio {
-> +       status = "okay";
-> + };
+On 09/02/21 10:59, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the kvm tree, today's linux-next build (htmldocs) produced
+> this warning:
+> 
+> Documentation/virt/kvm/api.rst:4927: WARNING: Title underline too short.
+> 
+> 4.130 KVM_XEN_VCPU_GET_ATTR
+> --------------------------
+> 
+> Introduced by commit
+> 
+>    e1f68169a4f8 ("KVM: Add documentation for Xen hypercall and shared_info updates")
+> 
 
-Probably some sort order should be taken into account (gpio before uart0),
-also avoidng the conflict?
+Thanks, will fix.
 
-Gr{oetje,eeting}s,
+Paolo
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
