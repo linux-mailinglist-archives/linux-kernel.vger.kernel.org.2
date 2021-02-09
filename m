@@ -2,213 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94AE314937
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9874B31494F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhBIHB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 02:01:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229745AbhBIHBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:01:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E212B64E9A;
-        Tue,  9 Feb 2021 07:00:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612854044;
-        bh=1oc/Hxzh6LQAwGHHC5YWOt3hkuwq+J2Ol4Flp1dGtVs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ALmUQBIdyWFrvYgxeo+cP6G8g3Eo0DSiKLoWQ/mgKvF1hEgBOVeIsqBHMfaX+ouMB
-         90Oh9SeT08NRFFZ3P3N+oKvh6jNGQ5sCaL5Rd3qTW96sadV8BxHnvE7NcR+mX9iopH
-         JLdPd5Oq+FLd4M2wxGJwpFI7NVRpOWTpMEP1M3ek=
-Date:   Tue, 9 Feb 2021 08:00:40 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v2] printk: Userspace format enumeration support
-Message-ID: <YCIzGBccfHL0dwgF@kroah.com>
-References: <YCIRf1zOk9g2R6fH@chrisdown.name>
+        id S230210AbhBIHL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 02:11:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhBIHLZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 02:11:25 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42E3C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 23:10:45 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id b8so9212125plh.12
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 23:10:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xa/F5J2XbvqQXc13QF9QNc4BHiOeHqqEiOQQrM3Oap4=;
+        b=xbVMRaQXjRSRMUTu3lL5rlitOuFh/G7nMkOMp0+dwYWAqsh/wQXhQlO0uEAnksmYrP
+         w1rikYGAcZtLa9oHAM2V3xbZk0yuDgt7mgvXsCZOzo0B+XuUlPViAmHLj1WsK4CPYp7D
+         urIf2NZTlOPCmRkSTy+O+10tVU2/wDbo9cRB67qWwXzSFHF3ZMOdm1JGxdjxYDiKEYAE
+         35B5QQrVkGL173iGGgQStvrpDbX+gM+OioMzxZuFeXo1e754SNUiWzTRdjv7+wkHeACS
+         zAbtcF5f8SRVV4xnQNp7gCebO9VAl5j4002uDLQrfFODmsXuMdqFzV3dzCe2F0zWS3Ml
+         VrsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xa/F5J2XbvqQXc13QF9QNc4BHiOeHqqEiOQQrM3Oap4=;
+        b=CPgjK4yDMz/QZMjJhbmcJracQ8DvzSVDGBXaM33XgDJLzsuDb/qXz5LOdWBh57LBEU
+         78Ge8ifeUHsLo11l1XVGI8m9rBq3d63/QWswKKunULtshawxcPooV/vUK8KEJdTN1b2k
+         BHHkyfnOd756yN3wmmy7TByy4OUv+ywDEUuQ0QRd/ZJuKTQK+Ix/gWYLbzCBpeObw+N1
+         yVApQ8y0rBOgcWVkMIokLxtkncTjFbZwALeTFxMsn6qGMDQTSceTHjigC6HyYc+aTcjz
+         8ZKqpdVyQnKuuoEFfErztfUMXu3JlApRYOkB+1mRYCI2z1xI2BWlcAXubH/DLQiBKD1A
+         80uw==
+X-Gm-Message-State: AOAM533wuxPvFFdHERPvTz4sjpp4zqVYb5X1INj6fbuopDctOIk+/Fyr
+        dNXY5RsryQN3CYmI9BUWRzw0bw==
+X-Google-Smtp-Source: ABdhPJx8NsLbzwjd5jnGYZ7IkUymTX4eMAGR1bOaW8zoFyhdd02KMcCgeCoCF7mZiQRELYZVAxD9/g==
+X-Received: by 2002:a17:902:26a:b029:e2:f436:15d8 with SMTP id 97-20020a170902026ab02900e2f43615d8mr1839481plc.31.1612854645252;
+        Mon, 08 Feb 2021 23:10:45 -0800 (PST)
+Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.229])
+        by smtp.gmail.com with ESMTPSA id a5sm6503633pgh.15.2021.02.08.23.10.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Feb 2021 23:10:44 -0800 (PST)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com
+Subject: [PATCH v2] psi: Remove the redundant psi_task_tick
+Date:   Tue,  9 Feb 2021 15:10:33 +0800
+Message-Id: <20210209071033.16989-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCIRf1zOk9g2R6fH@chrisdown.name>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 04:37:19AM +0000, Chris Down wrote:
-> +
-> +	file = debugfs_create_file(ps_get_module_name(ps), 0444, dfs_formats,
-> +				   mod, &dfs_formats_fops);
-> +
-> +	if (IS_ERR_OR_NULL(file))
+When the current task in a cgroup is in_memstall, the corresponding groupc
+on that cpu is in PSI_MEM_FULL state, so we can exploit that to remove the
+redundant psi_task_tick from scheduler_tick to save this periodic cost.
 
-How can file ever be NULL?
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ include/linux/psi.h  |  1 -
+ kernel/sched/core.c  |  1 -
+ kernel/sched/psi.c   | 49 ++++++++++++++-----------------------------------
+ kernel/sched/stats.h |  9 ---------
+ 4 files changed, 14 insertions(+), 46 deletions(-)
 
-And if it is an error, what is the problem here?  You can always feed
-the output of a debugfs_* call back into debugfs, and you never need to
-check the return values.
+diff --git a/include/linux/psi.h b/include/linux/psi.h
+index 7361023f3fdd..65eb1476ac70 100644
+--- a/include/linux/psi.h
++++ b/include/linux/psi.h
+@@ -20,7 +20,6 @@ void psi_task_change(struct task_struct *task, int clear, int set);
+ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 		     bool sleep);
+ 
+-void psi_memstall_tick(struct task_struct *task, int cpu);
+ void psi_memstall_enter(unsigned long *flags);
+ void psi_memstall_leave(unsigned long *flags);
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 15d2562118d1..31788a9b335b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4533,7 +4533,6 @@ void scheduler_tick(void)
+ 	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+ 	curr->sched_class->task_tick(rq, curr, 0);
+ 	calc_global_load_tick(rq);
+-	psi_task_tick(rq);
+ 
+ 	rq_unlock(rq, &rf);
+ 
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 2293c45d289d..6e46d9eb279b 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -644,8 +644,7 @@ static void poll_timer_fn(struct timer_list *t)
+ 	wake_up_interruptible(&group->poll_wait);
+ }
+ 
+-static void record_times(struct psi_group_cpu *groupc, int cpu,
+-			 bool memstall_tick)
++static void record_times(struct psi_group_cpu *groupc, int cpu)
+ {
+ 	u32 delta;
+ 	u64 now;
+@@ -664,23 +663,6 @@ static void record_times(struct psi_group_cpu *groupc, int cpu,
+ 		groupc->times[PSI_MEM_SOME] += delta;
+ 		if (groupc->state_mask & (1 << PSI_MEM_FULL))
+ 			groupc->times[PSI_MEM_FULL] += delta;
+-		else if (memstall_tick) {
+-			u32 sample;
+-			/*
+-			 * Since we care about lost potential, a
+-			 * memstall is FULL when there are no other
+-			 * working tasks, but also when the CPU is
+-			 * actively reclaiming and nothing productive
+-			 * could run even if it were runnable.
+-			 *
+-			 * When the timer tick sees a reclaiming CPU,
+-			 * regardless of runnable tasks, sample a FULL
+-			 * tick (or less if it hasn't been a full tick
+-			 * since the last state change).
+-			 */
+-			sample = min(delta, (u32)jiffies_to_nsecs(1));
+-			groupc->times[PSI_MEM_FULL] += sample;
+-		}
+ 	}
+ 
+ 	if (groupc->state_mask & (1 << PSI_CPU_SOME)) {
+@@ -714,7 +696,7 @@ static void psi_group_change(struct psi_group *group, int cpu,
+ 	 */
+ 	write_seqcount_begin(&groupc->seq);
+ 
+-	record_times(groupc, cpu, false);
++	record_times(groupc, cpu);
+ 
+ 	for (t = 0, m = clear; m; m &= ~(1 << t), t++) {
+ 		if (!(m & (1 << t)))
+@@ -738,6 +720,18 @@ static void psi_group_change(struct psi_group *group, int cpu,
+ 		if (test_state(groupc->tasks, s))
+ 			state_mask |= (1 << s);
+ 	}
++
++	/*
++	 * Since we care about lost potential, a memstall is FULL
++	 * when there are no other working tasks, but also when
++	 * the CPU is actively reclaiming and nothing productive
++	 * could run even if it were runnable. So when the current
++	 * task in a cgroup is in_memstall, the corresponding groupc
++	 * on that cpu is in PSI_MEM_FULL state.
++	 */
++	if (groupc->tasks[NR_ONCPU] && cpu_curr(cpu)->in_memstall)
++		state_mask |= (1 << PSI_MEM_FULL);
++
+ 	groupc->state_mask = state_mask;
+ 
+ 	write_seqcount_end(&groupc->seq);
+@@ -859,21 +853,6 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 	}
+ }
+ 
+-void psi_memstall_tick(struct task_struct *task, int cpu)
+-{
+-	struct psi_group *group;
+-	void *iter = NULL;
+-
+-	while ((group = iterate_groups(task, &iter))) {
+-		struct psi_group_cpu *groupc;
+-
+-		groupc = per_cpu_ptr(group->pcpu, cpu);
+-		write_seqcount_begin(&groupc->seq);
+-		record_times(groupc, cpu, true);
+-		write_seqcount_end(&groupc->seq);
+-	}
+-}
+-
+ /**
+  * psi_memstall_enter - mark the beginning of a memory stall section
+  * @flags: flags to handle nested sections
+diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
+index 33d0daf83842..9e4e67a94731 100644
+--- a/kernel/sched/stats.h
++++ b/kernel/sched/stats.h
+@@ -144,14 +144,6 @@ static inline void psi_sched_switch(struct task_struct *prev,
+ 	psi_task_switch(prev, next, sleep);
+ }
+ 
+-static inline void psi_task_tick(struct rq *rq)
+-{
+-	if (static_branch_likely(&psi_disabled))
+-		return;
+-
+-	if (unlikely(rq->curr->in_memstall))
+-		psi_memstall_tick(rq->curr, cpu_of(rq));
+-}
+ #else /* CONFIG_PSI */
+ static inline void psi_enqueue(struct task_struct *p, bool wakeup) {}
+ static inline void psi_dequeue(struct task_struct *p, bool sleep) {}
+@@ -159,7 +151,6 @@ static inline void psi_ttwu_dequeue(struct task_struct *p) {}
+ static inline void psi_sched_switch(struct task_struct *prev,
+ 				    struct task_struct *next,
+ 				    bool sleep) {}
+-static inline void psi_task_tick(struct rq *rq) {}
+ #endif /* CONFIG_PSI */
+ 
+ #ifdef CONFIG_SCHED_INFO
+-- 
+2.11.0
 
-> +		ps->file = NULL;
-> +	else
-> +		ps->file = file;
-> +}
-> +
-> +#ifdef CONFIG_MODULES
-> +static void remove_printk_fmt_sec(struct module *mod)
-> +{
-> +	struct printk_fmt_sec *ps = NULL;
-> +
-> +	if (WARN_ON_ONCE(!mod))
-> +		return;
-> +
-> +	mutex_lock(&printk_fmts_mutex);
-> +
-> +	ps = find_printk_fmt_sec(mod);
-> +	if (!ps) {
-> +		mutex_unlock(&printk_fmts_mutex);
-> +		return;
-> +	}
-> +
-> +	hash_del(&ps->hnode);
-> +
-> +	mutex_unlock(&printk_fmts_mutex);
-> +
-> +	debugfs_remove(ps->file);
-> +	kfree(ps);
-> +}
-> +
-> +static int module_printk_fmts_notify(struct notifier_block *self,
-> +				     unsigned long val, void *data)
-> +{
-> +	struct module *mod = data;
-> +
-> +	if (mod->printk_fmts_sec_size) {
-> +		switch (val) {
-> +		case MODULE_STATE_COMING:
-> +			store_printk_fmt_sec(mod, mod->printk_fmts_start,
-> +					     mod->printk_fmts_start +
-> +						     mod->printk_fmts_sec_size);
-> +			break;
-> +
-> +		case MODULE_STATE_GOING:
-> +			remove_printk_fmt_sec(mod);
-> +			break;
-> +		}
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static const char *ps_get_module_name(const struct printk_fmt_sec *ps)
-> +{
-> +	return ps->module ? ps->module->name : "vmlinux";
-> +}
-> +
-> +static struct notifier_block module_printk_fmts_nb = {
-> +	.notifier_call = module_printk_fmts_notify,
-> +};
-> +
-> +static int __init module_printk_fmts_init(void)
-> +{
-> +	return register_module_notifier(&module_printk_fmts_nb);
-> +}
-> +
-> +core_initcall(module_printk_fmts_init);
-> +
-> +#else /* !CONFIG_MODULES */
-> +static const char *ps_get_module_name(const struct printk_fmt_sec *ps)
-> +{
-> +	return "vmlinux";
-> +}
-> +#endif /* CONFIG_MODULES */
-> +
-> +static int debugfs_pf_show(struct seq_file *s, void *v)
-> +{
-> +	struct module *mod = s->file->f_inode->i_private;
-> +	struct printk_fmt_sec *ps = NULL;
-> +	const char **fptr = NULL;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&printk_fmts_mutex);
-> +
-> +	/*
-> +	 * The entry might have been invalidated in the hlist between _open and
-> +	 * _show, which is we need to eyeball the entries under
-> +	 * printk_fmts_mutex again.
-> +	 */
-> +	ps = find_printk_fmt_sec(mod);
-> +	if (unlikely(!ps)) {
-> +		ret = -ENOENT;
-> +		goto out_unlock;
-> +	}
-> +
-> +	for (fptr = ps->start; fptr < ps->end; fptr++) {
-> +		/* For callsites without facility/level preamble. */
-> +		if (unlikely(*fptr[0] != KERN_SOH_ASCII))
-> +			seq_printf(s, "%c%d", KERN_SOH_ASCII,
-> +				   MESSAGE_LOGLEVEL_DEFAULT);
-> +		seq_printf(s, "%s%c", *fptr, '\0');
-> +	}
-> +
-> +out_unlock:
-> +	mutex_unlock(&printk_fmts_mutex);
-> +	return ret;
-> +}
-> +
-> +static int debugfs_pf_open(struct inode *inode, struct file *file)
-> +{
-> +	struct module *mod = inode->i_private;
-> +	struct printk_fmt_sec *ps = NULL;
-> +	int ret;
-> +
-> +	/*
-> +	 * We can't pass around the printk_fmt_sec because it might be freed
-> +	 * before we enter the mutex. Do the hash table lookup each time to
-> +	 * check.
-> +	 */
-> +	mutex_lock(&printk_fmts_mutex);
-> +
-> +	ps = find_printk_fmt_sec(mod);
-> +	if (unlikely(!ps)) {
-> +		ret = -ENOENT;
-> +		goto out_unlock;
-> +	}
-> +
-> +	ret = single_open_size(file, debugfs_pf_show, NULL, ps->output_size);
-> +
-> +out_unlock:
-> +	mutex_unlock(&printk_fmts_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static int __init init_printk_fmts(void)
-> +{
-> +	struct dentry *dfs_root = debugfs_create_dir("printk", NULL);
-> +	struct dentry *tmp = NULL;
-> +
-> +	if (IS_ERR_OR_NULL(dfs_root))
-
-Again, how can dfs_root be NULL?
-
-And why care about any error?  No kernel code should ever work
-differently if debugfs is acting up or not.
-
-> +		return -ENOMEM;
-> +
-> +	tmp = debugfs_create_dir("formats", dfs_root);
-> +
-> +	if (IS_ERR_OR_NULL(tmp))
-
-Again, NULL can never happen.  Where did you copy this logic from?  I
-need to go fix that...
-
-thanks,
-
-greg k-h
