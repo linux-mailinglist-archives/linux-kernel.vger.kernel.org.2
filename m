@@ -2,94 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6607A314536
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E3C314538
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhBIBEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
+        id S229756AbhBIBEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhBIBEJ (ORCPT
+        with ESMTP id S229729AbhBIBEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:04:09 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8B9C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:03:28 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id cv23so603862pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:03:28 -0800 (PST)
+        Mon, 8 Feb 2021 20:04:20 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7EFC06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:03:39 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id s26so15721453edt.10
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:03:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=MfcsXfncKqwyZqj9wo90IfUK1Xuq26ciFpVmdsqb4sw=;
-        b=j5O/lJoB6fWuGf5SzkH1gnTYbuONd+VGpxE2jrItYctPzNsUxG8mTGMkmrLluJHy/n
-         y7VeOhTqRYO5GyfJ7ssgtNKjOo7/uBC6kOplsSlMDX+JeVtMRF/6zlpOHy9N8GBkMNad
-         l3DgNqaSbgzNtR2wQm5SgpzzwlTiDAe6KXxAow5huNWk74TB07u75O61RPaef8g5mwZ3
-         RuazMLkeM9ZaGiRENWKve6/j0E7UCcTiXfpOAtpfed21vZ6xQsgJ6d3aeKS9QBegcIzM
-         2Tug/R8gr2E/1+Y+ObF77ZS0JXhJFIlLllsIXK7F1c6KqrGXcvKRLGUbeUbMNID9Y12z
-         lwsA==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fHdIpxdCQ1PLtC8RCv6m44jQdcXIE1TuMoRRkTZi7uE=;
+        b=qwv0t5E5aZrjpce35wVglshp4JBxu39PIdgj4xdUOlLAEakgzg4b3FJbfq2HN/qqou
+         9LQfGzniImvjDNMBkBJnrX1ntP72ogrewjQ2gKYoCh1o/le4FRKVGjaJxv3rSN7ZZBGU
+         ND29aEvm0jt1j7a3IPInOsXrIfqP/YDjyAHvbHVpAfIfge/RjtSbj3EMVgUml+GLtD8A
+         s4+rSINdnXAV0Xh58nVxnqiimSO2mDtGL34UGKW0uyWIrbcD0eh7LweXk4UOOBJfHn1d
+         k46kyxjQC6/FOxYghxGOEZpmpCQBxx/22/B4ofVC4Hm3q5GScDOeGmVhJc6rCD4ZEY91
+         XuRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=MfcsXfncKqwyZqj9wo90IfUK1Xuq26ciFpVmdsqb4sw=;
-        b=eXlQypfZdQAnEyWOnhn8jlPDoCiSZUB4QhmiLXmXbYUQUoc1RNZkoo2RWGQGlP+ZXp
-         WIOTipc8v+HiAdt1aBRStlKGpr02kjx9OaQWSJ8lUIIQe7i29GfxnfxLv1/Lhgi4aK5m
-         l1Zjn19MKu2Ru1GKvrvGMGLK3R4cLnRiP3IeMIrXS+dEwDd1u8AmciMGf8a/MBRE+lon
-         K+Ylgi6WBePymMQOJlPH7mz65KOL+OvZ70ff5srMwSR6bdfjgUC0kcni9hYDW9ql4lcH
-         tZfMlFk2klxitK92Z1sK5l8EDohVUGzVmaJYsqoYZBq7Qi8KfzxeutV7m1t/642MR+Vi
-         bhyQ==
-X-Gm-Message-State: AOAM533UhnQs/0R4DkruauHtx3qcqgoNvxuOsfAyqFASXaW/iZ+a4bRw
-        K3pGsjdktGvosc8hbr48ACGohtGsZQ63/A==
-X-Google-Smtp-Source: ABdhPJxBFTNVbvcjXcaw2456OCXzobbFg3C8PqR3Wy1L83G9v50cVL32RYMQWVwFOK18iqh+ckrFRg==
-X-Received: by 2002:a17:90a:da02:: with SMTP id e2mr1438717pjv.173.1612832608592;
-        Mon, 08 Feb 2021 17:03:28 -0800 (PST)
-Received: from localhost ([220.240.226.199])
-        by smtp.gmail.com with ESMTPSA id f18sm442920pjq.53.2021.02.08.17.03.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 17:03:27 -0800 (PST)
-Date:   Tue, 09 Feb 2021 11:03:21 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v5 00/22] powerpc/32: Implement C syscall entry/exit
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fHdIpxdCQ1PLtC8RCv6m44jQdcXIE1TuMoRRkTZi7uE=;
+        b=hzohG8mNGLCgdPChZUxxS2iqiEyh2lYO5zHRvnMssyPfG9DVz2HI+42rKecNnTdUz4
+         yR3CywXEMVoFQ04vBZEOZ/oiOQuu52e6P88MaYAXom1lB9scBq2D9eGQUlHqiJTe7+qr
+         iTrldDBWJ5f5aocclZyuT6XoH4o1q6tS1LgMTtu7Y005YsVULBVV6xnJeFgdtWKDUURy
+         33bJZwAKN3Fug1kg9pAjq9V/TnkaBRWOLL+rcQNIQoBc9D94CGZrETXyjA6iECJZdtav
+         8Khh7CmfOEvNqIXjTfzodW5Tkj5NOema/jnzbNYosKGrIThVmVxSMXc9m/gUWmslEkE+
+         5p4Q==
+X-Gm-Message-State: AOAM531UWFOaP05ZU5b59wwZbnlHuAHqEiDSSHbqGjgqqL2B1lmr97L4
+        ARQU1SmQbYEPAbobM3InSAMR+AE4FMwA6fSn7e3wyQ==
+X-Google-Smtp-Source: ABdhPJyHAry8BiQtZNtaMNiR4K/N57s8fu6tcUa4c1BcfO8uaRfbbIzg0j3uT3lLVTnBuEac7Ul2LjuJW6ltpn+onC0=
+X-Received: by 2002:aa7:ca13:: with SMTP id y19mr20091433eds.300.1612832617860;
+ Mon, 08 Feb 2021 17:03:37 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <1612832388.bbrfxby1h0.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-9-ben.widawsky@intel.com> <CAPcyv4iPXqO5FL4_bmMQaSvmUm9FVrPv9yPJr3Q4DQWYf4t5hQ@mail.gmail.com>
+ <202102081406.CDE33FB8@keescook> <CAPcyv4ix=zmQdb5sFKN-9wOZFnitHN0sSwHZJgQeaEM+=6+W1w@mail.gmail.com>
+In-Reply-To: <CAPcyv4ix=zmQdb5sFKN-9wOZFnitHN0sSwHZJgQeaEM+=6+W1w@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 8 Feb 2021 17:03:25 -0800
+Message-ID: <CAPcyv4hFLnY4b8a7z+rWVeayHka4BLZyXse_ExSeRWuBRxjCwA@mail.gmail.com>
+Subject: Re: [PATCH 08/14] taint: add taint for direct hardware access
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-cxl@vger.kernel.org,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
-> This series implements C syscall entry/exit for PPC32. It reuses
-> the work already done for PPC64.
->=20
-> This series is based on today's merge-test (b6f72fc05389e3fc694bf5a5fa1bb=
-d33f61879e0)
->=20
-> In terms on performance we have the following number of cycles on an
-> 8xx running null_syscall benchmark:
-> - mainline: 296 cycles
-> - after patch 4: 283 cycles
-> - after patch 16: 304 cycles
-> - after patch 17: 348 cycles
-> - at the end of the series: 320 cycles
->=20
-> So in summary, we have a degradation of performance of 8% on null_syscall=
-.
->=20
-> I think it is not a big degradation, it is worth it.
+On Mon, Feb 8, 2021 at 3:36 PM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> On Mon, Feb 8, 2021 at 2:09 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Mon, Feb 08, 2021 at 02:00:33PM -0800, Dan Williams wrote:
+> > > [ add Jon Corbet as I'd expect him to be Cc'd on anything that
+> > > generically touches Documentation/ like this, and add Kees as the last
+> > > person who added a taint (tag you're it) ]
+> > >
+> > > Jon, Kees, are either of you willing to ack this concept?
+> > >
+> > > Top-posting to add more context for the below:
+> > >
+> > > This taint is proposed because it has implications for
+> > > CONFIG_LOCK_DOWN_KERNEL among other things. These CXL devices
+> > > implement memory like DDR would, but unlike DDR there are
+> > > administrative / configuration commands that demand kernel
+> > > coordination before they can be sent. The posture taken with this
+> > > taint is "guilty until proven innocent" for commands that have yet to
+> > > be explicitly allowed by the driver. This is different than NVME for
+> > > example where an errant vendor-defined command could destroy data on
+> > > the device, but there is no wider threat to system integrity. The
+> > > taint allows a pressure release valve for any and all commands to be
+> > > sent, but flagged with WARN_TAINT_ONCE if the driver has not
+> > > explicitly enabled it on an allowed list of known-good / kernel
+> > > coordinated commands.
+> > >
+> > > On Fri, Jan 29, 2021 at 4:25 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > > >
+> > > > For drivers that moderate access to the underlying hardware it is
+> > > > sometimes desirable to allow userspace to bypass restrictions. Once
+> > > > userspace has done this, the driver can no longer guarantee the sanctity
+> > > > of either the OS or the hardware. When in this state, it is helpful for
+> > > > kernel developers to be made aware (via this taint flag) of this fact
+> > > > for subsequent bug reports.
+> > > >
+> > > > Example usage:
+> > > > - Hardware xyzzy accepts 2 commands, waldo and fred.
+> > > > - The xyzzy driver provides an interface for using waldo, but not fred.
+> > > > - quux is convinced they really need the fred command.
+> > > > - xyzzy driver allows quux to frob hardware to initiate fred.
+> > > >   - kernel gets tainted.
+> > > > - turns out fred command is borked, and scribbles over memory.
+> > > > - developers laugh while closing quux's subsequent bug report.
+> >
+> > But a taint flag only lasts for the current boot. If this is a drive, it
+> > could still be compromised after reboot. It sounds like this taint is
+> > really only for ephemeral things? "vendor shenanigans" is a pretty giant
+> > scope ...
+> >
+>
+> That is true. This is more about preventing an ecosystem / cottage
+> industry of tooling built around bypassing the kernel. So the kernel
+> complains loudly and hopefully prevents vendor tooling from
+> propagating and instead directs that development effort back to the
+> native tooling. However for the rare "I know what I'm doing" cases,
+> this tainted kernel bypass lets some experimentation and debug happen,
+> but the kernel is transparent that when the capability ships in
+> production it needs to be a native implementation.
+>
+> So it's less, "the system integrity is compromised" and more like
+> "you're bypassing the development process that ensures sanity for CXL
+> implementations that may take down a system if implemented
+> incorrectly". For example, NVME reset is a non-invent, CXL reset can
+> be like surprise removing DDR DIMM.
+>
+> Should this be more tightly scoped to CXL? I had hoped to use this in
+> other places in LIBNVDIMM, but I'm ok to lose some generality for the
+> specific concerns that make CXL devices different than other PCI
+> endpoints.
 
-I guess it's 13% from 283. But it's very nice to use the shared C code.
+As I type this out it strikes me that plain WARN already does
+TAINT_WARN and meets the spirit of what is trying to be achieved.
 
-There might be a few more percent speedup in there we can find later.
-
-Thanks,
-Nick
-
+Appreciate the skeptical eye Kees, we'll drop this one.
