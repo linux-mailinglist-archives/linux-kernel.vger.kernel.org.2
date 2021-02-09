@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9AF3150BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA1E3150C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbhBINsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:48:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:51940 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231694AbhBINqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:46:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62DA6106F;
-        Tue,  9 Feb 2021 05:46:09 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1327F3F73D;
-        Tue,  9 Feb 2021 05:46:06 -0800 (PST)
-Subject: Re: [PATCH 4/6] sched/fair: reorder newidle_balance pulled_task test
-To:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, fweisbec@gmail.com,
-        tglx@linutronix.de, bristot@redhat.com,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org
-Cc:     qais.yousef@arm.com
-References: <20210205114830.781-1-vincent.guittot@linaro.org>
- <20210205114830.781-5-vincent.guittot@linaro.org>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <4ab3693c-615d-6ef0-f4b3-0f01b820b826@arm.com>
-Date:   Tue, 9 Feb 2021 14:46:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231965AbhBINtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:49:52 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:44772 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231706AbhBINrh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:47:37 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119Dk9CM022658;
+        Tue, 9 Feb 2021 05:46:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=WPavP26DKZ05Jmrq/qASLQHWFNCPXboM76wEZXomdjk=;
+ b=Qcy+NzfJg+CmaS+Ha810CgNHAzfet527DQ88W123JqqiqqeAjyNP7T81w+/zudxJ3X9W
+ hhGS3T/3yykXyw3ueyVPgbULSX2/QnNuo8UopLe2uW9D87lu55u0To7a62i3NgJec9F6
+ UwHxU3nglqpWOtXXrRhP3iVSL/SgeuyIo5gSWoCpLYzemmkf9Y/FOixHso46uG669mTa
+ s8Rwxi49Dg6iambOVkTAf7GVWPTpEhcyZymd06nhsWz3HIV0Ekxe8uWe9qi4TyWrszFN
+ Lk67P6craMQ4ybOW2peKVZJDGuZUV9OHG/jy/z8neAD+2NwhF5F1UEdhaDCN5Ml3h+Fi 7w== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36hsbrgcnx-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 05:46:40 -0800
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
+ 2021 05:46:39 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
+ 2021 05:46:38 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 9 Feb 2021 05:46:38 -0800
+Received: from octopus.marvell.com (octopus.marvell.com [10.5.24.3])
+        by maili.marvell.com (Postfix) with ESMTP id 5F3F13F703F;
+        Tue,  9 Feb 2021 05:46:34 -0800 (PST)
+From:   <kostap@marvell.com>
+To:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <vladimir.vid@sartura.hr>, <tmn505@gmail.com>,
+        <luka.kovacic@sartura.hr>, <sebastian.hesselbarth@gmail.com>,
+        <gregory.clement@bootlin.com>, <andrew@lunn.ch>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>, <kishon@ti.com>,
+        <miquel.raynal@bootlin.com>, <mw@semihalf.com>, <jaz@semihalf.com>,
+        <nadavh@marvell.com>, <stefanc@marvell.com>, <bpeled@marvell.com>,
+        "Konstantin Porotchkin" <kostap@marvell.com>
+Subject: [PATCH v4 1/5] Documentation/bindings: phy: update references to cp11x
+Date:   Tue, 9 Feb 2021 15:46:06 +0200
+Message-ID: <20210209134610.19904-2-kostap@marvell.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210209134610.19904-1-kostap@marvell.com>
+References: <20210209134610.19904-1-kostap@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205114830.781-5-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-09_03:2021-02-09,2021-02-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/2021 12:48, Vincent Guittot wrote:
-> Reorder the tests and skip prevent useless test when no load balance has
-> been performed.
+From: Grzegorz Jaszczyk <jaz@semihalf.com>
 
-LGTM.
+The cp11x references in dts has changed, reflect it in comphy
+documentation.
 
-But IMHO the reason why those two if conditions can be skipped for the
-'goto out' path is that we don't release the rq lock rather the actual
-lb. Might be worth saying this in the patch header? It's already
-mentioned on top of the first if condition though.
+Signed-off-by: Grzegorz Jaszczyk <jaz@semihalf.com>
+Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
+---
+ Documentation/devicetree/bindings/phy/phy-mvebu-comphy.txt | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/fair.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index c587af230010..935594cd5430 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10592,7 +10592,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  	if (curr_cost > this_rq->max_idle_balance_cost)
->  		this_rq->max_idle_balance_cost = curr_cost;
->  
-> -out:
->  	/*
->  	 * While browsing the domains, we released the rq lock, a task could
->  	 * have been enqueued in the meantime. Since we're not going idle,
-> @@ -10601,14 +10600,15 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  	if (this_rq->cfs.h_nr_running && !pulled_task)
->  		pulled_task = 1;
->  
-> -	/* Move the next balance forward */
-> -	if (time_after(this_rq->next_balance, next_balance))
-> -		this_rq->next_balance = next_balance;
-> -
->  	/* Is there a task of a high priority class? */
->  	if (this_rq->nr_running != this_rq->cfs.h_nr_running)
->  		pulled_task = -1;
->  
-> +out:
-> +	/* Move the next balance forward */
-> +	if (time_after(this_rq->next_balance, next_balance))
-> +		this_rq->next_balance = next_balance;
-> +
->  	if (pulled_task)
->  		this_rq->idle_stamp = 0;
->  	else
-> 
+diff --git a/Documentation/devicetree/bindings/phy/phy-mvebu-comphy.txt b/Documentation/devicetree/bindings/phy/phy-mvebu-comphy.txt
+index 8c60e6985950..5ffd0f55d010 100644
+--- a/Documentation/devicetree/bindings/phy/phy-mvebu-comphy.txt
++++ b/Documentation/devicetree/bindings/phy/phy-mvebu-comphy.txt
+@@ -42,22 +42,22 @@ Required properties (child nodes):
+ 
+ Examples:
+ 
+-	cpm_comphy: phy@120000 {
++	CP11X_LABEL(comphy): phy@120000 {
+ 		compatible = "marvell,comphy-cp110";
+ 		reg = <0x120000 0x6000>;
+-		marvell,system-controller = <&cpm_syscon0>;
+-		clocks = <&CP110_LABEL(clk) 1 5>, <&CP110_LABEL(clk) 1 6>,
+-			 <&CP110_LABEL(clk) 1 18>;
++		marvell,system-controller = <&CP11X_LABEL(syscon0)>;
++		clocks = <&CP11X_LABEL(clk) 1 5>, <&CP11X_LABEL(clk) 1 6>,
++			 <&CP11X_LABEL(clk) 1 18>;
+ 		clock-names = "mg_clk", "mg_core_clk", "axi_clk";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		cpm_comphy0: phy@0 {
++		CP11X_LABEL(comphy0): phy@0 {
+ 			reg = <0>;
+ 			#phy-cells = <1>;
+ 		};
+ 
+-		cpm_comphy1: phy@1 {
++		CP11X_LABEL(comphy1): phy@1 {
+ 			reg = <1>;
+ 			#phy-cells = <1>;
+ 		};
+-- 
+2.17.1
 
