@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265C13145D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9FE3145DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhBIBv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:51:58 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:25938 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229797AbhBIBvy (ORCPT
+        id S230348AbhBIBw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:52:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbhBIBwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:51:54 -0500
-X-IronPort-AV: E=Sophos;i="5.81,163,1610380800"; 
-   d="scan'208";a="104350489"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 09 Feb 2021 09:51:05 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 3C2874CE6F87;
-        Tue,  9 Feb 2021 09:51:04 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
- 2021 09:51:02 +0800
-Subject: Re: [PATCH 0/7] fsdax,xfs: Add reflink&dedupe support for fsdax
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>,
-        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <willy@infradead.org>, <viro@zeniv.linux.org.uk>,
-        <linux-btrfs@vger.kernel.org>, <ocfs2-devel@oss.oracle.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>
-References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com>
- <20210208153911.GE30081@quack2.suse.cz>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <31e9aa48-7830-efe2-837f-e31cba2da491@cn.fujitsu.com>
-Date:   Tue, 9 Feb 2021 09:50:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 8 Feb 2021 20:52:49 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD41C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:52:10 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id k13so4440403pfh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:52:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2srAivJsR8ZUb2Of5OZio4LXVkIXxX89sGFnynDTxFQ=;
+        b=mzW8QUkCHDb8txTgts6/c250bc5psaLG8vkJij6TG+bDHh0ltf2ZB555hvnxiZ4Tp3
+         NuFa51SYv9e+VDlKbK4QmbF+N1lKEnNJKrDVP4HthOy0YotW3zNUWHHVVl7Y7u1FY7dV
+         YgOI+jQ00Zrc4EvirXMlD3AU4kTzg9UbS5g3B/KPRE3gFVUEBSS5R2YAOe8lAd6ypZE2
+         NVx7M2gomjIftGUt0NTrwWOkYGGYdvAkltGSkx74W1D4W6vq6y9PRRAp1z+xMHSAraeQ
+         Yt+cYm6x0U0hk/Fxu9/5DA3uVm1xgFyMinOR0nsgAeu8MjxnYtu+z8ulhiVo8wBTkp6b
+         BgPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2srAivJsR8ZUb2Of5OZio4LXVkIXxX89sGFnynDTxFQ=;
+        b=eevoYYlt6L8JEx0xs9pTYosqK36EHxEsAN1koPotNECBUDymfyaAmefvnTMhw2FY4E
+         fwHwJyOaqidp2+smKjumeqVSPSJgkcwfiZjPPX8UMrCAZxqIlqUBqudrNWgNQ67zRQAW
+         qZplkQjN/FSOqFGzRdtBmWjdD5/GX0vL27E/6/TltxqQpII1yQtQZJfGCV7vXrvjOWj6
+         RxGSNDdnHpEbZfqDYrhjHhN2ejvyiznHiLrOlEh90htHEV9rhaw80B/S+aOZyarPASre
+         sEWiZzJ86yFIG/2F1tXJyNAYaahemcaQFqoAyGSgx0u11jKtSS0G4wX5C9zlrqRnQWnQ
+         upNw==
+X-Gm-Message-State: AOAM532B3UFspyY65I7o0J978hFpH2nsrP5EbfKKr9uBJOSpEYVgAMnj
+        OmJj0G2s65b4634t1rTRHUt6JQ==
+X-Google-Smtp-Source: ABdhPJwZftY+JfG4/ltpdGEm0VNS1bpBKVoGIJbWBMNCcNrjv07btIltmE0V7Uk4wPBBx9gbw16M0A==
+X-Received: by 2002:a62:1890:0:b029:1dc:1b2e:e07a with SMTP id 138-20020a6218900000b02901dc1b2ee07amr9121622pfy.14.1612835529512;
+        Mon, 08 Feb 2021 17:52:09 -0800 (PST)
+Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
+        by smtp.gmail.com with UTF8SMTPSA id nl12sm761085pjb.2.2021.02.08.17.52.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 17:52:08 -0800 (PST)
+Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
+        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
+        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
+        kwankhede@nvidia.com, ACurrid@nvidia.com, gmataev@nvidia.com,
+        cjia@nvidia.com, yishaih@nvidia.com
+References: <20210201181454.22112b57.cohuck@redhat.com>
+ <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
+ <20210201114230.37c18abd@omen.home.shazbot.org>
+ <20210202170659.1c62a9e8.cohuck@redhat.com>
+ <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
+ <806c138e-685c-0955-7c15-93cb1d4fe0d9@ozlabs.ru>
+ <34be24e6-7f62-9908-c56d-9e469c3b6965@nvidia.com>
+ <83ef0164-6291-c3d1-0ce5-2c9d6c97469e@ozlabs.ru>
+ <20210204125123.GI4247@nvidia.com>
+ <d69a7f3c-f552-cd25-4e15-3e894f4eb15a@ozlabs.ru>
+ <20210208181313.GH4247@nvidia.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <7c5bf697-86a6-5147-061c-7a7c38b6897c@ozlabs.ru>
+Date:   Tue, 9 Feb 2021 12:51:59 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-In-Reply-To: <20210208153911.GE30081@quack2.suse.cz>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <20210208181313.GH4247@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: 3C2874CE6F87.AC9A2
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/2/8 下午11:39, Jan Kara wrote:
-> On Mon 08-02-21 01:09:17, Shiyang Ruan wrote:
->> This patchset is attempt to add CoW support for fsdax, and take XFS,
->> which has both reflink and fsdax feature, as an example.
+On 09/02/2021 05:13, Jason Gunthorpe wrote:
+> On Fri, Feb 05, 2021 at 11:42:11AM +1100, Alexey Kardashevskiy wrote:
+>>> A real nvswitch function?
 >>
->> One of the key mechanism need to be implemented in fsdax is CoW.  Copy
->> the data from srcmap before we actually write data to the destance
->> iomap.  And we just copy range in which data won't be changed.
->>
->> Another mechanism is range comparison .  In page cache case, readpage()
->> is used to load data on disk to page cache in order to be able to
->> compare data.  In fsdax case, readpage() does not work.  So, we need
->> another compare data with direct access support.
->>
->> With the two mechanism implemented in fsdax, we are able to make reflink
->> and fsdax work together in XFS.
->>
->> Some of the patches are picked up from Goldwyn's patchset.  I made some
->> changes to adapt to this patchset.
+>> What do you mean by this exactly? The cpu side of nvlink is "emulated pci
+>> devices", the gpu side is not in pci space at all, the nvidia driver manages
+>> it via the gpu's mmio or/and cfg space.
 > 
-> How do you deal with HWPoison code trying to reverse-map struct page back
-> to inode-offset pair? This also needs to be fixed for reflink to work with
-> DAX.
-> 
+> Some versions of the nvswitch chip have a PCI-E link too, that is what
+> I though this was all about when I first saw it.
 
-I have posted v3 patchset to add reverse-map support for dax page 
-yesterday.  Please take a look at this:
-
-   https://lkml.org/lkml/2021/2/8/347
+> So, it is really a special set of functions for NVIDIA GPU device
+> assignment only applicable to P9 systems, much like IGD is for Intel
+> on x86.
 
 
---
-Thanks,
-Ruan Shiyang.
 
-> 								Honza
-> 
->>
->> (Rebased on v5.10)
->> ==
->>
->> Shiyang Ruan (7):
->>    fsdax: Output address in dax_iomap_pfn() and rename it
->>    fsdax: Introduce dax_copy_edges() for CoW
->>    fsdax: Copy data before write
->>    fsdax: Replace mmap entry in case of CoW
->>    fsdax: Dedup file range to use a compare function
->>    fs/xfs: Handle CoW for fsdax write() path
->>    fs/xfs: Add dedupe support for fsdax
->>
->>   fs/btrfs/reflink.c     |   3 +-
->>   fs/dax.c               | 188 ++++++++++++++++++++++++++++++++++++++---
->>   fs/ocfs2/file.c        |   2 +-
->>   fs/remap_range.c       |  14 +--
->>   fs/xfs/xfs_bmap_util.c |   6 +-
->>   fs/xfs/xfs_file.c      |  30 ++++++-
->>   fs/xfs/xfs_inode.c     |   8 +-
->>   fs/xfs/xfs_inode.h     |   1 +
->>   fs/xfs/xfs_iomap.c     |   3 +-
->>   fs/xfs/xfs_iops.c      |  11 ++-
->>   fs/xfs/xfs_reflink.c   |  23 ++++-
->>   include/linux/dax.h    |   5 ++
->>   include/linux/fs.h     |   9 +-
->>   13 files changed, 270 insertions(+), 33 deletions(-)
->>
->> -- 
->> 2.30.0
->>
->>
->>
+These GPUs are not P9 specific and they all have both PCIe and NVLink2 
+links. The special part is that some nvlinks are between P9 and GPU and 
+the rest are between GPUs, everywhere else (x86, may be ARM) the nvlinks 
+are used between GPUs but even there I do not think the nvlink logic is 
+presented to the host in the PCI space.
 
 
+
+-- 
+Alexey
