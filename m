@@ -2,75 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D606831510F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1947C315114
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhBIN54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:57:56 -0500
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:53814 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhBIN4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:56:22 -0500
-Received: by mail-wm1-f46.google.com with SMTP id j11so3214412wmi.3;
-        Tue, 09 Feb 2021 05:56:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XSnpm7/HVnmzb1rRaH6rhaurZgUv42UULqOJi/Beqao=;
-        b=D4Ek4cgqJooPeb583beOBFvfUnJTxcJf3MQsdxMteT8tpoACHNo29Cxy938QoCbsiz
-         buP9hyW7Ii8wh4ugURO34/APzExrrAVsLJQAF8/BIgXlvpeIBDp6jpRJt7QS0RnivrcN
-         n8xj6QMptIenethorH2XlOyzxfSvBFBJEmV+klsETyvZAM9Ez35UVOodpltGb2dzFKrX
-         sdyxg3/BK/GTxEdPhZjDhqKbmcGpgK52xjzgtN3cBSTr8ddUAR70trnh2fEHaHtKKkYV
-         lqhNVAuoFhn9+tB7B+xIv1B6UofXlG0PDPc52pDvHW1jzcIM0IVvIg/jo1cwfJfZhMvT
-         Sp+w==
-X-Gm-Message-State: AOAM532lYPltvysWL+YYFyw1ix1d/zjC4TQPpC5r7SbRX5QA8psZ+Qfd
-        +XdXCYQk3kiS2OxvoF3z08w=
-X-Google-Smtp-Source: ABdhPJwNB2giv7+CoyjHR4gxPw378n2meWhV1w/yKa2jvI06fXrZd3Z4dr3WdpEwpM4n3qwOnwgCXQ==
-X-Received: by 2002:a1c:ab57:: with SMTP id u84mr3640970wme.115.1612878940148;
-        Tue, 09 Feb 2021 05:55:40 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id 2sm20140855wre.24.2021.02.09.05.55.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 05:55:39 -0800 (PST)
-Date:   Tue, 9 Feb 2021 13:55:38 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>,
-        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH 4/7] xen/events: link interdomain events to associated
- xenbus device
-Message-ID: <20210209135538.ysr5pzxihvwxn22p@liuwe-devbox-debian-v2>
-References: <20210206104932.29064-1-jgross@suse.com>
- <20210206104932.29064-5-jgross@suse.com>
+        id S231949AbhBIN7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:59:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231825AbhBIN5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:57:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 553E264EEE;
+        Tue,  9 Feb 2021 13:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612879027;
+        bh=NYBRJpVERhcrNPXZUFCqG9eeCVvRA7N1yQGIY6Hsm10=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CoXx6r9G7v1kTpRmFlkNMSqNy+qXE4rqUTUJXwzKNgMKfKLQBk1c3FSaxpWFUWJYU
+         LFN/NC/hFLZ9pz3bD1N+/B2nx/OBd9bT/HCZgs9kM+TJFSvXh3Cp8YOWDSZ2zGIazr
+         EtIpfsV2vYLTOadp6htqPxzTh4onfXz/D8QO/XaDcMJHGJ6JfeMD/LECfIlpbzx8wl
+         1+Mez/sJWPs+tfzxdq7xHajxiJS2LNVgip/pLWCYVHaiQpqC6iYbf7DKp+QuTd5g43
+         IqWtLCXqfRIMh4IhvS5j87Z0dHhTJK0BhRR/xWT7/w5f24vjwaqja4MAo0JWFw6iSS
+         FRvAFjVSn8eBQ==
+Received: by mail-qk1-f174.google.com with SMTP id s77so17951112qke.4;
+        Tue, 09 Feb 2021 05:57:07 -0800 (PST)
+X-Gm-Message-State: AOAM531ucW8CNYIWFN/UcopqicS0txCVbwPJLHS668DvPS7QIL7q5Y4L
+        1xFZtZcztK9FliY7+7PP8OtINgYTXqd0s/3kvA==
+X-Google-Smtp-Source: ABdhPJwcdrYR55bl0azRvAzl06gG/0oJAP1Gh4LIiC0dRNTMkptuigKWwu/4kdUDrdmpeoNg1Zq7xfIeiJ+yd35FIK4=
+X-Received: by 2002:ae9:f20b:: with SMTP id m11mr22290060qkg.464.1612879026441;
+ Tue, 09 Feb 2021 05:57:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210206104932.29064-5-jgross@suse.com>
-User-Agent: NeoMutt/20180716
+References: <1611034054-63867-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <1611034054-63867-3-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <20210209022041.GA2527041@robh.at.kernel.org> <CY4PR02MB327015F3EF5FD8C265EE20E2BD8E9@CY4PR02MB3270.namprd02.prod.outlook.com>
+In-Reply-To: <CY4PR02MB327015F3EF5FD8C265EE20E2BD8E9@CY4PR02MB3270.namprd02.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 9 Feb 2021 07:56:55 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ31VkmK526BDZy+dg_O1L1A=2EH9Lq7CqhSUE0FPi2OA@mail.gmail.com>
+Message-ID: <CAL_JsqJ31VkmK526BDZy+dg_O1L1A=2EH9Lq7CqhSUE0FPi2OA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: pinctrl: Added binding for ZynqMP
+ pinctrl driver
+To:     Sai Krishna Potthuri <lakshmis@xilinx.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michals@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        git <git@xilinx.com>,
+        "saikrishna12468@gmail.com" <saikrishna12468@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 06, 2021 at 11:49:29AM +0100, Juergen Gross wrote:
-> In order to support the possibility of per-device event channel
-> settings (e.g. lateeoi spurious event thresholds) add a xenbus device
-> pointer to struct irq_info() and modify the related event channel
-> binding interfaces to take the pointer to the xenbus device as a
-> parameter instead of the domain id of the other side.
-> 
-> While at it remove the stale prototype of bind_evtchn_to_irq_lateeoi().
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+On Tue, Feb 9, 2021 at 2:17 AM Sai Krishna Potthuri <lakshmis@xilinx.com> wrote:
+>
+> Hi Rob,
+>
+> Thanks for the review.
+>
+> > -----Original Message-----
+> > From: Rob Herring <robh@kernel.org>
+> > Sent: Tuesday, February 9, 2021 7:51 AM
+> > To: Sai Krishna Potthuri <lakshmis@xilinx.com>
+> > Cc: Linus Walleij <linus.walleij@linaro.org>; Michal Simek
+> > <michals@xilinx.com>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>;
+> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-gpio@vger.kernel.org; git
+> > <git@xilinx.com>; saikrishna12468@gmail.com
+> > Subject: Re: [PATCH v2 2/3] dt-bindings: pinctrl: Added binding for ZynqMP
+> > pinctrl driver
+> >
+> > On Tue, Jan 19, 2021 at 10:57:33AM +0530, Sai Krishna Potthuri wrote:
+> > > Added documentation and dt-bindings file which contains MIO pin
+> > > configuration defines for Xilinx ZynqMP pinctrl driver.
+> > >
+> > > Signed-off-by: Sai Krishna Potthuri
+> > > <lakshmi.sai.krishna.potthuri@xilinx.com>
+> > > ---
+> > >  .../bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml | 337
+> > > ++++++++++++++++++  include/dt-bindings/pinctrl/pinctrl-zynqmp.h  |
+> > > 23 ++
+> > >  2 files changed, 360 insertions(+)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml
+> > >  create mode 100644 include/dt-bindings/pinctrl/pinctrl-zynqmp.h
+> > >
+> > > diff --git
+> > > a/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml
+> > > b/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml
+> > > new file mode 100644
+> > > index 000000000000..9f2efbafcaa4
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.ya
+> > > +++ ml
+> > > @@ -0,0 +1,337 @@
+> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause %YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/pinctrl/xlnx,zynqmp-pinctrl.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Xilinx ZynqMP Pinctrl
+> > > +
+> > > +maintainers:
+> > > +  - Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+> > > +  - Rajan Vaja <rajan.vaja@xilinx.com>
+> > > +
+> > > +description: |
+> > > +  Please refer to pinctrl-bindings.txt in this directory for details
+> > > +of the
+> > > +  common pinctrl bindings used by client devices, including the
+> > > +meaning of the
+> > > +  phrase "pin configuration node".
+> > > +
+> > > +  ZynqMP's pin configuration nodes act as a container for an
+> > > + arbitrary number of  subnodes. Each of these subnodes represents
+> > > + some desired configuration for a  pin, a group, or a list of pins or
+> > > + groups. This configuration can include the  mux function to select
+> > > + on those pin(s)/group(s), and various pin configuration  parameters, such
+> > as pull-up, slew rate, etc.
+> > > +
+> > > +  Each configuration node can consist of multiple nodes describing
+> > > + the pinmux and  pinconf options. Those nodes can be pinmux nodes or
+> > pinconf nodes.
+> > > +
+> > > +  The name of each subnode is not important; all subnodes should be
+> > > + enumerated  and processed purely based on their content.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: xlnx,zynqmp-pinctrl
+> > > +
+> > > +patternProperties:
+> > > +  '^(.*-)?(default|gpio)$':
+> > > +    type: object
+> > > +    patternProperties:
+> > > +      '^mux(.*)$':
+> >
+> > '^mux' is equivalent.
+> I will fix in v3.
+>
+> >
+> > > +        type: object
+> > > +        description:
+> > > +          Pinctrl node's client devices use subnodes for pin muxes,
+> > > +          which in turn use below standard properties.
+> > > +        $ref: pinmux-node.yaml#
+> > > +
+> > > +        properties:
+> > > +          groups:
+> > > +            description:
+> > > +              List of groups to select (either this or "pins" must be
+> > > +              specified), available groups for this subnode.
+> > > +            items:
+> > > +              oneOf:
+> > > +                - enum: [ethernet0_0_grp, ethernet1_0_grp,
+> > > + ethernet2_0_grp,
+> >
+> > Don't need 'oneOf' for a single item.
+> Here we have a possibility to have more than one group item as below,
+> hence used 'oneOf'.
+> groups = "uart0_4_grp", "uart0_5_grp";
+> Please suggest me if there is a better/another way to represent this.
 
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
+'items' has 2 forms: a list with a schema per entry or a schema that
+applies to all entries.
+
+1 item:
+items:
+  - enum: [...]
+
+all items:
+items:
+  enum: [...]
+
+You should use the latter form. You may need 'maxItems' here. Pick a
+'should be enough' value if you don't have an actual max.
+
+Rob
