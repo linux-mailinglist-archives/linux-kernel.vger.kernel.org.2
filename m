@@ -2,107 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863DA314751
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 05:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20AD631474D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 05:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhBIEH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 23:07:57 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11712 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhBIDtK (ORCPT
+        id S229821AbhBIEFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 23:05:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhBIDmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 22:49:10 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZSwR18dCzlHtb;
-        Tue,  9 Feb 2021 11:26:15 +0800 (CST)
-Received: from [10.174.179.149] (10.174.179.149) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 9 Feb 2021 11:27:57 +0800
-Subject: Re: [PATCH RFC] hugetlb_cgroup: fix unbalanced css_put for shared
- mappings
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
-CC:     <almasrymina@google.com>, <rientjes@google.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210123093111.60785-1-linmiaohe@huawei.com>
- <32100d84-8a26-2f8f-303f-52182ce72f52@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <1f683c18-6a22-b5a9-6352-2e7d956132bb@huawei.com>
-Date:   Tue, 9 Feb 2021 11:27:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 8 Feb 2021 22:42:38 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4BAC061786;
+        Mon,  8 Feb 2021 19:28:44 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id my11so814192pjb.1;
+        Mon, 08 Feb 2021 19:28:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=iNkvVbVPjvkONhlILwVRwh9nXa2Wj/wsvujkY/JhyuM=;
+        b=DtAKq9YCmmp3nhieg5RaC5F/0aChM7KbLSPPB4PxecWaRQjbsBDAhICKW+Na4tgmH4
+         dY9dKT5RHkKGkoFh3byCYiqBjkdrLaiBka8WxhFS6pAk4YlriQzJ4l1q9qAeMSUqRcQW
+         sgs0MitnA/d0ahIiDTY4r406X67ORimTkOKAtFh+XsaYQtr52DRs9RoZRu/jR5ChOXty
+         IbkbLcoJin9mC6JnbZwV98BDiqDIhg2sh0VEM1ioXk5e+L+H3F5+kLqqKF9LMggiejzM
+         L8srmTyqTEGkPze5t1ynjCgjzgbuE8qyfy9ENaH5Mwaf+EPu4EdzYOgYRDCo5rRb4lan
+         RLuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=iNkvVbVPjvkONhlILwVRwh9nXa2Wj/wsvujkY/JhyuM=;
+        b=obeEJ5gl3qoJGpwUdDZCP3g1iQ+PxAU4gTw5Ej27F/pmPCmySjTjonm9DLioYgTU33
+         EusVK7gKJ7K2hePhnNMR//daUkyXSn223qozJ++VZGcPRy0P7JHQ707UUJATuOx5Y13W
+         htpQEMQVgIqUG2Sv+vAnaXVmadSZrzKJsy7A0IRIqqTjAlxy28shPx5KiNvZhcoEdvb/
+         ssYc9hx+HwbZZYZEsNprumvz1oFm4F4OtHmV2BiOQ9C14RmO5qcbeaFXP+GBAtaAKWZg
+         KHrMc/ZeAZU7U8f6rFOH/Am4k882ZdfyuGYYGJCc56vuDStMK9rl6zN/bwt3Dd73Xlfv
+         8YZA==
+X-Gm-Message-State: AOAM532kLlKjLIVMpLIgm6SQPdwfVc44RBnJYfW0X4gdk/X7Z/Mi47zd
+        t1WxHmgT1VUrLBnHmw2GHYra1i+6q2slHA==
+X-Google-Smtp-Source: ABdhPJwS4m692WkJDHRki0OD1NmzMYo3U9c5MT7W2cpmC2agASAx0ZlEHkOJuyYJgmdCfpjXfwSkNA==
+X-Received: by 2002:a17:902:d48e:b029:e2:efbc:5fed with SMTP id c14-20020a170902d48eb02900e2efbc5fedmr2991833plg.53.1612841324367;
+        Mon, 08 Feb 2021 19:28:44 -0800 (PST)
+Received: from lenovo ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id a9sm14374382pfr.204.2021.02.08.19.28.41
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Feb 2021 19:28:43 -0800 (PST)
+Date:   Tue, 9 Feb 2021 11:28:38 +0800
+From:   Orson Zhai <orsonzhai@gmail.com>
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Haidong Yao <haidong.yao@unisoc.com>,
+        Orson Zhai <orson.zhai@unisoc.com>
+Subject: Re: [PATCH 1/3] mailbox: sprd: Introduce refcnt when clients
+ requests/free channels
+Message-ID: <20210209032838.GA24248@lenovo>
+Mail-Followup-To: Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Haidong Yao <haidong.yao@unisoc.com>,
+        Orson Zhai <orson.zhai@unisoc.com>
+References: <1612785064-3072-1-git-send-email-orsonzhai@gmail.com>
+ <CADBw62qiUG2dunB_i1iOp_srkAJP4CrVJX9mU25no++_b10hpg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <32100d84-8a26-2f8f-303f-52182ce72f52@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.149]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADBw62qiUG2dunB_i1iOp_srkAJP4CrVJX9mU25no++_b10hpg@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/9 3:52, Mike Kravetz wrote:
-> On 1/23/21 1:31 AM, Miaohe Lin wrote:
->> The current implementation of hugetlb_cgroup for shared mappings could have
->> different behavior. Consider the following two scenarios:
->>
->> 1.Assume initial css reference count of hugetlb_cgroup is 1:
->>   1.1 Call hugetlb_reserve_pages with from = 1, to = 2. So css reference
->> count is 2 associated with 1 file_region.
->>   1.2 Call hugetlb_reserve_pages with from = 2, to = 3. So css reference
->> count is 3 associated with 2 file_region.
->>   1.3 coalesce_file_region will coalesce these two file_regions into one.
->> So css reference count is 3 associated with 1 file_region now.
->>
->> 2.Assume initial css reference count of hugetlb_cgroup is 1 again:
->>   2.1 Call hugetlb_reserve_pages with from = 1, to = 3. So css reference
->> count is 2 associated with 1 file_region.
->>
->> Therefore, we might have one file_region while holding one or more css
->> reference counts. This inconsistency could lead to unbalanced css_put().
->> If we do css_put one by one (i.g. hole punch case), scenario 2 would put
->> one more css reference. If we do css_put all together (i.g. truncate case),
->> scenario 1 will leak one css reference.
+On Mon, Feb 08, 2021 at 10:06:47PM +0800, Baolin Wang wrote:
+> Hi Orson,
 > 
-> Sorry for the delay in replying.  This is tricky code and I needed some quiet
-> time to study it.
+> On Mon, Feb 8, 2021 at 7:52 PM Orson Zhai <orsonzhai@gmail.com> wrote:
+> >
+> > From: Orson Zhai <orson.zhai@unisoc.com>
+> >
+> > Unisoc mailbox has no way to be enabled/disabled for any single channel.
+> > They can only be set to startup or shutdown as a whole device at same time.
+> >
+> > Add a variable to count references to avoid mailbox FIFO being reset
+> > unexpectedly when clients are requesting or freeing channels.
+> >
+> > Also add a lock to dismiss possible conflicts from register r/w in
+> > different startup or shutdown threads.
+> >
+> > Fixes: ca27fc26cd22 ("mailbox: sprd: Add Spreadtrum mailbox driver")
+> > Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
+> > ---
+> >  drivers/mailbox/sprd-mailbox.c | 38 +++++++++++++++++++++++++-------------
+> >  1 file changed, 25 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
+> > index f6fab24..e606f52 100644
+> > --- a/drivers/mailbox/sprd-mailbox.c
+> > +++ b/drivers/mailbox/sprd-mailbox.c
+> > @@ -60,6 +60,8 @@ struct sprd_mbox_priv {
+> >         struct clk              *clk;
+> >         u32                     outbox_fifo_depth;
+> >
+> > +       struct mutex            lock;
+> > +       u32                     refcnt;
+> >         struct mbox_chan        chan[SPRD_MBOX_CHAN_MAX];
+> >  };
+> >
+> > @@ -215,18 +217,22 @@ static int sprd_mbox_startup(struct mbox_chan *chan)
+> >         struct sprd_mbox_priv *priv = to_sprd_mbox_priv(chan->mbox);
+> >         u32 val;
+> >
+> > -       /* Select outbox FIFO mode and reset the outbox FIFO status */
+> > -       writel(0x0, priv->outbox_base + SPRD_MBOX_FIFO_RST);
+> > +       mutex_lock(&priv->lock);
+> > +       if (priv->refcnt++ == 0) {
+> > +               /* Select outbox FIFO mode and reset the outbox FIFO status */
+> > +               writel(0x0, priv->outbox_base + SPRD_MBOX_FIFO_RST);
+> >
+> > -       /* Enable inbox FIFO overflow and delivery interrupt */
+> > -       val = readl(priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> > -       val &= ~(SPRD_INBOX_FIFO_OVERFLOW_IRQ | SPRD_INBOX_FIFO_DELIVER_IRQ);
+> > -       writel(val, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> > +               /* Enable inbox FIFO overflow and delivery interrupt */
+> > +               val = readl(priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> > +               val &= ~(SPRD_INBOX_FIFO_OVERFLOW_IRQ | SPRD_INBOX_FIFO_DELIVER_IRQ);
+> > +               writel(val, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> >
+> > -       /* Enable outbox FIFO not empty interrupt */
+> > -       val = readl(priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> > -       val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
+> > -       writel(val, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> > +               /* Enable outbox FIFO not empty interrupt */
+> > +               val = readl(priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> > +               val &= ~SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ;
+> > +               writel(val, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> > +       }
+> > +       mutex_unlock(&priv->lock);
 > 
+> I think using the atomic_add/sub_and_test() related APIs can remove
+> the mutex lock.
 
-That's fine. I was trying to catch more buggy case too.
+Yes, atomic could make refcnt itself safe. But mutex lock is to make whole processing of
+reading/writing registers safe.
 
-> I agree that the issue described exists.  Can you describe what a user would
-> see in the above imbalance scenarios?  What happens if we do one too many
-> css_put calls?  What happens if we leak the reference and do not do the
-> required number of css_puts?
+Consider case like this:
+
+  channel #1             channel #2
+-------------------------------------
+   startup
+   .....
+   shutdown               startup
+     |-refcnt==0            |
+     |                      |-retcnt+1
+     |                      |-enable mailbox
+     |-disable mailbox 
+
+Mailbox will be wrongly disabled after client requests channel #2's startup.
+
 > 
-
-The imbalanced css_get/css_put would result in a non-zero reference when we try to
-destroy the hugetlb cgroup. The hugetlb cgroup dir is removed __but__ associated
-resource is not freed. This might result in OOM or can not create a new hugetlb cgroup
-in a really busy workload finally.
-
-> The code changes look correct.
+> >
+> >         return 0;
+> >  }
+> > @@ -235,9 +241,13 @@ static void sprd_mbox_shutdown(struct mbox_chan *chan)
+> >  {
+> >         struct sprd_mbox_priv *priv = to_sprd_mbox_priv(chan->mbox);
+> >
+> > -       /* Disable inbox & outbox interrupt */
+> > -       writel(SPRD_INBOX_FIFO_IRQ_MASK, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> > -       writel(SPRD_OUTBOX_FIFO_IRQ_MASK, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> > +       mutex_lock(&priv->lock);
+> > +       if (--priv->refcnt == 0) {
+> > +               /* Disable inbox & outbox interrupt */
+> > +               writel(SPRD_INBOX_FIFO_IRQ_MASK, priv->inbox_base + SPRD_MBOX_IRQ_MSK);
+> > +               writel(SPRD_OUTBOX_FIFO_IRQ_MASK, priv->outbox_base + SPRD_MBOX_IRQ_MSK);
+> > +       }
+> > +       mutex_unlock(&priv->lock);
+> >  }
+> >
+> >  static const struct mbox_chan_ops sprd_mbox_ops = {
+> > @@ -266,6 +276,8 @@ static int sprd_mbox_probe(struct platform_device *pdev)
+> >                 return -ENOMEM;
+> >
+> >         priv->dev = dev;
+> > +       priv->refcnt = 0;
 > 
-> I just wish this code was not so complicated.  I think the private mapping
-> case could be simplified to only take a single css_ref per reserve map.
+> No need to do this, the priv structure is already cleared to 0.
 
-Could you explain this more?
-It seems one reserve map already takes a single css_ref. And a hugepage outside
-reservation would take a single css_ref too.
+Right, will remove at next version.
 
-> However, for shared mappings we need to track each individual reservation
-> which adds the complexity.  I can not think of a better way to do things.
+Thanks for reviewing!
+
+-Orson
+
 > 
-
-I can't figure out one too. And the fix might make the code more complex. :(
-
-> Please update commit message with an explanation of what users might see
-> because of this issue and resubmit as a patch.
+> > +       mutex_init(&priv->lock);
+> >
+> >         /*
+> >          * The Spreadtrum mailbox uses an inbox to send messages to the target
+> > --
+> > 2.7.4
+> >
 > 
-
-Will do. Thanks.
-
-> Thanks,
 > 
-
-Many thanks for reply. :)
+> -- 
+> Baolin Wang
