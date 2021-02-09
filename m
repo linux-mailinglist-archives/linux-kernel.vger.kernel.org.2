@@ -2,115 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B879315BFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2904315BCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbhBJBOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:14:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234305AbhBIWYf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:24:35 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ECFC061A27
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 14:21:28 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id c11so507978pfp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 14:21:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WYkm21PyuwLiZr93Ib+DbHMt5X8AQ+yDGADxOTkV6ao=;
-        b=X0HTeNld4k5XIuctg1B1GOGvxcx4NEnYnA8h4L/q2atjOPVLuj/eE+RilL/8wOUzLZ
-         zsWELRztBNJBPuNMAwNZjn7uO4pBK+Rw9H0t/aWQSImDro78vAJBYg6TK34h1qnSqt/D
-         ls1CqRIfPIGC5GQl1GwBPXTEPT8whjPe4FyIv1Fy5yucyNRG5Rtp6euNjHDHsOIaR/f3
-         cwr4ikpuJGnH6zZXWhimiqeR4X78mbOfShYsVydzJylibTn1auAoNjztsJIqpEoJ4c/f
-         F046qyp2FZuCm8nnVBkTS30bKT+32EzMk5SjQSmzACalavr8G5821FdE5OlNnaL+hW1E
-         JxjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WYkm21PyuwLiZr93Ib+DbHMt5X8AQ+yDGADxOTkV6ao=;
-        b=bK/V4ap/cj1/iCprPLirMZ3RaqvPLxEm2LzwmW5wTWSb0zQo5JKsb4yy6IKce2b+c1
-         DJpttDywYj9DGfz5bct7cmWvf7n6t6Sik6uriydq8bn5dqRzLIETMCGptinPH1g6uQTq
-         L3XQaR8EUocbMuWALHVcaQMD085xyXgLPIWaBBHawdKtza2ty0t9KFWoXN2nrKC2rVwZ
-         MZ3///7NSXh37dafhkH4WxI7hMz6WNNJh7NiiO6IkznlDg+myzY5/YbzcFDqFC/csKVw
-         z+wUz9ZjsK4Nxb85TXNfdItAWyeGcyw17Yyg4rwSP/TR3syvBsPOcd0iTM7Ih7g7TE5r
-         yzmA==
-X-Gm-Message-State: AOAM531DfGowe52ARfGdX0gJ6RfO3/GkReEUijHw+DicZCZJ3Azm7GFB
-        ITaJHtIzrubO3zY+5Vl1XaA=
-X-Google-Smtp-Source: ABdhPJxCezaqlQMfXnyzfHJdTeSqVEwyG4BWoM9i3x0ej+aJQG43cusjn4HUglWMONj4HKmhD5/LCg==
-X-Received: by 2002:aa7:888a:0:b029:1d8:49a3:563b with SMTP id z10-20020aa7888a0000b02901d849a3563bmr98263pfe.74.1612909287922;
-        Tue, 09 Feb 2021 14:21:27 -0800 (PST)
-Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id v9sm58601pju.33.2021.02.09.14.21.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 14:21:27 -0800 (PST)
-From:   Nadav Amit <nadav.amit@gmail.com>
-X-Google-Original-From: Nadav Amit
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>
-Subject: [PATCH v5 8/8] x86/mm/tlb: Remove unnecessary uses of the inline keyword
-Date:   Tue,  9 Feb 2021 14:16:53 -0800
-Message-Id: <20210209221653.614098-9-namit@vmware.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210209221653.614098-1-namit@vmware.com>
-References: <20210209221653.614098-1-namit@vmware.com>
+        id S234206AbhBJBAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:00:49 -0500
+Received: from mga18.intel.com ([134.134.136.126]:23607 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234217AbhBIWRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:17:54 -0500
+IronPort-SDR: 13jpp3Kpt0TnUGoJLco73L7N55FcfbZ+JCWqT0ItmYLJbAnvUHf1m8/mG4Sl+pmi5Wzk8ZFUvJ
+ FRfiiUgJVG+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="169649370"
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="169649370"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 14:17:00 -0800
+IronPort-SDR: uMHqeWfV5nUEZDtgxFxxAlvm6j9SFV3aoiv3yytjtjOdcLq1c0416CSHE2GKjQDbAwvl7ExI6f
+ d/XXX0yesaUA==
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="396417874"
+Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 14:17:00 -0800
+Subject: [PATCH v2] driver core: auxiliary bus: Fix calling stage for
+ auxiliary bus init
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 09 Feb 2021 15:17:00 -0700
+Message-ID: <161290894138.1332691.10728435940944534434.stgit@djiang5-desk3.ch.intel.com>
+User-Agent: StGit/0.23-29-ga622f1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+When the auxiliary device code is built into the kernel, it can be executed
+before the auxiliary bus is registered. This causes bus->p to be not
+allocated and triggers a NULL pointer dereference when the auxiliary bus
+device gets added with bus_add_device(). Call the auxiliary_bus_init()
+under driver_init() so the bus is initialized before devices.
 
-The compiler is smart enough without these hints.
+Below is the kernel splat for the bug:
+[ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
+[ 1.950670] #PF: supervisor read access in kernel mode
+[ 1.950670] #PF: error_code(0x0000) - not-present page
+[ 1.950670] PGD 0
+[ 1.950670] Oops: 0000 1 SMP NOPTI
+[ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
+[ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
+[ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
+78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
+[ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
+[ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
+[ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
+[ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
+[ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
+[ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
+[ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
+[ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
+[ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+[ 1.950670] PKRU: 55555554
+[ 1.950670] Call Trace:
+[ 1.950670] device_add+0x3ee/0x850
+[ 1.950670] __auxiliary_device_add+0x47/0x60
+[ 1.950670] idxd_pci_probe+0xf77/0x1180
+[ 1.950670] local_pci_probe+0x4a/0x90
+[ 1.950670] pci_device_probe+0xff/0x1b0
+[ 1.950670] really_probe+0x1cf/0x440
+[ 1.950670] ? rdinit_setup+0x31/0x31
+[ 1.950670] driver_probe_device+0xe8/0x150
+[ 1.950670] device_driver_attach+0x58/0x60
+[ 1.950670] __driver_attach+0x8f/0x150
+[ 1.950670] ? device_driver_attach+0x60/0x60
+[ 1.950670] ? device_driver_attach+0x60/0x60
+[ 1.950670] bus_for_each_dev+0x79/0xc0
+[ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
+[ 1.950670] driver_attach+0x1e/0x20
+[ 1.950670] bus_add_driver+0x154/0x1f0
+[ 1.950670] driver_register+0x70/0xc0
+[ 1.950670] __pci_register_driver+0x54/0x60
+[ 1.950670] idxd_init_module+0xe2/0xfc
+[ 1.950670] ? idma64_platform_driver_init+0x19/0x19
+[ 1.950670] do_one_initcall+0x4a/0x1e0
+[ 1.950670] kernel_init_freeable+0x1fc/0x25c
+[ 1.950670] ? rest_init+0xba/0xba
+[ 1.950670] kernel_init+0xe/0x116
+[ 1.950670] ret_from_fork+0x1f/0x30
+[ 1.950670] Modules linked in:
+[ 1.950670] CR2: 0000000000000060
+[ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
 
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Nadav Amit <namit@vmware.com>
+Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
+Acked-by: Dave Ertman <david.m.ertman@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
 ---
- arch/x86/mm/tlb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 98d212518f67..4cc28c624d1f 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -316,7 +316,7 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	local_irq_restore(flags);
+v2:
+- Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
+
+ drivers/base/auxiliary.c |   10 +---------
+ drivers/base/base.h      |    5 +++++
+ drivers/base/init.c      |    1 +
+ 3 files changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+index 8336535f1e11..8ff389653126 100644
+--- a/drivers/base/auxiliary.c
++++ b/drivers/base/auxiliary.c
+@@ -260,19 +260,11 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
+ }
+ EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
+ 
+-static int __init auxiliary_bus_init(void)
++int __init auxiliary_bus_init(void)
+ {
+ 	return bus_register(&auxiliary_bus_type);
  }
  
--static inline unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
-+static unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
- {
- 	unsigned long next_tif = task_thread_info(next)->flags;
- 	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
-@@ -882,7 +882,7 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct flush_tlb_info, flush_tlb_info);
- static DEFINE_PER_CPU(unsigned int, flush_tlb_info_idx);
- #endif
+-static void __exit auxiliary_bus_exit(void)
+-{
+-	bus_unregister(&auxiliary_bus_type);
+-}
+-
+-module_init(auxiliary_bus_init);
+-module_exit(auxiliary_bus_exit);
+-
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("Auxiliary Bus");
+ MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
+diff --git a/drivers/base/base.h b/drivers/base/base.h
+index f5600a83124f..978ad265c42e 100644
+--- a/drivers/base/base.h
++++ b/drivers/base/base.h
+@@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
+ extern int platform_bus_init(void);
+ extern void cpu_dev_init(void);
+ extern void container_dev_init(void);
++#ifdef CONFIG_AUXILIARY_BUS
++extern int auxiliary_bus_init(void);
++#else
++static inline int auxiliary_bus_init(void) { return 0; }
++#endif
  
--static inline struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
-+static struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
- 			unsigned long start, unsigned long end,
- 			unsigned int stride_shift, bool freed_tables,
- 			u64 new_tlb_gen)
-@@ -909,7 +909,7 @@ static inline struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
- 	return info;
- }
+ struct kobject *virtual_device_parent(struct device *dev);
  
--static inline void put_flush_tlb_info(void)
-+static void put_flush_tlb_info(void)
- {
- #ifdef CONFIG_DEBUG_VM
- 	/* Complete reentrency prevention checks */
--- 
-2.25.1
+diff --git a/drivers/base/init.c b/drivers/base/init.c
+index 908e6520e804..a9f57c22fb9e 100644
+--- a/drivers/base/init.c
++++ b/drivers/base/init.c
+@@ -32,6 +32,7 @@ void __init driver_init(void)
+ 	 */
+ 	of_core_init();
+ 	platform_bus_init();
++	auxiliary_bus_init();
+ 	cpu_dev_init();
+ 	memory_dev_init();
+ 	container_dev_init();
+
 
