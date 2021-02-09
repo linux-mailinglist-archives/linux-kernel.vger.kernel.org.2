@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21AB31536A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 283FD31536D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhBIQIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:08:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28022 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232615AbhBIQIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:08:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612886805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1xwffJWUIzQSXf4SOdpUxpvUWn/I4bujEit2lpJS4OA=;
-        b=Pr+F0OBWiphRpJEmLWkaLrsb/8RSMWb9wJBaeuUmkuTMQSMRwwQk9bNW/Br/J4DVKOi7AA
-        4aoMluMxthIDQizTy7ADlrMXKazEyfb56sB/i5O40h+spQwPJjQ6V6AXfQc8Nykq+9iuNA
-        V1xB5H9PSIOYofy4j7Ig6x1N30hzVW0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-AGQhXGytM82fBZdCh1c2Tw-1; Tue, 09 Feb 2021 11:06:42 -0500
-X-MC-Unique: AGQhXGytM82fBZdCh1c2Tw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A710192D785;
-        Tue,  9 Feb 2021 16:06:40 +0000 (UTC)
-Received: from [10.36.113.141] (ovpn-113-141.ams2.redhat.com [10.36.113.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E1D90100239A;
-        Tue,  9 Feb 2021 16:06:38 +0000 (UTC)
-Subject: Re: [PATCH v2] mm: cma: Print region name on failure
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     rdunlap@infradead.org, pdaly@codeaurora.org,
+        id S232725AbhBIQI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:08:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39320 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232608AbhBIQIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 11:08:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CF459AB71;
+        Tue,  9 Feb 2021 16:08:11 +0000 (UTC)
+To:     David Rientjes <rientjes@google.com>,
+        Charan Teja Kalla <charante@codeaurora.org>
+Cc:     akpm@linux-foundation.org, mhocko@suse.com,
+        vinmenon@codeaurora.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-References: <20210209142414.12768-1-georgi.djakov@linaro.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <37be751f-8c11-fd5a-a57f-a5e0599e2420@redhat.com>
-Date:   Tue, 9 Feb 2021 17:06:38 +0100
+References: <1612187338-19100-1-git-send-email-charante@codeaurora.org>
+ <d9d1dd7b-1fe7-67b6-6ba4-fb1a6faa8fae@google.com>
+ <160ba3b5-2cd4-5ff0-1348-fb477cefd33d@codeaurora.org>
+ <1213f4c6-7557-268d-253e-23f8fea55b19@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm: page_alloc: update the COMPACT[STALL|FAIL] events
+ properly
+Message-ID: <77fd72eb-0bb5-af33-0727-90a69ef7733a@suse.cz>
+Date:   Tue, 9 Feb 2021 17:08:11 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210209142414.12768-1-georgi.djakov@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1213f4c6-7557-268d-253e-23f8fea55b19@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.02.21 15:24, Georgi Djakov wrote:
-> From: Patrick Daly <pdaly@codeaurora.org>
+On 2/5/21 11:28 PM, David Rientjes wrote:
+> On Tue, 2 Feb 2021, Charan Teja Kalla wrote:
 > 
-> Print the name of the CMA region for convenience. This is useful
-> information to have when cma_alloc() fails.
+>> >> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> >> index 519a60d..531f244 100644
+>> >> --- a/mm/page_alloc.c
+>> >> +++ b/mm/page_alloc.c
+>> >> @@ -4152,6 +4152,8 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
+>> >>  	memalloc_noreclaim_restore(noreclaim_flag);
+>> >>  	psi_memstall_leave(&pflags);
+>> >>  
+>> >> +	if (*compact_result == COMPACT_SKIPPED)
+>> >> +		return NULL;
+>> >>  	/*
+>> >>  	 * At least in one zone compaction wasn't deferred or skipped, so let's
+>> >>  	 * count a compaction stall
+>> > 
+>> > This makes sense, I wonder if it would also be useful to check that 
+>> > page == NULL, either in try_to_compact_pages() or here for 
+>> > COMPACT_SKIPPED?
+>> 
+>> In the code, when COMPACT_SKIPPED is being returned, the page will
+>> always be NULL. So, I'm not sure how much useful it is for the page ==
+>> NULL check here. Or I failed to understand your point here?
+>> 
 > 
-> Signed-off-by: Patrick Daly <pdaly@codeaurora.org>
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-> ---
-> v2:
->   * Print the "count" variable, as it was originally in the code. (Randy)
->   * Fix spelling s/convienience/convenience/ in the commit text (Randy)
+> Your code is short-circuiting the rest of  __alloc_pages_direct_compact() 
+> where the return value is dictated by whether page is NULL or non-NULL.  
+> We can't leak a captured page if we are testing for it being NULL or 
+> non-NULL, which is what the rest of __alloc_pages_direct_compact() does 
+> *before* your change.  So the idea was to add a check the page is actually 
+> NULL here since you are now relying on the return value of 
+> compact_zone_order() to be COMPACT_SKIPPED to infer page == NULL.
 > 
-> v1: https://lore.kernel.org/r/20210208115200.20286-1-georgi.djakov@linaro.org/
+> I agree that's currently true in the code, I was trying to catch any 
+> errors where current->capture_control.page was non-NULL but 
+> try_to_compact_pages() returns COMPACT_SKIPPED.  There's some complexity 
+> here.
 > 
->   mm/cma.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> So my idea was the expand this out to:
 > 
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 23d4a97c834a..54eee2119822 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -500,8 +500,8 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->   	}
->   
->   	if (ret && !no_warn) {
-> -		pr_err("%s: alloc failed, req-size: %zu pages, ret: %d\n",
-> -			__func__, count, ret);
-> +		pr_err("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
-> +		       __func__, cma->name, count, ret);
->   		cma_debug_show_areas(cma);
->   	}
->   
-> 
+> 	if (*compact_result == COMPACT_SKIPPED) {
+> 		VM_BUG_ON(page);
+> 		return NULL;
+> 	}
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Note that this may indeed actually trigger due to free page capture, when an IRQ
+handler frees the page. See commit b9e20f0da1f5 ("mm, compaction: make capture
+control handling safe wrt interrupts") describing how this was happening for
+Hugh. So, this VM_BUG_ON() would sooner or later trigger.
 
--- 
-Thanks,
+It's because while compact_zone() does detect a successful capture and return
+COMPACT_SUCCESS, the IRQ-capture can also happen later without being detected -
+at any moment until compact_zone_order() resets the current->capture_control to
+NULL. And at that point it may be already poised to return COMPACT_SKIPPED.
 
-David / dhildenb
+It might be cleanest to check *capture at the end of compact_zone_order() and
+return COMPACT_SUCCESS when non-NULL. Technically it might be not true that
+compaction was successful (we were just lucky that IRQ came and freed the page),
+but not much harm in that. Better than e.g. the danger of leaking the captured
+page which the proposed patch would do due to the shortcut.
+The minor downside is that you would count a stall that wasn't really a stall in
+case we skipped compaction, but captured a page by luck, but it would be very rare.
 
