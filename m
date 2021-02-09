@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B11314604
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AD9314605
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhBICBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:01:46 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12872 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhBICBJ (ORCPT
+        id S230347AbhBICDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 21:03:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229851AbhBICDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:01:09 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DZQzr14rSz7j5y;
-        Tue,  9 Feb 2021 09:59:04 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.162) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
- 10:00:22 +0800
-Subject: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
- drivers
-To:     Finn Thain <fthain@telegraphics.com.au>
-References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com>
- <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au>
-CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-From:   tanxiaofei <tanxiaofei@huawei.com>
-Message-ID: <a555f4b2-4df9-7bf4-e76c-3556d5ccb4ff@huawei.com>
-Date:   Tue, 9 Feb 2021 10:00:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 8 Feb 2021 21:03:17 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE35C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 18:02:37 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id b145so10926184pfb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 18:02:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=utXHPcgvm9Y8ZwC4DuYoSqZra3dkj+8uEXyKJK77MuM=;
+        b=n2kVSQ1XlJX6xUt/1m2yXy+XedXCXDvoOAa1zzTkBmgiUEn/AWSkU+NLDGSkqgrmmX
+         ViwTenSuk6hs2X6eou1rCXLEuV7j89e3DPN+E2yhAIvBRZNd0rMBd0f2eToxAAdWgyby
+         0MwZltwqg/OaRiWmqvqZfrRjVntRB2LyDqX9maj0UUyc3E2AqF7BIebDlzA7pOy7EX09
+         9Qhz9umMzOXQ1xdIqrm5Iayyaz38/Xu+DnJ2m1OBdkwiZK/B6m9uOU3xlD4E7aPkVtNX
+         u3SWi/C7AdB7M3L+AGRNGmyqyGCyeLEAGJ1jIkTDF8cgNU7LKMvDUyfOoxVIJs27Rm5O
+         TRsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=utXHPcgvm9Y8ZwC4DuYoSqZra3dkj+8uEXyKJK77MuM=;
+        b=geECI1oC+CnzElKVbgC6ACkPhmZgYJxgdP37yosKSuSsyBQ2uQbtmV1q7xpLrHMRVY
+         xM7R5LmjySs7awFL6+kUV6q0pYCF3wZsX64Okq4q/eL4oiufjtcZwPhLHsEFzH6DIAIU
+         xeGJ6IJ4jvTDzkwU9R86dQzGjrEKPcD88RW0uT1ZxrOVQzk4B8NSKatftU//s4TZ+0Tr
+         QvvZ7HQMpNFmx7DpH/EbzgDvpxV0Z1e0msL+ZZjWsEhyFesY5NdXtr7GxoVLlVccRMMm
+         7G8742uCaqi6uZkBSs32SVODKAajmRJ2V/zUOIGvIfaL5IQVKjQ9OB3Wj3185Zb3wOiH
+         O+Jw==
+X-Gm-Message-State: AOAM532IN4fJxd+4QiRHJp4lviH0ehAG3gUXWydeJ9mNN7H2VCSz8aZt
+        +7XFdPxkofeWbSeJ5SZbe9U=
+X-Google-Smtp-Source: ABdhPJzuY8MD5OC5cvECJcPWzH/iIf6UjSZt7cny9SeK3VphHxxRpE48XhJHGnrzAOnUZgSXJJjn8w==
+X-Received: by 2002:a65:6207:: with SMTP id d7mr20641495pgv.92.1612836156934;
+        Mon, 08 Feb 2021 18:02:36 -0800 (PST)
+Received: from localhost ([220.240.226.199])
+        by smtp.gmail.com with ESMTPSA id y20sm19944613pfo.210.2021.02.08.18.02.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 18:02:36 -0800 (PST)
+Date:   Tue, 09 Feb 2021 12:02:30 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v5 18/22] powerpc/syscall: Remove FULL_REGS verification
+ in system_call_exception
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+        <6bef4d9ba0cba50160d13e344ee4627ebdf801dc.1612796617.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <6bef4d9ba0cba50160d13e344ee4627ebdf801dc.1612796617.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.192.162]
-X-CFilter-Loop: Reflected
+Message-Id: <1612836023.l122pe2n2b.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
-Thanks for reviewing the patch set.
+Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+> For book3s/64, FULL_REGS() is 'true' at all time, so the test voids.
+> For others, non volatile registers are saved inconditionally.
+>=20
+> So the verification is pointless.
+>=20
+> Should one fail to do it, it would anyway be caught by the
+> CHECK_FULL_REGS() in copy_thread() as we have removed the
+> special versions ppc_fork() and friends.
+>=20
+> null_syscall benchmark reduction 4 cycles (332 =3D> 328 cycles)
 
-On 2021/2/8 15:57, Finn Thain wrote:
-> On Sun, 7 Feb 2021, Xiaofei Tan wrote:
->
->> Replace spin_lock_irqsave with spin_lock in hard IRQ of SCSI drivers.
->> There are no function changes, but may speed up if interrupt happen too
->> often.
->
-> This change doesn't necessarily work on platforms that support nested
-> interrupts.
->
+I wonder if we rather make a CONFIG option for a bunch of these simpler
+debug checks here (and also in interrupt exit, wrappers, etc) rather
+than remove them entirely.
 
-Linux doesn't support nested interrupts anymore after the following 
-patch, so please don't worry this.
+Thanks,
+Nick
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc
-
-> Were you able to measure any benefit from this change on some other
-> platform?
->
-
-It's hard to measure the benefit of this change. Hmm, you could take 
-this patch set as cleanup. thanks.
-
-> Please see also,
-> https://lore.kernel.org/linux-scsi/89c5cb05cb844939ae684db0077f675f@h3c.com/
->
-> .
->
-
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/kernel/interrupt.c | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interr=
+upt.c
+> index 8fafca727b8b..55e1aa18cdb9 100644
+> --- a/arch/powerpc/kernel/interrupt.c
+> +++ b/arch/powerpc/kernel/interrupt.c
+> @@ -42,7 +42,6 @@ notrace long system_call_exception(long r3, long r4, lo=
+ng r5,
+>  	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
+>  		BUG_ON(!(regs->msr & MSR_RI));
+>  	BUG_ON(!(regs->msr & MSR_PR));
+> -	BUG_ON(!FULL_REGS(regs));
+>  	BUG_ON(arch_irq_disabled_regs(regs));
+> =20
+>  #ifdef CONFIG_PPC_PKEY
+> --=20
+> 2.25.0
+>=20
+>=20
