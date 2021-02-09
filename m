@@ -2,255 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCA131488F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EE83148A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhBIGVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 01:21:24 -0500
-Received: from marcansoft.com ([212.63.210.85]:42744 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229763AbhBIGVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 01:21:19 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id A46B941F47;
-        Tue,  9 Feb 2021 06:20:31 +0000 (UTC)
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Olof Johansson <olof@lixom.net>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-16-marcan@marcan.st> <87eehqlxlr.wl-maz@kernel.org>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH 15/18] irqchip/apple-aic: Add support for the Apple
- Interrupt Controller
-Message-ID: <1a8d801d-3b02-8909-52e2-28ca5d67f48e@marcan.st>
-Date:   Tue, 9 Feb 2021 15:20:29 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230006AbhBIGWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 01:22:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229636AbhBIGWY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 01:22:24 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F773C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 22:21:44 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id j11so9152342plt.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 22:21:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d/9o6gw27S6UN8MkYq1blVrCI9BLsI4+H00tlbC8EBE=;
+        b=favimtx+6weGe8M555lmQOBhCoy54oReElTcJzpJXeVeBgHQUImtrzhR4xL2PNQ4hj
+         B61sBGHNGjtqai17pbRiKkfpKFlyf3N7SfEZNhj9p694hdjwUDNvbaxplQIoX3Y2HB75
+         oM9e2a4FzCjXRLbXyImmgB1sz2HO9c4H1yk+0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d/9o6gw27S6UN8MkYq1blVrCI9BLsI4+H00tlbC8EBE=;
+        b=nJzMw7EUcefla+jjqF3FV34ztWowgi+YQegQgW3fQat0FGWHq43jH5oU2XXUIJAzG+
+         3ek+2Pf9SDngcvkEn4OVBHZhHqLA8HIVkTE7nvzSlTCVHLO1OkUgOfNIb7EtH92aurvD
+         vctzIiZyQhjB2drAnz5BS3jpkpVWJGpZh9kSrIxxaoFF4G9xWSB9lIHKly5p4xUcDRy/
+         3g5SfjEmdJuuwBYAUH2C5RBDkDII99J+l3Ba5SL+GeDgBRaYYH6Sl2Vw34yq1p9m+bBC
+         LXMtrVoNB59FESKSfFIWzUVnwCxFiv4x5fdsQYHTto/6zdWWipLzjM6w3NLuyVHHkaFO
+         cqEg==
+X-Gm-Message-State: AOAM530CqvWRiomxfJnzax5EcjDm5ZgEf4m6qbebh9Y/7hNAHLkKuKpM
+        an88h3oYYT6Hki5weJSijuxGDQ==
+X-Google-Smtp-Source: ABdhPJz0oyYOZadpQA/7+OnNYsgqbz6PN7ozvQBTUr4giRuwP1fH3QYLnHESLb3E3I02eo5S/4aG/w==
+X-Received: by 2002:a17:90a:4fe4:: with SMTP id q91mr2479504pjh.165.1612851703796;
+        Mon, 08 Feb 2021 22:21:43 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:a106:46e1:a999:81df])
+        by smtp.gmail.com with UTF8SMTPSA id s23sm21047537pgj.29.2021.02.08.22.21.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 22:21:43 -0800 (PST)
+From:   Claire Chang <tientzu@chromium.org>
+To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Claire Chang <tientzu@chromium.org>
+Subject: [PATCH v4 00/14] Restricted DMA
+Date:   Tue,  9 Feb 2021 14:21:17 +0800
+Message-Id: <20210209062131.2300005-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
 MIME-Version: 1.0
-In-Reply-To: <87eehqlxlr.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/2021 18.25, Marc Zyngier wrote:
-> I really do not want to expose IPIs in the DT. The OS defines what
-> IPIs are used for, not the firmware/HW. No other platform requires
-> this either, so is there any reason to do so?
+This series implements mitigations for lack of DMA access control on
+systems without an IOMMU, which could result in the DMA accessing the
+system memory at unexpected times and/or unexpected addresses, possibly
+leading to data leakage or corruption.
 
-This is used internally by the chained IPI driver (patch #16), but it 
-does not need to be ever used in the DT. I guess it would be appropriate 
-to just not document it in the bindings, and also use a higher type than 
-2 (e.g. 0xff), so that if we ever have to add another type to the 
-binding (e.g. the timer on older SoCs) it doesn't have to skip the 
-number 2 to avoid breaking compat between newer DTs and older drivers.
+For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
+not behind an IOMMU. As PCI-e, by design, gives the device full access to
+system memory, a vulnerability in the Wi-Fi firmware could easily escalate
+to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
+full chain of exploits; [2], [3]).
 
-See irq-bcm2836.c for the same approach: a chained IPI controller using 
-an otherwise undocumented IRQ binding.
+To mitigate the security concerns, we introduce restricted DMA. Restricted
+DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
+specially allocated region and does memory allocation from the same region.
+The feature on its own provides a basic level of protection against the DMA
+overwriting buffer contents at unexpected times. However, to protect
+against general data leakage and system memory corruption, the system needs
+to provide a way to restrict the DMA to a predefined memory region (this is
+usually done at firmware level, e.g. MPU in ATF on some ARM platforms [4]).
 
-Another approach is to do what irq-armada-370-xp.c does: just ditch the 
-chained irqchip and call handle_domain_irq into the IPI domain directly 
-from the main IRQ handler function.
+[1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
+[1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
+[2] https://blade.tencent.com/en/advisories/qualpwn/
+[3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
+[4] https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
 
->> +#include <linux/irqchip/chained_irq.h>
-> 
-> There isn't any chained interrupt controller here, AFAICT.
+Claire Chang (14):
+  swiotlb: Remove external access to io_tlb_start
+  swiotlb: Move is_swiotlb_buffer() to swiotlb.c
+  swiotlb: Add struct swiotlb
+  swiotlb: Refactor swiotlb_late_init_with_tbl
+  swiotlb: Add DMA_RESTRICTED_POOL
+  swiotlb: Add restricted DMA pool
+  swiotlb: Update swiotlb API to gain a struct device argument
+  swiotlb: Use restricted DMA pool if available
+  swiotlb: Refactor swiotlb_tbl_{map,unmap}_single
+  dma-direct: Add a new wrapper __dma_direct_free_pages()
+  swiotlb: Add is_dev_swiotlb_force()
+  swiotlb: Add restricted DMA alloc/free support.
+  dt-bindings: of: Add restricted DMA pool
+  of: Add plumbing for restricted DMA pool
 
-This goes with patch #16, I'll move it there.
-
-> If these functions have no impact on the per-CPU interrupts, then
-> maybe these interrupts should be given a different irqchip.
-
-Same IRQ domain, different irqchip? That sounds reasonable and gets rid 
-of the bounds check on the mask/unmask calls, I'll do it for v2. This 
-chip would apply for both IPIs (where a different register set in AIC 
-for  masking/unmasking applies, but that is handled at the chained 
-irqchip level in #16) and FIQs (which have no masking).
-
->> +static void aic_irq_eoi(struct irq_data *d)
->> +{
->> +	/*
->> +	 * Reading the interrupt reason automatically acknowledges and masks
->> +	 * the IRQ, so we just unmask it here if needed.
->> +	 */
->> +	if (!irqd_irq_disabled(d) && !irqd_irq_masked(d))
->> +		aic_irq_unmask(d);
-> 
-> This doesn't apply to per-CPU interrupts, right? Or does it?
-
-The auto-masking does apply to IPIs, but this code doesn't do the 
-unmasking. That is handled in the chained IPI domain in #16
-
-*Strictly speaking* if we separate the responsibility at AIC for the 
-root handler and say the chained handler should purely be a multiplexer 
-for IPIs that doesn't touch the hardware at all, then the 
-masking/unmasking should move here (into another irqchip) and the IPI 
-domain code should just call into the root domain to mask/unmask the 
-sole used hardware IPI; the current approach is a minor layering 
-violation but... I'm not sure how useful it is to keep the layering 
-pristine when both drivers live in the same file and are instantiated 
-together anyway.
-
-If I switch to the irq-armada-370-xp.c model where there is no logical 
-chaining, then this would be fine as-is as both domains would logically 
-represent driving different parts of AIC in parallel, with no nesting 
-relationship.
-
->> +		u32 type = event >> 16, irq = event & 0xffff;
-> 
-> Nit: please consider introducing masks and using the bitfield macros
-> to extract the various fields.
-
-Ack, will do.
-
->> +		/* AIC_EVENT is read-sensitive, ensure it happens before we proceed */
->> +		isb();
-> 
-> You seem to have a data dependency after this, so I can't see how the
-> ISB influences the read from AIC_EVENT. However you need to order it
-> with the read from the timer registers, and I believe it'd be better
-> to move the barrier there.
-
-(Keeping the barrier story in the other thread)
-
->> +		if (type == AIC_EVENT_TYPE_HW) {
->> +			handle_domain_irq(aic_irqc->hw_domain, irq, regs);
->> +		} else if (type == AIC_EVENT_TYPE_IPI) {
->> +			handle_domain_irq(aic_irqc->hw_domain,
->> +					  ic->nr_hw + AIC_NR_FIQ + irq - 1, regs);
-> 
-> nit: it would be slightly less cumbersome to compute the hwirq in a
-> switch, and have a single call to handle_domain_irq().
-> 
-> I also wonder whether using two top-level domains would be better. Not
-> a big deal though.
-
-Exactly :) I can certainly switch to that if you have no objection. It 
-should have lower overhead for IPIs anyway, and removes the fwspec step 
-to glue it all together.
-
->> +		} else {
->> +			pr_err("spurious IRQ event %d, %d\n", type, irq);
-> 
-> Spurious interrupts aren't an error, in general. If you really want to
-> keep this, at the very least make it rate-limited.
-
-In this case it's more like "unknown IRQ event", which better be an 
-error because it means the chip is doing something we don't know about - 
-*except* the zero case, that's just a spurious IRQ which indeed isn't an 
-error (peripheral asserted and deasserted IRQ before we could handle it; 
-I need to check but I believe AIC would just withdraw the event in that 
-case).
-
-So the zero case should be ignored and the unknown case should be fine 
-without rate limiting, because it really shouldn't happen, ever. I'll 
-fix the zero case for v2.
-
-> Consider turning the whole thing into a do{}while() so that there is
-> only a single read of AIC_EVENT in the function.
-
-Ack.
-
->> +	/*
->> +	 * It would be really nice to find a system register that lets us get the FIQ source
->> +	 * state without having to peek down into clients...
->> +	 */
-> 
-> nit: please try to keep comments within the 80 cols limit. I don't
-> mind code being wider, but comments benefit from being more rigorously
-> structured.
-
-Ack, I'll keep it in mind. For this one I just used clang-format as a 
-first-pass and made some minor changes, so please do point out any other 
-style nits I missed so I can keep it in check. I know it doesn't enforce 
-nor fully represent kernel style.
-
-> And yes, having to poll each end-point IP is really a drag. How does
-> the PMU work on this system? Is there any other per-CPU source?
-
-PMU also ends up in FIQ, and it's nonstandard (not the ARM Performance 
-Monitors extension). That means one more FIQ source is going to have to 
-end up here, and one more downstream register to poll (a proprietary one 
-in this case: SYS_PMCR0 is s3_1_c15_c0_0, not to be confused with the 
-standard SYS_PMCR_EL0 which is completely different).
-
-So the FIQ sources to be polled are the following:
-
-1. HV timers
-2. Guest timers (auto-masked, mask register TBD, I still have no idea 
-how XNU routes these to the hypervisor framework... haven't found the 
-code yet, or the mask register)
-3. Fast IPIs (not currently implemented)
-4 Apple PMU
-
-We have #1, I'll look for the mask bits to properly implement #2, #3 can 
-wait until we actually implement those, and #4 can wait until we 
-implement that PMU. Does that sound OK?
-
-If you think it's worth it, I could at least check the status registers 
-for #3 and #4 and yell loudly, so that if we somehow end up with a FIQ 
-storm because those paths went off unchecked, at least we have logs. Or 
-just make sure to mask them in the AIC init code, or both.
-
-Since these are per-CPU, setting the masks is a per-cpu call, so that 
-needs to go via something like cpuhp_setup_state_nocalls to run on CPU 
-bring-up.
-
-That said: PMC seems to have IRQ settings to go via AIC instead of FIQ, 
-but I have no idea if that works on these CPUs; XNU only uses it on 
-older ones. That should probably be investigated later.
-
-> This system runs VHE, so there is also CNT{P,V}_CTL_EL02 to consider.
-> But I really wonder how the whole thing works once these two timers
-> are assigned to a guest. Somehow, something must control the masking,
-> otherwise you wouldn't be able to enter a guest with a timer firing.
-
-Yeah, as I mentioned on IRC, there is auto-masking for the guest timers, 
-somehow. I'll find that mask bit.
-
-> It also means that there is no way to have threaded per-CPU
-> interrupts, which means no Preempt-RT. You could wire the mask/unmask
-> callbacks to mess with the IMASK bit in individual timers, but that
-> doesn't solve the problem for guests.
-
-For HV timers, we're probably have to mess with IMASK here if there is 
-no other way... I need to read through the timer code and make sure that 
-wouldn't confuse it, as that creates a bit of an implicit contract here.
-
-It'd be great if I can find a true status/mask register for FIQs, but 
-I'm not holding my breath that it exists...
-
-> Are all interrupts level? How are MSIs implemented?
-
-Seems a fixed set of MSIs are routed into AIC, presumably transformed 
-into level lines? I need to look into this part in more detail.
-
->> +	irqc->hw_domain =
->> +		irq_domain_add_linear(node,
->> +				      irqc->nr_hw + AIC_NR_FIQ + AIC_NR_IPI,
->> +				      &aic_irq_domain_ops, irqc);
-> 
-> Please keep assignments on a single line.
-
-I think this one was one of those clang-format things :-).
-
-I'll fix it and watch out for similar things.
-
->> +	for (i = 0; i < BITS_TO_LONGS(irqc->nr_hw); i++)
-> 
-> long is 64bit on arm64, so this loop is unlikely to do what you
-> want. Consider using BITS_TO_U32.
-
-Ha, nice catch. Thanks!
+ .../reserved-memory/reserved-memory.txt       |  24 +
+ arch/powerpc/platforms/pseries/svm.c          |   4 +-
+ drivers/iommu/dma-iommu.c                     |  12 +-
+ drivers/of/address.c                          |  25 +
+ drivers/of/device.c                           |   3 +
+ drivers/of/of_private.h                       |   5 +
+ drivers/xen/swiotlb-xen.c                     |   4 +-
+ include/linux/device.h                        |   4 +
+ include/linux/swiotlb.h                       |  32 +-
+ kernel/dma/Kconfig                            |  14 +
+ kernel/dma/direct.c                           |  51 +-
+ kernel/dma/direct.h                           |   8 +-
+ kernel/dma/swiotlb.c                          | 636 ++++++++++++------
+ 13 files changed, 582 insertions(+), 240 deletions(-)
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+
+v4:
+  - Fix spinlock bad magic
+  - Use rmem->name for debugfs entry
+  - Address the comments in v3
+
+v3:
+  Using only one reserved memory region for both streaming DMA and memory
+  allocation.
+  https://lore.kernel.org/patchwork/cover/1360992/
+
+v2:
+  Building on top of swiotlb.
+  https://lore.kernel.org/patchwork/cover/1280705/
+
+v1:
+  Using dma_map_ops.
+  https://lore.kernel.org/patchwork/cover/1271660/
+
+2.30.0.478.g8a0d178c01-goog
+
