@@ -2,81 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA275315A74
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA1D315ACE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbhBJABn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Feb 2021 19:01:43 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:47632 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbhBIUfi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:35:38 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 815D46083270;
-        Tue,  9 Feb 2021 21:06:14 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id bkPIndMJRUBv; Tue,  9 Feb 2021 21:06:14 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 38A33608A38F;
-        Tue,  9 Feb 2021 21:06:14 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 83PBCidjxaEH; Tue,  9 Feb 2021 21:06:14 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 17CAB60A358A;
-        Tue,  9 Feb 2021 21:06:14 +0100 (CET)
-Date:   Tue, 9 Feb 2021 21:06:14 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>
-Message-ID: <1923896038.379134.1612901174023.JavaMail.zimbra@nod.at>
-In-Reply-To: <563952295.378372.1612881357746.JavaMail.zimbra@nod.at>
-References: <20210124232007.21639-1-richard@nod.at> <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com> <563952295.378372.1612881357746.JavaMail.zimbra@nod.at>
-Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
+        id S233884AbhBJAPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:15:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47834 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233733AbhBIUqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 15:46:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612901312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=utBmzEHnMldk+xybu3FUHQ/4GijdaViYwt5S9/fMX5g=;
+        b=TjFv3w1m/0Glle7o/mpLcPWsTy958OLjFP0MF4y2grgkrogeIq5dCnnfB5BszcW5ggUnqY
+        LL4MV1a1lL2B5WOEu6FaOYZ3DET/TzX9b1n3q4/VP0Y/08QiHTyolRop/Pd6AqhLXBScSy
+        PBnAIDa+ir2IADhVPtKtqxwjkXo403U=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AC40AADF0;
+        Tue,  9 Feb 2021 20:08:32 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 21:08:31 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v17 00/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <YCLrv86O0ZoKhfN0@dhcp22.suse.cz>
+References: <20210208211326.GV242749@kernel.org>
+ <1F6A73CF-158A-4261-AA6C-1F5C77F4F326@redhat.com>
+ <YCJO8zLq8YkXGy8B@dhcp22.suse.cz>
+ <662b5871-b461-0896-697f-5e903c23d7b9@redhat.com>
+ <YCJbmR11ikrWKaU8@dhcp22.suse.cz>
+ <c1e5e7b6-3360-ddc4-2ff5-0e79515ee23a@redhat.com>
+ <YCKNMqu8/g0OofqU@dhcp22.suse.cz>
+ <8cbfe2c3-cfc6-72e0-bab1-852f80e20684@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: MUSE: Userspace backed MTD v3
-Thread-Index: NVDMpjLzrmLV3u3YwGU4qvbOOzku6DaSHdFp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8cbfe2c3-cfc6-72e0-bab1-852f80e20684@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miklos,
-
------ Ursprüngliche Mail -----
->> I do wonder if MUSE should go to drivers/mtd/ instead.   Long term
->> goal would be move CUSE to drivers/char and move the transport part of
->> fuse into net/fuse leaving only the actual filesystems (fuse and
->> virtiofs) under fs/.
->> 
->> But for now just moving the minimal interface needed for MUSE into a
->> separate header (<net/fuse.h>) would work, I guess.
->> 
->> Do you think that would make sense?
+On Tue 09-02-21 17:17:22, David Hildenbrand wrote:
+> On 09.02.21 14:25, Michal Hocko wrote:
+> > On Tue 09-02-21 11:23:35, David Hildenbrand wrote:
+> > [...]
+> > > I am constantly trying to fight for making more stuff MOVABLE instead of
+> > > going into the other direction (e.g., because it's easier to implement,
+> > > which feels like the wrong direction).
+> > > 
+> > > Maybe I am the only person that really cares about ZONE_MOVABLE these days
+> > > :) I can't stop such new stuff from popping up, so at least I want it to be
+> > > documented.
+> > 
+> > MOVABLE zone is certainly an important thing to keep working. And there
+> > is still quite a lot of work on the way. But as I've said this is more
+> > of a outlier than a norm. On the other hand movable zone is kinda hard
+> > requirement for a lot of application and it is to be expected that
+> > many features will be less than 100% compatible.  Some usecases even
+> > impossible. That's why I am arguing that we should have a central
+> > document where the movable zone is documented with all the potential
+> > problems we have encountered over time and explicitly state which
+> > features are fully/partially incompatible.
+> > 
 > 
-> Yes, I'm all for having MUSE in drivers/mtd/.
+> I'll send a mail during the next weeks to gather current restrictions to
+> document them (and include my brain dump). We might see more excessive use
+> of ZONE_MOVABLE in the future and as history told us, of CMA as well. We
+> really should start documenting/caring.
+
+Excellent! Thanks a lot. I will do my best to help reviewing that.
+
+> @Mike, it would be sufficient for me if one of your patches at least mention
+> the situation in the description like
 > 
-> I placed MUSE initially in fs/fuse/ because CUSE was already there and muse.c
-> includes
-> fuse_i.h. So tried to be as little invasive as possible.
+> "Please note that secretmem currently behaves much more like long-term GUP
+> instead of mlocked memory; secretmem is unmovable memory directly
+> consumed/controlled by user space. secretmem cannot be placed onto
+> ZONE_MOVABLE/CMA.
 
-I did a quick patch series which moves CUSE into drivers/char/
+Sounds good to me.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/rw/misc.git/log/?h=fs_fuse_split
-
-Does this more or less what you had in mind?
-If so, I'd submit these patches, rebase MUSE on them and do a v4 soon.
-
-Thanks,
-//richard
+-- 
+Michal Hocko
+SUSE Labs
