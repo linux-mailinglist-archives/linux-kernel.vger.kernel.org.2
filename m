@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CC5314834
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 06:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AA731483C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 06:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhBIFZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 00:25:30 -0500
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:58350
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229464AbhBIFZZ (ORCPT
+        id S229849AbhBIF1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 00:27:50 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7947 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229752AbhBIF1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 00:25:25 -0500
-Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgDn7yuBHCJgiJr0Ag--.5621S3;
-        Tue, 09 Feb 2021 13:24:18 +0800 (CST)
-From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] mm/mlock: minor coding style tweaks
-Date:   Tue,  9 Feb 2021 13:23:56 +0800
-Message-Id: <1612848236-7110-1-git-send-email-daizhiyuan@phytium.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgDn7yuBHCJgiJr0Ag--.5621S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1xKr4xGrW7WF45uF4fuFg_yoWfuFb_Aa
-        yIyryjgF15t3Wa9F10kw13Wryvvwn7ZF12yF95KrW3XryDGr98uF4UurW7Xryxuay7AFnx
-        C3Z5Cr9Fkr1I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        WwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr
-        0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUSeHgUUU
-        UU=
-X-Originating-IP: [202.43.158.76]
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
+        Tue, 9 Feb 2021 00:27:49 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60221d2d0000>; Mon, 08 Feb 2021 21:27:09 -0800
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
+ 2021 05:27:08 +0000
+Received: from MacBook-Pro-10.local (172.20.145.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb 2021
+ 05:27:08 +0000
+Subject: Re: [PATCH v2] mm: cma: support sysfs
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Minchan Kim <minchan@kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>, <surenb@google.com>,
+        <joaodias@google.com>, <willy@infradead.org>
+References: <20210208180142.2765456-1-minchan@kernel.org>
+ <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
+ <YCHLAdabGmm7kqSH@google.com>
+ <43cd6fc4-5bc5-50ec-0252-ffe09afd68ea@nvidia.com>
+ <YCINNpA09FTwr63U@google.com>
+ <3cf67381-9b5a-56ee-2a8f-047955c84128@nvidia.com>
+Message-ID: <6e3bb5a3-9634-6a1b-f2fd-cbbcb6c8ed66@nvidia.com>
+Date:   Mon, 8 Feb 2021 21:27:07 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <3cf67381-9b5a-56ee-2a8f-047955c84128@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612848429; bh=qh8VL+gYOXWaYImmhix9zNj5sivO32KEAX2o+472W64=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=I9TyyKrYmOKlqvb5YAsMK5B7xuGirT/raaKBsXyFOWliYoz1TV8rKNZwTmWUrRfHx
+         B+1RBmcx/XI/P+K6LTJeO0iou8jBCg1yPNF9bR9136jR5B6fl0yh/slSAeunN86mSq
+         3u+GpLHdNtTS36mvo7/tkUz8Uxm2kw5ec4TeCc/N93wljxuem/V9PvHh2dc3EGXbnR
+         JNGtcKnBMSh78znZF9RlE/O9Bo9FSTbR8TC7FBxP42xJ9+WPKYhJ69ueBnjnIE3+ig
+         BF8hgN7hETKPrQvSGM1ulL8k49jZedhsQkudNlK/cknT0UnaDBkDZ7uobp81NzSwP3
+         CfqvXr4KdrCbg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch move the pointer location to fix coding style issues,
-improve code reading.
+On 2/8/21 9:18 PM, John Hubbard wrote:
+> On 2/8/21 8:19 PM, Minchan Kim wrote:
+>> On Mon, Feb 08, 2021 at 05:57:17PM -0800, John Hubbard wrote:
+>>> On 2/8/21 3:36 PM, Minchan Kim wrote:
+>>> ...
+>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char name[CMA_MAX_NAME];
+>>>>>> +#ifdef CONFIG_CMA_SYSFS
+>>>>>> +=C2=A0=C2=A0=C2=A0 struct cma_stat=C2=A0=C2=A0=C2=A0 *stat;
+>>>>>
+>>>>> This should not be a pointer. By making it a pointer, you've added a =
+bunch of=20
+>>>>> pointless
+>>>>> extra code to the implementation.
+>>>>
+>>>> Originally, I went with the object lifetime with struct cma as you
+>>>> suggested to make code simple. However, Greg KH wanted to have
+>>>> release for kobj_type since it is consistent with other kboject
+>>>> handling.
+>>>
+>>> Are you talking about the kobj in your new struct cma_stat? That seems
+>>> like circular logic if so. I'm guessing Greg just wanted kobj methods
+>>> to be used *if* you are dealing with kobjects. That's a narrower point.
+>>>
+>>> I can't imagine that he would have insisted on having additional
+>>> allocations just so that kobj freeing methods could be used. :)
+>>
+>> I have no objection if Greg agree static kobject is okay in this
+>> case. Greg?
+>>
+>=20
+> What I meant is, no kobject at all in the struct cma_stat member
+> variable. The lifetime of the cma_stat member is the same as the
+> containing struct, so no point in putting a kobject into it.
+>=20
 
-Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
----
- mm/mlock.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+...unless...are you actually *wanting* to keep the lifetimes separate?
+Hmmm, given the short nature of sysfs reads, though, I'd be inclined
+to just let the parent object own the lifetime. But maybe I'm missing
+some design point here?
 
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 55b3b36..f6e26c2 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -560,7 +560,7 @@ static int apply_vma_lock_flags(unsigned long start, size_t len,
- 				vm_flags_t flags)
- {
- 	unsigned long nstart, end, tmp;
--	struct vm_area_struct * vma, * prev;
-+	struct vm_area_struct *vma, *prev;
- 	int error;
- 
- 	VM_BUG_ON(offset_in_page(start));
-@@ -738,7 +738,7 @@ static __must_check int do_mlock(unsigned long start, size_t len, vm_flags_t fla
-  */
- static int apply_mlockall_flags(int flags)
- {
--	struct vm_area_struct * vma, * prev = NULL;
-+	struct vm_area_struct *vma, *prev = NULL;
- 	vm_flags_t to_add = 0;
- 
- 	current->mm->def_flags &= VM_LOCKED_CLEAR_MASK;
--- 
-1.8.3.1
-
+thanks,
+--=20
+John Hubbard
+NVIDIA
