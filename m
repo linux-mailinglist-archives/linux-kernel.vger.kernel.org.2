@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F51314718
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 04:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B56931472A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 04:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhBIDdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 22:33:32 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33779 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230491AbhBIDZs (ORCPT
+        id S229822AbhBIDoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 22:44:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49182 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230392AbhBIDdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 22:25:48 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8DDFF58015A;
-        Mon,  8 Feb 2021 22:24:31 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 08 Feb 2021 22:24:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=4
-        DiscTR6+K04v5pQyWV0iTVaBBWAg9lBcNkZsN81LHA=; b=F88+D0aHTMKL++WnJ
-        //N/yaD06mgxOst6EWNCoy54TfJiTwiEgNTkoIaXHJbxWinTfy0agykHsbZj0+6C
-        dSisvfGKwcqoVSW7zk0sL+fjnnb/ZZcQiAg5DG0LHTtLzuXFLBaakdmBAD7aQOAi
-        jUhRjIic6Rau8bphEVExAl3v2rNp5AayWl7cvKdzoSZzQ4xBkgFxK+1SAW6LPZ4D
-        QiiWmt2n3OdFCqerz1YPEAADpTIR1V1IgUYcMcgRHsAf6rYVrH4YIK/66eA8EH5V
-        x0pxbFstD4EFqJXK/bf5GwRT49dXF5WRL6gDcvoP8G1zXOs9hJxdR4Y+xaQjxUyr
-        AZBAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=4DiscTR6+K04v5pQyWV0iTVaBBWAg9lBcNkZsN81L
-        HA=; b=bfP1WHpoS9jpHZpGxcwwvDuyDOE0Q0Ip6tGyfjnNgUcVzY7Cg2lYtU6cm
-        mp19CLQQ9Qe/Z/oFt6z/xCbqkb0dFx8b5bVhPhT6py96z01HLu//3RLO5Ur3GC1M
-        OOrlZOTfoh2bva8nZyMQXCbn4Al0mPZO2/5yNP1+5yq1xVR1bznaIk+Wq4KBU2YR
-        iVt2wkdiERMJTKsd8iA310Svci6QTsSIxIuFwhI6xmcoUDjJW3DgNAUAHPOddUnQ
-        P1A5DFWXbtPq87/1IU+05HWslDCLFuVkQ8onfd14kFxQYwgY1no/t/0/tIU/kHL7
-        zwHKVprFmX8AGPQVOHMJNVuR7ogJg==
-X-ME-Sender: <xms:bAAiYF8sSjpbKske3vQajbBr6qA8JEdW-kJvk5-C1EiYjK_jLqLaOw>
-    <xme:bAAiYJta_AaZoswPFy-lnayPaYA1hE9-fsRlR2BZ1jlOheUq2uFdVPbqUiFFq5vyh
-    dCqVPWxvk061xaXdw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheeggdeitdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefvfhfhuffkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvtddtjeeiuddugfffveetkeffgeffgedutdfgfeekudevudekffeh
-    tdefveeuvdenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
-    ugdrohhrgh
-X-ME-Proxy: <xmx:bAAiYDAuHpuZZVxPKPthg6F3SeWur-6CxPno1t-VZOwd3sQDcj2y7w>
-    <xmx:bAAiYJc2fKISPusaS96w3h7-QG2ZXtHtNkUC4JNFMc3MkLE1N-KoIQ>
-    <xmx:bAAiYKOsZkkkBJ9yFI6EMBQUS9UVoYLb-FrMBMBNIBnYFtEk35ZS5Q>
-    <xmx:bwAiYGniK4t9kay0GE7FNrridH9vQMPR495wlPXoSh_4U9FXSs4a2w>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2FD4B240057;
-        Mon,  8 Feb 2021 22:24:28 -0500 (EST)
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Ondrej Jirman <megous@megous.com>,
-        Netdev <netdev@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>, linux-sunxi@googlegroups.com
-References: <20210208062859.11429-1-samuel@sholland.org>
- <20210208062859.11429-5-samuel@sholland.org>
- <CAKgT0Ue3GAWbjZcX7aFxuM-iY-Ga2E0JOTftUqPBQC_dEGz_Eg@mail.gmail.com>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH net-next RESEND 3/5] net: stmmac: dwmac-sun8i: Use
- reset_control_reset
-Message-ID: <b12c9e59-cb96-dd88-e2b7-31517bd0f63e@sholland.org>
-Date:   Mon, 8 Feb 2021 21:24:27 -0600
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 8 Feb 2021 22:33:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612841494;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZAcXwo0Oru0ZxTATfw4I2VSKoXfBLIT/f+dSWdjupcA=;
+        b=GmDX2sStC7dbqBO+9R4PqxjbHMm7Ini76gi3EiU3ZXtWMOUw7T6lYS605mFSUBBIwloS0g
+        V1uXZHZkIg/ExZeMvpHNdaGw+2d/ctXpPKeDwJ3OayiEmBc+2u1dvseYyzgIh3EPLTQjWz
+        u7Cm/V0bY8H7GoiUN/MG7rNsrrtYSaU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-190-NCdWv4KwOj2_o0NG7VVE0Q-1; Mon, 08 Feb 2021 22:28:02 -0500
+X-MC-Unique: NCdWv4KwOj2_o0NG7VVE0Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B6682192D789;
+        Tue,  9 Feb 2021 03:28:00 +0000 (UTC)
+Received: from gshan.redhat.com (vpn2-54-26.bne.redhat.com [10.64.54.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 532B319C66;
+        Tue,  9 Feb 2021 03:27:57 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com, maz@kernel.org,
+        james.morse@arm.com, Jonathan.Cameron@huawei.com,
+        mark.rutland@arm.com, will@kernel.org, shan.gavin@gmail.com
+Subject: [PATCH v2 01/21] KVM: arm64: Introduce template for inline functions
+Date:   Tue,  9 Feb 2021 11:27:13 +0800
+Message-Id: <20210209032733.99996-2-gshan@redhat.com>
+In-Reply-To: <20210209032733.99996-1-gshan@redhat.com>
+References: <20210209032733.99996-1-gshan@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0Ue3GAWbjZcX7aFxuM-iY-Ga2E0JOTftUqPBQC_dEGz_Eg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 10:29 AM, Alexander Duyck wrote:
-> On Sun, Feb 7, 2021 at 10:32 PM Samuel Holland <samuel@sholland.org> wrote:
->>
->> Use the appropriate function instead of reimplementing it,
->> and update the error message to match the code.
->>
->> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
->> Signed-off-by: Samuel Holland <samuel@sholland.org>
->> ---
->>  drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 6 ++----
->>  1 file changed, 2 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
->> index 3c3d0b99d3e8..0e8d88417251 100644
->> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
->> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
->> @@ -806,11 +806,9 @@ static int sun8i_dwmac_power_internal_phy(struct stmmac_priv *priv)
->>         /* Make sure the EPHY is properly reseted, as U-Boot may leave
->>          * it at deasserted state, and thus it may fail to reset EMAC.
->>          */
->> -       reset_control_assert(gmac->rst_ephy);
->> -
->> -       ret = reset_control_deassert(gmac->rst_ephy);
->> +       ret = reset_control_reset(gmac->rst_ephy);
->>         if (ret) {
->> -               dev_err(priv->device, "Cannot deassert internal phy\n");
->> +               dev_err(priv->device, "Cannot reset internal PHY\n");
->>                 clk_disable_unprepare(gmac->ephy_clk);
->>                 return ret;
->>         }
-> 
-> I'm assuming you have exclusive access to the phy and this isn't a
-> shared line? Just wanting to confirm since the function call has the
-> following comment in the header for the documentation.
+The inline functions used to get the SMCCC parameters have same
+layout. It means the logical functionality can be presented by
+a template, to make the code simplified. Besides, this adds more
+similar inline functions like smccc_get_arg{4,5,6,7,8}() to visit
+more SMCCC arguments, which are required by SDEI virtualization
+support.
 
-Yes, this driver has exclusive access:
+Signed-off-by: Gavin Shan <gshan@redhat.com>
+---
+ include/kvm/arm_hypercalls.h | 34 +++++++++++++++-------------------
+ 1 file changed, 15 insertions(+), 19 deletions(-)
 
-	gmac->rst_ephy = of_reset_control_get_exclusive(iphynode, NULL);
+diff --git a/include/kvm/arm_hypercalls.h b/include/kvm/arm_hypercalls.h
+index 0e2509d27910..1120eff7aa28 100644
+--- a/include/kvm/arm_hypercalls.h
++++ b/include/kvm/arm_hypercalls.h
+@@ -6,27 +6,21 @@
+ 
+ #include <asm/kvm_emulate.h>
+ 
+-int kvm_hvc_call_handler(struct kvm_vcpu *vcpu);
+-
+-static inline u32 smccc_get_function(struct kvm_vcpu *vcpu)
+-{
+-	return vcpu_get_reg(vcpu, 0);
++#define SMCCC_DECLARE_GET_FUNCTION(type, name, reg)		\
++static inline type smccc_get_##name(struct kvm_vcpu *vcpu)	\
++{								\
++	return vcpu_get_reg(vcpu, (reg));			\
+ }
+ 
+-static inline unsigned long smccc_get_arg1(struct kvm_vcpu *vcpu)
+-{
+-	return vcpu_get_reg(vcpu, 1);
+-}
+-
+-static inline unsigned long smccc_get_arg2(struct kvm_vcpu *vcpu)
+-{
+-	return vcpu_get_reg(vcpu, 2);
+-}
+-
+-static inline unsigned long smccc_get_arg3(struct kvm_vcpu *vcpu)
+-{
+-	return vcpu_get_reg(vcpu, 3);
+-}
++SMCCC_DECLARE_GET_FUNCTION(u32,           function, 0)
++SMCCC_DECLARE_GET_FUNCTION(unsigned long, arg1,     1)
++SMCCC_DECLARE_GET_FUNCTION(unsigned long, arg2,     2)
++SMCCC_DECLARE_GET_FUNCTION(unsigned long, arg3,     3)
++SMCCC_DECLARE_GET_FUNCTION(unsigned long, arg4,     4)
++SMCCC_DECLARE_GET_FUNCTION(unsigned long, arg5,     5)
++SMCCC_DECLARE_GET_FUNCTION(unsigned long, arg6,     6)
++SMCCC_DECLARE_GET_FUNCTION(unsigned long, arg7,     7)
++SMCCC_DECLARE_GET_FUNCTION(unsigned long, arg8,     8)
+ 
+ static inline void smccc_set_retval(struct kvm_vcpu *vcpu,
+ 				    unsigned long a0,
+@@ -40,4 +34,6 @@ static inline void smccc_set_retval(struct kvm_vcpu *vcpu,
+ 	vcpu_set_reg(vcpu, 3, a3);
+ }
+ 
++int kvm_hvc_call_handler(struct kvm_vcpu *vcpu);
++
+ #endif
+-- 
+2.23.0
 
-And this is a reset line for the Ethernet PHY inside the SoC, that as
-far as I can tell is not shared with anything else.
-
->  * Consumers must not use reset_control_(de)assert on shared reset lines when
->  * reset_control_reset has been used.
->  *
-> 
-> If that is the case it might not hurt to add some documentation to
-> your call to reset_control_reset here explaining that it is safe to do
-> so since you have exclusive access.
-
-I can expand the comment above this line for v2.
-
-Cheers,
-Samuel
