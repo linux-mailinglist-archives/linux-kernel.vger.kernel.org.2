@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB47315C02
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F918315C08
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234512AbhBJBQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:16:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59070 "EHLO
+        id S234365AbhBJBRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234345AbhBIWXg (ORCPT
+        with ESMTP id S233831AbhBIWUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:23:36 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50846C0698DC
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:34:10 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id v24so30652411lfr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:34:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=OfVrerl2HtWECQl9+6bkSwn1VpHwMszkx7FXanUnXsg=;
-        b=W4DFOv5EV9mh7EqgMVbRE9Kk5eSvrr28NMYLzAEwPmHOQjs1Xifv2LTTXcULih6c29
-         AfMQ7h1xoBS8+rPYf9oXPpKtNHdTCEkae51YsM28uZKHmEbWDRVHFhT0aold01r5MDki
-         W4dq6gnFBes06ascpwzDCyy8gtDzLwinlqqO3wVvqS7waK3c5Ow2c0bCiLni6P5O3buR
-         WXocAmZSYzn6DFPiRlPeWzVCmyHCY9UUTjn87I85/4l0odXEbQ/3ukTSj++w9IXJoeDu
-         xKDjvCWvWg4+SFl5jQn2Eb6grf2YcthRtScnxsHplhxYlhlCZZhafpW+ANiJY3QfEcaU
-         8SFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=OfVrerl2HtWECQl9+6bkSwn1VpHwMszkx7FXanUnXsg=;
-        b=C9eZYEoasGM6A2lcr8cBv9a2Vdyp0HCQweQ3UgYhaeBiUleWJk3GDEK9y02lGPTzlo
-         34t2ETkcYyXNk1KeoYQYtEgsQ0SiglNu78yeYkqb7DDXGRZh9AYeR6hriOdefAmGzgmM
-         +YzpX9C47+bgeTGeOKMWavJT70cxy9Lc81ucN/TIEnwnrim4rTL0zjwjSu5zAVR4ztvE
-         wEMBhk9o27E3xnN34lA3ttKloUpV5YXQCRl+OMrd1JzDbKF75tj4UG9YQEDUrQZYZb3M
-         /QHcJ31Mse3hZNZ1orD8ZXYfP9xQvJGE+bgUeX05uwuEdddGIWQ7fdFz75NN0CikHw0r
-         /+tw==
-X-Gm-Message-State: AOAM532t+X+acmnjWdcMmdqup0xj5ZsMPTCh+Begk3gsmfo6GWp2KOgC
-        X2cGUkxnsDWmj1X6+fh6FejAkNdl1jvvUGS2
-X-Google-Smtp-Source: ABdhPJyTo0SuZyGFOfCejtJ3fyiVFTWri+S0XlmBO13IAh2SP4Y59EbqfvF6Nq6y3XlDSvMNTxWXlg==
-X-Received: by 2002:a19:24d5:: with SMTP id k204mr6550793lfk.126.1612906448808;
-        Tue, 09 Feb 2021 13:34:08 -0800 (PST)
-Received: from wkz-x280 (h-236-82.A259.priv.bahnhof.se. [98.128.236.82])
-        by smtp.gmail.com with ESMTPSA id w17sm1352421lfu.280.2021.02.09.13.34.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 13:34:08 -0800 (PST)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Mickey Rachamim <mickeyr@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: RE: [EXT] Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG support
-In-Reply-To: <BN6PR18MB158781B17E633670912AEED6BA8E9@BN6PR18MB1587.namprd18.prod.outlook.com>
-References: <20210203165458.28717-1-vadym.kochan@plvision.eu> <20210203165458.28717-6-vadym.kochan@plvision.eu> <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <87v9b249oq.fsf@waldekranz.com> <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <YCKVAtu2Y8DAInI+@lunn.ch> <20210209093500.53b55ca8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <BN6PR18MB158781B17E633670912AEED6BA8E9@BN6PR18MB1587.namprd18.prod.outlook.com>
-Date:   Tue, 09 Feb 2021 22:34:07 +0100
-Message-ID: <87h7ml3oz4.fsf@waldekranz.com>
+        Tue, 9 Feb 2021 17:20:13 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B46C0698E4
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:38:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:Message-ID:References:
+        In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=YYEZ2wEiCYmA0LWqHCD7zvMT/VIYTEjeg2vRMJxSuvg=; b=MePaVHAsFDdj9YFvPrfEO9PvCM
+        OKl59gt6WZAJ+pLzzNthwBrv4J5mjAYdjUqlChjWzOyfRGYwxE3HmwtRDQfuZWtnUHNUHN49bhY2F
+        n+WDMfIRwbU20oQAM/QH2o0QkLaF0mB1kSuQFXOJzJWSB+Na7YdQlVL/QZq9zJRbh9uHLpJqRswTH
+        Cs5tUqHFC103+ISedJNszwXEefUQSBaQSOZfQW9m7ZLnc3WXarfbQanSG8c7bpVKCBnjhi1h9zDGr
+        MuOBzZSvG4LNWvcQt9As2Nz9QjYFersefXv9xaXCIvAvVAxgz2lJcTGuQh0zYa7SBev57TVctTrWi
+        eqMWEEtw==;
+Received: from webng-gw.kapsi.fi ([91.232.154.200] helo=roundcube.kapsi.fi)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <jyri.sarha@iki.fi>)
+        id 1l9ahv-0001os-K0; Tue, 09 Feb 2021 23:38:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+Date:   Tue, 09 Feb 2021 23:38:01 +0200
+From:   Jyri Sarha <jyri.sarha@iki.fi>
+To:     quanyang.wang@windriver.com
+Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND][PATCH] drm/tilcdc: send vblank event when disabling crtc
+In-Reply-To: <20210209082415.382602-1-quanyang.wang@windriver.com>
+References: <20210209082415.382602-1-quanyang.wang@windriver.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <f4c657ab37c4ce127c960b0698a0ffcf@iki.fi>
+X-Sender: jyri.sarha@iki.fi
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 91.232.154.200
+X-SA-Exim-Mail-From: jyri.sarha@iki.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 20:31, Mickey Rachamim <mickeyr@marvell.com> wrote:
-> Hi Andrew, Jakub, Tobias,
->
-> On Tuesday, February 9, 2021 7:35 PM Jakub Kicinski wrote:
->> Sounds like we have 3 people who don't like FW-heavy designs dominating the kernel - this conversation can only go one way. 
->> Marvell, Plvision anything to share? AFAIU the values of Linux kernel are open source, healthy community, empowering users. With the SDK on the embedded CPU your driver does not seem to tick any of these boxes.
->
-> I'll try to share Marvell's insight and plans regarding our Prestera drivers;
->  
-> We do understand the importance and the vision behind the open-source community - while being committed to quality, functionality and the developers/end-users.
->
-> We started working on the Prestera driver in Q2 2019. it took us more than a year to get the first approved driver into 5.10, and we just started.
-> Right at the beginning - we implemented PP function into the Kernel driver like the SDMA operation (This is the RX/TX DMA engine). 
-> Yet, the FW itself - is an SW package that supports many Marvell Prestera Switching families of devices - this is a significant SW package that will take many working years to adapt to the Kernel environment.
-> We do plan to port more and more PP functions as Kernel drivers along the way.
+On 2021-02-09 10:24, quanyang.wang@windriver.com wrote:
+> From: Quanyang Wang <quanyang.wang@windriver.com>
+> 
+> When run xrandr to change resolution on Beaglebone Black board, it will
+> print the error information:
+> 
+> root@beaglebone:~# xrandr -display :0 --output HDMI-1 --mode 720x400
+> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:32:tilcdc
+> crtc] commit wait timed out
+> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*
+> [CONNECTOR:34:HDMI-A-1] commit wait timed out
+> [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
+> [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*
+> [PLANE:31:plane-0] commit wait timed out
+> tilcdc 4830e000.lcdc: already pending page flip!
+> 
+> This is because there is operation sequence as below:
+> 
+> drm_atomic_connector_commit_dpms(mode is DRM_MODE_DPMS_OFF):
+>     ...
+>     drm_atomic_helper_setup_commit <- 
+> init_completion(commit_A->flip_done)
+>     drm_atomic_helper_commit_tail
+>         tilcdc_crtc_atomic_disable
+>         tilcdc_plane_atomic_update <- drm_crtc_send_vblank_event in
+> tilcdc_crtc_irq
+>                                       is skipped since 
+> tilcdc_crtc->enabled is 0
+>         tilcdc_crtc_atomic_flush   <- drm_crtc_send_vblank_event is
+> skipped since
+>                                       crtc->state->event is set to be 
+> NULL in
+>                                       tilcdc_plane_atomic_update
+> drm_mode_setcrtc:
+>     ...
+>     drm_atomic_helper_setup_commit <- 
+> init_completion(commit_B->flip_done)
+>     drm_atomic_helper_wait_for_dependencies
+>         drm_crtc_commit_wait   <- wait for commit_A->flip_done 
+> completing
+> 
+> Just as shown above, the steps which could complete commit_A->flip_done
+> are all skipped and commit_A->flip_done will never be completed. This 
+> will
+> result a time-out ERROR when drm_crtc_commit_wait check the 
+> commit_A->flip_done.
+> So add drm_crtc_send_vblank_event in tilcdc_crtc_atomic_disable to
+> complete commit_A->flip_done.
+> 
+> Fixes: cb345decb4d2 ("drm/tilcdc: Use standard 
+> drm_atomic_helper_commit")
+> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
 
-This is very encouraging to hear. I understand that it is a massive
-undertaking.
+Reviewed-by: Jyri Sarha <jyri.sarha@iki.fi>
+Tested-by: Jyri Sarha <jyri.sarha@iki.fi>
 
-> We also are working with the community to extend Kernel functionality with a new feature beneficial to all Kernel users (e.g. Devlink changes) and we will continue to do it.
-> By extending the Prestera driver to in-kernel implementation with more PP features - we will simplify the FW logic and enables cost-effective solutions to the market/developers.
+Thanks a lot! I think I have bumbed into this once or twice, but latelu 
+I have had time to look into this. I'll merge this to drm-misc-next 
+soon.
 
-Until that day arrives, are there any chances of Marvell opening up CPSS
-in the same way DSDT was re-licensed some years back?
+Best regards,
+Jyri
 
-Being able to clone github.com/Marvell-switching/prestera-firmware (or
-whatever) and build the firmware from source would go a long way to
-alleviate my fears at least.
-
-In such a world, I at least have a chance of debugging any issue all the
-way to the bottom of the stack. It would also make it possible for the
-community to help out with the porting effort.
-
-> Regards,
-> Mickey.
+> ---
+>  drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+> b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+> index 30213708fc99..d99afd19ca08 100644
+> --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+> +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+> @@ -515,6 +515,15 @@ static void tilcdc_crtc_off(struct drm_crtc
+> *crtc, bool shutdown)
+> 
+>  	drm_crtc_vblank_off(crtc);
+> 
+> +	spin_lock_irq(&crtc->dev->event_lock);
+> +
+> +	if (crtc->state->event) {
+> +		drm_crtc_send_vblank_event(crtc, crtc->state->event);
+> +		crtc->state->event = NULL;
+> +	}
+> +
+> +	spin_unlock_irq(&crtc->dev->event_lock);
+> +
+>  	tilcdc_crtc_disable_irqs(dev);
+> 
+>  	pm_runtime_put_sync(dev->dev);
