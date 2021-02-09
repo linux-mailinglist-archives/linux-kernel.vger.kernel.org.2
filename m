@@ -2,117 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08DD314ED7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92637314ED2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhBIMVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:21:13 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12885 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhBIMVL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:21:11 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DZhlD3HWsz7jM7;
-        Tue,  9 Feb 2021 20:19:04 +0800 (CST)
-Received: from [127.0.0.1] (10.40.188.87) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
- 20:20:18 +0800
-Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-To:     Greg KH <gregkh@linuxfoundation.org>
-References: <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
- <ED58431F-5972-47D1-BF50-93A20AD86C46@amacapital.net>
- <2e6cf99f-beb6-9bef-1316-5e58fb0aa86e@hisilicon.com>
- <YCJX6QFQ4hsNRrFj@kroah.com>
- <f73951ba-84be-b7f8-8c79-db84bc9081f3@hisilicon.com>
- <YCJ5k/Bxxkg3BNNj@kroah.com>
-CC:     Andy Lutomirski <luto@amacapital.net>,
-        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-api@vger.kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        <song.bao.hua@hisilicon.com>, <jgg@ziepe.ca>,
-        <kevin.tian@intel.com>, <jean-philippe@linaro.org>,
-        <eric.auger@redhat.com>, <liguozhu@hisilicon.com>,
-        <zhangfei.gao@linaro.org>, Sihang Chen <chensihang1@hisilicon.com>
-From:   Zhou Wang <wangzhou1@hisilicon.com>
-Message-ID: <2237506a-0c98-7ba6-5d5f-b60b637174c5@hisilicon.com>
-Date:   Tue, 9 Feb 2021 20:20:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S229849AbhBIMR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:17:26 -0500
+Received: from foss.arm.com ([217.140.110.172]:50716 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229639AbhBIMRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:17:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3537CED1;
+        Tue,  9 Feb 2021 04:16:27 -0800 (PST)
+Received: from [10.37.8.18] (unknown [10.37.8.18])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E5F43F73B;
+        Tue,  9 Feb 2021 04:16:25 -0800 (PST)
+Subject: Re: [PATCH v12 7/7] kasan: don't run tests in async mode
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210208165617.9977-1-vincenzo.frascino@arm.com>
+ <20210208165617.9977-8-vincenzo.frascino@arm.com>
+ <20210209120241.GF1435@arm.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <0e373526-0fa8-c5c0-fb41-5c17aa47f07c@arm.com>
+Date:   Tue, 9 Feb 2021 12:20:28 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YCJ5k/Bxxkg3BNNj@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.40.188.87]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210209120241.GF1435@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/9 20:01, Greg KH wrote:
-> On Tue, Feb 09, 2021 at 07:58:15PM +0800, Zhou Wang wrote:
->> On 2021/2/9 17:37, Greg KH wrote:
->>> On Tue, Feb 09, 2021 at 05:17:46PM +0800, Zhou Wang wrote:
->>>> On 2021/2/8 6:02, Andy Lutomirski wrote:
->>>>>
->>>>>
->>>>>> On Feb 7, 2021, at 12:31 AM, Zhou Wang <wangzhou1@hisilicon.com> wrote:
->>>>>>
->>>>>> ﻿SVA(share virtual address) offers a way for device to share process virtual
->>>>>> address space safely, which makes more convenient for user space device
->>>>>> driver coding. However, IO page faults may happen when doing DMA
->>>>>> operations. As the latency of IO page fault is relatively big, DMA
->>>>>> performance will be affected severely when there are IO page faults.
->>>>>> From a long term view, DMA performance will be not stable.
->>>>>>
->>>>>> In high-performance I/O cases, accelerators might want to perform
->>>>>> I/O on a memory without IO page faults which can result in dramatically
->>>>>> increased latency. Current memory related APIs could not achieve this
->>>>>> requirement, e.g. mlock can only avoid memory to swap to backup device,
->>>>>> page migration can still trigger IO page fault.
->>>>>>
->>>>>> Various drivers working under traditional non-SVA mode are using
->>>>>> their own specific ioctl to do pin. Such ioctl can be seen in v4l2,
->>>>>> gpu, infiniband, media, vfio, etc. Drivers are usually doing dma
->>>>>> mapping while doing pin.
->>>>>>
->>>>>> But, in SVA mode, pin could be a common need which isn't necessarily
->>>>>> bound with any drivers, and neither is dma mapping needed by drivers
->>>>>> since devices are using the virtual address of CPU. Thus, It is better
->>>>>> to introduce a new common syscall for it.
->>>>>>
->>>>>> This patch leverages the design of userfaultfd and adds mempinfd for pin
->>>>>> to avoid messing up mm_struct. A fd will be got by mempinfd, then user
->>>>>> space can do pin/unpin pages by ioctls of this fd, all pinned pages under
->>>>>> one file will be unpinned in file release process. Like pin page cases in
->>>>>> other places, can_do_mlock is used to check permission and input
->>>>>> parameters.
->>>>>
->>>>>
->>>>> Can you document what the syscall does?
->>>>
->>>> Will add related document in Documentation/vm.
->>>
->>> A manpage is always good, and will be required eventually :)
+
+
+On 2/9/21 12:02 PM, Catalin Marinas wrote:
+> On Mon, Feb 08, 2021 at 04:56:17PM +0000, Vincenzo Frascino wrote:
+>> From: Andrey Konovalov <andreyknvl@google.com>
 >>
->> manpage is maintained in another repo. Do you mean add a manpage
->> patch in this series?
+>> Asynchronous KASAN mode doesn't guarantee that a tag fault will be
+>> detected immediately and causes tests to fail. Forbid running them
+>> in asynchronous mode.
+>>
+>> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 > 
-> It's good to show how it will be used, don't you think?
+> That's missing your SoB.
+>
 
-Agree, will add it in next version.
+Yes, I will add it in the next iteration.
 
-Thanks,
-Zhou
+>> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+>> index 7285dcf9fcc1..f82d9630cae1 100644
+>> --- a/lib/test_kasan.c
+>> +++ b/lib/test_kasan.c
+>> @@ -51,6 +51,10 @@ static int kasan_test_init(struct kunit *test)
+>>  		kunit_err(test, "can't run KASAN tests with KASAN disabled");
+>>  		return -1;
+>>  	}
+>> +	if (kasan_flag_async) {
+>> +		kunit_err(test, "can't run KASAN tests in async mode");
+>> +		return -1;
+>> +	}
+>>  
+>>  	multishot = kasan_save_enable_multi_shot();
+>>  	hw_set_tagging_report_once(false);
+> 
+> I think we can still run the kasan tests in async mode if we check the
+> TFSR_EL1 at the end of each test by calling mte_check_tfsr_exit().
+> 
 
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> .
-> 
+IIUC this was the plan for the future. But I let Andrey comment for more details.
 
+-- 
+Regards,
+Vincenzo
