@@ -2,88 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7023158FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83155315910
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhBIVw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:52:57 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:37687 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232941AbhBITY6 (ORCPT
+        id S234294AbhBIV5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 16:57:47 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:42385 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233513AbhBIT0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:24:58 -0500
-Received: by mail-oi1-f181.google.com with SMTP id y199so18607545oia.4;
-        Tue, 09 Feb 2021 11:21:10 -0800 (PST)
+        Tue, 9 Feb 2021 14:26:05 -0500
+Received: by mail-ot1-f47.google.com with SMTP id q4so8889830otm.9;
+        Tue, 09 Feb 2021 11:22:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=djpia0FYNCw9tE3WP5Tr7Z3WXN4BAb7/Bz2WXM06cjM=;
-        b=BZILmMhDOGBhIZVZfWPtmTZXmwq6vLPMFLDgpUy2ZutM/zMiIpA8i+vv5xFAfHnkB8
-         gbT32RqyzZ/VkkQScnOxb/oQgeXViRf1koOMqqJHKeQf8ROVg1alVzA7YUPQze6Vewf7
-         dBdq3pATD4/IliNprUp9SKOCr9a87m4kq9iS4unzXM3vouo+HLp0zmCpQR4AJPWaLS1U
-         49Sy3pDVI6CTEQ5OysKJVOWUyWV+1f6m6cJhAw7MemvpdyJnUVSKVcMtATPz6+TRQ20M
-         LuwFN2gMOP2TioCpLEhjnRbnGb2dt+hTijdOqOFJEQMPTUuMbwU3sPBSeNzslRESspP+
-         yJPQ==
-X-Gm-Message-State: AOAM531pC1bLQm2SFPY7JHl5bnc5ADc0jcGWSp1Tu/gFBTaKwbAw1oSG
-        kT5lKWmGkW5P+2YR3QwhpGS3XZUFeQ==
-X-Google-Smtp-Source: ABdhPJxXHj8LriG5h7lJxb2HcSAF8ts/EcRL9+I3AD9cV1JfGEQuW4cd3YqKhp5vJufOIMZhs5T04Q==
-X-Received: by 2002:aca:2102:: with SMTP id 2mr3615711oiz.80.1612898444606;
-        Tue, 09 Feb 2021 11:20:44 -0800 (PST)
+        bh=lCKSYN1S/BMKGDmQxUAKaGzQhreo9bxAbsTabQriVq0=;
+        b=f2zXT5ZULBvInFxM4HK4YVTSndaH8nce4GGxPp4Kj/qfvhHvtSZJoZ7AKwyJPTKwIm
+         3GXiSLNWDJ4zQB7tk0h+RGWdB1o8CX51NmEEUrcNvTR66VMB3yMUrZZIpypJUDiHhpga
+         QDaVyyY+elZh9PI9vpmCzteoth9nharMDDoX480v3UQQZID/qlsT/ekxZty1v8et6G53
+         Gj509WiNX97mOuJsSxwkdwkUoFtg0QF2Rm04/ZlqwbRe9IWtpScJsk9fbtdLWBZWCJj4
+         GTsy4Q5FVsujFKZxteRge5DfAMryKpPK9EMO+f+Z1R3d244vnqIQTqsCbuwTLS/vwPVT
+         sUXw==
+X-Gm-Message-State: AOAM533TNs/yd4bSCR/FRn2sQEJ8EABNXdw111jXs3b6quh1hA/U4WNi
+        UNph4+MmiGwomm6eCDJRew==
+X-Google-Smtp-Source: ABdhPJx6BPlprKBUC+xb/5qwJuVzUFsGtm4/bQfhNhu+3WhtLx7/Y0mh++ghwg3JoeR3YOsrjneqAg==
+X-Received: by 2002:a9d:ec7:: with SMTP id 65mr17119409otj.311.1612898517920;
+        Tue, 09 Feb 2021 11:21:57 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i13sm2821404oth.52.2021.02.09.11.20.42
+        by smtp.gmail.com with ESMTPSA id l110sm4513430otc.25.2021.02.09.11.21.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 11:20:43 -0800 (PST)
-Received: (nullmailer pid 4189533 invoked by uid 1000);
-        Tue, 09 Feb 2021 19:20:41 -0000
-Date:   Tue, 9 Feb 2021 13:20:41 -0600
+        Tue, 09 Feb 2021 11:21:56 -0800 (PST)
+Received: (nullmailer pid 4191780 invoked by uid 1000);
+        Tue, 09 Feb 2021 19:21:55 -0000
+Date:   Tue, 9 Feb 2021 13:21:55 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RFC] dt-bindings: power: sysc-remobile: Convert to
- json-schema
-Message-ID: <20210209192041.GA4168680@robh.at.kernel.org>
-References: <20210127132840.2019595-1-geert+renesas@glider.be>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] thermal: qcom: tsens-v0_1: Add support for MDM9607
+Message-ID: <20210209192155.GA4191751@robh.at.kernel.org>
+References: <20210127182506.52311-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127132840.2019595-1-geert+renesas@glider.be>
+In-Reply-To: <20210127182506.52311-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 02:28:40PM +0100, Geert Uytterhoeven wrote:
-> Convert the Renesas R-Mobile System Controller (SYSC) Device Tree
-> binding documentation to json-schema.
+On Wed, 27 Jan 2021 19:25:05 +0100, Konrad Dybcio wrote:
+> MDM9607 TSENS IP is very similar to the one of MSM8916, with
+> minor adjustments to various tuning values.
 > 
-> Document missing properties.
-> Drop consumer example, as it does not belong here.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
-> Marked RFC, as it does not check deeper levels than the first level of
-> the "pm-domains" subnode.
+> Changes since v1:
+> - Move the defines so as not to cut into the middle of 8974 regs
 > 
-> I think the reference in
+>  .../bindings/thermal/qcom-tsens.yaml          |   2 +
+>  drivers/thermal/qcom/tsens-v0_1.c             | 100 +++++++++++++++++-
+>  drivers/thermal/qcom/tsens.c                  |   3 +
+>  drivers/thermal/qcom/tsens.h                  |   2 +-
+>  4 files changed, 105 insertions(+), 2 deletions(-)
 > 
->     additionalProperties:
-> 	$ref: "#/patternProperties"
-> 
-> should become "#/patternProperties/0/additionalProperties", but that
-> gives:
-> 
->     Unresolvable JSON pointer: 'patternProperties/0/additionalProperties'
 
-AFAIK, numbers only work on lists (such as 'allOf' values). So I think 
-you'd want '#/patternProperties/^pm-domains$/additionalProperties'. 
-However, regex's can have illegal characters. I think URI escaping them 
-would work, but that gets too readable and unmaintainable for my tastes. 
-The other way to do this is put the schema under a '$defs'. But in your 
-case, you have just a fixed string, so there's no need for it to be a 
-pattern. Just move it to 'properties'.
-
-Otherwise, looks good to me.
-
-Rob
+Acked-by: Rob Herring <robh@kernel.org>
