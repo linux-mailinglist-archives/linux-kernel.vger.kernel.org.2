@@ -2,213 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61123314570
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1609314584
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbhBIBPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:15:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbhBIBPK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:15:10 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563B8C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:14:30 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id a16so8806818plh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:14:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=Izt0VcAW3kwu4buskbodCOPYDlobWed7XGKjt8BxndM=;
-        b=dbzmCbvKfqg+uS2oFA7Gj81/lPp5NdVL8cjvs7CSpEjHdoAsYS6MbNi87g1m9jWEMg
-         MYE6jB2MjTUE8ufI7only2RYqjq+Td1asi5LQA1ge/YkaATGcE/it2n7mmEN/Vo++3Aa
-         gLSmi8XlJBMAm1yHFQq/sTiRe/7h8yr6iePCFsQ6LOslenYhKcVMXpUjht3L9CaN1O+o
-         cq+RqxPn6T+m/JtSVKGIjZZ3e/O71PY4YPoR7nMzM4h9pz9lxk6iU3EHZCDNsqTRWtyM
-         987ioB6UfEBaKJQH98YtieJ3gTEgC85ehRvvdQbpegj725g0+YLzO/IFHpyEfT8eCXcE
-         Rovw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=Izt0VcAW3kwu4buskbodCOPYDlobWed7XGKjt8BxndM=;
-        b=e1so9nVWwXSoZQ546Ls1kPRdqUB9SywAGg8WaoJZPaja1yXqdbyp7KSIWLNooWFr0F
-         zSzfe1A98pgF5Ygu0ZMnl/iUdTVADyHSsL9VXSe8zBh1Bn2q9+XHhRcjjIRw2kuIXnLz
-         jBmHGejOhXfe39O3kjdGLqEPDcSFfXa1vU9/hO/kV001RZuF/WcGnaEqDe/5OD6P7R9Z
-         ZXCO9u37FTjg8aifG/TL/DFV02Hdch5CZ6RkNH4o3ld5i47YU3QOwM+gvnJ5tHqc7JKs
-         Z9fk16LBHKHS6rhb6yOJDixYJBk2Xja0qF5ZAqJSj+IrcUbIu2pTDwdYpcZISbpfOQ4V
-         gjCQ==
-X-Gm-Message-State: AOAM5302GS0hhf46E+53NdHPHLjDmqGxtdf2tStIWwYSkPCWBWBc3Eo8
-        WifdLCZA9sKovSy+5gxwKo4=
-X-Google-Smtp-Source: ABdhPJxJlrI6uXzUN+sPMpbnOSoRjfNPR7JUyH7/BjY8blpX2NGo5SPI9lNeBJL/y114+kPagZo1Xg==
-X-Received: by 2002:a17:902:4a:b029:e2:f3dc:811b with SMTP id 68-20020a170902004ab02900e2f3dc811bmr882293pla.36.1612833269942;
-        Mon, 08 Feb 2021 17:14:29 -0800 (PST)
-Received: from localhost ([220.240.226.199])
-        by smtp.gmail.com with ESMTPSA id y9sm6455496pfr.192.2021.02.08.17.14.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 17:14:29 -0800 (PST)
-Date:   Tue, 09 Feb 2021 11:14:24 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v5 06/22] powerpc/irq: Rework helpers that manipulate
- MSR[EE/RI]
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
-        <0e290372a0e7dc2ae657b4a01aec85f8de7fdf77.1612796617.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <0e290372a0e7dc2ae657b4a01aec85f8de7fdf77.1612796617.git.christophe.leroy@csgroup.eu>
+        id S230124AbhBIBTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:19:44 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:56828 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230333AbhBIBTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 20:19:02 -0500
+Received: from [10.130.0.193] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7_LK4iFgkGUIAA--.10747S3;
+        Tue, 09 Feb 2021 09:18:03 +0800 (CST)
+Subject: Re: [PATCH] staging: fix ignoring return value warning
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Sascha Hauer <sha@pengutronix.de>
+References: <1612689808-30985-1-git-send-email-tangyouling@loongson.cn>
+ <20210208134517.GG2696@kadam> <20210208150618.GI8233@pengutronix.de>
+ <20210208190237.GN20820@kadam>
+Cc:     devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+From:   Youling Tang <tangyouling@loongson.cn>
+Message-ID: <13779748-ab8e-c7c3-11e4-5232836f5ae6@loongson.cn>
+Date:   Tue, 9 Feb 2021 09:18:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Message-Id: <1612833191.rod6qskvzc.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210208190237.GN20820@kadam>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dx7_LK4iFgkGUIAA--.10747S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1rAr1UWF4UtrWrJw1UWrg_yoW8Ar4fpa
+        y0kFyjkFZ8tF4UKan0vw40v3WYy3srK348uFnYyw18u345XFyftr4UtrW5Ww15K34SkF1Y
+        yFWUXa4jqa4DZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
+        MxkIecxEwVAFwVWkMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+        tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf
+        9x07b51v-UUUUU=
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
-> In preparation of porting PPC32 to C syscall entry/exit,
-> rewrite the following helpers as static inline functions and
-> add support for PPC32 in them:
-> 	__hard_irq_enable()
-> 	__hard_irq_disable()
-> 	__hard_EE_RI_disable()
-> 	__hard_RI_enable()
->=20
-> Then use them in PPC32 version of arch_local_irq_disable()
-> and arch_local_irq_enable() to avoid code duplication.
->=20
+Hi, Dan
 
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/include/asm/hw_irq.h | 75 +++++++++++++++++++++----------
->  arch/powerpc/include/asm/reg.h    |  1 +
->  2 files changed, 52 insertions(+), 24 deletions(-)
->=20
-> diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm=
-/hw_irq.h
-> index ed0c3b049dfd..4739f61e632c 100644
-> --- a/arch/powerpc/include/asm/hw_irq.h
-> +++ b/arch/powerpc/include/asm/hw_irq.h
-> @@ -50,6 +50,55 @@
-> =20
->  #ifndef __ASSEMBLY__
-> =20
-> +static inline void __hard_irq_enable(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_BOOKE) || IS_ENABLED(CONFIG_40x))
-> +		wrtee(MSR_EE);
-> +	else if (IS_ENABLED(CONFIG_PPC_8xx))
-> +		wrtspr(SPRN_EIE);
-> +	else if (IS_ENABLED(CONFIG_PPC_BOOK3S_64))
-> +		__mtmsrd(MSR_EE | MSR_RI, 1);
-> +	else
-> +		mtmsr(mfmsr() | MSR_EE);
-> +}
-> +
-> +static inline void __hard_irq_disable(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_BOOKE) || IS_ENABLED(CONFIG_40x))
-> +		wrtee(0);
-> +	else if (IS_ENABLED(CONFIG_PPC_8xx))
-> +		wrtspr(SPRN_EID);
-> +	else if (IS_ENABLED(CONFIG_PPC_BOOK3S_64))
-> +		__mtmsrd(MSR_RI, 1);
-> +	else
-> +		mtmsr(mfmsr() & ~MSR_EE);
-> +}
-> +
-> +static inline void __hard_EE_RI_disable(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_BOOKE) || IS_ENABLED(CONFIG_40x))
-> +		wrtee(0);
-> +	else if (IS_ENABLED(CONFIG_PPC_8xx))
-> +		wrtspr(SPRN_NRI);
-> +	else if (IS_ENABLED(CONFIG_PPC_BOOK3S_64))
-> +		__mtmsrd(0, 1);
-> +	else
-> +		mtmsr(mfmsr() & ~(MSR_EE | MSR_RI));
-> +}
-> +
-> +static inline void __hard_RI_enable(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_BOOKE) || IS_ENABLED(CONFIG_40x))
-> +		return;
-> +
-> +	if (IS_ENABLED(CONFIG_PPC_8xx))
-> +		wrtspr(SPRN_EID);
-> +	else if (IS_ENABLED(CONFIG_PPC_BOOK3S_64))
-> +		__mtmsrd(MSR_RI, 1);
-> +	else
-> +		mtmsr(mfmsr() | MSR_RI);
-> +}
-> +
->  #ifdef CONFIG_PPC64
->  #include <asm/paca.h>
-> =20
-> @@ -212,18 +261,6 @@ static inline bool arch_irqs_disabled(void)
-> =20
->  #endif /* CONFIG_PPC_BOOK3S */
-> =20
-> -#ifdef CONFIG_PPC_BOOK3E
-> -#define __hard_irq_enable()	wrtee(MSR_EE)
-> -#define __hard_irq_disable()	wrtee(0)
-> -#define __hard_EE_RI_disable()	wrtee(0)
-> -#define __hard_RI_enable()	do { } while (0)
-> -#else
-> -#define __hard_irq_enable()	__mtmsrd(MSR_EE|MSR_RI, 1)
-> -#define __hard_irq_disable()	__mtmsrd(MSR_RI, 1)
-> -#define __hard_EE_RI_disable()	__mtmsrd(0, 1)
-> -#define __hard_RI_enable()	__mtmsrd(MSR_RI, 1)
-> -#endif
-> -
->  #define hard_irq_disable()	do {					\
->  	unsigned long flags;						\
->  	__hard_irq_disable();						\
-> @@ -322,22 +359,12 @@ static inline unsigned long arch_local_irq_save(voi=
-d)
-> =20
->  static inline void arch_local_irq_disable(void)
->  {
-> -	if (IS_ENABLED(CONFIG_BOOKE))
-> -		wrtee(0);
-> -	else if (IS_ENABLED(CONFIG_PPC_8xx))
-> -		wrtspr(SPRN_EID);
-> -	else
-> -		mtmsr(mfmsr() & ~MSR_EE);
-> +	__hard_irq_disable();
->  }
-> =20
->  static inline void arch_local_irq_enable(void)
->  {
-> -	if (IS_ENABLED(CONFIG_BOOKE))
-> -		wrtee(MSR_EE);
-> -	else if (IS_ENABLED(CONFIG_PPC_8xx))
-> -		wrtspr(SPRN_EIE);
-> -	else
-> -		mtmsr(mfmsr() | MSR_EE);
-> +	__hard_irq_enable();
->  }
-> =20
->  static inline bool arch_irqs_disabled_flags(unsigned long flags)
-> diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/re=
-g.h
-> index c5a3e856191c..bc4305ba00d0 100644
-> --- a/arch/powerpc/include/asm/reg.h
-> +++ b/arch/powerpc/include/asm/reg.h
-> @@ -1375,6 +1375,7 @@
->  #define mtmsr(v)	asm volatile("mtmsr %0" : \
->  				     : "r" ((unsigned long)(v)) \
->  				     : "memory")
-> +#define __mtmsrd(v, l)	BUILD_BUG()
->  #define __MTMSR		"mtmsr"
->  #endif
-> =20
-> --=20
-> 2.25.0
->=20
->=20
+On 02/09/2021 03:02 AM, Dan Carpenter wrote:
+> On Mon, Feb 08, 2021 at 04:06:18PM +0100, Sascha Hauer wrote:
+>> Hi Dan,
+>>
+>> On Mon, Feb 08, 2021 at 04:45:17PM +0300, Dan Carpenter wrote:
+>>> On Sun, Feb 07, 2021 at 05:23:28PM +0800, Youling Tang wrote:
+>>>> Fix the below ignoring return value warning for device_reset.
+>>>>
+>>>> drivers/staging/mt7621-dma/mtk-hsdma.c:685:2: warning: ignoring return value
+>>>> of function declared with 'warn_unused_result' attribute [-Wunused-result]
+>>>>          device_reset(&pdev->dev);
+>>>>          ^~~~~~~~~~~~ ~~~~~~~~~~
+>>>> drivers/staging/ralink-gdma/ralink-gdma.c:836:2: warning: ignoring return value
+>>>> of function declared with 'warn_unused_result' attribute [-Wunused-result]
+>>>>          device_reset(&pdev->dev);
+>>>>          ^~~~~~~~~~~~ ~~~~~~~~~~
+>>>>
+>>> We can't really do this sort of fix without the hardware to test it.
+>>> This could be the correct fix or perhaps switching to device_reset_optional()
+>>> is the correct fix.  We can't know unless we have the hardware to test.
+>> When device_reset() is the wrong function then adding a return value
+>> check will turn this into a runtime error for those who have the
+>> hardware which will hopefully trigger them to tell us why reset_device
+>> is wrong for them.
+>> At least for a staging driver I find this procedure opportune.
+>>
+> That seems like sort of a jerk move...  What's the rush?  Someone will
+> eventually be able to test this if we just wait around for a bit.
+> Otherwise if no one has the hardware then eventually the driver will be
+> deleted.
+>
+> regards,
+> dan carpenter
+We do not have the relevant hardware to test, this is just to solve a
+compile-time warning.
+
+Thanks,
+Youling.
+
