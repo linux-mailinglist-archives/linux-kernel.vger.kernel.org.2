@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC1C314EAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70C7314EB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhBIMHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:07:00 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:35022 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbhBIMFU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:05:20 -0500
-Received: by mail-oi1-f173.google.com with SMTP id l3so9197867oii.2;
-        Tue, 09 Feb 2021 04:05:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0wp24WQB9SPDerk+Iav7mKUoD2JL/GuXUL0SLa8Nm04=;
-        b=lfA3M6L837wIdP6xCc1AW7SCKLl9za6XxKTa9JVXV1o5lrN5jXPfYNlv/cMRW7sMM/
-         ZGMX2DorUZXby9YMhngAs1lyrWggc8CLr/amlW3fgXc95OP+KTagOCtEMXoHq9McjdgR
-         KocC2AgvC6iNchEfLoD1ltr88YnZPMMHO7nI/+lZrdEcn8WNG7qe3c/lEFeUEsic6Ryx
-         PPziPd4ZDv6iguOM480JXpQM3AqD9WRRm3LORq5OcWOyNXnLbU/WKD/sh9FpfRMzpvj6
-         QuOpUfsuYpd24tsuj4xhx4hosRluP8zw4trARe7SaZo2YmcS24Qoc2lvL0f/PBpUjadu
-         a35g==
-X-Gm-Message-State: AOAM531OX2QrBkHgK6dL0nbxD8XtcRRAXm1JqW4c+jF4H6dHNXc88Z16
-        FihdJMDqG6TtHnN4H/nV7ZDe3aW8o/hL8yOkh+A=
-X-Google-Smtp-Source: ABdhPJxD3v66lPnSWqnSfrOMiVJjkb/yr5mLQ0ayFauBkqZyA4XnA454IETfqt54p0nv7XD0IHHpLr88IB/RGzTA2EI=
-X-Received: by 2002:aca:d8c6:: with SMTP id p189mr2212557oig.54.1612872279070;
- Tue, 09 Feb 2021 04:04:39 -0800 (PST)
+        id S230221AbhBIMHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:07:39 -0500
+Received: from ozlabs.org ([203.11.71.1]:52375 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230047AbhBIMGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:06:02 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DZhRM2yKhz9sVw;
+        Tue,  9 Feb 2021 23:05:18 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612872319;
+        bh=7Dm65XLDTc0HjMEgLtgdWqz4Zap69IwRvoyHjrsvPT4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=MvGdKrazJZt4pMy2hHkMrefg+jC8lcDWeFZ1TE9aD9FE/Rm9uXDZoiG4BAcdvYKog
+         jvDS/OqJ10wVZanmHbZy+nxi65cP3ONOatx0YnOz7yDgHmFTX5+73WOQYX2F8awnMV
+         9tcMOwNLUtjIAs0wdXhaCdhFpzonu/au/UAoGHCb0I/ZFjDvubCmqOWaqKsAHKzLB6
+         SIwub5+2BtusVmIDo/LRhlS8d6+GJ72by80/A1fk8EptRG8x0oJAbZM3ozy+BT0vh+
+         fxALRPnLQz25jaFwH41ssjTbnk+nnPIPHlALj5Dc2HnuW6PNYbuNQUJO0r+X/Tbxw/
+         wzkF5OTxALPMA==
+Date:   Tue, 9 Feb 2021 23:05:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the extcon tree
+Message-ID: <20210209230517.7d698e81@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210205020730.1746354-1-saravanak@google.com>
-In-Reply-To: <20210205020730.1746354-1-saravanak@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Feb 2021 13:04:28 +0100
-Message-ID: <CAMuHMdVHfx5MtzFe8WGOrQD-yTQaaexbVCFn7UF7cFW1Tu-uTA@mail.gmail.com>
-Subject: Re: [PATCH v1] gpiolib: Don't probe gpio_device if it's not the
- primary device
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/dYQ491Hw0/pdPLn=Ll7Fgr/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+--Sig_/dYQ491Hw0/pdPLn=Ll7Fgr/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 5, 2021 at 3:09 AM Saravana Kannan <saravanak@google.com> wrote:
-> Dmitry reported[1] boot error messages caused by
-> commit 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default").
->
-> gpio-1022 (cpu-pwr-req-hog): hogged as input
-> max77620-pinctrl max77620-pinctrl: pin gpio4 already requested by max77620-pinctrl; cannot claim for gpiochip1
-> max77620-pinctrl max77620-pinctrl: pin-4 (gpiochip1) status -22
-> max77620-pinctrl max77620-pinctrl: could not request pin 4 (gpio4) from group gpio4  on device max77620-pinctrl
-> gpio_stub_drv gpiochip1: Error applying setting, reverse things back
-> gpio_stub_drv: probe of gpiochip1 failed with error -22
+Hi all,
 
-Similar issue on Salvator-XS:
+Commit
 
-    sh-pfc e6060000.pinctrl: pin GP_2_0 already requested by 7-0030;
-cannot claim for gpiochip9
-    sh-pfc e6060000.pinctrl: pin-64 (gpiochip9) status -22
-    sh-pfc e6060000.pinctrl: could not request pin 64 (GP_2_0) from
-group intc_ex_irq0  on device sh-pfc
-    gpio_stub_drv gpiochip9: Error applying setting, reverse things back
-    gpio_stub_drv: probe of gpiochip9 failed with error -22
+  d8cc19be483a ("extcon: sm5502: Detect OTG when USB_ID is connected to gro=
+und")
 
-> This happens because when we try to probe a device, driver core calls
-> into pinctrl to set up the pins. However, if the GPIO DT node already
-> has a proper device created and probed, trying to probe the gpio_device
-> with a stub driver makes the pins be claimed twice. pinctrl doesn't like
-> this and throws an error.
->
-> So, this patch makes sure the gpio_stub_drv doesn't match with a
-> gpio_device if it's not the primary device for the fwnode.
->
-> [1] - https://lore.kernel.org/lkml/544ad0e4-0954-274c-8e77-866aaa5661a8@gmail.com/
-> Fixes: 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
+is missing a Signed-off-by from its committer.
 
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+--=20
+Cheers,
+Stephen Rothwell
 
-Gr{oetje,eeting}s,
+--Sig_/dYQ491Hw0/pdPLn=Ll7Fgr/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-                        Geert
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAien0ACgkQAVBC80lX
+0Gzaywf+IEvgBh6JKrQ0rvvk76qOy8Y5eJO1WoW2mD0h4LwGX4nr0Ufo9HUr4WOu
+usVScr3ee+sABgwHUewdAbWgzcGA6C/D89PMtBX4uCdaWgYoLw1TPsJOp5iWZ34y
+CNu2hNx+PSbMaupWRJDhvNdMggH2sk/3d423/gE20JaiJ/WALWL1ak3rHi+70zfS
+DN4jW/RKW7bg7DUuIskUkuaqz7fKL8PFNqQGko0b9hXe2D7bzGBH2G7KAIwxkVME
+OWw4kfqH1P1yg2nc5DZV0D+nj7xCEkVlDeQaRjWVsMG9RcphrkjrQX6zgXGbu8+Y
+uTBq8wInhj5KgS8mVhIQsJilqF/jog==
+=d3My
+-----END PGP SIGNATURE-----
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--Sig_/dYQ491Hw0/pdPLn=Ll7Fgr/--
