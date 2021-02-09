@@ -2,106 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED7931553F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E28531553A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbhBIRii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 12:38:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
+        id S233272AbhBIRiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 12:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233001AbhBIRgF (ORCPT
+        with ESMTP id S233259AbhBIRf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:36:05 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E43C06121C
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:35:12 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id e9so10144791plh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:35:12 -0800 (PST)
+        Tue, 9 Feb 2021 12:35:56 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8DBC06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:35:33 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id s107so18181742otb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:35:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=r47X2ee78t2SLXgVN2ZcRb271S7UdHkQrq/tHAJkSkQ=;
-        b=DbdHfvtjdYzkLF7dfWPsMxV4+Rb4sAagbFEZ6H600ZnICjslL0olfmaPh3ikqvt3zz
-         IbIaV5p9dBs0iiHwb8hQEyrjqTrSQjZ2CmY1ayRrBl7MB4QIeqclo3xX55n4/5GwN6/U
-         oWpwcG/gms/Ddcor+Lj21w1fyMraOH6gTHyPo+mH3N0Wkjl6/bq+DFYHZ72FxKzgbWmw
-         prFvhzQQyH5zj2/6QVE48eRs59m2Y2eOvPsbyDSlj7fij30rdic147MB+jqjPrTmG3qU
-         8lzeOCzTd8tsOhgld6FHTd7VF915S9PfW1MJAruEwJjjUruv8nfiI/LFbHcgr3cf9Uw8
-         K0bA==
+        bh=2frGZv9MpWB5lKgC9m9OF/K9NIuBbPrL9HEmWyY/ZXM=;
+        b=tFsX5hNXjRip+gDiFP26/8Y6n3Ujr7r2J/g7QT/wCIpPnNkhBWcIuMMko68VFPs8O7
+         iUehhxmDexfrqbRcEDYUrFYueQ3iEEnEcn5g5wCSe/r6Sae6rlswtsB9Qemj344SRPKA
+         Y4T6r3HBxIH30RVjEKh19VsL7m3QtCJDuXOXG3OcfCabtyrXYzjTWH6UTtb8X5cYm/SR
+         8+uQ9XTY7JZWhs3A8WWeFlb4cnWsk3RrgdUyllSBTl/fi1hcHJ0EJ56fAfZbvvj0njOb
+         ZxDWnVj0FBGoE7UW0RCt4KHX1toGfxIylClT41By93xJGg/wnooTHZqZPn8I6SmOrJ76
+         ECPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=r47X2ee78t2SLXgVN2ZcRb271S7UdHkQrq/tHAJkSkQ=;
-        b=Kag+MtfO+T+Ss3TERhuu2b+KdDL92kjo2zQQ8tKN9JstXtzSksCFEzol+EmZhqzWo4
-         L3z1H4eyguy0v0rCe5ax7Y1KFgK2h3+oISGERDYyj0wolig1scNLKoiUnP5FYihI68Kv
-         BXlInevKSZUPzX9cMVjy6MBgHmZN2mqKN6CRHR2KZYhAVWARC8DqggWN/YaD9aG9FFUz
-         a+tBkrQrFmatdRq3lIjWHwb4XCce4K5UblhvSQUW9dsiVo0eii+WbCTTtV4ukH9sC8wl
-         aEkZYFf6DqpxtQvK+9bkyBrFQcl07vue/WoFjIf21w3c/1xfp5ipME54ycnSeZqza0eB
-         HsOQ==
-X-Gm-Message-State: AOAM532o38BdhT2Hj9lfu1LG0nEbv48FRgQRh+fMWppK5EfaDKGi46qt
-        /w5dMtIVsDAwkEd9d25ByxJPIA==
-X-Google-Smtp-Source: ABdhPJyfamXiK8zUBMBE5zvrRwdQMBQci+3Me+rQ9GBv/bbPyR43ucxOUxdQYH5Z5WfghBZ1oaEVyw==
-X-Received: by 2002:a17:902:c3c2:b029:e1:74f5:6a65 with SMTP id j2-20020a170902c3c2b02900e174f56a65mr21289693plj.46.1612892111477;
-        Tue, 09 Feb 2021 09:35:11 -0800 (PST)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id b18sm2065pfb.197.2021.02.09.09.35.10
+        bh=2frGZv9MpWB5lKgC9m9OF/K9NIuBbPrL9HEmWyY/ZXM=;
+        b=Xdc+YshsM8JarIeZaDasxAnikVZtvAgpNceOqv3VefKlxlnpaK2TsgZ5dUlQM52I5w
+         7TKz3aetsXzkTRIdHYmV67xGBgyb+bWWy1sHv6g1qmKs65QhjG4J6jjMdoE9F7e1O/Me
+         k0YG7i4Ivqc9DeQJNjmiDHRBPWrViOHWsMosRWsQJyZ9g91r6nj8nMvfsgssKvPyGx/k
+         F9yLyBtfYVa9G2tuXL+14KZmOciVFbo+DLKd2aPRmyycPXXt9nzlpV6hg3oOpctNVfRw
+         3JMqQuoW1WP82T3zJKDSY3gPUlShymF34rVJe9gjkRVal1fDi7yAV7dUTe64POXIUk4D
+         XDdQ==
+X-Gm-Message-State: AOAM5300i9MkngnlFofyJZMVK8xDmD86BNiT6AKcRVoCH27P5YNqZlwR
+        iBJ2/6VZh6kLIeFdpPr9SjH2eQ==
+X-Google-Smtp-Source: ABdhPJz/03ffuC6poRQA2jg3nh3UAaz74Jb0+oLSH1BzKUkjmuUdZcGJUXR4cbsa8XJhGLqFuOIeNQ==
+X-Received: by 2002:a05:6830:1342:: with SMTP id r2mr17237593otq.216.1612892132157;
+        Tue, 09 Feb 2021 09:35:32 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id x187sm4489883oig.3.2021.02.09.09.35.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 09:35:10 -0800 (PST)
-Date:   Tue, 9 Feb 2021 17:35:07 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     "wangyanan (Y)" <wangyanan55@huawei.com>,
-        kvm <kvm@vger.kernel.org>, linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Marc Zyngier <maz@kernel.org>, Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-Subject: Re: [RFC PATCH 1/2] KVM: selftests: Add a macro to get string of
- vm_mem_backing_src_type
-Message-ID: <YCLHy82RcATHEDtC@google.com>
-References: <20210208090841.333724-1-wangyanan55@huawei.com>
- <20210208090841.333724-2-wangyanan55@huawei.com>
- <CANgfPd967wgLk0tb6mNaWsaAa9Tn0LyecEZ_4-e+nKoa-HkCBg@mail.gmail.com>
- <c9c1207f-09ae-e601-5789-bd39ceb4071e@huawei.com>
- <CANgfPd_u2uGmt645e9mLbBcTOV1mQ_iXjq8h7WwCDKETZJ9GJg@mail.gmail.com>
+        Tue, 09 Feb 2021 09:35:31 -0800 (PST)
+Date:   Tue, 9 Feb 2021 11:35:29 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     mdalam@codeaurora.org
+Cc:     Vinod Koul <vkoul@kernel.org>, corbet@lwn.net, agross@kernel.org,
+        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
+        mdalam=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
+ support
+Message-ID: <YCLH4ZOMjLbywl4u@builder.lan>
+References: <20210112101056.GI2771@vkoul-mobl>
+ <e3cf7c4fc02c54d17fd2fd213f39005b@codeaurora.org>
+ <20210115055806.GE2771@vkoul-mobl>
+ <97ce29b230164a5848a38f6448d1be60@codeaurora.org>
+ <20210119164511.GE2771@vkoul-mobl>
+ <534308caab7c18730ad0cc25248d116f@codeaurora.org>
+ <20210201060508.GK2771@vkoul-mobl>
+ <9d33d73682f24d92338757e1823ccd88@codeaurora.org>
+ <20210201064314.GM2771@vkoul-mobl>
+ <73c871d3d674607fafc7b79e602ec587@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANgfPd_u2uGmt645e9mLbBcTOV1mQ_iXjq8h7WwCDKETZJ9GJg@mail.gmail.com>
+In-Reply-To: <73c871d3d674607fafc7b79e602ec587@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021, Ben Gardon wrote:
-> On Tue, Feb 9, 2021 at 3:21 AM wangyanan (Y) <wangyanan55@huawei.com> wrote:
-> >
-> >
-> > On 2021/2/9 2:13, Ben Gardon wrote:
-> > > On Mon, Feb 8, 2021 at 1:08 AM Yanan Wang <wangyanan55@huawei.com> wrote:
-> > >> Add a macro to get string of the backing source memory type, so that
-> > >> application can add choices for source types in the help() function,
-> > >> and users can specify which type to use for testing.
-> > > Coincidentally, I sent out a change last week to do the same thing:
-> > > "KVM: selftests: Add backing src parameter to dirty_log_perf_test"
-> > > (https://lkml.org/lkml/2021/2/2/1430)
-> > > Whichever way this ends up being implemented, I'm happy to see others
-> > > interested in testing different backing source types too.
-> >
-> > Thanks Ben! I have a little question here.
-> >
-> > Can we just present three IDs (0/1/2) but not strings for users to
-> > choose which backing_src_type to use like the way of guest modes,
-> 
-> That would be fine with me. The string names are easier for me to read
-> than an ID number (especially if you were to add additional options
-> e.g. 1G hugetlb or file backed  / shared memory) but it's mostly an
-> aesthetic preference, so I don't have strong feelings either way.
+On Mon 01 Feb 09:50 CST 2021, mdalam@codeaurora.org wrote:
 
-I vote to expose/consume strings, being able to do ".dirty_log_perf_test --help"
-and understand the backing options without having to dig into source was super
-nice.
+> On 2021-02-01 12:13, Vinod Koul wrote:
+> > On 01-02-21, 11:52, mdalam@codeaurora.org wrote:
+> > > On 2021-02-01 11:35, Vinod Koul wrote:
+> > > > On 27-01-21, 23:56, mdalam@codeaurora.org wrote:
+> > 
+> > > > >   The actual LOCK/UNLOCK flag should be set on hardware command
+> > > > > descriptor.
+> > > > >   so this flag setting should be done in DMA engine driver. The user
+> > > > > of the
+> > > > > DMA
+> > > > >   driver like (in case of IPQ5018) Crypto can use flag
+> > > > > "DMA_PREP_LOCK" &
+> > > > > "DMA_PREP_UNLOCK"
+> > > > >   while preparing CMD descriptor before submitting to the DMA
+> > > > > engine. In DMA
+> > > > > engine driver
+> > > > >   we are checking these flasgs on CMD descriptor and setting actual
+> > > > > LOCK/UNLOCK flag on hardware
+> > > > >   descriptor.
+> > > >
+> > > >
+> > > > I am not sure I comprehend this yet.. when is that we would need to do
+> > > > this... is this for each txn submitted to dmaengine.. or something
+> > > > else..
+> > > 
+> > >  Its not for each transaction submitted to dmaengine. We have to set
+> > > this
+> > > only
+> > >  once on CMD descriptor. So when A53 crypto driver need to change
+> > > the crypto
+> > > configuration
+> > >  then first it will lock the all other pipes using setting the LOCK
+> > > flag bit
+> > > on CMD
+> > >  descriptor and then it can start the transaction , on data
+> > > descriptor this
+> > > flag will
+> > >  not get set once all transaction will be completed the A53 crypto
+> > > driver
+> > > release the lock on
+> > >  all other pipes using UNLOCK flag on CMD descriptor. So LOCK/UNLOCK
+> > > will be
+> > > only once and not for
+> > >  the each transaction.
+> > 
+> > Okay so why cant the bam driver check cmd descriptor and do lock/unlock
+> > as below, why do we need users to do this.
+> > 
+> >         if (flags & DMA_PREP_CMD) {
+> >                 do_lock_bam();
+> 
+>  User will not decide to do this LOCK/UNLOCK mechanism. It depends on
+>  use case.  This LOCK/UNLOCK mechanism not required always. It needs
+>  only when hardware will be shared between different core with
+>  different driver.
+
+So you have a single piece of crypto hardware and you're using the BAM's
+LOCK/UNLOCK feature to implement a "mutex" on a particular BAM channel?
+
+>  The LOCK/UNLOCK flags provides SW to enter ordering between pipes
+> execution.
+>  (Generally, the BAM pipes are total independent from each other and work in
+> parallel manner).
+>  This LOCK/UNLOCK flags are part of actual pipe hardware descriptor.
+> 
+>  Pipe descriptor having the following flags:
+>  INT : Interrupt
+>  EOT: End of transfer
+>  EOB: End of block
+>  NWD: Notify when done
+>  CMD: Command
+>  LOCK: Lock
+>  UNLOCK: Unlock
+>  etc.
+> 
+>  Here the BAM driver is common driver for (QPIC, Crypto, QUP etc. in
+> IPQ5018)
+>  So here only Crypto will be shared b/w multiple cores so For crypto request
+> only the LOCK/UNLOCK
+>  mechanism required.
+>  For other request like for QPIC driver, QUPT driver etc. its not required.
+> So Crypto driver has to raise the flag for
+>  LOCK/UNLOCK while preparing CMD descriptor. The actual locking will happen
+> in BAM driver only using condition
+>  if (flags & DMA_PREP_CMD) {
+>      if (flags & DMA_PREP_LOCK)
+>         desc->flags |= cpu_to_le16(DESC_FLAG_LOCK);
+>  }
+> 
+>  So Crypto driver should set this flag DMA_PREP_LOCK while preparing CMD
+> descriptor.
+>  So LOCK should be set on actual hardware pipe descriptor with descriptor
+> type CMD.
+> 
+
+It sounds fairly clear that the actual descriptor modification must
+happen in the BAM driver, but the question in my mind is how this is
+exposed to the DMAengine clients (e.g. crypto, QPIC etc).
+
+What is the life span of the locked state? Do you always provide a
+series of descriptors that starts with a LOCK and ends with an UNLOCK?
+Or do you envision that the crypto driver provides a LOCK descriptor and
+at some later point provides a UNLOCK descriptor?
+
+
+Finally, this patch just adds the BAM part of things, where is the patch
+that actually makes use of this feature?
+
+Regards,
+Bjorn
+
+> > 
+> > The point here is that this seems to be internal to dma and should be
+> > handled by dma driver.
+> > 
+>   This LOCK/UNLOK flags are part of actual hardware descriptor so this
+> should be handled by BAM driver only.
+>   If we set condition like this
+>   if (flags & DMA_PREP_CMD) {
+>                 do_lock_bam();
+>   Then LOCK/UNLOCK will be applied for all the CMD descriptor including
+> (QPIC driver, QUP driver , Crypto driver etc.).
+>   So this is not our intension. So we need to set this LOCK/UNLOCK only for
+> the drivers it needs. So Crypto driver needs
+>   locking mechanism so we will set LOCK/UNLOCK flag on Crypto driver request
+> only for other driver request like QPIC driver,
+>   QUP driver will not set this.
+> 
+> > Also if we do this, it needs to be done for specific platforms..
+> > 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> > Thanks
