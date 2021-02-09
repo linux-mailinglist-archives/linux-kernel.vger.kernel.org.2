@@ -2,183 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4F43144C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC3A3144CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbhBIAT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 19:19:29 -0500
-Received: from mga12.intel.com ([192.55.52.136]:47541 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229623AbhBIAT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:19:27 -0500
-IronPort-SDR: ZJQCO/A3787mfUV0ZUWZHh+9B5Rumv23ViYKSf79xhWk51zaQ5CRHEftU34X972bBF/SKU1ggM
- O6WFflld8Gxg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="160957488"
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="160957488"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 16:17:41 -0800
-IronPort-SDR: u6DxJ2vfJjDslyiSUWZ5Rx31sPnoNoA2G2fmV4r476kY2YGGWEQ1GsT5+NEri8VCZKLFjD+g0u
- ppdDucux2tlQ==
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="395797398"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 16:17:38 -0800
-Subject: Re: [PATCH 27/49] perf util: Save pmu name to struct perf_pmu_alias
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        "Jin, Yao" <yao.jin@intel.com>
-References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
- <1612797946-18784-28-git-send-email-kan.liang@linux.intel.com>
- <20210208185732.GK920417@kernel.org>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <07a75656-a49d-0ca9-b1f5-e69501a5dd9c@linux.intel.com>
-Date:   Tue, 9 Feb 2021 08:17:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230059AbhBIAVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 19:21:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229978AbhBIAVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 19:21:03 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9A9C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 16:20:23 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id y15so14539559ilj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 16:20:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q1VHbH38hVd2unS1khB8XzowmfD50y/QcVJ8OqQemiA=;
+        b=VXhaa90/Z2Zb+FtG4H/Phr8KuO5zRwT4E6hUNyeaNCRApzVU5EOrIxkZ3bj7hPOm/x
+         X8028kcGTs0CQDu0SW7KCA8BCrIf2PvzEVJ9M17EGH+oWSOiuzxw9iZT7tgVqGxXmaEC
+         Nr3WHiVepYslkaRCpXoJRqbK6S/XuTS2tgjrc4Un0PgTRkfAFwbRkZpAdL9nbzSE1XXO
+         8anhP15uS9tPI/J2kfPkAULPpi973StvEr5MtPquBSpvLShqa8U16N5wb6Mg2MTj/Phh
+         0hw9Y3b5WzuwADEmznofiyqJTePWjvi9wI6VzcBCaB8outK3j3OyBCBwwDF+YgMZMu7Q
+         N8XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q1VHbH38hVd2unS1khB8XzowmfD50y/QcVJ8OqQemiA=;
+        b=sQCeX9nzsg9Gtf9q+2OnmZ3it+n/PCSOIS21lDbqsxJlcNFvIJxQF/xCAVpHlhX79y
+         oJu+CkETMfCvK/ZuZ/3qndQ/ztS0QoyXTcpNiwFQ+zHcwTn1sIUvkwacDBZO48TaKlTh
+         3mopbj/2KBQh4xnbG+b23/gVxVMKXyncP3xofqQP43t29Oliekb5H+MYV8lUDLCkqMj3
+         HF10azp0nyfD9/KSYOClHB59o591K4pdeqECnfvVgorcJB255BkmtcOEDIkrDWXB0Uzo
+         BE0yEY6GdtDOvrX1F0PoBINUud/89CHYjixmrb74Ej+yeCWB5MVDZmhwVHKC9we3emjb
+         QRVQ==
+X-Gm-Message-State: AOAM531jXC3q34AA8Vv64PjJWP+EfHo/Hd263Cq2sIoBeILtyXiIeHmf
+        yGAGkcFSeBoE4xX2wDALxEdd2PjotDjDDOysTcRxdA==
+X-Google-Smtp-Source: ABdhPJyPH1R03Nt8wDlrMvtg9sUGZmMpUXU2ipBTH5FZKtV6/hMAlksqAdcXPt8RgulBJ6wBtwFCTKCoYfpE14nFOT8=
+X-Received: by 2002:a05:6e02:1246:: with SMTP id j6mr18800954ilq.85.1612830022313;
+ Mon, 08 Feb 2021 16:20:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210208185732.GK920417@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210204183433.1431202-1-axelrasmussen@google.com> <20210209000343.GB78818@xz-x1>
+In-Reply-To: <20210209000343.GB78818@xz-x1>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Mon, 8 Feb 2021 16:19:45 -0800
+Message-ID: <CAJHvVcgLCvB7dCyTdGkRK2xVPkKuvXQ3K8SNmNJnXxP4Dp092w@mail.gmail.com>
+Subject: Re: [PATCH v4 00/10] userfaultfd: add minor fault handling
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On Mon, Feb 8, 2021 at 4:03 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Thu, Feb 04, 2021 at 10:34:23AM -0800, Axel Rasmussen wrote:
+> > - Split out adding #ifdef CONFIG_USERFAULTFD to a separate patch (instead of
+> >   lumping it together with adding UFFDIO_CONTINUE). Also, extended it to make
+> >   the same change for shmem as well as suggested by Hugh Dickins.
+>
+> It seems you didn't extend it to shmem yet. :) But I think it's fine - it can
+> always be done as a separate patch then when you work on shmem, or even post it
+> along.  Thanks,
 
-On 2/9/2021 2:57 AM, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Feb 08, 2021 at 07:25:24AM -0800, kan.liang@linux.intel.com escreveu:
->> From: Jin Yao <yao.jin@linux.intel.com>
->>
->> On hybrid platform, one event is available on one pmu
->> (such as, cpu_core or cpu_atom).
->>
->> This patch saves the pmu name to the pmu field of struct perf_pmu_alias.
->> Then next we can know the pmu where the event can be enabled.
->>
->> Reviewed-by: Andi Kleen <ak@linux.intel.com>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> ---
->>   tools/perf/util/pmu.c | 17 +++++++++++++----
->>   tools/perf/util/pmu.h |  1 +
->>   2 files changed, 14 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index 44ef283..0c25457 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -283,6 +283,7 @@ void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
->>   	zfree(&newalias->str);
->>   	zfree(&newalias->metric_expr);
->>   	zfree(&newalias->metric_name);
->> +	zfree(&newalias->pmu);
->>   	parse_events_terms__purge(&newalias->terms);
->>   	free(newalias);
->>   }
->> @@ -297,6 +298,10 @@ static bool perf_pmu_merge_alias(struct perf_pmu_alias *newalias,
->>   
->>   	list_for_each_entry(a, alist, list) {
->>   		if (!strcasecmp(newalias->name, a->name)) {
->> +			if (newalias->pmu && a->pmu &&
->> +			    !strcasecmp(newalias->pmu, a->pmu)) {
->> +				continue;
->> +			}
->>   			perf_pmu_update_alias(a, newalias);
->>   			perf_pmu_free_alias(newalias);
->>   			return true;
->> @@ -311,7 +316,8 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
->>   				 char *unit, char *perpkg,
->>   				 char *metric_expr,
->>   				 char *metric_name,
->> -				 char *deprecated)
->> +				 char *deprecated,
->> +				 char *pmu)
->>   {
->>   	struct parse_events_term *term;
->>   	struct perf_pmu_alias *alias;
->> @@ -382,6 +388,7 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
->>   	}
->>   	alias->per_pkg = perpkg && sscanf(perpkg, "%d", &num) == 1 && num == 1;
->>   	alias->str = strdup(newval);
->> +	alias->pmu = pmu ? strdup(pmu) : NULL;
->>   
->>   	if (deprecated)
->>   		alias->deprecated = true;
->> @@ -407,7 +414,7 @@ static int perf_pmu__new_alias(struct list_head *list, char *dir, char *name, FI
->>   	strim(buf);
->>   
->>   	return __perf_pmu__new_alias(list, dir, name, NULL, buf, NULL, NULL, NULL,
->> -				     NULL, NULL, NULL, NULL);
->> +				     NULL, NULL, NULL, NULL, NULL);
->>   }
->>   
->>   static inline bool pmu_alias_info_file(char *name)
->> @@ -797,7 +804,8 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
->>   				(char *)pe->unit, (char *)pe->perpkg,
->>   				(char *)pe->metric_expr,
->>   				(char *)pe->metric_name,
->> -				(char *)pe->deprecated);
->> +				(char *)pe->deprecated,
->> +				(char *)pe->pmu);
->>   	}
->>   }
->>   
->> @@ -870,7 +878,8 @@ static int pmu_add_sys_aliases_iter_fn(struct pmu_event *pe, void *data)
->>   				      (char *)pe->perpkg,
->>   				      (char *)pe->metric_expr,
->>   				      (char *)pe->metric_name,
->> -				      (char *)pe->deprecated);
->> +				      (char *)pe->deprecated,
->> +				      NULL);
-> 
-> At some point I think passing the whole 'struct pme_event' pointer
-> should be better?
-> 
+Ah, indeed, sorry about this.
 
-Yes, I'm thinking the changes as following,
+I had originally planned to only do hugetlb, but then added shmem
+based on Hugh's comments. And then, later reverted the shmem parts as
+per the original plan, after some additional discussion with Hugh. I
+wrote the changelog entry somewhere in the middle of that, and forgot
+to update it. :)
 
-Before:
-
-static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
-				 char *desc, char *val,
-				 char *long_desc, char *topic,
-				 char *unit, char *perpkg,
-				 char *metric_expr,
-				 char *metric_name,
-				 char *deprecated);
-
-After:
-
-static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
-				 char *desc, char *val,
-				 struct pmu_event *pe);
-
-That looks much simpler than before.
-
-Thanks
-Jin Yao
-
->>   	}
->>   
->>   	return 0;
->> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
->> index 8164388..0e724d5 100644
->> --- a/tools/perf/util/pmu.h
->> +++ b/tools/perf/util/pmu.h
->> @@ -72,6 +72,7 @@ struct perf_pmu_alias {
->>   	bool deprecated;
->>   	char *metric_expr;
->>   	char *metric_name;
->> +	char *pmu;
->>   };
->>   
->>   struct perf_pmu *perf_pmu__find(const char *name);
->> -- 
->> 2.7.4
->>
-> 
+>
+> --
+> Peter Xu
+>
