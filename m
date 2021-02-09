@@ -2,207 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB67314F6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50514314F6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhBIMrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:47:51 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:39408 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhBIMqb (ORCPT
+        id S230224AbhBIMrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:47:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhBIMqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:46:31 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 119Cjasp102812;
-        Tue, 9 Feb 2021 06:45:36 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612874736;
-        bh=dpFap93OJFoMCL6N2sI87pM+cqa/ZFq/0zKd/+sd+CQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Ew0OwIV0Szsj+MNFNtx4NQItS+gIW7Dq4IooKlJfYkEu5dNZydJ3UTdFFs2P9Z33c
-         J8GlONkexma0ZWOQOwdWMpNpRYw5tDVu5QQxlfhW6wvU5kE0/BcN7FsWg0Gck4ZwyX
-         /F2cvl9MlG8MkKomsxT4sdbM8o23PZhHu4/eKtSw=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 119Cjawm088819
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Feb 2021 06:45:36 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Feb
- 2021 06:45:36 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 9 Feb 2021 06:45:36 -0600
-Received: from [10.250.232.153] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 119CjXvd084235;
-        Tue, 9 Feb 2021 06:45:34 -0600
-Subject: Re: [PATCH] dmaengine: ti: k3-udma: Fix NULL pointer dereference
- error
-To:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210209090036.30832-1-kishon@ti.com>
- <19488154-22d5-33b4-06a1-17e9a896ae04@gmail.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <7e06c63d-606b-be78-84ff-d5a5c72f7ad7@ti.com>
-Date:   Tue, 9 Feb 2021 18:15:32 +0530
+        Tue, 9 Feb 2021 07:46:22 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD38C06178A;
+        Tue,  9 Feb 2021 04:45:41 -0800 (PST)
+Received: from [IPv6:2003:c7:cf1c:ce00:59a:7e98:1669:ccc] (p200300c7cf1cce00059a7e9816690ccc.dip0.t-ipconnect.de [IPv6:2003:c7:cf1c:ce00:59a:7e98:1669:ccc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 076FA1F44DA5;
+        Tue,  9 Feb 2021 12:45:40 +0000 (GMT)
+Subject: Re: [PATCH AUTOSEL 5.10 14/36] media: rkisp1: uapi: change hist_bins
+ array type from __u16 to __u32
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Helen Koike <helen.koike@collabora.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210208175806.2091668-1-sashal@kernel.org>
+ <20210208175806.2091668-14-sashal@kernel.org>
+ <12c8f50e-3bba-5936-6e67-55bd928a75c7@xs4all.nl>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <e086d0f4-c5f0-e38c-8937-593852ac0b50@collabora.com>
+Date:   Tue, 9 Feb 2021 13:45:35 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <19488154-22d5-33b4-06a1-17e9a896ae04@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <12c8f50e-3bba-5936-6e67-55bd928a75c7@xs4all.nl>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
 
-On 09/02/21 5:53 pm, Péter Ujfalusi wrote:
-> Hi Kishon,
-> 
-> On 2/9/21 11:00 AM, Kishon Vijay Abraham I wrote:
->> bcdma_get_*() and udma_get_*() checks if bchan/rchan/tchan/rflow is
->> already allocated by checking if it has a NON NULL value. For the
->> error cases, bchan/rchan/tchan/rflow will have error value
->> and bcdma_get_*() and udma_get_*() considers this as already allocated
->> (PASS) since the error values are NON NULL. This results in
->> NULL pointer dereference error while de-referencing
->> bchan/rchan/tchan/rflow.
-> 
-> I think this can happen when a channel request fails and we get a second
-> request coming and faces with the not cleanup up tchan/rchan/bchan/rflow
-> from the previous failure.
-> Interesting that I have not faced with this, but it is a valid oversight
-> from me.
 
-Thank you for reviewing.
-
-Got into this issue when all the PCIe endpoint functions were requesting
-for a MEMCOPY channel (total 22 endpoint functions) specifically in
-bcdma_get_bchan() where the scenario you mentioned above happened.
-
-Vignesh asked me to fix it for all udma_get_*().
-> 
->> Reset the value of bchan/rchan/tchan/rflow to NULL if the allocation
->> actually fails.
+Am 08.02.21 um 21:46 schrieb Hans Verkuil:
+> On 08/02/2021 18:57, Sasha Levin wrote:
+>> From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
 >>
->> Fixes: 017794739702 ("dmaengine: ti: k3-udma: Initial support for K3 BCDMA")
->> Fixes: 25dcb5dd7b7c ("dmaengine: ti: New driver for K3 UDMA")
+>> [ Upstream commit 31f190e0ccac8b75d33fdc95a797c526cf9b149e ]
+>>
+>> Each entry in the array is a 20 bits value composed of 16 bits unsigned
+>> integer and 4 bits fractional part. So the type should change to __u32.
+>> In addition add a documentation of how the measurements are done.
 > 
-> Will this patch apply at any of these?
-> 25dcb5dd7b7c does not have BCDMA (bchan)
-> 017794739702 does not contain PKTDMA (tflow)
+> Dafna, Helen, does it make sense at all to backport these three patches to
+> when rkisp1 was a staging driver?
+> 
+> I would be inclined not to backport this.
 
-I can probably split this patch
-017794739702 for bchan and 25dcb5dd7b7c for bchan/rchan/tchan/rflow
+I also don't think it makes sense since this changes the uapi and it is not really a bug fix.
+
+
+Thanks,
+Dafna
 
 > 
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> Regards,
+> 
+> 	Hans
+> 
+>>
+>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>> Acked-by: Helen Koike <helen.koike@collabora.com>
+>> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
 >> ---
->>  drivers/dma/ti/k3-udma.c | 30 +++++++++++++++++++++++++-----
->>  1 file changed, 25 insertions(+), 5 deletions(-)
+>>   drivers/staging/media/rkisp1/uapi/rkisp1-config.h | 13 +++++++++----
+>>   1 file changed, 9 insertions(+), 4 deletions(-)
 >>
->> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
->> index 298460438bb4..aa4ef583ff83 100644
->> --- a/drivers/dma/ti/k3-udma.c
->> +++ b/drivers/dma/ti/k3-udma.c
->> @@ -1330,6 +1330,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
->>  {
->>  	struct udma_dev *ud = uc->ud;
->>  	enum udma_tp_level tpl;
->> +	int ret;
->>  
->>  	if (uc->bchan) {
->>  		dev_dbg(ud->dev, "chan%d: already have bchan%d allocated\n",
->> @@ -1347,8 +1348,11 @@ static int bcdma_get_bchan(struct udma_chan *uc)
->>  		tpl = ud->bchan_tpl.levels - 1;
->>  
->>  	uc->bchan = __udma_reserve_bchan(ud, tpl, -1);
->> -	if (IS_ERR(uc->bchan))
->> -		return PTR_ERR(uc->bchan);
->> +	if (IS_ERR(uc->bchan)) {
->> +		ret = PTR_ERR(uc->bchan);
->> +		uc->bchan = NULL;
->> +		return ret;
->> +	}
->>  
->>  	uc->tchan = uc->bchan;
->>  
->> @@ -1358,6 +1362,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
->>  static int udma_get_tchan(struct udma_chan *uc)
->>  {
->>  	struct udma_dev *ud = uc->ud;
->> +	int ret;
->>  
->>  	if (uc->tchan) {
->>  		dev_dbg(ud->dev, "chan%d: already have tchan%d allocated\n",
->> @@ -1372,8 +1377,11 @@ static int udma_get_tchan(struct udma_chan *uc)
->>  	 */
->>  	uc->tchan = __udma_reserve_tchan(ud, uc->config.channel_tpl,
->>  					 uc->config.mapped_channel_id);
->> -	if (IS_ERR(uc->tchan))
->> -		return PTR_ERR(uc->tchan);
->> +	if (IS_ERR(uc->tchan)) {
->> +		ret = PTR_ERR(uc->tchan);
->> +		uc->tchan = NULL;
->> +		return ret;
->> +	}
->>  
->>  	if (ud->tflow_cnt) {
->>  		int tflow_id;
->> @@ -1403,6 +1411,7 @@ static int udma_get_tchan(struct udma_chan *uc)
->>  static int udma_get_rchan(struct udma_chan *uc)
->>  {
->>  	struct udma_dev *ud = uc->ud;
->> +	int ret;
->>  
->>  	if (uc->rchan) {
->>  		dev_dbg(ud->dev, "chan%d: already have rchan%d allocated\n",
->> @@ -1417,8 +1426,13 @@ static int udma_get_rchan(struct udma_chan *uc)
->>  	 */
->>  	uc->rchan = __udma_reserve_rchan(ud, uc->config.channel_tpl,
->>  					 uc->config.mapped_channel_id);
->> +	if (IS_ERR(uc->rchan)) {
->> +		ret = PTR_ERR(uc->rchan);
->> +		uc->rchan = NULL;
->> +		return ret;
->> +	}
->>  
->> -	return PTR_ERR_OR_ZERO(uc->rchan);
->> +	return 0;
->>  }
->>  
->>  static int udma_get_chan_pair(struct udma_chan *uc)
->> @@ -1472,6 +1486,7 @@ static int udma_get_chan_pair(struct udma_chan *uc)
->>  static int udma_get_rflow(struct udma_chan *uc, int flow_id)
->>  {
->>  	struct udma_dev *ud = uc->ud;
->> +	int ret;
->>  
->>  	if (!uc->rchan) {
->>  		dev_err(ud->dev, "chan%d: does not have rchan??\n", uc->id);
->> @@ -1485,6 +1500,11 @@ static int udma_get_rflow(struct udma_chan *uc, int flow_id)
->>  	}
->>  
->>  	uc->rflow = __udma_get_rflow(ud, flow_id);
->> +	if (IS_ERR(uc->rflow)) {
->> +		ret = PTR_ERR(uc->rflow);
->> +		uc->rflow = NULL;
->> +		return ret;
->> +	}
->>  
->>  	return PTR_ERR_OR_ZERO(uc->rflow);
+>> diff --git a/drivers/staging/media/rkisp1/uapi/rkisp1-config.h b/drivers/staging/media/rkisp1/uapi/rkisp1-config.h
+>> index 432cb6be55b47..c19fe059c2442 100644
+>> --- a/drivers/staging/media/rkisp1/uapi/rkisp1-config.h
+>> +++ b/drivers/staging/media/rkisp1/uapi/rkisp1-config.h
+>> @@ -848,13 +848,18 @@ struct rkisp1_cif_isp_af_stat {
+>>   /**
+>>    * struct rkisp1_cif_isp_hist_stat - statistics histogram data
+>>    *
+>> - * @hist_bins: measured bin counters
+>> + * @hist_bins: measured bin counters. Each bin is a 20 bits unsigned fixed point
+>> + *	       type. Bits 0-4 are the fractional part and bits 5-19 are the
+>> + *	       integer part.
+>>    *
+>> - * Measurement window divided into 25 sub-windows, set
+>> - * with ISP_HIST_XXX
+>> + * The window of the measurements area is divided to 5x5 sub-windows. The
+>> + * histogram is then computed for each sub-window independently and the final
+>> + * result is a weighted average of the histogram measurements on all
+>> + * sub-windows. The window of the measurements area and the weight of each
+>> + * sub-window are configurable using struct @rkisp1_cif_isp_hst_config.
+>>    */
+>>   struct rkisp1_cif_isp_hist_stat {
+>> -	__u16 hist_bins[RKISP1_CIF_ISP_HIST_BIN_N_MAX];
+>> +	__u32 hist_bins[RKISP1_CIF_ISP_HIST_BIN_N_MAX];
+>>   };
+>>   
+>>   /**
+>>
 > 
-> return 0;
-
-Will fix this.
-
-Thanks
-Kishon
