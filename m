@@ -2,62 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF52314E19
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7296C314E17
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhBILRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:17:48 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:24071 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhBILM0 (ORCPT
+        id S230181AbhBILRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:17:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230264AbhBILMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:12:26 -0500
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 09 Feb 2021 03:11:42 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Feb 2021 03:11:40 -0800
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 09 Feb 2021 16:41:23 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-        id 85D0E211AC; Tue,  9 Feb 2021 16:41:22 +0530 (IST)
-From:   Md Sadre Alam <mdalam@codeaurora.org>
-To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
-Subject: [PATCH] mtd: spi-nor: gigadevice: Add support for gd25lb256e
-Date:   Tue,  9 Feb 2021 16:41:19 +0530
-Message-Id: <1612869079-19593-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 9 Feb 2021 06:12:07 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1580BC06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 03:11:27 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id nm1so1362195pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 03:11:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1gfRAu+EF22TJgGrs/thl2AAOrMdVzWuE7892b9S/rs=;
+        b=gMlqXT8rWIpJyD5epCoxTSOMoDQeGgVe/OYZzHq885OM3Eec7ej1Ha+es9Qi5ghM0n
+         Qzia5l+bxr4acSJhvwVqZ5kdPAcK41l24tLJWRsP+f71m7t51KZPx7C+XhDJYLv4hJBG
+         fRuoLRfO+ARlgG4HF1L3wVXCp68Mpf5XYEbN+AG2dq8Gzc+DHZgM/9yi3oP73hTraLLi
+         3OAMArWW73mLCyjy9/EuMjm3+H3tAQWtvTpNV7t42N+dnC0FZKly0Xh9cphxwhtN9wap
+         WGjEBfkZzSQmNbn8Vw0tgsTwxhq0IjLH00SzIBxf6A9tQ0ZSZSTmpWFOSu48DcJ88nA1
+         ueog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1gfRAu+EF22TJgGrs/thl2AAOrMdVzWuE7892b9S/rs=;
+        b=ZplBRcV6EOwspnb3ZuiBMGC1HmeGLrbETSJdLZ+u0aqTCQzuLi+aj9OKnC1xSkUudq
+         E5gNzVxZGhjmOdWOzz/OYf1lZNz3zBJArOZBLmDFzhRYUlyvEb3xYlO2q22DBqSNMn2f
+         8qhboVM+Vn28G9rftfAdFu3vta6iW1gCLmlpa0xuU5c3IWJ6Hf87JCu9vw2NpcLdDUSr
+         P+JACAPrCE6BCQJHz+MnN9HQ3Ud8mP8uenbxjKY3F0kBIaVl/XGNpSm4HEHkEYqRSyhg
+         8DpMZwzu18qpMEKExNJro00PDjYr1qUXFGhZUH5tiLRT1VYVyaOBhYkMBqLjwu+TOnvr
+         K+pw==
+X-Gm-Message-State: AOAM532HYQ6Yw+jwCJ/WL4noHbV1Mr823LlrtSNO69+GnnZ/m/X4Bmv6
+        d5MVoyRVG1oG1vpZSugXeeIt5g==
+X-Google-Smtp-Source: ABdhPJzb6OwNr5h9uGAFWKExAYZiQLT3W8yNvzEfekNQUpET/UHm0MoH1Vt9vf374J4PuOEMD42siA==
+X-Received: by 2002:a17:90b:33d1:: with SMTP id lk17mr3582252pjb.102.1612869086445;
+        Tue, 09 Feb 2021 03:11:26 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id ep14sm2268423pjb.53.2021.02.09.03.11.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Feb 2021 03:11:25 -0800 (PST)
+Date:   Tue, 9 Feb 2021 16:41:23 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     rjw@rjwysocki.net, rafael.j.wysocki@intel.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com,
+        zhangwen@yulong.com
+Subject: Re: [PATCH] cpufreq: schedutil: Don't use the limits_changed flag
+ any more
+Message-ID: <20210209111123.kzx36ghdac4rpfuh@vireshk-i7>
+References: <20210208030723.781-1-zbestahu@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208030723.781-1-zbestahu@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for gd25lb256e. This device tested on IPQ5018
-platform with dd from/to the flash for read/write respectly,
-and mtd erase for erasing the flash.
+On 08-02-21, 11:07, Yue Hu wrote:
+> From: Yue Hu <huyue2@yulong.com>
+> 
+> The limits_changed flag was introduced by commit 600f5badb78c
+> ("cpufreq: schedutil: Don't skip freq update when limits change") due
+> to race condition where need_freq_update is cleared in get_next_freq()
+> which causes reducing the CPU frequency is ineffective while busy.
+> 
+> But now, the race condition above is gone because get_next_freq()
+> doesn't clear the flag any more after commit 23a881852f3e ("cpufreq:
+> schedutil: Don't skip freq update if need_freq_update is set").
+> 
+> Moreover, need_freq_update currently will be set to true only in
+> sugov_should_update_freq() if CPUFREQ_NEED_UPDATE_LIMITS is not set
+> for the driver. However, limits may have changed at any time. And
+> subsequent frequence update is depending on need_freq_update. So, we
+> may skip this update.
+> 
+> Hence, let's remove it to avoid above issue and make code more simple.
+> 
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
+> ---
+>  kernel/sched/cpufreq_schedutil.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
 
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
- drivers/mtd/spi-nor/gigadevice.c | 3 +++
- 1 file changed, 3 insertions(+)
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-index 447d84b..8f1e7ec 100644
---- a/drivers/mtd/spi-nor/gigadevice.c
-+++ b/drivers/mtd/spi-nor/gigadevice.c
-@@ -50,6 +50,9 @@ static const struct flash_info gigadevice_parts[] = {
- 			   SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
- 			   SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
- 		.fixups = &gd25q256_fixups },
-+	{ "gd25lb256e", INFO(0xc86719, 0, 64 * 1024, 512,
-+			  SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			  SPI_NOR_4B_OPCODES) },
- };
- 
- const struct spi_nor_manufacturer spi_nor_gigadevice = {
 -- 
-2.7.4
-
+viresh
