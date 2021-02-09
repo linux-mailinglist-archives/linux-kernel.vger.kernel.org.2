@@ -2,207 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755AF314C1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B823314C41
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhBIJtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbhBIJrF (ORCPT
+        id S229910AbhBIJ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:56:52 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:8552 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229963AbhBIJxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:47:05 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C895C06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:46:25 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id g6so7808434wrs.11
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:46:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fSiros/bpA33DrxLIopBprg2PSwxl41ia1ZrqmhCZho=;
-        b=vuymAfDyb9XWQJGjC4tFRu9OpDkqZ6wpjb+3cg+oJtEvl6F3yIguUVh2zjmPp0e/vk
-         +glgf+5EvIHURqr9BnMpmoPB3fyPZQFNXrox+OkaUC/8lHwp8GbR+37c/V04gVQS0AvI
-         5YYUbIf2uAq+uXt1vWaOU9wMWhxFNFF+YRfmDhqcPILso0AfKV3pRkZBSElXEhHe155H
-         jBL15Mghp1LSsKAjzZbHsuHGTjGGgCuWq+S7cWKzaAG8eB9l6fX9bOioNgVUCM4owsG5
-         3wskIW5DkZ78EPcPvchpZecKfdvbcu/u5vf/0DMGA/faJOnaoe8krNwjgKAZNPyKt7O+
-         YrkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fSiros/bpA33DrxLIopBprg2PSwxl41ia1ZrqmhCZho=;
-        b=pAEqfp8DoEKYmskW9bgm4JKwmf/MhM/RwMWYSxPeaRzYK4V8lvwrftBYA+g32KmaRJ
-         2fCqg88Z4ERmr0jEc9I7YRmnR/5XLruFLr9fC7CHFTvIiLZGZIb1nEFdAJYIPdLbDgVT
-         r+rrY3Oa/2PI3HTWs/tpgCukoIa3szfWRp7mEZYABgLtT4/1gOz0z/u7hhqfaEuhQdGN
-         c4Xx10Q8BXLl8rZF/cMpFyooMb74hq+bRiZ2K3oZj8E7moiJqqPFY8Y3mHehgvE04oxw
-         lI/M+jOqWbVNJu7j/5NTMZ0SBcUbjM1mWgI1JfuQ5ZVphTOWqgDihRi7Ma2k+WvO50tu
-         gBNg==
-X-Gm-Message-State: AOAM531gzoDvU6mGQ2W1BvIbJUwbywwtFKZVsmd0rgeoFwSGTfr+xmY4
-        X4E5esEShuOqc7QKJ37oWJ/Z9Q==
-X-Google-Smtp-Source: ABdhPJy36oew79AJSVFEq7CckGFITCQIAO8op7d15QP81YFpuwBohfOwZRePgfOx82jKXyxQUCt7tQ==
-X-Received: by 2002:adf:f749:: with SMTP id z9mr23848375wrp.327.1612863983827;
-        Tue, 09 Feb 2021 01:46:23 -0800 (PST)
-Received: from localhost.localdomain (hst-221-63.medicom.bg. [84.238.221.63])
-        by smtp.gmail.com with ESMTPSA id u14sm1509627wro.10.2021.02.09.01.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 01:46:23 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH 2/2] venus: vdec: Add support for conceal control
-Date:   Tue,  9 Feb 2021 11:45:27 +0200
-Message-Id: <20210209094527.2173690-3-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210209094527.2173690-1-stanimir.varbanov@linaro.org>
-References: <20210209094527.2173690-1-stanimir.varbanov@linaro.org>
+        Tue, 9 Feb 2021 04:53:49 -0500
+X-IronPort-AV: E=Sophos;i="5.81,164,1610380800"; 
+   d="scan'208";a="104368304"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 09 Feb 2021 17:46:18 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 7E31B4CE6F81;
+        Tue,  9 Feb 2021 17:46:13 +0800 (CST)
+Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
+ (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
+ 2021 17:46:12 +0800
+Subject: Re: [PATCH 5/7] fsdax: Dedup file range to use a compare function
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>,
+        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
+        <linux-btrfs@vger.kernel.org>, <ocfs2-devel@oss.oracle.com>,
+        <david@fromorbit.com>, <rgoldwyn@suse.de>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com>
+ <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com>
+ <20210208151920.GE12872@lst.de>
+ <9193e305-22a1-3928-0675-af1cecd28942@cn.fujitsu.com>
+ <20210209093438.GA630@lst.de>
+From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Message-ID: <79b0d65c-95dd-4821-e412-ab27c8cb6942@cn.fujitsu.com>
+Date:   Tue, 9 Feb 2021 17:46:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210209093438.GA630@lst.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
+X-yoursite-MailScanner-ID: 7E31B4CE6F81.AEF5B
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support for decoder conceal color control.
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h       |  1 +
- drivers/media/platform/qcom/venus/hfi_cmds.c   | 18 ++++++++++++++++--
- drivers/media/platform/qcom/venus/hfi_helper.h | 10 ++++++++++
- drivers/media/platform/qcom/venus/vdec.c       | 11 ++++++++++-
- drivers/media/platform/qcom/venus/vdec_ctrls.c |  7 +++++++
- 5 files changed, 44 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index a252ed32cc14..b70ff14e5a5b 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -172,6 +172,7 @@ struct vdec_controls {
- 	u32 post_loop_deb_mode;
- 	u32 profile;
- 	u32 level;
-+	u64 conceal_color;
- };
- 
- struct venc_controls {
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 4f7565834469..884339aae6a7 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -760,7 +760,9 @@ static int pkt_session_set_property_1x(struct hfi_session_set_property_pkt *pkt,
- 		struct hfi_conceal_color *color = prop_data;
- 		u32 *in = pdata;
- 
--		color->conceal_color = *in;
-+		color->conceal_color = *in & 0xff;
-+		color->conceal_color |= ((*in >> 10) & 0xff) << 8;
-+		color->conceal_color |= ((*in >> 20) & 0xff) << 16;
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
- 		break;
- 	}
-@@ -1255,7 +1257,19 @@ pkt_session_set_property_6xx(struct hfi_session_set_property_pkt *pkt,
- 		cq->frame_quality = in->frame_quality;
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*cq);
- 		break;
--	} default:
-+	}
-+	case HFI_PROPERTY_PARAM_VDEC_CONCEAL_COLOR: {
-+		struct hfi_conceal_color_v4 *color = prop_data;
-+		u32 *in = pdata;
-+
-+		color->conceal_color_8bit = *in & 0xff;
-+		color->conceal_color_8bit |= ((*in >> 10) & 0xff) << 8;
-+		color->conceal_color_8bit |= ((*in >> 20) & 0xff) << 16;
-+		color->conceal_color_10bit = *in;
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
-+		break;
-+	}
-+	default:
- 		return pkt_session_set_property_4xx(pkt, cookie, ptype, pdata);
- 	}
- 
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index 6b524c7cde5f..fa49b49170b7 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -685,10 +685,20 @@ struct hfi_vc1e_perf_cfg_type {
- 	u32 search_range_y_subsampled[3];
- };
- 
-+/*
-+ * 0 - 7bit -> Luma (def: 16)
-+ * 8 - 15bit -> Chroma (def: 128)
-+ * format is valid up to v4
-+ */
- struct hfi_conceal_color {
- 	u32 conceal_color;
- };
- 
-+struct hfi_conceal_color_v4 {
-+	u32 conceal_color_8bit;
-+	u32 conceal_color_10bit;
-+};
-+
- struct hfi_intra_period {
- 	u32 pframes;
- 	u32 bframes;
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index e4dc97f00fc3..8d98fca55db1 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -620,7 +620,7 @@ static int vdec_set_properties(struct venus_inst *inst)
- {
- 	struct vdec_controls *ctr = &inst->controls.dec;
- 	struct hfi_enable en = { .enable = 1 };
--	u32 ptype;
-+	u32 ptype, conceal;
- 	int ret;
- 
- 	if (ctr->post_loop_deb_mode) {
-@@ -630,6 +630,15 @@ static int vdec_set_properties(struct venus_inst *inst)
- 			return ret;
- 	}
- 
-+	ptype = HFI_PROPERTY_PARAM_VDEC_CONCEAL_COLOR;
-+	conceal = ctr->conceal_color & 0xffff;
-+	conceal |= ((ctr->conceal_color >> 16) & 0xffff) << 10;
-+	conceal |= ((ctr->conceal_color >> 32) & 0xffff) << 20;
-+
-+	ret = hfi_session_set_property(inst, ptype, &conceal);
-+	if (ret)
-+		return ret;
-+
- 	return 0;
- }
- 
-diff --git a/drivers/media/platform/qcom/venus/vdec_ctrls.c b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-index 974110b75b93..9ff3db1c4a0f 100644
---- a/drivers/media/platform/qcom/venus/vdec_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-@@ -30,6 +30,9 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_VP9_LEVEL:
- 		ctr->level = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:
-+		ctr->conceal_color = *ctrl->p_new.p_s64;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -158,6 +161,10 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	if (ctrl)
- 		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &vdec_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR, 0,
-+			  0xffffffffffffLL, 1, 0x8000800010LL);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret) {
- 		v4l2_ctrl_handler_free(&inst->ctrl_handler);
--- 
-2.25.1
+On 2021/2/9 下午5:34, Christoph Hellwig wrote:
+> On Tue, Feb 09, 2021 at 05:15:13PM +0800, Ruan Shiyang wrote:
+>> The dax dedupe comparison need the iomap_ops pointer as argument, so my
+>> understanding is that we don't modify the argument list of
+>> generic_remap_file_range_prep(), but move its code into
+>> __generic_remap_file_range_prep() whose argument list can be modified to
+>> accepts the iomap_ops pointer.  Then it looks like this:
+> 
+> I'd say just add the iomap_ops pointer to
+> generic_remap_file_range_prep and do away with the extra wrappers.  We
+> only have three callers anyway.
+
+OK.
+
+
+--
+Thanks,
+Ruan Shiyang.
+> 
+> 
+
 
