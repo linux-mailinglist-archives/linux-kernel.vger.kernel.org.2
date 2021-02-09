@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64683314E9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 141FF314EA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhBIMDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:03:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41712 "EHLO mx2.suse.de"
+        id S230179AbhBIMDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:03:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230242AbhBIMBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:01:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 38780AF2B;
-        Tue,  9 Feb 2021 12:00:51 +0000 (UTC)
-Subject: Re: [PATCH v4 3/3] vsprintf: dump full information of page flags in
- pGp
-To:     Yafang Shao <laoar.shao@gmail.com>, willy@infradead.org,
-        andriy.shevchenko@linux.intel.com, david@redhat.com,
-        linmiaohe@huawei.com, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, joe@perches.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210209105613.42747-1-laoar.shao@gmail.com>
- <20210209105613.42747-4-laoar.shao@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <0393a2c1-6cc6-418a-9548-572620eb9098@suse.cz>
-Date:   Tue, 9 Feb 2021 13:00:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229992AbhBIMBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:01:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B38FC64E8C;
+        Tue,  9 Feb 2021 12:00:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612872058;
+        bh=ENHk19c20GqiLUebme+RmW7wZA6VOHChW92hTBetcKM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m4dM5ezGBHqdHskfPYGBARkvUZr+uZwSx6PPdwYKMnnkfk3F5E1ljxj08vKKRQPTC
+         cGhUNtXOTd1R/agDbegkTXhroxjg0K4R37Dhmt5KJ7lODbGrYWXdHqw/JEI13/1/6L
+         +Glkfv4QcZrSQmg26BUudus2lVX1oYazNL7bg3SV7bfl6/dUpv6qBB1rPkK1In1DUi
+         VMPMGIVxP1eaG74bKCX0YrqXZ56rO3JZwhkiwdTZBqQ+4TKTPk1qIMWZPJB2tt19zQ
+         x4zM4NfQPSbuAxx4mpAC2+KfI3/bN9xK4p32cyBVjH0sO/aLWR6R1QasgYV+oA5mtn
+         jD1BG+BWfzlnw==
+Received: from johan by xi with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l9Rhf-00021y-BS; Tue, 09 Feb 2021 13:01:12 +0100
+Date:   Tue, 9 Feb 2021 13:01:11 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Cercueil <paul@crapouillou.net>, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] usb: misc: usb3503: Fix logic in usb3503_init()
+Message-ID: <YCJ5h889zBrzVzji@hovoldconsulting.com>
+References: <4ae929dc31c170252154352d04e89c8456d91ca3.1612870239.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209105613.42747-4-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ae929dc31c170252154352d04e89c8456d91ca3.1612870239.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 11:56 AM, Yafang Shao wrote:
-> Currently the pGp only shows the names of page flags, rather than
-> the full information including section, node, zone, last cpupid and
-> kasan tag. While it is not easy to parse these information manually
-> because there're so many flavors. Let's interpret them in pGp as well.
+On Tue, Feb 09, 2021 at 12:30:42PM +0100, Michal Simek wrote:
+> Based on
+> https://lore.kernel.org/linux-arm-kernel/YCJv59g3Tq2haDSa@kroah.com/
+> initialization should fail if any registration fails.
 > 
-> To be compitable with the existed format of pGp, the new introduced ones
-> also use '|' as the separator, then the user tools parsing pGp won't
-> need to make change, suggested by Matthew. The new information is
-> tracked onto the end of the existed one.
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
 > 
-> On example of the output in mm/slub.c as follows,
-> - Before the patch,
-> [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+>  drivers/usb/misc/usb3503.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> - After the patch,
-> [ 8838.835456] Slab 0x000000002828b78a objects=33 used=3 fp=0x00000000d04efc88 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-> 
-> The documentation and test cases are also updated. The output of the
-> test cases as follows,
-> [  501.485081] test_printf: loaded.
-> [  501.485768] test_printf: all 388 tests passed
-> [  501.488762] test_printf: unloaded.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Joe Perches <joe@perches.com>
-> Cc: Miaohe Lin <linmiaohe@huawei.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
+> diff --git a/drivers/usb/misc/usb3503.c b/drivers/usb/misc/usb3503.c
+> index 48099c6bf04c..3aae83fbebae 100644
+> --- a/drivers/usb/misc/usb3503.c
+> +++ b/drivers/usb/misc/usb3503.c
+> @@ -409,13 +409,17 @@ static int __init usb3503_init(void)
+>  	int err;
+>  
+>  	err = i2c_add_driver(&usb3503_i2c_driver);
+> -	if (err != 0)
+> +	if (err) {
+>  		pr_err("usb3503: Failed to register I2C driver: %d\n", err);
+> +		return err;
+> +	}
+>  
+>  	err = platform_driver_register(&usb3503_platform_driver);
+> -	if (err != 0)
+> +	if (err) {
+>  		pr_err("usb3503: Failed to register platform driver: %d\n",
+>  		       err);
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+You forgot to deregister the i2c driver.
 
-The 'pfl' array should be even useful in kernel crash dump tools!
+> +		return err;
+> +	}
+>  
+>  	return 0;
+>  }
 
+Johan
