@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C46131474F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 05:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0659C314792
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 05:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhBIEGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 23:06:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhBIDmi (ORCPT
+        id S229822AbhBIEfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 23:35:52 -0500
+Received: from azure-sdnproxy.icoremail.net ([52.187.6.220]:44402 "HELO
+        azure-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with SMTP id S230154AbhBIEHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 22:42:38 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95010C06178C;
-        Mon,  8 Feb 2021 19:33:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=MeDzDkJLjScKS80C0Rq2IFniB3UPYjZEfetms5EKJPQ=; b=ZdNWFqhv2Jl0t2u9HDkD8IScGg
-        7uQk74Zyg6DLEXfhJmtBusdyt98l+nC5l1nzR1Lk46U93MQEl0yIBN93jEicDGnhGOuSQRPoivIDV
-        Rknbq6O/hVwciU4gWJdjaNmydtkkt9Ens6CZ7+LQVsTG0zsdn4JfoIE3VAAtZNoZ0jnpM1G4YxU4a
-        ju3+/wQ8s8L/dLWZiIGcKJQJhjYWVaQ+10B8fZCiuNHJ/bq3torcxS6X5Zktics89UKr8rhjoMTZa
-        CliYg2mlcR5RxcaUkE6Cn7RfmAJMTBavIsvkGZfgxFWxMNZqZPiNy6qxGrWTBkxaLxwE26bazR6aV
-        IOrhIAxg==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9JmC-0001JB-AQ; Tue, 09 Feb 2021 03:33:20 +0000
-Subject: Re: linux-next: Tree for Feb 8 (Warning at arch/x86/kernel/irq.c:390)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@suse.de>
-References: <20210208235246.01cb4daf@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <62fecf7b-e660-8bf6-c9d7-634c599494dd@infradead.org>
-Date:   Mon, 8 Feb 2021 19:33:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210208235246.01cb4daf@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 8 Feb 2021 23:07:12 -0500
+X-Greylist: delayed 1430 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Feb 2021 23:07:10 EST
+Received: from centos7u5.localdomain (unknown [202.43.158.76])
+        by c1app2 (Coremail) with SMTP id AgINCgCnr7tEAiJg3Wj0Ag--.47078S3;
+        Tue, 09 Feb 2021 11:32:21 +0800 (CST)
+From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Subject: [PATCH] mm/slab: minor coding style tweaks
+Date:   Tue,  9 Feb 2021 11:31:39 +0800
+Message-Id: <1612841499-32166-1-git-send-email-daizhiyuan@phytium.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AgINCgCnr7tEAiJg3Wj0Ag--.47078S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr1xKFyxtrWfAF48JrWDurg_yoW5GFWDpF
+        9rC345tFZ3WF42gayxtw4DWFyfArZ7G3ZxCayj9a10v3Z8Z3WrXFW7XrW5JFs5Zry8CF4a
+        van5t3y7u397Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
+        Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUjQBMtUUUU
+        U==
+X-Originating-IP: [202.43.158.76]
+X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 4:52 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20210205:
-> 
+Fixed some coding style issues, improve code reading.
+This patch adds whitespace to clearly separate the parameters.
 
-on x86_64:
+Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+---
+ mm/slab.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Re: commit 1dba8a9538f5164eb8874eed4c7d6799a3c64963
-Author: Borislav Petkov <bp@suse.de>
-Date:   Thu Jan 7 13:29:05 2021 +0100
-    thermal: Move therm_throt there from x86/mce
-
-I am seeing this for CPU = 1,2,3:
-
-[    0.002092] WARNING: CPU: 1 PID: 0 at ../arch/x86/kernel/irq.c:390 thermal_set_handler+0x16/0x35
-[    0.002092] Modules linked in:
-[    0.002092] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.11.0-rc6-next-20210208 #1
-[    0.002092] Hardware name: TOSHIBA PORTEGE R835/Portable PC, BIOS Version 4.10   01/08/2013
-[    0.002092] RIP: 0010:thermal_set_handler+0x16/0x35
-[    0.002092] Code: 00 00 00 0f 85 e0 fe ff ff 5b 41 5c 41 5d 41 5e 41 5f 5d c3 48 85 ff 74 1c 48 81 3d f7 65 61 01 20 b4 41 b2 74 1b 55 48 89 e5 <0f> 0b 48 89 3d e8 65 61 01 5d c3 48 c7 05 db 65 61 01 20 b4 41 b2
-[    0.002092] RSP: 0000:ffff9c5a00097e08 EFLAGS: 00010002
-[    0.002092] RAX: 0000000000000007 RBX: 0000000000000007 RCX: 00000000000001b2
-[    0.002092] RDX: 0000000000000000 RSI: 0000000000000007 RDI: ffffffffb2a6c9d3
-[    0.002092] RBP: ffff9c5a00097e08 R08: ffff94c88ba51460 R09: 000000000003007f
-[    0.002092] R10: ffff94c88ba51480 R11: 0000000000000000 R12: 0000000000000000
-[    0.002092] R13: ffff94c88ba51480 R14: 0000000000000000 R15: 0000000000000000
-[    0.002092] FS:  0000000000000000(0000) GS:ffff94c88ba40000(0000) knlGS:0000000000000000
-[    0.002092] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    0.002092] CR2: 0000000000000000 CR3: 0000000093c0a001 CR4: 00000000000606a0
-[    0.002092] Call Trace:
-[    0.002092]  intel_init_thermal+0x25a/0x2e9
-[    0.002092]  init_intel+0x562/0x585
-[    0.002092]  identify_cpu+0x298/0x4b0
-[    0.002092]  identify_secondary_cpu+0x1a/0x99
-[    0.002092]  smp_store_cpu_info+0x5d/0x6b
-[    0.002092]  start_secondary+0x5f/0x16c
-[    0.002092]  secondary_startup_64_no_verify+0xc2/0xcb
-[    0.002092] ---[ end trace 9f8e2ebc792bd614 ]---
-
-
+diff --git a/mm/slab.c b/mm/slab.c
+index d7c8da9..30bba30 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -272,7 +272,7 @@ static void kmem_cache_node_init(struct kmem_cache_node *parent)
+ #define	STATS_DEC_ACTIVE(x)	((x)->num_active--)
+ #define	STATS_INC_ALLOCED(x)	((x)->num_allocations++)
+ #define	STATS_INC_GROWN(x)	((x)->grown++)
+-#define	STATS_ADD_REAPED(x,y)	((x)->reaped += (y))
++#define	STATS_ADD_REAPED(x, y)	((x)->reaped += (y))
+ #define	STATS_SET_HIGH(x)						\
+ 	do {								\
+ 		if ((x)->num_active > (x)->high_mark)			\
+@@ -296,7 +296,7 @@ static void kmem_cache_node_init(struct kmem_cache_node *parent)
+ #define	STATS_DEC_ACTIVE(x)	do { } while (0)
+ #define	STATS_INC_ALLOCED(x)	do { } while (0)
+ #define	STATS_INC_GROWN(x)	do { } while (0)
+-#define	STATS_ADD_REAPED(x,y)	do { (void)(y); } while (0)
++#define	STATS_ADD_REAPED(x, y)	do { (void)(y); } while (0)
+ #define	STATS_SET_HIGH(x)	do { } while (0)
+ #define	STATS_INC_ERR(x)	do { } while (0)
+ #define	STATS_INC_NODEALLOCS(x)	do { } while (0)
+@@ -332,7 +332,7 @@ static int obj_offset(struct kmem_cache *cachep)
+ static unsigned long long *dbg_redzone1(struct kmem_cache *cachep, void *objp)
+ {
+ 	BUG_ON(!(cachep->flags & SLAB_RED_ZONE));
+-	return (unsigned long long*) (objp + obj_offset(cachep) -
++	return (unsigned long long *) (objp + obj_offset(cachep) -
+ 				      sizeof(unsigned long long));
+ }
+ 
+@@ -580,7 +580,7 @@ static int transfer_objects(struct array_cache *to,
+ 	if (!nr)
+ 		return 0;
+ 
+-	memcpy(to->entry + to->avail, from->entry + from->avail -nr,
++	memcpy(to->entry + to->avail, from->entry + from->avail - nr,
+ 			sizeof(void *) *nr);
+ 
+ 	from->avail -= nr;
+@@ -2738,7 +2738,7 @@ static void *cache_free_debugcheck(struct kmem_cache *cachep, void *objp,
+ 
+ #else
+ #define kfree_debugcheck(x) do { } while(0)
+-#define cache_free_debugcheck(x,objp,z) (objp)
++#define cache_free_debugcheck(x, objp, z) (objp)
+ #endif
+ 
+ static inline void fixup_objfreelist_debug(struct kmem_cache *cachep,
+@@ -3025,7 +3025,7 @@ static void *cache_alloc_debugcheck_after(struct kmem_cache *cachep,
+ 	return objp;
+ }
+ #else
+-#define cache_alloc_debugcheck_after(a,b,objp,d) (objp)
++#define cache_alloc_debugcheck_after(a, b, objp, d) (objp)
+ #endif
+ 
+ static inline void *____cache_alloc(struct kmem_cache *cachep, gfp_t flags)
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+1.8.3.1
+
