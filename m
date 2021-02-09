@@ -2,67 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108283151CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0740A3151CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhBIOha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:37:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232138AbhBIOge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:36:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC9664E4F;
-        Tue,  9 Feb 2021 14:35:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612881354;
-        bh=q15tb5Wse3+G/2RjaIWhqAW8TuE4mKJ7jPy9N1Jo2c8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SXPdjrRdxWjfqoMzCaJEoNTF90EnkX+imFMJ0BS6NKV/ZwcWUJMaC9BeymSgZc384
-         QxWOReNr4BjGweHdZeeAL/4bJI7SkmDmSORGwIY/7Tx4VXDv69fHGvwbc4n1pIZnaM
-         4sAGe3BB27XQKEI3RqlV1vpxUPI0YEnsa2en4Sj1yWa0nBqvypfNn3HBoQcX1BrPMA
-         MpxDeSq1/GZrT+cRoOyEPA2ydyVXIhUWpRwad/cAwI4MyIm94zXlJBnaJZVywcFJ/h
-         vI7c30VxVvWi+VYxqUXlO8YcCX8hH7PjVLh9ex8qn78OcDj7en/Xzh+IkFs6AAMM0t
-         ESNkM70d2t6Hw==
-From:   Will Deacon <will@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] arm64: Make CPU_BIG_ENDIAN depend on ld.bfd or ld.lld 13.0.0+
-Date:   Tue,  9 Feb 2021 14:35:46 +0000
-Message-Id: <161288087156.126822.7923858337003340850.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210209005719.803608-1-nathan@kernel.org>
-References: <20210202022441.1451389-1-nathan@kernel.org> <20210209005719.803608-1-nathan@kernel.org>
+        id S231603AbhBIOhk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Feb 2021 09:37:40 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:41548 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232155AbhBIOgm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 09:36:42 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 6B886608A38A;
+        Tue,  9 Feb 2021 15:35:58 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 8Vwy9HmKlMkY; Tue,  9 Feb 2021 15:35:58 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 0B252605B49C;
+        Tue,  9 Feb 2021 15:35:58 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id BlL2HfhYicrX; Tue,  9 Feb 2021 15:35:57 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id D535B608A38A;
+        Tue,  9 Feb 2021 15:35:57 +0100 (CET)
+Date:   Tue, 9 Feb 2021 15:35:57 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ron Minnich <rminnich@google.com>, sven@narfation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>
+Message-ID: <563952295.378372.1612881357746.JavaMail.zimbra@nod.at>
+In-Reply-To: <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
+References: <20210124232007.21639-1-richard@nod.at> <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
+Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: MUSE: Userspace backed MTD v3
+Thread-Index: NVDMpjLzrmLV3u3YwGU4qvbOOzku6A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 17:57:20 -0700, Nathan Chancellor wrote:
-> Similar to commit 28187dc8ebd9 ("ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN
-> depends on !LD_IS_LLD"), ld.lld prior to 13.0.0 does not properly
-> support aarch64 big endian, leading to the following build error when
-> CONFIG_CPU_BIG_ENDIAN is selected:
+Miklos,
+
+----- Ursprüngliche Mail -----
+>> The core goal of MUSE is having the complexity on the userspace side and
+>> only a small MTD driver in kernelspace.
+>> While playing with different approaches I realized that FUSE offers everything
+>> we need. So MUSE is a little like CUSE except that it does not implement a
+>> bare character device but an MTD.
 > 
-> ld.lld: error: unknown emulation: aarch64linuxb
+> Looks fine.
+
+I'm glad to hear that!
+
+> I do wonder if MUSE should go to drivers/mtd/ instead.   Long term
+> goal would be move CUSE to drivers/char and move the transport part of
+> fuse into net/fuse leaving only the actual filesystems (fuse and
+> virtiofs) under fs/.
 > 
-> [...]
+> But for now just moving the minimal interface needed for MUSE into a
+> separate header (<net/fuse.h>) would work, I guess.
+> 
+> Do you think that would make sense?
 
-Applied to arm64 (for-next/misc), thanks!
+Yes, I'm all for having MUSE in drivers/mtd/.
 
-[1/1] arm64: Make CPU_BIG_ENDIAN depend on ld.bfd or ld.lld 13.0.0+
-      https://git.kernel.org/arm64/c/e9c6deee00e9
+I placed MUSE initially in fs/fuse/ because CUSE was already there and muse.c includes
+fuse_i.h. So tried to be as little invasive as possible.
 
-Cheers,
--- 
-Will
+>>
+>> Notes:
+>> ------
+>>
+>> - OOB support is currently limited. Currently MUSE has no support for processing
+>>   in- and out-band in the same MTD operation. It is good enough to make JFFS2
+>>   happy. This limitation is because FUSE has no support more than one variable
+>>   length buffer in a FUSE request.
+>>   At least I didn’t find a good way to pass more than one buffer to a request.
+>>   Maybe FUSE folks can correct me. :-)
+> 
+> If you look at fuse_do_ioctl() it does variable length input and
+> output at the same time.  I guess you need something similar to that.
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+I'll dig into this!
+
+Thanks,
+//richard
