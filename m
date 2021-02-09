@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A47E3145FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B11314604
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhBICA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:00:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229975AbhBICAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:00:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8052064EA1;
-        Tue,  9 Feb 2021 02:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612836007;
-        bh=0ES5u6nt4FzG4JbFR8B1V+2/AsLpStrMtudS1wgbnWQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=K8LjBVmQHRImZOHew1ura6hjW2siM2b1iS+k6yKtqjFywYjw8dCSRDYjL2Q8flFl9
-         Is+SPzoVQqjuiftMq57bfOB2Evcl3czQyzvM2VXWbHGw1lM0rcapIXjaYWjgBbuei3
-         bfcfkF5DybjdKH8RqL+nqAgu4tLFUfO0tvbsXi4mH6zpPDiHAHfCj6bkjXMuXuQOL2
-         2ynesvVmzmzPJ+5ZF72ADt4bOfxJcDm9R6m+E8WPCCr6MJoSzfhGC6aH4sJZqWVinh
-         22xSdDNJF53a/xQ3pwoVSSljBBlJgP6YuElwUv3MAoYuvhGquqV7xQLx9VfanWYUtA
-         /LhiX8YYTSxNg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 770BC609D6;
-        Tue,  9 Feb 2021 02:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231150AbhBICBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 21:01:46 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12872 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhBICBJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 21:01:09 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DZQzr14rSz7j5y;
+        Tue,  9 Feb 2021 09:59:04 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.162) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
+ 10:00:22 +0800
+Subject: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
+ drivers
+To:     Finn Thain <fthain@telegraphics.com.au>
+References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com>
+ <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au>
+CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+From:   tanxiaofei <tanxiaofei@huawei.com>
+Message-ID: <a555f4b2-4df9-7bf4-e76c-3556d5ccb4ff@huawei.com>
+Date:   Tue, 9 Feb 2021 10:00:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Add missing cleanup in
- atomic_bounds test
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161283600748.4994.7610155285282056810.git-patchwork-notify@kernel.org>
-Date:   Tue, 09 Feb 2021 02:00:07 +0000
-References: <20210208123737.963172-1-jackmanb@google.com>
-In-Reply-To: <20210208123737.963172-1-jackmanb@google.com>
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii.nakryiko@gmail.com, kpsingh@chromium.org,
-        revest@chromium.org, yhs@fb.com, linux-kernel@vger.kernel.org
+In-Reply-To: <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.192.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Finn,
+Thanks for reviewing the patch set.
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+On 2021/2/8 15:57, Finn Thain wrote:
+> On Sun, 7 Feb 2021, Xiaofei Tan wrote:
+>
+>> Replace spin_lock_irqsave with spin_lock in hard IRQ of SCSI drivers.
+>> There are no function changes, but may speed up if interrupt happen too
+>> often.
+>
+> This change doesn't necessarily work on platforms that support nested
+> interrupts.
+>
 
-On Mon,  8 Feb 2021 12:37:37 +0000 you wrote:
-> Add missing skeleton destroy call.
-> 
-> Reported-by: Yonghong Song <yhs@fb.com>
-> Fixes: 37086bfdc737 ("bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH")
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
-> 
-> [...]
+Linux doesn't support nested interrupts anymore after the following 
+patch, so please don't worry this.
 
-Here is the summary with links:
-  - [v2,bpf-next] selftests/bpf: Add missing cleanup in atomic_bounds test
-    https://git.kernel.org/bpf/bpf-next/c/1589a1fa4e38
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Were you able to measure any benefit from this change on some other
+> platform?
+>
 
+It's hard to measure the benefit of this change. Hmm, you could take 
+this patch set as cleanup. thanks.
+
+> Please see also,
+> https://lore.kernel.org/linux-scsi/89c5cb05cb844939ae684db0077f675f@h3c.com/
+>
+> .
+>
 
