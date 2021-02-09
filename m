@@ -2,144 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6508E314A75
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52924314A77
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhBIIhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:37:46 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:6404 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229851AbhBIIgn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:36:43 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1198XXQO027458;
-        Tue, 9 Feb 2021 09:35:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : subject : to
- : cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Xf58I3oc4vS+xAXxH1lhtadhjXCgDFhO3xI+liBkPK0=;
- b=ib56VHmZDsGHys78o8FHk6nGMU47CmKDSx1mNBVu6sE9mtHc2lM6nd44t/2xyjbNZjs3
- qDRg1Z0chYkU9V1obPQ0l2KZnT0s/FUUAZbWZiA9AM2ZepDy0Brc4OKBvdlHegrqR0sU
- n7k99jeE3/wmJIhHgCXQ8KszDJ4Wms1/vKx5jSUlUz50MOPGcLqOlJW2BjIqx4FOJcel
- mEGIdJqHaNERxIyeAF6+tRmdWurB1fGlggokP/7jNKWRZKg89Lj6zy5LMOeMBMpwqhT2
- B3+a47WSiEhAMT9cbG5xJgmghnCLOJqz2nuket9vXYmK3d9H0ABDLkaiNalxpPM7ZKgW Ug== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36hrf778q4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 09 Feb 2021 09:35:49 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3D1C610002A;
-        Tue,  9 Feb 2021 09:35:49 +0100 (CET)
-Received: from Webmail-eu.st.com (gpxdag2node6.st.com [10.75.127.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 24E1621CA78;
-        Tue,  9 Feb 2021 09:35:49 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.116) by GPXDAG2NODE6.st.com
- (10.75.127.70) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
- 2021 09:35:48 +0100
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Subject: Re: [PATCH v2] remoteproc: stm32: improve debug using dev_err_probe
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20201217144125.12903-1-arnaud.pouliquen@foss.st.com>
-Message-ID: <9d12a62c-ba39-4943-d9c4-9e3da8ef947f@foss.st.com>
-Date:   Tue, 9 Feb 2021 09:35:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229993AbhBIIij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:38:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229918AbhBIIhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 03:37:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3504C64E79;
+        Tue,  9 Feb 2021 08:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612859823;
+        bh=i8uBJJbz4wyAmxHfuAXfsQmKEl6vb3POsuLIzc8SaIU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mqxvFz4YCv9q3RSFDSqKmmqpJ2aMZLcQyQJopYaMfvjN4as7D8HT+M39QGKlE9GF8
+         OE9Vbk1XUnX84l+wmiYTZdK+2ZcuGIZsOv+afPaafbC2KZeeqSr9t7Vq9XZ1m/ig4a
+         Z5c/SzTR2rAlMhkL+qbL3tGY7tkBqBlTyyElglPY=
+Date:   Tue, 9 Feb 2021 09:37:01 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     Aaron Ma <aaron.ma@canonical.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Lee Jones <lee.jones@linaro.org>, peter.chen@nxp.com,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] xhci-pci: Set AMD Renoir USB controller to D3 when
+ shutdown
+Message-ID: <YCJJrVp2DvCzigCw@kroah.com>
+References: <20210204051850.64857-1-aaron.ma@canonical.com>
+ <CAAd53p4euFiw7pfDnD2H8oMVeeTqQ_c+wOFDLM2xPccn5MewiA@mail.gmail.com>
+ <cd4595e6-67da-885c-1a67-6dfd71425b8c@canonical.com>
+ <CAAd53p4z1ydFi5pwOZJnsrBDPNVLKU0ygqa0+kdZdXWYocPLgQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201217144125.12903-1-arnaud.pouliquen@foss.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.116]
-X-ClientProxiedBy: GPXDAG1NODE6.st.com (10.75.127.67) To GPXDAG2NODE6.st.com
- (10.75.127.70)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_02:2021-02-09,2021-02-09 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAd53p4z1ydFi5pwOZJnsrBDPNVLKU0ygqa0+kdZdXWYocPLgQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Feb 05, 2021 at 02:50:15PM +0800, Kai-Heng Feng wrote:
+> On Fri, Feb 5, 2021 at 2:45 PM Aaron Ma <aaron.ma@canonical.com> wrote:
+> >
+> >
+> > On 2/5/21 12:27 PM, Kai-Heng Feng wrote:
+> > > Can you please test the following patch, which should address the root cause:
+> > > https://lore.kernel.org/linux-acpi/20201201213019.1558738-1-furquan@google.com/
+> > >
+> > > It also helps another AMD laptop on S5:
+> > > https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1912935
+> > >
+> >
+> > No, this patch doesn't help on ThinkPad AMD platform.
+> 
+> Thanks for the confirmation!
+> 
+> Acked-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Gentle reminder, in case it has been forgotten.
+Mathias, want me to take this in my tree now, or are you going to send
+me more patches for 5.12-rc1?
 
-Thanks,
-Arnaud
+thanks,
 
-On 12/17/20 3:41 PM, Arnaud Pouliquen wrote:
-> From: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
-> 
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error.
-> The benefit is that DEFER issue will be logged in the devices_deferred
-> debugfs file.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
-> ---
-> V1 to V2: As suggested by Ahmad Fatoum use dev_err_probe to deal with
->           deferred cases
-> 
-> V1: https://www.spinics.net/lists/kernel/msg3765884.html
-> ---
-> 
->  drivers/remoteproc/stm32_rproc.c | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-> index a180aeae9675..ccb3c14a0023 100644
-> --- a/drivers/remoteproc/stm32_rproc.c
-> +++ b/drivers/remoteproc/stm32_rproc.c
-> @@ -370,8 +370,13 @@ static int stm32_rproc_request_mbox(struct rproc *rproc)
->  
->  		ddata->mb[i].chan = mbox_request_channel_byname(cl, name);
->  		if (IS_ERR(ddata->mb[i].chan)) {
-> -			if (PTR_ERR(ddata->mb[i].chan) == -EPROBE_DEFER)
-> +			if (PTR_ERR(ddata->mb[i].chan) == -EPROBE_DEFER) {
-> +				dev_err_probe(dev->parent,
-> +					      PTR_ERR(ddata->mb[i].chan),
-> +					      "failed to request mailbox %s\n",
-> +					      name);
->  				goto err_probe;
-> +			}
->  			dev_warn(dev, "cannot get %s mbox\n", name);
->  			ddata->mb[i].chan = NULL;
->  		}
-> @@ -592,15 +597,14 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
->  
->  	irq = platform_get_irq(pdev, 0);
->  	if (irq == -EPROBE_DEFER)
-> -		return -EPROBE_DEFER;
-> +		return dev_err_probe(dev, irq, "failed to get interrupt\n");
->  
->  	if (irq > 0) {
->  		err = devm_request_irq(dev, irq, stm32_rproc_wdg, 0,
->  				       dev_name(dev), pdev);
-> -		if (err) {
-> -			dev_err(dev, "failed to request wdg irq\n");
-> -			return err;
-> -		}
-> +		if (err)
-> +			return dev_err_probe(dev, err,
-> +					     "failed to request wdg irq\n");
->  
->  		ddata->wdg_irq = irq;
->  
-> @@ -613,10 +617,9 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
->  	}
->  
->  	ddata->rst = devm_reset_control_get_by_index(dev, 0);
-> -	if (IS_ERR(ddata->rst)) {
-> -		dev_err(dev, "failed to get mcu reset\n");
-> -		return PTR_ERR(ddata->rst);
-> -	}
-> +	if (IS_ERR(ddata->rst))
-> +		return dev_err_probe(dev, PTR_ERR(ddata->rst),
-> +				     "failed to get mcu_reset\n");
->  
->  	/*
->  	 * if platform is secured the hold boot bit must be written by
-> 
+greg k-h
