@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D68315C81
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7DC315CA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbhBJBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:45:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31355 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233594AbhBIXyr (ORCPT
+        id S234314AbhBJBxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234734AbhBJAFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 18:54:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612914772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sCgxYhlKqouW5On/JyHP4QhxHmQ7Rz3iIIznSUlIx+I=;
-        b=G0PBxnW6lUNowJmUpLvBx4+Z7eeQGXCkjj4tNPX9wCkjEKKleie/jvFGuQ5gpljuORx7a2
-        01/j/T4d6FowF0Y2Zcdv4e9p1sqajaDFdQXO+SGqFCGlcXLzjgE8kkNOCUhlBywTUVPM+1
-        voL3dU1awsY8yxurXYOW/UzV2ou6tqY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-134-Ex30AsQsPLG-6M6wmYfpQA-1; Tue, 09 Feb 2021 16:29:03 -0500
-X-MC-Unique: Ex30AsQsPLG-6M6wmYfpQA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97EA6192D794;
-        Tue,  9 Feb 2021 21:29:00 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-113-53.rdu2.redhat.com [10.10.113.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 74E1919C78;
-        Tue,  9 Feb 2021 21:28:58 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org
-Cc:     Matt Roper <matthew.d.roper@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Ville Syrjala <ville.syrjala@linux.intel.com>,
-        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        Yijun Shen <Yijun.Shen@dell.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Aditya Swarup <aditya.swarup@intel.com>,
-        Ramalingam C <ramalingam.c@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v5 2/4] drm/i915/gen9_bc: Introduce TGP PCH DDC pin mappings
-Date:   Tue,  9 Feb 2021 16:28:29 -0500
-Message-Id: <20210209212832.1401815-3-lyude@redhat.com>
-In-Reply-To: <20210209212832.1401815-1-lyude@redhat.com>
-References: <20210209212832.1401815-1-lyude@redhat.com>
+        Tue, 9 Feb 2021 19:05:52 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01262C0698DE
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:34:30 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id y11so18906118otq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:34:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mYfAaU+gBcca7IuAhhFeMVoOKmdaZyZ+mleDrl99M6o=;
+        b=uMWC68Ks3SY1GdCW+5mYxEwWNi1OLwA4mZXnhEiNyGp0shbrH30kRTYhdUIi0hTZvQ
+         oB6vFwXp4o01GrgAw59WEHUxznMVOoxEQMLFXcqX6jWWyXCbBzNrsF5YSrLesSpJ87TJ
+         tn+qWNcgkGNP7Kg7ZNtMF/btsp5mIMXhfWtoxh6rw9c07SLWQ4+SCOjIe26QKzCnqTLZ
+         lbNrAismaj657IC3R1UrNZeV5XKbrLUJbGUuBzNV60CuyhVc91y83PA94MyGea12z8oX
+         SgbhCWEMqvroz5IaWpId+eEtTHrHYHXMghXGRi8K7zQuXN59+sSeMkO7hhV8Lw3nSeGm
+         jzgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mYfAaU+gBcca7IuAhhFeMVoOKmdaZyZ+mleDrl99M6o=;
+        b=DVcD7iKKGCTbPDmOgiMb5Am0e4DkUGl2R+11sn/HEkGuH3lfes9bZ8SQZI21KhArg/
+         51ECrAhHUnyjk2LuoqHA6SW/5ob+x/Uo6goUB979fi14EPwrok7eafpH/GzkovNFEdB0
+         Sa5bd+Wa5+6DR67Abom7lvg53b/qkeOoHVHS6g2i34fuvLul9LSQAKzhOzWL21dHsD3Z
+         CWF96ktRBfU9Ezki8D1zDFUmaM+Xi7m2CvDk5AW9qsgQIIorAnn+xQO30eKv4g9bIAZK
+         brquhWUnNAAxH0oUP/SUKGUAmEsyWkrBjOQtIz0fYRolQuTg9wcfXBvW6MqwFFyI0VQI
+         oaAw==
+X-Gm-Message-State: AOAM532UjDM7MvSjgEoWuvUVk+KFSLhqoeUSJM7PCstC+xl1/ZoVM3B5
+        VVZq7PVf7F9zBnoSuPneMmuh4RUHjgprJ65Ckigh4A==
+X-Google-Smtp-Source: ABdhPJzVv6WwYxud20Q05eogiv5EadoAYl6sP2LpfAO8KxmSzeS3MpXkbVqBHmfZLPwaKo/EbOpeyR3xfUzCaZFl/l0=
+X-Received: by 2002:a9d:7a54:: with SMTP id z20mr11279517otm.233.1612906469227;
+ Tue, 09 Feb 2021 13:34:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210209151329.3459690-1-elver@google.com> <4f39ad95-a773-acc6-dd9e-cb04f897ca16@suse.cz>
+In-Reply-To: <4f39ad95-a773-acc6-dd9e-cb04f897ca16@suse.cz>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 9 Feb 2021 22:34:17 +0100
+Message-ID: <CANpmjNOXjwiZpfzhi0Zu-gdQmwiK4dMiAE0ZhRcOnZaw00DaVA@mail.gmail.com>
+Subject: Re: [PATCH mm] kfence: make reporting sensitive information configurable
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Jann Horn <jannh@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.cz>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the introduction of gen9_bc, where Intel combines Cometlake CPUs with
-a Tigerpoint PCH, we'll need to introduce new DDC pin mappings for this
-platform in order to make all of the display connectors work. So, let's do
-that.
+On Tue, 9 Feb 2021 at 19:06, Vlastimil Babka <vbabka@suse.cz> wrote:
+> On 2/9/21 4:13 PM, Marco Elver wrote:
+> > We cannot rely on CONFIG_DEBUG_KERNEL to decide if we're running a
+> > "debug kernel" where we can safely show potentially sensitive
+> > information in the kernel log.
+> >
+> > Therefore, add the option CONFIG_KFENCE_REPORT_SENSITIVE to decide if we
+> > should add potentially sensitive information to KFENCE reports. The
+> > default behaviour remains unchanged.
+> >
+> > Signed-off-by: Marco Elver <elver@google.com>
+>
+> Hi,
+>
+> could we drop this kconfig approach in favour of the boot option proposed here?
+> [1] Just do the prints with %p unconditionally and the boot option takes care of
+> it? Also Linus mentioned dislike of controlling potential memory leak to be a
+> config option [2]
+>
+> Thanks,
+> Vlastimil
+>
+> [1] https://lore.kernel.org/linux-mm/20210202213633.755469-1-timur@kernel.org/
+> [2]
+> https://lore.kernel.org/linux-mm/CAHk-=wgaK4cz=K-JB4p-KPXBV73m9bja2w1W1Lr3iu8+NEPk7A@mail.gmail.com/
 
-Changes since v4:
-* Split this into it's own patch - vsyrjala
+Is the patch at [1] already in -next? If not I'll wait until it is,
+because otherwise KFENCE reports will be pretty useless.
 
-Cc: Matt Roper <matthew.d.roper@intel.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Ville Syrjala <ville.syrjala@linux.intel.com>
-[originally from Tejas's work]
-Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/i915/display/intel_bios.c |  9 +++++++++
- drivers/gpu/drm/i915/display/intel_hdmi.c | 20 ++++++++++++++++++++
- 2 files changed, 29 insertions(+)
+I think it is reasonable to switch to '%p' once we have the boot
+option, but doing so while we do not yet have the option doesn't work
+for us. We can potentially drop this patch if the boot option patch
+will make it into mainline soon. Otherwise my preference would be to
+take this patch and revert it with the switch to '%p' when the boot
+option has landed.
 
-diff --git a/drivers/gpu/drm/i915/display/intel_bios.c b/drivers/gpu/drm/i915/display/intel_bios.c
-index 7118530a1c38..1289f9d437e4 100644
---- a/drivers/gpu/drm/i915/display/intel_bios.c
-+++ b/drivers/gpu/drm/i915/display/intel_bios.c
-@@ -1638,6 +1638,12 @@ static const u8 adls_ddc_pin_map[] = {
- 	[ADLS_DDC_BUS_PORT_TC4] = GMBUS_PIN_12_TC4_ICP,
- };
- 
-+static const u8 gen9bc_tgp_ddc_pin_map[] = {
-+	[DDC_BUS_DDI_B] = GMBUS_PIN_2_BXT,
-+	[DDC_BUS_DDI_C] = GMBUS_PIN_9_TC1_ICP,
-+	[DDC_BUS_DDI_D] = GMBUS_PIN_10_TC2_ICP,
-+};
-+
- static u8 map_ddc_pin(struct drm_i915_private *dev_priv, u8 vbt_pin)
- {
- 	const u8 *ddc_pin_map;
-@@ -1651,6 +1657,9 @@ static u8 map_ddc_pin(struct drm_i915_private *dev_priv, u8 vbt_pin)
- 	} else if (IS_ROCKETLAKE(dev_priv) && INTEL_PCH_TYPE(dev_priv) == PCH_TGP) {
- 		ddc_pin_map = rkl_pch_tgp_ddc_pin_map;
- 		n_entries = ARRAY_SIZE(rkl_pch_tgp_ddc_pin_map);
-+	} else if (HAS_PCH_TGP(dev_priv) && IS_GEN9_BC(dev_priv)) {
-+		ddc_pin_map = gen9bc_tgp_ddc_pin_map;
-+		n_entries = ARRAY_SIZE(gen9bc_tgp_ddc_pin_map);
- 	} else if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP) {
- 		ddc_pin_map = icp_ddc_pin_map;
- 		n_entries = ARRAY_SIZE(icp_ddc_pin_map);
-diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index dad54e116bc4..49528d07c7f3 100644
---- a/drivers/gpu/drm/i915/display/intel_hdmi.c
-+++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -3138,6 +3138,24 @@ static u8 rkl_port_to_ddc_pin(struct drm_i915_private *dev_priv, enum port port)
- 	return GMBUS_PIN_1_BXT + phy;
- }
- 
-+static u8 gen9bc_port_to_ddc_pin(struct drm_i915_private *i915, enum port port)
-+{
-+	enum phy phy = intel_port_to_phy(i915, port);
-+
-+	drm_WARN_ON(&i915->drm, port == PORT_A);
-+
-+	/*
-+	 * Pin mapping for GEN9 BC depends on which PCH is present.  With TGP,
-+	 * final two outputs use type-c pins, even though they're actually
-+	 * combo outputs.  With CMP, the traditional DDI A-D pins are used for
-+	 * all outputs.
-+	 */
-+	if (INTEL_PCH_TYPE(i915) >= PCH_TGP && phy >= PHY_C)
-+		return GMBUS_PIN_9_TC1_ICP + phy - PHY_C;
-+
-+	return GMBUS_PIN_1_BXT + phy;
-+}
-+
- static u8 dg1_port_to_ddc_pin(struct drm_i915_private *dev_priv, enum port port)
- {
- 	return intel_port_to_phy(dev_priv, port) + 1;
-@@ -3202,6 +3220,8 @@ static u8 intel_hdmi_ddc_pin(struct intel_encoder *encoder)
- 		ddc_pin = dg1_port_to_ddc_pin(dev_priv, port);
- 	else if (IS_ROCKETLAKE(dev_priv))
- 		ddc_pin = rkl_port_to_ddc_pin(dev_priv, port);
-+	else if (IS_GEN9_BC(dev_priv) && HAS_PCH_TGP(dev_priv))
-+		ddc_pin = gen9bc_port_to_ddc_pin(dev_priv, port);
- 	else if (HAS_PCH_MCC(dev_priv))
- 		ddc_pin = mcc_port_to_ddc_pin(dev_priv, port);
- 	else if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
--- 
-2.29.2
-
+Thanks,
+-- Marco
