@@ -2,124 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4233149E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E842A3149F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbhBIIB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:01:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
+        id S229684AbhBIIFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:05:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhBIIBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:01:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27CCC64E6F;
-        Tue,  9 Feb 2021 08:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612857642;
-        bh=PrZKwTBAEkhO9oVwFzz9vR4RpjecGA222H6u+Smz3/g=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=RZfSdW4MONU6xyHZcAlXF3UuyrNKwqpNx49sUuIUYtO86OB+31RzMa1O7dF6M8YBN
-         S9MNPiFRGvoUA8A7uoT3UZCXdmXkFdNWGQbJ+sjvPOwuF+KFSBJW6x2gxRNadUf4bP
-         TGupFGxUhX0KPEaei1olRQFWoplvhuVhF2qYSql41c20wThIpVrLDHHKFENyYOEJl2
-         h6MSfwndGoBOY8w349HyrpUO+EjDiPP8L/NShDsheNvOfjRpZ9QV9QdZU2yJWTiPRZ
-         i9t4psH+djtVZrQpkwSgDJim/iW8woBnt+ZvJELngCF1WqDRt/z1M9KYOY8Du/SNoX
-         y0os1dyaKr6Yg==
-Content-Type: text/plain; charset="utf-8"
+        id S229517AbhBIIFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 03:05:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE0D664E50;
+        Tue,  9 Feb 2021 08:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612857872;
+        bh=zPK+5MZsx1tSvH2HRp1p3HtPtCmnOHY9jiF0A95/QwE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Avm+GfAVXF4EksYujMA/CDdtYumq9mFdLJEs2zSEghuaaGAEeAmAE8ALnUIuCt+aM
+         zb7IZIEoOJxxxT8U7DM62ZovMxPGZGcVVPmz0oBWmqNTKEf33vg9GEFOaSVsNBjQo+
+         fNJYB/4IPVoWeLGW/uCJ6r0XhQ7Q6Qyb82RAit68=
+Date:   Tue, 9 Feb 2021 09:04:29 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     obayashi.yoshimasa@socionext.com, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Subject: Re: DMA direct mapping fix for 5.4 and earlier stable branches
+Message-ID: <YCJCDZGa1Dhqv6Ni@kroah.com>
+References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
+ <YCIym62vHfbG+dWf@kroah.com>
+ <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210126090120.19900-3-gabriel.fernandez@foss.st.com>
-References: <20210126090120.19900-1-gabriel.fernandez@foss.st.com> <20210126090120.19900-3-gabriel.fernandez@foss.st.com>
-Subject: Re: [PATCH v2 02/14] clk: stm32mp1: merge 'ck_hse_rtc' and 'ck_rtc' into one clock
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-To:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Etienne Carriere <etienne.carriere@st.com>,
-        Gabriel Fernandez <gabriel.fernandez@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, marex@denx.de
-Date:   Tue, 09 Feb 2021 00:00:40 -0800
-Message-ID: <161285764074.418021.15522379930579131077@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting gabriel.fernandez@foss.st.com (2021-01-26 01:01:08)
-> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->=20
-> 'ck_rtc' has multiple clocks as input (ck_hsi, ck_lsi, and ck_hse).
-> A divider is available only on the specific rtc input for ck_hse.
-> This Merge will facilitate to have a more coherent clock tree
-> in no trusted / trusted world.
->=20
-> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
-> ---
->  drivers/clk/clk-stm32mp1.c | 49 +++++++++++++++++++++++++++++++++-----
->  1 file changed, 43 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/clk-stm32mp1.c
-> index 35d5aee8f9b0..0e1d4427a8df 100644
-> --- a/drivers/clk/clk-stm32mp1.c
-> +++ b/drivers/clk/clk-stm32mp1.c
-> @@ -245,7 +245,7 @@ static const char * const dsi_src[] =3D {
->  };
-> =20
->  static const char * const rtc_src[] =3D {
-> -       "off", "ck_lse", "ck_lsi", "ck_hse_rtc"
-> +       "off", "ck_lse", "ck_lsi", "ck_hse"
->  };
-> =20
->  static const char * const mco1_src[] =3D {
-> @@ -1031,6 +1031,42 @@ static struct clk_hw *clk_register_cktim(struct de=
-vice *dev, const char *name,
->         return hw;
->  }
-> =20
-> +/* The divider of RTC clock concerns only ck_hse clock */
-> +#define HSE_RTC 3
-> +
-> +static unsigned long clk_divider_rtc_recalc_rate(struct clk_hw *hw,
-> +                                                unsigned long parent_rat=
-e)
-> +{
-> +       if (clk_hw_get_parent(hw) =3D=3D clk_hw_get_parent_by_index(hw, H=
-SE_RTC))
-> +               return clk_divider_ops.recalc_rate(hw, parent_rate);
-> +
-> +       return parent_rate;
-> +}
-> +
-> +static long clk_divider_rtc_round_rate(struct clk_hw *hw, unsigned long =
-rate,
-> +                                      unsigned long *prate)
-> +{
-> +       if (clk_hw_get_parent(hw) =3D=3D clk_hw_get_parent_by_index(hw, H=
-SE_RTC))
+On Tue, Feb 09, 2021 at 01:28:47PM +0530, Sumit Garg wrote:
+> Thanks Greg for your response.
+> 
+> On Tue, 9 Feb 2021 at 12:28, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Feb 09, 2021 at 11:39:25AM +0530, Sumit Garg wrote:
+> > > Hi Christoph, Greg,
+> > >
+> > > Currently we are observing an incorrect address translation
+> > > corresponding to DMA direct mapping methods on 5.4 stable kernel while
+> > > sharing dmabuf from one device to another where both devices have
+> > > their own coherent DMA memory pools.
+> >
+> > What devices have this problem?
+> 
+> The problem is seen with V4L2 device drivers which are currently under
+> development for UniPhier PXs3 Reference Board from Socionext [1].
 
-This clk op can be called at basically any time. Maybe this should use
-the determine rate op and then look to see what the parent is that comes
-in via the rate request structure? Or is the intention to keep this
-pinned to one particular parent? Looking at this right now it doesn't
-really make much sense why the current parent state should play into
-what rate the clk can round to, unless there is some more clk flags
-going on that constrain the ability to change this clk's parent.
+Ok, so it's not even a driver in the 5.4 kernel today, so there's
+nothing I can do here as there is no regression of the existing source
+tree.
 
-> +               return clk_divider_ops.round_rate(hw, rate, prate);
-> +
-> +       return *prate;
-> +}
-> +
-> +static int clk_divider_rtc_set_rate(struct clk_hw *hw, unsigned long rat=
-e,
-> +                                   unsigned long parent_rate)
-> +{
-> +       if (clk_hw_get_parent(hw) =3D=3D clk_hw_get_parent_by_index(hw, H=
-SE_RTC))
-> +               return clk_divider_ops.set_rate(hw, rate, parent_rate);
-> +
-> +       return parent_rate;
-> +}
-> +
+> Following is brief description of the test framework:
+> 
+> The issue is observed while trying to construct a Gstreamer pipeline
+> leveraging hardware video converter engine (VPE device) and hardware
+> video encode/decode engine (CODEC device) where we use dmabuf
+> framework for Zero-Copy.
+> 
+> Example GStreamer pipeline is:
+> gst-launch-1.0 -v -e videotestsrc \
+> > ! video/x-raw, width=480, height=270, format=NV15 \
+> > ! v4l2convert device=/dev/vpe0 capture-io-mode=dmabuf-import \
+> > ! video/x-raw, width=480, height=270, format=NV12 \
+> > ! v4l2h265enc device=/dev/codec0 output-io-mode=dmabuf \
+> > ! video/x-h265, format=byte-stream, width=480, height=270 \
+> > ! filesink location=out.hevc
+> 
+> Using GStreamer's V4L2 plugin,
+> - v4l2convert controls VPE driver,
+> - v4l2h265enc controls CODEC driver.
+> 
+> In the above pipeline, VPE driver imports CODEC driver's DMABUF for Zero-Copy.
+> 
+> [1] arch/arm64/boot/dts/socionext/uniphier-pxs3-ref.dts
+> 
+> > And why can't then just use 5.10 to
+> > solve this issue as that problem has always been present for them,
+> > right?
+> 
+> As the drivers are currently under development and Socionext has
+> chosen 5.4 stable kernel for their development. So I will let
+> Obayashi-san answer this if it's possible for them to migrate to 5.10
+> instead?
+
+Why pick a kernel that doesn not support the features they require?
+That seems very odd and unwise.
+
+> BTW, this problem belongs to the common code, so others may experience
+> this issue as well.
+
+Then they should move to 5.10 or newer as this just doesn't work on
+older kernels, right?
+
+> > > I am able to root cause this issue which is caused by incorrect virt
+> > > to phys translation for addresses belonging to vmalloc space using
+> > > virt_to_page(). But while looking at the mainline kernel, this patch
+> > > [1] changes address translation from virt->to->phys to dma->to->phys
+> > > which fixes the issue observed on 5.4 stable kernel as well (minimal
+> > > fix [2]).
+> > >
+> > > So I would like to seek your suggestion for backport to stable kernels
+> > > (5.4 or earlier) as to whether we should backport the complete
+> > > mainline commit [1] or we should just apply the minimal fix [2]?
+> >
+> > Whenever you try to create a "minimal" fix, 90% of the time it is wrong
+> > and does not work and I end up having to deal with the mess.
+> 
+> I agree with your concerns for having to apply a non-mainline commit
+> onto a stable kernel.
+> 
+> >  What
+> > prevents you from doing the real thing here?  Are the patches to big?
+> >
+> 
+> IMHO, yes the mainline patch is big enough to touch multiple
+> architectures. But if that's the only way preferred then I can
+> backport the mainline patch instead.
+> 
+> > And again, why not just use 5.10 for this hardware?  What hardware is
+> > it?
+> >
+> 
+> Please see my response above.
+
+If a feature in the kernel was not present on older kernels, trying to
+shoe-horn it into them is not wise at all.  You pick a kernel version
+to reflect the features/options that you require, and it sounds like 5.4
+just will not work for them, so to stick with that would be quite
+foolish.
+
+Just move to 5.10, much simpler!
+
+thanks,
+
+greg k-h
