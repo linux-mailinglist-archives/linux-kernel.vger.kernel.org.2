@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D5C3150B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A293150BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhBINrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231625AbhBINpV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:45:21 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F228C06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:44:41 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id c1so12958066qtc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:44:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m0aWzSj+LY+Pm6/iOhWj1FnuzMBYaB0PeiOpmIEzYlc=;
-        b=m0ZybclIto8FDXMo+Xc6M8LWQUVcr4Fdfd7ghcLIyxKTwH8BTQxyYtMUbUih8tWECV
-         2VT+6s7hE8CBSiZqN6bkvw24Uac8MmLDDi12B1jeZRjtOHllqcD/cupL4eo+uhYRxZN2
-         XofmcdPW3z+B4YCZnjGgWp75JMipYH0r7LH38gPu9CVXeJXQ4b1p3ExIpExO2Iz18RiX
-         aSE40sCfQ2T9u25TW9dPn2rmDnvbpisbwQQGBqLSCL+xzXgXzET0NMzRjKIe/+v41lcz
-         06dZa8ip1rgW6T8XpAe3Ap1llZSkK/tUofjeynu9J8T6nOGeeaa6PrERHkyYyDfqrS/d
-         Uv+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m0aWzSj+LY+Pm6/iOhWj1FnuzMBYaB0PeiOpmIEzYlc=;
-        b=ZtPxMbERbafKWxN7iqvAwqhwNdy90BV9c1dm4pM+yGGVmxJ219iVcxIuA82zeTJOQ1
-         d0/u2FryP8TfzERy/+0LdM7VIQ2kKPWBmByac/Zj1WNToggQQeBRyTGnxYkDprngbECZ
-         /UVEklYXPAAZRYitUNvwxLEEoSYOcXUvp6FnsTvPYnPpfMgZM3lmhIWIS9QmX+T2R7px
-         aiFOO+YCdNLOK8k7CN+yuzbQsBNbFrycR5Fpr/fvbPJmwtp7GgHgNYiunY8jCq2RUydl
-         +UszHpKfJZTdFQoydMyvVK+SnhghIc+gNmiQTvlK55qRfG5pQXfACTQDjHe6DW4zK78v
-         bZtw==
-X-Gm-Message-State: AOAM532F8PXRWv+j8iuEDjZ9APQwjL8hWKfX3k6VJRLIWA3lw7L7PmtO
-        H2ZNw/d6PntmJikB6Fa7e5QoljdXXIZPNSMs
-X-Google-Smtp-Source: ABdhPJxsSPzRdXtHpbbQb8PSJ12WAOa9MW0LcEJBQn0Vx0sdyHcridZpcWDX5XcVOrwu+wtw66I+OA==
-X-Received: by 2002:ac8:1190:: with SMTP id d16mr19704724qtj.125.1612878279800;
-        Tue, 09 Feb 2021 05:44:39 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id t6sm14169555qkd.127.2021.02.09.05.44.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 05:44:39 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l9TJm-005RQR-Sq; Tue, 09 Feb 2021 09:44:38 -0400
-Date:   Tue, 9 Feb 2021 09:44:38 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Alistair Popple <apopple@nvidia.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm-ppc@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>
-Subject: Re: [PATCH 0/9] Add support for SVM atomics in Nouveau
-Message-ID: <20210209134438.GE4718@ziepe.ca>
-References: <20210209010722.13839-1-apopple@nvidia.com>
- <CAKMK7uGwg2-DTU7Zrco=TSkcR4yTqN1AF0hvVYEAbuj4BUYi5Q@mail.gmail.com>
- <3426910.QXTomnrpqD@nvdebian>
- <20210209133520.GB4718@ziepe.ca>
- <CAKMK7uGR44pSdL7FOui4XE6hRY8pMs7d0bPbgHHoprRG4tGmFQ@mail.gmail.com>
+        id S231708AbhBINsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:48:16 -0500
+Received: from mga05.intel.com ([192.55.52.43]:21819 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231496AbhBINqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:46:39 -0500
+IronPort-SDR: Zcb5x47M44OH7UiAgT+atTBR8ahN0l456JYmTzsiY6w0QozIWvEl6zwSFQzY+EJZQ8Ob8Iyje3
+ 9HzcVSdWqqGg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="266714842"
+X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
+   d="scan'208";a="266714842"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 05:44:53 -0800
+IronPort-SDR: K5mgQptzIDhEIUYR4BWL9GK34qH+yj5BbANCpPZjKMs54EFp8Tmq1u19iqR1vwh+6OWvAIlg03
+ NA0Yx/THSyuA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
+   d="scan'208";a="436121377"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 09 Feb 2021 05:44:53 -0800
+Received: from [10.251.23.108] (kliang2-MOBL.ccr.corp.intel.com [10.251.23.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id C9C5258088F;
+        Tue,  9 Feb 2021 05:44:51 -0800 (PST)
+Subject: Re: [PATCH 23/49] perf/x86/msr: Add Alder Lake CPU support
+To:     kernel test robot <lkp@intel.com>, peterz@infradead.org,
+        acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, tglx@linutronix.de, bp@alien8.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        yao.jin@linux.intel.com
+References: <1612797946-18784-24-git-send-email-kan.liang@linux.intel.com>
+ <202102091153.8YFcmWIL-lkp@intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <f0cbcf58-7db8-b0c8-4c9b-a3090b21ddb4@linux.intel.com>
+Date:   Tue, 9 Feb 2021 08:44:50 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uGR44pSdL7FOui4XE6hRY8pMs7d0bPbgHHoprRG4tGmFQ@mail.gmail.com>
+In-Reply-To: <202102091153.8YFcmWIL-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 02:39:51PM +0100, Daniel Vetter wrote:
 
-> Either way ZONE_DEVICE for not vram/device memory sounds wrong. Is
-> that really going on here?
 
-My read was this was doing non-coherent atomics on CPU memory.
+On 2/8/2021 10:58 PM, kernel test robot wrote:
+> Hi,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on tip/perf/core]
+> [cannot apply to tip/master linus/master tip/x86/core v5.11-rc6 next-20210125]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/kan-liang-linux-intel-com/Add-Alder-Lake-support-for-perf/20210209-070642
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 32451614da2a9cf4296f90d3606ac77814fb519d
+> config: x86_64-randconfig-s021-20210209 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> reproduce:
+>          # apt-get install sparse
+>          # sparse version: v0.6.3-215-g0fb77bb6-dirty
+>          # https://github.com/0day-ci/linux/commit/ef3d3e5028f5f70a78fa37d642e8e7e65c60dee7
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review kan-liang-linux-intel-com/Add-Alder-Lake-support-for-perf/20210209-070642
+>          git checkout ef3d3e5028f5f70a78fa37d642e8e7e65c60dee7
+>          # save the attached .config to linux build tree
+>          make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=x86_64
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>     arch/x86/events/msr.c: In function 'test_intel':
+>>> arch/x86/events/msr.c:104:7: error: 'INTEL_FAM6_ALDERLAKE_L' undeclared (first use in this function); did you mean 'INTEL_FAM6_ALDERLAKE'?
+>       104 |  case INTEL_FAM6_ALDERLAKE_L:
+>           |       ^~~~~~~~~~~~~~~~~~~~~~
+>           |       INTEL_FAM6_ALDERLAKE
+>     arch/x86/events/msr.c:104:7: note: each undeclared identifier is reported only once for each function it appears in
 
-Atomics on GPU memory is just called migration to GPU memory, it
-doesn't need to be special for atomics. In that case it can free the
-CPU struct page completely as the data now lives in the ZONE_DEVICE
-page so no need for a pin, no problem with movable
 
-Jason
+The patchset is on top of PeterZ's perf/core branch plus
+commit id 6e1239c13953 ("x86/cpu: Add another Alder Lake CPU to the 
+Intel family")
+
+The above patch is also missed in the tip/perf/core branch. All the 
+issues should be gone once the tip/perf/core sync with the tip/x86/urgent.
+
+
+Thanks,
+Kan
+
+
