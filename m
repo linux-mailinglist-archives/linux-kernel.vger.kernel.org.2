@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A4B315671
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA66315675
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233505AbhBITBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 14:01:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
+        id S233567AbhBITEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 14:04:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233327AbhBIRvi (ORCPT
+        with ESMTP id S233339AbhBIRwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:51:38 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68E2C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:50:52 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id my11so1817850pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:50:52 -0800 (PST)
+        Tue, 9 Feb 2021 12:52:25 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346C9C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:51:41 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id f23so12631165lfk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:51:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CTX9nI+l+jTlvtYfuIUJpxjytbyTmwWmiGbUoX39kz0=;
-        b=jYp7erzkLHqd8ALqIUysIbs3Gm4bfwLk0NXzv1S/m+caSlmR9lanUASyGzSkRSqdEG
-         2YjR9tv13CZ8gw/Wo3ttkw8x9BBe9aZ4/gU+9nBWrnWctQzQ13/bJLrIjtybpNnt3JwN
-         NO2w4TMPcZhlbPXpTwySQMeB/DmaGJtW0btUtwKFwpCZzX5HlaDhU7aSVzqoG0lNjD5X
-         78/G1QxtN/C62uCsLOSUAVVotGiJYyh8mqfURqIZep83NrzsdWcbTLcMZSIdgY39IKFj
-         NQdbjUyHpULjTu0LJseTtQvhGC8rVNT4G9ysiasQKzPFJHdpFql70ag5n5Yr9151Y6Ur
-         /19Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lPHiyshAYwDQMHuL6XjRLdFg31CtAL5tyF9gpmIlpuY=;
+        b=HJ5GboupBRdvDYdE3+c+BbR5L/+b2RNlFkvzE9cvoL6wUi5kai3keCUCA7nryHiCd9
+         KZ3EkSj8HtcF5NHOacJ2DKgRbJq7+2M2OkSkGrKJZ1QfDuumWkiM3g/4k2dCJKJwKSa5
+         6wTjChskPuNHFsigYkPnA1oqTgJysg4meINj2mKinshoP6WLM8uhnsSlEReEmV/goHKq
+         +PA2MVXgPDi77Br/AHMo2t9XdIQaZ/R4zYEYcjcjrTWHaJakWPlCa0sRm5a9pKAkO8rE
+         g+xankyDbezGdQby6sGXMuEhWWxnBLn6k0/eCMRPS1k2QJ3Lfp+whhovYPf58UBCPywU
+         YZWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=CTX9nI+l+jTlvtYfuIUJpxjytbyTmwWmiGbUoX39kz0=;
-        b=B5LOzMW5VlWKmceZ1R+m/uorha6eZsygJ7gOI+jwsAG9feET9Y+jiE/wsYOIwpk7Tu
-         45yE6GYSkfac1KmGIXnaSW2xEtcflaX5hnCb0tAV5IR/pfn9mpVUFPTpbeWHuTmLaUv6
-         5VxUiCKu+Z99dmwm9wTbr7gqgPgYloN1VjkuxDzyt4Jaeje/6Vu36kffbr0Zv6gGflvV
-         7sMY0SDPGCiLLiSoZCXkE92tefyMnR8ht0723wLax1Fz3iGDLk7Z0gUTwseMtQZhIiVM
-         67VozKLe2tq+FeByhl6uB+Iy9h7wh6E1Mm9mELwQN96N7D3T8p/EnxTovOkhWYCWS9Kn
-         ZKNg==
-X-Gm-Message-State: AOAM5336Dm1OhTKQhFKDT5XcvUV6mQiIFs70mK+c42JzWhyTGc5dPGyK
-        dbfc3WAlIVf/WKwcV94XByw=
-X-Google-Smtp-Source: ABdhPJyUlnvVMLsH86gqTbh26uwn9gMrsGYQqPwCZV23qJXAdQl8W5Hp0cr6OIK2CoZnZ04U5DN0hw==
-X-Received: by 2002:a17:90a:4083:: with SMTP id l3mr5155505pjg.109.1612893052380;
-        Tue, 09 Feb 2021 09:50:52 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:d107:fbfb:a7c8:913e])
-        by smtp.gmail.com with ESMTPSA id c188sm7625194pfa.98.2021.02.09.09.50.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 09:50:51 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH] mm: remove lru_add_drain_all in alloc_contig_range
-Date:   Tue,  9 Feb 2021 09:50:48 -0800
-Message-Id: <20210209175048.361638-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lPHiyshAYwDQMHuL6XjRLdFg31CtAL5tyF9gpmIlpuY=;
+        b=ek4lNTJPE5y+YExIsKTYPUduzHiOU0EPFMNuQrirdPDbCONMsbSoK72cbpE61wEv8j
+         t7TC9EA5RE0kZU53W+9XMEJ9/TJAVrUaR8i2pbmRa1moEz97NRSVu57yp7p3K2cJw4Wf
+         Oey1lfNWkqhD2A/qbWZXSY2xjlUbM8FXHfNk0PoP9Vzz96hKoJSCXJkv87s0gI+nfKSK
+         cL2CBI1+0gIAeEGRYesdvLXhbLdlruZD43S/ETNdPpU38asyL45lMrJjFitAA+tTTcRm
+         431+bNFhd4PWeZo5ouX95osAlQmKbkcUSEywyWVK3QyRT01Yb3a4hXLwAiOOQtJzTZaa
+         8oMw==
+X-Gm-Message-State: AOAM530Od5f+P3pVDNYOhmoI1UUVLaqkHsMJebP+KAmG0KlTWt7ONe1V
+        Eb132GpqB7X5O1LqgxedloM1Vc8VvzGnmNKFML0xhQ==
+X-Google-Smtp-Source: ABdhPJyNwqJrbPEm56X5Fd4wgWqY/yJveLKo+1aKW+tRmsIXUbv7TTBoyddE0ravmqPusmp1ermnDhlEtsPwsnQQS8w=
+X-Received: by 2002:ac2:5590:: with SMTP id v16mr13571451lfg.626.1612893094231;
+ Tue, 09 Feb 2021 09:51:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210205080621.3102035-1-john.stultz@linaro.org>
+ <20210205080621.3102035-2-john.stultz@linaro.org> <4471b3b0-603e-6dbb-8064-ff4a95afbba9@amd.com>
+ <CALAqxLWZkUFvJX5r2OU2erW4tU3j=+u==VTyzYkt+95LwwVCUA@mail.gmail.com> <48225879-2fe1-22ac-daae-c61d52465aea@amd.com>
+In-Reply-To: <48225879-2fe1-22ac-daae-c61d52465aea@amd.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 9 Feb 2021 09:51:19 -0800
+Message-ID: <CALAqxLVDY6HkTZpXtJ1+V9E-shgtxXn4A5MB5nAaCbwr8AQV6g@mail.gmail.com>
+Subject: Re: [RFC][PATCH v6 1/7] drm: Add a sharable drm page-pool implementation
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__alloc_contig_migrate_range already has lru_add_drain_all call
-via migrate_prep. It's necessary to move LRU taget pages into
-LRU list to be able to isolated. However, lru_add_drain_all call
-after __alloc_contig_migrate_range is called is pointless.
+On Tue, Feb 9, 2021 at 4:11 AM Christian K=C3=B6nig <christian.koenig@amd.c=
+om> wrote:
+>
+>
+>
+> Am 05.02.21 um 21:46 schrieb John Stultz:
+> > On Fri, Feb 5, 2021 at 12:47 AM Christian K=C3=B6nig
+> > <christian.koenig@amd.com> wrote:
+> >> Am 05.02.21 um 09:06 schrieb John Stultz:
+> >>> diff --git a/drivers/gpu/drm/page_pool.c b/drivers/gpu/drm/page_pool.=
+c
+> >>> new file mode 100644
+> >>> index 000000000000..2139f86e6ca7
+> >>> --- /dev/null
+> >>> +++ b/drivers/gpu/drm/page_pool.c
+> >>> @@ -0,0 +1,220 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >> Please use a BSD/MIT compatible license if you want to copy this from
+> >> the TTM code.
+> > Hrm. This may be problematic, as it's not just TTM code, but some of
+> > the TTM logic integrated into a page-pool implementation I wrote based
+> > on logic from the ION code (which was GPL-2.0 before it was dropped).
+> > So I don't think I can just make it MIT.  Any extra context on the
+> > need for MIT, or suggestions on how to best resolve this?
+>
+> Most of the DRM/TTM code is also license able under the BSD/MIT style
+> license since we want to enable the BSD guys to port it over as well.
+>
+> What stuff do you need from the ION code that you can't just code
+> yourself? As far as I have seen this is like 99% code from the TTM pool.
 
-This patch removes it.
+Yea, it evolved into being mostly logic from the TTM pool (or code
+that was very similar to begin with), but it's not where it started.
+My old days at IBM makes me wary of claiming it's no longer the Ship
+of Theseus.
 
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- mm/page_alloc.c | 2 --
- 1 file changed, 2 deletions(-)
+So instead I think I'll have to just throw out my patch and rewrite it
+in full (so apologies in advance for any review issues I
+introduce/reintroduce).
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 6446778cbc6b..f8fbee73dd6d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8603,8 +8603,6 @@ int alloc_contig_range(unsigned long start, unsigned long end,
- 	 * isolated thus they won't get removed from buddy.
- 	 */
- 
--	lru_add_drain_all();
--
- 	order = 0;
- 	outer_start = start;
- 	while (!PageBuddy(pfn_to_page(outer_start))) {
--- 
-2.30.0.478.g8a0d178c01-goog
-
+thanks
+-john
