@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141FF314EA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8F9314EA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhBIMDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:03:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52760 "EHLO mail.kernel.org"
+        id S229760AbhBIMEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:04:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229992AbhBIMBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:01:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B38FC64E8C;
-        Tue,  9 Feb 2021 12:00:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612872058;
-        bh=ENHk19c20GqiLUebme+RmW7wZA6VOHChW92hTBetcKM=;
+        id S229742AbhBIMCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:02:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2DDC64E16;
+        Tue,  9 Feb 2021 12:01:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612872117;
+        bh=KXnFUWkeE3RzAL45lDxdFx/y1wzKceAzbuyX52i4TsI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m4dM5ezGBHqdHskfPYGBARkvUZr+uZwSx6PPdwYKMnnkfk3F5E1ljxj08vKKRQPTC
-         cGhUNtXOTd1R/agDbegkTXhroxjg0K4R37Dhmt5KJ7lODbGrYWXdHqw/JEI13/1/6L
-         +Glkfv4QcZrSQmg26BUudus2lVX1oYazNL7bg3SV7bfl6/dUpv6qBB1rPkK1In1DUi
-         VMPMGIVxP1eaG74bKCX0YrqXZ56rO3JZwhkiwdTZBqQ+4TKTPk1qIMWZPJB2tt19zQ
-         x4zM4NfQPSbuAxx4mpAC2+KfI3/bN9xK4p32cyBVjH0sO/aLWR6R1QasgYV+oA5mtn
-         jD1BG+BWfzlnw==
-Received: from johan by xi with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1l9Rhf-00021y-BS; Tue, 09 Feb 2021 13:01:12 +0100
-Date:   Tue, 9 Feb 2021 13:01:11 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Cercueil <paul@crapouillou.net>, linux-usb@vger.kernel.org
-Subject: Re: [PATCH] usb: misc: usb3503: Fix logic in usb3503_init()
-Message-ID: <YCJ5h889zBrzVzji@hovoldconsulting.com>
-References: <4ae929dc31c170252154352d04e89c8456d91ca3.1612870239.git.michal.simek@xilinx.com>
+        b=DOTJHzzs0FAsJ9XZl1aGZ5cH8m8J6FlrUnzLTsv+HQsJPyoVjmCXhXEjUCceVUmNA
+         mm29z79OAsLiQ013RWN+KhCvGh3r5fqgAyfLkqw+sPpEldf1l3bGpk7z8NvUTcBD9x
+         gD47PEY6W2LOY6R2YitBTaNoniiO/UE5cclIXM40=
+Date:   Tue, 9 Feb 2021 13:01:23 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zhou Wang <wangzhou1@hisilicon.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-api@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        song.bao.hua@hisilicon.com, jgg@ziepe.ca, kevin.tian@intel.com,
+        jean-philippe@linaro.org, eric.auger@redhat.com,
+        liguozhu@hisilicon.com, zhangfei.gao@linaro.org,
+        Sihang Chen <chensihang1@hisilicon.com>
+Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Message-ID: <YCJ5k/Bxxkg3BNNj@kroah.com>
+References: <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <ED58431F-5972-47D1-BF50-93A20AD86C46@amacapital.net>
+ <2e6cf99f-beb6-9bef-1316-5e58fb0aa86e@hisilicon.com>
+ <YCJX6QFQ4hsNRrFj@kroah.com>
+ <f73951ba-84be-b7f8-8c79-db84bc9081f3@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4ae929dc31c170252154352d04e89c8456d91ca3.1612870239.git.michal.simek@xilinx.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f73951ba-84be-b7f8-8c79-db84bc9081f3@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 12:30:42PM +0100, Michal Simek wrote:
-> Based on
-> https://lore.kernel.org/linux-arm-kernel/YCJv59g3Tq2haDSa@kroah.com/
-> initialization should fail if any registration fails.
+On Tue, Feb 09, 2021 at 07:58:15PM +0800, Zhou Wang wrote:
+> On 2021/2/9 17:37, Greg KH wrote:
+> > On Tue, Feb 09, 2021 at 05:17:46PM +0800, Zhou Wang wrote:
+> >> On 2021/2/8 6:02, Andy Lutomirski wrote:
+> >>>
+> >>>
+> >>>> On Feb 7, 2021, at 12:31 AM, Zhou Wang <wangzhou1@hisilicon.com> wrote:
+> >>>>
+> >>>> ﻿SVA(share virtual address) offers a way for device to share process virtual
+> >>>> address space safely, which makes more convenient for user space device
+> >>>> driver coding. However, IO page faults may happen when doing DMA
+> >>>> operations. As the latency of IO page fault is relatively big, DMA
+> >>>> performance will be affected severely when there are IO page faults.
+> >>>> From a long term view, DMA performance will be not stable.
+> >>>>
+> >>>> In high-performance I/O cases, accelerators might want to perform
+> >>>> I/O on a memory without IO page faults which can result in dramatically
+> >>>> increased latency. Current memory related APIs could not achieve this
+> >>>> requirement, e.g. mlock can only avoid memory to swap to backup device,
+> >>>> page migration can still trigger IO page fault.
+> >>>>
+> >>>> Various drivers working under traditional non-SVA mode are using
+> >>>> their own specific ioctl to do pin. Such ioctl can be seen in v4l2,
+> >>>> gpu, infiniband, media, vfio, etc. Drivers are usually doing dma
+> >>>> mapping while doing pin.
+> >>>>
+> >>>> But, in SVA mode, pin could be a common need which isn't necessarily
+> >>>> bound with any drivers, and neither is dma mapping needed by drivers
+> >>>> since devices are using the virtual address of CPU. Thus, It is better
+> >>>> to introduce a new common syscall for it.
+> >>>>
+> >>>> This patch leverages the design of userfaultfd and adds mempinfd for pin
+> >>>> to avoid messing up mm_struct. A fd will be got by mempinfd, then user
+> >>>> space can do pin/unpin pages by ioctls of this fd, all pinned pages under
+> >>>> one file will be unpinned in file release process. Like pin page cases in
+> >>>> other places, can_do_mlock is used to check permission and input
+> >>>> parameters.
+> >>>
+> >>>
+> >>> Can you document what the syscall does?
+> >>
+> >> Will add related document in Documentation/vm.
+> > 
+> > A manpage is always good, and will be required eventually :)
 > 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
-> 
->  drivers/usb/misc/usb3503.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/misc/usb3503.c b/drivers/usb/misc/usb3503.c
-> index 48099c6bf04c..3aae83fbebae 100644
-> --- a/drivers/usb/misc/usb3503.c
-> +++ b/drivers/usb/misc/usb3503.c
-> @@ -409,13 +409,17 @@ static int __init usb3503_init(void)
->  	int err;
->  
->  	err = i2c_add_driver(&usb3503_i2c_driver);
-> -	if (err != 0)
-> +	if (err) {
->  		pr_err("usb3503: Failed to register I2C driver: %d\n", err);
-> +		return err;
-> +	}
->  
->  	err = platform_driver_register(&usb3503_platform_driver);
-> -	if (err != 0)
-> +	if (err) {
->  		pr_err("usb3503: Failed to register platform driver: %d\n",
->  		       err);
+> manpage is maintained in another repo. Do you mean add a manpage
+> patch in this series?
 
-You forgot to deregister the i2c driver.
+It's good to show how it will be used, don't you think?
 
-> +		return err;
-> +	}
->  
->  	return 0;
->  }
+thanks,
 
-Johan
+greg k-h
