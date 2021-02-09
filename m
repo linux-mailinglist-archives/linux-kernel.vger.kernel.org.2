@@ -2,418 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E723152C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C5D3152D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232616AbhBIP1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbhBIP0Y (ORCPT
+        id S232434AbhBIP3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:29:31 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:39376 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231366AbhBIP32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:26:24 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23282C061786
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 07:25:43 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id r21so6181888wrr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 07:25:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=K617ZIc90vlsVdw3NuFgxnWpwZCFrf9GMHVLhoZQ06o=;
-        b=pzZ+77F6IsL4Dk549uH1cnBxEDHLhugvAcb6WGUKknG+R4asD1PC/Q0dBlpjSLq8kE
-         d4OG1blRU1IcOOr9HR8LT9KdADYG4dQ/zxjxLUNhGD8Sm4s3J91JLQozmbWHkRLYecyJ
-         +ftZOAU6YnLepMbdoiuCALOIH3ctfPQaKtwPipZjITQ71nVfS6NycEaX1vAtW2lsjPLK
-         q0xZsZAc74dKdG521q8VLNtQxd2i8zpvRZ3clC9iBviSYupVXTWIadN5b9NT9yxKWlD3
-         JrKKb7/EiTkN7s3wBVsGDF4EfDRCc/V+vL5LNY/feaY17uQn81JTDIfQZJyPzs8HCfVf
-         6Cuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=K617ZIc90vlsVdw3NuFgxnWpwZCFrf9GMHVLhoZQ06o=;
-        b=ufoyzHge8hYSBIfe3RPiyqv4okUTCaJTtfnSdm6bVF5irqEWPeKs4x6pEyfcQ5ShiK
-         rp63kjBqSWheRxiS39tddgW9P2tSQIxOs1C3vklV7xH6dNZ34LD5Zf7x8rLjRQf4Mg68
-         1TX5xnUBO3cVw/cCTj7HerfccHydrMUdPYr7VcQSxNb+x4w2OPpu7AW0/KVOdFpOmRzW
-         rNau2CmKHoCOl+MytGmkLaLl4ET+F8vfNGSumbHDw3nmnOtXMfW6XSnsUKjQwGKK11tX
-         T6uA4zK8wkNUwMwi/MpBtW2y8DA4owbAe5+n43ppNPXcGcbV/3q9lUDX+59SwsOeKHr+
-         FV1Q==
-X-Gm-Message-State: AOAM530sjEuItfeQRHgIGfR6tU+6FKqRq6ifoX9HTz0VBU76SeLwON8q
-        k5gT2XshbSeamX/qlczHTp2pCg==
-X-Google-Smtp-Source: ABdhPJzqEDbn4f2UEx76+b9EFZSJ1Lrya2PR1rM38CI0d45qIE4GokQKkISv9q2aazS1rRpdbeRCtw==
-X-Received: by 2002:a5d:6541:: with SMTP id z1mr25551568wrv.128.1612884341508;
-        Tue, 09 Feb 2021 07:25:41 -0800 (PST)
-Received: from dell ([91.110.221.187])
-        by smtp.gmail.com with ESMTPSA id u10sm4774446wmj.40.2021.02.09.07.25.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 07:25:40 -0800 (PST)
-Date:   Tue, 9 Feb 2021 15:25:38 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: Re: [PATCH v7 3/6] mfd: bd9576: Add IRQ support
-Message-ID: <20210209152538.GB220368@dell>
-References: <cover.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
- <8489e5d34a6ae26309772f7cbffaa340fbb6c34e.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
+        Tue, 9 Feb 2021 10:29:28 -0500
+Received: from mailhost.synopsys.com (sv1-mailhost1.synopsys.com [10.205.2.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id F2B11C010B;
+        Tue,  9 Feb 2021 15:28:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1612884503; bh=5hqceRlJayfpJv/Hf3mJAXYhU3Ta5FwcrD1hYrvyrWA=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=fc4CaquT1wreinUplGRuMhxx1y7pXLfJDS+BDfeomhoxesbEw+WkeF5f2M/r4QZhO
+         JLk8Ehx22SZyrJSBH9iTcFVesOG+Nzds0j9wWT3HqXFA37c23sX6xnDHuisSk7f4kT
+         un+nje/z7Jy50StLqfu+rFaRykFptkyU0yJRMxCcXOYss4TSanVF+Lnk8dYDBjQR5G
+         N4sDmyx0mwEBE2L/Vy89eiyG82IQC9CEB2I0Glu4RPdXqzpqB8lj9o3iRk2/ErzZbR
+         0oo5A6YAQxAbTTD1czee1O/Q+bPumsGl7CRTb2yLyFRWaF/EiZYFMAdy6WPsW9xSgu
+         baYJlNh7JIEYA==
+Received: from o365relay-in.synopsys.com (sv2-o365relay3.synopsys.com [10.202.1.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 7A27BA005F;
+        Tue,  9 Feb 2021 15:28:20 +0000 (UTC)
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (mail-cys01nam02lp2055.outbound.protection.outlook.com [104.47.37.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id B9CE4400A3;
+        Tue,  9 Feb 2021 15:28:18 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=gustavo@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="IYb675IY";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ms55efXpq2zRcvvD1BkWzv66X5kok8DKdQ2qnn2ciuh5lxQc6rec13NW6vLyGcTOWsU9otPJs1p/sBnA5aCJh2QuqlSjzPdkQE9EpMoRYH46axFboF9gw8czrK7D9/BCBQngUht/+37UWMxaWOLzQYcqCIhu0U+U7/QEOUBgaPLECm//oKwQaWKpS4Cp5/VhwezFtUp4Tc0dKJK5NimWlfmvJlvrXFQf0LWbQiiUV0Cqis/sjOYpFISHGXuQkCb0mjbIv9MD2Cty7I73KYPBcGxa6NRsv2kv5FLYHm1SQqNLETQnfnPTrqQ1npUv/b/2rF5165x4eqdVrNdewRb9tQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5hqceRlJayfpJv/Hf3mJAXYhU3Ta5FwcrD1hYrvyrWA=;
+ b=TFpPXCAP27asvBbGMhP31idpiutVJZRnqSXuhCM5pDiyMzGo4n+GjoK+vPl9tdSlOFjZBgv7jNoqqnz37iGit1sTpdMJPeJfKe7m0xvXMcGAqUu7R0t/MW1zbV6rbKF9oZbyUTE6YZCY7NvsOfosM1/Txxum9n3+8zV6VBPDyx1T+h3s4jyI4HijJ4qmVI1qGTcBpL84Nuq6IsulO3w6CpV4jOWEzs8DSoo55OK8VnGtL6LKHUmO5jJwGvFju1vz7TpFaE0VnV2dDcIfve5zJSj2kmv6nCkK7MVcTAfohO1jPXFKVgGoZlZHFzSW2L3YfeMrxb8Dh0HtUno0L9YCQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5hqceRlJayfpJv/Hf3mJAXYhU3Ta5FwcrD1hYrvyrWA=;
+ b=IYb675IYiy+yKHop3hijYVL7LVBfob4kMMl2wCEnIBd7zOqik3D+fiUl3D4JSQn8hYcwHbB+dADnqM8+fuHU/6b4YBGSmiE0T3tQFU1e2RmH32qIMYLrSGqqo38C/RV+zsmRKfMZBt5sRLVOYMuc8S2T0nrwreNXeLFi/C9DVd8=
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9) by
+ DM6PR12MB4433.namprd12.prod.outlook.com (2603:10b6:5:2a1::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3846.25; Tue, 9 Feb 2021 15:28:16 +0000
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::508b:bdb3:d353:9052]) by DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::508b:bdb3:d353:9052%10]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
+ 15:28:16 +0000
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     =?utf-8?B?S3J6eXN6dG9mIFdpbGN6ecWEc2tp?= <kw@linux.com>
+CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: RE: [RESEND v4 1/6] misc: Add Synopsys DesignWare xData IP driver
+Thread-Topic: [RESEND v4 1/6] misc: Add Synopsys DesignWare xData IP driver
+Thread-Index: AQHW+no0jzACp8G9M0OTEsfsxRZtmKpL7kqAgAIYZmCAAN7oAIABFLsw
+Date:   Tue, 9 Feb 2021 15:28:16 +0000
+Message-ID: <DM5PR12MB18350F331485A6FF36ED28DADA8E9@DM5PR12MB1835.namprd12.prod.outlook.com>
+References: <cover.1612390291.git.gustavo.pimentel@synopsys.com>
+ <bba090c3d9d3d90fb2dfe5f2aaa52c155d87958f.1612390291.git.gustavo.pimentel@synopsys.com>
+ <YB9EDzI7mSrzXUUB@rocinante>
+ <DM5PR12MB18354765D69889F2CD6E4D89DA8F9@DM5PR12MB1835.namprd12.prod.outlook.com>
+ <YCHBAmFAOv/Joqp5@rocinante>
+In-Reply-To: <YCHBAmFAOv/Joqp5@rocinante>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jWjNWemRHRjJiMXhoY0hCa1lYUmhYSEp2WVcxcGJtZGNNRGxrT0RRNVlq?=
+ =?utf-8?B?WXRNekprTXkwMFlUUXdMVGcxWldVdE5tSTROR0poTWpsbE16VmlYRzF6WjNO?=
+ =?utf-8?B?Y2JYTm5MVFpqTW1RM1lqQTRMVFpoWldJdE1URmxZaTA1T0dVMkxXWTRPVFJq?=
+ =?utf-8?B?TWpjek9EQTBNbHhoYldVdGRHVnpkRncyWXpKa04ySXdPUzAyWVdWaUxURXha?=
+ =?utf-8?B?V0l0T1RobE5pMW1PRGswWXpJM016Z3dOREppYjJSNUxuUjRkQ0lnYzNvOUlq?=
+ =?utf-8?B?RTNOelVpSUhROUlqRXpNalUzTXpVNE1EazBNakV6TlRFMk15SWdhRDBpVDFC?=
+ =?utf-8?B?TE5GQmtZa1lyYTFOa2JIaHpablU0WVRrMVFsQlZNVWhWUFNJZ2FXUTlJaUln?=
+ =?utf-8?B?WW13OUlqQWlJR0p2UFNJeElpQmphVDBpWTBGQlFVRkZVa2hWTVZKVFVsVkdU?=
+ =?utf-8?B?a05uVlVGQlFsRktRVUZDTjFRMlozVXJVRGRYUVdWVVduVjRkV2xMVDBGQ05V?=
+ =?utf-8?B?NXROMGMyU1c4MFFVVlBRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVaEJRVUZCUTJ0RFFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVWQlFWRkJRa0ZCUVVGT2NsTldNMmRCUVVGQlFVRkJRVUZCUVVGQlFVRktO?=
+ =?utf-8?B?RUZCUVVKdFFVZHJRV0puUW1oQlJ6UkJXWGRDYkVGR09FRmpRVUp6UVVkRlFX?=
+ =?utf-8?B?Sm5RblZCUjJ0QlltZENia0ZHT0VGa2QwSm9RVWhSUVZwUlFubEJSekJCV1ZG?=
+ =?utf-8?B?Q2VVRkhjMEZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUlVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?blFVRkJRVUZCYm1kQlFVRkhXVUZpZDBJeFFVYzBRVnBCUW5sQlNHdEJXSGRD?=
+ =?utf-8?B?ZDBGSFJVRmpaMEl3UVVjMFFWcFJRbmxCU0UxQldIZENia0ZIV1VGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFWRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkRRVUZCUVVGQlEyVkJRVUZCV21kQ2RrRklWVUZpWjBKclFV?=
+ =?utf-8?B?aEpRV1ZSUW1aQlNFRkJXVkZDZVVGSVVVRmlaMEpzUVVoSlFXTjNRbVpCU0Ux?=
+ =?utf-8?B?QldWRkNkRUZJVFVGa1VVSjFRVWRqUVZoM1FtcEJSemhCWW1kQ2JVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUpCUVVGQlFVRkJRVUZCU1VGQlFVRkJRVW8wUVVGQlFtMUJSemhC?=
+ =?utf-8?B?WkZGQ2RVRkhVVUZqWjBJMVFVWTRRV05CUW1oQlNFbEJaRUZDZFVGSFZVRmpa?=
+ =?utf-8?B?MEo2UVVZNFFXTjNRbWhCUnpCQlkzZENNVUZITkVGYWQwSm1RVWhKUVZwUlFu?=
+ =?utf-8?B?cEJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGRlFVRkJRVUZCUVVGQlFXZEJRVUZCUVVGdVow?=
+ =?utf-8?B?RkJRVWRaUVdKM1FqRkJSelJCV2tGQ2VVRklhMEZZZDBKM1FVZEZRV05uUWpC?=
+ =?utf-8?B?QlJ6UkJXbEZDZVVGSVRVRllkMEo2UVVjd1FXRlJRbXBCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJVVUZCUVVGQlFVRkJRVU5C?=
+ =?utf-8?B?UVVGQlFVRkRaVUZCUVVGYVowSjJRVWhWUVdKblFtdEJTRWxCWlZGQ1prRklR?=
+ =?utf-8?B?VUZaVVVKNVFVaFJRV0puUW14QlNFbEJZM2RDWmtGSVRVRmtRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUWtGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGSlFVRkJRVUZCU2pSQlFVRkNiVUZIT0VGa1VVSjFRVWRSUVdO?=
+ =?utf-8?B?blFqVkJSamhCWTBGQ2FFRklTVUZrUVVKMVFVZFZRV05uUW5wQlJqaEJaRUZD?=
+ =?utf-8?B?ZWtGSE1FRlpkMEZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVVkJRVUZCUVVGQlFVRkJaMEZCUVVGQlFXNW5RVUZCUjFsQlluZENN?=
+ =?utf-8?B?VUZITkVGYVFVSjVRVWhyUVZoM1FuZEJSMFZCWTJkQ01FRkhORUZhVVVKNVFV?=
+ =?utf-8?B?aE5RVmgzUWpGQlJ6QkJXWGRCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZSUVVGQlFVRkJRVUZCUTBGQlFVRkJRVU5sUVVG?=
+ =?utf-8?B?QlFWcDNRakJCU0UxQldIZENkMEZJU1VGaWQwSnJRVWhWUVZsM1FqQkJSamhC?=
+ =?utf-8?B?WkVGQ2VVRkhSVUZoVVVKMVFVZHJRV0puUW01QlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQ1FVRkJRVUZCUVVGQlFVbEJR?=
+ =?utf-8?B?VUZCUVVGS05FRkJRVUo2UVVkRlFXSkJRbXhCU0UxQldIZENhRUZIVFVGWmQw?=
+ =?utf-8?B?SjJRVWhWUVdKblFqQkJSamhCWTBGQ2MwRkhSVUZpWjBGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJSVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZuUVVGQlFVRkJibWRCUVVGSVRVRlpVVUp6UVVkVlFXTjNRbVpC?=
+ =?utf-8?B?U0VWQlpGRkNka0ZJVVVGYVVVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVZGQlFVRkJRVUZCUVVGRFFVRkJRVUZCUTJWQlFVRkJZM2RDZFVGSVFV?=
+ =?utf-8?B?RmpkMEptUVVkM1FXRlJRbXBCUjFWQlltZENla0ZIVlVGWWQwSXdRVWRWUVdO?=
+ =?utf-8?B?blFuUkJSamhCVFZGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVSkJRVUZCUVVGQlFVRkJTVUZCUVVGQlFVbzBRVUZC?=
+ =?utf-8?B?UW5wQlJ6UkJZMEZDZWtGR09FRmlRVUp3UVVkTlFWcFJRblZCU0UxQldsRkNa?=
+ =?utf-8?B?a0ZJVVVGYVVVSjVRVWN3UVZoM1FucEJTRkZCWkZGQ2EwRkhWVUZpWjBJd1FV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZGUVVGQlFVRkJRVUZCUVdkQlFV?=
+ =?utf-8?B?RkJRVUZ1WjBGQlFVaFpRVnAzUW1aQlIzTkJXbEZDTlVGSVkwRmlkMEo1UVVk?=
+ =?utf-8?B?UlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlVVRkJRVUZC?=
+ =?utf-8?Q?QUFBQUNBQUFBQUFBPSIvPjwvbWV0YT4=3D?=
+authentication-results: linux.com; dkim=none (message not signed)
+ header.d=none;linux.com; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [89.155.14.32]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 83f153b8-4cf6-4618-621c-08d8cd0f5296
+x-ms-traffictypediagnostic: DM6PR12MB4433:
+x-microsoft-antispam-prvs: <DM6PR12MB443334DFAEFCA9F6A12B4150DA8E9@DM6PR12MB4433.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Vdaow7Iz0BI2IRq6iuCYBG2yOS53+P7dREFeNZs4fyeBcGJyhJxo7Fq+A0g/GqU1yYXtfIL2ZzRP+E9vIY34vLh0A/2EN5E6TdI5fzvzUTP+nRRGzuNZXl+Nj+AnWOtcMGcGcuRC5lxNBB3Mpefe9tH1oK3cddpuVWKO7jJ9tX9GjaismeT7Il0Yn9KBbC5uA6Md6NYok/U1UcAv7pB7TxZsZDiYvPKAxOBjPqQFfJEh4WA0RJAA2jJpANY5TbjMA9f11ulCY6fIegOGx5bYBz076T3KoJiSxs0NFH6IqTxKTjUVvUPxukivLK4kOVR0ee13L5TdigjNRF7/hkiCOFXJ+UtQsJ/IJHttYBLmDsqGLjpffkQHLJVwSZf289ZgvLnAczwjAM8lRFd4ZEYSPA1i+h8GkJZyMkIzOimzMvli3Q+DXjNmqbTEESS+U/VijunsireXMX4GS5vA7UTz40MkpYCLBEHfhQdZrd2mJaxaM4WPyqhIScjei6Us5QxLgkAJnlOOKYF4OKwhpe7q7e0rMTX+y4d6VF4fYHM7it9wDdwqdwAwsCOFCtX0IsA+rjK9ObymFxd2Rg2UzFnOU7YGfKC0cc+yQH4rtkl/jUo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1835.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39860400002)(136003)(376002)(346002)(26005)(7696005)(186003)(86362001)(5660300002)(2906002)(478600001)(54906003)(966005)(4326008)(6916009)(8936002)(316002)(8676002)(33656002)(64756008)(76116006)(66476007)(66946007)(66556008)(66446008)(66574015)(9686003)(7416002)(71200400001)(53546011)(55016002)(6506007)(52536014)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?ZUQzUjkxeVU2MjN5Z1I0cmRNNXE4SnZkby81cGxCTkQ2Vk5BalFiTUYyZlVv?=
+ =?utf-8?B?bDJBNWw5bEJ4TXB6OEpoVFdPbjl3cndJTUdvaTk3NUE3RGtoV0R6bnRUdnFz?=
+ =?utf-8?B?RWt6Q09TazEzWjNOKzU0Wk0wMjBYU3AvRkptM2N4QVhhcjhuNWNBbG16ZmpP?=
+ =?utf-8?B?eWVISjFVY3BKMk1QSFpJbERIY21oaWJXRmQwb3hVZVpYV0I4NENTOGhWSDRM?=
+ =?utf-8?B?ZmFOY0dNOUN2MUxvUDhoWlZNd2N2NE43MytuRHp0RVpUVmJ3eFdxTEV2bjFB?=
+ =?utf-8?B?OXVzaENkZGgyMEw4U0xKVlBsRlZkbDRpTlRaZ1I4VHkzV0RaMG5ZNFB4MFRz?=
+ =?utf-8?B?ZDl1UEZnbzFpaThLK2Q4ZWhkL3ozb01ySmQ5d1JZemtxZm52SDFNSitrdDRS?=
+ =?utf-8?B?ZkxhN3Q1NEs1T3VLVHYrblZZdWVyZCtoYjYybEg1djduZitVSE5EZWNVVHdH?=
+ =?utf-8?B?VmNzYVlJZlk1aFhKbGIxTHkxSjh6enZ2YUxINDhQMVN5SDVoQ3VTank1S28z?=
+ =?utf-8?B?cHpqdC9zbXRGWTRjak9PUmUwVnhhMVpkYVl4a2s2RzNYajJlamtuUWNlSjk2?=
+ =?utf-8?B?NGRJTHJBQUtkaHFhTnlQVlZOTEVyVjgvWEZOcEo4eU40UFgvTU1LWVRTVW1T?=
+ =?utf-8?B?QjdTZElFV1ZlTERWZ2ZHUGNGUnRaTmlaQjBSNEVjdzIvVUZLdGo3Q2dXQnJt?=
+ =?utf-8?B?U3pzQ3dNUU5rVlZiRWI0U3FLMDlVbUlZdnh1eU5rREFSMTlxZjFBWXh4bFhD?=
+ =?utf-8?B?SnBmRmdFSmZrRk5SSktLb2dPdG42cjVoMTJyRVN2M2xndS9YS01JUHdBTVpM?=
+ =?utf-8?B?aVdwejR6MGdLVFBzaTJ2WUIzdWxrZTlVcm5ndHBicDZzYjF6WHMxbWx6OFIz?=
+ =?utf-8?B?MFBzZHpqaEZKTTF6ZHJQbnZkNmhKZEZ2ckduYVc1OUR4Lzg1OExkQTNHK01o?=
+ =?utf-8?B?bWFNTEtvYUgxMnExNWppSEJlZFpqSEZFUmh2WUpWaUtUcUNvaWxUTW9obWdt?=
+ =?utf-8?B?TlZ5U2k5c2hJUDVyZ2Nza2Y2RVpEWVlxa1crcEFkOUkza0x1NHdYbjRGdzlB?=
+ =?utf-8?B?NnM2MVBDN2NDTVFZNlVwQXk4N1JMZjM2QVc5WTZjZVUxc3Iwb013U2hMMzJi?=
+ =?utf-8?B?T0JiR0sxS1FPaHZ4V1JFUG5XMi9wNlVOUVpncWtGN05rY0tOdkRqNnMvWkFS?=
+ =?utf-8?B?dkZuKzhreEliR1E0NmgzY3JlRkxWWG52ZjJDK0dXcHQ1SytDZldQS0Ixckla?=
+ =?utf-8?B?Qzd3YTZlN0FjN280c3NEMEtMWnRKQmZxN2EzZENMMzRHM1NBcE1GTmV4ZTYy?=
+ =?utf-8?B?ZFU3ZmVMRkNWSGRCNEJnUWI0YlZwdHJqSzFKTU5GaVk5TUJvem42WmZ0WmxQ?=
+ =?utf-8?B?cHZ0QzZWWDJuL2tVMVlTUkpUMEZ2S2hLVk5hbkRGL1dGeXQ4WlBoM3N6QnAw?=
+ =?utf-8?B?R3Q0ak1ybTIybCtkejVERUJINmZRWEt4ZFA5a1Y2cG40LzhPdDVtRFN1aGkx?=
+ =?utf-8?B?TzdNSDJDemVZRjllOFlvRzJGL0hUaDd0OXlxQ2Z2WTN4ejVCWnRjZThDZE5i?=
+ =?utf-8?B?cWliUXlKVHN5bHFUak5vOE1zaERLcUVlOGFmdVRoTS9YWWg0eGpsK3ZxYzBy?=
+ =?utf-8?B?dzVzN2ozZUF6bWhNUDZZWDFZSmJKV1NDSGxsSEdQSmVObCtGQWowckNUUTdr?=
+ =?utf-8?B?Z0FnT0FDZ1dEUmwvdk9Nblh6OG5EalRDaFlpenV4U3o2MEV6MGVhbCthWGov?=
+ =?utf-8?Q?rHFTkfhiidDjHjWL8s=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8489e5d34a6ae26309772f7cbffaa340fbb6c34e.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1835.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83f153b8-4cf6-4618-621c-08d8cd0f5296
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2021 15:28:16.5966
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: D6BpqqRqqrVF9pucXOOTEpjG3IPAWqMUfkkJFxgnjJpzN2A8AmQreOVtKnpqpPFvLdtY5EBYTrXIYsng4cQ0/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4433
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021, Matti Vaittinen wrote:
-
-> BD9573 and BD9576 support set of "protection" interrupts for "fatal"
-> issues. Those lead to SOC reset as PMIC shuts the power outputs. Thus
-> there is no relevant IRQ handling for them.
-> 
-> Few "detection" interrupts were added to the BD9576 with the idea that
-> SOC could take some recovery-action before error gets unrecoverable.
-> 
-> Unfortunately the BD9576 interrupt logic was not re-evaluated. IRQs
-> are not designed to be properly acknowleged - and IRQ line is kept
-> active for whole duration of error condition (in comparison to
-> informing only about state change).
-> 
-> For above reason, do not consider missing IRQ as error.
-> 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
-> Changes since v6:
->  - new patch
-> 
->  drivers/mfd/rohm-bd9576.c       |  80 +++++++++++++++++-
->  include/linux/mfd/rohm-bd957x.h | 140 +++++++++++++++++++++++---------
->  2 files changed, 180 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/mfd/rohm-bd9576.c b/drivers/mfd/rohm-bd9576.c
-> index f4dd9e438427..99fa0f333277 100644
-> --- a/drivers/mfd/rohm-bd9576.c
-> +++ b/drivers/mfd/rohm-bd9576.c
-> @@ -16,12 +16,27 @@
->  #include <linux/regmap.h>
->  #include <linux/types.h>
->  
-> +/*
-> + * Due to the BD9576MUF nasty IRQ behaiour we don't always populate IRQs.
-> + * These will be added to regulator resources only if IRQ information for the
-> + * PMIC is populated in device-tree.
-> + */
-> +static const struct resource bd9576_regulator_irqs[] = {
-> +	DEFINE_RES_IRQ_NAMED(BD9576_INT_THERM, "bd9576-temp"),
-> +	DEFINE_RES_IRQ_NAMED(BD9576_INT_OVD, "bd9576-ovd"),
-> +	DEFINE_RES_IRQ_NAMED(BD9576_INT_UVD, "bd9576-uvd"),
-> +};
-> +
->  static struct mfd_cell bd9573_mfd_cells[] = {
->  	{ .name = "bd9573-pmic", },
->  	{ .name = "bd9576-wdt", },
->  };
->  
->  static struct mfd_cell bd9576_mfd_cells[] = {
-> +	/*
-> +	 * Please keep regulators as first cell as resources may be overwritten
-> +	 * from probe and the code expects regulators to be at index 0.
-> +	 */
->  	{ .name = "bd9576-pmic", },
->  	{ .name = "bd9576-wdt", },
->  };
-> @@ -48,6 +63,29 @@ static struct regmap_config bd957x_regmap = {
->  	.cache_type = REGCACHE_RBTREE,
->  };
->  
-> +static struct regmap_irq bd9576_irqs[] = {
-> +	REGMAP_IRQ_REG(BD9576_INT_THERM, 0, BD957X_MASK_INT_MAIN_THERM),
-> +	REGMAP_IRQ_REG(BD9576_INT_OVP, 0, BD957X_MASK_INT_MAIN_OVP),
-> +	REGMAP_IRQ_REG(BD9576_INT_SCP, 0, BD957X_MASK_INT_MAIN_SCP),
-> +	REGMAP_IRQ_REG(BD9576_INT_OCP, 0, BD957X_MASK_INT_MAIN_OCP),
-> +	REGMAP_IRQ_REG(BD9576_INT_OVD, 0, BD957X_MASK_INT_MAIN_OVD),
-> +	REGMAP_IRQ_REG(BD9576_INT_UVD, 0, BD957X_MASK_INT_MAIN_UVD),
-> +	REGMAP_IRQ_REG(BD9576_INT_UVP, 0, BD957X_MASK_INT_MAIN_UVP),
-> +	REGMAP_IRQ_REG(BD9576_INT_SYS, 0, BD957X_MASK_INT_MAIN_SYS),
-> +};
-> +
-> +static struct regmap_irq_chip bd9576_irq_chip = {
-> +	.name = "bd9576_irq",
-> +	.irqs = &bd9576_irqs[0],
-> +	.num_irqs = ARRAY_SIZE(bd9576_irqs),
-> +	.status_base = BD957X_REG_INT_MAIN_STAT,
-> +	.mask_base = BD957X_REG_INT_MAIN_MASK,
-> +	.ack_base = BD957X_REG_INT_MAIN_STAT,
-> +	.init_ack_masked = true,
-> +	.num_regs = 1,
-> +	.irq_reg_stride = 1,
-> +};
-> +
->  static int bd957x_i2c_probe(struct i2c_client *i2c,
->  			     const struct i2c_device_id *id)
->  {
-> @@ -56,6 +94,7 @@ static int bd957x_i2c_probe(struct i2c_client *i2c,
->  	struct mfd_cell *mfd;
->  	int cells;
->  	unsigned long chip_type;
-> +	struct irq_domain *domain;
->  
->  	chip_type = (unsigned long)of_device_get_match_data(&i2c->dev);
->  
-> @@ -67,6 +106,11 @@ static int bd957x_i2c_probe(struct i2c_client *i2c,
->  	case ROHM_CHIP_TYPE_BD9573:
->  		mfd = bd9573_mfd_cells;
->  		cells = ARRAY_SIZE(bd9573_mfd_cells);
-> +		/* BD9573 only supports fatal IRQs which we do not handle */
-
-Why not?
-
-> +		if (i2c->irq) {
-> +			dev_err(&i2c->dev, "no supported irqs on BD9573\n");
-
-"IRQs"
-
-> +			return -EINVAL;
-> +		}
->  		break;
->  	default:
->  		dev_err(&i2c->dev, "Unknown device type");
-> @@ -78,9 +122,43 @@ static int bd957x_i2c_probe(struct i2c_client *i2c,
->  		dev_err(&i2c->dev, "Failed to initialize Regmap\n");
->  		return PTR_ERR(regmap);
->  	}
-> +	/*
-> +	 * BD9576 behaves badly. It kepts IRQ asserted for the whole
-
-This is solution is less than pretty.
-
-> +	 * duration of detected HW condition (like over temp). This does
-
-"over-temperature"
-
-> +	 * not play nicely under any condition but we can work around it
-> +	 * except when we have shared IRQs. So we don't require IRQ to be
-> +	 * populated to help those poor sods who did connect IRQ to shared pin.
-
-No swearing in comments please.
-
-How do you know if an IRQ is shared?
-
-> +	 * If IRQ information is not given, then we mask all IRQs and do not
-> +	 * provide IRQ resources to regulator driver - which then just omits
-> +	 * the notifiers.
-> +	 */
-
-This situation doesn't sound totally crazy.  Is there no way to handle
-'persistent IRQ' conditions in the kernel?
-
-> +	if (i2c->irq) {
-> +		struct regmap_irq_chip_data *irq_data;
-> +		struct mfd_cell *regulators = &bd9576_mfd_cells[0];
-> +
-> +		regulators->resources = bd9576_regulator_irqs;
-> +		regulators->num_resources = ARRAY_SIZE(bd9576_regulator_irqs);
-> +
-> +		ret = devm_regmap_add_irq_chip(&i2c->dev, regmap, i2c->irq,
-> +					       IRQF_ONESHOT, 0,
-> +					       &bd9576_irq_chip, &irq_data);
-> +		if (ret) {
-> +			dev_err(&i2c->dev, "Failed to add IRQ chip\n");
-> +			return ret;
-> +		}
-> +		domain = regmap_irq_get_domain(irq_data);
-> +		dev_info(&i2c->dev, "Using IRQs for BD9576MUF\n");
-> +	} else {
-> +		ret = regmap_update_bits(regmap, BD957X_REG_INT_MAIN_MASK,
-> +					 BD957X_MASK_INT_ALL,
-> +					 BD957X_MASK_INT_ALL);
-
-What's the default state of the interrupts?  Unmasked?
-
-> +		if (ret)
-> +			return ret;
-> +		domain = NULL;
-> +	}
->  
->  	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO, mfd, cells,
-> -				   NULL, 0, NULL);
-> +				   NULL, 0, domain);
->  	if (ret)
->  		dev_err(&i2c->dev, "Failed to create subdevices\n");
->  
-> diff --git a/include/linux/mfd/rohm-bd957x.h b/include/linux/mfd/rohm-bd957x.h
-> index 3e7ca6fe5d4f..4fa632d8467a 100644
-> --- a/include/linux/mfd/rohm-bd957x.h
-> +++ b/include/linux/mfd/rohm-bd957x.h
-> @@ -13,47 +13,109 @@ enum {
->  	BD957X_VOUTS1,
->  };
->  
-> +/* The BD9576 has own IRQ 'blocks' for:
-
-Comments start on line 2.
-
-> + * I2C/THERMAL,
-
-Does this precede each line?
-
-> + * Over voltage protection
-> + * Short-circuit protection
-> + * Over current protection
-> + * Over voltage detection
-> + * Under voltage detection
-> + * Under voltage protection
-> + * and 'system interrupt'.
-> + *
-> + * Each of the blocks have a status register giving more accurate IRQ source
-> + * information - for example which of the regulators have over-voltage.
-> + *
-> + * On top of this, there is "main IRQ" status register where each bit indicates
-> + * which of sub-blocks have active IRQs. Fine. That would fit regmap-irq main
-> + * status handling. Except that:
-> + *  - Only some sub-IRQs can be masked.
-> + *  - The IRQ informs us about fault-condition, not when fault state changes.
-> + *    The IRQ line it is kept asserted until the detected condition is cleared
-> + *    in HW. This is _really_ annoying for IRQs like the one informing high
-> + *    temperature. Best mitigation for high temperature for sure is to
-> + *    keep the processor in IRQ loop, right? (NO!)
-
-No sarcasm in comments please it can be easily lost in translation.
-
-Please stay helpful and keep to the facts.
-
-> + * So - for now we do just use the main-IRQ register as source for our IRQ
-> + * information and bind the regmap-irq to this. We leave fine-grained sub-IRQ
-> + * register handling to handlers in sub-devices. The regulator driver shall
-> + * read which regulators are source for problem - or if the detected error is
-> + * regulator temperature error. The sub-drivers do also handle masking of "sub-
-> + * IRQs" if this is supported/needed.
-> + *
-> + * To overcome the problem with HW keeping IRQ asserted we do call
-> + * disable_irq_nosync() from sub-device handler and add a delayed work to
-> + * re-enable IRQ roughly 1 second later. This should keep our CPU out of
-> + * busy-loop.
-> + */
-> +
-> +#define IRQS_SILENT_MS 1000
-> +
-> +enum {
-> +	BD9576_INT_THERM,
-> +	BD9576_INT_OVP,
-> +	BD9576_INT_SCP,
-> +	BD9576_INT_OCP,
-> +	BD9576_INT_OVD,
-> +	BD9576_INT_UVD,
-> +	BD9576_INT_UVP,
-> +	BD9576_INT_SYS,
-> +};
-> +
->  #define BD957X_REG_SMRB_ASSERT		0x15
->  #define BD957X_REG_PMIC_INTERNAL_STAT	0x20
->  #define BD957X_REG_INT_THERM_STAT	0x23
-> -#define BD957X_REG_INT_THERM_MASK 0x24
-> -#define BD957X_REG_INT_OVP_STAT 0x25
-> -#define BD957X_REG_INT_SCP_STAT 0x26
-> -#define BD957X_REG_INT_OCP_STAT 0x27
-> -#define BD957X_REG_INT_OVD_STAT 0x28
-> -#define BD957X_REG_INT_UVD_STAT 0x29
-> -#define BD957X_REG_INT_UVP_STAT 0x2a
-> -#define BD957X_REG_INT_SYS_STAT 0x2b
-> -#define BD957X_REG_INT_SYS_MASK 0x2c
-> -#define BD957X_REG_INT_MAIN_STAT 0x30
-> -#define BD957X_REG_INT_MAIN_MASK 0x31
-> -
-> -#define BD957X_REG_WDT_CONF 0x16
-> -
-> -#define BD957X_REG_POW_TRIGGER1 0x41
-> -#define BD957X_REG_POW_TRIGGER2 0x42
-> -#define BD957X_REG_POW_TRIGGER3 0x43
-> -#define BD957X_REG_POW_TRIGGER4 0x44
-> -#define BD957X_REG_POW_TRIGGERL1 0x45
-> -#define BD957X_REG_POW_TRIGGERS1 0x46
-> -
-> -#define BD957X_REGULATOR_EN_MASK 0xff
-> -#define BD957X_REGULATOR_DIS_VAL 0xff
-> -
-> -#define BD957X_VSEL_REG_MASK	0xff
-> -
-> -#define BD957X_MASK_VOUT1_TUNE	0x87
-> -#define BD957X_MASK_VOUT2_TUNE	0x87
-> -#define BD957X_MASK_VOUT3_TUNE	0x1f
-> -#define BD957X_MASK_VOUT4_TUNE	0x1f
-> -#define BD957X_MASK_VOUTL1_TUNE	0x87
-> -
-> -#define BD957X_REG_VOUT1_TUNE	0x50
-> -#define BD957X_REG_VOUT2_TUNE	0x53
-> -#define BD957X_REG_VOUT3_TUNE	0x56
-> -#define BD957X_REG_VOUT4_TUNE	0x59
-> -#define BD957X_REG_VOUTL1_TUNE	0x5c
-> -
-> -#define BD957X_MAX_REGISTER 0x61
-> +#define BD957X_REG_INT_THERM_MASK	0x24
-> +#define BD957X_REG_INT_OVP_STAT		0x25
-> +#define BD957X_REG_INT_SCP_STAT		0x26
-> +#define BD957X_REG_INT_OCP_STAT		0x27
-> +#define BD957X_REG_INT_OVD_STAT		0x28
-> +#define BD957X_REG_INT_UVD_STAT		0x29
-> +#define BD957X_REG_INT_UVP_STAT		0x2a
-> +#define BD957X_REG_INT_SYS_STAT		0x2b
-> +#define BD957X_REG_INT_SYS_MASK		0x2c
-> +#define BD957X_REG_INT_MAIN_STAT	0x30
-> +#define BD957X_REG_INT_MAIN_MASK	0x31
-> +
-> +#define UVD_IRQ_VALID_MASK		0x6F
-> +#define OVD_IRQ_VALID_MASK		0x2F
-> +
-> +#define BD957X_MASK_INT_MAIN_THERM	BIT(0)
-> +#define BD957X_MASK_INT_MAIN_OVP	BIT(1)
-> +#define BD957X_MASK_INT_MAIN_SCP	BIT(2)
-> +#define BD957X_MASK_INT_MAIN_OCP	BIT(3)
-> +#define BD957X_MASK_INT_MAIN_OVD	BIT(4)
-> +#define BD957X_MASK_INT_MAIN_UVD	BIT(5)
-> +#define BD957X_MASK_INT_MAIN_UVP	BIT(6)
-> +#define BD957X_MASK_INT_MAIN_SYS	BIT(7)
-> +#define BD957X_MASK_INT_ALL		0xff
-> +
-> +#define BD957X_REG_WDT_CONF		0x16
-> +
-> +#define BD957X_REG_POW_TRIGGER1		0x41
-> +#define BD957X_REG_POW_TRIGGER2		0x42
-> +#define BD957X_REG_POW_TRIGGER3		0x43
-> +#define BD957X_REG_POW_TRIGGER4		0x44
-> +#define BD957X_REG_POW_TRIGGERL1	0x45
-> +#define BD957X_REG_POW_TRIGGERS1	0x46
-> +
-> +#define BD957X_REGULATOR_EN_MASK	0xff
-> +#define BD957X_REGULATOR_DIS_VAL	0xff
-> +
-> +#define BD957X_VSEL_REG_MASK		0xff
-> +
-> +#define BD957X_MASK_VOUT1_TUNE		0x87
-> +#define BD957X_MASK_VOUT2_TUNE		0x87
-> +#define BD957X_MASK_VOUT3_TUNE		0x1f
-> +#define BD957X_MASK_VOUT4_TUNE		0x1f
-> +#define BD957X_MASK_VOUTL1_TUNE		0x87
-> +
-> +#define BD957X_REG_VOUT1_TUNE		0x50
-> +#define BD957X_REG_VOUT2_TUNE		0x53
-> +#define BD957X_REG_VOUT3_TUNE		0x56
-> +#define BD957X_REG_VOUT4_TUNE		0x59
-> +#define BD957X_REG_VOUTL1_TUNE		0x5c
-> +
-> +#define BD957X_MAX_REGISTER		0x61
-
-Line all these up please.
-
->  #endif
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+T24gTW9uLCBGZWIgOCwgMjAyMSBhdCAyMjo1Mzo1NCwgS3J6eXN6dG9mIFdpbGN6ecWEc2tpIDxr
+d0BsaW51eC5jb20+IA0Kd3JvdGU6DQoNCj4gWytjYyBCam9ybl0NCj4gDQo+IEhpIEd1c3Rhdm8s
+DQo+IA0KPiBbLi4uXQ0KPiA+IFRoYW5rcyBmb3IgeW91ciByZXZpZXcuIEkgd2lsbCB3YWl0IGZv
+ciBhIGNvdXBsZSBvZiBkYXlzLCBiZWZvcmUgc2VuZGluZyANCj4gPiBhIG5ldyB2ZXJzaW9uIG9m
+IHRoaXMgcGF0Y2ggc2VyaWVzIGJhc2VkIG9uIHlvdXIgZmVlZGJhY2suDQo+IA0KPiBUaGFuayB5
+b3UhDQo+IA0KPiBUaGVyZSBtaWdodCBiZSBvbmUgbW9yZSBjaGFuZ2UsIGFuZCBpbXByb3ZlbWVu
+dCwgdG8gYmUgZG9uZSBhcyBwZXINCj4gQmpvcm4ncyBmZWVkYmFjaywgc2VlOg0KPiANCj4gICBo
+dHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgt
+cGNpLzIwMjEwMjA4MTkzNTE2LkdBNDA2MzA0QGJqb3JuLVByZWNpc2lvbi01NTIwL19fOyEhQTRG
+MlI5R19wZyFPeHA1NnBVX1VONk0yQmhmTlJTZFlxc0ZVbmNxVmtsQmpfMUlkTFFEX3dfVjZkS1JQ
+RE9fRmpQVXlzdE1hNUQzOVNSajh1byQgDQo+IA0KPiBUaGUgY29kZSBpbiBxdWVzdGlvbiB3b3Vs
+ZCBiZSAoZXhjZXBydCBmcm9tIHRoZSBwYXRjaCk6DQo+IA0KPiBbLi4uXQ0KPiArc3RhdGljIGlu
+dCBkd194ZGF0YV9wY2llX3Byb2JlKHN0cnVjdCBwY2lfZGV2ICpwZGV2LA0KPiArCQkJICAgICAg
+IGNvbnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lkICpwaWQpDQo+ICt7DQo+ICsJY29uc3Qgc3RydWN0
+IGR3X3hkYXRhX3BjaWVfZGF0YSAqcGRhdGEgPSAodm9pZCAqKXBpZC0+ZHJpdmVyX2RhdGE7DQo+
+ICsJc3RydWN0IGR3X3hkYXRhICpkdzsNCj4gWy4uLl0NCj4gKwlkdy0+cmdfcmVnaW9uLnZhZGRy
+ID0gcGNpbV9pb21hcF90YWJsZShwZGV2KVtwZGF0YS0+cmdfYmFyXTsNCj4gKwlpZiAoIWR3LT5y
+Z19yZWdpb24udmFkZHIpDQo+ICsJCXJldHVybiAtRU5PTUVNOw0KPiBbLi4uXQ0KPiANCj4gUGVy
+aGFwcyBzb21ldGhpbmcgbGlrZSB0aGUgZm9sbG93aW5nIHdvdWxkIHdvdWxkPw0KPiANCj4gdm9p
+ZCBfX2lvbWVtICogY29uc3QgKmlvbWFwX3RhYmxlOw0KPiANCj4gaW9tYXBfdGFibGUgPSBwY2lt
+X2lvbWFwX3RhYmxlKHBkZXYpOw0KPiBpZiAoIWlvbWFwX3RhYmxlKQ0KPiAgICAgICAgIHJldHVy
+biAtRU5PTUVNOw0KPiANCj4gZHctPnJnX3JlZ2lvbi52YWRkciA9IGlvbWFwX3RhYmxlW3BkYXRh
+LT5yZ19iYXJdOw0KPiBpZiAoIWR3LT5yZ19yZWdpb24udmFkZHIpDQo+IAlyZXR1cm4gLUVOT01F
+TTsNCj4gDQo+IFdpdGggc2Vuc2libGUgZXJyb3IgbWVzc2FnZXMgYWRkZWQsIG9mIGNvdXJzZS4g
+IFdoYXQgZG8geW91IHRoaW5rPw0KDQpJIHRoaW5rIGFsbCB0aGUgaW1wcm92ZW1lbnRzIGFyZSB3
+ZWxjb21lLiBJIHdpbGwgZG8gdGhhdC4NCk15IG9ubHkgZG91YnQgaXMgaWYgQmpvcm4gcmVjb21t
+ZW5kcyByZW1vdmluZyB0aGUgDQppb21hcF90YWJsZVtwZGF0YS0+cmdfYmFyXSBjaGVjaywgYWZ0
+ZXIgYWRkaW5nIHRoZSB2ZXJpZmljYXRpb24gb24gdGhlIA0KcGNpbV9pb21hcF90YWJsZSwgYmVj
+YXVzZSBhbGwgb3RoZXIgZHJpdmVycyBkb2Vzbid0IGRvIHRoYXQuDQoNClRoYW5rcyENCg0KLUd1
+c3Rhdm8NCj4gDQo+IEtyenlzenRvZg0KDQoNCg==
