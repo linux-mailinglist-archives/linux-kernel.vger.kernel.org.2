@@ -2,125 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBC23157CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 21:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FDD3157F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 21:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhBIUih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 15:38:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233500AbhBIS3V (ORCPT
+        id S234012AbhBIUsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 15:48:02 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16196 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233483AbhBISfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 13:29:21 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E94C061794;
-        Tue,  9 Feb 2021 10:28:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=8F8qTneyF1oxisYOCOkgV5cowkuUejUJ2qzhXmwkNw0=; b=fTs5e35749PXu8LILdjOhJeUt9
-        BPrkTVy/m/u8g9OK6kxI20QcRJyct2gdobEIvV1Iu8EFL/NREgj+ZwmzCVk226pOWnnfRiTmj3OcD
-        m3d6FSkKvWkPtVR/DQLAbNnVqVM5KYXyRurNP/fn957XsHOh6L/M1WyGkTjScSP+LsDzdBCps9fHN
-        vTGp0btnmuGQMRJlmTGhCbRwZrMeVFuzkKtx9F4EjZr2qgdPxv9nsqqTgMgFIatiaKLtGNCUi7MQ9
-        DNQSKrUOeytMSmuc71OYSNK3o3QgK5jZVChDoVaAbCLNT1eR3OpuCQ/LDpoTA6RogPE6M2VRLTIQj
-        281gv3mA==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9Xka-000067-SY; Tue, 09 Feb 2021 18:28:37 +0000
-Subject: Re: [PATCH] lockdep: Noinstr annotate warn_bogus_irq_restore()
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-References: <20210208235246.01cb4daf@canb.auug.org.au>
- <2000eae0-89f4-a88f-a113-7fa47f16def7@infradead.org>
- <YCJJAoC+r414zO+2@hirez.programming.kicks-ass.net>
- <20210209132430.GB71297@C02TD0UTHF1T.local>
- <YCKyYg53mMp4E7YI@hirez.programming.kicks-ass.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e92d4652-d6df-7fcd-6f0e-e1504653563b@infradead.org>
-Date:   Tue, 9 Feb 2021 10:28:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 9 Feb 2021 13:35:36 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119IPeBq012109
+        for <linux-kernel@vger.kernel.org>; Tue, 9 Feb 2021 10:34:09 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=iLpjtR2apKknZa9JJ0IOCrDk1p4qgiT/j6k9vaqSdkU=;
+ b=cimiw0OVJqiHyjIHakRBr2e91e7UFhy7EwrRsxUjqM/oF1RAomtMLMWE6gPS8g+d0Xc1
+ VqTFNRjoi0acIB1h/8x+PwsYQVAZSANNCVcIfz9JTDrbQefTCADtiEj7v/LMcWMRTKXg
+ aBFDiUl8KLf2vO/6NT9KdPIXokJP0DAOYNE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36jc1umt23-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 10:34:09 -0800
+Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 9 Feb 2021 10:33:56 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 23D7362E0A43; Tue,  9 Feb 2021 10:33:46 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>
+Subject: [PATCH v3] checkpatch: do not apply "initialise globals to 0" check to BPF progs
+Date:   Tue, 9 Feb 2021 10:33:43 -0800
+Message-ID: <20210209183343.3929160-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <YCKyYg53mMp4E7YI@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-09_06:2021-02-09,2021-02-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 adultscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 clxscore=1015 mlxlogscore=849
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102090088
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 8:03 AM, Peter Zijlstra wrote:
-> On Tue, Feb 09, 2021 at 01:24:30PM +0000, Mark Rutland wrote:
->> On Tue, Feb 09, 2021 at 09:34:10AM +0100, Peter Zijlstra wrote:
->>>
->>> Subject: lockdep: Noinstr annotate warn_bogus_irq_restore()
->>> From: Peter Zijlstra <peterz@infradead.org>
->>> Date: Tue Feb 9 09:30:03 CET 2021
->>>
->>>   vmlinux.o: warning: objtool: lock_is_held_type()+0x107: call to warn_bogus_irq_restore() leaves .noinstr.text section
->>>
->>> As per the general rule that WARNs are allowed to violate noinstr to
->>> get out, annotate it away.
->>>
->>> Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
->>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
->>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>
->> Whoops; sorry for missing that!
->>
->> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> This runs into sodding header hell on mips (and possibly others)
-> 
-> How's this then?
-> 
-> ---
-> Subject: lockdep: Noinstr annotate warn_bogus_irq_restore()
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Tue Feb 9 09:30:03 CET 2021
-> 
->   vmlinux.o: warning: objtool: lock_is_held_type()+0x107: call to warn_bogus_irq_restore() leaves .noinstr.text section
-> 
-> As per the general rule that WARNs are allowed to violate noinstr to
-> get out, annotate it away.
-> 
-> Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
+BPF programs explicitly initialise global variables to 0 to make sure
+clang (v10 or older) do not put the variables in the common section.
+Skip "initialise globals to 0" check for BPF programs to elimiate error
+messages like:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+    ERROR: do not initialise globals to 0
+    #19: FILE: samples/bpf/tracex1_kern.c:21:
 
-Thanks.
+Cc: Andy Whitcroft <apw@canonical.com>
+Cc: Joe Perches <joe@perches.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 
-> ---
->  include/linux/irqflags.h       |    5 ++++-
->  kernel/locking/irqflag-debug.c |    4 +++-
->  2 files changed, 7 insertions(+), 2 deletions(-)
-> 
-> --- a/kernel/locking/irqflag-debug.c
-> +++ b/kernel/locking/irqflag-debug.c
-> @@ -4,8 +4,10 @@
->  #include <linux/export.h>
->  #include <linux/irqflags.h>
->  
-> -void warn_bogus_irq_restore(void)
-> +noinstr void warn_bogus_irq_restore(void)
->  {
-> +	instrumentation_begin();
->  	WARN_ONCE(1, "raw_local_irq_restore() called with IRQs enabled\n");
-> +	instrumentation_end();
->  }
->  EXPORT_SYMBOL(warn_bogus_irq_restore);
-> 
+---
+Changes v2 =3D> v3:
+  1. Fix regex.
+Changes v1 =3D> v2:
+  1. Add function exclude_global_initialisers() to keep the code clean.
+---
+ scripts/checkpatch.pl | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-
--- 
-~Randy
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 1afe3af1cc097..967ff2a0b3899 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2428,6 +2428,15 @@ sub get_raw_comment {
+ 	return $comment;
+ }
+=20
++sub exclude_global_initialisers {
++	my ($realfile) =3D @_;
++
++	# Do not check for BPF programs (tools/testing/selftests/bpf/progs/*.c,=
+ samples/bpf/*_kern.c, *.bpf.c).
++	return $realfile =3D~ m@/^tools\/testing\/selftests\/bpf\/progs\/.*\.c@=
+ ||
++		$realfile =3D~ m@^samples\/bpf\/.*_kern.c@ ||
++		$realfile =3D~ m@/bpf/.*\.bpf\.c$@;
++}
++
+ sub process {
+ 	my $filename =3D shift;
+=20
+@@ -4323,7 +4332,8 @@ sub process {
+ 		}
+=20
+ # check for global initialisers.
+-		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_init=
+ializer)\s*;/) {
++		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_init=
+ializer)\s*;/ &&
++		    !exclude_global_initialisers($realfile)) {
+ 			if (ERROR("GLOBAL_INITIALISERS",
+ 				  "do not initialise globals to $1\n" . $herecurr) &&
+ 			    $fix) {
+--=20
+2.24.1
 
