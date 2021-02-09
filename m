@@ -2,68 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A611E315B46
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D974315B44
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbhBJAdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:33:07 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:45387 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233973AbhBIU5p (ORCPT
+        id S233913AbhBJAcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:32:36 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:48900 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234223AbhBIU6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:57:45 -0500
-Received: by mail-ot1-f53.google.com with SMTP id o12so18742297ote.12;
-        Tue, 09 Feb 2021 12:57:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kh/pXJurcIRAYyv8QUbj8W1saTq+ts50VPz/kq0Apmo=;
-        b=jCeH/1VLXXcB9M6utehOV1Httf5cHQxy+xylkFSmZI+VFErKx6sGlhwFQFVx4BqSRo
-         ZWommOIAd6+O9n/+CLJtzvquUnK2AUjPpEnv5ZZiy9/WpiGOxQkH578ju/OWJ3MPavvG
-         bFDpd/Arlv3tyWWyHURYlKQaus6QHsMCNK6y69pgzYj+AyMy7IQWlGqQ0l33bLF8ugsj
-         NZQLrXtYoUX4MihDYDjNBc17ApBrMbqL00giBjbyuWVTN6BsshO6P636D2vrkpf3AeFW
-         0nQ1x7O2mJoy4S/yaqCLkpW8qG1sMXg7ubErQvz8cv2XIFu+ifVYesQeQffVJ+vIBqUl
-         v8+g==
-X-Gm-Message-State: AOAM533yQDu20n8HFJ9kORPFA+yFYwfyPPJTo63w++bQ5A7PtsYYItfc
-        NBtN79we55YIlwiIbSUySw==
-X-Google-Smtp-Source: ABdhPJxThPHlo1ipIaJeoCSyG5mpxGkKBRusWuqdlzGL7BiAGXmACOmsC6EienP1d80u6hXjDG5T1A==
-X-Received: by 2002:a05:6830:1bcf:: with SMTP id v15mr5043763ota.232.1612904224590;
-        Tue, 09 Feb 2021 12:57:04 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i12sm2731005ots.17.2021.02.09.12.57.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 12:57:03 -0800 (PST)
-Received: (nullmailer pid 167154 invoked by uid 1000);
-        Tue, 09 Feb 2021 20:57:02 -0000
-Date:   Tue, 9 Feb 2021 14:57:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     Andrei Ziureaev <andrei.ziureaev@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Subject: Re: [PATCH] dt-bindings: Use portable sort for version cmp
-Message-ID: <20210209205702.GA167097@robh.at.kernel.org>
-References: <20210201165829.58656-1-iskren.chernev@gmail.com>
+        Tue, 9 Feb 2021 15:58:01 -0500
+Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id DDD8820B6C40;
+        Tue,  9 Feb 2021 12:57:19 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DDD8820B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1612904240;
+        bh=B6IXBDuHhomANc68xDBuzWoNqMqvLzCJBM0oCkXf5Go=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=QIKx/TZuAS+rtaIewTuyzQuZx80Qjh5e9NVrj6QV9ag6zjTB47ANqs7trj2D+qGeA
+         WXQeMGoIUn+5OCOSKXW0c+QUugkz+guiQzqx3Ptkk3cXlVzwl29fsuKhgc3iL6+1Fp
+         6Fcp0+EsrzX7RPQeK6wSSdlO/ogqbgBHbdFLRQ6o=
+Subject: Re: [PATCH 0/3] support for duplicate measurement of integrity
+ critical data
+To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20210130004519.25106-1-tusharsu@linux.microsoft.com>
+ <27f73411fc1d6ce6dd16a29344d729d9aa760250.camel@linux.ibm.com>
+ <27a4592c3b75861d2b9c8fb1511f593aa987222c.camel@linux.ibm.com>
+ <c5ecccbe-9e23-f297-8a79-2a9dd62a40fb@linux.microsoft.com>
+ <38ba5889d517ee010a6bf370f8892059dd7d3bfe.camel@linux.ibm.com>
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Message-ID: <6bf1d3b1-522a-4df7-b18b-3789855b5740@linux.microsoft.com>
+Date:   Tue, 9 Feb 2021 12:57:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201165829.58656-1-iskren.chernev@gmail.com>
+In-Reply-To: <38ba5889d517ee010a6bf370f8892059dd7d3bfe.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Feb 2021 18:58:28 +0200, Iskren Chernev wrote:
-> sort -C is like sort -c >/dev/null but less portable. It fails on
-> busybox sort (i.e alpine linux).
-> 
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> Fixes: ea5b8b5eb004 ("dt-bindings: Add a minimum version check for dtschema")
-> ---
->  Documentation/devicetree/bindings/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
 
-Applied, thanks!
+
+On 2021-02-09 10:53 a.m., Mimi Zohar wrote:
+> On Tue, 2021-02-09 at 10:23 -0800, Tushar Sugandhi wrote:
+>>> On Mon, 2021-02-08 at 15:22 -0500, Mimi Zohar wrote:
+>>>> On Fri, 2021-01-29 at 16:45 -0800, Tushar Sugandhi wrote:
+>>>>> IMA does not measure duplicate buffer data since TPM extend is a very
+>>>>> expensive operation.  However, in some cases for integrity critical
+>>>>> data, the measurement of duplicate data is necessary to accurately
+>>>>> determine the current state of the system.  Eg, SELinux state changing
+>>>>> from 'audit', to 'enforcing', and back to 'audit' again.  In this
+>>>>> example, currently, IMA will not measure the last state change to
+>>>>> 'audit'.  This limits the ability of attestation services to accurately
+>>>>> determine the current state of the integrity critical data on the
+>>>>> system.
+>>>>>
+>>>>> This series addresses this gap by providing the ability to measure
+>>>>> duplicate entries for integrity critical data, driven by policy.
+>>>>
+>>>> The same reason for re-measuring buffer data is equally applicable to
+>>>> files.  In both cases, the file or the buffer isn't re-measured if it
+>>>> already exists in the htable.   Please don't limit this patch set to
+>>>> just buffer data.
+>>>
+>> Agreed.  I wasn't sure if you wanted the support for files, or other
+>> buffer measurement scenarios, except critical data.  So I started the
+>> implementation with supporting just critical data.  Happy to extend it
+>> to files and other buffer measurement scenarios as you suggested.
+>>
+>>> Instead of making the change on a per measurement rule basis, disabling
+>>> "htable" would be the simplest way of forcing re-measurements.  All
+>>> that would be needed is a new Kconfig (e.g. CONFIG_IMA_DISABLE_HTABLE)
+>>> and the associated test in ima_add_template_entry().
+>>>
+>> Agreed.  Earlier I wasn't sure if you wanted allow_dup support for all
+>> the scenarios.  Now that it is clear,  I will implement it as you
+>> suggested.  Thank you so much for the pointers.  Appreciate it.
+> 
+> There are two different solutions - per measurement rule, disabling
+> htable - being discussed.   Disabling htable requires miminumal
+> changes.  Which version are you thinking of implementing?
+> 
+I am thinking of implementing "disabling 'htable' using a new Kconfig 
+(e.g. CONFIG_IMA_DISABLE_HTABLE)".  That is, not using the var 
+ima_htable or ima_lookup_digest_entry() if that CONFIG is set.
+So the duplicate measurements are allowed when the CONFIG is set.
+This would cover all the measurement scenarios through a single CONFIG 
+setting.
+
+I am not planning to implement it as a "per measurement rule".
+
+Sorry it wasn't clear in my earlier response.
+
+Thanks,
+Tushar
+
+> thanks,
+> 
+> Mimi
+> 
