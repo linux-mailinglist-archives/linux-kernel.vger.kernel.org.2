@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AE5315C39
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2BC315C2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbhBJB2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:28:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234483AbhBIW50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:57:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F5F164E3C;
-        Tue,  9 Feb 2021 22:56:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612911393;
-        bh=PfEDKvuwh0gfWlzyckF5/9G3rDhdLAKB/9Bd79EjxRk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BNrxVIA/ihj/SZyR+qr0RBsxTNLKmDqITO/hQIrF8kmkOmSmGzg4BIxwzBpBLW310
-         y982bZnwvHlKva+CtWiRuOcEh2c+Kp6iXVPVtRhmg+eujEZWp3nu7xFPKrPtLTnFQE
-         aP82+DOEoUzwc9zvI+ObrEXqp9j70e5u5c6EbXWl9AlJOFm50paIRBcp0tH0uNoYGF
-         9zwEUFIifhzIH+1Rm/oKRXVK9nvEoHn7kK+ZuPPyPLBGEkEe2SeEczOl02KA6eUYuc
-         SDuiVtVnY8U9TUyrRyPQbdpgu9/TBhTwPPKM1KwYIg02McJa0sw5ZbxDlFLp4awJQS
-         ecQ9CP2jnIBEA==
-Received: by pali.im (Postfix)
-        id 9EED4F9A; Tue,  9 Feb 2021 23:56:30 +0100 (CET)
-Date:   Tue, 9 Feb 2021 23:56:30 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     nnet <nnet@fastmail.fm>
-Cc:     a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
-        gregory.clement@bootlin.com, kabel@kernel.org, kostap@marvell.com,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
-        miquel.raynal@bootlin.com, mturquette@baylibre.com,
-        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
-        vladimir.vid@sartura.hr
-Subject: Re: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base
- CPU speed to 800 MHz from 1000 MHz
-Message-ID: <20210209225630.mdwnzkvnaz3r4blt@pali>
-References: <d59ba191-43db-4b7b-b201-62a60ca752c0@www.fastmail.com>
- <20210209213330.hnc7op72zoj24mgz@pali>
- <7b0988cc-eeb8-4ea7-92f6-e8234ca910d3@www.fastmail.com>
- <20210209224223.p22yhjdy7ibzepss@pali>
- <93745280-dbe9-491c-a79d-c9c364b83880@www.fastmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <93745280-dbe9-491c-a79d-c9c364b83880@www.fastmail.com>
-User-Agent: NeoMutt/20180716
+        id S233595AbhBJBZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:25:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233894AbhBIW67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:58:59 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF364C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 14:58:15 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id t5so282858qti.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 14:58:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=f+Sfzn1G8buhFeqBg3rOZ1CfjEptJKUCS3yLyjW3ukw=;
+        b=fXjKnajjwqEth6ETF1zmiiLoxMzax7fdB27dVNR262PGThQHBnxbxMp2UGW3t2jeCH
+         miWabgHcl2q1ZWnK9uGK9EoALG8Euee/lastlI5L2KdpJXgaIX0dqzTO9OuW0rc5cx6k
+         C5m5C7QQ9kc9qJRskvxfK1MN46Xvp2TVVnw2BTXt9ulo9j+Gc5ZzXBz5Oe+It8EeP8JE
+         8/BrdaedgiCLsiyzN/pd/4asmxv6isVt3lEg34B0E6I+bqoVL13zXrNS8RwcNcvQQDnH
+         nh6GuasHgotQuhqOcrCJMz7h5gyUoQluE6z2fn31ffj646DsMg1Ngnerf4JFEPNNtyRM
+         ujgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=f+Sfzn1G8buhFeqBg3rOZ1CfjEptJKUCS3yLyjW3ukw=;
+        b=tNgHgGc+JMKQOR+lnXsmlDtlOK8G/5mDlp/PKtXC49UDC/8Rl6t8W4jkIbnF4rmtVe
+         H7CKZoShXr1p2a2ZHl8hFUgeSz2gW+PwwTRHr9hs1hecFlND3NRvlDsC/6lkn1q26Q4e
+         vhGCzVoexabPcdTEJzIcPG08hL1ncrD6vttAADMWVK0g9bDMQKFb3P1NCUMB4jFJxxh1
+         9olJ31n6X0lWmM+ohetdv73wT8RDkBHW4oTTdVc2jqB/ObvTTYBr3u3oUE2mazZ0vVao
+         quXd1iinK6WXr+hZphFiUxX0b4VrYLwSUfVLj0hEhn43jdbgvzZsDTOhABkF2OsOIeyG
+         1f2A==
+X-Gm-Message-State: AOAM531yc44nR8iX+mjH6otWfjFJFiBU4IZyw5fXQzWbh/io0NKbTHJs
+        h/bVrgf8i5jFXkhaEM4OfIil7v2gCVn85A==
+X-Google-Smtp-Source: ABdhPJwVyVK2Hl7yFH//muAVUIkgbpJI5i2isxVp7CWbCELE91YgCxgjZ6Rx+Ko4UqOEcwLTPJzkL/RFmhbwPg==
+Sender: "jmattson via sendgmr" <jmattson@turtle.sea.corp.google.com>
+X-Received: from turtle.sea.corp.google.com ([2620:15c:100:202:9942:27af:a628:1d1b])
+ (user=jmattson job=sendgmr) by 2002:a0c:b59f:: with SMTP id
+ g31mr446987qve.28.1612911494938; Tue, 09 Feb 2021 14:58:14 -0800 (PST)
+Date:   Tue,  9 Feb 2021 14:56:53 -0800
+Message-Id: <20210209225653.1393771-1-jmattson@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: Trouble with perf_guest_get_msrs() and pebs_no_isolation
+From:   Jim Mattson <jmattson@google.com>
+To:     Peter Shier <pshier@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, x86@kernel.org
+Cc:     Jim Mattson <jmattson@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 09 February 2021 14:52:56 nnet wrote:
-> On Tue, Feb 9, 2021, at 2:42 PM, Pali Rohár wrote:
-> > On Tuesday 09 February 2021 13:45:08 nnet wrote:
-> > > On Tue, Feb 9, 2021, at 1:33 PM, Pali Rohár wrote:
-> > > > On Tuesday 09 February 2021 13:00:26 nnet wrote:
-> > > > > > If you have other Armada 3720 boards (Espressobin v5/v7, uDPU, Devel Board, ...) then it will be nice to do an additional tests and check if instability issues are finally fixed.
-> > > > > 
-> > > > > These patches applied to the 5.4.96 in OpenWrt (98d61b5) work fine so far on an Espressobin v7 AFAICT per changing values in /sys/devices/system/cpu/cpufreq/policy0.
-> > > > > 
-> > > > > Are these changes intended to work @1.2 GHz on the v7?
-> > > > 
-> > > > Hello! Do you have 1.2 GHz A3720 SoC?
-> > > 
-> > > Maybe (not)? ESPRESSObin_V7_1-0 on the underside.
-> > 
-> > Look at the package of SoC chip. On top of the package is printed
-> > identifier 88F3720. On the last line should be one of the string:
-> > C080, C100, C120, I080, I100 which identifies frequency
-> > (080 = 800 MHz, 100 = 1 GHz, 120 = 1.2 GHz)
-> > 
-> > Can you check what is printed on A3720 SoC package?
-> 
-> Both of mine are 88F3720-A0-C120.
+On a host that suffers from pebs_no_isolation, perf_guest_get_msrs()
+adds an entry to cpuc->guest_switch_msrs for
+MSR_IA32_PEBS_ENABLE. Kvm's atomic_switch_perf_msrs() is the only
+caller of perf_guest_get_msrs(). If atomic_switch_perf_msrs() finds an
+entry for MSR_IA32_PEBS_ENABLE in cpuc->guest_switch_msrs, it puts the
+"host" value of this entry on the VM-exit MSR-load list for the
+current VMCS. At the next VM-exit, that "host" value will be written
+to MSR_IA32_PEBS_ENABLE.
 
-Interesting... it is really 1.2 GHz. I have not seen it yet. And few
-weeks ago I thought that it was never available on market.
+The problem is that by the next VM-exit, that "host" value may be
+stale. Though maskable interrupts are blocked from well before
+atomic_switch_perf_msrs() to the next VM-entry, PMIs are delivered as
+NMIs. Moreover, due to PMI throttling, the PMI handler may clear bits
+in MSR_IA32_PEBS_ENABLE. See the comment to that effect in
+handle_pmi_common(). In fact, by the time that perf_guest_get_msrs()
+returns to its caller, the "host" value that it has recorded for
+MSR_IA32_PEBS_ENABLE could already be stale.
 
-Well, if 1.2 GHz variant has same issues as 1 GHz variants then this
-patch series should fix it. But you said that with this patch series is
-board crashing when running at 1.2 GHz?
+What happens if a VM-exit sets a bit in MSR_IA32_PEBS_ENABLE that the
+perf subsystem thinks should be clear? In the short term, nothing
+happens at all. But note that this situation may not get better at the
+next VM-exit, because kvm won't add MSR_IA32_PEBS_ENABLE to the
+VM-exit MSR-load list if perf_guest_get_mrs() reports that the "host"
+value of the MSR is 0. So, if the new MSR_IA32_PEBS_ENABLE "host"
+value is 0, the stale bits can actually persist for a long time.
+
+If, at some point in the future, the perf subsystem programs a counter
+overflow interrupt on the same PMC for a PEBS-capable event, we are in
+for some nasty surprises. (Note that the perf subsystem never
+*intentionally* programs a PMC for both PEBS and counter overflow
+interrupts at the same time.)
+
+If a PEBS assist is triggered while in VMX non-root operation, the CPU
+will try to access the host's DS_AREA using the guest's page tables,
+and a page fault is likely (specifically on a read of the PEBS
+interrupt threshold at offset 0x38 in the DS_AREA).
+
+If the PEBS interrupt threshold is met while in VMX root operation,
+two separate PMIs are generated: one for the PEBS interrupt threshold
+and one for the counter overflow. This results in a message from
+unknown_nmi_error(): "Uhhuh. NMI received for unknown reason <xx> on
+CPU <n>."
