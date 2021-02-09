@@ -2,85 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF853145EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A4A3145EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhBIB6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:58:02 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13458 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhBIB6A (ORCPT
+        id S230468AbhBIB6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:58:20 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12529 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbhBIB6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:58:00 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6021ebfe0000>; Mon, 08 Feb 2021 17:57:18 -0800
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
- 2021 01:57:17 +0000
-Received: from [10.2.50.67] (172.20.145.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb 2021
- 01:57:17 +0000
-Subject: Re: [PATCH v2] mm: cma: support sysfs
-To:     Minchan Kim <minchan@kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        <gregkh@linuxfoundation.org>, <surenb@google.com>,
-        <joaodias@google.com>, <willy@infradead.org>
-References: <20210208180142.2765456-1-minchan@kernel.org>
- <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
- <YCHLAdabGmm7kqSH@google.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <43cd6fc4-5bc5-50ec-0252-ffe09afd68ea@nvidia.com>
-Date:   Mon, 8 Feb 2021 17:57:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        Mon, 8 Feb 2021 20:58:15 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZQw31DJzzMX5x;
+        Tue,  9 Feb 2021 09:55:47 +0800 (CST)
+Received: from [10.174.179.149] (10.174.179.149) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 9 Feb 2021 09:57:30 +0800
+Subject: Re: [PATCH] mm/hugetlb: use helper huge_page_size() to get hugepage
+ size
+To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20210208082450.15716-1-linmiaohe@huawei.com>
+ <3752cc85-06d1-5af7-8baf-2810c98524d3@oracle.com>
+ <f7aee85c-d320-5127-35b3-77a53db6a00f@huawei.com>
+ <4fac6900-3685-abd6-964f-8fa436f97c43@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <8ba00fe0-fc0c-9304-ae6d-5d9ecaca489a@huawei.com>
+Date:   Tue, 9 Feb 2021 09:57:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <YCHLAdabGmm7kqSH@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <4fac6900-3685-abd6-964f-8fa436f97c43@oracle.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612835838; bh=TmWlGqblZEYg2VnL9TBzJ93nhtvBxMB2q5NR8/muxgA=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=GZC4fYWY5zvT4CvBDxJ5FY2X4iw19zYC8Ozp7ueA+gPrXS+vSrfPeM/t25SmazXcJ
-         x0G7V6p3vzgqWBH5o1mMV6jdmNVRoCK7yJn5VXw3G013mQRWmPRRbu2nXSfOF5NF+n
-         RSm5pHL5tq3mZuUTT4uNGdDcPuKG72KoXLxwVcf7semCBcD9YihYBvxP0EjmwzHFmF
-         ZB1Hau+nD+4kDG0UVgNwh92D4p+RCv878y+05YzQBjwU0VD3WIkj468IzBf/h6q1Mq
-         +cBVLpYuZCFzU1t4wxWcVETMTUCkYMe5wioHvUTtyQlsgSUFJdyahErGmBXz16742/
-         rNxBwZ5d/jSdA==
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 3:36 PM, Minchan Kim wrote:
-...
->>>    	char name[CMA_MAX_NAME];
->>> +#ifdef CONFIG_CMA_SYSFS
->>> +	struct cma_stat	*stat;
+On 2021/2/9 9:36, Mike Kravetz wrote:
+> On 2/8/21 5:24 PM, Miaohe Lin wrote:
+>> Hi：
+>> On 2021/2/9 8:45, Mike Kravetz wrote:
+>>> On 2/8/21 12:24 AM, Miaohe Lin wrote:
+>>>> We can use helper huge_page_size() to get the hugepage size directly to
+>>>> simplify the code slightly.
+>>>>
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>  mm/hugetlb.c | 14 ++++++--------
+>>>>  1 file changed, 6 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>>> index 18628f8dbfb0..6cdb59d8f663 100644
+>>>> --- a/mm/hugetlb.c
+>>>> +++ b/mm/hugetlb.c
+>>>> @@ -3199,7 +3199,7 @@ void __init hugetlb_add_hstate(unsigned int order)
+>>>>  	BUG_ON(order == 0);
+>>>>  	h = &hstates[hugetlb_max_hstate++];
+>>>>  	h->order = order;
+>>>> -	h->mask = ~((1ULL << (order + PAGE_SHIFT)) - 1);
+>>>> +	h->mask = ~(huge_page_size(h) - 1);
+>>>>  	for (i = 0; i < MAX_NUMNODES; ++i)
+>>>>  		INIT_LIST_HEAD(&h->hugepage_freelists[i]);
+>>>>  	INIT_LIST_HEAD(&h->hugepage_activelist);
+>>>> @@ -3474,7 +3474,7 @@ void hugetlb_report_meminfo(struct seq_file *m)
+>>>>  	for_each_hstate(h) {
+>>>>  		unsigned long count = h->nr_huge_pages;
+>>>>  
+>>>> -		total += (PAGE_SIZE << huge_page_order(h)) * count;
+>>>> +		total += huge_page_size(h) * count;
+>>>>  
+>>>>  		if (h == &default_hstate)
+>>>>  			seq_printf(m,
+>>>> @@ -3487,10 +3487,10 @@ void hugetlb_report_meminfo(struct seq_file *m)
+>>>>  				   h->free_huge_pages,
+>>>>  				   h->resv_huge_pages,
+>>>>  				   h->surplus_huge_pages,
+>>>> -				   (PAGE_SIZE << huge_page_order(h)) / 1024);
+>>>> +				   huge_page_size(h) / SZ_1K);
+>>>>  	}
+>>>>  
+>>>> -	seq_printf(m, "Hugetlb:        %8lu kB\n", total / 1024);
+>>>> +	seq_printf(m, "Hugetlb:        %8lu kB\n", total / SZ_1K);
+>>>>  }
+>>>>  
+>>>>  int hugetlb_report_node_meminfo(char *buf, int len, int nid)
+>>>> @@ -3524,7 +3524,7 @@ void hugetlb_show_meminfo(void)
+>>>>  				h->nr_huge_pages_node[nid],
+>>>>  				h->free_huge_pages_node[nid],
+>>>>  				h->surplus_huge_pages_node[nid],
+>>>> -				1UL << (huge_page_order(h) + PAGE_SHIFT - 10));
+>>>> +				huge_page_size(h) >> 10);
+>>>
+>>> Should we change this to
+>>>
+>>> 				huge_page_size(h) / SZ_1K);
+>>>> as in hugetlb_report_meminfo above?  Or, is that one where it takes an
+>>> additional instruction to do the divide as opposed to the shift?  I would> rather add the instruction and keep everything consistent.
+>>>
 >>
->> This should not be a pointer. By making it a pointer, you've added a bunch of pointless
->> extra code to the implementation.
+>> Yes, it takes an additional instruction to do the divide as opposed to the shift. So I did not
+>> change this. But it seems keeping everything consistent in a function is more important. So should
+>> I send a V2 to change this or Andrew would kindly handle this ?
 > 
-> Originally, I went with the object lifetime with struct cma as you
-> suggested to make code simple. However, Greg KH wanted to have
-> release for kobj_type since it is consistent with other kboject
-> handling.
+> I would go ahead and put together a v2 and let Andrew decide how he wants
+> to handle it.  You can include,
+> 
 
-Are you talking about the kobj in your new struct cma_stat? That seems
-like circular logic if so. I'm guessing Greg just wanted kobj methods
-to be used *if* you are dealing with kobjects. That's a narrower point.
+Will do. Thanks a lot.
 
-I can't imagine that he would have insisted on having additional
-allocations just so that kobj freeing methods could be used. :)
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> 
+> Thanks
+> 
 
-
-thanks,
--- 
-John Hubbard
-NVIDIA
