@@ -2,120 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A4A3145EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 447B13145F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhBIB6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:58:20 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12529 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhBIB6P (ORCPT
+        id S229821AbhBIB7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:59:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhBIB7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:58:15 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZQw31DJzzMX5x;
-        Tue,  9 Feb 2021 09:55:47 +0800 (CST)
-Received: from [10.174.179.149] (10.174.179.149) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 9 Feb 2021 09:57:30 +0800
-Subject: Re: [PATCH] mm/hugetlb: use helper huge_page_size() to get hugepage
- size
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210208082450.15716-1-linmiaohe@huawei.com>
- <3752cc85-06d1-5af7-8baf-2810c98524d3@oracle.com>
- <f7aee85c-d320-5127-35b3-77a53db6a00f@huawei.com>
- <4fac6900-3685-abd6-964f-8fa436f97c43@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <8ba00fe0-fc0c-9304-ae6d-5d9ecaca489a@huawei.com>
-Date:   Tue, 9 Feb 2021 09:57:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 8 Feb 2021 20:59:48 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0550CC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:59:09 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id cl8so683647pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:59:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IfhGG5EFiF0+GV+cXx/c1hFmnHr7EDLtq1/XLJ8Wrqw=;
+        b=Jb86j9QXa47sQXQPZMFKIS6GO/j/tpp7DNNjLp7FiLlvZfMGz2BF8Y9cWJgnmPGEyf
+         RKPyfFKtylW0GKsgl/J43mzsL9rO4f7WcGzQkFTz6iwMs5kYT4oisj3encefwLZfyl+9
+         MmFRqGbdc2eyEWr19Le16H1qVZrIC518kjatEDtY0Kplu8XhMzGxrIYEc5DEiAK+gbpn
+         0FjmJpcbshb55HO403qGIPNSx8iCYU536AabTz+HniBQh7Ju/Pv8m5mSALtV5M6PC+rM
+         hY2Z/vtbWSQHThyOOWRP8S9YwQe1Dsw2DgMjUXXbBw+mYwpVlrhSVuV3qxrNSZr24Rz8
+         TTEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IfhGG5EFiF0+GV+cXx/c1hFmnHr7EDLtq1/XLJ8Wrqw=;
+        b=rLuTf2EkbFF+/+LJ0G1ADfBO82FrZ0zrOIjfIiPRbf58ePaeckwq+6Pwaq2WT2xD4A
+         /XmlMmhg9qz8ki0URHu0mlIqj7jiO982ME5P/MP7MCw86rUbso/i2rDr9BBSil5DuaJH
+         AoJoW0JnevAF4e/BPWtZ/lqRpODX2aqeI4Jxaxko3vLd2ahLmT77AurHcqRf23ezwByY
+         LU1bCEobz4A2CMQ6Ie8O7Xc8R7jWE1zGU/4tcN0imhMnHUAijAgj93JbONnZ+5ShmprO
+         6vS1jqutDBKTjKMNI9yAZlHxr+Iy+FafA/qfO9pw3DrN4QTbTaOisoA7n+qKXH3cBm4y
+         P6JQ==
+X-Gm-Message-State: AOAM533pjlHQnezDxRSRm3OGlvGtDeMYAoGEaTnhGDJ5CoGI8hML/qZB
+        cjA6rI5VhbwXj1fBrTg3r7XlVw==
+X-Google-Smtp-Source: ABdhPJwilBT/p4PwScBoN7sJjtCO4XCBK8l7i0c62IBmgxUh2caNLJYPIxyvl5DOanOztniAJyYOVA==
+X-Received: by 2002:a17:903:2305:b029:df:c991:8c49 with SMTP id d5-20020a1709032305b02900dfc9918c49mr19696460plh.8.1612835948392;
+        Mon, 08 Feb 2021 17:59:08 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([198.44.243.100])
+        by smtp.gmail.com with ESMTPSA id h10sm19090046pfn.213.2021.02.08.17.58.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 17:59:07 -0800 (PST)
+Date:   Tue, 9 Feb 2021 09:58:55 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <Daniel.Kiss@arm.com>,
+        Denis Nikitin <denik@chromium.org>,
+        Al Grant <al.grant@arm.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/8] perf cs-etm: Fix bitmap for option
+Message-ID: <20210209015855.GA54680@leoy-ThinkPad-X240s>
+References: <20210206150833.42120-1-leo.yan@linaro.org>
+ <20210206150833.42120-5-leo.yan@linaro.org>
+ <20210208204641.GE2077938@xps15>
 MIME-Version: 1.0
-In-Reply-To: <4fac6900-3685-abd6-964f-8fa436f97c43@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.149]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208204641.GE2077938@xps15>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/9 9:36, Mike Kravetz wrote:
-> On 2/8/21 5:24 PM, Miaohe Lin wrote:
->> Hi：
->> On 2021/2/9 8:45, Mike Kravetz wrote:
->>> On 2/8/21 12:24 AM, Miaohe Lin wrote:
->>>> We can use helper huge_page_size() to get the hugepage size directly to
->>>> simplify the code slightly.
->>>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>  mm/hugetlb.c | 14 ++++++--------
->>>>  1 file changed, 6 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>>> index 18628f8dbfb0..6cdb59d8f663 100644
->>>> --- a/mm/hugetlb.c
->>>> +++ b/mm/hugetlb.c
->>>> @@ -3199,7 +3199,7 @@ void __init hugetlb_add_hstate(unsigned int order)
->>>>  	BUG_ON(order == 0);
->>>>  	h = &hstates[hugetlb_max_hstate++];
->>>>  	h->order = order;
->>>> -	h->mask = ~((1ULL << (order + PAGE_SHIFT)) - 1);
->>>> +	h->mask = ~(huge_page_size(h) - 1);
->>>>  	for (i = 0; i < MAX_NUMNODES; ++i)
->>>>  		INIT_LIST_HEAD(&h->hugepage_freelists[i]);
->>>>  	INIT_LIST_HEAD(&h->hugepage_activelist);
->>>> @@ -3474,7 +3474,7 @@ void hugetlb_report_meminfo(struct seq_file *m)
->>>>  	for_each_hstate(h) {
->>>>  		unsigned long count = h->nr_huge_pages;
->>>>  
->>>> -		total += (PAGE_SIZE << huge_page_order(h)) * count;
->>>> +		total += huge_page_size(h) * count;
->>>>  
->>>>  		if (h == &default_hstate)
->>>>  			seq_printf(m,
->>>> @@ -3487,10 +3487,10 @@ void hugetlb_report_meminfo(struct seq_file *m)
->>>>  				   h->free_huge_pages,
->>>>  				   h->resv_huge_pages,
->>>>  				   h->surplus_huge_pages,
->>>> -				   (PAGE_SIZE << huge_page_order(h)) / 1024);
->>>> +				   huge_page_size(h) / SZ_1K);
->>>>  	}
->>>>  
->>>> -	seq_printf(m, "Hugetlb:        %8lu kB\n", total / 1024);
->>>> +	seq_printf(m, "Hugetlb:        %8lu kB\n", total / SZ_1K);
->>>>  }
->>>>  
->>>>  int hugetlb_report_node_meminfo(char *buf, int len, int nid)
->>>> @@ -3524,7 +3524,7 @@ void hugetlb_show_meminfo(void)
->>>>  				h->nr_huge_pages_node[nid],
->>>>  				h->free_huge_pages_node[nid],
->>>>  				h->surplus_huge_pages_node[nid],
->>>> -				1UL << (huge_page_order(h) + PAGE_SHIFT - 10));
->>>> +				huge_page_size(h) >> 10);
->>>
->>> Should we change this to
->>>
->>> 				huge_page_size(h) / SZ_1K);
->>>> as in hugetlb_report_meminfo above?  Or, is that one where it takes an
->>> additional instruction to do the divide as opposed to the shift?  I would> rather add the instruction and keep everything consistent.
->>>
->>
->> Yes, it takes an additional instruction to do the divide as opposed to the shift. So I did not
->> change this. But it seems keeping everything consistent in a function is more important. So should
->> I send a V2 to change this or Andrew would kindly handle this ?
+On Mon, Feb 08, 2021 at 01:46:41PM -0700, Mathieu Poirier wrote:
+> On Sat, Feb 06, 2021 at 11:08:29PM +0800, Leo Yan wrote:
+> > From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > 
+> > When set option with macros ETM_OPT_CTXTID and ETM_OPT_TS, it wrongly
+> > takes these two values (14 and 28 prespectively) as bit masks, but
+> > actually both are the offset for bits.  But this doesn't lead to
+> > further failure due to the AND logic operation will be always true for
+> > ETM_OPT_CTXTID / ETM_OPT_TS.
+> > 
+> > This patch defines new independent macros (rather than using the
+> > "config" bits) for requesting the "contextid" and "timestamp" for
+> > cs_etm_set_option().
+> > 
+> > [leoy: Extract the change as a separate patch for easier review]
 > 
-> I would go ahead and put together a v2 and let Andrew decide how he wants
-> to handle it.  You can include,
+> This should go just above your name - see below.
 > 
+> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > Reviewed-by: Mike Leach <mike.leach@linaro.org>
+> 
+>  Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>  [Extract the change as a separate patch for easier review]
+>  Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>  Reviewed-by: Mike Leach <mike.leach@linaro.org>
+> 
+> > ---
+> >  tools/perf/arch/arm/util/cs-etm.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+> > index bd446aba64f7..c25c878fd06c 100644
+> > --- a/tools/perf/arch/arm/util/cs-etm.c
+> > +++ b/tools/perf/arch/arm/util/cs-etm.c
+> > @@ -156,6 +156,10 @@ static int cs_etm_set_timestamp(struct auxtrace_record *itr,
+> >  	return err;
+> >  }
+> >  
+> > +#define ETM_SET_OPT_CTXTID	(1 << 0)
+> > +#define ETM_SET_OPT_TS		(1 << 1)
+> > +#define ETM_SET_OPT_MASK	(ETM_SET_OPT_CTXTID | ETM_SET_OPT_TS)
+> > +
+> 
+> I would much rather see this fixed with the BIT() macro as it is done in the
+> rest of this set than defining new constant.
+> 
+> With the above:
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> 
+> I have picked up the kernel portion of this set.  I suggest you fix the above
+> and send another revision to Arnaldo with my RBs.
 
-Will do. Thanks a lot.
+Will do this.  Thanks for suggestion, Mathieu.
 
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> 
-> Thanks
-> 
+Leo
 
+[...]
