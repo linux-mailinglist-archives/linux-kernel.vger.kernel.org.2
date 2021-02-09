@@ -2,264 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1898B3159C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAA7315995
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbhBIW6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:58:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233762AbhBITwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:52:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05E0C64DF4;
-        Tue,  9 Feb 2021 19:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612898851;
-        bh=F+9Y63c/6U/kza2tTclcC/5KB0c9iVacIlzcY3swo5M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RMY0jddg2zBEUw+bGIqIV+DJKs0SWnzdJckVNSb2UQGmWF0JrCsqwYhJThshhk/Jg
-         ciEacMibEvRG3veya19Xllqq2gjowUDJszhs2NBpml0wWUkr57u/df/XT5PIbEmjtg
-         SfxrE+yEXQYKpSREGueQS2T7wG8ekMpbpaXApdzj6vEhLWs47WFIzicOIdxDSP9ATL
-         NgxqYG+8mmFYGO3IXah9ssk/wswujxb6EPpgyEtt9OUCFuZ3+AARzInUFvcnLmqPy/
-         8FiVKo9xrx/QgZ26nk0aZOrZD5O8fflfHkammC4ZWZVESsWqrxtJoODNi9KpNgOlLB
-         BqDBEr7kfaAfA==
-Date:   Tue, 9 Feb 2021 12:27:29 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Stephen Zhang <stephenzhangzsd@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        natechancellor@gmail.com, clang-built-linux@googlegroups.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Roeder <tmroeder@google.com>
-Subject: Re: [PATCH v1] clang_tools:gen_compile_commands: Change the default
- source directory
-Message-ID: <20210209192729.GA820978@ubuntu-m3-large-x86>
-References: <1612783737-3512-1-git-send-email-stephenzhangzsd@gmail.com>
- <20210208195439.GA1097868@ubuntu-m3-large-x86>
- <CALuz2=d-ENRbWgGYaO_ESEaw5eOVSwkQmkeYBJ-w0Vb3zZ+REg@mail.gmail.com>
+        id S233876AbhBIWg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233572AbhBITmY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 14:42:24 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13E0C061A2A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:32:08 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id 18so10398538pfz.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 11:32:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kIh4OLXPZqyT593P1uGyKCdBeoEDHVFwCLVWLT+c4Mg=;
+        b=Lt1uRsey0/tR64szLfqruKn04IQZuHfwckjuXpX/9mVwCAQULcPWOKRNfLKv/wNNCZ
+         IzK2zPHOpi3J87qTeZS0Iet11OTonqXt8vBlEhO+DyA8O97wmur92vRLWaRKH8IhveM7
+         g+KdLNtWU4eLWg78V3eoj8T30yPd8iAKmkVzQpdm0qpFVolIcI/bbTsLyzz1A4ZWUa2R
+         Ka4bJGIKKn6UZFe8Gcj0x5FNCresZkSDxnttXZcOOlDDj0AwlKq38QJ1tOgsp+PevUNu
+         KAiZhSXYDBTZF2wHN+G4wZRqYm+rnJztk3Ru28lzKf9IkjZ8JCJoKKUOYFsSw5uaoVPO
+         RnxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kIh4OLXPZqyT593P1uGyKCdBeoEDHVFwCLVWLT+c4Mg=;
+        b=CjydB/AyAXLH8X9goi24/pIHvBfhKDbK+t3hEO/mCgonX8lcBr/LQpm+XZYnM4VO0t
+         vrNMMSE9FvEx14LPrSeWQTveXWYKocW8/Z5sDZg4PI736w1UMwVohEej5R1y/A77aF9K
+         TvorUe0lqfkhBKU4JKsAjT/voExjvK89VMt10m9WCt8sRwsI11O6blizQ7F+vpA8Gq9m
+         NP9bW0PNRcyveSnOgAs4bourLqwwX770XCu3UPK+yfRvQfok3ub7KJCLMebKmPrW9BFr
+         JkUAbwOxaUPxe2OtQZ2OrV0HzaqUybkanVbsohSvemoucjqPHbEfLxRfmA39bf7xS/9y
+         EXaw==
+X-Gm-Message-State: AOAM531+41TtspBVpcFlynTpKChyAkfJrRkHSzplwOt1SVe6yriaeXHJ
+        6oTFfiOrE3G7M2iQy+rvFsg=
+X-Google-Smtp-Source: ABdhPJyTl78Zz2DcYCabZN13Y/BG0wPYREHUDsozd+maJ4kevTAOkkg3edzEq8Cvh7Nx+qY7w5+f7g==
+X-Received: by 2002:a62:52d1:0:b029:1da:1371:20b8 with SMTP id g200-20020a6252d10000b02901da137120b8mr16948374pfb.73.1612899128436;
+        Tue, 09 Feb 2021 11:32:08 -0800 (PST)
+Received: from localhost.localdomain ([103.200.106.135])
+        by smtp.googlemail.com with ESMTPSA id z16sm22936977pgj.51.2021.02.09.11.32.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 11:32:07 -0800 (PST)
+From:   ameynarkhede03@gmail.com
+To:     gregkh@linuxfoundation.org, dan.carpenter@oracle.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: [PATCH v2] staging: gdm724x: Fix DMA from stack
+Date:   Wed, 10 Feb 2021 01:01:47 +0530
+Message-Id: <20210209193147.558514-1-ameynarkhede03@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALuz2=d-ENRbWgGYaO_ESEaw5eOVSwkQmkeYBJ-w0Vb3zZ+REg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 09:56:20PM +0800, Stephen Zhang wrote:
-> Nathan Chancellor <nathan@kernel.org> 于2021年2月9日周二 上午3:54写道：
-> 
-> > On Mon, Feb 08, 2021 at 07:28:57PM +0800, Stephen Zhang wrote:
-> > > The default source directory is set equal to build directory which
-> > > specified by "-d".But it is designed to be set to the current working
-> > > directoy by default, as the help messge says.It makes a differece when
-> > > source directory and build directory are in separted directorys.
-> > >
-> > > Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
-> >
-> > I don't think this patch makes much sense unless I am misunderstanding
-> > the description of the problem. The entire point of this script is to
-> > parse the .cmd files that kbuild generates and those are only present
-> > in the build directory, not the source directory, so we should never be
-> > looking in there, unless args.directory is its default value, which is
-> > the way the script is currently written. Your patch would appear to
-> > either make use do way more searching than necessary (if the build
-> > folder is within the source folder) or miss it altogether (if the build
-> > folder is outside the source folder).
-> >
-> > Cheers,
-> > Nathan
+From: Amey Narkhede <ameynarkhede03@gmail.com>
 
-Just as an FYI, your email was HTML, which means it won't hit LKML.
+Stack allocated buffers cannot be used for DMA
+on all architectures so allocate hci_packet buffer
+using kzalloc().
 
-> Specifically,the souce directory is  /vm/linux/tools/perf on my machine,
-> while the build
-> directory is /vm/tmpbuild/tools/perf .In the build directory , Execute the
-> command:
-> 
-> /vm/linux/scripts/clang-tools/gen_compile_commands.py --log_level DEBUG -d .
-> 
-> The resulting debugging message is:
-> 
->     INFO: Could not add line from /vm/tmpbuild/tools/perf/.perf.o.cmd: File
-> /vm/tmpbuild/tools/perf/perf.c
->     not found.
-> 
-> But actually what we want is ：
-> 
->     add line from /vm/tmpbuild/tools/perf/.perf.o.cmd: File
-> /vm/linux/tools/perf/perf.c.
-> 
-> The    " /vm/tmpbuild/tools/perf " of  the "File
-> /vm/tmpbuild/tools/perf/perf.c not found." is passed by  "-d".
-> 
-> so it is the "-d" which decides the source prefix.
-> 
-> Then we execute:
-> 
->  /vm/linux/scripts/clang-tools/gen_compile_commands.py --log_level DEBUG
-> -d  /vm/linux/tools/perf
-> 
-> But in the oringnal code , the default build directory is the same as  the
-> source directory:
-> 
-> @@ -64,7 +64,7 @@ def parse_arguments():
->              os.path.abspath(args.directory),
->              args.output,
->              args.ar,
-> -            args.paths if len(args.paths) > 0 else [args.directory])
-> +            args.paths if len(args.paths) > 0 else [os.getcwd()])
-> 
-> after changing  it ,we then get the right result.
+Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+---
+ drivers/staging/gdm724x/gdm_usb.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Okay I think I see what is going on here. Your patch does not actually
-fix the problem from what I can tell though:
+diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
+index dc4da66c3..c4a9b90c5 100644
+--- a/drivers/staging/gdm724x/gdm_usb.c
++++ b/drivers/staging/gdm724x/gdm_usb.c
+@@ -56,11 +56,15 @@ static int gdm_usb_recv(void *priv_dev,
 
-$ mkdir -p /tmp/build/perf
+ static int request_mac_address(struct lte_udev *udev)
+ {
+-	u8 buf[16] = {0,};
+-	struct hci_packet *hci = (struct hci_packet *)buf;
++	u8 *buf;
++	struct hci_packet *hci;
+ 	struct usb_device *usbdev = udev->usbdev;
+ 	int actual;
+ 	int ret = -1;
++	buf = kzalloc(16, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++	hci = (struct hci_packet *)buf;
 
-$ make -C tools/perf -skj"$(nproc)" O=/tmp/build/perf
+ 	hci->cmd_evt = gdm_cpu_to_dev16(udev->gdm_ed, LTE_GET_INFORMATION);
+ 	hci->len = gdm_cpu_to_dev16(udev->gdm_ed, 1);
+@@ -70,6 +74,7 @@ static int request_mac_address(struct lte_udev *udev)
+ 			   &actual, 1000);
 
-$ cd /tmp/build/perf
+ 	udev->request_mac_addr = 1;
++	kfree(buf);
 
-$ ~/cbl/src/linux/scripts/clang-tools/gen_compile_commands.py --log_level INFO -d .
-...
-INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.bp-modify.o.cmd: File /tmp/build/perf/arch/x86/tests/bp-modify.c not found
-INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.insn-x86.o.cmd: File /tmp/build/perf/arch/x86/tests/insn-x86.c not found
-INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.arch-tests.o.cmd: File /tmp/build/perf/arch/x86/tests/arch-tests.c not found
-INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.intel-pt-pkt-decoder-test.o.cmd: File /tmp/build/perf/arch/x86/tests/intel-pt-pkt-decoder-test.c not found
-...
-
-The script has to know where the source location is in your particular
-use case because the .cmd files do not record it (maybe some future
-improvement?)
-
-This patch appears to generate what I think the compile_commands.json
-should look like for the most part, I am not sure if this is proper or
-works correctly though. CC'ing Tom Roeder who originally wrote this.
-Tom, the initial patch and description of the issue is here:
-https://lore.kernel.org/r/1612783737-3512-1-git-send-email-stephenzhangzsd@gmail.com/
-
-$ scripts/clang-tools/gen_compile_commands.py -d /tmp/build/perf -s tools/perf
-
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index 8ddb5d099029..ba3b2dcdc3e1 100755
---- a/scripts/clang-tools/gen_compile_commands.py
-+++ b/scripts/clang-tools/gen_compile_commands.py
-@@ -27,7 +27,8 @@ def parse_arguments():
- 
-     Returns:
-         log_level: A logging level to filter log output.
--        directory: The work directory where the objects were built.
-+        obj_directory: The work directory where the objects were built.
-+        src_directory: The source directory from which the objects were built.
-         ar: Command used for parsing .a archives.
-         output: Where to write the compile-commands JSON file.
-         paths: The list of files/directories to handle to find .cmd files.
-@@ -35,10 +36,15 @@ def parse_arguments():
-     usage = 'Creates a compile_commands.json database from kernel .cmd files'
-     parser = argparse.ArgumentParser(description=usage)
- 
--    directory_help = ('specify the output directory used for the kernel build '
--                      '(defaults to the working directory)')
--    parser.add_argument('-d', '--directory', type=str, default='.',
--                        help=directory_help)
-+    obj_directory_help = ('specify the output directory used for the kernel build '
-+                          '(defaults to the working directory)')
-+    parser.add_argument('-d', '--obj_directory', type=str, default='.',
-+                        help=obj_directory_help)
-+
-+    src_directory_help = ('specify the source directory used for the kernel build '
-+                          '(defaults to the working directory)')
-+    parser.add_argument('-s', '--src_directory', type=str, default='.',
-+                        help=src_directory_help)
- 
-     output_help = ('path to the output command database (defaults to ' +
-                    _DEFAULT_OUTPUT + ')')
-@@ -55,16 +61,17 @@ def parse_arguments():
- 
-     paths_help = ('directories to search or files to parse '
-                   '(files should be *.o, *.a, or modules.order). '
--                  'If nothing is specified, the current directory is searched')
-+                  'If nothing is specified, the build directory is searched')
-     parser.add_argument('paths', type=str, nargs='*', help=paths_help)
- 
-     args = parser.parse_args()
- 
-     return (args.log_level,
--            os.path.abspath(args.directory),
-+            os.path.abspath(args.obj_directory),
-+            os.path.abspath(args.src_directory),
-             args.output,
-             args.ar,
--            args.paths if len(args.paths) > 0 else [args.directory])
-+            args.paths if len(args.paths) > 0 else [args.obj_directory])
- 
- 
- def cmdfiles_in_dir(directory):
-@@ -154,22 +161,23 @@ def cmdfiles_for_modorder(modorder):
-                     yield to_cmdfile(obj)
- 
- 
--def process_line(root_directory, command_prefix, file_path):
-+def process_line(obj_directory, src_directory, command_prefix, file_path):
-     """Extracts information from a .cmd line and creates an entry from it.
- 
-     Args:
--        root_directory: The directory that was searched for .cmd files. Usually
-+        obj_directory: The directory that was searched for .cmd files. Usually
-             used directly in the "directory" entry in compile_commands.json.
-+        src_directory: The directory that was used to build the object files.
-         command_prefix: The extracted command line, up to the last element.
-         file_path: The .c file from the end of the extracted command.
--            Usually relative to root_directory, but sometimes absolute.
-+            Usually relative to obj_directory, but sometimes absolute.
- 
-     Returns:
-         An entry to append to compile_commands.
- 
-     Raises:
-         ValueError: Could not find the extracted file based on file_path and
--            root_directory or file_directory.
-+            src_directory or file_directory.
-     """
-     # The .cmd files are intended to be included directly by Make, so they
-     # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
-@@ -177,20 +185,23 @@ def process_line(root_directory, command_prefix, file_path):
-     # by Make, so this code replaces the escaped version with '#'.
-     prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
- 
--    # Use os.path.abspath() to normalize the path resolving '.' and '..' .
--    abs_path = os.path.abspath(os.path.join(root_directory, file_path))
-+    if os.path.isabs(file_path):
-+        abs_path = file_path
-+    else:
-+        # Use os.path.abspath() to normalize the path resolving '.' and '..' .
-+        abs_path = os.path.abspath(os.path.join(src_directory, file_path))
-     if not os.path.exists(abs_path):
-         raise ValueError('File %s not found' % abs_path)
-     return {
--        'directory': root_directory,
-+        'directory': obj_directory,
-         'file': abs_path,
--        'command': prefix + file_path,
-+        'command': prefix + abs_path,
-     }
- 
- 
- def main():
-     """Walks through the directory and finds and parses .cmd files."""
--    log_level, directory, output, ar, paths = parse_arguments()
-+    log_level, obj_directory, src_directory, output, ar, paths = parse_arguments()
- 
-     level = getattr(logging, log_level)
-     logging.basicConfig(format='%(levelname)s: %(message)s', level=level)
-@@ -221,8 +232,8 @@ def main():
-                 result = line_matcher.match(f.readline())
-                 if result:
-                     try:
--                        entry = process_line(directory, result.group(1),
--                                             result.group(2))
-+                        entry = process_line(obj_directory, src_directory,
-+                                             result.group(1), result.group(2))
-                         compile_commands.append(entry)
-                     except ValueError as err:
-                         logging.info('Could not add line from %s: %s',
+ 	return ret;
+ }
+--
+2.30.0
