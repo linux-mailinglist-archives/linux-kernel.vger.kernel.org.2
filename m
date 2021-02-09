@@ -2,152 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5CC314FFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2666B314FFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhBINSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:18:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59034 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231284AbhBINSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:18:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612876633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hscVwXWbZS59k2Mrx2EQB55XPrmNAr7Nf/1W616aiRA=;
-        b=phJYgl2FDdsaxXzglirq+9E/PFvQ09SmMOXMZhmQCkX3xnUui6gyQgU8pq6VCgFZRP1Nj7
-        4ywYD8QcYFjpmTT73fbyJ99EI01XOD13cuJJ02YYNRiktCaeLBu0orc/YuPfY4sb+PIX+n
-        y3DWzu+Qklmtk5MHIoO/Fx8xciQgqDo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9362BAD6A;
-        Tue,  9 Feb 2021 13:17:12 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 14:17:11 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <YCKLVzBR62+NtvyF@dhcp22.suse.cz>
-References: <20210208084920.2884-1-rppt@kernel.org>
- <20210208084920.2884-8-rppt@kernel.org>
- <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
- <20210208212605.GX242749@kernel.org>
- <YCJMDBss8Qhha7g9@dhcp22.suse.cz>
- <20210209090938.GP299309@linux.ibm.com>
+        id S231348AbhBINSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:18:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231336AbhBINSR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:18:17 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACCBC061786
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:17:36 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id e18so22179189lja.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:17:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wHt/2t6Gccb30RHK0fDTAMtzIA8Iw7ZTM9DKWCLwJV0=;
+        b=tWFRS1GROXoY79U8gYzCoUhPSriqjYvfqbMb4n+DladfnLpRBdFPX/ePj/ipyZmc1t
+         ynAjOlyyIYj/7aftlGs8FVpcmyx+osjcrR1yMN90+KwvFtLPAABUICZBzWzFw3DDdubU
+         yh01Desa1mlBJC6DT5o9zK3lypWAga6XJ+lmZDlOFhXmwd0DemiEnysBkbcGiEvssGIu
+         K1VXXFEeKBncggDTEj4VBpD+fZQ2hO8ajRX7u/korKv38VEsUhGkG0VymPGlzYsWKkGH
+         zdiBR4uh6HAqnvGbleoWmQJmGUs1PD1hGGGFusxTCAXOOWBDdXeD709i48wGVDwJk3PH
+         +xNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wHt/2t6Gccb30RHK0fDTAMtzIA8Iw7ZTM9DKWCLwJV0=;
+        b=neio61LAxah0TfIVPRTCYfpNxUk7vvykLh4wytk4ua2B/nS4wN0jZt+A2fMBDK0opl
+         YglQMdOVYXi1ewwL4jxZ7U8IBR1Lfx5ZfR+4P6NhpodhibkV337lmaWqjMn0puQBmZbg
+         voeoCgqwB58o7kAVSzJQS5LynmSX9JiLACv33nYIoWOzg5wap1pIk61iuizj2cJ1dG/N
+         i/nK2f6mA4JDsJMe85Rq/8mriWFeXVJ06055aBUZmKR9mFIcUBpbTB1vREJ5F3H758Cx
+         XUFMWc7ayFJc4tg9W2SnNQSICfuIn1m9imHeUflZxkW6fh77ehgQ2S76yqkn3BTYuFPM
+         T/9Q==
+X-Gm-Message-State: AOAM532oyj26OlnF8QCs53v2BaQwHDEPwsO7WfFj9kLNquVBRZjHt//8
+        SiUMyK0/vjDW6WmT1bgYTaZmBQ==
+X-Google-Smtp-Source: ABdhPJzYoE6XiVt0ypBzNvCt5TTw8d/IQKHdkTg/Itxi0vlEoTZOvxOG6U84NqQScpb6but7XqkOLA==
+X-Received: by 2002:a2e:b896:: with SMTP id r22mr14332708ljp.234.1612876654695;
+        Tue, 09 Feb 2021 05:17:34 -0800 (PST)
+Received: from xps.home ([2001:4647:9b4f:c:a1b6:e56:6469:3494])
+        by smtp.gmail.com with ESMTPSA id g4sm2528374lfu.283.2021.02.09.05.17.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 05:17:34 -0800 (PST)
+From:   Odin Ugedal <odin@uged.al>
+To:     changhuaixin@linux.alibaba.com
+Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
+        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
+        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
+        rostedt@goodmis.org, shanpeic@linux.alibaba.com,
+        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com, tj@kernel.org
+Subject: Re: [PATCH v3 0/4] sched/fair: Burstable CFS bandwidth controller
+Date:   Tue,  9 Feb 2021 14:17:19 +0100
+Message-Id: <20210209131719.1193428-1-odin@uged.al>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
+References: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209090938.GP299309@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 09-02-21 11:09:38, Mike Rapoport wrote:
-> On Tue, Feb 09, 2021 at 09:47:08AM +0100, Michal Hocko wrote:
-> > On Mon 08-02-21 23:26:05, Mike Rapoport wrote:
-> > > On Mon, Feb 08, 2021 at 11:49:22AM +0100, Michal Hocko wrote:
-> > > > On Mon 08-02-21 10:49:17, Mike Rapoport wrote:
-> > [...]
-> > > > > The file descriptor based memory has several advantages over the
-> > > > > "traditional" mm interfaces, such as mlock(), mprotect(), madvise(). It
-> > > > > paves the way for VMMs to remove the secret memory range from the process;
-> > > > 
-> > > > I do not understand how it helps to remove the memory from the process
-> > > > as the interface explicitly allows to add a memory that is removed from
-> > > > all other processes via direct map.
-> > > 
-> > > The current implementation does not help to remove the memory from the
-> > > process, but using fd-backed memory seems a better interface to remove
-> > > guest memory from host mappings than mmap. As Andy nicely put it:
-> > > 
-> > > "Getting fd-backed memory into a guest will take some possibly major work in
-> > > the kernel, but getting vma-backed memory into a guest without mapping it
-> > > in the host user address space seems much, much worse."
-> > 
-> > OK, so IIUC this means that the model is to hand over memory from host
-> > to guest. I thought the guest would be under control of its address
-> > space and therefore it operates on the VMAs. This would benefit from
-> > an additional and more specific clarification.
-> 
-> How guest would operate on VMAs if the interface between host and guest is
-> virtual hardware?
 
-I have to say that I am not really familiar with this area so my view
-might be misleading or completely wrong. I thought that the HW address
-ranges are mapped to the guest process and therefore have a VMA.
+Hi! This looks quite useful, but I have a few quick thoughts. :)
 
-> If you mean qemu (or any other userspace part of VMM that uses KVM), so one
-> of the points Andy mentioned back than is to remove mappings of the guest
-> memory from the qemu process.
+I know of a lot of people who would love this (especially some
+Kubernetes users)! I really like how this allow users to use cfs
+in a more dynamic and flexible way, without interfering with those
+who like the enforce strict quotas.
+
+
+> +++ b/kernel/sched/core.c
+> @ -7900,7 +7910,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64
+> [...]
+> +	/* burst_onset needed */
+> +	if (cfs_b->quota != RUNTIME_INF &&
+> +			sysctl_sched_cfs_bw_burst_enabled &&
+> +			sysctl_sched_cfs_bw_burst_onset_percent > 0) {
+> +
+> +		burst_onset = do_div(burst, 100) *
+> +			sysctl_sched_cfs_bw_burst_onset_percent;
+> +
+> +		cfs_b->runtime += burst_onset;
+> +		cfs_b->runtime = min(max_cfs_runtime, cfs_b->runtime);
+> +	}
+
+I saw a comment about this behavior, but I think this can lead to a bit of
+confusion. If sysctl_sched_cfs_bw_burst_onset_percent=0, the amount of
+bandwidth when the first process starts up will depend on the time between
+the quota was set and the startup of the process, and that feel a bit like
+a "timing" race that end user application then will have to think about.
+
+I suspect contianer runtimes and/or tools like Kubernetes will then have
+to tell users to set the value to a certan amount in order to make it
+work as expected.
+
+Another thing is that when a cgroup has saved some time into the
+"burst quota", updating the quota, period or burst will then reset the
+"burst quota", even though eg. only the burst was changed. Some tools
+use dynamic quotas, resulting in multiple changes in the quota over time,
+and I am a bit scared that don't allowing them to control "start burst"
+on a write can be limiting.
+
+Maybe we can allow people to set the "start bandwidth" explicitly when setting
+cfs_burst if they want to do that? (edit: that might be hard for cgroup v1, but
+would I think that is a good solution on cgroup v2).
+
+This is however just my thoughts, and I am not 100% sure about what the
+best solution is, but if we merge a certain behavior, we have no real
+chance of changing it later.
+
+
+> +++ b/kernel/sched/sched.h
+> @@ -367,6 +367,7 @@ struct cfs_bandwidth {
+>  	u64			burst;
+>  	u64			buffer;
+>  	u64			max_overrun;
+> +	u64			previous_runtime;
+>  	s64			hierarchical_quota;
+
+Maybe indicate that this was the remaining runtime _after_ the previous
+period ended? Not 100% sure, but maybe sometihing like
+'remaining_runtime_prev_period' or 'end_runtime_prev_period'(as inspiration).   
+
+
+> +++ b/kernel/sched/core.c
+> @@ -8234,6 +8236,10 @@ static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
+>  		seq_printf(sf, "wait_sum %llu\n", ws);
+>  	}
 >  
-> > > > > As secret memory implementation is not an extension of tmpfs or hugetlbfs,
-> > > > > usage of a dedicated system call rather than hooking new functionality into
-> > > > > memfd_create(2) emphasises that memfd_secret(2) has different semantics and
-> > > > > allows better upwards compatibility.
-> > > > 
-> > > > What is this supposed to mean? What are differences?
-> > > 
-> > > Well, the phrasing could be better indeed. That supposed to mean that
-> > > they differ in the semantics behind the file descriptor: memfd_create
-> > > implements sealing for shmem and hugetlbfs while memfd_secret implements
-> > > memory hidden from the kernel.
-> > 
-> > Right but why memfd_create model is not sufficient for the usecase?
-> > Please note that I am arguing against. To be honest I do not really care
-> > much. Using an existing scheme is usually preferable from my POV but
-> > there might be real reasons why shmem as a backing "storage" is not
-> > appropriate.
->    
-> Citing my older email:
-> 
->     I've hesitated whether to continue to use new flags to memfd_create() or to
->     add a new system call and I've decided to use a new system call after I've
->     started to look into man pages update. There would have been two completely
->     independent descriptions and I think it would have been very confusing.
+> +	seq_printf(sf, "current_bw %llu\n", cfs_b->runtime);
+> +	seq_printf(sf, "nr_burst %d\n", cfs_b->nr_burst);
+> +	seq_printf(sf, "burst_time %llu\n", cfs_b->burst_time);
+> +
+>  	return 0;
+>  }
 
-Could you elaborate? Unmapping from the kernel address space can work
-both for sealed or hugetlb memfds, no? Those features are completely
-orthogonal AFAICS. With a dedicated syscall you will need to introduce
-this functionality on top if that is required. Have you considered that?
-I mean hugetlb pages are used to back guest memory very often. Is this
-something that will be a secret memory usecase?
+Looks like these metrics are missing from the cgroup v2 stats.
 
-Please be really specific when giving arguments to back a new syscall
-decision.
--- 
-Michal Hocko
-SUSE Labs
+Are we sure it is smart to start exposing cfs_b->runtime, since it makes it
+harder to change the implementation at a later time? I don't thin it is that
+usefull, and if it is only exposed for debugging purposes people can probably
+use kprobes instead? Also, it would not be usefull unless you know how much
+wall time is left in the current period. In that sense,
+cfs_b->previous_runtime would probably be more usefull, but still not sure if
+it deserves to be exposed to end users like this.
+
+Also, will "cfs_b->runtime" keep updating if no processes are running, or
+will it be the the same here, but update (with burst via timer overrun)
+when a process starts again? If so, the runtime available when a process
+starts on cgroup inint can be hard to communicate if the value here doesn't
+update.
+
+
+> +++ b/kernel/sched/fair.c
+> +void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b, int init)
+> [...]
+> +	/*
+> +	 * When period timer stops, quota for the following period is not
+> +	 * refilled, however period timer is already forwarded. We should
+> +	 * accumulate quota once more than overrun here.
+> +	 */
+
+
+Trying to wrap my head around this one... Is not refilling here, as the
+behavior before your patch causing "loss" in runtime and causing unnecessary
+possibly causing a cgroup throttle?.
+
+
+A am not that familiar how cross subsystem patches like these are handled, but
+I am still adding the Tejun Heo (cgroup maintainer) as a CC. Should maybe cc to
+cgroup@ as well?
+
+Sorry for a long mail, in retrospect it should have been one per patch...
