@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1500B3156F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18213156E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233691AbhBITiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 14:38:16 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:42000 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232788AbhBISRv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233527AbhBITgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 14:36:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:55150 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233175AbhBISRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Feb 2021 13:17:51 -0500
-Received: by mail-ot1-f54.google.com with SMTP id q4so8696309otm.9;
-        Tue, 09 Feb 2021 10:15:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yvEVgFXxj42ho51jb6dVDNgFxU/choj/euDd8LGx2dg=;
-        b=me97rCxDInYiYZZC5XuYlcWX8rJmwJ6vJcr7yItwhSv7F/o4GQ25Xo+4Xm6p+x1azg
-         Wr73HkIMD0sBaoB/htir40QnoQOrW2Bp0ruDNwRghs0SweKjH4RPEAyzDmtdsajwul2b
-         8dTSD01VhqrqcYa6Sl1Bg8gEecZVJK8ggBPYN1/YONBukbCtJ0Thr9h0cSuBf5D6jmJA
-         mI5eO88qtZITL4va8bNAoUw5vu3pTWgcE/Z625UvoDQ4QGqfoqV+bArLaeyaGSHi05yC
-         oS+od2CL1fnGYxOeUxoyPWiCH3t/tnO0vCzR4hkU3GvGHpb6HDYlZrs3quMqMLLpPml7
-         Uixg==
-X-Gm-Message-State: AOAM531CXLmtIe34/adt2SltDErcGe1TWi65G41pGZTVdTB4+ozVkQqW
-        DQgYck8Vt27AkEXYarvLGw==
-X-Google-Smtp-Source: ABdhPJw4/5gXHlRhCLR6H+bmHa3XmOMLzdwLZrFeDUAOJtrrf0tETU3GzM5HQDG/rPU0Swpi08bOfg==
-X-Received: by 2002:a9d:17ed:: with SMTP id j100mr17375162otj.169.1612894513667;
-        Tue, 09 Feb 2021 10:15:13 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k67sm3069817oia.7.2021.02.09.10.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 10:15:12 -0800 (PST)
-Received: (nullmailer pid 4073574 invoked by uid 1000);
-        Tue, 09 Feb 2021 18:15:10 -0000
-Date:   Tue, 9 Feb 2021 12:15:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
-Subject: Re: [PATCH v3 09/14] drm/bridge: imx: Add i.MX8qxp pixel link to DPI
- support
-Message-ID: <20210209181510.GA4045547@robh.at.kernel.org>
-References: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
- <1611737488-2791-10-git-send-email-victor.liu@nxp.com>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30A251042;
+        Tue,  9 Feb 2021 10:15:43 -0800 (PST)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E3E9B3F73B;
+        Tue,  9 Feb 2021 10:15:29 -0800 (PST)
+Subject: Re: How can a userspace program tell if the system supports the ACPI
+ S4 state (Suspend-to-Disk)?
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Leandro Pereira <Leandro.Pereira@microsoft.com>
+References: <MWHPR21MB0863BA3D689DDEC3CA6BC262BFC91@MWHPR21MB0863.namprd21.prod.outlook.com>
+ <CAJZ5v0jRgeAsyZXpm-XdL6GCKWk5=yVh1s4fZ3m0++NJK-gYBg@mail.gmail.com>
+ <MW2PR2101MB1787B5253CAA640F8B7D2860BFB29@MW2PR2101MB1787.namprd21.prod.outlook.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <204fa040-115e-552a-5fc1-5520f10bc402@arm.com>
+Date:   Tue, 9 Feb 2021 18:15:17 +0000
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <MW2PR2101MB1787B5253CAA640F8B7D2860BFB29@MW2PR2101MB1787.namprd21.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1611737488-2791-10-git-send-email-victor.liu@nxp.com>
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 04:51:23PM +0800, Liu Ying wrote:
-> This patch adds a drm bridge driver for i.MX8qxp pixel link to display
-> pixel interface(PXL2DPI).  The PXL2DPI interfaces the pixel link 36-bit
-> data output and the DSI controller’s MIPI-DPI 24-bit data input, and
-> inputs of LVDS Display Bridge(LDB) module used in LVDS mode, to remap
-> the pixel color codings between those modules. The PXL2DPI is purely
-> combinatorial.
-> 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v2->v3:
-> * Call syscon_node_to_regmap() to get regmap instead of
->   syscon_regmap_lookup_by_phandle().
-> 
-> v1->v2:
-> * Drop unnecessary port availability check.
-> 
->  drivers/gpu/drm/bridge/imx/Kconfig           |   8 +
->  drivers/gpu/drm/bridge/imx/Makefile          |   1 +
->  drivers/gpu/drm/bridge/imx/imx8qxp-pxl2dpi.c | 488 +++++++++++++++++++++++++++
->  3 files changed, 497 insertions(+)
->  create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-pxl2dpi.c
+Hi Dexuan,
 
-> +	p2d->regmap = syscon_node_to_regmap(np->parent);
-> +	if (IS_ERR(p2d->regmap)) {
-> +		ret = PTR_ERR(p2d->regmap);
-> +		if (ret != -EPROBE_DEFER)
-> +			DRM_DEV_ERROR(dev, "failed to get regmap: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	p2d->id = of_alias_get_id(np, "pxl2dpi");
+On 05/02/2021 19:36, Dexuan Cui wrote:
+>> From: Rafael J. Wysocki <rafael@kernel.org>
+>> Sent: Friday, February 5, 2021 5:06 AM
+>> To: Dexuan Cui <decui@microsoft.com>
+>> Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> linux-hyperv@vger.kernel.org; Michael Kelley <mikelley@microsoft.com>
+>> Subject: Re: How can a userspace program tell if the system supports the ACPI
+>> S4 state (Suspend-to-Disk)?
+>>
+>> On Sat, Dec 12, 2020 at 2:22 AM Dexuan Cui <decui@microsoft.com> wrote:
+>>>
+>>> Hi all,
+>>> It looks like Linux can hibernate even if the system does not support the ACPI
+>>> S4 state, as long as the system can shut down, so "cat /sys/power/state"
+>>> always contains "disk", unless we specify the kernel parameter "nohibernate"
+>>> or we use LOCKDOWN_HIBERNATION.
 
-Don't add random aliases. I'd rather see a property in this node as long 
-as it is specific to what this is used for (and not a generic index).
+>>> In some scenarios IMO it can still be useful if the userspace is able to detect
+>>> if the ACPI S4 state is supported or not, e.g. when a Linux guest runs on
+>>> Hyper-V, Hyper-V uses the virtual ACPI S4 state as an indicator of the proper
+>>> support of the tool stack on the host, i.e. the guest is discouraged from
+>>> trying hibernation if the state is not supported.
 
-Rob
+What goes wrong? This sounds like a funny way of signalling hypervisor policy.
+
+
+>>> I know we can check the S4 state by 'dmesg':
+>>>
+>>> # dmesg |grep ACPI: | grep support
+>>> [    3.034134] ACPI: (supports S0 S4 S5)
+>>>
+>>> But this method is unreliable because the kernel msg buffer can be filled
+>>> and overwritten. Is there any better method? If not, do you think if the
+>>> below patch is appropriate? Thanks!
+>>
+>> Sorry for the delay.
+>>
+>> If ACPI S4 is supported, /sys/power/disk will list "platform" as one
+>> of the options (and it will be the default one then).  Otherwise,
+>> "platform" is not present in /sys/power/disk, because ACPI is the only
+>> user of hibernation_ops.
+
+> This works on x86. Thanks a lot!
+> 
+> BTW, does this also work on ARM64?
+
+Not today. The S4/S5 stuff is part of 'ACPI_SYSTEM_POWER_STATES_SUPPORT', which arm64
+doesn't enable as it has a firmware mechanism that covers this on both DT and ACPI
+systems. That code is what calls hibernation_set_ops() to enable ACPI's platform mode.
+
+Regardless: hibernate works fine. What does your hypervisor do that causes problems?
+(I think all we expect from firmware is it doesn't randomise the placement of the ACPI
+tables as they aren't necessarily part of the hibernate image)
+
+
+Thanks,
+
+James
