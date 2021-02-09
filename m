@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED6F31468F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C473D31468C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhBICiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:38:16 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:52223 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229733AbhBIChm (ORCPT
+        id S230520AbhBIChy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 21:37:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhBIChI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:37:42 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id BBDFB5C01DE;
-        Mon,  8 Feb 2021 21:36:34 -0500 (EST)
-Received: from imap1 ([10.202.2.51])
-  by compute6.internal (MEProxy); Mon, 08 Feb 2021 21:36:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=Imuik1TGE9YdIuXmmENtdnG1NGZ0AhG
-        fwRsqBCCiPHg=; b=msUmLiiJyeh3xS3YzYg3EhX3fUjCTmir5PgppkgLdVZNDo4
-        isMmSYOmg9CHTmWMkPLbZBBaT7vIRe4s+J1ePv0rJY1IdiUh/+E8H/s2AsZDioFG
-        hWYxjOu5qrcHKd1mbXhPOCTfPjNxHzxfrz2U9D9bXZczMIosYfGVCpRx8ceEMkMO
-        e0XGWPdRLCQ9Ql3ofw90EYLlfPhiA+EXJE1Rc0JljE1zWgfu44+kdPsES1pXu9Vj
-        AW5zpb8gZyN6W0+KDdjCBPwBCJRCdlKoo1Z2otIUhjZ0fKtltpDwUPIgyltRiCdX
-        hqUqsI9Jx3byS9Lcg7ntGqoO+Pab84ujLdStuuQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Imuik1
-        TGE9YdIuXmmENtdnG1NGZ0AhGfwRsqBCCiPHg=; b=tL+7XajZUzjlwcyuBGEuY4
-        a6gwxG9Va3eNM7BKGhluZX3C1fZy1QIQDvuz7ZcfuWzfKQG7TM2FMHIzbBsjXIoM
-        mE+B/dakS3lrOwszmsBU7Mvvd6h3Zw7B9QQuTmgOJAa7fuUdck6vPAHsiiHXXvvG
-        ARv+0qmuWa7IesKLnf0Rx/ZZZXLvCZPViQKIC7p7hlNM14nQkki1FPo35onbl4V0
-        0e90tsUqYGTxmMd59hao1c0ef9isbUVxy109UG5NrhXKJZW7xPYyi6s/NcS+c28e
-        wF5uUTm66pHlS9qPU5Zc9CmQOdp2NFU54xBQ3+bQ/pEQ/X9nGenXgA3chU7UUn2A
-        ==
-X-ME-Sender: <xms:MfUhYBMdVpBGqBYwzD2ke1jPhib06xQJXSeC4KbAJBDRsJ01sYZjDw>
-    <xme:MfUhYD-PQ2JnJA0_DZdI3nHn8dMaDpdiKyX5ut6XXBFVWk2uNhm2JdRSA3JMjSFuw
-    XpI223VIUWwhBFUHdc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheeggdegkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedflfhirgig
-    uhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepgefgfeeujeffhedufeehleejleffjefhjedvtedtvdeftdeg
-    ueevjeelleevgfefnecuffhomhgrihhnpehtqdgvshdqthdrhhhupdhgvghnvgigrdhssg
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgr
-    gihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:MfUhYATw6jBGGJ9W5WK5hsht-aXP2c3mk2Zpp5MfkcexuNBj4IaEng>
-    <xmx:MfUhYNs1P-h_zAoJ7OMQ5KUdNXTDaVqHkLk8EvpJaLoes2TkgS2W9w>
-    <xmx:MfUhYJd0dHmlZr_hCEbuFZXyVrzcME856IYFfraCEb2ulFYIdRM34Q>
-    <xmx:MvUhYKrdClz1ydrTJa46y97VxjGueb3oPrcWKOWBLeA61r__oD8vAA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4EC2D130005D; Mon,  8 Feb 2021 21:36:33 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
-Mime-Version: 1.0
-Message-Id: <d2df38f5-0894-44b3-a88c-fe9a7e595284@www.fastmail.com>
-In-Reply-To: <76dbc72a-32fd-4de3-bc36-3eb0d0eebb44@www.fastmail.com>
-References: <1612790085-14436-1-git-send-email-yangtiezhu@loongson.cn>
- <76dbc72a-32fd-4de3-bc36-3eb0d0eebb44@www.fastmail.com>
-Date:   Tue, 09 Feb 2021 10:36:11 +0800
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "Tiezhu Yang" <yangtiezhu@loongson.cn>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, "Xuefeng Li" <lixuefeng@loongson.cn>
-Subject: =?UTF-8?Q?Re:_[PATCH]_MIPS:_Make_check_condition_for_SDBBP_consistent_wi?=
- =?UTF-8?Q?th_EJTAG_spec?=
-Content-Type: text/plain
+        Mon, 8 Feb 2021 21:37:08 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B797EC061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 18:36:27 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id m2so4791736pgq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 18:36:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=3QXGdYBY4GlaQjWRP3AW5oVocz08MQfpEQJa46lCHW4=;
+        b=TibI077wK5BoFL+D16v0ATZT2K15vnWdkA7lAPagP9SvPLXshPfC8RfEfTQEshqj26
+         MjWiqpkoaiRkz/RG2GZ/R19LJ1rS+KzYf5UFwmZ/r3eUgYlJRB1+LysTYC2/Msk08tkE
+         TaJ5U5riA8qILa/prHnY2a765knNriZA7zZ4vYTu98cL7L7eZ1OnIOIS3TSMCTJOTBRx
+         PEbPXjOBhcHuXIue0yq8RjEtZTC1QE2eRuzBWlXRtc7jRnki+WZ/0DBplRshX3IqgoTi
+         D09T9UiuK+iSfq7FhOdISj+tMfEPoqcY4VVaEwdlx7f3wcbl18mS+ehf9ebS14uK+ROc
+         mbUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=3QXGdYBY4GlaQjWRP3AW5oVocz08MQfpEQJa46lCHW4=;
+        b=l2RxOD1bOiqy4UGJPKFMxdkfQs2wDmosRdoQSqjv10nS1yc81CCIfAxErx779qm6kP
+         8laDt89oGQqI0CTzBUnTSJSF1gHgji4rbhTEQBIRP2Z86Agv3WL0B/4JPyXwTAxHpgf/
+         C08+oNENHZH6BIxWK9cXkxAKE015XN1zY/kq1RHD66eE/DXEBVMqIfu4T9/evV2CpI2H
+         I/TUEJUwyWORe5vBcw9B9IukDWtugRhMU2CRO7MCg4TM4NQ4Kc6eIcueksWfuBDTfq7T
+         ZehWwh+3PGVpBY+IJS/EhOwcWu7oclhhkljb8LpH4fUVEGG13MtYj1S/jqzGJGosThLQ
+         renw==
+X-Gm-Message-State: AOAM533Cizg3MXYKpxDMo6EP/jTX0fa3z13n8ZHdi9aJvHciC7hNepc7
+        sbolrJm41B6upWEmdCztcCY=
+X-Google-Smtp-Source: ABdhPJzPMPSomATF2ZyD4YSYOSlDzTQHBwvjPuxeoN6W3R/OWYq87nM9LvDS8uYPAZg7XCUdbR0vMQ==
+X-Received: by 2002:a62:cd:0:b029:1d5:da40:abf8 with SMTP id 196-20020a6200cd0000b02901d5da40abf8mr20272668pfa.60.1612838187168;
+        Mon, 08 Feb 2021 18:36:27 -0800 (PST)
+Received: from localhost ([220.240.226.199])
+        by smtp.gmail.com with ESMTPSA id 71sm6599001pgh.55.2021.02.08.18.36.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 18:36:26 -0800 (PST)
+Date:   Tue, 09 Feb 2021 12:36:20 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v5 20/22] powerpc/syscall: Avoid storing 'current' in
+ another pointer
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+        <24804747098369ebcdac38970b8f7a1260bdd248.1612796617.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <24804747098369ebcdac38970b8f7a1260bdd248.1612796617.git.christophe.leroy@csgroup.eu>
+MIME-Version: 1.0
+Message-Id: <1612838134.rvncv9kzls.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+> By saving the pointer pointing to thread_info.flags, gcc copies r2
+> in a non-volatile register.
+>=20
+> We know 'current' doesn't change, so avoid that intermediaite pointer.
+>=20
+> Reduces null_syscall benchmark by 2 cycles (322 =3D> 320 cycles)
+>=20
+> On PPC64, gcc seems to know that 'current' is not changing, and it keeps
+> it in a non volatile register to avoid multiple read of 'current' in paca=
+.
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
+What if you did this?
 
-On Tue, Feb 9, 2021, at 12:32 AM, Jiaxun Yang wrote:
-> 
-> 
-> On Mon, Feb 8, 2021, at 9:14 PM, Tiezhu Yang wrote:
-> > According to MIPS EJTAG Specification [1], a Debug Breakpoint
-> > exception occurs when an SDBBP instruction is executed, the
-> > CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
-> > occurred, just check bit DBp for SDBBP is more accurate.
-> > 
-> > [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
-> > 
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >  arch/mips/kernel/genex.S | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-> > index bcce32a..6336826 100644
-> > --- a/arch/mips/kernel/genex.S
-> > +++ b/arch/mips/kernel/genex.S
-> > @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
-> >  	MTC0	k0, CP0_DESAVE
-> >  	mfc0	k0, CP0_DEBUG
-> >  
-> > -	sll	k0, k0, 30	# Check for SDBBP.
-> > -	bgez	k0, ejtag_return
-> > +	andi	k0, k0, 0x2	# Check for SDBBP.
-> > +	beqz	k0, ejtag_return
-> 
-> You'd better define a marco for it to prevent further confusion.
-> 
-> Btw I'm curious about how do kernel receive EJTAG exception?
-> In my understanding there are only two possible EJTAG exception vectors,
-> 0xbfc00480 and DSEG one. Both of them are reachable by kernel.
-^ not
+---
+ arch/powerpc/include/asm/current.h | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-> How do this piece of code work?
-> 
-> Thanks.
-> 
-> - Jiaxun
-> 
-> >  
-> >  #ifdef CONFIG_SMP
-> >  1:	PTR_LA	k0, ejtag_debug_buffer_spinlock
-> > -- 
-> > 2.1.0
-> > 
-> >
-> 
-> -- 
-> - Jiaxun
->
-
--- 
-- Jiaxun
+diff --git a/arch/powerpc/include/asm/current.h b/arch/powerpc/include/asm/=
+current.h
+index bbfb94800415..59ab327972a5 100644
+--- a/arch/powerpc/include/asm/current.h
++++ b/arch/powerpc/include/asm/current.h
+@@ -23,16 +23,19 @@ static inline struct task_struct *get_current(void)
+=20
+ 	return task;
+ }
+-#define current	get_current()
+=20
+ #else
+=20
+-/*
+- * We keep `current' in r2 for speed.
+- */
+-register struct task_struct *current asm ("r2");
++static inline struct task_struct *get_current(void)
++{
++	register struct task_struct *task asm ("r2");
++
++	return task;
++}
+=20
+ #endif
+=20
++#define current	get_current()
++
+ #endif /* __KERNEL__ */
+ #endif /* _ASM_POWERPC_CURRENT_H */
+--=20
