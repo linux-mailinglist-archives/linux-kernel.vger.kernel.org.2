@@ -2,135 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5969B31543E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1130315441
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbhBIQq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:46:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232963AbhBIQnE (ORCPT
+        id S233076AbhBIQq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:46:59 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:39376 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233119AbhBIQni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:43:04 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DC3C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:42:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GCUCgWrw3gm85lFgy7Enr/nqnYPKWtudEizUO/rcNQ0=; b=YdjXtDxQ3cfGSVhL2/05QbbqqH
-        nzNhJwFFfnlehGdzNugz5IVv3nLAeB02Suge1b9JoDKfBXjhIU4EqUuaybty4uNEERRnUUAok45HJ
-        +KvrKZgI/Nes4e4ufVT33ask1utXEFV3NNDlCkJ7+9/27matn01NGqoxghxvF4mdPN7FiwjaoioaU
-        +CI8cv3dKjl8k0PL3Sid7z0ck7imW/8nJOtqfmuJSDFZhjhhfAn2i+ydKSKwvZ1Uf4QkjSRJVsXse
-        1Hx7a71m5xf0FxufiWfvYuep1wJ7sNNHW62+d8yjoyZG7nIm6socntwH0wh45LQ7cg6Up5/Rrv6j9
-        eH3kLtqw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9W5e-00018w-PS; Tue, 09 Feb 2021 16:42:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5F64E304BAE;
-        Tue,  9 Feb 2021 17:42:13 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4AF6F20084EA1; Tue,  9 Feb 2021 17:42:13 +0100 (CET)
-Date:   Tue, 9 Feb 2021 17:42:13 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] objtool,x86: Additionally decode: mov %rsp, (%reg)
-Message-ID: <YCK7ZYt92ZFeD5IE@hirez.programming.kicks-ass.net>
-References: <20210209091600.075402197@infradead.org>
- <20210209093521.924097404@infradead.org>
- <20210209163255.epr2gxndsweyfpzi@treble>
+        Tue, 9 Feb 2021 11:43:38 -0500
+Received: by mail-ot1-f46.google.com with SMTP id d7so15770763otq.6;
+        Tue, 09 Feb 2021 08:43:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3MRQ17fCKkEkBmFXpmbVjByc0dqG2k5VHuVO7GU94Nw=;
+        b=t+yFZZKoZC8Px+c41e/I2VtgR4YrMIaf0kYijoWPT2hrSGyZTyLBz/HeUTgICJHitk
+         gWvrtYe6jhU18Hh0N8YYSuhkq/K/R8WSOAMZr/TlS8aXsVOZfaFGNvACXd1UjiwNiPqj
+         4MyQzqOp6FH6i+gljwWoEDEtLcwiFbal+QPO+EgHvTeG5XQSMIaIl7CorOQRq95f7Eo8
+         6EkogIOuJob68IOeX8Q73FgUsPAhn6BAxaiv37pMBng4Q8WXUe7dzpaDKUXtb8c+uQxF
+         14cVa/Nww1vfuzfe/D4MkWZExp1cff+B2zTD8n8FWQgiCcMFtiI8L+6Vq2KGZWh2+YE2
+         82jQ==
+X-Gm-Message-State: AOAM533daa0H8nsl/X+/k8jI6Qz0dFH8h7SRgL2WMpe+WQMn1jDyY9S9
+        pWeKL3Kb1d4W+wJvg5bJDyyYFJn1X9oLgM31aDkBNV9o
+X-Google-Smtp-Source: ABdhPJw1XscLR0FlQiu/DKmIMPQd+zzpVyvP0oraWPfl0uCjO1korovyDRPGDITCkzX2GIvHEidQ/+GH1w7wUh3xELc=
+X-Received: by 2002:a9d:a2d:: with SMTP id 42mr15328872otg.321.1612888976663;
+ Tue, 09 Feb 2021 08:42:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209163255.epr2gxndsweyfpzi@treble>
+References: <20210205132505.20173-1-sakari.ailus@linux.intel.com>
+ <20210205132505.20173-8-sakari.ailus@linux.intel.com> <CAMpxmJU7J9JBSwCN+GLDpuOL=iZ1PH=oZZuGiAyovuf2TQ=o9A@mail.gmail.com>
+ <CAJZ5v0jUqtYDpBn-ezsftCrY=9iD3sAKhyyFf_+CMkthLnsZow@mail.gmail.com>
+ <CAMpxmJW61Bd1SR3-i6=OV6RgafiEdfp4sNN0M6EYa7NSeOTFKg@mail.gmail.com> <20210209162343.GF32460@paasikivi.fi.intel.com>
+In-Reply-To: <20210209162343.GF32460@paasikivi.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 9 Feb 2021 17:42:45 +0100
+Message-ID: <CAJZ5v0h2=zKNMictJtJE5LuEi9E3n=Uf-xNO3udHxL2hqXL7Fg@mail.gmail.com>
+Subject: Re: [PATCH v10 7/7] at24: Support probing while off
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:32:55AM -0600, Josh Poimboeuf wrote:
-> On Tue, Feb 09, 2021 at 10:16:02AM +0100, Peter Zijlstra wrote:
-> > Where we already decode: mov %rsp, %reg, also decode mov %rsp, (%reg).
-> > 
-> > Nothing should match for this new stack-op.
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >  tools/objtool/arch/x86/decode.c |   23 ++++++++++++++++++-----
-> >  1 file changed, 18 insertions(+), 5 deletions(-)
-> > 
-> > --- a/tools/objtool/arch/x86/decode.c
-> > +++ b/tools/objtool/arch/x86/decode.c
-> > @@ -222,14 +222,24 @@ int arch_decode_instruction(const struct
-> >  		break;
-> >  
-> >  	case 0x89:
-> > -		if (rex_w && !rex_r && modrm_mod == 3 && modrm_reg == 4) {
-> > +		if (rex_w && !rex_r && modrm_reg == 4) {
-> >  
-> > -			/* mov %rsp, reg */
-> > +			/* mov %rsp, */
-> >  			ADD_OP(op) {
-> >  				op->src.type = OP_SRC_REG;
-> >  				op->src.reg = CFI_SP;
-> > -				op->dest.type = OP_DEST_REG;
-> > -				op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
-> > +				if (modrm_mod == 3) {
-> > +
-> > +					/* mov %rsp, reg */
-> > +					op->dest.type = OP_DEST_REG;
-> > +					op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
-> > +
-> > +				} else if (modrm_mod == 0) {
-> > +
-> > +					/* mov %rsp, (%reg) */
-> > +					op->dest.type = OP_DEST_REG_INDIRECT;
-> > +					op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
-> > +				}
-> 
-> What if modrm_mod is 1 or 2?   Should 'if' below the 'case' make sure
-> it's 0 or 3?
+On Tue, Feb 9, 2021 at 5:23 PM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+>
+> Hi Bartosz, Rafael,
+>
+> On Tue, Feb 09, 2021 at 04:49:37PM +0100, Bartosz Golaszewski wrote:
+> > On Mon, Feb 8, 2021 at 5:54 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > >
+> > > On Mon, Feb 8, 2021 at 5:44 PM Bartosz Golaszewski
+> > > <bgolaszewski@baylibre.com> wrote:
+> > > >
+> > > > On Fri, Feb 5, 2021 at 2:25 PM Sakari Ailus
+> > > > <sakari.ailus@linux.intel.com> wrote:
+> > > > >
+> > > > > In certain use cases (where the chip is part of a camera module, and the
+> > > > > camera module is wired together with a camera privacy LED), powering on
+> > > > > the device during probe is undesirable. Add support for the at24 to
+> > > > > execute probe while being powered off. For this to happen, a hint in form
+> > > > > of a device property is required from the firmware.
+> > > > >
+> > > > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > > > > Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+> > > > > ---
+> > > >
+> > > > I'll ack this but I still claim that the name
+> > > > acpi_dev_state_low_power() is super misleading for this use-case and
+> > > > I've been saying that for 10 versions now with everyone just ignoring
+> > > > my remarks. :/
+> > >
+> > > Well, the function in question simply checks if the current ACPI power
+> > > state of the device is different from "full power", so its name
+> > > appears to be quite adequate to me.
+> > >
+> > > If the way in which it is used is confusing, though, I guess
+> > > explaining what's going on would be welcome.
+> > >
+> >
+> > Yes, I have explained it multiple time already - last time at v9 of this series:
+> >
+> >     https://www.spinics.net/lists/kernel/msg3816807.html
+>
+> How about adding this to the description of acpi_dev_state_low_power():
+>
+> -----------8<--------------
+>  * This function is intended to be used by drivers to tell whether the device
+>  * is in low power state (D1--D3cold) in driver's probe or remove function. See
+>  * Documentation/firmware-guide/acpi/low-power-probe.rst for more information.
+> -----------8<--------------
 
-For 1,2 we need to look at the SIB byte or something. IIRC you get that
-encoding for stuff like: mov %rsp, off(%reg).
+This information is already there in the kerneldoc description of that
+function AFAICS.
 
-Didn't want to dive too deep into the instruction encoding thing again,
-this is all we need.
-
-> >  			}
-> >  			break;
-> >  		}
-> > @@ -259,8 +269,10 @@ int arch_decode_instruction(const struct
-> >  				op->dest.reg = CFI_BP;
-> >  				op->dest.offset = insn.displacement.value;
-> >  			}
-> > +			break;
-> > +		}
-> >  
-> > -		} else if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
-> > +		if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
-> >  
-> >  			/* mov reg, disp(%rsp) */
-> >  			ADD_OP(op) {
-> > @@ -270,6 +282,7 @@ int arch_decode_instruction(const struct
-> >  				op->dest.reg = CFI_SP;
-> >  				op->dest.offset = insn.displacement.value;
-> >  			}
-> > +			break;
-> >  		}
-> >  
-> >  		break;
-> > 
-> 
-> Did this change have a point?
-
-Consistency, but yeah, I see what you mean.
+I was thinking about adding an explanation comment to the caller.
