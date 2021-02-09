@@ -2,158 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3090D315C0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C36BE315C07
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235061AbhBJBSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:18:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28157 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234278AbhBIWob (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:44:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612910567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GZ7uCNlA2uIi2Zywr96bupyWhGmv/tkzQj/R8fIDK/I=;
-        b=JNmsMqripTu4J9CKnwz3BfoGRwZ1pXp8A4+IHy85OwXq/38j3xPoYnXGbq7z9aXRl9sXAJ
-        vCYdvD2ksmiCOJyjjg93HR0xH3mN6J6X8LRdDBPx1SMfTfCBLPtUjtoflhGfTX7J3trkfI
-        x3Q6SbbeyEdYs86w6mP5ER11VUYSQy8=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-u1ymklQ3PaCdxNhugrJ71A-1; Tue, 09 Feb 2021 17:42:42 -0500
-X-MC-Unique: u1ymklQ3PaCdxNhugrJ71A-1
-Received: by mail-ej1-f70.google.com with SMTP id jg11so255129ejc.23
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 14:42:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GZ7uCNlA2uIi2Zywr96bupyWhGmv/tkzQj/R8fIDK/I=;
-        b=WhzvRTQIlqCJBIKTT57iaKvFc/Eh/BHg/vKXr9E2RCTPnNTSayHTP7uUNkDoPehnio
-         drH2+3c3KUA+o6C2wSXd8ySYCALo1UsBZuXl3B9hedbJRm4eXhg2SRK7nJ5L7i6UwSpe
-         aKltAIEMLkCf1UkxoqZ82tPkYwJSwG8HPqvi//NR7oAppEvm+MfSsI5P15hncGMTkbXj
-         t2yI1e14FJ13qnWWK0ymg2dWs0M2WgtSBVaDKSY8u7yRs7JiEQ/6915ur/AHoWSOOFxj
-         j9kc4fO/oRAXQN69eCK79xUD2tMmohGFl+3sD+kclxuft0BX/S4urQWCRfJkBqBrT1KM
-         hAew==
-X-Gm-Message-State: AOAM531MRrevl12g07IZ/YQEV81I3iS8nTcb+lQ/PbSSE//9yIh68X/c
-        L1jk2cw03KkMuGF9KQaoZkjG4b8v6Q//g78VHX8tqPyXe4fDr3y6/6eEfjnKXzgXoqIz/sAannX
-        4sjBNBoZARqnB6ArdfwVzQYSdfKg44fp0ZCLOy2rB
-X-Received: by 2002:a17:906:b351:: with SMTP id cd17mr24871306ejb.110.1612910560582;
-        Tue, 09 Feb 2021 14:42:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxWZ/SxMb2EYr3Wx/r9tLm+ytvzx5rNbM3Mu7nYLvi+QXirS/jRZBjDCWHtM3Wa2pEsJ4PdxjPocMuO52GFZ9o=
-X-Received: by 2002:a17:906:b351:: with SMTP id cd17mr24871281ejb.110.1612910560352;
- Tue, 09 Feb 2021 14:42:40 -0800 (PST)
+        id S234516AbhBJBRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:17:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233610AbhBIWnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:43:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4241E64DE3;
+        Tue,  9 Feb 2021 22:42:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612910546;
+        bh=7eMvg1VPEGo3lWW4zotCo/3XyQ70lbVzFTFiKgWsqhU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HYRbitpU3bTMG/kdrSDLl0dNKnUgn0pdLEyvq6hWXMyuApyrM8FuWnzt+869wtR2Y
+         3xahI8A7PWarnmW3k+ke8IqeMmvxugZYjZD9rSVu6k2cV61cdRBcJR35iKBNKdtPWF
+         +Py1m2cqtNK30GLozZevFOHu270/1RNRsfg/vIWOY20aNzB3vlafirJMQLOzsmJ9Q4
+         Fn8CwUteOyZqCGWr03aD0yekMXv0+DsjqBkmqTAceyMXnt5Q74reSDVpg9ymUCfOUU
+         g7vcAMfUEPjtlg+Xjrdk6HLvLzLsgdd63FsRIqJLi3mY+Tk61UB+ul4C58aCnE/N7X
+         rQh8AFFWurE1w==
+Received: by pali.im (Postfix)
+        id DE53FF9A; Tue,  9 Feb 2021 23:42:23 +0100 (CET)
+Date:   Tue, 9 Feb 2021 23:42:23 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     nnet <nnet@fastmail.fm>
+Cc:     a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
+        gregory.clement@bootlin.com, kabel@kernel.org, kostap@marvell.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
+        miquel.raynal@bootlin.com, mturquette@baylibre.com,
+        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
+        vladimir.vid@sartura.hr
+Subject: Re: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base
+ CPU speed to 800 MHz from 1000 MHz
+Message-ID: <20210209224223.p22yhjdy7ibzepss@pali>
+References: <d59ba191-43db-4b7b-b201-62a60ca752c0@www.fastmail.com>
+ <20210209213330.hnc7op72zoj24mgz@pali>
+ <7b0988cc-eeb8-4ea7-92f6-e8234ca910d3@www.fastmail.com>
 MIME-Version: 1.0
-References: <591237.1612886997@warthog.procyon.org.uk> <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
-In-Reply-To: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
-From:   David Wysochanski <dwysocha@redhat.com>
-Date:   Tue, 9 Feb 2021 17:42:04 -0500
-Message-ID: <CALF+zOkMKqvidLf8WZD889PUN-KofdiRPOcbO4hxboVmUGiOgw@mail.gmail.com>
-Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cachefs <linux-cachefs@redhat.com>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7b0988cc-eeb8-4ea7-92f6-e8234ca910d3@www.fastmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 2:07 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> So I'm looking at this early, because I have more time now than I will
-> have during the merge window, and honestly, your pull requests have
-> been problematic in the past.
->
-> The PG_fscache bit waiting functions are completely crazy. The comment
-> about "this will wake up others" is actively wrong, and the waiting
-> function looks insane, because you're mixing the two names for
-> "fscache" which makes the code look totally incomprehensible. Why
-> would we wait for PF_fscache, when PG_private_2 was set? Yes, I know
-> why, but the code looks entirely nonsensical.
->
-> So just looking at the support infrastructure changes, I get a big "Hmm".
->
-> But the thing that makes me go "No, I won't pull this", is that it has
-> all the same hallmark signs of trouble that I've complained about
-> before: I see absolutely zero sign of "this has more developers
-> involved".
->
-> There's not a single ack from a VM person for the VM changes. There's
-> no sign that this isn't yet another "David Howells went off alone and
-> did something that absolutely nobody else cared about".
->
+On Tuesday 09 February 2021 13:45:08 nnet wrote:
+> On Tue, Feb 9, 2021, at 1:33 PM, Pali Rohár wrote:
+> > On Tuesday 09 February 2021 13:00:26 nnet wrote:
+> > > > If you have other Armada 3720 boards (Espressobin v5/v7, uDPU, Devel Board, ...) then it will be nice to do an additional tests and check if instability issues are finally fixed.
+> > > 
+> > > These patches applied to the 5.4.96 in OpenWrt (98d61b5) work fine so far on an Espressobin v7 AFAICT per changing values in /sys/devices/system/cpu/cpufreq/policy0.
+> > > 
+> > > Are these changes intended to work @1.2 GHz on the v7?
+> > 
+> > Hello! Do you have 1.2 GHz A3720 SoC?
+> 
+> Maybe (not)? ESPRESSObin_V7_1-0 on the underside.
 
-I care about it.
+Look at the package of SoC chip. On top of the package is printed
+identifier 88F3720. On the last line should be one of the string:
+C080, C100, C120, I080, I100 which identifies frequency
+(080 = 800 MHz, 100 = 1 GHz, 120 = 1.2 GHz)
 
-I cannot speak to your concerns about the infrastructure changes, nor
-can I comment about a given maintainers involvement or lack thereof.
-However, I can tell you what my involvement has been.  I got involved
-with it because some of our customers use fscache with NFS and I've
-supported it.  I saw dhowells rewriting it to greatly simplify the
-code and make it easier to debug and wanted to support the effort.
+Can you check what is printed on A3720 SoC package?
 
-I have been working on the NFS conversion as dhowells has been
-evolving the fscache-iter API.  David first posted the series I think
-in Dec 2019 and I started with NFS about mid-year 2020, and had my
-first post of NFS patches in July:
-https://marc.info/?l=linux-nfs&m=159482591232752&w=2
+> BTW, with the 1200_750 firmware and the patches:
+> 
+> root@OpenWrt:/sys/devices/system/cpu/cpufreq/policy0# cat scaling_available_frequencies 
+> 200000 300000 600000 1200000
+> 
+> Of course that could mean nothing, but thought I'd mention what I do see.
 
-One thing that came out of the earlier iterations as a result of my
-testing was the need for the network filesystem to be able to 'cap'
-the IO size based on its parameters, hence the "clamp_length()"
-function.  So the next iteration dhowells further evolved it into a
-'netfs' API and a 'fscache' API, and my November post was based on
-that:
-https://marc.info/?l=linux-nfs&m=160596540022461&w=2
-
-Each iteration has greatly simplified the interface to the network
-filesystem until today where the API is pretty simple.  I have done
-extensive tests with each iteration with all the main NFS versions,
-specific unit tests, xfstests, etc.  However my test matrix did not
-hit enough fscache + pNFS servers, and I found a problem too late to
-include in his pull request.  This is mostly why my patches were not
-included to convert NFS to the new fscache API, but I intend to work
-out the remaining issues for the next merge window, and I'll have an
-opportunity to do more testing last week of Feb with the NFS "remote
-bakeathon".  My most recent post was at the end of Jan, and Anna is
-taking the first 5 refactoring patches in the next merge window:
-https://marc.info/?l=linux-nfs&m=161184595127618&w=2
-
-I do not have the skills of a Trond or Anna NFS developers, but I have
-worked in this in earnest and intend to see it through to completion
-and support NFS and fscache work.  I have received some feedback on
-the NFS patches though it's not been a lot, I do know I have some
-things to address still.  With open source, no feedback is hard to
-draw conclusions other than it's not "super popular" area, but we
-always knew that about fscache - it's an "add on" that some customers
-require but not everyone. I know Trond speaks up when I make a mistake
-and/or something will cause a problem, so I consider the silence
-mostly a positive sign.
-
-
-
-> See my problem? I need to be convinced that this makes sense outside
-> of your world, and it's not yet another thing that will cause problems
-> down the line because nobody else really ever used it or cared about
-> it until we hit a snag.
->
->                   Linus
->
-
+This is value set by firmware file which you have started.
