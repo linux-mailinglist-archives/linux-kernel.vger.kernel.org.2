@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4427B3156BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E663156BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhBIT0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 14:26:04 -0500
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:35499 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233076AbhBIRzk (ORCPT
+        id S233281AbhBITWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 14:22:16 -0500
+Received: from mail-oo1-f45.google.com ([209.85.161.45]:34143 "EHLO
+        mail-oo1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233092AbhBIR47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:55:40 -0500
-Received: by mail-oi1-f180.google.com with SMTP id l3so10393144oii.2;
-        Tue, 09 Feb 2021 09:55:23 -0800 (PST)
+        Tue, 9 Feb 2021 12:56:59 -0500
+Received: by mail-oo1-f45.google.com with SMTP id x23so4463139oop.1;
+        Tue, 09 Feb 2021 09:56:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RQUHj+BXtANW6albug9w4Bx+rstlxLjWFqakR1XfA0o=;
-        b=FqW2iG+lnwMqySOCO6AhTmWfeJy18kxtd0JDTuTGuXk1GdQ4eue4FGSgd7D3nD3CrV
-         P4HS3nZnYPqkG4xn+6t3gLztCayckpdJhr5E8ErVx9lJL60C5gaaPSD2NY+XiyYFEL7P
-         qKoTbh9NBO10VrQKswazxoNPBz5k2NP3UbGZwJNBiGXI1+7R+jyXWDS2PMwmILM+yd6l
-         i9yeu5jOGBy1CXJonOIeVfF1qieXtb++HbctCETddbC5LvsfZppOd2iQp5zKCeVPqGF1
-         5d6Rclw0nVyYlRXNq2+stZ20wkY7xr3Cm4GF0l0IuCnwkb6U6uQ6U0HTMSVKZMscXJbw
-         CxBg==
-X-Gm-Message-State: AOAM532Ez5gyGVKXfgvvYytg5hiBPUUe9x2dYuNv55VkpojBj51pJ+aO
-        ObiI+RcNOWxyhNHTdPlqWjUa5mn2oQ==
-X-Google-Smtp-Source: ABdhPJz/nOQledHdl47iQx6sITmSHInVk2gRA33JBekAqpASydJExVmQ7LdPeUIVMWimUp96wXN6mQ==
-X-Received: by 2002:aca:220e:: with SMTP id b14mr3286454oic.130.1612893295896;
-        Tue, 09 Feb 2021 09:54:55 -0800 (PST)
+        bh=vBG1WNZ+VYDg58Hj0p0C8XiVqBI5eXydWO/NFf/WXAw=;
+        b=fABRR1tikxdvOZTDSRUQLYcn2A/OKITUgcpLOHPwS+Rq4O2heGSNv6yG+ro9w7/JrI
+         Y3xrNz9KyGZlvV4pMzTZzgj51UFd5oWSyRSLpsid13FcVrrj/9ltDorlll4+1LRYGIlo
+         4lhLozOhYAj6aCpPxAJSU8QaeFCHm50YU7c9GLBIv7l4QEbslc7UzpaBNaHq5CbjevCF
+         MAhdB6+ERWbFVAWDFaMubLtdbZ14dZCvLiqUMm4yoH8DiPwoGAgLSf/QM4hXvIo62Xsq
+         6mu8ADP1FHZ8EHnB3ZjbVmejarOrUDmuItakAVgsg6QHIQtUXbZJJwzqbVWSauccJ2Uf
+         h0jw==
+X-Gm-Message-State: AOAM531Fu4p51zqKacB8q7ryDKMnVQdkN3vxSsF2o7DubSr+2SJgVHer
+        91SUHerob7hyC8sR2Nxzdw==
+X-Google-Smtp-Source: ABdhPJwDyWG7JxVSQrPKKUjAO9gUPF8tm8MuPSOj8dj3+6IQC3cBmate/FqH6XfP1vsC+kwAHHQdBA==
+X-Received: by 2002:a4a:c489:: with SMTP id f9mr16497336ooq.49.1612893377147;
+        Tue, 09 Feb 2021 09:56:17 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w134sm1409488oia.56.2021.02.09.09.54.52
+        by smtp.gmail.com with ESMTPSA id a63sm4498903otc.75.2021.02.09.09.56.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 09:54:53 -0800 (PST)
-Received: (nullmailer pid 4037202 invoked by uid 1000);
-        Tue, 09 Feb 2021 17:54:52 -0000
-Date:   Tue, 9 Feb 2021 11:54:52 -0600
+        Tue, 09 Feb 2021 09:56:15 -0800 (PST)
+Received: (nullmailer pid 4039705 invoked by uid 1000);
+        Tue, 09 Feb 2021 17:56:14 -0000
+Date:   Tue, 9 Feb 2021 11:56:14 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     gabriel.fernandez@foss.st.com
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        devicetree@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        marex@denx.de, Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+Cc:     Stephen Boyd <sboyd@kernel.org>, marex@denx.de,
         Etienne Carriere <etienne.carriere@st.com>,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 09/14] dt-bindings: reset: add MCU HOLD BOOT ID for
- SCMI reset domains on stm32mp15
-Message-ID: <20210209175452.GA4037138@robh.at.kernel.org>
+        devicetree@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-clk@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Michael Turquette <mturquette@baylibre.com>
+Subject: Re: [PATCH v2 13/14] dt-bindings: clock: stm32mp1 new compatible for
+ secure rcc
+Message-ID: <20210209175614.GA4039647@robh.at.kernel.org>
 References: <20210126090120.19900-1-gabriel.fernandez@foss.st.com>
- <20210126090120.19900-10-gabriel.fernandez@foss.st.com>
+ <20210126090120.19900-14-gabriel.fernandez@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126090120.19900-10-gabriel.fernandez@foss.st.com>
+In-Reply-To: <20210126090120.19900-14-gabriel.fernandez@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Jan 2021 10:01:15 +0100, gabriel.fernandez@foss.st.com wrote:
+On Tue, 26 Jan 2021 10:01:19 +0100, gabriel.fernandez@foss.st.com wrote:
 > From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 > 
-> Add ID to SCMI0 to exposes reset controller for the MCU HOLD BOOT resource.
+> Introduce new compatible string "st,stm32mp1-rcc-secure" for
+> stm32mp1 clock driver when the device is configured with RCC
+> security support hardened.
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
 > Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 > ---
->  include/dt-bindings/reset/stm32mp1-resets.h | 2 ++
->  1 file changed, 2 insertions(+)
+>  .../devicetree/bindings/clock/st,stm32mp1-rcc.yaml          | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
