@@ -2,252 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B303152C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E723152C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232440AbhBIP0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:26:04 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:38465 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbhBIPX3 (ORCPT
+        id S232616AbhBIP1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:27:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232633AbhBIP0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:23:29 -0500
-Received: by mail-oi1-f181.google.com with SMTP id h6so19811474oie.5;
-        Tue, 09 Feb 2021 07:23:12 -0800 (PST)
+        Tue, 9 Feb 2021 10:26:24 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23282C061786
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 07:25:43 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id r21so6181888wrr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 07:25:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=K617ZIc90vlsVdw3NuFgxnWpwZCFrf9GMHVLhoZQ06o=;
+        b=pzZ+77F6IsL4Dk549uH1cnBxEDHLhugvAcb6WGUKknG+R4asD1PC/Q0dBlpjSLq8kE
+         d4OG1blRU1IcOOr9HR8LT9KdADYG4dQ/zxjxLUNhGD8Sm4s3J91JLQozmbWHkRLYecyJ
+         +ftZOAU6YnLepMbdoiuCALOIH3ctfPQaKtwPipZjITQ71nVfS6NycEaX1vAtW2lsjPLK
+         q0xZsZAc74dKdG521q8VLNtQxd2i8zpvRZ3clC9iBviSYupVXTWIadN5b9NT9yxKWlD3
+         JrKKb7/EiTkN7s3wBVsGDF4EfDRCc/V+vL5LNY/feaY17uQn81JTDIfQZJyPzs8HCfVf
+         6Cuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pdkRS3Vib+f99aAuZIkfmdf8/nBjJhm3iilrBoLKCLg=;
-        b=R4EBlJI05P7XYkE8v+k3ma4bL3fus3q+niQpOAcqAF26sK6agxb7ME+ILScKgyJ6sL
-         srk85burPAz1ZG53rsh7L3i8rK0y9adHwrIqSbVi3R8pXRPkddUtPl1xhFM6JeC5E8Ip
-         9JcbPdySWP7J2K0O9cMSUU480zV0hydF4qYH0K61IhAECrPTp8xOR7AkHDwxTEgl09bk
-         ZBs+6dJtweSP08kdW8o7QwYO43c2aI5DhM9U0yUl/v0kyAHvgTlQlWuXbUk/P2bZDHHe
-         +4cWzHHE64mghfXrA/d6AgfWFOj9vfc8wjcyCvDc633YwQqL6c22wcev3Y044difGevq
-         R07w==
-X-Gm-Message-State: AOAM531Gfjf8VuknCk2Ra0Av0nHOOGIblO9om0aWU6YgXAf1WRuGmi4I
-        w7qqC+5JKt6fg0KkxjvkD0A5IJ41cw==
-X-Google-Smtp-Source: ABdhPJweWkg0RNGbRHkrsVHVJP6WqRao/H++c8lbgNFtsQTEv65JqaYBMw8rlSV8B5biYBI3ZoU84Q==
-X-Received: by 2002:a05:6808:bc3:: with SMTP id o3mr2795912oik.134.1612884167565;
-        Tue, 09 Feb 2021 07:22:47 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s1sm1517007ooj.30.2021.02.09.07.22.45
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=K617ZIc90vlsVdw3NuFgxnWpwZCFrf9GMHVLhoZQ06o=;
+        b=ufoyzHge8hYSBIfe3RPiyqv4okUTCaJTtfnSdm6bVF5irqEWPeKs4x6pEyfcQ5ShiK
+         rp63kjBqSWheRxiS39tddgW9P2tSQIxOs1C3vklV7xH6dNZ34LD5Zf7x8rLjRQf4Mg68
+         1TX5xnUBO3cVw/cCTj7HerfccHydrMUdPYr7VcQSxNb+x4w2OPpu7AW0/KVOdFpOmRzW
+         rNau2CmKHoCOl+MytGmkLaLl4ET+F8vfNGSumbHDw3nmnOtXMfW6XSnsUKjQwGKK11tX
+         T6uA4zK8wkNUwMwi/MpBtW2y8DA4owbAe5+n43ppNPXcGcbV/3q9lUDX+59SwsOeKHr+
+         FV1Q==
+X-Gm-Message-State: AOAM530sjEuItfeQRHgIGfR6tU+6FKqRq6ifoX9HTz0VBU76SeLwON8q
+        k5gT2XshbSeamX/qlczHTp2pCg==
+X-Google-Smtp-Source: ABdhPJzqEDbn4f2UEx76+b9EFZSJ1Lrya2PR1rM38CI0d45qIE4GokQKkISv9q2aazS1rRpdbeRCtw==
+X-Received: by 2002:a5d:6541:: with SMTP id z1mr25551568wrv.128.1612884341508;
+        Tue, 09 Feb 2021 07:25:41 -0800 (PST)
+Received: from dell ([91.110.221.187])
+        by smtp.gmail.com with ESMTPSA id u10sm4774446wmj.40.2021.02.09.07.25.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 07:22:45 -0800 (PST)
-Received: (nullmailer pid 3781070 invoked by uid 1000);
-        Tue, 09 Feb 2021 15:22:44 -0000
-Date:   Tue, 9 Feb 2021 09:22:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     heiko@sntech.de, gregkh@linuxfoundation.org, balbi@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/8] dt-bindings: usb: convert rockchip,dwc3.txt to
- yaml
-Message-ID: <20210209152244.GA3769707@robh.at.kernel.org>
-References: <20210206185017.1817-1-jbx6244@gmail.com>
+        Tue, 09 Feb 2021 07:25:40 -0800 (PST)
+Date:   Tue, 9 Feb 2021 15:25:38 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     mazziesaccount@gmail.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH v7 3/6] mfd: bd9576: Add IRQ support
+Message-ID: <20210209152538.GB220368@dell>
+References: <cover.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
+ <8489e5d34a6ae26309772f7cbffaa340fbb6c34e.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210206185017.1817-1-jbx6244@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8489e5d34a6ae26309772f7cbffaa340fbb6c34e.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 06, 2021 at 07:50:10PM +0100, Johan Jonker wrote:
-> In the past Rockchip dwc3 usb nodes were manually checked.
-> With the conversion of snps,dwc3.yaml as common document
-> we now can convert rockchip,dwc3.txt to yaml as well.
-> Remove node wrapper.
-> 
-> Added properties for rk3399 are:
->   power-domains
->   resets
->   reset-names
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
-> Changed V3:
->   remove aclk_usb3_rksoc_axi_perf
->   remove aclk_usb3
-> 
-> Changed V2:
->   remove node wrapper
-> ---
->  .../devicetree/bindings/usb/rockchip,dwc3.txt      | 56 -------------
->  .../devicetree/bindings/usb/rockchip,dwc3.yaml     | 95 ++++++++++++++++++++++
->  2 files changed, 95 insertions(+), 56 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
->  create mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt b/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
-> deleted file mode 100644
-> index 945204932..000000000
-> --- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
-> +++ /dev/null
-> @@ -1,56 +0,0 @@
-> -Rockchip SuperSpeed DWC3 USB SoC controller
-> -
-> -Required properties:
-> -- compatible:	should contain "rockchip,rk3399-dwc3" for rk3399 SoC
-> -- clocks:	A list of phandle + clock-specifier pairs for the
-> -		clocks listed in clock-names
-> -- clock-names:	Should contain the following:
-> -  "ref_clk"	Controller reference clk, have to be 24 MHz
-> -  "suspend_clk"	Controller suspend clk, have to be 24 MHz or 32 KHz
-> -  "bus_clk"	Master/Core clock, have to be >= 62.5 MHz for SS
-> -		operation and >= 30MHz for HS operation
-> -  "grf_clk"	Controller grf clk
-> -
-> -Required child node:
-> -A child node must exist to represent the core DWC3 IP block. The name of
-> -the node is not important. The content of the node is defined in dwc3.txt.
-> -
-> -Phy documentation is provided in the following places:
-> -Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml - USB2.0 PHY
-> -Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt     - Type-C PHY
-> -
-> -Example device nodes:
-> -
-> -	usbdrd3_0: usb@fe800000 {
-> -		compatible = "rockchip,rk3399-dwc3";
-> -		clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
-> -			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
-> -		clock-names = "ref_clk", "suspend_clk",
-> -			      "bus_clk", "grf_clk";
-> -		#address-cells = <2>;
-> -		#size-cells = <2>;
-> -		ranges;
-> -		usbdrd_dwc3_0: dwc3@fe800000 {
-> -			compatible = "snps,dwc3";
-> -			reg = <0x0 0xfe800000 0x0 0x100000>;
-> -			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
-> -			dr_mode = "otg";
-> -		};
-> -	};
-> -
-> -	usbdrd3_1: usb@fe900000 {
-> -		compatible = "rockchip,rk3399-dwc3";
-> -		clocks = <&cru SCLK_USB3OTG1_REF>, <&cru SCLK_USB3OTG1_SUSPEND>,
-> -			 <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_GRF>;
-> -		clock-names = "ref_clk", "suspend_clk",
-> -			      "bus_clk", "grf_clk";
-> -		#address-cells = <2>;
-> -		#size-cells = <2>;
-> -		ranges;
-> -		usbdrd_dwc3_1: dwc3@fe900000 {
-> -			compatible = "snps,dwc3";
-> -			reg = <0x0 0xfe900000 0x0 0x100000>;
-> -			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-> -			dr_mode = "otg";
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> new file mode 100644
-> index 000000000..d815aacfc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> @@ -0,0 +1,95 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/rockchip,dwc3.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip SuperSpeed DWC3 USB SoC controller
-> +
-> +maintainers:
-> +  - Heiko Stuebner <heiko@sntech.de>
-> +
-> +description:
-> +  The common content of the node is defined in snps,dwc3.yaml.
-> +
-> +  Phy documentation is provided in the following places.
-> +
-> +  USB2.0 PHY
-> +  Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
-> +
-> +  Type-C PHY
-> +  Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
-> +
-> +allOf:
-> +  - $ref: snps,dwc3.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - rockchip,rk3399-dwc3
-> +      - const: snps,dwc3
+On Fri, 22 Jan 2021, Matti Vaittinen wrote:
 
-This will match on all 'snps,dwc3' nodes. You will need a custom 
-'select' to only match on rockchip,rk3399-dwc3.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description:
-> +          Controller reference clock, must to be 24 MHz
-> +      - description:
-> +          Controller suspend clock, must to be 24 MHz or 32 KHz
-> +      - description:
-> +          Master/Core clock, must to be >= 62.5 MHz for SS
-> +          operation and >= 30MHz for HS operation
-> +      - description:
-> +          Controller grf clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: ref_clk
-> +      - const: suspend_clk
-> +      - const: bus_clk
-> +      - const: grf_clk
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  reset-names:
-> +    const: usb3-otg
-> +
-> +unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/rk3399-cru.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    bus {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      usbdrd3_0: usb@fe800000 {
-> +        compatible = "rockchip,rk3399-dwc3", "snps,dwc3";
-> +        reg = <0x0 0xfe800000 0x0 0x100000>;
-> +        interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
-> +                 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
-> +        clock-names = "ref_clk", "suspend_clk",
-> +                      "bus_clk", "grf_clk";
-> +        dr_mode = "otg";
-> +      };
-> +    };
-> -- 
-> 2.11.0
+> BD9573 and BD9576 support set of "protection" interrupts for "fatal"
+> issues. Those lead to SOC reset as PMIC shuts the power outputs. Thus
+> there is no relevant IRQ handling for them.
 > 
+> Few "detection" interrupts were added to the BD9576 with the idea that
+> SOC could take some recovery-action before error gets unrecoverable.
+> 
+> Unfortunately the BD9576 interrupt logic was not re-evaluated. IRQs
+> are not designed to be properly acknowleged - and IRQ line is kept
+> active for whole duration of error condition (in comparison to
+> informing only about state change).
+> 
+> For above reason, do not consider missing IRQ as error.
+> 
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
+> Changes since v6:
+>  - new patch
+> 
+>  drivers/mfd/rohm-bd9576.c       |  80 +++++++++++++++++-
+>  include/linux/mfd/rohm-bd957x.h | 140 +++++++++++++++++++++++---------
+>  2 files changed, 180 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/mfd/rohm-bd9576.c b/drivers/mfd/rohm-bd9576.c
+> index f4dd9e438427..99fa0f333277 100644
+> --- a/drivers/mfd/rohm-bd9576.c
+> +++ b/drivers/mfd/rohm-bd9576.c
+> @@ -16,12 +16,27 @@
+>  #include <linux/regmap.h>
+>  #include <linux/types.h>
+>  
+> +/*
+> + * Due to the BD9576MUF nasty IRQ behaiour we don't always populate IRQs.
+> + * These will be added to regulator resources only if IRQ information for the
+> + * PMIC is populated in device-tree.
+> + */
+> +static const struct resource bd9576_regulator_irqs[] = {
+> +	DEFINE_RES_IRQ_NAMED(BD9576_INT_THERM, "bd9576-temp"),
+> +	DEFINE_RES_IRQ_NAMED(BD9576_INT_OVD, "bd9576-ovd"),
+> +	DEFINE_RES_IRQ_NAMED(BD9576_INT_UVD, "bd9576-uvd"),
+> +};
+> +
+>  static struct mfd_cell bd9573_mfd_cells[] = {
+>  	{ .name = "bd9573-pmic", },
+>  	{ .name = "bd9576-wdt", },
+>  };
+>  
+>  static struct mfd_cell bd9576_mfd_cells[] = {
+> +	/*
+> +	 * Please keep regulators as first cell as resources may be overwritten
+> +	 * from probe and the code expects regulators to be at index 0.
+> +	 */
+>  	{ .name = "bd9576-pmic", },
+>  	{ .name = "bd9576-wdt", },
+>  };
+> @@ -48,6 +63,29 @@ static struct regmap_config bd957x_regmap = {
+>  	.cache_type = REGCACHE_RBTREE,
+>  };
+>  
+> +static struct regmap_irq bd9576_irqs[] = {
+> +	REGMAP_IRQ_REG(BD9576_INT_THERM, 0, BD957X_MASK_INT_MAIN_THERM),
+> +	REGMAP_IRQ_REG(BD9576_INT_OVP, 0, BD957X_MASK_INT_MAIN_OVP),
+> +	REGMAP_IRQ_REG(BD9576_INT_SCP, 0, BD957X_MASK_INT_MAIN_SCP),
+> +	REGMAP_IRQ_REG(BD9576_INT_OCP, 0, BD957X_MASK_INT_MAIN_OCP),
+> +	REGMAP_IRQ_REG(BD9576_INT_OVD, 0, BD957X_MASK_INT_MAIN_OVD),
+> +	REGMAP_IRQ_REG(BD9576_INT_UVD, 0, BD957X_MASK_INT_MAIN_UVD),
+> +	REGMAP_IRQ_REG(BD9576_INT_UVP, 0, BD957X_MASK_INT_MAIN_UVP),
+> +	REGMAP_IRQ_REG(BD9576_INT_SYS, 0, BD957X_MASK_INT_MAIN_SYS),
+> +};
+> +
+> +static struct regmap_irq_chip bd9576_irq_chip = {
+> +	.name = "bd9576_irq",
+> +	.irqs = &bd9576_irqs[0],
+> +	.num_irqs = ARRAY_SIZE(bd9576_irqs),
+> +	.status_base = BD957X_REG_INT_MAIN_STAT,
+> +	.mask_base = BD957X_REG_INT_MAIN_MASK,
+> +	.ack_base = BD957X_REG_INT_MAIN_STAT,
+> +	.init_ack_masked = true,
+> +	.num_regs = 1,
+> +	.irq_reg_stride = 1,
+> +};
+> +
+>  static int bd957x_i2c_probe(struct i2c_client *i2c,
+>  			     const struct i2c_device_id *id)
+>  {
+> @@ -56,6 +94,7 @@ static int bd957x_i2c_probe(struct i2c_client *i2c,
+>  	struct mfd_cell *mfd;
+>  	int cells;
+>  	unsigned long chip_type;
+> +	struct irq_domain *domain;
+>  
+>  	chip_type = (unsigned long)of_device_get_match_data(&i2c->dev);
+>  
+> @@ -67,6 +106,11 @@ static int bd957x_i2c_probe(struct i2c_client *i2c,
+>  	case ROHM_CHIP_TYPE_BD9573:
+>  		mfd = bd9573_mfd_cells;
+>  		cells = ARRAY_SIZE(bd9573_mfd_cells);
+> +		/* BD9573 only supports fatal IRQs which we do not handle */
+
+Why not?
+
+> +		if (i2c->irq) {
+> +			dev_err(&i2c->dev, "no supported irqs on BD9573\n");
+
+"IRQs"
+
+> +			return -EINVAL;
+> +		}
+>  		break;
+>  	default:
+>  		dev_err(&i2c->dev, "Unknown device type");
+> @@ -78,9 +122,43 @@ static int bd957x_i2c_probe(struct i2c_client *i2c,
+>  		dev_err(&i2c->dev, "Failed to initialize Regmap\n");
+>  		return PTR_ERR(regmap);
+>  	}
+> +	/*
+> +	 * BD9576 behaves badly. It kepts IRQ asserted for the whole
+
+This is solution is less than pretty.
+
+> +	 * duration of detected HW condition (like over temp). This does
+
+"over-temperature"
+
+> +	 * not play nicely under any condition but we can work around it
+> +	 * except when we have shared IRQs. So we don't require IRQ to be
+> +	 * populated to help those poor sods who did connect IRQ to shared pin.
+
+No swearing in comments please.
+
+How do you know if an IRQ is shared?
+
+> +	 * If IRQ information is not given, then we mask all IRQs and do not
+> +	 * provide IRQ resources to regulator driver - which then just omits
+> +	 * the notifiers.
+> +	 */
+
+This situation doesn't sound totally crazy.  Is there no way to handle
+'persistent IRQ' conditions in the kernel?
+
+> +	if (i2c->irq) {
+> +		struct regmap_irq_chip_data *irq_data;
+> +		struct mfd_cell *regulators = &bd9576_mfd_cells[0];
+> +
+> +		regulators->resources = bd9576_regulator_irqs;
+> +		regulators->num_resources = ARRAY_SIZE(bd9576_regulator_irqs);
+> +
+> +		ret = devm_regmap_add_irq_chip(&i2c->dev, regmap, i2c->irq,
+> +					       IRQF_ONESHOT, 0,
+> +					       &bd9576_irq_chip, &irq_data);
+> +		if (ret) {
+> +			dev_err(&i2c->dev, "Failed to add IRQ chip\n");
+> +			return ret;
+> +		}
+> +		domain = regmap_irq_get_domain(irq_data);
+> +		dev_info(&i2c->dev, "Using IRQs for BD9576MUF\n");
+> +	} else {
+> +		ret = regmap_update_bits(regmap, BD957X_REG_INT_MAIN_MASK,
+> +					 BD957X_MASK_INT_ALL,
+> +					 BD957X_MASK_INT_ALL);
+
+What's the default state of the interrupts?  Unmasked?
+
+> +		if (ret)
+> +			return ret;
+> +		domain = NULL;
+> +	}
+>  
+>  	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO, mfd, cells,
+> -				   NULL, 0, NULL);
+> +				   NULL, 0, domain);
+>  	if (ret)
+>  		dev_err(&i2c->dev, "Failed to create subdevices\n");
+>  
+> diff --git a/include/linux/mfd/rohm-bd957x.h b/include/linux/mfd/rohm-bd957x.h
+> index 3e7ca6fe5d4f..4fa632d8467a 100644
+> --- a/include/linux/mfd/rohm-bd957x.h
+> +++ b/include/linux/mfd/rohm-bd957x.h
+> @@ -13,47 +13,109 @@ enum {
+>  	BD957X_VOUTS1,
+>  };
+>  
+> +/* The BD9576 has own IRQ 'blocks' for:
+
+Comments start on line 2.
+
+> + * I2C/THERMAL,
+
+Does this precede each line?
+
+> + * Over voltage protection
+> + * Short-circuit protection
+> + * Over current protection
+> + * Over voltage detection
+> + * Under voltage detection
+> + * Under voltage protection
+> + * and 'system interrupt'.
+> + *
+> + * Each of the blocks have a status register giving more accurate IRQ source
+> + * information - for example which of the regulators have over-voltage.
+> + *
+> + * On top of this, there is "main IRQ" status register where each bit indicates
+> + * which of sub-blocks have active IRQs. Fine. That would fit regmap-irq main
+> + * status handling. Except that:
+> + *  - Only some sub-IRQs can be masked.
+> + *  - The IRQ informs us about fault-condition, not when fault state changes.
+> + *    The IRQ line it is kept asserted until the detected condition is cleared
+> + *    in HW. This is _really_ annoying for IRQs like the one informing high
+> + *    temperature. Best mitigation for high temperature for sure is to
+> + *    keep the processor in IRQ loop, right? (NO!)
+
+No sarcasm in comments please it can be easily lost in translation.
+
+Please stay helpful and keep to the facts.
+
+> + * So - for now we do just use the main-IRQ register as source for our IRQ
+> + * information and bind the regmap-irq to this. We leave fine-grained sub-IRQ
+> + * register handling to handlers in sub-devices. The regulator driver shall
+> + * read which regulators are source for problem - or if the detected error is
+> + * regulator temperature error. The sub-drivers do also handle masking of "sub-
+> + * IRQs" if this is supported/needed.
+> + *
+> + * To overcome the problem with HW keeping IRQ asserted we do call
+> + * disable_irq_nosync() from sub-device handler and add a delayed work to
+> + * re-enable IRQ roughly 1 second later. This should keep our CPU out of
+> + * busy-loop.
+> + */
+> +
+> +#define IRQS_SILENT_MS 1000
+> +
+> +enum {
+> +	BD9576_INT_THERM,
+> +	BD9576_INT_OVP,
+> +	BD9576_INT_SCP,
+> +	BD9576_INT_OCP,
+> +	BD9576_INT_OVD,
+> +	BD9576_INT_UVD,
+> +	BD9576_INT_UVP,
+> +	BD9576_INT_SYS,
+> +};
+> +
+>  #define BD957X_REG_SMRB_ASSERT		0x15
+>  #define BD957X_REG_PMIC_INTERNAL_STAT	0x20
+>  #define BD957X_REG_INT_THERM_STAT	0x23
+> -#define BD957X_REG_INT_THERM_MASK 0x24
+> -#define BD957X_REG_INT_OVP_STAT 0x25
+> -#define BD957X_REG_INT_SCP_STAT 0x26
+> -#define BD957X_REG_INT_OCP_STAT 0x27
+> -#define BD957X_REG_INT_OVD_STAT 0x28
+> -#define BD957X_REG_INT_UVD_STAT 0x29
+> -#define BD957X_REG_INT_UVP_STAT 0x2a
+> -#define BD957X_REG_INT_SYS_STAT 0x2b
+> -#define BD957X_REG_INT_SYS_MASK 0x2c
+> -#define BD957X_REG_INT_MAIN_STAT 0x30
+> -#define BD957X_REG_INT_MAIN_MASK 0x31
+> -
+> -#define BD957X_REG_WDT_CONF 0x16
+> -
+> -#define BD957X_REG_POW_TRIGGER1 0x41
+> -#define BD957X_REG_POW_TRIGGER2 0x42
+> -#define BD957X_REG_POW_TRIGGER3 0x43
+> -#define BD957X_REG_POW_TRIGGER4 0x44
+> -#define BD957X_REG_POW_TRIGGERL1 0x45
+> -#define BD957X_REG_POW_TRIGGERS1 0x46
+> -
+> -#define BD957X_REGULATOR_EN_MASK 0xff
+> -#define BD957X_REGULATOR_DIS_VAL 0xff
+> -
+> -#define BD957X_VSEL_REG_MASK	0xff
+> -
+> -#define BD957X_MASK_VOUT1_TUNE	0x87
+> -#define BD957X_MASK_VOUT2_TUNE	0x87
+> -#define BD957X_MASK_VOUT3_TUNE	0x1f
+> -#define BD957X_MASK_VOUT4_TUNE	0x1f
+> -#define BD957X_MASK_VOUTL1_TUNE	0x87
+> -
+> -#define BD957X_REG_VOUT1_TUNE	0x50
+> -#define BD957X_REG_VOUT2_TUNE	0x53
+> -#define BD957X_REG_VOUT3_TUNE	0x56
+> -#define BD957X_REG_VOUT4_TUNE	0x59
+> -#define BD957X_REG_VOUTL1_TUNE	0x5c
+> -
+> -#define BD957X_MAX_REGISTER 0x61
+> +#define BD957X_REG_INT_THERM_MASK	0x24
+> +#define BD957X_REG_INT_OVP_STAT		0x25
+> +#define BD957X_REG_INT_SCP_STAT		0x26
+> +#define BD957X_REG_INT_OCP_STAT		0x27
+> +#define BD957X_REG_INT_OVD_STAT		0x28
+> +#define BD957X_REG_INT_UVD_STAT		0x29
+> +#define BD957X_REG_INT_UVP_STAT		0x2a
+> +#define BD957X_REG_INT_SYS_STAT		0x2b
+> +#define BD957X_REG_INT_SYS_MASK		0x2c
+> +#define BD957X_REG_INT_MAIN_STAT	0x30
+> +#define BD957X_REG_INT_MAIN_MASK	0x31
+> +
+> +#define UVD_IRQ_VALID_MASK		0x6F
+> +#define OVD_IRQ_VALID_MASK		0x2F
+> +
+> +#define BD957X_MASK_INT_MAIN_THERM	BIT(0)
+> +#define BD957X_MASK_INT_MAIN_OVP	BIT(1)
+> +#define BD957X_MASK_INT_MAIN_SCP	BIT(2)
+> +#define BD957X_MASK_INT_MAIN_OCP	BIT(3)
+> +#define BD957X_MASK_INT_MAIN_OVD	BIT(4)
+> +#define BD957X_MASK_INT_MAIN_UVD	BIT(5)
+> +#define BD957X_MASK_INT_MAIN_UVP	BIT(6)
+> +#define BD957X_MASK_INT_MAIN_SYS	BIT(7)
+> +#define BD957X_MASK_INT_ALL		0xff
+> +
+> +#define BD957X_REG_WDT_CONF		0x16
+> +
+> +#define BD957X_REG_POW_TRIGGER1		0x41
+> +#define BD957X_REG_POW_TRIGGER2		0x42
+> +#define BD957X_REG_POW_TRIGGER3		0x43
+> +#define BD957X_REG_POW_TRIGGER4		0x44
+> +#define BD957X_REG_POW_TRIGGERL1	0x45
+> +#define BD957X_REG_POW_TRIGGERS1	0x46
+> +
+> +#define BD957X_REGULATOR_EN_MASK	0xff
+> +#define BD957X_REGULATOR_DIS_VAL	0xff
+> +
+> +#define BD957X_VSEL_REG_MASK		0xff
+> +
+> +#define BD957X_MASK_VOUT1_TUNE		0x87
+> +#define BD957X_MASK_VOUT2_TUNE		0x87
+> +#define BD957X_MASK_VOUT3_TUNE		0x1f
+> +#define BD957X_MASK_VOUT4_TUNE		0x1f
+> +#define BD957X_MASK_VOUTL1_TUNE		0x87
+> +
+> +#define BD957X_REG_VOUT1_TUNE		0x50
+> +#define BD957X_REG_VOUT2_TUNE		0x53
+> +#define BD957X_REG_VOUT3_TUNE		0x56
+> +#define BD957X_REG_VOUT4_TUNE		0x59
+> +#define BD957X_REG_VOUTL1_TUNE		0x5c
+> +
+> +#define BD957X_MAX_REGISTER		0x61
+
+Line all these up please.
+
+>  #endif
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
