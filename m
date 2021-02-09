@@ -2,144 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8D131563A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 19:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 568A131564F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 19:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbhBISoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 13:44:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58828 "EHLO mx2.suse.de"
+        id S233630AbhBIStG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 13:49:06 -0500
+Received: from mga07.intel.com ([134.134.136.100]:55202 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233238AbhBIRtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:49:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612892861; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jni2W/IDi/GWvC25GgqGCfHqUn0ldqQ6jWnvtbK6ewk=;
-        b=F2JizNrEBrmtY1YGQeraNmBLSU/uLcXhtkc9Kkm1/r1i7YqHlGtIxz+1YrVR8hL+/RHyFP
-        D9NU1q4aV4m9gZ3H1lJkJ3ou69x0R47NmtXSho2Bde5OMlXCTzxo0AytQleALlEniyo5P0
-        JD4BK+8usFFcuMKUdLkPVO6UqxIW2KA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7DF4FAB71;
-        Tue,  9 Feb 2021 17:47:41 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 18:47:40 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        id S233274AbhBIRu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 12:50:28 -0500
+IronPort-SDR: 7Og6+6OZo4Ws5JYlM8s0mSOAoMpW9HYZ+Wam8K16p6kBsyzgOS/0EuEZeawvGec8ZDD4rMoxoM
+ fEJCd58geyXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="245993819"
+X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
+   d="scan'208";a="245993819"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 09:48:01 -0800
+IronPort-SDR: HPhu5z9yJh72sOfRkpkjg9hixdDE/CUxkO+VD0EDwuENlRnGe0Kf3BBJG5zYOxKI0UzYuHEK1g
+ SrmgntlQAWGg==
+X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
+   d="scan'208";a="359251282"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 09:47:58 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id EDB7A206D0; Tue,  9 Feb 2021 19:47:55 +0200 (EET)
+Date:   Tue, 9 Feb 2021 19:47:55 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, "J. Avila" <elavila@google.com>
-Subject: Re: [PATCH] printk: avoid prb_first_valid_seq() where possible
-Message-ID: <YCLKvCNJwabVavAP@alley>
-References: <20210205141728.18117-1-john.ogness@linutronix.de>
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v6 1/3] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+Message-ID: <20210209174755.GH32460@paasikivi.fi.intel.com>
+References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
+ <20210208200903.28084-2-sakari.ailus@linux.intel.com>
+ <CAHp75VciFMKrWM2zJZ6dppuL5M-7BLPGQfcnzkd9pQzY1bRWsQ@mail.gmail.com>
+ <20210209092032.GC32460@paasikivi.fi.intel.com>
+ <YCJc0LWBiQLwdmkN@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210205141728.18117-1-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YCJc0LWBiQLwdmkN@smile.fi.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-02-05 15:23:28, John Ogness wrote:
-> If message sizes average larger than expected (more than 32
-> characters), the data_ring will wrap before the desc_ring. Once the
-> data_ring wraps, it will start invalidating descriptors. These
-> invalid descriptors hang around until they are eventually recycled
-> when the desc_ring wraps. Readers do not care about invalid
-> descriptors, but they still need to iterate past them. If the
-> average message size is much larger than 32 characters, then there
-> will be many invalid descriptors preceding the valid descriptors.
+Hi Andy,
+
+On Tue, Feb 09, 2021 at 11:58:40AM +0200, Andy Shevchenko wrote:
+> On Tue, Feb 09, 2021 at 11:20:32AM +0200, Sakari Ailus wrote:
+> > On Mon, Feb 08, 2021 at 10:43:30PM +0200, Andy Shevchenko wrote:
+> > > On Mon, Feb 8, 2021 at 10:11 PM Sakari Ailus
+> > > <sakari.ailus@linux.intel.com> wrote:
 > 
-> The function prb_first_valid_seq() always begins at the oldest
-> descriptor and searches for the first valid descriptor. This can
-> be rather expensive for the above scenario. And, in fact, because
-> of its heavy usage in /dev/kmsg, there have been reports of long
-> delays and even RCU stalls.
+> ...
 > 
-> For code that does not need to search from the oldest record,
-> replace prb_first_valid_seq() usage with prb_read_valid_*()
-> functions, which provide a start sequence number to search from.
+> > > > +       %p4cc   BG12 little-endian (0x32314742)
+> > > 
+> > > This misses examples of the (strange) escaping cases and wiped
+> > > whitespaces to make sure everybody understands that 'D 12' will be the
+> > > same as 'D1 2' (side note: which I disagree on, perhaps something
+> > > should be added into documentation why).
+> > 
+> > The spaces are expected to be at the end only. I can add such example if
+> > you like. There are no fourcc codes with spaces in the middle in neither
+> > V4L2 nor DRM, and I don't think the expectation is to have them either.
 > 
-> Fixes: 896fbe20b4e2333fb55 ("printk: use the lockless ringbuffer")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Reported-by: J. Avila <elavila@google.com>
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  patch against next-20210205
+> But then the code suggests otherwise. Perhaps we need to extract
+> skip_trailing_spaces() from strim() and use it here.
+
+But this wouldn't affect the result in this case, would it?
+
 > 
->  kernel/printk/printk.c | 29 ++++++++++++++++++-----------
->  1 file changed, 18 insertions(+), 11 deletions(-)
+> ...
 > 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 5a95c688621f..035aae771ea1 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -1559,6 +1560,7 @@ static void syslog_clear(void)
->  
->  int do_syslog(int type, char __user *buf, int len, int source)
->  {
-> +	struct printk_info info;
->  	bool clear = false;
->  	static int saved_console_loglevel = LOGLEVEL_DEFAULT;
->  	int error;
-> @@ -1629,9 +1631,13 @@ int do_syslog(int type, char __user *buf, int len, int source)
->  	/* Number of chars in the log buffer */
->  	case SYSLOG_ACTION_SIZE_UNREAD:
->  		logbuf_lock_irq();
-> -		if (syslog_seq < prb_first_valid_seq(prb)) {
-> -			/* messages are gone, move to first one */
-> -			syslog_seq = prb_first_valid_seq(prb);
-> +		if (prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
-> +			if (info.seq != syslog_seq) {
-> +				/* messages are gone, move to first one */
-> +				syslog_seq = info.seq;
-> +				syslog_partial = 0;
-> +			}
-> +		} else {
->  			syslog_partial = 0;
+> > > > +static noinline_for_stack
+> > > > +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
+> > > > +                   struct printf_spec spec, const char *fmt)
+> > > > +{
+> > > 
+> > > > +       char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
+> > > 
+> > > Do we have any evidence / document / standard that the above format is
+> > > what people would find good? From existing practices (I consider other
+> > > printings elsewhere and users in this series) I find '(xx)' form for
+> > > hex numbers is weird. The standard practice is to use \xHH (without
+> > > parentheses).
+> > 
+> > Earlier in the review it was proposed that special handling of codes below
+> > 32 should be added, which I did. Using the parentheses is apparently an
+> > existing practice elsewhere.
+> 
+> Where? \xHH is quite well established format for escaping. Never heard about
+> '(xx)' variant before this very series.
 
-I am scratching my head when prb_read_valid_info(prb,
-syslog_seq, &info, NULL)) might fail.
+Mauro referred to FourCC codes while reviewing an earlier version of this,
+such as RGB(15).
 
-It might fail when syslog_seq points to the next message
-after the last valid one. In this case, we could return
-immediately (after releasing the lock) because there are
-zero unread messages.
+Does \× imply only the next two characters are hexadecimal? I have to admit
+I don't remember seeting that, nor \x notation is common.
 
-Anyway, syslog_partial must be zero in this case. syslog_seq
-should stay when the last read was partial. And there should
-always be at least one valid message in the log buffer
-be design.
+> 
+> > Note that neither DRM nor V4L2 currently has such fourcc codes currently.
+> 
+> ...
+> 
+> > > > +       p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
+> > > > +                              sizeof(u32));
+> > > 
+> > > This is perfectly one line (in this file we have even longer lines).
+> > 
+> > Sure, you can do that, and I can then review your patch and point to the
+> > coding style documentation. :-)
+> 
+> Yes, you can. The problem is that we agreed with others to improve readability
+> by letting some lines to be longer, so the code can lie on one line rather be
+> broken on two or more.
 
-Do I get it correctly, please?
+Making the end of the line invisible without scrolling vertically doesn't
+improve readability for me. It does depend on window width though. I'd
+simply only use that if 80 isn't enough.
 
-IMHO, it would deserve a comment and maybe even a warning.
-What about something like?
+-- 
+Regards,
 
-	/* Number of chars in the log buffer */
-	case SYSLOG_ACTION_SIZE_UNREAD:
-		logbuf_lock_irq();
-		if (!prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
-			/* No unread message */
-			if (syslog_partial) {
-				/* This should never happen. */
-				pr_err_once("Unable to read any message even when the last syslog read was partial: %zu", syslog_partial);
-				syslog_partial = 0;
-			}
-			logbuf_unlock_irq();
-			return 0;
-		}
-		if (info.seq != syslog_seq) {
-			/* messages are gone, move to first one */
-			syslog_seq = info.seq;
-			syslog_partial = 0;
-		}
-		if (source == SYSLOG_FROM_PROC) {
-			/*
-			 * Short-cut for poll(/"proc/kmsg") which simply checks
-		[...]
-
-
-Best Regards,
-Petr
+Sakari Ailus
