@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131D8314FE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E91314FED
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhBINNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:13:54 -0500
-Received: from elvis.franken.de ([193.175.24.41]:36608 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230228AbhBINNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:13:31 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l9Soz-0003io-01; Tue, 09 Feb 2021 14:12:49 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 98BE5C0DC4; Tue,  9 Feb 2021 14:12:37 +0100 (CET)
-Date:   Tue, 9 Feb 2021 14:12:37 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 4/6] MIPS: refactor the maybe coherent DMA indicators
-Message-ID: <20210209131237.GB11915@alpha.franken.de>
-References: <20210208145024.3320420-1-hch@lst.de>
- <20210208145024.3320420-5-hch@lst.de>
+        id S231248AbhBINPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:15:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47417 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230520AbhBINPr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:15:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612876460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZJO2coTOPSTpGO+5F/K+/F71lw3kWLqwpbNc9WcP6uE=;
+        b=OJSvVYS8+yIFFIflHsPqtYwPTJWO8cuRnfSrocumn8JOKugFlnDfkosv7CSaqmPDWSHnFM
+        jnOX2n9Elf/7snFLeTl8Dc8psrdWJOihqH/lIO5m0deWmjM7nXoE7mXUazOSkobXAM6A/Q
+        /apyOe4Tr7e56OdqidJMeE5vv9IrW3Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-rLjhSlqKPti5cKiHGW7mzQ-1; Tue, 09 Feb 2021 08:14:17 -0500
+X-MC-Unique: rLjhSlqKPti5cKiHGW7mzQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 049E9CE647;
+        Tue,  9 Feb 2021 13:14:14 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D1F401725E;
+        Tue,  9 Feb 2021 13:14:06 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com>
+References: <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com> <20210122181054.32635-1-eric.snowberg@oracle.com> <1103491.1612369600@warthog.procyon.org.uk> <10e6616e-0598-9f33-2de9-4a5268bba586@digikod.net> <A5B5DEC0-E47A-4C3D-8E79-AF37B6C2E565@oracle.com> <7924ce4c-ea94-9540-0730-bddae7c6af07@digikod.net> <BFC930B3-7994-4C5B-A8EF-1DD1C73F5750@oracle.com> <dc6a4524-3935-fda6-40a8-cebf80942cdf@digikod.net> <188DE1AF-A011-4631-B88A-2C4324DA013B@oracle.com> <99066eb7-53ac-41b0-46cf-36ea3d7f6590@digikod.net>
+To:     Eric Snowberg <eric.snowberg@oracle.com>,
+        =?us-ascii?Q?=3D=3Futf-8=3FQ=3FMicka=3DC3=3DABl=5FSala=3DC3=3DBCn=3F?=
+         =?us-ascii?Q?=3D?= <mic@digikod.net>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
+        ardb@kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+        lszubowi@redhat.com, javierm@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Subject: Re: Re: Conflict with =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn's?=
+ blacklist patches [was [PATCH v5 0/4] Add EFI_CERT_X509_GUID support for
+ dbx/mokx entries]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208145024.3320420-5-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 09 Feb 2021 13:14:06 +0000
+Message-ID: <525705.1612876446@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 03:50:22PM +0100, Christoph Hellwig wrote:
-> Replace the global coherentio enum, and the hw_coherentio (fake) boolean
-> variables with a single boolean dma_default_coherent flag.  Only the
-> malta setup code needs two additional local boolean variables to
-> preserved the command line overrides.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/mips/alchemy/common/setup.c      |  3 +--
->  arch/mips/include/asm/dma-coherence.h | 24 ++++--------------------
->  arch/mips/kernel/setup.c              |  8 +++-----
->  arch/mips/mm/c-r4k.c                  |  8 ++------
->  arch/mips/mti-malta/malta-setup.c     | 24 ++++++++++++++----------
->  arch/mips/pci/pci-alchemy.c           |  5 ++---
->  6 files changed, 26 insertions(+), 46 deletions(-)
-> 
-> diff --git a/arch/mips/alchemy/common/setup.c b/arch/mips/alchemy/common/setup.c
-> index c2da68e7984450..39e5b9cd882b10 100644
-> --- a/arch/mips/alchemy/common/setup.c
-> +++ b/arch/mips/alchemy/common/setup.c
-> @@ -65,8 +65,7 @@ void __init plat_mem_setup(void)
->  		/* Clear to obtain best system bus performance */
->  		clear_c0_config(1 << 19); /* Clear Config[OD] */
->  
-> -	coherentio = alchemy_dma_coherent() ?
-> -		IO_COHERENCE_ENABLED : IO_COHERENCE_DISABLED;
-> +	dma_default_coherent = alchemy_dma_coherent();
->  
->  	board_setup();	/* board specific setup */
->  
-> diff --git a/arch/mips/include/asm/dma-coherence.h b/arch/mips/include/asm/dma-coherence.h
-> index 5eaa1fcc878a88..846c5ade30d12d 100644
-> --- a/arch/mips/include/asm/dma-coherence.h
-> +++ b/arch/mips/include/asm/dma-coherence.h
-> @@ -9,30 +9,14 @@
->  #ifndef __ASM_DMA_COHERENCE_H
->  #define __ASM_DMA_COHERENCE_H
->  
-> -enum coherent_io_user_state {
-> -	IO_COHERENCE_DEFAULT,
-> -	IO_COHERENCE_ENABLED,
-> -	IO_COHERENCE_DISABLED,
-> -};
-> -
-> -#if defined(CONFIG_DMA_PERDEV_COHERENT)
-> -/* Don't provide (hw_)coherentio to avoid misuse */
-> -#elif defined(CONFIG_DMA_MAYBE_COHERENT)
-> -extern enum coherent_io_user_state coherentio;
-> -extern int hw_coherentio;
-> -
-> +#ifdef CONFIG_DMA_MAYBE_COHERENT
-> +extern bool dma_default_coherent;
->  static inline bool dev_is_dma_coherent(struct device *dev)
->  {
-> -	return coherentio == IO_COHERENCE_ENABLED ||
-> -		(coherentio == IO_COHERENCE_DEFAULT && hw_coherentio);
-> +	return dma_default_coherent;
 
-this breaks overriding of coherentio via command line. plat_mem_setup/
-plat_setup_iocoherency is called before earlyparams are handled. So
-changing coherentio after that doesn't have any effect.
+Hi Eric, Micka=C3=ABl,
 
-Thomas.
+Do we have a consensus on this?  From what's written here, I don't think I =
+can
+ask Linus to pull the merge of your two branches.  I feel that I probably n=
+eed
+to push Eric's first as that fixes a CVE if I can't offer a merge.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+David
+
