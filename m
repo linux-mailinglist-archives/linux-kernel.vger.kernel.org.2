@@ -2,73 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0D9314935
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94AE314937
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhBIG7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 01:59:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32816 "EHLO mail.kernel.org"
+        id S230026AbhBIHB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 02:01:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhBIG7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 01:59:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA80D64E9A;
-        Tue,  9 Feb 2021 06:58:38 +0000 (UTC)
+        id S229745AbhBIHBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 02:01:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E212B64E9A;
+        Tue,  9 Feb 2021 07:00:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612853919;
-        bh=dpxVE0srNtqxA2P2gotaZ3bV8h2QUfJrlvUUTfe0l7o=;
+        s=korg; t=1612854044;
+        bh=1oc/Hxzh6LQAwGHHC5YWOt3hkuwq+J2Ol4Flp1dGtVs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TXzbsFhDpAQgj9QwPWKvmB1zj6vFiKg4V4CTlVCZzGXPcxBW49yvO/txzd5T2Ii+w
-         rtL1/wYnZETAmKBFTPqDlkEsOY+vxAe9mVCFLWZ97V8boxpU4loubPLrclacpCX3FY
-         zrcJswcPX2TBjIjas307svqNOUapi81jMEm1i7hk=
-Date:   Tue, 9 Feb 2021 07:58:35 +0100
+        b=ALmUQBIdyWFrvYgxeo+cP6G8g3Eo0DSiKLoWQ/mgKvF1hEgBOVeIsqBHMfaX+ouMB
+         90Oh9SeT08NRFFZ3P3N+oKvh6jNGQ5sCaL5Rd3qTW96sadV8BxHnvE7NcR+mX9iopH
+         JLdPd5Oq+FLd4M2wxGJwpFI7NVRpOWTpMEP1M3ek=
+Date:   Tue, 9 Feb 2021 08:00:40 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        obayashi.yoshimasa@socionext.com
-Subject: Re: DMA direct mapping fix for 5.4 and earlier stable branches
-Message-ID: <YCIym62vHfbG+dWf@kroah.com>
-References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: [PATCH v2] printk: Userspace format enumeration support
+Message-ID: <YCIzGBccfHL0dwgF@kroah.com>
+References: <YCIRf1zOk9g2R6fH@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
+In-Reply-To: <YCIRf1zOk9g2R6fH@chrisdown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 11:39:25AM +0530, Sumit Garg wrote:
-> Hi Christoph, Greg,
-> 
-> Currently we are observing an incorrect address translation
-> corresponding to DMA direct mapping methods on 5.4 stable kernel while
-> sharing dmabuf from one device to another where both devices have
-> their own coherent DMA memory pools.
+On Tue, Feb 09, 2021 at 04:37:19AM +0000, Chris Down wrote:
+> +
+> +	file = debugfs_create_file(ps_get_module_name(ps), 0444, dfs_formats,
+> +				   mod, &dfs_formats_fops);
+> +
+> +	if (IS_ERR_OR_NULL(file))
 
-What devices have this problem?  And why can't then just use 5.10 to
-solve this issue as that problem has always been present for them,
-right?
+How can file ever be NULL?
 
-> I am able to root cause this issue which is caused by incorrect virt
-> to phys translation for addresses belonging to vmalloc space using
-> virt_to_page(). But while looking at the mainline kernel, this patch
-> [1] changes address translation from virt->to->phys to dma->to->phys
-> which fixes the issue observed on 5.4 stable kernel as well (minimal
-> fix [2]).
-> 
-> So I would like to seek your suggestion for backport to stable kernels
-> (5.4 or earlier) as to whether we should backport the complete
-> mainline commit [1] or we should just apply the minimal fix [2]?
+And if it is an error, what is the problem here?  You can always feed
+the output of a debugfs_* call back into debugfs, and you never need to
+check the return values.
 
-Whenever you try to create a "minimal" fix, 90% of the time it is wrong
-and does not work and I end up having to deal with the mess.  What
-prevents you from doing the real thing here?  Are the patches to big?
+> +		ps->file = NULL;
+> +	else
+> +		ps->file = file;
+> +}
+> +
+> +#ifdef CONFIG_MODULES
+> +static void remove_printk_fmt_sec(struct module *mod)
+> +{
+> +	struct printk_fmt_sec *ps = NULL;
+> +
+> +	if (WARN_ON_ONCE(!mod))
+> +		return;
+> +
+> +	mutex_lock(&printk_fmts_mutex);
+> +
+> +	ps = find_printk_fmt_sec(mod);
+> +	if (!ps) {
+> +		mutex_unlock(&printk_fmts_mutex);
+> +		return;
+> +	}
+> +
+> +	hash_del(&ps->hnode);
+> +
+> +	mutex_unlock(&printk_fmts_mutex);
+> +
+> +	debugfs_remove(ps->file);
+> +	kfree(ps);
+> +}
+> +
+> +static int module_printk_fmts_notify(struct notifier_block *self,
+> +				     unsigned long val, void *data)
+> +{
+> +	struct module *mod = data;
+> +
+> +	if (mod->printk_fmts_sec_size) {
+> +		switch (val) {
+> +		case MODULE_STATE_COMING:
+> +			store_printk_fmt_sec(mod, mod->printk_fmts_start,
+> +					     mod->printk_fmts_start +
+> +						     mod->printk_fmts_sec_size);
+> +			break;
+> +
+> +		case MODULE_STATE_GOING:
+> +			remove_printk_fmt_sec(mod);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static const char *ps_get_module_name(const struct printk_fmt_sec *ps)
+> +{
+> +	return ps->module ? ps->module->name : "vmlinux";
+> +}
+> +
+> +static struct notifier_block module_printk_fmts_nb = {
+> +	.notifier_call = module_printk_fmts_notify,
+> +};
+> +
+> +static int __init module_printk_fmts_init(void)
+> +{
+> +	return register_module_notifier(&module_printk_fmts_nb);
+> +}
+> +
+> +core_initcall(module_printk_fmts_init);
+> +
+> +#else /* !CONFIG_MODULES */
+> +static const char *ps_get_module_name(const struct printk_fmt_sec *ps)
+> +{
+> +	return "vmlinux";
+> +}
+> +#endif /* CONFIG_MODULES */
+> +
+> +static int debugfs_pf_show(struct seq_file *s, void *v)
+> +{
+> +	struct module *mod = s->file->f_inode->i_private;
+> +	struct printk_fmt_sec *ps = NULL;
+> +	const char **fptr = NULL;
+> +	int ret = 0;
+> +
+> +	mutex_lock(&printk_fmts_mutex);
+> +
+> +	/*
+> +	 * The entry might have been invalidated in the hlist between _open and
+> +	 * _show, which is we need to eyeball the entries under
+> +	 * printk_fmts_mutex again.
+> +	 */
+> +	ps = find_printk_fmt_sec(mod);
+> +	if (unlikely(!ps)) {
+> +		ret = -ENOENT;
+> +		goto out_unlock;
+> +	}
+> +
+> +	for (fptr = ps->start; fptr < ps->end; fptr++) {
+> +		/* For callsites without facility/level preamble. */
+> +		if (unlikely(*fptr[0] != KERN_SOH_ASCII))
+> +			seq_printf(s, "%c%d", KERN_SOH_ASCII,
+> +				   MESSAGE_LOGLEVEL_DEFAULT);
+> +		seq_printf(s, "%s%c", *fptr, '\0');
+> +	}
+> +
+> +out_unlock:
+> +	mutex_unlock(&printk_fmts_mutex);
+> +	return ret;
+> +}
+> +
+> +static int debugfs_pf_open(struct inode *inode, struct file *file)
+> +{
+> +	struct module *mod = inode->i_private;
+> +	struct printk_fmt_sec *ps = NULL;
+> +	int ret;
+> +
+> +	/*
+> +	 * We can't pass around the printk_fmt_sec because it might be freed
+> +	 * before we enter the mutex. Do the hash table lookup each time to
+> +	 * check.
+> +	 */
+> +	mutex_lock(&printk_fmts_mutex);
+> +
+> +	ps = find_printk_fmt_sec(mod);
+> +	if (unlikely(!ps)) {
+> +		ret = -ENOENT;
+> +		goto out_unlock;
+> +	}
+> +
+> +	ret = single_open_size(file, debugfs_pf_show, NULL, ps->output_size);
+> +
+> +out_unlock:
+> +	mutex_unlock(&printk_fmts_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static int __init init_printk_fmts(void)
+> +{
+> +	struct dentry *dfs_root = debugfs_create_dir("printk", NULL);
+> +	struct dentry *tmp = NULL;
+> +
+> +	if (IS_ERR_OR_NULL(dfs_root))
 
-And again, why not just use 5.10 for this hardware?  What hardware is
-it?
+Again, how can dfs_root be NULL?
+
+And why care about any error?  No kernel code should ever work
+differently if debugfs is acting up or not.
+
+> +		return -ENOMEM;
+> +
+> +	tmp = debugfs_create_dir("formats", dfs_root);
+> +
+> +	if (IS_ERR_OR_NULL(tmp))
+
+Again, NULL can never happen.  Where did you copy this logic from?  I
+need to go fix that...
 
 thanks,
 
