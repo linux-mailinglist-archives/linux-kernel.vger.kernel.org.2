@@ -2,168 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A94314B22
+	by mail.lfdr.de (Postfix) with ESMTP id 09192314B21
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhBIJIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:08:32 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:54140 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbhBIJBq (ORCPT
+        id S230515AbhBIJIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:08:19 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:26298 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230340AbhBIJB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:01:46 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11990fgo029830;
-        Tue, 9 Feb 2021 03:00:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612861241;
-        bh=CcqJPRpOCkiN0eB5gI+aMq6cKCTA5yx6UGev6u0FgxA=;
-        h=From:To:CC:Subject:Date;
-        b=owzNnILoWuTgKI3iFff9+APoqNifr93p+nJHnQoFzivgCrHOKnsSUeXv0p7shDV1G
-         C/Obyqre6wK+c3UiqD/6cCoZCL9YGkNuCabBVeyeYOufnQPNfLw6ofQH2aObTaLyxO
-         0tToZ3iCgT+8TaqKroL72EXj9l74NhDCclBuQLZg=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11990fOh035192
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Feb 2021 03:00:41 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Feb
- 2021 03:00:41 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 9 Feb 2021 03:00:41 -0600
-Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11990bB5104664;
-        Tue, 9 Feb 2021 03:00:38 -0600
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] dmaengine: ti: k3-udma: Fix NULL pointer dereference error
-Date:   Tue, 9 Feb 2021 14:30:36 +0530
-Message-ID: <20210209090036.30832-1-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Tue, 9 Feb 2021 04:01:26 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UOHsGms_1612861239;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOHsGms_1612861239)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 09 Feb 2021 17:00:44 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alim.akhtar@samsung.com
+Cc:     avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] [PATCH 5.12/scsi-staging] scsi: ufs: convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Tue,  9 Feb 2021 17:00:38 +0800
+Message-Id: <1612861238-118301-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bcdma_get_*() and udma_get_*() checks if bchan/rchan/tchan/rflow is
-already allocated by checking if it has a NON NULL value. For the
-error cases, bchan/rchan/tchan/rflow will have error value
-and bcdma_get_*() and udma_get_*() considers this as already allocated
-(PASS) since the error values are NON NULL. This results in
-NULL pointer dereference error while de-referencing
-bchan/rchan/tchan/rflow.
+Fix the following coccicheck warning:
 
-Reset the value of bchan/rchan/tchan/rflow to NULL if the allocation
-actually fails.
+./drivers/scsi/ufs/ufshcd.c:1838:8-16: WARNING: use scnprintf or
+sprintf.
 
-Fixes: 017794739702 ("dmaengine: ti: k3-udma: Initial support for K3 BCDMA")
-Fixes: 25dcb5dd7b7c ("dmaengine: ti: New driver for K3 UDMA")
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/dma/ti/k3-udma.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-index 298460438bb4..aa4ef583ff83 100644
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -1330,6 +1330,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 80620c8..a340c77 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1535,7 +1535,7 @@ static ssize_t ufshcd_clkscale_enable_show(struct device *dev,
  {
- 	struct udma_dev *ud = uc->ud;
- 	enum udma_tp_level tpl;
-+	int ret;
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
  
- 	if (uc->bchan) {
- 		dev_dbg(ud->dev, "chan%d: already have bchan%d allocated\n",
-@@ -1347,8 +1348,11 @@ static int bcdma_get_bchan(struct udma_chan *uc)
- 		tpl = ud->bchan_tpl.levels - 1;
- 
- 	uc->bchan = __udma_reserve_bchan(ud, tpl, -1);
--	if (IS_ERR(uc->bchan))
--		return PTR_ERR(uc->bchan);
-+	if (IS_ERR(uc->bchan)) {
-+		ret = PTR_ERR(uc->bchan);
-+		uc->bchan = NULL;
-+		return ret;
-+	}
- 
- 	uc->tchan = uc->bchan;
- 
-@@ -1358,6 +1362,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
- static int udma_get_tchan(struct udma_chan *uc)
- {
- 	struct udma_dev *ud = uc->ud;
-+	int ret;
- 
- 	if (uc->tchan) {
- 		dev_dbg(ud->dev, "chan%d: already have tchan%d allocated\n",
-@@ -1372,8 +1377,11 @@ static int udma_get_tchan(struct udma_chan *uc)
- 	 */
- 	uc->tchan = __udma_reserve_tchan(ud, uc->config.channel_tpl,
- 					 uc->config.mapped_channel_id);
--	if (IS_ERR(uc->tchan))
--		return PTR_ERR(uc->tchan);
-+	if (IS_ERR(uc->tchan)) {
-+		ret = PTR_ERR(uc->tchan);
-+		uc->tchan = NULL;
-+		return ret;
-+	}
- 
- 	if (ud->tflow_cnt) {
- 		int tflow_id;
-@@ -1403,6 +1411,7 @@ static int udma_get_tchan(struct udma_chan *uc)
- static int udma_get_rchan(struct udma_chan *uc)
- {
- 	struct udma_dev *ud = uc->ud;
-+	int ret;
- 
- 	if (uc->rchan) {
- 		dev_dbg(ud->dev, "chan%d: already have rchan%d allocated\n",
-@@ -1417,8 +1426,13 @@ static int udma_get_rchan(struct udma_chan *uc)
- 	 */
- 	uc->rchan = __udma_reserve_rchan(ud, uc->config.channel_tpl,
- 					 uc->config.mapped_channel_id);
-+	if (IS_ERR(uc->rchan)) {
-+		ret = PTR_ERR(uc->rchan);
-+		uc->rchan = NULL;
-+		return ret;
-+	}
- 
--	return PTR_ERR_OR_ZERO(uc->rchan);
-+	return 0;
+-	return snprintf(buf, PAGE_SIZE, "%d\n", hba->clk_scaling.is_enabled);
++	return sysfs_emit(buf, "%d\n", hba->clk_scaling.is_enabled);
  }
  
- static int udma_get_chan_pair(struct udma_chan *uc)
-@@ -1472,6 +1486,7 @@ static int udma_get_chan_pair(struct udma_chan *uc)
- static int udma_get_rflow(struct udma_chan *uc, int flow_id)
- {
- 	struct udma_dev *ud = uc->ud;
-+	int ret;
- 
- 	if (!uc->rchan) {
- 		dev_err(ud->dev, "chan%d: does not have rchan??\n", uc->id);
-@@ -1485,6 +1500,11 @@ static int udma_get_rflow(struct udma_chan *uc, int flow_id)
- 	}
- 
- 	uc->rflow = __udma_get_rflow(ud, flow_id);
-+	if (IS_ERR(uc->rflow)) {
-+		ret = PTR_ERR(uc->rflow);
-+		uc->rflow = NULL;
-+		return ret;
-+	}
- 
- 	return PTR_ERR_OR_ZERO(uc->rflow);
- }
+ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
 -- 
-2.17.1
+1.8.3.1
 
