@@ -2,81 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB66315B5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E90315B59
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbhBJAg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:36:58 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:41349 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233895AbhBIUtR (ORCPT
+        id S233730AbhBJAfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:35:52 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:52473 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234038AbhBIUtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:49:17 -0500
-Received: by mail-ot1-f52.google.com with SMTP id s107so18740457otb.8;
-        Tue, 09 Feb 2021 12:48:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6GfRCsmy7FJEj63mhoY+V+O3PvN7JiICzZ8IwcVEyCU=;
-        b=j8k6xngKhUU4RUGH3d5ZS8tHa3cCe+uJSp4zZYPvAxeY6mJ7dhNv0aHCz2hP67yVSq
-         +4pdx8V3wSQ2RDZvBQd173lEysRlSnPxrba4fi00XJODQ/IKM+jsl+0Hk1NTZs6UZ1JQ
-         m7JDvKkrydK2bq8ac7Q1GMKWa8abKZtyiFxliY8mqsZyvekjYMFZZBT/Vd2BHP63wUZ0
-         tKNiQLMEuiu7EQHzg8t2+cbXa9EYJoRAsUnwPQ02eyDpQNUS33vSK5uvJ8LrlspQEyfq
-         L1VMH1Ybz/ZfZqnodh+M792SWPmK2dMFAHl4w57dhlcuqji7Oy4DfsQTxRzo9NFQT06h
-         lfjQ==
-X-Gm-Message-State: AOAM532PDynB+WBqmPVdFEO2wHkZ3tcv2JyCLeQ17QinT+9kxA2z3lHG
-        I/L8yi81k0EeV104xUybtA==
-X-Google-Smtp-Source: ABdhPJxhyGab36VocoyC8HQ3QP0wYUMPGADBulPSTA+DfJ3gz0WxubjQ1ZAnu7tf9zmm5qDOSlcdVw==
-X-Received: by 2002:a9d:65d4:: with SMTP id z20mr17893027oth.349.1612903709536;
-        Tue, 09 Feb 2021 12:48:29 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z30sm1043647otj.61.2021.02.09.12.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 12:48:28 -0800 (PST)
-Received: (nullmailer pid 150932 invoked by uid 1000);
-        Tue, 09 Feb 2021 20:48:27 -0000
-Date:   Tue, 9 Feb 2021 14:48:27 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mediatek@lists.infradead.org, Min Guo <min.guo@mediatek.com>
-Subject: Re: [PATCH next v3 04/16] dt-bindings: phy: mediatek: hdmi-phy:
- modify compatible items
-Message-ID: <20210209204827.GA150874@robh.at.kernel.org>
-References: <20210201070016.41721-1-chunfeng.yun@mediatek.com>
- <20210201070016.41721-4-chunfeng.yun@mediatek.com>
+        Tue, 9 Feb 2021 15:49:18 -0500
+Date:   Tue, 09 Feb 2021 20:48:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612903714; bh=ptg4dtlOixx4N/Ps+zPYWXSaL+5RU9Pp83Jx/VqNNi4=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=OthOSBa4ZrVmt9Pe6U5c7kIM32c/S/wz17TmX0NJafAk6xcJdpHkqzSbpNbtd2K8y
+         mHH/fZD/2sx4wtjTL9Shycb3FMOB6oC+0sEuI8Ji1T4guq/t2X9LYileHj0bOVP2PQ
+         qGSog8aAfij2n6xA5Y40BE7KGr4eMLRy6fXF0qyEPhdPpNviCtLtBAN0BqnmjTurui
+         G16vUDZK8enN4jCa8Xop74SzsuPqBHw+OvAUjxITA/zHvQx4UouSM9LoWFibVdek4N
+         DcYzaGG7UsRtUhYBFanGRfomZ3NmSyC9csMipA/XOX+VK6G5EfmXM2GXp8khjeRYF2
+         ZnFUxWNrK/CzA==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [v3 net-next 06/10] skbuff: remove __kfree_skb_flush()
+Message-ID: <20210209204533.327360-7-alobakin@pm.me>
+In-Reply-To: <20210209204533.327360-1-alobakin@pm.me>
+References: <20210209204533.327360-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201070016.41721-4-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Feb 2021 15:00:04 +0800, Chunfeng Yun wrote:
-> mt7623-hdmi-tx is compatible to mt2701-hdmi-tx, and the compatible
-> "mediatek,mt7623-hdmi-tx" is not supported in driver, in fact uses
-> "mediatek,mt2701-hdmi-tx" instead on MT7623, so changes the
-> compatible items to make dependence clear.
-> 
-> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v3: modify commit message
-> v2: no changes
-> ---
->  .../devicetree/bindings/phy/mediatek,hdmi-phy.yaml    | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
+This function isn't much needed as NAPI skb queue gets bulk-freed
+anyway when there's no more room, and even may reduce the efficiency
+of bulk operations.
+It will be even less needed after reusing skb cache on allocation path,
+so remove it and this way lighten network softirqs a bit.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ include/linux/skbuff.h |  1 -
+ net/core/dev.c         |  6 +-----
+ net/core/skbuff.c      | 12 ------------
+ 3 files changed, 1 insertion(+), 18 deletions(-)
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 0a4e91a2f873..0e0707296098 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -2919,7 +2919,6 @@ static inline struct sk_buff *napi_alloc_skb(struct n=
+api_struct *napi,
+ }
+ void napi_consume_skb(struct sk_buff *skb, int budget);
+=20
+-void __kfree_skb_flush(void);
+ void __kfree_skb_defer(struct sk_buff *skb);
+=20
+ /**
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 21d74d30f5d7..135d46c0c3c7 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4906,8 +4906,6 @@ static __latent_entropy void net_tx_action(struct sof=
+tirq_action *h)
+ =09=09=09else
+ =09=09=09=09__kfree_skb_defer(skb);
+ =09=09}
+-
+-=09=09__kfree_skb_flush();
+ =09}
+=20
+ =09if (sd->output_queue) {
+@@ -6873,7 +6871,7 @@ static __latent_entropy void net_rx_action(struct sof=
+tirq_action *h)
+=20
+ =09=09if (list_empty(&list)) {
+ =09=09=09if (!sd_has_rps_ipi_waiting(sd) && list_empty(&repoll))
+-=09=09=09=09goto out;
++=09=09=09=09return;
+ =09=09=09break;
+ =09=09}
+=20
+@@ -6900,8 +6898,6 @@ static __latent_entropy void net_rx_action(struct sof=
+tirq_action *h)
+ =09=09__raise_softirq_irqoff(NET_RX_SOFTIRQ);
+=20
+ =09net_rps_action_and_irq_enable(sd);
+-out:
+-=09__kfree_skb_flush();
+ }
+=20
+ struct netdev_adjacent {
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 1c6f6ef70339..4be2bb969535 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -838,18 +838,6 @@ void __consume_stateless_skb(struct sk_buff *skb)
+ =09kfree_skbmem(skb);
+ }
+=20
+-void __kfree_skb_flush(void)
+-{
+-=09struct napi_alloc_cache *nc =3D this_cpu_ptr(&napi_alloc_cache);
+-
+-=09/* flush skb_cache if containing objects */
+-=09if (nc->skb_count) {
+-=09=09kmem_cache_free_bulk(skbuff_head_cache, nc->skb_count,
+-=09=09=09=09     nc->skb_cache);
+-=09=09nc->skb_count =3D 0;
+-=09}
+-}
+-
+ static inline void _kfree_skb_defer(struct sk_buff *skb)
+ {
+ =09struct napi_alloc_cache *nc =3D this_cpu_ptr(&napi_alloc_cache);
+--=20
+2.30.0
+
+
