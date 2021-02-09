@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE8B315BEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D13B315BD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233440AbhBJBJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:09:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234512AbhBIWas (ORCPT
+        id S235037AbhBJBDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:03:20 -0500
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:38331 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233956AbhBIWU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:30:48 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53802C0698DA
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:33:10 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id e4so679202ote.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:33:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DubnR59jAY/eOT03jh9Sc1n0fr2f+9zEJ5dJmvj8mQo=;
-        b=N0QEv+V+b8Pk7r/94W49Azdo5ySkDcPHHRLOkLJVEcPthpGjZDtBqoQ3yb3cfHB/se
-         hxx4BDaK81wOCZLSXRB2Oe9UTvi/9sqRgRj3QqOnsxe2U5eV2CWsJHqe7AxFr3oSWWxI
-         cR9A7EjQonGwJejyo1ibxBatzfL50pDSZHCooCZGkNX72uJRvji1qJpWNxT+UH1T+a1p
-         2QeRY9MWem+0qOaBfXpmT77o6hvzg2v0C1kgIWftPdhDCab2NlBw63IQGrY9gRwXMUrf
-         QGhg0sShE7sMV5d0qr3zvIrJg9IMB7J5+XSXJUZugphojqSlmSfqlrctQkpkx9pBaYZT
-         zWTw==
+        Tue, 9 Feb 2021 17:20:27 -0500
+Received: by mail-ua1-f42.google.com with SMTP id y35so987336uad.5;
+        Tue, 09 Feb 2021 14:18:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DubnR59jAY/eOT03jh9Sc1n0fr2f+9zEJ5dJmvj8mQo=;
-        b=l5NNFApC3aWvFLaoXnFKkSQvVvVRQD1j0Bp4UQ0HLIwEPnuhaJ53FMReGB5eqT0cu6
-         8WNYx8xefqeNgyiGouowVlWXeimY1WG16UmqA4B9ogRLW4QKzjbkqmQafCeWwG0+dnwg
-         mWwteFACMTW43OYhgedlRXMQvJ87B4V5kRXJVdETsdqSGJOjw+SXp/iJpr18MrNSkPx1
-         KtqrIrkovTyobf9uiO3w+XRjubRdR5OaQABAcqYLI5F9Wr/au8dh99ZAwTMi0InDItvI
-         TM9T1vis5hX8Q2HdgxaBfsFPTwBSeG4IWedRfU1YNMgUckBRcVHxX111G7+GVl3ZrUZM
-         IVbg==
-X-Gm-Message-State: AOAM531rqPJWu8TV8oMXrRKXROX6SMn50gvEXBz7DxTdtSWpifCo2rqb
-        r3baK2yr7PAzGqr2So32fXcAtfZ5/kJGd4CmR3CWBQ==
-X-Google-Smtp-Source: ABdhPJzgsrqOvA5diVA1gUUZvIRYR0Xc8yzoxRR9IHuBSuq0Wdtj0vxIz3wjTSlEQ8NGpmadCS1vGVxOg/2NiSRMExE=
-X-Received: by 2002:a9d:6016:: with SMTP id h22mr10236542otj.63.1612906389614;
- Tue, 09 Feb 2021 13:33:09 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=chF4AGWod1NaZkKppPWEQ1Io26jYw+8zMgU0N2aN71E=;
+        b=Rd/iXNwp/bRwoAvDkfjCUAvVcziQWVONRtksXMfYCcBp/fbMKt03L2b2d6EqxKNgph
+         g78S3ST5+36vPwRxpukhyEud/98HB7xiQvXl3Zy81wdYwhuvipLCwIxkxZTyNj+ceanG
+         saImCa+6fsFDKt6wq/7NwJOualvXq3No7nD0LbYkgVDuMRkfQpC9iV5o+wMhF3Ur+ct1
+         GAtAEYFpN7RKpa45karFIbZbmrDYWICbpgTvNXUfm7wZULl93Zfn0yUndcjol8VCAg58
+         +xHisVzJW/JWP9epmdrVkbDXwDWpQIyPbrbp0tYGeIhRvrpUT1d8KEazrniTrFcRJ16+
+         XPpw==
+X-Gm-Message-State: AOAM5305dyPaOUzMIBhVvEM3TUozW2j41Q5jqGh6ImxfO01wr5nlw0dH
+        R/M5LYL0lixXwO7cJHLpH1u5fkkdYw==
+X-Google-Smtp-Source: ABdhPJyGu3u5I/yz8BcR5c4Z5Un368IPwJTe9EIJ9SQLRz14qAclf658hUeQwMCs2kjkfjj8BHycEw==
+X-Received: by 2002:a9d:21ca:: with SMTP id s68mr17271906otb.164.1612906403390;
+        Tue, 09 Feb 2021 13:33:23 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o83sm418383ooo.37.2021.02.09.13.33.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 13:33:22 -0800 (PST)
+Received: (nullmailer pid 232145 invoked by uid 1000);
+        Tue, 09 Feb 2021 21:33:20 -0000
+Date:   Tue, 9 Feb 2021 15:33:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 4/8] of: property: Add fw_devlink support for optional
+ properties
+Message-ID: <20210209213320.GA219007@robh.at.kernel.org>
+References: <20210205222644.2357303-1-saravanak@google.com>
+ <20210205222644.2357303-5-saravanak@google.com>
 MIME-Version: 1.0
-References: <YBkT6175GmMWBvw3@google.com>
-In-Reply-To: <YBkT6175GmMWBvw3@google.com>
-From:   Jesse Barnes <jsbarnes@google.com>
-Date:   Tue, 9 Feb 2021 13:32:58 -0800
-Message-ID: <CAJmaN=miDwb4CvVDmLS4aBKsNOVp9XiDKB1Dp3s6cfrq4yXiQQ@mail.gmail.com>
-Subject: Re: [page-reclaim] Augmented Page Reclaim
-To:     Yu Zhao <yuzhao@google.com>, Sonny Rao <sonnyrao@google.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        page-reclaim@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205222644.2357303-5-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> ======================
-> Augmented Page Reclaim
-> ======================
-> We would like to share a work with you and see if there is enough
-> interest to warrant a run for the mainline. This work is a part of
-> result from a decade of research and experimentation in memory
-> overcommit at Google: an augmented page reclaim that, in our
-> experience, is performant, versatile and, more importantly, simple.
+On Fri, Feb 05, 2021 at 02:26:40PM -0800, Saravana Kannan wrote:
+> Not all DT bindings are mandatory bindings. Add support for optional DT
+> bindings and mark iommus, iommu-map, dmas as optional DT bindings.
 
-Per discussion on IRC, maybe some additional background would help.
+I don't think we can say these are optional or not. It's got to be a 
+driver decision somehow.
 
-In looking at browser workloads on Chrome OS, we found that reclaim was:
-1) too expensive in terms of CPU usage
-2) often making poor decisions about what to reclaim
+For example, if IOMMU is optional, what happens with this sequence:
 
-This work was mainly targeted toward improving those things, with an
-eye toward interactive performance for browser workloads.
-
-We have a few key tests we use for that, that measure tab switch times
-and number of tab discards when under memory pressure, and this
-approach significantly improves these (see Yu's data).
-
-We do expect this approach will also be beneficial to cloud workloads,
-and so are looking for people to try it out in their environments with
-their favorite key tests or workloads.
-
-Thanks,
-Jesse
+driver probes without IOMMU
+driver calls dma_map_?()
+IOMMU driver probes
+h/w accesses DMA buffer --> BOOM!
