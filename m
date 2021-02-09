@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B733F315535
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED7931553F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhBIRhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 12:37:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233232AbhBIRfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:35:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B3FE64E7E;
-        Tue,  9 Feb 2021 17:35:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612892101;
-        bh=2ry5h3lOxZL7tuhk5BAy7SlKInnx6xq7EGyfJE8uBhw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Y2c001D3lFY7aEapySs7wZdWRJXLbC0iOoao4QpbUnioFVLTMlkatIN5VlbLxMAE6
-         sS6FhUE4Ay2EfXroZM7+PPOM8/pefvZYA1X+1cDw0QmUulyRfMOobhPuFuy8xTWGb+
-         1+y7lrNaHpxE4vc6juE5bJUzAs2lwLgKF/CgUzj6+8BNyb5DiwvS1rvKq2hAU4f1ZG
-         X2Vf/yFc4rF2xOGWyOEdHjq3XVqk64IxdGyx1L02CdEfD49f3seqDFLtR3iJc9Qjas
-         a1dCFk0wtc6ZFkCdOYlmp9u66ZJ4XsL5l1vSJ+sZyBflmMoHnQ3EfRByYagAV95JaB
-         Vmvie4z8qiCXQ==
-Date:   Tue, 9 Feb 2021 09:35:00 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        Mickey Rachamim <mickeyr@marvell.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG support
-Message-ID: <20210209093500.53b55ca8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YCKVAtu2Y8DAInI+@lunn.ch>
-References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
-        <20210203165458.28717-6-vadym.kochan@plvision.eu>
-        <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87v9b249oq.fsf@waldekranz.com>
-        <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YCKVAtu2Y8DAInI+@lunn.ch>
+        id S233289AbhBIRii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 12:38:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233001AbhBIRgF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 12:36:05 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E43C06121C
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:35:12 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id e9so10144791plh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:35:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r47X2ee78t2SLXgVN2ZcRb271S7UdHkQrq/tHAJkSkQ=;
+        b=DbdHfvtjdYzkLF7dfWPsMxV4+Rb4sAagbFEZ6H600ZnICjslL0olfmaPh3ikqvt3zz
+         IbIaV5p9dBs0iiHwb8hQEyrjqTrSQjZ2CmY1ayRrBl7MB4QIeqclo3xX55n4/5GwN6/U
+         oWpwcG/gms/Ddcor+Lj21w1fyMraOH6gTHyPo+mH3N0Wkjl6/bq+DFYHZ72FxKzgbWmw
+         prFvhzQQyH5zj2/6QVE48eRs59m2Y2eOvPsbyDSlj7fij30rdic147MB+jqjPrTmG3qU
+         8lzeOCzTd8tsOhgld6FHTd7VF915S9PfW1MJAruEwJjjUruv8nfiI/LFbHcgr3cf9Uw8
+         K0bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r47X2ee78t2SLXgVN2ZcRb271S7UdHkQrq/tHAJkSkQ=;
+        b=Kag+MtfO+T+Ss3TERhuu2b+KdDL92kjo2zQQ8tKN9JstXtzSksCFEzol+EmZhqzWo4
+         L3z1H4eyguy0v0rCe5ax7Y1KFgK2h3+oISGERDYyj0wolig1scNLKoiUnP5FYihI68Kv
+         BXlInevKSZUPzX9cMVjy6MBgHmZN2mqKN6CRHR2KZYhAVWARC8DqggWN/YaD9aG9FFUz
+         a+tBkrQrFmatdRq3lIjWHwb4XCce4K5UblhvSQUW9dsiVo0eii+WbCTTtV4ukH9sC8wl
+         aEkZYFf6DqpxtQvK+9bkyBrFQcl07vue/WoFjIf21w3c/1xfp5ipME54ycnSeZqza0eB
+         HsOQ==
+X-Gm-Message-State: AOAM532o38BdhT2Hj9lfu1LG0nEbv48FRgQRh+fMWppK5EfaDKGi46qt
+        /w5dMtIVsDAwkEd9d25ByxJPIA==
+X-Google-Smtp-Source: ABdhPJyfamXiK8zUBMBE5zvrRwdQMBQci+3Me+rQ9GBv/bbPyR43ucxOUxdQYH5Z5WfghBZ1oaEVyw==
+X-Received: by 2002:a17:902:c3c2:b029:e1:74f5:6a65 with SMTP id j2-20020a170902c3c2b02900e174f56a65mr21289693plj.46.1612892111477;
+        Tue, 09 Feb 2021 09:35:11 -0800 (PST)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id b18sm2065pfb.197.2021.02.09.09.35.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 09:35:10 -0800 (PST)
+Date:   Tue, 9 Feb 2021 17:35:07 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     "wangyanan (Y)" <wangyanan55@huawei.com>,
+        kvm <kvm@vger.kernel.org>, linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Marc Zyngier <maz@kernel.org>, Peter Xu <peterx@redhat.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+Subject: Re: [RFC PATCH 1/2] KVM: selftests: Add a macro to get string of
+ vm_mem_backing_src_type
+Message-ID: <YCLHy82RcATHEDtC@google.com>
+References: <20210208090841.333724-1-wangyanan55@huawei.com>
+ <20210208090841.333724-2-wangyanan55@huawei.com>
+ <CANgfPd967wgLk0tb6mNaWsaAa9Tn0LyecEZ_4-e+nKoa-HkCBg@mail.gmail.com>
+ <c9c1207f-09ae-e601-5789-bd39ceb4071e@huawei.com>
+ <CANgfPd_u2uGmt645e9mLbBcTOV1mQ_iXjq8h7WwCDKETZJ9GJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANgfPd_u2uGmt645e9mLbBcTOV1mQ_iXjq8h7WwCDKETZJ9GJg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Feb 2021 14:58:26 +0100 Andrew Lunn wrote:
-> > At the same time some FW is necessary. Certain chip functions, are 
-> > best driven by a micro-controller running a tight control loop.   
+On Tue, Feb 09, 2021, Ben Gardon wrote:
+> On Tue, Feb 9, 2021 at 3:21 AM wangyanan (Y) <wangyanan55@huawei.com> wrote:
+> >
+> >
+> > On 2021/2/9 2:13, Ben Gardon wrote:
+> > > On Mon, Feb 8, 2021 at 1:08 AM Yanan Wang <wangyanan55@huawei.com> wrote:
+> > >> Add a macro to get string of the backing source memory type, so that
+> > >> application can add choices for source types in the help() function,
+> > >> and users can specify which type to use for testing.
+> > > Coincidentally, I sent out a change last week to do the same thing:
+> > > "KVM: selftests: Add backing src parameter to dirty_log_perf_test"
+> > > (https://lkml.org/lkml/2021/2/2/1430)
+> > > Whichever way this ends up being implemented, I'm happy to see others
+> > > interested in testing different backing source types too.
+> >
+> > Thanks Ben! I have a little question here.
+> >
+> > Can we just present three IDs (0/1/2) but not strings for users to
+> > choose which backing_src_type to use like the way of guest modes,
 > 
-> For a smart NIC, i could agree. But a switch? The data path is in
-> hardware. The driver is all about configuring this hardware, and then
-> it is idle. Polls the PHYs once a second, maybe gather statistics,
-> allows the network stack to perform STP, but otherwise it does
-> nothing.
-> 
-> So for me, i don't see that being a valid argument for this driver.
-> 
-> By putting their SDK inside the CPU on the switch, and adding an RPC
-> interface, Marvell can quickly get some sort of support working in the
-> Linux ecosystem. But this solution has all the problems of a binary
-> blob in userspace.
-> 
-> I doubt there is going to be any community engagement with this
-> driver. Marvell is going to have to add all the features. If a user
-> wants a feature which is not currently supported, they have little
-> chance of being able to add it themselves. There is no documentation
-> of the RPC interface. So even if the firmware has support for more
-> than what the Linux driver implements, only Marvell knows about it.
-> 
-> Products based around this driver are going to find it hard to
-> differentiate on switch features. The switch can do what Marvell
-> allows you to do. All differentiation is going to be limited to above
-> that, the user interface.
-> 
-> For some market segments, that might be enough. You don't see
-> community based patches adding new features to the Mellanex/nvidia
-> hardware. But when you look at the DSA drivers, a lot of the features
-> there are from the community. There is probably space for both.
-> 
-> Looking into my crystal ball, Marvell will probably have the base
-> features of their switch implemented before Microchip does, simply
-> because they are reusing code hidden away in the CPU. But then
-> development will stagnate. Microchip will take a bit longer to get the
-> base features implemented. But then because of the openness, users
-> will start using the hardware in different ways, and implement
-> features which are important to them. And contribute bug fixes. The
-> driver will keep gaining new features and mature, and in the end, the
-> device built from it will be a lot more divers and interesting.
-> 
-> What i'm not sure is how we as a community push back. Marvells whole
-> strategy is black box. I doubt we can make them open up the firmware.
-> Do we want to throw out the driver from the kernel? I don't think it
-> is that bad. We can point out the problems with Marvell's model. We
-> can put in review effort for Microchip, make their driver better. And
-> we can encourage the 3rd and 4th vendors in the enterprise switch
-> space to follow Microchips lead.
+> That would be fine with me. The string names are easier for me to read
+> than an ID number (especially if you were to add additional options
+> e.g. 1G hugetlb or file backed  / shared memory) but it's mostly an
+> aesthetic preference, so I don't have strong feelings either way.
 
-Sounds like we have 3 people who don't like FW-heavy designs dominating
-the kernel - this conversation can only go one way. 
-
-Marvell, Plvision anything to share? AFAIU the values of Linux kernel
-are open source, healthy community, empowering users. With the SDK on
-the embedded CPU your driver does not seem to tick any of these boxes.
+I vote to expose/consume strings, being able to do ".dirty_log_perf_test --help"
+and understand the backing options without having to dig into source was super
+nice.
