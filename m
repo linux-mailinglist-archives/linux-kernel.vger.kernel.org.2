@@ -2,124 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6893145BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 552E23145C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhBIBjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        id S230245AbhBIBlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:41:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhBIBh3 (ORCPT
+        with ESMTP id S229702AbhBIBkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:37:29 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEC1C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:36:49 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id j11so8824853plt.11
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:36:49 -0800 (PST)
+        Mon, 8 Feb 2021 20:40:10 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB43C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:39:29 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id r65so2496763lff.6
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:39:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=k3xVH4Zf+SGPyF1+qimuYcY1j2NUQvV4+U6ixsrmmks=;
-        b=uTze7O0GYArJLC7W8Zkrcp8ykioQ9iDzCecKSMXiKyWzl9Sz+m+oLQOsDHa5yyf9N6
-         +LZukihtC8/sd+PCzNlnSX/Ly6zpxylQ9/Df7siV5Xw5hb48kyrXsxSx5mbrca/6BLPM
-         RDXTP6JHJNQTih4cFf7XHTPi9tnCbm4D2fy5r8pif4oqELK43nmAq1YMTGTgpRpGiHku
-         SuvRmIcKojTbfURY19Xty76HPDY9vXIQuieDS5QSgmcxPdVMK5uhpmYaC0x9hFu1ZBpz
-         rPw2nvUXzsThsDHL9I3434y9pYbBCakRfQ2/rd0VL02+kYz20EAKt99zQi8F2qXoYrAD
-         PYjA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lVJrtVbOEkQeZbesRKYhsTkz4bxOuNAN5R8eee3+3BA=;
+        b=A9C7faioXC/fE/JHCjjNXXeup9N2pj9pgGlkMaDFLHdW6VbqfxjF2m28Fs4fMD7VJz
+         EQX+Fyr4WeCSUCnDknnv4NWOPoi98V9msOapcD9zRNuNyw7VbG3N0n+ZrBt1bDxVYhej
+         EHFCC7a6JQAi41nA31435arAczg+rcyuyXHugOfQuBrmSQzr87nGOoV3pZbW3YBSNX9e
+         /Ok2+sKFVQU3kffsuFzs6wMnIt+jeYgVisEubx/fJUa51eXsCpA7dwi/dC1XlFMrGTiC
+         dax08cTimOLylckl178BBvWHs3Z5s3g+baIYAt1571DcPDxtEStosJpSX8Tp8ISD2byK
+         NU8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=k3xVH4Zf+SGPyF1+qimuYcY1j2NUQvV4+U6ixsrmmks=;
-        b=e0qtLy99bLlDdEmWBkv9TgQACNQFFSmkI4b8hFsTJjXUqy3Y3GVrVhF1Buq6MiqRQB
-         UBXFGbJHkeS/0c1uZhM1zKwj9xFfQ328XsaulKU5trUViLrEqHpdFew5zcdoXB2HT5Gj
-         o7/JKEyh8rv4Z39LXscyiJNrnkNugwS/N+Y7ql3eUxH8Uz42ZILPVfm98ijohqIELmLC
-         9FwRqc//oDJoRxKuBPN7g7TQAtIbo6oTONcq3Vu3B3Vj8kSolidlh7M5Qo/QvIXlQA0V
-         DtvHcWw/ReoFYAv/o6JL0iDWgPwBoMzNqdkkneZOtiGM/OPqFSSOvDNksfWuj1FKwSUx
-         Xqew==
-X-Gm-Message-State: AOAM531e/ZRFPtau11q4Mx1HUOFkSGmRpzHYKYAZ45JaswSJq6eIi6bb
-        VtDMuAZU82HBcW8+Zs4B8FU=
-X-Google-Smtp-Source: ABdhPJzofX2hr0z0krmZbUaLCq+gAfmL06ugTwSrbvT6VDdNO/wiv3TeROuGdFwlNoHO/3clJ73yow==
-X-Received: by 2002:a17:90a:5287:: with SMTP id w7mr1670682pjh.52.1612834609161;
-        Mon, 08 Feb 2021 17:36:49 -0800 (PST)
-Received: from localhost ([220.240.226.199])
-        by smtp.gmail.com with ESMTPSA id o1sm19501986pgq.1.2021.02.08.17.36.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 17:36:48 -0800 (PST)
-Date:   Tue, 09 Feb 2021 11:36:43 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v5 12/22] powerpc/syscall: Change condition to check
- MSR_RI
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
-        <67820fada8dd6a8fe9d7b666f175d4cc9d8de87e.1612796617.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <67820fada8dd6a8fe9d7b666f175d4cc9d8de87e.1612796617.git.christophe.leroy@csgroup.eu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lVJrtVbOEkQeZbesRKYhsTkz4bxOuNAN5R8eee3+3BA=;
+        b=btm1/+Z0kMwaDpvYVcV4ZrgE/cZ4s5Cg4huZj95PJ7xYn0/NVaJRs236CfnHLousqr
+         0nbGNDq/SqizneNolPeHo1pmzzbriOmfxdmNwxKlVO5ahTDlVwLxFCGf2iRuofgvYggt
+         xBLX+GYiIV9nXngRkyaNDNzG3RUrhcz4DcnGuXaJeLYBejBfF3o0u1W10Kc98kMSoeUC
+         TZkhYduwpnpRvQrkTcbN+EYyQsOnuqa5lnw0V+ynk8L7F98238JlAhRvIZHvuLb/jK8Q
+         xTX8LYBA6JMrLprlNtp70ax25nreTPd9Gsgp15pnTsBA6BuJqjBZh+//A78wGTLyuU5d
+         o+/g==
+X-Gm-Message-State: AOAM530+il5X08a9vNZfLjBVUphXoW+9+DB8OpCQwf1xYQVhJBLTFXrO
+        ghLUhFHsNbKkD3fx77Qkv4bXZ3q0qMAo/2Pbi3zp8Q==
+X-Google-Smtp-Source: ABdhPJwB0FaJ86DVhtYlvTWzKa0rxanMYJOHyVD/WotNYmG0znQdQeGFeRiqHZv0cevJP331wFbLkAfH4TrH8GiZBx4=
+X-Received: by 2002:ac2:5e90:: with SMTP id b16mr11605061lfq.122.1612834768181;
+ Mon, 08 Feb 2021 17:39:28 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <1612834209.4lzq8y2p6t.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210202022441.1451389-1-nathan@kernel.org> <20210209005719.803608-1-nathan@kernel.org>
+In-Reply-To: <20210209005719.803608-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 8 Feb 2021 17:39:16 -0800
+Message-ID: <CAKwvOdkwoF8OqSY0mJbPh658N3QBPHARgiHP6K3H+=gPT6+R8g@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: Make CPU_BIG_ENDIAN depend on ld.bfd or ld.lld 13.0.0+
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Fangrui Song <maskray@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
-> In system_call_exception(), MSR_RI also needs to be checked on 8xx.
-> Only booke and 40x doesn't have MSR_RI.
+On Mon, Feb 8, 2021 at 4:58 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Similar to commit 28187dc8ebd9 ("ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN
+> depends on !LD_IS_LLD"), ld.lld prior to 13.0.0 does not properly
+> support aarch64 big endian, leading to the following build error when
+> CONFIG_CPU_BIG_ENDIAN is selected:
+>
+> ld.lld: error: unknown emulation: aarch64linuxb
+>
+> This has been resolved in LLVM 13. To avoid errors like this, only allow
+> CONFIG_CPU_BIG_ENDIAN to be selected if using ld.bfd or ld.lld 13.0.0
+> and newer.
+>
+> While we are here, the indentation of this symbol used spaces since its
+> introduction in commit a872013d6d03 ("arm64: kconfig: allow
+> CPU_BIG_ENDIAN to be selected"). Change it to tabs to be consistent with
+> kernel coding style.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/380
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1288
+> Link: https://github.com/llvm/llvm-project/commit/7605a9a009b5fa3bdac07e3131c8d82f6d08feb7
+> Link: https://github.com/llvm/llvm-project/commit/eea34aae2e74e9b6fbdd5b95f479bc7f397bf387
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+LGTM, thanks for implementing BE support for aarch64 in LLD, Fangrui!
+(And Nathan for the kernel patch+testing)
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-...
->=20
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > ---
-> v5: Also in interrupt exit prepare
-> ---
->  arch/powerpc/kernel/interrupt.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->=20
-> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interr=
-upt.c
-> index 1a2dec49f811..107ec39f05cb 100644
-> --- a/arch/powerpc/kernel/interrupt.c
-> +++ b/arch/powerpc/kernel/interrupt.c
-> @@ -39,7 +39,7 @@ notrace long system_call_exception(long r3, long r4, lo=
-ng r5,
-> =20
->  	trace_hardirqs_off(); /* finish reconciling */
-> =20
-> -	if (IS_ENABLED(CONFIG_PPC_BOOK3S))
-> +	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
->  		BUG_ON(!(regs->msr & MSR_RI));
->  	BUG_ON(!(regs->msr & MSR_PR));
->  	BUG_ON(!FULL_REGS(regs));
-> @@ -338,7 +338,7 @@ notrace unsigned long interrupt_exit_user_prepare(str=
-uct pt_regs *regs, unsigned
->  	unsigned long flags;
->  	unsigned long ret =3D 0;
-> =20
-> -	if (IS_ENABLED(CONFIG_PPC_BOOK3S))
-> +	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
->  		BUG_ON(!(regs->msr & MSR_RI));
->  	BUG_ON(!(regs->msr & MSR_PR));
->  	BUG_ON(!FULL_REGS(regs));
-> @@ -436,7 +436,8 @@ notrace unsigned long interrupt_exit_kernel_prepare(s=
-truct pt_regs *regs, unsign
->  	unsigned long amr;
->  #endif
-> =20
-> -	if (IS_ENABLED(CONFIG_PPC_BOOK3S) && unlikely(!(regs->msr & MSR_RI)))
-> +	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x) &&
-> +	    unlikely(!(regs->msr & MSR_RI)))
->  		unrecoverable_exception(regs);
->  	BUG_ON(regs->msr & MSR_PR);
->  	BUG_ON(!FULL_REGS(regs));
-> --=20
-> 2.25.0
->=20
->=20
+>
+> v1 -> v2:
+>
+> * Conditionally disable CONFIG_CPU_BIG_ENDIAN for older versions of
+>   ld.lld now that proper support has been added to ld.lld 13+ (thanks to
+>   the quick work of Fangrui Song).
+>
+>  arch/arm64/Kconfig | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index f39568b28ec1..912da4e2ab59 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -952,8 +952,9 @@ choice
+>           that is selected here.
+>
+>  config CPU_BIG_ENDIAN
+> -       bool "Build big-endian kernel"
+> -       help
+> +       bool "Build big-endian kernel"
+> +       depends on !LD_IS_LLD || LLD_VERSION >= 130000
+> +       help
+>           Say Y if you plan on running a kernel with a big-endian userspace.
+>
+>  config CPU_LITTLE_ENDIAN
+>
+> base-commit: 92bf22614b21a2706f4993b278017e437f7785b3
+> --
+> 2.30.1
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
