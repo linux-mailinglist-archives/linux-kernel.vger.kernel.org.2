@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48D8315937
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1F53159BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbhBIWOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:14:17 -0500
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:37483 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233463AbhBITkr (ORCPT
+        id S234600AbhBIWxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:53:25 -0500
+Received: from mx29228.godns.net ([190.228.29.228]:58739 "HELO
+        mx2923.godns.net" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with SMTP id S233635AbhBITrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:40:47 -0500
-Received: by mail-wm1-f48.google.com with SMTP id m1so4649799wml.2;
-        Tue, 09 Feb 2021 11:40:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c6vCaI1Ot4rIOLJkm4PsY67pG5cYnNtElevzVRC/8jc=;
-        b=HEZWULPJ+zz9Zw7W3W/pwWRa85Feels4tRl3vzTw9uUorgAhvnmwLkj1EJIKmJ+5du
-         97HyEp6ZmNBr4cknN6LcKiXjMUFS/c3VURmBlbvSdHTZGUb4xasUdMeP/jj7MIfeZTR3
-         stIQ1SHkDEq94qRdaFE6CCAHYA/NJtKtmEZJuX258NLQWB6bPjTsqBpOWl1GBZgc//kD
-         iKp8EZ58l3pdnbgu2C/tFyt1drgf5gRvdQCdD9f2Dg4pa9Oy7ReE0Ht3NDFfIqRG11Eq
-         Rmqcdz/J7DUC7frhl2id8lPzYUc3jc27Jl9zd2vImb8Dv+niOaBIi/0bzXn02vj+avAe
-         clBw==
-X-Gm-Message-State: AOAM5314CXwB3RD5Xe11dG7KecZxyU2aNrreBg50CG3dVGNyc5LbNPV9
-        BCOj60zV4NBmz9C1+IBtWho=
-X-Google-Smtp-Source: ABdhPJw7FD2tJaT20PTfXYsdZ/lAuCGttMIMQRbkmPz7RXBi0JFHhR8pII9knECGQDnDCrCFoWqmrg==
-X-Received: by 2002:a1c:b087:: with SMTP id z129mr5003988wme.147.1612899605420;
-        Tue, 09 Feb 2021 11:40:05 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id r16sm36117272wrt.68.2021.02.09.11.40.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 11:40:04 -0800 (PST)
-Date:   Tue, 9 Feb 2021 20:40:03 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v4 15/15] dmaengine: dw-edma: Add pcim_iomap_table return
- checker
-Message-ID: <YCLlE+StUVWjfxqf@rocinante>
-References: <ceb5eb396e417f9e45d39fd5ef565ba77aae6a63.1612389406.git.gustavo.pimentel@synopsys.com>
- <20210208193516.GA406304@bjorn-Precision-5520>
- <DM5PR12MB1835A960892E401D50DEBB9DDA8E9@DM5PR12MB1835.namprd12.prod.outlook.com>
- <YCLR3uB5+GELTXSk@rocinante>
+        Tue, 9 Feb 2021 14:47:45 -0500
+Received: (qmail 27913 invoked by uid 700); 9 Feb 2021 18:36:07 -0000
+Received: from unknown (HELO web.godns.net) (192.168.3.191)
+  by 0 with SMTP; 9 Feb 2021 18:36:06 -0000
+Received: (qmail 10982 invoked by uid 11670742); 9 Feb 2021 18:36:01 -0000
+To:     linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?(Abschlie=C3=9Fende_Mitteilung_f=C3=BCr_die_Zahlung)?=
+X-PHP-Originating-Script: 11670742:stream-privte.php
+Date:   Tue, 9 Feb 2021 15:36:01 -0300
+From:   El gordo de la Primitiva Lotterie Spanien 
+        <support@laboratoriopais.com.ar>
+Reply-To: santalucia.sg.es@spainmail.com
+Message-ID: <f3fa87a5cee80f2f95310252e62d30ad@laboratoriopais.com.ar>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YCLR3uB5+GELTXSk@rocinante>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
+El Gordo de la primitiva  lotterie spanien                        
+Adresse:Calle del Príncipe de Vergara, 38, 28001
+Madrid España]     
+Kontakt aufnehmen unter:] 34602 810 185 fax 34935457490]
+E-mail:]consultants24hrs@consultant.com]
 
-[...]
-> > That's true, there are a lot of drivers that don't verify that pointer. 
-> > What do you suggest?
-> > 1) To remove the verification so that is aligned with the other drivers
-> > 2) Leave it as is. Or even to add this verification to the other drivers?
-> > 
-> > Either way, I will add the pcim_iomap_table(pdev) before this 
-> > instruction.
-> [...]
-> 
-> A lot of the drivers consume the value from pcim_iomap_table() at
-> a given BAR index directly as-is, some check if the pointer they got
-> back is not NULL, a very few also check if the address at a given index
-> is not NULL.
-> 
-> Given that the memory allocation for the table can fail, we ought to
-> check for a NULL pointer.  It's a bit worrying that people decided to
-> consume the value it returns directly without any verification.
-> 
-> I only found two drivers that perform this additional verification of
-> checking whether the address at a given index is valid, as per:
-> 
->   https://lore.kernel.org/linux-pci/YCLFTjZQ2bCfGC+J@rocinante/
-> 
-> Personally, I would opt for (2), and then like you suggested send
-> a separate series to update other drivers so that they also include the
-> this NULL pointer check.
-> 
-> But let's wait for Bjorn's take on this, though.
+Aktenzeichen:]P09/01/02/2021.]
+Losnummer:] ESP 4447/1146411880201]
+Datum: 06/02/2021]
 
-As per Bjorn's reply:
+Hallo,         
+                  
+                             OFFIZIELLE MITTEILUNG,
+Diese El Gordo de la Primitiva Bonanza  Lotterie wurde und Ministerio de Industria, Comercio y Turismo  gesponsert um Tourismus in Spanien  zu fördern.
+ 
+Wir sind erfreut Ihnen mit zu teilen, dass die Gewinner des Sonder Spanish Tourismus Promotional Draw bekannt gegeben worden sind. Die offizielle Liste der Gewinner  erschien am  Samstag der 16/01/2021. 
+ 
+Ihre email adresse  mit der anhängenden Losnummer: ESP 4447/1146411880201  und mit der Seriennummer: ESP/018811-2020 zog die Glücksnummer: 6.16.18.33.47.51 Bonu:29,El Gordo de la Primitiva  Lotterie  6 /49 in der 3. Kategorie.
+ 
+Sie sind damit gewinner von: €991,000.00 Euro. Die Summe ergibt sich aus einer Gewinnausschüttung von: €6937,000.00 Euro, die durch die ersten sieben (7) Gewinner aus der gleichen Kategorie geteilt wurde.  Dir gewinn ist bei einer sicherheitsfirma hinterlegt und in ihren namen/email  versichert. um keine komplikationen bei der abwicklung der zahlung zu verursachen bitten wir sie diese offizielle mitteilung , diskret zu behandeln.,es ist ein teil unseres sicherheitsprotokolls und garantiert ihnen einen reibungslosen Ablauf.
+ 
+Alle gewinner wurden per computer aus Urlaubshotels, Fluggesellschaften und Reisebüros mailen Daten von fünf Millionen (5000000) Email adressen ausgewählt, als teil unserer Internationalen tourismus promotion programms, welches wir einmal im jahr veranstalten um Tourismus in Spanien zu fördern.
+ 
+Bitte kontaktieren sie unseren auslands sachbearbeiter Herr Gabriel  bei der sicherheitsfirma Santalucia Sicherheitsfirma:Per Email an:beratergabriel.sp@consultant.com oder anrufen: 34 602 810 185 & Fax:  34 931 70 2120, um Ihr Geld schnell zu bekommen.
+ 
+Denken Sie daran, jeder gewinnanspruch muss bis zum 27/02/2021 Angemeldete sein. Jeder nicht angemeldet Gewinnanspruch verfällt und geht zuruck an das Spanische Staatskasse.
+  
+WICHTIG: um verzögerungen und komplikationen zu vermeiden, bitte immer Aktenzeichen angeben.  Anbei ein anmeldeformular, bitte ausfüllen und zurück Per email an:beratergabriel.sp@consultant.com oder anrufen:  34 602 810185 & Fax:  34 931 70 2120 die sicherheitsfirma Santalucia Sicherheitsfirma.
+ 
+HERZLICHEN GLUCKWUNSCH…!
+Mit freundlichen Grüßen
+MARIA HIDALGO
+VIZEPRÄSIDENTIN
+ 
+BÜRO,SANTALUCIA SEGUROS S.A España 
+Plaza España, 15 - -16                            
+Madrid, 28008 España
+                           
+ 
+ANMELDEFORMULAR ZUR GEWINNANSPRUCHS
+_____________________________________________ 
+Bitte füllen Sie das Formular sorgfältig aus und senden es per e mail:santalucia.sg.es@spainmail.com an der Santalucia Sicherheitsfirma mit Kopie Ihres Personalausweises oder Reisepasses.
 
-  https://lore.kernel.org/linux-pci/20210209185246.GA494880@bjorn-Precision-5520/
 
-These extra checks I proposed would be definitely too much, especially
-since almost everyone who uses pcim_iomap_table() also calls either
-pcim_iomap_regions() or pcim_iomap_regions_request_all() before
-accessing the table.
+GEWINNBETRAG*__________AKTENZEICHEN:*ESP09/01/02/2021
+NAME:*____________________VORNAME:*_______________________
+GEBURTSDATUM:*_________________*NATIONALI:*________________
+LOSNUMMER*______________________*GLUCKSZAHLEN:*____________
+STRASSE*____________________________*NUMMER:*_______________
+WOHNORT*________________POSTLEITZAH*__________*LAND*________
+TELEFON*____________HANDY*_____________FAX*_________________
+BEFUF*__________FAMIELIENSTAND*_______________* (GESCHLECHT)
+EMAIL*________________________________________*Unterschrift*_
+  
+ 
+WELCHE ZAHLUNGSFORM BEVORZUGEN SIE?  (A) BANKÜBERWEISUNG:  (B) BARSCHECK  
+BANKDATEN SIND NUR NOTWENDIG WENN SIE SICH FÜR EINE BANKÜBERWEISUNG ENTSCHIEDEN HABEN.
+ 
+NAME DES GELDINSTITUTS:*__________________________
+KONTONUMMER:*_____________________________________
+SWIFT CODE:*______________________________________
+BANK ADDRESS:*____________________________________
+TELEFONNUMMER:*___________________________________
+FAX: NUMMER:*_____________________________________
 
-There probably is also an opportunity to simplify some of the other
-drivers in the future, especially if do some API changes as per what
-Bjorn suggested.
+ 
+     ERKLÄRUNG DES BEGÜNSTIGTEN
+ICH ___________________________BESTÄTIGE HIERMIT, DASS ALLE INFORMATIONEN, KORREKT SIND, UND DIE VERANSTALTER DER El SPANISH LOTTERY / SANTALUCIA SICHERHEITSFIRMA NICHT VERANTWORTLICH GEMACHT WERDEN, WENN ES ZU EINER UNBERECHTIGTEN ZAHLUNG DURCH UNGENAUE INFORMATIONEN, DIE ICH IN DIESEM FORMULAR ANGEBE KOMMT.DASS 10% PROVISION DER SANTA LUCIA SECURITY COMPANY GEH?REN, SOBALD SIE IHREN GEWINN FONDS ERHALTEN. DIESE ZEHN PROZENT WERDEN IHNEN SOFORT ZURÜCKGEGEBEN, SIE ERHALTEN IHREN GEWINN AUF IHREM KONTO. (ACHTUNG Wir bitten Sie, auf diese E-Mail-Adresse zu antworten(santalucia.sg.es@spainmail.com) BÜRO-KONTOINFORMATIONEN-IBAN ES17 2100 5624 1102 0011 7719 SWIFT CODE: CAIXESBBXXX.  KONTONAME,LA PLACITA DEL MIRADOR S.L SPAIN.
+Urheberrecht© 2019-2021 Multi-Staat Lotterie Verband. Alle Rechte
 
-Sorry for taking your time, and thank you again!
-
-Krzysztof
