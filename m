@@ -2,264 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C7F315B68
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0FA315B93
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233997AbhBJAib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:38:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
+        id S234742AbhBJArw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:47:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233807AbhBIUj1 (ORCPT
+        with ESMTP id S234095AbhBIVDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:39:27 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF36C061226;
-        Tue,  9 Feb 2021 11:24:00 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id l12so25372909edt.3;
-        Tue, 09 Feb 2021 11:24:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=4V4/+26zsQZ2u3jORNUZoR6RaMNMYHKRgtZ7++gnTVQ=;
-        b=RlOyEWxUPx0hNNFrJ0DkMvgTbdW7WTaT3poNpKaI9Y2zrsbpPA1suK7o1EYyi+D3gP
-         efpqeMF12k6rLTGoNZcCijq/qJx6dX2c+XI5KjlFAQT7ynvz1vzw1hw0tr6tXCBnmMZ0
-         G2W+0zXQoYhg/sFualou4xb0fRIHP7zSCRqSgIcP4dIAU9IZxAxgasYmAOjuD9eD2+c+
-         6nd2janVOktg+K5+tkjJ5czP8tnrK5e3v07bLzzfQs/uMbl+v4tSWt9E2xrE3eaRVTVf
-         dF1PmYNSdl+3Ak9X+Vc4plaGBw61haTZmSHcQEyMbxqDXUcXaLyZbt33SQBX5Gpz4TyN
-         4NoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=4V4/+26zsQZ2u3jORNUZoR6RaMNMYHKRgtZ7++gnTVQ=;
-        b=DCb1sLMlTfmJs7B3Fl7Pnb95rY/tlCGn9FZTKr9TSqideOjLJ7fX0dFcpsNl49kHoy
-         KjDAn1bk4GJW69Zv/eIhI4ViM5T3zfOu+u5zhXfY9H2y9/y7WkzylYtD3Kpb0ohgSSPj
-         B/0FZpHxO9NmjCo/otdt2h7iitPuaerKkjZU608PEj4VXtsyvhm0Mwv/LVcL+OyTmAqO
-         BRwGE55wNJiwxK+T3Y0kCQ2W3sBv536yiRX4UlpYKCKff8uUyX+G5pRVaHIF9lN/qI9J
-         Sbm+KWZBtWC4IEip6iPlkxjY99L44RSRKQUVFXORrr+qa15rPMGx93e5vrJVLO+gwNUl
-         kQeA==
-X-Gm-Message-State: AOAM530eYT4cTNPOEAoNNiiJbXGXysbEYn0139hK/gIgEfgDK+HSeT4p
-        Bq1BaG4JiNw/eZBXylePA/k=
-X-Google-Smtp-Source: ABdhPJzQ95LGdKuV+f/YUrN0ggL7Ct6sBaX/OzVyRU1WmwijkdKR22tvrlllf21hzI/g7xEMabdXKQ==
-X-Received: by 2002:a05:6402:281:: with SMTP id l1mr5021169edv.252.1612898639175;
-        Tue, 09 Feb 2021 11:23:59 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id w3sm11075779eja.52.2021.02.09.11.23.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Feb 2021 11:23:58 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/8] dt-bindings: usb: convert rockchip,dwc3.txt to yaml
-Date:   Tue,  9 Feb 2021 20:23:43 +0100
-Message-Id: <20210209192350.7130-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Tue, 9 Feb 2021 16:03:18 -0500
+Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93104C061A27;
+        Tue,  9 Feb 2021 11:57:07 -0800 (PST)
+Received: from localhost.localdomain (abac187.neoplus.adsl.tpnet.pl [83.6.166.187])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 9F5B61FABC;
+        Tue,  9 Feb 2021 20:54:02 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] thermal: qcom: tsens-v1: Add MSM8992 support
+Date:   Tue,  9 Feb 2021 20:53:46 +0100
+Message-Id: <20210209195346.457803-2-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210209195346.457803-1-konrad.dybcio@somainline.org>
+References: <20210209195346.457803-1-konrad.dybcio@somainline.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the past Rockchip dwc3 usb nodes were manually checked.
-With the conversion of snps,dwc3.yaml as common document
-we now can convert rockchip,dwc3.txt to yaml as well.
-Remove node wrapper.
+MSM8992 is more or less a cut-down MSM8994, so it only
+makes sense that TSENS support only requires a few lines
+on top of the bigger brother's code.
 
-Added properties for rk3399 are:
-  power-domains
-  resets
-  reset-names
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
-Changed V5:
-  add select
+ .../bindings/thermal/qcom-tsens.yaml          |  1 +
+ drivers/thermal/qcom/tsens-v1.c               | 25 +++++++++++++++++++
+ drivers/thermal/qcom/tsens.c                  |  3 +++
+ drivers/thermal/qcom/tsens.h                  |  2 +-
+ 4 files changed, 30 insertions(+), 1 deletion(-)
 
-Changed V3:
-  remove aclk_usb3_rksoc_axi_perf
-  remove aclk_usb3
-
-Changed V2:
-  remove node wrapper
----
- .../devicetree/bindings/usb/rockchip,dwc3.txt      |  56 -----------
- .../devicetree/bindings/usb/rockchip,dwc3.yaml     | 104 +++++++++++++++++++++
- 2 files changed, 104 insertions(+), 56 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
- create mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-
-diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt b/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
-deleted file mode 100644
-index 945204932..000000000
---- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
-+++ /dev/null
-@@ -1,56 +0,0 @@
--Rockchip SuperSpeed DWC3 USB SoC controller
--
--Required properties:
--- compatible:	should contain "rockchip,rk3399-dwc3" for rk3399 SoC
--- clocks:	A list of phandle + clock-specifier pairs for the
--		clocks listed in clock-names
--- clock-names:	Should contain the following:
--  "ref_clk"	Controller reference clk, have to be 24 MHz
--  "suspend_clk"	Controller suspend clk, have to be 24 MHz or 32 KHz
--  "bus_clk"	Master/Core clock, have to be >= 62.5 MHz for SS
--		operation and >= 30MHz for HS operation
--  "grf_clk"	Controller grf clk
--
--Required child node:
--A child node must exist to represent the core DWC3 IP block. The name of
--the node is not important. The content of the node is defined in dwc3.txt.
--
--Phy documentation is provided in the following places:
--Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml - USB2.0 PHY
--Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt     - Type-C PHY
--
--Example device nodes:
--
--	usbdrd3_0: usb@fe800000 {
--		compatible = "rockchip,rk3399-dwc3";
--		clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
--			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
--		clock-names = "ref_clk", "suspend_clk",
--			      "bus_clk", "grf_clk";
--		#address-cells = <2>;
--		#size-cells = <2>;
--		ranges;
--		usbdrd_dwc3_0: dwc3@fe800000 {
--			compatible = "snps,dwc3";
--			reg = <0x0 0xfe800000 0x0 0x100000>;
--			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
--			dr_mode = "otg";
--		};
--	};
--
--	usbdrd3_1: usb@fe900000 {
--		compatible = "rockchip,rk3399-dwc3";
--		clocks = <&cru SCLK_USB3OTG1_REF>, <&cru SCLK_USB3OTG1_SUSPEND>,
--			 <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_GRF>;
--		clock-names = "ref_clk", "suspend_clk",
--			      "bus_clk", "grf_clk";
--		#address-cells = <2>;
--		#size-cells = <2>;
--		ranges;
--		usbdrd_dwc3_1: dwc3@fe900000 {
--			compatible = "snps,dwc3";
--			reg = <0x0 0xfe900000 0x0 0x100000>;
--			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
--			dr_mode = "otg";
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-new file mode 100644
-index 000000000..9908270a9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-@@ -0,0 +1,104 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/rockchip,dwc3.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+index f194e914a62e..c69b8727a09c 100644
+--- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
++++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+@@ -31,6 +31,7 @@ properties:
+         items:
+           - enum:
+               - qcom,msm8976-tsens
++              - qcom,msm8992-tsens
+               - qcom,msm8994-tsens
+               - qcom,qcs404-tsens
+           - const: qcom,tsens-v1
+diff --git a/drivers/thermal/qcom/tsens-v1.c b/drivers/thermal/qcom/tsens-v1.c
+index 2127b6edd1ae..a470b24ae720 100644
+--- a/drivers/thermal/qcom/tsens-v1.c
++++ b/drivers/thermal/qcom/tsens-v1.c
+@@ -541,6 +541,17 @@ static int calibrate_8994(struct tsens_priv *priv)
+ 		base1[i] = base1[0];
+ 	}
+ 
++	/* 8992 features less sensors and remaps some */
++	if (priv->num_sensors == 13) {
++		p[6] = p[7];
++		p[7] = p[9];
++		p[8] = p[10];
++		p[9] = p[11];
++		p[10] = p[12];
++		p[11] = p[13];
++		p[12] = p[14];
++	}
 +
-+title: Rockchip SuperSpeed DWC3 USB SoC controller
+ 	compute_intercept_slope_8994(priv, base0, base1, p, mode);
+ 	kfree(calib0);
+ 	kfree(calib1);
+@@ -642,6 +653,20 @@ struct tsens_plat_data data_8976 = {
+ 	.fields		= tsens_v1_regfields,
+ };
+ 
++static const struct tsens_ops ops_8992 = {
++	.init		= init_common,
++	.calibrate	= calibrate_8994,
++	.get_temp	= get_temp_tsens_valid,
++};
 +
-+maintainers:
-+  - Heiko Stuebner <heiko@sntech.de>
++struct tsens_plat_data data_8992 = {
++	.num_sensors	= 13,
++	.ops		= &ops_8992,
++	.hw_ids		= (unsigned int []){ 0, 1, 2, 3, 4, 5, 7, 9, 10, 11, 12, 13, 14 },
++	.feat		= &tsens_v1_feat,
++	.fields	= tsens_v1_regfields,
++};
 +
-+description:
-+  The common content of the node is defined in snps,dwc3.yaml.
-+
-+  Phy documentation is provided in the following places.
-+
-+  USB2.0 PHY
-+  Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
-+
-+  Type-C PHY
-+  Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
-+
-+allOf:
-+  - $ref: snps,dwc3.yaml#
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - rockchip,rk3399-dwc3
-+  required:
-+    - compatible
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - rockchip,rk3399-dwc3
-+      - const: snps,dwc3
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description:
-+          Controller reference clock, must to be 24 MHz
-+      - description:
-+          Controller suspend clock, must to be 24 MHz or 32 KHz
-+      - description:
-+          Master/Core clock, must to be >= 62.5 MHz for SS
-+          operation and >= 30MHz for HS operation
-+      - description:
-+          Controller grf clock
-+
-+  clock-names:
-+    items:
-+      - const: ref_clk
-+      - const: suspend_clk
-+      - const: bus_clk
-+      - const: grf_clk
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    const: usb3-otg
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/rk3399-cru.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    bus {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+
-+      usbdrd3_0: usb@fe800000 {
-+        compatible = "rockchip,rk3399-dwc3", "snps,dwc3";
-+        reg = <0x0 0xfe800000 0x0 0x100000>;
-+        interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
-+                 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
-+        clock-names = "ref_clk", "suspend_clk",
-+                      "bus_clk", "grf_clk";
-+        dr_mode = "otg";
-+      };
-+    };
+ static const struct tsens_ops ops_8994 = {
+ 	.init		= init_common,
+ 	.calibrate	= calibrate_8994,
+diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+index 96d17afe3460..1c2e9bebc7c0 100644
+--- a/drivers/thermal/qcom/tsens.c
++++ b/drivers/thermal/qcom/tsens.c
+@@ -903,6 +903,9 @@ static const struct of_device_id tsens_table[] = {
+ 	}, {
+ 		.compatible = "qcom,msm8974-tsens",
+ 		.data = &data_8974,
++	}, {
++		.compatible = "qcom,msm8992-tsens",
++		.data = &data_8992,
+ 	}, {
+ 		.compatible = "qcom,msm8994-tsens",
+ 		.data = &data_8994,
+diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+index dfbff7f6442c..2548edaa36ec 100644
+--- a/drivers/thermal/qcom/tsens.h
++++ b/drivers/thermal/qcom/tsens.h
+@@ -588,7 +588,7 @@ extern struct tsens_plat_data data_8960;
+ extern struct tsens_plat_data data_8916, data_8939, data_8974;
+ 
+ /* TSENS v1 targets */
+-extern struct tsens_plat_data data_tsens_v1, data_8976, data_8994;
++extern struct tsens_plat_data data_tsens_v1, data_8976, data_8992, data_8994;
+ 
+ /* TSENS v2 targets */
+ extern struct tsens_plat_data data_8996, data_tsens_v2;
 -- 
-2.11.0
+2.30.0
 
