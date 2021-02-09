@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B04314CC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424DE314CCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhBIKS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:18:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20316 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231320AbhBIKDH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:03:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612864899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k1i4kA2ikoqEIy73WvpsH9kR9GpwZKdO/NHE9o+wheQ=;
-        b=FjKU0y4JGGEP0fy2WK2BS32WItnIEcNU7+hACOJz1uBuHTzLx/vfKgunl3xjN7CqIS+ey1
-        HX3gmi3FEtOFBUDcXVenJB+BAEvPNuM1ntMxmBOlYe8ko8kgO+/f8iJIA/l0p8IEK8PH5Q
-        g2gf4lA45I67NdmXZuFt5IPJbrcaETU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-577-YWZannIgNSmhHCnt7mRSFQ-1; Tue, 09 Feb 2021 05:01:37 -0500
-X-MC-Unique: YWZannIgNSmhHCnt7mRSFQ-1
-Received: by mail-wm1-f69.google.com with SMTP id l21so2024702wmj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 02:01:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k1i4kA2ikoqEIy73WvpsH9kR9GpwZKdO/NHE9o+wheQ=;
-        b=l1M1EDeumIL97XOvs9LhKdb/j3X0u1Ow6+KGk0F6IjMiwT6Z7ZnR/V1pzMMbm7UC6U
-         8hzSV+2YJlLzYqQ48Lf0mnTLpE0qbjRzub4dbskKPhkGMtBduPrEt2G1ewUCIUmseAkQ
-         DU2jkeZkp6Y5V3dyjXCiAJ//MhFMb993u0tQPHAcItfdGBbHOyDe5meBR8yzQeUiqI/s
-         ZrEdXRo4F3+BCOe15SNo2IO1xff6jgpqDZvf3qGNHn6QSzfNNdiSjaDF6388fOvfX9cQ
-         N8wBJBZiaU/E6D7Vwk8ShYxsbmgCYcd7LADKPDmDbeq+sRl5PIAgz7VKYYOLsMV7KyS7
-         2nTA==
-X-Gm-Message-State: AOAM531IVcXN0dNz6qWd0ofVNiOJzpfrbXm08+AhHKpGgRZyiATZfbqd
-        ap82VW+psm/LsgBxJ5ydEWQoV+dH4Db2px8llXMPMAxlo4jrUcA7AKn4xMF0r78zQE6uMU+zZ+8
-        VX8Te7nJUR3OyFW1/l17Ie69l
-X-Received: by 2002:a1c:318a:: with SMTP id x132mr2667849wmx.6.1612864896708;
-        Tue, 09 Feb 2021 02:01:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxpw6BIjnxiqkkeBjvrgae2D4o30y8fHuHqIVL3LcVSiw5rpDZgzP228TVvO4qazqkSUeeNQw==
-X-Received: by 2002:a1c:318a:: with SMTP id x132mr2667839wmx.6.1612864896557;
-        Tue, 09 Feb 2021 02:01:36 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b13sm13625804wrs.35.2021.02.09.02.01.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Feb 2021 02:01:35 -0800 (PST)
-Subject: Re: linux-next: build warning after merge of the kvm tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>, KVM <kvm@vger.kernel.org>
+        id S231749AbhBIKUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:20:25 -0500
+Received: from mga11.intel.com ([192.55.52.93]:42487 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230380AbhBIKDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:03:48 -0500
+IronPort-SDR: DhoDtesRw3tsUc+we5MZ3EGR2F2ds7Jb+0XI4OnZ8T7ULahT4sWs86LEesfYsOfydXcqGIxuzo
+ 0d95hWXXnsVQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="178346526"
+X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
+   d="scan'208";a="178346526"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 02:01:57 -0800
+IronPort-SDR: rnhFjJZUyagX9l6NkVSwVAXDoAYjA0WCGcS4e8PMLA+skaUN9neEPOnOysaFZHrDDu8mqtWyRN
+ FM7iNXXX6yxQ==
+X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
+   d="scan'208";a="509823432"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 02:01:54 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l9PqA-003BrA-CZ; Tue, 09 Feb 2021 12:01:50 +0200
+Date:   Tue, 9 Feb 2021 12:01:50 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        David Woodhouse <dwmw@amazon.co.uk>
-References: <20210209205950.7be889db@canb.auug.org.au>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <23ec3e79-1b6d-a116-ff52-3c5c1d0308d1@redhat.com>
-Date:   Tue, 9 Feb 2021 11:01:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v6 1/3] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+Message-ID: <YCJdjv+NjfTn/KsQ@smile.fi.intel.com>
+References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
+ <20210208200903.28084-2-sakari.ailus@linux.intel.com>
+ <CAHp75VciFMKrWM2zJZ6dppuL5M-7BLPGQfcnzkd9pQzY1bRWsQ@mail.gmail.com>
+ <YCGmD1d1Zn+EhrDH@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209205950.7be889db@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCGmD1d1Zn+EhrDH@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02/21 10:59, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the kvm tree, today's linux-next build (htmldocs) produced
-> this warning:
-> 
-> Documentation/virt/kvm/api.rst:4927: WARNING: Title underline too short.
-> 
-> 4.130 KVM_XEN_VCPU_GET_ATTR
-> --------------------------
-> 
-> Introduced by commit
-> 
->    e1f68169a4f8 ("KVM: Add documentation for Xen hypercall and shared_info updates")
-> 
+On Mon, Feb 08, 2021 at 10:58:55PM +0200, Andy Shevchenko wrote:
+> On Mon, Feb 08, 2021 at 10:43:30PM +0200, Andy Shevchenko wrote:
+> > On Mon, Feb 8, 2021 at 10:11 PM Sakari Ailus
+> > <sakari.ailus@linux.intel.com> wrote:
 
-Thanks, will fix.
+...
 
-Paolo
+> __le32 val;
+> 
+> val = cpu_to_le32(*fourcc & ~BIT(31));
+> 
+> p += string_escape_mem(&val, sizeof(*fourcc), output, sizeof(output), ESCAPE_NP | ESCAPE_HEX, NULL);
+
+sizeof(val) and as we are discussing in parallel emails something like
+skip_trailing_spaces() to be applied after above.
+
+The rationale of the above, that we reuse existing code and existing standard
+for the escaping non-printable characters.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
