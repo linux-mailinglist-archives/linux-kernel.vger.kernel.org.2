@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50127314DC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E15314DD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbhBILCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:02:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhBIK5a (ORCPT
+        id S232274AbhBILFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:05:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24725 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232035AbhBIK6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:57:30 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F27EC061794;
-        Tue,  9 Feb 2021 02:56:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=qgjO/6O6/GHv5ONViL/FqI7BSwMcToNyR5mKAZxLc1o=; b=ekteLdyeIn9VGB/6gjGX30LkE
-        +v2HdWGWFMllCW2pOoCzuoYT1R27oUhe53z7JtRXQyUtYfxYa6CJVWMt82KhFGyfdDq1MvqsFbfZj
-        JGeGW6XO6oxQH+JM1eZBqcGcrcGBYeuKWMOFN59kFM3VkPvaywD5+DZMKRNdeIbvBQuEaMg7I0rqC
-        5JqybgKTHQ75PFp+Q2mTSimNC3NcjIPnUFDhPsBJyIiivKxyCCsKY8wCHI+Wv8DIQU6PpV1HO8dRA
-        phyEfTaJK2UXC1nOHC51wZhkcbDCeIcFROx3qGeF96hZl1kzYb+kO3qarhnrfYMu1T0BzczIZK+bP
-        HzkPABXTA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41154)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l9QhL-0003JT-Go; Tue, 09 Feb 2021 10:56:47 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l9QhK-0003zb-Ca; Tue, 09 Feb 2021 10:56:46 +0000
-Date:   Tue, 9 Feb 2021 10:56:46 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Joao Pinto <Joao.Pinto@synopsys.com>,
-        linux-kernel@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 01/20] net: phy: realtek: Fix events detection failure in
- LPI mode
-Message-ID: <20210209105646.GP1463@shell.armlinux.org.uk>
-References: <20210208140341.9271-1-Sergey.Semin@baikalelectronics.ru>
- <20210208140341.9271-2-Sergey.Semin@baikalelectronics.ru>
- <8300d9ca-b877-860f-a975-731d6d3a93a5@gmail.com>
- <20210209101528.3lf47ouaedfgq74n@mobilestation>
- <a652c69b-94d3-9dc6-c529-1ebc0ed407ac@gmail.com>
+        Tue, 9 Feb 2021 05:58:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612868249;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kK2ClUw3Cdk/dZ7XyshGuNhYtTCXK+mZDDdWQTvzzq4=;
+        b=JiXA7FJcGduQn1si6xCRS145YZE4yOR9sU9OPMQuDratz+BD0bP7AK58kJQFDTvacHKgzO
+        wMf/JmE/cUa5j2GyhZw0wE+6oEthIj+E0KnMvJffbwdt/h+IhWSCmSXHc2RNxJ+ULVqGKz
+        J4203xotX487jAT/Naoys4O38WXZdhQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-e56SiWe7OLG7HO4suxdo-A-1; Tue, 09 Feb 2021 05:57:25 -0500
+X-MC-Unique: e56SiWe7OLG7HO4suxdo-A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 062B0803F48;
+        Tue,  9 Feb 2021 10:57:22 +0000 (UTC)
+Received: from [10.36.113.141] (ovpn-113-141.ams2.redhat.com [10.36.113.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A070110016F8;
+        Tue,  9 Feb 2021 10:57:17 +0000 (UTC)
+Subject: Re: [PATCH v4 1/3] mm, slub: use pGp to print page flags
+To:     Yafang Shao <laoar.shao@gmail.com>, willy@infradead.org,
+        andriy.shevchenko@linux.intel.com, linmiaohe@huawei.com,
+        vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, joe@perches.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210209105613.42747-1-laoar.shao@gmail.com>
+ <20210209105613.42747-2-laoar.shao@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <b23bba93-218b-4acc-4717-1b7e0a381e2d@redhat.com>
+Date:   Tue, 9 Feb 2021 11:57:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a652c69b-94d3-9dc6-c529-1ebc0ed407ac@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210209105613.42747-2-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 11:37:29AM +0100, Heiner Kallweit wrote:
-> Right, adding something like a genphy_{read,write}_mmd() doesn't make
-> too much sense for now. What I meant is just exporting mmd_phy_indirect().
-> Then you don't have to open-code the first three steps of a mmd read/write.
-> And it requires no additional code in phylib.
+On 09.02.21 11:56, Yafang Shao wrote:
+> As pGp has been already introduced in printk, we'd better use it to make
+> the output human readable.
+> 
+> Before this change, the output is,
+> [ 6155.716018] INFO: Slab 0x000000004027dd4f objects=33 used=3 fp=0x000000008cd1579c flags=0x17ffffc0010200
+> 
+> While after this change, the output is,
+> [ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Acked-by: Christoph Lameter <cl@linux.com>
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   mm/slub.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 34dcc09e2ec9..87ff086e68a4 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -638,8 +638,9 @@ void print_tracking(struct kmem_cache *s, void *object)
+>   
+>   static void print_page_info(struct page *page)
+>   {
+> -	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=0x%04lx\n",
+> -	       page, page->objects, page->inuse, page->freelist, page->flags);
+> +	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
+> +	       page, page->objects, page->inuse, page->freelist,
+> +	       page->flags, &page->flags);
+>   
+>   }
+>   
+> 
 
-... but at the cost that the compiler can no longer inline that code,
-as I mentioned in my previous reply. (However, the cost of the accesses
-will be higher.) On the plus side, less I-cache footprint, and smaller
-kernel code.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks,
+
+David / dhildenb
+
