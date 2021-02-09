@@ -2,53 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0E63157C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 21:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FC13157E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 21:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhBIUgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 15:36:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233361AbhBIS2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 13:28:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1452364E31;
-        Tue,  9 Feb 2021 18:26:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612895169;
-        bh=Jz0JK48Orafd4J5E+nIWTO9fcLP1eHH9cCNJvB2TVRM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=q9DTTvxwKJbm+48jZi5HXxJRzw7e/k+3N/Q+mvB0nUOHnf8h2PfaLLjhN5uhbzBux
-         5UBKFmokPgUl/0TrE4dij2n2wkMXljoK/V6pez2eCg12FLKmkrGTecD/XtW4NCPFDL
-         EgBBJwsiT6iu1+ynXyyiVODUM0B+JOPG35JIOQjy/FpUtHdeJQS6fbG1FqyIkNDBOj
-         l3yP58qruCmi0VMFwvga06hPyrYKndOOh8GDuCG11jjZXbSgsLY5toph+HWoXjUR//
-         XCZY5s9OIz7yg2ZI/jW8HcXPl0se43x+/yNnjkDibmTGX90HE/B2BDWhjTK2b0Xgfo
-         KXwXah1SoNRVw==
-Date:   Tue, 9 Feb 2021 10:26:06 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <davem@davemloft.net>, <willemdebruijn.kernel@gmail.com>,
-        <andrew@lunn.ch>, <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>
-Subject: Re: [Patch v4 net-next 0/7] ethtool support for fec and link
- configuration
-Message-ID: <20210209102606.5f3fd258@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1612866931-79299-1-git-send-email-hkelam@marvell.com>
-References: <1612866931-79299-1-git-send-email-hkelam@marvell.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233969AbhBIUoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 15:44:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233380AbhBIS1k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 13:27:40 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA2CC06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 10:26:39 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id z9so2157463pjl.5
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 10:26:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=dgZXefq5Ur84gHyH0jeL4t8oBY1mdlQ4zBj7nzzrp20=;
+        b=ZDvJHo02c2NueaZiHJVY9dsPPQfI5TZBk2lx6FMtMBs2S3DsUfh4MDB88Tam5Ne62M
+         gqacRfYI29Z5OeW1IFK/YXCbId9cuotvC09kAO1Icl73SgryW35dzMCzpnaHdNveegdN
+         ygZqRc9ymtDHpuIMFdGl6mXnJvEjLQKDz6b4CdrV+HgtiWjhus5dLYd4S1Til/XfGpe8
+         Pc5Gj/hca/fweWXv6Gkqyp2LdoiwNLgTIlkcmw1ZhjXXWOVW08jDrJL52xMNoK7+TQ71
+         Bx+b/3/or6mk3RacVA0J2+7DFASZkaTb7kQNFCaXAzfXP1TZfsX8od8/UJ6PFbZrM6If
+         pqDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=dgZXefq5Ur84gHyH0jeL4t8oBY1mdlQ4zBj7nzzrp20=;
+        b=oC6xH84/lID0mkEQn3xkDxv3KOj9Q3U6IFje38eDUWJpvy+JZorWefpmwtCvEK1Jci
+         u+RZonIFC2edYCbnpT8L8KEzKfOpQMit0z3JCh8w3NYa08zbLYh2FEpT4a9ItWpKePT5
+         sUoyYdjg0BRQFr0sGnGy2+LtbvTsHKF+czenJVTdjHFDdBd4l/fQCahUMHk/Fk6hmqZM
+         P61QMoLzfIDsQLbJH9ypYejEBHNllndeEVSBudnYxhGcglSnOBWMK0wuC7usGLQMTBjc
+         dSMFXdON4AuNwy7jVODqrgTWKE6G1Ljxo6eBPvo+m4zWx4lsEUaYHXPjdPNlh+SvEBWT
+         ZP+Q==
+X-Gm-Message-State: AOAM530yXVjfAHM+fochoICXAwToeTYrHy6y5Be4eeGDjun1/ZypA2L1
+        sX+xiMuYT1BUnL65xM34wVCz0A==
+X-Google-Smtp-Source: ABdhPJz3XrtIvAlXMoRc7qFrUi4rN8p+1C4uGXcWjLTUAKkrtA4IOwCvx+nbFwE9/Jwk7a9j3SHzSw==
+X-Received: by 2002:a17:902:d202:b029:e1:8936:cf31 with SMTP id t2-20020a170902d202b02900e18936cf31mr22413279ply.51.1612895199485;
+        Tue, 09 Feb 2021 10:26:39 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:f811:395b:ab09:b007? ([2601:646:c200:1ef2:f811:395b:ab09:b007])
+        by smtp.gmail.com with ESMTPSA id i1sm24729351pfb.54.2021.02.09.10.26.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 10:26:38 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
+Date:   Tue, 9 Feb 2021 10:26:37 -0800
+Message-Id: <3C17D187-8691-4521-9B64-F42A0B514F13@amacapital.net>
+References: <CAHk-=wgNXnmxjm+kK1ufjHfQPOBbuD5w3CTkSe0azF3NNWEHHQ@mail.gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@intel.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        live-patching@vger.kernel.org
+In-Reply-To: <CAHk-=wgNXnmxjm+kK1ufjHfQPOBbuD5w3CTkSe0azF3NNWEHHQ@mail.gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Feb 2021 16:05:24 +0530 Hariprasad Kelam wrote:
-> v4:
-> 	- Corrected indentation issues
-> 	- Use FEC_OFF if user requests for FEC_AUTO mode
-> 	- Do not clear fec stats in case of user changes
-> 	  fec mode
-> 	- dont hide fec stats depending on interface mode
-> 	  selection
 
-What about making autoneg modes symmetric between set and get?
+
+> On Feb 9, 2021, at 10:09 AM, Linus Torvalds <torvalds@linux-foundation.org=
+> wrote:
+>=20
+> =EF=BB=BFOn Tue, Feb 9, 2021 at 8:55 AM Andy Lutomirski <luto@amacapital.n=
+et> wrote:
+>>=20
+>> Or we hack up #CP to handle this case. I don=E2=80=99t quite know how I f=
+eel about this.
+>=20
+> I think that's the sane model - if we've replaced the instruction with
+> 'int3', and we end up getting #CP due to that, just do the #BP
+> handling.
+>=20
+> Anything else would just be insanely complicated, I feel.
+
+The other model is =E2=80=9Cdon=E2=80=99t do that then.=E2=80=9D
+
+I suppose a nice property of patching ENDBR to INT3 is that, not only is it a=
+tomic, but ENDBR is sort of a NOP, so we don=E2=80=99t need to replace the E=
+NDBR with anything.
+
+>=20
+>             Linus
