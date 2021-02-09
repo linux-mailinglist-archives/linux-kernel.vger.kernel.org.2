@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6797D314610
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A38314612
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhBICIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:08:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229683AbhBICIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:08:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A86F864E7D;
-        Tue,  9 Feb 2021 02:08:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612836491;
-        bh=Ltb9+BmwBOeM7mtAzRuVHyRilVNgXhqS09CXwZDOZCw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=by2HQ+5EloMJfvya8q6f6ahBhthPIMnIkN0CJu+KPXgOaOgq740hN1m9H3BbhFU5m
-         9W09OeCvN8qF2P9otcrtue7SuFwfxfeBxbr9/5NIIrLS7G+zAdFoSMZ8ZmEj2vsFh1
-         P8mENmBTc3bHCAEnuvQFgv7gvWK91EyfYF/tUJDiAKMts5YfR+uywp4gtpSX5ms+3C
-         h0hygDF1LHMEZyQIOxXGqBJoDfPAivtfcof1fZwAJLHlKmvOAMUuvU55YTpZJWcxeV
-         cz1lQqN1GcZNRUPAUgkkV5JRay+v7Joeqc6SU2rFVW6hgjznLOWsuN4dbiB4bHn00z
-         P38ROfOKLmHiw==
-Received: by mail-ej1-f53.google.com with SMTP id y9so28812472ejp.10;
-        Mon, 08 Feb 2021 18:08:10 -0800 (PST)
-X-Gm-Message-State: AOAM532iDzrwsvTmSJGhp5vHW3xIaUB7SGHmfX0OSNmZBWuVnqjMWSxP
-        HJ+Xee56CejoVj+sjRToHj0vdDDvlp5xXJcT3Q==
-X-Google-Smtp-Source: ABdhPJwFwMKgyM+S67pVy/bBXFnAdJXQkuS+LVViC01nwawVI35CCyVNoeIN4xO1suGpju+cYiArhcHB6PeT+Z/hQUA=
-X-Received: by 2002:a17:906:4301:: with SMTP id j1mr19698263ejm.108.1612836489061;
- Mon, 08 Feb 2021 18:08:09 -0800 (PST)
+        id S229753AbhBICKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 21:10:53 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12601 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhBICKv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 21:10:51 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DZRBv6Xltz165bN;
+        Tue,  9 Feb 2021 10:08:39 +0800 (CST)
+Received: from [10.174.179.149] (10.174.179.149) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 9 Feb 2021 10:10:00 +0800
+Subject: Re: [PATCH] mm/hugetlb: Remove redundant VM_BUG_ON_PAGE on
+ putback_active_hugepage()
+To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20210208083739.33178-1-linmiaohe@huawei.com>
+ <7e1cdef7-e3cd-79c1-c30c-5f5e9e9f85ac@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <a5a09912-72ab-f494-0f29-5e3b7fb7c5a4@huawei.com>
+Date:   Tue, 9 Feb 2021 10:10:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210209010439.3529036-1-saravanak@google.com>
-In-Reply-To: <20210209010439.3529036-1-saravanak@google.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 8 Feb 2021 20:07:56 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKHSkjY2LC_RucLr8HTNHuhY0ALQetOUBGUXcMGXpeKDA@mail.gmail.com>
-Message-ID: <CAL_JsqKHSkjY2LC_RucLr8HTNHuhY0ALQetOUBGUXcMGXpeKDA@mail.gmail.com>
-Subject: Re: [PATCH] of: property: Fix fw_devlink handling of interrupts/interrupts-extended
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7e1cdef7-e3cd-79c1-c30c-5f5e9e9f85ac@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 7:04 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> Commit 4104ca776ba3 ("of: property: Add fw_devlink support for interrupts")
-> was not taking interrupt-map into account. Fix that.
->
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Fixes: 4104ca776ba3 ("of: property: Add fw_devlink support for interrupts")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
-> Greg,
->
-> This needs to go into driver-core as the "Fixes" commit is only in
-> driver-core if I'm not mistaken.
->
-> -Saravana
->
->  drivers/of/property.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+Hi:
+On 2021/2/9 9:26, Mike Kravetz wrote:
+> On 2/8/21 12:37 AM, Miaohe Lin wrote:
+>> PageHead(page) is implicitly checked in set_page_huge_active() via the
+>> PageHeadHuge(page) check. So remove this explicit one.
+> 
+> I do not disagree with the code change.  However, this commit message
+> is not accurate.  set_page_huge_active() no longer exists in the tree
+> you are changing.  It was replaced with SetHPageMigratable.  Also, the
+> VM_BUG_ON_PAGE(!PageHeadHuge(page), page) was removed in the process.
+> So, there is no redundant check.
+> 
+> However, a quick audit of calling code reveals that all callers know they
+> are operating on a hugetlb head page.
+> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+So I should change the commit log like:
+
+	All callers know they are operating on a hugetlb head page. So this VM_BUG_ON_PAGE
+	can't catch anything useful.
+
+and send a v2. Right?
