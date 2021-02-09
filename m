@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F207D3145CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2F53145CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhBIBtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:49:01 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2830 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhBIBs7 (ORCPT
+        id S229702AbhBIBub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:50:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhBIBuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:48:59 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DZQhn4XsVz13rxP;
-        Tue,  9 Feb 2021 09:46:01 +0800 (CST)
-Received: from dggemi711-chm.china.huawei.com (10.3.20.110) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 9 Feb 2021 09:48:15 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi711-chm.china.huawei.com (10.3.20.110) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 9 Feb 2021 09:48:15 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Tue, 9 Feb 2021 09:48:15 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Finn Thain <fthain@telegraphics.com.au>,
-        tanxiaofei <tanxiaofei@huawei.com>
-CC:     "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [Linuxarm]  Re: [PATCH for-next 00/32] spin lock usage
- optimization for SCSI drivers
-Thread-Topic: [Linuxarm]  Re: [PATCH for-next 00/32] spin lock usage
- optimization for SCSI drivers
-Thread-Index: AQHW/fAMrBMz1ua2YUiLJwcWnjqnW6pPDROA
-Date:   Tue, 9 Feb 2021 01:48:15 +0000
-Message-ID: <e949a474a9284ac6951813bfc8b34945@hisilicon.com>
-References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com>
- <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au>
-In-Reply-To: <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.92]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 8 Feb 2021 20:50:20 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CD2C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:49:40 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id q72so668337pjq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:49:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=8sv6X8syVHw1MIFVnsFs4iqBtg0ahotEAO2Dby5NCpU=;
+        b=iYuo4Ld9rJKpnWlst5Klip3cA0uIYA463UoQfUlm/ElZXIEuJ9xOYyWIQPmO05T52D
+         lsdTx4V2qLKSR6bZWN1CqWototlMMdjJ7LRHfAg45/+FgGaCKErnR6JUzNOTe7K5GlY8
+         oWCx4rAEEpbyUCqcc+dOclWiENK6Fjg4dxZ0rXZY9Tbipsy4umONf/gn0LSrRR3gSh2c
+         8S1k1JrOc4bGdIhSFHduHa0rGtFeNA0LPy+Mmqu6DGzoCKrdGDmy7ZzIdhSr9VK4y9o7
+         p1pbEp3aovV2Kq+OF58bEq1L5V/DeZPzQg06pGN5fcf3Rgspbow0oH6i3QfOp0AgRPwJ
+         EXcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=8sv6X8syVHw1MIFVnsFs4iqBtg0ahotEAO2Dby5NCpU=;
+        b=H4a3JRfsLx2I0GwE94yU/Shb2U8beEDA2Ec09HiBn7K+xylGSjlJCG2XtUmSYQkmKV
+         7RNDmoz098rIVOQ/io/5auw/UtSE+bdYZFIOgDSaHVMVl7kS7MYwjbazlY1frv6ycOMh
+         685r8bfuMk+QkdQDcU3hy9zg061v1oZTR5oxGXsOWmrNXFIGJnV5gy+R30jYcRbtHOYJ
+         uAhft31b2Vn0dTn5RtYPMiVXyC6o4Fwir+MT4WWhyMm83ft9nV2GjsNx/NSs9wndpbVB
+         JAyDWO50qY1P2M2SiUJe4qtxQGMSyGpSfLB1SyXbw5J5yBW3o8UH2oHzTcM/z2kiuIDy
+         XeLw==
+X-Gm-Message-State: AOAM530qki/3rBet90JcSJ37qvCF5LFjgRb4x554bwJ7t6NZiG92pURX
+        gJVGkWzwywo9K16YZEKKGj8vGg==
+X-Google-Smtp-Source: ABdhPJzZWidT5PIEFpUI7hEhLGLVBjo5gbdYu1UlNuQmIRIftrCd/yOqL2Ex2XHz8iGxZg85N4LdFQ==
+X-Received: by 2002:a17:90a:c789:: with SMTP id gn9mr1662640pjb.101.1612835380312;
+        Mon, 08 Feb 2021 17:49:40 -0800 (PST)
+Received: from [10.255.96.22] ([139.177.225.229])
+        by smtp.gmail.com with ESMTPSA id y2sm488470pjw.36.2021.02.08.17.49.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 17:49:39 -0800 (PST)
+Subject: Re: [External] Re: [PATCH] psi: Add PSI_CPU_FULL state
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com
+References: <20210207072402.67532-1-zhouchengming@bytedance.com>
+ <YCGAYEiyTKCO71E3@cmpxchg.org>
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+Message-ID: <2cb984f3-fb8b-df26-31a2-8a091213d87e@bytedance.com>
+Date:   Tue, 9 Feb 2021 09:49:34 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <YCGAYEiyTKCO71E3@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRmlubiBUaGFpbiBbbWFp
-bHRvOmZ0aGFpbkB0ZWxlZ3JhcGhpY3MuY29tLmF1XQ0KPiBTZW50OiBNb25kYXksIEZlYnJ1YXJ5
-IDgsIDIwMjEgODo1NyBQTQ0KPiBUbzogdGFueGlhb2ZlaSA8dGFueGlhb2ZlaUBodWF3ZWkuY29t
-Pg0KPiBDYzogamVqYkBsaW51eC5pYm0uY29tOyBtYXJ0aW4ucGV0ZXJzZW5Ab3JhY2xlLmNvbTsN
-Cj4gbGludXgtc2NzaUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
-cmc7DQo+IGxpbnV4YXJtQG9wZW5ldWxlci5vcmcNCj4gU3ViamVjdDogW0xpbnV4YXJtXSBSZTog
-W1BBVENIIGZvci1uZXh0IDAwLzMyXSBzcGluIGxvY2sgdXNhZ2Ugb3B0aW1pemF0aW9uDQo+IGZv
-ciBTQ1NJIGRyaXZlcnMNCj4gDQo+IE9uIFN1biwgNyBGZWIgMjAyMSwgWGlhb2ZlaSBUYW4gd3Jv
-dGU6DQo+IA0KPiA+IFJlcGxhY2Ugc3Bpbl9sb2NrX2lycXNhdmUgd2l0aCBzcGluX2xvY2sgaW4g
-aGFyZCBJUlEgb2YgU0NTSSBkcml2ZXJzLg0KPiA+IFRoZXJlIGFyZSBubyBmdW5jdGlvbiBjaGFu
-Z2VzLCBidXQgbWF5IHNwZWVkIHVwIGlmIGludGVycnVwdCBoYXBwZW4gdG9vDQo+ID4gb2Z0ZW4u
-DQo+IA0KPiBUaGlzIGNoYW5nZSBkb2Vzbid0IG5lY2Vzc2FyaWx5IHdvcmsgb24gcGxhdGZvcm1z
-IHRoYXQgc3VwcG9ydCBuZXN0ZWQNCj4gaW50ZXJydXB0cy4NCj4gDQo+IFdlcmUgeW91IGFibGUg
-dG8gbWVhc3VyZSBhbnkgYmVuZWZpdCBmcm9tIHRoaXMgY2hhbmdlIG9uIHNvbWUgb3RoZXINCj4g
-cGxhdGZvcm0/DQoNCkkgdGhpbmsgdGhlIGNvZGUgZGlzYWJsaW5nIGlycSBpbiBoYXJkSVJRIGlz
-IHNpbXBseSB3cm9uZy4NClNpbmNlIHRoaXMgY29tbWl0DQpodHRwczovL2dpdC5rZXJuZWwub3Jn
-L3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0Lz9pZD1l
-NThhYTNkMmQwY2MNCmdlbmlycTogUnVuIGlycSBoYW5kbGVycyB3aXRoIGludGVycnVwdHMgZGlz
-YWJsZWQNCg0KaW50ZXJydXB0IGhhbmRsZXJzIGFyZSBkZWZpbml0ZWx5IHJ1bm5pbmcgaW4gYSBp
-cnEtZGlzYWJsZWQgY29udGV4dA0KdW5sZXNzIGlycSBoYW5kbGVycyBlbmFibGUgdGhlbSBleHBs
-aWNpdGx5IGluIHRoZSBoYW5kbGVyIHRvIHBlcm1pdA0Kb3RoZXIgaW50ZXJydXB0cy4NCg0KPiAN
-Cj4gUGxlYXNlIHNlZSBhbHNvLA0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1zY3Np
-Lzg5YzVjYjA1Y2I4NDQ5MzlhZTY4NGRiMDA3N2Y2NzVmQGgzYy5jbw0KPiBtLw0KPiBfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBMaW51eGFybSBtYWls
-aW5nIGxpc3QgLS0gbGludXhhcm1Ab3BlbmV1bGVyLm9yZw0KPiBUbyB1bnN1YnNjcmliZSANCg0K
-VGhhbmtzDQpCYXJyeQ0KDQo=
+在 2021/2/9 上午2:18, Johannes Weiner 写道:
+
+> On Sun, Feb 07, 2021 at 03:24:02PM +0800, Chengming Zhou wrote:
+>> The FULL state doesn't exist for the CPU resource at the system level,
+>> but exist at the cgroup level, means all non-idle tasks in a cgroup are
+>> delayed on the CPU resource which used by others outside of the cgroup.
+>>
+>> Co-developed-by: Muchun Song <songmuchun@bytedance.com>
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> That metric's come up in our production environment recently as well,
+> it makes a lot of sense.
+>
+> In addition to outside competition, this also applies to downtimes
+> enforced by cpu.max - another cgroup usecase that is worth mentioning
+> in the changelog & code comment.
+
+Thank you, I will add this and send patch-v2.
+
+> Thanks
