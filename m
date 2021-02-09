@@ -2,128 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA6D31446F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86059314473
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhBHX7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 18:59:35 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4528 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229854AbhBHX7c (ORCPT
+        id S229876AbhBIACi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 19:02:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39062 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229702AbhBIACc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 18:59:32 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 118NXEvH155636;
-        Mon, 8 Feb 2021 18:58:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=mxn87d4AQHZAkLlT2xU24ah/PVAVDm4ATnnmcY7rvko=;
- b=Eb4XMyvhwDH3HB0LvVSlJxJWsdw9GHkBaxCr2nPW/9jV2Fm01Eaf3AGx6Rtp1yC4Pf6f
- n9A7ZDuUPm08lhlItSkDdQNr1WQEv+AgkLcq9Q3JQglTnPsBrMt8WXTSIt4UVm+hYvtr
- xOZ9d689FLZ/VXL6whLzNecynW4pGNIRtIgYrXHTBn8vY70jHAcu4V3GJUS2orh1wTy7
- M/yqKkkH78ChyWyq9yWEd1xGztKS91ci6KdcdjmNOAkmw0p8bXGEeYihphsQ6D2U3ugw
- CmdhO707cb4pB19U11/sqr/DulUr20pdE3g6IseLZo7PRmktytwRspD2XyEbmT+6Vg51 0w== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36kbsmwe4d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Feb 2021 18:58:13 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 118NmKDr021090;
-        Mon, 8 Feb 2021 23:58:13 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma03wdc.us.ibm.com with ESMTP id 36hjr92f6b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Feb 2021 23:58:13 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 118NwCQS26149262
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 8 Feb 2021 23:58:12 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B721DAE063;
-        Mon,  8 Feb 2021 23:58:12 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 685ADAE05F;
-        Mon,  8 Feb 2021 23:58:09 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.80.224.222])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Mon,  8 Feb 2021 23:58:09 +0000 (GMT)
-References: <20201220064959.GB392325@kernel.org>
- <20210122043714.266075-1-bauerman@linux.ibm.com>
- <20210123180911.aafa8404a3a7a30779713456@linux-foundation.org>
- <20210124073421.GG6332@kernel.org>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, riel@surriel.com,
-        kernel-team@fb.com, Ram Pai <linuxram@us.ibm.com>,
-        linux-kernel@vger.kernel.org, mhocko@kernel.org,
-        linux-mm@kvack.org,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        iamjoonsoo.kim@lge.com, guro@fb.com, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations
- with kernel_end
-In-reply-to: <20210124073421.GG6332@kernel.org>
-Date:   Mon, 08 Feb 2021 20:58:07 -0300
-Message-ID: <87ft26yuwg.fsf@manicouagan.localdomain>
+        Mon, 8 Feb 2021 19:02:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612828863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xcZ+yeCeKdV2jRak92LuD28RYXAN2xMEiGah/lbPE24=;
+        b=JMikQXkQK0JhVCMgqvOvB2BORkfXIaEL4Pc/EXH7vmrJceo1EWkLckdlN5f+gqGTKe8rQZ
+        WZcMD+AtZK9F6hwWQyZasTP/IEkj759P+rXdcwnvlJuMBIzKjnIfXtVEVtj6+icbeUiFWi
+        FDnhBnTyLnrrS8VBF8D3nU6fupLj1aI=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-79-05Gz8qItPYGWfpjmovVMbw-1; Mon, 08 Feb 2021 19:01:02 -0500
+X-MC-Unique: 05Gz8qItPYGWfpjmovVMbw-1
+Received: by mail-qv1-f72.google.com with SMTP id u8so11936030qvm.5
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 16:01:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xcZ+yeCeKdV2jRak92LuD28RYXAN2xMEiGah/lbPE24=;
+        b=VPv02ZLlYBFGNmPb46N3e5/rXaLo+4gwldQogzAaQ1hqp8f79gadz316I7/162eO6U
+         LD9Q8HoKo+abXJgpMOOam0FQeSVg6uRi6bvopOHq+0PHjUF4qGUBIAL+oWPoC18oXZAL
+         xQIsNoxwDQbyIpPx1ZVF9ma9vKH1DARYWBFBMQtz/n2mKdM6nvdcS6v3eu8AVufwrhoh
+         6WgJg2/86rXR/BYiLRtRKTrXstkRfU4nB7pB9gbPYfMoILlA1LiEOh1YwJJjg7c8UoJU
+         HzyOByKw+nNKHhn3+b68gDRxQTLYcpAZdSH+Qo1nlIlCv4ZEKR4tzsRRZ8nFNlQEwnZo
+         kvCg==
+X-Gm-Message-State: AOAM5302qsdRSfyljTW+t1d0OAgoeKuHTXnlb9/htw2OTqJ9SpqMO+Le
+        GA3z9VIgsikdVcNu1lhPUFmJMOuyJhcSGMTu0CbI+9MlhvLPxqTgEnVEhxE2/yig+SyxXdXl5GO
+        ulIrTo/Qhhwgwb+p3LalHGq3L
+X-Received: by 2002:a0c:8365:: with SMTP id j92mr18642881qva.19.1612828861684;
+        Mon, 08 Feb 2021 16:01:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzwdJLdWaHbVrmWjJHQTdvfqr10RsoH69jk6l+AH5Y/5B1w0vnsBBKgJ9zss03AZxS1edcY2w==
+X-Received: by 2002:a0c:8365:: with SMTP id j92mr18642830qva.19.1612828861397;
+        Mon, 08 Feb 2021 16:01:01 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id j46sm5936461qtk.1.2021.02.08.16.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 16:01:00 -0800 (PST)
+Date:   Mon, 8 Feb 2021 19:00:58 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v4 05/10] userfaultfd: add minor fault registration mode
+Message-ID: <20210209000058.GA78818@xz-x1>
+References: <20210204183433.1431202-1-axelrasmussen@google.com>
+ <20210204183433.1431202-6-axelrasmussen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-08_16:2021-02-08,2021-02-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 mlxscore=0 impostorscore=0 phishscore=0
- clxscore=1015 malwarescore=0 bulkscore=0 spamscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102080130
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210204183433.1431202-6-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 04, 2021 at 10:34:28AM -0800, Axel Rasmussen wrote:
+> This feature allows userspace to intercept "minor" faults. By "minor"
+> faults, I mean the following situation:
+> 
+> Let there exist two mappings (i.e., VMAs) to the same page(s). One of
+> the mappings is registered with userfaultfd (in minor mode), and the
+> other is not. Via the non-UFFD mapping, the underlying pages have
+> already been allocated & filled with some contents. The UFFD mapping
+> has not yet been faulted in; when it is touched for the first time,
+> this results in what I'm calling a "minor" fault. As a concrete
+> example, when working with hugetlbfs, we have huge_pte_none(), but
+> find_lock_page() finds an existing page.
+> 
+> This commit adds the new registration mode, and sets the relevant flag
+> on the VMAs being registered. In the hugetlb fault path, if we find
+> that we have huge_pte_none(), but find_lock_page() does indeed find an
+> existing page, then we have a "minor" fault, and if the VMA has the
+> userfaultfd registration flag, we call into userfaultfd to handle it.
+> 
+> Why add a new registration mode, as opposed to adding a feature to
+> MISSING registration, like UFFD_FEATURE_SIGBUS?
+> 
+> - The semantics are significantly different. UFFDIO_COPY or
+>   UFFDIO_ZEROPAGE do not make sense for these minor faults; userspace
+>   would instead just memset() or memcpy() or whatever via the non-UFFD
+>   mapping. Unlike MISSING registration, MINOR registration only makes
+>   sense for hugetlbfs (or, in the future, shmem), as this is the only
+>   way to get two VMAs to a single set of underlying pages.
+> 
+> - Doing so would make handle_userfault()'s "reason" argument confusing.
+>   We'd pass in "MISSING" even if the pages weren't really missing.
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  fs/proc/task_mmu.c               |  1 +
+>  fs/userfaultfd.c                 | 81 ++++++++++++++++++++------------
+>  include/linux/mm.h               |  1 +
+>  include/linux/userfaultfd_k.h    | 15 +++++-
+>  include/trace/events/mmflags.h   |  1 +
+>  include/uapi/linux/userfaultfd.h | 15 +++++-
+>  mm/hugetlb.c                     | 32 +++++++++++++
+>  7 files changed, 112 insertions(+), 34 deletions(-)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 602e3a52884d..94e951ea3e03 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -651,6 +651,7 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
+>  		[ilog2(VM_MTE)]		= "mt",
+>  		[ilog2(VM_MTE_ALLOWED)]	= "",
+>  #endif
+> +		[ilog2(VM_UFFD_MINOR)]	= "ui",
+>  #ifdef CONFIG_ARCH_HAS_PKEYS
+>  		/* These come out via ProtectionKey: */
+>  		[ilog2(VM_PKEY_BIT0)]	= "",
+> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+> index a0f66e12026b..c643cf13d957 100644
+> --- a/fs/userfaultfd.c
+> +++ b/fs/userfaultfd.c
+> @@ -197,24 +197,21 @@ static inline struct uffd_msg userfault_msg(unsigned long address,
+>  	msg_init(&msg);
+>  	msg.event = UFFD_EVENT_PAGEFAULT;
+>  	msg.arg.pagefault.address = address;
+> +	/*
+> +	 * These flags indicate why the userfault occurred:
+> +	 * - UFFD_PAGEFAULT_FLAG_WP indicates a write protect fault.
+> +	 * - UFFD_PAGEFAULT_FLAG_MINOR indicates a minor fault.
+> +	 * - Neither of these flags being set indicates a MISSING fault.
+> +	 *
+> +	 * Separately, UFFD_PAGEFAULT_FLAG_WRITE indicates it was a write
+> +	 * fault. Otherwise, it was a read fault.
+> +	 */
+>  	if (flags & FAULT_FLAG_WRITE)
+> -		/*
+> -		 * If UFFD_FEATURE_PAGEFAULT_FLAG_WP was set in the
+> -		 * uffdio_api.features and UFFD_PAGEFAULT_FLAG_WRITE
+> -		 * was not set in a UFFD_EVENT_PAGEFAULT, it means it
+> -		 * was a read fault, otherwise if set it means it's
+> -		 * a write fault.
+> -		 */
+>  		msg.arg.pagefault.flags |= UFFD_PAGEFAULT_FLAG_WRITE;
+>  	if (reason & VM_UFFD_WP)
+> -		/*
+> -		 * If UFFD_FEATURE_PAGEFAULT_FLAG_WP was set in the
+> -		 * uffdio_api.features and UFFD_PAGEFAULT_FLAG_WP was
+> -		 * not set in a UFFD_EVENT_PAGEFAULT, it means it was
+> -		 * a missing fault, otherwise if set it means it's a
+> -		 * write protect fault.
+> -		 */
+>  		msg.arg.pagefault.flags |= UFFD_PAGEFAULT_FLAG_WP;
+> +	if (reason & VM_UFFD_MINOR)
+> +		msg.arg.pagefault.flags |= UFFD_PAGEFAULT_FLAG_MINOR;
+>  	if (features & UFFD_FEATURE_THREAD_ID)
+>  		msg.arg.pagefault.feat.ptid = task_pid_vnr(current);
+>  	return msg;
+> @@ -401,8 +398,10 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
+>  
+>  	BUG_ON(ctx->mm != mm);
+>  
+> -	VM_BUG_ON(reason & ~(VM_UFFD_MISSING|VM_UFFD_WP));
+> -	VM_BUG_ON(!(reason & VM_UFFD_MISSING) ^ !!(reason & VM_UFFD_WP));
+> +	/* Any unrecognized flag is a bug. */
+> +	VM_BUG_ON(reason & ~__VM_UFFD_FLAGS);
+> +	/* 0 or > 1 flags set is a bug; we expect exactly 1. */
+> +	VM_BUG_ON(!reason || !!(reason & (reason - 1)));
+>  
+>  	if (ctx->features & UFFD_FEATURE_SIGBUS)
+>  		goto out;
+> @@ -612,7 +611,7 @@ static void userfaultfd_event_wait_completion(struct userfaultfd_ctx *ctx,
+>  		for (vma = mm->mmap; vma; vma = vma->vm_next)
+>  			if (vma->vm_userfaultfd_ctx.ctx == release_new_ctx) {
+>  				vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
+> -				vma->vm_flags &= ~(VM_UFFD_WP | VM_UFFD_MISSING);
+> +				vma->vm_flags &= ~__VM_UFFD_FLAGS;
+>  			}
+>  		mmap_write_unlock(mm);
+>  
+> @@ -644,7 +643,7 @@ int dup_userfaultfd(struct vm_area_struct *vma, struct list_head *fcs)
+>  	octx = vma->vm_userfaultfd_ctx.ctx;
+>  	if (!octx || !(octx->features & UFFD_FEATURE_EVENT_FORK)) {
+>  		vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
+> -		vma->vm_flags &= ~(VM_UFFD_WP | VM_UFFD_MISSING);
+> +		vma->vm_flags &= ~__VM_UFFD_FLAGS;
+>  		return 0;
+>  	}
+>  
+> @@ -726,7 +725,7 @@ void mremap_userfaultfd_prep(struct vm_area_struct *vma,
+>  	} else {
+>  		/* Drop uffd context if remap feature not enabled */
+>  		vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
+> -		vma->vm_flags &= ~(VM_UFFD_WP | VM_UFFD_MISSING);
+> +		vma->vm_flags &= ~__VM_UFFD_FLAGS;
+>  	}
+>  }
+>  
+> @@ -867,12 +866,12 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
+>  	for (vma = mm->mmap; vma; vma = vma->vm_next) {
+>  		cond_resched();
+>  		BUG_ON(!!vma->vm_userfaultfd_ctx.ctx ^
+> -		       !!(vma->vm_flags & (VM_UFFD_MISSING | VM_UFFD_WP)));
+> +		       !!(vma->vm_flags & __VM_UFFD_FLAGS));
+>  		if (vma->vm_userfaultfd_ctx.ctx != ctx) {
+>  			prev = vma;
+>  			continue;
+>  		}
+> -		new_flags = vma->vm_flags & ~(VM_UFFD_MISSING | VM_UFFD_WP);
+> +		new_flags = vma->vm_flags & ~__VM_UFFD_FLAGS;
+>  		prev = vma_merge(mm, prev, vma->vm_start, vma->vm_end,
+>  				 new_flags, vma->anon_vma,
+>  				 vma->vm_file, vma->vm_pgoff,
+> @@ -1305,9 +1304,29 @@ static inline bool vma_can_userfault(struct vm_area_struct *vma,
+>  				     unsigned long vm_flags)
+>  {
+>  	/* FIXME: add WP support to hugetlbfs and shmem */
+> -	return vma_is_anonymous(vma) ||
+> -		((is_vm_hugetlb_page(vma) || vma_is_shmem(vma)) &&
+> -		 !(vm_flags & VM_UFFD_WP));
+> +	if (vm_flags & VM_UFFD_WP) {
+> +		if (is_vm_hugetlb_page(vma) || vma_is_shmem(vma))
+> +			return false;
+> +	}
+> +
+> +	if (vm_flags & VM_UFFD_MINOR) {
+> +		/*
+> +		 * The use case for minor registration (intercepting minor
+> +		 * faults) is to handle the case where a page is present, but
+> +		 * needs to be modified before it can be used. This only makes
+> +		 * sense when you have two mappings to the same underlying
+> +		 * pages (one UFFD registered, one not), but the memory doesn't
+> +		 * have to be shared (consider one process mapping a hugetlbfs
+> +		 * file with MAP_SHARED, and then a second process doing
+> +		 * MAP_PRIVATE).
 
-Mike Rapoport <rppt@kernel.org> writes:
+No strong opinion, but I'd drop the whole chunk of comment here..
 
-> On Sat, Jan 23, 2021 at 06:09:11PM -0800, Andrew Morton wrote:
->> On Fri, 22 Jan 2021 01:37:14 -0300 Thiago Jung Bauermann <bauerman@linux.ibm.com> wrote:
->> 
->> > Mike Rapoport <rppt@kernel.org> writes:
->> > 
->> > > > Signed-off-by: Roman Gushchin <guro@fb.com>
->> > > 
->> > > Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
->> > 
->> > I've seen a couple of spurious triggers of the WARN_ONCE() removed by this
->> > patch. This happens on some ppc64le bare metal (powernv) server machines with
->> > CONFIG_SWIOTLB=y and crashkernel=4G, as described in a candidate patch I posted
->> > to solve this issue in a different way:
->> > 
->> > https://lore.kernel.org/linuxppc-dev/20201218062103.76102-1-bauerman@linux.ibm.com/
->> > 
->> > Since this patch solves that problem, is it possible to include it in the next
->> > feasible v5.11-rcX, with the following tag?
->> 
->> We could do this, if we're confident that this patch doesn't depend on
->> [1/2] "mm: cma: allocate cma areas bottom-up"?  I think it is...
->
-> A think it does not depend on cma bottom-up allocation, it's rather the other
-> way around: without this CMA bottom-up allocation could fail with KASLR
-> enabled.
+  - "what is minor fault" should be covered in the documentation file already.
 
-I noticed that this patch is now upstream as:
+  - "two mappings" seems slightly superfluous too, since we can still use minor
+    fault with TRUNCATE+UFFDIO_COPY.. if we want?  maybe?
 
-2dcb39645441 memblock: do not start bottom-up allocations with kernel_end
+  - "memory doesn't have to be shared" would be a bit odd too if saying that
+    without any code checking against "shared" at all, I'd say. :)
 
-> Still, this patch may need updates to the way x86 does early reservations:
->
-> https://lore.kernel.org/lkml/20210115083255.12744-1-rppt@kernel.org
+The FIXME below it is fine.
 
-... but the patches from this link still aren't. Isn't this a potential
-problem for x86?
+If you agree with above, feel free to add my r-b after dropping the chunk:
 
-The patch series on the link above is now superseded by v2:
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-https://lore.kernel.org/linux-mm/20210128105711.10428-1-rppt@kernel.org/
+Thanks,
 
 -- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Peter Xu
+
