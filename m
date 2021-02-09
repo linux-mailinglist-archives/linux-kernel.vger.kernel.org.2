@@ -2,128 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE8E3153FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AF43153F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhBIQfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:35:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52112 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232825AbhBIQem (ORCPT
+        id S232823AbhBIQeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232710AbhBIQeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:34:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612888397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TpPewHFE2MVqf9Z/Y4xQ1jlFtNOfgvwTnjX04XxYNLs=;
-        b=GutnhLNMCB0KjWhH/GuZb/GJGMsXDGc0LDfnYBaDzdFe3lAad16ARC9+za4WluI4PqdQmh
-        cFJLHt0621exACRd/TEG1FZWPup/enHZ1ax8Bn7JYTh7OTVM14KCARn6uNkOmUVZQCpEM0
-        XlGs5FtDLhvr6SjuciNaGDMmmYCSSNI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-p-MvxQByOjiYbZifaadn7w-1; Tue, 09 Feb 2021 11:33:13 -0500
-X-MC-Unique: p-MvxQByOjiYbZifaadn7w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5141F107AD90;
-        Tue,  9 Feb 2021 16:32:58 +0000 (UTC)
-Received: from treble (ovpn-120-169.rdu2.redhat.com [10.10.120.169])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4992560BD9;
-        Tue,  9 Feb 2021 16:32:57 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 10:32:55 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] objtool,x86: Additionally decode: mov %rsp, (%reg)
-Message-ID: <20210209163255.epr2gxndsweyfpzi@treble>
-References: <20210209091600.075402197@infradead.org>
- <20210209093521.924097404@infradead.org>
+        Tue, 9 Feb 2021 11:34:09 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB78C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:33:28 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id 2so8987864qvd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:33:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XqwbjVKT92bgGmTwHneB7S6uqWbAlrDany7fE7oGT1Y=;
+        b=wl5iSzgZjMYgWkqOkI6F1OA6EQOr0VBwWz+1jGJaqi9r0iUCCJMwGfNy2ZgOyJmrST
+         vI9XWIPnkXj3pyoS9MC9dwZeK338IHOw9TivjHI1cpLlskJGdf5qqx53svtAV2vJ1MP+
+         4gjuaJl6/GvvI9OK4j1vD+s8KCK/lEJ3wnl16G3olAhs+NxlVEHkzb/mrooKe86FFG86
+         K8jc53i5n0xi4ZZKuID1hBG8PLcyVmjfJ00zIKKsi8iZzFGEwYc8oDqm+IViUkuIzBHA
+         TPd5DYSVcdaXjzcwLruGKXCJgCuxRWnF/I3rqeoMLw37Dnmv1MGK8blqtFqMuuXyLG9m
+         I1IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XqwbjVKT92bgGmTwHneB7S6uqWbAlrDany7fE7oGT1Y=;
+        b=JV5HaVUJlcy+uDgYgRR6TM2krwu8jmtOmyacVQHR0VVHJUyKtHBDK/SVk7S7+5PKIa
+         TCcBACQchhBZmC74TeYBjdW2an39sqSTQYmuSCCb/Jjg2w2PUbQQvtYLb1cDWayMwV6N
+         dtzw1EigGjbtk0kiVGJRa+EKFSg+kLQ53if/Ajaem9wMdZdychsXknlBJD48//6HREtu
+         +qJQAEELHkRMjLX5StabYqkcWkExJR1yaGqQ9AjIXDJl+27sM2m+lbFanA/uAxm3R4AD
+         ERp1vPBQ5Bfe0zxSyLl4ppruwHa4u6oKnSMIQ9svw1UIokihpvKnbZwf91RdEIXirgIl
+         bKNA==
+X-Gm-Message-State: AOAM530qOi37rAgiHzU5mE3t0imk2lQ6LrpxyTk5hLTgLUzfvj7jzths
+        HT8I7RL4k5Lf9H+awoDZWUCjYw==
+X-Google-Smtp-Source: ABdhPJx0wrSrroGhdi/SB2WSKmIinjBZ9twNIoDRE69zDqkSKMnz4qGrEtx2k+a0Kcyg4wM2ewXlmw==
+X-Received: by 2002:a0c:814e:: with SMTP id 72mr12762669qvc.16.1612888407771;
+        Tue, 09 Feb 2021 08:33:27 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id h12sm18296262qko.29.2021.02.09.08.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 08:33:26 -0800 (PST)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v3 0/8] mm: memcontrol: switch to rstat
+Date:   Tue,  9 Feb 2021 11:32:56 -0500
+Message-Id: <20210209163304.77088-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210209093521.924097404@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:16:02AM +0100, Peter Zijlstra wrote:
-> Where we already decode: mov %rsp, %reg, also decode mov %rsp, (%reg).
-> 
-> Nothing should match for this new stack-op.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  tools/objtool/arch/x86/decode.c |   23 ++++++++++++++++++-----
->  1 file changed, 18 insertions(+), 5 deletions(-)
-> 
-> --- a/tools/objtool/arch/x86/decode.c
-> +++ b/tools/objtool/arch/x86/decode.c
-> @@ -222,14 +222,24 @@ int arch_decode_instruction(const struct
->  		break;
->  
->  	case 0x89:
-> -		if (rex_w && !rex_r && modrm_mod == 3 && modrm_reg == 4) {
-> +		if (rex_w && !rex_r && modrm_reg == 4) {
->  
-> -			/* mov %rsp, reg */
-> +			/* mov %rsp, */
->  			ADD_OP(op) {
->  				op->src.type = OP_SRC_REG;
->  				op->src.reg = CFI_SP;
-> -				op->dest.type = OP_DEST_REG;
-> -				op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
-> +				if (modrm_mod == 3) {
-> +
-> +					/* mov %rsp, reg */
-> +					op->dest.type = OP_DEST_REG;
-> +					op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
-> +
-> +				} else if (modrm_mod == 0) {
-> +
-> +					/* mov %rsp, (%reg) */
-> +					op->dest.type = OP_DEST_REG_INDIRECT;
-> +					op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
-> +				}
+This is version 3 of the memcg rstat patches.
 
-What if modrm_mod is 1 or 2?   Should 'if' below the 'case' make sure
-it's 0 or 3?
+Updates since v2:
+- optimize root level in io controller's rstat flush callback (Tejun)
+- add comments and changelog notes on root level optimization (Tejun)
+- eliminate mem_cgroup_usage() rstat flush for leaf cgroups (Shakeel)
+- collected review & ack tags
 
->  			}
->  			break;
->  		}
-> @@ -259,8 +269,10 @@ int arch_decode_instruction(const struct
->  				op->dest.reg = CFI_BP;
->  				op->dest.offset = insn.displacement.value;
->  			}
-> +			break;
-> +		}
->  
-> -		} else if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
-> +		if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
->  
->  			/* mov reg, disp(%rsp) */
->  			ADD_OP(op) {
-> @@ -270,6 +282,7 @@ int arch_decode_instruction(const struct
->  				op->dest.reg = CFI_SP;
->  				op->dest.offset = insn.displacement.value;
->  			}
-> +			break;
->  		}
->  
->  		break;
-> 
+Updates since v1:
+- added cgroup selftest output (see test section below) (thanks Roman)
+- patched cgroup selftest so error expectations match kernel implementation
+- added Fixes: tag to 'mm: memcontrol: fix cpuhotplug statistics flushing' (Shakeel)
+- collected review & ack tags
+- added rstat overview to 'mm: memcontrol: switch to rstat' changelog (Michal)
+- simplified memcg_flush_lruvec_page_state() and removed cpu==-1 case (Michal)
 
-Did this change have a point?
+---
 
--- 
-Josh
+This series converts memcg stats tracking to the streamlined rstat
+infrastructure provided by the cgroup core code. rstat is already used
+by the CPU controller and the IO controller. This change is motivated
+by recent accuracy problems in memcg's custom stats code, as well as
+the benefits of sharing common infra with other controllers.
+
+The current memcg implementation does batched tree aggregation on the
+write side: local stat changes are cached in per-cpu counters, which
+are then propagated upward in batches when a threshold (32 pages) is
+exceeded. This is cheap, but the error introduced by the lazy upward
+propagation adds up: 32 pages times CPUs times cgroups in the subtree.
+We've had complaints from service owners that the stats do not
+reliably track and react to allocation behavior as expected, sometimes
+swallowing the results of entire test applications.
+
+The original memcg stat implementation used to do tree aggregation
+exclusively on the read side: local stats would only ever be tracked
+in per-cpu counters, and a memory.stat read would iterate the entire
+subtree and sum those counters up. This didn't keep up with the times:
+
+- Cgroup trees are much bigger now. We switched to lazily-freed
+  cgroups, where deleted groups would hang around until their
+  remaining page cache has been reclaimed. This can result in large
+  subtrees that are expensive to walk, while most of the groups are
+  idle and their statistics don't change much anymore.
+
+- Automated monitoring increased. With the proliferation of userspace
+  oom killing, proactive reclaim, and higher-resolution logging of
+  workload trends in general, top-level stat files are polled at least
+  once a second in many deployments.
+
+- The lifetime of cgroups got shorter. Where most cgroup setups in the
+  past would have a few large policy-oriented cgroups for everything
+  running on the system, newer cgroup deployments tend to create one
+  group per application - which gets deleted again as the processes
+  exit. An aggregation scheme that doesn't retain child data inside
+  the parents loses event history of the subtree.
+
+Rstat addresses all three of those concerns through intelligent,
+persistent read-side aggregation. As statistics change at the local
+level, rstat tracks - on a per-cpu basis - only those parts of a
+subtree that have changes pending and require aggregation. The actual
+aggregation occurs on the colder read side - which can now skip over
+(potentially large) numbers of recently idle cgroups.
+
+---
+
+The test_kmem cgroup selftest is currently failing due to excessive
+cumulative vmstat drift from 100 subgroups:
+
+    ok 1 test_kmem_basic
+    memory.current = 8810496
+    slab + anon + file + kernel_stack = 17074568
+    slab = 6101384
+    anon = 946176
+    file = 0
+    kernel_stack = 10027008
+    not ok 2 test_kmem_memcg_deletion
+    ok 3 test_kmem_proc_kpagecgroup
+    ok 4 test_kmem_kernel_stacks
+    ok 5 test_kmem_dead_cgroups
+    ok 6 test_percpu_basic
+
+As you can see, memory.stat items far exceed memory.current. The
+kernel stack alone is bigger than all of charged memory. That's
+because the memory of the test has been uncharged from memory.current,
+but the negative vmstat deltas are still sitting in the percpu caches.
+
+The test at this time isn't even counting percpu, pagetables etc. yet,
+which would further contribute to the error. The last patch in the
+series updates the test to include them - as well as reduces the
+vmstat tolerances in general to only expect page_counter batching.
+
+With all patches applied, the (now more stringent) test succeeds:
+
+    ok 1 test_kmem_basic
+    ok 2 test_kmem_memcg_deletion
+    ok 3 test_kmem_proc_kpagecgroup
+    ok 4 test_kmem_kernel_stacks
+    ok 5 test_kmem_dead_cgroups
+    ok 6 test_percpu_basic
+
+---
+
+A kernel build test confirms that overhead is comparable. Two kernels
+are built simultaneously in a nested tree with several idle siblings:
+
+root - kernelbuild - one - two - three - four - build-a (defconfig, make -j16)
+                                             `- build-b (defconfig, make -j16)
+                                             `- idle-1
+                                             `- ...
+                                             `- idle-9
+
+During the builds, kernelbuild/memory.stat is read once a second.
+
+A perf diff shows that the changes in cycle distribution is
+minimal. Top 10 kernel symbols:
+
+     0.09%     +0.08%  [kernel.kallsyms]                       [k] __mod_memcg_lruvec_state
+     0.00%     +0.06%  [kernel.kallsyms]                       [k] cgroup_rstat_updated
+     0.08%     -0.05%  [kernel.kallsyms]                       [k] __mod_memcg_state.part.0
+     0.16%     -0.04%  [kernel.kallsyms]                       [k] release_pages
+     0.00%     +0.03%  [kernel.kallsyms]                       [k] __count_memcg_events
+     0.01%     +0.03%  [kernel.kallsyms]                       [k] mem_cgroup_charge_statistics.constprop.0
+     0.10%     -0.02%  [kernel.kallsyms]                       [k] get_mem_cgroup_from_mm
+     0.05%     -0.02%  [kernel.kallsyms]                       [k] mem_cgroup_update_lru_size
+     0.57%     +0.01%  [kernel.kallsyms]                       [k] asm_exc_page_fault
+
+
+---
+
+The on-demand aggregated stats are now fully accurate:
+
+$ grep -e nr_inactive_file /proc/vmstat | awk '{print($1,$2*4096)}'; \
+  grep -e inactive_file /sys/fs/cgroup/memory.stat
+
+vanilla:                              patched:
+nr_inactive_file 1574105088           nr_inactive_file 1027801088
+   inactive_file 1577410560              inactive_file 1027801088
+
+---
+
+ block/blk-cgroup.c                         |  17 +-
+ include/linux/memcontrol.h                 | 119 ++++-------
+ kernel/cgroup/cgroup.c                     |  34 +--
+ kernel/cgroup/rstat.c                      |  63 +++---
+ mm/memcontrol.c                            | 305 +++++++++++++--------------
+ tools/testing/selftests/cgroup/test_kmem.c |  22 +-
+ 6 files changed, 267 insertions(+), 293 deletions(-)
+
+Based on v5.11-rc6-mmotm-2021-02-02-20-19.
+
 
