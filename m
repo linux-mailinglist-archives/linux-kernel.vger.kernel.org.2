@@ -2,133 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984AB315BC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 364B6315BA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234760AbhBJA7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:59:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234170AbhBIWPM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:15:12 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735FEC08EBAC;
-        Tue,  9 Feb 2021 13:55:46 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DZxR030Hxz9sVF;
-        Wed, 10 Feb 2021 08:50:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612907452;
-        bh=G0Ed/dJfXtLx7tzqS8Qox4C6pVjikZuLoNdBUJ+Rhdo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GB11Ad7cEkGMbSJSxvjhz/zMnO2zeqVIVA+YhZegFXyZC52QbYqMu+DFZhuoZZkdV
-         AmuM6WUb4qtE80OZweD5WMV9qnc3xovmZ/cMHC2R4pfAIri/6VvjYEMU4HlYWwvd76
-         WNQlEDqi+0HrQP86fyR/ssTfeLCpAkClQCAB+Vnls7wd5esiRb0pDkgFrA7k5d4VC4
-         WwomBdtvvleerFdXU/FWmNOdwPXnEakSf9KcuH9015WsQQCh+Z5Adwd1qU+mOem5Eo
-         XWxdmE2NlI9sCBluUew4H1GRua3Zt2UMrroN6id9DYr3l2ipOdEig77jZW5CUp1hL5
-         B9n0IqtX4y+hg==
-Date:   Wed, 10 Feb 2021 08:50:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: linux-next: build failure after merge of the modules tree
-Message-ID: <20210210085051.7fb951d1@canb.auug.org.au>
-In-Reply-To: <YCKnRPRTDyfGxnBC@gunter>
-References: <20210209210843.3af66662@canb.auug.org.au>
-        <YCKnRPRTDyfGxnBC@gunter>
+        id S233958AbhBJAv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:51:58 -0500
+Received: from mga18.intel.com ([134.134.136.126]:23099 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232991AbhBIWJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:09:58 -0500
+IronPort-SDR: qm3QDZKXVvUz7zK36R1cBmtYWTMjh9MmHmrEqnEf/VtC/ag/YXR087xiBAeOSqr2pPhsBdR/hE
+ d16Vo7P0q9cA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="169646391"
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="169646391"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 13:52:30 -0800
+IronPort-SDR: KMBExiMqHPbOmuFWjVF8uvMMKlFrOnZlogo2zHUcOm/4gLUvrr15QrFYyuMFho/oWotwP63h6j
+ qaE46oV2PR+w==
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="578192087"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 13:52:30 -0800
+Date:   Tue, 9 Feb 2021 13:52:29 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH 0/4] btrfs: Convert kmaps to core page calls
+Message-ID: <20210209215229.GC2975576@iweiny-DESK2.sc.intel.com>
+References: <20210205232304.1670522-1-ira.weiny@intel.com>
+ <20210209151123.GT1993@suse.cz>
+ <20210209110931.00f00e47d9a0529fcee2ff01@linux-foundation.org>
+ <20210209205249.GB2975576@iweiny-DESK2.sc.intel.com>
+ <20210209131103.b46e80db675fec8bec8d2ad1@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mF5sT4DfCLMx5cOaN5Q+QBj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209131103.b46e80db675fec8bec8d2ad1@linux-foundation.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mF5sT4DfCLMx5cOaN5Q+QBj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 09, 2021 at 01:11:03PM -0800, Andrew Morton wrote:
+> > > 
+> > > It would be best to merge [1/4] via the btrfs tree.  Please add my
+> > > 
+> > > Acked-by: Andrew Morton <akpm@linux-foundation.org>
+> > > 
+> > > 
+> > > Although I think it would be better if [1/4] merely did the code
+> > > movement.  Adding those BUG_ON()s is a semantic/functional change and
+> > > really shouldn't be bound up with the other things this patch series
+> > > does.
+> > 
+> > I proposed this too and was told 'no'...
+> > 
+> > <quote>
+> > If we put in into a separate patch, someone will suggest backing out the
+> > patch which tells us that there's a problem.
+> > </quote>
+> > 	-- https://lore.kernel.org/lkml/20201209201415.GT7338@casper.infradead.org/
+> 
+> Yeah, no, please let's not do this.  Bundling an offtopic change into
+> [1/4] then making three more patches dependent on the ontopic parts of
+> [1/4] is just rude.
+> 
+> I think the case for adding the BUG_ONs can be clearly made.  And that
+> case should at least have been clearly made in the [1/4] changelog!
+> 
+> (Although I expect VM_BUG_ON() would be better - will give us sufficient
+> coverage without the overall impact.)
 
-Hi Jessica,
+I'm ok with VM_BUG_ON()
 
-On Tue, 9 Feb 2021 16:16:20 +0100 Jessica Yu <jeyu@kernel.org> wrote:
->
-> Hmm, these errors don't look like it's related to that particular commit.=
- I was
+> 
+> Let's please queue this up separately.
 
-I found this commit by bisection and then tested by reverting it.
+Ok can I retain your Ack on the move part of the patch?  Note that it does
+change kmap_atomic() to kmap_local_page() currently.
 
-Before this commit, CONFIG_TRIM_UNUSED_KSYMS would not be set in the
-allyesconfig build because CONFIG_UNUSED_SYMBOLS was set.  After this
-commit, CONFIG_TRIM_UNUSED_KSYMS will be set in the allyesconfig build.
+Would you prefer a separate change for that as well?
 
-> able to reproduce these weird autoksym errors even without any modules-ne=
-xt
-> patches applied, and on a clean v5.11-rc7 tree. To reproduce it,
-> CONFIG_TRIM_UNUSED_KSYMS needs to be enabled. I guess that's why we run i=
-nto
-> these errors with allyesconfig. I used a gcc-7 ppc64le cross compiler and=
- got
-> the same compiler warnings. It seems to not compile on powerpc properly b=
-ecause
-> it looks like some symbols have an extra dot "." prefix, for example in
-> kthread.o:
->=20
->     168: 0000000000000318    24 NOTYPE  GLOBAL DEFAULT    6 kthread_creat=
-e_worker
->     169: 0000000000001d90   104 FUNC    GLOBAL DEFAULT    1 .kthread_crea=
-te_worker
->     170: 0000000000000330    24 NOTYPE  GLOBAL DEFAULT    6 kthread_creat=
-e_worker_on_cpu
->     171: 0000000000001e00    88 FUNC    GLOBAL DEFAULT    1 .kthread_crea=
-te_worker_on_cpu
->     172: 0000000000000348    24 NOTYPE  GLOBAL DEFAULT    6 kthread_queue=
-_work
->     173: 0000000000001e60   228 FUNC    GLOBAL DEFAULT    1 .kthread_queu=
-e_work
->=20
-> So I suppose this dot prefix is specific to powerpc. From the ppc64 elf a=
-bi docs:
->=20
->      Symbol names with a dot (.) prefix are reserved for holding entry po=
-int
->      addresses. The value of a symbol named ".FN", if it exists, is the e=
-ntry point
->      of the function "FN".
->=20
-> I guess the presence of the extra dot symbols is confusing
-> scripts/gen_autoksyms.sh, so we get the dot symbols in autoksyms.h, which=
- the
-> preprocessor doesn't like. I am wondering how this was never caught until=
- now
-> and also now curious if this feature was ever functional on powerpc..
+Ira
 
-Which feature?
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/mF5sT4DfCLMx5cOaN5Q+QBj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAjA7sACgkQAVBC80lX
-0Gzwlgf/ctA6cRjr3PycwX776JNl/lXhgq80w0pR7pFpO8OABd7QWDN+9Pb2blnZ
-tfsyhdvSJdCqfF5+iTdZudJOHYLaG572NTep620O3VBxAa6EVOErqSzH4tDlXC8h
-bj4cfZEzd63xGnNh+F/c5szn9k0A5tEJG3fFP/XKYUUbEI74Uu0nzJu/8NhuDPeJ
-kV+9lbT29f4x+OnBGW8Fw/NomyikgMSmxl+ogiqhtDols++QljYLBiHgMqzZoD6v
-F7tydwMWr50nO+0+su30kk08cnW0qivaqxLJzdaGiDk8Px03eGCs5+NUk0kJFGg6
-01/1bjeGuD752z9qVqXE1HixU1CNrw==
-=RQeI
------END PGP SIGNATURE-----
-
---Sig_/mF5sT4DfCLMx5cOaN5Q+QBj--
+PS really CC'ing Matthew now...
