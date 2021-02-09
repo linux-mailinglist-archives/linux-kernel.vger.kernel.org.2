@@ -2,107 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9934315CDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F46315CEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235258AbhBJCGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:06:37 -0500
-Received: from mail.windriver.com ([147.11.1.11]:59128 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234648AbhBJAvN (ORCPT
+        id S235102AbhBJCJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:09:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234564AbhBJAyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 19:51:13 -0500
-X-Greylist: delayed 6077 seconds by postgrey-1.27 at vger.kernel.org; Tue, 09 Feb 2021 19:43:53 EST
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.corp.ad.wrs.com [147.11.82.252])
-        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 119N0cHd018641
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 9 Feb 2021 15:00:43 -0800 (PST)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Feb 2021 14:59:22 -0800
-Received: from yow-pgortmak-lx2.corp.ad.wrs.com (128.224.56.62) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2106.2 via Frontend Transport; Tue, 9 Feb 2021 14:59:21 -0800
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Li Zefan <lizefan@huawei.com>, Ingo Molnar <mingo@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 8/8] rcu: deprecate "all" option to rcu_nocbs=
-Date:   Tue, 9 Feb 2021 17:59:07 -0500
-Message-ID: <20210209225907.78405-9-paul.gortmaker@windriver.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210209225907.78405-1-paul.gortmaker@windriver.com>
-References: <20210209225907.78405-1-paul.gortmaker@windriver.com>
+        Tue, 9 Feb 2021 19:54:13 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF23AC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 16:53:28 -0800 (PST)
+Message-Id: <20210209234041.127454039@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612918405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pDdpc5kGwmEMkRknnC0TBsKKg6AT5TqEtnl0IA7cIQk=;
+        b=rO1v+6G3d9ro1ogC2UG+aDXNkXPtdNe0q7/0UYAqnsR1TAQfd/x/rnneuPajBiLaYNjqIc
+        N/PHbkYTn4XmKzolyCn+LPGFZm5fYFyryXV06AaRqASTd2r3jOjeK5qoF2XY9bFTtIFiHH
+        vmU79jV6GSpoP9HqoKQn3myUA4gz2eVdE9eveWs894DXYW8w4UpyV3wLxhcKKqBWst9rSU
+        MFhHXigqzzTmoh94hT+uFH6my+eBKhJDzcCEiGME9ol/BPiQgT7l2I5t07Np89o6GcjsFa
+        hS/vI/dAUgdumyqOgB/VbudZSEG207feFIKeVmMYS/HgSH3MS9JGq4pJbPao6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612918405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pDdpc5kGwmEMkRknnC0TBsKKg6AT5TqEtnl0IA7cIQk=;
+        b=Mk1otb4vHXyFcPqim603S67ip9Hu3jVDITrbQm2LZf9HlOFhIZnrr4xPO9fY1n6D2iju3C
+        M+HkMBLpDx3Q1HCQ==
+Date:   Wed, 10 Feb 2021 00:40:41 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rich Felker <dalias@libc.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Subject: [patch V2 00/13] x86/irq/64: Inline irq stack switching
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the core bitmap support now accepting "N" as a placeholder for
-the end of the bitmap, "all" can be represented as "0-N" and has the
-advantage of not being specific to RCU (or any other subsystem).
-
-So deprecate the use of "all" by removing documentation references
-to it.  The support itself needs to remain for now, since we don't
-know how many people out there are using it currently, but since it
-is in an __init area anyway, it isn't worth losing sleep over.
-
-Cc: Yury Norov <yury.norov@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
- Documentation/admin-guide/kernel-parameters.txt | 4 +---
- kernel/rcu/tree_plugin.h                        | 6 ++----
- 2 files changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a10b545c2070..a116c0ff0a91 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4037,9 +4037,7 @@
- 				see CONFIG_RAS_CEC help text.
- 
- 	rcu_nocbs=	[KNL]
--			The argument is a cpu list, as described above,
--			except that the string "all" can be used to
--			specify every CPU on the system.
-+			The argument is a cpu list, as described above.
- 
- 			In kernels built with CONFIG_RCU_NOCB_CPU=y, set
- 			the specified list of CPUs to be no-callback CPUs.
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 7e291ce0a1d6..56788dfde922 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1463,14 +1463,12 @@ static void rcu_cleanup_after_idle(void)
- 
- /*
-  * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
-- * The string after the "rcu_nocbs=" is either "all" for all CPUs, or a
-- * comma-separated list of CPUs and/or CPU ranges.  If an invalid list is
-- * given, a warning is emitted and all CPUs are offloaded.
-+ * If the list is invalid, a warning is emitted and all CPUs are offloaded.
-  */
- static int __init rcu_nocb_setup(char *str)
- {
- 	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
--	if (!strcasecmp(str, "all"))
-+	if (!strcasecmp(str, "all"))		/* legacy: use "0-N" instead */
- 		cpumask_setall(rcu_nocb_mask);
- 	else
- 		if (cpulist_parse(str, rcu_nocb_mask)) {
--- 
-2.17.1
-
+VGhpcyBpcyB0aGUgc2Vjb25kIHZlcnNpb24gb2YgdGhpcyBzZXJpZXMuIFYxIGlzIGF2YWlsYWJs
+ZSBoZXJlOgoKICBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjEwMjA0MjA0OTAzLjM1MDI3
+NTc0M0BsaW51dHJvbml4LmRlCgpUaGUgcmVjZW50IGVmZm9ydCB0byBtYWtlIHRoZSBBU00gZW50
+cnkgY29kZSBzbGltIGFuZCB1bmlmaWVkIG1vdmVkCnRoZSBpcnEgc3RhY2sgc3dpdGNoaW5nIG91
+dCBvZiB0aGUgbG93IGxldmVsIEFTTSBjb2RlIHNvIHRoYXQgdGhlCndob2xlIHJldHVybiBmcm9t
+IGludGVycnVwdCB3b3JrIGFuZCBzdGF0ZSBoYW5kbGluZyBjYW4gYmUgZG9uZSBpbiBDCmFuZCB0
+aGUgQVNNIGNvZGUganVzdCBoYW5kbGVzIHRoZSB0cnVlIGxvdyBsZXZlbCBkZXRhaWxzIG9mIGVu
+dHJ5IGFuZApleGl0ICh3aGljaCBpcyBob3JyaWJsZSBlbm91Z2ggYWxyZWFkeSBkdWUgdG8gdGhl
+IHdlbGwgdGhvdWdodCBvdXQKYXJjaGl0ZXR1cmUpLgoKVGhlIG1haW4gZ29hbCBhdCB0aGlzIHBv
+aW50IHdhcyB0byBnZXQgaW5zdHJ1bWVudGF0aW9uIGFuZCBSQ1Ugc3RhdGUKdW5kZXIgY29udHJv
+bCBpbiBhIHZhbGlkYXRlZCB3YXkuIElubGluaW5nIHRoZSBzd2l0Y2ggbWVjaGFuaXNtIHdhcwph
+dHRlbXB0ZWQgYmFjayB0aGVuLCBidXQgdGhhdCBjYXVzZWQgbW9yZSBvYmp0b29sIGFuZCB1bndp
+bmRlciB0cm91YmxlCnRoYW4gd2UgaGFkIGFscmVhZHkgb24gb3VyIHBsYXRlLCBzbyB3ZSBlbmRl
+ZCB1cCB3aXRoIGEgc2ltcGxlLApmdW5jdGlvbmFsIGJ1dCBzdWJvcHRpbWFsIGltcGxlbWVudGF0
+aW9uLiBUaGUgbWFpbiBpc3N1ZXMgYXJlOgoKICAtIFRoZSB1bm5lY2Vzc2FyeSBpbmRpcmVjdCBj
+YWxsIHdoaWNoIGlzIGV4cGVuc2l2ZSB0aGFua3MgdG8KICAgIHJldHBvbGluZQoKICAtIFRoZSBp
+bmFiaWxpdHkgdG8gc3RheSBvbiB0aGUgaXJxIHN0YWNrIGZvciBzb2Z0aXJxIHByb2Nlc3Npbmcg
+b24gcmV0dXJuCiAgICBmcm9tIGludGVycnVwdCB3aGljaCByZXF1aXJlcyBhbm90aGVyIHN0YWNr
+IHN3aXRjaCBvcGVyYXRpb24uCgogIC0gVGhlIGZhY3QgdGhhdCB0aGUgc3RhY2sgc3dpdGNoaW5n
+IGNvZGUgZW5kZWQgdXAgYmVpbmcgYW4gZWFzeSB0byBmaW5kCiAgICBleHBsb2l0IGdhZGdldC4K
+ClRoaXMgc2VyaWVzIHJldmlzaXRzIHRoZSBwcm9ibGVtIGFuZCByZWltcGxlbWVudHMgdGhlIHN0
+YWNrIHN3aXRjaAptZWNoYW5pY3MgdmlhIGV2aWwgaW5saW5lIGFzc2VtYmx5LiBQZXRlciBaaWps
+c3RyYSBwcm92aWRlZCB0aGUgcmVxdWlyZWQKb2JqdG9vbCBhbmQgdW53aW5kZXIgY2hhbmdlcyBh
+bHJlYWR5LiBUaGVzZSBhcmUgYXZhaWxhYmxlIGhlcmU6CgogIGh0dHBzOi8vbG9yZS5rZXJuZWwu
+b3JnL3IvMjAyMTAyMDMxMjAyMjIuNDUxMDY4NTgzQGluZnJhZGVhZC5vcmcKCmFuZCB0aGUgbGF0
+ZXN0IGl0ZXJhdGlvbiBvZiB0aGVtIGlzIGF2YWlsYWJsZSBmcm9tIGdpdDoKCiAgZ2l0Oi8vZ2l0
+Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3BldGVyei9xdWV1ZS5naXQgb2Jq
+dG9vbC9jb3JlCgpUaGUgZnVsbCBzZXJpZXMgYmFzZWQgb24gUGV0ZXIncyBnaXQgYnJhbmNoIGlz
+IGFsc28gYXZhaWxhYmxlIGZyb20gZ2l0OgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2Nt
+L2xpbnV4L2tlcm5lbC9naXQvdGdseC9kZXZlbC5naXQgeDg2L2VudHJ5CgpBbGwgZnVuY3Rpb24g
+Y2FsbHMgYXJlIG5vdyBkaXJlY3QgYW5kIGZ1bGx5IGlubGluZWQgaW5jbHVkaW5nIHRoZSBzaW5n
+bGUKaW5zdGFuY2UgaW4gdGhlIHNvZnRpcnEgY29kZSB3aGljaCBpcyBpbnZva2VkIGZyb20gbG9j
+YWxfYmhfZW5hYmxlKCkgaW4KdGFzayBjb250ZXh0LgoKVGhlIGV4dHJhIDEwMCBsaW5lcyBpbiB0
+aGUgZGlmZnN0YXQgYXJlIHByZXR0eSBtdWNoIHRoZSBleHRlbnNpdmUgY29tbWVudHJ5CmZvciB0
+aGUgd2hvbGUgbWFnaWMgdG8gc3BhcmUgZXZlcnlvbmUgaW5jbHVkaW5nIG15c2VsZiB0byBzY3Jh
+dGNoIGhlYWRzIDIKd2Vla3MgZG93biB0aGUgcm9hZC4gCgpUaGUgdGV4dCBzaXplIGltcGFjdCBp
+cyBpbiB0aGUgbm9pc2UgYW5kIGxvb2tpbmcgYXQgdGhlIGFjdHVhbCBlbnRyeQpmdW5jdGlvbnMg
+dGhlcmUgaXMgZGVwZW5kaW5nIG9uIHRoZSBjb21waWxlciB2YXJpYW50IGV2ZW4gYSBzbWFsbCBz
+aXplCmRlY3JlYXNlLgoKVGhlIHBhdGNoZXMgaGF2ZSBiZWVuIHRlc3RlZCB3aXRoIGdjYzgsIGdj
+YzEwIGFuZCBjbGFuZy0xMyAoZnJlc2ggZnJvbQpnaXQpLiBUaGUgZGlmZmVyZW5jZSBiZXR3ZWVu
+IHRoZSBvdXRwdXQgb2YgdGhlc2UgY29tcGlsZXJzIGlzIG1pbmltYWwuCmdjYzggYmVpbmcgc2xp
+Z2h0bHkgd29yc2UgZHVlIHRvIHN0dXBpZCByZWdpc3RlciBzZWxlY3Rpb24gYW5kIHJhbmRvbQpO
+T1BzIGluamVjdGVkLgoKQ2hhbmdlcyB2cy4gVjE6CgogIC0gVXNlIEFTTV9DQUxMX0NPTlNUUkFJ
+TlQgdW5jb25kaXRpb25hbGx5IChKb3NoKQogIC0gTmV3IGFwcHJvYWNoIHRvIGhhbmRsZSB0aGUg
+aW5saW5pbmcgd2l0aG91dCB0aGUgZXh0cmEgI2lmZGVmZmVyeSAoTGFpKQogIC0gQWRkZWQgc3Rh
+YmxlL2ZpeGVzIHRhZyB0byBwYXRjaCAxIChCb3JpcykKICAtIFN0eWxlIGFuZCBjb21tZW50IHVw
+ZGF0ZXMgKEJvcmlzKQogIC0gQ2xhcmlmaWVkIHRoZSBjYWNoZWxpbmUgZWZmZWN0IGluIHRoZSBj
+aGFuZ2Vsb2cgKFBldGVyKQogIC0gUGlja2VkIHVwIFJldmlld2VkLWJ5IGZyb20gS2VlcyB3aGVy
+ZSBhcHByb3ByaWF0ZQoKClRoYW5rcywKCgl0Z2x4Ci0tLQogYXJjaC9LY29uZmlnICAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgICAgNiAKIGFyY2gvcGFyaXNjL0tjb25maWcgICAgICAgICAgICAg
+ICAgICB8ICAgIDEgCiBhcmNoL3BhcmlzYy9pbmNsdWRlL2FzbS9oYXJkaXJxLmggICAgfCAgICA0
+IAogYXJjaC9wYXJpc2Mva2VybmVsL2lycS5jICAgICAgICAgICAgIHwgICAgMSAKIGFyY2gvcG93
+ZXJwYy9LY29uZmlnICAgICAgICAgICAgICAgICB8ICAgIDEgCiBhcmNoL3Bvd2VycGMvaW5jbHVk
+ZS9hc20vaXJxLmggICAgICAgfCAgICAyIAogYXJjaC9wb3dlcnBjL2tlcm5lbC9pcnEuYyAgICAg
+ICAgICAgIHwgICAgMSAKIGFyY2gvczM5MC9LY29uZmlnICAgICAgICAgICAgICAgICAgICB8ICAg
+IDEgCiBhcmNoL3MzOTAvaW5jbHVkZS9hc20vaGFyZGlycS5oICAgICAgfCAgICAxIAogYXJjaC9z
+MzkwL2tlcm5lbC9pcnEuYyAgICAgICAgICAgICAgIHwgICAgMSAKIGFyY2gvc2gvS2NvbmZpZyAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgIDEgCiBhcmNoL3NoL2luY2x1ZGUvYXNtL2lycS5oICAg
+ICAgICAgICAgfCAgICAxIAogYXJjaC9zaC9rZXJuZWwvaXJxLmMgICAgICAgICAgICAgICAgIHwg
+ICAgMSAKIGFyY2gvc3BhcmMvS2NvbmZpZyAgICAgICAgICAgICAgICAgICB8ICAgIDEgCiBhcmNo
+L3NwYXJjL2luY2x1ZGUvYXNtL2lycV82NC5oICAgICAgfCAgICAxIAogYXJjaC9zcGFyYy9rZXJu
+ZWwvaXJxXzY0LmMgICAgICAgICAgIHwgICAgMSAKIGFyY2gveDg2L0tjb25maWcgICAgICAgICAg
+ICAgICAgICAgICB8ICAgIDIgCiBhcmNoL3g4Ni9lbnRyeS9jb21tb24uYyAgICAgICAgICAgICAg
+fCAgIDE5IC0tCiBhcmNoL3g4Ni9lbnRyeS9lbnRyeV82NC5TICAgICAgICAgICAgfCAgIDQxIC0t
+LS0tCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9pZHRlbnRyeS5oICAgICAgfCAgIDExIC0KIGFyY2gv
+eDg2L2luY2x1ZGUvYXNtL2lycS5oICAgICAgICAgICB8ICAgIDIgCiBhcmNoL3g4Ni9pbmNsdWRl
+L2FzbS9pcnFfc3RhY2suaCAgICAgfCAgMjc5ICsrKysrKysrKysrKysrKysrKysrKysrKy0tLS0t
+LS0tLS0tCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wcm9jZXNzb3IuaCAgICAgfCAgICA5IC0KIGFy
+Y2gveDg2L2luY2x1ZGUvYXNtL3NvZnRpcnFfc3RhY2suaCB8ICAgMTEgKwogYXJjaC94ODYva2Vy
+bmVsL2FwaWMvYXBpYy5jICAgICAgICAgIHwgICAzMSArKy0KIGFyY2gveDg2L2tlcm5lbC9jcHUv
+Y29tbW9uLmMgICAgICAgICB8ICAgIDQgCiBhcmNoL3g4Ni9rZXJuZWwvZHVtcHN0YWNrXzY0LmMg
+ICAgICAgfCAgIDIyICsrCiBhcmNoL3g4Ni9rZXJuZWwvaXJxLmMgICAgICAgICAgICAgICAgfCAg
+ICAyIAogYXJjaC94ODYva2VybmVsL2lycV8zMi5jICAgICAgICAgICAgIHwgICAgMSAKIGFyY2gv
+eDg2L2tlcm5lbC9pcnFfNjQuYyAgICAgICAgICAgICB8ICAgMTIgLQogYXJjaC94ODYva2VybmVs
+L3Byb2Nlc3NfNjQuYyAgICAgICAgIHwgICAgMiAKIGluY2x1ZGUvYXNtLWdlbmVyaWMvS2J1aWxk
+ICAgICAgICAgICB8ICAgIDEgCiBpbmNsdWRlL2FzbS1nZW5lcmljL3NvZnRpcnFfc3RhY2suaCAg
+fCAgIDE0ICsKIGluY2x1ZGUvbGludXgvaW50ZXJydXB0LmggICAgICAgICAgICB8ICAgIDkgLQog
+a2VybmVsL3NvZnRpcnEuYyAgICAgICAgICAgICAgICAgICAgIHwgICAgMiAKIDM1IGZpbGVzIGNo
+YW5nZWQsIDMwMyBpbnNlcnRpb25zKCspLCAxOTYgZGVsZXRpb25zKC0pCgoK
