@@ -2,131 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8157315188
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4445631518B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbhBIO1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:27:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
+        id S231773AbhBIO1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:27:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhBIO1R (ORCPT
+        with ESMTP id S231700AbhBIO11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:27:17 -0500
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8503C061786
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 06:26:36 -0800 (PST)
-Received: by mail-ua1-x936.google.com with SMTP id y35so519652uad.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 06:26:36 -0800 (PST)
+        Tue, 9 Feb 2021 09:27:27 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC8AC06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 06:26:47 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 190so3342407wmz.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 06:26:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mc9ajK/ExIHzpPYfk2i4tM1eLLMKQGhgH9O5R8zyOqU=;
-        b=ouVVqh2U1belsgV04Y2GTHvzxh79luVJ3l8YALSNgGm61/eOOU2lsLpx068nDGY+H2
-         5vLtmWhUNeK3M5Zd1ICUI+4vVz3lc+1iI4Dbh0jwR7BUTHChQcb5bWLTDAtiHNReOgG3
-         XnDn+d0opgj17dtKIW0wVlbRBnVcsM5kpZZUk=
+        d=linaro.org; s=google;
+        h=to:references:from:subject:message-id:date:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Uc4hLLfkzcuaU372Q8Ip+lqv8soO3u0k2b73t1eaFus=;
+        b=n9UozebptPP2PPvDim1k4FxcVXje29hmjNsONdbZ5u7jjioGjQPGJV1oOajW7zw4zu
+         JQw2WxxRulBdmUafraawGTZbzFndIYdPqdRgoe9g/1GhszCEeDOPFH5G2WcL/qQxIjI/
+         qoc2hW5vvxTdLPV3675zX6hefLyIBaqo6Qpjm08HVFK87v7qzED5z5LITq/EE1vIHCew
+         dLdVEOOBvu5sDhhDehEGc5nhT7bWAK4kFeiJv4Q7DZJikN1rI+VAFhMZBOE1YjU+rgVV
+         J5gayV8gIRvQupK3pXnaGPppGj+++5KZPjQGuYeV3VbPoI2ligcg/rwnvgAOCDmt2KC/
+         loeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mc9ajK/ExIHzpPYfk2i4tM1eLLMKQGhgH9O5R8zyOqU=;
-        b=gQcn1HFuDki1maQJ4oBjhApVvqmaqHGHRf21LFiErU2SaUhqEqBZmssqbwu3l1tRum
-         9xrYq/SrJEkn5S6bfzmftK64OnzZRVTBDPLr0FktnNxlrN68kc14lx2uUF+IsWVze/ZN
-         4jWoPFMEwdKTaQe8Ra4zTpEfMn4fWHLH948XsfP5kDxaLEobqwawTF13FQnU81a0CJYm
-         lLg1kU4X/gkhoCBcgtrSm+HFIcnNe2YkWCVYQI+wiv8Gfck9UZEVRPF88gAa+k6iKBdA
-         xQ1hcufShmjpahCUaZDwIuGMW7KTvRXTMNhE3c47AvOokj2oC1JbIfjDvwNRUoD7SzUF
-         b/tg==
-X-Gm-Message-State: AOAM533mkSPhogoHtiKjcwuYU8cG3fFt3zF5mDlxf58D3t25o3TtRCYp
-        6OMwVXfP97cXbApDuSWasEKxviaFjJ4bFCe4FIkj6TM/yaA=
-X-Google-Smtp-Source: ABdhPJy4aJHucfQgRXcSfDHbkiZDQs6NDFbWHQh0a37F5qLXYBPdb60JYI8BizBvkqD7MN8sIvwQyZuq60ynD6iUVg4=
-X-Received: by 2002:ab0:6f0d:: with SMTP id r13mr13099908uah.8.1612880795818;
- Tue, 09 Feb 2021 06:26:35 -0800 (PST)
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Uc4hLLfkzcuaU372Q8Ip+lqv8soO3u0k2b73t1eaFus=;
+        b=e1JWrSMs2r1tZcbl1HMpdb5Zi6Rfb5xwcTGgWPdUNRkM5rj5JuOZyMqELWbR8boyMN
+         IExZZsQxmxlqAOmhqWB0+YKjkPiQ2JnG+hVjAIMYGuv4xqSdeluVnC7KtaiCnMYV4UAT
+         fjfdLGJPmg1xZ1dt0E3osVaMGjxBzwKTM2hgWzw+MT25g8aNl54gUnsYYQ7BjNi0vlMX
+         vAYlWz+XK8EazxBfTNYxR0iP8Qrz7EImoBWUn1s+KNUVlEb0tfzqWMiw/BUD4hj3OkMD
+         7hywPQmWGHJBAIGNZIO42PIA3bwn2WqC2lqM/cd0Pme1cujoin5AHFre8SenXcmIX7pA
+         8c+w==
+X-Gm-Message-State: AOAM531psgIrWHYV8Wz6r1df6F/J4iFnpNjS90GRL2bGLkEoPCXeZai5
+        gxirNuUdRxINDtTe1gSQs+tSxQ==
+X-Google-Smtp-Source: ABdhPJwv+DvJmRgxDf0fCMECeVERTy5UALceUi2tv/8UPY8cpppnpNJqhbI4CBtV4sA8TjumeiSkuQ==
+X-Received: by 2002:a7b:ca57:: with SMTP id m23mr3677321wml.75.1612880806014;
+        Tue, 09 Feb 2021 06:26:46 -0800 (PST)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id t8sm4337913wmq.36.2021.02.09.06.26.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 06:26:45 -0800 (PST)
+To:     Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
+        broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Patrick Daly <pdaly@codeaurora.org>
+References: <20210208234508.iCc6kmL1z%akpm@linux-foundation.org>
+ <c85a7dba-2f2a-c518-ab9d-26a0c934adda@infradead.org>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Subject: Re: mmotm 2021-02-08-15-44 uploaded
+ (mm-cma-print-region-name-on-failure.patch)
+Message-ID: <05e2ea61-af8b-7a75-f458-f936dc8cf65a@linaro.org>
+Date:   Tue, 9 Feb 2021 16:26:44 +0200
 MIME-Version: 1.0
-References: <20210124232007.21639-1-richard@nod.at>
-In-Reply-To: <20210124232007.21639-1-richard@nod.at>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 9 Feb 2021 15:26:25 +0100
-Message-ID: <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
-Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ron Minnich <rminnich@google.com>, sven@narfation.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        fuse-devel <fuse-devel@lists.sourceforge.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <c85a7dba-2f2a-c518-ab9d-26a0c934adda@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 12:21 AM Richard Weinberger <richard@nod.at> wrote:
->
-> I'm happy to announce the first non-RFC version of this patch set.
-> Over the xmas holidays I found some time to experiment with various users=
-pace
-> implementations of MTDs and gave the kernel side more fine-tuning.
->
-> Rationale:
-> ----------
->
-> When working with flash devices a common task is emulating them to run va=
-rious
-> tests or inspect dumps from real hardware. To achieve that we have plenty=
- of
-> emulators in the MTD subsystem: mtdram, block2mtd, nandsim.
->
-> Each of them implements an ad-hoc MTD and have various drawbacks.
-> Over the last years some developers tried to extend them but these attemp=
-ts
-> often got rejected because they added just more adhoc feature instead of
-> addressing overall problems.
->
-> MUSE is a novel approach to address the need of advanced MTD emulators.
-> Advanced means in this context supporting different (vendor specific) ima=
-ge
-> formats, different ways for fault injection (fuzzing) and recoding/replay=
-ing
-> IOs to emulate power cuts.
->
-> The core goal of MUSE is having the complexity on the userspace side and
-> only a small MTD driver in kernelspace.
-> While playing with different approaches I realized that FUSE offers every=
-thing
-> we need. So MUSE is a little like CUSE except that it does not implement =
-a
-> bare character device but an MTD.
+On 2/9/21 06:03, Randy Dunlap wrote:
+> On 2/8/21 3:45 PM, akpm@linux-foundation.org wrote:
+>> The mm-of-the-moment snapshot 2021-02-08-15-44 has been uploaded to
+>>
+>>     https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> mmotm-readme.txt says
+>>
+>> README for mm-of-the-moment:
+>>
+>> https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+>> more than once a week.
+>>
+>> You will need quilt to apply these patches to the latest Linus release (5.x
+>> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+>> https://ozlabs.org/~akpm/mmotm/series
+>>
+>> The file broken-out.tar.gz contains two datestamp files: .DATE and
+>> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+>> followed by the base kernel version against which this patch series is to
+>> be applied.
+>>
+>> This tree is partially included in linux-next.  To see which patches are
+>> included in linux-next, consult the `series' file.  Only the patches
+>> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+>> linux-next.
+> 
+> mm-cma-print-region-name-on-failure.patch:
+> 
+> This causes a printk format warning on i386 (these used to be readable):
+> 
+> In file included from ../include/linux/printk.h:7:0,
+>                   from ../include/linux/kernel.h:16,
+>                   from ../include/asm-generic/bug.h:20,
+>                   from ../arch/x86/include/asm/bug.h:93,
+>                   from ../include/linux/bug.h:5,
+>                   from ../include/linux/mmdebug.h:5,
+>                   from ../include/linux/mm.h:9,
+>                   from ../include/linux/memblock.h:13,
+>                   from ../mm/cma.c:24:
+> ../mm/cma.c: In function ‘cma_alloc’:
+> ../include/linux/kern_levels.h:5:18: warning: format ‘%zu’ expects argument of type ‘size_t’, but argument 4 has type ‘long unsigned int’ [-Wformat=]
+>   #define KERN_SOH "\001"  /* ASCII Start Of Header */
+>                    ^
+> ../include/linux/kern_levels.h:11:18: note: in expansion of macro ‘KERN_SOH’
+>   #define KERN_ERR KERN_SOH "3" /* error conditions */
+>                    ^~~~~~~~
+> ../include/linux/printk.h:343:9: note: in expansion of macro ‘KERN_ERR’
+>    printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+>           ^~~~~~~~
+> ../mm/cma.c:503:3: note: in expansion of macro ‘pr_err’
+>     pr_err("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
+>     ^~~~~~
+> ../mm/cma.c:503:45: note: format string is defined here
+>     pr_err("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
+>                                             ~~^
+>                                             %lu
+> 
+> because the type of count is not the same as the type of cma->count.
+> 
+> Furthermore, are you sure that cma->count is the same value as count?
+> I'm not.
 
-Looks fine.
+Good catch. Sorry, it was not intentional.
 
-I do wonder if MUSE should go to drivers/mtd/ instead.   Long term
-goal would be move CUSE to drivers/char and move the transport part of
-fuse into net/fuse leaving only the actual filesystems (fuse and
-virtiofs) under fs/.
+> 
+> (also s/convienience/convenience/ in the patch description)
 
-But for now just moving the minimal interface needed for MUSE into a
-separate header (<net/fuse.h>) would work, I guess.
+Thanks! I have fixed these and sent v2.
 
-Do you think that would make sense?
-
->
-> Notes:
-> ------
->
-> - OOB support is currently limited. Currently MUSE has no support for pro=
-cessing
->   in- and out-band in the same MTD operation. It is good enough to make J=
-FFS2
->   happy. This limitation is because FUSE has no support more than one var=
-iable
->   length buffer in a FUSE request.
->   At least I didn=E2=80=99t find a good way to pass more than one buffer =
-to a request.
->   Maybe FUSE folks can correct me. :-)
-
-If you look at fuse_do_ioctl() it does variable length input and
-output at the same time.  I guess you need something similar to that.
-
-Thanks,
-Miklos
+BR,
+Georgi
