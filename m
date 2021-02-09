@@ -2,73 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A524315B79
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 592CD315B7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234268AbhBJAmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:42:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233530AbhBIVKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 16:10:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CE1664E7A;
-        Tue,  9 Feb 2021 21:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612904956;
-        bh=zPshNYYFXKSJS1wslEtEfsCT/O2+xCNYoNiqqWCdjSw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Zn5gTsXlvY3ytFe55Gfc5Gy5WlWm8USvW8m8E+qMDs11tp/aed3zUQpJSOV/by5d9
-         S3zNFpMkFiw4U9ILxWLAiNOr0fCpunyvp44zSdIWxJ3G/V0ynIkb2S9ZIHMOguLs+/
-         Hv39MLW2gAcEoNqTvjaHvz/ohh/MIWJhDMKsa2g9wxViLdXzR80A2+tIixuWGCsy0w
-         ZprtZZNyRWEayPZjPos4SiPD8aVE6qPrEbVyIYvCXLHpbTA28kxfEmAc/0r+ctCWxl
-         RlPB4aVxrWMHnNn+unF3b6cQkeCDj0Z2Abk02VYlgL6tFjjivRkWiZoH2tAMN9nSOZ
-         eDPt992E6ZVew==
-Date:   Tue, 9 Feb 2021 15:09:15 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] PCI: Add Silicom Denmark vendor ID
-Message-ID: <20210209210915.GA512168@bjorn-Precision-5520>
+        id S234646AbhBJAnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:43:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54071 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234339AbhBIVM6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 16:12:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612905054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GNTsEzyoPupLf8uFnqlZZbYFAgQKr7S0geejlS5p7yc=;
+        b=NwE00wUnTmWinZOjuNB7AiatJFzVCKQi/g/j2s0gQNgywvudSlMJZXBX6n38eKXCOEIEQA
+        b4bmeBRtFIS1tACYOp3auadFwW5C56pMwASewTgi0M9CL/oBieKXFJ1XL1/jmBBljWTUuM
+        vAbkGn9//QMfcqSTpgvbAyWK98Sgs5Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-zfMDn4FfM1uj1j28ps60sQ-1; Tue, 09 Feb 2021 16:10:52 -0500
+X-MC-Unique: zfMDn4FfM1uj1j28ps60sQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 199F0107ACC7;
+        Tue,  9 Feb 2021 21:10:50 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BDE796062F;
+        Tue,  9 Feb 2021 21:10:43 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
+References: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com> <591237.1612886997@warthog.procyon.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210208150158.2877414-1-mhu@silicom.dk>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <617684.1612905042.1@warthog.procyon.org.uk>
+Date:   Tue, 09 Feb 2021 21:10:42 +0000
+Message-ID: <617685.1612905042@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 04:01:57PM +0100, Martin Hundebøll wrote:
-> Update pci_ids.h with the vendor ID for Silicom Denmark. The define is
-> going to be referenced in driver(s) for FPGA accelerated smart NICs.
-> 
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Applied to pci/misc for v5.12 with reviewed-by from Krzysztof and Tom,
-thanks!
+> The PG_fscache bit waiting functions are completely crazy. The comment
+> about "this will wake up others" is actively wrong,
 
-> ---
-> 
-> Changes since v1:
->  * Align commit message/shortlog with similar changes to pci_ids.h
-> 
->  include/linux/pci_ids.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-> index f968fcda338e..c119f0eb41b6 100644
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@ -2589,6 +2589,8 @@
->  
->  #define PCI_VENDOR_ID_REDHAT		0x1b36
->  
-> +#define PCI_VENDOR_ID_SILICOM_DENMARK	0x1c2c
-> +
->  #define PCI_VENDOR_ID_AMAZON_ANNAPURNA_LABS	0x1c36
->  
->  #define PCI_VENDOR_ID_CIRCUITCO		0x1cc8
-> -- 
-> 2.29.2
-> 
+You mean this?
+
+/**
+ * unlock_page_fscache - Unlock a page pinned with PG_fscache
+ * @page: The page
+ *
+ * Unlocks the page and wakes up sleepers in wait_on_page_fscache().  Also
+ * wakes those waiting for the lock and writeback bits because the wakeup
+ * mechanism is shared.  But that's OK - those sleepers will just go back to
+ * sleep.
+ */
+
+Actually, you're right.  The wakeup check func is evaluated by the
+waker-upper.  I can fix the comment with a patch.
+
+> and the waiting function looks insane, because you're mixing the two names
+> for "fscache" which makes the code look totally incomprehensible. Why would
+> we wait for PF_fscache, when PG_private_2 was set? Yes, I know why, but the
+> code looks entirely nonsensical.
+
+IIRC someone insisted that I should make it a generic name and put the
+accessor functions in the fscache headers (which means they aren't available
+to core code), but I don't remember who (maybe Andrew? it was before mid-2007)
+- kind of like PG_checked is an alias for PG_owner_priv_1.
+
+I'd be quite happy to move the accessors for PG_fscache to the
+linux/page-flags.h as that would simplify things.
+
+David
+
