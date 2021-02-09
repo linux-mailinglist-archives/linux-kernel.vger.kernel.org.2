@@ -2,115 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70893314B24
+	by mail.lfdr.de (Postfix) with ESMTP id E1010314B25
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhBIJIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhBIJB4 (ORCPT
+        id S231193AbhBIJI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:08:59 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12899 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230379AbhBIJDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:01:56 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5406C06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:01:15 -0800 (PST)
-Date:   Tue, 9 Feb 2021 10:01:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612861273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mPeCBxGcgrptzbjPAZhFaC3gfl7tYPppNQEZi5JmYqI=;
-        b=MSG1KGdEcqbIqPTaNVtGP0DAlma/UZpcZSqYist10/f1Ky8fc4hvPZR+TZvjoFjQI4qW86
-        IGSJG7vOP23mx8In3ItMoPmrBkLUtckuG9m+xHOWcZjb4Rodu5Gzqu7QsdSSln0YbyVFwW
-        r+cOlePBvb1a4vDG71oaR1V1Rc4BWfRzRSCAK9Nll53mELsiyeC6D45hVqSlwLwrfIxGhc
-        lVgtoDnjDzJYebXWzwDfdkpEzML1QFgPEMhee6fdLnjnfD9TCuI+66cV1P06KrEXKC/GRR
-        +90GkpWNqUD8VZlOH1TJBW7hbHzVvK+PvJCc/KLguyPp4HL/RmajsjKT/qBnqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612861273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mPeCBxGcgrptzbjPAZhFaC3gfl7tYPppNQEZi5JmYqI=;
-        b=p/MDTnD7eoOp9LghL1r5q0zhEcBbpnUaCwa3bN3y1Ii17BCukqY7/OSzfGoL4J76UbB6c+
-        Clz7dz5naGkbAwBw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Willy Tarreau <w@1wt.eu>
-Subject: Re: [PATCH] auxdisplay: Remove in_interrupt() usage.
-Message-ID: <20210209090112.lewvvhnc2y7oyr27@linutronix.de>
-References: <20210208175824.381484-1-bigeasy@linutronix.de>
- <CANiq72kqfPOpgwvNo3hTesCJztODxVGonJXpeeX=S+O4roNZsw@mail.gmail.com>
- <20210208190735.ibq44r5pc4cwzt7j@linutronix.de>
- <CANiq72kq_d=5TvdhndP9zkyTD1pHF6WQb+qs01D68DEQH6jVjQ@mail.gmail.com>
- <20210208204136.sv4omzms3nadse6e@linutronix.de>
- <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
+        Tue, 9 Feb 2021 04:03:38 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DZcMN435zzjKV1;
+        Tue,  9 Feb 2021 17:01:36 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.87) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
+ 17:02:30 +0800
+Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+To:     Matthew Wilcox <willy@infradead.org>
+References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
+ <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <20210207213409.GL308988@casper.infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-api@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        <gregkh@linuxfoundation.org>, <song.bao.hua@hisilicon.com>,
+        <jgg@ziepe.ca>, <kevin.tian@intel.com>, <jean-philippe@linaro.org>,
+        <eric.auger@redhat.com>, <liguozhu@hisilicon.com>,
+        <zhangfei.gao@linaro.org>, Sihang Chen <chensihang1@hisilicon.com>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <a8f90c52-d51f-173f-7fd0-fb0792ac58e4@hisilicon.com>
+Date:   Tue, 9 Feb 2021 17:02:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
+In-Reply-To: <20210207213409.GL308988@casper.infradead.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.188.87]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-08 23:26:57 [+0100], Miguel Ojeda wrote:
-> Thanks -- can you please add a Link: tag to a lore URL or the docs or
-> similar where more information can be found regarding the
-> proposal/discussion for removing `in_interrurt()` etc.? It is useful
-> to track why these things are happening around the kernel.
-
-If I post series with more than just one patch I have a cover letter
-including:
-
-|in the discussion about preempt count consistency across kernel
-|configurations:
-|
-| https://lore.kernel.org/r/20200914204209.256266093@linutronix.de/
-|
-|it was concluded that the usage of in_interrupt() and related context
-|checks should be removed from non-core code.
-|
-|In the long run, usage of 'preemptible, in_*irq etc.' should be banned from
-|driver code completely.
-
-since this patch was small, simple and removing not required code I kept
-it out. Is this enough information for you?
-
-> Also, `hacking.rst` (and related documentation) should be updated
-> before this is done, so that we can link to it.
-
-The information is not wrong, it doesn't say you have to use it it your
-driver. It also does not mention that you should not. I will look into
-this.
-
-> > What I meant was GFP_KERNEL for context which can sleep vs GFP_ATOMIC for
-> > context which must not sleep. The commit above also eliminates the
-> > in_interrupt() usage within the driver (in multiple steps).
+On 2021/2/8 5:34, Matthew Wilcox wrote:
+> On Sun, Feb 07, 2021 at 04:18:03PM +0800, Zhou Wang wrote:
+>> SVA(share virtual address) offers a way for device to share process virtual
+>> address space safely, which makes more convenient for user space device
+>> driver coding. However, IO page faults may happen when doing DMA
+>> operations. As the latency of IO page fault is relatively big, DMA
+>> performance will be affected severely when there are IO page faults.
+>> >From a long term view, DMA performance will be not stable.
+>>
+>> In high-performance I/O cases, accelerators might want to perform
+>> I/O on a memory without IO page faults which can result in dramatically
+>> increased latency. Current memory related APIs could not achieve this
+>> requirement, e.g. mlock can only avoid memory to swap to backup device,
+>> page migration can still trigger IO page fault.
 > 
-> I was thinking something along those lines, but `in_interrupt()` nor
-> `cond_resched()` take an explicit context either, so I am confused.
-> Does `cond_reched()` always do the right thing regardless of context?
-> The docs are not really clear:
+> Well ... we have two requirements.  The application wants to not take
+> page faults.  The system wants to move the application to a different
+> NUMA node in order to optimise overall performance.  Why should the
+> application's desires take precedence over the kernel's desires?  And why
+> should it be done this way rather than by the sysadmin using numactl to
+> lock the application to a particular node?
+
+Just as Barry mentioned, there are other cases which could trigger IOPF.
+Only numactl is not enough.
+
 > 
->   "cond_resched() and cond_resched_lock(): latency reduction via
-> explicit rescheduling in places that are safe."
+>> +struct mem_pin_container {
+>> +	struct xarray array;
+>> +	struct mutex lock;
+>> +};
 > 
-> It could be read as "it will only resched whenever safe" or "only to
-> be called if it is safe".
+> I don't understand what the lock actually protects.
 
-You should keep track of the context you are in and not attempt to sleep
-if it is not allowed. If you are doing something that may monopolize the
-CPU then you should use cond_resched(). The difference compared to
-schedule() is that you don't blindly invoke the scheduler and that it is
-optimized away on a preemptible kernel. But as you noticed, you must not
-not use it if the context does not allow it (like in interrupt handler,
-disabled preemption and so on).
+This lock protects pin/unpin and record/remove.
+ - pin pages and record them
+ - unpin pages and remove them
+should be exlusive.
 
-> Cheers,
-> Miguel
+> 
+>> +struct pin_pages {
+>> +	unsigned long first;
+>> +	unsigned long nr_pages;
+>> +	struct page **pages;
+>> +};
+> 
+> I don't think you need 'first', and I think you can embed the pages
+> array into this struct, removing one allocation.
 
-Sebastian
+'first' will be recorded and be used to unpin later. We use it
+as an index to get pinned pages and do unpin operation.
+
+> 
+>> +	xa_for_each(&priv->array, idx, p) {
+>> +		unpin_user_pages(p->pages, p->nr_pages);
+>> +		xa_erase(&priv->array, p->first);
+>> +		vfree(p->pages);
+>> +		kfree(p);
+>> +	}
+>> +
+>> +	mutex_destroy(&priv->lock);
+>> +	xa_destroy(&priv->array);
+> 
+> If you just called xa_erase() on every element of the array, you don't need
+> to call xa_destroy().
+
+OK.
+
+> 
+>> +	if (!can_do_mlock())
+>> +		return -EPERM;
+>
+> You check for can_do_mlock(), but you don't account the pages to this
+> rlimit.
+
+Here I just copied it from ib_umen_get and do_mlock. If needed, we can
+add account for pages here.
+
+> 
+>> +	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
+> 
+> You don't need to mask off the bits, the shift will remove them.
+
+OK.
+
+> 
+>> +	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
+> 
+> DIV_ROUND_UP()?
+
+addr->size is input pin page size which is not same as PAGE_SIZE.
+So seems we can not use this macro.
+
+> 
+>> +	pages = vmalloc(nr_pages * sizeof(struct page *));
+> 
+> kvmalloc().  vmalloc() always allocates at least a page, so we want to
+> use kmalloc if the size is small.  Also, use array_size() -- I know this
+> can't overflow, but let's be clear
+
+Yes, will use kvmalloc and array_size here.
+
+> 
+>> +	ret = pin_user_pages_fast(addr->addr & PAGE_MASK, nr_pages,
+>> +				  flags | FOLL_LONGTERM, pages);
+>> +	if (ret != nr_pages) {
+>> +		pr_err("mempinfd: Failed to pin page\n");
+> 
+> No.  You mustn't allow the user to be able to generate messages to syslog,
+> just by passing garbage to a syscall.
+
+OK, will remove this.
+
+> 
+>> +	ret = xa_insert(&priv->array, p->first, p, GFP_KERNEL);
+>> +	if (ret)
+>> +		goto unpin_pages;
+> 
+> Hmm.  So we can't pin two ranges which start at the same address, but we
+> can pin two overlapping ranges.  Is that OK?
+
+The design here is only supporting pin a range with different start address.
+If two overlapping ranges with different start address, we will not prevent
+this. If this will not go wrong, let's make it simple firstly.
+
+Best,
+Zhou
+
+> 
+> 
+> .
+> 
+
