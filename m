@@ -2,143 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4902831497D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9547A314982
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhBIH0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 02:26:53 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12501 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhBIH0O (ORCPT
+        id S230360AbhBIH1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 02:27:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhBIH1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:26:14 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DZZBn4XhfzjLHC;
-        Tue,  9 Feb 2021 15:24:01 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.131) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
- 15:25:22 +0800
-Subject: Re: [PATCH v1 1/2] irqchip/gic-v3-its: don't set bitmap for LPI which
- user didn't allocate
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-References: <1612781926-56206-1-git-send-email-luojiaxing@huawei.com>
- <1612781926-56206-2-git-send-email-luojiaxing@huawei.com>
- <508c6c07a2c599ae1fc8b726fda69b44@kernel.org>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <bfe5e98a-52a6-636b-6b61-45482c07e2ec@huawei.com>
-Date:   Tue, 9 Feb 2021 15:25:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Tue, 9 Feb 2021 02:27:16 -0500
+Received: from srv1.deutnet.info (srv1.deutnet.info [IPv6:2a01:4f8:c2c:6846::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAF9C061788;
+        Mon,  8 Feb 2021 23:26:36 -0800 (PST)
+Received: from [2a01:cb14:a98:4900:be5f:f4ff:fe8b:2fc1] (helo=sonata)
+        by srv1.deutnet.info with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <agriveaux@deutnet.info>)
+        id 1l9NPn-000589-7q; Tue, 09 Feb 2021 08:26:27 +0100
+Received: from agriveaux by sonata with local (Exim 4.92)
+        (envelope-from <agriveaux@deutnet.info>)
+        id 1l9NPm-0001QB-Qv; Tue, 09 Feb 2021 08:26:26 +0100
+Date:   Tue, 9 Feb 2021 08:26:26 +0100
+From:   Alexandre GRIVEAUX <agriveaux@deutnet.info>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     robh+dt@kernel.org, mark.rutland@arm.com, wens@csie.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2] ARM: dts: sun5i: Add dts for inet86v_rev2
+Message-ID: <20210209072413.GA5159@localhost.localdomain>
+References: <20210124193903.21401-1-agriveaux@deutnet.info>
+ <20210128172329.ncuda3xlgpmefpqk@gilmour>
+ <20210201171236.GA7024@localhost.localdomain>
+ <20210203092103.7nznjzlr2t3llwj5@gilmour>
 MIME-Version: 1.0
-In-Reply-To: <508c6c07a2c599ae1fc8b726fda69b44@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.40.192.131]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203092103.7nznjzlr2t3llwj5@gilmour>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 03, 2021 at 10:21:03AM +0100, Maxime Ripard wrote:
+> On Mon, Feb 01, 2021 at 06:18:18PM +0100, agriveaux wrote:
+> > On Thu, Jan 28, 2021 at 06:23:29PM +0100, Maxime Ripard wrote:
+> > > Hi,
+> > Hi,
+Hello,
+> > > 
+> > > On Sun, Jan 24, 2021 at 08:39:03PM +0100, Alexandre GRIVEAUX wrote:
+> > > > Add Inet 86V Rev 2 support, based upon Inet 86VS.
+> > > > 
+> > > > The Inet 86V use SL1536 touchpanel controller, the Inet 86VS a GSL1680,
+> > > > which make them both incompatible.
+> > > > 
+> > > > Missing things:
+> > > > - Accelerometer (MXC6225X)
+> > > > - Touchpanel (Sitronix SL1536)
+> > > > - Nand (29F32G08CBACA)
+> > > > - Camera (HCWY0308)
+> > > > 
+> > > > Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+> > > > ---
+> > > >  arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts | 17 +++++++++++++++++
+> > > 
+> > > You have to add it to the Makefile
+> > > 
+> > Ok.
+> > > >  1 file changed, 17 insertions(+)
+> > > >  create mode 100644 arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts
+> > > > 
+> > > > diff --git a/arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts b/arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts
+> > > > new file mode 100644
+> > > > index 000000000000..581083e932d8
+> > > > --- /dev/null
+> > > > +++ b/arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts
+> > > > @@ -0,0 +1,17 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0+
+> > > > +/*
+> > > > + * Copyright 2021 Alexandre Griveaux <agriveaux@deutnet.info>
+> > > > + *
+> > > > + * Minimal dts file for the iNet 86V
+> > > > + */
+> > > > +
+> > > > +/dts-v1/;
+> > > > +
+> > > > +#include "sun5i-a13.dtsi"
+> > > > +#include "sun5i-reference-design-tablet.dtsi"
+> > > > +
+> > > > +/ {
+> > > > +	model = "iNET 86V Rev 02";
+> > > > +	compatible = "inet,86v-rev2", "allwinner,sun5i-a13";
+> > > 
+> > > inet should be documented in the vendor prefixes, and that compatible
+> > > should be documented in Documentation/devicetree/bindings/arm/sunxi.yaml
+> > > 
+> > 
+> > I forgot, but should be:
+> > 
+> >       - description: iNet-86V Rev 02
+> >         items:
+> >           - const: primux,inet86v-rev2
+> >           - const: allwinner,sun5i-a13
+> > 
+> > > Having the first rev compatible would be good too
+> > 
+> > Unfortunatly, I didn't find inet86v rev1 on FCC website and on
+> > linux-sunxi. 
+> > 
+> > > 
+> > > > +
+> > > > +};
+> > > 
+> > > But I'm wondering. If there's nothing here to add, why would we need
+> > > that DT in the first place?
+> > > 
+> > I prefer to add often instead of bulk adding, and to show there are some
+> > board to add missing things like those above.
+> 
+> Yeah, I get that, but the point really is that you're not really adding
+> anything here except an empty device tree.
+> 
+> Maxime
+In this case, I keep this patch to send it when I have more to add . 
 
-On 2021/2/8 19:59, Marc Zyngier wrote:
-> On 2021-02-08 10:58, Luo Jiaxing wrote:
->> The driver sets the LPI bitmap of device based on 
->> get_count_order(nvecs).
->> This means that when the number of LPI interrupts does not meet the 
->> power
->> of two, redundant bits are set in the LPI bitmap. However, when free
->> interrupt, these redundant bits is not cleared. As a result, device will
->> fails to allocate the same numbers of interrupts next time.
->>
->> Therefore, clear the redundant bits set in LPI bitmap.
->>
->> Fixes: 4615fbc3788d ("genirq/irqdomain: Don't try to free an interrupt
->> that has no mapping")
->>
->> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
->> ---
->>  drivers/irqchip/irq-gic-v3-its.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
->> b/drivers/irqchip/irq-gic-v3-its.c
->> index ed46e60..027f7ef 100644
->> --- a/drivers/irqchip/irq-gic-v3-its.c
->> +++ b/drivers/irqchip/irq-gic-v3-its.c
->> @@ -3435,6 +3435,10 @@ static int its_alloc_device_irq(struct
->> its_device *dev, int nvecs, irq_hw_number
->>
->>      *hwirq = dev->event_map.lpi_base + idx;
->>
->> +    bitmap_clear(dev->event_map.lpi_map,
->> +             idx + nvecs,
->> +             roundup_pow_of_two(nvecs) - nvecs);
->> +
->>      return 0;
->>  }
->
-> What makes you think that the remaining LPIs are free to be released?
-
-
-I think that the LPI bitmap is used to mark the valid LPI interrupts 
-allocated to the PCIe device.
-
-Therefore, for the remaining LPIs, the ITS can reserve entries in the 
-ITT table, but the bitmap does not need to be set.
-
-
-Maybe my understanding is wrong, and I'm a little confused about the 
-function of this bitmap.
-
-
-> Even if the end-point has request a non-po2 number of MSIs, it could
-> very well rely on the the rest of it to be available (specially in the
-> case of PCI Multi-MSI).
-
-
-yes, you are right. But for Multi-MSI, does it mean that one PCIE device 
-can own several MSI interrupts?
-
-
-Another question, is it possible for module driver to use these 
-remaining LPIs?
-
-For example, in my case
-
-
-I allcoate 32 MSI with 16 affi-IRQ in it.
-
-MSI can only offer 20 MSIs because online CPU number is 4 and it create 
-20 msi desc then.
-
-ITS create a its device for this PCIe device and generate a ITT tabel 
-for 32 MSIs.
-
-
-so in MSI, it provide 20 valid MSIs, but in ITS, lpi bitmap show that 32 
-MSI is allocated.
-
-This logic is a bit strange and a little incomprehensible.
-
-
->
-> Have a look at the thread pointed out by John for a potential fix.
-
-
-Sorry for missing that, I think it can fix my issue too, let me test it 
-later.
-
-
-Thanks
-
-jiaxing
-
-
->
-> Thanks,
->
->         M.
-
+Thanks.
