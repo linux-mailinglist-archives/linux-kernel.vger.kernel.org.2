@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89972314F84
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF27E314F3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhBIMxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:53:21 -0500
-Received: from m12-13.163.com ([220.181.12.13]:35096 "EHLO m12-13.163.com"
+        id S230255AbhBIMlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:41:01 -0500
+Received: from elvis.franken.de ([193.175.24.41]:36515 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhBIMxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:53:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=MrsoAV+zu1Ug+eSr1I
-        X4k24NhUyAb/tUE5+u2X9r3EA=; b=MDt+zSZQfv+twSlD05f+I+zHUnP/gFes0L
-        NweZkdMPBD5XtOK/Mk+mKy7qgj5JZyhBvnqB05Q5APUJKiSHKIJJ281XxaHTZcPC
-        EBoP5rZBZtXXkJccLHT+iw+HlmQLFc93ihPVQ6aALVPc9nty+fQxMwod67piGJ/6
-        Mpv6yTjg8=
-Received: from localhost.localdomain.localdomain (unknown [182.150.160.182])
-        by smtp9 (Coremail) with SMTP id DcCowADH09qyTCJgokJOeg--.59330S2;
-        Tue, 09 Feb 2021 16:49:55 +0800 (CST)
-From:   Liao Pingfang <winndows@163.com>
-To:     akpm@linux-foundation.org, rppt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Liao Pingfang <winndows@163.com>
-Subject: [PATCH] bus: mvebu-mbus: Convert to use DEFINE_SHOW_ATTRIBUTE macro
-Date:   Tue,  9 Feb 2021 16:49:41 +0800
-Message-Id: <1612860581-3073-1-git-send-email-winndows@163.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DcCowADH09qyTCJgokJOeg--.59330S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ArW7JFWxCr47ZF47ur15Jwb_yoW8Xw4xpa
-        93uayjyr1UtrWUGFnYyFsrZa4fuaySq3y2qFyv93yFqF98Zw1YqF1xtFWSkr1rWry8Wr1a
-        qw15GFyxZFWjyrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziPxhdUUUUU=
-X-Originating-IP: [182.150.160.182]
-X-CM-SenderInfo: hzlq0vxrzvqiywtou0bp/1tbiGRM0mVyPb2V17AAAsn
+        id S230222AbhBIMj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:39:58 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l9SIV-0003IE-00; Tue, 09 Feb 2021 13:39:15 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 980DAC0DB9; Tue,  9 Feb 2021 13:11:24 +0100 (CET)
+Date:   Tue, 9 Feb 2021 13:11:24 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] MIPS: Make check condition for SDBBP consistent with
+ EJTAG spec
+Message-ID: <20210209121124.GA11134@alpha.franken.de>
+References: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+On Tue, Feb 09, 2021 at 01:05:25PM +0800, Tiezhu Yang wrote:
+> According to MIPS EJTAG Specification [1], a Debug Breakpoint
+> exception occurs when an SDBBP instruction is executed, the
+> CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
+> occurred, just check bit DBp for SDBBP is more accurate.
+> 
+> [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+> 
+> v2: add MIPS_DEBUG_DBP definition
+> 
+>  arch/mips/include/asm/mipsregs.h | 4 ++++
+>  arch/mips/kernel/genex.S         | 4 ++--
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+> index a0e8ae5..9c8099a 100644
+> --- a/arch/mips/include/asm/mipsregs.h
+> +++ b/arch/mips/include/asm/mipsregs.h
+> @@ -1085,6 +1085,10 @@
+>  #define CVMVMCONF_RMMUSIZEM1_S	0
+>  #define CVMVMCONF_RMMUSIZEM1	(_U64CAST_(0xff) << CVMVMCONF_RMMUSIZEM1_S)
+>  
+> +/* Debug register field definitions */
+> +#define MIPS_DEBUG_DBP_SHIFT	1
+> +#define MIPS_DEBUG_DBP		(_ULCAST_(1) << MIPS_DEBUG_DBP_SHIFT)
+> +
+>  /*
+>   * Coprocessor 1 (FPU) register names
+>   */
+> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> index bcce32a..743d759 100644
+> --- a/arch/mips/kernel/genex.S
+> +++ b/arch/mips/kernel/genex.S
+> @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+>  	MTC0	k0, CP0_DESAVE
+>  	mfc0	k0, CP0_DEBUG
+>  
+> -	sll	k0, k0, 30	# Check for SDBBP.
+> -	bgez	k0, ejtag_return
+> +	andi	k0, k0, MIPS_DEBUG_DBP	# Check for SDBBP.
+> +	beqz	k0, ejtag_return
 
-Signed-off-by: Liao Pingfang <winndows@163.com>
----
- drivers/bus/mvebu-mbus.c | 24 ++----------------------
- 1 file changed, 2 insertions(+), 22 deletions(-)
+IMHO both implementations are doing the same thing.
 
-diff --git a/drivers/bus/mvebu-mbus.c b/drivers/bus/mvebu-mbus.c
-index 2519cee..4439612 100644
---- a/drivers/bus/mvebu-mbus.c
-+++ b/drivers/bus/mvebu-mbus.c
-@@ -470,17 +470,7 @@ static int mvebu_sdram_debug_show(struct seq_file *seq, void *v)
- 	return mbus->soc->show_cpu_target(mbus, seq, v);
- }
- 
--static int mvebu_sdram_debug_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, mvebu_sdram_debug_show, inode->i_private);
--}
--
--static const struct file_operations mvebu_sdram_debug_fops = {
--	.open = mvebu_sdram_debug_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(mvebu_sdram_debug);
- 
- static int mvebu_devs_debug_show(struct seq_file *seq, void *v)
- {
-@@ -520,17 +510,7 @@ static int mvebu_devs_debug_show(struct seq_file *seq, void *v)
- 	return 0;
- }
- 
--static int mvebu_devs_debug_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, mvebu_devs_debug_show, inode->i_private);
--}
--
--static const struct file_operations mvebu_devs_debug_fops = {
--	.open = mvebu_devs_debug_open,
--	.read = seq_read,
--	.llseek = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(mvebu_devs_debug);
- 
- /*
-  * SoC-specific functions and definitions
+Thomas.
+
 -- 
-1.8.3.1
-
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
