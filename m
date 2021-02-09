@@ -2,138 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8EC315B7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0C4315B82
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234323AbhBJAnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:43:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233236AbhBIVOO (ORCPT
+        id S234024AbhBJAoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:44:44 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:48669 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234391AbhBIVOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 16:14:14 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CF5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:13:20 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id e9so2438783pjj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:13:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ieB/biVTY4vKrZAPByaxJHrLYUL6onrueziYKauUuSU=;
-        b=tZyzAnPrQGc1sFSnWIDCRC0EgY3zJnF4QDlcn2s5oqdg9vyIvmZDz3Pu49Pbcc+sdk
-         sVeLcMlzjNxwEakd6+kVHpACDecZUmJxmkS/4PFB3t37tVIA9KD8mIHWGJ/fUza211Ba
-         PlvlwOBAlHvJZME0EVbA07AjcsHrDfq33F7oBAjHA2sVfMOpWhVU4dFhBe2m0Bz2SURA
-         dqrUkYh4d7+XsEuehMC+Qcr7Qmq40DitzbnFCxXs9BP5+EJZrlgPVo4iJmwULEc2T1nb
-         uaumwo1iLkrJuX9CR9YHAUkv1TGoqlpLfVrp6E+bvJsuYY49s6ob6WTrkjtilEW+Xwo6
-         +RXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ieB/biVTY4vKrZAPByaxJHrLYUL6onrueziYKauUuSU=;
-        b=bOx8LqTbQEbAmvCTSSMXQxccdKnfcf+EoYP0iF3qFibKuyPZJlNvJt2jz5DbcIGnIP
-         VUGIW7290FfU8+0ImnKT5g/fTjp7K/Kn2JPz/Nyed7TaOld57xvJ1uuWuYlYn4W5zoPz
-         EMpXWHYzeymYJjR74uIH0yVvZXNHZkxYSCK9d7ftj05qYjniDJyhieXu4Z7hg3w8u61M
-         XRu3b1JM/8/f0cXEvElpY87Z67VpXzxiqayF7mxH3SSU+A2/F6YjE6tBVo9xalEUc4KX
-         dtpk58dw2aWtzioe3oxTn+lMOQIJLMvY6krLYdNpwZAexws8kaIC5Jk2W/1b3V7Yg69I
-         WgzA==
-X-Gm-Message-State: AOAM53224ICKiqC4qfjQ4/6MP6UrDlPSIhRFMevVYW9DFYWbp9iU50c9
-        q7fUhpApqMU9SWrsKP3RE6o=
-X-Google-Smtp-Source: ABdhPJw+i7IlVhVSpYlxESYFw3ZKOS7c/pZzlfqzzXVHQ5uOP/aFC9oaDeHKCjREo1S5a5Pzzl6j5g==
-X-Received: by 2002:a17:902:464:b029:e2:ebb4:9251 with SMTP id 91-20020a1709020464b02900e2ebb49251mr7812750ple.29.1612905200252;
-        Tue, 09 Feb 2021 13:13:20 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:d107:fbfb:a7c8:913e])
-        by smtp.gmail.com with ESMTPSA id b15sm160998pfi.38.2021.02.09.13.13.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 13:13:19 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 9 Feb 2021 13:13:17 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, surenb@google.com,
-        joaodias@google.com, willy@infradead.org
-Subject: Re: [PATCH v2] mm: cma: support sysfs
-Message-ID: <YCL67QzPiyRhhbor@google.com>
-References: <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
- <YCHLAdabGmm7kqSH@google.com>
- <43cd6fc4-5bc5-50ec-0252-ffe09afd68ea@nvidia.com>
- <YCIoHBGELFWAyfMi@kroah.com>
- <7cc229f4-609c-71dd-9361-063ef1bf7c73@nvidia.com>
- <cd33f8b9-89e0-05bd-2b16-85855f7541bb@nvidia.com>
- <YCIyHuOX3E+tP+AO@kroah.com>
- <YCKwjz0uDPBhbFr5@google.com>
- <YCLLKDEQ4NYqb5Y5@kroah.com>
- <09e60732-6a46-dd00-f9d5-4ef17ee685c8@nvidia.com>
+        Tue, 9 Feb 2021 16:14:42 -0500
+X-IronPort-AV: E=Sophos;i="5.81,166,1610406000"; 
+   d="scan'208";a="492125976"
+Received: from palace.lip6.fr ([132.227.105.202])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 09 Feb 2021 22:13:29 +0100
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: [PATCH] video: use getter/setter functions
+Date:   Tue,  9 Feb 2021 22:13:25 +0100
+Message-Id: <20210209211325.1261842-1-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09e60732-6a46-dd00-f9d5-4ef17ee685c8@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 12:11:20PM -0800, John Hubbard wrote:
-> On 2/9/21 9:49 AM, Greg KH wrote:
-> > > > That's fine if you want to add it to the parent.  If so, then the
-> > > > kobject controls the lifetime of the structure, nothing else can.
-> > > 
-> > > The problem was parent object(i.e., struct cma cma_areas) is
-> > > static arrary so kobj->release function will be NULL or just
-> > > dummy. Is it okay? I thought it was one of the what you wanted
-> > > to avoid it.
-> > 
-> > No, that is not ok.
-> > 
-> > > > Either is fine with me, what is "forbidden" is having a kobject and
-> > > > somehow thinking that it does not control the lifetime of the structure.
-> > > 
-> > > Since parent object is static arrary, there is no need to control the
-> > > lifetime so I am curious if parent object approach is okay from kobject
-> > > handling point of view.
-> > 
-> > So the array is _NEVER_ freed?  If not, fine, don't provide a release
-> > function for the kobject, but ick, just make a dynamic kobject I don't
-> > see the problem for something so tiny and not very many...
-> > 
-> 
-> Yeah, I wasn't trying to generate so much discussion, I initially thought it
-> would be a minor comment: "just use an embedded struct and avoid some extra
-> code", at first.
-> 
-> > I worry that any static kobject might be copied/pasted as someone might
-> > think this is an ok thing to do.  And it's not an ok thing to do.
-> > 
-> 
-> Overall, then, we're seeing that there is a small design hole: in order
-> to use sysfs most naturally, you either much provide a dynamically allocated
-> item for it, or you must use the static kobject, and the second one sets a
-> bad example.
-> 
-> I think we should just use a static kobject, with a cautionary comment to
-> would-be copy-pasters, that explains the design constraints above. That way,
-> we still get a nice, less-code implementation, a safe design, and it only
-> really costs us a single carefully written comment.
-> 
-> thanks,
+Use getter and setter functions, for platform_device structures and a
+spi_device structure.
 
-Agreed. How about this for the warning part?
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-+
-+/*
-+ * note: kobj_type should provide a release function to free dynamically
-+ * allocated object since kobject is responsible for controlling lifespan
-+ * of the object. However, cma_area is static object so technially, it
-+ * doesn't need release function. It's very exceptional case so pleaes
-+ * do not follow this model.
-+ */
- static struct kobj_type cma_ktype = {
-        .sysfs_ops = &kobj_sysfs_ops,
-        .default_groups = cma_groups
-+       .release = NULL, /* do not follow. See above */
- };
+---
+ drivers/video/backlight/qcom-wled.c                                  |    2 +-
+ drivers/video/fbdev/amifb.c                                          |    4 ++--
+ drivers/video/fbdev/da8xx-fb.c                                       |    4 ++--
+ drivers/video/fbdev/imxfb.c                                          |    2 +-
+ drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c |    6 +++---
+ drivers/video/fbdev/omap2/omapfb/dss/dpi.c                           |    4 ++--
+ drivers/video/fbdev/omap2/omapfb/dss/dsi.c                           |    4 ++--
+ drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c                         |    2 +-
+ drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c                         |    2 +-
+ drivers/video/fbdev/xilinxfb.c                                       |    2 +-
+ 10 files changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+index 3bc7800eb0a9..091f07e7c145 100644
+--- a/drivers/video/backlight/qcom-wled.c
++++ b/drivers/video/backlight/qcom-wled.c
+@@ -1692,7 +1692,7 @@ static int wled_probe(struct platform_device *pdev)
+ 
+ static int wled_remove(struct platform_device *pdev)
+ {
+-	struct wled *wled = dev_get_drvdata(&pdev->dev);
++	struct wled *wled = platform_get_drvdata(pdev);
+ 
+ 	mutex_destroy(&wled->lock);
+ 	cancel_delayed_work_sync(&wled->ovp_work);
+diff --git a/drivers/video/fbdev/xilinxfb.c b/drivers/video/fbdev/xilinxfb.c
+index ca4ff658cad0..ffbf900648d9 100644
+--- a/drivers/video/fbdev/xilinxfb.c
++++ b/drivers/video/fbdev/xilinxfb.c
+@@ -472,7 +472,7 @@ static int xilinxfb_of_probe(struct platform_device *pdev)
+ 	if (of_find_property(pdev->dev.of_node, "rotate-display", NULL))
+ 		pdata.rotate_screen = 1;
+ 
+-	dev_set_drvdata(&pdev->dev, drvdata);
++	platform_set_drvdata(pdev, drvdata);
+ 	return xilinxfb_assign(pdev, drvdata, &pdata);
+ }
+ 
+diff --git a/drivers/video/fbdev/imxfb.c b/drivers/video/fbdev/imxfb.c
+index 884b16efa7e8..7f8debd2da06 100644
+--- a/drivers/video/fbdev/imxfb.c
++++ b/drivers/video/fbdev/imxfb.c
+@@ -657,7 +657,7 @@ static int imxfb_activate_var(struct fb_var_screeninfo *var, struct fb_info *inf
+ static int imxfb_init_fbinfo(struct platform_device *pdev)
+ {
+ 	struct imx_fb_platform_data *pdata = dev_get_platdata(&pdev->dev);
+-	struct fb_info *info = dev_get_drvdata(&pdev->dev);
++	struct fb_info *info = platform_get_drvdata(pdev);
+ 	struct imxfb_info *fbi = info->par;
+ 	struct device_node *np;
+ 
+diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
+index e3d441ade241..2c03608addcd 100644
+--- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
++++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
+@@ -713,7 +713,7 @@ static int hdmi5_bind(struct device *dev, struct device *master, void *data)
+ 	int irq;
+ 
+ 	hdmi.pdev = pdev;
+-	dev_set_drvdata(&pdev->dev, &hdmi);
++	platform_set_drvdata(pdev, &hdmi);
+ 
+ 	mutex_init(&hdmi.lock);
+ 	spin_lock_init(&hdmi.audio_playing_lock);
+diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
+index 496b43bdad21..800bd108e834 100644
+--- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
++++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
+@@ -672,7 +672,7 @@ static int hdmi4_bind(struct device *dev, struct device *master, void *data)
+ 	int irq;
+ 
+ 	hdmi.pdev = pdev;
+-	dev_set_drvdata(&pdev->dev, &hdmi);
++	platform_set_drvdata(pdev, &hdmi);
+ 
+ 	mutex_init(&hdmi.lock);
+ 	spin_lock_init(&hdmi.audio_playing_lock);
+diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dsi.c b/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
+index 58c7aa279ab1..daa313f14335 100644
+--- a/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
++++ b/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
+@@ -399,7 +399,7 @@ module_param(dsi_perf, bool, 0644);
+ 
+ static inline struct dsi_data *dsi_get_dsidrv_data(struct platform_device *dsidev)
+ {
+-	return dev_get_drvdata(&dsidev->dev);
++	return platform_get_drvdata(dsidev);
+ }
+ 
+ static inline struct platform_device *dsi_get_dsidev_from_dssdev(struct omap_dss_device *dssdev)
+@@ -5266,7 +5266,7 @@ static int dsi_bind(struct device *dev, struct device *master, void *data)
+ 		return -ENOMEM;
+ 
+ 	dsi->pdev = dsidev;
+-	dev_set_drvdata(&dsidev->dev, dsi);
++	platform_set_drvdata(dsidev, dsi);
+ 
+ 	spin_lock_init(&dsi->irq_lock);
+ 	spin_lock_init(&dsi->errors_lock);
+diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dpi.c b/drivers/video/fbdev/omap2/omapfb/dss/dpi.c
+index e2e7fe6f89ee..99ce6e955a46 100644
+--- a/drivers/video/fbdev/omap2/omapfb/dss/dpi.c
++++ b/drivers/video/fbdev/omap2/omapfb/dss/dpi.c
+@@ -55,7 +55,7 @@ static struct dpi_data *dpi_get_data_from_dssdev(struct omap_dss_device *dssdev)
+ /* only used in non-DT mode */
+ static struct dpi_data *dpi_get_data_from_pdev(struct platform_device *pdev)
+ {
+-	return dev_get_drvdata(&pdev->dev);
++	return platform_get_drvdata(pdev);
+ }
+ 
+ static struct dss_pll *dpi_get_pll(enum omap_channel channel)
+@@ -784,7 +784,7 @@ static int dpi_bind(struct device *dev, struct device *master, void *data)
+ 
+ 	dpi->pdev = pdev;
+ 
+-	dev_set_drvdata(&pdev->dev, dpi);
++	platform_set_drvdata(pdev, dpi);
+ 
+ 	mutex_init(&dpi->lock);
+ 
+diff --git a/drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c b/drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c
+index 0f93a260e432..1bec7a4422e8 100644
+--- a/drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c
++++ b/drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c
+@@ -239,7 +239,7 @@ static struct omap_dss_driver lb035q02_ops = {
+ static int lb035q02_probe_of(struct spi_device *spi)
+ {
+ 	struct device_node *node = spi->dev.of_node;
+-	struct panel_drv_data *ddata = dev_get_drvdata(&spi->dev);
++	struct panel_drv_data *ddata = spi_get_drvdata(spi);
+ 	struct omap_dss_device *in;
+ 	struct gpio_desc *gpio;
+ 
+@@ -277,7 +277,7 @@ static int lb035q02_panel_spi_probe(struct spi_device *spi)
+ 	if (ddata == NULL)
+ 		return -ENOMEM;
+ 
+-	dev_set_drvdata(&spi->dev, ddata);
++	spi_set_drvdata(spi, ddata);
+ 
+ 	ddata->spi = spi;
+ 
+@@ -318,7 +318,7 @@ static int lb035q02_panel_spi_probe(struct spi_device *spi)
+ 
+ static int lb035q02_panel_spi_remove(struct spi_device *spi)
+ {
+-	struct panel_drv_data *ddata = dev_get_drvdata(&spi->dev);
++	struct panel_drv_data *ddata = spi_get_drvdata(spi);
+ 	struct omap_dss_device *dssdev = &ddata->dssdev;
+ 	struct omap_dss_device *in = ddata->in;
+ 
+diff --git a/drivers/video/fbdev/da8xx-fb.c b/drivers/video/fbdev/da8xx-fb.c
+index e38c0e3f9c61..005ac3c17aa1 100644
+--- a/drivers/video/fbdev/da8xx-fb.c
++++ b/drivers/video/fbdev/da8xx-fb.c
+@@ -1066,7 +1066,7 @@ static void lcd_da8xx_cpufreq_deregister(struct da8xx_fb_par *par)
+ 
+ static int fb_remove(struct platform_device *dev)
+ {
+-	struct fb_info *info = dev_get_drvdata(&dev->dev);
++	struct fb_info *info = platform_get_drvdata(dev);
+ 	struct da8xx_fb_par *par = info->par;
+ 	int ret;
+ 
+@@ -1482,7 +1482,7 @@ static int fb_probe(struct platform_device *device)
+ 	da8xx_fb_var.activate = FB_ACTIVATE_FORCE;
+ 	fb_set_var(da8xx_fb_info, &da8xx_fb_var);
+ 
+-	dev_set_drvdata(&device->dev, da8xx_fb_info);
++	platform_set_drvdata(device, da8xx_fb_info);
+ 
+ 	/* initialize the vsync wait queue */
+ 	init_waitqueue_head(&par->vsync_wait);
+diff --git a/drivers/video/fbdev/amifb.c b/drivers/video/fbdev/amifb.c
+index 226682550b4b..6e07a97bbd31 100644
+--- a/drivers/video/fbdev/amifb.c
++++ b/drivers/video/fbdev/amifb.c
+@@ -3736,7 +3736,7 @@ static int __init amifb_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto free_irq;
+ 
+-	dev_set_drvdata(&pdev->dev, info);
++	platform_set_drvdata(pdev, info);
+ 
+ 	err = register_framebuffer(info);
+ 	if (err)
+@@ -3764,7 +3764,7 @@ static int __init amifb_probe(struct platform_device *pdev)
+ 
+ static int __exit amifb_remove(struct platform_device *pdev)
+ {
+-	struct fb_info *info = dev_get_drvdata(&pdev->dev);
++	struct fb_info *info = platform_get_drvdata(pdev);
+ 
+ 	unregister_framebuffer(info);
+ 	fb_dealloc_cmap(&info->cmap);
 
