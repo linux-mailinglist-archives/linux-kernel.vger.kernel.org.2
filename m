@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F16315B66
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7C6315B60
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234414AbhBJAiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:38:14 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:23919 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234032AbhBIUtB (ORCPT
+        id S233914AbhBJAhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:37:19 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:54445 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233767AbhBIUtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:49:01 -0500
-Date:   Tue, 09 Feb 2021 20:47:35 +0000
+        Tue, 9 Feb 2021 15:49:16 -0500
+Date:   Tue, 09 Feb 2021 20:48:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612903667; bh=xAmMBMhVGogGcZQk9S0AyKPMPlFzoB8B7aZY5oTMpiQ=;
+        t=1612903699; bh=85QQJNudKIF3Xtg97Y7g4QbqbeIMU4YL32cELilgRjM=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=aQ5LuT4wsTYqKxn3iSk/2Lnu9KvcFIHXtgFzQfgA3JMv2LtYTxLdZ7YbgP+OD9NbO
-         r5h0X9tR4kiLQxbAA1Rrg23v81povpP55oFXvCOJ3fMSJtNQuWu8LSoDjR8zfqF27g
-         CtOqCDJ42T5jSd3gSTJ0Z02QE5s68FH+4R/wDpKGi/VzfxgCjFMM/Lr/bFB5+6B+A6
-         Vh9U6+4qUoAYnjZDXYyJjwgeMLtH+Zc6npLNHC/I4pJyQ/HdwhTd5/6YyLIvTC/OmJ
-         2k+c0kqroTRsASCJj7nbUltZfNGaBSVRWmhc3zHyee6a6t+eg4ZA3eDAXDxVh5azOb
-         z78RNxxt2IH7g==
+        b=jhApZdmS2S6jhwoIFR1qFMrJ6Ar22V773Peax4i31bvsu8PZ9fepGhgyUjViJmVhS
+         7Xf5ZdSVsTMVkg8neW2VcsC8HSTrUjsSoLCvW/+KCp1HfitZdYSuYafr7U7YlatlP1
+         E2MO4pNbPYQ9ztadhoqkSrfN9Kbl8nROfOZmQISwoTSo979kbbfKJ1n/y83Gj7oHsn
+         OnSLcwikPEpLi78JUssBc2v+gEoA/RFkplg4sO0iulkPxhLosp87I+ar9ypnRJLMTu
+         p4wG38GmF9XhNW1HNCpvliQv2lyBb6uZpyPXChyhFugUsX3lZiOn5qOV8VcOBrF2lp
+         lvfyBv34dYsXg==
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
 From:   Alexander Lobakin <alobakin@pm.me>
@@ -52,8 +52,8 @@ Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
         Yang Yingliang <yangyingliang@huawei.com>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [v3 net-next 02/10] skbuff: simplify kmalloc_reserve()
-Message-ID: <20210209204533.327360-3-alobakin@pm.me>
+Subject: [v3 net-next 05/10] skbuff: use __build_skb_around() in __alloc_skb()
+Message-ID: <20210209204533.327360-6-alobakin@pm.me>
 In-Reply-To: <20210209204533.327360-1-alobakin@pm.me>
 References: <20210209204533.327360-1-alobakin@pm.me>
 MIME-Version: 1.0
@@ -68,34 +68,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eversince the introduction of __kmalloc_reserve(), "ip" argument
-hasn't been used. _RET_IP_ is embedded inside
-kmalloc_node_track_caller().
-Remove the redundant macro and rename the function after it.
+Just call __build_skb_around() instead of open-coding it.
 
 Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 ---
- net/core/skbuff.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ net/core/skbuff.c | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
 
 diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a0f846872d19..70289f22a6f4 100644
+index 88566de26cd1..1c6f6ef70339 100644
 --- a/net/core/skbuff.c
 +++ b/net/core/skbuff.c
-@@ -273,11 +273,8 @@ EXPORT_SYMBOL(__netdev_alloc_frag_align);
-  * may be used. Otherwise, the packet data may be discarded until enough
-  * memory is free
-  */
--#define kmalloc_reserve(size, gfp, node, pfmemalloc) \
--=09 __kmalloc_reserve(size, gfp, node, _RET_IP_, pfmemalloc)
--
--static void *__kmalloc_reserve(size_t size, gfp_t flags, int node,
--=09=09=09       unsigned long ip, bool *pfmemalloc)
-+static void *kmalloc_reserve(size_t size, gfp_t flags, int node,
-+=09=09=09     bool *pfmemalloc)
+@@ -326,7 +326,6 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gf=
+p_mask,
+ =09=09=09    int flags, int node)
  {
- =09void *obj;
- =09bool ret_pfmemalloc =3D false;
+ =09struct kmem_cache *cache;
+-=09struct skb_shared_info *shinfo;
+ =09struct sk_buff *skb;
+ =09u8 *data;
+ =09bool pfmemalloc;
+@@ -366,21 +365,8 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t g=
+fp_mask,
+ =09 * the tail pointer in struct sk_buff!
+ =09 */
+ =09memset(skb, 0, offsetof(struct sk_buff, tail));
+-=09/* Account for allocated memory : skb + skb->head */
+-=09skb->truesize =3D SKB_TRUESIZE(size);
++=09__build_skb_around(skb, data, 0);
+ =09skb->pfmemalloc =3D pfmemalloc;
+-=09refcount_set(&skb->users, 1);
+-=09skb->head =3D data;
+-=09skb->data =3D data;
+-=09skb_reset_tail_pointer(skb);
+-=09skb->end =3D skb->tail + size;
+-=09skb->mac_header =3D (typeof(skb->mac_header))~0U;
+-=09skb->transport_header =3D (typeof(skb->transport_header))~0U;
+-
+-=09/* make sure we initialize shinfo sequentially */
+-=09shinfo =3D skb_shinfo(skb);
+-=09memset(shinfo, 0, offsetof(struct skb_shared_info, dataref));
+-=09atomic_set(&shinfo->dataref, 1);
+=20
+ =09if (flags & SKB_ALLOC_FCLONE) {
+ =09=09struct sk_buff_fclones *fclones;
+@@ -393,8 +379,6 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gf=
+p_mask,
+ =09=09fclones->skb2.fclone =3D SKB_FCLONE_CLONE;
+ =09}
+=20
+-=09skb_set_kcov_handle(skb, kcov_common_handle());
+-
+ =09return skb;
+=20
+ nodata:
 --=20
 2.30.0
 
