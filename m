@@ -2,220 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009BC315940
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9F331595E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbhBIWSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:18:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233571AbhBITil (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:38:41 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781BFC061A32
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:37:19 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id sa23so33803115ejb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 11:37:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o3jYTiOHJZlHfoq5+7MSBsToqrkgCMv+obDe+1t3RuE=;
-        b=ah+sPiHCRo9jFUGiRHcc6MlSUUEjL5fNdMzG17M1DHpuGGA3s1+eFZ7mghLA8F5wJ6
-         QEBX4vN7HQWDmkc4KhTnMBEewLXXnzuEYm2ZBefDIvQPRoHb6B3hQ/1pJoNYL2IRF8my
-         1YrB6xBQVdihAvcgMWGdLPMm8hKAzK/4tXvdrjVIL+vN1Tyg5GOXwdbbhGczQ6vN2Lmr
-         TkM9zxLzDwrYjx2s8bVhKazV5+chVDN8fwdLRO1pLunEbSM9TDaoFLtmhM07nZuOhjj5
-         En2DPS1Di7xn1J0iNE+a3avFHFuuRsUsdlFpIGZbbN7fbLAjfxvYXk9cxxc2X+axT+8P
-         Ow0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o3jYTiOHJZlHfoq5+7MSBsToqrkgCMv+obDe+1t3RuE=;
-        b=XDWi0q+F4blDWeHD+g4oArNKDTPYeJ2UbhyhjOZLP+OAs1nIXRF0kZ7UOkH0e2fBdv
-         mptMZ3916cqEA6QJi0h25ataiOUcOxSWI6ylC+9T4icD/9UCdbJwyDPsiaaaj/JbwMgm
-         OSCc6rsriibWhRUXZyG9ZPosBuiLpJ6U9eb3XdXl2G0SNlEe2jtIIFX61cLfq6Xbv6ZC
-         oAUeaoA6Y9SioMwIIpqq5rgeryT5kGesMXWy9Pga9bq9dNloGRj4kc2ArABqvzpjRaGq
-         mI5J9+WTY8ox2RSCRsiFhdGsFEuFb202tGybWABg/GHY/CtPhJqlVYOPGhkMOy6EyXzE
-         XVLg==
-X-Gm-Message-State: AOAM531NzBpfqafx7qDppiWSF7MlktG08kTRsflva5cWKRX8uxRaqkd6
-        xoIoYL00yCzPIMumdYVYnaX8iIE3hcehHLZtV/YuZg==
-X-Google-Smtp-Source: ABdhPJw2PJt76E7qkl54G//GgcdZfOFHyO6FDhElskb438Yor31E7lvFIFCnCPc4bXHBfnIOLN9LXrLFfjxnXtEOub8=
-X-Received: by 2002:a17:906:6943:: with SMTP id c3mr9585460ejs.133.1612899437958;
- Tue, 09 Feb 2021 11:37:17 -0800 (PST)
+        id S234361AbhBIWXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:23:48 -0500
+Received: from mga18.intel.com ([134.134.136.126]:11939 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233509AbhBITmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 14:42:25 -0500
+IronPort-SDR: s2T8tgh7OK1g4LI0K8OSjVVaSe41HBozbc5Q2FlYy32JQ6QQQCUbWupgIU4rxoQ6lFfZOOukX1
+ BNqbvsziiHnw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="169626612"
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="169626612"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 11:38:08 -0800
+IronPort-SDR: HwhPdUv0eiEltXSGpS7CnWCYGd4ajZclVv0MJCTCVrSyv4Ouym4YSWbAdVhVBCorJwrLYhQ83H
+ niAYB86Dy68A==
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="396365865"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.123.115]) ([10.212.123.115])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 11:38:08 -0800
+Subject: Re: [PATCH] driver core: auxiliary bus: Fix calling stage for
+ auxiliary bus init
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <161289750572.1086235.9903492973331406876.stgit@djiang5-desk3.ch.intel.com>
+ <YCLfETxDjOUPISpw@kroah.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <8ac05dcb-398c-a357-d6e5-48f45e4c6b12@intel.com>
+Date:   Tue, 9 Feb 2021 12:38:06 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210208145806.281758651@linuxfoundation.org>
-In-Reply-To: <20210208145806.281758651@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 10 Feb 2021 01:07:06 +0530
-Message-ID: <CA+G9fYsDW5D+VBhw0BpBrF=5w7gyD2fi9Q9XucmPKqWOvdYXBQ@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/43] 4.9.257-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YCLfETxDjOUPISpw@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 at 20:35, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+
+On 2/9/2021 12:14 PM, Greg KH wrote:
+> On Tue, Feb 09, 2021 at 12:05:05PM -0700, Dave Jiang wrote:
+>> When the auxiliary device code is built into the kernel, it can be executed
+>> before the auxiliary bus is registered. This causes bus->p to be not
+>> allocated and triggers a NULL pointer dereference when the auxiliary bus
+>> device gets added with bus_add_device(). Change the init of auxiliary bus
+>> to subsys_initcall() from module_init() to ensure the bus is registered
+>> before devices.
+>>
+>> Below is the kernel splat for the bug:
+>> [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
+>> [ 1.950670] #PF: supervisor read access in kernel mode
+>> [ 1.950670] #PF: error_code(0x0000) - not-present page
+>> [ 1.950670] PGD 0
+>> [ 1.950670] Oops: 0000 1 SMP NOPTI
+>> [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
+>> [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+>> [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
+>> [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
+>> 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
+>> [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
+>> [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
+>> [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
+>> [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
+>> [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
+>> [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
+>> [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
+>> [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
+>> [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+>> [ 1.950670] PKRU: 55555554
+>> [ 1.950670] Call Trace:
+>> [ 1.950670] device_add+0x3ee/0x850
+>> [ 1.950670] __auxiliary_device_add+0x47/0x60
+>> [ 1.950670] idxd_pci_probe+0xf77/0x1180
+>> [ 1.950670] local_pci_probe+0x4a/0x90
+>> [ 1.950670] pci_device_probe+0xff/0x1b0
+>> [ 1.950670] really_probe+0x1cf/0x440
+>> [ 1.950670] ? rdinit_setup+0x31/0x31
+>> [ 1.950670] driver_probe_device+0xe8/0x150
+>> [ 1.950670] device_driver_attach+0x58/0x60
+>> [ 1.950670] __driver_attach+0x8f/0x150
+>> [ 1.950670] ? device_driver_attach+0x60/0x60
+>> [ 1.950670] ? device_driver_attach+0x60/0x60
+>> [ 1.950670] bus_for_each_dev+0x79/0xc0
+>> [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
+>> [ 1.950670] driver_attach+0x1e/0x20
+>> [ 1.950670] bus_add_driver+0x154/0x1f0
+>> [ 1.950670] driver_register+0x70/0xc0
+>> [ 1.950670] __pci_register_driver+0x54/0x60
+>> [ 1.950670] idxd_init_module+0xe2/0xfc
+>> [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
+>> [ 1.950670] do_one_initcall+0x4a/0x1e0
+>> [ 1.950670] kernel_init_freeable+0x1fc/0x25c
+>> [ 1.950670] ? rest_init+0xba/0xba
+>> [ 1.950670] kernel_init+0xe/0x116
+>> [ 1.950670] ret_from_fork+0x1f/0x30
+>> [ 1.950670] Modules linked in:
+>> [ 1.950670] CR2: 0000000000000060
+>> [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
+>>
+>> Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+>> Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
+>> Acked-by: Dave Ertman <david.m.ertman@intel.com>
+>> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+>> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+>> ---
+>>   drivers/base/auxiliary.c |    2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+>> index 8336535f1e11..53f93a506626 100644
+>> --- a/drivers/base/auxiliary.c
+>> +++ b/drivers/base/auxiliary.c
+>> @@ -270,7 +270,7 @@ static void __exit auxiliary_bus_exit(void)
+>>   	bus_unregister(&auxiliary_bus_type);
+>>   }
+>>   
+>> -module_init(auxiliary_bus_init);
+>> +subsys_initcall(auxiliary_bus_init);
+> Ah, the linker priority dance.  Are you _SURE_ this will solve this?
 >
-> This is the start of the stable review cycle for the 4.9.257 release.
-> There are 43 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.257-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
+> Why not just call this explicitly in driver_init() so that you know it
+> will be ok?  Just like we do for the platform bus?
+
+It would require making auxiliary_bus part of the base just like 
+platform instead of a module. Is that ok?
+
+
 >
 > thanks,
 >
 > greg k-h
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.9.257-rc1
-git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-git branch: linux-4.9.y
-git commit: cffa06cb070f1ce0015e19c0f54b7a2b86ab4d24
-git describe: v4.9.256-44-gcffa06cb070f
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.256-44-gcffa06cb070f
-
-No regressions (compared to build v4.9.255-14-gd4780bd0ccef)
-
-No fixes (compared to build v4.9.255-14-gd4780bd0ccef)
-
-Ran 39352 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* fwts
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* libhugetlbfs
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* network-basic-tests
-* kvm-unit-tests
-* ltp-open-posix-tests
-* kselftest-vm
-* kselftest-kexec
-* kselftest-x86
-
---
-Linaro LKFT
-https://lkft.linaro.org
