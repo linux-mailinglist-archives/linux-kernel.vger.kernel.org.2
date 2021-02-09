@@ -2,114 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2FE314B7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63430314B7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhBIJY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:24:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhBIJVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:21:22 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF3FC061794
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:20:42 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id 18so7600213oiz.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:20:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aleksander-es.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DTuMJKWknYrnZ1xNYLzvsaQ4qGCwYj1qIz7kzYoSeRA=;
-        b=Qvh2eOYXxet9fIRUiK5jbirxVA95uKvfHeqJxDuEqaqGmqez7+7SRKdVYPxjchgmS5
-         yGKUVXReARDTXcxSTTxD5WpiINvj1C4U32vy+IJZhG5H4zED5LVLlyIF+iWsFagZk/VK
-         DYWGw+cm/45qOW0SokH6DnTFC6/v4IKUXQ5xeA9agT978WkDUNGa3b/mMLnPxwy50ZAy
-         1C3w4EWLszGGsxqtHJoh9qPHc9Hha9mT98z9NHGjUyO2GSP4ywUasmWaaMrCJ+Ms7Wrp
-         t8eI1oDZhznkfM1rU5uqw8W3kS0Mn553wDxvX3bVYdD1kaLQ2y6YS1mUZNOB3g4SUZpl
-         KN2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DTuMJKWknYrnZ1xNYLzvsaQ4qGCwYj1qIz7kzYoSeRA=;
-        b=P5Kv0pD8KavFgd88ytLlYm+nFhyq7n6i9UffwH8f2fM4j36MiO7g9ZnLPPmd1c8AeP
-         fLjDf+5QqshDRPet/Afw+yDSWcA76ISxE4oHJGYFDMfMdEYf2Kk55JVK0yrRIsDoTsAM
-         hRdggzhl57XYvxRU+PmL/WM6cd0jazUGeEbVw8uUOGWRqDWlTPhZ8yzD084GJw14N905
-         DRfxHVIsZHaCLzHR4EfNEly6SLcgY1fppeUHJ257kYts+qRq5VGJL4FVSmys6AjfxCAY
-         DXZn45oAZuwxmw1JaO8SykYtejoCvIxRwEMnVKxLzuAGy0SVZnvUL9DvvUIJXHiXm9ft
-         9UQg==
-X-Gm-Message-State: AOAM532PCMSELv9pfMYWvAshCLPrqFVPum82Gb1xyXvkncAJw0LgJqSh
-        cGqNbw4BqnNWcLr/syITMZ/PU0EwFuJdEvnPC+kN1Q==
-X-Google-Smtp-Source: ABdhPJzLJ0oqa6+5bZtVfKINmAk0MnWV5DDDsEUpdQr5xU20juQWB4o82JCmg0PmqAhwFRdn8WGiuMPUsCipS3eJVOA=
-X-Received: by 2002:aca:d908:: with SMTP id q8mr1781140oig.67.1612862441549;
- Tue, 09 Feb 2021 01:20:41 -0800 (PST)
+        id S230018AbhBIJZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:25:15 -0500
+Received: from mga18.intel.com ([134.134.136.126]:48813 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230013AbhBIJWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:22:35 -0500
+IronPort-SDR: 6/oFOG9Dgrt5PvG3R1M5VPXNqJhNlR8spaJ9GS5pOOlsj4VbQ8LK9sv/K1TMvqq42oa8Y+e5A3
+ FJzlYSM94ANQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="169533833"
+X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
+   d="scan'208";a="169533833"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 01:20:38 -0800
+IronPort-SDR: +Z/5X24YSvj/nQVhkOlB08Xo4zq6U6D4CCsGwSc7d2XzQVC+10oR8jwhB2k54f/Kjo7zZeTa+9
+ UgZVBYxFb1Sw==
+X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
+   d="scan'208";a="360442487"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 01:20:34 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 70B12206D0; Tue,  9 Feb 2021 11:20:32 +0200 (EET)
+Date:   Tue, 9 Feb 2021 11:20:32 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v6 1/3] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+Message-ID: <20210209092032.GC32460@paasikivi.fi.intel.com>
+References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
+ <20210208200903.28084-2-sakari.ailus@linux.intel.com>
+ <CAHp75VciFMKrWM2zJZ6dppuL5M-7BLPGQfcnzkd9pQzY1bRWsQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
- <20210113152625.GB30246@work> <YBGDng3VhE1Yw6zt@kroah.com>
- <20210201105549.GB108653@thinkpad> <YBfi573Bdfxy0GBt@kroah.com>
- <20210201121322.GC108653@thinkpad> <20210202042208.GB840@work>
- <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org> <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com> <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Aleksander Morgado <aleksander@aleksander.es>
-Date:   Tue, 9 Feb 2021 10:20:30 +0100
-Message-ID: <CAAP7ucLZ5jKbKriSp39OtDLotbv72eBWKFCfqCbAF854kCBU8w@mail.gmail.com>
-Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VciFMKrWM2zJZ6dppuL5M-7BLPGQfcnzkd9pQzY1bRWsQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Jakub
+Hi Andy,
 
-On Wed, Feb 3, 2021 at 7:41 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Wed, 3 Feb 2021 19:28:28 +0100 Loic Poulain wrote:
-> > On Wed, 3 Feb 2021 at 19:05, Jakub Kicinski <kuba@kernel.org> wrote:
-> > > On Wed, 03 Feb 2021 09:45:06 +0530 Manivannan Sadhasivam wrote:
-> > > > The current patchset only supports QMI channel so I'd request you to
-> > > > review the chardev node created for it. The QMI chardev node created
-> > > > will be unique for the MHI bus and the number of nodes depends on the
-> > > > MHI controllers in the system (typically 1 but not limited).
-> > >
-> > > If you want to add a MHI QMI driver, please write a QMI-only driver.
-> > > This generic "userspace client interface" driver is a no go. Nobody will
-> > > have the time and attention to police what you throw in there later.
+On Mon, Feb 08, 2021 at 10:43:30PM +0200, Andy Shevchenko wrote:
+> On Mon, Feb 8, 2021 at 10:11 PM Sakari Ailus
+> <sakari.ailus@linux.intel.com> wrote:
 > >
-> > Think it should be seen as filtered userspace access to MHI bus
-> > (filtered because not all channels are exposed), again it's not
-> > specific to MHI, any bus in Linux offers that (i2c, spi, usb, serial,
-> > etc...). It will not be specific to QMI, since we will also need it
-> > for MBIM (modem control path), AT commands, and GPS (NMEA frames), all
-> > these protocols are usually handled by userspace tools and not linked
-> > to any internal Linux framework, so it would be better not having a
-> > dedicated chardev for each of them.
->
-> The more people argue for this backdoor interface the more distrustful
-> of it we'll become. Keep going at your own peril.
+> > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
+> > pixel formats denoted by fourccs. The fourcc encoding is the same for both
+> > so the same implementation can be used.
+> 
+> Thank you for an update with the examples how current users will be
+> converted. Below review is based on the users I had seen so far and
+> assumptions made in this code. I see that it's tagged by maintainers,
+> but I can't help to comment again on this. In any case the decision is
+> up to them.
+> 
+> ...
+> 
+> > +V4L2 and DRM FourCC code (pixel format)
+> > +---------------------------------------
+> > +
+> > +::
+> > +
+> > +       %p4cc
+> > +
+> > +Print a FourCC code used by V4L2 or DRM, including format endianness and
+> > +its numerical value as hexadecimal.
+> > +
+> > +Passed by reference.
+> > +
+> > +Examples::
+> > +
+> > +       %p4cc   BG12 little-endian (0x32314742)
+> 
+> This misses examples of the (strange) escaping cases and wiped
+> whitespaces to make sure everybody understands that 'D 12' will be the
+> same as 'D1 2' (side note: which I disagree on, perhaps something
+> should be added into documentation why).
 
-Are your worries that this driver will end up being used for many more
-things than the initial wwan control port management being suggested
-here? If so, what would be the suggested alternative for this
-integration? Just a different way to access those control ports
-instead of a chardev? A per port type specific driver?
+The spaces are expected to be at the end only. I can add such example if
+you like. There are no fourcc codes with spaces in the middle in neither
+V4L2 nor DRM, and I don't think the expectation is to have them either.
 
-This may be a stupid suggestion, but would the integration look less a
-backdoor if it would have been named "mhi_wwan" and it exposed already
-all the AT+DIAG+QMI+MBIM+NMEA possible channels as chardevs, not just
-QMI?
+> 
+> ...
+> 
+> > +static noinline_for_stack
+> > +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
+> > +                   struct printf_spec spec, const char *fmt)
+> > +{
+> 
+> > +       char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
+> 
+> Do we have any evidence / document / standard that the above format is
+> what people would find good? From existing practices (I consider other
+> printings elsewhere and users in this series) I find '(xx)' form for
+> hex numbers is weird. The standard practice is to use \xHH (without
+> parentheses).
+
+Earlier in the review it was proposed that special handling of codes below
+32 should be added, which I did. Using the parentheses is apparently an
+existing practice elsewhere.
+
+Note that neither DRM nor V4L2 currently has such fourcc codes currently.
+
+> 
+> > +       char *p = output;
+> > +       unsigned int i;
+> > +       u32 val;
+> > +
+> > +       if (fmt[1] != 'c' || fmt[2] != 'c')
+> > +               return error_string(buf, end, "(%p4?)", spec);
+> > +
+> > +       if (check_pointer(&buf, end, fourcc, spec))
+> > +               return buf;
+> > +
+> > +       val = *fourcc & ~BIT(31);
+> > +
+> > +       for (i = 0; i < sizeof(*fourcc); i++) {
+> > +               unsigned char c = val >> (i * 8);
+> 
+> ...
+> 
+> > +               /* Weed out spaces */
+> > +               if (c == ' ')
+> > +                       continue;
+> 
+> None of the existing users does that. Why?
+
+The existing instances of printing fourcc codes in V4L2 are scattered
+around with priority on implementation simplicity. As we have a single
+simplementation here, I'm not really worried about that.
+
+> 
+> > +               /* Print non-control ASCII characters as-is */
+> > +               if (isascii(c) && isprint(c)) {
+> > +                       *p++ = c;
+> > +                       continue;
+> > +               }
+> > +
+> > +               *p++ = '(';
+> > +               p = hex_byte_pack(p, c);
+> > +               *p++ = ')';
+> > +       }
+> > +
+> > +       strcpy(p, *fourcc & BIT(31) ? " big-endian" : " little-endian");
+> > +       p += strlen(p);
+> > +
+> > +       *p++ = ' ';
+> > +       *p++ = '(';
+> 
+> > +       p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
+> > +                              sizeof(u32));
+> 
+> This is perfectly one line (in this file we have even longer lines).
+
+Sure, you can do that, and I can then review your patch and point to the
+coding style documentation. :-)
+
+> 
+> > +       *p++ = ')';
+> > +       *p = '\0';
+> > +
+> > +       return string(buf, end, output, spec);
+> > +}
+> 
 
 -- 
-Aleksander
+Kind regards,
+
+Sakari Ailus
