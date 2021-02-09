@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9F5314498
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2723144A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhBIAJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 19:09:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhBIAJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:09:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6DEF64EB8;
-        Tue,  9 Feb 2021 00:08:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612829337;
-        bh=BIx3eGSYs9bP+3OswyB3XhNzfUFRBY2kgxghItTuskE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=opBunexJL58nGbpC8oGnOZvEL9CH7dTCEutJETDFyqqk8OqRVYhu33yw1KZEUz5cX
-         KhDYoY2040yNEc0HU9kiCkCl6pD7nbK+Y1eZEEVcKgb247l/JesoZILG9qOD83FPOR
-         ZYXEQyfsA/lX1sS09fsOniXXt/ksqBH/3QJQxosF45ncce1mgg3FcdoDvBHS5ZB/J/
-         f6QCfLr+ywhCiwahmEA1elvZKxNlt/DD4CDe5Km9BcBXLyoEykuY+/nlWKjeY+60NM
-         U8KcjKlY9oOb2C6noew90FZvJffP2yv2esgMZInXOcUiZeVoJ7LjGMBlHwYjmBU7Tg
-         jCrOFvl3PHVXA==
-Received: by mail-ej1-f47.google.com with SMTP id l25so11250273eja.9;
-        Mon, 08 Feb 2021 16:08:56 -0800 (PST)
-X-Gm-Message-State: AOAM533aV8O2DGe6gvhnjOJTO/ItGcs1UAVjlGvgscVXzFGl/7xMuCLR
-        iRstwjMV8lI6jO/433pGBVsWOL7ujFxuOMQ8UQ==
-X-Google-Smtp-Source: ABdhPJzpLqbujyvxL39zTOTeUscDS/tYzRbxuOzriw8VhEGNKVWX8nbXtvNGzdKFO2JaeBLgzu8Et0m/dH+2P6MVock=
-X-Received: by 2002:a17:906:708f:: with SMTP id b15mr19813910ejk.267.1612829335422;
- Mon, 08 Feb 2021 16:08:55 -0800 (PST)
+        id S229864AbhBIAKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 19:10:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229947AbhBIAKE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 19:10:04 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B314C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 16:09:23 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id e1so14572910ilu.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 16:09:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=akc8PS5t2j1XjbrR6CgcuGW0rLr1kbq6jUz31C/0DcU=;
+        b=G2F2sqG02nvIMHDsvW1ah8tVs6aTUU86GWEoocC4s68fvFgZeBRfGPD0Afl2r8MQYj
+         Adtu53Ykg2YAWTl9Y3epbLqnHAOyfEK0rQwhueBcFELvDhCWJugi/relPLWnpeDs3CD4
+         IDP6+7CbgKHFicHGBs5Xezd8iQ4NyOSmeHw4E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=akc8PS5t2j1XjbrR6CgcuGW0rLr1kbq6jUz31C/0DcU=;
+        b=hQ6RBeFS6grinBmD+t0zBeybC8gmV5pvILOSbn8cYsW3cQJRCNbJ9rnG6kfdWZjKUc
+         b4rdCn063LHGDqwojA3iaqKe4UTcJiItkQ2Jd2L2NJ5xMV8R2lvvS15tJ03l84DBZGKp
+         Mal6CLOCQdy1oe/iYybB1VIqD4rS6d1xtmGjbQe3087fOA5hHS9LTcX2Ww97mCTETbRf
+         dfIdfmrRiEqD0/5oan18IEuHMC79Ay6BuBJn6nPUhlkT5w7frWLq3E5/rjHYhGWwEoyX
+         7BkNso+4ZVHvxcAwXHGCTEQ+AHyDrDNJnNbtmCzo4b2YdIHmLmhknVZRdGARrpV3IO0s
+         GyPw==
+X-Gm-Message-State: AOAM5305oynx85Apu/uLSVWisfayOAzZxpVbE8qKuehB9m3DUA4Tn2vX
+        URjpUaRjI9uXPmF3aFaXoYPpsw==
+X-Google-Smtp-Source: ABdhPJxzZq3u/EH2OoAq4jOquUIpYtQ02A5RoV3cCqrI+bgqsz6vcFfm1uqwrlwomHTLPxsVSGfhhQ==
+X-Received: by 2002:a05:6e02:cd4:: with SMTP id c20mr17789361ilj.189.1612829363145;
+        Mon, 08 Feb 2021 16:09:23 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id f9sm9401648ilu.36.2021.02.08.16.09.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 16:09:22 -0800 (PST)
+Subject: Re: [PATCH v4 1/5] selftests/x86: Use getauxval() to simplify the
+ code in sgx
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210201132653.35690-1-tianjia.zhang@linux.alibaba.com>
+ <20210201132653.35690-2-tianjia.zhang@linux.alibaba.com>
+ <YBnMCWW8tux490JK@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <91629d56-a890-18ac-7b10-b20229343d2f@linuxfoundation.org>
+Date:   Mon, 8 Feb 2021 17:09:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210208014221.196584-1-jitao.shi@mediatek.com> <20210208014221.196584-4-jitao.shi@mediatek.com>
-In-Reply-To: <20210208014221.196584-4-jitao.shi@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 9 Feb 2021 08:08:44 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-WZRUgSBNTe2-Xu1+pkK2RAEScacYZTcHkSUuqXDU5Mg@mail.gmail.com>
-Message-ID: <CAAOTY_-WZRUgSBNTe2-Xu1+pkK2RAEScacYZTcHkSUuqXDU5Mg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] dt-bindings: mediatek,dpi: add mt8192 to mediatek,dpi
-To:     Jitao Shi <jitao.shi@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        yingjoe.chen@mediatek.com, eddie.huang@mediatek.com,
-        CK Hu <ck.hu@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>, stonea168@163.com,
-        huijuan.xie@mediatek.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, shuijing.li@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YBnMCWW8tux490JK@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jitao:
+On 2/2/21 3:02 PM, Jarkko Sakkinen wrote:
+> On Mon, Feb 01, 2021 at 09:26:49PM +0800, Tianjia Zhang wrote:
+>> Simplify the sgx code implemntation by using library function
+>> getauxval() instead of a custom function to get the base address
+>> of vDSO.
+>>
+>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> 
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> 
+> This needs also ack from Shuah.
+> 
 
-Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2021=E5=B9=B42=E6=9C=888=E6=97=
-=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=889:42=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Add compatible "mediatek,mt8192-dpi" for the mt8192 dpi.
->
+Looks good to me. Thank you.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
 
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> ---
->  .../devicetree/bindings/display/mediatek/mediatek,dpi.yaml       | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-dpi.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.=
-yaml
-> index 6cdb734c91a9..2f566f19e6e0 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yam=
-l
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yam=
-l
-> @@ -22,6 +22,7 @@ properties:
->        - mediatek,mt7623-dpi
->        - mediatek,mt8173-dpi
->        - mediatek,mt8183-dpi
-> +      - mediatek,mt8192-dpi
->
->    reg:
->      maxItems: 1
-> --
-> 2.25.1
+thanks,
+-- Shuah
+
