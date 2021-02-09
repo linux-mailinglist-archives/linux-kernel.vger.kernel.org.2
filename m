@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6E0314B7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293E2314BF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhBIJY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:24:57 -0500
-Received: from mga04.intel.com ([192.55.52.120]:53959 "EHLO mga04.intel.com"
+        id S230390AbhBIJmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:42:39 -0500
+Received: from m12-13.163.com ([220.181.12.13]:41721 "EHLO m12-13.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229839AbhBIJVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:21:46 -0500
-IronPort-SDR: K6Dgfz/b2BTMnL3io6eKqqwYcX64bAE1ykXj5LprFnRCpekaaMd1UWMvoxJkRZWtLtPIAmQs5r
- tGk3ub347WWQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="179293958"
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="179293958"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 01:20:00 -0800
-IronPort-SDR: /Yng3oo8OGEW+f8mThOaJfZqvh6dvvjoINZvY8Mo6ZXCEOWGCH3ABS7tYP9xw4NKFaZp4b8rTM
- iCpo+c/tUpWw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="396042075"
-Received: from zhangyu-optiplex-7040.bj.intel.com ([10.238.154.148])
-  by orsmga008.jf.intel.com with ESMTP; 09 Feb 2021 01:19:57 -0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     pbonzini@redhat.com, seanjc@google.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org
-Subject: [PATCH v3] KVM: x86/MMU: Do not check unsync status for root SP.
-Date:   Wed, 10 Feb 2021 01:01:11 +0800
-Message-Id: <20210209170111.4770-1-yu.c.zhang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S229939AbhBIJjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:39:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=MrsoAV+zu1Ug+eSr1I
+        X4k24NhUyAb/tUE5+u2X9r3EA=; b=MDt+zSZQfv+twSlD05f+I+zHUnP/gFes0L
+        NweZkdMPBD5XtOK/Mk+mKy7qgj5JZyhBvnqB05Q5APUJKiSHKIJJ281XxaHTZcPC
+        EBoP5rZBZtXXkJccLHT+iw+HlmQLFc93ihPVQ6aALVPc9nty+fQxMwod67piGJ/6
+        Mpv6yTjg8=
+Received: from localhost.localdomain.localdomain (unknown [182.150.160.182])
+        by smtp9 (Coremail) with SMTP id DcCowADH09qyTCJgokJOeg--.59330S2;
+        Tue, 09 Feb 2021 16:49:55 +0800 (CST)
+From:   Liao Pingfang <winndows@163.com>
+To:     akpm@linux-foundation.org, rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Liao Pingfang <winndows@163.com>
+Subject: [PATCH] bus: mvebu-mbus: Convert to use DEFINE_SHOW_ATTRIBUTE macro
+Date:   Tue,  9 Feb 2021 16:49:41 +0800
+Message-Id: <1612860581-3073-1-git-send-email-winndows@163.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DcCowADH09qyTCJgokJOeg--.59330S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ArW7JFWxCr47ZF47ur15Jwb_yoW8Xw4xpa
+        93uayjyr1UtrWUGFnYyFsrZa4fuaySq3y2qFyv93yFqF98Zw1YqF1xtFWSkr1rWry8Wr1a
+        qw15GFyxZFWjyrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziPxhdUUUUU=
+X-Originating-IP: [182.150.160.182]
+X-CM-SenderInfo: hzlq0vxrzvqiywtou0bp/1tbiGRM0mVyPb2V17AAAsn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In shadow page table, only leaf SPs may be marked as unsync;
-instead, for non-leaf SPs, we store the number of unsynced
-children in unsync_children. Therefore, in kvm_mmu_sync_root(),
-sp->unsync shall always be zero for the root SP and there is
-no need to check it. Remove the check, and add a warning
-inside mmu_sync_children() to assert that the flags are used
-properly.
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
-While at it, move the warning from mmu_need_write_protect()
-to kvm_unsync_page().
-
-Co-developed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+Signed-off-by: Liao Pingfang <winndows@163.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/bus/mvebu-mbus.c | 24 ++----------------------
+ 1 file changed, 2 insertions(+), 22 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 86af58294272..5f482af125b4 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1995,6 +1995,12 @@ static void mmu_sync_children(struct kvm_vcpu *vcpu,
- 	LIST_HEAD(invalid_list);
- 	bool flush = false;
+diff --git a/drivers/bus/mvebu-mbus.c b/drivers/bus/mvebu-mbus.c
+index 2519cee..4439612 100644
+--- a/drivers/bus/mvebu-mbus.c
++++ b/drivers/bus/mvebu-mbus.c
+@@ -470,17 +470,7 @@ static int mvebu_sdram_debug_show(struct seq_file *seq, void *v)
+ 	return mbus->soc->show_cpu_target(mbus, seq, v);
+ }
  
-+	/*
-+	 * Only 4k SPTEs can directly be made unsync, the parent pages
-+	 * should never be unsyc'd.
-+	 */
-+	WARN_ON_ONCE(parent->unsync);
-+
- 	while (mmu_unsync_walk(parent, &pages)) {
- 		bool protected = false;
+-static int mvebu_sdram_debug_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, mvebu_sdram_debug_show, inode->i_private);
+-}
+-
+-static const struct file_operations mvebu_sdram_debug_fops = {
+-	.open = mvebu_sdram_debug_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(mvebu_sdram_debug);
  
-@@ -2502,6 +2508,8 @@ EXPORT_SYMBOL_GPL(kvm_mmu_unprotect_page);
- 
- static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+ static int mvebu_devs_debug_show(struct seq_file *seq, void *v)
  {
-+	WARN_ON(sp->role.level != PG_LEVEL_4K);
-+
- 	trace_kvm_mmu_unsync_page(sp);
- 	++vcpu->kvm->stat.mmu_unsync;
- 	sp->unsync = 1;
-@@ -2524,7 +2532,6 @@ bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
- 		if (sp->unsync)
- 			continue;
+@@ -520,17 +510,7 @@ static int mvebu_devs_debug_show(struct seq_file *seq, void *v)
+ 	return 0;
+ }
  
--		WARN_ON(sp->role.level != PG_LEVEL_4K);
- 		kvm_unsync_page(vcpu, sp);
- 	}
+-static int mvebu_devs_debug_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, mvebu_devs_debug_show, inode->i_private);
+-}
+-
+-static const struct file_operations mvebu_devs_debug_fops = {
+-	.open = mvebu_devs_debug_open,
+-	.read = seq_read,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(mvebu_devs_debug);
  
-@@ -3406,8 +3413,7 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
- 		 * mmu_need_write_protect() describe what could go wrong if this
- 		 * requirement isn't satisfied.
- 		 */
--		if (!smp_load_acquire(&sp->unsync) &&
--		    !smp_load_acquire(&sp->unsync_children))
-+		if (!smp_load_acquire(&sp->unsync_children))
- 			return;
- 
- 		write_lock(&vcpu->kvm->mmu_lock);
+ /*
+  * SoC-specific functions and definitions
 -- 
-2.17.1
+1.8.3.1
+
 
