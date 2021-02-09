@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3017931527D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F0E315281
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbhBIPQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:16:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44366 "EHLO mx2.suse.de"
+        id S232043AbhBIPRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:17:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231654AbhBIPQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:16:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DCF20B1E0;
-        Tue,  9 Feb 2021 15:16:05 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 16:16:05 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Steven Rostedt <rostedt@goodmis.org>
-cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@intel.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        live-patching@vger.kernel.org
-Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
-In-Reply-To: <20210209094953.65d2f322@gandalf.local.home>
-Message-ID: <alpine.LSU.2.21.2102091613320.31501@pobox.suse.cz>
-References: <20210207104022.GA32127@zn.tnic> <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com> <20210207175814.GF32127@zn.tnic> <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com> <20210207224540.ercf5657pftibyaw@treble>
- <20210208100206.3b74891e@gandalf.local.home> <20210208153300.m5skwcxxrdpo37iz@treble> <YCFc+ewvwNWqrbY7@hirez.programming.kicks-ass.net> <20210208111546.5e01c3fb@gandalf.local.home> <alpine.LSU.2.21.2102090927230.31501@pobox.suse.cz>
- <20210209094953.65d2f322@gandalf.local.home>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S231674AbhBIPRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 10:17:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4F8164EB1;
+        Tue,  9 Feb 2021 15:16:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612883785;
+        bh=gLOoCljiYS+637We3rAhCj7YRtsqPvjKsdzaIB7M2Wk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lzRmksQj72FH/f7Fxm152+12w7tSjkJSk26QH0fXbcz5BCwj77/5bE5JMxGN6xjkQ
+         Qws9fzr1bfIvmCOUnRujMu4Ke4jUWjo0ENTdBqxC8nyQ7uNGmpkSdnO85w6Q71z7FR
+         8AzCe0UVwFamNLSWNg88PLVGHNwHPHgF7jMFAQzLhVB3iYAq537wdMwk0/oarQioxz
+         F701L2phy7RSjHpjiS3s+VF8mYJjrNC2TeQGmuxhGwY7xrpPVR3t3SmIZtWCzVFqDz
+         pOvC6GkPrk4amV1ZJHDJmKXLgm9sfzYgYhu6D25cKp9F9PbjcD//CpeyIHfP8u24ne
+         ksAMub0R1bbmw==
+Date:   Tue, 9 Feb 2021 16:16:20 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: linux-next: build failure after merge of the modules tree
+Message-ID: <YCKnRPRTDyfGxnBC@gunter>
+References: <20210209210843.3af66662@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210209210843.3af66662@canb.auug.org.au>
+X-OS:   Linux gunter 5.10.12-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Feb 2021, Steven Rostedt wrote:
++++ Stephen Rothwell [09/02/21 21:08 +1100]:
+>Hi all,
+>
+>After merging the modules tree, today's linux-next build (powerpc
+>allyesconfig) failed like this:
+>
+>In file included from include/linux/export.h:123,
+>                 from include/linux/linkage.h:7,
+>                 from arch/powerpc/include/asm/unistd.h:18,
+>                 from <stdin>:2:
+>./include/generated/autoksyms.h:5:9: warning: missing whitespace after the macro name
+>    5 | #define __KSYM_.HT_update_self_and_peer_setting 1
+>      |         ^~~~~~~
+>./include/generated/autoksyms.h:6:9: warning: missing whitespace after the macro name
+>    6 | #define __KSYM_.RemovePeerTS 1
+>      |         ^~~~~~~
+>./include/generated/autoksyms.h:6: warning: "__KSYM_" redefined
+>    6 | #define __KSYM_.RemovePeerTS 1
+>      |
+>./include/generated/autoksyms.h:5: note: this is the location of the previous definition
+>
+>and on and on :-(
+>
+>Caused by commit
+>
+>  367948220fce ("module: remove EXPORT_UNUSED_SYMBOL*")
+>
+>I have reverted that commit for today.
 
-> On Tue, 9 Feb 2021 09:32:34 +0100 (CET)
-> Miroslav Benes <mbenes@suse.cz> wrote:
-> 
-> > powerpc has this
-> > 
-> > static inline unsigned long klp_get_ftrace_location(unsigned long faddr)                                               
-> > {                                                                                                                      
-> >         /*                                                                                                             
-> >          * Live patch works only with -mprofile-kernel on PPC. In this case,                                           
-> >          * the ftrace location is always within the first 16 bytes.                                                    
-> >          */                                                                                                            
-> >         return ftrace_location_range(faddr, faddr + 16);                                                               
-> > }                                                                                                                      
-> > 
-> > > > I suppose the trivial fix is to see if it points to endbr64 and if so,
-> > > > increment the addr by the length of that.  
-> > > 
-> > > I thought of that too. But one thing that may be possible, is to use
-> > > kallsym. I believe you can get the range of a function (start and end of
-> > > the function) from kallsyms. Then ask ftrace for the addr in that range
-> > > (there should only be one).  
-> > 
-> > And we can do this if a hard-coded value live above is not welcome. If I 
-> > remember correctly, we used to have exactly this in the old versions of 
-> > kGraft. We walked through all ftrace records, called 
-> > kallsyms_lookup_size_offset() on every record's ip and if the offset+ip 
-> > matched faddr (in this case), we returned the ip.
-> 
-> Either way is fine. Question is, should we just wait till CET is
-> implemented for the kernel before making any of these changes? Just knowing
-> that we have a solution to handle it may be good enough for now.
+[ Adding Michael and Masahiro to CC ]
 
-I'd prefer it to be a part of CET enablement patch set.
+Hi Stephen,
 
-Miroslav
+Hmm, these errors don't look like it's related to that particular commit. I was
+able to reproduce these weird autoksym errors even without any modules-next
+patches applied, and on a clean v5.11-rc7 tree. To reproduce it,
+CONFIG_TRIM_UNUSED_KSYMS needs to be enabled. I guess that's why we run into
+these errors with allyesconfig. I used a gcc-7 ppc64le cross compiler and got
+the same compiler warnings. It seems to not compile on powerpc properly because
+it looks like some symbols have an extra dot "." prefix, for example in
+kthread.o:
+
+    168: 0000000000000318    24 NOTYPE  GLOBAL DEFAULT    6 kthread_create_worker
+    169: 0000000000001d90   104 FUNC    GLOBAL DEFAULT    1 .kthread_create_worker
+    170: 0000000000000330    24 NOTYPE  GLOBAL DEFAULT    6 kthread_create_worker_on_cpu
+    171: 0000000000001e00    88 FUNC    GLOBAL DEFAULT    1 .kthread_create_worker_on_cpu
+    172: 0000000000000348    24 NOTYPE  GLOBAL DEFAULT    6 kthread_queue_work
+    173: 0000000000001e60   228 FUNC    GLOBAL DEFAULT    1 .kthread_queue_work
+
+So I suppose this dot prefix is specific to powerpc. From the ppc64 elf abi docs:
+
+     Symbol names with a dot (.) prefix are reserved for holding entry point
+     addresses. The value of a symbol named ".FN", if it exists, is the entry point
+     of the function "FN".
+
+I guess the presence of the extra dot symbols is confusing
+scripts/gen_autoksyms.sh, so we get the dot symbols in autoksyms.h, which the
+preprocessor doesn't like. I am wondering how this was never caught until now
+and also now curious if this feature was ever functional on powerpc..
+
+Thanks,
+
+Jessica
