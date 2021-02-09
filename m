@@ -2,117 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720A3314866
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 06:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C85F314865
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 06:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhBIF7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 00:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhBIF7C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 00:59:02 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A15C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 21:58:22 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id o7so11815375pgl.1
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 21:58:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ODatsDn099m1+CSNXdXnLWPiY9mo47t7WiVoBOMsqJM=;
-        b=ITYn8yeve6X0LP8vu1azTHZL3fHOPrCmhckFGudStojQpknzAJs7D4QKaaiwLbnfq8
-         Dj+lPpahBquRa6CCNF/Q0GHGPWcD1wzhZrCHR2NruaNKwH74xQLQd37e/SxHh27NCbzK
-         IsKQPUTN/xTEoOva05nzUfFtFxV2Pn31i8avuqrm4c1outYc2EZtl37HWGZApF8imT1z
-         Yz1nQaLlY/idr21LV+GZ4zUuaAwmuTUFcvDfmR1js4XuPSBHg0z0z98h1Z+dhFKQ5dwl
-         4xbFNjV2c7X9Gh7mzEYvQvoUxOLp6qFr3mvZKFKRE7lWz1f5B8RTMlmaSysBDS4tztcA
-         AacQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ODatsDn099m1+CSNXdXnLWPiY9mo47t7WiVoBOMsqJM=;
-        b=XS3blk0hl8SBmEmh8wynG1S7NZF8/Bw4u47Hhn9N+i8r3NVoZYrrQIGES1u+gUWmrl
-         qhucajMmu9b8Rv5NUnoNSDAZe92Ow+fZtQAgAeyTCUD9FMNs9UpNe5BOmlegYAcSBMzE
-         Qn1+m/CkahZKOnqcO8sRnWsNQo0ov9WlTO7iK7WyrmC3EYHgydQ7e6CsmyaJf0xLGsRF
-         VOzO1102jwalgsfhbjDbq6pk6Ft+/CLfrnuATdQkGvIBLnFA4jsX6KmE6QKTQ/OZwwKA
-         c3uIyvTr8aChhwGszLCl3yrj29c5Dw+fpLBzZ9h/teeT2SElZ4pNoOfNNIX+lXlLkZga
-         8mdA==
-X-Gm-Message-State: AOAM533dbOKxC7GgkyhbR+YQzCMxhua27ODEEdu1zKtgvAOiFg0ZWYdD
-        0iSQANTPjp1amj2TotghC64=
-X-Google-Smtp-Source: ABdhPJwlw20G9EgFTRzEe7KMBF1IQKc7axH9HOzMkh4Imf/afuWmvnWiFLIH/uTBa70nMl8UMOxSkw==
-X-Received: by 2002:a63:ff09:: with SMTP id k9mr21025829pgi.175.1612850301680;
-        Mon, 08 Feb 2021 21:58:21 -0800 (PST)
-Received: from localhost.localdomain ([122.164.88.77])
-        by smtp.gmail.com with ESMTPSA id v4sm1062095pff.156.2021.02.08.21.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 21:58:21 -0800 (PST)
-From:   Atul Gopinathan <leoatul12@gmail.com>
-To:     mchehab+huawei@kernel.org
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Atul Gopinathan <leoatul12@gmail.com>
-Subject: [PATCH] staging: hikey9xx: fix checkpatch error and warning
-Date:   Tue,  9 Feb 2021 11:27:04 +0530
-Message-Id: <20210209055703.7211-1-leoatul12@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S229665AbhBIF6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 00:58:36 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:26573 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229464AbhBIF6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 00:58:33 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DZXHL21kTz9vBmK;
+        Tue,  9 Feb 2021 06:57:50 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 1lLkri7Za2BJ; Tue,  9 Feb 2021 06:57:50 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZXHK6wclz9vBmJ;
+        Tue,  9 Feb 2021 06:57:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8FFFB8B7C9;
+        Tue,  9 Feb 2021 06:57:50 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id vhI_15S8uVFg; Tue,  9 Feb 2021 06:57:50 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1D7558B764;
+        Tue,  9 Feb 2021 06:57:50 +0100 (CET)
+Subject: Re: [PATCH v5 05/22] powerpc/irq: Add helper to set regs->softe
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+ <5f37d1177a751fdbca79df461d283850ca3a34a2.1612796617.git.christophe.leroy@csgroup.eu>
+ <1612832745.vhjk6358hf.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <258ac0c6-ef40-86d4-2ce4-772cfc4a95e5@csgroup.eu>
+Date:   Tue, 9 Feb 2021 06:57:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <1612832745.vhjk6358hf.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following types of checkpatch error and warning:
 
-ERROR: code indent should use tabs where possible
-WARNING: struct phy_ops should normally be const
 
-Signed-off-by: Atul Gopinathan <leoatul12@gmail.com>
----
- drivers/staging/hikey9xx/hi6421-spmi-pmic.c     | 2 +-
- drivers/staging/hikey9xx/hi6421v600-regulator.c | 2 +-
- drivers/staging/hikey9xx/phy-hi3670-usb3.c      | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Le 09/02/2021 à 02:11, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+>> regs->softe doesn't exist on PPC32.
+>>
+>> Add irq_soft_mask_regs_set_state() helper to set regs->softe.
+>> This helper will void on PPC32.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/include/asm/hw_irq.h | 11 +++++++++--
+>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm/hw_irq.h
+>> index 614957f74cee..ed0c3b049dfd 100644
+>> --- a/arch/powerpc/include/asm/hw_irq.h
+>> +++ b/arch/powerpc/include/asm/hw_irq.h
+>> @@ -38,6 +38,8 @@
+>>   #define PACA_IRQ_MUST_HARD_MASK	(PACA_IRQ_EE)
+>>   #endif
+>>   
+>> +#endif /* CONFIG_PPC64 */
+>> +
+>>   /*
+>>    * flags for paca->irq_soft_mask
+>>    */
+>> @@ -46,8 +48,6 @@
+>>   #define IRQS_PMI_DISABLED	2
+>>   #define IRQS_ALL_DISABLED	(IRQS_DISABLED | IRQS_PMI_DISABLED)
+>>   
+>> -#endif /* CONFIG_PPC64 */
+>> -
+>>   #ifndef __ASSEMBLY__
+>>   
+>>   #ifdef CONFIG_PPC64
+>> @@ -287,6 +287,10 @@ extern void irq_set_pending_from_srr1(unsigned long srr1);
+>>   
+>>   extern void force_external_irq_replay(void);
+>>   
+>> +static inline void irq_soft_mask_regs_set_state(struct pt_regs *regs, unsigned long val)
+>> +{
+>> +	regs->softe = val;
+>> +}
+>>   #else /* CONFIG_PPC64 */
+>>   
+>>   static inline unsigned long arch_local_save_flags(void)
+>> @@ -355,6 +359,9 @@ static inline bool arch_irq_disabled_regs(struct pt_regs *regs)
+>>   
+>>   static inline void may_hard_irq_enable(void) { }
+>>   
+>> +static inline void irq_soft_mask_regs_set_state(struct pt_regs *regs, unsigned long val)
+>> +{
+>> +}
+>>   #endif /* CONFIG_PPC64 */
+>>   
+>>   #define ARCH_IRQ_INIT_FLAGS	IRQ_NOREQUEST
+> 
+> What I don't like about this where you use it is it kind of pollutes
+> the ppc32 path with this function which is not valid to use.
+> 
+> I would prefer if you had this purely so it could compile with:
+> 
+>    if (IS_ENABLED(CONFIG_PPC64)))
+>        irq_soft_mask_regs_set_state(regs, blah);
+> 
+> And then you could make the ppc32 cause a link error if it did not
+> get eliminated at compile time (e.g., call an undefined function).
+> 
+> You could do the same with the kuap_ functions to change some ifdefs
+> to IS_ENABLED.
+> 
+> That's just my preference but if you prefer this way I guess that's
+> okay.
 
-diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-index 2301f4fcd48d..9c5e113e1a81 100644
---- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-+++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-@@ -177,7 +177,7 @@ static void hi6421_spmi_pmic_irq_init(struct hi6421_spmi_pmic *ddata)
- 
- 	for (i = 0; i < HISI_IRQ_ARRAY; i++)
- 		regmap_write(ddata->regmap, SOC_PMIC_IRQ_MASK_0_ADDR + i,
--				        HISI_MASK);
-+					HISI_MASK);
- 
- 	for (i = 0; i < HISI_IRQ_ARRAY; i++) {
- 		regmap_read(ddata->regmap, SOC_PMIC_IRQ0_ADDR + i, &pending);
-diff --git a/drivers/staging/hikey9xx/hi6421v600-regulator.c b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-index c801bb840962..f6a14e9c3cbf 100644
---- a/drivers/staging/hikey9xx/hi6421v600-regulator.c
-+++ b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-@@ -106,7 +106,7 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
- 
- 	ret = regmap_update_bits(pmic->regmap, rdev->desc->enable_reg,
- 				 rdev->desc->enable_mask,
--			         rdev->desc->enable_mask);
-+				 rdev->desc->enable_mask);
- 
- 	/* Avoid powering up multiple devices at the same time */
- 	usleep_range(rdev->desc->off_on_delay, rdev->desc->off_on_delay + 60);
-diff --git a/drivers/staging/hikey9xx/phy-hi3670-usb3.c b/drivers/staging/hikey9xx/phy-hi3670-usb3.c
-index 8918f3665f8e..e7e579ce0302 100644
---- a/drivers/staging/hikey9xx/phy-hi3670-usb3.c
-+++ b/drivers/staging/hikey9xx/phy-hi3670-usb3.c
-@@ -585,7 +585,7 @@ static int hi3670_phy_exit(struct phy *phy)
- 	return ret;
- }
- 
--static struct phy_ops hi3670_phy_ops = {
-+static const struct phy_ops hi3670_phy_ops = {
- 	.init		= hi3670_phy_init,
- 	.exit		= hi3670_phy_exit,
- 	.owner		= THIS_MODULE,
--- 
-2.27.0
+I see you didn't change your mind since last April :)
 
+I'll see what I can do.
+
+Christophe
