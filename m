@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732B9314A7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 134DB314A7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhBIIjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:39:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47364 "EHLO mail.kernel.org"
+        id S229925AbhBIIkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:40:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52966 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhBIIjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:39:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAC2664DE8;
-        Tue,  9 Feb 2021 08:38:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612859940;
-        bh=8fytPU3zJcLBLMRd9bq+zgCRdOowwJBrd8hM6uHsRKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SB/p5Ae0Pk0hk/yGesVDbVNustludG2NHk58SUYPQY4WH3G16nTdZuJqINzZ07zjH
-         BvP2sz0FBK9MAX2dOg1w2KjYp4vidQFOtGand974SocDK+YVfWLoushwF9P4FR/4PJ
-         /NXdj1JoKc3FZAWb4kAX89iMantuUUFtZwdDZWyg=
-Date:   Tue, 9 Feb 2021 09:38:57 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Cc:     arnd@arndb.de, alex.dewar90@gmail.com,
-        linux-kernel@vger.kernel.org,
-        syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
-Subject: Re: [PATCH] drivers/misc/vmw_vmci: restrict too big queue size in
- qp_host_alloc_queue
-Message-ID: <YCJKIVhNS4N4glUa@kroah.com>
-References: <20210206053409.1972270-1-snovitoll@gmail.com>
+        id S229759AbhBIIkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 03:40:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612859975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M/TCQMsEKZeWKYWA7PitmpFz+lfBIV2PUxzKNcHqcSA=;
+        b=KZ7MzYv+TlxppKhZLwDSyysF5uPVvVC7N2pC83pC/uTDWki/80BBoVFPdQBTjNmrVy8CT0
+        y8vV0l+DqBOHYgEUOBarOoaQMVE+UkrpmLSVuQZjJ6K0hiBYKCywhHW5qvRjmBxqZ5HCFr
+        plK6sLPUIvTOai6G3U2VGlUe2lbO9so=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 94141AD3E;
+        Tue,  9 Feb 2021 08:39:35 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 09:39:34 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        john.ogness@linutronix.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v2] printk: fix deadlock when kernel panic
+Message-ID: <YCJKRnBXjTNWRBZ7@alley>
+References: <20210206054124.6743-1-songmuchun@bytedance.com>
+ <YCDcAy39BbPItdGY@jagdpanzerIV.localdomain>
+ <CAMZfGtVBVSuH=HGNs7KFOtixSviy_stoZsiG4au0RUkUnH-0rQ@mail.gmail.com>
+ <YCE4tIrz/u/RkDc/@jagdpanzerIV.localdomain>
+ <CAMZfGtX-bHXoF_4rU+WzDNp+LmZj3CHWmurEvjCZBCyM2uiDMw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210206053409.1972270-1-snovitoll@gmail.com>
+In-Reply-To: <CAMZfGtX-bHXoF_4rU+WzDNp+LmZj3CHWmurEvjCZBCyM2uiDMw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 06, 2021 at 11:34:09AM +0600, Sabyrzhan Tasbolatov wrote:
-> syzbot found WARNING in qp_broker_alloc[1] in qp_host_alloc_queue()
-> when num_pages is 0x100001, giving queue_size + queue_page_size
-> bigger than KMALLOC_MAX_SIZE for kzalloc(), resulting order >= MAX_ORDER
-> condition.
-> 
-> queue_size + queue_page_size=0x8000d8, where KMALLOC_MAX_SIZE=0x400000.
-> 
-> 
-> FYI, I've also noticed in vmci_queue_pair.c other SLAB allocations with no
-> length check that might exceed KMALLOC_MAX_SIZE as well,
-> but syzbot doesn't have reproduces for them.
-> 
-> in qp_alloc_ppn_set():
-> 	produce_ppns =
-> 	    kmalloc_array(num_produce_pages, sizeof(*produce_ppns),
-> 			  GFP_KERNEL);
-> [..]
-> 	consume_ppns =
-> 	    kmalloc_array(num_consume_pages, sizeof(*consume_ppns),
-> 			  GFP_KERNEL);
-> [..]
-> in qp_alloc_hypercall():
-> 	msg_size = sizeof(*alloc_msg) +
-> 	    (size_t) entry->num_ppns * ppn_size;
-> 	alloc_msg = kmalloc(msg_size, GFP_KERNEL);
-> [..]
-> in qp_broker_create():
-> 	entry->local_mem = kcalloc(QPE_NUM_PAGES(entry->qp),
-> 					   PAGE_SIZE, GFP_KERNEL);
-> 
-> [1]
-> Call Trace:
->  alloc_pages include/linux/gfp.h:547 [inline]
->  kmalloc_order+0x40/0x130 mm/slab_common.c:837
->  kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
->  kmalloc_large include/linux/slab.h:481 [inline]
->  __kmalloc+0x257/0x330 mm/slub.c:3959
->  kmalloc include/linux/slab.h:557 [inline]
->  kzalloc include/linux/slab.h:682 [inline]
->  qp_host_alloc_queue drivers/misc/vmw_vmci/vmci_queue_pair.c:540 [inline]
->  qp_broker_create drivers/misc/vmw_vmci/vmci_queue_pair.c:1351 [inline]
->  qp_broker_alloc+0x936/0x2740 drivers/misc/vmw_vmci/vmci_queue_pair.c:1739
-> 
-> Reported-by: syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
-> Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-> ---
->  drivers/misc/vmw_vmci/vmci_queue_pair.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-> index c49065887e8f..f6af406fda80 100644
-> --- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
-> +++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-> @@ -537,6 +537,11 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
->  
->  	queue_page_size = num_pages * sizeof(*queue->kernel_if->u.h.page);
->  
-> +	if (queue_size + queue_page_size > KMALLOC_MAX_SIZE) {
-> +		pr_warn("too big queue to allocate\n");
+On Mon 2021-02-08 23:40:07, Muchun Song wrote:
+> On Mon, Feb 8, 2021 at 9:12 PM Sergey Senozhatsky
+> <sergey.senozhatsky@gmail.com> wrote:
+> >
+> > On (21/02/08 16:49), Muchun Song wrote:
+> > > On Mon, Feb 8, 2021 at 2:38 PM Sergey Senozhatsky
+> > > <sergey.senozhatsky@gmail.com> wrote:
+> > > >
+> > > > On (21/02/06 13:41), Muchun Song wrote:
+> > > > > We found a deadlock bug on our server when the kernel panic. It can be
+> > > > > described in the following diagram.
+> > > > >
+> > > > > CPU0:                                         CPU1:
+> > > > > panic                                         rcu_dump_cpu_stacks
+> > > > >   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
+> > > > >     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
+> > > > >                                                     __printk_safe_flush
+> > > > >                                                       raw_spin_lock_irqsave(&read_lock)
+> > > > >     // send NMI to other processors
+> > > > >     apic_send_IPI_allbutself(NMI_VECTOR)
+> > > > >                                                         // NMI interrupt, dead loop
+> > > > >                                                         crash_nmi_callback
+> > > >
+> > > > At what point does this decrement num_online_cpus()? Any chance that
+> > > > panic CPU can apic_send_IPI_allbutself() and printk_safe_flush_on_panic()
+> > > > before num_online_cpus() becomes 1?
+> > >
+> > > I took a closer look at the code. IIUC, It seems that there is no point
+> > > which decreases num_online_cpus.
+> >
+> > So then this never re-inits the safe_read_lock?
 
-As this is controllable by userspace, you just provided a way to flood
-the kernel logs.
+Yes, but it will also not cause the deadlock.
+printk_safe_flush_on_panic() will return without flushing
+the buffers.
 
-Please make this a dev_dbg() call instead, if you really want to see it.
-Otherwise just return NULL, no need to report anything, right?
+> Right. If we encounter this case, we do not flush printk
+> buffer. So, it seems my previous patch is the right fix.
+> Right?
+> 
+> https://lore.kernel.org/patchwork/patch/1373563/
 
-thanks,
+No, there is a risk of deadlock caused by logbuf_lock, see
+https://lore.kernel.org/lkml/YB0nggSa7a95UCIK@alley/
 
-greg k-h
+> >                if (num_online_cpus() > 1)
+> >                        return;
+> >
+> >                debug_locks_off();
+> >                raw_spin_lock_init(&safe_read_lock);
+> >
+> >         -ss
+
+I prefer this approach. It is straightforward because it handles
+read_lock the same way as logbuf_lock.
+
+IMHO, it is not worth inventing any more complexity. Both logbuf_lock
+and read_lock are obsoleted by the lockless ringbuffer. And we need
+something simple to get backported to the already released kernels.
+
+Best Regards,
+Petr
