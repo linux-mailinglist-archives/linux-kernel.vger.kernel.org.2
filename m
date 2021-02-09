@@ -2,117 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A2E3144C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4F43144C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhBIARI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 19:17:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhBIARD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:17:03 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A17C061786;
-        Mon,  8 Feb 2021 16:16:22 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id es14so7895521qvb.3;
-        Mon, 08 Feb 2021 16:16:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+8DFoL2EGSgg/sJHZEF0UfDorvx2ns9yfYdINvaslqw=;
-        b=FhbkDxAjgvswwKsnbNXbwAW5btltZszOAwno23bs1Vzlx9BX4q6XP6erkz5Qi+a0bF
-         mtQP2rND1gx2GByhLCsHQzFHFbtddjDCz0GN8a5thWAu+YwnT/PmKGKvhp77Aq7lBv4u
-         u8zDIIMEWB2vdvf60A3ipfIlXc4ybH/8xZMymTn0gQ8jLyXLQAld0FCRfKPedzvSvR9C
-         jHFOFD7jduyzrJcAjTB9ZX5kRG3xMLQ995coTvoebji9GJ9MaJEzrMblBRBQBt0+tu44
-         08TTxOLgJGuY4A73ogtQFZA2kqNo2t08xBztPOMy1vBOjX/YWPdIWmtww7aXN6mGwOzb
-         WCMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=+8DFoL2EGSgg/sJHZEF0UfDorvx2ns9yfYdINvaslqw=;
-        b=Si6JC1uhEeajBRFNzalleW8r2u9UpZtL0JCRtDmLSvpxKFloPt/DVQDHq+K22/XhD8
-         6+BAeftrfdBleTgFR0Fa04R0O97S8smfQJ8USXnyFWjc8sQk1vXhmNjO50407BcYRIZu
-         lIpxUPohFWA8uQeHZ+qPpsLjoHmJ0cvzzdwYK1C6ZJRib5syu0QNoCGsrxIsL6lglEHg
-         arsqnqzJftCqfvW7UNLzck4oiIK4Yjb85qa9/FQXMOMj7aOUZt0zgovixsXBIoxqpPsc
-         5eiGyY98ncZmmtIuRS2YhKji8oyYehH9aWxdO8zrHcyMM20YqdNZNAbQT8h5NSRgdvI7
-         2amQ==
-X-Gm-Message-State: AOAM531TxwaE1jRJP5+QOYrrTqRCP6xXLyKEZ9XZzst+XnGP4wdTDtIG
-        M8UtTRE6H4aK9zJdr88pGwqx7LWA/GpKAvDC
-X-Google-Smtp-Source: ABdhPJwTBxaDdWBhxnCzV3taXe6XWPA4AbMsXQicbAixsexK0BjZUeSmmK7jB0dNEKtdsmSDZAiyoA==
-X-Received: by 2002:ad4:4ba6:: with SMTP id i6mr2725133qvw.50.1612829781910;
-        Mon, 08 Feb 2021 16:16:21 -0800 (PST)
-Received: from ArchLinux ([143.244.44.203])
-        by smtp.gmail.com with ESMTPSA id 138sm17719328qkh.7.2021.02.08.16.16.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 16:16:20 -0800 (PST)
-Date:   Tue, 9 Feb 2021 05:46:12 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>, davem@davemloft.net,
-        rppt@kernel.org, akpm@linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] drivers: net: ethernet: sun: Fix couple of spells in the
- file sunhme.c
-Message-ID: <YCHUTNQNqIzDhkH2@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Edward Cree <ecree.xilinx@gmail.com>, davem@davemloft.net,
-        rppt@kernel.org, akpm@linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-References: <20210205124741.1397457-1-unixbhaskar@gmail.com>
- <4134afc4-31d6-1b49-9b73-195a6d559953@gmail.com>
- <20210208100427.4708e1e0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S229733AbhBIAT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 19:19:29 -0500
+Received: from mga12.intel.com ([192.55.52.136]:47541 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229623AbhBIAT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 19:19:27 -0500
+IronPort-SDR: ZJQCO/A3787mfUV0ZUWZHh+9B5Rumv23ViYKSf79xhWk51zaQ5CRHEftU34X972bBF/SKU1ggM
+ O6WFflld8Gxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="160957488"
+X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
+   d="scan'208";a="160957488"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 16:17:41 -0800
+IronPort-SDR: u6DxJ2vfJjDslyiSUWZ5Rx31sPnoNoA2G2fmV4r476kY2YGGWEQ1GsT5+NEri8VCZKLFjD+g0u
+ ppdDucux2tlQ==
+X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
+   d="scan'208";a="395797398"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 16:17:38 -0800
+Subject: Re: [PATCH 27/49] perf util: Save pmu name to struct perf_pmu_alias
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+        "Jin, Yao" <yao.jin@intel.com>
+References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+ <1612797946-18784-28-git-send-email-kan.liang@linux.intel.com>
+ <20210208185732.GK920417@kernel.org>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <07a75656-a49d-0ca9-b1f5-e69501a5dd9c@linux.intel.com>
+Date:   Tue, 9 Feb 2021 08:17:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jNB3eq/8J+nDvh4w"
-Content-Disposition: inline
-In-Reply-To: <20210208100427.4708e1e0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210208185732.GK920417@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnaldo,
 
---jNB3eq/8J+nDvh4w
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 10:04 Mon 08 Feb 2021, Jakub Kicinski wrote:
->On Mon, 8 Feb 2021 15:00:01 +0000 Edward Cree wrote:
->> On 05/02/2021 12:47, Bhaskar Chowdhury wrote:
->> >
->> >
->> > s/fuck/mess/
->> > s/fucking/soooo/
->> >
->> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On 2/9/2021 2:57 AM, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Feb 08, 2021 at 07:25:24AM -0800, kan.liang@linux.intel.com escreveu:
+>> From: Jin Yao <yao.jin@linux.intel.com>
 >>
->> Right or wrong, these are not "spelling fixes".
->> Please do not misrepresent your patch in your Subject: line.
->> (Also, subsystem prefix should probably just be "net: sunhme:".)
->
->I think Steven already explained on the printf patch that the "obscene"
->language rules apply to new code only, so I marked this as Rejected
->silently.
+>> On hybrid platform, one event is available on one pmu
+>> (such as, cpu_core or cpu_atom).
+>>
+>> This patch saves the pmu name to the pmu field of struct perf_pmu_alias.
+>> Then next we can know the pmu where the event can be enabled.
+>>
+>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> ---
+>>   tools/perf/util/pmu.c | 17 +++++++++++++----
+>>   tools/perf/util/pmu.h |  1 +
+>>   2 files changed, 14 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index 44ef283..0c25457 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -283,6 +283,7 @@ void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
+>>   	zfree(&newalias->str);
+>>   	zfree(&newalias->metric_expr);
+>>   	zfree(&newalias->metric_name);
+>> +	zfree(&newalias->pmu);
+>>   	parse_events_terms__purge(&newalias->terms);
+>>   	free(newalias);
+>>   }
+>> @@ -297,6 +298,10 @@ static bool perf_pmu_merge_alias(struct perf_pmu_alias *newalias,
+>>   
+>>   	list_for_each_entry(a, alist, list) {
+>>   		if (!strcasecmp(newalias->name, a->name)) {
+>> +			if (newalias->pmu && a->pmu &&
+>> +			    !strcasecmp(newalias->pmu, a->pmu)) {
+>> +				continue;
+>> +			}
+>>   			perf_pmu_update_alias(a, newalias);
+>>   			perf_pmu_free_alias(newalias);
+>>   			return true;
+>> @@ -311,7 +316,8 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+>>   				 char *unit, char *perpkg,
+>>   				 char *metric_expr,
+>>   				 char *metric_name,
+>> -				 char *deprecated)
+>> +				 char *deprecated,
+>> +				 char *pmu)
+>>   {
+>>   	struct parse_events_term *term;
+>>   	struct perf_pmu_alias *alias;
+>> @@ -382,6 +388,7 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+>>   	}
+>>   	alias->per_pkg = perpkg && sscanf(perpkg, "%d", &num) == 1 && num == 1;
+>>   	alias->str = strdup(newval);
+>> +	alias->pmu = pmu ? strdup(pmu) : NULL;
+>>   
+>>   	if (deprecated)
+>>   		alias->deprecated = true;
+>> @@ -407,7 +414,7 @@ static int perf_pmu__new_alias(struct list_head *list, char *dir, char *name, FI
+>>   	strim(buf);
+>>   
+>>   	return __perf_pmu__new_alias(list, dir, name, NULL, buf, NULL, NULL, NULL,
+>> -				     NULL, NULL, NULL, NULL);
+>> +				     NULL, NULL, NULL, NULL, NULL);
+>>   }
+>>   
+>>   static inline bool pmu_alias_info_file(char *name)
+>> @@ -797,7 +804,8 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
+>>   				(char *)pe->unit, (char *)pe->perpkg,
+>>   				(char *)pe->metric_expr,
+>>   				(char *)pe->metric_name,
+>> -				(char *)pe->deprecated);
+>> +				(char *)pe->deprecated,
+>> +				(char *)pe->pmu);
+>>   	}
+>>   }
+>>   
+>> @@ -870,7 +878,8 @@ static int pmu_add_sys_aliases_iter_fn(struct pmu_event *pe, void *data)
+>>   				      (char *)pe->perpkg,
+>>   				      (char *)pe->metric_expr,
+>>   				      (char *)pe->metric_name,
+>> -				      (char *)pe->deprecated);
+>> +				      (char *)pe->deprecated,
+>> +				      NULL);
+> 
+> At some point I think passing the whole 'struct pme_event' pointer
+> should be better?
+> 
 
-Alright! Accepted.
+Yes, I'm thinking the changes as following,
 
---jNB3eq/8J+nDvh4w
-Content-Type: application/pgp-signature; name="signature.asc"
+Before:
 
------BEGIN PGP SIGNATURE-----
+static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+				 char *desc, char *val,
+				 char *long_desc, char *topic,
+				 char *unit, char *perpkg,
+				 char *metric_expr,
+				 char *metric_name,
+				 char *deprecated);
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAh1EkACgkQsjqdtxFL
-KRWajwgAht/6bncoSkqaKPFyGEVSrbUYSSgCqt17fq+WVn3pPAqb0IVSnmwntsa1
-RnMxNHuJ+zzeTi06QjbrBB7IiqhhyNIXghJVv8D3RHfD+IfkLo/24OTjL/yFZmIg
-pDVfBmZb6xB5202bNmclsXNTYyJSt5or4nIM67LTGhSTjzj1zLSY6n3Tj2/HIXUq
-vMdCQK5MR9jOtmwcR9RyKBZFwoSS+DXMwKni/ER+DdUidcg+qqtkWC8aAnmKbdxh
-dZVNLoFyl4r0nNaQjrjXq5P1nPmD5wADdIvUlHaA9BHVIQaW1PHfaK2gYdXGNAZc
-dKuPYbhQIMnIH72nJeGJaRMxFSxESg==
-=1TKW
------END PGP SIGNATURE-----
+After:
 
---jNB3eq/8J+nDvh4w--
+static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+				 char *desc, char *val,
+				 struct pmu_event *pe);
+
+That looks much simpler than before.
+
+Thanks
+Jin Yao
+
+>>   	}
+>>   
+>>   	return 0;
+>> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+>> index 8164388..0e724d5 100644
+>> --- a/tools/perf/util/pmu.h
+>> +++ b/tools/perf/util/pmu.h
+>> @@ -72,6 +72,7 @@ struct perf_pmu_alias {
+>>   	bool deprecated;
+>>   	char *metric_expr;
+>>   	char *metric_name;
+>> +	char *pmu;
+>>   };
+>>   
+>>   struct perf_pmu *perf_pmu__find(const char *name);
+>> -- 
+>> 2.7.4
+>>
+> 
