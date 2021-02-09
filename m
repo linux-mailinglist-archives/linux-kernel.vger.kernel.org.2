@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AA031514E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F8E315151
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhBIOMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:12:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbhBIOMn (ORCPT
+        id S231440AbhBIONQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:13:16 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:42114 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230154AbhBIOM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:12:43 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF6FC06178B
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 06:12:02 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id u14so22028196wri.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 06:12:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=k1HhnpSm7palodE2BhJbwA2o7GYtOSex3ooquhrx81E=;
-        b=T87iwANX2bAYRxZaQ0Z9PSx+xhQ3pig0kYuKz7L0TFzP8KIOx61cS2BeggXG5U6eSC
-         TehNjJAijyzIjuLvJHhW7y7q3q/bIDw5VlsTc0jtYg9D79vloeFzYTsLAEOe6LO+pHPL
-         dgZ2RtqE8NiP6inQiyOwdsP3Su0LyVbLYG84N27ag9T3QMcq+9APLn/h+EhDUysAvc42
-         PvYWgclqRiEJHXf8UG90XTFH7+bf81InRc0Acx+qoalaMDw2G9o77VgMsEATvTqxe01E
-         zNu0XnVULhojgSsX4gQRvBmthEAmTtNIzB1XcHUAmEozdcU/Brh4Jfft+bs5rnF5Eury
-         yAjw==
+        Tue, 9 Feb 2021 09:12:56 -0500
+Received: by mail-ot1-f44.google.com with SMTP id q4so7920952otm.9;
+        Tue, 09 Feb 2021 06:12:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=k1HhnpSm7palodE2BhJbwA2o7GYtOSex3ooquhrx81E=;
-        b=sOF2UdMs7mwfGvPOG45+GopJXeRb1IaqJnhHnPJgQF0Qoxo7bnFmdeLc7vg/wHtUwC
-         H5LEi2Q2sQ1tLwtVRKv10vCYoZR1xzwYKY1lAGNq4jkndcRElAsxao2Chtd/9gNME6Ai
-         x/CvMQBElqOqobrXrYTfUsfaUeM3dJBDohqU1ToxDp9YoxIZp58H4NlgjuaXMBHJhAMF
-         Mdykq3iOYcwvLw+oCVhnDoQGwNfhU3PRGh+84ROAiGfPjEL1D4i+JIhFLoc41P/XbJri
-         PreP+5uRcxv8pMApt3Yai1h8KKhF5TJYWZyiRYlBktst8dOu4cdf6mheVRftskTb7HsU
-         zSvQ==
-X-Gm-Message-State: AOAM531njFCNjfhTLWnojv7y7VWbLArYMQjfVyvCAnsI2jKm1oyGdPK4
-        sb7xT33gWZ2IxlgJ23wGulpSRA==
-X-Google-Smtp-Source: ABdhPJwhlg9/4addqJWZY9EJWC2V/ljjUkL52jAkH5a66gwevR6yODdQLNjXa223yZxHOa6oVfQnHg==
-X-Received: by 2002:a5d:67d1:: with SMTP id n17mr18771567wrw.168.1612879920377;
-        Tue, 09 Feb 2021 06:12:00 -0800 (PST)
-Received: from dell ([91.110.221.187])
-        by smtp.gmail.com with ESMTPSA id x4sm2187357wrn.64.2021.02.09.06.11.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 06:11:59 -0800 (PST)
-Date:   Tue, 9 Feb 2021 14:11:57 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v9 0/7] Netronix embedded controller driver for Kobo and
- Tolino ebook readers
-Message-ID: <20210209141157.GD4766@dell>
-References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
- <20210208225644.3df4da99@aktux>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qUZxHRlnhQ53xeYDDnIj3RkZGBfKRePKk2dnEVhR0QE=;
+        b=lc89TU7G7F/P2mWXIO6G+EHQFXzDCPcqwvJS1XHenWtSw6UzhfiiEAU7OL+/5Mqx8Z
+         S6Jy1D22SMisdJwjcYyTtmjRqZN1I8o6zPFECeSVha8vCGc8OTfBl4KSJCuDUw0bqKYS
+         kh0Eq4+91StEDwImZrgjDO6+ECA0SoCBVbkrgYXqliUEGUS5q37KzbJxCBYoWWXzf+nQ
+         b+/6ypLLjn5FCe1md5qbeQpUMH8eYfws16oSx5tHqNRPLiuOaTf0IWn1ubYrC5rc6uBA
+         rHWAmueBZuHAjHr9NDvZ2ulxM5j52a+hauMn+hTATFnY2EkUsySs49HBEkddcboPWKaS
+         4qdg==
+X-Gm-Message-State: AOAM531vg30SI90afglqluhsi2AxXM3bekJ4WGfBs5MGRCpdJCKSOS9b
+        X1T0io29LWqLTHy5ZWhLEUtzzR/Plc459ocYnbI=
+X-Google-Smtp-Source: ABdhPJzUk409ROxM1slEJZDbOB4ncC7/rhEOYPlVp8VGSdnhIzcAlxHERjzkCkqZ94bwxluaQEDJR//tUQjvKB2ybCY=
+X-Received: by 2002:a9d:3604:: with SMTP id w4mr16168933otb.107.1612879935459;
+ Tue, 09 Feb 2021 06:12:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210208225644.3df4da99@aktux>
+References: <20210207150736.24382-1-alex_luca@163.com>
+In-Reply-To: <20210207150736.24382-1-alex_luca@163.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 9 Feb 2021 15:12:03 +0100
+Message-ID: <CAMuHMdV445RaAydwgd=Sx6Y+jLJ-PpPSut8wi=Mj-qznYWi84g@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: renesas:fix possible null pointer dereference
+ struct pinmux_range *
+To:     alex_luca@163.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Zhang Kun <zhangkun@cdjrlc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Feb 2021, Andreas Kemnade wrote:
+Hi Alex,
 
-> On Sun, 24 Jan 2021 22:41:20 +0100
-> Jonathan Neuschäfer <j.neuschaefer@gmx.net> wrote:
-> 
-> > This patchset adds basic support for the embedded controller found on
-> > older ebook reader boards designed by/with the ODM Netronix Inc.[1] and
-> > sold by Kobo or Tolino, for example the Kobo Aura and the Tolino Shine.
-> > These drivers are based on information contained in the vendor kernel
-> > sources, but in order to all information in a single place, I documented
-> > the register interface of the EC on GitHub[2].
-> > 
-> > [1]: http://www.netronixinc.com/products.aspx?ID=1
-> > [2]: https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-controller
-> > 
-> > v9:
-> > - Fixed a bug in the error handling of ntxec_probe,
-> >   Reported-by: kernel test robot <lkp@intel.com>
-> > - Added Thierry Reding's ACK to the PWM patch
-> > 
-> what is the fate of this one, looks like it got all acks from
-> maintainers.
+Thanks for your patch!
 
-I'll apply it when -rc1 is out.
+On Sun, Feb 7, 2021 at 4:08 PM <alex_luca@163.com> wrote:
+> From: Zhang Kun <zhangkun@cdjrlc.com>
+>
+> The parameters of  sh_pfc_enum_in_range() pinmux_range *r should be checked
+> first for possible null ponter, especially when PINMUX_TYPE_FUNCTION as the
+> pinmux_type was passed by sh_pfc_config_mux().
+
+If pinmux_type in sh_pfc_config_mux() is PINMUX_TYPE_FUNCTION or
+PINMUX_TYPE_GPIO, range is indeed NULL.
+But as the call
+
+    in_range = sh_pfc_enum_in_range(enum_id, range);
+
+is not done in case of these pinmux types, I don't see where the
+problem is.  What am I missing?
+
+> Signed-off-by: Zhang Kun <zhangkun@cdjrlc.com>
+
+As you picked up a patch from Zhang, you should add your own SoB here.
+
+> --- a/drivers/pinctrl/renesas/core.c
+> +++ b/drivers/pinctrl/renesas/core.c
+> @@ -128,6 +128,9 @@ int sh_pfc_get_pin_index(struct sh_pfc *pfc, unsigned int pin)
+>
+>  static int sh_pfc_enum_in_range(u16 enum_id, const struct pinmux_range *r)
+>  {
+> +       if (!r)
+> +               return 0;
+> +
+>         if (enum_id < r->begin)
+>                 return 0;
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
