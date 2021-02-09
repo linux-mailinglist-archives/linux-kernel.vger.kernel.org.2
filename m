@@ -2,106 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92259314479
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B942831447F
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhBIAFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 19:05:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229541AbhBIAFP (ORCPT
+        id S229972AbhBIAGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 19:06:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229763AbhBIAGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:05:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612829028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G/210rAGZW9oY/7ReROP+ZQtbzjSdBlXTBZzdVvnx9Q=;
-        b=F8E1A221sj4I2kKF6T01ddXvnHLCv6VtXqj0P4a/a4mnV7rbDNsZmUC3M66bPqmtYvoytA
-        FbeADkBm3qnjyWw1TnXufTNMj4gnxzKY6xv++fwzh0M8p/QXeYKFVO6iYgyeDmJIEFsLA2
-        XuJONmPZDItijlOu17u/o0B0OPTfip0=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-w5giJwpoNwWZV4LRTZ9m8Q-1; Mon, 08 Feb 2021 19:03:46 -0500
-X-MC-Unique: w5giJwpoNwWZV4LRTZ9m8Q-1
-Received: by mail-qv1-f71.google.com with SMTP id bc13so3061076qvb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 16:03:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G/210rAGZW9oY/7ReROP+ZQtbzjSdBlXTBZzdVvnx9Q=;
-        b=T5qlDrpImsYj/iE6Z7j1S89eUG2C6PHGYulFOaHNC0UUWUgW/Y9KFH9Rluz9U3eCw6
-         BwoeEJmEY5wgbuQg1inoVCHcVNoP2HoC5zfgEFQ4RFsTfUBfqolFd8SVpoiaWbuYhLdd
-         Ejkg2y7riLM2MBwMMEKP0r3Ly9jxYBTwZL1oDVa4q7YKhmu7ef5YZyMrcb7J5kom/Rtd
-         yuNjpR8EAOyYcMT5gncTSLGYPJJkI+dwK4zP7LN1qqRujhFhGRM26PeiSDVRC/Fw4VMa
-         rlWGR8ftkIjFYLi+AWqToJvD4WC9RTCd/C11yVFI5jwu7yuURTXDNCmsZ3CVvjfn/jyF
-         dPQQ==
-X-Gm-Message-State: AOAM5309MB+CyohkC1jjJztF6NSJTyu9lY4aBgojqnZJD3FW7NMLb81x
-        HWC9wDxUTsOPPVJUq/iAumxCizVEk8/0C//D6u/qkW/MGp3aHoGHWt9bK4UszZg/yjMWpF9iKNR
-        Om3nMiDx+fnQ/JQvx7EaKjMro
-X-Received: by 2002:ac8:dc5:: with SMTP id t5mr18134036qti.246.1612829026162;
-        Mon, 08 Feb 2021 16:03:46 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyPXRlqyvo1iWsQesrmGcyiNU77GkMdEeHUd2qzG4pOkPk2ElaC1WwV8jpBuKPqeQ2Y4bQm3A==
-X-Received: by 2002:ac8:dc5:: with SMTP id t5mr18134008qti.246.1612829025991;
-        Mon, 08 Feb 2021 16:03:45 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id r17sm15494684qta.78.2021.02.08.16.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 16:03:45 -0800 (PST)
-Date:   Mon, 8 Feb 2021 19:03:43 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v4 00/10] userfaultfd: add minor fault handling
-Message-ID: <20210209000343.GB78818@xz-x1>
-References: <20210204183433.1431202-1-axelrasmussen@google.com>
+        Mon, 8 Feb 2021 19:06:08 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4153DC061788;
+        Mon,  8 Feb 2021 16:05:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=jeD6xCg4+RswOCoMEHKIIk8KLtfjnvlBFSZ+9EtU42U=; b=L8bbSM2r1rNL2q8EpeMmdARgWm
+        Mvsqu+6HBp2ba+7OPtThpWcKt/oHk5J9rHOIjU1RatrGkJQJR+ZpO2XoaVsfczOb1NiIwnOcPChLL
+        tq3GNhneO+fgo1iBcQRH+rZv0TrzryAbQ7Mrw+jn7/Dh8lHfsvHwXjGeAIwpfi2p4tbH0x7aP66Z+
+        0je3l0zsi1MzQZC/IY9TxAYnQvqVQ1fyUiW5pyl/nVEsvPJO4H4lAON9aJssilAqdMA5/5/v1DyI1
+        WVBdvj54LtSHNtycB9O48H14P9zOXTBbR4Iim0ItKmvp94hekxHEpGOm6fjwy6ZQFgkXqJ1wCG3Vu
+        t0aijzUA==;
+Received: from [2601:1c0:6280:3f0::a33e]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9GWr-006iWt-3n; Tue, 09 Feb 2021 00:05:18 +0000
+Subject: Re: linux-next boot error: kernel panic: VFS: Unable to mount root fs
+ on unknown-block(0,0)
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hannes Reinecke <hare@suse.de>, Jan Kara <jack@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Tejun Heo <tj@kernel.org>
+References: <0000000000003be5f605bad34c09@google.com>
+ <CACT4Y+Y4rfBqsoF4DDPYoyrZYFzGNO+hNKcu1QkFNcec2VY8xQ@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c49478fd-f5a1-f234-0b70-c6f61b155ab0@infradead.org>
+Date:   Mon, 8 Feb 2021 16:05:11 -0800
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <CACT4Y+Y4rfBqsoF4DDPYoyrZYFzGNO+hNKcu1QkFNcec2VY8xQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210204183433.1431202-1-axelrasmussen@google.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 10:34:23AM -0800, Axel Rasmussen wrote:
-> - Split out adding #ifdef CONFIG_USERFAULTFD to a separate patch (instead of
->   lumping it together with adding UFFDIO_CONTINUE). Also, extended it to make
->   the same change for shmem as well as suggested by Hugh Dickins.
+On 2/8/21 6:28 AM, Dmitry Vyukov wrote:
+> On Mon, Feb 8, 2021 at 2:39 PM syzbot
+> <syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com> wrote:
+>>
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    8d374d0d Add linux-next specific files for 20210208
+>> git tree:       linux-next
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=13de8a40d00000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=ced6adcf6aff98d6
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=b22ad1a79afb8da726c5
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+b22ad1a79afb8da726c5@syzkaller.appspotmail.com
+>>
+>> netconsole: network logging started
+>> gtp: GTP module loaded (pdp ctx size 104 bytes)
+>> rdma_rxe: loaded
+>> cfg80211: Loading compiled-in X.509 certificates for regulatory database
+>> cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+>> ALSA device list:
+>>   #0: Dummy 1
+>>   #1: Loopback 1
+>>   #2: Virtual MIDI Card 1
+>> md: Waiting for all devices to be available before autodetect
+>> md: If you don't use raid, use raid=noautodetect
+>> md: Autodetecting RAID arrays.
+>> md: autorun ...
+>> md: ... autorun DONE.
+>> VFS: Cannot open root device "sda1" or unknown-block(0,0): error -6
+> 
+> Has anything changed in linux-next related to block devices?... It was
+> supposed to boot from a standard GCE VM disk, but it does not seem to
+> be probed by the kernel (should be /dev/sda).
 
-It seems you didn't extend it to shmem yet. :) But I think it's fine - it can
-always be done as a separate patch then when you work on shmem, or even post it
-along.  Thanks,
+Hi Dmitry,
+
+This isn't going to help you much, but next-20210208 boots fine for me
+using SATA w/ AHCI and EXT4FS on my test laptop.
+
+
+
+>> Please append a correct "root=" boot option; here are the available partitions:
+>> 0100            4096 ram0
+>>  (driver?)
+>> 0101            4096 ram1
+>>  (driver?)
+>> 0102            4096 ram2
+>>  (driver?)
+>> 0103            4096 ram3
+>>  (driver?)
+>> 0104            4096 ram4
+>>  (driver?)
+>> 0105            4096 ram5
+>>  (driver?)
+>> 0106            4096 ram6
+>>  (driver?)
+>> 0107            4096 ram7
+>>  (driver?)
+>> 0108            4096 ram8
+>>  (driver?)
+>> 0109            4096 ram9
+>>  (driver?)
+>> 010a            4096 ram10
+>>  (driver?)
+>> 010b            4096 ram11
+>>  (driver?)
+>> 010c            4096 ram12
+>>  (driver?)
+>> 010d            4096 ram13
+>>  (driver?)
+>> 010e            4096 ram14
+>>  (driver?)
+>> 010f            4096 ram15
+>>  (driver?)
+>> 1f00             128 mtdblock0
+>>  (driver?)
+>> Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
+>> CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc6-next-20210208-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> Call Trace:
+>>  __dump_stack lib/dump_stack.c:79 [inline]
+>>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>>  panic+0x306/0x73d kernel/panic.c:231
+>>  mount_block_root+0x3f8/0x4dd init/do_mounts.c:445
+>>  mount_root+0x1af/0x1f5 init/do_mounts.c:561
+>>  prepare_namespace+0x1ff/0x234 init/do_mounts.c:613
+>>  kernel_init_freeable+0x671/0x689 init/main.c:1550
+>>  kernel_init+0xd/0x1b8 init/main.c:1426
+>>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+>> Kernel Offset: disabled
+>> Rebooting in 86400 seconds..
+>>
+>>
+>> ---
+>> This report is generated by a bot. It may contain errors.
+>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>
+>> syzbot will keep track of this issue. See:
+>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
 
 -- 
-Peter Xu
-
+~Randy
