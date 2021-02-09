@@ -2,84 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896C3314A8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B372314A8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhBIIlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:41:06 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41615 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229715AbhBIIks (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:40:48 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UOHlriS_1612859989;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOHlriS_1612859989)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 09 Feb 2021 16:40:02 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com, shuah@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] selftests/bpf: Simplify the calculation of variables
-Date:   Tue,  9 Feb 2021 16:39:47 +0800
-Message-Id: <1612859987-93923-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230000AbhBIIlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:41:53 -0500
+Received: from verein.lst.de ([213.95.11.211]:45491 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229861AbhBIIlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 03:41:36 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 711FD68AFE; Tue,  9 Feb 2021 09:40:51 +0100 (CET)
+Date:   Tue, 9 Feb 2021 09:40:50 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+Subject: Re: [PATCH v4 01/14] swiotlb: Remove external access to
+ io_tlb_start
+Message-ID: <20210209084050.GA32212@lst.de>
+References: <20210209062131.2300005-1-tientzu@chromium.org> <20210209062131.2300005-2-tientzu@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209062131.2300005-2-tientzu@chromium.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On Tue, Feb 09, 2021 at 02:21:18PM +0800, Claire Chang wrote:
+> This can be dropped if Christoph's swiotlb cleanups are landed.
+> https://lore.kernel.org/linux-iommu/20210207160934.2955931-1-hch@lst.de/T/#m7124f29b6076d462101fcff6433295157621da09 
 
-./tools/testing/selftests/bpf/xdpxceiver.c:954:28-30: WARNING !A || A &&
-B is equivalent to !A || B.
+FYI, I've also started looking into additional cleanups based on your
+struct in this branch, but I'd like to wait for all the previous
+changes to settle first:
 
-./tools/testing/selftests/bpf/xdpxceiver.c:932:28-30: WARNING !A || A &&
-B is equivalent to !A || B.
-
-./tools/testing/selftests/bpf/xdpxceiver.c:909:28-30: WARNING !A || A &&
-B is equivalent to !A || B.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- tools/testing/selftests/bpf/xdpxceiver.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index 99ea6cf..f4a96d5 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -897,7 +897,7 @@ static void *worker_testapp_validate(void *arg)
- 			ksft_print_msg("Destroying socket\n");
- 	}
- 
--	if (!opt_bidi || (opt_bidi && bidi_pass)) {
-+	if (!opt_bidi || bidi_pass) {
- 		xsk_socket__delete(ifobject->xsk->xsk);
- 		(void)xsk_umem__delete(ifobject->umem->umem);
- 	}
-@@ -922,7 +922,7 @@ static void testapp_validate(void)
- 	pthread_mutex_lock(&sync_mutex);
- 
- 	/*Spawn RX thread */
--	if (!opt_bidi || (opt_bidi && !bidi_pass)) {
-+	if (!opt_bidi || !bidi_pass) {
- 		if (pthread_create(&t0, &attr, worker_testapp_validate, ifdict[1]))
- 			exit_with_error(errno);
- 	} else if (opt_bidi && bidi_pass) {
-@@ -942,7 +942,7 @@ static void testapp_validate(void)
- 	pthread_mutex_unlock(&sync_mutex);
- 
- 	/*Spawn TX thread */
--	if (!opt_bidi || (opt_bidi && !bidi_pass)) {
-+	if (!opt_bidi || !bidi_pass) {
- 		if (pthread_create(&t1, &attr, worker_testapp_validate, ifdict[0]))
- 			exit_with_error(errno);
- 	} else if (opt_bidi && bidi_pass) {
--- 
-1.8.3.1
-
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/swiotlb-struct
