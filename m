@@ -2,150 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E842A3149F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AA93149F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhBIIFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:05:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhBIIFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:05:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE0D664E50;
-        Tue,  9 Feb 2021 08:04:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612857872;
-        bh=zPK+5MZsx1tSvH2HRp1p3HtPtCmnOHY9jiF0A95/QwE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Avm+GfAVXF4EksYujMA/CDdtYumq9mFdLJEs2zSEghuaaGAEeAmAE8ALnUIuCt+aM
-         zb7IZIEoOJxxxT8U7DM62ZovMxPGZGcVVPmz0oBWmqNTKEf33vg9GEFOaSVsNBjQo+
-         fNJYB/4IPVoWeLGW/uCJ6r0XhQ7Q6Qyb82RAit68=
-Date:   Tue, 9 Feb 2021 09:04:29 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     obayashi.yoshimasa@socionext.com, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org,
+        id S229704AbhBIIGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:06:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhBIIGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 03:06:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E50FC061786;
+        Tue,  9 Feb 2021 00:06:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=561m1JSOnJd3yK5dZVU8KkZf66IDG0xnVDexH6e2StQ=; b=kClxywIpRgg3p4VbxonBmrqhQv
+        MaQar0XCWOzJX+aKT3UZHVzquKaderMu/kfvqsPqWonmFWEFohIBNlxEY0lfp7O+TiLkZRrX2zaKQ
+        tmMxy4BOzyvLmm5MaPVpzonMJTbKvN7TkuSjtLuWGRqtD84X6gT+w6jhvHEGLpOEWhSnSo8WfWuMA
+        d/nBzAfDUwcNZDzUyRy1dyMoU6xiQU8GzrjZI0x+lZf0d2lUtzLcOS1AYafOwi/ZApXW2HF0HKLsP
+        LQuMT+0mc80BNMBolWbMlyuKp3EXoXF4k/gf6EGYky5pV8E1nA1wEVROdNaDRwMdXXtKT155W0Qua
+        RmLqeimg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l9O26-0007qe-DU; Tue, 09 Feb 2021 08:06:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E4E4530066E;
+        Tue,  9 Feb 2021 09:06:00 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7A4F92BA20223; Tue,  9 Feb 2021 09:06:00 +0100 (CET)
+Date:   Tue, 9 Feb 2021 09:06:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Subject: Re: DMA direct mapping fix for 5.4 and earlier stable branches
-Message-ID: <YCJCDZGa1Dhqv6Ni@kroah.com>
-References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
- <YCIym62vHfbG+dWf@kroah.com>
- <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
+        aryabinin@virtuozzo.com, dvyukov@google.com, keescook@chromium.org
+Subject: Re: linux-next: Tree for Feb 8 (objtool: warnings: 5)
+Message-ID: <YCJCaDIzIaUZG27F@hirez.programming.kicks-ass.net>
+References: <20210208235246.01cb4daf@canb.auug.org.au>
+ <2000eae0-89f4-a88f-a113-7fa47f16def7@infradead.org>
+ <20210208212153.vs2v7k2c55a3syvo@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
+In-Reply-To: <20210208212153.vs2v7k2c55a3syvo@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 01:28:47PM +0530, Sumit Garg wrote:
-> Thanks Greg for your response.
-> 
-> On Tue, 9 Feb 2021 at 12:28, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Tue, Feb 09, 2021 at 11:39:25AM +0530, Sumit Garg wrote:
-> > > Hi Christoph, Greg,
-> > >
-> > > Currently we are observing an incorrect address translation
-> > > corresponding to DMA direct mapping methods on 5.4 stable kernel while
-> > > sharing dmabuf from one device to another where both devices have
-> > > their own coherent DMA memory pools.
-> >
-> > What devices have this problem?
-> 
-> The problem is seen with V4L2 device drivers which are currently under
-> development for UniPhier PXs3 Reference Board from Socionext [1].
+On Mon, Feb 08, 2021 at 03:21:53PM -0600, Josh Poimboeuf wrote:
 
-Ok, so it's not even a driver in the 5.4 kernel today, so there's
-nothing I can do here as there is no regression of the existing source
-tree.
+> > fs/select.o: warning: objtool: do_sys_poll()+0x8e9: call to __ubsan_handle_sub_overflow() with UACCESS enabled
+> > lib/iov_iter.o: warning: objtool: iovec_from_user.part.12()+0x2db: call to __ubsan_handle_add_overflow() with UACCESS enabled
+> 
+> Peter, we need the patch to prevent UBSAN with gcc7?
 
-> Following is brief description of the test framework:
-> 
-> The issue is observed while trying to construct a Gstreamer pipeline
-> leveraging hardware video converter engine (VPE device) and hardware
-> video encode/decode engine (CODEC device) where we use dmabuf
-> framework for Zero-Copy.
-> 
-> Example GStreamer pipeline is:
-> gst-launch-1.0 -v -e videotestsrc \
-> > ! video/x-raw, width=480, height=270, format=NV15 \
-> > ! v4l2convert device=/dev/vpe0 capture-io-mode=dmabuf-import \
-> > ! video/x-raw, width=480, height=270, format=NV12 \
-> > ! v4l2h265enc device=/dev/codec0 output-io-mode=dmabuf \
-> > ! video/x-h265, format=byte-stream, width=480, height=270 \
-> > ! filesink location=out.hevc
-> 
-> Using GStreamer's V4L2 plugin,
-> - v4l2convert controls VPE driver,
-> - v4l2h265enc controls CODEC driver.
-> 
-> In the above pipeline, VPE driver imports CODEC driver's DMABUF for Zero-Copy.
-> 
-> [1] arch/arm64/boot/dts/socionext/uniphier-pxs3-ref.dts
-> 
-> > And why can't then just use 5.10 to
-> > solve this issue as that problem has always been present for them,
-> > right?
-> 
-> As the drivers are currently under development and Socionext has
-> chosen 5.4 stable kernel for their development. So I will let
-> Obayashi-san answer this if it's possible for them to migrate to 5.10
-> instead?
+I send it a while ago, Andrey wasn't liking it or something :/ But yes,
+UBSAN on <GCC8 is buggered. Randy ought to be aware of that though.
+Maybe he wanted something like the below?
 
-Why pick a kernel that doesn not support the features they require?
-That seems very odd and unwise.
 
-> BTW, this problem belongs to the common code, so others may experience
-> this issue as well.
-
-Then they should move to 5.10 or newer as this just doesn't work on
-older kernels, right?
-
-> > > I am able to root cause this issue which is caused by incorrect virt
-> > > to phys translation for addresses belonging to vmalloc space using
-> > > virt_to_page(). But while looking at the mainline kernel, this patch
-> > > [1] changes address translation from virt->to->phys to dma->to->phys
-> > > which fixes the issue observed on 5.4 stable kernel as well (minimal
-> > > fix [2]).
-> > >
-> > > So I would like to seek your suggestion for backport to stable kernels
-> > > (5.4 or earlier) as to whether we should backport the complete
-> > > mainline commit [1] or we should just apply the minimal fix [2]?
-> >
-> > Whenever you try to create a "minimal" fix, 90% of the time it is wrong
-> > and does not work and I end up having to deal with the mess.
+> > vmlinux.o: warning: objtool: do_machine_check()+0x7ee: call to queue_task_work() leaves .noinstr.text section
+> > vmlinux.o: warning: objtool: lock_is_held_type()+0x107: call to warn_bogus_irq_restore() leaves .noinstr.text section
 > 
-> I agree with your concerns for having to apply a non-mainline commit
-> onto a stable kernel.
-> 
-> >  What
-> > prevents you from doing the real thing here?  Are the patches to big?
-> >
-> 
-> IMHO, yes the mainline patch is big enough to touch multiple
-> architectures. But if that's the only way preferred then I can
-> backport the mainline patch instead.
-> 
-> > And again, why not just use 5.10 for this hardware?  What hardware is
-> > it?
-> >
-> 
-> Please see my response above.
+> Peter?
 
-If a feature in the kernel was not present on older kernels, trying to
-shoe-horn it into them is not wise at all.  You pick a kernel version
-to reflect the features/options that you require, and it sounds like 5.4
-just will not work for them, so to stick with that would be quite
-foolish.
+The mce one is a rats nest, Boris has that on his todo list. I'll go
+look at the lockdep one.
 
-Just move to 5.10, much simpler!
 
-thanks,
+---
+ lib/Kconfig.ubsan | 1 +
+ 1 file changed, 1 insertion(+)
 
-greg k-h
+diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+index 3a0b1c930733..6e4634b3b40e 100644
+--- a/lib/Kconfig.ubsan
++++ b/lib/Kconfig.ubsan
+@@ -116,6 +116,7 @@ config UBSAN_SIGNED_OVERFLOW
+ 	bool "Perform checking for signed arithmetic overflow"
+ 	default UBSAN
+ 	depends on $(cc-option,-fsanitize=signed-integer-overflow)
++	depends on !CC_IS_GCC || GCC_VERSION >= 80000
+ 	help
+ 	  This option enables -fsanitize=signed-integer-overflow which checks
+ 	  for overflow of any arithmetic operations with signed integers.
