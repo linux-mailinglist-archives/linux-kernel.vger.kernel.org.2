@@ -2,229 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C5C31599E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1898B3159C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234260AbhBIWnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:43:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233718AbhBITiO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:38:14 -0500
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA80AC061225
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:26:01 -0800 (PST)
-Received: from localhost.localdomain (abac187.neoplus.adsl.tpnet.pl [83.6.166.187])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id AEEBE1F52D;
-        Tue,  9 Feb 2021 20:25:49 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] thermal: qcom: tsens-v0_1: Add support for MDM9607
-Date:   Tue,  9 Feb 2021 20:25:25 +0100
-Message-Id: <20210209192526.455106-1-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.30.0
+        id S234654AbhBIW6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:58:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233762AbhBITwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 14:52:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05E0C64DF4;
+        Tue,  9 Feb 2021 19:27:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612898851;
+        bh=F+9Y63c/6U/kza2tTclcC/5KB0c9iVacIlzcY3swo5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RMY0jddg2zBEUw+bGIqIV+DJKs0SWnzdJckVNSb2UQGmWF0JrCsqwYhJThshhk/Jg
+         ciEacMibEvRG3veya19Xllqq2gjowUDJszhs2NBpml0wWUkr57u/df/XT5PIbEmjtg
+         SfxrE+yEXQYKpSREGueQS2T7wG8ekMpbpaXApdzj6vEhLWs47WFIzicOIdxDSP9ATL
+         NgxqYG+8mmFYGO3IXah9ssk/wswujxb6EPpgyEtt9OUCFuZ3+AARzInUFvcnLmqPy/
+         8FiVKo9xrx/QgZ26nk0aZOrZD5O8fflfHkammC4ZWZVESsWqrxtJoODNi9KpNgOlLB
+         BqDBEr7kfaAfA==
+Date:   Tue, 9 Feb 2021 12:27:29 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Stephen Zhang <stephenzhangzsd@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        natechancellor@gmail.com, clang-built-linux@googlegroups.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Roeder <tmroeder@google.com>
+Subject: Re: [PATCH v1] clang_tools:gen_compile_commands: Change the default
+ source directory
+Message-ID: <20210209192729.GA820978@ubuntu-m3-large-x86>
+References: <1612783737-3512-1-git-send-email-stephenzhangzsd@gmail.com>
+ <20210208195439.GA1097868@ubuntu-m3-large-x86>
+ <CALuz2=d-ENRbWgGYaO_ESEaw5eOVSwkQmkeYBJ-w0Vb3zZ+REg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALuz2=d-ENRbWgGYaO_ESEaw5eOVSwkQmkeYBJ-w0Vb3zZ+REg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MDM9607 TSENS IP is very similar to the one of MSM8916, with
-minor adjustments to various tuning values.
+On Tue, Feb 09, 2021 at 09:56:20PM +0800, Stephen Zhang wrote:
+> Nathan Chancellor <nathan@kernel.org> 于2021年2月9日周二 上午3:54写道：
+> 
+> > On Mon, Feb 08, 2021 at 07:28:57PM +0800, Stephen Zhang wrote:
+> > > The default source directory is set equal to build directory which
+> > > specified by "-d".But it is designed to be set to the current working
+> > > directoy by default, as the help messge says.It makes a differece when
+> > > source directory and build directory are in separted directorys.
+> > >
+> > > Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
+> >
+> > I don't think this patch makes much sense unless I am misunderstanding
+> > the description of the problem. The entire point of this script is to
+> > parse the .cmd files that kbuild generates and those are only present
+> > in the build directory, not the source directory, so we should never be
+> > looking in there, unless args.directory is its default value, which is
+> > the way the script is currently written. Your patch would appear to
+> > either make use do way more searching than necessary (if the build
+> > folder is within the source folder) or miss it altogether (if the build
+> > folder is outside the source folder).
+> >
+> > Cheers,
+> > Nathan
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Acked-by: Rob Herring <robh@kernel.org>
+Just as an FYI, your email was HTML, which means it won't hit LKML.
 
----
-Changes since v2:
-- Address Bjorn's comments (remove redundant variable and kfree)
- .../bindings/thermal/qcom-tsens.yaml          |  2 +
- drivers/thermal/qcom/tsens-v0_1.c             | 99 ++++++++++++++++++-
- drivers/thermal/qcom/tsens.c                  |  3 +
- drivers/thermal/qcom/tsens.h                  |  2 +-
- 4 files changed, 104 insertions(+), 2 deletions(-)
+> Specifically,the souce directory is  /vm/linux/tools/perf on my machine,
+> while the build
+> directory is /vm/tmpbuild/tools/perf .In the build directory , Execute the
+> command:
+> 
+> /vm/linux/scripts/clang-tools/gen_compile_commands.py --log_level DEBUG -d .
+> 
+> The resulting debugging message is:
+> 
+>     INFO: Could not add line from /vm/tmpbuild/tools/perf/.perf.o.cmd: File
+> /vm/tmpbuild/tools/perf/perf.c
+>     not found.
+> 
+> But actually what we want is ：
+> 
+>     add line from /vm/tmpbuild/tools/perf/.perf.o.cmd: File
+> /vm/linux/tools/perf/perf.c.
+> 
+> The    " /vm/tmpbuild/tools/perf " of  the "File
+> /vm/tmpbuild/tools/perf/perf.c not found." is passed by  "-d".
+> 
+> so it is the "-d" which decides the source prefix.
+> 
+> Then we execute:
+> 
+>  /vm/linux/scripts/clang-tools/gen_compile_commands.py --log_level DEBUG
+> -d  /vm/linux/tools/perf
+> 
+> But in the oringnal code , the default build directory is the same as  the
+> source directory:
+> 
+> @@ -64,7 +64,7 @@ def parse_arguments():
+>              os.path.abspath(args.directory),
+>              args.output,
+>              args.ar,
+> -            args.paths if len(args.paths) > 0 else [args.directory])
+> +            args.paths if len(args.paths) > 0 else [os.getcwd()])
+> 
+> after changing  it ,we then get the right result.
 
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-index 95462e071ab4..8ad9dc139c23 100644
---- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-+++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-@@ -22,6 +22,7 @@ properties:
-       - description: v0.1 of TSENS
-         items:
-           - enum:
-+              - qcom,mdm9607-tsens
-               - qcom,msm8916-tsens
-               - qcom,msm8939-tsens
-               - qcom,msm8974-tsens
-@@ -94,6 +95,7 @@ allOf:
-         compatible:
-           contains:
-             enum:
-+              - qcom,mdm9607-tsens
-               - qcom,msm8916-tsens
-               - qcom,msm8974-tsens
-               - qcom,msm8976-tsens
-diff --git a/drivers/thermal/qcom/tsens-v0_1.c b/drivers/thermal/qcom/tsens-v0_1.c
-index 4ffa2e2c0145..a9fc92a4779b 100644
---- a/drivers/thermal/qcom/tsens-v0_1.c
-+++ b/drivers/thermal/qcom/tsens-v0_1.c
-@@ -190,6 +190,39 @@
- 
- #define BIT_APPEND		0x3
- 
-+/* eeprom layout data for mdm9607 */
-+#define MDM9607_BASE0_MASK	0x000000ff
-+#define MDM9607_BASE1_MASK	0x000ff000
-+#define MDM9607_BASE0_SHIFT	0
-+#define MDM9607_BASE1_SHIFT	12
-+
-+#define MDM9607_S0_P1_MASK	0x00003f00
-+#define MDM9607_S1_P1_MASK	0x03f00000
-+#define MDM9607_S2_P1_MASK	0x0000003f
-+#define MDM9607_S3_P1_MASK	0x0003f000
-+#define MDM9607_S4_P1_MASK	0x0000003f
-+
-+#define MDM9607_S0_P2_MASK	0x000fc000
-+#define MDM9607_S1_P2_MASK	0xfc000000
-+#define MDM9607_S2_P2_MASK	0x00000fc0
-+#define MDM9607_S3_P2_MASK	0x00fc0000
-+#define MDM9607_S4_P2_MASK	0x00000fc0
-+
-+#define MDM9607_S0_P1_SHIFT	8
-+#define MDM9607_S1_P1_SHIFT	20
-+#define MDM9607_S2_P1_SHIFT	0
-+#define MDM9607_S3_P1_SHIFT	12
-+#define MDM9607_S4_P1_SHIFT	0
-+
-+#define MDM9607_S0_P2_SHIFT	14
-+#define MDM9607_S1_P2_SHIFT	26
-+#define MDM9607_S2_P2_SHIFT	6
-+#define MDM9607_S3_P2_SHIFT	18
-+#define MDM9607_S4_P2_SHIFT	6
-+
-+#define MDM9607_CAL_SEL_MASK	0x00700000
-+#define MDM9607_CAL_SEL_SHIFT	20
-+
- static int calibrate_8916(struct tsens_priv *priv)
- {
- 	int base0 = 0, base1 = 0, i;
-@@ -452,7 +485,56 @@ static int calibrate_8974(struct tsens_priv *priv)
- 	return 0;
- }
- 
--/* v0.1: 8916, 8939, 8974 */
-+static int calibrate_9607(struct tsens_priv *priv)
-+{
-+	int base, i;
-+	u32 p1[5], p2[5];
-+	int mode = 0;
-+	u32 *qfprom_cdata;
-+
-+	qfprom_cdata = (u32 *)qfprom_read(priv->dev, "calib");
-+	if (IS_ERR(qfprom_cdata))
-+		return PTR_ERR(qfprom_cdata);
-+
-+	mode = (qfprom_cdata[2] & MDM9607_CAL_SEL_MASK) >> MDM9607_CAL_SEL_SHIFT;
-+	dev_dbg(priv->dev, "calibration mode is %d\n", mode);
-+
-+	switch (mode) {
-+	case TWO_PT_CALIB:
-+		base = (qfprom_cdata[2] & MDM9607_BASE1_MASK) >> MDM9607_BASE1_SHIFT;
-+		p2[0] = (qfprom_cdata[0] & MDM9607_S0_P2_MASK) >> MDM9607_S0_P2_SHIFT;
-+		p2[1] = (qfprom_cdata[0] & MDM9607_S1_P2_MASK) >> MDM9607_S1_P2_SHIFT;
-+		p2[2] = (qfprom_cdata[1] & MDM9607_S2_P2_MASK) >> MDM9607_S2_P2_SHIFT;
-+		p2[3] = (qfprom_cdata[1] & MDM9607_S3_P2_MASK) >> MDM9607_S3_P2_SHIFT;
-+		p2[4] = (qfprom_cdata[2] & MDM9607_S4_P2_MASK) >> MDM9607_S4_P2_SHIFT;
-+		for (i = 0; i < priv->num_sensors; i++)
-+			p2[i] = ((base + p2[i]) << 2);
-+		fallthrough;
-+	case ONE_PT_CALIB2:
-+		base = (qfprom_cdata[0] & MDM9607_BASE0_MASK);
-+		p1[0] = (qfprom_cdata[0] & MDM9607_S0_P1_MASK) >> MDM9607_S0_P1_SHIFT;
-+		p1[1] = (qfprom_cdata[0] & MDM9607_S1_P1_MASK) >> MDM9607_S1_P1_SHIFT;
-+		p1[2] = (qfprom_cdata[1] & MDM9607_S2_P1_MASK) >> MDM9607_S2_P1_SHIFT;
-+		p1[3] = (qfprom_cdata[1] & MDM9607_S3_P1_MASK) >> MDM9607_S3_P1_SHIFT;
-+		p1[4] = (qfprom_cdata[2] & MDM9607_S4_P1_MASK) >> MDM9607_S4_P1_SHIFT;
-+		for (i = 0; i < priv->num_sensors; i++)
-+			p1[i] = (((base) + p1[i]) << 2);
-+		break;
-+	default:
-+		for (i = 0; i < priv->num_sensors; i++) {
-+			p1[i] = 500;
-+			p2[i] = 780;
-+		}
-+		break;
-+	}
-+
-+	compute_intercept_slope(priv, p1, p2, mode);
-+	kfree(qfprom_cdata);
-+
-+	return 0;
-+}
-+
-+/* v0.1: 8916, 8939, 8974, 9607 */
- 
- static struct tsens_features tsens_v0_1_feat = {
- 	.ver_major	= VER_0_1,
-@@ -540,3 +622,18 @@ struct tsens_plat_data data_8974 = {
- 	.feat		= &tsens_v0_1_feat,
- 	.fields	= tsens_v0_1_regfields,
- };
-+
-+static const struct tsens_ops ops_9607 = {
-+	.init		= init_common,
-+	.calibrate	= calibrate_9607,
-+	.get_temp	= get_temp_common,
-+};
-+
-+struct tsens_plat_data data_9607 = {
-+	.num_sensors	= 5,
-+	.ops		= &ops_9607,
-+	.hw_ids		= (unsigned int []){ 0, 1, 2, 3, 4 },
-+
-+	.feat		= &tsens_v0_1_feat,
-+	.fields	= tsens_v0_1_regfields,
-+};
-diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-index d8ce3a687b80..51c36b9e8e69 100644
---- a/drivers/thermal/qcom/tsens.c
-+++ b/drivers/thermal/qcom/tsens.c
-@@ -895,6 +895,9 @@ static SIMPLE_DEV_PM_OPS(tsens_pm_ops, tsens_suspend, tsens_resume);
- 
- static const struct of_device_id tsens_table[] = {
- 	{
-+		.compatible = "qcom,mdm9607-tsens",
-+		.data = &data_9607,
-+	}, {
- 		.compatible = "qcom,msm8916-tsens",
- 		.data = &data_8916,
- 	}, {
-diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
-index f40b625f897e..cba64c33b4f9 100644
---- a/drivers/thermal/qcom/tsens.h
-+++ b/drivers/thermal/qcom/tsens.h
-@@ -585,7 +585,7 @@ int get_temp_common(const struct tsens_sensor *s, int *temp);
- extern struct tsens_plat_data data_8960;
- 
- /* TSENS v0.1 targets */
--extern struct tsens_plat_data data_8916, data_8939, data_8974;
-+extern struct tsens_plat_data data_8916, data_8939, data_8974, data_9607;
- 
- /* TSENS v1 targets */
- extern struct tsens_plat_data data_tsens_v1, data_8976;
--- 
-2.30.0
+Okay I think I see what is going on here. Your patch does not actually
+fix the problem from what I can tell though:
 
+$ mkdir -p /tmp/build/perf
+
+$ make -C tools/perf -skj"$(nproc)" O=/tmp/build/perf
+
+$ cd /tmp/build/perf
+
+$ ~/cbl/src/linux/scripts/clang-tools/gen_compile_commands.py --log_level INFO -d .
+...
+INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.bp-modify.o.cmd: File /tmp/build/perf/arch/x86/tests/bp-modify.c not found
+INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.insn-x86.o.cmd: File /tmp/build/perf/arch/x86/tests/insn-x86.c not found
+INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.arch-tests.o.cmd: File /tmp/build/perf/arch/x86/tests/arch-tests.c not found
+INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.intel-pt-pkt-decoder-test.o.cmd: File /tmp/build/perf/arch/x86/tests/intel-pt-pkt-decoder-test.c not found
+...
+
+The script has to know where the source location is in your particular
+use case because the .cmd files do not record it (maybe some future
+improvement?)
+
+This patch appears to generate what I think the compile_commands.json
+should look like for the most part, I am not sure if this is proper or
+works correctly though. CC'ing Tom Roeder who originally wrote this.
+Tom, the initial patch and description of the issue is here:
+https://lore.kernel.org/r/1612783737-3512-1-git-send-email-stephenzhangzsd@gmail.com/
+
+$ scripts/clang-tools/gen_compile_commands.py -d /tmp/build/perf -s tools/perf
+
+diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+index 8ddb5d099029..ba3b2dcdc3e1 100755
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -27,7 +27,8 @@ def parse_arguments():
+ 
+     Returns:
+         log_level: A logging level to filter log output.
+-        directory: The work directory where the objects were built.
++        obj_directory: The work directory where the objects were built.
++        src_directory: The source directory from which the objects were built.
+         ar: Command used for parsing .a archives.
+         output: Where to write the compile-commands JSON file.
+         paths: The list of files/directories to handle to find .cmd files.
+@@ -35,10 +36,15 @@ def parse_arguments():
+     usage = 'Creates a compile_commands.json database from kernel .cmd files'
+     parser = argparse.ArgumentParser(description=usage)
+ 
+-    directory_help = ('specify the output directory used for the kernel build '
+-                      '(defaults to the working directory)')
+-    parser.add_argument('-d', '--directory', type=str, default='.',
+-                        help=directory_help)
++    obj_directory_help = ('specify the output directory used for the kernel build '
++                          '(defaults to the working directory)')
++    parser.add_argument('-d', '--obj_directory', type=str, default='.',
++                        help=obj_directory_help)
++
++    src_directory_help = ('specify the source directory used for the kernel build '
++                          '(defaults to the working directory)')
++    parser.add_argument('-s', '--src_directory', type=str, default='.',
++                        help=src_directory_help)
+ 
+     output_help = ('path to the output command database (defaults to ' +
+                    _DEFAULT_OUTPUT + ')')
+@@ -55,16 +61,17 @@ def parse_arguments():
+ 
+     paths_help = ('directories to search or files to parse '
+                   '(files should be *.o, *.a, or modules.order). '
+-                  'If nothing is specified, the current directory is searched')
++                  'If nothing is specified, the build directory is searched')
+     parser.add_argument('paths', type=str, nargs='*', help=paths_help)
+ 
+     args = parser.parse_args()
+ 
+     return (args.log_level,
+-            os.path.abspath(args.directory),
++            os.path.abspath(args.obj_directory),
++            os.path.abspath(args.src_directory),
+             args.output,
+             args.ar,
+-            args.paths if len(args.paths) > 0 else [args.directory])
++            args.paths if len(args.paths) > 0 else [args.obj_directory])
+ 
+ 
+ def cmdfiles_in_dir(directory):
+@@ -154,22 +161,23 @@ def cmdfiles_for_modorder(modorder):
+                     yield to_cmdfile(obj)
+ 
+ 
+-def process_line(root_directory, command_prefix, file_path):
++def process_line(obj_directory, src_directory, command_prefix, file_path):
+     """Extracts information from a .cmd line and creates an entry from it.
+ 
+     Args:
+-        root_directory: The directory that was searched for .cmd files. Usually
++        obj_directory: The directory that was searched for .cmd files. Usually
+             used directly in the "directory" entry in compile_commands.json.
++        src_directory: The directory that was used to build the object files.
+         command_prefix: The extracted command line, up to the last element.
+         file_path: The .c file from the end of the extracted command.
+-            Usually relative to root_directory, but sometimes absolute.
++            Usually relative to obj_directory, but sometimes absolute.
+ 
+     Returns:
+         An entry to append to compile_commands.
+ 
+     Raises:
+         ValueError: Could not find the extracted file based on file_path and
+-            root_directory or file_directory.
++            src_directory or file_directory.
+     """
+     # The .cmd files are intended to be included directly by Make, so they
+     # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
+@@ -177,20 +185,23 @@ def process_line(root_directory, command_prefix, file_path):
+     # by Make, so this code replaces the escaped version with '#'.
+     prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
+ 
+-    # Use os.path.abspath() to normalize the path resolving '.' and '..' .
+-    abs_path = os.path.abspath(os.path.join(root_directory, file_path))
++    if os.path.isabs(file_path):
++        abs_path = file_path
++    else:
++        # Use os.path.abspath() to normalize the path resolving '.' and '..' .
++        abs_path = os.path.abspath(os.path.join(src_directory, file_path))
+     if not os.path.exists(abs_path):
+         raise ValueError('File %s not found' % abs_path)
+     return {
+-        'directory': root_directory,
++        'directory': obj_directory,
+         'file': abs_path,
+-        'command': prefix + file_path,
++        'command': prefix + abs_path,
+     }
+ 
+ 
+ def main():
+     """Walks through the directory and finds and parses .cmd files."""
+-    log_level, directory, output, ar, paths = parse_arguments()
++    log_level, obj_directory, src_directory, output, ar, paths = parse_arguments()
+ 
+     level = getattr(logging, log_level)
+     logging.basicConfig(format='%(levelname)s: %(message)s', level=level)
+@@ -221,8 +232,8 @@ def main():
+                 result = line_matcher.match(f.readline())
+                 if result:
+                     try:
+-                        entry = process_line(directory, result.group(1),
+-                                             result.group(2))
++                        entry = process_line(obj_directory, src_directory,
++                                             result.group(1), result.group(2))
+                         compile_commands.append(entry)
+                     except ValueError as err:
+                         logging.info('Could not add line from %s: %s',
