@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72F4315506
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFAE3154FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbhBIRZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 12:25:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233023AbhBIRYg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:24:36 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6E8C061574;
-        Tue,  9 Feb 2021 09:23:50 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: nicolas)
-        with ESMTPSA id C90CE1F451DD
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     linux-media@vger.kernel.org
-Cc:     kernel@collabora.com, Jernej Skrabec <jernej.skrabec@siol.net>,
-        John Cox <jc@kynesim.co.uk>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>,
-        Maheshwar Ajja <majja@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] doc: h264/hevc: Clarify _START_CODE_NONE meaning
-Date:   Tue,  9 Feb 2021 12:22:33 -0500
-Message-Id: <20210209172337.336737-1-nicolas.dufresne@collabora.com>
-X-Mailer: git-send-email 2.28.0
+        id S233137AbhBIRZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 12:25:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232925AbhBIRYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 12:24:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF72264EA6;
+        Tue,  9 Feb 2021 17:23:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612891422;
+        bh=LjXPuFKczCfjBI/X7fEAoeb2xqworCPIBUql3tWStkY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NXdM4wwPmE4n+1lNsvpX9JpfzUjbm32HJtpdb6pommxMUSVdXRF3zGO2bmt7Jf3nH
+         V0FRcK6zPgxdZ5VhxlcO7QBIMZa5SCO/y7kgtL2RL796FElha6xAfzi8PSE/F9BhFn
+         1X6T4zOiwO7N4g2+XLul2b2Jw87Lf9m9l8OziwkI=
+Date:   Tue, 9 Feb 2021 18:23:39 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     karthek <mail@karthek.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: fix block comments alignment
+Message-ID: <YCLFG03glpl76Haq@kroah.com>
+References: <YB/6ZmZwCF3jeEue@kroah.com>
+ <YB/9hS2S1oaCmuDq@karthik-strix-linux.karthek.com>
+ <YB//EZl0aeLk/y+E@kroah.com>
+ <YCADP8ijAYvrsU7F@karthik-strix-linux.karthek.com>
+ <YCAEL9Eed6ijeeR+@kroah.com>
+ <YCAFEvCySI8u2059@karthik-strix-linux.karthek.com>
+ <YCAFeSw//h8JYpFk@kroah.com>
+ <YCAGQYng2hhg6xJk@karthik-strix-linux.karthek.com>
+ <YCAGsKf6fEqYEv9p@kroah.com>
+ <YCK2YgaM5u++djnl@karthik-strix-linux.karthek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCK2YgaM5u++djnl@karthik-strix-linux.karthek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As some hardware have a knob to enable or disable emulation prevention
-bytes removal, driver writers ended up wondering what exactly the
-START_CODE_NONE modes meant in this regards. This patch clarify what is
-expected with a reference to the specification.
+On Tue, Feb 09, 2021 at 09:50:50PM +0530, karthek wrote:
+> On Sun, Feb 07, 2021 at 04:26:40PM +0100, Greg Kroah-Hartman wrote:
+> > On Sun, Feb 07, 2021 at 08:54:49PM +0530, karthek wrote:
+> > > On Sun, Feb 07, 2021 at 04:21:29PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Sun, Feb 07, 2021 at 08:49:46PM +0530, karthek wrote:
+> > > > > On Sun, Feb 07, 2021 at 04:15:59PM +0100, Greg Kroah-Hartman wrote:
+> > > > > > On Sun, Feb 07, 2021 at 08:41:59PM +0530, karthek wrote:
+> > > > > > > On Sun, Feb 07, 2021 at 03:54:09PM +0100, Greg Kroah-Hartman wrote:
+> > > > > > > > On Sun, Feb 07, 2021 at 08:17:33PM +0530, karthek wrote:
+> > > > > > > > 
+> > > > > > > > <snip>
+> > > > > > > > 
+> > > > > > > > For some reason you sent this only to me, which is a bit rude to
+> > > > > > > > everyone else on the mailing list.  I'll be glad to respond if you
+> > > > > > > > resend it to everyone.
+> > > > > > > > 
+> > > > > > > > thanks,
+> > > > > > > > 
+> > > > > > > i> greg k-h
+> > > > > > > 
+> > > > > > > ok anyway
+> > > > > > > 
+> > > > > > > Those both lines(from, signed-off-by) are exactly same, what's problem
+> > > > > > > with them?
+> > > > > > 
+> > > > > > I don't see the context here...
+> > > > > are you real greg or bot?
+> > > > 
+> > > > All too real :)
+> > > > 
+> > > > > > Anyway, if you do sign documents with just "karthek" (lowercase and
+> > > > > > all), that's fine, but I do have to ask, right?
+> > > > > I do sign just karthek everywhere(bank,gov docs,etc), thats my legal
+> > > > > signature
+> > > > 
+> > > > Ok, that's good to know, however I have an application here from you
+> > > > with a different name on it.  Odd...
+> > > Ofcourse thats my legal name(Karthik Alapati) and this is my legal
+> > > signature(karthek)
+> > > FYI this is the first time i used my legal name on internet application
+> > 
+> > Great, please use your legal name on a signed-off-by: line, as it is a
+> > legal statement.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> pinging?
+> 
+> iam aware of how many patches you get everyday.im not expecting your
+> immediate attention but just pinging...
 
-Reported-by: John Cox <jc@kynesim.co.uk>
-Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
----
- .../userspace-api/media/v4l/ext-ctrls-codec-stateless.rst     | 4 +++-
- Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst     | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+Ping on what?  I was waiting for a new patch to be sent that met the
+above requirements.  My pending queue for staging patches is empty at
+the moment.
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
-index 01e3b1a3fb99..075cbf14991e 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec-stateless.rst
-@@ -665,7 +665,9 @@ Stateless Codec Control ID
-     * - ``V4L2_STATELESS_H264_START_CODE_NONE``
-       - 0
-       - Selecting this value specifies that H264 slices are passed
--        to the driver without any start code.
-+        to the driver without any start code. The bitstream data should be
-+        according to :ref:`h264` 7.3.1 NAL unit syntax, hence contains
-+        emulation prevention bytes when required.
-     * - ``V4L2_STATELESS_H264_START_CODE_ANNEX_B``
-       - 1
-       - Selecting this value specifies that H264 slices are expected
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index 00944e97d638..5021f1492856 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -3631,7 +3631,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     * - ``V4L2_MPEG_VIDEO_HEVC_START_CODE_NONE``
-       - 0
-       - Selecting this value specifies that HEVC slices are passed
--        to the driver without any start code.
-+        to the driver without any start code. The bitstream data should be
-+        according to :ref:`hevc` 7.3.1.1 General NAL unit syntax, hence
-+        contains emulation prevention bytes when required.
-     * - ``V4L2_MPEG_VIDEO_HEVC_START_CODE_ANNEX_B``
-       - 1
-       - Selecting this value specifies that HEVC slices are expected
--- 
-2.28.0
+thanks,
 
+greg k-h
