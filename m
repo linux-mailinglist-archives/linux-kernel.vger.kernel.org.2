@@ -2,138 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D13314FD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D16E5314FD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhBINKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:10:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:51484 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230080AbhBINKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:10:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84555106F;
-        Tue,  9 Feb 2021 05:09:45 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A2D6D3F719;
-        Tue,  9 Feb 2021 05:09:43 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, fweisbec@gmail.com, tglx@linutronix.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org
-Cc:     qais.yousef@arm.com, Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [RFC PATCH 5/6] sched/fair: trigger the update of blocked load on newly idle cpu
-In-Reply-To: <20210205114830.781-6-vincent.guittot@linaro.org>
-References: <20210205114830.781-1-vincent.guittot@linaro.org> <20210205114830.781-6-vincent.guittot@linaro.org>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Tue, 09 Feb 2021 13:09:41 +0000
-Message-ID: <jhjsg65tmju.mognet@arm.com>
+        id S230522AbhBINKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:10:47 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:48238 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230288AbhBINKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:10:43 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxOdagiSJgu5wIAA--.12292S3;
+        Tue, 09 Feb 2021 21:09:53 +0800 (CST)
+Subject: Re: [PATCH v2] MIPS: Make check condition for SDBBP consistent with
+ EJTAG spec
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
+ <20210209121124.GA11134@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <03fcfc00-acdd-a949-046c-3002195d6024@loongson.cn>
+Date:   Tue, 9 Feb 2021 21:09:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210209121124.GA11134@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9AxOdagiSJgu5wIAA--.12292S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7urWrKFWfXw1UXFW3Cr4Uurg_yoW8Zr1fpw
+        4DC3WkCF40gryUZayjyws5ur13Xws8KrWa9FyDK3yIva4jgF1rKr4kKry5Kry0gF4qka10
+        gFWYgr1DZr4IvFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCY02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUnF4_UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/02/21 12:48, Vincent Guittot wrote:
-> Instead of waking up a random and already idle CPU, we can take advantage
-> of this_cpu being about to enter idle to run the ILB and update the
-> blocked load.
->
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  include/linux/sched/nohz.h |  2 ++
->  kernel/sched/fair.c        | 11 ++++++++---
->  kernel/sched/idle.c        |  6 ++++++
->  3 files changed, 16 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/sched/nohz.h b/include/linux/sched/nohz.h
-> index 6d67e9a5af6b..74cdc4e87310 100644
-> --- a/include/linux/sched/nohz.h
-> +++ b/include/linux/sched/nohz.h
-> @@ -9,8 +9,10 @@
->  #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
->  extern void nohz_balance_enter_idle(int cpu);
->  extern int get_nohz_timer_target(void);
-> +extern void nohz_run_idle_balance(int cpu);
->  #else
->  static inline void nohz_balance_enter_idle(int cpu) { }
-> +static inline void nohz_run_idle_balance(int cpu) { }
->  #endif
->
->  #ifdef CONFIG_NO_HZ_COMMON
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 935594cd5430..3d2ab28d5736 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10461,6 +10461,11 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
->       return true;
->  }
->
-> +void nohz_run_idle_balance(int cpu)
-> +{
-> +	nohz_idle_balance(cpu_rq(cpu), CPU_IDLE);
-> +}
-> +
->  static void nohz_newidle_balance(struct rq *this_rq)
->  {
->       int this_cpu = this_rq->cpu;
-> @@ -10482,10 +10487,10 @@ static void nohz_newidle_balance(struct rq *this_rq)
->               return;
->
->       /*
-> -	 * Blocked load of idle CPUs need to be updated.
-> -	 * Kick an ILB to update statistics.
-> +	 * Set the need to trigger ILB in order to update blocked load
-> +	 * before entering idle state.
->        */
-> -	kick_ilb(NOHZ_STATS_KICK);
-> +	this_rq->nohz_idle_balance = NOHZ_STATS_KICK;
->  }
->
->  #else /* !CONFIG_NO_HZ_COMMON */
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index 305727ea0677..52a4e9ce2f9b 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -261,6 +261,12 @@ static void cpuidle_idle_call(void)
->  static void do_idle(void)
->  {
->       int cpu = smp_processor_id();
-> +
-> +	/*
-> +	 * Check if we need to update some blocked load
-> +	 */
-> +	nohz_run_idle_balance(cpu);
-> +
+On 02/09/2021 08:11 PM, Thomas Bogendoerfer wrote:
+> On Tue, Feb 09, 2021 at 01:05:25PM +0800, Tiezhu Yang wrote:
+>> According to MIPS EJTAG Specification [1], a Debug Breakpoint
+>> exception occurs when an SDBBP instruction is executed, the
+>> CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
+>> occurred, just check bit DBp for SDBBP is more accurate.
+>>
+>> [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
+>>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>
+>> v2: add MIPS_DEBUG_DBP definition
+>>
+>>   arch/mips/include/asm/mipsregs.h | 4 ++++
+>>   arch/mips/kernel/genex.S         | 4 ++--
+>>   2 files changed, 6 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+>> index a0e8ae5..9c8099a 100644
+>> --- a/arch/mips/include/asm/mipsregs.h
+>> +++ b/arch/mips/include/asm/mipsregs.h
+>> @@ -1085,6 +1085,10 @@
+>>   #define CVMVMCONF_RMMUSIZEM1_S	0
+>>   #define CVMVMCONF_RMMUSIZEM1	(_U64CAST_(0xff) << CVMVMCONF_RMMUSIZEM1_S)
+>>   
+>> +/* Debug register field definitions */
+>> +#define MIPS_DEBUG_DBP_SHIFT	1
+>> +#define MIPS_DEBUG_DBP		(_ULCAST_(1) << MIPS_DEBUG_DBP_SHIFT)
+>> +
+>>   /*
+>>    * Coprocessor 1 (FPU) register names
+>>    */
+>> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+>> index bcce32a..743d759 100644
+>> --- a/arch/mips/kernel/genex.S
+>> +++ b/arch/mips/kernel/genex.S
+>> @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+>>   	MTC0	k0, CP0_DESAVE
+>>   	mfc0	k0, CP0_DEBUG
+>>   
+>> -	sll	k0, k0, 30	# Check for SDBBP.
+>> -	bgez	k0, ejtag_return
+>> +	andi	k0, k0, MIPS_DEBUG_DBP	# Check for SDBBP.
+>> +	beqz	k0, ejtag_return
+> IMHO both implementations are doing the same thing.
 
-What do we gain from doing this here vs having a stats update in
-newidle_balance()?
+When I read the original code, it looks a little confusing
+at first glance, the initial aim of this patch is to make the code
+more readable and easier to understand.
 
-The current approach is to have a combined load_balance() + blocked load
-update during newidle, and I get that this can take too long. But then,
-we could still have what you're adding to do_idle() in the tail of
-newidle_balance() itself, no? i.e.
+>
+> Thomas.
+>
 
-  newidle_balance()
-    ...
-    for_each_domain(this_cpu, sd) {
-       ...
-       pulled_task = load_balance(...);
-       ...
-    }
-    ...
-    if (!pulled_task && !this_rq->nr_running) {
-      this_rq->nohz_idle_balance = NOHZ_STATS_KICK;
-      _nohz_idle_balance();
-    }
-
-or somesuch.
-
->       /*
->        * If the arch has a polling bit, we maintain an invariant:
->        *
-> --
-> 2.17.1
