@@ -2,370 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D2D3144FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D743144FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhBIAih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 19:38:37 -0500
-Received: from mga09.intel.com ([134.134.136.24]:9560 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229615AbhBIAid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:38:33 -0500
-IronPort-SDR: TfCzpn584dmQ8qRBlN3bRzPAUxmyQEc8TsDUKytFxVCqA8S92JvKbsZbUHBaTQJoHD5IM9BmtE
- Gq7VCI/MrkIg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="181950490"
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="181950490"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 16:36:42 -0800
-IronPort-SDR: PBcP1RPqplPlp7VPeBrA6Ok04KAVxCwc/Lopi4mjEfM05yjKLGFQzZSncViSyotJeJ6fvbMbes
- jHaAtGCfowVQ==
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="scan'208";a="395811279"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 16:36:39 -0800
-Subject: Re: [PATCH 43/49] perf stat: Add default hybrid events
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        "Jin, Yao" <yao.jin@intel.com>
-References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
- <1612797946-18784-44-git-send-email-kan.liang@linux.intel.com>
- <20210208191011.GO920417@kernel.org>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <1c87bd51-949c-cc3e-2726-8da5d504eb16@linux.intel.com>
-Date:   Tue, 9 Feb 2021 08:36:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229671AbhBIAl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 19:41:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhBIAlT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 19:41:19 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C8BC061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 16:40:39 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id e1so14630705ilu.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 16:40:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=jTVlfIINqTw0v4Efkeelt0x7KWMArOQ/VsKT2nrF4AQ=;
+        b=Y916e99Jd4Z1MX0dLQ/EOr6xbdu5jtzOnb7BVojOgl3edBx9kvS3WYQKH1t+mM3Igs
+         255Flh/bPoy/Ty/+i+omaB3uwt0nEukupFa+u/0QJDwwcbavNcoJolorLccN7ixCai42
+         2G4hDmKI7G9ms0/NZ8k2NCHLiQXPrWB9dzd7Ni98ZXdZK9E4xqNToyPvhRZSEvYdOkAl
+         EPAzPtcmjThys5Bx+cmAy9LkZcT+Xc8lgyHJ26ftx5QmrS9RCY7FE5SRkG4nMm4yYYFt
+         +Nzzy0ecQk29obZA5Z27pt03zMbKL+pVhEaBCA+VL2BkBK7bnncz3D3sAldve2QGDTG5
+         GCSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=jTVlfIINqTw0v4Efkeelt0x7KWMArOQ/VsKT2nrF4AQ=;
+        b=N16pGpREl+lgp1UnCYeMzP1uT/+gEWlqsQZQlOF4KdlvJw1yGy0Zrc1LUwdBvWs2ZL
+         l5IGwL5Gfa4ZsDWa+Uy2iDMYsSOE8UcFDqJJMfqxIv7MIpg6E/HvM1OLFy3/FGOiTiYy
+         iRIs+vKH7Z1oqGF6yEesR54PTnDkklqMXQrV7OQeUTn/hCWIvg3LEOsNsSKPgo7wxut0
+         Usej/g0mg74VYd3ejI9UWaYvAClXcUlwD3PgEWjVK555HYW4EqKojgvV6jv0lVo6xQA1
+         zHSuZq/XZhVINBPDCmcDoKy/DSaydupekcOwS/bL9BsmZvOQ+Jevj/WzxiSNeRfA1MVe
+         Trvw==
+X-Gm-Message-State: AOAM530oXl7Rqr0DPvErWdBEWjuZ8S9XulKkYWctMrhbyXE/XEQJfv9y
+        Ka7tXJDtEsAGkeAJtLCCPnu8Y3KaOOGRvq34tyw=
+X-Google-Smtp-Source: ABdhPJxmThvi5xCkLU4ZhchZo2my9PeYQY/47YeAxGMk+mdyJ8tICnHg5mxH6nBz0z9GBa3Utz9HHe8BSTonu04gTvI=
+X-Received: by 2002:a92:660d:: with SMTP id a13mr17130436ilc.268.1612831239215;
+ Mon, 08 Feb 2021 16:40:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210208191011.GO920417@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ac0:9dc2:0:0:0:0:0 with HTTP; Mon, 8 Feb 2021 16:40:38 -0800 (PST)
+Reply-To: charlesjacksonjrc@gmail.com
+From:   Charles Jackson Jr <jamesdonneljohnson@gmail.com>
+Date:   Mon, 8 Feb 2021 16:40:38 -0800
+Message-ID: <CAJt12UgWqJDe5vWcBbK3ZEgGGoO6ke14EJ3EzMD97zPqFYvt3g@mail.gmail.com>
+Subject: =?UTF-8?Q?Antworte_zur=C3=BCck_f=C3=BCr_den_sofortigen_Anspruch_auf_de?=
+        =?UTF-8?Q?in_gespendetes_Geld_und_gratuliere_dir_=2E=2E=2E=2E=2E=2E?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+--=20
+IHR E-MAIL-KONTO WURDE F=C3=9CR EINE SPENDE VON 3.500.000,00 USD F=C3=9CR
+CHARITY AUSGEW=C3=84HLT. Antworten Sie auf die folgende E-Mail, um weitere
+Informationen zu erhalten
 
-On 2/9/2021 3:10 AM, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Feb 08, 2021 at 07:25:40AM -0800, kan.liang@linux.intel.com escreveu:
->> From: Jin Yao <yao.jin@linux.intel.com>
->>
->> Previously if '-e' is not specified in perf stat, some software events
->> and hardware events are added to evlist by default.
->>
->> root@otcpl-adl-s-2:~# ./perf stat  -- ./triad_loop
->>
->>   Performance counter stats for './triad_loop':
->>
->>              109.43 msec task-clock                #    0.993 CPUs utilized
->>                   1      context-switches          #    0.009 K/sec
->>                   0      cpu-migrations            #    0.000 K/sec
->>                 105      page-faults               #    0.960 K/sec
->>         401,161,982      cycles                    #    3.666 GHz
->>       1,601,216,357      instructions              #    3.99  insn per cycle
->>         200,217,751      branches                  # 1829.686 M/sec
->>              14,555      branch-misses             #    0.01% of all branches
->>
->>         0.110176860 seconds time elapsed
->>
->> Among the events, cycles, instructions, branches and branch-misses
->> are hardware events.
->>
->> One hybrid platform, two events are created for one hardware event.
->>
->> core cycles,
->> atom cycles,
->> core instructions,
->> atom instructions,
->> core branches,
->> atom branches,
->> core branch-misses,
->> atom branch-misses
->>
->> These events will be added to evlist in order on hybrid platform
->> if '-e' is not set.
->>
->> Since parse_events() has been supported to create two hardware events
->> for one event on hybrid platform, so we just use parse_events(evlist,
->> "cycles,instructions,branches,branch-misses") to create the default
->> events and add them to evlist.
->>
->> After:
->> root@otcpl-adl-s-2:~# ./perf stat -vv -- taskset -c 16 ./triad_loop
->> ...
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             1
->>    size                             120
->>    config                           0x1
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 3
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             1
->>    size                             120
->>    config                           0x3
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 4
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             1
->>    size                             120
->>    config                           0x4
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 5
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             1
->>    size                             120
->>    config                           0x2
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 7
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             6
->>    size                             120
->>    config                           0x400000000
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 8
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             6
->>    size                             120
->>    config                           0xa00000000
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 9
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             6
->>    size                             120
->>    config                           0x400000001
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 10
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             6
->>    size                             120
->>    config                           0xa00000001
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 11
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             6
->>    size                             120
->>    config                           0x400000004
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 12
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             6
->>    size                             120
->>    config                           0xa00000004
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 13
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             6
->>    size                             120
->>    config                           0x400000005
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> sys_perf_event_open: pid 27954  cpu -1  group_fd -1  flags 0x8 = 14
->> ------------------------------------------------------------
->> perf_event_attr:
->>    type                             6
->>    size                             120
->>    config                           0xa00000005
->>    sample_type                      IDENTIFIER
->>    read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>    disabled                         1
->>    inherit                          1
->>    enable_on_exec                   1
->>    exclude_guest                    1
->> ------------------------------------------------------------
->> ...
->>
->>   Performance counter stats for 'taskset -c 16 ./triad_loop':
->>
->>              201.31 msec task-clock                #    0.997 CPUs utilized
->>                   1      context-switches          #    0.005 K/sec
->>                   1      cpu-migrations            #    0.005 K/sec
->>                 166      page-faults               #    0.825 K/sec
->>         623,267,134      cycles                    # 3096.043 M/sec                    (0.16%)
->>         603,082,383      cycles                    # 2995.777 M/sec                    (99.84%)
->>         406,410,481      instructions              # 2018.820 M/sec                    (0.16%)
->>       1,604,213,375      instructions              # 7968.837 M/sec                    (99.84%)
->>          81,444,171      branches                  #  404.569 M/sec                    (0.16%)
->>         200,616,430      branches                  #  996.550 M/sec                    (99.84%)
->>           3,769,856      branch-misses             #   18.727 M/sec                    (0.16%)
->>              16,111      branch-misses             #    0.080 M/sec                    (99.84%)
->>
->>         0.201895853 seconds time elapsed
->>
->> We can see two events are created for one hardware event.
->> First one is core event the second one is atom event.
-> 
-> Can we have that (core/atom) as a prefix or in the comment area?
->
-
-In next patch "perf stat: Uniquify hybrid event name", it would tell user the pmu which the event 
-belongs to.
-
-For example, I run the triad_loop on core cpu,
-
-root@ssp-pwrt-002:# ./perf stat -- taskset -c 0 ./triad_loop
-
-  Performance counter stats for 'taskset -c 0 ./triad_loop':
-
-             287.87 msec task-clock                #    0.990 CPUs utilized
-                 30      context-switches          #    0.104 K/sec
-                  1      cpu-migrations            #    0.003 K/sec
-                168      page-faults               #    0.584 K/sec
-        450,089,808      cycles [cpu_core]         # 1563.496 M/sec
-      <not counted>      cycles [cpu_atom]                                             (0.00%)
-      1,602,536,074      instructions [cpu_core]   # 5566.797 M/sec
-      <not counted>      instructions [cpu_atom]                                       (0.00%)
-        200,474,560      branches [cpu_core]       #  696.397 M/sec
-      <not counted>      branches [cpu_atom]                                           (0.00%)
-             23,002      branch-misses [cpu_core]  #    0.080 M/sec
-      <not counted>      branch-misses [cpu_atom]                                      (0.00%)
-
-We can see cpu_atom is not counted.
-
-Thanks
-Jin Yao
-
->> One thing is, the shadow stats looks a bit different, now it's just
->> 'M/sec'.
->>
->> The perf_stat__update_shadow_stats and perf_stat__print_shadow_stats
->> need to be improved in future if we want to get the original shadow
->> stats.
->>
->> Reviewed-by: Andi Kleen <ak@linux.intel.com>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> ---
->>   tools/perf/builtin-stat.c | 22 ++++++++++++++++++++++
->>   1 file changed, 22 insertions(+)
->>
->> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
->> index 44d1a5f..0b08665 100644
->> --- a/tools/perf/builtin-stat.c
->> +++ b/tools/perf/builtin-stat.c
->> @@ -1137,6 +1137,13 @@ static int parse_hybrid_type(const struct option *opt,
->>   	return 0;
->>   }
->>   
->> +static int add_default_hybrid_events(struct evlist *evlist)
->> +{
->> +	struct parse_events_error err;
->> +
->> +	return parse_events(evlist, "cycles,instructions,branches,branch-misses", &err);
->> +}
->> +
->>   static struct option stat_options[] = {
->>   	OPT_BOOLEAN('T', "transaction", &transaction_run,
->>   		    "hardware transaction statistics"),
->> @@ -1613,6 +1620,12 @@ static int add_default_attributes(void)
->>     { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_MISSES		},
->>   
->>   };
->> +	struct perf_event_attr default_sw_attrs[] = {
->> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_TASK_CLOCK		},
->> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CONTEXT_SWITCHES	},
->> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CPU_MIGRATIONS		},
->> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_PAGE_FAULTS		},
->> +};
->>   
->>   /*
->>    * Detailed stats (-d), covering the L1 and last level data caches:
->> @@ -1849,6 +1862,15 @@ static int add_default_attributes(void)
->>   	}
->>   
->>   	if (!evsel_list->core.nr_entries) {
->> +		perf_pmu__scan(NULL);
->> +		if (perf_pmu__hybrid_exist()) {
->> +			if (evlist__add_default_attrs(evsel_list,
->> +						      default_sw_attrs) < 0) {
->> +				return -1;
->> +			}
->> +			return add_default_hybrid_events(evsel_list);
->> +		}
->> +
->>   		if (target__has_cpu(&target))
->>   			default_attrs0[0].config = PERF_COUNT_SW_CPU_CLOCK;
->>   
->> -- 
->> 2.7.4
->>
-> 
+E-Mail: charlesjacksonjrc@gmail.com
