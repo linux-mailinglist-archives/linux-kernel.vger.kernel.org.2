@@ -2,121 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95718314B92
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F592314B96
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhBIJ1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:27:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21262 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230197AbhBIJXi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:23:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612862531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iLJXL0fbef5ZhSy7tA+pbwvz1MlswubwVD2OJTOPiME=;
-        b=DI8dXJGmeZtzgu3rT+IV66xG0E6c0MkA5U1NcryWoOlywvIMw5I1+td5UVHH1sRyOANzzX
-        LyADIV3Ndyq9jWi4bV0DyACZmI4GqDac+z4Jdl06kkkF73lNMUkGymvrs/LjU1z5pUZ+Jo
-        eByCywj3XzG4NXKSa1fqQucfoeGduO8=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-WXkmw2cEM6-6O4zVqiTTgw-1; Tue, 09 Feb 2021 04:22:09 -0500
-X-MC-Unique: WXkmw2cEM6-6O4zVqiTTgw-1
-Received: by mail-wm1-f70.google.com with SMTP id b201so2163640wmb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:22:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iLJXL0fbef5ZhSy7tA+pbwvz1MlswubwVD2OJTOPiME=;
-        b=HuYrikkxFvthfBByFmIbQIFfmb0yEgzHDvewdW76vObibADQzkT8mMKcezPixvV3Y4
-         EumG1uDFCabe3WUPYQXBOQ9xneGkbzatge2oB3JWdNza2MxQYDaynRoZ8EuZkfQjARQx
-         YtZrsrdj3wmyGS9YdD1bznAtUbLKxieV0xX4+k8uSJqchywYlEZOneqyI2c+xmEmpMKc
-         qrF/HOtrBCbYkhREFlwXmHNNLFp+qdW1XQGS3wb/1muyQAi4YeWntrwe34ja0hbUHs9S
-         eLc6ZcZs/ee53TKZm1LlE+x/v2D3oYXKepF2L/XAQosT3T5hufHFfLQzFGt2ZFtd7Mmm
-         0jtQ==
-X-Gm-Message-State: AOAM533UPwRVf7HK9VQwXV0oWfyw4IunFTEdvBN8Tv/PIgvo2iaFWKID
-        UO5NNuI2q8StZ0E8wS4ebJKjgbk2RuYm79Au6lTqIYnlkpZQz1THSAPK4V35s9sCNqmuCGtdeA5
-        TEIighKe95Ec31yG2ouGpREzi
-X-Received: by 2002:a1c:2143:: with SMTP id h64mr2470884wmh.60.1612862528690;
-        Tue, 09 Feb 2021 01:22:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxkMCs5uQpjL/srq3+PF7FLK8YUY8Ts39302ljk4yTFV8t2/V0uFg6R+sRtIXpKbtXwONjLsQ==
-X-Received: by 2002:a1c:2143:: with SMTP id h64mr2470867wmh.60.1612862528511;
-        Tue, 09 Feb 2021 01:22:08 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id t15sm3221252wmi.48.2021.02.09.01.22.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Feb 2021 01:22:07 -0800 (PST)
-Subject: Re: [PATCH] KVM: x86/xen: Use hva_t for holding hypercall page
- address
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Joao Martins <joao.m.martins@oracle.com>,
-        David Woodhouse <dwmw@amazon.co.uk>
-References: <20210208201502.1239867-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5c37dad6-c869-b66d-f8e6-2ba7c1591556@redhat.com>
-Date:   Tue, 9 Feb 2021 10:22:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S229861AbhBIJ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:28:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229770AbhBIJXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:23:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF67C64E4F;
+        Tue,  9 Feb 2021 09:23:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612862595;
+        bh=ZuzO8IlPH7OdvzOuM3hUuPGrV2BGw7BR18s5NWN+cQo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2IZd9JV5qM4aI8JsCkjZZuIE+UcwO+cZ/8Tzp/xkBac6h1v5ahUFGgLchn6WAvHWP
+         TTpbmG95sCUDlWRidU6dAfH5GDSinRQmdtdG5VZuur1DwcnrvtroT/g4T4IlgJjrY5
+         7e9KljC+q9VAdsCIo/5dP1dy/Ykm0EgIhSJoAfSo=
+Date:   Tue, 9 Feb 2021 10:23:12 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     obayashi.yoshimasa@socionext.com
+Cc:     sumit.garg@linaro.org, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        daniel.thompson@linaro.org
+Subject: Re: DMA direct mapping fix for 5.4 and earlier stable branches
+Message-ID: <YCJUgKDNVjJ4dUqM@kroah.com>
+References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
+ <YCIym62vHfbG+dWf@kroah.com>
+ <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
+ <YCJCDZGa1Dhqv6Ni@kroah.com>
+ <27bbe35deacb4ca49f31307f4ed551b5@SOC-EX02V.e01.socionext.com>
 MIME-Version: 1.0
-In-Reply-To: <20210208201502.1239867-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <27bbe35deacb4ca49f31307f4ed551b5@SOC-EX02V.e01.socionext.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/02/21 21:15, Sean Christopherson wrote:
-> Use hva_t, a.k.a. unsigned long, for the local variable that holds the
-> hypercall page address.  On 32-bit KVM, gcc complains about using a u64
-> due to the implicit cast from a 64-bit value to a 32-bit pointer.
+On Tue, Feb 09, 2021 at 09:05:40AM +0000, obayashi.yoshimasa@socionext.com wrote:
+> > > As the drivers are currently under development and Socionext has
+> > > chosen 5.4 stable kernel for their development. So I will let
+> > > Obayashi-san answer this if it's possible for them to migrate to 5.10
+> > > instead?
 > 
->    arch/x86/kvm/xen.c: In function ‘kvm_xen_write_hypercall_page’:
->    arch/x86/kvm/xen.c:300:22: error: cast to pointer from integer of
->                               different size [-Werror=int-to-pointer-cast]
->    300 |   page = memdup_user((u8 __user *)blob_addr, PAGE_SIZE);
+>   We have started this development project from last August, 
+> so we have selected 5.4 as most recent and longest lifetime LTS 
+> version at that time.
 > 
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Cc: David Woodhouse <dwmw@amazon.co.uk>
-> Fixes: 23200b7a30de ("KVM: x86/xen: intercept xen hypercalls if enabled")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/xen.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
+>   And we have already finished to develop other device drivers, 
+> and Video converter and CODEC drivers are now in development.
 > 
-> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-> index 2cee0376455c..deda1ba8c18a 100644
-> --- a/arch/x86/kvm/xen.c
-> +++ b/arch/x86/kvm/xen.c
-> @@ -286,8 +286,12 @@ int kvm_xen_write_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
->   				return 1;
->   		}
->   	} else {
-> -		u64 blob_addr = lm ? kvm->arch.xen_hvm_config.blob_addr_64
-> -				   : kvm->arch.xen_hvm_config.blob_addr_32;
-> +		/*
-> +		 * Note, truncation is a non-issue as 'lm' is guaranteed to be
-> +		 * false for a 32-bit kernel, i.e. when hva_t is only 4 bytes.
-> +		 */
-> +		hva_t blob_addr = lm ? kvm->arch.xen_hvm_config.blob_addr_64
-> +				     : kvm->arch.xen_hvm_config.blob_addr_32;
->   		u8 blob_size = lm ? kvm->arch.xen_hvm_config.blob_size_64
->   				  : kvm->arch.xen_hvm_config.blob_size_32;
->   		u8 *page;
+> > Why pick a kernel that doesn not support the features they require?
+> > That seems very odd and unwise.
 > 
+>   From the view point of ZeroCopy using DMABUF, is 5.4 not 
+> mature enough, and is 5.10 enough mature ?
+>   This is the most important point for judging migration.
 
-Queued, thanks.
+How do you judge "mature"?
 
-Paolo
+And again, if a feature isn't present in a specific kernel version, why
+would you think that it would be a viable solution for you to use?
 
+good luck!
+
+greg k-h
