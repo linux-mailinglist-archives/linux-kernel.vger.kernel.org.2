@@ -2,220 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9874B31494F
+	by mail.lfdr.de (Postfix) with ESMTP id 033E631494E
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 08:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhBIHL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 02:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60026 "EHLO
+        id S230119AbhBIHLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 02:11:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhBIHLZ (ORCPT
+        with ESMTP id S230052AbhBIHLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 02:11:25 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42E3C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 23:10:45 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id b8so9212125plh.12
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 23:10:45 -0800 (PST)
+        Tue, 9 Feb 2021 02:11:23 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1ACC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 23:10:41 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id u124so12197734pfb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 23:10:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xa/F5J2XbvqQXc13QF9QNc4BHiOeHqqEiOQQrM3Oap4=;
-        b=xbVMRaQXjRSRMUTu3lL5rlitOuFh/G7nMkOMp0+dwYWAqsh/wQXhQlO0uEAnksmYrP
-         w1rikYGAcZtLa9oHAM2V3xbZk0yuDgt7mgvXsCZOzo0B+XuUlPViAmHLj1WsK4CPYp7D
-         urIf2NZTlOPCmRkSTy+O+10tVU2/wDbo9cRB67qWwXzSFHF3ZMOdm1JGxdjxYDiKEYAE
-         35B5QQrVkGL173iGGgQStvrpDbX+gM+OioMzxZuFeXo1e754SNUiWzTRdjv7+wkHeACS
-         zAbtcF5f8SRVV4xnQNp7gCebO9VAl5j4002uDLQrfFODmsXuMdqFzV3dzCe2F0zWS3Ml
-         VrsQ==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=hKso1MwLRLw8n4+Grqq4tnQrzP51F50oX7aHEUrMrFI=;
+        b=Bb5HKfqMvcuXwLRKuIc/nM60N7hDs2c47YYZ6XuJx8vUW9hQmNBlsZdudbUsOmTt9W
+         25NVlfcONEgRGyjPOq7wb9lgFVq5lQ8IVBO4SrLEDCAHfnFUfJLP88AmiZ6ko4xj+zv1
+         J8NH5Z5F3fOuurrK6m9dEBIf0AE1jLI0esPgKg2+6ujWAFc/CIdL88E5zXEimKNtef48
+         FFnGOa4H0V5cULMnyJUpzW9rKH6nwmhl/g9jIn0YoW21jojQ2Nd7M7hHvMNsUKu5nbdL
+         p16B6NjKKIltD23f7gmZByI1PbrSufoLBm9z/Yt6yUeqerwNf/y1L2iPUXje+Z5DKnKr
+         sn6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xa/F5J2XbvqQXc13QF9QNc4BHiOeHqqEiOQQrM3Oap4=;
-        b=CPgjK4yDMz/QZMjJhbmcJracQ8DvzSVDGBXaM33XgDJLzsuDb/qXz5LOdWBh57LBEU
-         78Ge8ifeUHsLo11l1XVGI8m9rBq3d63/QWswKKunULtshawxcPooV/vUK8KEJdTN1b2k
-         BHHkyfnOd756yN3wmmy7TByy4OUv+ywDEUuQ0QRd/ZJuKTQK+Ix/gWYLbzCBpeObw+N1
-         yVApQ8y0rBOgcWVkMIokLxtkncTjFbZwALeTFxMsn6qGMDQTSceTHjigC6HyYc+aTcjz
-         8ZKqpdVyQnKuuoEFfErztfUMXu3JlApRYOkB+1mRYCI2z1xI2BWlcAXubH/DLQiBKD1A
-         80uw==
-X-Gm-Message-State: AOAM533wuxPvFFdHERPvTz4sjpp4zqVYb5X1INj6fbuopDctOIk+/Fyr
-        dNXY5RsryQN3CYmI9BUWRzw0bw==
-X-Google-Smtp-Source: ABdhPJx8NsLbzwjd5jnGYZ7IkUymTX4eMAGR1bOaW8zoFyhdd02KMcCgeCoCF7mZiQRELYZVAxD9/g==
-X-Received: by 2002:a17:902:26a:b029:e2:f436:15d8 with SMTP id 97-20020a170902026ab02900e2f43615d8mr1839481plc.31.1612854645252;
-        Mon, 08 Feb 2021 23:10:45 -0800 (PST)
-Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.229])
-        by smtp.gmail.com with ESMTPSA id a5sm6503633pgh.15.2021.02.08.23.10.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Feb 2021 23:10:44 -0800 (PST)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com
-Subject: [PATCH v2] psi: Remove the redundant psi_task_tick
-Date:   Tue,  9 Feb 2021 15:10:33 +0800
-Message-Id: <20210209071033.16989-1-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=hKso1MwLRLw8n4+Grqq4tnQrzP51F50oX7aHEUrMrFI=;
+        b=m/aUIGOKJzgH/cr1MDcj8VNralhi3ro92YRRDnJA/S5bIlqXRWhearxLqWnYTIi/86
+         pKWd57BCqigyAAyFTSBhoB7XnS5SDvD7B9eD8l46rd4o930Q/pbAZnhb0sXdKRNUXhIw
+         dXjA5/4P8Netkb4D3R5sCVqF9FZBIKYpllDlLLhR9Ulv4se/OUDig8YlddZi72GJnYTf
+         ygKPVQam6xY/mGwLq7D7e3BHvIgzBZdSlPy8LsHCa2IRqXrBqxN7fvKEB3/rq0IbjDUy
+         9skBk/c+a7lU6VQkYHahKGU1PFk7LoE2P2gHaHWDwsiT4kDiycgoLxkfC3F4kN/R6FK7
+         pDQA==
+X-Gm-Message-State: AOAM531Px1k0VInH5m7wNG2A9MlgkUTfGXxCwwAKW7o3HkC/zlkKeB48
+        ma1o40o7vvzYUiLstzPERROkxXp+irTA2w==
+X-Google-Smtp-Source: ABdhPJz2uyZNOUWxCh8+bTaw0WF2AyuBjDmjriJxozzN+RmdDvksIBD9JocSbE0wQEhImCMlRxv9hoQdlniMiQ==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:e4e6:62d4:a840:252a])
+ (user=davidgow job=sendgmr) by 2002:aa7:98d2:0:b029:1da:3374:4777 with SMTP
+ id e18-20020aa798d20000b02901da33744777mr13937516pfm.45.1612854641040; Mon,
+ 08 Feb 2021 23:10:41 -0800 (PST)
+Date:   Mon,  8 Feb 2021 23:10:34 -0800
+Message-Id: <20210209071034.3268897-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH] kunit: tool: Disable PAGE_POISONING under --alltests
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the current task in a cgroup is in_memstall, the corresponding groupc
-on that cpu is in PSI_MEM_FULL state, so we can exploit that to remove the
-redundant psi_task_tick from scheduler_tick to save this periodic cost.
+kunit_tool maintains a list of config options which are broken under
+UML, which we exclude from an otherwise 'make ARCH=um allyesconfig'
+build used to run all tests with the --alltests option.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Something in UML allyesconfig is causing segfaults when page poisining
+is enabled (and is poisoning with a non-zero value). Previously, this
+didn't occur, as allyesconfig enabled the CONFIG_PAGE_POISONING_ZERO
+option, which worked around the problem by zeroing memory. This option
+has since been removed, and memory is now poisoned with 0xAA, which
+triggers segfaults in many different codepaths, preventing UML from
+booting.
+
+Note that we have to disable both CONFIG_PAGE_POISONING and
+CONFIG_DEBUG_PAGEALLOC, as the latter will 'select' the former on
+architectures (such as UML) which don't implement __kernel_map_pages().
+
+Ideally, we'd fix this properly by tracking down the real root cause,
+but since this is breaking KUnit's --alltests feature, it's worth
+disabling there in the meantime so the kernel can boot to the point
+where tests can actually run.
+
+Fixes: f289041ed4 ("mm, page_poison: remove CONFIG_PAGE_POISONING_ZERO")
+Signed-off-by: David Gow <davidgow@google.com>
 ---
- include/linux/psi.h  |  1 -
- kernel/sched/core.c  |  1 -
- kernel/sched/psi.c   | 49 ++++++++++++++-----------------------------------
- kernel/sched/stats.h |  9 ---------
- 4 files changed, 14 insertions(+), 46 deletions(-)
 
-diff --git a/include/linux/psi.h b/include/linux/psi.h
-index 7361023f3fdd..65eb1476ac70 100644
---- a/include/linux/psi.h
-+++ b/include/linux/psi.h
-@@ -20,7 +20,6 @@ void psi_task_change(struct task_struct *task, int clear, int set);
- void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 		     bool sleep);
- 
--void psi_memstall_tick(struct task_struct *task, int cpu);
- void psi_memstall_enter(unsigned long *flags);
- void psi_memstall_leave(unsigned long *flags);
- 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 15d2562118d1..31788a9b335b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4533,7 +4533,6 @@ void scheduler_tick(void)
- 	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
- 	curr->sched_class->task_tick(rq, curr, 0);
- 	calc_global_load_tick(rq);
--	psi_task_tick(rq);
- 
- 	rq_unlock(rq, &rf);
- 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 2293c45d289d..6e46d9eb279b 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -644,8 +644,7 @@ static void poll_timer_fn(struct timer_list *t)
- 	wake_up_interruptible(&group->poll_wait);
- }
- 
--static void record_times(struct psi_group_cpu *groupc, int cpu,
--			 bool memstall_tick)
-+static void record_times(struct psi_group_cpu *groupc, int cpu)
- {
- 	u32 delta;
- 	u64 now;
-@@ -664,23 +663,6 @@ static void record_times(struct psi_group_cpu *groupc, int cpu,
- 		groupc->times[PSI_MEM_SOME] += delta;
- 		if (groupc->state_mask & (1 << PSI_MEM_FULL))
- 			groupc->times[PSI_MEM_FULL] += delta;
--		else if (memstall_tick) {
--			u32 sample;
--			/*
--			 * Since we care about lost potential, a
--			 * memstall is FULL when there are no other
--			 * working tasks, but also when the CPU is
--			 * actively reclaiming and nothing productive
--			 * could run even if it were runnable.
--			 *
--			 * When the timer tick sees a reclaiming CPU,
--			 * regardless of runnable tasks, sample a FULL
--			 * tick (or less if it hasn't been a full tick
--			 * since the last state change).
--			 */
--			sample = min(delta, (u32)jiffies_to_nsecs(1));
--			groupc->times[PSI_MEM_FULL] += sample;
--		}
- 	}
- 
- 	if (groupc->state_mask & (1 << PSI_CPU_SOME)) {
-@@ -714,7 +696,7 @@ static void psi_group_change(struct psi_group *group, int cpu,
- 	 */
- 	write_seqcount_begin(&groupc->seq);
- 
--	record_times(groupc, cpu, false);
-+	record_times(groupc, cpu);
- 
- 	for (t = 0, m = clear; m; m &= ~(1 << t), t++) {
- 		if (!(m & (1 << t)))
-@@ -738,6 +720,18 @@ static void psi_group_change(struct psi_group *group, int cpu,
- 		if (test_state(groupc->tasks, s))
- 			state_mask |= (1 << s);
- 	}
-+
-+	/*
-+	 * Since we care about lost potential, a memstall is FULL
-+	 * when there are no other working tasks, but also when
-+	 * the CPU is actively reclaiming and nothing productive
-+	 * could run even if it were runnable. So when the current
-+	 * task in a cgroup is in_memstall, the corresponding groupc
-+	 * on that cpu is in PSI_MEM_FULL state.
-+	 */
-+	if (groupc->tasks[NR_ONCPU] && cpu_curr(cpu)->in_memstall)
-+		state_mask |= (1 << PSI_MEM_FULL);
-+
- 	groupc->state_mask = state_mask;
- 
- 	write_seqcount_end(&groupc->seq);
-@@ -859,21 +853,6 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 	}
- }
- 
--void psi_memstall_tick(struct task_struct *task, int cpu)
--{
--	struct psi_group *group;
--	void *iter = NULL;
--
--	while ((group = iterate_groups(task, &iter))) {
--		struct psi_group_cpu *groupc;
--
--		groupc = per_cpu_ptr(group->pcpu, cpu);
--		write_seqcount_begin(&groupc->seq);
--		record_times(groupc, cpu, true);
--		write_seqcount_end(&groupc->seq);
--	}
--}
--
- /**
-  * psi_memstall_enter - mark the beginning of a memory stall section
-  * @flags: flags to handle nested sections
-diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
-index 33d0daf83842..9e4e67a94731 100644
---- a/kernel/sched/stats.h
-+++ b/kernel/sched/stats.h
-@@ -144,14 +144,6 @@ static inline void psi_sched_switch(struct task_struct *prev,
- 	psi_task_switch(prev, next, sleep);
- }
- 
--static inline void psi_task_tick(struct rq *rq)
--{
--	if (static_branch_likely(&psi_disabled))
--		return;
--
--	if (unlikely(rq->curr->in_memstall))
--		psi_memstall_tick(rq->curr, cpu_of(rq));
--}
- #else /* CONFIG_PSI */
- static inline void psi_enqueue(struct task_struct *p, bool wakeup) {}
- static inline void psi_dequeue(struct task_struct *p, bool sleep) {}
-@@ -159,7 +151,6 @@ static inline void psi_ttwu_dequeue(struct task_struct *p) {}
- static inline void psi_sched_switch(struct task_struct *prev,
- 				    struct task_struct *next,
- 				    bool sleep) {}
--static inline void psi_task_tick(struct rq *rq) {}
- #endif /* CONFIG_PSI */
- 
- #ifdef CONFIG_SCHED_INFO
+As described above, 'make ARCH=um allyesconfig' is broken. KUnit has
+been maintaining a list of configs to force-disable for this in
+tools/testing/kunit/configs/broken_on_uml.config. The kernels we've
+built with this have broken since CONFIG_PAGE_POISONING_ZERO was
+removed, panic-ing on startup with:
+
+<0>[    0.100000][   T11] Kernel panic - not syncing: Segfault with no mm
+<4>[    0.100000][   T11] CPU: 0 PID: 11 Comm: kdevtmpfs Not tainted 5.11.0-rc7-00003-g63381dc6f5f1-dirty #4
+<4>[    0.100000][   T11] Stack:
+<4>[    0.100000][   T11]  677d3d40 677d3f10 0000000e 600c0bc0
+<4>[    0.100000][   T11]  677d3d90 603c99be 677d3d90 62529b93
+<4>[    0.100000][   T11]  603c9ac0 677d3f10 62529b00 603c98a0
+<4>[    0.100000][   T11] Call Trace:
+<4>[    0.100000][   T11]  [<600c0bc0>] ? set_signals+0x0/0x60
+<4>[    0.100000][   T11]  [<603c99be>] lookup_mnt+0x11e/0x220
+<4>[    0.100000][   T11]  [<62529b93>] ? down_write+0x93/0x180
+<4>[    0.100000][   T11]  [<603c9ac0>] ? lock_mount+0x0/0x160
+<4>[    0.100000][   T11]  [<62529b00>] ? down_write+0x0/0x180
+<4>[    0.100000][   T11]  [<603c98a0>] ? lookup_mnt+0x0/0x220
+<4>[    0.100000][   T11]  [<603c8160>] ? namespace_unlock+0x0/0x1a0
+<4>[    0.100000][   T11]  [<603c9b25>] lock_mount+0x65/0x160
+<4>[    0.100000][   T11]  [<6012f360>] ? up_write+0x0/0x40
+<4>[    0.100000][   T11]  [<603cbbd2>] do_new_mount_fc+0xd2/0x220
+<4>[    0.100000][   T11]  [<603eb560>] ? vfs_parse_fs_string+0x0/0xa0
+<4>[    0.100000][   T11]  [<603cbf04>] do_new_mount+0x1e4/0x260
+<4>[    0.100000][   T11]  [<603ccae9>] path_mount+0x1c9/0x6e0
+<4>[    0.100000][   T11]  [<603a9f4f>] ? getname_kernel+0xaf/0x1a0
+<4>[    0.100000][   T11]  [<603ab280>] ? kern_path+0x0/0x60
+<4>[    0.100000][   T11]  [<600238ee>] 0x600238ee
+<4>[    0.100000][   T11]  [<62523baa>] devtmpfsd+0x52/0xb8
+<4>[    0.100000][   T11]  [<62523b58>] ? devtmpfsd+0x0/0xb8
+<4>[    0.100000][   T11]  [<600fffd8>] kthread+0x1d8/0x200
+<4>[    0.100000][   T11]  [<600a4ea6>] new_thread_handler+0x86/0xc0
+
+Disabling PAGE_POISONING fixes this. The issue can't be repoduced with
+just PAGE_POISONING, there's clearly something (or several things) also
+enabled by allyesconfig which contribute. Ideally, we'd track these down
+and fix this at its root cause, but in the meantime it'd be nice to
+disable PAGE_POISONING so we can at least get the kernel to boot. One
+way would be to add a 'depends on !UML' or similar, but since
+PAGE_POISONING does seem to work in the non-allyesconfig case, adding it
+to our list of broken configs seemed the better choice.
+
+Thoughts?
+
+(Note that to reproduce this, you'll want to run
+./tools/testing/kunit/kunit.py run --alltests --raw_output
+It also depends on a couple of other fixes which are not upstream yet:
+https://www.spinics.net/lists/linux-rtc/msg08294.html
+https://lore.kernel.org/linux-i3c/20210127040636.1535722-1-davidgow@google.com/
+
+Cheers,
+-- David
+
+ tools/testing/kunit/configs/broken_on_uml.config | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/testing/kunit/configs/broken_on_uml.config b/tools/testing/kunit/configs/broken_on_uml.config
+index a7f0603d33f6..690870043ac0 100644
+--- a/tools/testing/kunit/configs/broken_on_uml.config
++++ b/tools/testing/kunit/configs/broken_on_uml.config
+@@ -40,3 +40,5 @@
+ # CONFIG_RESET_BRCMSTB_RESCAL is not set
+ # CONFIG_RESET_INTEL_GW is not set
+ # CONFIG_ADI_AXI_ADC is not set
++# CONFIG_DEBUG_PAGEALLOC is not set
++# CONFIG_PAGE_POISONING is not set
 -- 
-2.11.0
+2.30.0.478.g8a0d178c01-goog
 
