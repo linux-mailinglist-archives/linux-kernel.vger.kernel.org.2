@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E21A314B79
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C59314B73
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhBIJYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:24:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58492 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229666AbhBIJVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:21:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612862379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S230196AbhBIJX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:23:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51328 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230058AbhBIJUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:20:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612862383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BFjv4UtzY9Kq1FYF0dpb6VHrc3ljOiW5dWjb2Re6blw=;
-        b=CI9dABxLinBFcyq38IYwSWHSJWt+eLNMag0qIzNF8ASr0s80k6gyZSbWYZaVEJnqRM+kAn
-        V0+5ziSghAp9pfw4nDjDBn4+0b50JxjhO0NXspx2ueKjyNhY6nSfSPmFQh7Z5tmlcIewSU
-        ZnFIEC4T96A6/qdsg/x8XvogCEMoSro=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-dV2QrBfIN9CVvVoNpTUc6Q-1; Tue, 09 Feb 2021 04:19:37 -0500
-X-MC-Unique: dV2QrBfIN9CVvVoNpTUc6Q-1
-Received: by mail-wr1-f71.google.com with SMTP id x1so9734429wrg.22
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:19:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BFjv4UtzY9Kq1FYF0dpb6VHrc3ljOiW5dWjb2Re6blw=;
-        b=W5atCEJvLepSc3GTntSwg9tcdKsPg+x0JEUW43mpy+yZegSNfKju/MP1WQ923sEeEk
-         W7ephNdOzRyiPnMTV19Y6wf1HUlxbRJnkyH8iZm5tAdJrcd8R5i0S1JBZRUQsWa1sair
-         lT/BcMebMu1IAPTg8hEuLYeSIGB4vOgNce1FEnMd5b3VhKZAx1+lVP7bABXJhMoy34p3
-         vXrqbiQy7D/fu/ug5hFz8OwGyhnhLj0WWVb0OcJrJ6Ur/8ymDAwp31DWyLUpG1+UsBPN
-         ritxaJHvV3i1CUoHGad6JduYGa6lf74+LATSOosU7KRFVqJl64ZShkELKnAGWWO7lK2Z
-         xKvA==
-X-Gm-Message-State: AOAM530rgeHX/ItUZhcGqCgPgeDIMFYh0+YGBbzmiVEi5XSPreWIlPoz
-        E+/prLOTQZ7E0BcskmFMmtbR2nGZEdIMe5zEe8RFyxIvI79GlFBRGLaNLV+vmn6cpcV7TlvLRfY
-        JwlxWq3J+jDucSQdxzAEZk7py
-X-Received: by 2002:a1c:7905:: with SMTP id l5mr2532083wme.171.1612862375892;
-        Tue, 09 Feb 2021 01:19:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJylyGxN6rAcQNsffz+2zGcPZnteVoUtmo8yoEcEep7Stu6LpFbD+RJDHfXVYYs7gR1qW5cazQ==
-X-Received: by 2002:a1c:7905:: with SMTP id l5mr2532068wme.171.1612862375679;
-        Tue, 09 Feb 2021 01:19:35 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u142sm3652118wmu.3.2021.02.09.01.19.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Feb 2021 01:19:34 -0800 (PST)
-Subject: Re: [PATCH 1/2] mm: provide a sane PTE walking API for modules
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, jgg@ziepe.ca,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        dan.j.williams@intel.com, Daniel Vetter <daniel@ffwll.ch>
-References: <20210205103259.42866-1-pbonzini@redhat.com>
- <20210205103259.42866-2-pbonzini@redhat.com>
- <20210208173936.GA1496438@infradead.org>
- <3b10057c-e117-89fa-1bd4-23fb5a4efb5f@redhat.com>
- <20210209081408.GA1703597@infradead.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d238b495-dbae-1bc4-3397-5bceadfddb7e@redhat.com>
-Date:   Tue, 9 Feb 2021 10:19:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        bh=Dai9OHgWYwN2IeScEPrXFPx2OP+WacEqDQGMmgzQewI=;
+        b=s0wHUYqQ6InM38Mz9PuMn+Qxl2JX6xVd4G6bM7evsRHc/8ynEaxFt0uMFshf63lTz6pTiU
+        uZoS5/n3hLp3xibZIHhR0k5UKyh4XqGENZqcB4Q/fbejqgdEyWWo6n3DAIRqlaZUID79Fi
+        xZHw5FGRBcMRaSaDcHdJpe4AQcoelo4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A56F9AD3E;
+        Tue,  9 Feb 2021 09:19:43 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 10:19:42 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
+        john.ogness@linutronix.de, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] printk: fix deadlock when kernel panic
+Message-ID: <YCJTrrirMlH7M5i7@alley>
+References: <20210206054124.6743-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209081408.GA1703597@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210206054124.6743-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02/21 09:14, Christoph Hellwig wrote:
-> On Mon, Feb 08, 2021 at 07:18:56PM +0100, Paolo Bonzini wrote:
->> Fair enough.  I would expect that pretty much everyone using follow_pfn will
->> at least want to switch to this one (as it's less bad and not impossible to
->> use correctly), but I'll squash this in:
+On Sat 2021-02-06 13:41:24, Muchun Song wrote:
+> We found a deadlock bug on our server when the kernel panic. It can be
+> described in the following diagram.
 > 
+> CPU0:                                         CPU1:
+> panic                                         rcu_dump_cpu_stacks
+>   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
+>     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
+>                                                     __printk_safe_flush
+>                                                       raw_spin_lock_irqsave(&read_lock)
+>     // send NMI to other processors
+>     apic_send_IPI_allbutself(NMI_VECTOR)
+>                                                         // NMI interrupt, dead loop
+>                                                         crash_nmi_callback
+>   printk_safe_flush_on_panic
+>     printk_safe_flush
+>       __printk_safe_flush
+>         // deadlock
+>         raw_spin_lock_irqsave(&read_lock)
 > 
-> Daniel looked into them, so he may correct me, but the other follow_pfn
-> users and their destiny are:
+> The register_nmi_handler() can be called in the __crash_kexec() or the
+> crash_smp_send_stop() on the x86-64. Because CPU1 is interrupted by the
+> NMI with holding the read_lock and crash_nmi_callback() never returns,
+> CPU0 can deadlock when printk_safe_flush_on_panic() is called.
 > 
->   - SGX, which is not modular and I think I just saw a patch to kill them
->   - v4l videobuf and frame vector: I think those are going away
->     entirely as they implement a rather broken pre-dmabuf P2P scheme
->   - vfio: should use MMU notifiers eventually
+> When we hold the read_lock and then interrupted by the NMI, if the NMI
+> handler call nmi_panic(), it is also can lead to deadlock.
+> 
+> In order to fix it, we make read_lock global and rename it to
+> safe_read_lock. And we handle safe_read_lock the same way in
+> printk_safe_flush_on_panic() as we handle logbuf_lock there.
 
-Yes, I'm thinking mostly of vfio, which could use follow_pte as a 
-short-term fix for just the missing permission check.
+What about the following commit message? It uses imperative language
+and explains that the patch just prevents the deadlock. It removes
+some details. The diagram is better than many words.
 
-There's also s390 PCI, which is also not modular.
+<commit message>
+printk_safe_flush_on_panic() caused the following deadlock on our server:
 
-Paolo
+CPU0:                                         CPU1:
+panic                                         rcu_dump_cpu_stacks
+  kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
+    register_nmi_handler(crash_nmi_callback)      printk_safe_flush
+                                                    __printk_safe_flush
+                                                      raw_spin_lock_irqsave(&read_lock)
+    // send NMI to other processors
+    apic_send_IPI_allbutself(NMI_VECTOR)
+                                                        // NMI interrupt, dead loop
+                                                        crash_nmi_callback
+  printk_safe_flush_on_panic
+    printk_safe_flush
+      __printk_safe_flush
+        // deadlock
+        raw_spin_lock_irqsave(&read_lock)
 
-> Daniel, what happened to your follow_pfn series?
+DEADLOCK: read_lock is taken on CPU1 and will never get released.
 
+It happens when panic() stops a CPU by NMI while it has been in
+the middle of printk_safe_flush().
 
+Handle the lock the same way as logbuf_lock. The printk_safe buffers
+are flushed only when both locks can be safely taken.
+
+Note: It would actually be safe to re-init the locks when all CPUs were
+      stopped by NMI. But it would require passing this information
+      from arch-specific code. It is not worth the complexity.
+      Especially because logbuf_lock and printk_safe buffers have been
+      obsoleted by the lockless ring buffer.
+</commit message>
+
+> Fixes: cf9b1106c81c ("printk/nmi: flush NMI messages on the system panic")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+
+With an updated commit message:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
