@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7C6315B60
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB66315B5F
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhBJAhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:37:19 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:54445 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233767AbhBIUtQ (ORCPT
+        id S234189AbhBJAg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:36:58 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:41349 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233895AbhBIUtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:49:16 -0500
-Date:   Tue, 09 Feb 2021 20:48:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612903699; bh=85QQJNudKIF3Xtg97Y7g4QbqbeIMU4YL32cELilgRjM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=jhApZdmS2S6jhwoIFR1qFMrJ6Ar22V773Peax4i31bvsu8PZ9fepGhgyUjViJmVhS
-         7Xf5ZdSVsTMVkg8neW2VcsC8HSTrUjsSoLCvW/+KCp1HfitZdYSuYafr7U7YlatlP1
-         E2MO4pNbPYQ9ztadhoqkSrfN9Kbl8nROfOZmQISwoTSo979kbbfKJ1n/y83Gj7oHsn
-         OnSLcwikPEpLi78JUssBc2v+gEoA/RFkplg4sO0iulkPxhLosp87I+ar9ypnRJLMTu
-         p4wG38GmF9XhNW1HNCpvliQv2lyBb6uZpyPXChyhFugUsX3lZiOn5qOV8VcOBrF2lp
-         lvfyBv34dYsXg==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [v3 net-next 05/10] skbuff: use __build_skb_around() in __alloc_skb()
-Message-ID: <20210209204533.327360-6-alobakin@pm.me>
-In-Reply-To: <20210209204533.327360-1-alobakin@pm.me>
-References: <20210209204533.327360-1-alobakin@pm.me>
+        Tue, 9 Feb 2021 15:49:17 -0500
+Received: by mail-ot1-f52.google.com with SMTP id s107so18740457otb.8;
+        Tue, 09 Feb 2021 12:48:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6GfRCsmy7FJEj63mhoY+V+O3PvN7JiICzZ8IwcVEyCU=;
+        b=j8k6xngKhUU4RUGH3d5ZS8tHa3cCe+uJSp4zZYPvAxeY6mJ7dhNv0aHCz2hP67yVSq
+         +4pdx8V3wSQ2RDZvBQd173lEysRlSnPxrba4fi00XJODQ/IKM+jsl+0Hk1NTZs6UZ1JQ
+         m7JDvKkrydK2bq8ac7Q1GMKWa8abKZtyiFxliY8mqsZyvekjYMFZZBT/Vd2BHP63wUZ0
+         tKNiQLMEuiu7EQHzg8t2+cbXa9EYJoRAsUnwPQ02eyDpQNUS33vSK5uvJ8LrlspQEyfq
+         L1VMH1Ybz/ZfZqnodh+M792SWPmK2dMFAHl4w57dhlcuqji7Oy4DfsQTxRzo9NFQT06h
+         lfjQ==
+X-Gm-Message-State: AOAM532PDynB+WBqmPVdFEO2wHkZ3tcv2JyCLeQ17QinT+9kxA2z3lHG
+        I/L8yi81k0EeV104xUybtA==
+X-Google-Smtp-Source: ABdhPJxhyGab36VocoyC8HQ3QP0wYUMPGADBulPSTA+DfJ3gz0WxubjQ1ZAnu7tf9zmm5qDOSlcdVw==
+X-Received: by 2002:a9d:65d4:: with SMTP id z20mr17893027oth.349.1612903709536;
+        Tue, 09 Feb 2021 12:48:29 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z30sm1043647otj.61.2021.02.09.12.48.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 12:48:28 -0800 (PST)
+Received: (nullmailer pid 150932 invoked by uid 1000);
+        Tue, 09 Feb 2021 20:48:27 -0000
+Date:   Tue, 9 Feb 2021 14:48:27 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mediatek@lists.infradead.org, Min Guo <min.guo@mediatek.com>
+Subject: Re: [PATCH next v3 04/16] dt-bindings: phy: mediatek: hdmi-phy:
+ modify compatible items
+Message-ID: <20210209204827.GA150874@robh.at.kernel.org>
+References: <20210201070016.41721-1-chunfeng.yun@mediatek.com>
+ <20210201070016.41721-4-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201070016.41721-4-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just call __build_skb_around() instead of open-coding it.
+On Mon, 01 Feb 2021 15:00:04 +0800, Chunfeng Yun wrote:
+> mt7623-hdmi-tx is compatible to mt2701-hdmi-tx, and the compatible
+> "mediatek,mt7623-hdmi-tx" is not supported in driver, in fact uses
+> "mediatek,mt2701-hdmi-tx" instead on MT7623, so changes the
+> compatible items to make dependence clear.
+> 
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v3: modify commit message
+> v2: no changes
+> ---
+>  .../devicetree/bindings/phy/mediatek,hdmi-phy.yaml    | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/core/skbuff.c | 18 +-----------------
- 1 file changed, 1 insertion(+), 17 deletions(-)
-
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 88566de26cd1..1c6f6ef70339 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -326,7 +326,6 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gf=
-p_mask,
- =09=09=09    int flags, int node)
- {
- =09struct kmem_cache *cache;
--=09struct skb_shared_info *shinfo;
- =09struct sk_buff *skb;
- =09u8 *data;
- =09bool pfmemalloc;
-@@ -366,21 +365,8 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t g=
-fp_mask,
- =09 * the tail pointer in struct sk_buff!
- =09 */
- =09memset(skb, 0, offsetof(struct sk_buff, tail));
--=09/* Account for allocated memory : skb + skb->head */
--=09skb->truesize =3D SKB_TRUESIZE(size);
-+=09__build_skb_around(skb, data, 0);
- =09skb->pfmemalloc =3D pfmemalloc;
--=09refcount_set(&skb->users, 1);
--=09skb->head =3D data;
--=09skb->data =3D data;
--=09skb_reset_tail_pointer(skb);
--=09skb->end =3D skb->tail + size;
--=09skb->mac_header =3D (typeof(skb->mac_header))~0U;
--=09skb->transport_header =3D (typeof(skb->transport_header))~0U;
--
--=09/* make sure we initialize shinfo sequentially */
--=09shinfo =3D skb_shinfo(skb);
--=09memset(shinfo, 0, offsetof(struct skb_shared_info, dataref));
--=09atomic_set(&shinfo->dataref, 1);
-=20
- =09if (flags & SKB_ALLOC_FCLONE) {
- =09=09struct sk_buff_fclones *fclones;
-@@ -393,8 +379,6 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gf=
-p_mask,
- =09=09fclones->skb2.fclone =3D SKB_FCLONE_CLONE;
- =09}
-=20
--=09skb_set_kcov_handle(skb, kcov_common_handle());
--
- =09return skb;
-=20
- nodata:
---=20
-2.30.0
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
