@@ -2,97 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060FA31535F
+	by mail.lfdr.de (Postfix) with ESMTP id 76AAB315360
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhBIQFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:05:21 -0500
-Received: from mga04.intel.com ([192.55.52.120]:21364 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232658AbhBIQFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:05:07 -0500
-IronPort-SDR: uKFrfQy7tykSJ8gFmA7IXBiJulPa3Whs0TFpMG1KjZpMsi4Jz1qVMbeEj5LKwSpa0uxzOHL6lN
- +6McP9Af3dlw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="179345506"
-X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
-   d="scan'208";a="179345506"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 08:04:07 -0800
-IronPort-SDR: 5QOZUHYWgVW4FWaJoqSbcCyj9CopCHrLKKg2MX7LFPsJxJzSt0oSVwdaA5eqcLtbAulHcPj/ws
- melkR84hTkWQ==
-X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
-   d="scan'208";a="436219055"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 08:04:06 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1l9VUh-003Fgw-Eq; Tue, 09 Feb 2021 18:04:03 +0200
-Date:   Tue, 9 Feb 2021 18:04:03 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the pm tree
-Message-ID: <YCKycybX+8L9zzCw@smile.fi.intel.com>
-References: <20210205115153.799dc024@canb.auug.org.au>
- <CAHp75VfiyAtxg+wqZ30kSzCfFFsLndLjzrUc1njZG0x6vQeyBQ@mail.gmail.com>
- <CAHp75Vdrnmnu3vfmtEmnU=dH9tjoZtSZUtgDNXp29E90tT+j7A@mail.gmail.com>
- <3936997.7vkU7uULjK@kreacher>
- <CAHp75VcUP1475T_jWQkZkjhZrfNEZ6UaOopm5v1WBOPoriTE3Q@mail.gmail.com>
- <CAHp75VfS=LgZfY6KTZeM7B+PgKpV3x_4zytszdaS=43A7BJEZQ@mail.gmail.com>
- <CAJZ5v0jbg8KWmmiAV0YrvndcbaY3CApUbPsTYVgxH-0HspZW3A@mail.gmail.com>
+        id S232701AbhBIQFc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Feb 2021 11:05:32 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:43352 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhBIQF1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 11:05:27 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id D8CA36083276;
+        Tue,  9 Feb 2021 17:04:44 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id pxadgr_i0awx; Tue,  9 Feb 2021 17:04:44 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 850A76083272;
+        Tue,  9 Feb 2021 17:04:44 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 5xN4CfVrl8hV; Tue,  9 Feb 2021 17:04:44 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 5DDC3608A38F;
+        Tue,  9 Feb 2021 17:04:44 +0100 (CET)
+Date:   Tue, 9 Feb 2021 17:04:44 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     Luca Risolia <luca.risolia@studio.unibo.it>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>
+Message-ID: <1517729157.378701.1612886684264.JavaMail.zimbra@nod.at>
+In-Reply-To: <b2424246-d42b-d0bc-8951-8cefdf5b681d@studio.unibo.it>
+References: <20210124232007.21639-1-richard@nod.at> <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com> <563952295.378372.1612881357746.JavaMail.zimbra@nod.at> <3a9c19cf-2c25-a3bf-a200-6d223952797a@studio.unibo.it> <443281182.378615.1612885278254.JavaMail.zimbra@nod.at> <b2424246-d42b-d0bc-8951-8cefdf5b681d@studio.unibo.it>
+Subject: Re: [fuse-devel] [PATCH 0/8] MUSE: Userspace backed MTD v3
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jbg8KWmmiAV0YrvndcbaY3CApUbPsTYVgxH-0HspZW3A@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: MUSE: Userspace backed MTD v3
+Thread-Index: f2FpF8PjrUPpHHP0V+KyAUAhV15RfQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 03:32:38PM +0100, Rafael J. Wysocki wrote:
-> On Mon, Feb 8, 2021 at 8:48 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Mon, Feb 8, 2021 at 9:47 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > > On Mon, Feb 8, 2021 at 9:30 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > > > On Friday, February 5, 2021 12:15:22 PM CET Andy Shevchenko wrote:
-> > > > > On Fri, Feb 5, 2021 at 11:14 AM Andy Shevchenko
-> > > > > <andy.shevchenko@gmail.com> wrote:
-> > > > > > On Friday, February 5, 2021, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+----- Ursprüngliche Mail -----
+> for example, many existing video applications use mmap() to map the
+> device memory to userspace memory. Adding support for mmap() to CUSE
+> would allow these apps to work without any modifications with CUSE-based
+>   device drivers other than kernel drivers.
 
-> > > > > >> After merging the pm tree, today's linux-next build (x86_64 allmodconfig)
-> > > > > >> failed like this:
-> > > > > >>
-> > > > > >
-> > > > > > Rafael, maybe I was unclear when explaining to you the dependencies with the series of series, but all three parts should go ordered. In any case it’s easy to fix. I will send you a PR late today of the immutable tag (part 1) that needs to be included in order to avoid the above.
-> > > > >
-> > > > > PR had just been sent to linux-acpi@ and Rafael in Cc.
-> > > >
-> > > > I haven't seen that PR, though, in any of my inboxes etc.
-> > > >
-> > > > Can you please point me to an archive or similar where I can find it?
-> > >
-> > > Sure, lore has it
-> > >
-> > > https://lore.kernel.org/linux-acpi/YB0mPPgpIpQzhNXS@smile.fi.intel.com/T/#u
-> >
-> > If it is possible, please pull that PR and on top of that (re-)apply
-> > the MFD related series.
-> 
-> Done (merged into the bleeding-edge branch).
+So you want to access device memory via CUSE?
+We have plenty of mechanisms in Linux to allow userspace accessing device memory.
+E.g. /dev/mem, UIO, VFIO.
 
-Looks perfect, thanks! I will send a last part soon (tomorrow at last).
+A simple (but ugly!) approach would be redirecting mmap() requests on CUSE devices to /dev/mem.
+hmm?
 
-> I was confused by it apparently asking Linus to pull. :-)
-
-Ah, sorry, it looks like I forgot to update the text when sending it again...
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+//richard
