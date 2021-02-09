@@ -2,81 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944EC315BF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8B0315C0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbhBJBNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:13:10 -0500
-Received: from mail-yb1-f169.google.com ([209.85.219.169]:39449 "EHLO
-        mail-yb1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234384AbhBIWYn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:24:43 -0500
-Received: by mail-yb1-f169.google.com with SMTP id k4so15158ybp.6;
-        Tue, 09 Feb 2021 14:24:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4U2uo28DRfOOEdpoc6H5T9KDb4rD1DuSo0Z2cCk8Ngo=;
-        b=ZbjcXwSnHCY3x7DtOcn4W8wN03eeeuJ4wC3QFLCUkd/wNHevwwuf9MCfPZ5mVGSCRR
-         GpdmF5SGV2AVUZnHm2MT8sUbaupiA+8SL0YVZ9MH8DP+6zIm8/FIk8ylAUyrJaCRHNv+
-         /dehdHjX68i3Lrib1PuEvXXzH4CqFVlZDvQMGb4oP4GooYcliDOf5hc9mZXMVbhCq1b8
-         +/o7MMqVs3T5MXRpugVx1ikVMmonOQH0G8QeWjKdfqjxTkFHlNw/FJSsxflIv5EPQ1ZI
-         VmX1QwFyBeszXFv8qgq41UBILD3wXKHuDbtcqjmJ0V1k4Ctg38apMdqjeoqv+g1Qlb0g
-         fDYg==
-X-Gm-Message-State: AOAM531uUVU+BKmoqZFknIueDSaUOLVKmvUpj+sU3qbuLQBFZOIXAPcB
-        bQkyB3O7y04avaDtV11qlJ3LnTe0PA==
-X-Google-Smtp-Source: ABdhPJwK6Bl9ku5ULbeXp9zDuv2tIt2fil758aM4hsnB7Lgz/dOTAg9MRqdE7CT1mVJDPeE9XQlSAQ==
-X-Received: by 2002:a05:6830:113:: with SMTP id i19mr801004otp.219.1612905799863;
-        Tue, 09 Feb 2021 13:23:19 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m10sm4610725oim.42.2021.02.09.13.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 13:23:18 -0800 (PST)
-Received: (nullmailer pid 214374 invoked by uid 1000);
-        Tue, 09 Feb 2021 21:23:17 -0000
-Date:   Tue, 9 Feb 2021 15:23:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-mtd@lists.infradead.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: spi-nor: Convert to DT schema format
-Message-ID: <20210209212317.GA214117@robh.at.kernel.org>
-References: <20210202175340.3902494-1-robh@kernel.org>
+        id S235115AbhBJBSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:18:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234349AbhBIWq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:46:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92F1664E8B;
+        Tue,  9 Feb 2021 21:25:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612905913;
+        bh=3l1Lx2Zsd3+a58rOtqbr6Ig2BO03fAiJHekglj/tm5I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=oU9cIGGZ9+lvTz3ixoLQmevdhcqk5X5fN7zKiSKQ9km0FZCUZTRPHvOTCIzbD6M1W
+         vnXE7cYSpKccas23kLuH6Wzm/8zSNH+onxHtt3UcPAj45dzkspoajXUixWJewEyJcV
+         kOpAOQYYtuAuT/KyCLv7SWI8f46g/QkS6iar7Bg1GoH1e4n0uNJ78gI9Z7EDkafhlF
+         N3k8hhiGuc7Rd28WV7BRooYCOpOPs7RNOIgJ2NYsuRiCMumVKv29td6rVNfiX87xdh
+         Mp+OIUhUbzvT7WZHChGByhuK99QBjCHzvcLR4uhgnVvJH4mJZgKjwKkFD9lbErj1E4
+         pKVsL82XoRPBQ==
+Date:   Tue, 9 Feb 2021 15:25:10 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     linux-pci@vger.kernel.org, prime.zeng@huawei.com,
+        linuxarm@openeuler.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Use subdir-ccflags-* to inherit debug flag
+Message-ID: <20210209212510.GA513360@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210202175340.3902494-1-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1612438215-33105-1-git-send-email-yangyicong@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Feb 2021 11:53:39 -0600, Rob Herring wrote:
-> Convert the SPI-NOR binding to DT schema format. Like other memory chips,
-> the compatible strings are a mess with vendor prefixes not being used
-> consistently and some compatibles not documented. The resulting schema
-> passes on 'compatible' checks for most in tree users with the exception
-> of some oddballs.
-> 
-> I dropped the 'm25p.*-nonjedec' compatible strings as these don't appear
-> to be used anywhere.
-> 
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../devicetree/bindings/mtd/jedec,spi-nor.txt |  91 ----------------
->  .../bindings/mtd/jedec,spi-nor.yaml           | 102 ++++++++++++++++++
->  2 files changed, 102 insertions(+), 91 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> 
+[+cc Masahiro, Michal, linux-kbuild, linux-kernel]
 
-Applied, thanks!
+On Thu, Feb 04, 2021 at 07:30:15PM +0800, Yicong Yang wrote:
+> From: Junhao He <hejunhao2@hisilicon.com>
+> 
+> Use subdir-ccflags-* instead of ccflags-* to inherit the debug
+> settings from Kconfig when traversing subdirectories.
+> 
+> Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+
+I applied this with Krzysztof's reviewed-by and the commit log below
+to pci/misc for v5.12, thanks!
+
+Feel free to copy or improve the commit log for use elsewhere.
+
+> ---
+>  drivers/pci/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+> index 11cc794..d62c4ac 100644
+> --- a/drivers/pci/Makefile
+> +++ b/drivers/pci/Makefile
+> @@ -36,4 +36,4 @@ obj-$(CONFIG_PCI_ENDPOINT)	+= endpoint/
+>  obj-y				+= controller/
+>  obj-y				+= switch/
+>  
+> -ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+> +subdir-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+
+commit e8e9aababe60 ("PCI: Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy")
+Author: Junhao He <hejunhao2@hisilicon.com>
+Date:   Thu Feb 4 19:30:15 2021 +0800
+
+    PCI: Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy
+    
+    CONFIG_PCI_DEBUG=y adds -DDEBUG to CFLAGS, which enables things like
+    pr_debug() and dev_dbg() (and hence pci_dbg()).  Previously we added
+    -DDEBUG for files in drivers/pci/, but not files in subdirectories of
+    drivers/pci/.
+    
+    Add -DDEBUG to CFLAGS for all files below drivers/pci/ so CONFIG_PCI_DEBUG
+    applies to the entire hierarchy.
+    
+    [bhelgaas: commit log]
+    Link: https://lore.kernel.org/r/1612438215-33105-1-git-send-email-yangyicong@hisilicon.com
+    Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+    Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+
+diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+index 11cc79411e2d..d62c4ac4ae1b 100644
+--- a/drivers/pci/Makefile
++++ b/drivers/pci/Makefile
+@@ -36,4 +36,4 @@ obj-$(CONFIG_PCI_ENDPOINT)	+= endpoint/
+ obj-y				+= controller/
+ obj-y				+= switch/
+ 
+-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
++subdir-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
