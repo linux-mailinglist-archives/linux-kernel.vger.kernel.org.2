@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB7F3158E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A414315900
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbhBIVoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:44:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49334 "EHLO mail.kernel.org"
+        id S234257AbhBIVyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 16:54:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52424 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233597AbhBITHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:07:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B7DF60232;
-        Tue,  9 Feb 2021 18:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612897146;
-        bh=4fpJLNnnXrm61+CZAhV3xI29v6k4LL3TqX6499FGgog=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e25v8N6RsnT4Ivrb6cji8NwTzyy/ohyiPXpn0gROnVLNpW6dr3+SRaJPV+e3O7qxL
-         tww8pvKGDsFKr3S8fwnpWIb22cAPecBKUX4jZT/Z+C6k3QAoySZeGu1v+//UBvnW9h
-         GsPg0YTe7lVm48+aAptfMIHHvD11bf9P/UT2GVco=
-Date:   Tue, 9 Feb 2021 19:59:02 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     karthik alapati <mail@karthek.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: fix block comments alignment
-Message-ID: <YCLbdtaTRk8dtsVA@kroah.com>
-References: <YCLaHXD/sUKM5HZE@karthik-strix-linux.karthek.com>
+        id S233624AbhBITY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 14:24:58 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2A1C0ADF0;
+        Tue,  9 Feb 2021 19:03:34 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 20:03:32 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm: remove lru_add_drain_all in alloc_contig_range
+Message-ID: <20210209190332.GA3363@localhost.localdomain>
+References: <20210209175048.361638-1-minchan@kernel.org>
+ <accc057c-e639-7510-f722-4a4d166c80b6@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YCLaHXD/sUKM5HZE@karthik-strix-linux.karthek.com>
+In-Reply-To: <accc057c-e639-7510-f722-4a4d166c80b6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:23:17AM +0530, karthik alapati wrote:
-> fix checkpatch.pl warning for "block comments should align the * on each line"
+On Tue, Feb 09, 2021 at 07:17:59PM +0100, David Hildenbrand wrote:
+> On 09.02.21 18:50, Minchan Kim wrote:
+> > __alloc_contig_migrate_range already has lru_add_drain_all call
+> > via migrate_prep. It's necessary to move LRU taget pages into
+> > LRU list to be able to isolated. However, lru_add_drain_all call
+> > after __alloc_contig_migrate_range is called is pointless.
+> > 
+> > This patch removes it.
+> > 
+> > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > ---
+> >   mm/page_alloc.c | 2 --
+> >   1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 6446778cbc6b..f8fbee73dd6d 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -8603,8 +8603,6 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+> >   	 * isolated thus they won't get removed from buddy.
+> >   	 */
+> > -	lru_add_drain_all();
+> > -
+> >   	order = 0;
+> >   	outer_start = start;
+> >   	while (!PageBuddy(pfn_to_page(outer_start))) {
+> > 
 > 
-> Signed-off-by: karthik alapati <mail@karthek.com>
-> ---
->  .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   | 204 +++++++++---------
->  1 file changed, 102 insertions(+), 102 deletions(-)
+> I was expecting some magical reason why this is still required but I am not
+> able to find a compelling one. Maybe this is really some historical
+> artifact.
 > 
-> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-> index cf23414d7..003f954c2 100644
-> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-> @@ -20,16 +20,16 @@
->  #define MAX_DOZE_WAITING_TIMES_9x 64
->  
->  /**
-> -* Function:	phy_CalculateBitShift
-> -*
-> -* OverView:	Get shifted position of the BitMask
-> -*
-> -* Input:
-> -*		u32 	BitMask,
-> -*
-> -* Output:	none
-> -* Return:		u32 	Return the shift bit bit position of the mask
-> -*/
-> + * Function:	phy_CalculateBitShift
-> + *
-> + * OverView:	Get shifted position of the BitMask
-> + *
-> + * Input:
-> + *		u32 	BitMask,
-> + *
-> + * Output:	none
-> + * Return:		u32 	Return the shift bit bit position of the mask
-> + */
+> Let's see if other people know why this call here still exists.
 
-These huge function comments are not normal kernel coding style anyway,
-why not fix them up to use the correct style, don't paper over it and
-keep this mess around any longer than it needs to be.
+I also stumbled upon this while working on adding hugetlb support for
+alloc_acontig_range [1].
+I have to confess I puzzled me a bit.
 
-thanks,
+I saw it going back to when the function was first introduced by 
 
-greg k-h
+commit 041d3a8cdc18dc375a128d90bbb753949a81b1fb
+Author: Michal Nazarewicz <mina86@mina86.com>
+Date:   Thu Dec 29 13:09:50 2011 +0100
+
+    mm: page_alloc: introduce alloc_contig_range()
+
+
+It does not make much sense to me. At this point our pages are free, so
+we do not care about LRU handling here.
+But I might be missing something.
+
+[1] https://lore.kernel.org/linux-mm/20210208103935.GA32103@linux/T/#md651fc6e73c656105179382f92f8b2d6073051d1
+
+
+-- 
+Oscar Salvador
+SUSE L3
