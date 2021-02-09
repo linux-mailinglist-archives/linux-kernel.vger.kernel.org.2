@@ -2,184 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2FC315118
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FA831511A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhBIN7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:59:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232058AbhBIN6z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:58:55 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8578DC061786
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:58:14 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id h26so2132596lfm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bvMNYMa56+JIxS32AeHgVqDy9+iOn3UZSpfo8P5gArs=;
-        b=AFn7FCe/X0upq89VDeUCMiUzJrgUxb0NlJ7qXlPyIXhgAbXBjzr+3IT/nf83PCH2eP
-         1OiDZo1kuZYYZQaiLwjb8MPPZhd0Grz+v46iT5fgDU4kfL2P1neb6HMZBRp+VKt9aD8Q
-         JJJrqpmlD7RAwFy9K4jNvZarr29pMNQaQNUKGuFi0gIibMfhAtaFfDjlQgaCTgM3v0Qq
-         V712leLnPerkMoL4+wDWzCbg0SegV0lG2usjPnXOQ2vp86Be7A970YwaxzoKiVFRBWm4
-         9iKuX2/YO46Oco88A1H6O1/+A4DIyXh2KeP8/cnw/mICF412dYVOH1rINh6jT3yN4zfb
-         ouRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bvMNYMa56+JIxS32AeHgVqDy9+iOn3UZSpfo8P5gArs=;
-        b=ORRm1tcGM5tjrOrrDk6opb8sAku4uIuQSOOQ4SuCjdg91yAc/nTRrOq7cGHfsxBheq
-         P5ykpK2CE8GfiXPhEV6saPVeNA0uuA5834iRkoeK7Zua6c6PA6wTdyFPbE8/4jznVTxe
-         bkGtB0MfdVqs4Vbss+uoRybpfgZj5FXsgB8gfRLtMp5oZolf2sPpo3x81xZBh/drqVWi
-         Py7SeWu40z/btkWLJmyIqfI0YVvn5lOFJOFr+zkM273/x3Khh6smyF/ve5z7DZvcbsga
-         EMD4TSz0ktcTxYZYs+dKC8DoifBRLIn8umKWnBDCDNHlQN3ZFmpO4iU+aGHOpN6IY8nv
-         WN7g==
-X-Gm-Message-State: AOAM5325iWWQhOvwyIY1QLrSiVA/8Cu7F78gXipMkRDWrE4ClLy1NuJk
-        5sISFcV+ht+H8XIQ3sOvOZ5n+IGwclfel8ueO5Xn2g==
-X-Google-Smtp-Source: ABdhPJw9MIrg8CuBNdHGRAEP7RIJzpVt/iXnRhsBRjHvPHB/wWIJlqT2P4quBOY5BVUD52/K1idEfWRtCrV/mGXd6dA=
-X-Received: by 2002:ac2:5452:: with SMTP id d18mr5107149lfn.233.1612879091222;
- Tue, 09 Feb 2021 05:58:11 -0800 (PST)
+        id S231984AbhBIOA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:00:28 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:57736 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230474AbhBIN7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:59:21 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l9TX8-0057fl-I8; Tue, 09 Feb 2021 14:58:26 +0100
+Date:   Tue, 9 Feb 2021 14:58:26 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Tobias Waldekranz <tobias@waldekranz.com>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG support
+Message-ID: <YCKVAtu2Y8DAInI+@lunn.ch>
+References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
+ <20210203165458.28717-6-vadym.kochan@plvision.eu>
+ <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87v9b249oq.fsf@waldekranz.com>
+ <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20210205114830.781-1-vincent.guittot@linaro.org>
- <20210205114830.781-6-vincent.guittot@linaro.org> <jhjsg65tmju.mognet@arm.com>
-In-Reply-To: <jhjsg65tmju.mognet@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 9 Feb 2021 14:57:59 +0100
-Message-ID: <CAKfTPtBshO4kq4EvoOLdo+Dx30fVhKQKUiGGqw13-gtNbK14mA@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/6] sched/fair: trigger the update of blocked load on
- newly idle cpu
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Qais Yousef <qais.yousef@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Feb 2021 at 14:09, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> On 05/02/21 12:48, Vincent Guittot wrote:
-> > Instead of waking up a random and already idle CPU, we can take advantage
-> > of this_cpu being about to enter idle to run the ILB and update the
-> > blocked load.
-> >
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > ---
-> >  include/linux/sched/nohz.h |  2 ++
-> >  kernel/sched/fair.c        | 11 ++++++++---
-> >  kernel/sched/idle.c        |  6 ++++++
-> >  3 files changed, 16 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/sched/nohz.h b/include/linux/sched/nohz.h
-> > index 6d67e9a5af6b..74cdc4e87310 100644
-> > --- a/include/linux/sched/nohz.h
-> > +++ b/include/linux/sched/nohz.h
-> > @@ -9,8 +9,10 @@
-> >  #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
-> >  extern void nohz_balance_enter_idle(int cpu);
-> >  extern int get_nohz_timer_target(void);
-> > +extern void nohz_run_idle_balance(int cpu);
-> >  #else
-> >  static inline void nohz_balance_enter_idle(int cpu) { }
-> > +static inline void nohz_run_idle_balance(int cpu) { }
-> >  #endif
-> >
-> >  #ifdef CONFIG_NO_HZ_COMMON
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 935594cd5430..3d2ab28d5736 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -10461,6 +10461,11 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
-> >       return true;
-> >  }
-> >
-> > +void nohz_run_idle_balance(int cpu)
-> > +{
-> > +     nohz_idle_balance(cpu_rq(cpu), CPU_IDLE);
-> > +}
-> > +
-> >  static void nohz_newidle_balance(struct rq *this_rq)
-> >  {
-> >       int this_cpu = this_rq->cpu;
-> > @@ -10482,10 +10487,10 @@ static void nohz_newidle_balance(struct rq *this_rq)
-> >               return;
-> >
-> >       /*
-> > -      * Blocked load of idle CPUs need to be updated.
-> > -      * Kick an ILB to update statistics.
-> > +      * Set the need to trigger ILB in order to update blocked load
-> > +      * before entering idle state.
-> >        */
-> > -     kick_ilb(NOHZ_STATS_KICK);
-> > +     this_rq->nohz_idle_balance = NOHZ_STATS_KICK;
-> >  }
-> >
-> >  #else /* !CONFIG_NO_HZ_COMMON */
-> > diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> > index 305727ea0677..52a4e9ce2f9b 100644
-> > --- a/kernel/sched/idle.c
-> > +++ b/kernel/sched/idle.c
-> > @@ -261,6 +261,12 @@ static void cpuidle_idle_call(void)
-> >  static void do_idle(void)
-> >  {
-> >       int cpu = smp_processor_id();
-> > +
-> > +     /*
-> > +      * Check if we need to update some blocked load
-> > +      */
-> > +     nohz_run_idle_balance(cpu);
-> > +
->
-> What do we gain from doing this here vs having a stats update in
-> newidle_balance()?
+> At the same time some FW is necessary. Certain chip functions, are 
+> best driven by a micro-controller running a tight control loop. 
 
-As mentioned by Joel, newidle_balance is called in the schedule
-context with preempt and irq off  which prevent any local activity
-like irq/timer. Whereas in this new place, we have the same condition
-as during ILB with only preemptoff and _nohz_idle_balance() regularly
-checks if it has to abort because something has been scheduled on the
-cpu.
+For a smart NIC, i could agree. But a switch? The data path is in
+hardware. The driver is all about configuring this hardware, and then
+it is idle. Polls the PHYs once a second, maybe gather statistics,
+allows the network stack to perform STP, but otherwise it does
+nothing.
 
+So for me, i don't see that being a valid argument for this driver.
 
->
-> The current approach is to have a combined load_balance() + blocked load
-> update during newidle, and I get that this can take too long. But then,
-> we could still have what you're adding to do_idle() in the tail of
-> newidle_balance() itself, no? i.e.
->
->   newidle_balance()
->     ...
->     for_each_domain(this_cpu, sd) {
->        ...
->        pulled_task = load_balance(...);
->        ...
->     }
->     ...
->     if (!pulled_task && !this_rq->nr_running) {
->       this_rq->nohz_idle_balance = NOHZ_STATS_KICK;
->       _nohz_idle_balance();
->     }
->
-> or somesuch.
->
-> >       /*
-> >        * If the arch has a polling bit, we maintain an invariant:
-> >        *
-> > --
-> > 2.17.1
+By putting their SDK inside the CPU on the switch, and adding an RPC
+interface, Marvell can quickly get some sort of support working in the
+Linux ecosystem. But this solution has all the problems of a binary
+blob in userspace.
+
+I doubt there is going to be any community engagement with this
+driver. Marvell is going to have to add all the features. If a user
+wants a feature which is not currently supported, they have little
+chance of being able to add it themselves. There is no documentation
+of the RPC interface. So even if the firmware has support for more
+than what the Linux driver implements, only Marvell knows about it.
+
+Products based around this driver are going to find it hard to
+differentiate on switch features. The switch can do what Marvell
+allows you to do. All differentiation is going to be limited to above
+that, the user interface.
+
+For some market segments, that might be enough. You don't see
+community based patches adding new features to the Mellanex/nvidia
+hardware. But when you look at the DSA drivers, a lot of the features
+there are from the community. There is probably space for both.
+
+Looking into my crystal ball, Marvell will probably have the base
+features of their switch implemented before Microchip does, simply
+because they are reusing code hidden away in the CPU. But then
+development will stagnate. Microchip will take a bit longer to get the
+base features implemented. But then because of the openness, users
+will start using the hardware in different ways, and implement
+features which are important to them. And contribute bug fixes. The
+driver will keep gaining new features and mature, and in the end, the
+device built from it will be a lot more divers and interesting.
+
+What i'm not sure is how we as a community push back. Marvells whole
+strategy is black box. I doubt we can make them open up the firmware.
+Do we want to throw out the driver from the kernel? I don't think it
+is that bad. We can point out the problems with Marvell's model. We
+can put in review effort for Microchip, make their driver better. And
+we can encourage the 3rd and 4th vendors in the enterprise switch
+space to follow Microchips lead.
+
+      Andrew
