@@ -2,121 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA66315675
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBC6315681
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhBITEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 14:04:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbhBIRwZ (ORCPT
+        id S233296AbhBITGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 14:06:20 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:43677 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233269AbhBIRxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:52:25 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346C9C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:51:41 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id f23so12631165lfk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:51:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lPHiyshAYwDQMHuL6XjRLdFg31CtAL5tyF9gpmIlpuY=;
-        b=HJ5GboupBRdvDYdE3+c+BbR5L/+b2RNlFkvzE9cvoL6wUi5kai3keCUCA7nryHiCd9
-         KZ3EkSj8HtcF5NHOacJ2DKgRbJq7+2M2OkSkGrKJZ1QfDuumWkiM3g/4k2dCJKJwKSa5
-         6wTjChskPuNHFsigYkPnA1oqTgJysg4meINj2mKinshoP6WLM8uhnsSlEReEmV/goHKq
-         +PA2MVXgPDi77Br/AHMo2t9XdIQaZ/R4zYEYcjcjrTWHaJakWPlCa0sRm5a9pKAkO8rE
-         g+xankyDbezGdQby6sGXMuEhWWxnBLn6k0/eCMRPS1k2QJ3Lfp+whhovYPf58UBCPywU
-         YZWw==
+        Tue, 9 Feb 2021 12:53:23 -0500
+Received: by mail-ot1-f49.google.com with SMTP id l23so6611168otn.10;
+        Tue, 09 Feb 2021 09:53:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lPHiyshAYwDQMHuL6XjRLdFg31CtAL5tyF9gpmIlpuY=;
-        b=ek4lNTJPE5y+YExIsKTYPUduzHiOU0EPFMNuQrirdPDbCONMsbSoK72cbpE61wEv8j
-         t7TC9EA5RE0kZU53W+9XMEJ9/TJAVrUaR8i2pbmRa1moEz97NRSVu57yp7p3K2cJw4Wf
-         Oey1lfNWkqhD2A/qbWZXSY2xjlUbM8FXHfNk0PoP9Vzz96hKoJSCXJkv87s0gI+nfKSK
-         cL2CBI1+0gIAeEGRYesdvLXhbLdlruZD43S/ETNdPpU38asyL45lMrJjFitAA+tTTcRm
-         431+bNFhd4PWeZo5ouX95osAlQmKbkcUSEywyWVK3QyRT01Yb3a4hXLwAiOOQtJzTZaa
-         8oMw==
-X-Gm-Message-State: AOAM530Od5f+P3pVDNYOhmoI1UUVLaqkHsMJebP+KAmG0KlTWt7ONe1V
-        Eb132GpqB7X5O1LqgxedloM1Vc8VvzGnmNKFML0xhQ==
-X-Google-Smtp-Source: ABdhPJyNwqJrbPEm56X5Fd4wgWqY/yJveLKo+1aKW+tRmsIXUbv7TTBoyddE0ravmqPusmp1ermnDhlEtsPwsnQQS8w=
-X-Received: by 2002:ac2:5590:: with SMTP id v16mr13571451lfg.626.1612893094231;
- Tue, 09 Feb 2021 09:51:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p0jcMoP1zdNYZ/i9r9D2TVX6lIvZeuJzpwgY33snses=;
+        b=NvVgZWjBbQf5422zdoqH5Zx7t92Vs1fywew34O9HXTyHiQa4TpTf2c1B/JHDYQa1r/
+         qNE5N1ucrmxgp0PlilLcHKw4h5svIMqdUS3bN0sy3eF78Fmk+3uJ57c0HzjkyHpnhCVI
+         jFN/LRtPt14DFrKfaxiQobL4YCDRVhUvJm530u2BRkgvBoIhldbYN2h2ILFdF2+MbdHy
+         bNnJPRE0EA1QppZt8kKRMfxxLll8f0jbRCl2uPkofsGUkNssHY5SjbzodBzL0DqXZEpL
+         RgGE9U6huh8eSykhea3Kn5TCIlT93LqQEb7gwwun0Fetk/sbfFUZcB8kk5P5Un6rLfki
+         hUCg==
+X-Gm-Message-State: AOAM532l552/947piWcfDI66F5egL6I2TGxoWsuF/byxhrXEhqZVxjhi
+        YnX54qSrF3Cgvk8yiaWqLw==
+X-Google-Smtp-Source: ABdhPJwmuWp6tTbWnSQ2IizYcSJo7pRxp1UJAGJBCc/J9iE3yPA1PUXrjaX/PbRV1oI5evxkC1IZrQ==
+X-Received: by 2002:a05:6830:191:: with SMTP id q17mr16277282ota.110.1612893158858;
+        Tue, 09 Feb 2021 09:52:38 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k21sm2886850otl.27.2021.02.09.09.52.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 09:52:37 -0800 (PST)
+Received: (nullmailer pid 4032920 invoked by uid 1000);
+        Tue, 09 Feb 2021 17:52:35 -0000
+Date:   Tue, 9 Feb 2021 11:52:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     gabriel.fernandez@foss.st.com
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-clk@vger.kernel.org, marex@denx.de,
+        Michael Turquette <mturquette@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Etienne Carriere <etienne.carriere@st.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 07/14] dt-bindings: clock: add IDs for SCMI clocks on
+ stm32mp15
+Message-ID: <20210209175235.GA4032862@robh.at.kernel.org>
+References: <20210126090120.19900-1-gabriel.fernandez@foss.st.com>
+ <20210126090120.19900-8-gabriel.fernandez@foss.st.com>
 MIME-Version: 1.0
-References: <20210205080621.3102035-1-john.stultz@linaro.org>
- <20210205080621.3102035-2-john.stultz@linaro.org> <4471b3b0-603e-6dbb-8064-ff4a95afbba9@amd.com>
- <CALAqxLWZkUFvJX5r2OU2erW4tU3j=+u==VTyzYkt+95LwwVCUA@mail.gmail.com> <48225879-2fe1-22ac-daae-c61d52465aea@amd.com>
-In-Reply-To: <48225879-2fe1-22ac-daae-c61d52465aea@amd.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 9 Feb 2021 09:51:19 -0800
-Message-ID: <CALAqxLVDY6HkTZpXtJ1+V9E-shgtxXn4A5MB5nAaCbwr8AQV6g@mail.gmail.com>
-Subject: Re: [RFC][PATCH v6 1/7] drm: Add a sharable drm page-pool implementation
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126090120.19900-8-gabriel.fernandez@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 4:11 AM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
->
->
->
-> Am 05.02.21 um 21:46 schrieb John Stultz:
-> > On Fri, Feb 5, 2021 at 12:47 AM Christian K=C3=B6nig
-> > <christian.koenig@amd.com> wrote:
-> >> Am 05.02.21 um 09:06 schrieb John Stultz:
-> >>> diff --git a/drivers/gpu/drm/page_pool.c b/drivers/gpu/drm/page_pool.=
-c
-> >>> new file mode 100644
-> >>> index 000000000000..2139f86e6ca7
-> >>> --- /dev/null
-> >>> +++ b/drivers/gpu/drm/page_pool.c
-> >>> @@ -0,0 +1,220 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0
-> >> Please use a BSD/MIT compatible license if you want to copy this from
-> >> the TTM code.
-> > Hrm. This may be problematic, as it's not just TTM code, but some of
-> > the TTM logic integrated into a page-pool implementation I wrote based
-> > on logic from the ION code (which was GPL-2.0 before it was dropped).
-> > So I don't think I can just make it MIT.  Any extra context on the
-> > need for MIT, or suggestions on how to best resolve this?
->
-> Most of the DRM/TTM code is also license able under the BSD/MIT style
-> license since we want to enable the BSD guys to port it over as well.
->
-> What stuff do you need from the ION code that you can't just code
-> yourself? As far as I have seen this is like 99% code from the TTM pool.
+On Tue, 26 Jan 2021 10:01:13 +0100, gabriel.fernandez@foss.st.com wrote:
+> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+> 
+> stm32mp15 TZ secure firmware provides SCMI clocks for oscillators, some
+> PLL output and few secure aware interfaces.
+> This change defines the SCMI clock identifiers used by SCMI agents
+> and servers.
+> Server SCMI0 exposes clocks and reset controllers for resources under
+> RCC[TZEN] configuration control.
+> Server SCMI1 exposes clocks for resources under RCC[MCKPROT] control.
+> 
+> Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
+> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+> ---
+>  include/dt-bindings/clock/stm32mp1-clks.h | 27 +++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
 
-Yea, it evolved into being mostly logic from the TTM pool (or code
-that was very similar to begin with), but it's not where it started.
-My old days at IBM makes me wary of claiming it's no longer the Ship
-of Theseus.
-
-So instead I think I'll have to just throw out my patch and rewrite it
-in full (so apologies in advance for any review issues I
-introduce/reintroduce).
-
-thanks
--john
+Acked-by: Rob Herring <robh@kernel.org>
