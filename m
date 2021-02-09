@@ -2,91 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92637314ED2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311F4314ED8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhBIMR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:17:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:50716 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229639AbhBIMRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:17:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3537CED1;
-        Tue,  9 Feb 2021 04:16:27 -0800 (PST)
-Received: from [10.37.8.18] (unknown [10.37.8.18])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E5F43F73B;
-        Tue,  9 Feb 2021 04:16:25 -0800 (PST)
-Subject: Re: [PATCH v12 7/7] kasan: don't run tests in async mode
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20210208165617.9977-1-vincenzo.frascino@arm.com>
- <20210208165617.9977-8-vincenzo.frascino@arm.com>
- <20210209120241.GF1435@arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <0e373526-0fa8-c5c0-fb41-5c17aa47f07c@arm.com>
-Date:   Tue, 9 Feb 2021 12:20:28 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229907AbhBIMVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:21:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhBIMVx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:21:53 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD52C061786
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 04:21:12 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id u15so9672313plf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 04:21:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wn6ML4D9ib7Umq62f8jkbYVxDjFrwWSjEsDdw0l1TAM=;
+        b=xxa0yUnVDStd9dUIvPcRbgNC5b++rEY30NrYLc9K4cm3QlvOF9blbl5iZ4/ecIBfI/
+         W9ayAPhmgVJ5SlaCtf0aBvZpASzEI1bBjXKNGbnplpo9wL/iNr0ZADB7oQXNUre08txH
+         08CUMh7kIO7fgRUhbLLiMKig5l6QJ5ZlzbDai6xIu/zWmNwTy2IRllC8XOVwPgnI1gAs
+         MTwTG8LvoRQxzZi7iOURE9snpPVTQ3ZTPBtisv7j5iLg+1peMmphrNPql8+gLCXEExH9
+         bXSG5GNItFUWsSEpTyknawY5V4n0+eXcaaVQ4AbcZ+0dqJJ/Nsdib16559s6C0HBwoKR
+         u4Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wn6ML4D9ib7Umq62f8jkbYVxDjFrwWSjEsDdw0l1TAM=;
+        b=Q30iVKBVDJ0f4Hzhn/UKYpx2rARCTvOb55WFWAlnE6PBjp7SwQeP132b+ScJtokZkO
+         f77sB4jCVB+9pF5rhh0+tL8F5vi92lR4IWKsn47pL1NswMWysSrZ86yl1K2RFdBl/Qdz
+         0qgaV9hoCq2PwJccL5thPyXT6CfONWJBxXLooWmb9jG7feHJSPkSVP+siiZPOLT9Tc+J
+         Y7JO83gqtxdUhSb0MPqNMndwRMc4XQkD/FPI5XC3ThPeRHOfzpp0tc58wbVCwfycld4C
+         xp4kBiujz6A7oID5tuUFh04/96Cg5K3a1e+CPh6vAtnupbsLpT29MRGV9VaueIAf+0SH
+         9NPA==
+X-Gm-Message-State: AOAM532Pl+8cBDQN0xXeyzvV2NaQaIuRdgrpgoy5yVtcnZkrVZ6LErgq
+        PkqNKR/Zts0K4KqGGYPC3R86/oJvyWtFNin3ZzrNgQ==
+X-Google-Smtp-Source: ABdhPJwzzNDNJEgOlgJVcYCVdF2ByMK6jjjEdff7bFHVPwbTnSfTiWygGhjH8SNMNZqfZ+ol82iHmE83ASxdrz+QSZo=
+X-Received: by 2002:a17:90a:9a4:: with SMTP id 33mr3806342pjo.147.1612873272144;
+ Tue, 09 Feb 2021 04:21:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210209120241.GF1435@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210206054124.6743-1-songmuchun@bytedance.com> <YCJTrrirMlH7M5i7@alley>
+In-Reply-To: <YCJTrrirMlH7M5i7@alley>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 9 Feb 2021 20:20:35 +0800
+Message-ID: <CAMZfGtVNDhmJxHyScXo6pS7tHnTaGTrOVhwW23iZqrtBB7wVSg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] printk: fix deadlock when kernel panic
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        john.ogness@linutronix.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/9/21 12:02 PM, Catalin Marinas wrote:
-> On Mon, Feb 08, 2021 at 04:56:17PM +0000, Vincenzo Frascino wrote:
->> From: Andrey Konovalov <andreyknvl@google.com>
->>
->> Asynchronous KASAN mode doesn't guarantee that a tag fault will be
->> detected immediately and causes tests to fail. Forbid running them
->> in asynchronous mode.
->>
->> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> 
-> That's missing your SoB.
+On Tue, Feb 9, 2021 at 5:19 PM Petr Mladek <pmladek@suse.com> wrote:
 >
+> On Sat 2021-02-06 13:41:24, Muchun Song wrote:
+> > We found a deadlock bug on our server when the kernel panic. It can be
+> > described in the following diagram.
+> >
+> > CPU0:                                         CPU1:
+> > panic                                         rcu_dump_cpu_stacks
+> >   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
+> >     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
+> >                                                     __printk_safe_flush
+> >                                                       raw_spin_lock_irqsave(&read_lock)
+> >     // send NMI to other processors
+> >     apic_send_IPI_allbutself(NMI_VECTOR)
+> >                                                         // NMI interrupt, dead loop
+> >                                                         crash_nmi_callback
+> >   printk_safe_flush_on_panic
+> >     printk_safe_flush
+> >       __printk_safe_flush
+> >         // deadlock
+> >         raw_spin_lock_irqsave(&read_lock)
+> >
+> > The register_nmi_handler() can be called in the __crash_kexec() or the
+> > crash_smp_send_stop() on the x86-64. Because CPU1 is interrupted by the
+> > NMI with holding the read_lock and crash_nmi_callback() never returns,
+> > CPU0 can deadlock when printk_safe_flush_on_panic() is called.
+> >
+> > When we hold the read_lock and then interrupted by the NMI, if the NMI
+> > handler call nmi_panic(), it is also can lead to deadlock.
+> >
+> > In order to fix it, we make read_lock global and rename it to
+> > safe_read_lock. And we handle safe_read_lock the same way in
+> > printk_safe_flush_on_panic() as we handle logbuf_lock there.
+>
+> What about the following commit message? It uses imperative language
+> and explains that the patch just prevents the deadlock. It removes
+> some details. The diagram is better than many words.
+>
+> <commit message>
+> printk_safe_flush_on_panic() caused the following deadlock on our server:
+>
+> CPU0:                                         CPU1:
+> panic                                         rcu_dump_cpu_stacks
+>   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
+>     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
+>                                                     __printk_safe_flush
+>                                                       raw_spin_lock_irqsave(&read_lock)
+>     // send NMI to other processors
+>     apic_send_IPI_allbutself(NMI_VECTOR)
+>                                                         // NMI interrupt, dead loop
+>                                                         crash_nmi_callback
+>   printk_safe_flush_on_panic
+>     printk_safe_flush
+>       __printk_safe_flush
+>         // deadlock
+>         raw_spin_lock_irqsave(&read_lock)
+>
+> DEADLOCK: read_lock is taken on CPU1 and will never get released.
+>
+> It happens when panic() stops a CPU by NMI while it has been in
+> the middle of printk_safe_flush().
+>
+> Handle the lock the same way as logbuf_lock. The printk_safe buffers
+> are flushed only when both locks can be safely taken.
+>
+> Note: It would actually be safe to re-init the locks when all CPUs were
+>       stopped by NMI. But it would require passing this information
+>       from arch-specific code. It is not worth the complexity.
+>       Especially because logbuf_lock and printk_safe buffers have been
+>       obsoleted by the lockless ring buffer.
+> </commit message>
 
-Yes, I will add it in the next iteration.
+Many thanks. It is clear.
 
->> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
->> index 7285dcf9fcc1..f82d9630cae1 100644
->> --- a/lib/test_kasan.c
->> +++ b/lib/test_kasan.c
->> @@ -51,6 +51,10 @@ static int kasan_test_init(struct kunit *test)
->>  		kunit_err(test, "can't run KASAN tests with KASAN disabled");
->>  		return -1;
->>  	}
->> +	if (kasan_flag_async) {
->> +		kunit_err(test, "can't run KASAN tests in async mode");
->> +		return -1;
->> +	}
->>  
->>  	multishot = kasan_save_enable_multi_shot();
->>  	hw_set_tagging_report_once(false);
-> 
-> I think we can still run the kasan tests in async mode if we check the
-> TFSR_EL1 at the end of each test by calling mte_check_tfsr_exit().
-> 
+>
+> > Fixes: cf9b1106c81c ("printk/nmi: flush NMI messages on the system panic")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> With an updated commit message:
+>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-IIUC this was the plan for the future. But I let Andrey comment for more details.
+Thanks. I will update the commit message.
 
--- 
-Regards,
-Vincenzo
+>
+> Best Regards,
+> Petr
