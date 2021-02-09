@@ -2,93 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D80315B71
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16635315B7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhBJAkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:40:23 -0500
-Received: from sauhun.de ([88.99.104.3]:33320 "EHLO pokefinder.org"
+        id S234435AbhBJAm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:42:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233684AbhBIVF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 16:05:59 -0500
-Received: from localhost (p5486c396.dip0.t-ipconnect.de [84.134.195.150])
-        by pokefinder.org (Postfix) with ESMTPSA id 731632C04E4;
-        Tue,  9 Feb 2021 22:04:13 +0100 (CET)
-Date:   Tue, 9 Feb 2021 22:04:10 +0100
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v10 2/7] i2c: Allow an ACPI driver to manage the device's
- power state during probe
-Message-ID: <20210209210410.GA2380@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-i2c@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-References: <20210205132505.20173-1-sakari.ailus@linux.intel.com>
- <20210205132505.20173-3-sakari.ailus@linux.intel.com>
+        id S233588AbhBIVKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 16:10:07 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65EA964DAF;
+        Tue,  9 Feb 2021 21:09:11 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 16:09:09 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
+        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 0/6] tracing: More synthetic event error fixes
+Message-ID: <20210209160909.28cc8d3b@gandalf.local.home>
+In-Reply-To: <cover.1612208610.git.zanussi@kernel.org>
+References: <cover.1612208610.git.zanussi@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
-Content-Disposition: inline
-In-Reply-To: <20210205132505.20173-3-sakari.ailus@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon,  1 Feb 2021 13:48:10 -0600
+Tom Zanussi <zanussi@kernel.org> wrote:
 
---cNdxnHkX5QqsyA0e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Hi,
+> 
+> This is v7 of the synthetic event error fix patchset.  This version
+> addresses the comments from v6:
+> 
+>   - moved check_command() from '[PATCH v6 3/6] tracing: Update synth
+>     command errors' to '[PATCH v6 2/6] tracing: Rework synthetic event
+>     command parsing'.
+> 
+>   - in __create_synth_event(), moved mutex_lock(&event_mutex) after
+>     is_good_name() check and changed related error handling.
+> 
+>   - simplified check_command() a bit by calling argv_free() sooner as
+>     suggested by Steve.
+> 
+>   - added Steve's comment about check_field_version() into that
+>     function and added additional comments to the caller.
+> 
 
+After applying these, the following test fails:
 
-> + * @I2C_DRV_FL_ALLOW_LOW_POWER_PROBE: Let the ACPI driver manage the device's
-> + *				      power state during probe and remove
+ test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
 
-Well, for the functional change, I am happy if the ACPI guys are happy.
-The only minor nit for me would be removing the "_FL" snipplet from the
-name of the define because I think it is clear enough that this is a
-flag. If you need to resend anyhow, maybe it is worth a thought. It is
-not a big issue, so anyway:
+It appears that:
 
-Acked-by: Wolfram Sang <wsa@kernel.org>
+  echo 'myevent char str[];; int v' > synthetic_events
 
-because I assume this will go in via the ACPI tree?
+doesn't error after these changes.
 
-
---cNdxnHkX5QqsyA0e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAi+MYACgkQFA3kzBSg
-Kba6/xAAtMdyI3C2JF5zUtXQxsmy1dTtr0C3ypMSMTb22o36hVCD5m0MrEk1Ism2
-FTlAoKDK2RhPjsANQLuDg5GyktNmk0aNX1ucmromKdNfHHnJQcEtKWSDm0lVEyyy
-b5RJnv1Zu7zc+Xk5sHKnfidY6YyGXx+HwS8D+w5UNvcTf/dpyhZLIEvn6Dl8tU1E
-WRsrMgmXqDVjEUukEr/j/g+ZwqjMfSj1be9hl3yPp29i4qaSmgKygp2i3/4iOC3f
-IXMIV/pOEN/rMbRCYeTBBccmsH3u67xXV2XFjHs6G2mMQ7n8ydbpAZjtkcQDh4Df
-ZWBzAWdIhtDZBEZ0CiyzcgnSP6QGLtNGfHGUYjuq7Sg8ea7kP1Acm1WHhwXcdvgT
-ZCuNSw48Cc8KYTjpJ4amx6HHmhFs/JcOu+j+psGVg3B/s7L3A+uq6iX6vBKgRcQ6
-0MS8VT04R+F1Z1UaFlIbidQbp/se2PCaUs7182afHSWnESwtebZ0y2oKwWvnmC6F
-/TmC3maOf0a1bUyV6tbAZ6fY5H5zQue+pzhsBfIALgYGe9mQsHDU+W7yklmYTwP8
-jxquIbwNqtwaaG0BHiAnCmH2eRIyM/yDDl0RLKqD6m3HSEM3vJaeBS2adzjShXnp
-pekggUfypFw/gpc5axQAEHkoGST+/M8g9ekR2EZ8IYdQZc1SVz8=
-=10SL
------END PGP SIGNATURE-----
-
---cNdxnHkX5QqsyA0e--
+-- Steve
