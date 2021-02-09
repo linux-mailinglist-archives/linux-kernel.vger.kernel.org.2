@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138153151B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5B83151AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhBIOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:33:13 -0500
-Received: from mx2.veeam.com ([64.129.123.6]:55760 "EHLO mx2.veeam.com"
+        id S232014AbhBIOcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:32:31 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:31643 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231366AbhBIOca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:32:30 -0500
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.veeam.com (Postfix) with ESMTPS id 6AF154141F;
-        Tue,  9 Feb 2021 09:31:14 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx2;
-        t=1612881074; bh=iOyxKFHPVnSJiNEqoIQLb5N7mlhEeMv/ecD8/bTsSt0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=EJi2swXfmkqGcb7cjVWZJ/3bBW0j9ANhODuOdQENhciXXuSAoVarVi9ek4yhuXdkL
-         FJjKFaaRKbZeQ1AKEohOVGTJclTFqLULWm8yM8yrkbL+A5m3lRnuaqpXbBNcTBtCK5
-         CTEr9VnxNrVz3tuhlyUcAkBjR939aeCRw6QCC6FU=
-Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
- prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Tue, 9 Feb 2021 15:30:53 +0100
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     <Damien.LeMoal@wdc.com>, <snitzer@redhat.com>, <hare@suse.de>,
-        <ming.lei@redhat.com>, <agk@redhat.com>, <corbet@lwn.net>,
-        <axboe@kernel.dk>, <jack@suse.cz>, <johannes.thumshirn@wdc.com>,
-        <gregkh@linuxfoundation.org>, <koct9i@gmail.com>, <steve@sk2.org>,
-        <dm-devel@redhat.com>, <linux-block@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sergei.shtepa@veeam.com>, <pavel.tide@veeam.com>
-Subject: [PATCH v5 6/6] docs: device-mapper: 'noexcl' option for dm-linear
-Date:   Tue, 9 Feb 2021 17:30:28 +0300
-Message-ID: <1612881028-7878-7-git-send-email-sergei.shtepa@veeam.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1612881028-7878-1-git-send-email-sergei.shtepa@veeam.com>
-References: <1612881028-7878-1-git-send-email-sergei.shtepa@veeam.com>
+        id S231878AbhBIObw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 09:31:52 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DZlgV2BM4z9v4gr;
+        Tue,  9 Feb 2021 15:31:02 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id bnKYf9L8xKhB; Tue,  9 Feb 2021 15:31:02 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZlgV18f4z9v4gp;
+        Tue,  9 Feb 2021 15:31:02 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 86B318B7E7;
+        Tue,  9 Feb 2021 15:31:03 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id oydW9FnggjEP; Tue,  9 Feb 2021 15:31:03 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id F22898B764;
+        Tue,  9 Feb 2021 15:31:02 +0100 (CET)
+Subject: Re: [PATCH v5 18/22] powerpc/syscall: Remove FULL_REGS verification
+ in system_call_exception
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+ <6bef4d9ba0cba50160d13e344ee4627ebdf801dc.1612796617.git.christophe.leroy@csgroup.eu>
+ <1612836023.l122pe2n2b.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <cc1a35a4-07c3-9e64-18d6-57e497f56e33@csgroup.eu>
+Date:   Tue, 9 Feb 2021 15:31:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D265617465
-X-Veeam-MMEX: True
+In-Reply-To: <1612836023.l122pe2n2b.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New 'noexcl' option allow to open underlying block-device
-without FMODE_EXCL flag.
 
-Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
----
- .../admin-guide/device-mapper/linear.rst      | 26 ++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/admin-guide/device-mapper/linear.rst b/Documentation/admin-guide/device-mapper/linear.rst
-index 9d17fc6e64a9..f035cd7ad78c 100644
---- a/Documentation/admin-guide/device-mapper/linear.rst
-+++ b/Documentation/admin-guide/device-mapper/linear.rst
-@@ -6,12 +6,22 @@ Device-Mapper's "linear" target maps a linear range of the Device-Mapper
- device onto a linear range of another device.  This is the basic building
- block of logical volume managers.
- 
--Parameters: <dev path> <offset>
-+Parameters: <dev path> <offset> [<options>]
-     <dev path>:
--	Full pathname to the underlying block-device, or a
-+        Full pathname to the underlying block-device, or a
-         "major:minor" device-number.
-     <offset>:
--	Starting sector within the device.
-+        Starting sector within the device.
-+    <options>:
-+        Options allow to set the exclusivity mode. The exclusivity mode
-+        can be 'excl' and 'noexcl'. By default, then options is not set,
-+        the 'excl' mode is used. 'noexcl' mode allow to open device
-+        without FMODE_EXCL flag. This allow to create liner device with
-+        underlying block-device that are already used by the system. For
-+        example, the file system on this device is already mounted.
-+        The 'noexcl' option should be used when creating dm devices that
-+        will be used as acceptor when connecting the device mapper to an
-+        existing block device with the 'dmsetup remap' command.
- 
- 
- Example scripts
-@@ -61,3 +71,13 @@ Example scripts
-   }
- 
-   `echo \"$table\" | dmsetup create $name`;
-+
-+::
-+
-+  #!/bin/sh
-+  # Create linear device and remap all requests from the original device
-+  # to new linear.
-+  DEV=$1
-+
-+  echo "0 `blockdev --getsz $DEV` linear $DEV 0 noexcl" | dmsetup create dm-noexcl
-+  dmsetup remap start dm-noexcl $DEV
--- 
-2.20.1
+Le 09/02/2021 à 03:02, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+>> For book3s/64, FULL_REGS() is 'true' at all time, so the test voids.
+>> For others, non volatile registers are saved inconditionally.
+>>
+>> So the verification is pointless.
+>>
+>> Should one fail to do it, it would anyway be caught by the
+>> CHECK_FULL_REGS() in copy_thread() as we have removed the
+>> special versions ppc_fork() and friends.
+>>
+>> null_syscall benchmark reduction 4 cycles (332 => 328 cycles)
+> 
+> I wonder if we rather make a CONFIG option for a bunch of these simpler
+> debug checks here (and also in interrupt exit, wrappers, etc) rather
+> than remove them entirely.
 
+We can drop this patch if you prefer. Anyway, like book3s/64, once ppc32 also do interrupt 
+entry/exit in C, FULL_REGS() will already return true.
+
+Christophe
+
+
+> 
+> Thanks,
+> Nick
+> 
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/kernel/interrupt.c | 1 -
+>>   1 file changed, 1 deletion(-)
+>>
+>> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+>> index 8fafca727b8b..55e1aa18cdb9 100644
+>> --- a/arch/powerpc/kernel/interrupt.c
+>> +++ b/arch/powerpc/kernel/interrupt.c
+>> @@ -42,7 +42,6 @@ notrace long system_call_exception(long r3, long r4, long r5,
+>>   	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
+>>   		BUG_ON(!(regs->msr & MSR_RI));
+>>   	BUG_ON(!(regs->msr & MSR_PR));
+>> -	BUG_ON(!FULL_REGS(regs));
+>>   	BUG_ON(arch_irq_disabled_regs(regs));
+>>   
+>>   #ifdef CONFIG_PPC_PKEY
+>> -- 
+>> 2.25.0
+>>
+>>
