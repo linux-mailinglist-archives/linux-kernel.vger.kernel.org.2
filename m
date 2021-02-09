@@ -2,120 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C473D31468C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6CB314690
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhBIChy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:37:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhBIChI (ORCPT
+        id S230333AbhBICic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 21:38:32 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:43515 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230144AbhBIChm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:37:08 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B797EC061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 18:36:27 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id m2so4791736pgq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 18:36:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=3QXGdYBY4GlaQjWRP3AW5oVocz08MQfpEQJa46lCHW4=;
-        b=TibI077wK5BoFL+D16v0ATZT2K15vnWdkA7lAPagP9SvPLXshPfC8RfEfTQEshqj26
-         MjWiqpkoaiRkz/RG2GZ/R19LJ1rS+KzYf5UFwmZ/r3eUgYlJRB1+LysTYC2/Msk08tkE
-         TaJ5U5riA8qILa/prHnY2a765knNriZA7zZ4vYTu98cL7L7eZ1OnIOIS3TSMCTJOTBRx
-         PEbPXjOBhcHuXIue0yq8RjEtZTC1QE2eRuzBWlXRtc7jRnki+WZ/0DBplRshX3IqgoTi
-         D09T9UiuK+iSfq7FhOdISj+tMfEPoqcY4VVaEwdlx7f3wcbl18mS+ehf9ebS14uK+ROc
-         mbUQ==
+        Mon, 8 Feb 2021 21:37:42 -0500
+Received: by mail-oi1-f177.google.com with SMTP id d20so17896338oiw.10;
+        Mon, 08 Feb 2021 18:37:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=3QXGdYBY4GlaQjWRP3AW5oVocz08MQfpEQJa46lCHW4=;
-        b=l2RxOD1bOiqy4UGJPKFMxdkfQs2wDmosRdoQSqjv10nS1yc81CCIfAxErx779qm6kP
-         8laDt89oGQqI0CTzBUnTSJSF1gHgji4rbhTEQBIRP2Z86Agv3WL0B/4JPyXwTAxHpgf/
-         C08+oNENHZH6BIxWK9cXkxAKE015XN1zY/kq1RHD66eE/DXEBVMqIfu4T9/evV2CpI2H
-         I/TUEJUwyWORe5vBcw9B9IukDWtugRhMU2CRO7MCg4TM4NQ4Kc6eIcueksWfuBDTfq7T
-         ZehWwh+3PGVpBY+IJS/EhOwcWu7oclhhkljb8LpH4fUVEGG13MtYj1S/jqzGJGosThLQ
-         renw==
-X-Gm-Message-State: AOAM533Cizg3MXYKpxDMo6EP/jTX0fa3z13n8ZHdi9aJvHciC7hNepc7
-        sbolrJm41B6upWEmdCztcCY=
-X-Google-Smtp-Source: ABdhPJzPMPSomATF2ZyD4YSYOSlDzTQHBwvjPuxeoN6W3R/OWYq87nM9LvDS8uYPAZg7XCUdbR0vMQ==
-X-Received: by 2002:a62:cd:0:b029:1d5:da40:abf8 with SMTP id 196-20020a6200cd0000b02901d5da40abf8mr20272668pfa.60.1612838187168;
-        Mon, 08 Feb 2021 18:36:27 -0800 (PST)
-Received: from localhost ([220.240.226.199])
-        by smtp.gmail.com with ESMTPSA id 71sm6599001pgh.55.2021.02.08.18.36.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hQRP/+c33BpQI1+/tGbsJuFwMmZpjkX8hC1DLcxfDkY=;
+        b=I0/0+u4MJ8iwyCduO0dRJkCqvAwxKME7dlEJRuSAcZLZ4huPhxb87+MErSyKkU7fbm
+         ZRD3+UPmBJo3uoTs5J0ROt2Jhr4KJar+25YzoHeam/JHlnUJijwFP1i07dqw0V7m8LdK
+         zV0JOa3hmZLcv/f6LFpRAY/kgR1EH2DaDxVrEznjqmiGE/UBUiTg4ofxw9woEGuHaxIy
+         tucJ6V7WTJmAdC4EoFNL6N/2gsEnWhxc29O/Pic8q4bAmzf80ZxNS5TmeRCKwBqrATFQ
+         InOXC0gG+JGcDw1193Ao2yZ24mNK5GYhgp4/kitzm3b9uRRao7dWau+UgVpUfgevXYgY
+         W1WQ==
+X-Gm-Message-State: AOAM530fi07j2RKZcV5VxKMOlYfeGw3+kh6P5X63hU/hilYrr6Ks+MFe
+        5zbs2qWMRWbNo9Ibd4MxvPWAf8FZ9Q==
+X-Google-Smtp-Source: ABdhPJxkPuqOi9xyaFRQXxdHtZhbsO1UswFQc/qFPL5GP+QGiKA/i3qF0K1U7CmEp7pB+Nmy2xEC7g==
+X-Received: by 2002:aca:5941:: with SMTP id n62mr1130055oib.135.1612838220567;
+        Mon, 08 Feb 2021 18:37:00 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p20sm2024040oos.46.2021.02.08.18.36.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 18:36:26 -0800 (PST)
-Date:   Tue, 09 Feb 2021 12:36:20 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v5 20/22] powerpc/syscall: Avoid storing 'current' in
- another pointer
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
-        <24804747098369ebcdac38970b8f7a1260bdd248.1612796617.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <24804747098369ebcdac38970b8f7a1260bdd248.1612796617.git.christophe.leroy@csgroup.eu>
+        Mon, 08 Feb 2021 18:36:59 -0800 (PST)
+Received: (nullmailer pid 2568970 invoked by uid 1000);
+        Tue, 09 Feb 2021 02:36:58 -0000
+Date:   Mon, 8 Feb 2021 20:36:58 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     devicetree@vger.kernel.org, David Jander <david@protonic.nl>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Robin van der Gracht <robin@protonic.nl>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v2 1/7] dt-bindings: display: simple: add Innolux
+ G070Y2-T02 panel
+Message-ID: <20210209023658.GA2568914@robh.at.kernel.org>
+References: <20210121061141.23062-1-o.rempel@pengutronix.de>
+ <20210121061141.23062-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Message-Id: <1612838134.rvncv9kzls.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121061141.23062-2-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
-> By saving the pointer pointing to thread_info.flags, gcc copies r2
-> in a non-volatile register.
->=20
-> We know 'current' doesn't change, so avoid that intermediaite pointer.
->=20
-> Reduces null_syscall benchmark by 2 cycles (322 =3D> 320 cycles)
->=20
-> On PPC64, gcc seems to know that 'current' is not changing, and it keeps
-> it in a non volatile register to avoid multiple read of 'current' in paca=
-.
->=20
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On Thu, 21 Jan 2021 07:11:35 +0100, Oleksij Rempel wrote:
+> Add binding for the Innolux G070Y2-T02 panel. It is 7" WVGA (800x480)
+> TFT LCD panel with TTL interface and a backlight unit.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-What if you did this?
-
----
- arch/powerpc/include/asm/current.h | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/current.h b/arch/powerpc/include/asm/=
-current.h
-index bbfb94800415..59ab327972a5 100644
---- a/arch/powerpc/include/asm/current.h
-+++ b/arch/powerpc/include/asm/current.h
-@@ -23,16 +23,19 @@ static inline struct task_struct *get_current(void)
-=20
- 	return task;
- }
--#define current	get_current()
-=20
- #else
-=20
--/*
-- * We keep `current' in r2 for speed.
-- */
--register struct task_struct *current asm ("r2");
-+static inline struct task_struct *get_current(void)
-+{
-+	register struct task_struct *task asm ("r2");
-+
-+	return task;
-+}
-=20
- #endif
-=20
-+#define current	get_current()
-+
- #endif /* __KERNEL__ */
- #endif /* _ASM_POWERPC_CURRENT_H */
---=20
+Acked-by: Rob Herring <robh@kernel.org>
