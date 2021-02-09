@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134DB314A7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 896C3314A8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhBIIkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:40:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52966 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229759AbhBIIkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:40:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612859975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M/TCQMsEKZeWKYWA7PitmpFz+lfBIV2PUxzKNcHqcSA=;
-        b=KZ7MzYv+TlxppKhZLwDSyysF5uPVvVC7N2pC83pC/uTDWki/80BBoVFPdQBTjNmrVy8CT0
-        y8vV0l+DqBOHYgEUOBarOoaQMVE+UkrpmLSVuQZjJ6K0hiBYKCywhHW5qvRjmBxqZ5HCFr
-        plK6sLPUIvTOai6G3U2VGlUe2lbO9so=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 94141AD3E;
-        Tue,  9 Feb 2021 08:39:35 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 09:39:34 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        john.ogness@linutronix.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v2] printk: fix deadlock when kernel panic
-Message-ID: <YCJKRnBXjTNWRBZ7@alley>
-References: <20210206054124.6743-1-songmuchun@bytedance.com>
- <YCDcAy39BbPItdGY@jagdpanzerIV.localdomain>
- <CAMZfGtVBVSuH=HGNs7KFOtixSviy_stoZsiG4au0RUkUnH-0rQ@mail.gmail.com>
- <YCE4tIrz/u/RkDc/@jagdpanzerIV.localdomain>
- <CAMZfGtX-bHXoF_4rU+WzDNp+LmZj3CHWmurEvjCZBCyM2uiDMw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtX-bHXoF_4rU+WzDNp+LmZj3CHWmurEvjCZBCyM2uiDMw@mail.gmail.com>
+        id S229997AbhBIIlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:41:06 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41615 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229715AbhBIIks (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 03:40:48 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UOHlriS_1612859989;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOHlriS_1612859989)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 09 Feb 2021 16:40:02 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, john.fastabend@gmail.com, shuah@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] selftests/bpf: Simplify the calculation of variables
+Date:   Tue,  9 Feb 2021 16:39:47 +0800
+Message-Id: <1612859987-93923-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-02-08 23:40:07, Muchun Song wrote:
-> On Mon, Feb 8, 2021 at 9:12 PM Sergey Senozhatsky
-> <sergey.senozhatsky@gmail.com> wrote:
-> >
-> > On (21/02/08 16:49), Muchun Song wrote:
-> > > On Mon, Feb 8, 2021 at 2:38 PM Sergey Senozhatsky
-> > > <sergey.senozhatsky@gmail.com> wrote:
-> > > >
-> > > > On (21/02/06 13:41), Muchun Song wrote:
-> > > > > We found a deadlock bug on our server when the kernel panic. It can be
-> > > > > described in the following diagram.
-> > > > >
-> > > > > CPU0:                                         CPU1:
-> > > > > panic                                         rcu_dump_cpu_stacks
-> > > > >   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
-> > > > >     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
-> > > > >                                                     __printk_safe_flush
-> > > > >                                                       raw_spin_lock_irqsave(&read_lock)
-> > > > >     // send NMI to other processors
-> > > > >     apic_send_IPI_allbutself(NMI_VECTOR)
-> > > > >                                                         // NMI interrupt, dead loop
-> > > > >                                                         crash_nmi_callback
-> > > >
-> > > > At what point does this decrement num_online_cpus()? Any chance that
-> > > > panic CPU can apic_send_IPI_allbutself() and printk_safe_flush_on_panic()
-> > > > before num_online_cpus() becomes 1?
-> > >
-> > > I took a closer look at the code. IIUC, It seems that there is no point
-> > > which decreases num_online_cpus.
-> >
-> > So then this never re-inits the safe_read_lock?
+Fix the following coccicheck warnings:
 
-Yes, but it will also not cause the deadlock.
-printk_safe_flush_on_panic() will return without flushing
-the buffers.
+./tools/testing/selftests/bpf/xdpxceiver.c:954:28-30: WARNING !A || A &&
+B is equivalent to !A || B.
 
-> Right. If we encounter this case, we do not flush printk
-> buffer. So, it seems my previous patch is the right fix.
-> Right?
-> 
-> https://lore.kernel.org/patchwork/patch/1373563/
+./tools/testing/selftests/bpf/xdpxceiver.c:932:28-30: WARNING !A || A &&
+B is equivalent to !A || B.
 
-No, there is a risk of deadlock caused by logbuf_lock, see
-https://lore.kernel.org/lkml/YB0nggSa7a95UCIK@alley/
+./tools/testing/selftests/bpf/xdpxceiver.c:909:28-30: WARNING !A || A &&
+B is equivalent to !A || B.
 
-> >                if (num_online_cpus() > 1)
-> >                        return;
-> >
-> >                debug_locks_off();
-> >                raw_spin_lock_init(&safe_read_lock);
-> >
-> >         -ss
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ tools/testing/selftests/bpf/xdpxceiver.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I prefer this approach. It is straightforward because it handles
-read_lock the same way as logbuf_lock.
+diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
+index 99ea6cf..f4a96d5 100644
+--- a/tools/testing/selftests/bpf/xdpxceiver.c
++++ b/tools/testing/selftests/bpf/xdpxceiver.c
+@@ -897,7 +897,7 @@ static void *worker_testapp_validate(void *arg)
+ 			ksft_print_msg("Destroying socket\n");
+ 	}
+ 
+-	if (!opt_bidi || (opt_bidi && bidi_pass)) {
++	if (!opt_bidi || bidi_pass) {
+ 		xsk_socket__delete(ifobject->xsk->xsk);
+ 		(void)xsk_umem__delete(ifobject->umem->umem);
+ 	}
+@@ -922,7 +922,7 @@ static void testapp_validate(void)
+ 	pthread_mutex_lock(&sync_mutex);
+ 
+ 	/*Spawn RX thread */
+-	if (!opt_bidi || (opt_bidi && !bidi_pass)) {
++	if (!opt_bidi || !bidi_pass) {
+ 		if (pthread_create(&t0, &attr, worker_testapp_validate, ifdict[1]))
+ 			exit_with_error(errno);
+ 	} else if (opt_bidi && bidi_pass) {
+@@ -942,7 +942,7 @@ static void testapp_validate(void)
+ 	pthread_mutex_unlock(&sync_mutex);
+ 
+ 	/*Spawn TX thread */
+-	if (!opt_bidi || (opt_bidi && !bidi_pass)) {
++	if (!opt_bidi || !bidi_pass) {
+ 		if (pthread_create(&t1, &attr, worker_testapp_validate, ifdict[0]))
+ 			exit_with_error(errno);
+ 	} else if (opt_bidi && bidi_pass) {
+-- 
+1.8.3.1
 
-IMHO, it is not worth inventing any more complexity. Both logbuf_lock
-and read_lock are obsoleted by the lockless ringbuffer. And we need
-something simple to get backported to the already released kernels.
-
-Best Regards,
-Petr
