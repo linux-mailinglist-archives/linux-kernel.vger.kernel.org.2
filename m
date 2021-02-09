@@ -2,76 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A3331549B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3822F31549C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbhBIRD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 12:03:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51162 "EHLO mail.kernel.org"
+        id S232762AbhBIREz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 12:04:55 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:23665 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233095AbhBIRDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:03:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAB0764E31;
-        Tue,  9 Feb 2021 17:02:58 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 17:02:56 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mm] arm64: kasan: fix MTE symbols exports
-Message-ID: <20210209170255.GG1435@arm.com>
-References: <dd36936c3d99582a623c8f01345f618ed4c036dd.1612884525.git.andreyknvl@google.com>
+        id S232912AbhBIREX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 12:04:23 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DZq3R6lxTz9v2fx;
+        Tue,  9 Feb 2021 18:03:31 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Gcz4YRACtslA; Tue,  9 Feb 2021 18:03:31 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZq3R5Y7Qz9v2fv;
+        Tue,  9 Feb 2021 18:03:31 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5CE8E8B7EE;
+        Tue,  9 Feb 2021 18:03:33 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id d9oR9oP2EDOI; Tue,  9 Feb 2021 18:03:33 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9E0608B7EA;
+        Tue,  9 Feb 2021 18:03:32 +0100 (CET)
+Subject: Re: [PATCH v5 20/22] powerpc/syscall: Avoid storing 'current' in
+ another pointer
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Segher Boessenkool' <segher@kernel.crashing.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "msuchanek@suse.de" <msuchanek@suse.de>,
+        Paul Mackerras <paulus@samba.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+ <24804747098369ebcdac38970b8f7a1260bdd248.1612796617.git.christophe.leroy@csgroup.eu>
+ <1612838134.rvncv9kzls.astroid@bobo.none>
+ <20210209135053.GD27854@gate.crashing.org>
+ <d35cc46eca474b2c9f94a4de269321e7@AcuMS.aculab.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <f6ae2e77-3a89-c294-9a6e-58d84fbb46b1@csgroup.eu>
+Date:   Tue, 9 Feb 2021 18:03:33 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd36936c3d99582a623c8f01345f618ed4c036dd.1612884525.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <d35cc46eca474b2c9f94a4de269321e7@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 04:32:30PM +0100, Andrey Konovalov wrote:
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index a66c2806fc4d..788ef0c3a25e 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -113,13 +113,17 @@ void mte_enable_kernel(void)
->  	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
->  	isb();
->  }
-> +#if IS_ENABLED(CONFIG_KASAN_KUNIT_TEST)
->  EXPORT_SYMBOL_GPL(mte_enable_kernel);
-> +#endif
->  
->  void mte_set_report_once(bool state)
->  {
->  	WRITE_ONCE(report_fault_once, state);
->  }
-> +#if IS_ENABLED(CONFIG_KASAN_KUNIT_TEST)
->  EXPORT_SYMBOL_GPL(mte_set_report_once);
-> +#endif
 
-Do we actually care about exporting them when KASAN_KUNIT_TEST=n? It
-looks weird to have these #ifdefs in the arch code. Either the
-arch-kasan API requires these symbols to be exported to modules or not.
-I'm not keen on such kasan internals trickling down into the arch code.
 
-If you don't want to export them in the KASAN_KUNIT_TEST=n case, add a
-wrapper in the kasan built-in code (e.g. kasan_test_enable_tagging,
-kasan_test_set_report_once) and conditionally compile them based on
-KASAN_KUNIT_TEST.
+Le 09/02/2021 à 15:31, David Laight a écrit :
+> From: Segher Boessenkool
+>> Sent: 09 February 2021 13:51
+>>
+>> On Tue, Feb 09, 2021 at 12:36:20PM +1000, Nicholas Piggin wrote:
+>>> What if you did this?
+>>
+>>> +static inline struct task_struct *get_current(void)
+>>> +{
+>>> +	register struct task_struct *task asm ("r2");
+>>> +
+>>> +	return task;
+>>> +}
+>>
+>> Local register asm variables are *only* guaranteed to live in that
+>> register as operands to an asm.  See
+>>    https://gcc.gnu.org/onlinedocs/gcc/Local-Register-Variables.html#Local-Register-Variables
+>> ("The only supported use" etc.)
+>>
+>> You can do something like
+>>
+>> static inline struct task_struct *get_current(void)
+>> {
+>> 	register struct task_struct *task asm ("r2");
+>>
+>> 	asm("" : "+r"(task));
+>>
+>> 	return task;
+>> }
+>>
+>> which makes sure that "task" actually is in r2 at the point of that asm.
+> 
+> If "r2" always contains current (and is never assigned by the compiler)
+> why not use a global register variable for it?
+> 
 
--- 
-Catalin
+
+The change proposed by Nick doesn't solve the issue.
+
+The problem is that at the begining of the function we have:
+
+	unsigned long *ti_flagsp = &current_thread_info()->flags;
+
+When the function uses ti_flagsp for the first time, it does use 112(r2)
+
+Then the function calls some other functions.
+
+Most likely because the function could update 'current', GCC copies r2 into r30, so that if r2 get 
+changed by the called function, ti_flagsp is still based on the previous value of current.
+
+Allthough we know r2 wont change, GCC doesn't know it. And in order to save r2 into r30, it needs to 
+save r30 in the stack.
+
+
+By using &current_thread_info()->flags directly instead of this intermediaite ti_flagsp pointer, GCC 
+uses r2 instead instead of doing a copy.
+
+
+Nick, I don't understand the reason why you need that 'ti_flagsp' local var.
+
+Christophe
