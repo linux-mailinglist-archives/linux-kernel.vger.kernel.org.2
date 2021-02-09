@@ -2,152 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D5D314598
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65240314564
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 02:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhBIBZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 20:25:47 -0500
-Received: from mga04.intel.com ([192.55.52.120]:52715 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhBIBZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:25:31 -0500
-IronPort-SDR: 8uYKV5aeiN4H1dYLReTaQJZO/cwcR6bP3UZPKSFcSyR7VoYozzujmr2co4Fam1LSD+358+HCOa
- Tx4i/ppG2c9w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="179251872"
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="asc'?scan'208";a="179251872"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 17:23:45 -0800
-IronPort-SDR: y+jeXAsnNmZV6FvzVTPdNbgBq1SCupULaKJuXGMmiokZpuvDu8VVocQPqeiT6RBQ1tBYk2t0eg
- VQzWsvQWIXIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; 
-   d="asc'?scan'208";a="398603670"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
-  by orsmga007.jf.intel.com with ESMTP; 08 Feb 2021 17:23:42 -0800
-Date:   Tue, 9 Feb 2021 09:08:17 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     zhi.a.wang@intel.com, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] drm/i915/gvt/kvmgt: Fix the build failure in kvmgt.
-Message-ID: <20210209010817.GC2043@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210208185210.6002-1-yu.c.zhang@linux.intel.com>
+        id S230235AbhBIBNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 20:13:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230349AbhBIBLs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 20:11:48 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1165C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 17:11:07 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id g3so8823919plp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 17:11:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=ce+TAyz/o7S91Chv55i/MyiuAhSqiQmmYvbIlKJlGig=;
+        b=ifgYO7R/BdrSlt3Lkt2JGQBaTU51EptYbg1L+QIXOXCSGoECDii7JYUBDu8RMNi/Xq
+         ZInTiiA8YSB5bl1DPU1866RcDsJOdGgglLEFpFnPSPeyeHQC5+XoanPl2YxDQz1blrke
+         tYmaewhrkS4lkmBrfDuD4+T6v+a8iQjj7O32tlZezBvtYjzqhyC+u3Fhjy/ldWpQkcH7
+         uUsHwy02WwDdxu/tUzydJPmwAn8xCp7YnMSHqVkGQaDIUtMnji6xJm6rKNmhrik7Q49R
+         oi/NJIM51Yqtqz7F0fEcLUj5y7GsO8M0wITBsh1iTzYoG49uR6/z0oRgbFvZPAaHF0ec
+         dpLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=ce+TAyz/o7S91Chv55i/MyiuAhSqiQmmYvbIlKJlGig=;
+        b=WtSAxbXEoYxEXemSb6ETNk94t7uz12qwO8R04CtHCezJ8VKQ0DHhrWm/10QpelJiej
+         4xKlghGBLfOy+H73gGzHN9rfMGZXtCrGER7S2taEglgk2nRxew1tPqXuToa2BHHNJmfZ
+         4DQbCKCmUtHJJrERZCPyuuybT7+fYoYKvj49+NWrH7tcnREO/+xFqDUPBBMvE3yNN89L
+         z9hQWfq8QrmhHiWTnyDw3LBH9fC3AGmtFNTz/m2im0SjxA+1WEG3jQptB3aylJJmd10R
+         AEmNOvsqM+ceGJeowfdXwZOZdaZib6kZ/FM6tmLFITZZEpkn76gAMzodZS3NeZnAU3Mr
+         /kNw==
+X-Gm-Message-State: AOAM532pyFssIeZQjeN4c3D0YWBNxUuIspirIVLHEnDr2oLJRRXTpQtd
+        4y7qLppakszkc1D1MbdIg7I=
+X-Google-Smtp-Source: ABdhPJwjC7RcC2kx0LfWL/8ZDlcX11eR15Q9dHbpe3LPq69ABi0I9iKy5XCz0SvDjIMx0lj2M1AvSA==
+X-Received: by 2002:a17:90a:4306:: with SMTP id q6mr1507951pjg.138.1612833066915;
+        Mon, 08 Feb 2021 17:11:06 -0800 (PST)
+Received: from localhost ([220.240.226.199])
+        by smtp.gmail.com with ESMTPSA id o124sm7926232pfg.108.2021.02.08.17.11.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 17:11:06 -0800 (PST)
+Date:   Tue, 09 Feb 2021 11:11:00 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v5 05/22] powerpc/irq: Add helper to set regs->softe
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+        <5f37d1177a751fdbca79df461d283850ca3a34a2.1612796617.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <5f37d1177a751fdbca79df461d283850ca3a34a2.1612796617.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="f61P+fpdnY2FZS1u"
-Content-Disposition: inline
-In-Reply-To: <20210208185210.6002-1-yu.c.zhang@linux.intel.com>
+Message-Id: <1612832745.vhjk6358hf.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---f61P+fpdnY2FZS1u
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 2021.02.09 02:52:10 +0800, Yu Zhang wrote:
-> Previously, commit 531810caa9f4 ("KVM: x86/mmu: Use
-> an rwlock for the x86 MMU") replaced KVM's mmu_lock
-> with type rwlock_t. This will cause a build failure
-> in kvmgt, which uses the same lock when trying to add/
-> remove some GFNs to/from the page tracker. Fix it with
-> write_lock/unlocks in kvmgt.
-
-Thanks for the fix! I saw Paolo has already carried one
-in -next, so we are fine.
-
+Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+> regs->softe doesn't exist on PPC32.
 >=20
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> Add irq_soft_mask_regs_set_state() helper to set regs->softe.
+> This helper will void on PPC32.
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > ---
->  drivers/gpu/drm/i915/gvt/kvmgt.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  arch/powerpc/include/asm/hw_irq.h | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
 >=20
-> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/=
-kvmgt.c
-> index 60f1a386dd06..b4348256ae95 100644
-> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> @@ -1703,7 +1703,7 @@ static int kvmgt_page_track_add(unsigned long handl=
-e, u64 gfn)
->  		return -EINVAL;
->  	}
+> diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm=
+/hw_irq.h
+> index 614957f74cee..ed0c3b049dfd 100644
+> --- a/arch/powerpc/include/asm/hw_irq.h
+> +++ b/arch/powerpc/include/asm/hw_irq.h
+> @@ -38,6 +38,8 @@
+>  #define PACA_IRQ_MUST_HARD_MASK	(PACA_IRQ_EE)
+>  #endif
 > =20
-> -	spin_lock(&kvm->mmu_lock);
-> +	write_lock(&kvm->mmu_lock);
+> +#endif /* CONFIG_PPC64 */
+> +
+>  /*
+>   * flags for paca->irq_soft_mask
+>   */
+> @@ -46,8 +48,6 @@
+>  #define IRQS_PMI_DISABLED	2
+>  #define IRQS_ALL_DISABLED	(IRQS_DISABLED | IRQS_PMI_DISABLED)
 > =20
->  	if (kvmgt_gfn_is_write_protected(info, gfn))
->  		goto out;
-> @@ -1712,7 +1712,7 @@ static int kvmgt_page_track_add(unsigned long handl=
-e, u64 gfn)
->  	kvmgt_protect_table_add(info, gfn);
+> -#endif /* CONFIG_PPC64 */
+> -
+>  #ifndef __ASSEMBLY__
 > =20
->  out:
-> -	spin_unlock(&kvm->mmu_lock);
-> +	write_unlock(&kvm->mmu_lock);
->  	srcu_read_unlock(&kvm->srcu, idx);
->  	return 0;
->  }
-> @@ -1737,7 +1737,7 @@ static int kvmgt_page_track_remove(unsigned long ha=
-ndle, u64 gfn)
->  		return -EINVAL;
->  	}
+>  #ifdef CONFIG_PPC64
+> @@ -287,6 +287,10 @@ extern void irq_set_pending_from_srr1(unsigned long =
+srr1);
 > =20
-> -	spin_lock(&kvm->mmu_lock);
-> +	write_lock(&kvm->mmu_lock);
+>  extern void force_external_irq_replay(void);
 > =20
->  	if (!kvmgt_gfn_is_write_protected(info, gfn))
->  		goto out;
-> @@ -1746,7 +1746,7 @@ static int kvmgt_page_track_remove(unsigned long ha=
-ndle, u64 gfn)
->  	kvmgt_protect_table_del(info, gfn);
+> +static inline void irq_soft_mask_regs_set_state(struct pt_regs *regs, un=
+signed long val)
+> +{
+> +	regs->softe =3D val;
+> +}
+>  #else /* CONFIG_PPC64 */
 > =20
->  out:
-> -	spin_unlock(&kvm->mmu_lock);
-> +	write_unlock(&kvm->mmu_lock);
->  	srcu_read_unlock(&kvm->srcu, idx);
->  	return 0;
->  }
-> @@ -1772,7 +1772,7 @@ static void kvmgt_page_track_flush_slot(struct kvm =
-*kvm,
->  	struct kvmgt_guest_info *info =3D container_of(node,
->  					struct kvmgt_guest_info, track_node);
+>  static inline unsigned long arch_local_save_flags(void)
+> @@ -355,6 +359,9 @@ static inline bool arch_irq_disabled_regs(struct pt_r=
+egs *regs)
 > =20
-> -	spin_lock(&kvm->mmu_lock);
-> +	write_lock(&kvm->mmu_lock);
->  	for (i =3D 0; i < slot->npages; i++) {
->  		gfn =3D slot->base_gfn + i;
->  		if (kvmgt_gfn_is_write_protected(info, gfn)) {
-> @@ -1781,7 +1781,7 @@ static void kvmgt_page_track_flush_slot(struct kvm =
-*kvm,
->  			kvmgt_protect_table_del(info, gfn);
->  		}
->  	}
-> -	spin_unlock(&kvm->mmu_lock);
-> +	write_unlock(&kvm->mmu_lock);
->  }
+>  static inline void may_hard_irq_enable(void) { }
 > =20
->  static bool __kvmgt_vgpu_exist(struct intel_vgpu *vgpu, struct kvm *kvm)
-> --=20
-> 2.17.1
->=20
+> +static inline void irq_soft_mask_regs_set_state(struct pt_regs *regs, un=
+signed long val)
+> +{
+> +}
+>  #endif /* CONFIG_PPC64 */
+> =20
+>  #define ARCH_IRQ_INIT_FLAGS	IRQ_NOREQUEST
 
---f61P+fpdnY2FZS1u
-Content-Type: application/pgp-signature; name="signature.asc"
+What I don't like about this where you use it is it kind of pollutes
+the ppc32 path with this function which is not valid to use.
 
------BEGIN PGP SIGNATURE-----
+I would prefer if you had this purely so it could compile with:
 
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYCHggQAKCRCxBBozTXgY
-J4FcAJsFxkXndfIuWXcRxMohV8DLfSmIbwCeNihYVZJrpZ/nzUK+LJJnAinbtbE=
-=YD2h
------END PGP SIGNATURE-----
+  if (IS_ENABLED(CONFIG_PPC64)))
+      irq_soft_mask_regs_set_state(regs, blah);
 
---f61P+fpdnY2FZS1u--
+And then you could make the ppc32 cause a link error if it did not
+get eliminated at compile time (e.g., call an undefined function).
+
+You could do the same with the kuap_ functions to change some ifdefs
+to IS_ENABLED.
+
+That's just my preference but if you prefer this way I guess that's
+okay.
+
+Thanks,
+Nick
