@@ -2,183 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36821315B65
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80077315B2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbhBJAiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:38:00 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:34892 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234022AbhBIUtB (ORCPT
+        id S234570AbhBJAaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:30:55 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:44010 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234192AbhBIU4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:49:01 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119KTvnx030468;
-        Tue, 9 Feb 2021 12:31:36 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0220;
- bh=Fy/lv5EgL/u/+mnZ7tYNIWmkDSm4YLxlq4YzDZtXNHk=;
- b=R3MzQ0VtySOEvTK2RvMJhLulVin391O8DN6jqj9x/H79RDNCHcGfYqzwT6Gfi1njMaKS
- Oltyjtb8q/DVkdimiSREczAtXhBl+ogGMIRW6xKmckcYu0vZFWuDrM4NiXS5i+TUjoez
- F+KEczIPPOecFhtE8BslZLkHLrK9dgFiISzHZhbX5s2sjttNoqqwA/YFRAfroH8KWLSg
- BhRDQU++bfQju41zvkT96CTuRN799Vn4Mg5/Drg0WROs0VM7TYIgFgSPXUYIEiSO30e9
- YcSHphv+bFR4ylmsmcjR9BbVq70QBGGYi1sJDb82xmfUYCm8ateACSZ4Wz0vU2Kv9x1y CQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 36hsbrj26u-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 09 Feb 2021 12:31:36 -0800
-Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
- 2021 12:31:34 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
- 2021 12:31:34 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.55) by
- DC5-EXCH01.marvell.com (10.69.176.38) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 9 Feb 2021 12:31:34 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jXGhmmYwA32MOymR1mCqzM0+sPWdZfY0cVxdhRQZTx1och3zBX/rHqHBirI9oz+K+/WaUYMGxELRzry17424ECDDPI10rXEZ6i5Hba6erez1frXNiQurN9AjmG6yMUryWmbjSOZuQ6cRy7mPqXxAigEfuBRFN6zgf/AgYnisqxCjcHAy5AeVCSOfTEAX41Dd5U6uKyU8sne5DRbux19kijIdVlEa0t9sqOQFNFk3OwyMBBo6uNQalwjC12lBoB/bTshG1C0Mi4Rwww7x0LbXToh0fpnnvz8CLfqtheVbouoRQMKPKBeGH/zvtVg551CJ2x2zGV4vlUyrGMorddl/HQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fy/lv5EgL/u/+mnZ7tYNIWmkDSm4YLxlq4YzDZtXNHk=;
- b=KHlXvOL5Og3i600nzbKJK3dklkLPS3caBIpFRucXo7tBQ6YogSPJl8Bwh5k0JfCyNdEXvu6CHweiVG8qaw79eu1mrt8TUGoaUB+vI+NPI8wO94wcYpgs1hbhPSL8fIWTJmkR5lzkEj+DolyMgkXQ90x+b0Lq4p4y3Ln6QH7ngvmfaIpZSJ3nGAPi4a2F19+57v4YguK4vZjMqh9E7oxctRr5eHt7B239lbgat1XuLLyIh8H8zM3gYOrdOALq7WOgDZ08aQYLI0VSnG1qwf6MUg5eyyrhMnZArCDTR9Vyb+TIXTVLdx1wF30tQYQnOfA3mXPxJ2zAGpGpTyUGrLNaJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fy/lv5EgL/u/+mnZ7tYNIWmkDSm4YLxlq4YzDZtXNHk=;
- b=fDOfeV0dSo9rOuh2f5a2aL3IThEveVKr8/H6d0BeK13qCIrDWDMBlQqxDklHdOWHSTDXwruRvEEjDF9gj+OA9glcL57m+/8edSJ3Bf+4ub7G2nNEmgvmQCPsu8mrjtOsDBqcHK2lXiRYnnbblpo8HOiTr4NPhHzbgaI43hHegaM=
-Received: from BN6PR18MB1587.namprd18.prod.outlook.com (2603:10b6:404:129::18)
- by BN8PR18MB3009.namprd18.prod.outlook.com (2603:10b6:408:99::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Tue, 9 Feb
- 2021 20:31:32 +0000
-Received: from BN6PR18MB1587.namprd18.prod.outlook.com
- ([fe80::addf:6885:7a52:52b0]) by BN6PR18MB1587.namprd18.prod.outlook.com
- ([fe80::addf:6885:7a52:52b0%8]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
- 20:31:32 +0000
-From:   Mickey Rachamim <mickeyr@marvell.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: RE: [EXT] Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG
- support
-Thread-Topic: [EXT] Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG
- support
-Thread-Index: AQHW+34dqeNi3qeAj0SumJjdXBCv2KpOsW+AgAAT+ICAARriAIAAPIIAgAAh5tA=
-Date:   Tue, 9 Feb 2021 20:31:32 +0000
-Message-ID: <BN6PR18MB158781B17E633670912AEED6BA8E9@BN6PR18MB1587.namprd18.prod.outlook.com>
-References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
-        <20210203165458.28717-6-vadym.kochan@plvision.eu>
-        <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87v9b249oq.fsf@waldekranz.com>
-        <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YCKVAtu2Y8DAInI+@lunn.ch>
- <20210209093500.53b55ca8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210209093500.53b55ca8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
-x-originating-ip: [109.186.191.106]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9c0df967-ea05-4796-c9b5-08d8cd39b01c
-x-ms-traffictypediagnostic: BN8PR18MB3009:
-x-ld-processed: 70e1fb47-1155-421d-87fc-2e58f638b6e0,ExtAddr
-x-microsoft-antispam-prvs: <BN8PR18MB3009036AB2A01EFD615C0872BA8E9@BN8PR18MB3009.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nWhutGgcyP/sHLieGeuOgRH9hgwXrnuzw9SLB8wLw27Iq9WPwVYX7zHB8njZVYLgy1wjX3NOFvSSQwJyz6yDXsMnKX0VTalmNSJIeJfN8kS9ZSAjRrxrylhuT+R8cGBefRTicpmr7twHqTcTgYezFRxCTpyZcYYdg2Vno4ku1SsIfTOrEgLNAp715h/yfHORe/Wz56ZafYbumDek9pv+bHIjS/1yATg6k5JHiUx+BKfGQmJXvMVB/Uu677Gq4r1LBCodQRrEvFu8r8SnJdOY5ZNAZxkJAByZsG1bwehbf0zxD1L6UceoFlf8bKBxRFbQ1BHXAieQ4CQCsq8sdrDkL7Jwy5VUZ8jmYgS3oAxmiAclIjmsPUQd7fbPbzuhTfOEo9vu1H1tImCehwF7ESRoixm/7XxgrDpnDtW8geas4y+nVWQbniQPH5cPhaFfvY24iMQQpvDFgC0pJxz0CVudf3+fW0k6JWYkdcg82n7X4JfBbxtOgIMl22wyqXTmlf4BMLLXVZ4kZ3W6TfCECZK40w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR18MB1587.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(376002)(39860400002)(396003)(52536014)(64756008)(5660300002)(66476007)(316002)(110136005)(66556008)(54906003)(66946007)(76116006)(66446008)(186003)(7696005)(6506007)(4326008)(55016002)(8676002)(2906002)(478600001)(9686003)(33656002)(26005)(8936002)(86362001)(53546011)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?IQMgjs11h40O/ezn6fJY269cN55fo+havl/oqfXmh6cLIXOPmZp9lCRLqrvw?=
- =?us-ascii?Q?MFYXmnVzcX5twD//7qgJW+l7F/1nDuFeAvnlQHZjGv2jsR8Sgh/3o7nkst2Y?=
- =?us-ascii?Q?bXH+KISo8yhf1cXUJhVAbvnEWy/BmhhhWPrF9XNHnlvbNAqdscrv4futn6um?=
- =?us-ascii?Q?OKq5vnmc4wvzqB4czW+9mt5C4V/Q4uI7S9lo9SdPi2nGXK6WXcRDn8cWDX7M?=
- =?us-ascii?Q?T4zemD/gcqoXdjmQWM2n4iL97ALUg5GGqTcivBcU7K3mnt7GmbizWgSltgJa?=
- =?us-ascii?Q?yneydoxGb743s5AgZ0rZ4NjuZFLGDFbhA4eId7DmpeNoJAT3FiJLdDQFz6qV?=
- =?us-ascii?Q?OXSpyApRlytD6/HsNJs1ai5T9ANiTr8B2AvVgepaLWy+iZlJ6G/ulzqv4v/Q?=
- =?us-ascii?Q?2SEY3YDKHtEaRMNJx1AqWVatLWqy/YiM+w8qPUwEvxuSV9Mus+MA7FJkbh7/?=
- =?us-ascii?Q?uwjCFr95Y4zriEmJ2EO8k4NrD/nt2u4NKSZrjxyZDFFg5Vq/cx8NovqYazxR?=
- =?us-ascii?Q?2mnvk8guFQOLQv7rCKa6iIBGzv92mupmiAWkS7EeBZSJefRKXc4MgIZjQS0W?=
- =?us-ascii?Q?EAHjLRdoQCRPnePYxD+dwUBg7GuIjxCyi5yRVUGrWFPhvSFTlbPPBkXWbqww?=
- =?us-ascii?Q?adON7513FP7PlIY9JzZogX+WjLM6OrW4jcvrcwoEdsmH8FQnXGzsmSw0jpSM?=
- =?us-ascii?Q?7f46Afcy1RcmTG87owT1bAbcNGquXyHqKVbQBeKXlJXkmPoiSZS9+7koH3CQ?=
- =?us-ascii?Q?oZ8QcKvJFep9FtT71n9JoTEBe4aV/V8mPyymEF9D4xMM7zjHuyR8uYi8OetC?=
- =?us-ascii?Q?KBNa6eceteSPgUyjD0bl3vrZ7mFzleTqu+y75BwQlQkQb9h3h+oyUUtxfZp2?=
- =?us-ascii?Q?JSfGTjlTgCLEgZVGvQQ5sLhhU2ZfcWjXkTsySYl3ujY0cJfc6cdNraWqFKJ0?=
- =?us-ascii?Q?r+lmpYupZ69A1Vq3DwPR1ubfI2pctRnggd0J1AE+sNffhtrxFXLAHjajLJPO?=
- =?us-ascii?Q?iurlElWY5IFKMWvgnN5tauLESCERmSBb4A1ySdHn/pwSMRDfAT5arxfIBC9g?=
- =?us-ascii?Q?9MJbgAC9vEU1cGMdLEVDxL0qR+MH0PK10AmVJAb7c4E8alVOP0T/+BUlgw9j?=
- =?us-ascii?Q?v9Rl+h9s4fHe3qpJLLG8VFJVjLqChcxjMbueeYm7ZZIpZ5rljx35B+Bs2LFI?=
- =?us-ascii?Q?ZvbLvmmq0nrPEOg1Kw3bl/xjYeGrI/Fj6WOkWAwZCbB3ceM/dbI1mYOzLrxh?=
- =?us-ascii?Q?qRgPZw0QFgddIOTsUzrT1aqrNTJxtBkfrif8iSYZ4K8/Aaif1IywYz3d31SL?=
- =?us-ascii?Q?+aauWLvWPM3/Ts2hqzEkq9OJ?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 9 Feb 2021 15:56:37 -0500
+Received: by mail-oi1-f174.google.com with SMTP id d20so20913908oiw.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 12:56:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ejS4tdhR52JYnnlfzFqAKVsx5ukUQHINk1u0rYP7GiQ=;
+        b=KM+Ay4f23Qu80c7IOrcQctOIqI/UG6PedQtRLUZykM1yWm3i7xrMPvJyqawD5tIS+T
+         AHt2hQZ2ikXvjkcq70Wrt/Qq/qLzuccdj2h3VBUfsXf8OI1kJBxArxDVgWQyOIgt10ij
+         QpvhIyimU+zIKDFEtV3SA6HGZBlrdjXR4QJFP02MZhQbDB2NRM8yzdF4bt3GV9h4DVZv
+         V/b/3OY5MIBWNKd6ayRJYC4DVy2ikz8jMuXPbAvDMtuegEjsck3vWtRUeqTcEKB/O88O
+         Nqc3iHJI6CtM9tBLym06VtR2tNxqU8H420aYlRw5wcRV8mETpFB3Ml0+RhSz1Lab5exR
+         zJSw==
+X-Gm-Message-State: AOAM533VbnkbL7TA7Nn36d6o3tXVnkBOGhwhkVPQg4DmZ/f8P7P8TEwX
+        Cel9AjBzqrFdfUlJU6fuN/Bu0d3joA==
+X-Google-Smtp-Source: ABdhPJxm224h6yL74JlgUNi3P5/DM+vvsFo+4bNVs1RVW27YOiS70JDy8LW1+QNkLr8bInysPI1yyQ==
+X-Received: by 2002:aca:f12:: with SMTP id 18mr3746528oip.106.1612903455452;
+        Tue, 09 Feb 2021 12:44:15 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c206sm208089oia.44.2021.02.09.12.44.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 12:44:13 -0800 (PST)
+Received: (nullmailer pid 143147 invoked by uid 1000);
+        Tue, 09 Feb 2021 20:44:12 -0000
+Date:   Tue, 9 Feb 2021 14:44:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Min Guo <min.guo@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH next v3 01/16] dt-bindings: usb: fix yamllint check
+ warning
+Message-ID: <20210209204412.GA139333@robh.at.kernel.org>
+References: <20210201070016.41721-1-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR18MB1587.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c0df967-ea05-4796-c9b5-08d8cd39b01c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2021 20:31:32.3162
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H28g5bfhm/eVrr5DDXQ7Y9C9WrvecxiNU55ibfs1gEU6fRsgICOgRd8Nnt8+oR67p2De6M2uF6ZeG1LCG3JHyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR18MB3009
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_07:2021-02-09,2021-02-09 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201070016.41721-1-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew, Jakub, Tobias,
+On Mon, Feb 01, 2021 at 03:00:01PM +0800, Chunfeng Yun wrote:
+> Fix warning: "missing starting space in comment"
+> 
 
-On Tuesday, February 9, 2021 7:35 PM Jakub Kicinski wrote:
-> Sounds like we have 3 people who don't like FW-heavy designs dominating t=
-he kernel - this conversation can only go one way.=20
-> Marvell, Plvision anything to share? AFAIU the values of Linux kernel are=
- open source, healthy community, empowering users. With the SDK on the embe=
-dded CPU your driver does not seem to tick any of these boxes.
+I'm not seeing this warning in linux-next. It may already be fixed.
 
-I'll try to share Marvell's insight and plans regarding our Prestera driver=
-s;
-=20
-We do understand the importance and the vision behind the open-source commu=
-nity - while being committed to quality, functionality and the developers/e=
-nd-users.
-
-We started working on the Prestera driver in Q2 2019. it took us more than =
-a year to get the first approved driver into 5.10, and we just started.
-Right at the beginning - we implemented PP function into the Kernel driver =
-like the SDMA operation (This is the RX/TX DMA engine).=20
-Yet, the FW itself - is an SW package that supports many Marvell Prestera S=
-witching families of devices - this is a significant SW package that will t=
-ake many working years to adapt to the Kernel environment.
-We do plan to port more and more PP functions as Kernel drivers along the w=
-ay.
-=20
-We also are working with the community to extend Kernel functionality with =
-a new feature beneficial to all Kernel users (e.g. Devlink changes) and we =
-will continue to do it.
-By extending the Prestera driver to in-kernel implementation with more PP f=
-eatures - we will simplify the FW logic and enables cost-effective solution=
-s to the market/developers.
-
-Regards,
-Mickey.
-
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2~v3: no changes
+> ---
+>  Documentation/devicetree/bindings/usb/usb-device.yaml | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/usb-device.yaml b/Documentation/devicetree/bindings/usb/usb-device.yaml
+> index 7bb25a45427d..23e76cfb2066 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-device.yaml
+> +++ b/Documentation/devicetree/bindings/usb/usb-device.yaml
+> @@ -82,9 +82,9 @@ required:
+>  additionalProperties: true
+>  
+>  examples:
+> -  #hub connected to port 1
+> -  #device connected to port 2
+> -  #device connected to port 3
+> +  # hub connected to port 1
+> +  # device connected to port 2
+> +  # device connected to port 3
+>    #    interface 0 of configuration 1
+>    #    interface 0 of configuration 2
+>    - |
+> -- 
+> 2.18.0
