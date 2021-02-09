@@ -2,205 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B8F315BA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85090315B9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234571AbhBJAu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:50:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34564 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233202AbhBIWGF (ORCPT
+        id S233992AbhBJAts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:49:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233269AbhBIWFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:06:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612908277;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eYA2lzjucFPzbA9Ee90dKrm+lNMdDDs9+GspopiTkfM=;
-        b=RY93SW9P4v0+54k0e8TbeLOf5LKGs++Zn1HENzhILP9uUum8sOsoCmxl0Iy3TEWa8HByLf
-        ea6t/tvMzgFqrv4qRnnjhSoK2bcL0lMqr/A86G2cCzln5AztzrkD58spto5LdN//0p5iN2
-        w9jieO7aiPVXnU34+RGbz7wNmv1QiPc=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-Ow09sEroPOGO3vnadh1p4g-1; Tue, 09 Feb 2021 17:01:00 -0500
-X-MC-Unique: Ow09sEroPOGO3vnadh1p4g-1
-Received: by mail-qk1-f197.google.com with SMTP id t184so9822617qkc.19
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 14:00:59 -0800 (PST)
+        Tue, 9 Feb 2021 17:05:44 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A1EC08EC87;
+        Tue,  9 Feb 2021 14:04:02 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id v15so23868958wrx.4;
+        Tue, 09 Feb 2021 14:04:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=aNKWeT8ewjIKljaUQZ7nHgE6ak/7b2fOMgS7twRaGvk=;
+        b=hp7i1rJjnV+qwqXAR8B8jUA0rta5SoL+0bFO01L2LHbBnoR1GahVYLCGkuMmJvIZ8b
+         LW3/fIuD2iHH19Dc9J3k+YN7rqkIxI2Nwd4Tu14X9FYcZrJ5Yk0qnRYbeIDZQHl29dW5
+         fxXJF875YqG+IbGQNG0YLbkU4c7dRFPR6MDJEWFnu2Zyo5QvJLZ3Q4cO8/fqMskKV8+1
+         g3/dUN4I2Kh4Yi4WWOWdNNbK2/KAJor6NCUJESwWIOOd+VTJy0a87Y0v1tc425vnewS4
+         OVPWGpwMIt780fJqBJ3hKh/tO+umib4ObfVzli35XsEKbRcRYCQXln3IzOe5gV9laK3S
+         PISQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eYA2lzjucFPzbA9Ee90dKrm+lNMdDDs9+GspopiTkfM=;
-        b=GfspBoxZPfTSEu2KTR5ApKyflDoj2YU6275ZJLKrTOz+E1B7rs/g5OBf5r8/PZUcrG
-         dDN/YRcUxwI1AyhpwTj3bBk3zu62MNKcx0ihJ+rOnQVjgGDnUXNkqp5YbZl8ZrgfGG1h
-         WGfSUAarn/yaK9O05gFjakQTa1wwrkUACDFEjrVXxmUeM3+zj9Rwfs9xHNf2wm4RlHdi
-         9W8L7FJmVRydQ3F7vNTYzED6OtkCrW6FvrVEq5HtJSokc2X4EkZRMLcy4HF38rdGTKsO
-         yE0oD3B0eHIkwOSVt5xYaaADzwxJRY+XOAsiGt82/YGOD5KQZC77eWrvyeIscwtvx8sr
-         tHUQ==
-X-Gm-Message-State: AOAM530UTuiG1JRDkHmZ6j+nJHMyYSBQCVGnJxGsLRKdCKXlec1YkNEp
-        jjZuX7IdRlg81C0jqGRjwuCefiFUiinoGNocUmX/vw2LUOo+4ECrjfn2S/RWQBUGsCsx1x/r4OV
-        EJe9sT4RH4uRwWxPDanQ5DAHO
-X-Received: by 2002:a0c:fd64:: with SMTP id k4mr23199138qvs.3.1612908059082;
-        Tue, 09 Feb 2021 14:00:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyODVUhkZ0D/FcCVYPrcdLpBq1QCMhWW6Jh+y/z7047FCb4TOzpP+ovlH411+WardRc056V1Q==
-X-Received: by 2002:a0c:fd64:: with SMTP id k4mr23199101qvs.3.1612908058747;
-        Tue, 09 Feb 2021 14:00:58 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id v145sm45655qka.27.2021.02.09.14.00.57
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=aNKWeT8ewjIKljaUQZ7nHgE6ak/7b2fOMgS7twRaGvk=;
+        b=J2x5TL1lOsr9gKbHod5709AuC64A+E5ueSMw2av1e6FwBSL74olPGC5Aqym8LPEY5y
+         DyNbPs7P+wnVk1DPeIdeEJHasapBENOy6Hkc1BcoNe6Ae2wfSB9d2nm3cVFa4qyAYoKE
+         wygIUQq46EKGKK5TPr1rdVj534uxWl/JTNKi6jG5ymU27c3qc9A7icmOryyjwNNg+RGU
+         h5xdRfYqjbhbU1AR9QYrJSPO1EiwmLuNpIDrHtcPV4Szsg9fGSsHatvZLYNnyR0JxA4l
+         pEzdgTPq7cPOK/SU8s9BEPHlsvDFR1wtPKqXZfbemRcTyvJSddySJh7v7M1X+aH/Gn2E
+         Nz7g==
+X-Gm-Message-State: AOAM530KYKDS/2aw0uuIPRI+02O4qc9kXJLUmWU5R/oZ5baQjh9N9s+z
+        kKZK8Gj9JorvvWYhqAeySwg=
+X-Google-Smtp-Source: ABdhPJwJpvdREOlxVU/INWnyVqqEOLBSAluqB/1Xm1aCvnRsA7BWnuj9BZhMN+BSyUgL+ntlrucpyQ==
+X-Received: by 2002:a5d:6546:: with SMTP id z6mr182756wrv.125.1612908241478;
+        Tue, 09 Feb 2021 14:04:01 -0800 (PST)
+Received: from [192.168.1.21] ([195.245.17.255])
+        by smtp.gmail.com with ESMTPSA id e16sm14203501wrt.36.2021.02.09.14.03.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 14:00:58 -0800 (PST)
-Date:   Tue, 9 Feb 2021 17:00:56 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH RFC 00/30] userfaultfd-wp: Support shmem and hugetlbfs
-Message-ID: <20210209220056.GD103365@xz-x1>
-References: <20210115170907.24498-1-peterx@redhat.com>
- <20210129224938.GC260413@xz-x1>
- <339d27e8-9f34-3e80-2910-46f46d58e9a6@oracle.com>
- <20210206023627.GD3195@xz-x1>
- <201f2636-1193-2cc1-ccee-a91243f14666@oracle.com>
+        Tue, 09 Feb 2021 14:04:00 -0800 (PST)
+Message-ID: <223de0d7e692a5871b3fe3dfd899987c793c20da.camel@gmail.com>
+Subject: Re: [PATCH v6 2/7] gpio: ep93xx: Fix single irqchip with multi
+ gpiochips
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 09 Feb 2021 23:03:59 +0100
+In-Reply-To: <20210209133110.7383-3-nikita.shubin@maquefel.me>
+References: <20210209133110.7383-1-nikita.shubin@maquefel.me>
+         <20210209133110.7383-3-nikita.shubin@maquefel.me>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <201f2636-1193-2cc1-ccee-a91243f14666@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 11:29:56AM -0800, Mike Kravetz wrote:
-> On 2/5/21 6:36 PM, Peter Xu wrote:
-> > On Fri, Feb 05, 2021 at 01:53:34PM -0800, Mike Kravetz wrote:
-> >> On 1/29/21 2:49 PM, Peter Xu wrote:
-> >>> On Fri, Jan 15, 2021 at 12:08:37PM -0500, Peter Xu wrote:
-> >>>> This is a RFC series to support userfaultfd upon shmem and hugetlbfs.
-> >> ...
-> >>> Huge & Mike,
-> >>>
-> >>> Would any of you have comment/concerns on the high-level design of this series?
-> >>>
-> >>> It would be great to know it, especially major objection, before move on to an
-> >>> non-rfc version.
-> >>
-> >> My apologies for not looking at this sooner.  Even now, I have only taken
-> >> a very brief look at the hugetlbfs patches.
-> >>
-> >> Coincidentally, I am working on the 'BUG' that soft dirty does not work for
-> >> hugetlbfs.  As you can imagine, there is some overlap in handling of wp ptes
-> >> set for soft dirty.  In addition, pmd sharing must be disabled for soft dirty
-> >> as here and in Axel's uffd minor fault code.
-> > 
-> > Interesting to know that we'll reach and need something common from different
-> > directions, especially when they all mostly happen at the same time. :)
-> > 
-> > Is there a real "BUG" that you mentioned?  I'd be glad to read about it if
-> > there is a link or something.
-> > 
+Hello Nikita!
+
+On Tue, 2021-02-09 at 16:31 +0300, Nikita Shubin wrote:
+> Fixes the following warnings which results in interrupts disabled on
+> port B/F:
 > 
-> Sorry, I was referring to a bugzilla bug not a BUG().  Bottom line is that
-> hugetlb was mostly overlooked when soft dirty support was added.  A thread
-> mostly from me is at:
-> lore.kernel.org/r/999775bf-4204-2bec-7c3d-72d81b4fce30@oracle.com
-> I am close to sending out a RFC, but keep getting distracted.
-
-Thanks.  Indeed I see no reason to not have hugetlb supported for soft dirty.
-Tracking 1G huge pages could be too coarse and heavy, but 2M at least still
-seems reasonable.
-
+> gpio gpiochip1: (B): detected irqchip that is shared with multiple gpiochips: please fix the driver.
+> gpio gpiochip5: (F): detected irqchip that is shared with multiple gpiochips: please fix the driver.
 > 
-> >> No objections to the overall approach based on my quick look.
-> > 
-> > Thanks for having a look.
-> > 
-> > So for hugetlb one major thing is indeed about the pmd sharing part, which
-> > seems that we've got very good consensus on.
+> - added separate irqchip for each interrupt capable gpiochip
+> - provided unique names for each irqchip
 > 
-> Yes
+> Fixes: d2b091961510 ("gpio: ep93xx: Pass irqchip when adding gpiochip")
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+
+Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+
+> ---
+> v5->v6:
+> - add devm_kasprintf() return value check and move it out from 
+> ep93xx_init_irq_chip()
+> - removed ep93xx_gpio_irq_chip
+> - pass girq->chip instead of removed ep93xx_gpio_irq_chip to
+> irq_set_chip_and_handler for port F
+> ---
+>  drivers/gpio/gpio-ep93xx.c | 30 +++++++++++++++++++-----------
+>  1 file changed, 19 insertions(+), 11 deletions(-)
 > 
-> > The other thing that I'd love to get some comment would be a shared topic with
-> > shmem in that: for a file-backed memory type, uffd-wp needs a consolidated way
-> > to record wr-protect information even if the pgtable entries were flushed.
-> > That comes from a fundamental difference between anonymous and file-backed
-> > memory in that anonymous pages keep all info in the pgtable entry, but
-> > file-backed memory is not, e.g., pgtable entries can be dropped at any time as
-> > long as page cache is there.
-> 
-> Sorry, but I can not recall this difference for hugetlb pages.  What operations
-> lead to flushing of pagetable entries?  It would need to be something other
-> than unmap as it seems we want to lose the information in unmap IIUC.
-
-For hugetlbfs I know two cases.
-
-One is exactly huge pmd sharing as mentioned above, where we'll drop the
-pgtable entries for a specific process but the page cache will still exist.
-
-The other one is hugetlbfs_punch_hole(), where hugetlb_vmdelete_list() called
-before remove_inode_hugepages().  For uffd-wp, there will be a very small
-window that a wr-protected huge page can be written before the page is finally
-dropped in remove_inode_hugepages() but after pgtable entry flushed.  In some
-apps that could cause data loss.
-
-> 
-> > I goes to look at soft-dirty then regarding this issue, and there's actually a
-> > paragraph about it:
-> > 
-> >         While in most cases tracking memory changes by #PF-s is more than enough
-> >         there is still a scenario when we can lose soft dirty bits -- a task
-> >         unmaps a previously mapped memory region and then maps a new one at
-> >         exactly the same place. When unmap is called, the kernel internally
-> >         clears PTE values including soft dirty bits. To notify user space
-> >         application about such memory region renewal the kernel always marks
-> >         new memory regions (and expanded regions) as soft dirty.
-> > 
-> > I feel like it just means soft-dirty currently allows false positives: we could
-> > have set the soft dirty bit even if the page is clean.  And that's what this
-> > series wanted to avoid: it used the new concept called "swap special pte" to
-> > persistent that information even for file-backed memory.  That all goes for
-> > avoiding those false positives.
-> 
-> Yes, I have seen this with soft dirty.  It really does not seem right.  When
-> you first create a mapping, even before faulting in anything the vma is marked
-> VM_SOFTDIRTY and from the user's perspective all addresses/pages appear dirty.
-
-Right that seems not optimal.  It is understandable since dirty info is indeed
-tolerant to false positives, so soft-dirty avoided this issue as uffd-wp wanted
-to solve in this series.  It would be great to know if current approach in this
-series would work for us to remove those false positives.
-
-> 
-> To be honest, I am not sure you want to try and carry per-process/per-mapping
-> wp information in the file.
-
-What this series does is trying to persist that information in pgtable entries,
-rather than in the file (or page cache).  Frankly I can't say whether that's
-optimal either, so I'm always open to any comment.  So far I think it's a valid
-solution, but it could always be possible that I missed something important.
-
-> In the comment about soft dirty above, it seems
-> reasonable that unmapping would clear all soft dirty information.  Also,
-> unmapping would clear any uffd state/information.
-
-Right, unmap should always means "dropping all information in the ptes".  It's
-in below patch that we tried to treat it differently:
-
-https://github.com/xzpeter/linux/commit/e958e9ee8d33e9a6602f93cdbe24a0c3614ab5e2
-
-A quick summary of above patch: only if we unmap or truncate the hugetlbfs
-file, would we call hugetlb_vmdelete_list() with ZAP_FLAG_DROP_FILE_UFFD_WP
-(which means we'll drop all the information, including uffd-wp bit).
-
-Thanks,
+> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
+> index 64d6c2b4282e..94d9fa0d6aa7 100644
+> --- a/drivers/gpio/gpio-ep93xx.c
+> +++ b/drivers/gpio/gpio-ep93xx.c
+> @@ -38,6 +38,7 @@
+>  #define EP93XX_GPIO_F_IRQ_BASE 80
+>  
+>  struct ep93xx_gpio_irq_chip {
+> +       struct irq_chip ic;
+>         u8 irq_offset;
+>         u8 int_unmasked;
+>         u8 int_enabled;
+> @@ -263,15 +264,6 @@ static int ep93xx_gpio_irq_type(struct irq_data *d, unsigned int type)
+>         return 0;
+>  }
+>  
+> -static struct irq_chip ep93xx_gpio_irq_chip = {
+> -       .name           = "GPIO",
+> -       .irq_ack        = ep93xx_gpio_irq_ack,
+> -       .irq_mask_ack   = ep93xx_gpio_irq_mask_ack,
+> -       .irq_mask       = ep93xx_gpio_irq_mask,
+> -       .irq_unmask     = ep93xx_gpio_irq_unmask,
+> -       .irq_set_type   = ep93xx_gpio_irq_type,
+> -};
+> -
+>  /*************************************************************************
+>   * gpiolib interface for EP93xx on-chip GPIOs
+>   *************************************************************************/
+> @@ -331,6 +323,15 @@ static int ep93xx_gpio_f_to_irq(struct gpio_chip *gc, unsigned offset)
+>         return EP93XX_GPIO_F_IRQ_BASE + offset;
+>  }
+>  
+> +static void ep93xx_init_irq_chip(struct device *dev, struct irq_chip *ic)
+> +{
+> +       ic->irq_ack = ep93xx_gpio_irq_ack;
+> +       ic->irq_mask_ack = ep93xx_gpio_irq_mask_ack;
+> +       ic->irq_mask = ep93xx_gpio_irq_mask;
+> +       ic->irq_unmask = ep93xx_gpio_irq_unmask;
+> +       ic->irq_set_type = ep93xx_gpio_irq_type;
+> +}
+> +
+>  static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
+>                                 struct platform_device *pdev,
+>                                 struct ep93xx_gpio *epg,
+> @@ -352,6 +353,8 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
+>  
+>         girq = &gc->irq;
+>         if (bank->has_irq || bank->has_hierarchical_irq) {
+> +               struct irq_chip *ic;
+> +
+>                 gc->set_config = ep93xx_gpio_set_config;
+>                 egc->eic = devm_kcalloc(dev, 1,
+>                                         sizeof(*egc->eic),
+> @@ -359,7 +362,12 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
+>                 if (!egc->eic)
+>                         return -ENOMEM;
+>                 egc->eic->irq_offset = bank->irq;
+> -               girq->chip = &ep93xx_gpio_irq_chip;
+> +               ic = &egc->eic->ic;
+> +               ic->name = devm_kasprintf(dev, GFP_KERNEL, "gpio-irq-%s", bank->label);
+> +               if (!ic->name)
+> +                       return -ENOMEM;
+> +               ep93xx_init_irq_chip(dev, ic);
+> +               girq->chip = ic;
+>         }
+>  
+>         if (bank->has_irq) {
+> @@ -401,7 +409,7 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
+>                         gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
+>                         irq_set_chip_data(gpio_irq, &epg->gc[5]);
+>                         irq_set_chip_and_handler(gpio_irq,
+> -                                                &ep93xx_gpio_irq_chip,
+> +                                                girq->chip,
+>                                                  handle_level_irq);
+>                         irq_clear_status_flags(gpio_irq, IRQ_NOREQUEST);
+>                 }
 
 -- 
-Peter Xu
+Alexander Sverdlin.
+
 
