@@ -2,141 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568A131564F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 19:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F29315648
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 19:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhBIStG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 13:49:06 -0500
-Received: from mga07.intel.com ([134.134.136.100]:55202 "EHLO mga07.intel.com"
+        id S233403AbhBISrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 13:47:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233274AbhBIRu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:50:28 -0500
-IronPort-SDR: 7Og6+6OZo4Ws5JYlM8s0mSOAoMpW9HYZ+Wam8K16p6kBsyzgOS/0EuEZeawvGec8ZDD4rMoxoM
- fEJCd58geyXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="245993819"
-X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
-   d="scan'208";a="245993819"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 09:48:01 -0800
-IronPort-SDR: HPhu5z9yJh72sOfRkpkjg9hixdDE/CUxkO+VD0EDwuENlRnGe0Kf3BBJG5zYOxKI0UzYuHEK1g
- SrmgntlQAWGg==
-X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
-   d="scan'208";a="359251282"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 09:47:58 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id EDB7A206D0; Tue,  9 Feb 2021 19:47:55 +0200 (EET)
-Date:   Tue, 9 Feb 2021 19:47:55 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v6 1/3] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-Message-ID: <20210209174755.GH32460@paasikivi.fi.intel.com>
-References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
- <20210208200903.28084-2-sakari.ailus@linux.intel.com>
- <CAHp75VciFMKrWM2zJZ6dppuL5M-7BLPGQfcnzkd9pQzY1bRWsQ@mail.gmail.com>
- <20210209092032.GC32460@paasikivi.fi.intel.com>
- <YCJc0LWBiQLwdmkN@smile.fi.intel.com>
+        id S233260AbhBIRtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 12:49:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56E5C64DB3;
+        Tue,  9 Feb 2021 17:48:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612892909;
+        bh=0bwozM0+19GheowWSY/r03uwZDq+Knnhrmbub8g0N6Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=byU4w/21yTB7r7ByiSRRVMOX6dtzSThCyfIvKLZdTFmiDNCtN+eBtznGboki9nzex
+         qzRzeBhk7vuT8gDfqpjk36AuVKoifXMp7BXitegzmRmmWAggcN9VriCCCry++0W0TR
+         B3trywkx4+IHo2O//uJJos+OdmC9wmqqdkCS0Fg6DDtRyBk4ZMevelWH1NzSftjdu6
+         tOucl4W3TRK5oq0TxgO1OszwY2/3tPzwalLlhPIJnOS23DTyKZ3PHBZO9jtTAKgF4V
+         MSh5sKURSWOrY8czE4fMIKEyDH3egYXEJ+dIyyWZVgx4RUqMR+HKrAX+MxsWCDNcmA
+         PAU0FygKggQSw==
+Date:   Tue, 9 Feb 2021 09:48:28 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Tobias Waldekranz <tobias@waldekranz.com>
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG support
+Message-ID: <20210209094828.5635e2bc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <87pn194fp4.fsf@waldekranz.com>
+References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
+        <20210203165458.28717-6-vadym.kochan@plvision.eu>
+        <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <87v9b249oq.fsf@waldekranz.com>
+        <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <87pn194fp4.fsf@waldekranz.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YCJc0LWBiQLwdmkN@smile.fi.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Tue, 09 Feb 2021 12:56:55 +0100 Tobias Waldekranz wrote:
+> > I ask myself that question pretty much every day. Sadly I have no clear
+> > answer.  
+> 
+> Thank you for your candid answer, really appreciate it. I do not envy
+> you one bit, making those decisions must be extremely hard.
+> 
+> > Silicon is cheap, you can embed a reasonable ARM or Risc-V core in the
+> > chip for the area and power draw comparable to one high speed serdes
+> > lane.
+> >
+> > The drivers landing in the kernel are increasingly meaningless. My day
+> > job is working for a hyperscaler. Even though we have one of the most
+> > capable kernel teams on the planet most of issues with HW we face
+> > result in "something is wrong with the FW, let's call the vendor".  
+> 
+> Right, and being a hyperscaler probably at least gets you some attention
+> when you call your vendor. My day job is working for a nanoscaler, so my
+> experience is that we must be prepared to solve all issues in-house; if
+> we get any help from the vendor that is just a bonus.
+> 
+> > And even when I say "drivers landing" it is an overstatement.
+> > If you look at high speed anything these days the drivers cover
+> > multiple generations of hardware, seems like ~5 years ago most
+> > NIC vendors reached sufficient FW saturation to cover up differences
+> > between HW generations.
+> >
+> > At the same time some FW is necessary. Certain chip functions, are 
+> > best driven by a micro-controller running a tight control loop.   
+> 
+> I agree. But I still do not understand why vendors cling to the source
+> of these like it was their wallet. That is the beauty of selling
+> silicon; you can fully leverage OSS and still have a very straight
+> forward business model.
 
-On Tue, Feb 09, 2021 at 11:58:40AM +0200, Andy Shevchenko wrote:
-> On Tue, Feb 09, 2021 at 11:20:32AM +0200, Sakari Ailus wrote:
-> > On Mon, Feb 08, 2021 at 10:43:30PM +0200, Andy Shevchenko wrote:
-> > > On Mon, Feb 8, 2021 at 10:11 PM Sakari Ailus
-> > > <sakari.ailus@linux.intel.com> wrote:
-> 
-> ...
-> 
-> > > > +       %p4cc   BG12 little-endian (0x32314742)
-> > > 
-> > > This misses examples of the (strange) escaping cases and wiped
-> > > whitespaces to make sure everybody understands that 'D 12' will be the
-> > > same as 'D1 2' (side note: which I disagree on, perhaps something
-> > > should be added into documentation why).
-> > 
-> > The spaces are expected to be at the end only. I can add such example if
-> > you like. There are no fourcc codes with spaces in the middle in neither
-> > V4L2 nor DRM, and I don't think the expectation is to have them either.
-> 
-> But then the code suggests otherwise. Perhaps we need to extract
-> skip_trailing_spaces() from strim() and use it here.
+Vendors want to be able to "add value", lock users in and sell support.
+Users adding features themselves hurts their bottom line. Take a look
+at income breakdown for publicly traded companies. There were also
+rumors recently about certain huge silicon vendor revoking the SDK
+license from a NOS company after that company got bought.
 
-But this wouldn't affect the result in this case, would it?
+Business people make rational choices, trust me. It's on us to make
+rational choices in the interest of the community (incl. our users).
 
+> > The complexity of FW is a spectrum, from basic to Qualcomm. 
+> > The problem is there is no way for us to know what FW is hiding
+> > by just looking at the driver.
+> >
+> > Where do we draw the line?   
 > 
-> ...
+> Yeah it is a very hard problem. In this particular case though, the
+> vendor explicitly said that what they have done is compiled their
+> existing SDK to run on the ASIC:
 > 
-> > > > +static noinline_for_stack
-> > > > +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
-> > > > +                   struct printf_spec spec, const char *fmt)
-> > > > +{
-> > > 
-> > > > +       char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
-> > > 
-> > > Do we have any evidence / document / standard that the above format is
-> > > what people would find good? From existing practices (I consider other
-> > > printings elsewhere and users in this series) I find '(xx)' form for
-> > > hex numbers is weird. The standard practice is to use \xHH (without
-> > > parentheses).
-> > 
-> > Earlier in the review it was proposed that special handling of codes below
-> > 32 should be added, which I did. Using the parentheses is apparently an
-> > existing practice elsewhere.
+> https://lore.kernel.org/netdev/BN6PR18MB1587EB225C6B80BF35A44EBFBA5A0@BN6PR18MB1587.namprd18.prod.outlook.com
 > 
-> Where? \xHH is quite well established format for escaping. Never heard about
-> '(xx)' variant before this very series.
+> So there is no reason that it could not be done as a proper driver.
 
-Mauro referred to FourCC codes while reviewing an earlier version of this,
-such as RGB(15).
+I guess you meant "no _technical_ reason" ;)
 
-Does \× imply only the next two characters are hexadecimal? I have to admit
-I don't remember seeting that, nor \x notation is common.
-
+> > Personally I'd really like to see us pushing back stronger.  
 > 
-> > Note that neither DRM nor V4L2 currently has such fourcc codes currently.
-> 
-> ...
-> 
-> > > > +       p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
-> > > > +                              sizeof(u32));
-> > > 
-> > > This is perfectly one line (in this file we have even longer lines).
-> > 
-> > Sure, you can do that, and I can then review your patch and point to the
-> > coding style documentation. :-)
-> 
-> Yes, you can. The problem is that we agreed with others to improve readability
-> by letting some lines to be longer, so the code can lie on one line rather be
-> broken on two or more.
-
-Making the end of the line invisible without scrolling vertically doesn't
-improve readability for me. It does depend on window width though. I'd
-simply only use that if 80 isn't enough.
-
--- 
-Regards,
-
-Sakari Ailus
+> Hear, hear!
