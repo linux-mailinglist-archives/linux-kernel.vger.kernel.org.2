@@ -2,80 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA78315C45
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D68315C81
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234961AbhBJBag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:30:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbhBIWHM (ORCPT
+        id S234601AbhBJBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:45:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31355 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233594AbhBIXyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:07:12 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002BAC06174A;
-        Tue,  9 Feb 2021 13:18:17 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Tue, 9 Feb 2021 18:54:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612914772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sCgxYhlKqouW5On/JyHP4QhxHmQ7Rz3iIIznSUlIx+I=;
+        b=G0PBxnW6lUNowJmUpLvBx4+Z7eeQGXCkjj4tNPX9wCkjEKKleie/jvFGuQ5gpljuORx7a2
+        01/j/T4d6FowF0Y2Zcdv4e9p1sqajaDFdQXO+SGqFCGlcXLzjgE8kkNOCUhlBywTUVPM+1
+        voL3dU1awsY8yxurXYOW/UzV2ou6tqY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-134-Ex30AsQsPLG-6M6wmYfpQA-1; Tue, 09 Feb 2021 16:29:03 -0500
+X-MC-Unique: Ex30AsQsPLG-6M6wmYfpQA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DZwjJ20Bhz9sCD;
-        Wed, 10 Feb 2021 08:18:12 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612905494;
-        bh=FQQIdy+Mz1dTsSBHdXmH1lZJcRnuyt5vO6TEBeaCYLU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=K7/smlwn870VYnHmrIeYu4HJtOlQeSHN4mnm/DBtfZ1Zgza25U15rt4JCazlkare5
-         bsZPslFFSKs8aYtNwkE8fvplA1Qti0RhuxSCNA77KHmhRxJQIiA6r+rzv8rXftaVNd
-         F3Ov/WyRGnpRh8VwZjJMNWUhmlDXUxXGY5v0yLPR5DvgJ+ya4Tz8UJm0ovPaQDf8sq
-         12CW3V5mhZgzn0u6PGfIEgt6PM3W9wTgOe9fz6CjeK6SUyMJ0vYNvX3XDLfesddtad
-         fGkJWJSSON9sKcY0A8mC5kKISne/m7lXYMGzDyzQxZWXOHhOS9T8rRDtm130psrTK9
-         +gdSd3/inJgqg==
-Date:   Wed, 10 Feb 2021 08:18:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the arm-soc tree
-Message-ID: <20210210081809.7d9f0cad@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97EA6192D794;
+        Tue,  9 Feb 2021 21:29:00 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-113-53.rdu2.redhat.com [10.10.113.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 74E1919C78;
+        Tue,  9 Feb 2021 21:28:58 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     intel-gfx@lists.freedesktop.org
+Cc:     Matt Roper <matthew.d.roper@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Ville Syrjala <ville.syrjala@linux.intel.com>,
+        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
+        Yijun Shen <Yijun.Shen@dell.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Aditya Swarup <aditya.swarup@intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Anshuman Gupta <anshuman.gupta@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v5 2/4] drm/i915/gen9_bc: Introduce TGP PCH DDC pin mappings
+Date:   Tue,  9 Feb 2021 16:28:29 -0500
+Message-Id: <20210209212832.1401815-3-lyude@redhat.com>
+In-Reply-To: <20210209212832.1401815-1-lyude@redhat.com>
+References: <20210209212832.1401815-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iNLGL_f4_SbJvWxZ9gyMchy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iNLGL_f4_SbJvWxZ9gyMchy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+With the introduction of gen9_bc, where Intel combines Cometlake CPUs with
+a Tigerpoint PCH, we'll need to introduce new DDC pin mappings for this
+platform in order to make all of the display connectors work. So, let's do
+that.
 
-Hi all,
+Changes since v4:
+* Split this into it's own patch - vsyrjala
 
-Commit
+Cc: Matt Roper <matthew.d.roper@intel.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Ville Syrjala <ville.syrjala@linux.intel.com>
+[originally from Tejas's work]
+Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/i915/display/intel_bios.c |  9 +++++++++
+ drivers/gpu/drm/i915/display/intel_hdmi.c | 20 ++++++++++++++++++++
+ 2 files changed, 29 insertions(+)
 
-  70ba3b1adbf5 ("arm64: defconfig: Enable RT5659")
+diff --git a/drivers/gpu/drm/i915/display/intel_bios.c b/drivers/gpu/drm/i915/display/intel_bios.c
+index 7118530a1c38..1289f9d437e4 100644
+--- a/drivers/gpu/drm/i915/display/intel_bios.c
++++ b/drivers/gpu/drm/i915/display/intel_bios.c
+@@ -1638,6 +1638,12 @@ static const u8 adls_ddc_pin_map[] = {
+ 	[ADLS_DDC_BUS_PORT_TC4] = GMBUS_PIN_12_TC4_ICP,
+ };
+ 
++static const u8 gen9bc_tgp_ddc_pin_map[] = {
++	[DDC_BUS_DDI_B] = GMBUS_PIN_2_BXT,
++	[DDC_BUS_DDI_C] = GMBUS_PIN_9_TC1_ICP,
++	[DDC_BUS_DDI_D] = GMBUS_PIN_10_TC2_ICP,
++};
++
+ static u8 map_ddc_pin(struct drm_i915_private *dev_priv, u8 vbt_pin)
+ {
+ 	const u8 *ddc_pin_map;
+@@ -1651,6 +1657,9 @@ static u8 map_ddc_pin(struct drm_i915_private *dev_priv, u8 vbt_pin)
+ 	} else if (IS_ROCKETLAKE(dev_priv) && INTEL_PCH_TYPE(dev_priv) == PCH_TGP) {
+ 		ddc_pin_map = rkl_pch_tgp_ddc_pin_map;
+ 		n_entries = ARRAY_SIZE(rkl_pch_tgp_ddc_pin_map);
++	} else if (HAS_PCH_TGP(dev_priv) && IS_GEN9_BC(dev_priv)) {
++		ddc_pin_map = gen9bc_tgp_ddc_pin_map;
++		n_entries = ARRAY_SIZE(gen9bc_tgp_ddc_pin_map);
+ 	} else if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP) {
+ 		ddc_pin_map = icp_ddc_pin_map;
+ 		n_entries = ARRAY_SIZE(icp_ddc_pin_map);
+diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+index dad54e116bc4..49528d07c7f3 100644
+--- a/drivers/gpu/drm/i915/display/intel_hdmi.c
++++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+@@ -3138,6 +3138,24 @@ static u8 rkl_port_to_ddc_pin(struct drm_i915_private *dev_priv, enum port port)
+ 	return GMBUS_PIN_1_BXT + phy;
+ }
+ 
++static u8 gen9bc_port_to_ddc_pin(struct drm_i915_private *i915, enum port port)
++{
++	enum phy phy = intel_port_to_phy(i915, port);
++
++	drm_WARN_ON(&i915->drm, port == PORT_A);
++
++	/*
++	 * Pin mapping for GEN9 BC depends on which PCH is present.  With TGP,
++	 * final two outputs use type-c pins, even though they're actually
++	 * combo outputs.  With CMP, the traditional DDI A-D pins are used for
++	 * all outputs.
++	 */
++	if (INTEL_PCH_TYPE(i915) >= PCH_TGP && phy >= PHY_C)
++		return GMBUS_PIN_9_TC1_ICP + phy - PHY_C;
++
++	return GMBUS_PIN_1_BXT + phy;
++}
++
+ static u8 dg1_port_to_ddc_pin(struct drm_i915_private *dev_priv, enum port port)
+ {
+ 	return intel_port_to_phy(dev_priv, port) + 1;
+@@ -3202,6 +3220,8 @@ static u8 intel_hdmi_ddc_pin(struct intel_encoder *encoder)
+ 		ddc_pin = dg1_port_to_ddc_pin(dev_priv, port);
+ 	else if (IS_ROCKETLAKE(dev_priv))
+ 		ddc_pin = rkl_port_to_ddc_pin(dev_priv, port);
++	else if (IS_GEN9_BC(dev_priv) && HAS_PCH_TGP(dev_priv))
++		ddc_pin = gen9bc_port_to_ddc_pin(dev_priv, port);
+ 	else if (HAS_PCH_MCC(dev_priv))
+ 		ddc_pin = mcc_port_to_ddc_pin(dev_priv, port);
+ 	else if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
+-- 
+2.29.2
 
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/iNLGL_f4_SbJvWxZ9gyMchy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAi/BEACgkQAVBC80lX
-0GzBDwf/aKVcDHmR3I5n6Wo/T+/QLH0w8se8zQynF2hTefKliFeZjFIrjBWTIhCt
-1UsTxXw4Gq3M7uhZCaCko2bTj+KrjYflHSDIUq3JnimKrh20U3hdzOL3Txg+jn7b
-yr8BpHBojkuWcbSIpx3O1PtclwCXtwIpHpuLM/e7XLhjW6G2Htg/q4ve2erBM2Cw
-R+aF0YG1Frod+KcbG0LhHqvhOiPGV26Ff3NzE3ZVDKn5CALm8bEWbQ8c1Cc7hAii
-vWhYWwB30KSiPS8aMPd0ejU4RYIst8DAznbkEdTSUL7TdEOFWXLeHF96YtWVRa28
-rj2/TtHmaLBJv/ugRzpkOkP9lV8hjw==
-=kjG5
------END PGP SIGNATURE-----
-
---Sig_/iNLGL_f4_SbJvWxZ9gyMchy--
