@@ -2,125 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E05315AD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7FB315AD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234545AbhBJAPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:15:39 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:46827 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233826AbhBIUq5 (ORCPT
+        id S233950AbhBJAQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:16:19 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:25546 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233988AbhBIUrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:46:57 -0500
-Received: by mail-oi1-f172.google.com with SMTP id k25so20881927oik.13;
-        Tue, 09 Feb 2021 12:46:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2s5+gI5RkcmBiEkvRs0kblor0zn4pUAbODGQq2QGc9Y=;
-        b=ZIDgEFpQhkd71A2e27EuAc9lM1c4bodiJQRKN7vucGRyw2NEVkKa/DAH7tqex8kdw4
-         NbacxMeaizZdLm7asrMkA7B9n3TJGRf7u+mb73moZM5zJgBvcbwa4YZzsvdIzLNv5qa8
-         dVvIU79cyPHMunWR2LgS8AjUrGuJb0HARUHZUoaaZGYACok2KXoANl7hY1iCIcXgPQTq
-         M4gky4n4j9jWshuasrbSG4AXDyBTjs6CqCihbHoAnn1qwmQlsfbACUwyUJE5RDpZMA20
-         0vLmabviV9vw6Lnqk315/jBu/yfzfByzkqDMW0mNC488IUeu8/EUydJrPKYB18w4XBas
-         RlOA==
-X-Gm-Message-State: AOAM531bOoSrHjAF8CGrr0dzACs6UCyLU7GBX45rTZeSyeDaIvxMWrpE
-        eKi3e9QnkF6ASjOZ5VZn4Q==
-X-Google-Smtp-Source: ABdhPJxcbTWoPyqVdl4qZFD5NZhVbO2hWAT36p59UdrslscD+BpxXnlxEZlbWI5rCtc/8MHFmM/O3A==
-X-Received: by 2002:aca:2102:: with SMTP id 2mr3811202oiz.80.1612903574974;
-        Tue, 09 Feb 2021 12:46:14 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j5sm795351oij.48.2021.02.09.12.46.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 12:46:13 -0800 (PST)
-Received: (nullmailer pid 146771 invoked by uid 1000);
-        Tue, 09 Feb 2021 20:46:11 -0000
-Date:   Tue, 9 Feb 2021 14:46:11 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Min Guo <min.guo@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH next v3 02/16] dt-bindings: usb: mediatek: fix yamllint
- check warning
-Message-ID: <20210209204611.GA143456@robh.at.kernel.org>
-References: <20210201070016.41721-1-chunfeng.yun@mediatek.com>
- <20210201070016.41721-2-chunfeng.yun@mediatek.com>
+        Tue, 9 Feb 2021 15:47:39 -0500
+Date:   Tue, 09 Feb 2021 20:46:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612903595; bh=OqhINS5au7CkgIZc/zoD88FzPH9SHYkuEvXcCCJstX4=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=lS7a7+3WQVXxFjZAC+WtL8ZIRbM4CTWuPwlPeAKnpqAMP209LS6XjSsHSbda/uCJY
+         VwrW6VpXc9CvSiBCDi2bn9RFn1fEJBPSJyRni2NnG2FwUsIuzIyj/s/e3PTplWnRMT
+         W+g1N4HtaPd6/naENaWkMkA4odbgnZ2f840yVZ6XZIi46kDgauAyhr/94nlVFAufIC
+         O5WAFvTsBuqqMnS2mxBQWOQ7B7mP1lgzxuurIlgyTYQcstF75yiJvbjiL/3ZW15sqx
+         kEpEpuKp0mjnPCDErWGA/KT5tppyVpYviR11VeBIOEbf5UREDo+IcOa2xCkf2XMdOW
+         LPDACzBtVnFvw==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [v3 net-next 00/10] skbuff: introduce skbuff_heads bulking and reusing
+Message-ID: <20210209204533.327360-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201070016.41721-2-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 03:00:02PM +0800, Chunfeng Yun wrote:
-> Fix warning: "too many spaces inside brackets"
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v2~v3: no changes
-> ---
->  .../devicetree/bindings/usb/mediatek,mtk-xhci.yaml          | 2 +-
->  Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml    | 6 +++---
->  Documentation/devicetree/bindings/usb/mediatek,musb.yaml    | 4 ++--
->  3 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-> index 38b1fe18aa79..a3817f3af59d 100644
-> --- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-> @@ -139,7 +139,7 @@ patternProperties:
->      description: The hard wired USB devices.
->  
->  dependencies:
-> -  wakeup-source: [ 'mediatek,syscon-wakeup' ]
-> +  wakeup-source: ['mediatek,syscon-wakeup']
+Currently, all sorts of skb allocation always do allocate
+skbuff_heads one by one via kmem_cache_alloc().
+On the other hand, we have percpu napi_alloc_cache to store
+skbuff_heads queued up for freeing and flush them by bulks.
 
-We allow either 0 or 1 space, so this should be fine. Confused...
+We can use this cache not only for bulk-wiping, but also to obtain
+heads for new skbs and avoid unconditional allocations, as well as
+for bulk-allocating.
+As accessing napi_alloc_cache implies NAPI softirq context, decaching
+is protected with in_serving_softirq() check, with the option to
+bypass the check when the context is 100% known.
 
->  
->  required:
->    - compatible
-> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
-> index f5c04b9d2de9..66d78f534722 100644
-> --- a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
-> @@ -172,9 +172,9 @@ patternProperties:
->        example if the host mode is enabled.
->  
->  dependencies:
-> -  connector: [ 'usb-role-switch' ]
-> -  port: [ 'usb-role-switch' ]
-> -  wakeup-source: [ 'mediatek,syscon-wakeup' ]
-> +  connector: ['usb-role-switch']
-> +  port: ['usb-role-switch']
-> +  wakeup-source: ['mediatek,syscon-wakeup']
->  
->  required:
->    - compatible
-> diff --git a/Documentation/devicetree/bindings/usb/mediatek,musb.yaml b/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
-> index 790efe8b6274..a515c9f30b96 100644
-> --- a/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
-> +++ b/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
-> @@ -66,8 +66,8 @@ properties:
->      type: object
->  
->  dependencies:
-> -  usb-role-switch: [ 'connector' ]
-> -  connector: [ 'usb-role-switch' ]
-> +  usb-role-switch: ['connector']
-> +  connector: ['usb-role-switch']
->  
->  required:
->    - compatible
-> -- 
-> 2.18.0
+iperf3 showed 35-70 Mbps bumps for both TCP and UDP while performing
+VLAN NAT on 1.2 GHz MIPS board. The boost is likely to be way bigger
+on more powerful hosts and NICs with tens of Mpps.
+
+Note on skbuff_heads from distant slabs or pfmemalloc'ed slabs:
+ - kmalloc()/kmem_cache_alloc() itself allows by default allocating
+   memory from the remote nodes to defragment their slabs. This is
+   controlled by sysctl, but according to this, skbuff_head from a
+   remote node is an OK case;
+ - The easiest way to check if the slab of skbuff_head is remote or
+   pfmemalloc'ed is:
+
+=09if (!dev_page_is_reusable(virt_to_head_page(skb)))
+=09=09/* drop it */;
+
+   ...*but*, regarding that most slabs are built of compound pages,
+   virt_to_head_page() will hit unlikely-branch every single call.
+   This check costed at least 20 Mbps in test scenarios and seems
+   like it'd be better to _not_ do this.
+
+Since v2 [1]:
+ - also cover {,__}alloc_skb() and {,__}build_skb() cases (became handy
+   after the changes that pass tiny skbs requests to kmalloc layer);
+ - cover the cache with KASAN instrumentation (suggested by Eric
+   Dumazet, help of Dmitry Vyukov);
+ - completely drop redundant __kfree_skb_flush() (also Eric);
+ - lots of code cleanups;
+ - expand the commit message with NUMA and pfmemalloc points (Jakub).
+
+Since v1 [0]:
+ - use one unified cache instead of two separate to greatly simplify
+   the logics and reduce hotpath overhead (Edward Cree);
+ - new: recycle also GRO_MERGED_FREE skbs instead of immediate
+   freeing;
+ - correct performance numbers after optimizations and performing
+   lots of tests for different use cases.
+
+[0] https://lore.kernel.org/netdev/20210111182655.12159-1-alobakin@pm.me
+[1] https://lore.kernel.org/netdev/20210113133523.39205-1-alobakin@pm.me
+
+Alexander Lobakin (10):
+  skbuff: move __alloc_skb() next to the other skb allocation functions
+  skbuff: simplify kmalloc_reserve()
+  skbuff: make __build_skb_around() return void
+  skbuff: simplify __alloc_skb() a bit
+  skbuff: use __build_skb_around() in __alloc_skb()
+  skbuff: remove __kfree_skb_flush()
+  skbuff: move NAPI cache declarations upper in the file
+  skbuff: reuse NAPI skb cache on allocation path (__build_skb())
+  skbuff: reuse NAPI skb cache on allocation path (__alloc_skb())
+  skbuff: queue NAPI_MERGED_FREE skbs into NAPI cache instead of freeing
+
+ include/linux/skbuff.h   |   4 +-
+ net/core/dev.c           |  15 +-
+ net/core/skbuff.c        | 392 ++++++++++++++++++++-------------------
+ net/netlink/af_netlink.c |   2 +-
+ 4 files changed, 202 insertions(+), 211 deletions(-)
+
+--=20
+2.30.0
+
+
