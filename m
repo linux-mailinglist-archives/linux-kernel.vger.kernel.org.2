@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24D6315BD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C433C315BFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234532AbhBJBBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:01:50 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:35453 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234299AbhBIWVr (ORCPT
+        id S234981AbhBJBPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:15:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234110AbhBIWXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:21:47 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id DC4245802F6;
-        Tue,  9 Feb 2021 16:45:29 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute4.internal (MEProxy); Tue, 09 Feb 2021 16:45:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type:content-transfer-encoding; s=fm2; bh=60hEJ
-        9ZPejN7IYrMR4SNa4nZxVrUpUb1gFS1Sg1WH4E=; b=AINfIep4odvEBIbj60yZH
-        viH9H5pqw6MGxVtah211WWmWYV0h+QsVqkrqd8DszSypMKsuIwEaUHJ4MZJqZ49V
-        GZs0bpFdw9UZYQjKMAw4mk3DPH99JXHTeCRJS4cVjK13jIbqLVLmihWOclpy7bS1
-        A80nBwuTQq8AjnqZnaiTGHIVnM0GnsyCEqa80u5ikEzNE9tH3aH9Z48tE3plEBcn
-        nypicWOz6CR137O927aY7nuCnameWPxLxYFoI0qGFmrh2yeQyhq1jjRuRl89cM9p
-        Hzm3WiS29922Wg4gEH94puxoOKPHHHKEQ6rucJt6he0xXUsmDF1Cldqe/n8UTAZh
-        A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=60hEJ9ZPejN7IYrMR4SNa4nZxVrUpUb1gFS1Sg1WH
-        4E=; b=aV8sTuo6cv+6LeAmFDBhKprqA83z46R5COXCH8X5Atn3rYejz0ZlLWHvV
-        g4Q8ylSk5aADq8oCncSMYkDCmm5AMRgnhOGiOFeORaFEZO9mlmVGV4S/Af6R0pIy
-        Dl2PTpvRi6UNmNB9Dza9oNfoSl4o29IqL4cFEqXOV1GNNAYlQDc2Rn+ZOk3pvhmN
-        L2D0KU8vxuGytvmGZqR2PSjH2L/Ygsca1ZDRVt/oFwEgZlUauNiqiruw7PkiGV9g
-        e1jDBaAk4l4Sb+7/TV1IEbHfKtwAroma+luGYRRmuRF/xUBBHxA9UA7GmyWr9eIH
-        PsoZsDTpVorMynwIKwN3A3Fp7kPUA==
-X-ME-Sender: <xms:eAIjYPrghdlV4YQR8i0QnzhCtHilOhRh4JbrlgQsmfVZ8juxmoOD-Q>
-    <xme:eAIjYJqCj2BwjEB9NLOdYeRlVzlNMFJU5ce0PXpWlG6MJVstQfMWGkmU5tEy8N_j4
-    EIqPxbfLwZ3Nw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheehgdduheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpehnnhgv
-    thcuoehnnhgvthesfhgrshhtmhgrihhlrdhfmheqnecuggftrfgrthhtvghrnhepueegke
-    dvheehveehteeiteduleejvddvtdeivedvueekjefgueehffeuleeugeeunecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhhnvghtsehfrghsth
-    hmrghilhdrfhhm
-X-ME-Proxy: <xmx:eAIjYMNPyfWFIZwhPPAI3T6NannkpdYKRiM1D27tnPMRLzBzwLBgxg>
-    <xmx:eAIjYC6UB2ufdpSKjmQYMCElh19AMWEcIGPuIBJ58NGsFjKl3peX0Q>
-    <xmx:eAIjYO4vBxyY7fn5ZBtRzWMed5KCDdiz433yuDzQJXZlWtfRKQy_qQ>
-    <xmx:eQIjYNScGs4tyoc-ab52Qk6gndotywU2JDwE3p79fpZvI18M2zWMuw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id ABF3BA0005E; Tue,  9 Feb 2021 16:45:28 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
-Mime-Version: 1.0
-Message-Id: <7b0988cc-eeb8-4ea7-92f6-e8234ca910d3@www.fastmail.com>
-In-Reply-To: <20210209213330.hnc7op72zoj24mgz@pali>
-References: <d59ba191-43db-4b7b-b201-62a60ca752c0@www.fastmail.com>
- <20210209213330.hnc7op72zoj24mgz@pali>
-Date:   Tue, 09 Feb 2021 13:45:08 -0800
-From:   nnet <nnet@fastmail.fm>
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
-        gregory.clement@bootlin.com, kabel@kernel.org, kostap@marvell.com,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
-        miquel.raynal@bootlin.com, mturquette@baylibre.com,
-        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
-        vladimir.vid@sartura.hr
-Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
- =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Tue, 9 Feb 2021 17:23:48 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58354C08E8BB
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:45:45 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id s77so19668993qke.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:45:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EwcA9/MPS0+DC3O3HQWukmve7xuaXcZk9slnXQmx7cE=;
+        b=wIT3T2WvKrwC5BKbIvNn7kdMwcTAScbRrfy18Jb8Zhtzgv/tJ/NMmI6yFeXmx+k+zt
+         IAMVDHXZ9uks34GmNs68sEqzbBojhsn2RgNG8RCvtrE6RHopwENBg3jbgh3LGG65XQSy
+         NPt/yTL38hj2tqZqevSZK70ul/wLkw9hmJljmQgwnVN0Q99ewpN7hr7kmujDldtFzpWZ
+         J3W4K3szU4FwoHmBaYJDgsjBKctQ9T/3G7pFtNBuctYp5HkpCtTX4W7eVEV7lzKHiRIs
+         I9/OKo/fFDMkIqhPr5e6FzDVIWPZhLcxuAgqgIIuNa2vpkc0rGZEX0eq0P7wzNG8aWVC
+         x8iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EwcA9/MPS0+DC3O3HQWukmve7xuaXcZk9slnXQmx7cE=;
+        b=sExVXXH3GYURXkDzruT0jnl9/TlDvihWvXgxjI/lYwTsOzazGU3tpCwbuElvujc4L9
+         uqsDTKFYheLudaxTOFTkv0IxN+rgQBTZgSqz5HcMzizR8pA3peKJGc666DYc8BlnGDQL
+         PJ4UM//TU1wHAk3P8KA0A2/lAf3itIabCmt86biyeokbzQG7mKmcBevLhsb7PaSRsQpq
+         0E80cHLKKaw6NCFHYg/+TKTns4ECe0OwPKCXmQELNNMrqqaIml1ypZ87kBmWvgDSO9hp
+         G8GpzmmWoCoptAMRvhjXocy2yZEsWPGmgeY1RFCg8sZOhgMTSH4aR+cqz1XGFe2tx71D
+         f7vA==
+X-Gm-Message-State: AOAM531qvR3Z/lMZfL3AcZtt9hoABvgzBd2VXEwu4/j+w7h9V1LtX0Yg
+        sRyRkLgJAxDKfpsxfbrxEBGJbA==
+X-Google-Smtp-Source: ABdhPJzV8LHr++DxdDhtyzXnSxFy0nGQ52UC/V1tfcP4eIaAhidTFu9Ol3JhP8qypdKFlZYfHliP/Q==
+X-Received: by 2002:a05:620a:1186:: with SMTP id b6mr239621qkk.180.1612907144543;
+        Tue, 09 Feb 2021 13:45:44 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id z25sm10277qkz.33.2021.02.09.13.45.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 13:45:43 -0800 (PST)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] mm: page-writeback: simplify memcg handling in test_clear_page_writeback()
+Date:   Tue,  9 Feb 2021 16:45:43 -0500
+Message-Id: <20210209214543.112655-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Page writeback doesn't hold a page reference, which allows truncate to
+free a page the second PageWriteback is cleared. This used to require
+special attention in test_clear_page_writeback(), where we had to be
+careful not to rely on the unstable page->memcg binding and look up
+all the necessary information before clearing the writeback flag.
 
+Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
+BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
+explicit reference on the page, and this dance is no longer needed.
 
-On Tue, Feb 9, 2021, at 1:33 PM, Pali Roh=C3=A1r wrote:
-> On Tuesday 09 February 2021 13:00:26 nnet wrote:
-> > > If you have other Armada 3720 boards (Espressobin v5/v7, uDPU, Dev=
-el Board, ...) then it will be nice to do an additional tests and check =
-if instability issues are finally fixed.
-> >=20
-> > These patches applied to the 5.4.96 in OpenWrt (98d61b5) work fine s=
-o far on an Espressobin v7 AFAICT per changing values in /sys/devices/sy=
-stem/cpu/cpufreq/policy0.
-> >=20
-> > Are these changes intended to work @1.2 GHz on the v7?
->=20
-> Hello! Do you have 1.2 GHz A3720 SoC?
+Use unlock_page_memcg() and dec_lruvec_page_stat() directly.
 
-Maybe (not)? ESPRESSObin_V7_1-0 on the underside.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/page-writeback.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-BTW, with the 1200_750 firmware and the patches:
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index eb34d204d4ee..f6c2c3165d4d 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2722,12 +2722,9 @@ EXPORT_SYMBOL(clear_page_dirty_for_io);
+ int test_clear_page_writeback(struct page *page)
+ {
+ 	struct address_space *mapping = page_mapping(page);
+-	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
+ 	int ret;
+ 
+-	memcg = lock_page_memcg(page);
+-	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
++	lock_page_memcg(page);
+ 	if (mapping && mapping_use_writeback_tags(mapping)) {
+ 		struct inode *inode = mapping->host;
+ 		struct backing_dev_info *bdi = inode_to_bdi(inode);
+@@ -2755,11 +2752,11 @@ int test_clear_page_writeback(struct page *page)
+ 		ret = TestClearPageWriteback(page);
+ 	}
+ 	if (ret) {
+-		dec_lruvec_state(lruvec, NR_WRITEBACK);
++		dec_lruvec_page_state(page, NR_WRITEBACK);
+ 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
+ 		inc_node_page_state(page, NR_WRITTEN);
+ 	}
+-	__unlock_page_memcg(memcg);
++	unlock_page_memcg(page);
+ 	return ret;
+ }
+ 
+-- 
+2.30.0
 
-root@OpenWrt:/sys/devices/system/cpu/cpufreq/policy0# cat scaling_availa=
-ble_frequencies=20
-200000 300000 600000 1200000
-
-Of course that could mean nothing, but thought I'd mention what I do see=
-.
