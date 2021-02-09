@@ -2,104 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8B0315C0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FB7315BC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235115AbhBJBSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:18:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234349AbhBIWq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:46:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92F1664E8B;
-        Tue,  9 Feb 2021 21:25:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612905913;
-        bh=3l1Lx2Zsd3+a58rOtqbr6Ig2BO03fAiJHekglj/tm5I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=oU9cIGGZ9+lvTz3ixoLQmevdhcqk5X5fN7zKiSKQ9km0FZCUZTRPHvOTCIzbD6M1W
-         vnXE7cYSpKccas23kLuH6Wzm/8zSNH+onxHtt3UcPAj45dzkspoajXUixWJewEyJcV
-         kOpAOQYYtuAuT/KyCLv7SWI8f46g/QkS6iar7Bg1GoH1e4n0uNJ78gI9Z7EDkafhlF
-         N3k8hhiGuc7Rd28WV7BRooYCOpOPs7RNOIgJ2NYsuRiCMumVKv29td6rVNfiX87xdh
-         Mp+OIUhUbzvT7WZHChGByhuK99QBjCHzvcLR4uhgnVvJH4mJZgKjwKkFD9lbErj1E4
-         pKVsL82XoRPBQ==
-Date:   Tue, 9 Feb 2021 15:25:10 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     linux-pci@vger.kernel.org, prime.zeng@huawei.com,
-        linuxarm@openeuler.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Use subdir-ccflags-* to inherit debug flag
-Message-ID: <20210209212510.GA513360@bjorn-Precision-5520>
+        id S234638AbhBJBAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:00:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48423 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234163AbhBIWPK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 17:15:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612908823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=njyj2XCXYGtI5AX/JV14IYXR8Ipi7RDaSVkhJ8oSglg=;
+        b=DHhyTRoeiBLTGmTnWeKpdGUq+JnvnbHrtNRjpqGZ+t982TUIPqiQWxl5yHNsh1f8hQX5Tw
+        +zfk4Qc/BVo9XwG1FgLD98joGKmJMzB5+A+R4ry4SpBQzHSwY3ld0110uASXgZ0IsK1E7Y
+        7XAYJRzBRugz74vl+xi3LHwwspwW6k4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-Ez0mEz_fP32izAfxafFp3w-1; Tue, 09 Feb 2021 16:25:32 -0500
+X-MC-Unique: Ez0mEz_fP32izAfxafFp3w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7E8FCC626;
+        Tue,  9 Feb 2021 21:25:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E044519C78;
+        Tue,  9 Feb 2021 21:25:23 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210209202134.GA308988@casper.infradead.org>
+References: <20210209202134.GA308988@casper.infradead.org> <591237.1612886997@warthog.procyon.org.uk> <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1612438215-33105-1-git-send-email-yangyicong@hisilicon.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <618608.1612905923.1@warthog.procyon.org.uk>
+Date:   Tue, 09 Feb 2021 21:25:23 +0000
+Message-ID: <618609.1612905923@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Masahiro, Michal, linux-kbuild, linux-kernel]
+Matthew Wilcox <willy@infradead.org> wrote:
 
-On Thu, Feb 04, 2021 at 07:30:15PM +0800, Yicong Yang wrote:
-> From: Junhao He <hejunhao2@hisilicon.com>
-> 
-> Use subdir-ccflags-* instead of ccflags-* to inherit the debug
-> settings from Kconfig when traversing subdirectories.
-> 
-> Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> Yeah, I have trouble with the private2 vs fscache bit too.  I've been
+> trying to persuade David that he doesn't actually need an fscache
+> bit at all; he can just increment the page's refcount to prevent it
+> from being freed while he writes data to the cache.
 
-I applied this with Krzysztof's reviewed-by and the commit log below
-to pci/misc for v5.12, thanks!
+That's not what the bit is primarily being used for.  It's being used to
+prevent the starting of a second write to the cache whilst the first is in
+progress and also to prevent modification whilst DMA to the cache is in
+progress.  This isn't so obvious in this cut-down patchset, but comes more in
+to play with full caching of local writes in my fscache-iter branch.
 
-Feel free to copy or improve the commit log for use elsewhere.
+I can't easily share PG_writeback for this because each bit covers a write to
+a different place.  PG_writeback covers the write to the server and PG_fscache
+the write to the cache.  These writes may get split up differently and will
+most likely finish at different times.
 
-> ---
->  drivers/pci/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
-> index 11cc794..d62c4ac 100644
-> --- a/drivers/pci/Makefile
-> +++ b/drivers/pci/Makefile
-> @@ -36,4 +36,4 @@ obj-$(CONFIG_PCI_ENDPOINT)	+= endpoint/
->  obj-y				+= controller/
->  obj-y				+= switch/
->  
-> -ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
-> +subdir-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+If I have to share PG_writeback, that will mean storing both states for each
+page somewhere else and then "OR'ing" them together to drive PG_writeback.
 
-commit e8e9aababe60 ("PCI: Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy")
-Author: Junhao He <hejunhao2@hisilicon.com>
-Date:   Thu Feb 4 19:30:15 2021 +0800
+David
 
-    PCI: Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy
-    
-    CONFIG_PCI_DEBUG=y adds -DDEBUG to CFLAGS, which enables things like
-    pr_debug() and dev_dbg() (and hence pci_dbg()).  Previously we added
-    -DDEBUG for files in drivers/pci/, but not files in subdirectories of
-    drivers/pci/.
-    
-    Add -DDEBUG to CFLAGS for all files below drivers/pci/ so CONFIG_PCI_DEBUG
-    applies to the entire hierarchy.
-    
-    [bhelgaas: commit log]
-    Link: https://lore.kernel.org/r/1612438215-33105-1-git-send-email-yangyicong@hisilicon.com
-    Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
-    Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-    Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
-
-diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
-index 11cc79411e2d..d62c4ac4ae1b 100644
---- a/drivers/pci/Makefile
-+++ b/drivers/pci/Makefile
-@@ -36,4 +36,4 @@ obj-$(CONFIG_PCI_ENDPOINT)	+= endpoint/
- obj-y				+= controller/
- obj-y				+= switch/
- 
--ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
-+subdir-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
