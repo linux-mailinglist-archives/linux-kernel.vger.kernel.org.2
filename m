@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7013231538D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC00315386
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhBIQOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:14:33 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:23375 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232788AbhBIQOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:14:17 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DZnxl0tRtz9v0Jx;
-        Tue,  9 Feb 2021 17:13:31 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id VNxI6Xy2d8lS; Tue,  9 Feb 2021 17:13:31 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZnxk6yd8z9v0JL;
-        Tue,  9 Feb 2021 17:13:30 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7ED6B8B764;
-        Tue,  9 Feb 2021 17:13:32 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id SpEj3Si2q6SX; Tue,  9 Feb 2021 17:13:32 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BE8778B7EA;
-        Tue,  9 Feb 2021 17:13:31 +0100 (CET)
-Subject: Re: [PATCH v5 16/22] powerpc/syscall: Avoid stack frame in likely
- part of system_call_exception()
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
- <981edfd50d4c980634b74c4bb76b765c499a87ec.1612796617.git.christophe.leroy@csgroup.eu>
- <1612834634.qle1lc7n6y.astroid@bobo.none>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <f2b17529-e1b6-3d2c-a38b-51e91841e438@csgroup.eu>
-Date:   Tue, 9 Feb 2021 17:13:17 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232770AbhBIQOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:14:06 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:37368 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232605AbhBIQOD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 11:14:03 -0500
+Received: by mail-ot1-f44.google.com with SMTP id h16so187177ote.4;
+        Tue, 09 Feb 2021 08:13:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jR97En3b34Ol6ESOXDCKQqtKUbkthU4wmGPDId0RT0w=;
+        b=jCWc/ZjmJzXjISBk87D4kg0GdxbUOdxsUQOKqXwRGY2J+R0BAHxq4hPpnFT8ogLWON
+         Nd2Dnhn+PdOE6A+B4yL/LM9MlAaawi0IC5yKusAWcyd1oI57CenO6XlUbVTZRtP705KD
+         ffjECSXD5AOj6hQZDR0kb/hOqtm+LS76PatxDI9nx/Vnh4bdmQmD+vYj64Ys75SJ36J1
+         DcfyrIlWVfYk0FuHgE+HpeqZwLGIqhBYKC36rdi8MZMD0jMamu2UeSOr8t5RRWU1uRGC
+         WNYsDTv6t1hPjO8hs1mDVUQ3st8fy9KQc33QTIbAe68LUdqq9rpwpk26oDkgkk6ivFFF
+         VZOw==
+X-Gm-Message-State: AOAM531VMDh1TNCNv0c825A+OYMvUJAKVV5Q2wEILCvh/1Ffe80b7HAd
+        G7/KVRkLeF7oLUshmnq49Q==
+X-Google-Smtp-Source: ABdhPJxfuQiGnRgaL6GK4Bz7pZyeuUykNWGmbkZ3OE1l2180JsrofW7N4XDivm32eMrKNswAiNZpHw==
+X-Received: by 2002:a9d:6c85:: with SMTP id c5mr16429869otr.300.1612887202769;
+        Tue, 09 Feb 2021 08:13:22 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a23sm4331799oii.16.2021.02.09.08.13.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 08:13:21 -0800 (PST)
+Received: (nullmailer pid 3861217 invoked by uid 1000);
+        Tue, 09 Feb 2021 16:13:19 -0000
+Date:   Tue, 9 Feb 2021 10:13:19 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Vincent Knecht <vincent.knecht@mailoo.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Michael Srba <Michael.Srba@seznam.cz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v3 1/2] dt-bindings: input/touchscreen: add bindings for
+ msg26xx
+Message-ID: <20210209161319.GA3849081@robh.at.kernel.org>
+References: <20210121174359.1455393-1-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
-In-Reply-To: <1612834634.qle1lc7n6y.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121174359.1455393-1-vincent.knecht@mailoo.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 09/02/2021 à 02:55, Nicholas Piggin a écrit :
-> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
->> When r3 is not modified, reload it from regs->orig_r3 to free
->> volatile registers. This avoids a stack frame for the likely part
->> of system_call_exception()
+On Thu, Jan 21, 2021 at 06:43:47PM +0100, Vincent Knecht wrote:
+> This adds dts bindings for the mstar msg26xx touchscreen.
 > 
-> This doesn't on my 64s build, but it does reduce one non volatile
-> register save/restore. With quite a bit more register pressure
-> reduction 64s can avoid the stack frame as well.
-
-The stack frame is not due to the registers because on PPC64 you have the redzone that you don't 
-have on PPC32.
-
-As far as I can see, this is due to a call to .arch_local_irq_restore().
-
-On ppc32 arch_local_irq_restore() is just a write to MSR.
-
-
+> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+> ---
+> Changed in v3:
+> - added `touchscreen-size-x: true` and `touchscreen-size-y: true` properties
+> Changed in v2:
+> - changed M-Star to MStar in title line
+> - changed reset gpio to active-low in example section
+> ---
+>  .../input/touchscreen/mstar,msg26xx.yaml      | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yaml
 > 
-> It's a cool trick but quite code and compiler specific so I don't know
-> how worthwhile it is to keep considering we're calling out into random
-> kernel C code after this.
-> 
-> Maybe just keep it PPC32 specific for the moment, will have to do more
-> tuning for 64 and we have other stuff to do there first.
-> 
-> If you are happy to make it 32-bit only then
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yaml b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yaml
+> new file mode 100644
+> index 000000000000..5d26a1008bf1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yaml
+> @@ -0,0 +1,69 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/mstar,msg26xx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MStar msg26xx touchscreen controller Bindings
+> +
+> +maintainers:
+> +  - Vincent Knecht <vincent.knecht@mailoo.org>
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: mstar,msg26xx
 
-I think we can leave without this, that's only one or two cycles won.
-
-> 
-> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-> 
+Don't use wildcards in compatible strings.
