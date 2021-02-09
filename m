@@ -2,131 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E30315460
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A36B4315462
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbhBIQvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:51:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233085AbhBIQum (ORCPT
+        id S232748AbhBIQwV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Feb 2021 11:52:21 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:44164 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233146AbhBIQu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:50:42 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7EBC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:50:02 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id t25so18099436otc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:50:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aleksander-es.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dKwNo6TC+1q3oQgv5Miw/gtfysz963YICrpQOCkStJ8=;
-        b=nRmGzLhyU4G9H274uUqksm/3yq38VX5VcGp0ZwGZqNDUNETv8QvewOOKe0Y+SwksNG
-         t3oES0hFI9jU/A0sJF1MenV1DhvlYGoOkQm1Ua0A5c4uVI3uFifwp7gL0ZeWKDtQPRcJ
-         58PvjG/3BhqPJm8FAp9d2KFgOawr5WCwgRBCpaKQ4Scj51MSJ5MMqCpo9eN2/w29f27m
-         GvLP2d711dMWgtB/1BeAe4CE+0pMPPHhwj1TfIEtUh6zZIHB/wHP6xvrd8GkpL0uJviC
-         +OEkeACTEZgt2TNjef6IRGtWDcMiKQoP4oqriD/vQxpIAzciIxkAnEntXXVfAH999IC3
-         c9iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dKwNo6TC+1q3oQgv5Miw/gtfysz963YICrpQOCkStJ8=;
-        b=CWwutCWDCvNGjZnJ9oUBRBLXqXweueNkGTINklqJm5eC3TZPN4Rp3SI4yoW1I7fku6
-         Ml34zAMGbx6l7gdY5hpdaD5cwBrxNIpmp73nCshe5OfWfa+MxFEGKHljyhYeBuMDrni4
-         ksKwvrBeKL5KdZ1HLYdk4A5IAakK9owu/gz7VnQAie9QBlc3mOmNV40bH9OCLjAKnHrP
-         qKwnF+pd0FEulR7qv3ntBQqzM0DqEAQOx+8U7ndyK8te+eP+hW8fKyFY1+EvOKFS6Q09
-         +kVZoMYTTZ6QAwHWzp3GykuZ1oZnT5/iJSRCyxyvpMI2sPXFqRT4JK3GkdAO7/f3TCKH
-         8jTQ==
-X-Gm-Message-State: AOAM533Y10u42jG/3nhYPIrAHjmkpqXq9j6blBwwArCdjEYRtqVed033
-        4/wYQHXTkNo9EvtHle+41caO1ROkKQPLYyMX2PhMNg==
-X-Google-Smtp-Source: ABdhPJxi3nburzdMpmtBueqBH1zmdUHAFcqMySogLILTXDVvPm/8sGfTIrB4GvKr/ee2mYjeic1LaaWxwIWNVa+Tumg=
-X-Received: by 2002:a9d:6358:: with SMTP id y24mr16384584otk.229.1612889401486;
- Tue, 09 Feb 2021 08:50:01 -0800 (PST)
+        Tue, 9 Feb 2021 11:50:58 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 493E46083270;
+        Tue,  9 Feb 2021 17:50:13 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id LgSQItoluF3W; Tue,  9 Feb 2021 17:50:13 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id E8B21608A38F;
+        Tue,  9 Feb 2021 17:50:12 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id GB4FDVzrT0QH; Tue,  9 Feb 2021 17:50:12 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id B1F2F6083270;
+        Tue,  9 Feb 2021 17:50:12 +0100 (CET)
+Date:   Tue, 9 Feb 2021 17:50:12 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     Luca Risolia <luca.risolia@studio.unibo.it>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>
+Message-ID: <492787386.378826.1612889412476.JavaMail.zimbra@nod.at>
+In-Reply-To: <705c010b-653a-1dd0-87b9-f3cc83c21802@studio.unibo.it>
+References: <20210124232007.21639-1-richard@nod.at> <3a9c19cf-2c25-a3bf-a200-6d223952797a@studio.unibo.it> <443281182.378615.1612885278254.JavaMail.zimbra@nod.at> <b2424246-d42b-d0bc-8951-8cefdf5b681d@studio.unibo.it> <1517729157.378701.1612886684264.JavaMail.zimbra@nod.at> <ad4fd822-016e-e11e-682c-077a1ced2a18@studio.unibo.it> <231074135.378774.1612888173941.JavaMail.zimbra@nod.at> <705c010b-653a-1dd0-87b9-f3cc83c21802@studio.unibo.it>
+Subject: Re: [fuse-devel] [PATCH 0/8] MUSE: Userspace backed MTD v3
 MIME-Version: 1.0
-References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
- <20210113152625.GB30246@work> <YBGDng3VhE1Yw6zt@kroah.com>
- <20210201105549.GB108653@thinkpad> <YBfi573Bdfxy0GBt@kroah.com>
- <20210201121322.GC108653@thinkpad> <20210202042208.GB840@work>
- <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org> <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com>
- <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAAP7ucLZ5jKbKriSp39OtDLotbv72eBWKFCfqCbAF854kCBU8w@mail.gmail.com> <20210209081744.43eea7b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210209081744.43eea7b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Aleksander Morgado <aleksander@aleksander.es>
-Date:   Tue, 9 Feb 2021 17:49:50 +0100
-Message-ID: <CAAP7ucLVVTUqMX4_jFvvYNXALHgHZmcvX4WQei8cPubfUgXKGQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: MUSE: Userspace backed MTD v3
+Thread-Index: q37PlZSRNO35cCN77UrdwzImPA2u1g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+----- Ursprüngliche Mail -----
+> On 09/02/21 17:29, Richard Weinberger wrote:
+>> The mmap() call itself. Of course you need to touch code.
+>> Maybe just cuse_lowlevel.c, maybe kernel too.
+> 
+> A patch had been submitted some years ago, more than once, asking for
+> inclusion in the kernel, but facts are that at that time nobody in the
+> FUSE group considered it. So much work and time lost, unfortunately.
 
-> On Tue, 9 Feb 2021 10:20:30 +0100 Aleksander Morgado wrote:
-> > This may be a stupid suggestion, but would the integration look less a
-> > backdoor if it would have been named "mhi_wwan" and it exposed already
-> > all the AT+DIAG+QMI+MBIM+NMEA possible channels as chardevs, not just
-> > QMI?
->
-> What's DIAG?
+Well, I think having a generic mmap() for CUSE is hard to achieve.
 
-DIAG/QCDM is an older protocol in Qualcomm based modems; in USB based
-devices we would get a TTY that speaks this protocol. In legacy CDMA
-modems this was required for actual device control (and ModemManager
-has a libqcdm for that
-https://gitlab.freedesktop.org/mobile-broadband/ModemManager/-/tree/master/libqcdm)
-but in all newest modems I'd say this is exclusively used for modem
-trace retrieval (e.g. asking the modem to enable some internal traces
-of the LTE stack which are downloaded in the host via this port). When
-debugging issues with manufacturers, this is what they would ask you
-to do, use this port to retrieve these traces (e.g. Quectel's QLog
-program does that, each manufacturer keeps its own).
-
-> Who's going to remember that this is a backdoor driver
-> a year from now when Qualcomm sends a one liner patches which just
-> adds a single ID to open another channel?
-
-I'm obviously not going to argue about that possibility; although,
-wouldn't it make more sense to discuss that whenever that happens?
-This work is implemented in a very generic way probably, but it
-focuses on WWAN control ports, which is what we need in userspace.
-
-Right now this mhi_uci integration can be used for QMI control of the
-modems, and I assume once that gets merged (if ever!), more patches
-would arrive to enable AT, DIAG and MBIM control ports. The channels
-associated to these WWAN control protocols have clearly defined
-channel ids, and I believe the device itself chooses which channels
-are exposed, so a device may e.g. say that it's going to expose only
-the MBIM control port. This is also very manufacturer dependent I
-think; I know for example that WWAN modules for laptops will probably
-want to expose the MBIM channel instead of QMI, so that the same HW
-integration is used in both Linux and Windows easily. The single and
-generic mhi_uci integration for all these different WWAN control ports
-would allow any of those combinations, very much like with USB devices
-and different USB configurations.
-
-Userspace is also ready for this integration, btw; at least libmbim
-and libqmi don't have any problem with these chardevs, and
-ModemManager has a branch ready to land to support this new
-integration. A lot of new laptops that are already being sold since
-last year come now with PCIe-only WWAN modules, and unfortunately I've
-also seen different manufacturers pushing their own out-of-tree
-variants of this same mhi_uci idea with better or worse luck. I
-personally was very glad to see this work moving forward.
-
---
-Aleksander
+Thanks,
+//richard
