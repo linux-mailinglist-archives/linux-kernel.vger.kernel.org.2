@@ -2,95 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450613150F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C3D3150FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhBINx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S231878AbhBINzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:55:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231993AbhBINw4 (ORCPT
+        with ESMTP id S232049AbhBINyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:52:56 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0601FC061786;
-        Tue,  9 Feb 2021 05:52:15 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id s15so9772399plr.9;
-        Tue, 09 Feb 2021 05:52:15 -0800 (PST)
+        Tue, 9 Feb 2021 08:54:32 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6788CC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:53:33 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id m144so2136517qke.10
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:53:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ltX/D6liAM5hSiXkr+tjZJvQ+HPeM0NdJdyG+zrYIJI=;
-        b=a5y6kLI7NmpM1X7QcRaPYEzgLKvEdV7hmEsn2TGrcLO1gOhvINHMeN7+yWmqhzZoyP
-         oi2yQZwPSgNMm8DbpPdl+tO5SXSpikIMi9eUWstGgmwNvujUyH5vxRG7ddFSEHRdiFVB
-         GPaiXdo3rQd4h2RYOMetFr/VbyhiyCwAnwXVY7sd8UPFNXZh7mfguNHuHDpcsT9fJbkc
-         gk00qdwp6vhGFlGX0nmP6GJS1fVIzW/27AqfBbQYU333lG9HPTYBdwMh5nCafNToa8nG
-         YnsLVcYuPnITkQ3Y8gA7/PCgVb97aqR4u1aJSWo0mqdwYb3or9+7Tbq3GO4M0gEZBLQk
-         gy/w==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=T8f8DDfwXSd9VRLmEP8P3umzAghI6Kqw6/qy/jeS5Qo=;
+        b=gh04iuWWyfXXLlaV1RWSVt6ZQHHbXgL+7SqTdgohcZssGB7SFCglc2Da1zz58QYygR
+         9tVoLF0GKpMU5fAKOJUQeZbKmiZNBpriOh6NJ88Z8/8Oiy+02484H0DfDsD9oLpEdCJB
+         iqbllGJHAulzwrFuz8zaWKtRoDWR91pkLeY3goABlW/bNnl7a7ucWFWFLWHoTWeFdCfi
+         E81odK7NiX2mIG23/RyV6fotvVvwHXBJ3/Y6NQ+7HvCiAyAGmRSY3kUdW52i458n5RX4
+         NyglMvima/h3o9mIMHNuMfUszee7pZjUtNzI0o4O78Zz7zTTtKPysaZeIPpMxYD972RH
+         nQ7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ltX/D6liAM5hSiXkr+tjZJvQ+HPeM0NdJdyG+zrYIJI=;
-        b=dd+rvdHn9YUi33APp/PCSc/mvIoDqaN2ahpxP91VU7IM9oO2TdkEd04hmK20XK0vrx
-         wv5V8fjPmF0+oB2eSoEzNqMlV74Lc6eA8h3dEYSjXXi1YiSjgwfWMttOAQ3ckxweluHO
-         owitikHomPzIyd2nkJdl7NWb3L4w4vjVFbcOJaXUWYxDMKsrbwI+iwmUk/WkGqLf3Bp1
-         MENS5hCS+pztPLPHGTCYcu974BAlc+XTX4GYm0mozHntXRhPSYbB2EIAkfPWSMQRkgnV
-         NFYbDQJPHOzhiJl0qp4y1YuY1UfOsqqkpJSK971Oq5KUywAPSTK7il8PDHWA0XTGZWXz
-         4pWw==
-X-Gm-Message-State: AOAM532RcrPTM0nOIZgRfL93pNPTsOiiUHOBRfwfooQTdxZNgK0Nlfb3
-        xS2ojnMvb9fzZAYmidk2/W8jaHieCMTW8QN9UYw=
-X-Google-Smtp-Source: ABdhPJxtKiBHHx8i8Yp4W/4/oUuJ2Hr9HCwlpdOOdEkv0rfq6DfcaZ+pxR/hbtRrBioSJ8K7Sc5gdo7lfeWXgya+Aqg=
-X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr4206391pja.228.1612878734494;
- Tue, 09 Feb 2021 05:52:14 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T8f8DDfwXSd9VRLmEP8P3umzAghI6Kqw6/qy/jeS5Qo=;
+        b=KvqjKDg2Xm2miGXJcaAgeLakw+VCay1ao94WgP1goI3uj29S9eZ5iPRvds2dlClF2T
+         zivsBgM0y0CFTPYDUTtw+gkp5WsrRyqTaI2rFRqPc+mrbmg4Ul0NeWe625JEKgxbPLSe
+         4H+rhi2mv63K5onjS5t97HegFwsVQ3YWb8IlwuuT6FUXXMjSgTz0zWXe7dtzQ4R82tyu
+         emDWsvndrM9d/7jteJdZ63kfkPTDFbLEEHCuB8yrrKn4nBvXa3hPz9pRKWguwkLLIumL
+         qWgqX0KNKImTDOIwIlqhbCA9bXgfLcnRDCUx/3TTqLPlrqvG7gpvzGkceH/FDjpvrYO3
+         9cIg==
+X-Gm-Message-State: AOAM531LgEZtzREIHKg+ykNnRs5OfwhUjLZiI70FRtCO7loZ53YZxcg4
+        Ay0GAyw3qedbwnaufoVtOWx7AA==
+X-Google-Smtp-Source: ABdhPJx3et279cgNvk+uqR894IQLoOIQFoSZDGEjQvDKhVHg09126LSd7Y8VSphbQdCDRlOdHVR86w==
+X-Received: by 2002:ae9:e80e:: with SMTP id a14mr11633708qkg.103.1612878812715;
+        Tue, 09 Feb 2021 05:53:32 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id d16sm17820271qka.44.2021.02.09.05.53.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 05:53:32 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l9TSN-005RZu-ON; Tue, 09 Feb 2021 09:53:31 -0400
+Date:   Tue, 9 Feb 2021 09:53:31 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Message-ID: <20210209135331.GF4718@ziepe.ca>
+References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
+ <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <a587bd61-9194-4b46-c122-8b4da7b941a8@redhat.com>
+ <20210208183348.GV4718@ziepe.ca>
+ <0dca000a6cd34d8183062466ba7d6eaf@hisilicon.com>
+ <20210208213023.GZ4718@ziepe.ca>
+ <0868d209d7424942a46d1238674cf75d@hisilicon.com>
 MIME-Version: 1.0
-References: <20210208085954.30050-1-nikita.shubin@maquefel.me>
- <5450294.DvuYhMxLoT@redslave> <CAHp75VeW6EWrGPbzBrSPry9Lb8GDvA-C-mkCvmJMTVPeeVxjKg@mail.gmail.com>
- <2202252.ElGaqSPkdT@redslave>
-In-Reply-To: <2202252.ElGaqSPkdT@redslave>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 9 Feb 2021 15:51:58 +0200
-Message-ID: <CAHp75VeOPgN9TMjd4diuiuTZJML23JJCj8AZaApenznmMCiV5Q@mail.gmail.com>
-Subject: Re: [PATCH v5 2/7] gpio: ep93xx: Fix single irqchip with multi gpiochips
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0868d209d7424942a46d1238674cf75d@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 2:54 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
-> On Tuesday, 9 February 2021 15:46:19 MSK Andy Shevchenko wrote:
-> >On Tue, Feb 9, 2021 at 2:35 PM Nikita Shubin
-> <nikita.shubin@maquefel.me> wrote:
-> >> On Monday, 8 February 2021 16:20:17 MSK Andy Shevchenko wrote:
-> >> >On Mon, Feb 8, 2021 at 11:00 AM Nikita Shubin
-> >> <nikita.shubin@maquefel.me> wrote:
+On Tue, Feb 09, 2021 at 03:01:42AM +0000, Song Bao Hua (Barry Song) wrote:
 
-...
+> On the other hand, wouldn't it be the benefit of hardware accelerators
+> to have a lower and more stable latency zip/encryption than CPU?
 
-> >> >> +       ic->name = devm_kasprintf(dev, GFP_KERNEL, "gpio-irq-%s",
-> >> >> label);
-> >> >
-> >> >Is the label being NULL okay?
->
-> You mean ENOMEM should be honored ? I think you are right about it.
+No, I don't think so.
 
-Depending on what is the answer to the question below. If NULL label
-is okay (and here is just optional) then simply comment it in the
-code, otherwise check is missed.
+If this is an important problem then it should apply equally to CPU
+and IO jitter.
 
-> >> The label is taken from ep93xx_gpio_banks[], so unless we explicitly
-> >> pass zero to ep93xx_init_irq_chip(), we are ok.
-> >
-> >Maybe I was unclear, let me rephrase: Is the *resulting* label being
-> >NULL okay?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Honestly I find the idea that occasional migration jitters CPU and DMA
+to not be very compelling. Such specialized applications should
+allocate special pages to avoid this, not adding an API to be able to
+lock down any page
+ 
+Jason
