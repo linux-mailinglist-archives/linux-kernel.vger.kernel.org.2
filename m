@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8423314661
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCDB314664
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbhBICbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:31:42 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:33714 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbhBICbT (ORCPT
+        id S230310AbhBICcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 21:32:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhBICcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:31:19 -0500
-Received: by mail-ot1-f51.google.com with SMTP id 63so16220605oty.0;
-        Mon, 08 Feb 2021 18:31:03 -0800 (PST)
+        Mon, 8 Feb 2021 21:32:39 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A879C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 18:31:58 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id f14so28911302ejc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 18:31:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mTfGi8L/4CClRzVPopUo6ym2s0FBZL3P9CuXWX9APaM=;
+        b=AvpvsLLoyj2RMvQKuZdRWp3N2Rljv2I6Xl80gQO51Qp+z7414zu8O1UN5G5sartw6D
+         +IhkKyoj7zV4VyavWWOQ6a6KtSVb3pUmU4NEu3YZrrNizjNIIIQmuUH0x9Lifyks8z7f
+         pwtMQ+RC9wBmRk+NcgEPKOMJ6tvIxUZFBMzQdAdWxFrvuRG7TtqTH3o3Kyi9DmCKcfk2
+         +xNTn30tAaGakVdTPUy/amTU5SVkkS9lVgMew8ktr0zeTvzWHZuN4cF2OZWlM2fYi3Ce
+         pEP6sDdhqBpesMewlMcX+/HzK8E8vOslrSn+RZFUrI4MvfUsXSzQFNu28F3chTPwMpEq
+         Xbcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PED255axvbXNFhk6Zwh4TAvJp8y+j/S6dmdpcXF2Uuo=;
-        b=RcEiTow6Wt0XM0DIRrV7x1wZRjST4kRmFxb8yDt2v54gvt8MTQJBlrYovVTnMW7omP
-         eOjHS3z5M9HPeIyfOQSaFXYTHxY2xp0Iq5+HYnehTmCPwcF76C4MyR03noA4ZYB8b4N6
-         i/ynzYTKu76jE0mjr0uBhsLvHK33I3YYylDtou7u+A7Rszy9CctuXTXdaqHW3iYHv24I
-         9YwSzQgMTACV4xB4pXbeDyG0ou1aqOmZDowdrl2LMSJfTbkDELAvJaIwV4YLdC5vAw1C
-         CC+ju0giTmoPwsflBID2J3yG9Limn8FQGIEw3DR4amlLYttHliCBdWKNeaevYZcdN3GS
-         H9ZQ==
-X-Gm-Message-State: AOAM53312EK0hhA668OlmhFchHGTAghP+M3SaVLlrG30MooFliNG7c+W
-        RG6UB1G3mUmX3TAp9thgOebWipu3PA==
-X-Google-Smtp-Source: ABdhPJzMRVr0ERYwjWHNwtA/F8L0VEP60pgUm4Q8mQsVdH8KoZ4wC3e++6km4F5eItWOJzZQoaGiHQ==
-X-Received: by 2002:a9d:2270:: with SMTP id o103mr10128656ota.303.1612837837674;
-        Mon, 08 Feb 2021 18:30:37 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z20sm4062344oth.55.2021.02.08.18.30.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 18:30:36 -0800 (PST)
-Received: (nullmailer pid 2558082 invoked by uid 1000);
-        Tue, 09 Feb 2021 02:30:35 -0000
-Date:   Mon, 8 Feb 2021 20:30:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Howard Yen <howardyen@google.com>
-Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] dt-bindings: usb: usb-xhci: add USB offload support
-Message-ID: <20210209023035.GA2552083@robh.at.kernel.org>
-References: <20210119101044.1637023-1-howardyen@google.com>
- <20210119101044.1637023-5-howardyen@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mTfGi8L/4CClRzVPopUo6ym2s0FBZL3P9CuXWX9APaM=;
+        b=RX4DeTVPAnHqla+FhDfbu5ROioFSXtX3q2vRCfIgue2tOMB+sBtkuphjM+t8FbPa0G
+         R7mpwZqfVe6W3B91BI1jNiOKGnUBHwK+wdl515TgfkEW0i3fA+dReM37XQ3dJrHjEt+D
+         vjXqK7fKdsAmo3vuirekg7uzlaY1Emi26pS+Iie47/e2754C729kCd0vtoHazsmAdioI
+         sSC551ya27mBfu2WXWwTjnkLrjVVVoyF1/ljQIPDm2q45wxi69sgzPBIGA8Qmge6aYPW
+         2LeeWoMqwDQiUINxJPavpn9E3Not2oDgj9W2D+OflBETZdkaAPkXJdlTvDm2VPvTpnJw
+         3nnQ==
+X-Gm-Message-State: AOAM530ICl5KX5twBtVbdRLo2qPOB05fPfECWfVbVRoDxxBZ0deGdOiZ
+        EcX1af2/hjtf99Ho7T2SvAP93hUBVz6w9Qur2t0wNQ==
+X-Google-Smtp-Source: ABdhPJyPqGgUhxoMWPs2L7UW1Jz9zUd86P5RnbK6VvIdX/xhbV1j3UzNgC6kJP1XsWoG0pHkFlPFl1LzpBH2fQn9Dz0=
+X-Received: by 2002:a17:906:ca0d:: with SMTP id jt13mr19524040ejb.170.1612837916543;
+ Mon, 08 Feb 2021 18:31:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119101044.1637023-5-howardyen@google.com>
+References: <20210208145818.395353822@linuxfoundation.org>
+In-Reply-To: <20210208145818.395353822@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 9 Feb 2021 08:01:44 +0530
+Message-ID: <CA+G9fYsjJ+K7w-PQ4gp=L3QO_VSaUMr6syvAS77--aFbfZVK-g@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/120] 5.10.15-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rolf Eike Beer <eb@emlix.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 06:10:44PM +0800, Howard Yen wrote:
-> Document USB offload support for usb-xhci.
+On Mon, 8 Feb 2021 at 20:44, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.15 release.
+> There are 120 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.15-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Is this a standard XHCI capability or specific to certain 
-implementations? Do all versions of DWC3 support it?
+Due to the patch below, the x86_64 build breaks with gcc 7.3.x
+This issue is specific to openembedded kernel builder.
 
-> 
-> For example:
-> 
-> &usbdrd_dwc3 {
-> 	...
-> 	/* support usb offloading, 0: disabled, 1: audio */
-> 	offload = <1>;
-> 	...
-> };
-> 
-> Signed-off-by: Howard Yen <howardyen@google.com>
-> ---
->  Documentation/devicetree/bindings/usb/usb-xhci.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/usb-xhci.txt b/Documentation/devicetree/bindings/usb/usb-xhci.txt
-> index b120dd6612a2..aab1fd499f15 100644
-> --- a/Documentation/devicetree/bindings/usb/usb-xhci.txt
-> +++ b/Documentation/devicetree/bindings/usb/usb-xhci.txt
-> @@ -46,6 +46,7 @@ Optional properties:
->    - quirk-broken-port-ped: set if the controller has broken port disable mechanism
->    - imod-interval-ns: default interrupt moderation interval is 5000ns
->    - phys : see usb-hcd.yaml in the current directory
-> +  - offload: supporting USB offload feature, 0: disabled, 1: audio
+We have also noticed on mainline, Linux next and now on stable-rc 5.10.
 
-What does not present mean? Unless you need 'keep the h/w default', then 
-this can be boolean instead.
+collect2: error: ld returned 1 exit status
+make[2]: *** [scripts/Makefile.host:95: scripts/extract-cert] Error 1
 
->  
->  additionally the properties from usb-hcd.yaml (in the current directory) are
->  supported.
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
-> 
+ref:
+Build failure link,
+https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.10/DISTRO=lkft,MACHINE=intel-corei7-64,label=docker-buster-lkft/64/consoleText
+
+> Rolf Eike Beer <eb@emlix.com>
+>     scripts: use pkg-config to locate libcrypto
+
+From 7658769759718950f5eda0079e84837738d8fda8 Mon Sep 17 00:00:00 2001
+From: Rolf Eike Beer <eb@emlix.com>
+Date: Thu, 22 Nov 2018 16:40:49 +0100
+Subject: scripts: use pkg-config to locate libcrypto
+
+commit 2cea4a7a1885bd0c765089afc14f7ff0eb77864e upstream.
+
+Otherwise build fails if the headers are not in the default location. While at
+it also ask pkg-config for the libs, with fallback to the existing value.
+
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Cc: stable@vger.kernel.org # 5.6.x
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
