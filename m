@@ -2,124 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01500315C42
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0C2315BF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234732AbhBJBaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:30:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43307 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233747AbhBIWHf (ORCPT
+        id S234671AbhBJBLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:11:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234067AbhBIWhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:07:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612908361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uskw3PbEX7wEnO/ex/Xsz3m8Nxa2KyupOaIbM7L2BOs=;
-        b=P1xXy+miLpiOjA2OGvxj6K8aFyJu4bBHAQV2HpFLOkcPy/ljnqBvR9bFuh7mOwmXXcgHqw
-        coESVx9hUcKaM101TIIVnhkxAJKeya6zLdolpQzSEMKsHisDPD7lg4SgKL2KmTPyshCfjp
-        +Jwn2BrAdp9+x1bb2DWkXu0krlnLpTw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-k2Jf9BXbPxKvPSd8tNYV6w-1; Tue, 09 Feb 2021 16:17:45 -0500
-X-MC-Unique: k2Jf9BXbPxKvPSd8tNYV6w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEB8F192CC44;
-        Tue,  9 Feb 2021 21:17:42 +0000 (UTC)
-Received: from redhat.com (ovpn-115-63.rdu2.redhat.com [10.10.115.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AE56A60D11;
-        Tue,  9 Feb 2021 21:17:40 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 16:17:38 -0500
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Alistair Popple <apopple@nvidia.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Linux MM <linux-mm@kvack.org>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm-ppc@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Subject: Re: [PATCH 0/9] Add support for SVM atomics in Nouveau
-Message-ID: <20210209211738.GA834106@redhat.com>
-References: <20210209010722.13839-1-apopple@nvidia.com>
- <CAKMK7uGwg2-DTU7Zrco=TSkcR4yTqN1AF0hvVYEAbuj4BUYi5Q@mail.gmail.com>
- <3426910.QXTomnrpqD@nvdebian>
- <20210209133520.GB4718@ziepe.ca>
+        Tue, 9 Feb 2021 17:37:02 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A7AC06121C
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:25:32 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id w36so17014492lfu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:25:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5NXrj70SaJJJRtMQWC0+3w4cmGywCfZjtndBL9rb8Bo=;
+        b=g8n7RWB/hph+MNS6KsfC0GffC4feoLtbwfzXkMDO5VGlvyK682yT02RPRIOW6hieUR
+         nxG1Mlzbyp5mtI1Do4dwBB4pr2NfNtLSNxuXGIfX+Az+7iAT6uxAH+/kuEuPZoNDiHrT
+         JX8A9+J4I4DIw7KDC1ACDk8XTP+nwuXWBZL+g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5NXrj70SaJJJRtMQWC0+3w4cmGywCfZjtndBL9rb8Bo=;
+        b=doHFSEx0AO4sT3tsqeAPTmdTerAud4Hm05c0E+WKzmWYNoJZfMC+NuJ0rFPHRKGf/v
+         QrFZlJbqSjXIxc4XxnLYziBBIJn3MjW/8nRkqKXExkZdLRDe41G7wd4T4ffSRfQOU3UG
+         T6VLOqkXNjeOydCx/OAoUgF4rKaG0pD4oteKfXNOJOHWr/hFPzdWQSUFcB+ZXuN9Azra
+         P3863/4yakW4n+GO69tW76F9TCV8gNdC3HFDVBjTvPyIQlqs+Ou2apXSKS98QwTCszbT
+         DWnfXJxBxPyDGivh9+i7C4LpDsjycqcUT7eG8FBonMCalm/Xs3feXycRN1/bTh5IJgCH
+         CBxA==
+X-Gm-Message-State: AOAM53137XINZlUJM8KQ68u7UnAEmOqIwqRpy8CK9d3LRRKIeTJ8pxrZ
+        ExlCypyixL3xH9jsKaZBT+cWaqMvk4kKpw==
+X-Google-Smtp-Source: ABdhPJzHxaGIFIWlgruYYh5StTYhkFy4WFl+M7RUObzQaM6MiB1sgq3BdndC3AW0qbfoOySxLOAkeA==
+X-Received: by 2002:a05:6512:234d:: with SMTP id p13mr14062543lfu.87.1612905930630;
+        Tue, 09 Feb 2021 13:25:30 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id m7sm2736561lfg.289.2021.02.09.13.25.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 13:25:30 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id f1so30640435lfu.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:25:30 -0800 (PST)
+X-Received: by 2002:a2e:b1c8:: with SMTP id e8mr15253931lja.251.1612905557284;
+ Tue, 09 Feb 2021 13:19:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210209133520.GB4718@ziepe.ca>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <591237.1612886997@warthog.procyon.org.uk> <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
+ <20210209202134.GA308988@casper.infradead.org>
+In-Reply-To: <20210209202134.GA308988@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 9 Feb 2021 13:19:01 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh+2gbF7XEjYc=HV9w_2uVzVf7vs60BPz0gFA=+pUm3ww@mail.gmail.com>
+Message-ID: <CAHk-=wh+2gbF7XEjYc=HV9w_2uVzVf7vs60BPz0gFA=+pUm3ww@mail.gmail.com>
+Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 09:35:20AM -0400, Jason Gunthorpe wrote:
-> On Tue, Feb 09, 2021 at 11:57:28PM +1100, Alistair Popple wrote:
-> > On Tuesday, 9 February 2021 9:27:05 PM AEDT Daniel Vetter wrote:
-> > > >
-> > > > Recent changes to pin_user_pages() prevent the creation of pinned pages in
-> > > > ZONE_MOVABLE. This series allows pinned pages to be created in 
-> > ZONE_MOVABLE
-> > > > as attempts to migrate may fail which would be fatal to userspace.
-> > > >
-> > > > In this case migration of the pinned page is unnecessary as the page can 
-> > be
-> > > > unpinned at anytime by having the driver revoke atomic permission as it
-> > > > does for the migrate_to_ram() callback. However a method of calling this
-> > > > when memory needs to be moved has yet to be resolved so any discussion is
-> > > > welcome.
-> > > 
-> > > Why do we need to pin for gpu atomics? You still have the callback for
-> > > cpu faults, so you
-> > > can move the page as needed, and hence a long-term pin sounds like the
-> > > wrong approach.
-> > 
-> > Technically a real long term unmoveable pin isn't required, because as you say 
-> > the page can be moved as needed at any time. However I needed some way of 
-> > stopping the CPU page from being freed once the userspace mappings for it had 
-> > been removed. 
-> 
-> The issue is you took the page out of the PTE it belongs to, which
-> makes it orphaned and unlocatable by the rest of the mm?
-> 
-> Ideally this would leave the PTE in place so everything continues to
-> work, just disable CPU access to it.
-> 
-> Maybe some kind of special swap entry?
-> 
-> I also don't much like the use of ZONE_DEVICE here, that should only
-> be used for actual device memory, not as a temporary proxy for CPU
-> pages.. Having two struct pages refer to the same physical memory is
-> pretty ugly.
-> 
-> > The normal solution of registering an MMU notifier to unpin the page when it 
-> > needs to be moved also doesn't work as the CPU page tables now point to the
-> > device-private page and hence the migration code won't call any invalidate 
-> > notifiers for the CPU page.
-> 
-> The fact the page is lost from the MM seems to be the main issue here.
-> 
-> > Yes, I would like to avoid the long term pin constraints as well if possible I 
-> > just haven't found a solution yet. Are you suggesting it might be possible to 
-> > add a callback in the page migration logic to specially deal with moving these 
-> > pages?
-> 
-> How would migration even find the page?
+On Tue, Feb 9, 2021 at 12:21 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> Yeah, I have trouble with the private2 vs fscache bit too.  I've been
+> trying to persuade David that he doesn't actually need an fscache
+> bit at all; he can just increment the page's refcount to prevent it
+> from being freed while he writes data to the cache.
 
-Migration can scan memory from physical address (isolate_migratepages_range())
-So the CPU mapping is not the only path to get to a page.
+Does the code not hold a refcount already?
 
-Cheers,
-Jérôme
+Honestly, the fact that writeback doesn't take a refcount, and then
+has magic "if writeback is set, don't free" code in other parts of the
+VM layer has been a problem already, when the wakeup ended up
+"leaking" from a previous page to a new allocation.
 
+I very much hope the fscache bit does not make similar mistakes,
+because the rest of the VM will _not_ have special "if fscache is set,
+then we won't do X" the way we do for writeback.
+
+So I think the fscache code needs to hold a refcount regardless, and
+that the fscache bit is set the page has to have a reference.
+
+So what are the current lifetime rules for the fscache bit?
+
+             Linus
