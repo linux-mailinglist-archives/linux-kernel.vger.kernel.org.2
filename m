@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11C0314F81
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3940A314F82
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhBIMu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:50:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60730 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229880AbhBIMtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:49:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 83327ADCD;
-        Tue,  9 Feb 2021 12:49:10 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 13:49:06 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 08/21] x86/fpu/xstate: Define the scope of the initial
- xstate data
-Message-ID: <20210209124906.GC15909@zn.tnic>
-References: <20201223155717.19556-1-chang.seok.bae@intel.com>
- <20201223155717.19556-9-chang.seok.bae@intel.com>
- <20210208123330.GE17908@zn.tnic>
- <AF6E884F-F6DC-4519-B57E-F6CFBDBEF85B@intel.com>
+        id S230222AbhBIMvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:51:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhBIMvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:51:46 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53352C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 04:51:06 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id e9so1594004pjj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 04:51:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yZxg6dXXFoEHvIAudV0HbB2Heq7jrncVjx+BrvchARk=;
+        b=vN1p/bIFWtuthuQZ71jOzLeqNOLOqGDcGBoIDb3IEA5/3ZNXz9Cq7OnrPQQaO2yyU5
+         5riH8BxKfGT2XVzdEoLgY/6uctN7fXm1VT06jvNoNLZPyxqoN2c7Frs9TWIVEPr+szka
+         dXuhbBtQffXbMSiN6tDn/dSbdqJE7YqMPUYPnp7dlFxqOpi3zh2gEDrwyYUcvZChlsK1
+         raZ+oEO/N8wjOS2PjvMNsF1stesZGTNqoHu4BZqq7w4EyxkppLd4MD6gAWdGQ97SEBg4
+         R4BGXloH58gOkOCz9Qx8PrIfOFxaIFuI1OHyXKkHeWNQ+IcT2GSrb0okI/zXWLuyxOgL
+         khKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yZxg6dXXFoEHvIAudV0HbB2Heq7jrncVjx+BrvchARk=;
+        b=bUl4l3adVJV2wyH0eQj3pgW8RCwO1KrkjN2cQSDEQkNR3Kb1u4aFfP3cDiZHNJlL3h
+         WHjN6TfuTWvGMmmJaCMSa1TUNWXbAH+wXGijBuyLHNQtkcvQ8mz+ATEjR+u71ZPHb6tv
+         FB2kF8TSa4zOeIaavm09CqcLpJBYd/HQWKctuM/87wY7B8nP+6u/Hr/cJgNlj8flEkYM
+         eCIkXv5YUdJHhSMgwqEZjD9ZJkbvkt6vTTKytPKckcgPUkN2IcqJx79bqbXaZIaoyjBr
+         /hJ3yucCV8Y1fl0keqZ8iNOMSi5noONxBnvqCCq50X756ctJS1pmEw9uCJanC4FSFh8r
+         AB3Q==
+X-Gm-Message-State: AOAM531PYUx8dMvfIAkpED9F9t8PXCPwr0P8rPiHPUCR4dBlq1j1QX7+
+        U+CQnwvLouH8Udof4SyDztg=
+X-Google-Smtp-Source: ABdhPJzAw96fBfEmrET2VUlhLYjKmuFAhEyapFm4b5wI0ZAZHaB2YN4R8RmOVMs9kEp67GAr7KsNaA==
+X-Received: by 2002:a17:90b:23d4:: with SMTP id md20mr3777029pjb.220.1612875065925;
+        Tue, 09 Feb 2021 04:51:05 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:5c0a:f013:997:8903:ccd:f31])
+        by smtp.gmail.com with ESMTPSA id t21sm21310609pfc.92.2021.02.09.04.51.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 04:51:05 -0800 (PST)
+From:   Mukul Mehar <mukulmehar02@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Mukul Mehar <mukulmehar02@gmail.com>
+Subject: [PATCH] Drivers: staging: most: sound: Fixed styling issue.
+Date:   Tue,  9 Feb 2021 18:20:37 +0530
+Message-Id: <20210209125036.17197-1-mukulmehar02@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <AF6E884F-F6DC-4519-B57E-F6CFBDBEF85B@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 06:53:23PM +0000, Bae, Chang Seok wrote:
-> Maybe, drop ‘for convenience’ from this sentence, since the buffer’s usage is
-> not much relevant in this changelog.
+This patch fixes a warning, of the line ending with a '(',
+generated by checkpatch.pl.
 
-Yes, "init_fpstate" is kinda clear what it is, from the name.
+Signed-off-by: Mukul Mehar <mukulmehar02@gmail.com>
+---
+ drivers/staging/most/sound/sound.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-> It does functional change, but it is conditional to AMX enabling.
->
-> It includes all the initial states when AMX states not enabled. But it will
-> exclude the AMX state (with 8KB zeros) with the change.
-
-Those sentences "no functional change" are supposed to mean that
-the patch doesn't change anything and is only an equivalent code
-transformation.
-
-Yours does. So drop it from this one and from all the other patches as
-it is causing more confusion than it is trying to dispel.
-
-> I think they are in a different context.
-> 
-> The helper indicates the mask for the ‘init_fpstate’ buffer. The rest is the
-> initial mask value for the per-task xstate buffer.
-
-Wait, what?
-
-Are you trying to tell me that that helper will return different masks
-depending on xfeatures_mask_user_dynamic, which changes in its lifetime?
-
-Then drop that helper altogether - that is more confusion and the xstate
-code is already confusing enough.
-
-> Since you suggested to introduce get_xstate_buffer_attr(), how about replacing
-> what you found with something like:
-> 
-> get_xstate_buffer_attr(XSTATE_INIT_MASK)
-
-I'd prefer no helper at all but only comments above the usage site.
-
-Thx.
-
+diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
+index 3a1a59058042..4dd1bf95d1ce 100644
+--- a/drivers/staging/most/sound/sound.c
++++ b/drivers/staging/most/sound/sound.c
+@@ -228,12 +228,12 @@ static int playback_thread(void *data)
+ 		struct mbo *mbo = NULL;
+ 		bool period_elapsed = false;
+ 
+-		wait_event_interruptible(
+-			channel->playback_waitq,
+-			kthread_should_stop() ||
+-			(channel->is_stream_running &&
+-			 (mbo = most_get_mbo(channel->iface, channel->id,
+-					     &comp))));
++		wait_event_interruptible(channel->playback_waitq,
++					 kthread_should_stop() ||
++					 (channel->is_stream_running &&
++					 (mbo = most_get_mbo(channel->iface,
++					 channel->id,
++					 &comp))));
+ 		if (!mbo)
+ 			continue;
+ 
 -- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+2.25.1
