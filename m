@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4581831571B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B177231570C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbhBITqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 14:46:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43614 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233170AbhBISTu (ORCPT
+        id S233674AbhBIToB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 14:44:01 -0500
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:52230 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233259AbhBISSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 13:19:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612894686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zdS/JNK+W4+/EonRhgG8sns52Ojv8+x5USFjY91rjWg=;
-        b=A/gOXBkOWTpNofUqxwdXpAb78yFrC3diJV+iMpAq+cotd9ph2cBPqJRrclJj+JnefwOKnF
-        w76WS+/2gnINmBUGLRuTCYBlK3Qf9AwcklYYlKJZ1CGb87PtXgo4eTyp9FDdoa0EOSX0d/
-        dua32uqXZUr2mXzO5uX9JNOfXU0LjhY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-sYh8g-K2OvmhnAjobrpvgA-1; Tue, 09 Feb 2021 13:18:03 -0500
-X-MC-Unique: sYh8g-K2OvmhnAjobrpvgA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 68B578030C2;
-        Tue,  9 Feb 2021 18:18:01 +0000 (UTC)
-Received: from [10.36.113.141] (ovpn-113-141.ams2.redhat.com [10.36.113.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EEADF5D9C0;
-        Tue,  9 Feb 2021 18:17:59 +0000 (UTC)
-Subject: Re: [PATCH] mm: remove lru_add_drain_all in alloc_contig_range
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <20210209175048.361638-1-minchan@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <accc057c-e639-7510-f722-4a4d166c80b6@redhat.com>
-Date:   Tue, 9 Feb 2021 19:17:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 9 Feb 2021 13:18:51 -0500
+Received: by mail-wm1-f53.google.com with SMTP id i5so4149045wmq.2;
+        Tue, 09 Feb 2021 10:18:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uLdJv6cZuHRtRFFRIJEOoH3tFE87WZTh9kuO83NwQkA=;
+        b=AQ+XhQOVzY7tNvN+7MromeEYGIc+mQAB+nJkPt0qZSlT3XflLWIVYJS3kuOrlSYnV3
+         iY8IO7acAMxh4Raaq+esbLoxLLigbJxNsW/qmAnN+jnzRckSF3+HXFAHXwuHa3dk9Afp
+         CQTnAz8ByqxnI5fo1T5NvFB4JT30kM6hGD9s4QJ2PUREIWbZRz8X7Ju4FenHTy3GK3gq
+         2s0hmen74301TCgW/Tq5aNiher26PN1SqbEaWaYkR6Pc5QJ/X9w/Pa3n6vhupgf7fJzD
+         FtfnBoboDFsGw+lsSF7CO0WnJVZKBjkkmUobv/CaQkUB/QkyGunTZLlNL+Qv4FNoREn+
+         yt4w==
+X-Gm-Message-State: AOAM531yJTqrhiAiUo+d6CMDrC4zJIvUeNg8oLZM96SXn4HdyQP7ZUxC
+        wBnMkBZ4UaE4RiHLgXChnP2gO4geLdYcbrS7
+X-Google-Smtp-Source: ABdhPJwz+oj1rYRkIUbkuFpwNkRP8w69gpqFE7NuELRZRlrJxE3bDlWo2EjSvBNuLir40teoqSz3YQ==
+X-Received: by 2002:a1c:105:: with SMTP id 5mr4662963wmb.89.1612894688876;
+        Tue, 09 Feb 2021 10:18:08 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id u70sm6019208wmu.20.2021.02.09.10.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 10:18:08 -0800 (PST)
+Date:   Tue, 9 Feb 2021 19:18:06 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v4 15/15] dmaengine: dw-edma: Add pcim_iomap_table return
+ checker
+Message-ID: <YCLR3uB5+GELTXSk@rocinante>
+References: <ceb5eb396e417f9e45d39fd5ef565ba77aae6a63.1612389406.git.gustavo.pimentel@synopsys.com>
+ <20210208193516.GA406304@bjorn-Precision-5520>
+ <DM5PR12MB1835A960892E401D50DEBB9DDA8E9@DM5PR12MB1835.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209175048.361638-1-minchan@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DM5PR12MB1835A960892E401D50DEBB9DDA8E9@DM5PR12MB1835.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.02.21 18:50, Minchan Kim wrote:
-> __alloc_contig_migrate_range already has lru_add_drain_all call
-> via migrate_prep. It's necessary to move LRU taget pages into
-> LRU list to be able to isolated. However, lru_add_drain_all call
-> after __alloc_contig_migrate_range is called is pointless.
+Hi Gustavo,
+
+[...]
+> > This "pcim_iomap_table(dev)[n]" pattern is extremely common.  There
+> > are over 100 calls of pcim_iomap_table(), and
+> > 
+> >   $ git grep "pcim_iomap_table(.*)\[.*\]" | wc -l
+> > 
+> > says about 75 of them are of this form, where we dereference the
+> > result before testing it.
 > 
-> This patch removes it.
+> That's true, there are a lot of drivers that don't verify that pointer. 
+> What do you suggest?
+> 1) To remove the verification so that is aligned with the other drivers
+> 2) Leave it as is. Or even to add this verification to the other drivers?
 > 
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->   mm/page_alloc.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 6446778cbc6b..f8fbee73dd6d 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8603,8 +8603,6 @@ int alloc_contig_range(unsigned long start, unsigned long end,
->   	 * isolated thus they won't get removed from buddy.
->   	 */
->   
-> -	lru_add_drain_all();
-> -
->   	order = 0;
->   	outer_start = start;
->   	while (!PageBuddy(pfn_to_page(outer_start))) {
-> 
+> Either way, I will add the pcim_iomap_table(pdev) before this 
+> instruction.
+[...]
 
-I was expecting some magical reason why this is still required but I am 
-not able to find a compelling one. Maybe this is really some historical 
-artifact.
+A lot of the drivers consume the value from pcim_iomap_table() at
+a given BAR index directly as-is, some check if the pointer they got
+back is not NULL, a very few also check if the address at a given index
+is not NULL.
 
-Let's see if other people know why this call here still exists.
+Given that the memory allocation for the table can fail, we ought to
+check for a NULL pointer.  It's a bit worrying that people decided to
+consume the value it returns directly without any verification.
 
--- 
-Thanks,
+I only found two drivers that perform this additional verification of
+checking whether the address at a given index is valid, as per:
 
-David / dhildenb
+  https://lore.kernel.org/linux-pci/YCLFTjZQ2bCfGC+J@rocinante/
 
+Personally, I would opt for (2), and then like you suggested send
+a separate series to update other drivers so that they also include the
+this NULL pointer check.
+
+But let's wait for Bjorn's take on this, though.
+
+Krzysztof
