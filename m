@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE0E314E99
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64683314E9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhBIMDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:03:12 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33975 "EHLO ozlabs.org"
+        id S229993AbhBIMDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:03:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41712 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229611AbhBIMBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:01:00 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DZhKV4W3xz9sW2;
-        Tue,  9 Feb 2021 23:00:13 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612872015;
-        bh=23qX09X79yp5J6UvlLalEpFKqO8aBwetHQLw2foXEeg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jHM5VcZitwYtxpDjOKtVwVd9LVZMEXM73OL0VHPHtT0Gf6MIuMG2jQLn3pqu3qMVX
-         hn0G4pmHDltnf/C6jaK934Wt2DkNIHPYuPKDT0e42bzx+b/jO+Z15MGoNKnqyno47M
-         otT9qb7Lt7Muv98Lppt6XElteREt7wAiJ5eVZdtItBaWp8cRMvuDD3/bWE7V6uSXUY
-         KEfICuUYAAWYadEKQXuNylZT9jgK6/2rAfV1BxdoFXTNQy5qbIwcPvnJSCxLAf34vt
-         5eyMorDRT10WBHbMx8TXJHTIY5+7BQU3BaHuKyARQX9gRSMexMwC1BLoLe/O0+aUDn
-         SVSbwbQHGdMRQ==
-Date:   Tue, 9 Feb 2021 23:00:12 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the clk tree
-Message-ID: <20210209230012.7887a91b@canb.auug.org.au>
+        id S230242AbhBIMBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:01:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 38780AF2B;
+        Tue,  9 Feb 2021 12:00:51 +0000 (UTC)
+Subject: Re: [PATCH v4 3/3] vsprintf: dump full information of page flags in
+ pGp
+To:     Yafang Shao <laoar.shao@gmail.com>, willy@infradead.org,
+        andriy.shevchenko@linux.intel.com, david@redhat.com,
+        linmiaohe@huawei.com, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, joe@perches.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210209105613.42747-1-laoar.shao@gmail.com>
+ <20210209105613.42747-4-laoar.shao@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <0393a2c1-6cc6-418a-9548-572620eb9098@suse.cz>
+Date:   Tue, 9 Feb 2021 13:00:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ru2Rglr0IGoqrtyhVn.6jBz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210209105613.42747-4-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ru2Rglr0IGoqrtyhVn.6jBz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2/9/21 11:56 AM, Yafang Shao wrote:
+> Currently the pGp only shows the names of page flags, rather than
+> the full information including section, node, zone, last cpupid and
+> kasan tag. While it is not easy to parse these information manually
+> because there're so many flavors. Let's interpret them in pGp as well.
+> 
+> To be compitable with the existed format of pGp, the new introduced ones
+> also use '|' as the separator, then the user tools parsing pGp won't
+> need to make change, suggested by Matthew. The new information is
+> tracked onto the end of the existed one.
+> 
+> On example of the output in mm/slub.c as follows,
+> - Before the patch,
+> [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+> 
+> - After the patch,
+> [ 8838.835456] Slab 0x000000002828b78a objects=33 used=3 fp=0x00000000d04efc88 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> 
+> The documentation and test cases are also updated. The output of the
+> test cases as follows,
+> [  501.485081] test_printf: loaded.
+> [  501.485768] test_printf: all 388 tests passed
+> [  501.488762] test_printf: unloaded.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Joe Perches <joe@perches.com>
+> Cc: Miaohe Lin <linmiaohe@huawei.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
 
-Hi all,
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Commits
+The 'pfl' array should be even useful in kernel crash dump tools!
 
-  af5782442538 ("clk: meson: axg: Remove MIPI enable clock gate")
-  001cad0d3a15 ("clk: meson-axg: remove CLKID_MIPI_ENABLE")
-
-are missing a Signed-off-by from their committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ru2Rglr0IGoqrtyhVn.6jBz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAieUwACgkQAVBC80lX
-0Gxznwf/SbIyKaPla4zy+F7l9QphYIhiU02U6VVLyqh8rnZitLV/fFOt60l7iodO
-20tfqa+wWS3c7z/Q/GDYuhvUPi5mhPqSTF6mLQpHks5QWqRhpeQsFyIQ02uqM0qN
-qc2hi9104f/5Q23bSvOl7BpfX/7boz9SPyxwHtDJOQJCzfAqo9uWZcd8RBbJWmmt
-cJmaHkCHvgilXFMi+hPCqWV6UBci5yGbYnbAsxwOAuDaI/QvVaRDMDjrmoIN1GpE
-UBsAL8s7iwCDeHQ1C1DEm9bOvQ7RUynZeHe83ZODRZahSVWCwbCtP3TxkfdthoTg
-c++D5iNvuIANhDAfCso9xvWTwKkqlg==
-=EUhu
------END PGP SIGNATURE-----
-
---Sig_/ru2Rglr0IGoqrtyhVn.6jBz--
