@@ -2,141 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB14C314C24
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324D7314C21
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhBIJwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:52:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhBIJuE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:50:04 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04A6C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:49:23 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id t142so2468186wmt.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:49:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iODsYL577vtiTZcS5AXU5f62AD5nWHRXTaswzxJRGpE=;
-        b=JBX1u8nYfJ2D17HCZU3bF64mR3tXNePMMbkujQwPzUB4EHhq0FLPs5OOM92rDCpHBF
-         4O9xTvVsnstE1b4IgRWf/cN/5JU2cy+inHw8TS2/FNMZeJNBStL7jnJ8ZcPrtCFvxPG4
-         V/4KyzneELW/HpkZBFhB9trOu3KvpkoWlsMbt5tVgBOMJdCNMuB/45CFP7unHH4zy3N2
-         NFahaB6yHkIYKLQFa/wTYu0dpNn78LVyWqe8lOs5wsRRZj5Dw2+AdWS4zVBv+s35utmv
-         HQfK/sg06HSj9kgzRvVI2EWfBGQTkY4bQKv9rmjLvOp2dFbUsZ/6hGhjOZ1SksYp8P8F
-         /Blg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iODsYL577vtiTZcS5AXU5f62AD5nWHRXTaswzxJRGpE=;
-        b=SqQ8qNgi6z/b0jHhmoje9IvbBIwUiudL56/oEcIst+BqOzW8XPcw2NUtBQcwZKYXbp
-         EU69vzLhqYduL/WLXKZfIplxtfeyzJIgHSC9WIh2o8wYBbXVPdPtE+iuGMPVoWgyDny6
-         OSoHn3NL7PSNXQZUyKgZk26lEJ7m7gJaFDtcJgMd2YnPWX/z997Tr6maGurM6tQakcSb
-         nPbtUALJMs+AMH+9gxHP1WlUfm0BRI1R3jW06vmmcgeqm+AJo18EHTml9jYx3PVDGM82
-         xrY+6kQ4NRCzFncV1T2jwj91aAbRAbsZIG16PPliz3eU2Eu9UZwhvv54lEsj1CfN6lsP
-         Zcfw==
-X-Gm-Message-State: AOAM533BUqP7m1gg2U3xb4qoQ9y3mP8iOrsGnIW/A9/LCVY7HVjvC0hS
-        njc5gBBgDYt4hMLF7EmEQe/cb80Y6NXeRNRM/vrwCA==
-X-Google-Smtp-Source: ABdhPJwkXMO4uhvCsmyjxeJIJN/dMVthik8rV2agcLFH9W28tEatgkKRxyaLXGqmb/ZxKjwVzyOeJ3lIrOe3jbSNI4Y=
-X-Received: by 2002:a7b:ca57:: with SMTP id m23mr2607883wml.116.1612864162564;
- Tue, 09 Feb 2021 01:49:22 -0800 (PST)
+        id S230439AbhBIJvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:51:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230483AbhBIJtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:49:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0012164E77;
+        Tue,  9 Feb 2021 09:49:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612864150;
+        bh=nEewrMAUeYK4aam0HpuXalNokQ+rdLXp/Q8WccuvwhI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EUudAXejpLYwVGcnxiXdzL2Z3e9LsSxYOH0bdHHzartLohDlznMlhBARv9VIF+vtY
+         9VRYXcndIyM6lZXQd+7eoO0j3goVesIrBH0FvaMfvRA69aPrfRM7PGMj0yRpyfKk4Q
+         2xxg/uLGkB4Q2X+QNrEd4KG7by1fgehm9vtLCQ6U=
+Date:   Tue, 9 Feb 2021 10:49:07 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Cc:     alex.dewar90@gmail.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org,
+        syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] drivers/misc/vmw_vmci: restrict too big queue size in
+Message-ID: <YCJak9a2WWRgiQWE@kroah.com>
+References: <YCJKIVhNS4N4glUa@kroah.com>
+ <20210209093101.2097627-1-snovitoll@gmail.com>
 MIME-Version: 1.0
-References: <20210111142309.193441-1-maxime@cerno.tech> <20210111142309.193441-15-maxime@cerno.tech>
-In-Reply-To: <20210111142309.193441-15-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 9 Feb 2021 09:49:05 +0000
-Message-ID: <CAPY8ntC7U1BAVT8xe0emX19p4mCu-BQOeBeC-CDgKjE+asZKRQ@mail.gmail.com>
-Subject: Re: [PATCH v2 14/15] ARM: dts: bcm2711: Add the BSC interrupt controller
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209093101.2097627-1-snovitoll@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
-
-On Mon, 11 Jan 2021 at 14:23, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> The BSC controllers used for the HDMI DDC have an interrupt controller
-> shared between both instances. Let's add it to avoid polling.
-
-This seems to have unintended side effects.
-GIC interrupt 117 is shared between the standard I2C controllers
-(i2c-bcm2835) and the l2-intc block handling the HDMI I2C interrupts.
-
-Whilst i2c-bcm2835 requests the interrupt with IRQF_SHARED, that
-doesn't appear to be an option for l2-intc registering as an interrupt
-controller. i2c-bcm2835 therefore loses out and fails to register for
-the interrupt.
-
-Is there an equivalent flag that an interrupt controller can add to
-say that the parent interrupt is shared? Is that even supported?
-
-Thanks
-  Dave
-
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+On Tue, Feb 09, 2021 at 03:31:01PM +0600, Sabyrzhan Tasbolatov wrote:
+> syzbot found WARNING in qp_broker_alloc[1] in qp_host_alloc_queue()
+> when num_pages is 0x100001, giving queue_size + queue_page_size
+> bigger than KMALLOC_MAX_SIZE for kzalloc(), resulting order >= MAX_ORDER
+> condition.
+> 
+> queue_size + queue_page_size=0x8000d8, where KMALLOC_MAX_SIZE=0x400000.
+> 
+> Reported-by: syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
+> Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 > ---
->  arch/arm/boot/dts/bcm2711.dtsi | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
-> index 4847dd305317..8bb46ae76a92 100644
-> --- a/arch/arm/boot/dts/bcm2711.dtsi
-> +++ b/arch/arm/boot/dts/bcm2711.dtsi
-> @@ -308,6 +308,14 @@ dvp: clock@7ef00000 {
->                         #reset-cells = <1>;
->                 };
->
-> +               bsc_intr: interrupt-controller@7ef00040 {
-> +                       compatible = "brcm,bcm2711-l2-intc", "brcm,l2-intc";
-> +                       reg = <0x7ef00040 0x30>;
-> +                       interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-controller;
-> +                       #interrupt-cells = <1>;
-> +               };
-> +
->                 hdmi0: hdmi@7ef00700 {
->                         compatible = "brcm,bcm2711-hdmi0";
->                         reg = <0x7ef00700 0x300>,
-> @@ -341,6 +349,8 @@ ddc0: i2c@7ef04500 {
->                         reg = <0x7ef04500 0x100>, <0x7ef00b00 0x300>;
->                         reg-names = "bsc", "auto-i2c";
->                         clock-frequency = <97500>;
-> +                       interrupt-parent = <&bsc_intr>;
-> +                       interrupts = <0>;
->                         status = "disabled";
->                 };
->
-> @@ -377,6 +387,8 @@ ddc1: i2c@7ef09500 {
->                         reg = <0x7ef09500 0x100>, <0x7ef05b00 0x300>;
->                         reg-names = "bsc", "auto-i2c";
->                         clock-frequency = <97500>;
-> +                       interrupt-parent = <&bsc_intr>;
-> +                       interrupts = <1>;
->                         status = "disabled";
->                 };
->         };
-> --
-> 2.29.2
->
+> >As this is controllable by userspace, you just provided a way to flood
+> >the kernel logs.
+> >
+> >Please make this a dev_dbg() call instead, if you really want to see it.
+> >Otherwise just return NULL, no need to report anything, right?
+> 
+> Thanks, removed pr_warn().
+> 
+> v2: Removed pr_warn() to avoid flood from user-space
+> ---
+>  drivers/misc/vmw_vmci/vmci_queue_pair.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+> index f6af406fda80..ea16df73cde0 100644
+> --- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
+> +++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+> @@ -538,9 +538,7 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
+>  	queue_page_size = num_pages * sizeof(*queue->kernel_if->u.h.page);
+>  
+>  	if (queue_size + queue_page_size > KMALLOC_MAX_SIZE) {
+> -		pr_warn("too big queue to allocate\n");
+>  		return NULL;
+> -	}
+>  
+
+This patch doesn't apply to the tree, you can't send me a patch that is
+relative to your previous one, that doesn't work at all.
+
+And also, test-build your patches always first, to not do so is a bit
+rude to maintainers...
+
+thanks,
+
+greg k-h
