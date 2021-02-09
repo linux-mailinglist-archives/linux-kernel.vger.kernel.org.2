@@ -2,106 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769CC314F63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E052314F65
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhBIMpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:45:49 -0500
-Received: from mga11.intel.com ([192.55.52.93]:15596 "EHLO mga11.intel.com"
+        id S230306AbhBIMrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:47:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:51008 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230412AbhBIMnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:43:01 -0500
-IronPort-SDR: wyMpPCyYtzIAvkBtLuKC1RRGYHs6TwB3gIoozCI8TPxITky6Kk7x9WlNeYz8bfjGqAWMXdAWKS
- 0zepbT7RYdmg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="178362269"
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="178362269"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 04:41:08 -0800
-IronPort-SDR: 6KPKfSvEZSTkUrzHjcp/yuliol8zzke1i7JlRE/MWmabiN1Rfs7TsNnoJ4kMBS/hCoUtpjfX8N
- Kp/n0M/KEWgQ==
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="398768358"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 04:41:04 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l9SKD-003DWG-9k; Tue, 09 Feb 2021 14:41:01 +0200
-Date:   Tue, 9 Feb 2021 14:41:01 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     willy@infradead.org, david@redhat.com, linmiaohe@huawei.com,
-        vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, joe@perches.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] mm, vsprintf: dump full information of page flags
- in pGp
-Message-ID: <YCKC3fkbOjJsem+E@smile.fi.intel.com>
-References: <20210209105613.42747-1-laoar.shao@gmail.com>
+        id S229626AbhBIMqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:46:06 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EE31EED1;
+        Tue,  9 Feb 2021 04:45:13 -0800 (PST)
+Received: from [10.57.49.26] (unknown [10.57.49.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85BFD3F73B;
+        Tue,  9 Feb 2021 04:45:12 -0800 (PST)
+Subject: Re: DMA direct mapping fix for 5.4 and earlier stable branches
+To:     Sumit Garg <sumit.garg@linaro.org>, Christoph Hellwig <hch@lst.de>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        obayashi.yoshimasa@socionext.com, m.szyprowski@samsung.com,
+        iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
+ <YCIym62vHfbG+dWf@kroah.com>
+ <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
+ <YCJCDZGa1Dhqv6Ni@kroah.com>
+ <27bbe35deacb4ca49f31307f4ed551b5@SOC-EX02V.e01.socionext.com>
+ <YCJUgKDNVjJ4dUqM@kroah.com> <20210209093642.GA1006@lst.de>
+ <CAFA6WYO59w=wif8W16sG6BnzSjFhaY6PmRUTdSCu9A+zA7gzBw@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <e36b8a7d-a999-da09-d7d9-cc26579a65d1@arm.com>
+Date:   Tue, 9 Feb 2021 12:45:11 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209105613.42747-1-laoar.shao@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAFA6WYO59w=wif8W16sG6BnzSjFhaY6PmRUTdSCu9A+zA7gzBw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 06:56:10PM +0800, Yafang Shao wrote:
-> The existed pGp shows the names of page flags only, rather than the full
-> information including section, node, zone, last cpuipid and kasan tag.
-> While it is not easy to parse these information manually because there
-> are so many flavors. We'd better interpret them in printf.
+On 2021-02-09 12:36, Sumit Garg wrote:
+> Hi Christoph,
 > 
-> To be compitable with the existed format of pGp, the new introduced ones
-> also use '|' as the separator, then the user tools parsing pGp won't
-> need to make change, suggested by Matthew. The new added information is
-> tracked onto the end of the existed one, e.g.
-> [ 8838.835456] Slab 0x000000002828b78a objects=33 used=3 fp=0x00000000d04efc88 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> On Tue, 9 Feb 2021 at 15:06, Christoph Hellwig <hch@lst.de> wrote:
+>>
+>> On Tue, Feb 09, 2021 at 10:23:12AM +0100, Greg KH wrote:
+>>>>    From the view point of ZeroCopy using DMABUF, is 5.4 not
+>>>> mature enough, and is 5.10 enough mature ?
+>>>>    This is the most important point for judging migration.
+>>>
+>>> How do you judge "mature"?
+>>>
+>>> And again, if a feature isn't present in a specific kernel version, why
+>>> would you think that it would be a viable solution for you to use?
+>>
+>> I'm pretty sure dma_get_sgtable has been around much longer and was
+>> supposed to work, but only really did work properly for arm32, and
+>> for platforms with coherent DMA.  I bet he is using non-coherent arm64,
 > 
-> The documentation and test cases are also updated. The result of the
-> test cases as follows,
-> [  501.485081] test_printf: loaded.
-> [  501.485768] test_printf: all 388 tests passed
-> [  501.488762] test_printf: unloaded.
+> It's an arm64 platform using coherent DMA where device coherent DMA
+> memory pool is defined in the DT as follows:
 > 
-> This patchset also includes some code cleanup in mm/slub.c.
+>          reserved-memory {
+>                  #address-cells = <2>;
+>                  #size-cells = <2>;
+>                  ranges;
+> 
+>                  <snip>
+>                  encbuffer: encbuffer@0xb0000000 {
+>                          compatible = "shared-dma-pool";
+>                          reg = <0 0xb0000000 0 0x08000000>; // this
+> area used with dma-coherent
+>                          no-map;
+>                  };
+>                  <snip>
+>          };
+> 
+> Device is dma-coherent as per following DT property:
+> 
+>                  codec {
+>                          compatible = "socionext,uniphier-pxs3-codec";
+>                          <snip>
+>                          memory-region = <&encbuffer>;
+>                          dma-coherent;
+>                          <snip>
+>                  };
+> 
+> And call chain to create device coherent DMA pool is as follows:
+> 
+> rmem_dma_device_init();
+>    dma_init_coherent_memory();
+>      memremap();
+>        ioremap_wc();
+> 
+> which simply maps coherent DMA memory into vmalloc space on arm64.
+> 
+> The thing I am unclear is why this is called a new feature rather than
+> a bug in dma_common_get_sgtable() which is failing to handle vmalloc
+> addresses? While at the same time DMA debug APIs specifically handle
+> vmalloc addresses [1].
 
-FWIW,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+It's not a bug, it's a fundamental design failure. dma_get_sgtable() has 
+only ever sort-of-worked for DMA buffers that come from CMA or regular 
+page allocations. In particular, a "no-map" DMA pool is not backed by 
+kernel memory, so does not have any corresponding page structs, so it's 
+impossible to generate a *valid* scatterlist to represent memory from 
+that pool, regardless of what you might get away with provided you don't 
+poke too hard at it.
 
-> v4:
-> - extend %pGp instead of introducing new format, per Matthew
-> 
-> v3:
-> - coding improvement, per Joe and Andy
-> - the possible impact on debugfs and the fix of it, per Joe and Matthew
-> - introduce new format instead of changing pGp, per Andy
-> 
-> v2:
-> - various coding improvement, per Joe, Miaohe, Vlastimil and Andy
-> - remove the prefix completely in patch #2, per Vlastimil
-> - Update the test cases, per Andy
-> 
-> Yafang Shao (3):
->   mm, slub: use pGp to print page flags
->   mm, slub: don't combine pr_err with INFO
->   vsprintf: dump full information of page flags in pGp
-> 
->  Documentation/core-api/printk-formats.rst |  2 +-
->  lib/test_printf.c                         | 60 +++++++++++++++++----
->  lib/vsprintf.c                            | 66 +++++++++++++++++++++--
->  mm/slub.c                                 | 13 ++---
->  4 files changed, 121 insertions(+), 20 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+It is not a good API...
 
--- 
-With Best Regards,
-Andy Shevchenko
+Robin.
 
-
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/kernel/dma/debug.c?h=linux-5.4.y#n1462
+> 
+> -Sumit
+> 
+>> and it would be broken for other drivers there as well if people did
+>> test them, which they apparently so far did not.
