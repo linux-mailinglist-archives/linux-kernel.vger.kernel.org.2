@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C8A3148F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F58C3148EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhBIGgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 01:36:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhBIGdn (ORCPT
+        id S230412AbhBIGdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 01:33:32 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12059 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230161AbhBIG2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 01:33:43 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F36DC061786
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 22:33:03 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id 8so9165093plc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 22:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1yfWtyKyTZvhHLdRd0Os+HgXY0IXloCRl6/1X6y49yY=;
-        b=I8sAs6STSD3viziWc9zjdGpRV2Ij0huuBcH4DTqpEpqza+Sa89+jcmi0lEr6QyU3Yc
-         L7rP/rH0/RfRBI83gH4R47SJOVgSrDffjCf/VWsaIa4tSZ3K01/puYHwXeA+73O+NMbj
-         Mayn3mIGAEUCdMMblgZt8JrLoIUQfDCTzzdMQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1yfWtyKyTZvhHLdRd0Os+HgXY0IXloCRl6/1X6y49yY=;
-        b=nWQCRSWr9fvdPgLgfpVKxIYojyQpu1UJwjN4ERID/RaWUal3eMwMpfn67C2XStbkUr
-         9pMOvv/YHxjDt2FxronKp8hQL1qBEvk003cndbm3y05YXP2jeojFnwyWGcA8YeHhIdv0
-         xNUDKvrgtpRFpA41CDwqO4/WIqwbqwD/Ovss94jY4rX9ah7jJYdH9bqNCOFpIk/jzMHQ
-         AnU0FJ75o0GS+0W3jy66cYbgHOaiOJo1xCYuR3y96v7kBS3x5gkOvElH1ReBHtE9NyeX
-         Z80mQZ4plxmKlMa4EsbKFnm4oN90jSBAdzwleJaCjbPlFz/n5K1K9Hc/0iJskVRxCtyu
-         An5w==
-X-Gm-Message-State: AOAM531sfSHRn5fMCHRCY1vHaiNV9126DYRvn8s5BS00f0OrzVlEvICA
-        pwdyLAsGWwWL0eLtUdR4xDSKozrd7WOCoA==
-X-Google-Smtp-Source: ABdhPJyIIQm7rCEr9M2o5Kchx9EM7M/SQ5MngTWW0b9+AAZxoCYQLqqyZoIWEprGE9VoKWVQyyZz7w==
-X-Received: by 2002:a17:90a:5a86:: with SMTP id n6mr2699031pji.65.1612852382477;
-        Mon, 08 Feb 2021 22:33:02 -0800 (PST)
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com. [209.85.215.175])
-        by smtp.gmail.com with ESMTPSA id t22sm22158188pgm.18.2021.02.08.22.33.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 22:33:02 -0800 (PST)
-Received: by mail-pg1-f175.google.com with SMTP id m2so5104772pgq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 22:33:02 -0800 (PST)
-X-Received: by 2002:a6b:144c:: with SMTP id 73mr18274991iou.69.1612852048986;
- Mon, 08 Feb 2021 22:27:28 -0800 (PST)
+        Tue, 9 Feb 2021 01:28:16 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60222b4d0000>; Mon, 08 Feb 2021 22:27:25 -0800
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
+ 2021 06:27:24 +0000
+Received: from [10.2.50.67] (172.20.145.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb 2021
+ 06:27:24 +0000
+Subject: Re: [PATCH v2] mm: cma: support sysfs
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, <surenb@google.com>,
+        <joaodias@google.com>, <willy@infradead.org>
+References: <20210208180142.2765456-1-minchan@kernel.org>
+ <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
+ <YCHLAdabGmm7kqSH@google.com>
+ <43cd6fc4-5bc5-50ec-0252-ffe09afd68ea@nvidia.com>
+ <YCIoHBGELFWAyfMi@kroah.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <7cc229f4-609c-71dd-9361-063ef1bf7c73@nvidia.com>
+Date:   Mon, 8 Feb 2021 22:27:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-References: <20210106034124.30560-1-tientzu@chromium.org> <d7043239-12cf-3636-4726-2e3b90917dc6@gmail.com>
- <CALiNf28sU1VtGB7LeTXExkMwQiCeg8N5arqyEjw0CPZP72R4dg@mail.gmail.com>
- <78871151-947d-b085-db03-0d0bd0b55632@gmail.com> <CALiNf29_PmLJTVLksSHp3NFAaL52idqehSMOtatJ=jaM2Muq1g@mail.gmail.com>
- <23a09b9a-70fc-a7a8-f3ea-b0bfa60507f0@gmail.com> <CAAFQd5DX=AdaYSYQbxgnrYYojkM5q7EE_Qs-BYPOiNjcQWbN1A@mail.gmail.com>
- <c7f7941d-b8bd-f0f3-4e40-b899a77188bf@gmail.com> <CAAFQd5AGm4U8hD4jHmw10S7MRS1-ZUSq7eGgoUifMMyfZgP2NA@mail.gmail.com>
- <7fe99ad2-79a7-9c8b-65ce-ce8353e9d9bf@gmail.com>
-In-Reply-To: <7fe99ad2-79a7-9c8b-65ce-ce8353e9d9bf@gmail.com>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Tue, 9 Feb 2021 14:27:18 +0800
-X-Gmail-Original-Message-ID: <CALiNf2_rRufFoxNN=i0_LkVvw31tXetKasm3SrzYy7O8o-sfgg@mail.gmail.com>
-Message-ID: <CALiNf2_rRufFoxNN=i0_LkVvw31tXetKasm3SrzYy7O8o-sfgg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/6] Restricted DMA
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Tomasz Figa <tfiga@chromium.org>, Rob Herring <robh+dt@kernel.org>,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YCIoHBGELFWAyfMi@kroah.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612852045; bh=X0aIckYSF9wc/TONr7/whXV7WyEI3S3ZRv/IkzFkkzw=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=KRzOE4v0vMuGPLYxhNQn2OXAeSmuSgrbctCSIrCIKYpZd2sc41twl/ibfplX4GxTO
+         TzMElz0s24BeSyr43v3+hgD9C3s81a9Lv/iHYMhLUYTaRth/8+iWd9IjLQNC+ZTc33
+         bvl7ZxZQoH+STN6yc8HYgKPdEG2otJ3DXdP4DqhTp5hu6ig0/jdhyCD+ucg5FB7+Y8
+         +kheXPXiU453iApKBzQ2wN4g4qMAM4QimxGYbLYFd5VYV1QHJmRvldWyQS4WySJ+j5
+         fB5pIBKtY9cqSX0e1nDF8hXLZVEyazk8lQmWCBHul7/NM0VxmDWAILvC5SfcT22lGm
+         yEI007isKxtMA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v4 here: https://lore.kernel.org/patchwork/cover/1378113/
+On 2/8/21 10:13 PM, Greg KH wrote:
+> On Mon, Feb 08, 2021 at 05:57:17PM -0800, John Hubbard wrote:
+>> On 2/8/21 3:36 PM, Minchan Kim wrote:
+>> ...
+>>>>>     	char name[CMA_MAX_NAME];
+>>>>> +#ifdef CONFIG_CMA_SYSFS
+>>>>> +	struct cma_stat	*stat;
+>>>>
+>>>> This should not be a pointer. By making it a pointer, you've added a bunch of pointless
+>>>> extra code to the implementation.
+>>>
+>>> Originally, I went with the object lifetime with struct cma as you
+>>> suggested to make code simple. However, Greg KH wanted to have
+>>> release for kobj_type since it is consistent with other kboject
+>>> handling.
+>>
+>> Are you talking about the kobj in your new struct cma_stat? That seems
+>> like circular logic if so. I'm guessing Greg just wanted kobj methods
+>> to be used *if* you are dealing with kobjects. That's a narrower point.
+>>
+>> I can't imagine that he would have insisted on having additional
+>> allocations just so that kobj freeing methods could be used. :)
+> 
+> Um, yes, I was :)
+> 
+> You can not add a kobject to a structure and then somehow think you can
+> just ignore the reference counting issues involved.  If a kobject is
+> part of a structure then the kobject is responsible for controling the
+> lifespan of the memory, nothing else can be.
+> 
+> So by making the kobject dynamic, you properly handle that memory
+> lifespan of the object, instead of having to worry about the lifespan of
+> the larger object (which the original patch was not doing.)
+> 
+> Does that make sense?
+> 
+That part makes sense, yes, thanks. The part that I'm trying to straighten
+out is, why was kobject even added to the struct cma_stat in the first
+place? Why not just leave .stat as a static member variable, without
+a kobject in it, and done?
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
