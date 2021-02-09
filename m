@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68247315CF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EC0315CF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234577AbhBJCL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
+        id S234890AbhBJCMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:12:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234716AbhBJA4z (ORCPT
+        with ESMTP id S234527AbhBJA44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 19:56:55 -0500
+        Tue, 9 Feb 2021 19:56:56 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23ECBC06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 16:53:41 -0800 (PST)
-Message-Id: <20210210002513.181713427@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1CFC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 16:53:42 -0800 (PST)
+Message-Id: <20210210002513.289960691@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612918419;
+        s=2020; t=1612918420;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=WKq3GCcYkMbymQHJPYIDVqNf1n+hrUsEGvAShKjJmQE=;
-        b=0WQgQTOo+nkbMSdWh5br+KqPlLf1R8aq6yfIizK9/KdNn7ZMxVHjJPPMktI3ff73HuqliG
-        +NbzC7NyUUja1fBqtCUNg4hzFWUqOMcVNQ77s9ACOKAIFa7lpJ0WSAJKNojOi7qLlNLieN
-        wNzIbXeuTjEu0Zc1lcRaK3tjZucieJZ+gF+bdOsltn+CrxQJ2txNSOpT8+1bUjbsRHtGMI
-        1xlpTSziUDBHSwZ0Yr9bqOmf4/1yEYlLPkhN91RTqv4TALQ6M4314e1xlc2kMZadFp9r/V
-        owovAShrM+peDo/b8Mc0vZ5wuna139nhsrnL/ff+keYRrOizptkD33+NATtxgQ==
+        bh=hj0MRfC3Qj3PKcksofMHXXfIeX7p3i3twCyRr8QegvA=;
+        b=DajxyYBHvgT8co4f3keEmhP5LQ/DNhBZ5aln5b32BXThVCBmaMfvonRxMxESZKDYrk4VSn
+        iPDkBT2LCCO2ceBhVGl8Hk6H0rkxJZagY/gKJKgiBjBc+OBDMWNcKurs14IhOgKqoqMngk
+        zo931RIl+CebWRkwgBTF+Oon+B5NW1pxkLuUYY4nVVJHd8zu7YI5ckJ97vDl5NNBoK/d9M
+        o031B31ZJAC4AtjvhxWXA21JzOfS5peoyQUyZ9LfoGPqBuTFnO+e/KWXWZDQz/aOwgltt9
+        qIpCTgjWF//IZoa5Tr6c+YpqhV/7HH5qL1HmONerXyuWMw0Wm3NbyRCGjxHKow==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612918419;
+        s=2020e; t=1612918420;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=WKq3GCcYkMbymQHJPYIDVqNf1n+hrUsEGvAShKjJmQE=;
-        b=Yst+O9vmy2fZbJJ36FPzLCcUE3Qk0Vxs37Z1D3ZVEx0BqjEiRzZYleQHeG/NSeyZDclszu
-        VB+EM4I+sZFNs5Cg==
-Date:   Wed, 10 Feb 2021 00:40:52 +0100
+        bh=hj0MRfC3Qj3PKcksofMHXXfIeX7p3i3twCyRr8QegvA=;
+        b=PwXZAQFocVJgPiDS6N7KF3h2rCZirogyjF+ddWtIQyr3sY54bbJfpvEeg1BBfuRFayzMgg
+        c4FvTnyBKpLvjsDA==
+Date:   Wed, 10 Feb 2021 00:40:53 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -46,7 +46,7 @@ Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Lai Jiangshan <jiangshanlai+lkml@gmail.com>,
         Kees Cook <keescook@chromium.org>
-Subject: [patch V2 11/13] softirq: Move __ARCH_HAS_DO_SOFTIRQ to Kconfig
+Subject: [patch V2 12/13] softirq: Move do_softirq_own_stack() to generic asm header
 References: <20210209234041.127454039@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,184 +55,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To prepare for inlining do_softirq_own_stack() replace
-__ARCH_HAS_DO_SOFTIRQ with a Kconfig switch and select it in the affected
-architectures.
+To avoid include recursion hell move the do_softirq_own_stack() related
+content into a generic asm header and include it from all places in arch/
+which need the prototype.
 
-This allows in the next step to move the function prototype and the inline
-stub into a seperate asm-generic header file which is required to avoid
-include recursion.
+This allows architectures to provide an inline implementation of
+do_softirq_own_stack() without introducing a lot of #ifdeffery all over the
+place.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: Lai Jiangshan <jiangshanlai+lkml@gmail.com>
 ---
 V2: New patch to get rid of the nested #ifdeffery - Lai
 ---
- arch/Kconfig                      |    6 ++++++
- arch/parisc/Kconfig               |    1 +
- arch/parisc/include/asm/hardirq.h |    4 ----
- arch/powerpc/Kconfig              |    1 +
- arch/powerpc/include/asm/irq.h    |    2 --
- arch/s390/Kconfig                 |    1 +
- arch/s390/include/asm/hardirq.h   |    1 -
- arch/sh/Kconfig                   |    1 +
- arch/sh/include/asm/irq.h         |    1 -
- arch/sparc/Kconfig                |    1 +
- arch/sparc/include/asm/irq_64.h   |    1 -
- arch/x86/Kconfig                  |    1 +
- arch/x86/include/asm/irq.h        |    2 --
- include/linux/interrupt.h         |    2 +-
- 14 files changed, 13 insertions(+), 12 deletions(-)
+ arch/parisc/kernel/irq.c            |    1 +
+ arch/powerpc/kernel/irq.c           |    1 +
+ arch/s390/kernel/irq.c              |    1 +
+ arch/sh/kernel/irq.c                |    1 +
+ arch/sparc/kernel/irq_64.c          |    1 +
+ arch/x86/kernel/irq_32.c            |    1 +
+ arch/x86/kernel/irq_64.c            |    1 +
+ include/asm-generic/Kbuild          |    1 +
+ include/asm-generic/softirq_stack.h |   14 ++++++++++++++
+ include/linux/interrupt.h           |    9 ---------
+ kernel/softirq.c                    |    2 ++
+ 11 files changed, 24 insertions(+), 9 deletions(-)
 
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -759,6 +759,12 @@ config HAVE_IRQ_EXIT_ON_IRQ_STACK
- 	  This spares a stack switch and improves cache usage on softirq
- 	  processing.
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -17,6 +17,7 @@
+ #include <linux/types.h>
+ #include <asm/io.h>
  
-+config HAVE_SOFTIRQ_ON_OWN_STACK
-+	bool
-+	help
-+	  Architecture provides a function to run __do_softirq() on a
-+	  seperate stack.
++#include <asm/softirq_stack.h>
+ #include <asm/smp.h>
+ #include <asm/ldcw.h>
+ 
+--- a/arch/powerpc/kernel/irq.c
++++ b/arch/powerpc/kernel/irq.c
+@@ -65,6 +65,7 @@
+ #include <asm/livepatch.h>
+ #include <asm/asm-prototypes.h>
+ #include <asm/hw_irq.h>
++#include <asm/softirq_stack.h>
+ 
+ #ifdef CONFIG_PPC64
+ #include <asm/paca.h>
+--- a/arch/s390/kernel/irq.c
++++ b/arch/s390/kernel/irq.c
+@@ -27,6 +27,7 @@
+ #include <asm/irq.h>
+ #include <asm/hw_irq.h>
+ #include <asm/stacktrace.h>
++#include <asm/softirq_stack.h>
+ #include "entry.h"
+ 
+ DEFINE_PER_CPU_SHARED_ALIGNED(struct irq_stat, irq_stat);
+--- a/arch/sh/kernel/irq.c
++++ b/arch/sh/kernel/irq.c
+@@ -20,6 +20,7 @@
+ #include <linux/uaccess.h>
+ #include <asm/thread_info.h>
+ #include <cpu/mmu_context.h>
++#include <asm/softirq_stack.h>
+ 
+ atomic_t irq_err_count;
+ 
+--- a/arch/sparc/kernel/irq_64.c
++++ b/arch/sparc/kernel/irq_64.c
+@@ -42,6 +42,7 @@
+ #include <asm/head.h>
+ #include <asm/hypervisor.h>
+ #include <asm/cacheflush.h>
++#include <asm/softirq_stack.h>
+ 
+ #include "entry.h"
+ #include "cpumap.h"
+--- a/arch/x86/kernel/irq_32.c
++++ b/arch/x86/kernel/irq_32.c
+@@ -22,6 +22,7 @@
+ 
+ #include <asm/apic.h>
+ #include <asm/nospec-branch.h>
++#include <asm/softirq_stack.h>
+ 
+ #ifdef CONFIG_DEBUG_STACKOVERFLOW
+ 
+--- a/arch/x86/kernel/irq_64.c
++++ b/arch/x86/kernel/irq_64.c
+@@ -20,6 +20,7 @@
+ #include <linux/sched/task_stack.h>
+ 
+ #include <asm/cpu_entry_area.h>
++#include <asm/softirq_stack.h>
+ #include <asm/irq_stack.h>
+ #include <asm/io_apic.h>
+ #include <asm/apic.h>
+--- a/include/asm-generic/Kbuild
++++ b/include/asm-generic/Kbuild
+@@ -51,6 +51,7 @@ mandatory-y += sections.h
+ mandatory-y += serial.h
+ mandatory-y += shmparam.h
+ mandatory-y += simd.h
++mandatory-y += softirq_stack.h
+ mandatory-y += switch_to.h
+ mandatory-y += timex.h
+ mandatory-y += tlbflush.h
+--- /dev/null
++++ b/include/asm-generic/softirq_stack.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef __ASM_GENERIC_SOFTIRQ_STACK_H
++#define __ASM_GENERIC_SOFTIRQ_STACK_H
 +
- config PGTABLE_LEVELS
- 	int
- 	default 2
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -63,6 +63,7 @@ config PARISC
- 	select HAVE_FTRACE_MCOUNT_RECORD if HAVE_DYNAMIC_FTRACE
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
-+	select HAVE_SOFTIRQ_ON_OWN_STACK if IRQSTACKS
- 	select SET_FS
- 
- 	help
---- a/arch/parisc/include/asm/hardirq.h
-+++ b/arch/parisc/include/asm/hardirq.h
-@@ -12,10 +12,6 @@
- #include <linux/threads.h>
- #include <linux/irq.h>
- 
--#ifdef CONFIG_IRQSTACKS
--#define __ARCH_HAS_DO_SOFTIRQ
--#endif
--
- typedef struct {
- 	unsigned int __softirq_pending;
- 	unsigned int kernel_stack_usage;
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -237,6 +237,7 @@ config PPC
- 	select MMU_GATHER_PAGE_SIZE
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RELIABLE_STACKTRACE		if PPC_BOOK3S_64 && CPU_LITTLE_ENDIAN
-+	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
- 	select HAVE_IRQ_TIME_ACCOUNTING
---- a/arch/powerpc/include/asm/irq.h
-+++ b/arch/powerpc/include/asm/irq.h
-@@ -37,8 +37,6 @@ extern int distribute_irqs;
- 
- struct pt_regs;
- 
--#define __ARCH_HAS_DO_SOFTIRQ
--
- #if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
- /*
-  * Per-cpu stacks for handling critical, debug and machine check
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -182,6 +182,7 @@ config S390
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RELIABLE_STACKTRACE
- 	select HAVE_RSEQ
-+	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
- 	select HAVE_VIRT_CPU_ACCOUNTING_IDLE
---- a/arch/s390/include/asm/hardirq.h
-+++ b/arch/s390/include/asm/hardirq.h
-@@ -18,7 +18,6 @@
- #define or_softirq_pending(x)  (S390_lowcore.softirq_pending |= (x))
- 
- #define __ARCH_IRQ_STAT
--#define __ARCH_HAS_DO_SOFTIRQ
- #define __ARCH_IRQ_EXIT_IRQS_DISABLED
- 
- static inline void ack_bad_irq(unsigned int irq)
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -55,6 +55,7 @@ config SUPERH
- 	select HAVE_PERF_EVENTS
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_UID16
-+	select HAVE_SOFTIRQ_ON_OWN_STACK if IRQSTACKS
- 	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select IRQ_FORCED_THREADING
---- a/arch/sh/include/asm/irq.h
-+++ b/arch/sh/include/asm/irq.h
-@@ -51,7 +51,6 @@ asmlinkage int do_IRQ(unsigned int irq,
- #ifdef CONFIG_IRQSTACKS
- extern void irq_ctx_init(int cpu);
- extern void irq_ctx_exit(int cpu);
--# define __ARCH_HAS_DO_SOFTIRQ
- #else
- # define irq_ctx_init(cpu) do { } while (0)
- # define irq_ctx_exit(cpu) do { } while (0)
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -97,6 +97,7 @@ config SPARC64
- 	select ARCH_HAS_PTE_SPECIAL
- 	select PCI_DOMAINS if PCI
- 	select ARCH_HAS_GIGANTIC_PAGE
-+	select HAVE_SOFTIRQ_ON_OWN_STACK
- 
- config ARCH_PROC_KCORE_TEXT
- 	def_bool y
---- a/arch/sparc/include/asm/irq_64.h
-+++ b/arch/sparc/include/asm/irq_64.h
-@@ -93,7 +93,6 @@ void arch_trigger_cpumask_backtrace(cons
- 
- extern void *hardirq_stack[NR_CPUS];
- extern void *softirq_stack[NR_CPUS];
--#define __ARCH_HAS_DO_SOFTIRQ
- 
- #define NO_IRQ		0xffffffff
- 
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -221,6 +221,7 @@ config X86
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RELIABLE_STACKTRACE		if X86_64 && (UNWINDER_FRAME_POINTER || UNWINDER_ORC) && STACK_VALIDATION
- 	select HAVE_FUNCTION_ARG_ACCESS_API
-+	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select HAVE_STACKPROTECTOR		if CC_HAS_SANE_STACKPROTECTOR
- 	select HAVE_STACK_VALIDATION		if X86_64
- 	select HAVE_STATIC_CALL
---- a/arch/x86/include/asm/irq.h
-+++ b/arch/x86/include/asm/irq.h
-@@ -25,8 +25,6 @@ static inline int irq_canonicalize(int i
- 
- extern int irq_init_percpu_irqstack(unsigned int cpu);
- 
--#define __ARCH_HAS_DO_SOFTIRQ
--
- struct irq_desc;
- 
- extern void fixup_irqs(void);
++#ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
++void do_softirq_own_stack(void);
++#else
++static inline void do_softirq_own_stack(void)
++{
++	__do_softirq();
++}
++#endif
++
++#endif
 --- a/include/linux/interrupt.h
 +++ b/include/linux/interrupt.h
-@@ -569,7 +569,7 @@ struct softirq_action
+@@ -569,15 +569,6 @@ struct softirq_action
  asmlinkage void do_softirq(void);
  asmlinkage void __do_softirq(void);
  
--#ifdef __ARCH_HAS_DO_SOFTIRQ
-+#ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
- void do_softirq_own_stack(void);
- #else
- static inline void do_softirq_own_stack(void)
+-#ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
+-void do_softirq_own_stack(void);
+-#else
+-static inline void do_softirq_own_stack(void)
+-{
+-	__do_softirq();
+-}
+-#endif
+-
+ extern void open_softirq(int nr, void (*action)(struct softirq_action *));
+ extern void softirq_init(void);
+ extern void __raise_softirq_irqoff(unsigned int nr);
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -26,6 +26,8 @@
+ #include <linux/tick.h>
+ #include <linux/irq.h>
+ 
++#include <asm/softirq_stack.h>
++
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/irq.h>
+ 
 
