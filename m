@@ -2,153 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D548314E22
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D535A314E21
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhBILUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:20:07 -0500
-Received: from foss.arm.com ([217.140.110.172]:49894 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230133AbhBILRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:17:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7FC8ED1;
-        Tue,  9 Feb 2021 03:16:12 -0800 (PST)
-Received: from [10.57.49.26] (unknown [10.57.49.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CBE543F73B;
-        Tue,  9 Feb 2021 03:16:09 -0800 (PST)
-Subject: Re: [RFC PATCH 10/11] vfio/iommu_type1: Optimize dirty bitmap
- population based on iommu HWDBM
-To:     Yi Sun <yi.y.sun@linux.intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        Marc Zyngier <maz@kernel.org>, jiangkunkun@huawei.com,
-        wanghaibin.wang@huawei.com, kevin.tian@intel.com,
-        yan.y.zhao@intel.com, Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, lushenming@huawei.com,
-        iommu@lists.linux-foundation.org, James Morse <james.morse@arm.com>
-References: <20210128151742.18840-1-zhukeqian1@huawei.com>
- <20210128151742.18840-11-zhukeqian1@huawei.com>
- <20210207095630.GA28580@yi.y.sun>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <8150bd3a-dbb9-2e2b-386b-04e66f4b68dc@arm.com>
-Date:   Tue, 9 Feb 2021 11:16:08 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230130AbhBILTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:19:19 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:59830 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229815AbhBILQ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 06:16:56 -0500
+Date:   Tue, 9 Feb 2021 14:16:09 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/16] net: stmmac: Add DW MAC GPIOs and Baikal-T1 GMAC
+ support
+Message-ID: <20210209111609.tjxoqr6stkcf22jy@mobilestation>
+References: <20210208140820.10410-1-Sergey.Semin@baikalelectronics.ru>
+ <YCGSwZnSXIz5Ssef@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <20210207095630.GA28580@yi.y.sun>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YCGSwZnSXIz5Ssef@lunn.ch>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-07 09:56, Yi Sun wrote:
-> Hi,
+On Mon, Feb 08, 2021 at 08:36:33PM +0100, Andrew Lunn wrote:
+> On Mon, Feb 08, 2021 at 05:08:04PM +0300, Serge Semin wrote:
 > 
-> On 21-01-28 23:17:41, Keqian Zhu wrote:
+> Hi Serge
 > 
-> [...]
+> I suggest you split this patchset up. This uses the generic GPIO
+> framework, which is great. But that also means you should be Cc: the
+> GPIO subsystem maintainers and list. But you don't want to spam them
+> with all the preparation work, which has little to do with the GPIO
+> code.
 > 
->> +static void vfio_dma_dirty_log_start(struct vfio_iommu *iommu,
->> +				     struct vfio_dma *dma)
->> +{
->> +	struct vfio_domain *d;
->> +
->> +	list_for_each_entry(d, &iommu->domain_list, next) {
->> +		/* Go through all domain anyway even if we fail */
->> +		iommu_split_block(d->domain, dma->iova, dma->size);
->> +	}
->> +}
+> So please split the actual GPIO driver and DT binding patches from the
+> rest. netdev can review the preparation work, with a comment in the
+> 0/X patch about what the big picture is, and then afterwards review
+> the GPIO patchset with a wider audience.
 > 
-> This should be a switch to prepare for dirty log start. Per Intel
-> Vtd spec, there is SLADE defined in Scalable-Mode PASID Table Entry.
-> It enables Accessed/Dirty Flags in second-level paging entries.
-> So, a generic iommu interface here is better. For Intel iommu, it
-> enables SLADE. For ARM, it splits block.
+> And as Jakub pointed out, nobody is going to review 60 patches all at
+> once. Please submit one series at a time, get it merged, and then
+> move onto the next.
 
- From a quick look, VT-D's SLADE and SMMU's HTTU appear to be the exact 
-same thing. This step isn't about enabling or disabling that feature 
-itself (the proposal for SMMU is to simply leave HTTU enabled all the 
-time), it's about controlling the granularity at which the dirty status 
-can be detected/reported at all, since that's tied to the pagetable 
-structure.
+Hello Andrew
+Right, with all that preparation work I've forgotten to Cc the
+GPIO-subsystem maintainers. Thanks for noticing this.
 
-However, if an IOMMU were to come along with some other way of reporting 
-dirty status that didn't depend on the granularity of individual 
-mappings, then indeed it wouldn't need this operation.
+Regarding the 60-patches. Please see my response to Jakub' post in the
+first series. To cut it short let's start working with that patchset:
+Link: https://lore.kernel.org/netdev/20210208135609.7685-1-Sergey.Semin@baikalelectronics.ru/
+I'll rebase and resubmit the rest of the work when the time comes.
 
-Robin.
+Regarding splitting the series up. I don't see a problem in just
+sending the cover-letter patch and actual GPIO-related patches to
+the GPIO-maintainers with no need to have them added to Cc in the rest
+of the series. That's a normal practice. Splitting is not really
+required. But since I have to split the very first patchset anyway.
+I'll split this one up too, when it comes to have this part of changes
+reviewed.
 
->> +
->> +static void vfio_dma_dirty_log_stop(struct vfio_iommu *iommu,
->> +				    struct vfio_dma *dma)
->> +{
->> +	struct vfio_domain *d;
->> +
->> +	list_for_each_entry(d, &iommu->domain_list, next) {
->> +		/* Go through all domain anyway even if we fail */
->> +		iommu_merge_page(d->domain, dma->iova, dma->size,
->> +				 d->prot | dma->prot);
->> +	}
->> +}
+-Sergey
+
 > 
-> Same as above comment, a generic interface is required here.
-> 
->> +
->> +static void vfio_iommu_dirty_log_switch(struct vfio_iommu *iommu, bool start)
->> +{
->> +	struct rb_node *n;
->> +
->> +	/* Split and merge even if all iommu don't support HWDBM now */
->> +	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
->> +		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
->> +
->> +		if (!dma->iommu_mapped)
->> +			continue;
->> +
->> +		/* Go through all dma range anyway even if we fail */
->> +		if (start)
->> +			vfio_dma_dirty_log_start(iommu, dma);
->> +		else
->> +			vfio_dma_dirty_log_stop(iommu, dma);
->> +	}
->> +}
->> +
->>   static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
->>   					unsigned long arg)
->>   {
->> @@ -2812,8 +2900,10 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
->>   		pgsize = 1 << __ffs(iommu->pgsize_bitmap);
->>   		if (!iommu->dirty_page_tracking) {
->>   			ret = vfio_dma_bitmap_alloc_all(iommu, pgsize);
->> -			if (!ret)
->> +			if (!ret) {
->>   				iommu->dirty_page_tracking = true;
->> +				vfio_iommu_dirty_log_switch(iommu, true);
->> +			}
->>   		}
->>   		mutex_unlock(&iommu->lock);
->>   		return ret;
->> @@ -2822,6 +2912,7 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
->>   		if (iommu->dirty_page_tracking) {
->>   			iommu->dirty_page_tracking = false;
->>   			vfio_dma_bitmap_free_all(iommu);
->> +			vfio_iommu_dirty_log_switch(iommu, false);
->>   		}
->>   		mutex_unlock(&iommu->lock);
->>   		return 0;
->> -- 
->> 2.19.1
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> 
+> 	 Andrew
