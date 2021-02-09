@@ -2,166 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473B331533E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79037315344
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232561AbhBIP4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:56:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232419AbhBIP4o (ORCPT
+        id S232627AbhBIP53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:57:29 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:52436 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232566AbhBIP50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:56:44 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CDDC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 07:56:03 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id x9so9981234plb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 07:56:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=RLLY3Kifgt8whTtEjTDT7sURhhrgrsnEjHhUvPN+ANU=;
-        b=KwLsh6fpusewnWWexKKtZ5jK9Hz+r9MkMVjPSUeOQt4wtQLkbvzuUhMOL5jl7Nfc/3
-         3xsV/0Szxzec0zLgWs5FJiiZBR2J+Ggc3YMR5/zAJkSRTQXTR9Jv87X/Hpu5U0+0eP/l
-         Ji2WPP0t56jRBYam45Zh/bsvYge+3jkhDuWkWpvYqel0M0e/CdFSHzNDbJiXp4n9Su0Q
-         h6CzpVyyFaJNFGF2Z29LXZy/q5g5hxgImllBKNhmM7ea7e+JpoNz6BaCdF8+4DnbU9k9
-         0VJ8nL5hznLBuQ1p1YNgK0FyUuRRKZWBw8QZSCW3mv7Ai9IImnMIJVKs8vzBjKAIg7oH
-         2/yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=RLLY3Kifgt8whTtEjTDT7sURhhrgrsnEjHhUvPN+ANU=;
-        b=Q1YxP0SF+fms75YPPvW5mfYxAX2zkVPmw+uSKHwDx3C3PSFHAz/9SvrEqbfqjTODti
-         hATDfl2lfHhMGAXCeii6w2oXvq2lKjs8Wg+SR7rhNCeHFAn+lUk9el1VVJcdbcVOikba
-         mge1uZdFlVuUNPnJSxYtHDAexHupqbyls99OV91QMhWuuCFSQ+4fxh47uqJxktQV5mlQ
-         4rweT6Z4iJniQ0KAI+EO0/UkF4N3WZACJIezA+RTvl4lDGdva8U9Gm6iqvgaiBvdNnXq
-         aaCJZvnYS1tIj4kaMiAvbGe3fc+o1etb2TCXnNkqUtGzxjmQ4EvNr4NrRUd08C4hy/5P
-         aEhw==
-X-Gm-Message-State: AOAM530RHK9buQXNgcLmhL9tvbsuQpSRj9+p9u4QYy9G1m2nA4xr3MRX
-        MEJEc4FXWg8Ztl6GNytwncQ=
-X-Google-Smtp-Source: ABdhPJwY1X+a9UW2Q70a0LSbQJhTJ7xRLtjwcPyb7TRVW+yxStYhcyVczMFKyVTddKK48sBpTlWKFw==
-X-Received: by 2002:a17:90a:6589:: with SMTP id k9mr4618070pjj.100.1612886163051;
-        Tue, 09 Feb 2021 07:56:03 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:d107:fbfb:a7c8:913e])
-        by smtp.gmail.com with ESMTPSA id 25sm14762989pfh.199.2021.02.09.07.56.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 07:56:01 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 9 Feb 2021 07:55:59 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, surenb@google.com,
-        joaodias@google.com, willy@infradead.org
-Subject: Re: [PATCH v2] mm: cma: support sysfs
-Message-ID: <YCKwjz0uDPBhbFr5@google.com>
-References: <20210208180142.2765456-1-minchan@kernel.org>
- <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
- <YCHLAdabGmm7kqSH@google.com>
- <43cd6fc4-5bc5-50ec-0252-ffe09afd68ea@nvidia.com>
- <YCIoHBGELFWAyfMi@kroah.com>
- <7cc229f4-609c-71dd-9361-063ef1bf7c73@nvidia.com>
- <cd33f8b9-89e0-05bd-2b16-85855f7541bb@nvidia.com>
- <YCIyHuOX3E+tP+AO@kroah.com>
+        Tue, 9 Feb 2021 10:57:26 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119Feba3008252;
+        Tue, 9 Feb 2021 09:56:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=5CEkKZOhO+kXh7ZJjl0JUmcEc38rbW3K6ghRgk6Zs3Q=;
+ b=qXUjWgAJECHF3EiAxvEUS/K7dVH7IdUJOlYovbmKqKJ1zZ9ZfPl1K+5wTO3n2RJl5z91
+ bh3KjNJN6vLDdpBOwqz5qxC//AC5JF7E0ylpGvfKlSIpk2EGYBE/tAq7BvxzPeyJ8h/G
+ 2rZqRQ037e0Fh1svLuYY8hXqUDP3CjtoW0n6JelmP7cjK/1cI17hBzUb2g0c67AkgNeY
+ BucJmA6FtHcEYeCRAjwvu9Vh1z2Wn/1aMZazkBUULXCsN9NS4pFRqXRxdWL7ETUFE7o5
+ UyEoPLcXN1fEE6cgV3i83acjDVNNdTW772fccI0CL5kW+R5/eFMF45E0Z01PphcrU+66 3g== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 36hrv2c1af-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 09 Feb 2021 09:56:12 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 9 Feb 2021
+ 15:56:10 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 9 Feb 2021 15:56:10 +0000
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.240])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 179F011CA;
+        Tue,  9 Feb 2021 15:56:06 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <pmladek@suse.com>, <rostedt@goodmis.org>,
+        <sergey.senozhatsky@gmail.com>,
+        <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>,
+        <shuah@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v6 1/4] lib: vsprintf: scanf: Negative number must have field width > 1
+Date:   Tue, 9 Feb 2021 15:56:01 +0000
+Message-ID: <20210209155604.6998-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YCIyHuOX3E+tP+AO@kroah.com>
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=522 suspectscore=0
+ impostorscore=0 clxscore=1015 bulkscore=0 adultscore=0 malwarescore=0
+ spamscore=0 phishscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102090081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 07:56:30AM +0100, Greg KH wrote:
-> On Mon, Feb 08, 2021 at 10:34:51PM -0800, John Hubbard wrote:
-> > On 2/8/21 10:27 PM, John Hubbard wrote:
-> > > On 2/8/21 10:13 PM, Greg KH wrote:
-> > > > On Mon, Feb 08, 2021 at 05:57:17PM -0800, John Hubbard wrote:
-> > > > > On 2/8/21 3:36 PM, Minchan Kim wrote:
-> > > > > ...
-> > > > > > > >         char name[CMA_MAX_NAME];
-> > > > > > > > +#ifdef CONFIG_CMA_SYSFS
-> > > > > > > > +    struct cma_stat    *stat;
-> > > > > > > 
-> > > > > > > This should not be a pointer. By making it a pointer, you've added a bunch of pointless
-> > > > > > > extra code to the implementation.
-> > > > > > 
-> > > > > > Originally, I went with the object lifetime with struct cma as you
-> > > > > > suggested to make code simple. However, Greg KH wanted to have
-> > > > > > release for kobj_type since it is consistent with other kboject
-> > > > > > handling.
-> > > > > 
-> > > > > Are you talking about the kobj in your new struct cma_stat? That seems
-> > > > > like circular logic if so. I'm guessing Greg just wanted kobj methods
-> > > > > to be used *if* you are dealing with kobjects. That's a narrower point.
-> > > > > 
-> > > > > I can't imagine that he would have insisted on having additional
-> > > > > allocations just so that kobj freeing methods could be used. :)
-> > > > 
-> > > > Um, yes, I was :)
-> > > > 
-> > > > You can not add a kobject to a structure and then somehow think you can
-> > > > just ignore the reference counting issues involved.  If a kobject is
-> > > > part of a structure then the kobject is responsible for controling the
-> > > > lifespan of the memory, nothing else can be.
-> > > > 
-> > > > So by making the kobject dynamic, you properly handle that memory
-> > > > lifespan of the object, instead of having to worry about the lifespan of
-> > > > the larger object (which the original patch was not doing.)
-> > > > 
-> > > > Does that make sense?
-> > > > 
-> > > That part makes sense, yes, thanks. The part that I'm trying to straighten
-> > > out is, why was kobject even added to the struct cma_stat in the first
-> > > place? Why not just leave .stat as a static member variable, without
-> > > a kobject in it, and done?
-> > > 
-> > 
-> > Sorry, I think I get it now: this is in order to allow a separate lifetime
-> > for the .stat member. I was sort of implicitly assuming that the "right"
-> > way to do it is just have the whole object use one lifetime management,
-> > but as you say, there is no kobject being added to the parent.
-> > 
-> > I still feel odd about the allocation and freeing of something that seems
-> > to be logically the same lifetime (other than perhaps a few, briefly pending
-> > sysfs reads, at the end of life). So I'd still think that the kobject should
-> > be added to the parent...
+If a signed number field starts with a '-' the field width must be > 1,
+or unlimited, to allow at least one digit after the '-'.
 
-sruct cma_stat {
-	spinlock_t lock;
-	unsigned long pages_attemtp;
-	unsigned long pages_fail;
-};
+This patch adds a check for this. If a signed field starts with '-'
+and field_width == 1 the scanf will quit.
 
-struct cma {
-	..
-	..
-	struct kobject kobj;
-	struct cma_stat stat;
-};
+It is ok for a signed number field to have a field width of 1 if it
+starts with a digit. In that case the single digit can be converted.
 
-I guess this is what Johan suggested. I agree with it.
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ lib/vsprintf.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-> 
-> That's fine if you want to add it to the parent.  If so, then the
-> kobject controls the lifetime of the structure, nothing else can.
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 3b53c73580c5..28bb26cd1f67 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -3434,8 +3434,12 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
+ 		str = skip_spaces(str);
+ 
+ 		digit = *str;
+-		if (is_sign && digit == '-')
++		if (is_sign && digit == '-') {
++			if (field_width == 1)
++				break;
++
+ 			digit = *(str + 1);
++		}
+ 
+ 		if (!digit
+ 		    || (base == 16 && !isxdigit(digit))
+-- 
+2.20.1
 
-The problem was parent object(i.e., struct cma cma_areas) is
-static arrary so kobj->release function will be NULL or just
-dummy. Is it okay? I thought it was one of the what you wanted
-to avoid it.
-
-> 
-> Either is fine with me, what is "forbidden" is having a kobject and
-> somehow thinking that it does not control the lifetime of the structure.
-
-Since parent object is static arrary, there is no need to control the
-lifetime so I am curious if parent object approach is okay from kobject
-handling point of view.
-
-If it's no problem, I am happy to change it.
