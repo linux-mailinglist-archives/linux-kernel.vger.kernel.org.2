@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECC13146FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 04:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00D13146F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 04:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhBID1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 22:27:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbhBIDTT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 22:19:19 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD411C061788;
-        Mon,  8 Feb 2021 19:17:59 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id s15so8941457plr.9;
-        Mon, 08 Feb 2021 19:17:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q2pKfb69pYQFwh9ajJVA3uQ+Q19S3O7/msVoIYMgUoY=;
-        b=OjaZUL7dCiVHJsp8mx1pbyQfCktRG/4k5LYp9UBNJGsvxTbKIPIDPAokPS3uDxuftY
-         V21oaREQIVebC6DpmKRK60z6LlPvHNapFhh+Qjffjc6+KVnuwojfyzhhi9HoZ/wGEOTy
-         Rc5ffR0oZA+VoG7o9qybHilFMm+BoNKb7LYbtmJcEK1vCTGs+zdZGC65Tc1qRo2kmnFD
-         A1BomJzr8GHI2cnIEJpRf8ykpSfODHAR9f1DHV6Aa2LJ3dZUrpofqui6nbkJm82+1EmH
-         r4GlRZx5J1VmMHNTiLJ3mB16B2Ug0nABMwI2mcBEWJ5mX7DQtp/EP6/MWC1mTkeDiWuR
-         mWaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q2pKfb69pYQFwh9ajJVA3uQ+Q19S3O7/msVoIYMgUoY=;
-        b=r1fKqf7v/GloSPgMKdoNmavUG2oE1M772M6Bckko59mub3Ilcg6tOKCV3Rh37HcH8B
-         ZyZERTJf2VG6uRo3qE4SQ2VuBTu5iymwNb+jk/DU5H7dS9EsKaZJ2ZdRGsuuH47qtJI+
-         1BJMroGJnR++2CF4fLjXFEQr6v6HNNhbiBC6QDS39H8OY2xsjyx6qp54INUgu3FK1QI7
-         U4u9UN3Ov1fHG4a7HPmWcetVtUndRgSDimC6miqUC3L/SN7hkDQLYF4PD9h7JC+vDwyh
-         UcT58Yly30iZ70/ZfPrQvjhjInp3xR98FNQmAAhHkb9VojfQfsxMKWipDrHNp5qEntT0
-         /1LA==
-X-Gm-Message-State: AOAM53209DJ0QqCw3ZWlderU9dFbEbjp/uof+aeE92aqkM8x+LO77taM
-        om2cCPYHNp3QrxOvB5wm75FPi4Rwo/DDbw==
-X-Google-Smtp-Source: ABdhPJyAUyPu0EF03mfMjijO/VPBNU/9K3YdmhoMdRoAxMqPILsT+aQQ6TRfDdRIVt2+DfIR/UvnMw==
-X-Received: by 2002:a17:90a:77c4:: with SMTP id e4mr1868230pjs.185.1612840679283;
-        Mon, 08 Feb 2021 19:17:59 -0800 (PST)
-Received: from weidongs-air.lan ([50.35.79.151])
-        by smtp.gmail.com with ESMTPSA id 9sm10052617pfw.48.2021.02.08.19.17.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Feb 2021 19:17:58 -0800 (PST)
-From:   Weidong Cui <weidongcui@gmail.com>
-To:     Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>
-Cc:     Weidong Cui <weidongcui@gmail.com>, Xinyang Ge <aegiryy@gmail.com>,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Enable ACPI_ADR_SPACE_PCI_CONFIG in acpi_gbl_default_address_spaces only when ACPI_PCI_CONFIGURED is defined
-Date:   Mon,  8 Feb 2021 19:17:44 -0800
-Message-Id: <20210209031744.26474-1-weidongcui@gmail.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        id S230316AbhBID0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 22:26:21 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:51972 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230387AbhBIDTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 8 Feb 2021 22:19:20 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_Ls_iFgJW8IAA--.10797S3;
+        Tue, 09 Feb 2021 11:18:04 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Make check condition for SDBBP consistent with
+ EJTAG spec
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1612790085-14436-1-git-send-email-yangtiezhu@loongson.cn>
+ <76dbc72a-32fd-4de3-bc36-3eb0d0eebb44@www.fastmail.com>
+ <d2df38f5-0894-44b3-a88c-fe9a7e595284@www.fastmail.com>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <1bce5614-39bb-2581-f9b0-1178c6339d44@loongson.cn>
+Date:   Tue, 9 Feb 2021 11:18:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <d2df38f5-0894-44b3-a88c-fe9a7e595284@www.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dxn_Ls_iFgJW8IAA--.10797S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF17ur47Xw43Aw4fZF1rCrg_yoW8ur4kpr
+        4UKa4vkFWkXr1jvFyjyw4rKrn0v3yDKrWSga1vq34F9F1qgFn5tFn29rWj9ryYgr1Ika40
+        v3WjqFnFyr1SyrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
+        67vIY487MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JU2FALUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Weidong Cui <weidongcui@gmail.com>
-Signed-off-by: Xinyang Ge <aegiryy@gmail.com>
----
- drivers/acpi/acpica/evhandler.c | 2 ++
- include/acpi/acconfig.h         | 4 ++++
- 2 files changed, 6 insertions(+)
+On 02/09/2021 10:36 AM, Jiaxun Yang wrote:
+>
+> On Tue, Feb 9, 2021, at 12:32 AM, Jiaxun Yang wrote:
+>>
+>> On Mon, Feb 8, 2021, at 9:14 PM, Tiezhu Yang wrote:
+>>> According to MIPS EJTAG Specification [1], a Debug Breakpoint
+>>> exception occurs when an SDBBP instruction is executed, the
+>>> CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
+>>> occurred, just check bit DBp for SDBBP is more accurate.
+>>>
+>>> [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
+>>>
+>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>>> ---
+>>>   arch/mips/kernel/genex.S | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+>>> index bcce32a..6336826 100644
+>>> --- a/arch/mips/kernel/genex.S
+>>> +++ b/arch/mips/kernel/genex.S
+>>> @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+>>>   	MTC0	k0, CP0_DESAVE
+>>>   	mfc0	k0, CP0_DEBUG
+>>>   
+>>> -	sll	k0, k0, 30	# Check for SDBBP.
+>>> -	bgez	k0, ejtag_return
+>>> +	andi	k0, k0, 0x2	# Check for SDBBP.
+>>> +	beqz	k0, ejtag_return
+>> You'd better define a marco for it to prevent further confusion.
 
-diff --git a/drivers/acpi/acpica/evhandler.c b/drivers/acpi/acpica/evhandler.c
-index 5884eba04..4c25ad433 100644
---- a/drivers/acpi/acpica/evhandler.c
-+++ b/drivers/acpi/acpica/evhandler.c
-@@ -26,7 +26,9 @@ acpi_ev_install_handler(acpi_handle obj_handle,
- u8 acpi_gbl_default_address_spaces[ACPI_NUM_DEFAULT_SPACES] = {
- 	ACPI_ADR_SPACE_SYSTEM_MEMORY,
- 	ACPI_ADR_SPACE_SYSTEM_IO,
-+#ifdef ACPI_PCI_CONFIGURED
- 	ACPI_ADR_SPACE_PCI_CONFIG,
-+#endif
- 	ACPI_ADR_SPACE_DATA_TABLE
- };
- 
-diff --git a/include/acpi/acconfig.h b/include/acpi/acconfig.h
-index a225eff49..790999028 100644
---- a/include/acpi/acconfig.h
-+++ b/include/acpi/acconfig.h
-@@ -162,7 +162,11 @@
- /* Maximum space_ids for Operation Regions */
- 
- #define ACPI_MAX_ADDRESS_SPACE          255
-+#ifdef ACPI_PCI_CONFIGURED
- #define ACPI_NUM_DEFAULT_SPACES         4
-+#else
-+#define ACPI_NUM_DEFAULT_SPACES         3
-+#endif
- 
- /* Array sizes.  Used for range checking also */
- 
--- 
-2.24.3 (Apple Git-128)
+OK,  thanks, I will do it in v2.
+
+>>
+>> Btw I'm curious about how do kernel receive EJTAG exception?
+>> In my understanding there are only two possible EJTAG exception vectors,
+>> 0xbfc00480 and DSEG one. Both of them are reachable by kernel.
+> ^ not
+>
+>> How do this piece of code work?
+
+We can see some useful explanations from the following comment,
+the firmware needs to make sure jump to except_vec_ejtag_debug.
+
+arch/mips/kernel/genex.S
+/*
+  * EJTAG debug exception handler.
+  * The EJTAG debug exception entry point is 0xbfc00480, which
+  * normally is in the boot PROM, so the boot PROM must do an
+  * unconditional jump to this vector.
+  */
+NESTED(except_vec_ejtag_debug, 0, sp)
+         j       ejtag_debug_handler
+#ifdef CONFIG_CPU_MICROMIPS
+          nop
+#endif
+         END(except_vec_ejtag_debug)
+
+>>
+>> Thanks.
+>>
+>> - Jiaxun
+>>
+>>>   
+>>>   #ifdef CONFIG_SMP
+>>>   1:	PTR_LA	k0, ejtag_debug_buffer_spinlock
+>>> -- 
+>>> 2.1.0
+>>>
+>>>
+>> -- 
+>> - Jiaxun
+>>
 
