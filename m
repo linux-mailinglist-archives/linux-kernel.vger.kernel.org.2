@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE023159B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBCC3159AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbhBIWvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:51:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
+        id S234477AbhBIWr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233537AbhBITtK (ORCPT
+        with ESMTP id S233659AbhBITtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Feb 2021 14:49:10 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04732C061A2A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:48:26 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id gx20so2307317pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 11:48:25 -0800 (PST)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A6FC061A31
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:48:27 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id b145so12573097pfb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 11:48:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=afF2pHGG502t/84V5YNHmCiVWiQMRNdlEkUy2NZuKx8=;
-        b=yRaJ+PJ+E44+mqB5LJcQUiR6volXPqvWk7B54rrcPwNuggp7DXthL43qFxwiJaIthR
-         HStcVglg8xIqrW9BKyqY4zPS+KQ0Ooh89+0ENhwQP/mK/2f/dJkzbd0fjdZhCmnkeTXo
-         zrtDpP/gAUVndHlTx7IIiuhwXwmlOFXBS7Bp/wO0+I2Qwc/ntb7r3kP5blH+FynCJPxW
-         v/M0ClZzR6U0x6nA2IolnjcozeqdJh+39gOMTpMFIaVj+ga+r7/IJCccxiPETvn5thso
-         CvDoN0CfebHTczcBATJwgu0i8jhadc+FJUgjcdcpw6+/P9dFdvZFH4xBDmtKhcs++J9/
-         i/Sg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ysXoxmHGWekWNyITP0f9QwT2Iyo77pJXB4WoqmtP4Co=;
+        b=AsJEwfacT50dzlHJesYHyvPMmGevTS+ag8BhYTlHlCJ+z3e0U27w5lWhFvWXNw7K8p
+         zjYspoGmCqgQYQJwbFzTIIhNSHhbb5GUcYIAxQIAz1PYnBg+ZXtkZlhyChFBnWXgJxXH
+         688qnGvDFa3ydexIBy6mU/hvuFDcrqljXxSyISZMOdRAlYG+dSio7eFkfQVYl34a2I+a
+         yXJsmt1Esb3/IQ5Fl7WoidYkFMmEZNI7ozgOogtAlXgZ4bTjmV51W7t0QlKszQ2Sm3CS
+         s3aT36pWaoZpeWiP7FYlxNQ/p8szINRxpSNZ045YUXExUAc6iM6vk99/GBEjfjkV1t1P
+         9Pag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=afF2pHGG502t/84V5YNHmCiVWiQMRNdlEkUy2NZuKx8=;
-        b=qrMRonTcO1fg133+N8R2OYIBI6lNc7xAuD4eECiYFOqjUzGJi+rOa4jvRsZUXtbTvj
-         AzLs4TmFqOigvqkMsDfM+OkHvph6nIPOTq8RIHpzIcVyRUffVj+iaEGkert6vTbby70w
-         p1z1nY5Oq4dKCQW940X1kF9gBh3z24yVqwl+q4AOrNIJnBVn3gwdxdwHOd6E1vA5J+BV
-         w68Szfvk8BGgtyA7tv+pcSf7nuLp15DBB3n0FqWjayd7i1T05ZBn7c18ql0NbDAoPs+t
-         +i/wcRcJNgyQ+cIiBUmzUB6PT3xCaBIVVC7bu+Kh7bZjKxNuzK2xGaauOXHVdXEps1Jm
-         WvoA==
-X-Gm-Message-State: AOAM532KEnM3g5pP/CooHydZo1cvIe///uC3AVCevIVme+SckvdLBTB1
-        IoY+mpIbv6rElcB63oOXwp56WCNX0/tpDQ==
-X-Google-Smtp-Source: ABdhPJykD/cVLPq3p06Nm/JMKvPVGXYlG9cVWzIEFPq4tJeqUZX+9Dn/vzf27apxe3n4hL48CaR0Sw==
-X-Received: by 2002:a17:90a:4588:: with SMTP id v8mr5562008pjg.58.1612900105090;
-        Tue, 09 Feb 2021 11:48:25 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ysXoxmHGWekWNyITP0f9QwT2Iyo77pJXB4WoqmtP4Co=;
+        b=Sxc1uIOkrNwOspmVxxe+k4uN+7JEb3iL6mCe2x3KCZj+scYnq21GMqz1d+swbI9FEh
+         nf1nMQ8mtLq1Qg30WtuDYXKYN1pzAV6sR6VFHmwfX1gG+8XiLnOcFnnxvPD8B7uLiXA4
+         ns9ipDduDRDyXh6YjndFDhvI3S9qXoz7dgxAigMZEJTRfRbS31GrcYJ2Y5RhC6NcUPLw
+         MLpGoSJtlXpSUTMAh18tKtxIVi8v43LtmCm7vVdQ/OenBQM26RiGNpWogoRi2rqxM/cr
+         cJlbgT/MtreWWVNIjBtO1s9yCdQrb2swDHsmziZh5B+pb3+wyPpAy/muq25LhKJArcPd
+         u0fg==
+X-Gm-Message-State: AOAM532FYr+Ykt9AG1sHpUnXL00AJ0ofzKeIAA93gU9VrCGVklyCIoyl
+        pcQKkvQZpnwrKZp5YaK33WCslkAZETS0yg==
+X-Google-Smtp-Source: ABdhPJzbnY58mnNBjT7Di/zQColXsY24/57OAsMRe1ZHW4yoCGkME/b6oR4C3hpIJMQURcXm2cyODA==
+X-Received: by 2002:a62:5ec5:0:b029:1ae:6847:fa02 with SMTP id s188-20020a625ec50000b02901ae6847fa02mr24453587pfb.61.1612900106860;
+        Tue, 09 Feb 2021 11:48:26 -0800 (PST)
 Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id j17sm22365836pfh.183.2021.02.09.11.48.23
+        by smtp.gmail.com with ESMTPSA id j17sm22365836pfh.183.2021.02.09.11.48.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 11:48:24 -0800 (PST)
+        Tue, 09 Feb 2021 11:48:26 -0800 (PST)
 From:   John Stultz <john.stultz@linaro.org>
 To:     lkml <linux-kernel@vger.kernel.org>
 Cc:     John Stultz <john.stultz@linaro.org>,
@@ -67,10 +67,12 @@ Cc:     John Stultz <john.stultz@linaro.org>,
         Simon Ser <contact@emersion.fr>,
         James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 1/2] dma-buf: dma-heap: Provide accessor to get heap name
-Date:   Tue,  9 Feb 2021 19:48:17 +0000
-Message-Id: <20210209194818.2459062-1-john.stultz@linaro.org>
+Subject: [PATCH v2 2/2] dma-buf: heaps: Fix the name used when exporting dmabufs to be the actual heap name
+Date:   Tue,  9 Feb 2021 19:48:18 +0000
+Message-Id: <20210209194818.2459062-2-john.stultz@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210209194818.2459062-1-john.stultz@linaro.org>
+References: <20210209194818.2459062-1-john.stultz@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -78,8 +80,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be useful to access the name for the heap,
-so provide an accessor to do so.
+By default dma_buf_export() sets the exporter name to be
+KBUILD_MODNAME. Unfortunately this may not be identical to the
+string used as the heap name (ie: "system" vs "system_heap").
+
+This can cause some minor confusion with tooling, and there is
+the future potential where multiple heap types may be exported
+by the same module (but would all have the same name).
+
+So to avoid all this, set the exporter exp_name to the heap name.
 
 Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: Sumit Semwal <sumit.semwal@linaro.org>
@@ -100,56 +109,34 @@ Cc: linux-media@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
-v2:
-* Make sure to use "const char *" as Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/dma-buf/dma-heap.c | 12 ++++++++++++
- include/linux/dma-heap.h   |  9 +++++++++
- 2 files changed, 21 insertions(+)
+ drivers/dma-buf/heaps/cma_heap.c    | 1 +
+ drivers/dma-buf/heaps/system_heap.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
-index afd22c9dbdcf..70e410c64c1c 100644
---- a/drivers/dma-buf/dma-heap.c
-+++ b/drivers/dma-buf/dma-heap.c
-@@ -190,6 +190,18 @@ void *dma_heap_get_drvdata(struct dma_heap *heap)
- 	return heap->priv;
- }
+diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+index 364fc2f3e499..62465d61ccc7 100644
+--- a/drivers/dma-buf/heaps/cma_heap.c
++++ b/drivers/dma-buf/heaps/cma_heap.c
+@@ -339,6 +339,7 @@ static int cma_heap_allocate(struct dma_heap *heap,
+ 	buffer->pagecount = pagecount;
  
-+/**
-+ * dma_heap_get_name() - get heap name
-+ * @heap: DMA-Heap to retrieve private data for
-+ *
-+ * Returns:
-+ * The char* for the heap name.
-+ */
-+const char *dma_heap_get_name(struct dma_heap *heap)
-+{
-+	return heap->name;
-+}
-+
- struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
- {
- 	struct dma_heap *heap, *h, *err_ret;
-diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
-index 454e354d1ffb..83b8cfb2d760 100644
---- a/include/linux/dma-heap.h
-+++ b/include/linux/dma-heap.h
-@@ -50,6 +50,15 @@ struct dma_heap_export_info {
-  */
- void *dma_heap_get_drvdata(struct dma_heap *heap);
+ 	/* create the dmabuf */
++	exp_info.exp_name = dma_heap_get_name(heap);
+ 	exp_info.ops = &cma_heap_buf_ops;
+ 	exp_info.size = buffer->len;
+ 	exp_info.flags = fd_flags;
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 17e0e9a68baf..2d4afc79c700 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -388,6 +388,7 @@ static int system_heap_allocate(struct dma_heap *heap,
+ 	}
  
-+/**
-+ * dma_heap_get_name() - get heap name
-+ * @heap: DMA-Heap to retrieve private data for
-+ *
-+ * Returns:
-+ * The char* for the heap name.
-+ */
-+const char *dma_heap_get_name(struct dma_heap *heap);
-+
- /**
-  * dma_heap_add - adds a heap to dmabuf heaps
-  * @exp_info:		information needed to register this heap
+ 	/* create the dmabuf */
++	exp_info.exp_name = dma_heap_get_name(heap);
+ 	exp_info.ops = &system_heap_buf_ops;
+ 	exp_info.size = buffer->len;
+ 	exp_info.flags = fd_flags;
 -- 
 2.25.1
 
