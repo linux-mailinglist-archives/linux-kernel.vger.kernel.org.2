@@ -2,183 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A39315257
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16432315261
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhBIPFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:05:49 -0500
-Received: from mail-am6eur05on2078.outbound.protection.outlook.com ([40.107.22.78]:55009
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231576AbhBIPFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:05:39 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fvMBKH6BFYD/ZDjg5B7m1x/bly3UiXwubMC/yEIvwYI24f4W0KnjLMiBqkCz4YOw8/ZYUfDV980vbPlf8S3m+M7coUyv+364uFL/zd3hfd/Al+Ze61Szpqnrq+OSGVgy55iNNbQNpPEy7EBO59btXWhuG4hbgNNcey5VyORZL/KwCdVabnRLxKQO7ytvR59CS9j7wXoS7FYAs3o7lkPtCWTWrbdfLvPa1m6Il3vj9Dks5Xk3aO2XgEl8n88ebIuAWr7gAonDp6KSRYT7BWQYV2ZhuwQstd1qMZ47r2dDx3ynAQpDHtCWQTbSe9Sm9DAELmxXGI0RovGPYq4gFd/WXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oLCvER8KAnvVaWbklgE+2NdSIiHSqUWsJc7oAFN1LO4=;
- b=LmAprO4GRapqTfgkbibfwSySLBd/kqWdPXZY9knZHDO2BikhGZaUiOxRzZWXpOv+rD0x1keqpE3NhKzoRteCFB0HqLQwB+aqcSOCXQxDlvpvcyoX0/NRIZm6Mo9WRoqxOC5l31jvhMFPJkN+wo6CcyMvTvuCJiyPP/SFdXB3xIabEjpEyeHdv4G6yjFDz40Zy28fCO+xC6L0tdOsY9IC9Y+wmzIgjW5DSOKNpWSATOcyK8IvP7Z8lp2pBRVurEAi8bCvyFA5F2UvhUBls2u++KAG7MFFpYbnN77go6kvyTbziLm+2dLy/SPmXYdAk4r5hXZrQ59G50Bbia279zzEJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oLCvER8KAnvVaWbklgE+2NdSIiHSqUWsJc7oAFN1LO4=;
- b=V4XrOX9SYZhiQZiLToj8OXQU5QFaWp9o1yel/jolLreik4Uk0FfBbE5jiWCwAGe91ujMDwGrgOiPGeWbI85cY5dadrWkcJ3w1WpAyNW+0ISx477dHJwH//ry2xi+R2iy97ZQCEkcgDpNyFZ6I077JVuSn4wmMupLVA+5Ao+RE/I=
-Authentication-Results: armlinux.org.uk; dkim=none (message not signed)
- header.d=none;armlinux.org.uk; dmarc=none action=none
- header.from=oss.nxp.com;
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM0PR04MB6898.eurprd04.prod.outlook.com (2603:10a6:208:185::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Tue, 9 Feb
- 2021 15:04:49 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::e90e:b1d6:18a2:2d42]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::e90e:b1d6:18a2:2d42%6]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
- 15:04:49 +0000
-Date:   Tue, 9 Feb 2021 20:34:33 +0530
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-acpi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux.cj@gmail.com, Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Subject: Re: [net-next PATCH v5 07/15] net: mdiobus: Introduce
- fwnode_mdiobus_register_phy()
-Message-ID: <20210209150433.GB3248@lsv03152.swis.in-blr01.nxp.com>
-References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com>
- <20210208151244.16338-8-calvin.johnson@oss.nxp.com>
- <20210208174013.GN1463@shell.armlinux.org.uk>
+        id S232274AbhBIPHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232014AbhBIPHm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 10:07:42 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64E3C06178A;
+        Tue,  9 Feb 2021 07:07:01 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id 123so4311658ooi.13;
+        Tue, 09 Feb 2021 07:07:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bjxmsAAlaEuDY9+PSLnzX23gCEFtWGdplw8kECzDAe0=;
+        b=j0Lv1K0lAyO/aXssmrb2JSZHcKCXRO4dHOzcsVMzGZ65kKP2JFgGXgG/PaJsPQmWyL
+         PH8Szb7vv3OS37Av5B78PgUF9qUpBk+6szQZ0Mfc8jSxBierincFetlK43SpuOzrUSix
+         JDDATP8QCbQ/aXeHyIJqqZd7pJSUDfMkAMtY2cLwiTzpZBSQR2VGEVrGoEiA/22eFBBo
+         +2ZJvXCwq/arwcW35AZo8Y99RUJ3pHuVD2TUi39R4P3fZW+D3AHUywDpJIcez+2zvwAw
+         fDD91rMnpF03sjoHuA3XsLqaWXEjraCCqrggCHNCij4oj5FWSNRnCtWAs9gcs4N0aJNk
+         ZQ/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bjxmsAAlaEuDY9+PSLnzX23gCEFtWGdplw8kECzDAe0=;
+        b=YJIY52PEM4ulXD/cjpIJtQfHfoIPkiYCOukIwyFI4G/+FxhMVrs51yjRk5sQDco0iz
+         pLzXaKIpLSq7yQZ257pRcGzizqprQmAiTYOiFQ2o8uzflnEoqiGYKAL42DLOY0EQhS/z
+         +XFLy6Ck4IWtnLqVRs8ZodsxW7WmKPXFPzKcCorvcf/3/1rK4yK7mZ4tE0wniSm8rPr5
+         qD+tK3EWaPPGGJnxlIPgHAbOKTwbxKDyAVN3e1hr6TECp5FlLStbQJryHDjk11Q9g3Sg
+         cgJSkTxeIhjnnyzw58HyBbUhNPzAUFxBMJg0eNmFD8los4gYCiof/3AUlkn4lVZwqaKh
+         tk3w==
+X-Gm-Message-State: AOAM532ZyTEl8RsS3B/kVAaNRyYBXgIc9vrVHUYsHaw9adMndNOHblzF
+        pJ7fuUa1r2/NHQ1cfcRiJVg=
+X-Google-Smtp-Source: ABdhPJzdEtSfPGrXG09x+Nc8Hru0U15ym9pUPhGZOCl+C3Q5W19I9KAYsqOfSP9595rJ8B9hyn1HDA==
+X-Received: by 2002:a4a:97a7:: with SMTP id w36mr1076981ooi.64.1612883221140;
+        Tue, 09 Feb 2021 07:07:01 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p23sm4534821otk.51.2021.02.09.07.06.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 09 Feb 2021 07:07:00 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 9 Feb 2021 07:06:58 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     gregkh@linuxfoundation.org, jdelvare@suse.com,
+        giometti@enneenne.com, abbotti@mev.co.uk,
+        hsweeten@visionengravers.com, kw@linux.com, helgaas@kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kbuild@vger.kernel.org, masahiroy@kernel.org,
+        michal.lkml@markovi.net, prime.zeng@huawei.com,
+        linuxarm@openeuler.org
+Subject: Re: [PATCH v2 2/4] hwmon: Use subdir-ccflags-* to inherit debug flag
+Message-ID: <20210209150658.GA31002@roeck-us.net>
+References: <1612868899-9185-1-git-send-email-yangyicong@hisilicon.com>
+ <1612868899-9185-3-git-send-email-yangyicong@hisilicon.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210208174013.GN1463@shell.armlinux.org.uk>
+In-Reply-To: <1612868899-9185-3-git-send-email-yangyicong@hisilicon.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: SGXP274CA0021.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::33)
- To AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SGXP274CA0021.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Tue, 9 Feb 2021 15:04:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: fa66bcac-b617-42e8-91a3-08d8cd0c0a7c
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6898:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB6898374675F28A32F54F046DD28E9@AM0PR04MB6898.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aRbu5jcMQBGNtG6fa7Gdn7dds57Sj4w4qCI3fcf2yaZg3YTJOLIZuPUNafj/KVuzOcGWeIOFqzYpl1ySwCGenKGABcxUMFpdXNWzjrM3CQjVeUaYEZ7XnwqTUVHs+2Ekd3DU0nNhUbl2zHMp0wjA145Mky39YOaYklyKPZ9D/0WTyMQ1xM3r1qhsz3Q6qstYOfSvU7RmgC57MzvwNwZUCm0Zu7B7GqQvGOihMGc0/q82o0YpFXU0M/Z/x0Fl3qQAyTGYX8P3PJ7LfhRFEbVn46H+LmrLOQ6lslXkGOdFjL+KQWnLx5PYHYdCJGaCf1tndIWbZ6BqWBoPjLw4zOx+nutehzNDMGKX2UoTbfHNDrAAnQAOLngeTvVcUdOsgkPKAJ/lwnvzyN88q+ce2DVL3/9akBqHrVoiuoYKwT9rzOs3eQDbJt5IyyCGmqX9AZ4QEsN+Th8SDXoDX1FHfqG08dsnKAOhVOvtjwS7AtV27qPJKp25fhSSdaIJaeiHdBRtZQ+MVYQGKcRZfp8m7uqo9AKMlKZLANggu+BJflgluUqgAV/6Y1q8wPPO426quLAQ90+h0wfi7KH7mbfLM+LZlw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(396003)(346002)(366004)(6916009)(86362001)(316002)(8936002)(4326008)(66946007)(66556008)(26005)(66476007)(7416002)(6506007)(55236004)(8676002)(956004)(9686003)(5660300002)(186003)(16526019)(6666004)(1006002)(478600001)(1076003)(33656002)(83380400001)(54906003)(55016002)(44832011)(7696005)(52116002)(2906002)(110426009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?qUPDiunlRsZDxETHAACI25GVAJO0hss3DIBrbvbs60s2Lsh7uYw2Ifb9TTlx?=
- =?us-ascii?Q?/f2DC0ecTUmOALJTy1CW0xOFDmaWclntnAllOeEnfvsHg5q/MkyuiVmlhWOx?=
- =?us-ascii?Q?SuoEH5fysW6ft/oGpN16zIRGMiGocdLso9MFYoxsBDNBQfrsRw5pg8XcZqF0?=
- =?us-ascii?Q?4p40LNO3oQLKCCcuBwe08h7+zM1WIeSwL2z4oDcHx6bbqD56DnZSkWJy0olj?=
- =?us-ascii?Q?Zl5foqBHA5FeGaY5r3CN3bOZdJm9e+XyxL2CEHrFIsUOxxFXo2Q9mkPFuYg9?=
- =?us-ascii?Q?hdDly2yDwhQd2MtdfABT4EexazgInc8KhbMzIQj/GjRR5JKNoWzFqA7174Jr?=
- =?us-ascii?Q?H1crRsaHadbGJpzT29Pv/k52bl38/5eVxa0nwj4TurJh0hEVIgyN7FVardQ5?=
- =?us-ascii?Q?tzdzT8vsPCjmeJdddHNW1gpKCCckvZixt9S4aI3odukEcSMhcM4FeyxHh9ZZ?=
- =?us-ascii?Q?zezikDgLg1fd7+UADRnAx1ilRkMJw7eiOyrT0FrETM78CMhv5e4hvbUvPqir?=
- =?us-ascii?Q?KKUFg9gy8+zjpjLDByZ5QNbuoo95pYLXDl8DkOgCXhAu/sSMiYXbvLxnwBSu?=
- =?us-ascii?Q?JE9vDlD0Bqfq7FsK0jbMW1zMZ/yqb04fcMD+OIGAPlpO3d7nwmNRHfOXBkjp?=
- =?us-ascii?Q?wAW2kRC9G9A7NxRwNQVncXvKTUT0GUuFbLBJ+anDyIqwJp8g9pV0YkldHdoT?=
- =?us-ascii?Q?LTcO8Q09Lhh2wJB3gpkMCV3CmyVlBbyt7jVS6Yz70iCNaVH25HS/S9mBgomT?=
- =?us-ascii?Q?B+2Y+ech5Xndz9Ubm2jDBDdIxl3kZdNVCnI3qHQhYFs05tp7mMYL6l7BAn21?=
- =?us-ascii?Q?HQ73sBF/gbTwzpscF8dwc/yQIHoX6w5K3f1oU+JReftmSUndiKatrLczP/h1?=
- =?us-ascii?Q?q9lTUpbwrLP5YXF8JqDFI0toVs+imP3KXkLL3Z9UDDr3fZPEHbWo14nWwfsK?=
- =?us-ascii?Q?7VQOj+mIZUzBS64ldX8JjcCoP2DM14Hrv+7gCqo02QoNn4DpmaVG65nZgNDx?=
- =?us-ascii?Q?6NS7KMbV4sTqm/hQoJAqV/aUuaGxivEgDjMijDP2zFZAIgk4WPrQOwn0kl7J?=
- =?us-ascii?Q?nUG1iPRZhm4O5sX5rsLrVdIkfTo4T2iYLwSjghG+XjK7RwSeluWOIewakXDV?=
- =?us-ascii?Q?M8xGVlC1F53uiy7ohoLRZ9sHko9DtIq70rGOwEnZTBpgcdFFptw4Fy2MYcSx?=
- =?us-ascii?Q?qKLn5/aMtTlfnj6U7BzF+SUXkzA5MhIWlIrOIwKhiTo4sHwq09agh+nRZO0I?=
- =?us-ascii?Q?MKmuDELOkB2DdBLebViTqhZYSdnINgVtds5An/CkoKErJ9Gd5gkdt55FH0gY?=
- =?us-ascii?Q?c3jj7F1QV5wqK+Vwv3DhULNqZ/RDdRqKEH6zvUEQ6EJSJw=3D=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa66bcac-b617-42e8-91a3-08d8cd0c0a7c
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2021 15:04:49.3340
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9WvZmIIkYe3XAWyWXVbOaiJ2E6g4Zs1xlc0908BrrgiVazAnlbV03/SyECqoSBWO43tpaOUna3H9WoAlP6dogA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6898
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 05:40:13PM +0000, Russell King - ARM Linux admin wrote:
-> On Mon, Feb 08, 2021 at 08:42:36PM +0530, Calvin Johnson wrote:
-> > +int fwnode_mdiobus_register_phy(struct mii_bus *bus,
-> > +				struct fwnode_handle *child, u32 addr)
-> > +{
-> > +	struct mii_timestamper *mii_ts;
+On Tue, Feb 09, 2021 at 07:08:17PM +0800, Yicong Yang wrote:
+> From: Junhao He <hejunhao2@hisilicon.com>
 > 
-> If you initialise this to NULL...
+> We use ccflags-$(CONFIG_HWMON_DEBUG_CHIP) for the debug
+> message in drivers/hwmon, but the DEBUG flag will not pass to
+> the subdirectory.
 > 
-> > +	struct phy_device *phy;
-> > +	bool is_c45 = false;
-> > +	u32 phy_id;
-> > +	int rc;
-> > +
-> > +	if (is_of_node(child)) {
-> > +		mii_ts = of_find_mii_timestamper(to_of_node(child));
-> > +		if (IS_ERR(mii_ts))
-> > +			return PTR_ERR(mii_ts);
-> > +	}
-> > +
-> > +	rc = fwnode_property_match_string(child, "compatible", "ethernet-phy-ieee802.3-c45");
-> > +	if (rc >= 0)
-> > +		is_c45 = true;
-> > +
-> > +	if (is_c45 || fwnode_get_phy_id(child, &phy_id))
-> > +		phy = get_phy_device(bus, addr, is_c45);
-> > +	else
-> > +		phy = phy_device_create(bus, addr, phy_id, 0, NULL);
-> > +	if (IS_ERR(phy)) {
-> > +		if (mii_ts && is_of_node(child))
+> Considering CONFIG_HWMON_DEBUG_CHIP intends to have DEBUG
+> recursively in driver/hwmon. It will be clearer
+> to use subdir-ccflags-* instead of ccflags-* to inherit
+> the debug settings from Kconfig when traversing subdirectories,
+> and it will avoid omittance of DEBUG define when debug messages
+> added in the subdirectories.
 > 
-> Then you don't need is_of_node() here.
-> 
-> > +		/* phy->mii_ts may already be defined by the PHY driver. A
-> > +		 * mii_timestamper probed via the device tree will still have
-> > +		 * precedence.
-> > +		 */
-> > +		if (mii_ts)
-> > +			phy->mii_ts = mii_ts;
-> 
-> Should this be moved out of the if() case?
-> 
-> I'm thinking of the future where we may end up adding mii timestamper
-> support for ACPI.
 
-Right. I'll take case of these in next version.
+The above paragraph doesn't add clarity and may as well be dropped.
+On the other side, the commit message still doesn't mention that
+pr_debug depends on DEBUG, which I am sure many people don't know
+or remember. This is the prime reason why this patch is acceptable,
+so it most definitely needs to be mentioned here.
 
-Thanks
-Calvin
+Guenter
+
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>  drivers/hwmon/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index 09a86c5..1c0c089 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -201,5 +201,5 @@ obj-$(CONFIG_SENSORS_XGENE)	+= xgene-hwmon.o
+>  obj-$(CONFIG_SENSORS_OCC)	+= occ/
+>  obj-$(CONFIG_PMBUS)		+= pmbus/
+>  
+> -ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
+> +subdir-ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
+>  
+> -- 
+> 2.8.1
+> 
