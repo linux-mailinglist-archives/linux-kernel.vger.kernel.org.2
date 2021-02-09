@@ -2,66 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7709F315C5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E59315C5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233704AbhBJBgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
+        id S235094AbhBJBfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:35:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233624AbhBIWHM (ORCPT
+        with ESMTP id S233713AbhBIWHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Feb 2021 17:07:12 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E891C08EB23
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:51:58 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id u14so23899296wri.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:51:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=7B1ZkR0uagcsDTEEwhmbCjTQMtDSTrQGmwoFrMWzdXI=;
-        b=g6DK5UolerRqPFIlISdjbU5vDGFGrZhw0by0G3DLaUzcIXaF/lSGx0lEasmrE3ARu/
-         sbzZ1iXwD2i2fn2wAlI+8V8Z+vyYEf2945XpqLtwL2ZCqRp8LpOhoOeAqbFXiV16ZA7m
-         +Uk68yE5aJ39wK1Ttr0JH24W79ly+RW+4UvPkEuRq3BFLaAh7WKY3jKACBfiEDNZUUNg
-         Unn7MfP/t7MZ2h0osBMRh1KmripbKY2Kl181mmWmwTt16/cHPhux+DvV3RQ/OZ3Dg9Un
-         2lc/X6LxXJGbw38lFi64iR2mryI4BpF1g2kj9j5ZECK7RAUaQtmI0tT83vJqmIuvC7Yv
-         +WBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=7B1ZkR0uagcsDTEEwhmbCjTQMtDSTrQGmwoFrMWzdXI=;
-        b=jrWDh6TKgQCkJuvHrqllRr3SqJPn4dm+Hwmk9kiKp5UaK22HsLIjcsFKRGad+U2Fka
-         7Llg+TP1sT82xix5DjMaNdD8DVsoBKd8/09AJyPMgJAJiqfeUU2Z1SqCpcN7rEylYh3o
-         rvBxCx/AtVY6s3sAwY/Z5c12C1C7z0wg3SiXVWYp/MmSz3b+oqsnm2qUAR/kYZ+tJGoj
-         a7Z9gWKPY0SgpEjxy+If+7h7/9lXosfuaOSx1NUx51dUGf+p2RmxPKaBdVvbFDVAVYLa
-         kxtCTZJK82hS630mQfd+BQIxPcAqXB89ybPaSdGNa7VJECr+KNoe3oY4Bg9dfzpwi4wb
-         M1Bw==
-X-Gm-Message-State: AOAM531gIDdOZht2tsXmuasdaoBn8zrBEL+6BoInkheC/rWx/cEnghXw
-        P/0a/7o5izoi+pPZoZo9YXPnNA==
-X-Google-Smtp-Source: ABdhPJycBNhbjzeRHvTSOFIYE340XSbFkuThJ5741p4eE/sCdx8bQv/sPD4G+07bf1z+mKCq/jnp8w==
-X-Received: by 2002:adf:d20c:: with SMTP id j12mr122554wrh.407.1612907516605;
-        Tue, 09 Feb 2021 13:51:56 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:4cbf:512d:a355:e705? ([2a01:e34:ed2f:f020:4cbf:512d:a355:e705])
-        by smtp.googlemail.com with ESMTPSA id g16sm75153wmi.30.2021.02.09.13.51.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Feb 2021 13:51:55 -0800 (PST)
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Claudiu Beznea <Claudiu.Beznea@microchip.com>,
-        j.neuschaefer@gmx.net
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] timer drivers for v5.12
-Message-ID: <3747fbde-134f-5e1d-47d5-8776c1a52aa1@linaro.org>
-Date:   Tue, 9 Feb 2021 22:51:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from smtp-42af.mail.infomaniak.ch (smtp-42af.mail.infomaniak.ch [IPv6:2001:1600:3:17::42af])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCCDC0698CF
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 13:55:19 -0800 (PST)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DZxTf2FcKzMqGbp;
+        Tue,  9 Feb 2021 22:53:10 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DZxTc3C9Szlh8TK;
+        Tue,  9 Feb 2021 22:53:08 +0100 (CET)
+Subject: =?UTF-8?Q?Re=3a_Conflict_with_Micka=c3=abl_Sala=c3=bcn=27s_blacklis?=
+ =?UTF-8?Q?t_patches_=5bwas_=5bPATCH_v5_0/4=5d_Add_EFI=5fCERT=5fX509=5fGUID_?=
+ =?UTF-8?Q?support_for_dbx/mokx_entries=5d?=
+To:     Eric Snowberg <eric.snowberg@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     dwmw2@infradead.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
+        ardb@kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+        lszubowi@redhat.com, javierm@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+References: <20210122181054.32635-1-eric.snowberg@oracle.com>
+ <1103491.1612369600@warthog.procyon.org.uk>
+ <10e6616e-0598-9f33-2de9-4a5268bba586@digikod.net>
+ <A5B5DEC0-E47A-4C3D-8E79-AF37B6C2E565@oracle.com>
+ <7924ce4c-ea94-9540-0730-bddae7c6af07@digikod.net>
+ <BFC930B3-7994-4C5B-A8EF-1DD1C73F5750@oracle.com>
+ <dc6a4524-3935-fda6-40a8-cebf80942cdf@digikod.net>
+ <188DE1AF-A011-4631-B88A-2C4324DA013B@oracle.com>
+ <99066eb7-53ac-41b0-46cf-36ea3d7f6590@digikod.net>
+ <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <456712ef-1349-ffe2-9e34-7d49848980ff@digikod.net>
+Date:   Tue, 9 Feb 2021 22:53:34 +0100
+User-Agent: 
 MIME-Version: 1.0
+In-Reply-To: <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -70,48 +58,66 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Thomas,
+On 09/02/2021 00:05, Eric Snowberg wrote:
+> 
+>> On Feb 6, 2021, at 11:30 AM, Mickaël Salaün <mic@digikod.net> wrote:
+>>
+>> On 06/02/2021 02:14, Eric Snowberg wrote:
+>>
+>>> I have done some additional testing, I am seeing a regression. The blacklist 
+>>> keyring is no longer picking up any of the hashes from the dbx during boot. 
+>>> I backed out the merge with my changes  (fdbbe7ceeb95090d09c33ce0497e0394c82aa33d) 
+>>> and still see the regression.  I then backed out Mickaël merge
+>>> (5bf1adccf5c41dbdd51d1f4de220d335d9548598) and it fixes the regression.
+>>>
+>>> On a x86 with the updated dbx from uefi.org, I’d expect to see 234 bin hash entries
+>>> in the blacklist keyring.  With the current merged code, there is none.
+>>
+>> Hum, I missed a part in refactoring (commit
+>> f78e50c8f750c0ac6767ac1ed006360cf77c56c4). :/
+>> Could you please test the following patch?
+>>
+>> diff --git a/certs/blacklist.c b/certs/blacklist.c
+>> index 07c592ae5307..f998a2e85ddc 100644
+>> --- a/certs/blacklist.c
+>> +++ b/certs/blacklist.c
+>> @@ -197,13 +197,16 @@ int mark_hash_blacklisted(const u8 *hash, size_t
+>> hash_len,
+>>                enum blacklist_hash_type hash_type)
+>> {
+>>        const char *buffer;
+>> +       int err;
+>>
+>>        buffer = get_raw_hash(hash, hash_len, hash_type);
+>>        if (IS_ERR(buffer))
+>>                return PTR_ERR(buffer);
+>> +       err = mark_raw_hash_blacklisted(buffer);
+>>        kfree(buffer);
+>> -       return 0;
+>> +       return err;
+>> }
+> 
+> I applied this patch, it works better, but there is still a regression. 
+> Most of the hashes show up in the blacklist keyring now.  However some 
+> do not, here is what I see in the log during boot:
+> 
+> [    2.321876] blacklist: Problem blacklisting hash (-13)
+> [    2.322729] blacklist: Problem blacklisting hash (-13)
+> [    2.323549] blacklist: Problem blacklisting hash (-13)
+> [    2.324369] blacklist: Problem blacklisting hash (-13)
+> 
+>> Is it possible to test these kind of dbx blacklist with Qemu?
+> 
+> Yes, just use OVMF. 
+> 
 
-please consider pulling the following changes for v5.12.
+My changes (with the fix) don't change the previous semantic. I just
+tested without my changes and with my changes (and the fix), and I get
+the same result: 184 bin hashes with
+https://uefi.org/sites/default/files/resources/dbxupdate_x64.bin
 
-Thanks
+Could you please re-test and if there is still an issue bisect and share
+the certificates causing this issue?
 
-  -- Daniel
-
-
-The following changes since commit e85c1d21b16b278f50d191155bc674633270e9c6:
-
-  clocksource/drivers/timer-microchip-pit64b: Add clocksource
-suspend/resume (2021-02-03 09:36:50 +0100)
-
-are available in the Git repository at:
-
-  https://git.linaro.org/people/daniel.lezcano/linux.git
-tags/timers-v5.12-rc1
-
-for you to fetch changes up to e85c1d21b16b278f50d191155bc674633270e9c6:
-
-  clocksource/drivers/timer-microchip-pit64b: Add clocksource
-suspend/resume (2021-02-03 09:36:50 +0100)
-
-----------------------------------------------------------------
-- Drop dead code on efm32 (Uwe Kleine-König)
-
-- Move pr_fmt() before the includes on davinci driver (Bartosz
-  Golaszewski)
-
-- Clarified timer interrupt must be specified on nuvoton DT bindings
-  (Jonathan Neuschäfer)
-
-- Remove tango, sirf, u300 and atlas timer drivers (Arnd Bergman)
-
-- Add suspend/resume on pit64b (Claudiu Beznea)
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+David, do you want me to send the two new patches or an updated full
+patch series?
