@@ -2,65 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEC3315387
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7013231538D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhBIQOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:14:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232764AbhBIQOE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:14:04 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719C9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:13:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xtgAIQYjeBASeA4Agwd12ZucFnQjR7z/f0eu8R/GUN0=; b=2VDQIOmIudcOMOMzJw66jqPAUM
-        b9RZzQOVo7xx8LzQSZXlXulEnGIupcizoo49TqbSVgbk200PElrHvYgHRl8wcHaYMkvMjMgsAGSLT
-        lkeHD1nkq+ySaul95oGvMfc0ztAgGweJXjn/WU9FRg8dI/9Ip6DxykvlyqJTxfDH7RK//NmqTOnc4
-        NZYNHTNgRQrEcal/AvA8dceGBahmDhoblZ41mHs/mFbE/9GDM+HHvhqHGtSIF2KaxgLh0crz8AQkA
-        kiAEFL/C8EWz+HQHfFhXncyhAnSIEt5eA4zrjxWVKdjlAlfwXoosGiOUkwXsBL4YaolzFJ63WO46J
-        /vM51Qsg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9Vdf-0005Ss-Op; Tue, 09 Feb 2021 16:13:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C1BDE301324;
-        Tue,  9 Feb 2021 17:13:15 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B324F20084EAD; Tue,  9 Feb 2021 17:13:15 +0100 (CET)
-Date:   Tue, 9 Feb 2021 17:13:15 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch] preempt: select PREEMPT_DYNAMIC under PREEMPTION instead
- of PREEMPT
-Message-ID: <YCK0m8FD9kp8QZWJ@hirez.programming.kicks-ass.net>
-References: <7d129a84b0858fd7fbc3e38ede62a848fbec536e.camel@gmx.de>
- <YCKmhnoSKgdYqxOL@hirez.programming.kicks-ass.net>
- <269ee10aac93d819e48dc81f09a01d01fcd44fb1.camel@gmx.de>
+        id S231845AbhBIQOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:14:33 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:23375 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232788AbhBIQOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 11:14:17 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DZnxl0tRtz9v0Jx;
+        Tue,  9 Feb 2021 17:13:31 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id VNxI6Xy2d8lS; Tue,  9 Feb 2021 17:13:31 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZnxk6yd8z9v0JL;
+        Tue,  9 Feb 2021 17:13:30 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7ED6B8B764;
+        Tue,  9 Feb 2021 17:13:32 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id SpEj3Si2q6SX; Tue,  9 Feb 2021 17:13:32 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BE8778B7EA;
+        Tue,  9 Feb 2021 17:13:31 +0100 (CET)
+Subject: Re: [PATCH v5 16/22] powerpc/syscall: Avoid stack frame in likely
+ part of system_call_exception()
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+ <981edfd50d4c980634b74c4bb76b765c499a87ec.1612796617.git.christophe.leroy@csgroup.eu>
+ <1612834634.qle1lc7n6y.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <f2b17529-e1b6-3d2c-a38b-51e91841e438@csgroup.eu>
+Date:   Tue, 9 Feb 2021 17:13:17 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <269ee10aac93d819e48dc81f09a01d01fcd44fb1.camel@gmx.de>
+In-Reply-To: <1612834634.qle1lc7n6y.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:05:14PM +0100, Mike Galbraith wrote:
-
-> ld: init/main.o: in function `trace_initcall_start':
-> /backup/usr/local/src/kernel/linux-tip-rt/./include/trace/events/initcall.h:27: undefined reference to `__SCT__preempt_schedule_notrace'
-
-Ooohh... this is because x86 can't build PREEMPT without PREEMPT_DYNAMIC
-anymore. Maybe I should fix that. Lemme see what that would take.
 
 
+Le 09/02/2021 à 02:55, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+>> When r3 is not modified, reload it from regs->orig_r3 to free
+>> volatile registers. This avoids a stack frame for the likely part
+>> of system_call_exception()
+> 
+> This doesn't on my 64s build, but it does reduce one non volatile
+> register save/restore. With quite a bit more register pressure
+> reduction 64s can avoid the stack frame as well.
+
+The stack frame is not due to the registers because on PPC64 you have the redzone that you don't 
+have on PPC32.
+
+As far as I can see, this is due to a call to .arch_local_irq_restore().
+
+On ppc32 arch_local_irq_restore() is just a write to MSR.
+
+
+> 
+> It's a cool trick but quite code and compiler specific so I don't know
+> how worthwhile it is to keep considering we're calling out into random
+> kernel C code after this.
+> 
+> Maybe just keep it PPC32 specific for the moment, will have to do more
+> tuning for 64 and we have other stuff to do there first.
+> 
+> If you are happy to make it 32-bit only then
+
+I think we can leave without this, that's only one or two cycles won.
+
+> 
+> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+> 
