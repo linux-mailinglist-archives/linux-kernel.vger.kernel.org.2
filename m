@@ -2,107 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB803158BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D469C3158EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbhBIVh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:37:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233614AbhBITIB (ORCPT
+        id S233435AbhBIVrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 16:47:09 -0500
+Received: from mail-yb1-f172.google.com ([209.85.219.172]:37743 "EHLO
+        mail-yb1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233311AbhBITQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:08:01 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814F6C061356
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:06:59 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id f1so30076608lfu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 11:06:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1tHDrQ7k7QBExa6hxOU6qMztojmSPjc893LQ4fde7dg=;
-        b=akIN38EhQAi1EJYSeLBzpY86D4HcP1JFpL9GOZ+0RTnCkorkEfcVrIAVKTL3jMnG1S
-         wB2qolfwaFv21H7u2zEEkvnFpGX1nEHeJ1S4J1sfz5c5YnXEdHBQ4kH64G0jT9/l9/e6
-         eD4OPnbfiSTjG9KsSbeEkIcjaKRrzYZYK/x80=
+        Tue, 9 Feb 2021 14:16:09 -0500
+Received: by mail-yb1-f172.google.com with SMTP id p193so5540486yba.4;
+        Tue, 09 Feb 2021 11:14:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1tHDrQ7k7QBExa6hxOU6qMztojmSPjc893LQ4fde7dg=;
-        b=bsuRHztl2XbjmYLaJeL051bIK7ingCJjLldQrmqlhlxp+uRQKr/2b2MP910h9GQI0R
-         J+Zq2KkqBk3yMFu9kBt8VfsVqZU06OsjZVamWF3tUSpuWf/25TVMuvD5lfIruHxW5OEV
-         AlkWhoIzzGWKxUF8aoYFFtq6awwr3AYemykyBw7Fp/r5/KoUTThj2uK7LyB0TIWRn7ZJ
-         6NMXZZW7QhFNLrg/B59wR24K/yHXsY0SHD2/oxbX8j2RxsG2ySDGiGj9H46F6RGU8IWp
-         +ERi1UOnZ5gZ4pQ7IyRmUEK+YtJyb39auqs1Qvqs7Uup0nI1346Wm4C+20tN5trB8iDJ
-         FxPQ==
-X-Gm-Message-State: AOAM530QbEllPWT4fbdjXbwP/RfHgsz39aB5xvC2ZiF6RWLzdjk44iGW
-        dED3wqoRTfsdWILA/lZAJx5DEcWGvbesnw==
-X-Google-Smtp-Source: ABdhPJzsIXg7+AK1iK+qgCScbiDyTr4ME3IweW4Q1MGFaYj/VKvpczcuDSuV+JhMBvHr7aztjRuvTg==
-X-Received: by 2002:a19:e41:: with SMTP id 62mr9179658lfo.128.1612897617903;
-        Tue, 09 Feb 2021 11:06:57 -0800 (PST)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id t27sm1241212ljk.132.2021.02.09.11.06.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Feb 2021 11:06:57 -0800 (PST)
-Received: by mail-lf1-f52.google.com with SMTP id f1so30076536lfu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 11:06:57 -0800 (PST)
-X-Received: by 2002:a19:c14c:: with SMTP id r73mr13646015lff.201.1612897616810;
- Tue, 09 Feb 2021 11:06:56 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0lSV4AohGsl1Zr1fTQrQWSThsP43A4U9NitlrjcGFLY=;
+        b=tqRnt9OodcnCqfbuYf1KMf6OpxeDpuzZoJ1RgZTciBqBeiNtfdbjWq11RHAZe87RFe
+         bfEjUbgGuDsTdAhuR2CFXbgPiTdej7iJYCZvH0U8kzU6yukOGj/mnhIghtKSIMJkFE3k
+         B0V7dAQxQC+NoqX8+QOQzNU6EgcArtyATXkA7UwSLDT8E1/NlIcYf1umKvICBC48E6Za
+         MaUq+w/SYQJeP9Oemb9vvVEgo6tuqUmE9hnPUZZjO+/BPHKQGrwFojBlufLhVpiqkWek
+         Vd761rYxIXtb76pTtgIxsLkyfPTsrMzAP0jDBdoZP/h9c4p1Eow1ZfOF4+5lTvj853Wx
+         X9hw==
+X-Gm-Message-State: AOAM5322QgE6St+pyk364nSlTg3m+fajrkARk8Yu/tRuqcxFfeEMJxBv
+        nIu3kV9FCdDKN/N/6IjCy0b2gczNJA==
+X-Google-Smtp-Source: ABdhPJzKfXsiizxjCyXEx0VckoiwC/5UFxLGdVQTZTq7WF7ZYGtOjNpOJapzmlORTAvYbqLUa9YFig==
+X-Received: by 2002:a9d:71c6:: with SMTP id z6mr17187410otj.276.1612897691853;
+        Tue, 09 Feb 2021 11:08:11 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i20sm4504476otl.78.2021.02.09.11.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 11:08:10 -0800 (PST)
+Received: (nullmailer pid 4167159 invoked by uid 1000);
+        Tue, 09 Feb 2021 19:08:09 -0000
+Date:   Tue, 9 Feb 2021 13:08:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     nicolas.ferre@microchip.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linus.walleij@linaro.org, alexandre.belloni@bootlin.com,
+        ludovic.desroches@microchip.com
+Subject: Re: [PATCH v2 1/3] dt-bindings: pinctrl: at91-pio4: add slew-rate
+Message-ID: <20210209190809.GA4167103@robh.at.kernel.org>
+References: <1611747945-29960-1-git-send-email-claudiu.beznea@microchip.com>
+ <1611747945-29960-2-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-References: <591237.1612886997@warthog.procyon.org.uk>
-In-Reply-To: <591237.1612886997@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 9 Feb 2021 11:06:41 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
-Message-ID: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
-Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
-To:     David Howells <dhowells@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611747945-29960-2-git-send-email-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So I'm looking at this early, because I have more time now than I will
-have during the merge window, and honestly, your pull requests have
-been problematic in the past.
+On Wed, 27 Jan 2021 13:45:43 +0200, Claudiu Beznea wrote:
+> Document slew-rate DT binding for SAMA7G5.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+> ---
+>  .../devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt       | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
 
-The PG_fscache bit waiting functions are completely crazy. The comment
-about "this will wake up others" is actively wrong, and the waiting
-function looks insane, because you're mixing the two names for
-"fscache" which makes the code look totally incomprehensible. Why
-would we wait for PF_fscache, when PG_private_2 was set? Yes, I know
-why, but the code looks entirely nonsensical.
-
-So just looking at the support infrastructure changes, I get a big "Hmm".
-
-But the thing that makes me go "No, I won't pull this", is that it has
-all the same hallmark signs of trouble that I've complained about
-before: I see absolutely zero sign of "this has more developers
-involved".
-
-There's not a single ack from a VM person for the VM changes. There's
-no sign that this isn't yet another "David Howells went off alone and
-did something that absolutely nobody else cared about".
-
-See my problem? I need to be convinced that this makes sense outside
-of your world, and it's not yet another thing that will cause problems
-down the line because nobody else really ever used it or cared about
-it until we hit a snag.
-
-                  Linus
+Acked-by: Rob Herring <robh@kernel.org>
