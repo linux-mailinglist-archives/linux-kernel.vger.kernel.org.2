@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3B8314FB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF45314FB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhBINCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:02:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44960 "EHLO mx2.suse.de"
+        id S230515AbhBINDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:03:25 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45082 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230415AbhBINCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:02:04 -0500
+        id S230422AbhBINCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:02:06 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8CFE0ADCD;
-        Tue,  9 Feb 2021 13:00:44 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 7550BAFD2;
+        Tue,  9 Feb 2021 13:00:45 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, Ray Jui <rjui@broadcom.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Ray Jui <rjui@broadcom.com>,
         Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+        bcm-kernel-feedback-list@broadcom.com
 Cc:     linux-rpi-kernel@lists.infradead.org, phil@raspberrypi.com,
         wahrenst@gmx.net, linux-arm-kernel@lists.infradead.org,
         mripard@kernel.org, eric@anholt.net
-Subject: [RFC/PATCH v2 06/16] mfd: bcm2835-pm: Rename asb to rpivid_asb
-Date:   Tue,  9 Feb 2021 13:59:02 +0100
-Message-Id: <20210209125912.3398-7-nsaenzjulienne@suse.de>
+Subject: [RFC/PATCH v2 07/16] mfd: bcm2835-pm: Use 'reg-names' to get resources
+Date:   Tue,  9 Feb 2021 13:59:03 +0100
+Message-Id: <20210209125912.3398-8-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210209125912.3398-1-nsaenzjulienne@suse.de>
 References: <20210209125912.3398-1-nsaenzjulienne@suse.de>
@@ -36,88 +37,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In anticipation to supporting BCM2711 on which new ASB took over V3D,
-use a more explicit name on the currently supported one.
+If available in firmware, find resources by their 'reg-names' position
+instead of relying on hardcoded offsets. Care is taken to support old
+firmware nonetheless.
 
 Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- drivers/mfd/bcm2835-pm.c        |  8 ++++----
- drivers/soc/bcm/bcm2835-power.c | 10 +++++-----
- include/linux/mfd/bcm2835-pm.h  |  2 +-
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/mfd/bcm2835-pm.c | 56 ++++++++++++++++++++++++++--------------
+ 1 file changed, 37 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/mfd/bcm2835-pm.c b/drivers/mfd/bcm2835-pm.c
-index 42fe67f1538e..836343e69f43 100644
+index 836343e69f43..182ccdc2a06b 100644
 --- a/drivers/mfd/bcm2835-pm.c
 +++ b/drivers/mfd/bcm2835-pm.c
-@@ -50,15 +50,15 @@ static int bcm2835_pm_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
+@@ -25,9 +25,38 @@ static const struct mfd_cell bcm2835_power_devs[] = {
+ 	{ .name = "bcm2835-power" },
+ };
  
--	/* We'll use the presence of the AXI ASB regs in the
-+	/* We'll use the presence of the RPiVid ASB regs in the
++static int bcm2835_pm_get_pdata(struct platform_device *pdev,
++				struct bcm2835_pm *pm)
++{
++	/* If no 'reg-names' property is found we can assume we're using old
++	 * firmware.
++	 */
++	if (!of_find_property(pm->dev->of_node, "reg-names", NULL)) {
++		dev_warn(pm->dev, "Old devicetree detected, please update your firmware.\n");
++
++		pm->base = devm_platform_ioremap_resource(pdev, 0);
++		if (IS_ERR(pm->base))
++			return PTR_ERR(pm->base);
++
++		pm->rpivid_asb = devm_platform_ioremap_resource(pdev, 1);
++		if (IS_ERR(pm->rpivid_asb))
++			pm->rpivid_asb = NULL;
++	} else {
++		pm->base = devm_platform_ioremap_resource_byname(pdev, "pm");
++		if (IS_ERR(pm->base))
++			return PTR_ERR(pm->base);
++
++		pm->rpivid_asb = devm_platform_ioremap_resource_byname(pdev,
++								       "rpivid_asb");
++		if (IS_ERR(pm->base))
++			pm->rpivid_asb = NULL;
++	}
++
++	return 0;
++}
++
+ static int bcm2835_pm_probe(struct platform_device *pdev)
+ {
+-	struct resource *res;
+ 	struct device *dev = &pdev->dev;
+ 	struct bcm2835_pm *pm;
+ 	int ret;
+@@ -39,10 +68,9 @@ static int bcm2835_pm_probe(struct platform_device *pdev)
+ 
+ 	pm->dev = dev;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	pm->base = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(pm->base))
+-		return PTR_ERR(pm->base);
++	ret = bcm2835_pm_get_pdata(pdev, pm);
++	if (ret)
++		return ret;
+ 
+ 	ret = devm_mfd_add_devices(dev, -1,
+ 				   bcm2835_pm_devs, ARRAY_SIZE(bcm2835_pm_devs),
+@@ -54,20 +82,10 @@ static int bcm2835_pm_probe(struct platform_device *pdev)
  	 * bcm2835-pm binding as the key for whether we can reference
  	 * the full PM register range and support power domains.
  	 */
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
- 	if (res) {
--		pm->asb = devm_ioremap_resource(dev, res);
--		if (IS_ERR(pm->asb))
--			return PTR_ERR(pm->asb);
-+		pm->rpivid_asb = devm_ioremap_resource(dev, res);
-+		if (IS_ERR(pm->rpivid_asb))
-+			return PTR_ERR(pm->rpivid_asb);
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-	if (res) {
+-		pm->rpivid_asb = devm_ioremap_resource(dev, res);
+-		if (IS_ERR(pm->rpivid_asb))
+-			return PTR_ERR(pm->rpivid_asb);
+-
+-		ret = devm_mfd_add_devices(dev, -1,
+-					   bcm2835_power_devs,
+-					   ARRAY_SIZE(bcm2835_power_devs),
+-					   NULL, 0, NULL);
+-		if (ret)
+-			return ret;
+-	}
+-
++	if (pm->rpivid_asb)
++		return devm_mfd_add_devices(dev, -1, bcm2835_power_devs,
++					    ARRAY_SIZE(bcm2835_power_devs),
++					    NULL, 0, NULL);
+ 	return 0;
+ }
  
- 		ret = devm_mfd_add_devices(dev, -1,
- 					   bcm2835_power_devs,
-diff --git a/drivers/soc/bcm/bcm2835-power.c b/drivers/soc/bcm/bcm2835-power.c
-index 1e0041ec8132..59b8abfc5617 100644
---- a/drivers/soc/bcm/bcm2835-power.c
-+++ b/drivers/soc/bcm/bcm2835-power.c
-@@ -126,8 +126,8 @@
- 
- #define ASB_AXI_BRDG_ID			0x20
- 
--#define ASB_READ(reg) readl(power->asb + (reg))
--#define ASB_WRITE(reg, val) writel(PM_PASSWORD | (val), power->asb + (reg))
-+#define ASB_READ(reg) readl(power->rpivid_asb + (reg))
-+#define ASB_WRITE(reg, val) writel(PM_PASSWORD | (val), power->rpivid_asb + (reg))
- 
- struct bcm2835_power_domain {
- 	struct generic_pm_domain base;
-@@ -140,8 +140,8 @@ struct bcm2835_power {
- 	struct device		*dev;
- 	/* PM registers. */
- 	void __iomem		*base;
--	/* AXI Async bridge registers. */
--	void __iomem		*asb;
-+	/* RPiVid bridge registers. */
-+	void __iomem		*rpivid_asb;
- 
- 	struct genpd_onecell_data pd_xlate;
- 	struct bcm2835_power_domain domains[BCM2835_POWER_DOMAIN_COUNT];
-@@ -625,7 +625,7 @@ static int bcm2835_power_probe(struct platform_device *pdev)
- 
- 	power->dev = dev;
- 	power->base = pm->base;
--	power->asb = pm->asb;
-+	power->rpivid_asb = pm->rpivid_asb;
- 
- 	id = ASB_READ(ASB_AXI_BRDG_ID);
- 	if (id != 0x62726467 /* "BRDG" */) {
-diff --git a/include/linux/mfd/bcm2835-pm.h b/include/linux/mfd/bcm2835-pm.h
-index ed37dc40e82a..ed4bd548db09 100644
---- a/include/linux/mfd/bcm2835-pm.h
-+++ b/include/linux/mfd/bcm2835-pm.h
-@@ -8,7 +8,7 @@
- struct bcm2835_pm {
- 	struct device *dev;
- 	void __iomem *base;
--	void __iomem *asb;
-+	void __iomem *rpivid_asb;
- };
- 
- #endif /* BCM2835_MFD_PM_H */
 -- 
 2.30.0
 
