@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75088315B73
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DEA315B72
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233851AbhBJAlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:41:24 -0500
-Received: from mga04.intel.com ([192.55.52.120]:48851 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233874AbhBIVG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 16:06:28 -0500
-IronPort-SDR: j4369iXQblB21ETpfHELluBA+yJ4W7zJNOAGnZqDdP59LRMsy4xDd9C9mQjOL2oEocql2th6Vb
- yO+yAPr5khTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="179401861"
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="179401861"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 13:03:01 -0800
-IronPort-SDR: aeOglqbKjhsOa5I08DiLx/CJW2e8FI23Ty3HojAKAdfdQ44sWcVhfVs3na8rwLeGuw3DygsxOu
- 4PwxCSPnHbfA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="379268818"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga008.fm.intel.com with ESMTP; 09 Feb 2021 13:03:00 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Feb 2021 13:02:59 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Feb 2021 13:02:59 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.002;
- Tue, 9 Feb 2021 13:02:59 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Mukesh Ojha <mojha@codeaurora.org>,
-        lkml <linux-kernel@vger.kernel.org>
-CC:     "keescook@chromium.org" <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        "ccross@android.com" <ccross@android.com>
-Subject: RE: Pstore : Query on using ramoops driver for DDR
-Thread-Topic: Pstore : Query on using ramoops driver for DDR
-Thread-Index: AQHW/yTDvb2lf+VGD0OzwuNhoo5kBqpQTkDQ
-Date:   Tue, 9 Feb 2021 21:02:57 +0000
-Message-ID: <e28daeb8a1d74d60a3acb5c582f92123@intel.com>
-References: <f71919bd-acd1-843c-3c9b-1d518f0d7b88@codeaurora.org>
-In-Reply-To: <f71919bd-acd1-843c-3c9b-1d518f0d7b88@codeaurora.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S234313AbhBJAlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:41:02 -0500
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:44792 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233271AbhBIVF6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 16:05:58 -0500
+Received: by mail-oo1-f43.google.com with SMTP id n19so9968ooj.11;
+        Tue, 09 Feb 2021 13:03:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VOtt3prjmqypaQTJ4pYSOiaPQHntAWw3Q/krYTfHSSk=;
+        b=KcbGh5xxRWTINRXJVDntuWmW6ueveQiJ+eNA5RHZN/ls20LXZbeRetpkUUw3KqeIdd
+         Q/DRNSIMHMQqHiwUbR9N8HWdSXowI2HmY5L74w56hpmBJfNu0/tF4BmyLobt9MeGaOhF
+         76I2C28wBUM8ByUFm0aDHPHWJuNydJfO7MYteFrjXdl+D/7QsZgKUJNnnag4jWcdy2dA
+         BB5ExlTkksRQUZiNlgUQ05FyeMJdcvc5ZyJOodz2q8GmUZgXQxOnxGi2e6wrbxxiiZh0
+         Ydra6wsyb1xTFKFckL/Q9b94mH8v39PRHSP5Dz3xYAtU6IeIuEkdy4qN1MaZp2cl8wvG
+         llug==
+X-Gm-Message-State: AOAM532H+TiNSfUFE1U3JBxDkh6Sg1NZisN4wYeZD282i2CaOD8kMVtR
+        mPCY968paB2jMSN6jRYYuw==
+X-Google-Smtp-Source: ABdhPJxZR0I7iOxekYCbNXoQvdkurgLtI6UNYp7oKlGrjOT91AqHiylCg2zCTplwkzqaYRmDj/mP3g==
+X-Received: by 2002:a4a:b987:: with SMTP id e7mr17130855oop.92.1612904584869;
+        Tue, 09 Feb 2021 13:03:04 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v17sm4510401ott.7.2021.02.09.13.03.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 13:03:03 -0800 (PST)
+Received: (nullmailer pid 178168 invoked by uid 1000);
+        Tue, 09 Feb 2021 21:03:02 -0000
+Date:   Tue, 9 Feb 2021 15:03:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     devicetree@vger.kernel.org, cmuellner@linux.com,
+        linux-rockchip@lists.infradead.org, helen.koike@collabora.com,
+        dri-devel@lists.freedesktop.org, dafna.hirschfeld@collabora.com,
+        hjc@rock-chips.com, linux-kernel@vger.kernel.org,
+        ezequiel@collabora.com, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, sebastian.fricke@posteo.net,
+        linux-media@vger.kernel.org,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: Re: [PATCH 2/6] dt-bindings: display: rockchip-dsi: add optional
+ #phy-cells property
+Message-ID: <20210209210302.GA178138@robh.at.kernel.org>
+References: <20210202145632.1263136-1-heiko@sntech.de>
+ <20210202145632.1263136-3-heiko@sntech.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202145632.1263136-3-heiko@sntech.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBDYW4gd2UgdXNlIGV4aXN0aW5nIGJhY2tlbmQgcHN0b3JlIHJhbSBkcml2ZXIgKGZzL3BzdG9y
-ZS9yYW0uYykgZm9yIEREUiANCj4gaW5zdGVhZCBvZiBTUkFNID8NCg0KVGhlIGV4cGVjdGF0aW9u
-IGZvciBwc3RvcmUgaXMgdGhhdCB0aGUgc3lzdGVtIHdpbGwgZ28gdGhyb3VnaCBhIHJlc2V0IHdo
-ZW4gaXQNCmNyYXNoZXMuIE1vc3Qgc3lzdGVtcyBkbyBub3QgcHJlc2VydmUgRERSIGNvbnRlbnRz
-IGFjcm9zcyByZXNldC4NCg0KPiBXYXMgdGhlIGN1cnJlbnQgZHJpdmVyIHdyaXR0ZW4gb25seSB0
-byBzdXBwb3J0IHBlcnNpc3RhbnQgUkFNIGxpa2UgU1JBTSANCj4gb3IgaXQgY2FuIGFjY2VwdCBm
-dXJ0aGVyIGNoYW5nZQ0KDQpMaW51eCBpcyBpbiBhIGNvbnN0YW50IHN0YXRlIG9mIGNoYW5nZSA6
-LSkNCg0KPiB0byBzdXBwb3J0IEREUiwgSWYgd2UgaGF2ZSBhIG1lY2hhbmlzbSB0byBjb3B5IHN0
-b3JlZCBkYXRhIGZyb20gRERSIHRvIA0KPiBleHRlcm5hbCBkZXZpY2UgYWZ0ZXIgdGhlIGNyYXNo
-Lg0KDQpTZWUgYWJvdmUgYWJvdXQgRERSIGNvbnRlbnRzLiAgIEJ1dCBpZiB5b3UgaGF2ZSBhIHBs
-YXRmb3JtIHRoYXQgZG9lcyBwcmVzZXJ2ZQ0KRERSIGNvbnRlbnRzIHVudGlsIHlvdXIgIm1lY2hh
-bmlzbSIgY2FuIGNvcHkgdGhlIHBzdG9yZSBidWZmZXIsIHRoZW4gcG9zdA0KYSBwYXRjaC4NCg0K
-LVRvbnkNCg==
+On Tue, 02 Feb 2021 15:56:28 +0100, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> 
+> The Rockchip DSI controller on some SoCs also controls a bidrectional
+> dphy, which would be connected to an Image Signal Processor as a phy
+> in the rx configuration.
+> 
+> So allow a #phy-cells property for the dsi controller.
+> 
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> ---
+>  .../bindings/display/rockchip/dw_mipi_dsi_rockchip.txt           | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+
+Acked-by: Rob Herring <robh@kernel.org>
