@@ -2,87 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8033231512E
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FAB315131
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhBIODj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:03:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhBIOCv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:02:51 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3B4C06178A;
-        Tue,  9 Feb 2021 06:02:10 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id w20so12983295qta.0;
-        Tue, 09 Feb 2021 06:02:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NITe3BJqzCY1ySV0FFf0h+BCloEa4Ar/izGPp65zl4U=;
-        b=R4OMrGVG2Lkzfh/SFAyEo5413EfjviAKw6mXdr1Ldf0ggNkspVPKdz7DxFhPTGNWqM
-         8g4q5mEc/hmclGeN2GXmyAFN7XV6lxrvKCkJ2cvJECfbX+uCQy7hqdCavJpBgDAfPOEw
-         RSlx1Jxlv4tWub9mBSqifVTV1k4pXkTt2XpQbx5TFMBzbQxg0xFV7hgZffeC75wJdRc7
-         Miu0mrTSj+PzoqO/6sjBcdMTQGvX1Y72U3bfcbelZbJxaWgR+P7ZtuwEWdqLa6Kegec4
-         CnWdh8RpCRM9FA2i93SJK6D0Duu3xBw3lrb2ZihCSojABmZU372H90ejerlF/JBB+xcD
-         Vb9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NITe3BJqzCY1ySV0FFf0h+BCloEa4Ar/izGPp65zl4U=;
-        b=GgGTj5wRwKVSo2XA4wb1c5yNIskmvPdyNktaCrFvVqNJC8wfTBpWpTDjYke/c4c8GP
-         lr44NKG6HkbRMmfKZwRKqHE0VKi+uCk1xF3mQfdXPVRkV2GNDLVwnkBJ8RuoeqE/UW5m
-         aV0HtZMq45ho4A83EvXDBZ/dPHX/AtvHyBMqnnuNPywY4K5HEGyIlc0PccUa6/bP3XI+
-         0kyvXt5DlHq2dzc+hBKIu4XLUyTkqDRV0DWM4NpVjhYSiBKDOl+cJg/e4hOlv8pr6tmU
-         dAeLXeoRFwCDfwEt1qy4bo2dnN8jG6GfDcO5n8JUW8O5tMik3swt0p3yKTVruT4SGBKN
-         18wg==
-X-Gm-Message-State: AOAM531xRCOEPe/GJeV0dwGWpejEDVzEd185/VpeodEN0n+t69e0Pnd2
-        twa6bLInOqtw4AEyK/jm8HT0/qsBLsGE+Umu
-X-Google-Smtp-Source: ABdhPJwUdq+7qyM1Ktz7HfILFxzm/x3Lpy8UEc3ELERfBHuOYKn3Gmaq/LDjAEJiqFdia4G6YI0ghQ==
-X-Received: by 2002:ac8:745a:: with SMTP id h26mr9101456qtr.278.1612879329448;
-        Tue, 09 Feb 2021 06:02:09 -0800 (PST)
-Received: from localhost.localdomain ([156.146.37.186])
-        by smtp.gmail.com with ESMTPSA id x49sm18147839qth.95.2021.02.09.06.02.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 06:02:08 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] docs: maintainer: Fix the spelling mistaeks to mistakes in the file pull-requests.rst
-Date:   Tue,  9 Feb 2021 19:31:55 +0530
-Message-Id: <20210209140155.3890715-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231626AbhBIOEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:04:53 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:6413 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231874AbhBIODA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 09:03:00 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DZl2D0xCNz9v0KD;
+        Tue,  9 Feb 2021 15:02:12 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id vzzvUCSzVgen; Tue,  9 Feb 2021 15:02:12 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZl2D050pz9v0KB;
+        Tue,  9 Feb 2021 15:02:12 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2E4838B7EA;
+        Tue,  9 Feb 2021 15:02:13 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id wvj3lYxnwGWG; Tue,  9 Feb 2021 15:02:13 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E0A908B7E9;
+        Tue,  9 Feb 2021 15:02:12 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 84DEE67359; Tue,  9 Feb 2021 14:02:12 +0000 (UTC)
+Message-Id: <99d4ccb58a20d8408d0e19874393655ad5b40822.1612879284.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 1/3] powerpc/uaccess: get rid of small constant size cases
+ in raw_copy_{to,from}_user()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue,  9 Feb 2021 14:02:12 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Copied from commit 4b842e4e25b1 ("x86: get rid of small
+constant size cases in raw_copy_{to,from}_user()")
 
-s/mistaeks/mistakes/
+Very few call sites where that would be triggered remain, and none
+of those is anywhere near hot enough to bother.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- Documentation/maintainer/pull-requests.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/uaccess.h | 41 ------------------------------
+ 1 file changed, 41 deletions(-)
 
-diff --git a/Documentation/maintainer/pull-requests.rst b/Documentation/maintainer/pull-requests.rst
-index 1a2f99b67d25..35759d16a5cc 100644
---- a/Documentation/maintainer/pull-requests.rst
-+++ b/Documentation/maintainer/pull-requests.rst
-@@ -84,7 +84,7 @@ As said by Linus::
- 	time (describing the conflicts and your personal issues for sending
- 	it right now), but may not make sense in the context of a merge
- 	commit message, so I will try to make it all make sense. I will
--	also fix any speeling mistaeks and bad grammar I notice,
-+	also fix any speeling mistakes and bad grammar I notice,
- 	particularly for non-native speakers (but also for native ones
- 	;^). But I may miss some, or even add some.
-
---
-2.30.0
+diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+index 93d33f7e8b53..a4d2569173ac 100644
+--- a/arch/powerpc/include/asm/uaccess.h
++++ b/arch/powerpc/include/asm/uaccess.h
+@@ -398,26 +398,6 @@ static inline unsigned long raw_copy_from_user(void *to,
+ 		const void __user *from, unsigned long n)
+ {
+ 	unsigned long ret;
+-	if (__builtin_constant_p(n) && (n <= 8)) {
+-		ret = 1;
+-
+-		switch (n) {
+-		case 1:
+-			__get_user_size(*(u8 *)to, from, 1, ret);
+-			break;
+-		case 2:
+-			__get_user_size(*(u16 *)to, from, 2, ret);
+-			break;
+-		case 4:
+-			__get_user_size(*(u32 *)to, from, 4, ret);
+-			break;
+-		case 8:
+-			__get_user_size(*(u64 *)to, from, 8, ret);
+-			break;
+-		}
+-		if (ret == 0)
+-			return 0;
+-	}
+ 
+ 	allow_read_from_user(from, n);
+ 	ret = __copy_tofrom_user((__force void __user *)to, from, n);
+@@ -428,27 +408,6 @@ static inline unsigned long raw_copy_from_user(void *to,
+ static inline unsigned long
+ raw_copy_to_user_allowed(void __user *to, const void *from, unsigned long n)
+ {
+-	if (__builtin_constant_p(n) && (n <= 8)) {
+-		unsigned long ret = 1;
+-
+-		switch (n) {
+-		case 1:
+-			__put_user_size_allowed(*(u8 *)from, (u8 __user *)to, 1, ret);
+-			break;
+-		case 2:
+-			__put_user_size_allowed(*(u16 *)from, (u16 __user *)to, 2, ret);
+-			break;
+-		case 4:
+-			__put_user_size_allowed(*(u32 *)from, (u32 __user *)to, 4, ret);
+-			break;
+-		case 8:
+-			__put_user_size_allowed(*(u64 *)from, (u64 __user *)to, 8, ret);
+-			break;
+-		}
+-		if (ret == 0)
+-			return 0;
+-	}
+-
+ 	return __copy_tofrom_user(to, (__force const void __user *)from, n);
+ }
+ 
+-- 
+2.25.0
 
