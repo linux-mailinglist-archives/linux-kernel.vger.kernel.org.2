@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F7D315234
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2933E31523A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhBIO5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:57:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36672 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230181AbhBIO5H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:57:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612882541;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S232235AbhBIO6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:58:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46826 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231576AbhBIO62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 09:58:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612882661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=WSsdPlcWLs4B7/MYVeVITkDmFpb6BsySsmx2wFDfjIg=;
-        b=RNL/CcDL+IAKBwA0EISQhdXGo6HzhQ1YzsL7iIrDlgqlcUCzqV4aKvaskaqqThhdmCKZ5v
-        xvBPcOLRJhWWnrYLAEjC6n1jSBrTG0jmYyd2izIB+KLCe2dBf0Jn5t2n37k8dZkalkpkas
-        fP2vA7J6ykQ/3EFodGn8cmgOXMm4uy0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-qxzcJTbyMRiJk3HLMxvefQ-1; Tue, 09 Feb 2021 09:55:39 -0500
-X-MC-Unique: qxzcJTbyMRiJk3HLMxvefQ-1
-Received: by mail-wr1-f69.google.com with SMTP id m7so17658734wro.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 06:55:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WSsdPlcWLs4B7/MYVeVITkDmFpb6BsySsmx2wFDfjIg=;
-        b=oKWt9sj/hiXAFXeDHYhNSS7s39rFrdqkClMRzeKbm5LG+DK/rJ8lRpc5g+ZQyghOfv
-         fAEjRpFIOJALp/I0S97WYOltkXIgrGtHBD+58BEz0St/8EjdKdwD/K8SAja38NCNkcaV
-         90t2Xj27byfe2dYw0u9j5nWLunaUAyCSdIIrVZk8SEOtaFS3M1NWLi3b7SZ7VnEynTUT
-         p1crsFh+X+P1KeO4z/qk+CjPgSxqLVB43In1+wzEaAL9mhZR8QA9kMMglgHI8wwg6v+i
-         Ag8Tqx2I+HWRRl6bZgED8PHB0Sjf8DBiMQmyM/ivH6pghz+JXcC1HP/YgLQfVEg10EJF
-         oMlQ==
-X-Gm-Message-State: AOAM532rpcaveo/P1Kki7967cP03U+rzHViuV8dxaU4pMcVt+dmkZAVR
-        6Sj+wYiPhk1KTQPfWP8inAj/G/cvpnRdH/+/mecMC3bMRXLlZhnkFEJ5IEIkcNgzuvjcWksOhuD
-        l3dBK/Z4aTXm0OjKD647+rHe/
-X-Received: by 2002:adf:eb82:: with SMTP id t2mr13792163wrn.231.1612882538073;
-        Tue, 09 Feb 2021 06:55:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzGiyD0i/pTC5CRicHdOTkBxICTMpZX9F+ZX+9eu4fC4Ozi+Yen5iR0i1cuW6uuuaqb68GylQ==
-X-Received: by 2002:adf:eb82:: with SMTP id t2mr13792098wrn.231.1612882537862;
-        Tue, 09 Feb 2021 06:55:37 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id x15sm19731236wro.66.2021.02.09.06.55.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 06:55:37 -0800 (PST)
-Date:   Tue, 9 Feb 2021 09:55:32 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Adrian Catangiu <acatan@amazon.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qemu-devel@nongnu.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, gregkh@linuxfoundation.org,
-        graf@amazon.com, rdunlap@infradead.org, arnd@arndb.de,
-        ebiederm@xmission.com, rppt@kernel.org, 0x7f454c46@gmail.com,
-        borntraeger@de.ibm.com, Jason@zx2c4.com, jannh@google.com,
-        w@1wt.eu, colmmacc@amazon.com, luto@kernel.org, tytso@mit.edu,
-        ebiggers@kernel.org, dwmw@amazon.co.uk, bonzini@gnu.org,
-        sblbir@amazon.com, raduweis@amazon.com, corbet@lwn.net,
-        mhocko@kernel.org, rafael@kernel.org, pavel@ucw.cz,
-        mpe@ellerman.id.au, areber@redhat.com, ovzxemul@gmail.com,
-        avagin@gmail.com, ptikhomirov@virtuozzo.com, gil@azul.com,
-        asmehra@redhat.com, dgunigun@redhat.com, vijaysun@ca.ibm.com,
-        oridgar@gmail.com, ghammer@redhat.com
-Subject: Re: [PATCH v5 2/2] drivers/virt: vmgenid: add vm generation id driver
-Message-ID: <20210209095350-mutt-send-email-mst@kernel.org>
-References: <1612200294-17561-1-git-send-email-acatan@amazon.com>
- <1612200294-17561-3-git-send-email-acatan@amazon.com>
+        bh=NT5My67JE83c8tAQ8Vj7O5VdNPEkjvw0Ln0YAFM1sgc=;
+        b=DmFSBCWKMuwLh62B0GyHFP86vFiEERQKvPAVLlLH7/QvzDqlqOq4BiRSAmY/Gb+F9QBW/y
+        O2+gt58hpWIAHwj2BaiDlTSjPQm11giinGHuVnb2d198F333Kkt4qNYoZULj9hD60StZgd
+        hxVCDOXOU5Xuz/koVQemOXEPW03Pj2U=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9851BB201;
+        Tue,  9 Feb 2021 14:57:41 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 15:57:38 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, willy@infradead.org,
+        david@redhat.com, linmiaohe@huawei.com, vbabka@suse.cz,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com, joe@perches.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] vsprintf: dump full information of page flags in
+ pGp
+Message-ID: <YCKi4mcFrJ9Qu2b5@alley>
+References: <20210209105613.42747-1-laoar.shao@gmail.com>
+ <20210209105613.42747-4-laoar.shao@gmail.com>
+ <YCKT8WCPGU+HBY91@alley>
+ <YCKZIWMYjD33xXnr@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1612200294-17561-3-git-send-email-acatan@amazon.com>
+In-Reply-To: <YCKZIWMYjD33xXnr@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +The ``vmgenid`` driver uses ACPI events to be notified by hardware
-> +changes to the 128-bit Vm Gen Id UUID.
+On Tue 2021-02-09 16:16:01, Andy Shevchenko wrote:
+> On Tue, Feb 09, 2021 at 02:53:53PM +0100, Petr Mladek wrote:
+> > On Tue 2021-02-09 18:56:13, Yafang Shao wrote:
+> 
+> ...
+> 
+> > I am sorry for my ignorance. I am not familiar with MM.
+> > But it is pretty hard to understand what call does what.
+> > 
+> > I have found the following comment in include/linux/page_flags.h:
+> > 
+> >  * The page flags field is split into two parts, the main flags area
+> >  * which extends from the low bits upwards, and the fields area which
+> >  * extends from the high bits downwards.
+> > 
+> > Sigh, I know that you already reworked this several times because
+> > people "nitpicked" about the code style. But it seems that it
+> > rather diverged instead of converged.
+> > 
+> > What about the following?
+> 
+> Isn't is some like v1 or v2?
 
-That's ok, problem is ACPI event processing is asynchronous.
-What we need is thus to flush out ACPI events whenever userspace
-does a read, otherwise the value it gets will be stale.
+Yes. And people suggested only some micro-optimizations and reported
+few small bugs there.
 
--- 
-MST
+But the code was heavily reworked in v3 to support the new
+%pGp[bl] variants. It also added the trick with the bitmap
+which invalidated all the previous suggestions.
 
+v3 and v4 review focused on behavior changes. We finally
+agreed on it. Let's give it more cycle and clean up the code
+after so many shuffles.
+
+
+> > Note: It is inpired by the names "main area" and "fields area"
+> >       mentioned in the above comment from page_flags.h.
+> >       I have later realized that "page_flags_layout" actually made
+> >       sense as well. Feel free to rename page_flags_fileds
+> >       back to page_flags_layout.
+> > 
+> > Anyway, this is my proposal:
+> 
+> What about to create a one format_flags() function which accepts new data
+> structure and do something like
+> 
+> buf = format_flags(main_area);
+> buf = format_flags(fields_area);
+> return buf;
+
+I am not sure that it would make things easier. The handling of
+the main area is trivial and reuses existing structures. The handling
+of the fields area seems to be much more complicated.
+
+Best Regards,
+Petr
