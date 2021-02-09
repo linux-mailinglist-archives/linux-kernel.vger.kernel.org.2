@@ -2,105 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486FE314C50
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A99314C55
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhBIJ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:59:48 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:17434 "EHLO pegase1.c-s.fr"
+        id S229980AbhBIKBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:01:15 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:16840 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231139AbhBIJ5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:57:12 -0500
+        id S231135AbhBIJ5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:57:13 -0500
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DZdZc3Jy2z9tx3j;
-        Tue,  9 Feb 2021 10:56:24 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4DZdZd3tmkz9tx3q;
+        Tue,  9 Feb 2021 10:56:25 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id vVAFlkfvfudk; Tue,  9 Feb 2021 10:56:24 +0100 (CET)
+        with ESMTP id Yoiuro041Laf; Tue,  9 Feb 2021 10:56:25 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZdZc2Y3bz9tx3b;
-        Tue,  9 Feb 2021 10:56:24 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 567B78B7D6;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZdZd35wvz9tx3b;
         Tue,  9 Feb 2021 10:56:25 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6ACC48B7D6;
+        Tue,  9 Feb 2021 10:56:26 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id XRzbqbrA8whx; Tue,  9 Feb 2021 10:56:25 +0100 (CET)
+        with ESMTP id Qj7H1GAqlY86; Tue,  9 Feb 2021 10:56:26 +0100 (CET)
 Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1A9698B7D4;
-        Tue,  9 Feb 2021 10:56:25 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 234B68B7D4;
+        Tue,  9 Feb 2021 10:56:26 +0100 (CET)
 Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id EB88067342; Tue,  9 Feb 2021 09:56:24 +0000 (UTC)
-Message-Id: <9fd49051430eda14df70d673cd23dadd7daff9e2.1612864003.git.christophe.leroy@csgroup.eu>
+        id 0003167342; Tue,  9 Feb 2021 09:56:25 +0000 (UTC)
+Message-Id: <2a9ca31f1ff6fb565612b9499b040ae7d951f4bb.1612864003.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1612864003.git.christophe.leroy@csgroup.eu>
 References: <cover.1612864003.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [RFC PATCH v1 01/41] powerpc/32: Preserve cr1 in exception prolog
- stack check to fix build error
+Subject: [RFC PATCH v1 02/41] powerpc/40x: Don't use SPRN_SPRG_SCRATCH0/1 in
+ TLB miss handlers
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue,  9 Feb 2021 09:56:24 +0000 (UTC)
+Date:   Tue,  9 Feb 2021 09:56:25 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-THREAD_ALIGN_SHIFT = THREAD_SHIFT + 1 = PAGE_SHIFT + 1
-Maximum PAGE_SHIFT is 18 for 256k pages so
-THREAD_ALIGN_SHIFT is 19 at the maximum.
+SPRN_SPRG_SCRATCH5 is used to save SPRN_PID.
+SPRN_SPRG_SCRATCH6 is already available.
 
-No need to clobber cr1, it can be preserved when moving r1
-into CR when we check stack overflow.
+SPRN_PID is only 8 bits. We have r12 that contains CR.
+We only need to preserve CR0, so we have space available in r12
+to save PID.
 
-This reduces the number of instructions in Machine Check Exception
-prolog and fixes a build failure reported by the kernel test robot
-on v5.10 stable when building with RTAS + VMAP_STACK + KVM. That
-build failure is due to too many instructions in the prolog hence
-not fitting between 0x200 and 0x300. Allthough the problem doesn't
-show up in mainline, it is still worth the change.
+Keep PID in r12 and free up SPRN_SPRG_SCRATCH5.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 98bf2d3f4970 ("powerpc/32s: Fix RTAS machine check with VMAP stack")
-Cc: stable@vger.kernel.org
+Then In TLB miss handlers, instead of using SPRN_SPRG_SCRATCH0 and
+SPRN_SPRG_SCRATCH1, use SPRN_SPRG_SCRATCH5 and SPRN_SPRG_SCRATCH6
+to avoid future conflicts with normal exception prologs.
+
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/kernel/head_32.h        | 2 +-
- arch/powerpc/kernel/head_book3s_32.S | 6 ------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ arch/powerpc/kernel/head_40x.S | 39 ++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 21 deletions(-)
 
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 961b1ce3b6bf..5d4706c14572 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -47,7 +47,7 @@
- 	lwz	r1,TASK_STACK-THREAD(r1)
- 	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
- 1:
--	mtcrf	0x7f, r1
-+	mtcrf	0x3f, r1
- 	bt	32 - THREAD_ALIGN_SHIFT, stack_overflow
- #else
- 	subi	r11, r1, INT_FRAME_SIZE		/* use r1 if kernel */
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index 086970bec32c..727fdab557c9 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -278,12 +278,6 @@ MachineCheck:
- 7:	EXCEPTION_PROLOG_2
- 	addi	r3,r1,STACK_FRAME_OVERHEAD
- #ifdef CONFIG_PPC_CHRP
--#ifdef CONFIG_VMAP_STACK
--	mfspr	r4, SPRN_SPRG_THREAD
--	tovirt(r4, r4)
--	lwz	r4, RTAS_SP(r4)
--	cmpwi	cr1, r4, 0
--#endif
- 	beq	cr1, machine_check_tramp
- 	twi	31, 0, 0
- #else
+diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
+index 24724a7dad49..383238a98f77 100644
+--- a/arch/powerpc/kernel/head_40x.S
++++ b/arch/powerpc/kernel/head_40x.S
+@@ -249,13 +249,13 @@ _ENTRY(saved_ksp_limit)
+  * load TLB entries from the page table if they exist.
+  */
+ 	START_EXCEPTION(0x1100,	DTLBMiss)
+-	mtspr	SPRN_SPRG_SCRATCH0, r10 /* Save some working registers */
+-	mtspr	SPRN_SPRG_SCRATCH1, r11
++	mtspr	SPRN_SPRG_SCRATCH5, r10 /* Save some working registers */
++	mtspr	SPRN_SPRG_SCRATCH6, r11
+ 	mtspr	SPRN_SPRG_SCRATCH3, r12
+ 	mtspr	SPRN_SPRG_SCRATCH4, r9
+ 	mfcr	r12
+ 	mfspr	r9, SPRN_PID
+-	mtspr	SPRN_SPRG_SCRATCH5, r9
++	rlwimi	r12, r9, 0, 0xff
+ 	mfspr	r10, SPRN_DEAR		/* Get faulting address */
+ 
+ 	/* If we are faulting a kernel address, we have to use the
+@@ -316,13 +316,12 @@ _ENTRY(saved_ksp_limit)
+ 	/* The bailout.  Restore registers to pre-exception conditions
+ 	 * and call the heavyweights to help us out.
+ 	 */
+-	mfspr	r9, SPRN_SPRG_SCRATCH5
+-	mtspr	SPRN_PID, r9
+-	mtcr	r12
++	mtspr	SPRN_PID, r12
++	mtcrf	0x80, r12
+ 	mfspr	r9, SPRN_SPRG_SCRATCH4
+ 	mfspr	r12, SPRN_SPRG_SCRATCH3
+-	mfspr	r11, SPRN_SPRG_SCRATCH1
+-	mfspr	r10, SPRN_SPRG_SCRATCH0
++	mfspr	r11, SPRN_SPRG_SCRATCH6
++	mfspr	r10, SPRN_SPRG_SCRATCH5
+ 	b	DataStorage
+ 
+ /* 0x1200 - Instruction TLB Miss Exception
+@@ -330,13 +329,13 @@ _ENTRY(saved_ksp_limit)
+  * registers and bailout to a different point.
+  */
+ 	START_EXCEPTION(0x1200,	ITLBMiss)
+-	mtspr	SPRN_SPRG_SCRATCH0, r10	 /* Save some working registers */
+-	mtspr	SPRN_SPRG_SCRATCH1, r11
++	mtspr	SPRN_SPRG_SCRATCH5, r10	 /* Save some working registers */
++	mtspr	SPRN_SPRG_SCRATCH6, r11
+ 	mtspr	SPRN_SPRG_SCRATCH3, r12
+ 	mtspr	SPRN_SPRG_SCRATCH4, r9
+ 	mfcr	r12
+ 	mfspr	r9, SPRN_PID
+-	mtspr	SPRN_SPRG_SCRATCH5, r9
++	rlwimi	r12, r9, 0, 0xff
+ 	mfspr	r10, SPRN_SRR0		/* Get faulting address */
+ 
+ 	/* If we are faulting a kernel address, we have to use the
+@@ -397,13 +396,12 @@ _ENTRY(saved_ksp_limit)
+ 	/* The bailout.  Restore registers to pre-exception conditions
+ 	 * and call the heavyweights to help us out.
+ 	 */
+-	mfspr	r9, SPRN_SPRG_SCRATCH5
+-	mtspr	SPRN_PID, r9
+-	mtcr	r12
++	mtspr	SPRN_PID, r12
++	mtcrf	0x80, r12
+ 	mfspr	r9, SPRN_SPRG_SCRATCH4
+ 	mfspr	r12, SPRN_SPRG_SCRATCH3
+-	mfspr	r11, SPRN_SPRG_SCRATCH1
+-	mfspr	r10, SPRN_SPRG_SCRATCH0
++	mfspr	r11, SPRN_SPRG_SCRATCH6
++	mfspr	r10, SPRN_SPRG_SCRATCH5
+ 	b	InstructionAccess
+ 
+ 	EXCEPTION(0x1300, Trap_13, unknown_exception, EXC_XFER_STD)
+@@ -543,13 +541,12 @@ finish_tlb_load:
+ 
+ 	/* Done...restore registers and get out of here.
+ 	*/
+-	mfspr	r9, SPRN_SPRG_SCRATCH5
+-	mtspr	SPRN_PID, r9
+-	mtcr	r12
++	mtspr	SPRN_PID, r12
++	mtcrf	0x80, r12
+ 	mfspr	r9, SPRN_SPRG_SCRATCH4
+ 	mfspr	r12, SPRN_SPRG_SCRATCH3
+-	mfspr	r11, SPRN_SPRG_SCRATCH1
+-	mfspr	r10, SPRN_SPRG_SCRATCH0
++	mfspr	r11, SPRN_SPRG_SCRATCH6
++	mfspr	r10, SPRN_SPRG_SCRATCH5
+ 	rfi			/* Should sync shadow TLBs */
+ 	b	.		/* prevent prefetch past rfi */
+ 
 -- 
 2.25.0
 
