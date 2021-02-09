@@ -2,147 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C67315B81
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E3B315B86
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234190AbhBJAoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:44:15 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:60033
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234385AbhBIVOj (ORCPT
+        id S234196AbhBJApN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:45:13 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:41050 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233761AbhBIVOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 16:14:39 -0500
-X-IronPort-AV: E=Sophos;i="5.81,166,1610406000"; 
-   d="scan'208";a="372589600"
-Received: from palace.lip6.fr ([132.227.105.202])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 09 Feb 2021 22:13:37 +0100
-From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Andy Walls <awalls@md.metrocast.net>,
-        Yasunari Takiguchi <Yasunari.Takiguchi@sony.com>
-Subject: [PATCH] media: use getter/setter functions
-Date:   Tue,  9 Feb 2021 22:13:33 +0100
-Message-Id: <20210209211333.1261893-1-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Feb 2021 16:14:37 -0500
+Received: by mail-oi1-f182.google.com with SMTP id v193so15533241oie.8;
+        Tue, 09 Feb 2021 13:14:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y21BGXF/rTK0RY5HUqN7he2nqNs3jANAETLtHL2mgms=;
+        b=UGRrTjzAGDsHSUqihj1r476Q+Hdtuul1xh5oA3jxWCzPvPoJw3+bT1IaZq6aAW0+qA
+         LV+EBZNf0TQPAdR/s2wPhZM3IvGzXEaPj/dXOK32PxeH4zkrz8t553X/QmD3iVfPmPwF
+         4cj8rb7dESHnpAikRYei71C7d6AB17UaGN4yzOtKv35aDPRyd6Jm5i9fu98PTqnF34zr
+         UUrIHwdbMPbR2yCh8lxs2XfcH3WNoAHmyeLRmTRsFja2jotna1aad4aIkY+YfTsfR3WO
+         f5Rx9OMJ+uAQeocsKu0UQoxSrdVBogfHSQtmQpu4mrNf6SW7QzjlI9+I6hx2ZXFQRZuq
+         UPqQ==
+X-Gm-Message-State: AOAM532FbWnDKvOOrGeeHqCiwKwjQu7EZcN8pimHx1O7rVPDg6kcqUIp
+        QzKBRKoFGBTb5O4nMb9lgQ==
+X-Google-Smtp-Source: ABdhPJzW1L/htZimMn1IPJG0SH9yT33KVK4LUAmwRUK4AYWsnh5Q4++AwWfU6W3pQYX85woXUTyUMQ==
+X-Received: by 2002:aca:4085:: with SMTP id n127mr3755717oia.8.1612905230094;
+        Tue, 09 Feb 2021 13:13:50 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k67sm3175110oia.7.2021.02.09.13.13.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 13:13:48 -0800 (PST)
+Received: (nullmailer pid 197152 invoked by uid 1000);
+        Tue, 09 Feb 2021 21:13:47 -0000
+Date:   Tue, 9 Feb 2021 15:13:47 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        devicetree@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: Re: [PATCH v4 2/3] dt-bindings: iio: Add cros ec proximity yaml doc
+Message-ID: <20210209211347.GA183847@robh.at.kernel.org>
+References: <20210202184434.42644-1-swboyd@chromium.org>
+ <20210202184434.42644-3-swboyd@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202184434.42644-3-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use getter and setter functions, for a variety of data types.
+On Tue, Feb 02, 2021 at 10:44:33AM -0800, Stephen Boyd wrote:
+> Some cros ECs support a front proximity MKBP event via
+> 'EC_MKBP_FRONT_PROXIMITY'. Add a DT binding to document this feature via
+> a node that is a child of the main cros_ec device node. Devices that
+> have this ability will describe this in firmware.
+> 
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Guenter Roeck <groeck@chromium.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Gwendal Grignou <gwendal@chromium.org>
+> Cc: <devicetree@vger.kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  .../google,cros-ec-mkbp-proximity.yaml        | 46 +++++++++++++++++++
+>  .../bindings/mfd/google,cros-ec.yaml          |  3 ++
+>  2 files changed, 49 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml b/Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml
+> new file mode 100644
+> index 000000000000..d82b929af445
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/iio/proximity/google,cros-ec-mkbp-proximity.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ChromeOS EC MKBP Proximity Sensor
+> +
+> +maintainers:
+> +  - Stephen Boyd <swboyd@chromium.org>
+> +  - Benson Leung <bleung@chromium.org>
+> +  - Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> +
+> +description: |
+> +  Google's ChromeOS EC sometimes has the ability to detect user proximity.
+> +  This is implemented on the EC as near/far logic and exposed to the OS
+> +  via an MKBP switch bit.
+> +
+> +properties:
+> +  compatible:
+> +    const: google,cros-ec-mkbp-proximity
+> +
+> +  label:
+> +    description: Name for proximity sensor
+> +
+> +required:
+> +  - compatible
+> +
+> +unevaluatedProperties: false
+> +additionalProperties: false
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+Only need one. In this case 'additionalProperties'.
 
----
- drivers/media/pci/ivtv/ivtv-driver.c  |    2 +-
- drivers/media/platform/fsl-viu.c      |    6 +++---
- drivers/media/platform/pxa_camera.c   |    4 ++--
- drivers/media/radio/radio-maxiradio.c |    2 +-
- drivers/media/spi/cxd2880-spi.c       |    4 ++--
- 5 files changed, 9 insertions(+), 9 deletions(-)
+> +
+> +examples:
+> +  - |
+> +    spi {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      ec@0 {
+> +        compatible = "google,cros-ec-spi";
+> +        reg = <0>;
+> +        proximity {
+> +          compatible = "google,cros-ec-mkbp-proximity";
+> +          label = "proximity-wifi-lte";
+> +        };
 
-diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index 6e448cb3b51c..c4a069b3b9d1 100644
---- a/drivers/media/pci/ivtv/ivtv-driver.c
-+++ b/drivers/media/pci/ivtv/ivtv-driver.c
-@@ -1393,7 +1393,7 @@ int ivtv_init_on_first_open(struct ivtv *itv)
- 
- static void ivtv_remove(struct pci_dev *pdev)
- {
--	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
-+	struct v4l2_device *v4l2_dev = pci_get_drvdata(pdev);
- 	struct ivtv *itv = to_ivtv(v4l2_dev);
- 	int i;
- 
-diff --git a/drivers/media/spi/cxd2880-spi.c b/drivers/media/spi/cxd2880-spi.c
-index 4077217777f9..931ec0727cd3 100644
---- a/drivers/media/spi/cxd2880-spi.c
-+++ b/drivers/media/spi/cxd2880-spi.c
-@@ -535,7 +535,7 @@ cxd2880_spi_probe(struct spi_device *spi)
- 
- 	dvb_spi->spi = spi;
- 	mutex_init(&dvb_spi->spi_mutex);
--	dev_set_drvdata(&spi->dev, dvb_spi);
-+	spi_set_drvdata(spi, dvb_spi);
- 	config.spi = spi;
- 	config.spi_mutex = &dvb_spi->spi_mutex;
- 
-@@ -632,7 +632,7 @@ cxd2880_spi_remove(struct spi_device *spi)
- 		return -EINVAL;
- 	}
- 
--	dvb_spi = dev_get_drvdata(&spi->dev);
-+	dvb_spi = spi_get_drvdata(spi);
- 
- 	if (!dvb_spi) {
- 		pr_err("failed\n");
-diff --git a/drivers/media/radio/radio-maxiradio.c b/drivers/media/radio/radio-maxiradio.c
-index ad488ecbd16c..de107e2cbcd6 100644
---- a/drivers/media/radio/radio-maxiradio.c
-+++ b/drivers/media/radio/radio-maxiradio.c
-@@ -176,7 +176,7 @@ static int maxiradio_probe(struct pci_dev *pdev,
- 
- static void maxiradio_remove(struct pci_dev *pdev)
- {
--	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
-+	struct v4l2_device *v4l2_dev = pci_get_drvdata(pdev);
- 	struct maxiradio *dev = to_maxiradio(v4l2_dev);
- 
- 	snd_tea575x_exit(&dev->tea);
-diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
-index 75fad9689c90..88a16cfeced8 100644
---- a/drivers/media/platform/pxa_camera.c
-+++ b/drivers/media/platform/pxa_camera.c
-@@ -2398,7 +2398,7 @@ static int pxa_camera_probe(struct platform_device *pdev)
- 
- 	pxa_camera_activate(pcdev);
- 
--	dev_set_drvdata(&pdev->dev, pcdev);
-+	platform_set_drvdata(pdev, pcdev);
- 	err = v4l2_device_register(&pdev->dev, &pcdev->v4l2_dev);
- 	if (err)
- 		goto exit_deactivate;
-@@ -2455,7 +2455,7 @@ static int pxa_camera_probe(struct platform_device *pdev)
- 
- static int pxa_camera_remove(struct platform_device *pdev)
- {
--	struct pxa_camera_dev *pcdev = dev_get_drvdata(&pdev->dev);
-+	struct pxa_camera_dev *pcdev = platform_get_drvdata(pdev);
- 
- 	pxa_camera_deactivate(pcdev);
- 	tasklet_kill(&pcdev->task_eof);
-diff --git a/drivers/media/platform/fsl-viu.c b/drivers/media/platform/fsl-viu.c
-index 1f1042d5c865..a4bfa70b49b2 100644
---- a/drivers/media/platform/fsl-viu.c
-+++ b/drivers/media/platform/fsl-viu.c
-@@ -1529,7 +1529,7 @@ static int viu_of_probe(struct platform_device *op)
- 
- static int viu_of_remove(struct platform_device *op)
- {
--	struct v4l2_device *v4l2_dev = dev_get_drvdata(&op->dev);
-+	struct v4l2_device *v4l2_dev = platform_get_drvdata(op);
- 	struct viu_dev *dev = container_of(v4l2_dev, struct viu_dev, v4l2_dev);
- 	struct v4l2_subdev *sdev = list_entry(v4l2_dev->subdevs.next,
- 					      struct v4l2_subdev, list);
-@@ -1550,7 +1550,7 @@ static int viu_of_remove(struct platform_device *op)
- #ifdef CONFIG_PM
- static int viu_suspend(struct platform_device *op, pm_message_t state)
- {
--	struct v4l2_device *v4l2_dev = dev_get_drvdata(&op->dev);
-+	struct v4l2_device *v4l2_dev = platform_get_drvdata(op);
- 	struct viu_dev *dev = container_of(v4l2_dev, struct viu_dev, v4l2_dev);
- 
- 	clk_disable(dev->clk);
-@@ -1559,7 +1559,7 @@ static int viu_suspend(struct platform_device *op, pm_message_t state)
- 
- static int viu_resume(struct platform_device *op)
- {
--	struct v4l2_device *v4l2_dev = dev_get_drvdata(&op->dev);
-+	struct v4l2_device *v4l2_dev = platform_get_drvdata(op);
- 	struct viu_dev *dev = container_of(v4l2_dev, struct viu_dev, v4l2_dev);
- 
- 	clk_enable(dev->clk);
+The complete examples I prefer is 1 example for the whole MFD in the MFD 
+schema and no example here.
 
+> +      };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+> index 76bf16ee27ec..479a9f15de32 100644
+> --- a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+> @@ -94,6 +94,9 @@ properties:
+>    keyboard-controller:
+>      $ref: "/schemas/input/google,cros-ec-keyb.yaml#"
+>  
+> +  proximity:
+> +    $ref: "/schemas/iio/proximity/google,cros-ec-mkbp-proximity.yaml#"
+> +
+>    codecs:
+>      type: object
+>      additionalProperties: false
+> -- 
+> https://chromeos.dev
+> 
