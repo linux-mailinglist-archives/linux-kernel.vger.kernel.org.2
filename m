@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAF7314D20
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD55314D23
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhBIKca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:32:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231723AbhBIK05 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:26:57 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB547C061786
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 02:26:16 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id q14so11883962ljp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 02:26:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=otN+QQNUNIP047zDpB3/w5u9a7jvfkmpri8aI4VojBU=;
-        b=mBRQcxrGN0CnbcLykibVwDL9XDmfZeIn5braZ9bj91r/UiGCkRCLP/QTFE8YR8sUYC
-         +MS3kPk0dkLLqRX2x8Kwm8kp+uWVwikfExk8fx7ZHoN1jAQiFYqxsXBzupAXR/tWZLHc
-         U124PpMsvDQnGdaHugIshSRl/1dI9TVhXyNmPyymtCr/3Ux1sE7jDxrWLPfXK7sQVZZK
-         d8ODHgeV8s/CbCnrM4sDpsKRC5iuroOJqNVVwfqzVmi8acbvS8EIdIgZfmPXekxHavpw
-         9JSAE2K0588AVayqbS7Ra80htqXRiQ1n7S2J68F23Ev0Olg4KKEO5N958nDKtWQGGRuT
-         OOnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=otN+QQNUNIP047zDpB3/w5u9a7jvfkmpri8aI4VojBU=;
-        b=C+JzyLUK7XIlJpy3R5CXL0EC9WqesVzegfp8qOuvdivycBzHiHlFQ7PsOORmZePClw
-         oY9D4dd/p28O8AAOimL+TYuo/AaT3COMFDtpM2+a/TsC6RVjmR4rSgfEUNMBgY50R1PJ
-         iAaGDw+ksqh12R5XrR6KLSuQxL9mubVHhVQZFyPjPXElioRphiW6rjV6p4ktTMammDrE
-         e6lxPvkbpEL/fr6IEj0d6wdrev0wUtFdxrk8ndHU+pRZ3/FVJys1YJIF/SPA41jjj6Db
-         6nJpt71djRIdeC4R2JIAX3kln6FvgEe+0NCFF9EYAFxbD46trivCvzw+tA5j6/0JVeNe
-         paEA==
-X-Gm-Message-State: AOAM532KKWfKpAePycAQHSdpjk/Qh425R7TvXJZvGi/BQ8VCmOvZ2mdJ
-        CMnWouTMlHM6UpjNlITqKKI=
-X-Google-Smtp-Source: ABdhPJzxQ3F5f+EsjFgvMOE1AVjhzAS855UrSg/ZbbT1HAtvLCDOYSnyorf6jzlHDCmWbmuC17TKfA==
-X-Received: by 2002:a2e:9710:: with SMTP id r16mr377109lji.358.1612866375446;
-        Tue, 09 Feb 2021 02:26:15 -0800 (PST)
-Received: from localhost.localdomain ([146.158.65.228])
-        by smtp.googlemail.com with ESMTPSA id i25sm2403969ljj.100.2021.02.09.02.26.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 02:26:14 -0800 (PST)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     alex.dewar90@gmail.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, snovitoll@gmail.com,
-        syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
-Subject: [PATCH v4] drivers/misc/vmw_vmci: restrict too big queue size in qp_host_alloc_queue
-Date:   Tue,  9 Feb 2021 16:26:12 +0600
-Message-Id: <20210209102612.2112247-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YCJb0Rc8ruCQIJMM@kroah.com>
-References: <YCJb0Rc8ruCQIJMM@kroah.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231961AbhBIKdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:33:09 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:37722 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231796AbhBIK1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:27:09 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DZfF85lnFz9tx3V;
+        Tue,  9 Feb 2021 11:26:20 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id srx25kv8u0IC; Tue,  9 Feb 2021 11:26:20 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZfF850Jrz9tx2x;
+        Tue,  9 Feb 2021 11:26:20 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A50188B7D6;
+        Tue,  9 Feb 2021 11:26:21 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8p7HUzzF1Kv1; Tue,  9 Feb 2021 11:26:21 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 57B668B7D8;
+        Tue,  9 Feb 2021 11:26:21 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 1AD0E6733E; Tue,  9 Feb 2021 10:26:21 +0000 (UTC)
+Message-Id: <99bf008e2970de7f8ed3225cda69a6d06ae1a644.1612866360.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/3] spi: mpc52xx: Avoid using get_tbl()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, broonie@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-spi@vger.kernel.org
+Date:   Tue,  9 Feb 2021 10:26:21 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot found WARNING in qp_broker_alloc[1] in qp_host_alloc_queue()
-when num_pages is 0x100001, giving queue_size + queue_page_size
-bigger than KMALLOC_MAX_SIZE for kzalloc(), resulting order >= MAX_ORDER
-condition.
+get_tbl() is confusing as it returns the content TBL register
+on PPC32 but the concatenation of TBL and TBU on PPC64.
 
-queue_size + queue_page_size=0x8000d8, where KMALLOC_MAX_SIZE=0x400000.
+Use mftb() instead.
 
-[1]
-Call Trace:
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x40/0x130 mm/slab_common.c:837
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
- kmalloc_large include/linux/slab.h:481 [inline]
- __kmalloc+0x257/0x330 mm/slub.c:3959
- kmalloc include/linux/slab.h:557 [inline]
- kzalloc include/linux/slab.h:682 [inline]
- qp_host_alloc_queue drivers/misc/vmw_vmci/vmci_queue_pair.c:540 [inline]
- qp_broker_create drivers/misc/vmw_vmci/vmci_queue_pair.c:1351 [inline]
- qp_broker_alloc+0x936/0x2740 drivers/misc/vmw_vmci/vmci_queue_pair.c:1739
+This will allow the removal of get_tbl() in a following patch.
 
-Reported-by: syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-> This patch does not apply to the tree...
-Apologies, it was so stupid from my side.
-Tested locally and via syzbot.
+ drivers/spi/spi-mpc52xx.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-v4: made a patch based on commit 65f0d2414b("Merge tag 'sound-5.11-rc4'
-of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound")
----
- drivers/misc/vmw_vmci/vmci_queue_pair.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-index c49065887e8f..024dcdbd9d01 100644
---- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
-+++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-@@ -537,6 +537,9 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
+diff --git a/drivers/spi/spi-mpc52xx.c b/drivers/spi/spi-mpc52xx.c
+index ef2f24420460..e6a30f232370 100644
+--- a/drivers/spi/spi-mpc52xx.c
++++ b/drivers/spi/spi-mpc52xx.c
+@@ -120,7 +120,7 @@ static void mpc52xx_spi_start_transfer(struct mpc52xx_spi *ms)
+ 	ms->cs_change = ms->transfer->cs_change;
  
- 	queue_page_size = num_pages * sizeof(*queue->kernel_if->u.h.page);
+ 	/* Write out the first byte */
+-	ms->wcol_tx_timestamp = get_tbl();
++	ms->wcol_tx_timestamp = mftb();
+ 	if (ms->tx_buf)
+ 		out_8(ms->regs + SPI_DATA, *ms->tx_buf++);
+ 	else
+@@ -221,8 +221,8 @@ static int mpc52xx_spi_fsmstate_transfer(int irq, struct mpc52xx_spi *ms,
+ 		 * but it can also be worked around simply by retrying the
+ 		 * transfer which is what we do here. */
+ 		ms->wcol_count++;
+-		ms->wcol_ticks += get_tbl() - ms->wcol_tx_timestamp;
+-		ms->wcol_tx_timestamp = get_tbl();
++		ms->wcol_ticks += mftb() - ms->wcol_tx_timestamp;
++		ms->wcol_tx_timestamp = mftb();
+ 		data = 0;
+ 		if (ms->tx_buf)
+ 			data = *(ms->tx_buf - 1);
+@@ -247,14 +247,14 @@ static int mpc52xx_spi_fsmstate_transfer(int irq, struct mpc52xx_spi *ms,
+ 	/* Is the transfer complete? */
+ 	ms->len--;
+ 	if (ms->len == 0) {
+-		ms->timestamp = get_tbl();
++		ms->timestamp = mftb();
+ 		ms->timestamp += ms->transfer->delay_usecs * tb_ticks_per_usec;
+ 		ms->state = mpc52xx_spi_fsmstate_wait;
+ 		return FSM_CONTINUE;
+ 	}
  
-+	if (queue_size + queue_page_size > KMALLOC_MAX_SIZE)
-+		return NULL;
-+
- 	queue = kzalloc(queue_size + queue_page_size, GFP_KERNEL);
- 	if (queue) {
- 		queue->q_header = NULL;
+ 	/* Write out the next byte */
+-	ms->wcol_tx_timestamp = get_tbl();
++	ms->wcol_tx_timestamp = mftb();
+ 	if (ms->tx_buf)
+ 		out_8(ms->regs + SPI_DATA, *ms->tx_buf++);
+ 	else
+@@ -276,7 +276,7 @@ mpc52xx_spi_fsmstate_wait(int irq, struct mpc52xx_spi *ms, u8 status, u8 data)
+ 		dev_err(&ms->master->dev, "spurious irq, status=0x%.2x\n",
+ 			status);
+ 
+-	if (((int)get_tbl()) - ms->timestamp < 0)
++	if (((int)mftb()) - ms->timestamp < 0)
+ 		return FSM_POLL;
+ 
+ 	ms->message->actual_length += ms->transfer->len;
 -- 
-2.25.1
+2.25.0
 
