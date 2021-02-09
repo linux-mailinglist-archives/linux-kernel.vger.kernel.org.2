@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A63314C63
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CEEA314C82
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhBIKDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:03:11 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:44448 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230491AbhBIJ7u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:59:50 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UOHsNhv_1612864725;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOHsNhv_1612864725)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 09 Feb 2021 17:59:01 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] power: supply: Use true and false for bool variable
-Date:   Tue,  9 Feb 2021 17:58:43 +0800
-Message-Id: <1612864723-57143-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231458AbhBIKFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:05:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:48652 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230492AbhBIKAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:00:06 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACF09101E;
+        Tue,  9 Feb 2021 01:59:15 -0800 (PST)
+Received: from e121896.arm.com (unknown [10.57.44.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3118B3F73B;
+        Tue,  9 Feb 2021 01:59:11 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     coresight@lists.linaro.org
+Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        James Clark <james.clark@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/5] Split Coresight decode by aux records
+Date:   Tue,  9 Feb 2021 11:58:52 +0200
+Message-Id: <20210209095857.28419-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+The following patches fix opening perf.data files that have timestamps
+(ordered data), aren't recorded with --per-thread, and that have
+discontinuous data in a single aux trace buffer.
 
-./include/linux/power_supply.h:507:9-10: WARNING: return of 0/1 in
-function 'power_supply_is_watt_property' with return type bool.
+I have some open questions:
+ * Can cs_etm__update_queues() be removed from cs_etm__flush_events()?
+ * Why does the second commit start making some files process correctly?
+ * Is it ok to wait for the flush to start processing? Previously
+   processing happened when the first aux record was delivered to
+   cs_etm__process_event().
+ * Do the aux records need to be saved into a new buffer or can they
+   be pulled from elsewhere?
 
-./include/linux/power_supply.h:479:9-10: WARNING: return of 0/1 in
-function 'power_supply_is_amp_property' with return type bool.
+I also have some further changes to make to make per-thread mode work
+where the cpu field of the sample is set to -1. And when there are
+no timestamps cs_etm__process_timeless_queues() is used, which is a
+completely different code path.
 
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- include/linux/power_supply.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Thanks
+James
 
-diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-index 81a55e9..029e6e9 100644
---- a/include/linux/power_supply.h
-+++ b/include/linux/power_supply.h
-@@ -476,12 +476,12 @@ static inline bool power_supply_is_amp_property(enum power_supply_property psp)
- 	case POWER_SUPPLY_PROP_CURRENT_NOW:
- 	case POWER_SUPPLY_PROP_CURRENT_AVG:
- 	case POWER_SUPPLY_PROP_CURRENT_BOOT:
--		return 1;
-+		return true;
- 	default:
- 		break;
- 	}
- 
--	return 0;
-+	return false;
- }
- 
- static inline bool power_supply_is_watt_property(enum power_supply_property psp)
-@@ -504,12 +504,12 @@ static inline bool power_supply_is_watt_property(enum power_supply_property psp)
- 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
- 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
- 	case POWER_SUPPLY_PROP_POWER_NOW:
--		return 1;
-+		return true;
- 	default:
- 		break;
- 	}
- 
--	return 0;
-+	return false;
- }
- 
- #ifdef CONFIG_POWER_SUPPLY_HWMON
+James Clark (5):
+  perf cs-etm: Split up etm queue setup function
+  perf cs-etm: Only search timestamp in current sample's queue.
+  perf cs-etm: Save aux records in each etm queue
+  perf cs-etm: don't process queues until cs_etm__flush_events
+  perf cs-etm: split decode by aux records.
+
+ tools/perf/util/cs-etm.c | 200 +++++++++++++++++++++++----------------
+ 1 file changed, 121 insertions(+), 79 deletions(-)
+
 -- 
-1.8.3.1
+2.28.0
 
