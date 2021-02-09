@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AC4314D7C
+	by mail.lfdr.de (Postfix) with ESMTP id A32F2314D7D
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231878AbhBIKu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:50:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40184 "EHLO mail.kernel.org"
+        id S231967AbhBIKut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:50:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231265AbhBIKlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:41:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B97D64E50;
-        Tue,  9 Feb 2021 10:40:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612867246;
-        bh=v+g1YM86idp+0g/8zM59AaEHGhUNJobOxVWmabHE9so=;
+        id S231421AbhBIKlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:41:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F331A64E6F;
+        Tue,  9 Feb 2021 10:40:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612867253;
+        bh=YvkKyU23vYwdJtjO8ln/oqp7oMDgbK2SlLLuxFQCymE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PE5n5Ev8/kePEnnTcd/Ud2/hBWDveV+qPpeqkp34V59nDCpXqlHxKfzVptOpdS3oD
-         mDayk89Rbv3TVZlKd6j6Lk8XAAgR1Y9rbBy7Y7mrSoQw4zqIOZE6sbPIy8JXSTuxzR
-         vhIewgBfXRyb8LOuHRSShbV8Ju3dr1Xd87KYzdPg=
-Date:   Tue, 9 Feb 2021 11:40:43 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Piyush Mehta <piyush.mehta@xilinx.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Bastien Nocera <hadess@hadess.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: misc: usb5744: Add support for USB hub
- controller
-Message-ID: <YCJmq882Sk9ae9PA@kroah.com>
-References: <cover.1612864393.git.michal.simek@xilinx.com>
- <e1e1d47982018ccd5a763f199680babc0df848c8.1612864393.git.michal.simek@xilinx.com>
- <YCJd5Xoy1cT6bCIB@kroah.com>
- <fe8f8175-0b5d-3824-e5f7-b8cb826253bf@xilinx.com>
+        b=njJDoRQiZml8JfHAPzXbApAcsPfihX4HU6G6e8MDFp1Be826wWrmhTIB41ANDQeIv
+         6hMilnT9aZ9Z0rGOmdledoTzJoKNko+G4tXirhl1AFDGttXnkll0kcm28y7vX0/Zze
+         lbZrLMmjSMnHtxB5JdD9aEKkX/mIDNXsOS6gng0r7p1coCHOjeM6G2AN5awyPdXibg
+         kAJ2Dt2qxHoa29Rz54yZxWVwnbMjsQTiIcrt4R5wu28W9K4X3LcIGIPmqvvAgE69fm
+         GBnfWk03seW6vGPS8xnYuwxvrFBVo4RRYZmpkdC9BmamS15o8zoYyCr5sC11nLLQfP
+         xK7m4nhay+BPA==
+Date:   Tue, 9 Feb 2021 11:40:50 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Mark Jonas <mark.jonas@de.bosch.com>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, Adam.Thomson.Opensource@diasemi.com,
+        stwiss.opensource@diasemi.com, marek.vasut@gmail.com,
+        tingquan.ruan@cn.bosch.com, hubert.streidl@de.bosch.com
+Subject: Re: [PATCH v4] mfd: da9063: Support SMBus and I2C mode
+Message-ID: <20210209104050.GB9698@ninjato>
+References: <20210208152758.13093-1-mark.jonas@de.bosch.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6sX45UoQRIJXqkqR"
 Content-Disposition: inline
-In-Reply-To: <fe8f8175-0b5d-3824-e5f7-b8cb826253bf@xilinx.com>
+In-Reply-To: <20210208152758.13093-1-mark.jonas@de.bosch.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 11:11:54AM +0100, Michal Simek wrote:
-> 
-> 
-> On 2/9/21 11:03 AM, Greg Kroah-Hartman wrote:
-> > On Tue, Feb 09, 2021 at 10:53:20AM +0100, Michal Simek wrote:
-> >> From: Piyush Mehta <piyush.mehta@xilinx.com>
-> >>
-> >> This patch adds a USB GPIO based hub reset for USB5744 hub. This usb5744
-> >> driver trigger hub reset signal after soft reset or core Reset. The HUB
-> >> needs to be resetted after completion of phy initialization. After the
-> >> toggling of gpio, hub configure using i2c usb attached command.
-> >>
-> >> USB5744 hub can be used without any I2C connection, is handled by a
-> >> simple platform device driver.
-> >>
-> >> As part of the reset, sets the direction of the pin to output before
-> >> toggling the pin. Delay of millisecond is added in between low and
-> >> high to meet the setup and hold time requirement of the reset.
-> >>
-> >> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
-> >> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> >> ---
-> >>
-> >>  MAINTAINERS                |   1 +
-> >>  drivers/usb/misc/Kconfig   |   9 +++
-> >>  drivers/usb/misc/Makefile  |   1 +
-> >>  drivers/usb/misc/usb5744.c | 115 +++++++++++++++++++++++++++++++++++++
-> >>  4 files changed, 126 insertions(+)
-> >>  create mode 100644 drivers/usb/misc/usb5744.c
-> >>
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> >> index 7439471b5d37..56d1fcdd24f6 100644
-> >> --- a/MAINTAINERS
-> >> +++ b/MAINTAINERS
-> >> @@ -2706,6 +2706,7 @@ F:	drivers/edac/synopsys_edac.c
-> >>  F:	drivers/i2c/busses/i2c-cadence.c
-> >>  F:	drivers/i2c/busses/i2c-xiic.c
-> >>  F:	drivers/mmc/host/sdhci-of-arasan.c
-> >> +F:	drivers/usb/misc/usb5744.c
-> >>  N:	zynq
-> >>  N:	xilinx
-> >>  
-> >> diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
-> >> index 8f1144359012..30335b5c4f88 100644
-> >> --- a/drivers/usb/misc/Kconfig
-> >> +++ b/drivers/usb/misc/Kconfig
-> >> @@ -242,6 +242,15 @@ config USB_HUB_USB251XB
-> >>  	  parameters may be set in devicetree or platform data.
-> >>  	  Say Y or M here if you need to configure such a device via SMBus.
-> >>  
-> >> +config USB_USB5744
-> >> +	tristate "Microchip USB5744 Hub driver"
-> >> +	depends on I2C
-> >> +	depends on GPIOLIB
-> >> +	help
-> >> +	  This option enables support for Microchip USB5744 Hub. This driver
-> >> +	  optionally reset the hub using gpio pin and configure hub via i2c if
-> >> +	  connected.
-> >> +
-> >>  config USB_HSIC_USB3503
-> >>  	tristate "USB3503 HSIC to USB20 Driver"
-> >>  	depends on I2C
-> >> diff --git a/drivers/usb/misc/Makefile b/drivers/usb/misc/Makefile
-> >> index 5f4e598573ab..5920146a506a 100644
-> >> --- a/drivers/usb/misc/Makefile
-> >> +++ b/drivers/usb/misc/Makefile
-> >> @@ -25,6 +25,7 @@ obj-$(CONFIG_USB_USS720)		+= uss720.o
-> >>  obj-$(CONFIG_USB_SEVSEG)		+= usbsevseg.o
-> >>  obj-$(CONFIG_USB_YUREX)			+= yurex.o
-> >>  obj-$(CONFIG_USB_HUB_USB251XB)		+= usb251xb.o
-> >> +obj-$(CONFIG_USB_USB5744)		+= usb5744.o
-> > 
-> > Can you follow the convention of the config options we have already, and
-> > make this USB_HUB_USB5744 please?
-> 
-> Sure.
-> 
-> > 
-> >>  obj-$(CONFIG_USB_HSIC_USB3503)		+= usb3503.o
-> >>  obj-$(CONFIG_USB_HSIC_USB4604)		+= usb4604.o
-> > 
-> > And then put it in sorted order :)
-> 
-> Do you want me to sort the whole Makefile and Kconfig as separate patch?
 
-No, but at least put your new line in the obvious place, in order :)
+--6sX45UoQRIJXqkqR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> And any other problem with the driver itself?
+On Mon, Feb 08, 2021 at 04:27:58PM +0100, Mark Jonas wrote:
+> From: Hubert Streidl <hubert.streidl@de.bosch.com>
+>=20
+> By default the PMIC DA9063 2-wire interface is SMBus compliant. This
+> means the PMIC will automatically reset the interface when the clock
+> signal ceases for more than the SMBus timeout of 35 ms.
+>=20
+> If the I2C driver / device is not capable of creating atomic I2C
+> transactions, a context change can cause a ceasing of the clock signal.
+> This can happen if for example a real-time thread is scheduled. Then
+> the DA9063 in SMBus mode will reset the 2-wire interface. Subsequently
+> a write message could end up in the wrong register. This could cause
+> unpredictable system behavior.
+>=20
+> The DA9063 PMIC also supports an I2C compliant mode for the 2-wire
+> interface. This mode does not reset the interface when the clock
+> signal ceases. Thus the problem depicted above does not occur.
+>=20
+> This patch tests for the bus functionality "I2C_FUNC_I2C". It can
+> reasonably be assumed that the bus cannot obey SMBus timings if
+> this functionality is set. SMBus commands most probably are emulated
+> in this case which is prone to the latency issue described above.
+>=20
+> This patch enables the I2C bus mode if I2C_FUNC_I2C is set or
+> otherwise enables the SMBus mode for a native SMBus controller
+> which doesn't have I2C_FUNC_I2C set.
+>=20
+> Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
+> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
 
-No idea, I stopped here in reviewing...
+=46rom I2C highlevel view, this looks good:
 
-thanks,
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-greg k-h
+
+--6sX45UoQRIJXqkqR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAiZrIACgkQFA3kzBSg
+KbatLQ//UULY14lvrfB6i/awuvHEqTSMXT/6zrn1xqndERDVy3I6szmAU9VUDPKJ
+udtnv3Cam1sDZfjTYn1NpeOQ7DoQga9hkoT9j9LsyPLgE0CyA+c1p02unNUlawwQ
+Wvi7B6+7tTFFk6Pw3EOTqt7qP40sLfmhu1wMsST/geeRKZxJ9QQp5PzC52F4byLj
+VJLfZF/ZcV3nzKQK/cSMuwtSOu2c5TAEAi95kMO0GpfAzW9crvEuJNQ6tgWGKiey
+vmW3k1LUyWAuHLzKrWPfXY1hRjCJVaGjSv7rgfbICoMLjWu9LT258zWTna1zZXIR
+TRz7JrOjfXuiNS7tBuSsAkxGpSECGDq3dzZENxKSQZH24v79V3FnJTl6iiRUPPFj
+P/7udPaIB0iu8alxy7o9r6U6uqCL9lg98lR0/IsiaGuCEmc0iD593Czzze/FyLHy
+MjMONDo7VLJEyyuFv5eyW1NFTLz0W2fLmdx5HybrXrEjXD+0OUfbIhw9vWIVNiXE
+m9yklaPV+AKKDOvZxnoC2XpnCPbWSnsbB45WLeYwFFHX41hz7iQJWkheUWA7wfay
+pXd1RS0T8HIOh650Jds+oEMTMy3/XGV12Tw6NBxS6257YPzbznHnkVG8M/aAryXi
+hy5XWIB+rC5/bhfVJ8zA0PCl1epH+7goQVWpGtonD0Cy62DJ5mw=
+=FlX0
+-----END PGP SIGNATURE-----
+
+--6sX45UoQRIJXqkqR--
