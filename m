@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA52314EB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B12B2314EBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhBIMIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:08:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhBIMH0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:07:26 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864A7C06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 04:06:46 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id 7so21380632wrz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 04:06:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mnnGb8uYfAKo5j4celfDTPJ3dArWMa9VeSJuwnZYFt4=;
-        b=wEKJaPKkgCJ+ae8GhAdCtynKzIbwKAfdC/y0O5HSYsLeIAkyIaUlg58XgsbE3UGzeq
-         P7XjTnbUrCapMasS52nmq7yNQ84qJu5UiCy5Nc1lm4Y/y5s1gpL2OVo1+73TnxyZ6sav
-         0yTI6HTYNXHA5FH88j1N2f+AUMvBaBHq5Ghy6vqxYczSjA9pB/NpAgsGBQ6Evj/dcz7Y
-         cQEMwGp4tJWB1J8wWFUgcO8FzX0uI0apzLdVcgfzOP7PHuGvzOIUiSMA4vFCehXOqz/P
-         i8t3OllBfZ1vIaNmIfPRhfijdGdXOYwced/mNIAG7o0ISPpc+Nmqwi3GbhDneXkp06sy
-         B9EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mnnGb8uYfAKo5j4celfDTPJ3dArWMa9VeSJuwnZYFt4=;
-        b=rv+Q7wxUKV4GD6Jd/SaGOI4pPaX+BtVFzIGKYAijJ9Ui0GZVWSvl8Z+VVGYwzQsarK
-         NKn02NPVXoGOVA445hSQEfAm9UANqNQVjg+S11oRWpqF2sl9IC69goMvqKKfRFqQaZhF
-         N37qUt5klyvMFKh30g8n4PvfJimCmVypY8HVs748AXhsZmMDmLeUGo//nf0Mhyfxs9XO
-         d7F+Q2s+S4fxRdo5GfoMDcPnfISe8IY0/9OhOWBllfjDUnSsvxe9LWLMcaQfHjoUclAf
-         LHhu2u4PzG41HddaHyQ1z9ccFMzcch4drYff4U1m80Ny+RAfcT6FMHDQR8nfeAGctyqW
-         tqDg==
-X-Gm-Message-State: AOAM533kCWDJQPOdODsC42xcOXnjqUn74FIUUsMAhevz4WHjSPNf10FI
-        cmhzWdw8d5my5BMp6Ic107BtpA==
-X-Google-Smtp-Source: ABdhPJx2hxuqk9YVJYljBUWNo1jn7M1UjgUr/ztTa6I0vGJ6tqK3g/UXkeKiSL3eAOyFQNOIKnvlsA==
-X-Received: by 2002:a5d:6c66:: with SMTP id r6mr24586009wrz.86.1612872405309;
-        Tue, 09 Feb 2021 04:06:45 -0800 (PST)
-Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
-        by smtp.gmail.com with ESMTPSA id z63sm4511330wme.8.2021.02.09.04.06.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 04:06:44 -0800 (PST)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8723bs: fix blank lines and comments in rtl8723b_hal.h
-Date:   Tue,  9 Feb 2021 12:06:41 +0000
-Message-Id: <20210209120641.3964-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.29.2
+        id S230047AbhBIMLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:11:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:50590 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229638AbhBIMJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:09:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CC8CED1;
+        Tue,  9 Feb 2021 04:08:57 -0800 (PST)
+Received: from [10.57.49.26] (unknown [10.57.49.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B4693F73B;
+        Tue,  9 Feb 2021 04:08:54 -0800 (PST)
+Subject: Re: [RFC PATCH 10/11] vfio/iommu_type1: Optimize dirty bitmap
+ population based on iommu HWDBM
+To:     Yi Sun <yi.y.sun@linux.intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        Marc Zyngier <maz@kernel.org>, jiangkunkun@huawei.com,
+        wanghaibin.wang@huawei.com, kevin.tian@intel.com,
+        yan.y.zhao@intel.com, Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, lushenming@huawei.com,
+        iommu@lists.linux-foundation.org, James Morse <james.morse@arm.com>
+References: <20210128151742.18840-1-zhukeqian1@huawei.com>
+ <20210128151742.18840-11-zhukeqian1@huawei.com>
+ <20210207095630.GA28580@yi.y.sun>
+ <407d28db-1f86-8d4f-ab15-3c3ac56bbe7f@huawei.com>
+ <20210209115744.GB28580@yi.y.sun>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <b137db1d-a31b-3a81-08fa-24d7a8c290e9@arm.com>
+Date:   Tue, 9 Feb 2021 12:08:48 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210209115744.GB28580@yi.y.sun>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary blank line, and move close of multiple-line comments
-to their own trailing lines. This fixes four checkpatch warnings and one
-checkpatch check notice for the include/rtl8723b_hal.h file.
+On 2021-02-09 11:57, Yi Sun wrote:
+> On 21-02-07 18:40:36, Keqian Zhu wrote:
+>> Hi Yi,
+>>
+>> On 2021/2/7 17:56, Yi Sun wrote:
+>>> Hi,
+>>>
+>>> On 21-01-28 23:17:41, Keqian Zhu wrote:
+>>>
+>>> [...]
+>>>
+>>>> +static void vfio_dma_dirty_log_start(struct vfio_iommu *iommu,
+>>>> +				     struct vfio_dma *dma)
+>>>> +{
+>>>> +	struct vfio_domain *d;
+>>>> +
+>>>> +	list_for_each_entry(d, &iommu->domain_list, next) {
+>>>> +		/* Go through all domain anyway even if we fail */
+>>>> +		iommu_split_block(d->domain, dma->iova, dma->size);
+>>>> +	}
+>>>> +}
+>>>
+>>> This should be a switch to prepare for dirty log start. Per Intel
+>>> Vtd spec, there is SLADE defined in Scalable-Mode PASID Table Entry.
+>>> It enables Accessed/Dirty Flags in second-level paging entries.
+>>> So, a generic iommu interface here is better. For Intel iommu, it
+>>> enables SLADE. For ARM, it splits block.
+>> Indeed, a generic interface name is better.
+>>
+>> The vendor iommu driver plays vendor's specific actions to start dirty log, and Intel iommu and ARM smmu may differ. Besides, we may add more actions in ARM smmu driver in future.
+>>
+>> One question: Though I am not familiar with Intel iommu, I think it also should split block mapping besides enable SLADE. Right?
+>>
+> I am not familiar with ARM smmu. :) So I want to clarify if the block
+> in smmu is big page, e.g. 2M page? Intel Vtd manages the memory per
+> page, 4KB/2MB/1GB.
 
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/rtl8723bs/include/rtl8723b_hal.h | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+Indeed, what you call large pages, we call blocks :)
 
-diff --git a/drivers/staging/rtl8723bs/include/rtl8723b_hal.h b/drivers/staging/rtl8723bs/include/rtl8723b_hal.h
-index f36516fa84c7..8e6e972dd843 100644
---- a/drivers/staging/rtl8723bs/include/rtl8723b_hal.h
-+++ b/drivers/staging/rtl8723bs/include/rtl8723b_hal.h
-@@ -42,11 +42,13 @@ struct rt_firmware_hdr {
- 
- 	/*  LONG WORD 0 ---- */
- 	__le16 signature;  /* 92C0: test chip; 92C, 88C0: test chip;
--			    * 88C1: MP A-cut; 92C1: MP A-cut */
-+			    * 88C1: MP A-cut; 92C1: MP A-cut
-+			    */
- 	u8 category;	   /* AP/NIC and USB/PCI */
- 	u8 function;	   /* Reserved for different FW function indications,
- 			    * for further use when driver needs to download
--			    * different FW in different conditions. */
-+			    * different FW in different conditions.
-+			    */
- 	__le16 version;    /* FW Version */
- 	__le16 subversion; /* FW Subversion, default 0x00 */
- 
-@@ -135,7 +137,6 @@ struct rt_firmware_hdr {
- #define WMM_NORMAL_PAGE_NUM_LPQ_8723B 0x20
- #define WMM_NORMAL_PAGE_NUM_NPQ_8723B 0x20
- 
--
- #include "HalVerDef.h"
- #include "hal_com.h"
- 
-@@ -149,7 +150,8 @@ struct rt_firmware_hdr {
- #define EFUSE_MAX_SECTION_8723B      64
- 
- #define EFUSE_IC_ID_OFFSET 506 /* For some inferiority IC purpose.
--				* Added by Roger, 2009.09.02. */
-+				* Added by Roger, 2009.09.02.
-+				*/
- #define AVAILABLE_EFUSE_ADDR(addr) (addr < EFUSE_REAL_CONTENT_LEN_8723B)
- 
- #define EFUSE_ACCESS_ON  0x69 /* For RTL8723 only. */
-@@ -173,7 +175,8 @@ typedef enum _C2H_EVT {
- 	C2H_TSF = 1,
- 	C2H_AP_RPT_RSP = 2,
- 	C2H_CCX_TX_RPT = 3, /* The FW notify the report
--			     * of the specific tx packet. */
-+			     * of the specific tx packet.
-+			     */
- 	C2H_BT_RSSI = 4,
- 	C2H_BT_OP_MODE = 5,
- 	C2H_EXT_RA_RPT = 6,
--- 
-2.29.2
+Robin.
 
+> There are two ways to manage dirty pages.
+> 1. Keep default granularity. Just set SLADE to enable the dirty track.
+> 2. Split big page to 4KB to get finer granularity.
+> 
+> But question about the second solution is if it can benefit the user
+> space, e.g. live migration. If my understanding about smmu block (i.e.
+> the big page) is correct, have you collected some performance data to
+> prove that the split can improve performance? Thanks!
+> 
+>> Thanks,
+>> Keqian
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
