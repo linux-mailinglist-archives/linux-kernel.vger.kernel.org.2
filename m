@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4E63151C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9923151C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhBIOfO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 9 Feb 2021 09:35:14 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:39863 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhBIOdc (ORCPT
+        id S232137AbhBIOf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:35:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232130AbhBIOdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:33:32 -0500
-Received: by mail-ot1-f43.google.com with SMTP id d7so15357766otq.6;
-        Tue, 09 Feb 2021 06:33:16 -0800 (PST)
+        Tue, 9 Feb 2021 09:33:52 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C46C06178B;
+        Tue,  9 Feb 2021 06:33:12 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id z22so13044974qto.7;
+        Tue, 09 Feb 2021 06:33:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fAm7IYlzcPxcyIGE7fbs6JaVUzixxWFM8O5XHRLso0g=;
+        b=ZKuZmT0HezCXrL5m/xqZS4qlsuzUMhblsTUWCxX5/+8jtkH5xRIIWQW0oI98yBSJy5
+         MfQpvFh1+uOhKTjM6EVkes4lUI/29Ns4V17uzg0LImBVWYKIilA63IdkBqxYXxoZsLAE
+         p4jYCSxmgkD/hjNFnQ0Ey7KE/33/EmkNvywzCQefXuAeG+wnHNVy6Z2F6cKbUWEKxLJH
+         ZNeZH7DvXvewkvjHna6aBt+VBbq60yid3pdKSPawBmPT/D8KKGDBerKCqYn/hmIS40fc
+         VVX/wbLqXY2p5My/E3FL0OW6g5PpT4sAKCzgXjhJpej9JM5kCs59bkylC0hkmDkR62aZ
+         cTlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dxDnC1Zz5HK79WzEP7wBzhcdkf8+JiVvyiK/PaMB65U=;
-        b=IePbOSEC7QGmtTgRlIRx7ClboUD12sS4xc0/u+EH8xcaPiwTuKad4CTQyWT2EWFGyk
-         wjgeNP0SRcFIOkvzhzUpsQUC+EiIwz2iBR2FayKEgBslXP7/iyY6tG1sUWNfCOPioJ61
-         +O+uVY4f18TvhTbSr+a7wMVAEQkZ5OJOn2rdhM6PFVmiT2dXYDaTuHjCE4lTfyX+Rm7M
-         hbhYfsDmVUrj2zHrCnf2g211TOWDYTJl+hCv6/oZzNV/pw8UYkRTJ/7QOD8VFmSGLyjB
-         +V1ladv1MJDkJsVPfkK3zx+v2ZQQqm0ZWyZlXY/KHruvX0aIRQB3dPtJsmqzXxQ14aQ3
-         dKdA==
-X-Gm-Message-State: AOAM532pYqfwIPPM9h825OOdTnTEIyG/qaS9HtS1AY8DVhibW7dNFIMZ
-        8YXSBlPa6pSDrhjGjx5Dg2o+j4uKV7vwoonhd5XZ5b6k
-X-Google-Smtp-Source: ABdhPJwCvfZqdipzCsaXpiZaEb5d4aRE7XskSSQXmgvN3yqT/jdADqL7ri6vhKZT5x2GjuoOulZ23ePtmf6vRrFC/PY=
-X-Received: by 2002:a05:6830:1481:: with SMTP id s1mr4673179otq.206.1612881171389;
- Tue, 09 Feb 2021 06:32:51 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=fAm7IYlzcPxcyIGE7fbs6JaVUzixxWFM8O5XHRLso0g=;
+        b=l+x1TqiKEHNOcfTgo8lBqQSXIledEocNkQVUrehkhsKob5thpmliKxbYI6rE/Dfl5s
+         F0jmKhS6mbwMJGburmFs0b9NYFlqBWdUOsrEmz3Odk55RSTSA3WzIvL5Do9pZ2jk6uFQ
+         YoGsY0b3ZwpNfHIqbhd/D30bvOivPfIwFkKjVcL4SLk6Havq7rdu8O+cD15m5Wn+BGJ3
+         gD6vswlZ3kvXYUw1KnRtW2w5uXjYQXAlfIJH5AT1U3weZDjVossIE+k747KMbd0xY6uI
+         CO/m8Vpsgj1zFyevCnaGLfS4Y7sDMpVfffJXPboIssu1l+LcdgW1sKh028lwPFZqMu/B
+         E0hg==
+X-Gm-Message-State: AOAM531st3WlyGXCfgo+X96F7gSxrQdayryrhr5Ia0sDXT+HT6UtjiC9
+        z0UCK1dFN4DlJoL9m0SjrEbfgyQhPtEVcAvl
+X-Google-Smtp-Source: ABdhPJxJxKs7kvB4lfgwSFO1sxxO9IFZMIlRafe4mrpnQgbjiaUo9DXSzvIuGtdGHh4VyazWw1jc4A==
+X-Received: by 2002:ac8:1494:: with SMTP id l20mr20499808qtj.151.1612881191529;
+        Tue, 09 Feb 2021 06:33:11 -0800 (PST)
+Received: from ArchLinux ([156.146.37.186])
+        by smtp.gmail.com with ESMTPSA id r4sm19121837qkf.112.2021.02.09.06.33.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 06:33:10 -0800 (PST)
+Date:   Tue, 9 Feb 2021 20:03:02 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] docs: maintainer: Fix the spelling mistaeks to mistakes
+ in the file pull-requests.rst
+Message-ID: <YCKdHhV1LZ6tsii4@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210209140155.3890715-1-unixbhaskar@gmail.com>
+ <20210209142130.GX308988@casper.infradead.org>
 MIME-Version: 1.0
-References: <20210205115153.799dc024@canb.auug.org.au> <CAHp75VfiyAtxg+wqZ30kSzCfFFsLndLjzrUc1njZG0x6vQeyBQ@mail.gmail.com>
- <CAHp75Vdrnmnu3vfmtEmnU=dH9tjoZtSZUtgDNXp29E90tT+j7A@mail.gmail.com>
- <3936997.7vkU7uULjK@kreacher> <CAHp75VcUP1475T_jWQkZkjhZrfNEZ6UaOopm5v1WBOPoriTE3Q@mail.gmail.com>
- <CAHp75VfS=LgZfY6KTZeM7B+PgKpV3x_4zytszdaS=43A7BJEZQ@mail.gmail.com>
-In-Reply-To: <CAHp75VfS=LgZfY6KTZeM7B+PgKpV3x_4zytszdaS=43A7BJEZQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 9 Feb 2021 15:32:38 +0100
-Message-ID: <CAJZ5v0jbg8KWmmiAV0YrvndcbaY3CApUbPsTYVgxH-0HspZW3A@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the pm tree
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/Wa9Npo/oMKrprps"
+Content-Disposition: inline
+In-Reply-To: <20210209142130.GX308988@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 8:48 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Feb 8, 2021 at 9:47 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Mon, Feb 8, 2021 at 9:30 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > >
-> > > On Friday, February 5, 2021 12:15:22 PM CET Andy Shevchenko wrote:
-> > > > On Fri, Feb 5, 2021 at 11:14 AM Andy Shevchenko
-> > > > <andy.shevchenko@gmail.com> wrote:
-> > > > > On Friday, February 5, 2021, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > >
-> > > > >> After merging the pm tree, today's linux-next build (x86_64 allmodconfig)
-> > > > >> failed like this:
-> > > > >>
-> > > > >
-> > > > > Rafael, maybe I was unclear when explaining to you the dependencies with the series of series, but all three parts should go ordered. In any case it’s easy to fix. I will send you a PR late today of the immutable tag (part 1) that needs to be included in order to avoid the above.
-> > > >
-> > > > PR had just been sent to linux-acpi@ and Rafael in Cc.
-> > >
-> > > I haven't seen that PR, though, in any of my inboxes etc.
-> > >
-> > > Can you please point me to an archive or similar where I can find it?
-> >
-> > Sure, lore has it
-> >
-> > https://lore.kernel.org/linux-acpi/YB0mPPgpIpQzhNXS@smile.fi.intel.com/T/#u
->
-> If it is possible, please pull that PR and on top of that (re-)apply
-> the MFD related series.
 
-Done (merged into the bleeding-edge branch).
+--/Wa9Npo/oMKrprps
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-I was confused by it apparently asking Linus to pull. :-)
+On 14:21 Tue 09 Feb 2021, Matthew Wilcox wrote:
+>On Tue, Feb 09, 2021 at 07:31:55PM +0530, Bhaskar Chowdhury wrote:
+>>
+>> s/mistaeks/mistakes/
+>
+>You missed the joke.
+
+:) it seems!
+
+--/Wa9Npo/oMKrprps
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAinRkACgkQsjqdtxFL
+KRUhZggA2nuZx654smDQ9H9jvFj6khzbJ6UsZmkt5EfyeN7L2o/4GVC52Lp8NM5r
+LvzZ1n5/bH7rTD4g++6idu8nksDNf4S7NoNmFFyW+VNh/Qrb+b5usJ5BXLu7K3ce
+DdeEva/Kshx/xEwGh6ib2EeVKCoM17TQOMEGCb0Yu/f2Eei+OuByRmJeMoX9CRKT
+QUiZAp+3wCAPjNV/idRgUQ68ffJe9TEjNT/KUhQYorp661IgQfZKwCvErIqYiIQV
+uT1dTRr7vwnN0IPXdlh45PlwnnYQroozojQwLSZ++FkphIIRalHb86i69BUE6iW2
+Wg2rAspS4Zq7h5q0TvwlxotoQeTYxw==
+=DUzO
+-----END PGP SIGNATURE-----
+
+--/Wa9Npo/oMKrprps--
