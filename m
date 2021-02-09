@@ -2,179 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85090315B9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43971315BAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhBJAts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:49:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        id S233202AbhBJAxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:53:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbhBIWFo (ORCPT
+        with ESMTP id S233823AbhBIWJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:05:44 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A1EC08EC87;
-        Tue,  9 Feb 2021 14:04:02 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id v15so23868958wrx.4;
-        Tue, 09 Feb 2021 14:04:02 -0800 (PST)
+        Tue, 9 Feb 2021 17:09:12 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10E8C08EC66
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 14:08:06 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id e1so59242ilu.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 14:08:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=aNKWeT8ewjIKljaUQZ7nHgE6ak/7b2fOMgS7twRaGvk=;
-        b=hp7i1rJjnV+qwqXAR8B8jUA0rta5SoL+0bFO01L2LHbBnoR1GahVYLCGkuMmJvIZ8b
-         LW3/fIuD2iHH19Dc9J3k+YN7rqkIxI2Nwd4Tu14X9FYcZrJ5Yk0qnRYbeIDZQHl29dW5
-         fxXJF875YqG+IbGQNG0YLbkU4c7dRFPR6MDJEWFnu2Zyo5QvJLZ3Q4cO8/fqMskKV8+1
-         g3/dUN4I2Kh4Yi4WWOWdNNbK2/KAJor6NCUJESwWIOOd+VTJy0a87Y0v1tc425vnewS4
-         OVPWGpwMIt780fJqBJ3hKh/tO+umib4ObfVzli35XsEKbRcRYCQXln3IzOe5gV9laK3S
-         PISQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f0pHLlu/e9Ji08EtxhI+DoyRZvZ2qnwkgDOAZruINtU=;
+        b=pILTqTfPpv+v1vpw08F9CXsSgqLpVJi20yTHeD+DQ/+M+3iw3u3o644wc8NiOs2208
+         A3hi8Ec3q/nCg3Cqc1byayrLJ+g/5eqn9WxBqiqAw+moO99Dqwa4SkJk9+1aJeZSNAog
+         FJ1sQmWv93mJzMHCWpVa75MvuH0VohrEsLSWj7IhDXZQsQoDHI6uZcLfsK1RJ1rukds3
+         ZPbzP1k5by3ejqt1ecKjWZn9Xe8StmzdpMFkkiF2YkRwZS5gbJx2Jr2YSiKLrelhBR5W
+         ntahirvEVjqQBv6HYFyJYr1VTwEaDSY6yeGMPOKgeZyJZmjtWr/1EKPo0IZKpqrb1ktU
+         /XzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=aNKWeT8ewjIKljaUQZ7nHgE6ak/7b2fOMgS7twRaGvk=;
-        b=J2x5TL1lOsr9gKbHod5709AuC64A+E5ueSMw2av1e6FwBSL74olPGC5Aqym8LPEY5y
-         DyNbPs7P+wnVk1DPeIdeEJHasapBENOy6Hkc1BcoNe6Ae2wfSB9d2nm3cVFa4qyAYoKE
-         wygIUQq46EKGKK5TPr1rdVj534uxWl/JTNKi6jG5ymU27c3qc9A7icmOryyjwNNg+RGU
-         h5xdRfYqjbhbU1AR9QYrJSPO1EiwmLuNpIDrHtcPV4Szsg9fGSsHatvZLYNnyR0JxA4l
-         pEzdgTPq7cPOK/SU8s9BEPHlsvDFR1wtPKqXZfbemRcTyvJSddySJh7v7M1X+aH/Gn2E
-         Nz7g==
-X-Gm-Message-State: AOAM530KYKDS/2aw0uuIPRI+02O4qc9kXJLUmWU5R/oZ5baQjh9N9s+z
-        kKZK8Gj9JorvvWYhqAeySwg=
-X-Google-Smtp-Source: ABdhPJwJpvdREOlxVU/INWnyVqqEOLBSAluqB/1Xm1aCvnRsA7BWnuj9BZhMN+BSyUgL+ntlrucpyQ==
-X-Received: by 2002:a5d:6546:: with SMTP id z6mr182756wrv.125.1612908241478;
-        Tue, 09 Feb 2021 14:04:01 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id e16sm14203501wrt.36.2021.02.09.14.03.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 14:04:00 -0800 (PST)
-Message-ID: <223de0d7e692a5871b3fe3dfd899987c793c20da.camel@gmail.com>
-Subject: Re: [PATCH v6 2/7] gpio: ep93xx: Fix single irqchip with multi
- gpiochips
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 09 Feb 2021 23:03:59 +0100
-In-Reply-To: <20210209133110.7383-3-nikita.shubin@maquefel.me>
-References: <20210209133110.7383-1-nikita.shubin@maquefel.me>
-         <20210209133110.7383-3-nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f0pHLlu/e9Ji08EtxhI+DoyRZvZ2qnwkgDOAZruINtU=;
+        b=dGaSQqNHbnG/ndmPEIQhpxzyowO7x9aB/2rxO7gvjG79qtYIx2y+3ZtLXks3Ag/mF6
+         ADc6e3jV+KzzAdfU7podDDw1vW26VuWwFaBwVJu/okj0dSekMrTuwmYzyDZ8ezZ3NFdW
+         XY10VEvhWMxM6jHdypRL81kdpazkjydXQkfVDSLEp3dxX/7KhwoHxUdxtZwal8a2ITJk
+         0G+gbgwmDTYM1yMpB5q38O4dbk6PCYq6u9U+qzivTZjJMzzfBKP/IenCOGIgBeXRknGn
+         Hh7+HPDY8uMQZGesgEX7rLXTelJH0z3BKzYVwC/FcM3LRfLVC3xPWx+B6499phBQIqfF
+         gGcA==
+X-Gm-Message-State: AOAM531PONKN0usIZDCQp6wY5moRBgSl94DMSm62nLrH0VgtP2qaGaV2
+        Iu2EUpjWG3XKYA8CfNeTZJK2dAL4bWXKGqfygVxP1w==
+X-Google-Smtp-Source: ABdhPJx1Kip0arZ1nRiflMu1rj0oPZ1UXoscVOPm/qCxIiBdZCDKHLxsyL+vJm2sPpZevvBpcYwKguMHBOSfaT1Op3Y=
+X-Received: by 2002:a05:6e02:5c6:: with SMTP id l6mr152127ils.136.1612908485751;
+ Tue, 09 Feb 2021 14:08:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210205235302.2022784-1-dlatypov@google.com> <20210205235302.2022784-2-dlatypov@google.com>
+ <alpine.LRH.2.23.451.2102091717001.1783@localhost>
+In-Reply-To: <alpine.LRH.2.23.451.2102091717001.1783@localhost>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 9 Feb 2021 14:07:53 -0800
+Message-ID: <CAGS_qxoRt+yibVgVBoMGp+GpVt9TSKuyyk08vfcSyQeTyAgN+A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] kunit: support failure from dynamic analysis tools
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Uriel Guajardo <urielguajardo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikita!
+On Tue, Feb 9, 2021 at 9:26 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> On Fri, 5 Feb 2021, Daniel Latypov wrote:
+>
+> > From: Uriel Guajardo <urielguajardo@google.com>
+> >
+> > Add a kunit_fail_current_test() function to fail the currently running
+> > test, if any, with an error message.
+> >
+> > This is largely intended for dynamic analysis tools like UBSAN and for
+> > fakes.
+> > E.g. say I had a fake ops struct for testing and I wanted my `free`
+> > function to complain if it was called with an invalid argument, or
+> > caught a double-free. Most return void and have no normal means of
+> > signalling failure (e.g. super_operations, iommu_ops, etc.).
+> >
+> > Key points:
+> > * Always update current->kunit_test so anyone can use it.
+> >   * commit 83c4e7a0363b ("KUnit: KASAN Integration") only updated it for
+> >   CONFIG_KASAN=y
+> >
+> > * Create a new header <kunit/test-bug.h> so non-test code doesn't have
+> > to include all of <kunit/test.h> (e.g. lib/ubsan.c)
+> >
+> > * Forward the file and line number to make it easier to track down
+> > failures
+> >
+>
+> Thanks for doing this!
+>
+> > * Declare it as a function for nice __printf() warnings about mismatched
+> > format strings even when KUnit is not enabled.
+> >
+>
+> One thing I _think_ this assumes is that KUnit is builtin;
+> don't we need an
 
-On Tue, 2021-02-09 at 16:31 +0300, Nikita Shubin wrote:
-> Fixes the following warnings which results in interrupts disabled on
-> port B/F:
-> 
-> gpio gpiochip1: (B): detected irqchip that is shared with multiple gpiochips: please fix the driver.
-> gpio gpiochip5: (F): detected irqchip that is shared with multiple gpiochips: please fix the driver.
-> 
-> - added separate irqchip for each interrupt capable gpiochip
-> - provided unique names for each irqchip
-> 
-> Fixes: d2b091961510 ("gpio: ep93xx: Pass irqchip when adding gpiochip")
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Ah, you're correct.
+Also going to rename it to have two _ to match other functions used in
+macros like __kunit_test_suites_init.
 
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+I had been having some recent issues with getting QEMU to work on my
+machine so I hadn't tested it before.
+Somehow I've finally fixed it and can now say that it works w/
+CONFIG_KUNIT=m after making the change
 
-> ---
-> v5->v6:
-> - add devm_kasprintf() return value check and move it out from 
-> ep93xx_init_irq_chip()
-> - removed ep93xx_gpio_irq_chip
-> - pass girq->chip instead of removed ep93xx_gpio_irq_chip to
-> irq_set_chip_and_handler for port F
-> ---
->  drivers/gpio/gpio-ep93xx.c | 30 +++++++++++++++++++-----------
->  1 file changed, 19 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-> index 64d6c2b4282e..94d9fa0d6aa7 100644
-> --- a/drivers/gpio/gpio-ep93xx.c
-> +++ b/drivers/gpio/gpio-ep93xx.c
-> @@ -38,6 +38,7 @@
->  #define EP93XX_GPIO_F_IRQ_BASE 80
->  
->  struct ep93xx_gpio_irq_chip {
-> +       struct irq_chip ic;
->         u8 irq_offset;
->         u8 int_unmasked;
->         u8 int_enabled;
-> @@ -263,15 +264,6 @@ static int ep93xx_gpio_irq_type(struct irq_data *d, unsigned int type)
->         return 0;
->  }
->  
-> -static struct irq_chip ep93xx_gpio_irq_chip = {
-> -       .name           = "GPIO",
-> -       .irq_ack        = ep93xx_gpio_irq_ack,
-> -       .irq_mask_ack   = ep93xx_gpio_irq_mask_ack,
-> -       .irq_mask       = ep93xx_gpio_irq_mask,
-> -       .irq_unmask     = ep93xx_gpio_irq_unmask,
-> -       .irq_set_type   = ep93xx_gpio_irq_type,
-> -};
-> -
->  /*************************************************************************
->   * gpiolib interface for EP93xx on-chip GPIOs
->   *************************************************************************/
-> @@ -331,6 +323,15 @@ static int ep93xx_gpio_f_to_irq(struct gpio_chip *gc, unsigned offset)
->         return EP93XX_GPIO_F_IRQ_BASE + offset;
->  }
->  
-> +static void ep93xx_init_irq_chip(struct device *dev, struct irq_chip *ic)
-> +{
-> +       ic->irq_ack = ep93xx_gpio_irq_ack;
-> +       ic->irq_mask_ack = ep93xx_gpio_irq_mask_ack;
-> +       ic->irq_mask = ep93xx_gpio_irq_mask;
-> +       ic->irq_unmask = ep93xx_gpio_irq_unmask;
-> +       ic->irq_set_type = ep93xx_gpio_irq_type;
-> +}
-> +
->  static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
->                                 struct platform_device *pdev,
->                                 struct ep93xx_gpio *epg,
-> @@ -352,6 +353,8 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
->  
->         girq = &gc->irq;
->         if (bank->has_irq || bank->has_hierarchical_irq) {
-> +               struct irq_chip *ic;
-> +
->                 gc->set_config = ep93xx_gpio_set_config;
->                 egc->eic = devm_kcalloc(dev, 1,
->                                         sizeof(*egc->eic),
-> @@ -359,7 +362,12 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
->                 if (!egc->eic)
->                         return -ENOMEM;
->                 egc->eic->irq_offset = bank->irq;
-> -               girq->chip = &ep93xx_gpio_irq_chip;
-> +               ic = &egc->eic->ic;
-> +               ic->name = devm_kasprintf(dev, GFP_KERNEL, "gpio-irq-%s", bank->label);
-> +               if (!ic->name)
-> +                       return -ENOMEM;
-> +               ep93xx_init_irq_chip(dev, ic);
-> +               girq->chip = ic;
->         }
->  
->         if (bank->has_irq) {
-> @@ -401,7 +409,7 @@ static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
->                         gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
->                         irq_set_chip_data(gpio_irq, &epg->gc[5]);
->                         irq_set_chip_and_handler(gpio_irq,
-> -                                                &ep93xx_gpio_irq_chip,
-> +                                                girq->chip,
->                                                  handle_level_irq);
->                         irq_clear_status_flags(gpio_irq, IRQ_NOREQUEST);
->                 }
-
--- 
-Alexander Sverdlin.
+# modprobe kunit
+# modprobe kunit-example-test
+[   27.689840]     # Subtest: example
+[   27.689994]     1..1
+[   27.692337]     # example_simple_test: initializing
+[   27.692862]     # example_simple_test:
+lib/kunit/kunit-example-test.c:31: example failure message: 42
+[   27.693158]     not ok 1 - example_simple_test
+[   27.693654] not ok 1 - example
 
 
+
+>
+> EXPORT_SYMBOL_GPL(_kunit_fail_current_test);
+>
+> ?
+>
+> Without it, if an analysis tool (or indeed if KUnit) is built
+> as a module, it won't be possible to use this functionality.
+>
+> > Example output from kunit_fail_current_test("message"):
+> > [15:19:34] [FAILED] example_simple_test
+> > [15:19:34]     # example_simple_test: initializing
+> > [15:19:34]     # example_simple_test: lib/kunit/kunit-example-test.c:24: message
+> > [15:19:34]     not ok 1 - example_simple_test
+> >
+> > Co-developed-by: Daniel Latypov <dlatypov@google.com>
+> > Signed-off-by: Uriel Guajardo <urielguajardo@google.com>
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > ---
+> >  include/kunit/test-bug.h | 30 ++++++++++++++++++++++++++++++
+> >  lib/kunit/test.c         | 36 ++++++++++++++++++++++++++++++++----
+> >  2 files changed, 62 insertions(+), 4 deletions(-)
+> >  create mode 100644 include/kunit/test-bug.h
+> >
+> > diff --git a/include/kunit/test-bug.h b/include/kunit/test-bug.h
+> > new file mode 100644
+> > index 000000000000..4963ed52c2df
+> > --- /dev/null
+> > +++ b/include/kunit/test-bug.h
+> > @@ -0,0 +1,30 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * KUnit API allowing dynamic analysis tools to interact with KUnit tests
+> > + *
+> > + * Copyright (C) 2020, Google LLC.
+>
+> nit; might want to update copyright year.
+>
+> > + * Author: Uriel Guajardo <urielguajardo@google.com>
+> > + */
+> > +
+> > +#ifndef _KUNIT_TEST_BUG_H
+> > +#define _KUNIT_TEST_BUG_H
+> > +
+> > +#define kunit_fail_current_test(fmt, ...) \
+> > +     _kunit_fail_current_test(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+> > +
+> > +#if IS_ENABLED(CONFIG_KUNIT)
+> > +
+> > +extern __printf(3, 4) void _kunit_fail_current_test(const char *file, int line,
+> > +                                                 const char *fmt, ...);
+> > +
+> > +#else
+> > +
+> > +static __printf(3, 4) void _kunit_fail_current_test(const char *file, int line,
+> > +                                                 const char *fmt, ...)
+> > +{
+> > +}
+> > +
+> > +#endif
+> > +
+> > +
+> > +#endif /* _KUNIT_TEST_BUG_H */
+> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> > index ec9494e914ef..7b16aae0ccae 100644
+> > --- a/lib/kunit/test.c
+> > +++ b/lib/kunit/test.c
+> > @@ -7,6 +7,7 @@
+> >   */
+> >
+> >  #include <kunit/test.h>
+> > +#include <kunit/test-bug.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/kref.h>
+> >  #include <linux/sched/debug.h>
+> > @@ -16,6 +17,37 @@
+> >  #include "string-stream.h"
+> >  #include "try-catch-impl.h"
+> >
+> > +/*
+> > + * Fail the current test and print an error message to the log.
+> > + */
+> > +void _kunit_fail_current_test(const char *file, int line, const char *fmt, ...)
+> > +{
+> > +     va_list args;
+> > +     int len;
+> > +     char *buffer;
+> > +
+> > +     if (!current->kunit_test)
+> > +             return;
+> > +
+> > +     kunit_set_failure(current->kunit_test);
+> > +
+> > +     /* kunit_err() only accepts literals, so evaluate the args first. */
+> > +     va_start(args, fmt);
+> > +     len = vsnprintf(NULL, 0, fmt, args) + 1;
+> > +     va_end(args);
+> > +
+> > +     buffer = kunit_kmalloc(current->kunit_test, len, GFP_KERNEL);
+> > +     if (!buffer)
+> > +             return;
+> > +
+> > +     va_start(args, fmt);
+> > +     vsnprintf(buffer, len, fmt, args);
+> > +     va_end(args);
+> > +
+> > +     kunit_err(current->kunit_test, "%s:%d: %s", file, line, buffer);
+> > +     kunit_kfree(current->kunit_test, buffer);
+> > +}
+> > +
+> >  /*
+> >   * Append formatted message to log, size of which is limited to
+> >   * KUNIT_LOG_SIZE bytes (including null terminating byte).
+> > @@ -273,9 +305,7 @@ static void kunit_try_run_case(void *data)
+> >       struct kunit_suite *suite = ctx->suite;
+> >       struct kunit_case *test_case = ctx->test_case;
+> >
+> > -#if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
+> >       current->kunit_test = test;
+> > -#endif /* IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT) */
+> >
+> >       /*
+> >        * kunit_run_case_internal may encounter a fatal error; if it does,
+> > @@ -624,9 +654,7 @@ void kunit_cleanup(struct kunit *test)
+> >               spin_unlock(&test->lock);
+> >               kunit_remove_resource(test, res);
+> >       }
+> > -#if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
+> >       current->kunit_test = NULL;
+> > -#endif /* IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT)*/
+> >  }
+> >  EXPORT_SYMBOL_GPL(kunit_cleanup);
+> >
+> > --
+> > 2.30.0.478.g8a0d178c01-goog
+> >
+> >
