@@ -2,39 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0C4315B82
+	by mail.lfdr.de (Postfix) with ESMTP id 69C67315B81
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhBJAoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:44:44 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:48669 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234391AbhBIVOm (ORCPT
+        id S234190AbhBJAoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:44:15 -0500
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:60033
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234385AbhBIVOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 16:14:42 -0500
+        Tue, 9 Feb 2021 16:14:39 -0500
 X-IronPort-AV: E=Sophos;i="5.81,166,1610406000"; 
-   d="scan'208";a="492125976"
+   d="scan'208";a="372589600"
 Received: from palace.lip6.fr ([132.227.105.202])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 09 Feb 2021 22:13:29 +0100
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 09 Feb 2021 22:13:37 +0100
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH] video: use getter/setter functions
-Date:   Tue,  9 Feb 2021 22:13:25 +0100
-Message-Id: <20210209211325.1261842-1-Julia.Lawall@inria.fr>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Andy Walls <awalls@md.metrocast.net>,
+        Yasunari Takiguchi <Yasunari.Takiguchi@sony.com>
+Subject: [PATCH] media: use getter/setter functions
+Date:   Tue,  9 Feb 2021 22:13:33 +0100
+Message-Id: <20210209211333.1261893-1-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,206 +32,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use getter and setter functions, for platform_device structures and a
-spi_device structure.
+Use getter and setter functions, for a variety of data types.
 
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- drivers/video/backlight/qcom-wled.c                                  |    2 +-
- drivers/video/fbdev/amifb.c                                          |    4 ++--
- drivers/video/fbdev/da8xx-fb.c                                       |    4 ++--
- drivers/video/fbdev/imxfb.c                                          |    2 +-
- drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c |    6 +++---
- drivers/video/fbdev/omap2/omapfb/dss/dpi.c                           |    4 ++--
- drivers/video/fbdev/omap2/omapfb/dss/dsi.c                           |    4 ++--
- drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c                         |    2 +-
- drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c                         |    2 +-
- drivers/video/fbdev/xilinxfb.c                                       |    2 +-
- 10 files changed, 16 insertions(+), 16 deletions(-)
+ drivers/media/pci/ivtv/ivtv-driver.c  |    2 +-
+ drivers/media/platform/fsl-viu.c      |    6 +++---
+ drivers/media/platform/pxa_camera.c   |    4 ++--
+ drivers/media/radio/radio-maxiradio.c |    2 +-
+ drivers/media/spi/cxd2880-spi.c       |    4 ++--
+ 5 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-index 3bc7800eb0a9..091f07e7c145 100644
---- a/drivers/video/backlight/qcom-wled.c
-+++ b/drivers/video/backlight/qcom-wled.c
-@@ -1692,7 +1692,7 @@ static int wled_probe(struct platform_device *pdev)
+diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
+index 6e448cb3b51c..c4a069b3b9d1 100644
+--- a/drivers/media/pci/ivtv/ivtv-driver.c
++++ b/drivers/media/pci/ivtv/ivtv-driver.c
+@@ -1393,7 +1393,7 @@ int ivtv_init_on_first_open(struct ivtv *itv)
  
- static int wled_remove(struct platform_device *pdev)
+ static void ivtv_remove(struct pci_dev *pdev)
  {
--	struct wled *wled = dev_get_drvdata(&pdev->dev);
-+	struct wled *wled = platform_get_drvdata(pdev);
+-	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
++	struct v4l2_device *v4l2_dev = pci_get_drvdata(pdev);
+ 	struct ivtv *itv = to_ivtv(v4l2_dev);
+ 	int i;
  
- 	mutex_destroy(&wled->lock);
- 	cancel_delayed_work_sync(&wled->ovp_work);
-diff --git a/drivers/video/fbdev/xilinxfb.c b/drivers/video/fbdev/xilinxfb.c
-index ca4ff658cad0..ffbf900648d9 100644
---- a/drivers/video/fbdev/xilinxfb.c
-+++ b/drivers/video/fbdev/xilinxfb.c
-@@ -472,7 +472,7 @@ static int xilinxfb_of_probe(struct platform_device *pdev)
- 	if (of_find_property(pdev->dev.of_node, "rotate-display", NULL))
- 		pdata.rotate_screen = 1;
+diff --git a/drivers/media/spi/cxd2880-spi.c b/drivers/media/spi/cxd2880-spi.c
+index 4077217777f9..931ec0727cd3 100644
+--- a/drivers/media/spi/cxd2880-spi.c
++++ b/drivers/media/spi/cxd2880-spi.c
+@@ -535,7 +535,7 @@ cxd2880_spi_probe(struct spi_device *spi)
  
--	dev_set_drvdata(&pdev->dev, drvdata);
-+	platform_set_drvdata(pdev, drvdata);
- 	return xilinxfb_assign(pdev, drvdata, &pdata);
- }
+ 	dvb_spi->spi = spi;
+ 	mutex_init(&dvb_spi->spi_mutex);
+-	dev_set_drvdata(&spi->dev, dvb_spi);
++	spi_set_drvdata(spi, dvb_spi);
+ 	config.spi = spi;
+ 	config.spi_mutex = &dvb_spi->spi_mutex;
  
-diff --git a/drivers/video/fbdev/imxfb.c b/drivers/video/fbdev/imxfb.c
-index 884b16efa7e8..7f8debd2da06 100644
---- a/drivers/video/fbdev/imxfb.c
-+++ b/drivers/video/fbdev/imxfb.c
-@@ -657,7 +657,7 @@ static int imxfb_activate_var(struct fb_var_screeninfo *var, struct fb_info *inf
- static int imxfb_init_fbinfo(struct platform_device *pdev)
+@@ -632,7 +632,7 @@ cxd2880_spi_remove(struct spi_device *spi)
+ 		return -EINVAL;
+ 	}
+ 
+-	dvb_spi = dev_get_drvdata(&spi->dev);
++	dvb_spi = spi_get_drvdata(spi);
+ 
+ 	if (!dvb_spi) {
+ 		pr_err("failed\n");
+diff --git a/drivers/media/radio/radio-maxiradio.c b/drivers/media/radio/radio-maxiradio.c
+index ad488ecbd16c..de107e2cbcd6 100644
+--- a/drivers/media/radio/radio-maxiradio.c
++++ b/drivers/media/radio/radio-maxiradio.c
+@@ -176,7 +176,7 @@ static int maxiradio_probe(struct pci_dev *pdev,
+ 
+ static void maxiradio_remove(struct pci_dev *pdev)
  {
- 	struct imx_fb_platform_data *pdata = dev_get_platdata(&pdev->dev);
--	struct fb_info *info = dev_get_drvdata(&pdev->dev);
-+	struct fb_info *info = platform_get_drvdata(pdev);
- 	struct imxfb_info *fbi = info->par;
- 	struct device_node *np;
+-	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
++	struct v4l2_device *v4l2_dev = pci_get_drvdata(pdev);
+ 	struct maxiradio *dev = to_maxiradio(v4l2_dev);
  
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
-index e3d441ade241..2c03608addcd 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c
-@@ -713,7 +713,7 @@ static int hdmi5_bind(struct device *dev, struct device *master, void *data)
- 	int irq;
+ 	snd_tea575x_exit(&dev->tea);
+diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
+index 75fad9689c90..88a16cfeced8 100644
+--- a/drivers/media/platform/pxa_camera.c
++++ b/drivers/media/platform/pxa_camera.c
+@@ -2398,7 +2398,7 @@ static int pxa_camera_probe(struct platform_device *pdev)
  
- 	hdmi.pdev = pdev;
--	dev_set_drvdata(&pdev->dev, &hdmi);
-+	platform_set_drvdata(pdev, &hdmi);
+ 	pxa_camera_activate(pcdev);
  
- 	mutex_init(&hdmi.lock);
- 	spin_lock_init(&hdmi.audio_playing_lock);
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
-index 496b43bdad21..800bd108e834 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c
-@@ -672,7 +672,7 @@ static int hdmi4_bind(struct device *dev, struct device *master, void *data)
- 	int irq;
- 
- 	hdmi.pdev = pdev;
--	dev_set_drvdata(&pdev->dev, &hdmi);
-+	platform_set_drvdata(pdev, &hdmi);
- 
- 	mutex_init(&hdmi.lock);
- 	spin_lock_init(&hdmi.audio_playing_lock);
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dsi.c b/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
-index 58c7aa279ab1..daa313f14335 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/dsi.c
-@@ -399,7 +399,7 @@ module_param(dsi_perf, bool, 0644);
- 
- static inline struct dsi_data *dsi_get_dsidrv_data(struct platform_device *dsidev)
- {
--	return dev_get_drvdata(&dsidev->dev);
-+	return platform_get_drvdata(dsidev);
- }
- 
- static inline struct platform_device *dsi_get_dsidev_from_dssdev(struct omap_dss_device *dssdev)
-@@ -5266,7 +5266,7 @@ static int dsi_bind(struct device *dev, struct device *master, void *data)
- 		return -ENOMEM;
- 
- 	dsi->pdev = dsidev;
--	dev_set_drvdata(&dsidev->dev, dsi);
-+	platform_set_drvdata(dsidev, dsi);
- 
- 	spin_lock_init(&dsi->irq_lock);
- 	spin_lock_init(&dsi->errors_lock);
-diff --git a/drivers/video/fbdev/omap2/omapfb/dss/dpi.c b/drivers/video/fbdev/omap2/omapfb/dss/dpi.c
-index e2e7fe6f89ee..99ce6e955a46 100644
---- a/drivers/video/fbdev/omap2/omapfb/dss/dpi.c
-+++ b/drivers/video/fbdev/omap2/omapfb/dss/dpi.c
-@@ -55,7 +55,7 @@ static struct dpi_data *dpi_get_data_from_dssdev(struct omap_dss_device *dssdev)
- /* only used in non-DT mode */
- static struct dpi_data *dpi_get_data_from_pdev(struct platform_device *pdev)
- {
--	return dev_get_drvdata(&pdev->dev);
-+	return platform_get_drvdata(pdev);
- }
- 
- static struct dss_pll *dpi_get_pll(enum omap_channel channel)
-@@ -784,7 +784,7 @@ static int dpi_bind(struct device *dev, struct device *master, void *data)
- 
- 	dpi->pdev = pdev;
- 
--	dev_set_drvdata(&pdev->dev, dpi);
-+	platform_set_drvdata(pdev, dpi);
- 
- 	mutex_init(&dpi->lock);
- 
-diff --git a/drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c b/drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c
-index 0f93a260e432..1bec7a4422e8 100644
---- a/drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c
-+++ b/drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c
-@@ -239,7 +239,7 @@ static struct omap_dss_driver lb035q02_ops = {
- static int lb035q02_probe_of(struct spi_device *spi)
- {
- 	struct device_node *node = spi->dev.of_node;
--	struct panel_drv_data *ddata = dev_get_drvdata(&spi->dev);
-+	struct panel_drv_data *ddata = spi_get_drvdata(spi);
- 	struct omap_dss_device *in;
- 	struct gpio_desc *gpio;
- 
-@@ -277,7 +277,7 @@ static int lb035q02_panel_spi_probe(struct spi_device *spi)
- 	if (ddata == NULL)
- 		return -ENOMEM;
- 
--	dev_set_drvdata(&spi->dev, ddata);
-+	spi_set_drvdata(spi, ddata);
- 
- 	ddata->spi = spi;
- 
-@@ -318,7 +318,7 @@ static int lb035q02_panel_spi_probe(struct spi_device *spi)
- 
- static int lb035q02_panel_spi_remove(struct spi_device *spi)
- {
--	struct panel_drv_data *ddata = dev_get_drvdata(&spi->dev);
-+	struct panel_drv_data *ddata = spi_get_drvdata(spi);
- 	struct omap_dss_device *dssdev = &ddata->dssdev;
- 	struct omap_dss_device *in = ddata->in;
- 
-diff --git a/drivers/video/fbdev/da8xx-fb.c b/drivers/video/fbdev/da8xx-fb.c
-index e38c0e3f9c61..005ac3c17aa1 100644
---- a/drivers/video/fbdev/da8xx-fb.c
-+++ b/drivers/video/fbdev/da8xx-fb.c
-@@ -1066,7 +1066,7 @@ static void lcd_da8xx_cpufreq_deregister(struct da8xx_fb_par *par)
- 
- static int fb_remove(struct platform_device *dev)
- {
--	struct fb_info *info = dev_get_drvdata(&dev->dev);
-+	struct fb_info *info = platform_get_drvdata(dev);
- 	struct da8xx_fb_par *par = info->par;
- 	int ret;
- 
-@@ -1482,7 +1482,7 @@ static int fb_probe(struct platform_device *device)
- 	da8xx_fb_var.activate = FB_ACTIVATE_FORCE;
- 	fb_set_var(da8xx_fb_info, &da8xx_fb_var);
- 
--	dev_set_drvdata(&device->dev, da8xx_fb_info);
-+	platform_set_drvdata(device, da8xx_fb_info);
- 
- 	/* initialize the vsync wait queue */
- 	init_waitqueue_head(&par->vsync_wait);
-diff --git a/drivers/video/fbdev/amifb.c b/drivers/video/fbdev/amifb.c
-index 226682550b4b..6e07a97bbd31 100644
---- a/drivers/video/fbdev/amifb.c
-+++ b/drivers/video/fbdev/amifb.c
-@@ -3736,7 +3736,7 @@ static int __init amifb_probe(struct platform_device *pdev)
+-	dev_set_drvdata(&pdev->dev, pcdev);
++	platform_set_drvdata(pdev, pcdev);
+ 	err = v4l2_device_register(&pdev->dev, &pcdev->v4l2_dev);
  	if (err)
- 		goto free_irq;
+ 		goto exit_deactivate;
+@@ -2455,7 +2455,7 @@ static int pxa_camera_probe(struct platform_device *pdev)
  
--	dev_set_drvdata(&pdev->dev, info);
-+	platform_set_drvdata(pdev, info);
- 
- 	err = register_framebuffer(info);
- 	if (err)
-@@ -3764,7 +3764,7 @@ static int __init amifb_probe(struct platform_device *pdev)
- 
- static int __exit amifb_remove(struct platform_device *pdev)
+ static int pxa_camera_remove(struct platform_device *pdev)
  {
--	struct fb_info *info = dev_get_drvdata(&pdev->dev);
-+	struct fb_info *info = platform_get_drvdata(pdev);
+-	struct pxa_camera_dev *pcdev = dev_get_drvdata(&pdev->dev);
++	struct pxa_camera_dev *pcdev = platform_get_drvdata(pdev);
  
- 	unregister_framebuffer(info);
- 	fb_dealloc_cmap(&info->cmap);
+ 	pxa_camera_deactivate(pcdev);
+ 	tasklet_kill(&pcdev->task_eof);
+diff --git a/drivers/media/platform/fsl-viu.c b/drivers/media/platform/fsl-viu.c
+index 1f1042d5c865..a4bfa70b49b2 100644
+--- a/drivers/media/platform/fsl-viu.c
++++ b/drivers/media/platform/fsl-viu.c
+@@ -1529,7 +1529,7 @@ static int viu_of_probe(struct platform_device *op)
+ 
+ static int viu_of_remove(struct platform_device *op)
+ {
+-	struct v4l2_device *v4l2_dev = dev_get_drvdata(&op->dev);
++	struct v4l2_device *v4l2_dev = platform_get_drvdata(op);
+ 	struct viu_dev *dev = container_of(v4l2_dev, struct viu_dev, v4l2_dev);
+ 	struct v4l2_subdev *sdev = list_entry(v4l2_dev->subdevs.next,
+ 					      struct v4l2_subdev, list);
+@@ -1550,7 +1550,7 @@ static int viu_of_remove(struct platform_device *op)
+ #ifdef CONFIG_PM
+ static int viu_suspend(struct platform_device *op, pm_message_t state)
+ {
+-	struct v4l2_device *v4l2_dev = dev_get_drvdata(&op->dev);
++	struct v4l2_device *v4l2_dev = platform_get_drvdata(op);
+ 	struct viu_dev *dev = container_of(v4l2_dev, struct viu_dev, v4l2_dev);
+ 
+ 	clk_disable(dev->clk);
+@@ -1559,7 +1559,7 @@ static int viu_suspend(struct platform_device *op, pm_message_t state)
+ 
+ static int viu_resume(struct platform_device *op)
+ {
+-	struct v4l2_device *v4l2_dev = dev_get_drvdata(&op->dev);
++	struct v4l2_device *v4l2_dev = platform_get_drvdata(op);
+ 	struct viu_dev *dev = container_of(v4l2_dev, struct viu_dev, v4l2_dev);
+ 
+ 	clk_enable(dev->clk);
 
