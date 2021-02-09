@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7D831515B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED65315166
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhBIOPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:15:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhBIOPk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:15:40 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60151C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 06:14:59 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id u20so18002053qku.7
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 06:14:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DfZAeOnHCXizMX0+jwteYMa2MAiUJ1xg5kMZiaqig+E=;
-        b=RT25JklICDBgQERXWv9eCDL+RbFqW6yCiyOYYMKx36Lq/jBu5zXQv7zGsGCjQQUBmv
-         rd1PnsBfXOijQtHZ6f80qNti5rr7E0HEOh3+JHa6O7ZU7nIQ9sWLtG13qIanZUTuTmdc
-         dFJqWJFaXHrUHLinY91hGuN+MYkSW086Ll9qd18pxBOLP7PlZzZ1C50OThoQrBxSLrkx
-         JrHuE/uQoOchsXFOxMH23gURkkNmIYsScQWSxOZOQ/eTIMhzKbQBaLQJnQoM2MlnKDmF
-         ATIPVPgM2loP65YS1nEe667yyZfYaC+mHobpSQSZHnXyxPsCT0xDt8YfUIQ3XI9rd3DH
-         uNKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DfZAeOnHCXizMX0+jwteYMa2MAiUJ1xg5kMZiaqig+E=;
-        b=ndtvQVhP2liaG/1zSdTPbO5ljz26/NriUy3cHitKiVZGjH+gbPtsPpSKghuO8UyEXy
-         bFISYCCeS0E1m+egGNEiD7/j8sBVQNtoN08PMqPingXbzk2sCw54hWTPewP9NKIBtp+O
-         R+Uuct/y4+crUy6gOAtInKCk/Dz568LbRGRLL0cLgRuTzfaqjoFWhyYgCJQAQHJF9gm+
-         KPnS7qywfjY1j9OnnuCFPBOhncGJ2vBHSw4Ls3XFoEMbqHAxyMFebsSuZhT+w/hg13Ol
-         FNwVWBVZ8D3h+uyis3CLZ3k+UxDHa37h14CrTRyTf1rKiPwvbSvBpF1l/yE/s0QoqUU8
-         khIg==
-X-Gm-Message-State: AOAM531o2tYMDn++w34lubjTphtrA1YNMRJdDkiJrRrnvWR1ifUIfSC8
-        B0xwD/XofxoDiEv0zAw5u8OGy+XXmq0gKa0h
-X-Google-Smtp-Source: ABdhPJx/pvEWuk4ALx8Sf4/Eff5z+A/LyOFVyi9MH50+t1zaAOo3NZ+4b8EJ8r9htXzu7um1zWDcXg==
-X-Received: by 2002:a05:620a:2236:: with SMTP id n22mr9527968qkh.47.1612880098343;
-        Tue, 09 Feb 2021 06:14:58 -0800 (PST)
-Received: from localhost.localdomain ([156.146.37.186])
-        by smtp.gmail.com with ESMTPSA id d5sm16587085qti.66.2021.02.09.06.14.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 06:14:56 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] include: uapi: linux: Fix the spelling simulatneous to simultaneous in the file capi.h
-Date:   Tue,  9 Feb 2021 19:44:45 +0530
-Message-Id: <20210209141445.3927167-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S231625AbhBIOSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:18:00 -0500
+Received: from mga07.intel.com ([134.134.136.100]:35706 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231319AbhBIOR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 09:17:57 -0500
+IronPort-SDR: nzZ3rAG4yK/agXrnAeTr7w2qu3Pf+5Qy1OKcL4dH5OKWCTP330X+ghvTm49rlnc2o44ze2YI3l
+ OHWrAUVO6XwA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="245953145"
+X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
+   d="scan'208";a="245953145"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 06:16:09 -0800
+IronPort-SDR: RkBMcTU0+fkpsIgm2O+1IjEi6UOCAJd89r6TT0BdfPkb4goL2fqES9jL99M3XdIGoyyLN77Xo+
+ pIt4LRDN5aWg==
+X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
+   d="scan'208";a="359189832"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 06:16:06 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l9To9-003EZG-Uw; Tue, 09 Feb 2021 16:16:01 +0200
+Date:   Tue, 9 Feb 2021 16:16:01 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, willy@infradead.org,
+        david@redhat.com, linmiaohe@huawei.com, vbabka@suse.cz,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com, joe@perches.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] vsprintf: dump full information of page flags in
+ pGp
+Message-ID: <YCKZIWMYjD33xXnr@smile.fi.intel.com>
+References: <20210209105613.42747-1-laoar.shao@gmail.com>
+ <20210209105613.42747-4-laoar.shao@gmail.com>
+ <YCKT8WCPGU+HBY91@alley>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCKT8WCPGU+HBY91@alley>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 09, 2021 at 02:53:53PM +0100, Petr Mladek wrote:
+> On Tue 2021-02-09 18:56:13, Yafang Shao wrote:
 
-s/simulatneous/simultaneous/
+...
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- include/uapi/linux/capi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I am sorry for my ignorance. I am not familiar with MM.
+> But it is pretty hard to understand what call does what.
+> 
+> I have found the following comment in include/linux/page_flags.h:
+> 
+>  * The page flags field is split into two parts, the main flags area
+>  * which extends from the low bits upwards, and the fields area which
+>  * extends from the high bits downwards.
+> 
+> Sigh, I know that you already reworked this several times because
+> people "nitpicked" about the code style. But it seems that it
+> rather diverged instead of converged.
+> 
+> What about the following?
 
-diff --git a/include/uapi/linux/capi.h b/include/uapi/linux/capi.h
-index 31f946f8a88d..4dcdb628d98b 100644
---- a/include/uapi/linux/capi.h
-+++ b/include/uapi/linux/capi.h
-@@ -24,7 +24,7 @@
-  */
+Isn't is some like v1 or v2?
 
- typedef struct capi_register_params {	/* CAPI_REGISTER */
--	__u32 level3cnt;	/* No. of simulatneous user data connections */
-+	__u32 level3cnt;	/* No. of simultaneous user data connections */
- 	__u32 datablkcnt;	/* No. of buffered data messages */
- 	__u32 datablklen;	/* Size of buffered data messages */
- } capi_register_params;
---
-2.30.0
+> Note: It is inpired by the names "main area" and "fields area"
+>       mentioned in the above comment from page_flags.h.
+>       I have later realized that "page_flags_layout" actually made
+>       sense as well. Feel free to rename page_flags_fileds
+>       back to page_flags_layout.
+> 
+> Anyway, this is my proposal:
+
+What about to create a one format_flags() function which accepts new data
+structure and do something like
+
+buf = format_flags(main_area);
+buf = format_flags(fields_area);
+return buf;
+
+?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
