@@ -2,195 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED472315327
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A610F31532B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 16:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232506AbhBIPtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 10:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbhBIPtG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 10:49:06 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3354DC061788
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 07:48:25 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id h8so8117197qkk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 07:48:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v44wljKK9LleEe24eIdSYGfbeID6JGw9AQcEXahJDho=;
-        b=cFjibUh8PzXqHUMu1ZogaUUS++qXMayAcUM7RxLQfstE9/UAJySaGtT/j4u02MmS3X
-         e5i/omUfik2fgs1DaDDoL60Di5QFM2Gl1XXfhbvHHMyb5evWuyr7LVJ+XKk+iDPaUvsq
-         ft3HI4YZD++qRZE31ybobG4r2EcRb2RkowzRu0tdZ6k8I5us45HpmQWA85enI6aBg0Ja
-         HVGxiqAQ2qZMS8iAqF9cxsamBtfngEm+I34ncWJ3k+dJ6Xy9wPEPheCeHsK/7AndEwpX
-         KMQYZtjEyd6aNetA95Cmtj70OPMguxXtTQSLiy2Rw1X1RG+Hk9b1r05vBx7rvbgXxuZS
-         65XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v44wljKK9LleEe24eIdSYGfbeID6JGw9AQcEXahJDho=;
-        b=K++REDrcoGu0uhQcz55VexKP84NIMvfR6nBXy0fQy5m2zIKnTIVSBfQQtPukC5pgrG
-         svnqsieNYxFyCY0ujZK/jSqguiBiomxAIfVG1p2WTUG/oxF2R0wiCBS78lSNsEbtInjA
-         E366xKd3ihqXLYuf+VJzU0ddtmNxjcoHgjuRMht05wG908X8IzOvNUftZ0Lw10r4+aH4
-         RSj2lvS3E5Jy0V9HdXUMMskhiVmP/PgDU/txNdglU2RGKSl2S2vjLoTJ27U9H9/7ZcpE
-         4jKV+djcJKEH36lPewHZ3UYcCQb8uhSB6BENw/8YUZH7GZmIg5387Nx6R2QKcHntcuiC
-         46Mw==
-X-Gm-Message-State: AOAM532JK3WyOK8/Azjh4GC8oclyhptTg2gDt6V1kpRVVN48M4TURJbS
-        iwUvs1A9Rh0Gto2CAxrfn8rM6w==
-X-Google-Smtp-Source: ABdhPJzGbaWigN1rY+mOyiAFrwOSI+OqzDFWL40/A7S2+HuximvapCByJXSGEObox22CxWz+xKgrdw==
-X-Received: by 2002:a05:620a:410f:: with SMTP id j15mr22773462qko.424.1612885704439;
-        Tue, 09 Feb 2021 07:48:24 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id v30sm1259811qte.26.2021.02.09.07.48.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 07:48:23 -0800 (PST)
-Date:   Tue, 9 Feb 2021 10:48:22 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, songmuchun@bytedance.com
-Subject: Re: [PATCH v2] psi: Remove the redundant psi_task_tick
-Message-ID: <YCKuxoPnm/RFI18O@cmpxchg.org>
-References: <20210209071033.16989-1-zhouchengming@bytedance.com>
+        id S232541AbhBIPtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 10:49:36 -0500
+Received: from mga12.intel.com ([192.55.52.136]:42006 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232452AbhBIPt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 10:49:28 -0500
+IronPort-SDR: htOd6o5yqzRlGh/7OmH5DbfJcx1ilL7MXmBCdEq8FNx8BzU5O/KGf09sOoktSAaQs8Z0CNNcKg
+ OYXKqGSjGZ0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="161052649"
+X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
+   d="scan'208";a="161052649"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 07:48:46 -0800
+IronPort-SDR: Y//QYvkquYurrVFuMqLqQs4CM2o1FKdB5yEJHDIq8L/suAzq4RbZg70TElHaOJIBHtqq0hhn3l
+ Q/hQuzzc3E2Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
+   d="scan'208";a="396196426"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga008.jf.intel.com with ESMTP; 09 Feb 2021 07:48:45 -0800
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 9 Feb 2021 07:48:45 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 9 Feb 2021 07:48:45 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Tue, 9 Feb 2021 07:48:44 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 9 Feb 2021 07:48:44 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ky7Ae2CsznDM0vls6YLDzJY6/+fpc/eOYATTSvYWW5g0SdufwLKe96EyqC5kY550VDOjuT+iEDqxL1tgp5MM9SbGR1EyT28dI1Mw2riLxU3HayK9TSY3uTnMWOj5LWmWLFBHKiceXJOtmeqD3VCZry5OFkwz6kTZ5gvUuKSGtQ1eq3VYMhj1O4C4UyfDRZNeDhDU65J84Fjs5tauw9QRAkAvNEvL22sUKqXAP8ZjnRTra6dBaHneOTgh4imNcv7Grurcou7SIWE6kGcLuYvOj5vOlcRbYKPPO+0cnHkq10X2owoRcZAi68ypecEZxkG8iMKA7tE2Vn7Tan8Tm3xgkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z2DCKmqLq4bISEfoBKQwWtUj7apc0xCsaL308vtwPu4=;
+ b=HWoRVa88KMI8U74v9GwsqfAuO2NQGeQ7YdYBfdhiXXWQ8vxlhWffWa4lBKD2NrBRX0g+r5mtvIycRCFD2QB9pk35KyMOe+V4DYaiQLs+RIQwwcaBIjyRVuqnabRHj2VA+Qj9cBMWXqApfMkB8tgdkbZEceujHH3dfPtgKzvSi8fdab08PihJqKG/M0aM4gDfbY9ZHsfd/N0QEiyA9FV80I2MAFhbxuFDfhGgCaoAgWeBgqDxUcDO6KSCqCcMohZh80NW6UgVCGQUxbEl9C7OWab1F6cZCsKpaxwQ7T6oUPMgNPmYlkYCcZ5P/nOBsUXSLosx2exPFXKRHPcVJt7a3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z2DCKmqLq4bISEfoBKQwWtUj7apc0xCsaL308vtwPu4=;
+ b=ZAfPUQTkYKivX996BT1t4B7UVVrEVOGG1/BQu9ts2/Y1gtbe+8oyFSL6ZmhqoGBk7/MdJ1+98Q3OdlNKV10eHvTR1uEG+wW4gq7kKaEZxjOLMWxK18hvEkNolTERrIXXRJoCl1lFoEwIDW++9ZMg6dZmMiBQ9NCqoicHnawgCcE=
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by PH0PR11MB4853.namprd11.prod.outlook.com (2603:10b6:510:40::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.24; Tue, 9 Feb
+ 2021 15:48:42 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::78e6:b455:ce90:fcb0]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::78e6:b455:ce90:fcb0%6]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
+ 15:48:42 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     Borislav Petkov <bp@suse.de>
+CC:     Andy Lutomirski <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v3 10/21] x86/fpu/xstate: Update xstate save function to
+ support dynamic xstate
+Thread-Topic: [PATCH v3 10/21] x86/fpu/xstate: Update xstate save function to
+ support dynamic xstate
+Thread-Index: AQHW2UTrfabGiuGaq0+dx4jPc8ZDRKpOes+AgAHIvAA=
+Date:   Tue, 9 Feb 2021 15:48:42 +0000
+Message-ID: <F16A56D8-803E-4B9C-BAA0-B16753BB273C@intel.com>
+References: <20201223155717.19556-1-chang.seok.bae@intel.com>
+ <20201223155717.19556-11-chang.seok.bae@intel.com>
+ <20210208123359.GG17908@zn.tnic>
+In-Reply-To: <20210208123359.GG17908@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.189.248.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ff0be20c-9bee-4ce3-2b2f-08d8cd122d84
+x-ms-traffictypediagnostic: PH0PR11MB4853:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB48531B26218313B899F8EB53D88E9@PH0PR11MB4853.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:751;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OCxxgcSk7QwDq6QOPNoCNLOyKhbxwwUhvtnlFFTAbJe2978ckPAR7IQzgMWErAYFzvXLu5NSXVd7ZJRgGfAtZjQin1kLEZfGCL6Bw2iAnwzV/bqqdykC0QjDjeNad/4yIHppYaGK2zhOWVWlvPpiTNcXL1mMs5yvHv8GruCg+ItSvbdXD1G/jGbb9p3cw1IZrumVEtbxGpL+LEM06CQahNXOTqur4EgH6bTxcbnjJ0bxxiX70BzKtDm8IhPyx4pwpNAiUja21KQF/7FCSp5oadwUttP7sDEbfwpN5nQEHjATIThIaANSA0KRV6WWvGgf7FsoAm59iTWeXJBNzjsC21yjZBxW3DW/7yl0cXavWHHN/zpEuj5knSJXCeJ8yeqsu8WvpyMUE7DOY+r89uJ081qeeOSseXKBdw8BH360nC+0ZEdC4YVlHBRuDlIUYuBn/8r2rEK6gqlHBML+i7q900WfPGa/02bcwdwjt66wqHZnQcIQRlYuiHvWCG7bOnWLlyO2Zjd3sh9IT0oFFYlnzdEpRo+i1AWZ0CneLW798dt++srt8Mnt5wFLE17qNB0vUR3Ddhxf3APO9lsqqFgek/5ksPlaRT/lQj9JBOBLPqfrklFtsDYj6Iw6LxMrAgWn4qH7gtydNb0XNDgvYgVuhp3h3DEJJjXkekotnrGmprA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(396003)(136003)(366004)(376002)(316002)(54906003)(5660300002)(6486002)(76116006)(15650500001)(6512007)(8676002)(6916009)(2616005)(966005)(71200400001)(86362001)(4326008)(2906002)(478600001)(53546011)(64756008)(83380400001)(6506007)(66446008)(66946007)(66476007)(66556008)(8936002)(33656002)(26005)(36756003)(186003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?b99RBc4mi4KlfwO+l7zNhJ4ii+dfnfevhtDv+h0oGVtbX/oTnCkNMMdOWRws?=
+ =?us-ascii?Q?tb7f1aW12tFkADaeZ9Jk/VAlV67xv4VqgnqhXZDYuXplgmtaFoF1qV7RYkr/?=
+ =?us-ascii?Q?28N/NtjhlaMAeW21bK1kBQJFiUXf/UZYPuji/+LUfY5RVFt8OVsyMNIa64dv?=
+ =?us-ascii?Q?PntGspPEbFx3Xlo3tlnMI6jxjxT96VPdlDBbAyKmrv+852dvWF82d4cByrQ/?=
+ =?us-ascii?Q?+5hHhGU8BnBf1Gjwl9tnXhFiIYjRnp2RaRzY3yusXSgHFEi2IrU25sNP86Yp?=
+ =?us-ascii?Q?+myK3Wjy9h3vY8wrijCIXdGfPsb7xkE79YEa+3DRZSMegvrO4/pgOzVQ5hNL?=
+ =?us-ascii?Q?00CQeWo/7LcYmlw3ASUfA/p85bjSEt2AGb6FeKnqOqRpmWIzH4k8tSK4/RkJ?=
+ =?us-ascii?Q?IFzDl/SV7ge1lHJ6vn2ahnluROhTjXC/i8qoE6tKERwTkqxb31mand70F2Z4?=
+ =?us-ascii?Q?y96GBV/fZ2gVP3z96iacoMEEZbKJBLn/qySn4ApJiYcE8VW37CQ5L8O7My3y?=
+ =?us-ascii?Q?oRlBqOCvGTRQ9a682rGOXwOz5hNKh+RZMKgmVWQUq230pGAFTBEP24w1RvlY?=
+ =?us-ascii?Q?rsFuY8xSkkAU29MaE0Cl41RsksWz7TVT5qqEo27LBdlNUWzy03tw6hwcEtKy?=
+ =?us-ascii?Q?yIv44Omgw7zGxnpi0NWQgLBL5dDBddEbHpmMspzeLm71JI36AK55jbb3SoIC?=
+ =?us-ascii?Q?F1pc8ifqXrszHpis+QlDuTfiVz7qiNTTZ5wUfEoaTAfHXel0SqfnH1KjFMFD?=
+ =?us-ascii?Q?6ut3h2RkNnhdYS4mOd+y33Hnm+pYixQ5i4YXuoVnzdlea4s6YmUOJoaa9y3o?=
+ =?us-ascii?Q?mj1R4TRlt06JQgv44kRwpg2xs0GhTHP8bge42rnN5PVQo447dAIorySMuTwY?=
+ =?us-ascii?Q?7DMlbsl+lyO15VkTzLMrKVwILm01LdvHJnB0g3UtHuN/0b+qs1Cod+yISkDj?=
+ =?us-ascii?Q?QlLSMvJp8Lx30T9hACH5UE6X+lEwRP30O1c25LpOJ5H3EEGRAZcSY15Vp3wn?=
+ =?us-ascii?Q?XSwUQgrC5S0PG4TLFn4pBsyRn6g6CqGstEkxyHBCXd+M+zwX8P339NSVpmdQ?=
+ =?us-ascii?Q?qgzZ3qemPBcrv+mhzKHVpFF5YpCLpS89IZ0O27KmOh7QV5WaNv0xR6JQ6MD+?=
+ =?us-ascii?Q?+5pHuTCofPtu8HlYd3UreNsvxwCPgdKkXbFSBPNvMmjCAy22OhVP4EH5/lQt?=
+ =?us-ascii?Q?LF4PAdJhMw3vBHvYdbC7uwIUWaZEUrRMUekjtkIp3O5oi1h+XY1KOY9qQHv2?=
+ =?us-ascii?Q?zB4ggnE85CbK61IP49wOp09XwNNe7KURzQGMddOiOxyLIcozILUpOXT5qzpm?=
+ =?us-ascii?Q?uHBtnEX5JtfylHw5b53yIhUOUAO2Fuk35JX1jM0v2/o83A=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4C30D23ACD28D94A9E7F9B97CFF05237@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209071033.16989-1-zhouchengming@bytedance.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff0be20c-9bee-4ce3-2b2f-08d8cd122d84
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2021 15:48:42.7775
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 94IfpqWlOUiK8h5Eh9KfYYmVHmpWQvCNfY7Qnd4oni9ZdZfWV4Z4Cg8hJa0NWaKo+1YvA+Wq01K8b9MV325gIuopcSW0lCP3jm9X8KyKGD8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4853
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Chengming,
+On Feb 8, 2021, at 04:33, Borislav Petkov <bp@suse.de> wrote:
+> On Wed, Dec 23, 2020 at 07:57:06AM -0800, Chang S. Bae wrote:
+>> copy_xregs_to_kernel() used to save all user states in a kernel buffer.
+>> When the dynamic user state is enabled, it becomes conditional which sta=
+te
+>> to be saved.
+>>=20
+>> fpu->state_mask can indicate which state components are reserved to be
+>> saved in XSAVE buffer. Use it as XSAVE's instruction mask to select stat=
+es.
+>>=20
+>> KVM used to save all xstate via copy_xregs_to_kernel(). Update KVM to se=
+t a
+>> valid fpu->state_mask, which will be necessary to correctly handle dynam=
+ic
+>> state buffers.
+>=20
+> All this commit message should say is something along the lines of
+> "extend copy_xregs_to_kernel() to receive a mask argument of which
+> states to save, in preparation of dynamic states handling."
 
-On Tue, Feb 09, 2021 at 03:10:33PM +0800, Chengming Zhou wrote:
-> When the current task in a cgroup is in_memstall, the corresponding groupc
-> on that cpu is in PSI_MEM_FULL state, so we can exploit that to remove the
-> redundant psi_task_tick from scheduler_tick to save this periodic cost.
+Yes, I will change like that. Thanks.
 
-Can you please update the patch name and the changelog to the new
-version of the patch? It's not removing the redundant tick, it's
-moving the reclaim detection from the timer tick to the task state
-tracking machinery using the recently added ONCPU state.
+>> No functional change until the kernel supports dynamic user states.
+>=20
+> Same comment as before.
 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  include/linux/psi.h  |  1 -
->  kernel/sched/core.c  |  1 -
->  kernel/sched/psi.c   | 49 ++++++++++++++-----------------------------------
->  kernel/sched/stats.h |  9 ---------
->  4 files changed, 14 insertions(+), 46 deletions(-)
-> 
-> diff --git a/include/linux/psi.h b/include/linux/psi.h
-> index 7361023f3fdd..65eb1476ac70 100644
-> --- a/include/linux/psi.h
-> +++ b/include/linux/psi.h
-> @@ -20,7 +20,6 @@ void psi_task_change(struct task_struct *task, int clear, int set);
->  void psi_task_switch(struct task_struct *prev, struct task_struct *next,
->  		     bool sleep);
->  
-> -void psi_memstall_tick(struct task_struct *task, int cpu);
->  void psi_memstall_enter(unsigned long *flags);
->  void psi_memstall_leave(unsigned long *flags);
->  
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 15d2562118d1..31788a9b335b 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4533,7 +4533,6 @@ void scheduler_tick(void)
->  	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
->  	curr->sched_class->task_tick(rq, curr, 0);
->  	calc_global_load_tick(rq);
-> -	psi_task_tick(rq);
->  
->  	rq_unlock(rq, &rf);
->  
-> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> index 2293c45d289d..6e46d9eb279b 100644
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -644,8 +644,7 @@ static void poll_timer_fn(struct timer_list *t)
->  	wake_up_interruptible(&group->poll_wait);
->  }
->  
-> -static void record_times(struct psi_group_cpu *groupc, int cpu,
-> -			 bool memstall_tick)
-> +static void record_times(struct psi_group_cpu *groupc, int cpu)
->  {
->  	u32 delta;
->  	u64 now;
-> @@ -664,23 +663,6 @@ static void record_times(struct psi_group_cpu *groupc, int cpu,
->  		groupc->times[PSI_MEM_SOME] += delta;
->  		if (groupc->state_mask & (1 << PSI_MEM_FULL))
->  			groupc->times[PSI_MEM_FULL] += delta;
-> -		else if (memstall_tick) {
-> -			u32 sample;
-> -			/*
-> -			 * Since we care about lost potential, a
-> -			 * memstall is FULL when there are no other
-> -			 * working tasks, but also when the CPU is
-> -			 * actively reclaiming and nothing productive
-> -			 * could run even if it were runnable.
-> -			 *
-> -			 * When the timer tick sees a reclaiming CPU,
-> -			 * regardless of runnable tasks, sample a FULL
-> -			 * tick (or less if it hasn't been a full tick
-> -			 * since the last state change).
-> -			 */
-> -			sample = min(delta, (u32)jiffies_to_nsecs(1));
-> -			groupc->times[PSI_MEM_FULL] += sample;
-> -		}
->  	}
->  
->  	if (groupc->state_mask & (1 << PSI_CPU_SOME)) {
-> @@ -714,7 +696,7 @@ static void psi_group_change(struct psi_group *group, int cpu,
->  	 */
->  	write_seqcount_begin(&groupc->seq);
->  
-> -	record_times(groupc, cpu, false);
-> +	record_times(groupc, cpu);
->  
->  	for (t = 0, m = clear; m; m &= ~(1 << t), t++) {
->  		if (!(m & (1 << t)))
-> @@ -738,6 +720,18 @@ static void psi_group_change(struct psi_group *group, int cpu,
->  		if (test_state(groupc->tasks, s))
->  			state_mask |= (1 << s);
->  	}
-> +
-> +	/*
-> +	 * Since we care about lost potential, a memstall is FULL
-> +	 * when there are no other working tasks, but also when
-> +	 * the CPU is actively reclaiming and nothing productive
-> +	 * could run even if it were runnable. So when the current
-> +	 * task in a cgroup is in_memstall, the corresponding groupc
-> +	 * on that cpu is in PSI_MEM_FULL state.
-> +	 */
-> +	if (groupc->tasks[NR_ONCPU] && cpu_curr(cpu)->in_memstall)
-> +		state_mask |= (1 << PSI_MEM_FULL);
+This needs to be removed as per your comment [1].
 
-This doesn't really work with the psi_task_switch() optimization. If
-we switch between two tasks inside a leaf group, where one is memstall
-and the other is not, we don't update the parents properly. So you
-need another branch in there as well for checking memstall. At which
-point the timer tick implementation is likely cheaper and simpler...
+Chang
 
-> @@ -144,14 +144,6 @@ static inline void psi_sched_switch(struct task_struct *prev,
->  	psi_task_switch(prev, next, sleep);
->  }
->  
-> -static inline void psi_task_tick(struct rq *rq)
-> -{
-> -	if (static_branch_likely(&psi_disabled))
-> -		return;
-> -
-> -	if (unlikely(rq->curr->in_memstall))
-> -		psi_memstall_tick(rq->curr, cpu_of(rq));
-> -}
->  #else /* CONFIG_PSI */
->  static inline void psi_enqueue(struct task_struct *p, bool wakeup) {}
->  static inline void psi_dequeue(struct task_struct *p, bool sleep) {}
+[1] https://lore.kernel.org/lkml/20210209124906.GC15909@zn.tnic/=
