@@ -2,116 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086293151F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B83315206
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbhBIOrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:47:43 -0500
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:12501 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232173AbhBIOrb (ORCPT
+        id S232317AbhBIOtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232306AbhBIOtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:47:31 -0500
+        Tue, 9 Feb 2021 09:49:20 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF59C061786;
+        Tue,  9 Feb 2021 06:48:40 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id k25so19632313oik.13;
+        Tue, 09 Feb 2021 06:48:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1612882050; x=1644418050;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:mime-version:content-transfer-encoding:subject;
-  bh=2Kb1dO0tX9Q/3hXhOyQc4Gtm6ISVV1Qd2tBwheSAix0=;
-  b=M5bb7MJU+r04l9TmORgb2ypUSkcfhqHyyNOZ3TXDV2GtUzqELT9OdGEs
-   +7EJDz/DpNZlf1xmbSBkJV1/XhEV/X5V0gWwk8QGdowRJG0h5k7Ips64M
-   WZ7NftsBQCxZqDYVPBgPGzmxS+hzAD69kJxMzuaE0+NbvplLDn4Kst/1o
-   c=;
-X-IronPort-AV: E=Sophos;i="5.81,165,1610409600"; 
-   d="scan'208";a="80855438"
-Subject: Re: [PATCH v5 1/2] drivers/misc: sysgenid: add system generation id driver
-Thread-Topic: [PATCH v5 1/2] drivers/misc: sysgenid: add system generation id driver
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 09 Feb 2021 14:46:38 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 1363EA2196;
-        Tue,  9 Feb 2021 14:46:35 +0000 (UTC)
-Received: from EX13D20UWC004.ant.amazon.com (10.43.162.41) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 9 Feb 2021 14:46:34 +0000
-Received: from EX13D08EUB004.ant.amazon.com (10.43.166.158) by
- EX13D20UWC004.ant.amazon.com (10.43.162.41) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 9 Feb 2021 14:46:33 +0000
-Received: from EX13D08EUB004.ant.amazon.com ([10.43.166.158]) by
- EX13D08EUB004.ant.amazon.com ([10.43.166.158]) with mapi id 15.00.1497.010;
- Tue, 9 Feb 2021 14:46:32 +0000
-From:   "Catangiu, Adrian Costin" <acatan@amazon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "Jason@zx2c4.com" <Jason@zx2c4.com>,
-        "jannh@google.com" <jannh@google.com>, "w@1wt.eu" <w@1wt.eu>,
-        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "areber@redhat.com" <areber@redhat.com>,
-        "ovzxemul@gmail.com" <ovzxemul@gmail.com>,
-        "avagin@gmail.com" <avagin@gmail.com>,
-        "ptikhomirov@virtuozzo.com" <ptikhomirov@virtuozzo.com>,
-        "gil@azul.com" <gil@azul.com>,
-        "asmehra@redhat.com" <asmehra@redhat.com>,
-        "dgunigun@redhat.com" <dgunigun@redhat.com>,
-        "vijaysun@ca.ibm.com" <vijaysun@ca.ibm.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>
-Thread-Index: AQHW+L9CWTm14fGsAkOMfnzzQsViX6pExriAgAtOBYA=
-Date:   Tue, 9 Feb 2021 14:46:32 +0000
-Message-ID: <CA221922-DFEE-4771-9590-FADDB74F7399@amazon.com>
-References: <1612200294-17561-1-git-send-email-acatan@amazon.com>
- <1612200294-17561-2-git-send-email-acatan@amazon.com>
- <YBlAueoh12esXR2A@kroah.com>
-In-Reply-To: <YBlAueoh12esXR2A@kroah.com>
-Accept-Language: en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.166.130]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <078DDECD943E3742BC3EFEB9511AA280@amazon.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aM7dO3tp79jO0fPJZv7YJSSQzHPVyz/cquYYOxatg1s=;
+        b=TakrWn6MQhdn0N6JvhltplGzffQ4B9foAeAxgUhk1txhp3OWj+nbUPSzodZrHB1/mb
+         jwFb2KCApPJ7tzMDAt/bTm4fSNM3CSuwYODCBzXs90rVSfPLyImvA8pjYIkFgy/nK502
+         HYQenV5BZ/vvOPRgegiNFzshJMqIjxcB/Oacdt5zs/v5sV828tC9Mk+nim5Gwfye+Wgq
+         HWixy+7a/KfXWs7NnmrqcLz+5//dgts7yuCANGlKBLOPqie9y8t/D0TwGn3ENoX1kHgT
+         btcaqfEjoaSEJHLCshCcpq/nywWxm/Ewem3JFzPt9yjHKrUZow1w/BdTSTveMKu0JFif
+         tpmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aM7dO3tp79jO0fPJZv7YJSSQzHPVyz/cquYYOxatg1s=;
+        b=HYL/5HIEg5PWwdPU64PGMMKDTGEVJ6GaAVqzx9/AhLPkFoLRYgtNpPEabyYLBHLhhN
+         CdQFNltV2bb2zpKxt+80xneGCUTkfDEd/WBesW6ITjUJd64Q0snV/9M0XR7ljB+9hL9g
+         7eVPNy+FCWc6W9L6uam75iPZN8cJhaWIIjzddOpp/JyxtqMF6WpceaSAAxoQIPN1sUQA
+         k4f8aGZUYqX/1uiWs2dmvuox75Xgat6lutTKqczU+oFVDANaIdTfhtsr7i5E2ehipWv7
+         v44kKDbLUVqoORpsNJcQs94oT9sekf7myH6WWmk4ObSJpskDHEoib/b4OWaBlNa9axuD
+         w+Pg==
+X-Gm-Message-State: AOAM5306svxIeVVnjaJoCZQvpbDFNfP/08shxe2v7ZONQ5NahxKBgRr/
+        AZrXdIG16KTigvdVMzh0sz4VV59KywazMBNQytk=
+X-Google-Smtp-Source: ABdhPJw/p815QsBu3fqLfKcPhGH0uCCJ1J2JQsOu2oSqCmhb8MyHUZopZ7pb49H23pc2XUeiLU321Biifhn1wyJ4zXY=
+X-Received: by 2002:aca:b683:: with SMTP id g125mr2559278oif.47.1612882119731;
+ Tue, 09 Feb 2021 06:48:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+References: <20210129092209.2584718-1-hsinyi@chromium.org> <20210129092209.2584718-8-hsinyi@chromium.org>
+In-Reply-To: <20210129092209.2584718-8-hsinyi@chromium.org>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Tue, 9 Feb 2021 15:48:28 +0100
+Message-ID: <CAFqH_53pqgxV0UotaaXNTN=3gfDyHfAzZv6QH9JOdKyg2TEKvw@mail.gmail.com>
+Subject: Re: [PATCH v13 7/8] soc: mediatek: add mtk mutex support for MT8183
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMDIvMDIvMjAyMSwgMTQ6MDksICJHcmVnIEtIIiA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5v
-cmc+IHdyb3RlOg0KDQogICAgT24gTW9uLCBGZWIgMDEsIDIwMjEgYXQgMDc6MjQ6NTNQTSArMDIw
-MCwgQWRyaWFuIENhdGFuZ2l1IHdyb3RlOg0KICAgID4gK3N0YXRpYyBsb25nIHN5c2dlbmlkX2lv
-Y3RsKHN0cnVjdCBmaWxlICpmaWxlLA0KICAgID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVkIGludCBjbWQsIHVuc2lnbmVkIGxvbmcgYXJn
-KQ0KDQogICAgVmVyeSBvZGQgaW5kZW50YXRpb24gc3R5bGUsIGNoZWNrcGF0Y2gucGwgZGlkbid0
-IGNhdGNoIHRoaXM/DQoNCkNoZWNrcGF0Y2gucGwgaXMgaGFwcHkgd2l0aCB0aGlzLCB5ZXMuDQpX
-aWxsIGNoYW5nZSBpdCB0byBhIHNpbmdsZSB0YWIgbm9uZXRoZWxlc3Mgc2luY2UgaXQgZG9lcyBs
-b29rIHdlaXJkIDopDQoNCgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgKFJvbWFuaWEpIFMu
-Ui5MLiByZWdpc3RlcmVkIG9mZmljZTogMjdBIFNmLiBMYXphciBTdHJlZXQsIFVCQzUsIGZsb29y
-IDIsIElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUsIFJvbWFuaWEuIFJlZ2lzdGVyZWQgaW4gUm9t
-YW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIvMjYyMS8yMDA1Lgo=
+Hi Hsin-Yi,
 
+Thank you for your patch.
+
+Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dv., 29 de gen.
+2021 a les 10:23:
+>
+> From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+>
+> Add mtk mutex support for MT8183 SoC.
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: CK Hu <ck.hu@mediatek.com>
+
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+FWIW this patch is required to have the display working on the
+Chromebook IdeaPad Duet, so
+
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+Matthias, If I am not wrong, this patch is the only one that is not
+applied for this series. I know that is too late for 5.12, but If
+you're fine with it, could you pick this patch directly or do you
+prefer a resend of this patch alone once you will start to accept
+patches for the next release?
+
+Thanks,
+  Enric
+
+> ---
+>  drivers/soc/mediatek/mtk-mutex.c | 50 ++++++++++++++++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+>
+> diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
+> index f531b119da7a9..718a41beb6afb 100644
+> --- a/drivers/soc/mediatek/mtk-mutex.c
+> +++ b/drivers/soc/mediatek/mtk-mutex.c
+> @@ -14,6 +14,8 @@
+>
+>  #define MT2701_MUTEX0_MOD0                     0x2c
+>  #define MT2701_MUTEX0_SOF0                     0x30
+> +#define MT8183_MUTEX0_MOD0                     0x30
+> +#define MT8183_MUTEX0_SOF0                     0x2c
+>
+>  #define DISP_REG_MUTEX_EN(n)                   (0x20 + 0x20 * (n))
+>  #define DISP_REG_MUTEX(n)                      (0x24 + 0x20 * (n))
+> @@ -37,6 +39,18 @@
+>  #define MT8167_MUTEX_MOD_DISP_DITHER           15
+>  #define MT8167_MUTEX_MOD_DISP_UFOE             16
+>
+> +#define MT8183_MUTEX_MOD_DISP_RDMA0            0
+> +#define MT8183_MUTEX_MOD_DISP_RDMA1            1
+> +#define MT8183_MUTEX_MOD_DISP_OVL0             9
+> +#define MT8183_MUTEX_MOD_DISP_OVL0_2L          10
+> +#define MT8183_MUTEX_MOD_DISP_OVL1_2L          11
+> +#define MT8183_MUTEX_MOD_DISP_WDMA0            12
+> +#define MT8183_MUTEX_MOD_DISP_COLOR0           13
+> +#define MT8183_MUTEX_MOD_DISP_CCORR0           14
+> +#define MT8183_MUTEX_MOD_DISP_AAL0             15
+> +#define MT8183_MUTEX_MOD_DISP_GAMMA0           16
+> +#define MT8183_MUTEX_MOD_DISP_DITHER0          17
+> +
+>  #define MT8173_MUTEX_MOD_DISP_OVL0             11
+>  #define MT8173_MUTEX_MOD_DISP_OVL1             12
+>  #define MT8173_MUTEX_MOD_DISP_RDMA0            13
+> @@ -87,6 +101,11 @@
+>  #define MT2712_MUTEX_SOF_DSI3                  6
+>  #define MT8167_MUTEX_SOF_DPI0                  2
+>  #define MT8167_MUTEX_SOF_DPI1                  3
+> +#define MT8183_MUTEX_SOF_DSI0                  1
+> +#define MT8183_MUTEX_SOF_DPI0                  2
+> +
+> +#define MT8183_MUTEX_EOF_DSI0                  (MT8183_MUTEX_SOF_DSI0 << 6)
+> +#define MT8183_MUTEX_EOF_DPI0                  (MT8183_MUTEX_SOF_DPI0 << 6)
+>
+>  struct mtk_mutex {
+>         int id;
+> @@ -181,6 +200,20 @@ static const unsigned int mt8173_mutex_mod[DDP_COMPONENT_ID_MAX] = {
+>         [DDP_COMPONENT_WDMA1] = MT8173_MUTEX_MOD_DISP_WDMA1,
+>  };
+>
+> +static const unsigned int mt8183_mutex_mod[DDP_COMPONENT_ID_MAX] = {
+> +       [DDP_COMPONENT_AAL0] = MT8183_MUTEX_MOD_DISP_AAL0,
+> +       [DDP_COMPONENT_CCORR] = MT8183_MUTEX_MOD_DISP_CCORR0,
+> +       [DDP_COMPONENT_COLOR0] = MT8183_MUTEX_MOD_DISP_COLOR0,
+> +       [DDP_COMPONENT_DITHER] = MT8183_MUTEX_MOD_DISP_DITHER0,
+> +       [DDP_COMPONENT_GAMMA] = MT8183_MUTEX_MOD_DISP_GAMMA0,
+> +       [DDP_COMPONENT_OVL0] = MT8183_MUTEX_MOD_DISP_OVL0,
+> +       [DDP_COMPONENT_OVL_2L0] = MT8183_MUTEX_MOD_DISP_OVL0_2L,
+> +       [DDP_COMPONENT_OVL_2L1] = MT8183_MUTEX_MOD_DISP_OVL1_2L,
+> +       [DDP_COMPONENT_RDMA0] = MT8183_MUTEX_MOD_DISP_RDMA0,
+> +       [DDP_COMPONENT_RDMA1] = MT8183_MUTEX_MOD_DISP_RDMA1,
+> +       [DDP_COMPONENT_WDMA0] = MT8183_MUTEX_MOD_DISP_WDMA0,
+> +};
+> +
+>  static const unsigned int mt2712_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
+>         [MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
+>         [MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0,
+> @@ -198,6 +231,13 @@ static const unsigned int mt8167_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
+>         [MUTEX_SOF_DPI1] = MT8167_MUTEX_SOF_DPI1,
+>  };
+>
+> +/* Add EOF setting so overlay hardware can receive frame done irq */
+> +static const unsigned int mt8183_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
+> +       [MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
+> +       [MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0 | MT8183_MUTEX_EOF_DSI0,
+> +       [MUTEX_SOF_DPI0] = MT8183_MUTEX_SOF_DPI0 | MT8183_MUTEX_EOF_DPI0,
+> +};
+> +
+>  static const struct mtk_mutex_data mt2701_mutex_driver_data = {
+>         .mutex_mod = mt2701_mutex_mod,
+>         .mutex_sof = mt2712_mutex_sof,
+> @@ -227,6 +267,14 @@ static const struct mtk_mutex_data mt8173_mutex_driver_data = {
+>         .mutex_sof_reg = MT2701_MUTEX0_SOF0,
+>  };
+>
+> +static const struct mtk_mutex_data mt8183_mutex_driver_data = {
+> +       .mutex_mod = mt8183_mutex_mod,
+> +       .mutex_sof = mt8183_mutex_sof,
+> +       .mutex_mod_reg = MT8183_MUTEX0_MOD0,
+> +       .mutex_sof_reg = MT8183_MUTEX0_SOF0,
+> +       .no_clk = true,
+> +};
+> +
+>  struct mtk_mutex *mtk_mutex_get(struct device *dev)
+>  {
+>         struct mtk_mutex_ctx *mtx = dev_get_drvdata(dev);
+> @@ -457,6 +505,8 @@ static const struct of_device_id mutex_driver_dt_match[] = {
+>           .data = &mt8167_mutex_driver_data},
+>         { .compatible = "mediatek,mt8173-disp-mutex",
+>           .data = &mt8173_mutex_driver_data},
+> +       { .compatible = "mediatek,mt8183-disp-mutex",
+> +         .data = &mt8183_mutex_driver_data},
+>         {},
+>  };
+>  MODULE_DEVICE_TABLE(of, mutex_driver_dt_match);
+> --
+> 2.30.0.365.g02bc693789-goog
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
