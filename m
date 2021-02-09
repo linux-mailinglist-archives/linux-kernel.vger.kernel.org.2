@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A350C3153B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 588BA3153B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhBIQT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:19:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232637AbhBIQTu (ORCPT
+        id S232660AbhBIQVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:21:47 -0500
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:38931 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232005AbhBIQVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:19:50 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFF1C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:19:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FYsM1K6OwYju0VC35C+1ECBzo2gy1/ASpk1pAe2+ysE=; b=2JShNvNyVYY/tWDr5BkNCrwlr3
-        h4sk465V3vn8MJoce+GVrKcaW/bZ5ZNliKMAwpjuxaeaTE0PFkz22aDuKreQimOaZd98DlOkMad8U
-        adwjsqrGLnoPLgd3OPoUxvnlMcG348/qVGSCsdGdL1D8MHCV9F6/6/PpHQ/WycJhEpvOGS88zBPLG
-        0l8GMtfOOOclzaqpqnCxcX8hxtJC7ejgJwm2+xaznGqdnM43KMtfU3E2pQH8v32Wgsm16mUY2MP1w
-        bAQpbQYQ+qzpEE+p/YA+JkzIDPTjlJcV17vMKDgz8caSzf+N1BvxR/u0VIZwpoUEwncskfumNbY2k
-        lZV2ORFA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9VjF-0006NC-L8; Tue, 09 Feb 2021 16:19:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C96F3012DF;
-        Tue,  9 Feb 2021 17:19:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 68FB12010B6C7; Tue,  9 Feb 2021 17:19:04 +0100 (CET)
-Date:   Tue, 9 Feb 2021 17:19:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch] preempt: select PREEMPT_DYNAMIC under PREEMPTION instead
- of PREEMPT
-Message-ID: <YCK1+JyFNxQnWeXK@hirez.programming.kicks-ass.net>
-References: <7d129a84b0858fd7fbc3e38ede62a848fbec536e.camel@gmx.de>
- <YCKmhnoSKgdYqxOL@hirez.programming.kicks-ass.net>
- <269ee10aac93d819e48dc81f09a01d01fcd44fb1.camel@gmx.de>
- <YCK0m8FD9kp8QZWJ@hirez.programming.kicks-ass.net>
+        Tue, 9 Feb 2021 11:21:40 -0500
+Received: by mail-pj1-f53.google.com with SMTP id d2so1943628pjs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:21:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QqYfCPuCk1vaTDI6PRJs8TZC802bXP3nLLoPQfnccV8=;
+        b=gW4D5mTvvAjZvgWasO8IbA0Cuqmqqiietq3T2yfeMZhdDlXrRSGMIHqbdy2at4gf5A
+         NxKnDP3X696Hsz8JXyyaI7e42a7KwsS5PWojb4N53UrBIuzylETc5I4h0LPU9jnTckBC
+         t/JE5PZxqEMUCFQd9ziTbM+rmQk9rww44ypBAFXrotQhAWvj7PDGyYaynaWHii13O+MA
+         jFHyPYXJkTxRRu/PjSqidPnbimK2MUsJroj6qxkjvCTx9hG4hwQ1P2lRU+73TrxXNMUb
+         4Vst6685N29YPiggOVwruffzRmXBudnJwtewjr1a/QQIT3T6HYRibk0vyW83VZ50ih2h
+         aqGg==
+X-Gm-Message-State: AOAM531//4CyTnSlfiVgnTd3X9SAw7ibMP6t3WnfJDRMezCLHIRu1GSJ
+        Ouxwe3WXv/e5kWZSsU29RVEOVl5YTutgcxGM
+X-Google-Smtp-Source: ABdhPJzxB54QUWngBTtTfaBmF+sLl97ei6/EewxK2nuUa4kyvFlUbNCENp5Lvr+IAVnQw5sc3cuVWA==
+X-Received: by 2002:a17:90b:4844:: with SMTP id lf4mr4736477pjb.23.1612887660244;
+        Tue, 09 Feb 2021 08:21:00 -0800 (PST)
+Received: from karthik-strix-linux.karthek.com ([192.140.154.47])
+        by smtp.gmail.com with ESMTPSA id h188sm7981332pfg.68.2021.02.09.08.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 08:20:59 -0800 (PST)
+Date:   Tue, 9 Feb 2021 21:50:50 +0530
+From:   karthek <mail@karthek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: fix block comments alignment
+Message-ID: <YCK2YgaM5u++djnl@karthik-strix-linux.karthek.com>
+References: <YB/2Uvj99+sReckM@karthik-strix-linux.karthek.com>
+ <YB/6ZmZwCF3jeEue@kroah.com>
+ <YB/9hS2S1oaCmuDq@karthik-strix-linux.karthek.com>
+ <YB//EZl0aeLk/y+E@kroah.com>
+ <YCADP8ijAYvrsU7F@karthik-strix-linux.karthek.com>
+ <YCAEL9Eed6ijeeR+@kroah.com>
+ <YCAFEvCySI8u2059@karthik-strix-linux.karthek.com>
+ <YCAFeSw//h8JYpFk@kroah.com>
+ <YCAGQYng2hhg6xJk@karthik-strix-linux.karthek.com>
+ <YCAGsKf6fEqYEv9p@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YCK0m8FD9kp8QZWJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YCAGsKf6fEqYEv9p@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:13:15PM +0100, Peter Zijlstra wrote:
-> On Tue, Feb 09, 2021 at 05:05:14PM +0100, Mike Galbraith wrote:
+On Sun, Feb 07, 2021 at 04:26:40PM +0100, Greg Kroah-Hartman wrote:
+> On Sun, Feb 07, 2021 at 08:54:49PM +0530, karthek wrote:
+> > On Sun, Feb 07, 2021 at 04:21:29PM +0100, Greg Kroah-Hartman wrote:
+> > > On Sun, Feb 07, 2021 at 08:49:46PM +0530, karthek wrote:
+> > > > On Sun, Feb 07, 2021 at 04:15:59PM +0100, Greg Kroah-Hartman wrote:
+> > > > > On Sun, Feb 07, 2021 at 08:41:59PM +0530, karthek wrote:
+> > > > > > On Sun, Feb 07, 2021 at 03:54:09PM +0100, Greg Kroah-Hartman wrote:
+> > > > > > > On Sun, Feb 07, 2021 at 08:17:33PM +0530, karthek wrote:
+> > > > > > > 
+> > > > > > > <snip>
+> > > > > > > 
+> > > > > > > For some reason you sent this only to me, which is a bit rude to
+> > > > > > > everyone else on the mailing list.  I'll be glad to respond if you
+> > > > > > > resend it to everyone.
+> > > > > > > 
+> > > > > > > thanks,
+> > > > > > > 
+> > > > > > i> greg k-h
+> > > > > > 
+> > > > > > ok anyway
+> > > > > > 
+> > > > > > Those both lines(from, signed-off-by) are exactly same, what's problem
+> > > > > > with them?
+> > > > > 
+> > > > > I don't see the context here...
+> > > > are you real greg or bot?
+> > > 
+> > > All too real :)
+> > > 
+> > > > > Anyway, if you do sign documents with just "karthek" (lowercase and
+> > > > > all), that's fine, but I do have to ask, right?
+> > > > I do sign just karthek everywhere(bank,gov docs,etc), thats my legal
+> > > > signature
+> > > 
+> > > Ok, that's good to know, however I have an application here from you
+> > > with a different name on it.  Odd...
+> > Ofcourse thats my legal name(Karthik Alapati) and this is my legal
+> > signature(karthek)
+> > FYI this is the first time i used my legal name on internet application
 > 
-> > ld: init/main.o: in function `trace_initcall_start':
-> > /backup/usr/local/src/kernel/linux-tip-rt/./include/trace/events/initcall.h:27: undefined reference to `__SCT__preempt_schedule_notrace'
+> Great, please use your legal name on a signed-off-by: line, as it is a
+> legal statement.
 > 
-> Ooohh... this is because x86 can't build PREEMPT without PREEMPT_DYNAMIC
-> anymore. Maybe I should fix that. Lemme see what that would take.
+> thanks,
+> 
+> greg k-h
 
-Does this work?
+pinging?
 
----
-diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
-index 0aa96f824af1..f8cb8af4de5c 100644
---- a/arch/x86/include/asm/preempt.h
-+++ b/arch/x86/include/asm/preempt.h
-@@ -110,6 +110,13 @@ extern asmlinkage void preempt_schedule_thunk(void);
- 
- #define __preempt_schedule_func preempt_schedule_thunk
- 
-+extern asmlinkage void preempt_schedule_notrace(void);
-+extern asmlinkage void preempt_schedule_notrace_thunk(void);
-+
-+#define __preempt_schedule_notrace_func preempt_schedule_notrace_thunk
-+
-+#ifdef CONFIG_PREEMPT_DYNAMIC
-+
- DECLARE_STATIC_CALL(preempt_schedule, __preempt_schedule_func);
- 
- #define __preempt_schedule() \
-@@ -118,11 +125,6 @@ do { \
- 	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule) : ASM_CALL_CONSTRAINT); \
- } while (0)
- 
--extern asmlinkage void preempt_schedule_notrace(void);
--extern asmlinkage void preempt_schedule_notrace_thunk(void);
--
--#define __preempt_schedule_notrace_func preempt_schedule_notrace_thunk
--
- DECLARE_STATIC_CALL(preempt_schedule_notrace, __preempt_schedule_notrace_func);
- 
- #define __preempt_schedule_notrace() \
-@@ -131,6 +133,16 @@ do { \
- 	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule_notrace) : ASM_CALL_CONSTRAINT); \
- } while (0)
- 
--#endif
-+#else /* PREEMPT_DYNAMIC */
-+
-+#define __preempt_schedule() \
-+	asm volatile ("call preempt_schedule_thunk" : ASM_CALL_CONSTRAINT);
-+
-+#define __preempt_schedule_notrace() \
-+	asm volatile ("call preempt_schedule_notrace_thunk" : ASM_CALL_CONSTRAINT);
-+
-+#endif /* PREEMPT_DYNAMIC */
-+
-+#endif /* PREEMPTION */
- 
- #endif /* __ASM_PREEMPT_H */
+iam aware of how many patches you get everyday.im not expecting your
+immediate attention but just pinging...
