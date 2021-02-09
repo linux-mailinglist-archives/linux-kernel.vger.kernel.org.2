@@ -2,87 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E73314BAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB50314BAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhBIJaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:30:46 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12881 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhBIJ2W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:28:22 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DZcvp1gvBz7jFf;
-        Tue,  9 Feb 2021 17:26:14 +0800 (CST)
-Received: from [127.0.0.1] (10.40.188.87) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Feb 2021
- 17:27:31 +0800
-Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-To:     Arnd Bergmann <arnd@kernel.org>
-References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
- <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
- <CAK8P3a13aGbqvTxL+5OQxu-wPa6RDHQJkJ_n8O6YeOibbJQ2yg@mail.gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>, <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Sihang Chen <chensihang1@hisilicon.com>
-From:   Zhou Wang <wangzhou1@hisilicon.com>
-Message-ID: <753db746-292c-4f1d-c79f-9a7282a19ba2@hisilicon.com>
-Date:   Tue, 9 Feb 2021 17:27:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S230340AbhBIJbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:31:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52430 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229981AbhBIJ22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:28:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECE2164E26;
+        Tue,  9 Feb 2021 09:27:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612862868;
+        bh=5sfDL0nQFDumSda8/jOvRYwCgWHbyu8kZmDo58u1ONs=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=I3OEjoPQ1nwluox08V3dl8/1Ql4tOmTad9N6twxUdvROnjtNMfiEP49nH0Xo1aKU7
+         ZxHVopWsT5Ti5KsTvk08U3xd/ta0QfiHwNB2h6zESclYfgEvLsmWz46cYQSPVfrvlZ
+         K2sk+ojl2afE9Wd0d2qgp9/XPVHkig3waMkR57sXZyo3eN9WNBy+91HcIp5qak8IuE
+         ZosFzkG1mygIyThjjlLxImuWTEiyFkX0u1xScu+5NPAIsTpZQzczrvRxMiEC1SZu8C
+         0teLOPDKkRJYwCXkmIuJfSmnIJ/VI4gIWIBsbyQCPRxFHv78VKS3czf+Y9+k/exmCc
+         lJMq+gDyJr7ow==
+Date:   Tue, 9 Feb 2021 10:27:44 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+cc:     You-Sheng Yang <vicamo.yang@canonical.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: intel-ish-hid: ipc: Add Tiger Lake H PCI device
+ ID
+In-Reply-To: <37cf77123be66e14f517a59576cdaba9c5787d0d.camel@linux.intel.com>
+Message-ID: <nycvar.YFH.7.76.2102091027350.28696@cbobk.fhfr.pm>
+References: <20210204083315.122952-1-vicamo.yang@canonical.com> <37cf77123be66e14f517a59576cdaba9c5787d0d.camel@linux.intel.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a13aGbqvTxL+5OQxu-wPa6RDHQJkJ_n8O6YeOibbJQ2yg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.188.87]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/8 5:51, Arnd Bergmann wrote:
-> On Sun, Feb 7, 2021 at 9:18 AM Zhou Wang <wangzhou1@hisilicon.com> wrote:
-> 
->> diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
->> index cccfbbe..3f49529 100644
->> --- a/arch/arm64/include/asm/unistd32.h
->> +++ b/arch/arm64/include/asm/unistd32.h
->> @@ -891,6 +891,8 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
->>  __SYSCALL(__NR_process_madvise, sys_process_madvise)
->>  #define __NR_epoll_pwait2 441
->>  __SYSCALL(__NR_epoll_pwait2, compat_sys_epoll_pwait2)
->> +#define __NR_mempinfd 442
->> +__SYSCALL(__NR_mempinfd, sys_mempinfd)
-> 
-> This adds a compat syscall for 32-bit tasks running on arm64 without adding
-> the same for the native arch/arm syscall table. Those two need to always
-> stay synchronized. In fact, new system call should ideally get assigned
-> on all architectures at the same time, with the same number (or +110
-> on arch/alpha).
+On Mon, 8 Feb 2021, Srinivas Pandruvada wrote:
 
-Thank for pointing out this. I use an ARM64 machine to test, so
-currently only add it for ARM64 :)
+> > Added Tiger Lake H PCI device ID to the supported device list.
+> > 
+> > Signed-off-by: You-Sheng Yang <vicamo.yang@canonical.com>
+> Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-Best,
-Zhou
+Applied, thanks.
 
-> 
->          Arnd
-> 
-> .
-> 
+-- 
+Jiri Kosina
+SUSE Labs
 
