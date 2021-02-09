@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD7B315887
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 356ED31588A
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234408AbhBIVUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:20:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhBIS6h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 13:58:37 -0500
-X-Greylist: delayed 570 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 Feb 2021 10:57:53 PST
-Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:171:314c::100:a1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61827C0613D6;
-        Tue,  9 Feb 2021 10:57:52 -0800 (PST)
-From:   =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c0d3.blue; s=2018;
-        t=1612896273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hOL6dc5Vpk4JALYPv2LREMiGbKlkP1zbjhOIL9R5Q5s=;
-        b=KcV2u/Zza1WHX+6jeNi0bsy0ZZJerGiuy8DIlqmdYuBV3Z3PlXwV4TB8xnHK14QwYaie4c
-        UjsRpMTyGF1kLdbGqsj0i7i5qsvh1MELtfMKzJ56yp5BM/SAyO6ziPK5iwy224TtC18Iwl
-        ztPrb+BWp8GjUyk5uFK79gqdhRg3P0p1L1pJbqHmyya1xUeD/dzza1pmE4beD9SYAHEdQa
-        IHF10XorFOqQLGRUcnFldPQYkxq993BFSqXF0XLT21Zo2bVNinoLj7a3pw17K57C4GwV/L
-        ayvcKzW/nA0vLu5b5CFhmmEls0EhqlmyF6oP5Rn1hK1ASQUC/FfDTt5VIoVPFw==
-To:     Kalle Valo <kvalo@codeaurora.org>, ath9k-devel@qca.qualcomm.com,
-        Simon Wunderlich <sw@simonwunderlich.de>
-Cc:     linux-wireless@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mathias Kretschmer <mathias.kretschmer@fit.fraunhofer.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>
-Subject: [PATCH] ath9k: fix data bus crash when setting nf_override via debugfs
-Date:   Tue,  9 Feb 2021 19:43:52 +0100
-Message-Id: <20210209184352.4272-1-linus.luessing@c0d3.blue>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=linus.luessing@c0d3.blue smtp.mailfrom=linus.luessing@c0d3.blue
+        id S234419AbhBIVVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 16:21:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233410AbhBIS45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 13:56:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9D7A64E7C;
+        Tue,  9 Feb 2021 18:45:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1612896316;
+        bh=GtmYHHEcqdc1UDShBy9Mlu65hB49cZakKnpnx2Og2eQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aP06nY6YiMDXRIS38tSvtTFV3YBFhASWUaeMt0wV7bsUISO1KRF7YPBwEtxI+jImq
+         Oo+t2pdYIgktk2hCzRPdzSufB5ybOpG67+SSggtzUmLn4rXV9KRJv1YFGQFt+f6hxv
+         RmTEse/HAUq8eITtewK4JuF7VDBZ8cI7dGiz9HGY=
+Date:   Tue, 9 Feb 2021 10:45:15 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mm] arm64: kasan: fix MTE symbols exports
+Message-Id: <20210209104515.75eaa00dea03175e49e70d6c@linux-foundation.org>
+In-Reply-To: <20210209170255.GG1435@arm.com>
+References: <dd36936c3d99582a623c8f01345f618ed4c036dd.1612884525.git.andreyknvl@google.com>
+        <20210209170255.GG1435@arm.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <ll@simonwunderlich.de>
+On Tue, 9 Feb 2021 17:02:56 +0000 Catalin Marinas <catalin.marinas@arm.com> wrote:
 
-When trying to set the noise floor via debugfs, a "data bus error"
-crash like the following can happen:
+> On Tue, Feb 09, 2021 at 04:32:30PM +0100, Andrey Konovalov wrote:
+> > diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> > index a66c2806fc4d..788ef0c3a25e 100644
+> > --- a/arch/arm64/kernel/mte.c
+> > +++ b/arch/arm64/kernel/mte.c
+> > @@ -113,13 +113,17 @@ void mte_enable_kernel(void)
+> >  	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+> >  	isb();
+> >  }
+> > +#if IS_ENABLED(CONFIG_KASAN_KUNIT_TEST)
+> >  EXPORT_SYMBOL_GPL(mte_enable_kernel);
+> > +#endif
+> >  
+> >  void mte_set_report_once(bool state)
+> >  {
+> >  	WRITE_ONCE(report_fault_once, state);
+> >  }
+> > +#if IS_ENABLED(CONFIG_KASAN_KUNIT_TEST)
+> >  EXPORT_SYMBOL_GPL(mte_set_report_once);
+> > +#endif
+> 
+> Do we actually care about exporting them when KASAN_KUNIT_TEST=n? It
+> looks weird to have these #ifdefs in the arch code. Either the
+> arch-kasan API requires these symbols to be exported to modules or not.
+> I'm not keen on such kasan internals trickling down into the arch code.
+> 
+> If you don't want to export them in the KASAN_KUNIT_TEST=n case, add a
+> wrapper in the kasan built-in code (e.g. kasan_test_enable_tagging,
+> kasan_test_set_report_once) and conditionally compile them based on
+> KASAN_KUNIT_TEST.
 
-[   88.433133] Data bus error, epc == 80221c28, ra == 83314e60
-[   88.438895] Oops[#1]:
-[   88.441246] CPU: 0 PID: 7263 Comm: sh Not tainted 4.14.195 #0
-[   88.447174] task: 838a1c20 task.stack: 82d5e000
-[   88.451847] $ 0   : 00000000 00000030 deadc0de 83141de4
-[   88.457248] $ 4   : b810a2c4 0000a2c4 83230fd4 00000000
-[   88.462652] $ 8   : 0000000a 00000000 00000001 00000000
-[   88.468055] $12   : 7f8ef318 00000000 00000000 77f802a0
-[   88.473457] $16   : 83230080 00000002 0000001b 83230080
-[   88.478861] $20   : 83a1c3f8 00841000 77f7adb0 ffffff92
-[   88.484263] $24   : 00000fa4 77edd860
-[   88.489665] $28   : 82d5e000 82d5fda8 00000000 83314e60
-[   88.495070] Hi    : 00000000
-[   88.498044] Lo    : 00000000
-[   88.501040] epc   : 80221c28 ioread32+0x8/0x10
-[   88.505671] ra    : 83314e60 ath9k_hw_loadnf+0x88/0x520 [ath9k_hw]
-[   88.512049] Status: 1000fc03 KERNEL EXL IE
-[   88.516369] Cause : 5080801c (ExcCode 07)
-[   88.520508] PrId  : 00019374 (MIPS 24Kc)
-[   88.524556] Modules linked in: ath9k ath9k_common pppoe ppp_async l2tp_ppp cdc_mbim batman_adv ath9k_hw ath sr9700 smsc95xx sierra_net rndis_host qmi_wwan pppox ppp_generic pl2303 nf_conntrack_ipv6 mcs7830 mac80211 kalmia iptable_nat ipt_REJECT ipt_MASQUERADE huawei_cdc_ncm ftdi_sio dm9601 cfg80211 cdc_subset cdc_ncm cdc_ether cdc_eem ax88179_178a asix xt_time xt_tcpudp xt_tcpmss xt_statistic xt_state xt_nat xt_multiport xt_mark xt_mac xt_limit xt_length xt_hl xt_ecn xt_dscp xt_conntrack xt_comment xt_TCPMSS xt_REDIRECT xt_NETMAP xt_LOG xt_HL xt_FLOWOFFLOAD xt_DSCP xt_CLASSIFY usbserial usbnet usbhid slhc rtl8150 r8152 pegasus nf_reject_ipv4 nf_nat_redirect nf_nat_masquerade_ipv4 nf_conntrack_ipv4 nf_nat_ipv4 nf_nat nf_log_ipv4 nf_flow_table_hw nf_flow_table nf_defrag_ipv6 nf_defrag_ipv4 nf_conntrack
-[   88.597894]  libcrc32c kaweth iptable_mangle iptable_filter ipt_ECN ipheth ip_tables hso hid_generic crc_ccitt compat cdc_wdm cdc_acm br_netfilter hid evdev input_core nf_log_ipv6 nf_log_common ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT x_tables nf_reject_ipv6 l2tp_netlink l2tp_core udp_tunnel ip6_udp_tunnel xfrm6_mode_tunnel xfrm6_mode_transport xfrm6_mode_beet ipcomp6 xfrm6_tunnel esp6 ah6 xfrm4_tunnel xfrm4_mode_tunnel xfrm4_mode_transport xfrm4_mode_beet ipcomp esp4 ah4 tunnel6 tunnel4 tun xfrm_user xfrm_ipcomp af_key xfrm_algo sha256_generic sha1_generic jitterentropy_rng drbg md5 hmac echainiv des_generic deflate zlib_inflate zlib_deflate cbc authenc crypto_acompress ehci_platform ehci_hcd gpio_button_hotplug usbcore nls_base usb_common crc16 mii aead crypto_null cryptomgr crc32c_generic
-[   88.671671]  crypto_hash
-[   88.674292] Process sh (pid: 7263, threadinfo=82d5e000, task=838a1c20, tls=77f81efc)
-[   88.682279] Stack : 00008060 00000008 00000200 00000000 00000000 00000000 00000000 00000002
-[   88.690916]         80500000 83230080 82d5fe22 00841000 77f7adb0 00000000 00000000 83156858
-[   88.699553]         00000000 8352fa00 83ad62b0 835302a8 00000000 300a00f8 00000003 82d5fe38
-[   88.708190]         82d5fef4 00000001 77f54dc4 77f80000 77f7adb0 c79fe901 00000000 00000000
-[   88.716828]         80510000 00000002 00841000 77f54dc4 77f80000 801ce4cc 0000000b 41824292
-[   88.725465]         ...
-[   88.727994] Call Trace:
-[   88.730532] [<80221c28>] ioread32+0x8/0x10
-[   88.734765] Code: 00000000  8c820000  0000000f <03e00008> 00000000  08088708  00000000  aca40000  03e00008
-[   88.744846]
-[   88.746464] ---[ end trace db226b2de1b69b9e ]---
-[   88.753477] Kernel panic - not syncing: Fatal exception
-[   88.759981] Rebooting in 3 seconds..
+In other words, the patch's changelog was poor!  It told us what the
+patch does (which is often obvious from the code) but it failed to
+explain why the patch does what it does.
 
-The "REG_READ(ah, AR_PHY_AGC_CONTROL)" in ath9k_hw_loadnf() does not
-like being called when the hardware is asleep, leading to this crash.
-
-The easiest way to reproduce this is trying to set nf_override while
-the hardware is down:
-
-  $ ip link set down dev wlan0
-  $ echo "-85" > /sys/kernel/debug/ieee80211/phy0/ath9k/nf_override
-
-Fixing this crash by waking the hardware up before trying to set the
-noise floor. Similar to what other ath9k debugfs files do.
-
-Tested on a Lima board from 8devices, which has a QCA 4531 chipset.
-
-Fixes: b90189759a7f ("ath9k: add noise floor override option")
-Cc: Simon Wunderlich <sw@simonwunderlich.de>
-Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
----
- drivers/net/wireless/ath/ath9k/debug.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath9k/debug.c b/drivers/net/wireless/ath/ath9k/debug.c
-index 017a43bc400c..4c81b1d7f417 100644
---- a/drivers/net/wireless/ath/ath9k/debug.c
-+++ b/drivers/net/wireless/ath/ath9k/debug.c
-@@ -1223,8 +1223,11 @@ static ssize_t write_file_nf_override(struct file *file,
- 
- 	ah->nf_override = val;
- 
--	if (ah->curchan)
-+	if (ah->curchan) {
-+		ath9k_ps_wakeup(sc);
- 		ath9k_hw_loadnf(ah, ah->curchan);
-+		ath9k_ps_restore(sc);
-+	}
- 
- 	return count;
- }
--- 
-2.29.2
+The same goes for code comments, folks - please explain "why it does
+this" rather than "what it does".
 
