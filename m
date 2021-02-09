@@ -2,182 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF944314E23
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BBA314E29
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 12:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhBILVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 06:21:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhBILS5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:18:57 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B46C061786
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 03:18:13 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id x136so5124573pfc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 03:18:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/RC5hON+NnajawpzB/GNIRHvEjGmIio6mT3cCoEgSwQ=;
-        b=a7Rcag+6J3kBmp8/yzL63VUK4wCGQuav9FO850Wd4S/dKvV5Ym603gZIhiVSARPgjR
-         bvtjW+KRW98X9VemNCulQ0IyBM3T6kOQ8fEISPwgBkiffOGp9+jEaE090fwZ04pfgFUF
-         d8inATP9YUg4APdGRSUh6IyVn46SOqX+TyDgEHgECnF2gI/h5FEQeJ5wPgLaD3JN1ZfW
-         w5FPhlceRAV/CALYaAimF3YVjNJP61Q+vyIGpQilsL69gjYGc+vLSvCr3RlPCz1uK0XH
-         /3RPSz9Ykaq6uufyrnzmXBprgPn2EXGeHDSCQzntAXokQQKZkfZrvB28gykXztRMbSxm
-         3b+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/RC5hON+NnajawpzB/GNIRHvEjGmIio6mT3cCoEgSwQ=;
-        b=Ip/jF8aCL8VjuMFi+8M42eMGyzmXpPNshaRPeForuyMr18fGatnPjUh3E+R5KNMa7F
-         xYfwp648k9v9u3aZ5KzC3Ksv/XogJ8Q3AUwxPt4ug7zNg9IYz6fVaDqSxg+y3DmalJ1S
-         QeCo+X7A1OVcA4Jmc0m01w9Xn58deYlbQwaWYdBi+/eJgcbRRF10x+IgygeQsnOtTGzn
-         f/tyQbkt9C1zJ4b2DIqK6Y7IpDz1Skxkd/ziZY3q+QAMUiH0t3p1jvFXAoKhgy9j8f7j
-         6EkVx8UOEeUe9Ks6adUihBPUuvQaqGCK4/B+hwPJeHmLVMqvF/Fg/biiGgg9nJvYqRlg
-         DekA==
-X-Gm-Message-State: AOAM532uzTz3HJILYsJ7Y3jzUffzmkgCuuNumoM97iZCzz7OR93R+d0u
-        8pKo1aMtUCWK3L6vG5JmTwzpog==
-X-Google-Smtp-Source: ABdhPJy4arvbQcjsyMyytXfd7r95VoGqqjgjvXBA56g7CAJAUcbXmm/s/sQXmFDLG5BYt/6lgnc3+w==
-X-Received: by 2002:a65:520d:: with SMTP id o13mr21458658pgp.57.1612869493260;
-        Tue, 09 Feb 2021 03:18:13 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id x9sm7744461pfc.114.2021.02.09.03.18.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Feb 2021 03:18:12 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Tushar Khandelwal <Tushar.Khandelwal@arm.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH Resend] mailbox: arm_mhuv2: Fix sparse warnings
-Date:   Tue,  9 Feb 2021 16:48:08 +0530
-Message-Id: <db5dd593cfd8b428ce44c1cce7484d887fa5e67c.1612869229.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        id S230028AbhBILW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 06:22:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhBILUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 06:20:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 941FD64E6B;
+        Tue,  9 Feb 2021 11:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612869610;
+        bh=O66toB/7BMykQ77TijJRtJ+Twsm+4LxeZAE82BtmgTU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ylg3/b9g0w+Em/zrEMNoKWNN/on+pUJdzinH6/iqrLfJOJwnMkZNfjz8MGjaNzObO
+         rge7MtjJFZKImE3wmE23XKSjyW3G5nfdSFoENID+BHLJPGZTKR/ZWZH1dCGucCKa2r
+         MT8SCFgIqsnDdOcfIKW6uVCGsAyqycmC0C9+7ks8=
+Date:   Tue, 9 Feb 2021 12:20:07 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Piyush Mehta <piyush.mehta@xilinx.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Bastien Nocera <hadess@hadess.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] usb: misc: usb5744: Add support for USB hub
+ controller
+Message-ID: <YCJv59g3Tq2haDSa@kroah.com>
+References: <cover.1612867682.git.michal.simek@xilinx.com>
+ <d6accf76bb5d060a13067816f23008e93264f317.1612867682.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d6accf76bb5d060a13067816f23008e93264f317.1612867682.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a bunch of sparse warnings in the newly added arm_mhuv2
-driver.
+On Tue, Feb 09, 2021 at 11:48:10AM +0100, Michal Simek wrote:
+> From: Piyush Mehta <piyush.mehta@xilinx.com>
+> 
+> This patch adds a USB GPIO based hub reset for USB5744 hub. This usb5744
+> driver trigger hub reset signal after soft reset or core Reset. The HUB
+> needs to be resetted after completion of phy initialization. After the
+> toggling of gpio, hub configure using i2c usb attached command.
+> 
+> USB5744 hub can be used without any I2C connection, is handled by a
+> simple platform device driver.
+> 
+> As part of the reset, sets the direction of the pin to output before
+> toggling the pin. Delay of millisecond is added in between low and
+> high to meet the setup and hold time requirement of the reset.
+> 
+> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
+> 
+> Changes in v2:
+> - s/USB_USB5744/USB_HUB_USB5744/g
+> - Fix order in Makefile and Kconfig
+> 
+>  MAINTAINERS                |   1 +
+>  drivers/usb/misc/Kconfig   |   9 +++
+>  drivers/usb/misc/Makefile  |   1 +
+>  drivers/usb/misc/usb5744.c | 115 +++++++++++++++++++++++++++++++++++++
+>  4 files changed, 126 insertions(+)
+>  create mode 100644 drivers/usb/misc/usb5744.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7439471b5d37..56d1fcdd24f6 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2706,6 +2706,7 @@ F:	drivers/edac/synopsys_edac.c
+>  F:	drivers/i2c/busses/i2c-cadence.c
+>  F:	drivers/i2c/busses/i2c-xiic.c
+>  F:	drivers/mmc/host/sdhci-of-arasan.c
+> +F:	drivers/usb/misc/usb5744.c
+>  N:	zynq
+>  N:	xilinx
+>  
+> diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
+> index 8f1144359012..9995a5701fd9 100644
+> --- a/drivers/usb/misc/Kconfig
+> +++ b/drivers/usb/misc/Kconfig
+> @@ -255,6 +255,15 @@ config USB_HSIC_USB4604
+>  	help
+>  	  This option enables support for SMSC USB4604 HSIC to USB 2.0 Driver.
+>  
+> +config USB_HUB_USB5744
+> +	tristate "Microchip USB5744 Hub driver"
+> +	depends on I2C
+> +	depends on GPIOLIB
+> +	help
+> +	  This option enables support for Microchip USB5744 Hub. This driver
+> +	  optionally reset the hub using gpio pin and configure hub via i2c if
+> +	  connected.
+> +
+>  config USB_LINK_LAYER_TEST
+>  	tristate "USB Link Layer Test driver"
+>  	help
+> diff --git a/drivers/usb/misc/Makefile b/drivers/usb/misc/Makefile
+> index 5f4e598573ab..fbb9adf08f8c 100644
+> --- a/drivers/usb/misc/Makefile
+> +++ b/drivers/usb/misc/Makefile
+> @@ -27,6 +27,7 @@ obj-$(CONFIG_USB_YUREX)			+= yurex.o
+>  obj-$(CONFIG_USB_HUB_USB251XB)		+= usb251xb.o
+>  obj-$(CONFIG_USB_HSIC_USB3503)		+= usb3503.o
+>  obj-$(CONFIG_USB_HSIC_USB4604)		+= usb4604.o
+> +obj-$(CONFIG_USB_HUB_USB5744)		+= usb5744.o
+>  obj-$(CONFIG_USB_CHAOSKEY)		+= chaoskey.o
+>  
+>  obj-$(CONFIG_USB_SISUSBVGA)		+= sisusbvga/
+> diff --git a/drivers/usb/misc/usb5744.c b/drivers/usb/misc/usb5744.c
+> new file mode 100644
+> index 000000000000..729b76345c69
+> --- /dev/null
+> +++ b/drivers/usb/misc/usb5744.c
+> @@ -0,0 +1,115 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Driver for the Microchip USB5744 4-port hub.
+> + *
+> + * Copyright (c) 2021 Xilinx, Inc.
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/err.h>
+> +#include <linux/i2c.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/platform_device.h>
+> +
+> +static int usb5744_init_hw(struct device *dev)
+> +{
+> +	struct gpio_desc *reset_gpio;
+> +
+> +	reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(reset_gpio)) {
+> +		dev_err(dev, "Failed to bind reset gpio");
+> +		return -ENODEV;
+> +	}
+> +
+> +	if (reset_gpio) {
+> +		/* Toggle RESET_N to reset the hub. */
+> +		gpiod_set_value(reset_gpio, 0);
+> +		usleep_range(5, 20); /* trstia */
+> +		gpiod_set_value(reset_gpio, 1);
+> +		usleep_range(5000, 10000); /* tcsh */
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int usb5744_i2c_probe(struct i2c_client *client,
+> +			     const struct i2c_device_id *id)
+> +{
+> +	struct device *dev = &client->dev;
+> +	int ret;
+> +
+> +	/* Trigger gpio reset to the hub. */
+> +	ret = usb5744_init_hw(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Send SMBus command to boot hub. */
+> +	ret = i2c_smbus_write_word_data(client, 0xAA, swab16(0x5600));
+> +	if (ret < 0)
+> +		dev_err(dev, "Sending boot command failed");
+> +
+> +	return ret;
+> +}
+> +
+> +static int usb5744_platform_probe(struct platform_device *pdev)
+> +{
+> +	/* Trigger gpio reset to the hub. */
+> +	return usb5744_init_hw(&pdev->dev);
+> +}
+> +
+> +static const struct i2c_device_id usb5744_id[] = {
+> +	{ "usb5744", 0 },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(i2c, usb5744_id);
+> +
+> +static struct i2c_driver usb5744_i2c_driver = {
+> +	.driver = {
+> +		.name = "usb5744",
+> +	},
+> +	.probe = usb5744_i2c_probe,
+> +	.id_table = usb5744_id,
+> +};
+> +
+> +static const struct of_device_id usb5744_platform_id[] = {
+> +	{ .compatible = "microchip,usb5744", },
+> +	{ }
+> +};
+> +
+> +static struct platform_driver usb5744_platform_driver = {
+> +	.driver = {
+> +		.name = "microchip,usb5744",
+> +		.of_match_table = usb5744_platform_id,
+> +	},
+> +	.probe = usb5744_platform_probe,
+> +};
+> +
+> +static int __init usb5744_init(void)
+> +{
+> +	int err;
+> +
+> +	err = i2c_add_driver(&usb5744_i2c_driver);
+> +	if (err != 0)
+> +		pr_err("usb5744: Failed to register I2C driver: %d\n", err);
+> +
+> +	err = platform_driver_register(&usb5744_platform_driver);
+> +	if (err != 0)
+> +		pr_err("usb5744: Failed to register platform driver: %d\n",
+> +		       err);
+> +	return 0;
 
-drivers/mailbox/arm_mhuv2.c:506:24: warning: incorrect type in argument 1 (different address spaces)
-drivers/mailbox/arm_mhuv2.c:506:24:    expected void const volatile [noderef] __iomem *addr
-drivers/mailbox/arm_mhuv2.c:506:24:    got unsigned int [usertype] *
-drivers/mailbox/arm_mhuv2.c:547:42: warning: incorrect type in argument 2 (different address spaces)
-drivers/mailbox/arm_mhuv2.c:547:42:    expected unsigned int [usertype] *reg
-drivers/mailbox/arm_mhuv2.c:547:42:    got unsigned int [noderef] __iomem *
-drivers/mailbox/arm_mhuv2.c:625:42: warning: incorrect type in argument 2 (different address spaces)
-drivers/mailbox/arm_mhuv2.c:625:42:    expected unsigned int [usertype] *reg
-drivers/mailbox/arm_mhuv2.c:625:42:    got unsigned int [noderef] __iomem *
-drivers/mailbox/arm_mhuv2.c:972:24: warning: dereference of noderef expression
-drivers/mailbox/arm_mhuv2.c:973:22: warning: dereference of noderef expression
-drivers/mailbox/arm_mhuv2.c:993:25: warning: dereference of noderef expression
-drivers/mailbox/arm_mhuv2.c:1026:24: warning: dereference of noderef expression
-drivers/mailbox/arm_mhuv2.c:1027:22: warning: dereference of noderef expression
-drivers/mailbox/arm_mhuv2.c:1048:17: warning: dereference of noderef expression
+So, no matter how many failures happen, you still say everything is good
+and continue on with loading the module?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-Hi,
+Please don't.
 
-This should have been merged to 5.11-rc since the driver got introduced
-in 5.11-rc1 itself. I don't see it queued for linux-next as well. It was
-posted over 6 weeks back and no response is received yet:
+thanks,
 
-https://lore.kernel.org/lkml/db5dd593cfd8b428ce44c1cce7484d887fa5e67c.1609303304.git.viresh.kumar@linaro.org/
-
-Would be good if this can still go in 5.11.
-
- drivers/mailbox/arm_mhuv2.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/mailbox/arm_mhuv2.c b/drivers/mailbox/arm_mhuv2.c
-index 67fb10885bb4..8223c1005254 100644
---- a/drivers/mailbox/arm_mhuv2.c
-+++ b/drivers/mailbox/arm_mhuv2.c
-@@ -238,19 +238,19 @@ struct mhuv2_mbox_chan_priv {
- };
- 
- /* Macro for reading a bitfield within a physically mapped packed struct */
--#define readl_relaxed_bitfield(_regptr, _field)				\
-+#define readl_relaxed_bitfield(_regptr, _type, _field)			\
- 	({								\
- 		u32 _regval;						\
- 		_regval = readl_relaxed((_regptr));			\
--		(*(typeof((_regptr)))(&_regval))._field;		\
-+		(*(_type *)(&_regval))._field;				\
- 	})
- 
- /* Macro for writing a bitfield within a physically mapped packed struct */
--#define writel_relaxed_bitfield(_value, _regptr, _field)		\
-+#define writel_relaxed_bitfield(_value, _regptr, _type, _field)		\
- 	({								\
- 		u32 _regval;						\
- 		_regval = readl_relaxed(_regptr);			\
--		(*(typeof(_regptr))(&_regval))._field = _value;		\
-+		(*(_type *)(&_regval))._field = _value;			\
- 		writel_relaxed(_regval, _regptr);			\
- 	})
- 
-@@ -496,7 +496,7 @@ static const struct mhuv2_protocol_ops mhuv2_data_transfer_ops = {
- 
- /* Interrupt handlers */
- 
--static struct mbox_chan *get_irq_chan_comb(struct mhuv2 *mhu, u32 *reg)
-+static struct mbox_chan *get_irq_chan_comb(struct mhuv2 *mhu, u32 __iomem *reg)
- {
- 	struct mbox_chan *chans = mhu->mbox.chans;
- 	int channel = 0, i, offset = 0, windows, protocol, ch_wn;
-@@ -969,8 +969,8 @@ static int mhuv2_tx_init(struct amba_device *adev, struct mhuv2 *mhu,
- 	mhu->mbox.ops = &mhuv2_sender_ops;
- 	mhu->send = reg;
- 
--	mhu->windows = readl_relaxed_bitfield(&mhu->send->mhu_cfg, num_ch);
--	mhu->minor = readl_relaxed_bitfield(&mhu->send->aidr, arch_minor_rev);
-+	mhu->windows = readl_relaxed_bitfield(&mhu->send->mhu_cfg, struct mhu_cfg_t, num_ch);
-+	mhu->minor = readl_relaxed_bitfield(&mhu->send->aidr, struct aidr_t, arch_minor_rev);
- 
- 	spin_lock_init(&mhu->doorbell_pending_lock);
- 
-@@ -990,7 +990,7 @@ static int mhuv2_tx_init(struct amba_device *adev, struct mhuv2 *mhu,
- 			mhu->mbox.txdone_poll = false;
- 			mhu->irq = adev->irq[0];
- 
--			writel_relaxed_bitfield(1, &mhu->send->int_en, chcomb);
-+			writel_relaxed_bitfield(1, &mhu->send->int_en, struct int_en_t, chcomb);
- 
- 			/* Disable all channel interrupts */
- 			for (i = 0; i < mhu->windows; i++)
-@@ -1023,8 +1023,8 @@ static int mhuv2_rx_init(struct amba_device *adev, struct mhuv2 *mhu,
- 	mhu->mbox.ops = &mhuv2_receiver_ops;
- 	mhu->recv = reg;
- 
--	mhu->windows = readl_relaxed_bitfield(&mhu->recv->mhu_cfg, num_ch);
--	mhu->minor = readl_relaxed_bitfield(&mhu->recv->aidr, arch_minor_rev);
-+	mhu->windows = readl_relaxed_bitfield(&mhu->recv->mhu_cfg, struct mhu_cfg_t, num_ch);
-+	mhu->minor = readl_relaxed_bitfield(&mhu->recv->aidr, struct aidr_t, arch_minor_rev);
- 
- 	mhu->irq = adev->irq[0];
- 	if (!mhu->irq) {
-@@ -1045,7 +1045,7 @@ static int mhuv2_rx_init(struct amba_device *adev, struct mhuv2 *mhu,
- 		writel_relaxed(0xFFFFFFFF, &mhu->recv->ch_wn[i].mask_set);
- 
- 	if (mhu->minor)
--		writel_relaxed_bitfield(1, &mhu->recv->int_en, chcomb);
-+		writel_relaxed_bitfield(1, &mhu->recv->int_en, struct int_en_t, chcomb);
- 
- 	return 0;
- }
--- 
-2.25.0.rc1.19.g042ed3e048af
-
+greg k-h
