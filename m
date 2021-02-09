@@ -2,266 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A4C314F72
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3406A314F80
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhBIMtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:49:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230310AbhBIMre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:47:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7903664EB4;
-        Tue,  9 Feb 2021 12:46:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612874813;
-        bh=FMUKzBODeFEAua6eaZMSI2Xpp+lzPJRF89vsl02EsfI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f5ttnyzybgiGZ7FtHcZVNsXnrGbhiMmyWglA/WBU5LKG5M0VDl1BBY6sMtqPt8hVw
-         oprVLsQe3uSmmHmjcECMttOfCfNDcSYiRGUTkP/Zhvro9yucgPe3dFJmQdsZriT8Iw
-         Y/XN6eJAjgsTzEbOuQsW8jLLCOB9LbaqBAhrqF4YH3c02BvDx0UvW9eP5uRloM8LfG
-         KBGCFS/IqAnl8XFcezDMgtXzAOgSNHmCXgIbgnMCK7umUlShgFnKkvUjwJX8s0cdPA
-         o1wwh+ESdHmk8BealVmJTGlvoJjmDLkk1v0p2+dFRS+1bh3iBIxlmoMZYQBWDDwZXv
-         xRAL9hoeq3VXg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9A58F40513; Tue,  9 Feb 2021 09:46:49 -0300 (-03)
-Date:   Tue, 9 Feb 2021 09:46:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Kemeng Shi <shikemeng@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, ndesaulniers@google.com, irogers@google.com,
-        tmricht@linux.ibm.com, hushiyuan@huawei.com, hewenliang4@huawei.com
-Subject: Re: [PATCH] perf report: Fix arm64 gap between kernel start and
- module end
-Message-ID: <20210209124649.GB1018564@kernel.org>
-References: <33fd24c4-0d5a-9d93-9b62-dffa97c992ca@huawei.com>
- <20200330131129.GB31702@kernel.org>
- <20200330131810.GC31702@kernel.org>
- <20210209124009.GA1018564@kernel.org>
+        id S230369AbhBIMum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:50:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51616 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230231AbhBIMtP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:49:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612874868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kYIvfF1pbKCmOCnTFNppgDKGi8/ozAzP6ifos3X5+bI=;
+        b=hn4YMAWRPrz2bVct0IzZSkAqedhj9b8Jy6kRWuoG/cwCGLzqZdSCpROqIQkNg76IuRi9cZ
+        e+6hEM67TOgOsYN61jKkNGCq+W5Ap7MxnLxq6XjgxAjSMAzj/000I4GvIPw4iKcLlhYybu
+        UqzBEsv/iDFT5CAwI8LVFqpidFym+NY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-m6qM_HJHMzypie8_HItsqg-1; Tue, 09 Feb 2021 07:47:46 -0500
+X-MC-Unique: m6qM_HJHMzypie8_HItsqg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92D63801981;
+        Tue,  9 Feb 2021 12:47:44 +0000 (UTC)
+Received: from krava (unknown [10.40.196.4])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 26BB660C04;
+        Tue,  9 Feb 2021 12:47:40 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 13:47:40 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     daniel@iogearbox.net, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2] perf script: Simplify bool conversion
+Message-ID: <YCKEbN52Z+a4+mhd@krava>
+References: <1612773936-98691-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209124009.GA1018564@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <1612773936-98691-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Feb 09, 2021 at 09:40:09AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, Mar 30, 2020 at 10:18:10AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Mon, Mar 30, 2020 at 10:11:29AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Mon, Mar 30, 2020 at 03:41:11PM +0800, Kemeng Shi escreveu:
-> > > > diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
-> > > > index 393b9895c..37cbfa5e9 100644
-> > > > --- a/tools/perf/arch/arm64/util/Build
-> > > > +++ b/tools/perf/arch/arm64/util/Build
-> > > > @@ -2,6 +2,7 @@ libperf-y += header.o
-> > > >  libperf-y += tsc.o
-> > > >  libperf-y += sym-handling.o
-> > > >  libperf-y += kvm-stat.o
-> > > > +libperf-y += machine.o
-> > > 
-> > > You made the patch against an old perf codebase, right? This libperf-y
-> > > above was changed to perf-y here:
-> > > 
-> > > commit 5ff328836dfde0cef9f28c8b8791a90a36d7a183
-> > > Author: Jiri Olsa <jolsa@kernel.org>
-> > > Date:   Wed Feb 13 13:32:39 2019 +0100
-> > > 
-> > >     perf tools: Rename build libperf to perf
-> > > 
-> > > ----
-> > > 
-> > > I'm fixing this up, please check my perf/core branch later to see that
-> > > all is working as intended.
-> > > 
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
-> > 
-> > Here it is:
-> > 
-> > 
-> > From 829b915d7d7eeafbe4af76dce19ccbdc743a43c8 Mon Sep 17 00:00:00 2001
-> > From: Kemeng Shi <shikemeng@huawei.com>
-> > Date: Mon, 30 Mar 2020 15:41:11 +0800
-> > Subject: [PATCH 1/1] perf symbols: Fix arm64 gap between kernel start and
-> >  module end
-> > 
-> > During execution of command 'perf report' in my arm64 virtual machine,
-> > this error message is showed:
-> > 
-> > failed to process sample
-> > 
-> > __symbol__inc_addr_samples(860): ENOMEM! sym->name=__this_module,
-> >     start=0x1477100, addr=0x147dbd8, end=0x80002000, func: 0
-> > 
-> > The error is caused with path:
-> > cmd_report
-> >  __cmd_report
-> >   perf_session__process_events
-> >    __perf_session__process_events
-> >     ordered_events__flush
-> >      __ordered_events__flush
-> >       oe->deliver (ordered_events__deliver_event)
-> >        perf_session__deliver_event
-> >         machines__deliver_event
-> >          perf_evlist__deliver_sample
-> >           tool->sample (process_sample_event)
-> >            hist_entry_iter__add
-> >             iter->add_entry_cb(hist_iter__report_callback)
-> >              hist_entry__inc_addr_samples
-> >               symbol__inc_addr_samples
-> >                __symbol__inc_addr_samples
-> >                 h = annotated_source__histogram(src, evidx) (NULL)
-> > 
-> > annotated_source__histogram failed is caused with path:
-> > ...
-> >  hist_entry__inc_addr_samples
-> >   symbol__inc_addr_samples
-> >    symbol__hists
-> >     annotated_source__alloc_histograms
-> >      src->histograms = calloc(nr_hists, sizeof_sym_hist) (failed)
-> > 
-> > Calloc failed as the symbol__size(sym) is too huge. As show in error
-> > message: start=0x1477100, end=0x80002000, size of symbol is about 2G.
-> > 
-> > This is the same problem as 'perf annotate: Fix s390 gap between kernel
-> > end and module start (b9c0a64901d5bd)'. Perf gets symbol information from
-> > /proc/kallsyms in __dso__load_kallsyms. A part of symbol in /proc/kallsyms
-> > from my virtual machine is as follows:
-> >  #cat /proc/kallsyms | sort
-> >  ...
-> >  ffff000001475080 d rpfilter_mt_reg      [ip6t_rpfilter]
-> >  ffff000001475100 d $d   [ip6t_rpfilter]
-> >  ffff000001475100 d __this_module        [ip6t_rpfilter]
-> >  ffff000080080000 t _head
-> >  ffff000080080000 T _text
-> >  ffff000080080040 t pe_header
-> >  ...
-> > 
-> > Take line 'ffff000001475100 d __this_module [ip6t_rpfilter]' as example.
-> > The start and end of symbol are both set to ffff000001475100 in
-> > dso__load_all_kallsyms. Then symbols__fixup_end will set the end of symbol
-> > to next big address to ffff000001475100 in /proc/kallsyms, ffff000080080000
-> > in this example. Then sizeof of symbol will be about 2G and cause the
-> > problem.
-> > 
-> > The start of module in my machine is
-> >  ffff000000a62000 t $x   [dm_mod]
-> > 
-> > The start of kernel in my machine is
-> >  ffff000080080000 t _head
-> > 
-> > There is a big gap between end of module and begin of kernel if a samll
-> > amount of memory is used by module. And the last symbol in module will
-> > have a large address range as caotaining the big gap.
-> > 
-> > Give that the module and kernel text segment sequence may change in
-> > the future, fix this by limiting range of last symbol in module and kernel
-> > to 4K in arch arm64.
-> > 
-> > Signed-off-by: Kemeng Shi <shikemeng@huawei.com>
-> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> > Cc: Hu Shiyuan <hushiyuan@huawei.com>
-> > Cc: Ian Rogers <irogers@google.com>
-> > Cc: Jiri Olsa <jolsa@redhat.com>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Thomas Richter <tmricht@linux.ibm.com>
-> > Cc: hewenliang4@huawei.com
-> > Link: http://lore.kernel.org/lkml/33fd24c4-0d5a-9d93-9b62-dffa97c992ca@huawei.com
-> > [ refreshed the patch on current codebase ]
-> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > ---
-> >  tools/perf/arch/arm64/util/Build     |  1 +
-> >  tools/perf/arch/arm64/util/machine.c | 26 ++++++++++++++++++++++++++
-> >  2 files changed, 27 insertions(+)
-> >  create mode 100644 tools/perf/arch/arm64/util/machine.c
-> > 
-> > diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
-> > index 789956f76d85..5c13438c7bd4 100644
-> > --- a/tools/perf/arch/arm64/util/Build
-> > +++ b/tools/perf/arch/arm64/util/Build
-> > @@ -1,4 +1,5 @@
-> >  perf-y += header.o
-> > +perf-y += machine.o
-> >  perf-y += perf_regs.o
-> >  perf-$(CONFIG_DWARF)     += dwarf-regs.o
-> >  perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
-> > diff --git a/tools/perf/arch/arm64/util/machine.c b/tools/perf/arch/arm64/util/machine.c
-> > new file mode 100644
-> > index 000000000000..94745131e89a
-> > --- /dev/null
-> > +++ b/tools/perf/arch/arm64/util/machine.c
-> > @@ -0,0 +1,26 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <stdio.h>
-> > +#include "debug.h"
-> > +#include "symbol.h"
-> > +
-> > +/* On arm64, kernel text segment start at high memory address,
-> > + * for example 0xffff 0000 8xxx xxxx. Modules start at a low memory
-> > + * address, like 0xffff 0000 00ax xxxx. When only samll amount of
-> > + * memory is used by modules, gap between end of module's text segment
-> > + * and start of kernel text segment may be reach 2G.
-> > + * Therefore do not fill this gap and do not assign it to the kernel dso map.
-> > + */
-> > +
-> > +#define SYMBOL_LIMIT (1 << 12) /* 4K */
-> > +
-> > +void arch__symbols__fixup_end(struct symbol *p, struct symbol *c)
-> > +{
-> > +	if ((strchr(p->name, '[') && strchr(c->name, '[') == NULL) ||
-> > +			(strchr(p->name, '[') == NULL && strchr(c->name, '[')))
-> > +		/* Limit range of last symbol in module and kernel */
-> > +		p->end += SYMBOL_LIMIT;
-> > +	else
-> > +		p->end = c->start;
-> > +	pr_debug4("%s sym:%s end:%#lx\n", __func__, p->name, p->end);
-> > +}
+On Mon, Feb 08, 2021 at 04:45:36PM +0800, Yang Li wrote:
+> Fix the following coccicheck warning:
+> ./tools/perf/builtin-script.c:2789:36-41: WARNING: conversion to bool
+> not needed here
+> ./tools/perf/builtin-script.c:3237:48-53: WARNING: conversion to bool
+> not needed here
 > 
-> This breaks the build on powerpc 32-bit, I'm fixing it using the proper "%#" PRIx64 " style.
-> 
-> - Arnaldo
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Sorry, the build broke on powerpc 32-bit, but the above for arm also has
-the same problem, I'll fix it there as well even it not breaking the
-build as that is 64-bit specific (ARM case).
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-- Arnaldo
- 
+thanks,
+jirka
+
+> ---
 > 
->   72    13.69 ubuntu:18.04-x-powerpc        : FAIL powerpc-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
->     arch/powerpc/util/machine.c: In function 'arch__symbols__fixup_end':
->     arch/powerpc/util/machine.c:23:12: error: format '%lx' expects argument of type 'long unsigned int', but argument 6 has type 'u64 {aka long long unsigned int}' [-Werror=format=]
->       pr_debug4("%s sym:%s end:%#lx\n", __func__, p->name, p->end);
->                 ^
->     /git/linux/tools/perf/util/debug.h:18:21: note: in definition of macro 'pr_fmt'
->      #define pr_fmt(fmt) fmt
->                          ^~~
->     /git/linux/tools/perf/util/debug.h:33:29: note: in expansion of macro 'pr_debugN'
->      #define pr_debug4(fmt, ...) pr_debugN(4, pr_fmt(fmt), ##__VA_ARGS__)
->                                  ^~~~~~~~~
->     /git/linux/tools/perf/util/debug.h:33:42: note: in expansion of macro 'pr_fmt'
->      #define pr_debug4(fmt, ...) pr_debugN(4, pr_fmt(fmt), ##__VA_ARGS__)
->                                               ^~~~~~
->     arch/powerpc/util/machine.c:23:2: note: in expansion of macro 'pr_debug4'
->       pr_debug4("%s sym:%s end:%#lx\n", __func__, p->name, p->end);
->       ^~~~~~~~~
->     cc1: all warnings being treated as errors
->     /git/linux/tools/build/Makefile.build:139: recipe for target 'util' failed
->     make[5]: *** [util] Error 2
->     /git/linux/tools/build/Makefile.build:139: recipe for target 'powerpc' failed
->     make[4]: *** [powerpc] Error 2
->     /git/linux/tools/build/Makefile.build:139: recipe for target 'arch' failed
->     make[3]: *** [arch] Error 2
->   73    30.47 ubuntu:18.04-x-powerpc64      : Ok   powerpc64-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
+> Change in v2:
+> -Change the subject to "perf script"
+> 
+>  tools/perf/builtin-script.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> index 42dad4a..3646a1c 100644
+> --- a/tools/perf/builtin-script.c
+> +++ b/tools/perf/builtin-script.c
+> @@ -2786,7 +2786,7 @@ static int parse_output_fields(const struct option *opt __maybe_unused,
+>  				break;
+>  		}
+>  		if (i == imax && strcmp(tok, "flags") == 0) {
+> -			print_flags = change == REMOVE ? false : true;
+> +			print_flags = change != REMOVE;
+>  			continue;
+>  		}
+>  		if (i == imax) {
+> @@ -3234,7 +3234,7 @@ static char *get_script_path(const char *script_root, const char *suffix)
+>  
+>  static bool is_top_script(const char *script_path)
+>  {
+> -	return ends_with(script_path, "top") == NULL ? false : true;
+> +	return ends_with(script_path, "top") != NULL;
+>  }
+>  
+>  static int has_required_arg(char *script_path)
+> -- 
+> 1.8.3.1
 > 
 
--- 
-
-- Arnaldo
