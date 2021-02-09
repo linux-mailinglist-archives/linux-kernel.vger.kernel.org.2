@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED27B314C62
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2E2314C61
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhBIKDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:03:08 -0500
-Received: from mga07.intel.com ([134.134.136.100]:40622 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230055AbhBIJ7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:59:48 -0500
-IronPort-SDR: EzexextpcHXkR3+sRv7i+mak/SosG3+LuIk0w2lNK6uKkBvTZaKpF6jZWrRPHO+mM2jg25fXnA
- 9SnBM6rhe3eA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="245925083"
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="245925083"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 01:58:47 -0800
-IronPort-SDR: T0qTs/2i2PqBJXc5IrRTpS6kpOrU/SRzXxopGHG1/kUrdforSp9RRZLCJI15PCgXsR6DLCOQT6
- lslQrLAfLUyQ==
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="374903061"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 01:58:43 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1l9Pn6-003Bop-Ba; Tue, 09 Feb 2021 11:58:40 +0200
-Date:   Tue, 9 Feb 2021 11:58:40 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v6 1/3] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-Message-ID: <YCJc0LWBiQLwdmkN@smile.fi.intel.com>
-References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
- <20210208200903.28084-2-sakari.ailus@linux.intel.com>
- <CAHp75VciFMKrWM2zJZ6dppuL5M-7BLPGQfcnzkd9pQzY1bRWsQ@mail.gmail.com>
- <20210209092032.GC32460@paasikivi.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209092032.GC32460@paasikivi.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S231321AbhBIKDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:03:06 -0500
+Received: from sibelius.xs4all.nl ([83.163.83.176]:52736 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhBIJ7k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:59:40 -0500
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 628555bb;
+        Tue, 9 Feb 2021 10:58:41 +0100 (CET)
+Date:   Tue, 9 Feb 2021 10:58:41 +0100 (CET)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     marcan@marcan.st, devicetree@vger.kernel.org, maz@kernel.org,
+        linux-kernel@vger.kernel.org, soc@kernel.org, robh+dt@kernel.org,
+        olof@lixom.net, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <CAK8P3a043eO4p2o6tizR2x7a1TZHMqO7TdX53JC4bTZnbQd9iQ@mail.gmail.com>
+        (message from Arnd Bergmann on Tue, 9 Feb 2021 10:15:31 +0100)
+Subject: Re: [PATCH 13/18] arm64: ioremap: use nGnRnE mappings on platforms
+ that require it
+References: <20210204203951.52105-1-marcan@marcan.st> <20210204203951.52105-14-marcan@marcan.st>
+ <CAK8P3a2Ad+xmmMWgznOHPpxgCXKWFYfpHBqt_49_UuxrwFSq+A@mail.gmail.com>
+ <c1bc2a087747c4d9@bloch.sibelius.xs4all.nl> <635f1a81-58c8-f3b6-ab3f-1cf6a084aed0@marcan.st> <CAK8P3a043eO4p2o6tizR2x7a1TZHMqO7TdX53JC4bTZnbQd9iQ@mail.gmail.com>
+Message-ID: <c1bc2bfd75f8a238@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 11:20:32AM +0200, Sakari Ailus wrote:
-> On Mon, Feb 08, 2021 at 10:43:30PM +0200, Andy Shevchenko wrote:
-> > On Mon, Feb 8, 2021 at 10:11 PM Sakari Ailus
-> > <sakari.ailus@linux.intel.com> wrote:
-
-...
-
-> > > +       %p4cc   BG12 little-endian (0x32314742)
-> > 
-> > This misses examples of the (strange) escaping cases and wiped
-> > whitespaces to make sure everybody understands that 'D 12' will be the
-> > same as 'D1 2' (side note: which I disagree on, perhaps something
-> > should be added into documentation why).
+> From: Arnd Bergmann <arnd@kernel.org>
+> Date: Tue, 9 Feb 2021 10:15:31 +0100
 > 
-> The spaces are expected to be at the end only. I can add such example if
-> you like. There are no fourcc codes with spaces in the middle in neither
-> V4L2 nor DRM, and I don't think the expectation is to have them either.
-
-But then the code suggests otherwise. Perhaps we need to extract
-skip_trailing_spaces() from strim() and use it here.
-
-...
-
-> > > +static noinline_for_stack
-> > > +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
-> > > +                   struct printf_spec spec, const char *fmt)
-> > > +{
-> > 
-> > > +       char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
-> > 
-> > Do we have any evidence / document / standard that the above format is
-> > what people would find good? From existing practices (I consider other
-> > printings elsewhere and users in this series) I find '(xx)' form for
-> > hex numbers is weird. The standard practice is to use \xHH (without
-> > parentheses).
+> On Tue, Feb 9, 2021 at 1:25 AM Hector Martin <marcan@marcan.st> wrote:
+> > On 09/02/2021 08.20, Mark Kettenis wrote:
+> > I probed writing to i<<28 for i = [0..255], using nGnRE. This reveals
+> > that nGnRE writes are allowed (i.e. either succeed or error out
+> > differently) in the following ranges:
+> >
+> > 0x400000000 - 0x4ffffffff (apciec0)
+> > 0x580000000 - 0x67fffffff (apciec1)
+> > 0x6a0000000 - 0x6ffffffff (apcie)
+> >
+> > Which matches the `ranges` properties of the respective apcie devices in
+> > the ADT.
 > 
-> Earlier in the review it was proposed that special handling of codes below
-> 32 should be added, which I did. Using the parentheses is apparently an
-> existing practice elsewhere.
-
-Where? \xHH is quite well established format for escaping. Never heard about
-'(xx)' variant before this very series.
-
-> Note that neither DRM nor V4L2 currently has such fourcc codes currently.
-
-...
-
-> > > +       p = special_hex_number(p, output + sizeof(output) - 2, *fourcc,
-> > > +                              sizeof(u32));
-> > 
-> > This is perfectly one line (in this file we have even longer lines).
+> Right, these are the same ranges that I found in the adt and that Mark
+> listed in his code snippet, so it seems we all see the same partitioning
+> of the address space. I also see them reflected in the
+> /defaults/pmap-io-ranges property in ADT, which seems to have an entry
+> for every register range that has some mmio registers, along with what
+> appears to be a bitmask of some attributes, and it clearly shows
+> the above ranges as having a distinct set of bits from the others
+> (in little-endian):
 > 
-> Sure, you can do that, and I can then review your patch and point to the
-> coding style documentation. :-)
+>  00000000 04000000 00000080 00000000 27000080 65494350
+>  00000080 04000000 00000080 00000000 27000080 65494350
+>  00000080 05000000 00000080 00000000 27000080 65494350
+>  00000000 06000000 00000080 00000000 27000080 65494350
+>  000000a0 06000000 00000020 00000000 27000080 65494350
+>  000000c0 06000000 00000040 00000000 27000080 65494350
+>    ^64-bit address       ^64-bit length            ^ 64-bit flags?
+> 
+> As opposed to e.g.
+> 
+>  0000f002 05000000 00400000 00000000 07400000 54524144
+>  0000f802 05000000 00400000 00000000 07400000 54524144
+>  00800021 05000000 00400000 00000000 07400000 44495344
+>  0000a801 05000000 00400000 00000000 07400000 54524144
+> 00000367 02000000 00400000 00000000 07400000 54524144
+> ...
+> 
+> There is one more entry for the 0x700000000-0x7ffffffff range, which
+> has yet another distinct bitmask, but does not seem to correspond
+> to any registers listed in other nodes.
+> 
+> > The first two are obviously the TB3 ports, and have more
+> > features (three ranges instead of two, presumably IO port ranges are
+> > supported on those, there's some extra DMA stuff, etc).
+> 
+> The PCI ranges property identifies these as 64-bit prefetchable (0x43),
+> 32-bit non-prefetchable (0x02), and 32-bit pre prefetchable (0x42)
+> respectively. The third bus only lacks the 32-bit prefetchable range,
+> that is normally ok. Is this the NVMe host or something else?
 
-Yes, you can. The problem is that we agreed with others to improve readability
-by letting some lines to be longer, so the code can lie on one line rather be
-broken on two or more.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Third bus has Broadcom WiFi, Fresco Logic xHCI and Broadcom Ethernet,
+so all the onboard PCIe devices.
