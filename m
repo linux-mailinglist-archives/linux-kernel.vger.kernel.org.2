@@ -2,133 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A75531552D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A86315537
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhBIRgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 12:36:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
+        id S232974AbhBIRhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 12:37:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233125AbhBIRej (ORCPT
+        with ESMTP id S233258AbhBIRfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:34:39 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C865C0617A9
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:33:28 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id v15so22963530wrx.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:33:28 -0800 (PST)
+        Tue, 9 Feb 2021 12:35:55 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E272C0617AB
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:35:12 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id l25so15756055eja.9
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:35:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=7JkPvEjrFUyCkgVos6hGetPZONkwMar8Z/Kg7PYRhYM=;
-        b=upyLM52zFkyCnjZekJtVFisSt9rvMDn2DCkv9o/ozl6Syfy0R8POrLtaFtvHM4IuLW
-         YR3AZehBmbIDTcrj4AOyggAtW7xGtgKG9FgBAll0SNnvhOf51tH3hZmhTjtW88pFcNKI
-         SQnWSwloX7GlynYWOjWqRGCIvYfsUfegRsIGtpH2r2CPaPhIOyrkCaeBBzu7pB5qbnNZ
-         sPtzYMXMTzBibIkvKwk8Yxp6mWXyVER8whJp7y3VTO7TwqZFy7UpCqxW7U5ZODAbBDhf
-         BUYFOQUFamp9MuioB8GMfBbWejqqYQX1QbFUK6KfjUwdS1+DIGJRZMgHYhowuL2cBR9u
-         nXog==
+        bh=rkfxHG6SUHpA6tbpAjqOVi7wM6zkzfQEESqTN4U8tdc=;
+        b=z3yKYDJsOsvcbQ4+mpQdcQtuQkh5oVsz0uARlIOZKEXhGob+/98z00TQGaBr0rIvSs
+         Eye29pBN/n+i7yGZCpYwYxcgMVA+W1joredpcyuu/+rMcw0AbTHoW2ZM2QMDqVQc0QGp
+         2zcXSppp5KjixOUlJETm3pJDIMmULzVtKIc7qccB3kJ4NCArSorbQSmDkLAKzimQdo4K
+         G8yPbkysQhut4sHefawh9EdPi/pFVo5zd8upCbqLb3W0KICOxktT9JL4/5miSrbkqvcx
+         sJlYivsmVQmMko9NEiXNhkvRnLJBfnm2KUCsA31aVA+GLIvESUwmZNlmEQXMI5PegFXV
+         PJZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7JkPvEjrFUyCkgVos6hGetPZONkwMar8Z/Kg7PYRhYM=;
-        b=jBPzu+gF+lVbbiU/xxT9AHFiafDtYjaef9AOLCWxxeCuViH8epPn5CzHw71qKFY7uE
-         rU+c9FPaMLnrngwlWcLYwSEMW0L6Apsl2+j8dMrxEeqpU1rv9N2XIxkkT1yw7oCbpEaN
-         QsCpiWh1Eii8iFv1jsDN90VNxq5oG5div4StOngeX2tBTRFlM/omyZvpB9XeD4uaHsdz
-         U8FbSHEmGrX+joPKNHA3/jW4C3Ydf9Y1cxEwkahXmiSwcHh0iAR5Q/HAvNMs47syZ2tP
-         8KksvrMNCHeeW3c4MNcTYLNlPEXgZvxJ1Q/534Ux8KcmZCiw8fu8oWKasj/FAAHYyoF/
-         M6vg==
-X-Gm-Message-State: AOAM533ZS+8W3FxH7CHI042NFNyC5NV1l3J2qPskv+jJl+psLDuHL1jG
-        +ANV5Ab2qd2p/7/KBuJvowLaQFYc4O8nJ21unf0DeGQShRwUmA==
-X-Google-Smtp-Source: ABdhPJxR0ME6EaFYPYk1Mxyp+BLFYVz+IlCCpKcDmPoDo8b3MwPtvt9CrFW7ON0rxhIUPKcWxdh5dbPKlpFBtmJQ6us=
-X-Received: by 2002:adf:ed45:: with SMTP id u5mr26626811wro.358.1612892006726;
- Tue, 09 Feb 2021 09:33:26 -0800 (PST)
+        bh=rkfxHG6SUHpA6tbpAjqOVi7wM6zkzfQEESqTN4U8tdc=;
+        b=fon8qsWStZ1OWPTCS4LuDuwbqUbLGiNBJ7xXCwfrsV75mvOCFmj2nX7Khhxxs1PrfA
+         t9pK7duQVcRdJZOxpTTbpSoCJx/smiflwn3WBQoaq19VAHvE+ffPW0PHvOEfOMR8MWZu
+         CrlCwWqX0YZqEo+7ZA5XLFLR/+OKZ4LCT+HG0AmXAADltvh4gk2SHevNsDISSEZbjEl6
+         +DoKEKKcDZUwj/ahacjndZcYK99Na9m9AddS8/S7sKRfKspQrweDRhYAwsQFjNsjyiW9
+         glFmQ0yoUVOWwrb/jleMV9Uh4RqnpyiBP35rtSdCDrICcU1nPi7NLOs9RU72FJaSb3rW
+         bf3g==
+X-Gm-Message-State: AOAM531Piqd2Yoa/nnQRg6+ooQqP0a9KVqI6LJhNovA7zs4gFiE2lnLp
+        FCouDXZ7i2d5SsRyUD3hBzSoG9RTeg8dnyAoOPbzfQ==
+X-Google-Smtp-Source: ABdhPJxbdvKjtKtbJCC9grRrKSo6+kZvrHTJ445dnzu5sAHOxM5Ses6yOP/mCA4uwQsHBV0RjO0w5oiZR245W4pWl/Q=
+X-Received: by 2002:a17:906:a153:: with SMTP id bu19mr24081209ejb.287.1612892110587;
+ Tue, 09 Feb 2021 09:35:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20210205080621.3102035-1-john.stultz@linaro.org>
- <20210205080621.3102035-2-john.stultz@linaro.org> <4471b3b0-603e-6dbb-8064-ff4a95afbba9@amd.com>
- <CALAqxLWZkUFvJX5r2OU2erW4tU3j=+u==VTyzYkt+95LwwVCUA@mail.gmail.com>
- <48225879-2fe1-22ac-daae-c61d52465aea@amd.com> <a9dd7f8a-ef30-9eb4-4834-37801d43b96f@amd.com>
-In-Reply-To: <a9dd7f8a-ef30-9eb4-4834-37801d43b96f@amd.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 9 Feb 2021 09:33:15 -0800
-Message-ID: <CAJuCfpE-T4Cs_h6LfrgHE+T_iOVywU2oNzLquYETudOaBMauMQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH v6 1/7] drm: Add a sharable drm page-pool implementation
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+References: <20210208145805.239714726@linuxfoundation.org>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 9 Feb 2021 23:04:59 +0530
+Message-ID: <CA+G9fYukMW13mCTXE2VYaDokxe59PB09Dcwkkb2aT8p6PakbLA@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/30] 4.14.221-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 4:57 AM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
+On Mon, 8 Feb 2021 at 20:38, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Am 09.02.21 um 13:11 schrieb Christian K=C3=B6nig:
-> > [SNIP]
-> >>>> +void drm_page_pool_add(struct drm_page_pool *pool, struct page *pag=
-e)
-> >>>> +{
-> >>>> +     spin_lock(&pool->lock);
-> >>>> +     list_add_tail(&page->lru, &pool->items);
-> >>>> +     pool->count++;
-> >>>> +     atomic_long_add(1 << pool->order, &total_pages);
-> >>>> +     spin_unlock(&pool->lock);
-> >>>> +
-> >>>> +     mod_node_page_state(page_pgdat(page),
-> >>>> NR_KERNEL_MISC_RECLAIMABLE,
-> >>>> +                         1 << pool->order);
-> >>> Hui what? What should that be good for?
-> >> This is a carryover from the ION page pool implementation:
-> >> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgi=
-t.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.git%2Ftr=
-ee%2Fdrivers%2Fstaging%2Fandroid%2Fion%2Fion_page_pool.c%3Fh%3Dv5.10%23n28&=
-amp;data=3D04%7C01%7Cchristian.koenig%40amd.com%7Cc4eadb0a9cf6491d99ba08d8c=
-a173457%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637481548325174885%7CU=
-nknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLC=
-JXVCI6Mn0%3D%7C1000&amp;sdata=3DFUjZK5NSDMUYfU7vGeE4fDU2HCF%2FYyNBwc30aoLLP=
-Q4%3D&amp;reserved=3D0
-> >>
-> >>
-> >> My sense is it helps with the vmstat/meminfo accounting so folks can
-> >> see the cached pages are shrinkable/freeable. This maybe falls under
-> >> other dmabuf accounting/stats discussions, so I'm happy to remove it
-> >> for now, or let the drivers using the shared page pool logic handle
-> >> the accounting themselves?
+> This is the start of the stable review cycle for the 4.14.221 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Intentionally separated the discussion for that here.
+> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
+> Anything received after that time might be too late.
 >
-> As far as I can see this is just bluntly incorrect.
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.221-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
 >
-> Either the page is reclaimable or it is part of our pool and freeable
-> through the shrinker, but never ever both.
+> thanks,
+>
+> greg k-h
 
-IIRC the original motivation for counting ION pooled pages as
-reclaimable was to include them into /proc/meminfo's MemAvailable
-calculations. NR_KERNEL_MISC_RECLAIMABLE defined as "reclaimable
-non-slab kernel pages" seems like a good place to account for them but
-I might be wrong.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
->
-> In the best case this just messes up the accounting, in the worst case
-> it can cause memory corruption.
->
-> Christian.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.14.221-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: c7c1196add2085d4956a80729d2832ef83d963c8
+git describe: v4.14.220-31-gc7c1196add20
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
+.y/build/v4.14.220-31-gc7c1196add20
+
+No regressions (compared to build v4.14.220)
+
+No fixes (compared to build v4.14.220)
+
+
+Ran 41474 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* fwts
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* v4l2-compliance
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-open-posix-tests
+* perf
+* kvm-unit-tests
+* rcutorture
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
