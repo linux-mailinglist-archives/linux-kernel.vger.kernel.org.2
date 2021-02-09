@@ -2,80 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271B3314EE0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32C3314EDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:24:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhBIMX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:23:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhBIMXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:23:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFB4664EB4;
-        Tue,  9 Feb 2021 12:23:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612873390;
-        bh=L+CvYP2l7yxFcu390LciJ5wzeQ4zlYr5y+5yTYVenYA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LDSUx5Wy/6WXXiafzKEK/f2JAMCSwNDd8U9cvhpFPM6vk0Mg9SCYWzpf41Fw00BNT
-         NuiGBA6Fxs4ZBiRYT7xF28QYktSPLVTV0Qu9MxT9SFh35axTZGqekyQrTtRkIhOFPC
-         2N8+Re1ScL4ZFotJE4gNLw/5KZo5FqGXIG6S8nyCGVQFwe46xsZbi275T6tRngYX5o
-         635JJP4Nh2sRTaUfygmLKAzzXF3EPHnWdUjwgzQL/tGfUYXzpHENg6mtfhmzfYCnCz
-         aElTv+gkpGxAPFlb6u8nxWqDH9daBoPGppZZbCziF4YVldt+9Eev+4UKyrY9o5VhAo
-         jPRrXPoki0DnQ==
-Date:   Tue, 9 Feb 2021 12:23:04 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 16/26] KVM: arm64: Prepare Hyp memory protection
-Message-ID: <20210209122303.GA27058@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-17-qperret@google.com>
- <20210203143709.GA18907@willie-the-truck>
- <YBvQrHdbiNTSLQq6@google.com>
- <YCJdPXuGr9kCIKVM@google.com>
+        id S229975AbhBIMWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhBIMWN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:22:13 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF9AC061788;
+        Tue,  9 Feb 2021 04:21:33 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id v5so25814348lft.13;
+        Tue, 09 Feb 2021 04:21:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CZUrnRm9ByTdlWXbkTDbS0P8AFModswyW8/LsEbzkus=;
+        b=eaTCAlytmFWgic1C1oLhMBo/YQ7FVrnxh+IeJXxXNz0VJ/oaEUFPhLwCMo70nHOkTk
+         h4HjtSGLYcAlY6YKI+jasC77dp7Hpxfx2R8qbXAUy4DxqTnT+KHetVp4hHkKAEFq74Ru
+         m/5muDrP5XBtQ9Qjixs2HtcRn/fn3UIJKOjwwYrZO2pcodumNefkfTgO/7/ouGpnEa7J
+         qaB55zsWFcSQiOpY/lsTx0xdSlzHfjiUAmRLSpCjjWeUC3/UPSNwccRs8njmcfFFdEHM
+         cRF3L9KyGYQIkRNtvHAFXw+uPOEa2ix/lBBt8C3Sh3+g+ryKNT4mZsQrN1ZWW4+YQjWi
+         wQ0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CZUrnRm9ByTdlWXbkTDbS0P8AFModswyW8/LsEbzkus=;
+        b=p6iRi4UVXoBjmjRshxtdWYGlXqx3N9qL85jeFLo2o7MBYyyoqaP4RhmOAZJL+Ak+iH
+         gRsN8kJB6meriy0g+OdzuqOAz4J2oC/YxI54Ke1H1G+AQ2fjb6LEWOm6U/Gca2ljP6O7
+         pykyXhT8jStdwdJmiOh8qZ5RHa60OTeioPXZimAKqpNuKhwlv9b4l3EuLPYu7Vk9BsN2
+         35nbsK5tujYYD/Gs7gK1teSIm7u5lo65/1OxgMfxX2t/jkEKdy2k9HgTuKp8p0dVMajZ
+         8WiThYyjM3FO4kb8QhGlsj/Xk6pwLqOE7rr0mvokUuVOvYfqXHbmLtU7gujhdH3M2arX
+         aIlA==
+X-Gm-Message-State: AOAM533vnDYWIPwgJFNM2qGn1mpTCVXnLZTGPox+SpzdaTP/qtONgz7D
+        E/auraJ1cStAU4eGn4nyAnrQS7IZUKZ4pyOU
+X-Google-Smtp-Source: ABdhPJygkihgdAQYaFff8iAgAIL1XqWwQiLsQ2+5StD5fqP4NuHagL9GSgVJpgWUIWKUiJve0O50og==
+X-Received: by 2002:ac2:4ecc:: with SMTP id p12mr5754480lfr.373.1612873291395;
+        Tue, 09 Feb 2021 04:21:31 -0800 (PST)
+Received: from [10.0.0.127] (91-157-86-155.elisa-laajakaista.fi. [91.157.86.155])
+        by smtp.gmail.com with ESMTPSA id f1sm517889ljj.124.2021.02.09.04.21.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 04:21:30 -0800 (PST)
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210209090036.30832-1-kishon@ti.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH] dmaengine: ti: k3-udma: Fix NULL pointer dereference
+ error
+Message-ID: <19488154-22d5-33b4-06a1-17e9a896ae04@gmail.com>
+Date:   Tue, 9 Feb 2021 14:23:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCJdPXuGr9kCIKVM@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210209090036.30832-1-kishon@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:00:29AM +0000, Quentin Perret wrote:
-> On Thursday 04 Feb 2021 at 10:47:08 (+0000), Quentin Perret wrote:
-> > On Wednesday 03 Feb 2021 at 14:37:10 (+0000), Will Deacon wrote:
-> > > > +static void handle___pkvm_init(struct kvm_cpu_context *host_ctxt)
-> > > > +{
-> > > > +	DECLARE_REG(phys_addr_t, phys, host_ctxt, 1);
-> > > > +	DECLARE_REG(unsigned long, size, host_ctxt, 2);
-> > > > +	DECLARE_REG(unsigned long, nr_cpus, host_ctxt, 3);
-> > > > +	DECLARE_REG(unsigned long *, per_cpu_base, host_ctxt, 4);
-> > > > +
-> > > > +	cpu_reg(host_ctxt, 1) = __pkvm_init(phys, size, nr_cpus, per_cpu_base);
-> > > 
-> > > __pkvm_init() doesn't return, so I think this assignment back into host_ctxt
-> > > is confusing.
-> > 
-> > Very good point, I'll get rid of this.
+Hi Kishon,
+
+On 2/9/21 11:00 AM, Kishon Vijay Abraham I wrote:
+> bcdma_get_*() and udma_get_*() checks if bchan/rchan/tchan/rflow is
+> already allocated by checking if it has a NON NULL value. For the
+> error cases, bchan/rchan/tchan/rflow will have error value
+> and bcdma_get_*() and udma_get_*() considers this as already allocated
+> (PASS) since the error values are NON NULL. This results in
+> NULL pointer dereference error while de-referencing
+> bchan/rchan/tchan/rflow.
+
+I think this can happen when a channel request fails and we get a second
+request coming and faces with the not cleanup up tchan/rchan/bchan/rflow
+from the previous failure.
+Interesting that I have not faced with this, but it is a valid oversight
+from me.
+
+> Reset the value of bchan/rchan/tchan/rflow to NULL if the allocation
+> actually fails.
 > 
-> Actually not, I think I'll leave it like that. __pkvm_init can return an
-> error, which is why I did this in the first place And it is useful for
-> debugging to have it propagated back to the host.
+> Fixes: 017794739702 ("dmaengine: ti: k3-udma: Initial support for K3 BCDMA")
+> Fixes: 25dcb5dd7b7c ("dmaengine: ti: New driver for K3 UDMA")
 
-Good point, but please add a comment!
+Will this patch apply at any of these?
+25dcb5dd7b7c does not have BCDMA (bchan)
+017794739702 does not contain PKTDMA (tflow)
 
-Will
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  drivers/dma/ti/k3-udma.c | 30 +++++++++++++++++++++++++-----
+>  1 file changed, 25 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+> index 298460438bb4..aa4ef583ff83 100644
+> --- a/drivers/dma/ti/k3-udma.c
+> +++ b/drivers/dma/ti/k3-udma.c
+> @@ -1330,6 +1330,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
+>  {
+>  	struct udma_dev *ud = uc->ud;
+>  	enum udma_tp_level tpl;
+> +	int ret;
+>  
+>  	if (uc->bchan) {
+>  		dev_dbg(ud->dev, "chan%d: already have bchan%d allocated\n",
+> @@ -1347,8 +1348,11 @@ static int bcdma_get_bchan(struct udma_chan *uc)
+>  		tpl = ud->bchan_tpl.levels - 1;
+>  
+>  	uc->bchan = __udma_reserve_bchan(ud, tpl, -1);
+> -	if (IS_ERR(uc->bchan))
+> -		return PTR_ERR(uc->bchan);
+> +	if (IS_ERR(uc->bchan)) {
+> +		ret = PTR_ERR(uc->bchan);
+> +		uc->bchan = NULL;
+> +		return ret;
+> +	}
+>  
+>  	uc->tchan = uc->bchan;
+>  
+> @@ -1358,6 +1362,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
+>  static int udma_get_tchan(struct udma_chan *uc)
+>  {
+>  	struct udma_dev *ud = uc->ud;
+> +	int ret;
+>  
+>  	if (uc->tchan) {
+>  		dev_dbg(ud->dev, "chan%d: already have tchan%d allocated\n",
+> @@ -1372,8 +1377,11 @@ static int udma_get_tchan(struct udma_chan *uc)
+>  	 */
+>  	uc->tchan = __udma_reserve_tchan(ud, uc->config.channel_tpl,
+>  					 uc->config.mapped_channel_id);
+> -	if (IS_ERR(uc->tchan))
+> -		return PTR_ERR(uc->tchan);
+> +	if (IS_ERR(uc->tchan)) {
+> +		ret = PTR_ERR(uc->tchan);
+> +		uc->tchan = NULL;
+> +		return ret;
+> +	}
+>  
+>  	if (ud->tflow_cnt) {
+>  		int tflow_id;
+> @@ -1403,6 +1411,7 @@ static int udma_get_tchan(struct udma_chan *uc)
+>  static int udma_get_rchan(struct udma_chan *uc)
+>  {
+>  	struct udma_dev *ud = uc->ud;
+> +	int ret;
+>  
+>  	if (uc->rchan) {
+>  		dev_dbg(ud->dev, "chan%d: already have rchan%d allocated\n",
+> @@ -1417,8 +1426,13 @@ static int udma_get_rchan(struct udma_chan *uc)
+>  	 */
+>  	uc->rchan = __udma_reserve_rchan(ud, uc->config.channel_tpl,
+>  					 uc->config.mapped_channel_id);
+> +	if (IS_ERR(uc->rchan)) {
+> +		ret = PTR_ERR(uc->rchan);
+> +		uc->rchan = NULL;
+> +		return ret;
+> +	}
+>  
+> -	return PTR_ERR_OR_ZERO(uc->rchan);
+> +	return 0;
+>  }
+>  
+>  static int udma_get_chan_pair(struct udma_chan *uc)
+> @@ -1472,6 +1486,7 @@ static int udma_get_chan_pair(struct udma_chan *uc)
+>  static int udma_get_rflow(struct udma_chan *uc, int flow_id)
+>  {
+>  	struct udma_dev *ud = uc->ud;
+> +	int ret;
+>  
+>  	if (!uc->rchan) {
+>  		dev_err(ud->dev, "chan%d: does not have rchan??\n", uc->id);
+> @@ -1485,6 +1500,11 @@ static int udma_get_rflow(struct udma_chan *uc, int flow_id)
+>  	}
+>  
+>  	uc->rflow = __udma_get_rflow(ud, flow_id);
+> +	if (IS_ERR(uc->rflow)) {
+> +		ret = PTR_ERR(uc->rflow);
+> +		uc->rflow = NULL;
+> +		return ret;
+> +	}
+>  
+>  	return PTR_ERR_OR_ZERO(uc->rflow);
+
+return 0;
+
+>  }
+> 
+
+-- 
+Péter
