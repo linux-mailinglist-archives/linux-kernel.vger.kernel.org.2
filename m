@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5403F315507
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E5F315512
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 18:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbhBIR0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 12:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233029AbhBIRYg (ORCPT
+        id S233228AbhBIR1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 12:27:47 -0500
+Received: from smtprelay0109.hostedemail.com ([216.40.44.109]:55350 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233196AbhBIR1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:24:36 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E83C06174A;
-        Tue,  9 Feb 2021 09:23:54 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id o63so12895102pgo.6;
-        Tue, 09 Feb 2021 09:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RFVknN5dERN41og2aHl0XoYuNNJGuTwr49EdvhAcYF0=;
-        b=ndt9MHp6FFgpH6qFQZRVxB+1tx1ZTvVGIZ3hw2tgEWNYbwS+T4wRjKhzllXOw309yK
-         v5I756QuhI/YBfZKWB5Pn5rFX0CkOUBIFXXZz1rM0jgZ8Fq7zWTZw+FoHVfQcclY6jDW
-         HltM2+C6rmxDXPpcaUwEw+vxRD1CSIXti9aYye6tG4/5BV4jMnYBwv102DnO6PtMDDLH
-         OlvO9mQbjqP0PK522JKFMYXFlw0MXLTN70NXaRu5N6/GdzodsjtaLJlbAiRkAkSc7uJY
-         tGnyO1lpB1CIkkr/kbedLZ1S1BczwwJDposXGEGtaxTuMRbczrA7IyJHKGEtASzt4UDP
-         OM2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RFVknN5dERN41og2aHl0XoYuNNJGuTwr49EdvhAcYF0=;
-        b=l7E/BirbF/ya7AFDtTC1jbc6VslA0l0q8/J1nk/gen6CxHXVA6jpxmsnJXWEI61i71
-         /kiaIoFP9ksmjL2YT1RONUEE8o41br77NVEEsde+Oe8QlrFfRBvVH7ShWXPMzwuxQfQk
-         YZJKnJ40ztUXRTHVJlXkFispzt1gPwytinMfkbBNJ6TEunFMqK5p6uF3GCop2C0EgMVm
-         jt4cvs6SCgJHm0rVWn3zGXHRWXJo1CH14c0U1PtDtUb09PylFY9cAMXUr5zkF8ZKwWEq
-         1QR575zpAMY6xUYO1TIWuyU+HyBw3mkg+VGKj+2iYj7P+0DptRYIz21WLQnUwiElitXs
-         Y0EA==
-X-Gm-Message-State: AOAM530ZkOotOmHJodR4Hu3vwjdSelWn8Y6McoPLze4IHiNUnEDpYXiX
-        T9GhQ9M9f+WYfk7chmn+bk95iXYxQ/k=
-X-Google-Smtp-Source: ABdhPJxbB1oIcwXpTxFcUO8kXJIxUwESY1nA4Zn8PwOV1SYOFlZ7O7zbKUX6jZaav5uzasobawp4Ow==
-X-Received: by 2002:a63:1c12:: with SMTP id c18mr23169278pgc.356.1612891433165;
-        Tue, 09 Feb 2021 09:23:53 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 9sm22564940pfo.1.2021.02.09.09.23.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 09:23:52 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org, corbet@lwn.net
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION)
-Subject: [PATCH v2] Documentation/admin-guide: kernel-parameters: Update nohlt section
-Date:   Tue,  9 Feb 2021 09:23:48 -0800
-Message-Id: <20210209172349.2249596-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Feb 2021 12:27:10 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 02FF41821C6A6;
+        Tue,  9 Feb 2021 17:24:18 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3867:3868:3870:3871:4250:4321:4362:5007:6119:6120:7652:7774:7901:10004:10400:11026:11232:11657:11658:11783:11914:12043:12297:12438:12740:12895:13161:13225:13229:13255:13439:13894:14093:14096:14097:14181:14659:14721:21080:21433:21451:21611:21627:21990:30012:30041:30054:30056:30064:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:7,LUA_SUMMARY:none
+X-HE-Tag: flock94_3b0d3f127609
+X-Filterd-Recvd-Size: 3474
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  9 Feb 2021 17:24:16 +0000 (UTC)
+Message-ID: <f20f16691faba583f8d8970e02827c88dd9fb49e.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: do not apply "initialise globals to 0"
+ check to BPF progs
+From:   Joe Perches <joe@perches.com>
+To:     Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Andy Whitcroft <apw@canonical.com>
+Date:   Tue, 09 Feb 2021 09:24:15 -0800
+In-Reply-To: <20210209170013.3475063-1-songliubraving@fb.com>
+References: <20210209170013.3475063-1-songliubraving@fb.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the documentation regarding "nohlt" and indicate that it is not
-only for bugs, but can be useful to disable the architecture specific
-sleep instructions. ARM, ARM64, SuperH and Microblaze all use
-CONFIG_GENERIC_IDLE_POLL_SETUP which takes care of honoring the
-"hlt"/"nohlt" parameters.
+On Tue, 2021-02-09 at 09:00 -0800, Song Liu wrote:
+> BPF programs explicitly initialise global variables to 0 to make sure
+> clang (v10 or older) do not put the variables in the common section.
+> Skip "initialise globals to 0" check for BPF programs to elimiate error
+> messages like:
+> 
+>     ERROR: do not initialise globals to 0
+>     #19: FILE: samples/bpf/tracex1_kern.c:21:
+> 
+> Cc: Andy Whitcroft <apw@canonical.com>
+> Cc: Joe Perches <joe@perches.com>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> 
+> ---
+> Changes v1 => v2:
+>   1. Add function exclude_global_initialisers() to keep the code clean.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v2:
+thanks.  trivia and a question:
 
-- used ';' after requires CONFIG_GENERIC_IDLE_POLL_SETUP (Randy)
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -2428,6 +2428,15 @@ sub get_raw_comment {
+>  	return $comment;
+>  }
+> 
+> +sub exclude_global_initialisers {
+> +	my ($realfile) = @_;
+> +
+> +	# Do not check for BPF programs (tools/testing/selftests/bpf/progs/*.c, samples/bpf/*_kern.c, *.bpf.c).
+> +	return $realfile =~ /^tools\/testing\/selftests\/bpf\/progs\/.*\.c/ ||
+> +		$realfile =~ /^samples\/bpf\/.*_kern.c/ ||
 
- Documentation/admin-guide/kernel-parameters.txt | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+The checkpatch convention commonly used for $realfile comparisons
+to file patterns with directory paths is m@...@
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a10b545c2070..0ea023242327 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3266,9 +3266,14 @@
- 			parameter, xsave area per process might occupy more
- 			memory on xsaves enabled systems.
- 
--	nohlt		[BUGS=ARM,SH] Tells the kernel that the sleep(SH) or
--			wfi(ARM) instruction doesn't work correctly and not to
--			use it. This is also useful when using JTAG debugger.
-+	nohlt		[ARM,ARM64,MICROBLAZE,SH] Forces the kernel to busy wait
-+			in do_idle() and not use the arch_cpu_idle()
-+			implementation; requires CONFIG_GENERIC_IDLE_POLL_SETUP
-+			to be effective. This is useful on platforms where the
-+			sleep(SH) or wfi(ARM,ARM64) instructions do not work
-+			correctly or when doing power measurements to evalute
-+			the impact of the sleep instructions. This is also
-+			useful when using JTAG debugger.
- 
- 	no_file_caps	Tells the kernel not to honor file capabilities.  The
- 			only way then for a file to be executed with privilege
--- 
-2.25.1
+	return $realfile =~ m@^tools/testing/selftests/bpf/progs/.*\.c@ ||
+		$realfile =~ m@^samples/bpf/.*_kern\.c@ ||
+
+> +		$realfile =~ /.bpf.c$/;
+
+And lastly, is this pattern meant to escape the periods?
+I presume so, but if not, the leading period isn't useful.
+
+Maybe:
+		$realfile =~ m@/bpf/.*\.bpf\.c$@;
+
+$ git ls-files | grep "\.bpf\.c$"
+kernel/bpf/preload/iterators/iterators.bpf.c
+tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+tools/bpf/bpftool/skeleton/profiler.bpf.c
+tools/bpf/runqslower/runqslower.bpf.c
+
+vs
+
+$ git ls-files | grep ".bpf.c$"
+drivers/net/hyperv/netvsc_bpf.c
+drivers/net/netdevsim/bpf.c
+kernel/bpf/preload/iterators/iterators.bpf.c
+lib/test_bpf.c
+net/core/lwt_bpf.c
+net/ipv4/tcp_bpf.c
+net/ipv4/udp_bpf.c
+net/netfilter/xt_bpf.c
+net/sched/act_bpf.c
+net/sched/cls_bpf.c
+samples/bpf/test_lwt_bpf.c
+tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+tools/bpf/bpftool/skeleton/profiler.bpf.c
+tools/bpf/runqslower/runqslower.bpf.c
+tools/build/feature/test-bpf.c
+tools/build/feature/test-libbpf.c
+tools/lib/bpf/bpf.c
+tools/lib/bpf/libbpf.c
+tools/perf/tests/bpf.c
+tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
+tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+tools/testing/selftests/net/reuseport_bpf.c
+tools/testing/selftests/seccomp/seccomp_bpf.c
+
 
