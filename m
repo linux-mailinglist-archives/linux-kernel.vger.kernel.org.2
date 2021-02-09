@@ -2,117 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A049F314CFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:29:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C1E314D01
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhBIK2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:28:10 -0500
-Received: from mga09.intel.com ([134.134.136.24]:34106 "EHLO mga09.intel.com"
+        id S231783AbhBIK3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:29:12 -0500
+Received: from mx.socionext.com ([202.248.49.38]:51004 "EHLO mx.socionext.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231725AbhBIKTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:19:39 -0500
-IronPort-SDR: dNkmE8Eyjl9RwoobUve/Ja1o7am2Hyjipna9Q81FnErHtqryca0r1f3K55fDa+IOgWiQUq7Ysn
- TODQwDFEMXfQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="182003195"
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="182003195"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 02:18:53 -0800
-IronPort-SDR: He5tAHtoEYXlOqIKbGKquQgstzXgcG1ROVWz9v9pqn8A6af69CKU4SblPxW7wmBhxSO8hR02LI
- TLfRSOmV1rsA==
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="396059715"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 02:18:50 -0800
-Date:   Tue, 9 Feb 2021 18:18:48 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>
-Subject: Re: [PATCH v9 00/18] HSM driver for ACRN hypervisor
-Message-ID: <20210209101848.GD15601@shuo-intel.sh.intel.com>
-References: <20210207031040.49576-1-shuo.a.liu@intel.com>
- <YCJdVy+e5Sy2IcnS@kroah.com>
+        id S231510AbhBIKUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:20:03 -0500
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 09 Feb 2021 19:19:07 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id E69CC2059027;
+        Tue,  9 Feb 2021 19:19:07 +0900 (JST)
+Received: from 10.213.24.1 (10.213.24.1) by m-FILTER with ESMTP; Tue, 9 Feb 2021 19:19:07 +0900
+Received: from SOC-EX02V.e01.socionext.com (10.213.24.22) by
+ SOC-EX01V.e01.socionext.com (10.213.24.21) with Microsoft SMTP Server (TLS)
+ id 15.0.995.29; Tue, 9 Feb 2021 19:19:07 +0900
+Received: from SOC-EX02V.e01.socionext.com ([10.213.25.22]) by
+ SOC-EX02V.e01.socionext.com ([10.213.25.22]) with mapi id 15.00.0995.028;
+ Tue, 9 Feb 2021 19:19:07 +0900
+From:   <obayashi.yoshimasa@socionext.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <sumit.garg@linaro.org>, <hch@lst.de>, <m.szyprowski@samsung.com>,
+        <robin.murphy@arm.com>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <daniel.thompson@linaro.org>
+Subject: RE: DMA direct mapping fix for 5.4 and earlier stable branches
+Thread-Topic: DMA direct mapping fix for 5.4 and earlier stable branches
+Thread-Index: AQHW/qowxPC004ZwL0WzBboqT0yFrapOzcOAgAAQ0oCAAAGYgIAAmb8Q//98PwCAAKOy0A==
+Date:   Tue, 9 Feb 2021 10:19:07 +0000
+Message-ID: <ed485ad069af4d1481e3961db4a3e079@SOC-EX02V.e01.socionext.com>
+References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
+ <YCIym62vHfbG+dWf@kroah.com>
+ <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
+ <YCJCDZGa1Dhqv6Ni@kroah.com>
+ <27bbe35deacb4ca49f31307f4ed551b5@SOC-EX02V.e01.socionext.com>
+ <YCJUgKDNVjJ4dUqM@kroah.com>
+In-Reply-To: <YCJUgKDNVjJ4dUqM@kroah.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-securitypolicycheck: OK by SHieldMailChecker v2.6.1
+x-shieldmailcheckerpolicyversion: POLICY200130
+x-originating-ip: [10.213.24.1]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YCJdVy+e5Sy2IcnS@kroah.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue  9.Feb'21 at 11:00:55 +0100, Greg Kroah-Hartman wrote:
->On Sun, Feb 07, 2021 at 11:10:22AM +0800, shuo.a.liu@intel.com wrote:
->> From: Shuo Liu <shuo.a.liu@intel.com>
->>
->> ACRN is a Type 1 reference hypervisor stack, running directly on the bare-metal
->> hardware, and is suitable for a variety of IoT and embedded device solutions.
->>
->> ACRN implements a hybrid VMM architecture, using a privileged Service VM. The
->> Service VM manages the system resources (CPU, memory, etc.) and I/O devices of
->> User VMs. Multiple User VMs are supported, with each of them running Linux,
->> Android OS or Windows. Both Service VM and User VMs are guest VM.
->>
->> Below figure shows the architecture.
->>
->>                 Service VM                    User VM
->>       +----------------------------+  |  +------------------+
->>       |        +--------------+    |  |  |                  |
->>       |        |ACRN userspace|    |  |  |                  |
->>       |        +--------------+    |  |  |                  |
->>       |-----------------ioctl------|  |  |                  |   ...
->>       |kernel space   +----------+ |  |  |                  |
->>       |               |   HSM    | |  |  | Drivers          |
->>       |               +----------+ |  |  |                  |
->>       +--------------------|-------+  |  +------------------+
->>   +---------------------hypercall----------------------------------------+
->>   |                       ACRN Hypervisor                                |
->>   +----------------------------------------------------------------------+
->>   |                          Hardware                                    |
->>   +----------------------------------------------------------------------+
->>
->> There is only one Service VM which could run Linux as OS.
->>
->> In a typical case, the Service VM will be auto started when ACRN Hypervisor is
->> booted. Then the ACRN userspace (an application running in Service VM) could be
->> used to start/stop User VMs by communicating with ACRN Hypervisor Service
->> Module (HSM).
->>
->> ACRN Hypervisor Service Module (HSM) is a middle layer that allows the ACRN
->> userspace and Service VM OS kernel to communicate with ACRN Hypervisor
->> and manage different User VMs. This middle layer provides the following
->> functionalities,
->>   - Issues hypercalls to the hypervisor to manage User VMs:
->>       * VM/vCPU management
->>       * Memory management
->>       * Device passthrough
->>       * Interrupts injection
->>   - I/O requests handling from User VMs.
->>   - Exports ioctl through HSM char device.
->>   - Exports function calls for other kernel modules
->>
->> ACRN is focused on embedded system. So it doesn't support some features.
->> E.g.,
->>   - ACRN doesn't support VM migration.
->>   - ACRN doesn't support vCPU migration.
->>
->> This patch set adds the HSM to the Linux kernel.
->> I also added a simple example to launch a small guest (with several instructions
->> as payload) on ACRN with demonstration ioctl usage.
->>
->> The basic ARCN support was merged to upstream already.
->> https://lore.kernel.org/lkml/1559108037-18813-3-git-send-email-yakui.zhao@intel.com/
->
->Thanks for sticking with this, now merged to my tree.
-
-Thanks Greg and all for reviewing this series.
-
-A really good Spring Festival gift for ACRN. :)
-
-Thanks
-shuo
+PiBIb3cgZG8geW91IGp1ZGdlICJtYXR1cmUiPw0KDQogIE15IGJhc2ljIGNyaXRlcmlhIGFyZQ0K
+KiBGdW5jdGlvbiBpcyBleGlzdCwgYnV0IGJ1ZyBmaXggaXMgbmVjZXNzYXJ5OiAibWF0dXJlIg0K
+KiBGdW5jdGlvbiBleHRlbnNpb24gaXMgbmVjZXNzYXJ5OiAiaW1tYXR1cmUiDQoNCj4gQW5kIGFn
+YWluLCBpZiBhIGZlYXR1cmUgaXNuJ3QgcHJlc2VudCBpbiBhIHNwZWNpZmljIGtlcm5lbCB2ZXJz
+aW9uLCB3aHkgd291bGQgeW91IHRoaW5rIHRoYXQgaXQgd291bGQgYmUNCj4gYSB2aWFibGUgc29s
+dXRpb24gZm9yIHlvdSB0byB1c2U/DQoNCiAgU28sICJhIGZlYXR1cmUgaXNuJ3QgcHJlc2VudCBp
+biBhIHNwZWNpZmljIGtlcm5lbCB2ZXJzaW9uIiwgDQphbHNvIG1lYW5zICJpbW1hdHVyZSIgYWNj
+b3JkaW5nIHRvIG15IGNyaXRlcmlhLg0KDQpSZWdhcmRzLg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVz
+c2FnZS0tLS0tDQo+IEZyb206IEdyZWcgS0ggPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPg0K
+PiBTZW50OiBUdWVzZGF5LCBGZWJydWFyeSA5LCAyMDIxIDY6MjMgUE0NCj4gVG86IE9iYXlhc2hp
+LCBZb3NoaW1hc2EvGyRCSHhOUxsoQiAbJEJBMUA1GyhCIDxvYmF5YXNoaS55b3NoaW1hc2FAc29j
+aW9uZXh0LmNvbT4NCj4gQ2M6IHN1bWl0LmdhcmdAbGluYXJvLm9yZzsgaGNoQGxzdC5kZTsgbS5z
+enlwcm93c2tpQHNhbXN1bmcuY29tOyByb2Jpbi5tdXJwaHlAYXJtLmNvbTsNCj4gaW9tbXVAbGlz
+dHMubGludXgtZm91bmRhdGlvbi5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHN0
+YWJsZUB2Z2VyLmtlcm5lbC5vcmc7DQo+IGRhbmllbC50aG9tcHNvbkBsaW5hcm8ub3JnDQo+IFN1
+YmplY3Q6IFJlOiBETUEgZGlyZWN0IG1hcHBpbmcgZml4IGZvciA1LjQgYW5kIGVhcmxpZXIgc3Rh
+YmxlIGJyYW5jaGVzDQo+IA0KPiBPbiBUdWUsIEZlYiAwOSwgMjAyMSBhdCAwOTowNTo0MEFNICsw
+MDAwLCBvYmF5YXNoaS55b3NoaW1hc2FAc29jaW9uZXh0LmNvbSB3cm90ZToNCj4gPiA+ID4gQXMg
+dGhlIGRyaXZlcnMgYXJlIGN1cnJlbnRseSB1bmRlciBkZXZlbG9wbWVudCBhbmQgU29jaW9uZXh0
+IGhhcw0KPiA+ID4gPiBjaG9zZW4gNS40IHN0YWJsZSBrZXJuZWwgZm9yIHRoZWlyIGRldmVsb3Bt
+ZW50LiBTbyBJIHdpbGwgbGV0DQo+ID4gPiA+IE9iYXlhc2hpLXNhbiBhbnN3ZXIgdGhpcyBpZiBp
+dCdzIHBvc3NpYmxlIGZvciB0aGVtIHRvIG1pZ3JhdGUgdG8NCj4gPiA+ID4gNS4xMCBpbnN0ZWFk
+Pw0KPiA+DQo+ID4gICBXZSBoYXZlIHN0YXJ0ZWQgdGhpcyBkZXZlbG9wbWVudCBwcm9qZWN0IGZy
+b20gbGFzdCBBdWd1c3QsIHNvIHdlDQo+ID4gaGF2ZSBzZWxlY3RlZCA1LjQgYXMgbW9zdCByZWNl
+bnQgYW5kIGxvbmdlc3QgbGlmZXRpbWUgTFRTIHZlcnNpb24gYXQNCj4gPiB0aGF0IHRpbWUuDQo+
+ID4NCj4gPiAgIEFuZCB3ZSBoYXZlIGFscmVhZHkgZmluaXNoZWQgdG8gZGV2ZWxvcCBvdGhlciBk
+ZXZpY2UgZHJpdmVycywgYW5kDQo+ID4gVmlkZW8gY29udmVydGVyIGFuZCBDT0RFQyBkcml2ZXJz
+IGFyZSBub3cgaW4gZGV2ZWxvcG1lbnQuDQo+ID4NCj4gPiA+IFdoeSBwaWNrIGEga2VybmVsIHRo
+YXQgZG9lc24gbm90IHN1cHBvcnQgdGhlIGZlYXR1cmVzIHRoZXkgcmVxdWlyZT8NCj4gPiA+IFRo
+YXQgc2VlbXMgdmVyeSBvZGQgYW5kIHVud2lzZS4NCj4gPg0KPiA+ICAgRnJvbSB0aGUgdmlldyBw
+b2ludCBvZiBaZXJvQ29weSB1c2luZyBETUFCVUYsIGlzIDUuNCBub3QgbWF0dXJlDQo+ID4gZW5v
+dWdoLCBhbmQgaXMgNS4xMCBlbm91Z2ggbWF0dXJlID8NCj4gPiAgIFRoaXMgaXMgdGhlIG1vc3Qg
+aW1wb3J0YW50IHBvaW50IGZvciBqdWRnaW5nIG1pZ3JhdGlvbi4NCj4gDQo+IEhvdyBkbyB5b3Ug
+anVkZ2UgIm1hdHVyZSI/DQo+IA0KPiBBbmQgYWdhaW4sIGlmIGEgZmVhdHVyZSBpc24ndCBwcmVz
+ZW50IGluIGEgc3BlY2lmaWMga2VybmVsIHZlcnNpb24sIHdoeSB3b3VsZCB5b3UgdGhpbmsgdGhh
+dCBpdCB3b3VsZCBiZQ0KPiBhIHZpYWJsZSBzb2x1dGlvbiBmb3IgeW91IHRvIHVzZT8NCj4gDQo+
+IGdvb2QgbHVjayENCj4gDQo+IGdyZWcgay1oDQo=
