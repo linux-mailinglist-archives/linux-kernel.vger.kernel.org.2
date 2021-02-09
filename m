@@ -2,104 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8F9314EA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C69314EBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhBIMEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:04:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53234 "EHLO mail.kernel.org"
+        id S230093AbhBIMLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:11:10 -0500
+Received: from mga03.intel.com ([134.134.136.65]:2684 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhBIMCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:02:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2DDC64E16;
-        Tue,  9 Feb 2021 12:01:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612872117;
-        bh=KXnFUWkeE3RzAL45lDxdFx/y1wzKceAzbuyX52i4TsI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DOTJHzzs0FAsJ9XZl1aGZ5cH8m8J6FlrUnzLTsv+HQsJPyoVjmCXhXEjUCceVUmNA
-         mm29z79OAsLiQ013RWN+KhCvGh3r5fqgAyfLkqw+sPpEldf1l3bGpk7z8NvUTcBD9x
-         gD47PEY6W2LOY6R2YitBTaNoniiO/UE5cclIXM40=
-Date:   Tue, 9 Feb 2021 13:01:23 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zhou Wang <wangzhou1@hisilicon.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-api@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        song.bao.hua@hisilicon.com, jgg@ziepe.ca, kevin.tian@intel.com,
-        jean-philippe@linaro.org, eric.auger@redhat.com,
-        liguozhu@hisilicon.com, zhangfei.gao@linaro.org,
-        Sihang Chen <chensihang1@hisilicon.com>
-Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-Message-ID: <YCJ5k/Bxxkg3BNNj@kroah.com>
-References: <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
- <ED58431F-5972-47D1-BF50-93A20AD86C46@amacapital.net>
- <2e6cf99f-beb6-9bef-1316-5e58fb0aa86e@hisilicon.com>
- <YCJX6QFQ4hsNRrFj@kroah.com>
- <f73951ba-84be-b7f8-8c79-db84bc9081f3@hisilicon.com>
+        id S229719AbhBIMKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:10:00 -0500
+IronPort-SDR: xagN38vN6YCwwHcRN9pVmg1E7rvUECPcCWbwaHjohs1uRhpgPMtoJcnPBrJe5ZWD5dllMyoRHz
+ 0IeIc3SXHyKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="181931417"
+X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
+   d="scan'208";a="181931417"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 04:08:04 -0800
+IronPort-SDR: EkElaaO7PCIBA7u/r7+YS4trpQvRbTAKGLXQ9dXFuJaQMYuagqKw+/nG+EKN+fuOkgJwNMxnEj
+ bFzIa3t3AiOA==
+X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
+   d="scan'208";a="396095446"
+Received: from yisun1-ubuntu.bj.intel.com (HELO yi.y.sun) ([10.238.156.116])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 09 Feb 2021 04:07:59 -0800
+Date:   Tue, 9 Feb 2021 20:02:31 +0800
+From:   Yi Sun <yi.y.sun@linux.intel.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Keqian Zhu <zhukeqian1@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>, kvm@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        Marc Zyngier <maz@kernel.org>, jiangkunkun@huawei.com,
+        wanghaibin.wang@huawei.com, kevin.tian@intel.com,
+        yan.y.zhao@intel.com, Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, lushenming@huawei.com,
+        iommu@lists.linux-foundation.org, James Morse <james.morse@arm.com>
+Subject: Re: [RFC PATCH 10/11] vfio/iommu_type1: Optimize dirty bitmap
+ population based on iommu HWDBM
+Message-ID: <20210209120231.GC28580@yi.y.sun>
+References: <20210128151742.18840-1-zhukeqian1@huawei.com>
+ <20210128151742.18840-11-zhukeqian1@huawei.com>
+ <20210207095630.GA28580@yi.y.sun>
+ <8150bd3a-dbb9-2e2b-386b-04e66f4b68dc@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f73951ba-84be-b7f8-8c79-db84bc9081f3@hisilicon.com>
+In-Reply-To: <8150bd3a-dbb9-2e2b-386b-04e66f4b68dc@arm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 07:58:15PM +0800, Zhou Wang wrote:
-> On 2021/2/9 17:37, Greg KH wrote:
-> > On Tue, Feb 09, 2021 at 05:17:46PM +0800, Zhou Wang wrote:
-> >> On 2021/2/8 6:02, Andy Lutomirski wrote:
-> >>>
-> >>>
-> >>>> On Feb 7, 2021, at 12:31 AM, Zhou Wang <wangzhou1@hisilicon.com> wrote:
-> >>>>
-> >>>> ﻿SVA(share virtual address) offers a way for device to share process virtual
-> >>>> address space safely, which makes more convenient for user space device
-> >>>> driver coding. However, IO page faults may happen when doing DMA
-> >>>> operations. As the latency of IO page fault is relatively big, DMA
-> >>>> performance will be affected severely when there are IO page faults.
-> >>>> From a long term view, DMA performance will be not stable.
-> >>>>
-> >>>> In high-performance I/O cases, accelerators might want to perform
-> >>>> I/O on a memory without IO page faults which can result in dramatically
-> >>>> increased latency. Current memory related APIs could not achieve this
-> >>>> requirement, e.g. mlock can only avoid memory to swap to backup device,
-> >>>> page migration can still trigger IO page fault.
-> >>>>
-> >>>> Various drivers working under traditional non-SVA mode are using
-> >>>> their own specific ioctl to do pin. Such ioctl can be seen in v4l2,
-> >>>> gpu, infiniband, media, vfio, etc. Drivers are usually doing dma
-> >>>> mapping while doing pin.
-> >>>>
-> >>>> But, in SVA mode, pin could be a common need which isn't necessarily
-> >>>> bound with any drivers, and neither is dma mapping needed by drivers
-> >>>> since devices are using the virtual address of CPU. Thus, It is better
-> >>>> to introduce a new common syscall for it.
-> >>>>
-> >>>> This patch leverages the design of userfaultfd and adds mempinfd for pin
-> >>>> to avoid messing up mm_struct. A fd will be got by mempinfd, then user
-> >>>> space can do pin/unpin pages by ioctls of this fd, all pinned pages under
-> >>>> one file will be unpinned in file release process. Like pin page cases in
-> >>>> other places, can_do_mlock is used to check permission and input
-> >>>> parameters.
-> >>>
-> >>>
-> >>> Can you document what the syscall does?
-> >>
-> >> Will add related document in Documentation/vm.
-> > 
-> > A manpage is always good, and will be required eventually :)
+On 21-02-09 11:16:08, Robin Murphy wrote:
+> On 2021-02-07 09:56, Yi Sun wrote:
+> >Hi,
+> >
+> >On 21-01-28 23:17:41, Keqian Zhu wrote:
+> >
+> >[...]
+> >
+> >>+static void vfio_dma_dirty_log_start(struct vfio_iommu *iommu,
+> >>+				     struct vfio_dma *dma)
+> >>+{
+> >>+	struct vfio_domain *d;
+> >>+
+> >>+	list_for_each_entry(d, &iommu->domain_list, next) {
+> >>+		/* Go through all domain anyway even if we fail */
+> >>+		iommu_split_block(d->domain, dma->iova, dma->size);
+> >>+	}
+> >>+}
+> >
+> >This should be a switch to prepare for dirty log start. Per Intel
+> >Vtd spec, there is SLADE defined in Scalable-Mode PASID Table Entry.
+> >It enables Accessed/Dirty Flags in second-level paging entries.
+> >So, a generic iommu interface here is better. For Intel iommu, it
+> >enables SLADE. For ARM, it splits block.
 > 
-> manpage is maintained in another repo. Do you mean add a manpage
-> patch in this series?
+> From a quick look, VT-D's SLADE and SMMU's HTTU appear to be the
+> exact same thing. This step isn't about enabling or disabling that
+> feature itself (the proposal for SMMU is to simply leave HTTU
+> enabled all the time), it's about controlling the granularity at
+> which the dirty status can be detected/reported at all, since that's
+> tied to the pagetable structure.
+> 
+> However, if an IOMMU were to come along with some other way of
+> reporting dirty status that didn't depend on the granularity of
+> individual mappings, then indeed it wouldn't need this operation.
+> 
+Per my thought, we can use these two start/stop interfaces to make
+user space decide when to start/stop the dirty tracking. For Intel
+SLADE, I think we can enable this bit when this start interface is
+called by user space. I don't think leave SLADE enabled all the time
+is necessary for Intel Vt-d. So I suggest a generic interface here.
+Thanks!
 
-It's good to show how it will be used, don't you think?
-
-thanks,
-
-greg k-h
+> Robin.
+> 
+> >>+
+> >>+static void vfio_dma_dirty_log_stop(struct vfio_iommu *iommu,
+> >>+				    struct vfio_dma *dma)
+> >>+{
+> >>+	struct vfio_domain *d;
+> >>+
+> >>+	list_for_each_entry(d, &iommu->domain_list, next) {
+> >>+		/* Go through all domain anyway even if we fail */
+> >>+		iommu_merge_page(d->domain, dma->iova, dma->size,
+> >>+				 d->prot | dma->prot);
+> >>+	}
+> >>+}
+> >
+> >Same as above comment, a generic interface is required here.
+> >
+> >>+
+> >>+static void vfio_iommu_dirty_log_switch(struct vfio_iommu *iommu, bool start)
+> >>+{
+> >>+	struct rb_node *n;
+> >>+
+> >>+	/* Split and merge even if all iommu don't support HWDBM now */
+> >>+	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
+> >>+		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
+> >>+
+> >>+		if (!dma->iommu_mapped)
+> >>+			continue;
+> >>+
+> >>+		/* Go through all dma range anyway even if we fail */
+> >>+		if (start)
+> >>+			vfio_dma_dirty_log_start(iommu, dma);
+> >>+		else
+> >>+			vfio_dma_dirty_log_stop(iommu, dma);
+> >>+	}
+> >>+}
+> >>+
+> >>  static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
+> >>  					unsigned long arg)
+> >>  {
+> >>@@ -2812,8 +2900,10 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
+> >>  		pgsize = 1 << __ffs(iommu->pgsize_bitmap);
+> >>  		if (!iommu->dirty_page_tracking) {
+> >>  			ret = vfio_dma_bitmap_alloc_all(iommu, pgsize);
+> >>-			if (!ret)
+> >>+			if (!ret) {
+> >>  				iommu->dirty_page_tracking = true;
+> >>+				vfio_iommu_dirty_log_switch(iommu, true);
+> >>+			}
+> >>  		}
+> >>  		mutex_unlock(&iommu->lock);
+> >>  		return ret;
+> >>@@ -2822,6 +2912,7 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
+> >>  		if (iommu->dirty_page_tracking) {
+> >>  			iommu->dirty_page_tracking = false;
+> >>  			vfio_dma_bitmap_free_all(iommu);
+> >>+			vfio_iommu_dirty_log_switch(iommu, false);
+> >>  		}
+> >>  		mutex_unlock(&iommu->lock);
+> >>  		return 0;
+> >>-- 
+> >>2.19.1
+> >_______________________________________________
+> >iommu mailing list
+> >iommu@lists.linux-foundation.org
+> >https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> >
