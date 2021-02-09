@@ -2,68 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337723153A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A350C3153B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhBIQSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:18:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232731AbhBIQS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:18:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A399164EAA;
-        Tue,  9 Feb 2021 16:17:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612887466;
-        bh=8s1KqE1BtMsVcS0eFE+GfcmfIiylX5MpTsFIA3Ujqm4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eB0IaQ0eALLvtW5WHfGR4Rzo4ExGq/fcPp8QgdDnUwTfz1QQ086LtdN6rqFWTDhYV
-         DmOnY/ISb1sC9mlZj+CHciHwX5jDMCYlL12N589mqpS5gLd3whOfiaCXvAiqcuV9Lg
-         UZtsZLaUWZO7ZLc1ak9e4HnQ7tWBLfosE5JfPOnEjMXLVhMljv8yJgGvgiFtXPFICX
-         H3nN8JUJLBeQYimZkHcd7k+CSdvvt2ImwPjboSQnXMGnwqr+exEQektudEmOPX53oO
-         MqdfONg4b+jp1nXHiq8JxCh6SAF/f56HqcP/wAkBA7cbNDU29UrdGq5GLTTtpTZsru
-         REXsPY9Fe1AWg==
-Date:   Tue, 9 Feb 2021 08:17:44 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Aleksander Morgado <aleksander@aleksander.es>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
-Message-ID: <20210209081744.43eea7b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAAP7ucLZ5jKbKriSp39OtDLotbv72eBWKFCfqCbAF854kCBU8w@mail.gmail.com>
-References: <1609958656-15064-1-git-send-email-hemantk@codeaurora.org>
-        <20210113152625.GB30246@work>
-        <YBGDng3VhE1Yw6zt@kroah.com>
-        <20210201105549.GB108653@thinkpad>
-        <YBfi573Bdfxy0GBt@kroah.com>
-        <20210201121322.GC108653@thinkpad>
-        <20210202042208.GB840@work>
-        <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org>
-        <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com>
-        <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAAP7ucLZ5jKbKriSp39OtDLotbv72eBWKFCfqCbAF854kCBU8w@mail.gmail.com>
+        id S232793AbhBIQT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:19:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232637AbhBIQTu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 11:19:50 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFF1C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:19:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FYsM1K6OwYju0VC35C+1ECBzo2gy1/ASpk1pAe2+ysE=; b=2JShNvNyVYY/tWDr5BkNCrwlr3
+        h4sk465V3vn8MJoce+GVrKcaW/bZ5ZNliKMAwpjuxaeaTE0PFkz22aDuKreQimOaZd98DlOkMad8U
+        adwjsqrGLnoPLgd3OPoUxvnlMcG348/qVGSCsdGdL1D8MHCV9F6/6/PpHQ/WycJhEpvOGS88zBPLG
+        0l8GMtfOOOclzaqpqnCxcX8hxtJC7ejgJwm2+xaznGqdnM43KMtfU3E2pQH8v32Wgsm16mUY2MP1w
+        bAQpbQYQ+qzpEE+p/YA+JkzIDPTjlJcV17vMKDgz8caSzf+N1BvxR/u0VIZwpoUEwncskfumNbY2k
+        lZV2ORFA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l9VjF-0006NC-L8; Tue, 09 Feb 2021 16:19:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C96F3012DF;
+        Tue,  9 Feb 2021 17:19:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 68FB12010B6C7; Tue,  9 Feb 2021 17:19:04 +0100 (CET)
+Date:   Tue, 9 Feb 2021 17:19:04 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [patch] preempt: select PREEMPT_DYNAMIC under PREEMPTION instead
+ of PREEMPT
+Message-ID: <YCK1+JyFNxQnWeXK@hirez.programming.kicks-ass.net>
+References: <7d129a84b0858fd7fbc3e38ede62a848fbec536e.camel@gmx.de>
+ <YCKmhnoSKgdYqxOL@hirez.programming.kicks-ass.net>
+ <269ee10aac93d819e48dc81f09a01d01fcd44fb1.camel@gmx.de>
+ <YCK0m8FD9kp8QZWJ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCK0m8FD9kp8QZWJ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Feb 2021 10:20:30 +0100 Aleksander Morgado wrote:
-> This may be a stupid suggestion, but would the integration look less a
-> backdoor if it would have been named "mhi_wwan" and it exposed already
-> all the AT+DIAG+QMI+MBIM+NMEA possible channels as chardevs, not just
-> QMI?
+On Tue, Feb 09, 2021 at 05:13:15PM +0100, Peter Zijlstra wrote:
+> On Tue, Feb 09, 2021 at 05:05:14PM +0100, Mike Galbraith wrote:
+> 
+> > ld: init/main.o: in function `trace_initcall_start':
+> > /backup/usr/local/src/kernel/linux-tip-rt/./include/trace/events/initcall.h:27: undefined reference to `__SCT__preempt_schedule_notrace'
+> 
+> Ooohh... this is because x86 can't build PREEMPT without PREEMPT_DYNAMIC
+> anymore. Maybe I should fix that. Lemme see what that would take.
 
-What's DIAG? Who's going to remember that this is a backdoor driver 
-a year from now when Qualcomm sends a one liner patches which just 
-adds a single ID to open another channel?
+Does this work?
+
+---
+diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
+index 0aa96f824af1..f8cb8af4de5c 100644
+--- a/arch/x86/include/asm/preempt.h
++++ b/arch/x86/include/asm/preempt.h
+@@ -110,6 +110,13 @@ extern asmlinkage void preempt_schedule_thunk(void);
+ 
+ #define __preempt_schedule_func preempt_schedule_thunk
+ 
++extern asmlinkage void preempt_schedule_notrace(void);
++extern asmlinkage void preempt_schedule_notrace_thunk(void);
++
++#define __preempt_schedule_notrace_func preempt_schedule_notrace_thunk
++
++#ifdef CONFIG_PREEMPT_DYNAMIC
++
+ DECLARE_STATIC_CALL(preempt_schedule, __preempt_schedule_func);
+ 
+ #define __preempt_schedule() \
+@@ -118,11 +125,6 @@ do { \
+ 	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule) : ASM_CALL_CONSTRAINT); \
+ } while (0)
+ 
+-extern asmlinkage void preempt_schedule_notrace(void);
+-extern asmlinkage void preempt_schedule_notrace_thunk(void);
+-
+-#define __preempt_schedule_notrace_func preempt_schedule_notrace_thunk
+-
+ DECLARE_STATIC_CALL(preempt_schedule_notrace, __preempt_schedule_notrace_func);
+ 
+ #define __preempt_schedule_notrace() \
+@@ -131,6 +133,16 @@ do { \
+ 	asm volatile ("call " STATIC_CALL_TRAMP_STR(preempt_schedule_notrace) : ASM_CALL_CONSTRAINT); \
+ } while (0)
+ 
+-#endif
++#else /* PREEMPT_DYNAMIC */
++
++#define __preempt_schedule() \
++	asm volatile ("call preempt_schedule_thunk" : ASM_CALL_CONSTRAINT);
++
++#define __preempt_schedule_notrace() \
++	asm volatile ("call preempt_schedule_notrace_thunk" : ASM_CALL_CONSTRAINT);
++
++#endif /* PREEMPT_DYNAMIC */
++
++#endif /* PREEMPTION */
+ 
+ #endif /* __ASM_PREEMPT_H */
