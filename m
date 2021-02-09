@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34782314AF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FCC314AFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhBII5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:57:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229822AbhBIIsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:48:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4665164EC7;
-        Tue,  9 Feb 2021 08:47:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612860461;
-        bh=dbMxB38xpbRK7LA36nkBy98Hiq0eLtfVXeswVUJw1bs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uz2qf2l39nH4wId4+k6qT6MNzlRIXsz8uEYGM/l6YNw/GKLJ6snDPp7xyt2+bDb7+
-         PCplVrWFGKJjuw7UsRiFLV7PXK0A8bY5R+gEIHaCmo+BMLknIpOsFzCQNh4PW0bfx7
-         7rEnK6DhfLnqMYU2zYSu0vIvTznmnksf3kIUAizc=
-Date:   Tue, 9 Feb 2021 09:47:39 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Samuel Iglesias =?iso-8859-1?Q?Gons=E1lvez?= 
-        <siglesias@igalia.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        linux-kernel@vger.kernel.org,
-        industrypack-devel@lists.sourceforge.net
-Subject: Re: [Industrypack-devel] [PATCH v1 1/2] ipack: Fail earlier for
- drivers without probe function
-Message-ID: <YCJMKzSgtDzwwiYi@kroah.com>
-References: <20210207215556.96371-1-uwe@kleine-koenig.org>
- <e86534902fce9b82d2a69b7ec24e697b43c9ef6f.camel@igalia.com>
+        id S229864AbhBII5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:57:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhBIIvr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 03:51:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9D0C061786;
+        Tue,  9 Feb 2021 00:51:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=u5y7wcDz5cdfoi3N3ubLyN1ln8h0zXfw3Maca96vMxg=; b=oUU2uouyJDP2Pw7iSgHdSjLJ4y
+        89Y1sbCT0OAp1rAbMS2N09i4tWMzGl468F4s0Fcxd522PikM1Bmu4bQ0CWfjM+PkdpCAnXMC7aCBb
+        i4o22HsB9LaM7oIOHLZpL3Im/L8DnreVZPEqxDsWhj0EjrlRr2FvtxafKgnHZIiyakFC/PD97BLKp
+        SJGPMSPz7psfbyIRD2ohi93vQR8vibZ9zSbFOoakTQxVbCX0I2gwg3YPexAJOws5oRAA4HDdTP9D8
+        8W5fQd3araNr/woBJRJEX9FBs8gfMpuaze6g41O5cDR+08qfFB0VFpollJm/U3hoJSE9KfupxiQOe
+        gxWgkr1g==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9Ojd-007BnK-94; Tue, 09 Feb 2021 08:51:01 +0000
+Date:   Tue, 9 Feb 2021 08:51:01 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Jan Kara <jack@suse.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 1/2] quota: Add mountpath based quota support
+Message-ID: <20210209085101.GA1710733@infradead.org>
+References: <20210128141713.25223-1-s.hauer@pengutronix.de>
+ <20210128141713.25223-2-s.hauer@pengutronix.de>
+ <20210128143552.GA2042235@infradead.org>
+ <20210202180241.GE17147@quack2.suse.cz>
+ <20210204073414.GA126863@infradead.org>
+ <20210204125350.GD20183@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e86534902fce9b82d2a69b7ec24e697b43c9ef6f.camel@igalia.com>
+In-Reply-To: <20210204125350.GD20183@quack2.suse.cz>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 09:40:12AM +0100, Samuel Iglesias Gonsálvez wrote:
-> Hi Uwe,
-> 
-> Thanks for the patches!
-> 
-> Patch series is,
-> 
-> Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-> 
-> Greg, Would you mind picking this patch series through your char-misc
-> tree?
+On Thu, Feb 04, 2021 at 01:53:50PM +0100, Jan Kara wrote:
+> Now quota data stored in a normal file is a setup we try to deprecate
+> anyway so another option is to just leave quotactl_path() only for those
+> setups where quota metadata is managed by the filesystem so we don't need
+> to pass quota files to Q_QUOTAON?
 
-Will be glad to, thanks!
-
-greg k-h
+I'd be perfectly fine with that.
