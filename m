@@ -2,93 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B379731591D
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C77AC315967
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233756AbhBIWHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:07:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233669AbhBIT0F (ORCPT
+        id S234392AbhBIWY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:24:59 -0500
+Received: from mail-yb1-f169.google.com ([209.85.219.169]:40075 "EHLO
+        mail-yb1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233149AbhBITmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:26:05 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1404FC0611BE;
-        Tue,  9 Feb 2021 11:24:06 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id b9so33558851ejy.12;
-        Tue, 09 Feb 2021 11:24:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VKpw+TGxcSonBmJvYVbjnLKEXkavUls9cDkglgeREzs=;
-        b=HO1rEER2rQ/ib60OX4LykRzzHUV7TK6M7FXnGi0rK0kf7M3lRCrxd5vuud4Y69slyc
-         gcJcjDFwAEKBdd+CV7Gdib0WaDgHMbaLMAOqwcG29CQeTgTSv609bh1St5YhZ6hOsqqF
-         dDW3AWzG1b8Qti44pryaVZ/3AdrFfSX9D6q0kPADnuf3JVyEBXU0hpDflZXLPyS8FBmP
-         HWCk8sOTr0s4EiNvcw9auqxdZnmoi0Qh+y3CnG4UVM7wkkvzxIRJedjelEyYsRDqxzro
-         U2O0iq8BSbNG3VEySL8f/ZrCDoLuvevjlzBFvHyeSwKavRzoA4RxaSDNIne33B53yQCr
-         U/EA==
+        Tue, 9 Feb 2021 14:42:25 -0500
+Received: by mail-yb1-f169.google.com with SMTP id i71so19336110ybg.7;
+        Tue, 09 Feb 2021 11:40:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=VKpw+TGxcSonBmJvYVbjnLKEXkavUls9cDkglgeREzs=;
-        b=hQ7m9XAUVD3VuNfag27wGegY1qKXHDErsiJf8lRXycKD2ShMh5CqT6maGFGVVpUMLS
-         mPhKfmJ/KGXY9prfFZUbI84sbb5Ms+r2N2sC1wD5abbtwWWKeQQm81W7P0aQDJciQ2t9
-         nErtn8AEQMFLzJXUn1tqOR9Fb8ZiXw2UQJXyhxL9qJxJEV5zFIINvaccyDYHBbo1pemN
-         /KxEMLc0lbJDGP2mLczlYpx+S0rZhq97ex7RzkG4FBEbuJ9ZKfAPiGKW2mB6MOLbjNk9
-         cJw1FkYFFB4Rruwn6Qxux/Ewz8jlLS++BePDan9CuQbEV+Jp5jdErzKshH8lkVwKGBaf
-         5A6Q==
-X-Gm-Message-State: AOAM533mHRuDCIct3LnhIJmIF3sc4JEZtB3P4I5swfHXyw1iP4JhOg8Y
-        sFYH58kZrn/9VRqR5nCwiUw=
-X-Google-Smtp-Source: ABdhPJw9959wQBn5cvY2Fqpt5Xz+QaWW6YioQ2FYuvburiVrHGpT8oFcjVbVZLt3nDg+4Z/13u4xQA==
-X-Received: by 2002:a17:906:b752:: with SMTP id fx18mr24723372ejb.17.1612898644828;
-        Tue, 09 Feb 2021 11:24:04 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id w3sm11075779eja.52.2021.02.09.11.24.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Feb 2021 11:24:04 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 8/8] dts64: rockchip: enable dwc3 usb for A95X Z2
-Date:   Tue,  9 Feb 2021 20:23:50 +0100
-Message-Id: <20210209192350.7130-8-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210209192350.7130-1-jbx6244@gmail.com>
-References: <20210209192350.7130-1-jbx6244@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GJFPQ2Ilx++OlRwYhDURW2rh2NMBhJeZYovPyBO0lLM=;
+        b=M7B+qQCkaYtWo584MWFVGHTEdWPGIIKhwuw3g22B2LCzBE3PLE6wnMPIfyT3tWXLn+
+         IltwCwUQT0LtNmk4abvNXpMY5smamK6nVaKfdXbWhuCozN37mCs1whtvrlr49Vu/JABA
+         EjNf+xY2kR3qkoBCVvwgTZGa28hIV2p00fgcbJeF2A6QmSMx5Qbqzms2qrcinfx3yp+7
+         UDiebbnRbRnZICPhDuJYK9OZcuHwfg26GvRqKbH3kGQgH8d4i0kAy3ZIUlf2eBCEvZrx
+         5r4Ei86RV0fRZ/3sIzTDBTNNrKUxU+t/Sn6mzt6YMpdU76d3qhJ6ka2WNl8yZoes6J80
+         cYZQ==
+X-Gm-Message-State: AOAM5339vNRbgvBdte2W4XtJ3m17vDMJ0uWdX/hyhp8ydTojQ7jiBOBW
+        KdN/BSNFg2WxfOi+vYKxYPkuBKMDvA==
+X-Google-Smtp-Source: ABdhPJz5cVwP1C15lX4pHusdFwtbNSqO2ZM3QELnNfk3yoegBRN1B/LqtqKPlcHeP8B5ax2zQPfq5g==
+X-Received: by 2002:a9d:303:: with SMTP id 3mr16767236otv.301.1612899012649;
+        Tue, 09 Feb 2021 11:30:12 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j68sm4481922otc.6.2021.02.09.11.30.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 11:30:11 -0800 (PST)
+Received: (nullmailer pid 12877 invoked by uid 1000);
+        Tue, 09 Feb 2021 19:30:10 -0000
+Date:   Tue, 9 Feb 2021 13:30:10 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
+        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, Sheng Pan <span@analogixsemi.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] dt-bindings:drm/bridge:anx7625:add vendor define
+ flags
+Message-ID: <20210209193010.GA4675@robh.at.kernel.org>
+References: <cover.1611802321.git.xji@analogixsemi.com>
+ <246b8bd6e51ed5c8cb3618f4259adf8aba319511.1611802321.git.xji@analogixsemi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <246b8bd6e51ed5c8cb3618f4259adf8aba319511.1611802321.git.xji@analogixsemi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable dwc3 usb for A95X Z2.
+On Thu, Jan 28, 2021 at 11:08:26AM +0800, Xin Ji wrote:
+> Add 'bus-type' and 'data-lanes' define for port0, add HDCP support
+> flag and DP tx lane0 and lane1 swing register array define.
+> 
+> Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> ---
+>  .../bindings/display/bridge/analogix,anx7625.yaml  | 54 +++++++++++++++++++++-
+>  1 file changed, 53 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> index c789784..048deec 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> @@ -34,6 +34,24 @@ properties:
+>      description: used for reset chip control, RESET_N pin B7.
+>      maxItems: 1
+>  
+> +  analogix,lane0-swing:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    maxItems: 20
+> +    description:
+> +      an array of swing register setting for DP tx lane0 PHY, please don't
+> +      add this property, or contact vendor.
+> +
+> +  analogix,lane1-swing:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    maxItems: 20
+> +    description:
+> +      an array of swing register setting for DP tx lane1 PHY, please don't
+> +      add this property, or contact vendor.
+> +
+> +  analogix,hdcp-support:
+> +    type: boolean
+> +    description: indicate the DP tx HDCP support or not.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
-Changed V2:
-  remove node wrapper
----
- arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+Please show the new properties in the example.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts b/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
-index 30c73ef25..e71870768 100644
---- a/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
-@@ -357,6 +357,11 @@
- 	status = "okay";
- };
- 
-+&usbdrd3 {
-+	dr_mode = "host";
-+	status = "okay";
-+};
-+
- &usb_host0_ehci {
- 	status = "okay";
- };
--- 
-2.11.0
+> +
+>    ports:
+>      $ref: /schemas/graph.yaml#/properties/ports
+>  
+> @@ -41,13 +59,45 @@ properties:
+>        port@0:
+>          $ref: /schemas/graph.yaml#/properties/port
+>          description:
+> -          Video port for MIPI DSI input.
+> +          Video port for MIPI input.
+> +
+> +        properties:
+> +          endpoint:
+> +            type: object
+> +            additionalProperties: false
+> +
+> +            # Properties described in
+> +            # Documentation/devicetree/bindings/media/video-interfaces.txt
 
+Now video-interfaces.yaml which should have a $ref here. It's currently 
+in media tree and linux-next. Follow the examples there. You'll also 
+have to wait for 5.12-rc1 to apply to drm-misc.
+
+> +            properties:
+> +              remote-endpoint: true
+> +              bus-type: true
+> +              data-lanes: true
+> +
+> +            required:
+> +              - remote-endpoint
+> +
+> +        required:
+> +          - endpoint
+> +
+>  
+>        port@1:
+>          $ref: /schemas/graph.yaml#/properties/port
+>          description:
+>            Video port for panel or connector.
+>  
+> +        properties:
+> +          endpoint:
+> +            type: object
+> +            additionalProperties: false
+> +
+> +            # Properties described in
+> +            # Documentation/devicetree/bindings/media/video-interfaces.txt
+> +            properties:
+> +              remote-endpoint: true
+> +
+> +            required:
+> +              - remote-endpoint
+> +
+>      required:
+>        - port@0
+>        - port@1
+> @@ -81,6 +131,8 @@ examples:
+>                      reg = <0>;
+>                      anx7625_in: endpoint {
+>                          remote-endpoint = <&mipi_dsi>;
+> +                        bus-type = <5>;
+> +                        data-lanes = <0 1 2 3>;
+>                      };
+>                  };
+>  
+> -- 
+> 2.7.4
+> 
