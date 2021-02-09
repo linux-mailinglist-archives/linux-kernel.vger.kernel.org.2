@@ -2,183 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C02315449
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE44131544B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhBIQrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:47:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
+        id S233051AbhBIQs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:48:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233011AbhBIQpo (ORCPT
+        with ESMTP id S232897AbhBIQqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:45:44 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C38EC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:45:02 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id i9so4128775wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:45:02 -0800 (PST)
+        Tue, 9 Feb 2021 11:46:34 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540FDC0613D6;
+        Tue,  9 Feb 2021 08:45:53 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id f2so23217875ljp.11;
+        Tue, 09 Feb 2021 08:45:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9taZttSD3TU/NKq023+Uxxq9BinerU1RlKUsH/RzkKw=;
-        b=LsP/64hhwzFsXvgFZGb2VTs1HjU9kXxEeTBsrb/fWSKVnPyD+XFrnJb4Tcm7C8we5E
-         Lnlk4p7cD20siuZnHIN7vts+RY0c4Ue6QCGsWPDiojz5pK43Z75I8M/CcuFbV3zKos3d
-         +Eqxzectjd/mxA7YP9L+s4fukBC+h+7F7pvlKr+RK6V9nc7kvRWh2rs7BMIeNURBpuCB
-         oUkUM1iXtMUYh2vQMowPoZomR1EX7H6v1RFaDG6flOayfAQFN1SUTALC+N8ri7RgNIaF
-         o1Eez5DEDTvILnn52R8nDjttzPgEPkRiASADvTYT80UoAT7XysRu8CtLtaFXR7w4FDHz
-         prBQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ucw59OKhM9Q+zWkYzS3DfxjYeaWxtahJyWWZM+ZSxcs=;
+        b=CksqofXNoheIa9e1LmljJyAtF5mIk/2VO9Knc5og6IIcHV3s+qa62XPGPBZbukFUc3
+         llf8VuBHfG4uQkV4ZcWZTsHju69yHLidkySv9wacWjQUlssJMOqjXvNdtJUBoednu1Em
+         qryZm5jdr0AZY7z/ZooZKOUUZMFrsLLnAPUwW7yntjouTNDO1FDSE/KCQE0DI2KMkkCr
+         Tfeio6TdlWhCWmxpkNL/dYuGvhFgaKZsFK3jafISWZf/9oawVz69aoT2/qljhF5wCSPW
+         XJT418JirCZ6+xQkOQzuwqEFDZV9jSRUVJ9wd2TkG2xLjLpUlU+NISXqT/pBPsi09kEj
+         qcgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9taZttSD3TU/NKq023+Uxxq9BinerU1RlKUsH/RzkKw=;
-        b=d909Ue0w5S15hIlA9V4zrcBIJDOS+TFoV8WxRuVAbt0Xz4oE8vo/2R/MB1GCnUFp3g
-         c4mFAwQf3/TBT2epCl1kMHiQI9JNM9vjmuYaF2I9SQ62KQ3B+IjWz+0pXLo7mN5vGPJJ
-         hurVPHEJb8+9zmTBguoOWOv0psTwl9qUadLzvE+Z4ETibfhQUxOnpbXUF3OG9VBK4f89
-         pRo970u9kso2hl4O2UUWDXxid6NWE8jf5XaiZ0ElDXB/tTf6lUsRpwrD583mlgdW2ttd
-         RHSRkITmw3lcJ/rgvWgpyPq2zkI3f/QvDD+tsnHW+8cL494WsUYbGlHvQZ03mny8Nbr4
-         EhuQ==
-X-Gm-Message-State: AOAM532VPeQHfAJAJzUBUtcGKl2DkGi0ZtQTP80/Vl/cAGthQfNPFz6m
-        rZlv173PhkJC72rMTl4OZQ9UTw==
-X-Google-Smtp-Source: ABdhPJxe/Q7j38rB57ohnxbhZDvvYK7F8aj9uUIk6sXWe9FALhTtRhfflWFkqMPVCmzHk26+1hp7Gw==
-X-Received: by 2002:a1c:9c01:: with SMTP id f1mr4153206wme.159.1612889101120;
-        Tue, 09 Feb 2021 08:45:01 -0800 (PST)
-Received: from dell ([91.110.221.187])
-        by smtp.gmail.com with ESMTPSA id z15sm4958853wmi.38.2021.02.09.08.44.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 08:45:00 -0800 (PST)
-Date:   Tue, 9 Feb 2021 16:44:58 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec
- jack-detect support
-Message-ID: <20210209164458.GE220368@dell>
-References: <20210204112502.88362-1-hdegoede@redhat.com>
- <ba9c1add-8ac0-766b-4577-1c2769c0e5e6@redhat.com>
- <20210209141420.GE4766@dell>
- <c0b4c612-7f60-5126-4c4d-b7085bd356d0@redhat.com>
- <20210209154511.GC220368@dell>
- <80068116-eb04-fd75-f656-804ab9f5d414@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ucw59OKhM9Q+zWkYzS3DfxjYeaWxtahJyWWZM+ZSxcs=;
+        b=Ig1Zv+kXU53r0PZAnW0YsMO8j7NcbBlS7f28ifoIg2ADcMdYXQCxZ/kEMa9eEGHLxP
+         8qMG/f+ln5pgHdoiXuY4DiOs2SJNZJXN/ekIIFDd7dbm2aE75pPFYOKNxRhVpfJ4HYDV
+         lpRnWG+jg9xpRtdHlTaOb7TNE8cozMLCCiAkiejY8+cqd6yo5Ruprp3FJyjE3+fQqysS
+         uUmC7LK4CpZy7yJ9Pwt8ZAvD1QlXMInK5ujJDFewKmBcYt1wFtNnx9d95na3ET5glyYZ
+         vCH2xk3ARf//tTpIeY0sSx+3gHZDQq3SmzoFvoOwJu3CuIT+YRiyUN6zOCwlzS0a60cf
+         ijWg==
+X-Gm-Message-State: AOAM532gKEWCB++J4pwvv6SFGGRBzaE6UJhGtuitcqwEm6jWMq7lsNGK
+        FOBS5haMaZbyZkl/hEkj1HC1ZreRXPnZefGJ0QE=
+X-Google-Smtp-Source: ABdhPJyKBJ6ktL1eFnp+AoAxD/FKdiQevwz7oTqE1bleouoAFpSG94b5wPM3hE3xefsG58tczevDsSO/zUqG03qJFds=
+X-Received: by 2002:a2e:3507:: with SMTP id z7mr14328131ljz.32.1612889151851;
+ Tue, 09 Feb 2021 08:45:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <80068116-eb04-fd75-f656-804ab9f5d414@redhat.com>
+References: <20210207104022.GA32127@zn.tnic> <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com>
+ <20210207175814.GF32127@zn.tnic> <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com>
+ <20210207224540.ercf5657pftibyaw@treble> <20210208100206.3b74891e@gandalf.local.home>
+ <20210208153300.m5skwcxxrdpo37iz@treble> <YCFc+ewvwNWqrbY7@hirez.programming.kicks-ass.net>
+ <20210208111546.5e01c3fb@gandalf.local.home> <alpine.LSU.2.21.2102090927230.31501@pobox.suse.cz>
+ <20210209094953.65d2f322@gandalf.local.home>
+In-Reply-To: <20210209094953.65d2f322@gandalf.local.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 9 Feb 2021 08:45:40 -0800
+Message-ID: <CAADnVQK-qdE6mHUogeaQo9Av_58cLptosmfUVmdMzW7gJn5UVw@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@intel.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        live-patching@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Feb 2021, Hans de Goede wrote:
+On Tue, Feb 9, 2021 at 6:49 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Tue, 9 Feb 2021 09:32:34 +0100 (CET)
+> Miroslav Benes <mbenes@suse.cz> wrote:
+>
+> > powerpc has this
+> >
+> > static inline unsigned long klp_get_ftrace_location(unsigned long faddr)
+> > {
+> >         /*
+> >          * Live patch works only with -mprofile-kernel on PPC. In this case,
+> >          * the ftrace location is always within the first 16 bytes.
+> >          */
+> >         return ftrace_location_range(faddr, faddr + 16);
+> > }
+> >
+> > > > I suppose the trivial fix is to see if it points to endbr64 and if so,
+> > > > increment the addr by the length of that.
+> > >
+> > > I thought of that too. But one thing that may be possible, is to use
+> > > kallsym. I believe you can get the range of a function (start and end of
+> > > the function) from kallsyms. Then ask ftrace for the addr in that range
+> > > (there should only be one).
+> >
+> > And we can do this if a hard-coded value live above is not welcome. If I
+> > remember correctly, we used to have exactly this in the old versions of
+> > kGraft. We walked through all ftrace records, called
+> > kallsyms_lookup_size_offset() on every record's ip and if the offset+ip
+> > matched faddr (in this case), we returned the ip.
+>
+> Either way is fine. Question is, should we just wait till CET is
+> implemented for the kernel before making any of these changes? Just knowing
+> that we have a solution to handle it may be good enough for now.
 
-> Hi,
-> 
-> On 2/9/21 4:45 PM, Lee Jones wrote:
-> > On Tue, 09 Feb 2021, Hans de Goede wrote:
-> > 
-> >> Hi,
-> >>
-> >> On 2/9/21 3:14 PM, Lee Jones wrote:
-> >>> On Mon, 08 Feb 2021, Hans de Goede wrote:
-> >>>
-> >>>> Hi Mark, Lee,
-> >>>>
-> >>>> On 2/4/21 12:24 PM, Hans de Goede wrote:
-> >>>>> Hi all,
-> >>>>>
-> >>>>> Here is v4 of my series to rework the arizona codec jack-detect support
-> >>>>> to use the snd_soc_jack helpers instead of direct extcon reporting.
-> >>>>>
-> >>>>> This is a resend with some extra *-by tags collected and with the extcon
-> >>>>> folks added to the "To:" list, which I somehow missed with the original
-> >>>>> v4 posting, sorry.
-> >>>>>
-> >>>>> This is done by reworking the extcon driver into an arizona-jackdet
-> >>>>> library and then modifying the codec drivers to use that directly,
-> >>>>> replacing the old separate extcon child-devices and extcon-driver.
-> >>>>>
-> >>>>> This brings the arizona-codec jack-detect handling inline with how
-> >>>>> all other ASoC codec driver do this. This was developed and tested on
-> >>>>> a Lenovo Yoga Tablet 1051L with a WM5102 codec.
-> >>>>>
-> >>>>> This was also tested by Charles Keepax, one of the Cirrus Codec folks.
-> >>>>>
-> >>>>> This depends on the previously posted "[PATCH v4 0/5] MFD/ASoC: Add
-> >>>>> support for Intel Bay Trail boards with WM5102 codec" series and there
-> >>>>> are various interdependencies between the patches in this series.
-> >>>>>
-> >>>>> Lee Jones, the MFD maintainer has agreed to take this series upstream
-> >>>>> through the MFD tree and to provide an immutable branch for the ASoC
-> >>>>> and extcon subsystems to merge.
-> >>>>>
-> >>>>> Mark and extcon-maintainers may we have your ack for merging these
-> >>>>> through the MFD tree ?
-> >>>>
-> >>>> Now that the pre-cursor (1) series to this has been merged, I guess it
-> >>>> is time to decide how to merge this series. 
-> >>>>
-> >>>> Chanwoo Choi has given his ack to merge the extcon bits through the MFD
-> >>>> tree and since Mark has expressed a preference for merging ASOC patches
-> >>>> directly I guess that it would be best to merge 1-6 through the MFD
-> >>>> tree and then Lee can send Mark a pull-req and Mark can apply the others? :
-> >>>>
-> >>>> 1/13  mfd: arizona: Drop arizona-extcon cells
-> >>>> 2/13  extcon: arizona: Fix some issues when HPDET IRQ fires after the jack has been unplugged
-> >>>> 3/13  extcon: arizona: Fix various races on driver unbind
-> >>>> 4/13  extcon: arizona: Fix flags parameter to the gpiod_get("wlf,micd-pol") call
-> >>>> 5/13  extcon: arizona: Always use pm_runtime_get_sync() when we need the device to be awake
-> >>>> 6/14  ASoC/extcon: arizona: Move arizona jack code to sound/soc/codecs/arizona-jack.c
-> >>>>
-> >>>> 1 is:    Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> >>>> 2-6 are: Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> >>>>
-> >>>> Note patch 6 renames drivers/extcon/extcon-arizona.c to sound/soc/codecs/arizona-jack.c
-> >>>> but it does not touch any other files under sound/soc (including NOT touching
-> >>>> sound/soc/codecs/Makefile that is done in a later patch). So it cannot cause any
-> >>>> conflicts.
-> >>>>
-> >>>> Mark, would merging 1-6 through the MFD tree, and you applying the rest
-> >>>> (which are all ASoC patches) work for you ?
-> >>>
-> >>> What a faff.
-> >>>
-> >>> I still don't see why they can't all go in and a PR provided.
-> >>
-> >> Well patch 13/13 of this set relies on 5/5 from the previous set which is
-> >> only in Mark's ASoC tree and not in the MFD tree, so splitting things over MFD + ASoC
-> >> again makes the most sense here too.
-> > 
-> > Right, this is what can happen when patch-sets are split up.
-> > 
-> >> The alternative is Mark doing a PR from ASoC to MFD to get 5/5 from the previous set
-> >> in MFD first, which seems less then ideal.
-> > 
-> > Well this set isn't likely to go in this cycle anyway, so actually the
-> > problem should just go away.
-> 
-> That is true.
-> 
-> > Best to let the first set get sucked
-> > into v5.12, then send this one up subsequently for v5.13.
-> 
-> Ack. So should I resend this once 5.12-rc1 is out ?
-
-If you haven't heard from anything by then, [RESEND] by all means.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I think the issue is more fundamental than what appears on the surface.
+According to endbr64 documentation it's not just any instruction.
+The cpu will wait for it and if it's replaced with int3 or not seen at
+the branch target the cpu will throw an exception.
+If I understood the doc correctly it means that endbr64 can never be
+replaced with a breakpoint. If that's the case text_poke_bp and kprobe
+need to do extra safety checks.
