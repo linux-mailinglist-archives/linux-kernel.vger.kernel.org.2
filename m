@@ -2,96 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB728315C78
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66066315C7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235179AbhBJBnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:43:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234583AbhBIXtI (ORCPT
+        id S234388AbhBJBoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:44:12 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:50354 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234617AbhBIXvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 18:49:08 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DEAC06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 15:48:27 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id h26so193974lfm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 15:48:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yNEcY+k1I/sPxeT89v0RbvERaYcFC6w0nk6p7Ga+k7o=;
-        b=H55GtJ+kFJow/fff1SlxkWECW/MsUAGzpc1ycWI29ms7aU5BsoRoN6PI5KmdemYb3e
-         lsdW1od8WBmJt4SLC9o5lqjwSPxX5fs7DCAZpvaLduFlvDn0up50izcE3A9sh684r1Og
-         AhVM1o29PNIjDIv62v++595uWT8LWfgYSbHvAmGTVt0NNlWp/zT9kPJy/3lc7X7qUdyh
-         6NMylHkFQ3VWjNHgUOKUdvqqwyiD3KqKSvPNVer+dV9SfmSbV2ZsJ4mldWqSnD3KeayA
-         +L+czvtUTNzU2kIljMobA1Gwxet4fjA7apw9SRYaj+eX9RlWpXij60MQw53QCFt3jD9o
-         3KpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yNEcY+k1I/sPxeT89v0RbvERaYcFC6w0nk6p7Ga+k7o=;
-        b=p7MxcR2/pmTCvq2rngwQYUBIQYlAMhFNgQzAvQhL3QIs7iTjUN37MI7tlvpPRD0Hop
-         ikFg5KIRVhdenfTeEdtaIxT1QdrHxPtnKDcE1oX0icgv3yk50YEpwKNEf/pxHGFn8rEE
-         AHCRal5SVgPxEMe+TKiBV5XWYoCP2YZ3R1Rp2csJuBqmaGg9McfgFmHJfbnW+RAn4aOv
-         fLab9+7DteFbH1s+vJ3VgyG9DjjyTAF9fr2OdLnQLzLLyyaVgwj7h3tBmonkPVsJluNZ
-         hyMKckY4B/mrA2DdOR+TKs+BTOfmggjjQNpNkAqUABq10Ai+F6tGh4hWwdAfDo6CC161
-         tQ0w==
-X-Gm-Message-State: AOAM531uod+zarJD0B9cLSgYKGXAjcsK6tkDuxwARAt3+Ys/YT0H8vjS
-        x1z9nTlGmKyyLGJsEQQ7jKo=
-X-Google-Smtp-Source: ABdhPJwEgfMGoJUtU5l1trR++7LWKZ1G/cGIubNiHZdjGVjhcKjS3G5FyPiBakSx7jaYCAYohVN/Yw==
-X-Received: by 2002:a05:6512:39ce:: with SMTP id k14mr195590lfu.169.1612914506449;
-        Tue, 09 Feb 2021 15:48:26 -0800 (PST)
-Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
-        by smtp.gmail.com with ESMTPSA id c25sm23779lja.131.2021.02.09.15.48.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 15:48:25 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        nouveau@lists.freedesktop.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 3/3] drm/nouveau/ttm: constify static vm_operations_struct
-Date:   Wed, 10 Feb 2021 00:48:17 +0100
-Message-Id: <20210209234817.55112-4-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210209234817.55112-1-rikard.falkeborn@gmail.com>
-References: <20210209234817.55112-1-rikard.falkeborn@gmail.com>
+        Tue, 9 Feb 2021 18:51:45 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210209235048epoutp049b8de4dd78cb10b046174c1cf0b7239d~iOVPgLk6h1807818078epoutp04n
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 23:50:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210209235048epoutp049b8de4dd78cb10b046174c1cf0b7239d~iOVPgLk6h1807818078epoutp04n
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612914648;
+        bh=Yfwyv25XMm32QG1IHtSFUvcYQNNR9BBObeWhcnK1FCE=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=mBCKeIcQftIcOcMfaFYXqKRNaxVppqgWmVeNXwPiU60Nfu5vlou+TCaA2OkKvxPYW
+         kA+QhaTDHtvSxNosCSHBI8/jaH51Ar0+x1BLIax2FwiFxj3Fd1npcORUB10JeN7K1X
+         IzyY2c7y7ZGxfX/ACmSqCRMiEGB0u3xNvKif2AJI=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210209235048epcas1p19b606a3e69e8905ca6a3276bcfd68f04~iOVPEr4Uw1737417374epcas1p1P;
+        Tue,  9 Feb 2021 23:50:48 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.164]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Db05M4DPSz4x9Pt; Tue,  9 Feb
+        2021 23:50:47 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        70.B6.10463.7DF13206; Wed, 10 Feb 2021 08:50:47 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2~iOVNn36Ao2430624306epcas1p14;
+        Tue,  9 Feb 2021 23:50:46 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210209235046epsmtrp2f14ae2e2ca7328098069b18083a2fb3e~iOVNnAAeB1241312413epsmtrp2j;
+        Tue,  9 Feb 2021 23:50:46 +0000 (GMT)
+X-AuditID: b6c32a38-f11ff700000028df-8f-60231fd77323
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        34.12.13470.6DF13206; Wed, 10 Feb 2021 08:50:46 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210209235046epsmtip287ac00e030c4c6178459d4aaf99f55b1~iOVNXNVy80642306423epsmtip2L;
+        Tue,  9 Feb 2021 23:50:46 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Linux Kernel Mailing List'" <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>
+Cc:     "'Eric Sandeen'" <sandeen@sandeen.net>,
+        "'Goldwyn Rodrigues'" <rgoldwyn@suse.com>,
+        "'Nicolas Boos'" <nicolas.boos@wanadoo.fr>,
+        <sedat.dilek@gmail.com>, "'Hyunchul Lee'" <hyc.lee@gmail.com>,
+        "'Luca Stefani'" <luca.stefani.ge1@gmail.com>,
+        "'Matthieu CASTET'" <castet.matthieu@free.fr>,
+        "'Sven Hoexter'" <sven@stormbind.net>,
+        "'Ethan Sommer'" <e5ten.arch@gmail.com>,
+        "'Ethan Sommer'" <e5ten.arch@gmail.com>,
+        "'Hyeongseok Kim'" <hyeongseok@gmail.com>
+Subject: [ANNOUNCE] exfatprogs-1.1.0 version released
+Date:   Wed, 10 Feb 2021 08:50:46 +0900
+Message-ID: <000001d6ff3e$62f336d0$28d9a470$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: Adb/Pa6th4yELZeSR5GVSDSMGqBObg==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFJsWRmVeSWpSXmKPExsWy7bCmvu51eeUEg7l/5S0+3+xlt+g88pTN
+        4tr99+wWfyd+YrLYs/cki8XlXXPYLP6tb2a3aDh2hMWi7e8uVovWK1oW66aeYLF4veEZqwOP
+        R/+6z6weO2fdZffYsvghk8fEH9PYPNZvucri8XmTnMfnu+tZA9ijcmwyUhNTUosUUvOS81My
+        89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgA5VUihLzCkFCgUkFhcr6dvZFOWX
+        lqQqZOQXl9gqpRak5BQYGhToFSfmFpfmpesl5+daGRoYGJkCVSbkZHTueMRSMIetYt7Dw2wN
+        jO2sXYycHBICJhKTdj5mA7GFBHYwStxu8u5i5AKyPzFKzJr3nxnC+cYoseTkC7iOTZ9XskAk
+        9jJKdM2/zgrhvGSUmHDxIDNIFZuArsS/P/vB5ooIJEvse72fEaSIWeAcs8SeM7PAEsICphJL
+        F39jAbFZBFQlHq1/AxbnFbCUeLHyFSOELShxcuYTsBpmAXmJ7W/nMEOcoSDx8+kyVogFehLb
+        1zezQdSISMzubAO7W0JgC4fE6+ZTTBANLhK3eptYIGxhiVfHt7BD2FISn9/tBWrmALKrJT7u
+        h5rfwSjx4rsthG0scXP9BlaQEmYBTYn1u/QhwooSO3/PZYRYyyfx7msPK8QUXomONiGIElWJ
+        vkuHoQ6Qluhq/wC11EPi8sfFrBMYFWcheXIWkidnIXlmFsLiBYwsqxjFUguKc9NTiw0LTJAj
+        exMjOBFrWexgnPv2g94hRiYOxkOMEhzMSiK8zjOVEoR4UxIrq1KL8uOLSnNSiw8xmgKDfSKz
+        lGhyPjAX5JXEG5oaGRsbW5iYmZuZGiuJ8yYZPIgXEkhPLEnNTk0tSC2C6WPi4JRqYMpc9TLU
+        oLNmnnzXojRxmfqnPIwrxBIkuo29mkKYb1y7svl28y+967z1dnO9zrXmssf++ZF3+sTbTULl
+        7t8U1EvXTku4lbDxXNvaXIVKvk/aSeaZmXvLXSv6LzbE9YbNE3hnoMZgdv3NO9tjnHMDNqze
+        nb9qQWvkHXH7QMMb9+/FRi2PMLBx3299SNZsX5iP4PGIK4dvrHq1b+7G0qrwohXx/XVWPpPi
+        AtzC7L11Z39YkDqzfqvPp/u/HyhH1vfymjBvOaCzl2NJgItsjblesfrT7fZynoUcudfZJiq+
+        mWnlqSN46uj1GLZs+X3/brAvO7JW5tJUcbUNb9gkhJwu5VVJXnCZnDs1+KHsxD1GSizFGYmG
+        WsxFxYkA2Z54wU0EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmkeLIzCtJLcpLzFFi42LZdlhJXveavHKCwb0X+hafb/ayW3Qeecpm
+        ce3+e3aLvxM/MVns2XuSxeLyrjlsFv/WN7NbNBw7wmLR9ncXq0XrFS2LdVNPsFi83vCM1YHH
+        o3/dZ1aPnbPusntsWfyQyWPij2lsHuu3XGXx+LxJzuPz3fWsAexRXDYpqTmZZalF+nYJXBmd
+        Ox6xFMxhq5j38DBbA2M7axcjJ4eEgInEps8rWboYuTiEBHYzSly79IURIiEtcezEGeYuRg4g
+        W1ji8OFiiJrnjBIHb29nB6lhE9CV+PdnPxuILSKQLLHv9X5GkCJmgWvMEnevQiSEBUwlli7+
+        xgJiswioSjxa/wYszitgKfFi5StGCFtQ4uTMJywgy5gF9CTaNoKFmQXkJba/ncMMcY+CxM+n
+        y1ghdulJbF/fzAZRIyIxu7ONeQKj4Cwkk2YhTJqFZNIsJB0LGFlWMUqmFhTnpucWGxYY5qWW
+        6xUn5haX5qXrJefnbmIEx5eW5g7G7as+6B1iZOJgPMQowcGsJMLrPFMpQYg3JbGyKrUoP76o
+        NCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQamAvHUAmvpDYHSpWesHX2/atay
+        LHh98pHri62ONrIPpy4vmfdIK6W7/18/f+apbenikV85itOLU22n5lv6m5ouj8g7Frpu1SQr
+        Wd91n1bzWJmtrgye0Zu016nH/WfsISX2+3Kb77YnBcsKOgmslSzoO6nT+LNv0+awTTzai7UO
+        KKWvcooxnJTxSvPX0h394i955uzk77mr+07itS8z8xGDpqtb81/xTrtZkpToqGNXEMG6+3Gz
+        wjy2w+551XH3+7dryV5/fuF2UZttz8NNyrt/8cas1mthO5Zpnrx322vpjqlTPi75tvpWz6fb
+        tcX+Wpc8uBbekb711IL/+4W4mz/d756Kub3v2f4D2/tXWnAosRRnJBpqMRcVJwIAqbxScx4D
+        AAA=
+X-CMS-MailID: 20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2
+References: <CGME20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of nouveau_ttm_vm_ops is to assign its address to the
-vm_ops field in the vm_area_struct struct. Make it const to allow the
-compiler to put it in read-only memory
+Hi folk,
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/gpu/drm/nouveau/nouveau_ttm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We have released exfatprogs 1.1.0 version. In this release, exfatlabel
+has been added to print or re-write volume label and volume serial value.
+Also, A new dump.exfat util has been added to display statistics from
+a given device(Requested by Mike Fleetwood(GParted Developer)).
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_ttm.c b/drivers/gpu/drm/nouveau/nouveau_ttm.c
-index 495288182c2d..b81ae90b8449 100644
---- a/drivers/gpu/drm/nouveau/nouveau_ttm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_ttm.c
-@@ -154,7 +154,7 @@ static vm_fault_t nouveau_ttm_fault(struct vm_fault *vmf)
- 	return ret;
- }
- 
--static struct vm_operations_struct nouveau_ttm_vm_ops = {
-+static const struct vm_operations_struct nouveau_ttm_vm_ops = {
- 	.fault = nouveau_ttm_fault,
- 	.open = ttm_bo_vm_open,
- 	.close = ttm_bo_vm_close,
--- 
-2.30.0
+Any feedback is welcome!:)
+
+CHANGES :
+ * fsck.exfat: Recover corrupted boot region.
+
+NEW FEATURES :
+ * exfatlabel: Print or set volume label and serial.
+ * dump.exfat: Show the on-disk metadata information and the statistics.
+
+BUG FIXES :
+ * Set _FILE_OFFSET_BITS=64 for Android build.
+
+The git tree is at:
+      https://github.com/exfatprogs/exfatprogs
+
+The tarballs can be found at:
+      https://github.com/exfatprogs/exfatprogs/releases/download/1.1.0/exfatprogs-1.1.0.tar.gz
 
