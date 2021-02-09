@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80728315CF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA54315CE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235246AbhBJCK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:10:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233873AbhBJAz5 (ORCPT
+        id S235199AbhBJCIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:08:49 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55222 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234592AbhBJAyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 19:55:57 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4A9C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 16:53:33 -0800 (PST)
-Message-Id: <20210210002512.469379641@linutronix.de>
+        Tue, 9 Feb 2021 19:54:17 -0500
+Message-Id: <20210210002512.578371068@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612918410;
+        s=2020; t=1612918411;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=koso/ijkAKHT4rK+8gTqQvbpAbj2hWodmKM11mEXCzo=;
-        b=oGTqOsywU3PhBfrcRDklcDnH31fQ5jT5xmFigI4hp/w96m4taMoFlAzTzivSA5xWwWEQzZ
-        nhWPcnKqZhcvRh88nZSMooUHX7E0448aZoUgAsK+EUmr/IY6YIabONgnCeXrHwQ5YCCm8r
-        qAjvZFIsIIldgY4LXCrbFVaO6D8c3R1rJeULg7rcHXIcTKnhpFmSmcw+i83r5LUMXUpbGT
-        DTA0KqNLMNZzPr29IYZadcNrQnu1UWDHJwcELWLvdjOD4g0LosslPd/mEZscy1MUu8jPKt
-        1vzERaS+R/ThD2yPfyT9NksYIMiM/Em1Eo7LjawDPVVGJ/k4f2nRkZCPIgt7Xg==
+        bh=WQDPlicIaWM+pkANu1hZXAw0rPfVqv7KclaSDn27Q7c=;
+        b=3z52E6r1WKlEC7Y4Thv7qa56/0QM2ay0ovxPtPQaJpsnf+Zcr8Lqo/tn0clAcHvgzZH4AO
+        0sWL9S66eEdvdAr+VITJQZdXj/u/xNIr2f/dKeJJIOkWUJIXoftYBWLXxKWKpfQIHSkTZg
+        5WbJy6hWgJhwDDm1KbH/SLcVTToYjMi7IsD0caDW82+m0UdNiTI7NQOHkiL32/SWZYl/Cr
+        u16z3Z6rCvvvQOO5D0d1gBeKgkbgvZ6cyrV9UAKCDQXVoQckuHlbBbJ5Id9uhSbec4BUiH
+        9FFPmxpwwmW/fds3Q+F+UomxORpvixQPPnul4ANEyS4FXUoK9NdpEuVp5fLapA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612918410;
+        s=2020e; t=1612918411;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=koso/ijkAKHT4rK+8gTqQvbpAbj2hWodmKM11mEXCzo=;
-        b=cl2eD3KK0GTMfTczVe1E+y+lLelNE7Tw0A58f1IQKHjYykfKkfMY+xh0tfWdd1Oz+jjVxE
-        AChYUr4xatendWBQ==
-Date:   Wed, 10 Feb 2021 00:40:45 +0100
+        bh=WQDPlicIaWM+pkANu1hZXAw0rPfVqv7KclaSDn27Q7c=;
+        b=unOYW3k4QelBOTKhx0sIAGhlAwW30bxWbxjGqE0VF2NMGUWwrx/eFZrZOOOIRPgL88BkZj
+        wnV12POFgrEJAgCQ==
+Date:   Wed, 10 Feb 2021 00:40:46 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -46,7 +43,7 @@ Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Kees Cook <keescook@chromium.org>,
         Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Subject: [patch V2 04/13] x86/apic: Split out spurious handling code
+Subject: [patch V2 05/13] x86/irq: Provide macro for inlining irq stack switching
 References: <20210209234041.127454039@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,70 +54,147 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-sysvec_spurious_apic_interrupt() calls into the handling body of
-__spurious_interrupt() which is not obvious as that function is declared
-inside the DEFINE_IDTENTRY_IRQ(spurious_interrupt) macro.
+The effort to make the ASM entry code slim and unified moved the irq stack
+switching out of the low level ASM code so that the whole return from
+interrupt work and state handling can be done in C and the ASM code just
+handles the low level details of entry and exit.
 
-As __spurious_interrupt() is currently always inlined this ends up with two
-copies of the same code for no reason.
+This ended up being a suboptimal implementation for various reasons
+(including tooling). The main pain points are:
 
-Split the handling function out and invoke it from both entry points.
+ - The indirect call which is expensive thanks to retpoline
+
+ - The inability to stay on the irq stack for softirq processing on return
+   from interrupt
+
+ - The fact that the stack switching code ends up being an easy to target
+   exploit gadget.
+
+Prepare for inlining the stack switching logic into the C entry points by
+providing a ASM macro which contains the guts of the switching mechanism:
+
+  1) Store RSP at the top of the irq stack
+  2) Switch RSP to the irq stack
+  3) Invoke code
+  4) Pop the original RSP back
+
+Document the unholy asm() logic while at it to reduce the amount of head
+scratching required a half year from now.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Kees Cook <keescook@chromium.org>
-
 ---
- arch/x86/kernel/apic/apic.c |   31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
+V2: Cosmetic changes - Borislav
+    Have ASM_CALL_CONSTRAINT unconditional - Josh
+---
+ arch/x86/include/asm/irq_stack.h |   98 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
 
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2137,18 +2137,11 @@ void __init register_lapic_address(unsig
-  * Local APIC interrupts
-  */
+--- a/arch/x86/include/asm/irq_stack.h
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -7,6 +7,104 @@
+ #include <asm/processor.h>
  
--/**
-- * spurious_interrupt - Catch all for interrupts raised on unused vectors
-- * @regs:	Pointer to pt_regs on stack
-- * @vector:	The vector number
-- *
-- * This is invoked from ASM entry code to catch all interrupts which
-- * trigger on an entry which is routed to the common_spurious idtentry
-- * point.
-- *
-- * Also called from sysvec_spurious_apic_interrupt().
+ #ifdef CONFIG_X86_64
++
 +/*
-+ * Common handling code for spurious_interrupt and spurious_vector entry
-+ * points below. No point in allowing the compiler to inline it twice.
-  */
--DEFINE_IDTENTRY_IRQ(spurious_interrupt)
-+static noinline void handle_spurious_interrupt(u8 vector)
- {
- 	u32 v;
- 
-@@ -2183,9 +2176,23 @@ DEFINE_IDTENTRY_IRQ(spurious_interrupt)
- 	trace_spurious_apic_exit(vector);
- }
- 
-+/**
-+ * spurious_interrupt - Catch all for interrupts raised on unused vectors
-+ * @regs:	Pointer to pt_regs on stack
-+ * @vector:	The vector number
++ * Macro to inline switching to an interrupt stack and invoking function
++ * calls from there. The following rules apply:
 + *
-+ * This is invoked from ASM entry code to catch all interrupts which
-+ * trigger on an entry which is routed to the common_spurious idtentry
-+ * point.
++ * - Ordering:
++ *
++ *   1. Write the stack pointer into the top most place of the irq
++ *	stack. This ensures that the various unwinders can link back to the
++ *	original stack.
++ *
++ *   2. Switch the stack pointer to the top of the irq stack.
++ *
++ *   3. Invoke whatever needs to be done (@asm_call argument)
++ *
++ *   4. Pop the original stack pointer from the top of the irq stack
++ *	which brings it back to the original stack where it left off.
++ *
++ * - Function invocation:
++ *
++ *   To allow flexible usage of the macro, the actual function code including
++ *   the store of the arguments in the call ABI registers is handed in via
++ *   the @asm_call argument.
++ *
++ * - Local variables:
++ *
++ *   @tos:
++ *	The @tos variable holds a pointer to the top of the irq stack and
++ *	_must_ be allocated in a non-callee saved register as this is a
++ *	restriction coming from objtool.
++ *
++ *	Note, that (tos) is both in input and output constraints to ensure
++ *	that the compiler does not assume that R11 is left untouched in
++ *	case this macro is used in some place where the per cpu interrupt
++ *	stack pointer is used again afterwards
++ *
++ * - Function arguments:
++ *	The function argument(s), if any, have to be defined in register
++ *	variables at the place where this is invoked. Storing the
++ *	argument(s) in the proper register(s) is part of the @asm_call
++ *
++ * - Constraints:
++ *
++ *   The constraints have to be done very carefully because the compiler
++ *   does not know about the assembly call.
++ *
++ *   output:
++ *     As documented already above the @tos variable is required to be in
++ *     the output constraints to make the compiler aware that R11 cannot be
++ *     reused after the asm() statement.
++ *
++ *     For builds with CONFIG_UNWIND_FRAME_POINTER ASM_CALL_CONSTRAINT is
++ *     required as well as this prevents certain creative GCC variants from
++ *     misplacing the ASM code.
++ *
++ *  input:
++ *    - func:
++ *	  Immediate, which tells the compiler that the function is referenced.
++ *
++ *    - tos:
++ *	  Register. The actual register is defined by the variable declaration.
++ *
++ *    - function arguments:
++ *	  The constraints are handed in via the 'argconstr' argument list. They
++ *	  describe the register arguments which are used in @asm_call.
++ *
++ *  clobbers:
++ *     Function calls can clobber anything except the callee-saved
++ *     registers. Tell the compiler.
 + */
-+DEFINE_IDTENTRY_IRQ(spurious_interrupt)
-+{
-+	handle_spurious_interrupt(vector);
++#define call_on_irqstack(func, asm_call, argconstr...)			\
++{									\
++	register void *tos asm("r11");					\
++									\
++	tos = ((void *)__this_cpu_read(hardirq_stack_ptr));		\
++									\
++	asm_inline volatile(						\
++	"movq	%%rsp, (%[tos])				\n"		\
++	"movq	%[tos], %%rsp				\n"		\
++									\
++	asm_call							\
++									\
++	"popq	%%rsp					\n"		\
++									\
++	: "+r" (tos), ASM_CALL_CONSTRAINT				\
++	: [__func] "i" (func), [tos] "r" (tos) argconstr		\
++	: "cc", "rax", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10",	\
++	  "memory"							\
++	);								\
 +}
 +
- DEFINE_IDTENTRY_SYSVEC(sysvec_spurious_apic_interrupt)
++/* Macros to assert type correctness for run_*_on_irqstack macros */
++#define assert_function_type(func, proto)				\
++	static_assert(__builtin_types_compatible_p(typeof(&func), proto))
++
++#define assert_arg_type(arg, proto)					\
++	static_assert(__builtin_types_compatible_p(typeof(arg), proto))
++
+ static __always_inline bool irqstack_active(void)
  {
--	__spurious_interrupt(regs, SPURIOUS_APIC_VECTOR);
-+	handle_spurious_interrupt(SPURIOUS_APIC_VECTOR);
- }
- 
- /*
+ 	return __this_cpu_read(hardirq_stack_inuse);
 
