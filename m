@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66EE314BDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE401314BCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhBIJjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:39:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbhBIJfH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:35:07 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC81C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:34:26 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id v15so20756755wrx.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 01:34:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=I6lla9xyajA+7i1DpUMCMQmJsAv3iw+P4AVVETxCxU8=;
-        b=JS5ZXG0NdNNenwAwYRGP56fdafT6qTxU/F4W7NjKrxOcA2F0FjgOjo3xjifg9tUaXI
-         ++44AAc1RPOlXQNxfkrmy4XLEy4h9fk3D0uznSGg4nT1M2q8enEIYIAnd14OeiP6HDmi
-         dfql1ArBt0ZWqOGNgeVXnCRskI8CUFkyJKHbE97vmhC1NkDn/dCVliDQErG7L4XovGPr
-         G/RgQJPOOfdKTxXueKlaoz+DN0EJ8YTklOvyN7a2Jym9lyP9fFYAFbrGgBKlsjdk+t+4
-         Kw9gRLSwNP9KU9qBtxFf1uzSMA1Cg1pVRv7AfMxI2h6d/x/1he54VeVkTnNli24oKwxt
-         SbFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=I6lla9xyajA+7i1DpUMCMQmJsAv3iw+P4AVVETxCxU8=;
-        b=UCQheT1twthEoccEJL6y7p7EPT58IliDAog+S6VyLfy/aO3VZ3fennvcVN6ptMZvxr
-         aOahSX0jtGeGb6zHjRBBL4MltWLi3uaIPSAff2pQRqyv9E+Km1Gmi1ro3LxZFQSOEQ1J
-         B+7CsV/rh3lAO35OLdPI2PbBCoByoET521AgaezgxGuZZT3j4zsbd5HG4tAsdJ8UEk1v
-         iW9TEq8tCqGlU6LcLsdBuU190uVGYomR1PpUsxyPf7CzsY+j2cH6DO+ePhOAwLjwrPV6
-         VLoQlytMgkfsu7aH0vyy8rRtk7cXtnZJZRXSSZVOvkpVpI666Pv7PXwcsrp9SD370Epf
-         ZAeg==
-X-Gm-Message-State: AOAM5316GxuvqjT+FWxl3RR5j3gbYKEW1eVCMQEDq+Hpv5G4N8vyW7eP
-        uZT3OFpH1xh/tgTj4O5QFPY=
-X-Google-Smtp-Source: ABdhPJzQiR8shG1HcjBfGmhbP4hEsyfXAKjAUtuMJV/fksQjo9aCMBDKfpuJZb7uwiiLh/Jnbi6Epg==
-X-Received: by 2002:adf:f8c1:: with SMTP id f1mr24318260wrq.76.1612863264871;
-        Tue, 09 Feb 2021 01:34:24 -0800 (PST)
-Received: from [192.168.0.66] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id v5sm15281402wro.71.2021.02.09.01.34.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Feb 2021 01:34:24 -0800 (PST)
-Subject: Re: [PATCH v2] drivers/misc/vmw_vmci: restrict too big queue size in
-To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
-References: <YCJKIVhNS4N4glUa@kroah.com>
- <20210209093101.2097627-1-snovitoll@gmail.com>
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <a10296cf-4545-c7f3-1d3c-31fbd05c3f6c@gmail.com>
-Date:   Tue, 9 Feb 2021 09:32:04 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229544AbhBIJgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:36:25 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:34726 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230107AbhBIJdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:33:16 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxSdSoViJgw40IAA--.11028S2;
+        Tue, 09 Feb 2021 17:32:25 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] Add basic support for Loongson-2K1000
+Date:   Tue,  9 Feb 2021 17:32:18 +0800
+Message-Id: <20210209093224.7085-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210209093101.2097627-1-snovitoll@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxSdSoViJgw40IAA--.11028S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7urykAr1DAw4DKryfXFWDJwb_yoW8XrW7pw
+        4akw15KF45Cry3Crn3JryUGryrArWfJrZFgF47Xr15WasIqa4Yvr1fJFs8trsFyrykta4j
+        9ry8GFW7GFnrC37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvqb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1D
+        MxkIecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
+        ZFpf9x07jz0PfUUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02/2021 09:31, Sabyrzhan Tasbolatov wrote:
-> syzbot found WARNING in qp_broker_alloc[1] in qp_host_alloc_queue()
-> when num_pages is 0x100001, giving queue_size + queue_page_size
-> bigger than KMALLOC_MAX_SIZE for kzalloc(), resulting order >= MAX_ORDER
-> condition.
->
-> queue_size + queue_page_size=0x8000d8, where KMALLOC_MAX_SIZE=0x400000.
->
-> Reported-by: syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
-> Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-> ---
->> As this is controllable by userspace, you just provided a way to flood
->> the kernel logs.
->>
->> Please make this a dev_dbg() call instead, if you really want to see it.
->> Otherwise just return NULL, no need to report anything, right?
-> Thanks, removed pr_warn().
-Looks like you forgot to take out the opening brace.
+These patches support single-core DTS boot to the serial port login
+interface, which can be operated using conventional commands.
 
->
-> v2: Removed pr_warn() to avoid flood from user-space
-> ---
->   drivers/misc/vmw_vmci/vmci_queue_pair.c | 2 --
->   1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-> index f6af406fda80..ea16df73cde0 100644
-> --- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
-> +++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-> @@ -538,9 +538,7 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
->   	queue_page_size = num_pages * sizeof(*queue->kernel_if->u.h.page);
->   
->   	if (queue_size + queue_page_size > KMALLOC_MAX_SIZE) {
-> -		pr_warn("too big queue to allocate\n");
->   		return NULL;
-> -	}
->   
->   	queue = kzalloc(queue_size + queue_page_size, GFP_KERNEL);
->   	if (queue) {
+I have successfully tested it on the Loongson 2K1000 machine.
+pmon: http://cgit.loongnix.org/cgit/pmon-loongson3/
+
+Qing Zhang (6):
+  MIPS: Loongson64: DeviceTree for 2K1000
+  MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI.
+  MIPS: Loongson64: Add support for the 2K1000 to get cpu_clock_freq
+  MIPS: Loongson64: Add 2K1000 early_printk_port
+  irqchip/loongson-liointc: irqchip add 2.0 version.
+  MIPS: Loongson64: Add a Loongson-2k default config file
+
+ arch/mips/boot/dts/loongson/Makefile          |   1 +
+ .../boot/dts/loongson/loongson64-2k1000.dtsi  | 243 ++++++++++++
+ .../dts/loongson/loongson64_2core_2k1000.dts  |  10 +
+ arch/mips/configs/loongson2k_defconfig        | 353 ++++++++++++++++++
+ .../include/asm/mach-loongson64/boot_param.h  |   6 +
+ .../asm/mach-loongson64/builtin_dtbs.h        |   1 +
+ .../include/asm/mach-loongson64/loongson.h    |   3 +-
+ arch/mips/loongson64/env.c                    |  13 +-
+ arch/mips/loongson64/init.c                   |  21 +-
+ arch/mips/loongson64/time.c                   |  14 +
+ drivers/irqchip/irq-loongson-liointc.c        |  55 ++-
+ 11 files changed, 706 insertions(+), 14 deletions(-)
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
+ create mode 100644 arch/mips/configs/loongson2k_defconfig
+
+-- 
+2.20.1
 
