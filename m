@@ -2,96 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED65315166
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31AE31516E
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhBIOSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:18:00 -0500
-Received: from mga07.intel.com ([134.134.136.100]:35706 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231319AbhBIOR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 09:17:57 -0500
-IronPort-SDR: nzZ3rAG4yK/agXrnAeTr7w2qu3Pf+5Qy1OKcL4dH5OKWCTP330X+ghvTm49rlnc2o44ze2YI3l
- OHWrAUVO6XwA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="245953145"
-X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
-   d="scan'208";a="245953145"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 06:16:09 -0800
-IronPort-SDR: RkBMcTU0+fkpsIgm2O+1IjEi6UOCAJd89r6TT0BdfPkb4goL2fqES9jL99M3XdIGoyyLN77Xo+
- pIt4LRDN5aWg==
-X-IronPort-AV: E=Sophos;i="5.81,165,1610438400"; 
-   d="scan'208";a="359189832"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 06:16:06 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l9To9-003EZG-Uw; Tue, 09 Feb 2021 16:16:01 +0200
-Date:   Tue, 9 Feb 2021 16:16:01 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, willy@infradead.org,
-        david@redhat.com, linmiaohe@huawei.com, vbabka@suse.cz,
-        cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com, joe@perches.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] vsprintf: dump full information of page flags in
- pGp
-Message-ID: <YCKZIWMYjD33xXnr@smile.fi.intel.com>
-References: <20210209105613.42747-1-laoar.shao@gmail.com>
- <20210209105613.42747-4-laoar.shao@gmail.com>
- <YCKT8WCPGU+HBY91@alley>
+        id S231319AbhBIOU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:20:56 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2526 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhBIOUy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 09:20:54 -0500
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DZlHJ4mmCz67mSQ;
+        Tue,  9 Feb 2021 22:13:32 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 9 Feb 2021 15:20:05 +0100
+Received: from [10.47.2.44] (10.47.2.44) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 9 Feb 2021
+ 14:20:03 +0000
+Subject: Re: [PATCH] perf tools: Fix arm64 build error with gcc-11
+To:     Leo Yan <leo.yan@linaro.org>, Jianlin Lv <Jianlin.Lv@arm.com>
+CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210209113357.1535104-1-Jianlin.Lv@arm.com>
+ <20210209121728.GA12546@leoy-ThinkPad-X240s>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <66c8385e-b9fb-4a5b-a55e-e1543ad3d3c3@huawei.com>
+Date:   Tue, 9 Feb 2021 14:18:26 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCKT8WCPGU+HBY91@alley>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210209121728.GA12546@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.2.44]
+X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 02:53:53PM +0100, Petr Mladek wrote:
-> On Tue 2021-02-09 18:56:13, Yafang Shao wrote:
-
-...
-
-> I am sorry for my ignorance. I am not familiar with MM.
-> But it is pretty hard to understand what call does what.
+On 09/02/2021 12:17, Leo Yan wrote:
+> Hi Jianlin,
 > 
-> I have found the following comment in include/linux/page_flags.h:
+> On Tue, Feb 09, 2021 at 07:33:57PM +0800, Jianlin Lv wrote:
+>> gcc version: 11.0.0 20210208 (experimental) (GCC)
+>>
+>> Following build error on arm64:
+>>
+>> .......
+>> In function ‘printf’,
+>>      inlined from ‘regs_dump__printf’ at util/session.c:1141:3,
+>>      inlined from ‘regs__printf’ at util/session.c:1169:2:
+>> /usr/include/aarch64-linux-gnu/bits/stdio2.h:107:10: \
+>>    error: ‘%-5s’ directive argument is null [-Werror=format-overflow=]
+>>
+>> 107 |   return __printf_chk (__USE_FORTIFY_LEVEL - 1, __fmt, \
+>>                  __va_arg_pack ());
+>>
+>> ......
+>> In function ‘fprintf’,
+>>    inlined from ‘perf_sample__fprintf_regs.isra’ at \
+>>      builtin-script.c:622:14:
+>> /usr/include/aarch64-linux-gnu/bits/stdio2.h:100:10: \
+>> 	error: ‘%5s’ directive argument is null [-Werror=format-overflow=]
+>>    100 |   return __fprintf_chk (__stream, __USE_FORTIFY_LEVEL - 1, __fmt,
+>>    101 |                         __va_arg_pack ());
+>>
+>> cc1: all warnings being treated as errors
+>> .......
+>>
+>> This patch fixes Wformat-overflow warnings by replacing the return
+>> value NULL of perf_reg_name with "unknown".
+>>
+>> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+>> ---
+>>   tools/perf/arch/arm64/include/perf_regs.h | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/perf/arch/arm64/include/perf_regs.h b/tools/perf/arch/arm64/include/perf_regs.h
+>> index baaa5e64a3fb..901419f907c0 100644
+>> --- a/tools/perf/arch/arm64/include/perf_regs.h
+>> +++ b/tools/perf/arch/arm64/include/perf_regs.h
+>> @@ -85,10 +85,10 @@ static inline const char *perf_reg_name(int id)
+>>   	case PERF_REG_ARM64_PC:
+>>   		return "pc";
+>>   	default:
+>> -		return NULL;
+>> +		return "unknown";
+>>   	}
+>>   
+>> -	return NULL;
+>> +	return "unknown";
 > 
->  * The page flags field is split into two parts, the main flags area
->  * which extends from the low bits upwards, and the fields area which
->  * extends from the high bits downwards.
+> This issue is a common issue crossing all archs.  So it's better to
+> change the code in the places where calls perf_reg_name(), e.g. in
+> util/session.c:
 > 
-> Sigh, I know that you already reworked this several times because
-> people "nitpicked" about the code style. But it seems that it
-> rather diverged instead of converged.
+> --- a/tools/perf/util/session.c
+> +++ b/tools/perf/util/session.c
+> @@ -1135,12 +1135,14 @@ static void branch_stack__printf(struct perf_sample *sample, bool callstack)
+>   static void regs_dump__printf(u64 mask, u64 *regs)
+>   {
+>          unsigned rid, i = 0;
+> +       char *reg_name;
+>   
+>          for_each_set_bit(rid, (unsigned long *) &mask, sizeof(mask) * 8) {
+>                  u64 val = regs[i++];
+>   
+> +               reg_name = perf_reg_name(rid);
+>                  printf(".... %-5s 0x%016" PRIx64 "\n",
+> -                      perf_reg_name(rid), val);
+> +                      reg_name ?: "Unknown", val);
+>          }
+>   }
 > 
-> What about the following?
+> And another potential issue is the format specifier "%-5s", it prints
+> out maximum to 5 chars, 
 
-Isn't is some like v1 or v2?
+Doesn't the width field specify the min, not max, number of characters?
 
-> Note: It is inpired by the names "main area" and "fields area"
->       mentioned in the above comment from page_flags.h.
->       I have later realized that "page_flags_layout" actually made
->       sense as well. Feel free to rename page_flags_fileds
->       back to page_flags_layout.
+Cheers,
+John
+
+> but actually string "Unknown" has 7 chars.
+> Actually the format specifier breaks other archs register names, e.g.
+> [1][2], seems to me, it's better to change as "%-8s", you might need
+> to use a dedicated patch for format specifier changes.
 > 
-> Anyway, this is my proposal:
-
-What about to create a one format_flags() function which accepts new data
-structure and do something like
-
-buf = format_flags(main_area);
-buf = format_flags(fields_area);
-return buf;
-
-?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> Thanks,
+> Leo
+> 
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/powerpc/include/perf_regs.h#n57
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/csky/include/perf_regs.h#n83
+> .
+> 
 
