@@ -2,80 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECF43158A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1093158A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbhBIV0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:26:01 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:46802 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233289AbhBITFp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:05:45 -0500
-Received: by mail-oi1-f173.google.com with SMTP id k25so20546835oik.13;
-        Tue, 09 Feb 2021 11:04:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E86zkumSxU1Imvr3X7AkPNquYJQ//itWITGEp5B1Dss=;
-        b=LAes0LBe9mqvipXUyKsgfnVHkwcXZIWvE/5bTf8UoYNowjaz7T1BCazX9fAeSPe+UI
-         yLCokhm/Qp/Va08ARhLNVXY74AsylfEjFrCmhPW5YO/pDnQg/MgelFOesrUhf4zcD2UA
-         Z9cO2wlwWwptmHU4agcfr26yqQgaZDNvWNATqYlyo/8Art5ZJMAt1Lc5W11j3vRFhf9Q
-         Pzqdl44haW1fF+SV20UEkyQPTJckq0jDZ5AKMTbDuvLX9n5hXNtTYSPCXQ2nauiOvk87
-         70IvDWPv89cM1/Un7SCJbjlgAdYva1i0JILNw+1wzrnxKzeownR1k/Dc1a2cnGoamc2M
-         zadQ==
-X-Gm-Message-State: AOAM5330VWv/pFNHYyni7LHz+TNUclqe2nC+oR7fJA6KN7Y7I4aGS0rZ
-        QOM3hj+WMyoNT2oZcbr0Sg==
-X-Google-Smtp-Source: ABdhPJytn51DUQba57wBwOykcJgXxKXzNpMCjrf1KwtaYlCyGRn1PoaVmI5ZkwFwQM2JA7IXg6ampA==
-X-Received: by 2002:aca:ccc3:: with SMTP id c186mr3498299oig.74.1612897458826;
-        Tue, 09 Feb 2021 11:04:18 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w2sm3070812otq.9.2021.02.09.11.04.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 11:04:17 -0800 (PST)
-Received: (nullmailer pid 4160125 invoked by uid 1000);
-        Tue, 09 Feb 2021 19:04:16 -0000
-Date:   Tue, 9 Feb 2021 13:04:16 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, coresight@lists.linaro.org,
-        mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        lcherian@marvell.com, suzuki.poulose@arm.com
-Subject: Re: [PATCH V3 12/14] dts: bindings: Document device tree bindings
- for Arm TRBE
-Message-ID: <20210209190416.GA4160095@robh.at.kernel.org>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-13-git-send-email-anshuman.khandual@arm.com>
+        id S232879AbhBIV25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 16:28:57 -0500
+Received: from mga11.intel.com ([192.55.52.93]:49322 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233202AbhBITGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 14:06:07 -0500
+IronPort-SDR: Tgp4A/EPCuWdcwkF762NuL50Df/SUEbmtudDXBboCWH3SZvi/yy/Sch9u3/4sFPl0hLK8C5Jgt
+ 0DYyjQH24DHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="178433429"
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="178433429"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 11:05:07 -0800
+IronPort-SDR: CryAP8+aLNkwQ0BPNrPMQSZO3FeRakfSZp3fnI2qnaZHhRHychXZBVNZiBv3ip600LcUgvr7Rg
+ uZOTOzOaEKww==
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="396351841"
+Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 11:05:06 -0800
+Subject: [PATCH] driver core: auxiliary bus: Fix calling stage for auxiliary
+ bus init
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 09 Feb 2021 12:05:05 -0700
+Message-ID: <161289750572.1086235.9903492973331406876.stgit@djiang5-desk3.ch.intel.com>
+User-Agent: StGit/0.23-29-ga622f1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611737738-1493-13-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 14:25:36 +0530, Anshuman Khandual wrote:
-> From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> 
-> Document the device tree bindings for Trace Buffer Extension (TRBE).
-> 
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> Changes in V3:
-> 
-> - Added missing description for the TRBE hardware
-> - Fixed all DT yaml semantics problems
-> 
->  Documentation/devicetree/bindings/arm/trbe.yaml | 49 +++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/trbe.yaml
-> 
+When the auxiliary device code is built into the kernel, it can be executed
+before the auxiliary bus is registered. This causes bus->p to be not
+allocated and triggers a NULL pointer dereference when the auxiliary bus
+device gets added with bus_add_device(). Change the init of auxiliary bus
+to subsys_initcall() from module_init() to ensure the bus is registered
+before devices.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Below is the kernel splat for the bug:
+[ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
+[ 1.950670] #PF: supervisor read access in kernel mode
+[ 1.950670] #PF: error_code(0x0000) - not-present page
+[ 1.950670] PGD 0
+[ 1.950670] Oops: 0000 1 SMP NOPTI
+[ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
+[ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
+[ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
+78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
+[ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
+[ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
+[ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
+[ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
+[ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
+[ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
+[ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
+[ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
+[ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+[ 1.950670] PKRU: 55555554
+[ 1.950670] Call Trace:
+[ 1.950670] device_add+0x3ee/0x850
+[ 1.950670] __auxiliary_device_add+0x47/0x60
+[ 1.950670] idxd_pci_probe+0xf77/0x1180
+[ 1.950670] local_pci_probe+0x4a/0x90
+[ 1.950670] pci_device_probe+0xff/0x1b0
+[ 1.950670] really_probe+0x1cf/0x440
+[ 1.950670] ? rdinit_setup+0x31/0x31
+[ 1.950670] driver_probe_device+0xe8/0x150
+[ 1.950670] device_driver_attach+0x58/0x60
+[ 1.950670] __driver_attach+0x8f/0x150
+[ 1.950670] ? device_driver_attach+0x60/0x60
+[ 1.950670] ? device_driver_attach+0x60/0x60
+[ 1.950670] bus_for_each_dev+0x79/0xc0
+[ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
+[ 1.950670] driver_attach+0x1e/0x20
+[ 1.950670] bus_add_driver+0x154/0x1f0
+[ 1.950670] driver_register+0x70/0xc0
+[ 1.950670] __pci_register_driver+0x54/0x60
+[ 1.950670] idxd_init_module+0xe2/0xfc
+[ 1.950670] ? idma64_platform_driver_init+0x19/0x19
+[ 1.950670] do_one_initcall+0x4a/0x1e0
+[ 1.950670] kernel_init_freeable+0x1fc/0x25c
+[ 1.950670] ? rest_init+0xba/0xba
+[ 1.950670] kernel_init+0xe/0x116
+[ 1.950670] ret_from_fork+0x1f/0x30
+[ 1.950670] Modules linked in:
+[ 1.950670] CR2: 0000000000000060
+[ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
+
+Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
+Acked-by: Dave Ertman <david.m.ertman@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+---
+ drivers/base/auxiliary.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+index 8336535f1e11..53f93a506626 100644
+--- a/drivers/base/auxiliary.c
++++ b/drivers/base/auxiliary.c
+@@ -270,7 +270,7 @@ static void __exit auxiliary_bus_exit(void)
+ 	bus_unregister(&auxiliary_bus_type);
+ }
+ 
+-module_init(auxiliary_bus_init);
++subsys_initcall(auxiliary_bus_init);
+ module_exit(auxiliary_bus_exit);
+ 
+ MODULE_LICENSE("GPL v2");
+
+
