@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA69C315BF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0A6315BFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbhBJBOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
+        id S234554AbhBJBOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:14:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234100AbhBIWYf (ORCPT
+        with ESMTP id S234143AbhBIWYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Feb 2021 17:24:35 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADE4C061223
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 14:21:25 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id d2so2526522pjs.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 14:21:25 -0800 (PST)
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D64C061224
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 14:21:27 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d13so100245plg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 14:21:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ENqQliVHyX0PxHtGBlp2V2PfjSfk7pDQibV4WcHF1c0=;
-        b=DNmpVMaAOmxBpi1lq2fSAawT2zUEMbedRYjYBYnrwnmsHRkB/xbVWQNOlJ6zVtMfzI
-         vGGi87GmT7nrenlq/cSkYMMZ6eqJIletJpPc2kxDvtnRzzg7aMpfrC9pUmpsPBg/s4l1
-         ZfUCCJpzDau0w66yyVZe0E36qc+etHLDqEPWzhRN08qsBTjfsA3f/4/Xa68m7EXOSLFB
-         rCQwCY+aPq8XgBqufDqR0eqDiRxEGFf3GxacG9uORR7vndFW1q0wf0zjzTTkNBRY9Eda
-         0MQujPJ5dTphE5WAwipIb1Hil3avri9lbK1CrHa7iCHozMBUgXfjO+VAq7m7it3qGrv0
-         mShg==
+        bh=vGwYMuoA/+ahXke9oYiC70zL9lBda/6UphvWrpObbGM=;
+        b=OWbeRvApKIMIa44WG70mylfOqlaC7KAvsBVdljzD+2f9LIhPbOjmjqHFEATxHrb1pZ
+         nQGby43Wnvh0V8mkA9X6eezyAsh7RmIJopD7OVX7v7SaycdDuWgS17kjjY9Ehbjz9zuB
+         BIr1cNWIxEIHfIcW846FmKyNapslVueGrGpn2JFhbFObAtCsgi6Hmq07i5jeM7/03jll
+         0dJ4rA2mEhn+ER1+zkqkiKf7OnS7dGV2a1kiUg0yKV/3HZGoXJ4OhdvFPWBfO4qfV2TG
+         Njze0I1eXIrBNdTuOi/BvY14ceumZcmXnMGbbsLfmt/aP6UV3hDAkhNykNJmiQhSFm+z
+         /LMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ENqQliVHyX0PxHtGBlp2V2PfjSfk7pDQibV4WcHF1c0=;
-        b=TXqhmek9dTI97NWpKo05zVOKNOKn8b+9g0zMpQ8P0ZydGfhtOGagmumbwJA8Nib6tz
-         LkmwklHdy591RdSd00SJbp7oct2Wmz0W+eL0zxfADgpBf8c66JNW3yGBUAdQbK8aoWC4
-         DY05h5gmPbho5MQBRVc2k10Aza7EB4d3DqoDVIIGrV5xVyHqb9Y21OUoIW2EIt2Xrw8T
-         0ihMxTWkO34pPXKmXaRUswynJqzioDY4yEBFvQx/UIgaXAziqOlNoqW/Z6i0sheDuPuC
-         dpHJHJz1tiNvGYAurtO40c5JXDvBucZDATaowWRuKMd0aIZBXkSWTQ+79MCKRAXu/YcY
-         lGsg==
-X-Gm-Message-State: AOAM531Kq/IlZHj10CwHbj9k1pgSVVay0cMZjrFNvoOP0T3/1VzmEfRu
-        CHUNMUQesTxWJAfvfU86me4=
-X-Google-Smtp-Source: ABdhPJwslqug9ZCevgxSn789hr+2/4MLdZpqxqH/bK+7Zla8f2QjHm8PJexfL8c0MtqT6CDUsLjnbg==
-X-Received: by 2002:a17:90b:224f:: with SMTP id hk15mr36754pjb.31.1612909285066;
-        Tue, 09 Feb 2021 14:21:25 -0800 (PST)
+        bh=vGwYMuoA/+ahXke9oYiC70zL9lBda/6UphvWrpObbGM=;
+        b=QnYEE28i4kSHNlD2//LXdOZsuRwSL5kp+lVxHCGly3h9lisc53s262gR8CYgpe0WcR
+         1QIkjrLuQ/kMUnxP53wW5QJEf30gRkeYbcyJ80J5O8nhl/vejdI2dwJUoRMFHywZqs7g
+         Re37KfdtWumJv6B41PTpRXgEWzRi5+zJnVyR/0RTt8m801ZzB/ziUdlYI9l2H4bIB14N
+         7fAn4wMx8I6j6pfSPlHR5UvzIgXnKd/YwDnXONiNUor7dOENqo8wUSreksZO1U4a0QAD
+         otW5TwSKs2ek6XssxdycrtJB2h5MyQMuGgZnYQOaeWGklou2/1ktor+uI7LlMH20m/XN
+         Bn8w==
+X-Gm-Message-State: AOAM531XU2p1jlVhuQH/5fC1tR7iZA7ZPAUZ7RrE+m/sMboWr3iV/xXJ
+        91mx3EvPRDMEUhdO1t9ijd8=
+X-Google-Smtp-Source: ABdhPJxGcxpwdhAuvO2qPNGyvitX9m70atthLRVHrS6uXQMbXQQS18Qh8w0o8BfB1lRp9Y8tH/lW4A==
+X-Received: by 2002:a17:90a:206:: with SMTP id c6mr69279pjc.50.1612909286476;
+        Tue, 09 Feb 2021 14:21:26 -0800 (PST)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id v9sm58601pju.33.2021.02.09.14.21.23
+        by smtp.gmail.com with ESMTPSA id v9sm58601pju.33.2021.02.09.14.21.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 14:21:24 -0800 (PST)
+        Tue, 09 Feb 2021 14:21:25 -0800 (PST)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     Thomas Gleixner <tglx@linutronix.de>
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Nadav Amit <namit@vmware.com>
-Subject: [PATCH v5 6/8] x86/mm/tlb: Do not make is_lazy dirty for no reason
-Date:   Tue,  9 Feb 2021 14:16:51 -0800
-Message-Id: <20210209221653.614098-7-namit@vmware.com>
+Subject: [PATCH v5 7/8] cpumask: Mark functions as pure
+Date:   Tue,  9 Feb 2021 14:16:52 -0800
+Message-Id: <20210209221653.614098-8-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210209221653.614098-1-namit@vmware.com>
 References: <20210209221653.614098-1-namit@vmware.com>
@@ -69,34 +69,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-Blindly writing to is_lazy for no reason, when the written value is
-identical to the old value, makes the cacheline dirty for no reason.
-Avoid making such writes to prevent cache coherency traffic for no
-reason.
+cpumask_next_and() and cpumask_any_but() are pure, and marking them as
+such seems to generate different and presumably better code for
+native_flush_tlb_multi().
 
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
 Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
- arch/x86/mm/tlb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/cpumask.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index e0271e0f84ea..98d212518f67 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -469,7 +469,8 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
- 		__flush_tlb_all();
- 	}
- #endif
--	this_cpu_write(cpu_tlbstate_shared.is_lazy, false);
-+	if (was_lazy)
-+		this_cpu_write(cpu_tlbstate_shared.is_lazy, false);
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index 383684e30f12..e86b7d027cfb 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -235,7 +235,7 @@ static inline unsigned int cpumask_last(const struct cpumask *srcp)
+ 	return find_last_bit(cpumask_bits(srcp), nr_cpumask_bits);
+ }
  
- 	/*
- 	 * The membarrier system call requires a full memory barrier and
+-unsigned int cpumask_next(int n, const struct cpumask *srcp);
++unsigned int __pure cpumask_next(int n, const struct cpumask *srcp);
+ 
+ /**
+  * cpumask_next_zero - get the next unset cpu in a cpumask
+@@ -252,8 +252,8 @@ static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
+ 	return find_next_zero_bit(cpumask_bits(srcp), nr_cpumask_bits, n+1);
+ }
+ 
+-int cpumask_next_and(int n, const struct cpumask *, const struct cpumask *);
+-int cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
++__pure int cpumask_next_and(int n, const struct cpumask *, const struct cpumask *);
++__pure int cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
+ unsigned int cpumask_local_spread(unsigned int i, int node);
+ int cpumask_any_and_distribute(const struct cpumask *src1p,
+ 			       const struct cpumask *src2p);
 -- 
 2.25.1
 
