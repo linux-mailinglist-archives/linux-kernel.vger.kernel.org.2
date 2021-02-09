@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE44131544B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D934F315455
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbhBIQs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:48:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbhBIQqe (ORCPT
+        id S231845AbhBIQtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:49:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53383 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233199AbhBIQrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:46:34 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540FDC0613D6;
-        Tue,  9 Feb 2021 08:45:53 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id f2so23217875ljp.11;
-        Tue, 09 Feb 2021 08:45:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ucw59OKhM9Q+zWkYzS3DfxjYeaWxtahJyWWZM+ZSxcs=;
-        b=CksqofXNoheIa9e1LmljJyAtF5mIk/2VO9Knc5og6IIcHV3s+qa62XPGPBZbukFUc3
-         llf8VuBHfG4uQkV4ZcWZTsHju69yHLidkySv9wacWjQUlssJMOqjXvNdtJUBoednu1Em
-         qryZm5jdr0AZY7z/ZooZKOUUZMFrsLLnAPUwW7yntjouTNDO1FDSE/KCQE0DI2KMkkCr
-         Tfeio6TdlWhCWmxpkNL/dYuGvhFgaKZsFK3jafISWZf/9oawVz69aoT2/qljhF5wCSPW
-         XJT418JirCZ6+xQkOQzuwqEFDZV9jSRUVJ9wd2TkG2xLjLpUlU+NISXqT/pBPsi09kEj
-         qcgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ucw59OKhM9Q+zWkYzS3DfxjYeaWxtahJyWWZM+ZSxcs=;
-        b=Ig1Zv+kXU53r0PZAnW0YsMO8j7NcbBlS7f28ifoIg2ADcMdYXQCxZ/kEMa9eEGHLxP
-         8qMG/f+ln5pgHdoiXuY4DiOs2SJNZJXN/ekIIFDd7dbm2aE75pPFYOKNxRhVpfJ4HYDV
-         lpRnWG+jg9xpRtdHlTaOb7TNE8cozMLCCiAkiejY8+cqd6yo5Ruprp3FJyjE3+fQqysS
-         uUmC7LK4CpZy7yJ9Pwt8ZAvD1QlXMInK5ujJDFewKmBcYt1wFtNnx9d95na3ET5glyYZ
-         vCH2xk3ARf//tTpIeY0sSx+3gHZDQq3SmzoFvoOwJu3CuIT+YRiyUN6zOCwlzS0a60cf
-         ijWg==
-X-Gm-Message-State: AOAM532gKEWCB++J4pwvv6SFGGRBzaE6UJhGtuitcqwEm6jWMq7lsNGK
-        FOBS5haMaZbyZkl/hEkj1HC1ZreRXPnZefGJ0QE=
-X-Google-Smtp-Source: ABdhPJyKBJ6ktL1eFnp+AoAxD/FKdiQevwz7oTqE1bleouoAFpSG94b5wPM3hE3xefsG58tczevDsSO/zUqG03qJFds=
-X-Received: by 2002:a2e:3507:: with SMTP id z7mr14328131ljz.32.1612889151851;
- Tue, 09 Feb 2021 08:45:51 -0800 (PST)
+        Tue, 9 Feb 2021 11:47:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612889186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9bKjwgbZ1EP33vL7JsMvHcw8xSOrDL2Zn14AJKji9VU=;
+        b=R+RjCt/NJDlo9uyxze+EHMXseJGc7qULXCph8rscMJv0RJwvefik0Z6VSyjGZ08pBuGv4m
+        kbPAtzWLQppiNwWzt7nlJLyGP8IOTGLppfPWJiW5WyfVe4lwsw6kI8Z4O7JSZ9WtevdCX9
+        aVyl8Z3SXYNj7Af3gfqFAMaY7/0NQK4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-499-alYt63OcOQKjNdkohcNTEQ-1; Tue, 09 Feb 2021 11:46:23 -0500
+X-MC-Unique: alYt63OcOQKjNdkohcNTEQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04A03107ACE8;
+        Tue,  9 Feb 2021 16:46:21 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7C58A5D705;
+        Tue,  9 Feb 2021 16:46:14 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <5055b9b4-2808-8816-d50c-e651bd88a7c3@digikod.net>
+References: <5055b9b4-2808-8816-d50c-e651bd88a7c3@digikod.net> <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com> <20210122181054.32635-1-eric.snowberg@oracle.com> <1103491.1612369600@warthog.procyon.org.uk> <10e6616e-0598-9f33-2de9-4a5268bba586@digikod.net> <A5B5DEC0-E47A-4C3D-8E79-AF37B6C2E565@oracle.com> <7924ce4c-ea94-9540-0730-bddae7c6af07@digikod.net> <BFC930B3-7994-4C5B-A8EF-1DD1C73F5750@oracle.com> <dc6a4524-3935-fda6-40a8-cebf80942cdf@digikod.net> <188DE1AF-A011-4631-B88A-2C4324DA013B@oracle.com> <99066eb7-53ac-41b0-46cf-36ea3d7f6590@digikod.net> <525705.1612876446@warthog.procyon.org.uk>
+To:     =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl=5FSala=3Dc3=3Dbcn=3F?=
+         =?us-ascii?Q?=3D?= <mic@digikod.net>,
+        Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
+        ardb@kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+        lszubowi@redhat.com, javierm@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Subject: Re: Re: Conflict with =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn's?=
+ blacklist patches [was [PATCH v5 0/4] Add EFI_CERT_X509_GUID support for
+ dbx/mokx entries]
 MIME-Version: 1.0
-References: <20210207104022.GA32127@zn.tnic> <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com>
- <20210207175814.GF32127@zn.tnic> <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com>
- <20210207224540.ercf5657pftibyaw@treble> <20210208100206.3b74891e@gandalf.local.home>
- <20210208153300.m5skwcxxrdpo37iz@treble> <YCFc+ewvwNWqrbY7@hirez.programming.kicks-ass.net>
- <20210208111546.5e01c3fb@gandalf.local.home> <alpine.LSU.2.21.2102090927230.31501@pobox.suse.cz>
- <20210209094953.65d2f322@gandalf.local.home>
-In-Reply-To: <20210209094953.65d2f322@gandalf.local.home>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 9 Feb 2021 08:45:40 -0800
-Message-ID: <CAADnVQK-qdE6mHUogeaQo9Av_58cLptosmfUVmdMzW7gJn5UVw@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@intel.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        live-patching@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 09 Feb 2021 16:46:13 +0000
+Message-ID: <595105.1612889173@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 6:49 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 9 Feb 2021 09:32:34 +0100 (CET)
-> Miroslav Benes <mbenes@suse.cz> wrote:
->
-> > powerpc has this
-> >
-> > static inline unsigned long klp_get_ftrace_location(unsigned long faddr)
-> > {
-> >         /*
-> >          * Live patch works only with -mprofile-kernel on PPC. In this case,
-> >          * the ftrace location is always within the first 16 bytes.
-> >          */
-> >         return ftrace_location_range(faddr, faddr + 16);
-> > }
-> >
-> > > > I suppose the trivial fix is to see if it points to endbr64 and if so,
-> > > > increment the addr by the length of that.
-> > >
-> > > I thought of that too. But one thing that may be possible, is to use
-> > > kallsym. I believe you can get the range of a function (start and end of
-> > > the function) from kallsyms. Then ask ftrace for the addr in that range
-> > > (there should only be one).
-> >
-> > And we can do this if a hard-coded value live above is not welcome. If I
-> > remember correctly, we used to have exactly this in the old versions of
-> > kGraft. We walked through all ftrace records, called
-> > kallsyms_lookup_size_offset() on every record's ip and if the offset+ip
-> > matched faddr (in this case), we returned the ip.
->
-> Either way is fine. Question is, should we just wait till CET is
-> implemented for the kernel before making any of these changes? Just knowing
-> that we have a solution to handle it may be good enough for now.
+Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wrote:
 
-I think the issue is more fundamental than what appears on the surface.
-According to endbr64 documentation it's not just any instruction.
-The cpu will wait for it and if it's replaced with int3 or not seen at
-the branch target the cpu will throw an exception.
-If I understood the doc correctly it means that endbr64 can never be
-replaced with a breakpoint. If that's the case text_poke_bp and kprobe
-need to do extra safety checks.
+> The only commit causing issues is commit f78e50c8f750 ("certs: Factor
+> out the blacklist hash creation"). I think my last patch fix the issue,
+> and I'm testing with the UEFI DBX, but I don't understand why this
+> change would have an impact. In the meantime you can push Eric's commits
+> first, I'll adapt my changes.
+
+Okay.  In that case, I've dropped your branch from my keys-next branch for =
+the
+moment and remerged Eric's branch.
+
+David
+
