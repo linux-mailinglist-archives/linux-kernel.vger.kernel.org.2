@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3129E315C1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EC8315C19
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234126AbhBJBWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:22:12 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:34999 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbhBIWyT (ORCPT
+        id S234517AbhBJBV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:21:26 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:35079 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234549AbhBIWyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Feb 2021 17:54:19 -0500
-Received: by mail-ot1-f53.google.com with SMTP id k10so81012otl.2;
-        Tue, 09 Feb 2021 14:53:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BdXrNYH73Jb2kpPTUcCxcN6nJbRmjpr252i7yRd/ggk=;
-        b=I6j242afR1bGVHPA78DIpg36KAcDA6RH+YSBVIqsLS4nr/aA6pQTS6nAc5gRo3FIc5
-         qlVtEZlMvhV82isi2+KB4Mje+JJOWQ40OndBxvVpethcd11a/OamQrIMXM4K+m3C/xlI
-         okj26FgdNuFZNR9WrES4PH8ehIzJq4QiwSwkjUt9nSvgO3IGcpXOWX86od8nhtBJgZgM
-         fktdz9cVPRYFbwKDi7frTlJb8pYstb/enyxpUA0EdbKlk9ZZGAtNZivjjGaFr7yclKV1
-         zoQQxk4SzMFRsZBdZnxmm8KBNwMLVqRI4q8Lo3AvrkRDyup+elnw92zOHaKs9xIs2UZi
-         0X/Q==
-X-Gm-Message-State: AOAM531M9hfaz4kN636GZxNGm+JgK033W2wc36nvg/e8CxAY3ilvxmZm
-        5S9uIm944qTp4VHjqghkyjqHHSSZEQ==
-X-Google-Smtp-Source: ABdhPJwzuiohuTuCd8IQ8dk5kVshNfOVLhoaBlPjyV7EoguvkYCz0yVz+su4drcXtxGAADhkz3ARLA==
-X-Received: by 2002:a9d:7514:: with SMTP id r20mr17267303otk.318.1612911157755;
-        Tue, 09 Feb 2021 14:52:37 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o98sm641ota.0.2021.02.09.14.52.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 14:52:36 -0800 (PST)
-Received: (nullmailer pid 372109 invoked by uid 1000);
-        Tue, 09 Feb 2021 22:52:35 -0000
-Date:   Tue, 9 Feb 2021 16:52:35 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-can@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: can: rcar_canfd: Group tuples in pin
- control properties
-Message-ID: <20210209225235.GA371996@robh.at.kernel.org>
-References: <20210204125937.1646305-1-geert+renesas@glider.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204125937.1646305-1-geert+renesas@glider.be>
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 3064A580300;
+        Tue,  9 Feb 2021 17:53:18 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Tue, 09 Feb 2021 17:53:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm2; bh=l5ys1
+        Jo3tRmxlqloV0+pZ+k003qctrDL4OIi/ivkIUc=; b=txwXJv1Nqu7I7o55O4t6m
+        zVxM6DmcyEsn66BNao0xVkEXsw6gbC3R4UB8ptjGPsW1srVVLjEQTQjk2ZV506y9
+        W/JYanEiKGj2R/QW8L+rvkEyPiABuLtCo0a7khxJIMyNV7YimYb5wNWqBYepZu7k
+        v2+pfwNjtqdf4vehN+KR6duc50eKA6UWce7UpcyozmMXcaDEOEM3PR/vrIfi7U+M
+        zG6FZPWfGKKrDDVy5B36WCtNm0/dF0meI6qJP/Ry/5ohfTqjewbbjvkuOyiGt5Gf
+        LXBKq+8f6+Z6lVkzuAwlCeGxOHHUciPLhNby4sZlFwLJDrOe+ooK0xToRYrRbYEL
+        w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=l5ys1Jo3tRmxlqloV0+pZ+k003qctrDL4OIi/ivkI
+        Uc=; b=TVw3Uu0wM1fQU7rzCNa+oaCySuPforuHDrHDc41T5EmSx0oIWMzqs8WhE
+        GTI2MHiBraK6IDrqTxvoffWxlqHduvfR9QLgfpBgXrIOf8hlnLqBuktn/9vxcXNK
+        1wfXbId6vV5WOS6FKmLZSQ+Wax+hlAkVz3owFIvYTcOk8O9/XYpJs9gwfdAr/uGE
+        wXNfBje673VyJaRsfEtNz4yV6UOtd0V19sLWCkVnLXJa0Be6NF6LYRYPm4dwTCKV
+        OdEDsX71OyeBCglqqk5m2E+bUrEtUprEkgCC8i9BnYlsh7rWLaiDx8h8Fv475g8T
+        bPxCG8jpIEu7W87lLOcM5DbSG59UA==
+X-ME-Sender: <xms:XBIjYAv2FSL9n4i2Nr68aHKOZoydQ4NbeU-0ONnJi0LZenGUTJg6EQ>
+    <xme:XBIjYNfAgeKI24VS2gDw3XhueNSOhWUAAjFnZa5FPJD9ywy5rtMJ88cGbbFNCX9W6
+    M-u2xpjzE7o7Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheeigddtfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepnhhnvght
+    uceonhhnvghtsehfrghsthhmrghilhdrfhhmqeenucggtffrrghtthgvrhhnpeeugeekvd
+    ehheevheetieetudeljedvvddtieevvdeukeejgfeuheffueelueegueenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnnhgvthesfhgrshhtmh
+    grihhlrdhfmh
+X-ME-Proxy: <xmx:XBIjYLydFDQBlbTqg485ALRSncGVF-1hd67fWE-v4kqGlLlXJuO18g>
+    <xmx:XBIjYDN9sWj1yblCqT8ehRDvQxe07IdvaFkp9_3oxGpzelpCwnbkFw>
+    <xmx:XBIjYA_lVesKWorggn5Mq89jXbDBvJgUk1SewEtI6NO6-XzTuEgkGg>
+    <xmx:XhIjYEXRSTDVij0h7p8HRjG9x-pYMEIkLtl9oaMrbD0VcYRCi_7zAg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 87E12A0005E; Tue,  9 Feb 2021 17:53:16 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
+Mime-Version: 1.0
+Message-Id: <93745280-dbe9-491c-a79d-c9c364b83880@www.fastmail.com>
+In-Reply-To: <20210209224223.p22yhjdy7ibzepss@pali>
+References: <d59ba191-43db-4b7b-b201-62a60ca752c0@www.fastmail.com>
+ <20210209213330.hnc7op72zoj24mgz@pali>
+ <7b0988cc-eeb8-4ea7-92f6-e8234ca910d3@www.fastmail.com>
+ <20210209224223.p22yhjdy7ibzepss@pali>
+Date:   Tue, 09 Feb 2021 14:52:56 -0800
+From:   nnet <nnet@fastmail.fm>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
+        gregory.clement@bootlin.com, kabel@kernel.org, kostap@marvell.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
+        miquel.raynal@bootlin.com, mturquette@baylibre.com,
+        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
+        vladimir.vid@sartura.hr
+Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
+ =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 04 Feb 2021 13:59:37 +0100, Geert Uytterhoeven wrote:
-> To improve human readability and enable automatic validation, the tuples
-> in "pinctrl-*" properties should be grouped using angle brackets.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  Documentation/devicetree/bindings/net/can/rcar_canfd.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+On Tue, Feb 9, 2021, at 2:42 PM, Pali Roh=C3=A1r wrote:
+> On Tuesday 09 February 2021 13:45:08 nnet wrote:
+> > On Tue, Feb 9, 2021, at 1:33 PM, Pali Roh=C3=A1r wrote:
+> > > On Tuesday 09 February 2021 13:00:26 nnet wrote:
+> > > > > If you have other Armada 3720 boards (Espressobin v5/v7, uDPU,=
+ Devel Board, ...) then it will be nice to do an additional tests and ch=
+eck if instability issues are finally fixed.
+> > > >=20
+> > > > These patches applied to the 5.4.96 in OpenWrt (98d61b5) work fi=
+ne so far on an Espressobin v7 AFAICT per changing values in /sys/device=
+s/system/cpu/cpufreq/policy0.
+> > > >=20
+> > > > Are these changes intended to work @1.2 GHz on the v7?
+> > >=20
+> > > Hello! Do you have 1.2 GHz A3720 SoC?
+> >=20
+> > Maybe (not)? ESPRESSObin_V7_1-0 on the underside.
+>=20
+> Look at the package of SoC chip. On top of the package is printed
+> identifier 88F3720. On the last line should be one of the string:
+> C080, C100, C120, I080, I100 which identifies frequency
+> (080 =3D 800 MHz, 100 =3D 1 GHz, 120 =3D 1.2 GHz)
+>=20
+> Can you check what is printed on A3720 SoC package?
 
-Applied, thanks!
+Both of mine are 88F3720-A0-C120.
