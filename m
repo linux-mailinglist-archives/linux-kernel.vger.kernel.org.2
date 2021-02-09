@@ -2,51 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BED315393
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADEC3315387
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbhBIQPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:15:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49338 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232198AbhBIQPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:15:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5A610AD2E;
-        Tue,  9 Feb 2021 16:14:34 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2F430DA7C8; Tue,  9 Feb 2021 17:12:41 +0100 (CET)
-Date:   Tue, 9 Feb 2021 17:12:41 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Pan Bian <bianpan2016@163.com>
-Cc:     David Sterba <dsterba@suse.com>, Fabian Frederick <fabf@skynet.be>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/affs: release old buffer head on error path
-Message-ID: <20210209161240.GV1993@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Pan Bian <bianpan2016@163.com>,
-        David Sterba <dsterba@suse.com>, Fabian Frederick <fabf@skynet.be>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210120085113.118984-1-bianpan2016@163.com>
+        id S232677AbhBIQOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:14:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232764AbhBIQOE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 11:14:04 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719C9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:13:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xtgAIQYjeBASeA4Agwd12ZucFnQjR7z/f0eu8R/GUN0=; b=2VDQIOmIudcOMOMzJw66jqPAUM
+        b9RZzQOVo7xx8LzQSZXlXulEnGIupcizoo49TqbSVgbk200PElrHvYgHRl8wcHaYMkvMjMgsAGSLT
+        lkeHD1nkq+ySaul95oGvMfc0ztAgGweJXjn/WU9FRg8dI/9Ip6DxykvlyqJTxfDH7RK//NmqTOnc4
+        NZYNHTNgRQrEcal/AvA8dceGBahmDhoblZ41mHs/mFbE/9GDM+HHvhqHGtSIF2KaxgLh0crz8AQkA
+        kiAEFL/C8EWz+HQHfFhXncyhAnSIEt5eA4zrjxWVKdjlAlfwXoosGiOUkwXsBL4YaolzFJ63WO46J
+        /vM51Qsg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l9Vdf-0005Ss-Op; Tue, 09 Feb 2021 16:13:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C1BDE301324;
+        Tue,  9 Feb 2021 17:13:15 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B324F20084EAD; Tue,  9 Feb 2021 17:13:15 +0100 (CET)
+Date:   Tue, 9 Feb 2021 17:13:15 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [patch] preempt: select PREEMPT_DYNAMIC under PREEMPTION instead
+ of PREEMPT
+Message-ID: <YCK0m8FD9kp8QZWJ@hirez.programming.kicks-ass.net>
+References: <7d129a84b0858fd7fbc3e38ede62a848fbec536e.camel@gmx.de>
+ <YCKmhnoSKgdYqxOL@hirez.programming.kicks-ass.net>
+ <269ee10aac93d819e48dc81f09a01d01fcd44fb1.camel@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210120085113.118984-1-bianpan2016@163.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <269ee10aac93d819e48dc81f09a01d01fcd44fb1.camel@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 12:51:13AM -0800, Pan Bian wrote:
-> The reference count of the old buffer head should be decremented on path
-> that fails to get the new buffer head.
-> 
-> Fixes: 6b4657667ba0 ("fs/affs: add rename exchange")
-> Signed-off-by: Pan Bian <bianpan2016@163.com>
+On Tue, Feb 09, 2021 at 05:05:14PM +0100, Mike Galbraith wrote:
 
-Thanks, added to affs branch. The fix is not that urgent for 5.11 so
-I'll send it for the 5.12 merge window. I've added the stable tag so
-it'll propagate to 4.14+.
+> ld: init/main.o: in function `trace_initcall_start':
+> /backup/usr/local/src/kernel/linux-tip-rt/./include/trace/events/initcall.h:27: undefined reference to `__SCT__preempt_schedule_notrace'
+
+Ooohh... this is because x86 can't build PREEMPT without PREEMPT_DYNAMIC
+anymore. Maybe I should fix that. Lemme see what that would take.
+
+
