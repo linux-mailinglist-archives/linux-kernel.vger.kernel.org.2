@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F4A315C72
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949D1315C73
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhBJBlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:41:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234480AbhBIXn1 (ORCPT
+        id S234391AbhBJBmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:42:11 -0500
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:46666 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233534AbhBIXo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 18:43:27 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A69C061756;
-        Tue,  9 Feb 2021 15:42:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=JqZPtG/TB/XswZSw5bmUCRK7B7+cprRdrJrDelTSrfY=; b=HNMpo/bbOD2d3JnJjyc1rkAKZb
-        DruBe+JtYzJ8aBmUnsFVFwDUEzvWEgXsSBk8E2hD4SLckUg1H7IFfjgywjGLGBJ1KgGiZN3ZaUNYq
-        NfKUR/tvgb+iUKU2TVDWyvgUOYxjELmoB23XR6QJWZ/MfbsF2U2gUIJO5Twgf0EiQNks82QKQ4FtH
-        xb5GVU/Qo7mRktdpPitUMnhLJcjIkdH/ZTe/V0cTQtc5ZOMwFXqh9/nMy11NRN+I1lZNWV8hcoMr/
-        euPS9q9u9UdCKm9eeEffKtKRLNa11tMSg9V5IQ6NYyYMKB7slfRZCXsqtoL/Gu7b11Bz0kUNYC74M
-        SV2qZwwQ==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9ceQ-0005x6-QP; Tue, 09 Feb 2021 23:42:35 +0000
-Subject: Re: [PATCH] wireless: brcm80211: Fix the spelling configation to
- configuration in the file d11.h
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, kuba@kernel.org,
-        davem@davemloft.net, linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210209232921.1255425-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b5dbd677-f932-dcd0-0615-4989725510d1@infradead.org>
-Date:   Tue, 9 Feb 2021 15:42:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 9 Feb 2021 18:44:27 -0500
+Received: by mail-lf1-f49.google.com with SMTP id v5so84846lft.13;
+        Tue, 09 Feb 2021 15:44:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yGmWhoja/hQOYUa2PNDucYo9KJYqOoWVC1/FBOW7ZLs=;
+        b=CSwu8RNl0F3aLFNUa2Zhqv/aqOr5LKZ/7NneX13EyvlbISAlqrLqBhJJJ7UJZwfvI+
+         quS89wObQiz7ojngCi7DM6T1jhylHQ+3XWcBSnVAZ01C4E0m29wEPc2lZDcW/Y4PPIgj
+         Ed+riKLtmJ/w0egBe6Fl2kBCYicFdUj3zXYSdcrTD0bV+BuxOFh1lSlbK4bSqNCyr+Zr
+         6vxTkKRcP49eVDXmEZhzL2lesOGyuY3FZAzp4583OpXKBd2/cQzuy9xfvmQkbKlaxs+y
+         1YY45uwPdPHt4Ie5OGc+I4YVy/5AJXOOJdrs2IYwIjMa1PXanRmjlQhXnQXYL8A35VGG
+         nQuw==
+X-Gm-Message-State: AOAM530yQyCHG82gFfpTcdg633sDyv2vKJlhv6/9F2IzsgNc+1VYcVPt
+        fcfEWP7xYbEkJLY4Epoaof8=
+X-Google-Smtp-Source: ABdhPJxx6hda2CiPB5yiesOFRVWCjUTcZerPAMRTqgFm5S+ShAghK/pTP616i1cMawpsbVKWyUk2/w==
+X-Received: by 2002:ac2:544c:: with SMTP id d12mr172177lfn.585.1612914223533;
+        Tue, 09 Feb 2021 15:43:43 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id u6sm21519lji.63.2021.02.09.15.43.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 15:43:42 -0800 (PST)
+Date:   Wed, 10 Feb 2021 00:43:41 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Yicong Yang <yangyicong@hisilicon.com>, linux-pci@vger.kernel.org,
+        prime.zeng@huawei.com, linuxarm@openeuler.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Use subdir-ccflags-* to inherit debug flag
+Message-ID: <YCMeLS1Vd2YQuWmQ@rocinante>
+References: <1612438215-33105-1-git-send-email-yangyicong@hisilicon.com>
+ <20210209212510.GA513360@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210209232921.1255425-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210209212510.GA513360@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 3:29 PM, Bhaskar Chowdhury wrote:
+Hi Bjorn,
+
+Thank you!  This looks great!
+
+[...]
+> commit e8e9aababe60 ("PCI: Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy")
+> Author: Junhao He <hejunhao2@hisilicon.com>
+> Date:   Thu Feb 4 19:30:15 2021 +0800
 > 
-> s/configation/configuration/
+>     PCI: Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy
+>     
+>     CONFIG_PCI_DEBUG=y adds -DDEBUG to CFLAGS, which enables things like
+>     pr_debug() and dev_dbg() (and hence pci_dbg()).  Previously we added
+>     -DDEBUG for files in drivers/pci/, but not files in subdirectories of
+>     drivers/pci/.
+>     
+>     Add -DDEBUG to CFLAGS for all files below drivers/pci/ so CONFIG_PCI_DEBUG
+>     applies to the entire hierarchy.
+>     
+>     [bhelgaas: commit log]
+>     Link: https://lore.kernel.org/r/1612438215-33105-1-git-send-email-yangyicong@hisilicon.com
+>     Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+>     Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>     Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+>     Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+> index 11cc79411e2d..d62c4ac4ae1b 100644
+> --- a/drivers/pci/Makefile
+> +++ b/drivers/pci/Makefile
+> @@ -36,4 +36,4 @@ obj-$(CONFIG_PCI_ENDPOINT)	+= endpoint/
+>  obj-y				+= controller/
+>  obj-y				+= switch/
+>  
+> -ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+> +subdir-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+And thank you again, Yicong, for fixing this.  Much appreciated.
 
-Thanks.
-
-> ---
->  drivers/net/wireless/broadcom/brcm80211/brcmsmac/d11.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/d11.h b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/d11.h
-> index 9035cc4d6ff3..dc395566e495 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/d11.h
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/d11.h
-> @@ -1469,7 +1469,7 @@ struct d11rxhdr {
->  /* htphy PhyRxStatus_1: */
->  /* core enables for {3..0}, 0=disabled, 1=enabled */
->  #define PRXS1_HTPHY_CORE_MASK	0x000F
-> -/* antenna configation */
-> +/* antenna configuration */
->  #define PRXS1_HTPHY_ANTCFG_MASK	0x00F0
->  /* Mixmode PLCP Length low byte mask */
->  #define PRXS1_HTPHY_MMPLCPLenL_MASK	0xFF00
-> --
-> 2.30.0
-> 
-
-
--- 
-~Randy
-
+Krzysztof
