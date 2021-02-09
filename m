@@ -2,71 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E585314BED
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB581314BF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhBIJl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:41:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54316 "EHLO mail.kernel.org"
+        id S230364AbhBIJma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:42:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229638AbhBIJi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:38:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF1E464E70;
-        Tue,  9 Feb 2021 09:37:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612863457;
-        bh=Q2fZA2RMjgvKK8UDAqpAhIusskTRp4HvpE38j1a08ME=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=Iqz6QZoBflLFrGUBVRgnsVbnCwm4h+roF5G4ZD/cd0XCQLbIV9Ck0cz0ZxReA+P+N
-         A9Qe2ZvrUEvY6rT91yiR2jqHMcTUvZ1Dnatp0nDl0d1KVtGDxk/DWhfi9ckzUbPsq2
-         TQ7gPch0X77zHVJMiExKTfxdYHIbYcyuuuLfqm+KyxQvdxOnB0kCzmQdNyCIVpG+Rp
-         intVH122nLahvGpu3NmuRbEcuPnUIw8WxwSYV+t/g6ADY+F3dlA0eHpiEY4XDL9saA
-         i/5Xz6HH8xHl5+9Ub8CEHNnLQPc9gPzh4nHayeBv7FiMWAyWGsGVMeeurprjJBuy1H
-         PhdcyUkwNN5iQ==
-Date:   Tue, 9 Feb 2021 10:37:34 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@archlinux.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@riseup.net>
-Subject: Re: [PATCH] HID: logitech-dj: add support for the new lightspeed
- connection iteration
-In-Reply-To: <20210123180220.3056430-1-lains@archlinux.org>
-Message-ID: <nycvar.YFH.7.76.2102091037250.28696@cbobk.fhfr.pm>
-References: <20210123180220.3056430-1-lains@archlinux.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S229799AbhBIJi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:38:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E804D64E27;
+        Tue,  9 Feb 2021 09:37:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612863468;
+        bh=3uhgNxvkQ3DE4szNXNrRNOmM42w+TvFbEvvc39Kp9o8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dnM8UoIu7vjUquwOGgLNI/nFIs7c5cxhJzUlDrEgEcxaM71P1VbXUNr75slYvIvip
+         JxniosSVimGPVVpFt1UW4dNP6DywhSeOr4E8K+/y/jp/U1BlN9NKoE4b81YZyYVsS4
+         TOZQ8fJ6UIH5YGUd0osrd5uxargdhmbZrAwT4234=
+Date:   Tue, 9 Feb 2021 10:37:45 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zhou Wang <wangzhou1@hisilicon.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-api@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        song.bao.hua@hisilicon.com, jgg@ziepe.ca, kevin.tian@intel.com,
+        jean-philippe@linaro.org, eric.auger@redhat.com,
+        liguozhu@hisilicon.com, zhangfei.gao@linaro.org,
+        Sihang Chen <chensihang1@hisilicon.com>
+Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Message-ID: <YCJX6QFQ4hsNRrFj@kroah.com>
+References: <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <ED58431F-5972-47D1-BF50-93A20AD86C46@amacapital.net>
+ <2e6cf99f-beb6-9bef-1316-5e58fb0aa86e@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2e6cf99f-beb6-9bef-1316-5e58fb0aa86e@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Jan 2021, Filipe Laíns wrote:
-
-> From: Filipe Laíns <lains@riseup.net>
+On Tue, Feb 09, 2021 at 05:17:46PM +0800, Zhou Wang wrote:
+> On 2021/2/8 6:02, Andy Lutomirski wrote:
+> > 
+> > 
+> >> On Feb 7, 2021, at 12:31 AM, Zhou Wang <wangzhou1@hisilicon.com> wrote:
+> >>
+> >> ﻿SVA(share virtual address) offers a way for device to share process virtual
+> >> address space safely, which makes more convenient for user space device
+> >> driver coding. However, IO page faults may happen when doing DMA
+> >> operations. As the latency of IO page fault is relatively big, DMA
+> >> performance will be affected severely when there are IO page faults.
+> >> From a long term view, DMA performance will be not stable.
+> >>
+> >> In high-performance I/O cases, accelerators might want to perform
+> >> I/O on a memory without IO page faults which can result in dramatically
+> >> increased latency. Current memory related APIs could not achieve this
+> >> requirement, e.g. mlock can only avoid memory to swap to backup device,
+> >> page migration can still trigger IO page fault.
+> >>
+> >> Various drivers working under traditional non-SVA mode are using
+> >> their own specific ioctl to do pin. Such ioctl can be seen in v4l2,
+> >> gpu, infiniband, media, vfio, etc. Drivers are usually doing dma
+> >> mapping while doing pin.
+> >>
+> >> But, in SVA mode, pin could be a common need which isn't necessarily
+> >> bound with any drivers, and neither is dma mapping needed by drivers
+> >> since devices are using the virtual address of CPU. Thus, It is better
+> >> to introduce a new common syscall for it.
+> >>
+> >> This patch leverages the design of userfaultfd and adds mempinfd for pin
+> >> to avoid messing up mm_struct. A fd will be got by mempinfd, then user
+> >> space can do pin/unpin pages by ioctls of this fd, all pinned pages under
+> >> one file will be unpinned in file release process. Like pin page cases in
+> >> other places, can_do_mlock is used to check permission and input
+> >> parameters.
+> > 
+> > 
+> > Can you document what the syscall does?
 > 
-> This new connection type is the new iteration of the Lightspeed
-> connection and will probably be used in some of the newer gaming
-> devices. It is currently use in the G Pro X Superlight.
-> 
-> This patch should be backported to older versions, as currently the
-> driver will panic when seing the unsupported connection. This isn't
-> an issue when using the receiver that came with the device, as Logitech
-> has been using different PIDs when they change the connection type, but
-> is an issue when using a generic receiver (well, generic Lightspeed
-> receiver), which is the case of the one in the Powerplay mat. Currently,
-> the only generic Ligthspeed receiver we support, and the only one that
-> exists AFAIK, is ther Powerplay.
-> 
-> As it stands, the driver will panic when seeing a G Pro X Superlight
-> connected to the Powerplay receiver and won't send any input events to
-> userspace! The kernel will warn about this so the issue should be easy
-> to identify, but it is still very worrying how hard it will fail :(
+> Will add related document in Documentation/vm.
 
-Applied to for-5.11/upstream-fixes, thanks Filipe.
+A manpage is always good, and will be required eventually :)
 
--- 
-Jiri Kosina
-SUSE Labs
+thanks,
 
+greg k-h
