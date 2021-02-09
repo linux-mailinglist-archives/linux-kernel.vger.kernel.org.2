@@ -2,95 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBE9314BCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669DF314BE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhBIJgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbhBIJdZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:33:25 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0623C061797
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 01:32:41 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l9PNs-0005dm-Rs; Tue, 09 Feb 2021 10:32:36 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l9PNs-00082D-79; Tue, 09 Feb 2021 10:32:36 +0100
-Date:   Tue, 9 Feb 2021 10:32:36 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-pwm@vger.kernel.org, linux-clk@vger.kernel.org,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] clk: provide new devm helpers for prepared and
- enabled clocks
-Message-ID: <20210209093236.iycxhgrbc3drp2c4@pengutronix.de>
-References: <20201013082132.661993-1-u.kleine-koenig@pengutronix.de>
- <20201013082132.661993-2-u.kleine-koenig@pengutronix.de>
- <20201110202537.fyldrnhqewtppjkw@pengutronix.de>
- <20201221092918.3uuxfe4caseu2d3o@pengutronix.de>
+        id S230250AbhBIJjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:39:46 -0500
+Received: from verein.lst.de ([213.95.11.211]:45717 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229917AbhBIJf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:35:27 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0B90868BFE; Tue,  9 Feb 2021 10:34:38 +0100 (CET)
+Date:   Tue, 9 Feb 2021 10:34:38 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
+        dan.j.williams@intel.com, willy@infradead.org, jack@suse.cz,
+        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, david@fromorbit.com, rgoldwyn@suse.de,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 5/7] fsdax: Dedup file range to use a compare function
+Message-ID: <20210209093438.GA630@lst.de>
+References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com> <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com> <20210208151920.GE12872@lst.de> <9193e305-22a1-3928-0675-af1cecd28942@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="g2ef6erhhx5bkaxj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201221092918.3uuxfe4caseu2d3o@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <9193e305-22a1-3928-0675-af1cecd28942@cn.fujitsu.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 09, 2021 at 05:15:13PM +0800, Ruan Shiyang wrote:
+> The dax dedupe comparison need the iomap_ops pointer as argument, so my 
+> understanding is that we don't modify the argument list of 
+> generic_remap_file_range_prep(), but move its code into 
+> __generic_remap_file_range_prep() whose argument list can be modified to 
+> accepts the iomap_ops pointer.  Then it looks like this:
 
---g2ef6erhhx5bkaxj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On Mon, Dec 21, 2020 at 10:29:18AM +0100, Uwe Kleine-K=F6nig wrote:
-> On Tue, Nov 10, 2020 at 09:25:37PM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Tue, Oct 13, 2020 at 10:21:31AM +0200, Uwe Kleine-K=F6nig wrote:
-> > > When a driver keeps a clock prepared (or enabled) during the whole
-> > > lifetime of the driver, these helpers allow to simplify the drivers.
-> >=20
-> > I'd really like to make use of these helpers, so it would be great if
-> > you could take a look and tell me if you like my approach.
->=20
-> This is still the case but unfortunately I didn't get any feedback since
-> October 13. Is this still on your list of things to review?
-
-I still didn't get any feedback here, still really like the implemented
-idea and want to use it. Looking forward to your feedback
-
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---g2ef6erhhx5bkaxj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAiVrEACgkQwfwUeK3K
-7AkznQgAnRsOGuewsFwro1fhYiEgE+8RXqktnum6eA0yDAxi0X+zPgqpRMKRsJZP
-IvkccRN7SpG1L3GCU6JWtkHOjtRAwNWN7IJ3eDMNNm7/CwMwH1oVnjw2GGX8rf7J
-5EYyu4glcm+EK6WpG0+YHxLXfi60Gyy1Ic9BlA05iRhFij0BC8iNwSeBjNgIw0E0
-70CZQV0/MsCkG7m1PGX6aVestYZ2QjsucMwjcpBFugbPULjJaxUFpq3Xsf6pR7HW
-2r6iMi/n7rJw5Tko8bo2VntnqianggTiQBuS7/pWoxP0ACl4ZxYNHJu7Q5Gjyxed
-LpEoB499c9Gp9lDvle8OsmH/B4N52g==
-=XplD
------END PGP SIGNATURE-----
-
---g2ef6erhhx5bkaxj--
+I'd say just add the iomap_ops pointer to
+generic_remap_file_range_prep and do away with the extra wrappers.  We
+only have three callers anyway.
