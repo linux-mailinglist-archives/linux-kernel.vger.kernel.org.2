@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D85315B0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB88315A77
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhBJAWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:22:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234081AbhBIUwE (ORCPT
+        id S234690AbhBJACB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:02:01 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:54902 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233719AbhBIUfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:52:04 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C219C0698C6;
-        Tue,  9 Feb 2021 12:20:49 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id y18so25566246edw.13;
-        Tue, 09 Feb 2021 12:20:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OJBJZoWtqasITVYW+Sh00YF0phZ4lq1R3a/gcaU0ls4=;
-        b=o/AxlQl0i/wUD4989dM3BQ9Gi/UH+Je6cbHNhA84lwvzRqeUwuhW4S4haRyZI0GgPd
-         Ej/r7H/wM6R3hOXnDtJJF14SNOLs40Wvo4qGFTwwD4QlpUsFij206pVp+GJb4kxAsY3F
-         z65T8HrcYQbcL8vFhr2HcbobpEEWPUvqncsAmlpky62S2x5+q3vCbm2JTJId8ZDe3J8n
-         VrW5z3qLoSpLdUyM43J9QjBj6MqZJ7WdU6UztgN2EideHqQQZevsC6BV7EoRN6w051Hr
-         G2lyfCoI3UgEmrYW+DhPm9tOlmz3duWY6/FQFMvZd6sjKzVuJ0rn7BFROqc83Ob/Wvtd
-         hRVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OJBJZoWtqasITVYW+Sh00YF0phZ4lq1R3a/gcaU0ls4=;
-        b=hboDIpr1xEDoRJI8vKesysCEHxlZ2mA8OWGIS7/Y4dLxD20cEWssq++tvtjE9eQFOE
-         1dEQNgbpoTTWHjmla2I6ipRzaMuwzNP+3h8DWBwZSdZha7GvzQNhhdbfKk1xaaBRN5cs
-         gS7rrsbRqexZe7eu7aU4Ebi9VEmREeUO4D3eaedFjBkFeXCWIZcbrZBxwDBSDV1Ynd/2
-         6juWbk5FkIyBN4xvuOZO/uAg48eQ3mfVLJvv5yacAJ74PnNjVdL7nsKrqO02+5tVjKxo
-         +LGZj2dNuM53cBlJKrNHatwhuMKP2G6kQi24Sj3cXkfFgu1iPJ09dfqN9hAimaDfx/DZ
-         2z6w==
-X-Gm-Message-State: AOAM532AYppR1xhJ4m/+VBfSrfdfPrqCM7a3SWdCLbWZr1A0Ry1Ph3lj
-        DY3/Uojv1mAcLK3G9LpdPOY=
-X-Google-Smtp-Source: ABdhPJwJtHUiJJW8tLUk73YO+ec8lbnMpR7egGqbTCfnV7RroIzrPKEhDhjC2bnmohYOtx/S8OFm6A==
-X-Received: by 2002:a50:cd8c:: with SMTP id p12mr25052831edi.114.1612902048344;
-        Tue, 09 Feb 2021 12:20:48 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id q14sm12228756edw.52.2021.02.09.12.20.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 12:20:47 -0800 (PST)
-Date:   Tue, 9 Feb 2021 22:20:45 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 04/11] net: bridge: offload initial and final
- port flags through switchdev
-Message-ID: <20210209202045.obayorcud4fg2qqb@skbuf>
-References: <20210209151936.97382-1-olteanv@gmail.com>
- <20210209151936.97382-5-olteanv@gmail.com>
- <20210209185100.GA266253@shredder.lan>
+        Tue, 9 Feb 2021 15:35:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612902936; x=1644438936;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=EHLVPvUVJez21AH8PebxAXBSYM5AvLzTmtWmafYTWPs=;
+  b=UCTir8jeHWWyumutCnlkXE1qxTYqOB7zWLvg5nhBDUIZEV+B0OwtgDDG
+   EQzk2Xqupy7E/qa7/ZzVe1FU7wxn/xjiqlEOCkErCA3GZt8obxZyZRNyD
+   Ct7bBW40XwmFpRqpGWocl5h4PkFo1Zmjni5r0Q1oK5oRJPKoA2GcDKdBz
+   xYQLdxLrGDKPCfmbbjowMGT1FyFnJ3rX1GxANKmnujQsPka54O0Jw5aMd
+   sNgbp/Wox8Zfcr0ld3rvzSH6Kgj9dQTZDxiMygOjZQUl06SvaUfQbDC0f
+   Ww+AAL6G46FVkgcfSfvvVUf1Xn6pM6iBwfxAp3+115iY2zpRak4q9jac8
+   A==;
+IronPort-SDR: Oju202nIkkMU8pXEVI3BqXqb0RWdKUozUz5kt4tNCAFAd0J2XSBaRxcWdKWH6AIB6QwXo7p9nv
+ IJ2b8Be5yRgZ1p+wxko5mTvhyuQ77QULLOgBSBS68lvPt0/A8/hjG0n0h2O/sRRGfgmb3Zf6oU
+ r/VaFOWSeknhPem7dgzrcZnFNmE1llE6xEu+IVmhmFF/Zo2Nwj5jU37uuCuzJJYYh/elcGLQek
+ JpqCTXTRK1/s4ywwO74fK8t7RGCOq5dV6TCnW04ZpJckOEG7fpbyc9NT6NAv5KvcuZs+Xw7Sk4
+ G+Y=
+X-IronPort-AV: E=Sophos;i="5.81,166,1610434800"; 
+   d="scan'208";a="114457590"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Feb 2021 13:24:22 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 9 Feb 2021 13:24:22 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 9 Feb 2021 13:24:19 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <jiri@resnulli.us>, <ivecera@redhat.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
+        <rasmus.villemoes@prevas.dk>, <andrew@lunn.ch>,
+        <vladimir.oltean@nxp.com>, <claudiu.manoil@nxp.com>,
+        <alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next v3 2/5] bridge: mrp: Add 'enum br_mrp_hw_support'
+Date:   Tue, 9 Feb 2021 21:21:09 +0100
+Message-ID: <20210209202112.2545325-3-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210209202112.2545325-1-horatiu.vultur@microchip.com>
+References: <20210209202112.2545325-1-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209185100.GA266253@shredder.lan>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 08:51:00PM +0200, Ido Schimmel wrote:
-> On Tue, Feb 09, 2021 at 05:19:29PM +0200, Vladimir Oltean wrote:
-> > So switchdev drivers operating in standalone mode should disable address
-> > learning. As a matter of practicality, we can reduce code duplication in
-> > drivers by having the bridge notify through switchdev of the initial and
-> > final brport flags. Then, drivers can simply start up hardcoded for no
-> > address learning (similar to how they already start up hardcoded for no
-> > forwarding), then they only need to listen for
-> > SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS and their job is basically done, no
-> > need for special cases when the port joins or leaves the bridge etc.
-> 
-> How are you handling the case where a port leaves a LAG that is linked
-> to a bridge? In this case the port becomes a standalone port, but will
-> not get this notification.
+Add the enum br_mrp_hw_support that is used by the br_mrp_switchdev
+functions to allow the SW to detect the cases where HW can't implement
+the functionality or when SW is used as a backup.
 
-Apparently the answer to that question is "I delete the code that makes
-this use case work", how smart of me. Thanks.
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+---
+ net/bridge/br_private_mrp.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Unless you have any idea how I could move the logic into the bridge, I
-guess I'm stuck with DSA and all the other switchdev drivers having this
-forest of corner cases to deal with. At least I can add a comment so I'm
-not tempted to delete it next time.
+diff --git a/net/bridge/br_private_mrp.h b/net/bridge/br_private_mrp.h
+index 32a48e5418da..a94017f86cda 100644
+--- a/net/bridge/br_private_mrp.h
++++ b/net/bridge/br_private_mrp.h
+@@ -46,6 +46,20 @@ struct br_mrp {
+ 	struct rcu_head			rcu;
+ };
+ 
++/* This type is returned by br_mrp_switchdev functions that allow to have a SW
++ * backup in case the HW can't implement completely the protocol.
++ * BR_MRP_NONE - means the HW can't run at all the protocol, so the SW stops
++ *               configuring the node anymore.
++ * BR_MRP_SW - the HW can help the SW to run the protocol, by redirecting MRP
++ *             frames to CPU.
++ * BR_MRP_HW - the HW can implement completely the protocol.
++ */
++enum br_mrp_hw_support {
++	BR_MRP_NONE,
++	BR_MRP_SW,
++	BR_MRP_HW,
++};
++
+ /* br_mrp.c */
+ int br_mrp_add(struct net_bridge *br, struct br_mrp_instance *instance);
+ int br_mrp_del(struct net_bridge *br, struct br_mrp_instance *instance);
+-- 
+2.27.0
+
