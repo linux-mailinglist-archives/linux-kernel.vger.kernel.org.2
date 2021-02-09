@@ -2,116 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79256315BD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944EC315BF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbhBJBDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:03:51 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28042 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234332AbhBIWWd (ORCPT
+        id S233638AbhBJBNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:13:10 -0500
+Received: from mail-yb1-f169.google.com ([209.85.219.169]:39449 "EHLO
+        mail-yb1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234384AbhBIWYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:22:33 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119L9tTq011617
-        for <linux-kernel@vger.kernel.org>; Tue, 9 Feb 2021 13:20:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=l5NPjjc5fr7S4q5RmKxLkUoj3XtehaneaeB3TFQqxGY=;
- b=FB77pqr7qDrfW0XG/vop8kSVOmiT3iblP+yEMG9q2e7T38Wa5XsUoAElrGZcIRFZFtlr
- 0EDb8s63qzvSd96pwie38icmR2pSRAyg2VZsGomWyRf/vHHnD4/bCtKfQFeVdK+HZq2P
- YRYMsPJImCNThTftBzpyUyO3xQ6zMA1VuwM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36jc1cdu9t-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 13:20:13 -0800
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Feb 2021 13:20:11 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id AF45A62E0A50; Tue,  9 Feb 2021 13:20:00 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH v4] checkpatch: do not apply "initialise globals to 0" check to BPF progs
-Date:   Tue, 9 Feb 2021 13:19:54 -0800
-Message-ID: <20210209211954.490077-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
+        Tue, 9 Feb 2021 17:24:43 -0500
+Received: by mail-yb1-f169.google.com with SMTP id k4so15158ybp.6;
+        Tue, 09 Feb 2021 14:24:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4U2uo28DRfOOEdpoc6H5T9KDb4rD1DuSo0Z2cCk8Ngo=;
+        b=ZbjcXwSnHCY3x7DtOcn4W8wN03eeeuJ4wC3QFLCUkd/wNHevwwuf9MCfPZ5mVGSCRR
+         GpdmF5SGV2AVUZnHm2MT8sUbaupiA+8SL0YVZ9MH8DP+6zIm8/FIk8ylAUyrJaCRHNv+
+         /dehdHjX68i3Lrib1PuEvXXzH4CqFVlZDvQMGb4oP4GooYcliDOf5hc9mZXMVbhCq1b8
+         +/o7MMqVs3T5MXRpugVx1ikVMmonOQH0G8QeWjKdfqjxTkFHlNw/FJSsxflIv5EPQ1ZI
+         VmX1QwFyBeszXFv8qgq41UBILD3wXKHuDbtcqjmJ0V1k4Ctg38apMdqjeoqv+g1Qlb0g
+         fDYg==
+X-Gm-Message-State: AOAM531uUVU+BKmoqZFknIueDSaUOLVKmvUpj+sU3qbuLQBFZOIXAPcB
+        bQkyB3O7y04avaDtV11qlJ3LnTe0PA==
+X-Google-Smtp-Source: ABdhPJwK6Bl9ku5ULbeXp9zDuv2tIt2fil758aM4hsnB7Lgz/dOTAg9MRqdE7CT1mVJDPeE9XQlSAQ==
+X-Received: by 2002:a05:6830:113:: with SMTP id i19mr801004otp.219.1612905799863;
+        Tue, 09 Feb 2021 13:23:19 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m10sm4610725oim.42.2021.02.09.13.23.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 13:23:18 -0800 (PST)
+Received: (nullmailer pid 214374 invoked by uid 1000);
+        Tue, 09 Feb 2021 21:23:17 -0000
+Date:   Tue, 9 Feb 2021 15:23:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-mtd@lists.infradead.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: spi-nor: Convert to DT schema format
+Message-ID: <20210209212317.GA214117@robh.at.kernel.org>
+References: <20210202175340.3902494-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_07:2021-02-09,2021-02-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1015 bulkscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=819 adultscore=0 spamscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102090108
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202175340.3902494-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BPF programs explicitly initialise global variables to 0 to make sure
-clang (v10 or older) do not put the variables in the common section.
-Skip "initialise globals to 0" check for BPF programs to elimiate error
-messages like:
+On Tue, 02 Feb 2021 11:53:39 -0600, Rob Herring wrote:
+> Convert the SPI-NOR binding to DT schema format. Like other memory chips,
+> the compatible strings are a mess with vendor prefixes not being used
+> consistently and some compatibles not documented. The resulting schema
+> passes on 'compatible' checks for most in tree users with the exception
+> of some oddballs.
+> 
+> I dropped the 'm25p.*-nonjedec' compatible strings as these don't appear
+> to be used anywhere.
+> 
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/mtd/jedec,spi-nor.txt |  91 ----------------
+>  .../bindings/mtd/jedec,spi-nor.yaml           | 102 ++++++++++++++++++
+>  2 files changed, 102 insertions(+), 91 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> 
 
-    ERROR: do not initialise globals to 0
-    #19: FILE: samples/bpf/tracex1_kern.c:21:
-
-Cc: Andy Whitcroft <apw@canonical.com>
-Cc: Joe Perches <joe@perches.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
-
----
-Changes v3 =3D> v4:
-  1. Yet more fixes to regexes.
-Changes v2 =3D> v3:
-  1. Fix regex.
-Changes v1 =3D> v2:
-  1. Add function exclude_global_initialisers() to keep the code clean.
----
- scripts/checkpatch.pl | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 1afe3af1cc097..f5b7ec9170999 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2428,6 +2428,15 @@ sub get_raw_comment {
- 	return $comment;
- }
-=20
-+sub exclude_global_initialisers {
-+	my ($realfile) =3D @_;
-+
-+	# Do not check for BPF programs (tools/testing/selftests/bpf/progs/*.c,=
- samples/bpf/*_kern.c, *.bpf.c).
-+	return $realfile =3D~ m@^tools/testing/selftests/bpf/progs/.*\.c$@ ||
-+		$realfile =3D~ m@^samples/bpf/.*_kern\.c$@ ||
-+		$realfile =3D~ m@/bpf/.*\.bpf\.c$@;
-+}
-+
- sub process {
- 	my $filename =3D shift;
-=20
-@@ -4323,7 +4332,8 @@ sub process {
- 		}
-=20
- # check for global initialisers.
--		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_init=
-ializer)\s*;/) {
-+		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_init=
-ializer)\s*;/ &&
-+		    !exclude_global_initialisers($realfile)) {
- 			if (ERROR("GLOBAL_INITIALISERS",
- 				  "do not initialise globals to $1\n" . $herecurr) &&
- 			    $fix) {
---=20
-2.24.1
-
+Applied, thanks!
