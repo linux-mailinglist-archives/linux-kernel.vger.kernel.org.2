@@ -2,121 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CA93146B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 03:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0CD3146C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 04:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhBIC6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 21:58:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32968 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230131AbhBIC5e (ORCPT
+        id S230208AbhBIDDO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 8 Feb 2021 22:03:14 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2892 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhBIDCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:57:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612839361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZCPgOdo0sguJV+CnbMbF2hM5SDTI0aKdRJzqe0KmNUc=;
-        b=fkW0IKlYRuvnaUvqPf44Yq2iubsVVZ3YkzvY1MKSLlNzA+h5VIt33RpZ7HJeOBmYswl6NU
-        HLbSI43X0nYPgO9gOb+fa4ubGsqW7/skcOwd5Co+1YiOV+N4ML5fTsLVo+Uum+I1Vnq2Zb
-        cQU9WH/T1Jpe+ef9Kg/tDkiK3DdoP7Q=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-jz5z1AO7POKqYFKYfJLS5g-1; Mon, 08 Feb 2021 21:55:59 -0500
-X-MC-Unique: jz5z1AO7POKqYFKYfJLS5g-1
-Received: by mail-qk1-f198.google.com with SMTP id 124so2002149qkg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 18:55:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZCPgOdo0sguJV+CnbMbF2hM5SDTI0aKdRJzqe0KmNUc=;
-        b=oY8qj48PwMHNGxbrJz3yac85cBEnIbDW8r7WuTbrtmLy/P684+qsnEizWSW9ga0USp
-         v/yAJV7lkpJ81In1VqY1snwqh2c/CGW2/7+kx7eFANsmPnARVi0Hpulpi7a47plgZSid
-         w/Wi5Dh0jT8WQegBpb9T1Ah2B9caZ7TC+J6k90C0/Z/hqB9ekpwkMqPpBOb1L95X0QbM
-         ymqp9I+IbvEWfdXvrXF62Kgz53PT2XUhzRtkF8Mf8txjqRPj6ucWovF7uJSN278WbSgr
-         rvo7ruOdaC6cCy0TlqpnCtP6SjZ5YV7Cds2TQRxerhuolu3j6KrSBiTb95w1pwwHOQuK
-         ItNQ==
-X-Gm-Message-State: AOAM530bTdC4vJ5EL8o+VZzRsT9PFnntw/c/VIpYDyDpCFnrhCEkHGEQ
-        mNV8P+1oEg1FqOPS+SbFhElQ+zJ6ehbX8I9ibqD3msD5UhXevNX9UmJreuvle4qTmR4Lh8dXyqx
-        hlfQxvoQZWlzGUnLe5+DNV0Hv
-X-Received: by 2002:a05:6214:118e:: with SMTP id t14mr18876781qvv.50.1612839359380;
-        Mon, 08 Feb 2021 18:55:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzw+JQUTVQ5YYbkf1TNWGMyrE7IvTpldV4OfemnnYjq2iJrzhzieq28T220Dnmd4gQiQ116Og==
-X-Received: by 2002:a05:6214:118e:: with SMTP id t14mr18876771qvv.50.1612839359161;
-        Mon, 08 Feb 2021 18:55:59 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id u45sm13510077qte.3.2021.02.08.18.55.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 18:55:58 -0800 (PST)
-Date:   Mon, 8 Feb 2021 21:55:56 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Gal Pressman <galpress@amazon.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Wei Zhang <wzam@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 5/5] hugetlb: Do early cow when page pinned on src mm
-Message-ID: <20210209025556.GA82021@xz-x1>
-References: <20210205165406.4655-1-peterx@redhat.com>
- <20210205165406.4655-6-peterx@redhat.com>
- <e3029aca-f487-225b-7a78-7712c4c465a6@oracle.com>
+        Mon, 8 Feb 2021 22:02:30 -0500
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DZSL560z1z5PjV;
+        Tue,  9 Feb 2021 10:59:57 +0800 (CST)
+Received: from dggpemm100011.china.huawei.com (7.185.36.112) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 9 Feb 2021 11:01:41 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpemm100011.china.huawei.com (7.185.36.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Tue, 9 Feb 2021 11:01:42 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Tue, 9 Feb 2021 11:01:42 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     David Hildenbrand <david@redhat.com>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Topic: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Thread-Index: AQHW/SrsWWMRpilf2UC1Pz29QqsBVqpNZGQAgACtCgCAAKKukP//jqmAgADcIzA=
+Date:   Tue, 9 Feb 2021 03:01:42 +0000
+Message-ID: <0868d209d7424942a46d1238674cf75d@hisilicon.com>
+References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
+ <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <a587bd61-9194-4b46-c122-8b4da7b941a8@redhat.com>
+ <20210208183348.GV4718@ziepe.ca>
+ <0dca000a6cd34d8183062466ba7d6eaf@hisilicon.com>
+ <20210208213023.GZ4718@ziepe.ca>
+In-Reply-To: <20210208213023.GZ4718@ziepe.ca>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.92]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e3029aca-f487-225b-7a78-7712c4c465a6@oracle.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 04:09:26PM -0800, Mike Kravetz wrote:
-> On 2/5/21 8:54 AM, Peter Xu wrote:
-> > This is the last missing piece of the COW-during-fork effort when there're
-> > pinned pages found.  One can reference 70e806e4e645 ("mm: Do early cow for
-> > pinned pages during fork() for ptes", 2020-09-27) for more information, since
-> > we do similar things here rather than pte this time, but just for hugetlb.
+
+
+> -----Original Message-----
+> From: Jason Gunthorpe [mailto:jgg@ziepe.ca]
+> Sent: Tuesday, February 9, 2021 10:30 AM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: David Hildenbrand <david@redhat.com>; Wangzhou (B)
+> <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
+> iommu@lists.linux-foundation.org; linux-mm@kvack.org;
+> linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
+> Morton <akpm@linux-foundation.org>; Alexander Viro <viro@zeniv.linux.org.uk>;
+> gregkh@linuxfoundation.org; kevin.tian@intel.com; jean-philippe@linaro.org;
+> eric.auger@redhat.com; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
+> zhangfei.gao@linaro.org; chensihang (A) <chensihang1@hisilicon.com>
+> Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+> pin
 > 
-> Thanks for all the changes, the patch looks much better.
+> On Mon, Feb 08, 2021 at 08:35:31PM +0000, Song Bao Hua (Barry Song) wrote:
+> >
+> >
+> > > From: Jason Gunthorpe [mailto:jgg@ziepe.ca]
+> > > Sent: Tuesday, February 9, 2021 7:34 AM
+> > > To: David Hildenbrand <david@redhat.com>
+> > > Cc: Wangzhou (B) <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
+> > > iommu@lists.linux-foundation.org; linux-mm@kvack.org;
+> > > linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
+> > > Morton <akpm@linux-foundation.org>; Alexander Viro
+> <viro@zeniv.linux.org.uk>;
+> > > gregkh@linuxfoundation.org; Song Bao Hua (Barry Song)
+> > > <song.bao.hua@hisilicon.com>; kevin.tian@intel.com;
+> > > jean-philippe@linaro.org; eric.auger@redhat.com; Liguozhu (Kenneth)
+> > > <liguozhu@hisilicon.com>; zhangfei.gao@linaro.org; chensihang (A)
+> > > <chensihang1@hisilicon.com>
+> > > Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+> > > pin
+> > >
+> > > On Mon, Feb 08, 2021 at 09:14:28AM +0100, David Hildenbrand wrote:
+> > >
+> > > > People are constantly struggling with the effects of long term pinnings
+> > > > under user space control, like we already have with vfio and RDMA.
+> > > >
+> > > > And here we are, adding yet another, easier way to mess with core MM in
+> the
+> > > > same way. This feels like a step backwards to me.
+> > >
+> > > Yes, this seems like a very poor candidate to be a system call in this
+> > > format. Much too narrow, poorly specified, and possibly security
+> > > implications to allow any process whatsoever to pin memory.
+> > >
+> > > I keep encouraging people to explore a standard shared SVA interface
+> > > that can cover all these topics (and no, uaccel is not that
+> > > interface), that seems much more natural.
+> > >
+> > > I still haven't seen an explanation why DMA is so special here,
+> > > migration and so forth jitter the CPU too, environments that care
+> > > about jitter have to turn this stuff off.
+> >
+> > This paper has a good explanation:
+> > https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7482091
+> >
+> > mainly because page fault can go directly to the CPU and we have
+> > many CPUs. But IO Page Faults go a different way, thus mean much
+> > higher latency 3-80x slower than page fault:
+> > events in hardware queue -> Interrupts -> cpu processing page fault
+> > -> return events to iommu/device -> continue I/O.
 > 
-> I did not look at 70e806e4e645 in detail until now.  That commit had the
-> 'write protect trick' which was removed in subsequent commits.  It took me
-> a bit of git history tracking to figure out the state of that code today and
-> the reasons for the subsequent changes.  I guess that was a good way to
-> educate me. :) 
+> The justifications for this was migration scenarios and migration is
+> short. If you take a fault on what you are migrating only then does it
+> slow down the CPU.
 
-Thanks for looking into those details.  I didn't expect that to happen since
-after Jason's rework with 57efa1fe5957 ("mm/gup: prevent gup_fast from racing
-with COW during fork", 2020-12-15) we can ignore the whole wr-protect idea as a
-whole.  I referenced 70e806e4e645 more for the idea of why we do that, and also
-copy_present_page() on how it is generally implemented.  That gup-fast race is
-definitely tricky on its own.
+I agree this can slow down CPU, but not as much as IO page fault.
+
+On the other hand, wouldn't it be the benefit of hardware accelerators
+to have a lower and more stable latency zip/encryption than CPU?
 
 > 
-> > 
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >  mm/hugetlb.c | 66 ++++++++++++++++++++++++++++++++++++++++++++++++----
-> >  1 file changed, 62 insertions(+), 4 deletions(-)
+> Are you also working with HW where the IOMMU becomes invalidated after
+> a migration and doesn't reload?
 > 
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ie not true SVA but the sort of emulated SVA we see in a lot of
+> places?
 
-Thanks!
+Yes. It is true SVA not emulated SVA.
 
-I'll post a new version very soon with your r-b, and also a compile warning
-fixed in the other patch as reported by Gal.
+> 
+> It would be much better to work improve that to have closer sync with the
+> CPU page table than to use pinning.
 
--- 
-Peter Xu
+Absolutely I agree improving IOPF and making IOPF catch up with the 
+performance of page fault is the best way. but it would take much
+long time to optimize both HW and SW. While waiting for them to
+mature, probably some way which can minimize IOPF should be used to
+take the responsivity.
 
+> 
+> Jason
+
+Thanks
+Barry
