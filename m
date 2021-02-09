@@ -2,141 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381B8314AFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC184314AFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhBII7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:59:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60150 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229939AbhBIIyB (ORCPT
+        id S230199AbhBII6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:58:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhBIIyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:54:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612860749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=27d+RXZO3vYMFsJOFty+AmSOzQHiAUphvpxkFATgeSY=;
-        b=AlG8+yQrMkUiLAkFfdVDO3UyS6Lz1F59ovUKOiAm2inNf2ceYuXYHKVGyQqPPW2rPDRdub
-        T0vjn7w9a6ycBsBqRb2tA3tK2Nft7f3qCjVHjRxSdRrl7humQvEvIwUwBnVe/DZHwFcsru
-        21I89svBKCvMlVYXx2lV11RpUu/MAM4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-vUqHOcUSPzmtwGzq8FfsNg-1; Tue, 09 Feb 2021 03:52:25 -0500
-X-MC-Unique: vUqHOcUSPzmtwGzq8FfsNg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87A091005501;
-        Tue,  9 Feb 2021 08:52:23 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-114-6.ams2.redhat.com [10.36.114.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CCFD25D9CD;
-        Tue,  9 Feb 2021 08:52:20 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     kuba@kernel.org
-Cc:     Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        George Zhang <georgezhang@vmware.com>
-Subject: [PATCH net v2] vsock: fix locking in vsock_shutdown()
-Date:   Tue,  9 Feb 2021 09:52:19 +0100
-Message-Id: <20210209085219.14280-1-sgarzare@redhat.com>
+        Tue, 9 Feb 2021 03:54:00 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA99C06178B
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 00:53:20 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id h12so4353038wrw.6
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 00:53:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=scylladb-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=H208pVEPEbQ1MKSr4OW/7+4dNKsHEjdg7nesnQMvyp8=;
+        b=nEOooPDEVr2l45WeE7wb95Sm/9VCZYRDo2IDYlfp7OyUip+YG8taZwJNy6NutaQbTS
+         uNEDbwAeJj/AJlyEOBYwxQHrNzv8uSi60zxOBa+Dm+iEDq9VfFAy74NJX72E8Ugk81n9
+         9GVv/2zSK1G2H6rFXL7iSkSi9BuegWhZW6BwFbi2wXzNmBZcQ3nc0MEObEqgSKltJJGJ
+         f1TBzMEIBHk61cssdfbyGaL12eLdhXEVUM8RI05F0CnZLoW3EFKiW0GZtrgyOTkzKIwW
+         YgryQpDvKCmW0I/fwsvm4zcXW1w0RSQbtpVQH9rI8wVag5Q0xmZcWxk3QGCePVUpi/nm
+         HbKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=H208pVEPEbQ1MKSr4OW/7+4dNKsHEjdg7nesnQMvyp8=;
+        b=TvW+kju6p1JBB27AigOTz+pyxqs7G5tjUHtSP5ioJfL82/zBDemw/bbppYPXJ5ZINf
+         iVxta1HD9Nttxec/y5A+LkgUuUaHO2AO37/Ds7qXa37JTWDGnqYmoGcHqie4PLIgU1pp
+         +ms4cw/0h12l9/M+wKQ/B5yQU7+CFqBeGnbpF3Udug2UJ8aWneyk8XC1yaWn4RqLjXKX
+         JiXPaW/uz6IbVt+kj84rAIELUlUOZewi4/e8YpFXi4m5tgfIUvDAVeovTaMPQ+j1Cn7o
+         bl5Ivcoa5mg9ILmjc5rSwOZ69gt6jdqocwjlBwwSNiHMJlJ9YDNFKSW1gcuW4HXW9n8P
+         T9HQ==
+X-Gm-Message-State: AOAM530U6dvCdQb2SjJX4Dqplicp6NYnH98zXDJtnzQkWVFKSaVWP3Ec
+        TUAiyQd1b4ttRloSJeldDQnPmA==
+X-Google-Smtp-Source: ABdhPJzN9QLvfxnc87FTfAej1i1vfCta3vnRz10Qfk8dnuz0GigPQqeqioTRm2sIPYW4akt9sBr4hg==
+X-Received: by 2002:adf:fe82:: with SMTP id l2mr5098493wrr.341.1612860798577;
+        Tue, 09 Feb 2021 00:53:18 -0800 (PST)
+Received: from tmp.scylladb.com (bzq-109-67-58-110.red.bezeqint.net. [109.67.58.110])
+        by smtp.googlemail.com with ESMTPSA id q15sm7180104wrr.58.2021.02.09.00.53.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 00:53:17 -0800 (PST)
+Subject: Re: Linux 4.9.256
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz
+References: <1612535085125226@kroah.com>
+ <23a28990-c465-f813-52a4-f7f3db007f9d@scylladb.com>
+ <20210208185707.GC4035784@sasha-vm>
+From:   Avi Kivity <avi@scylladb.com>
+Message-ID: <219a26ec-fd6b-b841-43ef-57e04b417c4e@scylladb.com>
+Date:   Tue, 9 Feb 2021 10:53:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210208185707.GC4035784@sasha-vm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In vsock_shutdown() we touched some socket fields without holding the
-socket lock, such as 'state' and 'sk_flags'.
+On 2/8/21 8:57 PM, Sasha Levin wrote:
+> On Mon, Feb 08, 2021 at 05:50:21PM +0200, Avi Kivity wrote:
+>> On 05/02/2021 16.26, Greg Kroah-Hartman wrote:
+>>> I'm announcing the release of the 4.9.256 kernel.
+>>>
+>>> This, and the 4.4.256 release are a little bit "different" than normal.
+>>>
+>>> This contains only 1 patch, just the version bump from .255 to .256 
+>>> which ends
+>>> up causing the userspace-visable LINUX_VERSION_CODE to behave a bit 
+>>> differently
+>>> than normal due to the "overflow".
+>>>
+>>> With this release, KERNEL_VERSION(4, 9, 256) is the same as 
+>>> KERNEL_VERSION(4, 10, 0).
+>>
+>>
+>> I think this is a bad idea. Many kernel features can only be 
+>> discovered by checking the kernel version. If a feature was 
+>> introduced in 4.10, then an application can be tricked into thinking 
+>> a 4.9 kernel has it.
+>>
+>>
+>> IMO, better to stop LINUX_VERSION_CODE at 255 and introduce a 
+>
+> In the upstream (and new -stable fix) we did this part.
+>
+>> LINUX_VERSION_CODE_IMPROVED that has more bits for patchlevel.
+>
+> Do you have a usecase where it's actually needed? i.e. userspace that
+> checks for -stable patchlevels?
+>
 
-Also, after the introduction of multi-transport, we are accessing
-'vsk->transport' in vsock_send_shutdown() without holding the lock
-and this call can be made while the connection is in progress, so
-the transport can change in the meantime.
+Not stable patchlevels, but minors. So a change from 4.9 to 4.10 could 
+be harmful.
 
-To avoid issues, we hold the socket lock when we enter in
-vsock_shutdown() and release it when we leave.
 
-Among the transports that implement the 'shutdown' callback, only
-hyperv_transport acquired the lock. Since the caller now holds it,
-we no longer take it.
+I have two such examples (not on the 4.9->4.10 boundary), but they test 
+the runtime version from uname(), not LINUX_VERSION_CODE, so they would 
+be vulnerable to such a change.
 
-Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
-v2:
-- removed 'sk' variable is hvs_shutdown_lock_held, since it is unused
-  after these changes
----
- net/vmw_vsock/af_vsock.c         | 8 +++++---
- net/vmw_vsock/hyperv_transport.c | 4 ----
- 2 files changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 4ea301fc2bf0..5546710d8ac1 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -943,10 +943,12 @@ static int vsock_shutdown(struct socket *sock, int mode)
- 	 */
- 
- 	sk = sock->sk;
-+
-+	lock_sock(sk);
- 	if (sock->state == SS_UNCONNECTED) {
- 		err = -ENOTCONN;
- 		if (sk->sk_type == SOCK_STREAM)
--			return err;
-+			goto out;
- 	} else {
- 		sock->state = SS_DISCONNECTING;
- 		err = 0;
-@@ -955,10 +957,8 @@ static int vsock_shutdown(struct socket *sock, int mode)
- 	/* Receive and send shutdowns are treated alike. */
- 	mode = mode & (RCV_SHUTDOWN | SEND_SHUTDOWN);
- 	if (mode) {
--		lock_sock(sk);
- 		sk->sk_shutdown |= mode;
- 		sk->sk_state_change(sk);
--		release_sock(sk);
- 
- 		if (sk->sk_type == SOCK_STREAM) {
- 			sock_reset_flag(sk, SOCK_DONE);
-@@ -966,6 +966,8 @@ static int vsock_shutdown(struct socket *sock, int mode)
- 		}
- 	}
- 
-+out:
-+	release_sock(sk);
- 	return err;
- }
- 
-diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
-index 630b851f8150..cc3bae2659e7 100644
---- a/net/vmw_vsock/hyperv_transport.c
-+++ b/net/vmw_vsock/hyperv_transport.c
-@@ -474,14 +474,10 @@ static void hvs_shutdown_lock_held(struct hvsock *hvs, int mode)
- 
- static int hvs_shutdown(struct vsock_sock *vsk, int mode)
- {
--	struct sock *sk = sk_vsock(vsk);
--
- 	if (!(mode & SEND_SHUTDOWN))
- 		return 0;
- 
--	lock_sock(sk);
- 	hvs_shutdown_lock_held(vsk->trans, mode);
--	release_sock(sk);
- 	return 0;
- }
- 
--- 
-2.29.2
 
