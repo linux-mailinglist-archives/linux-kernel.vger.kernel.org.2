@@ -2,127 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E052314F65
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB67314F6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhBIMrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:47:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:51008 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhBIMqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:46:06 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EE31EED1;
-        Tue,  9 Feb 2021 04:45:13 -0800 (PST)
-Received: from [10.57.49.26] (unknown [10.57.49.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85BFD3F73B;
-        Tue,  9 Feb 2021 04:45:12 -0800 (PST)
-Subject: Re: DMA direct mapping fix for 5.4 and earlier stable branches
-To:     Sumit Garg <sumit.garg@linaro.org>, Christoph Hellwig <hch@lst.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        obayashi.yoshimasa@socionext.com, m.szyprowski@samsung.com,
-        iommu@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com>
- <YCIym62vHfbG+dWf@kroah.com>
- <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com>
- <YCJCDZGa1Dhqv6Ni@kroah.com>
- <27bbe35deacb4ca49f31307f4ed551b5@SOC-EX02V.e01.socionext.com>
- <YCJUgKDNVjJ4dUqM@kroah.com> <20210209093642.GA1006@lst.de>
- <CAFA6WYO59w=wif8W16sG6BnzSjFhaY6PmRUTdSCu9A+zA7gzBw@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e36b8a7d-a999-da09-d7d9-cc26579a65d1@arm.com>
-Date:   Tue, 9 Feb 2021 12:45:11 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230393AbhBIMrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:47:51 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:39408 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhBIMqb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:46:31 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 119Cjasp102812;
+        Tue, 9 Feb 2021 06:45:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612874736;
+        bh=dpFap93OJFoMCL6N2sI87pM+cqa/ZFq/0zKd/+sd+CQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Ew0OwIV0Szsj+MNFNtx4NQItS+gIW7Dq4IooKlJfYkEu5dNZydJ3UTdFFs2P9Z33c
+         J8GlONkexma0ZWOQOwdWMpNpRYw5tDVu5QQxlfhW6wvU5kE0/BcN7FsWg0Gck4ZwyX
+         /F2cvl9MlG8MkKomsxT4sdbM8o23PZhHu4/eKtSw=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 119Cjawm088819
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 9 Feb 2021 06:45:36 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 9 Feb
+ 2021 06:45:36 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 9 Feb 2021 06:45:36 -0600
+Received: from [10.250.232.153] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 119CjXvd084235;
+        Tue, 9 Feb 2021 06:45:34 -0600
+Subject: Re: [PATCH] dmaengine: ti: k3-udma: Fix NULL pointer dereference
+ error
+To:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210209090036.30832-1-kishon@ti.com>
+ <19488154-22d5-33b4-06a1-17e9a896ae04@gmail.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <7e06c63d-606b-be78-84ff-d5a5c72f7ad7@ti.com>
+Date:   Tue, 9 Feb 2021 18:15:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAFA6WYO59w=wif8W16sG6BnzSjFhaY6PmRUTdSCu9A+zA7gzBw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <19488154-22d5-33b4-06a1-17e9a896ae04@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-09 12:36, Sumit Garg wrote:
-> Hi Christoph,
+Hi Peter,
+
+On 09/02/21 5:53 pm, Péter Ujfalusi wrote:
+> Hi Kishon,
 > 
-> On Tue, 9 Feb 2021 at 15:06, Christoph Hellwig <hch@lst.de> wrote:
+> On 2/9/21 11:00 AM, Kishon Vijay Abraham I wrote:
+>> bcdma_get_*() and udma_get_*() checks if bchan/rchan/tchan/rflow is
+>> already allocated by checking if it has a NON NULL value. For the
+>> error cases, bchan/rchan/tchan/rflow will have error value
+>> and bcdma_get_*() and udma_get_*() considers this as already allocated
+>> (PASS) since the error values are NON NULL. This results in
+>> NULL pointer dereference error while de-referencing
+>> bchan/rchan/tchan/rflow.
+> 
+> I think this can happen when a channel request fails and we get a second
+> request coming and faces with the not cleanup up tchan/rchan/bchan/rflow
+> from the previous failure.
+> Interesting that I have not faced with this, but it is a valid oversight
+> from me.
+
+Thank you for reviewing.
+
+Got into this issue when all the PCIe endpoint functions were requesting
+for a MEMCOPY channel (total 22 endpoint functions) specifically in
+bcdma_get_bchan() where the scenario you mentioned above happened.
+
+Vignesh asked me to fix it for all udma_get_*().
+> 
+>> Reset the value of bchan/rchan/tchan/rflow to NULL if the allocation
+>> actually fails.
 >>
->> On Tue, Feb 09, 2021 at 10:23:12AM +0100, Greg KH wrote:
->>>>    From the view point of ZeroCopy using DMABUF, is 5.4 not
->>>> mature enough, and is 5.10 enough mature ?
->>>>    This is the most important point for judging migration.
->>>
->>> How do you judge "mature"?
->>>
->>> And again, if a feature isn't present in a specific kernel version, why
->>> would you think that it would be a viable solution for you to use?
+>> Fixes: 017794739702 ("dmaengine: ti: k3-udma: Initial support for K3 BCDMA")
+>> Fixes: 25dcb5dd7b7c ("dmaengine: ti: New driver for K3 UDMA")
+> 
+> Will this patch apply at any of these?
+> 25dcb5dd7b7c does not have BCDMA (bchan)
+> 017794739702 does not contain PKTDMA (tflow)
+
+I can probably split this patch
+017794739702 for bchan and 25dcb5dd7b7c for bchan/rchan/tchan/rflow
+
+> 
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  drivers/dma/ti/k3-udma.c | 30 +++++++++++++++++++++++++-----
+>>  1 file changed, 25 insertions(+), 5 deletions(-)
 >>
->> I'm pretty sure dma_get_sgtable has been around much longer and was
->> supposed to work, but only really did work properly for arm32, and
->> for platforms with coherent DMA.  I bet he is using non-coherent arm64,
+>> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+>> index 298460438bb4..aa4ef583ff83 100644
+>> --- a/drivers/dma/ti/k3-udma.c
+>> +++ b/drivers/dma/ti/k3-udma.c
+>> @@ -1330,6 +1330,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
+>>  {
+>>  	struct udma_dev *ud = uc->ud;
+>>  	enum udma_tp_level tpl;
+>> +	int ret;
+>>  
+>>  	if (uc->bchan) {
+>>  		dev_dbg(ud->dev, "chan%d: already have bchan%d allocated\n",
+>> @@ -1347,8 +1348,11 @@ static int bcdma_get_bchan(struct udma_chan *uc)
+>>  		tpl = ud->bchan_tpl.levels - 1;
+>>  
+>>  	uc->bchan = __udma_reserve_bchan(ud, tpl, -1);
+>> -	if (IS_ERR(uc->bchan))
+>> -		return PTR_ERR(uc->bchan);
+>> +	if (IS_ERR(uc->bchan)) {
+>> +		ret = PTR_ERR(uc->bchan);
+>> +		uc->bchan = NULL;
+>> +		return ret;
+>> +	}
+>>  
+>>  	uc->tchan = uc->bchan;
+>>  
+>> @@ -1358,6 +1362,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
+>>  static int udma_get_tchan(struct udma_chan *uc)
+>>  {
+>>  	struct udma_dev *ud = uc->ud;
+>> +	int ret;
+>>  
+>>  	if (uc->tchan) {
+>>  		dev_dbg(ud->dev, "chan%d: already have tchan%d allocated\n",
+>> @@ -1372,8 +1377,11 @@ static int udma_get_tchan(struct udma_chan *uc)
+>>  	 */
+>>  	uc->tchan = __udma_reserve_tchan(ud, uc->config.channel_tpl,
+>>  					 uc->config.mapped_channel_id);
+>> -	if (IS_ERR(uc->tchan))
+>> -		return PTR_ERR(uc->tchan);
+>> +	if (IS_ERR(uc->tchan)) {
+>> +		ret = PTR_ERR(uc->tchan);
+>> +		uc->tchan = NULL;
+>> +		return ret;
+>> +	}
+>>  
+>>  	if (ud->tflow_cnt) {
+>>  		int tflow_id;
+>> @@ -1403,6 +1411,7 @@ static int udma_get_tchan(struct udma_chan *uc)
+>>  static int udma_get_rchan(struct udma_chan *uc)
+>>  {
+>>  	struct udma_dev *ud = uc->ud;
+>> +	int ret;
+>>  
+>>  	if (uc->rchan) {
+>>  		dev_dbg(ud->dev, "chan%d: already have rchan%d allocated\n",
+>> @@ -1417,8 +1426,13 @@ static int udma_get_rchan(struct udma_chan *uc)
+>>  	 */
+>>  	uc->rchan = __udma_reserve_rchan(ud, uc->config.channel_tpl,
+>>  					 uc->config.mapped_channel_id);
+>> +	if (IS_ERR(uc->rchan)) {
+>> +		ret = PTR_ERR(uc->rchan);
+>> +		uc->rchan = NULL;
+>> +		return ret;
+>> +	}
+>>  
+>> -	return PTR_ERR_OR_ZERO(uc->rchan);
+>> +	return 0;
+>>  }
+>>  
+>>  static int udma_get_chan_pair(struct udma_chan *uc)
+>> @@ -1472,6 +1486,7 @@ static int udma_get_chan_pair(struct udma_chan *uc)
+>>  static int udma_get_rflow(struct udma_chan *uc, int flow_id)
+>>  {
+>>  	struct udma_dev *ud = uc->ud;
+>> +	int ret;
+>>  
+>>  	if (!uc->rchan) {
+>>  		dev_err(ud->dev, "chan%d: does not have rchan??\n", uc->id);
+>> @@ -1485,6 +1500,11 @@ static int udma_get_rflow(struct udma_chan *uc, int flow_id)
+>>  	}
+>>  
+>>  	uc->rflow = __udma_get_rflow(ud, flow_id);
+>> +	if (IS_ERR(uc->rflow)) {
+>> +		ret = PTR_ERR(uc->rflow);
+>> +		uc->rflow = NULL;
+>> +		return ret;
+>> +	}
+>>  
+>>  	return PTR_ERR_OR_ZERO(uc->rflow);
 > 
-> It's an arm64 platform using coherent DMA where device coherent DMA
-> memory pool is defined in the DT as follows:
-> 
->          reserved-memory {
->                  #address-cells = <2>;
->                  #size-cells = <2>;
->                  ranges;
-> 
->                  <snip>
->                  encbuffer: encbuffer@0xb0000000 {
->                          compatible = "shared-dma-pool";
->                          reg = <0 0xb0000000 0 0x08000000>; // this
-> area used with dma-coherent
->                          no-map;
->                  };
->                  <snip>
->          };
-> 
-> Device is dma-coherent as per following DT property:
-> 
->                  codec {
->                          compatible = "socionext,uniphier-pxs3-codec";
->                          <snip>
->                          memory-region = <&encbuffer>;
->                          dma-coherent;
->                          <snip>
->                  };
-> 
-> And call chain to create device coherent DMA pool is as follows:
-> 
-> rmem_dma_device_init();
->    dma_init_coherent_memory();
->      memremap();
->        ioremap_wc();
-> 
-> which simply maps coherent DMA memory into vmalloc space on arm64.
-> 
-> The thing I am unclear is why this is called a new feature rather than
-> a bug in dma_common_get_sgtable() which is failing to handle vmalloc
-> addresses? While at the same time DMA debug APIs specifically handle
-> vmalloc addresses [1].
+> return 0;
 
-It's not a bug, it's a fundamental design failure. dma_get_sgtable() has 
-only ever sort-of-worked for DMA buffers that come from CMA or regular 
-page allocations. In particular, a "no-map" DMA pool is not backed by 
-kernel memory, so does not have any corresponding page structs, so it's 
-impossible to generate a *valid* scatterlist to represent memory from 
-that pool, regardless of what you might get away with provided you don't 
-poke too hard at it.
+Will fix this.
 
-It is not a good API...
-
-Robin.
-
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/kernel/dma/debug.c?h=linux-5.4.y#n1462
-> 
-> -Sumit
-> 
->> and it would be broken for other drivers there as well if people did
->> test them, which they apparently so far did not.
+Thanks
+Kishon
