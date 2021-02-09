@@ -2,80 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FF8314D4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2661D314D78
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhBIKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:43:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhBIKgQ (ORCPT
+        id S232076AbhBIKsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:48:43 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:42090 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231220AbhBIKhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:36:16 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F6EC061788
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 02:35:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TR9KySGPrVEPFHq9xTT60kdyppdvtvIMXnHHCxSctyE=; b=fdYO2ThEXPPvDbgecpMVKtur5H
-        rPwHNUT0W3/DQF8x5EHEwO0KeCsoaYvIIR7E+OBqWWhzIRtTyzeYlftZ8Rc8f+WlGDYTryI63miZG
-        Gqhhx+5kFQ1p66KBtqJIIQOFdgwEZoqxN8OohX40CMCq8Ls2a7vg9u3pqHvWm8nctzEktOG1LT1Wt
-        ZLr4NzGnthr0g12LmqENnlIgIb6FROEcsT5JWw7FE8QcxZKNBlPK9wrr3P4a1GwUVwBYiDZA/OqA7
-        4S4sKe1p6V1ihI6YiMWEXL6Ye4krdhaF4yAwfix/HsslVTn+Hb4odvau+fm57Q/DKVUUWr+l8PkWT
-        mvR3lZ1g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9QMj-0000DX-N3; Tue, 09 Feb 2021 10:35:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 65E4B3010D2;
-        Tue,  9 Feb 2021 11:35:28 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4D7B12D4E46ED; Tue,  9 Feb 2021 11:35:28 +0100 (CET)
-Date:   Tue, 9 Feb 2021 11:35:28 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] objtool: Support stack-swizzle
-Message-ID: <YCJlcI5fYRoX/sOA@hirez.programming.kicks-ass.net>
-References: <20210209091600.075402197@infradead.org>
- <20210209093521.994069508@infradead.org>
+        Tue, 9 Feb 2021 05:37:01 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119AZtY0031747;
+        Tue, 9 Feb 2021 02:36:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=taj4SO/mTriXrIb+DM/DHyC6/fPzV3ufFwW3P6258Nw=;
+ b=MePrG1qKdHWolcd33q93NVeXLs8oRz2h1BybrEVFv98ywqyN3Tw3Ryg5V3x812p8U0LB
+ +RNAkL+/JnkiLtzO1pbnMY1xFUIjlNVvkm0BYXjE0rK6g4/LQtadl197J4J1LXDRxLgk
+ zTddANFMBoyJYKoxl8VN+GU55ivai5gb6X83pj5lKvPI/NTONdVvWLIZdbCZp778ZgQx
+ ddnrTIb3+bWS9pZf5z3CIzEdIp5Il+KDeUFY7ra8T92deX4y5fK7fxTWujpBdhi6YuRy
+ ILIJvkzgenbUpMUj513lGNH+IQfBYZ+YYzX6eY/kERbo8kDnPiPCXjWfz66kF+zmJUhh vA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36hsbrg148-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 09 Feb 2021 02:36:02 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
+ 2021 02:36:01 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
+ 2021 02:35:58 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 9 Feb 2021 02:35:58 -0800
+Received: from hyd1soter2.marvell.com (unknown [10.29.37.45])
+        by maili.marvell.com (Postfix) with ESMTP id 06C1B3F703F;
+        Tue,  9 Feb 2021 02:35:54 -0800 (PST)
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>,
+        <willemdebruijn.kernel@gmail.com>, <andrew@lunn.ch>,
+        <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <sbhatta@marvell.com>,
+        <hkelam@marvell.com>
+Subject: [Patch v4 net-next 5/7] octeontx2-af: advertised link modes support on cgx
+Date:   Tue, 9 Feb 2021 16:05:29 +0530
+Message-ID: <1612866931-79299-6-git-send-email-hkelam@marvell.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1612866931-79299-1-git-send-email-hkelam@marvell.com>
+References: <1612866931-79299-1-git-send-email-hkelam@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209093521.994069508@infradead.org>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-09_03:2021-02-09,2021-02-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:16:03AM +0100, Peter Zijlstra wrote:
-> @@ -2193,6 +2232,12 @@ static int update_cfi_state(struct instr
->  			/* mov reg, disp(%rsp) */
->  			save_reg(cfi, op->src.reg, CFI_CFA,
->  				 op->dest.offset - cfi->stack_size);
-> +
-> +		} else if (op->src.reg == CFI_SP && op->dest.offset == 0) {
-> +
-> +			/* mov %rsp, (%reg); # setup a stack swizzle. */
-> +			cfi->vals[op->dest.reg].base = CFI_SP_INDIRECT;
-> +			cfi->vals[op->dest.reg].offset = cfi->cfa.offset;
+From: Christina Jacob <cjacob@marvell.com>
 
-I'll change that to:
+CGX supports setting advertised link modes on physical link.
+This patch adds support to derive cgx mode from ethtool
+link mode and pass it to firmware to configure the same.
 
-			cfi->vals[op->dest.reg].offset = cfa->offset;
+Signed-off-by: Christina Jacob <cjacob@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/cgx.c    | 114 ++++++++++++++++++++-
+ .../net/ethernet/marvell/octeontx2/af/cgx_fw_if.h  |  32 +++++-
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |   3 +-
+ 3 files changed, 146 insertions(+), 3 deletions(-)
 
-To be more consistent with the rest of the code.
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+index 5b7d858..9c62129 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+@@ -14,6 +14,7 @@
+ #include <linux/pci.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
++#include <linux/ethtool.h>
+ #include <linux/phy.h>
+ #include <linux/of.h>
+ #include <linux/of_mdio.h>
+@@ -646,6 +647,7 @@ static inline void cgx_link_usertable_init(void)
+ 	cgx_speed_mbps[CGX_LINK_25G] = 25000;
+ 	cgx_speed_mbps[CGX_LINK_40G] = 40000;
+ 	cgx_speed_mbps[CGX_LINK_50G] = 50000;
++	cgx_speed_mbps[CGX_LINK_80G] = 80000;
+ 	cgx_speed_mbps[CGX_LINK_100G] = 100000;
 
->  		}
->  
->  		break;
-> 
-> 
+ 	cgx_lmactype_string[LMAC_MODE_SGMII] = "SGMII";
+@@ -693,6 +695,110 @@ static int cgx_link_usertable_index_map(int speed)
+ 	return CGX_LINK_NONE;
+ }
+
++static void set_mod_args(struct cgx_set_link_mode_args *args,
++			 u32 speed, u8 duplex, u8 autoneg, u64 mode)
++{
++	/* Fill default values incase of user did not pass
++	 * valid parameters
++	 */
++	if (args->duplex == DUPLEX_UNKNOWN)
++		args->duplex = duplex;
++	if (args->speed == SPEED_UNKNOWN)
++		args->speed = speed;
++	if (args->an == AUTONEG_UNKNOWN)
++		args->an = autoneg;
++	args->mode = mode;
++	args->ports = 0;
++}
++
++static void otx2_map_ethtool_link_modes(u64 bitmask,
++					struct cgx_set_link_mode_args *args)
++{
++	switch (bitmask) {
++	case ETHTOOL_LINK_MODE_10baseT_Half_BIT:
++		set_mod_args(args, 10, 1, 1, BIT_ULL(CGX_MODE_SGMII));
++		break;
++	case  ETHTOOL_LINK_MODE_10baseT_Full_BIT:
++		set_mod_args(args, 10, 0, 1, BIT_ULL(CGX_MODE_SGMII));
++		break;
++	case  ETHTOOL_LINK_MODE_100baseT_Half_BIT:
++		set_mod_args(args, 100, 1, 1, BIT_ULL(CGX_MODE_SGMII));
++		break;
++	case  ETHTOOL_LINK_MODE_100baseT_Full_BIT:
++		set_mod_args(args, 100, 0, 1, BIT_ULL(CGX_MODE_SGMII));
++		break;
++	case  ETHTOOL_LINK_MODE_1000baseT_Half_BIT:
++		set_mod_args(args, 1000, 1, 1, BIT_ULL(CGX_MODE_SGMII));
++		break;
++	case  ETHTOOL_LINK_MODE_1000baseT_Full_BIT:
++		set_mod_args(args, 1000, 0, 1, BIT_ULL(CGX_MODE_SGMII));
++		break;
++	case  ETHTOOL_LINK_MODE_1000baseX_Full_BIT:
++		set_mod_args(args, 1000, 0, 0, BIT_ULL(CGX_MODE_1000_BASEX));
++		break;
++	case  ETHTOOL_LINK_MODE_10000baseT_Full_BIT:
++		set_mod_args(args, 1000, 0, 1, BIT_ULL(CGX_MODE_QSGMII));
++		break;
++	case  ETHTOOL_LINK_MODE_10000baseSR_Full_BIT:
++		set_mod_args(args, 10000, 0, 0, BIT_ULL(CGX_MODE_10G_C2C));
++		break;
++	case  ETHTOOL_LINK_MODE_10000baseLR_Full_BIT:
++		set_mod_args(args, 10000, 0, 0, BIT_ULL(CGX_MODE_10G_C2M));
++		break;
++	case  ETHTOOL_LINK_MODE_10000baseKR_Full_BIT:
++		set_mod_args(args, 10000, 0, 1, BIT_ULL(CGX_MODE_10G_KR));
++		break;
++	case  ETHTOOL_LINK_MODE_25000baseSR_Full_BIT:
++		set_mod_args(args, 25000, 0, 0, BIT_ULL(CGX_MODE_25G_C2C));
++		break;
++	case  ETHTOOL_LINK_MODE_25000baseCR_Full_BIT:
++		set_mod_args(args, 25000, 0, 1, BIT_ULL(CGX_MODE_25G_CR));
++		break;
++	case  ETHTOOL_LINK_MODE_25000baseKR_Full_BIT:
++		set_mod_args(args, 25000, 0, 1, BIT_ULL(CGX_MODE_25G_KR));
++		break;
++	case  ETHTOOL_LINK_MODE_40000baseSR4_Full_BIT:
++		set_mod_args(args, 40000, 0, 0, BIT_ULL(CGX_MODE_40G_C2C));
++		break;
++	case  ETHTOOL_LINK_MODE_40000baseLR4_Full_BIT:
++		set_mod_args(args, 40000, 0, 0, BIT_ULL(CGX_MODE_40G_C2M));
++		break;
++	case  ETHTOOL_LINK_MODE_40000baseCR4_Full_BIT:
++		set_mod_args(args, 40000, 0, 1, BIT_ULL(CGX_MODE_40G_CR4));
++		break;
++	case  ETHTOOL_LINK_MODE_40000baseKR4_Full_BIT:
++		set_mod_args(args, 40000, 0, 1, BIT_ULL(CGX_MODE_40G_KR4));
++		break;
++	case  ETHTOOL_LINK_MODE_50000baseSR_Full_BIT:
++		set_mod_args(args, 50000, 0, 0, BIT_ULL(CGX_MODE_50G_C2C));
++		break;
++	case  ETHTOOL_LINK_MODE_50000baseLR_ER_FR_Full_BIT:
++		set_mod_args(args, 50000, 0, 0, BIT_ULL(CGX_MODE_50G_C2M));
++		break;
++	case  ETHTOOL_LINK_MODE_50000baseCR_Full_BIT:
++		set_mod_args(args, 50000, 0, 1, BIT_ULL(CGX_MODE_50G_CR));
++		break;
++	case  ETHTOOL_LINK_MODE_50000baseKR_Full_BIT:
++		set_mod_args(args, 50000, 0, 1, BIT_ULL(CGX_MODE_50G_KR));
++		break;
++	case  ETHTOOL_LINK_MODE_100000baseSR4_Full_BIT:
++		set_mod_args(args, 100000, 0, 0, BIT_ULL(CGX_MODE_100G_C2C));
++		break;
++	case  ETHTOOL_LINK_MODE_100000baseLR4_ER4_Full_BIT:
++		set_mod_args(args, 100000, 0, 0, BIT_ULL(CGX_MODE_100G_C2M));
++		break;
++	case  ETHTOOL_LINK_MODE_100000baseCR4_Full_BIT:
++		set_mod_args(args, 100000, 0, 1, BIT_ULL(CGX_MODE_100G_CR4));
++		break;
++	case  ETHTOOL_LINK_MODE_100000baseKR4_Full_BIT:
++		set_mod_args(args, 100000, 0, 1, BIT_ULL(CGX_MODE_100G_KR4));
++		break;
++	default:
++		set_mod_args(args, 0, 1, 0, BIT_ULL(CGX_MODE_MAX));
++		break;
++	}
++}
++
+ static inline void link_status_user_format(u64 lstat,
+ 					   struct cgx_link_user_info *linfo,
+ 					   struct cgx *cgx, u8 lmac_id)
+@@ -887,13 +993,19 @@ int cgx_set_link_mode(void *cgxd, struct cgx_set_link_mode_args args,
+ 	if (!cgx)
+ 		return -ENODEV;
+
++	if (args.mode)
++		otx2_map_ethtool_link_modes(args.mode, &args);
++	if (!args.speed && args.duplex && !args.an)
++		return -EINVAL;
++
+ 	req = FIELD_SET(CMDREG_ID, CGX_CMD_MODE_CHANGE, req);
+ 	req = FIELD_SET(CMDMODECHANGE_SPEED,
+ 			cgx_link_usertable_index_map(args.speed), req);
+ 	req = FIELD_SET(CMDMODECHANGE_DUPLEX, args.duplex, req);
+ 	req = FIELD_SET(CMDMODECHANGE_AN, args.an, req);
+ 	req = FIELD_SET(CMDMODECHANGE_PORT, args.ports, req);
+-	req = FIELD_SET(CMDMODECHANGE_FLAGS, args.flags, req);
++	req = FIELD_SET(CMDMODECHANGE_FLAGS, args.mode, req);
++
+ 	return cgx_fwi_cmd_generic(req, &resp, cgx, lmac_id);
+ }
+ int cgx_set_fec(u64 fec, int cgx_id, int lmac_id)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx_fw_if.h b/drivers/net/ethernet/marvell/octeontx2/af/cgx_fw_if.h
+index 70610e7..dde2bd0 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/cgx_fw_if.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx_fw_if.h
+@@ -70,6 +70,36 @@ enum cgx_link_speed {
+ 	CGX_LINK_SPEED_MAX,
+ };
+
++enum CGX_MODE_ {
++	CGX_MODE_SGMII,
++	CGX_MODE_1000_BASEX,
++	CGX_MODE_QSGMII,
++	CGX_MODE_10G_C2C,
++	CGX_MODE_10G_C2M,
++	CGX_MODE_10G_KR,
++	CGX_MODE_20G_C2C,
++	CGX_MODE_25G_C2C,
++	CGX_MODE_25G_C2M,
++	CGX_MODE_25G_2_C2C,
++	CGX_MODE_25G_CR,
++	CGX_MODE_25G_KR,
++	CGX_MODE_40G_C2C,
++	CGX_MODE_40G_C2M,
++	CGX_MODE_40G_CR4,
++	CGX_MODE_40G_KR4,
++	CGX_MODE_40GAUI_C2C,
++	CGX_MODE_50G_C2C,
++	CGX_MODE_50G_C2M,
++	CGX_MODE_50G_4_C2C,
++	CGX_MODE_50G_CR,
++	CGX_MODE_50G_KR,
++	CGX_MODE_80GAUI_C2C,
++	CGX_MODE_100G_C2C,
++	CGX_MODE_100G_C2M,
++	CGX_MODE_100G_CR4,
++	CGX_MODE_100G_KR4,
++	CGX_MODE_MAX /* = 29 */
++};
+ /* REQUEST ID types. Input to firmware */
+ enum cgx_cmd_id {
+ 	CGX_CMD_NONE,
+@@ -231,6 +261,6 @@ struct cgx_lnk_sts {
+ #define CMDMODECHANGE_DUPLEX		GENMASK_ULL(12, 12)
+ #define CMDMODECHANGE_AN		GENMASK_ULL(13, 13)
+ #define CMDMODECHANGE_PORT		GENMASK_ULL(21, 14)
+-#define CMDMODECHANGE_FLAGS		GENMASK_ULL(29, 22)
++#define CMDMODECHANGE_FLAGS		GENMASK_ULL(63, 22)
+
+ #endif /* __CGX_FW_INTF_H__ */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index 4fc4ca7..5cd67cf 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -464,10 +464,11 @@ struct cgx_set_link_mode_args {
+ 	u8 duplex;
+ 	u8 an;
+ 	u8 ports;
+-	u8 flags;
++	u64 mode;
+ };
+
+ struct cgx_set_link_mode_req {
++#define AUTONEG_UNKNOWN		0xff
+ 	struct mbox_msghdr hdr;
+ 	struct cgx_set_link_mode_args args;
+ };
+--
+2.7.4
