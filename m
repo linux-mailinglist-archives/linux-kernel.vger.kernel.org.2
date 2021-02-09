@@ -2,95 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90ED9314F0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7447314EE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhBIMhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:37:55 -0500
-Received: from smtpcmd0872.aruba.it ([62.149.156.72]:52401 "EHLO
-        smtpcmd0872.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhBIMhx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:37:53 -0500
-Received: from [192.168.1.56] ([79.0.204.227])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id 9S6Slz4POHTby9S6Sl0V2E; Tue, 09 Feb 2021 13:26:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1612873613; bh=mDUswk8o3BSLtbN9FBZukK6zJHlk4RbhcvaAExyA0nw=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=Kzl1EYSpnas8XmF09hgxgzzlq2cQfYNdikTV0R866v6FMi18rsR2jWVgS6ccBui0q
-         gu/2VBPSRuxNS3lgMEbTkGPRrXRGRpmUJIpU8OHOj7OUqzy/o8lfidC5a1IVHy9fUM
-         ifOzehfJ+swDJDepMjKUkMl/t5TLwkCGCF8VvMGb1LyCcywhjMeUBK28Q4njRQxsad
-         0jkbGPw7zasSDzwI+CIP46O5RDOafo5UjAXFJttwfb2OzRSmlB08ORdiroaLqs85Ju
-         kuFmKTN9jCV9f6jHyTt/4MLwX8PcDuEjJwfSaq5+3DPIc0QcH0oVkEme3g6U8tidQL
-         D279Xfw9JloGg==
-Subject: Re: [PATCH v2 3/4] pps: Use subdir-ccflags-* to inherit debug flag
-To:     Yicong Yang <yangyicong@hisilicon.com>, gregkh@linuxfoundation.org,
-        jdelvare@suse.com, linux@roeck-us.net, abbotti@mev.co.uk,
-        hsweeten@visionengravers.com, kw@linux.com, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kbuild@vger.kernel.org, masahiroy@kernel.org,
-        michal.lkml@markovi.net
-Cc:     prime.zeng@huawei.com, linuxarm@openeuler.org
-References: <1612868899-9185-1-git-send-email-yangyicong@hisilicon.com>
- <1612868899-9185-4-git-send-email-yangyicong@hisilicon.com>
-From:   Rodolfo Giometti <giometti@enneenne.com>
-Message-ID: <36b30ed8-a930-d1c3-2725-c6653f23490c@enneenne.com>
-Date:   Tue, 9 Feb 2021 13:26:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229772AbhBIMay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:30:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41090 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229584AbhBIMav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:30:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 26F8DADE1;
+        Tue,  9 Feb 2021 12:30:08 +0000 (UTC)
+Subject: Re: [PATCH] kunit: tool: Disable PAGE_POISONING under --alltests
+To:     David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210209071034.3268897-1-davidgow@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <91207d64-e50f-872d-10db-55153da41aec@suse.cz>
+Date:   Tue, 9 Feb 2021 13:30:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <1612868899-9185-4-git-send-email-yangyicong@hisilicon.com>
+In-Reply-To: <20210209071034.3268897-1-davidgow@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfJOtvfcS9SDUIzmTBtbnLxCn9w5jBVsknznaedOo9e7Vr0rIPrGhQrxsiBlKpKQMo8p9WoIyfGExvxm3eRi5IThCUTGOTOoVORppicdkKLU7ntqvJoHq
- QPY+Q4cFW3Qlnf7BXKIc2bDD9sR81IdWZPdqhWl/yG48Ze9YsxPcF4EaYAPM6n3pKPXeSqxq5W1TIuiAFAd+LM0Ova77sJiY6RuiBeRT09UY9W4NVDKR9Hkg
- a+qYxNAviyYwMOQiB2hPv+rhKM7AMAmDD2DbOV3UaW+NIxAFUrCK/7wn4arJAwvL20rc7Plqq6DOaoxQW0IeazmOynuZjtKG7vOWanwkDv8Dy81kUXJz2TRw
- A98aGs49XrGCwUBoSyPANKkVLIThLhFOpbFjHXJigrI56FCF4i5CPE/sW+9yft4Fzsw4/OWCNlVYtFGUPjthKo3eN1ifKBIoZCFk8NEVZgcz+/qXlqFRgWLk
- fvmyn/dQzshzuqGfxjd+GEWY4GymmulB0+7tZhyPHgUVBJghPfRKUNyhhcq2Xu/rU808RhuuLRpvDsskEfKDqfYhLAVimMMdoa6tVgHW2u7qAUURgcKCchUZ
- 2JbWhCTFJW3iPgCh7EQYmY8Q2NzEZomvywfunnw8/O3EJ30YCuMdQHUYzwrJkjGmuBwVkcM50nXNQsldL103nFTq8x/GsuzwHACgBRF3vE7So7UKAAsHJffY
- D8C8+hAeAqXWlXGr71ctDJ2XrJBTtwqP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02/21 12:08, Yicong Yang wrote:
-> From: Junhao He <hejunhao2@hisilicon.com>
+On 2/9/21 8:10 AM, David Gow wrote:
+> kunit_tool maintains a list of config options which are broken under
+> UML, which we exclude from an otherwise 'make ARCH=um allyesconfig'
+> build used to run all tests with the --alltests option.
 > 
-> We use ccflags-$(CONFIG_PPS_DEBUG) for the debug
-> message in drivers/pps, but the DEBUG flag will not pass to
-> the subdirectory.
+> Something in UML allyesconfig is causing segfaults when page poisining
+> is enabled (and is poisoning with a non-zero value). Previously, this
+> didn't occur, as allyesconfig enabled the CONFIG_PAGE_POISONING_ZERO
+> option, which worked around the problem by zeroing memory. This option
+> has since been removed, and memory is now poisoned with 0xAA, which
+> triggers segfaults in many different codepaths, preventing UML from
+> booting.
 > 
-> Considering CONFIG_HWMON_DEBUG_CHIP intends to turn on debug
-> recursively under driver/pps, so it will be clearer to use
-> subdir-ccflags-* instead of ccflags-* to inherit
-> the debug settings from Kconfig when traversing subdirectories.
+> Note that we have to disable both CONFIG_PAGE_POISONING and
+> CONFIG_DEBUG_PAGEALLOC, as the latter will 'select' the former on
+> architectures (such as UML) which don't implement __kernel_map_pages().
 > 
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> ---
->  drivers/pps/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Ideally, we'd fix this properly by tracking down the real root cause,
+> but since this is breaking KUnit's --alltests feature, it's worth
+> disabling there in the meantime so the kernel can boot to the point
+> where tests can actually run.
+
+Agree on both arguments :)
+
+> Fixes: f289041ed4 ("mm, page_poison: remove CONFIG_PAGE_POISONING_ZERO")
+> Signed-off-by: David Gow <davidgow@google.com>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+...
+
+> Disabling PAGE_POISONING fixes this. The issue can't be repoduced with
+> just PAGE_POISONING, there's clearly something (or several things) also
+> enabled by allyesconfig which contribute. Ideally, we'd track these down
+> and fix this at its root cause, but in the meantime it'd be nice to
+> disable PAGE_POISONING so we can at least get the kernel to boot. One
+> way would be to add a 'depends on !UML' or similar, but since
+> PAGE_POISONING does seem to work in the non-allyesconfig case, adding it
+> to our list of broken configs seemed the better choice.
 > 
-> diff --git a/drivers/pps/Makefile b/drivers/pps/Makefile
-> index ceaf65c..7a2d3f7 100644
-> --- a/drivers/pps/Makefile
-> +++ b/drivers/pps/Makefile
-> @@ -8,4 +8,4 @@ pps_core-$(CONFIG_NTP_PPS)	+= kc.o
->  obj-$(CONFIG_PPS)		:= pps_core.o
->  obj-y				+= clients/ generators/
->  
-> -ccflags-$(CONFIG_PPS_DEBUG) := -DDEBUG
-> +subdir-ccflags-$(CONFIG_PPS_DEBUG) := -DDEBUG
+> Thoughts?
+
+Agreed that it's better to use kunit-specific config file instead of introducing
+such workaround dependencies in Kconfig proper.
+
+> (Note that to reproduce this, you'll want to run
+> ./tools/testing/kunit/kunit.py run --alltests --raw_output
+> It also depends on a couple of other fixes which are not upstream yet:
+> https://www.spinics.net/lists/linux-rtc/msg08294.html
+> https://lore.kernel.org/linux-i3c/20210127040636.1535722-1-davidgow@google.com/
+> 
+> Cheers,
+> -- David
+> 
+>  tools/testing/kunit/configs/broken_on_uml.config | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tools/testing/kunit/configs/broken_on_uml.config b/tools/testing/kunit/configs/broken_on_uml.config
+> index a7f0603d33f6..690870043ac0 100644
+> --- a/tools/testing/kunit/configs/broken_on_uml.config
+> +++ b/tools/testing/kunit/configs/broken_on_uml.config
+> @@ -40,3 +40,5 @@
+>  # CONFIG_RESET_BRCMSTB_RESCAL is not set
+>  # CONFIG_RESET_INTEL_GW is not set
+>  # CONFIG_ADI_AXI_ADC is not set
+> +# CONFIG_DEBUG_PAGEALLOC is not set
+> +# CONFIG_PAGE_POISONING is not set
 > 
 
-Acked-by: Rodolfo Giometti <giometti@enneenne.com>
-
--- 
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming                     skype:  rodolfo.giometti
