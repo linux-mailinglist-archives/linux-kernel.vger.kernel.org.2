@@ -2,145 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885BC315AAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:10:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93951315ACD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234996AbhBJAH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:07:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233888AbhBIUlM (ORCPT
+        id S234325AbhBJAPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:15:08 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:43346 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233538AbhBIUj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:41:12 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D27C06121E;
-        Tue,  9 Feb 2021 12:37:28 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id q2so22539622eds.11;
-        Tue, 09 Feb 2021 12:37:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vpXupxI4EmB9jS8FnsBDy9X9aAilQow9eZdElk5z5YU=;
-        b=EaCnqleR9co1ayX9zw8/Gbww2num6HhuM4rM/kM9NM7GKDe5pOvkyc4u1Yyqkwgb84
-         0ZmEdA9aOXpR65pmNEYgE0NybjZ2WP5hFK4g5Av6jBc23CsFz15v3La7dXi41gCy0pcm
-         0lNs7LXQers1shnqM/BafxrFDuS7hrqMB1968zH/0w+SdalfFn8KJRKJ6E0H8bVgF44y
-         ZY2Mw2MtExe5Aa4zYKcdhUWXyTD3rY0ApxtQB+eawTlVtuADNwjbEG/nHV63FLXyKmsQ
-         X3AIXJFUUjJFsVqp343pSzGKATCXc5sAVoIWnYwpHifWavfp5gPQwuQSzwJa1Xoc5E8I
-         QQdA==
+        Tue, 9 Feb 2021 15:39:27 -0500
+Received: by mail-ot1-f47.google.com with SMTP id l23so7085582otn.10;
+        Tue, 09 Feb 2021 12:38:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vpXupxI4EmB9jS8FnsBDy9X9aAilQow9eZdElk5z5YU=;
-        b=KKXt40F8394XIXWa7qtoRNjveTchXZcGx/S1VChJmC5Pcmt65ITwFbWQg/JldwFGlt
-         V97zsei8zcZcV9pEE18OBH1YOFkLKiedzv3QoI9t0qUXh/qNV+VoaY1PjZnfCJu47qSL
-         pTJ7b6mEhenF28MLgHj+8FquIqY6o42Xiobvl4V2yUENCtPQAsSVStw/EO9Qgn2EA733
-         3yMlCIri/AGAbK+ZzigaEvQ/QAtU8bHKT+1uboaWpwVHG3c/2qCMgLiyxJTGzhO1nYTP
-         V5x/V9qCOW2Cz81zTGhYkC44RYdqz1CeEepX1JXzM2WDsNO95W3vBa3mRiKiO1pRr/rf
-         vPjg==
-X-Gm-Message-State: AOAM530r+rlIC8a45ngZz+LrDQ4q4c76Z2BRCzFy/68AzL/gPss4kicJ
-        Sx1vXRdgIkM9Pth/EkSWj2c=
-X-Google-Smtp-Source: ABdhPJxIqOGmlf+A1ZaBl9Y42PJ/mw8AGgxl5wORuzMKWlhHCZnudzMduXY9/PTdcoTGZZ+uu6UkDQ==
-X-Received: by 2002:a05:6402:270e:: with SMTP id y14mr24801805edd.322.1612903047563;
-        Tue, 09 Feb 2021 12:37:27 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id i18sm12164169edt.68.2021.02.09.12.37.25
+        bh=+b3no4S6tPR9GkQZ2NNZiFO6SO8UXN4Y7IGlIsfkFlU=;
+        b=QPJOcmpOC24+6nRh0F1ozsOzjLixbnOAPyfioFk7Kw7U7Jqro+rQUBthLyKMW/FQaM
+         /fYlee7mljzzBL2oTvINasZKbqP5XVOpGG42aa1pwbZydg+zKPvwWBqf3LuTeGVs0ooT
+         dffs+3Unehe/i3HujegJ+f4M3nexC1Xa2ISIgv6qfFY2zK1UItVsxMeIcjyUNFIXA0cr
+         zHh4vHzE2ChIn6vEFYcURVzCFKqgcsL5aSPOFdY9VgGdrnfdHJ79O+a6R5+iW3g71heo
+         PN9Ulck2gRDftJtqrHjBAxun7EKbqYIW+FsRHCDKOGtsG62vykhpMyHFFo2seqKC1Bd7
+         oplQ==
+X-Gm-Message-State: AOAM533iK5bab2FkkS+0y+NJTZfCHWDNxLUCATFaTNXXA1zqekqQ8s8U
+        CDEX5TwrM5E1go/VnAYRMQXwF4Szdw==
+X-Google-Smtp-Source: ABdhPJwCMhN9eVCFYtSeCIytQ3vC3Cr8S0JoccLSz2ofPHGeOKWnLItB/sMia+njhoBRERRsV//MPA==
+X-Received: by 2002:a9d:4d0a:: with SMTP id n10mr16869282otf.73.1612903085857;
+        Tue, 09 Feb 2021 12:38:05 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i9sm4473410oii.34.2021.02.09.12.38.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 12:37:26 -0800 (PST)
-Date:   Tue, 9 Feb 2021 22:37:24 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 07/11] net: dsa: kill .port_egress_floods
- overengineering
-Message-ID: <20210209203724.t3gvjdzhxbkt3qu2@skbuf>
-References: <20210209151936.97382-1-olteanv@gmail.com>
- <20210209151936.97382-8-olteanv@gmail.com>
+        Tue, 09 Feb 2021 12:38:04 -0800 (PST)
+Received: (nullmailer pid 131928 invoked by uid 1000);
+        Tue, 09 Feb 2021 20:38:03 -0000
+Date:   Tue, 9 Feb 2021 14:38:03 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware: qcom_scm: Add MDM9607 compatible
+Message-ID: <20210209203803.GA129939@robh.at.kernel.org>
+References: <20210131013058.54299-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209151936.97382-8-olteanv@gmail.com>
+In-Reply-To: <20210131013058.54299-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:19:32PM +0200, Vladimir Oltean wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->
-> The bridge offloads the port flags through a single bit mask using
-> switchdev, which among others, contains learning and flooding settings.
->
-> The commit 57652796aa97 ("net: dsa: add support for bridge flags")
-> missed one crucial aspect of the SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS API
-> when designing the API one level lower, towards the drivers.
-> This is that the bitmask of passed brport flags never has more than one
-> bit set at a time. On the other hand, the prototype passed to the driver
-> is .port_egress_floods(int port, bool unicast, bool multicast), which
-> configures two flags at a time.
->
-> DSA currently checks if .port_egress_floods is implemented, and if it
-> is, reports both BR_FLOOD and BR_MCAST_FLOOD as supported. So the driver
-> has no choice if it wants to inform the bridge that, for example, it
-> can't configure unicast flooding independently of multicast flooding -
-> the DSA mid layer is standing in the way. Or the other way around: a new
-> driver wants to start configuring BR_BCAST_FLOOD separately, but what do
-> we do with the rest, which only support unicast and multicast flooding?
-> Do we report broadcast flooding configuration as supported for those
-> too, and silently do nothing?
->
-> Secondly, currently DSA deems the driver too dumb to deserve knowing that
-> a SWITCHDEV_ATTR_ID_BRIDGE_MROUTER attribute was offloaded, because it
-> just calls .port_egress_floods for the CPU port. When we'll add support
-> for the plain SWITCHDEV_ATTR_ID_PORT_MROUTER, that will become a real
-> problem because the flood settings will need to be held statefully in
-> the DSA middle layer, otherwise changing the mrouter port attribute will
-> impact the flooding attribute. And that's _assuming_ that the underlying
-> hardware doesn't have anything else to do when a multicast router
-> attaches to a port than flood unknown traffic to it. If it does, there
-> will need to be a dedicated .port_set_mrouter anyway.
->
-> Lastly, we have DSA drivers that have a backlink into a pure switchdev
-> driver (felix -> ocelot). It seems reasonable that the other switchdev
-> drivers should not have to suffer from the oddities of DSA overengineering,
-> so keeping DSA a pass-through layer makes more sense there.
->
-> To simplify the brport flags situation we just delete .port_egress_floods
-> and we introduce a simple .port_bridge_flags which is passed to the
-> driver. Also, the logic from dsa_port_mrouter is removed and a
-> .port_set_mrouter is created.
->
-> Functionally speaking, we simply move the calls to .port_egress_floods
-> one step lower, in the two drivers that implement it: mv88e6xxx and b53,
-> so things should work just as before.
->
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Sun, Jan 31, 2021 at 02:30:57AM +0100, Konrad Dybcio wrote:
+> Add a compatible for MDM9607. It uses the "legacy" calling
+> convention.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
+>  Documentation/devicetree/bindings/firmware/qcom,scm.txt | 1 +
+>  drivers/firmware/qcom_scm.c                             | 3 +++
+>  2 files changed, 4 insertions(+)
 
-Florian, Andrew, what are your opinions on this patch? I guess what I
-dislike the most about .port_egress_floods is that it combines the
-unicast and multicast settings in the same callback, for no good
-apparent reason. So that, at the very least, needs to change.
-What do you prefer between having:
-	.port_set_unicast_floods
-	.port_set_multicast_floods
-	.port_set_broadcast_floods
-	.port_set_learning
-and a single:
-	.port_bridge_flags
-?
+In the future, please split binding changes to separate patch.
+
+Acked-by: Rob Herring <robh@kernel.org>
+
+> 
+> diff --git a/Documentation/devicetree/bindings/firmware/qcom,scm.txt b/Documentation/devicetree/bindings/firmware/qcom,scm.txt
+> index 78456437df5f..df8379356021 100644
+> --- a/Documentation/devicetree/bindings/firmware/qcom,scm.txt
+> +++ b/Documentation/devicetree/bindings/firmware/qcom,scm.txt
+> @@ -12,6 +12,7 @@ Required properties:
+>   * "qcom,scm-ipq4019"
+>   * "qcom,scm-ipq806x"
+>   * "qcom,scm-ipq8074"
+> + * "qcom,scm-mdm9607"
+>   * "qcom,scm-msm8660"
+>   * "qcom,scm-msm8916"
+>   * "qcom,scm-msm8960"
+> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> index 7be48c1bec96..b5b9b13d8d29 100644
+> --- a/drivers/firmware/qcom_scm.c
+> +++ b/drivers/firmware/qcom_scm.c
+> @@ -1265,6 +1265,9 @@ static const struct of_device_id qcom_scm_dt_match[] = {
+>  							     SCM_HAS_BUS_CLK)
+>  	},
+>  	{ .compatible = "qcom,scm-ipq4019" },
+> +	{ .compatible = "qcom,scm-mdm9607", .data = (void *)(SCM_HAS_CORE_CLK |
+> +							     SCM_HAS_IFACE_CLK |
+> +							     SCM_HAS_BUS_CLK) },
+>  	{ .compatible = "qcom,scm-msm8660", .data = (void *) SCM_HAS_CORE_CLK },
+>  	{ .compatible = "qcom,scm-msm8960", .data = (void *) SCM_HAS_CORE_CLK },
+>  	{ .compatible = "qcom,scm-msm8916", .data = (void *)(SCM_HAS_CORE_CLK |
+> -- 
+> 2.30.0
+> 
