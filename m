@@ -2,156 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202823158C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729633158F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 22:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233046AbhBIVjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 16:39:54 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:35218 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233600AbhBITHl (ORCPT
+        id S234186AbhBIVsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 16:48:43 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:34830 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233644AbhBITQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:07:41 -0500
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4D95C20B57A6;
-        Tue,  9 Feb 2021 10:22:34 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4D95C20B57A6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1612894954;
-        bh=JLtKdep8ljX0R5HJlVcxKOGy6sWLOe65FEwvEma/Tow=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PBD7RXYsF8q0LZAzmADiN7/ouC8eUXPAzLUM05ZQ6i1VYiQNuC+r/YCxt1nKOk1f5
-         rCeNY0xD+383Qk5t1gRfsIBsy5bPSbaGG9xtfejxVbWqX37Fvgu7la2cpXm0SZaEJN
-         1DZIiFMdApEwIY0nvoaKKjQmCCCFHAks4YQngC+k=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
-        mpe@ellerman.id.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v17 08/10] kexec: Use fdt_appendprop_addrrange() to add ima buffer to FDT
-Date:   Tue,  9 Feb 2021 10:21:58 -0800
-Message-Id: <20210209182200.30606-9-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210209182200.30606-1-nramas@linux.microsoft.com>
-References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+        Tue, 9 Feb 2021 14:16:09 -0500
+Received: by mail-ot1-f54.google.com with SMTP id k10so16150039otl.2;
+        Tue, 09 Feb 2021 11:15:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bGlaQiCrkS/pfmikGaky45h5FdObmTM7r7/TdtHHYjY=;
+        b=P67D2HWhems099t8PqM9ijg8zZ6VIWpxELzZZjfDlSiC1q7ko4797Cimd/bnXKmc7u
+         oU/Irfz+OIkg3CItWZG79Gao4O+MLZjzAbrm7JH4fWVM7GQJQNEQPgfpiUdROOsr1Q+B
+         EPlXqn24Fxhpo4SOFOXt/6e88nQ5ugUgNzwPLfdKeysQimz53bmsPZi/bvYSRlNT1/im
+         v7xwGgdFI64RqBUdvyGud/yCYuJNxV67duXyUYZbgIb1Is4MYd2L1s0Q8twu+ngSybqZ
+         IHkoYO7MESck1twO2i0v3jzaO5u/dTYi9eN5ZgA8z2YmkiaEogVXCOwGSBoW0bFyocZ+
+         VX6A==
+X-Gm-Message-State: AOAM533VRIZtDh5YY1bKroauh8SFhsgObkGwciM3JJ5RjFnJhQNScx3W
+        rL4iGyZ4GmtZqDD+a9Oz/YkfIYJTaA==
+X-Google-Smtp-Source: ABdhPJzm06lWmZKudWGvyQBUFR55324LPYHa8dAIQmNX5vOCBWP1mwgX2hra0dPnpwDKnBFLhUXJnA==
+X-Received: by 2002:a05:6830:1481:: with SMTP id s1mr5490608otq.206.1612895502055;
+        Tue, 09 Feb 2021 10:31:42 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r22sm4507917ote.12.2021.02.09.10.31.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 10:31:40 -0800 (PST)
+Received: (nullmailer pid 4102619 invoked by uid 1000);
+        Tue, 09 Feb 2021 18:31:37 -0000
+Date:   Tue, 9 Feb 2021 12:31:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     linux-kernel@vger.kernel.org, linux-imx@nxp.com, vkoul@kernel.org,
+        dri-devel@lists.freedesktop.org, kernel@pengutronix.de,
+        narmstrong@baylibre.com, jonas@kwiboo.se, robh+dt@kernel.org,
+        kishon@ti.com, linux-media@vger.kernel.org, shawnguo@kernel.org,
+        jernej.skrabec@siol.net, a.hajda@samsung.com, airlied@linux.ie,
+        devicetree@vger.kernel.org, s.hauer@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org, mchehab@kernel.org,
+        Laurent.pinchart@ideasonboard.com
+Subject: Re: [PATCH v3 11/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
+ LVDS display bridge binding
+Message-ID: <20210209183137.GA4102564@robh.at.kernel.org>
+References: <1611737488-2791-1-git-send-email-victor.liu@nxp.com>
+ <1611737488-2791-12-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611737488-2791-12-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fdt_appendprop_addrrange() function adds a property, with the given name,
-to the device tree at the given node offset, and also sets the address
-and size of the property.  This function should be used to add
-"linux,ima-kexec-buffer" property to the device tree and set the address
-and size of the IMA measurement buffer, instead of using custom function.
+On Wed, 27 Jan 2021 16:51:25 +0800, Liu Ying wrote:
+> This patch adds bindings for i.MX8qm/qxp LVDS display bridge(LDB).
+> 
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v2->v3:
+> * Drop 'fsl,syscon' property. (Rob)
+> * Mention the CSR module controls LDB.
+> 
+> v1->v2:
+> * Use graph schema. (Laurent)
+> * Side note i.MX8qxp LDB official name 'pixel mapper'. (Laurent)
+> 
+>  .../bindings/display/bridge/fsl,imx8qxp-ldb.yaml   | 173 +++++++++++++++++++++
+>  1 file changed, 173 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
+> 
 
-Use fdt_appendprop_addrrange() to add  "linux,ima-kexec-buffer" property
-to the device tree.  This property holds the address and size of
-the IMA measurement buffer that needs to be passed from the current
-kernel to the next kernel across kexec system call.
-
-Remove custom code that is used in setup_ima_buffer() to add
-"linux,ima-kexec-buffer" property to the device tree.
-
-Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
----
- drivers/of/kexec.c | 57 ++++------------------------------------------
- 1 file changed, 5 insertions(+), 52 deletions(-)
-
-diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
-index c601b5af4a88..c53746b9b168 100644
---- a/drivers/of/kexec.c
-+++ b/drivers/of/kexec.c
-@@ -232,36 +232,6 @@ int of_ima_add_kexec_buffer(struct kimage *image,
- 	return 0;
- }
- 
--/**
-- * write_number - Convert number to big-endian format
-- *
-- * @p:		Buffer to write the number to
-- * @value:	Number to convert
-- * @cells:	Number of cells
-- *
-- * Return: 0 on success, or negative errno on error.
-- */
--static int write_number(void *p, u64 value, int cells)
--{
--	if (cells == 1) {
--		u32 tmp;
--
--		if (value > U32_MAX)
--			return -EINVAL;
--
--		tmp = cpu_to_be32(value);
--		memcpy(p, &tmp, sizeof(tmp));
--	} else if (cells == 2) {
--		u64 tmp;
--
--		tmp = cpu_to_be64(value);
--		memcpy(p, &tmp, sizeof(tmp));
--	} else
--		return -EINVAL;
--
--	return 0;
--}
--
- /**
-  * setup_ima_buffer - add IMA buffer information to the fdt
-  * @image:		kexec image being loaded.
-@@ -273,32 +243,15 @@ static int write_number(void *p, u64 value, int cells)
- static int setup_ima_buffer(const struct kimage *image, void *fdt,
- 			    int chosen_node)
- {
--	int ret, addr_cells, size_cells, entry_size;
--	u8 value[16];
-+	int ret;
- 
- 	if (!image->ima_buffer_size)
- 		return 0;
- 
--	ret = get_addr_size_cells(&addr_cells, &size_cells);
--	if (ret)
--		return ret;
--
--	entry_size = 4 * (addr_cells + size_cells);
--
--	if (entry_size > sizeof(value))
--		return -EINVAL;
--
--	ret = write_number(value, image->ima_buffer_addr, addr_cells);
--	if (ret)
--		return ret;
--
--	ret = write_number(value + 4 * addr_cells, image->ima_buffer_size,
--			   size_cells);
--	if (ret)
--		return ret;
--
--	ret = fdt_setprop(fdt, chosen_node, "linux,ima-kexec-buffer", value,
--			  entry_size);
-+	ret = fdt_appendprop_addrrange(fdt, 0, chosen_node,
-+				       "linux,ima-kexec-buffer",
-+				       image->ima_buffer_addr,
-+				       image->ima_buffer_size);
- 	if (ret < 0)
- 		return -EINVAL;
- 
--- 
-2.30.0
-
+Reviewed-by: Rob Herring <robh@kernel.org>
