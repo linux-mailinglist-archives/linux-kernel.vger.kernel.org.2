@@ -2,85 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE107315B76
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BFA315B77
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhBJAmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:42:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233937AbhBIVHV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 16:07:21 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE14EC06121D
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 11:14:27 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id e18so23817176lja.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 11:14:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QiJbgc9uHQ4f7W9ot8GPf8bOPMHTjKS9chqsEgTJBXQ=;
-        b=aNt936Uv5Pvb6XQyxVTyRfAnfZ4ie1FmlBY1FQeJsxtYKLmNSiV6vXfHjBBMUbV1TF
-         vAdVGuFF2gxHUeArYS7K5dGfF5h9bjgRekHi6vlCTWcU3fPjS+U2MHDsHr+ozwL7SaEr
-         D0tJffRY9XfrfIe6l7575nvi9Us1sSmKobpXfhcU7+t4peARscWC84AkXKcgs7uKjTRs
-         0SSxSTq1Wo7YMDuK44FS1hFJ5EyTt3oI1Ts4V2szLeRF7iP95Q1cbNDBlzrDeEwzzBNt
-         yTBDNRbD8kKBKhH68sI9SGjK+ZZFSclPWx4KvW2I5tXDqVTZEUP3nC4Gufdt6z9QnDO+
-         f9pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QiJbgc9uHQ4f7W9ot8GPf8bOPMHTjKS9chqsEgTJBXQ=;
-        b=VtL1+55858SU7QeNT61HT/Ik+JnSKJTDvxSOdbxkSF6Replegaqh6Yz/kCkJGv6ykp
-         uUyNX8LC961dwHNk8n1QxAymfUyionOuWVwcT3Ja4WpNsAAv1XHZfyHKeptwBHtfjVGw
-         SYs8XWqJGvLCFs39xK8H6F/PehMS/hRDXcRdVC3V+DqOssc7ozKZM78WKile5ATkROYE
-         0xYJlSbgGv3pTZ8YYGATsGBwsTi+L0flSIuFPdFU2loA8/MEY7gUODTecugjoNZSwWkd
-         xGPOk+MvJPm2I0MzXMeKhZwmvVhxkuxLzeHuXZhg/3bTjHdLgPhX8vlT6jBEZa/gyiEr
-         alBw==
-X-Gm-Message-State: AOAM531WcBSrqy0cab2dPaUZcnbmfkXCjvnB0TnUcXIrieS+X68nuas6
-        QMSslSZCZN1RJbeQas7Y7lCO160KXSLGjTQKJjQvRQ==
-X-Google-Smtp-Source: ABdhPJxA1PuqJnhzJJquwIJYOw1w6vzUPL6lOhcqipVzLiGXTT0J1IbS4/X7mBrqEmgsqlRWSB6ZGIU8jyhW4WcwhSQ=
-X-Received: by 2002:a2e:9801:: with SMTP id a1mr16086206ljj.122.1612898065894;
- Tue, 09 Feb 2021 11:14:25 -0800 (PST)
+        id S233350AbhBJAmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:42:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233954AbhBIVHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 16:07:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A06F64EC5;
+        Tue,  9 Feb 2021 19:14:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612898067;
+        bh=yAyfaqHOOoS3R3ANty1E7nUADcg6ondxQvzykZeBYKU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WDknU+XKb8Qc0LPzkWkZCNGotV3bBcB5QvrxbYmSON5THjTYIwGlVNbo8TvnEAMi8
+         0rlCHH7URvfgJvNx0TuWi6ZpYW9mucKCNC7+CaDgxbs3SNNLJvIYiX7yCxFU46nARS
+         kPQexvAtvJvXLKs5PZks3a2lXM+8BoZ1CfNpmykg=
+Date:   Tue, 9 Feb 2021 20:14:25 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] driver core: auxiliary bus: Fix calling stage for
+ auxiliary bus init
+Message-ID: <YCLfETxDjOUPISpw@kroah.com>
+References: <161289750572.1086235.9903492973331406876.stgit@djiang5-desk3.ch.intel.com>
 MIME-Version: 1.0
-References: <20210209174646.1310591-1-shy828301@gmail.com> <20210209174646.1310591-2-shy828301@gmail.com>
-In-Reply-To: <20210209174646.1310591-2-shy828301@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 9 Feb 2021 11:14:14 -0800
-Message-ID: <CALvZod5GW=zk0hq+_qqV1KGxz7MJ_RKctj6H=uS7bxHdhxOWrw@mail.gmail.com>
-Subject: Re: [v7 PATCH 01/12] mm: vmscan: use nid from shrink_control for tracepoint
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161289750572.1086235.9903492973331406876.stgit@djiang5-desk3.ch.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 9:47 AM Yang Shi <shy828301@gmail.com> wrote:
->
-> The tracepoint's nid should show what node the shrink happens on, the start tracepoint
-> uses nid from shrinkctl, but the nid might be set to 0 before end tracepoint if the
-> shrinker is not NUMA aware, so the traceing
+On Tue, Feb 09, 2021 at 12:05:05PM -0700, Dave Jiang wrote:
+> When the auxiliary device code is built into the kernel, it can be executed
+> before the auxiliary bus is registered. This causes bus->p to be not
+> allocated and triggers a NULL pointer dereference when the auxiliary bus
+> device gets added with bus_add_device(). Change the init of auxiliary bus
+> to subsys_initcall() from module_init() to ensure the bus is registered
+> before devices.
+> 
+> Below is the kernel splat for the bug:
+> [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
+> [ 1.950670] #PF: supervisor read access in kernel mode
+> [ 1.950670] #PF: error_code(0x0000) - not-present page
+> [ 1.950670] PGD 0
+> [ 1.950670] Oops: 0000 1 SMP NOPTI
+> [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
+> [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
+> [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
+> 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
+> [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
+> [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
+> [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
+> [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
+> [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
+> [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
+> [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
+> [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
+> [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+> [ 1.950670] PKRU: 55555554
+> [ 1.950670] Call Trace:
+> [ 1.950670] device_add+0x3ee/0x850
+> [ 1.950670] __auxiliary_device_add+0x47/0x60
+> [ 1.950670] idxd_pci_probe+0xf77/0x1180
+> [ 1.950670] local_pci_probe+0x4a/0x90
+> [ 1.950670] pci_device_probe+0xff/0x1b0
+> [ 1.950670] really_probe+0x1cf/0x440
+> [ 1.950670] ? rdinit_setup+0x31/0x31
+> [ 1.950670] driver_probe_device+0xe8/0x150
+> [ 1.950670] device_driver_attach+0x58/0x60
+> [ 1.950670] __driver_attach+0x8f/0x150
+> [ 1.950670] ? device_driver_attach+0x60/0x60
+> [ 1.950670] ? device_driver_attach+0x60/0x60
+> [ 1.950670] bus_for_each_dev+0x79/0xc0
+> [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
+> [ 1.950670] driver_attach+0x1e/0x20
+> [ 1.950670] bus_add_driver+0x154/0x1f0
+> [ 1.950670] driver_register+0x70/0xc0
+> [ 1.950670] __pci_register_driver+0x54/0x60
+> [ 1.950670] idxd_init_module+0xe2/0xfc
+> [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
+> [ 1.950670] do_one_initcall+0x4a/0x1e0
+> [ 1.950670] kernel_init_freeable+0x1fc/0x25c
+> [ 1.950670] ? rest_init+0xba/0xba
+> [ 1.950670] kernel_init+0xe/0x116
+> [ 1.950670] ret_from_fork+0x1f/0x30
+> [ 1.950670] Modules linked in:
+> [ 1.950670] CR2: 0000000000000060
+> [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
+> 
+> Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+> Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
+> Acked-by: Dave Ertman <david.m.ertman@intel.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+> ---
+>  drivers/base/auxiliary.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+> index 8336535f1e11..53f93a506626 100644
+> --- a/drivers/base/auxiliary.c
+> +++ b/drivers/base/auxiliary.c
+> @@ -270,7 +270,7 @@ static void __exit auxiliary_bus_exit(void)
+>  	bus_unregister(&auxiliary_bus_type);
+>  }
+>  
+> -module_init(auxiliary_bus_init);
+> +subsys_initcall(auxiliary_bus_init);
 
-tracing
+Ah, the linker priority dance.  Are you _SURE_ this will solve this?
 
-> log may show the shrink happens on one
-> node but end up on the other node.  It seems confusing.  And the following patch
-> will remove using nid directly in do_shrink_slab(), this patch also helps cleanup
-> the code.
->
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+Why not just call this explicitly in driver_init() so that you know it
+will be ok?  Just like we do for the platform bus?
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+thanks,
+
+greg k-h
