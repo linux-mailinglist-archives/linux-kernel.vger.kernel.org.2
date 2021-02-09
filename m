@@ -2,64 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7030C314D45
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FD4314D4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 11:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhBIKiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 05:38:03 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:60565 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbhBIKdu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:33:50 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 312FF22FAD;
-        Tue,  9 Feb 2021 11:33:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1612866786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jv1bhrDsB1NiAoYta58omHwHYYl/ioOR0GVcWdl1cmA=;
-        b=SsgoM0r4lJEDhzBId4UMoIsnCyL40H2bBQelyA5JtfIymcesC+Iq2rwz5GVLfxYkyCWK9j
-        gBP3TPjdHuwBQmR+BsxwEC5Ahgx1KzXPH8YSWdkrLdJMeUT8iQ2nAwMw5BimDVRP4uDl5x
-        N7ehmRiCHkphQl3UCP7q/s2kbRqg9lA=
+        id S231460AbhBIKjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 05:39:51 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:37060 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230295AbhBIKe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 05:34:56 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l9QLS-0006Hr-A2; Tue, 09 Feb 2021 11:34:10 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     heiko@sntech.de
+Cc:     cmuellner@linux.com, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: [PATCH] arm64: dts: rockchip: add phandle to timer0 on rk3368
+Date:   Tue,  9 Feb 2021 11:34:08 +0100
+Message-Id: <20210209103408.2302218-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 09 Feb 2021 11:33:05 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        git@xilinx.com, saikrishna12468@gmail.com
-Subject: Re: [PATCH v2 0/3] Added ZynqMP pinctrl driver
-In-Reply-To: <1611034054-63867-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
-References: <1611034054-63867-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <a20b19edd605154eb1a620a3e78a9737@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-Am 2021-01-19 06:27, schrieb Sai Krishna Potthuri:
-> Sai Krishna Potthuri (3):
->   firmware: xilinx: Added pinctrl support
->   dt-bindings: pinctrl: Added binding for ZynqMP pinctrl driver
->   pinctrl: Added Xilinx ZynqMP pinctrl driver support
+While the kernel doesn't care su much right now, bootloaders like
+u-boot need to refine the node on their side, so to make life easier
+for everyone add the timer0 phandle for timer0.
 
-There is mixed present and past tense in the subject and in the
-description. Please just use present tense.
+Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3368.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--michael
+diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
+index 7af68ec3feae..61b0a2a907f2 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
+@@ -667,7 +667,7 @@ wdt: watchdog@ff800000 {
+ 		status = "disabled";
+ 	};
+ 
+-	timer@ff810000 {
++	timer0: timer@ff810000 {
+ 		compatible = "rockchip,rk3368-timer", "rockchip,rk3288-timer";
+ 		reg = <0x0 0xff810000 0x0 0x20>;
+ 		interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
+-- 
+2.29.2
+
