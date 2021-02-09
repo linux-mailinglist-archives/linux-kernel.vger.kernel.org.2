@@ -2,237 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12223153A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD2D3153AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhBIQQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:16:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232592AbhBIQQX (ORCPT
+        id S231842AbhBIQTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:19:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48542 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231249AbhBIQTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:16:23 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB85C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:15:43 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id x9so10014277plb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:15:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MhXA89n1bxUyXeNRJNMGftQdsPaGvYx11C+sBGzQQD8=;
-        b=qhiU1dhna2OD2E5pRw/PYB451RLcY2RJTBgafbP1Am/WB28MUKGWvazY2cKc/Iiju3
-         zPrKSqx9P15nuzmsTYDJpYjzetB+OwaB/peSh2lDKwQI/BOWeKwTEpDjFCYCpkJ8jEsr
-         IbaDsfepEMGQ8oqnuaXLupt04B/0WSUKdPxkqpzkfW3O08mXmkDqwh24DWac7HGzEys4
-         BQIyXpferU1XSQh50yrqpxddAx8dJkFzA2uxXPj+PVUldg60znj/YsC/ZEmfprZnIJK/
-         kHLCBUX9LpxE/tfuZhaB6A+nn7ZYF3x8PUW9KgyFqPMcr2eYC8oWuYm4fwcXKAqBgLfB
-         30Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MhXA89n1bxUyXeNRJNMGftQdsPaGvYx11C+sBGzQQD8=;
-        b=rClJ+0vDLBvxo+3UFlijMB36jMirUMC2J5hDlEV39fOgqYubJ8yEWoZAxs5VPtok8g
-         No7RMDRgQ3JoiOrKo7CX4zXkeKLgF99AoRKKqzLFAgDpss4rDxXflw4qEepeido6Uj0y
-         mlTsKouoyNNMTaFeQoMNR1ZsqZXLK+SulYQbua7Lpjx+XpgHiApDTCRJ9pnndivVQIAn
-         bYj26G3Bv9oD66IHH84oO4ZOOA0UtVjawSjQUO9MPuSgwVBeQodRJGhjOEOfgnjlBE/C
-         hDNwQY3KE5W3OMs73+7w/VitL/AYm2u2S6NshLPYsbccS1oesCpMC7OA/P5OJ9c9+oDI
-         RcyQ==
-X-Gm-Message-State: AOAM5327Fe4BCOO1gvtHTeFmfji5zD3roTvyXo0jnQZL25kYhzgtjV+A
-        rRDYawxI2AwZhQ25VkBvswgWqg==
-X-Google-Smtp-Source: ABdhPJyj+l7zQdy1VX6ypzcwe5uCFJaEtPBprZrGhr7s3Oopdckhkzvn2l+bE1Mo1eFjazDiPoh8Tg==
-X-Received: by 2002:a17:90b:358f:: with SMTP id mm15mr4752586pjb.13.1612887342631;
-        Tue, 09 Feb 2021 08:15:42 -0800 (PST)
-Received: from google.com ([2401:fa00:fc:202:3418:6a0e:6bbd:7f00])
-        by smtp.gmail.com with ESMTPSA id p2sm23516264pgl.19.2021.02.09.08.15.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 08:15:41 -0800 (PST)
-Date:   Wed, 10 Feb 2021 00:15:32 +0800
-From:   Leo Liou <leoliou@google.com>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        cang@codeaurora.org, asutoshd@codeaurora.org, beanhuo@micron.com,
-        jaegeuk@kernel.org, adrian.hunter@intel.com, satyat@google.com,
-        essuuj@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs: create a hook for unipro dme control
-Message-ID: <YCK1JMsC3D1BqU6Q@google.com>
-References: <20210208125628.2758665-1-leoliou@google.com>
- <4cea12c5c2a1c42ab6c1b96b82489cc59da39517.camel@gmail.com>
+        Tue, 9 Feb 2021 11:19:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612887460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rPEBUfuoE8xnXkHqh37MN3V58bCQtUE2J2aM+0+7Hhg=;
+        b=GO6YGVp19NtK1N7dVAYyLwM5lLtnOzWM11AF3TGBrqo9hoF8POgf1w4xEzFgWMM6R5ysae
+        Bf5gs34GfHPGvo7B7yhyyWfXS0vRcXVdV/C4XRSmxTaGgn6+eCxIPY3sWRf3MfXhZvJGIX
+        szQoOLLC62e0QwsiRiZm70o/7QLP2/k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-uL8BkgqBNoSU9TSinWcnBQ-1; Tue, 09 Feb 2021 11:17:37 -0500
+X-MC-Unique: uL8BkgqBNoSU9TSinWcnBQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9332C801979;
+        Tue,  9 Feb 2021 16:17:31 +0000 (UTC)
+Received: from [10.36.113.141] (ovpn-113-141.ams2.redhat.com [10.36.113.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D16AE60BD9;
+        Tue,  9 Feb 2021 16:17:23 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20210208211326.GV242749@kernel.org>
+ <1F6A73CF-158A-4261-AA6C-1F5C77F4F326@redhat.com>
+ <YCJO8zLq8YkXGy8B@dhcp22.suse.cz>
+ <662b5871-b461-0896-697f-5e903c23d7b9@redhat.com>
+ <YCJbmR11ikrWKaU8@dhcp22.suse.cz>
+ <c1e5e7b6-3360-ddc4-2ff5-0e79515ee23a@redhat.com>
+ <YCKNMqu8/g0OofqU@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v17 00/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <8cbfe2c3-cfc6-72e0-bab1-852f80e20684@redhat.com>
+Date:   Tue, 9 Feb 2021 17:17:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4cea12c5c2a1c42ab6c1b96b82489cc59da39517.camel@gmail.com>
+In-Reply-To: <YCKNMqu8/g0OofqU@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 09:42:05PM +0100, Bean Huo wrote:
-> On Mon, 2021-02-08 at 20:56 +0800, Leo Liou wrote:
-> > Based on ufshci spec, it defines that "Offset C0h to FFh" belong
-> > to vendor specific. If cpu vendor doesn't support these commands, it
-> > makes the dme errors:
-> > 
-> > ufs: dme-set: attr-id 0xd041 val 0x1fff failed 0 retries
-> > ufs: dme-set: attr-id 0xd042 val 0xffff failed 0 retries
-> > ufs: dme-set: attr-id 0xd043 val 0x7fff failed 0 retries
-> > 
+On 09.02.21 14:25, Michal Hocko wrote:
+> On Tue 09-02-21 11:23:35, David Hildenbrand wrote:
+> [...]
+>> I am constantly trying to fight for making more stuff MOVABLE instead of
+>> going into the other direction (e.g., because it's easier to implement,
+>> which feels like the wrong direction).
+>>
+>> Maybe I am the only person that really cares about ZONE_MOVABLE these days
+>> :) I can't stop such new stuff from popping up, so at least I want it to be
+>> documented.
 > 
-> Hi Leo
-> "Offset C0h to FFh" registers belong to the UFSHCI, but the attribtes
-> you moved belong to "DME Attributes for DME_SET-based High Level Power
-> Mode Control" defined in Unipro and doesen't say they are vendor-
-> defined attributes. How these two are associated?
+> MOVABLE zone is certainly an important thing to keep working. And there
+> is still quite a lot of work on the way. But as I've said this is more
+> of a outlier than a norm. On the other hand movable zone is kinda hard
+> requirement for a lot of application and it is to be expected that
+> many features will be less than 100% compatible.  Some usecases even
+> impossible. That's why I am arguing that we should have a central
+> document where the movable zone is documented with all the potential
+> problems we have encountered over time and explicitly state which
+> features are fully/partially incompatible.
 > 
-> Kind regards,
-> Bean
-> 
-Hi Bean,
 
-Thanks for your remind:)
-I thought the vendor means cpu-related, and it's incorrect.
-Actually it doesn't make sense.
-I'll check the error with unipro layer.
+I'll send a mail during the next weeks to gather current restrictions to 
+document them (and include my brain dump). We might see more excessive 
+use of ZONE_MOVABLE in the future and as history told us, of CMA as 
+well. We really should start documenting/caring.
 
-Best Regards,
-Leo
+@Mike, it would be sufficient for me if one of your patches at least 
+mention the situation in the description like
 
-> > Create a hook for unipro vendor-specific commands.
-> > 
-> > Signed-off-by: Leo Liou <leoliou@google.com>
-> > ---
-> >  drivers/scsi/ufs/ufs-qcom.c | 11 +++++++++++
-> >  drivers/scsi/ufs/ufs-qcom.h |  5 +++++
-> >  drivers/scsi/ufs/ufshcd.c   |  7 +------
-> >  drivers/scsi/ufs/ufshcd.h   |  8 ++++++++
-> >  drivers/scsi/ufs/unipro.h   |  4 ----
-> >  5 files changed, 25 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-
-> > qcom.c
-> > index 2206b1e4b774..f2a925587029 100644
-> > --- a/drivers/scsi/ufs/ufs-qcom.c
-> > +++ b/drivers/scsi/ufs/ufs-qcom.c
-> > @@ -759,6 +759,16 @@ static int ufs_qcom_pwr_change_notify(struct
-> > ufs_hba *hba,
-> >  	return ret;
-> >  }
-> >  
-> > +static void ufs_qcom_unipro_dme_set(struct ufs_hba *hba)
-> > +{
-> > +	ufshcd_dme_set(hba,
-> > UIC_ARG_MIB(DME_LocalFC0ProtectionTimeOutVal),
-> > +		       DL_FC0ProtectionTimeOutVal_Default);
-> > +	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalTC0ReplayTimeOutVal),
-> > +		       DL_TC0ReplayTimeOutVal_Default);
-> > +	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalAFC0ReqTimeOutVal),
-> > +		       DL_AFC0ReqTimeOutVal_Default);
-> > +}
-> > +
-> >  static int ufs_qcom_quirk_host_pa_saveconfigtime(struct ufs_hba
-> > *hba)
-> >  {
-> >  	int err;
-> > @@ -1469,6 +1479,7 @@ static const struct ufs_hba_variant_ops
-> > ufs_hba_qcom_vops = {
-> >  	.hce_enable_notify      = ufs_qcom_hce_enable_notify,
-> >  	.link_startup_notify    = ufs_qcom_link_startup_notify,
-> >  	.pwr_change_notify	= ufs_qcom_pwr_change_notify,
-> > +	.unipro_dme_set		= ufs_qcom_unipro_dme_set,
-> >  	.apply_dev_quirks	= ufs_qcom_apply_dev_quirks,
-> >  	.suspend		= ufs_qcom_suspend,
-> >  	.resume			= ufs_qcom_resume,
-> > diff --git a/drivers/scsi/ufs/ufs-qcom.h b/drivers/scsi/ufs/ufs-
-> > qcom.h
-> > index 8208e3a3ef59..83db97caaa1b 100644
-> > --- a/drivers/scsi/ufs/ufs-qcom.h
-> > +++ b/drivers/scsi/ufs/ufs-qcom.h
-> > @@ -124,6 +124,11 @@ enum {
-> >  /* QUniPro Vendor specific attributes */
-> >  #define PA_VS_CONFIG_REG1	0x9000
-> >  #define DME_VS_CORE_CLK_CTRL	0xD002
-> > +
-> > +#define DME_LocalFC0ProtectionTimeOutVal	0xD041
-> > +#define DME_LocalTC0ReplayTimeOutVal		0xD042
-> > +#define DME_LocalAFC0ReqTimeOutVal		0xD043
-> > +
-> >  /* bit and mask definitions for DME_VS_CORE_CLK_CTRL attribute */
-> >  #define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT		BIT(8)
-> >  #define DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK	0xFF
-> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > index fb32d122f2e3..8ba2ce8c5d0c 100644
-> > --- a/drivers/scsi/ufs/ufshcd.c
-> > +++ b/drivers/scsi/ufs/ufshcd.c
-> > @@ -4231,12 +4231,7 @@ static int ufshcd_change_power_mode(struct
-> > ufs_hba *hba,
-> >  	ufshcd_dme_set(hba, UIC_ARG_MIB(PA_PWRMODEUSERDATA5),
-> >  			DL_AFC1ReqTimeOutVal_Default);
-> >  
-> > -	ufshcd_dme_set(hba,
-> > UIC_ARG_MIB(DME_LocalFC0ProtectionTimeOutVal),
-> > -			DL_FC0ProtectionTimeOutVal_Default);
-> > -	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalTC0ReplayTimeOutVal),
-> > -			DL_TC0ReplayTimeOutVal_Default);
-> > -	ufshcd_dme_set(hba, UIC_ARG_MIB(DME_LocalAFC0ReqTimeOutVal),
-> > -			DL_AFC0ReqTimeOutVal_Default);
-> > +	ufshcd_vops_unipro_dme_set(hba);
-> >  
-> >  	ret = ufshcd_uic_change_pwr_mode(hba, pwr_mode->pwr_rx << 4
-> >  			| pwr_mode->pwr_tx);
-> > diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> > index aa9ea3552323..b8c90bee7503 100644
-> > --- a/drivers/scsi/ufs/ufshcd.h
-> > +++ b/drivers/scsi/ufs/ufshcd.h
-> > @@ -311,6 +311,7 @@ struct ufs_pwr_mode_info {
-> >   * @pwr_change_notify: called before and after a power mode change
-> >   *			is carried out to allow vendor spesific
-> > capabilities
-> >   *			to be set.
-> > + * @unipro_dme_set: called when vendor speicific control is needed
-> >   * @setup_xfer_req: called before any transfer request is issued
-> >   *                  to set some things
-> >   * @setup_task_mgmt: called before any task management request is
-> > issued
-> > @@ -342,6 +343,7 @@ struct ufs_hba_variant_ops {
-> >  					enum ufs_notify_change_status
-> > status,
-> >  					struct ufs_pa_layer_attr *,
-> >  					struct ufs_pa_layer_attr *);
-> > +	void    (*unipro_dme_set)(struct ufs_hba *hba);
-> >  	void	(*setup_xfer_req)(struct ufs_hba *, int, bool);
-> >  	void	(*setup_task_mgmt)(struct ufs_hba *, int, u8);
-> >  	void    (*hibern8_notify)(struct ufs_hba *, enum uic_cmd_dme,
-> > @@ -1161,6 +1163,12 @@ static inline int
-> > ufshcd_vops_pwr_change_notify(struct ufs_hba *hba,
-> >  	return -ENOTSUPP;
-> >  }
-> >  
-> > +static inline void ufshcd_vops_unipro_dme_set(struct ufs_hba *hba)
-> > +{
-> > +	if (hba->vops && hba->vops->unipro_dme_set)
-> > +		return hba->vops->unipro_dme_set(hba);
-> > +}
-> > +
-> >  static inline void ufshcd_vops_setup_xfer_req(struct ufs_hba *hba,
-> > int tag,
-> >  					bool is_scsi_cmd)
-> >  {
-> > diff --git a/drivers/scsi/ufs/unipro.h b/drivers/scsi/ufs/unipro.h
-> > index 8e9e486a4f7b..224162e5afd8 100644
-> > --- a/drivers/scsi/ufs/unipro.h
-> > +++ b/drivers/scsi/ufs/unipro.h
-> > @@ -192,10 +192,6 @@
-> >  #define DL_TC1ReplayTimeOutVal_Default		65535
-> >  #define DL_AFC1ReqTimeOutVal_Default		32767
-> >  
-> > -#define DME_LocalFC0ProtectionTimeOutVal	0xD041
-> > -#define DME_LocalTC0ReplayTimeOutVal		0xD042
-> > -#define DME_LocalAFC0ReqTimeOutVal		0xD043
-> > -
-> >  /* PA power modes */
-> >  enum {
-> >  	FAST_MODE	= 1,
-> 
+"Please note that secretmem currently behaves much more like long-term 
+GUP instead of mlocked memory; secretmem is unmovable memory directly 
+consumed/controlled by user space. secretmem cannot be placed onto 
+ZONE_MOVABLE/CMA.
+
+As long as there is no excessive use of secretmem (e.g., maximum of 16 
+MiB for selected processes) in combination with ZONE_MOVABLE/CMA, this 
+is barely a real issue. However, it is something to keep in mind when a 
+significant amount of system RAM might be used for secretmem. In the 
+future, we might support migration of secretmem and make it look much 
+more like mlocked memory instead."
+
+Just a suggestion.
+
+-- 
+Thanks,
+
+David / dhildenb
+
