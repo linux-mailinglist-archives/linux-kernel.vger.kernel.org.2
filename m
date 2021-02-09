@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FA831511A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D5431511C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 15:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbhBIOA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 09:00:28 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:57736 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230474AbhBIN7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:59:21 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l9TX8-0057fl-I8; Tue, 09 Feb 2021 14:58:26 +0100
-Date:   Tue, 9 Feb 2021 14:58:26 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Tobias Waldekranz <tobias@waldekranz.com>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        linux-kernel@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG support
-Message-ID: <YCKVAtu2Y8DAInI+@lunn.ch>
-References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
- <20210203165458.28717-6-vadym.kochan@plvision.eu>
- <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87v9b249oq.fsf@waldekranz.com>
- <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S231728AbhBIOAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 09:00:43 -0500
+Received: from smtp-bc0d.mail.infomaniak.ch ([45.157.188.13]:57171 "EHLO
+        smtp-bc0d.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230408AbhBIN7k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 08:59:40 -0500
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DZkyM0ZD7zMqQlf;
+        Tue,  9 Feb 2021 14:58:51 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DZkyJ230Czlh8TN;
+        Tue,  9 Feb 2021 14:58:48 +0100 (CET)
+Subject: =?UTF-8?Q?Re=3a_Conflict_with_Micka=c3=abl_Sala=c3=bcn=27s_blacklis?=
+ =?UTF-8?Q?t_patches_=5bwas_=5bPATCH_v5_0/4=5d_Add_EFI=5fCERT=5fX509=5fGUID_?=
+ =?UTF-8?Q?support_for_dbx/mokx_entries=5d?=
+To:     David Howells <dhowells@redhat.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dwmw2@infradead.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
+        ardb@kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+        lszubowi@redhat.com, javierm@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+References: <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com>
+ <20210122181054.32635-1-eric.snowberg@oracle.com>
+ <1103491.1612369600@warthog.procyon.org.uk>
+ <10e6616e-0598-9f33-2de9-4a5268bba586@digikod.net>
+ <A5B5DEC0-E47A-4C3D-8E79-AF37B6C2E565@oracle.com>
+ <7924ce4c-ea94-9540-0730-bddae7c6af07@digikod.net>
+ <BFC930B3-7994-4C5B-A8EF-1DD1C73F5750@oracle.com>
+ <dc6a4524-3935-fda6-40a8-cebf80942cdf@digikod.net>
+ <188DE1AF-A011-4631-B88A-2C4324DA013B@oracle.com>
+ <99066eb7-53ac-41b0-46cf-36ea3d7f6590@digikod.net>
+ <525705.1612876446@warthog.procyon.org.uk>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <5055b9b4-2808-8816-d50c-e651bd88a7c3@digikod.net>
+Date:   Tue, 9 Feb 2021 14:59:14 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <525705.1612876446@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> At the same time some FW is necessary. Certain chip functions, are 
-> best driven by a micro-controller running a tight control loop. 
+Hi David,
 
-For a smart NIC, i could agree. But a switch? The data path is in
-hardware. The driver is all about configuring this hardware, and then
-it is idle. Polls the PHYs once a second, maybe gather statistics,
-allows the network stack to perform STP, but otherwise it does
-nothing.
+The only commit causing issues is commit f78e50c8f750 ("certs: Factor
+out the blacklist hash creation"). I think my last patch fix the issue,
+and I'm testing with the UEFI DBX, but I don't understand why this
+change would have an impact. In the meantime you can push Eric's commits
+first, I'll adapt my changes.
 
-So for me, i don't see that being a valid argument for this driver.
+ Mickaël
 
-By putting their SDK inside the CPU on the switch, and adding an RPC
-interface, Marvell can quickly get some sort of support working in the
-Linux ecosystem. But this solution has all the problems of a binary
-blob in userspace.
 
-I doubt there is going to be any community engagement with this
-driver. Marvell is going to have to add all the features. If a user
-wants a feature which is not currently supported, they have little
-chance of being able to add it themselves. There is no documentation
-of the RPC interface. So even if the firmware has support for more
-than what the Linux driver implements, only Marvell knows about it.
-
-Products based around this driver are going to find it hard to
-differentiate on switch features. The switch can do what Marvell
-allows you to do. All differentiation is going to be limited to above
-that, the user interface.
-
-For some market segments, that might be enough. You don't see
-community based patches adding new features to the Mellanex/nvidia
-hardware. But when you look at the DSA drivers, a lot of the features
-there are from the community. There is probably space for both.
-
-Looking into my crystal ball, Marvell will probably have the base
-features of their switch implemented before Microchip does, simply
-because they are reusing code hidden away in the CPU. But then
-development will stagnate. Microchip will take a bit longer to get the
-base features implemented. But then because of the openness, users
-will start using the hardware in different ways, and implement
-features which are important to them. And contribute bug fixes. The
-driver will keep gaining new features and mature, and in the end, the
-device built from it will be a lot more divers and interesting.
-
-What i'm not sure is how we as a community push back. Marvells whole
-strategy is black box. I doubt we can make them open up the firmware.
-Do we want to throw out the driver from the kernel? I don't think it
-is that bad. We can point out the problems with Marvell's model. We
-can put in review effort for Microchip, make their driver better. And
-we can encourage the 3rd and 4th vendors in the enterprise switch
-space to follow Microchips lead.
-
-      Andrew
+On 09/02/2021 14:14, David Howells wrote:
+> 
+> Hi Eric, Mickaël,
+> 
+> Do we have a consensus on this?  From what's written here, I don't think I can
+> ask Linus to pull the merge of your two branches.  I feel that I probably need
+> to push Eric's first as that fixes a CVE if I can't offer a merge.
+> 
+> David
+> 
