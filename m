@@ -2,104 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE00314EAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E0F314E96
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhBIMG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:06:56 -0500
-Received: from mga09.intel.com ([134.134.136.24]:42985 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229558AbhBIMFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:05:20 -0500
-IronPort-SDR: Zkke3K6ZRBiGI6nMCMcIQ9TCibpcKJN8455RqHcBwmzO5Gc2SSgp8aMT1QIBXZUm1j2PFVQeuo
- BfTbjNLQ0hmw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="182012859"
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="182012859"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 04:03:16 -0800
-IronPort-SDR: 0ieoaeAKU7d3c11pykydksMQ7vj3nDDcGmtrF0t/KBBgWNh9lq8KKHEiw0mCbglS6xKJI2v75a
- mLYjV2Vco98Q==
-X-IronPort-AV: E=Sophos;i="5.81,164,1610438400"; 
-   d="scan'208";a="396093725"
-Received: from yisun1-ubuntu.bj.intel.com (HELO yi.y.sun) ([10.238.156.116])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 09 Feb 2021 04:03:10 -0800
-Date:   Tue, 9 Feb 2021 19:57:44 +0800
-From:   Yi Sun <yi.y.sun@linux.intel.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
-        yuzenghui@huawei.com, lushenming@huawei.com, kevin.tian@intel.com,
-        yan.y.zhao@intel.com, baolu.lu@linux.intel.com
-Subject: Re: [RFC PATCH 10/11] vfio/iommu_type1: Optimize dirty bitmap
- population based on iommu HWDBM
-Message-ID: <20210209115744.GB28580@yi.y.sun>
-References: <20210128151742.18840-1-zhukeqian1@huawei.com>
- <20210128151742.18840-11-zhukeqian1@huawei.com>
- <20210207095630.GA28580@yi.y.sun>
- <407d28db-1f86-8d4f-ab15-3c3ac56bbe7f@huawei.com>
+        id S230054AbhBIMBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhBIMAU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:00:20 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7690EC061786
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 03:59:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bAPpZ9LVjTvDaTon1gB7Ci/LyNhGLNT597dGHfv9hpU=; b=JHik3t0Wjt4Bc2BLPrZO3kFH5+
+        hBk8NTqO6ptMHdqt79M2RaBvEDpmH1lQaY52ZO4uWzCOaErMO7wmoFOoT85OdWfI2BF4HH1NYy+IG
+        SBmxT7IQf2OCyhdiowCPimDmMrHL48VQNUlicUdf3MCaQ0U5gQyRKblOMcJrcHcvTx21IofOGdxeL
+        UylldITFCYHJ6qcYR82APlEgJ+S6EzvYYmkqwCVH3qH22P1t+4jvlUXic0mo5TouzGFw5xzjokKpc
+        Nh3F4MYC85Zm+J8SlLEQVLWu8IB5+gcwqxB2L1naNaUIjn6smseccm54zUThAwDZuq+y9tNGK2t07
+        W4m7758w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9Rfy-007Ooa-5t; Tue, 09 Feb 2021 11:59:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3AD01300446;
+        Tue,  9 Feb 2021 12:59:25 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E61162C70E09A; Tue,  9 Feb 2021 12:59:24 +0100 (CET)
+Date:   Tue, 9 Feb 2021 12:59:24 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 0/2 v3] tracepoints: Stop punishing non-static call users
+Message-ID: <YCJ5HEUP1DKUG45r@hirez.programming.kicks-ass.net>
+References: <20210208200922.215867530@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <407d28db-1f86-8d4f-ab15-3c3ac56bbe7f@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20210208200922.215867530@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-07 18:40:36, Keqian Zhu wrote:
-> Hi Yi,
-> 
-> On 2021/2/7 17:56, Yi Sun wrote:
-> > Hi,
-> > 
-> > On 21-01-28 23:17:41, Keqian Zhu wrote:
-> > 
-> > [...]
-> > 
-> >> +static void vfio_dma_dirty_log_start(struct vfio_iommu *iommu,
-> >> +				     struct vfio_dma *dma)
-> >> +{
-> >> +	struct vfio_domain *d;
-> >> +
-> >> +	list_for_each_entry(d, &iommu->domain_list, next) {
-> >> +		/* Go through all domain anyway even if we fail */
-> >> +		iommu_split_block(d->domain, dma->iova, dma->size);
-> >> +	}
-> >> +}
-> > 
-> > This should be a switch to prepare for dirty log start. Per Intel
-> > Vtd spec, there is SLADE defined in Scalable-Mode PASID Table Entry.
-> > It enables Accessed/Dirty Flags in second-level paging entries.
-> > So, a generic iommu interface here is better. For Intel iommu, it
-> > enables SLADE. For ARM, it splits block.
-> Indeed, a generic interface name is better.
-> 
-> The vendor iommu driver plays vendor's specific actions to start dirty log, and Intel iommu and ARM smmu may differ. Besides, we may add more actions in ARM smmu driver in future.
-> 
-> One question: Though I am not familiar with Intel iommu, I think it also should split block mapping besides enable SLADE. Right?
-> 
-I am not familiar with ARM smmu. :) So I want to clarify if the block
-in smmu is big page, e.g. 2M page? Intel Vtd manages the memory per
-page, 4KB/2MB/1GB. There are two ways to manage dirty pages.
-1. Keep default granularity. Just set SLADE to enable the dirty track.
-2. Split big page to 4KB to get finer granularity.
+On Mon, Feb 08, 2021 at 03:09:22PM -0500, Steven Rostedt wrote:
+> Steven Rostedt (VMware) (2):
+>       tracepoints: Remove unnecessary "data_args" macro parameter
+>       tracepoints: Do not punish non static call users
 
-But question about the second solution is if it can benefit the user
-space, e.g. live migration. If my understanding about smmu block (i.e.
-the big page) is correct, have you collected some performance data to
-prove that the split can improve performance? Thanks!
-
-> Thanks,
-> Keqian
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
