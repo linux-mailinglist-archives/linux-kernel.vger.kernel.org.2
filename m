@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3940A314F82
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751FA314F86
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 13:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhBIMvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 07:51:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhBIMvq (ORCPT
+        id S230261AbhBIMxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 07:53:55 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:38794 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhBIMxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:51:46 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53352C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 04:51:06 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id e9so1594004pjj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 04:51:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yZxg6dXXFoEHvIAudV0HbB2Heq7jrncVjx+BrvchARk=;
-        b=vN1p/bIFWtuthuQZ71jOzLeqNOLOqGDcGBoIDb3IEA5/3ZNXz9Cq7OnrPQQaO2yyU5
-         5riH8BxKfGT2XVzdEoLgY/6uctN7fXm1VT06jvNoNLZPyxqoN2c7Frs9TWIVEPr+szka
-         dXuhbBtQffXbMSiN6tDn/dSbdqJE7YqMPUYPnp7dlFxqOpi3zh2gEDrwyYUcvZChlsK1
-         raZ+oEO/N8wjOS2PjvMNsF1stesZGTNqoHu4BZqq7w4EyxkppLd4MD6gAWdGQ97SEBg4
-         R4BGXloH58gOkOCz9Qx8PrIfOFxaIFuI1OHyXKkHeWNQ+IcT2GSrb0okI/zXWLuyxOgL
-         khKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yZxg6dXXFoEHvIAudV0HbB2Heq7jrncVjx+BrvchARk=;
-        b=bUl4l3adVJV2wyH0eQj3pgW8RCwO1KrkjN2cQSDEQkNR3Kb1u4aFfP3cDiZHNJlL3h
-         WHjN6TfuTWvGMmmJaCMSa1TUNWXbAH+wXGijBuyLHNQtkcvQ8mz+ATEjR+u71ZPHb6tv
-         FB2kF8TSa4zOeIaavm09CqcLpJBYd/HQWKctuM/87wY7B8nP+6u/Hr/cJgNlj8flEkYM
-         eCIkXv5YUdJHhSMgwqEZjD9ZJkbvkt6vTTKytPKckcgPUkN2IcqJx79bqbXaZIaoyjBr
-         /hJ3yucCV8Y1fl0keqZ8iNOMSi5noONxBnvqCCq50X756ctJS1pmEw9uCJanC4FSFh8r
-         AB3Q==
-X-Gm-Message-State: AOAM531PYUx8dMvfIAkpED9F9t8PXCPwr0P8rPiHPUCR4dBlq1j1QX7+
-        U+CQnwvLouH8Udof4SyDztg=
-X-Google-Smtp-Source: ABdhPJzAw96fBfEmrET2VUlhLYjKmuFAhEyapFm4b5wI0ZAZHaB2YN4R8RmOVMs9kEp67GAr7KsNaA==
-X-Received: by 2002:a17:90b:23d4:: with SMTP id md20mr3777029pjb.220.1612875065925;
-        Tue, 09 Feb 2021 04:51:05 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:5c0a:f013:997:8903:ccd:f31])
-        by smtp.gmail.com with ESMTPSA id t21sm21310609pfc.92.2021.02.09.04.51.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 04:51:05 -0800 (PST)
-From:   Mukul Mehar <mukulmehar02@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Mukul Mehar <mukulmehar02@gmail.com>
-Subject: [PATCH] Drivers: staging: most: sound: Fixed styling issue.
-Date:   Tue,  9 Feb 2021 18:20:37 +0530
-Message-Id: <20210209125036.17197-1-mukulmehar02@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 9 Feb 2021 07:53:52 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BC3E61C0B7A; Tue,  9 Feb 2021 13:52:52 +0100 (CET)
+Date:   Tue, 9 Feb 2021 13:52:52 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Barret Rhoden <brho@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 4.4 22/38] elfcore: fix building with clang
+Message-ID: <20210209125252.GA23392@duo.ucw.cz>
+References: <20210208145805.279815326@linuxfoundation.org>
+ <20210208145806.154119176@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
+Content-Disposition: inline
+In-Reply-To: <20210208145806.154119176@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a warning, of the line ending with a '(',
-generated by checkpatch.pl.
 
-Signed-off-by: Mukul Mehar <mukulmehar02@gmail.com>
----
- drivers/staging/most/sound/sound.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
-index 3a1a59058042..4dd1bf95d1ce 100644
---- a/drivers/staging/most/sound/sound.c
-+++ b/drivers/staging/most/sound/sound.c
-@@ -228,12 +228,12 @@ static int playback_thread(void *data)
- 		struct mbo *mbo = NULL;
- 		bool period_elapsed = false;
- 
--		wait_event_interruptible(
--			channel->playback_waitq,
--			kthread_should_stop() ||
--			(channel->is_stream_running &&
--			 (mbo = most_get_mbo(channel->iface, channel->id,
--					     &comp))));
-+		wait_event_interruptible(channel->playback_waitq,
-+					 kthread_should_stop() ||
-+					 (channel->is_stream_running &&
-+					 (mbo = most_get_mbo(channel->iface,
-+					 channel->id,
-+					 &comp))));
- 		if (!mbo)
- 			continue;
- 
--- 
-2.25.1
+Hi!
+
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> commit 6e7b64b9dd6d96537d816ea07ec26b7dedd397b9 upstream.
+>=20
+> kernel/elfcore.c only contains weak symbols, which triggers a bug with
+> clang in combination with recordmcount:
+>=20
+>   Cannot find symbol for section 2: .text.
+>   kernel/elfcore.o: failed
+>=20
+> Move the empty stubs into linux/elfcore.h as inline functions.  As only
+> two architectures use these, just use the architecture specific Kconfig
+> symbols to key off the declaration.
+
+4.4 has this:
+
+config BINFMT_ELF32
+        bool
+        default y if MIPS32_O32 || MIPS32_N32
+                select ELFCORE
+
+in arch/mips. So I believe we'll see problems in that
+configuration...?
+
+Best regards,
+							Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--k1lZvvs/B4yU6o8G
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYCKFpAAKCRAw5/Bqldv6
+8hssAJ9/9h+iulEHzSPXJouUEHjC32p9SwCfVyDRAdN/GYM5bhqrbphR/PNaaaw=
+=6SVX
+-----END PGP SIGNATURE-----
+
+--k1lZvvs/B4yU6o8G--
