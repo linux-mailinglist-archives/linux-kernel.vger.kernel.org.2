@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D8A315917
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B379731591D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 23:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233679AbhBIWCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 17:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
+        id S233756AbhBIWHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 17:07:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233668AbhBIT0F (ORCPT
+        with ESMTP id S233669AbhBIT0F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 9 Feb 2021 14:26:05 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D5DC0611BD;
-        Tue,  9 Feb 2021 11:24:05 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id i8so33605862ejc.7;
-        Tue, 09 Feb 2021 11:24:05 -0800 (PST)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1404FC0611BE;
+        Tue,  9 Feb 2021 11:24:06 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id b9so33558851ejy.12;
+        Tue, 09 Feb 2021 11:24:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=CZhB/NEJnRkF+TAIIRVQHf9Sf3lp8bbtJmnwDMjx8Fs=;
-        b=Pyc5ziHzNys/DmCyRT/IZGIkNcdwW2jRgLCnoc4oF8HBHLtJtCiv0kUD4zYNFyZa4x
-         tsRhEQYCT38Fd0H0Abr+owIadmo000OiOsBVbBNY1c8lq3yyGFhiywtPmdB7SyMr5xA/
-         7dBhgbhf/lMMhbEgEaCYOGL4y0SfCsw4OVoGRNaMuAysPUZRXX3C/Wugdz54W7NIbzAK
-         yIniVvoW90wX2vxClo30xhcM7wj1eziBRUrwCR6I5t/+WoNaR5JPaNVcK/+6JIdpUcIe
-         6dUXHGldLgGppakAV4WYu17hJEALqICRYPfKCuRUrNRfhcirmZLe83WLPPMg9xbfeuu8
-         MX9g==
+        bh=VKpw+TGxcSonBmJvYVbjnLKEXkavUls9cDkglgeREzs=;
+        b=HO1rEER2rQ/ib60OX4LykRzzHUV7TK6M7FXnGi0rK0kf7M3lRCrxd5vuud4Y69slyc
+         gcJcjDFwAEKBdd+CV7Gdib0WaDgHMbaLMAOqwcG29CQeTgTSv609bh1St5YhZ6hOsqqF
+         dDW3AWzG1b8Qti44pryaVZ/3AdrFfSX9D6q0kPADnuf3JVyEBXU0hpDflZXLPyS8FBmP
+         HWCk8sOTr0s4EiNvcw9auqxdZnmoi0Qh+y3CnG4UVM7wkkvzxIRJedjelEyYsRDqxzro
+         U2O0iq8BSbNG3VEySL8f/ZrCDoLuvevjlzBFvHyeSwKavRzoA4RxaSDNIne33B53yQCr
+         U/EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=CZhB/NEJnRkF+TAIIRVQHf9Sf3lp8bbtJmnwDMjx8Fs=;
-        b=E4pJg63H4zxa7SjAbqKWIRTXo8Af+r53v42moQmhDUSJJVW2cGCrnH/DwajOSLfUfc
-         YyY4emptzVoC+gNviC+SMvQMo2tfFRY5zk6j3kETSxed546E9CEqOBBKtNu9tqHIg0YV
-         znNflPIGAWuvJ0yg46VUXWyMCXHTLXPnStIv185s0eyYpnKNpJS+bU3OAroE8i1nViOz
-         9dpldZ0tp/j0cFr7cAc8ljQ5o/Hv0Eno1r9de9tXX8DLnV71dz6iXfmMRWk0YDbwoohB
-         e2I6GOgc46f9AzccUCZoDWqcqvQQRE4YOe2sdEUKhMpqod/b+lYc6FaKESMrS/lKjSTK
-         H5kA==
-X-Gm-Message-State: AOAM533pV6AzgrgydSLZGun/23MV8mI4QBIx+qiWdIFAvGGwFu/oMt3Y
-        ZUoJqqMkgtQLQ4vhlxnjtOE=
-X-Google-Smtp-Source: ABdhPJyq2Hl1AVM7CRPhdEGtJGkzjJIdzCmDQRstMgdguIQWb8IxLBedrovs7JsXiNbv5ZgVdfF2Tw==
-X-Received: by 2002:a17:906:6449:: with SMTP id l9mr24927901ejn.320.1612898644183;
+        bh=VKpw+TGxcSonBmJvYVbjnLKEXkavUls9cDkglgeREzs=;
+        b=hQ7m9XAUVD3VuNfag27wGegY1qKXHDErsiJf8lRXycKD2ShMh5CqT6maGFGVVpUMLS
+         mPhKfmJ/KGXY9prfFZUbI84sbb5Ms+r2N2sC1wD5abbtwWWKeQQm81W7P0aQDJciQ2t9
+         nErtn8AEQMFLzJXUn1tqOR9Fb8ZiXw2UQJXyhxL9qJxJEV5zFIINvaccyDYHBbo1pemN
+         /KxEMLc0lbJDGP2mLczlYpx+S0rZhq97ex7RzkG4FBEbuJ9ZKfAPiGKW2mB6MOLbjNk9
+         cJw1FkYFFB4Rruwn6Qxux/Ewz8jlLS++BePDan9CuQbEV+Jp5jdErzKshH8lkVwKGBaf
+         5A6Q==
+X-Gm-Message-State: AOAM533mHRuDCIct3LnhIJmIF3sc4JEZtB3P4I5swfHXyw1iP4JhOg8Y
+        sFYH58kZrn/9VRqR5nCwiUw=
+X-Google-Smtp-Source: ABdhPJw9959wQBn5cvY2Fqpt5Xz+QaWW6YioQ2FYuvburiVrHGpT8oFcjVbVZLt3nDg+4Z/13u4xQA==
+X-Received: by 2002:a17:906:b752:: with SMTP id fx18mr24723372ejb.17.1612898644828;
         Tue, 09 Feb 2021 11:24:04 -0800 (PST)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id w3sm11075779eja.52.2021.02.09.11.24.03
+        by smtp.gmail.com with ESMTPSA id w3sm11075779eja.52.2021.02.09.11.24.04
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Feb 2021 11:24:03 -0800 (PST)
+        Tue, 09 Feb 2021 11:24:04 -0800 (PST)
 From:   Johan Jonker <jbx6244@gmail.com>
 To:     heiko@sntech.de
 Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
         linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
         linux-rockchip@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 7/8] arm64: dts: rockchip: add rk3328 dwc3 usb controller node
-Date:   Tue,  9 Feb 2021 20:23:49 +0100
-Message-Id: <20210209192350.7130-7-jbx6244@gmail.com>
+Subject: [PATCH v5 8/8] dts64: rockchip: enable dwc3 usb for A95X Z2
+Date:   Tue,  9 Feb 2021 20:23:50 +0100
+Message-Id: <20210209192350.7130-8-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210209192350.7130-1-jbx6244@gmail.com>
 References: <20210209192350.7130-1-jbx6244@gmail.com>
@@ -63,54 +63,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cameron Nemo <cnemo@tutanota.com>
+Enable dwc3 usb for A95X Z2.
 
-RK3328 SoCs have one USB 3.0 OTG controller which uses DWC_USB3
-core's general architecture. It can act as static xHCI host
-controller, static device controller, USB 3.0/2.0 OTG basing
-on ID of USB3.0 PHY.
-
-Signed-off-by: William Wu <william.wu@rock-chips.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
 Changed V2:
   remove node wrapper
 ---
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index 4d4cd1830..a3b069a10 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -988,6 +988,25 @@
- 		status = "disabled";
- 	};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts b/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
+index 30c73ef25..e71870768 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3318-a95x-z2.dts
+@@ -357,6 +357,11 @@
+ 	status = "okay";
+ };
  
-+	usbdrd3: usb@ff600000 {
-+		compatible = "rockchip,rk3328-dwc3", "snps,dwc3";
-+		reg = <0x0 0xff600000 0x0 0x100000>;
-+		interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru SCLK_USB3OTG_REF>, <&cru SCLK_USB3OTG_SUSPEND>,
-+			 <&cru ACLK_USB3OTG>;
-+		clock-names = "ref_clk", "suspend_clk",
-+			      "bus_clk";
-+		dr_mode = "otg";
-+		phy_type = "utmi_wide";
-+		snps,dis-del-phy-power-chg-quirk;
-+		snps,dis_enblslpm_quirk;
-+		snps,dis-tx-ipgap-linecheck-quirk;
-+		snps,dis-u2-freeclk-exists-quirk;
-+		snps,dis_u2_susphy_quirk;
-+		snps,dis_u3_susphy_quirk;
-+		status = "disabled";
-+	};
++&usbdrd3 {
++	dr_mode = "host";
++	status = "okay";
++};
 +
- 	gic: interrupt-controller@ff811000 {
- 		compatible = "arm,gic-400";
- 		#interrupt-cells = <3>;
+ &usb_host0_ehci {
+ 	status = "okay";
+ };
 -- 
 2.11.0
 
