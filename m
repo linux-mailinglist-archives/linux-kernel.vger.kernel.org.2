@@ -2,55 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624C2314A5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C54FE314A5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 09:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhBIIcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 03:32:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44860 "EHLO mail.kernel.org"
+        id S229809AbhBIId1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 03:33:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49986 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229752AbhBIIcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 03:32:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72C2C64E92;
-        Tue,  9 Feb 2021 08:32:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612859520;
-        bh=0/oi2skBq5piZUUVGQh3teGjtISF10arflwIeT7Kj68=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=irQI+oLFEkqEfXsZV7mBREHLQoqmHIRumEenpgX1+xkC2YZcgpbL5Pe9bTA0mAZx8
-         UyEflctzqXyCuLlM53US7yChIEUPBIav/Hv2EsjlFL2YFov54sgtFdmkiBHw7eEI6n
-         vhtfh0x5rhRBjUpHnPGBH1S7dqonsDjc/CA2n5Tg=
-Date:   Tue, 9 Feb 2021 09:31:41 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Phy <linux-phy@lists.infradead.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [GIT PULL]: soundwire: updates for v5.12-rc1
-Message-ID: <YCJIbTFRUqZOl5pL@kroah.com>
-References: <20210207173601.GA879029@vkoul-mobl.Dlink>
+        id S229759AbhBIIdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 03:33:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 760C3ACB7;
+        Tue,  9 Feb 2021 08:32:35 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 09:32:34 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Steven Rostedt <rostedt@goodmis.org>
+cc:     Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@intel.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        live-patching@vger.kernel.org
+Subject: Re: [GIT PULL] x86/urgent for v5.11-rc7
+In-Reply-To: <20210208111546.5e01c3fb@gandalf.local.home>
+Message-ID: <alpine.LSU.2.21.2102090927230.31501@pobox.suse.cz>
+References: <20210207104022.GA32127@zn.tnic>        <CAHk-=widXSyJ8W3vRrqO-zNP12A+odxg2J2_-oOUskz33wtfqA@mail.gmail.com>        <20210207175814.GF32127@zn.tnic>        <CAHk-=wi5z9S7x94SKYNj6qSHBqz+OD76GW=MDzo-KN2Fzm-V4Q@mail.gmail.com>       
+ <20210207224540.ercf5657pftibyaw@treble>        <20210208100206.3b74891e@gandalf.local.home>        <20210208153300.m5skwcxxrdpo37iz@treble>        <YCFc+ewvwNWqrbY7@hirez.programming.kicks-ass.net> <20210208111546.5e01c3fb@gandalf.local.home>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210207173601.GA879029@vkoul-mobl.Dlink>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 11:06:01PM +0530, Vinod Koul wrote:
-> Hello Greg,
-> 
-> Please pull to receive update for v5.12-rc1. This update includes new
-> no_pm IO routines and bunch of updates for intel & cadence drivers.
-> 
-> The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
-> 
->   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-5.12-rc1
+On Mon, 8 Feb 2021, Steven Rostedt wrote:
 
-Pulled and pushed out, thanks.
+> On Mon, 8 Feb 2021 16:47:05 +0100
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > > /*
+> > >  * Convert a function address into the appropriate ftrace location.
+> > >  *
+> > >  * Usually this is just the address of the function, but on some architectures
+> > >  * it's more complicated so allow them to provide a custom behaviour.
+> > >  */
+> > > #ifndef klp_get_ftrace_location
+> > > static unsigned long klp_get_ftrace_location(unsigned long faddr)
+> > > {
+> > > 	return faddr;
+> > > }
+> > > #endif  
 
-greg k-h
+powerpc has this
+
+static inline unsigned long klp_get_ftrace_location(unsigned long faddr)                                               
+{                                                                                                                      
+        /*                                                                                                             
+         * Live patch works only with -mprofile-kernel on PPC. In this case,                                           
+         * the ftrace location is always within the first 16 bytes.                                                    
+         */                                                                                                            
+        return ftrace_location_range(faddr, faddr + 16);                                                               
+}                                                                                                                      
+
+> > I suppose the trivial fix is to see if it points to endbr64 and if so,
+> > increment the addr by the length of that.
+> 
+> I thought of that too. But one thing that may be possible, is to use
+> kallsym. I believe you can get the range of a function (start and end of
+> the function) from kallsyms. Then ask ftrace for the addr in that range
+> (there should only be one).
+
+And we can do this if a hard-coded value live above is not welcome. If I 
+remember correctly, we used to have exactly this in the old versions of 
+kGraft. We walked through all ftrace records, called 
+kallsyms_lookup_size_offset() on every record's ip and if the offset+ip 
+matched faddr (in this case), we returned the ip.
+
+Miroslav
