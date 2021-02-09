@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031F9314886
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EF731488B
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 07:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhBIGOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 01:14:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40164 "EHLO mail.kernel.org"
+        id S229753AbhBIGTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 01:19:34 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:48528 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230077AbhBIGOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 01:14:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52CFD64EB4;
-        Tue,  9 Feb 2021 06:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612851232;
-        bh=vXvZjO+dJ8YWmqHgcCh15Ljh8Qtw2DaVGWOZH6EHT0k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2Po3kesrKpij7luyyByApUUHGyuySlg8ir7gDdTWQMwPAG2oVcqY7PkOYOyyZkdHR
-         9UCuHmQUNEgynRm8VV3Y8+52dGbPgvuzT4YLztJfyDhpku52eLhKzsg0h3UyV7E2DJ
-         mJv3z2j3BLNRH9lPryeE/m71TG8Z7rOffQwEK4Ik=
-Date:   Tue, 9 Feb 2021 07:13:48 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, surenb@google.com,
-        joaodias@google.com, willy@infradead.org
-Subject: Re: [PATCH v2] mm: cma: support sysfs
-Message-ID: <YCIoHBGELFWAyfMi@kroah.com>
-References: <20210208180142.2765456-1-minchan@kernel.org>
- <e01c111b-fb20-0586-c7a9-dd6d922c0e57@nvidia.com>
- <YCHLAdabGmm7kqSH@google.com>
- <43cd6fc4-5bc5-50ec-0252-ffe09afd68ea@nvidia.com>
+        id S229464AbhBIGTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 01:19:32 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DZXlR52gxz9vBmS;
+        Tue,  9 Feb 2021 07:18:43 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id uMwsPFVyGa3r; Tue,  9 Feb 2021 07:18:43 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DZXlR2dJyz9vBmK;
+        Tue,  9 Feb 2021 07:18:43 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0D6D48B7CB;
+        Tue,  9 Feb 2021 07:18:44 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id UWE8sIuMAx0B; Tue,  9 Feb 2021 07:18:43 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7AA778B764;
+        Tue,  9 Feb 2021 07:18:43 +0100 (CET)
+Subject: Re: [PATCH v5 05/22] powerpc/irq: Add helper to set regs->softe
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
+ <5f37d1177a751fdbca79df461d283850ca3a34a2.1612796617.git.christophe.leroy@csgroup.eu>
+ <1612832745.vhjk6358hf.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <5987787e-ee80-ed0e-0c34-9884f6aad3c5@csgroup.eu>
+Date:   Tue, 9 Feb 2021 07:18:45 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43cd6fc4-5bc5-50ec-0252-ffe09afd68ea@nvidia.com>
+In-Reply-To: <1612832745.vhjk6358hf.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 05:57:17PM -0800, John Hubbard wrote:
-> On 2/8/21 3:36 PM, Minchan Kim wrote:
-> ...
-> > > >    	char name[CMA_MAX_NAME];
-> > > > +#ifdef CONFIG_CMA_SYSFS
-> > > > +	struct cma_stat	*stat;
-> > > 
-> > > This should not be a pointer. By making it a pointer, you've added a bunch of pointless
-> > > extra code to the implementation.
-> > 
-> > Originally, I went with the object lifetime with struct cma as you
-> > suggested to make code simple. However, Greg KH wanted to have
-> > release for kobj_type since it is consistent with other kboject
-> > handling.
+
+
+Le 09/02/2021 à 02:11, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
+>> regs->softe doesn't exist on PPC32.
+>>
+>> Add irq_soft_mask_regs_set_state() helper to set regs->softe.
+>> This helper will void on PPC32.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
 > 
-> Are you talking about the kobj in your new struct cma_stat? That seems
-> like circular logic if so. I'm guessing Greg just wanted kobj methods
-> to be used *if* you are dealing with kobjects. That's a narrower point.
+> You could do the same with the kuap_ functions to change some ifdefs
+> to IS_ENABLED.
 > 
-> I can't imagine that he would have insisted on having additional
-> allocations just so that kobj freeing methods could be used. :)
+> That's just my preference but if you prefer this way I guess that's
+> okay.
+> 
 
-Um, yes, I was :)
 
-You can not add a kobject to a structure and then somehow think you can
-just ignore the reference counting issues involved.  If a kobject is
-part of a structure then the kobject is responsible for controling the
-lifespan of the memory, nothing else can be.
+That's also my preference on the long term.
 
-So by making the kobject dynamic, you properly handle that memory
-lifespan of the object, instead of having to worry about the lifespan of
-the larger object (which the original patch was not doing.)
+Here it is ephemeral, I have a follow up series implementing interrupt exit/entry in C and getting 
+rid of all the assembly kuap hence getting rid of those ifdefs.
 
-Does that make sense?
+The issue I see when using IS_ENABLED() is that you have to indent to the right, then you interfere 
+with the file history and 'git blame'
 
-thanks,
+Thanks for reviewing my series and looking forward to your feedback on my series on the interrupt 
+entry/exit that I will likely release later today.
 
-greg k-h
+Christophe
