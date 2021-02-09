@@ -2,48 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFBA314BEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E585314BED
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 10:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhBIJlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 04:41:46 -0500
-Received: from verein.lst.de ([213.95.11.211]:45736 "EHLO verein.lst.de"
+        id S230150AbhBIJl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 04:41:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230264AbhBIJhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:37:25 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3634268B02; Tue,  9 Feb 2021 10:36:42 +0100 (CET)
-Date:   Tue, 9 Feb 2021 10:36:42 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     obayashi.yoshimasa@socionext.com, sumit.garg@linaro.org,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, daniel.thompson@linaro.org
-Subject: Re: DMA direct mapping fix for 5.4 and earlier stable branches
-Message-ID: <20210209093642.GA1006@lst.de>
-References: <CAFA6WYNazCmYN20irLdNV+2vcv5dqR+grvaY-FA7q2WOBMs__g@mail.gmail.com> <YCIym62vHfbG+dWf@kroah.com> <CAFA6WYM+xJ0YDKenWFPMHrTz4gLWatnog84wyk31Xy2dTiT2RA@mail.gmail.com> <YCJCDZGa1Dhqv6Ni@kroah.com> <27bbe35deacb4ca49f31307f4ed551b5@SOC-EX02V.e01.socionext.com> <YCJUgKDNVjJ4dUqM@kroah.com>
+        id S229638AbhBIJi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:38:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF1E464E70;
+        Tue,  9 Feb 2021 09:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612863457;
+        bh=Q2fZA2RMjgvKK8UDAqpAhIusskTRp4HvpE38j1a08ME=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=Iqz6QZoBflLFrGUBVRgnsVbnCwm4h+roF5G4ZD/cd0XCQLbIV9Ck0cz0ZxReA+P+N
+         A9Qe2ZvrUEvY6rT91yiR2jqHMcTUvZ1Dnatp0nDl0d1KVtGDxk/DWhfi9ckzUbPsq2
+         TQ7gPch0X77zHVJMiExKTfxdYHIbYcyuuuLfqm+KyxQvdxOnB0kCzmQdNyCIVpG+Rp
+         intVH122nLahvGpu3NmuRbEcuPnUIw8WxwSYV+t/g6ADY+F3dlA0eHpiEY4XDL9saA
+         i/5Xz6HH8xHl5+9Ub8CEHNnLQPc9gPzh4nHayeBv7FiMWAyWGsGVMeeurprjJBuy1H
+         PhdcyUkwNN5iQ==
+Date:   Tue, 9 Feb 2021 10:37:34 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@archlinux.org>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@riseup.net>
+Subject: Re: [PATCH] HID: logitech-dj: add support for the new lightspeed
+ connection iteration
+In-Reply-To: <20210123180220.3056430-1-lains@archlinux.org>
+Message-ID: <nycvar.YFH.7.76.2102091037250.28696@cbobk.fhfr.pm>
+References: <20210123180220.3056430-1-lains@archlinux.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCJUgKDNVjJ4dUqM@kroah.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:23:12AM +0100, Greg KH wrote:
-> >   From the view point of ZeroCopy using DMABUF, is 5.4 not 
-> > mature enough, and is 5.10 enough mature ?
-> >   This is the most important point for judging migration.
-> 
-> How do you judge "mature"?
-> 
-> And again, if a feature isn't present in a specific kernel version, why
-> would you think that it would be a viable solution for you to use?
+On Sat, 23 Jan 2021, Filipe Laíns wrote:
 
-I'm pretty sure dma_get_sgtable has been around much longer and was
-supposed to work, but only really did work properly for arm32, and
-for platforms with coherent DMA.  I bet he is using non-coherent arm64,
-and it would be broken for other drivers there as well if people did
-test them, which they apparently so far did not.
+> From: Filipe Laíns <lains@riseup.net>
+> 
+> This new connection type is the new iteration of the Lightspeed
+> connection and will probably be used in some of the newer gaming
+> devices. It is currently use in the G Pro X Superlight.
+> 
+> This patch should be backported to older versions, as currently the
+> driver will panic when seing the unsupported connection. This isn't
+> an issue when using the receiver that came with the device, as Logitech
+> has been using different PIDs when they change the connection type, but
+> is an issue when using a generic receiver (well, generic Lightspeed
+> receiver), which is the case of the one in the Powerplay mat. Currently,
+> the only generic Ligthspeed receiver we support, and the only one that
+> exists AFAIK, is ther Powerplay.
+> 
+> As it stands, the driver will panic when seeing a G Pro X Superlight
+> connected to the Powerplay receiver and won't send any input events to
+> userspace! The kernel will warn about this so the issue should be easy
+> to identify, but it is still very worrying how hard it will fail :(
+
+Applied to for-5.11/upstream-fixes, thanks Filipe.
+
+-- 
+Jiri Kosina
+SUSE Labs
+
