@@ -2,170 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76319315AAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9704315AC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235029AbhBJAIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:08:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
+        id S235071AbhBJAL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:11:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233893AbhBIUlm (ORCPT
+        with ESMTP id S233903AbhBIUmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 15:41:42 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC81C061D7D;
-        Tue,  9 Feb 2021 12:03:33 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id j21so4715282wmj.0;
-        Tue, 09 Feb 2021 12:03:33 -0800 (PST)
+        Tue, 9 Feb 2021 15:42:07 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A0DC061D7E
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 12:03:43 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id y11so18658788otq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 12:03:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FoYK3y10ctekenhelipPCy41KdN9ge4kiy1j5pEZXLw=;
-        b=HMfndgWGrWMGy8RaSKT37wbq03RbZzqlph/TOTwab64sLwa0lgi8GwHmvk3MKt9B45
-         4bB5Jq029HFtqLZz9ykNAdLxWkNofceRGXj0B1Nt2JJdnLsnkDP2+Ktr+60hMPkv4ixY
-         9fG+3pOquCkWq9FsDWJ2+dy+BLhVkhMDY9OtX1h3UsIte18rfISsUt+jX0TKxq4N1Wi/
-         ypRGvEwx33PBSdrFbxFqayQGNGT2EgvtZI5eGwTTjsIilaUtS08EI54MbfK0B2OlCqjd
-         6D36OPdz16p++vAO4BOO9RGmGyBmG6+vyfxbTFT+61LKv7rjUNhSeWXhB3v1t5R0J0fS
-         +XPQ==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IJlgwhfz5X2MzqyUYiX7MoKMMru1jZl967/DhPZ5YYM=;
+        b=IGmyMapjKGK/9ul8hQQxgz0gLOuVsIS61seKmxzpC1gsISZYlX9S0ZdRSi6pidiwJy
+         /7+efzyjKx/pki6VZAJYF8FmQsEzU0QegZmkdybN9xKSoh8OLwEH6pZ4myK/CdqnQwS+
+         B6Q0KNJIPoX38WLQN4Nja7XJlR8U91dMQP83w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FoYK3y10ctekenhelipPCy41KdN9ge4kiy1j5pEZXLw=;
-        b=p43XBaJpq3HIdJULfwD6QnPTPC/jD7umYiyAkCc4ud/JSOFHoRNXVguMnPkddmW5Ss
-         mh3vEanZzdfx7YHQN5edrwV2rHSiNcm18mng6xMLpUeDtgv6tMtsQX8OWBsJFiCPFOLP
-         DNxgIwpE3ynXuEJTyivcbsqSoanbe57qbGxi+KEh+nbxLxe89AQ19O2ZgKuZxZWxwU2c
-         0sTUyE6xQ8yQtJIGVMDd3ww1x/HW1RiSSxV7hwwIhPdj3P9hnqDMmNe1mOzMPYFbgImB
-         YHVXEzKQUMKOk7g354DAF6icCIUyDOGRowOT9OGRv+O55Z4XqZD3/co/QtLCDB9OO8sQ
-         KtJQ==
-X-Gm-Message-State: AOAM532HRVc8J/XGEXzKqlPjjXFM/vf1Y7h2JhUn5Yl+myA+zZdbteWM
-        yWGiRG8rz+z578l3CpQ8aI4=
-X-Google-Smtp-Source: ABdhPJz5OlEcAcggpLfAl4VV5ssEWmy3CP/KlCueOmAIJTpPkr2Ukj3pis4ID9oEvKpAVoyN8/BhSA==
-X-Received: by 2002:a1c:2d8a:: with SMTP id t132mr4876062wmt.119.1612901012414;
-        Tue, 09 Feb 2021 12:03:32 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f1f:ad00:d8e6:4a8a:b30f:47d8? (p200300ea8f1fad00d8e64a8ab30f47d8.dip0.t-ipconnect.de. [2003:ea:8f1f:ad00:d8e6:4a8a:b30f:47d8])
-        by smtp.googlemail.com with ESMTPSA id j40sm5670486wmp.47.2021.02.09.12.03.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Feb 2021 12:03:31 -0800 (PST)
-To:     Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20210209164051.18156-1-michael@walle.cc>
- <20210209164051.18156-6-michael@walle.cc>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH net-next 5/9] net: phy: icplus: add IP101A/IP101G model
- detection
-Message-ID: <4645b902-aab4-c4d8-a5a9-1fbaf0ca67f6@gmail.com>
-Date:   Tue, 9 Feb 2021 21:03:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IJlgwhfz5X2MzqyUYiX7MoKMMru1jZl967/DhPZ5YYM=;
+        b=geDY9jfjRQZ2NcWcIdtvs3unWZHlxEYR44KdGK6iYpFDjIMWyItA4QgQLeQh8HkSBn
+         ZwV6Hw5tvf4waASUzB6cJDQgXQe/3GHhCshMpJQY3Nx66dEKxbNaD5VHFzQk2302ofXP
+         /b34c2mPneNW6mAOcqbzgbbf61y9wYPVxIl1f0IeCs0+A765TzHSRd8GGYPr0d1Kwzq+
+         8kF+xH4MvosB6vM5Q2i6duajykpTVbzMkyFeOa2BDt2Mdty4TurO9rV2R6YC9ygScN7h
+         iZQJOuxU0z1J9BnlPA2JcDEkozgMyWJTpQE3qXf48y4mFoGi8L2BoUz5QBRKCuh20h4g
+         m/uw==
+X-Gm-Message-State: AOAM5332E3GXOxzJj2D7WTnfeAjQ/PzxcJC5HTEBo9YfejTMEj3TLT6s
+        g5jOUQCwOrVsBqB2wvuiS7W5Uq4WL7Ui1CyX2FNX3w==
+X-Google-Smtp-Source: ABdhPJyX/1b2gHbOIodL9USnpmSk1z6/zBN4m375xL0pFFQK6OiEEYkpdSgQI3DPMm8b3vcVG/bBnUBSdBUjia2by5w=
+X-Received: by 2002:a9d:b85:: with SMTP id 5mr17540016oth.281.1612901022725;
+ Tue, 09 Feb 2021 12:03:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210209164051.18156-6-michael@walle.cc>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210205080621.3102035-1-john.stultz@linaro.org>
+ <20210205080621.3102035-2-john.stultz@linaro.org> <4471b3b0-603e-6dbb-8064-ff4a95afbba9@amd.com>
+ <CALAqxLWZkUFvJX5r2OU2erW4tU3j=+u==VTyzYkt+95LwwVCUA@mail.gmail.com>
+ <48225879-2fe1-22ac-daae-c61d52465aea@amd.com> <a9dd7f8a-ef30-9eb4-4834-37801d43b96f@amd.com>
+ <CAJuCfpE-T4Cs_h6LfrgHE+T_iOVywU2oNzLquYETudOaBMauMQ@mail.gmail.com> <c7df099f-27f7-adc6-4e87-9903ac00cbea@amd.com>
+In-Reply-To: <c7df099f-27f7-adc6-4e87-9903ac00cbea@amd.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 9 Feb 2021 21:03:31 +0100
+Message-ID: <CAKMK7uFu27RRpwPdNFuhd-Y5R8XiCNosET9BYtCnr3u30UDs0g@mail.gmail.com>
+Subject: Re: [RFC][PATCH v6 1/7] drm: Add a sharable drm page-pool implementation
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.02.2021 17:40, Michael Walle wrote:
-> Unfortunately, the IP101A and IP101G share the same PHY identifier.
-> While most of the functions are somewhat backwards compatible, there is
-> for example the APS_EN bit on the IP101A but on the IP101G this bit
-> reserved. Also, the IP101G has many more functionalities.
-> 
-> Deduce the model by accessing the page select register which - according
-> to the datasheet - is not available on the IP101A. If this register is
-> writable, assume we have an IP101G.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/net/phy/icplus.c | 43 +++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 42 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/phy/icplus.c b/drivers/net/phy/icplus.c
-> index 036bac628b11..189a9a34ed5f 100644
-> --- a/drivers/net/phy/icplus.c
-> +++ b/drivers/net/phy/icplus.c
-> @@ -44,6 +44,8 @@ MODULE_LICENSE("GPL");
->  #define IP101A_G_IRQ_DUPLEX_CHANGE	BIT(1)
->  #define IP101A_G_IRQ_LINK_CHANGE	BIT(0)
->  
-> +#define IP101G_PAGE_CONTROL				0x14
-> +#define IP101G_PAGE_CONTROL_MASK			GENMASK(4, 0)
->  #define IP101G_DIGITAL_IO_SPEC_CTRL			0x1d
->  #define IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32		BIT(2)
->  
-> @@ -61,8 +63,14 @@ enum ip101gr_sel_intr32 {
->  	IP101GR_SEL_INTR32_RXER,
->  };
->  
-> +enum ip101_model {
-> +	IP101A,
-> +	IP101G,
-> +};
-> +
->  struct ip101a_g_phy_priv {
->  	enum ip101gr_sel_intr32 sel_intr32;
-> +	enum ip101_model model;
->  };
->  
->  static int ip175c_config_init(struct phy_device *phydev)
-> @@ -175,6 +183,39 @@ static int ip175c_config_aneg(struct phy_device *phydev)
->  	return 0;
->  }
->  
-> +/* The IP101A and the IP101G share the same PHY identifier.The IP101G seems to
-> + * be a successor of the IP101A and implements more functions. Amongst other
-> + * things a page select register, which is not available on the IP101. Use this
-> + * to distinguish these two.
-> + */
-> +static int ip101a_g_detect_model(struct phy_device *phydev)
-> +{
-> +	struct ip101a_g_phy_priv *priv = phydev->priv;
-> +	int oldval, ret;
-> +
-> +	oldval = phy_read(phydev, IP101G_PAGE_CONTROL);
-> +	if (oldval < 0)
-> +		return oldval;
-> +
-> +	ret = phy_write(phydev, IP101G_PAGE_CONTROL, 0xffff);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = phy_read(phydev, IP101G_PAGE_CONTROL);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (ret == IP101G_PAGE_CONTROL_MASK)
-> +		priv->model = IP101G;
-> +	else
-> +		priv->model = IP101A;
-> +
-> +	phydev_dbg(phydev, "Detected %s\n",
-> +		   priv->model == IP101G ? "IP101G" : "IP101A");
-> +
-> +	return phy_write(phydev, IP101G_PAGE_CONTROL, oldval);
-> +}
-> +
->  static int ip101a_g_probe(struct phy_device *phydev)
->  {
->  	struct device *dev = &phydev->mdio.dev;
-> @@ -203,7 +244,7 @@ static int ip101a_g_probe(struct phy_device *phydev)
->  
->  	phydev->priv = priv;
->  
-> -	return 0;
-> +	return ip101a_g_detect_model(phydev);
->  }
->  
->  static int ip101a_g_config_init(struct phy_device *phydev)
-> 
+On Tue, Feb 9, 2021 at 6:46 PM Christian K=C3=B6nig <christian.koenig@amd.c=
+om> wrote:
+>
+>
+>
+> Am 09.02.21 um 18:33 schrieb Suren Baghdasaryan:
+> > On Tue, Feb 9, 2021 at 4:57 AM Christian K=C3=B6nig <christian.koenig@a=
+md.com> wrote:
+> >> Am 09.02.21 um 13:11 schrieb Christian K=C3=B6nig:
+> >>> [SNIP]
+> >>>>>> +void drm_page_pool_add(struct drm_page_pool *pool, struct page *p=
+age)
+> >>>>>> +{
+> >>>>>> +     spin_lock(&pool->lock);
+> >>>>>> +     list_add_tail(&page->lru, &pool->items);
+> >>>>>> +     pool->count++;
+> >>>>>> +     atomic_long_add(1 << pool->order, &total_pages);
+> >>>>>> +     spin_unlock(&pool->lock);
+> >>>>>> +
+> >>>>>> +     mod_node_page_state(page_pgdat(page),
+> >>>>>> NR_KERNEL_MISC_RECLAIMABLE,
+> >>>>>> +                         1 << pool->order);
+> >>>>> Hui what? What should that be good for?
+> >>>> This is a carryover from the ION page pool implementation:
+> >>>> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2F=
+git.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.git%2F=
+tree%2Fdrivers%2Fstaging%2Fandroid%2Fion%2Fion_page_pool.c%3Fh%3Dv5.10%23n2=
+8&amp;data=3D04%7C01%7Cchristian.koenig%40amd.com%7Cdccccff8edcd4d147a5b08d=
+8cd20cff2%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637484888114923580%7=
+CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwi=
+LCJXVCI6Mn0%3D%7C1000&amp;sdata=3D9%2BIBC0tezSV6Ci4S3kWfW%2BQvJm4mdunn3dF6C=
+0kyfCw%3D&amp;reserved=3D0
+> >>>>
+> >>>>
+> >>>> My sense is it helps with the vmstat/meminfo accounting so folks can
+> >>>> see the cached pages are shrinkable/freeable. This maybe falls under
+> >>>> other dmabuf accounting/stats discussions, so I'm happy to remove it
+> >>>> for now, or let the drivers using the shared page pool logic handle
+> >>>> the accounting themselves?
+> >> Intentionally separated the discussion for that here.
+> >>
+> >> As far as I can see this is just bluntly incorrect.
+> >>
+> >> Either the page is reclaimable or it is part of our pool and freeable
+> >> through the shrinker, but never ever both.
+> > IIRC the original motivation for counting ION pooled pages as
+> > reclaimable was to include them into /proc/meminfo's MemAvailable
+> > calculations. NR_KERNEL_MISC_RECLAIMABLE defined as "reclaimable
+> > non-slab kernel pages" seems like a good place to account for them but
+> > I might be wrong.
+>
+> Yeah, that's what I see here as well. But exactly that is utterly nonsens=
+e.
+>
+> Those pages are not "free" in the sense that get_free_page could return
+> them directly.
 
-You could also implement the match_phy_device callback. Then you can
-have separate PHY drivers for IP101A/IP101G. Would be cleaner I think.
-See the Realtek PHY driver for an example.
+Well on Android that is kinda true, because Android has it's
+oom-killer (way back it was just a shrinker callback, not sure how it
+works now), which just shot down all the background apps. So at least
+some of that (everything used by background apps) is indeed
+reclaimable on Android.
+
+But that doesn't hold on Linux in general, so we can't really do this
+for common code.
+
+Also I had a long meeting with Suren, John and other googles
+yesterday, and the aim is now to try and support all the Android gpu
+memory accounting needs with cgroups. That should work, and it will
+allow Android to handle all the Android-ism in a clean way in upstream
+code. Or that's at least the plan.
+
+I think the only thing we identified that Android still needs on top
+is the dma-buf sysfs stuff, so that shared buffers (which on Android
+are always dma-buf, and always stay around as dma-buf fd throughout
+their lifetime) can be listed/analyzed with full detail.
+
+But aside from this the plan for all the per-process or per-heap
+account, oom-killer integration and everything else is planned to be
+done with cgroups. Android (for now) only needs to account overall gpu
+memory since none of it is swappable on android drivers anyway, plus
+no vram, so not much needed.
+
+Cheers, Daniel
+
+>
+> Regards,
+> Christian.
+>
+> >
+> >> In the best case this just messes up the accounting, in the worst case
+> >> it can cause memory corruption.
+> >>
+> >> Christian.
+>
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
