@@ -2,181 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2666B314FFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A65315001
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 14:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhBINSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 08:18:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
+        id S230319AbhBINT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 08:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbhBINSR (ORCPT
+        with ESMTP id S231355AbhBINTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 08:18:17 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACCBC061786
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:17:36 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id e18so22179189lja.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 05:17:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wHt/2t6Gccb30RHK0fDTAMtzIA8Iw7ZTM9DKWCLwJV0=;
-        b=tWFRS1GROXoY79U8gYzCoUhPSriqjYvfqbMb4n+DladfnLpRBdFPX/ePj/ipyZmc1t
-         ynAjOlyyIYj/7aftlGs8FVpcmyx+osjcrR1yMN90+KwvFtLPAABUICZBzWzFw3DDdubU
-         yh01Desa1mlBJC6DT5o9zK3lypWAga6XJ+lmZDlOFhXmwd0DemiEnysBkbcGiEvssGIu
-         K1VXXFEeKBncggDTEj4VBpD+fZQ2hO8ajRX7u/korKv38VEsUhGkG0VymPGlzYsWKkGH
-         zdiBR4uh6HAqnvGbleoWmQJmGUs1PD1hGGGFusxTCAXOOWBDdXeD709i48wGVDwJk3PH
-         +xNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wHt/2t6Gccb30RHK0fDTAMtzIA8Iw7ZTM9DKWCLwJV0=;
-        b=neio61LAxah0TfIVPRTCYfpNxUk7vvykLh4wytk4ua2B/nS4wN0jZt+A2fMBDK0opl
-         YglQMdOVYXi1ewwL4jxZ7U8IBR1Lfx5ZfR+4P6NhpodhibkV337lmaWqjMn0puQBmZbg
-         voeoCgqwB58o7kAVSzJQS5LynmSX9JiLACv33nYIoWOzg5wap1pIk61iuizj2cJ1dG/N
-         i/nK2f6mA4JDsJMe85Rq/8mriWFeXVJ06055aBUZmKR9mFIcUBpbTB1vREJ5F3H758Cx
-         XUFMWc7ayFJc4tg9W2SnNQSICfuIn1m9imHeUflZxkW6fh77ehgQ2S76yqkn3BTYuFPM
-         T/9Q==
-X-Gm-Message-State: AOAM532oyj26OlnF8QCs53v2BaQwHDEPwsO7WfFj9kLNquVBRZjHt//8
-        SiUMyK0/vjDW6WmT1bgYTaZmBQ==
-X-Google-Smtp-Source: ABdhPJzYoE6XiVt0ypBzNvCt5TTw8d/IQKHdkTg/Itxi0vlEoTZOvxOG6U84NqQScpb6but7XqkOLA==
-X-Received: by 2002:a2e:b896:: with SMTP id r22mr14332708ljp.234.1612876654695;
-        Tue, 09 Feb 2021 05:17:34 -0800 (PST)
-Received: from xps.home ([2001:4647:9b4f:c:a1b6:e56:6469:3494])
-        by smtp.gmail.com with ESMTPSA id g4sm2528374lfu.283.2021.02.09.05.17.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 05:17:34 -0800 (PST)
-From:   Odin Ugedal <odin@uged.al>
-To:     changhuaixin@linux.alibaba.com
-Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
-        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com,
-        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com, tj@kernel.org
-Subject: Re: [PATCH v3 0/4] sched/fair: Burstable CFS bandwidth controller
-Date:   Tue,  9 Feb 2021 14:17:19 +0100
-Message-Id: <20210209131719.1193428-1-odin@uged.al>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
-References: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
+        Tue, 9 Feb 2021 08:19:01 -0500
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C19C06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 05:18:19 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 94E453E7E2;
+        Tue,  9 Feb 2021 14:18:15 +0100 (CET)
+Subject: Re: [PATCH v2 11/11] clk: qcom: gpucc-msm8998: Allow fabia gpupll0
+ rate setting
+To:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
+Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20210114221059.483390-1-angelogioacchino.delregno@somainline.org>
+ <20210114221059.483390-12-angelogioacchino.delregno@somainline.org>
+ <161280865244.76967.4923517866545833837@swboyd.mtv.corp.google.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <a9593d00-3ab4-4833-0bf5-516cf432ba48@somainline.org>
+Date:   Tue, 9 Feb 2021 14:18:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <161280865244.76967.4923517866545833837@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Il 08/02/21 19:24, Stephen Boyd ha scritto:
+> Quoting AngeloGioacchino Del Regno (2021-01-14 14:10:59)
+>> The GPU PLL0 is not a fixed PLL and the rate can be set on it:
+>> this is necessary especially on boards which bootloader is setting
+>> a very low rate on this PLL before booting Linux, which would be
+>> unsuitable for postdividing to reach the maximum allowed Adreno GPU
+>> frequency of 710MHz (or, actually, even 670MHz..) on this SoC.
+>>
+>> To allow setting rates on the GPU PLL0, also define VCO boundaries
+>> and set the CLK_SET_RATE_PARENT flag to the GPU PLL0 postdivider.
+>>
+>> With this change, the Adreno GPU is now able to scale through all
+>> the available frequencies.
+> 
+> BTW, you're probably undervolting your GPU and clocking it higher
+> than it should be at the voltage from boot.
+> 
 
-Hi! This looks quite useful, but I have a few quick thoughts. :)
+Thanks for the consideration, but that's not the case, locally ;)
 
-I know of a lot of people who would love this (especially some
-Kubernetes users)! I really like how this allow users to use cfs
-in a more dynamic and flexible way, without interfering with those
-who like the enforce strict quotas.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   drivers/clk/qcom/gpucc-msm8998.c | 10 +++++++++-
+>>   1 file changed, 9 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/clk/qcom/gpucc-msm8998.c b/drivers/clk/qcom/gpucc-msm8998.c
+>> index 1a518c4915b4..fedfffaf0a8d 100644
+>> --- a/drivers/clk/qcom/gpucc-msm8998.c
+>> +++ b/drivers/clk/qcom/gpucc-msm8998.c
+>> @@ -50,6 +50,11 @@ static struct clk_branch gpucc_cxo_clk = {
+>>          },
+>>   };
+>>   
+>> +static struct pll_vco fabia_vco[] = {
+> 
+> Should be const.
+> 
 
+Ack!
 
-> +++ b/kernel/sched/core.c
-> @ -7900,7 +7910,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64
-> [...]
-> +	/* burst_onset needed */
-> +	if (cfs_b->quota != RUNTIME_INF &&
-> +			sysctl_sched_cfs_bw_burst_enabled &&
-> +			sysctl_sched_cfs_bw_burst_onset_percent > 0) {
-> +
-> +		burst_onset = do_div(burst, 100) *
-> +			sysctl_sched_cfs_bw_burst_onset_percent;
-> +
-> +		cfs_b->runtime += burst_onset;
-> +		cfs_b->runtime = min(max_cfs_runtime, cfs_b->runtime);
-> +	}
+>> +       { 249600000, 2000000000, 0 },
+>> +       { 125000000, 1000000000, 1 },
+>> +};
+>> +
+>>   static const struct clk_div_table post_div_table_fabia_even[] = {
+>>          { 0x0, 1 },
+>>          { 0x1, 2 },
 
-I saw a comment about this behavior, but I think this can lead to a bit of
-confusion. If sysctl_sched_cfs_bw_burst_onset_percent=0, the amount of
-bandwidth when the first process starts up will depend on the time between
-the quota was set and the startup of the process, and that feel a bit like
-a "timing" race that end user application then will have to think about.
-
-I suspect contianer runtimes and/or tools like Kubernetes will then have
-to tell users to set the value to a certan amount in order to make it
-work as expected.
-
-Another thing is that when a cgroup has saved some time into the
-"burst quota", updating the quota, period or burst will then reset the
-"burst quota", even though eg. only the burst was changed. Some tools
-use dynamic quotas, resulting in multiple changes in the quota over time,
-and I am a bit scared that don't allowing them to control "start burst"
-on a write can be limiting.
-
-Maybe we can allow people to set the "start bandwidth" explicitly when setting
-cfs_burst if they want to do that? (edit: that might be hard for cgroup v1, but
-would I think that is a good solution on cgroup v2).
-
-This is however just my thoughts, and I am not 100% sure about what the
-best solution is, but if we merge a certain behavior, we have no real
-chance of changing it later.
-
-
-> +++ b/kernel/sched/sched.h
-> @@ -367,6 +367,7 @@ struct cfs_bandwidth {
->  	u64			burst;
->  	u64			buffer;
->  	u64			max_overrun;
-> +	u64			previous_runtime;
->  	s64			hierarchical_quota;
-
-Maybe indicate that this was the remaining runtime _after_ the previous
-period ended? Not 100% sure, but maybe sometihing like
-'remaining_runtime_prev_period' or 'end_runtime_prev_period'(as inspiration).   
-
-
-> +++ b/kernel/sched/core.c
-> @@ -8234,6 +8236,10 @@ static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
->  		seq_printf(sf, "wait_sum %llu\n", ws);
->  	}
->  
-> +	seq_printf(sf, "current_bw %llu\n", cfs_b->runtime);
-> +	seq_printf(sf, "nr_burst %d\n", cfs_b->nr_burst);
-> +	seq_printf(sf, "burst_time %llu\n", cfs_b->burst_time);
-> +
->  	return 0;
->  }
-
-Looks like these metrics are missing from the cgroup v2 stats.
-
-Are we sure it is smart to start exposing cfs_b->runtime, since it makes it
-harder to change the implementation at a later time? I don't thin it is that
-usefull, and if it is only exposed for debugging purposes people can probably
-use kprobes instead? Also, it would not be usefull unless you know how much
-wall time is left in the current period. In that sense,
-cfs_b->previous_runtime would probably be more usefull, but still not sure if
-it deserves to be exposed to end users like this.
-
-Also, will "cfs_b->runtime" keep updating if no processes are running, or
-will it be the the same here, but update (with burst via timer overrun)
-when a process starts again? If so, the runtime available when a process
-starts on cgroup inint can be hard to communicate if the value here doesn't
-update.
-
-
-> +++ b/kernel/sched/fair.c
-> +void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b, int init)
-> [...]
-> +	/*
-> +	 * When period timer stops, quota for the following period is not
-> +	 * refilled, however period timer is already forwarded. We should
-> +	 * accumulate quota once more than overrun here.
-> +	 */
-
-
-Trying to wrap my head around this one... Is not refilling here, as the
-behavior before your patch causing "loss" in runtime and causing unnecessary
-possibly causing a cgroup throttle?.
-
-
-A am not that familiar how cross subsystem patches like these are handled, but
-I am still adding the Tejun Heo (cgroup maintainer) as a CC. Should maybe cc to
-cgroup@ as well?
-
-Sorry for a long mail, in retrospect it should have been one per patch...
