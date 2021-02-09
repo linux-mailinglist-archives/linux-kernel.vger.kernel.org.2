@@ -2,234 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F043153DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EC93153C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbhBIQ1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:27:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S232802AbhBIQ0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232882AbhBIQ0y (ORCPT
+        with ESMTP id S232807AbhBIQZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:26:54 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA75BC061356
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:24:53 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id h12so6414372wrw.6
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:24:53 -0800 (PST)
+        Tue, 9 Feb 2021 11:25:29 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DFCC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:24:49 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id b24so3588594qtp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:24:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wu1Zf/mFp11ctNj1vtuDSQPYbJ+HL7jrEiQ0KZuFezo=;
-        b=I6D4bF5uMxtRWwS0Mn+TavIJ4XVUv7hvagTHG3ISwzJ6D/6d3zSF2mNypBEES4av7Y
-         hJxhwYsGmnnRSERkuFsGkCiLx5/fycwp13gXAiPeBIk1hei6pdyckZMlA6uJFrDbDf91
-         W8LkGgTZ4DiQekZ6ace+CgTv2aRjSWN0ZpEdtrSHimr51N2xkkBJPRuFSVzPYj4uXYWx
-         l0ubWK1bc+cKKQGXGI329I1xBooi6THHIgW7m4564Le9Jymvvo/OQ10LDX8C/qp25DJM
-         WqQxR+X81bpjX2yOKQonm4dz4rO6rCfsgkNVW427O1s8gWplkQtlmMZLbZvKgDRs7Y8S
-         JUgg==
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=WAvcbe90u/Sk2hKwNc4NT+yMPbtvqWizeUPK15paqhE=;
+        b=o3su8ZUKZnc93qTfjkoIhgkFZB6+E/ONif1lXzM7/H5up7fG74+TRVf9LbJ5FdWoUV
+         UCDlzgwJ7/nPBqfHoK5S5zZX1LufjBmC7NaVt6hcJ1Om0wHa8qedk5bVU2CEo7CWZPTG
+         +UPJQEiDLN1pA6Eodk8s8AU7Bzt/5iy0fAYH9zZb/dOcwwCSE8UE8dIn8WT8b4ajSD8e
+         99STx9n8SABe411AWSarJioVXmERaupHCGyuXHCi6lRzuFt1lHBIDvQMPwOt6CmJo122
+         7x1bW8iVmFiCZ0Ps2WHn8dQLjiG+WOIdvuWVnHFEf5C2LY8FLUFQaVqmDCMGIUD4GvsT
+         fuLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wu1Zf/mFp11ctNj1vtuDSQPYbJ+HL7jrEiQ0KZuFezo=;
-        b=tlCWJk5cQyFnjNpZUcMFwWknhORZwbJ1CHHOYHdF9o7LEnsbZaCcCzDB5RWdbr8hvj
-         m8JA3FroSr0xnj2F60edfghEhBom/HL8Cs54xvbaBv1uQfDvccPGU+AP2pfcD7Sh+Tt1
-         B2nB/0As6Pv5Zd0+F1tt2vtA1RvEz9ZfVEycoYei00B76s6dite+E+GXJit3iLQ1mjaD
-         pnua0UA0T9brT18AaFHTMD/MEPGb1CnakcHCMKhBihgJl4MpsxXbG44CBNcFHJl4kE5A
-         3cJi4AAvSw6UbmUIK05uAVQa0Y0+ezAkWdVM0s7lSPI7VRYY+UcnG5oL+1Uy8dyMTHMu
-         2Ieg==
-X-Gm-Message-State: AOAM532T79T4W10ZMNvltu47ug3h4MtLVtMWHYIZ9HYpC/3I9nthy6qM
-        H7kfcfYvXp/f30HOoZeQVXomfA==
-X-Google-Smtp-Source: ABdhPJxArIq1MgIBSFwswh1oCzfmdRDGnZkYUUmsbnXFD6laxQ912wKVUj3UuGfdmyrGygBoc0S/Bg==
-X-Received: by 2002:a5d:540d:: with SMTP id g13mr12949443wrv.143.1612887892665;
-        Tue, 09 Feb 2021 08:24:52 -0800 (PST)
-Received: from localhost.localdomain (hst-221-125.medicom.bg. [84.238.221.125])
-        by smtp.gmail.com with ESMTPSA id w8sm45210wrm.21.2021.02.09.08.24.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 08:24:52 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v5 5/5] venus: venc: Add support for CLL and Mastering display controls
-Date:   Tue,  9 Feb 2021 18:24:25 +0200
-Message-Id: <20210209162425.3970393-6-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210209162425.3970393-1-stanimir.varbanov@linaro.org>
-References: <20210209162425.3970393-1-stanimir.varbanov@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=WAvcbe90u/Sk2hKwNc4NT+yMPbtvqWizeUPK15paqhE=;
+        b=YH+djoJWs5VEEU4+cgdeOikxiVELfpp44XP60F2Z6LBns7ITPNdehNjgK9Fsogv4yN
+         /xxmUsX8bXWmJ69/vViZY7j7JxZkBQwa5oPT146aXDL6czUUnq3UqmG8f36erSpnYrrk
+         IedYzY88U6ebcsR37H+a/iMn987Zi8rSfWyxLl2A6yzfD1klLejQQzMG93sdI78YWEx6
+         q+3GzI5VN9BARs0ZEa3yWRESPkuQfutLfezZ4HCIoCkPSqFGO0PTgeSWzfsvm2uAwnMA
+         ZwPiyjrpN9315y3OniDnhg4CLEX6qq3rDQvItApSwzxt9XX2nOC5rXC6MpCnqykmuZlj
+         +ZlQ==
+X-Gm-Message-State: AOAM530nIhqDjzv1n74NvXM6wmPiedhSn+T1apNPOdp/zxTn7qIUNYtC
+        vacLexrD1runZHV5vUXUoR8=
+X-Google-Smtp-Source: ABdhPJy157lVLQqlscIEGVM7nSm1diSussGJ8QKoOqtK8ib/sPtGN86HtLgQnt7VgOEOw7L6vqPE3g==
+X-Received: by 2002:ac8:4e14:: with SMTP id c20mr10841148qtw.206.1612887888676;
+        Tue, 09 Feb 2021 08:24:48 -0800 (PST)
+Received: from ?IPv6:2601:5c0:c200:27c6:a82e:f46a:9884:895d? ([2601:5c0:c200:27c6:a82e:f46a:9884:895d])
+        by smtp.gmail.com with ESMTPSA id j5sm16641832qth.80.2021.02.09.08.24.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Feb 2021 08:24:48 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH] drm/qxl: properly handle device init failures
+From:   Tong Zhang <ztong0001@gmail.com>
+In-Reply-To: <20210209121629.vb3yu6zkr4npnskz@sirius.home.kraxel.org>
+Date:   Tue, 9 Feb 2021 11:24:47 -0500
+Cc:     dri-devel@lists.freedesktop.org, Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6FB53E26-5686-410F-B92F-5658BAF411C1@gmail.com>
+References: <20210208104149.423758-1-kraxel@redhat.com>
+ <E07153A4-9B42-4050-903E-8BBB99D8ED8E@gmail.com>
+ <20210209121629.vb3yu6zkr4npnskz@sirius.home.kraxel.org>
+To:     Gerd Hoffmann <kraxel@redhat.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create CLL and Mastering display colour volume v4l2 controls for
-encoder, add handling of HDR10 PQ SEI packet payloads for v4.
+Hi Gerd,
+I tested the patch on drm-misc-next and it fixed the issue.
+Thanks,
+- Tong
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h      |  2 ++
- drivers/media/platform/qcom/venus/hfi_cmds.c  |  8 +++++
- .../media/platform/qcom/venus/hfi_helper.h    | 20 +++++++++++++
- drivers/media/platform/qcom/venus/venc.c      | 29 +++++++++++++++++++
- .../media/platform/qcom/venus/venc_ctrls.c    | 16 +++++++++-
- 5 files changed, 74 insertions(+), 1 deletion(-)
+> On Feb 9, 2021, at 7:16 AM, Gerd Hoffmann <kraxel@redhat.com> wrote:
+>=20
+> On Mon, Feb 08, 2021 at 12:07:01PM -0500, Tong Zhang wrote:
+>> Does this patch fix an issue raised previously? Or should they be =
+used together?
+>> =
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2466541.html=20=
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index a252ed32cc14..adbcda6e9386 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -238,6 +238,8 @@ struct venc_controls {
- 	} level;
- 
- 	u32 base_priority_id;
-+	struct v4l2_ctrl_hdr10_cll_info cll;
-+	struct v4l2_ctrl_hdr10_mastering_display mastering;
- };
- 
- struct venus_buffer {
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 4f7565834469..d2edf3896cf1 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -1217,6 +1217,14 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*info);
- 		break;
- 	}
-+	case HFI_PROPERTY_PARAM_VENC_HDR10_PQ_SEI: {
-+		struct hfi_hdr10_pq_sei *in = pdata, *hdr10 = prop_data;
-+
-+		memcpy(hdr10, in, sizeof(*hdr10));
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*hdr10);
-+		break;
-+	}
-+
- 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
- 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
- 	case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index 6b524c7cde5f..d32d926c7b2c 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -513,6 +513,7 @@
- #define HFI_PROPERTY_PARAM_VENC_VPX_ERROR_RESILIENCE_MODE	0x2005029
- #define HFI_PROPERTY_PARAM_VENC_HIER_B_MAX_NUM_ENH_LAYER	0x200502c
- #define HFI_PROPERTY_PARAM_VENC_HIER_P_HYBRID_MODE		0x200502f
-+#define HFI_PROPERTY_PARAM_VENC_HDR10_PQ_SEI			0x2005036
- 
- /*
-  * HFI_PROPERTY_CONFIG_VENC_COMMON_START
-@@ -809,6 +810,25 @@ struct hfi_ltr_mark {
- 	u32 mark_frame;
- };
- 
-+struct hfi_mastering_display_colour_sei_payload {
-+	u32 display_primaries_x[3];
-+	u32 display_primaries_y[3];
-+	u32 white_point_x;
-+	u32 white_point_y;
-+	u32 max_display_mastering_luminance;
-+	u32 min_display_mastering_luminance;
-+};
-+
-+struct hfi_content_light_level_sei_payload {
-+	u32 max_content_light;
-+	u32 max_pic_average_light;
-+};
-+
-+struct hfi_hdr10_pq_sei {
-+	struct hfi_mastering_display_colour_sei_payload mastering;
-+	struct hfi_content_light_level_sei_payload cll;
-+};
-+
- struct hfi_framesize {
- 	u32 buffer_type;
- 	u32 width;
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 6976ed553647..192b8c4ef778 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -612,6 +612,35 @@ static int venc_set_properties(struct venus_inst *inst)
- 			return ret;
- 	}
- 
-+	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
-+		struct hfi_hdr10_pq_sei hdr10;
-+		unsigned int c;
-+
-+		ptype = HFI_PROPERTY_PARAM_VENC_HDR10_PQ_SEI;
-+
-+		for (c = 0; c < 3; c++) {
-+			hdr10.mastering.display_primaries_x[c] =
-+				ctr->mastering.display_primaries_x[c];
-+			hdr10.mastering.display_primaries_y[c] =
-+				ctr->mastering.display_primaries_y[c];
-+		}
-+
-+		hdr10.mastering.white_point_x = ctr->mastering.white_point_x;
-+		hdr10.mastering.white_point_y = ctr->mastering.white_point_y;
-+		hdr10.mastering.max_display_mastering_luminance =
-+			ctr->mastering.max_display_mastering_luminance;
-+		hdr10.mastering.min_display_mastering_luminance =
-+			ctr->mastering.min_display_mastering_luminance;
-+
-+		hdr10.cll.max_content_light = ctr->cll.max_content_light_level;
-+		hdr10.cll.max_pic_average_light =
-+			ctr->cll.max_pic_average_light_level;
-+
-+		ret = hfi_session_set_property(inst, ptype, &hdr10);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	if (ctr->num_b_frames) {
- 		u32 max_num_b_frames = NUM_B_FRAMES_MAX;
- 
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index a52b80055173..52ae665f361e 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -276,6 +276,12 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID:
- 		ctr->base_priority_id = ctrl->val;
- 		break;
-+	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:
-+		ctr->cll = *ctrl->p_new.p_hdr10_cll;
-+		break;
-+	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
-+		ctr->mastering = *ctrl->p_new.p_hdr10_mastering;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -291,7 +297,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 51);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 53);
- 	if (ret)
- 		return ret;
- 
-@@ -498,6 +504,14 @@ int venc_ctrl_init(struct venus_inst *inst)
- 			  V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID, 0,
- 			  6, 1, 0);
- 
-+	v4l2_ctrl_new_std_compound(&inst->ctrl_handler, &venc_ctrl_ops,
-+				   V4L2_CID_COLORIMETRY_HDR10_CLL_INFO,
-+				   v4l2_ctrl_ptr_create(NULL));
-+
-+	v4l2_ctrl_new_std_compound(&inst->ctrl_handler, &venc_ctrl_ops,
-+				   V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY,
-+				   v4l2_ctrl_ptr_create(NULL));
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret)
- 		goto err;
--- 
-2.25.1
+>>=20
+>> IMHO using this patch alone won=E2=80=99t fix the issue
+>=20
+> This patch on top of drm-misc-next fixes the initialization error =
+issue
+> reported by you in my testing.
+>=20
+> take care,
+>  Gerd
+>=20
 
