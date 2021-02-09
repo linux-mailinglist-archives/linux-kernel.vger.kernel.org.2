@@ -2,196 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2857D315411
+	by mail.lfdr.de (Postfix) with ESMTP id A44A2315412
 	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 17:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbhBIQjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 11:39:21 -0500
-Received: from mail-oo1-f47.google.com ([209.85.161.47]:34952 "EHLO
-        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbhBIQjF (ORCPT
+        id S232807AbhBIQj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 11:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232953AbhBIQjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:39:05 -0500
-Received: by mail-oo1-f47.google.com with SMTP id t196so2249316oot.2;
-        Tue, 09 Feb 2021 08:38:49 -0800 (PST)
+        Tue, 9 Feb 2021 11:39:36 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B8EC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 08:38:55 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id k204so18491082oih.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 08:38:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D1W20Sq6TDjaUrVZvwmz75ySVD0FOUb+UxbG/t0eOoA=;
+        b=sSkdzcMRmGDjsifSGK/jX2Vc8A6gs87kgs/VT4JncpFc2NXQXZ7Wo/pv2KcoUztrGr
+         hc9oJHfpEpTVNeXYPgQzZf/qOk0MiXscFUGsyp36ZxxcwGhOCJo+9eJ5Gr6rZCFbYkFB
+         rnjOz+PosFlEzlSxO/arOu9Oc+2xgFyg/cgqRYfrDIXU15v4amvidtEyktIpUJNq05hl
+         hEFuvxFfdP+bnoLVWJfYp3zECWr+vKhZlkWEaBCSIOZVAmTxPBwuMJ/MIy67BaYHWn97
+         3D4W6sAXDMwXfxDq0H8xnyMoLYth9IMbarJZOQY4uB2XcZkM5Hla2th7sTwro69JCAEE
+         R1LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wQ88ktMveXLIFjVYi4XLJQTN5XKyqacXyZXIGcsGiCs=;
-        b=se2Gzef2zjE2vun3ESZj803I/ck4r+b260eSHSqy46brjWT2zQVBqXuj7HW9388JKd
-         M4oY460J2ce5RSME8Y6bc1oDWlYCGHhvdPJp1dvzSrZpUJorNOXTHOghmnWLedDeYl2j
-         2cZTjNLunSsahCcGrH2oxEBa6wktK6etbBL+oNhsC/mWCbYwWYQiPUVUYcmlcyg+rc/n
-         zyiBssfatE/sPSx4B4vAKGR76xGv+c3em0oCL1mw9a1GMYobGp1BwkgfauF4kJbLCbSD
-         gBKvocATGzEnz8SyDX6X/EUA64es3DqhdjEx7V+FJlNVl06DNXBknwMaTDqLCc4w0847
-         PBSw==
-X-Gm-Message-State: AOAM531TDdTk7aBY947tATIdDLmTuCjiMz04MxAhxhErxcs//jfxmhUV
-        0C0sgXVOV0ksXQH5eFIXmQ==
-X-Google-Smtp-Source: ABdhPJyVYqJkRSlVwkuaXSCn5iGg2F2ZS9AACtrBVl6W1FRn+PDFWJy5SUmUPRPoMrkPqrR4nEHY2w==
-X-Received: by 2002:a4a:424c:: with SMTP id i12mr16605365ooj.85.1612888704019;
-        Tue, 09 Feb 2021 08:38:24 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e30sm48346ooh.32.2021.02.09.08.38.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 08:38:22 -0800 (PST)
-Received: (nullmailer pid 3898734 invoked by uid 1000);
-        Tue, 09 Feb 2021 16:38:20 -0000
-Date:   Tue, 9 Feb 2021 10:38:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, a.hajda@samsung.com,
-        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: display: bridge: Add documentation for
- LT8912
-Message-ID: <20210209163820.GB3892603@robh.at.kernel.org>
-References: <20210124150835.1522899-1-adrien.grassein@gmail.com>
- <20210124150835.1522899-3-adrien.grassein@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D1W20Sq6TDjaUrVZvwmz75ySVD0FOUb+UxbG/t0eOoA=;
+        b=lQJhA6cTotMY4eG4H0GpfPe/9/lBUJ9FpcB+EfmKryGhjimcjnBaEHJhKB9UrfqRzr
+         l8ms/ONHxTnaUDIJESu1y8CknrVG/9J9Uu/JQLlAFzxcG6eNO9bUR4xCbrgQaC3yMtRP
+         JJgSmYahMy7LiZZEJBAUYRIWEmk37eVdOi3iabM0p0JWU0GNgR3p1QPSpcdO9BCZKteV
+         tnA9Ho1pgv+0zoXn+vBSPdLRvErsMnZO2j7icUmPjp570YCUORJp4cKByCuHdBKdxcgD
+         mxawWcRbrxS7Hc0otu2lPxSlwP9An8ojSc6m8s+AbZSP4q45AhLZagwFndjErFbPEsj0
+         a6wQ==
+X-Gm-Message-State: AOAM5315g5tnDN8s9UHBKEFGSZLr0dQnYXBxIprkLlTbRQSTWJKRDjzl
+        o3roghb0In6gZB0IPj6biBclucE8yg6qLVi3VN72SYU+rG8=
+X-Google-Smtp-Source: ABdhPJzrYrvRsCx/SaVSQEfLelG+EocEdczfs1JYffxGBzLnGbfxqcWY6RCs0/Lc4X1xz1BwlT/ukEE2l1kzxS52vgw=
+X-Received: by 2002:aca:5a57:: with SMTP id o84mr3034936oib.0.1612888735437;
+ Tue, 09 Feb 2021 08:38:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210124150835.1522899-3-adrien.grassein@gmail.com>
+References: <20210209125912.3398-1-nsaenzjulienne@suse.de> <20210209125912.3398-10-nsaenzjulienne@suse.de>
+ <CAMEGJJ3i_hEAnO4rDQ+emqB=OYXetLyKh1kMRwAbUnYZ1e48VA@mail.gmail.com> <56e237a8d0646c03d4ff44e439d1b0f81c800a9b.camel@suse.de>
+In-Reply-To: <56e237a8d0646c03d4ff44e439d1b0f81c800a9b.camel@suse.de>
+From:   Phil Elwell <phil@raspberrypi.com>
+Date:   Tue, 9 Feb 2021 16:38:45 +0000
+Message-ID: <CAMEGJJ3d-d7-h_=B2XpFAiwSAdfnsPGh1mZjX5=sdeu3PNTPmg@mail.gmail.com>
+Subject: Re: [RFC/PATCH v2 09/16] soc: bcm: bcm2835-power: Add support for
+ BCM2711's Argon ASB
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>, wahrenst@gmx.net,
+        linux-arm-kernel@lists.infradead.org, mripard@kernel.org,
+        eric@anholt.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 04:08:34PM +0100, Adrien Grassein wrote:
-> Lontium LT8912 is a DSI to HDMI bridge.
-> 
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  .../display/bridge/lontium,lt8912.yaml        | 92 +++++++++++++++++++
->  MAINTAINERS                                   |  5 +
->  2 files changed, 97 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/lontium,lt8912.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/lontium,lt8912.yaml b/Documentation/devicetree/bindings/display/bridge/lontium,lt8912.yaml
-> new file mode 100644
-> index 000000000000..ed1a6ddaab2f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/bridge/lontium,lt8912.yaml
-> @@ -0,0 +1,92 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/bridge/lontium,lt8912.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Lontium LT8912 MIPI to HDMI Bridge
-> +
-> +maintainers:
-> +  - Adrien Grassein <adrien.grassein@gmail.com>
-> +
-> +description: |
-> +  The LT8912 is a bridge device which convert DSI to HDMI
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - lontium,lt8912
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  ddc-i2c-bus:
+Nicolas,
 
-This belongs in an hdmi-connector node.
 
-> +    maxItems: 1
-> +    description: i2c bus used to read EDID of the connected display.
-> +
-> +  dsi-lanes:
-> +    maxItems: 1
-> +    description: dsi lanes count interconnected with lt8912.
+On Tue, 9 Feb 2021 at 14:00, Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> On Tue, 2021-02-09 at 13:19 +0000, Phil Elwell wrote:
+> > Hi Nicolas,
+> >
+> > On Tue, 9 Feb 2021 at 13:00, Nicolas Saenz Julienne
+> > <nsaenzjulienne@suse.de> wrote:
+> > >
+> > > In BCM2711 the new ARGON ASB took over V3D. The old ASB is still present
+> > > with the ISP and H264 bits, and V3D is in the same place in the new ASB
+> > > as the old one.
+> > >
+> > > Use the fact that 'pm->argon_asb' is populated as a hint that we're on
+> > > BCM2711. On top of that introduce the macro ASB_BASE() which will select
+> > > the correct ASB register base, based on whether we're trying to access
+> > > V3D and which platform we're on.
+> >
+> > Please don't refer to this block as ARGON - it is the IP of Raspberry
+> > Pi Trading and it's name is RPiVid.
+>
+> OK, sorry for that. I, again, mixed both ASB names. I'll rename the Argon ASB
+> to RPiVid. How should I call the one present in older RPis?
 
-'data-lanes' in the graph is the standard way to do this.
+It can keep its unqualified name of ASB_*.
 
-You'll need video-interfaces.yaml which is pending in the media tree.
+>
+> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > >
+> > > ---
+> > >
+> > > Changes since v1:
+> > >  - Correct names
+> > >
+> > >  drivers/soc/bcm/bcm2835-power.c | 68 ++++++++++++++++++++-------------
+> > >  1 file changed, 42 insertions(+), 26 deletions(-)
+> > >
+> > > diff --git a/drivers/soc/bcm/bcm2835-power.c b/drivers/soc/bcm/bcm2835-power.c
+> > > index 59b8abfc5617..42e105758b47 100644
+> > > --- a/drivers/soc/bcm/bcm2835-power.c
+>
+> [...]
+>
+> > >         case BCM2835_POWER_DOMAIN_USB:
+> > >                 PM_WRITE(PM_USB, 0);
+> > > @@ -626,13 +633,22 @@ static int bcm2835_power_probe(struct platform_device *pdev)
+> > >         power->dev = dev;
+> > >         power->base = pm->base;
+> > >         power->rpivid_asb = pm->rpivid_asb;
+> > > +       power->argon_asb = pm->argon_asb;
+> > >
+> > > -       id = ASB_READ(ASB_AXI_BRDG_ID);
+> > > +       id = ASB_READ(ASB_AXI_BRDG_ID, false);
+> > >         if (id != 0x62726467 /* "BRDG" */) {
+> > > -               dev_err(dev, "ASB register ID returned 0x%08x\n", id);
+> > > +               dev_err(dev, "RPiVid ASB register ID returned 0x%08x\n", id);
+> > >                 return -ENODEV;
+> > >         }
+> > >
+> > > +       if (pm->argon_asb) {
+> > > +               id = ASB_READ(ASB_AXI_BRDG_ID, true);
+> > > +               if (id != 0x62726467 /* "BRDG" */) {
+> > > +                       dev_err(dev, "Argon ASB register ID returned 0x%08x\n", id);
+> > > +                       return -ENODEV;
+> > > +               }
+> > > +       }
+> > > +
+> >
+> > Surely these are the same register. Is this the result of a bad merge?
+>
+> AFAIU There are two ASBs the old one at 0x7e00a000 and the new RPiVid one at
+> 0x7ec11000. They both can be checked for valid IDs. Note the new argument in
+> ASB_READ().
 
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description: GPIO connected to active high RESET pin.
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description:
-> +          Primary MIPI port-1 for MIPI input
+You're right - I'd missed the parameter. Apologies.
 
-You're going to need a port for the connector.
-
-> +
-> +    required:
-> +      - port@0
-> +
-> +required:
-> +  - compatible
-> +  - ddc-i2c-bus
-> +  - dsi-lanes
-> +  - reg
-> +  - reset-gpios
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    i2c4 {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      hdmi-bridge@48 {
-> +        compatible = "lontium,lt8912";
-> +        reg = <0x48>;
-> +        reset-gpios = <&max7323 0 GPIO_ACTIVE_LOW>;
-> +        dsi-lanes = <4>;
-> +        ddc-i2c-bus = <&ddc_i2c_bus>;
-> +
-> +        ports {
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +
-> +          port@0 {
-> +            reg = <0>;
-> +
-> +            hdmi_out_in: endpoint {
-> +              remote-endpoint = <&mipi_dsi_out>;
-> +            };
-> +          };
-> +        };
-> +      };
-> +    };
-> +
-> +    ddc_i2c_bus: i2c5 {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +    };
-> +
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5aa18cbfb883..01e7e356bfac 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10472,6 +10472,11 @@ S:	Maintained
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git
->  F:	drivers/hid/hid-lg-g15.c
->  
-> +LONTIUM LT8912 MIPI TO HDMI BRIDGE
-> +M:	Adrien Grassein <adrien.grassein@gmail.com>
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/display/bridge/lontium,lt8912.yaml
-> +
->  LSILOGIC MPT FUSION DRIVERS (FC/SAS/SPI)
->  M:	Sathya Prakash <sathya.prakash@broadcom.com>
->  M:	Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-> -- 
-> 2.25.1
-> 
+Phil
