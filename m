@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F6C31574B
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 21:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E7231573C
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:56:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhBIT66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 14:58:58 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:55427 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233340AbhBISW7 (ORCPT
+        id S233802AbhBITyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 14:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233233AbhBISWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 13:22:59 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5660C5802DA;
-        Tue,  9 Feb 2021 13:00:27 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 09 Feb 2021 13:00:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=apMIh8
-        1zHTwrdiLkYm/FdsFavFVD8+FsPBR4HWhPa2U=; b=TeOeHWpIBlLMsdNiMMUs19
-        cQ52jAyJcvO/gFYpHT4LKstRXjXlP+KZTXE2jmEJulRJBm2G+kWiuiXiC0GPoTjV
-        V7b+MMxWxtC8nGDsNXAr7LXOsKJ3/Y96SxktYrBKxLf4PQ1PZU/QQxRc8OYsRHzi
-        t1HfCb9Z5A+XmCLkJkD5iQX9ITZjSKCCroI4Z/kz/AEnphvke8KffOmt7izQDX9H
-        kyl2/WitQ9QmObM+Y/PLEly5PHhKtvteG8Zt29HJRFrrbHZcHncbecpRTQNLHNBk
-        pdqJMm4onota2IWfcztPN3tXcRoMUttvgPlUJ3cY4Zrlr38oQ+3MDcRYqqO6nVmA
-        ==
-X-ME-Sender: <xms:uM0iYLn2jAXoGYPTRNtJxwXdF5KM8bwb4Yq12fwbCU2k-L3rKh7YMw>
-    <xme:uM0iYO1eMSvDiETvzYTmrwwV8XJH99ACpQpwo5OXQgmvMKT0hL3vlwo0uCOP5z3QM
-    HKEXB-HkJrBO38>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheehgddutdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
-    teenucfkphepkeegrddvvdelrdduheefrdeggeenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:uM0iYBqxKr_eSnGWqXgOaJRGutiEJpBmkSdXEOA8g00Wf6MbAZIC3w>
-    <xmx:uM0iYDkwJtWJIxnFCfVjC-W0okkmy7xMvQCOfCBxMIu2SGwaBZK3Sg>
-    <xmx:uM0iYJ2CZS-2sh4j4gcXrzlri7P0xINrHGgiUW8IPZUCpE17pX2-YQ>
-    <xmx:u80iYF6YKAbIP052gotWsGfb737pdMzYpkzg7Ya66r1ik1RKes7roQ>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 766FF24005C;
-        Tue,  9 Feb 2021 13:00:24 -0500 (EST)
-Date:   Tue, 9 Feb 2021 20:00:20 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 01/11] net: switchdev: propagate extack to
- port attributes
-Message-ID: <20210209180020.GA262892@shredder.lan>
-References: <20210209151936.97382-1-olteanv@gmail.com>
- <20210209151936.97382-2-olteanv@gmail.com>
+        Tue, 9 Feb 2021 13:22:00 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21A7C061356;
+        Tue,  9 Feb 2021 10:10:45 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id l19so7902825oih.6;
+        Tue, 09 Feb 2021 10:10:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fDl+34Ws0reoegWYcMSOTld+/zyr9JSnL2c4x6D1jmM=;
+        b=rrAEl/s+ibJpeJ39yhbxxw3u8/HsX3DZUmTocwO+f3cPD02AoNXJ5mxv1F96gIw6u6
+         KwKFu2NoEShbDA4Tg3I6jrh71RRhsKXKLoXgDfCnn4fcGuFPGfUEvM3m7vW1/S1VhpMx
+         KxalunLpOzSz5pdIZ/+XGerG/OgKgJexibCBPXZpxJ2S9ucVYB9onxrZ2aTnQhaTeZQY
+         TXGWEAUVMW8zVie0ZbIfT+nlBa+H0JsFKJTjLv+GgnnJglbrYuA27nOlPY6pAmJ1wP1i
+         6WJv+4nk7Eadjoo7OY4+iJnK8axienqCupnxXJDoNyxNJHjDU098/tnoAAFjQcK9eEEe
+         5Sbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fDl+34Ws0reoegWYcMSOTld+/zyr9JSnL2c4x6D1jmM=;
+        b=hqpqJ0G0t/vlDt3435e06zzP6P0fS7DyQE8eLAK4TfP12xbQidp7my0p77RnAh264m
+         SdS6uDKsR7/yBRbPiYIiEcbMIiFZnqUQ8m7/7q2in/4LFmy0eRxA2dxUOxxWeYoJEmxi
+         Noz1+ujtGh5T6vHSRs2SDxoU9uPQb79pk4NuXIvkDSqBy0HejMBv5eafmBwjLqQ5ZS3W
+         VG/gA5SPUJIu9fcbTrq6KUUhgZ1zllSyPbs6VOmwwSSDpxSOfPv1j833oY4g4mvpjEO2
+         uUQZTKKztGvtiRChhQuXeyYmClwlPBpTX8svhgCQDpPKLNqUmxUBhPBP3z9uCBUAgsDy
+         1P1Q==
+X-Gm-Message-State: AOAM5324KnZ+yn43geSQCYYvl2hZVkdYHF9ZXIQPR65oAM2KvnBoQnb1
+        UbMx9wCu+rxBGhHZ8y5gLl8tSntON6A=
+X-Google-Smtp-Source: ABdhPJwrladHCZioyFWnaln0oPzWpqZHS2VLcaOS8Aa/zn2A42vUPym7Aq4nkowakHBR/8Q59CwXtg==
+X-Received: by 2002:a54:410f:: with SMTP id l15mr3218375oic.149.1612894245423;
+        Tue, 09 Feb 2021 10:10:45 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e14sm1371581otk.22.2021.02.09.10.10.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 09 Feb 2021 10:10:45 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 9 Feb 2021 10:10:43 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.14 00/30] 4.14.221-rc1 review
+Message-ID: <20210209181043.GC142661@roeck-us.net>
+References: <20210208145805.239714726@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209151936.97382-2-olteanv@gmail.com>
+In-Reply-To: <20210208145805.239714726@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:19:26PM +0200, Vladimir Oltean wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Mon, Feb 08, 2021 at 04:00:46PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.221 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> When a struct switchdev_attr is notified through switchdev, there is no
-> way to report informational messages, unlike for struct switchdev_obj.
+> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Build results:
+	total: 168 pass: 168 fail: 0
+Qemu test results:
+	total: 404 pass: 404 fail: 0
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
