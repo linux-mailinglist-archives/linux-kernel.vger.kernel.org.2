@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AF4315667
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A4B315671
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 20:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbhBIS5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 13:57:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233277AbhBIRu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:50:28 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6E1864EB6;
-        Tue,  9 Feb 2021 17:49:44 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 12:49:43 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: Re: [PATCH] sched: Use SCHED_WARN_ON() instead of WARN_ON_ONCE()
- with CONFIG_SCHED_DEBUG
-Message-ID: <20210209124943.4a97b1d2@gandalf.local.home>
-In-Reply-To: <20210203095012.627-1-zbestahu@gmail.com>
-References: <20210203095012.627-1-zbestahu@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233505AbhBITBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 14:01:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233327AbhBIRvi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 12:51:38 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68E2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 09:50:52 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id my11so1817850pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 09:50:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CTX9nI+l+jTlvtYfuIUJpxjytbyTmwWmiGbUoX39kz0=;
+        b=jYp7erzkLHqd8ALqIUysIbs3Gm4bfwLk0NXzv1S/m+caSlmR9lanUASyGzSkRSqdEG
+         2YjR9tv13CZ8gw/Wo3ttkw8x9BBe9aZ4/gU+9nBWrnWctQzQ13/bJLrIjtybpNnt3JwN
+         NO2w4TMPcZhlbPXpTwySQMeB/DmaGJtW0btUtwKFwpCZzX5HlaDhU7aSVzqoG0lNjD5X
+         78/G1QxtN/C62uCsLOSUAVVotGiJYyh8mqfURqIZep83NrzsdWcbTLcMZSIdgY39IKFj
+         NQdbjUyHpULjTu0LJseTtQvhGC8rVNT4G9ysiasQKzPFJHdpFql70ag5n5Yr9151Y6Ur
+         /19Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=CTX9nI+l+jTlvtYfuIUJpxjytbyTmwWmiGbUoX39kz0=;
+        b=B5LOzMW5VlWKmceZ1R+m/uorha6eZsygJ7gOI+jwsAG9feET9Y+jiE/wsYOIwpk7Tu
+         45yE6GYSkfac1KmGIXnaSW2xEtcflaX5hnCb0tAV5IR/pfn9mpVUFPTpbeWHuTmLaUv6
+         5VxUiCKu+Z99dmwm9wTbr7gqgPgYloN1VjkuxDzyt4Jaeje/6Vu36kffbr0Zv6gGflvV
+         7sMY0SDPGCiLLiSoZCXkE92tefyMnR8ht0723wLax1Fz3iGDLk7Z0gUTwseMtQZhIiVM
+         67VozKLe2tq+FeByhl6uB+Iy9h7wh6E1Mm9mELwQN96N7D3T8p/EnxTovOkhWYCWS9Kn
+         ZKNg==
+X-Gm-Message-State: AOAM5336Dm1OhTKQhFKDT5XcvUV6mQiIFs70mK+c42JzWhyTGc5dPGyK
+        dbfc3WAlIVf/WKwcV94XByw=
+X-Google-Smtp-Source: ABdhPJyUlnvVMLsH86gqTbh26uwn9gMrsGYQqPwCZV23qJXAdQl8W5Hp0cr6OIK2CoZnZ04U5DN0hw==
+X-Received: by 2002:a17:90a:4083:: with SMTP id l3mr5155505pjg.109.1612893052380;
+        Tue, 09 Feb 2021 09:50:52 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:d107:fbfb:a7c8:913e])
+        by smtp.gmail.com with ESMTPSA id c188sm7625194pfa.98.2021.02.09.09.50.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 09:50:51 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH] mm: remove lru_add_drain_all in alloc_contig_range
+Date:   Tue,  9 Feb 2021 09:50:48 -0800
+Message-Id: <20210209175048.361638-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  3 Feb 2021 17:50:12 +0800
-Yue Hu <zbestahu@gmail.com> wrote:
+__alloc_contig_migrate_range already has lru_add_drain_all call
+via migrate_prep. It's necessary to move LRU taget pages into
+LRU list to be able to isolated. However, lru_add_drain_all call
+after __alloc_contig_migrate_range is called is pointless.
 
-> From: Yue Hu <huyue2@yulong.com>
-> 
-> Since SCHED_WARN_ON() is provided as a wrapper for WARN_ON_ONCE().
+This patch removes it.
 
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ mm/page_alloc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Peter, care to take this?
-
-Also, looks like we can get rid of the #ifdef CONFIG_SCHED_DEBUG in
-set_task_cpu() by replacing all the WARN_ON_ONCE() with SCHED_WARN_ON().
-
--- Steve
-
-
-> 
-> Signed-off-by: Yue Hu <huyue2@yulong.com>
-> ---
->  kernel/sched/core.c | 2 +-
->  kernel/sched/rt.c   | 4 +---
->  2 files changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 8c54810..8f1f345 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5347,7 +5347,7 @@ asmlinkage __visible void __sched preempt_schedule_irq(void)
->  int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flags,
->  			  void *key)
->  {
-> -	WARN_ON_ONCE(IS_ENABLED(CONFIG_SCHED_DEBUG) && wake_flags & ~WF_SYNC);
-> +	SCHED_WARN_ON(wake_flags & ~WF_SYNC);
->  	return try_to_wake_up(curr->private, mode, wake_flags);
->  }
->  EXPORT_SYMBOL(default_wake_function);
-> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-> index 8f720b7..a90eab3 100644
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -114,9 +114,7 @@ static void destroy_rt_bandwidth(struct rt_bandwidth *rt_b)
->  
->  static inline struct task_struct *rt_task_of(struct sched_rt_entity *rt_se)
->  {
-> -#ifdef CONFIG_SCHED_DEBUG
-> -	WARN_ON_ONCE(!rt_entity_is_task(rt_se));
-> -#endif
-> +	SCHED_WARN_ON(!rt_entity_is_task(rt_se));
->  	return container_of(rt_se, struct task_struct, rt);
->  }
->  
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 6446778cbc6b..f8fbee73dd6d 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8603,8 +8603,6 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+ 	 * isolated thus they won't get removed from buddy.
+ 	 */
+ 
+-	lru_add_drain_all();
+-
+ 	order = 0;
+ 	outer_start = start;
+ 	while (!PageBuddy(pfn_to_page(outer_start))) {
+-- 
+2.30.0.478.g8a0d178c01-goog
 
