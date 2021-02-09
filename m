@@ -2,140 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B66315BBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 984AB315BC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 01:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbhBJA5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 19:57:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28629 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234088AbhBIWN3 (ORCPT
+        id S234760AbhBJA7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 19:59:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234170AbhBIWPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:13:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612908722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mu2GdHae7EuK0Pc3OdQgK5kLKueeIcnxDHCY0zOgPDY=;
-        b=cMJgB25ED7l3DCmAIwJyblS/okic8Whi/xQC4/stXAcGVEpA7LjrS9vc9J1P10GBz0xS0C
-        bLF2ury6x98uZMYcSMjoJ30dbUnZk8AoEeovtwIbtP8FIJ2bFOBxjoe0ehkscnz70bLTB7
-        CbXELuARf1Hpzs9W3psZT2/mjmjXeQo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183--ILRPwG5Maqk2hAjVRPnMA-1; Tue, 09 Feb 2021 16:46:09 -0500
-X-MC-Unique: -ILRPwG5Maqk2hAjVRPnMA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 9 Feb 2021 17:15:12 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735FEC08EBAC;
+        Tue,  9 Feb 2021 13:55:46 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2407C280;
-        Tue,  9 Feb 2021 21:46:07 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-119-222.rdu2.redhat.com [10.10.119.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DECBB10016FC;
-        Tue,  9 Feb 2021 21:46:02 +0000 (UTC)
-Subject: Re: [PATCH v2 06/28] locking/rwlocks: Add contention detection for
- rwlocks
-To:     Guenter Roeck <linux@roeck-us.net>, Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Davidlohr Bueso <dbueso@suse.de>
-References: <20210202185734.1680553-1-bgardon@google.com>
- <20210202185734.1680553-7-bgardon@google.com>
- <20210209203908.GA255655@roeck-us.net>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <3ee109cd-e406-4a70-17e8-dfeae7664f5f@redhat.com>
-Date:   Tue, 9 Feb 2021 16:46:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DZxR030Hxz9sVF;
+        Wed, 10 Feb 2021 08:50:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612907452;
+        bh=G0Ed/dJfXtLx7tzqS8Qox4C6pVjikZuLoNdBUJ+Rhdo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GB11Ad7cEkGMbSJSxvjhz/zMnO2zeqVIVA+YhZegFXyZC52QbYqMu+DFZhuoZZkdV
+         AmuM6WUb4qtE80OZweD5WMV9qnc3xovmZ/cMHC2R4pfAIri/6VvjYEMU4HlYWwvd76
+         WNQlEDqi+0HrQP86fyR/ssTfeLCpAkClQCAB+Vnls7wd5esiRb0pDkgFrA7k5d4VC4
+         WwomBdtvvleerFdXU/FWmNOdwPXnEakSf9KcuH9015WsQQCh+Z5Adwd1qU+mOem5Eo
+         XWxdmE2NlI9sCBluUew4H1GRua3Zt2UMrroN6id9DYr3l2ipOdEig77jZW5CUp1hL5
+         B9n0IqtX4y+hg==
+Date:   Wed, 10 Feb 2021 08:50:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: linux-next: build failure after merge of the modules tree
+Message-ID: <20210210085051.7fb951d1@canb.auug.org.au>
+In-Reply-To: <YCKnRPRTDyfGxnBC@gunter>
+References: <20210209210843.3af66662@canb.auug.org.au>
+        <YCKnRPRTDyfGxnBC@gunter>
 MIME-Version: 1.0
-In-Reply-To: <20210209203908.GA255655@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: multipart/signed; boundary="Sig_/mF5sT4DfCLMx5cOaN5Q+QBj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 3:39 PM, Guenter Roeck wrote:
-> On Tue, Feb 02, 2021 at 10:57:12AM -0800, Ben Gardon wrote:
->> rwlocks do not currently have any facility to detect contention
->> like spinlocks do. In order to allow users of rwlocks to better manage
->> latency, add contention detection for queued rwlocks.
->>
->> CC: Ingo Molnar <mingo@redhat.com>
->> CC: Will Deacon <will@kernel.org>
->> Acked-by: Peter Zijlstra <peterz@infradead.org>
->> Acked-by: Davidlohr Bueso <dbueso@suse.de>
->> Acked-by: Waiman Long <longman@redhat.com>
->> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
->> Signed-off-by: Ben Gardon <bgardon@google.com>
-> When building mips:defconfig, this patch results in:
+--Sig_/mF5sT4DfCLMx5cOaN5Q+QBj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Jessica,
+
+On Tue, 9 Feb 2021 16:16:20 +0100 Jessica Yu <jeyu@kernel.org> wrote:
 >
-> Error log:
-> In file included from include/linux/spinlock.h:90,
->                   from include/linux/ipc.h:5,
->                   from include/uapi/linux/sem.h:5,
->                   from include/linux/sem.h:5,
->                   from include/linux/compat.h:14,
->                   from arch/mips/kernel/asm-offsets.c:12:
-> arch/mips/include/asm/spinlock.h:17:28: error: redefinition of 'queued_spin_unlock'
->     17 | #define queued_spin_unlock queued_spin_unlock
->        |                            ^~~~~~~~~~~~~~~~~~
-> arch/mips/include/asm/spinlock.h:22:20: note: in expansion of macro 'queued_spin_unlock'
->     22 | static inline void queued_spin_unlock(struct qspinlock *lock)
->        |                    ^~~~~~~~~~~~~~~~~~
-> In file included from include/asm-generic/qrwlock.h:17,
->                   from ./arch/mips/include/generated/asm/qrwlock.h:1,
->                   from arch/mips/include/asm/spinlock.h:13,
->                   from include/linux/spinlock.h:90,
->                   from include/linux/ipc.h:5,
->                   from include/uapi/linux/sem.h:5,
->                   from include/linux/sem.h:5,
->                   from include/linux/compat.h:14,
->                   from arch/mips/kernel/asm-offsets.c:12:
-> include/asm-generic/qspinlock.h:94:29: note: previous definition of 'queued_spin_unlock' was here
->     94 | static __always_inline void queued_spin_unlock(struct qspinlock *lock)
->        |                             ^~~~~~~~~~~~~~~~~~
+> Hmm, these errors don't look like it's related to that particular commit.=
+ I was
 
-I think the compile error is caused by the improper header file 
-inclusion ordering. Can you try the following change to see if it can 
-fix the compile error?
+I found this commit by bisection and then tested by reverting it.
 
+Before this commit, CONFIG_TRIM_UNUSED_KSYMS would not be set in the
+allyesconfig build because CONFIG_UNUSED_SYMBOLS was set.  After this
+commit, CONFIG_TRIM_UNUSED_KSYMS will be set in the allyesconfig build.
+
+> able to reproduce these weird autoksym errors even without any modules-ne=
+xt
+> patches applied, and on a clean v5.11-rc7 tree. To reproduce it,
+> CONFIG_TRIM_UNUSED_KSYMS needs to be enabled. I guess that's why we run i=
+nto
+> these errors with allyesconfig. I used a gcc-7 ppc64le cross compiler and=
+ got
+> the same compiler warnings. It seems to not compile on powerpc properly b=
+ecause
+> it looks like some symbols have an extra dot "." prefix, for example in
+> kthread.o:
+>=20
+>     168: 0000000000000318    24 NOTYPE  GLOBAL DEFAULT    6 kthread_creat=
+e_worker
+>     169: 0000000000001d90   104 FUNC    GLOBAL DEFAULT    1 .kthread_crea=
+te_worker
+>     170: 0000000000000330    24 NOTYPE  GLOBAL DEFAULT    6 kthread_creat=
+e_worker_on_cpu
+>     171: 0000000000001e00    88 FUNC    GLOBAL DEFAULT    1 .kthread_crea=
+te_worker_on_cpu
+>     172: 0000000000000348    24 NOTYPE  GLOBAL DEFAULT    6 kthread_queue=
+_work
+>     173: 0000000000001e60   228 FUNC    GLOBAL DEFAULT    1 .kthread_queu=
+e_work
+>=20
+> So I suppose this dot prefix is specific to powerpc. From the ppc64 elf a=
+bi docs:
+>=20
+>      Symbol names with a dot (.) prefix are reserved for holding entry po=
+int
+>      addresses. The value of a symbol named ".FN", if it exists, is the e=
+ntry point
+>      of the function "FN".
+>=20
+> I guess the presence of the extra dot symbols is confusing
+> scripts/gen_autoksyms.sh, so we get the dot symbols in autoksyms.h, which=
+ the
+> preprocessor doesn't like. I am wondering how this was never caught until=
+ now
+> and also now curious if this feature was ever functional on powerpc..
+
+Which feature?
+
+--=20
 Cheers,
-Longman
+Stephen Rothwell
 
-diff --git a/include/asm-generic/qrwlock.h b/include/asm-generic/qrwlock.h
-index 0020d3b820a7..d7178a9439b5 100644
---- a/include/asm-generic/qrwlock.h
-+++ b/include/asm-generic/qrwlock.h
-@@ -10,11 +10,11 @@
-  #define __ASM_GENERIC_QRWLOCK_H
+--Sig_/mF5sT4DfCLMx5cOaN5Q+QBj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-  #include <linux/atomic.h>
-+#include <linux/spinlock.h>
-  #include <asm/barrier.h>
-  #include <asm/processor.h>
+-----BEGIN PGP SIGNATURE-----
 
-  #include <asm-generic/qrwlock_types.h>
--#include <asm-generic/qspinlock.h>
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAjA7sACgkQAVBC80lX
+0Gzwlgf/ctA6cRjr3PycwX776JNl/lXhgq80w0pR7pFpO8OABd7QWDN+9Pb2blnZ
+tfsyhdvSJdCqfF5+iTdZudJOHYLaG572NTep620O3VBxAa6EVOErqSzH4tDlXC8h
+bj4cfZEzd63xGnNh+F/c5szn9k0A5tEJG3fFP/XKYUUbEI74Uu0nzJu/8NhuDPeJ
+kV+9lbT29f4x+OnBGW8Fw/NomyikgMSmxl+ogiqhtDols++QljYLBiHgMqzZoD6v
+F7tydwMWr50nO+0+su30kk08cnW0qivaqxLJzdaGiDk8Px03eGCs5+NUk0kJFGg6
+01/1bjeGuD752z9qVqXE1HixU1CNrw==
+=RQeI
+-----END PGP SIGNATURE-----
 
-  /*
-   * Writer states & reader shift and bias.
-
-
-
+--Sig_/mF5sT4DfCLMx5cOaN5Q+QBj--
