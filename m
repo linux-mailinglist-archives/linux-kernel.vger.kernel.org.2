@@ -2,388 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C431315DF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 04:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4DC315E34
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 05:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhBJDzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 22:55:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23335 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229601AbhBJDyt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 22:54:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612929202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8IpLBSg1+psqXS4gK7Kxa2B5zToJZmbNHb6kpSKm+3Q=;
-        b=WZrUJaWlmk3nYmVf132esU1l34dw+be0Li9Js6Gq/J5m6H3HPJHEQD2lhnFdQbbLScvIkb
-        mYATBQOMCa19/LZNc+2eijYStUaNc6UG+psXjeaSakuXZiL2m4KQuB2B3e+OKFovAhDqzo
-        1dax9Nkj7r4VDOlnG4j7nvTe4ev1vFQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-129-tRyM0tO6MWmOgx0ZElTwLA-1; Tue, 09 Feb 2021 22:53:18 -0500
-X-MC-Unique: tRyM0tO6MWmOgx0ZElTwLA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 150B11005501;
-        Wed, 10 Feb 2021 03:53:17 +0000 (UTC)
-Received: from [10.72.12.223] (ovpn-12-223.pek2.redhat.com [10.72.12.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 45D671B4B0;
-        Wed, 10 Feb 2021 03:53:10 +0000 (UTC)
-Subject: Re: [PATCH v1] vdpa/mlx5: Restore the hardware used index after
- change map
-To:     Si-Wei Liu <si-wei.liu@oracle.com>, Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lulu@redhat.com
-References: <20210204073618.36336-1-elic@nvidia.com>
- <81f5ce4f-cdb0-26cd-0dce-7ada824b1b86@oracle.com>
- <f2206fa2-0ddc-1858-54e7-71614b142e46@redhat.com>
- <20210208063736.GA166546@mtl-vdi-166.wap.labs.mlnx>
- <0d592ed0-3cea-cfb0-9b7b-9d2755da3f12@redhat.com>
- <20210208100445.GA173340@mtl-vdi-166.wap.labs.mlnx>
- <379d79ff-c8b4-9acb-1ee4-16573b601973@redhat.com>
- <20210209061232.GC210455@mtl-vdi-166.wap.labs.mlnx>
- <411ff244-a698-a312-333a-4fdbeb3271d1@redhat.com>
- <a90dd931-43cc-e080-5886-064deb972b11@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <b749313c-3a44-f6b2-f9b8-3aefa2c2d72c@redhat.com>
-Date:   Wed, 10 Feb 2021 11:53:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230226AbhBJE2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 23:28:16 -0500
+Received: from msg-2.mailo.com ([213.182.54.12]:58080 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229716AbhBJE2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 23:28:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1612897114; bh=V3ccey8WzD2XM7AIsQttYEM9eTcmjZ4r0L//q+ngfDY=;
+        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+         References:Content-Type:MIME-Version:Content-Transfer-Encoding;
+        b=EuwOSoBSYeNTUosXXdJcfv6d/N0BqOdiTnMD29Ho55Q6IP51jmzYzDrgbX+sLfdhX
+         nhCp3nsZlcxop2yWVl6UYSTnvA5bHXWnqGFeg/ruG9BLkSidOYhviXz5ubrzgubHZQ
+         ZyeOCOCKi4yeAgVXj9qPxJS39khz9axAY5H7jvzc=
+Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Tue,  9 Feb 2021 19:58:34 +0100 (CET)
+X-EA-Auth: miDhEH5cip3PJigdiPHecsZKJftJVBmcIk/mjlO+sZYfQ82rAqPsLR+iXZKaGjd+Fg+sq5g9isTz3qrMVpIRrbEk72TO8fzfsr7vDETcAvM=
+Message-ID: <07cac63721a9ca63733617e461d640e8927a78f3.camel@mailoo.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: input/touchscreen: add bindings for
+ msg26xx
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Michael Srba <Michael.Srba@seznam.cz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Date:   Tue, 09 Feb 2021 19:58:33 +0100
+In-Reply-To: <20210209161319.GA3849081@robh.at.kernel.org>
+References: <20210121174359.1455393-1-vincent.knecht@mailoo.org>
+         <20210209161319.GA3849081@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <a90dd931-43cc-e080-5886-064deb972b11@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Le mardi 09 f=C3=A9vrier 2021 =C3=A0 10:13 -0600, Rob Herring a =C3=A9crit=
+=C2=A0:
+> On Thu, Jan 21, 2021 at 06:43:47PM +0100, Vincent Knecht wrote:
+> > This adds dts bindings for the mstar msg26xx touchscreen.
+> >=20
+> > Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+> > ---
+> > Changed in v3:
+> > - added `touchscreen-size-x: true` and `touchscreen-size-y: true` prope=
+rties
+> > Changed in v2:
+> > - changed M-Star to MStar in title line
+> > - changed reset gpio to active-low in example section
+> > ---
+> > =C2=A0.../input/touchscreen/mstar,msg26xx.yaml=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 | 69 +++++++++++++++++++
+> > =C2=A01 file changed, 69 insertions(+)
+> > =C2=A0create mode 100644 Documentation/devicetree/bindings/input/touchs=
+creen/mstar,msg26xx.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/input/touchscreen/mstar,=
+msg26xx.yaml
+> > b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx.yam=
+l
+> > new file mode 100644
+> > index 000000000000..5d26a1008bf1
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx=
+.yaml
+> > @@ -0,0 +1,69 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/input/touchscreen/mstar,msg26xx.yam=
+l#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: MStar msg26xx touchscreen controller Bindings
+> > +
+> > +maintainers:
+> > +=C2=A0 - Vincent Knecht <vincent.knecht@mailoo.org>
+> > +
+> > +allOf:
+> > +=C2=A0 - $ref: touchscreen.yaml#
+> > +
+> > +properties:
+> > +=C2=A0 compatible:
+> > +=C2=A0=C2=A0=C2=A0 const: mstar,msg26xx
+>=20
+> Don't use wildcards in compatible strings.
 
-On 2021/2/10 上午10:30, Si-Wei Liu wrote:
->
->
-> On 2/8/2021 10:37 PM, Jason Wang wrote:
->>
->> On 2021/2/9 下午2:12, Eli Cohen wrote:
->>> On Tue, Feb 09, 2021 at 11:20:14AM +0800, Jason Wang wrote:
->>>> On 2021/2/8 下午6:04, Eli Cohen wrote:
->>>>> On Mon, Feb 08, 2021 at 05:04:27PM +0800, Jason Wang wrote:
->>>>>> On 2021/2/8 下午2:37, Eli Cohen wrote:
->>>>>>> On Mon, Feb 08, 2021 at 12:27:18PM +0800, Jason Wang wrote:
->>>>>>>> On 2021/2/6 上午7:07, Si-Wei Liu wrote:
->>>>>>>>> On 2/3/2021 11:36 PM, Eli Cohen wrote:
->>>>>>>>>> When a change of memory map occurs, the hardware resources 
->>>>>>>>>> are destroyed
->>>>>>>>>> and then re-created again with the new memory map. In such 
->>>>>>>>>> case, we need
->>>>>>>>>> to restore the hardware available and used indices. The 
->>>>>>>>>> driver failed to
->>>>>>>>>> restore the used index which is added here.
->>>>>>>>>>
->>>>>>>>>> Also, since the driver also fails to reset the available and 
->>>>>>>>>> used
->>>>>>>>>> indices upon device reset, fix this here to avoid regression 
->>>>>>>>>> caused by
->>>>>>>>>> the fact that used index may not be zero upon device reset.
->>>>>>>>>>
->>>>>>>>>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for 
->>>>>>>>>> supported mlx5
->>>>>>>>>> devices")
->>>>>>>>>> Signed-off-by: Eli Cohen<elic@nvidia.com>
->>>>>>>>>> ---
->>>>>>>>>> v0 -> v1:
->>>>>>>>>> Clear indices upon device reset
->>>>>>>>>>
->>>>>>>>>>      drivers/vdpa/mlx5/net/mlx5_vnet.c | 18 ++++++++++++++++++
->>>>>>>>>>      1 file changed, 18 insertions(+)
->>>>>>>>>>
->>>>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>>> index 88dde3455bfd..b5fe6d2ad22f 100644
->>>>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>>> @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
->>>>>>>>>>          u64 device_addr;
->>>>>>>>>>          u64 driver_addr;
->>>>>>>>>>          u16 avail_index;
->>>>>>>>>> +    u16 used_index;
->>>>>>>>>>          bool ready;
->>>>>>>>>>          struct vdpa_callback cb;
->>>>>>>>>>          bool restore;
->>>>>>>>>> @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
->>>>>>>>>>          u32 virtq_id;
->>>>>>>>>>          struct mlx5_vdpa_net *ndev;
->>>>>>>>>>          u16 avail_idx;
->>>>>>>>>> +    u16 used_idx;
->>>>>>>>>>          int fw_state;
->>>>>>>>>>            /* keep last in the struct */
->>>>>>>>>> @@ -804,6 +806,7 @@ static int create_virtqueue(struct 
->>>>>>>>>> mlx5_vdpa_net
->>>>>>>>>> *ndev, struct mlx5_vdpa_virtque
->>>>>>>>>>            obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, 
->>>>>>>>>> in,
->>>>>>>>>> obj_context);
->>>>>>>>>>          MLX5_SET(virtio_net_q_object, obj_context, 
->>>>>>>>>> hw_available_index,
->>>>>>>>>> mvq->avail_idx);
->>>>>>>>>> +    MLX5_SET(virtio_net_q_object, obj_context, hw_used_index,
->>>>>>>>>> mvq->used_idx);
->>>>>>>>>>          MLX5_SET(virtio_net_q_object, obj_context,
->>>>>>>>>> queue_feature_bit_mask_12_3,
->>>>>>>>>> get_features_12_3(ndev->mvdev.actual_features));
->>>>>>>>>>          vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context,
->>>>>>>>>> virtio_q_context);
->>>>>>>>>> @@ -1022,6 +1025,7 @@ static int connect_qps(struct 
->>>>>>>>>> mlx5_vdpa_net
->>>>>>>>>> *ndev, struct mlx5_vdpa_virtqueue *m
->>>>>>>>>>      struct mlx5_virtq_attr {
->>>>>>>>>>          u8 state;
->>>>>>>>>>          u16 available_index;
->>>>>>>>>> +    u16 used_index;
->>>>>>>>>>      };
->>>>>>>>>>        static int query_virtqueue(struct mlx5_vdpa_net *ndev, 
->>>>>>>>>> struct
->>>>>>>>>> mlx5_vdpa_virtqueue *mvq,
->>>>>>>>>> @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct
->>>>>>>>>> mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
->>>>>>>>>>          memset(attr, 0, sizeof(*attr));
->>>>>>>>>>          attr->state = MLX5_GET(virtio_net_q_object, 
->>>>>>>>>> obj_context, state);
->>>>>>>>>>          attr->available_index = MLX5_GET(virtio_net_q_object,
->>>>>>>>>> obj_context, hw_available_index);
->>>>>>>>>> +    attr->used_index = MLX5_GET(virtio_net_q_object, 
->>>>>>>>>> obj_context,
->>>>>>>>>> hw_used_index);
->>>>>>>>>>          kfree(out);
->>>>>>>>>>          return 0;
->>>>>>>>>>      @@ -1535,6 +1540,16 @@ static void 
->>>>>>>>>> teardown_virtqueues(struct
->>>>>>>>>> mlx5_vdpa_net *ndev)
->>>>>>>>>>          }
->>>>>>>>>>      }
->>>>>>>>>>      +static void clear_virtqueues(struct mlx5_vdpa_net *ndev)
->>>>>>>>>> +{
->>>>>>>>>> +    int i;
->>>>>>>>>> +
->>>>>>>>>> +    for (i = ndev->mvdev.max_vqs - 1; i >= 0; i--) {
->>>>>>>>>> +        ndev->vqs[i].avail_idx = 0;
->>>>>>>>>> +        ndev->vqs[i].used_idx = 0;
->>>>>>>>>> +    }
->>>>>>>>>> +}
->>>>>>>>>> +
->>>>>>>>>>      /* TODO: cross-endian support */
->>>>>>>>>>      static inline bool mlx5_vdpa_is_little_endian(struct 
->>>>>>>>>> mlx5_vdpa_dev
->>>>>>>>>> *mvdev)
->>>>>>>>>>      {
->>>>>>>>>> @@ -1610,6 +1625,7 @@ static int save_channel_info(struct
->>>>>>>>>> mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
->>>>>>>>>>              return err;
->>>>>>>>>>            ri->avail_index = attr.available_index;
->>>>>>>>>> +    ri->used_index = attr.used_index;
->>>>>>>>>>          ri->ready = mvq->ready;
->>>>>>>>>>          ri->num_ent = mvq->num_ent;
->>>>>>>>>>          ri->desc_addr = mvq->desc_addr;
->>>>>>>>>> @@ -1654,6 +1670,7 @@ static void restore_channels_info(struct
->>>>>>>>>> mlx5_vdpa_net *ndev)
->>>>>>>>>>                  continue;
->>>>>>>>>>                mvq->avail_idx = ri->avail_index;
->>>>>>>>>> +        mvq->used_idx = ri->used_index;
->>>>>>>>>>              mvq->ready = ri->ready;
->>>>>>>>>>              mvq->num_ent = ri->num_ent;
->>>>>>>>>>              mvq->desc_addr = ri->desc_addr;
->>>>>>>>>> @@ -1768,6 +1785,7 @@ static void mlx5_vdpa_set_status(struct
->>>>>>>>>> vdpa_device *vdev, u8 status)
->>>>>>>>>>          if (!status) {
->>>>>>>>>>              mlx5_vdpa_info(mvdev, "performing device reset\n");
->>>>>>>>>>              teardown_driver(ndev);
->>>>>>>>>> +        clear_virtqueues(ndev);
->>>>>>>>> The clearing looks fine at the first glance, as it aligns with 
->>>>>>>>> the other
->>>>>>>>> state cleanups floating around at the same place. However, the 
->>>>>>>>> thing is
->>>>>>>>> get_vq_state() is supposed to be called right after to get 
->>>>>>>>> sync'ed with
->>>>>>>>> the latest internal avail_index from device while vq is 
->>>>>>>>> stopped. The
->>>>>>>>> index was saved in the driver software at vq suspension, but 
->>>>>>>>> before the
->>>>>>>>> virtq object is destroyed. We shouldn't clear the avail_index 
->>>>>>>>> too early.
->>>>>>>> Good point.
->>>>>>>>
->>>>>>>> There's a limitation on the virtio spec and vDPA framework that 
->>>>>>>> we can not
->>>>>>>> simply differ device suspending from device reset.
->>>>>>>>
->>>>>>> Are you talking about live migration where you reset the device but
->>>>>>> still want to know how far it progressed in order to continue 
->>>>>>> from the
->>>>>>> same place in the new VM?
->>>>>> Yes. So if we want to support live migration at we need:
->>>>>>
->>>>>> in src node:
->>>>>> 1) suspend the device
->>>>>> 2) get last_avail_idx via get_vq_state()
->>>>>>
->>>>>> in the dst node:
->>>>>> 3) set last_avail_idx via set_vq_state()
->>>>>> 4) resume the device
->>>>>>
->>>>>> So you can see, step 2 requires the device/driver not to forget the
->>>>>> last_avail_idx.
->>>>>>
->>>>> Just to be sure, what really matters here is the used index. 
->>>>> Becuase the
->>>>> vriqtueue itself is copied from the src VM to the dest VM. The 
->>>>> available
->>>>> index is alreay there and we know the hardware reads it from there.
->>>>
->>>> So for "last_avail_idx" I meant the hardware internal avail index. 
->>>> It's not
->>>> stored in the virtqueue so we must migrate it from src to dest and 
->>>> set them
->>>> through set_vq_state(). Then in the destination, the virtqueue can be
->>>> restarted from that index.
->>>>
->>> Consider this case: driver posted buffers till avail index becomes the
->>> value 50. Hardware is executing but made it till 20 when virtqueue was
->>> suspended due to live migration - this is indicated by hardware used
->>> index equal 20.
->>
->>
->> So in this case the used index in the virtqueue should be 20? 
->> Otherwise we need not sync used index itself but all the used entries 
->> that is not committed to the used ring.
->
-> In other word, for mlx5 vdpa there's no such internal last_avail_idx 
-> stuff maintained by the hardware, right? 
+Thank you for the input...
+
+Let's say I set it to "mstar,msg2638", is it better to rename the driver fi=
+le and functions too ?
+According to downstream source file naming, msg2638 is the model I have and=
+ test this driver with.
 
 
-For each device it should have one otherwise it won't work correctly 
-during stop/resume. See the codes mlx5_vdpa_get_vq_state() which calls 
-query_virtqueue() that build commands to query "last_avail_idx" from the 
-hardware:
-
-     MLX5_SET(general_obj_in_cmd_hdr, cmd_hdr, opcode, 
-MLX5_CMD_OP_QUERY_GENERAL_OBJECT);
-     MLX5_SET(general_obj_in_cmd_hdr, cmd_hdr, obj_type, 
-MLX5_OBJ_TYPE_VIRTIO_NET_Q);
-     MLX5_SET(general_obj_in_cmd_hdr, cmd_hdr, obj_id, mvq->virtq_id);
-     MLX5_SET(general_obj_in_cmd_hdr, cmd_hdr, uid, ndev->mvdev.res.uid);
-     err = mlx5_cmd_exec(ndev->mvdev.mdev, in, sizeof(in), out, outlen);
-     if (err)
-         goto err_cmd;
-
-     obj_context = MLX5_ADDR_OF(query_virtio_net_q_out, out, obj_context);
-     memset(attr, 0, sizeof(*attr));
-     attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
-     attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, 
-hw_available_index);
+There's a possibility this driver works as-is or with minor mods for msg263=
+3 too,
+and a more remote one for msg21xx and msg22xx...
 
 
 
 
-> And the used_idx in the virtqueue is always in sync with the hardware 
-> used_index, and hardware is supposed to commit pending used buffers to 
-> the ring while bumping up the hardware used_index (and also committed 
-> to memory) altogether prior to suspension, is my understanding correct 
-> here? Double checking if this is the expected semantics of what 
-> modify_virtqueue(MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND) should achieve.
->
-> If the above is true, then it looks to me for mlx5 vdpa we should 
-> really return h/w used_idx rather than the last_avail_idx through 
-> get_vq_state(), in order to reconstruct the virt queue state post live 
-> migration. For the set_map case, the internal last_avail_idx really 
-> doesn't matter, although both indices are saved and restored 
-> transparently as-is.
 
-
-Right, a subtle thing here is that: for the device that might have can't 
-not complete all virtqueue requests during vq suspending, the 
-"last_avail_idx" might not be equal to the hardware used_idx. Thing 
-might be true for the storage devices that needs to connect to a remote 
-backend. But this is not the case of networking device, so 
-last_avail_idx should be equal to hardware used_idx here. But using the 
-"last_avail_idx" or hardware avail_idx should always be better in this 
-case since it's guaranteed to correct and will have less confusion. We 
-use this convention in other types of vhost backends (vhost-kernel, 
-vhost-user).
-
-So looking at mlx5_set_vq_state(), it probably won't work since it 
-doesn't not set either hardware avail_idx or hardware used_idx:
-
-static int mlx5_vdpa_set_vq_state(struct vdpa_device *vdev, u16 idx,
-                   const struct vdpa_vq_state *state)
-{
-     struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
-     struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
-     struct mlx5_vdpa_virtqueue *mvq = &ndev->vqs[idx];
-
-     if (mvq->fw_state == MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY) {
-         mlx5_vdpa_warn(mvdev, "can't modify available index\n");
-         return -EINVAL;
-     }
-
-     mvq->avail_idx = state->avail_index;
-     return 0;
-}
-
-Depends on the hardware, we should either set hardware used_idx or 
-hardware avail_idx here.
-
-I think we need to clarify how device is supposed to work in the virtio 
-spec.
-
-Thanks
-
-
->
-> -Siwei
->
->>
->>
->>> Now the vritqueue is copied to the new VM and the
->>> hardware now has to continue execution from index 20. We need to tell
->>> the hardware via configuring the last used_index.
->>
->>
->> If the hardware can not sync the index from the virtqueue, the driver 
->> can do the synchronization by make the last_used_idx equals to used 
->> index in the virtqueue.
->>
->> Thanks
->>
->>
->>>   So why don't we
->>> restore the used index?
->>>
->>>>> So it puzzles me why is set_vq_state() we do not communicate the 
->>>>> saved
->>>>> used index.
->>>>
->>>> We don't do that since:
->>>>
->>>> 1) if the hardware can sync its internal used index from the virtqueue
->>>> during device, then we don't need it
->>>> 2) if the hardware can not sync its internal used index, the driver 
->>>> (e.g as
->>>> you did here) can do that.
->>>>
->>>> But there's no way for the hardware to deduce the internal avail 
->>>> index from
->>>> the virtqueue, that's why avail index is sycned.
->>>>
->>>> Thanks
->>>>
->>>>
->>
->
 
