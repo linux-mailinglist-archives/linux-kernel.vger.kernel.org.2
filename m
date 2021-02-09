@@ -2,386 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D87B314509
-	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92BE8314510
+	for <lists+linux-kernel@lfdr.de>; Tue,  9 Feb 2021 01:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhBIAnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 8 Feb 2021 19:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhBIAnI (ORCPT
+        id S230185AbhBIArC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 8 Feb 2021 19:47:02 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:46762 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhBIAq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:43:08 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F77C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  8 Feb 2021 16:42:27 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id b21so11359725pgk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 08 Feb 2021 16:42:27 -0800 (PST)
+        Mon, 8 Feb 2021 19:46:57 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1190eHLo190759;
+        Tue, 9 Feb 2021 00:45:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=fuHYv6g6uxb/2HmQDkQ3NuMyX/kiIpKMCyut7DUAgAA=;
+ b=ekMF8eGQ7NPSzwtHlrHvNvJTwh/SBy1BROWImKqU6NVb/rNCMtlC3g2hVCge4XiKbmKX
+ 3YTrh4B/aSoaXWMMV+Uohl/U5ulGAsFElZB9W8jVBLBxqIhMNULvMqBs4BIcZJa41kmi
+ bSz8Bftc/cl0J1rKwC/9SbKvuoSyvXVrAnQXqgt+9D7Kj1KevbSt/Kb9G/Mzi/hRqzmE
+ BdhYDwRjXTejkTOmPCfagSg+4dxRtmLC8ixCup/s38ov8dV1DwR/rnp/dHl2EsitDszS
+ t5LYTXaFp/9/Uh7AO/lJ7YcPGFq79VulpOqks/Dyr9R9U80HDetAnd+HuKqLt6mSj3KW uQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 36hgmadywy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 09 Feb 2021 00:45:57 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1190eZH2166715;
+        Tue, 9 Feb 2021 00:45:56 GMT
+Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2052.outbound.protection.outlook.com [104.47.46.52])
+        by userp3020.oracle.com with ESMTP id 36j4vqkma0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 09 Feb 2021 00:45:56 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R5MsYm3CYa1fp59zOmkb5w0XwgJzJ+GgJJXF3/VUHiZK4WJXEkzKbyQxvqL6ApkHmE1tIaMrcZLZHxBXni3Xcmox295ueTN+qfO8CGhZSfXf0v8jL61muEjxFbW7lSll1UfiXTim7dBRkR3qQWHWpKHYOmoxN19bcq/bBAJwEEziELWy8TaFHKqhA9XXfrnhl8A0PWo7ABPePnU87F3UjEfjDlJu4crejZJiSa+gl6IR48jz3O44DdqhmaLxrhp+Rv+LobT0KPA2qvOw94lDki5FZ7YfWF4kyH8nFJ44GPwkaL43qlBfaYts1Pt4uH8c0Tn+ntEvsO2MEMM1GwHDgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fuHYv6g6uxb/2HmQDkQ3NuMyX/kiIpKMCyut7DUAgAA=;
+ b=HE5hHOYjKbytXPGHW++HPCgT3hbogvhgytHoVpk9rpIwm4PR2nd6sKWaO6MRHpngW/gOHWNLUDkfKkBMoCykNHEavLg0oEk7V3EIzrYzTHimZOXIoAB7Pk467Ybcs8zhKncq4knaI7NlWkHCSsW+b1oRYrIN/rs3rn7DfjL8o0StKPYbk72fNxBTt+NbMqYmPZMMkjIrVZBAYFMgwAPtChelSu3afHwQhsQAhQfyiiSOyTcMUHIaWlg55LfSkUnIRWPU5ILdYDJYUD59ie4SYCi7E0LHPngXZ3ugxV6SlyfdjARCatzM5FjQh5dEzhgHTzIRqo8FjzAwVL5zTZ/UXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=nVPN4UxPEU4aVrwT1YdaPeb+eZCqj8n8X5pzdQWiYkg=;
-        b=EVLgGSo8IwfM7scBBkA54yw1YCtCvUbpvVg7vYDVb8DwJd0AHv8AuCwtQ/pAnVvtUD
-         Xcx5W128HYWUJQMURWir6029LF6tr1hb3xOKCw4hh8XPcOA/+r4ljXCmE1fprVCktne4
-         irO7FrL0IHJcf/rhbuuyv6JzJftoTDqk2sNdc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=nVPN4UxPEU4aVrwT1YdaPeb+eZCqj8n8X5pzdQWiYkg=;
-        b=ikZKEKz7FDGpwWLnlAnuE0M12wDZzN6vDhH5scEFdmZzTxhT9yqhlwO3kEND4LtVzB
-         lZ6FvP/lPD1T4fqP11h3URuwk7nkZ/RnewfEARbi2sVQd+NqJ6V821F83vu78TmoCE9+
-         sH2zHaw/gvLXvRYfAH81IW5dqCcr2tFHqxLCBYbqFcnbBKuke+05qlkgwipzIEtnZk38
-         Duf/HqlV1dio/nApeUAlhZW9WA7U9ten38AEhU986XFfz8psVLx9ArlcQYacOdlgmWqY
-         MpfhDdGnalKxoBirD9oALqoFgwr6WsWRQjrKEtyFzUtiEjrvzA5p/0BRen2uFs2JWKdH
-         ZjSg==
-X-Gm-Message-State: AOAM530Pr/A8PaVWyyX6yo1AWcmZrmO0+gXh/hZ134MSScoSyxrq3mQ1
-        kdMx997B8f9MaGprUNLexzYmpA==
-X-Google-Smtp-Source: ABdhPJyD8IQTuK+U/Bizax/F0z25etXnsB1iM0MSbg8O1PSDuVayIwuE0rzc47b4PO3WGhCBC1u8Ag==
-X-Received: by 2002:a65:46c6:: with SMTP id n6mr19634580pgr.110.1612831346848;
-        Mon, 08 Feb 2021 16:42:26 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:751a:ba0b:8918:c305])
-        by smtp.gmail.com with ESMTPSA id s21sm19511044pga.12.2021.02.08.16.42.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 16:42:26 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fuHYv6g6uxb/2HmQDkQ3NuMyX/kiIpKMCyut7DUAgAA=;
+ b=FCpRJX3oEf3/ldMI8ft9kc2bbTUxRYWgILdvSUtam8pS5ZFVNEEKc/PCxEtKEhMcM8CjpN+LgAkOOcAskxDSsNnh6UgZkvWsfY2+Opmy+DB2M+I4D/qHQh8rV5LNu5mdS3d1B7rPVX2rxxcHpdlBAHK/hbLirgKgNge0fBgZlmc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
+ by MWHPR1001MB2349.namprd10.prod.outlook.com (2603:10b6:301:30::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Tue, 9 Feb
+ 2021 00:45:48 +0000
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
+ 00:45:48 +0000
+Subject: Re: [PATCH] mm/hugetlb: use helper huge_page_size() to get hugepage
+ size
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210208082450.15716-1-linmiaohe@huawei.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <3752cc85-06d1-5af7-8baf-2810c98524d3@oracle.com>
+Date:   Mon, 8 Feb 2021 16:45:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <20210208082450.15716-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MW4PR04CA0191.namprd04.prod.outlook.com
+ (2603:10b6:303:86::16) To MWHPR10MB1389.namprd10.prod.outlook.com
+ (2603:10b6:300:21::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1612448508-9179-3-git-send-email-mkshah@codeaurora.org>
-References: <1612448508-9179-1-git-send-email-mkshah@codeaurora.org> <1612448508-9179-3-git-send-email-mkshah@codeaurora.org>
-Subject: Re: [PATCH v6 2/4] soc: qcom: Add SoC sleep stats driver
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, ilina@codeaurora.org, lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>
-To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, mka@chromium.org
-Date:   Mon, 08 Feb 2021 16:42:24 -0800
-Message-ID: <161283134463.76967.4872263092725341078@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MW4PR04CA0191.namprd04.prod.outlook.com (2603:10b6:303:86::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Tue, 9 Feb 2021 00:45:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c6b88748-9846-49f8-9340-08d8cc940aa7
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2349:
+X-Microsoft-Antispam-PRVS: <MWHPR1001MB2349D75D10512E4C8D8D3781E28E9@MWHPR1001MB2349.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yxmMo33frWpWrirEBi5kcRa8dzy9tHIDkBDbRQXMciLSdWTXWLrh6UQyNo3rKD1L+x9GSugciGLIyspyUg3vJct7LwYvFo8A1ND7CtJ9Yls0RcaCHTDNtZcNXcFpUupLy6bAgPJQZyc4qxAkhfnaTs9nG8AT7Wz8x8iod/H+PvkNeJwaT+aACH/4g/+9XtxHWR0pfJ2dv0VT22oPmrCvhJlRvdE9fVfi4yQjQfruZmoat5j3eosUWvedgQNd5nBGp2z6LbgCUOJ/4kY+bjs7x0uc0phX6vBkLAOH3IgGmFqXF50MMa4wDiW8h24o2Ga+sJfhjzpielwu72jz0zoZBi/halAS7k8dFHrxTi/zA26ZvNvji1rNYiYF+np/rc/dxcombQuSw6R+8k/Y43bDpM6vWr7A6TcgwuTiv//VbYfKhPZoqQVeD3NyLf3ahuSQ8ID85/WEAxwmF7S/j55aLRqn+4bF1Ak1zqyOXEq2DwmchkZdJtfwNQoL8A/ekzQmuDY+fj8s+UuqnNnuIEhr2cOWZNcsvB5xIWN0T72t0ro1n+RA9fH1eAG00bfBXSDh9Rcrc+EwSZBYwYBIhGtLkLqVGuDwGJUhjsofdFidbJrpDiu7aUsH5HlqQaSTHjbH
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(366004)(376002)(396003)(83380400001)(86362001)(8936002)(2906002)(16526019)(5660300002)(53546011)(52116002)(956004)(16576012)(316002)(6486002)(31686004)(31696002)(8676002)(478600001)(2616005)(26005)(44832011)(186003)(66556008)(66476007)(66946007)(36756003)(4326008)(14583001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eU1FU0VXaCt4amplMDlaSktkVzFvclhBOEthZXJ2ZmdXR1dWb1d3cFVOTzJG?=
+ =?utf-8?B?VUQ1MzVKUlBjNGIySnR0bllNNmZXa25LR2NYYjIzTGd1czJVUnBsUjgzTGZH?=
+ =?utf-8?B?YjNsS3pjOE5HcFRiMmZCbGhPNENZZmpueDJhTGk1RitPSmRlZ1FGZVVHWUQr?=
+ =?utf-8?B?U1RDY0lkWUgydGdmNHRaZEtiZWtSVk8zckhmbTBOakc5ZUY5NWhRcjJpWjZU?=
+ =?utf-8?B?RzJvK1c2M0xncUpIMVFzeVA5ZnFqTUl2NXMvbjVwMlI3Y0FSc1JwRkZCTXZC?=
+ =?utf-8?B?ekF2Mm41emVWR2Fnb3AzZWorWE9ZeElMaUZISzl0QmlKVmFtamEwcVJLUlpq?=
+ =?utf-8?B?S2Rxb0N4cm9CSzlIejRVRWszNUYyd3Y3TVFCTTlVLzRQc3FHdnBHVC8rbExN?=
+ =?utf-8?B?WGgrdW45Y2FRSEpyamVtTVR2NndsemZ0TUxpcnUyUmpkd3Q3dEk4SkphQVQ3?=
+ =?utf-8?B?cEFpVnpJQ0tob2ZKUDE2NWFlY25zQ0xEVEpXcCtpcHNJZ1dXR3licnVzaWVa?=
+ =?utf-8?B?NEM3YnNvcUs1SFg5Y1phV29CMndRR3owTnNNOGFlOHgwL0VtOTlNS0lMa2FX?=
+ =?utf-8?B?ZFNOZlRrOVdnc20vQVJFbmZJcVFmbGx0MzNQNDJLMmFpSVRld1h1U0QxWitQ?=
+ =?utf-8?B?M1RMdFFPa2hjVDFSKzUvRVB0aTFjTmVVUDJnZXJSMTk1RFpJWk1tczRwWWlD?=
+ =?utf-8?B?ek1tZDdrTjBBNWUya1dBbVhrbHV4ZjdPb2haa21CaEtHakpMYzFNNjgya0da?=
+ =?utf-8?B?Zm5LT2hsaEtGdEdPU0FYb253WjRDSHlnK0s2YlJvSEIzV1hQWi9VbVBkd2lJ?=
+ =?utf-8?B?Ky9nNWVlVFFzZVNxcm0wa01IVVJIcDlZczFiSHViNFRXMEtTNnlCQVNTVi80?=
+ =?utf-8?B?bmp0eFdCUlE5cDFGOEdwWW9Wa3dpY0UxK0RQUVRhOERwbjNuRi9aMWN1Y2hO?=
+ =?utf-8?B?UStPL2VGUGQvVnNHQWNYTXJ5YWVuNVpiM0szVVc3UTA5dHRPUzdUcm5MSkFh?=
+ =?utf-8?B?cG1MUCtuMEk3Ty80RVFHQ2F3T0dFbWpvdGx2OWQzc2MzT3hiRDMxQmcwRWlw?=
+ =?utf-8?B?T1luTmx5eGlQRjNKZUE2bCtFcFhqQjZEOUpQaWJrMTFHWGFQandPSGlsMERI?=
+ =?utf-8?B?MmJpb0JzeFExSVJzMElxSU1IdlBOSkczb2kvbXA0V3FXbVhFbzliZVV5V3RG?=
+ =?utf-8?B?ZldaTzFEWFFuN044eURvbkdwUmM3czBKa0dMa2VXQXNhS0FHdDdnNzdzd0lv?=
+ =?utf-8?B?MHEvUnRiYll1TjRyL0RSaCtIUjdSZDM4ZzIrUWVsTTNmSjdNZHl4SWtIbTRm?=
+ =?utf-8?B?ZUUzMmkzelhmYmRWM1dhVS9HWXJPL3diUCtBRFMyWEJDdSt6UVliTnhxY3ZB?=
+ =?utf-8?B?eTFkV0YwNFJtbkd2OEN0S3RxUThkaWJSa2ovMjVvN1V4dW9oUC92cGE2SkpD?=
+ =?utf-8?B?dDZaVy9XRGQ0bnNZN2h3NVA4NEs1ZFRyZ2ZVMS8wY2M0VnNtdHF3enNBTytw?=
+ =?utf-8?B?eENVaVMrRHh6STJlbWk5Z0JtUEt0cmtuQitJcTFyTWhrL25pK2ZLK240Vm41?=
+ =?utf-8?B?K2VZVnFhb2VlY29pdElRUHU3Tys2dG9BNnZsamZ2cUVMVkk2VXROWXdVUWJ1?=
+ =?utf-8?B?RUFXWHlXRStMUmh2T0lOc0dGeFRxS01EcXp3bHFMb216bjZzL0V6TTBXV0s0?=
+ =?utf-8?B?YmRFNlRmZ21HbllSZTREY3VHcVhKUlJPZzdVYkRKbEhyaFRkYXpOdXdqWFpP?=
+ =?utf-8?Q?j4jr5i6a0WAgMRvjwnvi3jZuJav0Q3Erwk8cVV/?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6b88748-9846-49f8-9340-08d8cc940aa7
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2021 00:45:48.4783
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jSyqZsK3nDKWijtPjPY64pD/yI6s6Vwf1VmALSrzjiB8ieCZi7gM98Bmk1/T29BVKt3AyCGuxC3Clt1F/gokQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2349
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9889 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102090001
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9889 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102090001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Maulik Shah (2021-02-04 06:21:46)
-> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
->=20
-> Let's add a driver to read the stats from remote processor and
-> export to debugfs.
->=20
-> The driver creates "qcom_sleep_stats" directory in debugfs and
-> adds files for various low power mode available. Below is sample
-> output with command
->=20
-> cat /sys/kernel/debug/qcom_sleep_stats/ddr
-
-The ddr subsystem isn't listed below in subsystems though. Can the
-example be updated to reflect what is supported? Or can we gain the ddr
-subsystem?
-
-> count =3D 0
-> Last Entered At =3D 0
-> Last Exited At =3D 0
-> Accumulated Duration =3D 0
->=20
-> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
-> [mkshah: add subsystem sleep stats, create one file for each stat]
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+On 2/8/21 12:24 AM, Miaohe Lin wrote:
+> We can use helper huge_page_size() to get the hugepage size directly to
+> simplify the code slightly.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
->  drivers/soc/qcom/Kconfig           |  10 ++
->  drivers/soc/qcom/Makefile          |   1 +
->  drivers/soc/qcom/soc_sleep_stats.c | 258 +++++++++++++++++++++++++++++++=
-++++++
->  3 files changed, 269 insertions(+)
->  create mode 100644 drivers/soc/qcom/soc_sleep_stats.c
->=20
-> diff --git a/drivers/soc/qcom/soc_sleep_stats.c b/drivers/soc/qcom/soc_sl=
-eep_stats.c
-> new file mode 100644
-> index 0000000..66df638
-> --- /dev/null
-> +++ b/drivers/soc/qcom/soc_sleep_stats.c
-> @@ -0,0 +1,258 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#include <linux/debugfs.h>
+>  mm/hugetlb.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 18628f8dbfb0..6cdb59d8f663 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3199,7 +3199,7 @@ void __init hugetlb_add_hstate(unsigned int order)
+>  	BUG_ON(order == 0);
+>  	h = &hstates[hugetlb_max_hstate++];
+>  	h->order = order;
+> -	h->mask = ~((1ULL << (order + PAGE_SHIFT)) - 1);
+> +	h->mask = ~(huge_page_size(h) - 1);
+>  	for (i = 0; i < MAX_NUMNODES; ++i)
+>  		INIT_LIST_HEAD(&h->hugepage_freelists[i]);
+>  	INIT_LIST_HEAD(&h->hugepage_activelist);
+> @@ -3474,7 +3474,7 @@ void hugetlb_report_meminfo(struct seq_file *m)
+>  	for_each_hstate(h) {
+>  		unsigned long count = h->nr_huge_pages;
+>  
+> -		total += (PAGE_SIZE << huge_page_order(h)) * count;
+> +		total += huge_page_size(h) * count;
+>  
+>  		if (h == &default_hstate)
+>  			seq_printf(m,
+> @@ -3487,10 +3487,10 @@ void hugetlb_report_meminfo(struct seq_file *m)
+>  				   h->free_huge_pages,
+>  				   h->resv_huge_pages,
+>  				   h->surplus_huge_pages,
+> -				   (PAGE_SIZE << huge_page_order(h)) / 1024);
+> +				   huge_page_size(h) / SZ_1K);
+>  	}
+>  
+> -	seq_printf(m, "Hugetlb:        %8lu kB\n", total / 1024);
+> +	seq_printf(m, "Hugetlb:        %8lu kB\n", total / SZ_1K);
+>  }
+>  
+>  int hugetlb_report_node_meminfo(char *buf, int len, int nid)
+> @@ -3524,7 +3524,7 @@ void hugetlb_show_meminfo(void)
+>  				h->nr_huge_pages_node[nid],
+>  				h->free_huge_pages_node[nid],
+>  				h->surplus_huge_pages_node[nid],
+> -				1UL << (huge_page_order(h) + PAGE_SHIFT - 10));
+> +				huge_page_size(h) >> 10);
 
-Any chance to get off of debugfs and expose this in sysfs instead?
+Should we change this to
 
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/seq_file.h>
-> +
-> +#include <linux/soc/qcom/smem.h>
-> +#include <clocksource/arm_arch_timer.h>
-> +
-> +#define STAT_TYPE_ADDR         0x0
-> +#define COUNT_ADDR             0x4
-> +#define LAST_ENTERED_AT_ADDR   0x8
-> +#define LAST_EXITED_AT_ADDR    0x10
-> +#define ACCUMULATED_ADDR       0x18
-> +#define CLIENT_VOTES_ADDR      0x1c
-> +
-> +#define STAT_OFFSET(record_no, type) (((record_no)*(sizeof(struct sleep_=
-stats))) + (type))
-> +#define APPENDED_STAT_OFFSET(record_no) ((record_no)*(sizeof(struct appe=
-nded_stats)))
-> +
-> +struct subsystem_data {
-> +       const char *name;
-> +       u32 smem_item;
-> +       u32 pid;
-> +};
-> +
-> +static const struct subsystem_data subsystems[] =3D {
-> +       { "modem", 605, 1 },
-> +       { "adsp", 606, 2 },
-> +       { "cdsp", 607, 5 },
-> +       { "slpi", 608, 3 },
-> +       { "gpu", 609, 0 },
-> +       { "display", 610, 0 },
-> +       { "adsp_island", 613, 2 },
-> +       { "slpi_island", 613, 3 },
-> +};
-> +
-> +struct stats_config {
-> +       u32 offset_addr;
-> +       u32 num_records;
+				huge_page_size(h) / SZ_1K);
 
-size_t?
+as in hugetlb_report_meminfo above?  Or, is that one where it takes an
+additional instruction to do the divide as opposed to the shift?  I would
+rather add the instruction and keep everything consistent.
+-- 
+Mike Kravetz
 
-> +       bool appended_stats_avail;
-> +};
-> +
-> +struct stats_prv_data {
-> +       bool appended_stats_avail;
-> +       void __iomem *reg;
-> +};
-> +
-> +struct sleep_stats {
-> +       u32 stat_type;
-> +       u32 count;
-> +       u64 last_entered_at;
-> +       u64 last_exited_at;
-> +       u64 accumulated;
-> +};
-> +
-> +struct appended_stats {
-> +       u32 client_votes;
-> +       u32 reserved[3];
-> +};
-> +
-> +static void print_sleep_stats(struct seq_file *s, const struct sleep_sta=
-ts *stat)
-> +{
-> +       u64 accumulated =3D stat->accumulated;
-> +       /*
-> +        * If a subsystem is in sleep when reading the sleep stats adjust
-> +        * the accumulated sleep duration to show actual sleep time.
-> +        */
-> +       if (stat->last_entered_at > stat->last_exited_at)
-> +               accumulated +=3D arch_timer_read_counter()
-> +                              - stat->last_entered_at;
-> +
-> +       seq_printf(s, "Count =3D %u\n", stat->count);
-> +       seq_printf(s, "Last Entered At =3D %llu\n", stat->last_entered_at=
-);
-> +       seq_printf(s, "Last Exited At =3D %llu\n", stat->last_exited_at);
-> +       seq_printf(s, "Accumulated Duration =3D %llu\n", accumulated);
-> +}
-> +
-> +static int subsystem_sleep_stats_show(struct seq_file *s, void *d)
-> +{
-> +       struct subsystem_data *subsystem =3D s->private;
-> +       struct sleep_stats *stat;
-> +
-> +       /*
-> +        * Saving this pointer during probe may not help in cases like
-> +        * subsystem restart, beside not each subsystem is a remote proce=
-ssor
-
-s/beside/besides/
-s/each/every/
-
-> +        * for e.g display for which we can get start and stop notificati=
-on
-
-for example
-s/notification/notification./
-
-> +        *
-> +        * Lookup smem pointer each time to keep it simple.
-> +        */
-> +       stat =3D qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL=
-);
-> +       if (IS_ERR(stat))
-> +               return PTR_ERR(stat);
-> +
-> +       print_sleep_stats(s, stat);
-> +
-> +       return 0;
-> +}
-> +
-> +static int soc_sleep_stats_show(struct seq_file *s, void *d)
-> +{
-> +       struct stats_prv_data *prv_data =3D s->private;
-> +       void __iomem *reg =3D prv_data->reg;
-> +       struct sleep_stats stat;
-> +
-> +       stat.count =3D readl(reg + COUNT_ADDR);
-> +       stat.last_entered_at =3D readq(reg + LAST_ENTERED_AT_ADDR);
-> +       stat.last_exited_at =3D readq(reg + LAST_EXITED_AT_ADDR);
-> +       stat.accumulated =3D readq(reg + ACCUMULATED_ADDR);
-> +
-> +       print_sleep_stats(s, &stat);
-> +
-> +       if (prv_data->appended_stats_avail) {
-> +               struct appended_stats app_stat;
-> +
-> +               app_stat.client_votes =3D readl(reg + CLIENT_VOTES_ADDR);
-> +               seq_printf(s, "Client_votes =3D %#x\n", app_stat.client_v=
-otes);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +DEFINE_SHOW_ATTRIBUTE(soc_sleep_stats);
-> +DEFINE_SHOW_ATTRIBUTE(subsystem_sleep_stats);
-> +
-> +static struct dentry *create_debugfs_entries(void __iomem *reg,
-
-Can this be soc_sleep_stats_*()? Or inlined at the call site?
-create_debugfs_entries() is too generic.
-
-> +                                            struct stats_prv_data *prv_d=
-ata,
-> +                                            u32 num_records)
-> +{
-> +       struct dentry *root;
-> +       struct sleep_stats *stat;
-> +       char stat_type[sizeof(u32)] =3D {0};
-> +       u32 offset, type;
-> +       int i;
-> +
-> +       root =3D debugfs_create_dir("qcom_sleep_stats", NULL);
-> +
-> +       for (i =3D 0; i < num_records; i++) {
-> +               offset =3D STAT_OFFSET(i, STAT_TYPE_ADDR);
-> +
-> +               if (prv_data[i].appended_stats_avail)
-> +                       offset +=3D APPENDED_STAT_OFFSET(i);
-> +
-> +               prv_data[i].reg =3D reg + offset;
-> +
-> +               type =3D readl(prv_data[i].reg);
-> +               memcpy_fromio(stat_type, &type, sizeof(u32));
-
-type isn't an __iomem pointer though. Did you compile this with sparse?
-Use 'make C=3D2'
-
-Also, this is really bad design. The mmio register contains a physical
-address of where to read from? It's not an offset from the register or
-something like that? If an IOMMU is rewriting physical addresses this
-driver is screwed and will try to map some other physical address that
-could be completely different based on what the IOMMU decides that
-IPA maps to physically.
-
-> +               strim(stat_type);
-> +               debugfs_create_file(stat_type, 0400, root,
-> +                                   &prv_data[i],
-> +                                   &soc_sleep_stats_fops);
-> +       }
-> +
-> +       for (i =3D 0; i < ARRAY_SIZE(subsystems); i++) {
-> +               stat =3D qcom_smem_get(subsystems[i].pid, subsystems[i].s=
-mem_item,
-> +                                    NULL);
-> +               if (IS_ERR(stat))
-> +                       continue;
-> +
-> +               debugfs_create_file(subsystems[i].name, 0400, root,
-> +                                   (void *)&subsystems[i],
-
-cast to void shouldn't be needed. Please drop it.
-
-> +                                   &subsystem_sleep_stats_fops);
-> +       }
-> +
-> +       return root;
-> +}
-> +
-> +static int soc_sleep_stats_probe(struct platform_device *pdev)
-> +{
-> +       struct resource *res;
-> +       void __iomem *reg;
-> +       void __iomem *offset_addr;
-> +       phys_addr_t stats_base;
-> +       resource_size_t stats_size;
-> +       struct dentry *root;
-> +       const struct stats_config *config;
-> +       struct stats_prv_data *prv_data;
-> +       int i;
-> +
-> +       config =3D device_get_match_data(&pdev->dev);
-> +       if (!config)
-> +               return -ENODEV;
-> +
-> +       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       if (!res)
-> +               return PTR_ERR(res);
-> +
-> +       offset_addr =3D ioremap(res->start + config->offset_addr, sizeof(=
-u32));
-> +       if (IS_ERR(offset_addr))
-> +               return PTR_ERR(offset_addr);
-> +
-> +       stats_base =3D res->start | readl_relaxed(offset_addr);
-> +       stats_size =3D resource_size(res);
-> +       iounmap(offset_addr);
-> +
-> +       reg =3D devm_ioremap(&pdev->dev, stats_base, stats_size);
-> +       if (!reg)
-> +               return -ENOMEM;
-> +
-> +       prv_data =3D devm_kcalloc(&pdev->dev, config->num_records,
-> +                               sizeof(struct stats_prv_data), GFP_KERNEL=
-);
-
-sizeof(*prv_data) please so we don't have to think about the type
-matching the pointer storage.
-
-> +       if (!prv_data)
-> +               return -ENOMEM;
-> +
-> +       for (i =3D 0; i < config->num_records; i++)
-> +               prv_data[i].appended_stats_avail =3D config->appended_sta=
-ts_avail;
-> +
-> +       root =3D create_debugfs_entries(reg, prv_data, config->num_record=
-s);
-> +       platform_set_drvdata(pdev, root);
-> +
-> +       return 0;
-> +}
-> +
-> +static int soc_sleep_stats_remove(struct platform_device *pdev)
-> +{
-> +       struct dentry *root =3D platform_get_drvdata(pdev);
-> +
-> +       debugfs_remove_recursive(root);
-> +
-> +       return 0;
-> +}
-> +
+>  }
+>  
+>  void hugetlb_report_usage(struct seq_file *m, struct mm_struct *mm)
+> @@ -3647,9 +3647,7 @@ static int hugetlb_vm_op_split(struct vm_area_struct *vma, unsigned long addr)
+>  
+>  static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
+>  {
+> -	struct hstate *hstate = hstate_vma(vma);
+> -
+> -	return 1UL << huge_page_shift(hstate);
+> +	return huge_page_size(hstate_vma(vma));
+>  }
+>  
+>  /*
+> 
