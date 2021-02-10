@@ -2,173 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E98316FE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3EB316FE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234605AbhBJTQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:16:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234597AbhBJTQM (ORCPT
+        id S234584AbhBJTQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:16:01 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:53842 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233150AbhBJTPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:16:12 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC19C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:15:32 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id l8so3092288ybe.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:15:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bMm7LhCNfiXatte+J72259TBwE3qgGrJaSabgZ25gjg=;
-        b=HRIiwWTs47Szc6oxYxnhSOiBHfT4UHEE38Ch+iU28KkeDshpiC1SepDhdslHI23tt3
-         OS6PP06URj7B5CC3eUzROAwtGPBWwYlZObWB0SekS4wI484RrQtNhKydUqynhO0Q8Pyk
-         qguBlQPU+LMbanRwX+gBvVJF+BhQCcYxMSwMCzRFIEXITAKkGL/LKRyfcgN2HYRlGkG0
-         9Em0m0j6lShbUakz/6okuTXwmW2fb5MPmmWsxUn71aH5g/bQoczVbCIQxEdxfw7rHKoN
-         TLKZpTEXoYkJo9BrpaUYxzaQJytCtOK/yU8wbQvE6Yx/wkzfdo1t+bWo+N2VU47k8h1/
-         XX5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bMm7LhCNfiXatte+J72259TBwE3qgGrJaSabgZ25gjg=;
-        b=tyCxqq08lvZk0UF+YFgw9FyituTTscgcRO13Xb4agWURjtAtK2+jA/hHiM3B6afkiX
-         5RHDyRHdo5APSKu0HVeY1qvX1vgIWopXk7CSioGKfjTy87NQDFKElubRoDrc2/Lh/1lo
-         2iQiKX+IJ03ChdwNkn2Q0R8yQv7UgxrYaRHAl+LOXO9KWLRb+DgKmMoCBNrVIg/iYT2q
-         0DZ3u11P1aH4JCJNcZDh2JNwSqNaArOHeWC5HUBNYwor1vcEmBF5Dx3Y8Fz+6OhK37wi
-         8J118DkfawpjzYRz4O+2b2HQwpy8K7UXKyiHz7F7egdES+a6q5uCQNLdZBcms05bXR+0
-         p9jw==
-X-Gm-Message-State: AOAM530/uplLDdKHx/2Hl1LB1u2l5BWziJM8hfENyaM5xcDdpeUjQHMW
-        y9gQRDwpK3R0BEEdhBvEmTDFREDxBKQjn1pS1HQwPw==
-X-Google-Smtp-Source: ABdhPJxPLs/+QIJMt+wtIBzBZGrhURUX+xSgCx7EymGDDvrfSfAubD/1PiDbpILIMYyk25/SJ0qOy+BTaFfHFwoVjsg=
-X-Received: by 2002:a05:6902:1025:: with SMTP id x5mr6476503ybt.96.1612984531616;
- Wed, 10 Feb 2021 11:15:31 -0800 (PST)
+        Wed, 10 Feb 2021 14:15:46 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1l9ux6-0000pz-Tc; Wed, 10 Feb 2021 19:15:04 +0000
+Subject: NAK: [PATCH][next] media: uvcvideo: remove duplicated dma_dev
+ assignment
+From:   Colin Ian King <colin.king@canonical.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>, linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210210174555.144128-1-colin.king@canonical.com>
+Message-ID: <1d50eb5e-bed3-50dd-6eaf-b055e188dcf8@canonical.com>
+Date:   Wed, 10 Feb 2021 19:15:04 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
- <47ca46aa-99f3-5203-8aa7-65c6443bd965@microchip.com> <CAGETcx862JPn8759tk-69WySBvokxMXJaaOVY7L6V8FLwfpV8g@mail.gmail.com>
- <3ec7ba3a-bbf6-aa5f-7800-4fc91ab199ec@microchip.com>
-In-Reply-To: <3ec7ba3a-bbf6-aa5f-7800-4fc91ab199ec@microchip.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 10 Feb 2021 11:14:55 -0800
-Message-ID: <CAGETcx87RmBAhC2Kg0xP9oYGhGWXFWoTtshzuqT2=4_svm5s5A@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Brown, Len" <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210210174555.144128-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 2:02 AM <Tudor.Ambarus@microchip.com> wrote:
->
-> On 2/10/21 10:54 AM, Saravana Kannan wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >
-> > On Wed, Feb 10, 2021 at 12:19 AM <Tudor.Ambarus@microchip.com> wrote:
-> >>
-> >> Hi, Saravana,
-> >>
-> >> On 2/6/21 12:26 AM, Saravana Kannan wrote:
-> >>> There are a lot of devices/drivers where they never have a struct device
-> >>> created for them or the driver initializes the hardware without ever
-> >>> binding to the struct device.
-> >>>
-> >>> This series is intended to avoid any boot regressions due to such
-> >>> devices/drivers when fw_devlink=on and also address the handling of
-> >>> optional suppliers.
-> >>>
-> >>> Patch 1 and 2 addresses the issue of firmware nodes that look like
-> >>> they'll have struct devices created for them, but will never actually
-> >>> have struct devices added for them. For example, DT nodes with a
-> >>> compatible property that don't have devices added for them.
-> >>>
-> >>> Patch 3 and 4 allow for handling optional DT bindings.
-> >>>
-> >>> Patch 5 sets up a generic API to handle drivers that never bind with
-> >>> their devices.
-> >>>
-> >>> Patch 6 through 8 update different frameworks to use the new API.
-> >>>
-> >>> Thanks,
-> >>> Saravana
-> >>>
-> >>> Saravana Kannan (8):
-> >>>   driver core: fw_devlink: Detect supplier devices that will never be
-> >>>     added
-> >>>   of: property: Don't add links to absent suppliers
-> >>>   driver core: Add fw_devlink.strict kernel param
-> >>>   of: property: Add fw_devlink support for optional properties
-> >>>   driver core: fw_devlink: Handle suppliers that don't use driver core
-> >>>   irqdomain: Mark fwnodes when their irqdomain is added/removed
-> >>>   PM: domains: Mark fwnodes when their powerdomain is added/removed
-> >>>   clk: Mark fwnodes when their clock provider is added/removed
-> >>>
-> >>>  .../admin-guide/kernel-parameters.txt         |  5 ++
-> >>>  drivers/base/core.c                           | 58 ++++++++++++++++++-
-> >>>  drivers/base/power/domain.c                   |  2 +
-> >>>  drivers/clk/clk.c                             |  3 +
-> >>>  drivers/of/property.c                         | 16 +++--
-> >>>  include/linux/fwnode.h                        | 20 ++++++-
-> >>>  kernel/irq/irqdomain.c                        |  2 +
-> >>>  7 files changed, 98 insertions(+), 8 deletions(-)
-> >>>
-> >>
-> >> Even with this patch set applied, sama5d2_xplained can not boot.
-> >> Patch at [1] makes sama5d2_xplained boot again. Stephen applied it
-> >> to clk-next.
-> >
-> > I'm glad you won't actually have any boot issues in 5.12, but the fact
-> > you need [1] with this series doesn't make a lot of sense to me
-> > because:
-> >
-> > 1. The FWNODE_FLAG_INITIALIZED flag will be set for the clock fwnode
-> > in question way before any consumer devices are added.
->
-> Looks like in my case FWNODE_FLAG_INITIALIZED is not set, because
-> drivers/clk/at91/sama5d2.c uses of_clk_add_hw_provider().
+On 10/02/2021 17:45, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The assignment to dma_dev has been performed twice in one
+> statement. Fix this by removing the extraneous assignment.
+> 
+> Addresses-Coverity: ("Evaluation order violation")
+> Fixes: fdcd02a641e2 ("media: uvcvideo: Use dma_alloc_noncontiguos API")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/media/usb/uvc/uvc_video.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> index dc81f9a86eca..edf451a956d8 100644
+> --- a/drivers/media/usb/uvc/uvc_video.c
+> +++ b/drivers/media/usb/uvc/uvc_video.c
+> @@ -1105,7 +1105,7 @@ static inline struct device *stream_to_dmadev(struct uvc_streaming *stream)
+>  
+>  static void uvc_urb_dma_sync(struct uvc_urb *uvc_urb, bool for_device)
+>  {
+> -	struct device *dma_dev = dma_dev = stream_to_dmadev(uvc_urb->stream);
+> +	struct device *dma_dev = stream_to_dmadev(uvc_urb->stream);
+>  
+>  	if (for_device) {
+>  		dma_sync_sgtable_for_device(dma_dev, uvc_urb->sgt,
+> 
 
-Ah, that explains it.
-
-> > 2. Any consumer device added after (1) will stop trying to link to the
-> > clock device.
-> >
-> > Are you somehow adding a consumer to the clock fwnode before (1)?
-> >
-> > Can you try this patch without your clk fix? I was trying to avoid
-> > looping through a list, but looks like your case might somehow need
-> > it?
-> >
->
-> I tried it, didn't solve my boot problem.
-
-Thanks! I should stop coding past midnight!
-
-> The following patch makes the
-> sama5d2_xplained boot again, even without the patch from [1]:
-
-Great! I gave a reviewed-by.
-
--Saravana
+there are some other occurrences of this, I'll send a V2.
