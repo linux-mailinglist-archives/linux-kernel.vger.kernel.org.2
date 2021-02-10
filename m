@@ -2,143 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3294F316692
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A1331669C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhBJMZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:25:38 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:59366 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbhBJMXs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:23:48 -0500
-Date:   Wed, 10 Feb 2021 12:23:01 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612959782;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S231794AbhBJM1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:27:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58964 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230259AbhBJMX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:23:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612959791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zQVL9DyeN/TePUg/Z4cAv4C7Yah//iWSAblU5bnN9+k=;
-        b=cP94gF+QcI+QkQdTn1quAHkYTXj/KK0Y8p2+Sv28VikBYYnVtU7bHK4Q7tLmuLlMtWx6St
-        FORXPLGtTvztK/UcWvjpijAH1DLitT5JghQIISSU806su1srfbJvS8syBgGGJDCddBXZl1
-        EnIuYMTV1ezAxkYH+IsIMH7qGZvUwjNsoNjh2YNiK5k6FCQ5Qk4Gic7c2DD0QY34AeoIYU
-        wmJD8XK1xN0VKLYteWpYEpAicLw8cq0KPDr3+Z98P8FNIudzCFFqvSOzqwqB47+rv1ZpGz
-        K+Z73Ld1+7ypH6MTJCqR2CC7TsBJgl+r7EY/S+qzDoCo+FgTGjAWMEKbMSQBjA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612959782;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zQVL9DyeN/TePUg/Z4cAv4C7Yah//iWSAblU5bnN9+k=;
-        b=RAKbj200Z7qt0FgjITjdcpzQeu70Mdsv2UT/TKTkICT7m2MPdQCPRdH9jQmLAKtZ0x8MP2
-        2BHwNa2u18AarbCw==
-From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/paravirt] x86/xen: Use specific Xen pv interrupt entry for DF
-Cc:     Juergen Gross <jgross@suse.com>, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210120135555.32594-4-jgross@suse.com>
-References: <20210120135555.32594-4-jgross@suse.com>
+        bh=dsqc8ndJdURpL2hssLBy0cKI35i8iQHpKXZ5s9miM54=;
+        b=Gwrjv6r+Ug52YikQrv8w1KdjcXPsc4u2zdbH8P4PWBeGlz0o8NjmprdDO3TjIcmfIMBsRB
+        9e95oVVNUsDnWNRer+IMs419+lpFOKDszcrS1khEvQv24F5cHhF174xQRJrE5Wn2NifYCj
+        XnUZKazgkdiOIve3hGp3LkOuR6ppgYM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BEF6AAC97;
+        Wed, 10 Feb 2021 12:23:11 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 13:23:10 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: remove lru_add_drain_all in alloc_contig_range
+Message-ID: <YCPQLkmxLX1Zli9C@dhcp22.suse.cz>
+References: <20210209175048.361638-1-minchan@kernel.org>
+ <accc057c-e639-7510-f722-4a4d166c80b6@redhat.com>
+ <20210209190332.GA3363@localhost.localdomain>
+ <49491777-6d61-db4d-5e90-7a8b9045faca@suse.cz>
 MIME-Version: 1.0
-Message-ID: <161295978163.23325.10478028782418680739.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <49491777-6d61-db4d-5e90-7a8b9045faca@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/paravirt branch of tip:
+On Wed 10-02-21 13:17:33, Vlastimil Babka wrote:
+> On 2/9/21 8:03 PM, Oscar Salvador wrote:
+> > On Tue, Feb 09, 2021 at 07:17:59PM +0100, David Hildenbrand wrote:
+> >> I was expecting some magical reason why this is still required but I am not
+> >> able to find a compelling one. Maybe this is really some historical
+> >> artifact.
+> >> 
+> >> Let's see if other people know why this call here still exists.
+> > 
+> > I also stumbled upon this while working on adding hugetlb support for
+> > alloc_acontig_range [1].
+> > I have to confess I puzzled me a bit.
+> > 
+> > I saw it going back to when the function was first introduced by 
+> > 
+> > commit 041d3a8cdc18dc375a128d90bbb753949a81b1fb
+> > Author: Michal Nazarewicz <mina86@mina86.com>
+> > Date:   Thu Dec 29 13:09:50 2011 +0100
+> > 
+> >     mm: page_alloc: introduce alloc_contig_range()
+> > 
+> > 
+> > It does not make much sense to me. At this point our pages are free, so
+> > we do not care about LRU handling here.
+> > But I might be missing something.
+> 
+> AFAICS, at the time page migration used putback_lru_page() to release the
+> migration source page. This would put the page on lru pvec even if it was in
+> fact not mapped anywhere anymore, and only the drain would actually free it.
+> Seems Minchan optimized this in 2016 by c6c919eb90e0 ("mm: use put_page() to
+> free page instead of putback_lru_page()")
 
-Commit-ID:     5b4c6d65019bff65757f61adbbad5e45a333b800
-Gitweb:        https://git.kernel.org/tip/5b4c6d65019bff65757f61adbbad5e45a333b800
-Author:        Juergen Gross <jgross@suse.com>
-AuthorDate:    Wed, 20 Jan 2021 14:55:43 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 10 Feb 2021 12:13:40 +01:00
+This would be a great addition to the changelog. Thanks a lot Vlastimil,
+you saved me from some archeology. With that mentioned feel free to add
 
-x86/xen: Use specific Xen pv interrupt entry for DF
+Acked-by: Michal Hocko <mhocko@usse.com>
 
-Xen PV guests don't use IST. For double fault interrupts, switch to
-the same model as NMI.
+> 
+> > [1] https://lore.kernel.org/linux-mm/20210208103935.GA32103@linux/T/#md651fc6e73c656105179382f92f8b2d6073051d1
+> > 
+> > 
+> 
 
-Correct a typo in a comment while copying it.
-
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210120135555.32594-4-jgross@suse.com
----
- arch/x86/include/asm/idtentry.h |  3 +++
- arch/x86/xen/enlighten_pv.c     | 10 ++++++++--
- arch/x86/xen/xen-asm.S          |  2 +-
- 3 files changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 616909e..41e2e2e 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -608,6 +608,9 @@ DECLARE_IDTENTRY_RAW(X86_TRAP_DB,	xenpv_exc_debug);
- 
- /* #DF */
- DECLARE_IDTENTRY_DF(X86_TRAP_DF,	exc_double_fault);
-+#ifdef CONFIG_XEN_PV
-+DECLARE_IDTENTRY_RAW_ERRORCODE(X86_TRAP_DF,	xenpv_exc_double_fault);
-+#endif
- 
- /* #VC */
- #ifdef CONFIG_AMD_MEM_ENCRYPT
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 9db1d31..1fec2ee 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -567,10 +567,16 @@ void noist_exc_debug(struct pt_regs *regs);
- 
- DEFINE_IDTENTRY_RAW(xenpv_exc_nmi)
- {
--	/* On Xen PV, NMI doesn't use IST.  The C part is the sane as native. */
-+	/* On Xen PV, NMI doesn't use IST.  The C part is the same as native. */
- 	exc_nmi(regs);
- }
- 
-+DEFINE_IDTENTRY_RAW_ERRORCODE(xenpv_exc_double_fault)
-+{
-+	/* On Xen PV, DF doesn't use IST.  The C part is the same as native. */
-+	exc_double_fault(regs, error_code);
-+}
-+
- DEFINE_IDTENTRY_RAW(xenpv_exc_debug)
- {
- 	/*
-@@ -622,7 +628,7 @@ struct trap_array_entry {
- 
- static struct trap_array_entry trap_array[] = {
- 	TRAP_ENTRY_REDIR(exc_debug,			true  ),
--	TRAP_ENTRY(exc_double_fault,			true  ),
-+	TRAP_ENTRY_REDIR(exc_double_fault,		true  ),
- #ifdef CONFIG_X86_MCE
- 	TRAP_ENTRY_REDIR(exc_machine_check,		true  ),
- #endif
-diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
-index cd330ce..eac9dac 100644
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -161,7 +161,7 @@ xen_pv_trap asm_exc_overflow
- xen_pv_trap asm_exc_bounds
- xen_pv_trap asm_exc_invalid_op
- xen_pv_trap asm_exc_device_not_available
--xen_pv_trap asm_exc_double_fault
-+xen_pv_trap asm_xenpv_exc_double_fault
- xen_pv_trap asm_exc_coproc_segment_overrun
- xen_pv_trap asm_exc_invalid_tss
- xen_pv_trap asm_exc_segment_not_present
+-- 
+Michal Hocko
+SUSE Labs
