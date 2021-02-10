@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1FB316197
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F60831618B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbhBJI4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:56:43 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:57648 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhBJIxi (ORCPT
+        id S229610AbhBJIz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:55:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229604AbhBJIxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:53:38 -0500
+        Wed, 10 Feb 2021 03:53:37 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447EEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:52:57 -0800 (PST)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1612947175;
@@ -19,21 +22,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=suP2IuJO8+dYJ1CH56zFNwdykrbdPK11uoWDfR/SBnk=;
-        b=PWnL2mb/sAfZngRhgt7zY7W8R0yzNYWlwzL1uuCsReQcMtgdRQdCNx3FdChND2M9CtrMhC
-        FQN4fB1yd+A7kEoZYHiTzXC3VtMZ7XrlVfojeuFD+S4qD4Ym50BT7MX+UY2wHYw0D0h7dI
-        awz7yUzZ8N+QI8eYBhI/CZbkldb0rGV9YzyxfnN5ChSWIGSkj54K60sCglgxbQNdxh/kRe
-        UaIzAHsrp0jCVQnmel6o2P1bxk9lVKZCIRjIT36JRWyICDxT1pnQbIIy35N9FSu/WBAAzJ
-        C1aIQb+6eWR+i2s3xmnLApNan0HdAsXubEJaSlAub39eQFO8O45FHHI4xKKj4Q==
+        bh=eaL55WDEu5En7gCivD02gQJ8keMVutHEZeJruCL7b2s=;
+        b=p+rxMZyqoBFKkrGrCKmrN1HymV8CtGLigN4eaip9dxben7I0GZ4oQ6llCJyDx0yfLJ906o
+        YMJlGOuDcCpH4VvTOO36bNaT2d0z2tJYUGRvOPF89MwKLVzgMYJ/XXKiOUonQjrrWDm9ui
+        8zoozEYQK7MnZuYUpC+NX4W5Gm920D+dd8DEDNUigui974W5BrzgFDm3dmTZj2Fk575WLb
+        2MQIwtiWOf1X0WHDA5xHkpyiPWw9GxBBBEUMHMk3mEew4saAS+gMZIekIYB5cuxuHxJIFN
+        hj+yqY/AlYl1tL//khJkyjhpaOaAJlQFXWF6G0AkXMkhcKKN9d7/mQZ8/q/Mpw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1612947175;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=suP2IuJO8+dYJ1CH56zFNwdykrbdPK11uoWDfR/SBnk=;
-        b=WLdJVzqkJxmvCeOuq8Y6wFcBJ6tZNDGbHTdj1+6NOwbZJagwyzqt//KqMB/Rkf60C62DqG
-        zkFLJ+5bWh/24ZDA==
+        bh=eaL55WDEu5En7gCivD02gQJ8keMVutHEZeJruCL7b2s=;
+        b=Tg0MmEmwjRIcsRbhH2YSa5ldweQZqllUmsyeao7MXTDPxNUmG6FhEYoWYfRf3hBMPJj7VW
+        vOCI5F8E/HKDMOBA==
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
@@ -41,9 +44,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Joe Perches <joe@perches.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 1/2] locking/mutex: Kill mutex_trylock_recursive()
-Date:   Wed, 10 Feb 2021 09:52:47 +0100
-Message-Id: <20210210085248.219210-2-bigeasy@linutronix.de>
+Subject: [PATCH 2/2] checkpatch: Don't check for mutex_trylock_recursive()
+Date:   Wed, 10 Feb 2021 09:52:48 +0100
+Message-Id: <20210210085248.219210-3-bigeasy@linutronix.de>
 In-Reply-To: <20210210085248.219210-1-bigeasy@linutronix.de>
 References: <20210210085248.219210-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -52,73 +55,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are not users of mutex_trylock_recursive() in tree as of
-v5.11-rc7.
+mutex_trylock_recursive() has been removed from the tree, there is no
+need to check for it.
 
-Remove it.
+Remove traces of mutex_trylock_recursive()'s existence.
 
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- include/linux/mutex.h  | 25 -------------------------
- kernel/locking/mutex.c | 10 ----------
- 2 files changed, 35 deletions(-)
+ scripts/checkpatch.pl | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index dcd185cbfe793..0cd631a197276 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -199,29 +199,4 @@ extern void mutex_unlock(struct mutex *lock);
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 1afe3af1cc097..4b2775fd31d9d 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -7062,12 +7062,6 @@ sub process {
+ 			}
+ 		}
 =20
- extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
-=20
--/*
-- * These values are chosen such that FAIL and SUCCESS match the
-- * values of the regular mutex_trylock().
-- */
--enum mutex_trylock_recursive_enum {
--	MUTEX_TRYLOCK_FAILED    =3D 0,
--	MUTEX_TRYLOCK_SUCCESS   =3D 1,
--	MUTEX_TRYLOCK_RECURSIVE,
--};
+-# check for mutex_trylock_recursive usage
+-		if ($line =3D~ /mutex_trylock_recursive/) {
+-			ERROR("LOCKING",
+-			      "recursive locking is bad, do not use this ever.\n" . $herecurr);
+-		}
 -
--/**
-- * mutex_trylock_recursive - trylock variant that allows recursive locking
-- * @lock: mutex to be locked
-- *
-- * This function should not be used, _ever_. It is purely for hysterical G=
-EM
-- * raisins, and once those are gone this will be removed.
-- *
-- * Returns:
-- *  - MUTEX_TRYLOCK_FAILED    - trylock failed,
-- *  - MUTEX_TRYLOCK_SUCCESS   - lock acquired,
-- *  - MUTEX_TRYLOCK_RECURSIVE - we already owned the lock.
-- */
--extern /* __deprecated */ __must_check enum mutex_trylock_recursive_enum
--mutex_trylock_recursive(struct mutex *lock);
--
- #endif /* __LINUX_MUTEX_H */
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index 5352ce50a97e3..adb9350907688 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -86,16 +86,6 @@ bool mutex_is_locked(struct mutex *lock)
- }
- EXPORT_SYMBOL(mutex_is_locked);
-=20
--__must_check enum mutex_trylock_recursive_enum
--mutex_trylock_recursive(struct mutex *lock)
--{
--	if (unlikely(__mutex_owner(lock) =3D=3D current))
--		return MUTEX_TRYLOCK_RECURSIVE;
--
--	return mutex_trylock(lock);
--}
--EXPORT_SYMBOL(mutex_trylock_recursive);
--
- static inline unsigned long __owner_flags(unsigned long owner)
- {
- 	return owner & MUTEX_FLAGS;
+ # check for lockdep_set_novalidate_class
+ 		if ($line =3D~ /^.\s*lockdep_set_novalidate_class\s*\(/ ||
+ 		    $line =3D~ /__lockdep_no_validate__\s*\)/ ) {
 --=20
 2.30.0
 
