@@ -2,144 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333D6316B19
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0868E316B24
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbhBJQXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:23:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhBJQXY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:23:24 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50013C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:22:44 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id q9so2380212ilo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:22:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JSh8ExYxdty8HZ11KujafrMp7iovLQF4x5Wy4WPKtFY=;
-        b=MqBF5ZEr+daNm21Pgbp5M3xc3FrA2e2xhHAo0Dk1bkOF988nmvj/JIs0ba1jcPJ203
-         rl6mzOsv2xikvam4uDDIWkXM2lxulDO5Pw/Sz92l1FqLWb4bICKwNCirxhULXoxgy6w7
-         RnfuncRvRYQFUiRv98y3Apa/O2gIu6jPfC9xo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JSh8ExYxdty8HZ11KujafrMp7iovLQF4x5Wy4WPKtFY=;
-        b=exM2Y/SQBZOLiXzcbE8iDuXQqbAzblRsqnU8vb11wpFFN32WukpTvB/ZyVNJR+0HYw
-         9+i6+Xj4cClnQRj8D+G4PFp59LkMRleBrrapSHQi9+rlvrYIkFdMu7LIt3xEyb8CFChf
-         UmpAw1xAniAFObPsK5ZBJiU4QnmaLxep+3P2zUCNnoiejh7rolYE5Hk7E7CptvAa1q5x
-         UjQHyA8zT1aOnpZhe0/oLeeRcTgaKaMsh7qNHtudB2NcA1bsWZpKVX+30a3d8kSGhWGS
-         WBI+7Ay75mJz7obkfWK3kjO/fPxYkE5Q+Hd46iXS40eTaUTcjlblcwdPmUg1eOkeJ4oW
-         cbrQ==
-X-Gm-Message-State: AOAM531INuQC113Fsss0KP+Tzi+9hle/LuQnWr/r5zD/n13REMfo5QD4
-        2QZAph7Blp09XLU4YjYBVS/9kw==
-X-Google-Smtp-Source: ABdhPJzXyC8AmV48saKbwVck5pzWW/8Ry9H6e0li1SH7HuPENRqrnsNCXgsFgCru0G3RWsdbnHR4Nw==
-X-Received: by 2002:a92:dcc6:: with SMTP id b6mr1836908ilr.295.1612974163736;
-        Wed, 10 Feb 2021 08:22:43 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k11sm1129540iop.45.2021.02.10.08.22.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 08:22:43 -0800 (PST)
-Subject: Re: [PATCH 2/5] ath10k: fix WARNING: suspicious RCU usage
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <23a1333dfb0367cc69e7177a2e373df0b6d42980.1612915444.git.skhan@linuxfoundation.org>
- <20210210081320.2FBE5C433CA@smtp.codeaurora.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <7230c9e5-2632-b77e-c4f9-10eca557a5bb@linuxfoundation.org>
-Date:   Wed, 10 Feb 2021 09:22:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232223AbhBJQ0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:26:21 -0500
+Received: from mga14.intel.com ([192.55.52.115]:56603 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232152AbhBJQZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:25:55 -0500
+IronPort-SDR: IoBfMPJAhiVnMGDTtWl6YUoPwzTtjjUQERD3c2ha/LoLpCynd8C+qdtRBCrfROe003k8rGvqIy
+ UCpPFVu/LZnQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="181328877"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="181328877"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:25:13 -0800
+IronPort-SDR: vh8ca9Rk+hpZui2u9ziCQUQP2R9XfBCgQ5uFK92I5KW/SHqkD8HCAqFw8HZ1ZShHDhWeADYWxo
+ JBLA5mwGewUA==
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="488795823"
+Received: from tryu-mobl2.amr.corp.intel.com (HELO [10.209.100.152]) ([10.209.100.152])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:25:12 -0800
+Subject: Re: [PATCH 6/7] x86/boot/compressed/64: Check SEV encryption in
+ 32-bit boot-path
+To:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org
+Cc:     Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20210210102135.30667-1-joro@8bytes.org>
+ <20210210102135.30667-7-joro@8bytes.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0526b64e-8ef0-2e3c-06a7-e07835be160c@intel.com>
+Date:   Wed, 10 Feb 2021 08:25:11 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210210081320.2FBE5C433CA@smtp.codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210210102135.30667-7-joro@8bytes.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 1:13 AM, Kalle Valo wrote:
-> Shuah Khan <skhan@linuxfoundation.org> wrote:
-> 
->> ieee80211_find_sta_by_ifaddr() must be called under the RCU lock and
->> the resulting pointer is only valid under RCU lock as well.
->>
->> Fix ath10k_wmi_tlv_parse_peer_stats_info() to hold RCU lock before it
->> calls ieee80211_find_sta_by_ifaddr() and release it when the resulting
->> pointer is no longer needed. The log below shows the problem.
->>
->> While at it, fix ath10k_wmi_tlv_op_pull_peer_stats_info() to do the same.
->>
->> =============================
->> WARNING: suspicious RCU usage
->> 5.11.0-rc7+ #20 Tainted: G        W
->> -----------------------------
->> include/linux/rhashtable.h:594 suspicious rcu_dereference_check() usage!
->> other info that might help us debug this:
->>                 rcu_scheduler_active = 2, debug_locks = 1
->> no locks held by ksoftirqd/5/44.
->>
->> stack backtrace:
->> CPU: 5 PID: 44 Comm: ksoftirqd/5 Tainted: G        W         5.11.0-rc7+ #20
->> Hardware name: LENOVO 10VGCTO1WW/3130, BIOS M1XKT45A 08/21/2019
->> Call Trace:
->>   dump_stack+0x7d/0x9f
->>   lockdep_rcu_suspicious+0xdb/0xe5
->>   __rhashtable_lookup+0x1eb/0x260 [mac80211]
->>   ieee80211_find_sta_by_ifaddr+0x5b/0xc0 [mac80211]
->>   ath10k_wmi_tlv_parse_peer_stats_info+0x3e/0x90 [ath10k_core]
->>   ath10k_wmi_tlv_iter+0x6a/0xc0 [ath10k_core]
->>   ? ath10k_wmi_tlv_op_pull_mgmt_tx_bundle_compl_ev+0xe0/0xe0 [ath10k_core]
->>   ath10k_wmi_tlv_op_rx+0x5da/0xda0 [ath10k_core]
->>   ? trace_hardirqs_on+0x54/0xf0
->>   ? ath10k_ce_completed_recv_next+0x4e/0x60 [ath10k_core]
->>   ath10k_wmi_process_rx+0x1d/0x40 [ath10k_core]
->>   ath10k_htc_rx_completion_handler+0x115/0x180 [ath10k_core]
->>   ath10k_pci_process_rx_cb+0x149/0x1b0 [ath10k_pci]
->>   ? ath10k_htc_process_trailer+0x2d0/0x2d0 [ath10k_core]
->>   ? ath10k_pci_sleep.part.0+0x6a/0x80 [ath10k_pci]
->>   ath10k_pci_htc_rx_cb+0x15/0x20 [ath10k_pci]
->>   ath10k_ce_per_engine_service+0x61/0x80 [ath10k_core]
->>   ath10k_ce_per_engine_service_any+0x7d/0xa0 [ath10k_core]
->>   ath10k_pci_napi_poll+0x48/0x120 [ath10k_pci]
->>   net_rx_action+0x136/0x500
->>   __do_softirq+0xc6/0x459
->>   ? smpboot_thread_fn+0x2b/0x1f0
->>   run_ksoftirqd+0x2b/0x60
->>   smpboot_thread_fn+0x116/0x1f0
->>   kthread+0x14b/0x170
->>   ? smpboot_register_percpu_thread+0xe0/0xe0
->>   ? __kthread_bind_mask+0x70/0x70
->>   ret_from_fork+0x22/0x30
->>
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> 
-> Unlucky timing also on this one, it conflicts with a patch I applied yesterday:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=2615e3cdbd9c0e864f5906279c952a309871d225
-> 
-> Can you redo the patch to only change ath10k_wmi_event_tdls_peer()?
-> 
+On 2/10/21 2:21 AM, Joerg Roedel wrote:
+> +1:	rdrand	%eax
+> +	jnc	1b
+> +2:	rdrand	%ebx
+> +	jnc	2b
+> +
+> +	/* Store to memory and keep it in the registers */
+> +	movl	%eax, rva(sev_check_data)(%ebp)
+> +	movl	%ebx, rva(sev_check_data+4)(%ebp)
+> +
+> +	/* Enable paging to see if encryption is active */
+> +	movl	%cr0, %edx	/* Backup %cr0 in %edx */
+> +	movl	$(X86_CR0_PG | X86_CR0_PE), %ecx /* Enable Paging and Protected mode */
+> +	movl	%ecx, %cr0
+> +
+> +	cmpl	%eax, rva(sev_check_data)(%ebp)
+> +	jne	3f
+> +	cmpl	%ebx, rva(sev_check_data+4)(%ebp)
+> +	jne	3f
+> +
+> +	movl	%edx, %cr0	/* Restore previous %cr0 */
+> +
+> +	jmp	4f
 
-Yes. I will send the patch just for ath10k_wmi_event_tdls_peer()
-on top of your patch.
+This is all very cute.  But, if this fails, it means that the .data
+section is now garbage, right?.  I guess failing here is less
+entertaining than trying to run the kernel with random garbage in .data,
+but it doesn't make it very far either way, right?
 
-> error: patch failed: drivers/net/wireless/ath/ath10k/wmi-tlv.c:240
-> error: drivers/net/wireless/ath/ath10k/wmi-tlv.c: patch does not apply
-> stg import: Diff does not apply cleanly
-> 
-> Patch set to Changes Requested.
-> 
-
-thanks,
--- Shuah
+Why bother with rdrand, though?  Couldn't you just pick any old piece of
+.data and compare before and after?
