@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFF6316552
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A62D316551
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBJLhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:37:34 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44928 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhBJLgI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:36:08 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11ABYhsG084287;
-        Wed, 10 Feb 2021 05:34:43 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612956883;
-        bh=ZTT5yWAttLg1aAPI3ziGR5Ht0gucArUIncPh/zW+Slo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fLrc9Bga7XGx1ykAbm/5P1m4+6987rvctjneHqEbVsSS0IGPFeeyMtWRWjsgS3Ls6
-         AxM85HnMtnEe6AiDd3muA4ZbuxiL8V2HLYJ7ZbGDxV4Vq2/hEpKSPsrQqphOtYEAru
-         xcHHs76MZ4TP3c0PBNA+GbXKqkSTRW5Kf+LVx0Zo=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11ABYhdl120259
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Feb 2021 05:34:43 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 10
- Feb 2021 05:34:43 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 10 Feb 2021 05:34:43 -0600
-Received: from [10.250.232.207] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11ABYdg2126128;
-        Wed, 10 Feb 2021 05:34:40 -0600
-Subject: Re: [PATCH] dmaengine: ti: k3-udma: Fix NULL pointer dereference
- error
-To:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210209120238.9476-1-kishon@ti.com>
- <8e9954cd-53fa-2c7e-2019-9821e5f9d45a@gmail.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <30bfe6ef-de01-e019-d2d3-a999d6261fd8@ti.com>
-Date:   Wed, 10 Feb 2021 17:04:39 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230090AbhBJLgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:36:51 -0500
+Received: from muru.com ([72.249.23.125]:59812 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229600AbhBJLfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 06:35:43 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 3301280EB;
+        Wed, 10 Feb 2021 11:35:16 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 13:34:50 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>, soc@kernel.org,
+        robh+dt@kernel.org, Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
+ devicetree
+Message-ID: <YCPE2lPpBlhCi7TH@atomide.com>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-19-marcan@marcan.st>
+ <20210208110441.25qc6yken4effd6c@kozik-lap>
+ <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
+ <YCOzLSqdsr83xf0b@atomide.com>
+ <4481998a-27f6-951e-bb4f-a9d2b95f211f@marcan.st>
 MIME-Version: 1.0
-In-Reply-To: <8e9954cd-53fa-2c7e-2019-9821e5f9d45a@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4481998a-27f6-951e-bb4f-a9d2b95f211f@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On 10/02/21 3:33 pm, Péter Ujfalusi wrote:
-> Hi Kishon,
+* Hector Martin <marcan@marcan.st> [210210 11:14]:
+> On 10/02/2021 19.19, Tony Lindgren wrote:
+> > * Hector Martin 'marcan' <marcan@marcan.st> [210208 12:05]:
+> > > On 08/02/2021 20.04, Krzysztof Kozlowski wrote:
+> > ...
+> > 
+> > > > > +	clk24: clk24 {
+> > > > 
+> > > > Just "clock". Node names should be generic.
+> > > 
+> > > Really? Almost every other device device tree uses unique clock node names.
+> > 
+> > Yeah please just use generic node name "clock". FYI, we're still hurting
+> > because of this for the TI clock node names years after because the drivers
+> > got a chance to rely on the clock node name..
+> > 
+> > Using "clock" means your clock driver code won't get a chance to wrongly
+> > use the node name and you avoid similar issues.
 > 
-> On 2/9/21 2:02 PM, Kishon Vijay Abraham I wrote:
->> bcdma_get_*() and udma_get_*() checks if bchan/rchan/tchan/rflow is
->> already allocated by checking if it has a NON NULL value. For the
->> error cases, bchan/rchan/tchan/rflow will have error value
->> and bcdma_get_*() and udma_get_*() considers this as already allocated
->> (PASS) since the error values are NON NULL. This results in
->> NULL pointer dereference error while de-referencing
->> bchan/rchan/tchan/rflow.
->>
->> Reset the value of bchan/rchan/tchan/rflow to NULL if the allocation
->> actually fails.
->>
->> Fixes: 017794739702 ("dmaengine: ti: k3-udma: Initial support for K3 BCDMA")
->> Fixes: 25dcb5dd7b7c ("dmaengine: ti: New driver for K3 UDMA")
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> That means it'll end up like this (so that we can have more than one
+> fixed-clock):
 > 
-> Is this the same patch as the other with the similar subject?
+> clocks {
+>     #address-cells = <1>;
+>     #size-cells = <0>;
+> 
+>     clk123: clock@0 {
+>         ...
+>         reg = <0>
+>     }
+> 
+>     clk456: clock@1 {
+>         ...
+>         reg = <1>
+>     }
+> }
+> 
+> Correct?
 
-Right, sorry for the duplicate patch (thought it didn't go out initially).
+Yeah, just don't use an imaginary dummy index for the reg. Use a real
+register offset from a clock controller instance base, and a register
+bit offset too if needed.
 
-Regards
-Kishon
+That way if you discover a new clock inbetween somewhere, you don't have
+renumber any imaginary lists in the driver or device tree. So try to
+follow sort of what the standard interrupts binding is doing only
+describing the hardware.
+
+> Incidentally, there is just one example in the kernel tree of doing this
+> right (in arch/arm/boot/dts/imx6qdl-tx6.dtsi). All the others that use
+> non-mmio clocks called `clock`, including the various tegra devicetrees,
+> violate the DT spec by not including a dummy reg property matching the
+> unit-address.
+
+Doing it right will save you tons of time later on ;)
+
+FYI, for the TI clocks, we ended up redoing most of the clocks as
+documented in Documentation/devicetree/bindings/clock/ti-clkctrl.txt.
+
+Regards,
+
+Tony
