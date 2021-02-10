@@ -2,171 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E317C3172FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8F6317321
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhBJWNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:13:41 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:35001 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232097AbhBJWNh (ORCPT
+        id S233583AbhBJWQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:16:53 -0500
+Received: from mout.kundenserver.de ([212.227.17.24]:47467 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhBJWQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:13:37 -0500
-Received: by mail-ot1-f53.google.com with SMTP id k10so3383873otl.2;
-        Wed, 10 Feb 2021 14:13:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DTXg6CwDth7i/nqcv+euFr50pt7fVzpIfVZ9mbO1Zq0=;
-        b=sLh8jH9W+1uX3fOyt97W8/4Xc1IHy6QjemN9CZeCyw36S4BoOe/8Bp/mUHASLVP0kp
-         nWgZi+JXi7GSNEFll+XiwUw9Mc01XLbFnM8C5y91u01+0MgzxQLR09+lCtgMr3UfL1Sw
-         JEt6Ppn16Jkh0CPgjuMV6Dxwhg0+jLn5lirCSf6Sp7YPtDlbKQi47DH3Nlob1ObL55OR
-         ZWEvrOAqnhTOFiY+Mz1Wuqcu/hSsiuOV6pqek6RTUie0tvKUmTGHyY4JVuTzSr0lXrgY
-         0nj0ecD9geRsTqcNs76TQM2ZbfAxRoZeph4oor88IsIiqArEgVDReTWCQkJmleTgUCk9
-         /K/w==
-X-Gm-Message-State: AOAM533iJ7IFhITxcMi41A5/PGdxuV1FvRPR70XfCmKlTiq+3SsVUQD6
-        9F6cWGotVmW3c1K9v8dZAA==
-X-Google-Smtp-Source: ABdhPJzi/+7SeOHhZnHUBL4PJ6P0lIk8i2F6Ep3p3sFUaaO0qUGBJ/J5giqeNfq2byHxecLoX+o25A==
-X-Received: by 2002:a9d:6b1a:: with SMTP id g26mr3792095otp.49.1612995174877;
-        Wed, 10 Feb 2021 14:12:54 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z8sm613408oon.10.2021.02.10.14.12.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 14:12:54 -0800 (PST)
-Received: (nullmailer pid 2893717 invoked by uid 1000);
-        Wed, 10 Feb 2021 22:12:52 -0000
-Date:   Wed, 10 Feb 2021 16:12:52 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, timur@kernel.org,
-        nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 3/7] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for
- rpmsg cpu dai driver
-Message-ID: <20210210221252.GA2885308@robh.at.kernel.org>
-References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
- <1612693435-31418-4-git-send-email-shengjiu.wang@nxp.com>
+        Wed, 10 Feb 2021 17:16:02 -0500
+Received: from [192.168.1.155] ([77.2.178.237]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1M2wXK-1lB3fM1E7g-003Jg0; Wed, 10 Feb 2021 23:13:24 +0100
+Subject: Re: RFC: oftree based setup of composite board devices
+To:     Rob Herring <robh+dt@kernel.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org, Johan Hovold <johan@kernel.org>
+References: <20210208222203.22335-1-info@metux.net>
+ <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <2cadfb9a-58d2-ebd9-2992-90efea1fc132@metux.net>
+Date:   Wed, 10 Feb 2021 23:13:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612693435-31418-4-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:lV+1hlvUI0I6cuKSofVaILejnrBvHrh8arutmvhdPogsj0zM3S3
+ +WZVJW7wwOFyWxHPd6OqBD5vY9glex0Zi2mS1qkDGMmmEazdfqXsr7LEoCA2HaqLwCV7URP
+ zt0OAR7cp3XZ0cMEG9z2RyDtfGvBQsQjg3BR+06hyXyN6JMXFA1GHbTplK9/oL827Bamvuy
+ UGwDoyPzmmgaO/JBMyz0w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:l0wPzfodjyQ=:1Ur+xQTitLNUyftQb8OfH9
+ SRMTHhvTNaDeM5JLX07sWKxC3gkRAAICFY1KkDfpsfjhY+o5yK+3XsxFVWEWJiPoGoqJ6md9k
+ xRcqC7RCJvRDks0MxOd/Qqs/9miSYtH7rb8gxl4RNBzWzqCJiynWDgZEgxOKNXhIvkmMEdokt
+ CL22wu8I6BnJB22Wo+gfqMw5s7wx28jK0v8Gjx9roJMHNOguy6D8Sf5d0NL6ZXPW2aiksf8KX
+ xYTtguy816SnZItyYhvdLJ2RCTDOrbNRuzo8rmMwc/LzVvClKKI5ArbZwHSUT+xzPv5aVnO2W
+ zhmxmxiRl5kiTJBw9AiQlolQM8GM5OjksmCwDMhvpV8gMj4jjtGJsHbOWBirg+5HBHhVV3LgK
+ skJ5sKvLEmKRnPwyMN7wx6YNuL6xeS47hC4z+axN7fQklvGFguNnR+xuIiv+K
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 06:23:51PM +0800, Shengjiu Wang wrote:
-> fsl_rpmsg cpu dai driver is driver for rpmsg audio, which is mainly used
-> for getting the user's configuration from device tree and configure the
-> clocks which is used by Cortex-M core. So in this document define the
-> needed property.
+On 09.02.21 00:48, Rob Herring wrote:
+
+Hi,
+
+>> here's an RFC for using compiled-in dtb's for initializing board devices
+>> that can't be probed via bus'es or firmware.
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../devicetree/bindings/sound/fsl,rpmsg.yaml  | 80 +++++++++++++++++++
->  1 file changed, 80 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+> I'm not convinced compiled in is the mechanism we want.
+
+To make it clear, I'm talking of DTBs compiled into the ofboard driver
+(which itself can be a module). And yes, that's pretty much what I want.
+It's meant for drop-in replacement of composite board drivers, in cases
+where this driver doesn't do more than initializing other drivers.
+
+Therefore, it should work without any special userland actions, and it
+should put all board specific stuff into dtb.
+
+>> Use cases are boards with non-oftree firmware (ACPI, etc) where certain
+>> platform devices can't be directly enumerated via firmware. Traditionally
+>> we had to write board specific drivers that check for board identification
+>> (DMI strings, etc), then initialize the actual devices and their links
+>> (eg. gpio<->leds/buttons, ...). Often this can be expressed just by DT.
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-> new file mode 100644
-> index 000000000000..2d3ce10d42fc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-> @@ -0,0 +1,80 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/fsl,rpmsg.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP Audio RPMSG CPU DAI Controller
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx7ulp-rpmsg
-> +      - fsl,imx8mn-rpmsg
-> +      - fsl,imx8mm-rpmsg
-> +      - fsl,imx8mp-rpmsg
+> This is something I've wanted to see for a while. There's use cases
+> for DT based systems too. The example I'd like to see supported are
+> USB serial adapters with downstream serdev, GPIO, I2C, SPI, etc. Then
+> plug more than one of those in.
 
-rpmsg is a protocol. What's the h/w block?
+Yes, that's also on my 2do list (eg. adcs behind some usb-i2c dongle)
 
-> +
-> +  clocks:
-> +    items:
-> +      - description: Peripheral clock for register access
-> +      - description: Master clock
-> +      - description: DMA clock for DMA register access
-> +      - description: Parent clock for multiple of 8kHz sample rates
-> +      - description: Parent clock for multiple of 11kHz sample rates
-> +    minItems: 5
-> +
-> +  clock-names:
-> +    items:
-> +      - const: ipg
-> +      - const: mclk
-> +      - const: dma
-> +      - const: pll8k
-> +      - const: pll11k
-> +    minItems: 5
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  fsl,audioindex:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: instance index for rpmsg image
-> +
-> +  fsl,version:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: rpmsg image version index
+> I think there's a couple of approaches we could take. Either support
+> multiple root nodes as you have done or keep a single root and add
+> child nodes to them. I think the latter would be less invasive. In the
+> non-DT cases, we'd just always create an empty skeleton DT. A 3rd
+> variation on a DT system is we could want to create parent nodes if
+> they don't exist to attach this DT to so we have a full hierarchy.
 
-What are these 2 used for?
+I'm already investigating this idea.
 
-> +
-> +  fsl,buffer-size:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: pre allocate dma buffer size
-> +
-> +  fsl,enable-lpa:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: enable low power audio path.
-> +
-> +  fsl,codec-type:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Sometimes the codec is registered by
-> +                 driver not the device tree, this items
-> +                 can be used to distinguish codecs
+Actually, I'm also thinking a bit further, whether for the future it
+could make sense converting the acpi tables into oftree at runtime.
+Not sure whether it's good idea, but maybe we could consolidate the
+platform driver probing into one, more generic mechanism.
 
-0-2^32 are valid values?
-
-> +
-> +required:
-> +  - compatible
-> +  - fsl,audioindex
-> +  - fsl,version
-> +  - fsl,buffer-size
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    rpmsg_audio: rpmsg_audio {
-> +        compatible = "fsl,imx8mn-rpmsg";
-> +        fsl,audioindex = <0> ;
-> +        fsl,version = <2>;
-> +        fsl,buffer-size = <0x6000000>;
-> +        fsl,enable-lpa;
-> +        status = "okay";
-
-Don't show status in examples.
-
-> +    };
-> -- 
-> 2.27.0
+>> Yet some drawbacks of the current implementation:
+>>
+>>   * individual FDT's can't be modularized yet (IMHO, we don't have DMI-based
+>>     modprobing anyways)
 > 
+> I think we need to use either firmware loading or udev mechanisms to
+> load the FDTs.
+
+In my usecase neither would not be a good idea, because:
+
+a) on common machines (eg. pc's) we can't touch firmware easily
+    (if we could, we wouldn't need those board drivers in the first
+     place - we'd just fix the firmware :p)
+b) I'd like to have my new mechanism as a drop-in replacement for
+    existing drivers, reduce the init boilerplace to just a piece of dt.
+    Don't wanna force users to do userland changes on a kernel upgrade.
+
+Userland-driven approach IMHO makes sense for extra devices behind some
+interfaces, that itself is probed otherwise, and we don't know hat the
+user has attached to it (eg. USB->SPI adapter).
+
+>>   * can't reconfigure or attach to devices outside the individual DT's
+>>     (eg. probed by PCI, etc)
+> 
+> Not sure I follow.
+
+Let's take an example:
+
+I've got a PCI card with a bunch of generic chips, where we already have
+drivers for. A traditional driver would be probed the usual pci way, and
+then instantiate sub-devices directly.
+
+That's lots of boilerplace code, whose semantics could be described
+entirely via DT. In order to make that work, I need two things:
+
+1. create a pci device instance (when the card is found)
+2. instantiate all sub-devices with the card device as parent
+
+Another problem:
+
+I've got extra devices behind an interface that itself already is
+enumerated by firmware or some bus, but the extra devices aren't.
+(eg. acpi already enumerates some gpio's, but not what's connected
+to them, eg. leds, keys, ...). In this case, I somehow need to get
+these parent devices into my DT's scope, so the additional devices
+can refer to them.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
