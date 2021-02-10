@@ -2,150 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE25F316459
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D83F31645B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhBJKwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:52:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbhBJKtY (ORCPT
+        id S231669AbhBJKw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:52:56 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:37869 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230298AbhBJKtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:49:24 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7C4C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:48:44 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id e7so989360pge.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:48:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hh731gWK/+w9llsFAgOpwQUfpMkvGJtarMtHikRhFf0=;
-        b=dPUgqNTT61Q7/OkwxtprPL0+hwMUmL5JUAjiMSOA5PGKhnn2SfmUFfRQABQ2x4sUsR
-         Pwa/kEzzde5zrTbPV4Jvjo3vDIhZM621jFUAA7y3FD68Do60k3IhPK39yO77hAX0Gemf
-         bqmfN4+tMfpP+uOmF1CJrTbzFpuyiLysEm0mfVhuqdBGqnBQW36N5dAL/V5oiBqBNMQW
-         zwkMgurousYTgsMi1GKBPRh6O0485aFFXTiCfyM09vMQODpy1idmGjNjlDpgpzCuW9Vn
-         Wf4m9QDV7u/ocTtVVrrPanfhvwn0m3FZYneFxGcv9SLOwaqiTdHQBOgqvL9ZhGmiCiZn
-         lgIQ==
+        Wed, 10 Feb 2021 05:49:35 -0500
+Received: from mail-ed1-f72.google.com ([209.85.208.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <juerg.haefliger@canonical.com>)
+        id 1l9n35-0003Xt-OJ
+        for linux-kernel@vger.kernel.org; Wed, 10 Feb 2021 10:48:43 +0000
+Received: by mail-ed1-f72.google.com with SMTP id bd22so2178402edb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:48:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hh731gWK/+w9llsFAgOpwQUfpMkvGJtarMtHikRhFf0=;
-        b=QMAVUJWEyfYDEHi/459AhN8udEog21MmxOPpV5vjgSGaRCqie2X0pOdCYLLINDIxMd
-         fUH6iRowNW9vagAMq4FWho4aiQ2c8i3pTOOATTPkdyUp2IybNmckTu0cmSMarNz6vJ1S
-         1d7M9lpVoPdA22cdh/VuHRirKw5qZrU5Ug/kJolTJGfGjM0MLJWG2FGi+aJFG3ck846m
-         jGSM8AISiY37thIBQq4kH0aVZxMDMpzFc2M2nYYySAylDuRdWXMKUlDuknUeu6sUhJDq
-         ZrATISFpzhLyOvPQl16tAWdMtlWqd+XnDAoi0YLV/8l9zv1eULDNwoQ6GoMY8YdoKD69
-         Hfcg==
-X-Gm-Message-State: AOAM5337lQVEYdEAollW3cDq6IpEUMzDJ2T2Prx7zXQ9FOc/pqa4IGgp
-        DvHpAK+bnDrpl1xJ1BaTW1g=
-X-Google-Smtp-Source: ABdhPJxtrn+hHJV7vv5re1RBNyjD+P62IxjXjZzsPEWgOXtupdaYkwHMCdUiemtu9kDdtU3WtGHx4A==
-X-Received: by 2002:a62:7d03:0:b029:1bb:5919:6dec with SMTP id y3-20020a627d030000b02901bb59196decmr2698734pfc.76.1612954124132;
-        Wed, 10 Feb 2021 02:48:44 -0800 (PST)
-Received: from localhost ([103.200.106.135])
-        by smtp.gmail.com with ESMTPSA id s18sm1794327pjr.14.2021.02.10.02.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:organization
+         :mime-version;
+        bh=fbZODEynTk8KIxFQkGB4RefR0hE1fym2+Xyhrsnzu5A=;
+        b=VLwZkVtPMQY/MMzQVH0yOe5Q1mBPYAvgXkcA4ummvAmEXWcw4YlqnWCbIObuc2SPVp
+         dtUGep50NO9I5I7AbnMkdCmfxYW1Rut5RMFgzJ3E1wucTXHIOpwVM9jzWxqELgd9GJOT
+         aUttef9s0Dza4NpTYam/pOVT5Vwyz22SWXShvQqG6Y7ljnPsdVHCYhrEgWB1K95Osstv
+         aGHnSj5yyr0HijBuuQPfCXOKfk2feccg+++YsaVbIoA3tHIub0WyD9ZzKLnpKsgmtClv
+         eWhyTyvkxidlr2AQieDuPap8Vmh4eToItfCyh56TaNCekC3QS4dAL0h0H15IRDEYXs4+
+         25gw==
+X-Gm-Message-State: AOAM532d94oN6zbHzX5Qs6zRDEE0ieSiOgDZ9Y0OafKUXXqkMpxciDUU
+        IzCrcH6Oh2ZV7RnbBxPuf0rzqDq6O/hkMADHQTl5YRtOplyEzJjTTT01XwCk3lwMVVsFOkZpRvI
+        2/rBZ5GdguafjNLuC8IOI6xHWb5bhT56s56uBWJ7Fsg==
+X-Received: by 2002:a17:906:d0c3:: with SMTP id bq3mr2290840ejb.424.1612954123421;
         Wed, 10 Feb 2021 02:48:43 -0800 (PST)
-Date:   Wed, 10 Feb 2021 16:18:28 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2] staging: gdm724x: Fix DMA from stack
-Message-ID: <20210210104828.5kmdhrt6kaglmlmv@archlinux>
-References: <20210210080134.1978-1-ameynarkhede03@gmail.com>
- <YCOUIFVuvJuPP3lX@kroah.com>
- <20210210085811.7dunnfly6cqw67m3@archlinux>
- <20210210090442.GV2696@kadam>
+X-Google-Smtp-Source: ABdhPJx9NF6hS2YW4fND0UJVdN+X6/DxWiZF+y7SJqfqwpg6oWblzfPBC5lxW34Eqe1Xqhgbb15VeA==
+X-Received: by 2002:a17:906:d0c3:: with SMTP id bq3mr2290824ejb.424.1612954123154;
+        Wed, 10 Feb 2021 02:48:43 -0800 (PST)
+Received: from gollum ([194.191.244.86])
+        by smtp.gmail.com with ESMTPSA id v1sm878642ejd.3.2021.02.10.02.48.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 02:48:42 -0800 (PST)
+From:   Juerg Haefliger <juerg.haefliger@canonical.com>
+X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
+Date:   Wed, 10 Feb 2021 11:48:29 +0100
+To:     stefan.wahren@i2se.com, nsaenzjulienne@suse.de
+Cc:     bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: bcm2711_thermal: Kernel panic - not syncing: Asynchronous SError
+ Interrupt
+Message-ID: <20210210114829.2915de78@gollum>
+Organization: Canonical Ltd
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="knuynokjtvzjzo4t"
-Content-Disposition: inline
-In-Reply-To: <20210210090442.GV2696@kadam>
+Content-Type: multipart/signed; boundary="Sig_/Uv0BMDlp0lj2jnv1M84PBY8";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/Uv0BMDlp0lj2jnv1M84PBY8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
---knuynokjtvzjzo4t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Trying to dump the BCM2711 registers kills the kernel:
 
-On 21/02/10 12:04PM, Dan Carpenter wrote:
-> On Wed, Feb 10, 2021 at 02:28:11PM +0530, Amey Narkhede wrote:
-> > On 21/02/10 09:06AM, Greg KH wrote:
-> > > On Wed, Feb 10, 2021 at 01:31:34PM +0530, Amey Narkhede wrote:
-> > > > Stack allocated buffers cannot be used for DMA
-> > > > on all architectures so allocate hci_packet buffer
-> > > > using kzalloc().
-> > > >
-> > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > > > ---
-> > > > Changes in v2:
-> > > > 	- Fixed build warning
-> > > > 	- Fixed memory leak using kfree
-> > > >
-> > > >  drivers/staging/gdm724x/gdm_usb.c | 9 +++++++--
-> > > >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
-> > > > index dc4da66c3..c4a9b90c5 100644
-> > > > --- a/drivers/staging/gdm724x/gdm_usb.c
-> > > > +++ b/drivers/staging/gdm724x/gdm_usb.c
-> > > > @@ -56,11 +56,15 @@ static int gdm_usb_recv(void *priv_dev,
-> > > >
-> > > >  static int request_mac_address(struct lte_udev *udev)
-> > > >  {
-> > > > -	u8 buf[16] = {0,};
-> > > > -	struct hci_packet *hci = (struct hci_packet *)buf;
-> > > > +	u8 *buf;
-> > > > +	struct hci_packet *hci;
-> > > >  	struct usb_device *usbdev = udev->usbdev;
-> > > >  	int actual;
-> > > >  	int ret = -1;
-> > > > +	buf = kzalloc(16, GFP_KERNEL);
-> > >
-> > > checkpatch did not complain about this?
-> > No. checkpatch shows no errors and warnings.
-> > >
-> > > And why do you need 'buf' anymore now?  Why not just allocate hci and
-> > > pass that to the request instead?  Saves you an extra cast and an extra
-> > > pointer.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> > Thanks. I'll send v3. I assume now we don't need kzalloc anymore as we initialize
-> > the hci_packet so kmalloc(sizeof(struct hci_packet),..) will do.
->
-> We only initialize the first five bytes, but it also seems as if we only
-> use the first five bytes which raises the question of why we are
-> allocating 16 bytes.
->
-> regards,
-> dan carpenter
->
-That makes sense. I kept 16 bytes as original implementation allocated
-16 bytes on stack.
+# cat /sys/kernel/debug/regmap/dummy-avs-monitor\@fd5d2000/range
+0-efc
+# cat /sys/kernel/debug/regmap/dummy-avs-monitor\@fd5d2000/registers=20
 
-Thanks,
-Amey
+[   62.857661] SError Interrupt on CPU1, code 0xbf000002 -- SError
+[   62.857671] CPU: 1 PID: 478 Comm: cat Not tainted 5.11.0-rc7 #4
+[   62.857674] Hardware name: Raspberry Pi 4 Model B Rev 1.2 (DT)
+[   62.857676] pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=3D--)
+[   62.857679] pc : regmap_mmio_read32le+0x1c/0x34
+[   62.857681] lr : regmap_mmio_read+0x50/0x80
+[   62.857682] sp : ffff8000105c3c00
+[   62.857685] x29: ffff8000105c3c00 x28: 0000000000000014=20
+[   62.857694] x27: 0000000000000014 x26: ffffd2ea1c2060b0=20
+[   62.857699] x25: ffff4e34408ecc00 x24: 0000000000000efc=20
+[   62.857704] x23: ffff8000105c3e20 x22: ffff8000105c3d3c=20
+[   62.857710] x21: ffff8000105c3d3c x20: 0000000000000014=20
+[   62.857715] x19: ffff4e344037a900 x18: 0000000000000020=20
+[   62.857720] x17: 0000000000000000 x16: 0000000000000000=20
+[   62.857725] x15: ffff4e3447ac40f0 x14: 0000000000000003=20
+[   62.857730] x13: ffff4e34422c0000 x12: ffff4e34422a0046=20
+[   62.857735] x11: ffffd2ea1c8765e0 x10: 0000000000000000=20
+[   62.857741] x9 : ffffd2ea1b9495a0 x8 : ffff4e34429ef980=20
+[   62.857746] x7 : 000000000000000f x6 : ffff4e34422a004b=20
+[   62.857751] x5 : 00000000fffffff9 x4 : 0000000000000000=20
+[   62.857757] x3 : ffffd2ea1b949550 x2 : ffffd2ea1b949330=20
+[   62.857761] x1 : 0000000000000014 x0 : 0000000000000000=20
+[   62.857767] Kernel panic - not syncing: Asynchronous SError Interrupt
+[   62.857770] CPU: 1 PID: 478 Comm: cat Not tainted 5.11.0-rc7 #4
+[   62.857773] Hardware name: Raspberry Pi 4 Model B Rev 1.2 (DT)
+[   62.857775] Call trace:
+[   62.857777]  dump_backtrace+0x0/0x1e0
+[   62.857778]  show_stack+0x24/0x70
+[   62.857780]  dump_stack+0xd0/0x12c
+[   62.857782]  panic+0x168/0x370
+[   62.857783]  nmi_panic+0x98/0xa0
+[   62.857786]  arm64_serror_panic+0x8c/0x98
+[   62.857787]  do_serror+0x3c/0x6c
+[   62.857789]  el1_error+0x78/0xf0
+[   62.857791]  regmap_mmio_read32le+0x1c/0x34
+[   62.857793]  _regmap_bus_reg_read+0x24/0x30
+[   62.857795]  _regmap_read+0x6c/0x17c
+[   62.857797]  regmap_read+0x58/0x84
+[   62.857799]  regmap_read_debugfs+0x138/0x3f4
+[   62.857801]  regmap_map_read_file+0x34/0x40
+[   62.857803]  full_proxy_read+0x6c/0xc0
+[   62.857805]  vfs_read+0xb8/0x1e4
+[   62.857807]  ksys_read+0x78/0x10c
+[   62.857809]  __arm64_sys_read+0x28/0x34
+[   62.857811]  el0_svc_common.constprop.0+0x7c/0x194
+[   62.857813]  do_el0_svc+0x30/0x9c
+[   62.857814]  el0_svc+0x20/0x30
+[   62.857816]  el0_sync_handler+0x1a4/0x1b0
+[   62.857818]  el0_sync+0x174/0x180
+[   62.857842] SMP: stopping secondary CPUs
+[   62.857845] Kernel Offset: 0x52ea0b080000 from 0xffff800010000000
+[   62.857847] PHYS_OFFSET: 0xffffb1cc00000000
+[   62.857849] CPU features: 0x00240022,61806000
+[   62.857851] Memory Limit: none
 
---knuynokjtvzjzo4t
-Content-Type: application/pgp-signature; name="signature.asc"
+Sprinkling printks around regmap_read [1] shows that reading from 0x14 (20)
+seems to cause the issue:
+
+
+[   40.456230] map=3Dffff020a069c9c00, from=3D0, to=3D3836, count=3D131072
+[   40.462520] map=3Dffff020a069c9c00, i=3D0
+[   40.466319] ret=3D0, val=3D0
+[   40.468922] map=3Dffff020a069c9c00, i=3D4
+[   40.472684] ret=3D0, val=3D0
+[   40.475292] map=3Dffff020a069c9c00, i=3D8
+[   40.479048] ret=3D0, val=3D0
+[   40.481649] map=3Dffff020a069c9c00, i=3D12
+[   40.485492] ret=3D0, val=3D0
+[   40.488080] map=3Dffff020a069c9c00, i=3D16
+[   40.491922] ret=3D0, val=3D0
+[   40.494523] map=3Dffff020a069c9c00, i=3D20
+[   40.498497] SError Interrupt on CPU0, code 0xbf000002 -- SError
+[   40.498499] CPU: 0 PID: 486 Comm: cat Not tainted 5.11.0-rc7+ #8
+[   40.498501] Hardware name: Raspberry Pi 4 Model B Rev 1.2 (DT)
+
+
+...Juerg
+
+[1]
+diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/reg=
+map-debugfs.c
+index ff2ee87987c7..9465f5a2f3b8 100644
+--- a/drivers/base/regmap/regmap-debugfs.c
++++ b/drivers/base/regmap/regmap-debugfs.c
+@@ -229,6 +229,7 @@ static ssize_t regmap_read_debugfs(struct regmap *map, =
+unsigned int from,
+        if (count > (PAGE_SIZE << (MAX_ORDER - 1)))
+                count =3D PAGE_SIZE << (MAX_ORDER - 1);
+=20
++       printk("map=3D%px, from=3D%d, to=3D%d, count=3D%ld\n", map, from, t=
+o, count);
+        buf =3D kmalloc(count, GFP_KERNEL);
+        if (!buf)
+                return -ENOMEM;
+@@ -253,7 +254,9 @@ static ssize_t regmap_read_debugfs(struct regmap *map, =
+unsigned int from,
+                        buf_pos +=3D map->debugfs_reg_len + 2;
+=20
+                        /* Format the value, write all X if we can't read */
++                       printk("map=3D%px, i=3D%d\n", map, i);
+                        ret =3D regmap_read(map, i, &val);
++                       printk("ret=3D%ld, val=3D%x\n", ret, val);
+                        if (ret =3D=3D 0)
+                                snprintf(buf + buf_pos, count - buf_pos,
+                                         "%.*x", map->debugfs_val_len, val);
+
+
+--Sig_/Uv0BMDlp0lj2jnv1M84PBY8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEb5tNK+B4oWmn+0Z9BBTsy/Z3yzYFAmAjufwACgkQBBTsy/Z3
-yzZjMgf/bKfhQf2JVB5X5W3OlSgMymWcO2ex2LjEc9biSbGRzufzyGbSprgy7Xri
-S0kjg3C5bzuGVZ31W+os/zlbKNx/jw852EoXnlzt+1UPqQm3nHNKuJ4sQPYKeJnY
-JhMvo54xrLlnYluJ0V1tp9CwT+38Bew9ZS3ylq3Sm5AtsSE9JHwny7HVU+yY6LHO
-a7xNDbx74qXMOupXPCD7S8CniRvKKaGvx0FsxTlZk7W07uauKNgacik87gkFPvzn
-52nb++/5ukoCueuW8f/jydoGuGUscUl73PTtQLlpGnha+a7PqTO/2bE6d4CZk0Yz
-S5hg7dijv+l1tB8l+9kUwqi4JYzBIg==
-=dc20
+iQIzBAEBCgAdFiEEhZfU96IuprviLdeLD9OLCQumQrcFAmAjuf0ACgkQD9OLCQum
+Qrch+g//dS9eU3X3FHOYgZoRvUdTOkyCVKh7XsMdI8vt97nSVhuXVulSSFblU67d
+VXm2C/vo0D8xN2XEPZ7RWVriiE+tLpD4L3R+dIuCF1PvgapIdJ0k+6zzemu/f7KW
+TEwgB/Z6KDLkjoAY5+Wana8ZgmfNgeFgBAJAOe64GnKABpOPg6fx/2LX4L5ntYSx
+h5o7BYBft+S9VEef7qLLmAYvtESB8CYr88lBlqTosUYoX517ScghZpxigEc+0QtY
+JOQups6w/wwUoI/CdJvLprF5JcqEUipih75RslniKnmU6vBJJt1gwyoKry6teYnb
+igir9mwnsh3NCt9EHqCRkwXz9Kvn2amE9vQLiqXVpydY34bXdzBzjVz87W9tEL8z
+nvjqu36Quw7PFoql4uqWKzLRetrK4n0qSMSddXg7yLvVJraFcEZqm8OV7bgZBPIF
+NmXIBEFtFLzahXzjvMO50baK7512A7wjUFYuP6qeKwgbHrWrlgtXRThtCifcRqBk
+BGQb4i6PEl8WBiBIMaLP4Zlc0kxazAY7tGfoi5wjZqAmQLwZm0/KPCbKEOvxa+Mh
+vEleG56bYOV8M1SrQQONhKQLqCJAKDWYBV9bUrCAbuDgSnLhQ8+F8II+qSyirVRG
+kqQE7FgV1IAg7r9Oj6nI58/hkkRVO7BZ/Zy4LX5YSsgTYfCQjjM=
+=Jlzp
 -----END PGP SIGNATURE-----
 
---knuynokjtvzjzo4t--
+--Sig_/Uv0BMDlp0lj2jnv1M84PBY8--
