@@ -2,299 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A9531716F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F94317171
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhBJUdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231642AbhBJUdB (ORCPT
+        id S232418AbhBJUeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:34:37 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:55562 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232102AbhBJUed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:33:01 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1131C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:32:20 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d13so1883372plg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:32:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=aMO6X6G0WH01pbGLV0S28D1NOm/hEWB/uR+Vm5pjbWc=;
-        b=hwzcB+gVAWOdO2CmIB2swY8SHOzlAOVKeajgqLwZoR6LeTCIOYAcWJ193Qn+ojg6gp
-         DFVbiNOx3qmy3WYJjfz9WCSjsqfU0dqSvaEONA+WA2E8gw5BgbPWqZCnEkVqHf+vrzCX
-         F0XUdffRg6S6CIWUxkHsnCYuBn5ml8if7c3WdMhIIxtAkL58aGfFmZ5QTvfu0o4d2y9l
-         iKLdsp3W58frBnfU7b0paxvtgeY2bHWEveT9hQrOrzFTt+7emApKRFEnEIBqS1J/OTAC
-         MjA5cFZlkF9W8TBDSpWgeWHN71mOLgQyhFCYlCR82hi+d8xPT8v1orqpqm5a4COHbiIg
-         XSAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=aMO6X6G0WH01pbGLV0S28D1NOm/hEWB/uR+Vm5pjbWc=;
-        b=pDgbFlFiOAxGd1eFWdWpkL2tlnSKwIRk5qcTQ11GF4bpR2dNmalp3TLoC2fLITH/vT
-         ynKfH7EiEQdybrijTA5/r9+C6Y6/2iwimnoX57GUT08G2YGGIaFdmip57UQuzj5JXZ80
-         JxgDY7E8UBbH7LxzmRVxTf7YOWQ86Yh5YbZu1DohigSIlJW+r76ueuBkusjTRtcgJbTn
-         FBKvgYJ3U0ZY4CAgiOIVgsfljztq9VHPzOBsgXDPfAyZCgGoO5LM7JIUWqiSTxbsxhMd
-         Q+27+Mlmtaik9VNwmNV9JI4hsveqY4IkEM+/VNBBZ0jwCKlDnUiGIKY+FU5TD5Kv5akD
-         wQRQ==
-X-Gm-Message-State: AOAM5331382opug9mRCdlST1r3M4X4Fe491DROPKZ0QgdKW3Xh6J9DPr
-        1BNJPxjoTs+4eQk7htMm2XPrUA==
-X-Google-Smtp-Source: ABdhPJxPtEqUukNMC7ygS733ldLrS2ng5Nv5CIj61/wtFGcAgcwDtQFWM67/9mNGPDR9jNsEBIQRlA==
-X-Received: by 2002:a17:902:b10b:b029:e3:103c:4c47 with SMTP id q11-20020a170902b10bb02900e3103c4c47mr513320plr.8.1612989139962;
-        Wed, 10 Feb 2021 12:32:19 -0800 (PST)
-Received: from google.com ([2620:0:1008:11:6100:9d9:528c:3c92])
-        by smtp.gmail.com with ESMTPSA id c188sm3197601pfa.98.2021.02.10.12.32.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 12:32:18 -0800 (PST)
-Date:   Wed, 10 Feb 2021 12:32:14 -0800
-From:   Tom Roeder <tmroeder@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Stephen Zhang <stephenzhangzsd@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        natechancellor@gmail.com, clang-built-linux@googlegroups.com,
-        LKML <linux-kernel@vger.kernel.org>, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v1] clang_tools:gen_compile_commands: Change the default
- source directory
-Message-ID: <YCRCztmDvm22iWou@google.com>
-References: <1612783737-3512-1-git-send-email-stephenzhangzsd@gmail.com>
- <20210208195439.GA1097868@ubuntu-m3-large-x86>
- <CALuz2=d-ENRbWgGYaO_ESEaw5eOVSwkQmkeYBJ-w0Vb3zZ+REg@mail.gmail.com>
- <20210209192729.GA820978@ubuntu-m3-large-x86>
+        Wed, 10 Feb 2021 15:34:33 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AKTw8b032123;
+        Wed, 10 Feb 2021 20:33:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Qe5RVsPxANiTw71awkW3MnpMHQaQ6y+DfIOdG6MhMx8=;
+ b=eyeLcxmPMIhsbyenG70s5z6TXJr+BdC6MTjgWltpmXqz8KiPnAWcph5PYmgsxA+4ro5n
+ gKA7DGLSwT9Qawx+5YRy+eCMTVNjM9CEdz477AoH7IT7RryjV3eCXoKyVxOnHDgy470F
+ 5VuLje8ogCQm5HYnnlutqD/FN6GZTM0zSIIRdg+W6F80BTVtOZnkNqEqYs/tWWF8mfHq
+ HDbuoiL35PRyQU6g7RoG7bJgM9pRHKI7wbqyw6nk26cM4pK1T1SHriyriAtAX3x7hkkw
+ SdkjEsurvJ4L9JY+P3J5Pwg8P9smVZ55/3y1f5HNSsm/NMDOEXJYHEx01pFAcEUSJca8 mg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 36hgman4x7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 20:33:36 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AKUkVr093845;
+        Wed, 10 Feb 2021 20:33:34 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 36j4vta8q5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 20:33:34 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11AKXVJi007651;
+        Wed, 10 Feb 2021 20:33:31 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 12:33:30 -0800
+Date:   Wed, 10 Feb 2021 23:33:17 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     kbuild@lists.01.org, Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>, lkp@intel.com,
+        kbuild-all@lists.01.org
+Subject: Re: [PATCH v2 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
+Message-ID: <20210210203317.GH20820@kadam>
+References: <20210210074946.155417-3-drew@beagleboard.org>
+ <20210210182044.GY2696@kadam>
+ <20210210190428.GA188420@x1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210209192729.GA820978@ubuntu-m3-large-x86>
+In-Reply-To: <20210210190428.GA188420@x1>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102100182
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100182
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 12:27:29PM -0700, Nathan Chancellor wrote:
->On Tue, Feb 09, 2021 at 09:56:20PM +0800, Stephen Zhang wrote:
->> Nathan Chancellor <nathan@kernel.org> 于2021年2月9日周二 上午3:54写道：
->>
->> > On Mon, Feb 08, 2021 at 07:28:57PM +0800, Stephen Zhang wrote:
->> > > The default source directory is set equal to build directory which
->> > > specified by "-d".But it is designed to be set to the current working
->> > > directoy by default, as the help messge says.It makes a differece when
->> > > source directory and build directory are in separted directorys.
->> > >
->> > > Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
->> >
->> > I don't think this patch makes much sense unless I am misunderstanding
->> > the description of the problem. The entire point of this script is to
->> > parse the .cmd files that kbuild generates and those are only present
->> > in the build directory, not the source directory, so we should never be
->> > looking in there, unless args.directory is its default value, which is
->> > the way the script is currently written. Your patch would appear to
->> > either make use do way more searching than necessary (if the build
->> > folder is within the source folder) or miss it altogether (if the build
->> > folder is outside the source folder).
->> >
->> > Cheers,
->> > Nathan
->
->Just as an FYI, your email was HTML, which means it won't hit LKML.
->
->> Specifically,the souce directory is  /vm/linux/tools/perf on my machine,
->> while the build
->> directory is /vm/tmpbuild/tools/perf .In the build directory , Execute the
->> command:
->>
->> /vm/linux/scripts/clang-tools/gen_compile_commands.py --log_level DEBUG -d .
->>
->> The resulting debugging message is:
->>
->>     INFO: Could not add line from /vm/tmpbuild/tools/perf/.perf.o.cmd: File
->> /vm/tmpbuild/tools/perf/perf.c
->>     not found.
->>
->> But actually what we want is ：
->>
->>     add line from /vm/tmpbuild/tools/perf/.perf.o.cmd: File
->> /vm/linux/tools/perf/perf.c.
->>
->> The    " /vm/tmpbuild/tools/perf " of  the "File
->> /vm/tmpbuild/tools/perf/perf.c not found." is passed by  "-d".
->>
->> so it is the "-d" which decides the source prefix.
->>
->> Then we execute:
->>
->>  /vm/linux/scripts/clang-tools/gen_compile_commands.py --log_level DEBUG
->> -d  /vm/linux/tools/perf
->>
->> But in the oringnal code , the default build directory is the same as  the
->> source directory:
->>
->> @@ -64,7 +64,7 @@ def parse_arguments():
->>              os.path.abspath(args.directory),
->>              args.output,
->>              args.ar,
->> -            args.paths if len(args.paths) > 0 else [args.directory])
->> +            args.paths if len(args.paths) > 0 else [os.getcwd()])
->>
->> after changing  it ,we then get the right result.
->
->Okay I think I see what is going on here. Your patch does not actually
->fix the problem from what I can tell though:
->
->$ mkdir -p /tmp/build/perf
->
->$ make -C tools/perf -skj"$(nproc)" O=/tmp/build/perf
->
->$ cd /tmp/build/perf
->
->$ ~/cbl/src/linux/scripts/clang-tools/gen_compile_commands.py --log_level INFO -d .
->...
->INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.bp-modify.o.cmd: File /tmp/build/perf/arch/x86/tests/bp-modify.c not found
->INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.insn-x86.o.cmd: File /tmp/build/perf/arch/x86/tests/insn-x86.c not found
->INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.arch-tests.o.cmd: File /tmp/build/perf/arch/x86/tests/arch-tests.c not found
->INFO: Could not add line from /tmp/build/perf/arch/x86/tests/.intel-pt-pkt-decoder-test.o.cmd: File /tmp/build/perf/arch/x86/tests/intel-pt-pkt-decoder-test.c not found
->...
->
->The script has to know where the source location is in your particular
->use case because the .cmd files do not record it (maybe some future
->improvement?)
->
->This patch appears to generate what I think the compile_commands.json
->should look like for the most part, I am not sure if this is proper or
->works correctly though. CC'ing Tom Roeder who originally wrote this.
->Tom, the initial patch and description of the issue is here:
->https://lore.kernel.org/r/1612783737-3512-1-git-send-email-stephenzhangzsd@gmail.com/
+On Wed, Feb 10, 2021 at 11:04:28AM -0800, Drew Fustini wrote:
+> On Wed, Feb 10, 2021 at 09:20:44PM +0300, Dan Carpenter wrote:
+> > Hi Drew,
+> > 
+> > url:    https://github.com/0day-ci/linux/commits/Drew-Fustini/pinctrl-pinmux-Add-pinmux-select-debugfs-file/20210210-160108 
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git  devel
+> > config: i386-randconfig-m021-20210209 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> Does it makes sense for me to include that tag in this patch?
+> 
 
-Thanks! I'll take a look. I'm also CC'ing linux-kbuild, which is the 
-subtree that owns the script; I haven't been very involved since I added 
-it. My main concern is to make sure that changes don't break the simple 
-use case: generating compile_commands.json in an in-tree build without 
-any arguments to the script.
+This stuff is just in the autogenerated portions of the kbuild bot
+email.  I normally just hit forward, without all the extra pontifying
+that I included this time.  :P
 
->
->$ scripts/clang-tools/gen_compile_commands.py -d /tmp/build/perf -s tools/perf
->
->diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
->index 8ddb5d099029..ba3b2dcdc3e1 100755
->--- a/scripts/clang-tools/gen_compile_commands.py
->+++ b/scripts/clang-tools/gen_compile_commands.py
->@@ -27,7 +27,8 @@ def parse_arguments():
->
->     Returns:
->         log_level: A logging level to filter log output.
->-        directory: The work directory where the objects were built.
->+        obj_directory: The work directory where the objects were built.
->+        src_directory: The source directory from which the objects were built.
->         ar: Command used for parsing .a archives.
->         output: Where to write the compile-commands JSON file.
->         paths: The list of files/directories to handle to find .cmd files.
->@@ -35,10 +36,15 @@ def parse_arguments():
->     usage = 'Creates a compile_commands.json database from kernel .cmd files'
->     parser = argparse.ArgumentParser(description=usage)
->
->-    directory_help = ('specify the output directory used for the kernel build '
->-                      '(defaults to the working directory)')
->-    parser.add_argument('-d', '--directory', type=str, default='.',
->-                        help=directory_help)
->+    obj_directory_help = ('specify the output directory used for the kernel build '
->+                          '(defaults to the working directory)')
->+    parser.add_argument('-d', '--obj_directory', type=str, default='.',
->+                        help=obj_directory_help)
->+
->+    src_directory_help = ('specify the source directory used for the kernel build '
->+                          '(defaults to the working directory)')
->+    parser.add_argument('-s', '--src_directory', type=str, default='.',
->+                        help=src_directory_help)
->
->     output_help = ('path to the output command database (defaults to ' +
->                    _DEFAULT_OUTPUT + ')')
->@@ -55,16 +61,17 @@ def parse_arguments():
->
->     paths_help = ('directories to search or files to parse '
->                   '(files should be *.o, *.a, or modules.order). '
->-                  'If nothing is specified, the current directory is searched')
->+                  'If nothing is specified, the build directory is searched')
->     parser.add_argument('paths', type=str, nargs='*', help=paths_help)
->
->     args = parser.parse_args()
->
->     return (args.log_level,
->-            os.path.abspath(args.directory),
->+            os.path.abspath(args.obj_directory),
->+            os.path.abspath(args.src_directory),
->             args.output,
->             args.ar,
->-            args.paths if len(args.paths) > 0 else [args.directory])
->+            args.paths if len(args.paths) > 0 else [args.obj_directory])
->
->
-> def cmdfiles_in_dir(directory):
->@@ -154,22 +161,23 @@ def cmdfiles_for_modorder(modorder):
->                     yield to_cmdfile(obj)
->
->
->-def process_line(root_directory, command_prefix, file_path):
->+def process_line(obj_directory, src_directory, command_prefix, file_path):
->     """Extracts information from a .cmd line and creates an entry from it.
->
->     Args:
->-        root_directory: The directory that was searched for .cmd files. Usually
->+        obj_directory: The directory that was searched for .cmd files. Usually
->             used directly in the "directory" entry in compile_commands.json.
->+        src_directory: The directory that was used to build the object files.
->         command_prefix: The extracted command line, up to the last element.
->         file_path: The .c file from the end of the extracted command.
->-            Usually relative to root_directory, but sometimes absolute.
->+            Usually relative to obj_directory, but sometimes absolute.
->
->     Returns:
->         An entry to append to compile_commands.
->
->     Raises:
->         ValueError: Could not find the extracted file based on file_path and
->-            root_directory or file_directory.
->+            src_directory or file_directory.
->     """
->     # The .cmd files are intended to be included directly by Make, so they
->     # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
->@@ -177,20 +185,23 @@ def process_line(root_directory, command_prefix, file_path):
->     # by Make, so this code replaces the escaped version with '#'.
->     prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
->
->-    # Use os.path.abspath() to normalize the path resolving '.' and '..' .
->-    abs_path = os.path.abspath(os.path.join(root_directory, file_path))
->+    if os.path.isabs(file_path):
->+        abs_path = file_path
->+    else:
->+        # Use os.path.abspath() to normalize the path resolving '.' and '..' .
->+        abs_path = os.path.abspath(os.path.join(src_directory, file_path))
->     if not os.path.exists(abs_path):
->         raise ValueError('File %s not found' % abs_path)
->     return {
->-        'directory': root_directory,
->+        'directory': obj_directory,
->         'file': abs_path,
->-        'command': prefix + file_path,
->+        'command': prefix + abs_path,
->     }
->
->
-> def main():
->     """Walks through the directory and finds and parses .cmd files."""
->-    log_level, directory, output, ar, paths = parse_arguments()
->+    log_level, obj_directory, src_directory, output, ar, paths = parse_arguments()
->
->     level = getattr(logging, log_level)
->     logging.basicConfig(format='%(levelname)s: %(message)s', level=level)
->@@ -221,8 +232,8 @@ def main():
->                 result = line_matcher.match(f.readline())
->                 if result:
->                     try:
->-                        entry = process_line(directory, result.group(1),
->-                                             result.group(2))
->+                        entry = process_line(obj_directory, src_directory,
->+                                             result.group(1), result.group(2))
->                         compile_commands.append(entry)
->                     except ValueError as err:
->                         logging.info('Could not add line from %s: %s',
+regards,
+dan carpenter
+
