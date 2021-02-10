@@ -2,193 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4FD316336
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751B931633A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhBJKHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
+        id S230074AbhBJKIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:08:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhBJKEn (ORCPT
+        with ESMTP id S230303AbhBJKFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:04:43 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03167C061574;
-        Wed, 10 Feb 2021 02:03:52 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id b16so1969631lji.13;
-        Wed, 10 Feb 2021 02:03:52 -0800 (PST)
+        Wed, 10 Feb 2021 05:05:50 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92E7C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:05:09 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id jj19so3059118ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:05:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x3VLWuGcumJIEYKUve4p4pLDNfyXwCRFQtYj4mS1ZhQ=;
-        b=JTC9D+RS8RWP8xzzk189NhTMy5iYBi8w+xVNHNxgYaSez/yf2tj9ENTuGExTiKfik8
-         5Dfckra3TVX02yB1CnFaZV4fOjpXDVeowHvPUd5okdLqZ5LSqZe+dB/UfB5vjsjxmmW7
-         Mli+T37MXc2X8cuUtoqwOgGjXGGmrjC+4IdchIh6zud6NCdMWtx1OZmkKb+yB1xsXz5d
-         1ntW7hy9trHUsBo726d2YZ6oq4ekBDwCuGz9/sdLs9rfdm2hDOyGYwgD2F3y/BtVmIda
-         0oiNPAyl98jbE+ouEk/PCayU2KUyLtdZrUSi7RHxRsW0jjXPkTYQhim+Rad5FMymsKiR
-         6ZKQ==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HCNbKwG2VER2zbwN5PRJptR9cHuEEgGz8k2i0u4o7nE=;
+        b=mgnS/EkhqBvFXs5kREja9zchr+0T/hn1KQqoYM20fScv8oNIvwZDqXhtLOaSA7sP4l
+         2nNzqKNxPwHzpTKxKAKvS2qsnT1cEujkQoGSUgfOovyaYz2ptL7IPLbWbAjdKZ5IlNRd
+         raU8kcragfn7di5KpsD5ybEN0VIaNgnho18PphaWqgjX+ioF5JocjKWliBXY8XMDb1AF
+         8kXcOtN7T0Y3+8R7ON9x1P0wRzyE+v9+1HJCkEfDOsGjtcjBJ1hPg+kVJTVuCDmv5ZBo
+         /QgYO6wEqSVO1gIiWPUopPfMHGtDyJqpRbmjHHqSdVF0D8ByivYn6215wS8iK43ejNmE
+         Kh8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x3VLWuGcumJIEYKUve4p4pLDNfyXwCRFQtYj4mS1ZhQ=;
-        b=E4S2790xVLHKXRu0aYdAC3dYYUhDqp5mZNS9y723QC3b5PwxnGfDat+xcMJ9LXxqcE
-         lqmyHqWzGBEYwwdSK9iuFkYPusRPj5gTdbid9iWbLX+cM2zyjUx1xZWcjV1taAfN75OX
-         EMuGC1ZmXldABlBvS++QKmLYz6N0CBvPqUP+4S90S79BCjfnxi1QnKoMsTwUmWRwPjHK
-         b1BkVnSbbrWhew63GcU6Rie2JtQ6bU4v/SKZ5KNIsF9JE1BpdnIwGkRqHqzJsi4q3EYl
-         9EC9PeVTe8NwbdRVSUg9Ix5//TwvpLUGSknYMy35lEiJtKwi1/YNuI43r1xRlVHp3Wag
-         Ek+g==
-X-Gm-Message-State: AOAM533TqhOwIvG1qC96YBgaGOz/CRazJvIW/E6opT43fLgk4R8Ak3jp
-        YLD6ay7ZWWbEbBfDgAGGHPOd15ZseRMk0PWh
-X-Google-Smtp-Source: ABdhPJw3GV4FNMwPYd+v5CB31qUBankNHe+HMk4Y0qlLAnmC0RSHl4PeQUI7iny9yapHi9lj83M0bg==
-X-Received: by 2002:a2e:b5d8:: with SMTP id g24mr1489543ljn.279.1612951431037;
-        Wed, 10 Feb 2021 02:03:51 -0800 (PST)
-Received: from [10.0.0.42] (91-157-86-155.elisa-laajakaista.fi. [91.157.86.155])
-        by smtp.gmail.com with ESMTPSA id j20sm242986lfu.94.2021.02.10.02.03.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 02:03:50 -0800 (PST)
-Subject: Re: [PATCH] dmaengine: ti: k3-udma: Fix NULL pointer dereference
- error
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210209120238.9476-1-kishon@ti.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <8e9954cd-53fa-2c7e-2019-9821e5f9d45a@gmail.com>
-Date:   Wed, 10 Feb 2021 12:03:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HCNbKwG2VER2zbwN5PRJptR9cHuEEgGz8k2i0u4o7nE=;
+        b=Tb+JpIX2WTUUKFMVaMjtVm98PeCSWI56DelW6IPDj3fA0u2TO0UPMCEOuv28O5Jc4R
+         XtG4h27mjBfwbmd+dB4nsVDK48+PjHcAq69aQAuOE2pzYkCogWFgA5bJzdvlqTDhLy1l
+         mmUxEh4k6Ocmj0Qqc1IgTrsFb6b3GO77maN1ue6JiLg6vBKZ4c2KEdILeHrZX2Ti8Jxc
+         YFivoedMbDLC27DXXRN7XcHjPxJSe26Tr6hJY8GI0AT5h8ISdPvzT6hbpdvKCaP1UiTC
+         gQUdwnA/omTVgnNqm7GVX+rhLoGh6piTbk1sfaATN8qIOCWk/ILPJayzrl7vKB2DU0SB
+         GgKw==
+X-Gm-Message-State: AOAM530rwxsadBwVUWl88zR++pt/kvnVZUheEIenilxxnoq5f13jccLy
+        ldY02YS9d0xd3n4kke/i4dppLWrlUu6We2qgD2M7zSx8e2o=
+X-Google-Smtp-Source: ABdhPJwPzHKFl0qGkNEe0+Qy78L72B68tvLob8xa2JI2GlZlIQ+veiRPsSz/aN25bAcMPvWAk8foLQl0XSMRF2o0yrU=
+X-Received: by 2002:a17:906:3e42:: with SMTP id t2mr2169054eji.439.1612951508173;
+ Wed, 10 Feb 2021 02:05:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210209120238.9476-1-kishon@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <f6f642d75c1b1160ed78f6de0a2944ab64017691.1612185370.git.michal.simek@xilinx.com>
+In-Reply-To: <f6f642d75c1b1160ed78f6de0a2944ab64017691.1612185370.git.michal.simek@xilinx.com>
+From:   Michal Simek <monstr@monstr.eu>
+Date:   Wed, 10 Feb 2021 11:04:57 +0100
+Message-ID: <CAHTX3dJJqoC=s-QkEj1A_JREKJBsCs_p_Tv-8EEZ69rGtOvxCA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: arm: xilinx: Add missing Zturn boards
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Walle <michael@walle.cc>,
+        Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
-
-On 2/9/21 2:02 PM, Kishon Vijay Abraham I wrote:
-> bcdma_get_*() and udma_get_*() checks if bchan/rchan/tchan/rflow is
-> already allocated by checking if it has a NON NULL value. For the
-> error cases, bchan/rchan/tchan/rflow will have error value
-> and bcdma_get_*() and udma_get_*() considers this as already allocated
-> (PASS) since the error values are NON NULL. This results in
-> NULL pointer dereference error while de-referencing
-> bchan/rchan/tchan/rflow.
-> 
-> Reset the value of bchan/rchan/tchan/rflow to NULL if the allocation
-> actually fails.
-> 
-> Fixes: 017794739702 ("dmaengine: ti: k3-udma: Initial support for K3 BCDMA")
-> Fixes: 25dcb5dd7b7c ("dmaengine: ti: New driver for K3 UDMA")
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-
-Is this the same patch as the other with the similar subject?
-
--- 
-Péter
-
+po 1. 2. 2021 v 14:16 odes=C3=ADlatel Michal Simek <michal.simek@xilinx.com=
+> napsal:
+>
+> Add missing DT compatible strings for Zturn boards.
+>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 > ---
->  drivers/dma/ti/k3-udma.c | 30 +++++++++++++++++++++++++-----
->  1 file changed, 25 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-> index 298460438bb4..aa4ef583ff83 100644
-> --- a/drivers/dma/ti/k3-udma.c
-> +++ b/drivers/dma/ti/k3-udma.c
-> @@ -1330,6 +1330,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
->  {
->  	struct udma_dev *ud = uc->ud;
->  	enum udma_tp_level tpl;
-> +	int ret;
->  
->  	if (uc->bchan) {
->  		dev_dbg(ud->dev, "chan%d: already have bchan%d allocated\n",
-> @@ -1347,8 +1348,11 @@ static int bcdma_get_bchan(struct udma_chan *uc)
->  		tpl = ud->bchan_tpl.levels - 1;
->  
->  	uc->bchan = __udma_reserve_bchan(ud, tpl, -1);
-> -	if (IS_ERR(uc->bchan))
-> -		return PTR_ERR(uc->bchan);
-> +	if (IS_ERR(uc->bchan)) {
-> +		ret = PTR_ERR(uc->bchan);
-> +		uc->bchan = NULL;
-> +		return ret;
-> +	}
->  
->  	uc->tchan = uc->bchan;
->  
-> @@ -1358,6 +1362,7 @@ static int bcdma_get_bchan(struct udma_chan *uc)
->  static int udma_get_tchan(struct udma_chan *uc)
->  {
->  	struct udma_dev *ud = uc->ud;
-> +	int ret;
->  
->  	if (uc->tchan) {
->  		dev_dbg(ud->dev, "chan%d: already have tchan%d allocated\n",
-> @@ -1372,8 +1377,11 @@ static int udma_get_tchan(struct udma_chan *uc)
->  	 */
->  	uc->tchan = __udma_reserve_tchan(ud, uc->config.channel_tpl,
->  					 uc->config.mapped_channel_id);
-> -	if (IS_ERR(uc->tchan))
-> -		return PTR_ERR(uc->tchan);
-> +	if (IS_ERR(uc->tchan)) {
-> +		ret = PTR_ERR(uc->tchan);
-> +		uc->tchan = NULL;
-> +		return ret;
-> +	}
->  
->  	if (ud->tflow_cnt) {
->  		int tflow_id;
-> @@ -1403,6 +1411,7 @@ static int udma_get_tchan(struct udma_chan *uc)
->  static int udma_get_rchan(struct udma_chan *uc)
->  {
->  	struct udma_dev *ud = uc->ud;
-> +	int ret;
->  
->  	if (uc->rchan) {
->  		dev_dbg(ud->dev, "chan%d: already have rchan%d allocated\n",
-> @@ -1417,8 +1426,13 @@ static int udma_get_rchan(struct udma_chan *uc)
->  	 */
->  	uc->rchan = __udma_reserve_rchan(ud, uc->config.channel_tpl,
->  					 uc->config.mapped_channel_id);
-> +	if (IS_ERR(uc->rchan)) {
-> +		ret = PTR_ERR(uc->rchan);
-> +		uc->rchan = NULL;
-> +		return ret;
-> +	}
->  
-> -	return PTR_ERR_OR_ZERO(uc->rchan);
-> +	return 0;
->  }
->  
->  static int udma_get_chan_pair(struct udma_chan *uc)
-> @@ -1472,6 +1486,7 @@ static int udma_get_chan_pair(struct udma_chan *uc)
->  static int udma_get_rflow(struct udma_chan *uc, int flow_id)
->  {
->  	struct udma_dev *ud = uc->ud;
-> +	int ret;
->  
->  	if (!uc->rchan) {
->  		dev_err(ud->dev, "chan%d: does not have rchan??\n", uc->id);
-> @@ -1485,6 +1500,11 @@ static int udma_get_rflow(struct udma_chan *uc, int flow_id)
->  	}
->  
->  	uc->rflow = __udma_get_rflow(ud, flow_id);
-> +	if (IS_ERR(uc->rflow)) {
-> +		ret = PTR_ERR(uc->rflow);
-> +		uc->rflow = NULL;
-> +		return ret;
-> +	}
->  
->  	return PTR_ERR_OR_ZERO(uc->rflow);
->  }
-> 
+>
+> Patches are based on
+> https://lore.kernel.org/linux-arm-kernel/20210120194033.26970-3-michael@w=
+alle.cc/
+> ---
+>  Documentation/devicetree/bindings/arm/xilinx.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/xilinx.yaml b/Document=
+ation/devicetree/bindings/arm/xilinx.yaml
+> index aaca69d0199f..05217537fb0c 100644
+> --- a/Documentation/devicetree/bindings/arm/xilinx.yaml
+> +++ b/Documentation/devicetree/bindings/arm/xilinx.yaml
+> @@ -23,6 +23,8 @@ properties:
+>                - digilent,zynq-zybo
+>                - digilent,zynq-zybo-z7
+>                - ebang,ebaz4205
+> +              - myir,zynq-zturn-v5
+> +              - myir,zynq-zturn
+>                - xlnx,zynq-cc108
+>                - xlnx,zynq-zc702
+>                - xlnx,zynq-zc706
+> --
+> 2.30.0
+>
 
+Applied.
+M
+
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
