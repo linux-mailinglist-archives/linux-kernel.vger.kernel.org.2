@@ -2,65 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EB7316F4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E0B316F50
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbhBJSy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:54:29 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:53127 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233586AbhBJSug (ORCPT
+        id S234380AbhBJSz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:55:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23526 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234373AbhBJSwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:50:36 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l9uYU-0007ag-NO; Wed, 10 Feb 2021 18:49:38 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] soc: xilinx: vcu: remove deadcode on null divider check
-Date:   Wed, 10 Feb 2021 18:49:38 +0000
-Message-Id: <20210210184938.146124-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        Wed, 10 Feb 2021 13:52:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612983051;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sDSZq7ICJ0AfHa8/wG0kYNPnZuec3lptyyORunouOpY=;
+        b=iaf+CFartxIa3OU7+lbXxn3bLRQO31HCcE8gICDeXpjpFm/yHh328nWZFVtJA6fiVxFz+y
+        09Xvy11I3FVon9RjuivWSObzMXD20XG0uYgEOHn4vyvdSZ3cC7cVkXC1av9bmRfx2Zo5r3
+        0ZPY6WVI4UNZhc/SF66pkfc8d0uBO+g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-XZ2RXzyyMWyxoLkiVpGXxg-1; Wed, 10 Feb 2021 13:50:49 -0500
+X-MC-Unique: XZ2RXzyyMWyxoLkiVpGXxg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78E83195D56B;
+        Wed, 10 Feb 2021 18:50:47 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-115-20.rdu2.redhat.com [10.10.115.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 934655D6D1;
+        Wed, 10 Feb 2021 18:50:45 +0000 (UTC)
+Subject: Re: [PATCH] locking/arch: Move qrwlock.h include after qspinlock.h
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ben Gardon <bgardon@google.com>
+References: <20210210144556.10932-1-longman@redhat.com>
+ <1d7d564c-cc73-372b-be8b-1cfd51cf476c@redhat.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <382d4c4b-6dc8-75bc-f223-01aef8a2ef90@redhat.com>
+Date:   Wed, 10 Feb 2021 13:50:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1d7d564c-cc73-372b-be8b-1cfd51cf476c@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 2/10/21 1:28 PM, Paolo Bonzini wrote:
+> On 10/02/21 15:45, Waiman Long wrote:
+>> The queued rwlock code has a dependency on the current spinlock
+>> implementation (likely to be qspinlock), but not vice versa. Including
+>> qrwlock.h before qspinlock.h can be problematic when expanding qrwlock
+>> functionality.
+>>
+>> If both qspinlock.h and qrwlock.h are to be included, the qrwlock.h
+>> include should always be after qspinlock.h. Update the current set of
+>> asm/spinlock.h files to enforce that.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>
+> arch/sparc/include/asm/spinlock_64.h is missing.  Also, the include in 
+> kernel/locking/qrwlock.c is not necessary (it may be there for 
+> aesthetic reasons, but it complicates thing in this case).
 
-The pointer 'divider' has previously been null checked followed by
-a return, hence the subsequent null check is redundant deadcode
-that can be removed.  Clean up the code and remove it.
+Sorry for missing arch/sparc/include/asm/spinlock_64.h. I was just 
+focusing on asm/spinlock.h and not aware that there are other variants 
+there.
 
-Fixes: 9c789deea206 ("soc: xilinx: vcu: implement clock provider for output clocks")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/clk/xilinx/xlnx_vcu.c | 3 ---
- 1 file changed, 3 deletions(-)
+It is true that the asm/qrwlock.h include in qrwlock.c is not really 
+necessary. I can't recall why it was there.
 
-diff --git a/drivers/clk/xilinx/xlnx_vcu.c b/drivers/clk/xilinx/xlnx_vcu.c
-index d66b1315114e..607936d7a413 100644
---- a/drivers/clk/xilinx/xlnx_vcu.c
-+++ b/drivers/clk/xilinx/xlnx_vcu.c
-@@ -512,9 +512,6 @@ static void xvcu_clk_hw_unregister_leaf(struct clk_hw *hw)
- 
- 	mux = clk_hw_get_parent(divider);
- 	clk_hw_unregister_mux(mux);
--	if (!divider)
--		return;
--
- 	clk_hw_unregister_divider(divider);
- }
- 
--- 
-2.30.0
+>
+> I'll send a v2 that is based on the kvm/next tree.
+>
+> Paolo
+>
+Thanks for taking care of that.
+
+Cheers,
+Longman
 
