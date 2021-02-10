@@ -2,145 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D292315ECB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 06:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBE8315E8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 06:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhBJFM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 00:12:57 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:30095 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhBJFMz (ORCPT
+        id S229604AbhBJFFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 00:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhBJFFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 00:12:55 -0500
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210210051212epoutp037aeab94df05adc91a3727ac1dd43361c~iSt2hjNOB2571325713epoutp03x
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:12:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210210051212epoutp037aeab94df05adc91a3727ac1dd43361c~iSt2hjNOB2571325713epoutp03x
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612933932;
-        bh=oP47j6cbk000qUHjDQAmspwF0pjOcz69OLciCLzVCRI=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=BTFcv4Cx4OtdeEeNtyemwtOwcYfRcr5DDVNJ2vFvkU/ObGHPuf8ypUUwfXeQPuIrZ
-         XS+B1UWwZcY4hfFb0o+bbEAxyBJZDOVyeT4U3ZZq3yrCIrIg2l/n58skIMIa5IpIh6
-         Z4PKyRk2JLvlP0JEAnLKA214Q9B2Mk+rzYNB/Ozk=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210210051210epcas1p37dbe4f611780debf3fbd7418ba17826d~iSt1NWOcI0819108191epcas1p32;
-        Wed, 10 Feb 2021 05:12:10 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.166]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4Db7D96ZBRz4x9Pv; Wed, 10 Feb
-        2021 05:12:09 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        46.86.09577.92B63206; Wed, 10 Feb 2021 14:12:09 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210210051209epcas1p3e55c0cbab7313731bc6e425da6189bb4~iStzjAnRw0819108191epcas1p31;
-        Wed, 10 Feb 2021 05:12:09 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210210051209epsmtrp191b652a8c61e6baabba0178dad56b6ae~iStziFBhS1772517725epsmtrp1X;
-        Wed, 10 Feb 2021 05:12:09 +0000 (GMT)
-X-AuditID: b6c32a39-bfdff70000002569-49-60236b29ff7b
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D5.D8.13470.82B63206; Wed, 10 Feb 2021 14:12:08 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.101.61]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210210051208epsmtip1db842061126c935bc16411825ab658e7~iStzOKPyh3012530125epsmtip1V;
-        Wed, 10 Feb 2021 05:12:08 +0000 (GMT)
-From:   DooHyun Hwang <dh0421.hwang@samsung.com>
-To:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ulf.hansson@linaro.org, ebiggers@google.com,
-        wsa+renesas@sang-engineering.com, satyat@google.com,
-        ludovic.barre@st.com, linus.walleij@linaro.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
-        sh043.lee@samsung.com, cw9316.lee@samsung.com,
-        sh8267.baek@samsung.com, wkon.kim@samsung.com,
-        DooHyun Hwang <dh0421.hwang@samsung.com>
-Subject: [PATCH] mmc: core: add a power cycle when CMD11 fails
-Date:   Wed, 10 Feb 2021 13:59:36 +0900
-Message-Id: <20210210045936.7809-1-dh0421.hwang@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Wed, 10 Feb 2021 00:05:22 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5593DC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 21:04:41 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id g10so1295278eds.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 21:04:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qWpoVrEkN2lzYJaj+bSGe7C9ZM4er71WTkqgbEtWRzw=;
+        b=B/JOK9Vqs5MXVhSZkeYnkPSGG1tFb8s2cMjv9XbDrNwo9o9dNDkUk6K5rXb+P7t2dm
+         Ob3c8zOT0odOek/wEm+s3K7wLqaD5b9yqVqWflaveG5uROxfiCYMQecOrwydWeXr+N//
+         aWZXfIqNixfRDxIIC+BZUYmHrLqhlAt/dnjx9y+qCCMq//36hmmOborLP82tVMxXfWo2
+         R+TzEYtik/2/CPNdQm9RKEXUkO8Q8zGOBiOHxxTDvORa9V7xIPeGTG0LE4sqJotOdQm7
+         t3QhorFymVAnQiX7FQUqDi5TK0o///nQ4g1fkBkWiDztD6odsAyDZO+c+JDSmliajTS4
+         lGjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qWpoVrEkN2lzYJaj+bSGe7C9ZM4er71WTkqgbEtWRzw=;
+        b=LCrVIWo7vD1nIn72WNKtZEPPzyWDBnXRorlkRHvML+AoM0WJVGJxRjTmwot4tpnQ/u
+         ERLSIOzWqIwMZLR4WuLTcKAnHS1jFxImjC65CC5t7neE1HnDD/9s0TdwqWdfYEAyID0v
+         lC/AQlOAQZXVF+kjgEsQSiFqqwjufoHI4FTzwmhA8S1ggVVHgg4XQGt4CeHeZgnW7oJp
+         V4ihwZwkHEp5HyO2f7TpVn5ikoiPuegmPyL6N1GEdnZ+VZIXDTa8pGS3oHz695Taoex4
+         5BsCvnU7hnWlVU3nrb+Jtz8z8Q0apSt4mbFAQDXgy/DYNUiME4VzpFb51uhjFTn8Poqz
+         I7QQ==
+X-Gm-Message-State: AOAM530ge4pmU05/1PAeMXXXpeUB4q+HM2Xl/936ZkiIsxWQk3Y7di2k
+        L6lbygih+TJy56OVRQA2DG+7tP/qE4HKePv2n21gRA==
+X-Google-Smtp-Source: ABdhPJxrwYEqvBimtJiSyz0eb+J9/fOeI8aYdvEGIOW48nT6x8wYabREMcKN4f4Ol38/t9W2fsIOi81tiFqpCYe5a+Q=
+X-Received: by 2002:a05:6402:26c9:: with SMTP id x9mr1428484edd.365.1612933479827;
+ Tue, 09 Feb 2021 21:04:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCJsWRmVeSWpSXmKPExsWy7bCmnq5mtnKCwb/JBhYzTrWxWuy7dpLd
-        4uLqFlaLX3/Xs1t0bJ3MZLHj+Rl2i11/m5kspvxZzmRxedccNosj//sZLY4ccLToX32XzaLp
-        zz4Wi2tnTrBaHF8bbrH50jcWi75z7g6CHgs2lXrcubaHzaNvyypGj2cL17N4PP2xl9nj8ya5
-        ALaoHJuM1MSU1CKF1Lzk/JTMvHRbJe/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoMuV
-        FMoSc0qBQgGJxcVK+nY2RfmlJakKGfnFJbZKqQUpOQWGBgV6xYm5xaV56XrJ+blWhgYGRqZA
-        lQk5GdterWUuWMJRcfLKbKYGxttsXYycHBICJhJnHsxn7WLk4hAS2MEoceDGdCYI5xOjxKQ5
-        xxghnG+MEp9Xz2GGaTnxpokFIrGXUWLj55fMEM5nRonVK+6BDWYT0JPY07sKbLCIwGVGiYX3
-        doI5zAIfgZxbr4GqODiEBewkJiwLB2lgEVCV+LSwhRHE5hWwkZjx9AfUOnmJP/d7mCHighIn
-        Zz5hAbGZgeLNW2eDbZYQmMshcfbDcXaIBheJ3Wd/skLYwhKvjm+BiktJvOxvg7K7GSX6D9lB
-        NE9glLh8vAcaHsYSnz5/ZgQ5jllAU2L9Ln2IsKLEzt9zGSEW80m8+9rDClIiIcAr0dEmBFGi
-        JrH433egEnYgW0aikRsi6iEx78Z1sEYhgViJ6zt6GScwys9C8swsJM/MQli7gJF5FaNYakFx
-        bnpqsWGBKXKsbmIEJ18tyx2M099+0DvEyMTBeIhRgoNZSYTXeaZSghBvSmJlVWpRfnxRaU5q
-        8SFGU2DwTmSWEk3OB6b/vJJ4Q1MjY2NjCxMzczNTYyVx3iSDB/FCAumJJanZqakFqUUwfUwc
-        nFINTDEH1/M33P7xJPRkae7/sjILZjWW5cZq61ZYMl8uKMrjybE8yX9v+5TVihOXxD+Ktqu3
-        O1uRXlMTlbnodlYpk+eLJW9KLBhFX9c3Ck7W3fogbcqzQxGvlXTnXAm2WmeeJvXx9eTWtOab
-        vBLP7ybuCSySezDzk1b2pjPvww65GK526c/actVNZ96uHZn7cp5bHX5/+cCqjp3Bt870Oj0w
-        1tm+10Xxrtjcrvzk6kshjPeONOeeklzE2zXpaJjLlMJT3t1VoUfX1x52bGpa1b+hprP4VMe1
-        8mIpm58+bpNUJzxfv+Zy76oMV85++f9bHwhFmkSH8dyauCV7/fRvkgwcdy4bKNdIFUxqXj7Z
-        M8xDUYmlOCPRUIu5qDgRAEDUy79HBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrELMWRmVeSWpSXmKPExsWy7bCSnK5GtnKCwbUtlhYzTrWxWuy7dpLd
-        4uLqFlaLX3/Xs1t0bJ3MZLHj+Rl2i11/m5kspvxZzmRxedccNosj//sZLY4ccLToX32XzaLp
-        zz4Wi2tnTrBaHF8bbrH50jcWi75z7g6CHgs2lXrcubaHzaNvyypGj2cL17N4PP2xl9nj8ya5
-        ALYoLpuU1JzMstQifbsEroxtr9YyFyzhqDh5ZTZTA+Ntti5GTg4JAROJE2+aWLoYuTiEBHYz
-        SjRt/8AIkZCR6L6/l72LkQPIFpY4fLgYouYjo8S8RZPBatgE9CT29K5iBUmICNwGSly+wg7i
-        MAv8ZpSY9KMZrFtYwE5iwrJwkAYWAVWJTwtbwJp5BWwkZjz9wQyxTF7iz/0eZoi4oMTJmU9Y
-        QGxmoHjz1tnMExj5ZiFJzUKSWsDItIpRMrWgODc9t9iwwDAvtVyvODG3uDQvXS85P3cTIzga
-        tDR3MG5f9UHvECMTB+MhRgkOZiURXueZSglCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeS90nYwX
-        EkhPLEnNTk0tSC2CyTJxcEo1MG26ulibJa5gccSVpUzNhYuXbZHT/bn80fc62QXf9zltdvdv
-        unJaofJ/xqEvV88oOC31ObdQUHKOYWbltMI1z6o+Wk5atvte3lyv4/yeD9QTdgV8+9T0ZsuT
-        fNEtlUsMflmKuM2/6hiwfeuVuQ8dOadqes2wuu3QlrrUev/+i8lZVz/cWd4r5KyfmcVauPm+
-        R2rj7WTrMJfJHxYJfW/fUlzbY3l3/o3rsqYPNCOzo6bdZzvvtf3Wy3Wrkp+YCCXt97bi2DPD
-        PH+NZui6h9VvcmYVzu3ti9P/ffzn6cmq231vGbdpSPIKvY7lMbvkMp3jmeh25etCjxL7xB/N
-        c2d4c+r2RovGswqe6e3rm/rPfGxTYinOSDTUYi4qTgQAt7NGzvUCAAA=
-X-CMS-MailID: 20210210051209epcas1p3e55c0cbab7313731bc6e425da6189bb4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210210051209epcas1p3e55c0cbab7313731bc6e425da6189bb4
-References: <CGME20210210051209epcas1p3e55c0cbab7313731bc6e425da6189bb4@epcas1p3.samsung.com>
+References: <20210208145805.279815326@linuxfoundation.org>
+In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 10 Feb 2021 10:34:28 +0530
+Message-ID: <CA+G9fYv+rOgpr=i=t0M3c1YcdJxw6GTXDHT+0KpMxuiP+XAWrA@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/38] 4.4.257-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A power cycle is required if CMD11 fails.
-CMD11 failure should be handled as no response.
+On Mon, 8 Feb 2021 at 20:33, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.257 release.
+> There are 38 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.257-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-If there is a timeout error that means no response to the CMD11,
-do not send the CMD11 again and the power cycle is required.
-Any other errors for CMD11 are the same because CMD11 failed.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On some bad SD Card, CMD11 may fail but the card may have already
-invoked the voltage switch sequence.
-In this case, it is necessary to retry without voltage switching
-after power cycle.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
----
- drivers/mmc/core/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Summary
+------------------------------------------------------------------------
 
-diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 1136b859ddd8..a6674df2a7bb 100644
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -1207,7 +1207,7 @@ int mmc_set_uhs_voltage(struct mmc_host *host, u32 ocr)
- 
- 	err = mmc_wait_for_cmd(host, &cmd, 0);
- 	if (err)
--		return err;
-+		goto power_cycle;
- 
- 	if (!mmc_host_is_spi(host) && (cmd.resp[0] & R1_ERROR))
- 		return -EIO;
--- 
-2.29.0
+kernel: 4.4.257-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 1a954f75c0ee3245a025a60f2a4cccd6722a1bb6
+git describe: v4.4.256-39-g1a954f75c0ee
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.256-39-g1a954f75c0ee
 
+
+No regressions (compared to build v4.4.256)
+
+No fixes (compared to build v4.4.256)
+
+Ran 31608 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- i386
+- juno-64k_page_size
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* fwts
+* ssuite
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.257-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.257-rc1-hikey-20210208-927
+git commit: 288b6b317ee80392b29cd493327d429385373359
+git describe: 4.4.257-rc1-hikey-20210208-927
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.257-rc1-hikey-20210208-927/
+
+
+No regressions (compared to build 4.4.256-rc1-hikey-20210205-921)
+
+
+No fixes (compared to build 4.4.256-rc1-hikey-20210205-921)
+
+Ran 1953 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
