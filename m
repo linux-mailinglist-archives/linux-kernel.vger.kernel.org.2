@@ -2,55 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88795316118
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E6231611A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhBJIdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:33:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48216 "EHLO mail.kernel.org"
+        id S230061AbhBJId3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:33:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhBJIaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:30:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D78B064E42;
-        Wed, 10 Feb 2021 08:30:13 +0000 (UTC)
+        id S229692AbhBJIbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 03:31:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FDD264E25;
+        Wed, 10 Feb 2021 08:30:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612945814;
-        bh=39O3oCdme31u0psNcPGZsqQrogDwAmd5wyIKdbrQ3xg=;
+        s=korg; t=1612945822;
+        bh=FhmD7Id8w3BM/pFcOmfQtXONHAx6/gP1u36wip+6LZE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2sSKv9atWJupN9idT1tMFxSz2eEprJEeb/hDGe7FTRRLSjSEzQVlORWjZyCr59D2N
-         /qeaWEaDg1dJcji6burFqssXB3Oij2JtQ6FEBTRbIU9aT/gruu48pbB2phT3MBq11Z
-         KKB6rAbb9fmFsEcoWtRYHRrh0DZIS4oS4lx/cHbM=
-Date:   Wed, 10 Feb 2021 09:30:11 +0100
+        b=L+wbN9cIgPfofgXFq5dSbqfj1IZS05GEfowCsPAPuWVSqBkyuyCnCu7pOeET2rV++
+         caPfaIC3Dghhh7IagFk5uTLdJsp6/XorKy/tNbACLyabiMojFaEWlZjSYt48pJ7a5/
+         bopXUMxHBwbScmC621LwhBwqqPH58JYujm3DEqLU=
+Date:   Wed, 10 Feb 2021 09:30:19 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ross Schmidt <ross.schm.dev@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
 Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, stable@vger.kernel.org
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
 Subject: Re: [PATCH 5.10 000/120] 5.10.15-rc1 review
-Message-ID: <YCOZk/L8gvEjV8qm@kroah.com>
+Message-ID: <YCOZm6xtxYmwC7VQ@kroah.com>
 References: <20210208145818.395353822@linuxfoundation.org>
- <20210210012816.GC5618@book>
+ <20210209181444.GB142754@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210012816.GC5618@book>
+In-Reply-To: <20210209181444.GB142754@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 07:28:16PM -0600, Ross Schmidt wrote:
+On Tue, Feb 09, 2021 at 10:14:44AM -0800, Guenter Roeck wrote:
 > On Mon, Feb 08, 2021 at 03:59:47PM +0100, Greg Kroah-Hartman wrote:
 > > This is the start of the stable review cycle for the 5.10.15 release.
 > > There are 120 patches in this series, all will be posted as a response
 > > to this one.  If anyone has any issues with these being applied, please
 > > let me know.
-> >
+> > 
+> > Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
+> > Anything received after that time might be too late.
+> > 
 > 
-> Compiled and booted with no regressions on x86_64.
+> Build results:
+> 	total: 154 pass: 154 fail: 0
+> Qemu test results:
+> 	total: 427 pass: 427 fail: 0
 > 
-> Tested-by: Ross Schmidt <ross.schm.dev@gmail.com>
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks for testing and letting me know.
+Great, thanks for testing.
 
 greg k-h
