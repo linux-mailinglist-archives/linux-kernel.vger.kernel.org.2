@@ -2,100 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E0B316F50
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F7B316F4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbhBJSz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:55:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23526 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234373AbhBJSwT (ORCPT
+        id S234282AbhBJSyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:54:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234329AbhBJSvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:52:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612983051;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sDSZq7ICJ0AfHa8/wG0kYNPnZuec3lptyyORunouOpY=;
-        b=iaf+CFartxIa3OU7+lbXxn3bLRQO31HCcE8gICDeXpjpFm/yHh328nWZFVtJA6fiVxFz+y
-        09Xvy11I3FVon9RjuivWSObzMXD20XG0uYgEOHn4vyvdSZ3cC7cVkXC1av9bmRfx2Zo5r3
-        0ZPY6WVI4UNZhc/SF66pkfc8d0uBO+g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-564-XZ2RXzyyMWyxoLkiVpGXxg-1; Wed, 10 Feb 2021 13:50:49 -0500
-X-MC-Unique: XZ2RXzyyMWyxoLkiVpGXxg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78E83195D56B;
-        Wed, 10 Feb 2021 18:50:47 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-115-20.rdu2.redhat.com [10.10.115.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 934655D6D1;
-        Wed, 10 Feb 2021 18:50:45 +0000 (UTC)
-Subject: Re: [PATCH] locking/arch: Move qrwlock.h include after qspinlock.h
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ben Gardon <bgardon@google.com>
-References: <20210210144556.10932-1-longman@redhat.com>
- <1d7d564c-cc73-372b-be8b-1cfd51cf476c@redhat.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <382d4c4b-6dc8-75bc-f223-01aef8a2ef90@redhat.com>
-Date:   Wed, 10 Feb 2021 13:50:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 10 Feb 2021 13:51:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BAEAC061788;
+        Wed, 10 Feb 2021 10:51:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EjxwxHUNaOq23km6417evCVsqogE3nHC3sVFoKbPKg8=; b=cbatPENJ45p15QeKsGBV3IHWYB
+        MYY+XRAjvFdyEP+iDEN7xkSzpBF8JaSpuGwjfgDQQEVoM/xpsvi3INdXoOuJZl4r0QQlnvHCCAciJ
+        K/i0cA3Pwgde9FWWOLhdkA6YYagUEcEIMGbqk7+KZOOQ+qxq6cOSsGyLEBBVqyg8IR/EhcXGSzAi5
+        DrmHQ7abaKogcEgwxl2IxF8lApwCsy2ypMG647U37oOag2em5SznPVPpv05MjbAzva3gYU3woa/oH
+        +xIIvR6HMXdLr+peIu0bMCI/atrUkCcGpsugia1PXfoSpgp6DYOk2ID3l6Da2Zgsc8BsE+tykWGjN
+        kz8+SQ8Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9uZg-009FhE-Fm; Wed, 10 Feb 2021 18:50:53 +0000
+Date:   Wed, 10 Feb 2021 18:50:52 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Zhou Wang <wangzhou1@hisilicon.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-api@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        song.bao.hua@hisilicon.com, jgg@ziepe.ca, kevin.tian@intel.com,
+        jean-philippe@linaro.org, eric.auger@redhat.com,
+        liguozhu@hisilicon.com, zhangfei.gao@linaro.org,
+        Sihang Chen <chensihang1@hisilicon.com>
+Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
+ pin
+Message-ID: <20210210185052.GE308988@casper.infradead.org>
+References: <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
+ <ED58431F-5972-47D1-BF50-93A20AD86C46@amacapital.net>
+ <2e6cf99f-beb6-9bef-1316-5e58fb0aa86e@hisilicon.com>
+ <YCJX6QFQ4hsNRrFj@kroah.com>
+ <f73951ba-84be-b7f8-8c79-db84bc9081f3@hisilicon.com>
+ <YCJ5k/Bxxkg3BNNj@kroah.com>
+ <2237506a-0c98-7ba6-5d5f-b60b637174c5@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <1d7d564c-cc73-372b-be8b-1cfd51cf476c@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2237506a-0c98-7ba6-5d5f-b60b637174c5@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 1:28 PM, Paolo Bonzini wrote:
-> On 10/02/21 15:45, Waiman Long wrote:
->> The queued rwlock code has a dependency on the current spinlock
->> implementation (likely to be qspinlock), but not vice versa. Including
->> qrwlock.h before qspinlock.h can be problematic when expanding qrwlock
->> functionality.
->>
->> If both qspinlock.h and qrwlock.h are to be included, the qrwlock.h
->> include should always be after qspinlock.h. Update the current set of
->> asm/spinlock.h files to enforce that.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->
-> arch/sparc/include/asm/spinlock_64.h is missing.  Also, the include in 
-> kernel/locking/qrwlock.c is not necessary (it may be there for 
-> aesthetic reasons, but it complicates thing in this case).
+On Tue, Feb 09, 2021 at 08:20:18PM +0800, Zhou Wang wrote:
+> Agree, will add it in next version.
 
-Sorry for missing arch/sparc/include/asm/spinlock_64.h. I was just 
-focusing on asm/spinlock.h and not aware that there are other variants 
-there.
-
-It is true that the asm/qrwlock.h include in qrwlock.c is not really 
-necessary. I can't recall why it was there.
-
->
-> I'll send a v2 that is based on the kvm/next tree.
->
-> Paolo
->
-Thanks for taking care of that.
-
-Cheers,
-Longman
-
+No, don't do another version.  Jason is right, this approach is wrong.
+The point of SVA is that it doesn't require the application to do
+anything special.  If jitter from too-frequent page migration is actually
+a problem, then fix the frequency of page migration.  Don't pretend that
+this particular application is so important that it prevents the kernel
+from doing its housekeeping.
