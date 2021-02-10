@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8701315DE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 04:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B6B315DE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 04:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhBJDjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 22:39:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhBJDjR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 22:39:17 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A66C061574;
-        Tue,  9 Feb 2021 19:38:37 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id y10so243771qvo.6;
-        Tue, 09 Feb 2021 19:38:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wxx6520gHddGTtui10g2lNRV2REHNFb9+MjnGtYstpM=;
-        b=ZfD9OoG1bVUYKDazPyVkuV1d+f/7tKIdDutOP+SbSikMj/rJ5h6nXqMqIBQE+0k961
-         NJvhWHCTvS9+bTWgoOHCOysboJ6I2jhAZUEOWTg6iVEzf5PmHQZNP6eIfqg5iU7t5/F4
-         Rw78B+baZVflSdEQnq1lyzmpqIWtSzmiLIKcaD58QMhReSEjDtZMls4xfGVfEnIDbHIf
-         mpIol3MczS6Wi9uwCeE3N/gERWJgSxXRPaogo044jCfLchNIDze883yXEyvqS24K93Sj
-         VS3QGftDeiF+QHnH8selEobKng4r2RMsZd5L7DNQWhEE3G3WhGToLFzdO9x5MJSVGO1U
-         NwUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wxx6520gHddGTtui10g2lNRV2REHNFb9+MjnGtYstpM=;
-        b=ATEwPb52bfZkhb0k8QqpAx85U8fylEZOeRUjn17d0RXey0KnV6g1nlC8abL2VDzpyN
-         w7jZSTMqUSa0paEq9WcmRvsk9/5duBoPczu8pyICMWryiz7Iq9MS3G4lEHfs3M2t5/2y
-         eJ6MBOgG7PgOtae0bI5lUY25IKlurPm1kiXBRKdascDJ4lMvkYfzD58T4WDJ04yjoQZ5
-         oqpTzVmsyNkaVn4wlssaYNN9jBm63nLcMX2WhJVoXLldatXJriuAe6t9RnAd/kpzzBZy
-         MjA5LW0h9HIbYMC6OIbaUuvgFUM6DpMWI9KNm84mlRvyYVR8M54+hpUvZ8RaAhNKfi4T
-         FbCA==
-X-Gm-Message-State: AOAM532r/cT64IEbbkGvAezVdI8CPSTTcPSbuV0/S3vIOdEzHs4VpfLb
-        ner00nzCsRIeSAAO3pWlgDs=
-X-Google-Smtp-Source: ABdhPJy0orwrghiMLEHDkSxRt9uDRlSHCQLCeYVQUJSSIBqgPNXHXsSYETlskr797WFzeWspXRb6kA==
-X-Received: by 2002:ad4:4e8c:: with SMTP id dy12mr963136qvb.12.1612928316652;
-        Tue, 09 Feb 2021 19:38:36 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:7408:b5fb:1cd8:ad04])
-        by smtp.googlemail.com with ESMTPSA id o24sm569904qtt.36.2021.02.09.19.38.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 19:38:36 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        id S230183AbhBJDkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 22:40:22 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:11135 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhBJDkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 22:40:19 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Db59L6s1Tz2d;
+        Wed, 10 Feb 2021 04:39:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1612928375; bh=aDSrPcZLnyFTwRvQIZw7dYa9jPbEgxmzVe6t1XLUv7M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Aa2jt3ua6sQmDbJ1EZghcRfzc92eq9QsRTfCsaBp2MWenwgKZwc+p58uihYydjHaS
+         wknULXa1x+1TU1NolsnYemL97WT0mpS7zcnecWdJT+asPROhiU37GP4P/C5jHVvGMm
+         ijTwm3pVP3t7d6e31FJOn2K2xKlCZVtkKb0TIT/SuYCJ/7aomCg+aRO2S++8cTpP2F
+         PbH9rSDqJ7XnIQrlgNgidwg2g2tmnGzBmfFfdft29iFEfnTWoUtiPJfIgkpYCcSsfa
+         SEuX3FNGPfWzhXSPSYjp+QU97PDi72oixGPDB9ASLv1skrJxyc0qH934dn5x6fuJiN
+         zD1j810uE2r8A==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Wed, 10 Feb 2021 04:39:02 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
         linux-kernel@vger.kernel.org
-Cc:     ztong0001@gmail.com
-Subject: [PATCH v1] media: atomisp add auto selection to prevent ce
-Date:   Tue,  9 Feb 2021 22:38:30 -0500
-Message-Id: <20210210033830.961086-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH] mmc: cb710: Use new tasklet API
+Message-ID: <20210210033902.GA12086@qmqm.qmqm.pl>
+References: <20210208134551.39696-1-kernel@esmil.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210208134551.39696-1-kernel@esmil.dk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VIDEO_ATOMISP depends on VIDEO_V4L2_SUBDEV_API, if VIDEO_V4L2_SUBDEV_API
- is not selected, it will cause compilation error
+On Mon, Feb 08, 2021 at 02:45:51PM +0100, Emil Renner Berthing wrote:
+> This converts the driver to use the new tasklet API introduced in
+> commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
+> 
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 
-drivers/staging/media/atomisp/pci/atomisp_cmd.c:6079:42: error:
- ‘struct v4l2_subdev_fh’ has no member named ‘pad’ atomisp_subdev_set_ffmt
-(&asd->subdev, fh.pad, V4L2_SUBDEV_FORMAT_ACTIVE,
+Acked-by: Micha� Miros�aw <mirq-linux@rere.qmqm.pl>
 
-add auto select VIDEO_V4L2_SUBDEV_API if VIDEO_ATOMISP is selected
-
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/staging/media/atomisp/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/staging/media/atomisp/Kconfig b/drivers/staging/media/atomisp/Kconfig
-index 37577bb72998..c34ef28d1ebc 100644
---- a/drivers/staging/media/atomisp/Kconfig
-+++ b/drivers/staging/media/atomisp/Kconfig
-@@ -15,6 +15,7 @@ config VIDEO_ATOMISP
- 	depends on PMIC_OPREGION
- 	select IOSF_MBI
- 	select VIDEOBUF_VMALLOC
-+	select VIDEO_V4L2_SUBDEV_API
- 	help
- 	  Say Y here if your platform supports Intel Atom SoC
- 	  camera imaging subsystem.
--- 
-2.25.1
-
+> ---
+>  drivers/mmc/host/cb710-mmc.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/cb710-mmc.c b/drivers/mmc/host/cb710-mmc.c
+> index e84ed84ea4cc..6d623b2681c3 100644
+> --- a/drivers/mmc/host/cb710-mmc.c
+> +++ b/drivers/mmc/host/cb710-mmc.c
+> @@ -646,14 +646,14 @@ static int cb710_mmc_irq_handler(struct cb710_slot *slot)
+>  	return 1;
+>  }
+>  
+> -static void cb710_mmc_finish_request_tasklet(unsigned long data)
+> +static void cb710_mmc_finish_request_tasklet(struct tasklet_struct *t)
+>  {
+> -	struct mmc_host *mmc = (void *)data;
+> -	struct cb710_mmc_reader *reader = mmc_priv(mmc);
+> +	struct cb710_mmc_reader *reader = from_tasklet(reader, t,
+> +						       finish_req_tasklet);
+>  	struct mmc_request *mrq = reader->mrq;
+>  
+>  	reader->mrq = NULL;
+> -	mmc_request_done(mmc, mrq);
+> +	mmc_request_done(mmc_from_priv(reader), mrq);
+>  }
+>  
+>  static const struct mmc_host_ops cb710_mmc_host = {
+> @@ -718,8 +718,8 @@ static int cb710_mmc_init(struct platform_device *pdev)
+>  
+>  	reader = mmc_priv(mmc);
+>  
+> -	tasklet_init(&reader->finish_req_tasklet,
+> -		cb710_mmc_finish_request_tasklet, (unsigned long)mmc);
+> +	tasklet_setup(&reader->finish_req_tasklet,
+> +		      cb710_mmc_finish_request_tasklet);
+>  	spin_lock_init(&reader->irq_lock);
+>  	cb710_dump_regs(chip, CB710_DUMP_REGS_MMC);
+>  
