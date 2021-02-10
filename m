@@ -2,179 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E335F31681C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1FC31681E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhBJNfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:35:46 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5319 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhBJNfi (ORCPT
+        id S230328AbhBJNgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:36:21 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:33427 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhBJNgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:35:38 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6023e1000000>; Wed, 10 Feb 2021 05:34:56 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 13:34:55 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.177)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 10 Feb 2021 13:34:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CQXZn3vGoPYu6b3nF0PFBEB7JBQhCLazRlc4shMC7ElBt0exX+ltqYE74Ny+DOykFDyyTAVTxYX9eQv+9O7JZW79WCK23TMlMhu3LpQQafmZFQm8kMilGvpuGG0cxbBJzYfcEgpqiuYSypGfPYgGr5Q6qiXAg3idbM1B3mKr6rYZDuCP8wdZI33WYxqZrWZ5j4zCCqG9lfVAlHDBF897Kgr++g29zCgtPe0GQz4NoMBbwq1Vi3+sebadvuYFJTIpxNbdviJ7QuRHRrPBAZ17k0jhnB9BwLhNF1UEUtT3gP7XxHNa0wliwJWmT2fQtR6UFD3CINgJi+Ik9Mxyl+5dkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BX90xb9kBpIhs/sBVmCDM0VJTidLOFK8DWfcHaOsyF8=;
- b=k/uTPLAnZgjnou8OzgW6G71AoDmMwi5iL2p68xM6YjB3cpcVXX/RD70xy/Th8PtUiKhAhcOscWehjZH+RINi3r96rVIE+eZRm0ZvLvZJxNdqKN76WhkxcYoRzxlHoMewB3qB1JYg1g+c36tpu0hDXjcqB1SsJfRTjebhnrTpiDhcDxJ6OGri9hoBWdA9HK9hT9mmA4ms2awhUyqhJOZc2JW9wugiIw4myNXOp65VMxvo24oK4i2gVByzt+Reu4JKM7DTr7t9+T9OEwn8HXc7s/dj/gDCrvzYVA3C/KHEvXpWerZ2ZR8Ah6Wr++eWVBeDsL5WcHN66h4i/4a9Kwb2nQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2488.namprd12.prod.outlook.com (2603:10b6:4:b5::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.25; Wed, 10 Feb
- 2021 13:34:54 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
- 13:34:53 +0000
-Date:   Wed, 10 Feb 2021 09:34:52 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-CC:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "liranl@nvidia.com" <liranl@nvidia.com>,
-        "oren@nvidia.com" <oren@nvidia.com>,
-        "tzahio@nvidia.com" <tzahio@nvidia.com>,
-        "leonro@nvidia.com" <leonro@nvidia.com>,
-        "yarong@nvidia.com" <yarong@nvidia.com>,
-        "aviadye@nvidia.com" <aviadye@nvidia.com>,
-        "shahafs@nvidia.com" <shahafs@nvidia.com>,
-        "artemp@nvidia.com" <artemp@nvidia.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "ACurrid@nvidia.com" <ACurrid@nvidia.com>,
-        "gmataev@nvidia.com" <gmataev@nvidia.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "aik@ozlabs.ru" <aik@ozlabs.ru>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v2 0/9] Introduce vfio-pci-core subsystem
-Message-ID: <20210210133452.GW4247@nvidia.com>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <MWHPR11MB18867A429497117960344A798C8D9@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <MWHPR11MB18867A429497117960344A798C8D9@MWHPR11MB1886.namprd11.prod.outlook.com>
-X-ClientProxiedBy: MN2PR11CA0021.namprd11.prod.outlook.com
- (2603:10b6:208:23b::26) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Wed, 10 Feb 2021 08:36:01 -0500
+Received: by mail-io1-f70.google.com with SMTP id m3so2212038ioy.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:35:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=kNxnIzZ5neR9H2UAtt/mBNzMdeD8j+FUzpcQKMPLil0=;
+        b=L5EnUBhldj17OcYcEioWpmygQz+2W/W26bOf/1zdxot81IA24Pk/sEiOOASSGvaKA5
+         aAgNP6+FfrxuHq93rM3p4tm8vOP+ohH199ffFVMSIu0uDbL5vK2bB8BC4j1HwcUaOqoX
+         Uf2n0r+v9VGyDeDjXdh2QrqknWt/ak+QC59jXnV8M8j9lttA0OhhpdiL/y/S+uIa+RU7
+         gaolMPOlUgAAMA6PuEzzc7/YlUYgHeXjxTszDRPxaxCpYjQuFZIkXwdLWt6JJV/+NBgw
+         Le8q6iuA6pgCeTxwLmS1RFPr2f3g71UYDKMaVzpuzlCdCwy9drvjmQGlhxCDs0SVAAfm
+         +plQ==
+X-Gm-Message-State: AOAM531udyuMNIOs4lmpxCQ6ncDqXl5MciSnXFVI4ODCC834JlfqPzFK
+        uvf7d2FthveqMfbjTqQwy7qEKGLDdWJ0W7iSvjn9hp2r+pEl
+X-Google-Smtp-Source: ABdhPJyMrmt/CHXQRRWixWAA0us3GDu/SbuwXtm5kr27RcWCy7HGSjk6w7kOzUNf8n5eesh+5xQxREEMc3gviWExWuu20q9dLDAE
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR11CA0021.namprd11.prod.outlook.com (2603:10b6:208:23b::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 13:34:53 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9pds-005rQn-CM; Wed, 10 Feb 2021 09:34:52 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612964096; bh=UoQcNyiFY97yQ+UdvJgsciYzIHzh/G0qVQ0SuDeyD0Y=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=YDAaNnaB5PcakRan0aZm22dMMZSFuEDzFLm8vBOlA482JhmspGm5KJcdRRwdTlirO
-         r8qes3XHLDNAB4gJrU2mxAc1QfsAw2eAsRINZ8iOF8vL/s+1i2FQTAKEaz34wFHRxY
-         2Q2rAzPdck0IeE0bOqisABhvmT1BdtUgbL8ikaGLXei3wtR+wcUyBQQlsxbDS9G81r
-         d6h5ms6l0dhmYnpR00rmjqBFr6SjFb+/in5849AAOdvhnvgnhpqLAbk6fHcF+kWL6F
-         q7QlYv0JVpD/iNfPof872CmBfshe8Z53nCMDzlF3N7EndGtznv3dYHH+clImOtuqji
-         ZqsdBUZqZcP1A==
+X-Received: by 2002:a05:6638:205:: with SMTP id e5mr3365236jaq.142.1612964118803;
+ Wed, 10 Feb 2021 05:35:18 -0800 (PST)
+Date:   Wed, 10 Feb 2021 05:35:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000563a0205bafb7970@google.com>
+Subject: possible deadlock in start_this_handle (2)
+From:   syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 07:52:08AM +0000, Tian, Kevin wrote:
-> > This subsystem framework will also ease on adding vendor specific
-> > functionality to VFIO devices in the future by allowing another module
-> > to provide the pci_driver that can setup number of details before
-> > registering to VFIO subsystem (such as inject its own operations).
->=20
-> I'm a bit confused about the change from v1 to v2, especially about
-> how to inject module specific operations. From live migration p.o.v
-> it may requires two hook points at least for some devices (e.g. i40e=20
-> in original Yan's example):
+Hello,
 
-IMHO, it was too soon to give up on putting the vfio_device_ops in the
-final driver- we should try to define a reasonable public/private
-split of vfio_pci_device as is the norm in the kernel. No reason we
-can't achieve that.
+syzbot found the following issue on:
 
->  register a migration region and intercept guest writes to specific
-> registers. [PATCH 4/9] demonstrates the former but not the latter
-> (which is allowed in v1).
+HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15cbce90d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
+dashboard link: https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
+userspace arch: i386
 
-And this is why, the ROI to wrapper every vfio op in a PCI op just to
-keep vfio_pci_device completely private is poor :(
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> Then another question. Once we have this framework in place, do we=20
-> mandate this approach for any vendor specific tweak or still allow
-> doing it as vfio_pci_core extensions (such as igd and zdev in this
-> series)?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
 
-I would say no to any further vfio_pci_core extensions that are tied
-to specific PCI devices. Things like zdev are platform features, they
-are not tied to specific PCI devices
+======================================================
+WARNING: possible circular locking dependency detected
+5.11.0-rc6-syzkaller #0 Not tainted
+------------------------------------------------------
+kswapd0/2246 is trying to acquire lock:
+ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
 
-> If the latter, what is the criteria to judge which way is desired? Also w=
-hat=20
-> about the scenarios where we just want one-time vendor information,=20
-> e.g. to tell whether a device can tolerate arbitrary I/O page faults [1] =
-or
-> the offset in VF PCI config space to put PASID/ATS/PRI capabilities [2]?
-> Do we expect to create a module for each device to provide such info?
-> Having those questions answered is helpful for better understanding of
-> this proposal IMO. =F0=9F=98=8A
->=20
-> [1] https://lore.kernel.org/kvm/d4c51504-24ed-2592-37b4-f390b97fdd00@huaw=
-ei.com/T/
+but task is already holding lock:
+ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
 
-SVA is a platform feature, so no problem. Don't see a vfio-pci change
-in here?
+which lock already depends on the new lock.
 
-> [2] https://lore.kernel.org/kvm/20200407095801.648b1371@w520.home/
 
-This one could have been done as a broadcom_vfio_pci driver. Not sure
-exposing the entire config space unprotected is safe, hard to know
-what the device has put in there, and if it is secure to share with a
-guest..
+the existing dependency chain (in reverse order) is:
 
-> MDEV core is already a well defined subsystem to connect mdev
-> bus driver (vfio-mdev) and mdev device driver (mlx5-mdev).
+-> #2 (fs_reclaim){+.+.}-{0:0}:
+       __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
+       fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
+       might_alloc include/linux/sched/mm.h:193 [inline]
+       slab_pre_alloc_hook mm/slab.h:493 [inline]
+       slab_alloc_node mm/slub.c:2817 [inline]
+       __kmalloc_node+0x5f/0x430 mm/slub.c:4015
+       kmalloc_node include/linux/slab.h:575 [inline]
+       kvmalloc_node+0x61/0xf0 mm/util.c:587
+       kvmalloc include/linux/mm.h:781 [inline]
+       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
+       ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
+       ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
+       ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
+       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
+       ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
+       __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
+       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+       vfs_setxattr+0x135/0x320 fs/xattr.c:291
+       setxattr+0x1ff/0x290 fs/xattr.c:553
+       path_setxattr+0x170/0x190 fs/xattr.c:572
+       __do_sys_setxattr fs/xattr.c:587 [inline]
+       __se_sys_setxattr fs/xattr.c:583 [inline]
+       __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
+       do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
+       __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
+       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
+       entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 
-mdev is two things
+-> #1 (&ei->xattr_sem){++++}-{3:3}:
+       down_read+0x95/0x440 kernel/locking/rwsem.c:1353
+       ext4_setattr+0x570/0x1fd0 fs/ext4/inode.c:5375
+       notify_change+0xb60/0x10a0 fs/attr.c:336
+       chown_common+0x4a9/0x550 fs/open.c:674
+       vfs_fchown fs/open.c:741 [inline]
+       vfs_fchown fs/open.c:733 [inline]
+       ksys_fchown+0x111/0x170 fs/open.c:752
+       __do_sys_fchown fs/open.c:760 [inline]
+       __se_sys_fchown fs/open.c:758 [inline]
+       __x64_sys_fchown+0x6f/0xb0 fs/open.c:758
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
- - a driver core bus layer and sysfs that makes a lifetime model
- - a vfio bus driver that doesn't do anything but forward ops to the
-   main ops
+-> #0 (jbd2_handle){++++}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5442 [inline]
+       lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
+       start_this_handle+0xfb4/0x1380 fs/jbd2/transaction.c:446
+       jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:503
+       __ext4_journal_start_sb+0x227/0x4a0 fs/ext4/ext4_jbd2.c:105
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:320 [inline]
+       ext4_dirty_inode+0xbc/0x130 fs/ext4/inode.c:5951
+       __mark_inode_dirty+0x81f/0x1070 fs/fs-writeback.c:2262
+       mark_inode_dirty_sync include/linux/fs.h:2186 [inline]
+       iput.part.0+0x57/0x810 fs/inode.c:1676
+       iput+0x58/0x70 fs/inode.c:1669
+       dentry_unlink_inode+0x2b1/0x3d0 fs/dcache.c:374
+       __dentry_kill+0x3c0/0x640 fs/dcache.c:579
+       shrink_dentry_list+0x144/0x480 fs/dcache.c:1148
+       prune_dcache_sb+0xe7/0x140 fs/dcache.c:1229
+       super_cache_scan+0x336/0x590 fs/super.c:105
+       do_shrink_slab+0x3e4/0x9f0 mm/vmscan.c:511
+       shrink_slab+0x16f/0x5d0 mm/vmscan.c:672
+       shrink_node_memcgs mm/vmscan.c:2665 [inline]
+       shrink_node+0x8cc/0x1de0 mm/vmscan.c:2780
+       kswapd_shrink_node mm/vmscan.c:3523 [inline]
+       balance_pgdat+0x745/0x1270 mm/vmscan.c:3681
+       kswapd+0x5b1/0xdb0 mm/vmscan.c:3938
+       kthread+0x3b1/0x4a0 kernel/kthread.c:292
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-> vfio-mdev is just the channel to bring VFIO APIs through mdev core
-> to underlying vendor specific mdev device driver, which is already
-> granted flexibility to tweak whatever needs through mdev_parent_ops.
+other info that might help us debug this:
 
-This is the second thing, and it could just be deleted. The actual
-final mdev driver can just use vfio_device_ops directly. The
-redirection shim in vfio_mdev.c doesn't add value.
+Chain exists of:
+  jbd2_handle --> &ei->xattr_sem --> fs_reclaim
 
-> Then what exact extension is talked here by creating another subsystem
-> module? or are we talking about some general library which can be
-> shared by underlying mdev device drivers to reduce duplicated
-> emulation code?
+ Possible unsafe locking scenario:
 
-IMHO it is more a design philosophy that the end driver should
-implement the vfio_device_ops directly vs having a stack of ops
-structs.
+       CPU0                    CPU1
+       ----                    ----
+  lock(fs_reclaim);
+                               lock(&ei->xattr_sem);
+                               lock(fs_reclaim);
+  lock(jbd2_handle);
 
-Jason
+ *** DEADLOCK ***
+
+3 locks held by kswapd0/2246:
+ #0: ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
+ #1: ffffffff8be507f0 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0xc7/0x5d0 mm/vmscan.c:662
+ #2: ffff8880442660e0 (&type->s_umount_key#38){++++}-{3:3}, at: trylock_super fs/super.c:418 [inline]
+ #2: ffff8880442660e0 (&type->s_umount_key#38){++++}-{3:3}, at: super_cache_scan+0x6c/0x590 fs/super.c:80
+
+stack backtrace:
+CPU: 0 PID: 2246 Comm: kswapd0 Not tainted 5.11.0-rc6-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5442 [inline]
+ lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
+ start_this_handle+0xfb4/0x1380 fs/jbd2/transaction.c:446
+ jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:503
+ __ext4_journal_start_sb+0x227/0x4a0 fs/ext4/ext4_jbd2.c:105
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:320 [inline]
+ ext4_dirty_inode+0xbc/0x130 fs/ext4/inode.c:5951
+ __mark_inode_dirty+0x81f/0x1070 fs/fs-writeback.c:2262
+ mark_inode_dirty_sync include/linux/fs.h:2186 [inline]
+ iput.part.0+0x57/0x810 fs/inode.c:1676
+ iput+0x58/0x70 fs/inode.c:1669
+ dentry_unlink_inode+0x2b1/0x3d0 fs/dcache.c:374
+ __dentry_kill+0x3c0/0x640 fs/dcache.c:579
+ shrink_dentry_list+0x144/0x480 fs/dcache.c:1148
+ prune_dcache_sb+0xe7/0x140 fs/dcache.c:1229
+ super_cache_scan+0x336/0x590 fs/super.c:105
+ do_shrink_slab+0x3e4/0x9f0 mm/vmscan.c:511
+ shrink_slab+0x16f/0x5d0 mm/vmscan.c:672
+ shrink_node_memcgs mm/vmscan.c:2665 [inline]
+ shrink_node+0x8cc/0x1de0 mm/vmscan.c:2780
+ kswapd_shrink_node mm/vmscan.c:3523 [inline]
+ balance_pgdat+0x745/0x1270 mm/vmscan.c:3681
+ kswapd+0x5b1/0xdb0 mm/vmscan.c:3938
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
