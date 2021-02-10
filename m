@@ -2,153 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4DE3164F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A100A316504
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhBJLSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:18:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
+        id S231310AbhBJLUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:20:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhBJLMU (ORCPT
+        with ESMTP id S230294AbhBJLM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:12:20 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14F4C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:11:39 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id r21so1985794wrr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:11:39 -0800 (PST)
+        Wed, 10 Feb 2021 06:12:56 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A91C06178A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:12:15 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id q85so1186775qke.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:12:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=+4PQbDkgN9ma23iEvdVJptQ3V05007RBQo09oRIADY0=;
-        b=cAGrzzuDpMyMx9zeHVxV8zzXndWSOBxcAiA8Q2fzJpvwbWPzBwJX+Ks5FoY/wEcAMb
-         U5yVawsoLPVK/aIKDXL5HcywijuYJML4X3/NcMTGsA5oKoAXaejqn5hKaBZNn78r4qm9
-         zsip4sZMqdAt1JNkr4CDubIDtTF/6J/27d8O0TbEOqrcxmzBbFgtsmGuIFnyJy5MBCPW
-         KH/voTqThO5o3pbw8VXfgxDN6y4S7lcDrDizA8uLaf+m1JSprazI3dMmAr/7zltJiUYy
-         1oRem3Gc2w9HZ6TXk3Ug5lgQ4Sdqzb1LMFTEO+YShKgs975lrU4SeZ2GVpdLG3OLvwyb
-         Cazw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l6Aa5lO3nX8StZdHni5HLbVJmff/S5b/H+w9der7I6w=;
+        b=cH20E2hoIgdhIv7ZUGg4Kji8fgP8I30rf969LiyzfgKSxFOVljcaILS+YDx1Arwknx
+         NceojQ07JRuMuscoqMNGTcoOSE0ca9QeIpAoockv+iRRDufhxNTrOx9NrnJrLFOH3CUb
+         I4BT4EZY69waZThVs0Y8J7Kl4IYq4Tv96JYCPcICcqkvxrSX9ypNEYanl25M50qa2lvg
+         JPJ4jCBd2/pVVVR3XP5NX/FfnayqWe50rMBw0DV7nlvxOz1BypO2JSQN/+Ae2VfB4DXd
+         dnDqL5A9kUsz1OvkU6/L4JO/499Cz6+z/3M7bWB2e5FNhd2NhDZd+YCZK5doStLcqZef
+         uNKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=+4PQbDkgN9ma23iEvdVJptQ3V05007RBQo09oRIADY0=;
-        b=enqnzRyPu2Y7xu1NicgKRLAEGscwVOyIgslv1Or5ip8HAt5CZJkew5O7H8lCpwsGYX
-         2hK/WK48xw26vduHudWhuzBjZWczOEVQ4zwg1FyqvB1aU3LIwPSDnwPTUoQGv+lUGgn+
-         tAqVmBgoJXRRgWO25LNtVHNf6R08VHsZv5wZG3FJeS9osOYx2LlFfrpupIsAXBB8Ql9g
-         Rq+BoJLRg0YvsU3uKUp+xazlOh/GxvIE283Svio8T6kX4BYxT0KnVzRBCbSHLotqZIcX
-         IW2RNC0hWHVGgQgFRJj638th0KfCMnyS/RYrsaM2/GBoDnqQoZ7f1HWYHJRYZX7eiAwI
-         VYWQ==
-X-Gm-Message-State: AOAM531zkaXFhBj3pgCQQL9IAC3Gk1KQfVEqCubfBsZ2e/fYDvdu7zHN
-        WFY1XElgj/422LtNG3772n86sA==
-X-Google-Smtp-Source: ABdhPJylZFyEw0m+WWAQyCxMXaWhtWJF3P157jdX/UsfgWQDUHkMuezWf4uQ7pspK79rtEJEKtL+rQ==
-X-Received: by 2002:adf:f647:: with SMTP id x7mr2941035wrp.160.1612955498200;
-        Wed, 10 Feb 2021 03:11:38 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:a559:3455:b3db:9311])
-        by smtp.gmail.com with ESMTPSA id t15sm1889365wmi.48.2021.02.10.03.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 03:11:37 -0800 (PST)
-Date:   Wed, 10 Feb 2021 12:11:31 +0100
-From:   Marco Elver <elver@google.com>
-To:     Timur Tabi <timur@kernel.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 0/3][RESEND] add support for never printing hashed
- addresses
-Message-ID: <YCO/Y8cM/n5YRRJJ@elver.google.com>
-References: <20210210051814.845713-1-timur@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l6Aa5lO3nX8StZdHni5HLbVJmff/S5b/H+w9der7I6w=;
+        b=OLMUJfvzwoL1zKNbFnGQdjZtm5kpMo02uVPbtYZzQPLHnVtexc/UTF48rHgvDXXgA1
+         9KyYN/YXk6D7OWaIyR4R/EL9qgrK4k8rL6nM5EFPnGIgrJZxzm3uqBNVIo/VbqPw/s+j
+         IBQB9Rf5glGIRioAZcBuz2i8owcXtqfYhkzu+VhnKbOi1pXoZaaOFG7PA0QOtkCzKN+K
+         G7rj2EI/inHL/zFPuGRtj3SvTJ4itaxshVaeNlKhLy6XFdQ0UBJk9Qa5u1rQ0SRx4jhc
+         sbPCcdVRfyFupSPKVr9iVj14G36S9MJzuYqGm+zMwWTwJAhlQyV3Tn/dppVbI4rwL5uJ
+         Pbrg==
+X-Gm-Message-State: AOAM533AyRAXYYXSuWeJLdCxP/6ulTn0RNZG+e6kpNzGif0npenJEiCc
+        5HjDCMH3hWJKUKL25eQDao9op/WvFNDtTLOEjn6C7PfighQ=
+X-Google-Smtp-Source: ABdhPJwsDcMa+DYZsa8ZrxJYIhlNsLdkVt1FpNlaoYv1QSqXBAhIM+dt/pKZRTwrf49Vu75DpaqqwcLJpz8kmVkv2bY=
+X-Received: by 2002:a37:678b:: with SMTP id b133mr2707612qkc.237.1612955535243;
+ Wed, 10 Feb 2021 03:12:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210210051814.845713-1-timur@kernel.org>
-User-Agent: Mutt/2.0.2 (2020-11-20)
+References: <20210124232007.21639-1-richard@nod.at> <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
+ <563952295.378372.1612881357746.JavaMail.zimbra@nod.at> <1923896038.379134.1612901174023.JavaMail.zimbra@nod.at>
+ <CAJfpegufojx4q_CfR6L-fzSyQw9QXJZKy5xKVZZWaepADkL=Kw@mail.gmail.com>
+In-Reply-To: <CAJfpegufojx4q_CfR6L-fzSyQw9QXJZKy5xKVZZWaepADkL=Kw@mail.gmail.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Wed, 10 Feb 2021 12:12:03 +0100
+Message-ID: <CAFLxGvxhxxfT_ugmeFuqZ099Z+v-ENg9C6zq78sV45YzA5_Y_w@mail.gmail.com>
+Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 11:18PM -0600, Timur Tabi wrote:
-> [accidentally sent from the wrong email address, so resending]
-> 
-> [The list of email addresses on CC: is getting quite lengthy,
-> so I hope I've included everyone.]
-> 
-> Although hashing addresses printed via printk does make the
-> kernel more secure, it interferes with debugging, especially
-> with some functions like print_hex_dump() which always uses
-> hashed addresses.
-> 
-> To avoid having to choose between %p and %px, it's easier to
-> add a kernel command line that treats all %p as %px.  This
-> encourages developers to use %p more without making debugging
-> more difficult.
-> 
-> Patches #1 and #2 upgrade the kselftest framework so that
-> it can report on tests that were skipped outright.  This
-> is needed for the test_printf module which will now skip
-> %p hashing tests if hashing is disabled.
-> 
-> Patch #2 upgrades the printf library to check the command
-> line.  It also updates test_printf().
-> 
-> Timur Tabi (3):
->   lib/test_printf: use KSTM_MODULE_GLOBALS macro
->   kselftest: add support for skipped tests
->   [v2] lib/vsprintf: make-printk-non-secret printks all addresses as
->     unhashed
-> 
->  .../admin-guide/kernel-parameters.txt         | 15 +++++++
->  lib/test_printf.c                             | 12 +++++-
->  lib/vsprintf.c                                | 40 ++++++++++++++++++-
->  tools/testing/selftests/kselftest_module.h    | 18 ++++++---
->  4 files changed, 75 insertions(+), 10 deletions(-)
+On Wed, Feb 10, 2021 at 11:18 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > Does this more or less what you had in mind?
+>
+> Just moving the whole internal header file is not nice.  I did a
+> mechanical public/private separation of the interface based on what
+> CUSE uses.   Incremental patch attached.
+>
+> But this is just a start.  From the big structures still left in
+> <net/fuse.h> CUSE only uses the following fields:
+>
+> fc: .minor, max_read, max_write, rcu, release, initialized, num_waiting
+> fm: .fc
+> ff: .fm
+> fud: .fc
+>
+> Dealing with the last 3 is trivial:  create and alloc function for the
+> fm, and create accessor functions for the accessed fields.
 
-I wanted to test this for deciding if we can show sensitive info in
-KFENCE reports, which works just fine now that debug_never_hash_pointers
-is non-static. FWIW,
+Ah, ok. So the goal is that <net/fuse.h> provides the bare minimum such that
+CUSE and MUSE can reside outside of fs/fuse?
 
-	Acked-by: Marco Elver <elver@google.com>
+> Dealing with fc properly is probably a bit more involved, but does not
+> seem to be too compex at first glance.
+>
+> Do you want to take a stab at cleaning this up further?
 
-But unfortunately this series broke some other test:
+Yes. I guess for MUSE the interface needs little adaptations as well.
+But I won't be able to do this for the 5.12 merge window.
 
-| In file included from lib/test_bitmap.c:17:
-| lib/test_bitmap.c: In function ‘test_bitmap_init’:
-| lib/../tools/testing/selftests/kselftest_module.h:45:48: error: ‘skipped_tests’ undeclared (first use in this function); did you mean ‘failed_tests’?
-|    45 |  return kstm_report(total_tests, failed_tests, skipped_tests); \
-|       |                                                ^~~~~~~~~~~~~
-| lib/test_bitmap.c:637:1: note: in expansion of macro ‘KSTM_MODULE_LOADERS’
-|   637 | KSTM_MODULE_LOADERS(test_bitmap);
-|       | ^~~~~~~~~~~~~~~~~~~
-| lib/../tools/testing/selftests/kselftest_module.h:45:48: note: each undeclared identifier is reported only once for each function it appears in
-|    45 |  return kstm_report(total_tests, failed_tests, skipped_tests); \
-|       |                                                ^~~~~~~~~~~~~
-| lib/test_bitmap.c:637:1: note: in expansion of macro ‘KSTM_MODULE_LOADERS’
-|   637 | KSTM_MODULE_LOADERS(test_bitmap);
-|       | ^~~~~~~~~~~~~~~~~~~
-| lib/../tools/testing/selftests/kselftest_module.h:46:1: error: control reaches end of non-void function [-Werror=return-type]
-|    46 | }       \
-|       | ^
-| lib/test_bitmap.c:637:1: note: in expansion of macro ‘KSTM_MODULE_LOADERS’
-|   637 | KSTM_MODULE_LOADERS(test_bitmap);
-|       | ^~~~~~~~~~~~~~~~~~~
-
-My allyesconfig build suggests test_bitmap.c is the only one, so it
-should probably be fixed up in this series.
- 
+-- 
 Thanks,
--- Marco
+//richard
