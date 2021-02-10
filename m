@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1168A317380
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9758317384
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233765AbhBJWhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:37:40 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:39582 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233683AbhBJWgL (ORCPT
+        id S233006AbhBJWiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:38:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232891AbhBJWiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:36:11 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 04C8120B6C40;
-        Wed, 10 Feb 2021 14:34:57 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 04C8120B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1612996499;
-        bh=C4RT2DxXX8r0QxWsc1tHKf/MPo20abgRwaNI176DYPI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=onouFjqolPpuZU+smvyVOWVYonhp8wE62mGs4xFoCMBc41e1Qh93K7Mi9KTvGbtmN
-         UAzqFqtJBtcopTyxJ1GQNHoEHiXrWLeTs8SeDEQWYK2LTomPeu/bu09ptLZCtKjF1l
-         qJESL6CaYdPTWm0FK8vjjxpDP90Z9TdzZbUyzDZo=
-Subject: Re: [PATCH v17 00/10] Carry forward IMA measurement log on kexec on
- ARM64
-To:     Mimi Zohar <zohar@linux.ibm.com>, Rob Herring <robh@kernel.org>
-Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
+        Wed, 10 Feb 2021 17:38:13 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C58CC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:37:33 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id u143so2251609pfc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:37:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=s90SilBQFi+ziwOIINhOeEY8oYLj+xr0s/beSIR3XzA=;
+        b=MnEVVT6ElZKR6HNoGnByOlde92Fc00O5NLMZG97kXOqfO9xJdd/lo+nOZrahuarmX4
+         VpRMSLM/1rx0YTuEN6S/wDCBZBx1OX/tF+6TJrlgVtxArkAUYjwv4gpdTc7RvK11vkhi
+         bDep2WDFkBv5OrnATTrAr3VFk391/iVVMxyQA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s90SilBQFi+ziwOIINhOeEY8oYLj+xr0s/beSIR3XzA=;
+        b=gFnd912EFGEUCTd/DrfvTHfL3WVPnML9D++apmWeTu6z7r2yWvNkUwQUJNN0PVmBER
+         CzLUXlV4+jgoZurbYOP9ow2sw1An9+BpQOphxabjYpsMlepbPeOymtlBdoSANItn5D9R
+         dzOs+0Ema6GoGRRRWhXj4x+qFqJUGxGBtpeppyDhrY1P7CFpugm8wqzjRRMBcRt6RQFa
+         KS+BHermrljpNBUPVy/AK9VXHyBwB6yNL4A56V/BXIIxeVTRJlXU9/2sfxaHI1FP2DTB
+         RPM9QhU/rfEf1lmXqJuqa+XcUXH+VBmGM/lnNavwpP/As8MsizFjaDBVwWewTZBHYOWw
+         QVXQ==
+X-Gm-Message-State: AOAM532PUN5mQrpY5wxvBv4vIgKKyZ1FckeA+NuY1cTiczZ229w9/tUk
+        oRscH5a5kd4Io2m1XfJAt1kyyw==
+X-Google-Smtp-Source: ABdhPJyK3ihZe4QNyRenuGNSz4QvYRxteZ2JVLj89pyhupD+zRHusDk4TLTrUBPt+L3CXxPY8cRUiQ==
+X-Received: by 2002:a63:4a49:: with SMTP id j9mr5225931pgl.197.1612996652851;
+        Wed, 10 Feb 2021 14:37:32 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:d8e6:826a:fc50:2158])
+        by smtp.gmail.com with UTF8SMTPSA id j20sm3331858pfe.172.2021.02.10.14.37.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 14:37:32 -0800 (PST)
+Date:   Wed, 10 Feb 2021 14:37:30 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
+        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-References: <20210209182200.30606-1-nramas@linux.microsoft.com>
- <20210210171500.GA2328209@robh.at.kernel.org>
- <5c002c32-bc49-acda-c641-7b1494ea292d@linux.microsoft.com>
- <CAL_JsqLmdqfFF8u=dE+dQz+6ngv=moWkQF8tpZjUCX-vHuvU_w@mail.gmail.com>
- <cf7930239b93044a1be353556b7dc730e024f658.camel@linux.ibm.com>
- <594445d01e085875b97b46be726247f89d1e6661.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <82fec498-b1c0-7acd-cf1e-8bb40a4e688e@linux.microsoft.com>
-Date:   Wed, 10 Feb 2021 14:34:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v5 0/4] USB: misc: Add onboard_usb_hub driver
+Message-ID: <YCRgKpnBOv1+u0Lh@google.com>
+References: <20210210171040.684659-1-mka@chromium.org>
+ <20210210210451.3coi62cynptzb6wf@kozik-lap>
 MIME-Version: 1.0
-In-Reply-To: <594445d01e085875b97b46be726247f89d1e6661.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210210210451.3coi62cynptzb6wf@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 1:39 PM, Mimi Zohar wrote:
-> On Wed, 2021-02-10 at 15:55 -0500, Mimi Zohar wrote:
->> On Wed, 2021-02-10 at 14:42 -0600, Rob Herring wrote:
->>> On Wed, Feb 10, 2021 at 11:33 AM Lakshmi Ramasubramanian
->>
->>> Ideally, we don't apply the same patch in 2 branches. It looks like
->>> there's a conflict but no real dependence on the above patch (the
->>> ima_buffer part). The conflict seems trivial enough that Linus can
->>> resolve it in the merge window.
->>>
->>> Or Mimi can take the whole thing if preferred?
->>
->> How about I create a topic branch with just the two patches, allowing
->> both of us to merge it?   There shouldn't be a problem with re-writing
->> next-integrity history.
+Hi Krzysztof,
+
+On Wed, Feb 10, 2021 at 10:04:51PM +0100, Krzysztof Kozlowski wrote:
+> On Wed, Feb 10, 2021 at 09:10:35AM -0800, Matthias Kaehlcke wrote:
+> > This series adds the onboard_usb_hub_driver, the corresponding
+> > device tree bindings and creation of onboard_usb_hub platform in
+> > the xhci-plat driver during probe().
+> > 
+> > The main issue the driver addresses is that a USB hub needs to be
+> > powered before it can be discovered. For discrete onboard hubs (an
+> > example for such a hub is the Realtek RTS5411) this is often solved
+> > by supplying the hub with an 'always-on' regulator, which is kind
+> > of a hack.
 > 
-> The 2 patches are now in the ima-kexec-fixes branch.
+> It seems you are re-developing the power sequence drivers which perform
+> exactly this. Peter Chen some time ago was bringing power sequence to
+> USB devices, but I lost track where this ended up.
 > 
+> Some of his (and my) very old work (2017...) can be found here:
+> https://github.com/krzk/linux/tree/wip/odroid-u3-usb3503-pwrseq
 
-Thanks a lot Mimi.
+pwrseq was brought up in the discussion about this driver, but wasn't
+deemed suitable for this use case which might require more complex
+configurations:
 
-Rob - I will address the 2 comments you'd provided today, and build the 
-patches in ima-kexec-fixes branch.
+https://lore.kernel.org/patchwork/patch/1313000/#1512725
 
-If you have more comments in the v17 patches, please let me know.
+> Instead of adding custom driver hiding some USB hub implementation,
+> power sequence seems a generic solution. What if you need to power cycle
+> other embedded USB device? Not a hub?
 
-thanks,
-  -lakshmi
-
+The driver could be extended to also cover other types of devices if desired.
+Maybe it should be called usb-pwrseq then, even though it's not directly
+related with the original pwrseq series.
