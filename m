@@ -2,135 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DA4316D25
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C575316D2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbhBJRqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:46:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233035AbhBJRqK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:46:10 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03C9C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:45:29 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id a16so1602316plh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=s4db3FRFo7X4YqxZjmvCCj3kJmcqGswyfAjEtyKKTcM=;
-        b=d/yxt0YF7Spef0pYWLcNzTCagPindemCuIlhwf5UCBCZj26bF+6X17K2dn8M+CqXQ4
-         /zHlOXfQJAwlwJlUvhoL+KjJvQ7kpHJ6/mEU4i//0H885VsH35aJY2IK9Ow49wWvVeZF
-         Z35qIWRm5HEMJMl2RViUhCmygcN+Pu17CD+Ho=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=s4db3FRFo7X4YqxZjmvCCj3kJmcqGswyfAjEtyKKTcM=;
-        b=m2jEjdoLhHEOYnZivtwEoUiw3Hcg1SwpJK1Pc4oNtYIl33iPXq8jBns5LT4FGx87t7
-         +rwIyfDm42YXQXF/8ZNKxHK7gOuuASRTEcghi5OptpmR4U6XDcDJNTtrjASxjsZ5Us66
-         FT/tu/1pfrlkWBFlrEnHdsTxWB1gbdeWacuDddiASQGwUwA8NM9M8ACwPYlzLpik6gPd
-         dVe50aqsWOwOBBf0mf8POLfAorI/AOwOjo+ETo9VcdSjbO6hzCsP+Sh5yy22Kb1zHxU1
-         loQgc4LmGtAdZeMTHKO0uQrIkBkG6KEntZPGzo2Iw+Oej0xDpEvBU/WSqQpaxe5Dt29O
-         odog==
-X-Gm-Message-State: AOAM530ztA0wN5HLWWiO/JupF8oh4mzqO1qvk/8o4wKLZ3nu/QYGCc3G
-        M59dgMNSRi/GpA6Q7PrnwXZl6Q==
-X-Google-Smtp-Source: ABdhPJwEeMPlzTPD+9Z7iAFpSugf02Wwi01Nji6DCsWB/yHqXoE/eEFXv04Fh0uXGGgv16yIpJjaQQ==
-X-Received: by 2002:a17:90a:7525:: with SMTP id q34mr58078pjk.88.1612979129245;
-        Wed, 10 Feb 2021 09:45:29 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:5533:1106:2710:3ce])
-        by smtp.gmail.com with ESMTPSA id a37sm2980467pgm.79.2021.02.10.09.45.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 09:45:28 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S233184AbhBJRq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:46:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233117AbhBJRqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:46:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C828064ECF;
+        Wed, 10 Feb 2021 17:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612979153;
+        bh=/rkL6c7UoMWbGrEXcVkr8WWkfNnRE92JsX1y12GRzlg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=j9oRyJb527+OyWGu4R2BzKyCISXpXASfncMwp4fdNMDqWYxKFpTkMsZSz1iYwekUq
+         iM0myjP6HhdtKgGeSFtzjMuxuJyDyUffW0+TbM2en+2Lt5SX7F5u5gA4dfabzdA5wx
+         DUqFwP1sFRR/Mai5nlzP+Q55TBwOWNQToi52HuPEFXAqXayNC0uak/R33OE3gsfrlD
+         7MHeTlz8Kk2M5QSFEZABQlRuBI8u2oqpsn1eW4kLqJ+CmHeu+F/toVZNz7jJE5qhdJ
+         BdJ3L5QaSMzmXHTKBR+4U8uV8OwAkUKAhXlmtGCtH8CdCKFmp5Uclyk+ROBWZVuV+K
+         1/gNlr9wzu/QQ==
+Date:   Wed, 10 Feb 2021 11:45:51 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH] checkpatch: add warning for non-lore mailing list URLs
+Message-ID: <20210210174551.GA593525@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAPUE2utey1os_CmYxHdmObCSPZWFGrLCVfP24wuZj_iQDNqQ5Q@mail.gmail.com>
-References: <20210210025142.3609708-1-swboyd@chromium.org> <20210210025142.3609708-4-swboyd@chromium.org> <CAPUE2utey1os_CmYxHdmObCSPZWFGrLCVfP24wuZj_iQDNqQ5Q@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     Gwendal Grignou <gwendal@chromium.org>
-Date:   Wed, 10 Feb 2021 09:45:27 -0800
-Message-ID: <161297912701.418021.12174983952645253802@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202102092344.22A86166@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Gwendal Grignou (2021-02-10 00:29:45)
-> On Tue, Feb 9, 2021 at 6:51 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > +       if (event_type =3D=3D EC_MKBP_EVENT_SWITCH) {
-> > +               data =3D container_of(nb, struct cros_ec_mkbp_proximity=
-_data,
-> > +                                   notifier);
-> > +               indio_dev =3D data->indio_dev;
+On Wed, Feb 10, 2021 at 12:22:35AM -0800, Kees Cook wrote:
+> On Thu, Dec 17, 2020 at 04:50:41PM -0800, Joe Perches wrote:
+> > On Thu, 2020-12-17 at 17:56 -0600, Bjorn Helgaas wrote:
+> > > From: Bjorn Helgaas <bhelgaas@google.com>
+> > > 
+> > > The lkml.org, marc.info, spinics.net, etc archives are not quite as useful
+> > > as lore.kernel.org because they use different styles, add advertising, and
+> > > may disappear in the future.  The lore archives are more consistent and
+> > > more likely to stick around, so prefer https://lore.kernel.org URLs when
+> > > they exist.
+> > 
+> > Hi Bjorn.
+> > 
+> > I like the idea, thanks, but a couple notes.
+> > 
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > []
+> > > @@ -564,6 +564,17 @@ sub find_standard_signature {
+> > >  	return "";
+> > >  }
+> >  
+> > > +our $obsolete_archives = qr{(?xi:
+> > > +	freedesktop.org/archives/dri-devel|
+> > > +	lists.infradead.org|
+> > > +	lkml.org|
+> > > +	mail-archive.com|
+> > > +	mailman.alsa-project.org/pipermail|
+> > > +	marc.info|
+> > > +	ozlabs.org/pipermail|
+> > > +	spinics.net
+> > > +)};
+> > 
+> > Strictly, these all need \Q \E escaping so uses like lkmlAorg do not match.
+> > 
+> > 
+> > > @@ -3101,6 +3112,12 @@ sub process {
+> > >  			}
+> > >  		}
+> > >  
+> > > +# Check for mailing list archives other than lore.kernel.org
+> > > +		if ($line =~ /(http|https):\/\/\S*$obsolete_archives/) {
+> > 
+> > The https?:// doesn't seem necessary.  Perhaps:
+> > 
+> > 		if ($line =~ m{\b$obsolete_archives}) {
+> > 
+> > > +			WARN("PREFER_LORE_ARCHIVE",
+> > > +			     "Use lore.kernel.org archive links when possible; see https://lore.kernel.org/lists.html\n" . $herecurr);
+> > 
+> > Perhaps:
+> > 			     "Prefer lore.kernel.org links. see: https://www.kernel.org/lore.html#linking-to-list-discussions-from-commits\n" . $herecurr);
+> > 
+> > So maybe instead:
+> > ---
+> >  scripts/checkpatch.pl | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> > 
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > index 00085308ed9d..c2a324d628a6 100755
+> > --- a/scripts/checkpatch.pl
+> > +++ b/scripts/checkpatch.pl
+> > @@ -564,6 +564,17 @@ sub find_standard_signature {
+> >  	return "";
+> >  }
+> >  
+> > +our $obsolete_archives = qr{(?xi:
+> > +	\Qfreedesktop.org/archives/dri-devel\E |
+> > +	\Qlists.infradead.org\E |
+> > +	\Qlkml.org\E |
+> > +	\Qmail-archive.com\E |
+> > +	\Qmailman.alsa-project.org/pipermail\E |
+> > +	\Qmarc.info\E |
+> > +	\Qozlabs.org/pipermail\E |
+> > +	\Qspinics.net\E
+> > +)};
 > > +
-> > +               mutex_lock(&data->lock);
-> > +               if (data->enabled) {
-> > +                       timestamp =3D ktime_to_ns(ec->last_event_time);
-> Note to self, ktime_to_ns is a noop, but make code cleaner: need to
-> change other access to ec->last_event_time.
->
-> > +                       if (iio_device_get_clock(indio_dev) !=3D CLOCK_=
-BOOTTIME)
-> > +                               timestamp =3D iio_get_time_ns(indio_dev=
-);
-> > +                       state =3D cros_ec_mkbp_proximity_parse_state(sw=
-itches);
->
-> There can be several switches in the EC (lid open, tablet mode, ...),
-> so you can get a switch event even when the proximity switch did not
-> trigger.
-> You can keep the current state and push an iio event only when there
-> is a change. See cbas_ec_notify().
->
+> >  our @typeListMisordered = (
+> >  	qr{char\s+(?:un)?signed},
+> >  	qr{int\s+(?:(?:un)?signed\s+)?short\s},
+> > @@ -3101,6 +3112,12 @@ sub process {
+> >  			}
+> >  		}
+> >  
+> > +		# Check for mailing list archives other than lore.kernel.org
+> > +		if ($rawline =~ m{\b$obsolete_archives}) {
+> > +			WARN("PREFER_LORE_ARCHIVE",
+> > +			     "Use lore.kernel.org archive links when possible - see https://lore.kernel.org/lists.html\n" . $herecurr);
+> > +		}
+> > +
+> >  # Check for added, moved or deleted files
+> >  		if (!$reported_maintainer_file && !$in_commit_log &&
+> >  		    ($line =~ /^(?:new|deleted) file mode\s*\d+\s*$/ ||
+> > 
+> > 
+> 
+> Ah, nice. Yes, this would be great to get added. Joe, can you respin as
+> a full path? Please consider it:
 
-Ah ok. So we'll have to save a state tracking variable and poll the bit
-once at boot and then at resume time? What happens to events that happen
-across suspend/resume? We drop them? Or we need to inject the last state
-if it's different into IIO with the time of resume?
+I hate to ask Joe to rework *my* patch just because I've dropped the
+ball on it!  Sorry, I'll try to resurrect this.
 
-> > +                       dir =3D state ? IIO_EV_DIR_FALLING : IIO_EV_DIR=
-_RISING;
-> > +
-> > +                       ev =3D IIO_UNMOD_EVENT_CODE(IIO_PROXIMITY, 0,
-> > +                                                 IIO_EV_TYPE_THRESH, d=
-ir);
-> > +                       iio_push_event(indio_dev, ev, timestamp);
-> > +               }
-> > +               mutex_unlock(&data->lock);
-> > +       }
-> > +
-> > +       return NOTIFY_OK;
-> > +}
-> > +
-> > +static int cros_ec_mkbp_proximity_read_raw(struct iio_dev *indio_dev,
-> > +                          const struct iio_chan_spec *chan, int *val,
-> > +                          int *val2, long mask)
-> > +{
-> > +       struct cros_ec_mkbp_proximity_data *data =3D iio_priv(indio_dev=
-);
-> > +       struct cros_ec_device *ec =3D data->ec;
-> > +
-> > +       if (chan->type !=3D IIO_PROXIMITY)
-> > +               return -EINVAL;
-> > +
-> > +       switch (mask) {
->
-> A switch is not necessary here.
-
-Ok.
-
-> > +       case IIO_CHAN_INFO_RAW:
+> Reviewed-by: Kees Cook <keescook@chromium.org>
