@@ -2,178 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7E231651C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0A431651E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbhBJLWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:22:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        id S231682AbhBJLXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:23:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhBJLPD (ORCPT
+        with ESMTP id S230401AbhBJLPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:15:03 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D3BC06121C
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:49 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id o63so1013890pgo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:49 -0800 (PST)
+        Wed, 10 Feb 2021 06:15:16 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE412C06121E
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:51 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id l12so2044289wry.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QRU7LnSUwsy2J1LUcByliifcDkevWGi1e/7l1FGxdFY=;
-        b=g7X4InNpSo7NEg4suX2BeSEGrpDV26yKM5BqqZkeSr/4o8ywcQXQzv0aC+/MBYnZd0
-         fC+ipxMjsvmPhwCK0C5bZtf687ZxDgvraWUybv5VE2h69zapWBR6go6VRRNMfnqFedzm
-         i/jJeZqWKTKdiikUrO6ZTVg93qXjEOyw+Rvxgk1qkRAhjygrQCm/a6SeduOz2oMzyuA9
-         WsmEEcrFAQ1ROZED540Fi9yBr2c2iM3gTEnogjMHya+lLRRWSszNqIGT7To5jU9lLCA3
-         0LOprTGRy5auRvpHEzViCdbWROCyc4uyiV54ILrBfgk/R2xVaEEUY2OifQVQuN7e4eJI
-         5ksw==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=rlVxGUSSPCJtH0H34sD4Kgdi20pfZGhuTsAdOvhOScI=;
+        b=hvReQJDXBsrRJfdRH2bscBqaQXtTTFgZaPB7ropsz3LUu1SVLvTMDuml8DsTeuuc2F
+         NZMT+V7+TPavglEtqu2+hkrzX1iM8HspbHuYsjgdwJ8r9qNWjlSaYdhvRVBxQW70ruxl
+         1Rdfw8kjAqi61NDWfyYolBZ91sPgmAhg9QUaGQZqRUp7FgwcfdOnDQ0937PZ8SO0S0ad
+         5oUC9QCD+93OZHz2tRixnkU/iLLQKOJjUdkTbEbuqkMKZHzcM81amSzzVoQ5hN63Whma
+         HO4VefHoCB2vFtYjAcINEXvh70rh93hfspDAT4ZvAXuuj+yYP6gpTVfvZy74twNhHYtd
+         b+xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QRU7LnSUwsy2J1LUcByliifcDkevWGi1e/7l1FGxdFY=;
-        b=Dr8i8YvcX5ObOTVOIIjfrxUNepoytv/Xv12UDDmfKiU/i5sxuuLQUKSQ2nZWTOzGlX
-         ZGedQBblLcdFGGwsFwloH7XbOr5QkCeNQxYCXDVrf78dzAMjEQ4ux26fkARitKSTOrow
-         M2x393n317dfBK3Up+BGjr3QdeYVgMtzRxqsgNAFSkEbDPww3aTSOyFf7TuG0UTOVOkZ
-         k/RUmQDIuugaB8nl4urQx2DmUXPyJ7VVS+AB+ptOqf9Lb5jUqbwv2fLvxNuVUmkON/uT
-         qXtnDIK+wK66R+D+tMO8HhFJudOC1T68fEs5ZVhJRumlZJ7Ota6pW+nlU9F0WOgjCNDV
-         8hwg==
-X-Gm-Message-State: AOAM533MYZOXwFFmKpoSimDKb52tI9mFWMBjS90e32i1ojX0WmPaDB1r
-        RkvUQFYvVQIwScVEBoduqdRfTg==
-X-Google-Smtp-Source: ABdhPJzBP3OqpqSZEkEdtiGKaG9/SUHfEWELDMOS7uSdecD3j4DWi5Q3ln5ROFTnJM+FPHtphI9LuA==
-X-Received: by 2002:a63:c741:: with SMTP id v1mr2603957pgg.316.1612955628899;
-        Wed, 10 Feb 2021 03:13:48 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id e26sm2108659pfm.87.2021.02.10.03.13.48
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=rlVxGUSSPCJtH0H34sD4Kgdi20pfZGhuTsAdOvhOScI=;
+        b=q7XrWov49DUDQwxZxgGnu0CfjjlhYdo1vKaq8Z1rFRi5EnlFRZ553TEHdEVHtsGd0z
+         XTvP064A6mQHGc8S7JXm+hVLoNAHvaAlyhg6Ieub2Jv5Ais/w21ON8mUvGEMjee2C4pX
+         KJt17wPhdOxn3uMAw2akHdNW4xrFT+fFwPEnV18/l+e4mP7wvWY+w9obj7GZcfZi7S1U
+         /Jon035Xf4ZsGMQ1O6I/wXNlpe4rxX+mrA5c/FadtwfH3CNN0MyMrjeZFbJavtpg8nQL
+         Lhfm8X9Dw8bKz+rVsu73xq7zyC9Q22l4TFBr9pyyzNOIElV3VyPngokJsoqq49TCbSXf
+         5+eA==
+X-Gm-Message-State: AOAM53225yiKC86GN6MqukQ7VgieKB56hgX4625YD9ACKxHak/msg6JE
+        ss2U37wysGDS2HDnZOtA1ftm5ZxLDu6Uwg==
+X-Google-Smtp-Source: ABdhPJzifeUZriIOvo4cDKBY9VmccxjV3W7Obwczmt928UBOjqMcey5uOMdkRLCCerxXQx6AxaYKSA==
+X-Received: by 2002:a5d:6b45:: with SMTP id x5mr2940604wrw.415.1612955630588;
+        Wed, 10 Feb 2021 03:13:50 -0800 (PST)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id t6sm1976264wmj.22.2021.02.10.03.13.48
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Feb 2021 03:13:48 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH V7 3/3] of: unittest: Statically apply overlays using fdtoverlay
-Date:   Wed, 10 Feb 2021 16:43:30 +0530
-Message-Id: <72f0396f0eeed6dad25527368ee9e471312f9a59.1612955268.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1612955268.git.viresh.kumar@linaro.org>
-References: <cover.1612955268.git.viresh.kumar@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 10 Feb 2021 03:13:49 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH 2/2] bfq: amend the function name of
+ bfq_may_expire_for_budg_timeout()
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <1611917485-584-2-git-send-email-brookxu@tencent.com>
+Date:   Wed, 10 Feb 2021 12:13:59 +0100
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <0A676DC9-E730-460A-8C39-9E1851343339@linaro.org>
+References: <1611917485-584-1-git-send-email-brookxu@tencent.com>
+ <1611917485-584-2-git-send-email-brookxu@tencent.com>
+To:     Chunguang Xu <brookxu.cn@gmail.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that fdtoverlay is part of the kernel build, start using it to test
-the unitest overlays we have by applying them statically. Create two new
-base files static_base_1.dts and static_base_2.dts which includes other
-.dtsi files.
 
-Some unittest overlays deliberately contain errors that unittest checks
-for. These overlays will cause fdtoverlay to fail, and are thus not
-included for static builds.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/of/unittest-data/Makefile          | 50 ++++++++++++++++++++++
- drivers/of/unittest-data/static_base_1.dts |  4 ++
- drivers/of/unittest-data/static_base_2.dts |  4 ++
- 3 files changed, 58 insertions(+)
- create mode 100644 drivers/of/unittest-data/static_base_1.dts
- create mode 100644 drivers/of/unittest-data/static_base_2.dts
+> Il giorno 29 gen 2021, alle ore 11:51, Chunguang Xu =
+<brookxu.cn@gmail.com> ha scritto:
+>=20
+> From: Chunguang Xu <brookxu@tencent.com>
+>=20
+> The function name bfq_may_expire_for_budg_timeout() may be misspelled,
+> try to fix it.
+>=20
 
-diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
-index 009f4045c8e4..1d6029e722c0 100644
---- a/drivers/of/unittest-data/Makefile
-+++ b/drivers/of/unittest-data/Makefile
-@@ -34,7 +34,57 @@ DTC_FLAGS_overlay += -@
- DTC_FLAGS_overlay_bad_phandle += -@
- DTC_FLAGS_overlay_bad_symbol += -@
- DTC_FLAGS_overlay_base += -@
-+DTC_FLAGS_static_base_1 += -@
-+DTC_FLAGS_static_base_2 += -@
- DTC_FLAGS_testcases += -@
- 
- # suppress warnings about intentional errors
- DTC_FLAGS_testcases += -Wno-interrupts_property
-+
-+# Apply overlays statically with fdtoverlay.  This is a build time test that
-+# the overlays can be applied successfully by fdtoverlay.  This does not
-+# guarantee that the overlays can be applied successfully at run time by
-+# unittest, but it provides a bit of build time test coverage for those
-+# who do not execute unittest.
-+#
-+# The overlays are applied on top of static_base_1.dtb and static_base_2.dtb to
-+# create static_test_1.dtb and static_test_2.dtb.  If fdtoverlay detects an
-+# error than the kernel build will fail.  static_test_1.dtb and
-+# static_test_2.dtb are not consumed by unittest.
-+#
-+# Some unittest overlays deliberately contain errors that unittest checks for.
-+# These overlays will cause fdtoverlay to fail, and are thus not included
-+# in the static test:
-+#			  overlay_bad_add_dup_node.dtb \
-+#			  overlay_bad_add_dup_prop.dtb \
-+#			  overlay_bad_phandle.dtb \
-+#			  overlay_bad_symbol.dtb \
-+
-+apply_static_overlay_1 := overlay_0.dtbo \
-+			  overlay_1.dtbo \
-+			  overlay_2.dtbo \
-+			  overlay_3.dtbo \
-+			  overlay_4.dtbo \
-+			  overlay_5.dtbo \
-+			  overlay_6.dtbo \
-+			  overlay_7.dtbo \
-+			  overlay_8.dtbo \
-+			  overlay_9.dtbo \
-+			  overlay_10.dtbo \
-+			  overlay_11.dtbo \
-+			  overlay_12.dtbo \
-+			  overlay_13.dtbo \
-+			  overlay_15.dtbo \
-+			  overlay_gpio_01.dtbo \
-+			  overlay_gpio_02a.dtbo \
-+			  overlay_gpio_02b.dtbo \
-+			  overlay_gpio_03.dtbo \
-+			  overlay_gpio_04a.dtbo \
-+			  overlay_gpio_04b.dtbo
-+
-+apply_static_overlay_2 := overlay.dtbo
-+
-+static_test_1-dtbs := static_base_1.dtb $(apply_static_overlay_1)
-+static_test_2-dtbs := static_base_2.dtb $(apply_static_overlay_2)
-+
-+overlay-$(CONFIG_OF_OVERLAY) += static_test_1.dtb static_test_2.dtb
-diff --git a/drivers/of/unittest-data/static_base_1.dts b/drivers/of/unittest-data/static_base_1.dts
-new file mode 100644
-index 000000000000..10556cb3f01f
---- /dev/null
-+++ b/drivers/of/unittest-data/static_base_1.dts
-@@ -0,0 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/dts-v1/;
-+
-+#include "testcases_common.dtsi"
-diff --git a/drivers/of/unittest-data/static_base_2.dts b/drivers/of/unittest-data/static_base_2.dts
-new file mode 100644
-index 000000000000..b0ea9504d6f3
---- /dev/null
-+++ b/drivers/of/unittest-data/static_base_2.dts
-@@ -0,0 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/dts-v1/;
-+
-+#include "overlay_common.dtsi"
--- 
-2.25.0.rc1.19.g042ed3e048af
+Ok for me to make this name longer.
+
+Thanks,
+Paolo
+
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> ---
+> block/bfq-iosched.c | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+> index 9e4eb0f..4f40c61 100644
+> --- a/block/bfq-iosched.c
+> +++ b/block/bfq-iosched.c
+> @@ -4061,7 +4061,7 @@ static bool bfq_bfqq_budget_timeout(struct =
+bfq_queue *bfqq)
+>  * condition does not hold, or if the queue is slow enough to deserve
+>  * only to be kicked off for preserving a high throughput.
+>  */
+> -static bool bfq_may_expire_for_budg_timeout(struct bfq_queue *bfqq)
+> +static bool bfq_may_expire_for_budget_timeout(struct bfq_queue *bfqq)
+> {
+> 	bfq_log_bfqq(bfqq->bfqd, bfqq,
+> 		"may_budget_timeout: wait_request %d left %d timeout =
+%d",
+> @@ -4350,7 +4350,7 @@ static struct bfq_queue *bfq_select_queue(struct =
+bfq_data *bfqd)
+> 	 * on the case where bfq_bfqq_must_idle() returns true, in
+> 	 * bfq_completed_request().
+> 	 */
+> -	if (bfq_may_expire_for_budg_timeout(bfqq) &&
+> +	if (bfq_may_expire_for_budget_timeout(bfqq) &&
+> 	    !bfq_bfqq_must_idle(bfqq))
+> 		goto expire;
+>=20
+> @@ -5706,7 +5706,7 @@ static void bfq_completed_request(struct =
+bfq_queue *bfqq, struct bfq_data *bfqd)
+> 			 * of its reserved service guarantees.
+> 			 */
+> 			return;
+> -		} else if (bfq_may_expire_for_budg_timeout(bfqq))
+> +		} else if (bfq_may_expire_for_budget_timeout(bfqq))
+> 			bfq_bfqq_expire(bfqd, bfqq, false,
+> 					BFQQE_BUDGET_TIMEOUT);
+> 		else if (RB_EMPTY_ROOT(&bfqq->sort_list) &&
+> --=20
+> 1.8.3.1
+>=20
 
