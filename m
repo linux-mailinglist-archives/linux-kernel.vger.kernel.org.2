@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE02316245
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF53316240
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhBJJcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:32:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
+        id S230399AbhBJJa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:30:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhBJJPo (ORCPT
+        with ESMTP id S229898AbhBJJ2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:15:44 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D49DC061574;
-        Wed, 10 Feb 2021 01:15:04 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id B7F3423E64;
-        Wed, 10 Feb 2021 10:14:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1612948500;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wMCQt/BU0hbVrk2JBtTiMgg/ClhZDMtdMRCfZNumLsk=;
-        b=If4lWRbtqOAkZqI6yCO1C82UcROTnjAr+lFa0jlmljPql8L5rp5qrrQ/gaKck2hqeKRqym
-        H0wAKWNQIZE/UBBpgOQbQxReQHMaKma+XJnxTAAcyySyj8akMbo3OC2hK+nytkRZHfRUnw
-        RXZF6OMN4Q9diWATQzGQDD2e9Lxes4k=
+        Wed, 10 Feb 2021 04:28:43 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80599C061574;
+        Wed, 10 Feb 2021 01:28:03 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id n2so1173845iom.7;
+        Wed, 10 Feb 2021 01:28:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=NTwYbPlnwjr/4U1k4zJKPsXSZtSc51AAjh+Aot+HfzA=;
+        b=hHvBZmTVaXKcA8YQ1iaTAUfBzV8BeigfL5B/DmnCInK3LcLA1FW+8RTTiJrZ7CNVCV
+         SOSd4RR9+A9e12oPkMPvywW+GPPH+oFG29Pc91S/KvekXEq9ULye7N0CPGsgqJpTjvwc
+         WemZLc+rdjqwTsQ6yCAEXfMpEEyg36aS6zXvbjExy56UU8fQBV6pXQkRHSRJu/TrfffG
+         WoM6Y6x+K+Mw8y1dtvFjOOTETVV4URXS/Lrx7JZJu0YOCwJgXAEmp3dexlvAf6o1ITZJ
+         TcJXvZgFO/kESrTe0UoW+ki2vFBRf53SRBT0ooecG181tHyngoNNEKRNiGBWZlm44QG9
+         II5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=NTwYbPlnwjr/4U1k4zJKPsXSZtSc51AAjh+Aot+HfzA=;
+        b=gU9AGRfhcvrtQZrDeN+VWjMAykoVaS2sTys0kqrVBTcZIXURKxqLgqdqWsK+Eqknyq
+         hzbLS7R9DR6ysPTq7NJmAspLjclUaPEPgOLMLIoxUGDpJNcdEcDl6prNkImCBo540t1d
+         O/3djCLbIQHEB3ezKjpPrD4bV4MVcvseW0xNpFMp4sFveHYFZMostBETTReZJBDUHdQJ
+         fXaS5unPGRKdolbDIZZ7UHInBRzgJJ5dJfUG1BPeyi5YFARBt2fp3V+vt6z/fvnPOwG+
+         HulE0cV9q6Fat4PGXjZkZeuFk6Ix5j02VXd1I6FMtLSFsGLT3wXyltwZvtg4hrUoVYk9
+         5/fw==
+X-Gm-Message-State: AOAM533FGrAOv1O5hZQGIPmyuSK0W9fzKaqCRPsSNFr/0/BIjxdDZ5yl
+        YESqQFhFrzqUdthvOj1Ug9K0xkUYvst8Xof5Szc=
+X-Google-Smtp-Source: ABdhPJzg6YCVbjut6i3poATewgVGLxIendfOaoudHkYCnRbJ8uqsdz0eBgzzmTDYHA9u5aW+NyXKj1SAWs4QKjemVcU=
+X-Received: by 2002:a02:74a:: with SMTP id f71mr2299910jaf.30.1612949282924;
+ Wed, 10 Feb 2021 01:28:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 10 Feb 2021 10:14:59 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next 7/9] net: phy: icplus: select page before writing
- control register
-In-Reply-To: <1656b889-12c4-b376-5cdf-38e1dcc500bc@gmail.com>
-References: <20210209164051.18156-1-michael@walle.cc>
- <20210209164051.18156-8-michael@walle.cc>
- <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
- <e9d26cd6634a8c066809aa92e1481112@walle.cc>
- <1656b889-12c4-b376-5cdf-38e1dcc500bc@gmail.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <f3f831f453378fe3b55e8fc5606266eb@walle.cc>
-X-Sender: michael@walle.cc
+References: <CGME20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2@epcas1p1.samsung.com>
+ <000001d6ff3e$62f336d0$28d9a470$@samsung.com> <CA+icZUUFFrEJccHDZPV9nzj7zav-RA53eWqgKkDyvwOxCaKKnQ@mail.gmail.com>
+ <001401d6ff68$5acaf360$1060da20$@samsung.com> <CA+icZUW0gS21ns1mVeJ7z-0W8XmfyuhggkwYHRXQjYy0jDZyNw@mail.gmail.com>
+In-Reply-To: <CA+icZUW0gS21ns1mVeJ7z-0W8XmfyuhggkwYHRXQjYy0jDZyNw@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 10 Feb 2021 10:27:57 +0100
+Message-ID: <CA+icZUVmw0FpTTJB8Bv67EAOfuVJ+avNPw8_Vg3m0z_HHHehCQ@mail.gmail.com>
+Subject: Re: [ANNOUNCE] exfatprogs-1.1.0 version released
+To:     Namjae Jeon <namjae.jeon@samsung.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Eric Sandeen <sandeen@sandeen.net>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Nicolas Boos <nicolas.boos@wanadoo.fr>,
+        Hyunchul Lee <hyc.lee@gmail.com>,
+        Luca Stefani <luca.stefani.ge1@gmail.com>,
+        Matthieu CASTET <castet.matthieu@free.fr>,
+        Sven Hoexter <sven@stormbind.net>,
+        Ethan Sommer <e5ten.arch@gmail.com>,
+        Hyeongseok Kim <hyeongseok@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Feb 10, 2021 at 8:24 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Wed, Feb 10, 2021 at 5:51 AM Namjae Jeon <namjae.jeon@samsung.com> wrote:
+>
+> > > Hope Sven will do a new release for Debian.
+> > > ( Note that Debian/bullseye release  plans "Milestone 2" this Friday, February 12th (see [1] > "Key
+> > > release dates" > "[2021-Feb-12] Soft Freeze"). Dunno which impact this might have on this. )
+> > I hope he will do it, too!
+> >
+> > Thanks Sedat:)
+>
+> I filed Debian Bug #982431 "exfatprogs: Update to version 1.1.0"
+>
+> - Sedat -
+>
+> [1] https://bugs.debian.org/982431
 
-Am 2021-02-10 10:03, schrieb Heiner Kallweit:
-[..]
->>>> +    return phy_restore_page(phydev, oldpage, err);
->>> 
->>> If a random page was set before entering config_init, do we actually 
->>> want
->>> to restore it? Or wouldn't it be better to set the default page as 
->>> part
->>> of initialization?
->> 
->> First, I want to convert this to the match_phy_device() and while at 
->> it,
->> I noticed that there is this one "problem". Short summary: the IP101A 
->> isn't
->> paged, the IP101G has serveral and if page 16 is selected it is more 
->> or
->> less compatible with the IP101A. My problem here is now how to share 
->> the
->> functions for both PHYs without duplicating all the code. Eg. the 
->> IP101A
->> will phy_read/phy_write/phy_modify(), that is, all the locked 
->> versions.
->> For the IP101G I'd either need the _paged() versions or the __phy ones
->> which don't take the mdio_bus lock.
->> 
->> Here is what I came up with:
->> (1) provide a common function which uses the __phy ones, then the
->>     callback for the A version will take the mdio_bus lock and calls
->>     the common one. The G version will use 
->> phy_{select,restore}_page().
->> (2) the phy_driver ops for A will also provde a .read/write_page()
->>     callback which is just a no-op. So A can just use the G versions.
->> (3) What Heiner mentioned here, just set the default page in
->>     config_init().
->> 
->> (1) will still bloat the code; (3) has the disadvantage, that the
->> userspace might fiddle around with the page register and then the
->> whole PHY driver goes awry. I don't know if we have to respect that
->> use case in general. I know there is an API to read/write the PHY
->> registers and it could happen.
->> 
-> 
-> The potential issue you mention here we have with all PHY's using
-> pages. As one example, the genphy functions rely on the PHY being
-> set to the default page. In general userspace can write PHY register
-> values that break processing, independent of paging.
-> I'm not aware of any complaints regarding this behavior, therefore
-> wouldn't be too concerned here.
+Who said Debian GNU/linux has outdated packages :-)?
 
-I'm fine with that, that will make the driver easier.
+root# RELEASE="buildd-unstable" ; LC_ALL=C apt-get dist-upgrade -V -t $RELEASE
+...
+The following packages will be upgraded:
+  exfatprogs (1.0.4-1 => 1.1.0-1)
+1 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+Need to get 37.2 kB of archives.
+After this operation, 61.4 kB of additional disk space will be used.
+Do you want to continue? [Y/n]
 
-> Regarding (2) I'd like to come back to my proposal from yesterday,
-> implement match_phy_device to completely decouple the A and G versions.
-> Did you consider this option?
-
-Yes, that is what I was talking about above: "First, I want to convert
-this to the match_phy_device()" ;) And then I stumbled across that 
-problem
-I was describing above.
-
-It will likely go away if I just set the page to the default page.
-
->> That being said, I'm either fine with (2) and (3) but I'm preferring
->> (2).
->> 
->> BTW, this patch is still missing read/writes to the interrupt status
->> and control registers which is also paged.
-
--- 
--michael
+- Sedat -
