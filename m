@@ -2,143 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4157316C60
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB065316C5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhBJRRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:17:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54252 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232249AbhBJRQQ (ORCPT
+        id S232342AbhBJRRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:17:15 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:44832 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232479AbhBJRPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:16:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612977291;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pnXK/IR7kwRHioWi4n+z2d1LBLzC5VDv46lVgWiUcLw=;
-        b=Mkk8Wppyt/l3RtjZFlfPIcoh8E+/hu6EIJMJnSxKfK6QhKwCrSuL7beedPykVhnxR17UvJ
-        lW4ghwTesdXdi2aC42bv8MHjGfZ75JHNz+kSwFlzV5XebyAoZ6fSMjad72I5+YutEoe//K
-        gcssSHyzrcLrusOnMECxVfULNU+nkdY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414-IgicaziiOjiPdps8Nj9-fQ-1; Wed, 10 Feb 2021 12:14:49 -0500
-X-MC-Unique: IgicaziiOjiPdps8Nj9-fQ-1
-Received: by mail-wm1-f69.google.com with SMTP id u138so1213577wmu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:14:49 -0800 (PST)
+        Wed, 10 Feb 2021 12:15:42 -0500
+Received: by mail-oi1-f177.google.com with SMTP id r75so2801916oie.11;
+        Wed, 10 Feb 2021 09:15:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pnXK/IR7kwRHioWi4n+z2d1LBLzC5VDv46lVgWiUcLw=;
-        b=B8Shzoz4jFIvjU34mI+IlB48jIs3hodSS1apeqSK6apjWNom/OKxle0eZ/EoaTy7MS
-         O49d8uhNlPfOi9tP9oLI7q9cyndPcuJtLl8qU0bnOt9BukqDjKvvIKURjSwQWg6ozRYm
-         wsskRX9tAp0HOac7BaEVQzG8w/1mB2RyYJuSlzDennht+VJ/hXx9SUN5In6g4r946WtQ
-         NWI2aAXLXelItVqOqg+HrGMta1boQRo+bCasACPc7DANeS8e5mfQ1bIDyIpPTGMloohr
-         POfm6p8xZEI9v2BUENlqIbVGLviLbhwCplr6zBm/5YPC5rF7SEZdJ4QZD2l0SwrQnhiR
-         7iSg==
-X-Gm-Message-State: AOAM531xolvFHcJpFj/ghu9vu2tQFqYN0bE/YQ25rAOINWef4fBER/mh
-        dNxvuUisKbeYH7WTOdUyxT4Oujl5x6k+pTENVi5NtDV8rw12AO22ABgph5a+yVlTpkkZIMgJ4oV
-        lnx6BMLBIOEEkoWOb3tV9joq5
-X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr4764947wri.373.1612977288615;
-        Wed, 10 Feb 2021 09:14:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzrpfJC7m73xLVSUOZX8qz5cgWYm6hrGbObJc78i3V++vWyATGZZhotcOFwqDWQAzyVJRcu1g==
-X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr4764930wri.373.1612977288448;
-        Wed, 10 Feb 2021 09:14:48 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id l83sm3440826wmf.4.2021.02.10.09.14.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 09:14:47 -0800 (PST)
-Subject: Re: [PATCH v3] KVM: x86/MMU: Do not check unsync status for root SP.
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>, seanjc@google.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org
-References: <20210209170111.4770-1-yu.c.zhang@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <aa265bd9-851e-1823-8807-df50cd9820ab@redhat.com>
-Date:   Wed, 10 Feb 2021 18:14:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qJ1RPXH4Ky3rknP1i83/kgXLfXXCz/TwgTUNKoCqZ64=;
+        b=jCaPwHLnu4SSILpHP6GBhijrurgzTd4EbjrfWGRRnTjoN9QqldSK8wlbamU7by3rNk
+         6ofNwZfHYZ2PLwo1xlIl1a82toGuiLntMCPj0NJDJVmQ3b3/H2ICtJaiO/b3TZHbbvuZ
+         0xg0aUBSKyb/aNXUr6xypO7EvnkGwz+L4A/tQGdBs2jWTy8LtdvPN5FE9FHWnumRvR3r
+         PahcY9sIL3/hIGDuJnU74GG8k+3/wr0h3J1ynehDliXPTa5nRZXP5QdTRnrWqdP3OPvy
+         VT3RnD+xlVz+KNGRPKEQ23xgBTSHC2qSYq1VoXkKlAauLtF1iyxLw4oXFk1Oq7v5qKwv
+         wf7Q==
+X-Gm-Message-State: AOAM532yXct8P5Ll3nLNAKJZ+TdSovcfv2rf2o2tXHljS3Dqf3j5AC3S
+        uCCylX6vD8eVOPETQuz83A==
+X-Google-Smtp-Source: ABdhPJzsuQvHnbVMCnXzigZFYvy1mjydqefuslXLM2227BCJ57eYbmrcMRouWbgxLWOcD8sgwjoLFw==
+X-Received: by 2002:a54:4803:: with SMTP id j3mr2257771oij.124.1612977302768;
+        Wed, 10 Feb 2021 09:15:02 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u126sm567339oig.55.2021.02.10.09.15.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 09:15:02 -0800 (PST)
+Received: (nullmailer pid 2360939 invoked by uid 1000);
+        Wed, 10 Feb 2021 17:15:00 -0000
+Date:   Wed, 10 Feb 2021 11:15:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
+        mpe@ellerman.id.au, james.morse@arm.com, sashal@kernel.org,
+        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v17 00/10] Carry forward IMA measurement log on kexec on
+ ARM64
+Message-ID: <20210210171500.GA2328209@robh.at.kernel.org>
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209170111.4770-1-yu.c.zhang@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209182200.30606-1-nramas@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02/21 18:01, Yu Zhang wrote:
-> In shadow page table, only leaf SPs may be marked as unsync;
-> instead, for non-leaf SPs, we store the number of unsynced
-> children in unsync_children. Therefore, in kvm_mmu_sync_root(),
-> sp->unsync shall always be zero for the root SP and there is
-> no need to check it. Remove the check, and add a warning
-> inside mmu_sync_children() to assert that the flags are used
-> properly.
+On Tue, Feb 09, 2021 at 10:21:50AM -0800, Lakshmi Ramasubramanian wrote:
+> On kexec file load Integrity Measurement Architecture (IMA) subsystem
+> may verify the IMA signature of the kernel and initramfs, and measure
+> it.  The command line parameters passed to the kernel in the kexec call
+> may also be measured by IMA.  A remote attestation service can verify
+> a TPM quote based on the TPM event log, the IMA measurement list, and
+> the TPM PCR data.  This can be achieved only if the IMA measurement log
+> is carried over from the current kernel to the next kernel across
+> the kexec call.
 > 
-> While at it, move the warning from mmu_need_write_protect()
-> to kvm_unsync_page().
+> powerpc already supports carrying forward the IMA measurement log on
+> kexec.  This patch set adds support for carrying forward the IMA
+> measurement log on kexec on ARM64.
 > 
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
-> ---
->   arch/x86/kvm/mmu/mmu.c | 12 +++++++++---
->   1 file changed, 9 insertions(+), 3 deletions(-)
+> This patch set moves the platform independent code defined for powerpc
+> such that it can be reused for other platforms as well.  A chosen node
+> "linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
+> the address and the size of the memory reserved to carry
+> the IMA measurement log.
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 86af58294272..5f482af125b4 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1995,6 +1995,12 @@ static void mmu_sync_children(struct kvm_vcpu *vcpu,
->   	LIST_HEAD(invalid_list);
->   	bool flush = false;
->   
-> +	/*
-> +	 * Only 4k SPTEs can directly be made unsync, the parent pages
-> +	 * should never be unsyc'd.
-> +	 */
-> +	WARN_ON_ONCE(parent->unsync);
-> +
->   	while (mmu_unsync_walk(parent, &pages)) {
->   		bool protected = false;
->   
-> @@ -2502,6 +2508,8 @@ EXPORT_SYMBOL_GPL(kvm_mmu_unprotect_page);
->   
->   static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
->   {
-> +	WARN_ON(sp->role.level != PG_LEVEL_4K);
-> +
->   	trace_kvm_mmu_unsync_page(sp);
->   	++vcpu->kvm->stat.mmu_unsync;
->   	sp->unsync = 1;
-> @@ -2524,7 +2532,6 @@ bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
->   		if (sp->unsync)
->   			continue;
->   
-> -		WARN_ON(sp->role.level != PG_LEVEL_4K);
->   		kvm_unsync_page(vcpu, sp);
->   	}
->   
-> @@ -3406,8 +3413,7 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
->   		 * mmu_need_write_protect() describe what could go wrong if this
->   		 * requirement isn't satisfied.
->   		 */
-> -		if (!smp_load_acquire(&sp->unsync) &&
-> -		    !smp_load_acquire(&sp->unsync_children))
-> +		if (!smp_load_acquire(&sp->unsync_children))
->   			return;
->   
->   		write_lock(&vcpu->kvm->mmu_lock);
+> This patch set has been tested for ARM64 platform using QEMU.
+> I would like help from the community for testing this change on powerpc.
+> Thanks.
 > 
+> This patch set is based on
+> commit 96acc833dec8 ("ima: Free IMA measurement buffer after kexec syscall")
+> in https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+> "next-integrity" branch.
 
-Queued, thanks.
+Is that a hard dependency still? Given this is now almost entirely 
+deleting arch code and adding drivers/of/ code, I was going to apply it.
 
-Paolo
-
+Rob
