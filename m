@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA15C316844
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2B3316854
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhBJNrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbhBJNrr (ORCPT
+        id S231497AbhBJNvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:51:31 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6666 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231440AbhBJNuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:47:47 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B457C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:47:06 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id j19so2912615lfr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:47:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x7AQuIHqlGeDKdDmQaoPxTGljXqoMuKxFCh/+vT0i5k=;
-        b=nOGKWwErjCXi0YFKi585FYnDqp7VZktLvttuvqdhK0nRwzl46aW1e6ZK2y4GhoJ9i8
-         KpIxBAdYnb+08xigU5i30VZuFTrxH9hEDGhvwYEsy/vXJ20y3z8qmZGxB570y+8nwDXr
-         KqRlvpUxKhal/kP45OJ60gFtDUeeffZe8T1LC5rRY+O2Fx+sJ5NgQqI1K5vhBdjd2A6B
-         qJw8QKEDXZMZlFJvt+pc5moGlNUZkY9BSRYZmVwipRgXbnYqLGFJEc+CMn2+gVC3m7gE
-         4OfOhMBxuIem8mVWHVp+YR/xI5Pyv3MgEexPFS4XvAKqbFwqVEoJy6zxsM+1KZMJkXNM
-         BJVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x7AQuIHqlGeDKdDmQaoPxTGljXqoMuKxFCh/+vT0i5k=;
-        b=OAUNVMlyKKVG/id7So51+D3siZSp8TmZ7lgzDV477xTHnxDqtdd37a0Ue2rtkj/vQk
-         ttDeE36RmjRdv8U/C7t4f5x3FxO9goBwsDeHbLEixvxgH2mCnc/wAyDoin/uBd5a41Ku
-         1Laqvl/O4lHMkgPEXW5gIOX5hCFDMpz5wMGHhR6qQlVecNIR5eveoNFB8Y9yjtWV6HqU
-         mjm4eDaWCX5e2QPPiu4Pl/OZmT/uvs952U+mpvtGuTAJEG1VNzpr35QqJXFhHQd7/EKV
-         SL927Y7ZVPCwyJYDbJ2V6QECM1DsrPCA+XQCuyJfhsG2/QLkyT9e9C1u2AFC4ijec3Rs
-         hcRA==
-X-Gm-Message-State: AOAM530b7J30+vItUYjzMuv7R+5bT4oAqoJ3cjayQsbmRChXY+sa1qWP
-        eorp+y7d56FgvlxonNH8kim8CfN8rsTIoaFG0/Tb/A==
-X-Google-Smtp-Source: ABdhPJz841Cfn+4sq64Q5uE+gYJv38/kovaen61M8ii6Y201iSug/qJh/kkiv/4ACj5E6wmRFUhiWf/OXsFV7bvBq+s=
-X-Received: by 2002:a05:6512:6c6:: with SMTP id u6mr1722867lff.347.1612964822071;
- Wed, 10 Feb 2021 05:47:02 -0800 (PST)
+        Wed, 10 Feb 2021 08:50:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6023e4930001>; Wed, 10 Feb 2021 05:50:11 -0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
+ 2021 13:50:10 +0000
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
+ 2021 13:47:46 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 10 Feb 2021 13:47:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RfRRdTEtsNmcXTjHCuNBqH4B4vXRiGyITERvTF7uCS/khwvNTHWfnMEGZJnFqCRYtiUpwBuGygAvHFXitoXXjXNfYhtTZF85XOkLCyEYezG+IeqeU8aMSs7odP0UQBWMTnhGoE94Hg0es7tWHtOu5Nb7MjGpIYDXobcGVnvvANMnYVBS2uO8p2CO+IGKrRG8nhfPG6e+oEbMt6oLaLQfYbsPvPVnPEuD47MvkNXgGKk+3fuDqimJnbDnkKyhXaeO3KkEcK9Gbu9v7EWyo5nTwi83z+0i82ULgkt1Q/hq4+h+6Eqd66lMNwIj2tVqE9YsUCRr09YGr04VyeWq+IJyQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fE9wrQLs05M1Mn/6HILf2376t69HuWUqZmT/HXrY1+4=;
+ b=dtFuLTcN2+nJUZXKxQjbTwepA1jxsYvq+WcgJzMqbS5mD19ijygKgqr+4Cr9LIJVLbqETQtgNvzbiMXsG3jQpL00yHE5g+y+EAw4HTsNNJ81o4vD8rAUJ11EAn/AUb6Lcff1iJCdXlgzGmsS4dGL/IXddbqIlcK5OeQ8uurXwsjPXVUWijPBtgxGwOqC1P7UTEy6pbYgGvCBNSqaggrMfokqDCGHQc6by1H/GoG7l+AAMyoqLYnEFJ8Ti9FGaY8YWq7DcxSle79zMKHNOhOlYTN0RDzT3L9GUszGKaCPiYagj5EYfHaKb1v2Js7g/Ir3EAVMru0wNtACyY6oJ2NxWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3513.namprd12.prod.outlook.com (2603:10b6:5:18a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Wed, 10 Feb
+ 2021 13:47:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
+ 13:47:43 +0000
+Date:   Wed, 10 Feb 2021 09:47:42 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Lee Jones <lee.jones@linaro.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the rdma tree
+Message-ID: <20210210134742.GY4247@nvidia.com>
+References: <20210210211149.3498db8a@canb.auug.org.au>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210210211149.3498db8a@canb.auug.org.au>
+X-ClientProxiedBy: BL0PR05CA0007.namprd05.prod.outlook.com
+ (2603:10b6:208:91::17) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210209214543.112655-1-hannes@cmpxchg.org>
-In-Reply-To: <20210209214543.112655-1-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 10 Feb 2021 05:46:51 -0800
-Message-ID: <CALvZod7Tf+KBhT=3WCQ_uWa7_mZad6-L8wQJghxPRL_tVyQ8Cw@mail.gmail.com>
-Subject: Re: [PATCH] mm: page-writeback: simplify memcg handling in test_clear_page_writeback()
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR05CA0007.namprd05.prod.outlook.com (2603:10b6:208:91::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.11 via Frontend Transport; Wed, 10 Feb 2021 13:47:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9pqI-005ukD-65; Wed, 10 Feb 2021 09:47:42 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612965011; bh=fE9wrQLs05M1Mn/6HILf2376t69HuWUqZmT/HXrY1+4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=nQjUW1xPdsb8nfBwRnWV07FVddX32uPHV+EjBwLvDvyr0VxiJr63eqIt/Fh2DXPow
+         +nMpE7vcLFN5Q8L/UpkMnNFUxT5bkdjAsTK7nwMO0ueok8zWqiJM7tnMpDRRHASjo/
+         GrUT7sfN5EFvvyartxoNX/IMlEQel9YY+nRDtwS+wM/Rt0mqaEM70FcaHs/+xAbG8H
+         N2uCs704/HT+VmgrjgdSW4HG+PmHdfRY65N2BowZU4tjurInfMm0wwLsaI/MTSFqxk
+         qwgck7dqpiyXwGgc6kU4acTi7KrFZz4qicqQW3+xn9u9JFKF5k/63+txg1j2geieVE
+         Fi7RblFWIh/Mg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 1:45 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> Page writeback doesn't hold a page reference, which allows truncate to
-> free a page the second PageWriteback is cleared. This used to require
-> special attention in test_clear_page_writeback(), where we had to be
-> careful not to rely on the unstable page->memcg binding and look up
-> all the necessary information before clearing the writeback flag.
->
-> Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
-> BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
-> explicit reference on the page, and this dance is no longer needed.
->
-> Use unlock_page_memcg() and dec_lruvec_page_stat() directly.
->
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On Wed, Feb 10, 2021 at 09:11:49PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the rdma tree, today's linux-next build (htmldocs) produced
+> this warning:
+> 
+> drivers/infiniband/core/device.c:859: warning: Function parameter or member 'dev' not described in 'ib_port_immutable_read'
+> drivers/infiniband/core/device.c:859: warning: Function parameter or member 'port' not described in 'ib_port_immutable_read'
+> 
+> Introduced by commit
+> 
+>   7416790e2245 ("RDMA/core: Introduce and use API to read port immutable data")
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+drivers/infinband is W=1 clean right now in linux-next
+
+But how can I build *only* drivers/infiniband using W=1 so I can keep
+it that way?
+
+The rest of the kernel is not clean and creates too much warning noise
+to be usable, even with my mini config.
+
+Just doing a 'make W=1 drivers/infiniband' is sort of OK, but then I
+end up compiling things twice
+
+Does anyone know a good solution?
+
+Jason
+
+
+
+
