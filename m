@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A2C316400
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F44316401
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:38:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhBJKhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:37:33 -0500
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:51503 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231207AbhBJKaR (ORCPT
+        id S231300AbhBJKiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:38:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230497AbhBJKbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:30:17 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 33B34C41;
-        Wed, 10 Feb 2021 05:29:31 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 10 Feb 2021 05:29:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=oIa/2Qot3nAjg2o97/YX6K/oHZE
-        bZ3WonfjT0JArODs=; b=l8yfqApM7aybXQ/4V2KFaP0E8A08zx33dGddvnt5mh2
-        t403i7nKaKwXtlDbCAR1wHi+u+MoJ21lS/BDZagY0aHVbK4BoeYQAm9/Z+wNng3T
-        f6mDzoYKJMa/ldtlFCOJt9e9I1e+THvpdYO3Q6+bOvQ8rMofoeHW+reWrLfL7z8G
-        e+ZQpR3LyVktM4wBDIZ3lKDDQo5v93GuUHq1FshVSe4qJfhsPpLcgT7Wk17wZOIe
-        EIOytHwRDWJGW9TnyjNiqvS0nkTeUUeeS0jCr7B2+av1jGKmyVmZawnvicmnoKs6
-        cPxcx6YD45xX2OcXVHHbrun8oShgDs1cA4zCyLgWxJA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=oIa/2Q
-        ot3nAjg2o97/YX6K/oHZEbZ3WonfjT0JArODs=; b=aM80EBujFemviFs1HPNFQX
-        +Dj+kJ2DV1N5xzs/62T0zZz/Dm3el+9WiJJrbZZ626gdrfnVV3cGa7JoNNiClur0
-        KcnwczuUpKG3r05qNezT99p3U7QsENJ2OKVAOwij4k7p3/sjU9bxZ/uS9Io3VxpR
-        7MvOU3oqqvZPuVOrDTntwIFBOjHiNv6eUdbY5URSk848SxlmX+uYcHLiMl8Ok4Uw
-        UQAJAe4QpriUpY2gSnCDk6k9mV3iyX6/Gu5WmYPH+5aiAMAEA6kYre8sDVtz5BNA
-        aYR7xEvkk3HqttkA//76ff01rB++M3EOP7+M3ofNzZtyfsB5PnHU5Cn+KvCkVtYQ
-        ==
-X-ME-Sender: <xms:irUjYBUsfZ_5cF0rJ9gEAt0Y0N7DdXwxShcdimiPJDJGLUccF5GRAQ>
-    <xme:irUjYBm_OH9ecLMV3vmUX2-BJPuI1fkN8Z3UNw8Y9qWxT8vwbmeatZiqaUK7oS58n
-    Ikc3cyWN3Hqe7rIRso>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdduhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:irUjYNYrRvdNSP7YW5A97BdTjmmZ4rosV4OmpeK86JZlorouK8LOWw>
-    <xmx:irUjYEVabpaVHLFA7weG2AERutHpRqp0UcZkPTUdkIttQu7bbWtiGw>
-    <xmx:irUjYLkx9nvHGORe_6ztSQmRUQ2PbMWRIklj-PpnM1U06ktoFZBWng>
-    <xmx:irUjYN61z6kV13tJ8QyntRarhdV3c7JYPwxZuhW-vKhwGnhA7sOQWR6v134>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 68119108005B;
-        Wed, 10 Feb 2021 05:29:30 -0500 (EST)
-Date:   Wed, 10 Feb 2021 11:29:29 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     wens@csie.org, mturquette@baylibre.com, sboyd@kernel.org,
-        airlied@linux.ie, daniel@ffwll.ch, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v3 0/5] sunxi: fix H6 HDMI related issues
-Message-ID: <20210210102929.mkmxrwyku3js2zvp@gilmour>
-References: <20210209175900.7092-1-jernej.skrabec@siol.net>
+        Wed, 10 Feb 2021 05:31:37 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ECDC06174A;
+        Wed, 10 Feb 2021 02:30:57 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id t26so953477pgv.3;
+        Wed, 10 Feb 2021 02:30:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bi4sQc1W0haZULZiCGbFCEA8dMHiZn6QmzMFchXnTYQ=;
+        b=O6BimNAuXjNLj/yIoizM4uAt2GF/5uu64K1ztnL3yk7SXNLm63PvYs+X6csIxGHjvP
+         6OPVzLD+S84m7bvln8dTdCJmIqWOyC18oH1HRiIVGxCuwDU40KdZZTaMearXJBkjWvv8
+         NnbpAdx65RIdyGZGq8+R4u37Bc1hPk9tB0EfvU8NdLQUB98C6WGzqZw+2+2gM07t/lb3
+         q6V0UEaTgjMYbPbRINW9lKUILnngSPNhz4ol82BmG4BOTq7TsIvUA5RI868pym1NeLJT
+         YOusVxVaHPjP11txFj94L08FInBXB2lz0SalNdDSe9vcm9Svltym1l4ZKGPlqCQjhmjD
+         zlcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bi4sQc1W0haZULZiCGbFCEA8dMHiZn6QmzMFchXnTYQ=;
+        b=V475XtikCogFGTirqj9KDAZBD4hzRzWvtO08e5zqw4GbH49JBasuys0I6sJGYzqqGI
+         cguusqxlakzoMGUNx/C7pVB5UejiXX2lhnn6tQdA4yVJBDZ9wN6vCD0R5YXxkSyh3OyD
+         tICeElIDaEAxQHjHqcDifUofiayZzh9JiSnru+JzU7P39xHCQjNlXki8habE5AeX9r3D
+         F4y+zBqbBp4QW9L4anvm75mCI9uA69+zULBlamw786w9iPIAjakyMcD/27GJpWowjXv9
+         qYitijmSJufJ81tDLGEQTawQ0RLB7RnlUGepuNTSY5sdSrH9WgKFJnB5Uzp9NHmd6u3S
+         XkMQ==
+X-Gm-Message-State: AOAM5304zXvasZHAwk2FYFN/pbPajQ19d0SqU3r0aw/cX+WCrgnxDuN2
+        uS4b7D6TADGkY/UtZCSmxZeT4SNfdL7xM7OdV2c=
+X-Google-Smtp-Source: ABdhPJyP0sXFD40X5SO/TEyI/QwQnKtk4YunVmUZ8GB/ony+EeZZbqIf1O+uj1Qqqb2trtjlVfyvr80nzDIMMQAGIYg=
+X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
+ q20-20020a056a000854b02901b762330c5fmr2401710pfk.73.1612953057053; Wed, 10
+ Feb 2021 02:30:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ju3jwli3ct6v5xkf"
-Content-Disposition: inline
-In-Reply-To: <20210209175900.7092-1-jernej.skrabec@siol.net>
+References: <20210208222203.22335-1-info@metux.net>
+In-Reply-To: <20210208222203.22335-1-info@metux.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 10 Feb 2021 12:30:40 +0200
+Message-ID: <CAHp75VdNTenoE0AOmGfndqQ7SrxbuK+SvfFYn3W2GmqhkCSByQ@mail.gmail.com>
+Subject: Re: RFC: oftree based setup of composite board devices
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 9, 2021 at 12:25 AM Enrico Weigelt, metux IT consult
+<info@metux.net> wrote:
+>
+> Hello folks,
+>
+> here's an RFC for using compiled-in dtb's for initializing board devices
+> that can't be probed via bus'es or firmware.
+>
+> Use cases are boards with non-oftree firmware (ACPI, etc) where certain
+> platform devices can't be directly enumerated via firmware. Traditionally
+> we had to write board specific drivers that check for board identification
+> (DMI strings, etc), then initialize the actual devices and their links
+> (eg. gpio<->leds/buttons, ...). Often this can be expressed just by DT.
 
---ju3jwli3ct6v5xkf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In ACPI we support DT compatible strings, and we support overlays for
+a long time. Would it work for you?
 
-On Tue, Feb 09, 2021 at 06:58:55PM +0100, Jernej Skrabec wrote:
-> Over the year I got plenty of reports of troubles with H6 HDMI signal.
-> Sometimes monitor flickers, sometimes there was no image at all and
-> sometimes it didn't play well with AVR.
->=20
-> It turns out there are multiple issues. Patch 1 fixes clock issue,
-> which didn't adjust parent rate, even if it is allowed to do so. Patch 2
-> adds polarity config in tcon1. This is seemingly not needed for pre-HDMI2
-> controllers, although BSP drivers set it accordingly every time. It
-> turns out that HDMI2 controllers often don't work with monitors if
-> polarity is not set correctly. Patch 3 always set clock rate for HDMI
-> controller. Patch 4 fixes H6 HDMI PHY settings. Patch 5 fixes comment and
-> clock rate limit (wrong reasoning).
->=20
-> Please take a look.
->=20
-> Best regards,
-> Jernej
->=20
-> Changes from v2:
-> - use clk_hw_can_set_rate_parent() directly instead of checking flags
-> Changes from v1:
-> - collected Chen-Yu tags (except on replaced patch 4)
-> - Added some comments in patch 2
-> - Replaced patch 4 (see commit log for explanation)
+> This patch queue does a bunch of preparations in oftree code, so we can
+> support multiple fully independent DT's (not using DT overlays). And then
+> adds a generic driver parses compiled-in fdt blobs, checks for mathing
+> DMI strings and initializes the devices. As an example, the last patch
+> adds an alternative implementation for the PC engines APU2/3/4 board
+> family based on device tree.
 
-Applied patches 2-5, thanks
-Maxime
+Sounds weird, but let's see...
 
---ju3jwli3ct6v5xkf
-Content-Type: application/pgp-signature; name="signature.asc"
+> The approach can be easily be extended to other kinds of composite devices,
+> eg. PCI cards or USB dongles.
 
------BEGIN PGP SIGNATURE-----
+What do you mean? PCI and USB are self-enumerated. What's wrong with them?
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYCO1iAAKCRDj7w1vZxhR
-xWI+AP9LVKht587rKqqvDF5OHytZ7rTIv7TkzV5PorCdpAl6CwEA3VVGL21fGO9l
-0TtgdjhXMuTi5mmSoIsj/QQyNtubVQc=
-=9wps
------END PGP SIGNATURE-----
+> Yet some drawbacks of the current implementation:
+>
+>  * individual FDT's can't be modularized yet (IMHO, we don't have DMI-based
+>    modprobing anyways)
 
---ju3jwli3ct6v5xkf--
+What?! https://lwn.net/Articles/233385/
+`git grep -n 'MODULE_DEVICE_TABLE(dmi'`
+
+>  * can't reconfigure or attach to devices outside the individual DT's
+>    (eg. probed by PCI, etc)
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
