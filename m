@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBC0317088
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5627F31708E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbhBJTrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhBJTre (ORCPT
+        id S232367AbhBJTs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:48:26 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:38768 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231596AbhBJTsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:47:34 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6263C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:46:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=nybHHQYTtg1oEhf6PuzoAQT63cxJ5G3IZDOvK2iUB0s=; b=Nh5oOoWF7n/vD53P54dT3UTucf
-        KIEEi95QReBet1jFZgTUAnDsqiEsqIV7/zPgNa9XRCAu2X/LtaN1GiE7bhLTqkmkzQkImkvd4Htkq
-        /V59UXTqQZNCzMPVmVo5iHWXiivaSeSICVpVmWraZMHgvaFMGfVpTCm5dTm2+0YpO7zwfa9sgia+n
-        fCwTlYp9lUV1nshXaF7FxKxKddbxd5zkAlHvriy/2gVLgCfwPO5cstzf1PZnQun0NQ/6lnixaSK3Q
-        Hha0Y7koZgFk66FCkbrVuoShBeOoiGEqTauBS4PQuSuZVvo99LaWY6CcnTPTwc9E1yMPQVT6RccV7
-        cs/eUlMg==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9vRn-0007ZQ-Hv; Wed, 10 Feb 2021 19:46:48 +0000
-Subject: Re: [PATCH] pstore/ram : Add support for cached pages
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Mukesh Ojha <mojha@codeaurora.org>, linux-kernel@vger.kernel.org
-Cc:     tony.luck@intel.com, ccross@android.com, anton@enomsg.org,
-        keescook@chromium.org, Huang Yiwei <hyiwei@codeaurora.org>
-References: <1612968741-1692-1-git-send-email-mojha@codeaurora.org>
- <d59687d7-1ca3-c822-f41d-169a9e388abb@infradead.org>
-Message-ID: <895146dc-de12-8275-cd71-fdae180e6fcf@infradead.org>
-Date:   Wed, 10 Feb 2021 11:46:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 10 Feb 2021 14:48:17 -0500
+Received: by mail-ot1-f46.google.com with SMTP id e4so2963226ote.5;
+        Wed, 10 Feb 2021 11:48:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+qy1Z5qodeKEvo9pP+CsKbcmPA1dn3m2Hb7iTrfGUn4=;
+        b=rZzMro43D09FrYThiJ0jWfgjtn0qOBEW4aXscnSW5yplTh2Kq1lVObL0ZrOFwc3fOR
+         8BWckURS1S565+t5EoSoRRP7swSOIagx1TEgxvXfd5EvOU+lOC63dx9f6/lRCdcPkquv
+         wjwXtz9hE5J+tRGfz9PbAZZY/z+B5MVFTM24A7cfULi56QHyWeGcr1nXa/Seamh2yhEV
+         IG7R9QYILKuNjGt71Dlh9MF1AcYZGJvF/wMJM7mih9dSBt4pypo1ep+aQXeNOP3f+bKD
+         jhj/NJjcwe154zUHhL+37csCY6XGQ5LBQRs1cHVtpHEgrr3akoszVmFfQ9kpj1OZuMXy
+         Exww==
+X-Gm-Message-State: AOAM5333pMqIq+yWA3FHkXpABO3m+bKD5JT3C5Fah/I0DvKFpF/p5f+e
+        sAZ0qn+R06hH+LGH6vhG1A==
+X-Google-Smtp-Source: ABdhPJy3gzJ5yC7lL+2rZ4ttWIAdk76QcwvGJd4d9ENMiSwxUsXXbjIKGRMba+Jlnks/WW3LxoLGcA==
+X-Received: by 2002:a05:6830:200f:: with SMTP id e15mr3255771otp.306.1612986455932;
+        Wed, 10 Feb 2021 11:47:35 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s1sm554303ooj.30.2021.02.10.11.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 11:47:35 -0800 (PST)
+Received: (nullmailer pid 2633976 invoked by uid 1000);
+        Wed, 10 Feb 2021 19:47:34 -0000
+Date:   Wed, 10 Feb 2021 13:47:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     "Matwey V. Kornilov" <matwey@sai.msu.ru>,
+        Jean Delvare <jdelvare@suse.com>,
+        "open list:HARDWARE MONITORING" <linux-hwmon@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/4] hwmon: lm75: Add lm75 to of_match list
+Message-ID: <20210210194734.GA2609450@robh.at.kernel.org>
+References: <2588ea5c-630e-6509-689d-4c8fea358e9b@roeck-us.net>
+ <20210206095121.20625-1-matwey@sai.msu.ru>
+ <20210206095121.20625-2-matwey@sai.msu.ru>
+ <164495f0-9b53-2523-f178-bd52bbb40ae6@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <d59687d7-1ca3-c822-f41d-169a9e388abb@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <164495f0-9b53-2523-f178-bd52bbb40ae6@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 11:40 AM, Randy Dunlap wrote:
-> Hi--
+On Sat, Feb 06, 2021 at 08:46:16AM -0800, Guenter Roeck wrote:
+> On 2/6/21 1:51 AM, Matwey V. Kornilov wrote:
+> > Currently, many boards use just 'lm75' as a compatible string.
+> > 
+> > Signed-off-by: Matwey V. Kornilov <matwey@sai.msu.ru>
+> > ---
+> >  Documentation/devicetree/bindings/hwmon/lm75.yaml | 1 +
+> >  drivers/hwmon/lm75.c                              | 4 ++++
+> >  2 files changed, 5 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/hwmon/lm75.yaml b/Documentation/devicetree/bindings/hwmon/lm75.yaml
+> > index 96eed5cc7841..aec8edd1e0c6 100644
+> > --- a/Documentation/devicetree/bindings/hwmon/lm75.yaml
+> > +++ b/Documentation/devicetree/bindings/hwmon/lm75.yaml
+> > @@ -13,6 +13,7 @@ maintainers:
+> >  properties:
+> >    compatible:
+> >      enum:
+> > +      - lm75
 > 
-> On 2/10/21 6:52 AM, Mukesh Ojha wrote:
->> There could be a sceanario where we define some region
+> Please split the .yaml file changes into a single patch, separate
+> from the code changes. Also please make sure that the subject indicates
+> that this is a bindings change.
 > 
->                    scenario
+> For this change, we'll definitely need feedback from Rob. I am not sure
+> if such a generic compatible string is permitted or if we need to change
+> the dts files instead.
 > 
->> in normal memory and use them store to logs which is later
->> retrieved by bootloader during warm reset.
->>
->> In this scenario, we wanted to treat this memory as normal
->> cacheable memory instead of default behaviour which
->> is an overhead. Making it cacheable could improve
->> performance.
->>
->> This commit gives control to change mem_type from Device
->> tree, and also documents the value for normal memory.
->>
->> Signed-off-by: Huang Yiwei <hyiwei@codeaurora.org>
->> Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
->> ---
->>  Documentation/admin-guide/ramoops.rst |  4 +++-
->>  fs/pstore/ram.c                       |  1 +
->>  fs/pstore/ram_core.c                  | 10 ++++++++--
->>  3 files changed, 12 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/ramoops.rst b/Documentation/admin-guide/ramoops.rst
->> index b0a1ae7..8f107d8 100644
->> --- a/Documentation/admin-guide/ramoops.rst
->> +++ b/Documentation/admin-guide/ramoops.rst
->> @@ -3,7 +3,7 @@ Ramoops oops/panic logger
->>  
->>  Sergiu Iordache <sergiu@chromium.org>
->>  
->> -Updated: 17 November 2011
->> +Updated: 10 Feb 2021
->>  
->>  Introduction
->>  ------------
->> @@ -30,6 +30,8 @@ mapping to pgprot_writecombine. Setting ``mem_type=1`` attempts to use
->>  depends on atomic operations. At least on ARM, pgprot_noncached causes the
->>  memory to be mapped strongly ordered, and atomic operations on strongly ordered
->>  memory are implementation defined, and won't work on many ARMs such as omaps.
->> +Setting ``mem_type=2`` attempts to treat the memory region as normal memory,
+> On a higher level, while lm75 is an extreme case, I see a few other
+> violators as well.
 > 
-> Does "mem_type=" work?  or does it need to be "mem-type=", as below?
-> I.e., do both of them work?
+> drivers/macintosh/windfarm_ad7417_sensor.c:     { .compatible = "ad7417", },
+> drivers/macintosh/windfarm_max6690_sensor.c:    { .compatible = "max6690", },
+
+Old as dirt PowerMac stuff...
+
+> arch/arm/boot/dts/socfpga_arria10_socdk.dtsi:           compatible = "ltc2977";
+> arch/arm/boot/dts/aspeed-bmc-arm-centriq2400-rep.dts:                           compatible = "tmp421";
+
+Pretty much a dead platform...
+
+> arch/arm/boot/dts/nuvoton-npcm750-evb.dts:              compatible = "tmp100";
+> arch/arm/boot/dts/nuvoton-npcm750-evb.dts:              compatible = "tmp100";
 > 
+> so it would be good to know how to handle those in general.
 
-Ah yes, as documented:
+The dts files can be fixed without a compatibility issue (at least for 
+Linux), so we should update them and leave the documentation as-is. We 
+just can't add a new vendor compatible to the driver and then change the 
+dts files like these as old kernels wouldn't recognized the new 
+compatibles (though we should backport compatibles like PCI IDs).
 
-"Hyphens (dashes) and underscores are equivalent in parameter names,"
-
-thanks.
-
-
->> +which enables full cache on it. This can improve the performance.
->>  
->>  The memory area is divided into ``record_size`` chunks (also rounded down to
->>  power of two) and each kmesg dump writes a ``record_size`` chunk of
->> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
->> index ca6d8a8..b262c57 100644
->> --- a/fs/pstore/ram.c
->> +++ b/fs/pstore/ram.c
->> @@ -666,6 +666,7 @@ static int ramoops_parse_dt(struct platform_device *pdev,
->>  		field = value;						\
->>  	}
->>  
->> +	parse_u32("mem-type", pdata->record_size, pdata->mem_type);
 > 
->               here^^^^^^^^^^
+> Note that there is also:
+> 
+> Documentation/devicetree/bindings/display/repaper.txt:          compatible = "lm75b";
+> 
+> but maybe that doesn't matter as much since it is not actually
+> used in dts files.
 
+Right.
 
--- 
-~Randy
-
+Rob
