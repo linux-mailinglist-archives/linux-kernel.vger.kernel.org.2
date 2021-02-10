@@ -2,151 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AC0316FCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48A0316F6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhBJTO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:14:28 -0500
-Received: from www-5.netcourrier.com ([213.182.55.200]:32941 "EHLO
-        www-5.mailo.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234393AbhBJTOU (ORCPT
+        id S234222AbhBJTAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:00:36 -0500
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:3628 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232880AbhBJS61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:14:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1612979336; bh=FiwrkizrBSPTsvKMxQnwJcv6n7jqODJU8WnEpBli1GY=;
-        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-         References:Content-Type:MIME-Version:Content-Transfer-Encoding;
-        b=aVejjDj+LtOND0rHwfM/BdxyKlPIzF5FVjD5TmwNWFdXOBr9qMrGiduah5cMONWdF
-         crLyraOuDUeRMx+6SDny5iqYZbs73rd3Uqst8HNr9w2EWmnOi+/HoEmleAytVMbVp/
-         xXjGIJcJFSHYZcSFNmRRPofaiR/Uf9tAlje2L5PQ=
-Received: by b-6.in.mailobj.net [192.168.90.16] with ESMTP
-        via proxy.mailoo.org [213.182.55.207]
-        Wed, 10 Feb 2021 18:48:56 +0100 (CET)
-X-EA-Auth: 4xS/QoYM2v4q6SHusZVcWgnrZ5wIyvdcZxzttcMlxFecgXiC1vChK1nXQpXsw9yNRr9zDGCf/YWUyTd4ricXeiAGrcCnhkeza7yHCrNqkDA=
-Message-ID: <97ef97e996c2089cedb450f9aaac123208ca18e9.camel@mailoo.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: input/touchscreen: add bindings for
- msg26xx
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Michael Srba <Michael.Srba@seznam.cz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Date:   Wed, 10 Feb 2021 18:48:55 +0100
-In-Reply-To: <20210210031000.GA10151@labundy.com>
-References: <20210121174359.1455393-1-vincent.knecht@mailoo.org>
-         <20210209161319.GA3849081@robh.at.kernel.org>
-         <07cac63721a9ca63733617e461d640e8927a78f3.camel@mailoo.org>
-         <20210210031000.GA10151@labundy.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
-MIME-Version: 1.0
+        Wed, 10 Feb 2021 13:58:27 -0500
+Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11AIhQBU031326;
+        Wed, 10 Feb 2021 18:57:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pps0720;
+ bh=WRwaopX88LoaeJgR20aP82WCS1HpIRKTNy2vX3Jmrt4=;
+ b=QuCNeVbTI+HdgB8y6RtZy07HOQh2mpvjPSCAZrlMnwO49By9kUaXkCZi3wTSy3gPscCI
+ jMq5AS+xKeBhh3kt2q5xmxGPIsghg6Uarnl/lvXsXTE0ul9H8P3HKIi6G6dYi6g2xWku
+ J5b3N7oUG7dVGUO0HmvSxBi6DX3rlZ01F+dHMmeghiEbrZZqED/RN/mtfUyR/+fZ2KI6
+ lrZ2WIxOpGZOeHf1iCHmmfJDxbb4UC5DJHThe6e6BrwKmMhWWDUPUfCzf4Iw6ISbdza1
+ C846yqB6+kNpbEB68M4PJRnm8iXHEcEnwE5TM4ppZh06pB0x6t/12zwYAoKTx14kOb3O tQ== 
+Received: from g9t5009.houston.hpe.com (g9t5009.houston.hpe.com [15.241.48.73])
+        by mx0b-002e3701.pphosted.com with ESMTP id 36mbdycpbd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 18:57:27 +0000
+Received: from G9W9209.americas.hpqcorp.net (g9w9209.houston.hpecorp.net [16.220.66.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by g9t5009.houston.hpe.com (Postfix) with ESMTPS id 1E6CF55;
+        Wed, 10 Feb 2021 18:57:26 +0000 (UTC)
+Received: from G9W9210.americas.hpqcorp.net (2002:10dc:429b::10dc:429b) by
+ G9W9209.americas.hpqcorp.net (2002:10dc:429c::10dc:429c) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 10 Feb 2021 18:57:25 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (15.241.52.11) by
+ G9W9210.americas.hpqcorp.net (16.220.66.155) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2 via Frontend Transport; Wed, 10 Feb 2021 18:57:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nxPZRpGMpK3aBF8I42uzt400TBQk5lQo1byWrqFhgY5Ts4xjcW6gJ+ul2hmDp6iIpWJ+GXsgBa0n/VpdpcB0CrXvgScdFScRFgMxjqs8vy5Jf6Hu1/d8egJhCmKFHXoUt2m8iMDSftyJ9Vd9N7ME5E0GizNqBuIoxuS94MZ5tYHOMLzfsFeWggLGxzPzNcfcngAzYGjEydn16q4L8EkkrVRFZF4XFu6arrrDR+mY+92fNFA0j+NY/opk5ojkqocwAoRMdAKXNGySbqVtd9c40AfhjYFdvIlgg1d0lTsQ+qAp10GKcyZlpRXhUJif2wkTQL1m9OAnEt0rXmi6EMhBZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WRwaopX88LoaeJgR20aP82WCS1HpIRKTNy2vX3Jmrt4=;
+ b=YwTiksU+srEYILrhP6iAwx2qWtq1oYTvOht3IpPPUo0JU3MQw/WgClL8S9raYgXowta1wR7HNETlDFdLMeWojtUR9SeGsuTTKZq7UfUgI4xhlAjtgX8bk3k6PHZAeFaKvCqaEYa0Bv/bmBAfkSLCMNNT3yhFfnx09Cjfp9yzlGrbyOvpEGTHwtFwcmFg8mPgOp3kNrxIwFsqrt8OEClQ3NG7hQZD/j338y186vQfjZFxAZFZjQCFwRzATUPheMWGTRBdE3zXc4kFa0yD884jZLexmKHCxQrl8cYte9oWEk9EwD5Kxbm16ZZZiecCnF4X8MIWIzau+TPeSsF4586YAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
+ header.d=hpe.com; arc=none
+Received: from CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:750c::21) by CS1PR8401MB0357.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:7514::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Wed, 10 Feb
+ 2021 18:57:24 +0000
+Received: from CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::d9c0:54c9:95da:29d8]) by CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::d9c0:54c9:95da:29d8%5]) with mapi id 15.20.3825.030; Wed, 10 Feb 2021
+ 18:57:24 +0000
+From:   "Pearson, Robert B" <robert.pearson2@hpe.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Martin Wilck <mwilck@suse.com>
+Subject: RE: linux-next: manual merge of the rdma tree with Linus' tree
+Thread-Topic: linux-next: manual merge of the rdma tree with Linus' tree
+Thread-Index: AQHW/1Kql+xQKgMgsUyVf/ppryA44KpRvYUA
+Date:   Wed, 10 Feb 2021 18:57:24 +0000
+Message-ID: <CS1PR8401MB0821C1E95BE58300FF3B87C8BC8D9@CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM>
+References: <20210210131542.215ea67c@canb.auug.org.au>
+In-Reply-To: <20210210131542.215ea67c@canb.auug.org.au>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none header.from=hpe.com;
+x-originating-ip: [2603:8081:140c:1a00:d91e:2a27:9ee5:7083]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 99a9e594-4d8e-48a3-8207-08d8cdf5b451
+x-ms-traffictypediagnostic: CS1PR8401MB0357:
+x-microsoft-antispam-prvs: <CS1PR8401MB0357E65A9304A4B968431FDABC8D9@CS1PR8401MB0357.NAMPRD84.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: U2psn7PfDHXD83NxkXW7WDO+L+8H8RfOOXQ74z3g/OspFAobWvBsoKeSVPHtnhpL4wen2yW7SftMXB7P/YOH0i6kqhVbScT0BgfjufhN/0SyYW7gKcZi1MFIsi7I9T99lE+FI0g0gSBfl9fRp82oofT7MDBDNGUUU6xyCPInfUFm14AERbDrZBlcOQ9eQL/HvkJogjA2rrdBRt5UKUOJbET13ee5jSaxnLeE0WQ2vZlupS1jJwBteoCSDh5tZjZphoW482AeQB8vP+YX/X6VdjCWGZ000YLYefvAbE50Do202KbBE92Sf6s9DzgZC6rS5F+I/nS/XqUuDiIgIkSY0AkZRZsu9L4CeoSzXzx7bFAGpkTq+4SayRV7AUPx1j0rtoafrl3Y4BrFEbwIZabC23/wtYhFGwgUdyzdcFXzhjqT6nqBzYOwzMLaQtZTnKAvBeTpuQ5ahyhTCx4hLBs4k5Cj5DFPW3nAJ96AQBYDPy4aMG4i3ogigo81bbwRhM0tRCnzxlpmglTWvD+jcfpWmg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(396003)(366004)(39860400002)(53546011)(4326008)(6506007)(7696005)(33656002)(8676002)(478600001)(71200400001)(83380400001)(52536014)(186003)(316002)(54906003)(86362001)(110136005)(66446008)(64756008)(66556008)(9686003)(66476007)(5660300002)(76116006)(66946007)(55016002)(8936002)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?UI+v6aOBimWnccrXBLPrLzP2fe3fNYs6AJAR6cAkNy1xpAfVd6ebemzLMvR/?=
+ =?us-ascii?Q?wULF2VRnjK7KL7cWFQCHzun7iUMjQfAD4+HCV8MNS80bxMn9c1kb9zhB9IMp?=
+ =?us-ascii?Q?33c/UwxI72RYX99+KW8x1Jd9g1yQ0nWaT7c7xE9cXRI77faBPSJzqs2E2NEC?=
+ =?us-ascii?Q?nvsIBaRrZKPtUleqpB9S+LzGIPiP54/pN+g5dm4nxja+r12PhFmY2Rw1pFiA?=
+ =?us-ascii?Q?NNhbklWhORokuwr/FR0CYbbOuCPmqgBOl9R06lMiIBXZGLcxVB45TmEasfxx?=
+ =?us-ascii?Q?SXTpXva8DjEsZwlTWaHumMSeGmhy3n5+GaiIkOD5KxX+2dyV14E4GJtITQmY?=
+ =?us-ascii?Q?yGvHNxtA2DEg+6JzmVq9ZNCsxgH1g1pDJoKqYaXOaizqGZWngDnZMPyOgtWN?=
+ =?us-ascii?Q?JXnlUUiqzxA9pAu8H6jwfejbYjFwBwqGclvcJYKYNU8QYCnlgEUQgGxxvOMt?=
+ =?us-ascii?Q?1cXMrVROL8VLTUXmNLQ/XAse3AivHhUE3CeCI4Fwv4+2xwBqi8EX4rnseQez?=
+ =?us-ascii?Q?6TqFaJ1DakDbIlgCcFnKK/IYf9fex+pC+7b8WsTA4K8LqruOSsyqlrMCBCTv?=
+ =?us-ascii?Q?ZJd0MSYa8lQ+exAot4g8OnVsrUvwImYCaHbhrGfW0F6i2f9L6XOBFY1Yvysv?=
+ =?us-ascii?Q?bl6flzMts6PiCuVUk6/Qu/d3ezrbQHC0cw2Bzh/0Fl5vq+DrMxsjBEZGRfNP?=
+ =?us-ascii?Q?rBvTNE0pz8by0T5IIH+zquPLCU3iTiRFYT1JxnzEMSD9cFQh6pCYBl/ALVgo?=
+ =?us-ascii?Q?97gK/+3f3oZGITZoA/e+AJc4+qgRHfdcJd5dIjKnrPw6FXV1qpMPhJ/cMY8x?=
+ =?us-ascii?Q?QXh30jqWE91/yBrHde7LOC2/nJ0Xl/NjAkDSaXRfqrlgoHSIPGLe1/24Lb8t?=
+ =?us-ascii?Q?IboIBTRieJu96aPk/QTd+gydDKpVVtYW7e/bHf+nl/OpQH9pilpSZp2Pol+m?=
+ =?us-ascii?Q?SeLkH27zdpcmZR1kdyU7Yn36FkLvhUboRnr7u0ilZEMudwCq9eFJeFpdrriC?=
+ =?us-ascii?Q?VkaPOyHeLanZs/Wb4TBo2oQTAjoLzzmLFrRs7LKWSdR8U3+x9oIdaAOPCSye?=
+ =?us-ascii?Q?0lEE0cXdO29s9IuOwKJkm0Qc/8UKptHwEJ62yQ/zBgJ2Mvu/rtYF/bCo5mIg?=
+ =?us-ascii?Q?HU1ptpgE17VLkFIiF01+qxQsOg4ViDYEVMj/VW6VfcWs+J7EeQzdmNJ5CaIR?=
+ =?us-ascii?Q?Zlb9W6qUeNOGOjLGlBsK5sOYJKJnKbUdAHm9wb7I3ADC1nhBAEfOWppmxiME?=
+ =?us-ascii?Q?AmeCpeglIQZ556h2X1IyuQD1EhnZwCtHKSJ5uyc2Cph8HE1G4Il79u6qVLiH?=
+ =?us-ascii?Q?nwuJi/S6P6EWiwi6cdytOh/9sCKT8VEoYRk7qGUG91EapHKRv5mSZNaoZEJT?=
+ =?us-ascii?Q?gmoXp2pSd9CIY/Pqt5p8iBQtPmip?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99a9e594-4d8e-48a3-8207-08d8cdf5b451
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2021 18:57:24.8067
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VI2DMRpzxysAv5LBNdetD+fMYk6fWosXnkePZbuauyXbjIQRA2mVjN3FoR6Yo1E0A2GO3mKd7lg0PSk+Qrq4kw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CS1PR8401MB0357
+X-OriginatorOrg: hpe.com
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-10_08:2021-02-10,2021-02-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ clxscore=1011 priorityscore=1501 bulkscore=0 suspectscore=0 malwarescore=0
+ phishscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100168
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mardi 09 f=C3=A9vrier 2021 =C3=A0 21:10 -0600, Jeff LaBundy a =C3=A9crit=
-=C2=A0:
-> Hi Vincent,
->=20
-> On Tue, Feb 09, 2021 at 07:58:33PM +0100, Vincent Knecht wrote:
-> > Le mardi 09 f=C3=A9vrier 2021 =C3=A0 10:13 -0600, Rob Herring a =C3=A9c=
-rit=C2=A0:
-> > > On Thu, Jan 21, 2021 at 06:43:47PM +0100, Vincent Knecht wrote:
-> > > > This adds dts bindings for the mstar msg26xx touchscreen.
-> > > >=20
-> > > > Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
-> > > > ---
-> > > > Changed in v3:
-> > > > - added `touchscreen-size-x: true` and `touchscreen-size-y: true` p=
-roperties
-> > > > Changed in v2:
-> > > > - changed M-Star to MStar in title line
-> > > > - changed reset gpio to active-low in example section
-> > > > ---
-> > > > =C2=A0.../input/touchscreen/mstar,msg26xx.yaml=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 | 69 +++++++++++++++++++
-> > > > =C2=A01 file changed, 69 insertions(+)
-> > > > =C2=A0create mode 100644 Documentation/devicetree/bindings/input/to=
-uchscreen/mstar,msg26xx.yaml
-> > > >=20
-> > > > diff --git a/Documentation/devicetree/bindings/input/touchscreen/ms=
-tar,msg26xx.yaml
-> > > > b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg26xx=
-.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..5d26a1008bf1
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg=
-26xx.yaml
-> > > > @@ -0,0 +1,69 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/input/touchscreen/mstar,msg26xx=
-.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: MStar msg26xx touchscreen controller Bindings
-> > > > +
-> > > > +maintainers:
-> > > > +=C2=A0 - Vincent Knecht <vincent.knecht@mailoo.org>
-> > > > +
-> > > > +allOf:
-> > > > +=C2=A0 - $ref: touchscreen.yaml#
-> > > > +
-> > > > +properties:
-> > > > +=C2=A0 compatible:
-> > > > +=C2=A0=C2=A0=C2=A0 const: mstar,msg26xx
-> > >=20
-> > > Don't use wildcards in compatible strings.
-> >=20
-> > Thank you for the input...
-> >=20
-> > Let's say I set it to "mstar,msg2638", is it better to rename the drive=
-r file and functions too ?
-> > According to downstream source file naming, msg2638 is the model I have=
- and test this driver with.
->=20
-> This is ultimately Dmitry's call, but it's fairly common to use wildcards
-> for driver names and function calls if the driver is known to work across
-> all devices that fit in the wildcard (see iqs5xx and many others).
->=20
-> The risk with wildcards, however, is that vendors can introduce different
-> devices later with similar part numbers. Therefore, some subsystems (e.g.
-> iio) tend to frown upon wildcards for that reason.
->=20
-> You should try and make the driver cover as many devices as possible. But
-> if the driver is only known to work for one device then I don't think you
-> can use a wildcard in the name unless you support all other devices (just
-> my opinion).
->=20
-> In either case, however, compatible strings must be unique just as with a
-> part number in a schematic or bill of materials. As such, it is perfectly
-> fine to have multiple compatible strings in a single driver.
->=20
-> >=20
-> >=20
-> > There's a possibility this driver works as-is or with minor mods for ms=
-g2633 too,
-> > and a more remote one for msg21xx and msg22xx...
-> >=20
->=20
-> Kind regards,
-> Jeff LaBundy
+It looks like f1b0a8ea9f12 ("Revert "RDMA/rxe: Remove VLAN code leftovers f=
+rom RXE"") has not been applied to rdma for-next which is where I do my wor=
+k. Not sure how it got upstream.
 
-Thank you Jeff for the insight.
+bob
 
-Since I can't test it with any other model, I've renamed it to msg2638 in v=
-4:
-https://lore.kernel.org/linux-input/20210210173403.667482-1-vincent.knecht@=
-mailoo.org/T/#t
+-----Original Message-----
+From: Stephen Rothwell <sfr@canb.auug.org.au>=20
+Sent: Tuesday, February 9, 2021 8:16 PM
+To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@mellanox.com>
+Cc: Pearson, Robert B <robert.pearson2@hpe.com>; Bob Pearson <rpearsonhpe@g=
+mail.com>; Jason Gunthorpe <jgg@nvidia.com>; Jason Gunthorpe <jgg@ziepe.ca>=
+; Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Linux Next Mail=
+ing List <linux-next@vger.kernel.org>; Martin Wilck <mwilck@suse.com>
+Subject: linux-next: manual merge of the rdma tree with Linus' tree
 
+Hi all,
 
+Today's linux-next merge of the rdma tree got a conflict in:
 
+  drivers/infiniband/sw/rxe/rxe_net.c
 
+between commit:
 
+  f1b0a8ea9f12 ("Revert "RDMA/rxe: Remove VLAN code leftovers from RXE"")
+
+from Linus' tree and commit:
+
+  899aba891cab ("RDMA/rxe: Fix FIXME in rxe_udp_encap_recv()")
+
+from the rdma tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This is now f=
+ixed as far as linux-next is concerned, but any non trivial conflicts shoul=
+d be mentioned to your upstream maintainer when your tree is submitted for =
+merging.  You may also want to consider cooperating with the maintainer of =
+the conflicting tree to minimise any particularly complex conflicts.
+
+--
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/infiniband/sw/rxe/rxe_net.c
+index 943914c2a50c,36d56163afac..000000000000
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@@ -153,15 -152,14 +153,19 @@@ static struct dst_entry *rxe_find_route
+  static int rxe_udp_encap_recv(struct sock *sk, struct sk_buff *skb)
+  {
+  	struct udphdr *udph;
++ 	struct rxe_dev *rxe;
+  	struct net_device *ndev =3D skb->dev;
+ +	struct net_device *rdev =3D ndev;
+- 	struct rxe_dev *rxe =3D rxe_get_dev_from_net(ndev);
+  	struct rxe_pkt_info *pkt =3D SKB_TO_PKT(skb);
+ =20
++ 	/* takes a reference on rxe->ib_dev
++ 	 * drop when skb is freed
++ 	 */
++ 	rxe =3D rxe_get_dev_from_net(ndev);
+ +	if (!rxe && is_vlan_dev(rdev)) {
+ +		rdev =3D vlan_dev_real_dev(ndev);
+ +		rxe =3D rxe_get_dev_from_net(rdev);
+ +	}
+  	if (!rxe)
+  		goto drop;
+ =20
