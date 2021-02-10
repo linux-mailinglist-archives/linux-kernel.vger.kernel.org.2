@@ -2,160 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A08316B39
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 367D7316B4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbhBJQ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:29:37 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:10676 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbhBJQ3N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:29:13 -0500
-Date:   Wed, 10 Feb 2021 16:28:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612974508; bh=o4T7iSQYleBEuIFv05CFvm501rCgWuFs++fo+TxXVYs=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=FwZtDlvRMPdMCwmp0GVTgOOGQZTCHaeGCYTE2bPjIFoBGKYkvJXpYtN+EExmUwtUk
-         OHU2gvKKZMWsp6wxDC0AaKvQeDHspUgfeUu5hes7ReSdv+rz+X0WzsGNjKxf2hPKHR
-         7zDNRXuCY0+a3C+aujaYKYz0iuvJiORLxSb2ocF+GilyzS1mXFgsBjAwoEH4bRNP+k
-         0Jvaspult0o2PTGOC9J4ZCVulE23cxmwsAa8KW7Uv13ptctKWOUoXeCPT6jM5hnCBt
-         5lyq/MDURpFhlxJHdnt5WOL1ndew4C3jNU9LKXkE9qBxD57kTKOb6B0pjDmb7RvYAz
-         QGXKKWcjTJguA==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Florian Westphal <fw@strlen.de>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v4 net-next 00/11] skbuff: introduce skbuff_heads bulking and reusing
-Message-ID: <20210210162732.80467-1-alobakin@pm.me>
+        id S232428AbhBJQcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:32:22 -0500
+Received: from mga17.intel.com ([192.55.52.151]:21921 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232364AbhBJQaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:30:23 -0500
+IronPort-SDR: vDV47naPH2tmizffjjgZfuwfXdZ7T13DM9mOMyfV7uZyJ85eOkCYCy2c5EDzhAp1dJaBfqzWFO
+ j1Rjv48MP7dw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="161854858"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="161854858"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:28:37 -0800
+IronPort-SDR: q0VrK3w0bojpUzssjCNrgIEQvGfvmpaz24XNAH6SWOs2yBhe9GBqNbQWGaUSwYSQt9j0zDX67x
+ JM0KRueGJHlA==
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="578463104"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:28:34 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l9sLv-003lqx-4Q; Wed, 10 Feb 2021 18:28:31 +0200
+Date:   Wed, 10 Feb 2021 18:28:31 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH 4/8] lib: bitmap: move ERANGE check from set_region to
+ check_region
+Message-ID: <YCQJr8iRDiiZJQpF@smile.fi.intel.com>
+References: <20210209225907.78405-1-paul.gortmaker@windriver.com>
+ <20210209225907.78405-5-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209225907.78405-5-paul.gortmaker@windriver.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, all sorts of skb allocation always do allocate
-skbuff_heads one by one via kmem_cache_alloc().
-On the other hand, we have percpu napi_alloc_cache to store
-skbuff_heads queued up for freeing and flush them by bulks.
+On Tue, Feb 09, 2021 at 05:59:03PM -0500, Paul Gortmaker wrote:
+> It makes sense to do all the checks in check_region() and not 1/2
+> in check_region and 1/2 in set_region.
+> 
+> Since set_region is called immediately after check_region, the net
+> effect on runtime is zero, but it gets rid of an if (...) return...
 
-We can use this cache not only for bulk-wiping, but also to obtain
-heads for new skbs and avoid unconditional allocations, as well as
-for bulk-allocating (like XDP's cpumap code and veth driver already
-do).
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-As this might affect latencies, cache pressure and lots of hardware
-and driver-dependent stuff, this new feature is mostly optional and
-can be issued via:
- - a new napi_build_skb() function (as a replacement for build_skb());
- - existing {,__}napi_alloc_skb() and napi_get_frags() functions;
- - __alloc_skb() with passing SKB_ALLOC_NAPI in flags.
+> Cc: Yury Norov <yury.norov@gmail.com>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Acked-by: Yury Norov <yury.norov@gmail.com>
+> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> ---
+>  lib/bitmap.c | 19 +++++++------------
+>  1 file changed, 7 insertions(+), 12 deletions(-)
+> 
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 75006c4036e9..9596ba53c36b 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -499,25 +499,22 @@ struct region {
+>  	unsigned int end;
+>  };
+>  
+> -static int bitmap_set_region(const struct region *r,
+> -				unsigned long *bitmap, int nbits)
+> +static void bitmap_set_region(const struct region *r, unsigned long *bitmap)
+>  {
+>  	unsigned int start;
+>  
+> -	if (r->end >= nbits)
+> -		return -ERANGE;
+> -
+>  	for (start = r->start; start <= r->end; start += r->group_len)
+>  		bitmap_set(bitmap, start, min(r->end - start + 1, r->off));
+> -
+> -	return 0;
+>  }
+>  
+> -static int bitmap_check_region(const struct region *r)
+> +static int bitmap_check_region(const struct region *r, int nbits)
+>  {
+>  	if (r->start > r->end || r->group_len == 0 || r->off > r->group_len)
+>  		return -EINVAL;
+>  
+> +	if (r->end >= nbits)
+> +		return -ERANGE;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -651,13 +648,11 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+>  		if (IS_ERR(buf))
+>  			return PTR_ERR(buf);
+>  
+> -		ret = bitmap_check_region(&r);
+> +		ret = bitmap_check_region(&r, nmaskbits);
+>  		if (ret)
+>  			return ret;
+>  
+> -		ret = bitmap_set_region(&r, maskp, nmaskbits);
+> -		if (ret)
+> -			return ret;
+> +		bitmap_set_region(&r, maskp);
+>  	}
+>  
+>  	return 0;
+> -- 
+> 2.17.1
+> 
 
-iperf3 showed 35-70 Mbps bumps for both TCP and UDP while performing
-VLAN NAT on 1.2 GHz MIPS board. The boost is likely to be bigger
-on more powerful hosts and NICs with tens of Mpps.
-
-Note on skbuff_heads from distant slabs or pfmemalloc'ed slabs:
- - kmalloc()/kmem_cache_alloc() itself allows by default allocating
-   memory from the remote nodes to defragment their slabs. This is
-   controlled by sysctl, but according to this, skbuff_head from a
-   remote node is an OK case;
- - The easiest way to check if the slab of skbuff_head is remote or
-   pfmemalloc'ed is:
-
-=09if (!dev_page_is_reusable(virt_to_head_page(skb)))
-=09=09/* drop it */;
-
-   ...*but*, regarding that most slabs are built of compound pages,
-   virt_to_head_page() will hit unlikely-branch every single call.
-   This check costed at least 20 Mbps in test scenarios and seems
-   like it'd be better to _not_ do this.
-
-Since v3 [2]:
- - make the feature mostly optional, so driver developers could
-   decide whether to use it or not (Paolo Abeni).
-   This reuses the old flag for __alloc_skb() and introduces
-   a new napi_build_skb();
- - reduce bulk-allocation size from 32 to 16 elements (also Paolo).
-   This equals to the value of XDP's devmap and veth batch processing
-   (which were tested a lot) and should be sane enough;
- - don't waste cycles on explicit in_serving_softirq() check.
-
-Since v2 [1]:
- - also cover {,__}alloc_skb() and {,__}build_skb() cases (became handy
-   after the changes that pass tiny skbs requests to kmalloc layer);
- - cover the cache with KASAN instrumentation (suggested by Eric
-   Dumazet, help of Dmitry Vyukov);
- - completely drop redundant __kfree_skb_flush() (also Eric);
- - lots of code cleanups;
- - expand the commit message with NUMA and pfmemalloc points (Jakub).
-
-Since v1 [0]:
- - use one unified cache instead of two separate to greatly simplify
-   the logics and reduce hotpath overhead (Edward Cree);
- - new: recycle also GRO_MERGED_FREE skbs instead of immediate
-   freeing;
- - correct performance numbers after optimizations and performing
-   lots of tests for different use cases.
-
-[0] https://lore.kernel.org/netdev/20210111182655.12159-1-alobakin@pm.me
-[1] https://lore.kernel.org/netdev/20210113133523.39205-1-alobakin@pm.me
-[2] https://lore.kernel.org/netdev/20210209204533.327360-1-alobakin@pm.me
-
-Alexander Lobakin (11):
-  skbuff: move __alloc_skb() next to the other skb allocation functions
-  skbuff: simplify kmalloc_reserve()
-  skbuff: make __build_skb_around() return void
-  skbuff: simplify __alloc_skb() a bit
-  skbuff: use __build_skb_around() in __alloc_skb()
-  skbuff: remove __kfree_skb_flush()
-  skbuff: move NAPI cache declarations upper in the file
-  skbuff: introduce {,__}napi_build_skb() which reuses NAPI cache heads
-  skbuff: allow to optionally use NAPI cache from __alloc_skb()
-  skbuff: allow to use NAPI cache from __napi_alloc_skb()
-  skbuff: queue NAPI_MERGED_FREE skbs into NAPI cache instead of freeing
-
- include/linux/skbuff.h |   4 +-
- net/core/dev.c         |  15 +-
- net/core/skbuff.c      | 429 +++++++++++++++++++++++------------------
- 3 files changed, 243 insertions(+), 205 deletions(-)
-
---=20
-2.30.1
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
