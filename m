@@ -2,358 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380073166D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3382E3166DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhBJMfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:35:09 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:64782 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231812AbhBJMcF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:32:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612960324; x=1644496324;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SO7PnQcQJ3brzaSnIG7oy+PGOYQzMMkRO1glIKCB4Gw=;
-  b=QgopBbR45+AUBWtur5kD4/sEcJAk6w2EmRcatzQM0UYMQzfBBMj7rH0E
-   fpQ7WvbClMY3aEe56jzrOMAPaim/zoA3nIgKJ+rvtbRWUqICZ4c13l9L2
-   TBxZLnWg4tsUlvVwyJtdBaILABrSR4Pkt0CQU8VfcHxi2j0BWuiVrwaQP
-   DWxtQXPYktGlWeHqU2CRkiRnb5pzIepIf6Q8Im7eoXrCV0wKo0vS5ia5k
-   N1haHtpwQaPjvCWEkIzN8MeN/Z/KjjHbNn3odb2KxKXASwdcsoPi+C/y8
-   QFkcyAHf4enYCigxgo/vx0Gyp0DdjST/OH+FR1zjFpvuMT1sSzigGEdIs
-   w==;
-IronPort-SDR: 6awY9cD4rgba1abvf2itvrwQML2cIf5BZBu+KG+tBpErpkVEaw03otQmSf1Htdl5UoARRa7/Hf
- x4q9N9xv5vatJz5rlTG6tM2wLybi15gQYKJsEb+7GkIDD96xVUK3Fvp73GNY2E4KcKkxPrV5NM
- OIlV+j6WhfYL1PpQafG9EVE1fMyPOnd9OWrhqMxVrEKJHexX+BgSDKyNAIh4Pvef951Qjy7EHZ
- yCDPvp9Hqb3F0PvUjC2X2GuNlsBoVrSv8zwvoqaFQs62W2tW5sxcgDRKbj7rNfFnVvD01Jumcr
- R94=
-X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
-   d="scan'208";a="43621032"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 05:30:41 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 10 Feb 2021 05:30:41 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 10 Feb 2021 05:30:41 -0700
-Date:   Wed, 10 Feb 2021 13:30:40 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     "jiri@resnulli.us" <jiri@resnulli.us>,
-        "ivecera@redhat.com" <ivecera@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "roopa@nvidia.com" <roopa@nvidia.com>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>,
-        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "Claudiu Manoil" <claudiu.manoil@nxp.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH net-next v3 5/5] net: mscc: ocelot: Add support for MRP
-Message-ID: <20210210123040.rz2whrtx35s6gbv5@soft-dev3.localdomain>
-References: <20210209202112.2545325-1-horatiu.vultur@microchip.com>
- <20210209202112.2545325-6-horatiu.vultur@microchip.com>
- <20210210101802.6ztf6c3ifldfa5fw@skbuf>
+        id S231620AbhBJMha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:37:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:36866 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231860AbhBJMfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:35:11 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8392D6E;
+        Wed, 10 Feb 2021 04:33:57 -0800 (PST)
+Received: from [10.57.47.61] (unknown [10.57.47.61])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D45BE3F73D;
+        Wed, 10 Feb 2021 04:33:55 -0800 (PST)
+Subject: Re: [PATCH V3 06/14] dts: bindings: Document device tree bindings for
+ ETE
+To:     Rob Herring <robh@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        lcherian@marvell.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-7-git-send-email-anshuman.khandual@arm.com>
+ <20210209190031.GA4102836@robh.at.kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <4d0e6b88-72c2-be23-f43a-3f541f9ebb86@arm.com>
+Date:   Wed, 10 Feb 2021 12:33:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20210210101802.6ztf6c3ifldfa5fw@skbuf>
+In-Reply-To: <20210209190031.GA4102836@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 02/10/2021 10:18, Vladimir Oltean wrote:
+Hi Rob
 
-Hi Vladimir,
+On 2/9/21 7:00 PM, Rob Herring wrote:
+> On Wed, Jan 27, 2021 at 02:25:30PM +0530, Anshuman Khandual wrote:
+>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>
+>> Document the device tree bindings for Embedded Trace Extensions.
+>> ETE can be connected to legacy coresight components and thus
+>> could optionally contain a connection graph as described by
+>> the CoreSight bindings.
+>>
+>> Cc: devicetree@vger.kernel.org
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Rob Herring <robh@kernel.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> Changes in V3:
+>>
+>> - Fixed all DT yaml semantics problems
+>>
+>>   Documentation/devicetree/bindings/arm/ete.yaml | 74 ++++++++++++++++++++++++++
+>>   1 file changed, 74 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/ete.yaml b/Documentation/devicetree/bindings/arm/ete.yaml
+>> new file mode 100644
+>> index 0000000..edc1fe2
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/ete.yaml
+>> @@ -0,0 +1,74 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+>> +# Copyright 2021, Arm Ltd
+>> +%YAML 1.2
+>> +---
+>> +$id: "http://devicetree.org/schemas/arm/ete.yaml#"
+>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>> +
+>> +title: ARM Embedded Trace Extensions
+>> +
+>> +maintainers:
+>> +  - Suzuki K Poulose <suzuki.poulose@arm.com>
+>> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
+>> +
+>> +description: |
+>> +  Arm Embedded Trace Extension(ETE) is a per CPU trace component that
+>> +  allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
+>> +  architecture and has extended support for future architecture changes.
+>> +  The trace generated by the ETE could be stored via legacy CoreSight
+>> +  components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
+>> +  Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
+>> +  legacy CoreSight components, a node must be listed per instance, along
+>> +  with any optional connection graph as per the coresight bindings.
+>> +  See bindings/arm/coresight.txt.
+>> +
+>> +properties:
+>> +  $nodename:
+>> +    pattern: "^ete([0-9a-f]+)$"
+>> +  compatible:
+>> +    items:
+>> +      - const: arm,embedded-trace-extension
+>> +
+>> +  cpu:
+> 
+> We've already established 'cpus' for this purpose.
+> 
+
+Please see : https://lkml.kernel.org/r/9417218b-6eda-373b-a2cb-869089ffc7cd@arm.com
+for my response in the previous version to this and the one with out-ports.
+
+>> +    description: |
+>> +      Handle to the cpu this ETE is bound to.
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +
+>> +  out-ports:
+>> +    type: object
+> 
+> Replace with: $ref: /schemas/graph.yaml#/properties/ports
+
+So, just to confirm again :
+The CoreSight graph bindings expect the input ports and output ports
+grouped under in-ports{} and out-ports{} respectively to avoid having
+to specify the direction of the ports in the individual "port" nodes.
+i.e
+
+in-ports {
+
+	property: ports
+	  OR
+	property: port
+
+	required:
+		OneOf:
+			ports
+			port
+}
+
+out-ports {
+
+	# same as above
+}
+
+So thats why I added out-ports as a new object, where the ports/port
+could be a child node.
+
+Ideally the definition of out-ports /in-ports should go to a common schema
+for CoreSight bindings, when we move to Yaml for the existing bindings,
+which will follow in a separate series, later.
 
 > 
-> Would you mind adding the switchdev MRP support for the DSA driver too,
-> and move the code to the common ocelot library? I would like to give it
-> a run. I think that's only fair, since I have to keep in sync the
-> vsc7514 driver too for features that get added through DSA :)
-
-That is totally fair. I will do it in the next version :)
-
+>> +    description: |
+>> +      Output connections from the ETE to legacy CoreSight trace bus.
+>> +    properties:
+>> +      port:
+>> +        $ref: /schemas/graph.yaml#/properties/port
 > 
-> On Tue, Feb 09, 2021 at 09:21:12PM +0100, Horatiu Vultur wrote:
-> > Add basic support for MRP. The HW will just trap all MRP frames on the
-> > ring ports to CPU and allow the SW to process them. In this way it is
-> > possible to for this node to behave both as MRM and MRC.
-> >
-> > Current limitations are:
-> > - it doesn't support Interconnect roles.
-> > - it supports only a single ring.
-> > - the HW should be able to do forwarding of MRP Test frames so the SW
-> >   will not need to do this. So it would be able to have the role MRC
-> >   without SW support.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  drivers/net/ethernet/mscc/ocelot_net.c     | 154 +++++++++++++++++++++
-> >  drivers/net/ethernet/mscc/ocelot_vsc7514.c |   6 +
-> >  include/soc/mscc/ocelot.h                  |   6 +
-> >  3 files changed, 166 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/ethernet/mscc/ocelot_net.c
-> > index 8f12fa45b1b5..65971403e823 100644
-> > --- a/drivers/net/ethernet/mscc/ocelot_net.c
-> > +++ b/drivers/net/ethernet/mscc/ocelot_net.c
-> > @@ -9,7 +9,10 @@
-> >   */
-> >
-> >  #include <linux/if_bridge.h>
-> > +#include <linux/mrp_bridge.h>
-> >  #include <net/pkt_cls.h>
-> > +#include <soc/mscc/ocelot_vcap.h>
-> > +#include <uapi/linux/mrp_bridge.h>
-> >  #include "ocelot.h"
-> >  #include "ocelot_vcap.h"
-> >
-> > @@ -1069,6 +1072,139 @@ static int ocelot_port_obj_del_mdb(struct net_device *dev,
-> >       return ocelot_port_mdb_del(ocelot, port, mdb);
-> >  }
-> >
-> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
-> > +static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int port)
-> > +{
-> > +     struct ocelot_vcap_block *block_vcap_is2;
-> > +     struct ocelot_vcap_filter *filter;
-> > +
-> > +     block_vcap_is2 = &ocelot->block[VCAP_IS2];
-> > +     filter = ocelot_vcap_block_find_filter_by_id(block_vcap_is2, port,
-> > +                                                  false);
-> > +     if (!filter)
-> > +             return 0;
-> > +
-> > +     return ocelot_vcap_filter_del(ocelot, filter);
-> > +}
-> > +
-> > +static int ocelot_add_mrp(struct net_device *dev,
-> > +                       const struct switchdev_obj_mrp *mrp)
-> > +{
-> > +     struct ocelot_port_private *priv = netdev_priv(dev);
-> > +     struct ocelot_port *ocelot_port = &priv->port;
-> > +     struct ocelot *ocelot = ocelot_port->ocelot;
-> > +
-> > +     if (mrp->p_port != dev && mrp->s_port != dev)
-> > +             return 0;
-> > +
-> > +     if (ocelot->mrp_ring_id != 0 &&
-> > +         ocelot->mrp_s_port &&
-> > +         ocelot->mrp_p_port)
-> > +             return -EINVAL;
-> > +
-> > +     if (mrp->p_port == dev)
-> > +             ocelot->mrp_p_port = dev;
-> > +
-> > +     if (mrp->s_port == dev)
-> > +             ocelot->mrp_s_port = dev;
-> > +
-> > +     ocelot->mrp_ring_id = mrp->ring_id;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int ocelot_del_mrp(struct net_device *dev,
-> > +                       const struct switchdev_obj_mrp *mrp)
-> > +{
-> > +     struct ocelot_port_private *priv = netdev_priv(dev);
-> > +     struct ocelot_port *ocelot_port = &priv->port;
-> > +     struct ocelot *ocelot = ocelot_port->ocelot;
-> > +
-> > +     if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
-> > +             return 0;
-> > +
-> > +     if (ocelot->mrp_ring_id == 0 &&
-> > +         !ocelot->mrp_s_port &&
-> > +         !ocelot->mrp_p_port)
-> > +             return -EINVAL;
-> > +
-> > +     if (ocelot_mrp_del_vcap(ocelot, priv->chip_port))
-> > +             return -EINVAL;
-> > +
-> > +     if (ocelot->mrp_p_port == dev)
-> > +             ocelot->mrp_p_port = NULL;
-> > +
-> > +     if (ocelot->mrp_s_port == dev)
-> > +             ocelot->mrp_s_port = NULL;
-> > +
-> > +     ocelot->mrp_ring_id = 0;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int ocelot_add_ring_role(struct net_device *dev,
-> > +                             const struct switchdev_obj_ring_role_mrp *mrp)
-> > +{
-> > +     struct ocelot_port_private *priv = netdev_priv(dev);
-> > +     struct ocelot_port *ocelot_port = &priv->port;
-> > +     struct ocelot *ocelot = ocelot_port->ocelot;
-> > +     struct ocelot_vcap_filter *filter;
-> > +     int err;
-> > +
-> > +     if (ocelot->mrp_ring_id != mrp->ring_id)
-> > +             return -EINVAL;
-> > +
-> > +     if (!mrp->sw_backup)
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
-> > +             return 0;
-> > +
-> > +     filter = kzalloc(sizeof(*filter), GFP_KERNEL);
-> > +     if (!filter)
-> > +             return -ENOMEM;
-> > +
-> > +     filter->key_type = OCELOT_VCAP_KEY_ETYPE;
-> > +     filter->prio = 1;
-> > +     filter->id.cookie = priv->chip_port;
-> > +     filter->id.tc_offload = false;
-> > +     filter->block_id = VCAP_IS2;
-> > +     filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
-> > +     filter->ingress_port_mask = BIT(priv->chip_port);
-> > +     *(__be16 *)filter->key.etype.etype.value = htons(ETH_P_MRP);
-> > +     *(__be16 *)filter->key.etype.etype.mask = htons(0xffff);
-> > +     filter->action.mask_mode = OCELOT_MASK_MODE_PERMIT_DENY;
-> > +     filter->action.port_mask = 0x0;
-> > +     filter->action.cpu_copy_ena = true;
-> > +     filter->action.cpu_qu_num = 0;
-> > +
-> > +     err = ocelot_vcap_filter_add(ocelot, filter, NULL);
-> > +     if (err)
-> > +             kfree(filter);
-> > +
-> > +     return err;
-> > +}
-> > +
-> > +static int ocelot_del_ring_role(struct net_device *dev,
-> > +                             const struct switchdev_obj_ring_role_mrp *mrp)
-> > +{
-> > +     struct ocelot_port_private *priv = netdev_priv(dev);
-> > +     struct ocelot_port *ocelot_port = &priv->port;
-> > +     struct ocelot *ocelot = ocelot_port->ocelot;
-> > +
-> > +     if (ocelot->mrp_ring_id != mrp->ring_id)
-> > +             return -EINVAL;
-> > +
-> > +     if (!mrp->sw_backup)
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
-> > +             return 0;
-> > +
-> > +     return ocelot_mrp_del_vcap(ocelot, priv->chip_port);
-> > +}
-> > +#endif
-> > +
+> Actually, if only 1 port ever, you can drop 'out-ports' and just have
+> 'port'. Not sure though if the coresight stuff depends on 'out-ports'.
 > 
-> Would it make sense for this chunk of conditionally compiled code to
-> stay in a separate file like ocelot_mrp.c?
 
-Also initially I was thinking to add this code in a different file but I
-was not sure. But I will do that in the next version.
-
-> 
-> >  static int ocelot_port_obj_add(struct net_device *dev,
-> >                              const struct switchdev_obj *obj,
-> >                              struct netlink_ext_ack *extack)
-> > @@ -1083,6 +1219,15 @@ static int ocelot_port_obj_add(struct net_device *dev,
-> >       case SWITCHDEV_OBJ_ID_PORT_MDB:
-> >               ret = ocelot_port_obj_add_mdb(dev, SWITCHDEV_OBJ_PORT_MDB(obj));
-> >               break;
-> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
-> > +     case SWITCHDEV_OBJ_ID_MRP:
-> > +             ret = ocelot_add_mrp(dev, SWITCHDEV_OBJ_MRP(obj));
-> > +             break;
-> > +     case SWITCHDEV_OBJ_ID_RING_ROLE_MRP:
-> > +             ret = ocelot_add_ring_role(dev,
-> > +                                        SWITCHDEV_OBJ_RING_ROLE_MRP(obj));
-> > +             break;
-> > +#endif
-> 
-> I'm not really sure why SWITCHDEV_OBJ_ID_MRP is conditionally defined.
-> If you look at SWITCHDEV_ATTR_ID_BRIDGE_VLAN_FILTERING, that isn't
-> conditionally defined, even though it depends on CONFIG_BRIDGE_VLAN_FILTERING
-> at runtime.
-
-Then should I just create another patch for removing this? To be honest
-I also prefer that SWITCHDEV_OBJ_ID_MRP will not be conditionally
-defined.
-
-> 
-> >       default:
-> >               return -EOPNOTSUPP;
-> >       }
-> > @@ -1103,6 +1248,15 @@ static int ocelot_port_obj_del(struct net_device *dev,
-> >       case SWITCHDEV_OBJ_ID_PORT_MDB:
-> >               ret = ocelot_port_obj_del_mdb(dev, SWITCHDEV_OBJ_PORT_MDB(obj));
-> >               break;
-> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
-> > +     case SWITCHDEV_OBJ_ID_MRP:
-> > +             ret = ocelot_del_mrp(dev, SWITCHDEV_OBJ_MRP(obj));
-> > +             break;
-> > +     case SWITCHDEV_OBJ_ID_RING_ROLE_MRP:
-> > +             ret = ocelot_del_ring_role(dev,
-> > +                                        SWITCHDEV_OBJ_RING_ROLE_MRP(obj));
-> > +             break;
-> > +#endif
-> >       default:
-> >               return -EOPNOTSUPP;
-> >       }
-> > diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
-> > index 6b6eb92149ba..96a9c9f98060 100644
-> > --- a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
-> > +++ b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
-> > @@ -698,6 +698,12 @@ static irqreturn_t ocelot_xtr_irq_handler(int irq, void *arg)
-> >                       skb->offload_fwd_mark = 1;
-> >
-> >               skb->protocol = eth_type_trans(skb, dev);
-> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
-> > +             if (skb->protocol == ntohs(ETH_P_MRP) &&
-> > +                 (priv->dev == ocelot->mrp_p_port ||
-> > +                  priv->dev == ocelot->mrp_s_port))
-> > +                     skb->offload_fwd_mark = 0;
-> > +#endif
-> 
-> I wonder if you could just reserve a certain CPUQ for trapped traffic,
-> and just generically check for that, instead of MRP port roles?
-
-That is a good idea, I would try to have a look.
-
-> 
-> >               if (!skb_defer_rx_timestamp(skb))
-> >                       netif_rx(skb);
-> >               dev->stats.rx_bytes += len;
-> > diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
-> > index d0d48e9620fb..d95c019ad84e 100644
-> > --- a/include/soc/mscc/ocelot.h
-> > +++ b/include/soc/mscc/ocelot.h
-> > @@ -682,6 +682,12 @@ struct ocelot {
-> >       /* Protects the PTP clock */
-> >       spinlock_t                      ptp_clock_lock;
-> >       struct ptp_pin_desc             ptp_pins[OCELOT_PTP_PINS_NUM];
-> > +
-> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
-> > +     u16                             mrp_ring_id;
-> > +     struct net_device               *mrp_p_port;
-> > +     struct net_device               *mrp_s_port;
-> > +#endif
-> >  };
-> >
-> >  struct ocelot_policer {
-> > --
-> > 2.27.0
-> >
-
--- 
-/Horatiu
+Cheers
+Suzuki
