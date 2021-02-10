@@ -2,130 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73759317291
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70179317287
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbhBJVlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:41:46 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16110 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233189AbhBJVlh (ORCPT
+        id S233117AbhBJVlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:41:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233070AbhBJVk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:41:37 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11ALWRbh160883;
-        Wed, 10 Feb 2021 16:40:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=o6TuZSQpcdPy3WLJuSm6eQE5aim7yVvdU9t1MZ9OKtY=;
- b=fLVuTXw5GB0xrlUk9+oUdcgS4Vi41lMR5mxO36IQgNnpvqXZUxXWqWGdeA0m5zvj2Scq
- +udTAdoJOtISM3SBU9htGICE/uGZMMeAza8AluFqtfMB6Z1KD/2lqwHIVs/Ldt0qVzQy
- 6T0qn1V/WUUPT1gqzHKvo8/YQhXm2vVLM1YokVqNYWHUXOT/Doel3iHglMPxEzVmPj1v
- dlLbS2J5sBWqKNlYfhgyBlE8ZY/Ucl8amu08c55zvJ2oiy8PqOPxyXi8g4lPez/Dj9Y3
- os136pOS/Ct+2LPLeGZYnITaB4OQe5LhdP9VRAmEznVx/zQM+omj1OKehdCf+VMC9oD6 Jw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36mqff0b67-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 16:40:08 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11ALWXwH161540;
-        Wed, 10 Feb 2021 16:40:07 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36mqff0b4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 16:40:07 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11ALQwK2018691;
-        Wed, 10 Feb 2021 21:40:05 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 36hskb2jk4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 21:40:05 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11ALe2Oq42926414
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 21:40:03 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CECA211C05E;
-        Wed, 10 Feb 2021 21:40:02 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A2C2111C04A;
-        Wed, 10 Feb 2021 21:39:56 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.111.148])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 10 Feb 2021 21:39:56 +0000 (GMT)
-Message-ID: <594445d01e085875b97b46be726247f89d1e6661.camel@linux.ibm.com>
-Subject: Re: [PATCH v17 00/10] Carry forward IMA measurement log on kexec on
- ARM64
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Rob Herring <robh@kernel.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Date:   Wed, 10 Feb 2021 16:39:55 -0500
-In-Reply-To: <cf7930239b93044a1be353556b7dc730e024f658.camel@linux.ibm.com>
-References: <20210209182200.30606-1-nramas@linux.microsoft.com>
-         <20210210171500.GA2328209@robh.at.kernel.org>
-         <5c002c32-bc49-acda-c641-7b1494ea292d@linux.microsoft.com>
-         <CAL_JsqLmdqfFF8u=dE+dQz+6ngv=moWkQF8tpZjUCX-vHuvU_w@mail.gmail.com>
-         <cf7930239b93044a1be353556b7dc730e024f658.camel@linux.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_10:2021-02-10,2021-02-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 impostorscore=0
- mlxscore=0 bulkscore=0 adultscore=0 spamscore=0 clxscore=1015
- mlxlogscore=999 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102100186
+        Wed, 10 Feb 2021 16:40:56 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECF6C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:40:16 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id f1so5153052lfu.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:40:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t3rOxORmTTCbIAKBE30ARmmobyqtgzrjYpNHhtkidOE=;
+        b=z2RUQyCoEFbR6ar1QCQ4MrUppPpfYruz2FfwmwWxgDNDqVjz0v4pOeV7c9GtKfTSlh
+         BkJmwRqO97qKTL6KiMTyNKBwROvtAbJcrR2wR+TKCsdqh2/ZcLuZK0X0LZgMP4yiKPHk
+         nTM+LE3lxJk0mCTNbV6ea145CugmD1VjnpJTejkrHOhByohqzhxJ8su0rR38+L+vi4cy
+         5WU6jHeeRL9L7E2opNwF/2UxBNnLuDY3HwylaoWFo88DtOhqMehztH0DmiyxFffTFxiW
+         8Bi33TMxwPl7kJi9gG8Mga6t+BwB4im1t16MBUFLIzqGnzCTizrSCO84EYvaF1e7a6/f
+         ezdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t3rOxORmTTCbIAKBE30ARmmobyqtgzrjYpNHhtkidOE=;
+        b=WDVjuyYCd6azaMSR7o+pGowmNDC3kxZAOH+7+yCDfvJCOGbdsUmaUsxteGIU9yk8zP
+         R/7Pa+3ySXA6+nVNRynrBtEiCx5qcveg8R0OYrlurZLZ2bhdY6nMF1SVKvPXnVNlZm96
+         DdoBjy2e0aNpg+q6bfZSmxNFaDrblQB+9qOX5raHmjf0sCbyOWTFgza3LZ1HAxWs/vAH
+         shOcSz8xdwCCQ71wogylywISm7/EHMkKBzudq8ccT12Ys35LtTL4ZzByOBZ8ZYwmFG1l
+         BbLxQ0v5djdP1f0Fz0FNOsPCavc/mdI92r0ccFUNQ24dtu0wOMdhUbVoqfai/AXrq8dg
+         w9tA==
+X-Gm-Message-State: AOAM531YSbss/Prva6lcs8Vn8EIyx+nyEiqEIFahj7QVs0eO07yVIgBG
+        pq/Gy/Dcc1L5ScU6k/CvcnQiNbacjqb0WXzkx47P9Rvcwhlp2g==
+X-Google-Smtp-Source: ABdhPJxHKOlZvw1uNHBu1LiQCG7sqj6bBQIAgOsJ/ZeT5hM2cc4YoGFZFtU/UXFQlpAYtWMUstHwLqvdWVrmSF8AXjc=
+X-Received: by 2002:a19:7603:: with SMTP id c3mr2683294lff.508.1612993214315;
+ Wed, 10 Feb 2021 13:40:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20210210162632.3903128-1-minchan@kernel.org> <CALAqxLXzc3tfsr0hA6GS-zHjupWx++Bhcrs2pjbz00LNKeThOQ@mail.gmail.com>
+ <YCQcfYRQ3eW+QiMz@google.com>
+In-Reply-To: <YCQcfYRQ3eW+QiMz@google.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 10 Feb 2021 13:40:02 -0800
+Message-ID: <CALAqxLUaiOOrC6kWYSj1yg6qed32rQhfN4k99HNgn_=0kpFRJw@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: system_heap: do not warn for costly allocation
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        John Dias <joaodias@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-10 at 15:55 -0500, Mimi Zohar wrote:
-> On Wed, 2021-02-10 at 14:42 -0600, Rob Herring wrote:
-> > On Wed, Feb 10, 2021 at 11:33 AM Lakshmi Ramasubramanian
-> 
-> > Ideally, we don't apply the same patch in 2 branches. It looks like
-> > there's a conflict but no real dependence on the above patch (the
-> > ima_buffer part). The conflict seems trivial enough that Linus can
-> > resolve it in the merge window.
-> > 
-> > Or Mimi can take the whole thing if preferred?
-> 
-> How about I create a topic branch with just the two patches, allowing
-> both of us to merge it?   There shouldn't be a problem with re-writing
-> next-integrity history.
+On Wed, Feb 10, 2021 at 9:48 AM Minchan Kim <minchan@kernel.org> wrote:
+>
+> On Wed, Feb 10, 2021 at 09:32:09AM -0800, John Stultz wrote:
+> > On Wed, Feb 10, 2021 at 8:26 AM Minchan Kim <minchan@kernel.org> wrote:
+> > >
+> > > Linux VM is not hard to support PAGE_ALLOC_COSTLY_ODER allocation
+> > > so normally expects driver passes __GFP_NOWARN in that case
+> > > if they has fallback options.
+> > >
+> > > system_heap in dmabuf is the case so do not flood into demsg
+> > > with the warning for recording more precious information logs.
+> > > (below is ION warning example I got but dmabuf system heap is
+> > > nothing different).
+> > >
+> > > [ 1233.911533][  T460] warn_alloc: 11 callbacks suppressed
+> > > [ 1233.911539][  T460] allocator@2.0-s: page allocation failure: order:4, mode:0x140dc2(GFP_HIGHUSER|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
+> > > [ 1233.926235][  T460] Call trace:
+> > > [ 1233.929370][  T460]  dump_backtrace+0x0/0x1d8
+> > > [ 1233.933704][  T460]  show_stack+0x18/0x24
+> > > [ 1233.937701][  T460]  dump_stack+0xc0/0x140
+> > > [ 1233.941783][  T460]  warn_alloc+0xf4/0x148
+> > > [ 1233.945862][  T460]  __alloc_pages_slowpath+0x9fc/0xa10
+> > > [ 1233.951101][  T460]  __alloc_pages_nodemask+0x278/0x2c0
+> > > [ 1233.956285][  T460]  ion_page_pool_alloc+0xd8/0x100
+> > > [ 1233.961144][  T460]  ion_system_heap_allocate+0xbc/0x2f0
+> > > [ 1233.966440][  T460]  ion_buffer_create+0x68/0x274
+> > > [ 1233.971130][  T460]  ion_buffer_alloc+0x8c/0x110
+> > > [ 1233.975733][  T460]  ion_dmabuf_alloc+0x44/0xe8
+> > > [ 1233.980248][  T460]  ion_ioctl+0x100/0x320
+> > > [ 1233.984332][  T460]  __arm64_sys_ioctl+0x90/0xc8
+> > > [ 1233.988934][  T460]  el0_svc_common+0x9c/0x168
+> > > [ 1233.993360][  T460]  do_el0_svc+0x1c/0x28
+> > > [ 1233.997358][  T460]  el0_sync_handler+0xd8/0x250
+> > > [ 1234.001989][  T460]  el0_sync+0x148/0x180
+> > >
+> > > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > > ---
+> > >  drivers/dma-buf/heaps/system_heap.c | 9 +++++++--
+> > >  1 files changed, 7 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> > > index 29e49ac17251..33c25a5e06f9 100644
+> > > --- a/drivers/dma-buf/heaps/system_heap.c
+> > > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > > @@ -40,7 +40,7 @@ struct dma_heap_attachment {
+> > >         bool mapped;
+> > >  };
+> > >
+> > > -#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
+> > > +#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO \
+> > >                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+> > >                                 | __GFP_COMP)
+> > >  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> > > @@ -315,6 +315,7 @@ static struct page *alloc_largest_available(unsigned long size,
+> > >                                             unsigned int max_order)
+> > >  {
+> > >         struct page *page;
+> > > +       unsigned long gfp_flags;
+> > >         int i;
+> > >
+> > >         for (i = 0; i < NUM_ORDERS; i++) {
+> > > @@ -323,7 +324,11 @@ static struct page *alloc_largest_available(unsigned long size,
+> > >                 if (max_order < orders[i])
+> > >                         continue;
+> > >
+> > > -               page = alloc_pages(order_flags[i], orders[i]);
+> > > +               gfp_flags = order_flags[i];
+> > > +               if (orders[i] > PAGE_ALLOC_COSTLY_ORDER)
+> > > +                       gfp_flags |= __GFP_NOWARN;
+> > > +
+> > > +               page = alloc_pages(gfp_flags, orders[i]);
+> >
+> > Would it be cleaner to just set up the flags properly in the
+> > order_flags array? I'm not sure I understand why your patch does it
+> > dynamically?
+>
+> That's exactly I had in my branch for aosp fix but I wanted to
+> hear it explicitly from dmabuf maintainer since I was worried
+> chaninging order-4 allocation behavior, especially,
+> __GFP_NORETRY and &~__GFP_RECLAIM.
+> (It will make allocation failure easier than old and that's not
+> thing my patch is addressing).
 
-The 2 patches are now in the ima-kexec-fixes branch.
+Yea. I might stick to changing just the __GFP_NOWARN.
 
-Mimi
+> If you want this, I am happy to change it. Shall I?
+>
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> index 29e49ac17251..865ec847013d 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -44,7 +44,7 @@ struct dma_heap_attachment {
+>                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+>                                 | __GFP_COMP)
+>  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> -static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
+> +static gfp_t order_flags[] = {HIGH_ORDER_GFP, HIGH_ORDER_GFP, LOW_ORDER_GFP};
 
+Maybe can you define a MID_ORDER_GFP as LOW_ORDER | __GFP_NOWARN
+(along with a comment in the code as to why) instead ?
+
+That avoids introducing any subtle behavioral change unintentionally.
+
+thanks
+-john
