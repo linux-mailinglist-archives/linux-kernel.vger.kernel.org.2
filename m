@@ -2,188 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233BB3161B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A19831619A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhBJJAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:00:05 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:46517 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhBJIyV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:54:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612947260; x=1644483260;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=V30xAsGypzCvyHxMwzLUE/9K9QPg42uq4qpA4eaiTis=;
-  b=jPaUJUQVFU2zku4oPgsORIet+v5o+GNMqZsIu5QVWbN6YvxUQrUW8D2J
-   P9J4MZbiUKGBkIvBbY4gpvgioYgtm6Wt+ZmswYz3YuY5MI7CkuNDncEJK
-   zge6ZBYvxno9g0sIGNvTWvFDGM9i0HobwTgHGzedPW5BrEuA5Q/kIRVku
-   MHootFxef8N9Ajj5sDOTx6qw+iO66YpvrAHYSldNK71MmX11J3P3DqgiW
-   55BuaNLAGdzqtkOJH8B/1lp6VQIldMxlH/ktkIcx17IJ80Z8otK0WEEB4
-   apb5Ipe16CAU5uHT7bDbeqTHCCZGB7pRoCVGi7ZiiZiEvUyeF507SUwRp
-   Q==;
-IronPort-SDR: aZzI1bxZHUlDAdkyXCzU4NY2rt6yq+1V+oEWVuHJ+GdM3iGqfISfkMCacWypfYQ2YanhwR3YK6
- 6oKRcuf9qxPWopar3uwTfdCfa6bOcmokDFSE0RLqlvJlG2Xj6UYo77l5NUpwzf4H3a03Klwrmm
- C6M6cTm/3Ccmx6a7R2jUEVX08A+2yQhVMlEvWT/7R3z1jAEp2sGDMbpUNbXXOEFmCSiSwBlOEF
- Wvp6h5OEOik3V/u23subHX7gOBpbKV5sb89Fp5EVmk3mN2OtvJGIl4trboWPXQ7pSSHPWpE8bm
- n74=
-X-IronPort-AV: E=Sophos;i="5.81,167,1610434800"; 
-   d="scan'208";a="109183599"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 01:53:05 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 10 Feb 2021 01:53:05 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 10 Feb 2021 01:53:02 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Device Tree List <devicetree@vger.kernel.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Subject: [PATCH v14 1/4] dt-bindings: phy: Add sparx5-serdes bindings
-Date:   Wed, 10 Feb 2021 09:52:52 +0100
-Message-ID: <20210210085255.2006824-2-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210210085255.2006824-1-steen.hegelund@microchip.com>
-References: <20210210085255.2006824-1-steen.hegelund@microchip.com>
+        id S229678AbhBJI5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:57:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229884AbhBJIx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 03:53:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F4A564E15;
+        Wed, 10 Feb 2021 08:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612947194;
+        bh=7SlMsll9gTBepPK17qohPTs+xbtDrVXCOaAEBREX4lk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CXJRYxLsoRadSpp8suF4KHPTIBbXjouzJI2FCNEKi1CNaKQN77pKnEoxr2Dy5/0nK
+         +Hl7v0x05kjeFGOkjoV3PiV9aac+tqTWRWT6+9BJYNlPvunqvrYIoztClyY3LqlAXI
+         MxzngLfaXIZoOy6Dub48pBC3kWUmEAm6T/y2WZ+c=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.19.175
+Date:   Wed, 10 Feb 2021 09:53:10 +0100
+Message-Id: <161294719118460@kroah.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Sparx5 ethernet serdes phy driver bindings.
+I'm announcing the release of the 4.19.175 kernel.
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- .../bindings/phy/microchip,sparx5-serdes.yaml | 100 ++++++++++++++++++
- 1 file changed, 100 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+All users of the 4.19 kernel series must upgrade.
 
-diff --git a/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml b/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
-new file mode 100644
-index 000000000000..bdbdb3bbddbe
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
-@@ -0,0 +1,100 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/microchip,sparx5-serdes.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip Sparx5 Serdes controller
-+
-+maintainers:
-+  - Steen Hegelund <steen.hegelund@microchip.com>
-+
-+description: |
-+  The Sparx5 SERDES interfaces share the same basic functionality, but
-+  support different operating modes and line rates.
-+
-+  The following list lists the SERDES features:
-+
-+  * RX Adaptive Decision Feedback Equalizer (DFE)
-+  * Programmable continuous time linear equalizer (CTLE)
-+  * Rx variable gain control
-+  * Rx built-in fault detector (loss-of-lock/loss-of-signal)
-+  * Adjustable tx de-emphasis (FFE)
-+  * Tx output amplitude control
-+  * Supports rx eye monitor
-+  * Multiple loopback modes
-+  * Prbs generator and checker
-+  * Polarity inversion control
-+
-+  SERDES6G:
-+
-+  The SERDES6G is a high-speed SERDES interface, which can operate at
-+  the following data rates:
-+
-+  * 100 Mbps (100BASE-FX)
-+  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
-+  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
-+  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
-+
-+  SERDES10G
-+
-+  The SERDES10G is a high-speed SERDES interface, which can operate at
-+  the following data rates:
-+
-+  * 100 Mbps (100BASE-FX)
-+  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
-+  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
-+  * 5 Gbps (QSGMII/USGMII)
-+  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
-+  * 10 Gbps (10G-USGMII)
-+  * 10.3125 Gbps (10GBASE-R/10GBASE-KR/USXGMII)
-+
-+  SERDES25G
-+
-+  The SERDES25G is a high-speed SERDES interface, which can operate at
-+  the following data rates:
-+
-+  * 1.25 Gbps (SGMII/1000BASE-X/1000BASE-KX)
-+  * 3.125 Gbps (2.5GBASE-X/2.5GBASE-KX)
-+  * 5 Gbps (QSGMII/USGMII)
-+  * 5.15625 Gbps (5GBASE-KR/5G-USXGMII)
-+  * 10 Gbps (10G-USGMII)
-+  * 10.3125 Gbps (10GBASE-R/10GBASE-KR/USXGMII)
-+  * 25.78125 Gbps (25GBASE-KR/25GBASE-CR/25GBASE-SR/25GBASE-LR/25GBASE-ER)
-+
-+properties:
-+  $nodename:
-+    pattern: "^serdes@[0-9a-f]+$"
-+
-+  compatible:
-+    const: microchip,sparx5-serdes
-+
-+  reg:
-+    minItems: 1
-+
-+  '#phy-cells':
-+    const: 1
-+    description: |
-+      - The main serdes input port
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#phy-cells'
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    serdes: serdes@10808000 {
-+      compatible = "microchip,sparx5-serdes";
-+      #phy-cells = <1>;
-+      clocks = <&sys_clk>;
-+      reg = <0x10808000 0x5d0000>;
-+    };
-+
-+...
--- 
-2.30.0
+The updated 4.19.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                       |    8 ----
+ arch/arm/mach-footbridge/dc21285.c             |   12 +++---
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi |    2 -
+ arch/x86/Makefile                              |    3 +
+ arch/x86/include/asm/apic.h                    |   10 -----
+ arch/x86/include/asm/barrier.h                 |   18 +++++++++
+ arch/x86/kernel/apic/apic.c                    |    4 ++
+ arch/x86/kernel/apic/x2apic_cluster.c          |    6 ++-
+ arch/x86/kernel/apic/x2apic_phys.c             |    6 ++-
+ arch/x86/kvm/svm.c                             |    5 ++
+ drivers/input/joystick/xpad.c                  |   17 ++++++++
+ drivers/input/serio/i8042-x86ia64io.h          |    2 +
+ drivers/iommu/intel-iommu.c                    |    6 +++
+ drivers/md/md.c                                |    2 +
+ drivers/mmc/core/sdio_cis.c                    |    6 +++
+ drivers/net/dsa/mv88e6xxx/chip.c               |    6 ++-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c |   10 ++---
+ drivers/nvme/host/pci.c                        |    2 +
+ drivers/usb/class/usblp.c                      |   19 +++++----
+ drivers/usb/dwc2/gadget.c                      |    8 ----
+ drivers/usb/dwc3/core.c                        |    2 -
+ drivers/usb/gadget/legacy/ether.c              |    4 +-
+ drivers/usb/host/xhci-ring.c                   |   31 ++++++++++-----
+ drivers/usb/renesas_usbhs/fifo.c               |    1 
+ drivers/usb/serial/cp210x.c                    |    2 +
+ drivers/usb/serial/option.c                    |    6 +++
+ fs/afs/main.c                                  |    6 +--
+ fs/cifs/dir.c                                  |   22 ++++++++++-
+ fs/cifs/smb2pdu.h                              |    2 -
+ fs/hugetlbfs/inode.c                           |    3 +
+ fs/overlayfs/dir.c                             |    2 -
+ include/linux/elfcore.h                        |   22 +++++++++++
+ include/linux/hugetlb.h                        |    3 +
+ include/linux/msi.h                            |    6 +++
+ kernel/Makefile                                |    1 
+ kernel/elfcore.c                               |   26 -------------
+ kernel/irq/msi.c                               |   44 ++++++++++------------
+ kernel/kprobes.c                               |    4 ++
+ mm/huge_memory.c                               |   37 +++++++++++-------
+ mm/hugetlb.c                                   |   48 +++++++++++++++++++++---
+ mm/memblock.c                                  |   49 +++----------------------
+ net/ipv4/ip_tunnel.c                           |   16 +++-----
+ net/lapb/lapb_out.c                            |    3 +
+ net/mac80211/driver-ops.c                      |    5 ++
+ net/mac80211/rate.c                            |    3 +
+ net/rxrpc/af_rxrpc.c                           |    6 +--
+ 46 files changed, 307 insertions(+), 199 deletions(-)
+
+Alexey Dobriyan (1):
+      Input: i8042 - unbreak Pegatron C15B
+
+Arnd Bergmann (1):
+      elfcore: fix building with clang
+
+Aurelien Aptel (1):
+      cifs: report error instead of invalid when revalidating a dentry fails
+
+Benjamin Valentin (1):
+      Input: xpad - sync supported devices with fork on GitHub
+
+Chenxin Jin (1):
+      USB: serial: cp210x: add new VID/PID for supporting Teraoka AD2000
+
+Christoph Schemmel (1):
+      USB: serial: option: Adding support for Cinterion MV31
+
+DENG Qingfang (1):
+      net: dsa: mv88e6xxx: override existent unicast portvec in port_fdb_add
+
+Dan Carpenter (1):
+      USB: gadget: legacy: fix an error code in eth_bind()
+
+Dave Hansen (1):
+      x86/apic: Add extra serialization for non-serializing MSRs
+
+David Howells (1):
+      rxrpc: Fix deadlock around release of dst cached on udp tunnel
+
+Felix Fietkau (1):
+      mac80211: fix station rate table updates on assoc
+
+Fengnan Chang (1):
+      mmc: core: Limit retries when analyse of SDIO tuples fails
+
+Gary Bisson (1):
+      usb: dwc3: fix clock issue during resume in OTG mode
+
+Greg Kroah-Hartman (1):
+      Linux 4.19.175
+
+Gustavo A. R. Silva (1):
+      smb3: Fix out-of-bounds bug in SMB2_negotiate()
+
+Heiko Stuebner (1):
+      usb: dwc2: Fix endpoint direction check in ep_from_windex
+
+Hugh Dickins (1):
+      mm: thp: fix MADV_REMOVE deadlock on shmem THP
+
+Jeremy Figgins (1):
+      USB: usblp: don't call usb_set_interface if there's a single alt
+
+Josh Poimboeuf (1):
+      x86/build: Disable CET instrumentation in the kernel
+
+Liangyan (1):
+      ovl: fix dentry leak in ovl_get_redirect
+
+Marc Zyngier (1):
+      genirq/msi: Activate Multi-MSI early when MSI_FLAG_ACTIVATE_EARLY is set
+
+Mathias Nyman (1):
+      xhci: fix bounce buffer usage for non-sg list case
+
+Muchun Song (4):
+      mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
+      mm: hugetlb: fix a race between freeing and dissolving the page
+      mm: hugetlb: fix a race between isolating and freeing page
+      mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
+
+Nadav Amit (1):
+      iommu/vt-d: Do not use flush-queue when caching-mode is on
+
+Pho Tran (1):
+      USB: serial: cp210x: add pid/vid for WSDA-200-USB
+
+Roman Gushchin (1):
+      memblock: do not start bottom-up allocations with kernel_end
+
+Russell King (1):
+      ARM: footbridge: fix dc21285 PCI configuration accessors
+
+Sean Christopherson (1):
+      KVM: SVM: Treat SVM as unsupported when running as an SEV guest
+
+Stefan Chulski (1):
+      net: mvpp2: TCAM entry enable should be written after SRAM data
+
+Thorsten Leemhuis (1):
+      nvme-pci: avoid the deepest sleep state on Kingston A2000 SSDs
+
+Vadim Fedorenko (1):
+      net: ip_tunnel: fix mtu calculation
+
+Wang ShaoBo (1):
+      kretprobe: Avoid re-registration of the same kretprobe earlier
+
+Xiao Ni (1):
+      md: Set prev_flush_start and flush_bio in an atomic way
+
+Xie He (1):
+      net: lapb: Copy the skb before sending a packet
+
+Yoshihiro Shimoda (1):
+      usb: renesas_usbhs: Clear pipe running flag in usbhs_pkt_pop()
+
+Zyta Szpak (1):
+      arm64: dts: ls1046a: fix dcfg address range
 
