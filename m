@@ -2,343 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCD031666F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AF9316671
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhBJMSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:18:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
+        id S231836AbhBJMSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:18:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbhBJMM7 (ORCPT
+        with ESMTP id S231759AbhBJMMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:12:59 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33F9C061D7D
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:07:52 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1l9oHc-0002xq-Lg; Wed, 10 Feb 2021 13:07:48 +0100
-Received: from mgr by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mgr@pengutronix.de>)
-        id 1l9oHa-000261-O9; Wed, 10 Feb 2021 13:07:46 +0100
-Date:   Wed, 10 Feb 2021 13:07:46 +0100
-From:   Michael Grzeschik <mgr@pengutronix.de>
-To:     Manish Narani <MNARANI@xilinx.com>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Michal Simek <michals@xilinx.com>, git <git@xilinx.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, Thinh.Nguyen@synopsys.com
-Subject: Re: [RESEND PATCH v3 2/2] usb: dwc3: Add driver for Xilinx platforms
-Message-ID: <20210210120746.GF8982@pengutronix.de>
-References: <1608015291-52007-1-git-send-email-manish.narani@xilinx.com>
- <1608015291-52007-3-git-send-email-manish.narani@xilinx.com>
- <20210118134223.GE12316@pengutronix.de>
- <20210122080846.GI12316@pengutronix.de>
- <BYAPR02MB589689FC1EAE48B5D2213E96C1A09@BYAPR02MB5896.namprd02.prod.outlook.com>
- <20210122133452.GK12316@pengutronix.de>
- <20210127233607.GG19259@pengutronix.de>
- <20210208235606.GA8982@pengutronix.de>
- <BYAPR02MB58965858F51B613965B83192C18E9@BYAPR02MB5896.namprd02.prod.outlook.com>
- <20210209200200.GE8982@pengutronix.de>
+        Wed, 10 Feb 2021 07:12:51 -0500
+Received: from smtp-bc0a.mail.infomaniak.ch (smtp-bc0a.mail.infomaniak.ch [IPv6:2001:1600:4:17::bc0a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD5FC061756;
+        Wed, 10 Feb 2021 04:07:34 -0800 (PST)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DbJRS2vZ7zMpnnY;
+        Wed, 10 Feb 2021 13:07:32 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DbJRP6qQzzlh8TJ;
+        Wed, 10 Feb 2021 13:07:29 +0100 (CET)
+Subject: =?UTF-8?Q?Re=3a_Conflict_with_Micka=c3=abl_Sala=c3=bcn=27s_blacklis?=
+ =?UTF-8?Q?t_patches_=5bwas_=5bPATCH_v5_0/4=5d_Add_EFI=5fCERT=5fX509=5fGUID_?=
+ =?UTF-8?Q?support_for_dbx/mokx_entries=5d?=
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+To:     Eric Snowberg <eric.snowberg@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     dwmw2@infradead.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        James.Bottomley@HansenPartnership.com, masahiroy@kernel.org,
+        michal.lkml@markovi.net, jmorris@namei.org, serge@hallyn.com,
+        ardb@kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+        lszubowi@redhat.com, javierm@redhat.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+References: <20210122181054.32635-1-eric.snowberg@oracle.com>
+ <1103491.1612369600@warthog.procyon.org.uk>
+ <10e6616e-0598-9f33-2de9-4a5268bba586@digikod.net>
+ <A5B5DEC0-E47A-4C3D-8E79-AF37B6C2E565@oracle.com>
+ <7924ce4c-ea94-9540-0730-bddae7c6af07@digikod.net>
+ <BFC930B3-7994-4C5B-A8EF-1DD1C73F5750@oracle.com>
+ <dc6a4524-3935-fda6-40a8-cebf80942cdf@digikod.net>
+ <188DE1AF-A011-4631-B88A-2C4324DA013B@oracle.com>
+ <99066eb7-53ac-41b0-46cf-36ea3d7f6590@digikod.net>
+ <74EC102D-BD18-4863-A7FB-C88439654C8C@oracle.com>
+ <456712ef-1349-ffe2-9e34-7d49848980ff@digikod.net>
+Message-ID: <999f0763-b1c1-a9ad-0efe-d3e148663ced@digikod.net>
+Date:   Wed, 10 Feb 2021 13:07:59 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0rSojgWGcpz+ezC3"
-Content-Disposition: inline
-In-Reply-To: <20210209200200.GE8982@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 13:06:30 up 70 days, 33 min, 108 users,  load average: 0.26, 0.27,
- 0.18
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mgr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <456712ef-1349-ffe2-9e34-7d49848980ff@digikod.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---0rSojgWGcpz+ezC3
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Adding Tinh Nguyen to CC:
-
-On Tue, Feb 09, 2021 at 09:02:00PM +0100, Michael Grzeschik wrote:
->Hi Manish,
->
->On Tue, Feb 09, 2021 at 06:01:58AM +0000, Manish Narani wrote:
->>Hi Michael,
+On 09/02/2021 22:53, Mickaël Salaün wrote:
+> 
+> On 09/02/2021 00:05, Eric Snowberg wrote:
 >>
->>>-----Original Message-----
->>>From: Michael Grzeschik <mgr@pengutronix.de>
->>>Sent: Tuesday, February 9, 2021 5:26 AM
->>>To: Manish Narani <MNARANI@xilinx.com>
->>>Cc: devicetree@vger.kernel.org; p.zabel@pengutronix.de; balbi@kernel.org;
->>>gregkh@linuxfoundation.org; linux-usb@vger.kernel.org; linux-
->>>kernel@vger.kernel.org; robh+dt@kernel.org; Michal Simek
->>><michals@xilinx.com>; git <git@xilinx.com>; kernel@pengutronix.de; linux-
->>>arm-kernel@lists.infradead.org
->>>Subject: Re: [RESEND PATCH v3 2/2] usb: dwc3: Add driver for Xilinx
->>>platforms
+>>> On Feb 6, 2021, at 11:30 AM, Mickaël Salaün <mic@digikod.net> wrote:
 >>>
->>>Hi Manish!
+>>> On 06/02/2021 02:14, Eric Snowberg wrote:
 >>>
->>>On Thu, Jan 28, 2021 at 12:36:07AM +0100, Michael Grzeschik wrote:
->>>>On Fri, Jan 22, 2021 at 02:34:52PM +0100, Michael Grzeschik wrote:
->>>>>On Fri, Jan 22, 2021 at 01:06:22PM +0000, Manish Narani wrote:
->>>>>>Hi Michael,
->>>>>>
->>>>>>>-----Original Message-----
->>>>>>>From: Michael Grzeschik <mgr@pengutronix.de>
->>>>>>>Sent: Friday, January 22, 2021 1:39 PM
->>>>>>>To: Manish Narani <MNARANI@xilinx.com>
->>>>>>>Cc: devicetree@vger.kernel.org; kernel@pengutronix.de;
->>>balbi@kernel.org;
->>>>>>>gregkh@linuxfoundation.org; linux-usb@vger.kernel.org; Michal Simek
->>>>>>><michals@xilinx.com>; linux-kernel@vger.kernel.org;
->>>robh+dt@kernel.org;
->>>>>>>git <git@xilinx.com>; p.zabel@pengutronix.de; linux-arm-
->>>>>>>kernel@lists.infradead.org
->>>>>>>Subject: Re: [RESEND PATCH v3 2/2] usb: dwc3: Add driver for Xilinx
->>>>>>>platforms
->>>>>>>
->>>>>>>Hello!
->>>>>>>
->>>>>>>On Mon, Jan 18, 2021 at 02:42:24PM +0100, Michael Grzeschik wrote:
->>>>>>>>Hi!
->>>>>>>>
->>>>>>>>On Tue, Dec 15, 2020 at 12:24:51PM +0530, Manish Narani wrote:
->>>>>>>>>Add a new driver for supporting Xilinx platforms. This driver is u=
-sed
->>>>>>>>>for some sequence of operations required for Xilinx USB controller=
-s.
->>>>>>>>>This driver is also used to choose between PIPE clock coming from
->>>SerDes
->>>>>>>>>and the Suspend Clock. Before the controller is out of reset, the =
-clock
->>>>>>>>>selection should be changed to PIPE clock in order to make the USB
->>>>>>>>>controller work. There is a register added in Xilinx USB controller
->>>>>>>>>register space for the same.
->>>>>>>>
->>>>>>>>I tried out this driver with the vanilla kernel on an zynqmp. Witho=
-ut
->>>>>>>>this patch the USB-Gadget is already acting buggy. In the gadget mo=
-de,
->>>>>>>>some iterations of plug/unplug results to an stalled gadget which w=
-ill
->>>>>>>>never come back without a reboot.
->>>>>>>>
->>>>>>>>With the corresponding code of this driver (reset assert, clk modif=
-y,
->>>>>>>>reset deassert) in the downstream kernels phy driver we found out i=
-t is
->>>>>>>>totaly stable. But using this exact glue driver which should do the=
- same
->>>>>>>>as the downstream code, the gadget still was buggy the way described
->>>>>>>>above.
->>>>>>>>
->>>>>>>>I suspect the difference lays in the different order of operations.
->>>>>>>>While the downstream code is runing the resets inside the phy driver
->>>>>>>>which is powered and initialized in the dwc3-core itself. With this=
- glue
->>>>>>>>layser approach of this patch the whole phy init is done before even
->>>>>>>>touching dwc3-core in any way. It seems not to have the same effect,
->>>>>>>>though.
->>>>>>>>
->>>>>>>>If really the order of operations is limiting us, we probably need
->>>>>>>>another solution than this glue layer. Any Ideas?
->>>>>>>
->>>>>>>I found out what the difference between the Downstream and this
->>>>>>>Glue is. When using vanilla with this Glue code we may not set
->>>>>>>the following bit:
->>>>>>>
->>>>>>>https://www.xilinx.com/html_docs/registers/ug1087/ug1087-zynq-
->>>>>>>ultrascale-registers.html#usb3_regs___fpd_power_prsnt.html
->>>>>>>
->>>>>>>>>+	/* Set PIPE Power Present signal in FPD Power Present
->>>Register*/
->>>>>>>>>+	writel(PIPE_POWER_ON, priv_data->regs +
->>>>>>>XLNX_USB_FPD_POWER_PRSNT);
->>>>>>>
->>>>>>>When I comment this out, the link stays stable. This is different in
->>>>>>>the Downstream Xilinx Kernel, where the bit is also set but has no
->>>>>>>negativ effect.
->>>>>>>
->>>>>>>Manish, can you give me a pointer what to look for?
->>>>>>>So setting this will also work with mainline?
->>>>>>I am looking further on this but from what I see here is that,
->>>>>>In order to make USB function properly, there are some dt changes
->>>needed in mainline for
->>>>>>USB node which include defining clocks coming from serdes.
->>>>>>The DT changes are pending to be sent to mainline.
->>>>>
->>>>>Can you push that state somewhere, so I could test it?
->>>>>Or is in the downstream kernel some things to copy?
->>>>>
->>>>>>Can you share the DT settings for USB node on your side?
->>>>>
->>>>>Here is my current configuration for the device node at usb0:
->>>>>
->>>>>zynqmp.dtsi
->>>>>
->>>>>zynqmp_reset: reset-controller {
->>>>>	compatible =3D "xlnx,zynqmp-reset";
->>>>>	#reset-cells =3D <1>;
->>>>>};
->>>>>
->>>>>usb0: usb@ff9d0000 {
->>>>>	#address-cells =3D <2>;
->>>>>	#size-cells =3D <2>;
->>>>>	status =3D "disabled";
->>>>>	compatible =3D "xlnx,zynqmp-dwc3";
->>>>>	reg =3D <0x0 0xff9d0000 0x0 0x100>;
->>>>>	clock-names =3D "bus_clk", "ref_clk";
->>>>>	power-domains =3D <&zynqmp_firmware PD_USB_0>;
->>>>>	ranges;
->>>>>	resets =3D <&zynqmp_reset ZYNQMP_RESET_USB0_CORERESET>,
->>>>>		<&zynqmp_reset ZYNQMP_RESET_USB0_HIBERRESET>,
->>>>>		<&zynqmp_reset ZYNQMP_RESET_USB0_APB>;
->>>>>	reset-names =3D "usb_crst", "usb_hibrst", "usb_apbrst";
->>>>>	phy-names =3D "usb3-phy";
->>>>>	phys =3D <&psgtr 2 PHY_TYPE_USB3 0 2>;
->>>>>
->>>>>	usb0_dwc3: dwc3@fe200000 {
->>>>>		compatible =3D "snps,dwc3";
->>>>>		interrupt-parent =3D <&gic>;
->>>>>		interrupts =3D <0 65 4>;
->>>>>		clock-names =3D "ref", "bus_early", "suspend";
->>>>>		reg =3D <0x0 0xfe200000 0x0 0x40000>;
->>>>>	};
->>>>>};
->>>>>
->>>>>platform.dts
->>>>>
->>>>>&usb0 {
->>>>>	status =3D "okay";
->>>>>	phy-names =3D "usb3-phy";
->>>>>	phys =3D <&psgtr 2 PHY_TYPE_USB3 0 2>;
->>>>>};
->>>>>
->>>>>&usb0_dwc3 {
->>>>>	dr_mode =3D "peripheral";
->>>>>
->>>>>	/* The following quirks are required, since the bInterval is 1 and we
->>>>>	 * handle steady ISOC streaming. See Usecase 3 in commit
->>>729dcffd1ed3
->>>>>	 * ("usb: dwc3: gadget: Add support for disabling U1 and U2
->>>entries").
->>>>>	 */
->>>>>	snps,dis-u1-entry-quirk;
->>>>>	snps,dis-u2-entry-quirk;
->>>>>};
->>>>>
->>>>>
->>>>>>Meanwhile I will keep updating on the same.
->>>>>
->>>>>Thanks, that sounds great!
+>>>> I have done some additional testing, I am seeing a regression. The blacklist 
+>>>> keyring is no longer picking up any of the hashes from the dbx during boot. 
+>>>> I backed out the merge with my changes  (fdbbe7ceeb95090d09c33ce0497e0394c82aa33d) 
+>>>> and still see the regression.  I then backed out Mickaël merge
+>>>> (5bf1adccf5c41dbdd51d1f4de220d335d9548598) and it fixes the regression.
 >>>>
->>>>I have more feedback regarding this issues. As we saw new uncommon
->>>>effects, when using the glue. Regarding to get the plug/unplug behaviour
->>>>stable, we sticked with leaving out the setting of PIPE_POWER_ON in that
->>>>driver. Unfortunately, with that change, the dwc3 is not only not
->>>>sending any Erratic Errors any more, but also is lacking to send
->>>>disconnect interrupts.
->>>>
->>>>Double checking with downstream shows that disconnects are working
->>>>completely fine in your downstream stack.
->>>>
->>>>I think we should really need to know why PIPE_POWER_ON is making
->>>>a difference before we can say the dwc3 is stable with that glue.
+>>>> On a x86 with the updated dbx from uefi.org, I’d expect to see 234 bin hash entries
+>>>> in the blacklist keyring.  With the current merged code, there is none.
 >>>
->>>After bisecting your v5.4 and mainline we found out that this all is
->>>working fine, when setting "snps,dis_u3_susphy_quirk" in the zynqmp.dtsi
->>>dwc3 node.
+>>> Hum, I missed a part in refactoring (commit
+>>> f78e50c8f750c0ac6767ac1ed006360cf77c56c4). :/
+>>> Could you please test the following patch?
 >>>
->>>The code handling this quirk was introduced after v5.4, so this was
->>>never an issue with your downstream stack.
+>>> diff --git a/certs/blacklist.c b/certs/blacklist.c
+>>> index 07c592ae5307..f998a2e85ddc 100644
+>>> --- a/certs/blacklist.c
+>>> +++ b/certs/blacklist.c
+>>> @@ -197,13 +197,16 @@ int mark_hash_blacklisted(const u8 *hash, size_t
+>>> hash_len,
+>>>                enum blacklist_hash_type hash_type)
+>>> {
+>>>        const char *buffer;
+>>> +       int err;
 >>>
->>>"9ba3aca8 usb: dwc3: Disable phy suspend after power-on reset"
->>>
->>>We need to know if adding snps,dis_u3_susphy_quirk to the dwc nodes
->>>is generally necessary for zynqmp, so we can fix for everyone.
+>>>        buffer = get_raw_hash(hash, hash_len, hash_type);
+>>>        if (IS_ERR(buffer))
+>>>                return PTR_ERR(buffer);
+>>> +       err = mark_raw_hash_blacklisted(buffer);
+>>>        kfree(buffer);
+>>> -       return 0;
+>>> +       return err;
+>>> }
 >>
->>Yes, it is necessary for DWC3 on ZynqMP platform. This property should be
->>added to the DT node.
->
->For now this quirk does solve the issues regarding the pluging
->behaviour. But we would like to know why?
->
->Is the phy not properly configured/connected to serve the phy
->suspend as intended for the dwc3 stack? Is this a real Hardware issue,
->or does this quirk only disable the suspend behaviour even though it
->would work properly when configured correctly in software.
->
->
->The second question is addressing the dwc3 xilinx glue driver
->you are trying to mainline. We found that the driver is pulling and
->releasing some resets before and after changing the pll frequency
->comming from the reference clk lines. After that the undocumented
->registers XLNX_USB_FPD_POWER_PRSNT and XLNX_USB_FPD_PIPE_CLK are changed
->according to the updated pll frequency. What do these bit change?
->Is this an internal configuration every dwc3 user on the zynqmp has
->to do or does this differ from user to user?
->
->Regards,
->Michael
->
->--=20
->Pengutronix e.K.                           |                             |
->Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
->31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
->Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+>> I applied this patch, it works better, but there is still a regression. 
+>> Most of the hashes show up in the blacklist keyring now.  However some 
+>> do not, here is what I see in the log during boot:
+>>
+>> [    2.321876] blacklist: Problem blacklisting hash (-13)
+>> [    2.322729] blacklist: Problem blacklisting hash (-13)
+>> [    2.323549] blacklist: Problem blacklisting hash (-13)
+>> [    2.324369] blacklist: Problem blacklisting hash (-13)
+>>
+>>> Is it possible to test these kind of dbx blacklist with Qemu?
+>>
+>> Yes, just use OVMF. 
+>>
+> 
+> My changes (with the fix) don't change the previous semantic. I just
+> tested without my changes and with my changes (and the fix), and I get
+> the same result: 184 bin hashes with
+> https://uefi.org/sites/default/files/resources/dbxupdate_x64.bin
+> 
+> Could you please re-test and if there is still an issue bisect and share
+> the certificates causing this issue?
+> 
+> David, do you want me to send the two new patches or an updated full
+> patch series?
+> 
 
-
-
->_______________________________________________
->linux-arm-kernel mailing list
->linux-arm-kernel@lists.infradead.org
->http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---0rSojgWGcpz+ezC3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEElXvEUs6VPX6mDPT8C+njFXoeLGQFAmAjzI0ACgkQC+njFXoe
-LGSNVQ//Q0Dk261hmdzByEbp2FCIcACP2awHI4LrxPWWw4x7I1VCrOW0fNY2T/6z
-GpepS/8Zlm57d9QMCZX7KSzZYEugYXdzxGKGXUdYCpQi4BhIJ4LNu5WRaIWhn/Ci
-bbFx3SLIK3kWYNmTZeLQugbfBoa33wQMUjdYsFBaiQehBEaTCwEYwHTjYsGIFwho
-jUgLQThEAIZ9/LtCQTcAaK1vwB8XXrZjPffgpYQ3o/Q62bdmPtvXmoiwqOmlQ0/m
-cf7Y0b+C3HqKyt0j4AOXxZ9gPawJ45F71MO51i5oJMKplfbkOxitypgFfDikKQEw
-UoRMyR0SBLjLFVvDXIswbAleCYrSjbRwj99I/jMKw3QsaF4fiv8UYhzG5SddNyYx
-qJgLffYItAf5yor90CU56Om0fdRhEuYeMA9KQvteoZ0iZXFAX40kiICSzrQ3CW0e
-mNAMLTnKhjvl9ZO1OaSIrK4dSezaoGi3JGkTm4ujrc8htqwXPYLf808SwvHA/itX
-8BfhdbY8iJRBfGEWsUcQka9GUc8HcgJA/4w4HNzxeg90yrB0/7jU5GGdIZCgL/k2
-WDOMTxKMvqEsoi2cx5UWvgC7krHjOaE3YkCyaKKToXYh4RLyC3Qb9ooPdO+NBeFC
-IjC5A6V7Uhq8eqiDvuscB0bhIIeVPWphYK5f/wkUCgEFStVazr8=
-=QWWK
------END PGP SIGNATURE-----
-
---0rSojgWGcpz+ezC3--
+I found the issue and fixed it in a new patch series:
+https://lore.kernel.org/lkml/20210210120410.471693-1-mic@digikod.net/
