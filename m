@@ -2,264 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4060831661B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A244E3165F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhBJMJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:09:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39206 "EHLO
+        id S229544AbhBJMFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:05:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhBJMHk (ORCPT
+        with ESMTP id S229754AbhBJMEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:07:40 -0500
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056D1C0617AA
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:04:10 -0800 (PST)
-Received: by mail-vk1-xa2a.google.com with SMTP id g17so418609vkk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:04:09 -0800 (PST)
+        Wed, 10 Feb 2021 07:04:32 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9C2C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:03:52 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id 18so1132610pfz.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:03:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7JGcu4XrZnVMUC12p2OysDg1RTccXXXiNHN8GvUfYp4=;
-        b=NbuVn1/8+zBeUV+oY6fiklCAfoOn87rMBO9H1Df2Vl9lP49WxgMUQEWv6+7MfbdZpN
-         CctjR2BPOTc8Vkfv/3ovv+X7Y8ooTVF+u9QIwrYzYp/wsK8Hr5P+z08vyvj+6v6XWrqG
-         UyDiq/qF8jaQyHwmfTXFMm1JsJ/RSpcAwZFszEoedxCaonjBEHlNXaNNCpZ576TSQGbn
-         Y2MuhioNv3vGU8cEiRQWNNhBDOHE5QnRRwWDQPVTj3q/TRDqMnpEwngT4e+rljuKLggS
-         Uj3r9ocvwLvjaOo2D36krEPLMSPShxRL1Fv/STl4onxRtNgH6tJnpGNRnihgBBlRoms6
-         gzmw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MA62Id4xvlTd2MzFrmGX4Z33bCUmSIvf/5faUyJz8co=;
+        b=ag7xEWDr1k9w0e2byUNqku+dVvYFDaUp0MgCFy6ZmZfRFvKSdqMg/hGThPcaalxW1b
+         oGLpWD/F45oTUqy5/lCJjqArRn14QdCNneQhPdWUKChXmmeyFkYnG9VJGgiyP/b+THDe
+         87Fy1StKXGQ6i04jJ2u3ZLQ7muck3VepZLzSGsxIjIJv3TgulfVSZdH0adOUZEU3k4N7
+         BlOCHQoq1S60KOa9iTmoQlZrBuUyXhxhr+PaxUCVxMq4GHq0ruhqMSVzcbPzK/5PJpY5
+         fDTzh2KiRVuIGPzxsb4Z37ss5ZyOFmsg0Dccl1KL9fg49gtiqfZhVugF5yLbbkphvCls
+         RDFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7JGcu4XrZnVMUC12p2OysDg1RTccXXXiNHN8GvUfYp4=;
-        b=GHW+MHCtG6MrE/x5y/Bc+kIi0X18zeakwETpqI6pf0UXr2RrZJYpF5ijeYPyVvhDXb
-         QgEHQjcI9Ts/YvXtk08FLEg/p9/h/OMN7F/kIkHQ/T0fvBLNVLSxekA6LS4ZfWQ26ccs
-         IWStgAv+M7CWfWLnlN9gpTetxoba3mHelwrP5L8vx/6tLl6t0Wj2baWBzuUoGBnlDTAa
-         VQQkUrRvGaLrsXOiYpmQh9FOEx1kWfr/WIF9v4QQE3b2F+lJc4//OUO/j/iM52Yo1293
-         s2DEE7vsH5061RD7a1S3nmIC0yQXro4Y43sOHc9wQG1DC0PDEoRMnpQfxVj+SDJvMv/Y
-         RKaQ==
-X-Gm-Message-State: AOAM531NX7g1GCrYsLMwsshlKwyPLrleJdIiv0J1S5zUjb3OzbuDEy80
-        wKOQLFmRoR5R3QMdRq8sh2O0v2CUBOiR0LK//jxz/g==
-X-Google-Smtp-Source: ABdhPJyiXqhi4Rde5/I/fRmwtVV0L9TllaXMGAsYvebOp5+kccg16AKc3h45Ief4uLm87jf2DGMPwUA+DslrYQsYZZM=
-X-Received: by 2002:a1f:a102:: with SMTP id k2mr1289757vke.15.1612958648968;
- Wed, 10 Feb 2021 04:04:08 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MA62Id4xvlTd2MzFrmGX4Z33bCUmSIvf/5faUyJz8co=;
+        b=rqNOMNPk1anweqmfC/ial1RPtzwCU1L81V2d6Vr8cQgoBh2EiOZSJZ3P4TOzg7vGt2
+         dDendD4969oBMljulMfJ1WvFDKqMehGxk5AUQtpSDEeDCG8vJ7z0Jq2K9qAsMLeT1p1Q
+         yPn1hcIzCfMPEi7PBF7f4NSF7HsfikjQflrGqu0y9f1ceQ7HWAwwTVAtTtHwdgErMBa4
+         LhlRCsAk/lWHsxwzhio5hh4ZP9d1cKeKxchS8jw6s1/Fb09WvksuJNhrpqhrT9mx/GSf
+         hnXTMQhuTPY9nw+vItcS7VENXm/6U7CQH+82vFuKUeXf1jQc3WbFmBly/zgVdmZ0c//e
+         NMXw==
+X-Gm-Message-State: AOAM533mzKSogHdZBqpfYCdBo6CzmqED4gQxX6L52Wt/xwV5B6r/OTfp
+        xqZZDfhNLeQRANSglqSbcr+UsA==
+X-Google-Smtp-Source: ABdhPJwElRvUwrpiCjZadB6NI/AowooQkhirbHr8u+TJJJh4wPCy2xKy9RcwKBcewLQs/zb2Vf2tOQ==
+X-Received: by 2002:a63:1c13:: with SMTP id c19mr2694048pgc.359.1612958631896;
+        Wed, 10 Feb 2021 04:03:51 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([202.131.71.236])
+        by smtp.gmail.com with ESMTPSA id j73sm2324218pfd.170.2021.02.10.04.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 04:03:51 -0800 (PST)
+Date:   Wed, 10 Feb 2021 20:03:41 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Al Grant <al.grant@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        Tan Xiaojun <tanxiaojun@huawei.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 8/8] perf arm-spe: Set thread TID
+Message-ID: <20210210120341.GD29117@leoy-ThinkPad-X240s>
+References: <20210119144658.793-1-james.clark@arm.com>
+ <20210119144658.793-8-james.clark@arm.com>
+ <20210131120156.GB230721@leoy-ThinkPad-X240s>
+ <cb7c6deb-e4a1-95fa-b0d2-e4405f644e63@arm.com>
+ <20210204102734.GA4737@leoy-ThinkPad-X240s>
+ <258ff186-7be0-7b83-fb29-e8223e780f73@arm.com>
+ <6c5760aa-76aa-3a56-9a12-9f331b254173@arm.com>
 MIME-Version: 1.0
-References: <20210204120547.15381-1-yann.gautier@foss.st.com>
- <20210204120547.15381-2-yann.gautier@foss.st.com> <CAPDyKFqdtK33HSW_AM0s9172V=cBM6wnKuHubXSOGCVqJ8nzFg@mail.gmail.com>
- <e31df871-ae1a-7c80-d741-0813f90532c7@foss.st.com> <1c1814dc-f87b-ef5c-24b4-b9a6ec570dbc@foss.st.com>
- <CAPDyKFq26Q3jwwJ71vp6s-+ux3jUnL6+m2FEzfi_gh5z8meqrw@mail.gmail.com> <cc8a480c-77dc-f44b-ae98-309ab59c4e13@foss.st.com>
-In-Reply-To: <cc8a480c-77dc-f44b-ae98-309ab59c4e13@foss.st.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 10 Feb 2021 13:03:32 +0100
-Message-ID: <CAPDyKFrA8iV3HXjf18N7vJw=Q1dtrAQJY8cLqxybXKDJtzoMrA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mmc: mmci: enable MMC_CAP_NEED_RSP_BUSY
-To:     Yann Gautier <yann.gautier@foss.st.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        ludovic.barre@foss.st.com,
-        =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6c5760aa-76aa-3a56-9a12-9f331b254173@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Feb 2021 at 15:01, Yann Gautier <yann.gautier@foss.st.com> wrote:
->
-> On 2/8/21 4:03 PM, Ulf Hansson wrote:
-> > On Mon, 8 Feb 2021 at 13:16, Yann GAUTIER <yann.gautier@foss.st.com> wrote:
-> >>
-> >> On 2/5/21 1:19 PM, Yann GAUTIER wrote:
-> >>> On 2/5/21 10:53 AM, Ulf Hansson wrote:
-> >>>> - trimmed cc-list
-> >>>>
-> >>>> On Thu, 4 Feb 2021 at 13:08, <yann.gautier@foss.st.com> wrote:
-> >>>>>
-> >>>>> From: Yann Gautier <yann.gautier@foss.st.com>
-> >>>>>
-> >>>>> To properly manage commands awaiting R1B responses, the capability
-> >>>>> MMC_CAP_NEED_RSP_BUSY is enabled in mmci driver, for variants that
-> >>>>> manage busy detection.
-> >>>>> This R1B management needs both the flags MMC_CAP_NEED_RSP_BUSY and
-> >>>>> MMC_CAP_WAIT_WHILE_BUSY to be enabled together.
-> >>>>
-> >>>> Would it be possible for you to share a little bit more about the
-> >>>> problem? Like under what circumstances does things screw up?
-> >>>>
-> >>>> Is the issue only occurring when the cmd->busy_timeout becomes larger
-> >>>> than host->max_busy_timeout. Or even in other cases?
-> >>>>
-> >>>>>
-> >>>>> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
-> >>>>> ---
-> >>>>>    drivers/mmc/host/mmci.c | 2 +-
-> >>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>>>
-> >>>>> diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-> >>>>> index 1bc674577ff9..bf6971fdd1a6 100644
-> >>>>> --- a/drivers/mmc/host/mmci.c
-> >>>>> +++ b/drivers/mmc/host/mmci.c
-> >>>>> @@ -2148,7 +2148,7 @@ static int mmci_probe(struct amba_device *dev,
-> >>>>>                   if (variant->busy_dpsm_flag)
-> >>>>>                           mmci_write_datactrlreg(host,
-> >>>>>
-> >>>>> host->variant->busy_dpsm_flag);
-> >>>>> -               mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
-> >>>>> +               mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY |
-> >>>>> MMC_CAP_NEED_RSP_BUSY;
-> >>>>
-> >>>> This isn't correct as the ux500 (and likely also other legacy
-> >>>> variants) don't need this. I have tried it in the past and it works
-> >>>> fine for ux500 without MMC_CAP_NEED_RSP_BUSY.
-> >>>>
-> >>>> The difference is rather that the busy detection for stm32 variants
-> >>>> needs a corresponding HW busy timeout to be set (its
-> >>>> variant->busy_timeout flag is set). Perhaps we can use that
-> >>>> information instead?
-> >>>>
-> >>>> Note that, MMC_CAP_NEED_RSP_BUSY, means that cmd->busy_timeout will
-> >>>> not be set by the core for erase commands, CMD5 and CMD6.
-> >>>>
-> >>>> By looking at the code in mmci_start_command(), it looks like we will
-> >>>> default to a timeout of 10s, when cmd->busy_timeout isn't set. At
-> >>>> least for some erase requests, that won't be sufficient. Would it be
-> >>>> possible to disable the HW busy timeout in some way - and maybe use a
-> >>>> software timeout instead? Maybe I already asked Ludovic about this?
-> >>>> :-)
-> >>>>
-> >>>> BTW, did you check that the MMCIDATATIMER does get the correct value
-> >>>> set for the timer in mmci_start_command() and if
-> >>>> host->max_busy_timeout gets correctly set in
-> >>>> mmci_set_max_busy_timeout()?
-> >>>>
-> >>>> [...]
-> >>>>
-> >>>> Kind regards
-> >>>> Uffe
-> >>>>
+Hi James,
+
+On Wed, Feb 10, 2021 at 12:16:58PM +0200, James Clark wrote:
+> 
+> 
+> On 09/02/2021 17:36, James Clark wrote:
+> > 
+> > 
+> > On 04/02/2021 12:27, Leo Yan wrote:
+> >> On Mon, Feb 01, 2021 at 07:40:45PM +0200, James Clark wrote:
 > >>>
-> >>> Hi Ulf,
-> >>>
-> >>> Thanks for the hints.
-> >>> I'll check all of that and get back with updated patches.
-> >>>
-> >>> As I tried to explain in the cover letter and in reply to Adrian, I saw
-> >>> a freeze (BUSYD0) in test 37 during MMC_ERASE command  with
-> >>> SECURE_ERASE_ARG, when running this test just after test 36 (or any
-> >>> other write test). But maybe, as you said that's mostly a incorrect
-> >>> timeout issue.
-> >>>
-> >>> Regards,
-> >>> Yann
+> >>> On 31/01/2021 14:01, Leo Yan wrote:
+> >>>> Option 1: by merging patches 07/08 and 08/08, we can firstly support PID
+> >>>> tracing for root namespace, and later we can extend to support PID
+> >>>> tracing in container (and in VMs).
+> >>>>
+> >> Arm SPE has the problem for step2, due to the trace uses statistical
+> >> approach, it doesn't trace the complete branch instructions, so it
+> >> cannot promise to capture all branches for the symbol "__switch_to".
+> >> If we only use the events PERF_RECORD_SWITCH /
+> >> PERF_RECORD_SWITCH_CPU_WIDE, then it will lead to the coarse result
+> >> for PID tracing.
 > >>
-> >> Hi,
+> >> For this reason, seems to me it's pragmatic to use CONTEXTIDR for
+> >> PID tracing at current stage, at least it can allow the root domain
+> >> tracing works accurately.  But this will leave the issue for tracing
+> >> PID in non root namespace, we need to figure out solution later.
 > >>
-> >> I made some extra tests, and the timeout value set in MMCIDATATIMER
-> >> correspond to the one computed:
-> >> card->ext_csd.erase_group_def is set to 1 in mmc_init_card()
-> >> In mmc_mmc_erase_timeout(), we have:
-> >> erase_timeout = card->ext_csd.hc_erase_timeout; // 300ms * 0x07 (for the
-> >> eMMC card I have: THGBMDG5D1LBAIL
-> >> erase_timeout *= card->ext_csd.sec_erase_mult; // 0xDC
-> >> erase_timeout *= qty; // 32 (from = 0x1d0000, to = 0x20ffff)
-> >>
-> >> This leads to a timeout of 14784000ms (~4 hours).
-> >> The max_busy_timeout is 86767ms.
-> >>
-> >> After those 4 hours, I get this message:
-> >> mmc1: Card stuck being busy! __mmc_poll_for_busy
-> >
-> > Okay, I see.
-> >
-> > This means that we end up polling for busy in __mmc_poll_for_busy().
-> > However, not by using CMD13 but rather with the ->card_busy() ops (as
-> > mmci has this callback set).
-> >
-> > Could it be that the ->card_busy() callback isn't working correctly
-> > for the stm32 variant?
-> >
-> > What happens if you temporarily drop the assignment of the
-> > ->card_busy() callback, thus force the mmc core to poll with CMD13
-> > instead? Would this work?
-> >
->
-> Hi Ulf,
->
-> When ->card_busy() is stubbed for MMC_ERASE command, CMD13 is running in
-> loop, for ~66 seconds.
-> The card status is just 0xe00 here, no errors, just prog state, as
-> awaited for CMD38, and READY_FOR_DATA bit not set.
-> And after those 66 seconds, the status changes to 0x900.
-> But busyd0 is still set to 1, during the CMD13 and after.
-> The test continues, with a CMD25, still with busyd0 and DPSM so the IP
-> is stuck, and the STOP command is sent (mrq->stop in mmc_mrq_pr_debug).
-> And here nothing more happens, wait_for_completion() from
-> mmc_wait_for_req_done().
+> >> Hi Mark.R, Al, do you have any comments for this?
+> > 
+> > Hi Leo,
+> > 
+> > I spoke with Al and his suggestion is to clear the PID value if the event
+> > was opened outside of the root namespace.
+> > 
+> > I think that's not a bad idea as it gets us PIDs in most cases but also
+> > doesn't show any incorrect data. Do you know if it's possible to determine
+> > that from a perf.data file? Unfortunately it doesn't seem to be possible
+> > to disable CONTEXTIDR tracing when opening the event as it's compile time
+> > only and can't be disabled dynamically.
+> > 
+> > James
+> > 
+> 
+> I've had a think about it and I think we should do one of two things:
 
-Okay, I see. Thanks for sharing the details.
+Thanks a lot for digging!
 
->
-> >>
-> >> The second erase with MMC_ERASE_ARG finds an erase timeout of 67200ms,
-> >> and uses R1B command.
-> >> But as the first erase failed, the DPSMACT is still enabled, the busy
-> >> timeout doesn't seem to happen. Something may be missing in the error path.
-> >
-> > Assuming the eMMC card completed the first erase operation
-> > successfully, then yes, the second erase should work.
-> >
-> > However, what if the eMMC actually failed with the first erase? How can we know?
->
-> In the case where ->card_busy() is used:
-> As busyd0 is still 1 in the STATUS register, we cannot know if the
-> command really finished. And as the DPSM is stuck, we cannot send other
-> read command to check what is on the card.
->
-> As I said in another thread:
-> "I've discussed with Ludovic, and it is somewhat related to this patch set:
-> https://patchwork.kernel.org/project/linux-mmc/list/?series=186219&state=%2A&archive=both
->
-> The STM32 SDMMC IP needs a specific reset procedure when a data timeout
-> occurs. If it is hardware, this is managed with the threaded IRQ. But if
-> it is a SW polling (if R1B is replaced with R1), there is nothing in
-> frameworks that could call this "unstuck" procedure for STM32 variant.
-> I don't know how this should be handled."
->
-> Are there other things I should check?
->
-> The main issue here is that we cannot use R1B if timeout >
-> mmc->max_busy_timeout, and SW polling won't be able to call our reset
-> procedure in case of trouble.
+> #1) Remove the PID setting from the data source patchset. This will keep the
+>     existing behaviour of using the PID of the first traced process only even
+>     if there are forks. Later we can implement #2 or attempt to make it work
+>     even in non root namespaces.
 
-Right, I understand.
+I agree.  Let's simplify the data source patch set; could you resend the
+data source patch set so this can allow perf maintainer to easier follow
+up (and merge) the patch series?  Thanks!
 
-As a simple initial fix, I would suggest you to set
-MMC_CAP_NEED_RSP_BUSY for the stm32 variants. This also means you need
-to cap the used timeout written to MMCIDATATIMER (when using
-MMC_CAP_NEED_RSP_BUSY, cmd->busy_timeout may be greater than
-host->max_busy_timeout).
+>     I'm not sure how this will impact your c2c patchset if you are relying on
+>     the PID data Leo?
 
-I guess this should work for almost all cases, as 86767ms is rather long.
+Yes, based on the experiment, if we want to extend "perf c2c" for
+exhibit multi-threading info, then it depends on PID tracing.
 
-Long term wise, we need to think of another option. It seems to be
-okay to use R1 in favor of R1B and then poll with CMD13. However, in
-such cases the controller needs to be reset to move out from DPSM.
-Perhaps we can let the core invoke a new callback in the host, to let
-it deal with this in some way...?
+> #2) Make a change in the SPE driver to add an option for disabling CONTEXTIDR.
+>     We will disable this from userspace if the event is opened in a non root
+>     namespace. So we will only show PID data if we know it's valid, otherwise
+>     the existing behaviour of only using the first PID will remain.
 
->
-> The second patch in the series, changing the MMC_ERASE argument from
-> MMC_SECURE_ERASE_ARG to the argument chosen in the framework will then
-> compute a timeout lower than mmc->max_busy_timeout, and the test will pass.
-> But this does not explain why STM32 SDMMC IP doesn't react well to this
-> secure argument after it has executed a write test.
->
->
-> Thanks,
-> Yann
->
+Yeah, just a minor difference in my head.
 
-Kind regards
-Uffe
+Yes, we can use the kernel to export an extra PMU format, e.g. a new PMU format
+"contextid", so the kernel provides a knob for userspace (this is similiar with
+perf cs-etm :)).
+
+I am just wandering if we can disable CONTEXTIDR tracing in the kernel side,
+e.g. when the kernel detects if it's running on non root namespace, it should
+not set bit SYS_PMSCR_EL1_CX_SHIFT; so if the tool in the userspace has
+specified the PMU format "contextid" from non root namespace, the kernel should
+report failure for without permission.
+
+This seems to me, at least, we can have a sane solution for root
+namespace.
+
+Thanks,
+Leo
