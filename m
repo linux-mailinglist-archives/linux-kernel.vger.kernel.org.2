@@ -2,159 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E3E315DCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 04:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A235315DD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 04:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhBJDeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 22:34:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55615 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229562AbhBJDeF (ORCPT
+        id S230005AbhBJDhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 22:37:01 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:48034 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhBJDg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 22:34:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612927957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dIycg8TE3qvA5BDEadabLQSqpKyAlR7M5/0dpkVkaDg=;
-        b=XxqibCztij9PpbOF8XVJ8wADBMVFPVw94dhk6jt4X/W8KpH/RW/YyZm0/jZ22YWaGXJcfK
-        SrvJJwsUrT/l5nvwZCm9a0FRzoyCvFPPr9Ef+G5WKkSz3opqmxv6EnevBsRR8rWUrz+sbB
-        CMHwuFEStws9V4OA2m6paKYfUVPbB4Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-9TvoC1MnOGG9tUQID_yKmQ-1; Tue, 09 Feb 2021 22:32:36 -0500
-X-MC-Unique: 9TvoC1MnOGG9tUQID_yKmQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D82851005501;
-        Wed, 10 Feb 2021 03:32:33 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-119-222.rdu2.redhat.com [10.10.119.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F120A19CA8;
-        Wed, 10 Feb 2021 03:32:28 +0000 (UTC)
-Subject: Re: [PATCH v2 06/28] locking/rwlocks: Add contention detection for
- rwlocks
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Davidlohr Bueso <dbueso@suse.de>
-References: <20210202185734.1680553-1-bgardon@google.com>
- <20210202185734.1680553-7-bgardon@google.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <6287ff89-d869-e5ed-3e64-11621cc4796a@redhat.com>
-Date:   Tue, 9 Feb 2021 22:32:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210202185734.1680553-7-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Tue, 9 Feb 2021 22:36:57 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 177CC4D2CA80E;
+        Tue,  9 Feb 2021 19:36:17 -0800 (PST)
+Date:   Tue, 09 Feb 2021 19:36:11 -0800 (PST)
+Message-Id: <20210209.193611.1524785817913120444.davem@davemloft.net>
+To:     torvalds@linux-foundation.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT] Networking 
+From:   David Miller <davem@davemloft.net>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Tue, 09 Feb 2021 19:36:17 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 1:57 PM, Ben Gardon wrote:
-> rwlocks do not currently have any facility to detect contention
-> like spinlocks do. In order to allow users of rwlocks to better manage
-> latency, add contention detection for queued rwlocks.
->
-> CC: Ingo Molnar <mingo@redhat.com>
-> CC: Will Deacon <will@kernel.org>
-> Acked-by: Peter Zijlstra <peterz@infradead.org>
-> Acked-by: Davidlohr Bueso <dbueso@suse.de>
-> Acked-by: Waiman Long <longman@redhat.com>
-> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->   include/asm-generic/qrwlock.h | 24 ++++++++++++++++++------
->   include/linux/rwlock.h        |  7 +++++++
->   2 files changed, 25 insertions(+), 6 deletions(-)
->
-> diff --git a/include/asm-generic/qrwlock.h b/include/asm-generic/qrwlock.h
-> index 84ce841ce735..0020d3b820a7 100644
-> --- a/include/asm-generic/qrwlock.h
-> +++ b/include/asm-generic/qrwlock.h
-> @@ -14,6 +14,7 @@
->   #include <asm/processor.h>
->   
->   #include <asm-generic/qrwlock_types.h>
-> +#include <asm-generic/qspinlock.h>
 
-As said in another thread, qspinlock and qrwlock can be independently 
-enabled for an architecture. So we shouldn't include qspinlock.h here. 
-Instead, just include the regular linux/spinlock.h file to make sure 
-that arch_spin_is_locked() is available.
+Another pile of networing fixes:
 
+1) ath9k build error fix from Arnd Bergmann
 
->   
->   /*
->    * Writer states & reader shift and bias.
-> @@ -116,15 +117,26 @@ static inline void queued_write_unlock(struct qrwlock *lock)
->   	smp_store_release(&lock->wlocked, 0);
->   }
->   
-> +/**
-> + * queued_rwlock_is_contended - check if the lock is contended
-> + * @lock : Pointer to queue rwlock structure
-> + * Return: 1 if lock contended, 0 otherwise
-> + */
-> +static inline int queued_rwlock_is_contended(struct qrwlock *lock)
-> +{
-> +	return arch_spin_is_locked(&lock->wait_lock);
-> +}
-> +
->   /*
->    * Remapping rwlock architecture specific functions to the corresponding
->    * queue rwlock functions.
->    */
-> -#define arch_read_lock(l)	queued_read_lock(l)
-> -#define arch_write_lock(l)	queued_write_lock(l)
-> -#define arch_read_trylock(l)	queued_read_trylock(l)
-> -#define arch_write_trylock(l)	queued_write_trylock(l)
-> -#define arch_read_unlock(l)	queued_read_unlock(l)
-> -#define arch_write_unlock(l)	queued_write_unlock(l)
-> +#define arch_read_lock(l)		queued_read_lock(l)
-> +#define arch_write_lock(l)		queued_write_lock(l)
-> +#define arch_read_trylock(l)		queued_read_trylock(l)
-> +#define arch_write_trylock(l)		queued_write_trylock(l)
-> +#define arch_read_unlock(l)		queued_read_unlock(l)
-> +#define arch_write_unlock(l)		queued_write_unlock(l)
-> +#define arch_rwlock_is_contended(l)	queued_rwlock_is_contended(l)
->   
->   #endif /* __ASM_GENERIC_QRWLOCK_H */
-> diff --git a/include/linux/rwlock.h b/include/linux/rwlock.h
-> index 3dcd617e65ae..7ce9a51ae5c0 100644
-> --- a/include/linux/rwlock.h
-> +++ b/include/linux/rwlock.h
-> @@ -128,4 +128,11 @@ do {								\
->   	1 : ({ local_irq_restore(flags); 0; }); \
->   })
->   
-> +#ifdef arch_rwlock_is_contended
-> +#define rwlock_is_contended(lock) \
-> +	 arch_rwlock_is_contended(&(lock)->raw_lock)
-> +#else
-> +#define rwlock_is_contended(lock)	((void)(lock), 0)
-> +#endif /* arch_rwlock_is_contended */
-> +
->   #endif /* __LINUX_RWLOCK_H */
+2) dma memory leak fix in mediatec driver from Lorenzo Bianconi.
 
-Cheers,
-Longman
+3) bpf int3 kprobe fix from Alexei Starovoitov.
 
+4) bpf stackmap integer overflow fix from Bui Quang Minh.
+
+5) Add usb device ids for Cinterion MV31 to qmi_qwwan driver, from
+   Christoph Schemmel.
+
+6) Don't update deleted entry in xt_recent netfilter module, from Jazsef Kadlecsik.
+
+7) Use after free in nftables, fix from Pablo Neira Ayuso.
+
+8) Header checksum fix in flowtable from Sven Auhagen.
+
+9) Validate user controlled length in qrtr code, from Sabyrzhan Tasbolatov.
+
+10) Fix race in xen/netback, from Juergen Gross,
+
+11) New device ID in cxgb4, from Raju Rangoju.
+
+12) Fix ring locking in rxrpc release call, from David Howells.
+
+13) Don't return LAPB error codes from x25_open(), from Xie He.
+
+14) Missing error returns in gsi_channel_setup() from Alex Elder.
+
+15) Get skb_copy_and_csum_datagram working properly with odd segment sizes,
+    from Willem de Bruijn.
+
+16) Missing RFS/RSS table init in enetc driver, from Vladimir Oltean.
+
+17) Do teardown on probe failure in DSA, from Vladimir Oltean.
+
+18) Fix compilation failures of txtimestamp selftest, from Vadim Fedorenko.
+
+19) Limit rx per-napi gro queue size to fix latency regression,  from Eric Dumazet.
+
+20) dpaa_eth xdp fixes from Camelia Groza.
+
+21) Missing txq mode update when switching CBS off, in stmmac driver,
+    from Mohammad Athari Bin Ismail.
+
+22) Failover pending logic fix in ibmvnic driver, from Sukadev Bhattiprolu.
+
+23) Null deref fix in vmw_vsock, from Norbert Slusarek.
+
+24) Missing verdict update in xdp paths of ena driver, from Shay Agroskin.
+
+25) seq_file iteration fix in sctp from Neil Brown.
+
+26) bpf 32-bit src register truncation fix on div/mod, from Daniel Borkmann.
+
+27) Fix jmp32 pruning in bpf verifier, from  Daniel Borkmann.
+
+28) Fix locking in vsock_shutdown(),  from Stefano Garzarella.
+
+29) Various missing index bound checks in hns3 driver, from Yufeng Mo.
+
+30) Flush ports on .phylink_mac_link_down() in dsa felix driver, from Vladimir Oltean.
+
+31) Don't mix up stp and mrp port states in bridge layer, from Horatiu Vultur.
+
+32) Fix locking during netif_tx_disable(), from Edwin Peer.
+
+Please pull, thanks a lot!
+
+The following changes since commit 3aaf0a27ffc29b19a62314edd684b9bc6346f9a8:
+
+  Merge tag 'clang-format-for-linux-v5.11-rc7' of git://github.com/ojeda/linux (2021-02-02 10:46:59 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git 
+
+for you to fetch changes up to b8776f14a47046796fe078c4a2e691f58e00ae06:
+
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf (2021-02-09 18:55:17 -0800)
+
+----------------------------------------------------------------
+Alex Elder (1):
+      net: ipa: set error code in gsi_channel_setup()
+
+Alexei Starovoitov (1):
+      bpf: Unbreak BPF_PROG_TYPE_KPROBE when kprobe is called via do_int3
+
+Andrea Parri (Microsoft) (1):
+      hv_netvsc: Reset the RSC count if NVSP_STAT_FAIL in netvsc_receive()
+
+Arnd Bergmann (1):
+      ath9k: fix build error with LEDS_CLASS=m
+
+Bui Quang Minh (1):
+      bpf: Check for integer overflow when using roundup_pow_of_two()
+
+Camelia Groza (3):
+      dpaa_eth: reserve space for the xdp_frame under the A050385 erratum
+      dpaa_eth: reduce data alignment requirements for the A050385 erratum
+      dpaa_eth: try to move the data in place for the A050385 erratum
+
+Christoph Schemmel (1):
+      NET: usb: qmi_wwan: Adding support for Cinterion MV31
+
+Daniel Borkmann (3):
+      bpf: Fix verifier jsgt branch analysis on max bound
+      bpf: Fix verifier jmp32 pruning decision logic
+      bpf: Fix 32 bit src register truncation on div/mod
+
+David Howells (1):
+      rxrpc: Fix clearance of Tx/Rx ring when releasing a call
+
+David S. Miller (4):
+      Merge branch 'bridge-mrp'
+      Merge branch 'hns3-fixes'
+      Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf
+      Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
+
+Edwin Peer (1):
+      net: watchdog: hold device global xmit lock during tx disable
+
+Eric Dumazet (1):
+      net: gro: do not keep too many GRO packets in napi->rx_list
+
+Fabian Frederick (1):
+      selftests: netfilter: fix current year
+
+Florian Westphal (1):
+      netfilter: conntrack: skip identical origin tuple in same zone only
+
+Horatiu Vultur (2):
+      bridge: mrp: Fix the usage of br_mrp_port_switchdev_set_state
+      switchdev: mrp: Remove SWITCHDEV_ATTR_ID_MRP_PORT_STAT
+
+Jakub Kicinski (3):
+      Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf
+      Merge branch 'dpaa_eth-a050385-erratum-workaround-fixes-under-xdp'
+      Merge tag 'wireless-drivers-2021-02-05' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers
+
+Jozsef Kadlecsik (1):
+      netfilter: xt_recent: Fix attempt to update deleted entry
+
+Juergen Gross (1):
+      xen/netback: avoid race in xenvif_rx_ring_slots_available()
+
+Lorenzo Bianconi (1):
+      mt76: dma: fix a possible memory leak in mt76_add_fragment()
+
+Mohammad Athari Bin Ismail (1):
+      net: stmmac: set TxQ mode back to DCB after disabling CBS
+
+NeilBrown (1):
+      net: fix iteration for sctp transport seq_files
+
+Norbert Slusarek (2):
+      net/vmw_vsock: fix NULL pointer dereference
+      net/vmw_vsock: improve locking in vsock_connect_timeout()
+
+Pablo Neira Ayuso (2):
+      netfilter: nftables: fix possible UAF over chains from packet path in netns
+      netfilter: nftables: relax check for stateful expressions in set definition
+
+Raju Rangoju (1):
+      cxgb4: Add new T6 PCI device id 0x6092
+
+Sabyrzhan Tasbolatov (1):
+      net/qrtr: restrict user-controlled length in qrtr_tun_write_iter()
+
+Shay Agroskin (1):
+      net: ena: Update XDP verdict upon failure
+
+Stefano Garzarella (2):
+      vsock/virtio: update credit only if socket is not closed
+      vsock: fix locking in vsock_shutdown()
+
+Sukadev Bhattiprolu (1):
+      ibmvnic: Clear failover_pending if unable to schedule
+
+Sven Auhagen (1):
+      netfilter: flowtable: fix tcp and udp header checksum update
+
+Vadim Fedorenko (2):
+      selftests/tls: fix selftest with CHACHA20-POLY1305
+      selftests: txtimestamp: fix compilation issue
+
+Vladimir Oltean (3):
+      net: enetc: initialize the RFS and RSS memories
+      net: dsa: call teardown method on probe failure
+      net: dsa: felix: implement port flushing on .phylink_mac_link_down
+
+Willem de Bruijn (1):
+      udp: fix skb_copy_and_csum_datagram with odd segment sizes
+
+Xie He (1):
+      net: hdlc_x25: Return meaningful error code in x25_open
+
+Yufeng Mo (3):
+      net: hns3: add a check for queue_id in hclge_reset_vf_queue()
+      net: hns3: add a check for tqp_index in hclge_get_ring_chain_from_mbx()
+      net: hns3: add a check for index in hclge_get_rss_key()
+
+ drivers/net/dsa/ocelot/felix.c                          | 17 ++++++++++++++++-
+ drivers/net/ethernet/amazon/ena/ena_netdev.c            |  6 +++++-
+ drivers/net/ethernet/chelsio/cxgb4/t4_pci_id_tbl.h      |  1 +
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c          | 42 ++++++++++++++++++++++++++++++++++++++----
+ drivers/net/ethernet/freescale/enetc/enetc_hw.h         |  2 ++
+ drivers/net/ethernet/freescale/enetc/enetc_pf.c         | 59 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c |  7 +++++++
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c  | 29 +++++++++++++++++++++++++----
+ drivers/net/ethernet/ibm/ibmvnic.c                      | 17 ++++++++++++++++-
+ drivers/net/ethernet/mscc/ocelot.c                      | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/net/ethernet/mscc/ocelot_io.c                   |  8 ++++++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c         |  7 ++++++-
+ drivers/net/hyperv/netvsc.c                             |  5 ++++-
+ drivers/net/hyperv/rndis_filter.c                       |  2 --
+ drivers/net/ipa/gsi.c                                   |  1 +
+ drivers/net/usb/qmi_wwan.c                              |  1 +
+ drivers/net/wan/hdlc_x25.c                              |  6 +++---
+ drivers/net/wireless/ath/ath9k/Kconfig                  |  8 ++------
+ drivers/net/wireless/mediatek/mt76/dma.c                |  8 +++++---
+ drivers/net/xen-netback/rx.c                            |  9 ++++++++-
+ include/linux/netdevice.h                               |  2 ++
+ include/linux/uio.h                                     |  8 +++++++-
+ include/net/switchdev.h                                 |  2 --
+ include/soc/mscc/ocelot.h                               |  2 ++
+ kernel/bpf/stackmap.c                                   |  2 ++
+ kernel/bpf/verifier.c                                   | 38 ++++++++++++++++++++------------------
+ kernel/trace/bpf_trace.c                                |  3 ---
+ lib/iov_iter.c                                          | 24 ++++++++++++++----------
+ net/bridge/br_mrp.c                                     |  9 ++++++---
+ net/bridge/br_mrp_switchdev.c                           |  7 +++----
+ net/bridge/br_private_mrp.h                             |  3 +--
+ net/core/datagram.c                                     | 12 ++++++++++--
+ net/core/dev.c                                          | 11 ++++++-----
+ net/dsa/dsa2.c                                          |  7 +++++--
+ net/mac80211/Kconfig                                    |  2 +-
+ net/netfilter/nf_conntrack_core.c                       |  3 ++-
+ net/netfilter/nf_flow_table_core.c                      |  4 ++--
+ net/netfilter/nf_tables_api.c                           | 53 ++++++++++++++++++++++++++++++++++-------------------
+ net/netfilter/xt_recent.c                               | 12 ++++++++++--
+ net/qrtr/tun.c                                          |  6 ++++++
+ net/rxrpc/call_object.c                                 |  2 --
+ net/sctp/proc.c                                         | 16 ++++++++++++----
+ net/vmw_vsock/af_vsock.c                                | 15 +++++++--------
+ net/vmw_vsock/hyperv_transport.c                        |  4 ----
+ net/vmw_vsock/virtio_transport_common.c                 |  4 ++--
+ tools/testing/selftests/net/tls.c                       | 15 ++++++++++-----
+ tools/testing/selftests/net/txtimestamp.c               |  6 +++---
+ tools/testing/selftests/netfilter/nft_meta.sh           |  2 +-
+ 48 files changed, 429 insertions(+), 134 deletions(-)
