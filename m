@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EA1317310
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E768531731E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhBJWPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:15:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
+        id S233391AbhBJWQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:16:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbhBJWPF (ORCPT
+        with ESMTP id S233322AbhBJWPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:15:05 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504BCC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:14:25 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id p193so3644659yba.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:14:25 -0800 (PST)
+        Wed, 10 Feb 2021 17:15:48 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB72EC06178B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:14:48 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id w1so6866717ejf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:14:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=VWjM7/wBKHL4scsTLe5KXcjevC2FogNYYzs0R/QPoac=;
-        b=XStRtBd97ht21JGd6R50j43IpSGd/zQ+tXkHzGCHtpVVCHPOnuPS8ekC3qlryUbaE9
-         6mfGre+OYSuDNrZgaCGwGjLaubT2VoZLZ1OFzmkXira5oSpR2IYILbEv2rtwVh2gbws4
-         3Hw5jnE1RwwC2ROy0y2mCdsbIqk4CAm2TzofA7naiWhQLr3mHyJwsn8EooBG7EMENpJW
-         DWkmHWCLgdAJBd4NCIF1ONv8b3pcHD74cL0nxWGhTuAuehlsn4dKDzE/YUkmhSN502zR
-         Fe77wG2OR3+eLe2FyIUyM+4IJZC0aJqMNIamsP0OV/Cp5JpgscsP+0zaPdMvovwkhFVQ
-         FZHQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TLQHZYiHAcfMtJij9bBMXiJV8bp7vLmKRqNCBw8+ijc=;
+        b=CftyxJd0nXVsoqE3oViLeFHCTpBEQpvE37TwZ4oqafTgxDVd/JhRl0Vn5oIAVTGqpn
+         rZ9JU4qVG68o13ozYG6Iz7KLEQpn1kV8JnCFP2FeQx3CXlRj7uEStWu/1pTOnYkMUW3v
+         Og67ih/fSNfujPjwbczEsIPytMH/H+HVgDlEuAF803pTtgUifWV+rtJtJJ8UxJGjlkq6
+         M9XUAFm26X1wisgDUcgY9g3N+MGWPDjDlPPXxgDxMsXso+Hyvr/XErFk3SvJeahixVXU
+         q7N9F5otSddC2CMpV8zs50IXiDPCH3JbaY6zw3BN8y5wb8/H7HKcTJgGSS0Zj9zMXNNp
+         elGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=VWjM7/wBKHL4scsTLe5KXcjevC2FogNYYzs0R/QPoac=;
-        b=itJgNf2e3HhbHVAe9jLCC2bHfXsiRXLoLjkFim+Ih7EW9o8rAmhzDFO2wyCBHYeBYf
-         SruAcxmxWbfDcTsU6Y1ZbsLuOBBw+Mgbu4okhzn4KB9A8tawIavP894PqlFzkRcjE80I
-         UIHdN/hj86JC6kGqM0p3biBsWwmIvuHwH0w4W4clgvvJcqBdvBbwGCmmtknzm3Wnk1Aa
-         yUWDlHAEmKoamujVaSYGVhPCNC+rBcSBiAqwZyo5/p1LUTxbJIS/lyDbo99aIVLo3874
-         BXqcodGOogHimgERcspEqhbug/XRu5gSTYey2br6XuwKmsCeg6CWJhUblotp9JfPLc7x
-         +Rkw==
-X-Gm-Message-State: AOAM533Q70f4+6EeHV+kaGR1V/Bbhb78NADaQVIiwYvHMa+BmdFP3/vh
-        z8y0nvSyij4VeCdMYARdjmc4RGRQG+CZmbUouBucqA==
-X-Google-Smtp-Source: ABdhPJz3URz0lofJcCssdyg7nZLDEZn/GHBJSrxxYizLGPovCOiOwHAwalAXeiod/kZgAJAenDpnQBty+NJ6rTZjf+4=
-X-Received: by 2002:a25:b74c:: with SMTP id e12mr7988864ybm.20.1612995264346;
- Wed, 10 Feb 2021 14:14:24 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TLQHZYiHAcfMtJij9bBMXiJV8bp7vLmKRqNCBw8+ijc=;
+        b=rnx53ui1Y5K/TwkRMFu4QYctXNwp/K+ywW9/Ujvz4Iswg5K8wZuFJXK2/oAc0k1WxI
+         /Fc41TFSmy74O7XaDDkhiYZp9OwZG4qxRkVfpfLUJy1uuySzTYS34GGXI0yDhbrdutDC
+         q82NtULnzLdhTxwIKHf8637hmPsa1st6yptPs8XtC6AgFDqaCF4zEVGVc7VPkNipgBuc
+         CfGbkccCeApEOnqrpcPl8r+uNOSjZmUw2ErxGDzQdVdaSYfOe73t/uKNAoMQUfTmzGIh
+         UbqPt6FWEE5hshtRhHIE1RO1v5833ioCCzMtpIYRSoGmuhCrki+F+gu06Dh7MZ9vgMoy
+         he9A==
+X-Gm-Message-State: AOAM533kemD4bzH9UN1Nrzwo5lkr/o3OJmypatRC1QioGQ+ZwmD/wzmc
+        uSfDMWDLeLrwLlb/xeZJWSE=
+X-Google-Smtp-Source: ABdhPJz2EFGkeo94PcaY8UQDCUVYJyF/C0qFCnJHLmZHnw28VJfmsI5BiIngRgNAzmaLQti6EEKcaA==
+X-Received: by 2002:a17:906:390c:: with SMTP id f12mr5187225eje.31.1612995287367;
+        Wed, 10 Feb 2021 14:14:47 -0800 (PST)
+Received: from TRWS9215.usr.ingenico.loc ([78.190.146.52])
+        by smtp.gmail.com with ESMTPSA id b3sm2130578edw.14.2021.02.10.14.14.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 14:14:46 -0800 (PST)
+From:   Fatih YILDIRIM <yildirim.fatih@gmail.com>
+To:     pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, yildirim.fatih@gmail.com
+Subject: [PATCH 0/1] Coding style fix
+Date:   Thu, 11 Feb 2021 01:14:38 +0300
+Message-Id: <20210210221439.3489-1-yildirim.fatih@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 10 Feb 2021 14:13:48 -0800
-Message-ID: <CAGETcx9YpCUMmHjyydMtOJP9SKBbVsHNB-9SspD9u=txJ12Gug@mail.gmail.com>
-Subject: phy_attach_direct()'s use of device_bind_driver()
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Android Kernel Team <kernel-team@android.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
+I have a coding style fix in greybus subsystem.
 
-This email was triggered by this other email[1].
+By the way, I'm following the Eudyptula Challenge Linux kernel tasks and
+this patch is related to my task no 10. I hope I'm doing it the right way.
+Thanks for your understanding and kind comments.
 
-Why is phy_attach_direct() directly calling device_bind_driver()
-instead of using bus_probe_device()? I'm asking because this is
-causing device links status to not get updated correctly and causes
-this[2] warning.
+Fatih YILDIRIM (1):
+  Macros with multiple statements should be enclosed in a do - while
+    loop.
 
-We can fix the device links issue with something like this[3], but
-want to understand the reason for the current implementation of
-phy_attach_direct() before we go ahead and put in that fix.
+ drivers/staging/greybus/loopback.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Thanks,
-Saravana
+-- 
+2.20.1
 
-[1] - https://lore.kernel.org/lkml/e11bc6a2-ec9d-ea3b-71f7-13c9f764bbfc@nvidia.com/#t
-[2] - https://lore.kernel.org/lkml/56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com/
-[3] - https://lore.kernel.org/lkml/6a43e209-1d2d-b10a-4564-0289d54135d3@nvidia.com/
