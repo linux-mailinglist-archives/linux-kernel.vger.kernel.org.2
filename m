@@ -2,157 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D429316B1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 333D6316B19
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhBJQYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:24:33 -0500
-Received: from smtpcmd0642.aruba.it ([62.149.156.42]:33879 "EHLO
-        smtpcmd0642.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232286AbhBJQYA (ORCPT
+        id S232355AbhBJQXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:23:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232091AbhBJQXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:24:00 -0500
-Received: from [192.168.1.184] ([79.10.42.7])
-        by Aruba Outgoing Smtp  with ESMTPA
-        id 9sGEl0x2gl6ts9sGElboW6; Wed, 10 Feb 2021 17:22:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1612974160; bh=+zT/ViXdsyEqsM0XxHGfPKmXnHFZ85zQgkpYMgBh4Oo=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=KZRe+R9tdGmlGRClWHts7qbM0AWGy6q8nqNyi04jXGTU8LIdASdhyQ7BH+gCswyha
-         kzN4Ke8kQ2Cy6eyOZI5MTXLqzpf4XW49Cic0UNmD5KyChQzHoSgOCk1krEtxJ9K4/c
-         WBNiWfoTdcpwDI/kSTmjTVSDLv7s0UdXpp5iDzV/DPmigVnHDOzMoiQaORVFFTgpOz
-         UUnyr2bf3j/0N0BXfwZdCRU1+On7qJguMG53FMBaGgZZNBN5bCZBSQF6/93Nlm0O3D
-         7q1CsUjb/FAiDXdCOCsZ7aU5By1owYruUoJemu7wLTcT5SUbG/H1MN4wzwh5tJxOhB
-         KvChlSqrzX+Yg==
-Subject: [PATCH] pinctrl/sunxi: adding input-debounce-ns property
-To:     Maxime Ripard <maxime@cerno.tech>, wens@csie.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <d244aa6b-00b7-d768-83cb-e5a228b7ee08@trexom.it>
- <20210114081732.9386-1-giulio.benetti@benettiengineering.com>
- <20210114114219.faulkwww3dhdqwmc@gilmour>
-From:   Marjan Pascolo <marjan.pascolo@trexom.it>
-Message-ID: <c3bc06e3-4193-dc0b-b2b3-d54636481e28@trexom.it>
-Date:   Wed, 10 Feb 2021 17:22:37 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 10 Feb 2021 11:23:24 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50013C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:22:44 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id q9so2380212ilo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:22:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JSh8ExYxdty8HZ11KujafrMp7iovLQF4x5Wy4WPKtFY=;
+        b=MqBF5ZEr+daNm21Pgbp5M3xc3FrA2e2xhHAo0Dk1bkOF988nmvj/JIs0ba1jcPJ203
+         rl6mzOsv2xikvam4uDDIWkXM2lxulDO5Pw/Sz92l1FqLWb4bICKwNCirxhULXoxgy6w7
+         RnfuncRvRYQFUiRv98y3Apa/O2gIu6jPfC9xo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JSh8ExYxdty8HZ11KujafrMp7iovLQF4x5Wy4WPKtFY=;
+        b=exM2Y/SQBZOLiXzcbE8iDuXQqbAzblRsqnU8vb11wpFFN32WukpTvB/ZyVNJR+0HYw
+         9+i6+Xj4cClnQRj8D+G4PFp59LkMRleBrrapSHQi9+rlvrYIkFdMu7LIt3xEyb8CFChf
+         UmpAw1xAniAFObPsK5ZBJiU4QnmaLxep+3P2zUCNnoiejh7rolYE5Hk7E7CptvAa1q5x
+         UjQHyA8zT1aOnpZhe0/oLeeRcTgaKaMsh7qNHtudB2NcA1bsWZpKVX+30a3d8kSGhWGS
+         WBI+7Ay75mJz7obkfWK3kjO/fPxYkE5Q+Hd46iXS40eTaUTcjlblcwdPmUg1eOkeJ4oW
+         cbrQ==
+X-Gm-Message-State: AOAM531INuQC113Fsss0KP+Tzi+9hle/LuQnWr/r5zD/n13REMfo5QD4
+        2QZAph7Blp09XLU4YjYBVS/9kw==
+X-Google-Smtp-Source: ABdhPJzXyC8AmV48saKbwVck5pzWW/8Ry9H6e0li1SH7HuPENRqrnsNCXgsFgCru0G3RWsdbnHR4Nw==
+X-Received: by 2002:a92:dcc6:: with SMTP id b6mr1836908ilr.295.1612974163736;
+        Wed, 10 Feb 2021 08:22:43 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id k11sm1129540iop.45.2021.02.10.08.22.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 08:22:43 -0800 (PST)
+Subject: Re: [PATCH 2/5] ath10k: fix WARNING: suspicious RCU usage
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <23a1333dfb0367cc69e7177a2e373df0b6d42980.1612915444.git.skhan@linuxfoundation.org>
+ <20210210081320.2FBE5C433CA@smtp.codeaurora.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <7230c9e5-2632-b77e-c4f9-10eca557a5bb@linuxfoundation.org>
+Date:   Wed, 10 Feb 2021 09:22:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210114114219.faulkwww3dhdqwmc@gilmour>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: it
-X-CMAE-Envelope: MS4wfH6oTAFv1UAc1UHjeT7fAUES0ERDDBsJcmnoqFOgFC4ptHAeVTLQat5FeTa3CPXA5acPN5BTNTXELXNkmdiwK4JcdZovN+luGUaxplPcy95PLoftAoUr
- M5mpLLDSjADTP7z+8Ou0rzlTA6ofdIK6AiHqwlfsmOEPQTGD1feR+1zp6kUEs0dQHr2AL3VLgpUIt+qQ3qqNqRGPF41/LkEK0HuBtmvn4CvQ875aG7XWb59t
- uneMi4ET4xtInHSFyOf7NCULykYkLkFIP+EqY+ygFeWFqUada0m8ywN0eWwtru5r261rWaqYkbSJX4sxRnxsXxD0yJb/FalRjeGQ8RHOhJlYTdMjMcaEPKtK
- R/CH/zYX3rdF0oGLCcE1ErnL8nsZBA==
+In-Reply-To: <20210210081320.2FBE5C433CA@smtp.codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Allwinner SoC interrupt debounce can be controlled by two oscillator
-(32KHz and 24MHz) and a prescale divider.
-Oscillator and prescale divider are set through
-device tree property "input-debounce" which have 1uS accuracy.
-For acheive nS precision a new device tree poperty is made
-named "input-debounce-ns".
-"input-debounce-ns" is checked only if "input-debounce"
-property is not defined.
+On 2/10/21 1:13 AM, Kalle Valo wrote:
+> Shuah Khan <skhan@linuxfoundation.org> wrote:
+> 
+>> ieee80211_find_sta_by_ifaddr() must be called under the RCU lock and
+>> the resulting pointer is only valid under RCU lock as well.
+>>
+>> Fix ath10k_wmi_tlv_parse_peer_stats_info() to hold RCU lock before it
+>> calls ieee80211_find_sta_by_ifaddr() and release it when the resulting
+>> pointer is no longer needed. The log below shows the problem.
+>>
+>> While at it, fix ath10k_wmi_tlv_op_pull_peer_stats_info() to do the same.
+>>
+>> =============================
+>> WARNING: suspicious RCU usage
+>> 5.11.0-rc7+ #20 Tainted: G        W
+>> -----------------------------
+>> include/linux/rhashtable.h:594 suspicious rcu_dereference_check() usage!
+>> other info that might help us debug this:
+>>                 rcu_scheduler_active = 2, debug_locks = 1
+>> no locks held by ksoftirqd/5/44.
+>>
+>> stack backtrace:
+>> CPU: 5 PID: 44 Comm: ksoftirqd/5 Tainted: G        W         5.11.0-rc7+ #20
+>> Hardware name: LENOVO 10VGCTO1WW/3130, BIOS M1XKT45A 08/21/2019
+>> Call Trace:
+>>   dump_stack+0x7d/0x9f
+>>   lockdep_rcu_suspicious+0xdb/0xe5
+>>   __rhashtable_lookup+0x1eb/0x260 [mac80211]
+>>   ieee80211_find_sta_by_ifaddr+0x5b/0xc0 [mac80211]
+>>   ath10k_wmi_tlv_parse_peer_stats_info+0x3e/0x90 [ath10k_core]
+>>   ath10k_wmi_tlv_iter+0x6a/0xc0 [ath10k_core]
+>>   ? ath10k_wmi_tlv_op_pull_mgmt_tx_bundle_compl_ev+0xe0/0xe0 [ath10k_core]
+>>   ath10k_wmi_tlv_op_rx+0x5da/0xda0 [ath10k_core]
+>>   ? trace_hardirqs_on+0x54/0xf0
+>>   ? ath10k_ce_completed_recv_next+0x4e/0x60 [ath10k_core]
+>>   ath10k_wmi_process_rx+0x1d/0x40 [ath10k_core]
+>>   ath10k_htc_rx_completion_handler+0x115/0x180 [ath10k_core]
+>>   ath10k_pci_process_rx_cb+0x149/0x1b0 [ath10k_pci]
+>>   ? ath10k_htc_process_trailer+0x2d0/0x2d0 [ath10k_core]
+>>   ? ath10k_pci_sleep.part.0+0x6a/0x80 [ath10k_pci]
+>>   ath10k_pci_htc_rx_cb+0x15/0x20 [ath10k_pci]
+>>   ath10k_ce_per_engine_service+0x61/0x80 [ath10k_core]
+>>   ath10k_ce_per_engine_service_any+0x7d/0xa0 [ath10k_core]
+>>   ath10k_pci_napi_poll+0x48/0x120 [ath10k_pci]
+>>   net_rx_action+0x136/0x500
+>>   __do_softirq+0xc6/0x459
+>>   ? smpboot_thread_fn+0x2b/0x1f0
+>>   run_ksoftirqd+0x2b/0x60
+>>   smpboot_thread_fn+0x116/0x1f0
+>>   kthread+0x14b/0x170
+>>   ? smpboot_register_percpu_thread+0xe0/0xe0
+>>   ? __kthread_bind_mask+0x70/0x70
+>>   ret_from_fork+0x22/0x30
+>>
+>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
+> Unlucky timing also on this one, it conflicts with a patch I applied yesterday:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=2615e3cdbd9c0e864f5906279c952a309871d225
+> 
+> Can you redo the patch to only change ath10k_wmi_event_tdls_peer()?
+> 
 
+Yes. I will send the patch just for ath10k_wmi_event_tdls_peer()
+on top of your patch.
 
-Suggested-by: Maxime Ripard <maxime@cerno.tech>
-Signed-off-by: Marjan Pascolo <marjan.pascolo@trexom.it>
----
----
-  .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml  |  9 +++++++
-  drivers/pinctrl/sunxi/pinctrl-sunxi.c         | 25 ++++++++++++++++---
-  2 files changed, 30 insertions(+), 4 deletions(-)
+> error: patch failed: drivers/net/wireless/ath/ath10k/wmi-tlv.c:240
+> error: drivers/net/wireless/ath/ath10k/wmi-tlv.c: patch does not apply
+> stg import: Diff does not apply cleanly
+> 
+> Patch set to Changes Requested.
+> 
 
-diff --git 
-a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml 
-b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-index 5240487dfe50..346776de3a44 100644
---- 
-a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-+++ 
-b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-@@ -93,6 +93,15 @@ properties:
-      minItems: 1
-      maxItems: 5
-
-+  input-debounce-ns:
-+    description:
-+      Debouncing periods in nanoseconds, one period per interrupt
-+      bank found in the controller.
-+      Only checked if input-debounce is not present
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 1
-+    maxItems: 5
-+
-  patternProperties:
-    # It's pretty scary, but the basic idea is that:
-    #   - One node name can start with either s- or r- for PRCM nodes,
-diff --git a/drivers/pinctrl/sunxi/pinctrl-sunxi.c 
-b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-index dc8d39ae045b..869b6d5743ba 100644
---- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-+++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-@@ -1335,14 +1335,31 @@ static int sunxi_pinctrl_setup_debounce(struct 
-sunxi_pinctrl *pctl,
-      struct clk *hosc, *losc;
-      u8 div, src;
-      int i, ret;
-+    /* Keeping for loop below clean */
-+    const char* debounce_prop_name;
-+    unsigned long debounce_dividend;
-
-      /* Deal with old DTs that didn't have the oscillators */
-      if (of_clk_get_parent_count(node) != 3)
-          return 0;
-
-+    /*
-+     * Distinguish between simple input-debounce
-+     * and new input-debounce-ns
-+     */
-+
-      /* If we don't have any setup, bail out */
--    if (!of_find_property(node, "input-debounce", NULL))
--        return 0;
-+    if (!of_find_property(node, "input-debounce", NULL)) {
-+        if(!of_find_property(node, "input-debounce-ns", NULL)) {
-+            return 0;
-+        } else {
-+            debounce_prop_name="input-debounce-ns";
-+            debounce_dividend=NSEC_PER_SEC;
-+        }
-+    } else {
-+        debounce_prop_name="input-debounce";
-+        debounce_dividend=USEC_PER_SEC;
-+    }
-
-      losc = devm_clk_get(pctl->dev, "losc");
-      if (IS_ERR(losc))
-@@ -1356,7 +1373,7 @@ static int sunxi_pinctrl_setup_debounce(struct 
-sunxi_pinctrl *pctl,
-          unsigned long debounce_freq;
-          u32 debounce;
-
--        ret = of_property_read_u32_index(node, "input-debounce",
-+        ret = of_property_read_u32_index(node, debounce_prop_name,
-                           i, &debounce);
-          if (ret)
-              return ret;
-@@ -1364,7 +1381,7 @@ static int sunxi_pinctrl_setup_debounce(struct 
-sunxi_pinctrl *pctl,
-          if (!debounce)
-              continue;
-
--        debounce_freq = DIV_ROUND_CLOSEST(USEC_PER_SEC, debounce);
-+        debounce_freq = DIV_ROUND_CLOSEST(debounce_dividend, debounce);
-          losc_div = sunxi_pinctrl_get_debounce_div(losc,
-                                debounce_freq,
-                                &losc_diff);
--- 
-2.22.0.windows.1
-
-
+thanks,
+-- Shuah
