@@ -2,53 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E318316958
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 705C5316965
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhBJOoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:44:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231626AbhBJOoO (ORCPT
+        id S231639AbhBJOru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:47:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49512 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229917AbhBJOrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:44:14 -0500
-Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [IPv6:2001:4b7a:2000:18::166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE83C0613D6;
-        Wed, 10 Feb 2021 06:43:32 -0800 (PST)
-Received: from [192.168.1.101] (abac187.neoplus.adsl.tpnet.pl [83.6.166.187])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Wed, 10 Feb 2021 09:47:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612968378;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=fPXbqURy6kSX4ZxoBdBuEq+FZUuby0EHA9k832hQnFM=;
+        b=X2pSm1cHDIH/x5FHLcrG4KW9NeagUJDeCotD0t6Mu/kvFkP+DEsmMO5g4xSOCAd8p9WcDy
+        2rZGoGxqs3EiJVo0d6QiZDBNuAata/iUyie7UOman50IKE98BvieddLSAZg0tZ7kkx7r/a
+        LIONWPG2/V+RWOcI6BibcCn9kfiIxbQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-oJQTCZx_MwWRjqm9NwJ5tQ-1; Wed, 10 Feb 2021 09:46:16 -0500
+X-MC-Unique: oJQTCZx_MwWRjqm9NwJ5tQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id ED5BF3F3F7;
-        Wed, 10 Feb 2021 15:43:27 +0100 (CET)
-Subject: Re: [PATCH v3] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add DSI and
- panel bits
-To:     Amit Pundir <amit.pundir@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org
-References: <1612945128-23174-1-git-send-email-amit.pundir@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <75692378-d864-4862-45dc-aa0fd9594a2d@somainline.org>
-Date:   Wed, 10 Feb 2021 15:43:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <1612945128-23174-1-git-send-email-amit.pundir@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CD8B1005501;
+        Wed, 10 Feb 2021 14:46:13 +0000 (UTC)
+Received: from llong.com (ovpn-115-20.rdu2.redhat.com [10.10.115.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C24860936;
+        Wed, 10 Feb 2021 14:46:06 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ben Gardon <bgardon@google.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] locking/arch: Move qrwlock.h include after qspinlock.h
+Date:   Wed, 10 Feb 2021 09:45:56 -0500
+Message-Id: <20210210144556.10932-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+The queued rwlock code has a dependency on the current spinlock
+implementation (likely to be qspinlock), but not vice versa. Including
+qrwlock.h before qspinlock.h can be problematic when expanding qrwlock
+functionality.
 
-Konrad
+If both qspinlock.h and qrwlock.h are to be included, the qrwlock.h
+include should always be after qspinlock.h. Update the current set of
+asm/spinlock.h files to enforce that.
+
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ arch/arm64/include/asm/spinlock.h  | 2 +-
+ arch/mips/include/asm/spinlock.h   | 2 +-
+ arch/xtensa/include/asm/spinlock.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/include/asm/spinlock.h b/arch/arm64/include/asm/spinlock.h
+index 9083d6992603..0525c0b089ed 100644
+--- a/arch/arm64/include/asm/spinlock.h
++++ b/arch/arm64/include/asm/spinlock.h
+@@ -5,8 +5,8 @@
+ #ifndef __ASM_SPINLOCK_H
+ #define __ASM_SPINLOCK_H
+ 
+-#include <asm/qrwlock.h>
+ #include <asm/qspinlock.h>
++#include <asm/qrwlock.h>
+ 
+ /* See include/linux/spinlock.h */
+ #define smp_mb__after_spinlock()	smp_mb()
+diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
+index 8a88eb265516..6ce2117e49f6 100644
+--- a/arch/mips/include/asm/spinlock.h
++++ b/arch/mips/include/asm/spinlock.h
+@@ -10,7 +10,6 @@
+ #define _ASM_SPINLOCK_H
+ 
+ #include <asm/processor.h>
+-#include <asm/qrwlock.h>
+ 
+ #include <asm-generic/qspinlock_types.h>
+ 
+@@ -27,5 +26,6 @@ static inline void queued_spin_unlock(struct qspinlock *lock)
+ }
+ 
+ #include <asm/qspinlock.h>
++#include <asm/qrwlock.h>
+ 
+ #endif /* _ASM_SPINLOCK_H */
+diff --git a/arch/xtensa/include/asm/spinlock.h b/arch/xtensa/include/asm/spinlock.h
+index 584b0de6f2ca..41c449ece2d8 100644
+--- a/arch/xtensa/include/asm/spinlock.h
++++ b/arch/xtensa/include/asm/spinlock.h
+@@ -12,8 +12,8 @@
+ #define _XTENSA_SPINLOCK_H
+ 
+ #include <asm/barrier.h>
+-#include <asm/qrwlock.h>
+ #include <asm/qspinlock.h>
++#include <asm/qrwlock.h>
+ 
+ #define smp_mb__after_spinlock()	smp_mb()
+ 
+-- 
+2.18.1
+
