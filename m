@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5699316BD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 768FF316BE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhBJQzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:55:17 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:40032 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233137AbhBJQwB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:52:01 -0500
-Received: by mail-ot1-f46.google.com with SMTP id i20so2400208otl.7;
-        Wed, 10 Feb 2021 08:51:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HYDCWW0ri9ABwNvakmVNrOr5CXzUYGndo7RaL5QLnsY=;
-        b=d16j+9IqLn5pPaSzFyRl29YxYg0AsK3dOdQ/4D4keMg2iQD8pnoeaMl2a3w2AbhC2A
-         BMfvpmey5OkuMGYUQkmS7caUFuCZdadpuKJ02HGGFmaIUwpNY+GV+6Tb0V1gBwcqdXQ9
-         3ds1e4uNQ4OCuXESVef2IoiZbL4LcJKZgFUmEeWJV0jhE2nF1gkACgWEdk/VN81MAeLw
-         3DBVjGliESVjwC6rdLl2Ufbm+TYUhD+5Ngm6dRuZFIZwiPixyPsmk1ep9Uu7aU02M9Ka
-         xFjO8LaeuvRbES8zg1VPZR55h4CJY0oQDdZNPIROWRdCTNpDPkbancfSp9Jj0+bsFtTP
-         hC4g==
-X-Gm-Message-State: AOAM532DW7eOP8DtjLeqXrcnv2W3pbUCM5/v4xfqn6HtExqNELTNSO2l
-        v2QPYKC/8k1R4dwMGpKxRg==
-X-Google-Smtp-Source: ABdhPJytCx3NdyTubREuzpwniM9aZ3So4jziTwM7WzUcVNObDeXC7uO//8RwWqawI+Itzag/Jn/R0g==
-X-Received: by 2002:a05:6830:120c:: with SMTP id r12mr2830409otp.72.1612975881492;
-        Wed, 10 Feb 2021 08:51:21 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t3sm476211otb.36.2021.02.10.08.51.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 08:51:19 -0800 (PST)
-Received: (nullmailer pid 2315145 invoked by uid 1000);
-        Wed, 10 Feb 2021 16:51:18 -0000
-Date:   Wed, 10 Feb 2021 10:51:18 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     vkoul@kernel.org, kishon@ti.com, devicetree@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: phy: add Amlogic G12A Analog MIPI
- D-PHY bindings
-Message-ID: <20210210165118.GA2311581@robh.at.kernel.org>
-References: <20210210080736.771803-1-narmstrong@baylibre.com>
- <20210210080736.771803-2-narmstrong@baylibre.com>
+        id S233046AbhBJQ6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:58:37 -0500
+Received: from mga06.intel.com ([134.134.136.31]:7976 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232903AbhBJQ6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:58:07 -0500
+IronPort-SDR: jtMW4iIy6IQgyN1+zdQZT2Ypa8twsbmJYPNdXZRYqopHnB30jc/JmLtcrZwhPM7mUZBgqt6tE6
+ 4WsG8Ke3zqww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="243600272"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="243600272"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:54:20 -0800
+IronPort-SDR: YaHAI6bJQoUB7zMRBVuvHxXrWC1N8RXcKfsBSKreSHGJXC5Jz648w2uzLzbxNb4NTkGf52nZ2R
+ SwwyG1s397/A==
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="586375276"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:54:15 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l9skl-003m9n-6t; Wed, 10 Feb 2021 18:54:11 +0200
+Date:   Wed, 10 Feb 2021 18:54:11 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        akpm@linux-foundation.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        akinobu.mita@gmail.com, glider@google.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 0/3][RESEND] add support for never printing hashed
+ addresses
+Message-ID: <YCQPs9qg8dbSOh0S@smile.fi.intel.com>
+References: <20210210051814.845713-1-timur@kernel.org>
+ <6da0be5a-7cb0-4943-e61f-7c3275e60cb6@i-love.sakura.ne.jp>
+ <20210210111836.2468f10a@gandalf.local.home>
+ <e996ff2f-d350-1399-bb6b-8373bf70e687@i-love.sakura.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210080736.771803-2-narmstrong@baylibre.com>
+In-Reply-To: <e996ff2f-d350-1399-bb6b-8373bf70e687@i-love.sakura.ne.jp>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:07:35AM +0100, Neil Armstrong wrote:
-> The Amlogic G12A SoCs embeds an Analog MIPI D-PHY to communicate with DSI
-> panels, this adds the bindings.
+On Thu, Feb 11, 2021 at 01:39:41AM +0900, Tetsuo Handa wrote:
+> On 2021/02/11 1:18, Steven Rostedt wrote:
+> > The point of this exercise is to be able to debug the *same* kernel that
+> > someone is having issues with. And this is to facilitate that debugging.
 > 
-> This Analog D-PHY works with a separate Digital MIPI D-PHY.
-> 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->  .../phy/amlogic,g12a-mipi-dphy-analog.yaml    | 35 +++++++++++++++++++
->  1 file changed, 35 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog.yaml b/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog.yaml
-> new file mode 100644
-> index 000000000000..14bb8d78a860
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog.yaml
-> @@ -0,0 +1,35 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/phy/amlogic,g12a-mipi-dphy-analog.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Amlogic G12A MIPI analog PHY
-> +
-> +maintainers:
-> +  - Neil Armstrong <narmstrong@baylibre.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: amlogic,g12a-mipi-dphy-analog
-> +
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#phy-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    phy@0 {
-> +          compatible = "amlogic,g12a-mipi-dphy-analog";
-> +          #phy-cells = <0>;
-> +          reg = <0>;
+> That's too difficult to use. If a problem is not reproducible, we will have
+> no choice but always specify "never hash pointers" command line option. If a
+> problem is reproducible, we can rebuild that kernel with "never hash pointers"
+> config option turned on.
 
-If this is a child of something else, then put a $ref to this schema and 
-the example in the parent schema.
+I think what you are targeting is something like dynamic debug approach where
+you can choose which prints to enable/disable and what enable/disable in them.
 
-Rob
+In that case you specifically apply a command line option and enable only files
+/ lines in the files.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
