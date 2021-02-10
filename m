@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94063173E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B023173EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233711AbhBJXFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
+        id S233741AbhBJXHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:07:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233746AbhBJXFY (ORCPT
+        with ESMTP id S233358AbhBJXHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:05:24 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819F4C06174A;
-        Wed, 10 Feb 2021 15:04:22 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id t5so4953580eds.12;
-        Wed, 10 Feb 2021 15:04:22 -0800 (PST)
+        Wed, 10 Feb 2021 18:07:13 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77EAC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:06:32 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id v17so4233081ybq.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:06:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=91MESKnC1MhIt/jwzEzebE9493kbhWyUvwXaIA3Mid4=;
-        b=K/aiZvABimqe7FbqOGdmVgewChkSrWbAATd8jWlR9fCwgE77r/9/mhoSpgKS3RwDM7
-         bGcQ6P57XYC8phugX5DG83vLKQj0vXk/iHD6wqQzUPIestGB2fMQUQ07QI+CwvKJLsU2
-         In0WNJR9YU+jXhvZ1EqLIrP28PDrqD7obsmWkcCUSlioIAZhOon/4D4eF3+QLs4wHkHk
-         qXBuzlGiUJZq2NTJzwtW6fpjWkGWz9d2OfTGkh5CO74JJJ9Qkk4lMa/R+qKaREOSnTOC
-         mEiUXYjb9oUq2K0TgiUi1MIuFC0k/SScO/zJ7xJ7IqIW+5v4jszM3qdnQ10WQ8iMClLF
-         nBVw==
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=lEvJNf+eeRBlW12CD2hGETxb4z2rF+2HjSgOd3i59N4=;
+        b=EtP2zMcj9He4HNUCSKuttQNySDsBqi1ZFBdhPZjDXSzxacN8PGSoJ1aA/bNqHr26np
+         lm/gO+046j/WVp1Lnb7WOP8ix1jcu3LvnZMtkfU/KFvVMhPlOXE3UKpCbgzTjnQGk0KD
+         hPrA3sQzfMYMa/bCG9W5TDrxAuMLqgz8PRzJ4fyd8yqEIp95QmeysR+VAykYWzsTWG8e
+         2FBlLPp6EhPCTPEJ2oALEzQKLMBhsd9I9G7mU/SZna34pkK8LMuwnIeAAHR0rgiT1psO
+         MmFaAUeRnPN9GQawQf1wv01h1HanZAtVMuKkDPUXCfXEsLAJtKIrUNBXDM+7VR/bSrSo
+         Q2xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=91MESKnC1MhIt/jwzEzebE9493kbhWyUvwXaIA3Mid4=;
-        b=Ku1utY2i9RtUkt9I29fZ7FFfgRbvhFjDGBc6ODFA9hJ/O9d1vLJb5L5T67xtShOPql
-         3xKJp+zzz4903RmA2NtQlYZLZQuia6OchkNuZY4iw2g3GuJvaKnfpLG3X6GqNBcmKJ+P
-         F7Q6Xl2nL6B0q8Jy1Di2zQ6MGzWAfLWzctHDqJQnvrqXYmDkshg+gcNu6O7LBh1zwoKR
-         UXnyzM9oa+TMOfdaD5nMF2ZUIjULuu13Q16yrAQt0b2DS6drvmntv75j8mZ3wbT75DRC
-         OCssodpIp3/7nZqDPSuUPHa0IXLJ0obhDrcM1Chq9vJ82rUdiMhWRg63pxZ3jx+fpDVz
-         p+UA==
-X-Gm-Message-State: AOAM532ILiJ7AlELyTruo7clvWPtxDpYPIzZUkznbhKCoLZ6t7xJEI+0
-        /6RH8cQxoRlVNQFKGKoB/NlnY/0PlqjF9w==
-X-Google-Smtp-Source: ABdhPJytJAmoiunnhrtxBB3WYKIWjNOhpnL7Utd2JYAMyRIGFkFIKq3mHqcHKzS49+qQRa7I6pmFng==
-X-Received: by 2002:a05:6402:149:: with SMTP id s9mr5426679edu.247.1612998261281;
-        Wed, 10 Feb 2021 15:04:21 -0800 (PST)
-Received: from xws.localdomain ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id y20sm2062192edc.84.2021.02.10.15.04.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 15:04:20 -0800 (PST)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-test-robot <lkp@intel.com>
-Subject: [PATCH] platform/surface: aggregator: Fix access of unaligned value
-Date:   Thu, 11 Feb 2021 00:04:11 +0100
-Message-Id: <20210210230411.1938660-1-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=lEvJNf+eeRBlW12CD2hGETxb4z2rF+2HjSgOd3i59N4=;
+        b=VTP03+RbueIoFWvB9fX6jPDeH8J67DKFlq+FYH+0bsKLc3rwILZHJu1f2mlgatMdmf
+         1PL4qRXvkD/O5vtkdVg+q0K83+x4avLAKKIn5ZbwdN7a5VK1mz11MbzNWzh1XP+/j19u
+         T0DTrMpSPYpZE4L3Co6hE6Iio5czYxD2c/OzNWIbLPlQttYIr3fHE6wl/EZ0EJeYz0lG
+         NkaAEJPtAuFxQRIkiOzM6ojxXqZ+FcY26S6TdamtUvv5QL+e2ZkGl9lH+bvQrQCDzIDb
+         qLXafPmS2b78zG/uAvqRRUZMaJH7+HvF0iZ0LdUP53R5aluoyHiGJiinOqOrumInV3ay
+         18JA==
+X-Gm-Message-State: AOAM531hX4XZZ/VQ6tHZFYDnD/iYcOqLoCQq8Q+ujywE5IEOTE4UsuGP
+        smsQeU5LD+jhKbZUrGiDeSwVGDZBkFI=
+X-Google-Smtp-Source: ABdhPJwHI09nguSTMiySI5MlS1toxb2QJl5U/U1345plc//rwpzjcITxlVORplYLs2I4WgWuXSP0gmKvkhs=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:11fc:33d:bf1:4cb8])
+ (user=seanjc job=sendgmr) by 2002:a25:e052:: with SMTP id x79mr7761396ybg.378.1612998391954;
+ Wed, 10 Feb 2021 15:06:31 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 10 Feb 2021 15:06:10 -0800
+Message-Id: <20210210230625.550939-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH 00/15] VM: selftests: Hugepage fixes and cleanups
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The raw message frame length is unaligned and explicitly marked as
-little endian. It should not be accessed without the appropriatte
-accessor functions. Fix this.
+Fix hugepage bugs in the KVM selftests that specifically affect dirty
+logging and demand paging tests.  Found while attempting to verify KVM
+changes/fixes related to hugepages and dirty logging (patches incoming in
+a separate series).
 
-Reported-by: kernel-test-robot <lkp@intel.com>
-Fixes: c167b9c7e3d6 ("platform/surface: Add Surface Aggregator subsystem")
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
----
- drivers/platform/surface/aggregator/ssh_packet_layer.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Clean up the perf_test_args util on top of the hugepage fixes to clarify
+what "page size" means, and to improve confidence in the code doing what
+it thinks it's doing.  In a few cases, users of perf_test_args were
+duplicating (approximating?) calculations made by perf_test_args, and it
+wasn't obvious that both pieces of code were guaranteed to end up with the
+same result.
 
-diff --git a/drivers/platform/surface/aggregator/ssh_packet_layer.c b/drivers/platform/surface/aggregator/ssh_packet_layer.c
-index 583315db8b02..9a78188d8d1c 100644
---- a/drivers/platform/surface/aggregator/ssh_packet_layer.c
-+++ b/drivers/platform/surface/aggregator/ssh_packet_layer.c
-@@ -1774,7 +1774,8 @@ static size_t ssh_ptl_rx_eval(struct ssh_ptl *ptl, struct ssam_span *source)
- 		break;
- 	}
- 
--	return aligned.ptr - source->ptr + SSH_MESSAGE_LENGTH(frame->len);
-+	return aligned.ptr - source->ptr
-+		+ SSH_MESSAGE_LENGTH(get_unaligned_le16(&frame->len));
- }
- 
- static int ssh_ptl_rx_threadfn(void *data)
+Sean Christopherson (15):
+  KVM: selftests: Explicitly state indicies for vm_guest_mode_params
+    array
+  KVM: selftests: Expose align() helpers to tests
+  KVM: selftests: Align HVA for HugeTLB-backed memslots
+  KVM: selftests: Force stronger HVA alignment (1gb) for hugepages
+  KVM: selftests: Require GPA to be aligned when backed by hugepages
+  KVM: selftests: Use shorthand local var to access struct
+    perf_tests_args
+  KVM: selftests: Capture per-vCPU GPA in perf_test_vcpu_args
+  KVM: selftests: Use perf util's per-vCPU GPA/pages in demand paging
+    test
+  KVM: selftests: Move per-VM GPA into perf_test_args
+  KVM: selftests: Remove perf_test_args.host_page_size
+  KVM: selftests: Create VM with adjusted number of guest pages for perf
+    tests
+  KVM: selftests: Fill per-vCPU struct during "perf_test" VM creation
+  KVM: selftests: Sync perf_test_args to guest during VM creation
+  KVM: selftests: Track size of per-VM memslot in perf_test_args
+  KVM: selftests: Get rid of gorilla math in memslots modification test
+
+ .../selftests/kvm/demand_paging_test.c        |  39 ++---
+ .../selftests/kvm/dirty_log_perf_test.c       |  10 +-
+ .../testing/selftests/kvm/include/kvm_util.h  |  28 ++++
+ .../selftests/kvm/include/perf_test_util.h    |  18 +--
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  36 ++---
+ .../selftests/kvm/lib/perf_test_util.c        | 139 ++++++++++--------
+ .../kvm/memslot_modification_stress_test.c    |  16 +-
+ 7 files changed, 145 insertions(+), 141 deletions(-)
+
 -- 
-2.30.0
+2.30.0.478.g8a0d178c01-goog
 
