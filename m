@@ -2,95 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0109316A88
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6917316A85
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbhBJPzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:55:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40468 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230160AbhBJPzf (ORCPT
+        id S231186AbhBJPyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:54:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhBJPyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:55:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612972448;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/iXYwewC8ykR1ydcobsk8WlvcCmIoiMdSUj9YDWUA9Y=;
-        b=D06wfyprQxi4lvL6Ck8XyhnvAkPc/rfumdHyD1gKvnxc2/VKvaVSZMm5YN41g5DJzt77MZ
-        mZIOvssIYkMyYd12GXc8tGDlOP/yQUqKwdvW0PeVRESzGLTBPfQlcDNi4crfJqTY8bE9fZ
-        +zHcWR+0khztV+7hTDkd9UZrdK/uIzc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-v1nJFLltNMG8bJ8KVCA-_Q-1; Wed, 10 Feb 2021 10:54:02 -0500
-X-MC-Unique: v1nJFLltNMG8bJ8KVCA-_Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2188801977;
-        Wed, 10 Feb 2021 15:54:00 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-115-20.rdu2.redhat.com [10.10.115.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 41D9A10013D7;
-        Wed, 10 Feb 2021 15:53:59 +0000 (UTC)
-Subject: Re: [PATCH] locking/arch: Move qrwlock.h include after qspinlock.h
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Ben Gardon <bgardon@google.com>
-References: <20210210144556.10932-1-longman@redhat.com>
- <401dbbe1-096c-8af5-4e21-e355e602272e@roeck-us.net>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <d8f02a3f-4cef-c5d4-7646-fc435cfc9307@redhat.com>
-Date:   Wed, 10 Feb 2021 10:53:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <401dbbe1-096c-8af5-4e21-e355e602272e@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Wed, 10 Feb 2021 10:54:49 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7862CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:54:09 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id z6so3109181wrq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=diEVw5/O8/Cy8oiBHC8W2XTuoIkYQ2nZAo/0L37zzlA=;
+        b=WrxKkBGiNt0lpiBKQGILDGQoZOf6yr0kAlqHLYYFYcjMSJ8NcuITvVF+C9QqhvC2Uy
+         +bgxUTlXmwUCh5S9/or4Zeju6IG4TBVuqSZI8F999LcKPyQHlhpbczAbbqulxjTJUG8U
+         o0L2/lMRI1xuAP8bfX8tiOtKLvjJE9dUwVs9BhgwvWTdDxttqbGEAtr0O2SoJP+9B9jV
+         8HFZUkAI0MJtPvIkG02y+T4g6VBbJd7dz0CmyolNqRQYomSQaHwGoFTrWiQ49U/gPPiy
+         xx8hodBASgNWiO64H9WubL+A13Jn5Dhe0NQ50NoHP6UgV6aRyPDQiyvOpb+07x376uZW
+         d4XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=diEVw5/O8/Cy8oiBHC8W2XTuoIkYQ2nZAo/0L37zzlA=;
+        b=YP7sIk3TYHoH01QV128rJOCQRyErdH8BtWtlhAxWn9MMEIcY/KjU45c/G87G1ssqyJ
+         7x7gt3BRj5ji5BzWQjy9i5m8XagWqaeH6NwIbbuGOehBNuUqfLTIHy0y/N59TEVpN3o2
+         AZmWopKoJyCzTP0rf9bJV3vHKkWByIk1zhWdRLV42kooyXKNAkhv7wmVpT6o00TEZ6fm
+         t9mJKnmLYBfEfinpWw3YKxcBAWfLVjoGigHqO9QzSr//xzjS2NFW76qGGb4HaZH73kDY
+         ZWcaoBzhaeAWhDRxvH7/TTiExa0io8B3TmyvE23Fl13vf42fvPuhB9vtnXyp2+4QyTg+
+         2s6Q==
+X-Gm-Message-State: AOAM5316AA4UL8pf5d/QlSXUuQcnuAb/vF5e3nnXcBSxAsph7AwaigdV
+        SgBAwgQ7kChS7i1rqwzvaslNToQ5ajpUPQ==
+X-Google-Smtp-Source: ABdhPJw1QFVpKunbCZwyU8NE9x73nKK0p7MMY16TugmV4n0fp/nCj5n532ESqNTyy0hqmas54no7zQ==
+X-Received: by 2002:adf:ecd2:: with SMTP id s18mr4408622wro.311.1612972448181;
+        Wed, 10 Feb 2021 07:54:08 -0800 (PST)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id z6sm2787750wmi.39.2021.02.10.07.54.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Feb 2021 07:54:07 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH 1/2] bfq: remove some useless logic of
+ bfq_update_next_in_service()
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <bc39aeb5-4fb6-db15-3ad5-b310f5d5b486@kernel.dk>
+Date:   Wed, 10 Feb 2021 16:54:15 +0100
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Chunguang Xu <brookxu.cn@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6FFDC28C-BB1B-45F8-B2E9-2BCDF2CC1B61@linaro.org>
+References: <1611917485-584-1-git-send-email-brookxu@tencent.com>
+ <B4751549-78D9-4A84-8FB2-5DAA86ED39C8@linaro.org>
+ <20210210152034.puimoewzgtnnp2zl@spock.localdomain>
+ <bc39aeb5-4fb6-db15-3ad5-b310f5d5b486@kernel.dk>
+To:     Jens Axboe <axboe@kernel.dk>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 10:05 AM, Guenter Roeck wrote:
-> On 2/10/21 6:45 AM, Waiman Long wrote:
->> The queued rwlock code has a dependency on the current spinlock
->> implementation (likely to be qspinlock), but not vice versa. Including
->> qrwlock.h before qspinlock.h can be problematic when expanding qrwlock
->> functionality.
->>
->> If both qspinlock.h and qrwlock.h are to be included, the qrwlock.h
->> include should always be after qspinlock.h. Update the current set of
->> asm/spinlock.h files to enforce that.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
-> There should be a Fixes: tag here. If the SHA of the offending commit is not
-> stable, there should be a better reference than "The queued rwlock code".
-I originally have a Fixes tag when I was modifying the mips' 
-asm/spinlock.h file. After I realize that there are more files to 
-modify, I take that out. Anyway, the problem was exposed by Ben's 
-qrwlock patch. So existing stable releases should still be fine without 
-this patch.
->
-> This patch fixes the build problem I had observed on mips. I also tested
-> xtensa:defconfig and arm64:defconfig with no problems observed.
->
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks for the testing as I don't have a build environment to verify that.
 
-Cheers,
-Longman
+> Il giorno 10 feb 2021, alle ore 16:21, Jens Axboe <axboe@kernel.dk> ha =
+scritto:
+>=20
+> On 2/10/21 8:20 AM, Oleksandr Natalenko wrote:
+>> On Wed, Feb 10, 2021 at 12:13:29PM +0100, Paolo Valente wrote:
+>>>=20
+>>>=20
+>>>> Il giorno 29 gen 2021, alle ore 11:51, Chunguang Xu =
+<brookxu.cn@gmail.com> ha scritto:
+>>>>=20
+>>>> From: Chunguang Xu <brookxu@tencent.com>
+>>>>=20
+>>>> The if statement at the end of the function is obviously useless,
+>>>> maybe we can delete it.
+>>>>=20
+>>>=20
+>>> Thanks for spotting this mistake.
+>>>=20
+>>> Acked-by: Paolo Valente <paolo.valente@linaro.org>
+>>>=20
+>>>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+>>>> ---
+>>>> block/bfq-wf2q.c | 3 ---
+>>>> 1 file changed, 3 deletions(-)
+>>>>=20
+>>>> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+>>>> index 26776bd..070e34a 100644
+>>>> --- a/block/bfq-wf2q.c
+>>>> +++ b/block/bfq-wf2q.c
+>>>> @@ -137,9 +137,6 @@ static bool bfq_update_next_in_service(struct =
+bfq_sched_data *sd,
+>>>>=20
+>>>> 	sd->next_in_service =3D next_in_service;
+>>>>=20
+>>>> -	if (!next_in_service)
+>>>> -		return parent_sched_may_change;
+>>>> -
+>>=20
+>> Unless I'm missing something, this has already been fixed here:
+>>=20
+>> =
+https://git.kernel.dk/cgit/linux-block/commit/?h=3Dfor-5.12/block&id=3D1a2=
+3e06cdab2be07cbda460c6417d7de564c48e6
+>=20
+> Yep indeed.
+>=20
+
+I seemed to remember this patch as well. But my memory is rather weak.
+
+> --=20
+> Jens Axboe
 
