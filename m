@@ -2,196 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95ED3166CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 380073166D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231987AbhBJMd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:33:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbhBJMbW (ORCPT
+        id S231843AbhBJMfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:35:09 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:64782 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231812AbhBJMcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:31:22 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30EFC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:30:41 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id d85so1391204qkg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:30:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=enZFEFjPnVDKy5Tf5uYXOTSQtZWht4M7Wyya0sZvSX0=;
-        b=NicfCiKndcuJChQTNN5a3eGvVeyhhtieDO8+PjG8PLLhhvnMQqgqryax9VoN9lsaWJ
-         XTS+F+VCOy1xBGyJApqwoxHuoA1GIfuZf1axUoi9h2+H6FLvJdZi2hXid7qW9DGgeKe+
-         0HRTL9E7CNAxrbaK30fHQ9D+cZpUISAxWyNjMZ41JcPmph5KX/AlA2Gk1M8uN2u2sEt2
-         W+/C6wAIeMZBFSNMdGQkW+ZB282FOnKAx0/QaTumad26QAcF9h+ycOCe8A6aJ/9U0+n3
-         5k0GdCLZiosGohx9I5NPjv6XqlsKI90sarjeYGx1727fKyOoOuG7qZFKOOKx/5liTX8a
-         JRhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=enZFEFjPnVDKy5Tf5uYXOTSQtZWht4M7Wyya0sZvSX0=;
-        b=fE5DkdZZtmk1pCE82nXRwhKrs6rTP07ddyQPJEu4JOV9BBqnhyag/hzZIYUPjUNudN
-         SATsg5Tfu4Fi6DY/ljA2Nd1N6UQRnIrnOGyayhy2D5IOrmScZDWteW8bFj+xdoc2ldNH
-         +Qi2sulD4aeLXibHkwRl7iFpKhSCJh76fsX9Ig3qdcMsvrC9u/1AanSPlqpaQphyr2gJ
-         dmjpHYcGTdIxN20weZzttw2iBWTBrIwGAuaKwzQOEnoUTcUJ2mMbmaOinGxrdedjE8CI
-         5dBGLiLveR+tPzJecYXcS7Gm1ho32IPmsDakcPku6pJeAzQ10j8hlHV/K5Q2AqL7X8yT
-         I7Hw==
-X-Gm-Message-State: AOAM533JUI4fzermKiR8TC2h5vMJAaQYp5jtTRC8QkE71mNjUhtHgmoZ
-        3hvj7oyxsNZiYXe3tXL1OuJPgUFUxQBWbuD7tM70LTso9EAqQA==
-X-Google-Smtp-Source: ABdhPJzyjqBukjZvtAk65BtB9PrDvKg5QPFDBrgXHPnXOnzpLkOrdmOIMa7BccC49bGgo1NJ/An44gWSgfYSejpAfxA=
-X-Received: by 2002:ae9:e915:: with SMTP id x21mr2958560qkf.311.1612960241153;
- Wed, 10 Feb 2021 04:30:41 -0800 (PST)
+        Wed, 10 Feb 2021 07:32:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612960324; x=1644496324;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SO7PnQcQJ3brzaSnIG7oy+PGOYQzMMkRO1glIKCB4Gw=;
+  b=QgopBbR45+AUBWtur5kD4/sEcJAk6w2EmRcatzQM0UYMQzfBBMj7rH0E
+   fpQ7WvbClMY3aEe56jzrOMAPaim/zoA3nIgKJ+rvtbRWUqICZ4c13l9L2
+   TBxZLnWg4tsUlvVwyJtdBaILABrSR4Pkt0CQU8VfcHxi2j0BWuiVrwaQP
+   DWxtQXPYktGlWeHqU2CRkiRnb5pzIepIf6Q8Im7eoXrCV0wKo0vS5ia5k
+   N1haHtpwQaPjvCWEkIzN8MeN/Z/KjjHbNn3odb2KxKXASwdcsoPi+C/y8
+   QFkcyAHf4enYCigxgo/vx0Gyp0DdjST/OH+FR1zjFpvuMT1sSzigGEdIs
+   w==;
+IronPort-SDR: 6awY9cD4rgba1abvf2itvrwQML2cIf5BZBu+KG+tBpErpkVEaw03otQmSf1Htdl5UoARRa7/Hf
+ x4q9N9xv5vatJz5rlTG6tM2wLybi15gQYKJsEb+7GkIDD96xVUK3Fvp73GNY2E4KcKkxPrV5NM
+ OIlV+j6WhfYL1PpQafG9EVE1fMyPOnd9OWrhqMxVrEKJHexX+BgSDKyNAIh4Pvef951Qjy7EHZ
+ yCDPvp9Hqb3F0PvUjC2X2GuNlsBoVrSv8zwvoqaFQs62W2tW5sxcgDRKbj7rNfFnVvD01Jumcr
+ R94=
+X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
+   d="scan'208";a="43621032"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 05:30:41 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 10 Feb 2021 05:30:41 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 10 Feb 2021 05:30:41 -0700
+Date:   Wed, 10 Feb 2021 13:30:40 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     "jiri@resnulli.us" <jiri@resnulli.us>,
+        "ivecera@redhat.com" <ivecera@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "roopa@nvidia.com" <roopa@nvidia.com>,
+        "nikolay@nvidia.com" <nikolay@nvidia.com>,
+        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "Claudiu Manoil" <claudiu.manoil@nxp.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>
+Subject: Re: [PATCH net-next v3 5/5] net: mscc: ocelot: Add support for MRP
+Message-ID: <20210210123040.rz2whrtx35s6gbv5@soft-dev3.localdomain>
+References: <20210209202112.2545325-1-horatiu.vultur@microchip.com>
+ <20210209202112.2545325-6-horatiu.vultur@microchip.com>
+ <20210210101802.6ztf6c3ifldfa5fw@skbuf>
 MIME-Version: 1.0
-References: <20201217170009.GA29186@192.168.3.9> <CAA70yB6O2on1tpoA8TpT+Hp03iu_Xrpaa_d0HjVa75UFMTA4yg@mail.gmail.com>
- <CAA70yB5evFpMSy-D9txv91NNHTguXsSVstAFQ3sYTTkDMy6F=A@mail.gmail.com>
- <20210127111346.GB59838@balbir-desktop> <CAA70yB6P4_JsZnCrBkYg=7eyT5KW0XucUY+Y7T8YYMnXj6iVXA@mail.gmail.com>
- <20210204102020.GA286763@balbir-desktop> <CAA70yB4P2jhOSH=MSc+2NNSmaH8ckF4M0v_vGwE7c9qShMGKew@mail.gmail.com>
- <20210205000848.GB286763@balbir-desktop> <CAA70yB7VwbuzuU0=SH+mhSkYBiC28G2NCe9vpqfHv27gyxafCw@mail.gmail.com>
- <20210208055531.GD286763@balbir-desktop>
-In-Reply-To: <20210208055531.GD286763@balbir-desktop>
-From:   Weiping Zhang <zwp10758@gmail.com>
-Date:   Wed, 10 Feb 2021 20:30:30 +0800
-Message-ID: <CAA70yB74AH6J0iuhd5s4ONDVh71fEuh3Kr625H_CypyMP0Te+Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] taskstats: add /proc/taskstats to fetch pid/tgid status
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     sblbir@amazon.com, davem@davemloft.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20210210101802.6ztf6c3ifldfa5fw@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 1:55 PM Balbir Singh <bsingharora@gmail.com> wrote:
->
-> On Fri, Feb 05, 2021 at 10:43:02AM +0800, Weiping Zhang wrote:
-> > On Fri, Feb 5, 2021 at 8:08 AM Balbir Singh <bsingharora@gmail.com> wrote:
-> > >
-> > > On Thu, Feb 04, 2021 at 10:37:20PM +0800, Weiping Zhang wrote:
-> > > > On Thu, Feb 4, 2021 at 6:20 PM Balbir Singh <bsingharora@gmail.com> wrote:
-> > > > >
-> > > > > On Sun, Jan 31, 2021 at 05:16:47PM +0800, Weiping Zhang wrote:
-> > > > > > On Wed, Jan 27, 2021 at 7:13 PM Balbir Singh <bsingharora@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Fri, Jan 22, 2021 at 10:07:50PM +0800, Weiping Zhang wrote:
-> > > > > > > > Hello Balbir Singh,
-> > > > > > > >
-> > > > > > > > Could you help review this patch, thanks
-> > > > > > > >
-> > > > > > > > On Mon, Dec 28, 2020 at 10:10 PM Weiping Zhang <zwp10758@gmail.com> wrote:
-> > > > > > > > >
-> > > > > > > > > Hi David,
-> > > > > > > > >
-> > > > > > > > > Could you help review this patch ?
-> > > > > > > > >
-> > > > > > > > > thanks
-> > > > > > > > >
-> > > > > > > > > On Fri, Dec 18, 2020 at 1:24 AM Weiping Zhang
-> > > > > > > > > <zhangweiping@didiglobal.com> wrote:
-> > > > > > > > > >
-> > > > > > > > > > If a program needs monitor lots of process's status, it needs two
-> > > > > > > > > > syscalls for every process. The first one is telling kernel which
-> > > > > > > > > > pid/tgid should be monitored by send a command(write socket) to kernel.
-> > > > > > > > > > The second one is read the statistics by read socket. This patch add
-> > > > > > > > > > a new interface /proc/taskstats to reduce two syscalls to one ioctl.
-> > > > > > > > > > The user just set the target pid/tgid to the struct taskstats.ac_pid,
-> > > > > > > > > > then kernel will collect statistics for that pid/tgid.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
-> > > > > > >
-> > > > > > > Could you elaborate on the overhead your seeing for the syscalls? I am not
-> > > > > > > in favour of adding new IOCTL's.
-> > > > > > >
-> > > > > > > Balbir Singh.
-> > > > > >
-> > > > > > Hello Balbir Singh,
-> > > > > >
-> > > > > > Sorry for late reply,
-> > > > > >
-> > > > > > I do a performance test between netlink mode and ioctl mode,
-> > > > > > monitor 1000 and 10000 sleep processes,
-> > > > > > the netlink mode cost more time than ioctl mode, that is to say
-> > > > > > ioctl mode can save some cpu resource and has a quickly reponse
-> > > > > > especially when monitor lot of process.
-> > > > > >
-> > > > > > proccess-count    netlink         ioctl
-> > > > > > ---------------------------------------------
-> > > > > > 1000              0.004446851     0.001553733
-> > > > > > 10000             0.047024986     0.023290664
-> > > > > >
-> > > > > > you can get the test demo code from the following link
-> > > > > > https://github.com/dublio/tools/tree/master/c/taskstat
-> > > > > >
-> > > > >
-> > > > > Let me try it out, I am opposed to adding the new IOCTL interface
-> > > > > you propose. How frequently do you monitor this data and how much
-> > > > > time in spent in making decision on the data? I presume the data
-> > > > > mentioned is the cost per call in seconds?
-> > > > >
-> > > > This program just read every process's taskstats from kernel and do not
-> > > > any extra data calculation, that is to say it just test the time spend on
-> > > > these syscalls. It read data every 1 second, the output is delta time spend to
-> > > > read all 1000 or 10000 processes's taskstat.
-> > > >
-> > > > t1 = clock_gettime();
-> > > > for_each_pid /* 1000 or 10000 */
-> > > >         read_pid_taskstat
-> > > > t2 = clock_gettime();
-> > > >
-> > > > delta = t2 - t1.
-> > > >
-> > > > > > proccess-count    netlink         ioctl
-> > > > > > ---------------------------------------------
-> > > > > > 1000              0.004446851     0.001553733
-> > > > > > 10000             0.047024986     0.023290664
-> > > >
-> > > > Since netlink mode needs two syscall and ioctl mode needs one syscall
-> > > > the test result shows  netlink cost double time compare to ioctl.
-> > > > So I want to add this interface to reduce the time cost by syscall.
-> > > >
-> > > > You can get the test script from:
-> > > > https://github.com/dublio/tools/tree/master/c/taskstat#test-the-performance-between-netlink-and-ioctl-mode
-> > > >
-> > > > Thanks
-> > > >
-> > >
-> > > Have you looked at the listener interface in taskstats, where one
-> > > can register to listen on a cpumask against all exiting processes?
-> > >
-> > > That provides a register once and listen and filter interface (based
-> > > on pids/tgids returned) and lets the task be done on exit as opposed
-> > > to polling for data.
-> > >
-> > That is a good feature to collect data async mode, now I want to collect
-> > those long-time running process's data in a fixed frequency, like iotop.
-> > So I try to reduce the overhead cost by these syscalls when I polling
-> > a lot of long-time running processes.
+The 02/10/2021 10:18, Vladimir Oltean wrote:
+
+Hi Vladimir,
+
+> 
+> Would you mind adding the switchdev MRP support for the DSA driver too,
+> and move the code to the common ocelot library? I would like to give it
+> a run. I think that's only fair, since I have to keep in sync the
+> vsc7514 driver too for features that get added through DSA :)
+
+That is totally fair. I will do it in the next version :)
+
+> 
+> On Tue, Feb 09, 2021 at 09:21:12PM +0100, Horatiu Vultur wrote:
+> > Add basic support for MRP. The HW will just trap all MRP frames on the
+> > ring ports to CPU and allow the SW to process them. In this way it is
+> > possible to for this node to behave both as MRM and MRC.
 > >
-> > Thanks a ton
->
-> Still not convinced about it, I played around with it. The reason we did not
-> use ioctl in the first place is to get the benefits of TLA with netlink, which
-For monitoring long-time-running process the ioctl can meet our requirement,
-it is more simple than netlink when we get the real user data(struct taskstats).
-The netlink mode needs construct/parse extra strcutures like struct msgtemplate,
-struct nlmsghdr, struct genlmsghdr. The ioctl mode only has one
-structure (struct taskstats).
-For complicated user case the netlink mode is more suitable, for this
-simple user case
-the ioctl mode is more suitable. From the test results we can see that
-ioctl can save CPU
-resource, it's useful to build a light-weight monitor tools.
-> ioctl's miss. IMHO, the overhead is not very significant even for
-> 10,000 processes in your experiment. I am open to considering enhancing the
-> interface to do a set of pid's.
-It's a good approach to collect data in batch mode, I think we can support it in
-both netlink and ioctl mode.
+> > Current limitations are:
+> > - it doesn't support Interconnect roles.
+> > - it supports only a single ring.
+> > - the HW should be able to do forwarding of MRP Test frames so the SW
+> >   will not need to do this. So it would be able to have the role MRC
+> >   without SW support.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  drivers/net/ethernet/mscc/ocelot_net.c     | 154 +++++++++++++++++++++
+> >  drivers/net/ethernet/mscc/ocelot_vsc7514.c |   6 +
+> >  include/soc/mscc/ocelot.h                  |   6 +
+> >  3 files changed, 166 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/ethernet/mscc/ocelot_net.c
+> > index 8f12fa45b1b5..65971403e823 100644
+> > --- a/drivers/net/ethernet/mscc/ocelot_net.c
+> > +++ b/drivers/net/ethernet/mscc/ocelot_net.c
+> > @@ -9,7 +9,10 @@
+> >   */
+> >
+> >  #include <linux/if_bridge.h>
+> > +#include <linux/mrp_bridge.h>
+> >  #include <net/pkt_cls.h>
+> > +#include <soc/mscc/ocelot_vcap.h>
+> > +#include <uapi/linux/mrp_bridge.h>
+> >  #include "ocelot.h"
+> >  #include "ocelot_vcap.h"
+> >
+> > @@ -1069,6 +1072,139 @@ static int ocelot_port_obj_del_mdb(struct net_device *dev,
+> >       return ocelot_port_mdb_del(ocelot, port, mdb);
+> >  }
+> >
+> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> > +static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int port)
+> > +{
+> > +     struct ocelot_vcap_block *block_vcap_is2;
+> > +     struct ocelot_vcap_filter *filter;
+> > +
+> > +     block_vcap_is2 = &ocelot->block[VCAP_IS2];
+> > +     filter = ocelot_vcap_block_find_filter_by_id(block_vcap_is2, port,
+> > +                                                  false);
+> > +     if (!filter)
+> > +             return 0;
+> > +
+> > +     return ocelot_vcap_filter_del(ocelot, filter);
+> > +}
+> > +
+> > +static int ocelot_add_mrp(struct net_device *dev,
+> > +                       const struct switchdev_obj_mrp *mrp)
+> > +{
+> > +     struct ocelot_port_private *priv = netdev_priv(dev);
+> > +     struct ocelot_port *ocelot_port = &priv->port;
+> > +     struct ocelot *ocelot = ocelot_port->ocelot;
+> > +
+> > +     if (mrp->p_port != dev && mrp->s_port != dev)
+> > +             return 0;
+> > +
+> > +     if (ocelot->mrp_ring_id != 0 &&
+> > +         ocelot->mrp_s_port &&
+> > +         ocelot->mrp_p_port)
+> > +             return -EINVAL;
+> > +
+> > +     if (mrp->p_port == dev)
+> > +             ocelot->mrp_p_port = dev;
+> > +
+> > +     if (mrp->s_port == dev)
+> > +             ocelot->mrp_s_port = dev;
+> > +
+> > +     ocelot->mrp_ring_id = mrp->ring_id;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int ocelot_del_mrp(struct net_device *dev,
+> > +                       const struct switchdev_obj_mrp *mrp)
+> > +{
+> > +     struct ocelot_port_private *priv = netdev_priv(dev);
+> > +     struct ocelot_port *ocelot_port = &priv->port;
+> > +     struct ocelot *ocelot = ocelot_port->ocelot;
+> > +
+> > +     if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
+> > +             return 0;
+> > +
+> > +     if (ocelot->mrp_ring_id == 0 &&
+> > +         !ocelot->mrp_s_port &&
+> > +         !ocelot->mrp_p_port)
+> > +             return -EINVAL;
+> > +
+> > +     if (ocelot_mrp_del_vcap(ocelot, priv->chip_port))
+> > +             return -EINVAL;
+> > +
+> > +     if (ocelot->mrp_p_port == dev)
+> > +             ocelot->mrp_p_port = NULL;
+> > +
+> > +     if (ocelot->mrp_s_port == dev)
+> > +             ocelot->mrp_s_port = NULL;
+> > +
+> > +     ocelot->mrp_ring_id = 0;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int ocelot_add_ring_role(struct net_device *dev,
+> > +                             const struct switchdev_obj_ring_role_mrp *mrp)
+> > +{
+> > +     struct ocelot_port_private *priv = netdev_priv(dev);
+> > +     struct ocelot_port *ocelot_port = &priv->port;
+> > +     struct ocelot *ocelot = ocelot_port->ocelot;
+> > +     struct ocelot_vcap_filter *filter;
+> > +     int err;
+> > +
+> > +     if (ocelot->mrp_ring_id != mrp->ring_id)
+> > +             return -EINVAL;
+> > +
+> > +     if (!mrp->sw_backup)
+> > +             return -EOPNOTSUPP;
+> > +
+> > +     if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
+> > +             return 0;
+> > +
+> > +     filter = kzalloc(sizeof(*filter), GFP_KERNEL);
+> > +     if (!filter)
+> > +             return -ENOMEM;
+> > +
+> > +     filter->key_type = OCELOT_VCAP_KEY_ETYPE;
+> > +     filter->prio = 1;
+> > +     filter->id.cookie = priv->chip_port;
+> > +     filter->id.tc_offload = false;
+> > +     filter->block_id = VCAP_IS2;
+> > +     filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
+> > +     filter->ingress_port_mask = BIT(priv->chip_port);
+> > +     *(__be16 *)filter->key.etype.etype.value = htons(ETH_P_MRP);
+> > +     *(__be16 *)filter->key.etype.etype.mask = htons(0xffff);
+> > +     filter->action.mask_mode = OCELOT_MASK_MODE_PERMIT_DENY;
+> > +     filter->action.port_mask = 0x0;
+> > +     filter->action.cpu_copy_ena = true;
+> > +     filter->action.cpu_qu_num = 0;
+> > +
+> > +     err = ocelot_vcap_filter_add(ocelot, filter, NULL);
+> > +     if (err)
+> > +             kfree(filter);
+> > +
+> > +     return err;
+> > +}
+> > +
+> > +static int ocelot_del_ring_role(struct net_device *dev,
+> > +                             const struct switchdev_obj_ring_role_mrp *mrp)
+> > +{
+> > +     struct ocelot_port_private *priv = netdev_priv(dev);
+> > +     struct ocelot_port *ocelot_port = &priv->port;
+> > +     struct ocelot *ocelot = ocelot_port->ocelot;
+> > +
+> > +     if (ocelot->mrp_ring_id != mrp->ring_id)
+> > +             return -EINVAL;
+> > +
+> > +     if (!mrp->sw_backup)
+> > +             return -EOPNOTSUPP;
+> > +
+> > +     if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
+> > +             return 0;
+> > +
+> > +     return ocelot_mrp_del_vcap(ocelot, priv->chip_port);
+> > +}
+> > +#endif
+> > +
+> 
+> Would it make sense for this chunk of conditionally compiled code to
+> stay in a separate file like ocelot_mrp.c?
 
-Add ioctl can give user mode choice and make user code more simple, it seems no
-harm to taskstats framework, I'd like to support it.
+Also initially I was thinking to add this code in a different file but I
+was not sure. But I will do that in the next version.
 
-Thanks very much
->
-> Balbir Singh.
+> 
+> >  static int ocelot_port_obj_add(struct net_device *dev,
+> >                              const struct switchdev_obj *obj,
+> >                              struct netlink_ext_ack *extack)
+> > @@ -1083,6 +1219,15 @@ static int ocelot_port_obj_add(struct net_device *dev,
+> >       case SWITCHDEV_OBJ_ID_PORT_MDB:
+> >               ret = ocelot_port_obj_add_mdb(dev, SWITCHDEV_OBJ_PORT_MDB(obj));
+> >               break;
+> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> > +     case SWITCHDEV_OBJ_ID_MRP:
+> > +             ret = ocelot_add_mrp(dev, SWITCHDEV_OBJ_MRP(obj));
+> > +             break;
+> > +     case SWITCHDEV_OBJ_ID_RING_ROLE_MRP:
+> > +             ret = ocelot_add_ring_role(dev,
+> > +                                        SWITCHDEV_OBJ_RING_ROLE_MRP(obj));
+> > +             break;
+> > +#endif
+> 
+> I'm not really sure why SWITCHDEV_OBJ_ID_MRP is conditionally defined.
+> If you look at SWITCHDEV_ATTR_ID_BRIDGE_VLAN_FILTERING, that isn't
+> conditionally defined, even though it depends on CONFIG_BRIDGE_VLAN_FILTERING
+> at runtime.
+
+Then should I just create another patch for removing this? To be honest
+I also prefer that SWITCHDEV_OBJ_ID_MRP will not be conditionally
+defined.
+
+> 
+> >       default:
+> >               return -EOPNOTSUPP;
+> >       }
+> > @@ -1103,6 +1248,15 @@ static int ocelot_port_obj_del(struct net_device *dev,
+> >       case SWITCHDEV_OBJ_ID_PORT_MDB:
+> >               ret = ocelot_port_obj_del_mdb(dev, SWITCHDEV_OBJ_PORT_MDB(obj));
+> >               break;
+> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> > +     case SWITCHDEV_OBJ_ID_MRP:
+> > +             ret = ocelot_del_mrp(dev, SWITCHDEV_OBJ_MRP(obj));
+> > +             break;
+> > +     case SWITCHDEV_OBJ_ID_RING_ROLE_MRP:
+> > +             ret = ocelot_del_ring_role(dev,
+> > +                                        SWITCHDEV_OBJ_RING_ROLE_MRP(obj));
+> > +             break;
+> > +#endif
+> >       default:
+> >               return -EOPNOTSUPP;
+> >       }
+> > diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> > index 6b6eb92149ba..96a9c9f98060 100644
+> > --- a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> > +++ b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> > @@ -698,6 +698,12 @@ static irqreturn_t ocelot_xtr_irq_handler(int irq, void *arg)
+> >                       skb->offload_fwd_mark = 1;
+> >
+> >               skb->protocol = eth_type_trans(skb, dev);
+> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> > +             if (skb->protocol == ntohs(ETH_P_MRP) &&
+> > +                 (priv->dev == ocelot->mrp_p_port ||
+> > +                  priv->dev == ocelot->mrp_s_port))
+> > +                     skb->offload_fwd_mark = 0;
+> > +#endif
+> 
+> I wonder if you could just reserve a certain CPUQ for trapped traffic,
+> and just generically check for that, instead of MRP port roles?
+
+That is a good idea, I would try to have a look.
+
+> 
+> >               if (!skb_defer_rx_timestamp(skb))
+> >                       netif_rx(skb);
+> >               dev->stats.rx_bytes += len;
+> > diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
+> > index d0d48e9620fb..d95c019ad84e 100644
+> > --- a/include/soc/mscc/ocelot.h
+> > +++ b/include/soc/mscc/ocelot.h
+> > @@ -682,6 +682,12 @@ struct ocelot {
+> >       /* Protects the PTP clock */
+> >       spinlock_t                      ptp_clock_lock;
+> >       struct ptp_pin_desc             ptp_pins[OCELOT_PTP_PINS_NUM];
+> > +
+> > +#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> > +     u16                             mrp_ring_id;
+> > +     struct net_device               *mrp_p_port;
+> > +     struct net_device               *mrp_s_port;
+> > +#endif
+> >  };
+> >
+> >  struct ocelot_policer {
+> > --
+> > 2.27.0
+> >
+
+-- 
+/Horatiu
