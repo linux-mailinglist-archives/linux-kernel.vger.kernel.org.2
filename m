@@ -2,146 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AAC31614E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E405316144
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhBJIot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:44:49 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:40408 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhBJIjx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:39:53 -0500
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 11A8cOpL014811;
-        Wed, 10 Feb 2021 17:38:25 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 11A8cOpL014811
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1612946305;
-        bh=3DX8/02wQ6Cpgi5cMSc+g0gcdAe8jyFLRruNtzqSL8I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Fa0JrmPqdyIUA3NnzAbZE+CwnixA7nu/ms2u+YPZignsSyacJgm3b07m7/gYny+ff
-         FSxg8rW3UdvfHuJAkUEZmkkMjGTT79Q3liiqvOcYRNDMZ1NKPydgZ17eUlkVGUL4RV
-         rS2jIxJ7+c7MQ6jeVJM9Js2idV7v/WRqRs0/J6wefkecv11TtquPmmzRkkgC68E9uv
-         1nmibWQju9+tgf70HFqLpN6NQEKLU208AJ0IMTaVzgP9uR9nJKSqR4HM/m5NdpUTmo
-         BiMZWsbUTz8BoEGHBJPDrLjtcG9RZUVLmwkN+vm87PDDabGpTsDl24REm3SIQ+QomE
-         dBRLmSFJd8cVA==
-X-Nifty-SrcIP: [209.85.216.51]
-Received: by mail-pj1-f51.google.com with SMTP id e9so746054pjj.0;
-        Wed, 10 Feb 2021 00:38:24 -0800 (PST)
-X-Gm-Message-State: AOAM533Z6oMinG/oEH/HFO0aeBir9bmENTZk8oepPvaJ6cSuXxMZr35S
-        20Id83a8v8T4MHm4xmX8aTxwDO93fABc6Hz7gXY=
-X-Google-Smtp-Source: ABdhPJy0W0dEpNV//idNYeiwVy2Ma7CnIC9BVDYPcuhy8IEKdENaRxxWUEGOfqjoAtApW/XluCBhRNPQq63xC/MaK7Q=
-X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr2176385pjh.198.1612946304251;
- Wed, 10 Feb 2021 00:38:24 -0800 (PST)
+        id S230229AbhBJIlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:41:44 -0500
+Received: from muru.com ([72.249.23.125]:59702 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230166AbhBJIii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 03:38:38 -0500
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id B185D80EB;
+        Wed, 10 Feb 2021 08:38:13 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Suman Anna <s-anna@ti.com>, Tero Kristo <kristo@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Yongqin Liu <yongqin.liu@linaro.org>
+Subject: [PATCH] soc: ti: omap-prm: Fix reboot issue with invalid pcie reset map for dra7
+Date:   Wed, 10 Feb 2021 10:37:51 +0200
+Message-Id: <20210210083751.19202-1-tony@atomide.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210209210843.3af66662@canb.auug.org.au> <YCKnRPRTDyfGxnBC@gunter>
- <20210210085051.7fb951d1@canb.auug.org.au> <YCOUGGJtUJ+Nf0ZA@gunter>
-In-Reply-To: <YCOUGGJtUJ+Nf0ZA@gunter>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 10 Feb 2021 17:37:47 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQn8BX9H577Mfp8WMzzaZZ=oZdEti1Lx2XptZY8aHmzuQ@mail.gmail.com>
-Message-ID: <CAK7LNAQn8BX9H577Mfp8WMzzaZZ=oZdEti1Lx2XptZY8aHmzuQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the modules tree
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 5:06 PM Jessica Yu <jeyu@kernel.org> wrote:
->
-> +++ Stephen Rothwell [10/02/21 08:50 +1100]:
-> >Hi Jessica,
-> >
-> >On Tue, 9 Feb 2021 16:16:20 +0100 Jessica Yu <jeyu@kernel.org> wrote:
-> >>
-> >> Hmm, these errors don't look like it's related to that particular commit. I was
-> >
-> >I found this commit by bisection and then tested by reverting it.
-> >
-> >Before this commit, CONFIG_TRIM_UNUSED_KSYMS would not be set in the
-> >allyesconfig build because CONFIG_UNUSED_SYMBOLS was set.  After this
-> >commit, CONFIG_TRIM_UNUSED_KSYMS will be set in the allyesconfig build.
->
-> Ah, that makes sense then. I would get the error on powerpc whenever
-> CONFIG_TRIM_UNUSED_KSYMS was enabled.
->
-> >> able to reproduce these weird autoksym errors even without any modules-next
-> >> patches applied, and on a clean v5.11-rc7 tree. To reproduce it,
-> >> CONFIG_TRIM_UNUSED_KSYMS needs to be enabled. I guess that's why we run into
-> >> these errors with allyesconfig. I used a gcc-7 ppc64le cross compiler and got
-> >> the same compiler warnings. It seems to not compile on powerpc properly because
-> >> it looks like some symbols have an extra dot "." prefix, for example in
-> >> kthread.o:
-> >>
-> >>     168: 0000000000000318    24 NOTYPE  GLOBAL DEFAULT    6 kthread_create_worker
-> >>     169: 0000000000001d90   104 FUNC    GLOBAL DEFAULT    1 .kthread_create_worker
-> >>     170: 0000000000000330    24 NOTYPE  GLOBAL DEFAULT    6 kthread_create_worker_on_cpu
-> >>     171: 0000000000001e00    88 FUNC    GLOBAL DEFAULT    1 .kthread_create_worker_on_cpu
-> >>     172: 0000000000000348    24 NOTYPE  GLOBAL DEFAULT    6 kthread_queue_work
-> >>     173: 0000000000001e60   228 FUNC    GLOBAL DEFAULT    1 .kthread_queue_work
-> >>
-> >> So I suppose this dot prefix is specific to powerpc. From the ppc64 elf abi docs:
-> >>
-> >>      Symbol names with a dot (.) prefix are reserved for holding entry point
-> >>      addresses. The value of a symbol named ".FN", if it exists, is the entry point
-> >>      of the function "FN".
-> >>
-> >> I guess the presence of the extra dot symbols is confusing
-> >> scripts/gen_autoksyms.sh, so we get the dot symbols in autoksyms.h, which the
-> >> preprocessor doesn't like. I am wondering how this was never caught until now
-> >> and also now curious if this feature was ever functional on powerpc..
-> >
-> >Which feature?
->
-> Sorry, by "feature" I meant CONFIG_TRIM_UNUSED_KSYMS. This config
-> option was introduced around v4.7. If simply enabling it produces
-> these compilation errors I was wondering if it ever built properly on
-> powerpc.
->
-> Thanks,
->
-> Jessica
+Yongqin Liu <yongqin.liu@linaro.org> reported an issue where reboot hangs
+on beagleboard-x15. This started happening after commit 7078a5ba7a58
+("soc: ti: omap-prm: Fix boot time errors for rst_map_012 bits 0 and 1").
 
+We now assert any 012 type resets on init to prevent unconfigured
+accelerator MMUs getting enabled on init depending on the bootloader or
+kexec configured state.
 
-Thanks for the report.
+Turns out that we now also wrongly assert dra7 l3init domain PCIe reset
+bits causing a hang during reboot. Let's fix the l3init reset bits to
+use a 01 map instead of 012 map. There are only two rstctrl bits and not
+three. This is documented in TRM "Table 3-1647. RM_PCIESS_RSTCTRL".
 
-I think the following will fix the issue,
-but modpost needs fixing too.
+Fixes: 5a68c87afde0 ("soc: ti: omap-prm: dra7: add genpd support for remaining PRM instances")
+Fixes: 7078a5ba7a58 ("soc: ti: omap-prm: Fix boot time errors for rst_map_012 bits 0 and 1")
+Cc: Kishon Vijay Abraham I <kishon@ti.com>
+Reported-by: Yongqin Liu <yongqin.liu@linaro.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/soc/ti/omap_prm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
-index 16c0b2ddaa4c..996a7109167b 100755
---- a/scripts/gen_autoksyms.sh
-+++ b/scripts/gen_autoksyms.sh
-@@ -44,7 +44,7 @@ sed 's/ko$/mod/' $modlist |
- xargs -n1 sed -n -e '2{s/ /\n/g;/^$/!p;}' -- |
- cat - "$ksym_wl" |
- sort -u |
--sed -e 's/\(.*\)/#define __KSYM_\1 1/' >> "$output_file"
-+sed -e 's/^\.\{,1\}\(.*\)/#define __KSYM_\1 1/' >> "$output_file"
-
- # Special case for modversions (see modpost.c)
- if [ -n "$CONFIG_MODVERSIONS" ]; then
-m
-
-
-
-
-I will post two patches with some commit log
-after some testing.
-(one for gen_autoksyms.sh and the other for modpost).
-
-
-
-
-
+diff --git a/drivers/soc/ti/omap_prm.c b/drivers/soc/ti/omap_prm.c
+--- a/drivers/soc/ti/omap_prm.c
++++ b/drivers/soc/ti/omap_prm.c
+@@ -332,7 +332,7 @@ static const struct omap_prm_data dra7_prm_data[] = {
+ 	{
+ 		.name = "l3init", .base = 0x4ae07300,
+ 		.pwrstctrl = 0x0, .pwrstst = 0x4, .dmap = &omap_prm_alwon,
+-		.rstctrl = 0x10, .rstst = 0x14, .rstmap = rst_map_012,
++		.rstctrl = 0x10, .rstst = 0x14, .rstmap = rst_map_01,
+ 		.clkdm_name = "pcie"
+ 	},
+ 	{
 -- 
-Best Regards
-Masahiro Yamada
+2.30.1
