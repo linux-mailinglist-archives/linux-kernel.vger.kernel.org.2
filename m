@@ -2,255 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECFB317097
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFAA3170A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhBJTtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:49:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233114AbhBJTt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:49:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8195D64EDF
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 19:48:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612986526;
-        bh=FAPGExqOTkOBqOlkCN+OURryuSv/6YZbk+hA40//uP4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qqXiVHqcEQzlQMKfWyZGVyXTnVfbR0Nh8XzPsU/TsXK2AOyNqURhBBi73UGFdA2aB
-         rboYLFKEEveMuxdXxvRGNnyTxB7ojs/J4VffGjotsaBzDPMUT3o78Ziq9yw5Ek9VcO
-         r6ll9iFBr5goU8h60p/GWFjs9v9A5CXyWQqK5lTv65sAP/Jkrx9bCvjEqQ0FOEG713
-         Ao7Rnj1kfBo1n5tZHIJbUdNXJ3b9GITeeP8/oJplZbIDGzW8C8sYZvwBTSA7f2Xlke
-         ntUR0nnFo4lOMKI3sdwmwjBA8942xZ4C7JtIgne4ft3/ISBJZn16iHJVig8dw8pkEb
-         ThMuCmO5hLOqQ==
-Received: by mail-ej1-f42.google.com with SMTP id hs11so6342737ejc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:48:46 -0800 (PST)
-X-Gm-Message-State: AOAM533eiJUV8XOHud2d1rJWOkiH9RwrcId2QGeOXNjrU1OLMuAs3MkK
-        BZrEx5HD1Tk+87APumKMYm6yPQDCmeIx+4SgrWtI9g==
-X-Google-Smtp-Source: ABdhPJxZ1Oe7ZfDn2o8sh5z16NgXDE74CZwTf3R65dv3ub1JlsAMldes56Bodh/Kn0gw1S45DR4gxiZj4SL+x2P51Tw=
-X-Received: by 2002:a17:906:17d3:: with SMTP id u19mr4829127eje.316.1612986524982;
- Wed, 10 Feb 2021 11:48:44 -0800 (PST)
+        id S232516AbhBJTvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:51:52 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44014 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232802AbhBJTvh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 14:51:37 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11AJo32w023859;
+        Wed, 10 Feb 2021 13:50:03 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612986603;
+        bh=KbGjO9RvEE9nypUEybeaQ6iz5h67qLkB0O8m1jrgJBc=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=C6J7LLk7n/hg1720k5dC1KGWg58+rp6eT8FXtAyK2wLcbRw4YGnD/xlMVYKPqe8kP
+         r/UKk0WF6JbNryd0yxdmI34QTl1oU4i1aTgEjTSl6wnI1b2BUwsn2oAZCY70VKiCB0
+         FL2Ckf877nchhNZisf6PBmumULG0DsNdhfqiTHOI=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11AJo21U102328
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Feb 2021 13:50:03 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 10
+ Feb 2021 13:50:03 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 10 Feb 2021 13:50:03 -0600
+Received: from [10.250.39.16] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11AJo3nM107248;
+        Wed, 10 Feb 2021 13:50:03 -0600
+Subject: Re: [EXTERNAL] Re: [PATCH 1/2] power: supply: bq25980: Applies
+ multiple fixes brought on
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     <sre@kernel.org>, <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210209230527.26712-1-r-rivera-matos@ti.com>
+ <CAJKOXPdy4BJMSb7KXhU8vYrJ2+qWPOw0MzTGhXQEgh1xHDZFNw@mail.gmail.com>
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Message-ID: <8f952bd9-1849-af7e-d54f-b897c653a126@ti.com>
+Date:   Wed, 10 Feb 2021 13:50:03 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210210175703.12492-1-yu-cheng.yu@intel.com> <20210210175703.12492-7-yu-cheng.yu@intel.com>
-In-Reply-To: <20210210175703.12492-7-yu-cheng.yu@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 10 Feb 2021 11:48:33 -0800
-X-Gmail-Original-Message-ID: <CALCETrVBTocCecYfTMEqeeHSquyWLPYBDP4eWQECo9WFYg2_pg@mail.gmail.com>
-Message-ID: <CALCETrVBTocCecYfTMEqeeHSquyWLPYBDP4eWQECo9WFYg2_pg@mail.gmail.com>
-Subject: Re: [PATCH v20 06/25] x86/cet: Add control-protection fault handler
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJKOXPdy4BJMSb7KXhU8vYrJ2+qWPOw0MzTGhXQEgh1xHDZFNw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 9:58 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+Krzysztof,
+
+On 2/10/21 2:20 AM, Krzysztof Kozlowski wrote:
+> On Wed, 10 Feb 2021 at 00:52, Ricardo Rivera-Matos
+> <r-rivera-matos@ti.com> wrote:
+>> fix: corrects various register step size and offset values
+>>
+>> fix: corrects bq25980_get_input_curr_lim() and bq25980_set_input_curr_lim()
+>>
+>> fix: corrects bq25980_get_const_charge_curr() and bq25980_set_const_charge_curr()
+>>
+>> fix: corrects BQ25960_BATOVP_MIN_uV, BQ25960_BATOVP_OFFSET_uV,
+>>
+>> BQ25960_BATOVP_STEP_uV, and BQ25960_BATOVP_MAX_uV
+>>
+>> fix: corrects busocp_sc_min and busocp_byp_min members
+>>
+>> fix: removes unnecessary polarity check from bq25980_get_adc_ibus()
+>>
+>> fix: removes unnecessary polarity check from bq25980_get_adc_ibat()
+>>
+>> fix: clamps ibat_adc to match datasheet change
+> Thanks for the patch.
 >
-> A control-protection fault is triggered when a control-flow transfer
-> attempt violates Shadow Stack or Indirect Branch Tracking constraints.
-> For example, the return address for a RET instruction differs from the copy
-> on the shadow stack; or an indirect JMP instruction, without the NOTRACK
-> prefix, arrives at a non-ENDBR opcode.
+> Only one fix at a time and please exactly describe what is being fixed
+> using proper sentences (starting with capital letter, ending with a
+> full stop... and usually description needs multiple of such
+> sentences). You add here multiple changes without proper description
+> of a problem being fixed. This is not the correct style of a patch.
+ACK, this patch is meant to implement changes brought on by a new 
+datasheet revision. The revision tweaked the register step size and 
+offset values to improve the accuracy. I can rebase and reword the patch 
+if that works for you.
 >
-> The control-protection fault handler works in a similar way as the general
-> protection fault handler.  It provides the si_code SEGV_CPERR to the signal
-> handler.
->
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-> ---
->  arch/x86/include/asm/idtentry.h    |  4 ++
->  arch/x86/kernel/idt.c              |  4 ++
->  arch/x86/kernel/signal_compat.c    |  2 +-
->  arch/x86/kernel/traps.c            | 63 ++++++++++++++++++++++++++++++
->  include/uapi/asm-generic/siginfo.h |  3 +-
->  5 files changed, 74 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-> index f656aabd1545..ff4b3bf634da 100644
-> --- a/arch/x86/include/asm/idtentry.h
-> +++ b/arch/x86/include/asm/idtentry.h
-> @@ -574,6 +574,10 @@ DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_SS,    exc_stack_segment);
->  DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_GP,        exc_general_protection);
->  DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_AC,        exc_alignment_check);
->
-> +#ifdef CONFIG_X86_CET
-> +DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_CP, exc_control_protection);
-> +#endif
-> +
->  /* Raw exception entries which need extra work */
->  DECLARE_IDTENTRY_RAW(X86_TRAP_UD,              exc_invalid_op);
->  DECLARE_IDTENTRY_RAW(X86_TRAP_BP,              exc_int3);
-> diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-> index ee1a283f8e96..e8166d9bbb10 100644
-> --- a/arch/x86/kernel/idt.c
-> +++ b/arch/x86/kernel/idt.c
-> @@ -105,6 +105,10 @@ static const __initconst struct idt_data def_idts[] = {
->  #elif defined(CONFIG_X86_32)
->         SYSG(IA32_SYSCALL_VECTOR,       entry_INT80_32),
->  #endif
-> +
-> +#ifdef CONFIG_X86_CET
-> +       INTG(X86_TRAP_CP,               asm_exc_control_protection),
-> +#endif
->  };
->
->  /*
-> diff --git a/arch/x86/kernel/signal_compat.c b/arch/x86/kernel/signal_compat.c
-> index a5330ff498f0..dd92490b1e7f 100644
-> --- a/arch/x86/kernel/signal_compat.c
-> +++ b/arch/x86/kernel/signal_compat.c
-> @@ -27,7 +27,7 @@ static inline void signal_compat_build_tests(void)
->          */
->         BUILD_BUG_ON(NSIGILL  != 11);
->         BUILD_BUG_ON(NSIGFPE  != 15);
-> -       BUILD_BUG_ON(NSIGSEGV != 9);
-> +       BUILD_BUG_ON(NSIGSEGV != 10);
->         BUILD_BUG_ON(NSIGBUS  != 5);
->         BUILD_BUG_ON(NSIGTRAP != 5);
->         BUILD_BUG_ON(NSIGCHLD != 6);
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index 7f5aec758f0e..8c7fa91a57c9 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -39,6 +39,7 @@
->  #include <linux/io.h>
->  #include <linux/hardirq.h>
->  #include <linux/atomic.h>
-> +#include <linux/nospec.h>
->
->  #include <asm/stacktrace.h>
->  #include <asm/processor.h>
-> @@ -606,6 +607,68 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
->         cond_local_irq_disable(regs);
->  }
->
-> +#ifdef CONFIG_X86_CET
-> +static const char * const control_protection_err[] = {
-> +       "unknown",
-> +       "near-ret",
-> +       "far-ret/iret",
-> +       "endbranch",
-> +       "rstorssp",
-> +       "setssbsy",
-> +       "unknown",
-> +};
-> +
-> +/*
-> + * When a control protection exception occurs, send a signal to the responsible
-> + * application.  Currently, control protection is only enabled for user mode.
-> + * This exception should not come from kernel mode.
-> + */
-> +DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
-> +{
-> +       static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
-> +                                     DEFAULT_RATELIMIT_BURST);
-> +       struct task_struct *tsk;
-> +
-> +       if (!user_mode(regs)) {
-> +               pr_emerg("PANIC: unexpected kernel control protection fault\n");
-> +               die("kernel control protection fault", regs, error_code);
-> +               panic("Machine halted.");
-
-I think it would be nice to decode the error code and print the cause.
-
-> +       }
-> +
-> +       cond_local_irq_enable(regs);
-
-We got rid of user mode irqs off a while ago.   You can just do
-local_irq_enable();
-
-> +
-> +       if (!boot_cpu_has(X86_FEATURE_CET))
-> +               WARN_ONCE(1, "Control protection fault with CET support disabled\n");
-> +
-> +       tsk = current;
-> +       tsk->thread.error_code = error_code;
-> +       tsk->thread.trap_nr = X86_TRAP_CP;
-
-
-
-> +
-> +       /*
-> +        * Ratelimit to prevent log spamming.
-> +        */
-> +       if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
-> +           __ratelimit(&rs)) {
-> +               unsigned long ssp;
-> +               int err;
-> +
-> +               err = array_index_nospec(error_code, ARRAY_SIZE(control_protection_err));
-
-Shouldn't this do a bounds check?  You also need to handle the ENCL bit.
-
-> +
-> +               rdmsrl(MSR_IA32_PL3_SSP, ssp);
-> +               pr_emerg("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)",
-> +                        tsk->comm, task_pid_nr(tsk),
-> +                        regs->ip, regs->sp, ssp, error_code,
-> +                        control_protection_err[err]);
-
-That should be pr_info();
-
-> +               print_vma_addr(KERN_CONT " in ", regs->ip);
-> +               pr_cont("\n");
-> +       }
-> +
-> +       force_sig_fault(SIGSEGV, SEGV_CPERR,
-> +                       (void __user *)uprobe_get_trap_addr(regs));
-> +       cond_local_irq_disable(regs);
-> +}
-> +#endif
-> +
->  static bool do_int3(struct pt_regs *regs)
->  {
->         int res;
-> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-> index d2597000407a..1c2ea91284a0 100644
-> --- a/include/uapi/asm-generic/siginfo.h
-> +++ b/include/uapi/asm-generic/siginfo.h
-> @@ -231,7 +231,8 @@ typedef struct siginfo {
->  #define SEGV_ADIPERR   7       /* Precise MCD exception */
->  #define SEGV_MTEAERR   8       /* Asynchronous ARM MTE error */
->  #define SEGV_MTESERR   9       /* Synchronous ARM MTE exception */
-> -#define NSIGSEGV       9
-> +#define SEGV_CPERR     10      /* Control protection fault */
-> +#define NSIGSEGV       10
->
->  /*
->   * SIGBUS si_codes
-> --
-> 2.21.0
->
+> Best regards,
+> Krzysztof
+Best Regards,
+Ricardo
