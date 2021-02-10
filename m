@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BD13160FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3A0316100
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhBJI2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:28:44 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:43872 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230444AbhBJI01 (ORCPT
+        id S229892AbhBJI3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:29:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232268AbhBJI0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:26:27 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612945567; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=9EoJ98RLCOjfNGA9m9IWMD0BBEcL08tR1uiW4fkuRXk=; b=LIeuY0QF0X+fPFbeEfsY1+Y4O+OvkOnd+NDiEbZzREibbHD96ucgyrUjNkgeqPcUzR6Mx1L2
- a++hy/2VQ1BkLs/Qs0opAlQQ78hnCUZSRKpiYOMv1UC2MPneu5GHvb+rkOlAcXaFhJdO1TP6
- 8YmbLmk1lUZ/FBk8hpyB5P9ceGI=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6023988434db06ef79edb785 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 08:25:40
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 035F8C433ED; Wed, 10 Feb 2021 08:25:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4F74CC433ED;
-        Wed, 10 Feb 2021 08:25:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4F74CC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org
-Subject: Re: [PATCH 4/5] ath10k: detect conf_mutex held ath10k_drain_tx() calls
-References: <cover.1612915444.git.skhan@linuxfoundation.org>
-        <a980abfb143f5240375f3f1046f0f26971c695e6.1612915444.git.skhan@linuxfoundation.org>
-Date:   Wed, 10 Feb 2021 10:25:35 +0200
-In-Reply-To: <a980abfb143f5240375f3f1046f0f26971c695e6.1612915444.git.skhan@linuxfoundation.org>
-        (Shuah Khan's message of "Tue, 9 Feb 2021 17:42:25 -0700")
-Message-ID: <87lfbwtjls.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Wed, 10 Feb 2021 03:26:38 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC537C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:25:52 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id fa16so705720pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:25:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g4mAxK84GVyyKetwRBgARd5k8KiBNnAsnToA/1zbXCg=;
+        b=GLne2KwtyWUcLtsjoYrN2d+ZV3yyoA3ILAldzIyiYA8Z7waJFzoH7SNdpikNHbBVAy
+         +PKuZ2LJBCfu0JtcPEJjYTz1KEuPLyTadRuVGRXE0dRv/ZiboPdinPnVC68WkXKDLV0M
+         7CLvS8Hmt3mpG/urv/zMZP3vzNCuaDV4ypO9eMe2rvfy30KlSgZFqFR94Xx4i6+06V4Q
+         m3hXLSTKNNdnf5rF5s2OI1OHxvT8G41ixRVOpkZgbOST8D7i7AHjT+kK5KKssvGtOlPD
+         Wh3nOdDRhI1XTKZANfFNzMNQhyxyt9TXRgad4pua6Ovc8FF8sSptWfVEiM7L9pfSDZI6
+         8OoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g4mAxK84GVyyKetwRBgARd5k8KiBNnAsnToA/1zbXCg=;
+        b=dxrqLvUkuyW5RXXXoowY0U2uIrslKL6fzdMVYhuC+2SPRrFaEETCpGgTKa/C8ZLMPw
+         a2r+kzwRQrKn1JiqUlRX4hqJWqqpoc7/f9Qd/IOGw5CYNCOwpR+iiBFj2LWx5OKq4lIV
+         CzFE7TyHc00zwED2ZPsE2nF7kUhsB5dlRtD5cgswpIhtRdBuio+7cN0lbNXHljxrthxr
+         hFXALx3ugLTmENdCrHY1oOYCaz91QtDCzQxpK/C1smiaKBxDW4S46Mcx0SalYwV8uidn
+         +RRRxHjr+KTINWWVrBg9CS+Y75Y0cwqFSaSA2M6dZoSxZbJABXeNFiJRYwNAKzWX2AsW
+         X44g==
+X-Gm-Message-State: AOAM5328QvGEo28+dD6g8+F6iOZEEzcxfIgOzwGs0OWWhrqcSaxcWCnV
+        2UfGHCntVTb3cv+UfBGNsmMl
+X-Google-Smtp-Source: ABdhPJzhj439RRQshBLOOGPVaOfrmeeEbK3w7uF7K8DfGOTJ+v0iCH7vyeCfb1G1rhxshZxuv5OtPw==
+X-Received: by 2002:a17:90b:e09:: with SMTP id ge9mr2016098pjb.173.1612945552492;
+        Wed, 10 Feb 2021 00:25:52 -0800 (PST)
+Received: from localhost.localdomain ([103.66.79.29])
+        by smtp.gmail.com with ESMTPSA id r68sm1402963pfc.49.2021.02.10.00.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 00:25:51 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/1] MHI fix for v5.12
+Date:   Wed, 10 Feb 2021 13:55:37 +0530
+Message-Id: <20210210082538.2494-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shuah Khan <skhan@linuxfoundation.org> writes:
+Hi Greg,
 
-> ath10k_drain_tx() must not be called with conf_mutex held as workers can
-> use that also. Add check to detect conf_mutex held calls.
->
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+At the last moment we noticed a regression which existed since last release.
+Since we are very late for v5.11 rc, please consider merging this patch for
+v5.12.
 
-The commit log does not answer to "Why?". How did you find this? What
-actual problem are you trying to solve?
+Thanks,
+Mani
 
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 53f92945006f..3545ce7dce0a 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -4566,6 +4566,7 @@ static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
->  /* Must not be called with conf_mutex held as workers can use that also. */
->  void ath10k_drain_tx(struct ath10k *ar)
->  {
-> +	WARN_ON(lockdep_is_held(&ar->conf_mutex));
+Loic Poulain (1):
+  mhi: Fix double dma free
 
-Empty line after WARN_ON().
-
-Shouldn't this check debug_locks similarly lockdep_assert_held() does?
-
-#define lockdep_assert_held(l)	do {				\
-		WARN_ON(debug_locks && !lockdep_is_held(l));	\
-	} while (0)
-
-And I suspect you need #ifdef CONFIG_LOCKDEP which should fix the kbuild
-bot error.
-
-But honestly I would prefer to have lockdep_assert_not_held() in
-include/linux/lockdep.h, much cleaner that way. Also
-i915_gem_object_lookup_rcu() could then use the same macro.
+ drivers/bus/mhi/core/init.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.25.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
