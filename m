@@ -2,140 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043A4317164
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB3831716C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbhBJU3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:29:31 -0500
-Received: from mga09.intel.com ([134.134.136.24]:38341 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231948AbhBJU3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:29:25 -0500
-IronPort-SDR: qH/w83vVi8Z8ZlMSvlEXRBknftDqaDEsjYy44oQyWURJ9jQMWM+MkGsdMUy0WY1hVZod7NU/IY
- aK7puWpyAc0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="182283593"
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="182283593"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 12:28:42 -0800
-IronPort-SDR: C2gtxQF37nYHRLTyTbO97ptYfjx/bOJpnwR80Eqectr+d5v2RSeD7yjf1Uve6yLfo+U+QTX09R
- 11FIsNyOKKfg==
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="421193546"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.188.167]) ([10.212.188.167])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 12:28:40 -0800
-Subject: Re: [PATCH v20 08/25] x86/mm: Introduce _PAGE_COW
-To:     Kees Cook <keescook@chromium.org>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>, haitao.huang@intel.com
-References: <20210210175703.12492-1-yu-cheng.yu@intel.com>
- <20210210175703.12492-9-yu-cheng.yu@intel.com>
- <202102101137.E109C9FE6@keescook>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <819b6d6a-64ea-d908-76ad-0a6366ed0d53@intel.com>
-Date:   Wed, 10 Feb 2021 12:28:39 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233463AbhBJUbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232957AbhBJUbF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 15:31:05 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606FFC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:30:25 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id m2so1999911pgq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:30:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PJmyrPMtY2yl3dmSpn8becwEl0NxjN1C6ENVTeSAzlE=;
+        b=X7XpCWjvk18kXKw4kgMeu1XUk8U7GbMdhpE5e+l1++YScKxVkxab8MNbcLqNr8wBrr
+         ZJZ818OauFIFOg8P7lTA8QQ4ETqmSmWEKzpn0fV3uJFPPt1PO/737jzcipfov7sQK3m0
+         SXXOqLOEV46SOP162eAoPlNnq2fEEZr6ePUJuZ3ggRxeuC08BXeJ61psj8R6jcDJqUYy
+         +gvEM6tGLocvi2BGtrERzlFYVIAg984r9+5DSJ6uNo1EueaGvzaLwwLhFNU6G60pKHOp
+         ie4f7uaIrDinfLIjYZLqb51AVW716iBugIMb+XLb/au/6HDLHquWlyrkTfRDhmb4tCMk
+         AEBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PJmyrPMtY2yl3dmSpn8becwEl0NxjN1C6ENVTeSAzlE=;
+        b=RZC1d1NNA3q9LRgenLHTmY1ZPKOS8Nto9vrzd12eMGd/zKCapDRKoRY4LJsVdyp+aI
+         TXd137eA8xcI7Wqcjk7wHYv7XHOUT1rf6WloarbnYr8nnUoNF/tsAlCd9b3zVe1SWVw6
+         WqE44cSecfZUGWPIa52iOlvMSo4vngd2R+ZRnZVnfElz+JItydf1Sp4zRch/yWWVSm2X
+         FyIrPd6Py+W6QYIlftE+RVRbB7ZC+7YKIb91rUnrrN+w+fdmaqPy+32FkT02B806NPf4
+         jqd1ft5KFBxzzJqYs0iVPK24zDp7PgQw7tv118U7QE0CxdnmIyvy7rEnIgQIoKq3fhrA
+         Rswg==
+X-Gm-Message-State: AOAM5328cmKD9dzcVK49GBGBdHH6inhwnbGz7C819TEk4iCyukmcHB6n
+        gx5L6YbwTp4mMkgTZ1gGut+Zd3FLhTU3UA==
+X-Google-Smtp-Source: ABdhPJx/uZo8a0fja85mAj0hfq+nTFT8A2F/S0ELEgZ/8HdLoCv/0e1g8z3yendy4HZ4EAakwBh3rA==
+X-Received: by 2002:a63:e54f:: with SMTP id z15mr4664275pgj.247.1612989024640;
+        Wed, 10 Feb 2021 12:30:24 -0800 (PST)
+Received: from ?IPv6:2620:10d:c085:21c1::194c? ([2620:10d:c090:400::5:a5c1])
+        by smtp.gmail.com with ESMTPSA id it6sm2915538pjb.15.2021.02.10.12.30.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 12:30:24 -0800 (PST)
+Subject: Re: [PATCH][next] io_uring: remove redundant initialization of
+ variable ret
+To:     Colin King <colin.king@canonical.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210210200007.149248-1-colin.king@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7cbce70d-741e-2948-d1c4-9f30a89d029d@kernel.dk>
+Date:   Wed, 10 Feb 2021 13:30:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <202102101137.E109C9FE6@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210210200007.149248-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/2021 11:42 AM, Kees Cook wrote:
-> On Wed, Feb 10, 2021 at 09:56:46AM -0800, Yu-cheng Yu wrote:
->> There is essentially no room left in the x86 hardware PTEs on some OSes
->> (not Linux).  That left the hardware architects looking for a way to
->> represent a new memory type (shadow stack) within the existing bits.
->> They chose to repurpose a lightly-used state: Write=0, Dirty=1.
->>
->> The reason it's lightly used is that Dirty=1 is normally set by hardware
->> and cannot normally be set by hardware on a Write=0 PTE.  Software must
->> normally be involved to create one of these PTEs, so software can simply
->> opt to not create them.
->>
->> In places where Linux normally creates Write=0, Dirty=1, it can use the
->> software-defined _PAGE_COW in place of the hardware _PAGE_DIRTY.  In other
->> words, whenever Linux needs to create Write=0, Dirty=1, it instead creates
->> Write=0, Cow=1, except for shadow stack, which is Write=0, Dirty=1.  This
->> clearly separates shadow stack from other data, and results in the
->> following:
->>
->> (a) A modified, copy-on-write (COW) page: (Write=0, Cow=1)
->> (b) A R/O page that has been COW'ed: (Write=0, Cow=1)
->>      The user page is in a R/O VMA, and get_user_pages() needs a writable
->>      copy.  The page fault handler creates a copy of the page and sets
->>      the new copy's PTE as Write=0 and Cow=1.
->> (c) A shadow stack PTE: (Write=0, Dirty=1)
->> (d) A shared shadow stack PTE: (Write=0, Cow=1)
->>      When a shadow stack page is being shared among processes (this happens
->>      at fork()), its PTE is made Dirty=0, so the next shadow stack access
->>      causes a fault, and the page is duplicated and Dirty=1 is set again.
->>      This is the COW equivalent for shadow stack pages, even though it's
->>      copy-on-access rather than copy-on-write.
->> (e) A page where the processor observed a Write=1 PTE, started a write, set
->>      Dirty=1, but then observed a Write=0 PTE.  That's possible today, but
->>      will not happen on processors that support shadow stack.
->>
->> Define _PAGE_COW and update pte_*() helpers and apply the same changes to
->> pmd and pud.
+On 2/10/21 1:00 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> I still find this commit confusing mostly due to _PAGE_COW being 0
-> without CET enabled. Shouldn't this just get changed universally? Why
-> should this change depend on CET?
-> 
+> The variable ret is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
 
-For example, in...
+Applied, thanks.
 
-static inline int pte_write(pte_t pte)
-{
-	if (cpu_feature_enabled(X86_FEATURE_SHSTK))
-		return pte_flags(pte) & (_PAGE_RW | _PAGE_DIRTY);
-	else
-		return pte_flags(pte) & _PAGE_RW;
-}
+-- 
+Jens Axboe
 
-There are four cases:
-
-(a) RW=1, Dirty=1 -> writable
-(b) RW=1, Dirty=0 -> writable
-(c) RW=0, Dirty=0 -> not writable
-(d) RW=0, Dirty=1 -> shadow stack, or not-writable if !X86_FEATURE_SHSTK
-
-Case (d) is ture only when shadow stack is enabled, otherwise it is not 
-writable.  With shadow stack feature, the usual dirty, copy-on-write PTE 
-becomes RW=0, Cow=1.
-
-We can get this changed universally, but all usual dirty, copy-on-write 
-PTEs need the Dirty/Cow swapping, always.  Is that desirable?
-
---
-Yu-cheng
-
-[...]
