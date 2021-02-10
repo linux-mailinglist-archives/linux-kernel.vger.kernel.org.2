@@ -2,182 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAD4316528
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACDF316521
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhBJL0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbhBJLQJ (ORCPT
+        id S231799AbhBJLXv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Feb 2021 06:23:51 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:46601 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230486AbhBJLPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:16:09 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B13C0611C1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:14:39 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id m13so1974068wro.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:14:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sz6D6ERg6o5rQEjkN1863Afv5YNdZlEinqDFPvm/M+g=;
-        b=Op0ecYS+MiCa7Wwvp8vwywu3BgXqJtbmCm4BRL5wZRtw589sPnZqJ6D6WeqvVkW5rH
-         U/9dUnFZN0FMXVBsGuFY8rzVC6Zc7Lk2sVxB2FT21ZoZj+58AsLRHEFmm6cGWiVfaIsC
-         g0YA3IgAZb5/w8QjXgTfgU9FbF51d6cqzAAUA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sz6D6ERg6o5rQEjkN1863Afv5YNdZlEinqDFPvm/M+g=;
-        b=co46tGQgCE4AxQjHAkuFhkHo4T2zcnVLFqBxJLe7mZrPv8W46Lmi3ZX2yehFgj+65u
-         Lkg8Vju7F3QR6Wi9Bd+pN7l6pGVatlHzf75ScvroqUs91BNSJKIahNnaoXx8SKAw6/p5
-         sLbh+km+fZfYcXJrgsZvymnlgEMRF9sVOW9lTP4ubc8lrXIcyBEZFoNoF8htd8iYDse1
-         9qOHvhbb/L9k2guHhZ+T6ULt0lwZrO1WAmU94zEK0jwFC83N2Vzoi61fhVa2JelHwxNN
-         UsM5d3AR6fQCb/d+OaVlJJjuCY11bNpJ/7If3bccN8cin+4GbTeRrRP7bHh0bVdG0Ckx
-         pm6w==
-X-Gm-Message-State: AOAM531XWf3NKtwnLx/uHQGB3GobXJq98FvdSacWDn/DO31no+JNZgsy
-        JfSdPdO3tyWXH8wl3T9BPTjPMw==
-X-Google-Smtp-Source: ABdhPJxcm37s0uK94oOaTP7MzUMGWn1tPUXWrFZq3ATsdxayZIuFYJKkx/DJPcHbR69mum4yqgyJsw==
-X-Received: by 2002:adf:f003:: with SMTP id j3mr3103159wro.335.1612955678061;
-        Wed, 10 Feb 2021 03:14:38 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:31ae:b3c8:8fe:5f4d])
-        by smtp.gmail.com with ESMTPSA id u10sm1907633wmj.40.2021.02.10.03.14.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 03:14:37 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, revest@google.com, jackmanb@chromium.org,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next v7 5/5] selftests/bpf: Add a selftest for the tracing bpf_get_socket_cookie
-Date:   Wed, 10 Feb 2021 12:14:06 +0100
-Message-Id: <20210210111406.785541-5-revest@chromium.org>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-In-Reply-To: <20210210111406.785541-1-revest@chromium.org>
-References: <20210210111406.785541-1-revest@chromium.org>
+        Wed, 10 Feb 2021 06:15:45 -0500
+X-Originating-IP: 90.2.4.167
+Received: from xps13 (aputeaux-654-1-105-167.w90-2.abo.wanadoo.fr [90.2.4.167])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 44AA11BF206;
+        Wed, 10 Feb 2021 11:14:55 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 12:14:29 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>
+Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
+Message-ID: <20210210121429.4fb5ecf3@xps13>
+In-Reply-To: <CAJfpegugbvppOKhJ8KjSVGgZOGVuj6NSiy4n18mbD7Ui3wme6g@mail.gmail.com>
+References: <20210124232007.21639-1-richard@nod.at>
+        <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
+        <1507208626.379155.1612906761549.JavaMail.zimbra@nod.at>
+        <CAJfpegugbvppOKhJ8KjSVGgZOGVuj6NSiy4n18mbD7Ui3wme6g@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This builds up on the existing socket cookie test which checks whether
-the bpf_get_socket_cookie helpers provide the same value in
-cgroup/connect6 and sockops programs for a socket created by the
-userspace part of the test.
+Hi Miklos,
 
-Instead of having an update_cookie sockops program tag a socket local
-storage with 0xFF, this uses both an update_cookie_sockops program and
-an update_cookie_tracing program which succesively tag the socket with
-0x0F and then 0xF0.
+Miklos Szeredi <miklos@szeredi.hu> wrote on Wed, 10 Feb 2021 11:16:45
++0100:
 
-Signed-off-by: Florent Revest <revest@chromium.org>
-Acked-by: KP Singh <kpsingh@kernel.org>
----
- .../selftests/bpf/prog_tests/socket_cookie.c  | 11 ++++--
- .../selftests/bpf/progs/socket_cookie_prog.c  | 36 +++++++++++++++++--
- 2 files changed, 41 insertions(+), 6 deletions(-)
+> On Tue, Feb 9, 2021 at 10:39 PM Richard Weinberger <richard@nod.at> wrote:
+> >
+> > Miklos,
+> >
+> > ----- Ursprüngliche Mail -----  
+> > > If you look at fuse_do_ioctl() it does variable length input and
+> > > output at the same time.  I guess you need something similar to that.  
+> >
+> > I'm not sure whether I understand correctly.
+> >
+> > In MUSE one use case would be attaching two distinct (variable length) buffers to a
+> > single FUSE request, in both directions.
+> > If I read fuse_do_ioctl() correctly, it attaches always a single buffer per request
+> > but does multiple requests.  
+> 
+> Right.
+> 
+> > In MUSE we cold go the same path and issue up to two requests.
+> > One for in-band and optionally a second one for the out-of-band data.
+> > Hmmm?  
+> 
+> Does in-band and OOB data need to be handled together?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-index e12a31d3752c..232db28dde18 100644
---- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-@@ -35,9 +35,14 @@ void test_socket_cookie(void)
- 	if (!ASSERT_OK_PTR(skel->links.set_cookie, "prog_attach"))
- 		goto close_cgroup_fd;
- 
--	skel->links.update_cookie = bpf_program__attach_cgroup(
--		skel->progs.update_cookie, cgroup_fd);
--	if (!ASSERT_OK_PTR(skel->links.update_cookie, "prog_attach"))
-+	skel->links.update_cookie_sockops = bpf_program__attach_cgroup(
-+		skel->progs.update_cookie_sockops, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links.update_cookie_sockops, "prog_attach"))
-+		goto close_cgroup_fd;
-+
-+	skel->links.update_cookie_tracing = bpf_program__attach(
-+		skel->progs.update_cookie_tracing);
-+	if (!ASSERT_OK_PTR(skel->links.update_cookie_tracing, "prog_attach"))
- 		goto close_cgroup_fd;
- 
- 	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
-diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-index fbd5eaf39720..35630a5aaf5f 100644
---- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-+++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-@@ -5,6 +5,7 @@
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
- 
- #define AF_INET6 10
- 
-@@ -20,6 +21,14 @@ struct {
- 	__type(value, struct socket_cookie);
- } socket_cookies SEC(".maps");
- 
-+/*
-+ * These three programs get executed in a row on connect() syscalls. The
-+ * userspace side of the test creates a client socket, issues a connect() on it
-+ * and then checks that the local storage associated with this socket has:
-+ * cookie_value == local_port << 8 | 0xFF
-+ * The different parts of this cookie_value are appended by those hooks if they
-+ * all agree on the output of bpf_get_socket_cookie().
-+ */
- SEC("cgroup/connect6")
- int set_cookie(struct bpf_sock_addr *ctx)
- {
-@@ -33,14 +42,14 @@ int set_cookie(struct bpf_sock_addr *ctx)
- 	if (!p)
- 		return 1;
- 
--	p->cookie_value = 0xFF;
-+	p->cookie_value = 0xF;
- 	p->cookie_key = bpf_get_socket_cookie(ctx);
- 
- 	return 1;
- }
- 
- SEC("sockops")
--int update_cookie(struct bpf_sock_ops *ctx)
-+int update_cookie_sockops(struct bpf_sock_ops *ctx)
- {
- 	struct bpf_sock *sk = ctx->sk;
- 	struct socket_cookie *p;
-@@ -61,9 +70,30 @@ int update_cookie(struct bpf_sock_ops *ctx)
- 	if (p->cookie_key != bpf_get_socket_cookie(ctx))
- 		return 1;
- 
--	p->cookie_value = (ctx->local_port << 8) | p->cookie_value;
-+	p->cookie_value |= (ctx->local_port << 8);
- 
- 	return 1;
- }
- 
-+SEC("fexit/inet_stream_connect")
-+int BPF_PROG(update_cookie_tracing, struct socket *sock,
-+	     struct sockaddr *uaddr, int addr_len, int flags)
-+{
-+	struct socket_cookie *p;
-+
-+	if (uaddr->sa_family != AF_INET6)
-+		return 0;
-+
-+	p = bpf_sk_storage_get(&socket_cookies, sock->sk, 0, 0);
-+	if (!p)
-+		return 0;
-+
-+	if (p->cookie_key != bpf_get_socket_cookie(sock->sk))
-+		return 0;
-+
-+	p->cookie_value |= 0xF0;
-+
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.30.0.478.g8a0d178c01-goog
+Short answer: yes.
 
+> If so, then two requests is not a good option.
+
+More detailed answer:
+
+There is a type of MTD device (NAND devices) which are composed, for
+each page, of X in-band bytes plus Y out-of-band metadata bytes.
+
+Accessing either the in-band data, or the out-of-band data, or both at
+the same time are all valid use cases.
+
+* Read operation details:
+  From a hardware point of view, the out-of-band data is (almost)
+  always retrieved when the in-band data is read because it contains
+  meta-data used to correct eventual bitflips. In this case, if both
+  areas are requested, it is highly non-efficient to do two requests,
+  that's why the MTD core allows to do both at the same time.
+* Write operation details:
+  Even worse, in the write case, you *must* write both at the same
+  time. It is physically impossible to do one after the other (still
+  with actual hardware, of course).
+
+That is why it is preferable that MUSE will be able to access both in
+a single request.
+
+Thanks,
+Miquèl
