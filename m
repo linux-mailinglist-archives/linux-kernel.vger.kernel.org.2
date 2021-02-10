@@ -2,177 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB1A3160EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C193160FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhBJI0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:26:31 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:57355 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhBJIZ5 (ORCPT
+        id S233262AbhBJI1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:27:44 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:42596 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233534AbhBJI0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:25:57 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 74CE323E64;
-        Wed, 10 Feb 2021 09:25:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1612945506;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+cNxpkdDuOwRJvNB3aKuwMpR+znNnj63c1Pb8vQebZc=;
-        b=n7yhPtn1qWcaeOroSll+XLku+Qitl2q++/TN5pqVf3AV9HrJRKbI5NFUgN1vzj/mxIQzBL
-        th29M4JrQJWmUXsZ/Xdm3wDy724HOM+uAJ0Ki+tWlX105/FLesV85ISF1wqpJjy3SXxPHK
-        +GTijeVrB2UBTa/DkvNbne+VonVKnMc=
+        Wed, 10 Feb 2021 03:26:22 -0500
+Received: by mail-oi1-f169.google.com with SMTP id u66so1137800oig.9;
+        Wed, 10 Feb 2021 00:26:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aGjLISWJ+fszvKmcvo2/oB8kqSJgVo4mq+414YKd0ak=;
+        b=tTM6x9WvBKj6CCIlz5RGq1bETqJFXJYJAyrAXjmBzr16syAZxbUCQOGezwW2g727mV
+         w614B9nQnvXZ8OYELXXA+2fURs4cGDkRsj/f66PXoqNUY5tY8ZpgyahSXVf8kBX0L/sE
+         WDjWyDtsCnZofUMxrngqtSJ2clsWhMoo+KtFahwp8HtKKFJiaA/MhFZb+gkY7qLNnHzs
+         oLjEvT1FJW58acYBABkf7kLGPUpra3CoZtS+Ul8ViCMgUNv/4hzy3yRVOXff/MuTvPPd
+         wVBu46NiyjJc3trNDdKRUYqvPe3wVCdyXiay6CbPlbN/K/EHZ2Bi9E8+uurDFardRwmZ
+         /j4g==
+X-Gm-Message-State: AOAM530czFG4/8pl89E0IAj34w1s5I0BFI7K9LTibSdoee0QrQpUkjP1
+        JT9cbPZ8rztGkspJ0aSdxBnTfklbLzCSp3+DHaE=
+X-Google-Smtp-Source: ABdhPJw76RbbTdIjOWOYdNuMSRd5sBeR2j0014yZb4MdeOrBQA1HjGlwkbMtEPnZoE9rsvsL6sEmWZSBR33/719FBhk=
+X-Received: by 2002:a54:4e88:: with SMTP id c8mr1277055oiy.148.1612945537621;
+ Wed, 10 Feb 2021 00:25:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 10 Feb 2021 09:25:04 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next 7/9] net: phy: icplus: select page before writing
- control register
-In-Reply-To: <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
-References: <20210209164051.18156-1-michael@walle.cc>
- <20210209164051.18156-8-michael@walle.cc>
- <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <e9d26cd6634a8c066809aa92e1481112@walle.cc>
-X-Sender: michael@walle.cc
+References: <20210205222644.2357303-1-saravanak@google.com>
+ <20210205222644.2357303-5-saravanak@google.com> <20210209213320.GA219007@robh.at.kernel.org>
+ <CAGETcx_gHRd9UYHvSsHX_=NFF+HEJkamJp3JcpojuJob_a8_DA@mail.gmail.com>
+In-Reply-To: <CAGETcx_gHRd9UYHvSsHX_=NFF+HEJkamJp3JcpojuJob_a8_DA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 10 Feb 2021 09:25:26 +0100
+Message-ID: <CAMuHMdXi9s_b0xjaQ3n_-qFfdwfBtxnrhYfVuRENJM5UJ9TUwg@mail.gmail.com>
+Subject: Re: [PATCH v4 4/8] of: property: Add fw_devlink support for optional properties
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Saravana,
 
-Am 2021-02-10 08:03, schrieb Heiner Kallweit:
-> On 09.02.2021 17:40, Michael Walle wrote:
->> Registers >= 16 are paged. Be sure to set the page. It seems this was
->> working for now, because the default is correct for the registers used
->> in the driver at the moment. But this will also assume, nobody will
->> change the page select register before linux is started. The page 
->> select
->> register is _not_ reset with a soft reset of the PHY.
->> 
->> Add read_page()/write_page() support for the IP101G and use it
->> accordingly.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  drivers/net/phy/icplus.c | 50 
->> +++++++++++++++++++++++++++++++---------
->>  1 file changed, 39 insertions(+), 11 deletions(-)
->> 
->> diff --git a/drivers/net/phy/icplus.c b/drivers/net/phy/icplus.c
->> index a6e1c7611f15..858b9326a72d 100644
->> --- a/drivers/net/phy/icplus.c
->> +++ b/drivers/net/phy/icplus.c
->> @@ -49,6 +49,8 @@ MODULE_LICENSE("GPL");
->>  #define IP101G_DIGITAL_IO_SPEC_CTRL			0x1d
->>  #define IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32		BIT(2)
->> 
->> +#define IP101G_DEFAULT_PAGE			16
->> +
->>  #define IP175C_PHY_ID 0x02430d80
->>  #define IP1001_PHY_ID 0x02430d90
->>  #define IP101A_PHY_ID 0x02430c54
->> @@ -250,23 +252,25 @@ static int ip101a_g_probe(struct phy_device 
->> *phydev)
->>  static int ip101a_g_config_init(struct phy_device *phydev)
->>  {
->>  	struct ip101a_g_phy_priv *priv = phydev->priv;
->> -	int err;
->> +	int oldpage, err;
->> +
->> +	oldpage = phy_select_page(phydev, IP101G_DEFAULT_PAGE);
->> 
->>  	/* configure the RXER/INTR_32 pin of the 32-pin IP101GR if needed: 
->> */
->>  	switch (priv->sel_intr32) {
->>  	case IP101GR_SEL_INTR32_RXER:
->> -		err = phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
->> -				 IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32, 0);
->> +		err = __phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
->> +				   IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32, 0);
->>  		if (err < 0)
->> -			return err;
->> +			goto out;
->>  		break;
->> 
->>  	case IP101GR_SEL_INTR32_INTR:
->> -		err = phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
->> -				 IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32,
->> -				 IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32);
->> +		err = __phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
->> +				   IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32,
->> +				   IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32);
->>  		if (err < 0)
->> -			return err;
->> +			goto out;
->>  		break;
->> 
->>  	default:
->> @@ -284,12 +288,14 @@ static int ip101a_g_config_init(struct 
->> phy_device *phydev)
->>  	 * reserved as 'write-one'.
->>  	 */
->>  	if (priv->model == IP101A) {
->> -		err = phy_set_bits(phydev, IP10XX_SPEC_CTRL_STATUS, 
->> IP101A_G_APS_ON);
->> +		err = __phy_set_bits(phydev, IP10XX_SPEC_CTRL_STATUS,
->> +				     IP101A_G_APS_ON);
->>  		if (err)
->> -			return err;
->> +			goto out;
->>  	}
->> 
->> -	return 0;
->> +out:
->> +	return phy_restore_page(phydev, oldpage, err);
-> 
-> If a random page was set before entering config_init, do we actually 
-> want
-> to restore it? Or wouldn't it be better to set the default page as part
-> of initialization?
+CC iommu
 
-First, I want to convert this to the match_phy_device() and while at it,
-I noticed that there is this one "problem". Short summary: the IP101A 
-isn't
-paged, the IP101G has serveral and if page 16 is selected it is more or
-less compatible with the IP101A. My problem here is now how to share the
-functions for both PHYs without duplicating all the code. Eg. the IP101A
-will phy_read/phy_write/phy_modify(), that is, all the locked versions.
-For the IP101G I'd either need the _paged() versions or the __phy ones
-which don't take the mdio_bus lock.
+On Tue, Feb 9, 2021 at 10:55 PM Saravana Kannan <saravanak@google.com> wrote:
+> On Tue, Feb 9, 2021 at 1:33 PM Rob Herring <robh@kernel.org> wrote:
+> > On Fri, Feb 05, 2021 at 02:26:40PM -0800, Saravana Kannan wrote:
+> > > Not all DT bindings are mandatory bindings. Add support for optional DT
+> > > bindings and mark iommus, iommu-map, dmas as optional DT bindings.
+> >
+> > I don't think we can say these are optional or not. It's got to be a
+> > driver decision somehow.
+>
+> Right, so maybe the word "optional" isn't a good name for it. I can
+> change that if you want.
+>
+> The point being, fw_devlink can't block the probe of this driver based
+> on iommu property. We let the driver decide if it wants to
+> -EPROBE_DEFER or not or however it wants to handle this.
 
-Here is what I came up with:
-(1) provide a common function which uses the __phy ones, then the
-     callback for the A version will take the mdio_bus lock and calls
-     the common one. The G version will use phy_{select,restore}_page().
-(2) the phy_driver ops for A will also provde a .read/write_page()
-     callback which is just a no-op. So A can just use the G versions.
-(3) What Heiner mentioned here, just set the default page in
-     config_init().
+The driver cannot make that decision, cfr. below.
 
-(1) will still bloat the code; (3) has the disadvantage, that the
-userspace might fiddle around with the page register and then the
-whole PHY driver goes awry. I don't know if we have to respect that
-use case in general. I know there is an API to read/write the PHY
-registers and it could happen.
+> > For example, if IOMMU is optional, what happens with this sequence:
+> >
+> > driver probes without IOMMU
+> > driver calls dma_map_?()
+> > IOMMU driver probes
+> > h/w accesses DMA buffer --> BOOM!
 
-That being said, I'm either fine with (2) and (3) but I'm preferring
-(2).
+Does it really behave that way? Or does it continue without IOMMU?
 
-BTW, this patch is still missing read/writes to the interrupt status
-and control registers which is also paged.
+> Right. But how is this really related to fw_devlink? AFAICT, this is
+> an issue even today. If the driver needs the IOMMU, then it needs to
+> make sure the IOMMU has probed? What am I missing?
 
--michael
+Individual I/O (IOMMU slave) drivers are completely unaware of the
+presence or absence of an IOMMU; they just use the DMA API, which is the
+same regardless of an IOMMU being used or not.
+While for GPIO/IRQ/CLK/DMA/... have request/get_{gpio,irq,clk,dma,...}
+APIs for a driver to get a reference, which can return -EPROBE_DEFER, no
+such thing exists for IOMMUs.  This is handled by the IOMMU core
+instead.
+
+Using the IOMMU or not is more like a system policy decision.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
