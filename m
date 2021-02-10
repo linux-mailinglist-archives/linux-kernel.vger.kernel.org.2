@@ -2,163 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5493163C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56943163D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhBJK0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:26:25 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:19344 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229937AbhBJKOI (ORCPT
+        id S229878AbhBJK2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:28:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230186AbhBJKRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:14:08 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11AAB01Z008183;
-        Wed, 10 Feb 2021 05:13:14 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36hrw8v4t1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 05:13:14 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 11AADDAC026388
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Feb 2021 05:13:13 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Wed, 10 Feb 2021
- 05:13:12 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Wed, 10 Feb 2021 05:13:12 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11AAD8UD018370;
-        Wed, 10 Feb 2021 05:13:10 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>, <lars@metafoo.de>,
-        <linux-fpga@vger.kernel.org>, <mdf@kernel.org>,
-        <ardeleanalex@gmail.com>,
-        Mircea Caprioru <mircea.caprioru@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 2/2] clk: axi-clkgen: Add support for FPGA info
-Date:   Wed, 10 Feb 2021 12:15:35 +0200
-Message-ID: <20210210101535.47979-2-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210210101535.47979-1-alexandru.ardelean@analog.com>
-References: <20210210101535.47979-1-alexandru.ardelean@analog.com>
+        Wed, 10 Feb 2021 05:17:11 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113DAC061756;
+        Wed, 10 Feb 2021 02:16:30 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id z9so863459pjl.5;
+        Wed, 10 Feb 2021 02:16:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3EZcIx57dtjwbSL1k7C+oZwjaz0Cw8Ii9+YuvFCjbVA=;
+        b=gaULwByFe/mfO9pwL9gb+FcVy5zdJg886jB9vnJ6fRPEgV+C0x11tj/AxvRZRF64Yq
+         Q1e3AXQTH8QnmHSbyiBh9LD+v8+XGKIVkVj5oXVH0F8YVtZbTSi+viqVNEZxReUrbbY4
+         xJaF1judKEK97aO00g7FoqvR0mK069NEuJ9teEU7E8mLDlPO0ibTb5Bw5ypBYPGTwTRS
+         ZJ3Mvt6uk0q+DpC+btiJcHYuNAvg5PXuYVSUS2PVxkoAfYKZVHj/h3gcspp2stkvaxrW
+         iqjQGa7THS2Iy/ZC25TxtnA2l6hDoSGKT0371HsYzbHTjUlDhdmEBq4alNGoS+c+0/i6
+         UJMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3EZcIx57dtjwbSL1k7C+oZwjaz0Cw8Ii9+YuvFCjbVA=;
+        b=oV4GjHrWnJ0Sl68EyOK0ExEv0v0My2A8MSdUXO1FAeTrYOoFKVD3FRF1vNLPIeiYzt
+         Ac7ogLL8z3rQbTbdUg5AQxLW486SUl5AM/M8C68XS7/aWoHf64egfx/aR9bsJVkPNXiQ
+         GnYND82fbrwUW3B9Q+NPPicn+2TOtt1vItyk5nqtrCdXHadCJEmpPDclQimbqf+t68WP
+         RSZ1UZL/uG0FULlGisxi5S0KXxuQOjyZdLjhIwBHFjXR+L7fhFSMOo14KyFXk60SJ1nQ
+         aNt7IOu4LthmR92AiCrJGLnATUVdLEN8Y+5ZtJ0uPH0YvnqSFkEOWsi34myrkWJAIcKw
+         kYTg==
+X-Gm-Message-State: AOAM530jhSX34oL6NnCYMlsFJGC7QX2V6uEmpqyDfkOKRC31S3L1QjYB
+        MqyHkGvVTdKr9de3kGx/RImGvFHEmEvqwUqLgTs=
+X-Google-Smtp-Source: ABdhPJw1tkmd9nLtYipQAI+RUTZ5u9yoBC2AGMveFdXe3f/LFcDY7zY9IDtiYmH6giHr8l/pRW/AzV7b3zu8uqE/GR4=
+X-Received: by 2002:a17:90a:644a:: with SMTP id y10mr2519617pjm.129.1612952189609;
+ Wed, 10 Feb 2021 02:16:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_03:2021-02-10,2021-02-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 spamscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
- priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100099
+References: <20210210074946.155417-1-drew@beagleboard.org> <20210210074946.155417-2-drew@beagleboard.org>
+In-Reply-To: <20210210074946.155417-2-drew@beagleboard.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 10 Feb 2021 12:16:13 +0200
+Message-ID: <CAHp75Vfw0Y-hLgsx4v0pX2F4yFd3YfW91DJy8rtJKT_S883FRw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: use to octal permissions for debugfs files
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mircea Caprioru <mircea.caprioru@analog.com>
+On Wed, Feb 10, 2021 at 9:50 AM Drew Fustini <drew@beagleboard.org> wrote:
+>
+> Switch over pinctrl debugfs files to use octal permissions as they are
+> preferred over symbolic permissions. Refer to commit f90774e1fd27
+> ("checkpatch: look for symbolic permissions and suggest octal instead").
 
-This patch adds support for vco maximum and minimum ranges in accordance
-with fpga speed grade, voltage, device package, technology and family. This
-new information is extracted from two new registers implemented in the ip
-core: ADI_REG_FPGA_INFO and ADI_REG_FPGA_VOLTAGE, which are stored in the
-'include/linux/fpga/adi-axi-common.h' file as they are common to all ADI
-FPGA cores.
+You forgot:
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/clk/clk-axi-clkgen.c | 52 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 51 insertions(+), 1 deletion(-)
+LGTM after addressing what Geert noticed.
 
-diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-index ac6ff736ac8f..e4d6c87f8a07 100644
---- a/drivers/clk/clk-axi-clkgen.c
-+++ b/drivers/clk/clk-axi-clkgen.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/platform_device.h>
- #include <linux/clk-provider.h>
-+#include <linux/fpga/adi-axi-common.h>
- #include <linux/slab.h>
- #include <linux/io.h>
- #include <linux/of.h>
-@@ -240,6 +241,50 @@ static void axi_clkgen_read(struct axi_clkgen *axi_clkgen,
- 	*val = readl(axi_clkgen->base + reg);
- }
- 
-+static void axi_clkgen_setup_ranges(struct axi_clkgen *axi_clkgen)
-+{
-+	struct axi_clkgen_limits *limits = &axi_clkgen->limits;
-+	unsigned int reg_value;
-+	unsigned int tech, family, speed_grade, voltage;
-+
-+	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_FPGA_INFO, &reg_value);
-+	tech = ADI_AXI_INFO_FPGA_TECH(reg_value);
-+	family = ADI_AXI_INFO_FPGA_FAMILY(reg_value);
-+	speed_grade = ADI_AXI_INFO_FPGA_SPEED_GRADE(reg_value);
-+
-+	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_FPGA_VOLTAGE, &reg_value);
-+	voltage = ADI_AXI_INFO_FPGA_VOLTAGE(reg_value);
-+
-+	switch (speed_grade) {
-+	case ADI_AXI_FPGA_SPEED_GRADE_XILINX_1 ... ADI_AXI_FPGA_SPEED_GRADE_XILINX_1LV:
-+		limits->fvco_max = 1200000;
-+		limits->fpfd_max = 450000;
-+		break;
-+	case ADI_AXI_FPGA_SPEED_GRADE_XILINX_2 ... ADI_AXI_FPGA_SPEED_GRADE_XILINX_2LV:
-+		limits->fvco_max = 1440000;
-+		limits->fpfd_max = 500000;
-+		if ((family == ADI_AXI_FPGA_FAMILY_XILINX_KINTEX) |
-+		    (family == ADI_AXI_FPGA_FAMILY_XILINX_ARTIX)) {
-+			if (voltage < 950) {
-+				limits->fvco_max = 1200000;
-+				limits->fpfd_max = 450000;
-+			}
-+		}
-+		break;
-+	case ADI_AXI_FPGA_SPEED_GRADE_XILINX_3:
-+		limits->fvco_max = 1600000;
-+		limits->fpfd_max = 550000;
-+		break;
-+	default:
-+		break;
-+	};
-+
-+	if (tech == ADI_AXI_FPGA_TECH_XILINX_ULTRASCALE_PLUS) {
-+		limits->fvco_max = 1600000;
-+		limits->fvco_min = 800000;
-+	}
-+}
-+
- static int axi_clkgen_wait_non_busy(struct axi_clkgen *axi_clkgen)
- {
- 	unsigned int timeout = 10000;
-@@ -510,7 +555,7 @@ static int axi_clkgen_probe(struct platform_device *pdev)
- 	struct clk_init_data init;
- 	const char *parent_names[2];
- 	const char *clk_name;
--	unsigned int i;
-+	unsigned int i, ver;
- 	int ret;
- 
- 	dflt_limits = device_get_match_data(&pdev->dev);
-@@ -537,6 +582,11 @@ static int axi_clkgen_probe(struct platform_device *pdev)
- 
- 	memcpy(&axi_clkgen->limits, dflt_limits, sizeof(axi_clkgen->limits));
- 
-+	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_VERSION, &ver);
-+
-+	if (ADI_AXI_PCORE_VER_MAJOR(ver) > 0x04)
-+		axi_clkgen_setup_ranges(axi_clkgen);
-+
- 	clk_name = pdev->dev.of_node->name;
- 	of_property_read_string(pdev->dev.of_node, "clock-output-names",
- 		&clk_name);
--- 
-2.17.1
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> ---
+>  drivers/pinctrl/core.c    | 6 +++---
+>  drivers/pinctrl/pinconf.c | 4 ++--
+>  drivers/pinctrl/pinmux.c  | 4 ++--
+>  3 files changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+> index 3663d87f51a0..c9c28f653799 100644
+> --- a/drivers/pinctrl/core.c
+> +++ b/drivers/pinctrl/core.c
+> @@ -1914,11 +1914,11 @@ static void pinctrl_init_debugfs(void)
+>                 return;
+>         }
+>
+> -       debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pinctrl-devices", 0400,
+>                             debugfs_root, NULL, &pinctrl_devices_fops);
+> -       debugfs_create_file("pinctrl-maps", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pinctrl-maps", 0400,
+>                             debugfs_root, NULL, &pinctrl_maps_fops);
+> -       debugfs_create_file("pinctrl-handles", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pinctrl-handles", 0400,
+>                             debugfs_root, NULL, &pinctrl_fops);
+>  }
+>
+> diff --git a/drivers/pinctrl/pinconf.c b/drivers/pinctrl/pinconf.c
+> index 02c075cc010b..f005921bb49e 100644
+> --- a/drivers/pinctrl/pinconf.c
+> +++ b/drivers/pinctrl/pinconf.c
+> @@ -370,9 +370,9 @@ DEFINE_SHOW_ATTRIBUTE(pinconf_groups);
+>  void pinconf_init_device_debugfs(struct dentry *devroot,
+>                          struct pinctrl_dev *pctldev)
+>  {
+> -       debugfs_create_file("pinconf-pins", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pinconf-pins", 0400,
+>                             devroot, pctldev, &pinconf_pins_fops);
+> -       debugfs_create_file("pinconf-groups", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pinconf-groups", 0400,
+>                             devroot, pctldev, &pinconf_groups_fops);
+>  }
+>
+> diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
+> index bab888fe3f8e..7f6190eaedbb 100644
+> --- a/drivers/pinctrl/pinmux.c
+> +++ b/drivers/pinctrl/pinmux.c
+> @@ -676,9 +676,9 @@ DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
+>  void pinmux_init_device_debugfs(struct dentry *devroot,
+>                          struct pinctrl_dev *pctldev)
+>  {
+> -       debugfs_create_file("pinmux-functions", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pinmux-functions", 0400,
+>                             devroot, pctldev, &pinmux_functions_fops);
+> -       debugfs_create_file("pinmux-pins", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pinmux-pins", 0400,
+>                             devroot, pctldev, &pinmux_pins_fops);
+>  }
+>
+> --
+> 2.25.1
+>
 
+
+--
+With Best Regards,
+Andy Shevchenko
