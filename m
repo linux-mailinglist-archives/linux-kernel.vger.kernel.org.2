@@ -2,119 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6113169AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4626A3169AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhBJPCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:02:31 -0500
-Received: from mail-oo1-f45.google.com ([209.85.161.45]:44876 "EHLO
-        mail-oo1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhBJPCJ (ORCPT
+        id S232004AbhBJPDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:03:05 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:44797 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231927AbhBJPCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:02:09 -0500
-Received: by mail-oo1-f45.google.com with SMTP id n19so542384ooj.11;
-        Wed, 10 Feb 2021 07:01:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k4r1dL/62zvPQ5vCFCYHmddBBlQvQ5Mxd0U7I5nMv8U=;
-        b=kKzGash8tJjKCoUcKYqqShKbeAwNioV5xrjc73y8GoKqxRvWVhv7iVgBIqbMv70BpY
-         tawd+h3lXZTEaGyRMpTPDIyi5p8xAufI3hfsb4v1nJrSWLLeulom4G2SvY+4HxQUDo40
-         QltISDisOR3jzi+7/dguruR0fCk+ybjW6ZQ2ObbhAAjFl2sJTGmS/smgKkr+U1+d6HB0
-         ADfQ7cgygbHk384xjxPWu0rjQN8qldaURLKEGuMLwOmYREs+HwILa/pc61KxarVtrq2j
-         yKkLq3zhLZKJXoqBsgEoJW/THAgEzgG4pOjTAIAcLd9H3xG7pad1pf1nFHUFfO+sSP4b
-         D9mw==
-X-Gm-Message-State: AOAM5312XeyVdhkj0NJu5O/7yQnnHt/IUhlJMvDyzIbsumhGIU91lB7W
-        nu19THNRKRP9nqNDFzm+r6oSDG7jgjiopUf2DyQ=
-X-Google-Smtp-Source: ABdhPJwKm4pa3yTqhxxbZTEbrBcRJ7gHf1aXxqRhkCIheRuZV5YbAcxoPstIWOHVylMGxqGSNpeX21ek+qWDIcsNeIk=
-X-Received: by 2002:a4a:d50d:: with SMTP id m13mr2348928oos.2.1612969287823;
- Wed, 10 Feb 2021 07:01:27 -0800 (PST)
+        Wed, 10 Feb 2021 10:02:32 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id D09D55C017C;
+        Wed, 10 Feb 2021 10:01:21 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 10 Feb 2021 10:01:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=6GZtdqXMNFkD2BcFburlBicKk1i
+        oVhLRSpK6+dRFql0=; b=ln8XgmqJuPfayAsfHYyeRmHfpOkr9QxtZhq8yQz/R2e
+        g5b0PACGUZeZ9pPOHSsvdH5NHoSq6Qz08UZAgSQjjSL+tiOXrEEkPrSvH5hMrgS4
+        6XkQdaDclkzIaMBNJYv40CV1GLvep/+IYz3ebKH00mmdl0E8OmMjg8FWBevKIut0
+        aoEHNP4lk80Od7EzdAgy1lGL5oeSnxr/x1Vm2myXZ90+PnWyGZiuddSMzi1We7ii
+        YJJfX/K4c+/7kBm/RKpl4sBIluoCw7u9n2fU3TfMGmUdYnH3VDlAxHjDHkS5jqLh
+        tpJaPVltzy4l5O9Um5DvS6YlRPKU9cD+xRMR2Os2xCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6GZtdq
+        XMNFkD2BcFburlBicKk1ioVhLRSpK6+dRFql0=; b=lZPD1HgEGxoHNYwPDLlZRy
+        Yq6hptQY+IgaQgkKgQYp6BQh6KWInW54H23x+78hAlhMRrvJJSeLSRlHvufnxNI+
+        kglJnoGqcVvs23U7GrXrLF+u0rEuLZo+6I3CIvlSOoZ8ed6S7ZdQnaEJojSsBdbG
+        ivcrw4crvwgTjIbex1d/V7p1cLM9KwXHmerFQ5VDzNz/7PpLRnj9fGBp4SAIWUkI
+        GWM6TXYjO1hZGsNGuLb/clbDBVEdhqWda7gH5YSPS8pol4rtnaSNicPJI3VPLAfX
+        BVGt4XMFmq1TnksCsto6Yf++cOqrFOEqTm7BSKFIaxQ6IGnrhHS+OpblM+uvGKvQ
+        ==
+X-ME-Sender: <xms:QPUjYPN-SVKk_xBSnmqZgMJjeqyRKaWeYWgl5LKCkRxDMd6bkbukGQ>
+    <xme:QPUjYJ97UxuiO_WC6Q4LWofHAM8DOO-x0gWPBEiZTo9xqCEJSMQHbalDwMEjCEvJd
+    HjXlqMxJrXqQacxblE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdejtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeevveefffduveeitdegtefhhfetueffteefffdvheevvdehteethedvleffgfej
+    vdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeeltddrkeelrdeikedrje
+    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
+    gihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:QPUjYOTUkHOTe6AmVa0j98ZfcE9keIcv5-6MGsGYTDpsmZ6IQgq1eg>
+    <xmx:QPUjYDvpApN8bKCKdlMtHMfEcsY8gNYcxFAj7cdvkqmOg_0rkr962Q>
+    <xmx:QPUjYHcUcJ4DGJ4DwKFmI-hF3jA4VH24PXE9hV-_jUmnVsm4xCkIBg>
+    <xmx:QfUjYIEFjmdLZC3jGWHdJNP01drrBjnuazM08-xA2-J__LkiSTi9cQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3080C240064;
+        Wed, 10 Feb 2021 10:01:20 -0500 (EST)
+Date:   Wed, 10 Feb 2021 16:01:18 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     "B.R. Oake" <broake@mailfence.com>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY mode
+Message-ID: <20210210150118.ly252i37eykayrcb@gilmour>
+References: <1243888060.510560.1612783497400@ichabod.co-bxl>
 MIME-Version: 1.0
-References: <20210210114320.3478-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0hx78JHnP5-5xFTPr0Rh9FvPCzAzTCyBaT6eLZ3Dd-mFA@mail.gmail.com>
- <3881654.NPl3a4M0kB@kreacher> <1946478.1QpZic6vku@kreacher> <YCPyKjO7XPBFAgbn@smile.fi.intel.com>
-In-Reply-To: <YCPyKjO7XPBFAgbn@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 10 Feb 2021 16:01:16 +0100
-Message-ID: <CAJZ5v0jq1+q3HKDEzgBUWtZY8H0kaiR=bNi1WUsdg3BTAyiPgw@mail.gmail.com>
-Subject: Re: [PATCH v1 7/7] ACPI: property: Allow counting a single value as
- an array of 1 element
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mc7bt46on7uorfl2"
+Content-Disposition: inline
+In-Reply-To: <1243888060.510560.1612783497400@ichabod.co-bxl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 3:48 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Feb 10, 2021 at 02:48:09PM +0100, Rafael J. Wysocki wrote:
-> > On Wednesday, February 10, 2021 2:31:48 PM CET Rafael J. Wysocki wrote:
-> > > On Wednesday, February 10, 2021 1:36:00 PM CET Rafael J. Wysocki wrote:
-> > > > On Wed, Feb 10, 2021 at 12:51 PM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
->
-> Rafael, thanks for the review, my answers below.
->
-> > > > > We allow to read the single value as a first element in the array.
-> > > > > Unfortunately the counting doesn't work in this case and we can't
-> > > > > call fwnode_property_count_*() API without getting an error.
-> > > >
-> > > > It would be good to mention what the symptom of the issue is here.
->
-> fwnode_property_match_string() is not working as reported by Calvin.
->
-> > > > > Modify acpi_data_prop_read() to always try the single value read
-> > > > > and thus allow counting the single value as an array of 1 element.
-> > > > >
-> > > > > Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> > > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > >
-> > > > This is a bug fix, so it should go in before the cleanups in this series IMO.
->
-> Seems it was never worked, hence neither Fixes tag nor...
->
-> > > > Also it looks like stable@vger material.
->
-> ...Cc to stable@.
->
-> > > > > -       if (val && nval == 1) {
-> > > > > +       /* Try to read as a single value first */
-> > > > > +       if (!val || nval == 1) {
-> > > > >                 ret = acpi_data_prop_read_single(data, propname, proptype, val);
-> > > >
-> > > > This returns -EINVAL if val is NULL.
->
-> Nope. That's why it's a patch 7. Patch 6 solves this.
 
-That's my point.  Patch 7 should be the first one in the series.
+--mc7bt46on7uorfl2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > > >                 if (ret >= 0)
-> > > > > -                       return ret;
-> > > > > +                       return val ? ret : 1;
-> > > >
-> > > > So val cannot be NULL here.
->
-> Why not? I have changed conditional.
->
-> > > > >         }
->
-> > > > To me, acpi_fwnode_property_read_string_array() needs to special-case
-> > > > val == NULL and nval == 0.
->
-> nval can be anything in the case of val==NULL. So far neither of your proposals
-> conform this.
+Hi,
 
-That is if !val and nval != 0 is regarded as a valid combination of
-arguments, but is it?
+On Mon, Feb 08, 2021 at 12:24:57PM +0100, B.R. Oake wrote:
+> Since commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx
+> delay config"), Ethernet no longer works on the Orange Pi Plus,
+> because that commit sets the RX/TX delay according to the phy-mode
+> property in the device tree, which is "rgmii", the wrong setting
+> for this board.
+>=20
+> Following the example of others who fixed the same problem for
+> many other boards, this patch changes the phy-mode to "rgmii-id"
+> which gets Ethernet working again on this board.
+>=20
+> Fixes: 4904337fe34f ("ARM: dts: sunxi: Restore EMAC changes (boards)")
+> Fixes: 1dcd0095019a ("ARM: sun8i: orangepi-plus: Enable dwmac-sun8i")
+> Signed-off-by: B.R. Oake <broake@mailfence.com>
 
-If that is the case, the check in acpi_data_prop_read() in the last
-patch that I posted needs to be (!val || nval == 1), but that would be
-it, no?
+Unfortunately we can't take this patch as is, this needs to be your real na=
+me, see:
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#deve=
+loper-s-certificate-of-origin-1-1
+
+Maxime
+
+--mc7bt46on7uorfl2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYCP1PgAKCRDj7w1vZxhR
+xZSsAQDi5eI7KYLfoFTOdahd3unW/v8Wk6HmPxOdTiBAJJt6lAD/bUsW9cfrdL3U
+LkJen15K9KdgC4tKI83IJmzoNgnRfA0=
+=a46C
+-----END PGP SIGNATURE-----
+
+--mc7bt46on7uorfl2--
