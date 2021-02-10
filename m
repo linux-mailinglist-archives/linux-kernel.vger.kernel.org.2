@@ -2,339 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D27D316615
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80363316623
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhBJMIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:08:53 -0500
-Received: from mail-eopbgr150073.outbound.protection.outlook.com ([40.107.15.73]:56388
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230260AbhBJMGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:06:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bZeofFwylZ5xdKCzQx+H7r2jk620ULdh/EfYIBkGHts=;
- b=hXzez1/0P4B9N1rDQ9B6Z6dkJyIh2RbFaR6Er4GtXTuCto0Dq9iexipyzxUqPuqn0cwHUm+vIIiJKSbOJPdMRBb2h7d5DiuoofaDi1V2QScBTY/I9MYdoIAQFWdLzCtSx3UkQOHC7doGUrzapEFhAxHx9QyDJaP/CwG/vbI7pkk=
-Received: from AM6P191CA0023.EURP191.PROD.OUTLOOK.COM (2603:10a6:209:8b::36)
- by DB7PR08MB3035.eurprd08.prod.outlook.com (2603:10a6:5:1d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.25; Wed, 10 Feb
- 2021 12:05:41 +0000
-Received: from AM5EUR03FT045.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:209:8b:cafe::18) by AM6P191CA0023.outlook.office365.com
- (2603:10a6:209:8b::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend
- Transport; Wed, 10 Feb 2021 12:05:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
- header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- AM5EUR03FT045.mail.protection.outlook.com (10.152.17.105) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 12:05:40 +0000
-Received: ("Tessian outbound 2b57fdd78668:v71"); Wed, 10 Feb 2021 12:05:39 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: 90e7e0a89e567587
-X-CR-MTA-TID: 64aa7808
-Received: from e4cff2d38ed9.1
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 20BDE09E-1138-4E45-B69E-8524AE1A1D7C.1;
-        Wed, 10 Feb 2021 12:05:28 +0000
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id e4cff2d38ed9.1
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Wed, 10 Feb 2021 12:05:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=flzByQlQkstRzHDBMyh6Tx02cOPdRNKWcTGdJmxSw6VpDDgB03TZBPG4jCKUa7eYz7bef/cr+o5JerkY+rDMTW9ZNWQ5fCNhz51CUYBL7pgSunl8mio9yMTDXu/BIAmOiwHO38Z/WE3w/4QxOIdNPOy8/mq6MueQaMDAIQEsR+hoYDccwvkyH93h71xbLlvcnwoyul6zLpgXDaovT6YMiSEUJmj3QSxNEJCDplX0QsGhn+D+xfd5svz3OFmXk+jCKBWYtGI+EvX0vtBB0v8nxhGT1y2/DASsQLXpDFSYqxrgwhZ0/TAhu3fqm+8Rc4icUE48yyrxMcnbGDC2HyrabA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bZeofFwylZ5xdKCzQx+H7r2jk620ULdh/EfYIBkGHts=;
- b=lqJFueaeEPYai2kDUiVysyTaGKpur6vxiP+kegg88g7rJLMQwgGfrTxMCYHMOysgOYznnr0ja3g5QWeBZQcGodR4UJZRJl+Am0s49+977ow5rN5AJsvM+perqi4xx408YTYRuU36B+1h93H+BXvqyuiWAYsKo3rBy1C6HP+PiV0Y9r5s23+33ibAmZSOejMjOARfH0X42RZyHDF84+2d/q+hGvt1ZSyK6exyWA/fe78eGd2tH5hXXYqkiMeRR5fpKGSmr2HpEiN8OSUPeo5L58x9LZM7IldoS2Ihg5OkhQEf0qkWi6GI6y1K6PCt8/epGulRFogVaQAz3kJusZBquA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bZeofFwylZ5xdKCzQx+H7r2jk620ULdh/EfYIBkGHts=;
- b=hXzez1/0P4B9N1rDQ9B6Z6dkJyIh2RbFaR6Er4GtXTuCto0Dq9iexipyzxUqPuqn0cwHUm+vIIiJKSbOJPdMRBb2h7d5DiuoofaDi1V2QScBTY/I9MYdoIAQFWdLzCtSx3UkQOHC7doGUrzapEFhAxHx9QyDJaP/CwG/vbI7pkk=
-Authentication-Results-Original: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=arm.com;
-Received: from AS8PR08MB6120.eurprd08.prod.outlook.com (2603:10a6:20b:299::13)
- by AM6PR08MB4102.eurprd08.prod.outlook.com (2603:10a6:20b:ab::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.27; Wed, 10 Feb
- 2021 12:05:26 +0000
-Received: from AS8PR08MB6120.eurprd08.prod.outlook.com
- ([fe80::3c1e:d3bd:de58:dee8]) by AS8PR08MB6120.eurprd08.prod.outlook.com
- ([fe80::3c1e:d3bd:de58:dee8%7]) with mapi id 15.20.3825.020; Wed, 10 Feb 2021
- 12:05:26 +0000
-Subject: Re: [PATCH 4/4] perf tools: determine if LR is the return address
-To:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Cc:     John Garry <john.garry@huawei.com>, Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Al Grant <al.grant@arm.com>,
-        Wilco Dijkstra <wilco.dijkstra@arm.com>
-References: <20210122161854.5289-1-alexandre.truong@arm.com>
- <20210122161854.5289-4-alexandre.truong@arm.com>
- <3184a838-9784-eb86-09ad-ceadabcd3381@arm.com>
-From:   Alexandre Truong <alexandre.truong@arm.com>
-Message-ID: <fef4739e-ccdf-7a60-3f4d-e8583ec27e9e@arm.com>
-Date:   Wed, 10 Feb 2021 12:05:22 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <3184a838-9784-eb86-09ad-ceadabcd3381@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [217.140.99.251]
-X-ClientProxiedBy: LO4P123CA0159.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:188::20) To AS8PR08MB6120.eurprd08.prod.outlook.com
- (2603:10a6:20b:299::13)
+        id S231668AbhBJMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:10:31 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:53762 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231337AbhBJMHu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:07:50 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AC0D0B159847;
+        Wed, 10 Feb 2021 12:06:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=OEyAmudG0vxIoe+Bc5o3Lx7baiaUbNRyOQQO16YoctM=;
+ b=DygSz6EPeUusXm93Ua2iU2uG4ZJw58bsWR8e2Gyxnt1cMQAjBjISf8HUOG/jZVaDLBCV
+ dwzZlb7PkyOSh3cXbsshZ/2W45iVdVLKU4WYBH7Pvf4Ma5R5s0MDpUakkcU+hDefzt9c
+ x+HXmktThJHC4hi57yK6Ok4QJPU+fpRtcDsF1s/y1AEmS1Db9NMdeiHiOEJp7r3fF4GA
+ iJ8U6u9qXmJy2WeBaaI77jBWNdA6I2FctxxO+QGG8xeHVMcSTWnE6SB7yCAHmn96RQ2Y
+ nb+MXTqTlox/zWWokFIBD4u0IoIYdr6ewhu/bYKJIK+vF7RZLIvhN6Jz4VrfiwjAKg4c JA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 36hgmak8b8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 12:06:53 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AC61PZ038725;
+        Wed, 10 Feb 2021 12:06:51 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 36j4pq2ehj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 12:06:51 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11AC6jTw031970;
+        Wed, 10 Feb 2021 12:06:46 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 04:06:45 -0800
+Date:   Wed, 10 Feb 2021 15:06:34 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     karthek <mail@karthek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: fix function comments to follow
+ kernel-doc
+Message-ID: <20210210120634.GV20820@kadam>
+References: <YCL6vrGPQ0uDZUI8@karthik-strix-linux.karthek.com>
+ <20210210080636.GT2696@kadam>
+ <CAJ5zXr1hJ6ts7Gqi_vfaJceZ8qKPgFk479h4sA9AxFrAdB8vHw@mail.gmail.com>
+ <20210210090120.GU20820@kadam>
+ <CAJ5zXr1OW+RfNNuXOZDjUvm=EKz5C9=GPc243z3Wk_qc3N=6sQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.57.16.51] (217.140.99.251) by LO4P123CA0159.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:188::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Wed, 10 Feb 2021 12:05:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ecda558e-f0bf-4720-5627-08d8cdbc2f6a
-X-MS-TrafficTypeDiagnostic: AM6PR08MB4102:|DB7PR08MB3035:
-X-LD-Processed: f34e5979-57d9-4aaa-ad4d-b122a662184d,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR08MB303559F5E550FCAAF6EF674B9C8D9@DB7PR08MB3035.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: 7HaPteX11pd9pLSTqsyWgZW5buDw+JVC/6n/nkMwBKiU/O35nXFlpNQ8lyHE+ZDVR7pWri9rEFpYhvb0l8t4REozAhGZmUEN357rjFWpKP51FxaY9xDDlXyfOCjRFszgOvqqypapj7oqnsThie+DTtqUwnekI3HqDJ8ZHDTSMIAexkQ6lFHLvJfAw3CtcrCOvZ35R3TDH+we1nt7jyHqGmzvus+bGdcOsBX+4eXkpVwqlY/2/pOJ5M5/YFUhs20YX/f42hI0LZkxXlS2XeCzjB4Udmgcc1MpUr63gLrGaEgzwnxjn1XNBuidiDRHcK7wGCQDlKDoatNqQ5XFKyXD9rR64TOWM2oa91Td1sTe9faakJ58tixBW0qtL6VKD1Mh+akoj2w4Fqe+EVctoRk8szxHA8+ysOOCT/3HkUdUSJ38two/nFTAW2ae8RiotSPhMZSoQWesP5Z9K45o/NS54rq7VQHZnfS8YD78nQiuRG+ZsbAJF+F6F84tKNp2xpVpVyMX62HiO0k8ZaiCwUxf7cvayWNGYv9pYg4lMdo+XA4/o4rSczt0OKVIjUdoPympmRhS8gZqCtg69IXE4l/7y0oeic9R5pFeeU2NGobUizM=
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR08MB6120.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39850400004)(396003)(376002)(136003)(54906003)(2906002)(86362001)(44832011)(8676002)(7416002)(2616005)(31686004)(52116002)(53546011)(186003)(316002)(4326008)(956004)(16526019)(6486002)(5660300002)(16576012)(83380400001)(26005)(66946007)(66556008)(66476007)(8936002)(31696002)(478600001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?d0Q2UTNJUm92VHRHSWJnV1dZVjBpWmRacUZQZmtKVEtOdjB4eE9CRkZHNlo2?=
- =?utf-8?B?dkpQRmRoQ0VQTzZvM0NqZ3pLZkdiUFl6b3Q4clg3TDZ6SE9VbFNsRklHNXBU?=
- =?utf-8?B?OWdIOC9MRHpqWmFDSmg1bFEvTDFSWUZBQVdObTdIOTdiMzNldnEwYnZrVmxF?=
- =?utf-8?B?a21oeGZoZFNXRGVWS2xQTEIzVmgyeVJNbWJkQnNoMGRIRjJKN2ZQT3Y4Mi9H?=
- =?utf-8?B?TWVROW5kQ0wzeW9vWmVmR3MvKzh1bkFzeE1zRlJsSmdHbEtKdFgyc3pYdjRT?=
- =?utf-8?B?RE9WTDlCM1BxNG53VHBya3hjenZNUWhnTXpIcm41L2NqM1M4ZXlyU2hZa2w3?=
- =?utf-8?B?TmFJRGhvS0R0b28zK2tYZFlFYit0aFlYd3pJUEhnZUtOTXNHMGl0ei83RXUr?=
- =?utf-8?B?bmE3eUR2dmNHekVjWStDcGxzdVN3V1RDVmFJVjl2a1JyQ2pZWndkRHN3bkI1?=
- =?utf-8?B?K1JuMzZyMkdwV2toRThCVENxSVZVWUZqY3F3RDUrVGFFVjlKUjUvYXdhOVpP?=
- =?utf-8?B?WnkvcldQRDBjOFFWSGplM2xybk9KSnBEN1E4dDlEeFJPVEdhUURZSGpLQUph?=
- =?utf-8?B?WHF1UXRtSXFqR3pGVVhrSEhnczNpVE1heG5WT0ZNcS9wbmFzOUJMWnhnaVR2?=
- =?utf-8?B?RE9vNnBsOTUrNTRIRDFucUZiWUN0dWhKbHlVVHIxNUVhZ20zR3Bvb2UxZm11?=
- =?utf-8?B?eGNVYzc0UE5rQVk0RmxjQ1dQeVl5MUovc05MMzhzdFZkS2hZenYvT2VneFJR?=
- =?utf-8?B?dk55azVPWE50eW1QMlEwbmxZYzV1aVFheGRVSU9qWlhwVzl6RlpTOUJhVkZp?=
- =?utf-8?B?UGx2WmJuZnc1K3FiL0hpTi9GSHVING5YR0ZOY2FUVzlaaDJVcm5TU09vdW1Q?=
- =?utf-8?B?aU90NmlJVGM2VVZVVlZHM0hnVGhIbmFIOFczb2NoUGFRZ1ZQd2lrREQxdU5y?=
- =?utf-8?B?dGcvcUZaSEpuUUxwMFN1azg3dzl6cnhwS0hoc01iOXVWRXZYWThLR3VzQm4r?=
- =?utf-8?B?L2xTQ1dEWWN2OXJFTzBCcjhjblJ0Zk1oeklzZXBhZS8yVDFrTWR1RHg4U3h5?=
- =?utf-8?B?VDYxc2ozcVJ6UUVGOE9FS1gyem9kRHlQU2J0Q1plamRwOGpFemppUjV5Z3VY?=
- =?utf-8?B?SHRHeFhZa0labW9aM1NMSkt3Nmhvb0VhUUM3QnE3SzNzQzBmaDFwSFpZSVJI?=
- =?utf-8?B?bDRhby9udlZwa05obVBWenl0VmYyUWZoQnZmUXdaUWFMRmtHaHJ5a0xxaUVO?=
- =?utf-8?B?Y2xEOXQzSE1TRlF3b0s0a2g0akNEcE9LbGJDVHE2SXV1UEkybURlbm9pQjNj?=
- =?utf-8?B?dzVJVmtteFMveTM5MTBuMjEreGNNUGxJbzl4YzdvemlLandEdWpTRFEyeENn?=
- =?utf-8?B?bnYwNWtlR2daVzJHVFhrYk42N214dFFhWldlL2tqSkc5SFhOemV5aFdITnNy?=
- =?utf-8?B?dksvSWM1ck03RHE4WDBJR3dlZGswS21LSHJlUDZLSVZTTERheDhpYjR5WmNR?=
- =?utf-8?B?UEF6dnNiOExjaXFGajhlZ2RtSWJobEIrVXYxbXNCSi9mWVlFOWtOQTVvSUF2?=
- =?utf-8?B?SHFnYk84RFJyR1pQV1FremIzVGRnWnZTRnc2MUhualptY1dkdnBRNzdqNDNo?=
- =?utf-8?B?eGsvRlhEWEswSG5COUc3MnJOTWluRUVKTW5vUGNCMHBGNERhZS8ydWo3Q1oy?=
- =?utf-8?B?Z3FJeFk4ZnNGVDEwNFpCWHlScEQ3WWs2Um50cVpPcVFEUEZSY3NMTGRydXVC?=
- =?utf-8?Q?Wjf1J6UC3NVvi7G7s3NM0GUzF9p3IUbCj+XKo+D?=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB4102
-Original-Authentication-Results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT045.eop-EUR03.prod.protection.outlook.com
-X-MS-Office365-Filtering-Correlation-Id-Prvs: 50e77702-7cdb-47e9-c022-08d8cdbc26b2
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cD6Vkf5lw0Neds/sKV8xmbaSVXC4wUhDS0VYHDR3O6NzV8uryOHJZpDuZsl3O7KbybC55Z8KzBiRjbhuTxEXSf/37kLzMLf/rIrPtjO4h/xnbri4GZ8FJ9cUG5wezfi6nveYb0wyQoKUiIRbVp/8jqM5NhN/6rJZIZAa41Hvbu6JPIgZ9fyvmjqD+fYlntmsrfdjcQFGVF5e0F0BWJrqg0BC9dlqzq9teNl9+7WYUltWtwSXfA3qvrtVc3+ZdAkCWC0hA8S61MvBt6Uu1ZnunZDr209EtkrHhbKr8k0NEJoJ+EWxstouVOPk5/hPvwDyclfkW2oJ5SFGjqyTX5U7wm52fOJAL6SS62ROJDdsbidsOnGIDEPtOv2nCvcXA7U7bpfc+2Uhc4jmUWBWbpBp4creNhjlhflkCtwbV7+TZgtug15hR6+9O2EcUJFaQWINVN3T+mIYyBTyMddrANL5aGy4EQNudLri7LjH/hiZwM04OemaJ8oEVZcP/40Z0y5lQ/5c8x3FXkZpJ46fW5iqYbutA2ZB3F2FBiYu+i3azw4ZhFyieHLtGUK/8biXoTsvAlHFZc9UDx+yOPij3/RyFnKCoQMkUT4CruFwJEJvGZCR5MTBAVMLdQj/LkSodO7oEGJVtznoMRwiUGaWFkvdTfYt1B2haHvtwRMfmZKkAWkasr61PS0egabMzDZW8jhv
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(136003)(396003)(39850400004)(376002)(346002)(36840700001)(46966006)(4326008)(956004)(70206006)(356005)(31686004)(2616005)(36860700001)(478600001)(70586007)(450100002)(86362001)(336012)(82740400003)(53546011)(82310400003)(81166007)(8936002)(44832011)(6486002)(8676002)(16526019)(316002)(16576012)(36756003)(186003)(47076005)(5660300002)(83380400001)(54906003)(2906002)(31696002)(26005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 12:05:40.5029
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecda558e-f0bf-4720-5627-08d8cdbc2f6a
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT045.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR08MB3035
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ5zXr1OW+RfNNuXOZDjUvm=EKz5C9=GPc243z3Wk_qc3N=6sQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102100119
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 10, 2021 at 02:38:28PM +0530, karthek wrote:
+> On Wed, Feb 10, 2021, 2:31 PM Dan Carpenter <dan.carpenter@oracle.com>
+> wrote:
+> 
+> > On Wed, Feb 10, 2021 at 02:28:31PM +0530, karthek wrote:
+> > > On Wed, Feb 10, 2021 at 1:37 PM Dan Carpenter <dan.carpenter@oracle.com>
+> > wrote:
+> > > > > @@ -789,7 +759,7 @@ static void phy_PostSetBwMode8723B(struct
+> > adapter *Adapter)
+> > > > >
+> > > > >               PHY_SetBBReg(Adapter, rFPGA1_RFMOD, bRFMOD, 0x0);
+> > > > >
+> > > > > -/*                   PHY_SetBBReg(Adapter, rFPGA0_AnalogParameter2,
+> > BIT10, 1); */
+> > > > > +     /*PHY_SetBBReg(Adapter, rFPGA0_AnalogParameter2, BIT10, 1); */
+> > > >
+> > > > This format is wrong.  Anyway, just delete the commented out code.
+> > > >
+> > > > regards,
+> > > > dan carpenter
+> > > >
+> > >
+> > > how can i delete that, i have no idea what this driver does
+> > > i'm just fixing coding style issues for eudyptula challenge.
+> > > i dont think its a good idea to delete the code without knowing its
+> > > purpose even though its commented out
+> >
+> > Commented code obviously doesn't do anything at all?
+> >
+> > regards,
+> > dan carpenter
+> >
+> 
+> > Ofcourse it does nothing
+> 
+> But why does it exist in the first place,
+> 
+> Why maintainer decided to comment it out without just deleting it?
+> Maybe there is some reason which i don't know
+> So i decided not to touch it
 
+This is staging code because the original developers didn't do a great
+job.
 
-On 2/8/21 3:39 PM, James Clark wrote:
->
->
-> On 22/01/2021 18:18, Alexandre Truong wrote:
->
->> +}
->> +
->> +static int add_entry(struct unwind_entry *entry, void *arg)
->> +{
->> +    struct entries *entries =3D arg;
->> +
->> +    entries->stack[entries->i++] =3D entry->ip;
->> +    return 0;
->> +}
->> +
->> +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct th=
-read *thread)
->> +{
->> +    u64 leaf_frame;
->> +    struct entries entries =3D {{0, 0}, 0};
->> +
->> +    if (get_leaf_frame_caller_enabled(sample))
->> +            return 0;
->> +
->> +    unwind__get_entries(add_entry, &entries, thread, sample, 2);
->> +    leaf_frame =3D callchain_param.order =3D=3D ORDER_CALLER ?
->> +            entries.stack[0] : entries.stack[1];
->> +
->> +    if (leaf_frame + 1 =3D=3D sample->user_regs.regs[PERF_REG_ARM64_LR]=
-)
->> +            return sample->user_regs.regs[PERF_REG_ARM64_LR];
->
-> Hi Alex,
->
->  From your other reply about your investigation it looks like the check a=
-gainst PERF_REG_ARM64_LR isn't
-> required because libunwind won't return a value if it's not correct. Whet=
-her it's equal to the LR or not.
->
-> And PERF_REG_ARM64_LR points to the instruction _after_ the call site. i.=
-e. where to return to,
-> not where the call was made from. So just leaf_frame rather than leaf_fra=
-me+1 would be more accurate.
->
-> I was also looking at unwind_entry in machine.c which is similar to your =
-add_entry function and saw that it
-> does some extra bits like this:
->
->       if (symbol_conf.hide_unresolved && entry->ms.sym =3D=3D NULL)
->               return 0;
->
->       if (append_inlines(cursor, &entry->ms, entry->ip) =3D=3D 0)
->               return 0;
->
->       /*
->        * Convert entry->ip from a virtual address to an offset in
->        * its corresponding binary.
->        */
->       if (entry->ms.map)
->               addr =3D map__map_ip(entry->ms.map, entry->ip);
->
-> I have a feeling you will also need to do those on your values returned f=
-rom libunwind to make it 100%
-> equivalent.
->
-> James
->
+> 
+> Anyway I'm new to this so just say what should i do now?
 
-Hi James,
+Just delete it.
 
-Thanks for your reply.
+regards,
+dan carpenter
 
-The check against PERF_REG_ARM64_LR is indeed not required and I can
-check if libunwind goes successfully.
-
-I am going to follow up with a v2 of the patch applying these changes.
-
-I think the bits you mentioned don't need to be added because this check
-is already done in add_callchain_ip() called afterwards in machine.c :
-
-     if (symbol_conf.hide_unresolved && entry->ms.sym =3D=3D NULL)
-         return 0;
-
-For the second one, I don't think it needs to be added either because
-append_inlines() appends ip on the cursor which is also already done by
-add_callchain_ip().
-
-For the last one, the conversion from a virtual address to a binary one
-isn't required.
-
-
-Also for the expansion to all platforms, it doesn't work on x86 so I'll
-leave it just for arm for now.
-
-Regards,
-
-Alexandre
-
->> +    return 0;
->> +}
->> diff --git a/tools/perf/util/arm-frame-pointer-unwind-support.h b/tools/=
-perf/util/arm-frame-pointer-unwind-support.h
->> new file mode 100644
->> index 000000000000..16dc03fa9abe
->> --- /dev/null
->> +++ b/tools/perf/util/arm-frame-pointer-unwind-support.h
->> @@ -0,0 +1,7 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
->> +#define __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
->> +
->> +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct th=
-read *thread);
->> +
->> +#endif /* __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H */
->> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
->> index 40082d70eec1..bc6147e46c89 100644
->> --- a/tools/perf/util/machine.c
->> +++ b/tools/perf/util/machine.c
->> @@ -34,6 +34,7 @@
->>   #include "bpf-event.h"
->>   #include <internal/lib.h> // page_size
->>   #include "cgroup.h"
->> +#include "arm-frame-pointer-unwind-support.h"
->>
->>   #include <linux/ctype.h>
->>   #include <symbol/kallsyms.h>
->> @@ -2671,10 +2672,12 @@ static int find_prev_cpumode(struct ip_callchain=
- *chain, struct thread *thread,
->>      return err;
->>   }
->>
->> -static u64 get_leaf_frame_caller(struct perf_sample *sample __maybe_unu=
-sed,
->> -            struct thread *thread __maybe_unused)
->> +static u64 get_leaf_frame_caller(struct perf_sample *sample, struct thr=
-ead *thread)
->>   {
->> -    return 0;
->> +    if (strncmp(thread->maps->machine->env->arch, "aarch64", 7) =3D=3D =
-0)
->> +            return get_leaf_frame_caller_aarch64(sample, thread);
->> +    else
->> +            return 0;
->>   }
->>
->>   static int thread__resolve_callchain_sample(struct thread *thread,
->>
-IMPORTANT NOTICE: The contents of this email and any attachments are confid=
-ential and may also be privileged. If you are not the intended recipient, p=
-lease notify the sender immediately and do not disclose the contents to any=
- other person, use it for any purpose, or store or copy the information in =
-any medium. Thank you.
