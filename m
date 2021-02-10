@@ -2,142 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CB7316CDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62917316CE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbhBJRfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:35:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
+        id S233006AbhBJRgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:36:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbhBJRbo (ORCPT
+        with ESMTP id S233052AbhBJRdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:31:44 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA25C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:31:04 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id o7so1690138pgl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:31:04 -0800 (PST)
+        Wed, 10 Feb 2021 12:33:03 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E3BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:32:22 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id p21so4015751lfu.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:32:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r3TD1VAfUO11hF9aR+MVS7dpwQ4XHZyMR7TiZnGBl0g=;
-        b=JFoezMNI7Nb31jHhwYFqP7nmDWA7073Dh5KxzGSxmXniyuDG8tb0hMnQZEikXrqcJH
-         DDuDNhIFh51Fh9LBHlwW5xgjdKp31CMNmxmYCPehx6dfgEMjAZDlhgQb1hMT/VfBNSgQ
-         F6SIOWzti1rHnvPYZxrGB5VZEpYxgSNE48nZds/Pe8gB6qM/rOUPzDdCh6/kIZ090IZa
-         WKMx8bkWnRIxSvqvQ6uqNQbyNvVaABOyxR2Fb3tFOGl173gPgOmgwvRR37qWbINyZWjV
-         DMmnSU9EqiZXbzQiHNb1h6Rea5HvCAi/tRLydSOJobWAz93H+AcLeAVX8wdrkksf2kT9
-         YjqA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EzR3RKneYKSWiiWyad5VBkY/1CELRsyGqG1y+v7sb8Y=;
+        b=vlwiD0hJFfwqF3kbno47a0ujL8az+y6CsI7aqWEk7OFgo5MJSGwxqeZK2V0lkXI5JN
+         s/dVF4zPbc2emIsRgdyCIEZfTZgA5zWP1A5CZaEw5R3TVRvS/m+P/Chz7ZNKPBa1dl0/
+         JgzfQfoLgZTI0KJpaKNxLwYbPhMjbEPAYZh/c9hltVZ+4ViCiiFrd6ML7KC0UmfPjyQA
+         1f3YQKKrZ8q75KAQXjkTzmf/DdTe2TzBwA30dEmg90/nLA+4KL/nEOGwq0fkVC4aq3+D
+         L1VGHmXJu+SCz72W/EKx21TBA3qKtiO4GTuon7zYvE8bZ0fAjLnkkQEdXWM6ryhriVAZ
+         y1tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r3TD1VAfUO11hF9aR+MVS7dpwQ4XHZyMR7TiZnGBl0g=;
-        b=NRYorml4a2/CakcnFWkVyeT0a94VQP6suTtki5G7lfC40GOyn+C8I8k4B9vQ/2rD8R
-         iw/vi8hTeZ3w4p+t15oipdggdGezc9kKBzgg8y0rVfYhbL80XuYl3/FP6Ait1vsByjnt
-         0gBwu1LijcmDy1ynRKEXQe54xx/d226JFYOFJx8tRE4pYZsjMQDs2BYkMTQmKvqI7MAN
-         w+e7FNdw6jzGdNHqYgwXJgjOgWVHkj34BGzOvl8MAvLa9Fhp9d1vOQZi0N61V8v0New/
-         ZVyIzX6NkeQlrD40J7H6/7q20ekJ4pJFPy3FFby5oKNv+8mzp0SRnSgJdb/q900bAv4b
-         XFPQ==
-X-Gm-Message-State: AOAM530BgpZ/J8ejux0/0S5iE5pXVlbXeh28Sevy0aFxV4xIcMJ4qzdM
-        AD5yoX9AFc2vwLN78jyBc3BNw9V4J9lw4Q==
-X-Google-Smtp-Source: ABdhPJyxaBuTrDORPtY6pXqrKAzLL/RSuxC5vxYQJdxX/k8MC5hxfnNUcPe2nTKsUGq5plyO4rkUoQ==
-X-Received: by 2002:aa7:92c6:0:b029:1cb:1c6f:c605 with SMTP id k6-20020aa792c60000b02901cb1c6fc605mr4179151pfa.4.1612978263556;
-        Wed, 10 Feb 2021 09:31:03 -0800 (PST)
-Received: from x1 ([2601:1c0:4701:ae70:7b19:df69:92d6:528e])
-        by smtp.gmail.com with ESMTPSA id 68sm3153793pfg.90.2021.02.10.09.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 09:31:02 -0800 (PST)
-Date:   Wed, 10 Feb 2021 09:31:00 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Subject: Re: [PATCH v2 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
-Message-ID: <20210210173100.GA178344@x1>
-References: <20210210074946.155417-1-drew@beagleboard.org>
- <20210210074946.155417-3-drew@beagleboard.org>
- <CAHp75VcDVVZ=hg5hfRTs9hJ20gdEE_Xhccyg859nsvtyxTXCyw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EzR3RKneYKSWiiWyad5VBkY/1CELRsyGqG1y+v7sb8Y=;
+        b=TO6amrzc6qFDXyFc20Fk5u1loBRpimsc7Dn3RY5IvnE2VFeINDQRrC9tqwZb92Dh9/
+         wQEGdewDKqT6/BuEFndAnPe8RozG/C5hIWrM+W3BeZgaYf3ztC8rGj4gVtRwnx1Pj6y4
+         0r4hKLgTBeBCT8rrs/6w3uAOeX6zKdA8MTip2nU5XI7Znzy2eHO4vueTRFy1vXw1Vbzb
+         vajtuhRk+zMrVdrWyPTThgDo7kjAwdaU9Gm/p7+9t2y16PKPw/E9hBWtQZyR1JR9RivX
+         a72I3V0aqXiKKmJW30GmiB51zVQubXtKSzItPdNi49A1JJ6YV+aC6xqkG18td34XNeSH
+         vUYw==
+X-Gm-Message-State: AOAM530eLJxKpIli4NBk6X7aK5n/Gmf57fYoLlZ9dN+iMttnfrJg4bO/
+        CirjDJU7lGH9+3MWwSGKAo+kK5LWhAJ+TaxooqVndg==
+X-Google-Smtp-Source: ABdhPJziYXldWzLWofd/jWFQpmwotcgnz6w+1lH9Lz2U6xpT2p0TR0LSV/pOKu2uWwxGTC8z9fD3i6ZXrYO14X/dllo=
+X-Received: by 2002:a19:9c5:: with SMTP id 188mr2106747lfj.626.1612978341098;
+ Wed, 10 Feb 2021 09:32:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcDVVZ=hg5hfRTs9hJ20gdEE_Xhccyg859nsvtyxTXCyw@mail.gmail.com>
+References: <20210210162632.3903128-1-minchan@kernel.org>
+In-Reply-To: <20210210162632.3903128-1-minchan@kernel.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 10 Feb 2021 09:32:09 -0800
+Message-ID: <CALAqxLXzc3tfsr0hA6GS-zHjupWx++Bhcrs2pjbz00LNKeThOQ@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: system_heap: do not warn for costly allocation
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        John Dias <joaodias@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 11:56:49AM +0200, Andy Shevchenko wrote:
-> On Wed, Feb 10, 2021 at 9:50 AM Drew Fustini <drew@beagleboard.org> wrote:
-> >
-> > Add "pinmux-select" to debugfs which will activate a function and group
-> > when 2 integers "<function-selector> <group-selector>" are written to
-> > the file. The write operation pinmux_select() handles this by checking
-> > if fsel and gsel are valid selectors and then calling ops->set_mux().
-> >
-> > The existing "pinmux-functions" debugfs file lists the pin functions
-> > registered for the pin controller. For example:
-> >
-> > function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
-> > function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
-> > function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
-> > function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
-> > function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
-> > function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
-> >
-> > To activate function pinmux-i2c1 (fsel 4) and group pinmux-i2c1-pins
-> > (gsel 4):
-> >
-> > echo '4 4' > pinmux-select
-> 
-> ...
-> 
-> >  DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
-> >
-> 
-> > +
-> 
-> One blank line (existed) is enough.
-> 
-> > +#define PINMUX_MAX_NAME 64
-> 
-> ...
-> 
-> > +       buf = devm_kzalloc(pctldev->dev, PINMUX_MAX_NAME * 2, GFP_KERNEL);
-> 
-> You have to (re-)read documentation about Device Managed Resources.
-> Keyword here is *device*! Pay attention to it. TL;DR: misuse of device
-> managed resources here.
-> Potentially memory exhausting (local DoS attack), but see below.
-> 
-> > +       if (!buf)
-> > +               return -ENOMEM;
-> 
-> ...
-> 
-> > +       devm_kfree(pctldev->dev, buf);
-> 
-> Calling devm_kfree() or other devm_*() release kinda APIs is a red
-> flag in 99%. See above.
+On Wed, Feb 10, 2021 at 8:26 AM Minchan Kim <minchan@kernel.org> wrote:
+>
+> Linux VM is not hard to support PAGE_ALLOC_COSTLY_ODER allocation
+> so normally expects driver passes __GFP_NOWARN in that case
+> if they has fallback options.
+>
+> system_heap in dmabuf is the case so do not flood into demsg
+> with the warning for recording more precious information logs.
+> (below is ION warning example I got but dmabuf system heap is
+> nothing different).
+>
+> [ 1233.911533][  T460] warn_alloc: 11 callbacks suppressed
+> [ 1233.911539][  T460] allocator@2.0-s: page allocation failure: order:4, mode:0x140dc2(GFP_HIGHUSER|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
+> [ 1233.926235][  T460] Call trace:
+> [ 1233.929370][  T460]  dump_backtrace+0x0/0x1d8
+> [ 1233.933704][  T460]  show_stack+0x18/0x24
+> [ 1233.937701][  T460]  dump_stack+0xc0/0x140
+> [ 1233.941783][  T460]  warn_alloc+0xf4/0x148
+> [ 1233.945862][  T460]  __alloc_pages_slowpath+0x9fc/0xa10
+> [ 1233.951101][  T460]  __alloc_pages_nodemask+0x278/0x2c0
+> [ 1233.956285][  T460]  ion_page_pool_alloc+0xd8/0x100
+> [ 1233.961144][  T460]  ion_system_heap_allocate+0xbc/0x2f0
+> [ 1233.966440][  T460]  ion_buffer_create+0x68/0x274
+> [ 1233.971130][  T460]  ion_buffer_alloc+0x8c/0x110
+> [ 1233.975733][  T460]  ion_dmabuf_alloc+0x44/0xe8
+> [ 1233.980248][  T460]  ion_ioctl+0x100/0x320
+> [ 1233.984332][  T460]  __arm64_sys_ioctl+0x90/0xc8
+> [ 1233.988934][  T460]  el0_svc_common+0x9c/0x168
+> [ 1233.993360][  T460]  do_el0_svc+0x1c/0x28
+> [ 1233.997358][  T460]  el0_sync_handler+0xd8/0x250
+> [ 1234.001989][  T460]  el0_sync+0x148/0x180
+>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+>  drivers/dma-buf/heaps/system_heap.c | 9 +++++++--
+>  1 files changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> index 29e49ac17251..33c25a5e06f9 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -40,7 +40,7 @@ struct dma_heap_attachment {
+>         bool mapped;
+>  };
+>
+> -#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
+> +#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO \
+>                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+>                                 | __GFP_COMP)
+>  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> @@ -315,6 +315,7 @@ static struct page *alloc_largest_available(unsigned long size,
+>                                             unsigned int max_order)
+>  {
+>         struct page *page;
+> +       unsigned long gfp_flags;
+>         int i;
+>
+>         for (i = 0; i < NUM_ORDERS; i++) {
+> @@ -323,7 +324,11 @@ static struct page *alloc_largest_available(unsigned long size,
+>                 if (max_order < orders[i])
+>                         continue;
+>
+> -               page = alloc_pages(order_flags[i], orders[i]);
+> +               gfp_flags = order_flags[i];
+> +               if (orders[i] > PAGE_ALLOC_COSTLY_ORDER)
+> +                       gfp_flags |= __GFP_NOWARN;
+> +
+> +               page = alloc_pages(gfp_flags, orders[i]);
 
-Thank you for reviewing and pointing out this issue.
+Would it be cleaner to just set up the flags properly in the
+order_flags array? I'm not sure I understand why your patch does it
+dynamically?
 
-Do you mean that I should not be treating these buffers used in the 
-debugfs write op as belonging to the pin controller device?
-
-I have looked through the kernel code and I realize now that I don't see
-any instances of devm_*() being used inside the read or write op for a
-debugfs file. As I consider it further, devm_*() does not seem to make
-sense as I am creating the buffers only for temporary use inside
-pinmux_select().
-
-I'll get that fixed in v3.
-
-Thank you,
-Drew
+thanks
+-john
