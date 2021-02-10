@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7D53168F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB4E3168FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhBJOTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:19:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhBJOTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:19:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2BB264E77;
-        Wed, 10 Feb 2021 14:18:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612966721;
-        bh=/H/VpuE4ftmMd1Jm1lW1k1psNWGjYaTa1sG7utPCWP8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jxmz6XzlQ/YtWrL9W/YfZfx/AwJJNqC/ad908KSGQTVb+PdyYIVbHQBTS4j3byBFt
-         z+VwvbpFI7rJKzT4g5Zt+EbLq1gmgNNvfd9gyFgP5DCNlL91sjwkvsgt3UW164ia4b
-         j53OdRdFpcjiUbfuexjbLGQn4iG3y4pwd23K4OItiuyWSbZxQOuGovZVthbp9sSh4J
-         /pkJLQsAJ8uCthRIGqYwwyJPp4B7zxdFGNPmioNxtIe0lEVn0nq50MjLIWLZgsXO+o
-         HBEJIsUjxIBjVPPYxedLDl57bfEfUPs5e+k8PNvxUhKgrfP9rm7Thnt9yGqxlbz7QA
-         ni+ATs9hAdQ4g==
-Date:   Wed, 10 Feb 2021 15:18:38 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org, Mike Galbraith <efault@gmx.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [tip: sched/core] sched,x86: Allow !PREEMPT_DYNAMIC
-Message-ID: <20210210141838.GA53130@lothringen>
-References: <YCK1+JyFNxQnWeXK@hirez.programming.kicks-ass.net>
- <161296521143.23325.3662179234825253723.tip-bot2@tip-bot2>
+        id S231731AbhBJOUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:20:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230489AbhBJOU3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:20:29 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E3CC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 06:19:48 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id a22so3011308ljp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 06:19:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=STanyo0VxqectlsIzMPDjmIhDAwFO8ShwKQAZIMHAJ8=;
+        b=JJVIO8cTw0DZ7TaBIt9ZD/qu+pTbwmSPSxu3ZJtHq1HYVFkYlnvumMMA6oQOCsCnxy
+         DBWFDzx8MQqA1M1aqWSA2E94JTTCiXpkqFB/z+J6GMfHWF9rQQlyzwSjmBvp9fQGi06T
+         3DfnG8GC8iCIuKLidmGvDyhrs9Fz9AHI/eAeUzpKFcsMJ5POyJT5tudlakqmdm30sBuZ
+         TVfg5KqdzEozPxuVerAvCYuvBE0RUf9XzhSkm+oNX86BRPdXpNDprDI9dutzfQK1pILf
+         hjDMhaGqKnI2Njmb1uT9fhTQ2kLt3Y49uNlsDdeBzeiOKYuE/ixIjrIvIj6jJKhVqJU9
+         +njQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=STanyo0VxqectlsIzMPDjmIhDAwFO8ShwKQAZIMHAJ8=;
+        b=jGlCokv99QJFWlxRrQwVDN/Kw++rqISpTa1mlInD5WCGNM8eIsWdkpJQsQgAimAr5A
+         ZTlTIbgaoHTYlV4aBMYVoT4+2uZDKkR/q2PM4v5NGID87PyG8OhGVe3Rf1uYpAjazn6x
+         jOiGzhpvArWI5eqXzREYkDDcTyO6AqS+uwTcTRcSr86kPmbpPk0OOODm4zSejfk17f+i
+         ElYn/G4gOaboz1xhxErFvRmK0hLvXsf1mxuJ+qOjQAs/YgzAGY6acBbcKzyD+AhljYby
+         T9Wxt36XR22aP4WDPvo72+enxSipwlPuJWDD4VGslT4ucO7zhJ0u14IOD9uQj+bHPHC2
+         phXA==
+X-Gm-Message-State: AOAM533RScNPcrprruCikNmjomgK1n6+pm6qEuUtRiBqdiX0QQ99EKBY
+        J9MUrazYS48j/oMAvMfL5+pWeFJLjQ/FaDwxIlJgOA==
+X-Google-Smtp-Source: ABdhPJxMnEHrTizG5GfHfjzb+C5dLVyw57d8HYLUk3hc88l0K4uvHzlXl2BcBR+I9W7Kk6l3XwqVEzjhJe/BNkWaUmM=
+X-Received: by 2002:a2e:9801:: with SMTP id a1mr2227628ljj.122.1612966786152;
+ Wed, 10 Feb 2021 06:19:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161296521143.23325.3662179234825253723.tip-bot2@tip-bot2>
+References: <20210209174646.1310591-1-shy828301@gmail.com> <20210209174646.1310591-3-shy828301@gmail.com>
+In-Reply-To: <20210209174646.1310591-3-shy828301@gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 10 Feb 2021 06:19:35 -0800
+Message-ID: <CALvZod4s4_AJPxjPo+okq3XuvXa45eXTAeJOHgu3rwGVBw-Oww@mail.gmail.com>
+Subject: Re: [v7 PATCH 02/12] mm: vmscan: consolidate shrinker_maps handling code
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:53:31PM -0000, tip-bot2 for Peter Zijlstra wrote:
-> The following commit has been merged into the sched/core branch of tip:
-> 
-> Commit-ID:     82891be90f3c42dc964fd61b8b2a89de12940c9f
-> Gitweb:        https://git.kernel.org/tip/82891be90f3c42dc964fd61b8b2a89de12940c9f
-> Author:        Peter Zijlstra <peterz@infradead.org>
-> AuthorDate:    Tue, 09 Feb 2021 22:02:33 +01:00
-> Committer:     Peter Zijlstra <peterz@infradead.org>
-> CommitterDate: Wed, 10 Feb 2021 14:44:51 +01:00
-> 
-> sched,x86: Allow !PREEMPT_DYNAMIC
-> 
-> Allow building x86 with PREEMPT_DYNAMIC=n, this is needed for
-> PREEMPT_RT as it makes no sense to not have full preemption on
-> PREEMPT_RT.
-> 
-> Fixes: 8c98e8cf723c ("preempt/dynamic: Provide preempt_schedule[_notrace]() static calls")
-> Reported-by: Mike Galbraith <efault@gmx.de>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Tested-by: Mike Galbraith <efault@gmx.de>
-> Link: https://lkml.kernel.org/r/YCK1+JyFNxQnWeXK@hirez.programming.kicks-ass.net
+On Tue, Feb 9, 2021 at 9:47 AM Yang Shi <shy828301@gmail.com> wrote:
+>
+> The shrinker map management is not purely memcg specific, it is at the intersection
+> between memory cgroup and shrinkers.  It's allocation and assignment of a structure,
+> and the only memcg bit is the map is being stored in a memcg structure.  So move the
+> shrinker_maps handling code into vmscan.c for tighter integration with shrinker code,
+> and remove the "memcg_" prefix.  There is no functional change.
+>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
-Also should we add something like this?
-
-From 4e1de6d9d8804ea7edc6f8767abea37f5103799a Mon Sep 17 00:00:00 2001
-From: Frederic Weisbecker <frederic@kernel.org>
-Date: Wed, 10 Feb 2021 15:11:39 +0100
-Subject: [PATCH] preempt/dynamic: Make PREEMPT_DYNAMIC optional
-
-In order not to make the small trampoline overhead mandatory for archs
-that support HAVE_STATIC_CALL but not HAVE_STATIC_CALL_INLINE, make
-PREEMPT_DYNAMIC optional.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/Kconfig.preempt | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-index 416017301660..1fe759677907 100644
---- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -40,7 +40,6 @@ config PREEMPT
- 	depends on !ARCH_NO_PREEMPT
- 	select PREEMPTION
- 	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
--	select PREEMPT_DYNAMIC if HAVE_PREEMPT_DYNAMIC
- 	help
- 	  This option reduces the latency of the kernel by making
- 	  all kernel code (that is not executing in a critical section)
-@@ -83,11 +82,13 @@ config PREEMPTION
-        select PREEMPT_COUNT
- 
- config PREEMPT_DYNAMIC
--	bool
-+	bool "Override preemption flavour at boot time"
-+	depends on HAVE_PREEMPT_DYNAMIC && PREEMPT
-+	default HAVE_STATIC_CALL_INLINE
- 	help
- 	  This option allows to define the preemption model on the kernel
--	  command line parameter and thus override the default preemption
--	  model defined during compile time.
-+	  command line parameter "preempt=" and thus override the default
-+	  preemption model defined during compile time.
- 
- 	  The feature is primarily interesting for Linux distributions which
- 	  provide a pre-built kernel binary to reduce the number of kernel
-@@ -99,3 +100,5 @@ config PREEMPT_DYNAMIC
- 
- 	  Interesting if you want the same pre-built kernel should be used for
- 	  both Server and Desktop workloads.
-+
-+	  Say Y if you have CONFIG_HAVE_STATIC_CALL_INLINE.
--- 
-2.25.1
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
