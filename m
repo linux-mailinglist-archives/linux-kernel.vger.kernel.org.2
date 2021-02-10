@@ -2,123 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE27431632A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288A0316330
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhBJKFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:05:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhBJKB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:01:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 094D660235;
-        Wed, 10 Feb 2021 10:00:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612951240;
-        bh=ztSbbp80YOWbAAbbvPuLSqTDjOdJ9Nw8DBZvAkpK63s=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Dek8duigBvYQvfsUAy67eA2AHvg5bf5zJR04X9ax0ILJYQWvheLjqBuogm5l1PGmU
-         kXeUtW9P5UuYAGDVbkTJPBnWZVsKGRya6yROMJiXm2j9mGUVxIUsEcLQ+/7t+n79q8
-         s5MYxyrEms5N/dR5tT4oPadg+vASrwrR/NpDO3S/ryXa19k2TPfJnOQHihHBvjnOyT
-         KoEOJ/SbOEZ7RAXikeC99LlN4jt91tSeaY2xfQmhyH6K8bYGPfZXPKUNO8h8UUCsdG
-         s4aJbDpgzUxcoG17KHLA2K9Sx2XBDT7aW9cMyvXpyHg2yy9RLY+r8EHY3eFoTLWFDm
-         jVEVu2rt2gqXg==
-Date:   Wed, 10 Feb 2021 15:30:36 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dma <dmaengine@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] dmaengine fixes for v5.11
-Message-ID: <20210210100036.GD2774@vkoul-mobl.Dlink>
+        id S230326AbhBJKGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:06:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229881AbhBJKBb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:01:31 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562DCC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:00:51 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id x14so1073458qkm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:00:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=7U2xet98O8zeH0o3n3SmAGvuSV7RRDgD+QCC5VUE/Oo=;
+        b=tcwNyO9qElO8Zks2c62Zmjo2eQMRWCFX+MKtiXOA1Rbyn3ba6QWukbjamqbsv83myj
+         mxOuI21ThWBLWql5CTHm9yeB9wzMP9viFFX4RdVsP3Hix+J7APrt2xY9+aZkBkICG1ZS
+         JnqsP2aEvuZmoqQ9EDTEg2hlBd3i66vuqsC4ep897yE9Nn5/6sL9EIZ9C/n0dxAGjHCT
+         M1y0y2onB5Z6fdIl0+Asgvird+rtY2TaImotDgNwl9b3xc8JcW/VdykjcXcVlbQC13wb
+         nzaS/p+26sW0xh/CoH0moKH7hNypImDlEmmaVRKRD/E72Zm8dtvSt+Nm9KVyxw9OdGu8
+         OcXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=7U2xet98O8zeH0o3n3SmAGvuSV7RRDgD+QCC5VUE/Oo=;
+        b=AbZddZc8/thPKJ+EOzNhICSKCe1NDuYQYcRmjQladsaEpdmZSHHHfJ8+SdCKzCugIC
+         WE7PAumnkP685pjRPso2F3YihwVgQmq4zi5VWJ1eyMMrEdw2UWfCzKtAUFVnzh45zYhv
+         dE7njNkp1BICmzEcvC+AgCM8jtuR3lJLRawIb0PmOvrogVl7sHyEy93CNG3V+TfSAM+0
+         gLb7zfqW4eI8j6h5suqZJsH5Y7eXqXApbm+oN5L8gtyuI4BLPBTl53lXP5GEZ85rDkIc
+         B+OJWaQ6pyy26BE+EsnrS7/ZCUia0dadrL2yrEQsOn5Sc1eQ8gtFRcylZFZyRHZ/pJof
+         Ezbw==
+X-Gm-Message-State: AOAM533DeRSNApfxdmTCvPHgFtDHnG/NlGiYwp2ybncZqpMHWYmHBUe1
+        aqXeArHeYuvjrT9W/XBINf0B3gmeYq9Lm6ywWYw=
+X-Google-Smtp-Source: ABdhPJyzH2JIYbGLza0/ah3rRo084bc1zyWwaHqhCEy6Q7QMFJQU+yjoDXdryoEygS+v+OUsPCjbOYYdXDaet3TvtbM=
+X-Received: by 2002:ae9:e8d7:: with SMTP id a206mr316486qkg.90.1612951250586;
+ Wed, 10 Feb 2021 02:00:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
-Content-Disposition: inline
+Received: by 2002:a0c:b628:0:0:0:0:0 with HTTP; Wed, 10 Feb 2021 02:00:50
+ -0800 (PST)
+Reply-To: nnoelie64@gmail.com
+From:   Mr Gouli Frank <frankgouli9090@gmail.com>
+Date:   Wed, 10 Feb 2021 02:00:50 -0800
+Message-ID: <CACCZzQpLoPFmkrHRmWjrbF0SnieNsDpotV_7gxcK9XsM8tT+0g@mail.gmail.com>
+Subject: Dear Beneficiary,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Beneficiary,
 
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Your Over-due ATM Card Payment Compensation fund from United Nations
+Compensation Commission valued ( US$1,550.000.00) has been deposited here in
+the Bank on your behalf. Therefore, re-confirm your information such
+as,full Name, Address and Telephone Numbers. Also state categorically your
+age, occupations and marital status.
 
-Hi Linus,
+Immediately contact the Coordinator Compensation Unite .Mr. Noelie Nikiema, who
+is in position to release your ATM Card to you.
 
-Few late fixes for dmaengine. This includes one core fix and couple of
-driver fixes.
+Mr. Noelie Nikiema,
+Coordinator
+United Nations Compensation Unite Programe.
+Coris International Bank For Africa Burkina Faso.
+E-mail: nnoelie64@gmail.com
+*****************************
+(United Nations Compensation Commission, MAKING THE WORLD A BETTER PLACE).
 
-The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+yours sincerely,
+Mr. Frank Gouli
 
-  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
-aengine-fix2-5.11
-
-for you to fetch changes up to b6c14d7a83802046f7098e9bae78fbde23affa74:
-
-  dmaengine dw: Revert "dmaengine: dw: Enable runtime PM" (2021-02-08 17:36=
-:12 +0530)
-
-----------------------------------------------------------------
-dmaengine fixes-2 for v5.11
-
-Some late fixes for dmaengine:
- - Core: fix channel device_node deletion
- - Driver fixes for:
-   - dw: revert of runtime pm enabling
-   - idxd: device state fix, interrupt completion and list corruption
-   - ti: resource leak
-
-----------------------------------------------------------------
-Cezary Rojewski (1):
-      dmaengine dw: Revert "dmaengine: dw: Enable runtime PM"
-
-Christophe JAILLET (1):
-      dmaengine: ti: k3-udma: Fix a resource leak in an error handling path
-
-Dave Jiang (4):
-      dmaengine: idxd: Fix list corruption in description completion
-      dmaengine: idxd: fix misc interrupt completion
-      dmaengine: move channel device_node deletion to driver
-      dmaengine: idxd: check device state before issue command
-
- drivers/dma/dmaengine.c   |   1 -
- drivers/dma/dw/core.c     |   6 ---
- drivers/dma/idxd/device.c |  23 ++++++++-
- drivers/dma/idxd/dma.c    |   5 +-
- drivers/dma/idxd/idxd.h   |   2 +-
- drivers/dma/idxd/init.c   |   5 +-
- drivers/dma/idxd/irq.c    | 122 +++++++++++++++++++++++++++---------------=
-----
- drivers/dma/ti/k3-udma.c  |   3 +-
- 8 files changed, 104 insertions(+), 63 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---2fHTh5uZTiUOsy+g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmAjrsQACgkQfBQHDyUj
-g0c+WRAAhDc6IiI6HY4zZTy+zYcEIwl8Pv1QifwuzR526+SSJJvAx1K+r7btZ4Nv
-z+/BYd1aEIvYdQc/g7Myo2n279uA16l7U9WfRL2+8ElQPWa71q6t56vZUxX/90jL
-cyv/NhFWHKXjCXf9lsjrrAbG6OMGMocx0D40EClHbn5JtLK6hWcm7my1iMxCRJEM
-kGKvw9FKJkHHX/T+DpxxvHGP/n8HkG1FG27H3K7KIkuWMnuWhk5bD/7caRP55AWG
-3tLBVxVG3DlW+858JdWZzD4sGqu5xhlRmYt7VtqalnqVpHEY9lFlYSRJPja9e+2t
-egm97Ae0Kd6TZStLeqiBhWeTTs0PUWzZk9LcOZ67+2xjAdQTexwsqdE1qYbhmVap
-v1FWMoBBAope3+8V+IdqWxcTOrSYG0Sl0gJI+UGL1N3XwtUle984OtWQYMwDivGM
-qOStCBE6STI9tXsbFMYetbPC0QMMTWYZZ1WkQJImAeMJV3zWbQcRKumygmQ3vwpJ
-wJQEVfdZDp17x77R4FOYRorP4H7SVr1fhMbCU8fCbeMpjIqXG3/O8earep2x/khf
-d11XDu71ggSfc4YJErwisTbDTFMt3qjeSXiypP92PmHN2jSW8y67c2R1ENdiOOA5
-wR2BRG+2QlnIH19JJlRK2Vm/dPtpI2OJMMBh8Onx4ojbRKbuwkY=
-=Ak+o
------END PGP SIGNATURE-----
-
---2fHTh5uZTiUOsy+g--
+Position. Director
