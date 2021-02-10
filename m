@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D013172A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C843172B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233672AbhBJVrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233493AbhBJVrP (ORCPT
+        id S232212AbhBJVvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:51:24 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:35454 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232350AbhBJVug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:47:15 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29DCC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:46:34 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id p186so3572914ybg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:46:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FYDFwgJG+B9JGjyghuiLmPAsWot/rZ7zHMMlK8N94XM=;
-        b=FYu+PGpX66lOPjmBR15vH14/+3I2bBolaYSuBF53mdi7o0QgVD8Jaj5OHVV/zXPzPH
-         xJ50dqHKcSCQW/NAFFjZ9YZ+W4zN1kh5x/+pDUhPTMPlMS83M5xTS9tSdrhMQC4pvi4Y
-         FvO+o332u9lDYIn9ZG9QbOxj+KFidrc780MjPkV3IPXmnTm1dfrlwAZiq7bkTRwqEvRD
-         RLVDu0UO0x6LKX3hLEySMgBIV6N6kijRHmkC28iqvtVweoWRqzfXneC3n30cmIwWO3I5
-         d82HtLP0PKtPmN37rXxlwvCn95eJNfsG3W8bvuJJbSre7V6VY58acQJfozaHqT8QxvMo
-         UKbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FYDFwgJG+B9JGjyghuiLmPAsWot/rZ7zHMMlK8N94XM=;
-        b=DZ4L9Kr3XPsrSFwkm1ju6btnm5N/GJKPtWiUqTIc3VtgE3uFgIRb4wUayJNAk+8Gpz
-         K7KcB+OF1YEoC9mx++6jyD1/9xeoGbal8t6L+orQ8DJpKHxgbSoLNDwF2+8ya2mLWVTC
-         JCwOoK47bF9tc/Xo9STokK3Uo1LLDQuDyE/bIYbqsFpX31Paoa1whVFvmlN7cy+mk3JK
-         ycTqw7iyZ0P+iMGpjvOKc7ItCae+hW/b6pLt3+yBV/uv4RtGBOYbXIXkbLaKp9IVbs7t
-         3Ssx8IhCQprHRxpgt+fidvg9VgK9uwBOgd85wIHkFFvnGazqRSyk8zPydzfxKLV5qoBT
-         b4wQ==
-X-Gm-Message-State: AOAM533LmRrIrNyA5CFvjvVfmO5Wk+JDbUXS4P7Do9btbO4/JVEamhZw
-        Dnsupfp5w0UVxlIusAO2ZiFtV+zTq4zZIk+aGh0=
-X-Google-Smtp-Source: ABdhPJzoJWAiVdeO33Ss0CW5o8aEyXO20Oib+FtkFREf/iJ2uvvkOXw9U0s5Yq8+S9QMTCEw1UHIxM4V2T6lSFnOqRA=
-X-Received: by 2002:a25:a125:: with SMTP id z34mr6993996ybh.22.1612993594224;
- Wed, 10 Feb 2021 13:46:34 -0800 (PST)
+        Wed, 10 Feb 2021 16:50:36 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ALjOiM090661;
+        Wed, 10 Feb 2021 21:49:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=Tdndnpd4eEExL2M0vXU8tvqQad0Lunj0ISddzhpccyE=;
+ b=d7zvhFgaPGvV2yvUgnNVbXqvrSPC/c8VNfwGrudzxt8Phy9o4eJC32mqC3zzYIVECc2R
+ 1Nm2Molv8569RL54H/LFumt8ZJiPS3R5c1OHTLu3rfsmGCQRgbjqOq6+FeY+/riiWNXR
+ SvJD+P73BGc8wOTMdW4h9x4EDcptGNBDdhvYIkYC1ViOvHkYTpKvCIJ2mb5iCW8sPejN
+ HrqEYpiv/vqsRu14l50dF1/+FOXZM4ZJrxvp2PSGpltwlIPr0kdbtRW0kex47zno8boS
+ mh4M/cOYmn0VdrZ9OWstGfmlitkw/F3QGl1nIRh7Ws7TspfsmUPwpyNmjYj1OKl2OEK0 2w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 36m4upurgx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 21:49:51 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ALk1vB104194;
+        Wed, 10 Feb 2021 21:49:48 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 36j4pqpxrs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 21:49:47 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11ALnjtO002810;
+        Wed, 10 Feb 2021 21:49:45 GMT
+Received: from ban25x6uut24.us.oracle.com (/10.153.73.24) by default (Oracle
+ Beehive Gateway v4.0) with ESMTP ; Wed, 10 Feb 2021 13:48:42 -0800
 MIME-Version: 1.0
-References: <20210208175824.381484-1-bigeasy@linutronix.de>
- <CANiq72kqfPOpgwvNo3hTesCJztODxVGonJXpeeX=S+O4roNZsw@mail.gmail.com>
- <20210208190735.ibq44r5pc4cwzt7j@linutronix.de> <CANiq72kq_d=5TvdhndP9zkyTD1pHF6WQb+qs01D68DEQH6jVjQ@mail.gmail.com>
- <20210208204136.sv4omzms3nadse6e@linutronix.de> <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
- <20210209090112.lewvvhnc2y7oyr27@linutronix.de>
-In-Reply-To: <20210209090112.lewvvhnc2y7oyr27@linutronix.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 10 Feb 2021 22:46:23 +0100
-Message-ID: <CANiq72mG3zXA7j9KbC74hQ1BMgw713Hm3WDAcQBjKxgg0fLHeg@mail.gmail.com>
-Subject: Re: [PATCH] auxdisplay: Remove in_interrupt() usage.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <1612993680-29454-1-git-send-email-si-wei.liu@oracle.com>
+Date:   Wed, 10 Feb 2021 13:47:57 -0800 (PST)
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     mst@redhat.com, jasowang@redhat.com, elic@nvidia.com
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        si-wei.liu@oracle.com
+Subject: [PATCH v2 0/3] mlx5_vdpa bug fixes
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102100189
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
+ suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100189
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+This set attempts to fix a few independent issues recently found
+in mlx5_vdpa driver. Please find details for each in the commit
+message.
 
-On Tue, Feb 9, 2021 at 10:01 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> If I post series with more than just one patch I have a cover letter
-> including:
+Patch 1 and patch 3 are already Ack'ed by Jason Wang. Patch 2 is
+reworked to move virtio feature capability query to mlx5v_probe()
+as suggested by Eli.
 
-Yeah, it is a bit confusing when reading without the context (it is
-hard to keep up with everything going on unless you work full-time on
-it :-)
+--
+v1->v2: move feature capability query to probing (Eli)
 
-> since this patch was small, simple and removing not required code I kept
-> it out. Is this enough information for you?
+Si-Wei Liu (3):
+  vdpa/mlx5: should exclude header length and fcs from mtu
+  vdpa/mlx5: fix feature negotiation across device reset
+  vdpa/mlx5: defer clear_virtqueues to until DRIVER_OK
 
-If you don't mind, please add a quick sentence like (I can do it on my
-side too):
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |  4 ++++
+ drivers/vdpa/mlx5/net/mlx5_vnet.c  | 42 +++++++++++++++++++++++++++-----------
+ 2 files changed, 34 insertions(+), 12 deletions(-)
 
-    `in_interrupt()` and related context checks are being removed
-    from non-core code.
+-- 
+1.8.3.1
 
-Plus the tag:
-
-    Link: https://lore.kernel.org/r/20200914204209.256266093@linutronix.de/
-
-> The information is not wrong, it doesn't say you have to use it it your
-> driver. It also does not mention that you should not. I will look into
-> this.
-
-Thanks!
-
-Cheers,
-Miguel
