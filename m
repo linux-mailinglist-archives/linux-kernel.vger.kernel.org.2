@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006F4315E0D
+	by mail.lfdr.de (Postfix) with ESMTP id 717D3315E0E
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 05:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhBJEIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 23:08:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhBJEIs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 23:08:48 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2831AC06174A;
-        Tue,  9 Feb 2021 20:08:08 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id w20so707732qta.0;
-        Tue, 09 Feb 2021 20:08:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MqmBxAF2S/lqLqepzGI6ExvnAgzNlPrrveCuAjuPhBs=;
-        b=FmbwPUlO9ocu0j3DIm9KR3GxzSfDF8uqPze9DIfBLVb7suMVkBD/DWC40oHH4ov2xr
-         Sk3WnjjEw+NukO0Zrt5lo6z2A+25gxXSA6N2GLvzJXgfNzdI94fTV/e5hHmE033cUpnF
-         dL0LKrr+/OGaJJ4g8GtsEHnoPQYtQAPnP03rEBMidRVc9bto5qVw+Gjc6vvrSuu4HhGd
-         mgBvv+R6appuoKrIf7qAQHWa/XhVjKZYjANsKdewFitDF/GvrSkZ2F+ztFzKRAK4/bYN
-         /8idr37QHrIIcMABZBmjaVimbwAOx+hgi2IoVcVTon7eJKcPRf6UDGLgkBsd0UHtc6te
-         oEjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MqmBxAF2S/lqLqepzGI6ExvnAgzNlPrrveCuAjuPhBs=;
-        b=W1roaRJ9ETgIxwgQc1rDJC3ZFJ78JzcFCED9RPHpW9EcXR9+B4XOdN7K0t6K9xDrsP
-         idNSttYV6LPiMb+UW6tXWfboCYUY2I7BJVfG4P70B1ndi9haE5NXyObt1WUYuLgq6eBp
-         4o30cmLE8kL+X3Umom3NnwBw5g7b6JhrPv0NyR6sBR9KPb5cuqnyXrKvcfRZTR5YuzSj
-         kcXa9nbQ9ROOtrZudZmFk1AKBz/MTFZkjWDycWJmgvMpWt8BDMJlGaVUCV/KvjaeS6ya
-         yXoRN5tAM5K2SVyaM2jCaVKzbayJlvB1B10ahCAvxNA7D/oJPCl1vEUgv/2zxMLlco76
-         gOXA==
-X-Gm-Message-State: AOAM530xv2WNXFIJLoQBt8qdyVOI+g9Zn39nu/bFh64KSdPvfNodoZbC
-        wQCDEKC+erF075o9xfapxfg=
-X-Google-Smtp-Source: ABdhPJxzmjanZOSeMx6h6VOUNseHcdIU6gZ9O1yspL7zZKxxC9R0SyTNAwMMVJCwUeJaIGAnsjyYAg==
-X-Received: by 2002:ac8:3a63:: with SMTP id w90mr1183698qte.300.1612930087390;
-        Tue, 09 Feb 2021 20:08:07 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:7408:b5fb:1cd8:ad04])
-        by smtp.googlemail.com with ESMTPSA id q3sm668209qkb.73.2021.02.09.20.08.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 20:08:06 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Benoit Parrot <bparrot@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     ztong0001@gmail.com
-Subject: [PATCH v1] media: ti-vpe: cal: fix ce
-Date:   Tue,  9 Feb 2021 23:08:02 -0500
-Message-Id: <20210210040802.1069235-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230158AbhBJEJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 23:09:22 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:38781 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229864AbhBJEJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 23:09:16 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Db5pn2cNcz2d;
+        Wed, 10 Feb 2021 05:08:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1612930113; bh=ZDhTCXZCzIKGT4AKpym1hMLWxqXenhYjqabI+NNVA8Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IMcUs6cF8NQyQqbsoLs8XE1qtfzxGU9uBVivpA8PtKpv7xpWTG/rSDWROTz9YWxU5
+         CxWE7DeG1VY/Ep4KBzJ8b4nYmuP+u3Bf2+AeemI0OWhWa1crlOdqkPwdUDg6pq9VBI
+         edTj0+06Ie1hxaaSWV0XS6M56xOH5NprinFGRECwF08qDakLQeFzHoT4fAS0dWB7/E
+         Ek5ZwFd7Cy7u+fuTz69wwqGZ5P/3JQZHNNVbzpqBXd7MMSfne6MSKdHlbOyzDv9FOS
+         NmRako666R3IBOoNu7cPDJs0WvluSKxlRK8TX6U3JfU+Uf6YLLf0B5KojybkFJ0Jlw
+         iA9OhSGd83jEQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Wed, 10 Feb 2021 05:08:05 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Michal Rostecki <mrostecki@suse.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH RFC 4/6] btrfs: Check if the filesystem is has mixed type
+ of devices
+Message-ID: <20210210040805.GB12086@qmqm.qmqm.pl>
+References: <20210209203041.21493-1-mrostecki@suse.de>
+ <20210209203041.21493-5-mrostecki@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210209203041.21493-5-mrostecki@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FIELD_GET require mask field to be constant, however it is wrapped by a
-function which will cause error
+On Tue, Feb 09, 2021 at 09:30:38PM +0100, Michal Rostecki wrote:
+> From: Michal Rostecki <mrostecki@suse.com>
+> 
+> Add the btrfs_check_mixed() function which checks if the filesystem has
+> the mixed type of devices (non-rotational and rotational). This
+> information is going to be used in roundrobin raid1 read policy.a
+[...]
+> @@ -669,8 +699,12 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  	}
+>  
+>  	q = bdev_get_queue(bdev);
+> -	if (!blk_queue_nonrot(q))
+> +	rotating = !blk_queue_nonrot(q);
+> +	device->rotating = rotating;
+> +	if (rotating)
+>  		fs_devices->rotating = true;
+> +	if (!fs_devices->mixed)
+> +		fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
+[...]
 
-././include/linux/compiler_types.h:320:38: error: call to â€˜__compiletime_assert_270â€™ declared with attribute error: FIELD_GET: mask is
-not constant
-  320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+Since this is adding to a set, a faster way is:
 
-redefine cal_read_field as a macro
+if (fs_devices->rotating != rotating)
+	fs_devices->mixed = true;
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/media/platform/ti-vpe/cal.h | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+The scan might be necessary on device removal, though.
 
-diff --git a/drivers/media/platform/ti-vpe/cal.h b/drivers/media/platform/ti-vpe/cal.h
-index 4123405ee0cf..d73a4a3b99cb 100644
---- a/drivers/media/platform/ti-vpe/cal.h
-+++ b/drivers/media/platform/ti-vpe/cal.h
-@@ -215,10 +215,7 @@ static inline void cal_write(struct cal_dev *cal, u32 offset, u32 val)
- 	iowrite32(val, cal->base + offset);
- }
- 
--static inline u32 cal_read_field(struct cal_dev *cal, u32 offset, u32 mask)
--{
--	return FIELD_GET(mask, cal_read(cal, offset));
--}
-+#define cal_read_field(cal, offset, mask) FIELD_GET(mask, cal_read(cal, offset))
- 
- static inline void cal_write_field(struct cal_dev *cal, u32 offset, u32 value,
- 				   u32 mask)
--- 
-2.25.1
+> -	if (!blk_queue_nonrot(q))
+> +	rotating = !blk_queue_nonrot(q);
+> +	device->rotating = rotating;
+> +	if (rotating)
+>  		fs_devices->rotating = true;
+> +	if (!fs_devices->mixed)
+> +		fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
 
+Duplication. Maybe pull all this into a function?
+
+Best Regards,
+Micha³ Miros³aw
