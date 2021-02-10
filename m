@@ -2,95 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9776E315F12
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 06:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58BF315F15
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 06:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhBJFbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 00:31:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhBJFbE (ORCPT
+        id S231307AbhBJFdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 00:33:32 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:18668 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231245AbhBJFdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 00:31:04 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB189C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 21:30:23 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id b9so1680198ejy.12
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 21:30:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=MICJlJ29tnK0OfCyoQ6hy5raS8MLx1t0pMdT44oGdyg=;
-        b=nfbBML/4y70ovJ2kiP9RG4GcxYkTO+D3LyhbGrYmbdYX7rKrIpX6minKQOhPHiNfVf
-         ycrDDxo78Yn4BzEYDPu66bkXO+MyRZ+XJfiIEX6eAmCK7Ubo6u6uU+pkzcufzqcgX5HL
-         jsHZlagsshooCK1KC0HIgZYZkvmlZOsbBwCzbrl/ixW7WlnNGy5dGyqqRgjcUdhVmmkT
-         tCQ0O1OyhgTyBA7T9xH1+ABwCHlABqisavBE7ffDIVSYjpOSJWwFBYTyx6g+uvGHkYsu
-         d1Pecs/8/PGPQC06MBB9T1yLCJZ7/KNGEZXAKroDC1N1+fTESJhsrqouMLi+mC/80Pzs
-         DCWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=MICJlJ29tnK0OfCyoQ6hy5raS8MLx1t0pMdT44oGdyg=;
-        b=GQnvIF6Bcu60fu+uPqvpP80WmMcna/U+wiH1mvTIvqHgKiXJX7/ZsYyW344evACW30
-         0Of/D4t7H3JE1YF3cAPOgO4eG8BXpXI9yGrOhsgmQmceRicZM8SLvGAmRwwyZl91h+tE
-         yG3d5IfE71vsVGrcvbiLVCx90XDHzqdiPq8yNiDmNA5u7dahGZO3UPJYPEIiBgT14hit
-         RjHW7ANhuFGTOhPrGujwQpH+4tePsbMbHPTLYx22wTd8jHic1gfZnUc+ghU5feOyaOnK
-         oWTgSLdqGiIYx3zKqeuzW5ixAnm0b5sI0wPibOGigPNu9L9XhPEyqfyx8Ue5UDuNBQwD
-         5dWw==
-X-Gm-Message-State: AOAM533NosjTZZA0y/D0z4uHRAButTd4K+waKVwEisvoN4tQL8ndSe5+
-        srSoWWkaM+oaVMCkGF74uCrcHeVMHUmAgXqNDwB6gk2Dw11oqqmd
-X-Google-Smtp-Source: ABdhPJxEoJqFS1/67jseq2Ryw8nAFmbH3a+Jxs2FDMzSngVK9VYGXMqwMiOfqb1G8wgBu2idtECavM8knM8Y8m+9beE=
-X-Received: by 2002:a17:906:a153:: with SMTP id bu19mr1269611ejb.287.1612935022534;
- Tue, 09 Feb 2021 21:30:22 -0800 (PST)
+        Wed, 10 Feb 2021 00:33:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612935172; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=BIlfa2cy/5+Yjvxzsa3tehqtwaQL36b2B1AzhanU16c=;
+ b=T4f2DKPgqCbkRPFd+GDpyX9m600fol2D04T/hqBE4pvk41o6w4Xnk5rpMw+luFZY4BJGo+a1
+ pXWE7fX/3Vc5kwyVpIDx5zqry8NYYtVnRI+jp0qBA5rhVfqePsPovm3lnForJaxgY2ptFBXa
+ hNBhUylFj6XS0Yxey6/YnTwq6wA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60236fe34bd23a05ae12ef52 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 05:32:19
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DA41CC433ED; Wed, 10 Feb 2021 05:32:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0779C433CA;
+        Wed, 10 Feb 2021 05:32:17 +0000 (UTC)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 10 Feb 2021 11:00:11 +0530
-Message-ID: <CA+G9fYtkWdeL7-nfXW8+VbaCK7swinU_Ksn67RW4FFD+cx8VYg@mail.gmail.com>
-Subject: [next] [mips] spinlock.h:17:28: error: redefinition of 'queued_spin_unlock'
-To:     linux-mips@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Paul Burton <paul.burton@mips.com>, Will Deacon <will@kernel.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 10 Feb 2021 13:32:17 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     Avri Altman <Avri.Altman@wdc.com>, daejun7.park@samsung.com,
+        Greg KH <gregkh@linuxfoundation.org>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, asutoshd@codeaurora.org,
+        stanley.chu@mediatek.com, bvanassche@acm.org,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v19 3/3] scsi: ufs: Prepare HPB read for cached sub-region
+In-Reply-To: <4355a1ebffea1da290389c57eb2b42df75990c6e.camel@gmail.com>
+References: <20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6>
+ <CGME20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p5>
+ <20210129053042epcms2p538e7fa396c3c2104594c44e48be53eb8@epcms2p5>
+ <7f25ccb1d857131baa1c0424c4542e33@codeaurora.org>
+ <b6a8652c00411e3f71d33e7a6322f49eb5701039.camel@gmail.com>
+ <DM6PR04MB657522B94AB436CF096460F6FCB29@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <DM6PR04MB6575C8C5BEE5BCDA7EBE786BFC8E9@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <4355a1ebffea1da290389c57eb2b42df75990c6e.camel@gmail.com>
+Message-ID: <bbfc6fa427b7b1972bf55e77458bf809@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While building Linux next tag 20210209 mips uImage.gz failed with below configs
+On 2021-02-09 22:21, Bean Huo wrote:
+> On Tue, 2021-02-09 at 13:25 +0000, Avri Altman wrote:
+>> >
+>> >
+>> > > > > +     put_unaligned_be64(ppn, &cdb[6]);
+>> > > >
+>> > > > You are assuming the HPB entries read out by "HPB Read Buffer"
+>> > > > cmd
+>> > > > are
+>> > > > in Little
+>> > > > Endian, which is why you are using put_unaligned_be64 here.
+>> > > > However,
+>> > > > this assumption
+>> > > > is not right for all the other flash vendors - HPB entries read
+>> > > > out
+>> > > > by
+>> > > > "HPB Read Buffer"
+>> > > > cmd may come in Big Endian, if so, their random read
+>> > > > performance are
+>> > > > screwed.
+>> > >
+>> > > For this question, it is very hard to make a correct format since
+>> > > the
+>> > > Spec doesn't give a clear definition. Should we have a default
+>> > > format,
+>> > > if there is conflict, and then add quirk or add a vendor-specific
+>> > > table?
+>> > >
+>> > > Hi Avri
+>> > > Do you have a good idea?
+>> >
+>> > I don't know.  Better let Daejun answer this.
+>> > This was working for me for both Galaxy S20 (Exynos) as well as
+>> > Xiaomi Mi10
+>> > (8250).
+>> 
+>> As for the endianity issue -
+>> I don't think that any fix is needed in the hpb driver.
+>> It is readily seen that the ppn from get_ppn, and the one in the upiu
+>> cdb (upiu trace) are identical.
+>> Therefore, if an issue exist, it is IMHO a device issue.
+>> 
+>> kworker/u16:10-315   [001] d..2    62.283264: ufshpb_get_ppn: Avri
+>> ppn 480d2f8244c21abd
+>>   kworker/u16:10-315   [001] d..2    62.283336: ufshcd_upiu: v:1.10
+>> send: T:62283314922, HDR:014000000000000000000000,
+>> CDB:8800002ddaac480d2f8244c21abd0100, D:
+>> 
+>> Again, verified on both gs20 (exynos) and mi10 (8250).
+>> Thanks,
+>> Avri
+> 
+> 
+> Hi Avri,
+> Your testing method is no problem, the current problem is in function
+> ufshpb_get_ppn().
+> 
+> 
+> +static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
+> +                         struct ufshpb_map_ctx *mctx, int pos, int
+> *error)
+> +{
+> +       u64 *ppn_table;
+> +       struct page *page;
+> +       int index, offset;
+> +
+> +       index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
+> +       offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
+> +
+> +       page = mctx->m_page[index];
+> +       if (unlikely(!page)) {
+> +               *error = -ENOMEM;
+> +               dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+> +                       "error. cannot find page in mctx\n");
+> +               return 0;
+> +       }
+> +
+> +       ppn_table = page_address(page);
+> +       if (unlikely(!ppn_table)) {
+> +               *error = -ENOMEM;
+> +               dev_err(&hpb->sdev_ufs_lu->sdev_dev,
+> +                       "error. cannot get ppn_table\n");
+> +               return 0;
+> +       }
+> +
+> +       return ppn_table[offset];
+> +}
+> 
+> 
+> Say, the UFS device outputs the L2P entry in big-endian, which means
+> the most significant byte of an L2P entry will be output firstly, then
+> the less significant byte..., let's take an example of one L2P entry:
+> 
+> 0x 12 34 56 78 90 12 34 56
+> 
+> 0x12 is the most significant byte, will be store in the lowest address
+> in the L2P cache.
+> 
+> eg,
+> 
+> F0000008: 1234 5678 9012 3456
+> 
+> In the ARM based system, If we use "return ppn_table[offset]",
+> the original L2P entry 0x1234 5678 9012 3456, will be converted to
+> 0x5634 1290 7856 3412. then use put_unaligned_be64(), UFS receive
+> unexpected L2P entry(L2P entry miss).
+> 
+> If the UFS output L2P entry in the big-endian, this is a problem.
+> 
+> 
+> For the UFS outputs L2P entry in little-endian, no problem,
+> 
+> Because of the L2P entry in the memory:
+> 
+> F0000008: 5634 1290 7856 3412
+> 
+> After return ppn_table[offset], L2P entry will be correct L2P entry:
+> 
+> 0x1234567890123456. then use put_unaligned_be64(), UFS can receive
+> expected L2P etnry(L2P entry hit).
+> 
+> 
+> we need to figure out which way is the JEDEC recommended L2P entry
+> output endianness. otherwise, two methods co-exist in HPB driver, there
+> will confuse customer.
+> If you have a look at the JEDEC HPB 2.0, seems the big-endian is
+> correct way. This need you and Daejun to double check inside your
+> company.
+> 
 
-  - mips (cavium_octeon_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
-  - mips (malta_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
-  - mips (nlm_xlp_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
-  - mips (defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+Bean is right, finally you know what I was saying...
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=mips
-CROSS_COMPILE=mips-linux-gnu- 'CC=sccache mips-linux-gnu-gcc'
-'HOSTCC=sccache gcc' uImage.gz
-In file included from /include/linux/spinlock.h:90,
-                 from /include/linux/ipc.h:5,
-                 from /include/uapi/linux/sem.h:5,
-                 from /include/linux/sem.h:5,
-                 from /include/linux/compat.h:14,
-                 from /arch/mips/kernel/asm-offsets.c:12:
-/arch/mips/include/asm/spinlock.h:17:28: error: redefinition of
-'queued_spin_unlock'
-   17 | #define queued_spin_unlock queued_spin_unlock
-      |                            ^~~~~~~~~~~~~~~~~~
+We need to fix it before move on - all the UFS3.1 HPB parts which I 
+tested
+over the last few weeks are screwed due to this... I don't care 
+where/how
+you want to get it fixed in next version.
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+In my case, which may not be a valid fix, I simply hack the code as 
+below
+and it works for me.
 
-build link,
-https://builds.tuxbuild.com/1oF9lkBAeWM2WvR11O2Yun8ERNT/
+-      put_unaligned_be64(ppn, &cdb[6]);
++      memcpy(&cdb[6], &ppn, sizeof(u64));
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+Can Guo.
+
+> thanks,
+> Bean
