@@ -2,77 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDEC317276
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F3F317279
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbhBJVhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:37:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56626 "EHLO mail.kernel.org"
+        id S232732AbhBJVjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:39:07 -0500
+Received: from mga12.intel.com ([192.55.52.136]:53404 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233097AbhBJVg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:36:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F374A64DD6;
-        Wed, 10 Feb 2021 21:36:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612992978;
-        bh=8/iQqCFp3uQ57lkielDRJ0nDpWhNDeLQmdENd46C96w=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=F836RUntz0IBDKngDQbq6aGEQziWb/MAEhkCht/Gs3AfcWs9QpJkpcpu53XnqB76L
-         26FFqUSFoVsm8s6oxtIMezKKdXHeSnYV5S+0VpaGOOzlckdja727xfnz9yYK9sxraD
-         XYawRZLigDxevf/m9gUmB710mGxhIT8kfHLFfSkySNkfjdxjR97Wq+mMKMGjw6MT1v
-         M6rUbgSmP1guhdUywccceiXEVQ5Gas/RR6CBDjZK3i7pwjL2CPpeWTBRwCUmbSuxm+
-         uVDXTzIs/zdj4f9sECXYyjcBVZwsgfnRJCQ03JlBNwTRX+XGCUgOugvP2l5Dm/ha1W
-         l7ilAWpbCkwXg==
-Date:   Wed, 10 Feb 2021 13:36:17 -0800 (PST)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     "Woodhouse, David" <dwmw@amazon.co.uk>
-cc:     "julien@xen.org" <julien@xen.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "iwj@xenproject.org" <iwj@xenproject.org>,
-        "Grall, Julien" <jgrall@amazon.co.uk>
-Subject: Re: [PATCH] arm/xen: Don't probe xenbus as part of an early
- initcall
-In-Reply-To: <7858866d099732baf56e395a627f610968d24a7d.camel@amazon.co.uk>
-Message-ID: <alpine.DEB.2.21.2102101335590.7114@sstabellini-ThinkPad-T480s>
-References: <20210210170654.5377-1-julien@xen.org> <7858866d099732baf56e395a627f610968d24a7d.camel@amazon.co.uk>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S232192AbhBJViz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 16:38:55 -0500
+IronPort-SDR: tVPB0cyoz6KeKg1N2AMNEUj9ePcaKVssctrpTBBMttjm3MEzHZTvB5pAMQkUWH1/umhrw02i/T
+ 1JR0gGzG46FQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="161301778"
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="161301778"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 13:38:14 -0800
+IronPort-SDR: lfBvtJxzP7eM7rxhNTEkSJQFKW6pSPQwDWDjL0xrSvc0rO529nfDOd01DxdtVXlVhrVpvVqI9D
+ WUnuOVuiu4FQ==
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="375624618"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.188.167]) ([10.212.188.167])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 13:38:12 -0800
+Subject: Re: [PATCH v20 21/25] x86/cet/shstk: Handle signals for shadow stack
+To:     Kees Cook <keescook@chromium.org>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>, haitao.huang@intel.com
+References: <20210210175703.12492-1-yu-cheng.yu@intel.com>
+ <20210210175703.12492-22-yu-cheng.yu@intel.com>
+ <202102101154.CEF2606E@keescook>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <57dcc827-052a-94cd-31d4-286675f9d506@intel.com>
+Date:   Wed, 10 Feb 2021 13:38:10 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <202102101154.CEF2606E@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021, Woodhouse, David wrote:
-> On Wed, 2021-02-10 at 17:06 +0000, Julien Grall wrote:
-> > From: Julien Grall <jgrall@amazon.com>
-> > 
-> > After Commit 3499ba8198cad ("xen: Fix event channel callback via
-> > INTX/GSI"), xenbus_probe() will be called too early on Arm. This will
-> > recent to a guest hang during boot.
-> > 
-> > If there hang wasn't there, we would have ended up to call
-> > xenbus_probe() twice (the second time is in xenbus_probe_initcall()).
-> > 
-> > We don't need to initialize xenbus_probe() early for Arm guest.
-> > Therefore, the call in xen_guest_init() is now removed.
-> > 
-> > After this change, there is no more external caller for xenbus_probe().
-> > So the function is turned to a static one. Interestingly there were two
-> > prototypes for it.
-> > 
-> > Fixes: 3499ba8198cad ("xen: Fix event channel callback via INTX/GSI")
-> > Reported-by: Ian Jackson <iwj@xenproject.org>
-> > Signed-off-by: Julien Grall <jgrall@amazon.com>
+On 2/10/2021 11:58 AM, Kees Cook wrote:
+> On Wed, Feb 10, 2021 at 09:56:59AM -0800, Yu-cheng Yu wrote:
+>> To deliver a signal, create a shadow stack restore token and put the token
+>> and the signal restorer address on the shadow stack.  For sigreturn, verify
+>> the token and restore from it the shadow stack pointer.
+>>
+>> A shadow stack restore token marks a restore point of the shadow stack.
+>> The token is distinctively different from any shadow stack address.
 > 
-> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-> Cc: stable@vger.kernel.org
+> How is it different? It seems like it just has the last 2 bits
+> masked/set?
+> 
 
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+For example, for 64-bit apps,
+
+A shadow stack pointer value (*ssp) has to be in some code area, but for 
+a token, (*ptr_of_token) = (ptr_of_token + 8), which has to be within 
+the same shadow stack area.  In cet_verify_rstor_token(), this is checked.
+
+>> In sigreturn, restoring from a token ensures the target address is the
+>> location pointed by the token.
+> 
+> As in, a token (real stack address with 2-bit mask) is checked against
+> the real stack address? I don't see a comparison -- it only checks that
+> it is < TASK_SIZE.
+> 
+> How does cet_restore_signal() figure into this? (As in, the MSR writes?)
+> 
+
+The kernel takes the restore address from the token.  It will not 
+mistakenly take a wrong address from the shadow stack.  I will put this 
+in my commit logs.
+
+[...]
+
+>> Introduce WRUSS, which is a kernel-mode instruction but writes directly to
+>> user shadow stack.  It is used to construct the user signal stack as
+>> described above.
+>>
+>> Currently there is no systematic facility for extending a signal context.
+>> Introduce a signal context extension 'struct sc_ext', which is used to save
+>> shadow stack restore token address and WAIT_ENDBR status.  WAIT_ENDBR will
+>> be introduced later in the Indirect Branch Tracking (IBT) series, but add
+>> that into sc_ext now to keep the struct stable in case the IBT series is
+>> applied later.
+>>
+>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+
+[...]
+
+>> diff --git a/arch/x86/kernel/cet.c b/arch/x86/kernel/cet.c
+>> index d25a03215984..08e43d9b5176 100644
+>> --- a/arch/x86/kernel/cet.c
+>> +++ b/arch/x86/kernel/cet.c
+>> @@ -19,6 +19,8 @@
+>>   #include <asm/fpu/xstate.h>
+>>   #include <asm/fpu/types.h>
+>>   #include <asm/cet.h>
+>> +#include <asm/special_insns.h>
+>> +#include <uapi/asm/sigcontext.h>
+>>   
+>>   static void start_update_msrs(void)
+>>   {
+>> @@ -72,6 +74,80 @@ static unsigned long alloc_shstk(unsigned long size, int flags)
+>>   	return addr;
+>>   }
+>>   
+>> +#define TOKEN_MODE_MASK	3UL
+>> +#define TOKEN_MODE_64	1UL
+>> +#define IS_TOKEN_64(token) (((token) & TOKEN_MODE_MASK) == TOKEN_MODE_64)
+>> +#define IS_TOKEN_32(token) (((token) & TOKEN_MODE_MASK) == 0)
+>> +
+>> +/*
+>> + * Verify the restore token at the address of 'ssp' is
+>> + * valid and then set shadow stack pointer according to the
+>> + * token.
+>> + */
+>> +int cet_verify_rstor_token(bool ia32, unsigned long ssp,
+>> +			   unsigned long *new_ssp)
+>> +{
+>> +	unsigned long token;
+>> +
+>> +	*new_ssp = 0;
+>> +
+>> +	if (!IS_ALIGNED(ssp, 8))
+>> +		return -EINVAL;
+>> +
+>> +	if (get_user(token, (unsigned long __user *)ssp))
+>> +		return -EFAULT;
+>> +
+>> +	/* Is 64-bit mode flag correct? */
+>> +	if (!ia32 && !IS_TOKEN_64(token))
+>> +		return -EINVAL;
+>> +	else if (ia32 && !IS_TOKEN_32(token))
+>> +		return -EINVAL;
+>> +
+>> +	token &= ~TOKEN_MODE_MASK;
+>> +
+>> +	/*
+>> +	 * Restore address properly aligned?
+>> +	 */
+>> +	if ((!ia32 && !IS_ALIGNED(token, 8)) || !IS_ALIGNED(token, 4))
+>> +		return -EINVAL;
+>> +
+>> +	/*
+>> +	 * Token was placed properly?
+>> +	 */
+>> +	if (((ALIGN_DOWN(token, 8) - 8) != ssp) || token >= TASK_SIZE_MAX)
+>> +		return -EINVAL;
+>> +
+>> +	*new_ssp = token;
+>> +	return 0;
+>> +}
+>> +
+>> +/*
+>> + * Create a restore token on the shadow stack.
+>> + * A token is always 8-byte and aligned to 8.
+>> + */
+>> +static int create_rstor_token(bool ia32, unsigned long ssp,
+>> +			      unsigned long *new_ssp)
+>> +{
+>> +	unsigned long addr;
+>> +
+>> +	*new_ssp = 0;
+>> +
+>> +	if ((!ia32 && !IS_ALIGNED(ssp, 8)) || !IS_ALIGNED(ssp, 4))
+>> +		return -EINVAL;
+>> +
+>> +	addr = ALIGN_DOWN(ssp, 8) - 8;
+>> +
+>> +	/* Is the token for 64-bit? */
+>> +	if (!ia32)
+>> +		ssp |= TOKEN_MODE_64;
+>> +
+>> +	if (write_user_shstk_64(addr, ssp))
+>> +		return -EFAULT;
+>> +
+>> +	*new_ssp = addr;
+>> +	return 0;
+>> +}
+>> +
+
+[...]
