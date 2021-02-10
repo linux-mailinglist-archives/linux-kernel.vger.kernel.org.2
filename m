@@ -2,173 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7CE315DE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 04:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABA5315DEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 04:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhBJDoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 22:44:09 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12887 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhBJDoF (ORCPT
+        id S229977AbhBJDrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 22:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhBJDrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 22:44:05 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Db5D75nRfz7j2F;
-        Wed, 10 Feb 2021 11:41:59 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.131) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Wed, 10 Feb 2021
- 11:43:19 +0800
-Subject: Re: [Linuxarm] [PATCH for next v1 0/2] gpio: few clean up patches to
- replace spin_lock_irqsave with spin_lock
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        "Kevin Hilman" <khilman@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
- <2b8001bb-0bcd-3fea-e15c-2722e7243209@huawei.com>
- <CAHp75VcpeYpsW6B85F0u=B+GToNh=1fYdRSMeQqE0vOtOdSi8A@mail.gmail.com>
- <1a5dfcf2-11a2-f549-782d-447d58e21305@huawei.com>
- <CAHp75Vd5UV3E79sdq8uQ4pgjFORdJknpm-g7No3tomnKhinMnw@mail.gmail.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <c2458ac9-669b-bd46-df98-7d86d38459b1@huawei.com>
-Date:   Wed, 10 Feb 2021 11:43:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Tue, 9 Feb 2021 22:47:10 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61017C061574;
+        Tue,  9 Feb 2021 19:46:30 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id v206so477520qkb.3;
+        Tue, 09 Feb 2021 19:46:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XCL608888xI21CZ+Cc5Dfc0mFqx0sZ/adP+mXo0osYM=;
+        b=gjichQiW9DLCgeVHOm5q57W6CmsdQ8Z7LQNp9k6kKlr+LMtVQ7PXVHlUcFGuvZpKWL
+         uUY8nFpovfqU+zrdyJ+hdTTWlYmlBIdxhR4Eptfc8CPYL4PWhSRvKA50AfkRIV6no35Z
+         uPhUokODsKugTcoU0pT+pV+vjAsHn9qvgkBYNPwKErISDF22ZRz6w5chvuBYZ/XJ8qQX
+         djcV0Ox8DvQ6q1pfsJc6t8G8ZW978ShvjgWKzTSDBeInk/2gTu65BLtiPve3aU5XmWfO
+         L4B4JNvoewasAGoaKIKijdeGgLJuH38xK8Nhf03vaigZdmX7aOHkpTLHACGoZqwTJ/W/
+         Gv1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XCL608888xI21CZ+Cc5Dfc0mFqx0sZ/adP+mXo0osYM=;
+        b=Vw4UT4yFefqZ0tndNTS+fm2jCtudHGzeiGFQuWx4SWt7UfRxw/FnCv5b8sef85PUNJ
+         r9ol+oN/06z3Dxp3dz4qX15gjUmhTDxSZAOfrrR3PahnlE3COwl5jOv1tqYCjvdXIi7q
+         9J8miDNgjyDLsBmPhU9B15dhEzpJ0/wxZ25FmlLN3Ob7S7SdDGkYfcGrKSXXPog0mUuF
+         sjAYKmVjRmyAdIGYJZ5WRno7LudO11/Fst3ASwQKR6hYybCdSkb/gy0VKnTFnBKRKKYb
+         gl5pWoZeTtr5bSkwqi7plYOwqnQQsryFD3RAWNR6oTxQe0FPkm7kh6POuOOxKxNIV57h
+         u4ww==
+X-Gm-Message-State: AOAM5300lwiTAHLso5MiHdLO1RrPvxlK/f/td+22dhCpneUP/t0Jkpqq
+        +lVQFKtYdrZ+EVuns7WJwipCT2rINplRFA==
+X-Google-Smtp-Source: ABdhPJx6kvKUN88jZOsUC1EnyXqhw/OXZTYN7Eh5iqLBAPbo3ABv6d/o7waFiEWOTLusJbvvQ0VvKA==
+X-Received: by 2002:a05:620a:1442:: with SMTP id i2mr1594129qkl.290.1612928789590;
+        Tue, 09 Feb 2021 19:46:29 -0800 (PST)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:7408:b5fb:1cd8:ad04])
+        by smtp.googlemail.com with ESMTPSA id k187sm622254qkc.74.2021.02.09.19.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 19:46:28 -0800 (PST)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Tong Zhang <ztong0001@gmail.com>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] media: atomisp: fix compiler warning
+Date:   Tue,  9 Feb 2021 22:46:18 -0500
+Message-Id: <20210210034622.1013012-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vd5UV3E79sdq8uQ4pgjFORdJknpm-g7No3tomnKhinMnw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.40.192.131]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+should use %zu for size_t type, otherwise compiler will complain
+drivers/staging/media/atomisp/pci/hmm/hmm.c:272:3: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 6 has type ‘size_t’ {aka ‘unsigned int’} [-Wformat=]
+  272 |   "%s: pages: 0x%08x (%ld bytes), type: %d from highmem %d, user ptr %p, cached %d\n",
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On 2021/2/9 17:42, Andy Shevchenko wrote:
-> On Tue, Feb 9, 2021 at 11:24 AM luojiaxing <luojiaxing@huawei.com> wrote:
->> On 2021/2/8 21:28, Andy Shevchenko wrote:
->>> On Mon, Feb 8, 2021 at 11:11 AM luojiaxing <luojiaxing@huawei.com> wrote:
->>>> Sorry, my operation error causes a patch missing from this patch set. I
->>>> re-send the patch set. Please check the new one.
->>> What is the new one?! You have to give proper versioning and change
->>> log for your series.
->> sure, I will send a new one later, but let me answer your question first.
->>
->>>> On 2021/2/8 16:56, Luo Jiaxing wrote:
->>>>> There is no need to use API with _irqsave in hard IRQ handler, So replace
->>>>> those with spin_lock.
->>> How do you know that another CPU in the system can't serve the
-> The keyword here is: *another*.
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ drivers/staging/media/atomisp/pci/hmm/hmm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-ooh, sorry, now I got your point.
-
-
-As to me, I don't think another CPU can serve the IRQ when one CPU 
-runing hard IRQ handler,
-
-except it's a per CPU interrupts.
-
-
-The following is a simple call logic when IRQ come.
-
-elx_irq -> handle_arch_irq -> __handle_domain_irq -> desc->handle_irq -> 
-handle_irq_event
-
-
-Assume that two CPUs receive the same IRQ and enter the preceding 
-process. Both of them will go to desc->handle_irq().
-
-In handle_irq(), raw_spin_lock(&desc->lock) always be called first. 
-Therefore, even if two CPUs are running handle_irq(),
-
-only one can get the spin lock. Assume that CPU A obtains the spin lock. 
-Then CPU A will sets the status of irq_data to
-
-IRQD_IRQ_INPROGRESS in handle_irq_event() and releases the spin lock. 
-Even though CPU B gets the spin lock later and
-
-continue to run handle_irq(), but the check of irq_may_run(desc) causes 
-it to exit.
-
-
-so, I think we don't own the situation that two CPU server the hard IRQ 
-handler at the same time.
-
-
->
->>> following interrupt from the hardware at the same time?
->> Yes, I have some question before.
->>
->> There are some similar discussion here,  please take a look, Song baohua
->> explained it more professionally.
->>
->> https://lore.kernel.org/lkml/e949a474a9284ac6951813bfc8b34945@hisilicon.com/
->>
->> Here are some excerpts from the discussion:
->>
->> I think the code disabling irq in hardIRQ is simply wrong.
-> Why?
-
-
-I mention the following call before.
-
-elx_irq -> handle_arch_irq -> __handle_domain_irq -> desc->handle_irq -> 
-handle_irq_event
-
-
-__handle_domain_irq() will call irq_enter(), it ensures that the IRQ 
-processing of the current CPU can not be preempted.
-
-So I think this is the reason why Song baohua said it's not need to 
-disable IRQ in hardIRQ handler.
-
-
->
->> Since this commit
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc
->> genirq: Run irq handlers with interrupts disabled
->>
->> interrupt handlers are definitely running in a irq-disabled context
->> unless irq handlers enable them explicitly in the handler to permit
->> other interrupts.
-> This doesn't explain any changes in the behaviour on SMP.
-> IRQ line can be disabled on a few stages:
->   a) on the source (IP that generates an event)
->   b) on IRQ router / controller
->   c) on CPU side
-
-
-yes, you are right.
-
-
->
-> The commit above is discussing (rightfully!) the problem when all
-> interrupts are being served by a *single* core. Nobody prevents them
-> from being served by *different* cores simultaneously. Also, see [1].
->
-> [1]: https://www.kernel.org/doc/htmldocs/kernel-locking/cheatsheet.html
-
-
-I check [1], quite useful description about locking, thanks. But you can
-
-see Table of locking Requirements
-
-
-Between IRQ handler A and IRQ handle A, it's no need for a SLIS.
-
-
-Thanks
-
-Jiaxing
-
-
->
+diff --git a/drivers/staging/media/atomisp/pci/hmm/hmm.c b/drivers/staging/media/atomisp/pci/hmm/hmm.c
+index e0eaff0f8a22..6a5ee4607089 100644
+--- a/drivers/staging/media/atomisp/pci/hmm/hmm.c
++++ b/drivers/staging/media/atomisp/pci/hmm/hmm.c
+@@ -269,7 +269,7 @@ ia_css_ptr hmm_alloc(size_t bytes, enum hmm_bo_type type,
+ 		hmm_set(bo->start, 0, bytes);
+ 
+ 	dev_dbg(atomisp_dev,
+-		"%s: pages: 0x%08x (%ld bytes), type: %d from highmem %d, user ptr %p, cached %d\n",
++		"%s: pages: 0x%08x (%zu bytes), type: %d from highmem %d, user ptr %p, cached %d\n",
+ 		__func__, bo->start, bytes, type, from_highmem, userptr, cached);
+ 
+ 	return bo->start;
+-- 
+2.25.1
 
