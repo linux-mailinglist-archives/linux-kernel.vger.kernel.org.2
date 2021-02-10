@@ -2,85 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA8E316E93
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB17316E95
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234190AbhBJS1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:27:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50028 "EHLO mx2.suse.de"
+        id S234213AbhBJS2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:28:02 -0500
+Received: from mga12.intel.com ([192.55.52.136]:38108 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233648AbhBJSPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:15:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 21398AD6A;
-        Wed, 10 Feb 2021 18:14:50 +0000 (UTC)
-Subject: Re: [v7 PATCH 04/12] mm: vmscan: remove memcg_shrinker_map_size
-To:     Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>
-Cc:     ktkhai@virtuozzo.com, shakeelb@google.com, david@fromorbit.com,
-        hannes@cmpxchg.org, mhocko@suse.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210209174646.1310591-1-shy828301@gmail.com>
- <20210209174646.1310591-5-shy828301@gmail.com>
- <20210209204314.GG524633@carbon.DHCP.thefacebook.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <d27223a8-0a00-b670-da5b-205d4c16a2e4@suse.cz>
-Date:   Wed, 10 Feb 2021 19:14:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S233910AbhBJSR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:17:57 -0500
+IronPort-SDR: z6ZH1ALovtzEv3FfN1CXp2gMr6k7mG6PgSMz5gD823x+/jvCzDOtRwZJPpwWMxV9FdM0Kb/0Lw
+ e27Gfgm/T84w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="161272931"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="161272931"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 10:16:11 -0800
+IronPort-SDR: 89YIahzzNcWM4MWq58gZa8q7jRv5w0QeXvYNtv2OQtPYLwWV1jmyuU4V42/1/mV38XgH88VOOr
+ gwVqkEpXXGJQ==
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="359654996"
+Received: from lgrunes-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.135.4])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 10:16:07 -0800
+Date:   Wed, 10 Feb 2021 10:16:05 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v2 2/8] cxl/mem: Find device capabilities
+Message-ID: <20210210181605.ecbl3m5ep4rszpqs@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-3-ben.widawsky@intel.com>
+ <20210210133252.000047af@Huawei.com>
+ <20210210150759.00005684@Huawei.com>
+ <20210210165557.7fuqbyr7e7zjoxaa@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209204314.GG524633@carbon.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210165557.7fuqbyr7e7zjoxaa@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 9:43 PM, Roman Gushchin wrote:
-> On Tue, Feb 09, 2021 at 09:46:38AM -0800, Yang Shi wrote:
->> Both memcg_shrinker_map_size and shrinker_nr_max is maintained, but actually the
->> map size can be calculated via shrinker_nr_max, so it seems unnecessary to keep both.
->> Remove memcg_shrinker_map_size since shrinker_nr_max is also used by iterating the
->> bit map.
->> 
->> Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
->> Signed-off-by: Yang Shi <shy828301@gmail.com>
+On 21-02-10 08:55:57, Ben Widawsky wrote:
+> On 21-02-10 15:07:59, Jonathan Cameron wrote:
+> > On Wed, 10 Feb 2021 13:32:52 +0000
+> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> > 
+> > > On Tue, 9 Feb 2021 16:02:53 -0800
+> > > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > > 
+> > > > Provide enough functionality to utilize the mailbox of a memory device.
+> > > > The mailbox is used to interact with the firmware running on the memory
+> > > > device. The flow is proven with one implemented command, "identify".
+> > > > Because the class code has already told the driver this is a memory
+> > > > device and the identify command is mandatory.
+> > > > 
+> > > > CXL devices contain an array of capabilities that describe the
+> > > > interactions software can have with the device or firmware running on
+> > > > the device. A CXL compliant device must implement the device status and
+> > > > the mailbox capability. Additionally, a CXL compliant memory device must
+> > > > implement the memory device capability. Each of the capabilities can
+> > > > [will] provide an offset within the MMIO region for interacting with the
+> > > > CXL device.
+> > > > 
+> > > > The capabilities tell the driver how to find and map the register space
+> > > > for CXL Memory Devices. The registers are required to utilize the CXL
+> > > > spec defined mailbox interface. The spec outlines two mailboxes, primary
+> > > > and secondary. The secondary mailbox is earmarked for system firmware,
+> > > > and not handled in this driver.
+> > > > 
+> > > > Primary mailboxes are capable of generating an interrupt when submitting
+> > > > a background command. That implementation is saved for a later time.
+> > > > 
+> > > > Link: https://www.computeexpresslink.org/download-the-specification
+> > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>  
+> > > 
+> > > Hi Ben,
+> > > 
+> > > 
+> > > > +/**
+> > > > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
+> > > > + * @cxlm: The CXL memory device to communicate with.
+> > > > + * @mbox_cmd: Command to send to the memory device.
+> > > > + *
+> > > > + * Context: Any context. Expects mbox_lock to be held.
+> > > > + * Return: -ETIMEDOUT if timeout occurred waiting for completion. 0 on success.
+> > > > + *         Caller should check the return code in @mbox_cmd to make sure it
+> > > > + *         succeeded.  
+> > > 
+> > > cxl_xfer_log() doesn't check mbox_cmd->return_code and for my test it currently
+> > > enters an infinite loop as a result.
+> 
+> I meant to fix that.
+> 
+> > > 
+> > > I haven't checked other paths, but to my mind it is not a good idea to require
+> > > two levels of error checking - the example here proves how easy it is to forget
+> > > one.
+> 
+> Demonstrably, you're correct. I think it would be good to have a kernel only
+> mbox command that does the error checking though. Let me type something up and
+> see how it looks.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Hi Jonathan. What do you think of this? The bit I'm on the fence about is if I
+should validate output size too. I like the simplicity as it is, but it requires
+every caller to possibly check output size, which is kind of the same problem
+you're originally pointing out.
 
->> ---
->>  mm/vmscan.c | 18 +++++++++---------
->>  1 file changed, 9 insertions(+), 9 deletions(-)
->> 
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index e4ddaaaeffe2..641077b09e5d 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -185,8 +185,10 @@ static LIST_HEAD(shrinker_list);
->>  static DECLARE_RWSEM(shrinker_rwsem);
->>  
->>  #ifdef CONFIG_MEMCG
->> +static int shrinker_nr_max;
->>  
->> -static int memcg_shrinker_map_size;
->> +#define NR_MAX_TO_SHR_MAP_SIZE(nr_max) \
->> +	(DIV_ROUND_UP(nr_max, BITS_PER_LONG) * sizeof(unsigned long))
-> 
-> How about something like this?
-> 
-> static inline int shrinker_map_size(int nr_items)
-> {
-> 	return DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long);
-> }
-> 
-> I think it look less cryptic.
+diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+index 55c5f5a6023f..ad7b2077ab28 100644
+--- a/drivers/cxl/mem.c
++++ b/drivers/cxl/mem.c
+@@ -284,7 +284,7 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+ }
+ 
+ /**
+- * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
++ * __cxl_mem_mbox_send_cmd() - Execute a mailbox command
+  * @cxlm: The CXL memory device to communicate with.
+  * @mbox_cmd: Command to send to the memory device.
+  *
+@@ -296,7 +296,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+  * This is a generic form of the CXL mailbox send command, thus the only I/O
+  * operations used are cxl_read_mbox_reg(). Memory devices, and perhaps other
+  * types of CXL devices may have further information available upon error
+- * conditions.
++ * conditions. Driver facilities wishing to send mailbox commands should use the
++ * wrapper command.
+  *
+  * The CXL spec allows for up to two mailboxes. The intention is for the primary
+  * mailbox to be OS controlled and the secondary mailbox to be used by system
+@@ -304,8 +305,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+  * not need to coordinate with each other. The driver only uses the primary
+  * mailbox.
+  */
+-static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
+-				 struct mbox_cmd *mbox_cmd)
++static int __cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
++				   struct mbox_cmd *mbox_cmd)
+ {
+ 	void __iomem *payload = cxlm->mbox_regs + CXLDEV_MBOX_PAYLOAD_OFFSET;
+ 	u64 cmd_reg, status_reg;
+@@ -469,6 +470,54 @@ static void cxl_mem_mbox_put(struct cxl_mem *cxlm)
+ 	mutex_unlock(&cxlm->mbox_mutex);
+ }
+ 
++/**
++ * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
++ * @cxlm: The CXL memory device to communicate with.
++ * @opcode: Opcode for the mailbox command.
++ * @in: The input payload for the mailbox command.
++ * @in_size: The length of the input payload
++ * @out: Caller allocated buffer for the output.
++ *
++ * Context: Any context. Will acquire and release mbox_mutex.
++ * Return:
++ *  * %>=0	- Number of bytes returned in @out.
++ *  * %-EBUSY	- Couldn't acquire exclusive mailbox access.
++ *  * %-EFAULT	- Hardware error occurred.
++ *  * %-ENXIO	- Command completed, but device reported an error.
++ *
++ * Mailbox commands may execute successfully yet the device itself reported an
++ * error. While this distinction can be useful for commands from userspace, the
++ * kernel will often only care when both are successful.
++ *
++ * See __cxl_mem_mbox_send_cmd()
++ */
++static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, u16 opcode, u8 *in,
++				 size_t in_size, u8 *out)
++{
++	struct mbox_cmd mbox_cmd = {
++		.opcode = opcode,
++		.payload_in = in,
++		.size_in = in_size,
++		.payload_out = out,
++	};
++	int rc;
++
++	rc = cxl_mem_mbox_get(cxlm);
++	if (rc)
++		return rc;
++
++	rc = __cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
++	cxl_mem_mbox_put(cxlm);
++	if (rc)
++		return rc;
++
++	/* TODO: Map return code to proper kernel style errno */
++	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS)
++		return -ENXIO;
++
++	return mbox_cmd.size_out;
++}
++
+ /**
+  * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
+  * @cxlmd: The CXL memory device to communicate with.
+@@ -1380,33 +1429,18 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
+ 		u8 poison_caps;
+ 		u8 qos_telemetry_caps;
+ 	} __packed id;
+-	struct mbox_cmd mbox_cmd = {
+-		.opcode = CXL_MBOX_OP_IDENTIFY,
+-		.payload_out = &id,
+-		.size_in = 0,
+-	};
+ 	int rc;
+ 
+-	/* Retrieve initial device memory map */
+-	rc = cxl_mem_mbox_get(cxlm);
+-	if (rc)
+-		return rc;
+-
+-	rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+-	cxl_mem_mbox_put(cxlm);
+-	if (rc)
++	rc = cxl_mem_mbox_send_cmd(cxlm, CXL_MBOX_OP_IDENTIFY, NULL, 0,
++				   (u8 *)&id);
++	if (rc < 0)
+ 		return rc;
+ 
+-	/* TODO: Handle retry or reset responses from firmware. */
+-	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS) {
+-		dev_err(&cxlm->pdev->dev, "Mailbox command failed (%d)\n",
+-			mbox_cmd.return_code);
++	if (rc < sizeof(id)) {
++		dev_err(&cxlm->pdev->dev, "Short identify data\n",
+ 		return -ENXIO;
+ 	}
+ 
+-	if (mbox_cmd.size_out != sizeof(id))
+-		return -ENXIO;
+-
+ 	/*
+ 	 * TODO: enumerate DPA map, as 'ram' and 'pmem' do not alias.
+ 	 * For now, only the capacity is exported in sysfs
 
-Yeah that looks nicer so I'm fine with that potential change.
 
-> The rest of the patch looks good to me.
-> 
-> Thanks!
-> 
+[snip]
 
