@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E7E31698A
+	by mail.lfdr.de (Postfix) with ESMTP id B8C9431698B
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhBJO5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:57:31 -0500
-Received: from mga06.intel.com ([134.134.136.31]:61841 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229888AbhBJO52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:57:28 -0500
-IronPort-SDR: fdi66C2t2dwZ+/gK89fEmj+UDUTi2DXFcfhCJjwRHYOA31yWZm9NE5q0zc/9SAKmdnenIji15c
- gQitbFoMJv8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="243575327"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="243575327"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 06:56:42 -0800
-IronPort-SDR: Uv/sQUYf46bgYDKfel7rXV+9Fn8OF1Z98xSc8zWQy6IB7TB+HDS3Q5dLxFo8a9fCUlIDvQQ7Lp
- lbLsyioiTD4g==
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="421074065"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 06:56:40 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1l9quz-003klX-JR; Wed, 10 Feb 2021 16:56:37 +0200
-Date:   Wed, 10 Feb 2021 16:56:37 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     luojiaxing <luojiaxing@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [Linuxarm]  Re: [PATCH for next v1 0/2] gpio: few clean up
- patches to replace spin_lock_irqsave with spin_lock
-Message-ID: <YCP0JeEUcoPp9B/H@smile.fi.intel.com>
-References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
- <2b8001bb-0bcd-3fea-e15c-2722e7243209@huawei.com>
- <CAHp75VcpeYpsW6B85F0u=B+GToNh=1fYdRSMeQqE0vOtOdSi8A@mail.gmail.com>
- <1a5dfcf2-11a2-f549-782d-447d58e21305@huawei.com>
- <CAHp75Vd5UV3E79sdq8uQ4pgjFORdJknpm-g7No3tomnKhinMnw@mail.gmail.com>
- <c2458ac9-669b-bd46-df98-7d86d38459b1@huawei.com>
- <CAHp75VdrskuNkvFr4MPbbg8c8=VSug0GT+vs=cMRMOqLr+-f5A@mail.gmail.com>
- <947bcef0d56a4d0c82729d6899394f4a@hisilicon.com>
+        id S231596AbhBJO5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:57:42 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:34458 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229888AbhBJO5d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:57:33 -0500
+Date:   Wed, 10 Feb 2021 17:56:40 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
+ "usb"-prefixed names
+Message-ID: <20210210145640.xhvcnarq3xoeeesu@mobilestation>
+References: <20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru>
+ <20201205155621.3045-10-Sergey.Semin@baikalelectronics.ru>
+ <YBnZ8O+zI/dzrjDQ@builder.lan>
+ <YBpnpj+0KHM1Q8l8@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <947bcef0d56a4d0c82729d6899394f4a@hisilicon.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YBpnpj+0KHM1Q8l8@kroah.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 11:50:45AM +0000, Song Bao Hua (Barry Song) wrote:
-> > -----Original Message-----
-> > From: Andy Shevchenko [mailto:andy.shevchenko@gmail.com]
-> > Sent: Wednesday, February 10, 2021 11:51 PM
-> > On Wed, Feb 10, 2021 at 5:43 AM luojiaxing <luojiaxing@huawei.com> wrote:
-> > > On 2021/2/9 17:42, Andy Shevchenko wrote:
-
-...
-
-> > > Between IRQ handler A and IRQ handle A, it's no need for a SLIS.
+On Wed, Feb 03, 2021 at 10:06:46AM +0100, Greg Kroah-Hartman wrote:
+> On Tue, Feb 02, 2021 at 05:02:08PM -0600, Bjorn Andersson wrote:
+> > On Sat 05 Dec 09:56 CST 2020, Serge Semin wrote:
 > > 
-> > Right, but it's not the case in the patches you provided.
+> > > In accordance with the USB HCD/DRD schema all the USB controllers are
+> > > supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
+> > > existing DT-nodes will be renamed in a subsequent patch let's first make
+> > > sure the DWC3 Qualcomm driver supports them and second falls back to the
+> > > deprecated naming so not to fail on the legacy DTS-files passed to the
+> > > newer kernels.
+> > > 
+> > 
+> > Felipe, will you merge this, so that I can merge the dts patch depending
+> > on this into the Qualcomm DT tree?
 > 
-> The code still holds spin_lock. So if two cpus call same IRQ handler,
-> spin_lock makes them spin; and if interrupts are threaded, spin_lock
-> makes two threads run the same handler one by one.
+> Patches this old are long-gone out of our queues.  If it needs to be
+> applied to a linux-usb tree, please resend.
 
-If you run on an SMP system and it happens that spin_lock_irqsave() just
-immediately after spin_unlock(), you will get into the troubles. Am I mistaken?
+Greg, Bjorn,
+I've revised and resent the series. Please find the recently posted
+patchset:
+Link: https://lore.kernel.org/lkml/20210208135154.6645-1-Sergey.Semin@baikalelectronics.ru/
 
-I think this entire activity is a carefully crafted mine field for the future
-syzcaller and fuzzers alike. I don't believe there are no side effects in a long
-term on all possible systems and configurations (including forced threaded IRQ
-handlers).
+Alas I've forgotten to Cc the linux-usb mailing list. Should I resend
+the series one more time?
 
-I would love to see a better explanation in the commit message of such patches
-which makes it clear that there are *no* side effects.
+-Sergey
 
-For time being, NAK to the all patches of this kind.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> 
+> thanks,
+> 
+> greg k-h
