@@ -2,152 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76ED6316C8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E98316C9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhBJRZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:25:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232054AbhBJRZq (ORCPT
+        id S232633AbhBJR1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:27:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57542 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232103AbhBJR1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:25:46 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA01C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:25:05 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id w4so2438333wmi.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:25:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EMfMjppoZfEVvtLv1UjCh52UgsLFnMc2zt65mnUeFkA=;
-        b=e33T+RDsooAMSM3Jfaf8wNDOi/Z29x5VRUaQSBPLjtCvgOqA33QRZhOwEkULQwA/UM
-         oha1KWgkY8ryGVjziEj6X9PK6i8S951Efy4q+plRGbSfwXNo1W5iE4Lz+RktCtahiM6n
-         SfkjuulQsVL0mOWqVeB9c/68ei9DMOPmY7OBA3osT7B0eO8bJPKQHvRdumsGIKWiFAkx
-         xlMhdrRrWkRC4iGW80Nz0j7DeUvwKgDGzTdZnmmvwa2/4AnOzG6lS1B2yh1gS/yKFKYp
-         wPCiWYT+kT3UB3fD74eqabgplvtatx61YZk2xJmPUklZVRFe5QDwDUDk2A6SYwbnp8TO
-         /1EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EMfMjppoZfEVvtLv1UjCh52UgsLFnMc2zt65mnUeFkA=;
-        b=YUfcubkM50Qo9AlvDyBXasfid3IzrzL84C0MysvpCivTThHuPC1CWDlOMdH6J2A1Wy
-         /Lr/fpFLbqGYNJTq0lY8bJULpF79IWkpG8LAlYrklk66gjUMb7hnP6BWVvA02zUeM6K0
-         gV914fc+6emTEm+1iV6nFGXnfq1rdfjuuO8z+cktC/XLSxPCUOIqxn1jxaEnd96bbpHW
-         +AwGJ4t7QxH95nE2b1MQgtK0BR2s7QqSgU3yYhQc/+COxb/CSvrEiO1N8qEuv9+j6bSa
-         yEvdYAeN7CopIvO+PF4X8Gp2Zog4Rn5GQ9mLxcXOfv2OF7rlB/eMccBO/n/h5h+1iqqT
-         FHVA==
-X-Gm-Message-State: AOAM533PKBNg60D6wvWewopViqI4FEfYb1SCpRgMIE+SAwz9ZiCj7IBR
-        EJ3LeuFg5hTA3J4TPjB7TFU1o88z2aGk2nAuEg1AFPWn5rv3ZA==
-X-Google-Smtp-Source: ABdhPJxQ9zIAz+vs3dHMgAs0m9SIypMm+4RhH1L6cHXok5+VA8usBew7hNEaulYXL5xHpfJF3XZAwuZK2ZDGDuNWWOw=
-X-Received: by 2002:a1c:acc9:: with SMTP id v192mr3781736wme.22.1612977904192;
- Wed, 10 Feb 2021 09:25:04 -0800 (PST)
+        Wed, 10 Feb 2021 12:27:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612977952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/cSe7sL5Ep1uG0oJAcv3xu7xrZMjqjN2Tp23S5V2S98=;
+        b=VHPeHf5SFsMi6zOTY4iCu0kZkSkN2ao8SuiPZCnIjsvbP1dty7sj819lHGeqxq1vIaQCUI
+        S2Y+lQppL9O96u/y2UBayVoFgUxRdkFtQokMVhA0wzOfZX4HoCaOUcek9Bx2ajfODHzR6P
+        eQA5W+3x3u74HbozXd96TD+Z8nj3KZU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-F5KEm5BxMWCru53xB6q2fA-1; Wed, 10 Feb 2021 12:25:49 -0500
+X-MC-Unique: F5KEm5BxMWCru53xB6q2fA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DAB4C7402;
+        Wed, 10 Feb 2021 17:25:46 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 600A962688;
+        Wed, 10 Feb 2021 17:25:27 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 18:25:26 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Edward Cree <ecree.xilinx@gmail.com>, brouer@redhat.com,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Subject: Re: [v3 net-next 08/10] skbuff: reuse NAPI skb cache on allocation
+ path (__build_skb())
+Message-ID: <20210210182526.3fd3c0ba@carbon>
+In-Reply-To: <20210210122414.8064-1-alobakin@pm.me>
+References: <20210209204533.327360-1-alobakin@pm.me>
+        <20210209204533.327360-9-alobakin@pm.me>
+        <b6efe8d3a4ebf8188c040c5401b50b6c11b6eaf9.camel@redhat.com>
+        <20210210122414.8064-1-alobakin@pm.me>
 MIME-Version: 1.0
-References: <20210210162632.3903128-1-minchan@kernel.org>
-In-Reply-To: <20210210162632.3903128-1-minchan@kernel.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 10 Feb 2021 09:24:52 -0800
-Message-ID: <CAJuCfpER=nbfY93CPf3Lz+bJcvAN8Vuqy6ZWZg12HnRGvznm+A@mail.gmail.com>
-Subject: Re: [PATCH] dma-buf: system_heap: do not warn for costly allocation
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        John Dias <joaodias@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code looks fine to me. Description needs a bit polishing :)
+On Wed, 10 Feb 2021 12:25:04 +0000
+Alexander Lobakin <alobakin@pm.me> wrote:
 
-On Wed, Feb 10, 2021 at 8:26 AM Minchan Kim <minchan@kernel.org> wrote:
->
-> Linux VM is not hard to support PAGE_ALLOC_COSTLY_ODER allocation
-> so normally expects driver passes __GFP_NOWARN in that case
-> if they has fallback options.
->
-> system_heap in dmabuf is the case so do not flood into demsg
-> with the warning for recording more precious information logs.
-> (below is ION warning example I got but dmabuf system heap is
-> nothing different).
+> From: Paolo Abeni <pabeni@redhat.com>
+> Date: Wed, 10 Feb 2021 11:21:06 +0100
+> 
+> > I'm sorry for the late feedback, I could not step-in before.
+> > 
+> > Also adding Jesper for awareness, as he introduced the bulk free
+> > infrastructure.
 
-Suggestion:
-Dmabuf system_heap allocation logic starts with the highest necessary
-allocation order before falling back to lower orders. The requested
-order can be higher than PAGE_ALLOC_COSTLY_ODER and failures to
-allocate will flood dmesg with warnings. Such high-order allocations
-are not unexpected and are handled by the system_heap's allocation
-fallback mechanism.
-Prevent these warnings when allocating higher than
-PAGE_ALLOC_COSTLY_ODER pages using __GFP_NOWARN flag.
+Thanks (and Alexander Duyck also did part of the work while at Red Hat).
 
-Below is ION warning example I got but dmabuf system heap is nothing different:
+In my initial versions of my patchsets I actually also had reuse of the
+SKBs that were defer freed during NAPI context.  But I dropped that
+part because it was getting nitpicked and the merge window was getting
+close, so I ended up dropping that part.
 
->
-> [ 1233.911533][  T460] warn_alloc: 11 callbacks suppressed
-> [ 1233.911539][  T460] allocator@2.0-s: page allocation failure: order:4, mode:0x140dc2(GFP_HIGHUSER|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
-> [ 1233.926235][  T460] Call trace:
-> [ 1233.929370][  T460]  dump_backtrace+0x0/0x1d8
-> [ 1233.933704][  T460]  show_stack+0x18/0x24
-> [ 1233.937701][  T460]  dump_stack+0xc0/0x140
-> [ 1233.941783][  T460]  warn_alloc+0xf4/0x148
-> [ 1233.945862][  T460]  __alloc_pages_slowpath+0x9fc/0xa10
-> [ 1233.951101][  T460]  __alloc_pages_nodemask+0x278/0x2c0
-> [ 1233.956285][  T460]  ion_page_pool_alloc+0xd8/0x100
-> [ 1233.961144][  T460]  ion_system_heap_allocate+0xbc/0x2f0
-> [ 1233.966440][  T460]  ion_buffer_create+0x68/0x274
-> [ 1233.971130][  T460]  ion_buffer_alloc+0x8c/0x110
-> [ 1233.975733][  T460]  ion_dmabuf_alloc+0x44/0xe8
-> [ 1233.980248][  T460]  ion_ioctl+0x100/0x320
-> [ 1233.984332][  T460]  __arm64_sys_ioctl+0x90/0xc8
-> [ 1233.988934][  T460]  el0_svc_common+0x9c/0x168
-> [ 1233.993360][  T460]  do_el0_svc+0x1c/0x28
-> [ 1233.997358][  T460]  el0_sync_handler+0xd8/0x250
-> [ 1234.001989][  T460]  el0_sync+0x148/0x180
->
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->  drivers/dma-buf/heaps/system_heap.c | 9 +++++++--
->  1 files changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-> index 29e49ac17251..33c25a5e06f9 100644
-> --- a/drivers/dma-buf/heaps/system_heap.c
-> +++ b/drivers/dma-buf/heaps/system_heap.c
-> @@ -40,7 +40,7 @@ struct dma_heap_attachment {
->         bool mapped;
->  };
->
-> -#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
-> +#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO \
->                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
->                                 | __GFP_COMP)
->  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
-> @@ -315,6 +315,7 @@ static struct page *alloc_largest_available(unsigned long size,
->                                             unsigned int max_order)
->  {
->         struct page *page;
-> +       unsigned long gfp_flags;
->         int i;
->
->         for (i = 0; i < NUM_ORDERS; i++) {
-> @@ -323,7 +324,11 @@ static struct page *alloc_largest_available(unsigned long size,
->                 if (max_order < orders[i])
->                         continue;
->
-> -               page = alloc_pages(order_flags[i], orders[i]);
-> +               gfp_flags = order_flags[i];
-> +               if (orders[i] > PAGE_ALLOC_COSTLY_ORDER)
-> +                       gfp_flags |= __GFP_NOWARN;
-> +
-> +               page = alloc_pages(gfp_flags, orders[i]);
->                 if (!page)
->                         continue;
->                 return page;
-> --
-> 2.30.0.478.g8a0d178c01-goog
->
+
+
+> > On Tue, 2021-02-09 at 20:48 +0000, Alexander Lobakin wrote:  
+> > > @@ -231,7 +256,7 @@ struct sk_buff *__build_skb(void *data, unsigned int frag_size)
+> > >   */
+> > >  struct sk_buff *build_skb(void *data, unsigned int frag_size)
+> > >  {
+> > > -	struct sk_buff *skb = __build_skb(data, frag_size);
+> > > +	struct sk_buff *skb = __build_skb(data, frag_size, true);  
+> > 
+> > I must admit I'm a bit scared of this. There are several high speed
+> > device drivers that will move to bulk allocation, and we don't have any
+> > performance figure for them.
+> > 
+> > In my experience with (low end) MIPS board, cache misses cost tend to
+> > be much less visible there compared to reasonably recent server H/W,
+> > because the CPU/memory access time difference is much lower.
+> > 
+> > When moving to higher end H/W the performance gain you measured could
+> > be completely countered by less optimal cache usage.
+> > 
+> > I fear also latency spikes - I'm unsure if a 32 skbs allocation vs a
+> > single skb would be visible e.g. in a round-robin test. Generally
+> > speaking bulk allocating 32 skbs looks a bit too much. IIRC, when
+> > Edward added listification to GRO, he did several measures with
+> > different list size and found 8 to be the optimal value (for the tested
+> > workload). Above such number the list become too big and the pressure
+> > on the cache outweighted the bulking benefits.  
+> 
+> I can change to logics the way so it would allocate the first 8.
+> I think I've already seen this batch value somewhere in XDP code,
+> so this might be a balanced one.
+
+(Speaking about SLUB code): Bulk ALLOC side disables interrupts, and
+can call slow path (___slab_alloc), which is bad for latency sensitive
+workloads.   This I don't recommend large bulk ALLOCATIONS.
+
+> Regarding bulk-freeing: can the batch size make sense when freeing
+> or it's okay to wipe 32 (currently 64 in baseline) in a row?
+
+(Speaking about SLUB code):  You can bulk FREE large amount of object
+without hurting latency sensitive workloads, because it doesn't disable
+interrupts (I'm quite proud that this was possible).
+
+
+> > Perhaps giving the device drivers the ability to opt-in on this infra
+> > via a new helper - as done back then with napi_consume_skb() - would
+> > make this change safer?  
+> 
+> That's actually a very nice idea. There's only a little in the code
+> to change to introduce an ability to take heads from the cache
+> optionally. This way developers could switch to it when needed.
+
+Well, I actually disagree that this should be hidden behind a switch
+for drivers to enable, as this will take forever to get proper enabled.
+
+
+
+> Thanks for the suggestions! I'll definitely absorb them into the code
+> and give it a test.
+> 
+> > > @@ -838,31 +863,31 @@ void __consume_stateless_skb(struct sk_buff *skb)
+> > >  	kfree_skbmem(skb);
+> > >  }
+> > >
+> > > -static inline void _kfree_skb_defer(struct sk_buff *skb)
+> > > +static void napi_skb_cache_put(struct sk_buff *skb)
+> > >  {
+> > >  	struct napi_alloc_cache *nc = this_cpu_ptr(&napi_alloc_cache);
+> > > +	u32 i;
+> > >
+> > >  	/* drop skb->head and call any destructors for packet */
+> > >  	skb_release_all(skb);
+> > >
+> > > -	/* record skb to CPU local list */
+> > > +	kasan_poison_object_data(skbuff_head_cache, skb);
+> > >  	nc->skb_cache[nc->skb_count++] = skb;
+> > >
+> > > -#ifdef CONFIG_SLUB
+> > > -	/* SLUB writes into objects when freeing */
+> > > -	prefetchw(skb);
+> > > -#endif  
+> > 
+> > It looks like this chunk has been lost. Is that intentional?  
+> 
+> Yep. This prefetchw() assumed that skbuff_heads will be wiped
+> immediately or at the end of network softirq. Reusing this cache
+> means that heads can be reused later or may be kept in a cache for
+> some time, so prefetching makes no sense anymore.
+
+I agree with this statement, the prefetchw() is no-longer needed.
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
