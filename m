@@ -2,187 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD111316998
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3BD31699D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhBJO70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:59:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53334 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231767AbhBJO7A (ORCPT
+        id S231817AbhBJPAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:00:10 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:60186 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230160AbhBJO77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:59:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612969052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=z2dPGwBXCWSVZ5g1pGm6UIqGI0ADcDy1IxFOAnmlTEE=;
-        b=QzDF3vLj2CQafKLw1NTtknyaRd9MW/8vyDf/KHiFkcfoTdbNg5nEUDTbJ5l59n8qtZVjBy
-        mgShMLmYfcUevpLct+0Ard1IFiSWyTfOTuzcCoYqmWyswOjjUaBeGxP4JVcpDTLKaE9+nA
-        Ilw7pl/awho7Ah6C0gjqvYajMGWAeW4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-BUzlBjMCPu-BrVdmGJSJcQ-1; Wed, 10 Feb 2021 09:57:28 -0500
-X-MC-Unique: BUzlBjMCPu-BrVdmGJSJcQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9451C192CC40;
-        Wed, 10 Feb 2021 14:57:24 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 517BE60657;
-        Wed, 10 Feb 2021 14:57:20 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Ben Boeckel <mathstuf@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jann Horn <jannh@google.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Tom Rix <trix@redhat.com>, YueHaibing <yuehaibing@huawei.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: 
+        Wed, 10 Feb 2021 09:59:59 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AEwZXB114447;
+        Wed, 10 Feb 2021 14:58:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=oB2eoEiluld5d9aCEG1fhFVyi34FAPtv3ChPM3tG8LY=;
+ b=rrAO1rIg+uEJlbQaBmBOzsVLrQcu8N4txLIs63ex0t/HUWRRcaxL/rvdpMW4Qw/8PuRn
+ p/vvpHwTdEVOc7ry6FYLonTTS6fTog8ntUXqNaEN8LMGx9aBqxZXznCAc9dq3TNj9nYU
+ JzYiBXWbH9aQDG5BxuwuLtSB+SHLc9uOqhDbuV7IZcGKWn4YBlX6BI1LYbyWL0ROs8hG
+ 0ckcdSAuv3fKx28Gq+06bjRZLk7F9stZi89cg0rUVyTrJ7vEcf5NdyB6RK91Otr4QCPn
+ g1LuqS7kEBSG8KtHsli5boJjbpCkh1ygF4TT/G099jfuORduz5hdNunH8368auSw646Z gA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 36hjhqupnb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 14:58:47 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AEt33W161467;
+        Wed, 10 Feb 2021 14:58:46 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2109.outbound.protection.outlook.com [104.47.70.109])
+        by userp3030.oracle.com with ESMTP id 36j51xnxfr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 14:58:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C1HbVm7AyQIF5rn4mI8S3o8vX1/Yl0jlzywohWh65Gp7w+ZxncPI6CHrVI4ZROsMp4S3hS0ibKdTH7ZT5AFopGQIff+JwuhU1y1J+eAVDCRfxN1WlP8mzm4tZJpW/51gVDch70jLvkiOzoYO1/lXGlkTrWIJ+OJb88eWAcIoxj80Mb7+qKM5zVacvmy7z146oFx22bDYNolx3ATAESVc1UuqJx58t3BPiO2+wLg0nrJBkWrNxvKWyref2es7A3X1M7rpBz0j6d8FnWHzsPIK3HDLyxvYDY7eoTfqnJ2T0J5tQGmC5MZwC4yNdKWXvud9IAW1ViEf/TJAgESkve2CNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oB2eoEiluld5d9aCEG1fhFVyi34FAPtv3ChPM3tG8LY=;
+ b=JJvL0R78gJD757woXkPf1ALy4rODWZjkbH+pNOoBU3ofvl/jmDdDbH5Tq1guK0BFiXoxVNEUjQUevj8P7fbVxxmocnFqCxesfZVfhNRIngtec+3Fg19z2g4MYEog94yassHyUdSnmTz+0mY8j5I+dSRqdAoPHm6HaC/KO6mE1946jOf8HmHTA7XxSYwjdyyaR7jCke3zHZZWKIKVCH4ddpy7jFFu8ItCNYLz5Np7d/o1AOBF4A7/HETM8uJp4X9Zh/CgJlbFAYVvWD7canhnMv2+Y36S/iICq5jW07WJI8htcv4hlHdLd7kh9TcdrF8XK8ukYlzlJf9yQBi9MMtPnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oB2eoEiluld5d9aCEG1fhFVyi34FAPtv3ChPM3tG8LY=;
+ b=HAfKE3ODUj+52e4FmfK84gWb20mAOU/br2fadZQIsRS1JCN6r5u9gDBSgdrOmwUPzrs0NG7vCoEXojDOecKi/8Fzwe/cRDsoBaUj3wNRCKb6GgWo/+vBxq80UzFa2pz7JklADO+9+Ct1w6vaphvmxyfcS4/q4NlxSxXq5o8Z4mo=
+Authentication-Results: 8bytes.org; dkim=none (message not signed)
+ header.d=none;8bytes.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by SJ0PR10MB4640.namprd10.prod.outlook.com (2603:10b6:a03:2af::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Wed, 10 Feb
+ 2021 14:58:44 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
+ 14:58:44 +0000
+Date:   Wed, 10 Feb 2021 09:58:35 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Joerg Roedel <joro@8bytes.org>, daniel.kiper@oracle.com
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 0/7] x86/seves: Support 32-bit boot path and other updates
+Message-ID: <20210210145835.GE358613@fedora>
+References: <20210210102135.30667-1-joro@8bytes.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210102135.30667-1-joro@8bytes.org>
+X-Originating-IP: [209.6.208.110]
+X-ClientProxiedBy: BL1PR13CA0225.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::20) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 10 Feb 2021 14:57:19 +0000
-Message-ID: <1322700.1612969039@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fedora (209.6.208.110) by BL1PR13CA0225.namprd13.prod.outlook.com (2603:10b6:208:2bf::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.11 via Frontend Transport; Wed, 10 Feb 2021 14:58:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5c4019b3-d276-4fde-bcd6-08d8cdd45ad5
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4640:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB4640EBA5D7C6A297F93161B5898D9@SJ0PR10MB4640.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: boPC7ud8Pe76Vstx7ywP4l348Wh40B9RPCWCqHN6eFDhbJxqPI/kNtzz52uoZQ5O51xpz0ujVGdF1jf+un8VGh0Ruyq7egvjZdhEEwqe6pWiljgq/BaWchcZiZtf2mkX+nDvnusnw07xStdCuvJmajIabaFNF0hxsle0X1z+KnOC+IqACLAEogSN6YaAlh4Q/DqTMp872tKMsQD3PiiZMmAaxCFZNVewP/ehXCD4JS/qarfd7Q28n6OwmT339Wa1pMsomS7S9BKIDgf26qyUfsaJvUEJeOXj+OVjIkrJKqwLunZyh457mrwsHIRcz3SWpqClw9o1GQxMLbmU6iVLtT0IXecs7Rtfpbw22H8Q/cHJfvW2X8tFrjrsUZfWw1XEu+2NR8B9OMVmpTk79JuKNVY8P77plF3hPyMNvIjyZroF2qFg5UEHrghmqgAiOIIha+PJAjpfHqfRN9MGM67HxxrnUyK63o8TCRXlE7GO60dUDfuuozQyxgvQGKEhCEYDwWpURSrqelfKimrFNnAzIA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(376002)(366004)(346002)(396003)(6636002)(54906003)(52116002)(6496006)(478600001)(4326008)(55016002)(316002)(8676002)(9686003)(5660300002)(956004)(7416002)(26005)(9576002)(1076003)(33656002)(86362001)(186003)(16526019)(6666004)(15650500001)(66946007)(33716001)(8936002)(83380400001)(66556008)(2906002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9uyEd0NZhDCW5w/pXPgXAV94fMAdzTPUcFACNHwoTwMjxhryKx1hZtV+pbgy?=
+ =?us-ascii?Q?3gIqMVUua4y6aGVN+zKWgY9kpOlSDxMfXcs5svPTxbK7JRzzJ/aU1C5vQQad?=
+ =?us-ascii?Q?4ppyPrSfqi1Gx0jloy8ZM/5yrdQFRVaSxAvkksobg/zmrqGHVfBPcFkuPmZW?=
+ =?us-ascii?Q?uIe06uPeUeim+9LBFEns2qMfh1OeVEIrq+L0iadVKZCgmQ5vHr+WMDJ8IEhX?=
+ =?us-ascii?Q?Y1YHe5ESa6KHiiQJXUsGA4QqG56qOCkMoSlg2ZEzaXxDT9ocaGfHznhQRxfP?=
+ =?us-ascii?Q?HyYEkk76hLMIY4vYHya9Kt51pZ12FvfBvt/MleEgKYpuo11GolHk41P8oPJe?=
+ =?us-ascii?Q?njzDWE9mqsxY95piu4IssHU2u7M8J96JmPALS20g2aRKmT3cRk6muE/Zj5rH?=
+ =?us-ascii?Q?IA9I6B6ZBxJXnmXucjrK5IUD04awXkXN4/F9x+Yzhs155/Xk7jwqyo5WV6vT?=
+ =?us-ascii?Q?Mm1UBazZWhj/dKW2JjcBFlxVVYPf7pJDYnqpRb7lpuvtO33OKSFu6A1NIHgm?=
+ =?us-ascii?Q?Jl2qv9dU3npJGCRiEHmZOhdS3a9iLn8ukZF1H1uDuSb4w00LbNt7bDMXdmRw?=
+ =?us-ascii?Q?Q2UO34Lrmc7Egt76JOUogVEPgM+nBE+IVcGQSFj9Kk3MlyUlmRH5dkzkIrhQ?=
+ =?us-ascii?Q?WMNSn0a9J5IEsEpYPga1hTa9JURYYXebSePQYr3mSsH1snmjMsMptEceiMyi?=
+ =?us-ascii?Q?T76KjfiGOcLBsyukw4PRA4Qv7clboEp70iMAcDGodl4sP2ZGfn4QKABZlCWm?=
+ =?us-ascii?Q?+YC9exT0ftgPsmcTj7EOVrA6qYvn62AqBZW8ttEmpllPwpxAHifG7pdysD8x?=
+ =?us-ascii?Q?asQqNEGvF92OINAEp80BBqLGTWrXFU46OXXLN6OW/l9XxqITysdLBkdQhm9l?=
+ =?us-ascii?Q?ZlD138M0ciBdsD4bUvTonUw//D1urc/KLC6pp2cvo0NNasfvhmOG39rFRmiq?=
+ =?us-ascii?Q?VSsZLjTT9xMHa3El3ho11+nInFGyNK6VrdWJy/9t0XpE5IdUeaY9ee03v8if?=
+ =?us-ascii?Q?FgLlzyj5rKd/1kLjIANwWCYmyZYCpZFTm/pyae0hqyZm6iYegHgvcgGyPiI7?=
+ =?us-ascii?Q?tU6cTkmvCxcwkixhb8aRJ4Zjvp7g33m4IkiBTts4muy6gDRbqifLQkucJbrA?=
+ =?us-ascii?Q?6H2qzsgL8x/656rjyzBTymSZJiVsKtGKuQAO7jp/GS0tUp4yFS2r9H8Fa3K4?=
+ =?us-ascii?Q?FZd/7nWxqoyj7DjvNbEBg3z6yq6ZlWcKoW0BRqkVgz6EBT6xwRBlTs3E4i2P?=
+ =?us-ascii?Q?qbmzz4K73W5lTY/LNFZ3jRqksN9CZ/EQqU9gBDe59roolIHFMNOl5T1LLqfc?=
+ =?us-ascii?Q?3yZcx32CMJgJG0yTCZ1xkthH?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c4019b3-d276-4fde-bcd6-08d8cdd45ad5
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 14:58:43.8528
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FFCgMEYT1QfSRkEIvm9s4wUuaOBKSf9pDJtnTAYk309wQT1cPtRPlM2nN05TKimbEC3pJTd4wdmwlmZBK6lomA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4640
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100143
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1011 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 10, 2021 at 11:21:28AM +0100, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> Hi,
+> 
+> these patches add support for the 32-bit boot in the decompressor
+> code. This is needed to boot an SEV-ES guest on some firmware and grub
+> versions. The patches also add the necessary CPUID sanity checks and a
 
-Hi Linus,
+Could you expand a bit please?
 
-Here's a set of minor keyrings fixes/cleanups that I've collected from
-various people for the upcoming merge window.
+What GRUB versions are we talking about (CC-ing Daniel Kiper, who owns
+GRUB).
 
-A couple of them might, in theory, be visible to userspace:
+By 'some firmware' we talking SeaBIOS?
 
- (*) Make blacklist_vet_description() reject uppercase letters as they
-     don't match the all-lowercase hex string generated for a blacklist
-     search.
-
-     This may want reconsideration in the future, but, currently, you can't
-     add to the blacklist keyring from userspace and the only source of
-     blacklist keys generates lowercase descriptions.
-
- (*) Fix blacklist_init() to use a new KEY_ALLOC_* flag to indicate that it
-     wants KEY_FLAG_KEEP to be set rather than passing KEY_FLAG_KEEP into
-     keyring_alloc() as KEY_FLAG_KEEP isn't a valid alloc flag.
-
-     This isn't currently a problem as the blacklist keyring isn't
-     currently writable by userspace.
-
-The rest of the patches are cleanups and I don't think they should have any
-visible effect.
-
-I've fixed the compilation error, added another patch and rebased to
-v5.11-rc4 since the last request.
-
-David
----
-The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
-
-  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/=
-keys-misc-20210126
-
-for you to fetch changes up to 8f0bfc25c907f38e7f9dc498e8f43000d77327ef:
-
-  watch_queue: rectify kernel-doc for init_watch() (2021-01-26 11:16:34 +00=
-00)
-
-----------------------------------------------------------------
-Keyrings miscellany
-
-----------------------------------------------------------------
-Alex Shi (2):
-      PKCS#7: drop function from kernel-doc pkcs7_validate_trust_one
-      certs/blacklist: fix kernel doc interface issue
-
-Alexander A. Klimov (1):
-      encrypted-keys: Replace HTTP links with HTTPS ones
-
-David Howells (1):
-      certs: Fix blacklist flag type confusion
-
-Denis Efremov (1):
-      security/keys: use kvfree_sensitive()
-
-Gabriel Krisman Bertazi (1):
-      watch_queue: Drop references to /dev/watch_queue
-
-Gustavo A. R. Silva (1):
-      security: keys: Fix fall-through warnings for Clang
-
-Jann Horn (1):
-      keys: Remove outdated __user annotations
-
-Krzysztof Kozlowski (1):
-      KEYS: asymmetric: Fix kerneldoc
-
-Lukas Bulwahn (1):
-      watch_queue: rectify kernel-doc for init_watch()
-
-Micka=C3=ABl Sala=C3=BCn (3):
-      certs: Fix blacklisted hexadecimal hash string check
-      PKCS#7: Fix missing include
-      certs: Replace K{U,G}IDT_INIT() with GLOBAL_ROOT_{U,G}ID
-
-Randy Dunlap (2):
-      security: keys: delete repeated words in comments
-      crypto: asymmetric_keys: fix some comments in pkcs7_parser.h
-
-Tianjia Zhang (1):
-      crypto: public_key: Remove redundant header file from public_key.h
-
-Tom Rix (2):
-      KEYS: remove redundant memset
-      keys: remove trailing semicolon in macro definition
-
-YueHaibing (1):
-      crypto: pkcs7: Use match_string() helper to simplify the code
-
- Documentation/security/keys/core.rst     |  4 ++--
- certs/blacklist.c                        | 10 +++++-----
- certs/system_keyring.c                   |  5 +++--
- crypto/asymmetric_keys/asymmetric_type.c |  6 ++++--
- crypto/asymmetric_keys/pkcs7_parser.h    |  5 ++---
- crypto/asymmetric_keys/pkcs7_trust.c     |  2 +-
- crypto/asymmetric_keys/pkcs7_verify.c    |  9 ++++-----
- include/crypto/public_key.h              |  1 -
- include/keys/encrypted-type.h            |  2 +-
- include/linux/key.h                      |  5 +++--
- include/linux/verification.h             |  2 ++
- kernel/watch_queue.c                     |  2 +-
- samples/Kconfig                          |  2 +-
- samples/watch_queue/watch_test.c         |  2 +-
- security/integrity/ima/ima_mok.c         |  5 ++---
- security/keys/Kconfig                    |  8 ++++----
- security/keys/big_key.c                  |  9 +++------
- security/keys/key.c                      |  2 ++
- security/keys/keyctl.c                   |  2 +-
- security/keys/keyctl_pkey.c              |  2 --
- security/keys/keyring.c                  | 10 +++++-----
- security/keys/process_keys.c             |  1 +
- 22 files changed, 48 insertions(+), 48 deletions(-)
-
+> 32-bit version of the C-bit check.
+> 
+> Other updates included here:
+> 
+> 	1. Add code to shut down exception handling in the
+> 	   decompressor code before jumping to the real kernel.
+> 	   Once in the real kernel it is not safe anymore to jump
+> 	   back to the decompressor code via exceptions.
+> 
+> 	2. Replace open-coded hlt loops with proper calls to
+> 	   sev_es_terminate().
+> 
+> Please review.
+> 
+> Thanks,
+> 
+> 	Joerg
+> 
+> Joerg Roedel (7):
+>   x86/boot/compressed/64: Cleanup exception handling before booting
+>     kernel
+>   x86/boot/compressed/64: Reload CS in startup_32
+>   x86/boot/compressed/64: Setup IDT in startup_32 boot path
+>   x86/boot/compressed/64: Add 32-bit boot #VC handler
+>   x86/boot/compressed/64: Add CPUID sanity check to 32-bit boot-path
+>   x86/boot/compressed/64: Check SEV encryption in 32-bit boot-path
+>   x86/sev-es: Replace open-coded hlt-loops with sev_es_terminate()
+> 
+>  arch/x86/boot/compressed/head_64.S     | 168 ++++++++++++++++++++++++-
+>  arch/x86/boot/compressed/idt_64.c      |  14 +++
+>  arch/x86/boot/compressed/mem_encrypt.S | 114 ++++++++++++++++-
+>  arch/x86/boot/compressed/misc.c        |   7 +-
+>  arch/x86/boot/compressed/misc.h        |   6 +
+>  arch/x86/boot/compressed/sev-es.c      |  12 +-
+>  arch/x86/kernel/sev-es-shared.c        |  10 +-
+>  7 files changed, 307 insertions(+), 24 deletions(-)
+> 
+> -- 
+> 2.30.0
+> 
