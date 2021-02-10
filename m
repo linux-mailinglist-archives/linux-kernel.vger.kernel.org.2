@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4626A3169AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C81E53169AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhBJPDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:03:05 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:44797 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231927AbhBJPCc (ORCPT
+        id S231599AbhBJPDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:03:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231939AbhBJPCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Feb 2021 10:02:32 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id D09D55C017C;
-        Wed, 10 Feb 2021 10:01:21 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 10 Feb 2021 10:01:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=6GZtdqXMNFkD2BcFburlBicKk1i
-        oVhLRSpK6+dRFql0=; b=ln8XgmqJuPfayAsfHYyeRmHfpOkr9QxtZhq8yQz/R2e
-        g5b0PACGUZeZ9pPOHSsvdH5NHoSq6Qz08UZAgSQjjSL+tiOXrEEkPrSvH5hMrgS4
-        6XkQdaDclkzIaMBNJYv40CV1GLvep/+IYz3ebKH00mmdl0E8OmMjg8FWBevKIut0
-        aoEHNP4lk80Od7EzdAgy1lGL5oeSnxr/x1Vm2myXZ90+PnWyGZiuddSMzi1We7ii
-        YJJfX/K4c+/7kBm/RKpl4sBIluoCw7u9n2fU3TfMGmUdYnH3VDlAxHjDHkS5jqLh
-        tpJaPVltzy4l5O9Um5DvS6YlRPKU9cD+xRMR2Os2xCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6GZtdq
-        XMNFkD2BcFburlBicKk1ioVhLRSpK6+dRFql0=; b=lZPD1HgEGxoHNYwPDLlZRy
-        Yq6hptQY+IgaQgkKgQYp6BQh6KWInW54H23x+78hAlhMRrvJJSeLSRlHvufnxNI+
-        kglJnoGqcVvs23U7GrXrLF+u0rEuLZo+6I3CIvlSOoZ8ed6S7ZdQnaEJojSsBdbG
-        ivcrw4crvwgTjIbex1d/V7p1cLM9KwXHmerFQ5VDzNz/7PpLRnj9fGBp4SAIWUkI
-        GWM6TXYjO1hZGsNGuLb/clbDBVEdhqWda7gH5YSPS8pol4rtnaSNicPJI3VPLAfX
-        BVGt4XMFmq1TnksCsto6Yf++cOqrFOEqTm7BSKFIaxQ6IGnrhHS+OpblM+uvGKvQ
-        ==
-X-ME-Sender: <xms:QPUjYPN-SVKk_xBSnmqZgMJjeqyRKaWeYWgl5LKCkRxDMd6bkbukGQ>
-    <xme:QPUjYJ97UxuiO_WC6Q4LWofHAM8DOO-x0gWPBEiZTo9xqCEJSMQHbalDwMEjCEvJd
-    HjXlqMxJrXqQacxblE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdejtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeevveefffduveeitdegtefhhfetueffteefffdvheevvdehteethedvleffgfej
-    vdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeeltddrkeelrdeikedrje
-    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
-    gihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:QPUjYOTUkHOTe6AmVa0j98ZfcE9keIcv5-6MGsGYTDpsmZ6IQgq1eg>
-    <xmx:QPUjYDvpApN8bKCKdlMtHMfEcsY8gNYcxFAj7cdvkqmOg_0rkr962Q>
-    <xmx:QPUjYHcUcJ4DGJ4DwKFmI-hF3jA4VH24PXE9hV-_jUmnVsm4xCkIBg>
-    <xmx:QfUjYIEFjmdLZC3jGWHdJNP01drrBjnuazM08-xA2-J__LkiSTi9cQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3080C240064;
-        Wed, 10 Feb 2021 10:01:20 -0500 (EST)
-Date:   Wed, 10 Feb 2021 16:01:18 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     "B.R. Oake" <broake@mailfence.com>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY mode
-Message-ID: <20210210150118.ly252i37eykayrcb@gilmour>
-References: <1243888060.510560.1612783497400@ichabod.co-bxl>
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A6AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:01:51 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id z6so1439958pfq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=beJP1mYrkSB9mBgiVe08BgvkPCu0WrVWSYUe1T5cFT8=;
+        b=JmIFfWvmUP1+frG/lAkaqmY/IXMtopiZCRe9kvND+RaZK7hebEHmzLVsHrefm3xOPB
+         0y0NhuswZTgIKWPwQ/DrS7xlAGDDGiRn9vDgcXrxyuFg7DIcd70f+lrzaqDLoXC8+wtu
+         9+3SiFHFTHnfmzqHg2iFD49T97GUrn71t4r5Xk01IaoaomKo1l0iFv3vhTRcVsuhHaHk
+         7/bPo8fKQ9AJh6zt+/r/NJP9ukPSDGNqSVBkLK1InlyiV5S/524LW4jio2oqM9C+LoS3
+         WSfXz06h8XuECd5Yn6F0+GHo1Dp4outBSdWLsHUjjyuZS2/TK/2AK1bm+9b4ctbINZME
+         KFsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=beJP1mYrkSB9mBgiVe08BgvkPCu0WrVWSYUe1T5cFT8=;
+        b=lNF/qKdacqsGbGokJAvvTBAZPaVbAdSi6dt7EshjvLdt31Uupvn9g2DJ7V+vk6FJ08
+         wTVT9IlrgAEgqsesTjq68CgACfVFlbWIfEqUP2YBHqj3owRu2P00dOaWWz15ei/bYhC7
+         xBzCO/JJ3TCu1eHaHKCWN2MQnNu0681cnHEXjaxetbffo03O6I9Gqi0LREF0HMO1Cn/S
+         AoI3BUjvNdJUYRlPNljWDiAdys/Qo79h+M4T4NuvJ/RBXa+5vy9DcbJoCtvnfZgup2hr
+         DEN/EmY1dGSsJ9PMXTv1aOOHPo5vP0mNPk8YNOdt2YcBrgYdkFYo/cGIEg7H640FJ77w
+         U6rA==
+X-Gm-Message-State: AOAM530tRTBau/U9iU9vLSHlem0jwtYyiU2fdIavVDIHN/FdxPC7mwVX
+        yU9Bzt0wPvevBRLS4iWqRNOgjlVENqE=
+X-Google-Smtp-Source: ABdhPJwC+Uvy/gzCp/1OSVlsPTqUU2JoH2LX9RLXrZ9/C4CeS5MQZnrciTxFhUyij+/J5IWuTSH1tQ==
+X-Received: by 2002:a62:5a45:0:b029:1e5:4c81:c59 with SMTP id o66-20020a625a450000b02901e54c810c59mr3645349pfb.51.1612969308755;
+        Wed, 10 Feb 2021 07:01:48 -0800 (PST)
+Received: from localhost ([103.200.106.135])
+        by smtp.gmail.com with ESMTPSA id u3sm2901202pfm.144.2021.02.10.07.01.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 07:01:48 -0800 (PST)
+Date:   Wed, 10 Feb 2021 20:31:33 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH v3] staging: gdm724x: Fix DMA from stack
+Message-ID: <20210210150133.chf4gwefgcvaewnd@archlinux>
+References: <20210210142512.23152-1-ameynarkhede03@gmail.com>
+ <YCPz7jy6BLRzmvU3@kroah.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mc7bt46on7uorfl2"
+        protocol="application/pgp-signature"; boundary="ydswyj5saqachrzt"
 Content-Disposition: inline
-In-Reply-To: <1243888060.510560.1612783497400@ichabod.co-bxl>
+In-Reply-To: <YCPz7jy6BLRzmvU3@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---mc7bt46on7uorfl2
+--ydswyj5saqachrzt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On 21/02/10 03:55PM, Greg KH wrote:
+> On Wed, Feb 10, 2021 at 07:55:12PM +0530, Amey Narkhede wrote:
+> > Stack allocated buffers cannot be used for DMA
+> > on all architectures so allocate hci_packet buffer
+> > using kmalloc.
+> >
+> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > ---
+> > Changes in v3:
+> > 	- Remove superfluous buf pointer
+> > 	- Reduce size of allocation of hci_packet to match number of
+> > 	bytes used for DMA
+> >
+> >  drivers/staging/gdm724x/gdm_usb.c | 10 +++++++---
+> >  1 file changed, 7 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
+> > index dc4da66c3..80c58a3ef 100644
+> > --- a/drivers/staging/gdm724x/gdm_usb.c
+> > +++ b/drivers/staging/gdm724x/gdm_usb.c
+> > @@ -56,20 +56,24 @@ static int gdm_usb_recv(void *priv_dev,
+> >
+> >  static int request_mac_address(struct lte_udev *udev)
+> >  {
+> > -	u8 buf[16] = {0,};
+> > -	struct hci_packet *hci = (struct hci_packet *)buf;
+> > +	struct hci_packet *hci;
+> >  	struct usb_device *usbdev = udev->usbdev;
+> >  	int actual;
+> >  	int ret = -1;
+> >
+> > +	hci = kmalloc(5, GFP_KERNEL);
+>
+> Why "5" and not:
+> 	hci = kmalloc(sizeof(*hci), GFP_KERNEL);
+> ?
+>
+> thanks,
+>
+> greg k-h
+I really need a cup of coffee :)
+I'll send v4
 
-On Mon, Feb 08, 2021 at 12:24:57PM +0100, B.R. Oake wrote:
-> Since commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx
-> delay config"), Ethernet no longer works on the Orange Pi Plus,
-> because that commit sets the RX/TX delay according to the phy-mode
-> property in the device tree, which is "rgmii", the wrong setting
-> for this board.
->=20
-> Following the example of others who fixed the same problem for
-> many other boards, this patch changes the phy-mode to "rgmii-id"
-> which gets Ethernet working again on this board.
->=20
-> Fixes: 4904337fe34f ("ARM: dts: sunxi: Restore EMAC changes (boards)")
-> Fixes: 1dcd0095019a ("ARM: sun8i: orangepi-plus: Enable dwmac-sun8i")
-> Signed-off-by: B.R. Oake <broake@mailfence.com>
+Thanks,
+Amey
 
-Unfortunately we can't take this patch as is, this needs to be your real na=
-me, see:
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#deve=
-loper-s-certificate-of-origin-1-1
-
-Maxime
-
---mc7bt46on7uorfl2
+--ydswyj5saqachrzt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYCP1PgAKCRDj7w1vZxhR
-xZSsAQDi5eI7KYLfoFTOdahd3unW/v8Wk6HmPxOdTiBAJJt6lAD/bUsW9cfrdL3U
-LkJen15K9KdgC4tKI83IJmzoNgnRfA0=
-=a46C
+iQEzBAABCAAdFiEEb5tNK+B4oWmn+0Z9BBTsy/Z3yzYFAmAj9U0ACgkQBBTsy/Z3
+yzblYAf9H3EOJk/l30Do38RCSkbDmugXm/zeGUYvILtXRiTHX/xDK2Bzo/c1j2Gz
+jiqUFbLs1/MgehpgDxj4bST8Z0FeGLOOhkf+Jr/KRNbAUwy4GB8KcUhBI8+v7s/U
+icimCI49xSO3yk4SN17BfADrODZM4oUuQPewlfHNYYYg+amq1PGYHBIre4vHWWdg
+/jzDLtQG8vJqPBDgLKBRWwwGPxQfvR6Vxpqs0lw394r/LQePk5lau+GSgCBPsqZp
+8cAyIHu4xmD601IjbcmlPCRJpXHPFzCWzw0Y+iI9IbKLkDYe1828pgoPFojR5/Hf
+zv93hZDStFHoE9kE6KwuRLlNYJ8JWQ==
+=Ux+e
 -----END PGP SIGNATURE-----
 
---mc7bt46on7uorfl2--
+--ydswyj5saqachrzt--
