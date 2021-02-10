@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C93E3167AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:15:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B2B3167B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhBJNPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:15:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhBJNO4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:14:56 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1614EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:14:15 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id u14so2513439wri.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:14:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yd/N+I5kkzyOJpCnRN7vd7lwOUGF6B7BATQPc1K2fYQ=;
-        b=Ku2flnqwc5D6z3d9GmRgcHXuXbDphKiJCNyjgnzoxVdwxDs/52BrDyb7OcLZWnkYAz
-         UR5IZLaVzdRpurLn7fxlbf1b3mo/RM5L29GsZ6tgTpsyMRaO55uRbNi615w5EEGuzuiH
-         EftzrNQu9uZtxv0u8BEWObc6EWl1rD8xoM1xc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=yd/N+I5kkzyOJpCnRN7vd7lwOUGF6B7BATQPc1K2fYQ=;
-        b=X2dFYDWFKU+Y964zWsuAvFW/9mePlC/Cn9TX44+Cmjg+UYNpBaZ5eCPChOt4qg5SWZ
-         5zwbxGKbF1Bt584r3xFZcLYUEqd2i86kFdgfQ2AKYGBm+LFJoV56l2dcHpSX1TfUtp+F
-         p0fEEiXpwtlvgnDHhlIvWPnwoI1KbjmQt4avIDtInsWLpMM0EL1se9DXUyv42ZVl4NNp
-         ciIWbp07XzEZ+YZtQYAp7uM2mCj41M+OYbVQPsqK05eFnmK3p5GkPyCvGh24bhhHvq9U
-         iOmEPdYohhrnSWWghpsF03f2nQ1Nq2jhwDN9RHSOBUbU1gvVeeg1Ha8pSDn1nJwePMvp
-         YXGw==
-X-Gm-Message-State: AOAM531ZpMHtSF+PqBv2G+ylJd1luRhQ8KT6NX5jtno5W8az7vFfTcOf
-        D+l5v42OnQHAddacj4TsTRNLrw==
-X-Google-Smtp-Source: ABdhPJzaMMmb4JfbfYiORqaQNccdJmyShOrVZsJEkutd675pXDThmmVuBjfO9+5KkU1bjFmrTMFG0A==
-X-Received: by 2002:a05:6000:1374:: with SMTP id q20mr3489704wrz.44.1612962853806;
-        Wed, 10 Feb 2021 05:14:13 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id r1sm2894759wrl.95.2021.02.10.05.14.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 05:14:13 -0800 (PST)
-Date:   Wed, 10 Feb 2021 14:14:11 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        nouveau@lists.freedesktop.org
-Subject: Re: [PATCH 0/3] drm/ttm: constify static vm_operations_structs
-Message-ID: <YCPcIwxso67M3VqR@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Likun Gao <Likun.Gao@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        nouveau@lists.freedesktop.org
-References: <20210209234817.55112-1-rikard.falkeborn@gmail.com>
- <e819cb08-98b6-c87d-4d95-338e06f88a48@amd.com>
+        id S231432AbhBJNPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:15:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33352 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229710AbhBJNPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:15:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612962889; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MiX2gkzarTK0h+lISZ1n2kae0qwJVwGheDzNtJatgj4=;
+        b=oGTLpdlTv9kpK7PGKvpr+uzOynnvsduvfrSgh/g1amIqnkadq/SgrIDv6zZ95TA907qy0F
+        DexjlY/nfJEG67SjG26HNg8S7ApCGw62B43HlBlmUEGVPrem+EXc7MU6NWejTdLP0mUn3H
+        65fbIwFlTG/wO25sBtvT0Epxttd7ycU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C8332AC97;
+        Wed, 10 Feb 2021 13:14:48 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 14:14:46 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     zhou xianrong <xianrong_zhou@163.com>
+Cc:     iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        rostedt@goodmis.org, mingo@redhat.com, vbabka@suse.cz,
+        rientjes@google.com, willy@linux.intel.com,
+        pankaj.gupta.linux@gmail.com, bhe@redhat.com, ying.huang@intel.com,
+        minchan@kernel.org, ruxian.feng@transsion.com,
+        kai.cheng@transsion.com, zhao.xu@transsion.com,
+        yunfeng.lan@transsion.com, zhouxianrong@tom.com,
+        zhou xianrong <xianrong.zhou@transsion.com>
+Subject: Re: [PATCH] kswapd: no need reclaim cma pages triggered by unmovable
+ allocation
+Message-ID: <YCPcRj/e9NdQIV9S@dhcp22.suse.cz>
+References: <20210209082313.21969-1-xianrong_zhou@163.com>
+ <YCJUnWLlcSGoR1sT@dhcp22.suse.cz>
+ <bc294334-eec3-f755-cb51-0e302e82809b@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e819cb08-98b6-c87d-4d95-338e06f88a48@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <bc294334-eec3-f755-cb51-0e302e82809b@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 08:45:56AM +0100, Christian König wrote:
-> Reviewed-by: Christian König <christian.koenig@amd.com> for the series.
-
-Smash it into -misc?
--Daniel
-
+On Wed 10-02-21 12:07:57, zhou xianrong wrote:
 > 
-> Am 10.02.21 um 00:48 schrieb Rikard Falkeborn:
-> > Constify a few static vm_operations_struct that are never modified. Their
-> > only usage is to assign their address to the vm_ops field in the
-> > vm_area_struct, which is a pointer to const vm_operations_struct. Make them
-> > const to allow the compiler to put them in read-only memory.
-> > 
-> > With this series applied, all static struct vm_operations_struct in the
-> > kernel tree are const.
-> > 
-> > Rikard Falkeborn (3):
-> >    drm/amdgpu/ttm: constify static vm_operations_struct
-> >    drm/radeon/ttm: constify static vm_operations_struct
-> >    drm/nouveau/ttm: constify static vm_operations_struct
-> > 
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 2 +-
-> >   drivers/gpu/drm/nouveau/nouveau_ttm.c   | 2 +-
-> >   drivers/gpu/drm/radeon/radeon_ttm.c     | 2 +-
-> >   3 files changed, 3 insertions(+), 3 deletions(-)
-> > 
-> 
+> On 2021/2/9 ä¸‹åˆ5:23, Michal Hocko wrote:
+> > On Tue 09-02-21 16:23:13, zhou wrote:
+> > > From: zhou xianrong <xianrong.zhou@transsion.com>
+> > > 
+> > > For purpose of better migration cma pages are allocated after
+> > > failure movalbe allocations and are used normally for file pages
+> > > or anonymous pages.
+> > > 
+> > > In reclaim path so many cma pages if configurated are reclaimed
+> > > from lru lists in kswapd mainly or direct reclaim triggered by
+> > > unmovable or reclaimable allocations. But these cma pages can not
+> > > be used by original unmovable or reclaimable allocations. So the
+> > > reclaim are unnecessary.
+> > > 
+> > > In a same system if the cma pages were configurated to large then
+> > > more failture unmovable (vmalloc etc.) or reclaimable (slab etc.)
+> > > allocations are arised and then more kswapd rounds are triggered
+> > > and then more cma pages are reclaimed.
+> > Could you be more specific? Do you have any numbers and an example
+> > configuration when this is visible?
+> It should be implicit.
 
+Right but the scale of the problem is an important part of _any_ patch
+justification.
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Michal Hocko
+SUSE Labs
