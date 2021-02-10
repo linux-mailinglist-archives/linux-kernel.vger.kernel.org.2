@@ -2,148 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4FF316E96
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BADBE316EA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbhBJS2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:28:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233979AbhBJSR7 (ORCPT
+        id S234166AbhBJS3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:29:45 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2539 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233065AbhBJSTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:17:59 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA68FC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:17:08 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id s107so2667303otb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:17:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=91NW65f73U7tYhbJABgMADCsijsHeCS7/BirUy4WduQ=;
-        b=OxwdccxRTP96g+fMXhEYybO558hFLAVazpm1K6QnlWYbLFxFvi3bv6qyLkhnoj04j1
-         ZzVszy64t4gEWGJ2RJC2akOHvrhGq3e66vtD0XujJT0EDa/gkXbDciXtLBl0ZDgZUbKb
-         qQLBUyi3YehJZfh/hnL7Opj3vBafr5wHPzFY0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=91NW65f73U7tYhbJABgMADCsijsHeCS7/BirUy4WduQ=;
-        b=Ny9gS0RNyk3YuU3AATSEFAViNUdLAdxEyFR+FSaxHrYQTln8wln6Fw7JhRYG4WKF/b
-         9JJeB5PBpruHg5wRWvCXN3OLtCq9uPuFYgXup+at3q7qWnqvNtQbR4GeZlYbyTz/Fx1m
-         IxOFPq5uZFugAWBBF6q2M8xqm/emvbH7koxrhcOqYic9pZ6Y5/vk80OHzeNB8pPu/lzB
-         8dVr3gRESwkX6Oe3AtW9Vtoh6ZxHAn3g1p4CaE7kJ4tehBOENiTEgKL2Wqj/e3Q+8UeP
-         EFZRTzDZN0hDgqusy2Qc09Q8ECfnKXykrZolcjSe3HVD0HOig77MvtsCMC3xiUJY1h2u
-         j8NA==
-X-Gm-Message-State: AOAM530N2IZz086g+vX2DGXWYt2UhahmGG4O3NyufydZja42NqgfXm0F
-        WukYb8AhFxqsnnUxxmSolkK57g==
-X-Google-Smtp-Source: ABdhPJydl2EaK2PBkFer3n1me1DSriI+1gZ2TRvOI8C3NSbG2umNfS0X1EZeLC2o6jx3iipJ5MaHcQ==
-X-Received: by 2002:a05:6830:131a:: with SMTP id p26mr2969403otq.134.1612981028007;
-        Wed, 10 Feb 2021 10:17:08 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id n7sm542873otk.48.2021.02.10.10.17.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 10:17:07 -0800 (PST)
-Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <000000000000647eff05b3f7e0d4@google.com>
- <20201113120055.11748-1-hdanton@sina.com>
- <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
- <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
- <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
- <9bdd3f10-bddb-bd87-d7ad-b4b706477006@i-love.sakura.ne.jp>
- <6b8da36f-a994-7604-77f4-52e29434605f@linuxfoundation.org>
- <5f9ec159-77d8-ffba-21d1-2810e059f998@i-love.sakura.ne.jp>
- <a06093f1-22b3-7d72-bc6c-f99f4e0d0de9@linuxfoundation.org>
- <40617d66-1334-13a0-de9b-bd7cc1155ce5@i-love.sakura.ne.jp>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <43d8d6bf-53f3-11e6-894d-c257f7f4bd07@linuxfoundation.org>
-Date:   Wed, 10 Feb 2021 11:17:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 10 Feb 2021 13:19:14 -0500
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DbSYk6bX5z67kqq;
+        Thu, 11 Feb 2021 02:13:30 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 10 Feb 2021 19:18:26 +0100
+Received: from localhost (10.47.67.2) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 10 Feb
+ 2021 18:18:25 +0000
+Date:   Wed, 10 Feb 2021 18:17:25 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        "Chris Browy" <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Jon Masters" <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v2 3/8] cxl/mem: Register CXL memX devices
+Message-ID: <20210210181725.00007865@Huawei.com>
+In-Reply-To: <20210210000259.635748-4-ben.widawsky@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+        <20210210000259.635748-4-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <40617d66-1334-13a0-de9b-bd7cc1155ce5@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.67.2]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/29/21 7:25 PM, Tetsuo Handa wrote:
-> On 2021/01/30 6:18, Shuah Khan wrote:
->> In this console log:
+On Tue, 9 Feb 2021 16:02:54 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
+
+> From: Dan Williams <dan.j.williams@intel.com>
 > 
-> It seems "this console log" refers to https://syzkaller.appspot.com/x/log.txt?x=10453034500000 .
+> Create the /sys/bus/cxl hierarchy to enumerate:
 > 
->>
->> 06:57:50 executing program 1:
->> socketpair$tipc(0x1e, 0x2, 0x0, &(0x7f00000000c0)={<r0=>0xffffffffffffffff})
->> sendmsg$BATADV_CMD_GET_TRANSTABLE_LOCAL(r0, &(0x7f00000002c0)={&(0x7f00000001c0), 0xc, &(0x7f0000000280)={0x0, 0xd001010000000000}}, 0x0)
->>
->> [ 1151.090883][T23361] vhci_hcd vhci_hcd.0: pdev(4) rhport(0) sockfd(4)
->> [ 1151.097445][T23361] vhci_hcd vhci_hcd.0: devid(0) speed(1) speed_str(low-speed)
->> 06:57:50 executing program 0:
->> r0 = syz_open_dev$binderN(&(0x7f0000000680)='/dev/binder#\x00', 0x0, 0x0)
->> ioctl$BINDER_WRITE_READ(r0, 0xc0306201, &(0x7f0000000cc0)={0x88, 0x0, &(0x7f0000000b80)=[@transaction={0x40406300, {0x2, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}, @transaction={0x40406300, {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}], 0x0, 0x0, 0x0})
->>
->> [ 1151.164402][T23363] vhci_hcd: connection closed
->> [ 1151.167346][  T240] vhci_hcd: stop threads
->>
->>
->> [ 1151.178329][T26761] usb 17-1: new low-speed USB device number 2 using vhci_hcd
->>
->>
->> SK: Looking at the console log, it looks like while connection is being
->>      torn down,
+> * Memory Devices (per-endpoint control devices)
 > 
-> Excuse me, but it looks like (what comes here) while connection is being torn down ?
-> I'm not familiar with driver code.
+> * Memory Address Space Devices (platform address ranges with
+>   interleaving, performance, and persistence attributes)
 > 
->>
->>
->> [ 1151.181245][  T240] vhci_hcd: release socket
->>
->>
->> Can you share your your test code for this program:
->> "executing program 1"
+> * Memory Regions (active provisioned memory from an address space device
+>   that is in use as System RAM or delegated to libnvdimm as Persistent
+>   Memory regions).
 > 
-> I don't think program 1 is relevant. I think program 4
+> For now, only the per-endpoint control devices are registered on the
+> 'cxl' bus. However, going forward it will provide a mechanism to
+> coordinate cross-device interleave.
 > 
->    06:57:50 executing program 4:
->    r0 = socket$tipc(0x1e, 0x2, 0x0)
->    syz_usbip_server_init(0x1)
->    close_range(r0, 0xffffffffffffffff, 0x0)
-> 
-> which calls syz_usbip_server_init() as with other duplicates is relevant.
-> 
->>
->> Also your setup? Do you run usbip_host and vhci_hcd both?
-> 
-> Who are you referring to with "you/your" ? I'm not running syzkaller in my setup
-> and I don't have test code.
-> 
-> I'm just proposing printing more messages in order to confirm the ordering of
-> events and member values in structures.
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+
+One stray header, and a request for a tiny bit of reordering to
+make it easier to chase through creation and destruction.
+
+Either way with the header move to earlier patch I'm fine with this one.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  Documentation/ABI/testing/sysfs-bus-cxl       |  26 ++
+>  .../driver-api/cxl/memory-devices.rst         |  17 +
+>  drivers/cxl/Makefile                          |   3 +
+>  drivers/cxl/bus.c                             |  29 ++
+>  drivers/cxl/cxl.h                             |   4 +
+>  drivers/cxl/mem.c                             | 301 +++++++++++++++++-
+>  6 files changed, 378 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-cxl
+>  create mode 100644 drivers/cxl/bus.c
 > 
 
-I am looking to understand the syzbot configuration and a reproducer
-to be able to debug and fix the problem. How is syzbot triggering the
-vhci_hcd attach and detach sequence?
 
-This helps me determine all these fix suggestions that are coming in
-are fixes or papering over a real problem.
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 745f5e0bfce3..b3c56fa6e126 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -3,6 +3,7 @@
+>  
+>  #ifndef __CXL_H__
+>  #define __CXL_H__
+> +#include <linux/range.h>
 
-thanks,
--- Shuah
+Why is this coming in now? Feels like it should have been in earlier
+patch that started using struct range
+
+>  
+>  #include <linux/bitfield.h>
+>  #include <linux/bitops.h>
+> @@ -55,6 +56,7 @@
+>  	(FIELD_GET(CXLMDEV_RESET_NEEDED_MASK, status) !=                       \
+>  	 CXLMDEV_RESET_NEEDED_NOT)
+>  
+> +struct cxl_memdev;
+>  /**
+>   * struct cxl_mem - A CXL memory device
+>   * @pdev: The PCI device associated with this CXL device.
+> @@ -72,6 +74,7 @@
+>  struct cxl_mem {
+>  	struct pci_dev *pdev;
+>  	void __iomem *regs;
+> +	struct cxl_memdev *cxlmd;
+>  
+>  	void __iomem *status_regs;
+>  	void __iomem *mbox_regs;
+> @@ -90,4 +93,5 @@ struct cxl_mem {
+>  	} ram;
+>  };
+>  
+> +extern struct bus_type cxl_bus_type;
+>  #endif /* __CXL_H__ */
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index 0a868a15badc..8bbd2495e237 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -1,11 +1,36 @@
+>
+
+> +
+> +static void cxl_memdev_release(struct device *dev)
+> +{
+> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+> +
+> +	percpu_ref_exit(&cxlmd->ops_active);
+> +	ida_free(&cxl_memdev_ida, cxlmd->id);
+> +	kfree(cxlmd);
+> +}
+> +
+...
+
+> +static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+> +{
+> +	struct pci_dev *pdev = cxlm->pdev;
+> +	struct cxl_memdev *cxlmd;
+> +	struct device *dev;
+> +	struct cdev *cdev;
+> +	int rc;
+> +
+> +	cxlmd = kzalloc(sizeof(*cxlmd), GFP_KERNEL);
+> +	if (!cxlmd)
+> +		return -ENOMEM;
+> +	init_completion(&cxlmd->ops_dead);
+> +
+> +	/*
+> +	 * @cxlm is deallocated when the driver unbinds so operations
+> +	 * that are using it need to hold a live reference.
+> +	 */
+> +	cxlmd->cxlm = cxlm;
+> +	rc = percpu_ref_init(&cxlmd->ops_active, cxlmdev_ops_active_release, 0,
+> +			     GFP_KERNEL);
+> +	if (rc)
+> +		goto err_ref;
+> +
+> +	rc = ida_alloc_range(&cxl_memdev_ida, 0, CXL_MEM_MAX_DEVS, GFP_KERNEL);
+> +	if (rc < 0)
+> +		goto err_id;
+> +	cxlmd->id = rc;
+> +
+> +	dev = &cxlmd->dev;
+> +	device_initialize(dev);
+> +	dev->parent = &pdev->dev;
+> +	dev->bus = &cxl_bus_type;
+> +	dev->devt = MKDEV(cxl_mem_major, cxlmd->id);
+> +	dev->type = &cxl_memdev_type;
+> +	dev_set_name(dev, "mem%d", cxlmd->id);
+> +
+> +	cdev = &cxlmd->cdev;
+> +	cdev_init(cdev, &cxl_memdev_fops);
+> +
+> +	rc = cdev_device_add(cdev, dev);
+> +	if (rc)
+> +		goto err_add;
+> +
+> +	return devm_add_action_or_reset(dev->parent, cxlmdev_unregister, cxlmd);
+
+This had me scratching my head. The cxlmdev_unregister() if called normally
+or in the _or_reset() results in
+
+	percpu_ref_kill(&cxlmd->ops_active);
+	cdev_device_del(&cxlmd->cdev, dev);
+	wait_for_completion(&cxlmd->ops_dead);
+	cxlmd->cxlm = NULL;
+	put_device(dev);
+	/* If last ref this will result in */
+		percpu_ref_exit(&cxlmd->ops_active);
+		ida_free(&cxl_memdev_ida, cxlmd->id);
+		kfree(cxlmd);
+
+So it's doing all the correct things but not necessarily
+in the obvious order.
+
+For simplicity of review perhaps it's worth reordering probe a bit
+to get the ida immediately after the cxlmd alloc and
+for the cxlmdev_unregister() perhaps reorder the cdev_device_del()
+before the percpu_ref_kill().
+
+Trivial obvious as the ordering has no affect but makes it
+easy for reviewers to tick off setup vs tear down parts.
+
+> +
+> +err_add:
+> +	ida_free(&cxl_memdev_ida, cxlmd->id);
+> +err_id:
+> +	/*
+> +	 * Theoretically userspace could have already entered the fops,
+> +	 * so flush ops_active.
+> +	 */
+> +	percpu_ref_kill(&cxlmd->ops_active);
+> +	wait_for_completion(&cxlmd->ops_dead);
+> +	percpu_ref_exit(&cxlmd->ops_active);
+> +err_ref:
+> +	kfree(cxlmd);
+> +
+> +	return rc;
+> +}
+> +
+
+
+
+
