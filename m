@@ -2,122 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF95316901
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02DC316906
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhBJOWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:22:00 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:39424 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhBJOV4 (ORCPT
+        id S230043AbhBJOYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:24:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43752 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229789AbhBJOYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:21:56 -0500
-Received: by mail-ot1-f44.google.com with SMTP id d7so1896961otq.6;
-        Wed, 10 Feb 2021 06:21:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QWv25sZTzfQsa6EKZRYZsW4Xzm4uyOUtOgHrp6KoZsw=;
-        b=ooalySMRcwom6fuadO+5m2/ehhVisTMnZ7MCYkhU/o0EK1rrYcavF4A7ZslOoTt1mC
-         h2bUDTBU1oyak2bNPmVSqNEYFX/gv73znAA6ok6UNFduxCB1Mcay58F55yj6WVr9biTQ
-         0RiqWaGLmFcpprsgEyl77cQrJcQ+gBwegczNk4BQHxP/29EtJHRUeO4MbKPrZvWZtTFt
-         coSVb82uogkGDY36RKxPCg4y1AnLvm3dsdEj+JklRMdu/LWloYujvygjWY8wfbWuMR1k
-         fAg1okWOCbl4PNNMByzDhgHs3xnXosNJXo+aoiLQFihAaRK/loJbS35x8iugNo2DEwF1
-         e6Vg==
-X-Gm-Message-State: AOAM531F5iGzYAbWQrx567osCbuuCwN3zWugqqmPh06Fezv5WjWGG52U
-        TdTKAIXw0ZWsVOedEXYvUq1Z/5rUDDdj4CiS2RI=
-X-Google-Smtp-Source: ABdhPJyHmgLG/wJNJM+uoRRAPNtNaZj+QytW6s4cvQKIGCjtm/DCckSOggT59JBOjwi2k9kpLrwL4qRlWYNL6TEuW38=
-X-Received: by 2002:a9d:77d6:: with SMTP id w22mr2245205otl.145.1612966875162;
- Wed, 10 Feb 2021 06:21:15 -0800 (PST)
+        Wed, 10 Feb 2021 09:24:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612966958;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yKGNdoeE42XjyVSZ4Q+TFvmhULCMg2nknuM5NfQEDVM=;
+        b=DmGc35xI5po+UTQt6y5U3celghd8pQAPvcFw7oQyKo248MpiQQ3VXisqL3EMViNni6Jloi
+        hi9vJijmQzOtVsdkIECOAKk946GAB/0N87PhoNPWA1HiUsKJsFfgaNJ4BfT5hVdIwjqZZV
+        RlA9PbtZk+bI5VW9EyrtFUMFEQjYmfM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-UVuQvXOOMO2s5-ylVlVaSw-1; Wed, 10 Feb 2021 09:22:33 -0500
+X-MC-Unique: UVuQvXOOMO2s5-ylVlVaSw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 769F2801A9A;
+        Wed, 10 Feb 2021 14:22:09 +0000 (UTC)
+Received: from [10.36.113.218] (ovpn-113-218.ams2.redhat.com [10.36.113.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F31CA5C6AB;
+        Wed, 10 Feb 2021 14:22:07 +0000 (UTC)
+Subject: Re: [RFC PATCH 1/2] mm,page_alloc: Make alloc_contig_range handle
+ in-use hugetlb pages
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210208103812.32056-1-osalvador@suse.de>
+ <20210208103812.32056-2-osalvador@suse.de>
+ <6aa21eb3-7bee-acff-8f3c-7c13737066ba@redhat.com>
+ <20210210140941.GA3636@localhost.localdomain>
+ <d38527b5-140d-15e5-c1c4-f381602eab46@redhat.com>
+ <20210210141425.GB3636@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <e3e35cfb-738d-0f80-32de-a7fbbf3e331c@redhat.com>
+Date:   Wed, 10 Feb 2021 15:22:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210210132751.1422386-1-geert+renesas@glider.be>
- <87mtwcujd0.fsf@microchip.com> <CAMuHMdVpHUmwfob6t_aWvaVVHpSDpF5HvLe_W5+KY9ky5A-qEw@mail.gmail.com>
- <20210210141728.GO351084@piout.net>
-In-Reply-To: <20210210141728.GO351084@piout.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 10 Feb 2021 15:21:04 +0100
-Message-ID: <CAMuHMdXWVYB0vZ9Q3G9jGAv3J8nDReKzgSmDj4ykny6rH1cKGw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: PINCTRL_MICROCHIP_SGPIO should depend on
- ARCH_SPARX5 || SOC_VCOREIII
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210210141425.GB3636@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+On 10.02.21 15:14, Oscar Salvador wrote:
+> On Wed, Feb 10, 2021 at 03:11:05PM +0100, David Hildenbrand wrote:
+>> On 10.02.21 15:09, Oscar Salvador wrote:
+>>> On Wed, Feb 10, 2021 at 09:56:37AM +0100, David Hildenbrand wrote:
+>>>> On 08.02.21 11:38, Oscar Salvador wrote:
+>>>>> alloc_contig_range is not prepared to handle hugetlb pages and will
+>>>>> fail if it ever sees one, but since they can be migrated as any other
+>>>>> page (LRU and Movable), it makes sense to also handle them.
+>>>>>
+>>>>> For now, do it only when coming from alloc_contig_range.
+>>>>>
+>>>>> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+>>>>> ---
+>>>>>     mm/compaction.c | 17 +++++++++++++++++
+>>>>>     mm/vmscan.c     |  5 +++--
+>>>>>     2 files changed, 20 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/mm/compaction.c b/mm/compaction.c
+>>>>> index e5acb9714436..89cd2e60da29 100644
+>>>>> --- a/mm/compaction.c
+>>>>> +++ b/mm/compaction.c
+>>>>> @@ -940,6 +940,22 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>>>>>     			goto isolate_fail;
+>>>>>     		}
+>>>>> +		/*
+>>>>> +		 * Handle hugetlb pages only when coming from alloc_contig
+>>>>> +		 */
+>>>>> +		if (PageHuge(page) && cc->alloc_contig) {
+>>>>> +			if (page_count(page)) {
+>>>>
+>>>> I wonder if we should care about races here. What if someone concurrently
+>>>> allocates/frees?
+>>>>
+>>>> Note that PageHuge() succeeds on tail pages, isolate_huge_page() not, i
+>>>> assume we'll have to handle that as well.
+>>>>
+>>>> I wonder if it would make sense to move some of the magic to hugetlb code
+>>>> and handle it there with less chances for races (isolate if used,
+>>>> alloc-and-dissolve if not).
+>>>
+>>> Yes, it makes sense to keep the magic in hugetlb code.
+>>> Note, though, that removing all races might be tricky.
+>>>
+>>> isolate_huge_page() checks for PageHuge under hugetlb_lock,
+>>> so there is a race between a call to PageHuge(x) and a subsequent
+>>> call to isolate_huge_page().
+>>> But we should be fine as isolate_huge_page will fail in case the page is
+>>> no longer HugeTLB.
+>>>
+>>> Also, since isolate_migratepages_block() gets called with ranges
+>>> pageblock aligned, we should never be handling tail pages in the core
+>>> of the function. E.g: the same way we handle THP:
+>>
+>> Gigantic pages? (spoiler: see my comments to next patch :) )
+> 
+> Oh, yeah, that sucks.
+> We had the same problem in scan_movable_pages/has_unmovable_pages
+> with such pages.
+> 
+> Uhm, I will try to be more careful :-)
+> 
 
-On Wed, Feb 10, 2021 at 3:17 PM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
-> On 10/02/2021 14:53:01+0100, Geert Uytterhoeven wrote:
-> > On Wed, Feb 10, 2021 at 2:45 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
-> > > Geert Uytterhoeven writes:
-> > > > the Microsemi/Microchip Serial GPIO device is present only Microsemi
-> > > > VCore III and Microchip Sparx5 SoCs.  Hence add a dependency on
-> > > > ARCH_SPARX5 || SOC_VCOREIII, to prevent asking the user about this
-> > > > driver when configuring a kernel without support for these SoCs.
-> > > >
-> > > > Fixes: 7e5ea974e61c8dd0 ("pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO")
-> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > > ---
-> > > >  drivers/pinctrl/Kconfig | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-> > > > index 113073d5f89bbf70..3b75b1d7d3d1f1b0 100644
-> > > > --- a/drivers/pinctrl/Kconfig
-> > > > +++ b/drivers/pinctrl/Kconfig
-> > > > @@ -353,8 +353,8 @@ config PINCTRL_OCELOT
-> > > >
-> > > >  config PINCTRL_MICROCHIP_SGPIO
-> > > >         bool "Pinctrl driver for Microsemi/Microchip Serial GPIO"
-> > > > -       depends on OF
-> > > > -       depends on HAS_IOMEM
-> > > > +       depends on OF && HAS_IOMEM
-> > > > +       depends on ARCH_SPARX5 || SOC_VCOREIII || COMPILE_TEST
-> > > >         select GPIOLIB
-> > > >         select GPIOLIB_IRQCHIP
-> > > >         select GENERIC_PINCONF
-> > >
-> > > Thank you for your patch. Unfortunately, it makes it impossible to use
-> > > the driver across PCIe - which is a specifically desired configuration.
-> > >
-> > > Could you add CONFIG_PCI to the || chain?
-> >
-> > Sure.
-> >
-> > Is PCIe the only other transport over which the register can be accessed?
-> > Or can this also be done over e.g. SPI, like on Ocelot[1]?
-> >
-> > [1] https://lore.kernel.org/linux-gpio/20200511145329.GV34497@piout.net/
-> >
->
-> Yes, this driver IP is also available on Ocelot (this is SOC_VCOREIII)
-> so this is also available over SPI.
-
-Hence would you consider
-
-    depends on ARCH_SPARX5 || SOC_VCOREIII || PCI || SPI || COMPILE_TEST
-
-acceptable?  Or would that be futile, as must systems have PCI and/or
-SPI enabled anyway?
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Gigantic pages are a minefield. Not your fault :)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+David / dhildenb
+
