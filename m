@@ -2,207 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B55316EDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8DC316EE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234023AbhBJShZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:37:25 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:36407 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234091AbhBJSZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:25:01 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612981475; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=t+MNOVooXHEI9VyWLeT0xKygr+MDEJjCL/sCRvsYnhM=; b=QA+vt5vU6KVKOiwfKwwO6+E7OuEPTtvIDiqpxN4E6591lhJGNzW09X2XpUf7nryUTf8ZZtOP
- 1w1T67eNuNyn8cngE3r5lv8zFEf9753M2xwZ7GAAJYc8/So4AR68qH0PrkglVgiBMEdLJc8h
- vOkN0nErcIpcIsA3Vk6PE5ju+Cs=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 602424c94bd23a05ae030bcc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 18:24:09
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 90478C433C6; Wed, 10 Feb 2021 18:24:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.106] (unknown [49.204.180.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9913CC433CA;
-        Wed, 10 Feb 2021 18:24:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9913CC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH v1 2/2] clk: qcom: Add Global Clock controller (GCC)
- driver for SC7280
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org
-References: <1608058114-29025-1-git-send-email-tdas@codeaurora.org>
- <1608058114-29025-3-git-send-email-tdas@codeaurora.org>
- <161048188125.3661239.13161942092910464158@swboyd.mtv.corp.google.com>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <a70505c8-9d29-463f-99bb-b5c046ee8da3@codeaurora.org>
-Date:   Wed, 10 Feb 2021 23:54:02 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <161048188125.3661239.13161942092910464158@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S234355AbhBJSh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:37:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234141AbhBJS0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:26:55 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5B7C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:26:14 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id e9so146518qvf.21
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:26:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=q+sIuVQJ6KcFkT5QFvyQWYzcdJ2lh3h/xyy/iLNsRYQ=;
+        b=di8qVqiUnwbZq+drUX5B4zxZ1i2Q93eORZ9i+xxj1lYzZzLPlYGgYljubSs5OY3tFS
+         mYD3hl33pPNMC+maQ5KN8CfmbqqmoOQYr0E/fFKZip9vd/CscLrYAvff2xvLEnyk0loB
+         gNG1WQhQKEBKiOuRQsD9xqjogNHt61/i5hpz573lRwpLmGRmDBbLQPcoRkZJl9Kr7k5j
+         nofOLI/uzrLCKrM8gP6jpHO0hnJ6+OjFb9N4T+r2vsAkErDblZIns4dJ3fPOA8da1WvX
+         B1RsREoFbnqXDGw0hRBspd9eIXSNxDO0rYqXl3HpEaPV2PYejQ65w2po74pXslOOvlNl
+         l3rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=q+sIuVQJ6KcFkT5QFvyQWYzcdJ2lh3h/xyy/iLNsRYQ=;
+        b=ZqGxvAKyHos+Lwl3dIUOSArJA6tF0vbzytShN6WRUUVNOhq9pIGxFUgOzf1L+cWQMz
+         2bFbF0DiHYsJpbfu/azqbCC9VWxn3ziU5dHSsZAZYEmaODxBozg3/yo83xAnaz+4kx4X
+         KFHgyX57IAWNwl2oTcP6+Y6abUAYe4MQ+SqhXDa/vk9WZPSN49I6n4kr3kyZ3jIVzdIY
+         d53DCL1RMu+HB+Kvra4nu4TPgHZaMCgMJeYKk+XpzpGfpjz65eRJXCKUrH63KWoJCGcR
+         m26ukLKbhRvc7YnixdUXz2pB/EXQGThxvjynSX+KbxWINI02rlaNYpLzgQPOOxVanG5/
+         7pEg==
+X-Gm-Message-State: AOAM532cNHAuONhHMABUvFRuQ+1HgPcpb0nTfDLl06XBAnB4SnfCn8t4
+        ZVVoGK1/Jf0F3x/Mkwi91TimfrJwfSE=
+X-Google-Smtp-Source: ABdhPJwWYtIBmeRMFFyrmnZp1CUY6dAfZLe3CPlBHlBdXORhWl9XfX/dsq8lvN1lhUh4QsJWeuA70xZbYLA=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:11fc:33d:bf1:4cb8])
+ (user=seanjc job=sendgmr) by 2002:a0c:fdec:: with SMTP id m12mr3978002qvu.11.1612981574160;
+ Wed, 10 Feb 2021 10:26:14 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 10 Feb 2021 10:26:04 -0800
+Message-Id: <20210210182609.435200-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH 0/5]  KVM: x86/xen: Selftest fixes and a cleanup
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Stephen for your review comments.
+Fix a '40' vs '0x40' bug in the new Xen shinfo selftest, and clean up some
+other oddities that made root causing the problem far more painful than it
+needed to be.
 
-On 1/13/2021 1:34 AM, Stephen Boyd wrote:
+Note, Paolo already queued a patch from Vitaly that adds the tests to
+.gitignore[*], i.e. patch 01 can likely be dropped.  I included it here
+for completeness.
 
->> +
->> +static struct clk_rcg2 gcc_sdcc1_apps_clk_src = {
->> +       .cmd_rcgr = 0x7500c,
->> +       .mnd_width = 8,
->> +       .hid_width = 5,
->> +       .parent_map = gcc_parent_map_8,
->> +       .freq_tbl = ftbl_gcc_sdcc1_apps_clk_src,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "gcc_sdcc1_apps_clk_src",
->> +               .parent_data = gcc_parent_data_8,
->> +               .num_parents = ARRAY_SIZE(gcc_parent_data_8),
->> +               .flags = CLK_SET_RATE_PARENT,
->> +               .ops = &clk_rcg2_ops,
-> 
-> This needs to use floor clk ops?
-> 
+[*] https://lkml.kernel.org/r/20210129161821.74635-1-vkuznets@redhat.com
 
-My bad I missed them in my patch, latest patch has this fixed.
+Sean Christopherson (5):
+  KVM: selftests: Ignore recently added Xen tests' build output
+  KVM: selftests: Fix size of memslots created by Xen tests
+  KVM: selftests: Fix hex vs. decimal snafu in Xen test
+  KVM: sefltests: Don't bother mapping GVA for Xen shinfo test
+  KVM: x86/xen: Explicitly pad struct compat_vcpu_info to 64 bytes
 
->> +       },
->> +};
->> +
->> +static const struct freq_tbl ftbl_gcc_sdcc1_ice_core_clk_src[] = {
->> +       F(100000000, P_GCC_GPLL0_OUT_EVEN, 3, 0, 0),
->> +       F(150000000, P_GCC_GPLL0_OUT_EVEN, 2, 0, 0),
->> +       F(300000000, P_GCC_GPLL0_OUT_EVEN, 1, 0, 0),
->> +       { }
->> +};
->> +
->> +static struct clk_rcg2 gcc_sdcc1_ice_core_clk_src = {
->> +       .cmd_rcgr = 0x7502c,
->> +       .mnd_width = 0,
->> +       .hid_width = 5,
->> +       .parent_map = gcc_parent_map_1,
->> +       .freq_tbl = ftbl_gcc_sdcc1_ice_core_clk_src,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "gcc_sdcc1_ice_core_clk_src",
->> +               .parent_data = gcc_parent_data_1,
->> +               .num_parents = ARRAY_SIZE(gcc_parent_data_1),
->> +               .flags = CLK_SET_RATE_PARENT,
->> +               .ops = &clk_rcg2_ops,
-> 
-> Same.
-> 
->> +       },
->> +};
->> +
->> +static const struct freq_tbl ftbl_gcc_sdcc2_apps_clk_src[] = {
->> +       F(400000, P_BI_TCXO, 12, 1, 4),
->> +       F(19200000, P_BI_TCXO, 1, 0, 0),
->> +       F(25000000, P_GCC_GPLL0_OUT_EVEN, 12, 0, 0),
->> +       F(50000000, P_GCC_GPLL0_OUT_EVEN, 6, 0, 0),
->> +       F(100000000, P_GCC_GPLL0_OUT_EVEN, 3, 0, 0),
->> +       F(202000000, P_GCC_GPLL9_OUT_MAIN, 4, 0, 0),
->> +       { }
->> +};
->> +
->> +static struct clk_rcg2 gcc_sdcc2_apps_clk_src = {
->> +       .cmd_rcgr = 0x1400c,
->> +       .mnd_width = 8,
->> +       .hid_width = 5,
->> +       .parent_map = gcc_parent_map_9,
->> +       .freq_tbl = ftbl_gcc_sdcc2_apps_clk_src,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "gcc_sdcc2_apps_clk_src",
->> +               .parent_data = gcc_parent_data_9,
->> +               .num_parents = ARRAY_SIZE(gcc_parent_data_9),
->> +               .flags = CLK_SET_RATE_PARENT,
->> +               .ops = &clk_rcg2_ops,
-> 
-> Same.
-> 
->> +       },
->> +};
->> +
->> +static const struct freq_tbl ftbl_gcc_sdcc4_apps_clk_src[] = {
->> +       F(400000, P_BI_TCXO, 12, 1, 4),
->> +       F(19200000, P_BI_TCXO, 1, 0, 0),
->> +       F(25000000, P_GCC_GPLL0_OUT_EVEN, 12, 0, 0),
->> +       F(50000000, P_GCC_GPLL0_OUT_EVEN, 6, 0, 0),
->> +       F(100000000, P_GCC_GPLL0_OUT_EVEN, 3, 0, 0),
->> +       { }
->> +};
->> +
->> +static struct clk_rcg2 gcc_sdcc4_apps_clk_src = {
->> +       .cmd_rcgr = 0x1600c,
->> +       .mnd_width = 8,
->> +       .hid_width = 5,
->> +       .parent_map = gcc_parent_map_1,
->> +       .freq_tbl = ftbl_gcc_sdcc4_apps_clk_src,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "gcc_sdcc4_apps_clk_src",
->> +               .parent_data = gcc_parent_data_1,
->> +               .num_parents = ARRAY_SIZE(gcc_parent_data_1),
->> +               .flags = CLK_SET_RATE_PARENT,
->> +               .ops = &clk_rcg2_ops,
-> 
-> Same.
-> 
->> +       },
->> +};
->> +
-> [...]
->> +static struct clk_branch gcc_cpuss_ahb_clk = {
->> +       .halt_reg = 0x48000,
->> +       .halt_check = BRANCH_HALT_VOTED,
->> +       .hwcg_reg = 0x48000,
->> +       .hwcg_bit = 1,
->> +       .clkr = {
->> +               .enable_reg = 0x52000,
->> +               .enable_mask = BIT(21),
->> +               .hw.init = &(struct clk_init_data){
->> +                       .name = "gcc_cpuss_ahb_clk",
->> +                       .parent_data = &(const struct clk_parent_data){
->> +                               .hw = &gcc_cpuss_ahb_postdiv_clk_src.clkr.hw,
->> +                       },
->> +                       .num_parents = 1,
->> +                       .flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
-> 
-> Why is it critical? Please add a comment like sc7180.
-> 
-
-Updated the comment in the latest patch.
-
->> +                       .ops = &clk_branch2_ops,
->> +               },
->> +       },
->> +};
->> +
+ arch/x86/kvm/xen.h                                   | 11 ++++++-----
+ tools/testing/selftests/kvm/.gitignore               |  2 ++
+ tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c | 12 +++++-------
+ tools/testing/selftests/kvm/x86_64/xen_vmcall_test.c |  3 +--
+ 4 files changed, 14 insertions(+), 14 deletions(-)
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
+2.30.0.478.g8a0d178c01-goog
 
---
