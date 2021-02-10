@@ -2,110 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C683169F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8F63169F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbhBJPRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:17:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50046 "EHLO
+        id S231966AbhBJPTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:19:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57777 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231968AbhBJPRS (ORCPT
+        by vger.kernel.org with ESMTP id S231810AbhBJPTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:17:18 -0500
+        Wed, 10 Feb 2021 10:19:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612970151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=mimecast20190719; t=1612970257;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fUmvVMvAvYIwqlomGlCTTR4gDfNwX2CSnq9kV4m6kT4=;
-        b=XDkQFjZo1mut/ApoosyI9wP71ibvE2gySVdxU6r5p6UzNRcH8zOeypuLiHUPjATd3Vky2p
-        4QTBKAza/qaaLf/IK2+iaQe9oHj4z2IP34NZt8QIq0/CR/oO9dymvhO+1E89Gz/rvfo9VI
-        8NYW2KRB4Vj3uyAni5gNQCD6cI1PpS4=
+        bh=mceUppGttM5IRjUjF4Mhgo2zyBFKIwkpPAnlMIu3O04=;
+        b=gtKlt4F4rqrAk8gWqcarKJNq3CBv6XYIRtVxySUD2G9pimTzD4dvsIkQ1idzXTwiBmZoJ7
+        EmQthx2YSMkfcsaCZhS3D01xBZ7vD9sZxIAH3Pj+rUVqg1smJs3t+VLFBTVZuTI+Ox52M/
+        Dga+mHpyeZYj5LghCRLQewE4JTkJu50=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-76-yxmXs3rGO_iKldY_Cl-SBA-1; Wed, 10 Feb 2021 10:15:47 -0500
-X-MC-Unique: yxmXs3rGO_iKldY_Cl-SBA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-346-DTjzdxsZMimxHRlugpVajA-1; Wed, 10 Feb 2021 10:17:33 -0500
+X-MC-Unique: DTjzdxsZMimxHRlugpVajA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 059D1BBEE8;
-        Wed, 10 Feb 2021 15:15:45 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-115-20.rdu2.redhat.com [10.10.115.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7712960657;
-        Wed, 10 Feb 2021 15:15:39 +0000 (UTC)
-Subject: Re: [PATCH v2 06/28] locking/rwlocks: Add contention detection for
- rwlocks
-From:   Waiman Long <longman@redhat.com>
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Davidlohr Bueso <dbueso@suse.de>
-References: <20210202185734.1680553-1-bgardon@google.com>
- <20210202185734.1680553-7-bgardon@google.com>
- <6287ff89-d869-e5ed-3e64-11621cc4796a@redhat.com>
-Organization: Red Hat
-Message-ID: <058d416d-e137-056f-e81b-823cd770a3ff@redhat.com>
-Date:   Wed, 10 Feb 2021 10:15:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7DC43100CCDD;
+        Wed, 10 Feb 2021 15:17:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 078C860C0F;
+        Wed, 10 Feb 2021 15:17:30 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <1323922.1612970030@warthog.procyon.org.uk>
+References: <1323922.1612970030@warthog.procyon.org.uk>
+Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Add EFI_CERT_X509_GUID support for dbx/mokx entries
 MIME-Version: 1.0
-In-Reply-To: <6287ff89-d869-e5ed-3e64-11621cc4796a@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1324171.1612970250.1@warthog.procyon.org.uk>
+Date:   Wed, 10 Feb 2021 15:17:30 +0000
+Message-ID: <1324172.1612970250@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 10:32 PM, Waiman Long wrote:
-> On 2/2/21 1:57 PM, Ben Gardon wrote:
->> rwlocks do not currently have any facility to detect contention
->> like spinlocks do. In order to allow users of rwlocks to better manage
->> latency, add contention detection for queued rwlocks.
->>
->> CC: Ingo Molnar <mingo@redhat.com>
->> CC: Will Deacon <will@kernel.org>
->> Acked-by: Peter Zijlstra <peterz@infradead.org>
->> Acked-by: Davidlohr Bueso <dbueso@suse.de>
->> Acked-by: Waiman Long <longman@redhat.com>
->> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
->> Signed-off-by: Ben Gardon <bgardon@google.com>
->> ---
->>   include/asm-generic/qrwlock.h | 24 ++++++++++++++++++------
->>   include/linux/rwlock.h        |  7 +++++++
->>   2 files changed, 25 insertions(+), 6 deletions(-)
->>
->> diff --git a/include/asm-generic/qrwlock.h 
->> b/include/asm-generic/qrwlock.h
->> index 84ce841ce735..0020d3b820a7 100644
->> --- a/include/asm-generic/qrwlock.h
->> +++ b/include/asm-generic/qrwlock.h
->> @@ -14,6 +14,7 @@
->>   #include <asm/processor.h>
->>     #include <asm-generic/qrwlock_types.h>
->> +#include <asm-generic/qspinlock.h>
->
-> As said in another thread, qspinlock and qrwlock can be independently 
-> enabled for an architecture. So we shouldn't include qspinlock.h here. 
-> Instead, just include the regular linux/spinlock.h file to make sure 
-> that arch_spin_is_locked() is available.
+David Howells <dhowells@redhat.com> wrote:
 
-The csky architecture uses qrwlock but not qspinlock. So this patch can 
-be problematic when compiling for csky.
+> This set of patches from Eric Snowberg that add support for
+> EFI_CERT_X509_GUID entries in the dbx and mokx UEFI tables (such entries
+> cause matching certificates to be rejected).  These are currently ignored
+> and only the hash entries are made use of.
 
-Cheers,
-Longman
+This is aimed at the next merge window.
+
+David
 
