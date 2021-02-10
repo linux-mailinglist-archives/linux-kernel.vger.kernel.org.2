@@ -2,169 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839583171B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FA63171BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhBJUxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:53:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
+        id S232802AbhBJUxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:53:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhBJUxV (ORCPT
+        with ESMTP id S232166AbhBJUxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:53:21 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA696C061574;
-        Wed, 10 Feb 2021 12:52:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MHHcGpb4gOQLQjN4KaymSh6gqFjQvC2Kdu4iWTjyAgo=; b=KD0EY5qs+STGP8mrHoY+b9ieS8
-        2yQh2OVg050XIgaI7n3ocunHRb03rpky6ytCt+sw2OkJPM1mAJ0KN9/9Cd1+3MQxWXDikXIV9hoCg
-        9wyUp5H+5Be/02oZimqDFow+Gm0UAmvhOovY18lmtWcUAgcLws6r/SZUQbAyvK51Fyv+qsy+bOcKp
-        su0pv43BknabM0VaBoq27yIb9DSurWggimPqGln24OrvcyNFomIwEMGd2kI3bfjqeLLed9JovJHZ+
-        A0oIFkP5iqnulQsc/JMghz+DCrwAVBJh7nNePiyhVCsbRWG6Hkq/catjfDR5D+5Vq1SRxLcm20fwY
-        7EuqDdLA==;
-Received: from 54-240-197-233.amazon.com ([54.240.197.233] helo=freeip.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9wTE-0003nW-SU; Wed, 10 Feb 2021 20:52:21 +0000
-Message-ID: <be3c9169962b1f618293f2c29f8805838d01dbc9.camel@infradead.org>
-Subject: Re: [EXTERNAL] [PATCH 1/5] KVM: selftests: Ignore recently added
- Xen tests' build output
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 10 Feb 2021 20:52:18 +0000
-In-Reply-To: <20210210182609.435200-2-seanjc@google.com>
-References: <20210210182609.435200-1-seanjc@google.com>
-         <20210210182609.435200-2-seanjc@google.com>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-WDBzfKVMLnKD8yqEpS/s"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+        Wed, 10 Feb 2021 15:53:47 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72A0C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:53:06 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id l8so3379184ybe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:53:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BsB5KRJaGcVhcZiseIo9XXgOJ7KRckf1RNXqQ8o+K1c=;
+        b=Yc469+QXefSui1tifcqA/p8KFWOiXopacGJDqvWnRhTpKQINREc+ZxaGRpuQ/WM3d6
+         zJ8Swxlie5zX0zsN4cbkwZzSQFygwI91ioP3117sBFrGVPm8hFRNZWuyQsTTXI9Nlxev
+         nTO9eyc04R0YG3GMyYsqgrecQlToDk4zwi5cnxJIvAL8icU12ThURwW5hQBcolgp9cmD
+         YmD8nfo/VJUo5ArYG3a3WHo57QUOlZxXtkW7IE+FQ/6CEy+vLo7k2ihl6cTO7y5x2NMp
+         +hGiRiwubF7X+wX6p63hJ0XFQaoZH3TJWpCbckBz+34vV2dH67qwN3YnYOwjC5q/8Bxn
+         o9eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BsB5KRJaGcVhcZiseIo9XXgOJ7KRckf1RNXqQ8o+K1c=;
+        b=ATxFC6Tjtpr1TFIRUe2ghLNmF5l6dhV5ZKPnCHyUdOCCE97vsKfBhUy9s8e1kSOX6R
+         0nRzrHfa+FAKSKsxZlIhD6Sur63PquFH1mNBqA3/wW/iiNw8noGFR1anCmaiQazvKEyo
+         FHrP/+qkNBFtnzOhR8d8ikDfpUsh2zor08frTylTBiKPQntinY1jXAgqf3buTiz0maBw
+         9+T2dlQ+7+tCrsgZ/RkhL3UriKFb2LU6jPnwf3jBvPd1x3iBXwwHIU4/VZcWd9ajRSFe
+         yZYCIacGaiJKgBvQBNfrUgy4AWIqSQa/8kUU+k86uoCa06Gg5nDdM+dM7VM0qOIDFIMX
+         numg==
+X-Gm-Message-State: AOAM531vZ4EDtkhpxsFh3lXpHUFb+EyKzlDRaqXsbwCP7QD78x+acKeH
+        GJ6AVVqpz52zEX8ia2L50e8uNiVxbfZuqRliMfNsWg==
+X-Google-Smtp-Source: ABdhPJzEGxYC0unQUTM6P37ospZaYOv+0k2jZfrKXozXK0JtOdqej1WQKJcuMy6yvyuW4YUWZ24TmviLiiq7jBgw7D0=
+X-Received: by 2002:a25:718b:: with SMTP id m133mr7085877ybc.412.1612990385982;
+ Wed, 10 Feb 2021 12:53:05 -0800 (PST)
+MIME-Version: 1.0
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <20201218031703.3053753-6-saravanak@google.com> <20210210055430.GA73123@roeck-us.net>
+ <CAGETcx-UaYEeYVXg0sd4=9t2zbBe8YH1LOoOms9ANGix=Zmypw@mail.gmail.com> <33f643b9-9f6d-e59a-64e7-2d2b7d3e71a4@roeck-us.net>
+In-Reply-To: <33f643b9-9f6d-e59a-64e7-2d2b7d3e71a4@roeck-us.net>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 10 Feb 2021 12:52:29 -0800
+Message-ID: <CAGETcx8QRDo2t==Ng2Cvs_+ZXXnM2SjMzo+A1b78XXAj1iYKSw@mail.gmail.com>
+Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 10, 2021 at 7:10 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 2/10/21 12:20 AM, Saravana Kannan wrote:
+> > On Tue, Feb 9, 2021 at 9:54 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>
+> >> On Thu, Dec 17, 2020 at 07:17:03PM -0800, Saravana Kannan wrote:
+> >>> Cyclic dependencies in some firmware was one of the last remaining
+> >>> reasons fw_devlink=on couldn't be set by default. Now that cyclic
+> >>> dependencies don't block probing, set fw_devlink=on by default.
+> >>>
+> >>> Setting fw_devlink=on by default brings a bunch of benefits (currently,
+> >>> only for systems with device tree firmware):
+> >>> * Significantly cuts down deferred probes.
+> >>> * Device probe is effectively attempted in graph order.
+> >>> * Makes it much easier to load drivers as modules without having to
+> >>>   worry about functional dependencies between modules (depmod is still
+> >>>   needed for symbol dependencies).
+> >>>
+> >>> If this patch prevents some devices from probing, it's very likely due
+> >>> to the system having one or more device drivers that "probe"/set up a
+> >>> device (DT node with compatible property) without creating a struct
+> >>> device for it.  If we hit such cases, the device drivers need to be
+> >>> fixed so that they populate struct devices and probe them like normal
+> >>> device drivers so that the driver core is aware of the devices and their
+> >>> status. See [1] for an example of such a case.
+> >>>
+> >>> [1] - https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
+> >>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >>
+> >> This patch breaks nios2 boot tests in qemu. The system gets stuck when
+> >> trying to reboot. Reverting this patch fixes the problem. Bisect log
+> >> is attached.
+> >
+> > Thanks for the report Guenter. Can you please try this series?
+> > https://lore.kernel.org/lkml/20210205222644.2357303-1-saravanak@google.com/
+> >
+>
+> Not this week. I have lots of reviews to complete before the end of the week,
+> with the 5.12 commit window coming up.
 
---=-WDBzfKVMLnKD8yqEpS/s
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Ok. By next week, all the fixes should be in linux-next too. So it
+should be easier if you choose to test.
 
-On Wed, 2021-02-10 at 10:26 -0800, Sean Christopherson wrote:
-> Add the new Xen test binaries to KVM selftest's .gitnore.
->=20
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
+> Given the number of problems observed, I personally think that it is way
+> too early for this patch. We'll have no end of problems if it is applied
+> to the upstream kernel in the next commit window. Of course, that is just
+> my personal opinion.
 
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+You had said "with 115 of 430 boot tests failing in -next" earlier.
+Just to be sure I understand it right, you are not saying this patch
+caused them all right? You are just saying that 115 general boot
+failures that might mask fw_devlink issues in some of them, right?
 
-
-
---=-WDBzfKVMLnKD8yqEpS/s
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEw
-MjEwMjA1MjE4WjAvBgkqhkiG9w0BCQQxIgQgAqxrWjuJaytFgKRlO0lX+18VPP81XpRrvh5T3e+9
-QHIwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAHHBZx031ort8W+MHJ3M5IshQkr1TpuN8wkeV/1p66a0M+yiIyRzWErUlOVPo9aT
-Yg1/knQSkBqpawPLuKuhreZ85i0u5Ei3wFndCv6W9lcMFVM+dOmtBrUkqZfJvhSIhQV6AO6MJ/WM
-14MqdJdBmnuaiFhfWIPK/8GK3HhPQXy1pZdAESGWcY0bCaEs1Mko74XPf8R1RY2AIGQ/z/cjlE1k
-z50ENQMlxRifqCKtRKS0IiqEcqKV3FaMMl9lxue+WCyt/Z3Kk/k6HKXpwHIQuO7xiwu4E+5np3K2
-1u38TfB4OWPhmbNyPdO8cUsq6j+9n+OKZqJ6HGXq8osncJqgrnsAAAAAAAA=
-
-
---=-WDBzfKVMLnKD8yqEpS/s--
-
+Thanks,
+Saravana
