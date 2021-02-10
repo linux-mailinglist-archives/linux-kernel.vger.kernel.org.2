@@ -2,125 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C30D317222
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59979317223
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhBJVOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:14:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbhBJVK5 (ORCPT
+        id S233567AbhBJVOs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Feb 2021 16:14:48 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:43782 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233683AbhBJVMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:10:57 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40193C061574;
-        Wed, 10 Feb 2021 13:10:16 -0800 (PST)
-Date:   Wed, 10 Feb 2021 21:10:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612991414;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gngjeJPNcZZcgmyt6/v2khOLAQVyDcojVu/JN00cNBY=;
-        b=aQnMd/CN9ux3ON8NLtKjiGUGk0bv9NldIvkAK6H2vk4dT2A6HT130dxS3EyrwRUvLqx4S6
-        tCuG4mVv18GTR57VfEkpc09Oo7/7CVFLHPXvFjg7N2I1w8W5K41M2mDy5ikaoBn/8Ldeu6
-        uVhBmPau05NQmuJ2+vMUFSWksMSL/msLtH8lBT05+ZoFS0qCYyoplyB5mHXQm0DVO+dIl7
-        bWkq5jEBKyNw8k/LqPs2rSkLpXpshj81YKsxIfNU1eKlbOYKCruC6Mj4jQ7yq7zJGIn321
-        Fm9wNr7NEnEcD3YmD12OwAqlanAoFPVqTu79uCT+5YCm77cMoFBowhkqck7Hkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612991414;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gngjeJPNcZZcgmyt6/v2khOLAQVyDcojVu/JN00cNBY=;
-        b=OA17cxdwMMMoqlgshG/WDLTV2hlYomxccsUwStwlKjafBgRQ+eR6c2xnAmg2I7Rdj721MC
-        Ush82G/5PimCRtDQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/pci: Create PCI/MSI irqdomain after
- x86_init.pci.arch_init()
-Cc:     Juergen Gross <jgross@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <87pn18djte.fsf@nanos.tec.linutronix.de>
-References: <87pn18djte.fsf@nanos.tec.linutronix.de>
+        Wed, 10 Feb 2021 16:12:15 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id C4BB3627AFC8;
+        Wed, 10 Feb 2021 22:11:31 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id LRpPA_QJFqh4; Wed, 10 Feb 2021 22:11:31 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 780276083277;
+        Wed, 10 Feb 2021 22:11:31 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id D9Tnmm0EdigE; Wed, 10 Feb 2021 22:11:31 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 4EE976089354;
+        Wed, 10 Feb 2021 22:11:31 +0100 (CET)
+Date:   Wed, 10 Feb 2021 22:11:31 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>
+Message-ID: <605123206.382066.1612991491197.JavaMail.zimbra@nod.at>
+In-Reply-To: <20210210215548.40ce9ba5@xps13>
+References: <20210124232007.21639-1-richard@nod.at> <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com> <1507208626.379155.1612906761549.JavaMail.zimbra@nod.at> <CAJfpegugbvppOKhJ8KjSVGgZOGVuj6NSiy4n18mbD7Ui3wme6g@mail.gmail.com> <20210210121429.4fb5ecf3@xps13> <1183985773.380599.1612956233979.JavaMail.zimbra@nod.at> <20210210215548.40ce9ba5@xps13>
+Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
 MIME-Version: 1.0
-Message-ID: <161299141323.23325.8366354176580288665.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: MUSE: Userspace backed MTD v3
+Thread-Index: IS11nPAn7mspJgoMPO7FSWtrblrgdQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+----- Ursprüngliche Mail -----
+>> By single request we meant FUSE op-codes. The NAND simulator in Userspace
+>> will see just one call. My plan is to abstract it in libfuse.
+> 
+> If libfuse abstracts it, as long as MTD only sees a single request I'm
+> fine :)
 
-Commit-ID:     70245f86c109e0eafb92ea9653184c0e44b4b35c
-Gitweb:        https://git.kernel.org/tip/70245f86c109e0eafb92ea9653184c0e44b4b35c
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 10 Feb 2021 16:27:41 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 10 Feb 2021 22:06:47 +01:00
+:-)
 
-x86/pci: Create PCI/MSI irqdomain after x86_init.pci.arch_init()
+I'll prototype that in the next few weeks. Let's see whether my plans are
+doable to not.
 
-Invoking x86_init.irqs.create_pci_msi_domain() before
-x86_init.pci.arch_init() breaks XEN PV.
-
-The XEN_PV specific pci.arch_init() function overrides the default
-create_pci_msi_domain() which is obviously too late.
-
-As a consequence the XEN PV PCI/MSI allocation goes through the native
-path which runs out of vectors and causes malfunction.
-
-Invoke it after x86_init.pci.arch_init().
-
-Fixes: 6b15ffa07dc3 ("x86/irq: Initialize PCI/MSI domain at PCI init time")
-Reported-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Juergen Gross <jgross@suse.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87pn18djte.fsf@nanos.tec.linutronix.de
----
- arch/x86/pci/init.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/pci/init.c b/arch/x86/pci/init.c
-index 00bfa1e..0bb3b8b 100644
---- a/arch/x86/pci/init.c
-+++ b/arch/x86/pci/init.c
-@@ -9,16 +9,23 @@
-    in the right sequence from here. */
- static __init int pci_arch_init(void)
- {
--	int type;
--
--	x86_create_pci_msi_domain();
-+	int type, pcbios = 1;
- 
- 	type = pci_direct_probe();
- 
- 	if (!(pci_probe & PCI_PROBE_NOEARLY))
- 		pci_mmcfg_early_init();
- 
--	if (x86_init.pci.arch_init && !x86_init.pci.arch_init())
-+	if (x86_init.pci.arch_init)
-+		pcbios = x86_init.pci.arch_init();
-+
-+	/*
-+	 * Must happen after x86_init.pci.arch_init(). Xen sets up the
-+	 * x86_init.irqs.create_pci_msi_domain there.
-+	 */
-+	x86_create_pci_msi_domain();
-+
-+	if (!pcbios)
- 		return 0;
- 
- 	pci_pcbios_init();
+Thanks,
+//richard
