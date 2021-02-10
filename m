@@ -2,43 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB5131666C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC746316672
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbhBJMSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:18:23 -0500
-Received: from relay.sw.ru ([185.231.240.75]:56482 "EHLO relay.sw.ru"
+        id S230104AbhBJMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:18:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50748 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231623AbhBJMNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:13:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GAOsibDhKJ04+xMmEsdPpg7oFYUkfCHjNiy9fpcutpg=; b=wKkkF4iMbqvGVMzMq11k823xrW
-        UgQUXkdf+qTU7A3j4VsVhEg9a8/s5d7Ydo+IgEMhU69ecEtaNz7JLebZaRhPCOYb2ysiF74VulqcC
-        16gA3FWJFaztuo9uYYa4+R/3k0d74rgLQkwj8AzVak53jrJ9Vkvr9ckz/t9B5ez1rVCo=;
-Received: from [192.168.15.133]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1l9oMA-002822-3z; Wed, 10 Feb 2021 15:12:30 +0300
-Subject: Re: [v7 PATCH 06/12] mm: vmscan: add shrinker_info_protected() helper
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
-        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
-        mhocko@suse.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210209174646.1310591-1-shy828301@gmail.com>
- <20210209174646.1310591-7-shy828301@gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <73458559-f8b9-3f3a-6ffc-8fcc8a7dc519@virtuozzo.com>
-Date:   Wed, 10 Feb 2021 15:12:39 +0300
+        id S231319AbhBJMOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:14:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5B52CAC97;
+        Wed, 10 Feb 2021 12:13:33 +0000 (UTC)
+Subject: Re: [PATCH] mm: remove lru_add_drain_all in alloc_contig_range
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>
+References: <20210209175048.361638-1-minchan@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <429d0494-ac72-de24-08e1-60851c6f8c0c@suse.cz>
+Date:   Wed, 10 Feb 2021 13:13:32 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210209174646.1310591-7-shy828301@gmail.com>
+In-Reply-To: <20210209175048.361638-1-minchan@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,69 +36,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.02.2021 20:46, Yang Shi wrote:
-> The shrinker_info is dereferenced in a couple of places via rcu_dereference_protected
-> with different calling conventions, for example, using mem_cgroup_nodeinfo helper
-> or dereferencing memcg->nodeinfo[nid]->shrinker_info.  And the later patch
-> will add more dereference places.
+On 2/9/21 6:50 PM, Minchan Kim wrote:
+> __alloc_contig_migrate_range already has lru_add_drain_all call
+> via migrate_prep. It's necessary to move LRU taget pages into
+> LRU list to be able to isolated. However, lru_add_drain_all call
+> after __alloc_contig_migrate_range is called is pointless.
 > 
-> So extract the dereference into a helper to make the code more readable.  No
-> functional change.
+> This patch removes it.
 > 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
 
-Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
 > ---
->  mm/vmscan.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
+>  mm/page_alloc.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 9436f9246d32..273efbf4d53c 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -190,6 +190,13 @@ static int shrinker_nr_max;
->  #define NR_MAX_TO_SHR_MAP_SIZE(nr_max) \
->  	(DIV_ROUND_UP(nr_max, BITS_PER_LONG) * sizeof(unsigned long))
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 6446778cbc6b..f8fbee73dd6d 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8603,8 +8603,6 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+>  	 * isolated thus they won't get removed from buddy.
+>  	 */
 >  
-> +static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
-> +						     int nid)
-> +{
-> +	return rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
-> +					 lockdep_is_held(&shrinker_rwsem));
-> +}
-> +
->  static void free_shrinker_info_rcu(struct rcu_head *head)
->  {
->  	kvfree(container_of(head, struct shrinker_info, rcu));
-> @@ -202,8 +209,7 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
->  	int nid;
->  
->  	for_each_node(nid) {
-> -		old = rcu_dereference_protected(
-> -			mem_cgroup_nodeinfo(memcg, nid)->shrinker_info, true);
-> +		old = shrinker_info_protected(memcg, nid);
->  		/* Not yet online memcg */
->  		if (!old)
->  			return 0;
-> @@ -234,7 +240,7 @@ void free_shrinker_info(struct mem_cgroup *memcg)
->  
->  	for_each_node(nid) {
->  		pn = mem_cgroup_nodeinfo(memcg, nid);
-> -		info = rcu_dereference_protected(pn->shrinker_info, true);
-> +		info = shrinker_info_protected(memcg, nid);
->  		kvfree(info);
->  		rcu_assign_pointer(pn->shrinker_info, NULL);
->  	}
-> @@ -674,8 +680,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->  	if (!down_read_trylock(&shrinker_rwsem))
->  		return 0;
->  
-> -	info = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
-> -					 true);
-> +	info = shrinker_info_protected(memcg, nid);
->  	if (unlikely(!info))
->  		goto unlock;
->  
+> -	lru_add_drain_all();
+> -
+>  	order = 0;
+>  	outer_start = start;
+>  	while (!PageBuddy(pfn_to_page(outer_start))) {
 > 
 
