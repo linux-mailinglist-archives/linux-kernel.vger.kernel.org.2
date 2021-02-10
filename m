@@ -2,129 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C1D316B74
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2A2316B61
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbhBJQjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:39:45 -0500
-Received: from mo-csw1116.securemx.jp ([210.130.202.158]:54786 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232707AbhBJQc5 (ORCPT
+        id S232670AbhBJQfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:35:18 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:33856 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232542AbhBJQbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:32:57 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 11AGUB4b006826; Thu, 11 Feb 2021 01:30:11 +0900
-X-Iguazu-Qid: 2wGqhgW4xaueMBSRto
-X-Iguazu-QSIG: v=2; s=0; t=1612974610; q=2wGqhgW4xaueMBSRto; m=ZHb/nLnVYDrFCjWRAERWKgGTvH0octWl57WAenaU1E0=
-Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
-        by relay.securemx.jp (mx-mr1112) id 11AGU9rA026238;
-        Thu, 11 Feb 2021 01:30:09 +0900
-Received: from enc01.toshiba.co.jp ([106.186.93.100])
-        by imx2.toshiba.co.jp  with ESMTP id 11AGU9ma007062;
-        Thu, 11 Feb 2021 01:30:09 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 11AGU8I3029439;
-        Thu, 11 Feb 2021 01:30:08 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4/4] arm: dts: visconti: Add DT support for Toshiba Visconti5 ethernet controller
-Date:   Thu, 11 Feb 2021 01:29:54 +0900
-X-TSB-HOP: ON
-Message-Id: <20210210162954.3955785-5-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210210162954.3955785-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210210162954.3955785-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Wed, 10 Feb 2021 11:31:03 -0500
+Date:   Wed, 10 Feb 2021 16:30:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612974620; bh=HZHaNJCAig0YSUt683wmcffffm0YebCE8doSL87HOwk=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=AAVz4XLzmIZ7ZKgQf5/pTKIllBOLjbg5ahLMuzgVNUV3Ck8VZrvugYGJrz18g57tg
+         7FB9nGwKd4MeViCBO4mQuZYW2s0x8P1tgR0X9kVhY6X9ZC5RPauq6O1V4IgxM6QcPx
+         ZDF80s8j9zAvu04cQWoVbzYK8KV0voV5SIbnSIr/l1d1aVesv0jFfUTWwnSXh5oxYJ
+         dDIZbOVv1JLkyHaRM/LGqgNvYY394LNADNQ0kUwMr+RuE0cQphYItqIfIcKkq8Hrxz
+         SH2+NL6gDXSJf/a2dYD2YjYSBRV5KS0CIQvepy3MLzpcF8dTT6W2Ui/cxzD//pRRK+
+         oh0ErizMVcu3g==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v4 net-next 07/11] skbuff: move NAPI cache declarations upper in the file
+Message-ID: <20210210162732.80467-8-alobakin@pm.me>
+In-Reply-To: <20210210162732.80467-1-alobakin@pm.me>
+References: <20210210162732.80467-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the ethernet controller node in Toshiba Visconti5 SoC-specific DT file.
-And enable this node in TMPV7708 RM main board's board-specific DT file.
+NAPI cache structures will be used for allocating skbuff_heads,
+so move their declarations a bit upper.
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 ---
- .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     | 18 ++++++++++++++
- arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     | 24 +++++++++++++++++++
- 2 files changed, 42 insertions(+)
+ net/core/skbuff.c | 90 +++++++++++++++++++++++------------------------
+ 1 file changed, 45 insertions(+), 45 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-index ed0bf7f13f54..48fa8776e36f 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-@@ -41,3 +41,21 @@ &uart1 {
- 	clocks = <&uart_clk>;
- 	clock-names = "apb_pclk";
- };
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 4be2bb969535..860a9d4f752f 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -119,6 +119,51 @@ static void skb_under_panic(struct sk_buff *skb, unsig=
+ned int sz, void *addr)
+ =09skb_panic(skb, sz, addr, __func__);
+ }
+=20
++#define NAPI_SKB_CACHE_SIZE=0964
 +
-+&piether {
-+	status = "okay";
-+	phy-handle = <&phy0>;
-+	phy-mode = "rgmii-id";
-+	clocks = <&clk300mhz>, <&clk125mhz>;
-+	clock-names = "stmmaceth", "phy_ref_clk";
-+
-+	mdio0 {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		compatible = "snps,dwmac-mdio";
-+		phy0: ethernet-phy@1 {
-+			device_type = "ethernet-phy";
-+			reg = <0x1>;
-+		};
-+	};
++struct napi_alloc_cache {
++=09struct page_frag_cache page;
++=09unsigned int skb_count;
++=09void *skb_cache[NAPI_SKB_CACHE_SIZE];
 +};
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-index 242f25f4e12a..fabb8d66ef93 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-@@ -134,6 +134,20 @@ uart_clk: uart-clk {
- 		#clock-cells = <0>;
- 	};
- 
-+	clk125mhz: clk125mhz {
-+		compatible = "fixed-clock";
-+		clock-frequency = <125000000>;
-+		#clock-cells = <0>;
-+		clock-output-names = "clk125mhz";
-+	};
 +
-+	clk300mhz: clk300mhz {
-+		compatible = "fixed-clock";
-+		clock-frequency = <300000000>;
-+		#clock-cells = <0>;
-+		clock-output-names = "clk300mhz";
-+	};
++static DEFINE_PER_CPU(struct page_frag_cache, netdev_alloc_cache);
++static DEFINE_PER_CPU(struct napi_alloc_cache, napi_alloc_cache);
 +
- 	soc {
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -384,6 +398,16 @@ spi6: spi@28146000 {
- 			#size-cells = <0>;
- 			status = "disabled";
- 		};
++static void *__alloc_frag_align(unsigned int fragsz, gfp_t gfp_mask,
++=09=09=09=09unsigned int align_mask)
++{
++=09struct napi_alloc_cache *nc =3D this_cpu_ptr(&napi_alloc_cache);
 +
-+		piether: ethernet@28000000 {
-+			compatible = "toshiba,visconti-dwmac";
-+			reg = <0 0x28000000 0 0x10000>;
-+			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "macirq";
-+			snps,txpbl = <4>;
-+			snps,rxpbl = <4>;
-+			status = "disabled";
-+		};
- 	};
- };
- 
--- 
-2.27.0
++=09return page_frag_alloc_align(&nc->page, fragsz, gfp_mask, align_mask);
++}
++
++void *__napi_alloc_frag_align(unsigned int fragsz, unsigned int align_mask=
+)
++{
++=09fragsz =3D SKB_DATA_ALIGN(fragsz);
++
++=09return __alloc_frag_align(fragsz, GFP_ATOMIC, align_mask);
++}
++EXPORT_SYMBOL(__napi_alloc_frag_align);
++
++void *__netdev_alloc_frag_align(unsigned int fragsz, unsigned int align_ma=
+sk)
++{
++=09struct page_frag_cache *nc;
++=09void *data;
++
++=09fragsz =3D SKB_DATA_ALIGN(fragsz);
++=09if (in_irq() || irqs_disabled()) {
++=09=09nc =3D this_cpu_ptr(&netdev_alloc_cache);
++=09=09data =3D page_frag_alloc_align(nc, fragsz, GFP_ATOMIC, align_mask);
++=09} else {
++=09=09local_bh_disable();
++=09=09data =3D __alloc_frag_align(fragsz, GFP_ATOMIC, align_mask);
++=09=09local_bh_enable();
++=09}
++=09return data;
++}
++EXPORT_SYMBOL(__netdev_alloc_frag_align);
++
+ /* Caller must provide SKB that is memset cleared */
+ static void __build_skb_around(struct sk_buff *skb, void *data,
+ =09=09=09       unsigned int frag_size)
+@@ -220,51 +265,6 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
+ }
+ EXPORT_SYMBOL(build_skb_around);
+=20
+-#define NAPI_SKB_CACHE_SIZE=0964
+-
+-struct napi_alloc_cache {
+-=09struct page_frag_cache page;
+-=09unsigned int skb_count;
+-=09void *skb_cache[NAPI_SKB_CACHE_SIZE];
+-};
+-
+-static DEFINE_PER_CPU(struct page_frag_cache, netdev_alloc_cache);
+-static DEFINE_PER_CPU(struct napi_alloc_cache, napi_alloc_cache);
+-
+-static void *__alloc_frag_align(unsigned int fragsz, gfp_t gfp_mask,
+-=09=09=09=09unsigned int align_mask)
+-{
+-=09struct napi_alloc_cache *nc =3D this_cpu_ptr(&napi_alloc_cache);
+-
+-=09return page_frag_alloc_align(&nc->page, fragsz, gfp_mask, align_mask);
+-}
+-
+-void *__napi_alloc_frag_align(unsigned int fragsz, unsigned int align_mask=
+)
+-{
+-=09fragsz =3D SKB_DATA_ALIGN(fragsz);
+-
+-=09return __alloc_frag_align(fragsz, GFP_ATOMIC, align_mask);
+-}
+-EXPORT_SYMBOL(__napi_alloc_frag_align);
+-
+-void *__netdev_alloc_frag_align(unsigned int fragsz, unsigned int align_ma=
+sk)
+-{
+-=09struct page_frag_cache *nc;
+-=09void *data;
+-
+-=09fragsz =3D SKB_DATA_ALIGN(fragsz);
+-=09if (in_irq() || irqs_disabled()) {
+-=09=09nc =3D this_cpu_ptr(&netdev_alloc_cache);
+-=09=09data =3D page_frag_alloc_align(nc, fragsz, GFP_ATOMIC, align_mask);
+-=09} else {
+-=09=09local_bh_disable();
+-=09=09data =3D __alloc_frag_align(fragsz, GFP_ATOMIC, align_mask);
+-=09=09local_bh_enable();
+-=09}
+-=09return data;
+-}
+-EXPORT_SYMBOL(__netdev_alloc_frag_align);
+-
+ /*
+  * kmalloc_reserve is a wrapper around kmalloc_node_track_caller that tell=
+s
+  * the caller if emergency pfmemalloc reserves are being used. If it is an=
+d
+--=20
+2.30.1
+
 
