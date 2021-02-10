@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413CC316FAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51056316FB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234443AbhBJTIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:08:53 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:53433 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbhBJTIh (ORCPT
+        id S232904AbhBJTJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:09:49 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57910 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234415AbhBJTJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:08:37 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l9uq9-0000HE-1u; Wed, 10 Feb 2021 19:07:53 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "Paul J . Murphy" <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Martina Krasteva <martinax.krasteva@intel.com>,
-        Gjorgji Rosikopulos <gjorgjix.rosikopulos@intel.com>,
-        linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] media: i2c: imx334: Fix a read of the uninitialized variable ret
-Date:   Wed, 10 Feb 2021 19:07:52 +0000
-Message-Id: <20210210190752.146631-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        Wed, 10 Feb 2021 14:09:44 -0500
+Received: from fsav104.sakura.ne.jp (fsav104.sakura.ne.jp [27.133.134.231])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11AJ85iP098318;
+        Thu, 11 Feb 2021 04:08:05 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav104.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp);
+ Thu, 11 Feb 2021 04:08:05 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11AJ843F098315
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 11 Feb 2021 04:08:04 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000647eff05b3f7e0d4@google.com>
+ <20201113120055.11748-1-hdanton@sina.com>
+ <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
+ <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
+ <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
+ <9bdd3f10-bddb-bd87-d7ad-b4b706477006@i-love.sakura.ne.jp>
+ <6b8da36f-a994-7604-77f4-52e29434605f@linuxfoundation.org>
+ <5f9ec159-77d8-ffba-21d1-2810e059f998@i-love.sakura.ne.jp>
+ <a06093f1-22b3-7d72-bc6c-f99f4e0d0de9@linuxfoundation.org>
+ <40617d66-1334-13a0-de9b-bd7cc1155ce5@i-love.sakura.ne.jp>
+ <43d8d6bf-53f3-11e6-894d-c257f7f4bd07@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <4368349b-fc0c-6da3-a502-2733f953d271@i-love.sakura.ne.jp>
+Date:   Thu, 11 Feb 2021 04:07:59 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <43d8d6bf-53f3-11e6-894d-c257f7f4bd07@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 2021/02/11 3:17, Shuah Khan wrote:
+> I am looking to understand the syzbot configuration and a reproducer
+> to be able to debug and fix the problem. How is syzbot triggering the
+> vhci_hcd attach and detach sequence?
 
-Currently there is a dev_err error message that is printing the
-error status in variable ret (that has not been set) instead of
-the correct error status from imx334->reset_gpio.  Fix this.
+I don't know. I'm waiting for syzbot to reproduce the problem on linux-next
+with https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/usb/usbip?id=f1bdf414e7dd0cbc26460425719fc3ea479947a2 .
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: 9746b11715c3 ("media: i2c: Add imx334 camera sensor driver")
+> 
+> This helps me determine all these fix suggestions that are coming in
+> are fixes or papering over a real problem.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/media/i2c/imx334.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+What are these fix suggestions?
 
-diff --git a/drivers/media/i2c/imx334.c b/drivers/media/i2c/imx334.c
-index 07e31bc2ef18..f8b1caf26c9b 100644
---- a/drivers/media/i2c/imx334.c
-+++ b/drivers/media/i2c/imx334.c
-@@ -790,7 +790,8 @@ static int imx334_parse_hw_config(struct imx334 *imx334)
- 	imx334->reset_gpio = devm_gpiod_get_optional(imx334->dev, "reset",
- 						     GPIOD_OUT_LOW);
- 	if (IS_ERR(imx334->reset_gpio)) {
--		dev_err(imx334->dev, "failed to get reset gpio %d", ret);
-+		dev_err(imx334->dev, "failed to get reset gpio %ld",
-+			IS_ERR_VALUE(imx334->reset_gpio));
- 		return PTR_ERR(imx334->reset_gpio);
- 	}
- 
--- 
-2.30.0
+"general protection fault in tomoyo_socket_sendmsg_permission" is a NULL pointer
+dereference which can happen if vhci_device_reset() and/or vhci_device_init()
+(which does vdev->ud.tcp_socket = NULL;) were unexpectedly called. There is no
+reproducer, and (as far as I know) no fix suggestion.
+
+"KASAN: null-ptr-deref Write in vhci_shutdown_connection" is an ERR_PTR(-EINTR)
+pointer dereference which can happen if kthread_create() was SIGKILLed. There is
+a reproducer, and https://lkml.kernel.org/r/20210205135707.4574-1-penguin-kernel@I-love.SAKURA.ne.jp
+is a fix suggestion.
 
