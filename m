@@ -2,137 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CF83160BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 923923160C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhBJIO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:14:26 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:45341 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233912AbhBJIOJ (ORCPT
+        id S233616AbhBJITR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:19:17 -0500
+Received: from smtprelay0130.hostedemail.com ([216.40.44.130]:46280 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231494AbhBJITL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:14:09 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612944830; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=IRzUsolklWJ8q/rjQMpMiYe3i/nQFmXbBRtsW+ljWFg=;
- b=SgUDLdaTdZico2FB+tnws+kEJ1idPfJWbqjyiRYL8fycozmtRtTKUzjwUJyGtFApNyfQf7wL
- BtPu0hPkofQf+qJ+Mv6LBlA8ozR0Juq+ma+5mb4zutro4DR/etC/o7gP8+i3Y2ctDnywdSar
- 9e/KYXhj0owx870li2SH6v6MRUU=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 602395a034db06ef79e7d2bb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 08:13:20
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 25BBDC43462; Wed, 10 Feb 2021 08:13:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78FE0C433CA;
-        Wed, 10 Feb 2021 08:13:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 78FE0C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Wed, 10 Feb 2021 03:19:11 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id A67FE127A6;
+        Wed, 10 Feb 2021 08:18:30 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:1981:2194:2199:2393:2525:2565:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3867:3868:3870:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:5007:7652:8985:9025:10004:10400:10848:11232:11658:11914:12043:12048:12050:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21212:21611:21627:21749:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: party75_5a0b9892760e
+X-Filterd-Recvd-Size: 1872
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 10 Feb 2021 08:18:28 +0000 (UTC)
+Message-ID: <aeaa56b9a50444c571a5ab34914d9b4590a9d629.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS: replace non-matching patterns for
+ loongson{2,3}
+From:   Joe Perches <joe@perches.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@linux-mips.org
+Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 10 Feb 2021 00:18:27 -0800
+In-Reply-To: <20210210075947.15604-1-lukas.bulwahn@gmail.com>
+References: <20210210075947.15604-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 2/5] ath10k: fix WARNING: suspicious RCU usage
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <23a1333dfb0367cc69e7177a2e373df0b6d42980.1612915444.git.skhan@linuxfoundation.org>
-References: <23a1333dfb0367cc69e7177a2e373df0b6d42980.1612915444.git.skhan@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210210081320.25BBDC43462@smtp.codeaurora.org>
-Date:   Wed, 10 Feb 2021 08:13:20 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shuah Khan <skhan@linuxfoundation.org> wrote:
-
-> ieee80211_find_sta_by_ifaddr() must be called under the RCU lock and
-> the resulting pointer is only valid under RCU lock as well.
+On Wed, 2021-02-10 at 08:59 +0100, Lukas Bulwahn wrote:
+> Commit ffe1f9356fbe ("MAINTAINERS: Add Loongson-2/Loongson-3 maintainers")
+> adds quite generic file entries for drivers/*/*loongson{2,3}* and
+> drivers/*/*/*loongson{2,3}* to be informed on changes to all loongson{2,3}
+> files in drivers.
 > 
-> Fix ath10k_wmi_tlv_parse_peer_stats_info() to hold RCU lock before it
-> calls ieee80211_find_sta_by_ifaddr() and release it when the resulting
-> pointer is no longer needed. The log below shows the problem.
-> 
-> While at it, fix ath10k_wmi_tlv_op_pull_peer_stats_info() to do the same.
-> 
-> =============================
-> WARNING: suspicious RCU usage
-> 5.11.0-rc7+ #20 Tainted: G        W
-> -----------------------------
-> include/linux/rhashtable.h:594 suspicious rcu_dereference_check() usage!
-> other info that might help us debug this:
->                rcu_scheduler_active = 2, debug_locks = 1
-> no locks held by ksoftirqd/5/44.
-> 
-> stack backtrace:
-> CPU: 5 PID: 44 Comm: ksoftirqd/5 Tainted: G        W         5.11.0-rc7+ #20
-> Hardware name: LENOVO 10VGCTO1WW/3130, BIOS M1XKT45A 08/21/2019
-> Call Trace:
->  dump_stack+0x7d/0x9f
->  lockdep_rcu_suspicious+0xdb/0xe5
->  __rhashtable_lookup+0x1eb/0x260 [mac80211]
->  ieee80211_find_sta_by_ifaddr+0x5b/0xc0 [mac80211]
->  ath10k_wmi_tlv_parse_peer_stats_info+0x3e/0x90 [ath10k_core]
->  ath10k_wmi_tlv_iter+0x6a/0xc0 [ath10k_core]
->  ? ath10k_wmi_tlv_op_pull_mgmt_tx_bundle_compl_ev+0xe0/0xe0 [ath10k_core]
->  ath10k_wmi_tlv_op_rx+0x5da/0xda0 [ath10k_core]
->  ? trace_hardirqs_on+0x54/0xf0
->  ? ath10k_ce_completed_recv_next+0x4e/0x60 [ath10k_core]
->  ath10k_wmi_process_rx+0x1d/0x40 [ath10k_core]
->  ath10k_htc_rx_completion_handler+0x115/0x180 [ath10k_core]
->  ath10k_pci_process_rx_cb+0x149/0x1b0 [ath10k_pci]
->  ? ath10k_htc_process_trailer+0x2d0/0x2d0 [ath10k_core]
->  ? ath10k_pci_sleep.part.0+0x6a/0x80 [ath10k_pci]
->  ath10k_pci_htc_rx_cb+0x15/0x20 [ath10k_pci]
->  ath10k_ce_per_engine_service+0x61/0x80 [ath10k_core]
->  ath10k_ce_per_engine_service_any+0x7d/0xa0 [ath10k_core]
->  ath10k_pci_napi_poll+0x48/0x120 [ath10k_pci]
->  net_rx_action+0x136/0x500
->  __do_softirq+0xc6/0x459
->  ? smpboot_thread_fn+0x2b/0x1f0
->  run_ksoftirqd+0x2b/0x60
->  smpboot_thread_fn+0x116/0x1f0
->  kthread+0x14b/0x170
->  ? smpboot_register_percpu_thread+0xe0/0xe0
->  ? __kthread_bind_mask+0x70/0x70
->  ret_from_fork+0x22/0x30
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> However, only the pattern 'drivers/*/*loongson2*' matches to one file in
+> the repository, i.e., drivers/cpufreq/loongson2_cpufreq.c; all other
+> patterns have no file matches.
 
-Unlucky timing also on this one, it conflicts with a patch I applied yesterday:
+Thank you.  I hope one day it gets applied...
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=2615e3cdbd9c0e864f5906279c952a309871d225
+https://lore.kernel.org/linux-mips/20190325212717.27044-1-joe@perches.com/
+https://lore.kernel.org/linux-mips/20180928215928.30611-1-joe@perches.com/
+https://lore.kernel.org/linux-mips/20180928220034.30697-1-joe@perches.com/
 
-Can you redo the patch to only change ath10k_wmi_event_tdls_peer()?
-
-error: patch failed: drivers/net/wireless/ath/ath10k/wmi-tlv.c:240
-error: drivers/net/wireless/ath/ath10k/wmi-tlv.c: patch does not apply
-stg import: Diff does not apply cleanly
-
-Patch set to Changes Requested.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/23a1333dfb0367cc69e7177a2e373df0b6d42980.1612915444.git.skhan@linuxfoundation.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
