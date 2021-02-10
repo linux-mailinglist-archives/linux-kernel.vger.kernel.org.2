@@ -2,229 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507CC31671F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A33C3166B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhBJMvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:51:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhBJMvm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:51:42 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBE0C061574;
-        Wed, 10 Feb 2021 04:51:01 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id x7so833218ljc.5;
-        Wed, 10 Feb 2021 04:51:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ro3BKKFjsV5+bDQPg1YW+54jgkKBfKS3SSCmUlA3e48=;
-        b=WJTXpb9Hxynkp47Ga3ZhP7ffedvg0ou3UwKUj/HbypujG4U4UWK0FgYJVZaMpltWzL
-         zm5u1Nd8No2W/Zf+X9P9DJcXA/sivWYfhTprwYlThc09HB0mx5mhH9bmDzKpOPHijUuZ
-         rBdIGAT3eF24+IZ3y1wLbVQmqWHnMMv77kIA/ojDX7Z153ZWcKSgcWcPhjl9kw48Ep99
-         CVvFLhoV0vNLGKEWZbJvLF+mcLg9wkdkh+nL3mkMR/SsTT3m2mNk/hMtIw3B+YcpsL9q
-         iOLNtfoR7Ot4vWrnT+zqkttmOe2mnTrC22NhGpxeC+bPOodLXzQxopouiEtxoc0cWeH9
-         rh1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ro3BKKFjsV5+bDQPg1YW+54jgkKBfKS3SSCmUlA3e48=;
-        b=NHriSiQPmqhjPZYICOOo3l00fQF8UeLpQJD2PuUNmBifjmKZxK1+uL18ujxRKi4Pg4
-         MRXvdjQEl/MjJSm72ZbcZc9q25oKjRx/UYa14y/D+3OrBMARut4/+1qtlOkBUsZ07fiy
-         JXqsYbvx2DczIhoBxVOF8u6R5N1djwil230/4Ph04CaipZ0+DJWAh1+5QhR0ywWp0CoQ
-         kmpfGA1jFpgE3w6vhjZg11bspLEM2vqLJwThLRSJk6LmmMXTGvziddveGmlUXQzVGMPw
-         QFbzr4iz7qGy83EA2nzVqxvlcmMe4b6ohYyoJClfm4qcJ5picBWCbKvpGDuYGvUPFmrP
-         Wjkg==
-X-Gm-Message-State: AOAM533+Krlc0vfiDxmLfOGYVohdPNyMWfMQWWD9MVjdYerbttzz0JSH
-        +eII0vxV6mFyNGUjxxNRJpQ=
-X-Google-Smtp-Source: ABdhPJwGFE0wbHroFLz+JiT4wI5+n+tKcHd3+Y8lzfCO4yELFJsBKbs8yQwXCItgnhS/LC401Np8Eg==
-X-Received: by 2002:a05:651c:552:: with SMTP id q18mr1941142ljp.278.1612961460330;
-        Wed, 10 Feb 2021 04:51:00 -0800 (PST)
-Received: from localhost.localdomain (host-5-58-109-138.bitternet.ua. [5.58.109.138])
-        by smtp.gmail.com with ESMTPSA id w10sm463595ljm.133.2021.02.10.04.50.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 04:50:59 -0800 (PST)
-From:   Vladimir Lypak <junak.pub@gmail.com>
-To:     Vladimir Lypak <junak.pub@gmail.com>
-Cc:     Robert Foss <robert.foss@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: qcom: camss: Fix overflows in clock rate calculations
-Date:   Wed, 10 Feb 2021 15:29:02 +0300
-Message-Id: <20210210122906.3037085-1-junak.pub@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S231432AbhBJMbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:31:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34672 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231855AbhBJMaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:30:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6ABD7AC43;
+        Wed, 10 Feb 2021 12:29:26 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 12:29:25 +0000
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
+Message-ID: <20210210122925.GB23499@wotan.suse.de>
+References: <20210209203041.21493-1-mrostecki@suse.de>
+ <20210209203041.21493-7-mrostecki@suse.de>
+ <20210210042428.GC12086@qmqm.qmqm.pl>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210210042428.GC12086@qmqm.qmqm.pl>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because of u32 type being used to store pixel clock rate, expression used
-to calculate pipeline clocks (pixel_clock * bpp) produces wrong value due
-to integer overflow. This patch changes data type used to store, pass and
-retrieve pixel_clock from u32 to u64 to make this mistake less likely to
-be repeated in the future.
+On Wed, Feb 10, 2021 at 05:24:28AM +0100, Michał Mirosław wrote:
+> On Tue, Feb 09, 2021 at 09:30:40PM +0100, Michal Rostecki wrote:
+> [...]
+> > For the array with 3 HDDs, not adding any penalty resulted in 409MiB/s
+> > (429MB/s) performance. Adding the penalty value 1 resulted in a
+> > performance drop to 404MiB/s (424MB/s). Increasing the value towards 10
+> > was making the performance even worse.
+> > 
+> > For the array with 2 HDDs and 1 SSD, adding penalty value 1 to
+> > rotational disks resulted in the best performance - 541MiB/s (567MB/s).
+> > Not adding any value and increasing the value was making the performance
+> > worse.
+> > 
+> > Adding penalty value to non-rotational disks was always decreasing the
+> > performance, which motivated setting it as 0 by default. For the purpose
+> > of testing, it's still configurable.
+> [...]
+> > +	bdev = map->stripes[mirror_index].dev->bdev;
+> > +	inflight = mirror_load(fs_info, map, mirror_index, stripe_offset,
+> > +			       stripe_nr);
+> > +	queue_depth = blk_queue_depth(bdev->bd_disk->queue);
+> > +
+> > +	return inflight < queue_depth;
+> [...]
+> > +	last_mirror = this_cpu_read(*fs_info->last_mirror);
+> [...]
+> > +	for (i = last_mirror; i < first + num_stripes; i++) {
+> > +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
+> > +					    stripe_nr)) {
+> > +			preferred_mirror = i;
+> > +			goto out;
+> > +		}
+> > +	}
+> > +
+> > +	for (i = first; i < last_mirror; i++) {
+> > +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
+> > +					    stripe_nr)) {
+> > +			preferred_mirror = i;
+> > +			goto out;
+> > +		}
+> > +	}
+> > +
+> > +	preferred_mirror = last_mirror;
+> > +
+> > +out:
+> > +	this_cpu_write(*fs_info->last_mirror, preferred_mirror);
+> 
+> This looks like it effectively decreases queue depth for non-last
+> device. After all devices are filled to queue_depth-penalty, only
+> a single mirror will be selected for next reads (until a read on
+> some other one completes).
+> 
 
-Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
----
- drivers/media/platform/qcom/camss/camss-csid.c           | 2 +-
- drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c | 4 ++--
- drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c | 4 ++--
- drivers/media/platform/qcom/camss/camss-csiphy.c         | 4 ++--
- drivers/media/platform/qcom/camss/camss-csiphy.h         | 2 +-
- drivers/media/platform/qcom/camss/camss-vfe.c            | 4 ++--
- drivers/media/platform/qcom/camss/camss.c                | 2 +-
- drivers/media/platform/qcom/camss/camss.h                | 2 +-
- 8 files changed, 12 insertions(+), 12 deletions(-)
+Good point. And if all devices are going to be filled for longer time,
+this function will keep selecting the last one. Maybe I should select
+last+1 in that case. Would that address your concern or did you have any
+other solution in mind?
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-index be3fe76f3dc30..6307b889baa69 100644
---- a/drivers/media/platform/qcom/camss/camss-csid.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid.c
-@@ -462,7 +462,7 @@ static irqreturn_t csid_isr(int irq, void *dev)
- static int csid_set_clock_rates(struct csid_device *csid)
- {
- 	struct device *dev = csid->camss->dev;
--	u32 pixel_clock;
-+	u64 pixel_clock;
- 	int i, j;
- 	int ret;
- 
-diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
-index 12bce391d71fd..ec66d1557b8b1 100644
---- a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
-+++ b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
-@@ -57,7 +57,7 @@ static void csiphy_reset(struct csiphy_device *csiphy)
-  * Return settle count value or 0 if the CSI2 pixel clock
-  * frequency is not available
-  */
--static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
-+static u8 csiphy_settle_cnt_calc(u64 pixel_clock, u8 bpp, u8 num_lanes,
- 				 u32 timer_clk_rate)
- {
- 	u32 mipi_clock; /* Hz */
-@@ -83,7 +83,7 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
- 
- static void csiphy_lanes_enable(struct csiphy_device *csiphy,
- 				struct csiphy_config *cfg,
--				u32 pixel_clock, u8 bpp, u8 lane_mask)
-+				u64 pixel_clock, u8 bpp, u8 lane_mask)
- {
- 	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
- 	u8 settle_cnt;
-diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-index 97cb9de850315..cd6eb88a7c153 100644
---- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-+++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-@@ -113,7 +113,7 @@ static irqreturn_t csiphy_isr(int irq, void *dev)
-  * Return settle count value or 0 if the CSI2 pixel clock
-  * frequency is not available
-  */
--static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
-+static u8 csiphy_settle_cnt_calc(u64 pixel_clock, u8 bpp, u8 num_lanes,
- 				 u32 timer_clk_rate)
- {
- 	u32 mipi_clock; /* Hz */
-@@ -137,7 +137,7 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
- 
- static void csiphy_lanes_enable(struct csiphy_device *csiphy,
- 				struct csiphy_config *cfg,
--				u32 pixel_clock, u8 bpp, u8 lane_mask)
-+				u64 pixel_clock, u8 bpp, u8 lane_mask)
- {
- 	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
- 	u8 settle_cnt;
-diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-index 509c9a59c09cd..61628f55c4f63 100644
---- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-+++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-@@ -102,7 +102,7 @@ static u8 csiphy_get_bpp(const struct csiphy_format *formats,
- static int csiphy_set_clock_rates(struct csiphy_device *csiphy)
- {
- 	struct device *dev = csiphy->camss->dev;
--	u32 pixel_clock;
-+	u64 pixel_clock;
- 	int i, j;
- 	int ret;
- 
-@@ -238,7 +238,7 @@ static u8 csiphy_get_lane_mask(struct csiphy_lanes_cfg *lane_cfg)
- static int csiphy_stream_on(struct csiphy_device *csiphy)
- {
- 	struct csiphy_config *cfg = &csiphy->cfg;
--	u32 pixel_clock;
-+	u64 pixel_clock;
- 	u8 lane_mask = csiphy_get_lane_mask(&cfg->csi2->lane_cfg);
- 	u8 bpp = csiphy_get_bpp(csiphy->formats, csiphy->nformats,
- 				csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
-diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
-index f7967ef836dcc..450c8247bd533 100644
---- a/drivers/media/platform/qcom/camss/camss-csiphy.h
-+++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
-@@ -50,7 +50,7 @@ struct csiphy_hw_ops {
- 	void (*reset)(struct csiphy_device *csiphy);
- 	void (*lanes_enable)(struct csiphy_device *csiphy,
- 			     struct csiphy_config *cfg,
--			     u32 pixel_clock, u8 bpp, u8 lane_mask);
-+			     u64 pixel_clock, u8 bpp, u8 lane_mask);
- 	void (*lanes_disable)(struct csiphy_device *csiphy,
- 			      struct csiphy_config *cfg);
- 	irqreturn_t (*isr)(int irq, void *dev);
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-index fae2b513b2f9d..b2c95b46ce661 100644
---- a/drivers/media/platform/qcom/camss/camss-vfe.c
-+++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-@@ -1112,7 +1112,7 @@ static inline void vfe_isr_halt_ack(struct vfe_device *vfe)
- static int vfe_set_clock_rates(struct vfe_device *vfe)
- {
- 	struct device *dev = vfe->camss->dev;
--	u32 pixel_clock[MSM_VFE_LINE_NUM];
-+	u64 pixel_clock[MSM_VFE_LINE_NUM];
- 	int i, j;
- 	int ret;
- 
-@@ -1194,7 +1194,7 @@ static int vfe_set_clock_rates(struct vfe_device *vfe)
-  */
- static int vfe_check_clock_rates(struct vfe_device *vfe)
- {
--	u32 pixel_clock[MSM_VFE_LINE_NUM];
-+	u64 pixel_clock[MSM_VFE_LINE_NUM];
- 	int i, j;
- 	int ret;
- 
-diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-index 8fefce57bc49f..eb55cf436b717 100644
---- a/drivers/media/platform/qcom/camss/camss.c
-+++ b/drivers/media/platform/qcom/camss/camss.c
-@@ -555,7 +555,7 @@ struct media_entity *camss_find_sensor(struct media_entity *entity)
-  *
-  * Return 0 on success or a negative error code otherwise
-  */
--int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock)
-+int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock)
- {
- 	struct media_entity *sensor;
- 	struct v4l2_subdev *subdev;
-diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
-index 3a0484683cd6e..fabfce9a3496c 100644
---- a/drivers/media/platform/qcom/camss/camss.h
-+++ b/drivers/media/platform/qcom/camss/camss.h
-@@ -108,7 +108,7 @@ int camss_enable_clocks(int nclocks, struct camss_clock *clock,
- 			struct device *dev);
- void camss_disable_clocks(int nclocks, struct camss_clock *clock);
- struct media_entity *camss_find_sensor(struct media_entity *entity);
--int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock);
-+int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock);
- int camss_pm_domain_on(struct camss *camss, int id);
- void camss_pm_domain_off(struct camss *camss, int id);
- void camss_delete(struct camss *camss);
--- 
-2.30.0
+Thanks for pointing that out.
 
+> Have you tried testing with much more jobs / non-sequential accesses?
+> 
+
+I didn't try with non-sequential accesses. Will do that before
+respinning v2.
+
+> Best Reagrds,
+> Michał Mirosław
+
+Regards,
+Michal
