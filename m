@@ -2,116 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE483171D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3513171D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232920AbhBJVB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:01:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232585AbhBJVBY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:01:24 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BCAC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:00:43 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id a16so4527177wmm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:00:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rZp7A+v4WBoQUiE0OhhhKKw56QCYcEoeSnDvzhpwo2M=;
-        b=JDVIaflUJw9bBTdq3ctIHkYy8SkkxhtSJgQQP9bW7tduZv6mCoJHnNnGYEH/Or393r
-         GJEjkYBy9wSzZXPv+zNXdE1gnpjVLsTxR/jTjyvRFEqm61I4Nfbw4KaUJ67SjVQgWjkv
-         wAzvfs3J48W8ZHKVaMg1fV265PDLE5qrRl7bJ3nA5NrUVIRyXHR6wXBR13zmuCcu/vf5
-         FY7u0zLTqxZ59jrJyciU9ZIHLWt2RRNgUaDwG8F3w/o+DJgOnNUk0MKaaHeqZglJoP/h
-         7qt/ARv3ydu7fCiPiEt9GMKXdun8NyBjcEbsa72qQlAX/P7laTHCV8SXHMVymQ9UFEd4
-         ehyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rZp7A+v4WBoQUiE0OhhhKKw56QCYcEoeSnDvzhpwo2M=;
-        b=OSJlgPUAxC6xNFbGdxEYejn1S5BTRw+2VSO3vkJ0BdMh7VRSOjMxYk2HUS+GVuZhov
-         IqyWJlWCVbHznKBfU5faZJIb7KWr2bZ2H+amCmxjShSHomKhh2vlbOFoItlja7JxAfRO
-         0PRjEsTPyWPr5gad6cS579FaCSmqMt0z2oRiLKsEqZtg3vJVB+DN7RkFwc39kDo7OqRO
-         W9Kc4ZJK9x9DPAAKFUPdY45hH1PC1DzD49WCCNHoGYVmAORHyBq4E10Tn/+FFvxb/Hj7
-         yg347RqMwDJDX4/X7GbepJnbEmOafG8U9wIwr+wF5AIpAwgOIBSmU1BAQy80WKXdod2t
-         pEMw==
-X-Gm-Message-State: AOAM531w2jO3CBlTfB2ggCEnFcbkFVDcpkd/eiRAKRX70+U+s13lcga6
-        G2Xmfu8U91qhSiJIS68si+tgDc9I78oFXA==
-X-Google-Smtp-Source: ABdhPJxyJid9SF3FUbzMJFgxrftMe8ZG6eNhOB+9JksMFmVt31UxXtc0O162hXH0PMYeedtTDSIKyQ==
-X-Received: by 2002:a7b:c5c1:: with SMTP id n1mr870556wmk.163.1612990837207;
-        Wed, 10 Feb 2021 13:00:37 -0800 (PST)
-Received: from kernelvm (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
-        by smtp.gmail.com with ESMTPSA id z63sm4708558wme.8.2021.02.10.13.00.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 13:00:36 -0800 (PST)
-Date:   Wed, 10 Feb 2021 21:00:34 +0000
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
-        luk@wybcz.pl, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: cleanup macros within
- include/rtw_debug.h
-Message-ID: <20210210210034.GA1919@kernelvm>
-References: <20210210170003.100880-1-phil@philpotter.co.uk>
- <20210210184027.GZ2696@kadam>
- <20210210185544.GA1786@kernelvm>
- <20210210201849.GA2696@kadam>
+        id S232585AbhBJVCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:02:12 -0500
+Received: from mga09.intel.com ([134.134.136.24]:40449 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232530AbhBJVCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 16:02:08 -0500
+IronPort-SDR: idhXHZCTWgpVC+2Gs2hv8K68AjMBU3TZYINSsaZs+6E3wA5/9UuHXYsc5ygOGKjEwc3IzRLGut
+ zd7LlMfsB6Ww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="182287590"
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="182287590"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 13:01:26 -0800
+IronPort-SDR: 2DoZYVFt2FIBxGGLkf/pEvIfx1TIdJOqNQbvE0jH9jz/tohTYN8Wx2MhDQScHveynRqjzBcYbx
+ ePIras3ZRjwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="375611053"
+Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 10 Feb 2021 13:01:25 -0800
+Received: from kbuild by cd560a204411 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l9wc0-0003Gi-Lv; Wed, 10 Feb 2021 21:01:24 +0000
+Date:   Thu, 11 Feb 2021 05:01:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 355b3a57ddba71b73a99aa249a99aed6ed904606
+Message-ID: <602449a2.pF/M388wpTXU2WUu%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210201849.GA2696@kadam>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > So I'm in the process of stripping out _dbgdump entirely as per Greg
-> > K-H's suggestion - am I to understand raw printk is frowned upon though,
-> > even with the correct KERN_x level specified?
-> 
-> Yes.  Ideally in drivers everything would use dev_dbg() and dev_err() or
-> whatever.  But it's perhaps tricky to convert everything in a single
-> patch so changing _dbgdump() to "#define pr_debug" as an intermediate
-> step is probably fine.
-> 
-> Look at how people do pr_fmt():
-> #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> 
-> You could do a patch that does a mass replacement of DBG_871X with
-> pr_debug().  Again, I haven't really looked at this code so you'll have
-> to double check and consider what is the best way to break up the
-> patches.
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 355b3a57ddba71b73a99aa249a99aed6ed904606  sched: Harden PREEMPT_DYNAMIC
 
-That sounds great, I'll take a look, thanks.
+elapsed time: 730m
 
-> > One query I have is that individual patches I'm working on for this file are
-> > generating an awful lot of checkpatch warnings themselves due to the
-> > nature of the existing violations on the relevant lines. Is it
-> > considered acceptable for me to still submit these, providing I do so in
-> > a series which cleans up the other violations in separate patches?
-> 
-> It's tricky to know how to break up patches.  Probably the simplest
-> advice is to only clean up a single type of checkpatch warning at a
-> time.  But fix all the instances of that warning in a file.  Don't
-> change anything else even if it is tempting.  Do that in the next patch.
-> 
-> The actuall rules are slightly more complicated and nuanced than that,
-> but if you just fix one type at a time then that's okay.
-> 
-> One thing is that your patches should not introduce new checkpatch
-> warnings.  So if you have two statements in an if statement and you
-> delete one, then that means you have to delete he curly braces as well.
-> 
-> regards,
-> dan carpenter
-> 
+configs tested: 123
+configs skipped: 3
 
-Thanks again for the feedback. I will work on something over the next
-few days.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Regards,
-Phil
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                       m5249evb_defconfig
+sh                   sh7770_generic_defconfig
+mips                         cobalt_defconfig
+arc                        nsimosci_defconfig
+microblaze                          defconfig
+powerpc                     ksi8560_defconfig
+nios2                         3c120_defconfig
+arc                        vdk_hs38_defconfig
+arm                         s3c6400_defconfig
+arm                         vf610m4_defconfig
+arc                              alldefconfig
+c6x                        evmc6474_defconfig
+xtensa                         virt_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                 mpc8560_ads_defconfig
+mips                           rs90_defconfig
+arm                         s5pv210_defconfig
+m68k                          amiga_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc                     tqm8555_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                        bcm63xx_defconfig
+sh                           se7721_defconfig
+sh                           se7751_defconfig
+mips                     decstation_defconfig
+arm                        magician_defconfig
+m68k                        m5272c3_defconfig
+sh                               allmodconfig
+xtensa                  audio_kc705_defconfig
+powerpc                     sequoia_defconfig
+powerpc                     taishan_defconfig
+alpha                               defconfig
+mips                      maltaaprp_defconfig
+powerpc                         ps3_defconfig
+powerpc                      walnut_defconfig
+powerpc                    mvme5100_defconfig
+sh                         microdev_defconfig
+mips                     loongson1c_defconfig
+arm                         hackkit_defconfig
+nds32                               defconfig
+m68k                       m5475evb_defconfig
+arm                           stm32_defconfig
+sh                          rsk7201_defconfig
+arm                       imx_v4_v5_defconfig
+arm                     am200epdkit_defconfig
+powerpc                        cell_defconfig
+microblaze                      mmu_defconfig
+powerpc                     powernv_defconfig
+sh                     sh7710voipgw_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210209
+x86_64               randconfig-a001-20210209
+x86_64               randconfig-a005-20210209
+x86_64               randconfig-a004-20210209
+x86_64               randconfig-a002-20210209
+x86_64               randconfig-a003-20210209
+i386                 randconfig-a001-20210209
+i386                 randconfig-a005-20210209
+i386                 randconfig-a003-20210209
+i386                 randconfig-a002-20210209
+i386                 randconfig-a006-20210209
+i386                 randconfig-a004-20210209
+i386                 randconfig-a016-20210209
+i386                 randconfig-a013-20210209
+i386                 randconfig-a012-20210209
+i386                 randconfig-a014-20210209
+i386                 randconfig-a011-20210209
+i386                 randconfig-a015-20210209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210209
+x86_64               randconfig-a014-20210209
+x86_64               randconfig-a015-20210209
+x86_64               randconfig-a012-20210209
+x86_64               randconfig-a016-20210209
+x86_64               randconfig-a011-20210209
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
