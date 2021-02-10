@@ -2,116 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B19C317064
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E62931706C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhBJTkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:40:25 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:60351 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232085AbhBJTiJ (ORCPT
+        id S232892AbhBJTlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:41:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232536AbhBJTjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:38:09 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id D3F0D5C0061;
-        Wed, 10 Feb 2021 14:36:57 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 10 Feb 2021 14:36:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=uuBODOQjdj3KydyKzXRngmmLR59
-        dRv7xuQsfYGBd6mI=; b=T8otxWOCmM+ieyHYR0dbiDdRimB03w1kJW+6/XM6pZ2
-        r40k68XwJRA6KWGp0UYeEInVZ4ohdKZluZbyhhpGFLgugjnE6bA6owUo8XL7Qglb
-        DU+wNnRsJqU7s0Ar2dudilBWGPGkuOr6xJbsyTyVVKsqN9w0DStLlDMPb/kYvSX+
-        AdH5QZSa4cdY0S+vYy6m+UTcEjovyBYVSR5/cqpTLhCI8ZX4sTopkJwrwVSGGCi0
-        fP69T51RCPM1AFwvepu3cq/N8Z///ZustofNOWX2acYg168mqcccSR80phN+pw22
-        Je1Y/axgX0bVmXJ87NUWKu0heWNXfXVIA26fzIQb0Yw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=uuBODO
-        Qjdj3KydyKzXRngmmLR59dRv7xuQsfYGBd6mI=; b=r7aAKCVNwlOSsaaeLVRaXA
-        MRbJrcmsfTeDo89jZei2J64mp3rAaA1FMu4FKlwf6AZgR7XddSZh+Xrd0LLRCavF
-        iFkSCfJSNY5o2MeT/aXYX3SzKwlI2D7yzRvUhXZeuLrcAFX8zwqYNuYb3CmEGRnl
-        EMRhD/WljKwBURy2COiP7r0C/lK0I0BBEMu+pk4mehL3YcHFNbq+2YSBZkP40Mh0
-        HtOi2Ggjuc7E2kyTJWElDLdCIH0LRKvjduu0a7QINwmKdP6ThR17b+lBellMfi/V
-        Ke1wD9Q2iL1JHk1vc+IHfFkps4MlYQ23WU5QICym6j7RuolLPwolzw+JO7Q/gltg
-        ==
-X-ME-Sender: <xms:2TUkYEzxiDgdmc3daUa0ZxZS6p-sneBa9eNwb5Sl6SWAc752jPNFEA>
-    <xme:2TUkYIQhH73DL7CWG9LW5P4obkKImeNnDwBq6oAzKy4cqV2Li7fHgxHXB0SisB88r
-    owCdDgLa80N1w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdduvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:2TUkYGU1btNfqkVeZzwnHruirm5lLL9BhHq0s3JchbEiKs2HVdyMRg>
-    <xmx:2TUkYCjm5B06jU5JpOSzwQOGhtiJoa3v839ihIaAtBpLV-w7OpAdMw>
-    <xmx:2TUkYGCzYXqGG15d1_PW7dIKBAP2ppLVB99p1RLgvB4MCNXESN-HQg>
-    <xmx:2TUkYJPMq75g51nvgfKdfb1Bmrs6JS7_22zx72ZLwGnuBW51xlODng>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DCA61108005C;
-        Wed, 10 Feb 2021 14:36:56 -0500 (EST)
-Date:   Wed, 10 Feb 2021 20:36:54 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the driver-core tree
-Message-ID: <YCQ11nY4Bg2L2HWo@kroah.com>
-References: <20210210214720.02e6a6be@canb.auug.org.au>
- <YCQjfqH415zIhhyz@kroah.com>
- <CAGETcx88Ln2XxuLN7P2BVhzB=OQxPLLsBN7WLL1j2JtR4+Z8ow@mail.gmail.com>
- <CAGETcx9zM2OdbNDcC7pXGtY9yqRgb-wt0YzFv6wfNgQi0gM+8w@mail.gmail.com>
+        Wed, 10 Feb 2021 14:39:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCCBC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:39:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=brclteCp5S0ACW9GqYHC/I0po7E3ehhIK15zyfOy9Ik=; b=mHl3Atv+mjArxbxhH66gGJzHij
+        urjoFuWegb8cdmswXnGDgt0ESy7kLxLtVSQI642JrNjg+hxQbWPx2Ni68QU5sczIVFIwnR8iFcQWN
+        cokI0+SgqAGWekoCD+cU63UBFAJMv4jOeawOG3A4NH5m4Vd7uOf1c0uOh9WZjPTwWsCywVg9df+kJ
+        XMVtFFblLgEixEZNeztp2QBsuY1XeFMDNdqL7tB4B/uDS6XKP6tXorKkqVyzWl3/4GAjKpHaqtmrM
+        PNCkwJmv3dbF3I4qMPPf+A0eV7MPt4JifQMGfhfg1NDPCrxNoqj6Mo80J5F8FVyGKkXjMMrJ7OBDh
+        BglGq1WQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9vJz-009IjI-RK; Wed, 10 Feb 2021 19:38:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 53FFA3010D2;
+        Wed, 10 Feb 2021 20:38:42 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3B0B02018E5A1; Wed, 10 Feb 2021 20:38:42 +0100 (CET)
+Date:   Wed, 10 Feb 2021 20:38:42 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Alison Schofield <alison.schofield@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Prarit Bhargava <prarit@redhat.com>, brice.goglin@gmail.com
+Subject: Re: [PATCH] x86, sched: Allow NUMA nodes to share an LLC on Intel
+ platforms
+Message-ID: <YCQ2QiC7If2X8jnP@hirez.programming.kicks-ass.net>
+References: <20210209223943.9834-1-alison.schofield@intel.com>
+ <YCOTujUj3D53uGjd@hirez.programming.kicks-ass.net>
+ <b717d5cd-e40d-c86a-05de-a512a5e3b0af@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGETcx9zM2OdbNDcC7pXGtY9yqRgb-wt0YzFv6wfNgQi0gM+8w@mail.gmail.com>
+In-Reply-To: <b717d5cd-e40d-c86a-05de-a512a5e3b0af@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 11:17:16AM -0800, Saravana Kannan wrote:
-> On Wed, Feb 10, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Wed, Feb 10, 2021 at 10:18 AM Greg KH <greg@kroah.com> wrote:
-> > >
-> > > On Wed, Feb 10, 2021 at 09:47:20PM +1100, Stephen Rothwell wrote:
-> > > > Hi all,
-> > > >
-> > > > After merging the driver-core tree, today's linux-next build (sparc64
-> > > > defconfig) failed like this:
-> > > >
-> > > > drivers/of/property.o: In function `parse_interrupts':
-> > > > property.c:(.text+0x14e0): undefined reference to `of_irq_parse_one'
-> > > >
-> > > > Caused by commit
-> > > >
-> > > >   f265f06af194 ("of: property: Fix fw_devlink handling of interrupts/interrupts-extended")
-> > > >
-> > > > CONFIG_OF_IRQ depends on !SPARC so of_irq_parse_one() needs a stub.
-> > > > I have added the following patch for today.
-> > > >
-> > > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > Date: Wed, 10 Feb 2021 21:27:56 +1100
-> > > > Subject: [PATCH] of: irq: make a stub for of_irq_parse_one()
-> > > >
-> > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > ---
-> > > >  include/linux/of_irq.h | 9 +++++++--
-> > > >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > Thanks Stephen!
+On Wed, Feb 10, 2021 at 07:22:03AM -0800, Dave Hansen wrote:
+> On 2/10/21 12:05 AM, Peter Zijlstra wrote:
+> >> +	if (IS_ENABLED(CONFIG_NUMA))
+> >> +		set_cpu_bug(c, X86_BUG_NUMA_SHARES_LLC);
+> >>  }
+> > This seens wrong too, it shouldn't be allowed pre SKX. And ideally only
+> > be allowed when SNC is enabled.
 > 
-> Actually the stub needs to return an error. 0 indicates it found the interrupt.
+> Originally, this just added a few more models to the list of CPUs with
+> SNC.  I was hoping for something a bit more durable that we wouldn't
+> have to go back and poke at every year or two.
 
-Can you send a fix-up patch for this?  This is now in my tree :(
+It's not like we don't have to update a gazillion FMS tables for each
+new instance anyway :-(
 
-thanks,
+> > Please make this more specific than: all Intel CPUs. Ofcourse, since you
+> > all knew this was an issue, you could've made it discoverable
+> > _somewhere_ :-(
+> 
+> You're totally right, of course.  The hardware could enumerate SNC as a
+> feature explicitly somewhere.  But, that's a little silly because all of
+> the information that it's enumerating about the CPU caches and NUMA
+> nodes present and correct is *correct*.  The secondary information would
+> only be for the CPU to say, "yeah, I'm really sure about that other stuff".
+> 
+> I think this sanity check has outlived its usefulness.
 
-greg k-h
+Maybe BIOS monkeys got better, but I'm not sure I trust it all.
+
+So SNC is all on-package, do all those nodes have the same pkg id? That
+is, I'm trying to find something to restrict topological madness.
+
+
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 88cd0064d1f8..de1010dd0bba 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -458,6 +458,26 @@ static bool match_smt(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ 	return false;
+ }
+ 
++static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
++{
++	if ((c->phys_proc_id == o->phys_proc_id) &&
++		(c->cpu_die_id == o->cpu_die_id))
++		return true;
++	return false;
++}
++
++/*
++ * Unlike the other levels, we do not enforce keeping a
++ * multicore group inside a NUMA node.  If this happens, we will
++ * discard the MC level of the topology later.
++ */
++static bool match_pkg(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
++{
++	if (c->phys_proc_id == o->phys_proc_id)
++		return true;
++	return false;
++}
++
+ /*
+  * Define snc_cpu[] for SNC (Sub-NUMA Cluster) CPUs.
+  *
+@@ -495,33 +515,12 @@ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ 	 * means 'c' does not share the LLC of 'o'. This will be
+ 	 * reflected to userspace.
+ 	 */
+-	if (!topology_same_node(c, o) && x86_match_cpu(snc_cpu))
++	if (!topology_same_node(c, o) && x86_match_cpu(snc_cpu) && match_pkg(c, o))
+ 		return false;
+ 
+ 	return topology_sane(c, o, "llc");
+ }
+ 
+-/*
+- * Unlike the other levels, we do not enforce keeping a
+- * multicore group inside a NUMA node.  If this happens, we will
+- * discard the MC level of the topology later.
+- */
+-static bool match_pkg(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+-{
+-	if (c->phys_proc_id == o->phys_proc_id)
+-		return true;
+-	return false;
+-}
+-
+-static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+-{
+-	if ((c->phys_proc_id == o->phys_proc_id) &&
+-		(c->cpu_die_id == o->cpu_die_id))
+-		return true;
+-	return false;
+-}
+-
+-
+ #if defined(CONFIG_SCHED_SMT) || defined(CONFIG_SCHED_MC)
+ static inline int x86_sched_itmt_flags(void)
+ {
