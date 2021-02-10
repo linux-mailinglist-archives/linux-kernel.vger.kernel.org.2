@@ -2,123 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03153169DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C683169F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbhBJPPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:15:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27581 "EHLO
+        id S231993AbhBJPRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:17:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50046 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230294AbhBJPP0 (ORCPT
+        by vger.kernel.org with ESMTP id S231968AbhBJPRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:15:26 -0500
+        Wed, 10 Feb 2021 10:17:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612970039;
+        s=mimecast20190719; t=1612970151;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=64yAKhf/pzRpCahMyzllKj4FXtslcoEEd5sylPeTwZY=;
-        b=HvxtuPk4NmcFwMGiDQzYszU/tfcWO+hNH01RuBwr70XSA0cpzxFkUCs2qbBDcr8q6iHjYI
-        xg679eiYRSTxPUEY+/XvavAxjul+ZPlI0zyWWFB760BV9AhF07UQ243SSx7Ux7UaPdQy1o
-        5wfc54UmrJ6BSPUTdhPi5wE40pp8xf8=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fUmvVMvAvYIwqlomGlCTTR4gDfNwX2CSnq9kV4m6kT4=;
+        b=XDkQFjZo1mut/ApoosyI9wP71ibvE2gySVdxU6r5p6UzNRcH8zOeypuLiHUPjATd3Vky2p
+        4QTBKAza/qaaLf/IK2+iaQe9oHj4z2IP34NZt8QIq0/CR/oO9dymvhO+1E89Gz/rvfo9VI
+        8NYW2KRB4Vj3uyAni5gNQCD6cI1PpS4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-368-O24rLHeQPGyF_cnHOTj5Bw-1; Wed, 10 Feb 2021 10:13:55 -0500
-X-MC-Unique: O24rLHeQPGyF_cnHOTj5Bw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-76-yxmXs3rGO_iKldY_Cl-SBA-1; Wed, 10 Feb 2021 10:15:47 -0500
+X-MC-Unique: yxmXs3rGO_iKldY_Cl-SBA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F708107ACE3;
-        Wed, 10 Feb 2021 15:13:53 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 34A1E10013DB;
-        Wed, 10 Feb 2021 15:13:51 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Add EFI_CERT_X509_GUID support for dbx/mokx entries
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 059D1BBEE8;
+        Wed, 10 Feb 2021 15:15:45 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-115-20.rdu2.redhat.com [10.10.115.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7712960657;
+        Wed, 10 Feb 2021 15:15:39 +0000 (UTC)
+Subject: Re: [PATCH v2 06/28] locking/rwlocks: Add contention detection for
+ rwlocks
+From:   Waiman Long <longman@redhat.com>
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Davidlohr Bueso <dbueso@suse.de>
+References: <20210202185734.1680553-1-bgardon@google.com>
+ <20210202185734.1680553-7-bgardon@google.com>
+ <6287ff89-d869-e5ed-3e64-11621cc4796a@redhat.com>
+Organization: Red Hat
+Message-ID: <058d416d-e137-056f-e81b-823cd770a3ff@redhat.com>
+Date:   Wed, 10 Feb 2021 10:15:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
-Date:   Wed, 10 Feb 2021 15:13:50 +0000
-Message-ID: <1323922.1612970030@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <6287ff89-d869-e5ed-3e64-11621cc4796a@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/9/21 10:32 PM, Waiman Long wrote:
+> On 2/2/21 1:57 PM, Ben Gardon wrote:
+>> rwlocks do not currently have any facility to detect contention
+>> like spinlocks do. In order to allow users of rwlocks to better manage
+>> latency, add contention detection for queued rwlocks.
+>>
+>> CC: Ingo Molnar <mingo@redhat.com>
+>> CC: Will Deacon <will@kernel.org>
+>> Acked-by: Peter Zijlstra <peterz@infradead.org>
+>> Acked-by: Davidlohr Bueso <dbueso@suse.de>
+>> Acked-by: Waiman Long <longman@redhat.com>
+>> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+>> Signed-off-by: Ben Gardon <bgardon@google.com>
+>> ---
+>>   include/asm-generic/qrwlock.h | 24 ++++++++++++++++++------
+>>   include/linux/rwlock.h        |  7 +++++++
+>>   2 files changed, 25 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/include/asm-generic/qrwlock.h 
+>> b/include/asm-generic/qrwlock.h
+>> index 84ce841ce735..0020d3b820a7 100644
+>> --- a/include/asm-generic/qrwlock.h
+>> +++ b/include/asm-generic/qrwlock.h
+>> @@ -14,6 +14,7 @@
+>>   #include <asm/processor.h>
+>>     #include <asm-generic/qrwlock_types.h>
+>> +#include <asm-generic/qspinlock.h>
+>
+> As said in another thread, qspinlock and qrwlock can be independently 
+> enabled for an architecture. So we shouldn't include qspinlock.h here. 
+> Instead, just include the regular linux/spinlock.h file to make sure 
+> that arch_spin_is_locked() is available.
 
-Hi Linus,
+The csky architecture uses qrwlock but not qspinlock. So this patch can 
+be problematic when compiling for csky.
 
-This set of patches from Eric Snowberg that add support for
-EFI_CERT_X509_GUID entries in the dbx and mokx UEFI tables (such entries
-cause matching certificates to be rejected).  These are currently ignored
-and only the hash entries are made use of.
-
-These patches fix CVE-2020-26541.
-
-To quote Eric:
-
-	This is the fifth patch series for adding support for
-	EFI_CERT_X509_GUID entries [1].  It has been expanded to not only
-	include dbx entries but also entries in the mokx.  Additionally my
-	series to preload these certificate [2] has also been included.
-
-	This series is based on v5.11-rc4.
-
-	[1] https://patchwork.kernel.org/project/linux-security-module/patch/20200916004927.64276-1-eric.snowberg@oracle.com/
-	[2] https://lore.kernel.org/patchwork/cover/1315485/
-
-Note that this is based on top of the collected minor fixes I sent you a
-preceding pull request for.  If you would rather this was not based on my
-keys-misc branch, but was instead based on your tree directly, I can rebase
-it.  Note that there would be very minor conflict between the two branches,
-but I think git merge should be able to handle it automatically.
-
-David
----
-The following changes since commit 8f0bfc25c907f38e7f9dc498e8f43000d77327ef:
-
-  watch_queue: rectify kernel-doc for init_watch() (2021-01-26 11:16:34 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/keys-cve-2020-26541
-
-for you to fetch changes up to 0b641da796d30d00f3b055e7a94ce9426107428a:
-
-  integrity: Load mokx variables into the blacklist keyring (2021-02-03 15:39:04 +0000)
-
-----------------------------------------------------------------
-Fix CVE-2020-26541
-
-----------------------------------------------------------------
-Eric Snowberg (4):
-      certs: Add EFI_CERT_X509_GUID support for dbx entries
-      certs: Move load_system_certificate_list to a common function
-      certs: Add ability to preload revocation certs
-      integrity: Load mokx variables into the blacklist keyring
-
- certs/Kconfig                                      |  8 ++++
- certs/Makefile                                     | 20 ++++++--
- certs/blacklist.c                                  | 49 +++++++++++++++++++
- certs/blacklist.h                                  | 12 +++++
- certs/common.c                                     | 56 ++++++++++++++++++++++
- certs/common.h                                     |  9 ++++
- certs/revocation_certificates.S                    | 21 ++++++++
- certs/system_keyring.c                             | 55 ++++-----------------
- include/keys/system_keyring.h                      | 11 +++++
- scripts/Makefile                                   |  1 +
- .../integrity/platform_certs/keyring_handler.c     | 11 +++++
- security/integrity/platform_certs/load_uefi.c      | 20 +++++++-
- 12 files changed, 222 insertions(+), 51 deletions(-)
- create mode 100644 certs/common.c
- create mode 100644 certs/common.h
- create mode 100644 certs/revocation_certificates.S
+Cheers,
+Longman
 
