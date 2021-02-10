@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2CB317002
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953F9316FFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbhBJTUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:20:42 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:53887 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234626AbhBJTUZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:20:25 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l9v1a-00015o-Qo; Wed, 10 Feb 2021 19:19:42 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next][V2] media: uvcvideo: remove duplicated dma_dev assignments
-Date:   Wed, 10 Feb 2021 19:19:42 +0000
-Message-Id: <20210210191942.147083-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S234620AbhBJTUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:20:21 -0500
+Received: from mga17.intel.com ([192.55.52.151]:36813 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234541AbhBJTUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 14:20:13 -0500
+IronPort-SDR: l0e5rbCZPLaDzmXMNc5M1fJAgiVCbt7s6OIIMT7VlZKMCHvfqeDRvhoQj35pws+v4iQtTS8tUT
+ 58HJw4Gc/Zwg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="161887925"
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="161887925"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 11:19:50 -0800
+IronPort-SDR: 0dffhSzRA77MMCeNSietWGZ0X0f7VfDjvonMrXOOoPODV79KYe3lcueWGES11+65DFPUm6H8kn
+ OAvBSqYf2vgA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="488844956"
+Received: from otc-chromeosbuild-1.jf.intel.com ([10.54.30.83])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Feb 2021 11:19:50 -0800
+From:   Casey Bowman <casey.g.bowman@intel.com>
+To:     mika.westerberg@linux.intel.com
+Cc:     dvhart@infradead.org, andy@infradead.org, azhar.shaikh@intel.com,
+        casey.g.bowman@intel.com, lee.jones@linaro.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        heikki.krogerus@linux.intel.com
+Subject: [PATCH] platform/x86: intel_scu_ipc: Increase virtual timeout from 3 to 5 seconds
+Date:   Wed, 10 Feb 2021 11:20:41 -0800
+Message-Id: <20210210192041.17022-1-casey.g.bowman@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Increasing the virtual timeout time to account for scenarios
+that may require more time, like DisplayPort Multi-Stream Transport
+(DP MST), where the disconnect time can be extended longer than
+usual.
 
-The assignment to dma_dev has been performed twice in one
-statement. Fix this by removing the extraneous assignment.
+The recommended timeout range is 5-10 seconds, of which
+we will take the lower bound.
 
-Addresses-Coverity: ("Evaluation order violation")
-Fixes: fdcd02a641e2 ("media: uvcvideo: Use dma_alloc_noncontiguos API")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Casey Bowman <casey.g.bowman@intel.com>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 ---
+ drivers/platform/x86/intel_scu_ipc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-V2:  Fix 2nd occurrence of this same issue.
-
----
- drivers/media/usb/uvc/uvc_video.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index dc81f9a86eca..6f2f308d86fe 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -1105,7 +1105,7 @@ static inline struct device *stream_to_dmadev(struct uvc_streaming *stream)
+diff --git a/drivers/platform/x86/intel_scu_ipc.c b/drivers/platform/x86/intel_scu_ipc.c
+index d9cf7f7602b0..9171a46a9e3f 100644
+--- a/drivers/platform/x86/intel_scu_ipc.c
++++ b/drivers/platform/x86/intel_scu_ipc.c
+@@ -75,7 +75,7 @@ struct intel_scu_ipc_dev {
+ #define IPC_READ_BUFFER		0x90
  
- static void uvc_urb_dma_sync(struct uvc_urb *uvc_urb, bool for_device)
- {
--	struct device *dma_dev = dma_dev = stream_to_dmadev(uvc_urb->stream);
-+	struct device *dma_dev = stream_to_dmadev(uvc_urb->stream);
+ /* Timeout in jiffies */
+-#define IPC_TIMEOUT		(3 * HZ)
++#define IPC_TIMEOUT		(5 * HZ)
  
- 	if (for_device) {
- 		dma_sync_sgtable_for_device(dma_dev, uvc_urb->sgt,
-@@ -1586,7 +1586,7 @@ static void uvc_video_complete(struct urb *urb)
-  */
- static void uvc_free_urb_buffers(struct uvc_streaming *stream)
- {
--	struct device *dma_dev = dma_dev = stream_to_dmadev(stream);
-+	struct device *dma_dev = stream_to_dmadev(stream);
- 	struct uvc_urb *uvc_urb;
- 
- 	for_each_uvc_urb(uvc_urb, stream) {
+ static struct intel_scu_ipc_dev *ipcdev; /* Only one for now */
+ static DEFINE_MUTEX(ipclock); /* lock used to prevent multiple call to SCU */
 -- 
-2.30.0
+2.17.1
 
