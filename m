@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3153168EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F023168ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbhBJORO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:17:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59092 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232110AbhBJOPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:15:11 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7E9F1AC43;
-        Wed, 10 Feb 2021 14:14:27 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 15:14:25 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] mm,page_alloc: Make alloc_contig_range handle
- in-use hugetlb pages
-Message-ID: <20210210141425.GB3636@localhost.localdomain>
-References: <20210208103812.32056-1-osalvador@suse.de>
- <20210208103812.32056-2-osalvador@suse.de>
- <6aa21eb3-7bee-acff-8f3c-7c13737066ba@redhat.com>
- <20210210140941.GA3636@localhost.localdomain>
- <d38527b5-140d-15e5-c1c4-f381602eab46@redhat.com>
+        id S230014AbhBJORi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:17:38 -0500
+Received: from angie.orcam.me.uk ([157.25.102.26]:47382 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231737AbhBJOP6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:15:58 -0500
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id B1BBB9200B4; Wed, 10 Feb 2021 15:15:10 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id ACC779200B3;
+        Wed, 10 Feb 2021 15:15:10 +0100 (CET)
+Date:   Wed, 10 Feb 2021 15:15:10 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+cc:     Arnd Bergmann <arnd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] MIPS: make kgdb depend on FPU support
+In-Reply-To: <20210210122929.rgqfkoop4rsso3yo@maple.lan>
+Message-ID: <alpine.DEB.2.21.2102101444140.35623@angie.orcam.me.uk>
+References: <20210122110307.934543-1-arnd@kernel.org> <20210122110307.934543-2-arnd@kernel.org> <alpine.DEB.2.21.2102081748280.35623@angie.orcam.me.uk> <20210210113830.xeechzpctz5repv5@maple.lan> <alpine.DEB.2.21.2102101252580.35623@angie.orcam.me.uk>
+ <20210210122929.rgqfkoop4rsso3yo@maple.lan>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d38527b5-140d-15e5-c1c4-f381602eab46@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 03:11:05PM +0100, David Hildenbrand wrote:
-> On 10.02.21 15:09, Oscar Salvador wrote:
-> > On Wed, Feb 10, 2021 at 09:56:37AM +0100, David Hildenbrand wrote:
-> > > On 08.02.21 11:38, Oscar Salvador wrote:
-> > > > alloc_contig_range is not prepared to handle hugetlb pages and will
-> > > > fail if it ever sees one, but since they can be migrated as any other
-> > > > page (LRU and Movable), it makes sense to also handle them.
-> > > > 
-> > > > For now, do it only when coming from alloc_contig_range.
-> > > > 
-> > > > Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> > > > ---
-> > > >    mm/compaction.c | 17 +++++++++++++++++
-> > > >    mm/vmscan.c     |  5 +++--
-> > > >    2 files changed, 20 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/mm/compaction.c b/mm/compaction.c
-> > > > index e5acb9714436..89cd2e60da29 100644
-> > > > --- a/mm/compaction.c
-> > > > +++ b/mm/compaction.c
-> > > > @@ -940,6 +940,22 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
-> > > >    			goto isolate_fail;
-> > > >    		}
-> > > > +		/*
-> > > > +		 * Handle hugetlb pages only when coming from alloc_contig
-> > > > +		 */
-> > > > +		if (PageHuge(page) && cc->alloc_contig) {
-> > > > +			if (page_count(page)) {
-> > > 
-> > > I wonder if we should care about races here. What if someone concurrently
-> > > allocates/frees?
-> > > 
-> > > Note that PageHuge() succeeds on tail pages, isolate_huge_page() not, i
-> > > assume we'll have to handle that as well.
-> > > 
-> > > I wonder if it would make sense to move some of the magic to hugetlb code
-> > > and handle it there with less chances for races (isolate if used,
-> > > alloc-and-dissolve if not).
-> > 
-> > Yes, it makes sense to keep the magic in hugetlb code.
-> > Note, though, that removing all races might be tricky.
-> > 
-> > isolate_huge_page() checks for PageHuge under hugetlb_lock,
-> > so there is a race between a call to PageHuge(x) and a subsequent
-> > call to isolate_huge_page().
-> > But we should be fine as isolate_huge_page will fail in case the page is
-> > no longer HugeTLB.
-> > 
-> > Also, since isolate_migratepages_block() gets called with ranges
-> > pageblock aligned, we should never be handling tail pages in the core
-> > of the function. E.g: the same way we handle THP:
+On Wed, 10 Feb 2021, Daniel Thompson wrote:
+
+> >  NB if GDB sees a register padded out (FAOD it means all-x's rather than a 
+> > hex string placed throughout the respective slot) in a `g' packet, then it 
+> > will mark the register internally as "unavailable" and present it to the 
+> > receiver of the information as such rather than giving any specific value.  
+> > I don't remember offhand what the syntax for the `G' packet is in that 
+> > case; possibly GDB just sends all-zeros, and in any case you can't make 
+> > GDB write any specific value to such a register via any user
+> > interface.
 > 
-> Gigantic pages? (spoiler: see my comments to next patch :) )
+> kgdb doesn't track register validity and adding would be a fairly big
+> change. Everything internally (including some of the interactions with
+> arch code) is based on updating a binary shadow of register state which
+> is only bin2hex'ed just before transmitting a packet.
 
-Oh, yeah, that sucks.
-We had the same problem in scan_movable_pages/has_unmovable_pages
-with such pages.
+ I've had a peek and it doesn't appear to me it would be a big deal.
 
-Uhm, I will try to be more careful :-)
+ We have `gdb_regs' defined as an array of longs.  We'd just need a second 
+array for a register validity bitmap, which could for simplicity just have 
+a single bit per each byte of `gdb_regs'.  It would then be updated in 
+`pt_regs_to_gdb_regs' according to the result of `dbg_get_reg' across the 
+number of bits given by `dbg_reg_def[i].size'.  And then `kgdb_mem2hex' 
+would interpret the bitmap given as an extra argument accordingly.
 
--- 
-Oscar Salvador
-SUSE L3
+ It looks to me like a couple of lines of extra code really.
+
+> It will simply default them to zero and update them on a 'G' packet.
+
+ Ack.
+
+> >  The way the unavailability is shown depends on the interface used, i.e. 
+> > it will be different between the `info all-registers'/`info register $reg' 
+> > commands, and the `p $reg' command (or any expression involving `$reg'), 
+> > and the MI interface.  But in any case it will be unambiguous.
+> 
+> I guess this probably does create a technical protocol violation since
+> kgdb will reject per-register read/write for register that its report
+> says are zero rather then invalid.
+
+ Not a violation, as GDB won't ever issue a `p'/`P' packet for a register 
+that is in the range covered by `g'/`G'.  This is by design.  I'd have to 
+track down the justification, but this is the right thing really.
+
+ Also there is no issue with returning a rubbish value written with `G', 
+as the same already happens with any RSP debug stub (or for that matter 
+native GDB target) that deals with read-only registers.  If you attempt to 
+write one, then all the caches will keep the new value, and you will often 
+have to make the target resume execution before the value reported is 
+reset to the hardwired one.
+
+ Debug stubs often cache registers for performance reasons, and may not 
+even write them out unless execution is to be resumed, which often has 
+serious consequences if a write to a hardware registers has side effects.  
+For example I had that with an Intel Atom CPU switching between the real 
+and the protected mode with a CR0 register write issued via a debug probe 
+wired through the JTAG inteface.
+
+ Caching is surely what Linux `gdbserver' does, as is what all JTAG debug 
+interfaces do that I have come across, as JTAG access is usually painfully 
+slow.  Therefore in many cases GDB's `flushregs' command won't help as the 
+stub will happily resend what it has previously cached with any updates 
+applied locally only.
+
+ FWIW,
+
+  Maciej
