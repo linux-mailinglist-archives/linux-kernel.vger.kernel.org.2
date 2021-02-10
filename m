@@ -2,104 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378313163DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AE33163DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhBJKbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbhBJKTb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:19:31 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39311C06174A;
-        Wed, 10 Feb 2021 02:19:12 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id j12so944751pfj.12;
-        Wed, 10 Feb 2021 02:19:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Iof9qrGrOjDVGG80uBcZwlY5H3RKsoP1e9Sucn4XJt8=;
-        b=ZQa/tDejNb6Jn/RSxfU7tZw7o9wXC0gg6XpETJcn2NqqcNGTJH2uuLVD9bCACWQsz8
-         C5x7mIklmdk34LcM4UlCf6yxW+ARB/gTeFrxBbUXhrPjeVJQg0aN2RdI2imYsFb2cpMB
-         taiQqsApfs4YNbilt+U6X9FASV09RWp3MOs68FuZrEpluOQg3OTND6j2r2LFe6XVl8f8
-         dcUhhO9ikVA+eL5YuFu+oJVic6Kasyy5eXgl1834w9Usa9qQLaSIIFsPi/kGueZqg0f0
-         /75/wTr7TlV7nrO9kmy8cG6DpbFQYM4vkKbU6VjPRIgMDyWbd7VxZLftsP85aWmB3Ma9
-         tgmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Iof9qrGrOjDVGG80uBcZwlY5H3RKsoP1e9Sucn4XJt8=;
-        b=olmQjXRHY41W/osASSo+/pvY0KsZ7eFzG0NJxrOxhqlpHy1As1a5Zdyr/IT2anOdza
-         W+Hh75nDS8Ai8XzBEx1ygbYjW1A08Qkh8huE83hUitgkEB8nS1XYRxI5vQC9LsRoUj4c
-         GT3ht5Fu0wReT5l37R5/lRljYZA4d3tq+Q0NA98QCcET3bQRj5eVlZQNSQuFQiIv4fDT
-         RhvG7XJq6HjtqkO/NBZJCB+FjXsCAeF9HWhJ7fWBgJq2VmBw+aTNrvhn0GhaLBi/4b50
-         rRPJ1LtBJZZXsGPRYbrt1FEnKdwCjvxQnSluP6m1oBSsx039mtXXDHpRyNel3WaB8EG4
-         cPEg==
-X-Gm-Message-State: AOAM531CF94kTAXZT4WJHzfN1I6JFJtiQtMOlXLgNo1g2ry8DFwY3b5t
-        /nxqkmtOHs8PGFWBzA7fseZt5pyXFNODclRVyr8=
-X-Google-Smtp-Source: ABdhPJzB5oLUOxgzFNlj2kibKSE8q3WM7ypIH4vHlsOSpcHDoh9KJZ3UAonA8W5JQWfiZ6tIGXuoQYiefaV7DnfYwro=
-X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
- q20-20020a056a000854b02901b762330c5fmr2361426pfk.73.1612952351766; Wed, 10
- Feb 2021 02:19:11 -0800 (PST)
+        id S230159AbhBJKcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:32:04 -0500
+Received: from muru.com ([72.249.23.125]:59766 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230076AbhBJKUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:20:11 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 302D380EB;
+        Wed, 10 Feb 2021 10:19:46 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 12:19:25 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Hector Martin 'marcan' <marcan@marcan.st>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        soc@kernel.org, robh+dt@kernel.org,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
+ devicetree
+Message-ID: <YCOzLSqdsr83xf0b@atomide.com>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-19-marcan@marcan.st>
+ <20210208110441.25qc6yken4effd6c@kozik-lap>
+ <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
 MIME-Version: 1.0
-References: <20210210074946.155417-1-drew@beagleboard.org> <20210210074946.155417-2-drew@beagleboard.org>
- <87437daafdd86fa5c765ff9b17b6c7b097f0c317.camel@perches.com>
-In-Reply-To: <87437daafdd86fa5c765ff9b17b6c7b097f0c317.camel@perches.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 10 Feb 2021 12:18:55 +0200
-Message-ID: <CAHp75VeJT0dPATD-Ux+JCEYxNTigbOn_6D_F1VQkfL=vuiCBPQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] pinctrl: use to octal permissions for debugfs files
-To:     Joe Perches <joe@perches.com>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:30 AM Joe Perches <joe@perches.com> wrote:
-> On Tue, 2021-02-09 at 23:49 -0800, Drew Fustini wrote:
-
-> > -     debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
-> > +     debugfs_create_file("pinctrl-devices", 0400,
-> >                           debugfs_root, NULL, &pinctrl_devices_fops);
->
-> NAK.  You've changed the permission levels.
-
-NAK is usually given when the whole idea is broken. Here is not the
-case and you may have helped to amend the patch.
-
+* Hector Martin 'marcan' <marcan@marcan.st> [210208 12:05]:
+> On 08/02/2021 20.04, Krzysztof Kozlowski wrote:
 ...
 
-> And you have to keep the S_IFREG or'd along with the octal.
+> > > +	clk24: clk24 {
+> > 
+> > Just "clock". Node names should be generic.
+> 
+> Really? Almost every other device device tree uses unique clock node names.
 
-Perhaps time to read the code?
-https://elixir.bootlin.com/linux/latest/source/fs/debugfs/inode.c#L387
+Yeah please just use generic node name "clock". FYI, we're still hurting
+because of this for the TI clock node names years after because the drivers
+got a chance to rely on the clock node name..
 
-...
+Using "clock" means your clock driver code won't get a chance to wrongly
+use the node name and you avoid similar issues.
 
-> checkpatch does this conversion using this command line:
->
-> $ ./scripts/checkpatch.pl -f --show-types --terse drivers/pinctrl/*.[ch] --types=SYMBOLIC_PERMS --fix-inplace
+Regards,
 
-NAK! See above.
+Tony
 
-> -       debugfs_create_file("pins", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pins", S_IFREG | 0444,
->                             device_root, pctldev, &pinctrl_pins_fops);
-
--- 
-With Best Regards,
-Andy Shevchenko
