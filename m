@@ -2,436 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABE4316388
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69153163AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhBJKRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:17:37 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:3216 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230443AbhBJKHa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:07:30 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11AA6PKr022840;
-        Wed, 10 Feb 2021 05:06:36 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36hr7qc5xt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 05:06:36 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 11AA6YuN035806
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 10 Feb 2021 05:06:34 -0500
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 10 Feb 2021 02:06:33 -0800
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Wed, 10 Feb 2021 02:06:32 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Wed, 10 Feb 2021 02:06:32 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11AA5x0N018045;
-        Wed, 10 Feb 2021 05:06:30 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <dragos.bogdan@analog.com>, <rafael@kernel.org>,
-        <gregkh@linuxfoundation.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v4 17/17] tools: iio: convert iio_generic_buffer to use new IIO buffer API
-Date:   Wed, 10 Feb 2021 12:08:23 +0200
-Message-ID: <20210210100823.46780-18-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210210100823.46780-1-alexandru.ardelean@analog.com>
-References: <20210210100823.46780-1-alexandru.ardelean@analog.com>
+        id S231215AbhBJKW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:22:57 -0500
+Received: from mail-db8eur05on2078.outbound.protection.outlook.com ([40.107.20.78]:37152
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230302AbhBJKJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:09:21 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cT9i0Kh6BmWfJ7FDSSELLv7+ztzLMkB957qGfIZbqroYznW1sA9Y9BVbNUfCH/V08UkDGiwI6l8/paSEzP0LZ+YqHbZNUdTcLldPYtpHGK47x0QK1hPl2fpQDEQlbF0JKuQ82UBl1P5kCNP7Zl42XNQMmgQRE0n3dFV5146QVpoEZ/m3PYhS36vLgIw+ccNfk8fMW9mm6OD6lkX2osH3vg3eaDRKnZMQ5z3qS9zxtqhYhYyTxOhHidxxZKt35QyzQyxixx7zb4SzfQUr3vP2va24BI3ltfAOTyBeHEvoaL/7Wv3rcwxVFGtlQ4AUCU3RFUFNJHJ1/kjlizYgA3ShhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mkSCqEMIbki/ZQV1uwE6Y+aTejTgyR51Z2ansgi2fl0=;
+ b=iTNBI0WEMAXs5Q/y8pAWW7O/du2SNs3lb7qfadxfyoU7kn0F15aKR1U/GLwjwih0wtuMxTIFvS3iYWxGnOPBDr1isOIwN1ULAUsMiDuo+RCwKwDSWmgSxETFHJjwZtYCW3ORWWXO93iSswj9FOTN5hZaRWwDm4OO+CZFbA9V3XAlDPz1apXCVMuvmnZIBZrG50CO3NqJMHrGUv/F268iiwzvgiwtkJjJXaXjge20HbnIcg/eI21A35CbPxjqZCzTyQSLqHGk4/Ix+Pce46u0ZJUtWCHdUX9I7KxUDx+5y3NdG5V9TFy+bU0bd+G8Y4gWqfl4DK8Q/NwusqzBMfFlAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mkSCqEMIbki/ZQV1uwE6Y+aTejTgyR51Z2ansgi2fl0=;
+ b=ntVQEZ0d8Bi7ms99wOlSg3940EJvoKVm34Q7x1mPwNq8W3+YvFcY68xERqUfcIkL8HKCKezRcquTjDKTutdUl6G2FW9Bqgjyu9KOSD0pFynCRYXGvpVett1UtjLKwU0E5bSgGPASZ1tKVS6dDw2Wn1CafskzFz+CQiosqe3VOWs=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB5134.eurprd04.prod.outlook.com (2603:10a6:803:5f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19; Wed, 10 Feb
+ 2021 10:08:32 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::3df3:2eba:51bb:58d7]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::3df3:2eba:51bb:58d7%7]) with mapi id 15.20.3825.030; Wed, 10 Feb 2021
+ 10:08:32 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+CC:     "jiri@resnulli.us" <jiri@resnulli.us>,
+        "ivecera@redhat.com" <ivecera@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "roopa@nvidia.com" <roopa@nvidia.com>,
+        "nikolay@nvidia.com" <nikolay@nvidia.com>,
+        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>
+Subject: Re: [PATCH net-next v3 0/5] bridge: mrp: Extend br_mrp_switchdev_*
+Thread-Topic: [PATCH net-next v3 0/5] bridge: mrp: Extend br_mrp_switchdev_*
+Thread-Index: AQHW/yGN1ipr+GfbIUiWAmue2IqujqpRKxqA
+Date:   Wed, 10 Feb 2021 10:08:31 +0000
+Message-ID: <20210210100831.acnycww3wkeb6imt@skbuf>
+References: <20210209202112.2545325-1-horatiu.vultur@microchip.com>
+In-Reply-To: <20210209202112.2545325-1-horatiu.vultur@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [5.12.227.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 522297dc-9c55-4209-e178-08d8cdabd20d
+x-ms-traffictypediagnostic: VI1PR04MB5134:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB51340619C33B7D95C2A9879DE08D9@VI1PR04MB5134.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: R2Y+QhXpcMxPlJtkbcLijv8pPUH4fZB54PtM1pMTh2JP94ycJkjnQDzZlDbJmf5NcGSYxr22TjNqKFN7jmoqjKrrxADIpBlJNlb0Tqq1f6C2SPbRGa/VQumrsXLFL+vNO5cY1KhzezA7NYCf9diVbXhwgZy0fnGPFlBQTkI9u4narf8ZhMrfh57bbIduMAJJu0xbM1YQHV99Xi+HPJF7uKdaRmDCM5S7687DI43zXVN7pEmO5QjqrO7VloscLYHd2ireunjmaefP2gC/7Hr6tvXmwnb+V4t5FjrzDaXHlz7C7aMslC14Yz2czoKjI+8PfK/5VgDLsHBAf54xCn4A9t1mdJT9vnlp0drYDcBjmk69za5gaXehO/eXXHqTWi/kxrqWRUJdJxHNFOiH/42b4IZpSmy3KbyGH46qiZJvZR2uPlZzHzhP+O4OzyPC+lRN2HrFdjOZXbFIMFHWg4WElYLI8heAqqCfd0Ydk++MA9a4eRb1n/wuVN/GgZq1LS2WsOhijwZH6D3TlPh/zveUZA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(376002)(136003)(39860400002)(346002)(366004)(396003)(71200400001)(4326008)(2906002)(8676002)(66446008)(64756008)(66556008)(54906003)(66476007)(6506007)(83380400001)(76116006)(44832011)(1076003)(478600001)(5660300002)(26005)(33716001)(86362001)(8936002)(6486002)(66946007)(6512007)(6916009)(9686003)(316002)(186003)(7416002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?m9zF83YdmeW7+NUbFC8JOEve6GIR87QG2/cJkOYZWX9bXT9hQX3evC+am0eA?=
+ =?us-ascii?Q?Da4zFzdDc4so7Bj5jX2I31eU93dfMdquyEIMutxp5Q6hgRF8ge/7LF4cwsCD?=
+ =?us-ascii?Q?tpJtFWsCgBd0A1+H+/2tq9px1j7I+jSe2/CFqZuqiJsDuSgWMgDa0LRJesZa?=
+ =?us-ascii?Q?6Xw83YNmlASAwNWqXD+eCBkiyR964qvKpBZUAj3eVP2L61GBa0yEbSxJTFDz?=
+ =?us-ascii?Q?jccQAd25k+O75NF2SyZZgbkBo6rOkErA1DSjWNgn0SH4xulGt+7yAsDqtuJ/?=
+ =?us-ascii?Q?izeO12u8Af8EoOwF4BfqGnCTQdj/7F7qmTDDxahrV/GKbrI66dzmHQFZHm2B?=
+ =?us-ascii?Q?79+w2+ACjXUM7lZ4PzSKpHlrlSU0tubf02qRqkxewDWteSave/jn+QspueyG?=
+ =?us-ascii?Q?8od2RYIAbwAFN+mTG31YleBGnKG0xrzR9kGsSLaAekqZNicg0kl5PRSkOCTk?=
+ =?us-ascii?Q?b67O8NEftcIC8GkSWiquoDscbMkQWIEtiBuqx+tSKAUHQvFNMIyKh6bxrFM7?=
+ =?us-ascii?Q?HYzuvMLx56d0/ViKM8Fs0LcFwtuza4xIizSnuxg8m3hTur9PbGXMRnDphG7p?=
+ =?us-ascii?Q?qtl8xnzFWyjmkLpBVEfRf1kHGItHXt1l4LUklXV/jpWoRPYOIiLDXC3GOcwe?=
+ =?us-ascii?Q?1sq7DY5Gnj5CU/zwAUI3tG6VW6DQmlm27a9Wt6+8wOhBQt4/08B02UiwH5D0?=
+ =?us-ascii?Q?/J8b1kCDoNH9svmzI/dN6xF9PbYTQ/ClZAe8ngyvpn/50lp8QVFW03Utr7sY?=
+ =?us-ascii?Q?XVeX73pfPxrLUv3E5Eorl/z2WrezBNZfx+gy2K32rzTlPl9hICG3mxxt/29J?=
+ =?us-ascii?Q?LwWbDtzjPf5gJRxNd+blMDlyzGJ9P3fdw1VmLZQjuBJWrvw3NLvrg7vqeK3T?=
+ =?us-ascii?Q?IIJQnEl1vaxtDIGJ6WS0kN1dUb4a3+WjYOAyAUswRQJTnMQKtl+BWyaVLwPZ?=
+ =?us-ascii?Q?u7Z+xHcTxA0k4IeDfawcfHkr7hO/2yiBoxp1mrYPPQNeGclZquPj6C+0hrEz?=
+ =?us-ascii?Q?0L3u32MG7Mvh6081q023Ct441sIBVLkqP+QPe/1rK7PJz/STr02/cX5TsWpq?=
+ =?us-ascii?Q?4y2fvgSXcKHng9NGcq/Kgd8c4NkxKOaTJqfFcFOHOT4tFeD/h9zfVJmumGAT?=
+ =?us-ascii?Q?ryOdHKdHG/hrbw5WWoNO++LlGB/BNogdtaDobPSnSOKgWZPbZ/tRb5ATtFXu?=
+ =?us-ascii?Q?RSo4zzbPIbcU6WAqhAmaA+vo6OhD/9yCPI4WGAUbh+mf1gJCY5UJhcgQhMr7?=
+ =?us-ascii?Q?8Abf5ZgA2Q5VGn1vo8UQPqmSJF0pbwgchNJ/O+tP8Py1KadmMjJtG9JlPoyE?=
+ =?us-ascii?Q?YONY3KqN4FJKkZZZr1obRd/K?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <90E48C016380FC4182CC031CB1AA155D@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_03:2021-02-10,2021-02-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 clxscore=1015 spamscore=0 phishscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100098
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 522297dc-9c55-4209-e178-08d8cdabd20d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2021 10:08:31.9812
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CD7omGggi78p01JxJSzu4QIIV/KDQRe/6uOWVhLkmm13LLzcnyhbWAnxbsWykrFLlb/ELpSGf/M5rHC70vNj6A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change makes use of the new IIO buffer API to read data from an IIO
-buffer.
-It doesn't read the /sys/bus/iio/devices/iio:deviceX/scan_elements dir
-anymore, it reads /sys/bus/iio/devices/iio:deviceX/bufferY, where all the
-scan_elements have been merged together with the old/classical buffer
-attributes.
+Hi Horatiu,
 
-And it makes use of the new IIO_BUFFER_GET_FD_IOCTL ioctl to get an FD for
-the IIO buffer for which to read data from.
-It also does a quick sanity check to see that -EBUSY is returned if reading
-the chardev after the ioctl() has succeeded.
+On Tue, Feb 09, 2021 at 09:21:07PM +0100, Horatiu Vultur wrote:
+> This patch series extends MRP switchdev to allow the SW to have a better
+> understanding if the HW can implement the MRP functionality or it needs
+> to help the HW to run it. There are 3 cases:
+> - when HW can't implement at all the functionality.
+> - when HW can implement a part of the functionality but needs the SW
+>   implement the rest. For example if it can't detect when it stops
+>   receiving MRP Test frames but it can copy the MRP frames to CPU to
+>   allow the SW to determine this.  Another example is generating the MRP
+>   Test frames. If HW can't do that then the SW is used as backup.
+> - when HW can implement completely the functionality.
+>=20
+> So, initially the SW tries to offload the entire functionality in HW, if
+> that fails it tries offload parts of the functionality in HW and use the
+> SW as helper and if also this fails then MRP can't run on this HW.
+>=20
+> Also implement the switchdev calls for Ocelot driver. This is an example
+> where the HW can't run completely the functionality but it can help the S=
+W
+> to run it, by trapping all MRP frames to CPU.
+>=20
+> v3:
+>  - implement the switchdev calls needed by Ocelot driver.
+> v2:
+>  - fix typos in comments and in commit messages
+>  - remove some of the comments
+>  - move repeated code in helper function
+>  - fix issue when deleting a node when sw_backup was true
+>=20
+> Horatiu Vultur (5):
+>   switchdev: mrp: Extend ring_role_mrp and in_role_mrp
+>   bridge: mrp: Add 'enum br_mrp_hw_support'
+>   bridge: mrp: Extend br_mrp_switchdev to detect better the errors
+>   bridge: mrp: Update br_mrp to use new return values of
+>     br_mrp_switchdev
+>   net: mscc: ocelot: Add support for MRP
+>=20
+>  drivers/net/ethernet/mscc/ocelot_net.c     | 154 +++++++++++++++++++
+>  drivers/net/ethernet/mscc/ocelot_vsc7514.c |   6 +
+>  include/net/switchdev.h                    |   2 +
+>  include/soc/mscc/ocelot.h                  |   6 +
+>  net/bridge/br_mrp.c                        |  43 ++++--
+>  net/bridge/br_mrp_switchdev.c              | 171 +++++++++++++--------
+>  net/bridge/br_private_mrp.h                |  38 +++--
+>  7 files changed, 327 insertions(+), 93 deletions(-)
+>=20
+> --=20
+> 2.27.0
+>=20
 
-This was tested with the following cases:
- 1. Tested buffer0 works with ioctl()
- 2. Tested that buffer0 can't be opened via /dev/iio:deviceX after ioctl()
- 3. Moved valid buffer0 to be buffer1, and tested that data comes from it
+Which net-next commit can these patches be applied to? On the current
+master I get:
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- tools/iio/Makefile             |   1 +
- tools/iio/iio_generic_buffer.c | 102 +++++++++++++++++++++++++++------
- tools/iio/iio_utils.c          |  13 +++--
- tools/iio/iio_utils.h          |   4 +-
- 4 files changed, 96 insertions(+), 24 deletions(-)
-
-diff --git a/tools/iio/Makefile b/tools/iio/Makefile
-index 3de763d9ab70..5d12ac4e7f8f 100644
---- a/tools/iio/Makefile
-+++ b/tools/iio/Makefile
-@@ -27,6 +27,7 @@ include $(srctree)/tools/build/Makefile.include
- #
- $(OUTPUT)include/linux/iio: ../../include/uapi/linux/iio
- 	mkdir -p $(OUTPUT)include/linux/iio 2>&1 || true
-+	ln -sf $(CURDIR)/../../include/uapi/linux/iio/buffer.h $@
- 	ln -sf $(CURDIR)/../../include/uapi/linux/iio/events.h $@
- 	ln -sf $(CURDIR)/../../include/uapi/linux/iio/types.h $@
- 
-diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
-index 7c7240553777..c796a1d9ed20 100644
---- a/tools/iio/iio_generic_buffer.c
-+++ b/tools/iio/iio_generic_buffer.c
-@@ -30,6 +30,8 @@
- #include <inttypes.h>
- #include <stdbool.h>
- #include <signal.h>
-+#include <sys/ioctl.h>
-+#include <linux/iio/buffer.h>
- #include "iio_utils.h"
- 
- /**
-@@ -197,7 +199,7 @@ static void process_scan(char *data, struct iio_channel_info *channels,
- 	printf("\n");
- }
- 
--static int enable_disable_all_channels(char *dev_dir_name, int enable)
-+static int enable_disable_all_channels(char *dev_dir_name, int buffer_idx, int enable)
- {
- 	const struct dirent *ent;
- 	char scanelemdir[256];
-@@ -205,7 +207,7 @@ static int enable_disable_all_channels(char *dev_dir_name, int enable)
- 	int ret;
- 
- 	snprintf(scanelemdir, sizeof(scanelemdir),
--		 FORMAT_SCAN_ELEMENTS_DIR, dev_dir_name);
-+		 FORMAT_SCAN_ELEMENTS_DIR, dev_dir_name, buffer_idx);
- 	scanelemdir[sizeof(scanelemdir)-1] = '\0';
- 
- 	dp = opendir(scanelemdir);
-@@ -243,6 +245,7 @@ static void print_usage(void)
- 		"Capture, convert and output data from IIO device buffer\n"
- 		"  -a         Auto-activate all available channels\n"
- 		"  -A         Force-activate ALL channels\n"
-+		"  -b <n>     The buffer which to open (by index), default 0\n"
- 		"  -c <n>     Do n conversions, or loop forever if n < 0\n"
- 		"  -e         Disable wait for event (new data)\n"
- 		"  -g         Use trigger-less mode\n"
-@@ -259,6 +262,7 @@ static void print_usage(void)
- static enum autochan autochannels = AUTOCHANNELS_DISABLED;
- static char *dev_dir_name = NULL;
- static char *buf_dir_name = NULL;
-+static int buffer_idx = 0;
- static bool current_trigger_set = false;
- 
- static void cleanup(void)
-@@ -286,7 +290,7 @@ static void cleanup(void)
- 
- 	/* Disable channels if auto-enabled */
- 	if (dev_dir_name && autochannels == AUTOCHANNELS_ACTIVE) {
--		ret = enable_disable_all_channels(dev_dir_name, 0);
-+		ret = enable_disable_all_channels(dev_dir_name, buffer_idx, 0);
- 		if (ret)
- 			fprintf(stderr, "Failed to disable all channels\n");
- 		autochannels = AUTOCHANNELS_DISABLED;
-@@ -333,7 +337,9 @@ int main(int argc, char **argv)
- 	unsigned long long j;
- 	unsigned long toread;
- 	int ret, c;
--	int fp = -1;
-+	struct stat st;
-+	int fd = -1;
-+	int buf_fd = -1;
- 
- 	int num_channels = 0;
- 	char *trigger_name = NULL, *device_name = NULL;
-@@ -352,7 +358,7 @@ int main(int argc, char **argv)
- 
- 	register_cleanup();
- 
--	while ((c = getopt_long(argc, argv, "aAc:egl:n:N:t:T:w:?", longopts,
-+	while ((c = getopt_long(argc, argv, "aAb:c:egl:n:N:t:T:w:?", longopts,
- 				NULL)) != -1) {
- 		switch (c) {
- 		case 'a':
-@@ -361,7 +367,20 @@ int main(int argc, char **argv)
- 		case 'A':
- 			autochannels = AUTOCHANNELS_ENABLED;
- 			force_autochannels = true;
--			break;	
-+			break;
-+		case 'b':
-+			errno = 0;
-+			buffer_idx = strtoll(optarg, &dummy, 10);
-+			if (errno) {
-+				ret = -errno;
-+				goto error;
-+			}
-+			if (buffer_idx < 0) {
-+				ret = -ERANGE;
-+				goto error;
-+			}
-+
-+			break;
- 		case 'c':
- 			errno = 0;
- 			num_loops = strtoll(optarg, &dummy, 10);
-@@ -518,7 +537,7 @@ int main(int argc, char **argv)
- 	 * Parse the files in scan_elements to identify what channels are
- 	 * present
- 	 */
--	ret = build_channel_array(dev_dir_name, &channels, &num_channels);
-+	ret = build_channel_array(dev_dir_name, buffer_idx, &channels, &num_channels);
- 	if (ret) {
- 		fprintf(stderr, "Problem reading scan element information\n"
- 			"diag %s\n", dev_dir_name);
-@@ -535,7 +554,7 @@ int main(int argc, char **argv)
- 	    (autochannels == AUTOCHANNELS_ENABLED && force_autochannels)) {
- 		fprintf(stderr, "Enabling all channels\n");
- 
--		ret = enable_disable_all_channels(dev_dir_name, 1);
-+		ret = enable_disable_all_channels(dev_dir_name, buffer_idx, 1);
- 		if (ret) {
- 			fprintf(stderr, "Failed to enable all channels\n");
- 			goto error;
-@@ -544,7 +563,7 @@ int main(int argc, char **argv)
- 		/* This flags that we need to disable the channels again */
- 		autochannels = AUTOCHANNELS_ACTIVE;
- 
--		ret = build_channel_array(dev_dir_name, &channels,
-+		ret = build_channel_array(dev_dir_name, buffer_idx, &channels,
- 					  &num_channels);
- 		if (ret) {
- 			fprintf(stderr, "Problem reading scan element "
-@@ -565,7 +584,7 @@ int main(int argc, char **argv)
- 		fprintf(stderr, "Enable channels manually in "
- 			FORMAT_SCAN_ELEMENTS_DIR
- 			"/*_en or pass -a to autoenable channels and "
--			"try again.\n", dev_dir_name);
-+			"try again.\n", dev_dir_name, buffer_idx);
- 		ret = -ENOENT;
- 		goto error;
- 	}
-@@ -576,12 +595,25 @@ int main(int argc, char **argv)
- 	 * be built rather than found.
- 	 */
- 	ret = asprintf(&buf_dir_name,
--		       "%siio:device%d/buffer", iio_dir, dev_num);
-+		       "%siio:device%d/buffer%d", iio_dir, dev_num, buffer_idx);
- 	if (ret < 0) {
- 		ret = -ENOMEM;
- 		goto error;
- 	}
- 
-+	if (stat(buf_dir_name, &st)) {
-+		fprintf(stderr, "Could not stat() '%s', got error %d: %s\n",
-+			buf_dir_name, errno, strerror(errno));
-+		ret = -errno;
-+		goto error;
-+	}
-+
-+	if (!S_ISDIR(st.st_mode)) {
-+		fprintf(stderr, "File '%s' is not a directory\n", buf_dir_name);
-+		ret = -EFAULT;
-+		goto error;
-+	}
-+
- 	if (!notrigger) {
- 		printf("%s %s\n", dev_dir_name, trigger_name);
- 		/*
-@@ -607,7 +639,8 @@ int main(int argc, char **argv)
- 	ret = write_sysfs_int("enable", buf_dir_name, 1);
- 	if (ret < 0) {
- 		fprintf(stderr,
--			"Failed to enable buffer: %s\n", strerror(-ret));
-+			"Failed to enable buffer '%s': %s\n",
-+			buf_dir_name, strerror(-ret));
- 		goto error;
- 	}
- 
-@@ -625,17 +658,50 @@ int main(int argc, char **argv)
- 	}
- 
- 	/* Attempt to open non blocking the access dev */
--	fp = open(buffer_access, O_RDONLY | O_NONBLOCK);
--	if (fp == -1) { /* TODO: If it isn't there make the node */
-+	fd = open(buffer_access, O_RDONLY | O_NONBLOCK);
-+	if (fd == -1) { /* TODO: If it isn't there make the node */
- 		ret = -errno;
- 		fprintf(stderr, "Failed to open %s\n", buffer_access);
- 		goto error;
- 	}
- 
-+	/* specify for which buffer index we want an FD */
-+	buf_fd = buffer_idx;
-+
-+	ret = ioctl(fd, IIO_BUFFER_GET_FD_IOCTL, &buf_fd);
-+	if (ret == -1 || buf_fd == -1) {
-+		ret = -errno;
-+		if (ret == -ENODEV || ret == -EINVAL)
-+			fprintf(stderr,
-+				"This device does not support buffers\n");
-+		else
-+			fprintf(stderr, "Failed to retrieve buffer fd\n");
-+		if (close(fd) == -1)
-+			perror("Failed to close character device file");
-+
-+		goto error;
-+	}
-+
-+	/* if this is buffer0, check that we get EBUSY after this point */
-+	if (buffer_idx == 0) {
-+		errno = 0;
-+		read_size = read(fd, data, 1);
-+		if (read_size > -1 || errno != EBUSY) {
-+			ret = -EFAULT;
-+			perror("Reading from '%s' should not be possible after ioctl()");
-+			goto error;
-+		}
-+	}
-+
-+	/* close now the main chardev FD and let the buffer FD work */
-+	if (close(fd) == -1)
-+		perror("Failed to close character device file");
-+	fd = -1;
-+
- 	for (j = 0; j < num_loops || num_loops < 0; j++) {
- 		if (!noevents) {
- 			struct pollfd pfd = {
--				.fd = fp,
-+				.fd = buf_fd,
- 				.events = POLLIN,
- 			};
- 
-@@ -653,7 +719,7 @@ int main(int argc, char **argv)
- 			toread = 64;
- 		}
- 
--		read_size = read(fp, data, toread * scan_size);
-+		read_size = read(buf_fd, data, toread * scan_size);
- 		if (read_size < 0) {
- 			if (errno == EAGAIN) {
- 				fprintf(stderr, "nothing available\n");
-@@ -670,7 +736,9 @@ int main(int argc, char **argv)
- error:
- 	cleanup();
- 
--	if (fp >= 0 && close(fp) == -1)
-+	if (fd >= 0 && close(fd) == -1)
-+		perror("Failed to close character device");
-+	if (buf_fd >= 0 && close(buf_fd) == -1)
- 		perror("Failed to close buffer");
- 	free(buffer_access);
- 	free(data);
-diff --git a/tools/iio/iio_utils.c b/tools/iio/iio_utils.c
-index a96002f2c2d5..aadee6d34c74 100644
---- a/tools/iio/iio_utils.c
-+++ b/tools/iio/iio_utils.c
-@@ -77,6 +77,7 @@ int iioutils_break_up_name(const char *full_name, char **generic_name)
-  * @mask: output a bit mask for the raw data
-  * @be: output if data in big endian
-  * @device_dir: the IIO device directory
-+ * @buffer_idx: the IIO buffer index
-  * @name: the channel name
-  * @generic_name: the channel type name
-  *
-@@ -85,8 +86,8 @@ int iioutils_break_up_name(const char *full_name, char **generic_name)
- static int iioutils_get_type(unsigned int *is_signed, unsigned int *bytes,
- 			     unsigned int *bits_used, unsigned int *shift,
- 			     uint64_t *mask, unsigned int *be,
--			     const char *device_dir, const char *name,
--			     const char *generic_name)
-+			     const char *device_dir, int buffer_idx,
-+			     const char *name, const char *generic_name)
- {
- 	FILE *sysfsfp;
- 	int ret;
-@@ -96,7 +97,7 @@ static int iioutils_get_type(unsigned int *is_signed, unsigned int *bytes,
- 	unsigned padint;
- 	const struct dirent *ent;
- 
--	ret = asprintf(&scan_el_dir, FORMAT_SCAN_ELEMENTS_DIR, device_dir);
-+	ret = asprintf(&scan_el_dir, FORMAT_SCAN_ELEMENTS_DIR, device_dir, buffer_idx);
- 	if (ret < 0)
- 		return -ENOMEM;
- 
-@@ -304,12 +305,13 @@ void bsort_channel_array_by_index(struct iio_channel_info *ci_array, int cnt)
- /**
-  * build_channel_array() - function to figure out what channels are present
-  * @device_dir: the IIO device directory in sysfs
-+ * @buffer_idx: the IIO buffer for this channel array
-  * @ci_array: output the resulting array of iio_channel_info
-  * @counter: output the amount of array elements
-  *
-  * Returns 0 on success, otherwise a negative error code.
-  **/
--int build_channel_array(const char *device_dir,
-+int build_channel_array(const char *device_dir, int buffer_idx,
- 			struct iio_channel_info **ci_array, int *counter)
- {
- 	DIR *dp;
-@@ -322,7 +324,7 @@ int build_channel_array(const char *device_dir,
- 	char *filename;
- 
- 	*counter = 0;
--	ret = asprintf(&scan_el_dir, FORMAT_SCAN_ELEMENTS_DIR, device_dir);
-+	ret = asprintf(&scan_el_dir, FORMAT_SCAN_ELEMENTS_DIR, device_dir, buffer_idx);
- 	if (ret < 0)
- 		return -ENOMEM;
- 
-@@ -503,6 +505,7 @@ int build_channel_array(const char *device_dir,
- 						&current->mask,
- 						&current->be,
- 						device_dir,
-+						buffer_idx,
- 						current->name,
- 						current->generic_name);
- 			if (ret < 0)
-diff --git a/tools/iio/iio_utils.h b/tools/iio/iio_utils.h
-index a5d0aa8a57d3..336752cade4f 100644
---- a/tools/iio/iio_utils.h
-+++ b/tools/iio/iio_utils.h
-@@ -12,7 +12,7 @@
- /* Made up value to limit allocation sizes */
- #define IIO_MAX_NAME_LENGTH 64
- 
--#define FORMAT_SCAN_ELEMENTS_DIR "%s/scan_elements"
-+#define FORMAT_SCAN_ELEMENTS_DIR "%s/buffer%d"
- #define FORMAT_TYPE_FILE "%s_type"
- 
- #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
-@@ -61,7 +61,7 @@ int iioutils_get_param_float(float *output, const char *param_name,
- 			     const char *device_dir, const char *name,
- 			     const char *generic_name);
- void bsort_channel_array_by_index(struct iio_channel_info *ci_array, int cnt);
--int build_channel_array(const char *device_dir,
-+int build_channel_array(const char *device_dir, int buffer_idx,
- 			struct iio_channel_info **ci_array, int *counter);
- int find_type_by_name(const char *name, const char *type);
- int write_sysfs_int(const char *filename, const char *basedir, int val);
--- 
-2.17.1
-
+Applying: switchdev: mrp: Extend ring_role_mrp and in_role_mrp
+Applying: bridge: mrp: Add 'enum br_mrp_hw_support'
+Applying: bridge: mrp: Extend br_mrp_switchdev to detect better the errors
+error: patch failed: net/bridge/br_mrp_switchdev.c:177
+error: net/bridge/br_mrp_switchdev.c: patch does not apply
+Patch failed at 0004 bridge: mrp: Extend br_mrp_switchdev to detect better =
+the errors
+hint: Use 'git am --show-current-patch' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".=
