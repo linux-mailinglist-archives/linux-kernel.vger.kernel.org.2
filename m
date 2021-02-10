@@ -2,222 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36889315FAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38AD315FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbhBJGpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 01:45:43 -0500
-Received: from mail-eopbgr750053.outbound.protection.outlook.com ([40.107.75.53]:41396
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232106AbhBJGpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232112AbhBJGpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 01:45:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232108AbhBJGpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Feb 2021 01:45:12 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=astm26aniAQNyK1DMPe0quCd3o4TnGPJmqLS9Rs8PHKDlsVJVmepS7T6RgLmM69gBHcQU+ZmrkAR3wvBzAB++Nh7LqyQWK1UHZy0dJ6TSSGzAnjvOOfz7tyGHIciWZNgsO9W5eLaLyP1T+xVF1MjZBvYMlYE9A056pSOYSUNGCt1L7wooxoIIAbfpl85vxO4RAwOm1bWY3vk9souLU5LxFWv4WWCHoAV/hcW9wyobVgPUMYjCsn80urVY6yoL2gptQBLsGmvoWBTpGrYoBJrYxMSJtH7QDSgrPjon3Mra3g/HK4gPAnN1Sjt+VYX9/sMP4soq2mVQcRxJSIrkmTcyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BhjJWuvonJWPXqMBpL1P7EPAg07h3Y01XWCBIRYYnjc=;
- b=jj96/nBFShExFxnmoDxVhS/ZXX3wR/7rKPsl4LLjg61GVsSZorDr5snB0KHBjNyoAlAMMtDLDOrkMoajqOCWRwY4myWLJhHNEOZOhTdyzBQH6cIt/bP+1SORUBbe5EB1hsRCabO1XxgeQoBnDNpFfYenNHDVv75kkXOY4d8ZD1Br1D3YkdGdZYMjAeDUz9iCRR1JKKzmJQezF/+5SACgepFj5aaaxJEKgVb7Gq7pZmI+UqA3AvO2594x8APXUZfHgKPJBMMb517vZWGb4EH69kd0rjJ1KaSj0iy2I7RLrfgx4cO4lWKA6J0fzseCkKCnQjaWb9a3xGAfzlyuT3NgvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BhjJWuvonJWPXqMBpL1P7EPAg07h3Y01XWCBIRYYnjc=;
- b=mH0j1816eO0pfSqFd5Fn8qn+IUJ2T0j3ABMvy/lDAyR43XlNBR/AqYwkBtP1+4C4Esvn22/lP/p0HwqNuXsURmt3AQzpdxIFE8wDgeURn2g1+ffjFpOFa/eFjkEtvek5znWViQq2zx0bBFy7KiIun7tSRZMu0JkONfphIQyJPUo=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=synaptics.com;
-Received: from BN8PR03MB4724.namprd03.prod.outlook.com (2603:10b6:408:96::21)
- by BN8PR03MB4723.namprd03.prod.outlook.com (2603:10b6:408:97::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.27; Wed, 10 Feb
- 2021 06:44:28 +0000
-Received: from BN8PR03MB4724.namprd03.prod.outlook.com
- ([fe80::34cf:5dc3:971:82a7]) by BN8PR03MB4724.namprd03.prod.outlook.com
- ([fe80::34cf:5dc3:971:82a7%5]) with mapi id 15.20.3846.026; Wed, 10 Feb 2021
- 06:44:28 +0000
-Date:   Wed, 10 Feb 2021 14:44:09 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] tee: optee: add invoke_fn tracepoints
-Message-ID: <20210210144409.36ecdaed@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR07CA0037.namprd07.prod.outlook.com
- (2603:10b6:a03:60::14) To BN8PR03MB4724.namprd03.prod.outlook.com
- (2603:10b6:408:96::21)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0368264E40;
+        Wed, 10 Feb 2021 06:44:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612939471;
+        bh=jStEIUQ286km6S08MAjI4CNXSWcCYWhr03EXQEkdyT8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J6VrXJCkNNyAI2a1xFPH4Ijal2e2jsrsIrz65qUw7jh0Xm/6yOg67MyygKnpvgQMJ
+         VVfrZzu0hAOekY7nG5SlVtRb5Pv4mRhWARwEA4sn0zNnOKLlOnZsJ5TUDCyWFI4Ou3
+         e64JOeicXAsXHAOAE3PpfAUDUP1MyIbt2B+OiH64=
+Date:   Wed, 10 Feb 2021 07:44:27 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] driver core: auxiliary bus: Fix calling stage for
+ auxiliary bus init
+Message-ID: <YCOAy8S4FI8CPr59@kroah.com>
+References: <161290894138.1332691.10728435940944534434.stgit@djiang5-desk3.ch.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR07CA0037.namprd07.prod.outlook.com (2603:10b6:a03:60::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Wed, 10 Feb 2021 06:44:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dd9e7cca-84cc-4ba9-6db2-08d8cd8f4ff9
-X-MS-TrafficTypeDiagnostic: BN8PR03MB4723:
-X-Microsoft-Antispam-PRVS: <BN8PR03MB4723267B26FD5C93B4254455ED8D9@BN8PR03MB4723.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IA4Bi1U4Lux4Z5ZQ6gVlVDQzNREOLA/8p/8C9tJ2MehSbGwhBpt/gglp0ZY9ImEvlNTWWakC6phTHCrfYnXvpefS473uM6chCgu22P1EUg4Ox5oxdYQ3oMGF0olIeey6J3YoNBivJaOS0BB0UBwDX/KOZ2BscwXCLAKelMUp1ruQ+PqfVQ5NTGgV+CzNculxcSzvHuk7ckrMnyHXGWQmNfw0A1/Qw2++Y2sah05bzI5u3yR1YAA2JDGH7h+4UXJenUXsEozcLl/JgrL9u/TEFXq1YZnyyWxXRbWuLRSNfhsY+YqYR2kLTVXqo90hWKXxAALeGSkzIoX5R6fGpPOyiWK809nWqbea70S0lmUZk2Y1x4s6QMDm5NEfwEhG539AIw3X+g8QzEg7jQ/5OC5p1xEwgOpRETxpt7Rp6dzK8ZMD0ysHPmnItV5x+pe+89A6wIt3zvXhKQmtTflq7V6Xr14wp/Of/7SxREk/Y7I3VcGbny92fhIeCzn312OBNbAB0WDwQd1/THr5KiPzZqBaWA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR03MB4724.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(346002)(376002)(136003)(366004)(7696005)(52116002)(956004)(6666004)(186003)(9686003)(8936002)(16526019)(1076003)(8676002)(110136005)(2906002)(86362001)(478600001)(83380400001)(26005)(66946007)(316002)(66556008)(66476007)(55016002)(5660300002)(4326008)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ZiyBgu3F0L1nN2Sy3TDLNkgqcYe2TRxMJWIHCyySB5muay+w+NCf0KNo9BQg?=
- =?us-ascii?Q?ahN9ER43RhBXUtou0P3XE5qlgcc2pOOjIOkGmKJgMdopkXB1mr+WBv357Qd6?=
- =?us-ascii?Q?ugV3hriOYm1AoGLfofFfa7oclvm2eGLqhLfR+Sqdq3DKC7SFBjvXkb7UgTb+?=
- =?us-ascii?Q?tvs8JNAarafYKdeDepua769lsylZk4F9oo80z9nATy4GUqYyLHZI1mm1n3RD?=
- =?us-ascii?Q?cfcfLQcsGBc+BsVDEWTYr3f+pqfwI0rIi72WGgGb9PVoW199lgAKjuC6c8P7?=
- =?us-ascii?Q?VaBgAre6epdALKHvdgqe9g/PKD5ACBORvw7admDqym950owWSpaPyJHLxX/N?=
- =?us-ascii?Q?xBurvjdztg7DV6L0KoWl/88K2QntE4dUwXD+lCjlnkeAkptpdku95MvucoRI?=
- =?us-ascii?Q?2o/0pNJta3KZ+MveId4kyl/d4v/hTPA6T/OHFfDEaN/pycVIEDytLPdQ0cD8?=
- =?us-ascii?Q?i5sJgs/TRDzitFXgFTIyRXwDX98/2nrsgjjcPOrznciJAoRMOQUtMBWEqBvp?=
- =?us-ascii?Q?ACznqt6gq8Q9/VMHhh4HZINOJaJy2u0Zr47+bd/nNn7CkLl46YKrAKG9bGAt?=
- =?us-ascii?Q?MS2hRs8IgU1DEabXOxPMbvmD5IsAO6Hwg+QKZ98LPz44MP02Be7mLdikm76t?=
- =?us-ascii?Q?LaRTU/aJvd5cs1NqCkJBQD32T61b2tQDv0bcWfMmG0p/j5WJa0PnH7nFSqcn?=
- =?us-ascii?Q?fpWGGd+/4rafu666oa7hDF+vpTulQu/7+m2AdDCxgoCHynihSmtgrUgsfos3?=
- =?us-ascii?Q?1qbZBUqoLdSpexGjEF1UGOD97wyiPa/XkENgRduuM1OZ+ktwPEI9ZjgbcvCA?=
- =?us-ascii?Q?a/AFqirZx11wVTDca0oM1+4AZxWEn6WQNzOxfdq1wKXjQqiSH+yWj87jL6fB?=
- =?us-ascii?Q?gQbIFxhtKKzn80TXl6SKWWnU0DhKdlgV3vw9qXO2UL4ODbCSVEWO1vBoZ/w/?=
- =?us-ascii?Q?NlXdx+XZb9/llfyTu3bLE0wzQ0H3yH94q+VBpCMnNSPPwI37EsYjPvtCmyoT?=
- =?us-ascii?Q?ySq3biU+IufBqCTiojTeQYoT14DNcM6OPVTizb/xrmj/0kzCXcJWApSHFnxB?=
- =?us-ascii?Q?coLdi82v29n6lHRXfUZ2zrzssBEmr9/qK1ifwho0SY+hHKN5uV7NxckvLFEp?=
- =?us-ascii?Q?UeI8qEF4s+yGnvOCxYJFZIxRJTTyX13ieVvFVpxaiYDQ9cXUpb2ChQOYd7Om?=
- =?us-ascii?Q?5VwU8cqel2BK84J5s1UbcypNI9G6f6AF9JbyTDnHFVdhKuDpcs8zqW18fzid?=
- =?us-ascii?Q?7vD4Nmd2NTZGOcpD7G5KrNrV9b6NbiZS8JBmGul7YiMiZ07uan5Mx0RAgCkX?=
- =?us-ascii?Q?+WYX6WRaPsHBA7zEzb2SthFf?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd9e7cca-84cc-4ba9-6db2-08d8cd8f4ff9
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR03MB4724.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 06:44:28.0518
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UD8wuVZaoLobaaq/Xh3CpSA6OcFQAplbZGNKS6YbessIWGd6rcl4mXcK97MOjt/OsS4ax77LfjXG2rKVc8lxyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR03MB4723
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161290894138.1332691.10728435940944534434.stgit@djiang5-desk3.ch.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tracepoints to retrieve information about the invoke_fn. This would
-help to measure how many invoke_fn are triggered and how long it takes
-to complete one invoke_fn call.
+On Tue, Feb 09, 2021 at 03:17:00PM -0700, Dave Jiang wrote:
+> When the auxiliary device code is built into the kernel, it can be executed
+> before the auxiliary bus is registered. This causes bus->p to be not
+> allocated and triggers a NULL pointer dereference when the auxiliary bus
+> device gets added with bus_add_device(). Call the auxiliary_bus_init()
+> under driver_init() so the bus is initialized before devices.
+> 
+> Below is the kernel splat for the bug:
+> [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
+> [ 1.950670] #PF: supervisor read access in kernel mode
+> [ 1.950670] #PF: error_code(0x0000) - not-present page
+> [ 1.950670] PGD 0
+> [ 1.950670] Oops: 0000 1 SMP NOPTI
+> [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
+> [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
+> [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
+> 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
+> [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
+> [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
+> [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
+> [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
+> [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
+> [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
+> [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
+> [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
+> [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+> [ 1.950670] PKRU: 55555554
+> [ 1.950670] Call Trace:
+> [ 1.950670] device_add+0x3ee/0x850
+> [ 1.950670] __auxiliary_device_add+0x47/0x60
+> [ 1.950670] idxd_pci_probe+0xf77/0x1180
+> [ 1.950670] local_pci_probe+0x4a/0x90
+> [ 1.950670] pci_device_probe+0xff/0x1b0
+> [ 1.950670] really_probe+0x1cf/0x440
+> [ 1.950670] ? rdinit_setup+0x31/0x31
+> [ 1.950670] driver_probe_device+0xe8/0x150
+> [ 1.950670] device_driver_attach+0x58/0x60
+> [ 1.950670] __driver_attach+0x8f/0x150
+> [ 1.950670] ? device_driver_attach+0x60/0x60
+> [ 1.950670] ? device_driver_attach+0x60/0x60
+> [ 1.950670] bus_for_each_dev+0x79/0xc0
+> [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
+> [ 1.950670] driver_attach+0x1e/0x20
+> [ 1.950670] bus_add_driver+0x154/0x1f0
+> [ 1.950670] driver_register+0x70/0xc0
+> [ 1.950670] __pci_register_driver+0x54/0x60
+> [ 1.950670] idxd_init_module+0xe2/0xfc
+> [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
+> [ 1.950670] do_one_initcall+0x4a/0x1e0
+> [ 1.950670] kernel_init_freeable+0x1fc/0x25c
+> [ 1.950670] ? rest_init+0xba/0xba
+> [ 1.950670] kernel_init+0xe/0x116
+> [ 1.950670] ret_from_fork+0x1f/0x30
+> [ 1.950670] Modules linked in:
+> [ 1.950670] CR2: 0000000000000060
+> [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
+> 
+> Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+> Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
+> Acked-by: Dave Ertman <david.m.ertman@intel.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+> ---
+> 
+> v2:
+> - Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
+> 
+>  drivers/base/auxiliary.c |   10 +---------
+>  drivers/base/base.h      |    5 +++++
+>  drivers/base/init.c      |    1 +
+>  3 files changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+> index 8336535f1e11..8ff389653126 100644
+> --- a/drivers/base/auxiliary.c
+> +++ b/drivers/base/auxiliary.c
+> @@ -260,19 +260,11 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
+>  }
+>  EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
+>  
+> -static int __init auxiliary_bus_init(void)
+> +int __init auxiliary_bus_init(void)
+>  {
+>  	return bus_register(&auxiliary_bus_type);
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
+Ok, you return an int, and then...
 
-Since v1:
- - add BUILD_BUG_ON() macro usage to make sure that the size of what is being
-   copied, is not smaller than the amount being copied. Thank Steve.
- - move optee_trace.h to keep include headers sorted
+>  }
+>  
+> -static void __exit auxiliary_bus_exit(void)
+> -{
+> -	bus_unregister(&auxiliary_bus_type);
+> -}
+> -
+> -module_init(auxiliary_bus_init);
+> -module_exit(auxiliary_bus_exit);
+> -
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_DESCRIPTION("Auxiliary Bus");
+>  MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
+> diff --git a/drivers/base/base.h b/drivers/base/base.h
+> index f5600a83124f..978ad265c42e 100644
+> --- a/drivers/base/base.h
+> +++ b/drivers/base/base.h
+> @@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
+>  extern int platform_bus_init(void);
+>  extern void cpu_dev_init(void);
+>  extern void container_dev_init(void);
+> +#ifdef CONFIG_AUXILIARY_BUS
+> +extern int auxiliary_bus_init(void);
+> +#else
+> +static inline int auxiliary_bus_init(void) { return 0; }
+> +#endif
+>  
+>  struct kobject *virtual_device_parent(struct device *dev);
+>  
+> diff --git a/drivers/base/init.c b/drivers/base/init.c
+> index 908e6520e804..a9f57c22fb9e 100644
+> --- a/drivers/base/init.c
+> +++ b/drivers/base/init.c
+> @@ -32,6 +32,7 @@ void __init driver_init(void)
+>  	 */
+>  	of_core_init();
+>  	platform_bus_init();
+> +	auxiliary_bus_init();
 
- drivers/tee/optee/call.c        |  4 ++
- drivers/tee/optee/optee_trace.h | 67 +++++++++++++++++++++++++++++++++
- 2 files changed, 71 insertions(+)
- create mode 100644 drivers/tee/optee/optee_trace.h
+Ignore it :(
 
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index 780d7c4fd756..0da6fe50f1af 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -14,6 +14,8 @@
- #include <linux/uaccess.h>
- #include "optee_private.h"
- #include "optee_smc.h"
-+#define CREATE_TRACE_POINTS
-+#include "optee_trace.h"
- 
- struct optee_call_waiter {
- 	struct list_head list_node;
-@@ -138,9 +140,11 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
- 	while (true) {
- 		struct arm_smccc_res res;
- 
-+		trace_optee_invoke_fn_begin(&param);
- 		optee->invoke_fn(param.a0, param.a1, param.a2, param.a3,
- 				 param.a4, param.a5, param.a6, param.a7,
- 				 &res);
-+		trace_optee_invoke_fn_end(&param, &res);
- 
- 		if (res.a0 == OPTEE_SMC_RETURN_ETHREAD_LIMIT) {
- 			/*
-diff --git a/drivers/tee/optee/optee_trace.h b/drivers/tee/optee/optee_trace.h
-new file mode 100644
-index 000000000000..7c954eefa4bf
---- /dev/null
-+++ b/drivers/tee/optee/optee_trace.h
-@@ -0,0 +1,67 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * optee trace points
-+ *
-+ * Copyright (C) 2021 Synaptics Incorporated
-+ * Author: Jisheng Zhang <jszhang@kernel.org>
-+ */
-+
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM optee
-+
-+#if !defined(_TRACE_OPTEE_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_OPTEE_H
-+
-+#include <linux/arm-smccc.h>
-+#include <linux/tracepoint.h>
-+#include "optee_private.h"
-+
-+TRACE_EVENT(optee_invoke_fn_begin,
-+	TP_PROTO(struct optee_rpc_param *param),
-+	TP_ARGS(param),
-+
-+	TP_STRUCT__entry(
-+		__field(void *, param)
-+		__array(u32, args, 8)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->param = param;
-+		BUILD_BUG_ON(sizeof(*param) < sizeof(__entry->args));
-+		memcpy(__entry->args, param, sizeof(__entry->args));
-+	),
-+
-+	TP_printk("param=%p (%x, %x, %x, %x, %x, %x, %x, %x)", __entry->param,
-+		  __entry->args[0], __entry->args[1], __entry->args[2],
-+		  __entry->args[3], __entry->args[4], __entry->args[5],
-+		  __entry->args[6], __entry->args[7])
-+);
-+
-+TRACE_EVENT(optee_invoke_fn_end,
-+	TP_PROTO(struct optee_rpc_param *param, struct arm_smccc_res *res),
-+	TP_ARGS(param, res),
-+
-+	TP_STRUCT__entry(
-+		__field(void *, param)
-+		__array(unsigned long, rets, 4)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->param = param;
-+		BUILD_BUG_ON(sizeof(*res) < sizeof(__entry->rets));
-+		memcpy(__entry->rets, res, sizeof(__entry->rets));
-+	),
-+
-+	TP_printk("param=%p ret (%lx, %lx, %lx, %lx)", __entry->param,
-+		  __entry->rets[0], __entry->rets[1], __entry->rets[2],
-+		  __entry->rets[3])
-+);
-+#endif /* _TRACE_OPTEE_H */
-+
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_FILE optee_trace
-+
-+/* This part must be outside protection */
-+#include <trace/define_trace.h>
--- 
-2.30.0
+Please just make the function not return anything.
 
+thanks,
+
+greg k-h
