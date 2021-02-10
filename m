@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C9431698B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A972D31698F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhBJO5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:57:42 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:34458 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhBJO5d (ORCPT
+        id S231754AbhBJO6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:58:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26060 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230394AbhBJO6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:57:33 -0500
-Date:   Wed, 10 Feb 2021 17:56:40 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
- "usb"-prefixed names
-Message-ID: <20210210145640.xhvcnarq3xoeeesu@mobilestation>
-References: <20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru>
- <20201205155621.3045-10-Sergey.Semin@baikalelectronics.ru>
- <YBnZ8O+zI/dzrjDQ@builder.lan>
- <YBpnpj+0KHM1Q8l8@kroah.com>
+        Wed, 10 Feb 2021 09:58:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612969042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PA7CbQ28iF3COQPnO4RZrKLSnHnB37vlar5EOpU27eg=;
+        b=UO2z/dO4M1uW/buHIn9oJv7HzbeNmIv2sAF49BZNRitNp2JmJQVl7cDYdJd0E4UPmyjTiy
+        ++6b7oreIeE4F4mmyHIytVRuukf92XHTTHFAq26/z3oo8Z9PKANugs88TfN+BsUNk3XRvE
+        /ijDpivBnCztLumtpeM/R3VDjBeDiTE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-luhDp1vNMdKn38bF2w6E4Q-1; Wed, 10 Feb 2021 09:57:19 -0500
+X-MC-Unique: luhDp1vNMdKn38bF2w6E4Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30FCF106BC6D;
+        Wed, 10 Feb 2021 14:57:17 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-115-20.rdu2.redhat.com [10.10.115.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 42CFD57;
+        Wed, 10 Feb 2021 14:57:12 +0000 (UTC)
+Subject: Re: [PATCH v2 06/28] locking/rwlocks: Add contention detection for
+ rwlocks
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Davidlohr Bueso <dbueso@suse.de>
+References: <20210202185734.1680553-1-bgardon@google.com>
+ <20210202185734.1680553-7-bgardon@google.com>
+ <20210209203908.GA255655@roeck-us.net>
+ <3ee109cd-e406-4a70-17e8-dfeae7664f5f@redhat.com>
+ <20210209222519.GA178687@roeck-us.net>
+ <fc7792e2-26f1-2b37-fb79-002d8d6d4ef7@redhat.com>
+ <4e00a7a6-aad4-57cf-0cd3-93338a5f363f@roeck-us.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <d578ea0f-5177-929a-6a5f-4a3e79ab511c@redhat.com>
+Date:   Wed, 10 Feb 2021 09:57:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YBpnpj+0KHM1Q8l8@kroah.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <4e00a7a6-aad4-57cf-0cd3-93338a5f363f@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 10:06:46AM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Feb 02, 2021 at 05:02:08PM -0600, Bjorn Andersson wrote:
-> > On Sat 05 Dec 09:56 CST 2020, Serge Semin wrote:
-> > 
-> > > In accordance with the USB HCD/DRD schema all the USB controllers are
-> > > supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
-> > > existing DT-nodes will be renamed in a subsequent patch let's first make
-> > > sure the DWC3 Qualcomm driver supports them and second falls back to the
-> > > deprecated naming so not to fail on the legacy DTS-files passed to the
-> > > newer kernels.
-> > > 
-> > 
-> > Felipe, will you merge this, so that I can merge the dts patch depending
-> > on this into the Qualcomm DT tree?
-> 
-> Patches this old are long-gone out of our queues.  If it needs to be
-> applied to a linux-usb tree, please resend.
+On 2/10/21 1:04 AM, Guenter Roeck wrote:
+> On 2/9/21 4:27 PM, Waiman Long wrote:
+> [ ... ]
+>
+>> It is because in arch/mips/include/asm/spinlock.h, asm/qrwlock.h is included before asm/qspinlock.h. The compilation error should be gone if the asm/qrwlock.h is removed or moved after asm/qspinlock.h.
+>>
+>> I did a x86 build and there was no compilation issue.
+>>
+> I can not really comment on what exactly is wrong - I don't know the code well
+> enough to do that - but I don't think this is a valid argument.
+>
+> Anyway, it seems like mips is the only architecture affected by the problem.
+> I am not entirely sure, though - linux-next is too broken for that.
 
-Greg, Bjorn,
-I've revised and resent the series. Please find the recently posted
-patchset:
-Link: https://lore.kernel.org/lkml/20210208135154.6645-1-Sergey.Semin@baikalelectronics.ru/
+It does look like a rather common practice to include both qrwlock.h and 
+qspinlock.h in asm/spinlock.h file. I have just a patch to make sure 
+that qrwlock is always included after qspinlock.h if present. Hopefully 
+that can fix the compilation problem.
 
-Alas I've forgotten to Cc the linux-usb mailing list. Should I resend
-the series one more time?
+Cheers,
+Longman
 
--Sergey
-
-> 
-> thanks,
-> 
-> greg k-h
