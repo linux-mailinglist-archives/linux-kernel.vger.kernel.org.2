@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE783161BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBD23161B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhBJJB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:01:56 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:54966 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbhBJIya (ORCPT
+        id S229907AbhBJJBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:01:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53896 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230033AbhBJIy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:54:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612947269; x=1644483269;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zfGVEDQiiHC3/VPTUtcWx0x1XAWj0O1UB0Hg/LuXxFw=;
-  b=u1DFV4kmfsaOdmGf8fAHwuC2vtW24w2QjM6Wh+G3nXSmP4GGlrxwcv3S
-   Iir8CHcoS5/asmU4t1o8A6EZr/zFRM9aBrOViCFZpi7dwhUFL+gd7P+eT
-   IpoKUme8WOyDtT1kXDYHH4J9QdY7AeJeLUv6JivVcitYYxXE+FGssKTze
-   H/9p3xpRMIt2DQ9qKRhv/vrmueurlbKcUbMXQe2BW46nb34C6u3yjfrNU
-   jcGf4YvplezgsoC7EcpIdV5rqvENjhpV089D9kESgaHwv5XCgs8epUIr6
-   qwoGaNFLxeogmL+lLeylU+a/1OSiTIsGPNpdA8scJEZSUZNAP+U+tCP15
-   w==;
-IronPort-SDR: v2wB1KMnDSf4pRNFseM/pbZSQG2p1sIR71tX0F9GhfjYh+ldJ4Ev71FlADZW+zwM0/7KkkulI0
- 9YxDqERLN6FHAXAkFIOzDoJ3eBnqpkdLSL0na/OnyhAJBeIswzETprmYUA5RBXlfQOt/Io2Teg
- 4yYgvUyYfWLysmCeG+CcpjBihmQ5x3o/tR/tbEAswk2p+KSWdQCd3F9Cu4sCJMHMMwUpcfJfcO
- NrQbJy2HuhmdW3Q1mIRDYj64mt09RUh0/0A9izbAuDkBtCcOSO3lEMEfYaSWzR0hWK6eAlYG4e
- oBM=
-X-IronPort-AV: E=Sophos;i="5.81,167,1610434800"; 
-   d="scan'208";a="103270930"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 01:53:13 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 10 Feb 2021 01:53:13 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 10 Feb 2021 01:53:11 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-Subject: [PATCH v14 4/4] arm64: dts: sparx5: Add Sparx5 serdes driver node
-Date:   Wed, 10 Feb 2021 09:52:55 +0100
-Message-ID: <20210210085255.2006824-5-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210210085255.2006824-1-steen.hegelund@microchip.com>
-References: <20210210085255.2006824-1-steen.hegelund@microchip.com>
+        Wed, 10 Feb 2021 03:54:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612947182;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XbWilXPmhjifHrII7qdPfl8oFAeHMhd/LQtQOsMv3Eo=;
+        b=XOib9jgypu1hG3PK1/4MqHg1uECZnztUEOTGuY5aEDHnIa3W7YK4nhEzFaR9DojabyVjVK
+        2ifi27+KrsUWSBz1AUKM1ZLI0mJn2zmgot5EQgKsjBr16xRCANaJgXe6L5Hxq4DhuyP6GZ
+        382Rc89DGZhdk+lGdrCddsQJ9+37ZNs=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-o6vvhWNjNlm-24qsCP84Ng-1; Wed, 10 Feb 2021 03:53:00 -0500
+X-MC-Unique: o6vvhWNjNlm-24qsCP84Ng-1
+Received: by mail-ej1-f69.google.com with SMTP id yd11so1966285ejb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:53:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XbWilXPmhjifHrII7qdPfl8oFAeHMhd/LQtQOsMv3Eo=;
+        b=FTlJxEExje7f14+4WAG7IFb/LGjqXlU/Ie3VHof/Z8/cdqZFoCUaudapQg/H6MktAP
+         tTLPn4RTC+EBW2y4ka+wxhknodxusp05ST5D1nuoG8wcRbj16oA6tuaePu7EKjPVTaP+
+         WyMBNJhq3D/NW4mEmCGwQaRe8U01hL2d539wgoWHsG1lqm45yf52Uqf9JNvuf8tro9yB
+         nTAG2lArGqXgv/aBfOBFZCWtQfNoB6F4g/IPSXHkm/F0Gq1Ra+n+3A05cRMXtZF6FbBj
+         5uPh8AfbrklGW3fW/e8LDV/H4DY2tEp04trhfVPrw/Z0ZkjNpmXcOK4asKGE0bTuqOj2
+         tZkA==
+X-Gm-Message-State: AOAM531kKGzTRuhkr/4ebU4tGCEPHxVxeK/OtxMx1Ad+mP1potdmcQzG
+        i7xZuxvx2TFX1Co572Hx4VAeteSCmntYxQ+PiFra5fqgaC8qtVPDj3pDtSX9RNMRYshYmR7jnSq
+        S5fQ4xILEg1Ww8Tf09eg+7cb6d0OjsDv3z7iWiE0cDv5zj4Kdno9NkcXaawLIhyrHLZK+6wd+KQ
+        HY
+X-Received: by 2002:a17:906:f2cd:: with SMTP id gz13mr1935449ejb.83.1612947179141;
+        Wed, 10 Feb 2021 00:52:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw8SBuC2F4Xj7VAkMbqdL+su/Z8wad5yGl2uSiRycmqXw2K2IIxk6tQJI3KBJuEyXtUjul2aA==
+X-Received: by 2002:a17:906:f2cd:: with SMTP id gz13mr1935434ejb.83.1612947178962;
+        Wed, 10 Feb 2021 00:52:58 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id f13sm667102ejf.42.2021.02.10.00.52.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 00:52:58 -0800 (PST)
+Subject: Re: [PATCH -next] mfd: arizona: Make some symbols static
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+References: <20210210075626.1096193-1-weiyongjun1@huawei.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <c5d3a077-62ff-a5b5-d57e-e6a1858ea9db@redhat.com>
+Date:   Wed, 10 Feb 2021 09:52:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20210210075626.1096193-1-weiyongjun1@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Sparx5 serdes driver node, and enable it generally for all
-reference boards.
+Hi,
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On 2/10/21 8:56 AM, Wei Yongjun wrote:
+> The sparse tool complains as follows:
+> 
+> drivers/mfd/arizona-spi.c:28:31: warning:
+>  symbol 'reset_gpios' was not declared. Should it be static?
+> drivers/mfd/arizona-spi.c:29:31: warning:
+>  symbol 'ldoena_gpios' was not declared. Should it be static?
+> 
+> Those symbols are not used outside of arizona-spi.c, so this
+> commit marks them static.
+> 
+> Fixes: e933836744a2 ("mfd: arizona: Add support for ACPI enumeration of WM5102 connected over SPI")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 380281f312d8..29c606194bc7 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -383,5 +383,13 @@ tmon0: tmon@610508110 {
- 			#thermal-sensor-cells = <0>;
- 			clocks = <&ahb_clk>;
- 		};
-+
-+		serdes: serdes@10808000 {
-+			compatible = "microchip,sparx5-serdes";
-+			#phy-cells = <1>;
-+			clocks = <&sys_clk>;
-+			reg = <0x6 0x10808000 0x5d0000>;
-+		};
-+
- 	};
- };
--- 
-2.30.0
+Thank you for catching this.
+
+Patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+> ---
+>  drivers/mfd/arizona-spi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+> index 24a2c75d691a..aa1d6f94ae53 100644
+> --- a/drivers/mfd/arizona-spi.c
+> +++ b/drivers/mfd/arizona-spi.c
+> @@ -25,8 +25,8 @@
+>  #include "arizona.h"
+>  
+>  #ifdef CONFIG_ACPI
+> -const struct acpi_gpio_params reset_gpios = { 1, 0, false };
+> -const struct acpi_gpio_params ldoena_gpios = { 2, 0, false };
+> +static const struct acpi_gpio_params reset_gpios = { 1, 0, false };
+> +static const struct acpi_gpio_params ldoena_gpios = { 2, 0, false };
+>  
+>  static const struct acpi_gpio_mapping arizona_acpi_gpios[] = {
+>  	{ "reset-gpios", &reset_gpios, 1, },
+> 
 
