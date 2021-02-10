@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B39A31713E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36DC31713B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbhBJUWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:22:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44840 "EHLO mail.kernel.org"
+        id S233668AbhBJUWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:22:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232178AbhBJUUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:20:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 66E1E64E63;
+        id S233353AbhBJUUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 15:20:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id F1D4D64EDF;
         Wed, 10 Feb 2021 20:19:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612988362;
-        bh=dhSva5z9w5S8NaISHb9NApJpQbh3aZIVz54oFK1B5fY=;
+        s=k20201202; t=1612988363;
+        bh=GvmDyAd4JObio+94SF0DADk7u+lFPBSCoeBKnB7LDD8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=q0JRM/cuu4/frjHBT/ry41mGdzydcPH4dwFuYDaIum3s7atGxOrnWY/XXFwg/9zDB
-         2Uw7lzYngLCsKiSxQLFaLKv44VoSx6k7So8NxNc6BPsBvZD+fqnE/h8hPhMgGGs7+r
-         SxKQAAjuvyx8oOLRKC3w6XqQV6Ud8vHWC6uCnNYj3J2wafJL4ppWzvnSgj+b7kyT0h
-         wGqAcHPYu6+oxnAkBlkJAgHdBih03G6xqMJhP+zo6RSuJG5yWQHZIG1bSHp/WsddC0
-         3D7Y9O7r14Ov7V1MdSMNIkVU6VutIRhSftbfQm8FZCPV3xQDx5mvGbBvyISct1uQys
-         lSduHA6Td1xUQ==
+        b=sePBIE2u/s4DXeDA1KhYnewG+sQgk19FgeRL6Zvk2r5nzUksTYQPRba/IxGxPNZwK
+         t6AA12/ghzZCD8ProeW9s8419n6plx8KPZr5GFE4KGWrQTEU5k7KF/fqfZ1OdcTVUx
+         ggvIUfnn3bQKyHzsuW1+Zfj7JEvtDVkKJCDCPMHGNHq7Ho9BM6x5S58Kun0HaX5ZJX
+         EZTOYO8z3+Ta9ghpotjE8yLo/tF871NTyU5QHmZXChdZ9nDmZ/icYPgePCYkgYkmB4
+         TrFUsLZeOos8BV0C46018fgPgovteeIgpG6DF5er4ml4EY9FA1QceGXDC+7Lc8ajaf
+         Ex63oVp7dhnhg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5AEDA609F1;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ED121609E9;
         Wed, 10 Feb 2021 20:19:22 +0000 (UTC)
-Subject: Re: [GIT PULL] Power management fixes for v5.11-rc8
+Subject: Re: [GIT] Networking 
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0iEwAvR3EyQp0Qy=7ehQyufrUvMPR4CyCUdVd=qE-5OAg@mail.gmail.com>
-References: <CAJZ5v0iEwAvR3EyQp0Qy=7ehQyufrUvMPR4CyCUdVd=qE-5OAg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0iEwAvR3EyQp0Qy=7ehQyufrUvMPR4CyCUdVd=qE-5OAg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.11-rc8
-X-PR-Tracked-Commit-Id: d11a1d08a082a7dc0ada423d2b2e26e9b6f2525c
+In-Reply-To: <20210209.193611.1524785817913120444.davem@davemloft.net>
+References: <20210209.193611.1524785817913120444.davem@davemloft.net>
+X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210209.193611.1524785817913120444.davem@davemloft.net>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git refs/heads/master
+X-PR-Tracked-Commit-Id: b8776f14a47046796fe078c4a2e691f58e00ae06
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 291009f656e8eaebbdfd3a8d99f6b190a9ce9deb
-Message-Id: <161298836236.25163.12158861332802664204.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 6016bf19b3854b6e70ba9278a7ca0fce75278d3a
+Message-Id: <161298836296.25163.4791202972773784695.pr-tracker-bot@kernel.org>
 Date:   Wed, 10 Feb 2021 20:19:22 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To:     David Miller <davem@davemloft.net>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 10 Feb 2021 18:47:04 +0100:
+The pull request you sent on Tue, 09 Feb 2021 19:36:11 -0800 (PST):
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.11-rc8
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git refs/heads/master
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/291009f656e8eaebbdfd3a8d99f6b190a9ce9deb
+https://git.kernel.org/torvalds/c/6016bf19b3854b6e70ba9278a7ca0fce75278d3a
 
 Thank you!
 
