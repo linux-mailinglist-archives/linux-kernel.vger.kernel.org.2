@@ -2,192 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41263163B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B95253163B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhBJKX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42436 "EHLO
+        id S230466AbhBJKZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbhBJKLT (ORCPT
+        with ESMTP id S229919AbhBJKMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:11:19 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99767C061793
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:10:38 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id q2so2186812eds.11
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:10:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IZiMzhLdfVQZkFKa2UC3/BywnaDXeDau8xmJtr8dU38=;
-        b=DNbGyFxx3kCS9/j20Y9P0rU42KGYEhzoemRvo9Xx5kJTEHtH6dOpjcAMB2ApFDSSZ6
-         w+KePPGz15wBLKrgmQBv/viHii4cJ+ZfOBVKKMR02WAC48aYjp7NcjbGIKfP7NQ8LPk0
-         SSb4J4KKneDpKCbvsFqZASyTdtAFDyf5jcdwI7oSx/rA8dWPbG3dckmKRjY7Q6e9557K
-         /SheqyDEz6J+MxjG0oAaodZtA/Dn3uKhw6UCdJdaSLL+xC8lCnhs86plQIWDtdLE4Wez
-         Q5OanvDfJPW2jYJ83gBUDaaBcTvRloH4HjwfJwmAsFuRawX8ZMXEbcZRHgW7fXa9s0P+
-         osdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=IZiMzhLdfVQZkFKa2UC3/BywnaDXeDau8xmJtr8dU38=;
-        b=rPdmyXofVaIG0h3Qrgqoaa5THfjRZ7dIdLi8I2tWvL+1vqRO1hvYwgjBn0WQpDwlt4
-         aTBuNaY3KIKc5zznb+CWUIQ51LXjisI7X+ppJV9fd9i74KE3C965pH9bmyvEL3voyho5
-         ElyRmdm4lVLJywKRGDbua28+a8Hqf9WIhNplTQ/fTAsYXLJUwxh5mYIJa4+df8jl17/V
-         GAu+izSZI5gPp0p1TvEfOK9ktfK0jF6oWDOLln9/fRQj0bxAWsFj4Hen5xl2SV/uqn94
-         oBPmOICa7h7mXIlJKH7iY9oAihjRgn8kWQTwYEcbGeloDT0LXgGvEkGdc8XUNhH/JSU2
-         JuGA==
-X-Gm-Message-State: AOAM532sxi54AKLjK322B4UqiRmW/w6i7LuaKqZupaj6cz9BOTXdc5i9
-        KYv3qXXUb/stJkTmA/FSVEPF9riCI3VCiA==
-X-Google-Smtp-Source: ABdhPJw3ICAK3+bqwsi4GntjzrrX6z/adbvvxabg48+ANL9VVY9BCW0wN267ea/MDJrlA67o/2HPQw==
-X-Received: by 2002:aa7:d790:: with SMTP id s16mr2447249edq.294.1612951830768;
-        Wed, 10 Feb 2021 02:10:30 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id x25sm789313ejc.33.2021.02.10.02.10.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 10 Feb 2021 02:10:30 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-spi@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: spi: zynq: Convert Zynq QSPI binding to yaml
-Date:   Wed, 10 Feb 2021 11:10:25 +0100
-Message-Id: <4ece21a7e9691ed1e775fd6b0b4046b1562e44bd.1612951821.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.30.0
+        Wed, 10 Feb 2021 05:12:41 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B305C061574;
+        Wed, 10 Feb 2021 02:11:53 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DbFsy4nhDz9sCD;
+        Wed, 10 Feb 2021 21:11:50 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612951911;
+        bh=+0rlFVBPe1mgKL57jA7Vl8PRGyLhCeJnf5Wjm/q/nk0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=h7UQRY9dAxSJeEcm1ACnphYOGgZiumDqS4VvyhgeshEAZBD6RrJ5d//sMGSfCR8QB
+         w/QTRO450Bdbtzsav4MppZ3Euxu93Yr1Rs/0PsylLVei2NfKvmkK7HzUskwZHgqEGm
+         Y/sNDQQ/GIjTLqhYcP1jVXGGnYNtchJOg67ICqVer+kvzK2zx9nWFlIYqOjbpqVSWV
+         vbbRQffDqGIGt2EUgT4faeDnnzzlSPnyzuzQoy1V5182Ac0b/oMVmwJi0n+Rvbpqnf
+         Pp6tT9UgABrlXghgQQMe0/86frMLTbYkuMFL8Dflybkv4HjhJDDEksUMLb/K0zo9+c
+         T80CXmEgwGZZQ==
+Date:   Wed, 10 Feb 2021 21:11:49 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the rdma tree
+Message-ID: <20210210211149.3498db8a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/T0YWGGVFmbF.8aAegWcf_cG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert spi-zynq-qspi.txt to yaml.
+--Sig_/T0YWGGVFmbF.8aAegWcf_cG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+Hi all,
 
-Changes in v2:
-- s/additionalProperties: true/unevaluatedProperties: false/
+After merging the rdma tree, today's linux-next build (htmldocs) produced
+this warning:
 
- .../devicetree/bindings/spi/spi-zynq-qspi.txt | 25 --------
- .../bindings/spi/xlnx,zynq-qspi.yaml          | 59 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 3 files changed, 60 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
- create mode 100644 Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
+drivers/infiniband/core/device.c:859: warning: Function parameter or member=
+ 'dev' not described in 'ib_port_immutable_read'
+drivers/infiniband/core/device.c:859: warning: Function parameter or member=
+ 'port' not described in 'ib_port_immutable_read'
 
-diff --git a/Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt b/Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
-deleted file mode 100644
-index 16b734ad3102..000000000000
---- a/Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--Xilinx Zynq QSPI controller Device Tree Bindings
---------------------------------------------------------------------
--
--Required properties:
--- compatible		: Should be "xlnx,zynq-qspi-1.0".
--- reg			: Physical base address and size of QSPI registers map.
--- interrupts		: Property with a value describing the interrupt
--			  number.
--- clock-names		: List of input clock names - "ref_clk", "pclk"
--			  (See clock bindings for details).
--- clocks		: Clock phandles (see clock bindings for details).
--
--Optional properties:
--- num-cs		: Number of chip selects used.
--
--Example:
--	qspi: spi@e000d000 {
--		compatible = "xlnx,zynq-qspi-1.0";
--		reg = <0xe000d000 0x1000>;
--		interrupt-parent = <&intc>;
--		interrupts = <0 19 4>;
--		clock-names = "ref_clk", "pclk";
--		clocks = <&clkc 10>, <&clkc 43>;
--		num-cs = <1>;
--	};
-diff --git a/Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml b/Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
-new file mode 100644
-index 000000000000..1f1c40a9f320
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/xlnx,zynq-qspi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Xilinx Zynq QSPI controller
-+
-+description:
-+  The Xilinx Zynq QSPI controller is used to access multi-bit serial flash
-+  memory devices.
-+
-+allOf:
-+  - $ref: "spi-controller.yaml#"
-+
-+maintainers:
-+  - Michal Simek <michal.simek@xilinx.com>
-+
-+# Everything else is described in the common file
-+properties:
-+  compatible:
-+    const: xlnx,zynq-qspi-1.0
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: reference clock
-+      - description: peripheral clock
-+
-+  clock-names:
-+    items:
-+      - const: ref_clk
-+      - const: pclk
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    spi@e000d000 {
-+        compatible = "xlnx,zynq-qspi-1.0";
-+        reg = <0xe000d000 0x1000>;
-+        interrupt-parent = <&intc>;
-+        interrupts = <0 19 4>;
-+        clock-names = "ref_clk", "pclk";
-+        clocks = <&clkc 10>, <&clkc 43>;
-+        num-cs = <1>;
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 546aa66428c9..e494b061dcd1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2766,6 +2766,7 @@ W:	http://wiki.xilinx.com
- T:	git https://github.com/Xilinx/linux-xlnx.git
- F:	Documentation/devicetree/bindings/i2c/cdns,i2c-r1p10.yaml
- F:	Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml
-+F:	Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
- F:	arch/arm/mach-zynq/
- F:	drivers/block/xsysace.c
- F:	drivers/clocksource/timer-cadence-ttc.c
--- 
-2.30.0
+Introduced by commit
 
+  7416790e2245 ("RDMA/core: Introduce and use API to read port immutable da=
+ta")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/T0YWGGVFmbF.8aAegWcf_cG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAjsWUACgkQAVBC80lX
+0GzSTQf9FxK3QBsWXVFCkWBuZB2W4EegpedijkEN4DSALIK/L3392dsSLV8OHQVR
+b/j/Lxs/4r9vvtDRGIzGmNuHl4un6jCOeRkqi4es7DYs/e8IM2dxRsbtI8WZo+Yc
+HZnMM4OR50DxMQOsI58nLKaun4jdTVLzlV4eN+MTuzPiZ6GY5C1y2Hgi0KdBkFBA
+XfaCtgu40nWMthQaWN4ZVj+u+T+NFTqjyNKKSc8lvd3IeZuH2jz8A0qnphw9a5y6
+7V/QauDcViQD/qVZs0UjXcr4e5tO5R+6Masn7hJqOi517/KGziK2d308U1wdGECU
+/X/YEyEa+3rby9+U8lVEN54CzsxbIg==
+=4CBO
+-----END PGP SIGNATURE-----
+
+--Sig_/T0YWGGVFmbF.8aAegWcf_cG--
