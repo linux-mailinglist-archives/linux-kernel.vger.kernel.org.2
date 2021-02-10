@@ -2,163 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9323231737F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1168A317380
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbhBJWhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:37:08 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44078 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233733AbhBJWgL (ORCPT
+        id S233765AbhBJWhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:37:40 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:39582 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233683AbhBJWgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Feb 2021 17:36:11 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 8CBF62A94E;
-        Wed, 10 Feb 2021 17:34:46 -0500 (EST)
-Date:   Thu, 11 Feb 2021 09:34:51 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-cc:     tanxiaofei <tanxiaofei@huawei.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 04C8120B6C40;
+        Wed, 10 Feb 2021 14:34:57 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 04C8120B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1612996499;
+        bh=C4RT2DxXX8r0QxWsc1tHKf/MPo20abgRwaNI176DYPI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=onouFjqolPpuZU+smvyVOWVYonhp8wE62mGs4xFoCMBc41e1Qh93K7Mi9KTvGbtmN
+         UAzqFqtJBtcopTyxJ1GQNHoEHiXrWLeTs8SeDEQWYK2LTomPeu/bu09ptLZCtKjF1l
+         qJESL6CaYdPTWm0FK8vjjxpDP90Z9TdzZbUyzDZo=
+Subject: Re: [PATCH v17 00/10] Carry forward IMA measurement log on kexec on
+ ARM64
+To:     Mimi Zohar <zohar@linux.ibm.com>, Rob Herring <robh@kernel.org>
+Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
-Subject: RE: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage optimization
- for SCSI drivers
-In-Reply-To: <13c414b9bd7940caa5e1df810356dcfd@hisilicon.com>
-Message-ID: <221cb29-53a8-fd1-4232-360655f28f3@telegraphics.com.au>
-References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com> <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au> <e949a474a9284ac6951813bfc8b34945@hisilicon.com> <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
- <88d26bd86c314e5483ec596952054be7@hisilicon.com> <da111631-83ef-1ad8-799a-5d976d5759d@telegraphics.com.au> <00c06b19e87a425fa3a4b6aaecc66d49@hisilicon.com> <9611728-3e7-3954-cfee-f3d3cf45df6@telegraphics.com.au>
- <13c414b9bd7940caa5e1df810356dcfd@hisilicon.com>
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210210171500.GA2328209@robh.at.kernel.org>
+ <5c002c32-bc49-acda-c641-7b1494ea292d@linux.microsoft.com>
+ <CAL_JsqLmdqfFF8u=dE+dQz+6ngv=moWkQF8tpZjUCX-vHuvU_w@mail.gmail.com>
+ <cf7930239b93044a1be353556b7dc730e024f658.camel@linux.ibm.com>
+ <594445d01e085875b97b46be726247f89d1e6661.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <82fec498-b1c0-7acd-cf1e-8bb40a4e688e@linux.microsoft.com>
+Date:   Wed, 10 Feb 2021 14:34:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811774-653018509-1612996491=:23"
+In-Reply-To: <594445d01e085875b97b46be726247f89d1e6661.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 2/10/21 1:39 PM, Mimi Zohar wrote:
+> On Wed, 2021-02-10 at 15:55 -0500, Mimi Zohar wrote:
+>> On Wed, 2021-02-10 at 14:42 -0600, Rob Herring wrote:
+>>> On Wed, Feb 10, 2021 at 11:33 AM Lakshmi Ramasubramanian
+>>
+>>> Ideally, we don't apply the same patch in 2 branches. It looks like
+>>> there's a conflict but no real dependence on the above patch (the
+>>> ima_buffer part). The conflict seems trivial enough that Linus can
+>>> resolve it in the merge window.
+>>>
+>>> Or Mimi can take the whole thing if preferred?
+>>
+>> How about I create a topic branch with just the two patches, allowing
+>> both of us to merge it?   There shouldn't be a problem with re-writing
+>> next-integrity history.
+> 
+> The 2 patches are now in the ima-kexec-fixes branch.
+> 
 
----1463811774-653018509-1612996491=:23
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Thanks a lot Mimi.
 
-On Wed, 10 Feb 2021, Song Bao Hua (Barry Song) wrote:
+Rob - I will address the 2 comments you'd provided today, and build the 
+patches in ima-kexec-fixes branch.
 
-> > On Wed, 10 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> >=20
-> > > >
-> > > > There is no warning from m68k builds. That's because=20
-> > > > arch_irqs_disabled() returns true when the IPL is non-zero.
-> > >
-> > > So for m68k, the case is
-> > > arch_irqs_disabled() is true, but interrupts can still come?
-> > >
-> > > Then it seems it is very confusing. If prioritized interrupts can=20
-> > > still come while arch_irqs_disabled() is true,
-> >=20
-> > Yes, on m68k CPUs, an IRQ having a priority level higher than the=20
-> > present priority mask will get serviced.
-> >=20
-> > Non-Maskable Interrupt (NMI) is not subject to this rule and gets=20
-> > serviced regardless.
-> >=20
-> > > how could spin_lock_irqsave() block the prioritized interrupts?
-> >=20
-> > It raises the the mask level to 7. Again, please see=20
-> > arch/m68k/include/asm/irqflags.h
->=20
-> Hi Finn,
-> Thanks for your explanation again.
->=20
-> TBH, that is why m68k is so confusing. irqs_disabled() on m68k should=20
-> just reflect the status of all interrupts have been disabled except NMI.
->=20
-> irqs_disabled() should be consistent with the calling of APIs such as=20
-> local_irq_disable, local_irq_save, spin_lock_irqsave etc.
->=20
+If you have more comments in the v17 patches, please let me know.
 
-When irqs_disabled() returns true, we cannot infer that=20
-arch_local_irq_disable() was called. But I have not yet found driver code=
-=20
-or core kernel code attempting that inference.
+thanks,
+  -lakshmi
 
-> >=20
-> > > Isn't arch_irqs_disabled() a status reflection of irq disable API?
-> > >
-> >=20
-> > Why not?
->=20
-> If so, arch_irqs_disabled() should mean all interrupts have been masked=
-=20
-> except NMI as NMI is unmaskable.
->=20
-
-Can you support that claim with a reference to core kernel code or=20
-documentation? (If some arch code agrees with you, that's neither here nor=
-=20
-there.)
-
-> >=20
-> > Are all interrupts (including NMI) masked whenever=20
-> > arch_irqs_disabled() returns true on your platforms?
->=20
-> On my platform, once irqs_disabled() is true, all interrupts are masked=
-=20
-> except NMI. NMI just ignore spin_lock_irqsave or local_irq_disable.
->=20
-> On ARM64, we also have high-priority interrupts, but they are running as
-> PESUDO_NMI:
-> https://lwn.net/Articles/755906/
->=20
-
-A glance at the ARM GIC specification suggests that your hardware works=20
-much like 68000 hardware.
-
-   When enabled, a CPU interface takes the highest priority pending=20
-   interrupt for its connected processor and determines whether the=20
-   interrupt has sufficient priority for it to signal the interrupt=20
-   request to the processor. [...]
-
-   When the processor acknowledges the interrupt at the CPU interface, the=
-=20
-   Distributor changes the status of the interrupt from pending to either=
-=20
-   active, or active and pending. At this point the CPU interface can=20
-   signal another interrupt to the processor, to preempt interrupts that=20
-   are active on the processor. If there is no pending interrupt with=20
-   sufficient priority for signaling to the processor, the interface=20
-   deasserts the interrupt request signal to the processor.
-
-https://developer.arm.com/documentation/ihi0048/b/
-
-Have you considered that Linux/arm might benefit if it could fully exploit=
-=20
-hardware features already available, such as the interrupt priority=20
-masking feature in the GIC in existing arm systems?
-
-> On m68k, it seems you mean=EF=BC=9A
-> irq_disabled() is true, but high-priority interrupts can still come;
-> local_irq_disable() can disable high-priority interrupts, and at that
-> time, irq_disabled() is also true.
->=20
-> TBH, this is wrong and confusing on m68k.
->=20
-
-Like you, I was surprised when I learned about it. But that doesn't mean=20
-it's wrong. The fact that it works should tell you something.
-
-Things could always be made simpler. But discarding features isn't=20
-necessarily an improvement.
-
-> >=20
-> > > Thanks
-> > > Barry
-> > >
->=20
-> Thanks
-> Barry
->=20
----1463811774-653018509-1612996491=:23--
