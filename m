@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFDD316BE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E28316BF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232776AbhBJQ63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:58:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232315AbhBJQ6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:58:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9185264DF6;
-        Wed, 10 Feb 2021 16:57:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612976240;
-        bh=SmlTPkoQPYtqVBpQwnlQoRLZYtYp2qGxncjY48CBIHk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=i3/7z1DNhGZIs3g2MS165pNH1D0ND9R4ZRN91flOgCa9G2Zh9PqueIqPoC3K5GKMo
-         dp8dj3e0FA5HIWY3clDHWRsouMFh7MobaLmZwFi3CIHjWEvRPMW24tHgIBA8QkIHvk
-         bimFwoTbkh9SMF/dgRIshSUdJp88MSlIEIBKhGa7TjvApbw0hU8U/O3aksZ8cFLUY8
-         XxgeKMchn2/0n27sFhS+jQF//0AvV+LVoSbWOMeziZRlRPctTkZj9Y1PldQifO7h8H
-         +dUW8ruQV0fUaXyvIiMKwFMdQtaf/h7stuH9L/kb/7w6b8aHLh7BwSFBhvO/h1Vy4r
-         TWw3QDpdYxAjw==
-Subject: Re: [PATCH 0/3][RESEND] add support for never printing hashed
- addresses
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-References: <20210210051814.845713-1-timur@kernel.org>
- <CAHp75Vfai3cdBmxqE1mW27xj=+E2aWRoVfN-6mXw0miMAe-Exg@mail.gmail.com>
-From:   Timur Tabi <timur@kernel.org>
-Message-ID: <56d3df88-4a9e-389a-7ec4-64022f67e303@kernel.org>
-Date:   Wed, 10 Feb 2021 10:57:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233131AbhBJRAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232724AbhBJQ7o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:59:44 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E40EC061574;
+        Wed, 10 Feb 2021 08:59:05 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id jj19so5463110ejc.4;
+        Wed, 10 Feb 2021 08:59:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CZixN6Q/4ReK9YtVCNtVo5cDo+F6iIEK6tabVtfOzxo=;
+        b=Rq7xCOotKS9ZpLJt7mztI4zaEi7hNGUIkviW+Rh0IHqkEftTg4Ao0h6MELWhz+xcle
+         E/IQHaPwkqKKu+ymFzsU/pg7WI73tsddPelKXby+JVgt6OqjmwceDddIBPMHgon1b03Q
+         qHTO7RokQtGa7vNbp0aeyyzJxbXVgnajTj15dyvyECpv90PceOJQfRNPbbmejRzarwzE
+         Psq8DugOhJXTH2BgccoDMJFjNiNE6oGWSUvxiwUdz//D8rjrttPMQvRT0ymwXslFOuNW
+         qXJ+2wwE0WtTjTh0mJlvxBF6dd9HZ1bftTrQAWLbAAzuKmFoqoQhJvUZDiApiThkQyK2
+         MexA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CZixN6Q/4ReK9YtVCNtVo5cDo+F6iIEK6tabVtfOzxo=;
+        b=orRGJTqfiolbPzJtvPNrsp9CQDz1PuFrxuZgLh3tAKtzqk0jUlLfC+ku5oijIpJB10
+         vBVl4TLvRCpwGsfnKEd0og9c0bwXzYwL834dqp2QfPNO/eScVBzo1OwaX7AkT4ePos8M
+         yEXSiVlJTDU9eTGIVgN267kvbXW2G2mEwEdBpuRt3b7K6AboJVWPVqNIkMTpLVJUAW4r
+         O4eSuOFwOLsIgewGuNW7FAa8Vn1Kih4RaBbD2MSpGe9IwisBKr8uwfkeWLTs8CSip8hc
+         HaWRRT6kgymDCUNwVKsU47hnXey1CIl2L++yBhcHS8jpFwbhVZVdvaVZTOj1/CZXaJNJ
+         96KQ==
+X-Gm-Message-State: AOAM533PRZS/F6Hzx8EkyWz34nrAn96kkvOmYc29R+TP+x6vnd6A6Uu3
+        nh9koHeqXluBhlKMPJd2czgsUY997ns9073tGoo=
+X-Google-Smtp-Source: ABdhPJyOUgWmInD4qVcgQuWqw8PD0zsXXPLcq6zX4rspY74T4IQSbdnnewUZt7QWQDAqh4rzLc+HPrDLiAWQqIA/5yM=
+X-Received: by 2002:a17:906:755:: with SMTP id z21mr3949721ejb.514.1612976343938;
+ Wed, 10 Feb 2021 08:59:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vfai3cdBmxqE1mW27xj=+E2aWRoVfN-6mXw0miMAe-Exg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210209174646.1310591-1-shy828301@gmail.com> <20210209174646.1310591-2-shy828301@gmail.com>
+ <CALvZod5GW=zk0hq+_qqV1KGxz7MJ_RKctj6H=uS7bxHdhxOWrw@mail.gmail.com>
+In-Reply-To: <CALvZod5GW=zk0hq+_qqV1KGxz7MJ_RKctj6H=uS7bxHdhxOWrw@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 10 Feb 2021 08:58:52 -0800
+Message-ID: <CAHbLzkqCPSh6LAepBrWm5f=21aM8f-cKsCC-Oq6iGiwP4LscbA@mail.gmail.com>
+Subject: Re: [v7 PATCH 01/12] mm: vmscan: use nid from shrink_control for tracepoint
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 5:47 AM, Andy Shevchenko wrote:
-> It's a bit hard in some mailers (like Gmail) to see the different
-> versions of your patches.
-> Can you use in the future
->   - either `git format-patch -v<N> ...`, where <N> is a version
->   - or `git format-patch --subject-prefix="PATCH vX / RESEND / etc" ...`
-> ?
+On Tue, Feb 9, 2021 at 11:14 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Tue, Feb 9, 2021 at 9:47 AM Yang Shi <shy828301@gmail.com> wrote:
+> >
+> > The tracepoint's nid should show what node the shrink happens on, the start tracepoint
+> > uses nid from shrinkctl, but the nid might be set to 0 before end tracepoint if the
+> > shrinker is not NUMA aware, so the traceing
+>
+> tracing
 
-Yes, of course.  Sorry about that.  Like I said earlier, I really 
-shouldn't be posting patches late at night, when I will just forget 
-important details.
+Fixed. Thanks.
+
+>
+> > log may show the shrink happens on one
+> > node but end up on the other node.  It seems confusing.  And the following patch
+> > will remove using nid directly in do_shrink_slab(), this patch also helps cleanup
+> > the code.
+> >
+> > Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> > Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
