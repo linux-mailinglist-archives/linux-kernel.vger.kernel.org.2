@@ -2,219 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81963316774
+	by mail.lfdr.de (Postfix) with ESMTP id 0F55B316773
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhBJNG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:06:28 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:38547 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231380AbhBJNAm (ORCPT
+        id S231259AbhBJNGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:06:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231771AbhBJNAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:00:42 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0B54D580356;
-        Wed, 10 Feb 2021 07:59:30 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 10 Feb 2021 07:59:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=1B/sKQ
-        jlwEtwpk2UdHGgq7mXlzq0dYqdXHdjMHRt2+k=; b=ewA68Ps9HP4jaIXNHCJuE/
-        CUff6LhOMsg2TPN9CLD1rvABjM3I6ricpFlYmEdcfXD0at5Hc722W1RX8u6GLLOY
-        7g1ur8flzEp9HPPi0fd54GGgs9NyYkMnE5NKybnYBa/mSzU0eXd4RF5DZbcaaSbm
-        gRP78YpFxcACO/wTWlt0D4vUE2dEiSEKM2tHUBttzoSCWFdRO9PCCxa8uFdlICmX
-        abgfYTrBADmpChKymSYgbeRhUZTgTRmrrQfjKNgqYwg80ZJdQ08iMGdw1/Tj2ASq
-        XCCp9a5Y4zXqZeBspdMH0k0pYhKkxZIQCRBeztMI+mkIylvKFt3yxYXPK7cp0lZw
-        ==
-X-ME-Sender: <xms:r9gjYMehOkfcj8t8teb8blIOi10_4ko7u5a02N0nAd-78dHbiPAVrw>
-    <xme:r9gjYOPHuf6O5uuy1OZL9ykI2XWvc-C9Ay1Ojj1OosxTdAxnFhTT1Japx3V3lgCH2
-    mcZVv5FAqyeJmc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdegjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
-    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:r9gjYNhlVHWH2-NZapw36EG67GtrzSQk8T_5YiHDCbxSJ3z1k_245A>
-    <xmx:r9gjYB_ZckBsv7R-XPnEXtmYJ2OYps_2L1p7JWqSVuS3YtJO_Xq6Og>
-    <xmx:r9gjYIsQ0OaHS5frQv3POxhBkDcmusgmXehTEEry6mIqafMhJ0N8FA>
-    <xmx:stgjYIRtTqGUB2CzokbvCmVX9dzunG4H49xy4UMn7UTHtrwn8ZfAnA>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 96E57108005B;
-        Wed, 10 Feb 2021 07:59:26 -0500 (EST)
-Date:   Wed, 10 Feb 2021 14:59:23 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 00/11] Cleanup in brport flags switchdev
- offload for DSA
-Message-ID: <20210210125923.GA296172@shredder.lan>
-References: <a8e9284b-f0a6-0343-175d-8c323371ef8d@nvidia.com>
- <20210210104549.ga3lgjafn5x3htwj@skbuf>
- <a58e9615-036c-0431-4ea6-004af4988b27@nvidia.com>
- <20210210110125.rw6fvjtsqmmuglcg@skbuf>
- <90b255e6-efd2-b234-7bfc-4285331e56b1@nvidia.com>
- <20210210120106.g7blqje3wq4j5l6j@skbuf>
- <20210210122105.GA294287@shredder.lan>
- <20210210122936.rpvdh7ksjfh2ee6b@skbuf>
- <20210210123823.GA294900@shredder.lan>
- <20210210125501.f6lbfv5y5zj4qrmi@skbuf>
+        Wed, 10 Feb 2021 08:00:18 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60250C061793
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:59:36 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id 7so2464553wrz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:59:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6MsHCb96PmdEoxri8X3RrE2xw2rPHnbybff/JS7t4rM=;
+        b=Tstgim+g0HY1P/mkk3+/u2VrYZzdm9S0YfCCOW5tUOYsB36CYieEHqqX4gLAN0dvYl
+         HwuWr0Ii0ZR/atXuP6UXJ5kI/MFr3fELyAgmJG9LEiHWGssayf7qVtCiTYZ270jOoGKa
+         40lRsXcevUNvgMYcsuDv15Ykj6bDqL5ycyu64=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=6MsHCb96PmdEoxri8X3RrE2xw2rPHnbybff/JS7t4rM=;
+        b=iGfJKyvt4mWV3iqT5bpZFT4h8PhWek/K7j51c/vtLU3ab0OdjC1eNDsjUtlFKnN3uB
+         oRuAl1e5u68gXfqLJJWI8Z2kYr4C751aNZeG4oZGW3xDEaUE6g8VfYbqAukpx6V41lSq
+         r3M0ylrxHij1KUkwFb4Im4Nd2R4aVkZpu9DYvJiIHRH3ywNqliqDkigqhwIyMwWRTsrN
+         81tgMq3/x0hw4Lboe6qaKa6c3hLPa+UoamLBo1Z0Uo2V5X+mosFM6vlA0YElJbpQfjuv
+         lerkI43rJNPn5t9c9U8j2eSv+O49YN51KFHevUbdzwrc9AkJgt52ZCyOTZM41NugXCJ0
+         zWVg==
+X-Gm-Message-State: AOAM5331nx5P4j22iy2z3noDUF4ppvXHqhMUS6+2SJGFBhG90RWlstB+
+        Vf9gOtw+cmPpnZcUR9wlns5lyQ==
+X-Google-Smtp-Source: ABdhPJwRmPaxUgrAFJhjeq8xi1cVj/iHb/OYEDnTnx72e9/77v9DlCR5ZxyjtYtC8tHGuc5C0xMUTQ==
+X-Received: by 2002:a5d:4211:: with SMTP id n17mr3539933wrq.37.1612961975096;
+        Wed, 10 Feb 2021 04:59:35 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id d10sm2955713wrn.88.2021.02.10.04.59.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 04:59:34 -0800 (PST)
+Date:   Wed, 10 Feb 2021 13:59:32 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Alistair Popple <apopple@nvidia.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Nouveau Dev <nouveau@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kvm-ppc@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH 0/9] Add support for SVM atomics in Nouveau
+Message-ID: <YCPYtNeYCuu6i2/d@phenom.ffwll.local>
+Mail-Followup-To: John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>, Linux MM <linux-mm@kvack.org>,
+        Nouveau Dev <nouveau@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kvm-ppc@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Jerome Glisse <jglisse@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+References: <20210209010722.13839-1-apopple@nvidia.com>
+ <CAKMK7uGwg2-DTU7Zrco=TSkcR4yTqN1AF0hvVYEAbuj4BUYi5Q@mail.gmail.com>
+ <3426910.QXTomnrpqD@nvdebian>
+ <CAKMK7uHp+BzHF1=JhKjv5HYm_j0SVqsGdRqjUxVFYx4GSEPucg@mail.gmail.com>
+ <57fe0deb-8bf6-d3ee-3545-11109e946528@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210125501.f6lbfv5y5zj4qrmi@skbuf>
+In-Reply-To: <57fe0deb-8bf6-d3ee-3545-11109e946528@nvidia.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:55:01PM +0200, Vladimir Oltean wrote:
-> On Wed, Feb 10, 2021 at 02:38:23PM +0200, Ido Schimmel wrote:
-> > On Wed, Feb 10, 2021 at 02:29:36PM +0200, Vladimir Oltean wrote:
-> > > On Wed, Feb 10, 2021 at 02:21:05PM +0200, Ido Schimmel wrote:
-> > > > On Wed, Feb 10, 2021 at 02:01:06PM +0200, Vladimir Oltean wrote:
-> > > > > On Wed, Feb 10, 2021 at 01:05:57PM +0200, Nikolay Aleksandrov wrote:
-> > > > > > On 10/02/2021 13:01, Vladimir Oltean wrote:
-> > > > > > > On Wed, Feb 10, 2021 at 12:52:33PM +0200, Nikolay Aleksandrov wrote:
-> > > > > > >> On 10/02/2021 12:45, Vladimir Oltean wrote:
-> > > > > > >>> Hi Nikolay,
-> > > > > > >>>
-> > > > > > >>> On Wed, Feb 10, 2021 at 12:31:43PM +0200, Nikolay Aleksandrov wrote:
-> > > > > > >>>> Hi Vladimir,
-> > > > > > >>>> Let's take a step back for a moment and discuss the bridge unlock/lock sequences
-> > > > > > >>>> that come with this set. I'd really like to avoid those as they're a recipe
-> > > > > > >>>> for future problems. The only good way to achieve that currently is to keep
-> > > > > > >>>> the PRE_FLAGS call and do that in unsleepable context but move the FLAGS call
-> > > > > > >>>> after the flags have been changed (if they have changed obviously). That would
-> > > > > > >>>> make the code read much easier since we'll have all our lock/unlock sequences
-> > > > > > >>>> in the same code blocks and won't play games to get sleepable context.
-> > > > > > >>>> Please let's think and work in that direction, rather than having:
-> > > > > > >>>> +	spin_lock_bh(&p->br->lock);
-> > > > > > >>>> +	if (err) {
-> > > > > > >>>> +		netdev_err(p->dev, "%s\n", extack._msg);
-> > > > > > >>>> +		return err;
-> > > > > > >>>>  	}
-> > > > > > >>>> +
-> > > > > > >>>>
-> > > > > > >>>> which immediately looks like a bug even though after some code checking we can
-> > > > > > >>>> verify it's ok. WDYT?
-> > > > > > >>>>
-> > > > > > >>>> I plan to get rid of most of the br->lock since it's been abused for a very long
-> > > > > > >>>> time because it's essentially STP lock, but people have started using it for other
-> > > > > > >>>> things and I plan to fix that when I get more time.
-> > > > > > >>>
-> > > > > > >>> This won't make the sysfs codepath any nicer, will it?
-> > > > > > >>>
-> > > > > > >>
-> > > > > > >> Currently we'll have to live with a hack that checks if the flags have changed. I agree
-> > > > > > >> it won't be pretty, but we won't have to unlock and lock again in the middle of the
-> > > > > > >> called function and we'll have all our locking in the same place, easier to verify and
-> > > > > > >> later easier to remove. Once I get rid of most of the br->lock usage we can revisit
-> > > > > > >> the drop of PRE_FLAGS if it's a problem. The alternative is to change the flags, then
-> > > > > > >> send the switchdev notification outside of the lock and revert the flags if it doesn't
-> > > > > > >> go through which doesn't sound much better.
-> > > > > > >> I'm open to any other suggestions, but definitely would like to avoid playing locking games.
-> > > > > > >> Even if it means casing out flag setting from all other store_ functions for sysfs.
-> > > > > > >
-> > > > > > > By casing out flag settings you mean something like this?
-> > > > > > >
-> > > > > > >
-> > > > > > > #define BRPORT_ATTR(_name, _mode, _show, _store)		\
-> > > > > > > const struct brport_attribute brport_attr_##_name = { 	        \
-> > > > > > > 	.attr = {.name = __stringify(_name), 			\
-> > > > > > > 		 .mode = _mode },				\
-> > > > > > > 	.show	= _show,					\
-> > > > > > > 	.store_unlocked	= _store,				\
-> > > > > > > };
-> > > > > > >
-> > > > > > > #define BRPORT_ATTR_FLAG(_name, _mask)				\
-> > > > > > > static ssize_t show_##_name(struct net_bridge_port *p, char *buf) \
-> > > > > > > {								\
-> > > > > > > 	return sprintf(buf, "%d\n", !!(p->flags & _mask));	\
-> > > > > > > }								\
-> > > > > > > static int store_##_name(struct net_bridge_port *p, unsigned long v) \
-> > > > > > > {								\
-> > > > > > > 	return store_flag(p, v, _mask);				\
-> > > > > > > }								\
-> > > > > > > static BRPORT_ATTR(_name, 0644,					\
-> > > > > > > 		   show_##_name, store_##_name)
-> > > > > > >
-> > > > > > > static ssize_t brport_store(struct kobject *kobj,
-> > > > > > > 			    struct attribute *attr,
-> > > > > > > 			    const char *buf, size_t count)
-> > > > > > > {
-> > > > > > > 	...
-> > > > > > >
-> > > > > > > 	} else if (brport_attr->store_unlocked) {
-> > > > > > > 		val = simple_strtoul(buf, &endp, 0);
-> > > > > > > 		if (endp == buf)
-> > > > > > > 			goto out_unlock;
-> > > > > > > 		ret = brport_attr->store_unlocked(p, val);
-> > > > > > > 	}
-> > > > > > >
-> > > > > >
-> > > > > > Yes, this can work but will need a bit more changes because of br_port_flags_change().
-> > > > > > Then the netlink side can be modeled in a similar way.
-> > > > >
-> > > > > What I just don't understand is how others can get away with doing
-> > > > > sleepable work in atomic context but I can't make the notifier blocking
-> > > > > by dropping a spinlock which isn't needed there, because it looks ugly :D
-> > > >
-> > > > Can you please point to the bug? I'm not following
-> > >
-> > > For example, mlxsw eventually calls mlxsw_sp_fid_flood_set from the
-> > > SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS handling data path, and this
-> > > function allocates memory with GFP_KERNEL.
-> > >
-> > > Another example is prestera which eventually calls prestera_fw_send_req
-> > > which takes a mutex_lock.
-> > >
-> > > Yet another example are mv88e6xxx and b53 which use MDIO and SPI
-> > > from their .port_egress_floods implementation, buses which have
-> > > might_sleep() in them.
-> >
-> > Right, but see the code:
-> >
-> > ```
-> > 	attr.id = SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS;
-> > 	attr.flags = SWITCHDEV_F_DEFER;
-> > 	attr.u.brport_flags = flags;
-> >
-> > 	err = switchdev_port_attr_set(p->dev, &attr);
-> > ```
-> >
-> > And check how SWITCHDEV_F_DEFER is used.
-> >
-> > We can squash SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS and
-> > SWITCHDEV_ATTR_ID_PORT_PRE_BRIDGE_FLAGS into one blocking notification
-> > by reducing the scope of the bridge lock like Nik suggested. Currently
-> > it's just blindly taken around br_setport().
+On Tue, Feb 09, 2021 at 12:53:27PM -0800, John Hubbard wrote:
+> On 2/9/21 5:37 AM, Daniel Vetter wrote:
+> > On Tue, Feb 9, 2021 at 1:57 PM Alistair Popple <apopple@nvidia.com> wrote:
+> > > 
+> > > On Tuesday, 9 February 2021 9:27:05 PM AEDT Daniel Vetter wrote:
+> > > > > 
+> > > > > Recent changes to pin_user_pages() prevent the creation of pinned pages in
+> > > > > ZONE_MOVABLE. This series allows pinned pages to be created in
+> > > ZONE_MOVABLE
+> > > > > as attempts to migrate may fail which would be fatal to userspace.
+> > > > > 
+> > > > > In this case migration of the pinned page is unnecessary as the page can
+> > > be
+> > > > > unpinned at anytime by having the driver revoke atomic permission as it
+> > > > > does for the migrate_to_ram() callback. However a method of calling this
+> > > > > when memory needs to be moved has yet to be resolved so any discussion is
+> > > > > welcome.
+> > > > 
+> > > > Why do we need to pin for gpu atomics? You still have the callback for
+> > > > cpu faults, so you
+> > > > can move the page as needed, and hence a long-term pin sounds like the
+> > > > wrong approach.
+> > > 
+> > > Technically a real long term unmoveable pin isn't required, because as you say
+> > > the page can be moved as needed at any time. However I needed some way of
+> > > stopping the CPU page from being freed once the userspace mappings for it had
+> > > been removed. Obviously I could have just used get_page() but from the
+> > > perspective of page migration the result is much the same as a pin - a page
+> > > which can't be moved because of the extra refcount.
+> > 
+> > long term pin vs short term page reference aren't fully fleshed out.
+> > But the rule more or less is:
+> > - short term page reference: _must_ get released in finite time for
+> > migration and other things, either because you have a callback, or
+> > because it's just for direct I/O, which will complete. This means
+> > short term pins will delay migration, but not foul it complete
 > 
-> Okay, so the deferred attr_set propagates just a possible ENOMEM from
-> the deferred work enqueue, not the actual failure if that occurred.
 > 
-> I can leave alone the piece that sends two notifications for now, but I
-> would still need to deliver the full struct switchdev_brport_flags with
-> both the flags and the mask to both the PRE_BRIDGE_FLAGS and the
-> BRIDGE_FLAGS, because I need to deliver an extack from the sja1105 driver
-> that BR_FLOOD should always have the same value as BR_MCAST_FLOOD.
+> GPU atomic operations to sysmem are hard to categorize, because because application
+> programmers could easily write programs that do a long series of atomic operations.
+> Such a program would be a little weird, but it's hard to rule out.
 
-OK
+Yeah, but we can forcefully break this whenever we feel like by revoking
+the page, moving it, and then reinstating the gpu pte again and let it
+continue.
+
+If that's no possible then what we need here instead is an mlock() type of
+thing I think.
+
+> > - long term pin: the page cannot be moved, all migration must fail.
+> > Also this will have an impact on COW behaviour for fork (but not sure
+> > where those patches are, John Hubbard will know).
+> 
+> 
+> That would be Jason's commit 57efa1fe59576 ("mm/gup: prevent gup_fast from racing
+> with COW during fork"), which is in linux-next 20201216.
+
+Nice, thanks for the pointer.
+> 
+> 
+> > 
+> > So I think for your use case here you want a) short term page
+> > reference to make sure it doesn't disappear plus b) callback to make
+> > sure migrate isn't blocked.
+> > 
+> > Breaking ZONE_MOVEABLE with either allowing long term pins or failing
+> > migrations because you don't release your short term page reference
+> > isn't good.
+> > 
+> > > The normal solution of registering an MMU notifier to unpin the page when it
+> > > needs to be moved also doesn't work as the CPU page tables now point to the
+> > > device-private page and hence the migration code won't call any invalidate
+> > > notifiers for the CPU page.
+> > 
+> > Yeah you need some other callback for migration on the page directly.
+> > it's a bit awkward since there is one already for struct
+> > address_space, but that's own by the address_space/page cache, not
+> > HMM. So I think we need something else, maybe something for each
+> > ZONE_DEVICE?
+> > 
+> 
+> This direction sounds at least...possible. Using MMU notifiers instead of pins
+> is definitely appealing. I'm not quite clear on the callback idea above, but
+> overall it seems like taking advantage of the ZONE_DEVICE tracking of pages
+> (without having to put anything additional in each struct page), could work.
+> 
+> Additional notes or ideas here are definitely welcome.
+
+Well I don't have ideas for the details tbh, just from the little I
+learned about how this all fits together pretending to be a pin while
+pretending to not be a pin just gets us back to the mess we're trying to
+solve with gup vs pup cleanup. And given that the pin_user_pages rollout
+hasn't even completed yet it's maybe way to early to already toss it out
+again.
+
+I think overall we should try really hard to not mix up things between
+memory that's pinned and memory that can be moved. Because retroactively
+trying to fix things up just because it was easier to get a feature going
+that way is very, very hard. And I think we've demonstrated countless
+times that "ah we just fix this with pinning, it doesn't happen often, no
+one will notice" always comes back to bite us later on :-)
+
+Like just looking ahead, 1GB pages are a thing, we will have to support
+that, migrate_page is the only way to get there, and statistically just a
+1/256th chance of encountering a pinned page guarantees we'll never
+assemble a giant page.
+
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
