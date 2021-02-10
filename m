@@ -2,106 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F5B3165C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CBC3165D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhBJL5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhBJLys (ORCPT
+        id S229639AbhBJL71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:59:27 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:15483 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230302AbhBJL5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:54:48 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57ECFC06174A;
-        Wed, 10 Feb 2021 03:54:07 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id p21so2336592lfu.11;
-        Wed, 10 Feb 2021 03:54:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6veChv4X2YgMkhqCjE3a4k98qt78vadEJiIFGLbQqGA=;
-        b=dq4h2Z1bp4yyUD4/iweE7BDC/dgwKbB1ELrS7y/SGpIN+bKRZ/fy0hMbCOiw6zh9IS
-         uX62+GAxVOSsKyCi1iON64P00AomIHKRe50+iLD1NypY7+xkChQgzYjfHNaJP4QsY3qX
-         VN7eLq+3OXargRIChaj0r401CUyONM8xUBCS6ul5rwMqgf+Mp7832LRdS0yeT0Pe0/8Y
-         P8Z/hGt2IrG5FuuUGa2fiX7QtC/elurswsN8W3JfUignGttd4oF3Yy7PTQmRpEU7CQA2
-         xOaxsQcQpXD4FnmPg2e5F+ORG52ObGs4kAphkQPv9na6xu2l1DjPeY0LPaHEEEfgQc1T
-         Ynpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6veChv4X2YgMkhqCjE3a4k98qt78vadEJiIFGLbQqGA=;
-        b=IVRGqsXlmzH0K7vZsbyXf3FCS2hC5Nc5LPZIKiM3YPi0+nlowFxKEaETyn5viW5oxP
-         2CBiUqppuSYPRA/7XBsXenpXAZkKbMgSWTXHRuEeiDzTkE9hqPnWMnDOpWUxhVVq3w/H
-         CTxbjJzLw64QL0ZLpofU28MWpPdhSsNf2fVP1deaQyAgMCAecbsitbw9ro5D1uySWsH/
-         MiR1NIE2OchtSiaISDJrVsjRppTrXBz7j6ijEviEWbM4QsSXF/MhhRG6x5Ls+r/ot4Zp
-         D3TLEuAt1K/I9uTxl+m5ppouoEPFpjHpMOQSTYOB2N9MB+DVZF2UDGY0ltcYO/I8xakk
-         5rFw==
-X-Gm-Message-State: AOAM532txh4+PaCVT02IIMg1/X/tjIfi72fwZSwSFfW5cZN//wFTnsvs
-        kwqZszTnhBkC9/uHD+ED0rc=
-X-Google-Smtp-Source: ABdhPJwkWJ5YNQgnHyQiLmMseJ7t4hfkEOodwCLrc2yr1oyu5Z+yylfPCOG2gpxWjOTYJaiS/VZb2g==
-X-Received: by 2002:a19:4092:: with SMTP id n140mr1488415lfa.150.1612958045766;
-        Wed, 10 Feb 2021 03:54:05 -0800 (PST)
-Received: from [192.168.31.34] (109-252-130-105.dynamic.spd-mgts.ru. [109.252.130.105])
-        by smtp.gmail.com with ESMTPSA id u26sm290316lfk.148.2021.02.10.03.54.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 03:54:05 -0800 (PST)
-Subject: Re: [PATCH] ubsan: remove overflow checks
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-References: <YCJCaDIzIaUZG27F@hirez.programming.kicks-ass.net>
- <20210209232348.20510-1-ryabinin.a.a@gmail.com>
- <202102091617.8FD77890@keescook>
-From:   Andrey Rybainin <ryabinin.a.a@gmail.com>
-Message-ID: <460f8e86-f602-d3ae-1287-0042c510a165@gmail.com>
-Date:   Wed, 10 Feb 2021 14:55:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 10 Feb 2021 06:57:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612958220; x=1644494220;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=/nFWYpgDz2q9AGtCu9C5FQC0uPo0Ps2PgxNOaxfDfHQ=;
+  b=GtGGnAIrfXusPUVPkdfeRIocr4pjCk+FgMB2n86McT2GMATjRKaodwfP
+   bl7+uht6iRTvWRp25iljhU/W5HXQ5i4+wp1+vQtMI2/bkAB29GXN0gbK+
+   8ZuVNZ4q/ZNhzDn982xgxWLI4lQH6H6qR/yYXGfc6oUteNzFsTGKgTwD7
+   HywAeu8c6u5meGEh+1iuca7dfMZ0NNWxQOi3qGNSs69Pmn9dKpaBC78qs
+   kChDHml/Uk484XZigTE6HBQZDX1IOn+AOf4j+gdhvC5/ENO7LaSIXUGDk
+   m+ktlk2fqK/8YNnJzFBymL/RGD2Eak+AlqL/kWPGU303ZprFX05Q1pdtF
+   Q==;
+IronPort-SDR: xuR3FBea+DUDsOXUbIO+BYMXs1/9OOJi7SiDQoLABp1sn1qXUl3KwBHwB3vifdO1SKWaCVqglG
+ sZxlQCN92sLzG15kPlfWnzB0JpAn+JeiLf/EcptpRW/DeoWpxjOllDTBZnrVi9fwJwz1qM7x8g
+ MLhxw4pFLux6jd6TG+bPyakpYaBegjN/TNqFLJx6ycuXck/BExk1+c3LdjSfqjwAjA7u+gDeWd
+ przWGaZXxz+ZDsvFL9ONdbewW4BVd3ChgrF8KxysFphUR7aLCy4KCn6RqbLtLrTdsKcvhn7XYw
+ ee8=
+X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
+   d="scan'208";a="109199456"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 04:55:45 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 10 Feb 2021 04:55:45 -0700
+Received: from CHE-LT-I21427U.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 10 Feb 2021 04:55:40 -0700
+Message-ID: <fc0549661e10c28d6344be74eb8b29336c1ebdf5.camel@microchip.com>
+Subject: Re: [PATCH net-next 2/8] net: dsa: tag_ksz: add tag handling for
+ Microchip LAN937x
+From:   Prasanna Vengateshan Varadharajan 
+        <prasanna.vengateshan@microchip.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <robh+dt@kernel.org>,
+        <kuba@kernel.org>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <davem@davemloft.net>,
+        <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Date:   Wed, 10 Feb 2021 17:25:38 +0530
+In-Reply-To: <20210130022709.ai5kq7w52gpqrb4n@skbuf>
+References: <20210128064112.372883-1-prasanna.vengateshan@microchip.com>
+         <20210128064112.372883-3-prasanna.vengateshan@microchip.com>
+         <20210130022709.ai5kq7w52gpqrb4n@skbuf>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <202102091617.8FD77890@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/10/21 3:19 AM, Kees Cook wrote:
-> On Wed, Feb 10, 2021 at 02:23:48AM +0300, Andrey Ryabinin wrote:
->> Since GCC 8.0 -fsanitize=signed-integer-overflow doesn't work with -fwrapv.
->> -fwrapv makes signed overflows defines and GCC essentially disables
->> ubsan checks. On GCC < 8.0 -fwrapv doesn't have influence on
->> -fsanitize=signed-integer-overflow setting, so it kinda works
->> but generates false-positves and violates uaccess rules:
->>
->> lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
->>
->> Disable signed overflow checks to avoid these problems.
->> Remove unsigned overflow checks as well.
->> Unsigned overflow appeared as side effect of the commit
->>  cdf8a76fda4a ("ubsan: move cc-option tests into Kconfig"),
->> but it never worked (kernel doesn't boot). And unsigned overflows
->> are allowed by C standard, so it just pointless.
->>
->> Signed-off-by: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+On Sat, 2021-01-30 at 04:27 +0200, Vladimir Oltean wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
 > 
-> NAK, please don't remove the entire thing. I want this to work again
-> with -fwrapv, and it's not entirely broken under Clang. But the feature
-> shouldn't be removed from the kernel.
+> On Thu, Jan 28, 2021 at 12:11:06PM +0530, Prasanna Vengateshan wrote:
+> > diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
+> > index 4820dbcedfa2..6fac39c2b7d5 100644
+> > --- a/net/dsa/tag_ksz.c
+> > +++ b/net/dsa/tag_ksz.c
+> > @@ -190,10 +190,84 @@ static const struct dsa_device_ops
+> > ksz9893_netdev_ops = {
+> >  DSA_TAG_DRIVER(ksz9893_netdev_ops);
+> >  MODULE_ALIAS_DSA_TAG_DRIVER(DSA_TAG_PROTO_KSZ9893);
+> > 
+> > +/* For Ingress (Host -> LAN937x), 2 bytes are added before FCS.
+> > + * -------------------------------------------------------------
+> > --------------
+> > + *
+> > DA(6bytes)|SA(6bytes)|....|Data(nbytes)|tag0(1byte)|tag1(1byte)|FCS
+> > (4bytes)
+> > + * -------------------------------------------------------------
+> > --------------
+> > + * tag0 : represents tag override, lookup and valid
+> > + * tag1 : each bit represents port (eg, 0x01=port1, 0x02=port2,
+> > 0x80=port8)
+> > + *
+> > + * For Egress (LAN937x -> Host), 1 byte is added before FCS.
+> > + * -------------------------------------------------------------
+> > --------------
+> > + * DA(6bytes)|SA(6bytes)|....|Data(nbytes)|tag0(1byte)|FCS(4bytes)
+> > + * -------------------------------------------------------------
+> > --------------
+> > + * tag0 : zero-based value represents port
+> > + *     (eg, 0x00=port1, 0x02=port3, 0x07=port8)
+> > + */
 > 
+> You messed up the comment, right now it's as good as not having it.
+> The one-hot port encoding is for xmit. The zero-based encoding is for
+> rcv, not the other way around.
+I understand the problem is with the term Egress & Ingress w.r.to
+LAN937x. I will make sure that the comment is added w.r.to xmit() &
+rcv().
 
-This is dead code. How exactly it's useful to keep it? You can always resurrect it later when you'll need it.
-Clang has the same behavior as GCC > 8, signed-integer-overflow does nothing when compiled -fwrapv or -fno-strict-overflow
+> 
+> > +#define LAN937X_INGRESS_TAG_LEN              2
+> > +
+> > +#define LAN937X_TAIL_TAG_OVERRIDE    BIT(11)
+> > +#define LAN937X_TAIL_TAG_LOOKUP              BIT(12)
+> > +#define LAN937X_TAIL_TAG_VALID               BIT(13)
+> > +#define LAN937X_TAIL_TAG_PORT_MASK   7
+> > +
+> > +static struct sk_buff *lan937x_xmit(struct sk_buff *skb,
+> > +                                 struct net_device *dev)
+> > +{
+> > +     struct dsa_port *dp = dsa_slave_to_port(dev);
+> > +     __be16 *tag;
+> > +     u8 *addr;
+> > +     u16 val;
+> > +
+> > +     /* Tag encoding */
+> 
+> Do we really need this comment and the one with "Tag decoding" from
+> rcv?
+Okay, will correct it.
+
+> 
+> > +     tag = skb_put(skb, LAN937X_INGRESS_TAG_LEN);
+> > +     addr = skb_mac_header(skb);
+> > +
+> > +     val = BIT(dp->index);
+> > +
+> > +     if (is_link_local_ether_addr(addr))
+> > +             val |= LAN937X_TAIL_TAG_OVERRIDE;
+> > +
+> > +     /* Tail tag valid bit - This bit should always be set by the
+> > CPU*/
+> > +     val |= LAN937X_TAIL_TAG_VALID;
+> > +
+> > +     *tag = cpu_to_be16(val);
+> > +
+> > +     return skb;
+> > +}
+> > +
+> > +static struct sk_buff *lan937x_rcv(struct sk_buff *skb, struct
+> > net_device *dev,
+> > +                                struct packet_type *pt)
+> 
+> You can reuse ksz9477_rcv.
+Sure, will reuse ksz9477_rcv. 
+
+> 
+> > +{
+> > +     /* Tag decoding */
+> > +     u8 *tag = skb_tail_pointer(skb) - KSZ_EGRESS_TAG_LEN;
+> > +     unsigned int port = tag[0] & LAN937X_TAIL_TAG_PORT_MASK;
+> > +     unsigned int len = KSZ_EGRESS_TAG_LEN;
+> > +
+> > +     /* Extra 4-bytes PTP timestamp */
+> > +     if (tag[0] & KSZ9477_PTP_TAG_INDICATION)
+> > +             len += KSZ9477_PTP_TAG_LEN;
+> > +
+> > +     return ksz_common_rcv(skb, dev, port, len);
+> > +}
+> > +
+> > +static const struct dsa_device_ops lan937x_netdev_ops = {
+> > +     .name   = "lan937x",
+> > +     .proto  = DSA_TAG_PROTO_LAN937X,
+> > +     .xmit   = lan937x_xmit,
+> > +     .rcv    = lan937x_rcv,
+> > +     .overhead = LAN937X_INGRESS_TAG_LEN,
+> > +     .tail_tag = true,
+> > +};
+> > +
+> > +DSA_TAG_DRIVER(lan937x_netdev_ops);
+> > +MODULE_ALIAS_DSA_TAG_DRIVER(DSA_TAG_PROTO_LAN937X);
+> > +
+> >  static struct dsa_tag_driver *dsa_tag_driver_array[] = {
+> >       &DSA_TAG_DRIVER_NAME(ksz8795_netdev_ops),
+> >       &DSA_TAG_DRIVER_NAME(ksz9477_netdev_ops),
+> >       &DSA_TAG_DRIVER_NAME(ksz9893_netdev_ops),
+> > +     &DSA_TAG_DRIVER_NAME(lan937x_netdev_ops),
+> >  };
+> > 
+> >  module_dsa_tag_drivers(dsa_tag_driver_array);
+> > --
+> > 2.25.1
+> > 
 
