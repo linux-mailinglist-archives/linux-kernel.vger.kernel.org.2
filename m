@@ -2,197 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A7D316749
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B3E316752
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhBJM6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:58:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55716 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230450AbhBJM4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:56:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B3FDDAEB9;
-        Wed, 10 Feb 2021 12:55:31 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 12:55:30 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 4/6] btrfs: Check if the filesystem is has mixed type
- of devices
-Message-ID: <20210210125530.GD23499@wotan.suse.de>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-5-mrostecki@suse.de>
- <CAL3q7H7Y6Mh9L4niCHzUVOfo4_PDK9o6Ho_aZfxENOQsiWwk9g@mail.gmail.com>
+        id S229710AbhBJM71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:59:27 -0500
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:37691 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231396AbhBJM4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:56:33 -0500
+Received: by mail-wm1-f44.google.com with SMTP id m1so1766294wml.2;
+        Wed, 10 Feb 2021 04:56:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=klyvuCb2s80xxmYVdUoIwTBI4ZLcJg7EZBGPH+l10fY=;
+        b=auU+VBRerIgXeBh0ER8IiXAVrUy335iZjMe8VdtnYnlqVpSsaWw3aSDN8LiFULtZWz
+         rDD5Pv1GIKgZFPtMp+uhw0OkbABy9kNoSKNcrHlwU/xM56W/56gLkA1bfMkh1icEd4jA
+         cdhVezh+Y9VTku9oJhss61NtMXFJ6hhoMZ10ZQ08YKiNjxStqBE/ztEbk16SWGhNXR+Y
+         kM/vTpKuivDQe7luv0DeOCesEewUpsK+u+HZAGETz1DMIPAfFvNZ7ggrVMj/y2E9Tjwq
+         +GBc7PjKmaOaChUBHOHTBwvDl3YQlilFKVkl6xuZgUhQRXT/QHvSJGoLZrAmcryZXSGa
+         sUvQ==
+X-Gm-Message-State: AOAM531gsE55ReQgMWG/6RypfSdjjn4mi7w3w29N+wm3RptDFhHeDsSR
+        eMCwt7HHeo27EGCDb08lZ0QNBVLbN2M=
+X-Google-Smtp-Source: ABdhPJxEJMv2xTHkhA5hRM6aKJJZhYfdlEBUHOKcxJzOPO3sXDi3h9DHp9MZv//bMkX9mQOgPEc9bA==
+X-Received: by 2002:a1c:3b8a:: with SMTP id i132mr2869183wma.26.1612961750425;
+        Wed, 10 Feb 2021 04:55:50 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id 64sm3601054wrc.50.2021.02.10.04.55.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 04:55:49 -0800 (PST)
+Date:   Wed, 10 Feb 2021 13:55:48 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Hector Martin <marcan@marcan.st>, Arnd Bergmann <arnd@kernel.org>,
+        devicetree@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        linux-kernel@vger.kernel.org, soc@kernel.org, robh+dt@kernel.org,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
+ devicetree
+Message-ID: <20210210125548.sdeadc4ncoxu3ikj@kozik-lap>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-19-marcan@marcan.st>
+ <20210208110441.25qc6yken4effd6c@kozik-lap>
+ <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
+ <YCOzLSqdsr83xf0b@atomide.com>
+ <4481998a-27f6-951e-bb4f-a9d2b95f211f@marcan.st>
+ <YCPE2lPpBlhCi7TH@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H7Y6Mh9L4niCHzUVOfo4_PDK9o6Ho_aZfxENOQsiWwk9g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YCPE2lPpBlhCi7TH@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:09:10AM +0000, Filipe Manana wrote:
-> On Tue, Feb 9, 2021 at 9:32 PM Michal Rostecki <mrostecki@suse.de> wrote:
-> >
-> > From: Michal Rostecki <mrostecki@suse.com>
-> >
-> > Add the btrfs_check_mixed() function which checks if the filesystem has
-> > the mixed type of devices (non-rotational and rotational). This
-> > information is going to be used in roundrobin raid1 read policy.
-> >
-> > Signed-off-by: Michal Rostecki <mrostecki@suse.com>
-> > ---
-> >  fs/btrfs/volumes.c | 44 ++++++++++++++++++++++++++++++++++++++++++--
-> >  fs/btrfs/volumes.h |  7 +++++++
-> >  2 files changed, 49 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > index 1ac364a2f105..1ad30a595722 100644
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -617,6 +617,35 @@ static int btrfs_free_stale_devices(const char *path,
-> >         return ret;
-> >  }
-> >
-> > +/*
-> > + * Checks if after adding the new device the filesystem is going to have mixed
-> > + * types of devices (non-rotational and rotational).
-> > + *
-> > + * @fs_devices:          list of devices
-> > + * @new_device_rotating: if the new device is rotational
-> > + *
-> > + * Returns true if there are mixed types of devices, otherwise returns false.
-> > + */
-> > +static bool btrfs_check_mixed(struct btrfs_fs_devices *fs_devices,
-> > +                             bool new_device_rotating)
-> > +{
-> > +       struct btrfs_device *device, *prev_device;
-> > +
-> > +       list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> > +               if (prev_device == NULL &&
+On Wed, Feb 10, 2021 at 01:34:50PM +0200, Tony Lindgren wrote:
+> * Hector Martin <marcan@marcan.st> [210210 11:14]:
+> > On 10/02/2021 19.19, Tony Lindgren wrote:
+> > > * Hector Martin 'marcan' <marcan@marcan.st> [210208 12:05]:
+> > > > On 08/02/2021 20.04, Krzysztof Kozlowski wrote:
+> > > ...
+> > > 
+> > > > > > +	clk24: clk24 {
+> > > > > 
+> > > > > Just "clock". Node names should be generic.
+> > > > 
+> > > > Really? Almost every other device device tree uses unique clock node names.
+> > > 
+> > > Yeah please just use generic node name "clock". FYI, we're still hurting
+> > > because of this for the TI clock node names years after because the drivers
+> > > got a chance to rely on the clock node name..
+> > > 
+> > > Using "clock" means your clock driver code won't get a chance to wrongly
+> > > use the node name and you avoid similar issues.
+> > 
+> > That means it'll end up like this (so that we can have more than one
+> > fixed-clock):
+> > 
+> > clocks {
+> >     #address-cells = <1>;
+> >     #size-cells = <0>;
+> > 
+> >     clk123: clock@0 {
+> >         ...
+> >         reg = <0>
+> >     }
+> > 
+> >     clk456: clock@1 {
+> >         ...
+> >         reg = <1>
+> >     }
+> > }
+> > 
+> > Correct?
 > 
-> Hum, prev_device is not initialized when we enter the first iteration
-> of the loop.
-> 
-> > +                   device->rotating != new_device_rotating)
-> > +                       return true;
-> > +               if (prev_device != NULL &&
-> > +                   (device->rotating != prev_device->rotating ||
-> 
-> Here it's more dangerous, dereferencing an uninitialized pointer can
-> result in a crash.
-> 
-> With this fixed, it would be better to redo the benchmarks when using
-> mixed device types.
-> 
-> Thanks.
-> 
+> Yeah, just don't use an imaginary dummy index for the reg. Use a real
+> register offset from a clock controller instance base, and a register
+> bit offset too if needed.
 
-Thanks for pointing that out. Will fix and redo benchmarks for v2.
+No, there is no need for fake "clocks" node with fake addresses. If you
+have multiple clocks, the rules are the same as for other similar cases,
+e.g. leds:
 
-> > +                    device->rotating != new_device_rotating))
-> > +                       return true;
-> > +
-> > +               prev_device = device;
-> > +       }
-> > +
-> > +       return false;
-> > +}
-> > +
-> >  /*
-> >   * This is only used on mount, and we are protected from competing things
-> >   * messing with our fs_devices by the uuid_mutex, thus we do not need the
-> > @@ -629,6 +658,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
-> >         struct request_queue *q;
-> >         struct block_device *bdev;
-> >         struct btrfs_super_block *disk_super;
-> > +       bool rotating;
-> >         u64 devid;
-> >         int ret;
-> >
-> > @@ -669,8 +699,12 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
-> >         }
-> >
-> >         q = bdev_get_queue(bdev);
-> > -       if (!blk_queue_nonrot(q))
-> > +       rotating = !blk_queue_nonrot(q);
-> > +       device->rotating = rotating;
-> > +       if (rotating)
-> >                 fs_devices->rotating = true;
-> > +       if (!fs_devices->mixed)
-> > +               fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
-> >
-> >         device->bdev = bdev;
-> >         clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
-> > @@ -2418,6 +2452,7 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
-> >         fs_devices->open_devices = 0;
-> >         fs_devices->missing_devices = 0;
-> >         fs_devices->rotating = false;
-> > +       fs_devices->mixed = false;
-> >         list_add(&seed_devices->seed_list, &fs_devices->seed_list);
-> >
-> >         generate_random_uuid(fs_devices->fsid);
-> > @@ -2522,6 +2557,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
-> >         int seeding_dev = 0;
-> >         int ret = 0;
-> >         bool locked = false;
-> > +       bool rotating;
-> >
-> >         if (sb_rdonly(sb) && !fs_devices->seeding)
-> >                 return -EROFS;
-> > @@ -2621,8 +2657,12 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
-> >
-> >         atomic64_add(device->total_bytes, &fs_info->free_chunk_space);
-> >
-> > -       if (!blk_queue_nonrot(q))
-> > +       rotating = !blk_queue_nonrot(q);
-> > +       device->rotating = rotating;
-> > +       if (rotating)
-> >                 fs_devices->rotating = true;
-> > +       if (!fs_devices->mixed)
-> > +               fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
-> >
-> >         orig_super_total_bytes = btrfs_super_total_bytes(fs_info->super_copy);
-> >         btrfs_set_super_total_bytes(fs_info->super_copy,
-> > diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> > index 6e544317a377..594f1207281c 100644
-> > --- a/fs/btrfs/volumes.h
-> > +++ b/fs/btrfs/volumes.h
-> > @@ -147,6 +147,9 @@ struct btrfs_device {
-> >         /* I/O stats for raid1 mirror selection */
-> >         struct percpu_counter inflight;
-> >         atomic_t last_offset;
-> > +
-> > +       /* If the device is rotational */
-> > +       bool rotating;
-> >  };
-> >
-> >  /*
-> > @@ -274,6 +277,10 @@ struct btrfs_fs_devices {
-> >          * nonrot flag set
-> >          */
-> >         bool rotating;
-> > +       /* Set when we find or add both nonrot and rot disks in the
-> > +        * filesystem
-> > +        */
-> > +       bool mixed;
-> >
-> >         struct btrfs_fs_info *fs_info;
-> >         /* sysfs kobjects */
-> > --
-> > 2.30.0
-> >
-> 
-> 
-> -- 
-> Filipe David Manana,
-> 
-> “Whether you think you can, or you think you can't — you're right.”
+{
+    clock-0 {
+       ...
+    };
+
+    clock-1 {
+        ..
+    };
+
+    soc@0 {
+    };
+}
+
+This should not generate any dtc W=1 warnings and work with dtschema
+(you need to check for both).
+
+Best regards,
+Krzysztof
+
