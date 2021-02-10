@@ -2,284 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA677316FC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE55A316FCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbhBJTNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234575AbhBJTM5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:12:57 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B81C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:12:17 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id t2so1719710pjq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:12:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=D09LkSe2ebxlrCpntvua2yK41XaWwVaTEcwcly2HFOE=;
-        b=tdzsLTqxfAsHZFZuF2Mw/VEtKkFOjspUPnkwxHusVJ5h6H08woVxbp0BiqYKAFX8YE
-         Fre4sOD2lSJhzVtf+vOJfg0G+jYtaRj6TAjn5SIfWciT3D/2GsVM8XsSpHO+6YuMMP5u
-         6D+TNpztuGCa8x/vFok2MQcnCOEz3025kvmBmSqNyzB1lU0W+Nr/2ojJwwqljKTE6cXd
-         IIdVDZjqnyQBqLzxrkrIpjAqzilIILjKA30K+4TF3Rpv0LC2NBQHpaKCILMDmPa0fZza
-         7rXh9f4c1n2r4HWuM1/3xWTrcMG3f0dLv0zaSR1qzYe2PLCwjetlkGObOy1Bp8nAVPx8
-         /JIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=D09LkSe2ebxlrCpntvua2yK41XaWwVaTEcwcly2HFOE=;
-        b=TjriFKrn3HaOSZjuscXbSwoXI5kXpzNTFHtUnBPhw29Cx7B+vrQ/HWrEIs5W6KCa1K
-         O+XNdjT/5T/6q6lAAhH9E12ZurJoh5IEdfo1eUoKKH6AkIP5t7RicRRWlFeRsET0m2l/
-         h59UOJJVeJMr8yM9NoHWJs3kMuB72nv+X0zNScqMM93kz34GoL2lVziEeXOAV8J/FCwJ
-         nr449OqKmCc9oUDa/OR5KmBwjPXIGo3JRQHB3ALRQV6Yz8k7cvcQiOTXhRgUDSDyFzXq
-         qlIEE6erU+7D12Yrw8QTOiEQvv2ozNz1Aq4jbW1+hCAjbdRUqfqnr7onJ1cMpBKHZawb
-         0Z6Q==
-X-Gm-Message-State: AOAM53055upXhmOgEjfWb7A74apZmD15w0OOuQ35HBY4g0suTyfKt7pF
-        IWnQYujhJstImnSnoBaLz6RkWKkk55LxbmNduKvU9w==
-X-Google-Smtp-Source: ABdhPJzT75PRUjxGLKPS2lKd9gqe4/tbIGSDT67F7bKY978vOFW82sCkY4yUWPTmOIQeAga00+0PTgGspvFle4eh1Qs=
-X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr352613pjf.59.1612984336464;
- Wed, 10 Feb 2021 11:12:16 -0800 (PST)
+        id S234530AbhBJTOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:14:00 -0500
+Received: from mga01.intel.com ([192.55.52.88]:2610 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234495AbhBJTNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 14:13:13 -0500
+IronPort-SDR: HXqZH/5cAoe6N4nABuRi9/uYhRXCIywXThqIBXP55OhpfAk0fWfjm4KBT+4SpdX3p92UTE+xpx
+ YbvNgxxZ1pUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="201252356"
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="201252356"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 11:12:31 -0800
+IronPort-SDR: Fie5eJeuLNs0eRaUUcCs4YlA4FQebSj8KQrBRdj2C+VE36PAJ0mwNut9ixx6yhKDF28tv6lc4w
+ 3hW+HalhASpQ==
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="362255467"
+Received: from lgrunes-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.135.4])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 11:12:30 -0800
+Date:   Wed, 10 Feb 2021 11:12:29 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Ariel.Sibley@microchip.com
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        cbrowy@avery-design.com, hch@infradead.org,
+        dan.j.williams@intel.com, david@redhat.com, rientjes@google.com,
+        ira.weiny@intel.com, jcm@jonmasters.org,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        rdunlap@infradead.org, vishal.l.verma@intel.com,
+        jgroves@micron.com, sean.v.kelley@intel.com,
+        Ahmad.Danesh@microchip.com, Varada.Dighe@microchip.com,
+        Kirthi.Shenoy@microchip.com, Sanjay.Goyal@microchip.com
+Subject: Re: [PATCH v2 5/8] cxl/mem: Add a "RAW" send command
+Message-ID: <20210210191229.xgsr4s27iveo37qv@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-6-ben.widawsky@intel.com>
+ <MN2PR11MB36455574E25237635D3F9CC0888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
+ <20210210164904.lfhtfvlyeypfpjhe@intel.com>
+ <MN2PR11MB36450EFC1729D9A4CDB2FB27888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
+ <20210210181159.opwjsjovzsom7rky@intel.com>
+ <MN2PR11MB364513777E713224B3BB7D74888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210205080621.3102035-1-john.stultz@linaro.org>
- <20210205080621.3102035-2-john.stultz@linaro.org> <4471b3b0-603e-6dbb-8064-ff4a95afbba9@amd.com>
- <CALAqxLWZkUFvJX5r2OU2erW4tU3j=+u==VTyzYkt+95LwwVCUA@mail.gmail.com>
- <48225879-2fe1-22ac-daae-c61d52465aea@amd.com> <a9dd7f8a-ef30-9eb4-4834-37801d43b96f@amd.com>
- <CAJuCfpE-T4Cs_h6LfrgHE+T_iOVywU2oNzLquYETudOaBMauMQ@mail.gmail.com>
- <c7df099f-27f7-adc6-4e87-9903ac00cbea@amd.com> <CAKMK7uFu27RRpwPdNFuhd-Y5R8XiCNosET9BYtCnr3u30UDs0g@mail.gmail.com>
- <CAJuCfpF2Q1qVkv75czc2AFRrp25eNz7hqmeO9Wx8e5VY7PvyJw@mail.gmail.com>
- <YCPaZc0+F+5C7FG4@phenom.ffwll.local> <CAJuCfpG+nOwZJcJAXuvv=P=17vWdw2AFT7+WHfpwfmjAfefM2g@mail.gmail.com>
- <d085aaf7-8414-3efa-404b-1595abfb6da7@amd.com>
-In-Reply-To: <d085aaf7-8414-3efa-404b-1595abfb6da7@amd.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 10 Feb 2021 11:12:05 -0800
-Message-ID: <CAJuCfpHUBGykGdcgBSg6bGvPGtE66m+SrXeYg3jMtYQ5ZRzpdQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH v6 1/7] drm: Add a sharable drm page-pool implementation
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR11MB364513777E713224B3BB7D74888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:32 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
->
->
-> Am 10.02.21 um 17:39 schrieb Suren Baghdasaryan:
-> > On Wed, Feb 10, 2021 at 5:06 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >> On Tue, Feb 09, 2021 at 12:16:51PM -0800, Suren Baghdasaryan wrote:
-> >>> On Tue, Feb 9, 2021 at 12:03 PM Daniel Vetter <daniel@ffwll.ch> wrote=
-:
-> >>>> On Tue, Feb 9, 2021 at 6:46 PM Christian K=C3=B6nig <christian.koeni=
-g@amd.com> wrote:
-> >>>>>
-> >>>>>
-> >>>>> Am 09.02.21 um 18:33 schrieb Suren Baghdasaryan:
-> >>>>>> On Tue, Feb 9, 2021 at 4:57 AM Christian K=C3=B6nig <christian.koe=
-nig@amd.com> wrote:
-> >>>>>>> Am 09.02.21 um 13:11 schrieb Christian K=C3=B6nig:
-> >>>>>>>> [SNIP]
-> >>>>>>>>>>> +void drm_page_pool_add(struct drm_page_pool *pool, struct pa=
-ge *page)
-> >>>>>>>>>>> +{
-> >>>>>>>>>>> +     spin_lock(&pool->lock);
-> >>>>>>>>>>> +     list_add_tail(&page->lru, &pool->items);
-> >>>>>>>>>>> +     pool->count++;
-> >>>>>>>>>>> +     atomic_long_add(1 << pool->order, &total_pages);
-> >>>>>>>>>>> +     spin_unlock(&pool->lock);
-> >>>>>>>>>>> +
-> >>>>>>>>>>> +     mod_node_page_state(page_pgdat(page),
-> >>>>>>>>>>> NR_KERNEL_MISC_RECLAIMABLE,
-> >>>>>>>>>>> +                         1 << pool->order);
-> >>>>>>>>>> Hui what? What should that be good for?
-> >>>>>>>>> This is a carryover from the ION page pool implementation:
-> >>>>>>>>> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%=
-2F%2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Ftorvalds%2Flinux.g=
-it%2Ftree%2Fdrivers%2Fstaging%2Fandroid%2Fion%2Fion_page_pool.c%3Fh%3Dv5.10=
-%23n28&amp;data=3D04%7C01%7Cchristian.koenig%40amd.com%7Cbb7155447ee149a49f=
-3a08d8cde2685d%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637485719618339=
-413%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1=
-haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DIYsJoAd7SUo12V7tS3CCRqNVm569iy%2FtoX=
-Qqm2MdC1g%3D&amp;reserved=3D0
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> My sense is it helps with the vmstat/meminfo accounting so folk=
-s can
-> >>>>>>>>> see the cached pages are shrinkable/freeable. This maybe falls =
-under
-> >>>>>>>>> other dmabuf accounting/stats discussions, so I'm happy to remo=
-ve it
-> >>>>>>>>> for now, or let the drivers using the shared page pool logic ha=
-ndle
-> >>>>>>>>> the accounting themselves?
-> >>>>>>> Intentionally separated the discussion for that here.
-> >>>>>>>
-> >>>>>>> As far as I can see this is just bluntly incorrect.
-> >>>>>>>
-> >>>>>>> Either the page is reclaimable or it is part of our pool and free=
-able
-> >>>>>>> through the shrinker, but never ever both.
-> >>>>>> IIRC the original motivation for counting ION pooled pages as
-> >>>>>> reclaimable was to include them into /proc/meminfo's MemAvailable
-> >>>>>> calculations. NR_KERNEL_MISC_RECLAIMABLE defined as "reclaimable
-> >>>>>> non-slab kernel pages" seems like a good place to account for them=
- but
-> >>>>>> I might be wrong.
-> >>>>> Yeah, that's what I see here as well. But exactly that is utterly n=
-onsense.
-> >>>>>
-> >>>>> Those pages are not "free" in the sense that get_free_page could re=
-turn
-> >>>>> them directly.
-> >>>> Well on Android that is kinda true, because Android has it's
-> >>>> oom-killer (way back it was just a shrinker callback, not sure how i=
-t
-> >>>> works now), which just shot down all the background apps. So at leas=
-t
-> >>>> some of that (everything used by background apps) is indeed
-> >>>> reclaimable on Android.
-> >>>>
-> >>>> But that doesn't hold on Linux in general, so we can't really do thi=
-s
-> >>>> for common code.
-> >>>>
-> >>>> Also I had a long meeting with Suren, John and other googles
-> >>>> yesterday, and the aim is now to try and support all the Android gpu
-> >>>> memory accounting needs with cgroups. That should work, and it will
-> >>>> allow Android to handle all the Android-ism in a clean way in upstre=
-am
-> >>>> code. Or that's at least the plan.
-> >>>>
-> >>>> I think the only thing we identified that Android still needs on top
-> >>>> is the dma-buf sysfs stuff, so that shared buffers (which on Android
-> >>>> are always dma-buf, and always stay around as dma-buf fd throughout
-> >>>> their lifetime) can be listed/analyzed with full detail.
-> >>>>
-> >>>> But aside from this the plan for all the per-process or per-heap
-> >>>> account, oom-killer integration and everything else is planned to be
-> >>>> done with cgroups.
-> >>> Until cgroups are ready we probably will need to add a sysfs node to
-> >>> report the total dmabuf pool size and I think that would cover our
-> >>> current accounting need here.
-> >>> As I mentioned, not including dmabuf pools into MemAvailable would
-> >>> affect that stat and I'm wondering if pools should be considered as
-> >>> part of MemAvailable or not. Since MemAvailable includes SReclaimable
-> >>> I think it makes sense to include them but maybe there are other
-> >>> considerations that I'm missing?
-> >> On Android, yes, on upstream, not so much. Because upstream doesn't ha=
-ve
-> >> the android low memory killer cleanup up all the apps, so effectively =
-we
-> >> can't reclaim that memory, and we shouldn't report it as such.
-> >> -Daniel
-> > Hmm. Sorry, I fail to see why Android's low memory killer makes a
-> > difference here. In my mind, the pages in the pools are not used but
-> > kept there in case heaps need them (maybe that's the part I'm wrong?).
-> > These pages can be freed by the shrinker if memory pressure rises.
->
-> And exactly that's the difference. They *can* be freed is not the same
-> thing as they *are* free.
+On 21-02-10 18:46:04, Ariel.Sibley@microchip.com wrote:
+> > > > > > diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> > > > > > index c4ba3aa0a05d..08eaa8e52083 100644
+> > > > > > --- a/drivers/cxl/Kconfig
+> > > > > > +++ b/drivers/cxl/Kconfig
+> > > > > > @@ -33,6 +33,24 @@ config CXL_MEM
+> > > > > >
+> > > > > >           If unsure say 'm'.
+> > > > > >
+> > > > > > +config CXL_MEM_RAW_COMMANDS
+> > > > > > +       bool "RAW Command Interface for Memory Devices"
+> > > > > > +       depends on CXL_MEM
+> > > > > > +       help
+> > > > > > +         Enable CXL RAW command interface.
+> > > > > > +
+> > > > > > +         The CXL driver ioctl interface may assign a kernel ioctl command
+> > > > > > +         number for each specification defined opcode. At any given point in
+> > > > > > +         time the number of opcodes that the specification defines and a device
+> > > > > > +         may implement may exceed the kernel's set of associated ioctl function
+> > > > > > +         numbers. The mismatch is either by omission, specification is too new,
+> > > > > > +         or by design. When prototyping new hardware, or developing /
+> > > > > > debugging
+> > > > > > +         the driver it is useful to be able to submit any possible command to
+> > > > > > +         the hardware, even commands that may crash the kernel due to their
+> > > > > > +         potential impact to memory currently in use by the kernel.
+> > > > > > +
+> > > > > > +         If developing CXL hardware or the driver say Y, otherwise say N.
+> > > > >
+> > > > > Blocking RAW commands by default will prevent vendors from developing user
+> > > > > space tools that utilize vendor specific commands. Vendors of CXL.mem devices
+> > > > > should take ownership of ensuring any vendor defined commands that could cause
+> > > > > user data to be exposed or corrupted are disabled at the device level for
+> > > > > shipping configurations.
+> > > >
+> > > > Thanks for brining this up Ariel. If there is a recommendation on how to codify
+> > > > this, I would certainly like to know because the explanation will be long.
+> > > >
+> > > > ---
+> > > >
+> > > > The background:
+> > > >
+> > > > The enabling/disabling of the Kconfig option is driven by the distribution
+> > > > and/or system integrator. Even if we made the default 'y', nothing stops them
+> > > > from changing that. if you are using this driver in production and insist on
+> > > > using RAW commands, you are free to carry around a small patch to get rid of the
+> > > > WARN (it is a one-liner).
+> > > >
+> > > > To recap why this is in place - the driver owns the sanctity of the device and
+> > > > therefore a [large] part of the whole system. What we can do as driver writers
+> > > > is figure out the set of commands that are "safe" and allow those. Aside from
+> > > > being able to validate them, we're able to mediate them with other parallel
+> > > > operations that might conflict. We gain the ability to squint extra hard at bug
+> > > > reports. We provide a reason to try to use a well defined part of the spec.
+> > > > Realizing that only allowing that small set of commands in a rapidly growing
+> > > > ecosystem is not a welcoming API; we decided on RAW.
+> > > >
+> > > > Vendor commands can be one of two types:
+> > > > 1. Some functionality probably most vendors want.
+> > > > 2. Functionality that is really single vendor specific.
+> > > >
+> > > > Hopefully we can agree that the path for case #1 is to work with the consortium
+> > > > to standardize a command that does what is needed and that can eventually become
+> > > > part of UAPI. The situation is unfortunate, but temporary. If you won't be able
+> > > > to upgrade your kernel, patch out the WARN as above.
+> > > >
+> > > > The second situation is interesting and does need some more thought and
+> > > > discussion.
+> > > >
+> > > > ---
+> > > >
+> > > > I see 3 realistic options for truly vendor specific commands.
+> > > > 1. Tough noogies. Vendors aren't special and they shouldn't do that.
+> > > > 2. modparam to disable the WARN for specific devices (let the sysadmin decide)
+> > > > 3. Try to make them part of UAPI.
+> > > >
+> > > > The right answer to me is #1, but I also realize I live in the real world.
+> > > >
+> > > > #2 provides too much flexibility. Vendors will just do what they please and
+> > > > distros and/or integrators will be seen as hostile if they don't accommodate.
+> > > >
+> > > > I like #3, but I have a feeling not everyone will agree. My proposal for vendor
+> > > > specific commands is, if it's clear it's truly a unique command, allow adding it
+> > > > as part of UAPI (moving it out of RAW). I expect like 5 of these, ever. If we
+> > > > start getting multiple per vendor, we've failed. The infrastructure is already
+> > > > in place to allow doing this pretty easily. I think we'd have to draw up some
+> > > > guidelines (like adding test cases for the command) to allow these to come in.
+> > > > Anything with command effects is going to need extra scrutiny.
+> > >
+> > > This would necessitate adding specific opcode values in the range C000h-FFFFh
+> > > to UAPI, and those would then be allowed for all CXL.mem devices, correct?  If
+> > > so, I do not think this is the right approach, as opcodes in this range are by
+> > > definition vendor defined.  A given opcode value will have totally different
+> > > effects depending on the vendor.
+> > 
+> > Perhaps I didn't explain well enough. The UAPI would define the command ID to
+> > opcode mapping, for example 0xC000. There would be a validation step in the
+> > driver where it determines if it's actually the correct hardware to execute on.
+> > So it would be entirely possible to have multiple vendor commands with the same
+> > opcode.
+> > 
+> > So UAPI might be this:
+> >         ___C(GET_HEALTH_INFO, "Get Health Info"),                         \
+> >         ___C(GET_LOG, "Get Log"),                                         \
+> >         ___C(VENDOR_FOO_XXX, "FOO"),                                      \
+> >         ___C(VENDOR_BAR_XXX, "BAR"),                                      \
+> > 
+> > User space just picks the command they want, FOO/BAR. If they use VENDOR_BAR_XXX
+> > on VENDOR_FOO's hardware, they will get an error return value.
+> 
+> Would the driver be doing this enforcement of vendor ID / opcode
+> compatibility, or would the error return value mentioned here be from the
+> device?  My concern is where the same opcode has two meanings for different
+> vendors.  For example, for Vendor A opcode 0xC000 might report some form of
+> status information, but for Vendor B it might have data side effects.  There
+> may not have been any UAPI intention to expose 0xC000 for Vendor B devices,
+> but the existence of 0xC000 in UAPI for Vendor A results in the data
+> corrupting version of 0xC000 for Vendor B being allowed.  It would seem to me
+> that even if the commands are in UAPI, the driver would still need to rely on
+> the contents of the CEL to determine if the command should be allowed.
 
-No argument there. That's why I think meminfo has two separate stats
-for MemFree and MemAvailable. MemFree is self-explanatory. The
-description of MemAvailable in
-https://www.kernel.org/doc/Documentation/filesystems/proc.txt says "An
-estimate of how much memory is available for starting new
-applications, without swapping.". Since dropping unused pages from
-slabs, caches and pools is less expensive than swapping, I would
-assume that a well-behaved system would do that before resorting to
-swapping. And if so, such memory should be included in MemAvailable
-because VM will make it available before swapping. But again, that's
-my interpretation. WDYT?
+I think I might not be properly understanding your concern. There are two types
+of errors in UAPI that represent 3 error conditions:
 
->
-> > In that sense I think it's very similar to reclaimable slabs which are
-> > already accounted as part of MemAvailable. So it seems logical to me
-> > to include unused pages in the pools here as well. What am I missing?
->
-> See the shrinkers are there because you need to do some action before
-> you can re-use the memory.
->
-> In the case of the TTM/DRM pool for example you need to change the
-> caching attributes which might cause sleeping for a TLB flush to finish.
+1. errno from the ioctl - parameter invalid kind of stuff, this would include using
+   the vendor A UAPI on vendor B's device (assuming matching opcodes).
+2. errno from the ioctl - transport error of some sort in the mailbox command -
+   timeout on doorbell kind of thing.
+3. cxl_send_command.retval - Device's error code.
 
-I see your point here. But how about caches/pools which can be easily
-dropped? Shouldn't they be part of MemAvailable?
+Did that address your concern?
 
->
-> By accounting those pages as free you mess up (for example) the handling
-> which makes sure that there are enough emergency reserves. I can only
-> strongly recommend to not do that.
->
-> What you could do is to add a sysfs interface to expose the different
-> shrinkers and the amount of pages in them to userspace. Similar to what
-> /proc/slabinfo is doing.
+>  
+> > > I think you may be on to something with the command effects.  But rather than
+> > > "extra scrutiny" for opcodes that have command effects, would it make sense to
+> > > allow vendor defined opcodes that have Bit[5:0] in the Command Effect field of
+> > > the CEL Entry Structure (Table 173) set to 0?  In conjunction, those bits
+> > > represent any change to the configuration or data within the device.  For
+> > > commands that have no such effects, is there harm to allowing them?  Of
+> > > course, this approach relies on the vendor to not misrepresent the command
+> > > effects.
+> > >
+> > 
+> > That last sentence is what worries me :-)
+> 
+> One must also rely on the vendor to not simply corrupt data at random. :) IMO
+> the contents of the CEL should be believed by the driver, rather than the
+> driver treating the device as a hostile actor.
+> 
 
-True, we can work around this. Just want to make sure whatever we do
-really makes sense.
-Thanks,
-Suren.
+I respect your opinion, but my opinion is that driver writers absolutely cannot
+rely on that. It would further the conversation a great deal to get concrete
+examples of commands that couldn't be part of the core spec and had no effects.
+I assume all vendors are going to avoid doing that, which is a real shame.
 
->
-> Regards,
-> Christian.
->
-> >
-> >>>> Android (for now) only needs to account overall gpu
-> >>>> memory since none of it is swappable on android drivers anyway, plus
-> >>>> no vram, so not much needed.
-> >>>>
-> >>>> Cheers, Daniel
-> >>>>
-> >>>>> Regards,
-> >>>>> Christian.
-> >>>>>
-> >>>>>>> In the best case this just messes up the accounting, in the worst=
- case
-> >>>>>>> it can cause memory corruption.
-> >>>>>>>
-> >>>>>>> Christian.
-> >>>>
-> >>>> --
-> >>>> Daniel Vetter
-> >>>> Software Engineer, Intel Corporation
-> >>>> https://nam11.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fb=
-log.ffwll.ch%2F&amp;data=3D04%7C01%7Cchristian.koenig%40amd.com%7Cbb7155447=
-ee149a49f3a08d8cde2685d%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637485=
-719618349407%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLC=
-JBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3D11ENl28PIoSoUx6FhkEK9u4G6yi=
-Lc3YhsYsl1DIzsv8%3D&amp;reserved=3D0
-> >> --
-> >> Daniel Vetter
-> >> Software Engineer, Intel Corporation
-> >> https://nam11.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fblo=
-g.ffwll.ch%2F&amp;data=3D04%7C01%7Cchristian.koenig%40amd.com%7Cbb7155447ee=
-149a49f3a08d8cde2685d%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C63748571=
-9618349407%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJB=
-TiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3D11ENl28PIoSoUx6FhkEK9u4G6yiLc=
-3YhsYsl1DIzsv8%3D&amp;reserved=3D0
->
+So far I haven't seen the consortium shoot something down from a vendor because
+it is too vendor specific...
+
+> > 
+> > 
+> > > >
+> > > > In my opinion, as maintainers of the driver, we do owe the community an answer
+> > > > as to our direction for this. Dan, what is your thought?
