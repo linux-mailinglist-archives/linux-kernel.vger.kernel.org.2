@@ -2,46 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005D4315D4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE52D315D50
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbhBJCb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:31:29 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:59208 "EHLO vps0.lunn.ch"
+        id S235108AbhBJCbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:31:50 -0500
+Received: from mga17.intel.com ([192.55.52.151]:55654 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235236AbhBJCFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 21:05:07 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l9eri-005Dxe-0k; Wed, 10 Feb 2021 03:04:26 +0100
-Date:   Wed, 10 Feb 2021 03:04:26 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Michael Walle <michael@walle.cc>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next 6/9] net: phy: icplus: don't set APS_EN bit on
- IP101G
-Message-ID: <YCM/KpQ154+YguTY@lunn.ch>
-References: <20210209164051.18156-1-michael@walle.cc>
- <20210209164051.18156-7-michael@walle.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209164051.18156-7-michael@walle.cc>
+        id S234773AbhBJCIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 21:08:19 -0500
+IronPort-SDR: cX3nKQXXP2jtkstCRz/RYYSAMY2ZxnjKreYAA5NaaiF0id1Axz15nXLG3ZYobDGsIohpjzk+vX
+ LxmQ+aP8h9ag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="161748060"
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="161748060"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 18:07:09 -0800
+IronPort-SDR: ZIYRofkClCG24wq35CWWIL37qCS+WZ7fnXiO5uUlOMBxLH38CZ0OxTDLEznqHRg67Ik/8bn1kA
+ tAertE8fxlag==
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
+   d="scan'208";a="379628247"
+Received: from qiuxu-lab.sh.intel.com ([10.239.53.1])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 18:07:06 -0800
+From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] PCI/RCEC: Fix failure to inject errors to some RCiEP devices
+Date:   Wed, 10 Feb 2021 10:05:16 +0800
+Message-Id: <20210210020516.95292-1-qiuxu.zhuo@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:40:48PM +0100, Michael Walle wrote:
-> This bit is reserved as 'always-write-1'. While this is not a particular
-> error, because we are only setting it, guard it by checking the model to
-> prevent errors in the future.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+On a Sapphire Rapids server, it failed to inject correctable errors
+to the RCiEP device e8:02.0 which was associated with the RCEC device
+e8:00.4. See the following error log before applying the patch:
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+aer-inject -s e8:02.0 examples/correctable
+Error: Failed to write, No such device
 
-    Andrew
+This was because rcec_assoc_rciep() mistakenly used "rciep->devfn" as
+device number to check whether the corresponding bit was set in
+the RCiEPBitmap of the RCEC. So that the RCiEP device e8:02.0 wasn't
+linked to the RCEC and resulted in the above error.
+
+Fix it by using PCI_SLOT() to convert rciep->devfn to device number.
+Ensure that the RCiEP devices associated with the RCEC are linked to
+the RCEC as the RCEC is enumerated. After applying the patch, correctable
+errors can be injected to the RCiEP successfully.
+
+Reported-and-tested-by: Wen Jin <wen.jin@intel.com>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+---
+ drivers/pci/pcie/rcec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
+index 2c5c552994e4..d0bcd141ac9c 100644
+--- a/drivers/pci/pcie/rcec.c
++++ b/drivers/pci/pcie/rcec.c
+@@ -32,7 +32,7 @@ static bool rcec_assoc_rciep(struct pci_dev *rcec, struct pci_dev *rciep)
+ 
+ 	/* Same bus, so check bitmap */
+ 	for_each_set_bit(devn, &bitmap, 32)
+-		if (devn == rciep->devfn)
++		if (devn == PCI_SLOT(rciep->devfn))
+ 			return true;
+ 
+ 	return false;
+-- 
+2.17.1
+
