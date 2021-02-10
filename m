@@ -2,173 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AFB316A1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D3A316A2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbhBJPZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:25:40 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20826 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231643AbhBJPZV (ORCPT
+        id S230005AbhBJP2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:28:14 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:42214 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhBJP2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:25:21 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11AFBvDQ073293;
-        Wed, 10 Feb 2021 10:24:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=YE4yzdTFr4qAlMkTbvSKj+np/7g7u8F/lfs8feNmmnE=;
- b=hIzvP7nvmJ+7w/MoBp8ZsKjtcO/iq7oJdHgqXU4faXJFNsi4RDJniSsv/EsXAyl+VGVd
- AzOIa2qewpe2ie8JCgN3nxyFv4iZrNs9pQbTNVMX8ynu1V4xhf3Apc07nantfuzc0/b6
- LPodDBZlap6OY3BHH/SGFaqUv8jr51DEydLFS/A25GSqKHXYhGEMfTst3DQiM3DIsGTK
- nYTcaUZF7vd7acl/KTMZHWRtpWYoLvp/5d4Q0XL5c9EvDsGEc0wCJQuqdow9tfAyurpy
- +H0sgPdJoU2e9R4Hjz5xW+ZtKCahbHcgqsIh768EGYi6qjhKCKChV+jxTcbf8e4dfuCq Ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36mhww0g7m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 10:24:37 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11AFBuJE073250;
-        Wed, 10 Feb 2021 10:24:36 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36mhww0g6q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 10:24:36 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11AFCbM6031432;
-        Wed, 10 Feb 2021 15:24:34 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 36m1m2s302-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 15:24:34 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11AFOLjV36831712
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 15:24:21 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE6C04204D;
-        Wed, 10 Feb 2021 15:24:31 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 471D242042;
-        Wed, 10 Feb 2021 15:24:31 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.25.242])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed, 10 Feb 2021 15:24:31 +0000 (GMT)
-Date:   Wed, 10 Feb 2021 16:24:29 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org, borntraeger@de.ibm.com,
-        kwankhede@nvidia.com, pbonzini@redhat.com,
-        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
-Subject: Re: [PATCH 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-Message-ID: <20210210162429.261fc17c.pasic@linux.ibm.com>
-In-Reply-To: <20210210115334.46635966.cohuck@redhat.com>
-References: <20210209194830.20271-1-akrowiak@linux.ibm.com>
-        <20210209194830.20271-2-akrowiak@linux.ibm.com>
-        <20210210115334.46635966.cohuck@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 10 Feb 2021 10:28:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612970880; x=1644506880;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=xGVzJquCzyjQYa4LIIypMWK2VAvY2VtOhqrB42TBKao=;
+  b=bIShQNFzDHVNVmK8H7lZPyR4MhOyh/K9R30r6viLzrDiyHYJmw0j/odX
+   trlRYwC0BPvOIrny/983/xCKXBk7ZuFSXmUy5hGjQNpXg4/bwYYMsbgG4
+   I+gCZ3y0LJtnNEO5YbWjsUp6l9DIvmuZ9d8KVQf/zDS/7xFen4n2veIKM
+   l3M09eeAGZBFsLPbEdCJVdNk370QRDgxP3v6avA7ja3FEctwSZBBCdMiD
+   Zn+0+Ftv9nalruErOCVZssk2yuUrvCuT9EByLyOCZRH2TMlrI2R9i2g5n
+   zWKINlCmnHutsl8INaMz1jsEF9K5Lylc5ycFx0fBttZ71/mWXMxFC42qs
+   Q==;
+IronPort-SDR: vwCVGxVJThETRAbcUmdJWtiNNgPYabBmPfEgW9aa8If73sgNVKvG/URQc3sb1vupu/7Pe/hrXM
+ GD9jEyAaxiuf+V7Dy9no3LfsuE/VVEoWKYIINn5dvCkENuDx9aYEZwzjUoqwy2lSHajOPZOlPR
+ P/5zIDsU6Lhf5BIlRaE7TmR42ycm+ZVbWWnxeQ9G6NxEZAUL1k14+WFaHKT18wKswEay+V3RW+
+ w2F1SpBRTeLYhxw4EhuO+shNDxRqrE060NUUwfLLpwZ6alVyLDiUTSklrYHAe7Q8QnEO3vqmzR
+ +aU=
+X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
+   d="scan'208";a="108719237"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 08:26:44 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 10 Feb 2021 08:26:40 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Wed, 10 Feb 2021 08:26:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UaxLrcc88/V8g86xpqjGEaOcDuWGtpUbUObx3IYsbPoBxodHcgnQstwZJPsyPt3xcA15BZ1GRtS6sHcOEBLNuAtLVywcFCzcihSZdQRD9EAD2JtjAeTvyEC/xCjz5vRyl1GWr5HaKcVqKROlXt7NenAxLBaEVxqzjr5TNbRULhOtIrJjpfl/ptwHFiJhMtPJsQgbYf8U3oc1Bt/0d+hXSVBEZ38WcPEpFu+8pBArbwXU0aGfFtC+UR/XcJAUBjP93Pu0n8ujkah3V4bqJIxNePxj7Z7yfOmWt367y8CGqmGiw4QnwOSbzEjCi1L4r7xIBh8JmbhbL93IFUsXiCsiBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rteu7Jctq28lgwb8XznjyCN7S2VISSfAMObiYy0AGfI=;
+ b=NfGFRWDYBLjZ8tIow3nc2j64MCkywN1qjQroetzCDE5gxVgL0bUF7G25v4AsZnnoW8Zq5N8qHBV+IQ9dibK+yUFShKHIktDS7HTNf5RiOsfY/IEo9OKzOFN4DPFW1MNDIijxuDc7dltLK7ZRxgHA6CyVjzPR7pgWQd5AQ59QGAiN6l1JTJ84/P6HNU7/KsNTeo+oKYdGBAhSmakoZdgwMD2Pxcp3hd9cxuxWQm3SZZZbTRAMR7PEdtc/da1RpoDkCNwlTauqUr442IXvxT0tP8GhmOFKRBb9/rOM0MZRQcChIu5KOGpbH7Wh1uo7BwpbKS3jfcq6eZo3va63T/x6hA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rteu7Jctq28lgwb8XznjyCN7S2VISSfAMObiYy0AGfI=;
+ b=jmUrznCyUi1nmjgcD9fNilkjubIGHD0rCUTYqqC1Nrx1tcrDwlQeLTZJ1//dhyMdIX22JHrGbPaeStRw+neqt/4EpBIHMgsDZrT24HZBU8XDFlEm7Mdf10/6rx9I6mrtQdodxMQYKS8v93xzE8eqyqPl3+KzlrmPQUQf6J7drKI=
+Received: from MN2PR11MB3645.namprd11.prod.outlook.com (2603:10b6:208:f8::13)
+ by MN2PR11MB3648.namprd11.prod.outlook.com (2603:10b6:208:f0::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Wed, 10 Feb
+ 2021 15:26:27 +0000
+Received: from MN2PR11MB3645.namprd11.prod.outlook.com
+ ([fe80::51c7:31cf:308f:4c30]) by MN2PR11MB3645.namprd11.prod.outlook.com
+ ([fe80::51c7:31cf:308f:4c30%5]) with mapi id 15.20.3825.030; Wed, 10 Feb 2021
+ 15:26:27 +0000
+From:   <Ariel.Sibley@microchip.com>
+To:     <ben.widawsky@intel.com>, <linux-cxl@vger.kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-pci@vger.kernel.org>,
+        <helgaas@kernel.org>, <cbrowy@avery-design.com>,
+        <hch@infradead.org>, <dan.j.williams@intel.com>,
+        <david@redhat.com>, <rientjes@google.com>, <ira.weiny@intel.com>,
+        <jcm@jonmasters.org>, <Jonathan.Cameron@Huawei.com>,
+        <rafael.j.wysocki@intel.com>, <rdunlap@infradead.org>,
+        <vishal.l.verma@intel.com>, <jgroves@micron.com>,
+        <sean.v.kelley@intel.com>
+Subject: RE: [PATCH v2 5/8] cxl/mem: Add a "RAW" send command
+Thread-Topic: [PATCH v2 5/8] cxl/mem: Add a "RAW" send command
+Thread-Index: AQHW/0AqZCOVul459UanKz+acVTCvapRfUwQ
+Date:   Wed, 10 Feb 2021 15:26:27 +0000
+Message-ID: <MN2PR11MB36455574E25237635D3F9CC0888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-6-ben.widawsky@intel.com>
+In-Reply-To: <20210210000259.635748-6-ben.widawsky@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [142.134.145.175]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0d30efc6-6810-469d-115c-08d8cdd83bc3
+x-ms-traffictypediagnostic: MN2PR11MB3648:
+x-microsoft-antispam-prvs: <MN2PR11MB3648B7F3EF4F10333189B652888D9@MN2PR11MB3648.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4OBqMZ8ipHipRogcYq7jSyeW+7sOEgcxf7S3rKauMKT3/u3a0/VpQ1EraPbYOfV0Q9KZKUYjCdwh21kfmALpTSbA4cpF6Oqg5Jb6ey1kSQqk6lWIPGhkecy19snxPTDJL3Arravrl7/MBnl+BL8sx+xlE4fqr/E7KfDhbGFhZ/KVGgr8WHPtr5l/nsw0gSxCgNPnmMLewqZXxzbiBCK+TVfbRw1d566lMUs5VTb79XrrPi/JW5X5yEamxWJQLa54IFPdqPmaIe6TvT9AM1L1aKt5qyOXIa0WIPkhBgMylNvbq7u3Tg4hnJEnRuY2yi9LxWMAt/8UVD/SsoZIdMeyUsYyFVL0XUtqHQdRyIJGq/WgogJ3SZjHhiFYHJ1NJsUUBeDhistFmVSzhlR/OCO/tUUc7CPDO6L4IRrWtGoZzSmikReRJylbGbbOsPW55IbJJu95SASqNkUrrVEHQjmcsOY6ZaxoGxHkbozNGsY3BnIaui3gmgflil2UG5hk9zh4mXfH22WlQgr2FEFJyekMfw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR11MB3645.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(39860400002)(136003)(396003)(71200400001)(4326008)(8676002)(2906002)(66446008)(64756008)(66556008)(54906003)(66476007)(52536014)(6506007)(110136005)(33656002)(83380400001)(76116006)(478600001)(7696005)(5660300002)(26005)(86362001)(8936002)(9686003)(66946007)(316002)(55016002)(186003)(7416002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?gOymMf+WEY4yG+Xfrdz5PI1KH7Mqb6Ki7EQTiXcThj+wrXrftv/WW3mgb9j0?=
+ =?us-ascii?Q?CDer+rAjFY//ITpZJXxFK2Q79snOpvQmIzPTfuLmtTzVsX40kMqk5lv2O5Dd?=
+ =?us-ascii?Q?+OBb/j+MCt94bOmpCWxv2iqUbcM/xMnmeGuyKNQCzuWYJZAIAT8xg9Ia60A+?=
+ =?us-ascii?Q?n/oGPlqxG2JZ3l7sCPLdqORw30ksRGpxe6og+/olIEmds4GUJdNpo3sKthq2?=
+ =?us-ascii?Q?68C9XNPWIpp+Db9u6XWlZUaEbC908+knBdwORLxdZt45GlaE6Bx2AHnQgkVz?=
+ =?us-ascii?Q?GfPdiA4pSUvPwo0zjZoBs1vaDU1ej3qFCrKJu2XD9scBA8rk/3w5nGZhpUQh?=
+ =?us-ascii?Q?ecIubz/6nbkq7BimTdOX5A91+9QYwZ+2aGEIHZSdrbmGLKRmsp4OS8CrQuBs?=
+ =?us-ascii?Q?tAmT/OxpmXXaC/yQoPukqGmG3aAeDmFh00g/CNO5HtUJNGhqv5UHrUgR6h61?=
+ =?us-ascii?Q?PfzUWU6rN+w6GXcsAPh6cWb7ZNKvQv+FOTvGts1vumrYyfu1vv11KQsWrmxo?=
+ =?us-ascii?Q?neFAicn2aZFU+YmpU9YU+GKMytPpmKKhGEQSkXMYazag+ZX0tYGjstEaYxfs?=
+ =?us-ascii?Q?7LPj06Eh1rQooo6rSOYe9UM7MlNI2jofQGROoZBisqXWxRfSNIwrkpb8/uE5?=
+ =?us-ascii?Q?kaldtbbwr2M8MAgNcWZih+4OaNSgIPZhrhp23N5pIFaS30wRpulBpTqF8Hfw?=
+ =?us-ascii?Q?632fRhP+DtIf4fdkwRHerZ5VWyD7XpNey8Hgv2ephI5mu1LNIV+1FlyK/zTQ?=
+ =?us-ascii?Q?0DugoaWgRRN5p83bf1gJMB03mXJ+zuDLKA2TY3XusogoeFhz+2B8WmxWUI7h?=
+ =?us-ascii?Q?T7m6RqvWPAryKBK5qgFWm2qgynBNa5zdThzdltih8SUK5Be+QtgX47OGUkBy?=
+ =?us-ascii?Q?Zhlh9sGTIVAdT4CEMG4LSZBsm2xBF70qjw/ilFKZ/C59jowXqUbhqASpGrK1?=
+ =?us-ascii?Q?cXGAGC043YlAoYgLBLsjBnW/IJszg6WEGAZer7FQU6Mi8QHRq3hopDS6OOUo?=
+ =?us-ascii?Q?NwHih2pzFtdYDoCpfhMXAtEasqUhmGjfjq66T6iADbjAz4bh97oSlveN7xN2?=
+ =?us-ascii?Q?yxvw2vPGyCpvp3eODy1fFOmkRYmxJzhoFNzbzl+GC1IgaNjYBWU1MCqulyk+?=
+ =?us-ascii?Q?4rSWLFu8lZyzZgQSATjs8q1NhM8FzFBRhFYvo3/Bllh4pNJrEsDSoICjm2l1?=
+ =?us-ascii?Q?9PTn2UVFkMTLadWCWw8/3v7T8DxqKvEc0Syeef55Y8gW4f63u18y0egMBrRz?=
+ =?us-ascii?Q?pQ4e2/hkK0fBw4rkdB9E1ujx+labqs6KCNfh/3PGvauESMZfBwA1CknEoVpX?=
+ =?us-ascii?Q?W7mCacEqvCHLxIzK4dmhIjiq?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_05:2021-02-10,2021-02-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100140
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR11MB3645.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d30efc6-6810-469d-115c-08d8cdd83bc3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2021 15:26:27.0855
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CRpiWRDXuRW2qDUVWJkzMWVf937tDgKisduj8eD6xY4BRGymyE/2M9xAbB/hg8jviBbKraw4k4g4EqrU3vkjGL+ZiRad9xjZWQAuiIE81Fs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3648
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 11:53:34 +0100
-Cornelia Huck <cohuck@redhat.com> wrote:
+> diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> index c4ba3aa0a05d..08eaa8e52083 100644
+> --- a/drivers/cxl/Kconfig
+> +++ b/drivers/cxl/Kconfig
+> @@ -33,6 +33,24 @@ config CXL_MEM
+>=20
+>           If unsure say 'm'.
+>=20
+> +config CXL_MEM_RAW_COMMANDS
+> +       bool "RAW Command Interface for Memory Devices"
+> +       depends on CXL_MEM
+> +       help
+> +         Enable CXL RAW command interface.
+> +
+> +         The CXL driver ioctl interface may assign a kernel ioctl comman=
+d
+> +         number for each specification defined opcode. At any given poin=
+t in
+> +         time the number of opcodes that the specification defines and a=
+ device
+> +         may implement may exceed the kernel's set of associated ioctl f=
+unction
+> +         numbers. The mismatch is either by omission, specification is t=
+oo new,
+> +         or by design. When prototyping new hardware, or developing /
+> debugging
+> +         the driver it is useful to be able to submit any possible comma=
+nd to
+> +         the hardware, even commands that may crash the kernel due to th=
+eir
+> +         potential impact to memory currently in use by the kernel.
+> +
+> +         If developing CXL hardware or the driver say Y, otherwise say N=
+.
 
-> On Tue,  9 Feb 2021 14:48:30 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> 
-> > This patch fixes a circular locking dependency in the CI introduced by
-> > commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
-> > pointer invalidated"). The lockdep only occurs when starting a Secure
-> > Execution guest. Crypto virtualization (vfio_ap) is not yet supported for
-> > SE guests; however, in order to avoid CI errors, this fix is being
-> > provided.
-> > 
-> > The circular lockdep was introduced when the masks in the guest's APCB
-> > were taken under the matrix_dev->lock. While the lock is definitely
-> > needed to protect the setting/unsetting of the KVM pointer, it is not
-> > necessarily critical for setting the masks, so this will not be done under
-> > protection of the matrix_dev->lock.
-> > 
-> > Fixes: f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> > ---
-> >  drivers/s390/crypto/vfio_ap_ops.c | 75 ++++++++++++++++++-------------
-> >  1 file changed, 45 insertions(+), 30 deletions(-)
-> >   
-> 
-> >  static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
-> >  {
-> > -	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> > -	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> > -	vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> > -	kvm_put_kvm(matrix_mdev->kvm);
-> > -	matrix_mdev->kvm = NULL;
-> > +	if (matrix_mdev->kvm) {  
-> 
-> If you're doing setting/unsetting under matrix_dev->lock, is it
-> possible that matrix_mdev->kvm gets unset between here and the next
-> line, as you don't hold the lock?
-> 
-> Maybe you could
-> - grab a reference to kvm while holding the lock
-> - call the mask handling functions with that kvm reference
-> - lock again, drop the reference, and do the rest of the processing?
-
-I agree, matrix_mdev->kvm can go NULL any time and we are risking
-a null pointer dereference here.
-
-Another idea would be to do
-
-
-static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)           
-{                                                                               
-        struct kvm *kvm;
-                                                        
-        mutex_lock(&matrix_dev->lock);                                          
-        if (matrix_mdev->kvm) {                                                 
-                kvm = matrix_mdev->kvm;                                         
-                matrix_mdev->kvm = NULL;                                        
-                mutex_unlock(&matrix_dev->lock);                                
-                kvm_arch_crypto_clear_masks(kvm);                               
-                mutex_lock(&matrix_dev->lock);                                  
-                matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;                 
-                vfio_ap_mdev_reset_queues(matrix_mdev->mdev);                   
-                kvm_put_kvm(kvm);                                               
-        }                                                                       
-        mutex_unlock(&matrix_dev->lock);                                         
-}
-
-That way only one unset would actually do the unset and cleanup
-and every other invocation would bail out with only checking
-matrix_mdev->kvm.
-
- 
-> > +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> > +		mutex_lock(&matrix_dev->lock);
-> > +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> > +		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> > +		kvm_put_kvm(matrix_mdev->kvm);
-> > +		matrix_mdev->kvm = NULL;
-> > +		mutex_unlock(&matrix_dev->lock);
-> > +	}
-> >  }  
-> 
-
+Blocking RAW commands by default will prevent vendors from developing user =
+space tools that utilize vendor specific commands. Vendors of CXL.mem devic=
+es should take ownership of ensuring any vendor defined commands that could=
+ cause user data to be exposed or corrupted are disabled at the device leve=
+l for shipping configurations.
