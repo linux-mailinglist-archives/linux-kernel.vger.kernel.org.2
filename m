@@ -2,295 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CDD31661D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7120331662C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhBJMKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:10:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39198 "EHLO
+        id S231290AbhBJMMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:12:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230522AbhBJMHp (ORCPT
+        with ESMTP id S230429AbhBJMIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:07:45 -0500
-Received: from smtp-190a.mail.infomaniak.ch (smtp-190a.mail.infomaniak.ch [IPv6:2001:1600:4:17::190a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B937C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:04:03 -0800 (PST)
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DbJMJ3SkwzMpnnY;
-        Wed, 10 Feb 2021 13:03:56 +0100 (CET)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DbJMJ1RH9zlh8TM;
-        Wed, 10 Feb 2021 13:03:56 +0100 (CET)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH v6 5/5] certs: Allow root user to append signed hashes to the blacklist keyring
-Date:   Wed, 10 Feb 2021 13:04:10 +0100
-Message-Id: <20210210120410.471693-6-mic@digikod.net>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210210120410.471693-1-mic@digikod.net>
-References: <20210210120410.471693-1-mic@digikod.net>
+        Wed, 10 Feb 2021 07:08:15 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A90AC06121C
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:04:37 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id f16so1607099wmq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:04:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+9PeUG6v1r8aFGi6ORK3pCJUjeurz7TuWVSE9CMni0c=;
+        b=vefKpoHHE9JY7wsXqdCVcvzKivbYRTXzF+0dgJaRh4tzwGHJlFAPcT6iyCPjtVk/QO
+         2nbSc5689PqMRWiH0mYBu5uUXuBmmxhvZbfVsxAu4AYbT9KkUXLQ8GUARAWnmp4QnaYC
+         qrzOL4EoDzuwTZWyGC0rpjwwcObKmnDgs1a7A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+9PeUG6v1r8aFGi6ORK3pCJUjeurz7TuWVSE9CMni0c=;
+        b=O0wZx5appvBdclhd5a+BTSbhvZZqaplQdmJpwrySRONvgQ1Y4N9OG3TnFsEXEDapLR
+         byzKGxbEe5dDCgePlEsOuDP54futDKt5gUg8wC27RSLMxy7Mqqd2odX8AkSSLqEDKIDh
+         2V09M7xFXUf+Mm3BRjiCcY6WV4IxkqOF41D+1hTztw1oZqBoXeMMiFc8WqLpuAQWb7s1
+         UccHpMM0UK+2Aqm9chO7L/jOcBZ3ObtTThEaNSjOGtQ4ja08yCKDYrjTX55P6wkYHzTL
+         ut4S98ahcRZBe0bCQtSgr9OYsKW3crf5pPB9oNImWm9hfMEi6aLwgR3VkRhm7e/yYyRm
+         fUTg==
+X-Gm-Message-State: AOAM530lRzmUbR6038/50H8u8omok1luEOYzM1K5HRh5XcEYZET4qW0L
+        ipy/6JWa8exQ6SDWe3ypf5+V+Q==
+X-Google-Smtp-Source: ABdhPJwpmZw+y59+QzJHB79z4KhJzeSBdFZ5h0S1sHnxAqBTLAPp1GIONJS8JzIW2wEz2gPnFzl8PA==
+X-Received: by 2002:a1c:9851:: with SMTP id a78mr2600203wme.66.1612958676276;
+        Wed, 10 Feb 2021 04:04:36 -0800 (PST)
+Received: from antares.lan (c.3.c.9.d.d.c.e.0.a.6.8.a.9.e.c.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:ce9a:86a0:ecdd:9c3c])
+        by smtp.gmail.com with ESMTPSA id j7sm2837854wrp.72.2021.02.10.04.04.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 04:04:35 -0800 (PST)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: [PATCH bpf 0/4] Expose network namespace cookies to user space
+Date:   Wed, 10 Feb 2021 12:04:21 +0000
+Message-Id: <20210210120425.53438-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+We're working on a user space control plane for the BPF sk_lookup
+hook [1]. The hook attaches to a network namespace and allows
+control over which socket receives a new connection / packet.
 
-Add a kernel option SYSTEM_BLACKLIST_AUTH_UPDATE to enable the root user
-to dynamically add new keys to the blacklist keyring.  This enables to
-invalidate new certificates, either from being loaded in a keyring, or
-from being trusted in a PKCS#7 certificate chain.  This also enables to
-add new file hashes to be denied by the integrity infrastructure.
+Roughly, applications can give a socket to our user space component
+to participate in custom bind semantics. This creates an edge case
+where  an application can provide us with a socket that lives in
+a different network namespace than our BPF sk_lookup program.
+We'd like to return an error in this case.
 
-Being able to untrust a certificate which could have normaly been
-trusted is a sensitive operation.  This is why adding new hashes to the
-blacklist keyring is only allowed when these hashes are signed and
-vouched by the builtin trusted keyring.  A blacklist hash is stored as a
-key description.  The PKCS#7 signature of this description must be
-provided as the key payload.
+Additionally, we have some user space state that is tied to the
+network namespace. We currently use the inode of the nsfs entry
+in a directory name, but this is suffers from inode reuse.
 
-Marking a certificate as untrusted should be enforced while the system
-is running.  It is then forbiden to remove such blacklist keys.
+I'm proposing to fix both of these issues by adding a new
+SO_NETNS_COOKIE socket option as well as a NS_GET_COOKIE ioctl.
+Using these we get a stable, unique identifier for a network
+namespace and check whether a socket belongs to the "correct"
+namespace.
 
-Update blacklist keyring, blacklist key and revoked certificate access rights:
-* allows the root user to search for a specific blacklisted hash, which
-  make sense because the descriptions are already viewable;
-* forbids key update (blacklist and asymmetric ones);
-* restricts kernel rights on the blacklist keyring to align with the
-  root user rights.
+NS_GET_COOKIE could be renamed to NS_GET_NET_COOKIE. I kept the
+name generic because it seems like other namespace types could
+benefit from a cookie as well.
 
-See help in tools/certs/print-cert-tbs-hash.sh .
+I'm trying to land this via the bpf tree since this is where the
+netns cookie originated, please let me know if this isn't
+appropriate.
 
-Cc: David Howells <dhowells@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Eric Snowberg <eric.snowberg@oracle.com>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
----
+1: https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
 
-Changes since v5:
-* Rebase on keys-next, fix Kconfig conflict, and update the asymmetric
-  key rights added to the blacklist keyring by the new
-  add_key_to_revocation_list(): align with blacklist key rights by
-  removing KEY_POS_WRITE as a safeguard, and add
-  KEY_ALLOC_BYPASS_RESTRICTION to not be subject to
-  restrict_link_for_blacklist() that only allows blacklist key types to
-  be added to the keyring.
-* Change the return code for restrict_link_for_blacklist() from -EPERM
-  to -EOPNOTSUPP to align with asymmetric key keyrings.
+Cc: bpf@vger.kernel.org
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-api@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
 
-Changes since v3:
-* Update commit message for print-cert-tbs-hash.sh .
+Lorenz Bauer (4):
+  net: add SO_NETNS_COOKIE socket option
+  nsfs: add an ioctl to discover the network namespace cookie
+  tools/testing: add test for NS_GET_COOKIE
+  tools/testing: add a selftest for SO_NETNS_COOKIE
 
-Changes since v2:
-* Add comment for blacklist_key_instantiate().
----
- certs/Kconfig     | 10 +++++
- certs/blacklist.c | 96 ++++++++++++++++++++++++++++++++++++-----------
- 2 files changed, 85 insertions(+), 21 deletions(-)
+ arch/alpha/include/uapi/asm/socket.h          |  2 +
+ arch/mips/include/uapi/asm/socket.h           |  2 +
+ arch/parisc/include/uapi/asm/socket.h         |  2 +
+ arch/sparc/include/uapi/asm/socket.h          |  2 +
+ fs/nsfs.c                                     |  9 +++
+ include/linux/sock_diag.h                     | 20 ++++++
+ include/net/net_namespace.h                   | 11 ++++
+ include/uapi/asm-generic/socket.h             |  2 +
+ include/uapi/linux/nsfs.h                     |  2 +
+ net/core/filter.c                             |  9 ++-
+ net/core/sock.c                               |  7 +++
+ tools/testing/selftests/net/.gitignore        |  1 +
+ tools/testing/selftests/net/Makefile          |  2 +-
+ tools/testing/selftests/net/so_netns_cookie.c | 61 +++++++++++++++++++
+ tools/testing/selftests/nsfs/.gitignore       |  1 +
+ tools/testing/selftests/nsfs/Makefile         |  2 +-
+ tools/testing/selftests/nsfs/netns.c          | 57 +++++++++++++++++
+ 17 files changed, 185 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/net/so_netns_cookie.c
+ create mode 100644 tools/testing/selftests/nsfs/netns.c
 
-diff --git a/certs/Kconfig b/certs/Kconfig
-index 139940b54207..555491fdde0e 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -94,4 +94,14 @@ config SYSTEM_REVOCATION_KEYS
- 	  containing X.509 certificates to be included in the default blacklist
- 	  keyring.
- 
-+config SYSTEM_BLACKLIST_AUTH_UPDATE
-+	bool "Allow root to add signed blacklist keys"
-+	depends on SYSTEM_BLACKLIST_KEYRING
-+	depends on SYSTEM_DATA_VERIFICATION
-+	help
-+	  If set, provide the ability to load new blacklist keys at run time if
-+	  they are signed and vouched by a certificate from the builtin trusted
-+	  keyring.  The PKCS#7 signature of the description is set in the key
-+	  payload.  Blacklist keys cannot be removed.
-+
- endmenu
-diff --git a/certs/blacklist.c b/certs/blacklist.c
-index 9fe79597bda7..731e8e5bb6d8 100644
---- a/certs/blacklist.c
-+++ b/certs/blacklist.c
-@@ -15,6 +15,7 @@
- #include <linux/err.h>
- #include <linux/seq_file.h>
- #include <linux/uidgid.h>
-+#include <linux/verification.h>
- #include <keys/system_keyring.h>
- #include "blacklist.h"
- #include "common.h"
-@@ -26,6 +27,9 @@
-  */
- #define MAX_HASH_LEN	128
- 
-+#define BLACKLIST_KEY_PERM (KEY_POS_SEARCH | KEY_POS_VIEW | \
-+			    KEY_USR_SEARCH | KEY_USR_VIEW)
-+
- static const char tbs_prefix[] = "tbs";
- static const char bin_prefix[] = "bin";
- 
-@@ -78,19 +82,51 @@ static int blacklist_vet_description(const char *desc)
- 	return 0;
- }
- 
--/*
-- * The hash to be blacklisted is expected to be in the description.  There will
-- * be no payload.
-- */
--static int blacklist_preparse(struct key_preparsed_payload *prep)
-+static int blacklist_key_instantiate(struct key *key,
-+		struct key_preparsed_payload *prep)
- {
--	if (prep->datalen > 0)
--		return -EINVAL;
--	return 0;
-+#ifdef CONFIG_SYSTEM_BLACKLIST_AUTH_UPDATE
-+	int err;
-+#endif
-+
-+	/* Sets safe default permissions for keys loaded by user space. */
-+	key->perm = BLACKLIST_KEY_PERM;
-+
-+	/*
-+	 * Skips the authentication step for builtin hashes, they are not
-+	 * signed but still trusted.
-+	 */
-+	if (key->flags & (1 << KEY_FLAG_BUILTIN))
-+		goto out;
-+
-+#ifdef CONFIG_SYSTEM_BLACKLIST_AUTH_UPDATE
-+	/*
-+	 * Verifies the description's PKCS#7 signature against the builtin
-+	 * trusted keyring.
-+	 */
-+	err = verify_pkcs7_signature(key->description,
-+			strlen(key->description), prep->data, prep->datalen,
-+			NULL, VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
-+	if (err)
-+		return err;
-+#else
-+	/*
-+	 * It should not be possible to come here because the keyring doesn't
-+	 * have KEY_USR_WRITE and the only other way to call this function is
-+	 * for builtin hashes.
-+	 */
-+	WARN_ON_ONCE(1);
-+	return -EPERM;
-+#endif
-+
-+out:
-+	return generic_key_instantiate(key, prep);
- }
- 
--static void blacklist_free_preparse(struct key_preparsed_payload *prep)
-+static int blacklist_key_update(struct key *key,
-+		struct key_preparsed_payload *prep)
- {
-+	return -EPERM;
- }
- 
- static void blacklist_describe(const struct key *key, struct seq_file *m)
-@@ -101,9 +137,8 @@ static void blacklist_describe(const struct key *key, struct seq_file *m)
- static struct key_type key_type_blacklist = {
- 	.name			= "blacklist",
- 	.vet_description	= blacklist_vet_description,
--	.preparse		= blacklist_preparse,
--	.free_preparse		= blacklist_free_preparse,
--	.instantiate		= generic_key_instantiate,
-+	.instantiate		= blacklist_key_instantiate,
-+	.update			= blacklist_key_update,
- 	.describe		= blacklist_describe,
- };
- 
-@@ -152,8 +187,7 @@ static int mark_raw_hash_blacklisted(const char *hash)
- 				   hash,
- 				   NULL,
- 				   0,
--				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
--				    KEY_USR_VIEW),
-+				   BLACKLIST_KEY_PERM,
- 				   KEY_ALLOC_NOT_IN_QUOTA |
- 				   KEY_ALLOC_BUILT_IN);
- 	if (IS_ERR(key)) {
-@@ -172,8 +206,10 @@ int add_key_to_revocation_list(const char *data, size_t size)
- 				   NULL,
- 				   data,
- 				   size,
--				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW),
--				   KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_BUILT_IN);
-+				   KEY_POS_VIEW | KEY_POS_READ | KEY_POS_SEARCH
-+				   | KEY_USR_VIEW,
-+				   KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_BUILT_IN
-+				   | KEY_ALLOC_BYPASS_RESTRICTION);
- 
- 	if (IS_ERR(key)) {
- 		pr_err("Problem with revocation key (%ld)\n", PTR_ERR(key));
-@@ -247,25 +283,43 @@ int is_binary_blacklisted(const u8 *hash, size_t hash_len)
- }
- EXPORT_SYMBOL_GPL(is_binary_blacklisted);
- 
-+static int restrict_link_for_blacklist(struct key *dest_keyring,
-+		const struct key_type *type, const union key_payload *payload,
-+		struct key *restrict_key)
-+{
-+	if (type == &key_type_blacklist)
-+		return 0;
-+	return -EOPNOTSUPP;
-+}
-+
- /*
-  * Initialise the blacklist
-  */
- static int __init blacklist_init(void)
- {
- 	const char *const *bl;
-+	struct key_restriction *restriction;
- 
- 	if (register_key_type(&key_type_blacklist) < 0)
- 		panic("Can't allocate system blacklist key type\n");
- 
-+	restriction = kzalloc(sizeof(*restriction), GFP_KERNEL);
-+	if (!restriction)
-+		panic("Can't allocate blacklist keyring restriction\n");
-+	restriction->check = restrict_link_for_blacklist;
-+
- 	blacklist_keyring =
- 		keyring_alloc(".blacklist",
- 			      GLOBAL_ROOT_UID, GLOBAL_ROOT_GID, current_cred(),
--			      (KEY_POS_ALL & ~KEY_POS_SETATTR) |
--			      KEY_USR_VIEW | KEY_USR_READ |
--			      KEY_USR_SEARCH,
--			      KEY_ALLOC_NOT_IN_QUOTA |
-+			      KEY_POS_VIEW | KEY_POS_READ | KEY_POS_SEARCH |
-+			      KEY_POS_WRITE |
-+			      KEY_USR_VIEW | KEY_USR_READ | KEY_USR_SEARCH
-+#ifdef CONFIG_SYSTEM_BLACKLIST_AUTH_UPDATE
-+			      | KEY_USR_WRITE
-+#endif
-+			      , KEY_ALLOC_NOT_IN_QUOTA |
- 			      KEY_ALLOC_SET_KEEP,
--			      NULL, NULL);
-+			      restriction, NULL);
- 	if (IS_ERR(blacklist_keyring))
- 		panic("Can't allocate system blacklist keyring\n");
- 
 -- 
-2.30.0
+2.27.0
 
