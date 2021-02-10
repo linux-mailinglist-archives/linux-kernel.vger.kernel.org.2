@@ -2,156 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949213164B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECBA3164BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbhBJLLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:11:06 -0500
-Received: from mga04.intel.com ([192.55.52.120]:10527 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229710AbhBJLIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:08:31 -0500
-IronPort-SDR: 0MHhTu7/DCJV1XcNNyQCvW/9oOa3j6rpKavkm4L/bwEFm4QiB6A0kXyFrvKYckQ4bhlbwzrJYZ
- 4xl3YKQb54VA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="179496855"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="179496855"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 03:07:47 -0800
-IronPort-SDR: U/5acyUp0YElXKCfRaEHnd6am0aF0QjkRWVamKBjkR+gajFjD2j6Ee9hoRD+9mUS5C0IfBBmeR
- YeiLFiPoKIfw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="375312788"
-Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 10 Feb 2021 03:07:45 -0800
-Received: from kbuild by cd560a204411 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l9nLV-0002wI-7G; Wed, 10 Feb 2021 11:07:45 +0000
-Date:   Wed, 10 Feb 2021 19:07:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/drm/amd/pm/powerplay/si_dpm] BUILD
- SUCCESS 42f20d2957c113e614042064333716eb5d6fe3d3
-Message-ID: <6023be58.sk66L/V4vuSJI5mI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229731AbhBJLLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:11:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229937AbhBJLIi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 06:08:38 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEFEC06174A;
+        Wed, 10 Feb 2021 03:07:56 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 3B9FC41FA3;
+        Wed, 10 Feb 2021 11:07:52 +0000 (UTC)
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        soc@kernel.org, robh+dt@kernel.org,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-19-marcan@marcan.st>
+ <20210208110441.25qc6yken4effd6c@kozik-lap>
+ <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
+ <YCOzLSqdsr83xf0b@atomide.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
+ devicetree
+Message-ID: <4481998a-27f6-951e-bb4f-a9d2b95f211f@marcan.st>
+Date:   Wed, 10 Feb 2021 20:07:49 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YCOzLSqdsr83xf0b@atomide.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/drm/amd/pm/powerplay/si_dpm
-branch HEAD: 42f20d2957c113e614042064333716eb5d6fe3d3  drm/amd/pm: Replace one-element array with flexible-array in struct SISLANDS_SMC_SWSTATE
+On 10/02/2021 19.19, Tony Lindgren wrote:
+> * Hector Martin 'marcan' <marcan@marcan.st> [210208 12:05]:
+>> On 08/02/2021 20.04, Krzysztof Kozlowski wrote:
+> ...
+> 
+>>>> +	clk24: clk24 {
+>>>
+>>> Just "clock". Node names should be generic.
+>>
+>> Really? Almost every other device device tree uses unique clock node names.
+> 
+> Yeah please just use generic node name "clock". FYI, we're still hurting
+> because of this for the TI clock node names years after because the drivers
+> got a chance to rely on the clock node name..
+> 
+> Using "clock" means your clock driver code won't get a chance to wrongly
+> use the node name and you avoid similar issues.
 
-elapsed time: 871m
+That means it'll end up like this (so that we can have more than one 
+fixed-clock):
 
-configs tested: 94
-configs skipped: 4
+clocks {
+     #address-cells = <1>;
+     #size-cells = <0>;
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+     clk123: clock@0 {
+         ...
+         reg = <0>
+     }
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                       m5249evb_defconfig
-sh                   sh7770_generic_defconfig
-mips                         cobalt_defconfig
-arc                        nsimosci_defconfig
-nios2                         3c120_defconfig
-arm                         s3c6400_defconfig
-arm                         vf610m4_defconfig
-arc                              alldefconfig
-s390                       zfcpdump_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                  colibri_pxa270_defconfig
-sh                            migor_defconfig
-arc                        vdk_hs38_defconfig
-mips                           rs90_defconfig
-powerpc                     sequoia_defconfig
-powerpc                     taishan_defconfig
-alpha                               defconfig
-mips                      maltaaprp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210209
-i386                 randconfig-a005-20210209
-i386                 randconfig-a003-20210209
-i386                 randconfig-a002-20210209
-i386                 randconfig-a006-20210209
-i386                 randconfig-a004-20210209
-i386                 randconfig-a016-20210209
-i386                 randconfig-a013-20210209
-i386                 randconfig-a012-20210209
-i386                 randconfig-a014-20210209
-i386                 randconfig-a011-20210209
-i386                 randconfig-a015-20210209
-x86_64               randconfig-a006-20210209
-x86_64               randconfig-a001-20210209
-x86_64               randconfig-a005-20210209
-x86_64               randconfig-a004-20210209
-x86_64               randconfig-a002-20210209
-x86_64               randconfig-a003-20210209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+     clk456: clock@1 {
+         ...
+         reg = <1>
+     }
+}
 
-clang tested configs:
-x86_64               randconfig-a013-20210209
-x86_64               randconfig-a014-20210209
-x86_64               randconfig-a015-20210209
-x86_64               randconfig-a012-20210209
-x86_64               randconfig-a016-20210209
-x86_64               randconfig-a011-20210209
+Correct?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Incidentally, there is just one example in the kernel tree of doing this 
+right (in arch/arm/boot/dts/imx6qdl-tx6.dtsi). All the others that use 
+non-mmio clocks called `clock`, including the various tegra devicetrees, 
+violate the DT spec by not including a dummy reg property matching the 
+unit-address.
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
