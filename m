@@ -2,122 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66562316078
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E98E316082
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhBJIAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:00:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
+        id S233336AbhBJICq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:02:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbhBJIAi (ORCPT
+        with ESMTP id S233383AbhBJICl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:00:38 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCD2C061574;
-        Tue,  9 Feb 2021 23:59:57 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id l12so1765931edt.3;
-        Tue, 09 Feb 2021 23:59:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=6+Y+v0mf5SvNQeLGUI6zmXJKmFCPE8MP5k1v0xa403Q=;
-        b=b4XWVQ7l167lCCU8tm3PcBUEZenz+6KZuxZicTmhBF6ZaqXf4F0WpbEgmO9odZSyeQ
-         QS+gwT1guxNGc8txE8JNkjHmnHOZ4fIjhcYnZj8iomLcMmEXouN1ErVvR8+vh74T4Kq0
-         VStESSSuV9kkuVn4d/9QFL9YAVhnu9+9/ASSbKaRUXyxDixTkQQK29PulZ04pv7PJ/bN
-         1r4Yt3wwXFEQA4XGt3Qm8OY0KJ6SFwlBVo7lZP3iI4iMPqgUQhpB7zT0ejz42c4zIE+z
-         cgpPTfyHpwR/P/CVBG/giG4QxD1/N//ZEw4k7jOl9eQF0B1pLMz7l8l2iEQ6y4lf8x63
-         rJyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=6+Y+v0mf5SvNQeLGUI6zmXJKmFCPE8MP5k1v0xa403Q=;
-        b=BKwcGqn2YBSSRz1NwKDi2fLTbHBWsQitTrxOAMJs/hlOukS4ptwEZ2qxlQP69tm/Xt
-         sOyfQmacjjVinRtcTQDujlsz48mtpSyTI7QRxkskN5DwMN10q9rzll2lcyHQLNfwXpUl
-         laGYruyHZnRKIBx8OgJI6tZd9piKrklqlwOj7/cxrymdwumPDOG8cJOP8Xv7ouBq1ne1
-         DnElvnUVkED+vIce4gvxsidmieiQdXOKhPT6fJK0TGZFSYjokJeuUNAoOFzA6dub679g
-         pG8wcmousA8C7CmjDaLC18IbCPuILOa/OYk3+5gIJy1WFsioIV5mxjzfJsA9g9C/k0nD
-         sfPQ==
-X-Gm-Message-State: AOAM533wHD0WH+GZaEwt1D7k0UwE/yAfMG9QiFCcvGLSjzA8U44p/b5D
-        8YFn3LIv/gPrmSiqQwuEjUrAk4EKcfYGZw==
-X-Google-Smtp-Source: ABdhPJw2mVlmcWbZgsGJ6E4Ewxaxytwh9nNbkSiFkNHSY5JfY9tBfHckwV+HRFWfPpaYFdLoLONV6w==
-X-Received: by 2002:a50:e882:: with SMTP id f2mr2028558edn.35.1612943996343;
-        Tue, 09 Feb 2021 23:59:56 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d7e:e500:60d3:cde9:82a5:6b47])
-        by smtp.gmail.com with ESMTPSA id l5sm433116edv.50.2021.02.09.23.59.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 23:59:55 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Keguang Zhang <keguang.zhang@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@linux-mips.org
-Cc:     Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: replace non-matching patterns for loongson{2,3}
-Date:   Wed, 10 Feb 2021 08:59:47 +0100
-Message-Id: <20210210075947.15604-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 10 Feb 2021 03:02:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D198C061756;
+        Wed, 10 Feb 2021 00:02:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Message-ID:From:CC:To:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
+        Date:Sender:Reply-To:Content-ID:Content-Description;
+        bh=YwvDu6oqROt+57TdiDoWh5hmU/4sN4z20+5LEuc/s2s=; b=v28vFuD3GKtPjcZ1S4zq/pKgIn
+        6WOeUKnFlUOe3TSLrwe3QMtmr3WuTROXmKCYs4UzXyRbDV6M7t3XzfC3q6vQgaWEEKP1f2AEnuJ9H
+        SXCwIkbiJ4ltBMTKEw44H0eVJHInTxp5GDRVhzwF96pWLOvk3Cn/miPQah2ShslEqn5LSFAw3H67Q
+        OmGyt6jjntKi6z07AayxxIFW/MNsDA2DuHzXFjtIKAMQKdThYxYcqEJCb6qH6sFjet3eUFG0Dq9+d
+        Yutzm/JSyvihGhQR/uslkl1ofDFIgvd8GqAGOruz3z2Xsqe6Gc7fTZEdbEDsvfb2w8O89q3i3oQMu
+        ITi+bGpA==;
+Received: from [2001:8b0:10b:1:214c:2fae:9fc7:4b5c]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9kRG-008Y5W-EA; Wed, 10 Feb 2021 08:01:43 +0000
+Date:   Wed, 10 Feb 2021 08:01:30 +0000
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210210074554.81100-1-songyang@linux.alibaba.com>
+References: <20210210074554.81100-1-songyang@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] sign-file: add openssl engine support
+To:     Yang Song <songyang@linux.alibaba.com>, dhowells@redhat.com,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+CC:     zhang.jia@linux.alibaba.com, tianjia.zhang@linux.alibaba.com,
+        songyang@linux.alibaba.com
+From:   David Woodhouse <dwmw2@infradead.org>
+Message-ID: <E4E1860E-57B8-44AA-B370-9589F9C20215@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ffe1f9356fbe ("MAINTAINERS: Add Loongson-2/Loongson-3 maintainers")
-adds quite generic file entries for drivers/*/*loongson{2,3}* and
-drivers/*/*/*loongson{2,3}* to be informed on changes to all loongson{2,3}
-files in drivers.
 
-However, only the pattern 'drivers/*/*loongson2*' matches to one file in
-the repository, i.e., drivers/cpufreq/loongson2_cpufreq.c; all other
-patterns have no file matches.
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+On 10 February 2021 07:45:54 GMT, Yang Song <songyang@linux=2Ealibaba=2Eco=
+m> wrote:
+>Use a customized signature service supported by openssl engine
+>to sign the kernel module=2E
+>Add command line parameters that support engine for sign-file
+>to use the customized openssl engine service to sign kernel modules=2E
+>
+>Signed-off-by: Yang Song <songyang@linux=2Ealibaba=2Ecom>
 
-  warning: no file matches    F:    drivers/*/*/*loongson2*
-  warning: no file matches    F:    drivers/*/*/*loongson3*
-  warning: no file matches    F:    drivers/*/*loongson3*
+Aren't engines already obsolete in the latest versions of OpenSSL, as well=
+ as being an implementation detail of one particular crypto library? They a=
+ren't really a concept we should be exposing in *our* user interface=2E
 
-As in the last two and half years, no further files and drivers have
-showed up to match those patterns, just name the one file that matches
-explicitly and delete the others without a match.
+Better to make sign-file automatically recognise RFC7512 PKCS#11 URIs and =
+handle them by automatically loading the PKCS#11 engine=2E
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on current master and next-20201102
-
-Keguang, Huacai, Jiaxun, please ack.
-
-Thomas, please pick this minor non-urgent cleanup patch.
-
- MAINTAINERS | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b4197e9da495..fc08f628e196 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11719,8 +11719,7 @@ L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	arch/mips/include/asm/mach-loongson2ef/
- F:	arch/mips/loongson2ef/
--F:	drivers/*/*/*loongson2*
--F:	drivers/*/*loongson2*
-+F:	drivers/cpufreq/loongson2_cpufreq.c
- 
- MIPS/LOONGSON64 ARCHITECTURE
- M:	Huacai Chen <chenhc@lemote.com>
-@@ -11729,8 +11728,6 @@ L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	arch/mips/include/asm/mach-loongson64/
- F:	arch/mips/loongson64/
--F:	drivers/*/*/*loongson3*
--F:	drivers/*/*loongson3*
- F:	drivers/irqchip/irq-loongson*
- F:	drivers/platform/mips/cpu_hwmon.c
- 
--- 
-2.17.1
-
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
