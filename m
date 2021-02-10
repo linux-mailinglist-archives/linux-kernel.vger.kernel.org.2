@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14543173B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D6C3173C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbhBJWxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:53:01 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:33634 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233516AbhBJWw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:52:57 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l9yLC-005Pl9-0r; Wed, 10 Feb 2021 23:52:10 +0100
-Date:   Wed, 10 Feb 2021 23:52:10 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: phy_attach_direct()'s use of device_bind_driver()
-Message-ID: <YCRjmpKjK0pxKTCP@lunn.ch>
-References: <CAGETcx9YpCUMmHjyydMtOJP9SKBbVsHNB-9SspD9u=txJ12Gug@mail.gmail.com>
+        id S233508AbhBJWz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:55:57 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:44225 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232428AbhBJWzs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 17:55:48 -0500
+Received: by mail-oi1-f172.google.com with SMTP id r75so3975322oie.11;
+        Wed, 10 Feb 2021 14:55:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RP/1fWgQSpnhyqyUYQC54WPzfZsZ61OQZSW7jfdfAz4=;
+        b=Ju6RTOTLROxombkS5TcBXA4s4RibtmG+t8CAbwrKTKj0oxu0uPlBg/GZwcJMmXyiJS
+         9lPjJU/D4H64lkhoSMg8qTZ8/0jRJNxIfRtM8E062dv0NqZje0JznJZ2vWT2/zWIVlEc
+         5BQxYkRHQtRmgZMaJVnYZtu+NfwP8RLyxPgXl/bcTd2dniCObncnmKlSTSY98/QKCno1
+         ClT0D7nVFZa6t3ZBTPrZBDdfnMvKT17ok5+EICEcb1WGHK9wyLw9sVzzhjQV+nPO3oCI
+         s8Vj0ZkRHAR7ddFKGkotMAI40i35tqJ570uRTla9o2gpur5HTBKHhkI3hl5g7+3iN1xT
+         cVpg==
+X-Gm-Message-State: AOAM531LWmPbXpqDIBGOQybYdj7g2wZ+dNQnj/6VtVPvcxFfNMYoSY2i
+        cfMFjunt92AeXDm25JkAnQ==
+X-Google-Smtp-Source: ABdhPJw/ziPtOmnTH37OtDhwg5KsWreepQYebmeB6EPWMZJ3RNDdWVHQ1zbiL7IyFGFQo3ItwY1yYA==
+X-Received: by 2002:aca:1903:: with SMTP id l3mr897629oii.133.1612997706959;
+        Wed, 10 Feb 2021 14:55:06 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r4sm772458oig.52.2021.02.10.14.55.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 14:55:05 -0800 (PST)
+Received: (nullmailer pid 2966346 invoked by uid 1000);
+        Wed, 10 Feb 2021 22:53:23 -0000
+Date:   Wed, 10 Feb 2021 16:53:23 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Irui Wang <irui.wang@mediatek.com>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/5] dt-bindings: media: mtk-vcodec: Add dma-ranges
+ property
+Message-ID: <20210210225323.GA2961490@robh.at.kernel.org>
+References: <20210203083752.12586-1-irui.wang@mediatek.com>
+ <20210203083752.12586-2-irui.wang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGETcx9YpCUMmHjyydMtOJP9SKBbVsHNB-9SspD9u=txJ12Gug@mail.gmail.com>
+In-Reply-To: <20210203083752.12586-2-irui.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:13:48PM -0800, Saravana Kannan wrote:
-> Hi,
+On Wed, Feb 03, 2021 at 04:37:48PM +0800, Irui Wang wrote:
+> Adds dma-ranges property for DMA addresses translation.
 > 
-> This email was triggered by this other email[1].
+> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Why is phy_attach_direct() directly calling device_bind_driver()
-> instead of using bus_probe_device()?
+> diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+> index f85276e629bf..e4644f8caee9 100644
+> --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+> +++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
+> @@ -23,6 +23,8 @@ Required properties:
+>  - iommus : should point to the respective IOMMU block with master port as
+>    argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+>    for details.
+> +- dma-ranges : describes how the physical address space of the IOMMU maps
+> +  to memory.
 
-Hi Saravana
+dma-ranges is supposed to be in a bus/parent node.
 
-So this is to do with the generic PHY, which is a special case.
-
-First the normal case. The MDIO bus driver registers an MDIO bus using
-mdiobus_register(). This will enumerate the bus, finding PHYs on
-it. Each PHY device is registered with the device core, using the
-usual device_add(). The core will go through the registered PHY
-drivers and see if one can drive this hardware, based on the ID
-registers the PHY has at address 2 and 3. If a match is found, the
-driver probes the device, all in the usual way.
-
-Sometime later, the MAC driver wants to make use of the PHY
-device. This is often in the open() call of the MAC driver, when the
-interface is configured up. The MAC driver asks phylib to associate a
-PHY devices to the MAC device. In the normal case, the PHY has been
-probed, and everything is good to go.
-
-However, sometimes, there is no driver for the PHY. There is no driver
-for that hardware. Or the driver has not been built, or it is not on
-the disk, etc. So the device core has not been able to probe
-it. However, IEEE 802.3 clause 22 defines a minimum set of registers a
-PHY should support. And most PHY devices have this minimum. So there
-is a fall back driver, the generic PHY driver. It assumes the minimum
-registers are available, and does its best to drive the hardware. It
-often works, but not always. So if the MAC asks phylib to connect to a
-PHY which does not have a driver, we forcefully bind the generic
-driver to the device, and hope for the best.
-
-We don't actually recommend using the generic driver. Use the specific
-driver for the hardware. But the generic driver can at least get you
-going, allow you to scp the correct driver onto the system, etc.
-
-   Andrew
+>  One of the two following nodes:
+>  - mediatek,vpu : the node of the video processor unit, if using VPU.
+>  - mediatek,scp : the node of the SCP unit, if using SCP.
+> -- 
+> 2.25.1
+> 
