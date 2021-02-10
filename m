@@ -2,200 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A47316CFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BD5316D01
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhBJRjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:39:41 -0500
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:43948 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhBJRi1 (ORCPT
+        id S232312AbhBJRkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:40:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25201 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232462AbhBJRkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:38:27 -0500
-Received: by mail-oi1-f176.google.com with SMTP id d20so2893451oiw.10;
-        Wed, 10 Feb 2021 09:38:09 -0800 (PST)
+        Wed, 10 Feb 2021 12:40:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612978723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ulIYs4vjX02SWt4rVxo1O7Hqi68QURFqQUhPnrYP8Yo=;
+        b=LT3DY1B9zY5ihNTzlCQxbxgttFyUqQnLpk5CkUTS0fiEGDtJDLrH56W1NixsRd5oswMqIP
+        zPRVWnfssoJ0eDN41e17soDP26BUHKXbeuJ7ecd7mxJJJu2tHLoSyKvpe460jg4y0Sz9jw
+        vlzIxAm85pfs6Z69kXRNwPVqRl8hx7M=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-489-8qdlWlLtO8u5TUO6_XoD_A-1; Wed, 10 Feb 2021 12:38:42 -0500
+X-MC-Unique: 8qdlWlLtO8u5TUO6_XoD_A-1
+Received: by mail-wr1-f71.google.com with SMTP id u15so2256275wrn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:38:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c4tGoeSje1FtQW22/bbQZImu7Ov7f7EbyEaomifyUrs=;
-        b=k6ew1uHERz+7Ww3BOovBwn7Tda6ttoXXek0R0SmmOvWL33cxNrR8bphtgb19tXyocm
-         TguIlHwSBASSAhk55RbBmTc4fLLRTjZtcbauD9xOrPhEhfCaZbe9UZFEbucQLHU9AELE
-         qMjScPeBeDrpMLwYGG6s20iUNp6i084xaAUbJcNZ0mzezu6ZDT08qG9+AUOjM3o66exM
-         Kd4/TjOCbkMNw9AaSEGPSZvUVDcR6rpc9pJDEg4saKtflni5CK05kZUQy5a/Yjr4JQ3r
-         1uF5HE/YBeje+gEKTUqawWBYoSl3654l2ubeAySqY6os0A7eeFLiBZndc9uZO/drhfJD
-         7i0A==
-X-Gm-Message-State: AOAM5323IHA1RmP9ofIfYpGbU3GK9mGdj7PpVagNxVtTqDFUL9UTNRyE
-        E0szt8e7uJ3WlJiYevYuQA==
-X-Google-Smtp-Source: ABdhPJzG5D8rmY8Fs9oCnBNgJ8fWU+eJIXdu9Ees0oagTus8bwF5UCVgqLBnaV8QHAQK8kR4sKOZZA==
-X-Received: by 2002:aca:1903:: with SMTP id l3mr2965163oii.133.1612978663815;
-        Wed, 10 Feb 2021 09:37:43 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r4sm580938oig.52.2021.02.10.09.37.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 09:37:43 -0800 (PST)
-Received: (nullmailer pid 2401604 invoked by uid 1000);
-        Wed, 10 Feb 2021 17:37:41 -0000
-Date:   Wed, 10 Feb 2021 11:37:41 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     peng.fan@oss.nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
-        patrice.chotard@st.com, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V10 01/10] dt-bindings: remoteproc: convert imx rproc
- bindings to json-schema
-Message-ID: <20210210173741.GA2378005@robh.at.kernel.org>
-References: <1612774571-6134-1-git-send-email-peng.fan@oss.nxp.com>
- <1612774571-6134-2-git-send-email-peng.fan@oss.nxp.com>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ulIYs4vjX02SWt4rVxo1O7Hqi68QURFqQUhPnrYP8Yo=;
+        b=Dqi+/D8knLWe6BRW98oQeuaYuJBbY8qFj7O83ph14nqjwNxOox3oE/Qp7Iudzsul9W
+         jE54fKFCihXaqeaINFKa1yHR2V2nL72KxOGMe2MJ+4PlMfYWAbndIATCUpG8Uu0yM0zc
+         UYuE/z4aH5Mvptj2s1DWyZ9BDQmmg9J8RjWUvWAvGN/pRN9xyL8azCkhqDtQ5zSESFgo
+         Cg90U3e7JU093HduQ5lEvrVTvH3qkGvvtFQLKc9b5ZijpMJXEKFLhoLp7ydlnKLLHhZ/
+         7Ira4FLGQrvtdTYV1yUfNerS2WOrxMZFc0qPJjy1XwCoxiKnt0urpdOcjuVh99Tr8pYq
+         nxow==
+X-Gm-Message-State: AOAM532b2vfDjTLRv38cbU7+240QsL4d0rW5GgvRcclYPgmg+nCzQrO9
+        zalZpcLEB43hda5QuP5VPvJiu100LeAb1XYYBIz17nizDx8E4P56zgPCS88xFtWTY9Q3qIcRF75
+        avOUIx8R/uBXZhfy2I3kUUrw6
+X-Received: by 2002:a5d:4d8d:: with SMTP id b13mr4631958wru.178.1612978721161;
+        Wed, 10 Feb 2021 09:38:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw8JVANRHxS+2EHhZNuHVwfrl6kd0Bb3JcxGG2kluWZGGBJ6/u/SH7eyaNJgQBWAKclRo4CIA==
+X-Received: by 2002:a5d:4d8d:: with SMTP id b13mr4631940wru.178.1612978720923;
+        Wed, 10 Feb 2021 09:38:40 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id r17sm4171824wro.46.2021.02.10.09.38.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 09:38:38 -0800 (PST)
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20210210155937.141569-1-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH] KVM: nSVM: call nested_svm_load_cr3 on nested state load
+Message-ID: <9314afe0-7808-7877-0270-87f29a5f1191@redhat.com>
+Date:   Wed, 10 Feb 2021 18:38:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612774571-6134-2-git-send-email-peng.fan@oss.nxp.com>
+In-Reply-To: <20210210155937.141569-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 04:56:02PM +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On 10/02/21 16:59, Maxim Levitsky wrote:
+> While KVM's MMU should be fully reset by loading of nested CR0/CR3/CR4
+> by KVM_SET_SREGS, we are not in nested mode yet when we do it and therefore
+> only root_mmu is reset.
 > 
-> Convert the imx rproc binding to DT schema format using json-schema.
+> On regular nested entries we call nested_svm_load_cr3 which both updates the
+> guest's CR3 in the MMU when it is needed, and it also initializes
+> the mmu again which makes it initialize the walk_mmu as well when nested
+> paging is enabled in both host and guest.
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Since we don't call nested_svm_load_cr3 on nested state load,
+> the walk_mmu can be left uninitialized, which can lead to a NULL pointer
+> dereference while accessing it if we happen to get a nested page fault
+> right after entering the nested guest first time after the migration and
+> we decide to emulate it, which leads to emulator trying to access
+> walk_mmu->gva_to_gpa which is NULL.
+> 
+> Therefore we should call this function on nested state load as well.
+> 
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > ---
->  .../bindings/remoteproc/fsl,imx-rproc.yaml    | 59 +++++++++++++++++++
->  .../bindings/remoteproc/imx-rproc.txt         | 33 -----------
->  2 files changed, 59 insertions(+), 33 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
->  delete mode 100644 Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
+>   arch/x86/kvm/svm/nested.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> new file mode 100644
-> index 000000000000..5e906fa6a39d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/remoteproc/fsl,imx-rproc.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 519fe84f2100..c209f1232928 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -1282,6 +1282,14 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>   
+>   	nested_vmcb02_prepare_control(svm);
+>   
+> +	ret = nested_svm_load_cr3(&svm->vcpu, vcpu->arch.cr3,
+> +				  nested_npt_enabled(svm));
 > +
-> +title: NXP iMX6SX/iMX7D Co-Processor Bindings
+> +	if (ret) {
+> +		svm_leave_nested(svm);
+> +		goto out_free;
+> +	}
 > +
-> +description:
-> +  This binding provides support for ARM Cortex M4 Co-processor found on some NXP iMX SoCs.
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx7d-cm4
-> +      - fsl,imx6sx-cm4
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  syscon:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to syscon block which provide access to System Reset Controller
-> +
-> +  memory-region:
-> +    description:
-> +      If present, a phandle for a reserved memory area that used for vdev buffer,
-> +      resource table, vring region and others used by remote processor.
-
-You need to define what each one is as a schema. How does the driver 
-know which one is the vring region for example? Minimally, it's:
-
-items:
-  - description: ...
-  - description: ...
-  - description: ...
-
-But if what's present is variable, then it gets more complicated. If the 
-OS side doesn't need to know what each region is, then you can do just:
-
-minItems: N
-maxItems: M
-
-Rob
-
-
-
-> +
-> +required:
-> +  - compatible
-> +  - clocks
-> +  - syscon
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx7d-clock.h>
-> +    m4_reserved_sysmem1: cm4@80000000 {
-> +      reg = <0x80000000 0x80000>;
-> +    };
-> +
-> +    m4_reserved_sysmem2: cm4@81000000 {
-> +      reg = <0x81000000 0x80000>;
-> +    };
-> +
-> +    imx7d-cm4 {
-> +      compatible	= "fsl,imx7d-cm4";
-> +      memory-region	= <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
-> +      syscon		= <&src>;
-> +      clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
-> +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt b/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-> deleted file mode 100644
-> index fbcefd965dc4..000000000000
-> --- a/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-> +++ /dev/null
-> @@ -1,33 +0,0 @@
-> -NXP iMX6SX/iMX7D Co-Processor Bindings
-> -----------------------------------------
-> -
-> -This binding provides support for ARM Cortex M4 Co-processor found on some
-> -NXP iMX SoCs.
-> -
-> -Required properties:
-> -- compatible		Should be one of:
-> -				"fsl,imx7d-cm4"
-> -				"fsl,imx6sx-cm4"
-> -- clocks		Clock for co-processor (See: ../clock/clock-bindings.txt)
-> -- syscon		Phandle to syscon block which provide access to
-> -			System Reset Controller
-> -
-> -Optional properties:
-> -- memory-region		list of phandels to the reserved memory regions.
-> -			(See: ../reserved-memory/reserved-memory.txt)
-> -
-> -Example:
-> -	m4_reserved_sysmem1: cm4@80000000 {
-> -		reg = <0x80000000 0x80000>;
-> -	};
-> -
-> -	m4_reserved_sysmem2: cm4@81000000 {
-> -		reg = <0x81000000 0x80000>;
-> -	};
-> -
-> -	imx7d-cm4 {
-> -		compatible	= "fsl,imx7d-cm4";
-> -		memory-region	= <&m4_reserved_sysmem1>, <&m4_reserved_sysmem2>;
-> -		syscon		= <&src>;
-> -		clocks		= <&clks IMX7D_ARM_M4_ROOT_CLK>;
-> -	};
-> -- 
-> 2.30.0
+>   	kvm_make_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
+>   	ret = 0;
+>   out_free:
 > 
+
+I think you have to delay this to KVM_REQ_GET_NESTED_STATE_PAGES, 
+because the !nested_npt case can be accessing memory before the VM is 
+started (PDPTRs!).
+
+In fact the same is true for VMX: this code
+
+         /* Shadow page tables on either EPT or shadow page tables. */
+         if (nested_vmx_load_cr3(vcpu, vmcs12->guest_cr3, 
+nested_cpu_has_ept(vmcs12),
+                                 entry_failure_code))
+                 return -EINVAL;
+
+must be moved from prepare_vmcs02 to both nested_vmx_enter_non_root_mode 
+and nested_get_vmcs12_pages.
+
+Thanks,
+
+Paolo
+
