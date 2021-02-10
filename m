@@ -2,145 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98285316156
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F4C31615B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbhBJIpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:45:47 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:52996 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230127AbhBJIkc (ORCPT
+        id S230470AbhBJIq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:46:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhBJIk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:40:32 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11A8Uspd032146;
-        Wed, 10 Feb 2021 09:39:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=IdIphRq0oo03Upaifx4Sr2lddUG/YQLMaBXzjBtS7BU=;
- b=0YLLFZjDT3TCALs25fy5Dia6PQlM89y1hFyTr9xH1csDL1FClrZcu7NHicXWytBBXhnq
- DBTtzv5gLl+JnY5n8TRI4fR7mTibaaJUNDMJtjIi8VNIRX1q4aNXzL9sCXMW+56zuV0l
- 8GMv9ym9beQXLVombOk8VtrYlGdAQ6p8ScSjOPx3bWgb7H4hsOtw1Dv14xooRARK+4nq
- MOqBc/mWcN1k3zJZk6CQxF0L5TS38O6iYrUCEtSr4lPxM6wEKYggHOTmFZsajyIMgw+w
- lVunJuS/RA1ODu/slEkxlbkKHPaHion/Vs/M3ap1w5WFEGFPl8hYttVdc+rwA9f1h7IP Mg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36hr2ceg1d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 09:39:33 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0781410002A;
-        Wed, 10 Feb 2021 09:39:33 +0100 (CET)
-Received: from Webmail-eu.st.com (gpxdag2node6.st.com [10.75.127.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E14A921CA9C;
-        Wed, 10 Feb 2021 09:39:32 +0100 (CET)
-Received: from lmecxl1060.lme.st.com (10.75.127.122) by GPXDAG2NODE6.st.com
- (10.75.127.70) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 09:39:31 +0100
-Subject: Re: [PATCH 4/5] ARM: dts: stm32: enable the analog filter for all I2C
- nodes in stm32mp151
-To:     Alain Volmat <alain.volmat@foss.st.com>, <wsa@kernel.org>,
-        <robh+dt@kernel.org>
-CC:     <mark.rutland@arm.com>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@foss.st.com>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>
-References: <1612515104-838-1-git-send-email-alain.volmat@foss.st.com>
- <1612515104-838-5-git-send-email-alain.volmat@foss.st.com>
-From:   Pierre Yves MORDRET <pierre-yves.mordret@foss.st.com>
-Message-ID: <59aec92b-9e5d-b9e9-0fee-d14d50281d4b@foss.st.com>
-Date:   Wed, 10 Feb 2021 09:39:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 10 Feb 2021 03:40:56 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9D1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:40:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=/GPvZaRgojtdY3kcT7rvSlB+DudLJBNJNksGm8HkQGc=; b=GPo8T8OLOFxlLHLZI3WxjeaZjJ
+        ByKdNiuSZo9cxw9Ct8+3WOpwW4h9DpHJ/aKXvCTpTQ4xXNQpkHN/1WJZq7ogvnCsdTMv5z/tnM7e6
+        Pl/01JlNNgbfQDx3bpGUQVtbaXmMnWSLa3t24/nI0e8jQyBwztF6HZIlhd53H72urliUqlLZB+X08
+        i/3khjmA3qQjT1WtLjjsp7uqleogXkgJcseBgPIzfy7I3JGg+QWxFhVttG0Q6RyQd7z8oPosLz8DT
+        UfHqEzLmQpzCeTa2r6mncO0Im/R4EWyWAQY0jr+LhPJ8qfhIoPyPMP+Yv9td6Qx2MIHuKvqjk/bCQ
+        Ie2fRI3w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9l2Q-008atL-RL; Wed, 10 Feb 2021 08:39:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C42353010D2;
+        Wed, 10 Feb 2021 09:39:53 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7BE99201D19B1; Wed, 10 Feb 2021 09:39:53 +0100 (CET)
+Date:   Wed, 10 Feb 2021 09:39:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>, yu-cheng.yu@intel.com
+Subject: [RFC][PATCH] objtool: WARN about ENDBR instructions
+Message-ID: <YCOb2byLJhLOjhrL@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <1612515104-838-5-git-send-email-alain.volmat@foss.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.122]
-X-ClientProxiedBy: GPXDAG2NODE4.st.com (10.75.127.68) To GPXDAG2NODE6.st.com
- (10.75.127.70)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_02:2021-02-09,2021-02-10 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
-
-Looks good to me
-
-Reviewed-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
-
-Thx
-Regards
 
 
-On 2/5/21 9:51 AM, Alain Volmat wrote:
-> Enable the analog filter for all I2C nodes of the stm32mp151.
-> 
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> ---
->  arch/arm/boot/dts/stm32mp151.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-> index 3c75abacb374..558fc8fb38b6 100644
-> --- a/arch/arm/boot/dts/stm32mp151.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-> @@ -493,6 +493,7 @@
->  			#size-cells = <0>;
->  			st,syscfg-fmp = <&syscfg 0x4 0x1>;
->  			wakeup-source;
-> +			i2c-analog-filter;
->  			status = "disabled";
->  		};
->  
-> @@ -508,6 +509,7 @@
->  			#size-cells = <0>;
->  			st,syscfg-fmp = <&syscfg 0x4 0x2>;
->  			wakeup-source;
-> +			i2c-analog-filter;
->  			status = "disabled";
->  		};
->  
-> @@ -523,6 +525,7 @@
->  			#size-cells = <0>;
->  			st,syscfg-fmp = <&syscfg 0x4 0x4>;
->  			wakeup-source;
-> +			i2c-analog-filter;
->  			status = "disabled";
->  		};
->  
-> @@ -538,6 +541,7 @@
->  			#size-cells = <0>;
->  			st,syscfg-fmp = <&syscfg 0x4 0x10>;
->  			wakeup-source;
-> +			i2c-analog-filter;
->  			status = "disabled";
->  		};
->  
-> @@ -1533,6 +1537,7 @@
->  			#size-cells = <0>;
->  			st,syscfg-fmp = <&syscfg 0x4 0x8>;
->  			wakeup-source;
-> +			i2c-analog-filter;
->  			status = "disabled";
->  		};
->  
-> @@ -1570,6 +1575,7 @@
->  			#size-cells = <0>;
->  			st,syscfg-fmp = <&syscfg 0x4 0x20>;
->  			wakeup-source;
-> +			i2c-analog-filter;
->  			status = "disabled";
->  		};
->  
-> 
+Given all the ENDBR fun we recently had, do we want the below? Until
+someone comes and fixes up kprobes/ftrace/livepatch etc.. having them is
+a giant pain and we'd better warn about it.
 
--- 
---
-~ Py MORDRET
---
+---
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index 931cef78b857..e708731b10cd 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -91,7 +91,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ {
+ 	struct insn insn;
+ 	int x86_64, sign;
+-	unsigned char op1, op2, rex = 0, rex_b = 0, rex_r = 0, rex_w = 0,
++	unsigned char op1, op2, pfx = 0, rex = 0, rex_b = 0, rex_r = 0, rex_w = 0,
+ 		      rex_x = 0, modrm = 0, modrm_mod = 0, modrm_rm = 0,
+ 		      modrm_reg = 0, sib = 0;
+ 	struct stack_op *op = NULL;
+@@ -118,6 +118,9 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 	op1 = insn.opcode.bytes[0];
+ 	op2 = insn.opcode.bytes[1];
+ 
++	if (insn.prefixes.nbytes)
++		pfx = insn.prefixes.bytes[0];
++
+ 	if (insn.rex_prefix.nbytes) {
+ 		rex = insn.rex_prefix.bytes[0];
+ 		rex_w = X86_REX_W(rex) >> 3;
+@@ -444,6 +447,11 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 			/* nopl/nopw */
+ 			*type = INSN_NOP;
+ 
++		} else if (op2 == 0x1e && pfx == 0xf3 && (modrm == 0xfa || modrm == 0xfb)) {
++
++			/* endbr32/endbr64 */
++			WARN("endbr32/64 instruction at %s:0x%lx", sec->name, offset);
++
+ 		} else if (op2 == 0xa0 || op2 == 0xa8) {
+ 
+ 			/* push fs/gs */
