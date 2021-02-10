@@ -2,189 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C77316ACB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068DD316AE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbhBJQMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:12:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        id S232123AbhBJQOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhBJQMA (ORCPT
+        with ESMTP id S230043AbhBJQOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:12:00 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F016C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:11:20 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id r77so2106605qka.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:11:20 -0800 (PST)
+        Wed, 10 Feb 2021 11:14:16 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933D5C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:13:03 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id i9so2305888wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:13:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Fo4Ogy3EVpm466AahoLKTmNyaNfFhCUSTgOIAOz+YxU=;
-        b=GCpxvihkfGsyTrjdB4Xysggilr1MgaqiNWunIC1qarIXeVnYvT+o65nQM8Xul7BvMN
-         9sfJynnEtBQKBdgTpheDdj3aTGSTsZEZsXzQrzT0cM0mtWWo5dctPaZZvaHTgnNrrzBo
-         VER308qz7Ks88dUDywN9w+TRWACyg2M8FLkAq47mVZINYE+3oRMlCdx9c3SRj74qeQg8
-         obf/pLFxRNgZi0flTGz2GTGNdAvvkHwwexgR+/gA3vlGMttM9YrGNt9EP6qwtkd5Pz1J
-         ui6t+LGmbI0JdcZnf4uf+5RaXsKwNHeym9ZfBGiwM85C5jSv/wWz3g0v2hFtQIb0TYEl
-         nrXw==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=9EqkICeAqFea9hutcJE8LTJk6fkCLGfHmOvQQmMvAJM=;
+        b=Hh49I+GceO/gmkekotuymhn3rjlU3YIypVisjoLOygTP1mgYBpzmbiY1B+Z5kDHv1H
+         X+1p+H/pZbOPlldO65mL33J/nmB6ms47MC+u60d9S34oT4MiRfwDpZZWh/qETmt/Om/y
+         olUsvQGKt/zp/HREvWDezf3EVhY9WQSBDq//vrYo+RtlXuw1teA/flfEzF4rT2UCYUo6
+         WEyPCuv9rP7JAXB7hd4Zk5CXQfiPo2bj7YDV4C/V4SfKbO6gG7O8nWSxiVamK32i6r03
+         Vi1DcAM4Whf1JnAWKjVWawTmQnF73oyA7TPneeQ1mIDpdIwY/evQfcTuEdgRAkLg3tZr
+         f/6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Fo4Ogy3EVpm466AahoLKTmNyaNfFhCUSTgOIAOz+YxU=;
-        b=ICAflooliopl/5+zOjqM7OiVQUuNrwXxslWYKemxzRreEYHH3sUhDQqoqsmA9pEcHY
-         ZqPqWENUAbHw6nwbtVTa1xwaLdV4DuRhupXF/L3Vx0VEnBR1fvVuGNISqkBdCPqKs55r
-         FgiU4xW/MF30JrFdNgMbzr8bzzADddcQX94VidppSnNA60rMCL/vcAWwVM9/1UR8ul/V
-         8FBOVX3noO+Eo8HVLMWt+FzDLqA/rjAwMmrCiF5a/YHnNtNaUN9QGaeBNpmzDibDSpsq
-         dJaE/CSbiQlOWAn6T18FxDutSDanfIbq3MBm3NGXO766VhVVGj/GFCKoVLe7qBg4krB9
-         Cfhw==
-X-Gm-Message-State: AOAM5328vkLa2qsdlVTpRsbYpsrpcBuP1Htexjmwecskv3pX92rVrZSC
-        jrZvN24bQpOseuW2LA7t/ECooQ==
-X-Google-Smtp-Source: ABdhPJwwI961leeegb5I9ryZ7kycDVipzwWMJKFIfLq62JB4EWCd6IiGb8M9E8Y/aZkmfl49xdbJPA==
-X-Received: by 2002:a37:a004:: with SMTP id j4mr4026481qke.450.1612973479259;
-        Wed, 10 Feb 2021 08:11:19 -0800 (PST)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id r44sm1596162qtb.28.2021.02.10.08.11.17
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9EqkICeAqFea9hutcJE8LTJk6fkCLGfHmOvQQmMvAJM=;
+        b=o1YCLjAALQJHvB+wZfiSkZBI/Br+dfLybuqSmUFU59umh7gKhEYxNcPs1kR4osC0lx
+         yzfYdoE9wj0pn/oFyvpPQJpDFgMPkhn2XR+5SDZQXQIM8H8bBoWsayAKI8iBKr5uIj6C
+         9kk1ddL6ZkkvvQVqvKKUHP/II4za9F1zbDilkOegoUU2V6H0pkedHMA8P8+BnI5RDJVI
+         tuhb0DEEFbWFzUcNW8DE2SXM/MUf5wa5hdzNN2ljp9LP9r/LScfB1cY+EqVBdgNqXr+P
+         KjTNX9PMfHR/primnmPxaIXSskp+a69mWCIgGOccAVgFFrElmjPdt/INZVRQrVvIY0H4
+         ALYg==
+X-Gm-Message-State: AOAM5304rOmPdq1AxEXV0Fead5xAMqdsRV4ej8BYlb2wmqYU67GnaNEi
+        F0jg/Cx85+zjIb6YbnMGlSVHzQ==
+X-Google-Smtp-Source: ABdhPJxwjN9tnOjYE29ii/KagRZk+egL7JyD+GF9hT3oJWkCY7DOqROK+nqMjm3eItHTGs95G9LYOA==
+X-Received: by 2002:a05:600c:216:: with SMTP id 22mr3432179wmi.111.1612973581930;
+        Wed, 10 Feb 2021 08:13:01 -0800 (PST)
+Received: from x1 ([91.110.221.237])
+        by smtp.gmail.com with ESMTPSA id x9sm3275333wmb.14.2021.02.10.08.12.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 08:11:17 -0800 (PST)
-Message-ID: <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
-Subject: Re: [BUG REPORT] media: coda: mpeg4 decode corruption on i.MX6qp
- only
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 10 Feb 2021 11:11:16 -0500
-In-Reply-To: <20210203163348.30686-1-TheSven73@gmail.com>
-References: <20210203163348.30686-1-TheSven73@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+        Wed, 10 Feb 2021 08:13:00 -0800 (PST)
+Date:   Wed, 10 Feb 2021 16:12:58 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        kernel-janitors@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-fbdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] video: use getter/setter functions
+Message-ID: <20210210161258.GA124276@x1>
+References: <20210209211325.1261842-1-Julia.Lawall@inria.fr>
+ <20210210082341.GH220368@dell>
+ <YCPbxSHWMipTz+mB@phenom.ffwll.local>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YCPbxSHWMipTz+mB@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sven,
+On Wed, 10 Feb 2021, Daniel Vetter wrote:
 
-Le mercredi 03 février 2021 à 11:33 -0500, Sven Van Asbroeck a écrit :
-> From: Sven Van Asbroeck <thesven73@gmail.com>
+> On Wed, Feb 10, 2021 at 08:23:41AM +0000, Lee Jones wrote:
+> > On Tue, 09 Feb 2021, Julia Lawall wrote:
+> > 
+> > > Use getter and setter functions, for platform_device structures and a
+> > > spi_device structure.
+> > > 
+> > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> > > 
+> > > ---
+> > >  drivers/video/backlight/qcom-wled.c                                  |    2 +-
+> > 
+> > This patch is fine.
+> > 
+> > Could you please split it out and submit it separately though please.
 > 
-> We have observed that under certain repeatable circumstances, the CODA
-> mem2mem device consistently generates corrupted frames. This happens only
-> on an i.MX6qp (Plus) - the classic imx6q is not affected.
+> Or just apply the entire patch through backlight tree, there's nothing
+> going on in fbdev anyway I think.
 > 
-> This happens when the virtual X screen is wider than 0x900 pixels (1).
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-Are you sure you aren't just running out of CMA ? This is the only things that
-comes to mind at the moment, sorry if it's not that useful.
+I can do that.  Is that an fbdev Ack?
 
+> > >  drivers/video/fbdev/amifb.c                                          |    4 ++--
+> > >  drivers/video/fbdev/da8xx-fb.c                                       |    4 ++--
+> > >  drivers/video/fbdev/imxfb.c                                          |    2 +-
+> > >  drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c |    6 +++---
+> > >  drivers/video/fbdev/omap2/omapfb/dss/dpi.c                           |    4 ++--
+> > >  drivers/video/fbdev/omap2/omapfb/dss/dsi.c                           |    4 ++--
+> > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c                         |    2 +-
+> > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c                         |    2 +-
+> > >  drivers/video/fbdev/xilinxfb.c                                       |    2 +-
+> > >  10 files changed, 16 insertions(+), 16 deletions(-)
+> > 
+> > ...]
+> > 
+> > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> > > index 3bc7800eb0a9..091f07e7c145 100644
+> > > --- a/drivers/video/backlight/qcom-wled.c
+> > > +++ b/drivers/video/backlight/qcom-wled.c
+> > > @@ -1692,7 +1692,7 @@ static int wled_probe(struct platform_device *pdev)
+> > >  
+> > >  static int wled_remove(struct platform_device *pdev)
+> > >  {
+> > > -	struct wled *wled = dev_get_drvdata(&pdev->dev);
+> > > +	struct wled *wled = platform_get_drvdata(pdev);
+> > >  
+> > >  	mutex_destroy(&wled->lock);
+> > >  	cancel_delayed_work_sync(&wled->ovp_work);
+> > 
+> > For my own reference (apply this as-is to your sign-off block):
+> > 
+> >   Acked-for-Backlight-by: Lee Jones <lee.jones@linaro.org>
+> > 
 > 
-> Quite strange, because CODA is a mem2mem device, and is presumably not
-> touching
-> any of the IPU/GPU2D/GPU3D infrastructure used by X. Except if there is a
-> hidden
-> dependency somehow.
-> 
-> I have captured and visualized generated CODA frames as follows:
-> gst-launch-1.0 playbin uri=file:///home/default/nycTrain1080p.mp4 flags=0x45
->     video-sink='multifilesink location=frame%d.yuv'
-> See (2) for how I converted the raw YUV frame to a PNG image.
-> 
-> For example, the following will break CODA mpeg4 decode (width >= 0x900):
-> # xrandr --fb 2400x1088
-> Screen 0: minimum 1 x 1, current 2400 x 1088, maximum 4096 x 4096
-> HDMI1 disconnected (normal left inverted right x axis y axis)
-> LVDS1 connected primary 1280x800+0+0 (normal left inverted right x axis y
-> axis) 0mm x 0mm
->    1280x800      59.79*+
-> 
-> Resulting frame when dumped with multifilesink (NOT written to the display):
-> https://gitlab.com/TheSven73/coda-investigation/-/blob/master/stripes.png
-> 
-> And the following will restore CODA mpeg4 decode (width < 0x900):
-> # xrandr --fb 2300x1088
-> Screen 0: minimum 1 x 1, current 2300 x 1088, maximum 4096 x 4096
-> HDMI1 disconnected (normal left inverted right x axis y axis)
-> LVDS1 connected primary 1280x800+0+0 (normal left inverted right x axis y
-> axis) 0mm x 0mm
->    1280x800      59.79*+
-> 
-> Resulting frame when dumped with multifilesink (NOT written to the display):
-> https://gitlab.com/TheSven73/coda-investigation/-/blob/master/ok.png
-> 
-> Additional info:
-> - only the virtual X screen width seems to trigger the issue, it is
->   independent of the height.
-> - issue seems independent of the pixel format. Forcing CODA to output NV12
->   shows the same behaviour.
-> 
-> System description:
-> - i.MX6 QuadPlus:
-> [    0.144518] CPU identified as i.MX6QP, silicon rev 1.1
-> - mainline Linux v5.9.16 with a small private patchset on top
->   (patchset does not touch CODA)
-> - CODA960 silicon contained within i.MX6 QuadPlus:
-> [ 4798.510033] coda 2040000.vpu: Firmware code revision: 46076
-> [ 4798.515916] coda 2040000.vpu: Initialized CODA960.
-> [ 4798.520779] coda 2040000.vpu: Firmware version: 3.1.1
-> - gstreamer from buildroot:
-> gst-launch-1.0 version 1.16.2
-> GStreamer 1.16.2
-> - X from buildroot, using armada and etnadrm_gpu plugins:
-> X.Org X Server 1.20.7
-> X Protocol Version 11, Revision 0
-> [    99.527] (II) LoadModule: "armada"
-> [    99.527] (II) Loading /usr/lib/xorg/modules/drivers/armada_drv.so
-> [    99.538] (II) Module armada: vendor="X.Org Foundation"
-> [    99.538]    compiled for 1.20.7, module version = 0.0.0
-> [    99.538]    Module class: X.Org Video Driver
-> [    99.538]    ABI class: X.Org Video Driver, version 24.1
-> [    99.538] (II) armada: Support for Marvell LCD Controller: 88AP510
-> [    99.539] (II) armada: Support for Freescale IPU: i.MX6
-> [    99.545] (II) armada(0): Added screen for KMS device /dev/dri/card1
-> [    99.561] (II) armada(0): hardware: imx-drm
-> [    99.563] (**) armada(0): Option "AccelModule" "etnadrm_gpu"
-> [    99.563] (II) Loading sub module "etnadrm_gpu"
-> [    99.563] (II) LoadModule: "etnadrm_gpu"
-> [    99.564] (II) Loading /usr/lib/xorg/modules/drivers/etnadrm_gpu.so
-> [    99.576] (II) Module Etnaviv GPU driver (DRM): vendor="X.Org Foundation"
-> [    99.576]    compiled for 1.20.7, module version = 0.0.0
-> 
-> 
-> (1) When using multiple displays, the virtual X screen is typically the
-> bounding
->     rectangle which includes all screens. That's why it can become wider than
->     1920 pixels.
-> 
-> (2)
-> 
-> # Convert raw YUYV to PNG
-> # Python, runs out of the box on a stock Google Colab notebook
-> import cv2
-> import numpy as np
-> import matplotlib.pyplot as plt
-> import matplotlib
-> 
-> img = np.fromfile('frame1.yuv', dtype=np.uint8)
-> # YUYV has two 8-bit channels per pixel
-> img.shape = (1088, 1920, 2)
-> 
-> img2 = cv2.cvtColor(img, cv2.COLOR_YUV2RGB_YUYV)
-> plt.imshow(img2)
-> matplotlib.image.imsave('frame1.png', img2)
-> 
-> To: Philipp Zabel <p.zabel@pengutronix.de>
-> To: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Adrian Ratiu <adrian.ratiu@collabora.com>
-> Cc: Lucas Stach <l.stach@pengutronix.de>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Cc: linux-media@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
 
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
