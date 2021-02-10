@@ -2,142 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82D03166C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 507CC31671F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbhBJMcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:32:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34417 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231921AbhBJMaa (ORCPT
+        id S230201AbhBJMvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:51:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhBJMvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:30:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612960132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i5wXyy1sPUgnnMqVauVL41jvRX6eG8p4VtBbB9PGUS8=;
-        b=GJN9Ms8JS3P8FihrakgZoDJ5qI+SHgzHKJv4e8Q5+mrUAhRZ1nhaqBT+80nCVTBM8+RkjM
-        ioDpHeD5UhxpqLbmVD8QNeCpVNHP/bC+iVrHG7Dr7e2QQRpBNNIu5L5RJVMJWMjP1NeujM
-        as+7uePvBfZS8O/EXZV3wfcxVrCJ348=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-195-Nyd8w7oZMgCP4YRrkHzZlg-1; Wed, 10 Feb 2021 07:28:51 -0500
-X-MC-Unique: Nyd8w7oZMgCP4YRrkHzZlg-1
-Received: by mail-wr1-f70.google.com with SMTP id c1so1716450wrx.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:28:50 -0800 (PST)
+        Wed, 10 Feb 2021 07:51:42 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBE0C061574;
+        Wed, 10 Feb 2021 04:51:01 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id x7so833218ljc.5;
+        Wed, 10 Feb 2021 04:51:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ro3BKKFjsV5+bDQPg1YW+54jgkKBfKS3SSCmUlA3e48=;
+        b=WJTXpb9Hxynkp47Ga3ZhP7ffedvg0ou3UwKUj/HbypujG4U4UWK0FgYJVZaMpltWzL
+         zm5u1Nd8No2W/Zf+X9P9DJcXA/sivWYfhTprwYlThc09HB0mx5mhH9bmDzKpOPHijUuZ
+         rBdIGAT3eF24+IZ3y1wLbVQmqWHnMMv77kIA/ojDX7Z153ZWcKSgcWcPhjl9kw48Ep99
+         CVvFLhoV0vNLGKEWZbJvLF+mcLg9wkdkh+nL3mkMR/SsTT3m2mNk/hMtIw3B+YcpsL9q
+         iOLNtfoR7Ot4vWrnT+zqkttmOe2mnTrC22NhGpxeC+bPOodLXzQxopouiEtxoc0cWeH9
+         rh1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i5wXyy1sPUgnnMqVauVL41jvRX6eG8p4VtBbB9PGUS8=;
-        b=TB4C1sTwhVjv7OYyDB8fZViB32BhPqGlEoBHxlVpoCfoOKEPgkYnAcad6qI17VdydT
-         ELXENrJUD6fE/11/iuWhe6LH992kbVa6ef99hropJ2jNrRn8IWd3eVxA94oxk/zA43Hf
-         GCGUFjCBBLkQEnFhbUycwLr8hi465qcR4cgjkPi+IpNbkDtiHJWksaUyXzn34aspBaOX
-         ty9sxKPrEAgU9ydxcVMIeCRgBW0gcLYjLMCJzVinzN68ERC4hcx977hSP6qzAPi8Lm25
-         J7JwMvkOHSPBNb7i/yjpwmyWJE1u9MUOFESOPpB2Uvn3nH1VWNOJKYMRbbOOguKJbShy
-         iTrQ==
-X-Gm-Message-State: AOAM5336wOs1HVqvk24ndXZZcSa6fJFI3NdV+n+RISimm0Okh+L63xco
-        IJg0ty6k7ilE+jKdomc3smvbZrb6tHpmLSwC1bLfHQvjWmAnOG3OOtiHlwd2pgrnbroITb5EEON
-        c4hWD2mJHK084icAIqeKwxxHB
-X-Received: by 2002:adf:b611:: with SMTP id f17mr3364768wre.8.1612960129953;
-        Wed, 10 Feb 2021 04:28:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx9+xzSxdXFmowIk42Rj2TTfAS5qUcbZY08lcAl1KI09s/LaYklsKwABS3n8zQbgdh+YNgXxg==
-X-Received: by 2002:adf:b611:: with SMTP id f17mr3364759wre.8.1612960129805;
-        Wed, 10 Feb 2021 04:28:49 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id i10sm3116755wrp.0.2021.02.10.04.28.48
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ro3BKKFjsV5+bDQPg1YW+54jgkKBfKS3SSCmUlA3e48=;
+        b=NHriSiQPmqhjPZYICOOo3l00fQF8UeLpQJD2PuUNmBifjmKZxK1+uL18ujxRKi4Pg4
+         MRXvdjQEl/MjJSm72ZbcZc9q25oKjRx/UYa14y/D+3OrBMARut4/+1qtlOkBUsZ07fiy
+         JXqsYbvx2DczIhoBxVOF8u6R5N1djwil230/4Ph04CaipZ0+DJWAh1+5QhR0ywWp0CoQ
+         kmpfGA1jFpgE3w6vhjZg11bspLEM2vqLJwThLRSJk6LmmMXTGvziddveGmlUXQzVGMPw
+         QFbzr4iz7qGy83EA2nzVqxvlcmMe4b6ohYyoJClfm4qcJ5picBWCbKvpGDuYGvUPFmrP
+         Wjkg==
+X-Gm-Message-State: AOAM533+Krlc0vfiDxmLfOGYVohdPNyMWfMQWWD9MVjdYerbttzz0JSH
+        +eII0vxV6mFyNGUjxxNRJpQ=
+X-Google-Smtp-Source: ABdhPJwGFE0wbHroFLz+JiT4wI5+n+tKcHd3+Y8lzfCO4yELFJsBKbs8yQwXCItgnhS/LC401Np8Eg==
+X-Received: by 2002:a05:651c:552:: with SMTP id q18mr1941142ljp.278.1612961460330;
+        Wed, 10 Feb 2021 04:51:00 -0800 (PST)
+Received: from localhost.localdomain (host-5-58-109-138.bitternet.ua. [5.58.109.138])
+        by smtp.gmail.com with ESMTPSA id w10sm463595ljm.133.2021.02.10.04.50.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 04:28:49 -0800 (PST)
-Date:   Wed, 10 Feb 2021 07:28:46 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-Cc:     Eli Cohen <elic@nvidia.com>, jasowang@redhat.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 2/3] mlx5_vdpa: fix feature negotiation across device
- reset
-Message-ID: <20210210072758-mutt-send-email-mst@kernel.org>
-References: <1612614564-4220-1-git-send-email-si-wei.liu@oracle.com>
- <1612614564-4220-2-git-send-email-si-wei.liu@oracle.com>
- <20210208053500.GA137517@mtl-vdi-166.wap.labs.mlnx>
- <061486d5-6235-731b-d036-f5d5e9fac22e@oracle.com>
+        Wed, 10 Feb 2021 04:50:59 -0800 (PST)
+From:   Vladimir Lypak <junak.pub@gmail.com>
+To:     Vladimir Lypak <junak.pub@gmail.com>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: qcom: camss: Fix overflows in clock rate calculations
+Date:   Wed, 10 Feb 2021 15:29:02 +0300
+Message-Id: <20210210122906.3037085-1-junak.pub@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <061486d5-6235-731b-d036-f5d5e9fac22e@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 05:20:11PM -0800, Si-Wei Liu wrote:
-> 
-> 
-> On 2/7/2021 9:35 PM, Eli Cohen wrote:
-> > On Sat, Feb 06, 2021 at 04:29:23AM -0800, Si-Wei Liu wrote:
-> > > The mlx_features denotes the capability for which
-> > > set of virtio features is supported by device. In
-> > > principle, this field needs not be cleared during
-> > > virtio device reset, as this capability is static
-> > > and does not change across reset.
-> > > 
-> > > In fact, the current code may have the assumption
-> > > that mlx_features can be reloaded from firmware
-> > > via the .get_features ops after device is reset
-> > > (via the .set_status ops), which is unfortunately
-> > > not true. The userspace VMM might save a copy
-> > > of backend capable features and won't call into
-> > > kernel again to get it on reset. This causes all
-> > > virtio features getting disabled on newly created
-> > > virtqs after device reset, while guest would hold
-> > > mismatched view of available features. For e.g.,
-> > > the guest may still assume tx checksum offload
-> > > is available after reset and feature negotiation,
-> > > causing frames with bogus (incomplete) checksum
-> > > transmitted on the wire.
-> > > 
-> > > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> > > ---
-> > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 1 -
-> > >   1 file changed, 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > index b8416c4..aa6f8cd 100644
-> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > @@ -1788,7 +1788,6 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
-> > >   		clear_virtqueues(ndev);
-> > >   		mlx5_vdpa_destroy_mr(&ndev->mvdev);
-> > >   		ndev->mvdev.status = 0;
-> > > -		ndev->mvdev.mlx_features = 0;
-> > >   		++mvdev->generation;
-> > >   		return;
-> > >   	}
-> > Since we assume that device capabilities don't change, I think I would
-> > get the features through a call done in mlx5v_probe after the netdev
-> > object is created and change mlx5_vdpa_get_features() to just return
-> > ndev->mvdev.mlx_features.
-> Yep, it makes sense. Will post a revised patch.
+Because of u32 type being used to store pixel clock rate, expression used
+to calculate pipeline clocks (pixel_clock * bpp) produces wrong value due
+to integer overflow. This patch changes data type used to store, pass and
+retrieve pixel_clock from u32 to u64 to make this mistake less likely to
+be repeated in the future.
 
-So I'm waiting for v2 of this patchset. Please make sure to post a cover letter
-with an overall description.
+Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
+---
+ drivers/media/platform/qcom/camss/camss-csid.c           | 2 +-
+ drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c | 4 ++--
+ drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c | 4 ++--
+ drivers/media/platform/qcom/camss/camss-csiphy.c         | 4 ++--
+ drivers/media/platform/qcom/camss/camss-csiphy.h         | 2 +-
+ drivers/media/platform/qcom/camss/camss-vfe.c            | 4 ++--
+ drivers/media/platform/qcom/camss/camss.c                | 2 +-
+ drivers/media/platform/qcom/camss/camss.h                | 2 +-
+ 8 files changed, 12 insertions(+), 12 deletions(-)
 
-> If vdpa tool allows
-> reconfiguration post probing, the code has to be reconciled then.
-> 
-> > 
-> > Did you actually see this issue in action? If you did, can you share
-> > with us how you trigerred this?
-> Issue is indeed seen in action. The mismatched tx-checksum offload as
-> described in the commit message was one of such examples. You would need a
-> guest reboot though (triggering device reset via the .set_status ops and
-> zero'ed mlx_features was loaded to deduce new actual_features for creating
-> the h/w virtq object) for repro.
-> 
-> -Siwei
-> > 
-> > > -- 
-> > > 1.8.3.1
-> > > 
+diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
+index be3fe76f3dc30..6307b889baa69 100644
+--- a/drivers/media/platform/qcom/camss/camss-csid.c
++++ b/drivers/media/platform/qcom/camss/camss-csid.c
+@@ -462,7 +462,7 @@ static irqreturn_t csid_isr(int irq, void *dev)
+ static int csid_set_clock_rates(struct csid_device *csid)
+ {
+ 	struct device *dev = csid->camss->dev;
+-	u32 pixel_clock;
++	u64 pixel_clock;
+ 	int i, j;
+ 	int ret;
+ 
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
+index 12bce391d71fd..ec66d1557b8b1 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
++++ b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
+@@ -57,7 +57,7 @@ static void csiphy_reset(struct csiphy_device *csiphy)
+  * Return settle count value or 0 if the CSI2 pixel clock
+  * frequency is not available
+  */
+-static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
++static u8 csiphy_settle_cnt_calc(u64 pixel_clock, u8 bpp, u8 num_lanes,
+ 				 u32 timer_clk_rate)
+ {
+ 	u32 mipi_clock; /* Hz */
+@@ -83,7 +83,7 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
+ 
+ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+ 				struct csiphy_config *cfg,
+-				u32 pixel_clock, u8 bpp, u8 lane_mask)
++				u64 pixel_clock, u8 bpp, u8 lane_mask)
+ {
+ 	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
+ 	u8 settle_cnt;
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+index 97cb9de850315..cd6eb88a7c153 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
++++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
+@@ -113,7 +113,7 @@ static irqreturn_t csiphy_isr(int irq, void *dev)
+  * Return settle count value or 0 if the CSI2 pixel clock
+  * frequency is not available
+  */
+-static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
++static u8 csiphy_settle_cnt_calc(u64 pixel_clock, u8 bpp, u8 num_lanes,
+ 				 u32 timer_clk_rate)
+ {
+ 	u32 mipi_clock; /* Hz */
+@@ -137,7 +137,7 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
+ 
+ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
+ 				struct csiphy_config *cfg,
+-				u32 pixel_clock, u8 bpp, u8 lane_mask)
++				u64 pixel_clock, u8 bpp, u8 lane_mask)
+ {
+ 	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
+ 	u8 settle_cnt;
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+index 509c9a59c09cd..61628f55c4f63 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy.c
++++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+@@ -102,7 +102,7 @@ static u8 csiphy_get_bpp(const struct csiphy_format *formats,
+ static int csiphy_set_clock_rates(struct csiphy_device *csiphy)
+ {
+ 	struct device *dev = csiphy->camss->dev;
+-	u32 pixel_clock;
++	u64 pixel_clock;
+ 	int i, j;
+ 	int ret;
+ 
+@@ -238,7 +238,7 @@ static u8 csiphy_get_lane_mask(struct csiphy_lanes_cfg *lane_cfg)
+ static int csiphy_stream_on(struct csiphy_device *csiphy)
+ {
+ 	struct csiphy_config *cfg = &csiphy->cfg;
+-	u32 pixel_clock;
++	u64 pixel_clock;
+ 	u8 lane_mask = csiphy_get_lane_mask(&cfg->csi2->lane_cfg);
+ 	u8 bpp = csiphy_get_bpp(csiphy->formats, csiphy->nformats,
+ 				csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
+index f7967ef836dcc..450c8247bd533 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy.h
++++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
+@@ -50,7 +50,7 @@ struct csiphy_hw_ops {
+ 	void (*reset)(struct csiphy_device *csiphy);
+ 	void (*lanes_enable)(struct csiphy_device *csiphy,
+ 			     struct csiphy_config *cfg,
+-			     u32 pixel_clock, u8 bpp, u8 lane_mask);
++			     u64 pixel_clock, u8 bpp, u8 lane_mask);
+ 	void (*lanes_disable)(struct csiphy_device *csiphy,
+ 			      struct csiphy_config *cfg);
+ 	irqreturn_t (*isr)(int irq, void *dev);
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+index fae2b513b2f9d..b2c95b46ce661 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+@@ -1112,7 +1112,7 @@ static inline void vfe_isr_halt_ack(struct vfe_device *vfe)
+ static int vfe_set_clock_rates(struct vfe_device *vfe)
+ {
+ 	struct device *dev = vfe->camss->dev;
+-	u32 pixel_clock[MSM_VFE_LINE_NUM];
++	u64 pixel_clock[MSM_VFE_LINE_NUM];
+ 	int i, j;
+ 	int ret;
+ 
+@@ -1194,7 +1194,7 @@ static int vfe_set_clock_rates(struct vfe_device *vfe)
+  */
+ static int vfe_check_clock_rates(struct vfe_device *vfe)
+ {
+-	u32 pixel_clock[MSM_VFE_LINE_NUM];
++	u64 pixel_clock[MSM_VFE_LINE_NUM];
+ 	int i, j;
+ 	int ret;
+ 
+diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+index 8fefce57bc49f..eb55cf436b717 100644
+--- a/drivers/media/platform/qcom/camss/camss.c
++++ b/drivers/media/platform/qcom/camss/camss.c
+@@ -555,7 +555,7 @@ struct media_entity *camss_find_sensor(struct media_entity *entity)
+  *
+  * Return 0 on success or a negative error code otherwise
+  */
+-int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock)
++int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock)
+ {
+ 	struct media_entity *sensor;
+ 	struct v4l2_subdev *subdev;
+diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
+index 3a0484683cd6e..fabfce9a3496c 100644
+--- a/drivers/media/platform/qcom/camss/camss.h
++++ b/drivers/media/platform/qcom/camss/camss.h
+@@ -108,7 +108,7 @@ int camss_enable_clocks(int nclocks, struct camss_clock *clock,
+ 			struct device *dev);
+ void camss_disable_clocks(int nclocks, struct camss_clock *clock);
+ struct media_entity *camss_find_sensor(struct media_entity *entity);
+-int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock);
++int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock);
+ int camss_pm_domain_on(struct camss *camss, int id);
+ void camss_pm_domain_off(struct camss *camss, int id);
+ void camss_delete(struct camss *camss);
+-- 
+2.30.0
 
