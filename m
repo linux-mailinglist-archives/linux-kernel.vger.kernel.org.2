@@ -2,94 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B2531721E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C30D317222
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbhBJVOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
+        id S233713AbhBJVOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:14:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232804AbhBJVKW (ORCPT
+        with ESMTP id S231897AbhBJVK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:10:22 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94271C0613D6;
-        Wed, 10 Feb 2021 13:09:41 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DbXSx6ckVz9sRf;
-        Thu, 11 Feb 2021 08:09:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612991378;
-        bh=T37OReoOydFbq4unal8lMB7zx6wTkEScGSNlSPw6ilw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Au/K03MmTWDwkNwgXpRYwXzNdKD5CLmWC9iMkxqcsCtod8qCqUNeZ83ml6swojmRW
-         rorY8TZinRrvQAMGvGGqJByedWFJdW2tfwYh8U/M5NH3F9i/abWsaJZZAN2RCGKrzS
-         loPz7nQQPlsXJdu7MKck6V0445fwIM/EpHtG/+04N+bv2wK+FvkvC04HYA8mGzopbd
-         2xqVAANOtZn31q610PlpEyAtCIVMzdTrSFGYmgY5Bq6kXQtDPM71q/bCZ20nWdSPTO
-         0rRKjMV3biyw+dpGji5F9UnYndc+i4AbvkFRrhfKoZjUa5k5+G9CIMLaQxKcFMh+16
-         GJemgs/eqze2A==
-Date:   Thu, 11 Feb 2021 08:09:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-team@android.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] of: irq: Fix the return value for of_irq_parse_one()
- stub
-Message-ID: <20210211080936.7c51b99c@canb.auug.org.au>
-In-Reply-To: <20210210200050.4106032-1-saravanak@google.com>
-References: <20210210200050.4106032-1-saravanak@google.com>
+        Wed, 10 Feb 2021 16:10:57 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40193C061574;
+        Wed, 10 Feb 2021 13:10:16 -0800 (PST)
+Date:   Wed, 10 Feb 2021 21:10:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612991414;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gngjeJPNcZZcgmyt6/v2khOLAQVyDcojVu/JN00cNBY=;
+        b=aQnMd/CN9ux3ON8NLtKjiGUGk0bv9NldIvkAK6H2vk4dT2A6HT130dxS3EyrwRUvLqx4S6
+        tCuG4mVv18GTR57VfEkpc09Oo7/7CVFLHPXvFjg7N2I1w8W5K41M2mDy5ikaoBn/8Ldeu6
+        uVhBmPau05NQmuJ2+vMUFSWksMSL/msLtH8lBT05+ZoFS0qCYyoplyB5mHXQm0DVO+dIl7
+        bWkq5jEBKyNw8k/LqPs2rSkLpXpshj81YKsxIfNU1eKlbOYKCruC6Mj4jQ7yq7zJGIn321
+        Fm9wNr7NEnEcD3YmD12OwAqlanAoFPVqTu79uCT+5YCm77cMoFBowhkqck7Hkw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612991414;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gngjeJPNcZZcgmyt6/v2khOLAQVyDcojVu/JN00cNBY=;
+        b=OA17cxdwMMMoqlgshG/WDLTV2hlYomxccsUwStwlKjafBgRQ+eR6c2xnAmg2I7Rdj721MC
+        Ush82G/5PimCRtDQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/pci: Create PCI/MSI irqdomain after
+ x86_init.pci.arch_init()
+Cc:     Juergen Gross <jgross@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <87pn18djte.fsf@nanos.tec.linutronix.de>
+References: <87pn18djte.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9VHlBQTTpR8AbkOIrHYbqOp";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Message-ID: <161299141323.23325.8366354176580288665.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9VHlBQTTpR8AbkOIrHYbqOp
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The following commit has been merged into the x86/urgent branch of tip:
 
-Hi Saravana,
+Commit-ID:     70245f86c109e0eafb92ea9653184c0e44b4b35c
+Gitweb:        https://git.kernel.org/tip/70245f86c109e0eafb92ea9653184c0e44b4b35c
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 10 Feb 2021 16:27:41 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 10 Feb 2021 22:06:47 +01:00
 
-On Wed, 10 Feb 2021 12:00:49 -0800 Saravana Kannan <saravanak@google.com> w=
-rote:
->
-> When commit 1852ebd13542 ("of: irq: make a stub for of_irq_parse_one()")
-> added a stub for of_irq_parse_one() it set the return value to 0. Return
-> value of 0 in this instance means the call succeeded and the out_irq
-> pointer was filled with valid data. So, fix it to return an error value.
->=20
-> Fixes: 1852ebd13542 ("of: irq: make a stub for of_irq_parse_one()")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+x86/pci: Create PCI/MSI irqdomain after x86_init.pci.arch_init()
 
-Oops, sorry about that.
+Invoking x86_init.irqs.create_pci_msi_domain() before
+x86_init.pci.arch_init() breaks XEN PV.
 
-Acked-by: Stephen Rothwell <sfr@canb.auug.org.au>
+The XEN_PV specific pci.arch_init() function overrides the default
+create_pci_msi_domain() which is obviously too late.
 
---=20
-Cheers,
-Stephen Rothwell
+As a consequence the XEN PV PCI/MSI allocation goes through the native
+path which runs out of vectors and causes malfunction.
 
---Sig_/9VHlBQTTpR8AbkOIrHYbqOp
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Invoke it after x86_init.pci.arch_init().
 
------BEGIN PGP SIGNATURE-----
+Fixes: 6b15ffa07dc3 ("x86/irq: Initialize PCI/MSI domain at PCI init time")
+Reported-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Juergen Gross <jgross@suse.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/87pn18djte.fsf@nanos.tec.linutronix.de
+---
+ arch/x86/pci/init.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAkS5AACgkQAVBC80lX
-0GwRCQf9EBXY8yx+s8dTbRHzyMaTzfcM8yWhayyA+gpPCBRi2K98HHe7Ru+ayJVP
-u/YA78f3rJAG9IRa6EfZNGPRvZMeEJRuK1QuRdXX9CpMOXx3TIEbHTZI7cD6bpCk
-n7VQpyWKB1tZV4SEC/UYofIZB+R3mgdn/6xGS16oMvLrwE4UEiMBRUeq9may8pia
-hKe/K6/Tg0a3owfPw7JvLtIiAA9qQiCo9VAGV3y/35Jlu3+Ht5IA+YT1m99ljVxd
-c5wFitjJNPdLSyYCIzv0cmbuBjwzWnlhrWz0G3oVq9OchSGyJnwciiOgZT2Mp6Wx
-1ULk877lV3YLLd6Xj8RevOxm7lzibw==
-=ddxf
------END PGP SIGNATURE-----
-
---Sig_/9VHlBQTTpR8AbkOIrHYbqOp--
+diff --git a/arch/x86/pci/init.c b/arch/x86/pci/init.c
+index 00bfa1e..0bb3b8b 100644
+--- a/arch/x86/pci/init.c
++++ b/arch/x86/pci/init.c
+@@ -9,16 +9,23 @@
+    in the right sequence from here. */
+ static __init int pci_arch_init(void)
+ {
+-	int type;
+-
+-	x86_create_pci_msi_domain();
++	int type, pcbios = 1;
+ 
+ 	type = pci_direct_probe();
+ 
+ 	if (!(pci_probe & PCI_PROBE_NOEARLY))
+ 		pci_mmcfg_early_init();
+ 
+-	if (x86_init.pci.arch_init && !x86_init.pci.arch_init())
++	if (x86_init.pci.arch_init)
++		pcbios = x86_init.pci.arch_init();
++
++	/*
++	 * Must happen after x86_init.pci.arch_init(). Xen sets up the
++	 * x86_init.irqs.create_pci_msi_domain there.
++	 */
++	x86_create_pci_msi_domain();
++
++	if (!pcbios)
+ 		return 0;
+ 
+ 	pci_pcbios_init();
