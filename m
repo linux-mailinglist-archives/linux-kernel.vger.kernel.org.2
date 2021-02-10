@@ -2,93 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11A431668D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0365931669E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhBJMYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230450AbhBJM1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:27:36 -0500
+Received: from mout.gmx.net ([212.227.15.15]:52989 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231837AbhBJMYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Feb 2021 07:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbhBJMWg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:22:36 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FF7C061574;
-        Wed, 10 Feb 2021 04:21:55 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DbJlx4N4Gz9sBJ;
-        Wed, 10 Feb 2021 23:21:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612959709;
-        bh=QkhHLoS2lTtZFN7qEIJZm53BOWjr7fHShqCW5xBcxEc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=h931OTLH9GUI6/fwkaWhDercwh7vi7ZefFDEtthdPL8DeBqhB5OI63pqB2W7Zy+R3
-         XG014/hnBALTAhK8PURRz+ux7dtyGO/G3mkb10Kb5X9cW1c0/usEv1o7lNNPD1gcZ9
-         ynsn80g/vNcN3Lj8fPKozO/ifFRsFWRojc7tYQQkwYj5rR8UoW2E6QfpP+Q0Q3E6oQ
-         /ENsvdYSOllKR6YMi0HQbSjgcX/6hsHXISslOtuGiYt3qerrqARN0+GHfVRHR3SMSf
-         X4vl29FAjkZKc0ZmocHio6jr96GulUM6mIQ+CgoEJ254/j8MMXY4cYmT35tJJFeZYG
-         vsmqlqBUm1adA==
-Date:   Wed, 10 Feb 2021 23:21:48 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: linux-next: build failure after merge of the modules tree
-Message-ID: <20210210232148.4f9d4a43@canb.auug.org.au>
-In-Reply-To: <YCOUGGJtUJ+Nf0ZA@gunter>
-References: <20210209210843.3af66662@canb.auug.org.au>
-        <YCKnRPRTDyfGxnBC@gunter>
-        <20210210085051.7fb951d1@canb.auug.org.au>
-        <YCOUGGJtUJ+Nf0ZA@gunter>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1612959765;
+        bh=+h8MD8271n/iybg6BuCV23jv8ZgoQb3mvg9bq6LK1Lk=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=i1Zic/gPsjIfBU5mzX4tjqqirDsdoAkJM+T93doBu+fXvTKHHxFMXdymBXVJ/qqDj
+         HvnedSDGjbAeUk3gR+DoMaQ++SMb9bIBPJgQy2LozitAfnuHqKyB0gFrUtftnDi8Px
+         45Pb/JM3E9a5yTH7KUsao1uatX+C/67vSlGb5jvI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MTiPv-1lLcNd3kBZ-00U0Ug; Wed, 10
+ Feb 2021 13:22:44 +0100
+Message-ID: <eeea2d002142ec7f8737b9d0fb5128b0cdb2ae58.camel@gmx.de>
+Subject: Re: drm/nouneau: 5.11 cycle regression bisected to 461619f5c324
+ "drm/nouveau: switch to new allocator"
+From:   Mike Galbraith <efault@gmx.de>
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+Date:   Wed, 10 Feb 2021 13:22:44 +0100
+In-Reply-To: <5df26bda-9ff8-168f-e5a3-0bb503ffcca9@amd.com>
+References: <1d663cd74af91e23f4f24ebbdd65ef3ba72c15fc.camel@gmx.de>
+         <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
+         <2793c200beb530ed4a8ac32c5eea0f5aaa53c7e8.camel@gmx.de>
+         <bfd62492-e6a9-3899-dd7d-87b7800f45c7@amd.com>
+         <41cc52bd57a466f29ea81676d42f57a7b9da7dd8.camel@gmx.de>
+         <5df26bda-9ff8-168f-e5a3-0bb503ffcca9@amd.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ve2Gj7CFwA6nEqZCIcPGXRm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:W4GPS80D+clxDsGdF2ikhyzexg0GvS2xkMk+USdFXQMRvvYcPII
+ 95dxzYyTD0cdg8+JCGbyuX+8S2IhEm6hIHqrJB7H1WhQMjPlVYYgLdGjm1ftAPEKxwBZSsf
+ XhsmN2pfACcRuqQB6ZmY3QDsDJfOdI1qu1iX99mNPtFBEl2pgxGLIzfz6AklLITr8Q9g6iL
+ 9ZlUHvuBdh7ONQderi9jQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QaLTXDBf5aY=:d0+yTuFehnvZQRqe8bH9B4
+ 2f0ISzh4QRpFe53GFjmqHz5gW3xtHS9FcXEubTX6ZtfBRgi65+fjJXLzXbeLEDEwH3OT+fv+s
+ kWUs3aureTrlmwLpEsB5hIEoaJtDEkO+sBvr4dWwbqG81xik0RM0Tz+Snar7uvf+/SRo/Ickd
+ ASIlzt9SlnIML0B5U7zC67Kg1qGsvs5RnTbQS8ufHh6k3AjYksvxbggo8iCX1bhN/6DMPMtdI
+ 5LizOtEcq5URCLr2mvtFI+dFo/tdEju6RxmgW4qkv2zhBF/b5NF0ju+mHBPtBcn6DlaZoxJO0
+ HXgnSSIthPfAmqFttIR/yVhJRL8hzClStxBfxYOr7hyYizPaOXjT6CRo5Vkh9bwHS8TMMkMrZ
+ vasJmOy9V+WKv5IIR2ssZZRyo4IgI/j4GLSx71qxHHDGddjKf8ZO/ykPO+HILIiQ8vSKq/Fto
+ bSpgNCRTs7eRvD49K3I2DwU7IqFvhorszj+c6TRwhpI/w26adGKjUG/S972wJQJ+ioKQxEcaV
+ G9c2cONSyUYuYVXFCfudTceBVPPey+EiY5FEUi329M9Mzv17/1JQa60hPwkmyJOxsOEPnuvFl
+ 0tei7SNSBWAfvhp8/y9r1VR/E6BqjfmI1hhdS9TsZ0OX0h8VT/z4MA7mIKCPLhZM5lgh2VPg5
+ JLGe77sfB29iJOswOPYcUuZUfCZVAQUSnvfovH1juX5WAqxjKVeQofz8MXxbK2xlek04476Fy
+ VwXsU2UB800pTvWE5AbRDK2DdH0AIVhyA8teApKNVp7sa9ouUPMNtFG7106/FywAnasuoIOOG
+ T7TrAH8EjsbVSytMLGYY3h1RG0fEfhzLPLw/gF7ZiE4W9JLOb8m/Uwles1gFzRoc0A4fwgdqD
+ KykHIrAlK9ZN/WwsZutA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ve2Gj7CFwA6nEqZCIcPGXRm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 2021-02-10 at 12:44 +0100, Christian K=F6nig wrote:
+> Please try to add a "return NULL" at the beginning of ttm_pool_type_take=
+().
+>
+> That should effectively disable using the pool.
 
-Hi Jessica,
+That did away with the yield looping, but it doesn't take long for the
+display to freeze.  I ssh'd in from lappy, but there was nada in dmesg.
 
-On Wed, 10 Feb 2021 09:06:48 +0100 Jessica Yu <jeyu@kernel.org> wrote:
->=20
-> Sorry, by "feature" I meant CONFIG_TRIM_UNUSED_KSYMS. This config
-> option was introduced around v4.7. If simply enabling it produces
-> these compilation errors I was wondering if it ever built properly on
-> powerpc.
+> Thanks for testing,
 
-Ah, of course.  So for a quick fix, you could revert just the changes
-to lib/Kconfig and all the defconfigs.  That way all the UNUSED_SYMBOLS
-infrastructure is still removed, but TRIM_UNUSED_KSYMS remains (un)set
-whenever it used to be (un)set and that could then be cleaned up in a
-followup patch set per architecture when we know it works.
---=20
-Cheers,
-Stephen Rothwell
+Happy to.
 
---Sig_/Ve2Gj7CFwA6nEqZCIcPGXRm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+	-Mike
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAjz9wACgkQAVBC80lX
-0Gz/Dgf/XjojqFPVsjOyBJyhznHqyo9BVhsUryG4Aozj8T4HwoNf8rANih8uPv6/
-bkvYyBj8N1I0O5hwImdJ25x0ZQJ8lFtD4TA6+F9XaKPV3IfSewRc4L2bVWFiWMoO
-66AeJwFy4xD93HcfqXxMv5fVMeZ9q7idOihUt+gbU+18tHQzuYdMfO12guPUg0EK
-3c7WxlZ8HnapQXeUCZvJ74Hmw5WsdZ0zWNuiDyqrIhHpPgZxUhRmUgzKr/GQUCfq
-f1ODmOYOh4MJnyWKkrWAI68LZEDB009fGESxMh6DJcGDH8OUiL6If2Dog7Dw8Br4
-/wCH9E2NLeLbcFIv0H5cwFayqmrJ8g==
-=h6Kn
------END PGP SIGNATURE-----
-
---Sig_/Ve2Gj7CFwA6nEqZCIcPGXRm--
