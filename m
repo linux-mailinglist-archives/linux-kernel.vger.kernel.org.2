@@ -2,90 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2D9316B38
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A08316B39
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbhBJQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:29:24 -0500
-Received: from mga11.intel.com ([192.55.52.93]:23092 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232363AbhBJQ3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:29:11 -0500
-IronPort-SDR: +A/HPQyqI+L8BthC8ZdYh1Me2m5MK8IIeLSegGe9oYs60dtTqAP5aqypYu55jsh0UYMEJWAfQe
- 5OhGLRkw7vNQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="178594893"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="178594893"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:27:26 -0800
-IronPort-SDR: LvgRswj4ujM0TQDKag8IfJgbkvt4hl1So6vNN+Q87LbZo1kTj3LgAQX1HVpu8oW7nlLuALoyFU
- 0TkBiVhUGn3g==
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="361395355"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:27:22 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l9sKl-003lqD-G4; Wed, 10 Feb 2021 18:27:19 +0200
-Date:   Wed, 10 Feb 2021 18:27:19 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH 2/8] lib: test_bitmap: add tests to trigger ERANGE case.
-Message-ID: <YCQJZ8LCsuLV3Pdv@smile.fi.intel.com>
-References: <20210209225907.78405-1-paul.gortmaker@windriver.com>
- <20210209225907.78405-3-paul.gortmaker@windriver.com>
+        id S232432AbhBJQ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:29:37 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:10676 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232366AbhBJQ3N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:29:13 -0500
+Date:   Wed, 10 Feb 2021 16:28:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612974508; bh=o4T7iSQYleBEuIFv05CFvm501rCgWuFs++fo+TxXVYs=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=FwZtDlvRMPdMCwmp0GVTgOOGQZTCHaeGCYTE2bPjIFoBGKYkvJXpYtN+EExmUwtUk
+         OHU2gvKKZMWsp6wxDC0AaKvQeDHspUgfeUu5hes7ReSdv+rz+X0WzsGNjKxf2hPKHR
+         7zDNRXuCY0+a3C+aujaYKYz0iuvJiORLxSb2ocF+GilyzS1mXFgsBjAwoEH4bRNP+k
+         0Jvaspult0o2PTGOC9J4ZCVulE23cxmwsAa8KW7Uv13ptctKWOUoXeCPT6jM5hnCBt
+         5lyq/MDURpFhlxJHdnt5WOL1ndew4C3jNU9LKXkE9qBxD57kTKOb6B0pjDmb7RvYAz
+         QGXKKWcjTJguA==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v4 net-next 00/11] skbuff: introduce skbuff_heads bulking and reusing
+Message-ID: <20210210162732.80467-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209225907.78405-3-paul.gortmaker@windriver.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:59:01PM -0500, Paul Gortmaker wrote:
-> Add tests that specify a valid range, but one that is outside the
-> width of the bitmap for which it is to be applied to.  These should
-> trigger an -ERANGE response from the code.
+Currently, all sorts of skb allocation always do allocate
+skbuff_heads one by one via kmem_cache_alloc().
+On the other hand, we have percpu napi_alloc_cache to store
+skbuff_heads queued up for freeing and flush them by bulks.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+We can use this cache not only for bulk-wiping, but also to obtain
+heads for new skbs and avoid unconditional allocations, as well as
+for bulk-allocating (like XDP's cpumap code and veth driver already
+do).
 
-> Cc: Yury Norov <yury.norov@gmail.com>
-> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> ---
->  lib/test_bitmap.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-> index 589f2a34ceba..172ffbfa83c4 100644
-> --- a/lib/test_bitmap.c
-> +++ b/lib/test_bitmap.c
-> @@ -338,6 +338,8 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
->  	{-EINVAL, "-1",	NULL, 8, 0},
->  	{-EINVAL, "-0",	NULL, 8, 0},
->  	{-EINVAL, "10-1", NULL, 8, 0},
-> +	{-ERANGE, "8-8", NULL, 8, 0},
-> +	{-ERANGE, "0-31", NULL, 8, 0},
->  	{-EINVAL, "0-31:", NULL, 32, 0},
->  	{-EINVAL, "0-31:0", NULL, 32, 0},
->  	{-EINVAL, "0-31:0/", NULL, 32, 0},
-> -- 
-> 2.17.1
-> 
+As this might affect latencies, cache pressure and lots of hardware
+and driver-dependent stuff, this new feature is mostly optional and
+can be issued via:
+ - a new napi_build_skb() function (as a replacement for build_skb());
+ - existing {,__}napi_alloc_skb() and napi_get_frags() functions;
+ - __alloc_skb() with passing SKB_ALLOC_NAPI in flags.
 
--- 
-With Best Regards,
-Andy Shevchenko
+iperf3 showed 35-70 Mbps bumps for both TCP and UDP while performing
+VLAN NAT on 1.2 GHz MIPS board. The boost is likely to be bigger
+on more powerful hosts and NICs with tens of Mpps.
+
+Note on skbuff_heads from distant slabs or pfmemalloc'ed slabs:
+ - kmalloc()/kmem_cache_alloc() itself allows by default allocating
+   memory from the remote nodes to defragment their slabs. This is
+   controlled by sysctl, but according to this, skbuff_head from a
+   remote node is an OK case;
+ - The easiest way to check if the slab of skbuff_head is remote or
+   pfmemalloc'ed is:
+
+=09if (!dev_page_is_reusable(virt_to_head_page(skb)))
+=09=09/* drop it */;
+
+   ...*but*, regarding that most slabs are built of compound pages,
+   virt_to_head_page() will hit unlikely-branch every single call.
+   This check costed at least 20 Mbps in test scenarios and seems
+   like it'd be better to _not_ do this.
+
+Since v3 [2]:
+ - make the feature mostly optional, so driver developers could
+   decide whether to use it or not (Paolo Abeni).
+   This reuses the old flag for __alloc_skb() and introduces
+   a new napi_build_skb();
+ - reduce bulk-allocation size from 32 to 16 elements (also Paolo).
+   This equals to the value of XDP's devmap and veth batch processing
+   (which were tested a lot) and should be sane enough;
+ - don't waste cycles on explicit in_serving_softirq() check.
+
+Since v2 [1]:
+ - also cover {,__}alloc_skb() and {,__}build_skb() cases (became handy
+   after the changes that pass tiny skbs requests to kmalloc layer);
+ - cover the cache with KASAN instrumentation (suggested by Eric
+   Dumazet, help of Dmitry Vyukov);
+ - completely drop redundant __kfree_skb_flush() (also Eric);
+ - lots of code cleanups;
+ - expand the commit message with NUMA and pfmemalloc points (Jakub).
+
+Since v1 [0]:
+ - use one unified cache instead of two separate to greatly simplify
+   the logics and reduce hotpath overhead (Edward Cree);
+ - new: recycle also GRO_MERGED_FREE skbs instead of immediate
+   freeing;
+ - correct performance numbers after optimizations and performing
+   lots of tests for different use cases.
+
+[0] https://lore.kernel.org/netdev/20210111182655.12159-1-alobakin@pm.me
+[1] https://lore.kernel.org/netdev/20210113133523.39205-1-alobakin@pm.me
+[2] https://lore.kernel.org/netdev/20210209204533.327360-1-alobakin@pm.me
+
+Alexander Lobakin (11):
+  skbuff: move __alloc_skb() next to the other skb allocation functions
+  skbuff: simplify kmalloc_reserve()
+  skbuff: make __build_skb_around() return void
+  skbuff: simplify __alloc_skb() a bit
+  skbuff: use __build_skb_around() in __alloc_skb()
+  skbuff: remove __kfree_skb_flush()
+  skbuff: move NAPI cache declarations upper in the file
+  skbuff: introduce {,__}napi_build_skb() which reuses NAPI cache heads
+  skbuff: allow to optionally use NAPI cache from __alloc_skb()
+  skbuff: allow to use NAPI cache from __napi_alloc_skb()
+  skbuff: queue NAPI_MERGED_FREE skbs into NAPI cache instead of freeing
+
+ include/linux/skbuff.h |   4 +-
+ net/core/dev.c         |  15 +-
+ net/core/skbuff.c      | 429 +++++++++++++++++++++++------------------
+ 3 files changed, 243 insertions(+), 205 deletions(-)
+
+--=20
+2.30.1
 
 
