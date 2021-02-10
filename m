@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D992B316721
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41942316726
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhBJMwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:52:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54574 "EHLO mail.kernel.org"
+        id S231186AbhBJMxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:53:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:37112 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhBJMwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:52:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9F2A64DF2;
-        Wed, 10 Feb 2021 12:51:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612961511;
-        bh=3ANfLUPOdNsqF2xYY2mEKyOlMs90/0utz+hz6lvcaIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dn4UYauslhggonOTDbJKXimGJ1QCTklV6KplgNFsB6j31TDjFC6w20Nys/UmTT+iP
-         EH4IntBMv2maimiaIBsOXFJjN6WuvthSjTBcjol8oimguwYqr9scnp8qIsiLn76PQh
-         4BWXwQZvcUJEuGCKRLXEJyr4ZYxUMWIxh5wvO4o4ueTMrZbCcXjzXnjCDpuWR1LKMd
-         tIRZy25g/Z0ckUQsXw0EEEGxWDqKPt+RmGwT2q0pReCx89yA926L1/woQSvlK08l2I
-         LsshUO5WVPjt/3hiS4535pX04xv2x86ES6okI9F+AutfLLYUdbilJwAE6TDnfdR7Qu
-         P85AuXZrciIdQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0D86C40513; Wed, 10 Feb 2021 09:51:47 -0300 (-03)
-Date:   Wed, 10 Feb 2021 09:51:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 15/24] perf daemon: Add ping command
-Message-ID: <20210210125146.GD1018564@kernel.org>
-References: <20210208200908.1019149-1-jolsa@kernel.org>
- <20210208200908.1019149-16-jolsa@kernel.org>
+        id S229465AbhBJMx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:53:27 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59E34D6E;
+        Wed, 10 Feb 2021 04:52:41 -0800 (PST)
+Received: from e123427-lin.arm.com (unknown [10.57.46.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 162763F73D;
+        Wed, 10 Feb 2021 04:52:38 -0800 (PST)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     tjoseph@cadence.com, linux-pci@vger.kernel.org, kishon@ti.com,
+        bhelgaas@google.com, robh@kernel.org, linux-kernel@vger.kernel.org,
+        Nadeem Athani <nadeem@cadence.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, mparab@cadence.com,
+        pthombar@cadence.com, sjakhade@cadence.com
+Subject: Re: [PATCH v8 0/2] PCI: cadence: Retrain Link to work around Gen2
+Date:   Wed, 10 Feb 2021 12:52:33 +0000
+Message-Id: <161296139640.22133.12504586706777255696.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20210209144622.26683-1-nadeem@cadence.com>
+References: <20210209144622.26683-1-nadeem@cadence.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208200908.1019149-16-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Feb 08, 2021 at 09:08:59PM +0100, Jiri Olsa escreveu:
-> +
-> +	if (!pollfd.revents & POLLIN) {
-> +		pr_err("failed: did not received an ack\n");
-> +		goto out;
-> +	}
-> +
+On Tue, 9 Feb 2021 15:46:20 +0100, Nadeem Athani wrote:
+> Cadence controller will not initiate autonomous speed change if strapped
+> as Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+> Adding a quirk flag for defective IP. In future IP revisions this will not
+> be applicable.
+> 
+> Version history:
+> Changes in v8:
+> - Adding a new function cdns_pcie_host_start_link().
+> Changes in v7:
+> - Changing the commit title of patch 1 in this series.
+> - Added a return value for function cdns_pcie_retrain().
+> Changes in v6:
+> - Move the position of function cdns_pcie_host_wait_for_link to remove
+>   compilation error. No changes in code. Separate patch for this.
+> Changes in v5:
+> - Remove the compatible string based setting of quirk flag.
+> - Removed additional Link Up Check
+> - Removed quirk from pcie-cadence-plat.c and added in pci-j721e.c
+> Changes in v4:
+> - Added a quirk flag based on a new compatible string.
+> - Change of api for link up: cdns_pcie_host_wait_for_link().
+> Changes in v3:
+> - To set retrain link bit,checking device capability & link status.
+> - 32bit read in place of 8bit.
+> - Minor correction in patch comment.
+> - Change in variable & macro name.
+> Changes in v2:
+> - 16bit read in place of 8bit.
+> 
+> [...]
 
-Fixed up this, pointed out by clang on many build containers, including
-fedora:34:
+Applied to pci/cadence, squashed two commits together since it makes
+no sense to keep them separate. Also, please check:
 
-Committer notes:
+git log --oneline
 
-Fixed up bug pointed by clang:
+when writing patches to keep the changes uniform, I had to edit your
+commit.
 
-Buggy:
-
-  if (!pollfd.revents & POLLIN)
-
-Correct code:
-
-  if (!(pollfd.revents & POLLIN))
-
-clang warning:
-
-  builtin-daemon.c:560:6: error: logical not is only applied to the left hand side of this bitwise operator [-Werror,-Wlogical-not-parentheses]
-          if (!pollfd.revents & POLLIN) {
-              ^               ~
-  builtin-daemon.c:560:6: note: add parentheses after the '!' to evaluate the bitwise operator first
-
-
-- Arnaldo
+Thanks,
+Lorenzo
