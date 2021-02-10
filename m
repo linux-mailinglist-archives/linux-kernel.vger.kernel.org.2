@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E26B3171F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CC43171FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbhBJVHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:07:40 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:41484 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhBJVHf (ORCPT
+        id S233403AbhBJVJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232101AbhBJVJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:07:35 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id A9B2A292FB;
-        Wed, 10 Feb 2021 16:06:50 -0500 (EST)
-Date:   Thu, 11 Feb 2021 08:06:56 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-cc:     tanxiaofei <tanxiaofei@huawei.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
-Subject: RE: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage optimization
- for SCSI drivers
-In-Reply-To: <00c06b19e87a425fa3a4b6aaecc66d49@hisilicon.com>
-Message-ID: <9611728-3e7-3954-cfee-f3d3cf45df6@telegraphics.com.au>
-References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com> <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au> <e949a474a9284ac6951813bfc8b34945@hisilicon.com> <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
- <88d26bd86c314e5483ec596952054be7@hisilicon.com> <da111631-83ef-1ad8-799a-5d976d5759d@telegraphics.com.au> <00c06b19e87a425fa3a4b6aaecc66d49@hisilicon.com>
+        Wed, 10 Feb 2021 16:09:01 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC104C061786;
+        Wed, 10 Feb 2021 13:08:18 -0800 (PST)
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 7B4FF22FB3;
+        Wed, 10 Feb 2021 22:08:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1612991297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mZhBvp+WKL1GjGYg/cC0hhNjKILLfx3wgilGDLxX5RQ=;
+        b=lfMfvfkvrZvNt3x2iDRGZtfgMAXVzTTzSOQZq1aCNOFmfpc3I4+wium9w+OOc08GCfOgz8
+        BA0soO9uaTfaRIUcVLJH4BUFbwXNacJbl/bF7AL3Mtm+nz1NZlCZzKzlK092C4j9dp8VeP
+        lJ8k+KcRFXnz9BdMH8BlW2OqKP/DDIA=
+From:   Michael Walle <michael@walle.cc>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH net-next v2 0/9] net: phy: icplus: cleanups and new features
+Date:   Wed, 10 Feb 2021 22:08:00 +0100
+Message-Id: <20210210210809.30125-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cleanup the PHY drivers for IPplus devices and add PHY counters and MDIX
+support for the IP101A/G.
 
-On Wed, 10 Feb 2021, Song Bao Hua (Barry Song) wrote:
+Patch 5 adds a model detection based on the behavior of the PHY.
+Unfortunately, the IP101A shares the PHY ID with the IP101G. But the latter
+provides more features. Try to detect the newer model by accessing the page
+selection register. If it is writeable, it is assumed, that it is a IP101G.
 
-> > On Tue, 9 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > 
-> > > > > sonic_interrupt() uses an irq lock within an interrupt handler 
-> > > > > to avoid issues relating to this. This kind of locking may be 
-> > > > > needed in the drivers you are trying to patch. Or it might not. 
-> > > > > Apparently, no-one has looked.
-> > >
-> > > Is the comment in sonic_interrupt() outdated according to this: 
-> > > m68k: irq: Remove IRQF_DISABLED 
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=77a4279 
-> > > http://lkml.iu.edu/hypermail/linux/kernel/1109.2/01687.html
-> > >
-> > 
-> > The removal of IRQF_DISABLED isn't relevant to this driver. Commit 
-> > 77a42796786c ("m68k: Remove deprecated IRQF_DISABLED") did not disable 
-> > interrupts, it just removed some code to enable them.
-> > 
-> > The code and comments in sonic_interrupt() are correct. You can 
-> > confirm this for yourself quite easily using QEMU and a 
-> > cross-compiler.
-> > 
-> > > and this: genirq: Warn when handler enables interrupts
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b738a50a
-> > >
-> > > wouldn't genirq report a warning on m68k?
-> > >
-> > 
-> > There is no warning from m68k builds. That's because 
-> > arch_irqs_disabled() returns true when the IPL is non-zero.
-> 
-> 
-> So for m68k, the case is
-> arch_irqs_disabled() is true, but interrupts can still come?
-> 
-> Then it seems it is very confusing. If prioritized interrupts can still 
-> come while arch_irqs_disabled() is true, 
+With this detection in place, we can now access registers >= 16 in a
+correct way on the IP101G; that is by first selecting the correct page.
+This might previouly worked, because no one ever set another active page
+before booting linux.
 
-Yes, on m68k CPUs, an IRQ having a priority level higher than the present 
-priority mask will get serviced.
+The last two patches add the new features.
 
-Non-Maskable Interrupt (NMI) is not subject to this rule and gets serviced 
-regardless.
+Michael Walle (9):
+  net: phy: icplus: use PHY_ID_MATCH_MODEL() macro
+  net: phy: icplus: use PHY_ID_MATCH_EXACT() for IP101A/G
+  net: phy: icplus: drop address operator for functions
+  net: phy: icplus: use the .soft_reset() of the phy-core
+  net: phy: icplus: split IP101A/G driver
+  net: phy: icplus: don't set APS_EN bit on IP101G
+  net: phy: icplus: fix paged register access
+  net: phy: icplus: add PHY counter for IP101G
+  net: phy: icplus: add MDI/MDIX support for IP101A/G
 
-> how could spin_lock_irqsave() block the prioritized interrupts?
+ drivers/net/phy/icplus.c | 378 ++++++++++++++++++++++++++++++++-------
+ 1 file changed, 317 insertions(+), 61 deletions(-)
 
-It raises the the mask level to 7. Again, please see
-arch/m68k/include/asm/irqflags.h
+-- 
+2.20.1
 
-> Isn't arch_irqs_disabled() a status reflection of irq disable API?
-> 
-
-Why not?
-
-Are all interrupts (including NMI) masked whenever arch_irqs_disabled() 
-returns true on your platforms?
-
-> Thanks
-> Barry
-> 
-> 
