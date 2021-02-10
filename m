@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83C8317045
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19224317053
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhBJTgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:36:01 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:33758 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232487AbhBJTe0 (ORCPT
+        id S233225AbhBJThv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232331AbhBJTfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:34:26 -0500
-Received: by mail-ot1-f52.google.com with SMTP id c16so2947607otp.0;
-        Wed, 10 Feb 2021 11:34:08 -0800 (PST)
+        Wed, 10 Feb 2021 14:35:52 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF1EC06178C
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:34:03 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id b8so1763250plh.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:34:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LxaZ4hziEn9bchFK4AxqUiBcTDlmtg7lC2ZBUIMeIPQ=;
+        b=nRz/Y4Y5rIwUL1EuSMgwTQJXMPe2fRzT5faEAJAOhNicQ+O6uXb8rFTVjChcJytO38
+         iZzMzgApYK6PyJKIgtWx0b3QyfsAou3UCfKtA7njlDUDBn3dG1Vf9lzcDMklXcV7UQIs
+         wJv/CUJiDCLpOS0wR3wJHlX1yC2Cgie/lSZPY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=WJP0klzEwgDZ/2iWW0PFvy76OgVpkGGEA11Lmo6SvQs=;
-        b=dyb6ocQgoFV+I4KrNOoZw+Rn7SuImn8Ldkv/cRvylcrSvam/nEJxf7T+0Zqp+huN9A
-         vHorvU8L5z6CbDNyBAvUScf9ZV61v+OdofmLnk1YokT59rogeq+QiQDPmlaZN+/8Fk1w
-         25BljqMCRz60kY6XzAEQcosHjypUVIG01hPxQcuF0uvlTSQvHUQwx4/IccD/F1ZBVUcF
-         fHuuQdvNenb9AmiOfvAjojbws+Y2S8Nw54WX6ctXUk49AH0Tnl6BVksZGYYCrsvS3muq
-         mnztfkOdKWGfMTmJu21U/isnrmJXYGPByXDxrvjVqHT2VqJf5tEwJPadMvU+lqj25hnj
-         RZng==
-X-Gm-Message-State: AOAM530pnKZP21dbzmjPB0Zl43RnUQDOsAm93TePb6fb5gULjRNSjRLw
-        svafxlYM/9SDScZwogN2DQ==
-X-Google-Smtp-Source: ABdhPJyi5+padksHgBI9S7lV1Nqq9A/4KHpFpydckNAVQU2HDvSbq94O8o32Nk7ZrLscKRUg+3fnFw==
-X-Received: by 2002:a05:6830:110a:: with SMTP id w10mr3238829otq.11.1612985623337;
-        Wed, 10 Feb 2021 11:33:43 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p20sm533507oos.46.2021.02.10.11.33.41
+        bh=LxaZ4hziEn9bchFK4AxqUiBcTDlmtg7lC2ZBUIMeIPQ=;
+        b=gNkOoCwdDfyRzgMpuyPh5yQlS6kNaJ+pm64Zs8Cgu/hduso58S8qxFUtrGPgLXQOSH
+         Gvs/djIQq2JCuPhitcTkoeZWRcpMK0LInT09gFAOPdXyfktSDw1ZlrcobhKrkruhrY3u
+         ok84sH6QM4c6wVPFSK71+/vTnQrOrqYfDCx/Ja1T7rPJRgw+hzMc6F97Z2lcV6J8ol0A
+         wA1Shn+rOhwDHp0xdn9hVeFrdMnaBL42cOqNyyi7f9eS30sZpgvgjowh3zC5WwI+ifux
+         pc2VT0Mz/2mHzCJZVeBe8jbRinDwa+6cqxljHS58KYUuWiWD0saIgIeSBYj8VfD1BFUI
+         AghA==
+X-Gm-Message-State: AOAM5324jTVA4MocJDQj/AAlHQAPXKpB8ATX9zBZW8Xj6YtBJk1pHGBM
+        MC6MeJqulZ+sKEQvKXpr+gPQTA==
+X-Google-Smtp-Source: ABdhPJyRecy1GRXLP1kMQcH16Sgfnf+QusYUJ4oECanP4lP6AnzDHzMfwFxFC9h1QK8RZDo1gMXKvg==
+X-Received: by 2002:a17:90a:4fc1:: with SMTP id q59mr443897pjh.129.1612985643404;
+        Wed, 10 Feb 2021 11:34:03 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z2sm3089727pfj.100.2021.02.10.11.34.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 11:33:42 -0800 (PST)
-Received: (nullmailer pid 2609314 invoked by uid 1000);
-        Wed, 10 Feb 2021 19:33:41 -0000
-Date:   Wed, 10 Feb 2021 13:33:41 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     mchehab@kernel.org, Tomasz Figa <tfiga@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        todor.too@gmail.com, Jonathan Marek <jonathan@marek.ca>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        linux-media@vger.kernel.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        angelogioacchino.delregno@somainline.org, robh+dt@kernel.org,
-        Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: [PATCH v4 19/22] media: dt-bindings: media: Remove qcom,camss
- documentation
-Message-ID: <20210210193341.GA2609254@robh.at.kernel.org>
-References: <20210205104414.299732-1-robert.foss@linaro.org>
- <20210205104414.299732-20-robert.foss@linaro.org>
+        Wed, 10 Feb 2021 11:34:02 -0800 (PST)
+Date:   Wed, 10 Feb 2021 11:34:01 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>, haitao.huang@intel.com,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [PATCH v20 06/25] x86/cet: Add control-protection fault handler
+Message-ID: <202102101134.CC29A738B@keescook>
+References: <20210210175703.12492-1-yu-cheng.yu@intel.com>
+ <20210210175703.12492-7-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210205104414.299732-20-robert.foss@linaro.org>
+In-Reply-To: <20210210175703.12492-7-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 05 Feb 2021 11:44:11 +0100, Robert Foss wrote:
-> This documentation has been incorporated in dtschema dt-bindings
-> for the devices supported by CAMSS and is no longer helpful.
+On Wed, Feb 10, 2021 at 09:56:44AM -0800, Yu-cheng Yu wrote:
+> A control-protection fault is triggered when a control-flow transfer
+> attempt violates Shadow Stack or Indirect Branch Tracking constraints.
+> For example, the return address for a RET instruction differs from the copy
+> on the shadow stack; or an indirect JMP instruction, without the NOTRACK
+> prefix, arrives at a non-ENDBR opcode.
 > 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
->  .../devicetree/bindings/media/qcom,camss.txt  | 236 ------------------
->  1 file changed, 236 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/media/qcom,camss.txt
+> The control-protection fault handler works in a similar way as the general
+> protection fault handler.  It provides the si_code SEGV_CPERR to the signal
+> handler.
 > 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
