@@ -2,79 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60C031708F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A22317092
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhBJTsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:48:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50804 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231596AbhBJTs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:48:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 85741AB98;
-        Wed, 10 Feb 2021 19:47:46 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 11:47:39 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        kgdb-bugreport@liss.sourceforge.net, linux-kernel@vger.kernel.org,
-        patches@linaro.org
-Subject: Re: [PATCH] kgdb: Remove kgdb_schedule_breakpoint()
-Message-ID: <20210210194739.sj5ye473k4ufkxza@offworld>
-References: <20210210142525.2876648-1-daniel.thompson@linaro.org>
+        id S232936AbhBJTsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:48:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232642AbhBJTsg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 14:48:36 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E05C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:47:55 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id j19so4604168lfr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:47:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jgluCWKZJ2+LY+PEphK7od7mrizftajltQrIKyz138w=;
+        b=IEJm95BbLno1mCCZlyZDN8aOD8u2EOWWaw9LBL2rBNQw6P5FQ3CV8fedgEzOaOvysv
+         lK+plzchGF9lymr2yrhTDDMJOScF8ZzkrPE5FWEJJIl5ThZreRDrNxuyrX+jb8mSH4XE
+         NWW+GA5y6//ZtzsO37YWz0VTXzoXCSIS/90DnCYoA4A4tWyi8lJmt4md//JRB3b0GhRL
+         86rhtqPrbjl2j7a6USyHBZe0zXattTFl84oZ3JTduK59X5cgi+cgNHPzVRsLFM8gV70i
+         sUATESKACRANXeIsVzM56Pc90TBXc0LmHL7Rwetlp/HfzErX1HucpgMc9at1CqgNXDwc
+         0ZNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jgluCWKZJ2+LY+PEphK7od7mrizftajltQrIKyz138w=;
+        b=JDZU/H7t6685CblMoKiO7NR8UxmahgRFVfB53grKJmZQjPqRCs8DDq2IqjbBUK4Vmx
+         4/7WsgQchduUGMjfcJGwfQZxO6CdQKX/+7PxmELlkBYpSF1mCip+fYJRqrWHrfNzBt5M
+         b1yBWIIQTBhKnfW9FIi2byvSebw0jrmiiJ+8cQZznVdgdk9JHenBAar+X082aduGT8Nz
+         kplXXm25EZe7F9PtqlCQqUKbpe5bcc74L0SYBuj1d3Sy6uU9n9ewTWXFH4Ehw0lE7z5s
+         9PZsixLqQwQiPghPyjjgd3J/BUjNq1u8S7DbSqX7QC6FisxVmdLyL3dMofrgLZEswHXn
+         RPOQ==
+X-Gm-Message-State: AOAM530lJrhJS01TNY6vsyS58zgIDAkL8wHl3MkNAOYtEyb1wCW1bQka
+        BYQe34HuVDLEY2FS5dzdvAJuhdA6BRbEZwH44fQ=
+X-Google-Smtp-Source: ABdhPJzOGtvr0VJCpc+aS6X06HOVcw8gQoM23bYlMYVSVvSR2Rxcf6ueehYUlSrTgiZjin8irFR8WvRaKto6Z8ZUvIQ=
+X-Received: by 2002:ac2:5dc1:: with SMTP id x1mr2389526lfq.182.1612986474144;
+ Wed, 10 Feb 2021 11:47:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210210142525.2876648-1-daniel.thompson@linaro.org>
-User-Agent: NeoMutt/20201120
+References: <cover.1612924255.git.luto@kernel.org> <YCPmL45wQSyWLmst@hirez.programming.kicks-ass.net>
+In-Reply-To: <YCPmL45wQSyWLmst@hirez.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 10 Feb 2021 11:47:43 -0800
+Message-ID: <CAADnVQKds2tEyaf8c_oTssWSGJk3dJvEdX862zWtHYfUUOwgxA@mail.gmail.com>
+Subject: Re: [RFC][PATCH] kprobes: Remove kprobe::fault_handler
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021, Daniel Thompson wrote:
-
->To the very best of my knowledge there has never been any in-tree
->code that calls this function. It exists largely to support an
->out-of-tree driver that provides kgdb-over-ethernet using the
->netpoll API.
+On Wed, Feb 10, 2021 at 5:57 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
->kgdboe has been out-of-tree for more than 10 years and I don't
->recall any serious attempt to upstream it at any point in the last
->five. At this stage it looks better to stop carrying this code in
->the kernel and integrate the code into the out-of-tree driver
->instead.
 >
->The long term trajectory for the kernel looks likely to include
->effort to remove or reduce the use of tasklets (something that has
->also been true for the last 10 years). Thus the main real reason
->for this patch is to make explicit that the in-tree kgdb features
->do not require tasklets.
-
-I'm happy to see another user gone, I missed that it was even an option
-to remove this altogether. Yeah so in general I started sending random
-patches to get rid of some tasklets after seeing the recent extentions
-in 12cc923f1cc (tasklet: Introduce new initialization API), which is
-really the wrong way to go imo. Some driver maintainers/authors push
-back in the name of performance (albeit tasklets provide no guarantees
-because of ksoftirqd, for example), some don't care as much. There are
-also constantly new users being added (despite the explicit deprecation
-of the api) defering through tasklets, which makes me wonder if the tasklet
-removal is anything but a pipe dream.
-
-Acked-by: Davidlohr Bueso <dbueso@suse.de>
+> Somewhat related.. I had this pending.
 >
->Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
->---
+> ---
+> Subject: kprobes: Remove kprobe::fault_handler
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Tue Feb 2 10:43:41 CET 2021
 >
->Notes:
->    During this cycle two developers have proposed tidying up the
->    DECLARE_TASKLET_OLD() in the debug core. Both threads ended with a
->    suggestion to remove kgdb_schedule_breakpoint() but I don't recall
->    seeing a follow up patch for either thread... so I wrote it myself.
+> The reason for kprobe::fault_handler(), as given by their comment:
+>
+>  * We come here because instructions in the pre/post
+>  * handler caused the page_fault, this could happen
+>  * if handler tries to access user space by
+>  * copy_from_user(), get_user() etc. Let the
+>  * user-specified handler try to fix it first.
+>
+> If just plain bad. Those other handlers are ran from non-preemptible
+> context and had better use _nofault() functions. Also, there is no
+> upstream usage of this.
 
-Thanks,
-Davidlohr
+No objections from me.
+
+Since Masami mentioned that systemtap used that you
+probably want to give them a courtesy heads-up that it's going away.
+Though looking at systemtap source code I couldn't find any
+reference to it. So it's likely a nop for them anyway.
