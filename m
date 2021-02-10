@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E38631628E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B67316294
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhBJJmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:42:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230182AbhBJJk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:40:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29F3164E40;
-        Wed, 10 Feb 2021 09:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612950009;
-        bh=wHm5n85G54B+/iVWS1El6BGnS/7lrW7mFxfy2fLG91s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0qNF0wBOQ5hU+kOZkPANY6rKLFrOrvB4jDbc/cV4WW3QdZGTf0z5dZEvMA1rhiepl
-         4NtVrS6Q8hOIAFsikfvMs1wurxEvcXoRsZkodl7F0zjSW25baickVKAUMwW+GOYXd6
-         eZ+785HBe6ySbjGC/VtRW4azrY4QdqmABAiyPEfQ=
-Date:   Wed, 10 Feb 2021 10:39:56 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-phy@lists.infradead.org
-Subject: Re: [GIT PULL] phy: second round of fixes for v5.11
-Message-ID: <YCOp7BU7nx8b0tXV@kroah.com>
-References: <20210205115618.GG2656@vkoul-mobl.Dlink>
- <YCJI45rXLMpHRY1v@kroah.com>
- <20210210091249.GC2774@vkoul-mobl.Dlink>
+        id S229918AbhBJJop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:44:45 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12606 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhBJJmz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 04:42:55 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DbFB74MS2z165Dl;
+        Wed, 10 Feb 2021 17:40:47 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Wed, 10 Feb 2021
+ 17:42:01 +0800
+Subject: Re: [PATCH v2 2/4] hwmon: Use subdir-ccflags-* to inherit debug flag
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     <gregkh@linuxfoundation.org>, <jdelvare@suse.com>,
+        <giometti@enneenne.com>, <abbotti@mev.co.uk>,
+        <hsweeten@visionengravers.com>, <kw@linux.com>,
+        <helgaas@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
+        <devel@driverdev.osuosl.org>, <linux-kbuild@vger.kernel.org>,
+        <masahiroy@kernel.org>, <michal.lkml@markovi.net>,
+        <prime.zeng@huawei.com>, <linuxarm@openeuler.org>
+References: <1612868899-9185-1-git-send-email-yangyicong@hisilicon.com>
+ <1612868899-9185-3-git-send-email-yangyicong@hisilicon.com>
+ <20210209150658.GA31002@roeck-us.net>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <128d71da-b07b-237c-d6a5-205513f3b093@hisilicon.com>
+Date:   Wed, 10 Feb 2021 17:42:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210091249.GC2774@vkoul-mobl.Dlink>
+In-Reply-To: <20210209150658.GA31002@roeck-us.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:42:49PM +0530, Vinod Koul wrote:
-> On 09-02-21, 09:33, Greg KH wrote:
-> > On Fri, Feb 05, 2021 at 05:26:18PM +0530, Vinod Koul wrote:
-> > > Hello Greg,
-> > > 
-> > > Please pull to receive few phy driver fixes for v5.11.
-> > > Apologies for sending them bit late.
-> > > 
-> > > The following changes since commit d092bd9110494de3372722b317510b3692f1b2fe:
-> > > 
-> > >   phy: mediatek: allow compile-testing the dsi phy (2021-01-04 13:00:54 +0530)
-> > > 
-> > > are available in the Git repository at:
-> > > 
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-fixes2-5.11
-> > 
-> > It's too late for this for my tree, sorry.  Can you send these as
-> > patches and add a cc: stable on them to make sure they get into 5.11.y
-> > properly (and further back if they are needed)?
+On 2021/2/9 23:06, Guenter Roeck wrote:
+> On Tue, Feb 09, 2021 at 07:08:17PM +0800, Yicong Yang wrote:
+>> From: Junhao He <hejunhao2@hisilicon.com>
+>>
+>> We use ccflags-$(CONFIG_HWMON_DEBUG_CHIP) for the debug
+>> message in drivers/hwmon, but the DEBUG flag will not pass to
+>> the subdirectory.
+>>
+>> Considering CONFIG_HWMON_DEBUG_CHIP intends to have DEBUG
+>> recursively in driver/hwmon. It will be clearer
+>> to use subdir-ccflags-* instead of ccflags-* to inherit
+>> the debug settings from Kconfig when traversing subdirectories,
+>> and it will avoid omittance of DEBUG define when debug messages
+>> added in the subdirectories.
+>>
 > 
-> Ok I understand. But would it be okay to merge the fixes. Some folks
-> already use the tree and have requested the commits to be preserved.
+> The above paragraph doesn't add clarity and may as well be dropped.
+> On the other side, the commit message still doesn't mention that
+> pr_debug depends on DEBUG, which I am sure many people don't know
+> or remember. This is the prime reason why this patch is acceptable,
+> so it most definitely needs to be mentioned here.
+
+sorry, i didn't realize that you mean this. will impove this in the next
+version after the lunar new year holiday over.
+
+Thanks,
+Yicong
+
 > 
-> I tested and it merges fine. I shall submit all these patches to stable
-> for 5.11 or earlier as applicable once they hit Linus's tree
+> Guenter
+> 
+>> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+>> Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> ---
+>>  drivers/hwmon/Makefile | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+>> index 09a86c5..1c0c089 100644
+>> --- a/drivers/hwmon/Makefile
+>> +++ b/drivers/hwmon/Makefile
+>> @@ -201,5 +201,5 @@ obj-$(CONFIG_SENSORS_XGENE)	+= xgene-hwmon.o
+>>  obj-$(CONFIG_SENSORS_OCC)	+= occ/
+>>  obj-$(CONFIG_PMBUS)		+= pmbus/
+>>  
+>> -ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
+>> +subdir-ccflags-$(CONFIG_HWMON_DEBUG_CHIP) := -DDEBUG
+>>  
+>> -- 
+>> 2.8.1
+>>
+> 
+> .
+> 
 
-Ok, now merged and pushed out.
-
-thanks,
-
-greg k-h
