@@ -2,199 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8780F315CFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FF4315D03
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235425AbhBJCNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:13:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234925AbhBJBBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 20:01:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E852664DD1;
-        Wed, 10 Feb 2021 01:00:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612918853;
-        bh=K/elv7DhX3bRsav/YirM2iHEqkRBlokAyCQh0C7pFAw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IoWAeBLRDtaC/SMsbv2i+Ql8knfpEFT6A/MxDa6jJmNg3UUeKfubVfHqCrUk4I6WH
-         uIbNJ++yT6/zgTjEG3LWeuPf/nTZZlTduAGRIOIAZJQibaQbOiffxx9GRAksBpdycc
-         UOV8K9f+rLqGGNtM+P6mucDC4PFStrNBlR560pdtjVTNUBVW3NcJWZdV2JGPdfr6GK
-         N38mBWE6J/UEfZTBomDwCUG2mapcjI3+1vnfNx/6M9o+7dMsP0HVGNm7q0u7mV5H1P
-         CDudTkdEkcfgRkyrnagGdCPSZWwcUGW8qB2sJyB+4v+Rk4RNP0CwQ9TQAdOVF2nHK7
-         0S6d3o1pUZc/A==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8BA233522585; Tue,  9 Feb 2021 17:00:52 -0800 (PST)
-Date:   Tue, 9 Feb 2021 17:00:52 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        id S233311AbhBJCOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:14:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234944AbhBJBIB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 20:08:01 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F5CC061574;
+        Tue,  9 Feb 2021 17:07:20 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id p20so959940ejb.6;
+        Tue, 09 Feb 2021 17:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ePOOgJ1bRE7sZrw4203J7YVw7l2PTtMtobAvSfxZsE8=;
+        b=GyyJJ/YjmAijxmg74wofh+2bQ0XakpFCm424T5jbHcOLM/qUrPvmEQk6wOQ95qlWS9
+         Gk1QfPaSXbUX9cSP16QgEP68Hgo+wRKKpKKq+syClxOwTlQnrqJWaH9qoHcFeT9/3StP
+         ZrxNd7cQuiRmYgcy1pHgJ3HY7O/xkSs50bH0XDWHx7rIzorLmS8+Tq8UQp00IlfAqzs2
+         p3elJnl+n5+s+UIYGcE5mBa9w885JXbgitP5XAjKPAYnD1M3BzsxHDifE3AXa5fNmKk2
+         UEZOoiP4L0534FaamPfN6OaulnBllYmpYYKhyhXUYsC/f/LtQU/Kwt9q9A7KQlxNCUU2
+         hWzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ePOOgJ1bRE7sZrw4203J7YVw7l2PTtMtobAvSfxZsE8=;
+        b=UeH+RbCDs5fbkSat5kaCBEnwwLJ74fG2015lmSWOrYRhc9BrznECdd/WB9Tqq1wuIZ
+         QGaZJvTsGBJhGE7fCviUb7QfX0VXaYIEkcz/brxnXQdvg24LLBsOCRv5b/tb448I8AIm
+         fxhYno9XbQBTVjMdu/eq6qZpGi8K9h/8WZfBR6nHZPMUZCjOA0p6MOVw2pBBJ9hl6feQ
+         sylDmaLtultON727i11ms7kIEN26WqGuoU3cF8pQF8FwpF40pjoysjPl30++hJez9M5N
+         xGWZgtHoM8IwiUj21aQg4NKwHZALPIBuc5B0RBktThBn55XSAHch93CnJN57ck6Zc9V7
+         9Igg==
+X-Gm-Message-State: AOAM530sVE52utf3LeW5a+IbOyojHzzhTIH3m578eVoGQ+nsXreEml2c
+        qiyN+GWhOztTiosCLYEoBm47jDZ5SEFMO5e3EA0=
+X-Google-Smtp-Source: ABdhPJw4DItb779I2iVr2ra7DPTmnwUuXp3XWcNxJXP4T0tQgBy4M3uYGgqeOu3ilbXbTM9VyEvJJ6VdPOIB+WjhakQ=
+X-Received: by 2002:a17:906:2583:: with SMTP id m3mr383234ejb.499.1612919239346;
+ Tue, 09 Feb 2021 17:07:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20210209174646.1310591-1-shy828301@gmail.com> <20210209174646.1310591-7-shy828301@gmail.com>
+ <20210210002218.GJ524633@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20210210002218.GJ524633@carbon.DHCP.thefacebook.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 9 Feb 2021 17:07:07 -0800
+Message-ID: <CAHbLzkp6q60pGBGKB-H6k5YoCy8ZHcLVj4rrZOsXi3=jOfbGzQ@mail.gmail.com>
+Subject: Re: [v7 PATCH 06/12] mm: vmscan: add shrinker_info_protected() helper
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/2] rcuscale: add kfree_rcu() single-argument scale test
-Message-ID: <20210210010052.GZ2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210129200505.5273-1-urezki@gmail.com>
- <20210204214648.GL2743@paulmck-ThinkPad-P72>
- <20210209201343.GA15619@pc638.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209201343.GA15619@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 09:13:43PM +0100, Uladzislau Rezki wrote:
-> On Thu, Feb 04, 2021 at 01:46:48PM -0800, Paul E. McKenney wrote:
-> > On Fri, Jan 29, 2021 at 09:05:04PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > To stress and test a single argument of kfree_rcu() call, we
-> > > should to have a special coverage for it. We used to have it
-> > > in the test-suite related to vmalloc stressing. The reason is
-> > > the rcuscale is a correct place for RCU related things.
-> > > 
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > 
-> > This is a great addition, but it would be even better if there was
-> > a way to say "test both in one run".  One way to do this is to have
-> > torture_param() variables for both kfree_rcu_test_single and (say)
-> > kfree_rcu_test_double, both bool and both initialized to false.  If both
-> > have the same value (false or true) both are tested, otherwise only
-> > the one with value true is tested.  The value of this is that it allows
-> > testing of both options with one test.
-> > 
-> Make sense to me :)
-> 
-> >From ba083a543a123455455c81230b7b5a9aa2a9cb7f Mon Sep 17 00:00:00 2001
-> From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> Date: Fri, 29 Jan 2021 19:51:27 +0100
-> Subject: [PATCH v2 1/1] rcuscale: add kfree_rcu() single-argument scale test
-> 
-> To stress and test a single argument of kfree_rcu() call, we
-> should to have a special coverage for it. We used to have it
-> in the test-suite related to vmalloc stressing. The reason is
-> the rcuscale is a correct place for RCU related things.
-> 
-> Therefore introduce two torture_param() variables, one is for
-> single-argument scale test and another one for double-argument
-> scale test.
-> 
-> By default kfree_rcu_test_single and kfree_rcu_test_double are
-> initialized to false. If both have the same value (false or true)
-> both are tested in one run, otherwise only the one with value
-> true is tested. The value of this is that it allows testing of
-> both options with one test.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  kernel/rcu/rcuscale.c | 33 ++++++++++++++++++++++++++++-----
->  1 file changed, 28 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> index 06491d5530db..0cde5c17f06c 100644
-> --- a/kernel/rcu/rcuscale.c
-> +++ b/kernel/rcu/rcuscale.c
-> @@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
->  torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
->  torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
->  torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
-> +torture_param(int, kfree_rcu_test_single, 0, "Do we run a kfree_rcu() single-argument scale test?");
-> +torture_param(int, kfree_rcu_test_double, 0, "Do we run a kfree_rcu() double-argument scale test?");
+On Tue, Feb 9, 2021 at 4:22 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Tue, Feb 09, 2021 at 09:46:40AM -0800, Yang Shi wrote:
+> > The shrinker_info is dereferenced in a couple of places via rcu_dereference_protected
+> > with different calling conventions, for example, using mem_cgroup_nodeinfo helper
+> > or dereferencing memcg->nodeinfo[nid]->shrinker_info.  And the later patch
+> > will add more dereference places.
+> >
+> > So extract the dereference into a helper to make the code more readable.  No
+> > functional change.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  mm/vmscan.c | 15 ++++++++++-----
+> >  1 file changed, 10 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 9436f9246d32..273efbf4d53c 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -190,6 +190,13 @@ static int shrinker_nr_max;
+> >  #define NR_MAX_TO_SHR_MAP_SIZE(nr_max) \
+> >       (DIV_ROUND_UP(nr_max, BITS_PER_LONG) * sizeof(unsigned long))
+> >
+> > +static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+> > +                                                  int nid)
+> > +{
+> > +     return rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
+> > +                                      lockdep_is_held(&shrinker_rwsem));
+> > +}
+> > +
+>
+>
+> I'd probably drop the "protected" suffix (because there is no unprotected version,
+> right?).
 
-Good!  But why int instead of bool?
+No, actually there is one "unprotected" call in set_shrinker_bit().
 
->  static struct task_struct **kfree_reader_tasks;
->  static int kfree_nrealthreads;
-> @@ -641,7 +643,7 @@ kfree_scale_thread(void *arg)
->  {
->  	int i, loop = 0;
->  	long me = (long)arg;
-> -	struct kfree_obj *alloc_ptr;
-> +	struct kfree_obj *alloc_ptr[2];
-
-You lost me on this one...
-
->  	u64 start_time, end_time;
->  	long long mem_begin, mem_during = 0;
->  
-> @@ -665,12 +667,33 @@ kfree_scale_thread(void *arg)
->  			mem_during = (mem_during + si_mem_available()) / 2;
->  		}
->  
-> +		// By default kfree_rcu_test_single and kfree_rcu_test_double are
-> +		// initialized to false. If both have the same value (false or true)
-> +		// both are tested in one run, otherwise only the one with value
-> +		// true is tested.
->  		for (i = 0; i < kfree_alloc_num; i++) {
-> -			alloc_ptr = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
-> -			if (!alloc_ptr)
-> -				return -ENOMEM;
-> +			alloc_ptr[0] = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
-> +			alloc_ptr[1] = (kfree_rcu_test_single == kfree_rcu_test_double) ?
-> +				kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL) : NULL;
-> +
-> +			// 0 ptr. is freed either over single or double argument.
-> +			if (alloc_ptr[0]) {
-> +				if (kfree_rcu_test_single == kfree_rcu_test_double ||
-> +						kfree_rcu_test_single) {
-> +					kfree_rcu(alloc_ptr[0]);
-> +				} else {
-> +					kfree_rcu(alloc_ptr[0], rh);
-> +				}
-> +			}
-> +
-> +			// 1 ptr. is always freed over double argument.
-> +			if (alloc_ptr[1])
-> +				kfree_rcu(alloc_ptr[1], rh);
->  
-> -			kfree_rcu(alloc_ptr, rh);
-> +			if (!alloc_ptr[0] ||
-> +					(kfree_rcu_test_single == kfree_rcu_test_double &&
-> +						!alloc_ptr[1]))
-> +				return -ENOMEM;
-
-How about something like this?
-
-	bool krts = kfree_rcu_test_single || kfree_rcu_test_single == kfree_rcu_test_double;
-	bool krtd = kfree_rcu_test_double || kfree_rcu_test_single == kfree_rcu_test_double;
-	bool krtb = kfree_rcu_test_single && kfree_rcu_test_double;
-	DEFINE_TORTURE_RANDOM(tr);
-
-	...
-
-			alloc_ptr = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
-			if (!alloc_ptr)
-				return -ENOMEM;
-			if (krtd || (krtb && (torture_random(&tr) & 0x800)))
-				kfree_rcu(alloc_ptr, rh);
-			else
-				kfree_rcu(alloc_ptr);
-
->  		}
->  
->  		cond_resched();
-
-And this is why I was so confused about the earlier OOMs.  We need
-something stronger, and not here, but rather inside the above loop.
-The function rcu_torture_fwd_prog_cond_resched() does what is needed,
-which needs to be moved to kernel/torture.c or to be a static inline in
-include/linux/torture.h so that it can be invoked here.
-
-The flooding we are looking to emulate has to have frequent trips into
-userspace, and rcu_torture_fwd_prog_cond_resched() is the way that we
-emulate those trips.
-
-But please make this change be a separate patch.
-
-							Thanx, Paul
+>
+> Other than that LGTM.
+>
+> Acked-by: Roman Gushchin <guro@fb.com>
