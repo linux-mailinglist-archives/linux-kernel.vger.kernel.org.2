@@ -2,202 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F55B316773
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC61316777
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhBJNGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:06:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbhBJNAS (ORCPT
+        id S229806AbhBJNGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:06:52 -0500
+Received: from smtprelay0010.hostedemail.com ([216.40.44.10]:43534 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231765AbhBJNEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:00:18 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60250C061793
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:59:36 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id 7so2464553wrz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:59:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6MsHCb96PmdEoxri8X3RrE2xw2rPHnbybff/JS7t4rM=;
-        b=Tstgim+g0HY1P/mkk3+/u2VrYZzdm9S0YfCCOW5tUOYsB36CYieEHqqX4gLAN0dvYl
-         HwuWr0Ii0ZR/atXuP6UXJ5kI/MFr3fELyAgmJG9LEiHWGssayf7qVtCiTYZ270jOoGKa
-         40lRsXcevUNvgMYcsuDv15Ykj6bDqL5ycyu64=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=6MsHCb96PmdEoxri8X3RrE2xw2rPHnbybff/JS7t4rM=;
-        b=iGfJKyvt4mWV3iqT5bpZFT4h8PhWek/K7j51c/vtLU3ab0OdjC1eNDsjUtlFKnN3uB
-         oRuAl1e5u68gXfqLJJWI8Z2kYr4C751aNZeG4oZGW3xDEaUE6g8VfYbqAukpx6V41lSq
-         r3M0ylrxHij1KUkwFb4Im4Nd2R4aVkZpu9DYvJiIHRH3ywNqliqDkigqhwIyMwWRTsrN
-         81tgMq3/x0hw4Lboe6qaKa6c3hLPa+UoamLBo1Z0Uo2V5X+mosFM6vlA0YElJbpQfjuv
-         lerkI43rJNPn5t9c9U8j2eSv+O49YN51KFHevUbdzwrc9AkJgt52ZCyOTZM41NugXCJ0
-         zWVg==
-X-Gm-Message-State: AOAM5331nx5P4j22iy2z3noDUF4ppvXHqhMUS6+2SJGFBhG90RWlstB+
-        Vf9gOtw+cmPpnZcUR9wlns5lyQ==
-X-Google-Smtp-Source: ABdhPJwRmPaxUgrAFJhjeq8xi1cVj/iHb/OYEDnTnx72e9/77v9DlCR5ZxyjtYtC8tHGuc5C0xMUTQ==
-X-Received: by 2002:a5d:4211:: with SMTP id n17mr3539933wrq.37.1612961975096;
-        Wed, 10 Feb 2021 04:59:35 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id d10sm2955713wrn.88.2021.02.10.04.59.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 04:59:34 -0800 (PST)
-Date:   Wed, 10 Feb 2021 13:59:32 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Alistair Popple <apopple@nvidia.com>,
+        Wed, 10 Feb 2021 08:04:52 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id CD91318023912;
+        Wed, 10 Feb 2021 13:04:10 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2525:2553:2560:2563:2682:2685:2691:2692:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:6742:7652:7903:7904:9025:10004:10400:10848:11232:11658:11914:12043:12297:12438:12663:12740:12895:13069:13311:13357:13439:13894:14096:14097:14181:14659:14721:21080:21611:21627:21990:30012:30054:30070:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: fish41_140b27927610
+X-Filterd-Recvd-Size: 2507
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 10 Feb 2021 13:04:08 +0000 (UTC)
+Message-ID: <5e1e5415dc1bcda37df3ce07a18827172c2a5b7f.camel@perches.com>
+Subject: Re: [PATCH v4 3/3] vsprintf: dump full information of page flags in
+ pGp
+From:   Joe Perches <joe@perches.com>
+To:     Petr Mladek <pmladek@suse.com>, Yafang Shao <laoar.shao@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
+        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Linux MM <linux-mm@kvack.org>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm-ppc@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH 0/9] Add support for SVM atomics in Nouveau
-Message-ID: <YCPYtNeYCuu6i2/d@phenom.ffwll.local>
-Mail-Followup-To: John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>, Linux MM <linux-mm@kvack.org>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm-ppc@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
-References: <20210209010722.13839-1-apopple@nvidia.com>
- <CAKMK7uGwg2-DTU7Zrco=TSkcR4yTqN1AF0hvVYEAbuj4BUYi5Q@mail.gmail.com>
- <3426910.QXTomnrpqD@nvdebian>
- <CAKMK7uHp+BzHF1=JhKjv5HYm_j0SVqsGdRqjUxVFYx4GSEPucg@mail.gmail.com>
- <57fe0deb-8bf6-d3ee-3545-11109e946528@nvidia.com>
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 10 Feb 2021 05:04:07 -0800
+In-Reply-To: <YCPWypWctDMGWUpA@alley>
+References: <20210209105613.42747-1-laoar.shao@gmail.com>
+         <20210209105613.42747-4-laoar.shao@gmail.com> <YCKT8WCPGU+HBY91@alley>
+         <CALOAHbBO6gXzbXjnH_EPsk4v-AdEQNhwNez7mbM6oTaut1pokw@mail.gmail.com>
+         <YCPWypWctDMGWUpA@alley>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57fe0deb-8bf6-d3ee-3545-11109e946528@nvidia.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 12:53:27PM -0800, John Hubbard wrote:
-> On 2/9/21 5:37 AM, Daniel Vetter wrote:
-> > On Tue, Feb 9, 2021 at 1:57 PM Alistair Popple <apopple@nvidia.com> wrote:
-> > > 
-> > > On Tuesday, 9 February 2021 9:27:05 PM AEDT Daniel Vetter wrote:
-> > > > > 
-> > > > > Recent changes to pin_user_pages() prevent the creation of pinned pages in
-> > > > > ZONE_MOVABLE. This series allows pinned pages to be created in
-> > > ZONE_MOVABLE
-> > > > > as attempts to migrate may fail which would be fatal to userspace.
-> > > > > 
-> > > > > In this case migration of the pinned page is unnecessary as the page can
-> > > be
-> > > > > unpinned at anytime by having the driver revoke atomic permission as it
-> > > > > does for the migrate_to_ram() callback. However a method of calling this
-> > > > > when memory needs to be moved has yet to be resolved so any discussion is
-> > > > > welcome.
-> > > > 
-> > > > Why do we need to pin for gpu atomics? You still have the callback for
-> > > > cpu faults, so you
-> > > > can move the page as needed, and hence a long-term pin sounds like the
-> > > > wrong approach.
-> > > 
-> > > Technically a real long term unmoveable pin isn't required, because as you say
-> > > the page can be moved as needed at any time. However I needed some way of
-> > > stopping the CPU page from being freed once the userspace mappings for it had
-> > > been removed. Obviously I could have just used get_page() but from the
-> > > perspective of page migration the result is much the same as a pin - a page
-> > > which can't be moved because of the extra refcount.
-> > 
-> > long term pin vs short term page reference aren't fully fleshed out.
-> > But the rule more or less is:
-> > - short term page reference: _must_ get released in finite time for
-> > migration and other things, either because you have a callback, or
-> > because it's just for direct I/O, which will complete. This means
-> > short term pins will delay migration, but not foul it complete
+On Wed, 2021-02-10 at 13:51 +0100, Petr Mladek wrote:
+> On Wed 2021-02-10 00:21:37, Yafang Shao wrote:
+> > On Tue, Feb 9, 2021 at 9:53 PM Petr Mladek <pmladek@suse.com> wrote:
+[]
+> >  for (p = pff; p < pff + ARRAY_SIZE(pff); p++) {
 > 
+> This looks a bit non-standard. IMHO, Joe was not against using index.
+> He proposed:
 > 
-> GPU atomic operations to sysmem are hard to categorize, because because application
-> programmers could easily write programs that do a long series of atomic operations.
-> Such a program would be a little weird, but it's hard to rule out.
-
-Yeah, but we can forcefully break this whenever we feel like by revoking
-the page, moving it, and then reinstating the gpu pte again and let it
-continue.
-
-If that's no possible then what we need here instead is an mlock() type of
-thing I think.
-
-> > - long term pin: the page cannot be moved, all migration must fail.
-> > Also this will have an impact on COW behaviour for fork (but not sure
-> > where those patches are, John Hubbard will know).
+> 	for (i = 0; i < ARRAY_SIZE(pfl) && buf < end; i++) {
 > 
+> , see
+> https://lore.kernel.org/lkml/e5ea9e8b1190c2a397a1b84dd55bb9c706dc7058.camel@perches.com/
 > 
-> That would be Jason's commit 57efa1fe59576 ("mm/gup: prevent gup_fast from racing
-> with COW during fork"), which is in linux-next 20201216.
+> I am not sure about the (buf < end) check. It might be some
+> optimization or it did fit the the old code.
 
-Nice, thanks for the pointer.
+I believe the buf < end bit was broken anyway.
+
+I believe vsprintf is supposed to return the maximum possible length
+of the output and the function should not restrict that.  The
+function should not write beyond the specified end.
+ 
+> Anyway, I like the currently used:
 > 
+> 	for (i = 0; i < ARRAY_SIZE(pff); i++) {
 > 
-> > 
-> > So I think for your use case here you want a) short term page
-> > reference to make sure it doesn't disappear plus b) callback to make
-> > sure migrate isn't blocked.
-> > 
-> > Breaking ZONE_MOVEABLE with either allowing long term pins or failing
-> > migrations because you don't release your short term page reference
-> > isn't good.
-> > 
-> > > The normal solution of registering an MMU notifier to unpin the page when it
-> > > needs to be moved also doesn't work as the CPU page tables now point to the
-> > > device-private page and hence the migration code won't call any invalidate
-> > > notifiers for the CPU page.
-> > 
-> > Yeah you need some other callback for migration on the page directly.
-> > it's a bit awkward since there is one already for struct
-> > address_space, but that's own by the address_space/page cache, not
-> > HMM. So I think we need something else, maybe something for each
-> > ZONE_DEVICE?
-> > 
-> 
-> This direction sounds at least...possible. Using MMU notifiers instead of pins
-> is definitely appealing. I'm not quite clear on the callback idea above, but
-> overall it seems like taking advantage of the ZONE_DEVICE tracking of pages
-> (without having to put anything additional in each struct page), could work.
-> 
-> Additional notes or ideas here are definitely welcome.
+> It is standard, easy to understand, and thus more safe. I am sure that
+> compiler will optimize it very well.
 
-Well I don't have ideas for the details tbh, just from the little I
-learned about how this all fits together pretending to be a pin while
-pretending to not be a pin just gets us back to the mess we're trying to
-solve with gup vs pup cleanup. And given that the pin_user_pages rollout
-hasn't even completed yet it's maybe way to early to already toss it out
-again.
+true.
 
-I think overall we should try really hard to not mix up things between
-memory that's pinned and memory that can be moved. Because retroactively
-trying to fix things up just because it was easier to get a feature going
-that way is very, very hard. And I think we've demonstrated countless
-times that "ah we just fix this with pinning, it doesn't happen often, no
-one will notice" always comes back to bite us later on :-)
 
-Like just looking ahead, 1GB pages are a thing, we will have to support
-that, migrate_page is the only way to get there, and statistically just a
-1/256th chance of encountering a pinned page guarantees we'll never
-assemble a giant page.
-
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
