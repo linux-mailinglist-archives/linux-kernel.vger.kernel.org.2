@@ -2,87 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3743316492
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F362B31649A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhBJLE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:04:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbhBJLCs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:02:48 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93511C061786;
-        Wed, 10 Feb 2021 03:01:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=dxGLKzUoElrl+nJzx5pPiJMsCC9IQ3Av/N7o9w/5Wbk=; b=nu5w8im4bFs67sfrSbKMT0CLZ
-        b1IWVQagzhHlXg72qekkHDZnkwvzE9xi8wwtmkCc5cRni8gy1Hlo+QBSG6wmy7vd5X+vVEqKfoaq+
-        0cbDvD1B1Lb7ruc7Kw53ThxjFSeTxuN6ZusgPtyZA8LQZtljPs9D8YDCgDliH9ilYD87X4qXWtLPx
-        8qMJP8XrUlSDMb/PE/3AE/89MH7L7Am5SNRSsTegmGafvrXzK8JhxZSSad6DlF505912ftKIADnwg
-        D8hlwSfswmvEYBKHHDfYHBdjsBFn7Y0jfIHPTMnSUxVh5aT8B6512jewi+ozmJVtF8zL3HVZYdBX9
-        emVLwOPRA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41570)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l9nFm-0004YR-AK; Wed, 10 Feb 2021 11:01:50 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l9nFl-00050F-4P; Wed, 10 Feb 2021 11:01:49 +0000
-Date:   Wed, 10 Feb 2021 11:01:49 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Michael Walle <michael@walle.cc>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next] net: phy: introduce phydev->port
-Message-ID: <20210210110148.GT1463@shell.armlinux.org.uk>
-References: <20210209163852.17037-1-michael@walle.cc>
- <YCM8JiO4FfKx5ECo@lunn.ch>
+        id S231432AbhBJLGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:06:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56348 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231480AbhBJLEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 06:04:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8FEE1AD29;
+        Wed, 10 Feb 2021 11:03:26 +0000 (UTC)
+Subject: Re: [PATCH 3/3] lib/vsprintf: make-printk-non-secret printks all
+ addresses as unhashed
+To:     Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        akpm@linux-foundation.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        akinobu.mita@gmail.com, glider@google.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210210051814.845713-1-timur@kernel.org>
+ <20210210051814.845713-4-timur@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <9c6ed37a-aeae-7816-d204-ff752a05efdd@suse.cz>
+Date:   Wed, 10 Feb 2021 12:03:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCM8JiO4FfKx5ECo@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210210051814.845713-4-timur@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:51:34AM +0100, Andrew Lunn wrote:
-> This is a general comment, not a problem specific to this patch.
+On 2/10/21 6:18 AM, Timur Tabi wrote:
+> If the make-printk-non-secret command line parameter is set, then
+> printk("%p") will print pointers as unhashed.  This is useful for
+> debugging purposes.
 > 
-> There is some interesting race conditions here. The marvell driver
-> first checks the fibre page and gets the status of the fiber port. As
-> you can see from the hunk above, it clears out pause, duplex, speed,
-> sets port to PORT_FIBRE, and then reads the PHY registers to set these
-> values. If link is not detected on the fibre, it swaps page and does
-> it all again, but for the copper port. So once per second,
-> phydev->port is going to flip flop PORT_FIBER->PORT_TP, if copper has
-> link.
+> A large warning message is displayed if this option is enabled.
+> Unhashed pointers, while useful for debugging, expose kernel
+> addresses which can be a security risk.
 > 
-> Now, the read_status() call into the driver should be performed while
-> holding the phydev->lock. So to the PHY state machine, this flip/flop
-> does not matter, it is atomic with respect to the lock. But
-> phy_ethtool_ksettings_get() is not talking the lock. It could see
-> speed, duplex, and port while they have _UNKNOWN values, or port is
-> part way through a flip flop. I think we need to take the lock here.
-> phy_ethtool_ksettings_set() should also probably take the lock.
+> Also update test_printf to skip the hashed pointer tests if the
+> command-line option is set.
+> 
+> Signed-off-by: Timur Tabi <timur@kernel.org>
+> Acked-by: Petr Mladek <pmladek@suse.com>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 
-phy_ethtool_ksettings_get() needs to take the lock, otherwise it could
-read the phy_device members in the middle of an update. This is likely
-a long-standing phylib bug.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks!
+
+> ---
+>  .../admin-guide/kernel-parameters.txt         | 15 ++++++++
+>  lib/test_printf.c                             |  8 ++++
+>  lib/vsprintf.c                                | 38 ++++++++++++++++++-
+>  3 files changed, 59 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a10b545c2070..6962379469e4 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2613,6 +2613,21 @@
+>  			different yeeloong laptops.
+>  			Example: machtype=lemote-yeeloong-2f-7inch
+>  
+> +        make-printk-non-secret
+> +			Force pointers printed to the console to be unhashed.
+> +			By default, when a pointer is printed to the kernel
+> +			console (via %p format string), that pointer is
+> +			"hashed", i.e. obscured by hashing the pointer value.
+> +			This is a security feature that hides actual kernel
+> +			addresses from unprivileged users, but it also makes
+> +			debugging the kernel more difficult since unequal
+> +			pointers can no longer be compared.  If this option is
+> +			specified, then all normal pointers will have their
+> +			true value printed.  Pointers printed via %pK may
+> +			still be hashed.  This option should only be specified
+> +			when debugging the kernel.  Please do not use on
+> +			production kernels.
+> +
+>  	max_addr=nn[KMG]	[KNL,BOOT,ia64] All physical memory greater
+>  			than or equal to this physical address is ignored.
+>  
+> diff --git a/lib/test_printf.c b/lib/test_printf.c
+> index ad2bcfa8caa1..b0b62d76e598 100644
+> --- a/lib/test_printf.c
+> +++ b/lib/test_printf.c
+> @@ -35,6 +35,8 @@ KSTM_MODULE_GLOBALS();
+>  static char *test_buffer __initdata;
+>  static char *alloced_buffer __initdata;
+>  
+> +extern bool debug_never_hash_pointers;
+> +
+>  static int __printf(4, 0) __init
+>  do_test(int bufsize, const char *expect, int elen,
+>  	const char *fmt, va_list ap)
+> @@ -301,6 +303,12 @@ plain(void)
+>  {
+>  	int err;
+>  
+> +	if (debug_never_hash_pointers) {
+> +		pr_warn("skipping plain 'p' tests");
+> +		skipped_tests += 2;
+> +		return;
+> +	}
+> +
+>  	err = plain_hash();
+>  	if (err) {
+>  		pr_warn("plain 'p' does not appear to be hashed\n");
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 3b53c73580c5..1296d9b0b328 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -2090,6 +2090,34 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+>  	return widen_string(buf, buf - buf_start, end, spec);
+>  }
+>  
+> +/* Disable pointer hashing if requested */
+> +bool debug_never_hash_pointers __ro_after_init;
+> +EXPORT_SYMBOL_GPL(debug_never_hash_pointers);
+> +
+> +static int __init debug_never_hash_pointers_enable(char *str)
+> +{
+> +	debug_never_hash_pointers = true;
+> +
+> +	pr_warn("**********************************************************\n");
+> +	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("** All pointers that are printed to the console will    **\n");
+> +	pr_warn("** be printed as unhashed.                              **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("** Kernel memory addresses are exposed, which may       **\n");
+> +	pr_warn("** reduce the security of your system.                  **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("** If you see this message and you are not debugging    **\n");
+> +	pr_warn("** the kernel, report this immediately to your system   **\n");
+> +	pr_warn("** administrator!                                       **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> +	pr_warn("**********************************************************\n");
+> +
+> +	return 0;
+> +}
+> +early_param("make-printk-non-secret", debug_never_hash_pointers_enable);
+> +
+>  /*
+>   * Show a '%p' thing.  A kernel extension is that the '%p' is followed
+>   * by an extra set of alphanumeric characters that are extended format
+> @@ -2297,8 +2325,14 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+>  		}
+>  	}
+>  
+> -	/* default is to _not_ leak addresses, hash before printing */
+> -	return ptr_to_id(buf, end, ptr, spec);
+> +	/*
+> +	 * default is to _not_ leak addresses, so hash before printing unless
+> +	 * make-printk-non-secret is specified on the command line.
+> +	 */
+> +	if (unlikely(debug_never_hash_pointers))
+> +		return pointer_string(buf, end, ptr, spec);
+> +	else
+> +		return ptr_to_id(buf, end, ptr, spec);
+>  }
+>  
+>  /*
+> 
+
