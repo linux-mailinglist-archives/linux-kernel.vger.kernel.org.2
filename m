@@ -2,127 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8102D31718E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B016317191
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhBJUn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:43:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229834AbhBJUns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:43:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9559364EF1;
-        Wed, 10 Feb 2021 20:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612989787;
-        bh=uLOKAWM3j/FoxqUD8GT+3TtzddPUhVZXn4EjHpRaYRU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=K74lobox4y7gUuWJf5x9BZjKZ34y96W1chSRDGXNta6UmHLrqFFjA3wj1PI7xTRij
-         syQ7wcueUW7+HioanlcWrFZ0mRRhCeQHaYHVrWB7vXOoZCT3QM0F6PzY0OBJCyfa2g
-         19AbOG0dGhyn272NCJsuCuPusha+toPskSq3/V4Y0CoDPuZ1LCvDvTk2gmKq9m+Od0
-         SgxkbRWyNazA1+tMMqRp6LJILmxOqLBK3AAkF2dIT5x05/aHtBSN3Lj73mFx6XTQOF
-         EWUmv2cD4UPu3hAnoDhpMrgxWWRulqA5/PyRK28xe20b2Dpfjk2cIjNbkc51Dti93W
-         SPnRe2Tt/v/+Q==
-Received: by mail-ej1-f52.google.com with SMTP id w2so6484086ejk.13;
-        Wed, 10 Feb 2021 12:43:07 -0800 (PST)
-X-Gm-Message-State: AOAM532lwZ4odP6jGqshavMz1Gd8rWKnlnzkoWYuxPwFGG2CuocHh7qj
-        JTZSMRJtFhZ6GTD2INpWq0vFwsjYiwMt3lvKQg==
-X-Google-Smtp-Source: ABdhPJyZOou+FoAa1VvtSo/LHBp8mrbstlSxAr2IxMuuWsdlFjqx8EC6dZAWMoScFPYRRlNAEw7N0EavS9AV9/V0P7o=
-X-Received: by 2002:a17:906:af41:: with SMTP id ly1mr4612652ejb.525.1612989785769;
- Wed, 10 Feb 2021 12:43:05 -0800 (PST)
+        id S233199AbhBJUok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:44:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232279AbhBJUoU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 15:44:20 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9639C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:43:39 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id a25so4710650ljn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:43:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bFCBVLmx4m3P8OJ7FexI4xTU+D+dqeOPB5L3zdP1j98=;
+        b=OlXMEGE3+YXDW20u82up+ZZJxFuT5KQPVaOZp56fIviL/ca54YrjE5bQPiM0jLbtr5
+         JephDlBWc6ihBoJg5k8R1M7+hSbeoGkpREvy/8A8Bsg5/X4GhbjclPWfb060aUds7Xkf
+         2bFaMcZ2LOg9RoALDj7udW/xyJ4i9lrqIzZcg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bFCBVLmx4m3P8OJ7FexI4xTU+D+dqeOPB5L3zdP1j98=;
+        b=C+phNIdDDA1upyksLrF8OEAstaIBxbGDBpdX91JnsJ4XXjLGRireOMrmrH0fiUZ5nk
+         BeOBf54nxIwXN8J3toUiOwblRP+r2hrkEqpIh6s+rNBu1uQB+A9qOsDZZ/Ru8FY1LDM7
+         UfqM9Lwl3z924jr5oDDLQGvfHH0xfix6cY1S+2wY/OaOP08NrdVbsliqu4ZC2XvzjLL0
+         +IY7TaV/IFKIZI6l5uyRhZFuv7tZd2YRhburDDkhvawvhaGYWOXhPBc2dEHlQn5RTITw
+         M1W5RwEvdW/Jok1gwlOi4hmYU3b+NOprvjjBLd989DcPxWDPT5WQYIXsc7qLKzQT77fS
+         0ODA==
+X-Gm-Message-State: AOAM532XrE5uSDMiyZTBfQOpBA/6hztz3zaxfkhuB9nao7IYgjliL/3S
+        FMkYQMAB0c4agbxGftsPMjCpQlfbwurUjQ==
+X-Google-Smtp-Source: ABdhPJxXLxoOEMV9Um2u14ENBSpE1f8G0hiryy88CS585CknJ0LPL2U5h4qqtasK7gFkO1qcfD2HSQ==
+X-Received: by 2002:a2e:9119:: with SMTP id m25mr3131874ljg.215.1612989817753;
+        Wed, 10 Feb 2021 12:43:37 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id f20sm450455lfk.188.2021.02.10.12.43.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 12:43:36 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id v5so4834840lft.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:43:35 -0800 (PST)
+X-Received: by 2002:a05:6512:a8c:: with SMTP id m12mr2551518lfu.253.1612989815438;
+ Wed, 10 Feb 2021 12:43:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20210209182200.30606-1-nramas@linux.microsoft.com>
- <20210210171500.GA2328209@robh.at.kernel.org> <5c002c32-bc49-acda-c641-7b1494ea292d@linux.microsoft.com>
-In-Reply-To: <5c002c32-bc49-acda-c641-7b1494ea292d@linux.microsoft.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 10 Feb 2021 14:42:53 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLmdqfFF8u=dE+dQz+6ngv=moWkQF8tpZjUCX-vHuvU_w@mail.gmail.com>
-Message-ID: <CAL_JsqLmdqfFF8u=dE+dQz+6ngv=moWkQF8tpZjUCX-vHuvU_w@mail.gmail.com>
-Subject: Re: [PATCH v17 00/10] Carry forward IMA measurement log on kexec on ARM64
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
+ <591237.1612886997@warthog.procyon.org.uk> <1330473.1612974547@warthog.procyon.org.uk>
+ <1330751.1612974783@warthog.procyon.org.uk>
+In-Reply-To: <1330751.1612974783@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 10 Feb 2021 12:43:19 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjgA-74ddehziVk=XAEMTKswPu1Yw4uaro1R3ibs27ztw@mail.gmail.com>
+Message-ID: <CAHk-=wjgA-74ddehziVk=XAEMTKswPu1Yw4uaro1R3ibs27ztw@mail.gmail.com>
+Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
+To:     David Howells <dhowells@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 11:33 AM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
+On Wed, Feb 10, 2021 at 8:33 AM David Howells <dhowells@redhat.com> wrote:
 >
-> On 2/10/21 9:15 AM, Rob Herring wrote:
-> > On Tue, Feb 09, 2021 at 10:21:50AM -0800, Lakshmi Ramasubramanian wrote:
-> >> On kexec file load Integrity Measurement Architecture (IMA) subsystem
-> >> may verify the IMA signature of the kernel and initramfs, and measure
-> >> it.  The command line parameters passed to the kernel in the kexec call
-> >> may also be measured by IMA.  A remote attestation service can verify
-> >> a TPM quote based on the TPM event log, the IMA measurement list, and
-> >> the TPM PCR data.  This can be achieved only if the IMA measurement log
-> >> is carried over from the current kernel to the next kernel across
-> >> the kexec call.
-> >>
-> >> powerpc already supports carrying forward the IMA measurement log on
-> >> kexec.  This patch set adds support for carrying forward the IMA
-> >> measurement log on kexec on ARM64.
-> >>
-> >> This patch set moves the platform independent code defined for powerpc
-> >> such that it can be reused for other platforms as well.  A chosen node
-> >> "linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
-> >> the address and the size of the memory reserved to carry
-> >> the IMA measurement log.
-> >>
-> >> This patch set has been tested for ARM64 platform using QEMU.
-> >> I would like help from the community for testing this change on powerpc.
-> >> Thanks.
-> >>
-> >> This patch set is based on
-> >> commit 96acc833dec8 ("ima: Free IMA measurement buffer after kexec syscall")
-> >> in https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
-> >> "next-integrity" branch.
-> >
-> > Is that a hard dependency still? Given this is now almost entirely
-> > deleting arch code and adding drivers/of/ code, I was going to apply it.
-> >
->
-> I tried applying the patches in Linus' mainline branch -
-> PATCH #5 0005-powerpc-Move-ima-buffer-fields-to-struct-kimage.patch
-> doesn't apply.
->
-> But if I apply the dependent patch set (link given below), all the
-> patches in this patch set apply fine.
->
-> https://patchwork.kernel.org/project/linux-integrity/patch/20210204174951.25771-2-nramas@linux.microsoft.com/
+> Then I could follow it up with this patch here, moving towards dropping the
+> PG_fscache alias for the new API.
 
-Ideally, we don't apply the same patch in 2 branches. It looks like
-there's a conflict but no real dependence on the above patch (the
-ima_buffer part). The conflict seems trivial enough that Linus can
-resolve it in the merge window.
+So I don't mind the alias per se, but I did mind the odd mixing of
+names for the same thing.
 
-Or Mimi can take the whole thing if preferred?
+So I think your change to make it be named "wait_on_page_private_2()"
+fixed that mixing, but I also think that it's probably then a good
+idea to have aliases in place for filesystems that actually include
+the fscache.h header.
 
-Rob
+Put another way: I think that it would be even better to simply just
+have a function like
+
+   static inline void wait_on_page_fscache(struct page *page)
+   {
+        if (PagePrivate2(page))
+                wait_on_page_bit(page, PG_private_2);
+  }
+
+and make that be *not* in <linux/pagemap.h>, but simply be in
+<linux/fscache.h> under that big comment about how PG_private_2 is
+used for the fscache bit. You already have that comment, putting the
+above kind of helper function right there would very much explain why
+a "wait for fscache bit" function then uses the PagePrivate2 function
+to test the bit. Agreed?
+
+Alternatively, since that header file already has
+
+    #define PageFsCache(page)               PagePrivate2((page))
+
+you could also just write the above as
+
+   static inline void wait_on_page_fscache(struct page *page)
+   {
+        if (PageFsCache(page))
+                wait_on_page_bit(page, PG_fscache);
+  }
+
+and now it is even more obvious. And there's no odd mixing of
+"fscache" and "private_2", it's all consistent.
+
+IOW, I'm not against "wait_on_page_fscache()" as a function, but I
+*am* against the odd _mixing_ of things without a big explanation,
+where the code itself looks very odd and questionable.
+
+And I think the "fscache" waiting functions should not be visible to
+any core VM or filesystem code - it should be limited explicitly to
+those filesystems that use fscache, and include that header file.
+
+Wouldn't that make sense?
+
+Also, honestly, I really *REALLY* want your commit messages to talk
+about who has been cc'd, who has been part of development, and point
+to the PUBLIC MAILING LISTS WHERE THAT DISCUSSION WAS TAKING PLACE, so
+that I can actually see that "yes, other people were involved"
+
+No, I don't require this in general, but exactly because of the
+history we have, I really really want to see that. I want to see a
+
+   Link: https://lore.kernel.org/r/....
+
+and the Cc's - or better yet, the Reviewed-by's etc - so that when I
+get a pull request, it really is very obvious to me when I look at it
+that others really have been involved.
+
+So if I continue to see just
+
+    Signed-off-by: David Howells <dhowells@redhat.com>
+
+at the end of the commit messages, I will not pull.
+
+Yes, in this thread a couple of people have piped up and said that
+they were part of the discussion and that they are interested, but if
+I have to start asking around just to see that, then it's too little,
+too late.
+
+No more of this "it looks like David Howells did things in private". I
+want links I can follow to see the discussion, and I really want to
+see that others really have been involved.
+
+Ok?
+
+                  Linus
