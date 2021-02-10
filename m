@@ -2,125 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EE531708B
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBC0317088
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:48:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhBJTrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:47:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        id S232557AbhBJTrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:47:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232369AbhBJTrS (ORCPT
+        with ESMTP id S229834AbhBJTre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:47:18 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B369C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:46:32 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id b145so1972057pfb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:46:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LOBexJVZl5O63ei2PKVTk/yEoofE8UPxbzZ4mG3AdFU=;
-        b=TKGDKYbQHgIOPRKX8liktIsLemZyxUCEJfXoV6JuwuzbpfwUT19ClQa0tNbeh1kwjO
-         peMEEpmUf/iJ9RMFYheTYcMNCbcH/fnYMVujd4ZvlaoHo7ETnnZNO/VAjDsY4D6U6AEl
-         jJNufnxus0dZeQfIXmnTep06cZ8AGCzmOmAi4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LOBexJVZl5O63ei2PKVTk/yEoofE8UPxbzZ4mG3AdFU=;
-        b=jdHmbDtnaV8BQx7Kw+4ZqN0l8ilkFwfVGwcbOlTNTJtdNd6+3eIrr4RmelGreH4Zek
-         qBbDZqSysI0k7DLflK7JA9XB7v5lx0J7hPT0SI108WRDolLuoFT89nvNayChubiINrtn
-         wutSx+Arsi0oJ+vxQMypyqIlvqy7OYOl1FuGHQ13EW/exl3FH/953pSx7TF3cly0jDEz
-         TEieQfDn/iXFgIQqngyyQgW9mLSGAkRwuDHTOgZ6lOd0A1V7BlZCxUV2itHKB0XTidGb
-         uRDsVgC5S5u8GFSOTbTn8nk6WUU0vZJIHkSUDgN559p6Vk7nq/SPLDTWCbCuduypIPJU
-         aYUQ==
-X-Gm-Message-State: AOAM533w1u0pGnZa1FmSFLxagsrEPsa4ihxMbp2iLrTXfiSIT6J04QMK
-        db3VbU/J0kHXxsgOwV+sA2pDPQ==
-X-Google-Smtp-Source: ABdhPJzU36iPUZB59irH169GzgM6TNqXFDVT4lz6gU6IaKnXXV8mNiT8RQ8Q6WVoTQsGfLesTa299A==
-X-Received: by 2002:a65:520d:: with SMTP id o13mr4568903pgp.57.1612986391981;
-        Wed, 10 Feb 2021 11:46:31 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v23sm2966724pgo.43.2021.02.10.11.46.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 11:46:31 -0800 (PST)
-Date:   Wed, 10 Feb 2021 11:46:30 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>, haitao.huang@intel.com
-Subject: Re: [PATCH v20 25/25] mm: Introduce PROT_SHSTK for shadow stack
-Message-ID: <202102101145.7DE8B381@keescook>
-References: <20210210175703.12492-1-yu-cheng.yu@intel.com>
- <20210210175703.12492-26-yu-cheng.yu@intel.com>
+        Wed, 10 Feb 2021 14:47:34 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6263C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:46:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=nybHHQYTtg1oEhf6PuzoAQT63cxJ5G3IZDOvK2iUB0s=; b=Nh5oOoWF7n/vD53P54dT3UTucf
+        KIEEi95QReBet1jFZgTUAnDsqiEsqIV7/zPgNa9XRCAu2X/LtaN1GiE7bhLTqkmkzQkImkvd4Htkq
+        /V59UXTqQZNCzMPVmVo5iHWXiivaSeSICVpVmWraZMHgvaFMGfVpTCm5dTm2+0YpO7zwfa9sgia+n
+        fCwTlYp9lUV1nshXaF7FxKxKddbxd5zkAlHvriy/2gVLgCfwPO5cstzf1PZnQun0NQ/6lnixaSK3Q
+        Hha0Y7koZgFk66FCkbrVuoShBeOoiGEqTauBS4PQuSuZVvo99LaWY6CcnTPTwc9E1yMPQVT6RccV7
+        cs/eUlMg==;
+Received: from [2601:1c0:6280:3f0::cf3b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l9vRn-0007ZQ-Hv; Wed, 10 Feb 2021 19:46:48 +0000
+Subject: Re: [PATCH] pstore/ram : Add support for cached pages
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Mukesh Ojha <mojha@codeaurora.org>, linux-kernel@vger.kernel.org
+Cc:     tony.luck@intel.com, ccross@android.com, anton@enomsg.org,
+        keescook@chromium.org, Huang Yiwei <hyiwei@codeaurora.org>
+References: <1612968741-1692-1-git-send-email-mojha@codeaurora.org>
+ <d59687d7-1ca3-c822-f41d-169a9e388abb@infradead.org>
+Message-ID: <895146dc-de12-8275-cd71-fdae180e6fcf@infradead.org>
+Date:   Wed, 10 Feb 2021 11:46:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210175703.12492-26-yu-cheng.yu@intel.com>
+In-Reply-To: <d59687d7-1ca3-c822-f41d-169a9e388abb@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:57:03AM -0800, Yu-cheng Yu wrote:
-> There are three possible options to create a shadow stack allocation API:
-> an arch_prctl, a new syscall, or adding PROT_SHSTK to mmap()/mprotect().
-> Each has its advantages and compromises.
+On 2/10/21 11:40 AM, Randy Dunlap wrote:
+> Hi--
 > 
-> An arch_prctl() is the least intrusive.  However, the existing x86
-> arch_prctl() takes only two parameters.  Multiple parameters must be
-> passed in a memory buffer.  There is a proposal to pass more parameters in
-> registers [1], but no active discussion on that.
+> On 2/10/21 6:52 AM, Mukesh Ojha wrote:
+>> There could be a sceanario where we define some region
 > 
-> A new syscall minimizes compatibility issues and offers an extensible frame
-> work to other architectures, but this will likely result in some overlap of
-> mmap()/mprotect().
+>                    scenario
 > 
-> The introduction of PROT_SHSTK to mmap()/mprotect() takes advantage of
-> existing APIs.  The x86-specific PROT_SHSTK is translated to VM_SHSTK and
-> a shadow stack mapping is created without reinventing the wheel.  There are
-> potential pitfalls though.  The most obvious one would be using this as a
-> bypass to shadow stack protection.  However, the attacker would have to get
-> to the syscall first.
+>> in normal memory and use them store to logs which is later
+>> retrieved by bootloader during warm reset.
+>>
+>> In this scenario, we wanted to treat this memory as normal
+>> cacheable memory instead of default behaviour which
+>> is an overhead. Making it cacheable could improve
+>> performance.
+>>
+>> This commit gives control to change mem_type from Device
+>> tree, and also documents the value for normal memory.
+>>
+>> Signed-off-by: Huang Yiwei <hyiwei@codeaurora.org>
+>> Signed-off-by: Mukesh Ojha <mojha@codeaurora.org>
+>> ---
+>>  Documentation/admin-guide/ramoops.rst |  4 +++-
+>>  fs/pstore/ram.c                       |  1 +
+>>  fs/pstore/ram_core.c                  | 10 ++++++++--
+>>  3 files changed, 12 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/ramoops.rst b/Documentation/admin-guide/ramoops.rst
+>> index b0a1ae7..8f107d8 100644
+>> --- a/Documentation/admin-guide/ramoops.rst
+>> +++ b/Documentation/admin-guide/ramoops.rst
+>> @@ -3,7 +3,7 @@ Ramoops oops/panic logger
+>>  
+>>  Sergiu Iordache <sergiu@chromium.org>
+>>  
+>> -Updated: 17 November 2011
+>> +Updated: 10 Feb 2021
+>>  
+>>  Introduction
+>>  ------------
+>> @@ -30,6 +30,8 @@ mapping to pgprot_writecombine. Setting ``mem_type=1`` attempts to use
+>>  depends on atomic operations. At least on ARM, pgprot_noncached causes the
+>>  memory to be mapped strongly ordered, and atomic operations on strongly ordered
+>>  memory are implementation defined, and won't work on many ARMs such as omaps.
+>> +Setting ``mem_type=2`` attempts to treat the memory region as normal memory,
 > 
-> Since arch_calc_vm_prot_bits() is modified, I have moved arch_vm_get_page
-> _prot() and arch_calc_vm_prot_bits() to x86/include/asm/mman.h.
-> This will be more consistent with other architectures.
+> Does "mem_type=" work?  or does it need to be "mem-type=", as below?
+> I.e., do both of them work?
+> 
 
-This portion of the patch seems logically separate from the PROT_SHSTK
-implementation. Can you please separate it into its own patch?
+Ah yes, as documented:
 
+"Hyphens (dashes) and underscores are equivalent in parameter names,"
+
+thanks.
+
+
+>> +which enables full cache on it. This can improve the performance.
+>>  
+>>  The memory area is divided into ``record_size`` chunks (also rounded down to
+>>  power of two) and each kmesg dump writes a ``record_size`` chunk of
+>> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+>> index ca6d8a8..b262c57 100644
+>> --- a/fs/pstore/ram.c
+>> +++ b/fs/pstore/ram.c
+>> @@ -666,6 +666,7 @@ static int ramoops_parse_dt(struct platform_device *pdev,
+>>  		field = value;						\
+>>  	}
+>>  
+>> +	parse_u32("mem-type", pdata->record_size, pdata->mem_type);
 > 
-> [1] https://lore.kernel.org/lkml/20200828121624.108243-1-hjl.tools@gmail.com/
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+>               here^^^^^^^^^^
 
-With that done:
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-Kees Cook
+~Randy
+
