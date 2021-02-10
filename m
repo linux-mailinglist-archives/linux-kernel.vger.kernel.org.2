@@ -2,277 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360BB316AA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C778316AAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbhBJQD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:03:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbhBJQDw (ORCPT
+        id S232085AbhBJQEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:04:01 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:47614 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231744AbhBJQD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:03:52 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115A7C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:03:12 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id ew18so1061926qvb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:03:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=vMl09xTYk2AzALOlDDizo3CtDKFHQF/1OYESJTbYIHg=;
-        b=MY7Bzkhn+T42ADKv7SQ4rQ8Qqnl4ETe3P4Pt2BITRHMV3Vdh3k9/Km1pq1HPRX9W/t
-         zkorU+6gWfq714Nryh19tvtsebphMZOejYl02HNdjjIhpsjZYeiF6COnxBIfQmzUI++q
-         7t/Ya43TTTwsBvGPhZP8/W/+kVuOAwlDCi4OkJGk1/UANOuO3jBvLOCojxfP2wAPO1ui
-         87Fde9Zq2SqVRu4S50N2Ft+07oCXZASFE5H7x1hDHZOe5jw2Dex6K+kEhmp5oPmPlUHQ
-         5FDoFCtPem73WB91W6i1HLGt2FkyCMII5Izct3UqkIF+ju+U9tcjlfJR5ZZpnUWrtpS5
-         IYmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=vMl09xTYk2AzALOlDDizo3CtDKFHQF/1OYESJTbYIHg=;
-        b=aCuD1pwrinQGNNTEcGhLwNmqjGQ+cTlUdYbZBFp9vQa2CBzJaJo7ITzEied6eJfOHC
-         ELXvyQrhwNMaW43mGEbPAV2cznOR+Bv/SZfXYFMc1E3XAoxGpZQkeOCiXAGcZxIdEDSm
-         z8YbJ+NphiYoOd29hMJerzyJ1YVWcZ3iXMujOKM4FedXQ/0CCduE5SnLnItY7WbVOyD6
-         IYFwQKAqmdyvvegO6ukDWRlXwiQX91KawHyZVINdXKeiKiQVh5o+cYsw07gJxWcaqOKf
-         eaMCZfchDAwzAqetwjHpnvdScQlHjTp7Lnagx7f7vvKN4/DLfNEh3aQuwz7PyjYGZDlo
-         5/aQ==
-X-Gm-Message-State: AOAM531t32rtAOiK2UrT4xJjZUZaPZ3Cs0WHRY86TpshSk/QDADQerC9
-        OTAo6VuDanFiIBJFlsB9oulBGQ==
-X-Google-Smtp-Source: ABdhPJwKloPRibW3+NS+02RBOsavIVO21dXRly8FSjWsWvAz63HU/pBF+GI07636yktDtlCHCq6SLA==
-X-Received: by 2002:ad4:54ad:: with SMTP id r13mr3450326qvy.48.1612972991130;
-        Wed, 10 Feb 2021 08:03:11 -0800 (PST)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id 11sm1798878qkm.25.2021.02.10.08.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 08:03:09 -0800 (PST)
-Message-ID: <26407550afb3d5a2ee4b3af4474acdcf4191ed68.camel@ndufresne.ca>
-Subject: Re: [PATCH v6 1/2] media: v4l2-ctrl: add controls for long term
- reference.
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, dikshita@codeaurora.org
-Cc:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-Date:   Wed, 10 Feb 2021 11:03:08 -0500
-In-Reply-To: <2a6bf75f-a44c-e921-55a0-abd6d6eaf67f@xs4all.nl>
-References: <1611553919-17919-1-git-send-email-dikshita@codeaurora.org>
-         <1611553919-17919-2-git-send-email-dikshita@codeaurora.org>
-         <d20ba57f-54a7-5a61-a64b-2d9433b79281@xs4all.nl>
-         <6e59d1bee1d0f1b64aab77959bb22e6e@codeaurora.org>
-         <2a6bf75f-a44c-e921-55a0-abd6d6eaf67f@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+        Wed, 10 Feb 2021 11:03:57 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1l9rxQ-0002Bd-0K; Wed, 10 Feb 2021 16:03:12 +0000
+To:     Sean Wang <sean.wang@mediatek.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Soul Huang <Soul.Huang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: re: mt76: mt7921: add MCU support
+Message-ID: <57068965-649f-ef8e-0dd2-9d25b8bec1c7@canonical.com>
+Date:   Wed, 10 Feb 2021 16:03:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 04 février 2021 à 11:05 +0100, Hans Verkuil a écrit :
-> On 04/02/2021 06:01, dikshita@codeaurora.org wrote:
-> > On 2021-02-01 16:50, Hans Verkuil wrote:
-> > > On 25/01/2021 06:51, Dikshita Agarwal wrote:
-> > > > Long Term Reference (LTR) frames are the frames that are encoded
-> > > > sometime in the past and stored in the DPB buffer list to be used
-> > > > as reference to encode future frames.
-> > > > This change adds controls to enable this feature.
-> > > > 
-> > > > Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> > > > ---
-> > > >  .../userspace-api/media/v4l/ext-ctrls-codec.rst        | 18 
-> > > > ++++++++++++++++++
-> > > >  drivers/media/v4l2-core/v4l2-ctrls.c                   | 14 
-> > > > ++++++++++++++
-> > > >  include/uapi/linux/v4l2-controls.h                     |  3 +++
-> > > >  3 files changed, 35 insertions(+)
-> > > > 
-> > > > diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst 
-> > > > b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > > > index 400774c..a37d460 100644
-> > > > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > > > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> > > > @@ -3637,3 +3637,21 @@ enum v4l2_mpeg_video_hevc_size_of_length_field 
-> > > > -
-> > > >        - Selecting this value specifies that HEVC slices are expected
-> > > >          to be prefixed by Annex B start codes. According to 
-> > > > :ref:`hevc`
-> > > >          valid start codes can be 3-bytes 0x000001 or 4-bytes 
-> > > > 0x00000001.
-> > > > +
-> > > > +``V4L2_CID_MPEG_VIDEO_LTR_COUNT (integer)``
-> > > > +       Specifies the number of Long Term Reference (LTR) frames 
-> > > > encoder needs
-> > > > +       to generate or keep. This is applicable to the H264 and HEVC 
-> > > > encoders.
-> > > > +
-> > > > +``V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX (integer)``
-> > > > +       The current frame is marked as a Long Term Reference (LTR) 
-> > > > frame
-> > > > +       and given this LTR index which ranges from 0 to LTR_COUNT-1.
-> > > > +       This is applicable to the H264 and HEVC encoders and can be 
-> > > > applied using
-> > > > +       Request API.
-> > > 
-> > > You mentioned in reply to my comment that the venus driver didn't 
-> > > support the
-> > > Request API that it is also possible to use it without that API.
-> > > 
-> > > But that requires more precise documentation. I assume that without the 
-> > > Request
-> > > API you would set this control, then queue the buffer containing the 
-> > > frame this
-> > > control should apply to, then wait until it is dequeued. Since that's 
-> > > the only
-> > > way you can be certain this control is applied to the correct frame.
-> > > 
-> > > Is this indeed what you do in your application?
-> > > 
-> > > Regards,
-> > > 
-> > >         Hans
-> > > 
-> > Hi Hans,
-> > 
-> > Yes, It is possible without request API as well in a non-synchronized 
-> > way.
-> > And we don't need to wait for the frame to be dequeued.
-> > The driver implementation ensures that whenever the LTR control is 
-> > received,
-> > it applies to the frame received after that. Not to frame which would be 
-> > encoded next.
-> > So that it is at least synchronized between driver & encoder.
-> 
-> This is highly driver dependent. I'm not even sure this is true for the venus
-> driver: if you prequeue, say, 4 output buffers to the encoder and call
-> V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX after the second buffer (so it should
-> apply to the third), and only after the fourth you call VIDIOC_STREAMON,
-> does the venus driver still keep track of the order of the queued buffers
-> and when these controls are set? Once STREAMON is called it looks like it
-> stays synced since everything is queued into a command queue, if I understand
-> the code correctly.
-> 
-> The problem is that when controls are applied in relation to queued buffers
-> is not defined, unless you use the Request API. Typically controls are applied
-> immediately, so the venus driver is a bit of an anomaly in that respect.
-> 
-> You can make an explicit requirement that these controls apply to the next
-> queued buffer if no request API is used, but you really must be 100% certain
-> that the venus driver does that right (and as mentioned, I have my doubts
-> about
-> the case where you queue buffers before calling STREAMON).
+Hi,
 
-Do you propose to start usign request for stateful encoder ? If this is the
-case, I'd like to remind that it's not always possible to notify encode
-completion in request queue order for this type of HW. Reordering might be
-implicit in the firmware design, so the driver may not have any notification
-until multiple frames have been encoded.
+Static analysis with Coverity on linux-next has found an issue with the
+following commit:
 
-To resume, we can use request for this type of application, no issues, but
-userspace may not switch to waiting on the request for completion as this may
-have HW specific behaviour. It will have to resort to polling for READ, and
-dequeue from capture queue and figure-out after the fact which request are now
-complete.
+commit 1c099ab44727c8e42fe4de4d91b53cec3ef02860
+Author: Sean Wang <sean.wang@mediatek.com>
+Date:   Thu Jan 28 03:33:39 2021 +0800
 
-Nicolas
+    mt76: mt7921: add MCU support
 
-> 
-> Regards,
-> 
->         Hans
-> 
-> > 
-> > Thanks,
-> > Dikshita
-> > 
-> > > > +       Source Rec. ITU-T H.264 (06/2019); Table 7.9
-> > > > +
-> > > > +``V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES (bitmask)``
-> > > > +       Specifies the Long Term Reference (LTR) frame(s) to be used 
-> > > > for
-> > > > +       encoding the current frame.
-> > > > +       This provides a bitmask which consists of bits [0, 
-> > > > LTR_COUNT-1].
-> > > > +       This is applicable to the H264 and HEVC encoders and can be 
-> > > > applied using
-> > > > +       Request API.
-> > > > diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c 
-> > > > b/drivers/media/v4l2-core/v4l2-ctrls.c
-> > > > index 16ab54f..84c1eb8 100644
-> > > > --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> > > > +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> > > > @@ -950,6 +950,9 @@ const char *v4l2_ctrl_get_name(u32 id)
-> > > >         case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:             return
-> > > > "Vertical MV 
-> > > > Search Range";
-> > > >         case V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER:             return
-> > > > "Repeat Sequence 
-> > > > Header";
-> > > >         case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:               return
-> > > > "Force Key Frame";
-> > > > +       case V4L2_CID_MPEG_VIDEO_LTR_COUNT:                     return
-> > > > "LTR Count";
-> > > > +       case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:               return
-> > > > "Frame LTR Index";
-> > > > +       case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:                return
-> > > > "Use LTR Frames";
-> > > >         case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:            return
-> > > > "MPEG-2 Slice 
-> > > > Parameters";
-> > > >         case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:            return
-> > > > "MPEG-2 
-> > > > Quantization Matrices";
-> > > >         case V4L2_CID_FWHT_I_FRAME_QP:                          return
-> > > > "FWHT I-Frame QP Value";
-> > > > @@ -1277,6 +1280,17 @@ void v4l2_ctrl_fill(u32 id, const char **name, 
-> > > > enum v4l2_ctrl_type *type,
-> > > >         case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
-> > > >                 *type = V4L2_CTRL_TYPE_INTEGER;
-> > > >                 break;
-> > > > +       case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
-> > > > +               *type = V4L2_CTRL_TYPE_INTEGER;
-> > > > +               break;
-> > > > +       case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
-> > > > +               *type = V4L2_CTRL_TYPE_INTEGER;
-> > > > +               *flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-> > > > +               break;
-> > > > +       case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:
-> > > > +               *type = V4L2_CTRL_TYPE_BITMASK;
-> > > > +               *flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-> > > > +               break;
-> > > >         case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
-> > > >         case V4L2_CID_PAN_RESET:
-> > > >         case V4L2_CID_TILT_RESET:
-> > > > diff --git a/include/uapi/linux/v4l2-controls.h 
-> > > > b/include/uapi/linux/v4l2-controls.h
-> > > > index af8dda2..c0bb87b 100644
-> > > > --- a/include/uapi/linux/v4l2-controls.h
-> > > > +++ b/include/uapi/linux/v4l2-controls.h
-> > > > @@ -422,6 +422,9 @@ enum v4l2_mpeg_video_multi_slice_mode {
-> > > >  #define 
-> > > > V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE           (V4L2_CID_CODEC_BASE+227
-> > > > )
-> > > >  #define 
-> > > > V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE           (V4L2_CID_CODEC_BASE+228
-> > > > )
-> > > >  #define 
-> > > > V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME             (V4L2_CID_CODEC_BASE+229
-> > > > )
-> > > > +#define
-> > > > V4L2_CID_MPEG_VIDEO_LTR_COUNT                  (V4L2_CID_CODEC_BASE+230)
-> > > > +#define 
-> > > > V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX             (V4L2_CID_CODEC_BASE+231
-> > > > )
-> > > > +#define
-> > > > V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES             (V4L2_CID_CODEC_BASE+232)
-> > > > 
-> > > >  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
-> > > >  #define
-> > > > V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL                        (V4L2_CID_CODEC_B
-> > > > ASE+270)
-> > > > 
-> 
+The analysis is as follows:
 
+390 static void
+391 mt7921_mcu_tx_rate_report(struct mt7921_dev *dev, struct sk_buff *skb,
+392                          u16 wlan_idx)
+393 {
+394        struct mt7921_mcu_wlan_info_event *wtbl_info =
+395                (struct mt7921_mcu_wlan_info_event *)(skb->data);
+396        struct rate_info rate = {};
+397        u8 curr_idx = wtbl_info->rate_info.rate_idx;
+398        u16 curr = le16_to_cpu(wtbl_info->rate_info.rate[curr_idx]);
+399        struct mt7921_mcu_peer_cap peer = wtbl_info->peer_cap;
+400        struct mt76_phy *mphy = &dev->mphy;
 
+   1. var_decl: Declaring variable stats without initializer.
+
+401        struct mt7921_sta_stats *stats;
+402        struct mt7921_sta *msta;
+403        struct mt76_wcid *wcid;
+404
+
+   2. Condition wlan_idx >= 288, taking false branch.
+
+405        if (wlan_idx >= MT76_N_WCIDS)
+406                return;
+
+   3. Condition 0 /* !((((sizeof ((*dev).mt76.wcid[wlan_idx]) == sizeof
+(char) || sizeof ((*dev).mt76.wcid[wlan_idx]) == sizeof (short)) ||
+sizeof ((*dev).mt76.wcid[wlan_idx]) == sizeof (int)) || sizeof
+((*dev).mt76.wcid[wlan_idx]) == sizeof (long)) || sizeof
+((*dev).mt76.wcid[wlan_idx]) == sizeof (long long)) */, taking false branch.
+
+   4. Condition debug_lockdep_rcu_enabled(), taking true branch.
+   5. Condition !__warned, taking true branch.
+   6. Condition 0, taking false branch.
+   7. Condition rcu_read_lock_held(), taking false branch.
+407        wcid = rcu_dereference(dev->mt76.wcid[wlan_idx]);
+   8. Condition !wcid, taking true branch.
+408        if (!wcid) {
+
+Uninitialized pointer write (UNINIT)
+   9. uninit_use: Using uninitialized value stats.
+
+409                stats->tx_rate = rate;
+410                return;
+411        }
+
+Line 409 dereferences pointer stats, however, this pointer has not yet
+been initialized.  The initialization occurs later:
+
+413        msta = container_of(wcid, struct mt7921_sta, wcid);
+414        stats = &msta->stats;
+
+Colin
