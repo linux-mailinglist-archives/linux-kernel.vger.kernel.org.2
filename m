@@ -2,100 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6DA316EFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FCC316F02
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:44:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234030AbhBJSns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:43:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234195AbhBJSaZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:30:25 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BE9C06178B;
-        Wed, 10 Feb 2021 10:29:42 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id w36so4325677lfu.4;
-        Wed, 10 Feb 2021 10:29:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WD7reh8H3L0ENa8aBkz3DGqf37HyyKAGvekPvSYaYbU=;
-        b=u+MLD8XmKOAeWJqs7q1x5ZD6KU7FG9Es2xIJPgp4zpuGvmpLbI46TLqxzIKQQ4vCoz
-         k47z8ahAVHzBgDagTk6NekcHRsqdQOj/yxncEdUyZZ9bfOtt606mBVbriBPpk5oQRvJ+
-         uCyihZZLjgMQKOaKOI53lv3mzh54SSWj2G5gHAgJvVZONHNQUmg1dFDkNNpZVFoh2AIl
-         JEPCpF0rnhcM/CVf4VwtD4lqp4nXsCWHsN90K7tbjn2FbWpPh1syv0Sdm8+QUz/hkLLE
-         yd2j1fXRByuumTNxwv2MBHLsebqLQh8ARp5t3r1seIq3D978TDgVI5znLD8Go6VpFubj
-         SBYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WD7reh8H3L0ENa8aBkz3DGqf37HyyKAGvekPvSYaYbU=;
-        b=Qm3vzqPWktNsbfxYSUSi8WcquOTb1nD9kTyp6f0inncZSuL/IToTPIJgo3wiOzJvvK
-         ELh8ZhVybOBJvGUz36pNvc76UGDzzbJ5BRuz+OuBSSfgbKwTIJ0vGk18G1v/x1eNdqOq
-         EXrYej1hVRcRTihwXpPAWeAi6FlbuFQhb4NCCOzlJ4mSxFFfnOMD2BzmbS7R6YNqp06W
-         lV2i5f2obu86x4psv4VcUgy1VDTQDNUTtWPCIpzKQZV3M905OINoxq0rXvcC23/NRmzB
-         PJCrPJKp3H49x/IwDVGwWy4iLqx4WQPtnb0rTh9CpR6jg/b+TxNPi+JM9gdh2RzfqpFn
-         F9yA==
-X-Gm-Message-State: AOAM530gV8Qb+b+N7kjmKwQfWq6q7OMQciMC+TKZpgjrIjApUiXhvMou
-        Wx8Oe/3HiBgzvmts2mMF/4FJdi49zfIojrFnJ6edfzYiCHuaDg==
-X-Google-Smtp-Source: ABdhPJx7rhGWhwI5sDaxWsJELgVakM7N0i9Sxsa3sNM73cxT4SZbNjmwgAiQkMatL5Gtj+erB1Bzws36GZniH4UGAbA=
-X-Received: by 2002:a05:6512:a90:: with SMTP id m16mr2214728lfu.577.1612981780538;
- Wed, 10 Feb 2021 10:29:40 -0800 (PST)
+        id S234378AbhBJSob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:44:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234384AbhBJSdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:33:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E401464E79;
+        Wed, 10 Feb 2021 18:30:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612981834;
+        bh=GhlWvnECgJllfLtO8xUeOGZbtcYjbZu0AtA83aQ0XQk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U+pNdBwkeQwxRW6z9EwaaF7HHJhp481ny4Cn5dTs3C/uhMYgWobmcKjHgO6K8mc2I
+         fB32I8hy9qHMy+L8fFAT1aRLnxaC88Vv5sH25WvWkOEihlciSvQX/HAiAr22ECmuIj
+         QIOC9NkooRs0HkyOUNzgnJSvAxDcNUxtLowMCzbr8vB17faIGZUrektwvmTp6dDO0x
+         oV1tKi2GCdTO2PD49BCzX06yf3Yu7SLdMBJeDmQp01xEfRlvcXF2sjcz7If0nsAvTk
+         n/kr24H0CzOu9grx3elxL88UgdDhXPwh6Wls/M8TtCnbQuqkS9yyHObZhQd3F+ST5h
+         AlkstqAtBqpWA==
+Date:   Wed, 10 Feb 2021 13:30:33 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable <stable@vger.kernel.org>, Theodore Tso <tytso@mit.edu>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chris Mason <clm@fb.com>, Tejun Heo <tj@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, rostedt <rostedt@goodmis.org>,
+        Michael Jeanson <mjeanson@efficios.com>
+Subject: Re: [stable 4.4, 4.9, 4.14, 4.19 LTS] Missing fix "memcg: fix a
+ crash in wb_workfn when a device disappears"
+Message-ID: <20210210183033.GF4035784@sasha-vm>
+References: <537870616.15400.1612973059419.JavaMail.zimbra@efficios.com>
+ <YCQTQyRlCsJHXzIQ@kroah.com>
+ <2071967108.15704.1612977931149.JavaMail.zimbra@efficios.com>
+ <20210210180025.GE4035784@sasha-vm>
 MIME-Version: 1.0
-References: <20210203163348.30686-1-TheSven73@gmail.com> <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
-In-Reply-To: <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 10 Feb 2021 13:29:29 -0500
-Message-ID: <CAGngYiWt9Q4jWksiniC6vqUw29L3mOFuQpw7Dz_BK9Ye9FbQ1Q@mail.gmail.com>
-Subject: Re: [BUG REPORT] media: coda: mpeg4 decode corruption on i.MX6qp only
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210210180025.GE4035784@sasha-vm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Found it!
+On Wed, Feb 10, 2021 at 01:00:25PM -0500, Sasha Levin wrote:
+>Looks like it doesn't apply due to churn with tracepoints, I think it's
+>fixable. Let me try and get something for <=4.19.
 
-The i.MX6QuadPlus has two pairs of PREs, which use the extended
-section of the iRAM. The Classic does not have any PREs or extended
-iRAM:
+I've queued a backport of that patch (via two prereq patches), thanks!
 
-pre1: pre@21c8000 {
-   compatible = "fsl,imx6qp-pre";
-    <snip>
-    fsl,iram = <&ocram2>;
-};
-
-pre3: pre@21ca000 {
-    compatible = "fsl,imx6qp-pre";
-    <snip>
-    fsl,iram = <&ocram3>;
-};
-
-The CODA (VPU) driver uses the common section of iRAM:
-
-vpu: vpu@2040000 {
-    compatible = "cnm,coda960";
-    <snip>
-    iram = <&ocram>;
-};
-
-The VPU or the PREs are overrunning their assigned iRAM area. How do I
-know? Because if I change the PRE iRAM order, the problem disappears!
-
-PRE1: ocram2 change to ocram3
-PRE2: ocram2 change to ocram3
-PRE3: ocram3 change to ocram2
-PRE4: ocram3 change to ocram2
-
-Sven
+-- 
+Thanks,
+Sasha
