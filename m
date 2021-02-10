@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6033169A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2813169A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhBJPAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        id S231926AbhBJPBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:01:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhBJPAa (ORCPT
+        with ESMTP id S231909AbhBJPAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:00:30 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A488BC06174A;
-        Wed, 10 Feb 2021 06:59:48 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 3062F1280970;
-        Wed, 10 Feb 2021 06:59:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612969186;
-        bh=DxDyCNcnCVoW8QKTNX6Mk6L5XH6eZAVV8RI1Foj2CAQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=UvkRPgOA60dj2pJQ9mMtEt+ah+IaqxBFtQnSUiPAbl5y53XfePEMwUS2VDPQLh90W
-         QgKcUfHMV8ER1UjeCp9umLKYi3I6Phybt+cnR8LCJpGzcvkYHyW3sg0SMjLIthhrXt
-         +iIrQGhg0Kd3uXwJSubKKVgGYtkaeNo4vbydFr6U=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tXk5NU9INlaf; Wed, 10 Feb 2021 06:59:46 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 9DCA4128096F;
-        Wed, 10 Feb 2021 06:59:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612969186;
-        bh=DxDyCNcnCVoW8QKTNX6Mk6L5XH6eZAVV8RI1Foj2CAQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=UvkRPgOA60dj2pJQ9mMtEt+ah+IaqxBFtQnSUiPAbl5y53XfePEMwUS2VDPQLh90W
-         QgKcUfHMV8ER1UjeCp9umLKYi3I6Phybt+cnR8LCJpGzcvkYHyW3sg0SMjLIthhrXt
-         +iIrQGhg0Kd3uXwJSubKKVgGYtkaeNo4vbydFr6U=
-Message-ID: <a4ed4f9a5181995bb304490be219fa32dbb6a061.camel@HansenPartnership.com>
-Subject: Re: [PATCH] sign-file: add openssl engine support
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Yang Song <songyang@linux.alibaba.com>, dhowells@redhat.com,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     zhang.jia@linux.alibaba.com, tianjia.zhang@linux.alibaba.com
-Date:   Wed, 10 Feb 2021 06:59:44 -0800
-In-Reply-To: <E4E1860E-57B8-44AA-B370-9589F9C20215@infradead.org>
-References: <20210210074554.81100-1-songyang@linux.alibaba.com>
-         <E4E1860E-57B8-44AA-B370-9589F9C20215@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Wed, 10 Feb 2021 10:00:53 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C478C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:00:12 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id g10so2969813wrx.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:00:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+TsCv5JLxVLTrn5tdQZ7PWqPRydG1WyX4P4IhWeL27c=;
+        b=MODky0j7fors6ZNV0gwEQgKiBbKnnpTDfbRNatUg9oMH/sGKT7HBtewWnKbNtnYdiV
+         1JRNFRfbzuV3KkudeBLiEJZ2psl3ubPQDoM1GyscuTeN99JF9yebF2892EFN+vdH0pfL
+         soAJKsGAasrF7pGg0WITy8JQCEB40mnPe6/rLUTSaHFMpBwq/jSX+TGuSGr94UmimDai
+         Ti5NqCg2eYWuBbZfIC33Vaeluefo7tFEY5HECvOdHYfL2HPb70jqgoZoSeMPtmR1UrPs
+         MnBQeSxb6OazoTywXlGZ8jioQMZDIMTdUW/5dWUo3vmsaXgL42l6q3IgjnmvjyISKmhG
+         Rd9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+TsCv5JLxVLTrn5tdQZ7PWqPRydG1WyX4P4IhWeL27c=;
+        b=i3ziCmiUQlVLedC3jKzcLRhfGn7x8gblelm0z3zDPKP7JDzNIPNu6171gUMiCpOXje
+         0UOJbV5XrGjdkwkbc0msQ6MaECYfkiWdUji5AOdPze9daJBWCfFObXY8J3Yr1AXd+cH2
+         3qZskBNaHOuKCV5hZSYqutm+3XrEjP6xjtQJbYkG2+HOupv/iBrbPP85x07/H5Ybyy4v
+         +DMWl4fLkjKtErH46N7oxajZyY/Ka5J69gNYc5pVJuC9pVYiMn1qnUeXakkZhNUHu+xv
+         W5HaTDl4PwoMTTBKoc7HJgI9zRHeDyuxteA7xkywK4wjDc6N5myAZYb+RqKAB49cpOKk
+         gLjw==
+X-Gm-Message-State: AOAM531iOummvUHvO6AjcXMkH7G2cH90k7h7eEynaSw1HDGK280ueJAa
+        ppWHEA1g4U2K3IxzQ5viNvY=
+X-Google-Smtp-Source: ABdhPJxHf5Qn5nbWHtZcmniPlrCRYdBXitlIOetfhvRh3asq13R8PBtTa5Mg2zQTB1DhGN9RYeRxzQ==
+X-Received: by 2002:adf:a50c:: with SMTP id i12mr2542756wrb.299.1612969211124;
+        Wed, 10 Feb 2021 07:00:11 -0800 (PST)
+Received: from localhost.localdomain ([154.72.150.126])
+        by smtp.gmail.com with ESMTPSA id j7sm3615744wrp.72.2021.02.10.07.00.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 07:00:10 -0800 (PST)
+From:   Mairo Paul Rufus <akoudanilo@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     trivial@kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Mairo Paul Rufus <akoudanilo@gmail.com>
+Subject: [PATCH] staging: wlan-ng: Fix comments typos
+Date:   Wed, 10 Feb 2021 15:59:52 +0100
+Message-Id: <20210210145952.722586-1-akoudanilo@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-10 at 08:01 +0000, David Woodhouse wrote:
-> 
-> On 10 February 2021 07:45:54 GMT, Yang Song <
-> songyang@linux.alibaba.com> wrote:
-> > Use a customized signature service supported by openssl engine
-> > to sign the kernel module.
-> > Add command line parameters that support engine for sign-file
-> > to use the customized openssl engine service to sign kernel
-> > modules.
-> > 
-> > Signed-off-by: Yang Song <songyang@linux.alibaba.com>
-> 
-> Aren't engines already obsolete in the latest versions of OpenSSL, as
-> well as being an implementation detail of one particular crypto
-> library?
+Signed-off-by: Mairo Paul Rufus <akoudanilo@gmail.com>
+---
+ drivers/staging/wlan-ng/p80211netdev.c | 2 +-
+ drivers/staging/wlan-ng/prism2mib.c    | 2 +-
+ drivers/staging/wlan-ng/prism2sta.c    | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-Um, no, they're getting renamed providers with some annoying API
-changes that require a bit of a rewrite but the concept of a crypto
-"engine" plug in to the code base isn't going away.
-
->  They aren't really a concept we should be exposing in *our* user
-> interface.
-
-We already do ... grep ENGINE in scripts/sign-file.c
-
-Just by the way in case anyone is interested in history:
-
-https://lore.kernel.org/keyrings/1518452963.3114.6.camel@HansenPartnership.com/
-
-> Better to make sign-file automatically recognise RFC7512 PKCS#11 URIs
-> and handle them by automatically loading the PKCS#11 engine.
-
-PKCS11 can't cover everyting engines can.  Engines are mostly used for
-accelerators, which are not in the PKCS11 API and even for external
-keys, PKCS11 can't cope if the key isn't inside what PKCS11 thinks of
-as a token.
-
-James
-
+diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
+index 7b091c5a2984..4a6813e89916 100644
+--- a/drivers/staging/wlan-ng/p80211netdev.c
++++ b/drivers/staging/wlan-ng/p80211netdev.c
+@@ -274,7 +274,7 @@ static void p80211netdev_rx_bh(unsigned long arg)
+ 	struct sk_buff *skb = NULL;
+ 	struct net_device *dev = wlandev->netdev;
+ 
+-	/* Let's empty our our queue */
++	/* Let's empty our queue */
+ 	while ((skb = skb_dequeue(&wlandev->nsd_rxq))) {
+ 		if (wlandev->state == WLAN_DEVICE_OPEN) {
+ 			if (dev->type != ARPHRD_ETHER) {
+diff --git a/drivers/staging/wlan-ng/prism2mib.c b/drivers/staging/wlan-ng/prism2mib.c
+index 7d7d77b04255..875812a391c9 100644
+--- a/drivers/staging/wlan-ng/prism2mib.c
++++ b/drivers/staging/wlan-ng/prism2mib.c
+@@ -292,7 +292,7 @@ int prism2mgmt_mibset_mibget(struct wlandevice *wlandev, void *msgp)
+ 	/*
+ 	 ** Determine if this is a "mibget" or a "mibset".  If this is a
+ 	 ** "mibget", then make sure that the MIB may be read.  Otherwise,
+-	 ** this is a "mibset" so make make sure that the MIB may be written.
++	 ** this is a "mibset" so make sure that the MIB may be written.
+ 	 */
+ 
+ 	isget = (msg->msgcode == DIDMSG_DOT11REQ_MIBGET);
+diff --git a/drivers/staging/wlan-ng/prism2sta.c b/drivers/staging/wlan-ng/prism2sta.c
+index 8f25496188aa..e6dcb687e7a1 100644
+--- a/drivers/staging/wlan-ng/prism2sta.c
++++ b/drivers/staging/wlan-ng/prism2sta.c
+@@ -461,7 +461,7 @@ u32 prism2sta_ifstate(struct wlandevice *wlandev, u32 ifstate)
+ 		case WLAN_MSD_FWLOAD:
+ 			wlandev->msdstate = WLAN_MSD_RUNNING_PENDING;
+ 			/* Initialize the device+driver for full
+-			 * operation. Note that this might me an FWLOAD to
++			 * operation. Note that this might me an FWLOAD
+ 			 * to RUNNING transition so we must not do a chip
+ 			 * or board level reset.  Note that on failure,
+ 			 * the MSD state is set to HWPRESENT because we
+@@ -1352,7 +1352,7 @@ void prism2sta_processing_defer(struct work_struct *data)
+ 		 * we get back in range.  We should block transmits and
+ 		 * receives in this state.  Do we need an indication here?
+ 		 * Probably not since a polling user-mode element would
+-		 * get this status from from p2PortStatus(FD40). What about
++		 * get this status from p2PortStatus(FD40). What about
+ 		 * p80211?
+ 		 * Response:
+ 		 * Block Transmits, Ignore receives of data frames
+-- 
+2.26.2
 
