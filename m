@@ -2,81 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B489316D51
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B1B316D53
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbhBJRvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:51:20 -0500
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:40229 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233446AbhBJRr5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:47:57 -0500
-Received: by mail-wr1-f52.google.com with SMTP id v14so3541011wro.7;
-        Wed, 10 Feb 2021 09:47:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=xS94Nmt7CZoKfe/ooNogCsxo74+nRHCXmzdXYf9v/zo=;
-        b=T96m2rqN4xv3nL0zaowVWqjOrNnHGa7Zy2eSJ4Tya0/S/SEVZ6hDkLZgIJOzUbFgTi
-         dM5lTBPvZJUDJz5m8LHCgehCzKZPeyL8b8i4/R08aNTKyBdvP9vQ4aG2vKw4Ln7ZK+Nb
-         63EJPZO+j0/35gL0JP0Dq3jDJg544B+6xszItK43Z9ydmkOiGiTo7SPJuGlSqbFQGN0u
-         sfFwUdoLtS8RjYYPL3+w9aKaQW3sCrJ/v1V7YkxmCQwHx9xgYfwVE8n6Ooj9KluUqw0+
-         aAUlTwU70/RbfOx5ebEcXkwgJ/Q9hAbdUBnMsMMrDQEg1Ji3yczPjvKmeZ/8qT0O/X5K
-         TV/A==
-X-Gm-Message-State: AOAM530l4cUqe4vbO5qiDSmw/eE+otMP85qq/y6qWCvU9DUXikyutxfT
-        zFcaSrh338M/fxdtRjgWInoMYx/tPczLnU2+sBQ=
-X-Google-Smtp-Source: ABdhPJygX1Cr8XmSICtNKIcQTAl+inc+NuAmMYpiUutZOsZfRcInJ6mA0q/Ex0blppw3kd4dipVPjcMUA2Fs31iGDSw=
-X-Received: by 2002:adf:f7c5:: with SMTP id a5mr4965509wrq.243.1612979235397;
- Wed, 10 Feb 2021 09:47:15 -0800 (PST)
+        id S232561AbhBJRvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:51:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232256AbhBJRtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:49:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1A6264E79;
+        Wed, 10 Feb 2021 17:48:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612979305;
+        bh=2rLI9+Fe1Vb3IUxDFPYblq7Kdt+EU6Ggd3102F0ROkk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RlnQmKlvLAMhSN+VCPErbjbmX1HPtonPjp1OZOFaBZPbtdBwZxkJUJLpP4F7vm5WM
+         4fINKBISl2PK+LFjl97aoM3OvjVzkoxPtsRz8QXEJj9CTswc2QROtRE7tgiXHRYxV5
+         ims/vqgpNHYicoonyXWFv7KtdQnBG0YlmOb+tXJ4=
+Date:   Wed, 10 Feb 2021 18:48:22 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     devel@driverdev.osuosl.org, luk@wybcz.pl,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: cleanup macros within
+ include/rtw_debug.h
+Message-ID: <YCQcZkmNGPuL4DBZ@kroah.com>
+References: <20210210170003.100880-1-phil@philpotter.co.uk>
+ <YCQUFvhKW7rSR6qy@kroah.com>
+ <20210210173438.GA1349@kernelvm>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 10 Feb 2021 18:47:04 +0100
-Message-ID: <CAJZ5v0iEwAvR3EyQp0Qy=7ehQyufrUvMPR4CyCUdVd=qE-5OAg@mail.gmail.com>
-Subject: [GIT PULL] Power management fixes for v5.11-rc8
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210173438.GA1349@kernelvm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Feb 10, 2021 at 05:34:38PM +0000, Phillip Potter wrote:
+> On Wed, Feb 10, 2021 at 06:12:54PM +0100, Greg KH wrote:
+> > On Wed, Feb 10, 2021 at 05:00:03PM +0000, Phillip Potter wrote:
+> > > Remove do/while loops from DBG_871X, MSG_8192C and DBG_8192C. Also
+> > > fix opening brace placements and trailing single statement layout within
+> > > RT_PRINT_DATA, as well as making newline character placement more
+> > > consistent and removing camel case where possible. Finally, add
+> > > parentheses for DBG_COUNTER definition.
+> > > 
+> > > This fixes 3 checkpatch warnings, 5 checkpatch errors and 3 checkpatch
+> > > checks.
+> > > 
+> > > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > > ---
+> > >  drivers/staging/rtl8723bs/include/rtw_debug.h | 40 +++++++++----------
+> > >  1 file changed, 19 insertions(+), 21 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
+> > > index c90adfb87261..d06ac9540cf7 100644
+> > > --- a/drivers/staging/rtl8723bs/include/rtw_debug.h
+> > > +++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
+> > > @@ -201,19 +201,16 @@
+> > >  #ifdef DEBUG
+> > >  #if	defined(_dbgdump)
+> > >  	#undef DBG_871X
+> > > -	#define DBG_871X(...)     do {\
+> > > -		_dbgdump(DRIVER_PREFIX __VA_ARGS__);\
+> > > -	} while (0)
+> > > +	#define DBG_871X(...)\
+> > > +		_dbgdump(DRIVER_PREFIX __VA_ARGS__)
+> > >  
+> > >  	#undef MSG_8192C
+> > > -	#define MSG_8192C(...)     do {\
+> > > -		_dbgdump(DRIVER_PREFIX __VA_ARGS__);\
+> > > -	} while (0)
+> > > +	#define MSG_8192C(...)\
+> > > +		_dbgdump(DRIVER_PREFIX __VA_ARGS__)
+> > >  
+> > >  	#undef DBG_8192C
+> > > -	#define DBG_8192C(...)     do {\
+> > > -		_dbgdump(DRIVER_PREFIX __VA_ARGS__);\
+> > > -	} while (0)
+> > > +	#define DBG_8192C(...)\
+> > > +		_dbgdump(DRIVER_PREFIX __VA_ARGS__)
+> > 
+> > Odd, the do/while is correct here, why is checkpatch complaining about
+> > it?
+> 
+> The warning it gives me for these is:
+> WARNING: Single statement macros should not use a do {} while (0) loop
 
-Please pull from the tag
+Ah.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.11-rc8
+What a mess.
 
-with top-most commit d11a1d08a082a7dc0ada423d2b2e26e9b6f2525c
+I would recommend starting to unwind the "debugging" macro mess here,
+all that a driver should be using is the netdev_dbg() and friends
+functions, not this mess of "printk or no printk" that it currently is.
 
- cpufreq: ACPI: Update arch scale-invariance max perf ratio if CPPC is not there
+If you replace _dbgdump with what it is defined with, then go from there
+and replace the DBG_8192C and friends with what they should be, and so
+on.  That's a much better overall solution than to just paper over this
+with a checkpatch cleanup.
 
-on top of commit 92bf22614b21a2706f4993b278017e437f7785b3
+thanks,
 
- Linux 5.11-rc7
-
-to receive power management fixes for 5.11-rc8.
-
-These address a performance regression related to scale-invariance on
-x86 that may prevent turbo CPU frequencies from being used in certain
-workloads on systems using acpi-cpufreq as the CPU performance
-scaling driver and schedutil as the scaling governor.
-
-Thanks!
-
-
----------------
-
-Rafael J. Wysocki (2):
-      cpufreq: ACPI: Extend frequency tables to cover boost frequencies
-      cpufreq: ACPI: Update arch scale-invariance max perf ratio if
-CPPC is not there
-
----------------
-
- arch/x86/kernel/smpboot.c      |   1 +
- drivers/cpufreq/acpi-cpufreq.c | 115 ++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 104 insertions(+), 12 deletions(-)
+greg k-h
