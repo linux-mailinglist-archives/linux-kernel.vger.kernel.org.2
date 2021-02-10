@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1C3317227
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49189317231
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhBJVQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:16:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbhBJVOd (ORCPT
+        id S232318AbhBJVVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:21:02 -0500
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:63340 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhBJVU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:14:33 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EBFC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:13:53 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id o7so3244239ils.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:13:53 -0800 (PST)
+        Wed, 10 Feb 2021 16:20:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wkGHGHCDtF/e56vw7nKTBuP3UHCQdUWg9HZpFXYrggA=;
-        b=Jh9f0ljt8Jhp+qw+yxtvXzyErFX+M3LwJERppl/c3WO3UsxWbzHyBUpI1DBT+EH3nJ
-         43F8yDWf3EuwgrgrNZ0CWmWFgL1D26RAoMcEY+u0x1RaVLNrwlre6K9qmx8HjR4p3elV
-         Hzlpfx9o23l5EgrFk36pQzqkmnbOHbyNV8A9pC4ezk2LuovAAFSwNnQofDEqsu4y5HgM
-         IZNoH7ZJvAiG4J/lQfq3dMGAUn36xRL9++Es+hQC5N+2huEx38Ha47QBO2EuBY0s8Uti
-         TNAX7706iRTGqeLJZVvbHXjAkuhLAWfT7VULCMrfAPimnTBFaE4yqUvA5L/gtklYqrUT
-         tacg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wkGHGHCDtF/e56vw7nKTBuP3UHCQdUWg9HZpFXYrggA=;
-        b=p83egSaO8K/8GfWm7aEnnm60YdQkom1MpCigdy+sfA+zzuk+H3tP28UhAmW+GzzCqs
-         VKCYzaGFZQ49+zYzGKeNU4H7xwvSZmgVIHPWgXKBUi+BPFj2/zl9wJ4q9Cs2Sy2MBEmG
-         befyH4lYZCq8UpEjRwN8tv+orBw6J1iAD3/3NQOQQC7FdU7wY8qt64bbZMNhhs9Pcd4+
-         SQay7STbFMikt/T7Yo0EQ/vts0/hmm9nIpq7LEFjD5hM0PzAe8g+g6ySVtkDxMiq3s3w
-         job+64p72IMyz29UHHkMJk4HUsUjNPe7rauszPARlGoP7rzJ53cLWf45g/tyeF7I3N+h
-         RSFw==
-X-Gm-Message-State: AOAM531wfuOEvfM3F0SCsShzJVuHUPE5zKU6PZTVYzYuIhlJbhIj/Rti
-        UUZgjpa21ED0YTORR6FAWrravg==
-X-Google-Smtp-Source: ABdhPJyPzxJ19bCcVdJ2bK/7klllblUMnUgpGCczbJlwIGDQuvnm3ZO4nC9nNOWXR1oR7Sm/LnYXPA==
-X-Received: by 2002:a92:d11:: with SMTP id 17mr2997477iln.57.1612991632527;
-        Wed, 10 Feb 2021 13:13:52 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id v1sm1549546ilm.35.2021.02.10.13.13.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 13:13:51 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: ipa: pass checksum trailer with received packets
-Date:   Wed, 10 Feb 2021 15:13:49 -0600
-Message-Id: <20210210211349.13158-1-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1612992059; x=1644528059;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:mime-version:content-transfer-encoding:subject;
+  bh=Gw/p55C3EcrZRIb+r10UNE2J4XRblc54MM0mWDxYHNM=;
+  b=v1JuEZEeTWfjcquzii8qHt/2ruKVgU+igOJugURX/gX0N5mfxAt0wsf7
+   JT5jW199HnkAZTnxZ2IRLzAkUoxyTMjKK6fR3cfpJpXEGRIVUux/EjPjo
+   Ar/P/SqmbrLFkxekN1t7CiHVKIAYhSAh+tCtzdnnqhIERY7UxyJHSQoHK
+   8=;
+X-IronPort-AV: E=Sophos;i="5.81,169,1610409600"; 
+   d="scan'208";a="81802886"
+Subject: Re: [PATCH 5/5] KVM: x86/xen: Explicitly pad struct compat_vcpu_info to 64
+ bytes
+Thread-Topic: [PATCH 5/5] KVM: x86/xen: Explicitly pad struct compat_vcpu_info to 64 bytes
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 10 Feb 2021 21:20:12 +0000
+Received: from EX13MTAUEE001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id 2EBC7A20C6;
+        Wed, 10 Feb 2021 21:20:08 +0000 (UTC)
+Received: from EX13D08UEB004.ant.amazon.com (10.43.60.142) by
+ EX13MTAUEE001.ant.amazon.com (10.43.62.200) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 10 Feb 2021 21:20:08 +0000
+Received: from EX13D08UEB001.ant.amazon.com (10.43.60.245) by
+ EX13D08UEB004.ant.amazon.com (10.43.60.142) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 10 Feb 2021 21:20:08 +0000
+Received: from EX13D08UEB001.ant.amazon.com ([10.43.60.245]) by
+ EX13D08UEB001.ant.amazon.com ([10.43.60.245]) with mapi id 15.00.1497.010;
+ Wed, 10 Feb 2021 21:20:08 +0000
+From:   "Woodhouse, David" <dwmw@amazon.co.uk>
+To:     "seanjc@google.com" <seanjc@google.com>
+CC:     "jmattson@google.com" <jmattson@google.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Thread-Index: AQHW/9pOzhEdoEl9PkGnB5lokEkwtKpR3VyAgAAF/YCAAAH0gA==
+Date:   Wed, 10 Feb 2021 21:20:08 +0000
+Message-ID: <9dbfbc342899895a13effb7ed745001549b51798.camel@amazon.co.uk>
+References: <20210210182609.435200-1-seanjc@google.com>
+         <20210210182609.435200-6-seanjc@google.com>
+         <8752a59b694671d25308d644cba661c4ec128094.camel@amazon.co.uk>
+         <YCRMY17WEdpJYd3C@google.com>
+In-Reply-To: <YCRMY17WEdpJYd3C@google.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.161.87]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E53F7ACE5AF36E448C20592C01D82242@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For a QMAP RX endpoint, received packets will be passed to the RMNet
-driver.  If RX checksum offload is enabled, the RMNet driver expects
-to find a trailer following each packet that contains computed
-checksum information.  Currently the IPA driver is passing the
-packet without the trailer.
-
-Fix this bug.
-
-Fixes: 84f9bd12d46db ("soc: qcom: ipa: IPA endpoints")
-Signed-off-by: Alex Elder <elder@linaro.org>
----
-
-David/Jakub,
-I would like to have this back-ported as bug fix.  At its core, the
-fix is simple, but even if it were reduced to a one-line change, the
-result won't cleanly apply to both net/master and net-next/master.
-How should this be handled?  What can I do to make it easier?
-
-Thanks.
-
-					-Alex
-
- drivers/net/ipa/ipa_endpoint.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index 7209ee3c31244..5e3c2b3f38a95 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -1232,6 +1232,11 @@ static void ipa_endpoint_status_parse(struct ipa_endpoint *endpoint,
- 	void *data = page_address(page) + NET_SKB_PAD;
- 	u32 unused = IPA_RX_BUFFER_SIZE - total_len;
- 	u32 resid = total_len;
-+	u32 trailer_len = 0;
-+
-+	/* If checksum offload is enabled, each packet includes a trailer */
-+	if (endpoint->data->checksum)
-+		trailer_len = sizeof(struct rmnet_map_dl_csum_trailer);
- 
- 	while (resid) {
- 		const struct ipa_status *status = data;
-@@ -1260,18 +1265,18 @@ static void ipa_endpoint_status_parse(struct ipa_endpoint *endpoint,
- 		 */
- 		align = endpoint->data->rx.pad_align ? : 1;
- 		len = le16_to_cpu(status->pkt_len);
--		len = sizeof(*status) + ALIGN(len, align);
--		if (endpoint->data->checksum)
--			len += sizeof(struct rmnet_map_dl_csum_trailer);
-+		len = sizeof(*status) + ALIGN(len, align) + trailer_len;
- 
- 		if (!ipa_endpoint_status_drop(endpoint, status)) {
- 			void *data2;
- 			u32 extra;
- 			u32 len2;
- 
--			/* Client receives only packet data (no status) */
-+			/* Strip off the status element and pass only the
-+			 * packet data (plus checksum trailer if enabled).
-+			 */
- 			data2 = data + sizeof(*status);
--			len2 = le16_to_cpu(status->pkt_len);
-+			len2 = le16_to_cpu(status->pkt_len) + trailer_len;
- 
- 			/* Have the true size reflect the extra unused space in
- 			 * the original receive buffer.  Distribute the "cost"
--- 
-2.20.1
+T24gV2VkLCAyMDIxLTAyLTEwIGF0IDEzOjEzIC0wODAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
+b3RlOg0KPiBPbiBXZWQsIEZlYiAxMCwgMjAyMSwgV29vZGhvdXNlLCBEYXZpZCB3cm90ZToNCj4g
+PiBPbiBXZWQsIDIwMjEtMDItMTAgYXQgMTA6MjYgLTA4MDAsIFNlYW4gQ2hyaXN0b3BoZXJzb24g
+d3JvdGU6DQo+ID4gU28gaXQgaXNuJ3QgY2xlYXIgdGhlIGFkZGl0aW9uYWxseSBwYWRkaW5nIHJl
+YWxseSBidXlzIHVzIGFueXRoaW5nOyBpZg0KPiA+IHdlIHBsYXkgdGhpcyBnYW1lIHdpdGhvdXQg
+a25vd2luZyB0aGUgQUJJIHdlJ2QgYmUgc2NyZXdlZCBhbnl3YXkuIEJ1dA0KPiA+IGl0IGRvZXNu
+J3QgaHVydC4NCj4gDQo+IFlhLCB0aGlzIGlzIHB1cmVseSBmb3IgZm9sa3MgcmVhZGluZyB0aGUg
+Y29kZSBhbmQgd29uZGVyaW5nIGhvdyA2Mj09NjQuDQoNCkZhaXIgZW5vdWdoLiBUaGF0IGtpbmQg
+b2YgdGhpbmcgaXMgd2h5IEkgbGl0dGVyZWQgdGhlIGNvZGUgd2l0aA0KYXNzZXJ0aW9ucyBiYXNl
+ZCBvbiBzaXplb2YoKSBhbmQgb2Zmc2V0b2YoKSA6KQ0KCgoKQW1hem9uIERldmVsb3BtZW50IENl
+bnRyZSAoTG9uZG9uKSBMdGQuIFJlZ2lzdGVyZWQgaW4gRW5nbGFuZCBhbmQgV2FsZXMgd2l0aCBy
+ZWdpc3RyYXRpb24gbnVtYmVyIDA0NTQzMjMyIHdpdGggaXRzIHJlZ2lzdGVyZWQgb2ZmaWNlIGF0
+IDEgUHJpbmNpcGFsIFBsYWNlLCBXb3JzaGlwIFN0cmVldCwgTG9uZG9uIEVDMkEgMkZBLCBVbml0
+ZWQgS2luZ2RvbS4KCgo=
 
