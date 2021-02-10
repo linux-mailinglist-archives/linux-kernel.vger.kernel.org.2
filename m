@@ -2,94 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F4C31615B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B408316169
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhBJIq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:46:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbhBJIk4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:40:56 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9D1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:40:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=/GPvZaRgojtdY3kcT7rvSlB+DudLJBNJNksGm8HkQGc=; b=GPo8T8OLOFxlLHLZI3WxjeaZjJ
-        ByKdNiuSZo9cxw9Ct8+3WOpwW4h9DpHJ/aKXvCTpTQ4xXNQpkHN/1WJZq7ogvnCsdTMv5z/tnM7e6
-        Pl/01JlNNgbfQDx3bpGUQVtbaXmMnWSLa3t24/nI0e8jQyBwztF6HZIlhd53H72urliUqlLZB+X08
-        i/3khjmA3qQjT1WtLjjsp7uqleogXkgJcseBgPIzfy7I3JGg+QWxFhVttG0Q6RyQd7z8oPosLz8DT
-        UfHqEzLmQpzCeTa2r6mncO0Im/R4EWyWAQY0jr+LhPJ8qfhIoPyPMP+Yv9td6Qx2MIHuKvqjk/bCQ
-        Ie2fRI3w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l9l2Q-008atL-RL; Wed, 10 Feb 2021 08:39:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C42353010D2;
-        Wed, 10 Feb 2021 09:39:53 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7BE99201D19B1; Wed, 10 Feb 2021 09:39:53 +0100 (CET)
-Date:   Wed, 10 Feb 2021 09:39:53 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>, yu-cheng.yu@intel.com
-Subject: [RFC][PATCH] objtool: WARN about ENDBR instructions
-Message-ID: <YCOb2byLJhLOjhrL@hirez.programming.kicks-ass.net>
+        id S230018AbhBJIry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:47:54 -0500
+Received: from mga11.intel.com ([192.55.52.93]:27146 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230144AbhBJInE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 03:43:04 -0500
+IronPort-SDR: Wd7mOY1noQP1TXttbVX4B5VLRPMFxAIl0wLN9GZjbzk06o++J6mp7+RF2PSxqpyvXrD7HR23DL
+ AmHudyQiIyrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="178525418"
+X-IronPort-AV: E=Sophos;i="5.81,167,1610438400"; 
+   d="scan'208";a="178525418"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 00:41:18 -0800
+IronPort-SDR: YoH+gspjY3sHrBSfpvthur+rWTZN8iyc+XAnaJ0hDleOFJ0PyOzvmgyzqM2g4ROgkdo7pX3HZj
+ lG9CHO9ObDSQ==
+X-IronPort-AV: E=Sophos;i="5.81,167,1610438400"; 
+   d="scan'208";a="436597931"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 00:41:15 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 73038201E1;
+        Wed, 10 Feb 2021 10:41:13 +0200 (EET)
+Date:   Wed, 10 Feb 2021 10:41:13 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v10 7/7] at24: Support probing while off
+Message-ID: <20210210080311.GA3@paasikivi.fi.intel.com>
+References: <20210205132505.20173-1-sakari.ailus@linux.intel.com>
+ <20210205132505.20173-8-sakari.ailus@linux.intel.com>
+ <CAMpxmJU7J9JBSwCN+GLDpuOL=iZ1PH=oZZuGiAyovuf2TQ=o9A@mail.gmail.com>
+ <CAJZ5v0jUqtYDpBn-ezsftCrY=9iD3sAKhyyFf_+CMkthLnsZow@mail.gmail.com>
+ <CAMpxmJW61Bd1SR3-i6=OV6RgafiEdfp4sNN0M6EYa7NSeOTFKg@mail.gmail.com>
+ <20210209162343.GF32460@paasikivi.fi.intel.com>
+ <CAJZ5v0h2=zKNMictJtJE5LuEi9E3n=Uf-xNO3udHxL2hqXL7Fg@mail.gmail.com>
+ <20210209165418.GG32460@paasikivi.fi.intel.com>
+ <CAJZ5v0jc9HZ-Qa9ooN40sgispqo5BUE6ngnVMCqAO3qnUU+uqw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jc9HZ-Qa9ooN40sgispqo5BUE6ngnVMCqAO3qnUU+uqw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 09, 2021 at 05:58:12PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Feb 9, 2021 at 5:54 PM Sakari Ailus
+> <sakari.ailus@linux.intel.com> wrote:
+> >
+> > On Tue, Feb 09, 2021 at 05:42:45PM +0100, Rafael J. Wysocki wrote:
+> > > On Tue, Feb 9, 2021 at 5:23 PM Sakari Ailus
+> > > <sakari.ailus@linux.intel.com> wrote:
+> > > >
+> > > > Hi Bartosz, Rafael,
+> > > >
+> > > > On Tue, Feb 09, 2021 at 04:49:37PM +0100, Bartosz Golaszewski wrote:
+> > > > > On Mon, Feb 8, 2021 at 5:54 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > >
+> > > > > > On Mon, Feb 8, 2021 at 5:44 PM Bartosz Golaszewski
+> > > > > > <bgolaszewski@baylibre.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Feb 5, 2021 at 2:25 PM Sakari Ailus
+> > > > > > > <sakari.ailus@linux.intel.com> wrote:
+> > > > > > > >
+> > > > > > > > In certain use cases (where the chip is part of a camera module, and the
+> > > > > > > > camera module is wired together with a camera privacy LED), powering on
+> > > > > > > > the device during probe is undesirable. Add support for the at24 to
+> > > > > > > > execute probe while being powered off. For this to happen, a hint in form
+> > > > > > > > of a device property is required from the firmware.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > > > > > > > Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+> > > > > > > > ---
+> > > > > > >
+> > > > > > > I'll ack this but I still claim that the name
+> > > > > > > acpi_dev_state_low_power() is super misleading for this use-case and
+> > > > > > > I've been saying that for 10 versions now with everyone just ignoring
+> > > > > > > my remarks. :/
+> > > > > >
+> > > > > > Well, the function in question simply checks if the current ACPI power
+> > > > > > state of the device is different from "full power", so its name
+> > > > > > appears to be quite adequate to me.
+> > > > > >
+> > > > > > If the way in which it is used is confusing, though, I guess
+> > > > > > explaining what's going on would be welcome.
+> > > > > >
+> > > > >
+> > > > > Yes, I have explained it multiple time already - last time at v9 of this series:
+> > > > >
+> > > > >     https://www.spinics.net/lists/kernel/msg3816807.html
+> > > >
+> > > > How about adding this to the description of acpi_dev_state_low_power():
+> > > >
+> > > > -----------8<--------------
+> > > >  * This function is intended to be used by drivers to tell whether the device
+> > > >  * is in low power state (D1--D3cold) in driver's probe or remove function. See
+> > > >  * Documentation/firmware-guide/acpi/low-power-probe.rst for more information.
+> > > > -----------8<--------------
+> > >
+> > > This information is already there in the kerneldoc description of that
+> > > function AFAICS.
+> >
+> > Ok, the D states are mentioned already. But how to use it is not, nor
+> > there's a reference to the ReST file. I think that wouldn't hurt.
+> >
+> > >
+> > > I was thinking about adding an explanation comment to the caller.
+> >
+> > I think it'd be best if the function name would convey that without a
+> > comment that should then be added to all callers. How about calling the
+> > function e.g. acpi_dev_state_d0() and negating the return value? The D0
+> > state is well defined and we could do this without adding new terms.
+> 
+> That would work for me.
 
+Bartosz, would that work for you?
 
-Given all the ENDBR fun we recently had, do we want the below? Until
-someone comes and fixes up kprobes/ftrace/livepatch etc.. having them is
-a giant pain and we'd better warn about it.
+I'd call the temporary variable in the at24 driver e.g. "full_power".
 
----
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index 931cef78b857..e708731b10cd 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -91,7 +91,7 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
- {
- 	struct insn insn;
- 	int x86_64, sign;
--	unsigned char op1, op2, rex = 0, rex_b = 0, rex_r = 0, rex_w = 0,
-+	unsigned char op1, op2, pfx = 0, rex = 0, rex_b = 0, rex_r = 0, rex_w = 0,
- 		      rex_x = 0, modrm = 0, modrm_mod = 0, modrm_rm = 0,
- 		      modrm_reg = 0, sib = 0;
- 	struct stack_op *op = NULL;
-@@ -118,6 +118,9 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
- 	op1 = insn.opcode.bytes[0];
- 	op2 = insn.opcode.bytes[1];
- 
-+	if (insn.prefixes.nbytes)
-+		pfx = insn.prefixes.bytes[0];
-+
- 	if (insn.rex_prefix.nbytes) {
- 		rex = insn.rex_prefix.bytes[0];
- 		rex_w = X86_REX_W(rex) >> 3;
-@@ -444,6 +447,11 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
- 			/* nopl/nopw */
- 			*type = INSN_NOP;
- 
-+		} else if (op2 == 0x1e && pfx == 0xf3 && (modrm == 0xfa || modrm == 0xfb)) {
-+
-+			/* endbr32/endbr64 */
-+			WARN("endbr32/64 instruction at %s:0x%lx", sec->name, offset);
-+
- 		} else if (op2 == 0xa0 || op2 == 0xa8) {
- 
- 			/* push fs/gs */
+-- 
+Regards,
+
+Sakari Ailus
