@@ -2,118 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49A6316C93
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8133A316C9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhBJR0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:26:36 -0500
-Received: from mail.efficios.com ([167.114.26.124]:53538 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbhBJR0U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:26:20 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id AC6072FDF94;
-        Wed, 10 Feb 2021 12:25:31 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 4s4obU5j8meL; Wed, 10 Feb 2021 12:25:31 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 4C35B2FDE2F;
-        Wed, 10 Feb 2021 12:25:31 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 4C35B2FDE2F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1612977931;
-        bh=io6jcxeNM2lxF9S8jKCyDAOxOk5s55Q5wZFoRXhWX2M=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=I0JoMuxVGV57WxJbVNVIP/VnIRusdKWAsEgVbtYTcuaEPb3Edr0Y95IqaefFc9vvF
-         CmXjB8qBwF1mTH+27NImXBoscDcoRIMTT3rmUvt6J1dc8DCVK4ZRNUFKEcN20bo/2Q
-         UX3+xGPkvAOYPxJJqJgySUMVjAtnHTO9xwIMDyj1RJew7l+UzZrOHNmwuRHSbQsgbI
-         U7cAvbTXLMfTyB2AQ00gWQKY0QNUV6Nv8hRJ3KiV5QxpTBuh8x+fN/3rAAMHFPpcnz
-         GSjo4oIdz3HD32YRRrl8VYMrGOfH9vpd17Ps+8vm6uZTwuDz0fplwhtjPeCYIrPiuW
-         VFW5IH7XYglkA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id VMpGiQn7Tg1X; Wed, 10 Feb 2021 12:25:31 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 3DBEA2FDEAE;
-        Wed, 10 Feb 2021 12:25:31 -0500 (EST)
-Date:   Wed, 10 Feb 2021 12:25:31 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable <stable@vger.kernel.org>, Theodore Tso <tytso@mit.edu>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, rostedt <rostedt@goodmis.org>,
-        Michael Jeanson <mjeanson@efficios.com>
-Message-ID: <2071967108.15704.1612977931149.JavaMail.zimbra@efficios.com>
-In-Reply-To: <YCQTQyRlCsJHXzIQ@kroah.com>
-References: <537870616.15400.1612973059419.JavaMail.zimbra@efficios.com> <YCQTQyRlCsJHXzIQ@kroah.com>
-Subject: Re: [stable 4.4, 4.9, 4.14, 4.19 LTS] Missing fix "memcg: fix a
- crash in wb_workfn when a device disappears"
+        id S232729AbhBJR1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:27:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232107AbhBJR12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:27:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75CF064E05;
+        Wed, 10 Feb 2021 17:26:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612978007;
+        bh=L+9ZY6K3T2erGZBQk5+t7RI7BYJvkEJbar4mTVy5H0U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PYxXK7GDNBqNxrfsDcFg0krA6Xt4Z+erkFS7v3V7XiOxi5ybzH73uGmPfgz0KgzGV
+         rYVPv2YB0pV8PGQnVJDaECb58s8GPGHBB1IiiU2QfmIMkmrt/HUQKdx49BOzdWGqqK
+         ZOb1/dAJnElc+yDzDkvYGXVnu5zGnyPuSpzO6wsakYFMQzZWpUV5ftndbWZ+HwSdhO
+         3/Ba9fYhBMru5owRfcT3fK4u4/TNUdgbHrsyHHiuP+4dOmA78huCa4/v87+JFG0FKn
+         d+mpcP5/OBABfK6ng6UpK+7/MvRQifQjt1Bysohv2GIBVhgLKgriM8l6blDbGj/Vlh
+         P/szDaZsUQ0mA==
+Date:   Wed, 10 Feb 2021 17:26:39 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        joe@perches.com, catalin.marinas@arm.com, mpe@ellerman.id.au,
+        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v17 03/10] arm64: Use common
+ of_kexec_alloc_and_setup_fdt()
+Message-ID: <20210210172638.GA29087@willie-the-truck>
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210209182200.30606-4-nramas@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF85 (Linux)/8.8.15_GA_3996)
-Thread-Topic: Missing fix "memcg: fix a crash in wb_workfn when a device disappears"
-Thread-Index: Ttc552H2ElXvNAOr94i9faJfXx6q2g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209182200.30606-4-nramas@linux.microsoft.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Feb 10, 2021, at 12:09 PM, Greg Kroah-Hartman gregkh@linuxfoundation.org wrote:
-
-> On Wed, Feb 10, 2021 at 11:04:19AM -0500, Mathieu Desnoyers wrote:
->> Hi,
->> 
->> While reconciling the lttng-modules writeback instrumentation with its
->> counterpart
->> within the upstream Linux kernel, I notice that the following commit introduced
->> in
->> 5.6 is present in stable branches 5.4 and 5.5, but is missing from LTS stable
->> branches
->> for 4.4, 4.9, 4.14, 4.19:
->> 
->> commit 68f23b89067fdf187763e75a56087550624fdbee
->> ("memcg: fix a crash in wb_workfn when a device disappears")
->> 
->> Considering that this fix was CC'd to the stable mailing list, is there any
->> reason why it has not been integrated into those LTS branches ?
+On Tue, Feb 09, 2021 at 10:21:53AM -0800, Lakshmi Ramasubramanian wrote:
+> From: Rob Herring <robh@kernel.org>
 > 
-> Yes, it doesn't apply at all.  If you think this is needed, I will
-> gladly take backported and tested patches.
+> The code for setting up the /chosen node in the device tree
+> and updating the memory reservation for the next kernel has been
+> moved to of_kexec_alloc_and_setup_fdt() defined in "drivers/of/kexec.c".
 > 
-> But why do you think this is needed in older kernels?  Have you hit
-> this in real-life?
-
-No, I have not hit this in real-life. Looking at the patch commit message,
-the conditions needed to trigger this issue are very specific: memcg must
-be enabled, and a device must be hotremoved while writeback is going on,
-with writeback tracing active.
-
-AFAIU memcg was present in those LTS releases and devices can be hotremoved
-(please correct me if I'm wrong here), so all the preconditions appear to be
-met.
-
-Considering that I don't have the setup ready to reproduce this issue, I will
-have to defer to the original patch authors for a properly tested backport,
-if it happens to be relevant at all.
-
-I just though reporting what appears to be a missing fix in LTS branches
-would be the right thing to do.
-
-Thanks,
-
-Mathieu
-
+> Use the common of_kexec_alloc_and_setup_fdt() to setup the device tree
+> and update the memory reservation for kexec for arm64.
 > 
-> thanks,
-> 
-> greg k-h
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  arch/arm64/kernel/machine_kexec_file.c | 180 ++-----------------------
+>  1 file changed, 8 insertions(+), 172 deletions(-)
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+I mean, of course I'm going to Ack that!
+
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
