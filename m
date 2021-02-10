@@ -2,408 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B50D316F40
+	by mail.lfdr.de (Postfix) with ESMTP id E6152316F41
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234436AbhBJSwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:52:49 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2540 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233795AbhBJSre (ORCPT
+        id S234475AbhBJSxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:53:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234146AbhBJSsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:47:34 -0500
-Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DbTCm6GX3z67mck;
-        Thu, 11 Feb 2021 02:43:00 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 10 Feb 2021 19:46:42 +0100
-Received: from localhost (10.47.67.2) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 10 Feb
- 2021 18:46:41 +0000
-Date:   Wed, 10 Feb 2021 18:45:40 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Jon Masters" <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Williams <dan.j.willams@intel.com>
-Subject: Re: [PATCH v2 4/8] cxl/mem: Add basic IOCTL interface
-Message-ID: <20210210184540.00007536@Huawei.com>
-In-Reply-To: <20210210000259.635748-5-ben.widawsky@intel.com>
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
-        <20210210000259.635748-5-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Wed, 10 Feb 2021 13:48:40 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A5CC06178C;
+        Wed, 10 Feb 2021 10:45:57 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id t5so4190653eds.12;
+        Wed, 10 Feb 2021 10:45:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OSwRklUKEgerO/ruJtc6qqr8RfBeesHl4VyXwtXPq+s=;
+        b=Ghey7JkDfj7BDM2QOpDU7sxDB95ZxYv6chQC2f5IfAnzRVsCaEcRyKJsBLtQM6v8Ew
+         dOzHFVagORKvEpNJM/t0vzv9CO3yTsBuTm5e/yQPILsWDan17pfpLiwC+q1+AUZslfD0
+         W0gF7/Ora4jXcRecqWBrkpX4QKSoY1E2DM2CmVuoSUQ+eq+Z8adbXcMwJKcDzYukOmOm
+         ZLD+CfyFe2JtlPPTH6ZcoUI+7UQvNdFcpHmBNEPiVmahFXd8wA0ygc+50zBiR1yjIpuO
+         a5Iy/FoT8KLw5glqNS3wJzfYMscMlWpVDxPbcjNVN6+vWak//beFuvNl4euYiyFNGkgg
+         qNKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OSwRklUKEgerO/ruJtc6qqr8RfBeesHl4VyXwtXPq+s=;
+        b=jM8b/G7/M/ERUrSr3oyK/laYmyTKV2F1R8JN1cvKeja8Tn5pq3GFqo5IH5gtepYqUD
+         K607vY4q61vd60enYGxCqfKWgYFr2ywLHbQKTSp8bisKIwLQVRRBMDW9U5qgVjC0pPth
+         YwON+QyC6Ko4q4sEEI5YFVL8b4nvGbTYJ34L1lJqZ5dxm96JkJ7O6bGoUO3IeAXMIvRp
+         d506atkIfAEKJ5fpK0ciSssfMRQGZh1vl/URZ4tcVCPCP1Uv6af+LK+IfdrWI20flMhZ
+         OskFC0wvY1/lkXloUI1iqxxT31vZiwv4FxJQz7G8ytWE8fRT1M0jNbR5L9ESY8KfmmnF
+         BpMA==
+X-Gm-Message-State: AOAM532ar7bIC49ucrJsNGrVJ1L+xvZE6u9ayTi5sI0wgIX8WkeNDyxj
+        9xOwBFG2MI5YzFNDhLO20Fc1NxWopforGGeHmKY=
+X-Google-Smtp-Source: ABdhPJyLpbdb7DJiKsbSwvNmBlEpo5PXtG3A6Ujq1MjCd5prIOyDPwfzC/l21m4dy9YDaZIgJgadqTvRJE4+yZkEAM8=
+X-Received: by 2002:aa7:c804:: with SMTP id a4mr4465864edt.168.1612982756190;
+ Wed, 10 Feb 2021 10:45:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.67.2]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210209174646.1310591-1-shy828301@gmail.com> <20210209174646.1310591-8-shy828301@gmail.com>
+ <20210210003943.GK524633@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20210210003943.GK524633@carbon.DHCP.thefacebook.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 10 Feb 2021 10:45:44 -0800
+Message-ID: <CAHbLzkpvzt=zwvSfGY2qXWmhLCY2WiRrbVFvj8J3vEq=x=54CA@mail.gmail.com>
+Subject: Re: [v7 PATCH 07/12] mm: vmscan: use a new flag to indicate shrinker
+ is registered
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Feb 2021 16:02:55 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+On Tue, Feb 9, 2021 at 4:39 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Tue, Feb 09, 2021 at 09:46:41AM -0800, Yang Shi wrote:
+> > Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
+> > This approach is fine with nr_deferred at the shrinker level, but the following
+> > patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
+> > shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
+> > from unregistering correctly.
+> >
+> > Remove SHRINKER_REGISTERING since we could check if shrinker is registered
+> > successfully by the new flag.
+> >
+> > Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  include/linux/shrinker.h |  7 ++++---
+> >  mm/vmscan.c              | 31 +++++++++----------------------
+> >  2 files changed, 13 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+> > index 0f80123650e2..1eac79ce57d4 100644
+> > --- a/include/linux/shrinker.h
+> > +++ b/include/linux/shrinker.h
+> > @@ -79,13 +79,14 @@ struct shrinker {
+> >  #define DEFAULT_SEEKS 2 /* A good number if you don't know better. */
+> >
+> >  /* Flags */
+> > -#define SHRINKER_NUMA_AWARE  (1 << 0)
+> > -#define SHRINKER_MEMCG_AWARE (1 << 1)
+> > +#define SHRINKER_REGISTERED  (1 << 0)
+> > +#define SHRINKER_NUMA_AWARE  (1 << 1)
+> > +#define SHRINKER_MEMCG_AWARE (1 << 2)
+> >  /*
+> >   * It just makes sense when the shrinker is also MEMCG_AWARE for now,
+> >   * non-MEMCG_AWARE shrinker should not have this flag set.
+> >   */
+> > -#define SHRINKER_NONSLAB     (1 << 2)
+> > +#define SHRINKER_NONSLAB     (1 << 3)
+> >
+> >  extern int prealloc_shrinker(struct shrinker *shrinker);
+> >  extern void register_shrinker_prepared(struct shrinker *shrinker);
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 273efbf4d53c..a047980536cf 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -315,19 +315,6 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
+> >       }
+> >  }
+> >
+> > -/*
+> > - * We allow subsystems to populate their shrinker-related
+> > - * LRU lists before register_shrinker_prepared() is called
+> > - * for the shrinker, since we don't want to impose
+> > - * restrictions on their internal registration order.
+> > - * In this case shrink_slab_memcg() may find corresponding
+> > - * bit is set in the shrinkers map.
+> > - *
+> > - * This value is used by the function to detect registering
+> > - * shrinkers and to skip do_shrink_slab() calls for them.
+> > - */
+> > -#define SHRINKER_REGISTERING ((struct shrinker *)~0UL)
+> > -
+> >  static DEFINE_IDR(shrinker_idr);
+> >
+> >  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+> > @@ -336,7 +323,7 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+> >
+> >       down_write(&shrinker_rwsem);
+> >       /* This may call shrinker, so it must use down_read_trylock() */
+> > -     id = idr_alloc(&shrinker_idr, SHRINKER_REGISTERING, 0, 0, GFP_KERNEL);
+> > +     id = idr_alloc(&shrinker_idr, shrinker, 0, 0, GFP_KERNEL);
+> >       if (id < 0)
+> >               goto unlock;
+> >
+> > @@ -499,10 +486,7 @@ void register_shrinker_prepared(struct shrinker *shrinker)
+> >  {
+> >       down_write(&shrinker_rwsem);
+> >       list_add_tail(&shrinker->list, &shrinker_list);
+> > -#ifdef CONFIG_MEMCG
+> > -     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> > -             idr_replace(&shrinker_idr, shrinker, shrinker->id);
+> > -#endif
+> > +     shrinker->flags |= SHRINKER_REGISTERED;
+> >       up_write(&shrinker_rwsem);
+> >  }
+> >
+> > @@ -522,13 +506,16 @@ EXPORT_SYMBOL(register_shrinker);
+> >   */
+> >  void unregister_shrinker(struct shrinker *shrinker)
+> >  {
+> > -     if (!shrinker->nr_deferred)
+> > +     if (!(shrinker->flags & SHRINKER_REGISTERED))
+> >               return;
+> > -     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> > -             unregister_memcg_shrinker(shrinker);
+> > +
+> >       down_write(&shrinker_rwsem);
+> >       list_del(&shrinker->list);
+> > +     shrinker->flags &= ~SHRINKER_REGISTERED;
+> >       up_write(&shrinker_rwsem);
+> > +
+> > +     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> > +             unregister_memcg_shrinker(shrinker);
+>
+> Because unregister_memcg_shrinker() will take and release shrinker_rwsem once again,
+> I wonder if it's better to move it into the locked section and change the calling
+> convention to require the caller to take the semaphore?
 
-> Add a straightforward IOCTL that provides a mechanism for userspace to
-> query the supported memory device commands. CXL commands as they appear
-> to userspace are described as part of the UAPI kerneldoc. The command
-> list returned via this IOCTL will contain the full set of commands that
-> the driver supports, however, some of those commands may not be
-> available for use by userspace.
-> 
-> Memory device commands first appear in the CXL 2.0 specification. They
-> are submitted through a mailbox mechanism specified also originally
-> specified in the CXL 2.0 specification.
-> 
-> The send command allows userspace to issue mailbox commands directly to
-> the hardware. The list of available commands to send are the output of
-> the query command. The driver verifies basic properties of the command
-> and possibly inspect the input (or output) payload to determine whether
-> or not the command is allowed (or might taint the kernel).
-> 
-> Reported-by: kernel test robot <lkp@intel.com> # bug in earlier revision
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Reviewed-by: Dan Williams <dan.j.willams@intel.com>
+BTW, I think lockdep_assert_held() in unregister_memcg_shrinker()
+seems good enough.
 
-A bit of anti macro commentary below.  Heavy use of them may make the code
-shorter, but I'd argue they make it harder to do review if you've not looked
-at a given bit of code for a while.
-
-Also there is a bit of documentation in here for flags that don't seem to
-exist (at this stage anyway) - may just be in the wrong patch.
-
-Jonathan
-
-
-> ---
->  .clang-format                                 |   1 +
->  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
->  drivers/cxl/mem.c                             | 291 +++++++++++++++++-
->  include/uapi/linux/cxl_mem.h                  | 152 +++++++++
->  4 files changed, 443 insertions(+), 2 deletions(-)
->  create mode 100644 include/uapi/linux/cxl_mem.h
-> 
-> diff --git a/.clang-format b/.clang-format
-> index 10dc5a9a61b3..3f11c8901b43 100644
-> --- a/.clang-format
-> +++ b/.clang-format
-> @@ -109,6 +109,7 @@ ForEachMacros:
->    - 'css_for_each_child'
->    - 'css_for_each_descendant_post'
->    - 'css_for_each_descendant_pre'
-> +  - 'cxl_for_each_cmd'
->    - 'device_for_each_child_node'
->    - 'dma_fence_chain_for_each'
->    - 'do_for_each_ftrace_op'
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index a4c75a28c839..6eb8e634664d 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -352,6 +352,7 @@ Code  Seq#    Include File                                           Comments
->                                                                       <mailto:michael.klein@puffin.lb.shuttle.de>
->  0xCC  00-0F  drivers/misc/ibmvmc.h                                   pseries VMC driver
->  0xCD  01     linux/reiserfs_fs.h
-> +0xCE  01-02  uapi/linux/cxl_mem.h                                    Compute Express Link Memory Devices
->  0xCF  02     fs/cifs/ioctl.c
->  0xDB  00-0F  drivers/char/mwave/mwavepub.h
->  0xDD  00-3F                                                          ZFCP device driver see drivers/s390/scsi/
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index 8bbd2495e237..ce65630bb75e 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-> +#include <uapi/linux/cxl_mem.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/cdev.h>
-> @@ -39,6 +40,7 @@
->  #define CXL_MAILBOX_TIMEOUT_MS (2 * HZ)
->  
->  enum opcode {
-> +	CXL_MBOX_OP_INVALID		= 0x0000,
->  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
->  	CXL_MBOX_OP_MAX			= 0x10000
->  };
-> @@ -90,9 +92,57 @@ struct cxl_memdev {
->  static int cxl_mem_major;
->  static DEFINE_IDA(cxl_memdev_ida);
->  
-> +/**
-> + * struct cxl_mem_command - Driver representation of a memory device command
-> + * @info: Command information as it exists for the UAPI
-> + * @opcode: The actual bits used for the mailbox protocol
-> + * @flags: Set of flags reflecting the state of the command.
-> + *
-> + *  * %CXL_CMD_FLAG_MANDATORY: Hardware must support this command. This flag is
-> + *    only used internally by the driver for sanity checking.
-
-Doesn't seem to be defined yet.
-
-> + *
-> + * The cxl_mem_command is the driver's internal representation of commands that
-> + * are supported by the driver. Some of these commands may not be supported by
-> + * the hardware. The driver will use @info to validate the fields passed in by
-> + * the user then submit the @opcode to the hardware.
-> + *
-> + * See struct cxl_command_info.
-> + */
-> +struct cxl_mem_command {
-> +	struct cxl_command_info info;
-> +	enum opcode opcode;
-> +};
-> +
-> +#define CXL_CMD(_id, _flags, sin, sout)                                        \
-> +	[CXL_MEM_COMMAND_ID_##_id] = {                                         \
-> +	.info =	{                                                              \
-> +			.id = CXL_MEM_COMMAND_ID_##_id,                        \
-> +			.flags = CXL_MEM_COMMAND_FLAG_##_flags,                \
-> +			.size_in = sin,                                        \
-> +			.size_out = sout,                                      \
-> +		},                                                             \
-> +	.opcode = CXL_MBOX_OP_##_id,                                           \
-> +	}
-> +
-> +/*
-> + * This table defines the supported mailbox commands for the driver. This table
-> + * is made up of a UAPI structure. Non-negative values as parameters in the
-> + * table will be validated against the user's input. For example, if size_in is
-> + * 0, and the user passed in 1, it is an error.
-> + */
-> +static struct cxl_mem_command mem_commands[] = {
-> +	CXL_CMD(IDENTIFY, NONE, 0, 0x43),
-> +};
-
-As below, I'm doubtful about the macro magic and would rather see the
-long hand version. It's a fwe more characters but I can immediately see if fields
-are in the right places etc and we can skip the 0 default values.
-
-static struct cxl_mem_command mem_commands[] = {
-	[CXL_MEM_COMMAND_ID_IDENTIFY] = {
-		.info = {
-			.id = CXL_MEM_COMMAND_ID_IDENTIFY,
-			.size_out = 0x43,
-		},
-		.opcode = CXL_MBOX_OP_IDENTIFY,	
-	},
-};
-
-Still it's your driver and I guess I'll guess I can probably get my head around
-this macro..
-
->  
-> diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
-> new file mode 100644
-> index 000000000000..f1f7e9f32ea5
-> --- /dev/null
-> +++ b/include/uapi/linux/cxl_mem.h
-> @@ -0,0 +1,152 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * CXL IOCTLs for Memory Devices
-> + */
-> +
-> +#ifndef _UAPI_CXL_MEM_H_
-> +#define _UAPI_CXL_MEM_H_
-> +
-> +#include <linux/types.h>
-> +
-> +/**
-> + * DOC: UAPI
-> + *
-> + * Not all of all commands that the driver supports are always available for use
-> + * by userspace. Userspace must check the results from the QUERY command in
-> + * order to determine the live set of commands.
-> + */
-> +
-> +#define CXL_MEM_QUERY_COMMANDS _IOR(0xCE, 1, struct cxl_mem_query_commands)
-> +#define CXL_MEM_SEND_COMMAND _IOWR(0xCE, 2, struct cxl_send_command)
-> +
-> +#define CXL_CMDS                                                          \
-> +	___C(INVALID, "Invalid Command"),                                 \
-> +	___C(IDENTIFY, "Identify Command"),                               \
-> +	___C(MAX, "Last command")
-> +
-> +#define ___C(a, b) CXL_MEM_COMMAND_ID_##a
-> +enum { CXL_CMDS };
-> +
-> +#undef ___C
-> +#define ___C(a, b) { b }
-> +static const struct {
-> +	const char *name;
-> +} cxl_command_names[] = { CXL_CMDS };
-> +#undef ___C
-
-Unless there are going to be a lot of these, I'd just write them out long hand
-as much more readable than the macro magic.
-
-enum {
-	CXL_MEM_COMMAND_ID_INVALID,
-	CXL_MEM_COMMAND_ID_IDENTIFY,
-	CXL_MEM_COMMAND_ID_MAX
-};
-
-static const struct {
-	const char *name;
-} cxl_command_names[] = {
-	[CXL_MEM_COMMAND_ID_INVALID] = { "Invalid Command" },
-	[CXL_MEM_COMMAND_ID_IDENTIFY] = { "Identify Comamnd" },
-	/* I hope you never need the Last command to exist in here as that sounds like a bug */
-};
-
-That's assuming I actually figured the macro fun out correctly.
-To my mind it's worth doing this stuff for 'lots' no so much for 3.
-
-> +
-> +/**
-> + * struct cxl_command_info - Command information returned from a query.
-> + * @id: ID number for the command.
-> + * @flags: Flags that specify command behavior.
-> + *
-> + *  * %CXL_MEM_COMMAND_FLAG_KERNEL: This command is reserved for exclusive
-> + *    kernel use.
-> + *  * %CXL_MEM_COMMAND_FLAG_MUTEX: This command may require coordination with
-> + *    the kernel in order to complete successfully.
-Doesn't correspond to the flags defined below.  If introduced in a later patch
-then bring the docs in with the first use.
-
-> + *
-> + * @size_in: Expected input size, or -1 if variable length.
-> + * @size_out: Expected output size, or -1 if variable length.
-> + *
-> + * Represents a single command that is supported by both the driver and the
-> + * hardware. This is returned as part of an array from the query ioctl. The
-> + * following would be a command named "foobar" that takes a variable length
-> + * input and returns 0 bytes of output.
-
-Why give it a name?  It's just an id!
-
-> + *
-> + *  - @id = 10
-> + *  - @flags = CXL_MEM_COMMAND_FLAG_MUTEX
-
-That flag doesn't seem to be defined below.
-
-> + *  - @size_in = -1
-> + *  - @size_out = 0
-> + *
-> + * See struct cxl_mem_query_commands.
-> + */
-> +struct cxl_command_info {
-> +	__u32 id;
-> +
-> +	__u32 flags;
-> +#define CXL_MEM_COMMAND_FLAG_NONE 0
-> +#define CXL_MEM_COMMAND_FLAG_KERNEL BIT(0)
-> +#define CXL_MEM_COMMAND_FLAG_MASK GENMASK(1, 0)
-> +
-> +	__s32 size_in;
-> +	__s32 size_out;
-> +};
-> +
-> +/**
-> + * struct cxl_mem_query_commands - Query supported commands.
-> + * @n_commands: In/out parameter. When @n_commands is > 0, the driver will
-> + *		return min(num_support_commands, n_commands). When @n_commands
-> + *		is 0, driver will return the number of total supported commands.
-> + * @rsvd: Reserved for future use.
-> + * @commands: Output array of supported commands. This array must be allocated
-> + *            by userspace to be at least min(num_support_commands, @n_commands)
-> + *
-> + * Allow userspace to query the available commands supported by both the driver,
-> + * and the hardware. Commands that aren't supported by either the driver, or the
-> + * hardware are not returned in the query.
-> + *
-> + * Examples:
-> + *
-> + *  - { .n_commands = 0 } // Get number of supported commands
-> + *  - { .n_commands = 15, .commands = buf } // Return first 15 (or less)
-> + *    supported commands
-> + *
-> + *  See struct cxl_command_info.
-> + */
-> +struct cxl_mem_query_commands {
-> +	/*
-> +	 * Input: Number of commands to return (space allocated by user)
-> +	 * Output: Number of commands supported by the driver/hardware
-> +	 *
-> +	 * If n_commands is 0, kernel will only return number of commands and
-> +	 * not try to populate commands[], thus allowing userspace to know how
-> +	 * much space to allocate
-> +	 */
-> +	__u32 n_commands;
-> +	__u32 rsvd;
-> +
-> +	struct cxl_command_info __user commands[]; /* out: supported commands */
-> +};
-> +
-> +/**
-> + * struct cxl_send_command - Send a command to a memory device.
-> + * @id: The command to send to the memory device. This must be one of the
-> + *	commands returned by the query command.
-> + * @flags: Flags for the command (input).
-> + * @rsvd: Must be zero.
-> + * @retval: Return value from the memory device (output).
-> + * @in.size: Size of the payload to provide to the device (input).
-> + * @in.rsvd: Must be zero.
-> + * @in.payload: Pointer to memory for payload input (little endian order).
-
-Silly point, but perhaps distinguish it's the payload that is in little endian order
-not the pointer.  (I obviously haven't had enough coffee today and missread it)
-
-
-> + * @out.size: Size of the payload received from the device (input/output). This
-> + *	      field is filled in by userspace to let the driver know how much
-> + *	      space was allocated for output. It is populated by the driver to
-> + *	      let userspace know how large the output payload actually was.
-> + * @out.rsvd: Must be zero.
-> + * @out.payload: Pointer to memory for payload output (little endian order).
-> + *
-> + * Mechanism for userspace to send a command to the hardware for processing. The
-> + * driver will do basic validation on the command sizes. In some cases even the
-> + * payload may be introspected. Userspace is required to allocate large
-> + * enough buffers for size_out which can be variable length in certain
-> + * situations.
-> + */
-> +struct cxl_send_command {
-> +	__u32 id;
-> +	__u32 flags;
-> +	__u32 rsvd;
-> +	__u32 retval;
-> +
-> +	struct {
-> +		__s32 size;
-> +		__u32 rsvd;
-> +		__u64 payload;
-> +	} in;
-> +
-> +	struct {
-> +		__s32 size;
-> +		__u32 rsvd;
-> +		__u64 payload;
-> +	} out;
-> +};
-> +
-> +#endif
-
+>
+> >       kfree(shrinkrem->nr_deferred);
+> >       shrinker->nr_deferred = NULL;
+> >  }
+> > @@ -693,7 +680,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+> >               struct shrinker *shrinker;
+> >
+> >               shrinker = idr_find(&shrinker_idr, i);
+> > -             if (unlikely(!shrinker || shrinker == SHRINKER_REGISTERING)) {
+> > +             if (unlikely(!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))) {
+> >                       if (!shrinker)
+> >                               clear_bit(i, info->map);
+> >                       continue;
+> > --
+> > 2.26.2
+> >
