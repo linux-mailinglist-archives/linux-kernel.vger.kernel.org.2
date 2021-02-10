@@ -2,116 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEA33173AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188C33173AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhBJWuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:50:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50694 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232164AbhBJWuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:50:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3D4564EAC;
-        Wed, 10 Feb 2021 22:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612997380;
-        bh=9GWrJH4D5kRgV/kzJAspNT1VfbR+T+Ol4bGBDgM0IRc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Il60EIAoC2ATFfXoB1WHPMkFGbMkSGpRkdh6Zv7EoyIuFW0pUqEiABptrMOFVqRXY
-         d4Yz1B1z3ZDPwVERGoeQr+qzNKDNK8QtMZHYncWEaooR7tIUeOc5f7o4Mm6/wOx8R9
-         ne3dUOXMNOLT3O8pWsYE0GSOV1tOeYWwSzSTvA+1i6i2Nj8Q9+ducSP+XuFCo5P59D
-         PMsxsdr9fl7jqzROgs3mfHewaSPx7tcqt9LBObOp3nl5D+zwFobPdpRi0l8RJqiFeF
-         GhpH4P2rMq9otYRHDBl/Dn5ntdVYnzfr99c6bKzvtRAUOr7b9g0FY/vVoKGTzUktT4
-         qI3RsfdzFNpvQ==
-Date:   Wed, 10 Feb 2021 16:49:37 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] staging: rtl8723bs: Replace one-element array with
- flexible-array member in struct ndis_80211_var_ie
-Message-ID: <20210210224937.GA11922@embeddedor>
+        id S233321AbhBJWvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:51:19 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:35917 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232164AbhBJWvJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 17:51:09 -0500
+Received: by mail-oi1-f181.google.com with SMTP id k204so4005746oih.3;
+        Wed, 10 Feb 2021 14:50:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BlKdWC9EZwU0qeYCVAvxDTeo3iSF+eFw4n8X391mQjc=;
+        b=bpHRqoCg3fsRtJpBT4ijAxidt1vgCbhdyeCc87Hf6lqdBbqscSwRKR/ieJ0WwOTLMI
+         el13H/ueHGZIJHFvH7IpV5Rfvm9HoAwlwmDm6UHumhnkukkAGhM7Jx2XZ38S6UEaDdkM
+         TwqQ+RVg66vg4J588bHYoeu6CEuZ7MZkStPjuzRcL10OrOl3YowX0kEDWW8TRwJryLrj
+         6Cxkipcpf7fvIsA2h3WGSIFqwUKXTIJ0jal7LOJYIzBbobYRigdjjZ92WzErtg73uJ3V
+         VseRNSm9TyWz6Adh+OMZvhG8VLQrJo2kkWMT0eQWIRcONQ6VduBi+2uQGAahVEbKDEQo
+         Z2OQ==
+X-Gm-Message-State: AOAM5327EQcbn+KiCJiF3r+km+NrlIr9222m4+QNXzj+f+PzwtOGo+Ya
+        VMp3CvRA+ZE4fKFLKOCs0Q==
+X-Google-Smtp-Source: ABdhPJxziduVw3rfiU3DyzsyjbtxP45LUPOkmM6HwK2KWtO+txEu0K6965ad0hz9/tP2VBij5vPZjA==
+X-Received: by 2002:aca:54c9:: with SMTP id i192mr917001oib.3.1612997427878;
+        Wed, 10 Feb 2021 14:50:27 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k32sm665330otc.74.2021.02.10.14.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 14:50:26 -0800 (PST)
+Received: (nullmailer pid 2960948 invoked by uid 1000);
+        Wed, 10 Feb 2021 22:50:25 -0000
+Date:   Wed, 10 Feb 2021 16:50:25 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, Luka Perkov <luka.perkov@sartura.hr>
+Subject: Re: [PATCH v2 net-next 2/4] dt-bindings: net: Add bindings for
+ Qualcomm QCA807x
+Message-ID: <20210210225025.GA2953160@robh.at.kernel.org>
+References: <20210210125523.2146352-1-robert.marko@sartura.hr>
+ <20210210125523.2146352-3-robert.marko@sartura.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210210125523.2146352-3-robert.marko@sartura.hr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+On Wed, Feb 10, 2021 at 01:55:21PM +0100, Robert Marko wrote:
+> Add DT bindings for Qualcomm QCA807x PHYs.
+> 
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> ---
+> Changes in v2:
+> * Drop LED properties
+> * Directly define PSGMII/QSGMII SerDes driver values
+> 
+>  .../devicetree/bindings/net/qcom,qca807x.yaml | 70 +++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/qcom,qca807x.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/qcom,qca807x.yaml b/Documentation/devicetree/bindings/net/qcom,qca807x.yaml
+> new file mode 100644
+> index 000000000000..0867f5e698cd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/qcom,qca807x.yaml
+> @@ -0,0 +1,70 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/qcom,qca807x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm QCA807x PHY
+> +
+> +maintainers:
+> +  - Robert Marko <robert.marko@sartura.hr>
+> +
+> +description: |
+> +  Bindings for Qualcomm QCA807x PHYs
+> +
+> +allOf:
+> +  - $ref: ethernet-phy.yaml#
+> +
+> +properties:
+> +  reg:
+> +    maxItems: 1
+> +
+> +  qcom,fiber-enable:
+> +    description: |
+> +      If present, then PHYs combo port is configured to operate in combo
+> +      mode. In combo mode autodetection of copper and fiber media is
+> +      used in order to support both of them.
+> +      Combo mode can be strapped as well, if not strapped this property
+> +      will set combo support anyway.
+> +    type: boolean
+> +
+> +  qcom,psgmii-az:
+> +    description: |
+> +      If present, then PSMGII PHY will advertise 802.3-az support to
+> +      the MAC.
 
-Refactor the code according to the use of a flexible-array member in
-struct ndis_80211_var_ie, instead of a one-element array.
+Sounds like a standard thing that should be common?
 
-Also, this helps with the ongoing efforts to enable -Warray-bounds and
-fix the following warnings:
+> +    type: boolean
+> +
+> +  gpio-controller: true
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +  qcom,tx-driver-strength:
+> +    description: PSGMII/QSGMII SerDes TX driver strength control in mV.
 
-  CC [M]  drivers/staging/rtl8723bs/core/rtw_wlan_util.o
-In file included from ./drivers/staging/rtl8723bs/include/drv_types.h:20,
-                 from drivers/staging/rtl8723bs/core/rtw_wlan_util.c:9:
-drivers/staging/rtl8723bs/core/rtw_wlan_util.c: In function ‘HT_caps_handler’:
-./drivers/staging/rtl8723bs/include/basic_types.h:108:11: warning: array subscript 1 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
-  108 |  (EF1BYTE(*((u8 *)(__pstart))))
-      |           ^
-./drivers/staging/rtl8723bs/include/basic_types.h:42:8: note: in definition of macro ‘EF1BYTE’
-   42 |  ((u8)(_val))
-      |        ^~~~
-./drivers/staging/rtl8723bs/include/basic_types.h:127:4: note: in expansion of macro ‘LE_P1BYTE_TO_HOST_1BYTE’
-  127 |   (LE_P1BYTE_TO_HOST_1BYTE(__pstart) >> (__bitoffset)) & \
-      |    ^~~~~~~~~~~~~~~~~~~~~~~
-./drivers/staging/rtl8723bs/include/rtw_ht.h:97:55: note: in expansion of macro ‘LE_BITS_TO_1BYTE’
-   97 | #define GET_HT_CAPABILITY_ELE_RX_STBC(_pEleStart)     LE_BITS_TO_1BYTE((_pEleStart)+1, 0, 2)
-      |                                                       ^~~~~~~~~~~~~~~~
-drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1104:58: note: in expansion of macro ‘GET_HT_CAPABILITY_ELE_RX_STBC’
- 1104 |   if (TEST_FLAG(phtpriv->stbc_cap, STBC_HT_ENABLE_TX) && GET_HT_CAPABILITY_ELE_RX_STBC(pIE->data)) {
-      |                                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1051:75: warning: array subscript 2 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
- 1051 |    if ((pmlmeinfo->HT_caps.u.HT_cap_element.AMPDU_para & 0x3) > (pIE->data[i] & 0x3))
-      |                                                                  ~~~~~~~~~^~~
-drivers/staging/rtl8723bs/core/rtw_wlan_util.c: In function ‘check_assoc_AP’:
-drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1606:19: warning: array subscript 4 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
- 1606 |      if (pIE->data[4] == 1)
-      |          ~~~~~~~~~^~~
-drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1609:20: warning: array subscript 5 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
- 1609 |       if (pIE->data[5] & RT_HT_CAP_USE_92SE)
-      |           ~~~~~~~~~^~~
-drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1613:19: warning: array subscript 5 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
- 1613 |      if (pIE->data[5] & RT_HT_CAP_USE_SOFTAP)
-      |          ~~~~~~~~~^~~
-drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1617:20: warning: array subscript 6 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
- 1617 |       if (pIE->data[6] & RT_HT_CAP_USE_JAGUAR_BCUT) {
-      |           ~~~~~~~~~^~~
+Use standard unit suffix as defined in property-units.txt.
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+Again, seems like a common property?
 
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/109
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/602434b8.jc5DoXJ0bmHoxgIL%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/staging/rtl8723bs/include/wlan_bssdef.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
-diff --git a/drivers/staging/rtl8723bs/include/wlan_bssdef.h b/drivers/staging/rtl8723bs/include/wlan_bssdef.h
-index ea370b2bb8db..27cd2c5d90af 100644
---- a/drivers/staging/rtl8723bs/include/wlan_bssdef.h
-+++ b/drivers/staging/rtl8723bs/include/wlan_bssdef.h
-@@ -68,7 +68,7 @@ struct ndis_802_11_fix_ie {
- struct ndis_80211_var_ie {
- 	u8  ElementID;
- 	u8  Length;
--	u8  data[1];
-+	u8  data[];
- };
- 
- /* Length is the 4 bytes multiples of the sum of
--- 
-2.27.0
+Then you can drop this.
 
+> +    enum: [140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 400, 500, 600]
+> +
+> +  qcom,control-dac:
+> +    description: Analog MDI driver amplitude and bias current.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
+> +
+> +required:
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/net/qcom-qca807x.h>
+> +
+> +    mdio {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      ethphy0: ethernet-phy@0 {
+> +        compatible = "ethernet-phy-ieee802.3-c22";
+> +        reg = <0>;
+> +
+> +        qcom,control-dac = <QCA807X_CONTROL_DAC_DSP_VOLT_QUARTER_BIAS>;
+> +      };
+> +    };
+> -- 
+> 2.29.2
+> 
