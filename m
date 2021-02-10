@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F0D316C56
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37464316C5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbhBJRQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:16:08 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:14945 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232484AbhBJRPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:15:03 -0500
+        id S231950AbhBJRQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:16:38 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:61373 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232554AbhBJRPI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:15:08 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612977286; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1612977287; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=yqncgmpEgMonGlRYgNY3Q5knJe13USxuArsQVafOWUE=; b=CM/to1PLz4clkjtuq5owT8ws7uV2AqkE/xaGM7C9HWepWrELVTTfjiPuJNpB6S6d9jFaLtb0
- ODmjG3J66roY+fh9FFvbaPGjZJfy5GVLK9d7WGXV15J6hK6IDpqRoJmpQfoEEQHxD9t7e96X
- 9/87X5DGBxSe81eB+bjyohra5Lg=
-X-Mailgun-Sending-Ip: 198.61.254.15
+ bh=cILPgz4XyqjUlXxwQuFYrgD9NT4tC0MMCHE1fPTd+sc=; b=YyGCfAXYBIofALWu122S419VbZ4DujQ8e9XImEXmnVjyHeCnEhrMYai/8kzIXmqpnae2dKwb
+ OQWB6AXntzvv76korDN8G0KY2Bpi1FTht+vW2LGxEfpq96NEi0oBNfrEfL42kxQlIKWawFpE
+ BvHfuzLvvfG52LT517tt8ew6DPE=
+X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60241465e3df861f4b4cb7bf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 17:14:13
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6024146b81f6c45dcefd5ee3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 17:14:18
  GMT
 Sender: tdas=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 82986C43464; Wed, 10 Feb 2021 17:14:12 +0000 (UTC)
+        id 43640C43461; Wed, 10 Feb 2021 17:14:18 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +38,9 @@ Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A97C6C43462;
-        Wed, 10 Feb 2021 17:14:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A97C6C43462
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82FD6C43462;
+        Wed, 10 Feb 2021 17:14:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 82FD6C43462
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
 From:   Taniya Das <tdas@codeaurora.org>
@@ -50,9 +51,9 @@ Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
         linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
         Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v1 1/2] dt-bindings: clock: Add RPMHCC bindings for SC7280
-Date:   Wed, 10 Feb 2021 22:43:49 +0530
-Message-Id: <1612977230-11566-2-git-send-email-tdas@codeaurora.org>
+Subject: [PATCH v1 2/2] clk: qcom: rpmh: Add support for RPMH clocks on SC7280
+Date:   Wed, 10 Feb 2021 22:43:50 +0530
+Message-Id: <1612977230-11566-3-git-send-email-tdas@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1612977230-11566-1-git-send-email-tdas@codeaurora.org>
 References: <1612977230-11566-1-git-send-email-tdas@codeaurora.org>
@@ -60,25 +61,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings and update documentation for clock rpmh driver on SC7280.
+Add support for RPMH clocks on SC7280 SoCs.
 
 Signed-off-by: Taniya Das <tdas@codeaurora.org>
 ---
- Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/qcom/clk-rpmh.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml b/Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml
-index 12c9cbc..3d16c8e 100644
---- a/Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml
-+++ b/Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml
-@@ -18,6 +18,7 @@ properties:
-   compatible:
-     enum:
-       - qcom,sc7180-rpmh-clk
-+      - qcom,sc7280-rpmh-clk
-       - qcom,sdm845-rpmh-clk
-       - qcom,sdx55-rpmh-clk
-       - qcom,sm8150-rpmh-clk
+diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
+index 6a2a13c..c180959 100644
+--- a/drivers/clk/qcom/clk-rpmh.c
++++ b/drivers/clk/qcom/clk-rpmh.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.
+  */
+
+ #include <linux/clk-provider.h>
+@@ -486,6 +486,27 @@ static const struct clk_rpmh_desc clk_rpmh_sm8350 = {
+ 	.num_clks = ARRAY_SIZE(sm8350_rpmh_clocks),
+ };
+
++static struct clk_hw *sc7280_rpmh_clocks[] = {
++	[RPMH_CXO_CLK]      = &sdm845_bi_tcxo.hw,
++	[RPMH_CXO_CLK_A]    = &sdm845_bi_tcxo_ao.hw,
++	[RPMH_LN_BB_CLK2]   = &sdm845_ln_bb_clk2.hw,
++	[RPMH_LN_BB_CLK2_A] = &sdm845_ln_bb_clk2_ao.hw,
++	[RPMH_RF_CLK1]      = &sdm845_rf_clk1.hw,
++	[RPMH_RF_CLK1_A]    = &sdm845_rf_clk1_ao.hw,
++	[RPMH_RF_CLK3]      = &sdm845_rf_clk3.hw,
++	[RPMH_RF_CLK3_A]    = &sdm845_rf_clk3_ao.hw,
++	[RPMH_RF_CLK4]      = &sm8350_rf_clk4.hw,
++	[RPMH_RF_CLK4_A]    = &sm8350_rf_clk4_ao.hw,
++	[RPMH_IPA_CLK]      = &sdm845_ipa.hw,
++	[RPMH_PKA_CLK]      = &sm8350_pka.hw,
++	[RPMH_HWKM_CLK]     = &sm8350_hwkm.hw,
++};
++
++static const struct clk_rpmh_desc clk_rpmh_sc7280 = {
++	.clks = sc7280_rpmh_clocks,
++	.num_clks = ARRAY_SIZE(sc7280_rpmh_clocks),
++};
++
+ static struct clk_hw *of_clk_rpmh_hw_get(struct of_phandle_args *clkspec,
+ 					 void *data)
+ {
+@@ -575,6 +596,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
+ 	{ .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
+ 	{ .compatible = "qcom,sm8250-rpmh-clk", .data = &clk_rpmh_sm8250},
+ 	{ .compatible = "qcom,sm8350-rpmh-clk", .data = &clk_rpmh_sm8350},
++	{ .compatible = "qcom,sc7280-rpmh-clk", .data = &clk_rpmh_sc7280},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, clk_rpmh_match_table);
 --
 Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
 of the Code Aurora Forum, hosted by the  Linux Foundation.
