@@ -2,167 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B016317191
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E072A31719E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233199AbhBJUok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
+        id S233516AbhBJUps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbhBJUoU (ORCPT
+        with ESMTP id S233425AbhBJUpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:44:20 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9639C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:43:39 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id a25so4710650ljn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:43:39 -0800 (PST)
+        Wed, 10 Feb 2021 15:45:08 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667C7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:44:06 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id v5so3398830ybi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:44:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bFCBVLmx4m3P8OJ7FexI4xTU+D+dqeOPB5L3zdP1j98=;
-        b=OlXMEGE3+YXDW20u82up+ZZJxFuT5KQPVaOZp56fIviL/ca54YrjE5bQPiM0jLbtr5
-         JephDlBWc6ihBoJg5k8R1M7+hSbeoGkpREvy/8A8Bsg5/X4GhbjclPWfb060aUds7Xkf
-         2bFaMcZ2LOg9RoALDj7udW/xyJ4i9lrqIzZcg=
+        bh=8f1XjpNELN9zsfANF+FH1lk4KW13Kba1bid4uzYN8Ws=;
+        b=oy6sII0U3E3uIbMdr3LS1uwg/JacXpfPdfQILUh6etskJImlykEHzzQjuQP40GmMZJ
+         ABRwUIaDOpvvJ2YdD1qDm4VhSfrAOaPc6j4JpYL34kYXNqbxn8UR0IUuNgYptKgRWCOd
+         m6iwJU6LQQY4KNeSzE2L+LG0JQMQJVHbKVEfOIYF1OmsZwPoOx8aXAhsRlsAQPTwQhuc
+         M9BiFNFC8bL35R7qAyw7X7LL2Jx3uFXeySCvWsfvkU64mTmFf9nCbEEnwuALPHqZsfYz
+         qpDYuLZQ4sx5MQmY5E7ly1EqP0WDacjdHWiGyvpG7H0UlkJ+Wc+/ALPYlomlk6mG9Inb
+         TIrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bFCBVLmx4m3P8OJ7FexI4xTU+D+dqeOPB5L3zdP1j98=;
-        b=C+phNIdDDA1upyksLrF8OEAstaIBxbGDBpdX91JnsJ4XXjLGRireOMrmrH0fiUZ5nk
-         BeOBf54nxIwXN8J3toUiOwblRP+r2hrkEqpIh6s+rNBu1uQB+A9qOsDZZ/Ru8FY1LDM7
-         UfqM9Lwl3z924jr5oDDLQGvfHH0xfix6cY1S+2wY/OaOP08NrdVbsliqu4ZC2XvzjLL0
-         +IY7TaV/IFKIZI6l5uyRhZFuv7tZd2YRhburDDkhvawvhaGYWOXhPBc2dEHlQn5RTITw
-         M1W5RwEvdW/Jok1gwlOi4hmYU3b+NOprvjjBLd989DcPxWDPT5WQYIXsc7qLKzQT77fS
-         0ODA==
-X-Gm-Message-State: AOAM532XrE5uSDMiyZTBfQOpBA/6hztz3zaxfkhuB9nao7IYgjliL/3S
-        FMkYQMAB0c4agbxGftsPMjCpQlfbwurUjQ==
-X-Google-Smtp-Source: ABdhPJxXLxoOEMV9Um2u14ENBSpE1f8G0hiryy88CS585CknJ0LPL2U5h4qqtasK7gFkO1qcfD2HSQ==
-X-Received: by 2002:a2e:9119:: with SMTP id m25mr3131874ljg.215.1612989817753;
-        Wed, 10 Feb 2021 12:43:37 -0800 (PST)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id f20sm450455lfk.188.2021.02.10.12.43.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 12:43:36 -0800 (PST)
-Received: by mail-lf1-f51.google.com with SMTP id v5so4834840lft.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:43:35 -0800 (PST)
-X-Received: by 2002:a05:6512:a8c:: with SMTP id m12mr2551518lfu.253.1612989815438;
- Wed, 10 Feb 2021 12:43:35 -0800 (PST)
+        bh=8f1XjpNELN9zsfANF+FH1lk4KW13Kba1bid4uzYN8Ws=;
+        b=RpEUjpMSjncaveTWbGqf+s01O4xr0sDDPRzkcqdLZAh3PNv8zU6snqnsVdg5RV8Z4k
+         rGLFcn8ACIL8tpXd+oGLC4X4Akm0hjBrh+C4KSBFb1tLYetHM7c2tzehqUuq4/4TkYG+
+         Oyy773evom9e+7dZb8HOx+quhj3/lIP48RSQTDPLLvhb7YfPcC0yZTZpurKfromwi4a/
+         7m72BiswL0sYsUx690WCMIdz5DFxaGxSiPQZZ9smb6QhYgrngiCW0I+z1nqgTU3DORpj
+         ulD1KkR6qMfeMGzrIQPXQYlcKtd1OsLza9mQh0feBxbPXmCFg4RbaY1AI0X6KNBrJwFZ
+         HyZw==
+X-Gm-Message-State: AOAM531Lvz90Fn7hm4vwr5Ig8cBZuVvtgaDqZ1xI4v1NBmiQyRcuJTf0
+        xzNJWGuU1Z6iV3n2mnv4YyWsEXROZb9MseRrCWPRSw==
+X-Google-Smtp-Source: ABdhPJzHRkwwySiKSgHdTLepBiBJmKQc2WktlG1U/Wcb3SY6WEPBKAi8xHvRcVe/FZIAsAWokyaNW4lzuG7DDUU62NU=
+X-Received: by 2002:a25:718b:: with SMTP id m133mr7034554ybc.412.1612989845498;
+ Wed, 10 Feb 2021 12:44:05 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
- <591237.1612886997@warthog.procyon.org.uk> <1330473.1612974547@warthog.procyon.org.uk>
- <1330751.1612974783@warthog.procyon.org.uk>
-In-Reply-To: <1330751.1612974783@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 10 Feb 2021 12:43:19 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjgA-74ddehziVk=XAEMTKswPu1Yw4uaro1R3ibs27ztw@mail.gmail.com>
-Message-ID: <CAHk-=wjgA-74ddehziVk=XAEMTKswPu1Yw4uaro1R3ibs27ztw@mail.gmail.com>
-Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
-To:     David Howells <dhowells@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210210214720.02e6a6be@canb.auug.org.au> <YCQjfqH415zIhhyz@kroah.com>
+ <CAGETcx88Ln2XxuLN7P2BVhzB=OQxPLLsBN7WLL1j2JtR4+Z8ow@mail.gmail.com>
+ <CAGETcx9zM2OdbNDcC7pXGtY9yqRgb-wt0YzFv6wfNgQi0gM+8w@mail.gmail.com> <CAL_JsqLrRQs2Q_ui2SLdEBJ7FuYNpC-_K+9yoQjyMDbhaRbLiQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqLrRQs2Q_ui2SLdEBJ7FuYNpC-_K+9yoQjyMDbhaRbLiQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 10 Feb 2021 12:43:29 -0800
+Message-ID: <CAGETcx9dPER2NoOx5vcS7BbCNw=Bao20kKk82uMe_8Bjf-XoFw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the driver-core tree
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Greg KH <greg@kroah.com>, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 8:33 AM David Howells <dhowells@redhat.com> wrote:
+On Wed, Feb 10, 2021 at 12:15 PM Rob Herring <robh+dt@kernel.org> wrote:
 >
-> Then I could follow it up with this patch here, moving towards dropping the
-> PG_fscache alias for the new API.
+> On Wed, Feb 10, 2021 at 1:17 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Wed, Feb 10, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Wed, Feb 10, 2021 at 10:18 AM Greg KH <greg@kroah.com> wrote:
+> > > >
+> > > > On Wed, Feb 10, 2021 at 09:47:20PM +1100, Stephen Rothwell wrote:
+> > > > > Hi all,
+> > > > >
+> > > > > After merging the driver-core tree, today's linux-next build (sparc64
+> > > > > defconfig) failed like this:
+> > > > >
+> > > > > drivers/of/property.o: In function `parse_interrupts':
+> > > > > property.c:(.text+0x14e0): undefined reference to `of_irq_parse_one'
+> > > > >
+> > > > > Caused by commit
+> > > > >
+> > > > >   f265f06af194 ("of: property: Fix fw_devlink handling of interrupts/interrupts-extended")
+> > > > >
+> > > > > CONFIG_OF_IRQ depends on !SPARC so of_irq_parse_one() needs a stub.
+>
+> It's always Sparc!
+>
+> > > > > I have added the following patch for today.
+> > > > >
+> > > > > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > > Date: Wed, 10 Feb 2021 21:27:56 +1100
+> > > > > Subject: [PATCH] of: irq: make a stub for of_irq_parse_one()
+> > > > >
+> > > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > > ---
+> > > > >  include/linux/of_irq.h | 9 +++++++--
+> > > > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > >
+> > > Thanks Stephen!
+> >
+> > Actually the stub needs to return an error. 0 indicates it found the interrupt.
+>
+> I have a slight preference if you could add an 'if
+> (!IS_ENABLED(CONFIG_OF_IRQ))' at the caller instead.
+>
+> If you grep of_irq_parse_one, you'll see there's only a few users
+> which means it's on my hit list to make it private. Stub functions
+> give the impression 'use everywhere'.
 
-So I don't mind the alias per se, but I did mind the odd mixing of
-names for the same thing.
+I already sent out a fix :(
 
-So I think your change to make it be named "wait_on_page_private_2()"
-fixed that mixing, but I also think that it's probably then a good
-idea to have aliases in place for filesystems that actually include
-the fscache.h header.
+Will that check optimize out the code and not cause build errors? If
+so, I can send out a patch later.
 
-Put another way: I think that it would be even better to simply just
-have a function like
-
-   static inline void wait_on_page_fscache(struct page *page)
-   {
-        if (PagePrivate2(page))
-                wait_on_page_bit(page, PG_private_2);
-  }
-
-and make that be *not* in <linux/pagemap.h>, but simply be in
-<linux/fscache.h> under that big comment about how PG_private_2 is
-used for the fscache bit. You already have that comment, putting the
-above kind of helper function right there would very much explain why
-a "wait for fscache bit" function then uses the PagePrivate2 function
-to test the bit. Agreed?
-
-Alternatively, since that header file already has
-
-    #define PageFsCache(page)               PagePrivate2((page))
-
-you could also just write the above as
-
-   static inline void wait_on_page_fscache(struct page *page)
-   {
-        if (PageFsCache(page))
-                wait_on_page_bit(page, PG_fscache);
-  }
-
-and now it is even more obvious. And there's no odd mixing of
-"fscache" and "private_2", it's all consistent.
-
-IOW, I'm not against "wait_on_page_fscache()" as a function, but I
-*am* against the odd _mixing_ of things without a big explanation,
-where the code itself looks very odd and questionable.
-
-And I think the "fscache" waiting functions should not be visible to
-any core VM or filesystem code - it should be limited explicitly to
-those filesystems that use fscache, and include that header file.
-
-Wouldn't that make sense?
-
-Also, honestly, I really *REALLY* want your commit messages to talk
-about who has been cc'd, who has been part of development, and point
-to the PUBLIC MAILING LISTS WHERE THAT DISCUSSION WAS TAKING PLACE, so
-that I can actually see that "yes, other people were involved"
-
-No, I don't require this in general, but exactly because of the
-history we have, I really really want to see that. I want to see a
-
-   Link: https://lore.kernel.org/r/....
-
-and the Cc's - or better yet, the Reviewed-by's etc - so that when I
-get a pull request, it really is very obvious to me when I look at it
-that others really have been involved.
-
-So if I continue to see just
-
-    Signed-off-by: David Howells <dhowells@redhat.com>
-
-at the end of the commit messages, I will not pull.
-
-Yes, in this thread a couple of people have piped up and said that
-they were part of the discussion and that they are interested, but if
-I have to start asking around just to see that, then it's too little,
-too late.
-
-No more of this "it looks like David Howells did things in private". I
-want links I can follow to see the discussion, and I really want to
-see that others really have been involved.
-
-Ok?
-
-                  Linus
+-Saravana
