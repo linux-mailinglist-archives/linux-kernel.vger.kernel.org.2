@@ -2,97 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B261316F24
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D87F316F2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234391AbhBJSsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:48:01 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:37651 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234296AbhBJSkI (ORCPT
+        id S234059AbhBJSsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:48:33 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:50442 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234388AbhBJSlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:40:08 -0500
-Received: by mail-ot1-f41.google.com with SMTP id a5so1594303otq.4;
-        Wed, 10 Feb 2021 10:39:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rxTS3+SRxomQSyYLoa8qx229pO2BpD0/9oWyAxDCXio=;
-        b=kJycTYV4yEB65lu8kPvpI27iZ7XYAp8ZPPEi7EZ2bis+9oycFh8V+SG82H20XLYiIg
-         2vnUlPfsXVU5JM5rGAF44xnSUoOxUuvM2QPwMJ3ud7KbB0gp/cfor4EXEwcnj7r3TJPd
-         Kq6wWeLhV67Trig5LAWlZFvYqAs3j0x22ijz+HXHuplaorn29fXnz1I2Lp93+oafItS8
-         kzyTs5yCuotW3oTAWMjOcLLrytUO232dA6X9zIC5/jGnALqDKMnRtC9FlQmLXpLasGyl
-         Nvst3WEBxOVv/O+7jwJrNo/MUt6gItSdnx8+oRQ1USyel4/3boOLKUg7w5puD6/1VzB6
-         Ea9g==
-X-Gm-Message-State: AOAM533o2tIpM4vV/8LG6Y8n727XEGBRkqGZfR88ZYoCZEMw1YU8MMmu
-        0HiiDTjdpNDYH6sAjeVCtSCSf75VBO33MFjQXWcmDepk
-X-Google-Smtp-Source: ABdhPJyi5OHQZIQ/9YUyRXrNDJ8824T22VJga//Kw2/ulHXP1POBeRucokiH+t4VPegwg63sSHLgU6NE+uieV5Aduk8=
-X-Received: by 2002:a05:6830:148d:: with SMTP id s13mr3142306otq.250.1612982367488;
- Wed, 10 Feb 2021 10:39:27 -0800 (PST)
+        Wed, 10 Feb 2021 13:41:37 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AIP7Gr089153;
+        Wed, 10 Feb 2021 18:40:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=C+Gyl+bsnt2+HTSAhWjCVJVbRPBb0xQhVV2gG5aAxOg=;
+ b=tGTEWrEqurwtPVMKI0IFlMMOs0OLVh/eJUWy18hgKf0uPEkIeBu/VMeRAw9NLZuWjhjD
+ dYcg3AFFByq7RiYjRTALOcok+tWsIL2M8jlz96xdA5UXhEdZjpXmpspnfJU5omdRlkV5
+ WS1rPFJE0nugv4j9M0DpC69VP5yMLHU1Bze69Nc4iODOpB51Qffjz6HGLJg0W4dB0YZN
+ 8/HEXEM4yapNdimboW4w4hK6BlGhP0iECSxlBDua5tE1IatXHHLYLAAMpV4iAvbSuAdq
+ gzsRXZECyHZK1VNn9Z+7R5YNtr2c5bYWbmASlKyOGVyxKW74p8l0VP6j3XLQRQM/rRMM KQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 36hjhqvmcn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 18:40:45 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AIP5u4183658;
+        Wed, 10 Feb 2021 18:40:43 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 36j51xxy03-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 18:40:43 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11AIegxX032272;
+        Wed, 10 Feb 2021 18:40:42 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 10:40:41 -0800
+Date:   Wed, 10 Feb 2021 21:40:27 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        luk@wybcz.pl, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: cleanup macros within
+ include/rtw_debug.h
+Message-ID: <20210210184027.GZ2696@kadam>
+References: <20210210170003.100880-1-phil@philpotter.co.uk>
 MIME-Version: 1.0
-References: <20210210074946.155417-3-drew@beagleboard.org> <20210210182044.GY2696@kadam>
-In-Reply-To: <20210210182044.GY2696@kadam>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 10 Feb 2021 19:39:16 +0100
-Message-ID: <CAMuHMdUTG-0PMsP--i4KE2RA_zOaQgpUDksvtU8dLPW9dSpoug@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210170003.100880-1-phil@philpotter.co.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100167
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1011 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100167
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+On Wed, Feb 10, 2021 at 05:00:03PM +0000, Phillip Potter wrote:
+> Remove do/while loops from DBG_871X, MSG_8192C and DBG_8192C.
 
-On Wed, Feb 10, 2021 at 7:21 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> 99b2f99aa41aa7 Drew Fustini  2021-02-09  694    buf = devm_kzalloc(pctldev->dev, PINMUX_MAX_NAME * 2, GFP_KERNEL);
-> 99b2f99aa41aa7 Drew Fustini  2021-02-09  695    if (!buf)
-> 99b2f99aa41aa7 Drew Fustini  2021-02-09  696            return -ENOMEM;
-> 99b2f99aa41aa7 Drew Fustini  2021-02-09  697
-> 99b2f99aa41aa7 Drew Fustini  2021-02-09  698    fname = devm_kzalloc(pctldev->dev, PINMUX_MAX_NAME, GFP_KERNEL);
-> 99b2f99aa41aa7 Drew Fustini  2021-02-09  699    if (!fname) {
-> 99b2f99aa41aa7 Drew Fustini  2021-02-09  700            ret = -ENOMEM;
-> 99b2f99aa41aa7 Drew Fustini  2021-02-09  701            goto free_buf;
->
-> The gotos are out of order.  They should be in mirror/reverse order of
-> the allocations:
->
-> free_gmane:
->         devm_kfree(pctldev->dev, gname);
-> free_fname:
->         devm_kfree(pctldev->dev, fname);
-> free_buf:
->         devm_kfree(pctldev->dev, buf);
->
-> But also why do we need to use devm_kfree() at all?  I thought the whole
-> point of devm_ functions was that they are garbage collected
-> automatically for you.  Can we not just delete all error handling and
-> return -ENOMEM here?
+I'm pretty hip to checkpatch.pl warnings, but I had forgotten what the
+warning was for this:
 
-No, because the lifetime of the objects allocated here does not match the
-lifetime of dev.  If they're not freed here, they will only be freed when the
-device is unbound.  As the user can access the sysfs files at will, he can
-OOM the system.
+WARNING: Single statement macros should not use a do {} while (0) loop
 
-Gr{oetje,eeting}s,
+Please, include it for people who are forgetful like I am.
 
-                        Geert
+> Also
+> fix opening brace placements and trailing single statement layout within
+> RT_PRINT_DATA, as well as making newline character placement more
+> consistent and removing camel case where possible. Finally, add
+> parentheses for DBG_COUNTER definition.
+> 
+> This fixes 3 checkpatch warnings, 5 checkpatch errors and 3 checkpatch
+> checks.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+This patch would be easier to review if it were split into multiple
+patches.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> ---
+>  drivers/staging/rtl8723bs/include/rtw_debug.h | 40 +++++++++----------
+>  1 file changed, 19 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
+> index c90adfb87261..d06ac9540cf7 100644
+> --- a/drivers/staging/rtl8723bs/include/rtw_debug.h
+> +++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
+> @@ -201,19 +201,16 @@
+>  #ifdef DEBUG
+>  #if	defined(_dbgdump)
+>  	#undef DBG_871X
+> -	#define DBG_871X(...)     do {\
+> -		_dbgdump(DRIVER_PREFIX __VA_ARGS__);\
+> -	} while (0)
+> +	#define DBG_871X(...)\
+> +		_dbgdump(DRIVER_PREFIX __VA_ARGS__)
+
+This can fit on one line:
+
+	#define DBG_871X(...) _dbgdump(DRIVER_PREFIX __VA_ARGS__)
+
+It's tough with staging code to know how much to change at one time
+because even after you change the code then it still looks rubbish.
+This define shouldn't be indented.  The _dbgdump() macro is just
+
+#define _dbgdump printk
+
+so you know, no printk level.  Wow.  etc.  This code is crap.
+
+>  
+>  	#undef MSG_8192C
+> -	#define MSG_8192C(...)     do {\
+> -		_dbgdump(DRIVER_PREFIX __VA_ARGS__);\
+> -	} while (0)
+> +	#define MSG_8192C(...)\
+> +		_dbgdump(DRIVER_PREFIX __VA_ARGS__)
+>  
+>  	#undef DBG_8192C
+> -	#define DBG_8192C(...)     do {\
+> -		_dbgdump(DRIVER_PREFIX __VA_ARGS__);\
+> -	} while (0)
+> +	#define DBG_8192C(...)\
+> +		_dbgdump(DRIVER_PREFIX __VA_ARGS__)
+>  #endif /* defined(_dbgdump) */
+>  #endif /* DEBUG */
+>  
+
+Yeah.  Do all the above as one patch.
+
+> @@ -235,25 +232,26 @@
+>  
+>  #if	defined(_dbgdump)
+>  	#undef RT_PRINT_DATA
+> -	#define RT_PRINT_DATA(_Comp, _Level, _TitleString, _HexData, _HexDataLen)			\
+> -		if (((_Comp) & GlobalDebugComponents) && (_Level <= GlobalDebugLevel))	\
+> -		{									\
+> +	#define RT_PRINT_DATA(_comp, _level, _title_string, _hex_data, _hex_data_len)		\
+> +	do {											\
+> +		if (((_comp) & GlobalDebugComponents) && ((_level) <= GlobalDebugLevel)) {	\
+>  			int __i;								\
+> -			u8 *ptr = (u8 *)_HexData;				\
+> +			u8 *ptr = (u8 *)_hex_data;						\
+>  			_dbgdump("%s", DRIVER_PREFIX);						\
+> -			_dbgdump(_TitleString);						\
+> -			for (__i = 0; __i < (int)_HexDataLen; __i++)				\
+> -			{								\
+> +			_dbgdump(_title_string);						\
+> +			for (__i = 0; __i < (int)_hex_data_len; __i++) {			\
+>  				_dbgdump("%02X%s", ptr[__i], (((__i + 1) % 4) == 0)?"  ":" ");	\
+> -				if (((__i + 1) % 16) == 0)	_dbgdump("\n");			\
+> -			}								\
+> -			_dbgdump("\n");							\
+> -		}
+> +				if (((__i + 1) % 16) == 0)					\
+> +					_dbgdump("\n");						\
+> +			}									\
+> +			_dbgdump("\n");								\
+> +		}										\
+> +	} while (0)
+
+This is okay, I suppose but we have functions to dump hex data.  I can't
+remember what they are...  One patch for this.
+
+>  #endif /* defined(_dbgdump) */
+>  #endif /* DEBUG_RTL871X */
+>  
+>  #ifdef CONFIG_DBG_COUNTER
+> -#define DBG_COUNTER(counter) counter++
+> +#define DBG_COUNTER(counter) ((counter)++)
+
+Heh...  I think these counters are write only variables.  Double check
+and then just delete everything to do with CONFIG_DBG_COUNTER.
+(In a separate patch).
+
+regards,
+dan carpenter
+
