@@ -2,60 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59485316183
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D8E316190
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhBJIyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:54:03 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12167 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhBJIw1 (ORCPT
+        id S229821AbhBJI4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:56:15 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:57632 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhBJIxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:52:27 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DbD3T2wpGzlHrV;
-        Wed, 10 Feb 2021 16:49:57 +0800 (CST)
-Received: from [10.174.179.149] (10.174.179.149) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 10 Feb 2021 16:51:41 +0800
-Subject: Re: [PATCH] mm/hugetlb: use some helper functions to cleanup code
-To:     David Hildenbrand <david@redhat.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-References: <20210210065346.21958-1-linmiaohe@huawei.com>
- <4bb381fc-eae5-effd-214d-8d62e66da272@redhat.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <ccdf2213-651c-ae04-1a2f-4e69fdd2faa8@huawei.com>
-Date:   Wed, 10 Feb 2021 16:51:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 10 Feb 2021 03:53:38 -0500
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612947175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wI4dYA0LemOEeK7ck9OsgEy8vt00i1M3Et4kBaT742I=;
+        b=FePiSAFmqsrH5sPz7TKOXO67Vc6lP2feeRBjSexAD2DRWCeXDQeBmuaufc7TSuu1mwK4Cl
+        M+yXBUWCFHH3C+2WQQwGN2q8FR/LygHDOTgUIN01pmrhmO/RK3PBhG/1qDISf8mYrbjjFm
+        nJ5Nrf1DaTrXKZFcdWjQ+AvzlEJS+9XAbsfIkOxjq65EYwmClZJTuGdZ5OT3OG3hB+YlDz
+        VOI773N9XrvFO7TWmkIj14mWY0TvZ2aI5vLVSMWORRcl/MRc1nUnGDSt81GU/RoWDv44Om
+        aK6+RhlaXPE9LzhQ2ECQwA1pPcgtSN0lcyspFtpL/fcTBIpeNc/cv0RSQzpnPQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612947175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wI4dYA0LemOEeK7ck9OsgEy8vt00i1M3Et4kBaT742I=;
+        b=h6O5tk3jRSJAGgO0HvlNPXwZSNtVo1mE5BbHlvsrhPW8M85QGkas9VF++KuK6+8smQH5i1
+        4tKJp89edeKe6bCg==
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 0/2] locking/mutex: Kill mutex_trylock_recursive()
+Date:   Wed, 10 Feb 2021 09:52:46 +0100
+Message-Id: <20210210085248.219210-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <4bb381fc-eae5-effd-214d-8d62e66da272@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.149]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/10 16:35, David Hildenbrand wrote:
-> On 10.02.21 07:53, Miaohe Lin wrote:
->> We could use pages_per_huge_page to get the number of pages per hugepage,
->> use get_hstate_idx to calculate hstate index, and use hstate_is_gigantic
->> to check if a hstate is gigantic to make code more succinct.
->>
-> 
-> Another suggestion, please collect and group your cleanups for a subsystem and send them in a single cleanup patch series where possible. Again, makes life easier for reviewers and maintainers.
-> 
+Remove mutex_trylock_recursive() from the API and tell checkpatch not to
+check it for it anymore.
 
-Many thanks for your suggestion again. I will keep it in mind. :)
+Sebastian
 
-> Thanks!
-> 
-
-Thanks a lot.
-
-> 
 
