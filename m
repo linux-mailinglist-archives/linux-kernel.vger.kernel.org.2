@@ -2,248 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F6A315FD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6064E315FD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbhBJHCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 02:02:07 -0500
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:33040 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhBJHB6 (ORCPT
+        id S232276AbhBJHEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 02:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231927AbhBJHD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 02:01:58 -0500
-Received: by mail-lj1-f177.google.com with SMTP id a25so1481311ljn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 23:01:40 -0800 (PST)
+        Wed, 10 Feb 2021 02:03:59 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C469C06174A;
+        Tue,  9 Feb 2021 23:03:19 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id u14so1267952wri.3;
+        Tue, 09 Feb 2021 23:03:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LBNzGpjovJdmRTyJP+nTC+xvg8GW871RV/9xcC5rQDI=;
+        b=FqK5GGpwnIknffo5W5qv8ABGIuwGLerReoXG1M1L9cMFIUWx/poY4vmbqMwoxO21U/
+         fwFwneaEZ1K5OjjP73KBXjnqrdGXrthRtUdvpEvEJgNjplP7UeX6nseZ4qKXMCfKZx6s
+         JKzBuJ1gSDixo6gxmbsKnKwogkhmGzWthhNT/3mVYOLBI/mMabgpFSPmekVp+XHXTefG
+         pWyV46/BYdm2bBkTs3TQi+B/W0R4Rd+VcZ8qia1qGa/GyPKWXpa9CfU/Xv9yJ0Uxy1Gr
+         tpVzMkNjHxJyzMMNvHUD8x9zsUpFHBJhCwMqsb30YJriQO+Sj4yqbdOjbKXG5v6quovo
+         qnqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Kkc+vL76oFsI+gKvpPWRMS2VWzccYZ7RAvh7RS/YjSk=;
-        b=CrooNhNPlxm2jPhoxRdK5GzlIuaT/zkNYYBz/OWC0+YgcEsLUDK8klb5f5b8KRMzWN
-         0Bb9sTR5ouDt7FIPdUweGvfIvWUr1MyLjjhfX0QYSCa0YlDa6nMbkolZz/tCpWQfvx+Q
-         znsOdmhIScd/rMIPWzrhwCZ6x0eb59F0LDQl+BrynUe8hfnU6bKce6PQs09gA2HWLG4t
-         8E7pX3LGX3tnIRnkdua1Y7T4HuSoJqI4hO8HTTrDycgAwN3+a5bdb2BKwoW/Zs4AzLFI
-         9Xf9984f1spLoDNpA58Tyq2way2UgY3qnEpdu/iEMUfScgv4Fkp0ZOmt31j0hCFReGdD
-         9I1Q==
-X-Gm-Message-State: AOAM533zT78o1cizRIR21XXygLhGf8m6HpBB53sfiT3ZULm+SnjASOE1
-        DvvckgLhyuK6RUcibSvUNcPHGiYXIBR9Pw==
-X-Google-Smtp-Source: ABdhPJwEZrYpE8+mMtD6TpNi718O6MfSbWnHwoZng4puNNinZR7ThXryqFeXkAxz+9tVxIOZjjamQw==
-X-Received: by 2002:a2e:8ed2:: with SMTP id e18mr1064236ljl.87.1612940474965;
-        Tue, 09 Feb 2021 23:01:14 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id y10sm159678lfy.57.2021.02.09.23.01.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 23:01:14 -0800 (PST)
-Message-ID: <bd59188a1aa360385edf33bf14de5e82ad60a766.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH v7 3/6] mfd: bd9576: Add IRQ support
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-In-Reply-To: <20210209152538.GB220368@dell>
-References: <cover.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
-         <8489e5d34a6ae26309772f7cbffaa340fbb6c34e.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210209152538.GB220368@dell>
-Content-Type: text/plain; charset="UTF-8"
+        bh=LBNzGpjovJdmRTyJP+nTC+xvg8GW871RV/9xcC5rQDI=;
+        b=QSx8Bl3Q3zUgy1gNhWdBmG6UJGK5kjnolbf5Kp7ZfAfegeenlV+2sVtDoZ5qeSnPPe
+         JJUiVYLiNmtsfuxZcR//4CeH+Lppi9XdT2wejjbM6320MunOn9KS5/9iGiYxWwe9Y1ie
+         2HTzDa2F27yayT3aew/xCdcZyXiQZqa5PWalk5UKLEwF/Nul9XWLyUhZiZEKRu+y+Rf4
+         plh6dupMM3oLeP1XkZ7wrJm6+mvcJi2d1HmKaRG41wN4oA84mqDI9DI3AiiBPyM4CvYD
+         msWFUR7NuiIYjzY93x4s+/eOG1NWx+1gtxBflLhW5UXJPyUGtwtqLukTddW7774Ls4x3
+         a1lw==
+X-Gm-Message-State: AOAM530PGmRSlxKkNXxiZ1VzHCYN65tnmLpdZJTPpiIEgwzgGcNHiALi
+        ynCwV0DndEEo5UXM/7hduGA=
+X-Google-Smtp-Source: ABdhPJxQtDoTHO5G6iFs2FvzMzpR8PjSz/sPLH5W+rUxE8mtOeiNhP5CQYvXUY83iJebpiwQvRC1VA==
+X-Received: by 2002:adf:b64f:: with SMTP id i15mr1833176wre.279.1612940597877;
+        Tue, 09 Feb 2021 23:03:17 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f1f:ad00:b0ff:e539:9460:c978? (p200300ea8f1fad00b0ffe5399460c978.dip0.t-ipconnect.de. [2003:ea:8f1f:ad00:b0ff:e539:9460:c978])
+        by smtp.googlemail.com with ESMTPSA id t7sm1582362wrv.75.2021.02.09.23.03.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 23:03:17 -0800 (PST)
+Subject: Re: [PATCH net-next 7/9] net: phy: icplus: select page before writing
+ control register
+To:     Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210209164051.18156-1-michael@walle.cc>
+ <20210209164051.18156-8-michael@walle.cc>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
+Date:   Wed, 10 Feb 2021 08:03:07 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Date:   Wed, 10 Feb 2021 09:01:08 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+In-Reply-To: <20210209164051.18156-8-michael@walle.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Lee,
-
-I appreciate your thorough reviews :) Thanks.
-
-On Tue, 2021-02-09 at 15:25 +0000, Lee Jones wrote:
-> On Fri, 22 Jan 2021, Matti Vaittinen wrote:
+On 09.02.2021 17:40, Michael Walle wrote:
+> Registers >= 16 are paged. Be sure to set the page. It seems this was
+> working for now, because the default is correct for the registers used
+> in the driver at the moment. But this will also assume, nobody will
+> change the page select register before linux is started. The page select
+> register is _not_ reset with a soft reset of the PHY.
 > 
-> > BD9573 and BD9576 support set of "protection" interrupts for
-> > "fatal"
-> > issues. Those lead to SOC reset as PMIC shuts the power outputs.
-> > Thus
-> > there is no relevant IRQ handling for them.
-> > 
-> > Few "detection" interrupts were added to the BD9576 with the idea
-> > that
-> > SOC could take some recovery-action before error gets
-> > unrecoverable.
-> > 
-> > Unfortunately the BD9576 interrupt logic was not re-evaluated. IRQs
-> > are not designed to be properly acknowleged - and IRQ line is kept
-> > active for whole duration of error condition (in comparison to
-> > informing only about state change).
-> > 
-> > For above reason, do not consider missing IRQ as error.
-> > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> >  	case ROHM_CHIP_TYPE_BD9573:
-> >  		mfd = bd9573_mfd_cells;
-> >  		cells = ARRAY_SIZE(bd9573_mfd_cells);
-> > +		/* BD9573 only supports fatal IRQs which we do not
-> > handle */
+> Add read_page()/write_page() support for the IP101G and use it
+> accordingly.
 > 
-> Why not?
-
-Because 'fatal' in the context of this comment means that when this
-condition occurs the PMIC will do emergency shut down for power outputs
-- which means the processor will not be able to handle the IRQ as it
-loses the power. Maybe I'd better clarify the meaning of 'fatal' here.
-+	/*
-> > +	 * BD9576 behaves badly. It kepts IRQ asserted for the whole
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+>  drivers/net/phy/icplus.c | 50 +++++++++++++++++++++++++++++++---------
+>  1 file changed, 39 insertions(+), 11 deletions(-)
 > 
-> This is solution is less than pretty.
+> diff --git a/drivers/net/phy/icplus.c b/drivers/net/phy/icplus.c
+> index a6e1c7611f15..858b9326a72d 100644
+> --- a/drivers/net/phy/icplus.c
+> +++ b/drivers/net/phy/icplus.c
+> @@ -49,6 +49,8 @@ MODULE_LICENSE("GPL");
+>  #define IP101G_DIGITAL_IO_SPEC_CTRL			0x1d
+>  #define IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32		BIT(2)
+>  
+> +#define IP101G_DEFAULT_PAGE			16
+> +
+>  #define IP175C_PHY_ID 0x02430d80
+>  #define IP1001_PHY_ID 0x02430d90
+>  #define IP101A_PHY_ID 0x02430c54
+> @@ -250,23 +252,25 @@ static int ip101a_g_probe(struct phy_device *phydev)
+>  static int ip101a_g_config_init(struct phy_device *phydev)
+>  {
+>  	struct ip101a_g_phy_priv *priv = phydev->priv;
+> -	int err;
+> +	int oldpage, err;
+> +
+> +	oldpage = phy_select_page(phydev, IP101G_DEFAULT_PAGE);
+>  
+>  	/* configure the RXER/INTR_32 pin of the 32-pin IP101GR if needed: */
+>  	switch (priv->sel_intr32) {
+>  	case IP101GR_SEL_INTR32_RXER:
+> -		err = phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
+> -				 IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32, 0);
+> +		err = __phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
+> +				   IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32, 0);
+>  		if (err < 0)
+> -			return err;
+> +			goto out;
+>  		break;
+>  
+>  	case IP101GR_SEL_INTR32_INTR:
+> -		err = phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
+> -				 IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32,
+> -				 IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32);
+> +		err = __phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
+> +				   IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32,
+> +				   IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32);
+>  		if (err < 0)
+> -			return err;
+> +			goto out;
+>  		break;
+>  
+>  	default:
+> @@ -284,12 +288,14 @@ static int ip101a_g_config_init(struct phy_device *phydev)
+>  	 * reserved as 'write-one'.
+>  	 */
+>  	if (priv->model == IP101A) {
+> -		err = phy_set_bits(phydev, IP10XX_SPEC_CTRL_STATUS, IP101A_G_APS_ON);
+> +		err = __phy_set_bits(phydev, IP10XX_SPEC_CTRL_STATUS,
+> +				     IP101A_G_APS_ON);
+>  		if (err)
+> -			return err;
+> +			goto out;
+>  	}
+>  
+> -	return 0;
+> +out:
+> +	return phy_restore_page(phydev, oldpage, err);
 
-Um, sorry, What are you referring to?
+If a random page was set before entering config_init, do we actually want
+to restore it? Or wouldn't it be better to set the default page as part
+of initialization?
 
-> > +	 * duration of detected HW condition (like over temp). This
-> > does
+>  }
+>  
+>  static int ip101a_g_ack_interrupt(struct phy_device *phydev)
+> @@ -347,6 +353,26 @@ static irqreturn_t ip101a_g_handle_interrupt(struct phy_device *phydev)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> +static int ip101a_g_read_page(struct phy_device *phydev)
+> +{
+> +	struct ip101a_g_phy_priv *priv = phydev->priv;
+> +
+> +	if (priv->model == IP101A)
+> +		return 0;
+> +
+> +	return __phy_read(phydev, IP101G_PAGE_CONTROL);
+> +}
+> +
+> +static int ip101a_g_write_page(struct phy_device *phydev, int page)
+> +{
+> +	struct ip101a_g_phy_priv *priv = phydev->priv;
+> +
+> +	if (priv->model == IP101A)
+> +		return 0;
+> +
+> +	return __phy_write(phydev, IP101G_PAGE_CONTROL, page);
+> +}
+> +
+>  static struct phy_driver icplus_driver[] = {
+>  {
+>  	PHY_ID_MATCH_MODEL(IP175C_PHY_ID),
+> @@ -373,6 +399,8 @@ static struct phy_driver icplus_driver[] = {
+>  	.config_intr	= ip101a_g_config_intr,
+>  	.handle_interrupt = ip101a_g_handle_interrupt,
+>  	.config_init	= ip101a_g_config_init,
+> +	.read_page	= ip101a_g_read_page,
+> +	.write_page	= ip101a_g_write_page,
+>  	.soft_reset	= genphy_soft_reset,
+>  	.suspend	= genphy_suspend,
+>  	.resume		= genphy_resume,
 > 
-> "over-temperature"
-
-Right. Thanks :)
-
-> > +	 * not play nicely under any condition but we can work around
-> > it
-> > +	 * except when we have shared IRQs. So we don't require IRQ to
-> > be
-> > +	 * populated to help those poor sods who did connect IRQ to
-> > shared pin.
-> 
-> No swearing in comments please.
-
-Ok. This is actually a good reminder for me that I can't know how
-something sounds like for a reader. (That phrase sounds quite innocent
-to me but I've no idea how 'severe' swearing that is for the rest of
-the world). I'll clean this up.
-
-> How do you know if an IRQ is shared?
-
-I don't. This is something that board designer does know. And my
-thinking here was to allow board designer to omit the IRQ information
-from DT if he prefers to not use these IRQs. I just tried to explain
-that the driver does not _require_ IRQ information to be populated.
-
-> 
-> > +	 * If IRQ information is not given, then we mask all IRQs and
-> > do not
-> > +	 * provide IRQ resources to regulator driver - which then just
-> > omits
-> > +	 * the notifiers.
-> > +	 */
-> 
-> This situation doesn't sound totally crazy.  Is there no way to
-> handle
-> 'persistent IRQ' conditions in the kernel?
-
-Actually there is. Even for shared IRQs in this case. I made a mistake
-at the beginning when I noticed that not all of these IRQs have mask
-bits in the sub-IRQ registers. So I thought that for these IRQs the
-device can't be told to revert IRQ back to normal. That would have
-meaned that only way to prevent IRQ storm was to disable IRQs from the
-processor end. But I was mistaken. All of the IRQs can be masked from
-the 'main IRQ' level register. So we can mask the whole set of IRQs
-form BD9576 when IRQ triggers - and then we can get the BD9576 to
-restore the IRQ line.
-
-So yes - we can make this to somehow work. And more importantly, we
-don't completely spoil the shared IRQs. Still, the IRQ handling for
-BD9576 is ... how to put it ... hacky. And I think few of the setups
-might not actually have use for the notifications - so making IRQs
-optional just sounded like the best course of action (to me). 
-+	} else {
-> > +		ret = regmap_update_bits(regmap,
-> > BD957X_REG_INT_MAIN_MASK,
-> > +					 BD957X_MASK_INT_ALL,
-> > +					 BD957X_MASK_INT_ALL);
-> 
-> What's the default state of the interrupts?  Unmasked?
-
-I've learned that I'd rather not assume the default state with ROHM
-ICs. I've seen all kinds of defaults changing between IC revisions. And
-occasionally I've seen same IC versions having different set of
-defaults depending on the OTP version. I guess this comes from
-traditional operation model where ICs have been tailored to meet needs
-of the different customers.
- 
-> > diff --git a/include/linux/mfd/rohm-bd957x.h
-> > b/include/linux/mfd/rohm-bd957x.h
-> > index 3e7ca6fe5d4f..4fa632d8467a 100644
-> > --- a/include/linux/mfd/rohm-bd957x.h
-> > +++ b/include/linux/mfd/rohm-bd957x.h
-> > @@ -13,47 +13,109 @@ enum {
-> >  	BD957X_VOUTS1,
-> >  };
-> >  
-> > +/* The BD9576 has own IRQ 'blocks' for:
-> 
-> Comments start on line 2.
-
-Do you mean I should move this comment block top of the file? The idea
-of this comment is to clarify the IRQs in the hardware. Hence I placed
-it in the section where IRQ definitions dwell.
-
-> > + * I2C/THERMAL,
-> 
-> Does this precede each line?
-
-You mean the I2C/THERMAL? No. The first IRQ block is combined set of
-I2C/thermal IRQs. Caps are misleading, right?
-
-> + *    temperature. Best mitigation for high temperature for sure
-> > is to
-> > + *    keep the processor in IRQ loop, right? (NO!)
-> 
-> No sarcasm in comments please it can be easily lost in translation.
-> 
-> Please stay helpful and keep to the facts.
-
-Right. I'll clean this up.
-
-> 
-> >  #define BD957X_REG_SMRB_ASSERT		0x15
-> >  #define BD957X_REG_PMIC_INTERNAL_STAT	0x20
-> >  #define BD957X_REG_INT_THERM_STAT	0x23
-> > -#define BD957X_REG_INT_THERM_MASK 0x24
-> > -#define BD957X_REG_INT_OVP_STAT 0x25
-> > -#define BD957X_REG_INT_SCP_STAT 0x26
-> > -#define BD957X_REG_INT_OCP_STAT 0x27
-
-//snip
-
-> > +
-> > +#define BD957X_REGULATOR_EN_MASK	0xff
-> > +#define BD957X_REGULATOR_DIS_VAL	0xff
-> > +
-> > +#define BD957X_VSEL_REG_MASK		0xff
-> > +
-> > +#define BD957X_MASK_VOUT1_TUNE		0x87
-> > +#define BD957X_MASK_VOUT2_TUNE		0x87
-> > +#define BD957X_MASK_VOUT3_TUNE		0x1f
-> > +#define BD957X_MASK_VOUT4_TUNE		0x1f
-> > +#define BD957X_MASK_VOUTL1_TUNE		0x87
-> > +
-> > +#define BD957X_REG_VOUT1_TUNE		0x50
-> > +#define BD957X_REG_VOUT2_TUNE		0x53
-> > +#define BD957X_REG_VOUT3_TUNE		0x56
-> > +#define BD957X_REG_VOUT4_TUNE		0x59
-> > +#define BD957X_REG_VOUTL1_TUNE		0x5c
-> > +
-> > +#define BD957X_MAX_REGISTER		0x61
-> 
-> Line all these up please.
-
-By 'line up' you mean I should remove the empty lines, right?
-
-Best Regards
-	Matti Vaittinen
-
-
 
