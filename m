@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3A0316100
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4581D316101
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhBJI3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:29:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
+        id S230005AbhBJI3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:29:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbhBJI0i (ORCPT
+        with ESMTP id S231408AbhBJI0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:26:38 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC537C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:25:52 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id fa16so705720pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:25:52 -0800 (PST)
+        Wed, 10 Feb 2021 03:26:37 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E11C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:25:57 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id a16so787543plh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:25:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g4mAxK84GVyyKetwRBgARd5k8KiBNnAsnToA/1zbXCg=;
-        b=GLne2KwtyWUcLtsjoYrN2d+ZV3yyoA3ILAldzIyiYA8Z7waJFzoH7SNdpikNHbBVAy
-         +PKuZ2LJBCfu0JtcPEJjYTz1KEuPLyTadRuVGRXE0dRv/ZiboPdinPnVC68WkXKDLV0M
-         7CLvS8Hmt3mpG/urv/zMZP3vzNCuaDV4ypO9eMe2rvfy30KlSgZFqFR94Xx4i6+06V4Q
-         m3hXLSTKNNdnf5rF5s2OI1OHxvT8G41ixRVOpkZgbOST8D7i7AHjT+kK5KKssvGtOlPD
-         Wh3nOdDRhI1XTKZANfFNzMNQhyxyt9TXRgad4pua6Ovc8FF8sSptWfVEiM7L9pfSDZI6
-         8OoA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=O1bP8tntg9pA9yGxdgncjvitmKPqyFRS1o/Fqe5r2Ps=;
+        b=irzmiVZ4wsEOeiwpQwsrht1OIb9g5AKBV+N1HM9YcKJf95u9lyJqdetLbOTkFDPznA
+         pt3dJRYpn77GMxLX5KfzWm9UcxtdOpKl3BY0APSVniGsRPb/cYMyomC9kk6IHQtN1IBe
+         62WQsgGlydXrwhNxQYWvaT2qJ1QllCXUrUSq4gYfQ0JPshAX0wHZnm7yEsHOVf5Bhx6C
+         ocs1C4cbTJGsZjvnLIeZA4RU8Rb8Uo/ikTUr1XUqBe5Hr/+agFQroAithue/yMzdxBJs
+         YRrTiJ2hM9zbxq/mcy+wGmFd51sh0CYkQJWdD4wpILQsBuQ7QWb4Cg+v/5rrUlxeOT7U
+         MVMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g4mAxK84GVyyKetwRBgARd5k8KiBNnAsnToA/1zbXCg=;
-        b=dxrqLvUkuyW5RXXXoowY0U2uIrslKL6fzdMVYhuC+2SPRrFaEETCpGgTKa/C8ZLMPw
-         a2r+kzwRQrKn1JiqUlRX4hqJWqqpoc7/f9Qd/IOGw5CYNCOwpR+iiBFj2LWx5OKq4lIV
-         CzFE7TyHc00zwED2ZPsE2nF7kUhsB5dlRtD5cgswpIhtRdBuio+7cN0lbNXHljxrthxr
-         hFXALx3ugLTmENdCrHY1oOYCaz91QtDCzQxpK/C1smiaKBxDW4S46Mcx0SalYwV8uidn
-         +RRRxHjr+KTINWWVrBg9CS+Y75Y0cwqFSaSA2M6dZoSxZbJABXeNFiJRYwNAKzWX2AsW
-         X44g==
-X-Gm-Message-State: AOAM5328QvGEo28+dD6g8+F6iOZEEzcxfIgOzwGs0OWWhrqcSaxcWCnV
-        2UfGHCntVTb3cv+UfBGNsmMl
-X-Google-Smtp-Source: ABdhPJzhj439RRQshBLOOGPVaOfrmeeEbK3w7uF7K8DfGOTJ+v0iCH7vyeCfb1G1rhxshZxuv5OtPw==
-X-Received: by 2002:a17:90b:e09:: with SMTP id ge9mr2016098pjb.173.1612945552492;
-        Wed, 10 Feb 2021 00:25:52 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=O1bP8tntg9pA9yGxdgncjvitmKPqyFRS1o/Fqe5r2Ps=;
+        b=Lq65l6Ezdv6VFtLo0+0Fn3ONGKYbsdIGQe6+L4Z4hVzCDBPd3nW55rwm06E7ajViNz
+         X2k6gYvlTf3iOFEzoWZzGyjHnXW+TGWca23SOr5r5RGR7it2XK2bT+XwkH8VoZf5L+rO
+         XAsZLOBjc7o7PTdlCEPOv9kP8SUJDB+PWb3ij7iLLFHo6eR5+fnVdrgyDiJd7hv6ULkl
+         xIVBE1v8ndwYxDJWGc/33XcduIKoNWISCC3FeQpBdmJRpyq3TOB1wg8Vg8zpF8rvTu+d
+         0+jfmSVwrq09pro2TFWbxWgBoEYsPvM5qwS/BU6gBJU7EzLrQ8fvu9IHtkpHTt6tKgV4
+         VuGA==
+X-Gm-Message-State: AOAM532A62azHZSAINKRVb9qn/5A4hD2/RURNCTPGU/wqCDIMCGB96+k
+        IkggoFRaxnB5aVUJsrRhqgag
+X-Google-Smtp-Source: ABdhPJy6tqTNSlx2DOfv6fYexq28jWCpsUkSSEJgihZIaNnqN6sYV+awW/kjax6hCq7LNSo2A8zgCQ==
+X-Received: by 2002:a17:90a:a585:: with SMTP id b5mr2093367pjq.110.1612945557053;
+        Wed, 10 Feb 2021 00:25:57 -0800 (PST)
 Received: from localhost.localdomain ([103.66.79.29])
-        by smtp.gmail.com with ESMTPSA id r68sm1402963pfc.49.2021.02.10.00.25.48
+        by smtp.gmail.com with ESMTPSA id r68sm1402963pfc.49.2021.02.10.00.25.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 00:25:51 -0800 (PST)
+        Wed, 10 Feb 2021 00:25:56 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
@@ -55,31 +55,62 @@ Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
         linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
         kvalo@codeaurora.org, ath11k@lists.infradead.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 0/1] MHI fix for v5.12
-Date:   Wed, 10 Feb 2021 13:55:37 +0530
-Message-Id: <20210210082538.2494-1-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 1/1] mhi: Fix double dma free
+Date:   Wed, 10 Feb 2021 13:55:38 +0530
+Message-Id: <20210210082538.2494-2-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210210082538.2494-1-manivannan.sadhasivam@linaro.org>
+References: <20210210082538.2494-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Loic Poulain <loic.poulain@linaro.org>
 
-At the last moment we noticed a regression which existed since last release.
-Since we are very late for v5.11 rc, please consider merging this patch for
-v5.12.
+mhi_deinit_chan_ctxt functionthat takes care of unitializing channel
+resources, including unmapping coherent MHI areas, can be called
+from different path in case of controller unregistering/removal:
+ - From a client driver remove callback, via mhi_unprepare_channel
+ - From mhi_driver_remove that unitialize all channels
 
-Thanks,
-Mani
+mhi_driver_remove()
+|-> driver->remove()
+|    |-> mhi_unprepare_channel()
+|        |-> mhi_deinit_chan_ctxt()
+|...
+|-> mhi_deinit_chan_ctxt()
 
-Loic Poulain (1):
-  mhi: Fix double dma free
+This leads to double dma freeing...
 
+Fix that by preventing deinit for already uninitialized channel.
+
+Fixes: a7f422f2f89e ("bus: mhi: Fix channel close issue on driver remove")
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+Reported-by: Kalle Valo <kvalo@codeaurora.org>
+Tested-by: Kalle Valo <kvalo@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/1612894264-15956-1-git-send-email-loic.poulain@linaro.org
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
  drivers/bus/mhi/core/init.c | 3 +++
  1 file changed, 3 insertions(+)
 
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index aa575d3fb3ae..be4eebb0971b 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -557,6 +557,9 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
+ 	tre_ring = &mhi_chan->tre_ring;
+ 	chan_ctxt = &mhi_cntrl->mhi_ctxt->chan_ctxt[mhi_chan->chan];
+ 
++	if (!chan_ctxt->rbase) /* Already uninitialized */
++		return;
++
+ 	mhi_free_coherent(mhi_cntrl, tre_ring->alloc_size,
+ 			  tre_ring->pre_aligned, tre_ring->dma_handle);
+ 	vfree(buf_ring->base);
 -- 
 2.25.1
 
