@@ -2,127 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D777F317282
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73759317291
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbhBJVj7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Feb 2021 16:39:59 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3017 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232585AbhBJVjx (ORCPT
+        id S233466AbhBJVlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:41:46 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16110 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233189AbhBJVlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:39:53 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DbY5Y0SHwzR9M9;
-        Thu, 11 Feb 2021 05:37:53 +0800 (CST)
-Received: from dggpemm100011.china.huawei.com (7.185.36.112) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 11 Feb 2021 05:39:09 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm100011.china.huawei.com (7.185.36.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Thu, 11 Feb 2021 05:39:09 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Thu, 11 Feb 2021 05:39:09 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     David Hildenbrand <david@redhat.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        Wed, 10 Feb 2021 16:41:37 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11ALWRbh160883;
+        Wed, 10 Feb 2021 16:40:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=o6TuZSQpcdPy3WLJuSm6eQE5aim7yVvdU9t1MZ9OKtY=;
+ b=fLVuTXw5GB0xrlUk9+oUdcgS4Vi41lMR5mxO36IQgNnpvqXZUxXWqWGdeA0m5zvj2Scq
+ +udTAdoJOtISM3SBU9htGICE/uGZMMeAza8AluFqtfMB6Z1KD/2lqwHIVs/Ldt0qVzQy
+ 6T0qn1V/WUUPT1gqzHKvo8/YQhXm2vVLM1YokVqNYWHUXOT/Doel3iHglMPxEzVmPj1v
+ dlLbS2J5sBWqKNlYfhgyBlE8ZY/Ucl8amu08c55zvJ2oiy8PqOPxyXi8g4lPez/Dj9Y3
+ os136pOS/Ct+2LPLeGZYnITaB4OQe5LhdP9VRAmEznVx/zQM+omj1OKehdCf+VMC9oD6 Jw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36mqff0b67-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 16:40:08 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11ALWXwH161540;
+        Wed, 10 Feb 2021 16:40:07 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36mqff0b4r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 16:40:07 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11ALQwK2018691;
+        Wed, 10 Feb 2021 21:40:05 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 36hskb2jk4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 21:40:05 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11ALe2Oq42926414
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 21:40:03 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CECA211C05E;
+        Wed, 10 Feb 2021 21:40:02 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A2C2111C04A;
+        Wed, 10 Feb 2021 21:39:56 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.111.148])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 10 Feb 2021 21:39:56 +0000 (GMT)
+Message-ID: <594445d01e085875b97b46be726247f89d1e6661.camel@linux.ibm.com>
+Subject: Re: [PATCH v17 00/10] Carry forward IMA measurement log on kexec on
+ ARM64
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Rob Herring <robh@kernel.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: RE: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-Thread-Topic: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
- pin
-Thread-Index: AQHW/SrsWWMRpilf2UC1Pz29QqsBVqpNZGQAgACtCgCAAKKukP//jqmAgADcIzCAADaMgIABCrxAgADNm4CAALRckA==
-Date:   Wed, 10 Feb 2021 21:39:09 +0000
-Message-ID: <8a676b45ebaa49e8886f4bf9b762bb75@hisilicon.com>
-References: <1612685884-19514-1-git-send-email-wangzhou1@hisilicon.com>
- <1612685884-19514-2-git-send-email-wangzhou1@hisilicon.com>
- <a587bd61-9194-4b46-c122-8b4da7b941a8@redhat.com>
- <20210208183348.GV4718@ziepe.ca>
- <0dca000a6cd34d8183062466ba7d6eaf@hisilicon.com>
- <20210208213023.GZ4718@ziepe.ca>
- <0868d209d7424942a46d1238674cf75d@hisilicon.com>
- <20210209135331.GF4718@ziepe.ca>
- <2527b4ac8df14fa1b427bef65dace719@hisilicon.com>
- <20210210180405.GP4718@ziepe.ca>
-In-Reply-To: <20210210180405.GP4718@ziepe.ca>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.223]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Date:   Wed, 10 Feb 2021 16:39:55 -0500
+In-Reply-To: <cf7930239b93044a1be353556b7dc730e024f658.camel@linux.ibm.com>
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+         <20210210171500.GA2328209@robh.at.kernel.org>
+         <5c002c32-bc49-acda-c641-7b1494ea292d@linux.microsoft.com>
+         <CAL_JsqLmdqfFF8u=dE+dQz+6ngv=moWkQF8tpZjUCX-vHuvU_w@mail.gmail.com>
+         <cf7930239b93044a1be353556b7dc730e024f658.camel@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-10_10:2021-02-10,2021-02-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 impostorscore=0
+ mlxscore=0 bulkscore=0 adultscore=0 spamscore=0 clxscore=1015
+ mlxlogscore=999 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102100186
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Jason Gunthorpe [mailto:jgg@ziepe.ca]
-> Sent: Thursday, February 11, 2021 7:04 AM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: David Hildenbrand <david@redhat.com>; Wangzhou (B)
-> <wangzhou1@hisilicon.com>; linux-kernel@vger.kernel.org;
-> iommu@lists.linux-foundation.org; linux-mm@kvack.org;
-> linux-arm-kernel@lists.infradead.org; linux-api@vger.kernel.org; Andrew
-> Morton <akpm@linux-foundation.org>; Alexander Viro <viro@zeniv.linux.org.uk>;
-> gregkh@linuxfoundation.org; kevin.tian@intel.com; jean-philippe@linaro.org;
-> eric.auger@redhat.com; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
-> zhangfei.gao@linaro.org; chensihang (A) <chensihang1@hisilicon.com>
-> Subject: Re: [RFC PATCH v3 1/2] mempinfd: Add new syscall to provide memory
-> pin
+On Wed, 2021-02-10 at 15:55 -0500, Mimi Zohar wrote:
+> On Wed, 2021-02-10 at 14:42 -0600, Rob Herring wrote:
+> > On Wed, Feb 10, 2021 at 11:33 AM Lakshmi Ramasubramanian
 > 
-> On Tue, Feb 09, 2021 at 10:22:47PM +0000, Song Bao Hua (Barry Song) wrote:
+> > Ideally, we don't apply the same patch in 2 branches. It looks like
+> > there's a conflict but no real dependence on the above patch (the
+> > ima_buffer part). The conflict seems trivial enough that Linus can
+> > resolve it in the merge window.
+> > 
+> > Or Mimi can take the whole thing if preferred?
 > 
-> > The problem is that SVA declares we can use any memory of a process
-> > to do I/O. And in real scenarios, we are unable to customize most
-> > applications to make them use the pool. So we are looking for some
-> > extension generically for applications such as Nginx, Ceph.
-> 
-> But those applications will suffer jitter even if their are using CPU
-> to do the same work. I fail to see why adding an accelerator suddenly
-> means the application owner will care about jitter introduced by
-> migration/etc.
+> How about I create a topic branch with just the two patches, allowing
+> both of us to merge it?   There shouldn't be a problem with re-writing
+> next-integrity history.
 
-The only point for this is that when migration occurs on the accelerator,
-the impact/jitter is much bigger than it does on CPU. Then the accelerator
-might be unhelpful.
+The 2 patches are now in the ima-kexec-fixes branch.
 
-> 
-> Again in proper SVA it should be quite unlikely to take a fault caused
-> by something like migration, on the same likelyhood as the CPU. If
-> things are faulting so much this is a problem then I think it is a
-> system level problem with doing too much page motion.
+Mimi
 
-My point is that single one SVA application shouldn't require system
-to make global changes, such as disabling numa balancing, disabling
-THP, to decrease page fault frequency by affecting other applications.
-
-Anyway, guys are in lunar new year. Hopefully, we are getting more
-real benchmark data afterwards to make the discussion more targeted.
-
-> 
-> Jason
-
-Thanks
-Barry
