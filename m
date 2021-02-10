@@ -2,355 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67808316092
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4547131609B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbhBJIGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:06:52 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8017 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbhBJIGb (ORCPT
+        id S233567AbhBJIIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:08:43 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:56204 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233659AbhBJIHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:06:31 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602393dd0000>; Wed, 10 Feb 2021 00:05:49 -0800
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 08:05:49 +0000
-Received: from [10.2.50.67] (172.20.145.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 08:05:48 +0000
-Subject: Re: [PATCH v3] mm: cma: support sysfs
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <willy@infradead.org>, <gregkh@linuxfoundation.org>,
-        <surenb@google.com>, <joaodias@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-References: <20210210075509.3788729-1-minchan@kernel.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <070ca72a-c99f-a2a7-c460-0a823cc262f4@nvidia.com>
-Date:   Wed, 10 Feb 2021 00:05:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        Wed, 10 Feb 2021 03:07:54 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A84hmg114080;
+        Wed, 10 Feb 2021 08:06:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=tBdEFBY3JFdmpQUoen8tVddgbKBIEwa+FNsUaftCVCg=;
+ b=I5jwyy8CJl4mr0e5NoqLbmnmonvJZ9ci4+oE5eyC3cGqxXErPNahODyScsm3p0PJQlk0
+ ntcDIiquG3V4pRuj0KHGkKPauzn6fo12DDW32gqda2PGaMF5023ilLCLdwAGr+6MayAl
+ C4XEfte0oj4XLrm5Mc8KpjNvKHXzQeF7SJz2SNK/h3nXQ2V9THHDuaawjVJqxgkCAFVj
+ z43IeXYvrZplUHiP81rQ1QN6KErL9mQTdHAZN+Lr6+gZKAmlOC2ueJEF0mQbIC126a5t
+ gsVWBTgdD0g4KuzkOoRMu7M7wWDJafGts9x72liP3fzq1VmnJeoSulPebEa6PsH/jE8m kQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 36hgmajfpu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 08:06:58 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A855NJ022018;
+        Wed, 10 Feb 2021 08:06:46 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 36j51x8b44-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 08:06:46 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11A86iwr008654;
+        Wed, 10 Feb 2021 08:06:44 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 00:06:43 -0800
+Date:   Wed, 10 Feb 2021 11:06:36 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     karthik alapati <mail@karthek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: fix function comments to follow
+ kernel-doc
+Message-ID: <20210210080636.GT2696@kadam>
+References: <YCL6vrGPQ0uDZUI8@karthik-strix-linux.karthek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210210075509.3788729-1-minchan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612944349; bh=3DRbDpk2yftmsNrGO2Hor5bMwar2FFnuYuElfqbamlc=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=f9B87MU3ZMuTMiVYxSbiP768NEDcYg9GilAyKlh3cOw7ToVdhEVBN8TSi7K4F6p6e
-         yDdWEpzY65IUM6UW0Pta/6Bcj5Gd7No0vgkOWjTO0drts/xdw8txUPD40vO3r/qLcx
-         9vu/inz+MRtbgwcu5K1UioJw46+JC3VgTxqBXwheN7o751XbRlS3UJ2JL/Pvaek9LM
-         fRbgPZy0Ml5KIndri+lPERYG9SrvbldL1CtNfVCwXBUqVU4vwQmogY+YM72brsz+Ex
-         w7dl+6CzfrAXW5FI5n2W+mwgjn4+Y9qPpkLwHKFB1w12MeP6d9+dtHKcbL58ok29W0
-         kKY7YWf47j+BA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCL6vrGPQ0uDZUI8@karthik-strix-linux.karthek.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100083
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 11:55 PM, Minchan Kim wrote:
-> Since CMA is getting used more widely, it's more important to
-> keep monitoring CMA statistics for system health since it's
-> directly related to user experience.
+On Wed, Feb 10, 2021 at 02:42:30AM +0530, karthik alapati wrote:
+> fix checkpatch.pl warning for "block comments should align the
+>  * on each line" and make function comments follow kernel-doc
 > 
-> This patch introduces sysfs statistics for CMA, in order to provide
-> some basic monitoring of the CMA allocator.
-> 
->   * the number of CMA page allocation attempts
->   * the number of CMA page allocation failures
-> 
-> These two values allow the user to calcuate the allocation
-> failure rate for each CMA area.
-> 
-> e.g.)
->    /sys/kernel/mm/cma/WIFI/cma_alloc_pages_[attempts|fails]
->    /sys/kernel/mm/cma/SENSOR/cma_alloc_pages_[attempts|fails]
->    /sys/kernel/mm/cma/BLUETOOTH/cma_alloc_pages_[attempts|fails]
-> 
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> Signed-off-by: karthik alapati <mail@karthek.com>
 > ---
-
-Looks good.
-
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
->  From v2 - https://lore.kernel.org/linux-mm/20210208180142.2765456-1-minchan@kernel.org/
->   * sysfs doc and description modification - jhubbard
+>  .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   | 209 ++++++++----------
+>  1 file changed, 91 insertions(+), 118 deletions(-)
 > 
->  From v1 - https://lore.kernel.org/linux-mm/20210203155001.4121868-1-minchan@kernel.org/
->   * fix sysfs build and refactoring - willy
->   * rename and drop some attributes - jhubbard
->   Documentation/ABI/testing/sysfs-kernel-mm-cma |  25 ++++
->   mm/Kconfig                                    |   7 ++
->   mm/Makefile                                   |   1 +
->   mm/cma.c                                      |   6 +-
->   mm/cma.h                                      |  18 +++
->   mm/cma_sysfs.c                                | 114 ++++++++++++++++++
->   6 files changed, 170 insertions(+), 1 deletion(-)
->   create mode 100644 Documentation/ABI/testing/sysfs-kernel-mm-cma
->   create mode 100644 mm/cma_sysfs.c
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-cma b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> new file mode 100644
-> index 000000000000..f518af819cee
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-kernel-mm-cma
-> @@ -0,0 +1,25 @@
-> +What:		/sys/kernel/mm/cma/
-> +Date:		Feb 2021
-> +Contact:	Minchan Kim <minchan@kernel.org>
-> +Description:
-> +		/sys/kernel/mm/cma/ contains a subdirectory for each CMA
-> +		heap name (also sometimes called CMA areas).
-> +
-> +		Each CMA heap subdirectory (that is, each
-> +		/sys/kernel/mm/cma/<cma-heap-name> directory) contains the
-> +		following items:
-> +
-> +			cma_alloc_pages_attempts
-> +			cma_alloc_pages_fails
-> +
-> +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_attempts
-> +Date:		Feb 2021
-> +Contact:	Minchan Kim <minchan@kernel.org>
-> +Description:
-> +		the number of pages CMA API tried to allocate
-> +
-> +What:		/sys/kernel/mm/cma/<cma-heap-name>/cma_alloc_pages_fails
-> +Date:		Feb 2021
-> +Contact:	Minchan Kim <minchan@kernel.org>
-> +Description:
-> +		the number of pages CMA API failed to allocate
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index ec35bf406439..ad7e9c065657 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -513,6 +513,13 @@ config CMA_DEBUGFS
->   	help
->   	  Turns on the DebugFS interface for CMA.
->   
-> +config CMA_SYSFS
-> +	bool "CMA information through sysfs interface"
-> +	depends on CMA && SYSFS
-> +	help
-> +	  This option exposes some sysfs attributes to get information
-> +	  from CMA.
-> +
->   config CMA_AREAS
->   	int "Maximum count of the CMA areas"
->   	depends on CMA
-> diff --git a/mm/Makefile b/mm/Makefile
-> index b2a564eec27f..e10c14300191 100644
-> --- a/mm/Makefile
-> +++ b/mm/Makefile
-> @@ -109,6 +109,7 @@ obj-$(CONFIG_CMA)	+= cma.o
->   obj-$(CONFIG_MEMORY_BALLOON) += balloon_compaction.o
->   obj-$(CONFIG_PAGE_EXTENSION) += page_ext.o
->   obj-$(CONFIG_CMA_DEBUGFS) += cma_debug.o
-> +obj-$(CONFIG_CMA_SYSFS) += cma_sysfs.o
->   obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
->   obj-$(CONFIG_IDLE_PAGE_TRACKING) += page_idle.o
->   obj-$(CONFIG_DEBUG_PAGE_REF) += debug_page_ref.o
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 23d4a97c834a..b42ccafc71e5 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -447,9 +447,10 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->   	offset = cma_bitmap_aligned_offset(cma, align);
->   	bitmap_maxno = cma_bitmap_maxno(cma);
->   	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
-> +	cma_sysfs_alloc_count(cma, count);
->   
->   	if (bitmap_count > bitmap_maxno)
-> -		return NULL;
-> +		goto out;
->   
->   	for (;;) {
->   		mutex_lock(&cma->lock);
-> @@ -504,6 +505,9 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->   			__func__, count, ret);
->   		cma_debug_show_areas(cma);
->   	}
-> +out:
-> +	if (!page)
-> +		cma_sysfs_fail_count(cma, count);
->   
->   	pr_debug("%s(): returned %p\n", __func__, page);
->   	return page;
-> diff --git a/mm/cma.h b/mm/cma.h
-> index 42ae082cb067..24a1d61eabc7 100644
-> --- a/mm/cma.h
-> +++ b/mm/cma.h
-> @@ -3,6 +3,14 @@
->   #define __MM_CMA_H__
->   
->   #include <linux/debugfs.h>
-> +#include <linux/kobject.h>
-> +
-> +struct cma_stat {
-> +	spinlock_t lock;
-> +	unsigned long pages_attempts;	/* the number of CMA page allocation attempts */
-> +	unsigned long pages_fails;	/* the number of CMA page allocation failures */
-> +	struct kobject kobj;
-> +};
->   
->   struct cma {
->   	unsigned long   base_pfn;
-> @@ -16,6 +24,9 @@ struct cma {
->   	struct debugfs_u32_array dfs_bitmap;
->   #endif
->   	char name[CMA_MAX_NAME];
-> +#ifdef CONFIG_CMA_SYSFS
-> +	struct cma_stat	*stat;
-> +#endif
->   };
->   
->   extern struct cma cma_areas[MAX_CMA_AREAS];
-> @@ -26,4 +37,11 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
->   	return cma->count >> cma->order_per_bit;
->   }
->   
-> +#ifdef CONFIG_CMA_SYSFS
-> +void cma_sysfs_alloc_count(struct cma *cma, size_t count);
-> +void cma_sysfs_fail_count(struct cma *cma, size_t count);
-> +#else
-> +static inline void cma_sysfs_alloc_count(struct cma *cma, size_t count) {};
-> +static inline void cma_sysfs_fail_count(struct cma *cma, size_t count) {};
-> +#endif
->   #endif
-> diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
-> new file mode 100644
-> index 000000000000..d281bf95a614
-> --- /dev/null
-> +++ b/mm/cma_sysfs.c
-> @@ -0,0 +1,114 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * CMA SysFS Interface
+> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
+> index cf23414d7..b7fca881c 100644
+> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
+> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
+> @@ -20,16 +20,11 @@
+>  #define MAX_DOZE_WAITING_TIMES_9x 64
+>  
+>  /**
+> -* Function:	phy_CalculateBitShift
+> -*
+> -* OverView:	Get shifted position of the BitMask
+> -*
+> -* Input:
+> -*		u32 	BitMask,
+> -*
+> -* Output:	none
+> -* Return:		u32 	Return the shift bit bit position of the mask
+> -*/
+> + *	phy_CalculateBitShift - Get shifted position of the BitMask.
+> + *	@BitMask: Bitmask.
 > + *
-> + * Copyright (c) 2021 Minchan Kim <minchan@kernel.org>
+> + *	Return:	Return the shift bit position of the mask
 > + */
+>  static	u32 phy_CalculateBitShift(u32 BitMask)
+>  {
+>  	u32 i;
+> @@ -43,19 +38,17 @@ static	u32 phy_CalculateBitShift(u32 BitMask)
+>  
+>  
+>  /**
+> -* Function:	PHY_QueryBBReg
+> -*
+> -* OverView:	Read "specific bits" from BB register
+> -*
+> -* Input:
+> -*		struct adapter *	Adapter,
+> -*		u32 		RegAddr,	The target address to be readback
+> -*		u32 		BitMask		The target bit position in the target address
+> -*							to be readback
+> -* Output:	None
+> -* Return:		u32 		Data		The readback register value
+> -* Note:		This function is equal to "GetRegSetting" in PHY programming guide
+> -*/
+> + *	PHY_QueryBBReg - Read "specific bits" from BB register.
+> + *	@Adapter:
+> + *	@RegAddr:	The target address to be readback
+> + *	@BitMask:	The target bit position in the target address
+> + *				to be readback
+> + *
+> + * Return:	The readback register value
+> + *
+> + * .. Note::	This function is equal to "GetRegSetting" in PHY programming
+> + *			guide
+> + */
+>  u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask)
+>  {
+>  	u32 OriginalValue, BitShift;
+> @@ -64,7 +57,10 @@ u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask)
+>  	return 0;
+>  #endif
+>  
+> -	/* RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_QueryBBReg(): RegAddr(%#lx), BitMask(%#lx)\n", RegAddr, BitMask)); */
+> +	/**
+> +	 * RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_QueryBBReg():
+> +	 * RegAddr(%#lx), BitMask(%#lx)\n", RegAddr, BitMask));
+> +	 */
+
+Just delete this (in a separate patch).
+
+>  
+>  	OriginalValue = rtw_read32(Adapter, RegAddr);
+>  	BitShift = phy_CalculateBitShift(BitMask);
+> @@ -75,22 +71,17 @@ u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask)
+>  
+>  
+>  /**
+> -* Function:	PHY_SetBBReg
+> -*
+> -* OverView:	Write "Specific bits" to BB register (page 8~)
+> -*
+> -* Input:
+> -*		struct adapter *	Adapter,
+> -*		u32 		RegAddr,	The target address to be modified
+> -*		u32 		BitMask		The target bit position in the target address
+> -*								to be modified
+> -*		u32 		Data		The new register value in the target bit position
+> -*								of the target address
+> -*
+> -* Output:	None
+> -* Return:		None
+> -* Note:		This function is equal to "PutRegSetting" in PHY programming guide
+> -*/
+> + *	PHY_SetBBReg - Write "Specific bits" to BB register (page 8~).
+> + *	@Adapter:
+> + *	@RegAddr:	The target address to be modified
+> + *	@BitMask:	The target bit position in the target address
+> + *				to be modified
+> + *	@Data:		The new register value in the target bit position
+> + *				of the target address
+> + *
+> + * .. Note::	This function is equal to "PutRegSetting" in PHY programming
+> + *			guide
+> + */
+>  
+>  void PHY_SetBBReg_8723B(
+>  	struct adapter *Adapter,
+> @@ -106,7 +97,10 @@ void PHY_SetBBReg_8723B(
+>  	return;
+>  #endif
+>  
+> -	/* RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_SetBBReg(): RegAddr(%#lx), BitMask(%#lx), Data(%#lx)\n", RegAddr, BitMask, Data)); */
+> +	/**
+> +	 * RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_SetBBReg():
+> +	 * RegAddr(%#lx), BitMask(%#lx), Data(%#lx)\n", RegAddr, BitMask, Data));
+> +	 */
+
+Delete.
+
+>  
+>  	if (BitMask != bMaskDWord) { /* if not "double word" write */
+>  		OriginalValue = rtw_read32(Adapter, RegAddr);
+> @@ -184,27 +178,21 @@ static u32 phy_RFSerialRead_8723B(
+>  }
+>  
+>  /**
+> -* Function:	phy_RFSerialWrite_8723B
+> -*
+> -* OverView:	Write data to RF register (page 8~)
+> -*
+> -* Input:
+> -*		struct adapter *	Adapter,
+> -*		RF_PATH			eRFPath,	Radio path of A/B/C/D
+> -*		u32 		Offset,		The target address to be read
+> -*		u32 		Data		The new register Data in the target bit position
+> -*								of the target to be read
+> -*
+> -* Output:	None
+> -* Return:		None
+> -* Note:		Threre are three types of serial operations:
+> -*		1. Software serial write
+> -*		2. Hardware LSSI-Low Speed Serial Interface
+> -*		3. Hardware HSSI-High speed
+> -*		serial write. Driver need to implement (1) and (2).
+> -*		This function is equal to the combination of RF_ReadReg() and  RFLSSIRead()
+> + *	phy_RFSerialWrite_8723B - Write data to RF register (page 8~).
+> + *	@Adapter:
+> + *	@eRFPath:	Radio path of A/B/C/D
+> + *	@Offset:	The target address to be read
+> + *	@Data:	The new register Data in the target bit position
+> + *			of the target to be read
+> + *
+> + * .. Note::		Threre are three types of serial operations:
+> + *		1. Software serial write
+> + *		2. Hardware LSSI-Low Speed Serial Interface
+> + *		3. Hardware HSSI-High speed
+> + *		serial write. Driver need to implement (1) and (2).
+> + *		This function is equal to the combination of RF_ReadReg() and  RFLSSIRead()
+>   *
+> - * Note:		  For RF8256 only
+> + * .. Note::		  For RF8256 only
+>   *		 The total count of RTL8256(Zebra4) register is around 36 bit it only employs
+>   *		 4-bit RF address. RTL8256 uses "register mode control bit" (Reg00[12], Reg00[10])
+>   *		 to access register address bigger than 0xf. See "Appendix-4 in PHY Configuration
+> @@ -225,7 +213,7 @@ static u32 phy_RFSerialRead_8723B(
+>   *
+>   *
+>   *
+> -*/
+> + */
+>  static void phy_RFSerialWrite_8723B(
+>  	struct adapter *Adapter,
+>  	enum RF_PATH eRFPath,
+> @@ -249,33 +237,33 @@ static void phy_RFSerialWrite_8723B(
+>  	/*  Put write addr in [5:0]  and write data in [31:16] */
+>  	/*  */
+>  	/* DataAndAddr = (Data<<16) | (NewOffset&0x3f); */
+> -	DataAndAddr = ((NewOffset<<20) | (Data&0x000fffff)) & 0x0fffffff;	/*  T65 RF */
+> +	DataAndAddr = ((NewOffset<<20) | (Data&0x000fffff)) & 0x0fffffff;
+> +	/*T65 RF */
+
+This doesn't make sense at all now.
+
+>  
+>  	/*  */
+>  	/*  Write Operation */
+>  	/*  */
+>  	PHY_SetBBReg(Adapter, pPhyReg->rf3wireOffset, bMaskDWord, DataAndAddr);
+> -	/* RTPRINT(FPHY, PHY_RFW, ("RFW-%d Addr[0x%lx]= 0x%lx\n", eRFPath, pPhyReg->rf3wireOffset, DataAndAddr)); */
+> +	/**
+> +	  *RTPRINT(FPHY, PHY_RFW, ("RFW-%d Addr[0x%lx]= 0x%lx\n", eRFPath,
+> +	  *pPhyReg->rf3wireOffset, DataAndAddr));
+> +	  */
+
+Delete.
+
+>  
+>  }
+>  
+>  
+>  /**
+> -* Function:	PHY_QueryRFReg
+> -*
+> -* OverView:	Query "Specific bits" to RF register (page 8~)
+> -*
+> -* Input:
+> -*		struct adapter *	Adapter,
+> -*		RF_PATH			eRFPath,	Radio path of A/B/C/D
+> -*		u32 		RegAddr,	The target address to be read
+> -*		u32 		BitMask		The target bit position in the target address
+> -*								to be read
+> -*
+> -* Output:	None
+> -* Return:		u32 		Readback value
+> -* Note:		This function is equal to "GetRFRegSetting" in PHY programming guide
+> -*/
+> + *	PHY_QueryRFReg - Query "Specific bits" to RF register (page 8~).
+> + *	@Adapter:
+> + *	@eRFPath:	Radio path of A/B/C/D
+> + *	@RegAdd:	The target address to be read
+> + *	@BitMask:	The target bit position in the target address
+> + *				to be read
+> + *
+> + *	Return:	Readback value
+> + *
+> + * .. Note::		This function is equal to "GetRFRegSetting" in PHY programming guide
+> + */
+>  u32 PHY_QueryRFReg_8723B(
+>  	struct adapter *Adapter,
+>  	u8 eRFPath,
+> @@ -296,23 +284,17 @@ u32 PHY_QueryRFReg_8723B(
+>  }
+>  
+>  /**
+> -* Function:	PHY_SetRFReg
+> -*
+> -* OverView:	Write "Specific bits" to RF register (page 8~)
+> -*
+> -* Input:
+> -*		struct adapter *	Adapter,
+> -*		RF_PATH			eRFPath,	Radio path of A/B/C/D
+> -*		u32 		RegAddr,	The target address to be modified
+> -*		u32 		BitMask		The target bit position in the target address
+> -*								to be modified
+> -*		u32 		Data		The new register Data in the target bit position
+> -*								of the target address
+> -*
+> -* Output:	None
+> -* Return:		None
+> -* Note:		This function is equal to "PutRFRegSetting" in PHY programming guide
+> -*/
+> + *	PHY_SetRFReg - Write "Specific bits" to RF register (page 8~).
+> + *	@Adapter:
+> + *	@eRFPath:	Radio path of A/B/C/D
+> + *	@RegAddr:	The target address to be modified
+> + *	@BitMask:	The target bit position in the target address
+> + *				to be modified
+> + *	@Data:	The new register Data in the target bit position
+> + *								of the target address
+> + *
+> + *	.. Note::		This function is equal to "PutRFRegSetting" in PHY programming guide
+
+
+Don't put a huge white space after the ::.
+
+regards,
+dan carpenter
+
+> + */
+>  void PHY_SetRFReg_8723B(
+>  	struct adapter *Adapter,
+>  	u8 eRFPath,
+> @@ -344,15 +326,7 @@ void PHY_SetRFReg_8723B(
+>  
+>  
+>  /*-----------------------------------------------------------------------------
+> - * Function:    PHY_MACConfig8192C
+> - *
+> - * Overview:	Condig MAC by header file or parameter file.
+> - *
+> - * Input:       NONE
+> - *
+> - * Output:      NONE
+> - *
+> - * Return:      NONE
+> + *	PHY_MACConfig8192C - Condig MAC by header file or parameter file.
+>   *
+>   * Revised History:
+>   *  When		Who		Remark
+> @@ -369,17 +343,12 @@ s32 PHY_MACConfig8723B(struct adapter *Adapter)
+>  }
+>  
+>  /**
+> -* Function:	phy_InitBBRFRegisterDefinition
+> -*
+> -* OverView:	Initialize Register definition offset for Radio Path A/B/C/D
+> -*
+> -* Input:
+> -*		struct adapter *	Adapter,
+> -*
+> -* Output:	None
+> -* Return:		None
+> -* Note:		The initialization value is constant and it should never be changes
+> -*/
+> + *	phy_InitBBRFRegisterDefinition - Initialize Register definition offset for
+> + *									Radio Path A/B/C/D
+> + *	@Adapter:
+> + *
+> + *	.. Note::		The initialization value is constant and it should never be changes
+> + */
+>  static void phy_InitBBRFRegisterDefinition(struct adapter *Adapter)
+>  {
+>  	struct hal_com_data		*pHalData = GET_HAL_DATA(Adapter);
+> @@ -675,6 +644,7 @@ static void phy_SetRegBW_8723B(
+>  )
+>  {
+>  	u16 RegRfMod_BW, u2tmp = 0;
 > +
-> +#include <linux/cma.h>
-> +#include <linux/kernel.h>
-> +#include <linux/slab.h>
-> +
-> +#include "cma.h"
-> +
-> +static struct cma_stat *cma_stats;
-> +
-> +void cma_sysfs_alloc_count(struct cma *cma, size_t count)
-> +{
-> +	spin_lock(&cma->stat->lock);
-> +	cma->stat->pages_attempts += count;
-> +	spin_unlock(&cma->stat->lock);
-> +}
-> +
-> +void cma_sysfs_fail_count(struct cma *cma, size_t count)
-> +{
-> +	spin_lock(&cma->stat->lock);
-> +	cma->stat->pages_fails += count;
-> +	spin_unlock(&cma->stat->lock);
-> +}
-> +
-> +#define CMA_ATTR_RO(_name) \
-> +	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
-> +
-> +static struct kobject *cma_kobj;
-> +
-> +static ssize_t cma_alloc_pages_attempts_show(struct kobject *kobj,
-> +			struct kobj_attribute *attr, char *buf)
-> +{
-> +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
-> +
-> +	return sysfs_emit(buf, "%lu\n", stat->pages_attempts);
-> +}
-> +CMA_ATTR_RO(cma_alloc_pages_attempts);
-> +
-> +static ssize_t cma_alloc_pages_fails_show(struct kobject *kobj,
-> +			struct kobj_attribute *attr, char *buf)
-> +{
-> +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
-> +
-> +	return sysfs_emit(buf, "%lu\n", stat->pages_fails);
-> +}
-> +CMA_ATTR_RO(cma_alloc_pages_fails);
-> +
-> +static void cma_kobj_release(struct kobject *kobj)
-> +{
-> +	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
-> +
-> +	kfree(stat);
-> +}
-> +
-> +static struct attribute *cma_attrs[] = {
-> +	&cma_alloc_pages_attempts_attr.attr,
-> +	&cma_alloc_pages_fails_attr.attr,
-> +	NULL,
-> +};
-> +ATTRIBUTE_GROUPS(cma);
-> +
-> +static struct kobj_type cma_ktype = {
-> +	.release = cma_kobj_release,
-> +	.sysfs_ops = &kobj_sysfs_ops,
-> +	.default_groups = cma_groups
-> +};
-> +
-> +static int __init cma_sysfs_init(void)
-> +{
-> +	int i = 0;
-> +	struct cma *cma;
-> +
-> +	cma_kobj = kobject_create_and_add("cma", mm_kobj);
-> +	if (!cma_kobj) {
-> +		pr_err("failed to create cma kobject\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	cma_stats = kzalloc(array_size(sizeof(struct cma_stat),
-> +				cma_area_count), GFP_KERNEL);
-> +	if (!cma_stats) {
-> +		pr_err("failed to create cma_stats\n");
-> +		goto out;
-> +	}
-> +
-> +	do {
-> +		cma = &cma_areas[i];
-> +		cma->stat = &cma_stats[i];
-> +		spin_lock_init(&cma->stat->lock);
-> +		if (kobject_init_and_add(&cma->stat->kobj, &cma_ktype,
-> +					cma_kobj, "%s", cma->name)) {
-> +			kobject_put(&cma->stat->kobj);
-> +			goto out;
-> +		}
-> +	} while (++i < cma_area_count);
-> +
-> +	return 0;
-> +out:
-> +	while (--i >= 0) {
-> +		cma = &cma_areas[i];
-> +		kobject_put(&cma->stat->kobj);
-> +	}
-> +
-> +	kfree(cma_stats);
-> +	kobject_put(cma_kobj);
-> +
-> +	return -ENOMEM;
-> +}
-> +subsys_initcall(cma_sysfs_init);
-> 
+
+
+This is not related to comments.  Do it in a separate patch.
+
+>  	RegRfMod_BW = rtw_read16(Adapter, REG_TRXPTCL_CTL_8723B);
+>  
+>  	switch (CurrentBW) {
+> @@ -789,7 +759,7 @@ static void phy_PostSetBwMode8723B(struct adapter *Adapter)
+>  
+>  		PHY_SetBBReg(Adapter, rFPGA1_RFMOD, bRFMOD, 0x0);
+>  
+> -/* 			PHY_SetBBReg(Adapter, rFPGA0_AnalogParameter2, BIT10, 1); */
+> +	/*PHY_SetBBReg(Adapter, rFPGA0_AnalogParameter2, BIT10, 1); */
+
+This format is wrong.  Anyway, just delete the commented out code.
+
+regards,
+dan carpenter
 
