@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE913174D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83CC3174D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbhBJX5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:57:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbhBJX5f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:57:35 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3B6C061756;
-        Wed, 10 Feb 2021 15:56:55 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id d184so3875838ybf.1;
-        Wed, 10 Feb 2021 15:56:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NlBU/EA5O5TjlAdnlvz/LDwHm49DsW41/c60GtVRT74=;
-        b=pJPqASHZnFoxFqibBPjdXo/RgSRVRvHlFmNeu59Ca28kVCrYAcdIswfPWmlqQNjVLP
-         I185P4VWBPPnru9fZ0q3PeaQieE8i3c7frpGkW4/d9Yh3ugOV5+Jdn5eWXb+b4YIZEKO
-         vb5GEUu1DzI2c5PWg+YXMEb95BHKCYZ25cE5+f1Pk9o8psw0WpNHI+RsJajvPzea5t1o
-         LrN4L9QfVXCEJcQchrpX5ATT4wgA1gM1UJJFK51dlpTAfjMInADIHPVBPkH+uaRmxFs+
-         RTX27vJbvhPBgc0QJyiL/bG6zoLfils4qn0z17w1DhAVgBf5Zx/PnTKTcKaH/rKRUDnI
-         fvSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NlBU/EA5O5TjlAdnlvz/LDwHm49DsW41/c60GtVRT74=;
-        b=paWhb5r8QoVYsWOTwuXV7nivSbrMRlgsnJ5FA5cirN+PziUKryg9RSWzQnrO97fv7j
-         XXfo6KLjF/sTPkxbIt6xFbpyZRIF7zLeEd1/5b8JZ3gMFPkzmO3+90gLhkrjiKjtAFGX
-         Mo18ug28hRmukYRzGHzXTrw4leYnDUuz+vZ0lKPOObPFhwK+cmMmNDyr7XIUNjJ2lVmz
-         nKVt41SEvevRkfGYPnFeu1GT9qKpmbhCdrbIahRjCWuH3lI0LhiukzMxiaVTsCJbtbMP
-         iGeWJQsnyuVMC8CZF9c6lA01y6aSmq9zWx9rQ5K2bcXpPJ39eLjhbzq4dJ25hUmAJbLw
-         e8VQ==
-X-Gm-Message-State: AOAM530lHc60mpYuiIBOgVMrMVgtLh8w7HcaHdU88tEPIWfaKl4kkufK
-        lMCuEcF9xpo0OtZ+5c4govxAI+6jxKPUOUiiFeQ=
-X-Google-Smtp-Source: ABdhPJyFeixNmcUyYnl1vhiuD7S3q9Q222OT+Ynk7lyXjN0oeCH0nvjq2ltCBFS2rgAF2/1eyQOqym4KkYcqqXn/q18=
-X-Received: by 2002:a25:9882:: with SMTP id l2mr7298911ybo.425.1613001414729;
- Wed, 10 Feb 2021 15:56:54 -0800 (PST)
+        id S233979AbhBJX6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:58:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231564AbhBJX6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 18:58:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D48364E0D;
+        Wed, 10 Feb 2021 23:57:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613001471;
+        bh=SaNe+4sznhzVt1n/wb+asu4cuOT8/tQOnU+IeBWSNMs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=SyN5Xw1/hpGtpAu4oJeB/BI/zY383zQINolzxZMio+oUgbRR0sEXKB1dzN15fmN+G
+         e1FMjskAmEO2PHoO3Nty8+8XpFTseFtbR5lwlcQC8NnGAmjg1VM5EljfcZOfwFH1Pn
+         30TR88axOSHO1aXXyU55cYPLwE9PjLAMvQfO0dAzTcK1yfjg1JTc2Dq9iK0hs5yrZP
+         dVYYLj1AyR+hlFiZ56TaVGsqgjojrb3gabU/egRcxZT5M64KIM8JLgTKpObvfxX2ws
+         QP0p8s6TgvUXBadaJJTyBeZc+JujxgY2wdCoIZp1ID23BNv0v53NO1hgbksJu4tZTM
+         4J4iX4IMdDtGw==
+Date:   Wed, 10 Feb 2021 17:57:49 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] PCI: Run platform power transition on initial D0 entry
+Message-ID: <20210210235749.GA617942@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210209112701.3341724-1-elver@google.com> <20210210055937.4c2gfs5utfeytoeg@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210210055937.4c2gfs5utfeytoeg@kafai-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Feb 2021 15:56:44 -0800
-Message-ID: <CAEf4BzaO+cR3b-TKb6BBsj1_gmAbWuq1JriGU7C8qMuiHz-5Gg@mail.gmail.com>
-Subject: Re: [PATCH] bpf_lru_list: Read double-checked variable once without lock
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Marco Elver <elver@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
-        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204220640.1548532-1-luzmaximilian@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 10:00 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Tue, Feb 09, 2021 at 12:27:01PM +0100, Marco Elver wrote:
-> > For double-checked locking in bpf_common_lru_push_free(), node->type is
-> > read outside the critical section and then re-checked under the lock.
-> > However, concurrent writes to node->type result in data races.
-> >
-> > For example, the following concurrent access was observed by KCSAN:
-> >
-> >   write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
-> >    __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
-> >    __local_list_flush            kernel/bpf/bpf_lru_list.c:298
-> >    ...
-> >   read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
-> >    bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
-> >    bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
-> >    ...
-> >
-> > Fix the data races where node->type is read outside the critical section
-> > (for double-checked locking) by marking the access with READ_ONCE() as
-> > well as ensuring the variable is only accessed once.
-> >
-> > Reported-by: syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com
-> > Reported-by: syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > ---
-> > Detailed reports:
-> >       https://groups.google.com/g/syzkaller-upstream-moderation/c/PwsoQ7bfi8k/m/NH9Ni2WxAQAJ
-> >       https://groups.google.com/g/syzkaller-upstream-moderation/c/-fXQO9ehxSM/m/RmQEcI2oAQAJ
-> > ---
-> >  kernel/bpf/bpf_lru_list.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-> > index 1b6b9349cb85..d99e89f113c4 100644
-> > --- a/kernel/bpf/bpf_lru_list.c
-> > +++ b/kernel/bpf/bpf_lru_list.c
-> > @@ -502,13 +502,14 @@ struct bpf_lru_node *bpf_lru_pop_free(struct bpf_lru *lru, u32 hash)
-> >  static void bpf_common_lru_push_free(struct bpf_lru *lru,
-> >                                    struct bpf_lru_node *node)
-> >  {
-> > +     u8 node_type = READ_ONCE(node->type);
-> >       unsigned long flags;
-> >
-> > -     if (WARN_ON_ONCE(node->type == BPF_LRU_LIST_T_FREE) ||
-> > -         WARN_ON_ONCE(node->type == BPF_LRU_LOCAL_LIST_T_FREE))
-> > +     if (WARN_ON_ONCE(node_type == BPF_LRU_LIST_T_FREE) ||
-> > +         WARN_ON_ONCE(node_type == BPF_LRU_LOCAL_LIST_T_FREE))
-> >               return;
-> >
-> > -     if (node->type == BPF_LRU_LOCAL_LIST_T_PENDING) {
-> > +     if (node_type == BPF_LRU_LOCAL_LIST_T_PENDING) {
-> I think this can be bpf-next.
->
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+[+cc Rafael, linux-pm]
 
-Added Fixes: 3a08c2fd7634 ("bpf: LRU List") and applied to bpf-next, thanks.
+On Thu, Feb 04, 2021 at 11:06:40PM +0100, Maximilian Luz wrote:
+> On some devices and platforms, the initial platform power state is not
+> in sync with the power state of the PCI device.
+> 
+> pci_enable_device_flags() updates the state of a PCI device by reading
+> from the PCI_PM_CTRL register. This may change the stored power state of
+> the device without running the appropriate platform power transition.
+
+At this point in the code, setting dev->current_state based on the
+value of PCI_PM_CTRL seems reasonable.  We're making the pci_dev state
+match the PCI device hardware state.  This paragraph sort of implies
+we're missing an "appropriate platform power transition" here, but I
+don't think that's the case.
+
+But it would be nice if we could combine this bit from
+pci_enable_device_flags() with the pci_set_power_state() in
+do_pci_enable_device().
+
+> Due to the stored power-state being changed, the later call to
+> pci_set_power_state(..., PCI_D0) in do_pci_enable_device() can evaluate
+> to a no-op if the stored state has been changed to D0 via that. This
+> will then prevent the appropriate platform power transition to be run,
+> which can on some devices and platforms lead to platform and PCI power
+> state being entirely different, i.e. out-of-sync. On ACPI platforms,
+> this can lead to power resources not being turned on, even though they
+> are marked as required for D0.
+> 
+> Specifically, on the Microsoft Surface Book 2 and 3, some ACPI power
+> regions that should be "on" for the D0 state (and others) are
+> initialized as "off" in ACPI, whereas the PCI device is in D0.
+
+So some ACPI power regions are in fact "on" (because the PCI device
+that requires them is in D0), but the ACPI core believes them to be
+"off" (or probably "unknown, treated as 'off'")?
+
+> As the
+> state is updated in pci_enable_device_flags() without ensuring that the
+> platform state is also updated, the power resource will never be
+> properly turned on. Instead, it lives in a sort of on-but-marked-as-off
+> zombie-state, which confuses things down the line when attempting to
+> transition the device into D3cold: As the resource is already marked as
+> off, it won't be turned off and the device does not fully enter D3cold,
+> causing increased power consumption during (runtime-)suspend.
+> 
+> By replacing pci_set_power_state() in do_pci_enable_device() with
+> pci_power_up(), we can force pci_platform_power_transition() to be
+> called, which will then check if the platform power state needs updating
+> and appropriate actions need to be taken.
+> 
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+
+I added Rafael & linux-pm because he should chime in here.
+
+> ---
+> 
+> I'm not entirely sure if this is the best way to do this, so I'm open to
+> alternatives. In a previous version of this, I've tried to run the
+> platform/ACPI transition directly after the pci_read_config_word() in
+> pci_enable_device_flags(), however, that caused some regression in
+> intel-lpss-pci, specifically that then had trouble accessing its config
+> space for initial setup.
+> 
+> This version has been tested for a while now on [1/2] without any
+> complaints. As this essentially only drops the initial are-we-already-
+> in-that-state-check, I don't expect any issues to be caused by that.
+> 
+> [1]: https://github.com/linux-surface/linux-surface
+> [2]: https://github.com/linux-surface/kernel
+> 
+> ---
+>  drivers/pci/pci.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index b9fecc25d213..eb778e80d8cf 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1802,7 +1802,7 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
+>  	u16 cmd;
+>  	u8 pin;
+>  
+> -	err = pci_set_power_state(dev, PCI_D0);
+> +	err = pci_power_up(dev);
+>  	if (err < 0 && err != -EIO)
+>  		return err;
+>  
+> -- 
+> 2.30.0
+> 
