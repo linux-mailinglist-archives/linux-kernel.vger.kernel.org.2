@@ -2,142 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C575316D2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1877316D30
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbhBJRq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:46:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233117AbhBJRqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:46:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C828064ECF;
-        Wed, 10 Feb 2021 17:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612979153;
-        bh=/rkL6c7UoMWbGrEXcVkr8WWkfNnRE92JsX1y12GRzlg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=j9oRyJb527+OyWGu4R2BzKyCISXpXASfncMwp4fdNMDqWYxKFpTkMsZSz1iYwekUq
-         iM0myjP6HhdtKgGeSFtzjMuxuJyDyUffW0+TbM2en+2Lt5SX7F5u5gA4dfabzdA5wx
-         DUqFwP1sFRR/Mai5nlzP+Q55TBwOWNQToi52HuPEFXAqXayNC0uak/R33OE3gsfrlD
-         7MHeTlz8Kk2M5QSFEZABQlRuBI8u2oqpsn1eW4kLqJ+CmHeu+F/toVZNz7jJE5qhdJ
-         BdJ3L5QaSMzmXHTKBR+4U8uV8OwAkUKAhXlmtGCtH8CdCKFmp5Uclyk+ROBWZVuV+K
-         1/gNlr9wzu/QQ==
-Date:   Wed, 10 Feb 2021 11:45:51 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH] checkpatch: add warning for non-lore mailing list URLs
-Message-ID: <20210210174551.GA593525@bjorn-Precision-5520>
+        id S233370AbhBJRru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:47:50 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:33132 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233131AbhBJRqo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:46:44 -0500
+Date:   Wed, 10 Feb 2021 17:45:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612979155;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FGr+JZg2As9vzz3JSC9vKMBS4L/TklsnHHgugjQyBiE=;
+        b=IK3CfAuHknQqhmK68mXtdG9mZsh8yBzQG2hcKSpqKUNXJ8ugiI5FUcIJ/toRhwDhtVuubJ
+        r3Em1PQeJ7jMlHAiyn/O8OJC8PNgV/JL7c7YwaDjcTPIJ+gRRayoBooEFDJVZs1EiuO0gI
+        EL5FXj3E73hCE2e2GTuU5R7L359WkEX6f55gwTRF4lxHmmMnG2e9Po8dA3frPHJmfu9tPb
+        +wwzASOmiehYVvWn2x/dwgzrUCqvTL1xsdnkd203ETwkx56zRTgEvrOYHgB9N39rIVn0Iv
+        MFFkcQ5xMDPyiO3kZphMh8wUxdHCofgEm2klNdYVgKCG+rDWZSN0dur906Resg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612979155;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FGr+JZg2As9vzz3JSC9vKMBS4L/TklsnHHgugjQyBiE=;
+        b=jxXOpPk1QI3DrxeWqwj6XQ+ZRzJyTWG9jZkKoVoxQR+C/wRLNqTY2o9Z54jolCD8bCElsk
+        wRlwk8CZFEcjBuCQ==
+From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] x86/fault: Rename no_context() to kernelmode_fixup_or_oops()
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <c21940efe676024bb4bc721f7d70c29c420e127e.1612924255.git.luto@kernel.org>
+References: <c21940efe676024bb4bc721f7d70c29c420e127e.1612924255.git.luto@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202102092344.22A86166@keescook>
+Message-ID: <161297915493.23325.3251206368293231953.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:22:35AM -0800, Kees Cook wrote:
-> On Thu, Dec 17, 2020 at 04:50:41PM -0800, Joe Perches wrote:
-> > On Thu, 2020-12-17 at 17:56 -0600, Bjorn Helgaas wrote:
-> > > From: Bjorn Helgaas <bhelgaas@google.com>
-> > > 
-> > > The lkml.org, marc.info, spinics.net, etc archives are not quite as useful
-> > > as lore.kernel.org because they use different styles, add advertising, and
-> > > may disappear in the future.  The lore archives are more consistent and
-> > > more likely to stick around, so prefer https://lore.kernel.org URLs when
-> > > they exist.
-> > 
-> > Hi Bjorn.
-> > 
-> > I like the idea, thanks, but a couple notes.
-> > 
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > []
-> > > @@ -564,6 +564,17 @@ sub find_standard_signature {
-> > >  	return "";
-> > >  }
-> >  
-> > > +our $obsolete_archives = qr{(?xi:
-> > > +	freedesktop.org/archives/dri-devel|
-> > > +	lists.infradead.org|
-> > > +	lkml.org|
-> > > +	mail-archive.com|
-> > > +	mailman.alsa-project.org/pipermail|
-> > > +	marc.info|
-> > > +	ozlabs.org/pipermail|
-> > > +	spinics.net
-> > > +)};
-> > 
-> > Strictly, these all need \Q \E escaping so uses like lkmlAorg do not match.
-> > 
-> > 
-> > > @@ -3101,6 +3112,12 @@ sub process {
-> > >  			}
-> > >  		}
-> > >  
-> > > +# Check for mailing list archives other than lore.kernel.org
-> > > +		if ($line =~ /(http|https):\/\/\S*$obsolete_archives/) {
-> > 
-> > The https?:// doesn't seem necessary.  Perhaps:
-> > 
-> > 		if ($line =~ m{\b$obsolete_archives}) {
-> > 
-> > > +			WARN("PREFER_LORE_ARCHIVE",
-> > > +			     "Use lore.kernel.org archive links when possible; see https://lore.kernel.org/lists.html\n" . $herecurr);
-> > 
-> > Perhaps:
-> > 			     "Prefer lore.kernel.org links. see: https://www.kernel.org/lore.html#linking-to-list-discussions-from-commits\n" . $herecurr);
-> > 
-> > So maybe instead:
-> > ---
-> >  scripts/checkpatch.pl | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> > 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > index 00085308ed9d..c2a324d628a6 100755
-> > --- a/scripts/checkpatch.pl
-> > +++ b/scripts/checkpatch.pl
-> > @@ -564,6 +564,17 @@ sub find_standard_signature {
-> >  	return "";
-> >  }
-> >  
-> > +our $obsolete_archives = qr{(?xi:
-> > +	\Qfreedesktop.org/archives/dri-devel\E |
-> > +	\Qlists.infradead.org\E |
-> > +	\Qlkml.org\E |
-> > +	\Qmail-archive.com\E |
-> > +	\Qmailman.alsa-project.org/pipermail\E |
-> > +	\Qmarc.info\E |
-> > +	\Qozlabs.org/pipermail\E |
-> > +	\Qspinics.net\E
-> > +)};
-> > +
-> >  our @typeListMisordered = (
-> >  	qr{char\s+(?:un)?signed},
-> >  	qr{int\s+(?:(?:un)?signed\s+)?short\s},
-> > @@ -3101,6 +3112,12 @@ sub process {
-> >  			}
-> >  		}
-> >  
-> > +		# Check for mailing list archives other than lore.kernel.org
-> > +		if ($rawline =~ m{\b$obsolete_archives}) {
-> > +			WARN("PREFER_LORE_ARCHIVE",
-> > +			     "Use lore.kernel.org archive links when possible - see https://lore.kernel.org/lists.html\n" . $herecurr);
-> > +		}
-> > +
-> >  # Check for added, moved or deleted files
-> >  		if (!$reported_maintainer_file && !$in_commit_log &&
-> >  		    ($line =~ /^(?:new|deleted) file mode\s*\d+\s*$/ ||
-> > 
-> > 
-> 
-> Ah, nice. Yes, this would be great to get added. Joe, can you respin as
-> a full path? Please consider it:
+The following commit has been merged into the x86/mm branch of tip:
 
-I hate to ask Joe to rework *my* patch just because I've dropped the
-ball on it!  Sorry, I'll try to resurrect this.
+Commit-ID:     6456a2a69ee16ad402f26d272d0b67ce1d25061f
+Gitweb:        https://git.kernel.org/tip/6456a2a69ee16ad402f26d272d0b67ce1d25061f
+Author:        Andy Lutomirski <luto@kernel.org>
+AuthorDate:    Tue, 09 Feb 2021 18:33:43 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 10 Feb 2021 14:41:19 +01:00
 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+x86/fault: Rename no_context() to kernelmode_fixup_or_oops()
+
+The name no_context() has never been very clear.  It's only called for
+faults from kernel mode, so rename it and change the no-longer-useful
+user_mode(regs) check to a WARN_ON_ONCE.
+
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/c21940efe676024bb4bc721f7d70c29c420e127e.1612924255.git.luto@kernel.org
+---
+ arch/x86/mm/fault.c | 28 ++++++++++------------------
+ 1 file changed, 10 insertions(+), 18 deletions(-)
+
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 187975b..3566a59 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -730,17 +730,10 @@ oops:
+ }
+ 
+ static noinline void
+-no_context(struct pt_regs *regs, unsigned long error_code,
+-	   unsigned long address, int signal, int si_code)
++kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
++			 unsigned long address, int signal, int si_code)
+ {
+-	if (user_mode(regs)) {
+-		/*
+-		 * This is an implicit supervisor-mode access from user
+-		 * mode.  Bypass all the kernel-mode recovery code and just
+-		 * OOPS.
+-		 */
+-		goto oops;
+-	}
++	WARN_ON_ONCE(user_mode(regs));
+ 
+ 	/* Are we prepared to handle this kernel fault? */
+ 	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
+@@ -780,7 +773,6 @@ no_context(struct pt_regs *regs, unsigned long error_code,
+ 	if (is_prefetch(regs, error_code, address))
+ 		return;
+ 
+-oops:
+ 	page_fault_oops(regs, error_code, address);
+ }
+ 
+@@ -827,7 +819,7 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+ 	struct task_struct *tsk = current;
+ 
+ 	if (!user_mode(regs)) {
+-		no_context(regs, error_code, address, pkey, si_code);
++		kernelmode_fixup_or_oops(regs, error_code, address, pkey, si_code);
+ 		return;
+ 	}
+ 
+@@ -959,7 +951,7 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
+ {
+ 	/* Kernel mode? Handle exceptions or die: */
+ 	if (!user_mode(regs)) {
+-		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
++		kernelmode_fixup_or_oops(regs, error_code, address, SIGBUS, BUS_ADRERR);
+ 		return;
+ 	}
+ 
+@@ -1421,8 +1413,8 @@ good_area:
+ 		 * has unlocked the mm for us if we get here.
+ 		 */
+ 		if (!user_mode(regs))
+-			no_context(regs, error_code, address, SIGBUS,
+-				   BUS_ADRERR);
++			kernelmode_fixup_or_oops(regs, error_code, address,
++						 SIGBUS, BUS_ADRERR);
+ 		return;
+ 	}
+ 
+@@ -1442,15 +1434,15 @@ good_area:
+ 		return;
+ 
+ 	if (fatal_signal_pending(current) && !user_mode(regs)) {
+-		no_context(regs, error_code, address, 0, 0);
++		kernelmode_fixup_or_oops(regs, error_code, address, 0, 0);
+ 		return;
+ 	}
+ 
+ 	if (fault & VM_FAULT_OOM) {
+ 		/* Kernel mode? Handle exceptions or die: */
+ 		if (!user_mode(regs)) {
+-			no_context(regs, error_code, address,
+-				   SIGSEGV, SEGV_MAPERR);
++			kernelmode_fixup_or_oops(regs, error_code, address,
++						 SIGSEGV, SEGV_MAPERR);
+ 			return;
+ 		}
+ 
