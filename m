@@ -2,176 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2183C3160EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB1A3160EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhBJI0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:26:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44964 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233443AbhBJIZe (ORCPT
+        id S229997AbhBJI0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:26:31 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:57355 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231152AbhBJIZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:25:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612945447;
+        Wed, 10 Feb 2021 03:25:57 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 74CE323E64;
+        Wed, 10 Feb 2021 09:25:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1612945506;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aB6w5KMqRZs4fASbYkKOZF5C6NqksMPRWk0Bw9OA14Q=;
-        b=NA6/WV0yl/jwUs3wpgSYMh1nwE9uw9vB7Yw4PH5nRB2DdqTWzuuyUMY8D0vg4iRxHLpRPW
-        RRImMByjO4tTs2UPPLghIHP4b5G5CiFtVuW6ZVd8kxSvx2AEv/N9FB4qWLhHlMnC8fkXBU
-        sCrZuB1CyjvfpOpGOTGbn6vnVdE+4A0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-533-bBsgDbSGMsKuAwQuLSsIeg-1; Wed, 10 Feb 2021 03:24:03 -0500
-X-MC-Unique: bBsgDbSGMsKuAwQuLSsIeg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C885107ACC7;
-        Wed, 10 Feb 2021 08:24:02 +0000 (UTC)
-Received: from [10.36.113.218] (ovpn-113-218.ams2.redhat.com [10.36.113.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B30C26091B;
-        Wed, 10 Feb 2021 08:24:00 +0000 (UTC)
-To:     Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210208103812.32056-1-osalvador@suse.de>
- <20210208103812.32056-3-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [RFC PATCH 2/2] mm,page_alloc: Make alloc_contig_range handle
- free hugetlb pages
-Message-ID: <9ed946df-9c6c-9a4d-4be9-2f32809974f7@redhat.com>
-Date:   Wed, 10 Feb 2021 09:23:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        bh=+cNxpkdDuOwRJvNB3aKuwMpR+znNnj63c1Pb8vQebZc=;
+        b=n7yhPtn1qWcaeOroSll+XLku+Qitl2q++/TN5pqVf3AV9HrJRKbI5NFUgN1vzj/mxIQzBL
+        th29M4JrQJWmUXsZ/Xdm3wDy724HOM+uAJ0Ki+tWlX105/FLesV85ISF1wqpJjy3SXxPHK
+        +GTijeVrB2UBTa/DkvNbne+VonVKnMc=
 MIME-Version: 1.0
-In-Reply-To: <20210208103812.32056-3-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 10 Feb 2021 09:25:04 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next 7/9] net: phy: icplus: select page before writing
+ control register
+In-Reply-To: <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
+References: <20210209164051.18156-1-michael@walle.cc>
+ <20210209164051.18156-8-michael@walle.cc>
+ <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <e9d26cd6634a8c066809aa92e1481112@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.02.21 11:38, Oscar Salvador wrote:
-> Free hugetlb pages are trickier to handle as to in order to guarantee
-> no userspace appplication disruption, we need to replace the
-> current free hugepage with a new one.
+Hi,
+
+Am 2021-02-10 08:03, schrieb Heiner Kallweit:
+> On 09.02.2021 17:40, Michael Walle wrote:
+>> Registers >= 16 are paged. Be sure to set the page. It seems this was
+>> working for now, because the default is correct for the registers used
+>> in the driver at the moment. But this will also assume, nobody will
+>> change the page select register before linux is started. The page 
+>> select
+>> register is _not_ reset with a soft reset of the PHY.
+>> 
+>> Add read_page()/write_page() support for the IP101G and use it
+>> accordingly.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  drivers/net/phy/icplus.c | 50 
+>> +++++++++++++++++++++++++++++++---------
+>>  1 file changed, 39 insertions(+), 11 deletions(-)
+>> 
+>> diff --git a/drivers/net/phy/icplus.c b/drivers/net/phy/icplus.c
+>> index a6e1c7611f15..858b9326a72d 100644
+>> --- a/drivers/net/phy/icplus.c
+>> +++ b/drivers/net/phy/icplus.c
+>> @@ -49,6 +49,8 @@ MODULE_LICENSE("GPL");
+>>  #define IP101G_DIGITAL_IO_SPEC_CTRL			0x1d
+>>  #define IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32		BIT(2)
+>> 
+>> +#define IP101G_DEFAULT_PAGE			16
+>> +
+>>  #define IP175C_PHY_ID 0x02430d80
+>>  #define IP1001_PHY_ID 0x02430d90
+>>  #define IP101A_PHY_ID 0x02430c54
+>> @@ -250,23 +252,25 @@ static int ip101a_g_probe(struct phy_device 
+>> *phydev)
+>>  static int ip101a_g_config_init(struct phy_device *phydev)
+>>  {
+>>  	struct ip101a_g_phy_priv *priv = phydev->priv;
+>> -	int err;
+>> +	int oldpage, err;
+>> +
+>> +	oldpage = phy_select_page(phydev, IP101G_DEFAULT_PAGE);
+>> 
+>>  	/* configure the RXER/INTR_32 pin of the 32-pin IP101GR if needed: 
+>> */
+>>  	switch (priv->sel_intr32) {
+>>  	case IP101GR_SEL_INTR32_RXER:
+>> -		err = phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
+>> -				 IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32, 0);
+>> +		err = __phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
+>> +				   IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32, 0);
+>>  		if (err < 0)
+>> -			return err;
+>> +			goto out;
+>>  		break;
+>> 
+>>  	case IP101GR_SEL_INTR32_INTR:
+>> -		err = phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
+>> -				 IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32,
+>> -				 IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32);
+>> +		err = __phy_modify(phydev, IP101G_DIGITAL_IO_SPEC_CTRL,
+>> +				   IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32,
+>> +				   IP101G_DIGITAL_IO_SPEC_CTRL_SEL_INTR32);
+>>  		if (err < 0)
+>> -			return err;
+>> +			goto out;
+>>  		break;
+>> 
+>>  	default:
+>> @@ -284,12 +288,14 @@ static int ip101a_g_config_init(struct 
+>> phy_device *phydev)
+>>  	 * reserved as 'write-one'.
+>>  	 */
+>>  	if (priv->model == IP101A) {
+>> -		err = phy_set_bits(phydev, IP10XX_SPEC_CTRL_STATUS, 
+>> IP101A_G_APS_ON);
+>> +		err = __phy_set_bits(phydev, IP10XX_SPEC_CTRL_STATUS,
+>> +				     IP101A_G_APS_ON);
+>>  		if (err)
+>> -			return err;
+>> +			goto out;
+>>  	}
+>> 
+>> -	return 0;
+>> +out:
+>> +	return phy_restore_page(phydev, oldpage, err);
 > 
-> In order to do that, a new function called alloc_and_dissolve_huge_page
-> in introduced.
-> This function will first try to get a new fresh hugetlb page, and if it
-> succeeds, it will dissolve the old one.
->
+> If a random page was set before entering config_init, do we actually 
+> want
+> to restore it? Or wouldn't it be better to set the default page as part
+> of initialization?
 
-Thanks for looking into this! Can we move this patch to #1 in the 
-series? It is the easier case.
+First, I want to convert this to the match_phy_device() and while at it,
+I noticed that there is this one "problem". Short summary: the IP101A 
+isn't
+paged, the IP101G has serveral and if page 16 is selected it is more or
+less compatible with the IP101A. My problem here is now how to share the
+functions for both PHYs without duplicating all the code. Eg. the IP101A
+will phy_read/phy_write/phy_modify(), that is, all the locked versions.
+For the IP101G I'd either need the _paged() versions or the __phy ones
+which don't take the mdio_bus lock.
 
-I also wonder if we should at least try on the memory unplug path to 
-keep nr_pages by at least trying to allocate at new one if required, and 
-printing a warning if that fails (after all, we're messing with 
-something configured by the admin - "nr_pages"). Note that gigantic 
-pages are special (below).
+Here is what I came up with:
+(1) provide a common function which uses the __phy ones, then the
+     callback for the A version will take the mdio_bus lock and calls
+     the common one. The G version will use phy_{select,restore}_page().
+(2) the phy_driver ops for A will also provde a .read/write_page()
+     callback which is just a no-op. So A can just use the G versions.
+(3) What Heiner mentioned here, just set the default page in
+     config_init().
 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> ---
->   include/linux/hugetlb.h |  6 ++++++
->   mm/compaction.c         | 11 +++++++++++
->   mm/hugetlb.c            | 35 +++++++++++++++++++++++++++++++++++
->   3 files changed, 52 insertions(+)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index ebca2ef02212..f81afcb86e89 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -505,6 +505,7 @@ struct huge_bootmem_page {
->   	struct hstate *hstate;
->   };
->   
-> +bool alloc_and_dissolve_huge_page(struct page *page);
->   struct page *alloc_huge_page(struct vm_area_struct *vma,
->   				unsigned long addr, int avoid_reserve);
->   struct page *alloc_huge_page_nodemask(struct hstate *h, int preferred_nid,
-> @@ -773,6 +774,11 @@ static inline void huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
->   #else	/* CONFIG_HUGETLB_PAGE */
->   struct hstate {};
->   
-> +static inline bool alloc_and_dissolve_huge_page(struct page *page)
-> +{
-> +	return false;
-> +}
-> +
->   static inline struct page *alloc_huge_page(struct vm_area_struct *vma,
->   					   unsigned long addr,
->   					   int avoid_reserve)
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 89cd2e60da29..7969ddc10856 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -952,6 +952,17 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->   					low_pfn += compound_nr(page) - 1;
->   					goto isolate_success_no_list;
->   				}
-> +			} else {
+(1) will still bloat the code; (3) has the disadvantage, that the
+userspace might fiddle around with the page register and then the
+whole PHY driver goes awry. I don't know if we have to respect that
+use case in general. I know there is an API to read/write the PHY
+registers and it could happen.
 
-} else if (alloc_and_dissolve_huge_page(page))) {
+That being said, I'm either fine with (2) and (3) but I'm preferring
+(2).
 
-...
+BTW, this patch is still missing read/writes to the interrupt status
+and control registers which is also paged.
 
-> +				/*
-> +				 * Free hugetlb page. Allocate a new one and
-> +				 * dissolve this is if succeed.
-> +				 */
-> +				if (alloc_and_dissolve_huge_page(page)) {
-> +					unsigned long order = buddy_order_unsafe(page);
-> +
-> +					low_pfn += (1UL << order) - 1;
-> +					continue;
-> +				}
-
-
-
-Note that there is a very ugly corner case we will have to handle 
-gracefully (I think also in patch #1):
-
-Assume you allocated a gigantic page (and assume that we are not using 
-CMA for gigantic pages for simplicity). Assume you want to allocate 
-another one. alloc_pool_huge_page()->...->alloc_contig_pages() will 
-stumble over the first allocated page. It will try to 
-alloc_and_dissolve_huge_page() the existing gigantic page. To do that, 
-it will alloc_pool_huge_page()->...->alloc_contig_pages() ... and so on. 
-Bad.
-
-We really don't want to mess with gigantic pages (migrate, dissolve) 
-while allocating a gigantic page. I think the easiest (and cleanest) way 
-forward is to not mess (isolate, migrate, dissolve) with gigantic pages 
-at all.
-
-Gigantic pages are not movable, so they won't be placed on random CMA / 
-ZONE_MOVABLE.
-
-Some hstate_is_gigantic(h) calls (maybe inside 
-alloc_and_dissolve_huge_page() ? ) along with a nice comment might be 
-good enough to avoid having to pass down some kind of alloc_contig 
-context. I even think that should be handled inside
-
-(the main issue is that in contrast to CMA, plain alloc_contig_pages() 
-has no memory about which parts were allocated and will simply try 
-re-allocating what it previously allocated and never freed - which is 
-usually fine, unless we're dealing with such special cases)
-
-Apart from that, not messing with gigantic pages feels like the right 
-approach (allocating/migrating gigantic pages is just horribly slow and 
-most probably not worth it anyway).
-
--- 
-Thanks,
-
-David / dhildenb
-
+-michael
