@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91306316140
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACDA316135
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhBJIki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:40:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29766 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229940AbhBJIgs (ORCPT
+        id S229609AbhBJIij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:38:39 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:35745 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229809AbhBJIgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:36:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612946121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZYx5QDeee+NlLS2PNW9UB9LPhcyb8m+LMnAIKiIuGCg=;
-        b=AXCKvowiwEJK1XcxVydfeDjINe1X1Pa2UlwxNc+BZNsLalQ9KKQIPSU2M9TXMT7jo9nrNe
-        rFj7l9OSOFE5VabKxVvO1fntdQTjh+GovYUCbZfVeVNnkHhhfa0I+c7jNkQTq5fGEC0+AN
-        H/c0qKWTtx+BqMO9VUabXhUM+WIXvOM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-454-6Xo7U8PnPd27ReM2N1qCPA-1; Wed, 10 Feb 2021 03:35:17 -0500
-X-MC-Unique: 6Xo7U8PnPd27ReM2N1qCPA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A5A8A107ACE3;
-        Wed, 10 Feb 2021 08:35:15 +0000 (UTC)
-Received: from [10.36.113.218] (ovpn-113-218.ams2.redhat.com [10.36.113.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2479C5D749;
-        Wed, 10 Feb 2021 08:35:13 +0000 (UTC)
-Subject: Re: [PATCH] mm/hugetlb: use some helper functions to cleanup code
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210210065346.21958-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <4bb381fc-eae5-effd-214d-8d62e66da272@redhat.com>
-Date:   Wed, 10 Feb 2021 09:35:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 10 Feb 2021 03:36:11 -0500
+Received: by mail-ot1-f50.google.com with SMTP id k10so1110160otl.2;
+        Wed, 10 Feb 2021 00:35:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vqpklVwZsvlYgxzSjH8suIxDySU+Irpf/Vq8Oa4SfJg=;
+        b=MNwQhqFlUBRL071X5MiE2aV3theSIEDgoBnXXttTn6SLGs4GYMIh7/6030qK16nKsl
+         GCWA2KJM7CIJedCP98ZKUFEk5gRXxM2LnyvpUE3GgZByFbxk7lH7YIaI8+xa/icbxmOT
+         dzkyQQIhNuiZdu6b9/rmMick3PS9Ge80VN51SJhUiKMfPi9HZK8PRal1nBQlRWBiZ3NR
+         Ok3eD0jZznYHIUMLopP6C+QyJaZe/o7ZtATKQGOcG/Ukn0NzB65GKbBCymNcEUbnjugq
+         Bt3CwiycrGdEM49+/8rG/4gUqTqkMSBKz1cK1UbFZoo9Zbt6MygdB0t8q51CHLIxWjUJ
+         IqYg==
+X-Gm-Message-State: AOAM532f9aXHIkd2HDzkMYt6y+z/EOSlasxHiWqfN1uu2LWOa3Dl/snx
+        9rokwEj5HosJpadAx/XG7zMVTcEWhmrHLkjwsWQ=
+X-Google-Smtp-Source: ABdhPJwTmD2qiGCoyFFCPHV2KgKBDaQ/CttPX7ZQFpl4FJNfT3Tt66Qjb9TDczYkUH8hpoM0Y7BDu9nb/h4tmhQ+M3g=
+X-Received: by 2002:a9d:77d6:: with SMTP id w22mr1349139otl.145.1612946130704;
+ Wed, 10 Feb 2021 00:35:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210210065346.21958-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210210074946.155417-1-drew@beagleboard.org> <20210210074946.155417-3-drew@beagleboard.org>
+In-Reply-To: <20210210074946.155417-3-drew@beagleboard.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 10 Feb 2021 09:35:19 +0100
+Message-ID: <CAMuHMdXVKtJi4qFj1ODUtc7qZVwfB-wNWrj_hyAwox=JMbAphg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.02.21 07:53, Miaohe Lin wrote:
-> We could use pages_per_huge_page to get the number of pages per hugepage,
-> use get_hstate_idx to calculate hstate index, and use hstate_is_gigantic
-> to check if a hstate is gigantic to make code more succinct.
-> 
+Hi Drew,
 
-Another suggestion, please collect and group your cleanups for a 
-subsystem and send them in a single cleanup patch series where possible. 
-Again, makes life easier for reviewers and maintainers.
+On Wed, Feb 10, 2021 at 8:50 AM Drew Fustini <drew@beagleboard.org> wrote:
+> Add "pinmux-select" to debugfs which will activate a function and group
+> when 2 integers "<function-selector> <group-selector>" are written to
+> the file. The write operation pinmux_select() handles this by checking
+> if fsel and gsel are valid selectors and then calling ops->set_mux().
 
-Thanks!
+Thanks for your patch!
 
+> The existing "pinmux-functions" debugfs file lists the pin functions
+> registered for the pin controller. For example:
+>
+> function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
+> function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
+> function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
+> function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
+> function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
+> function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
+>
+> To activate function pinmux-i2c1 (fsel 4) and group pinmux-i2c1-pins
+> (gsel 4):
+>
+> echo '4 4' > pinmux-select
 
--- 
-Thanks,
+I think you forgot to update the example.
 
-David / dhildenb
+I assume
 
+    echo pinmux-i2c1 pinmux-i2c1-pins > mux-select
+
+?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
