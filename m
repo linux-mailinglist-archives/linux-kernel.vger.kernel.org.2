@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A100A316504
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819A2316516
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhBJLUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:20:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        id S229730AbhBJLVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:21:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbhBJLM4 (ORCPT
+        with ESMTP id S230470AbhBJLOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:12:56 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A91C06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:12:15 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id q85so1186775qke.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:12:15 -0800 (PST)
+        Wed, 10 Feb 2021 06:14:20 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22E6C06178C
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:39 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id x9so1026169plb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l6Aa5lO3nX8StZdHni5HLbVJmff/S5b/H+w9der7I6w=;
-        b=cH20E2hoIgdhIv7ZUGg4Kji8fgP8I30rf969LiyzfgKSxFOVljcaILS+YDx1Arwknx
-         NceojQ07JRuMuscoqMNGTcoOSE0ca9QeIpAoockv+iRRDufhxNTrOx9NrnJrLFOH3CUb
-         I4BT4EZY69waZThVs0Y8J7Kl4IYq4Tv96JYCPcICcqkvxrSX9ypNEYanl25M50qa2lvg
-         JPJ4jCBd2/pVVVR3XP5NX/FfnayqWe50rMBw0DV7nlvxOz1BypO2JSQN/+Ae2VfB4DXd
-         dnDqL5A9kUsz1OvkU6/L4JO/499Cz6+z/3M7bWB2e5FNhd2NhDZd+YCZK5doStLcqZef
-         uNKw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gwtfzan5OujNTY4a0AKY/xvxM1yAX3PRPFXQBcIR6P4=;
+        b=IU90nRwAeBYYGyZkWYotPk+ZSKt5w+cUcF7mh913RpbRX511aCDkFiXaVjvDN2TpG7
+         fI8G4oMFlLGEGvVZ2SwqIY4pl2x/02c5AKL1iWzCMpwIaCZXs7Q+viXKYB4FY/zaAL6t
+         G2IE3LMFIiKovpjLq2ewgnYDYa85JhRbimvkg4B9FjIDzrkZfO6a3BgSe/cVLRMp+jud
+         Lt+N1EipxpI9sTxVomNj7+dwpAxpDgN5Dyi3xf+tBTfaUlh9yHceB8alOE90qapLBaxf
+         F4ggh89ein2sua2WTDXDxstLfSPduxneqb0aiD4kdhXhMMmDoIsHV4285prTFI0zFToc
+         71Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l6Aa5lO3nX8StZdHni5HLbVJmff/S5b/H+w9der7I6w=;
-        b=OLMUJfvzwoL1zKNbFnGQdjZtm5kpMo02uVPbtYZzQPLHnVtexc/UTF48rHgvDXXgA1
-         9KyYN/YXk6D7OWaIyR4R/EL9qgrK4k8rL6nM5EFPnGIgrJZxzm3uqBNVIo/VbqPw/s+j
-         IBQB9Rf5glGIRioAZcBuz2i8owcXtqfYhkzu+VhnKbOi1pXoZaaOFG7PA0QOtkCzKN+K
-         G7rj2EI/inHL/zFPuGRtj3SvTJ4itaxshVaeNlKhLy6XFdQ0UBJk9Qa5u1rQ0SRx4jhc
-         sbPCcdVRfyFupSPKVr9iVj14G36S9MJzuYqGm+zMwWTwJAhlQyV3Tn/dppVbI4rwL5uJ
-         Pbrg==
-X-Gm-Message-State: AOAM533AyRAXYYXSuWeJLdCxP/6ulTn0RNZG+e6kpNzGif0npenJEiCc
-        5HjDCMH3hWJKUKL25eQDao9op/WvFNDtTLOEjn6C7PfighQ=
-X-Google-Smtp-Source: ABdhPJwsDcMa+DYZsa8ZrxJYIhlNsLdkVt1FpNlaoYv1QSqXBAhIM+dt/pKZRTwrf49Vu75DpaqqwcLJpz8kmVkv2bY=
-X-Received: by 2002:a37:678b:: with SMTP id b133mr2707612qkc.237.1612955535243;
- Wed, 10 Feb 2021 03:12:15 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gwtfzan5OujNTY4a0AKY/xvxM1yAX3PRPFXQBcIR6P4=;
+        b=a6bn1DcLjiWPqX7wQzDtUJRMgTXCAC8KNUyL8ZOrmxa0MNXvVZnC1Ar0HGNE4oFqnP
+         kWUAm7d/GBkZgQdKNMNN9cLbpTgzROUZcofxg6G5smGf4VylnUCQ7XSAvmprGN91ppWg
+         LIaxXDRL/V1GBnudCJZ0lvVRrbLGqETm7ygTxdc7B+dCVIDlZ5TwNgI8ZyMNA3lbqoxc
+         yEuBfX8XMAJW5dEhMll3w9lEvx6rjox7GxAyY3oc+jbHdyqa93WpszqsZAACq3zc0a/t
+         Doof/OUnUBuqvFeI5SDnYn+295XrSCRxopIR9tnm+4P/jMr0qfug0AwFB7n1Uq6ACo6j
+         f9Nw==
+X-Gm-Message-State: AOAM5337JUlbSHO5A62EuOZfGHRZ2+bFwJmGZX5OwQ/qLKvvuEqkCmD4
+        r89BnDczKWlCGU1dQ0LIQ6Kkdw==
+X-Google-Smtp-Source: ABdhPJwLv60t3YqHGu67xdMHSUO7XONNUEZPH5mofBLybO24/0jjKMpwpQReYFgV/mgBkFiHxUKefg==
+X-Received: by 2002:a17:902:9009:b029:dc:52a6:575 with SMTP id a9-20020a1709029009b02900dc52a60575mr2375968plp.57.1612955619345;
+        Wed, 10 Feb 2021 03:13:39 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id bo1sm1929911pjb.7.2021.02.10.03.13.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Feb 2021 03:13:38 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH V7 0/3] dt: Build unittests statically with fdtoverlay
+Date:   Wed, 10 Feb 2021 16:43:27 +0530
+Message-Id: <cover.1612955268.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-References: <20210124232007.21639-1-richard@nod.at> <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
- <563952295.378372.1612881357746.JavaMail.zimbra@nod.at> <1923896038.379134.1612901174023.JavaMail.zimbra@nod.at>
- <CAJfpegufojx4q_CfR6L-fzSyQw9QXJZKy5xKVZZWaepADkL=Kw@mail.gmail.com>
-In-Reply-To: <CAJfpegufojx4q_CfR6L-fzSyQw9QXJZKy5xKVZZWaepADkL=Kw@mail.gmail.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Wed, 10 Feb 2021 12:12:03 +0100
-Message-ID: <CAFLxGvxhxxfT_ugmeFuqZ099Z+v-ENg9C6zq78sV45YzA5_Y_w@mail.gmail.com>
-Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 11:18 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > Does this more or less what you had in mind?
->
-> Just moving the whole internal header file is not nice.  I did a
-> mechanical public/private separation of the interface based on what
-> CUSE uses.   Incremental patch attached.
->
-> But this is just a start.  From the big structures still left in
-> <net/fuse.h> CUSE only uses the following fields:
->
-> fc: .minor, max_read, max_write, rcu, release, initialized, num_waiting
-> fm: .fc
-> ff: .fm
-> fud: .fc
->
-> Dealing with the last 3 is trivial:  create and alloc function for the
-> fm, and create accessor functions for the accessed fields.
+Hi,
 
-Ah, ok. So the goal is that <net/fuse.h> provides the bare minimum such that
-CUSE and MUSE can reside outside of fs/fuse?
+The first four patches from the previous patchset are already picked by
+Rob for 5.12. This patchset contains the other two that update unittests
+and an additional patch suggested by Rob.
 
-> Dealing with fc properly is probably a bit more involved, but does not
-> seem to be too compex at first glance.
->
-> Do you want to take a stab at cleaning this up further?
+V6->V7:
+- Dropped the first 4 patches, already merged.
+- Patch 1/3 is new, suggested by Rob and slightly modified by me.
+- Adapt Patch 3/3 to the new rule and name the overlay dtbs as .dtbo.
 
-Yes. I guess for MUSE the interface needs little adaptations as well.
-But I won't be able to do this for the 5.12 merge window.
+--
+Viresh
+
+Rob Herring (1):
+  kbuild: Add generic rule to apply fdtoverlay
+
+Viresh Kumar (2):
+  of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
+  of: unittest: Statically apply overlays using fdtoverlay
+
+ drivers/of/unittest-data/Makefile             | 50 ++++++++++
+ drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
+ drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
+ drivers/of/unittest-data/static_base_1.dts    |  4 +
+ drivers/of/unittest-data/static_base_2.dts    |  4 +
+ drivers/of/unittest-data/testcases.dts        | 18 ++--
+ .../of/unittest-data/testcases_common.dtsi    | 19 ++++
+ .../of/unittest-data/tests-interrupts.dtsi    |  7 --
+ scripts/Makefile.lib                          | 39 +++++---
+ 9 files changed, 203 insertions(+), 119 deletions(-)
+ create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+ create mode 100644 drivers/of/unittest-data/static_base_1.dts
+ create mode 100644 drivers/of/unittest-data/static_base_2.dts
+ create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
 
 -- 
-Thanks,
-//richard
+2.25.0.rc1.19.g042ed3e048af
+
