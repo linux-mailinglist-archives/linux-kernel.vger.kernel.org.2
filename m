@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E283163DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378313163DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhBJKbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:31:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
+        id S230384AbhBJKbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:31:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhBJKTe (ORCPT
+        with ESMTP id S230374AbhBJKTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:19:34 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9626AC06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:18:54 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id v3so1117486qtw.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:18:54 -0800 (PST)
+        Wed, 10 Feb 2021 05:19:31 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39311C06174A;
+        Wed, 10 Feb 2021 02:19:12 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id j12so944751pfj.12;
+        Wed, 10 Feb 2021 02:19:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=baxcKrCgkoScFUDNAwKsa84jVZFHv1nVp34webfNPW4=;
-        b=FMzLIjunyqiHNiUcPvkqjDQKBNtMZFSJVGEPJfUVMDqvrc/fzg9Nb4FG7kVjduLgXB
-         EP3sCzCQRAKuTEHztB6GWafxqQAYW53oatc5Vs+ENMIsF/z63khBAKiPab/05HGlBsm4
-         qNGb3KtRaLxNLMtTdC/WtCNJaK9NMwUP5bBLw=
+        bh=Iof9qrGrOjDVGG80uBcZwlY5H3RKsoP1e9Sucn4XJt8=;
+        b=ZQa/tDejNb6Jn/RSxfU7tZw7o9wXC0gg6XpETJcn2NqqcNGTJH2uuLVD9bCACWQsz8
+         C5x7mIklmdk34LcM4UlCf6yxW+ARB/gTeFrxBbUXhrPjeVJQg0aN2RdI2imYsFb2cpMB
+         taiQqsApfs4YNbilt+U6X9FASV09RWp3MOs68FuZrEpluOQg3OTND6j2r2LFe6XVl8f8
+         dcUhhO9ikVA+eL5YuFu+oJVic6Kasyy5eXgl1834w9Usa9qQLaSIIFsPi/kGueZqg0f0
+         /75/wTr7TlV7nrO9kmy8cG6DpbFQYM4vkKbU6VjPRIgMDyWbd7VxZLftsP85aWmB3Ma9
+         tgmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=baxcKrCgkoScFUDNAwKsa84jVZFHv1nVp34webfNPW4=;
-        b=ahGfSIyhk2ePmRkv7TOYsF0WLeqIOQNndrV2uLha2qkCVBtvMCF58KUn4mqP0mmQWZ
-         JWcU1DOS3qWYX+vlnBC4nPAj0DFlwvAIe0VjyTfgFF32YtgRXZ9kn6Smi4y6QaWRGpvQ
-         iv7EV4YCjrAvNTpZsbaKq3+X9dh/u4p3GU/kCO6CNhYbeJQYdaOcmogJ/Yjyz2hLeDyL
-         xEcLrPGNc0lklfXAR63UxSerRo0b//4nZciv2TkxqG2ova7lo2Ynmzmlv+2BWwAon3tu
-         DKotevTgurHJeJt3lpIUpTSZ1bebj93GwKJcwsgx4RkpDRASYhekvznSTaM38brhJd0U
-         rL4w==
-X-Gm-Message-State: AOAM532AA5At+249iP8poXnIZd2wutOSu0BddnBx13ogDJWONXjywKO5
-        Xmpa2zlTWJT9ZbGLm5lm+bIDMUexyFxoCEeMJXo=
-X-Google-Smtp-Source: ABdhPJx8EwJMSfm1WnKBn8E5s6t3mQThpXYQTyVN5sLS/BAw6cQj9PKEjrp9ONWSXAMxw7s+zOrssnSpZXkZO5vOhFM=
-X-Received: by 2002:ac8:5156:: with SMTP id h22mr2122208qtn.176.1612952333710;
- Wed, 10 Feb 2021 02:18:53 -0800 (PST)
+        bh=Iof9qrGrOjDVGG80uBcZwlY5H3RKsoP1e9Sucn4XJt8=;
+        b=olmQjXRHY41W/osASSo+/pvY0KsZ7eFzG0NJxrOxhqlpHy1As1a5Zdyr/IT2anOdza
+         W+Hh75nDS8Ai8XzBEx1ygbYjW1A08Qkh8huE83hUitgkEB8nS1XYRxI5vQC9LsRoUj4c
+         GT3ht5Fu0wReT5l37R5/lRljYZA4d3tq+Q0NA98QCcET3bQRj5eVlZQNSQuFQiIv4fDT
+         RhvG7XJq6HjtqkO/NBZJCB+FjXsCAeF9HWhJ7fWBgJq2VmBw+aTNrvhn0GhaLBi/4b50
+         rRPJ1LtBJZZXsGPRYbrt1FEnKdwCjvxQnSluP6m1oBSsx039mtXXDHpRyNel3WaB8EG4
+         cPEg==
+X-Gm-Message-State: AOAM531CF94kTAXZT4WJHzfN1I6JFJtiQtMOlXLgNo1g2ry8DFwY3b5t
+        /nxqkmtOHs8PGFWBzA7fseZt5pyXFNODclRVyr8=
+X-Google-Smtp-Source: ABdhPJzB5oLUOxgzFNlj2kibKSE8q3WM7ypIH4vHlsOSpcHDoh9KJZ3UAonA8W5JQWfiZ6tIGXuoQYiefaV7DnfYwro=
+X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
+ q20-20020a056a000854b02901b762330c5fmr2361426pfk.73.1612952351766; Wed, 10
+ Feb 2021 02:19:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20201208091748.1920-1-wangzhiqiang.bj@bytedance.com>
- <HK0PR06MB33807C054FCE9E355346E204F2D00@HK0PR06MB3380.apcprd06.prod.outlook.com>
- <CAK8P3a2WPvWokkqJB-yhfQH1ofofGNvibqPjUXPme+F2LCHjxw@mail.gmail.com>
- <HK0PR06MB3380A1F79CDE49FACC1A3E71F2A60@HK0PR06MB3380.apcprd06.prod.outlook.com>
- <CAK8P3a1g8szrHnhOxjwFkwYt+P5ukawZRr7jbwtJLVyFVHS21g@mail.gmail.com>
-In-Reply-To: <CAK8P3a1g8szrHnhOxjwFkwYt+P5ukawZRr7jbwtJLVyFVHS21g@mail.gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 10 Feb 2021 10:18:40 +0000
-Message-ID: <CACPK8XdzLOQKe_v2BK=iTFonrw2V2NgYYqwiWky-PPzxs11iAg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] misc: Add clock control logic into Aspeed LPC
- SNOOP driver
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Ryan Chen <ryan_chen@aspeedtech.com>,
-        John Wang <wangzhiqiang.bj@bytedance.com>,
-        "xuxiaohan@bytedance.com" <xuxiaohan@bytedance.com>,
-        "yulei.sh@bytedance.com" <yulei.sh@bytedance.com>,
-        Robert Lippert <rlippert@google.com>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vernon Mauery <vernon.mauery@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
-        Patrick Venture <venture@google.com>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Joel Stanley <joel@linux.ibm.com>,
-        Andrew Jeffery <andrewrj@au1.ibm.com>
+References: <20210210074946.155417-1-drew@beagleboard.org> <20210210074946.155417-2-drew@beagleboard.org>
+ <87437daafdd86fa5c765ff9b17b6c7b097f0c317.camel@perches.com>
+In-Reply-To: <87437daafdd86fa5c765ff9b17b6c7b097f0c317.camel@perches.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 10 Feb 2021 12:18:55 +0200
+Message-ID: <CAHp75VeJT0dPATD-Ux+JCEYxNTigbOn_6D_F1VQkfL=vuiCBPQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: use to octal permissions for debugfs files
+To:     Joe Perches <joe@perches.com>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 at 01:43, Arnd Bergmann <arnd@kernel.org> wrote:
+On Wed, Feb 10, 2021 at 10:30 AM Joe Perches <joe@perches.com> wrote:
+> On Tue, 2021-02-09 at 23:49 -0800, Drew Fustini wrote:
+
+> > -     debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
+> > +     debugfs_create_file("pinctrl-devices", 0400,
+> >                           debugfs_root, NULL, &pinctrl_devices_fops);
 >
-> On Sat, Jan 16, 2021 at 2:03 AM Ryan Chen <ryan_chen@aspeedtech.com> wrote:
-> > >
-> > > Sorry it did not make it into the merge window. The patch is still in patchwork.
-> > > I could just pick it up directly for v5.12, or wait for a combined pull request
-> > > with other work.
-> >
-> > Hello Arnd,
-> > Thanks your update.
-> >
-> > >Joel, please let me know what you prefer.
-> > >
-> > Hello Joel,
-> > Could you help check on this patch?
-> > https://patchwork.ozlabs.org/project/linux-aspeed/patch/20200928070108.14040-2-ryan_chen@aspeedtech.com/
+> NAK.  You've changed the permission levels.
 
-Sure, I'll respond to that thread separately.
+NAK is usually given when the whole idea is broken. Here is not the
+case and you may have helped to amend the patch.
 
-> Hi Joel,
+...
+
+> And you have to keep the S_IFREG or'd along with the octal.
+
+Perhaps time to read the code?
+https://elixir.bootlin.com/linux/latest/source/fs/debugfs/inode.c#L387
+
+...
+
+> checkpatch does this conversion using this command line:
 >
-> I see there has been no new pull request for mach-aspeed in
-> v5.12. If you have any material at all, please send it as soon
-> as you can so I can pick it up this time.
+> $ ./scripts/checkpatch.pl -f --show-types --terse drivers/pinctrl/*.[ch] --types=SYMBOLIC_PERMS --fix-inplace
 
-There are some patches that I have queued up. As you can see I have
-been a bit behind this cycle.
+NAK! See above.
 
-I'll get a pull request to you today. Thanks for the reminder.
+> -       debugfs_create_file("pins", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pins", S_IFREG | 0444,
+>                             device_root, pctldev, &pinctrl_pins_fops);
 
-Cheers,
-
-Joel
-
->
-> As a reminder, the patch here has still not been merged, as I
-> never heard back from you.
->
->        Arnd
+-- 
+With Best Regards,
+Andy Shevchenko
