@@ -2,550 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1272317341
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC92E317346
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhBJWWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:22:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232164AbhBJWWo (ORCPT
+        id S233412AbhBJWXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:23:34 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:38775 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232164AbhBJWXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:22:44 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E2BC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:22:04 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id n14so3691007iog.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:22:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XJzEN4WBlPcdkQGDcNp6/w/drT4yjRT6RDluXdhY0fs=;
-        b=E5Jir7P/qSL8QEPHmGs55wS2E4P0GfqyFsctIL6cQZcwrs/CMcBaFnmV9zoQRDRF97
-         aMGzr85HCs3i4BTxerVdZ8ByQrA+GNWotrsAP3WixVLjWwnvRy8KSYMwIz/LXvWdlL+u
-         lL1UiCQR5/rEtbps/8pM07E7OZQOqSYPUKcUlMGVUzLvt37kimyLBMXWlgvX+izsLukH
-         XEj2JJK88e/kek+LhVUFE0kdSantWhy208hhK/WlGZHlQcHVYrdvu/79pGYL/SQLxOpA
-         5rxEX7srBu+t0Q2dkz4edrkuC6Hl1nCojgV/v/W9pa6muaRGP1vtdVuFuRUiXoczx6lb
-         RbRg==
+        Wed, 10 Feb 2021 17:23:24 -0500
+Received: by mail-ot1-f41.google.com with SMTP id e4so3385325ote.5;
+        Wed, 10 Feb 2021 14:23:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XJzEN4WBlPcdkQGDcNp6/w/drT4yjRT6RDluXdhY0fs=;
-        b=FyN9dxdDTOdwpU6J8DPM9gWFV9zbb45U/ViZwiA459zttAv8KZN1w3Ai8Fl9kgNTW2
-         up2l58ZP3tw+UZ0Ivwws1lkr0fFzq3lwMaJhxvCKDrMWOE3ijZ8049jaT/hn06k/h10b
-         R/YRTIOAjhsQMxMUDJsz0k3CT5KSYP28XLUyawpoLUw9S+t2lgRhm+gMctvygG33olY0
-         1dVJ3K7tM2yeW5tagRmfBuWlcIif8nAK5Fg7SsEOniKRZKrYrvb8sXHU29W1JWCa00B5
-         T/BlCvX9oreCXPN1OavA+AJ2S49RI8GCAYgvfkQ/W2hfskxh5s5uMIHKDfMnH1VyIr9S
-         BmgA==
-X-Gm-Message-State: AOAM530AAiRYsVvNiK+t64ZqvfJUR+ZuEtwkN3UGZpGDstutO4uzZ69e
-        7BUsqmfygJzZoPRzeWlf3TITD0MmRD0jEQevtbpIFQ==
-X-Google-Smtp-Source: ABdhPJzpyF4G/M9J7IBOozQhAzHYywGxg/xn4oF1c3Ij3uJZJfni8QAVueJVzNpVKtQHkm572IroHPPtL0+YWdSTgJo=
-X-Received: by 2002:a5e:8807:: with SMTP id l7mr2779765ioj.23.1612995723484;
- Wed, 10 Feb 2021 14:22:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=M6n3OYgGLF2v6o6pLcsl5i856+A/z2zBwf3QTH//u/w=;
+        b=ngsYsDuSJbzdTp69W+3nXVIua/cOqOJRMIWl2o0+N5yzcz7Bow6TBzeF7Bq2clMWLN
+         rtW5fFkuWarfH1qnAOT170Cbnn+3OlYVigOcujlILno9HcVScMtB80l6rP/tizVbiEWx
+         pzGlbC0uBjNdeWTVh0g1r2Ij4WBnivQbm7j85PFkAX0nPmfXDmizlcLCeFtVaXVYt73F
+         ZZXrD2QZKb9v/2E7E95Tx6wAWoOAfaCPFjGJIwB9raAkVhsl9ZkRJ5Vu46ZupKsWVL+x
+         6bJ3UeKRQTbVXD7xqBYUK6/ZNF47B1erMhlK/wq8SC4NTN1jyy++hu3igw7cSEYR2kxW
+         Rx2g==
+X-Gm-Message-State: AOAM5312Y+gBB7zctBkwznj/LoM0VItRP/hqnpDBIwuJ49aPuuilqOBe
+        BwjV8CTp41dP/YArXIDR0w==
+X-Google-Smtp-Source: ABdhPJwJYPJGLTsZhzkvK1fZdQzPCEUL88/UW98cs/4NQlfUoYDPVDbNik0oj5mLTaWRzjM8wkG53g==
+X-Received: by 2002:a05:6830:8d:: with SMTP id a13mr3626235oto.119.1612995763403;
+        Wed, 10 Feb 2021 14:22:43 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m68sm669898otm.46.2021.02.10.14.22.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 14:22:42 -0800 (PST)
+Received: (nullmailer pid 2911108 invoked by uid 1000);
+        Wed, 10 Feb 2021 22:22:41 -0000
+Date:   Wed, 10 Feb 2021 16:22:41 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Piyush Mehta <piyush.mehta@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: usb: misc: Add binding for Microchip
+ usb5744 hub
+Message-ID: <20210210222241.GA2901449@robh.at.kernel.org>
+References: <cover.1612867682.git.michal.simek@xilinx.com>
+ <076994fc051e9230a3fef9e3eb5ec932104ef16a.1612867682.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
-References: <20210210212200.1097784-1-axelrasmussen@google.com> <20210210212200.1097784-9-axelrasmussen@google.com>
-In-Reply-To: <20210210212200.1097784-9-axelrasmussen@google.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Wed, 10 Feb 2021 14:21:26 -0800
-Message-ID: <CAJHvVchGrf_JOVZPNjto5MCMHnVjwHOsVic4-ya48e7bs3GBkg@mail.gmail.com>
-Subject: Re: [PATCH v5 08/10] userfaultfd: add UFFDIO_CONTINUE ioctl
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <076994fc051e9230a3fef9e3eb5ec932104ef16a.1612867682.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"
-
-On Wed, Feb 10, 2021 at 1:22 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
->
-> This ioctl is how userspace ought to resolve "minor" userfaults. The
-> idea is, userspace is notified that a minor fault has occurred. It might
-> change the contents of the page using its second non-UFFD mapping, or
-> not. Then, it calls UFFDIO_CONTINUE to tell the kernel "I have ensured
-> the page contents are correct, carry on setting up the mapping".
->
-> Note that it doesn't make much sense to use UFFDIO_{COPY,ZEROPAGE} for
-> MINOR registered VMAs. ZEROPAGE maps the VMA to the zero page; but in
-> the minor fault case, we already have some pre-existing underlying page.
-> Likewise, UFFDIO_COPY isn't useful if we have a second non-UFFD mapping.
-> We'd just use memcpy() or similar instead.
->
-> It turns out hugetlb_mcopy_atomic_pte() already does very close to what
-> we want, if an existing page is provided via `struct page **pagep`. We
-> already special-case the behavior a bit for the UFFDIO_ZEROPAGE case, so
-> just extend that design: add an enum for the three modes of operation,
-> and make the small adjustments needed for the MCOPY_ATOMIC_CONTINUE
-> case. (Basically, look up the existing page, and avoid adding the
-> existing page to the page cache or calling set_page_huge_active() on
-> it.)
->
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+On Tue, Feb 09, 2021 at 11:48:09AM +0100, Michal Simek wrote:
+> From: Piyush Mehta <piyush.mehta@xilinx.com>
+> 
+> Added dt binding for usb5744 driver.
+> 
+> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 > ---
->  fs/userfaultfd.c                 | 67 ++++++++++++++++++++++++++++++++
->  include/linux/hugetlb.h          |  3 ++
->  include/linux/userfaultfd_k.h    | 18 +++++++++
->  include/uapi/linux/userfaultfd.h | 21 +++++++++-
->  mm/hugetlb.c                     | 39 ++++++++++++-------
->  mm/userfaultfd.c                 | 37 +++++++++++-------
->  6 files changed, 156 insertions(+), 29 deletions(-)
->
-> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> index b351a8552140..5e20f425efd7 100644
-> --- a/fs/userfaultfd.c
-> +++ b/fs/userfaultfd.c
-> @@ -1527,6 +1527,10 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
->                 if (!(uffdio_register.mode & UFFDIO_REGISTER_MODE_WP))
->                         ioctls_out &= ~((__u64)1 << _UFFDIO_WRITEPROTECT);
->
-> +               /* CONTINUE ioctl is only supported for MINOR ranges. */
-> +               if (!(uffdio_register.mode & UFFDIO_REGISTER_MODE_MINOR))
-> +                       ioctls_out &= ~((__u64)1 << _UFFDIO_CONTINUE);
+> 
+> Changes in v2: None
+> 
+>  .../bindings/usb/microchip,usb5744.yaml       | 56 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> new file mode 100644
+> index 000000000000..fe222f6db81d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/usb/microchip,usb5744.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 > +
->                 /*
->                  * Now that we scanned all vmas we can already tell
->                  * userland which ioctls methods are guaranteed to
-> @@ -1880,6 +1884,66 @@ static int userfaultfd_writeprotect(struct userfaultfd_ctx *ctx,
->         return ret;
->  }
->
-> +static int userfaultfd_continue(struct userfaultfd_ctx *ctx, unsigned long arg)
-> +{
-> +       __s64 ret;
-> +       struct uffdio_continue uffdio_continue;
-> +       struct uffdio_continue __user *user_uffdio_continue;
-> +       struct userfaultfd_wake_range range;
+> +title: Bindings for the Microchip USB5744 4-port Hub Controller
 > +
-> +       user_uffdio_continue = (struct uffdio_continue __user *)arg;
+> +description:
+> +  Microchip’s USB5744 SmartHub™ IC is a 4 port, SuperSpeed (SS)/Hi-Speed (HS),
+> +  low power, low pin count configurable and fully compliant with the USB 3.1
+> +  Gen 1 specification. The USB5744 also supports Full Speed (FS) and Low Speed
+> +  (LS) USB signaling, offering complete coverage of all defined USB operating
+> +  speeds. The new SuperSpeed hubs operate in parallel with the USB 2.0
+> +  controller, so 5 Gbps SuperSpeed data transfers are not affected by slower
+> +  USB 2.0 traffic.
 > +
-> +       ret = -EAGAIN;
-> +       if (READ_ONCE(ctx->mmap_changing))
-> +               goto out;
+> +maintainers:
+> +  - Piyush Mehta <piyush.mehta@xilinx.com>
+> +  - Michal Simek <michal.simek@xilinx.com>
 > +
-> +       ret = -EFAULT;
-> +       if (copy_from_user(&uffdio_continue, user_uffdio_continue,
-> +                          /* don't copy the output fields */
-> +                          sizeof(uffdio_continue) - (sizeof(__s64))))
-> +               goto out;
+> +properties:
+> +  compatible:
+> +    const: microchip,usb5744
 > +
-> +       ret = validate_range(ctx->mm, &uffdio_continue.range.start,
-> +                            uffdio_continue.range.len);
-> +       if (ret)
-> +               goto out;
-> +
-> +       ret = -EINVAL;
-> +       /* double check for wraparound just in case. */
-> +       if (uffdio_continue.range.start + uffdio_continue.range.len <=
-> +           uffdio_continue.range.start) {
-> +               goto out;
-> +       }
-> +       if (uffdio_continue.mode & ~UFFDIO_CONTINUE_MODE_DONTWAKE)
-> +               goto out;
-> +
-> +       if (mmget_not_zero(ctx->mm)) {
-> +               ret = mcopy_continue(ctx->mm, uffdio_continue.range.start,
-> +                                    uffdio_continue.range.len,
-> +                                    &ctx->mmap_changing);
-> +               mmput(ctx->mm);
-> +       } else {
-> +               return -ESRCH;
-> +       }
-> +
-> +       if (unlikely(put_user(ret, &user_uffdio_continue->mapped)))
-> +               return -EFAULT;
-> +       if (ret < 0)
-> +               goto out;
-> +
-> +       /* len == 0 would wake all */
-> +       BUG_ON(!ret);
-> +       range.len = ret;
-> +       if (!(uffdio_continue.mode & UFFDIO_CONTINUE_MODE_DONTWAKE)) {
-> +               range.start = uffdio_continue.range.start;
-> +               wake_userfault(ctx, &range);
-> +       }
-> +       ret = range.len == uffdio_continue.range.len ? 0 : -EAGAIN;
-> +
-> +out:
-> +       return ret;
-> +}
-> +
->  static inline unsigned int uffd_ctx_features(__u64 user_features)
->  {
->         /*
-> @@ -1964,6 +2028,9 @@ static long userfaultfd_ioctl(struct file *file, unsigned cmd,
->         case UFFDIO_WRITEPROTECT:
->                 ret = userfaultfd_writeprotect(ctx, arg);
->                 break;
-> +       case UFFDIO_CONTINUE:
-> +               ret = userfaultfd_continue(ctx, arg);
-> +               break;
->         }
->         return ret;
->  }
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index aa9e1d6de831..3d01d228fc78 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -11,6 +11,7 @@
->  #include <linux/kref.h>
->  #include <linux/pgtable.h>
->  #include <linux/gfp.h>
-> +#include <linux/userfaultfd_k.h>
->
->  struct ctl_table;
->  struct user_struct;
-> @@ -139,6 +140,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm, pte_t *dst_pte,
->                                 struct vm_area_struct *dst_vma,
->                                 unsigned long dst_addr,
->                                 unsigned long src_addr,
-> +                               enum mcopy_atomic_mode mode,
->                                 struct page **pagep);
->  #endif /* CONFIG_USERFAULTFD */
->  bool hugetlb_reserve_pages(struct inode *inode, long from, long to,
-> @@ -317,6 +319,7 @@ static inline int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->                                                 struct vm_area_struct *dst_vma,
->                                                 unsigned long dst_addr,
->                                                 unsigned long src_addr,
-> +                                               enum mcopy_atomic_mode mode,
->                                                 struct page **pagep)
->  {
->         BUG();
-> diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-> index e060d5f77cc5..794d1538b8ba 100644
-> --- a/include/linux/userfaultfd_k.h
-> +++ b/include/linux/userfaultfd_k.h
-> @@ -37,6 +37,22 @@ extern int sysctl_unprivileged_userfaultfd;
->
->  extern vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason);
->
-> +/*
-> + * The mode of operation for __mcopy_atomic and its helpers.
-> + *
-> + * This is almost an implementation detail (mcopy_atomic below doesn't take this
-> + * as a parameter), but it's exposed here because memory-kind-specific
-> + * implementations (e.g. hugetlbfs) need to know the mode of operation.
-> + */
-> +enum mcopy_atomic_mode {
-> +       /* A normal copy_from_user into the destination range. */
-> +       MCOPY_ATOMIC_NORMAL,
-> +       /* Don't copy; map the destination range to the zero page. */
-> +       MCOPY_ATOMIC_ZEROPAGE,
-> +       /* Just install pte(s) with the existing page(s) in the page cache. */
-> +       MCOPY_ATOMIC_CONTINUE,
-> +};
-> +
->  extern ssize_t mcopy_atomic(struct mm_struct *dst_mm, unsigned long dst_start,
->                             unsigned long src_start, unsigned long len,
->                             bool *mmap_changing, __u64 mode);
-> @@ -44,6 +60,8 @@ extern ssize_t mfill_zeropage(struct mm_struct *dst_mm,
->                               unsigned long dst_start,
->                               unsigned long len,
->                               bool *mmap_changing);
-> +extern ssize_t mcopy_continue(struct mm_struct *dst_mm, unsigned long dst_start,
-> +                             unsigned long len, bool *mmap_changing);
->  extern int mwriteprotect_range(struct mm_struct *dst_mm,
->                                unsigned long start, unsigned long len,
->                                bool enable_wp, bool *mmap_changing);
-> diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
-> index f24dd4fcbad9..bafbeb1a2624 100644
-> --- a/include/uapi/linux/userfaultfd.h
-> +++ b/include/uapi/linux/userfaultfd.h
-> @@ -40,10 +40,12 @@
->         ((__u64)1 << _UFFDIO_WAKE |             \
->          (__u64)1 << _UFFDIO_COPY |             \
->          (__u64)1 << _UFFDIO_ZEROPAGE |         \
-> -        (__u64)1 << _UFFDIO_WRITEPROTECT)
-> +        (__u64)1 << _UFFDIO_WRITEPROTECT |     \
-> +        (__u64)1 << _UFFDIO_CONTINUE)
->  #define UFFD_API_RANGE_IOCTLS_BASIC            \
->         ((__u64)1 << _UFFDIO_WAKE |             \
-> -        (__u64)1 << _UFFDIO_COPY)
-> +        (__u64)1 << _UFFDIO_COPY |             \
-> +        (__u64)1 << _UFFDIO_CONTINUE)
->
->  /*
->   * Valid ioctl command number range with this API is from 0x00 to
-> @@ -59,6 +61,7 @@
->  #define _UFFDIO_COPY                   (0x03)
->  #define _UFFDIO_ZEROPAGE               (0x04)
->  #define _UFFDIO_WRITEPROTECT           (0x06)
-> +#define _UFFDIO_CONTINUE               (0x07)
->  #define _UFFDIO_API                    (0x3F)
->
->  /* userfaultfd ioctl ids */
-> @@ -77,6 +80,8 @@
->                                       struct uffdio_zeropage)
->  #define UFFDIO_WRITEPROTECT    _IOWR(UFFDIO, _UFFDIO_WRITEPROTECT, \
->                                       struct uffdio_writeprotect)
-> +#define UFFDIO_CONTINUE                _IOR(UFFDIO, _UFFDIO_CONTINUE,  \
-> +                                    struct uffdio_continue)
->
->  /* read() structure */
->  struct uffd_msg {
-> @@ -268,6 +273,18 @@ struct uffdio_writeprotect {
->         __u64 mode;
->  };
->
-> +struct uffdio_continue {
-> +       struct uffdio_range range;
-> +#define UFFDIO_CONTINUE_MODE_DONTWAKE          ((__u64)1<<0)
-> +       __u64 mode;
-> +
-> +       /*
-> +        * Fields below here are written by the ioctl and must be at the end:
-> +        * the copy_from_user will not read past here.
-> +        */
-> +       __s64 mapped;
-> +};
-> +
->  /*
->   * Flags for the userfaultfd(2) system call itself.
->   */
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 2331281cf133..7ddf28730361 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -39,7 +39,6 @@
->  #include <linux/hugetlb.h>
->  #include <linux/hugetlb_cgroup.h>
->  #include <linux/node.h>
-> -#include <linux/userfaultfd_k.h>
->  #include <linux/page_owner.h>
->  #include "internal.h"
->
-> @@ -4648,8 +4647,10 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->                             struct vm_area_struct *dst_vma,
->                             unsigned long dst_addr,
->                             unsigned long src_addr,
-> +                           enum mcopy_atomic_mode mode,
->                             struct page **pagep)
->  {
-> +       bool is_continue = (mode == MCOPY_ATOMIC_CONTINUE);
->         struct address_space *mapping;
->         pgoff_t idx;
->         unsigned long size;
-> @@ -4659,8 +4660,18 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->         spinlock_t *ptl;
->         int ret;
->         struct page *page;
-> +       int writable;
->
-> -       if (!*pagep) {
-> +       mapping = dst_vma->vm_file->f_mapping;
-> +       idx = vma_hugecache_offset(h, dst_vma, dst_addr);
-> +
-> +       if (is_continue) {
-> +               ret = -EFAULT;
-> +               page = find_lock_page(mapping, idx);
-> +               *pagep = NULL;
-> +               if (!page)
-> +                       goto out;
-> +       } else if (!*pagep) {
->                 ret = -ENOMEM;
->                 page = alloc_huge_page(dst_vma, dst_addr, 0);
->                 if (IS_ERR(page))
-> @@ -4689,13 +4700,8 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->          */
->         __SetPageUptodate(page);
->
-> -       mapping = dst_vma->vm_file->f_mapping;
-> -       idx = vma_hugecache_offset(h, dst_vma, dst_addr);
-> -
-> -       /*
-> -        * If shared, add to page cache
-> -        */
-> -       if (vm_shared) {
-> +       /* Add shared, newly allocated pages to the page cache. */
-> +       if (vm_shared && !is_continue) {
->                 size = i_size_read(mapping->host) >> huge_page_shift(h);
->                 ret = -EFAULT;
->                 if (idx >= size)
-> @@ -4740,8 +4746,14 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->                 hugepage_add_new_anon_rmap(page, dst_vma, dst_addr);
->         }
->
-> -       _dst_pte = make_huge_pte(dst_vma, page, dst_vma->vm_flags & VM_WRITE);
-> -       if (dst_vma->vm_flags & VM_WRITE)
-> +       /* For CONTINUE on a non-shared VMA, don't set VM_WRITE for CoW. */
-> +       if (is_continue && !vm_shared)
-> +               writable = 0;
-> +       else
-> +               writable = dst_vma->vm_flags & VM_WRITE;
-> +
-> +       _dst_pte = make_huge_pte(dst_vma, page, writable);
-> +       if (writable)
->                 _dst_pte = huge_pte_mkdirty(_dst_pte);
->         _dst_pte = pte_mkyoung(_dst_pte);
->
-> @@ -4755,8 +4767,9 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->         update_mmu_cache(dst_vma, dst_addr, dst_pte);
->
->         spin_unlock(ptl);
-> -       SetHPageMigratable(page);
-> -       if (vm_shared)
-> +       if (!is_continue)
-> +               SetHPageMigratable(page);
-> +       if (vm_shared || is_continue)
->                 unlock_page(page);
->         ret = 0;
->  out:
+> +  reg:
+> +    maxItems: 1
+> +    description: |
+> +      Specifies the i2c slave address, it is required and should be 0x2d
+> +      if I2C is used.
 
-Apologies, I noticed a mistake here. Just like the
-"unlock_page(page);" line above, I think we need to change to "if
-(vm_shared || is_continue)" in the "out_release_unlock:" case as well.
-I'll send this change in a v5.1 or a v6, depending on what other
-comments this series gets in the next few days.
+If I2C is not used, then this should be underneath the USB host as a USB 
+device. That also implies a different compatible string. I'd suggest you 
+just say I2C is required if that's your use.
 
-> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> index b2ce61c1b50d..ce6cb4760d2c 100644
-> --- a/mm/userfaultfd.c
-> +++ b/mm/userfaultfd.c
-> @@ -207,7 +207,7 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
->                                               unsigned long dst_start,
->                                               unsigned long src_start,
->                                               unsigned long len,
-> -                                             bool zeropage)
-> +                                             enum mcopy_atomic_mode mode)
->  {
->         int vm_alloc_shared = dst_vma->vm_flags & VM_SHARED;
->         int vm_shared = dst_vma->vm_flags & VM_SHARED;
-> @@ -227,7 +227,7 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
->          * by THP.  Since we can not reliably insert a zero page, this
->          * feature is not supported.
->          */
-> -       if (zeropage) {
-> +       if (mode == MCOPY_ATOMIC_ZEROPAGE) {
->                 mmap_read_unlock(dst_mm);
->                 return -EINVAL;
->         }
-> @@ -273,8 +273,6 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
->         }
->
->         while (src_addr < src_start + len) {
-> -               pte_t dst_pteval;
-> -
->                 BUG_ON(dst_addr >= dst_start + len);
->
->                 /*
-> @@ -297,16 +295,16 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
->                         goto out_unlock;
->                 }
->
-> -               err = -EEXIST;
-> -               dst_pteval = huge_ptep_get(dst_pte);
-> -               if (!huge_pte_none(dst_pteval)) {
-> +               if (mode != MCOPY_ATOMIC_CONTINUE &&
-> +                   !huge_pte_none(huge_ptep_get(dst_pte))) {
-> +                       err = -EEXIST;
->                         mutex_unlock(&hugetlb_fault_mutex_table[hash]);
->                         i_mmap_unlock_read(mapping);
->                         goto out_unlock;
->                 }
->
->                 err = hugetlb_mcopy_atomic_pte(dst_mm, dst_pte, dst_vma,
-> -                                               dst_addr, src_addr, &page);
-> +                                              dst_addr, src_addr, mode, &page);
->
->                 mutex_unlock(&hugetlb_fault_mutex_table[hash]);
->                 i_mmap_unlock_read(mapping);
-> @@ -408,7 +406,7 @@ extern ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
->                                       unsigned long dst_start,
->                                       unsigned long src_start,
->                                       unsigned long len,
-> -                                     bool zeropage);
-> +                                     enum mcopy_atomic_mode mode);
->  #endif /* CONFIG_HUGETLB_PAGE */
->
->  static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
-> @@ -458,7 +456,7 @@ static __always_inline ssize_t __mcopy_atomic(struct mm_struct *dst_mm,
->                                               unsigned long dst_start,
->                                               unsigned long src_start,
->                                               unsigned long len,
-> -                                             bool zeropage,
-> +                                             enum mcopy_atomic_mode mcopy_mode,
->                                               bool *mmap_changing,
->                                               __u64 mode)
->  {
-> @@ -469,6 +467,7 @@ static __always_inline ssize_t __mcopy_atomic(struct mm_struct *dst_mm,
->         long copied;
->         struct page *page;
->         bool wp_copy;
-> +       bool zeropage = (mcopy_mode == MCOPY_ATOMIC_ZEROPAGE);
->
->         /*
->          * Sanitize the command parameters:
-> @@ -527,10 +526,12 @@ static __always_inline ssize_t __mcopy_atomic(struct mm_struct *dst_mm,
->          */
->         if (is_vm_hugetlb_page(dst_vma))
->                 return  __mcopy_atomic_hugetlb(dst_mm, dst_vma, dst_start,
-> -                                               src_start, len, zeropage);
-> +                                               src_start, len, mcopy_mode);
->
->         if (!vma_is_anonymous(dst_vma) && !vma_is_shmem(dst_vma))
->                 goto out_unlock;
-> +       if (mcopy_mode == MCOPY_ATOMIC_CONTINUE)
-> +               goto out_unlock;
->
->         /*
->          * Ensure the dst_vma has a anon_vma or this page
-> @@ -626,14 +627,22 @@ ssize_t mcopy_atomic(struct mm_struct *dst_mm, unsigned long dst_start,
->                      unsigned long src_start, unsigned long len,
->                      bool *mmap_changing, __u64 mode)
->  {
-> -       return __mcopy_atomic(dst_mm, dst_start, src_start, len, false,
-> -                             mmap_changing, mode);
-> +       return __mcopy_atomic(dst_mm, dst_start, src_start, len,
-> +                             MCOPY_ATOMIC_NORMAL, mmap_changing, mode);
->  }
->
->  ssize_t mfill_zeropage(struct mm_struct *dst_mm, unsigned long start,
->                        unsigned long len, bool *mmap_changing)
->  {
-> -       return __mcopy_atomic(dst_mm, start, 0, len, true, mmap_changing, 0);
-> +       return __mcopy_atomic(dst_mm, start, 0, len, MCOPY_ATOMIC_ZEROPAGE,
-> +                             mmap_changing, 0);
-> +}
+'const: 0x2d' instead of maxItems is the schema to express the address 
+if fixed.
+
 > +
-> +ssize_t mcopy_continue(struct mm_struct *dst_mm, unsigned long start,
-> +                      unsigned long len, bool *mmap_changing)
-> +{
-> +       return __mcopy_atomic(dst_mm, start, 0, len, MCOPY_ATOMIC_CONTINUE,
-> +                             mmap_changing, 0);
->  }
->
->  int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
-> --
-> 2.30.0.478.g8a0d178c01-goog
->
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description:
+> +      The phandle and specifier for the GPIO that controls the RESET line of
+> +      USB hub.
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        usb5744@2d {
+> +            compatible = "microchip,usb5744";
+> +            reg = <0x2d>;
+> +            reset-gpios = <&gpio 44 GPIO_ACTIVE_HIGH>;
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 41e8d3d7faec..7439471b5d37 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2697,6 +2697,7 @@ W:	http://wiki.xilinx.com
+>  T:	git https://github.com/Xilinx/linux-xlnx.git
+>  F:	Documentation/devicetree/bindings/i2c/cdns,i2c-r1p10.yaml
+>  F:	Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml
+> +F:	Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+>  F:	arch/arm/mach-zynq/
+>  F:	drivers/block/xsysace.c
+>  F:	drivers/clocksource/timer-cadence-ttc.c
+> -- 
+> 2.30.0
+> 
