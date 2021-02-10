@@ -2,133 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56CC3165A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB583165AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbhBJLt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:49:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhBJLpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:45:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2512464E2A;
-        Wed, 10 Feb 2021 11:44:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612957494;
-        bh=7TkHMquWewApmsNtom3Sk5kqBfrt9Txj5xLN/pBrQbQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DL62wACXYBcjnG+VbxBoQ4TYtFlxHK8gFj0AxepZjo6k1qqDqCpBL9Y6A0SgOCgXF
-         PNIrogaCWaCeEUIZCmh62iBX0N/x4R8rrXqFBUvBf5QwDCi5aSNHxQJJ8KzteVPR4L
-         jMMhqfzhPDf9dRrRi9DzsOrFnUn1i7Z3WmuFhNfUrO+N2mcRC5T3paGOCIWP3rajLt
-         +i+fPsbpHP4P+jNSrpnof2o+WFq1tgN2Nc0ALIG+ZwHzxZCkD+Tckx/k09YvnerwJC
-         GxPr7xqtz4iAyOV0qSZdbtR7qZutK2JXNmFv1tRdDs3oKeNdaVTnm9bF8saT3H+Sol
-         o3Mk1/eEziGlA==
-Date:   Wed, 10 Feb 2021 11:44:48 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v3 1/8] mm: Cleanup faultaround and finish_fault()
- codepaths
-Message-ID: <20210210114448.GA28682@willie-the-truck>
-References: <20210114175934.13070-1-will@kernel.org>
- <20210114175934.13070-2-will@kernel.org>
- <20210209202449.GA104837@roeck-us.net>
+        id S230380AbhBJLv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:51:26 -0500
+Received: from mail-mw2nam12on2087.outbound.protection.outlook.com ([40.107.244.87]:53270
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231243AbhBJLp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 06:45:57 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h0aeefgH88KAS+mFZzz3s6GSJy3shj3jdtXAXQmJY6uPR3r5xZoV+H26x6LiSSRgH6rO+CQLkTUFSoRWeW/o8Pt+SSY/3v6TR4SEaZ/S1DeAinCsG/upp6O/Hj7RKQDHn+m8vJqUU685m2yq2HIZshuhOuakkorvqXSf42a55fKx3ww5z984JNuCRBgALrgbecw4aQzhlaxe8PNRWxVk8uVotM1kc/Mj6hcSl/i5Cm9jgkxckFwt92z/SZA3FHyOTfyF9GmuiLPq4qDUYUBpB/xQTNk7O0O3Q7/ardpvylN9VvVqZYpmqcCTEWJN4t61reMrbdtqN16xf5/sN+TNrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F7rrEVOPubpwLp6mYlB5O3vrNvtKdTG89i24FP4CmWA=;
+ b=YWan1Y5tL7+IakugddnYQSvHvmZttjMM2g4cxX0nQKdfcnIer+DXtxfJZU7yAn7Mp5wTyw31T9q3aDmuhRL19awEXxDUzfck0JY+UmMxlAs6FDjj62DfaKpBXSvQMs7P4/jfq7TAYDGEL2BD3T5EPcsXbj2iedB90NKmfk3Y/CVZG0Wnn1ra7kFV9+pZE8DZ27NNfq/kLwWqIQPXXm2JmnaeVU34xRRd31zslJTO0fVzBIWJLIDZz7/+tpoBBK+k5bWKUj5+pQdXqqdsMqzQ1E5rHK5g2D8HHWd8BMPhf6JZbBYte/FVFDHCxaRDNI8arXvQeNX3tYxC4tu6DofmBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F7rrEVOPubpwLp6mYlB5O3vrNvtKdTG89i24FP4CmWA=;
+ b=w/iRFv2mdn2cKaFeYrgQQ4CNhOo7hiZqMCWZ19NJjh7S9LxCI9S5mrcxaeDfN8fIQGekF81OmtCTpbFUMlnWXvMOGbB9PWJWtewzGa3jteqrqq5oti9YLdTlwiWqM0JOE+rrXW7eZIWeEXB+mdNWt8Him7QCkLJFAvF1I3xKLBs=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4638.namprd12.prod.outlook.com (2603:10b6:208:ff::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.24; Wed, 10 Feb
+ 2021 11:45:05 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
+ 11:45:04 +0000
+Subject: Re: drm/nouneau: 5.11 cycle regression bisected to 461619f5c324
+ "drm/nouveau: switch to new allocator"
+To:     Mike Galbraith <efault@gmx.de>, lkml <linux-kernel@vger.kernel.org>
+Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+References: <1d663cd74af91e23f4f24ebbdd65ef3ba72c15fc.camel@gmx.de>
+ <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
+ <2793c200beb530ed4a8ac32c5eea0f5aaa53c7e8.camel@gmx.de>
+ <bfd62492-e6a9-3899-dd7d-87b7800f45c7@amd.com>
+ <41cc52bd57a466f29ea81676d42f57a7b9da7dd8.camel@gmx.de>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <5df26bda-9ff8-168f-e5a3-0bb503ffcca9@amd.com>
+Date:   Wed, 10 Feb 2021 12:44:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <41cc52bd57a466f29ea81676d42f57a7b9da7dd8.camel@gmx.de>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:1e1:ad6e:a509:1753]
+X-ClientProxiedBy: AM0PR06CA0124.eurprd06.prod.outlook.com
+ (2603:10a6:208:ab::29) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209202449.GA104837@roeck-us.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:1e1:ad6e:a509:1753] (2a02:908:1252:fb60:1e1:ad6e:a509:1753) by AM0PR06CA0124.eurprd06.prod.outlook.com (2603:10a6:208:ab::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 11:45:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3fa07a43-4368-42d9-cd34-08d8cdb94e7d
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4638:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4638DCFF1701CB8CA7A05ABD838D9@MN2PR12MB4638.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dAlIs2kCGcTP6rfUk6VcudilwbsrFmQwgTsCehm8i1Xg48jboP6/fHnfYaDQGjorRJgXtRNyVwIaBIsKbO55ofh8zhCOeqZgsie6PkV7kXqoynGHTH5TP37bgn04SgIuzowONL00tZKCDMfacIZRSXqlZi5eOckZTusOF73iqWHKH6Jg5W348IqTYcXaDPaxyIthOu/vQ2oxdyYkpRnmv1/pqR8R0Cg2HCRunzReHIb4IIAAtNB98PBh+HPzf6npYwBwOzsy9wesOaql9fCON7ho98inRj4Ok+7HMPMylINc4b7OH0LiKMPqav2T82XaP0EhXvr8BM471NM/8LMHhiMHn6Xvtr4SCyEyGohWxI+QMKWL6tmJzD5IR0jZQaCVJqI+1YlvOo0xfVgV9vn8L2B5idFn3MRb/0363ebOFybm+ad/ZOPP5fAsFlrq+zOKk2riNmzd0/7mwkxQ7pcGwOgwmETVaPwxE86wPyuysEdRWyCItyKKkv6arzC25wkOl/g0jXtSjY0QisI6A0vdiDM/s7pm5SEwDeIKawEcvWYhdvK4pOWos6yKu63WN3c08SusjFhqbVPtZD5fcMZb3jy1ytXmuTY/vMqFHxCO53o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(396003)(376002)(136003)(366004)(66574015)(86362001)(31686004)(4326008)(6486002)(66556008)(52116002)(66946007)(8676002)(8936002)(31696002)(478600001)(6666004)(16526019)(36756003)(66476007)(2616005)(54906003)(4744005)(186003)(5660300002)(83380400001)(2906002)(316002)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-15?Q?kjASZ5mvhBN00keLwCsus31hZYpXWJo+1HsUfne+U9iAQlTf2ruLaPuIP?=
+ =?iso-8859-15?Q?G5oFZt6LQRNit3qVlzPvpvm4NCyqOGFi9AAkQhKh2X3wJlh7ZiRo/2NYR?=
+ =?iso-8859-15?Q?G3+I+cjRv/5DJsWzkpXfohOUyT8vjt+rmKUNCe9GhHGSwHxS5oovVx+a9?=
+ =?iso-8859-15?Q?Jp1ujO+wvSBbaevekrgn7Of9d9dnas2YSgYZlKEg+4WNe64PAgTXKFyVZ?=
+ =?iso-8859-15?Q?X2bFWn9IlpcXxPW/DnA9QBVLjg++V4555qxUkXJgeZW/aXDGJfpZQM5Dz?=
+ =?iso-8859-15?Q?0AMYA+75u+7I/0oKeFXsBvAccps9oTeRoRUaOxHM/LD7u0nK2fvMSD6PC?=
+ =?iso-8859-15?Q?uhWKl2+BUpAeie1+LOrRUK9f1Eq75TLXxJ3OFpHwjqoItQADB6CEPOouM?=
+ =?iso-8859-15?Q?7iQGOdau278MagE7qto7BbQBmNENEeBdMhjw3VgTanUdhSRKG+VoXPieS?=
+ =?iso-8859-15?Q?kBE7Ak/NMj8mt6QknklFIsCngVxWSQuGBeWcHPGYKv8SXJcYnJ5jqBLMd?=
+ =?iso-8859-15?Q?PNcUD1pdBs2HZ1QMTRIswNgFrGyjSvFS9S4iS+D4H/jxISgmpvtjQXa0B?=
+ =?iso-8859-15?Q?vaQ6udtokkFuxrmNRgy99eRCgJKfBZOaoKt79lzcTh9LAfuRVMdW0LG+B?=
+ =?iso-8859-15?Q?eOcfrWxY9ivssgg8SgJ1eFAbvAhGu3KiWndr9akALjzNH7UgKbzik8v0W?=
+ =?iso-8859-15?Q?auW5lUNfiZV9tdt01T18TPDeuCfY9itaRBNWtaRtxZhENs5cA/IrjZgkK?=
+ =?iso-8859-15?Q?YJLV8uJGTcajH0J4S7T9EHTYL7DFBgq9rtej+LPdlCv4U++O/c/9Ra+Xs?=
+ =?iso-8859-15?Q?pi3D+lkR2yKDCrUI3M/dtPsqMSUvMKu6F/7cVP0SZF686WD56shXwfXoL?=
+ =?iso-8859-15?Q?FkKd+taZjy1Tqw/7HUHvjVrVp+L61FPzph08sdJz7sdpY4pG1/HMkkYHf?=
+ =?iso-8859-15?Q?BjtHCfXjhmZ4jCEp18tUj78W1VOPpIoIWfhO2qYblpirRKsO+3cM0HrZb?=
+ =?iso-8859-15?Q?3XdSre0k8jtS0FfNMOTEhE9p7RN2G+649/rf26LNcUeBRN3d52iUPdtpw?=
+ =?iso-8859-15?Q?AtrOX78iYsNrCUHCbp0BvCvDLRQpzGHQrn3a9F0H6JNWh5CZ1e+xq9Ig6?=
+ =?iso-8859-15?Q?YuhHFZ3RT8wOou3V2wH9uASa/sl5obfAyG+1T/ah+F3s8x7ZPvJlhkTgA?=
+ =?iso-8859-15?Q?gE+jkSCUDMX7jg9XH37eLDdeLKs01KckpL4lFGk7CkxPTJ0L+fwVR5x47?=
+ =?iso-8859-15?Q?JFTqRKfhnKii0yYMFJ0uXvJ+ND4775/KILc7nMY5FGwebpcr4NjUrU+cB?=
+ =?iso-8859-15?Q?+Tzw/HuxdUUC7Q6uqFtqWEVKDzY1idkONLkkbnpHpdXMLqmj3qbrk09SL?=
+ =?iso-8859-15?Q?BsnrTuTdstWd2+HiNtH5VmFkm6gMeP+ZK/FUtQuQlvOiA+k+PTpKvQ8y/?=
+ =?iso-8859-15?Q?saUyJyMazER5KiH0V0QRvBzNefNW+y6HZnU55l7u?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fa07a43-4368-42d9-cd34-08d8cdb94e7d
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 11:45:04.7343
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h5jITLQXRQoUFgKPXTk4sLLeYnae7LEv3fFZXuXBg3C65ctoq4DVASOEyY/glo/A
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4638
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 12:24:49PM -0800, Guenter Roeck wrote:
-> On Thu, Jan 14, 2021 at 05:59:27PM +0000, Will Deacon wrote:
-> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> > 
-> > alloc_set_pte() has two users with different requirements: in the
-> > faultaround code, it called from an atomic context and PTE page table
-> > has to be preallocated. finish_fault() can sleep and allocate page table
-> > as needed.
-> > 
-> > PTL locking rules are also strange, hard to follow and overkill for
-> > finish_fault().
-> > 
-> > Let's untangle the mess. alloc_set_pte() has gone now. All locking is
-> > explicit.
-> > 
-> > The price is some code duplication to handle huge pages in faultaround
-> > path, but it should be fine, having overall improvement in readability.
-> > 
-> > Link: https://lore.kernel.org/r/20201229132819.najtavneutnf7ajp@box
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > [will: s/from from/from/ in comment; spotted by willy]
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > ---
-> >  fs/xfs/xfs_file.c       |   6 +-
-> >  include/linux/mm.h      |  12 ++-
-> >  include/linux/pgtable.h |  11 +++
-> >  mm/filemap.c            | 177 ++++++++++++++++++++++++++---------
-> >  mm/memory.c             | 199 ++++++++++++----------------------------
-> >  5 files changed, 213 insertions(+), 192 deletions(-)
-> > 
-> 
-> When building microblaze:mmu_defconfig:
-> 
-> mm/filemap.c: In function 'filemap_map_pages':
-> mm/filemap.c:3153:3: error: implicit declaration of function 'update_mmu_cache'; did you mean 'update_mmu_tlb'?
-> 
-> Bisect log attached.
+Please try to add a "return NULL" at the beginning of ttm_pool_type_take().
 
-Looks like a missing include.
+That should effectively disable using the pool.
 
-Will
+Thanks for testing,
+Christian.
 
---->8
-
-From 076f93117c067d5b6caab4773c6d6da130859cc4 Mon Sep 17 00:00:00 2001
-From: Will Deacon <will@kernel.org>
-Date: Wed, 10 Feb 2021 11:15:11 +0000
-Subject: [PATCH] mm: filemap: Fix microblaze build failure with
- 'mmu_defconfig'
-
-Commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault()
-codepaths") added a call to 'update_mmu_cache()' in mm/filemap.c, which
-breaks the build for microblaze:
-
-  | mm/filemap.c: In function 'filemap_map_pages':
-  | mm/filemap.c:3153:3: error: implicit declaration of function 'update_mmu_cache'; did you mean 'update_mmu_tlb'?
-
-Include asm/tlbflush.h in mm/filemap.c to make sure that the function
-(or indeed, macro) is available.
-
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210209202449.GA104837@roeck-us.net
-Signed-off-by: Will Deacon <will@kernel.org>
----
- mm/filemap.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index fb7a8d9b5603..2ca13227747b 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -43,6 +43,7 @@
- #include <linux/ramfs.h>
- #include <linux/page_idle.h>
- #include <asm/pgalloc.h>
-+#include <asm/tlbflush.h>
- #include "internal.h"
- 
- #define CREATE_TRACE_POINTS
--- 
-2.30.0.478.g8a0d178c01-goog
+Am 10.02.21 um 12:22 schrieb Mike Galbraith:
+> On Wed, 2021-02-10 at 11:52 +0100, Christian König wrote:
+>>
+>> You could try to replace the "for (order = min(MAX_ORDER - 1UL,
+>> __fls(num_pages)); num_pages;" in ttm_pool_alloc() with "for (order = 0;
+>> num_pages;" to get the old behavior.
+> That's a nogo too.
+>
+> 	-Mike
+>
 
