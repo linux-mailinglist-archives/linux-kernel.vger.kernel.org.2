@@ -2,188 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A67A316680
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61550316688
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhBJMV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:21:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55984 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230412AbhBJMTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:19:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5454EAC43;
-        Wed, 10 Feb 2021 12:18:58 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 12:18:53 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 0/6] Add roundrobin raid1 read policy
-Message-ID: <20210210121853.GA23499@wotan.suse.de>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <4f24ef7f-c1cf-3cda-b12f-a2c8c84a7e45@oracle.com>
+        id S231754AbhBJMXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:23:20 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:57232 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhBJMUR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:20:17 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ACFIJj117957;
+        Wed, 10 Feb 2021 12:19:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=RSSYx5ZKyLwSH2WY20S360SzVHoate5hhIssdRM7i4w=;
+ b=PePQVMmURpS+XLsy2yNWWMLPwxopuGErm8HDwg+7rysPqfu+Fc3eNsM8ba93ZfXUzTWT
+ WOdg00F3KBIBf/arngjQ+PXREcvrC15p2xfBkJClXR8UhfqKO+CLCLQYiDmquMUjsura
+ jNZkX+O8nQfmB49VMuvDch6E/irvkCBxe2s6HmS6SsEshzPpz2xerlNsq+5Y56VZNnMc
+ 2P//T/MIqf/Oy9y6x4qYPgKP5eVcheLS3hWAn56D+k9PrzYB5xkDVbPug0c/bO/HBNbe
+ DszITgMQe2V0NAVJNpapEiGNrxQaXQD2CPCjACbJ6GBXGFbmH2y8GZeWcJzA00tx7YMN fg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 36m4upsnum-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 12:19:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ACEg1c074049;
+        Wed, 10 Feb 2021 12:19:24 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 36j4vsqyj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 12:19:24 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11ACJNjJ008895;
+        Wed, 10 Feb 2021 12:19:23 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 04:19:22 -0800
+Date:   Wed, 10 Feb 2021 15:19:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH] staging: ralink-gdma: Fix checkpatch.pl CHECK
+Message-ID: <20210210121915.GX2696@kadam>
+References: <20210210120348.262328-1-aakashhemadri123@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4f24ef7f-c1cf-3cda-b12f-a2c8c84a7e45@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210210120348.262328-1-aakashhemadri123@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102100120
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1011
+ suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:52:01PM +0800, Anand Jain wrote:
-> On 10/02/2021 04:30, Michal Rostecki wrote:
-> > From: Michal Rostecki <mrostecki@suse.com>
-> > 
-> > This patch series adds a new raid1 read policy - roundrobin. For each
-> > request, it selects the mirror which has lower load than queue depth.
-> > Load is defined  as the number of inflight requests + a penalty value
-> > (if the scheduled request is not local to the last processed request for
-> > a rotational disk).
-> > 
-> > The series consists of preparational changes which add necessary
-> > information to the btrfs_device struct and the change with the policy.
-> > 
-> > This policy was tested with fio and compared with the default `pid`
-> > policy.
-> > 
-> > The singlethreaded test has the following parameters:
-> > 
-> >    [global]
-> >    name=btrfs-raid1-seqread
-> >    filename=btrfs-raid1-seqread
-> >    rw=read
-> >    bs=64k
-> >    direct=0
-> >    numjobs=1
-> >    time_based=0
-> > 
-> >    [file1]
-> >    size=10G
-> >    ioengine=libaio
-> > 
-> > and shows the following results:
-> > 
-> > - raid1c3 with 3 HDDs:
-> >    3 x Segate Barracuda ST2000DM008 (2TB)
-> >    * pid policy
-> >      READ: bw=217MiB/s (228MB/s), 217MiB/s-217MiB/s (228MB/s-228MB/s),
-> >      io=10.0GiB (10.7GB), run=47082-47082msec
-> >    * roundrobin policy
-> >      READ: bw=409MiB/s (429MB/s), 409MiB/s-409MiB/s (429MB/s-429MB/s),
-> >      io=10.0GiB (10.7GB), run=25028-25028mse
+On Wed, Feb 10, 2021 at 05:33:48PM +0530, Aakash Hemadri wrote:
+> Remove CHECK: Lines should not end with a '('
 > 
+> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> ---
 > 
-> > - raid1c3 with 2 HDDs and 1 SSD:
-> >    2 x Segate Barracuda ST2000DM008 (2TB)
-> >    1 x Crucial CT256M550SSD1 (256GB)
-> >    * pid policy (the worst case when only HDDs were chosen)
-> >      READ: bw=220MiB/s (231MB/s), 220MiB/s-220MiB/s (231MB/s-231MB/s),
-> >      io=10.0GiB (10.7GB), run=46577-46577mse
-> >    * pid policy (the best case when SSD was used as well)
-> >      READ: bw=513MiB/s (538MB/s), 513MiB/s-513MiB/s (538MB/s-538MB/s),
-> >      io=10.0GiB (10.7GB), run=19954-19954msec
-> >    * roundrobin (there are no noticeable differences when testing multiple
-> >      times)
-> >      READ: bw=541MiB/s (567MB/s), 541MiB/s-541MiB/s (567MB/s-567MB/s),
-> >      io=10.0GiB (10.7GB), run=18933-18933msec
-> > 
-> > The multithreaded test has the following parameters:
-> > 
-> >    [global]
-> >    name=btrfs-raid1-seqread
-> >    filename=btrfs-raid1-seqread
-> >    rw=read
-> >    bs=64k
-> >    direct=0
-> >    numjobs=8
-> >    time_based=0
-> > 
-> >    [file1]
-> >    size=10G
-> >    ioengine=libaio
-> > 
-> > and shows the following results:
-> > 
-> > - raid1c3 with 3 HDDs: 3 x Segate Barracuda ST2000DM008 (2TB)
-> >    3 x Segate Barracuda ST2000DM008 (2TB)
-> >    * pid policy
-> >      READ: bw=1569MiB/s (1645MB/s), 196MiB/s-196MiB/s (206MB/s-206MB/s),
-> >      io=80.0GiB (85.9GB), run=52210-52211msec
-> >    * roundrobin
-> >      READ: bw=1733MiB/s (1817MB/s), 217MiB/s-217MiB/s (227MB/s-227MB/s),
-> >      io=80.0GiB (85.9GB), run=47269-47271msec
-> > - raid1c3 with 2 HDDs and 1 SSD:
-> >    2 x Segate Barracuda ST2000DM008 (2TB)
-> >    1 x Crucial CT256M550SSD1 (256GB)
-> >    * pid policy
-> >      READ: bw=1843MiB/s (1932MB/s), 230MiB/s-230MiB/s (242MB/s-242MB/s),
-> >      io=80.0GiB (85.9GB), run=44449-44450msec
-> >    * roundrobin
-> >      READ: bw=2485MiB/s (2605MB/s), 311MiB/s-311MiB/s (326MB/s-326MB/s),
-> >      io=80.0GiB (85.9GB), run=32969-32970msec
-> > 
+>  drivers/staging/ralink-gdma/ralink-gdma.c | 28 ++++++++++++-----------
+>  1 file changed, 15 insertions(+), 13 deletions(-)
 > 
->  Both of the above test cases are sequential. How about some random IO
->  workload?
+> diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
+> index 655df317d0ee..a11f915f3308 100644
+> --- a/drivers/staging/ralink-gdma/ralink-gdma.c
+> +++ b/drivers/staging/ralink-gdma/ralink-gdma.c
+> @@ -135,8 +135,7 @@ struct gdma_data {
+>  	int (*start_transfer)(struct gdma_dmaengine_chan *chan);
+>  };
 > 
->  Also, the seek time for non-rotational devices does not exist. So it is
->  a good idea to test with ssd + nvme and all nvme or all ssd.
+> -static struct gdma_dma_dev *gdma_dma_chan_get_dev(
+> -	struct gdma_dmaengine_chan *chan)
+> +static struct gdma_dma_dev *gdma_dma_chan_get_dev(struct gdma_dmaengine_chan *chan)
+>  {
+>  	return container_of(chan->vchan.chan.device, struct gdma_dma_dev,
+>  		ddev);
+> @@ -510,10 +509,11 @@ static void gdma_dma_issue_pending(struct dma_chan *c)
+>  	spin_unlock_irqrestore(&chan->vchan.lock, flags);
+>  }
 > 
+> -static struct dma_async_tx_descriptor *gdma_dma_prep_slave_sg(
+> -		struct dma_chan *c, struct scatterlist *sgl,
+> -		unsigned int sg_len, enum dma_transfer_direction direction,
+> -		unsigned long flags, void *context)
+> +static struct dma_async_tx_descriptor
+> +	*gdma_dma_prep_slave_sg(struct dma_chan *c, struct scatterlist *sgl,
 
-Good idea. I will test random I/O and will try to test all-nvme /
-all-ssd and mixed nonrot.
+Don't do it like this...  The original code is better so, I guess, lets
+leave it as is.  There are two accepted ways to start a function in the
+kernel:
 
-> > To measure the performance of each policy and find optimal penalty
-> > values, I created scripts which are available here:
-> > 
-> > https://gitlab.com/vadorovsky/btrfs-perf
-> > https://github.com/mrostecki/btrfs-perf
-> > 
-> > Michal Rostecki (6):
-> 
-> 
-> >    btrfs: Add inflight BIO request counter
-> >    btrfs: Store the last device I/O offset
-> 
-> These patches look good. But as only round-robin policy requires
-> to monitor the inflight and last-offset. Could you bring them under
-> if policy=roundrobin? Otherwise, it is just a waste of CPU cycles
-> if the policy != roundrobin.
-> 
+ONE:
+static type
+function_name(paramenters)
 
-If I bring those stats under if policy=roundrobin, they are going to be
-inaccurate if someone switches policies on the running system, after
-doing any I/O in that filesystem.
+TWO
+static type function_name(paramenters)
 
-I'm open to suggestions how can I make those stats as lightweight as
-possible. Unfortunately, I don't think I can store the last physical
-location without atomic_t.
+Either option will let you grep for the names of the functions:
 
-The BIO percpu counter is probably the least to be worried about, though
-I could maybe get rid of it entirely in favor of using part_stat_read().
+	egrep "^[a-zA-Z]" dir/file.c | grep '('
 
-> >    btrfs: Add stripe_physical function
-> >    btrfs: Check if the filesystem is has mixed type of devices
-> 
-> Thanks, Anand
-> 
-> >    btrfs: sysfs: Add directory for read policies
-> >    btrfs: Add roundrobin raid1 read policy
-> > 
-> >   fs/btrfs/ctree.h   |   3 +
-> >   fs/btrfs/disk-io.c |   3 +
-> >   fs/btrfs/sysfs.c   | 144 ++++++++++++++++++++++++++----
-> >   fs/btrfs/volumes.c | 218 +++++++++++++++++++++++++++++++++++++++++++--
-> >   fs/btrfs/volumes.h |  22 +++++
-> >   5 files changed, 366 insertions(+), 24 deletions(-)
-> > 
-> 
+regards,
+dan carpenter
 
-Thanks for review,
-Michal
+
