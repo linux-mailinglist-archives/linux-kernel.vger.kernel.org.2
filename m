@@ -2,87 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1853174C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62293174C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbhBJXw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:52:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50182 "EHLO
+        id S234030AbhBJXxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233150AbhBJXwn (ORCPT
+        with ESMTP id S233516AbhBJXxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:52:43 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F36FC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:52:03 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id t25so2369074pga.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:52:03 -0800 (PST)
+        Wed, 10 Feb 2021 18:53:34 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5B7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:52:54 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id u15so2167117plf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:52:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+RqrcmBvSp+AfCyDbTNQeAWJW47jyI7LST7znFnRbaY=;
-        b=S/w5ZkWkNMRWHoojAYD/diEh4aI3LfPNbz+6i3xiI3H58fp1VX0ZL29+rFGi2y/XRZ
-         HJund21d+QVhCZUtZ6FDzi83Vf+esFKIN4JDBwTFyPVxZf+uTkb5JCk7QEu2UC7bioqG
-         tSinMcigd7ma1Cuf1I4X3wS0nwWLgKw17UlzI=
+        bh=sw+4hTERsJ95x3OUdaatH7l2UPgiDomv1hcpD2ZxNqI=;
+        b=iJXkbpWf9Xp9xhd3DRYZ2iFa+7t+86a8D1EhkB4lVs1Jtkp98ZoO0ydYq8PgTIPRr4
+         dSaxK+vQmGFp9dQB0ww/CwlfJfiTutb1O8n9myj/Wmm33DjVB5MncTpa43TXJ13vv7V+
+         ferU4u8NBVxNEEaAJ4Mg1LtlV3GgwwL3I0+BEoZq6WofvfSJ0AY+iZJZreNVB4ye9KdY
+         1wPlb+xVvc8U7Ju38o22ipV6TGntk8LGOjhpP7nhuXJ8e7kLur9RicbJROdLeVc5YXjl
+         vIIxnvVra6opi/iIvwS5QntTDhyVL12trjJwws+W2pT5m/Xc8zRqA6eFfdYBufAsRnZS
+         nRJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+RqrcmBvSp+AfCyDbTNQeAWJW47jyI7LST7znFnRbaY=;
-        b=W6AlLHaI4EjAIzsfdOX2U7cZvxIzbxjKBd0tJlhx/52R2EJWzpxjIU7tnP455NJeBo
-         rfRi7WoUsL5z8UnyyGnf71ahrZ4FxcVF5G+Ff0lo2fvXXI9fOCOpecNwVzh01N2/2s8/
-         RjKGka43q9uQNTgvuRqFIRgU0E4F2SDj3Cb5ES0yfaP2wSeY18ibV0/tHBu0IzKhtspb
-         yIXGTZBtmbvGY6iizRqT4zEQWU5kc9Onma2gs9INZrZfY2Pqvoq++6mVpdvd0curEsKa
-         Zm5ey0xGP3457TPGpnCsG1g9c+tJOirFnYvBpghWb7i2I4Iw1PzKOgnSTDNPIAH1lBqc
-         ruSQ==
-X-Gm-Message-State: AOAM532ueY/O+13u1ZKpH/YGZKhg0F6KMEojYm/nZPHNUVS7GgdCoWew
-        lBpOvMVSxS9MvqKi4o0EDxdqPuzhcV1XPg==
-X-Google-Smtp-Source: ABdhPJxO6F2cxeUUIYk3TZlrfEHU7oXT95eujXQYKA24s93iFWEPgApaorjplCrx1gcGdPiHZeDHKQ==
-X-Received: by 2002:a05:6a00:1a46:b029:1d5:9acd:798c with SMTP id h6-20020a056a001a46b02901d59acd798cmr5302704pfv.25.1613001122869;
-        Wed, 10 Feb 2021 15:52:02 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s23sm3427212pfc.211.2021.02.10.15.52.01
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=sw+4hTERsJ95x3OUdaatH7l2UPgiDomv1hcpD2ZxNqI=;
+        b=hVOChk75ifDgtDhxI4639nCW7zJzO1Lnko1IuJAmaNrkZQ6CjE0kRcwwNdgGRZLmUJ
+         TpWhnsP8qC9KfRhmbqyXbs6ncgz9t5iTtQ/IWScM2KsZ24OAE39+h/tIqnwt8IBhv0Bm
+         WSx192Q9MQI/yGvKw2IGmK4bBejH/DUxbhXQUBnp8SBZs6qDuy70ipMeaZNz9IlD0IXw
+         tHoATvI4bU21VlxJZw9uD7Oul1doiag0QxsuMDVeIYUhbLu9fFvVpz621J6mcofl045E
+         P1hkjhB6ox12xgcdWux0mtotd35sIallP0oFWaAIeZv5rXgjrbLQG5YRJzLl9DOtCvj8
+         l6YA==
+X-Gm-Message-State: AOAM531CbW/4b6w6ZYG9SQ3XUBQf8Kqmk7a7AAiRDhjaUFmmiymQG2Yi
+        og5HTqyAvl/bkH1O4yyM3PE=
+X-Google-Smtp-Source: ABdhPJzSFkYB5GmLFSQZ4TnxB4yVnLTWzjlffBbDKs0fNJIFqC+FmWj5cvxz/qSViIuEQeRal1XKjA==
+X-Received: by 2002:a17:90a:1f4c:: with SMTP id y12mr1356739pjy.52.1613001174226;
+        Wed, 10 Feb 2021 15:52:54 -0800 (PST)
+Received: from voyager.lan ([45.124.203.14])
+        by smtp.gmail.com with ESMTPSA id y16sm3288419pgg.20.2021.02.10.15.52.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 15:52:02 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Cc:     Kees Cook <keescook@chromium.org>, Joe Perches <joe@perches.com>,
-        Justin Sanders <justin@coraid.com>, linux-block@vger.kernel.org
-Subject: [PATCH] block: Replace lkml.org links with lore
-Date:   Wed, 10 Feb 2021 15:51:59 -0800
-Message-Id: <20210210235159.3190756-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 10 Feb 2021 15:52:53 -0800 (PST)
+Sender: "joel.stan@gmail.com" <joel.stan@gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+To:     Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: kexec: Remove unused kexec_reinit callback
+Date:   Thu, 11 Feb 2021 10:22:43 +1030
+Message-Id: <20210210235243.398810-1-joel@jms.id.au>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=2b392b78f5ee01e9203448b6ce61edad507ab0e5; i=IGI1xt74lLuj6j2hPzpbXMCl+rubQWiCF3jE3okcbg4=; m=kc8NgBcNkR1FdAUFoBcecPqIFWVDlhJwDI99K+gzg58=; p=oMk8zTlanqECFHj8udWi0YpfsWy8cY89E6aJQBmmOe8=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmAkcZ8ACgkQiXL039xtwCbGrg//QRf WC+6w+4+XFz6/a4mLgBIP9S8YfZuJplYzrME1LlHhvpyxujFiNnqNQkorD5vi96Nc/YKvc0VHtqmS gLeCaRmgfj727yCD0dt4uALzq46f+gAgARD0whwcL7MZmKr9OdduKfWiL3YA5kHhz3leVZ+Ezb82t RDUWrIp4BwRnuY77gI24ayM7l88W+8ARr3oMul05ScA5Jz6J7f3yLhylMk+4n1apcS34U23dOVcAM qxicR0o2X7UmXgy7WR/628buGJlqdt8Su8VrnFVY7d+e3U3b0eSm1yyGEOa4EIxdbs6cHy2OYKs0A S4u85+6EblJXRKPnUJ8rg0hnlPf3M+cOcwedjnKwtjkJsbUBBQbx8/5GJ5LVxQ9owEcYi3W2wMZxr r9rwV/Ek1yMwn0Goc5PzOX9doOle92gsZyPxpZBZ2Ofv9go8/nSgKWya9kaERT6NMVik7dCJVrvgU 6K7tIicCx9FqdtCtW2QzB9nyPDvKNswLxgzg2GulO+CAZ0G9iE3KOPGUDS/aRUMd0mpPufhAqmANH UmGekl2/eqCjHdTYcMS+mcb9sGNuZ9Vw0hy4DU5zGBT9TCUFQ/RsJiiXKJVfyJduwrEBY5+MIvrD5 2fOhrKLE3qk0+ZeWXkWnV2/V2ROg06LovATrjMuoqql5HY1qJf5xxYMdtCw67g+E=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
-links with lore"), replace lkml.org links with lore to better use a
-single source that's more likely to stay available long-term.
+The last (only?) user of this was removed in commit ba364fc752da ("ARM:
+Kirkwood: Remove mach-kirkwood"), back in v3.17.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 ---
- drivers/block/aoe/aoecmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/include/asm/kexec.h    | 3 ---
+ arch/arm/kernel/machine_kexec.c | 8 --------
+ 2 files changed, 11 deletions(-)
 
-diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
-index ac720bdcd983..ecd77897a761 100644
---- a/drivers/block/aoe/aoecmd.c
-+++ b/drivers/block/aoe/aoecmd.c
-@@ -1046,7 +1046,7 @@ aoe_end_request(struct aoedev *d, struct request *rq, int fastfail)
- 
- 	__blk_mq_end_request(rq, err);
- 
--	/* cf. http://lkml.org/lkml/2006/10/31/28 */
-+	/* cf. https://lore.kernel.org/lkml/20061031071040.GS14055@kernel.dk/ */
- 	if (!fastfail)
- 		blk_mq_run_hw_queues(q, true);
+diff --git a/arch/arm/include/asm/kexec.h b/arch/arm/include/asm/kexec.h
+index 22751b5b5735..e62832dcba76 100644
+--- a/arch/arm/include/asm/kexec.h
++++ b/arch/arm/include/asm/kexec.h
+@@ -56,9 +56,6 @@ static inline void crash_setup_regs(struct pt_regs *newregs,
+ 	}
  }
+ 
+-/* Function pointer to optional machine-specific reinitialization */
+-extern void (*kexec_reinit)(void);
+-
+ static inline unsigned long phys_to_boot_phys(phys_addr_t phys)
+ {
+ 	return phys_to_idmap(phys);
+diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
+index 2b09dad7935e..f567032a09c0 100644
+--- a/arch/arm/kernel/machine_kexec.c
++++ b/arch/arm/kernel/machine_kexec.c
+@@ -147,11 +147,6 @@ void machine_crash_shutdown(struct pt_regs *regs)
+ 	pr_info("Loading crashdump kernel...\n");
+ }
+ 
+-/*
+- * Function pointer to optional machine-specific reinitialization
+- */
+-void (*kexec_reinit)(void);
+-
+ void machine_kexec(struct kimage *image)
+ {
+ 	unsigned long page_list, reboot_entry_phys;
+@@ -187,9 +182,6 @@ void machine_kexec(struct kimage *image)
+ 
+ 	pr_info("Bye!\n");
+ 
+-	if (kexec_reinit)
+-		kexec_reinit();
+-
+ 	soft_restart(reboot_entry_phys);
+ }
+ 
 -- 
-2.25.1
+2.30.0
 
