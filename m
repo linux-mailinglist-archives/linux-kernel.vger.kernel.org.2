@@ -2,114 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F44316401
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0308316402
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhBJKiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:38:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
+        id S231363AbhBJKiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbhBJKbh (ORCPT
+        with ESMTP id S230417AbhBJKbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:31:37 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ECDC06174A;
-        Wed, 10 Feb 2021 02:30:57 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id t26so953477pgv.3;
-        Wed, 10 Feb 2021 02:30:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bi4sQc1W0haZULZiCGbFCEA8dMHiZn6QmzMFchXnTYQ=;
-        b=O6BimNAuXjNLj/yIoizM4uAt2GF/5uu64K1ztnL3yk7SXNLm63PvYs+X6csIxGHjvP
-         6OPVzLD+S84m7bvln8dTdCJmIqWOyC18oH1HRiIVGxCuwDU40KdZZTaMearXJBkjWvv8
-         NnbpAdx65RIdyGZGq8+R4u37Bc1hPk9tB0EfvU8NdLQUB98C6WGzqZw+2+2gM07t/lb3
-         q6V0UEaTgjMYbPbRINW9lKUILnngSPNhz4ol82BmG4BOTq7TsIvUA5RI868pym1NeLJT
-         YOusVxVaHPjP11txFj94L08FInBXB2lz0SalNdDSe9vcm9Svltym1l4ZKGPlqCQjhmjD
-         zlcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bi4sQc1W0haZULZiCGbFCEA8dMHiZn6QmzMFchXnTYQ=;
-        b=V475XtikCogFGTirqj9KDAZBD4hzRzWvtO08e5zqw4GbH49JBasuys0I6sJGYzqqGI
-         cguusqxlakzoMGUNx/C7pVB5UejiXX2lhnn6tQdA4yVJBDZ9wN6vCD0R5YXxkSyh3OyD
-         tICeElIDaEAxQHjHqcDifUofiayZzh9JiSnru+JzU7P39xHCQjNlXki8habE5AeX9r3D
-         F4y+zBqbBp4QW9L4anvm75mCI9uA69+zULBlamw786w9iPIAjakyMcD/27GJpWowjXv9
-         qYitijmSJufJ81tDLGEQTawQ0RLB7RnlUGepuNTSY5sdSrH9WgKFJnB5Uzp9NHmd6u3S
-         XkMQ==
-X-Gm-Message-State: AOAM5304zXvasZHAwk2FYFN/pbPajQ19d0SqU3r0aw/cX+WCrgnxDuN2
-        uS4b7D6TADGkY/UtZCSmxZeT4SNfdL7xM7OdV2c=
-X-Google-Smtp-Source: ABdhPJyP0sXFD40X5SO/TEyI/QwQnKtk4YunVmUZ8GB/ony+EeZZbqIf1O+uj1Qqqb2trtjlVfyvr80nzDIMMQAGIYg=
-X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
- q20-20020a056a000854b02901b762330c5fmr2401710pfk.73.1612953057053; Wed, 10
- Feb 2021 02:30:57 -0800 (PST)
+        Wed, 10 Feb 2021 05:31:42 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE706C061756;
+        Wed, 10 Feb 2021 02:31:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=uIOldDOA1Qh5xWliGCJX3sNgD2W7tpUEtTyYPM97uJg=; b=cpV7aIO5erhcj4WGpltHtKVZ3
+        Hv+0cbdV86vf72x8ZjvDj19bhcSTokhDlNZUNw1e3yDcT7gwxMJNf3ipH19Gy+bvwFhQz5wfMS/Az
+        3CP4dWzNIPCy1j/o8hqZ20eOKzJHzznBouV9ygnIMaaxG7W/B+5ele35g/qWbSPYryIOlMsTEEo4D
+        Lcl6kkwQj8rwap4oCuIf0Cgm8vWvJre+gvBAiXOr5ZsJvZkOpvLaUTQ9l0isBGUvf8GJD/XVCPpNn
+        oHoamHJRzLZxc4k04xvaEvOCD8YkMwrVfdkpil49cQTUmWp4DDlEfuhCYZn7K3WWVTUzE50fMce1Q
+        VWwCT95+Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41556)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l9mlw-0004We-H6; Wed, 10 Feb 2021 10:31:00 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l9mlv-0004yt-6o; Wed, 10 Feb 2021 10:30:59 +0000
+Date:   Wed, 10 Feb 2021 10:30:59 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next 7/9] net: phy: icplus: select page before
+ writing control register
+Message-ID: <20210210103059.GR1463@shell.armlinux.org.uk>
+References: <20210209164051.18156-1-michael@walle.cc>
+ <20210209164051.18156-8-michael@walle.cc>
+ <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
 MIME-Version: 1.0
-References: <20210208222203.22335-1-info@metux.net>
-In-Reply-To: <20210208222203.22335-1-info@metux.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 10 Feb 2021 12:30:40 +0200
-Message-ID: <CAHp75VdNTenoE0AOmGfndqQ7SrxbuK+SvfFYn3W2GmqhkCSByQ@mail.gmail.com>
-Subject: Re: RFC: oftree based setup of composite board devices
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 12:25 AM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
->
-> Hello folks,
->
-> here's an RFC for using compiled-in dtb's for initializing board devices
-> that can't be probed via bus'es or firmware.
->
-> Use cases are boards with non-oftree firmware (ACPI, etc) where certain
-> platform devices can't be directly enumerated via firmware. Traditionally
-> we had to write board specific drivers that check for board identification
-> (DMI strings, etc), then initialize the actual devices and their links
-> (eg. gpio<->leds/buttons, ...). Often this can be expressed just by DT.
+On Wed, Feb 10, 2021 at 08:03:07AM +0100, Heiner Kallweit wrote:
+> On 09.02.2021 17:40, Michael Walle wrote:
+> > +out:
+> > +	return phy_restore_page(phydev, oldpage, err);
+> 
+> If a random page was set before entering config_init, do we actually want
+> to restore it? Or wouldn't it be better to set the default page as part
+> of initialization?
 
-In ACPI we support DT compatible strings, and we support overlays for
-a long time. Would it work for you?
+I think you've missed asking one key question: does the paging on this
+PHY affect the standardised registers at 0..15 inclusive, or does it
+only affect registers 16..31?
 
-> This patch queue does a bunch of preparations in oftree code, so we can
-> support multiple fully independent DT's (not using DT overlays). And then
-> adds a generic driver parses compiled-in fdt blobs, checks for mathing
-> DMI strings and initializes the devices. As an example, the last patch
-> adds an alternative implementation for the PC engines APU2/3/4 board
-> family based on device tree.
-
-Sounds weird, but let's see...
-
-> The approach can be easily be extended to other kinds of composite devices,
-> eg. PCI cards or USB dongles.
-
-What do you mean? PCI and USB are self-enumerated. What's wrong with them?
-
-> Yet some drawbacks of the current implementation:
->
->  * individual FDT's can't be modularized yet (IMHO, we don't have DMI-based
->    modprobing anyways)
-
-What?! https://lwn.net/Articles/233385/
-`git grep -n 'MODULE_DEVICE_TABLE(dmi'`
-
->  * can't reconfigure or attach to devices outside the individual DT's
->    (eg. probed by PCI, etc)
-
+If it doesn't affect the standardised registers, then the genphy_*
+functions don't care which page is selected.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
