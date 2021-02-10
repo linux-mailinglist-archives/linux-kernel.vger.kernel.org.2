@@ -2,58 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5BE316095
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB53316098
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbhBJIHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:07:39 -0500
-Received: from sym2.noone.org ([178.63.92.236]:34376 "EHLO sym2.noone.org"
+        id S233554AbhBJIHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:07:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229834AbhBJIHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:07:32 -0500
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4DbC5d0JN9zvjhQ; Wed, 10 Feb 2021 09:06:44 +0100 (CET)
-Date:   Wed, 10 Feb 2021 09:06:44 +0100
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, shuah@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, vincenzo.frascino@arm.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] selftests/vDSO: fix ABI selftest on riscv
-Message-ID: <20210210080644.gc3wyt4fq72u3khz@distanz.ch>
-References: <20210204145042.7345-1-tklauser@distanz.ch>
- <mhng-1ed0f9e8-84ec-4f2e-ac42-5a608726e2fe@palmerdabbelt-glaptop>
- <20210205075745.jlf3vsjkp3n3rwss@distanz.ch>
- <5a8923b2-0c5e-ab6c-52fd-f00bc1361a3f@linuxfoundation.org>
+        id S233237AbhBJIHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 03:07:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 142A564DF5;
+        Wed, 10 Feb 2021 08:06:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612944413;
+        bh=JSySFpnSJmoR8zhZOCgk841D38I73vAelpyUEZpCaBU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HRFdIh5hE3dN1iD1xl/OMlhB37JnEH3m3pUw5RgXwf8Voiydu+ZD9P4VgjYSH9xHO
+         ldKEGMXuRRrSdD71P1up/uzY9IBOcpYl+rJNna0aa3YYVgxcpeuEOR7U0PlZ6k1/iW
+         UqIFvW1sZZQNrhfQNAeQRtD5FaLqh+aOuY1YlqgDqOELhtRjZnAAEiRg6teesQ7oZn
+         +Vz9UNBgEWYaLn82L7F9YQBMQATnCv4veyjV+bV7sgbkA9ilQXjPSHjVnJhaW3NGEt
+         qd1Rd0J6P7tuifOSLeMGpel4JXrUPc9043/ouveCqWLqKuCrzBkCZAM1hgTotx4ybH
+         veT7ed3L0pCKg==
+Date:   Wed, 10 Feb 2021 09:06:48 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: linux-next: build failure after merge of the modules tree
+Message-ID: <YCOUGGJtUJ+Nf0ZA@gunter>
+References: <20210209210843.3af66662@canb.auug.org.au>
+ <YCKnRPRTDyfGxnBC@gunter>
+ <20210210085051.7fb951d1@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <5a8923b2-0c5e-ab6c-52fd-f00bc1361a3f@linuxfoundation.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20210210085051.7fb951d1@canb.auug.org.au>
+X-OS:   Linux gunter 5.10.12-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-09 at 00:37:24 +0100, Shuah Khan <skhan@linuxfoundation.org> wrote:
-> On 2/5/21 12:57 AM, Tobias Klauser wrote:
-> > On 2021-02-05 at 08:06:37 +0100, Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > > On Thu, 04 Feb 2021 06:50:42 PST (-0800), tklauser@distanz.ch wrote:
-> > 
-> > [...]
-> > 
-> > > Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> > 
-> > Thank you!
-> > 
-> > > Not sure if you want this through the RISC-V tree, so I'm leaving it out for
-> > > now and assuming it'll go through a kselftest tree.
-> > 
-> > Either way is fine for me.
-> > 
-> 
-> Thank you. Applied to linux-kselftest next for 5.12-rc1
++++ Stephen Rothwell [10/02/21 08:50 +1100]:
+>Hi Jessica,
+>
+>On Tue, 9 Feb 2021 16:16:20 +0100 Jessica Yu <jeyu@kernel.org> wrote:
+>>
+>> Hmm, these errors don't look like it's related to that particular commit. I was
+>
+>I found this commit by bisection and then tested by reverting it.
+>
+>Before this commit, CONFIG_TRIM_UNUSED_KSYMS would not be set in the
+>allyesconfig build because CONFIG_UNUSED_SYMBOLS was set.  After this
+>commit, CONFIG_TRIM_UNUSED_KSYMS will be set in the allyesconfig build.
 
-Thank you Shuah!
+Ah, that makes sense then. I would get the error on powerpc whenever
+CONFIG_TRIM_UNUSED_KSYMS was enabled.
+
+>> able to reproduce these weird autoksym errors even without any modules-next
+>> patches applied, and on a clean v5.11-rc7 tree. To reproduce it,
+>> CONFIG_TRIM_UNUSED_KSYMS needs to be enabled. I guess that's why we run into
+>> these errors with allyesconfig. I used a gcc-7 ppc64le cross compiler and got
+>> the same compiler warnings. It seems to not compile on powerpc properly because
+>> it looks like some symbols have an extra dot "." prefix, for example in
+>> kthread.o:
+>>
+>>     168: 0000000000000318    24 NOTYPE  GLOBAL DEFAULT    6 kthread_create_worker
+>>     169: 0000000000001d90   104 FUNC    GLOBAL DEFAULT    1 .kthread_create_worker
+>>     170: 0000000000000330    24 NOTYPE  GLOBAL DEFAULT    6 kthread_create_worker_on_cpu
+>>     171: 0000000000001e00    88 FUNC    GLOBAL DEFAULT    1 .kthread_create_worker_on_cpu
+>>     172: 0000000000000348    24 NOTYPE  GLOBAL DEFAULT    6 kthread_queue_work
+>>     173: 0000000000001e60   228 FUNC    GLOBAL DEFAULT    1 .kthread_queue_work
+>>
+>> So I suppose this dot prefix is specific to powerpc. From the ppc64 elf abi docs:
+>>
+>>      Symbol names with a dot (.) prefix are reserved for holding entry point
+>>      addresses. The value of a symbol named ".FN", if it exists, is the entry point
+>>      of the function "FN".
+>>
+>> I guess the presence of the extra dot symbols is confusing
+>> scripts/gen_autoksyms.sh, so we get the dot symbols in autoksyms.h, which the
+>> preprocessor doesn't like. I am wondering how this was never caught until now
+>> and also now curious if this feature was ever functional on powerpc..
+>
+>Which feature?
+
+Sorry, by "feature" I meant CONFIG_TRIM_UNUSED_KSYMS. This config
+option was introduced around v4.7. If simply enabling it produces
+these compilation errors I was wondering if it ever built properly on
+powerpc.
+
+Thanks,
+
+Jessica
