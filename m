@@ -2,145 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0681731718A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8102D31718E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:44:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhBJUnK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Feb 2021 15:43:10 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4626 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhBJUnG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:43:06 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DbWr0275VzY7F4;
-        Thu, 11 Feb 2021 04:41:04 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 11 Feb 2021 04:42:20 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 11 Feb 2021 04:42:20 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Thu, 11 Feb 2021 04:42:20 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     luojiaxing <luojiaxing@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [Linuxarm]  Re: [PATCH for next v1 0/2] gpio: few clean up
- patches to replace spin_lock_irqsave with spin_lock
-Thread-Topic: [Linuxarm]  Re: [PATCH for next v1 0/2] gpio: few clean up
- patches to replace spin_lock_irqsave with spin_lock
-Thread-Index: AQHW/fpz5jJ2/H7qpkegS3EF2g2rTapNupMAgAFOFgCAAATsgIABLhiAgAB3XwCAAJQm4P//sJmAgADhgwA=
-Date:   Wed, 10 Feb 2021 20:42:20 +0000
-Message-ID: <7d9c4fa854924bfc890e98da2d88ea36@hisilicon.com>
-References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
- <2b8001bb-0bcd-3fea-e15c-2722e7243209@huawei.com>
- <CAHp75VcpeYpsW6B85F0u=B+GToNh=1fYdRSMeQqE0vOtOdSi8A@mail.gmail.com>
- <1a5dfcf2-11a2-f549-782d-447d58e21305@huawei.com>
- <CAHp75Vd5UV3E79sdq8uQ4pgjFORdJknpm-g7No3tomnKhinMnw@mail.gmail.com>
- <c2458ac9-669b-bd46-df98-7d86d38459b1@huawei.com>
- <CAHp75VdrskuNkvFr4MPbbg8c8=VSug0GT+vs=cMRMOqLr+-f5A@mail.gmail.com>
- <947bcef0d56a4d0c82729d6899394f4a@hisilicon.com>
- <YCP0JeEUcoPp9B/H@smile.fi.intel.com>
-In-Reply-To: <YCP0JeEUcoPp9B/H@smile.fi.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.223]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S232418AbhBJUn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:43:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229834AbhBJUns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 15:43:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9559364EF1;
+        Wed, 10 Feb 2021 20:43:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612989787;
+        bh=uLOKAWM3j/FoxqUD8GT+3TtzddPUhVZXn4EjHpRaYRU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=K74lobox4y7gUuWJf5x9BZjKZ34y96W1chSRDGXNta6UmHLrqFFjA3wj1PI7xTRij
+         syQ7wcueUW7+HioanlcWrFZ0mRRhCeQHaYHVrWB7vXOoZCT3QM0F6PzY0OBJCyfa2g
+         19AbOG0dGhyn272NCJsuCuPusha+toPskSq3/V4Y0CoDPuZ1LCvDvTk2gmKq9m+Od0
+         SgxkbRWyNazA1+tMMqRp6LJILmxOqLBK3AAkF2dIT5x05/aHtBSN3Lj73mFx6XTQOF
+         EWUmv2cD4UPu3hAnoDhpMrgxWWRulqA5/PyRK28xe20b2Dpfjk2cIjNbkc51Dti93W
+         SPnRe2Tt/v/+Q==
+Received: by mail-ej1-f52.google.com with SMTP id w2so6484086ejk.13;
+        Wed, 10 Feb 2021 12:43:07 -0800 (PST)
+X-Gm-Message-State: AOAM532lwZ4odP6jGqshavMz1Gd8rWKnlnzkoWYuxPwFGG2CuocHh7qj
+        JTZSMRJtFhZ6GTD2INpWq0vFwsjYiwMt3lvKQg==
+X-Google-Smtp-Source: ABdhPJyZOou+FoAa1VvtSo/LHBp8mrbstlSxAr2IxMuuWsdlFjqx8EC6dZAWMoScFPYRRlNAEw7N0EavS9AV9/V0P7o=
+X-Received: by 2002:a17:906:af41:: with SMTP id ly1mr4612652ejb.525.1612989785769;
+ Wed, 10 Feb 2021 12:43:05 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210210171500.GA2328209@robh.at.kernel.org> <5c002c32-bc49-acda-c641-7b1494ea292d@linux.microsoft.com>
+In-Reply-To: <5c002c32-bc49-acda-c641-7b1494ea292d@linux.microsoft.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 10 Feb 2021 14:42:53 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLmdqfFF8u=dE+dQz+6ngv=moWkQF8tpZjUCX-vHuvU_w@mail.gmail.com>
+Message-ID: <CAL_JsqLmdqfFF8u=dE+dQz+6ngv=moWkQF8tpZjUCX-vHuvU_w@mail.gmail.com>
+Subject: Re: [PATCH v17 00/10] Carry forward IMA measurement log on kexec on ARM64
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Andy Shevchenko [mailto:andy.shevchenko@gmail.com]
-> Sent: Thursday, February 11, 2021 3:57 AM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: luojiaxing <luojiaxing@huawei.com>; Linus Walleij
-> <linus.walleij@linaro.org>; Grygorii Strashko <grygorii.strashko@ti.com>;
-> Santosh Shilimkar <ssantosh@kernel.org>; Kevin Hilman <khilman@kernel.org>;
-> open list:GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>; Linux Kernel Mailing
-> List <linux-kernel@vger.kernel.org>; linuxarm@openeuler.org
-> Subject: Re: [Linuxarm] Re: [PATCH for next v1 0/2] gpio: few clean up patches
-> to replace spin_lock_irqsave with spin_lock
-> 
-> On Wed, Feb 10, 2021 at 11:50:45AM +0000, Song Bao Hua (Barry Song) wrote:
-> > > -----Original Message-----
-> > > From: Andy Shevchenko [mailto:andy.shevchenko@gmail.com]
-> > > Sent: Wednesday, February 10, 2021 11:51 PM
-> > > On Wed, Feb 10, 2021 at 5:43 AM luojiaxing <luojiaxing@huawei.com> wrote:
-> > > > On 2021/2/9 17:42, Andy Shevchenko wrote:
-> 
-> ...
-> 
-> > > > Between IRQ handler A and IRQ handle A, it's no need for a SLIS.
-> > >
-> > > Right, but it's not the case in the patches you provided.
+On Wed, Feb 10, 2021 at 11:33 AM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+>
+> On 2/10/21 9:15 AM, Rob Herring wrote:
+> > On Tue, Feb 09, 2021 at 10:21:50AM -0800, Lakshmi Ramasubramanian wrote:
+> >> On kexec file load Integrity Measurement Architecture (IMA) subsystem
+> >> may verify the IMA signature of the kernel and initramfs, and measure
+> >> it.  The command line parameters passed to the kernel in the kexec call
+> >> may also be measured by IMA.  A remote attestation service can verify
+> >> a TPM quote based on the TPM event log, the IMA measurement list, and
+> >> the TPM PCR data.  This can be achieved only if the IMA measurement log
+> >> is carried over from the current kernel to the next kernel across
+> >> the kexec call.
+> >>
+> >> powerpc already supports carrying forward the IMA measurement log on
+> >> kexec.  This patch set adds support for carrying forward the IMA
+> >> measurement log on kexec on ARM64.
+> >>
+> >> This patch set moves the platform independent code defined for powerpc
+> >> such that it can be reused for other platforms as well.  A chosen node
+> >> "linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
+> >> the address and the size of the memory reserved to carry
+> >> the IMA measurement log.
+> >>
+> >> This patch set has been tested for ARM64 platform using QEMU.
+> >> I would like help from the community for testing this change on powerpc.
+> >> Thanks.
+> >>
+> >> This patch set is based on
+> >> commit 96acc833dec8 ("ima: Free IMA measurement buffer after kexec syscall")
+> >> in https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+> >> "next-integrity" branch.
 > >
-> > The code still holds spin_lock. So if two cpus call same IRQ handler,
-> > spin_lock makes them spin; and if interrupts are threaded, spin_lock
-> > makes two threads run the same handler one by one.
-> 
-> If you run on an SMP system and it happens that spin_lock_irqsave() just
-> immediately after spin_unlock(), you will get into the troubles. Am I mistaken?
+> > Is that a hard dependency still? Given this is now almost entirely
+> > deleting arch code and adding drivers/of/ code, I was going to apply it.
+> >
+>
+> I tried applying the patches in Linus' mainline branch -
+> PATCH #5 0005-powerpc-Move-ima-buffer-fields-to-struct-kimage.patch
+> doesn't apply.
+>
+> But if I apply the dependent patch set (link given below), all the
+> patches in this patch set apply fine.
+>
+> https://patchwork.kernel.org/project/linux-integrity/patch/20210204174951.25771-2-nramas@linux.microsoft.com/
 
-Hi Andy,
-Thanks for your reply.
+Ideally, we don't apply the same patch in 2 branches. It looks like
+there's a conflict but no real dependence on the above patch (the
+ima_buffer part). The conflict seems trivial enough that Linus can
+resolve it in the merge window.
 
-But I don't agree spin_lock_irqsave() just immediately after spin_unlock()
-could a problem on SMP.
-When the 1st cpu releases spinlock by spin_unlock, it has completed its section
-of accessing the critical data, then 2nd cpu gets the spin_lock. These two CPUs
-won't have overlap on accessing the same data.
+Or Mimi can take the whole thing if preferred?
 
-> 
-> I think this entire activity is a carefully crafted mine field for the future
-> syzcaller and fuzzers alike. I don't believe there are no side effects in a
-> long
-> term on all possible systems and configurations (including forced threaded IRQ
-> handlers).
-
-Also I don't understand why forced threaded IRQ could be a problem. Since IRQ has
-been a thread, this actually makes the situation much simpler than non-threaded
-IRQ. Since all threads including those IRQ threads want to hold spin_lock,
-they won't access the same critical data at the same time either.
-
-> 
-> I would love to see a better explanation in the commit message of such patches
-> which makes it clear that there are *no* side effects.
-> 
-
-People had the same questions before, But I guess the discussion in this commit
-has led to a better commit log:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4eb7d0cd59
-
-> For time being, NAK to the all patches of this kind.
-
-Fair enough, if you expect better explanation, I agree the commit log is too
-short.
-
-> 
-> --
-> With Best Regards,
-> Andy Shevchenko
-> 
-
-Thanks
-Barry
-
+Rob
