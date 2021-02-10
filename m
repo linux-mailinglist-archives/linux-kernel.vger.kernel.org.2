@@ -2,83 +2,586 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18AB31729E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA103172A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbhBJVqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:46:05 -0500
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:51685 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232097AbhBJVp5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:45:57 -0500
-Received: by mail-wm1-f46.google.com with SMTP id t142so3152970wmt.1;
-        Wed, 10 Feb 2021 13:45:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K198DCJ4x+tkk5MzAOh2fgwgWRM7jXwp8acavChFK1k=;
-        b=RL/0/o3ZmgHQbkDa8jNI6IHDnQAOUGD4j6FBV1yP9Tj7V5TxfBQQLi7caj09VZ/0np
-         IBk6m8zFg1eoJRsEx2StHFDTZ1c+uAOiHx2AfsHlXw/ntBKRIbBSpG07n3leB7XUji8L
-         sgiGs04HOAfDkuaVdRGbCXyXA4dAWL84HOWzlB8iGyviIv9gpn0r+VXS/hzvIKv1jL8P
-         pNlW5yqThX7YezrVoPfy33mLEx5ZePZXNBUSqWSCKNmxSiWHFT+ZNeZCKtom4rGVko/s
-         z212Uq2UtsAdSp1ygLXPpFrhx7aNwcyxMOtlhflVHsAHjJSIRIputXx4w9IVuQ6G+kcF
-         IXBw==
-X-Gm-Message-State: AOAM530vHb4nPE6kKxWuDpDttd+5ZXSvbL6FqwkBpPsiyChKntzZUWON
-        D6LqQwe9wMaCc/Ww+YkHWNM3tp4azyXx0Xp+
-X-Google-Smtp-Source: ABdhPJxFYXDq9ZbGNvtUOKX/OVL9l7xwHvw0DW9oXkNPslQVZS1s6OT5J3K5joZp2m+fVV5HgwJndw==
-X-Received: by 2002:a1c:c308:: with SMTP id t8mr1101584wmf.7.1612993514947;
-        Wed, 10 Feb 2021 13:45:14 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id c9sm4466055wmb.33.2021.02.10.13.45.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 13:45:14 -0800 (PST)
-Date:   Wed, 10 Feb 2021 22:45:13 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhelgaas@google.com
-Subject: Re: [PATCH 1/2] PCI: xilinx-nwl: Enable coherent PCIe DMA traffic
- using CCI
-Message-ID: <YCRT6QVQai3oIvwf@rocinante>
-References: <20210209101955.8836-1-bharat.kumar.gogada@xilinx.com>
+        id S233624AbhBJVrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:47:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:44214 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232097AbhBJVrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 16:47:13 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E66A113E;
+        Wed, 10 Feb 2021 13:46:25 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 384AD3F73B;
+        Wed, 10 Feb 2021 13:46:22 -0800 (PST)
+Date:   Wed, 10 Feb 2021 21:46:19 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jyoti Bhayana <jbhayana@google.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Enrico Granata <egranata@google.com>,
+        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
+        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
+        Peter Hilber <Peter.hilber@opensynergy.com>,
+        Ankit Arora <ankitarora@google.com>, cristian.marussi@arm.com
+Subject: Re: [PATCH v5 1/1] iio/scmi: Adding support for IIO SCMI Based
+ Sensors
+Message-ID: <20210210214619.GD6873@e120937-lin>
+References: <20210208211918.1280588-1-jbhayana@google.com>
+ <20210208211918.1280588-2-jbhayana@google.com>
+ <20210209115639.GC6873@e120937-lin>
+ <CA+=V6c12nRxLCxM2DPst8RV=i+1WatPyHcQQZp4xAzuoN0vKaw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209101955.8836-1-bharat.kumar.gogada@xilinx.com>
+In-Reply-To: <CA+=V6c12nRxLCxM2DPst8RV=i+1WatPyHcQQZp4xAzuoN0vKaw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bharat,
+Hi Jyoti,
 
-Thank you for sending the patches over!
+On Wed, Feb 10, 2021 at 11:19:35AM -0800, Jyoti Bhayana wrote:
+> Hi Cristian,
+> 
+> Thanks for the feedback. Regarding registering callbacks at the probe time
+> instead of .preenable, I have tried it before but I think due to some
+> issues(don't remember it now maybe on the platform side)  I kept it at the
+> .preenable level.
+> 
+> But you are right, that it will be nice to move it at the probe level
+> instead. I will try again and test if it works and would move it at the
+> probe level. Regarding the unregistering of the notifier, is it required at
+> the remove of iio driver or scmi driver will take care of it?
+> Because if I add unregister at the iio driver remove level, I would have to
+> iterate all the sensors again and unregister them.
 
-> Add support for routing PCIe DMA traffic coherently when
-> Cache Coherent Interconnect (CCI) is enabled in the system.
-> The "dma-coherent" property is used to determine if CCI is enabled
-> or not.
-> Refer https://developer.arm.com/documentation/ddi0470/k/preface
-> for CCI specification.
-[...]
+Yes you are right if you move callbacks registration once for all to the
+.probe step you'll have to unregister them all in a .remove.
 
-A small nitpick, so feel free to ignore, of course.
+BUT I think instead you should stick with your current solution given
+it's working fine anyway and it's supported by the notification
+framework and also for another reason I'm going to explain down below
+(which is also the reason why I asked you this at first :D)
 
-Perhaps "Refer to" and "for the CCI", etc.
+As you may remember I'm refactoring all the SCMI internals in a separate
+series to ease modularization and vendor protocols support, and that will
+lead also to some changes in the SCMI driver interface that you use:
+amongst other things one interesting addition will be a new devres managed
+notification registration method, something like:
 
-[...]
-> +	/* This routes the PCIe DMA traffic to go through CCI path */
-> +	if (of_dma_is_coherent(dev->of_node)) {
-> +		nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, BRCFG_PCIE_RX1) |
-> +				  CFG_PCIE_CACHE, BRCFG_PCIE_RX1);
-> +	}
-[...]
+handle->notify_ops->devm_register_notifier(sdev, ...);
 
-A suggestion.
+With such method you could just move your registration to the .probe
+step and just forget about it, without the need to add any unregistration
+in the .remove step, since the core will take care to remove all the
+callbacks at driver unloading time.
 
-You can drop the curly brackets here if you want to keep the style used
-in the kernel, especially for when there is a single statement inside
-the code block.
+Now, this series, which is here if you want to have a look:
 
-Krzysztof
+https://lore.kernel.org/linux-arm-kernel/20210202221555.41167-1-cristian.marussi@arm.com/
+
+is already taking care to port any existent SCMI driver to the new interface,
+so when your IIODEV SCMI driver will be finally queued somewhere for merge, I
+can in turn rebase my series on yours and take care to port your driver too to
+the new interface applying the changes above in the context of my series.
+(and ask you to review of course :D)
+
+I'm saying that is better if you keep your series as it is for now
+(old interface + .preenable/.postdisable regs/unregs) because, as said,
+with the new interface the devm_ methods will ease the registration
+@probe time, and also especially because the new interface is not (and
+most probably won't) be part of the v5.4 backport that you are testing
+against: so if you stick with your current solution you'll have a
+working patch easily backportable now, and once queued I'll port it to
+the interface using devm_ (so simplifying it)
+
+In this context, it would be indeed important to know if in general moving
+registration to the probe phase (which should be fine by the spec) poses
+any kind of problem. (and that's reason why asked it)
+
+Hope to have been clear despite the flood of words :D
+
+Thanks
+
+Cristian
+
+> 
+> Thanks,
+> Jyoti
+> 
+> On Tue, Feb 9, 2021 at 3:56 AM Cristian Marussi <cristian.marussi@arm.com>
+> wrote:
+> 
+> > Hi Jyoti
+> >
+> > some minor things down below.
+> >
+> > Other than that, FWIW about the SCMI side of this:
+> >
+> > Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+> >
+> > Thanks
+> >
+> > Cristian
+> >
+> > On Mon, Feb 08, 2021 at 09:19:18PM +0000, Jyoti Bhayana wrote:
+> > > This change provides ARM SCMI Protocol based IIO device.
+> > > This driver provides support for Accelerometer and Gyroscope using
+> > > SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification
+> > >
+> > > Signed-off-by: Jyoti Bhayana <jbhayana@google.com>
+> > > ---
+> > >  MAINTAINERS                                |   6 +
+> > >  drivers/firmware/arm_scmi/driver.c         |   2 +-
+> > >  drivers/iio/common/Kconfig                 |   1 +
+> > >  drivers/iio/common/Makefile                |   1 +
+> > >  drivers/iio/common/scmi_sensors/Kconfig    |  18 +
+> > >  drivers/iio/common/scmi_sensors/Makefile   |   5 +
+> > >  drivers/iio/common/scmi_sensors/scmi_iio.c | 673 +++++++++++++++++++++
+> > >  7 files changed, 705 insertions(+), 1 deletion(-)
+> > >  create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
+> > >  create mode 100644 drivers/iio/common/scmi_sensors/Makefile
+> > >  create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
+> > >
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index b516bb34a8d5..ccf37d43ab41 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -8567,6 +8567,12 @@ S:     Maintained
+> > >  F:
+> >  Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt
+> > >  F:   drivers/iio/multiplexer/iio-mux.c
+> > >
+> > > +IIO SCMI BASED DRIVER
+> > > +M:   Jyoti Bhayana <jbhayana@google.com>
+> > > +L:   linux-iio@vger.kernel.org
+> > > +S:   Maintained
+> > > +F:   drivers/iio/common/scmi_sensors/scmi_iio.c
+> > > +
+> > >  IIO SUBSYSTEM AND DRIVERS
+> > >  M:   Jonathan Cameron <jic23@kernel.org>
+> > >  R:   Lars-Peter Clausen <lars@metafoo.de>
+> > > diff --git a/drivers/firmware/arm_scmi/driver.c
+> > b/drivers/firmware/arm_scmi/driver.c
+> > > index 5392e1fc6b4e..248313bbd473 100644
+> > > --- a/drivers/firmware/arm_scmi/driver.c
+> > > +++ b/drivers/firmware/arm_scmi/driver.c
+> > > @@ -741,7 +741,7 @@ static struct scmi_prot_devnames devnames[] = {
+> > >       { SCMI_PROTOCOL_SYSTEM, { "syspower" },},
+> > >       { SCMI_PROTOCOL_PERF,   { "cpufreq" },},
+> > >       { SCMI_PROTOCOL_CLOCK,  { "clocks" },},
+> > > -     { SCMI_PROTOCOL_SENSOR, { "hwmon" },},
+> > > +     { SCMI_PROTOCOL_SENSOR, { "hwmon", "iiodev" },},
+> > >       { SCMI_PROTOCOL_RESET,  { "reset" },},
+> > >       { SCMI_PROTOCOL_VOLTAGE,  { "regulator" },},
+> > >  };
+> > > diff --git a/drivers/iio/common/Kconfig b/drivers/iio/common/Kconfig
+> > > index 2b9ee9161abd..0334b4954773 100644
+> > > --- a/drivers/iio/common/Kconfig
+> > > +++ b/drivers/iio/common/Kconfig
+> > > @@ -6,5 +6,6 @@
+> > >  source "drivers/iio/common/cros_ec_sensors/Kconfig"
+> > >  source "drivers/iio/common/hid-sensors/Kconfig"
+> > >  source "drivers/iio/common/ms_sensors/Kconfig"
+> > > +source "drivers/iio/common/scmi_sensors/Kconfig"
+> > >  source "drivers/iio/common/ssp_sensors/Kconfig"
+> > >  source "drivers/iio/common/st_sensors/Kconfig"
+> > > diff --git a/drivers/iio/common/Makefile b/drivers/iio/common/Makefile
+> > > index 4bc30bb548e2..fad40e1e1718 100644
+> > > --- a/drivers/iio/common/Makefile
+> > > +++ b/drivers/iio/common/Makefile
+> > > @@ -11,5 +11,6 @@
+> > >  obj-y += cros_ec_sensors/
+> > >  obj-y += hid-sensors/
+> > >  obj-y += ms_sensors/
+> > > +obj-y += scmi_sensors/
+> > >  obj-y += ssp_sensors/
+> > >  obj-y += st_sensors/
+> > > diff --git a/drivers/iio/common/scmi_sensors/Kconfig
+> > b/drivers/iio/common/scmi_sensors/Kconfig
+> > > new file mode 100644
+> > > index 000000000000..67e084cbb1ab
+> > > --- /dev/null
+> > > +++ b/drivers/iio/common/scmi_sensors/Kconfig
+> > > @@ -0,0 +1,18 @@
+> > > +#
+> > > +# IIO over SCMI
+> > > +#
+> > > +# When adding new entries keep the list in alphabetical order
+> > > +
+> > > +menu "IIO SCMI Sensors"
+> > > +
+> > > +config IIO_SCMI
+> > > +     tristate "IIO SCMI"
+> > > +        depends on ARM_SCMI_PROTOCOL
+> > > +        select IIO_BUFFER
+> > > +        select IIO_KFIFO_BUF
+> > > +     help
+> > > +          Say yes here to build support for IIO SCMI Driver.
+> > > +          This provides ARM SCMI Protocol based IIO device.
+> > > +          This driver provides support for accelerometer and gyroscope
+> > > +          sensors available on SCMI based platforms.
+> > > +endmenu
+> > > diff --git a/drivers/iio/common/scmi_sensors/Makefile
+> > b/drivers/iio/common/scmi_sensors/Makefile
+> > > new file mode 100644
+> > > index 000000000000..f13140a2575a
+> > > --- /dev/null
+> > > +++ b/drivers/iio/common/scmi_sensors/Makefile
+> > > @@ -0,0 +1,5 @@
+> > > +# SPDX - License - Identifier : GPL - 2.0 - only
+> > > +#
+> > > +# Makefile for the IIO over SCMI
+> > > +#
+> > > +obj-$(CONFIG_IIO_SCMI) += scmi_iio.o
+> > > diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c
+> > b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> > > new file mode 100644
+> > > index 000000000000..093b1fc24e27
+> > > --- /dev/null
+> > > +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> > > @@ -0,0 +1,673 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +
+> > > +/*
+> > > + * System Control and Management Interface(SCMI) based IIO sensor driver
+> > > + *
+> > > + * Copyright (C) 2021 Google LLC
+> > > + */
+> > > +
+> > > +#include <linux/delay.h>
+> > > +#include <linux/err.h>
+> > > +#include <linux/iio/buffer.h>
+> > > +#include <linux/iio/iio.h>
+> > > +#include <linux/iio/kfifo_buf.h>
+> > > +#include <linux/iio/sysfs.h>
+> > > +#include <linux/kernel.h>
+> > > +#include <linux/kthread.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/scmi_protocol.h>
+> > > +#include <linux/time.h>
+> > > +#include <linux/types.h>
+> > > +
+> > > +#define SCMI_IIO_NUM_OF_AXIS 3
+> > > +
+> > > +struct scmi_iio_priv {
+> > > +     struct scmi_handle *handle;
+> > > +     const struct scmi_sensor_info *sensor_info;
+> > > +     struct iio_dev *indio_dev;
+> > > +     /* adding one additional channel for timestamp */
+> > > +     long long iio_buf[SCMI_IIO_NUM_OF_AXIS + 1];
+> > > +     struct notifier_block sensor_update_nb;
+> > > +     u32 *freq_avail;
+> > > +};
+> > > +
+> > > +static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
+> > > +                                  unsigned long event, void *data)
+> > > +{
+> > > +     struct scmi_sensor_update_report *sensor_update = data;
+> > > +     struct iio_dev *scmi_iio_dev;
+> > > +     struct scmi_iio_priv *sensor;
+> > > +     s8 tstamp_scale;
+> > > +     u64 time, time_ns;
+> > > +     int i;
+> > > +
+> > > +     if (sensor_update->readings_count == 0)
+> > > +             return NOTIFY_DONE;
+> > > +
+> > > +     sensor = container_of(nb, struct scmi_iio_priv, sensor_update_nb);
+> > > +
+> > > +     for (i = 0; i < sensor_update->readings_count; i++)
+> > > +             sensor->iio_buf[i] = sensor_update->readings[i].value;
+> > > +
+> > > +     if (!sensor->sensor_info->timestamped) {
+> > > +             time_ns = ktime_to_ns(sensor_update->timestamp);
+> > > +     } else {
+> > > +             /*
+> > > +              *  All the axes are supposed to have the same value for
+> > timestamp.
+> > > +              *  We are just using the values from the Axis 0 here.
+> > > +              */
+> > > +             time = sensor_update->readings[0].timestamp;
+> > > +
+> > > +             /*
+> > > +              *  Timestamp returned by SCMI is in seconds and is equal
+> > to
+> > > +              *  time * power-of-10 multiplier(tstamp_scale) seconds.
+> > > +              *  Converting the timestamp to nanoseconds below.
+> > > +              */
+> > > +             tstamp_scale = sensor->sensor_info->tstamp_scale +
+> > > +                            const_ilog2(NSEC_PER_SEC) / const_ilog2(10);
+> > > +             if (tstamp_scale < 0)
+> > > +                     time_ns =
+> > > +                             div64_u64(time, int_pow(10,
+> > abs(tstamp_scale)));
+> > > +             else
+> > > +                     time_ns = time * int_pow(10, tstamp_scale);
+> > > +     }
+> > > +
+> > > +     scmi_iio_dev = sensor->indio_dev;
+> > > +     iio_push_to_buffers_with_timestamp(scmi_iio_dev, sensor->iio_buf,
+> > > +                                        time_ns);
+> > > +     return NOTIFY_OK;
+> > > +}
+> > > +
+> > > +static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     u32 sensor_id = sensor->sensor_info->id;
+> > > +     u32 sensor_config = 0;
+> > > +     int err;
+> > > +
+> > > +     if (sensor->sensor_info->timestamped)
+> > > +             sensor_config |=
+> > FIELD_PREP(SCMI_SENS_CFG_TSTAMP_ENABLED_MASK,
+> > > +                                         SCMI_SENS_CFG_TSTAMP_ENABLE);
+> > > +
+> > > +     sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> > > +                                 SCMI_SENS_CFG_SENSOR_ENABLE);
+> > > +
+> > > +     err =
+> > sensor->handle->notify_ops->register_event_notifier(sensor->handle,
+> > > +                     SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > > +                     &sensor_id, &sensor->sensor_update_nb);
+> > > +     if (err) {
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Error in registering sensor update notifier for
+> > sensor %s err %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +             return err;
+> > > +     }
+> > > +
+> > > +     err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> > > +                     sensor->sensor_info->id, sensor_config);
+> > > +     if (err) {
+> > > +
+> >  sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> > > +                             SCMI_PROTOCOL_SENSOR,
+> > > +                             SCMI_EVENT_SENSOR_UPDATE, &sensor_id,
+> > > +                             &sensor->sensor_update_nb);
+> > > +             dev_err(&iio_dev->dev, "Error in enabling sensor %s err
+> > %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +     }
+> > > +
+> > > +     return err;
+> > > +}
+> > > +
+> > > +static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
+> > > +{
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     u32 sensor_id = sensor->sensor_info->id;
+> > > +     u32 sensor_config = 0;
+> > > +     int err;
+> > > +
+> > > +     sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> > > +                                 SCMI_SENS_CFG_SENSOR_DISABLE);
+> > > +
+> > > +     err =
+> > sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> > > +                     SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> > > +                     &sensor_id, &sensor->sensor_update_nb);
+> > > +     if (err) {
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Error in unregistering sensor update notifier for
+> > sensor %s err %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +             return err;
+> > > +     }
+> > > +
+> > > +     err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> > sensor_id,
+> > > +                                                  sensor_config);
+> > > +     if (err) {
+> > > +             dev_err(&iio_dev->dev,
+> > > +                     "Error in disabling sensor %s with err %d",
+> > > +                     sensor->sensor_info->name, err);
+> > > +     }
+> > > +
+> > > +     return err;
+> > > +}
+> > > +
+> > > +static const struct iio_buffer_setup_ops scmi_iio_buffer_ops = {
+> > > +     .preenable = scmi_iio_buffer_preenable,
+> > > +     .postdisable = scmi_iio_buffer_postdisable,
+> > > +};
+> >
+> > This is just a question, I'm not suggesting to change anything here at
+> > this point to be clear, since it works just fine as it is.
+> >
+> > Following up a previous email, given these are called on enable/disable
+> > by sysfs, is there a specific reason why you configure here, inside
+> > these ops, also timestamping and callbacks  i.e. each time the sensor is
+> > turned on/off by sysfs ? ... instead of just, as an example, enabling
+> > in _preenable the sensor while registering callbacks and enabling
+> > timestamping once for all earlier during probe phase ?
+> > (likewise for _postdisable -> remove)
+> >
+> > AFAIU the spec says notifications are emitted for sensors which has
+> > requested them (via SENSOR_CONTINUOUS_UPDATE_NOTIFY) BUT only if the
+> > sensor is enabled as a whole (via proper CONFIG_SET as you do), so
+> > that enabling/disabling the sensor as a whole should result in starting/
+> > stopping the notification flow without the need of unregistering the
+> > callbacks everytime. (same goes with the timestamping)
+> >
+> > In other words, I would expect the sensor to maintain its state (on the
+> > platform side) even when going through enable/disable cycles, so that
+> > it 'remembers' that timestamping/notifications were enabled across an
+> > on/off.
+> >
+> > This would reduce the number of SCMI messages exchanges between the
+> > kernel and the platform and should be supported by both, but as said,
+> > it's more of a question for the future, not necessarily for this series.
+> >
+> > > +
+> >
+> > [snip]
+> >
+> > > +static int scmi_iio_set_sampling_freq_avail(struct iio_dev *iio_dev)
+> > > +{
+> > > +     u64 cur_interval_ns, low_interval_ns, high_interval_ns,
+> > step_size_ns,
+> > > +             hz, uhz;
+> > > +     unsigned int cur_interval, low_interval, high_interval, step_size;
+> > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> > > +     int i;
+> > > +
+> > > +     sensor->freq_avail =
+> > > +             devm_kzalloc(&iio_dev->dev,
+> > > +                          sizeof(*sensor->freq_avail) *
+> > > +                                  (sensor->sensor_info->intervals.count
+> > * 2),
+> > > +                          GFP_KERNEL);
+> > > +     if (!sensor->freq_avail)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     if (sensor->sensor_info->intervals.segmented) {
+> > > +             low_interval = sensor->sensor_info->intervals
+> > > +                                    .desc[SCMI_SENS_INTVL_SEGMENT_LOW];
+> > > +             low_interval_ns =
+> > scmi_iio_convert_interval_to_ns(low_interval);
+> > > +             convert_ns_to_freq(low_interval_ns, &hz, &uhz);
+> > > +             sensor->freq_avail[0] = hz;
+> > > +             sensor->freq_avail[1] = uhz;
+> > > +
+> > > +             step_size = sensor->sensor_info->intervals
+> > > +                                 .desc[SCMI_SENS_INTVL_SEGMENT_STEP];
+> > > +             step_size_ns = scmi_iio_convert_interval_to_ns(step_size);
+> > > +             convert_ns_to_freq(step_size_ns, &hz, &uhz);
+> > > +             sensor->freq_avail[2] = hz;
+> > > +             sensor->freq_avail[3] = uhz;
+> > > +
+> > > +             high_interval = sensor->sensor_info->intervals
+> > > +
+> >  .desc[SCMI_SENS_INTVL_SEGMENT_HIGH];
+> > > +             high_interval_ns =
+> > > +                     scmi_iio_convert_interval_to_ns(high_interval);
+> > > +             convert_ns_to_freq(high_interval_ns, &hz, &uhz);
+> > > +             sensor->freq_avail[4] = hz;
+> > > +             sensor->freq_avail[5] = uhz;
+> > > +     } else {
+> > > +             for (i = 0; i < sensor->sensor_info->intervals.count; i++)
+> > {
+> > > +                     cur_interval =
+> > sensor->sensor_info->intervals.desc[i];
+> > > +                     cur_interval_ns =
+> > > +
+> >  scmi_iio_convert_interval_to_ns(cur_interval);
+> > > +                     convert_ns_to_freq(cur_interval_ns, &hz, &uhz);
+> > > +                     sensor->freq_avail[i * 2] = hz;
+> > > +                     sensor->freq_avail[i * 2 + 1] = uhz;
+> > > +             }
+> > > +     }
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+> > > +{
+> > > +     struct iio_buffer *buffer;
+> > > +
+> > > +     buffer = devm_iio_kfifo_allocate(&scmi_iiodev->dev);
+> > > +     if (!buffer)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     iio_device_attach_buffer(scmi_iiodev, buffer);
+> > > +     scmi_iiodev->modes |= INDIO_BUFFER_SOFTWARE;
+> > > +     scmi_iiodev->setup_ops = &scmi_iio_buffer_ops;
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+> > > +                               struct scmi_handle *handle,
+> > > +                               const struct scmi_sensor_info
+> > *sensor_info)
+> > > +{
+> > > +     struct iio_chan_spec *iio_channels;
+> > > +     struct scmi_iio_priv *sensor;
+> > > +     enum iio_modifier modifier;
+> > > +     enum iio_chan_type type;
+> > > +     struct iio_dev *iiodev;
+> > > +     int i, ret;
+> > > +
+> > > +     iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
+> > > +     if (!iiodev)
+> > > +             return ERR_PTR(-ENOMEM);
+> > > +
+> > > +     iiodev->modes = INDIO_DIRECT_MODE;
+> > > +     iiodev->dev.parent = dev;
+> > > +     sensor = iio_priv(iiodev);
+> > > +     sensor->handle = handle;
+> > > +     sensor->sensor_info = sensor_info;
+> > > +     sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
+> > > +     sensor->indio_dev = iiodev;
+> > > +
+> > > +     /* adding one additional channel for timestamp */
+> > > +     iiodev->num_channels = sensor_info->num_axis + 1;
+> > > +     iiodev->name = sensor_info->name;
+> > > +     iiodev->info = &scmi_iio_info;
+> > > +
+> > > +     iio_channels =
+> > > +             devm_kzalloc(dev,
+> > > +                          sizeof(*iio_channels) *
+> > (iiodev->num_channels),
+> > > +                          GFP_KERNEL);
+> > > +     if (!iio_channels)
+> > > +             return ERR_PTR(-ENOMEM);
+> > > +
+> > > +     scmi_iio_set_sampling_freq_avail(iiodev);
+> >
+> > You don't check this for retval, and it could fail with -ENOMEM.
+> >
+> > > +
+> > > +     for (i = 0; i < sensor_info->num_axis; i++) {
+> > > +             ret = scmi_iio_get_chan_type(sensor_info->axis[i].type,
+> > &type);
+> > > +             if (ret < 0)
+> > > +                     return ERR_PTR(ret);
+> > > +
+> > > +             ret = scmi_iio_get_chan_modifier(sensor_info->axis[i].name,
+> > > +                                              &modifier);
+> > > +             if (ret < 0)
+> > > +                     return ERR_PTR(ret);
+> > > +
+> > > +             scmi_iio_set_data_channel(&iio_channels[i], type, modifier,
+> > > +                                       sensor_info->axis[i].id);
+> > > +     }
+> > > +
+> > > +     scmi_iio_set_timestamp_channel(&iio_channels[i], i);
+> > > +     iiodev->channels = iio_channels;
+> > > +     return iiodev;
+> > > +}
+> > > +
+> >
