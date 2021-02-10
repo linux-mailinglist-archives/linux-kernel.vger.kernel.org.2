@@ -2,118 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F613174B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F323174BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:51:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbhBJXuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:50:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33470 "EHLO mail.kernel.org"
+        id S234101AbhBJXuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:50:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233744AbhBJXuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:50:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 660B764E0B;
-        Wed, 10 Feb 2021 23:49:29 +0000 (UTC)
+        id S232565AbhBJXur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 18:50:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id B8F8D64E05;
+        Wed, 10 Feb 2021 23:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613000970;
-        bh=DFd7DSXy7nWVxMi3ogNh04lyt3UKSNz0wPfFB3/Ikgk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RwE0EQrcXAXhRu1tEHQ5OhsgYK9JITPA5slwojL1+mXW77Z8/D7tRuDy1HrBeaNDi
-         VSoq6CR/wVeUFMyFlVpogSpN78LwdeH5XGoLpMSHKSsAS39OBexHYcGz7nUI3cSElf
-         pEhdAKrevf4lPyeCXeXC2xLVhsNo2ROTK8vxd6WVAJwem1bv+G36GDRLwJXdn7jQCA
-         6HG7oiRQ/xiXWpnelxJgLOzGhYUy0qDiZUPImb86cg+e57sZh1Z4tfOz3bTKymv2N8
-         Fq6+9zJNjKrznJWXV08nvgsPXEnSBZPFkS58LWHyMzO9Br/s54B6maQz3ZGArCPUPb
-         vCxAkBdkPgidQ==
-Date:   Wed, 10 Feb 2021 17:49:27 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] drm/radeon/nislands_smc.h: Replace one-element array
- with flexible-array member in struct NISLANDS_SMC_SWSTATE
-Message-ID: <20210210234927.GA68137@embeddedor>
+        s=k20201202; t=1613001006;
+        bh=WBjPLYl4furVnCUGUncMKY4HraEOdv4ShTVTnDxAzUA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pXe8mw4Xjo4+EGvydk2RbuAYhTX4sGX/bxUUmmryjw68FIDKcxm64ZFCW7/f6lh2i
+         lM9kt8Ot2FcLbPD6turmohg1SONWut3JYSEvYE/FPh+ZJyLuY2MKhl1LVnU94gq6hs
+         8JUwKtFnSe5u0JCa6OsV33AND2rotHLPPxnsezoYfOUkWPgFFMiBWvsiVOg16kiTsS
+         9Ih+AViuLNn3QhnFbZ0wer9UWo14+Lye+Zu0dcqGCQ0Wqs/EB/cW2GzohOmRs9ek6Y
+         /hOTmPKAvu/MFfmElzYBtHdB8Bcg33nflCmlKQwQs9ea9vu06D5lgbqpiczCgY+jeI
+         gFQyT1q3JpsJg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A9FBF609D4;
+        Wed, 10 Feb 2021 23:50:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next] net: mvpp2: add an entry to skip parser
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161300100669.28743.67405275607303768.git-patchwork-notify@kernel.org>
+Date:   Wed, 10 Feb 2021 23:50:06 +0000
+References: <1612966633-11064-1-git-send-email-stefanc@marvell.com>
+In-Reply-To: <1612966633-11064-1-git-send-email-stefanc@marvell.com>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org,
+        linux@armlinux.org.uk, mw@semihalf.com, andrew@lunn.ch,
+        rmk+kernel@armlinux.org.uk, atenart@kernel.org, lironh@marvell.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+Hello:
 
-Use flexible-array member in struct NISLANDS_SMC_SWSTATE, instead of
-one-element array.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Also, this helps with the ongoing efforts to enable -Warray-bounds by
-fixing the following warnings:
+On Wed, 10 Feb 2021 16:17:13 +0200 you wrote:
+> From: Stefan Chulski <stefanc@marvell.com>
+> 
+> This entry used when skipping the parser needed,
+> for example, the custom header pretended to ethernet header.
+> 
+> Suggested-by: Liron Himi <liron@marvell.com>
+> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+> 
+> [...]
 
-drivers/gpu/drm/radeon/ni_dpm.c: In function ‘ni_convert_power_state_to_smc’:
-drivers/gpu/drm/radeon/ni_dpm.c:2521:20: warning: array subscript 1 is above array bounds of ‘NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’ {aka ‘struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’} [-Warray-bounds]
- 2521 |   smc_state->levels[i].dpm2.MaxPS =
-      |   ~~~~~~~~~~~~~~~~~^~~
-drivers/gpu/drm/radeon/ni_dpm.c:2523:20: warning: array subscript 1 is above array bounds of ‘NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’ {aka ‘struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’} [-Warray-bounds]
- 2523 |   smc_state->levels[i].dpm2.NearTDPDec = NISLANDS_DPM2_NEAR_TDP_DEC;
-      |   ~~~~~~~~~~~~~~~~~^~~
-drivers/gpu/drm/radeon/ni_dpm.c:2524:20: warning: array subscript 1 is above array bounds of ‘NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’ {aka ‘struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’} [-Warray-bounds]
- 2524 |   smc_state->levels[i].dpm2.AboveSafeInc = NISLANDS_DPM2_ABOVE_SAFE_INC;
-      |   ~~~~~~~~~~~~~~~~~^~~
-drivers/gpu/drm/radeon/ni_dpm.c:2525:20: warning: array subscript 1 is above array bounds of ‘NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’ {aka ‘struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’} [-Warray-bounds]
- 2525 |   smc_state->levels[i].dpm2.BelowSafeInc = NISLANDS_DPM2_BELOW_SAFE_INC;
-      |   ~~~~~~~~~~~~~~~~~^~~
-drivers/gpu/drm/radeon/ni_dpm.c:2526:35: warning: array subscript 1 is above array bounds of ‘NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’ {aka ‘struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’} [-Warray-bounds]
- 2526 |   smc_state->levels[i].stateFlags |=
-      |                                   ^~
-drivers/gpu/drm/radeon/ni_dpm.c:2526:35: warning: array subscript 1 is above array bounds of ‘NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’ {aka ‘struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’} [-Warray-bounds]
- 2526 |   smc_state->levels[i].stateFlags |=
-      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
- 2527 |    ((i != (state->performance_level_count - 1)) && power_boost_limit) ?
-      |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 2528 |    PPSMC_STATEFLAG_POWERBOOST : 0;
-      |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/radeon/ni_dpm.c:2442:20: warning: array subscript 1 is above array bounds of ‘NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’ {aka ‘struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]’} [-Warray-bounds]
- 2442 |   smc_state->levels[i + 1].aT = cpu_to_be32(a_t);
+Here is the summary with links:
+  - [net-next] net: mvpp2: add an entry to skip parser
+    https://git.kernel.org/netdev/net-next/c/e4b62cf7559f
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/109
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/6023ed54.BfIY+9Uz81I6nq19%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/gpu/drm/radeon/nislands_smc.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/radeon/nislands_smc.h b/drivers/gpu/drm/radeon/nislands_smc.h
-index 3cf8fc0d83f4..7395cb6b3cac 100644
---- a/drivers/gpu/drm/radeon/nislands_smc.h
-+++ b/drivers/gpu/drm/radeon/nislands_smc.h
-@@ -134,11 +134,11 @@ typedef struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL NISLANDS_SMC_HW_PERFORMANCE_LEV
- 
- struct NISLANDS_SMC_SWSTATE
- {
--    uint8_t                             flags;
--    uint8_t                             levelCount;
--    uint8_t                             padding2;
--    uint8_t                             padding3;
--    NISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[1];
-+	uint8_t                             flags;
-+	uint8_t                             levelCount;
-+	uint8_t                             padding2;
-+	uint8_t                             padding3;
-+	NISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[];
- };
- 
- typedef struct NISLANDS_SMC_SWSTATE NISLANDS_SMC_SWSTATE;
--- 
-2.27.0
 
