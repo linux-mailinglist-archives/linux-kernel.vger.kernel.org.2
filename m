@@ -2,96 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD53D315E28
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 05:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E3E315E2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 05:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhBJES6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 23:18:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229809AbhBJES4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 23:18:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612930650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XogBkdyBYNnsPgb8O5lpSxrAmm+YqRAreRdEUUxEYQU=;
-        b=P2E9fjzhnglo7hkI6CbXBoJdcxazXaQAoQOEIEipaKDZC7AZUP+Q3ErTiUU0DDJVIaDKMc
-        hjC+SF0V5nfUQH/dUpjeYU2dX5kF8XaKvi0Z6GpAqEG18Q91CjlYteNpE28Tk0BjWDgmwH
-        yG55LXwcy0yifutVRd5NNdS4x/ZG17k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-_S6FvGMlO3GKG8vrmWID7g-1; Tue, 09 Feb 2021 23:17:28 -0500
-X-MC-Unique: _S6FvGMlO3GKG8vrmWID7g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BD30192AB78;
-        Wed, 10 Feb 2021 04:17:27 +0000 (UTC)
-Received: from [10.72.12.223] (ovpn-12-223.pek2.redhat.com [10.72.12.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EC7519C66;
-        Wed, 10 Feb 2021 04:17:20 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: fix param validation in mlx5_vdpa_get_config()
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        Eli Cohen <elic@nvidia.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Parav Pandit <parav@nvidia.com>, linux-kernel@vger.kernel.org
-References: <20210208161741.104939-1-sgarzare@redhat.com>
- <20210209054302.GA210455@mtl-vdi-166.wap.labs.mlnx>
- <20210209090014.xolf5kxri3xdmacz@steredhat>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <cdd75885-3610-8685-14f3-5467a8ef1501@redhat.com>
-Date:   Wed, 10 Feb 2021 12:17:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229879AbhBJEZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 23:25:41 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:16556 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229684AbhBJEZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 23:25:39 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Db69h3nZ6z2d;
+        Wed, 10 Feb 2021 05:24:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1612931096; bh=QHxzW/XJK3U0oNQjGYevmIuaZObRFPo3K4Pd9Nk0lHM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bMcD2oq404OShRFj1fd4CTBBo5rmZXa0Z2HJCX6iLLEpoAzr7mPzW6q2yYUOqp8a0
+         rwtNsp5kkM2LBtyWaNUr8PAkSGFoWjtA5qrhlhj+FLMZbM3Uw7tyb8nQ01obvBBnZu
+         5XSOiQh9WaizlWsTs+PpQY03kyv/NruzHjQKxmV9oR9nMlbH0x9Z9fB6vsDTJwETuZ
+         B0BAtkGWsp24Y1Ak/mZ1Yt/2DsWbb7oxyPt8cNrfUV4d9JDB1gmfK31/f1J79cF4/c
+         kCBTgjCHgniUGBH4eptG9XW4+dd3pL8vbk7ncoMUIMHAv+IDLbKH4AIP9klFperz2w
+         1Az1SUNujMmzg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Wed, 10 Feb 2021 05:24:28 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Michal Rostecki <mrostecki@suse.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
+Message-ID: <20210210042428.GC12086@qmqm.qmqm.pl>
+References: <20210209203041.21493-1-mrostecki@suse.de>
+ <20210209203041.21493-7-mrostecki@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210209090014.xolf5kxri3xdmacz@steredhat>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210209203041.21493-7-mrostecki@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 09, 2021 at 09:30:40PM +0100, Michal Rostecki wrote:
+[...]
+> For the array with 3 HDDs, not adding any penalty resulted in 409MiB/s
+> (429MB/s) performance. Adding the penalty value 1 resulted in a
+> performance drop to 404MiB/s (424MB/s). Increasing the value towards 10
+> was making the performance even worse.
+> 
+> For the array with 2 HDDs and 1 SSD, adding penalty value 1 to
+> rotational disks resulted in the best performance - 541MiB/s (567MB/s).
+> Not adding any value and increasing the value was making the performance
+> worse.
+> 
+> Adding penalty value to non-rotational disks was always decreasing the
+> performance, which motivated setting it as 0 by default. For the purpose
+> of testing, it's still configurable.
+[...]
+> +	bdev = map->stripes[mirror_index].dev->bdev;
+> +	inflight = mirror_load(fs_info, map, mirror_index, stripe_offset,
+> +			       stripe_nr);
+> +	queue_depth = blk_queue_depth(bdev->bd_disk->queue);
+> +
+> +	return inflight < queue_depth;
+[...]
+> +	last_mirror = this_cpu_read(*fs_info->last_mirror);
+[...]
+> +	for (i = last_mirror; i < first + num_stripes; i++) {
+> +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
+> +					    stripe_nr)) {
+> +			preferred_mirror = i;
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	for (i = first; i < last_mirror; i++) {
+> +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
+> +					    stripe_nr)) {
+> +			preferred_mirror = i;
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	preferred_mirror = last_mirror;
+> +
+> +out:
+> +	this_cpu_write(*fs_info->last_mirror, preferred_mirror);
 
-On 2021/2/9 ä¸‹åˆ5:00, Stefano Garzarella wrote:
-> On Tue, Feb 09, 2021 at 07:43:02AM +0200, Eli Cohen wrote:
->> On Mon, Feb 08, 2021 at 05:17:41PM +0100, Stefano Garzarella wrote:
->>> It's legal to have 'offset + len' equal to
->>> sizeof(struct virtio_net_config), since 'ndev->config' is a
->>> 'struct virtio_net_config', so we can safely copy its content under
->>> this condition.
->>>
->>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 
->>> devices")
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->>
->> Acked-by: Eli Cohen <elic@nvidia.com>
->>
->> BTW, same error in vdpa_sim you may want to fix.
->>
->
-> Commit 65b709586e22 ("vdpa_sim: add get_config callback in 
-> vdpasim_dev_attr") unintentionally solved it.
->
-> Since it's a simulator, maybe we can avoid solving it in the stable 
-> branches. Or does it matter?
+This looks like it effectively decreases queue depth for non-last
+device. After all devices are filled to queue_depth-penalty, only
+a single mirror will be selected for next reads (until a read on
+some other one completes).
 
+Have you tried testing with much more jobs / non-sequential accesses?
 
-I think not, since the module depends on RUNTIME_TESTING_MENU.
-
-Thanks
-
-
-
-
->
-> Thanks,
-> Stefano 
-
+Best Reagrds,
+Micha³ Miros³aw
