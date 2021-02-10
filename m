@@ -2,62 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDE9317263
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 846C031726A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhBJVb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:31:29 -0500
-Received: from elvis.franken.de ([193.175.24.41]:41107 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233450AbhBJVab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:30:31 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l9x3M-0005Sj-00; Wed, 10 Feb 2021 22:29:40 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3F92CC0E40; Wed, 10 Feb 2021 22:19:08 +0100 (CET)
-Date:   Wed, 10 Feb 2021 22:19:08 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] Revert "MIPS: kernel: {ftrace,kgdb}: Set correct
- address limit for cache flushes"
-Message-ID: <20210210211908.GA11311@alpha.franken.de>
-References: <20210210161615.21228-1-tsbogend@alpha.franken.de>
- <20210210191100.GB2208287@infradead.org>
+        id S232208AbhBJVfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232097AbhBJVfN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 16:35:13 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D493DC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:34:33 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id fa16so1898742pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:34:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qvqSlhch54qKd6Z/euk8bPQFbQJTiG8Sl5LeBocD2oY=;
+        b=ewq2ZJYkhG+l2oxZATjN/3r6VnQhfS6os6buQNGLgJILEcHKR57DuF1R8nNJeTnh1s
+         Jw3EgkrinW9DWJUpOBAwiffdCrjbWfXsfJdH3gENyl1ZzpEFTYx7gkEXi8Xk7l4ywNxb
+         f9bduu2eqMOXwg4OH3HU0KbQVbKH4+pIXwCc2sxtYqlSwOIaDHrxBC5y2tsYLEyabNB4
+         Xoz5XBCTb7DdKY6zRVEt1+jfxWjeOoKjb2uBbMLnhGZ8KPN70nKRlweduw2sXGXrhDaf
+         aFyx7LErt0+Nz5RHgGCJ9+T60bGT//irI4MGgwrsVa6UbhMpHtgtcq4fQ/BkS3iLbpDY
+         LJpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qvqSlhch54qKd6Z/euk8bPQFbQJTiG8Sl5LeBocD2oY=;
+        b=IdcJzG6S53HzZSVb7zKv6VrJSuYH2a2AzQLUipJowvsdvG/fUyXSICvAziLSi54yl+
+         /vqScAnapO+G1HCTgxk21sEmKFrUHqqkn9PjI1NYBJI4ni9zYaP2Uzqz7eHHMwICqWD7
+         rLMS3T2ZZS90rqf2USckFqs+1sDLNEc8Kk+bxqy5BthM7e/OBi/TZeIx3r3oKkXQh0c8
+         ZUnI85IcDeUfPWtiLMQYFgVgWpL6jbvwppOHPrApyTNS4p9ZitET04GoteZNwpWLn7fh
+         Oiu/vgcByf8+gntXzR6u+xmHs+lMh/bHh2wzoodWUt25lfljINTAeNC47x1mNcbaHgPe
+         h9Ew==
+X-Gm-Message-State: AOAM533rsHDWwfpaMoFVhO+vc3P1z2whNusTRQUD8kjyo0oim8ltKr7q
+        dyFsC4Dn3FVcP+FKwcYgd/sO/w==
+X-Google-Smtp-Source: ABdhPJwfbZ/ZBw3M8AIvp+XeqMaYCaZc5iTCRPzVsQy2DgzR+QpEF/tL7YWm5YnakQeGNp4/E4wtDA==
+X-Received: by 2002:a17:90a:f497:: with SMTP id bx23mr875535pjb.170.1612992873373;
+        Wed, 10 Feb 2021 13:34:33 -0800 (PST)
+Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:7b19:df69:92d6:528e])
+        by smtp.gmail.com with ESMTPSA id h8sm3006928pfv.154.2021.02.10.13.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 13:34:32 -0800 (PST)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH v3 0/2] pinctrl: pinmux: Add pinmux-select debugfs file
+Date:   Wed, 10 Feb 2021 13:34:18 -0800
+Message-Id: <20210210213419.227285-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210191100.GB2208287@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 07:11:00PM +0000, Christoph Hellwig wrote:
-> On Wed, Feb 10, 2021 at 05:16:13PM +0100, Thomas Bogendoerfer wrote:
-> > This reverts commit 6ebda44f366478d1eea180d93154e7d97b591f50.
-> > 
-> > All icache flushes in this code paths are done via flush_icache_range(),
-> > which only uses normal cache instruction. And this is the correct thing
-> > for EVA mode, too. So no need to do set_fs(KERNEL_DS) here.
-> > 
-> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> 
-> Looks good,
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> ... it might be time to kill off the remaining set_fs() users in mips
-> code as well ...
+This series first converts the debugfs files in the pinctrl subsystem to
+octal permissions and then adds a new debug file "pinmux-select".  Add
+function name and group name can be written to "pinmux-select" which
+will cause the function and group to be activated on the pin controller.
 
-I already have patches for that. Still needs some cleaning and testing
-before sending/applying it.
+Notes for PATCH v3:
+- add Suggested-by: Andy Shevchenko to the "pinctrl: use to octal                                     
+  permissions for debugfs files" patch
+- change the octal permissions from 0400 to 0444 to correctly match the                         
+  symbolic permissions (thanks to Joe Perches and Geert Uytterhoeven)    
+- note that S_IFREG flag is added to the mode in __debugfs_create_file()
+  (thanks to Andy for highlighting this and Joe for suggesting I should 
+  add a note to the commit message)
+- fix order of the goto labels so that the buffers are freed correctly
+  as suggested by Dan Carpenter 
+- move from devm_kzalloc() to kzalloc() as the buffers are only used
+  inside the pinmux_select() function and not related to the lifetime
+  of the pin controller device (thanks to Andy for pointing this out)
+- correct the pinmux-select example in commit message to use the
+  function and group name instead of selector (thanks to Geert)
 
-Thomas.
+Notes for PATCH v2:
+- create patch series that includes patch to switch all the debugfs
+  files in pinctrl subsystem over to octal permission
+- write function name and group name, instead of error-prone selector
+  numbers, to the 'pinmux-select' file
+- switch from static to dynamic allocation for the kernel buffer filled
+  by strncpy_from_user()
+- look up function selector from function name using
+  pinmux_func_name_to_selector()
+- validate group name with get_function_groups() and match_string()
+- look up selector for group name with pinctrl_get_group_selector()
+
+Notes for PATCH v1:
+- posted seperate patch to switch all the debugfs files in pinctrl
+  subsystem over to octal permission [1]
+- there is no existing documentation for any of the debugfs enteries for
+  pinctrl, so it seemed to have a bigger scope than just this patch. I
+  also noticed that rst documentation is confusingly named "pinctl" (no
+  'r') and started thread about that [2]. Linus suggested chaning that
+  to 'pin-control'. Thus I am planning a seperate documentation patch
+  series where the file is renamed, references changed and a section on
+  the pinctrl debugfs files is added.
+
+Notes for RFC v2 [3]:
+- rename debugfs file "pinmux-set" to "pinmux-select"
+- renmae pinmux_set_write() to pinmux_select()
+- switch from memdup_user_nul() to strncpy_from_user()
+- switch from pr_warn() to dev_err()
+
+[1] https://lore.kernel.org/linux-gpio/20210126044742.87602-1-drew@beagleboard.org/
+[2] https://lore.kernel.org/linux-gpio/20210126050817.GA187797@x1/
+[3] https://lore.kernel.org/linux-gpio/20210123064909.466225-1-drew@beagleboard.org/
+
+Drew Fustini (2):
+  pinctrl: use to octal permissions for debugfs files
+  pinctrl: pinmux: Add pinmux-select debugfs file
+
+ drivers/pinctrl/core.c    |   6 +--
+ drivers/pinctrl/pinconf.c |   4 +-
+ drivers/pinctrl/pinmux.c  | 111 +++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 114 insertions(+), 7 deletions(-)
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.25.1
+
