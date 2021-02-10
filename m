@@ -2,127 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A56E316295
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144A131629D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhBJJov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhBJJnL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:43:11 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E10AC06174A;
-        Wed, 10 Feb 2021 01:42:29 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DbFD04H3wz9sCD;
-        Wed, 10 Feb 2021 20:42:23 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612950145;
-        bh=J9lGZTrqX2s2/B1qIZ8e77GL8+B9fY0I9TXfY6sYe/8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uSThYFWrLYpUQEF0KWeH9xx8LK5CMonAm1c53irvHAtThiZ1R13V5ciblSWV3nwqz
-         ClbXyKWxgpcvN9x0PtdID996yZ+jLypi8ztpKFJxw5lW0kcytsFWffMn3clvt0aFq5
-         9rPEQRAUulCyN7l9miCXY/iIHs8HgAfAwMvqlYO6yZeUHlLmh4P0HGuFGIVMCoBXF8
-         n5JdJQK8qD59qE/cjzTGezrLq3DlFbf4LtdB1YePV5AooTsy0urSC8hOUCTlqw0+Fe
-         vqcTQCTmdVOAx50zJc4jqtYMfkCx+DLxopphIkP12vJuOdMMRuKMdOGaJvW9mjTJeS
-         OGKjax5aiUBHg==
-Date:   Wed, 10 Feb 2021 20:42:15 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel@ffwll.ch>,
-        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Daniel Vetter <daniel.vetter@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the iomem-mmap-vs-gup tree
-Message-ID: <20210210204215.2912b80b@canb.auug.org.au>
+        id S230034AbhBJJpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:45:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53724 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230125AbhBJJnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 04:43:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A5634AE91;
+        Wed, 10 Feb 2021 09:42:31 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 10:42:28 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        ben.widawsky@intel.com, rientjes@google.com, cl@linux.com,
+        alex.shi@linux.alibaba.com, dwagner@suse.de, tobin@kernel.org,
+        akpm@linux-foundation.org, ying.huang@intel.com,
+        dan.j.williams@intel.com, cai@lca.pw, stable@vger.kernel.org
+Subject: Re: [RFC][PATCH 01/13] mm/vmscan: restore zone_reclaim_mode ABI
+Message-ID: <20210210094222.GA27173@linux>
+References: <20210126003411.2AC51464@viggo.jf.intel.com>
+ <20210126003412.59594AA9@viggo.jf.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/S90AYVKifAGg.VlqIK_6.7M";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126003412.59594AA9@viggo.jf.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/S90AYVKifAGg.VlqIK_6.7M
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jan 25, 2021 at 04:34:13PM -0800, Dave Hansen wrote:
+> 
+> From: Dave Hansen <dave.hansen@linux.intel.com>
+> 
+> I went to go add a new RECLAIM_* mode for the zone_reclaim_mode
+> sysctl.  Like a good kernel developer, I also went to go update the
+> documentation.  I noticed that the bits in the documentation didn't
+> match the bits in the #defines.
+> 
+> The VM never explicitly checks the RECLAIM_ZONE bit.  The bit is,
+> however implicitly checked when checking 'node_reclaim_mode==0'.
+> The RECLAIM_ZONE #define was removed in a cleanup.  That, by itself
+> is fine.
+> 
+> But, when the bit was removed (bit 0) the _other_ bit locations also
+> got changed.  That's not OK because the bit values are documented to
+> mean one specific thing and users surely rely on them meaning that one
+> thing and not changing from kernel to kernel.  The end result is that
+> if someone had a script that did:
+> 
+> 	sysctl vm.zone_reclaim_mode=1
+> 
+> This script would have gone from enalbing node reclaim for clean
+> unmapped pages to writing out pages during node reclaim after the
+> commit in question.  That's not great.
+> 
+> Put the bits back the way they were and add a comment so something
+> like this is a bit harder to do again.  Update the documentation to
+> make it clear that the first bit is ignored.
+> 
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Fixes: 648b5cf368e0 ("mm/vmscan: remove unused RECLAIM_OFF/RECLAIM_ZONE")
+> Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Acked-by: Christoph Lameter <cl@linux.com>
+> Cc: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Daniel Wagner <dwagner@suse.de>
+> Cc: "Tobin C. Harding" <tobin@kernel.org>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Qian Cai <cai@lca.pw>
+> Cc: Daniel Wagner <dwagner@suse.de>
+> Cc: osalvador <osalvador@suse.de>
+> Cc: stable@vger.kernel.org
 
-Hi all,
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-After merging the iomem-mmap-vs-gup tree, today's linux-next build
-(powerpc ppc64_defconfig) failed like this:
+> 
+> --
+> 
+> Changes from v2:
+>  * Update description to indicate that bit0 was used for clean
+>    unmapped page node reclaim.
+> ---
+> 
+>  b/Documentation/admin-guide/sysctl/vm.rst |   10 +++++-----
+>  b/mm/vmscan.c                             |    9 +++++++--
+>  2 files changed, 12 insertions(+), 7 deletions(-)
+> 
+> diff -puN Documentation/admin-guide/sysctl/vm.rst~mm-vmscan-restore-old-zone_reclaim_mode-abi Documentation/admin-guide/sysctl/vm.rst
+> --- a/Documentation/admin-guide/sysctl/vm.rst~mm-vmscan-restore-old-zone_reclaim_mode-abi	2021-01-25 16:23:06.048866718 -0800
+> +++ b/Documentation/admin-guide/sysctl/vm.rst	2021-01-25 16:23:06.056866718 -0800
+> @@ -978,11 +978,11 @@ that benefit from having their data cach
+>  left disabled as the caching effect is likely to be more important than
+>  data locality.
+>  
+> -zone_reclaim may be enabled if it's known that the workload is partitioned
+> -such that each partition fits within a NUMA node and that accessing remote
+> -memory would cause a measurable performance reduction.  The page allocator
+> -will then reclaim easily reusable pages (those page cache pages that are
+> -currently not used) before allocating off node pages.
+> +Consider enabling one or more zone_reclaim mode bits if it's known that the
+> +workload is partitioned such that each partition fits within a NUMA node
+> +and that accessing remote memory would cause a measurable performance
+> +reduction.  The page allocator will take additional actions before
+> +allocating off node pages.
+>  
+>  Allowing zone reclaim to write out pages stops processes that are
+>  writing large amounts of data from dirtying pages on other nodes. Zone
+> diff -puN mm/vmscan.c~mm-vmscan-restore-old-zone_reclaim_mode-abi mm/vmscan.c
+> --- a/mm/vmscan.c~mm-vmscan-restore-old-zone_reclaim_mode-abi	2021-01-25 16:23:06.052866718 -0800
+> +++ b/mm/vmscan.c	2021-01-25 16:23:06.057866718 -0800
+> @@ -4086,8 +4086,13 @@ module_init(kswapd_init)
+>   */
+>  int node_reclaim_mode __read_mostly;
+>  
+> -#define RECLAIM_WRITE (1<<0)	/* Writeout pages during reclaim */
+> -#define RECLAIM_UNMAP (1<<1)	/* Unmap pages during reclaim */
+> +/*
+> + * These bit locations are exposed in the vm.zone_reclaim_mode sysctl
+> + * ABI.  New bits are OK, but existing bits can never change.
+> + */
+> +#define RECLAIM_ZONE  (1<<0)   /* Run shrink_inactive_list on the zone */
+> +#define RECLAIM_WRITE (1<<1)   /* Writeout pages during reclaim */
+> +#define RECLAIM_UNMAP (1<<2)   /* Unmap pages during reclaim */
+>  
+>  /*
+>   * Priority for NODE_RECLAIM. This determines the fraction of pages
+> _
+> 
 
-
-Caused by commit
-
-  96667f8a4382 ("mm: Close race in generic_access_phys")
-
-interacting with commit
-
-  9fd6dad1261a ("mm: provide a saner PTE walking API for modules")
-
-from the kvm tree.
-
-I have applied the following merge fix patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 10 Feb 2021 20:29:22 +1100
-Subject: [PATCH] mm: fixup for follow_pte() API change
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- mm/memory.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index b518bf4273d2..2c436e3a6259 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4825,7 +4825,7 @@ int generic_access_phys(struct vm_area_struct *vma, u=
-nsigned long addr,
- 		return -EINVAL;
-=20
- retry:
--	if (follow_pte(vma->vm_mm, addr, NULL, &ptep, NULL, &ptl))
-+	if (follow_pte(vma->vm_mm, addr, &ptep, &ptl))
- 		return -EINVAL;
- 	pte =3D *ptep;
- 	pte_unmap_unlock(ptep, ptl);
-@@ -4840,7 +4840,7 @@ int generic_access_phys(struct vm_area_struct *vma, u=
-nsigned long addr,
- 	if (!maddr)
- 		return -ENOMEM;
-=20
--	if (follow_pte(vma->vm_mm, addr, NULL, &ptep, NULL, &ptl))
-+	if (follow_pte(vma->vm_mm, addr, &ptep, &ptl))
- 		goto out_unmap;
-=20
- 	if (!pte_same(pte, *ptep)) {
---=20
-2.30.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/S90AYVKifAGg.VlqIK_6.7M
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAjqncACgkQAVBC80lX
-0GzF0gf+IoInNF+gWKQAgwYEB0j8McYhVWX8qIoih4IIWGAJdlXgfWOG11hm5HwE
-rnsdLwk2HeRAMkekqSypxPNa6jA8D4FQg7MnYCnt5v+BRXGjR/CoBjsHjFhf8Z+Y
-K7j9ZTjstM81iGqppt4AZuikbV5Mr3aF9xnKzpNNMjTsmJ9kajKW7oo3H83ghpF3
-dbQbvmqyVG9yrULNWI/yZz5BrBGa7tdvqFwHfpzaAK8LTJeLK1t1BoS21P/LylcY
-IZ0mPPllO6wjstRI2L8mYlDAZ+n3eRB1V/HzRNDSfP3svbjzes12s0VFgbePb9oR
-+kn0f1doDG0Fwu/nnX88G5llMHE/8A==
-=n0dX
------END PGP SIGNATURE-----
-
---Sig_/S90AYVKifAGg.VlqIK_6.7M--
+-- 
+Oscar Salvador
+SUSE L3
