@@ -2,142 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07F23173D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F3E3173CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbhBJW6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:58:43 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55238 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232578AbhBJW6i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:58:38 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11AMv20f070192;
-        Wed, 10 Feb 2021 16:57:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612997822;
-        bh=LzGwa7Vg5Ce7q3QZRv3zzST8vDoG+tg5dsnxojQoMpo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=fVsI28zcMOK1AsUR3+mWaUPgZ3mbohw12JazKdKUVhhFmZVofPSYP6N4hRUuuBn4T
-         W56P/mn6f/RIdSg6v5++J/61ZmA/dRCJ60/VHxrDcIpR/R0zO4URywJ6eX4lKBxjT5
-         TU2EpHol0dBnmt8UV0zVtUVnYtYVCWFLutQbqL1k=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11AMv1NH123365
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Feb 2021 16:57:01 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 10
- Feb 2021 16:57:01 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 10 Feb 2021 16:57:01 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11AMv177090501;
-        Wed, 10 Feb 2021 16:57:01 -0600
-From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-To:     <sre@kernel.org>, <krzk@kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Subject: [PATCH v2 2/2] power: supply: bq25980: Move props from battery node
-Date:   Wed, 10 Feb 2021 16:56:46 -0600
-Message-ID: <20210210225646.10055-2-r-rivera-matos@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210210225646.10055-1-r-rivera-matos@ti.com>
-References: <20210210225646.10055-1-r-rivera-matos@ti.com>
+        id S233785AbhBJW6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:58:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233741AbhBJW6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 17:58:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D51F764EBB;
+        Wed, 10 Feb 2021 22:57:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612997842;
+        bh=UJfsvvn0ix5B2B8amG6o871cR0JpZNABhACiEZxCNac=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ufNE5DNDh1Nz18RJZvqyxD8pqzzCI4sLMwzCHcu7bd4gyZbGlSGs7hl1FGfbrLhCN
+         TTtlr0jUuqQoiHt2McjjzMx9UD+zdntHOEkwpDeHXgekdkKtEvrplPYebrNktNFrO7
+         t38XpKrUzE8xhGYENhtb7ByvdhqLzdpDCNSITuMfFrrquD3m8HIDOete+TTEXnKJpM
+         dLHzgQU5A4fpLVbxuoAmhTVJmSKpxq1Z5plbKZ60beAO4OW2i8GANro1lLM4530d48
+         xS1oTmKteX6WCMoBJSzTGGLuulB1ZYX+EISCVqdt6hzTMR6U9t7cDoll9in8HTKmVL
+         MJ+jlPlu0NbQQ==
+Date:   Wed, 10 Feb 2021 16:57:20 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] media: venus: hfi_cmds.h: Replace one-element array
+ with flexible-array member
+Message-ID: <20210210225720.GA13710@embeddedor>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT and
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE are exposed on the battery node
+Use flexible-array member in struct hfi_sys_set_property_pkt instead of
+one-element array.
 
-and this is incorrect.
+Also, this helps with the ongoing efforts to enable -Warray-bounds and
+fix the following warnings:
 
-This patch exposes POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT and
+drivers/media/platform/qcom/venus/hfi_cmds.c: In function ‘pkt_sys_coverage_config’:
+drivers/media/platform/qcom/venus/hfi_cmds.c:57:11: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+   57 |  pkt->data[1] = mode;
+      |  ~~~~~~~~~^~~
 
-POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE on the charger node rather
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
 
-than the battery node.
-
-Fixes: 5069185fc18e ("power: supply: bq25980: Add support for the BQ259xx family")
-Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Link: https://github.com/KSPP/linux/issues/79
+Link: https://github.com/KSPP/linux/issues/109
+Build-tested-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/602416da.iZqae7Dbk7nyl6OY%25lkp@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/power/supply/bq25980_charger.c | 40 ++++++++------------------
- 1 file changed, 12 insertions(+), 28 deletions(-)
+ drivers/media/platform/qcom/venus/hfi_cmds.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/bq25980_charger.c b/drivers/power/supply/bq25980_charger.c
-index 7c489a9e8877..ac73e2c19238 100644
---- a/drivers/power/supply/bq25980_charger.c
-+++ b/drivers/power/supply/bq25980_charger.c
-@@ -641,33 +641,6 @@ static int bq25980_get_state(struct bq25980_device *bq,
- 	return 0;
- }
+diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.h b/drivers/media/platform/qcom/venus/hfi_cmds.h
+index 83705e237f1c..327ed90a2788 100644
+--- a/drivers/media/platform/qcom/venus/hfi_cmds.h
++++ b/drivers/media/platform/qcom/venus/hfi_cmds.h
+@@ -68,7 +68,7 @@ struct hfi_sys_release_resource_pkt {
+ struct hfi_sys_set_property_pkt {
+ 	struct hfi_pkt_hdr hdr;
+ 	u32 num_properties;
+-	u32 data[1];
++	u32 data[];
+ };
  
--static int bq25980_set_battery_property(struct power_supply *psy,
--				enum power_supply_property psp,
--				const union power_supply_propval *val)
--{
--	struct bq25980_device *bq = power_supply_get_drvdata(psy);
--	int ret = 0;
--
--	switch (psp) {
--	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
--		ret = bq25980_set_const_charge_curr(bq, val->intval);
--		if (ret)
--			return ret;
--		break;
--
--	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
--		ret = bq25980_set_const_charge_volt(bq, val->intval);
--		if (ret)
--			return ret;
--		break;
--
--	default:
--		return -EINVAL;
--	}
--
--	return ret;
--}
--
- static int bq25980_get_battery_property(struct power_supply *psy,
- 				enum power_supply_property psp,
- 				union power_supply_propval *val)
-@@ -736,6 +709,18 @@ static int bq25980_set_charger_property(struct power_supply *psy,
- 			return ret;
- 		break;
- 
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
-+		ret = bq25980_set_const_charge_curr(bq, val->intval);
-+		if (ret)
-+			return ret;
-+		break;
-+
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
-+		ret = bq25980_set_const_charge_volt(bq, val->intval);
-+		if (ret)
-+			return ret;
-+		break;
-+
- 	default:
- 		return -EINVAL;
- 	}
-@@ -957,7 +942,6 @@ static struct power_supply_desc bq25980_battery_desc = {
- 	.name			= "bq25980-battery",
- 	.type			= POWER_SUPPLY_TYPE_BATTERY,
- 	.get_property		= bq25980_get_battery_property,
--	.set_property		= bq25980_set_battery_property,
- 	.properties		= bq25980_battery_props,
- 	.num_properties		= ARRAY_SIZE(bq25980_battery_props),
- 	.property_is_writeable	= bq25980_property_is_writeable,
+ struct hfi_sys_get_property_pkt {
 -- 
-2.30.0
+2.27.0
 
