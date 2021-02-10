@@ -2,139 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7FE31737B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9323231737F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233752AbhBJWgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:36:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233708AbhBJWfv (ORCPT
+        id S232554AbhBJWhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:37:08 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44078 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233733AbhBJWgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:35:51 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6B6C0617A9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:33:29 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id m17so3698371ioy.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:33:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7FCuQIhoM4UnSeDf+V9T1zVw5r1nx3mRIbuQj9L1BYA=;
-        b=Rd/yJmUWl/CbjQMXYAj81h5dkBwFZoIiFyzebIXqmV6DFK9Qtj9EkWHVY3rV1A/GT+
-         jHv17UrnbOkI3wbe4ApcNKXs4L6No+EBJ2tsgAlQyV0Sjs9+OEo3aI2DT+AgD6duxV1H
-         LtIwyRHbsl8CtEfljXn4SqVpgMWXIqksSyR4UEILQWBvKwZ+bOU/Xoj/w1w4g4px9nyU
-         Tsh5RNdBhuIwN0AmjIgHkNLCyvZ4GcHuOljB2CAtkq8pvR4oIl9qVwVwooCLQoqT50aY
-         BIhbNnmr6rVSvaDcLmfhFW9vIZImUVfEkjRsC2seur/r9ExLYkngZdpeYVGnp65WPNuZ
-         EeNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7FCuQIhoM4UnSeDf+V9T1zVw5r1nx3mRIbuQj9L1BYA=;
-        b=QNEHOAHBgeugk98RbeGcAqxSQGea/cF/s52LJJMPBKOkmV/Rf1JaYR8AV2d5K5qrur
-         OIObZ3Y5RN5uf/PZ8coRz51Y98UzqNCXIS8SttqgarC6aOuoreTGSm5PT/kZeDNv5XuJ
-         hn4v+Jc/X/UbVC5iyFm20QoNXjH5AotfHeN1qkYjjLUnjIWanZ1Mx++wJuwjiN3TdLd5
-         3dpVXJK6f0JmUhjK2YIEJIB/o9TmH7NgACVQA0h/P5VkvXKSEFdEQ4PjUcuE5PUNi/ro
-         a08kHdpFmz3jiYZC+eXaWw6SnZnUIz1iDJo+T9EpIaa2Kz6YGFzoTzmopzEo+nahDVc/
-         TUKg==
-X-Gm-Message-State: AOAM533XKTXLeVi84UrU9BBeOyORiUIutsnKgm2ZQKS2BMQ9i3hJZ9Do
-        VHr6BuDYfBsmRoumslHcW85TkQ==
-X-Google-Smtp-Source: ABdhPJzEwRYBYmx50KyPLxbXpPzMLdZUtiR4RWBfkd/2A9g86F+haXl3TmymKpxL7zb9SU127tPSJA==
-X-Received: by 2002:a5e:9612:: with SMTP id a18mr2732161ioq.209.1612996408710;
-        Wed, 10 Feb 2021 14:33:28 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id e23sm1484525ioc.34.2021.02.10.14.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 14:33:28 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 5/5] net: ipa: introduce gsi_channel_initialized()
-Date:   Wed, 10 Feb 2021 16:33:20 -0600
-Message-Id: <20210210223320.11269-6-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210210223320.11269-1-elder@linaro.org>
-References: <20210210223320.11269-1-elder@linaro.org>
+        Wed, 10 Feb 2021 17:36:11 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 8CBF62A94E;
+        Wed, 10 Feb 2021 17:34:46 -0500 (EST)
+Date:   Thu, 11 Feb 2021 09:34:51 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+cc:     tanxiaofei <tanxiaofei@huawei.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
+Subject: RE: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage optimization
+ for SCSI drivers
+In-Reply-To: <13c414b9bd7940caa5e1df810356dcfd@hisilicon.com>
+Message-ID: <221cb29-53a8-fd1-4232-360655f28f3@telegraphics.com.au>
+References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com> <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au> <e949a474a9284ac6951813bfc8b34945@hisilicon.com> <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
+ <88d26bd86c314e5483ec596952054be7@hisilicon.com> <da111631-83ef-1ad8-799a-5d976d5759d@telegraphics.com.au> <00c06b19e87a425fa3a4b6aaecc66d49@hisilicon.com> <9611728-3e7-3954-cfee-f3d3cf45df6@telegraphics.com.au>
+ <13c414b9bd7940caa5e1df810356dcfd@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="-1463811774-653018509-1612996491=:23"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a simple helper function that indicates whether a channel has
-been initialized.  This abstacts/hides the details of how this is
-determined.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+---1463811774-653018509-1612996491=:23
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index d33686da15420..2406363bba2e8 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -175,6 +175,12 @@ static u32 gsi_channel_id(struct gsi_channel *channel)
- 	return channel - &channel->gsi->channel[0];
- }
- 
-+/* An initialized channel has a non-null GSI pointer */
-+static bool gsi_channel_initialized(struct gsi_channel *channel)
-+{
-+	return !!channel->gsi;
-+}
-+
- /* Update the GSI IRQ type register with the cached value */
- static void gsi_irq_type_update(struct gsi *gsi, u32 val)
- {
-@@ -1638,8 +1644,8 @@ static int gsi_channel_setup_one(struct gsi *gsi, u32 channel_id)
- 	u32 evt_ring_id = channel->evt_ring_id;
- 	int ret;
- 
--	if (!channel->gsi)
--		return 0;	/* Ignore uninitialized channels */
-+	if (!gsi_channel_initialized(channel))
-+		return 0;
- 
- 	ret = gsi_evt_ring_alloc_command(gsi, evt_ring_id);
- 	if (ret)
-@@ -1675,8 +1681,8 @@ static void gsi_channel_teardown_one(struct gsi *gsi, u32 channel_id)
- 	struct gsi_channel *channel = &gsi->channel[channel_id];
- 	u32 evt_ring_id = channel->evt_ring_id;
- 
--	if (!channel->gsi)
--		return;		/* Ignore uninitialized channels */
-+	if (!gsi_channel_initialized(channel))
-+		return;
- 
- 	netif_napi_del(&channel->napi);
- 
-@@ -1770,8 +1776,8 @@ static int gsi_channel_setup(struct gsi *gsi)
- 	while (channel_id < GSI_CHANNEL_COUNT_MAX) {
- 		struct gsi_channel *channel = &gsi->channel[channel_id++];
- 
--		if (!channel->gsi)
--			continue;	/* Ignore uninitialized channels */
-+		if (!gsi_channel_initialized(channel))
-+			continue;
- 
- 		dev_err(gsi->dev, "channel %u not supported by hardware\n",
- 			channel_id - 1);
-@@ -2088,8 +2094,8 @@ static int gsi_channel_init_one(struct gsi *gsi,
- /* Inverse of gsi_channel_init_one() */
- static void gsi_channel_exit_one(struct gsi_channel *channel)
- {
--	if (!channel->gsi)
--		return;		/* Ignore uninitialized channels */
-+	if (!gsi_channel_initialized(channel))
-+		return;
- 
- 	if (channel->command)
- 		ipa_cmd_pool_exit(channel);
--- 
-2.20.1
+On Wed, 10 Feb 2021, Song Bao Hua (Barry Song) wrote:
 
+> > On Wed, 10 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> >=20
+> > > >
+> > > > There is no warning from m68k builds. That's because=20
+> > > > arch_irqs_disabled() returns true when the IPL is non-zero.
+> > >
+> > > So for m68k, the case is
+> > > arch_irqs_disabled() is true, but interrupts can still come?
+> > >
+> > > Then it seems it is very confusing. If prioritized interrupts can=20
+> > > still come while arch_irqs_disabled() is true,
+> >=20
+> > Yes, on m68k CPUs, an IRQ having a priority level higher than the=20
+> > present priority mask will get serviced.
+> >=20
+> > Non-Maskable Interrupt (NMI) is not subject to this rule and gets=20
+> > serviced regardless.
+> >=20
+> > > how could spin_lock_irqsave() block the prioritized interrupts?
+> >=20
+> > It raises the the mask level to 7. Again, please see=20
+> > arch/m68k/include/asm/irqflags.h
+>=20
+> Hi Finn,
+> Thanks for your explanation again.
+>=20
+> TBH, that is why m68k is so confusing. irqs_disabled() on m68k should=20
+> just reflect the status of all interrupts have been disabled except NMI.
+>=20
+> irqs_disabled() should be consistent with the calling of APIs such as=20
+> local_irq_disable, local_irq_save, spin_lock_irqsave etc.
+>=20
+
+When irqs_disabled() returns true, we cannot infer that=20
+arch_local_irq_disable() was called. But I have not yet found driver code=
+=20
+or core kernel code attempting that inference.
+
+> >=20
+> > > Isn't arch_irqs_disabled() a status reflection of irq disable API?
+> > >
+> >=20
+> > Why not?
+>=20
+> If so, arch_irqs_disabled() should mean all interrupts have been masked=
+=20
+> except NMI as NMI is unmaskable.
+>=20
+
+Can you support that claim with a reference to core kernel code or=20
+documentation? (If some arch code agrees with you, that's neither here nor=
+=20
+there.)
+
+> >=20
+> > Are all interrupts (including NMI) masked whenever=20
+> > arch_irqs_disabled() returns true on your platforms?
+>=20
+> On my platform, once irqs_disabled() is true, all interrupts are masked=
+=20
+> except NMI. NMI just ignore spin_lock_irqsave or local_irq_disable.
+>=20
+> On ARM64, we also have high-priority interrupts, but they are running as
+> PESUDO_NMI:
+> https://lwn.net/Articles/755906/
+>=20
+
+A glance at the ARM GIC specification suggests that your hardware works=20
+much like 68000 hardware.
+
+   When enabled, a CPU interface takes the highest priority pending=20
+   interrupt for its connected processor and determines whether the=20
+   interrupt has sufficient priority for it to signal the interrupt=20
+   request to the processor. [...]
+
+   When the processor acknowledges the interrupt at the CPU interface, the=
+=20
+   Distributor changes the status of the interrupt from pending to either=
+=20
+   active, or active and pending. At this point the CPU interface can=20
+   signal another interrupt to the processor, to preempt interrupts that=20
+   are active on the processor. If there is no pending interrupt with=20
+   sufficient priority for signaling to the processor, the interface=20
+   deasserts the interrupt request signal to the processor.
+
+https://developer.arm.com/documentation/ihi0048/b/
+
+Have you considered that Linux/arm might benefit if it could fully exploit=
+=20
+hardware features already available, such as the interrupt priority=20
+masking feature in the GIC in existing arm systems?
+
+> On m68k, it seems you mean=EF=BC=9A
+> irq_disabled() is true, but high-priority interrupts can still come;
+> local_irq_disable() can disable high-priority interrupts, and at that
+> time, irq_disabled() is also true.
+>=20
+> TBH, this is wrong and confusing on m68k.
+>=20
+
+Like you, I was surprised when I learned about it. But that doesn't mean=20
+it's wrong. The fact that it works should tell you something.
+
+Things could always be made simpler. But discarding features isn't=20
+necessarily an improvement.
+
+> >=20
+> > > Thanks
+> > > Barry
+> > >
+>=20
+> Thanks
+> Barry
+>=20
+---1463811774-653018509-1612996491=:23--
