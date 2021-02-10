@@ -2,148 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A14F315F78
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C70315F7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhBJG2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 01:28:30 -0500
-Received: from foss.arm.com ([217.140.110.172]:32968 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231892AbhBJG1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 01:27:46 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 04818ED1;
-        Tue,  9 Feb 2021 22:26:58 -0800 (PST)
-Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.208.215])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 33AA33F719;
-        Tue,  9 Feb 2021 22:26:52 -0800 (PST)
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, mhiramat@kernel.org, fche@redhat.com,
-        irogers@google.com, sumanthk@linux.ibm.com
-Cc:     Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH v2] perf probe: fix kretprobe issue caused by GCC bug
-Date:   Wed, 10 Feb 2021 14:26:46 +0800
-Message-Id: <20210210062646.2377995-1-Jianlin.Lv@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S231950AbhBJG3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 01:29:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhBJG3b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 01:29:31 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A32C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 22:28:51 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id j11so632602plt.11
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 22:28:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ImBUIA0A5z4zu1ljmU+gZzbb8HAuUJogg1wP+5zwUbk=;
+        b=DUw6eMkU0eBhuCSORTKGS+JyCx2qs7yzRH3yy9YVkPlJaHT6ilo6P/B8SU8cfUIq8V
+         IP/mfrKYv7YGcNgdBOgx7+qGiHackEqMtJcxDiz/swUxpTsT0NoVWVnUtJruN+QKZfPX
+         b4+Bd/jhW0rlSuQKQkWKy0G4HWwQm2QFH3S5M4gczrElNVgSIWp94MLTS9buNuzhPV6C
+         bXfp+nNrImP1jxAPVz15NivSPpcc30bf199p4OyaSmsWPqvDxlCiCaKx0jwFOfeFz0Af
+         HF7azcgqV4BanjHbWgS9OoLhOJoIoUiydPSNaw+ZtcnweEP/T7NRX+qNg+HyCY6Y7xcG
+         LEkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ImBUIA0A5z4zu1ljmU+gZzbb8HAuUJogg1wP+5zwUbk=;
+        b=OojfuDEBSRKs9tF5PZQahCmUUaXYunA+kG49/Q+udarzS6HtsZE4Y70fhL4f9JLa7M
+         14vueaPBEsz2uijoOILD3Vf6btTag8tcwdBiO5dzIoCv+N5RsFLe+QEuZGNKIHVBcKjV
+         ogLackibb0RxbVp7IazlmSkRBTLfJF/OQ14DbdzcimM/5wAarodyRI9FpkIfM5ntxuEb
+         tiBPTfhgoiQcmMg8p6+c7gYC0ac/y891UYIbIhPPcNJwvfNqrPXj8IAnYLnGi2tQxMyh
+         DhtHxiyRwGgcgs9C3fYLAym6P1ZtW08Plg0zwyyIKKFAbqCGX8ZYieeeLeU1ahknHCKJ
+         xkdQ==
+X-Gm-Message-State: AOAM532rkRJtCC4b6o4TxtAkDZckky3biYpTG0F16ZL11UnyGZFQ2bhp
+        m2Z0ZTB7s/E4xHzSaIk0hI4USA==
+X-Google-Smtp-Source: ABdhPJztSTXXotJS8BlNUGcfUb+YKsIm0OTEolA60d1LZr8gDdu5xOqjO3uSb7OI9QolMT+ltUPDGg==
+X-Received: by 2002:a17:902:e741:b029:e2:a9c9:69e3 with SMTP id p1-20020a170902e741b02900e2a9c969e3mr1687711plf.28.1612938530672;
+        Tue, 09 Feb 2021 22:28:50 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id ob6sm847416pjb.30.2021.02.09.22.28.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Feb 2021 22:28:50 -0800 (PST)
+Date:   Wed, 10 Feb 2021 11:58:47 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Tushar Khandelwal <Tushar.Khandelwal@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH Resend] mailbox: arm_mhuv2: Fix sparse warnings
+Message-ID: <20210210062847.tptyycw6au5baype@vireshk-i7>
+References: <db5dd593cfd8b428ce44c1cce7484d887fa5e67c.1612869229.git.viresh.kumar@linaro.org>
+ <CABb+yY3QkiZqWLJ8LmXXVy0n-UN1YxxbBOMcnTmHTe6WLeKmpA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABb+yY3QkiZqWLJ8LmXXVy0n-UN1YxxbBOMcnTmHTe6WLeKmpA@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Perf failed to add kretprobe event with debuginfo of vmlinux which is
-compiled by gcc with -fpatchable-function-entry option enabled.
-The same issue with kernel module.
+On 10-02-21, 00:25, Jassi Brar wrote:
+> Yup any bug fix should be sent in rc. But this, imo, lies on the
+> boundary of code and cosmetic issues, so I practiced discretion to
+> keep it for the next pull request lest I won't have much to send ;)
 
-Issue:
+Fair enough, would have been better though if you could have replied
+with this earlier. I had no clue on what's going on until this email
+came from you :)
 
-  # perf probe  -v 'kernel_clone%return $retval'
-  ......
-  Writing event: r:probe/kernel_clone__return _text+599624 $retval
-  Failed to write event: Invalid argument
-    Error: Failed to add events. Reason: Invalid argument (Code: -22)
+Thanks anyway.
 
-  # cat /sys/kernel/debug/tracing/error_log
-  [156.75] trace_kprobe: error: Retprobe address must be an function entry
-  Command: r:probe/kernel_clone__return _text+599624 $retval
-                                        ^
-
-  # llvm-dwarfdump  vmlinux |grep  -A 10  -w 0x00df2c2b
-  0x00df2c2b:   DW_TAG_subprogram
-                DW_AT_external  (true)
-                DW_AT_name      ("kernel_clone")
-                DW_AT_decl_file ("/home/code/linux-next/kernel/fork.c")
-                DW_AT_decl_line (2423)
-                DW_AT_decl_column       (0x07)
-                DW_AT_prototyped        (true)
-                DW_AT_type      (0x00dcd492 "pid_t")
-                DW_AT_low_pc    (0xffff800010092648)
-                DW_AT_high_pc   (0xffff800010092b9c)
-                DW_AT_frame_base        (DW_OP_call_frame_cfa)
-
-  # cat /proc/kallsyms |grep kernel_clone
-  ffff800010092640 T kernel_clone
-  # readelf -s vmlinux |grep -i kernel_clone
-  183173: ffff800010092640  1372 FUNC    GLOBAL DEFAULT    2 kernel_clone
-
-  # objdump -d vmlinux |grep -A 10  -w \<kernel_clone\>:
-  ffff800010092640 <kernel_clone>:
-  ffff800010092640:       d503201f        nop
-  ffff800010092644:       d503201f        nop
-  ffff800010092648:       d503233f        paciasp
-  ffff80001009264c:       a9b87bfd        stp     x29, x30, [sp, #-128]!
-  ffff800010092650:       910003fd        mov     x29, sp
-  ffff800010092654:       a90153f3        stp     x19, x20, [sp, #16]
-
-The entry address of kernel_clone converted by debuginfo is _text+599624
-(0x92648), which is consistent with the value of DW_AT_low_pc attribute.
-But the symbolic address of kernel_clone from /proc/kallsyms is
-ffff800010092640.
-
-This issue is found on arm64, -fpatchable-function-entry=2 is enabled when
-CONFIG_DYNAMIC_FTRACE_WITH_REGS=y;
-Just as objdump displayed the assembler contents of kernel_clone,
-GCC generate 2 NOPs  at the beginning of each function.
-
-kprobe_on_func_entry detects that (_text+599624) is not the entry address
-of the function, which leads to the failure of adding kretprobe event.
-
----
-kprobe_on_func_entry
-->_kprobe_addr
-->kallsyms_lookup_size_offset
-->arch_kprobe_on_func_entry		// FALSE
----
-
-The cause of the issue is that the first instruction in the compile unit
-indicated by DW_AT_low_pc does not include NOPs.
-This issue exists in all gcc versions that support
--fpatchable-function-entry option.
-
-I have reported it to the GCC community:
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=98776
-
-Currently arm64 and PA-RISC may enable fpatchable-function-entry option.
-The kernel compiled with clang does not have this issue.
-
-FIX:
-
-This GCC issue only cause the registration failure of the kretprobe event
-which doesn't need debuginfo. So, stop using debuginfo for retprobe.
-map will be used to query the probe function address.
-
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
----
-v2: stop using debuginfo for retprobe, and update changelog.
----
- tools/perf/util/probe-event.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index 8eae2afff71a..a59d3268adb0 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -894,6 +894,16 @@ static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
- 	struct debuginfo *dinfo;
- 	int ntevs, ret = 0;
- 
-+	/* Workaround for gcc #98776 issue.
-+	 * Perf failed to add kretprobe event with debuginfo of vmlinux which is
-+	 * compiled by gcc with -fpatchable-function-entry option enabled. The
-+	 * same issue with kernel module. The retprobe doesn`t need debuginfo.
-+	 * This workaround solution use map to query the probe function address
-+	 * for retprobe event.
-+	 */
-+	if (pev->point.retprobe)
-+		return 0;
-+
- 	dinfo = open_debuginfo(pev->target, pev->nsi, !need_dwarf);
- 	if (!dinfo) {
- 		if (need_dwarf)
 -- 
-2.25.1
-
+viresh
