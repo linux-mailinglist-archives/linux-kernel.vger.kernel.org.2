@@ -2,86 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D26131645D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9686316467
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhBJKxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:53:19 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:7374 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231448AbhBJKt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:49:58 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11AAjt3s018532;
-        Wed, 10 Feb 2021 05:49:17 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36hrw8v7su-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 05:49:17 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 11AAnFMn036784
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 10 Feb 2021 05:49:16 -0500
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 10 Feb
- 2021 02:49:14 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Wed, 10 Feb 2021 02:49:14 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11AAnAs8019925;
-        Wed, 10 Feb 2021 05:49:11 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <michael.hennerich@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] iio: adc: adi-axi-adc: add proper Kconfig dependencies
-Date:   Wed, 10 Feb 2021 12:50:44 +0200
-Message-ID: <20210210105044.48914-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        id S230217AbhBJKzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:55:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230090AbhBJKwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:52:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6428364E2F;
+        Wed, 10 Feb 2021 10:51:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612954309;
+        bh=Y6sCoyxE53CReNPUEbiccEMYwSH7CbdJeBLkyQtM4kg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ns6iSXNhiO6JrMRZy7ZlMVQLaPRp1McXSsStX4jQFhFyY/3Rou9ZqtYBi5SaeFPYF
+         QWPaiZkmmCIX5zqXPp6/oLk/bITbO77eAC0JY+rhf6ejTYfCkVnlll7Un18DWTc2fQ
+         RWg/hwN+Lq7jzqYDbL1VR+Y9nHYiCzLtrfuJBH0Y=
+Date:   Wed, 10 Feb 2021 11:51:46 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hikaru Nishida <hikalium@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, suleiman@google.com,
+        Alexander Graf <graf@amazon.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [RFC PATCH 2/2] drivers/virt: introduce CLOCK_BOOTTIME
+ adjustment sysfs interface driver
+Message-ID: <YCO6wmsnB/OsNb+R@kroah.com>
+References: <20210210103908.1720658-1-hikalium@google.com>
+ <20210210193728.RFC.2.I03c0323c1564a18210ec98fb78b3eb728a90c2d2@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_03:2021-02-10,2021-02-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 spamscore=0 mlxlogscore=942 clxscore=1015 adultscore=0
- priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100106
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210193728.RFC.2.I03c0323c1564a18210ec98fb78b3eb728a90c2d2@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ADI AXI ADC driver requires IO mem access and OF to work. This change
-adds these dependencies to the Kconfig symbol of the driver.
+On Wed, Feb 10, 2021 at 07:39:08PM +0900, Hikaru Nishida wrote:
+> From: Hikaru Nishida <hikalium@chromium.org>
+> 
+> This adds a sysfs interface /sys/kernel/boottime_adj to enable advancing
+> CLOCK_BOOTTIME from the userspace without actual susupend/resume cycles.
+> 
+> This gives a way to mitigate CLOCK_BOOTTIME divergence between guest
+> and host on virtualized environments after suspend/resume cycles on
+> the host.
+> 
+> We observed an issue of a guest application that expects there is a gap
+> between CLOCK_BOOTTIME and CLOCK_MONOTONIC after the device is suspended
+> to detect whether the device went into suspend or not.
+> Since the guest is paused instead of being actually suspended during the
+> host's suspension, guest kernel doesn't advance CLOCK_BOOTTIME correctly
+> and there is no way to correct that.
+> 
+> To solve the problem, this change introduces a way to modify a gap
+> between those clocks and align the timer behavior to host's one.
+> 
+> Signed-off-by: Hikaru Nishida <hikalium@chromium.org>
+> ---
+> 
+>  drivers/virt/Kconfig        |  9 ++++++
+>  drivers/virt/Makefile       |  1 +
+>  drivers/virt/boottime_adj.c | 57 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 67 insertions(+)
+>  create mode 100644 drivers/virt/boottime_adj.c
+> 
+> diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
+> index 80c5f9c16ec1..149b4e763e4d 100644
+> --- a/drivers/virt/Kconfig
+> +++ b/drivers/virt/Kconfig
+> @@ -13,6 +13,15 @@ menuconfig VIRT_DRIVERS
+>  
+>  if VIRT_DRIVERS
+>  
+> +config BOOTTIME_ADJUSTMENT
+> +	tristate "CLOCK_BOOTTIME adjustment sysfs interface"
+> +	help
+> +          The CLOCK_BOOTTIME adjustment sysfs interface driver
+> +          provides a sysfs interface ( /sys/kernel/boottime_adj )
+> +          to enable adjusting CLOCK_BOOTTIME from the userspace.
+> +
+> +          If unsure, say N.
+> +
+>  config FSL_HV_MANAGER
+>  	tristate "Freescale hypervisor management driver"
+>  	depends on FSL_SOC
+> diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
+> index f28425ce4b39..1bbb476ddba9 100644
+> --- a/drivers/virt/Makefile
+> +++ b/drivers/virt/Makefile
+> @@ -3,6 +3,7 @@
+>  # Makefile for drivers that support virtualization
+>  #
+>  
+> +obj-$(CONFIG_BOOTTIME_ADJUSTMENT)	+= boottime_adj.o
+>  obj-$(CONFIG_FSL_HV_MANAGER)	+= fsl_hypervisor.o
+>  obj-y				+= vboxguest/
+>  
+> diff --git a/drivers/virt/boottime_adj.c b/drivers/virt/boottime_adj.c
+> new file mode 100644
+> index 000000000000..9cc717d8accc
+> --- /dev/null
+> +++ b/drivers/virt/boottime_adj.c
+> @@ -0,0 +1,57 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
 
-This was also found via the lkp bot, as the
-devm_platform_ioremap_resource() symbol was not found at link-time on the
-S390 architecture.
+Do you really mean "or later"?  I have to ask...
 
-Fixes: ef04070692a21 ("iio: adc: adi-axi-adc: add support for AXI ADC IP core")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/adc/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+> +/*
+> + * CLOCK_BOOTTIME Adjustment Interface Driver
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index 769381b05b9a..d20a3b574af9 100644
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -266,6 +266,8 @@ config ADI_AXI_ADC
- 	select IIO_BUFFER
- 	select IIO_BUFFER_HW_CONSUMER
- 	select IIO_BUFFER_DMAENGINE
-+	depends on HAS_IOMEM
-+	depends on OF
- 	help
- 	  Say yes here to build support for Analog Devices Generic
- 	  AXI ADC IP core. The IP core is used for interfacing with
--- 
-2.17.1
+No copyright, nice!  Your company lawyers will be having a word with
+you... :(
 
+> + */
+> +
+> +#include <linux/kobject.h>
+> +#include <linux/module.h>
+> +#include <linux/timekeeping.h>
+> +
+> +static struct kobject *kobj_boottime_adj;
+> +
+> +/*
+> + * Write to /sys/kernel/boottime_adj advances CLOCK_BOOTTIME by given delta.
+> + */
+> +static ssize_t boottime_adj_write(struct kobject *kobj,
+> +		struct kobj_attribute *attr, const char *buf,
+> +		size_t count)
+> +{
+> +	int error;
+> +	struct timespec64 delta;
+> +
+> +	if (sscanf(buf, "%lld %ld", &delta.tv_sec, &delta.tv_nsec) != 2)
+> +		return -EINVAL;
+
+sysfs is "one value per file", but as you did not provide documentation
+on what this does, I can't tell if you really are following this or not.
+
+> +
+> +	error = timekeeping_adjust_boottime(&delta);
+> +	if (error)
+> +		return error;
+> +
+> +	pr_info("%s: CLOCK_BOOTTIME has been advanced by %+lld seconds and %+ld nanoseconds\n",
+> +			__func__, delta.tv_sec, delta.tv_nsec);
+
+If kernels are working normally, no messages are printed to the log.  Do
+not allow userspace to spam things.
+
+> +	return count;
+> +}
+> +
+> +static struct kobj_attribute boottime_adj_attr =
+> +__ATTR(boottime_adj, 0200, NULL, boottime_adj_write);
+
+__ATTR_RO() please.
+
+> +
+> +static int __init boottime_adj_init(void)
+> +{
+> +	int error;
+> +
+> +	error = sysfs_create_file(kernel_kobj, &boottime_adj_attr.attr);
+> +	if (error) {
+> +		pr_warn("%s: failed to init\n", __func__);
+
+why warn again?
+
+> +		return error;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void __exit boottime_adj_cleanup(void)
+> +{
+> +	kobject_put(kobj_boottime_adj);
+
+You just called put on a kobject you never initialized?????
+
+Are you sure this file has been tested?
+
+odd...
+
+greg k-h
