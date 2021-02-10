@@ -2,317 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBE8315E8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 06:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9187A315E90
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 06:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbhBJFFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 00:05:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhBJFFW (ORCPT
+        id S229798AbhBJFGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 00:06:42 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6533 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhBJFGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 00:05:22 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5593DC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 21:04:41 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id g10so1295278eds.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 21:04:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qWpoVrEkN2lzYJaj+bSGe7C9ZM4er71WTkqgbEtWRzw=;
-        b=B/JOK9Vqs5MXVhSZkeYnkPSGG1tFb8s2cMjv9XbDrNwo9o9dNDkUk6K5rXb+P7t2dm
-         Ob3c8zOT0odOek/wEm+s3K7wLqaD5b9yqVqWflaveG5uROxfiCYMQecOrwydWeXr+N//
-         aWZXfIqNixfRDxIIC+BZUYmHrLqhlAt/dnjx9y+qCCMq//36hmmOborLP82tVMxXfWo2
-         R+TzEYtik/2/CPNdQm9RKEXUkO8Q8zGOBiOHxxTDvORa9V7xIPeGTG0LE4sqJotOdQm7
-         t3QhorFymVAnQiX7FQUqDi5TK0o///nQ4g1fkBkWiDztD6odsAyDZO+c+JDSmliajTS4
-         lGjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qWpoVrEkN2lzYJaj+bSGe7C9ZM4er71WTkqgbEtWRzw=;
-        b=LCrVIWo7vD1nIn72WNKtZEPPzyWDBnXRorlkRHvML+AoM0WJVGJxRjTmwot4tpnQ/u
-         ERLSIOzWqIwMZLR4WuLTcKAnHS1jFxImjC65CC5t7neE1HnDD/9s0TdwqWdfYEAyID0v
-         lC/AQlOAQZXVF+kjgEsQSiFqqwjufoHI4FTzwmhA8S1ggVVHgg4XQGt4CeHeZgnW7oJp
-         V4ihwZwkHEp5HyO2f7TpVn5ikoiPuegmPyL6N1GEdnZ+VZIXDTa8pGS3oHz695Taoex4
-         5BsCvnU7hnWlVU3nrb+Jtz8z8Q0apSt4mbFAQDXgy/DYNUiME4VzpFb51uhjFTn8Poqz
-         I7QQ==
-X-Gm-Message-State: AOAM530ge4pmU05/1PAeMXXXpeUB4q+HM2Xl/936ZkiIsxWQk3Y7di2k
-        L6lbygih+TJy56OVRQA2DG+7tP/qE4HKePv2n21gRA==
-X-Google-Smtp-Source: ABdhPJxrwYEqvBimtJiSyz0eb+J9/fOeI8aYdvEGIOW48nT6x8wYabREMcKN4f4Ol38/t9W2fsIOi81tiFqpCYe5a+Q=
-X-Received: by 2002:a05:6402:26c9:: with SMTP id x9mr1428484edd.365.1612933479827;
- Tue, 09 Feb 2021 21:04:39 -0800 (PST)
+        Wed, 10 Feb 2021 00:06:35 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602369b20000>; Tue, 09 Feb 2021 21:05:54 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
+ 2021 05:05:50 +0000
+Received: from ubuntu.vdiclient.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 10 Feb 2021 05:05:48 +0000
+From:   Timur Tabi <ttabi@nvidia.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        <akpm@linux-foundation.org>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        <roman.fietze@magna.com>, "Kees Cook" <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        <akinobu.mita@gmail.com>, <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+Subject: [PATCH 0/3] add support for never printing hashed addresses
+Date:   Tue, 9 Feb 2021 23:05:26 -0600
+Message-ID: <20210210050529.843005-1-ttabi@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210208145805.279815326@linuxfoundation.org>
-In-Reply-To: <20210208145805.279815326@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 10 Feb 2021 10:34:28 +0530
-Message-ID: <CA+G9fYv+rOgpr=i=t0M3c1YcdJxw6GTXDHT+0KpMxuiP+XAWrA@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/38] 4.4.257-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
+X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612933554; bh=k1iewYdm5iqO8SkKejAIunDnl9bWSYGT0UoXEWqFvkU=;
+        h=From:To:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=IS0WMBy/DkdVeUznUsjqkWpjpe2dr7Jtppf0GS2Mgw995/CPK/Kr4xhzTVmRn2p7w
+         HmPDabG9ML21XbEhGzR/vHIzlPhMg8aCh6B55OFh5heWOneqnyvAowwo0IvlnGGPu9
+         ++udcBAOqBvsiKKusrw66FHdK+z5UuokqxxxBhxPA2SnXZU0j+1/48zqDBmDcmxRw1
+         URq6H+JaJrCk1uZEasxmflRIyxocJtU0r+d/DgxR0Zle+JIpGa8lmMB/6qsmvcZ9eC
+         2Ieizh7LOBN0sHv5NNwOGYj2NlXWGnJK92C+1mgGRGLAn2lj3Xfnbbl6s85vWWuICd
+         HcvbG3/sLAo8Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 8 Feb 2021 at 20:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.257 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.257-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+[The list of email addresses on CC: is getting quite lengthy,
+so I hope I've included everyone.]
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Although hashing addresses printed via printk does make the
+kernel more secure, it interferes with debugging, especially
+with some functions like print_hex_dump() which always uses
+hashed addresses.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+To avoid having to choose between %p and %px, it's easier to
+add a kernel command line that treats all %p as %px.  This
+encourages developers to use %p more without making debugging
+more difficult.
 
-Summary
-------------------------------------------------------------------------
+Patches #1 and #2 upgrade the kselftest framework so that
+it can report on tests that were skipped outright.  This
+is needed for the test_printf module which will now skip
+%p hashing tests if hashing is disabled.
 
-kernel: 4.4.257-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 1a954f75c0ee3245a025a60f2a4cccd6722a1bb6
-git describe: v4.4.256-39-g1a954f75c0ee
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.256-39-g1a954f75c0ee
+Patch #2 upgrades the printf library to check the command
+line.  It also updates test_printf().
 
+Timur Tabi (3):
+  lib/test_printf: use KSTM_MODULE_GLOBALS macro
+  kselftest: add support for skipped tests
+  [v2] lib/vsprintf: make-printk-non-secret printks all addresses as
+    unhashed
 
-No regressions (compared to build v4.4.256)
-
-No fixes (compared to build v4.4.256)
-
-Ran 31608 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- i386
-- juno-64k_page_size
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* v4l2-compliance
-* kvm-unit-tests
-* fwts
-* ssuite
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.257-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.257-rc1-hikey-20210208-927
-git commit: 288b6b317ee80392b29cd493327d429385373359
-git describe: 4.4.257-rc1-hikey-20210208-927
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.257-rc1-hikey-20210208-927/
-
-
-No regressions (compared to build 4.4.256-rc1-hikey-20210205-921)
-
-
-No fixes (compared to build 4.4.256-rc1-hikey-20210205-921)
-
-Ran 1953 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-
+ .../admin-guide/kernel-parameters.txt         | 15 +++++++
+ lib/test_printf.c                             | 12 +++++-
+ lib/vsprintf.c                                | 40 ++++++++++++++++++-
+ tools/testing/selftests/kselftest_module.h    | 18 ++++++---
+ 4 files changed, 75 insertions(+), 10 deletions(-)
 
 --=20
-Linaro LKFT
-https://lkft.linaro.org
+2.25.1
+
