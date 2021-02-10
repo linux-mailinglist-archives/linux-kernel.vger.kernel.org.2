@@ -2,85 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BCE316E88
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CB2316E8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhBJSZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:25:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhBJSMK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:12:10 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAA3C06174A;
-        Wed, 10 Feb 2021 10:11:30 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id p21so4185253lfu.11;
-        Wed, 10 Feb 2021 10:11:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OutgQr4yqOXcvI+2VAqCroHhiEUOTQsB+VYfkyokZfQ=;
-        b=K/tNUGRyyg1JPaXFeIAty+vAt1pa4AVtgnZrjOi1idCaLomaXtFM6eqPAodd+MPpDc
-         7Zauh8bXZX8g+xFKJE6RRC3SqD/gf4SaSt8/UfI9dw62iqnQB5RAhll52imITGCbpp4i
-         yUqyVBHbO670x72ouOOdZVIr3K3qMbkshnhRVf+mEKMscZZ5FRHD+krSb4q2/oTw/df6
-         TnH2K5Ik+KY51i5xyhJx1GC8jgGYoVIOIAzAd6A6HC7T/fbpxrx/IMR1Lz7p5JVr4e50
-         +8DsuwZtYCFuyNUsAEf28DC4g/AssHPnTC3oe3oGZUCMMfhJnQCpGZznB3Kzho/9bTm4
-         m6tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OutgQr4yqOXcvI+2VAqCroHhiEUOTQsB+VYfkyokZfQ=;
-        b=QOtiLP3BZaI44hX7Nb5iffue8obVHcJOnj/CJ8hWF0fF2zS87l0RjxUm/w8SkzuAPt
-         OmKTW3/sShXy9nZzHgaQCzsrTTWuF2Xz/eMp8o2YgSjEs/BE1/Yg+PYJGVwECK83rbT0
-         445LczMWB1W34bOiGGkUeAGZGs2DTiC5T4fw9thFrV7k6XsuSG2eusCrHTapNFhYvKnv
-         0QUBMnuV13nihoe33NuqMFehE8/wInBnDSk/8TSSgRgTRvuU3/o4Y23pm9sEz1CmM68R
-         PdPaXMNSioygu8ual7l5YreiUM3nCqux+WGxeAlIizjdFUyWA3wKzQtPFB/P5wCZNO8r
-         +7YQ==
-X-Gm-Message-State: AOAM5336atBW9+mcI3N6kn4ikD/RgL4/PW2kQz+VNTrE/73zq6+HBmXV
-        evcbiuN79ljKZQWiwdlyz6qNI5WZj9zc4XsR0f8=
-X-Google-Smtp-Source: ABdhPJyjGB27CNQYWLoAURbKcwGlNjGMcPNWjNOM02k+hJrUyW/hRPYOrE16tF9ARShrkrMiN857gpu3qNSwgxCScKs=
-X-Received: by 2002:ac2:5f0b:: with SMTP id 11mr2255557lfq.578.1612980688543;
- Wed, 10 Feb 2021 10:11:28 -0800 (PST)
+        id S231990AbhBJS0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:26:42 -0500
+Received: from mga11.intel.com ([192.55.52.93]:32631 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233957AbhBJSMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:12:47 -0500
+IronPort-SDR: 1shGfjKF2CeVdfbNis9FyaQcqq3b0SHBI2Q5oNhy80JAtX/wX+2mD8fIYd4EdRO92PLZDd95Ru
+ sAJZVhvUBa0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="178618000"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="178618000"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 10:12:02 -0800
+IronPort-SDR: otIKlgv/3ChXfkinQTHutWBEyxNn0BDDOI6dcsiSwt2PfBWeneG1pnx9XbEroIE2KBsRocu6xK
+ rizZ6r3S8NNA==
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="510481918"
+Received: from lgrunes-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.135.4])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 10:12:01 -0800
+Date:   Wed, 10 Feb 2021 10:11:59 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Ariel.Sibley@microchip.com
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        cbrowy@avery-design.com, hch@infradead.org,
+        dan.j.williams@intel.com, david@redhat.com, rientjes@google.com,
+        ira.weiny@intel.com, jcm@jonmasters.org,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        rdunlap@infradead.org, vishal.l.verma@intel.com,
+        jgroves@micron.com, sean.v.kelley@intel.com,
+        Ahmad.Danesh@microchip.com, Varada.Dighe@microchip.com,
+        Kirthi.Shenoy@microchip.com, Sanjay.Goyal@microchip.com
+Subject: Re: [PATCH v2 5/8] cxl/mem: Add a "RAW" send command
+Message-ID: <20210210181159.opwjsjovzsom7rky@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-6-ben.widawsky@intel.com>
+ <MN2PR11MB36455574E25237635D3F9CC0888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
+ <20210210164904.lfhtfvlyeypfpjhe@intel.com>
+ <MN2PR11MB36450EFC1729D9A4CDB2FB27888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210203163348.30686-1-TheSven73@gmail.com> <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
-In-Reply-To: <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 10 Feb 2021 13:11:17 -0500
-Message-ID: <CAGngYiX2tQ3egFX0CZSMd8QBG_-FuXCWL9R1whu77J7ZE+M_+w@mail.gmail.com>
-Subject: Re: [BUG REPORT] media: coda: mpeg4 decode corruption on i.MX6qp only
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR11MB36450EFC1729D9A4CDB2FB27888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bonjour Nicolas,
+On 21-02-10 18:03:35, Ariel.Sibley@microchip.com wrote:
+> > > > diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> > > > index c4ba3aa0a05d..08eaa8e52083 100644
+> > > > --- a/drivers/cxl/Kconfig
+> > > > +++ b/drivers/cxl/Kconfig
+> > > > @@ -33,6 +33,24 @@ config CXL_MEM
+> > > >
+> > > >           If unsure say 'm'.
+> > > >
+> > > > +config CXL_MEM_RAW_COMMANDS
+> > > > +       bool "RAW Command Interface for Memory Devices"
+> > > > +       depends on CXL_MEM
+> > > > +       help
+> > > > +         Enable CXL RAW command interface.
+> > > > +
+> > > > +         The CXL driver ioctl interface may assign a kernel ioctl command
+> > > > +         number for each specification defined opcode. At any given point in
+> > > > +         time the number of opcodes that the specification defines and a device
+> > > > +         may implement may exceed the kernel's set of associated ioctl function
+> > > > +         numbers. The mismatch is either by omission, specification is too new,
+> > > > +         or by design. When prototyping new hardware, or developing /
+> > > > debugging
+> > > > +         the driver it is useful to be able to submit any possible command to
+> > > > +         the hardware, even commands that may crash the kernel due to their
+> > > > +         potential impact to memory currently in use by the kernel.
+> > > > +
+> > > > +         If developing CXL hardware or the driver say Y, otherwise say N.
+> > >
+> > > Blocking RAW commands by default will prevent vendors from developing user
+> > > space tools that utilize vendor specific commands. Vendors of CXL.mem devices
+> > > should take ownership of ensuring any vendor defined commands that could cause
+> > > user data to be exposed or corrupted are disabled at the device level for
+> > > shipping configurations.
+> > 
+> > Thanks for brining this up Ariel. If there is a recommendation on how to codify
+> > this, I would certainly like to know because the explanation will be long.
+> > 
+> > ---
+> > 
+> > The background:
+> > 
+> > The enabling/disabling of the Kconfig option is driven by the distribution
+> > and/or system integrator. Even if we made the default 'y', nothing stops them
+> > from changing that. if you are using this driver in production and insist on
+> > using RAW commands, you are free to carry around a small patch to get rid of the
+> > WARN (it is a one-liner).
+> > 
+> > To recap why this is in place - the driver owns the sanctity of the device and
+> > therefore a [large] part of the whole system. What we can do as driver writers
+> > is figure out the set of commands that are "safe" and allow those. Aside from
+> > being able to validate them, we're able to mediate them with other parallel
+> > operations that might conflict. We gain the ability to squint extra hard at bug
+> > reports. We provide a reason to try to use a well defined part of the spec.
+> > Realizing that only allowing that small set of commands in a rapidly growing
+> > ecosystem is not a welcoming API; we decided on RAW.
+> > 
+> > Vendor commands can be one of two types:
+> > 1. Some functionality probably most vendors want.
+> > 2. Functionality that is really single vendor specific.
+> > 
+> > Hopefully we can agree that the path for case #1 is to work with the consortium
+> > to standardize a command that does what is needed and that can eventually become
+> > part of UAPI. The situation is unfortunate, but temporary. If you won't be able
+> > to upgrade your kernel, patch out the WARN as above.
+> > 
+> > The second situation is interesting and does need some more thought and
+> > discussion.
+> > 
+> > ---
+> > 
+> > I see 3 realistic options for truly vendor specific commands.
+> > 1. Tough noogies. Vendors aren't special and they shouldn't do that.
+> > 2. modparam to disable the WARN for specific devices (let the sysadmin decide)
+> > 3. Try to make them part of UAPI.
+> > 
+> > The right answer to me is #1, but I also realize I live in the real world.
+> > 
+> > #2 provides too much flexibility. Vendors will just do what they please and
+> > distros and/or integrators will be seen as hostile if they don't accommodate.
+> > 
+> > I like #3, but I have a feeling not everyone will agree. My proposal for vendor
+> > specific commands is, if it's clear it's truly a unique command, allow adding it
+> > as part of UAPI (moving it out of RAW). I expect like 5 of these, ever. If we
+> > start getting multiple per vendor, we've failed. The infrastructure is already
+> > in place to allow doing this pretty easily. I think we'd have to draw up some
+> > guidelines (like adding test cases for the command) to allow these to come in.
+> > Anything with command effects is going to need extra scrutiny.
+> 
+> This would necessitate adding specific opcode values in the range C000h-FFFFh
+> to UAPI, and those would then be allowed for all CXL.mem devices, correct?  If
+> so, I do not think this is the right approach, as opcodes in this range are by
+> definition vendor defined.  A given opcode value will have totally different
+> effects depending on the vendor.
 
-On Wed, Feb 10, 2021 at 11:11 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
->
-> Are you sure you aren't just running out of CMA ? This is the only things that
-> comes to mind at the moment, sorry if it's not that useful.
+Perhaps I didn't explain well enough. The UAPI would define the command ID to
+opcode mapping, for example 0xC000. There would be a validation step in the
+driver where it determines if it's actually the correct hardware to execute on.
+So it would be entirely possible to have multiple vendor commands with the same
+opcode.
 
-Thanks for the suggestion! No worries, this is such a strange/weird
-problem, that basically any idea has merit at this point.
+So UAPI might be this:
+        ___C(GET_HEALTH_INFO, "Get Health Info"),                         \
+        ___C(GET_LOG, "Get Log"),                                         \
+        ___C(VENDOR_FOO_XXX, "FOO"),                                      \
+        ___C(VENDOR_BAR_XXX, "BAR"),                                      \
 
-I tried increasing the CMA area from 256M -> 512M, but there was no
-impact. The critical framebuffer width still remains the same
-(=0x900).
+User space just picks the command they want, FOO/BAR. If they use VENDOR_BAR_XXX
+on VENDOR_FOO's hardware, they will get an error return value.
 
-And everything works fine on a classic i.MX6Quad, it's only the
-i.MX6QuadPlus that has the problem. I am running i.MX6Quad and
-i.MX6QuadPlus side-by-side with identical kernels/rootfses. Obviously
-the devicetree is slightly different.
+> I think you may be on to something with the command effects.  But rather than
+> "extra scrutiny" for opcodes that have command effects, would it make sense to
+> allow vendor defined opcodes that have Bit[5:0] in the Command Effect field of
+> the CEL Entry Structure (Table 173) set to 0?  In conjunction, those bits
+> represent any change to the configuration or data within the device.  For
+> commands that have no such effects, is there harm to allowing them?  Of
+> course, this approach relies on the vendor to not misrepresent the command
+> effects.
+> 
 
-Sven
+That last sentence is what worries me :-)
+
+
+> > 
+> > In my opinion, as maintainers of the driver, we do owe the community an answer
+> > as to our direction for this. Dan, what is your thought?
