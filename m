@@ -2,103 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E3E315E2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 05:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0E4315E2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 05:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhBJEZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 23:25:41 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:16556 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229684AbhBJEZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 23:25:39 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Db69h3nZ6z2d;
-        Wed, 10 Feb 2021 05:24:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1612931096; bh=QHxzW/XJK3U0oNQjGYevmIuaZObRFPo3K4Pd9Nk0lHM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bMcD2oq404OShRFj1fd4CTBBo5rmZXa0Z2HJCX6iLLEpoAzr7mPzW6q2yYUOqp8a0
-         rwtNsp5kkM2LBtyWaNUr8PAkSGFoWjtA5qrhlhj+FLMZbM3Uw7tyb8nQ01obvBBnZu
-         5XSOiQh9WaizlWsTs+PpQY03kyv/NruzHjQKxmV9oR9nMlbH0x9Z9fB6vsDTJwETuZ
-         B0BAtkGWsp24Y1Ak/mZ1Yt/2DsWbb7oxyPt8cNrfUV4d9JDB1gmfK31/f1J79cF4/c
-         kCBTgjCHgniUGBH4eptG9XW4+dd3pL8vbk7ncoMUIMHAv+IDLbKH4AIP9klFperz2w
-         1Az1SUNujMmzg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Wed, 10 Feb 2021 05:24:28 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Michal Rostecki <mrostecki@suse.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
-Message-ID: <20210210042428.GC12086@qmqm.qmqm.pl>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-7-mrostecki@suse.de>
+        id S230126AbhBJE0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 23:26:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229684AbhBJE0P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 23:26:15 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF90C061574;
+        Tue,  9 Feb 2021 20:25:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=nczYoTsCTLNgeall4U40h6M+4Wuvi16K00s3tJbpTCI=; b=hs50JRPMhgQGPBW4LBVFmKwKSZ
+        plN+dVooFpZ3WLykFO/nqLgzidEUbeuFJ8MfkzDSQbSMINnxf+Wtwa74O3rjxcyJFUvJ5zbjd4TGB
+        fAItj4V2pPefTyHy2JxQpQZwCIKokRrLv9rl64MmnNWHMDjdtZYK70GJm7ohph5t4EiQoyCwiBehZ
+        Bk/WAyhTVsBkbCXNARqJSPi3Es8gVVnQ2UUxj9Tt1PIui97jQal85uNOwePBFdt9MN9Xe2jMn2ID0
+        YaahDehmqJ/HbDASetLBMGGOGXMkfaCY+13tAFUE6eVocJ5d06XOpeM9XeWW6cNDUZKZz0BIKetPY
+        KuvweGwA==;
+Received: from [2601:1c0:6280:3f0::cf3b] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l9h4E-0001Fi-L9; Wed, 10 Feb 2021 04:25:31 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 1/2] fs: eventpoll: fix comments & kernel-doc notation
+Date:   Tue,  9 Feb 2021 20:25:25 -0800
+Message-Id: <20210210042526.23174-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210209203041.21493-7-mrostecki@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 09:30:40PM +0100, Michal Rostecki wrote:
-[...]
-> For the array with 3 HDDs, not adding any penalty resulted in 409MiB/s
-> (429MB/s) performance. Adding the penalty value 1 resulted in a
-> performance drop to 404MiB/s (424MB/s). Increasing the value towards 10
-> was making the performance even worse.
-> 
-> For the array with 2 HDDs and 1 SSD, adding penalty value 1 to
-> rotational disks resulted in the best performance - 541MiB/s (567MB/s).
-> Not adding any value and increasing the value was making the performance
-> worse.
-> 
-> Adding penalty value to non-rotational disks was always decreasing the
-> performance, which motivated setting it as 0 by default. For the purpose
-> of testing, it's still configurable.
-[...]
-> +	bdev = map->stripes[mirror_index].dev->bdev;
-> +	inflight = mirror_load(fs_info, map, mirror_index, stripe_offset,
-> +			       stripe_nr);
-> +	queue_depth = blk_queue_depth(bdev->bd_disk->queue);
-> +
-> +	return inflight < queue_depth;
-[...]
-> +	last_mirror = this_cpu_read(*fs_info->last_mirror);
-[...]
-> +	for (i = last_mirror; i < first + num_stripes; i++) {
-> +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
-> +					    stripe_nr)) {
-> +			preferred_mirror = i;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	for (i = first; i < last_mirror; i++) {
-> +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
-> +					    stripe_nr)) {
-> +			preferred_mirror = i;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	preferred_mirror = last_mirror;
-> +
-> +out:
-> +	this_cpu_write(*fs_info->last_mirror, preferred_mirror);
+Use the documented kernel-doc format for function Return: descriptions.
+Begin constant values in kernel-doc comments with '%'.
 
-This looks like it effectively decreases queue depth for non-last
-device. After all devices are filled to queue_depth-penalty, only
-a single mirror will be selected for next reads (until a read on
-some other one completes).
+Remove kernel-doc "/**" from 2 functions that are not documented with
+kernel-doc notation.
 
-Have you tried testing with much more jobs / non-sequential accesses?
+Fix typos, punctuation, & grammar.
 
-Best Reagrds,
-Micha³ Miros³aw
+Also fix a few kernel-doc warnings:
+
+../fs/eventpoll.c:1883: warning: Function parameter or member 'ep' not described in 'ep_loop_check_proc'
+../fs/eventpoll.c:1883: warning: Excess function parameter 'priv' description in 'ep_loop_check_proc'
+../fs/eventpoll.c:1932: warning: Function parameter or member 'ep' not described in 'ep_loop_check'
+../fs/eventpoll.c:1932: warning: Excess function parameter 'from' description in 'ep_loop_check'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+---
+Jon: Al says that he is OK with one of you merging this fs/
+     (only comments) patch.
+
+ fs/eventpoll.c |   52 +++++++++++++++++++++++------------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
+
+--- linux-next-20210205.orig/fs/eventpoll.c
++++ linux-next-20210205/fs/eventpoll.c
+@@ -366,8 +366,8 @@ static inline struct epitem *ep_item_fro
+  *
+  * @ep: Pointer to the eventpoll context.
+  *
+- * Returns: Returns a value different than zero if ready events are available,
+- *          or zero otherwise.
++ * Return: a value different than %zero if ready events are available,
++ *          or %zero otherwise.
+  */
+ static inline int ep_events_available(struct eventpoll *ep)
+ {
+@@ -1023,7 +1023,7 @@ struct file *get_epoll_tfile_raw_ptr(str
+ }
+ #endif /* CONFIG_CHECKPOINT_RESTORE */
+ 
+-/**
++/*
+  * Adds a new entry to the tail of the list in a lockless way, i.e.
+  * multiple CPUs are allowed to call this function concurrently.
+  *
+@@ -1035,10 +1035,10 @@ struct file *get_epoll_tfile_raw_ptr(str
+  *         completed.
+  *
+  *        Also an element can be locklessly added to the list only in one
+- *        direction i.e. either to the tail either to the head, otherwise
++ *        direction i.e. either to the tail or to the head, otherwise
+  *        concurrent access will corrupt the list.
+  *
+- * Returns %false if element has been already added to the list, %true
++ * Return: %false if element has been already added to the list, %true
+  * otherwise.
+  */
+ static inline bool list_add_tail_lockless(struct list_head *new,
+@@ -1076,11 +1076,11 @@ static inline bool list_add_tail_lockles
+ 	return true;
+ }
+ 
+-/**
++/*
+  * Chains a new epi entry to the tail of the ep->ovflist in a lockless way,
+  * i.e. multiple CPUs are allowed to call this function concurrently.
+  *
+- * Returns %false if epi element has been already chained, %true otherwise.
++ * Return: %false if epi element has been already chained, %true otherwise.
+  */
+ static inline bool chain_epi_lockless(struct epitem *epi)
+ {
+@@ -1105,8 +1105,8 @@ static inline bool chain_epi_lockless(st
+  * mechanism. It is called by the stored file descriptors when they
+  * have events to report.
+  *
+- * This callback takes a read lock in order not to content with concurrent
+- * events from another file descriptors, thus all modifications to ->rdllist
++ * This callback takes a read lock in order not to contend with concurrent
++ * events from another file descriptor, thus all modifications to ->rdllist
+  * or ->ovflist are lockless.  Read lock is paired with the write lock from
+  * ep_scan_ready_list(), which stops all list modifications and guarantees
+  * that lists state is seen correctly.
+@@ -1335,8 +1335,8 @@ static int reverse_path_check_proc(struc
+  *                      paths such that we will spend all our time waking up
+  *                      eventpoll objects.
+  *
+- * Returns: Returns zero if the proposed links don't create too many paths,
+- *	    -1 otherwise.
++ * Return: %zero if the proposed links don't create too many paths,
++ *	    %-1 otherwise.
+  */
+ static int reverse_path_check(void)
+ {
+@@ -1734,7 +1734,7 @@ static struct timespec64 *ep_timeout_to_
+ }
+ 
+ /**
+- * ep_poll - Retrieves ready events, and delivers them to the caller supplied
++ * ep_poll - Retrieves ready events, and delivers them to the caller-supplied
+  *           event buffer.
+  *
+  * @ep: Pointer to the eventpoll context.
+@@ -1747,7 +1747,7 @@ static struct timespec64 *ep_timeout_to_
+  *           until at least one event has been retrieved (or an error
+  *           occurred).
+  *
+- * Returns: Returns the number of ready events which have been fetched, or an
++ * Return: the number of ready events which have been fetched, or an
+  *          error code, in case of error.
+  */
+ static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
+@@ -1774,9 +1774,9 @@ static int ep_poll(struct eventpoll *ep,
+ 
+ 	/*
+ 	 * This call is racy: We may or may not see events that are being added
+-	 * to the ready list under the lock (e.g., in IRQ callbacks). For, cases
++	 * to the ready list under the lock (e.g., in IRQ callbacks). For cases
+ 	 * with a non-zero timeout, this thread will check the ready list under
+-	 * lock and will added to the wait queue.  For, cases with a zero
++	 * lock and will add to the wait queue.  For cases with a zero
+ 	 * timeout, the user by definition should not care and will have to
+ 	 * recheck again.
+ 	 */
+@@ -1869,15 +1869,15 @@ static int ep_poll(struct eventpoll *ep,
+ 
+ /**
+  * ep_loop_check_proc - verify that adding an epoll file inside another
+- *                      epoll structure, does not violate the constraints, in
++ *                      epoll structure does not violate the constraints, in
+  *                      terms of closed loops, or too deep chains (which can
+  *                      result in excessive stack usage).
+  *
+- * @priv: Pointer to the epoll file to be currently checked.
++ * @ep: the &struct eventpoll to be currently checked.
+  * @depth: Current depth of the path being checked.
+  *
+- * Returns: Returns zero if adding the epoll @file inside current epoll
+- *          structure @ep does not violate the constraints, or -1 otherwise.
++ * Return: %zero if adding the epoll @file inside current epoll
++ *          structure @ep does not violate the constraints, or %-1 otherwise.
+  */
+ static int ep_loop_check_proc(struct eventpoll *ep, int depth)
+ {
+@@ -1919,14 +1919,14 @@ static int ep_loop_check_proc(struct eve
+ 
+ /**
+  * ep_loop_check - Performs a check to verify that adding an epoll file (@to)
+- *                 into another epoll file (represented by @from) does not create
++ *                 into another epoll file (represented by @ep) does not create
+  *                 closed loops or too deep chains.
+  *
+- * @from: Pointer to the epoll we are inserting into.
++ * @ep: Pointer to the epoll we are inserting into.
+  * @to: Pointer to the epoll to be inserted.
+  *
+- * Returns: Returns zero if adding the epoll @to inside the epoll @from
+- * does not violate the constraints, or -1 otherwise.
++ * Return: %zero if adding the epoll @to inside the epoll @from
++ * does not violate the constraints, or %-1 otherwise.
+  */
+ static int ep_loop_check(struct eventpoll *ep, struct eventpoll *to)
+ {
+@@ -2074,8 +2074,8 @@ int do_epoll_ctl(int epfd, int op, int f
+ 	ep = f.file->private_data;
+ 
+ 	/*
+-	 * When we insert an epoll file descriptor, inside another epoll file
+-	 * descriptor, there is the change of creating closed loops, which are
++	 * When we insert an epoll file descriptor inside another epoll file
++	 * descriptor, there is the chance of creating closed loops, which are
+ 	 * better be handled here, than in more critical paths. While we are
+ 	 * checking for loops we also determine the list of files reachable
+ 	 * and hang them on the tfile_check_list, so we can check that we
+@@ -2113,7 +2113,7 @@ int do_epoll_ctl(int epfd, int op, int f
+ 	}
+ 
+ 	/*
+-	 * Try to lookup the file inside our RB tree, Since we grabbed "mtx"
++	 * Try to lookup the file inside our RB tree. Since we grabbed "mtx"
+ 	 * above, we can be sure to be able to use the item looked up by
+ 	 * ep_find() till we release the mutex.
+ 	 */
