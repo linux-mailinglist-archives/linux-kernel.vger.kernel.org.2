@@ -2,109 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC43B317356
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB1C317362
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhBJW25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:28:57 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:35520 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232097AbhBJW2w (ORCPT
+        id S233383AbhBJWbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:31:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232204AbhBJWbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:28:52 -0500
-Date:   Thu, 11 Feb 2021 01:28:05 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Rob Herring <robh@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/16] dt-bindings: net: dwmac: Add DW GMAC GPIOs
- properties
-Message-ID: <20210210222805.upoioue7uc6cat2v@mobilestation>
-References: <20210208140820.10410-1-Sergey.Semin@baikalelectronics.ru>
- <20210208140820.10410-2-Sergey.Semin@baikalelectronics.ru>
- <20210209231352.GA402351@robh.at.kernel.org>
+        Wed, 10 Feb 2021 17:31:01 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91F3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:30:20 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id b145so2251396pfb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:30:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r+QJXkuBE0EcskODI67dDLG/EouRi6CorwRUDEaVztU=;
+        b=cDckGXbaJyAfxdfRYA2hh9GVQLzR2nSd+LnIUI1ZKVs2XITR7aOVAyKsRmqHeNqWEY
+         koWMWbDZIyOVAHtPtgVmMZZVTe73DRmxwVHTN4uD/1jpFgAXC4KZuKl6oQNMj0IzT49j
+         2YOuh95DgOGBWk0CB5W9nYejqAEqcZxsT2cXzSjydKUMrMsIA90pcmd9YjRtEStYd+zy
+         FB4pE1XT/0vVYOhAi+I2Fr3x7HBXRaDAF0LSDGnpHyIOHBHLshEgPXYi2o2tWaHH8+8Z
+         b5g0rGen2FWzsm3cn3GwemYygFzaN8TlbO7f6uDXIYAjJHhxkrd4AjdBtoJdTcRv5d/H
+         CX9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r+QJXkuBE0EcskODI67dDLG/EouRi6CorwRUDEaVztU=;
+        b=dQeHq/cGU0U/0BCq+gc6K2m8wqY/jhCASB35S4o46lC8l1oocJQbooYtw32OmmGq7y
+         9tDD/D8yCnaZMBNIQrR5G02ZEojXjmgzcddETXJLMjqP8YGP/6jnIZ1Mb4+sXk1rhdtW
+         eXxMH1VhXg0oryYk7mw8s5aJN0UV18RclL/pG8vVyhnxULOOu1HlHs3X5Ee63286ouhO
+         cDfxA4TKmhICq+bI59mYxVpwniJDxmG9GpNUQR1umhWJ8gf8waUqi3sRf2Z0y++2sc3f
+         hW1nsAxF9CW7eExpSDguIRHajJCWYvVZAMejnfLON4LsVzBZpJ4XzjjLPp8bLxT+WzqU
+         FM4g==
+X-Gm-Message-State: AOAM530hcmk1HPemAsVQtSNJZkZ+U+6uT4HqBHiSf2mWRC26Ab67icGA
+        5UvuFDJD2mW99YVk9qve2ECFYg==
+X-Google-Smtp-Source: ABdhPJxsUwH76rLptCf2BhfCdx+phjW+Q5xAxtrXnTUfNHqs+XHNxhWsEhKIyIomjJTwSW4/ZPF4bw==
+X-Received: by 2002:a05:6a00:138f:b029:1b8:b9d5:3a2c with SMTP id t15-20020a056a00138fb02901b8b9d53a2cmr5480406pfg.10.1612996220223;
+        Wed, 10 Feb 2021 14:30:20 -0800 (PST)
+Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:7b19:df69:92d6:528e])
+        by smtp.gmail.com with ESMTPSA id t17sm3686307pgk.25.2021.02.10.14.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 14:30:19 -0800 (PST)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH v4 0/2] pinctrl: pinmux: Add pinmux-select debugfs file
+Date:   Wed, 10 Feb 2021 14:28:50 -0800
+Message-Id: <20210210222851.232374-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210209231352.GA402351@robh.at.kernel.org>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:13:52PM -0600, Rob Herring wrote:
-> On Mon, Feb 08, 2021 at 05:08:05PM +0300, Serge Semin wrote:
-> > Synopsys DesignWare Ethernet controllers can be synthesized with
-> > General-Purpose IOs support. GPIOs can work either as inputs or as outputs
-> > thus belong to the gpi_i and gpo_o ports respectively. The ports width
-> > (number of possible inputs/outputs) and the configuration registers layout
-> > depend on the IP-core version. For instance, DW GMAC can have from 0 to 4
-> > GPIs and from 0 to 4 GPOs, while DW xGMAC have a wider ports width up to
-> > 16 pins of each one.
-> > 
-> > So the DW MAC DT-node can be equipped with "ngpios" property, which can't
-> > have a value greater than 32, standard GPIO-related properties like
-> > "gpio-controller" and "#gpio-cells", and, if GPIs are supposed to be
-> > detected, IRQ-controller related properties.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > ---
-> >  .../devicetree/bindings/net/snps,dwmac.yaml     | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > index bdc437b14878..fcca23d3727e 100644
-> > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > @@ -110,6 +110,23 @@ properties:
-> >    reset-names:
-> >      const: stmmaceth
-> >  
-> > +  ngpios:
-> > +    description:
-> > +      Total number of GPIOs the MAC supports. The property shall include both
-> > +      the GPI and GPO ports width.
-> > +    minimum: 1
-> > +    maximum: 32
-> 
+This series first converts the debugfs files in the pinctrl subsystem to
+octal permissions and then adds a new debugfs file "pinmux-select".
 
-> Does the driver actually need this? I'd omit it if just to validate 
-> consumers are in range.
+Function name and group name can be written to "pinmux-select" which
+will cause the function and group to be activated on the pin controller.
 
-I can't say for all possible DW MAC IP-cores (I've got manuals for
-GMAC and xGMAC only), but at least DW GMAC can't have more than four
-GPIs and four GPOs, while XGMACs can be synthesized with up to 16
-each. That's why I've set the upper boundary here as 32. But the
-driver uses the ngpios property do determine the total number GPIOs
-the core has been synthesized. Th number of GPIs and GPOs will be
-auto-detected then (by writing-reading to-from the GPI type field of
-the GPIO control register).
+Notes for PATCH v4:
+- correct the commit message in the second patch to reference function
+  and group name instead of integer selectors. Apologies for not fixing
+  that in v3
+- fix typos in cover letter
 
-> 
-> Are GPI and GPO counts independent? If so, this isn't really sufficient.
+Notes for PATCH v3:
+- add Suggested-by: Andy Shevchenko to the "pinctrl: use to octal
+  permissions for debugfs files" patch
+- change the octal permissions from 0400 to 0444 to correctly match the
+  symbolic permissions (thanks to Joe Perches and Geert Uytterhoeven)
+- note that S_IFREG flag is added to the mode in __debugfs_create_file()
+  (thanks to Andy for highlighting this and Joe for suggesting I should
+  add a note to the commit message)
+- fix order of the goto labels so that the buffers are freed correctly
+  as suggested by Dan Carpenter
+- move from devm_kzalloc() to kzalloc() as the buffers are only used
+  inside the pinmux_select() function and not related to the lifetime
+  of the pin controller device (thanks to Andy for pointing this out)
+- correct the pinmux-select example in commit message to use the
+  function and group name instead of selector (thanks to Geert)
 
-Yeap, they are independent. What do you suggest then? Define some
-vendor-specific properties like snps,ngpis and snps,ngpos? If so then
-they seem more generic than vendor-specific, because the separated
-GPI and GPO space isn't an unique feature of the DW MAC GPIOs. Do we
-need to create a generic version of such properties then? (That much
-more changes then introduced here. We'd need to fix the dt-schema tool
-too then.)
+Notes for PATCH v2:
+- create patch series that includes patch to switch all the debugfs
+  files in pinctrl subsystem over to octal permission
+- write function name and group name, instead of error-prone selector
+  numbers, to the 'pinmux-select' file
+- switch from static to dynamic allocation for the kernel buffer filled
+  by strncpy_from_user()
+- look up function selector from function name using
+  pinmux_func_name_to_selector()
+- validate group name with get_function_groups() and match_string()
+- look up selector for group name with pinctrl_get_group_selector()
 
--Sergey
+Notes for PATCH v1:
+- posted seperate patch to switch all the debugfs files in pinctrl
+  subsystem over to octal permission [1]
+- there is no existing documentation for any of the debugfs enteries for
+  pinctrl, so it seemed to have a bigger scope than just this patch. I
+  also noticed that rst documentation is confusingly named "pinctl" (no
+  'r') and started thread about that [2]. Linus suggested chaning that
+  to 'pin-control'. Thus I am planning a seperate documentation patch
+  series where the file is renamed, references changed and a section on
+  the pinctrl debugfs files is added.
 
-> 
-> Rob
+Notes for RFC v2 [3]:
+- rename debugfs file "pinmux-set" to "pinmux-select"
+- renmae pinmux_set_write() to pinmux_select()
+- switch from memdup_user_nul() to strncpy_from_user()
+- switch from pr_warn() to dev_err()
+
+[1] https://lore.kernel.org/linux-gpio/20210126044742.87602-1-drew@beagleboard.org/
+[2] https://lore.kernel.org/linux-gpio/20210126050817.GA187797@x1/
+[3] https://lore.kernel.org/linux-gpio/20210123064909.466225-1-drew@beagleboard.org/
+
+Drew Fustini (2):
+  pinctrl: use to octal permissions for debugfs files
+  pinctrl: pinmux: Add pinmux-select debugfs file
+
+ drivers/pinctrl/core.c    |   6 +--
+ drivers/pinctrl/pinconf.c |   4 +-
+ drivers/pinctrl/pinmux.c  | 111 +++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 114 insertions(+), 7 deletions(-)
+
+-- 
+2.25.1
+
