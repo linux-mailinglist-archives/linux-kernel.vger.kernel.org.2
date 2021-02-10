@@ -2,99 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D2E3161D4
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDB53161D3
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhBJJM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:12:57 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:33172 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhBJJCk (ORCPT
+        id S229960AbhBJJMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:12:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhBJJCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:02:40 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A8xxGM117071;
-        Wed, 10 Feb 2021 09:01:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=iP2G7L21Ok+LoC/Zq7zmu3BeQUif0cX4L5MAz+HUsL4=;
- b=hi2sSEb6FhJAOdIFyQDwN6KdlVXuQJFh+6one59/zV/i7f1LjDX+IrBHZXsW8u8c2Rxw
- Izvk6Yfrlvu+Ja8+SjaEMYi6asvII3vw/GdKUuLQ+tXFbJ6Yo2j9jCHpsugFRUNIGZvO
- Tv/YW3xzHiyrUNtQi02dPY+aSGnAztW3ZRQWbUZQ47U0fHGGyWp/jk2eRbtbT9h4xHKe
- yDxb7nSNGwQI16ec9t9m6ZxFHcfJw5v4/p/DDZX2ppyqlllwFoHvMsmzq0Rbct68NCyn
- 9MnRXjkGy3DJsSda6dRsx/KQqalh0uzrHFccqJCR9HjUozNJ2vKuL2hE53wrgbRbLy+3 jA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 36hkrn2f2a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 09:01:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A916Va018572;
-        Wed, 10 Feb 2021 09:01:46 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 36j51x9xuj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 09:01:46 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11A91h8s023274;
-        Wed, 10 Feb 2021 09:01:44 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 10 Feb 2021 01:01:42 -0800
-Date:   Wed, 10 Feb 2021 12:01:20 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     karthek <mail@karthek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: fix function comments to follow
- kernel-doc
-Message-ID: <20210210090120.GU20820@kadam>
-References: <YCL6vrGPQ0uDZUI8@karthik-strix-linux.karthek.com>
- <20210210080636.GT2696@kadam>
- <CAJ5zXr1hJ6ts7Gqi_vfaJceZ8qKPgFk479h4sA9AxFrAdB8vHw@mail.gmail.com>
+        Wed, 10 Feb 2021 04:02:35 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE783C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 01:01:48 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id k13so818965pfh.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 01:01:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ZR4GWczI+xHbDhy8yOwk9fJn8ZUuJW3l++fUKt2TTmI=;
+        b=yh0yiPM9YI7dLK05YNe7g5QKHA9z63Z3iVqHuDfs3yD4fGnGacePFZrzTO+KHh7icC
+         MPZLidOMyUdM3C7L4mei80RNnDSTbZQLSSZN7SmbQaFbOQAMc2ePUBipwSB0Vaad4Yd2
+         vPKNBqHPSeDdrhfpnMFS02efBBMOiKijd1FdXQfthnYdy194K0Bk+atdrwOl5/Fu8WDA
+         MJpQ6NzgC/krfTylo8L09AS9BsfzFeC0Zyi1+uRhuGghgQF3SjCAqZtIHubcmGyu4bB8
+         avLJij9knNCry/xJbZEu5XrKT5KOh73MoA23QJtQpMoK+4VXYgbyEyJ1W18cB9bqfJnO
+         w2zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZR4GWczI+xHbDhy8yOwk9fJn8ZUuJW3l++fUKt2TTmI=;
+        b=Ht3LYp9OcqrqJCt5tXNpk9TWkaTwX3wkVlpeCqWTfVf82NNE92MuOEklcYi3RhPdRH
+         5KHK6s5PU+IIrGwblZAq2dSfB8wNYNvMaJVQb2ecSdiZ6GPWYqOJaCuufdPPp+HryysA
+         40bkVA914pLjCqUpJkzYRjAzzpfIJufts12lYkU9bJml7Fn0+o0653OsEuKBHgrG1o2H
+         BjBFoUVugLlFcRW6ZPKyp/2lIhqhkvUnVTrZpcqYAZf5pjh368TrR2xKaYaF85gyVcjb
+         LknH989AMjYIUv4upSBcSMNO0aoHZFhi/ZXfFAnFSeDpDI3n5+Vd07McXvdKrF+M4syZ
+         Y7oQ==
+X-Gm-Message-State: AOAM530yY1/4Yrl+4uDlCynl8pWZLzVAMfZi2ygsigShf/+BH1cJD9ch
+        Iscj+Hocg7FiOZBvYU9KiJto
+X-Google-Smtp-Source: ABdhPJxshQShTa9xlKcEJvbbFXKh7+En4nStubVYK1Tm2QncQAPwh19ZJt2iU2E6ZBO4gqcagz9g7g==
+X-Received: by 2002:a63:1965:: with SMTP id 37mr2194334pgz.349.1612947708171;
+        Wed, 10 Feb 2021 01:01:48 -0800 (PST)
+Received: from work ([103.66.79.29])
+        by smtp.gmail.com with ESMTPSA id p19sm1444013pjo.7.2021.02.10.01.01.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Feb 2021 01:01:47 -0800 (PST)
+Date:   Wed, 10 Feb 2021 14:31:44 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Md Sadre Alam <mdalam@codeaurora.org>
+Cc:     miquel.raynal@bootlin.com, boris.brezillon@collabora.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vigneshr@ti.com, sricharan@codeaurora.org
+Subject: Re: [PATCH V4] mtd: rawnand: qcom: update last code word register
+Message-ID: <20210210090144.GE19226@work>
+References: <1611869959-5109-1-git-send-email-mdalam@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJ5zXr1hJ6ts7Gqi_vfaJceZ8qKPgFk479h4sA9AxFrAdB8vHw@mail.gmail.com>
+In-Reply-To: <1611869959-5109-1-git-send-email-mdalam@codeaurora.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102100092
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
- priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:28:31PM +0530, karthek wrote:
-> On Wed, Feb 10, 2021 at 1:37 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > > @@ -789,7 +759,7 @@ static void phy_PostSetBwMode8723B(struct adapter *Adapter)
-> > >
-> > >               PHY_SetBBReg(Adapter, rFPGA1_RFMOD, bRFMOD, 0x0);
-> > >
-> > > -/*                   PHY_SetBBReg(Adapter, rFPGA0_AnalogParameter2, BIT10, 1); */
-> > > +     /*PHY_SetBBReg(Adapter, rFPGA0_AnalogParameter2, BIT10, 1); */
-> >
-> > This format is wrong.  Anyway, just delete the commented out code.
-> >
-> > regards,
-> > dan carpenter
-> >
+On Fri, Jan 29, 2021 at 03:09:19AM +0530, Md Sadre Alam wrote:
+> From QPIC version 2.0 onwards new register got added to
+> read last codeword. This change will add the READ_LOCATION_LAST_CW_n
+> register.
 > 
-> how can i delete that, i have no idea what this driver does
-> i'm just fixing coding style issues for eudyptula challenge.
-> i dont think its a good idea to delete the code without knowing its
-> purpose even though its commented out
+> For first three code word READ_LOCATION_n register will be
+> use.For last code word READ_LOCATION_LAST_CW_n register will be
+> use.
+> 
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
 
-Commented code obviously doesn't do anything at all?
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-regards,
-dan carpenter
+Thanks,
+Mani
+
+> ---
+> [V4]
+>  * Modified condition for nandc_set_read_loc_last() in qcom_nandc_read_cw_raw().
+>  * Added one additional argument "last_cw" to the function config_nand_cw_read()
+>    to handle last code word condition.
+>  * Changed total number of last code word register "NAND_READ_LOCATION_LAST_CW_0" to 4
+>    while doing code word configuration.
+>  drivers/mtd/nand/raw/qcom_nandc.c | 110 +++++++++++++++++++++++++++++---------
+>  1 file changed, 84 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index 667e4bf..9484be8 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -48,6 +48,10 @@
+>  #define	NAND_READ_LOCATION_1		0xf24
+>  #define	NAND_READ_LOCATION_2		0xf28
+>  #define	NAND_READ_LOCATION_3		0xf2c
+> +#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
+> +#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
+> +#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
+> +#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
+>  
+>  /* dummy register offsets, used by write_reg_dma */
+>  #define	NAND_DEV_CMD1_RESTORE		0xdead
+> @@ -187,6 +191,12 @@ nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
+>  	      ((size) << READ_LOCATION_SIZE) |			\
+>  	      ((is_last) << READ_LOCATION_LAST))
+>  
+> +#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
+> +nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
+> +	      ((offset) << READ_LOCATION_OFFSET) |		\
+> +	      ((size) << READ_LOCATION_SIZE) |			\
+> +	      ((is_last) << READ_LOCATION_LAST))
+> +
+>  /*
+>   * Returns the actual register address for all NAND_DEV_ registers
+>   * (i.e. NAND_DEV_CMD0, NAND_DEV_CMD1, NAND_DEV_CMD2 and NAND_DEV_CMD_VLD)
+> @@ -316,6 +326,10 @@ struct nandc_regs {
+>  	__le32 read_location1;
+>  	__le32 read_location2;
+>  	__le32 read_location3;
+> +	__le32 read_location_last0;
+> +	__le32 read_location_last1;
+> +	__le32 read_location_last2;
+> +	__le32 read_location_last3;
+>  
+>  	__le32 erased_cw_detect_cfg_clr;
+>  	__le32 erased_cw_detect_cfg_set;
+> @@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
+>  		return &regs->read_location2;
+>  	case NAND_READ_LOCATION_3:
+>  		return &regs->read_location3;
+> +	case NAND_READ_LOCATION_LAST_CW_0:
+> +		return &regs->read_location_last0;
+> +	case NAND_READ_LOCATION_LAST_CW_1:
+> +		return &regs->read_location_last1;
+> +	case NAND_READ_LOCATION_LAST_CW_2:
+> +		return &regs->read_location_last2;
+> +	case NAND_READ_LOCATION_LAST_CW_3:
+> +		return &regs->read_location_last3;
+>  	default:
+>  		return NULL;
+>  	}
+> @@ -719,9 +741,14 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
+>  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+>  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+>  
+> -	if (read)
+> -		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+> -				   host->cw_data : host->cw_size, 1);
+> +	if (read) {
+> +		if (nandc->props->qpic_v2)
+> +			nandc_set_read_loc_last(nandc, 0, 0, host->use_ecc ?
+> +					host->cw_data : host->cw_size, 1);
+> +		else
+> +			nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+> +					host->cw_data : host->cw_size, 1);
+> +	}
+>  }
+>  
+>  /*
+> @@ -1094,11 +1121,16 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
+>   * before reading each codeword in NAND page.
+>   */
+>  static void
+> -config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
+> +config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc, bool last_cw)
+>  {
+> -	if (nandc->props->is_bam)
+> -		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+> -			      NAND_BAM_NEXT_SGL);
+> +	if (nandc->props->is_bam) {
+> +		if (nandc->props->qpic_v2 && last_cw)
+> +			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0, 4,
+> +				      NAND_BAM_NEXT_SGL);
+> +		else
+> +			write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+> +				      NAND_BAM_NEXT_SGL);
+> +	}
+>  
+>  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+>  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+> @@ -1118,10 +1150,10 @@ config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
+>   */
+>  static void
+>  config_nand_single_cw_page_read(struct qcom_nand_controller *nandc,
+> -				bool use_ecc)
+> +				bool use_ecc, bool last_cw)
+>  {
+>  	config_nand_page_read(nandc);
+> -	config_nand_cw_read(nandc, use_ecc);
+> +	config_nand_cw_read(nandc, use_ecc, last_cw);
+>  }
+>  
+>  /*
+> @@ -1215,7 +1247,7 @@ static int nandc_param(struct qcom_nand_host *host)
+>  	nandc->buf_count = 512;
+>  	memset(nandc->data_buffer, 0xff, nandc->buf_count);
+>  
+> -	config_nand_single_cw_page_read(nandc, false);
+> +	config_nand_single_cw_page_read(nandc, false, false);
+>  
+>  	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
+>  		      nandc->buf_count, 0);
+> @@ -1633,19 +1665,32 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>  	}
+>  
+>  	if (nandc->props->is_bam) {
+> -		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+> -		read_loc += data_size1;
+> +		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1)) {
+> +			nandc_set_read_loc_last(nandc, 0, read_loc, data_size1, 0);
+> +			read_loc += data_size1;
+> +
+> +			nandc_set_read_loc_last(nandc, 1, read_loc, oob_size1, 0);
+> +			read_loc += oob_size1;
+>  
+> -		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+> -		read_loc += oob_size1;
+> +			nandc_set_read_loc_last(nandc, 2, read_loc, data_size2, 0);
+> +			read_loc += data_size2;
+>  
+> -		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+> -		read_loc += data_size2;
+> +			nandc_set_read_loc_last(nandc, 3, read_loc, oob_size2, 1);
+> +		} else {
+> +			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+> +			read_loc += data_size1;
+> +
+> +			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+> +			read_loc += oob_size1;
+>  
+> -		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+> +			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+> +			read_loc += data_size2;
+> +
+> +			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+> +		}
+>  	}
+>  
+> -	config_nand_cw_read(nandc, false);
+> +	config_nand_cw_read(nandc, false, cw == ecc->steps - 1 ? true : false);
+>  
+>  	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+>  	reg_off += data_size1;
+> @@ -1873,18 +1918,31 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>  
+>  		if (nandc->props->is_bam) {
+>  			if (data_buf && oob_buf) {
+> -				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+> -				nandc_set_read_loc(nandc, 1, data_size,
+> -						   oob_size, 1);
+> +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1)) {
+> +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 0);
+> +					nandc_set_read_loc_last(nandc, 1, data_size,
+> +								oob_size, 1);
+> +				} else {
+> +					nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+> +					nandc_set_read_loc(nandc, 1, data_size,
+> +							   oob_size, 1);
+> +				}
+>  			} else if (data_buf) {
+> -				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
+> +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
+> +					nandc_set_read_loc_last(nandc, 0, 0, data_size, 1);
+> +				else
+> +					nandc_set_read_loc(nandc, 0, 0, data_size, 1);
+>  			} else {
+> -				nandc_set_read_loc(nandc, 0, data_size,
+> -						   oob_size, 1);
+> +				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
+> +					nandc_set_read_loc_last(nandc, 0, data_size,
+> +								oob_size, 1);
+> +				else
+> +					nandc_set_read_loc(nandc, 0, data_size,
+> +							   oob_size, 1);
+>  			}
+>  		}
+>  
+> -		config_nand_cw_read(nandc, true);
+> +		config_nand_cw_read(nandc, true, i == ecc->steps - 1 ? true : false);
+>  
+>  		if (data_buf)
+>  			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
+> @@ -1946,7 +2004,7 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
+>  	set_address(host, host->cw_size * (ecc->steps - 1), page);
+>  	update_rw_regs(host, 1, true);
+>  
+> -	config_nand_single_cw_page_read(nandc, host->use_ecc);
+> +	config_nand_single_cw_page_read(nandc, host->use_ecc, true);
+>  
+>  	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
+>  
+> -- 
+> 2.7.4
+> 
