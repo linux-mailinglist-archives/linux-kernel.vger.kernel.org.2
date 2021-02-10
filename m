@@ -2,111 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2F1315F76
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A14F315F78
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhBJG1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 01:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbhBJG0R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 01:26:17 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DB5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 22:25:37 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id b145so614417pfb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 22:25:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=T6iLwlvBFG1EiaZPDKGBqgctstyNp7MrLxck6nK7ef8=;
-        b=nYi8+aZl046CuZe4rtb1FYS68GX7vAraXSHJK2kEQh6ksl1jDiTmgaTSSsD5HrN8Sw
-         NmY95337W6sIudQTqwd3/bEbk8QZSjw8j3bkRMEaIIb7ehGiO50xfs2uEGThAPmQJlXx
-         P+LAAAumvq/jD9GZ5cfGJXnDU+KxiwTorzBL+zq/eSLtKCAAqsWGMwuUeiVhkyPcTwRv
-         TKmahcy22dE6jlAbYS/ItLWGR1NF+m7Kccpp1LJJfv4QaiS25K1tmod70gFDpgnbKKVV
-         9u1Xndn7HmlIwapjUPqd21Ywhd8HE1ExFPfCibmLzNvpW29n/7G0D4cDHrkdt5N4pcDO
-         wGZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=T6iLwlvBFG1EiaZPDKGBqgctstyNp7MrLxck6nK7ef8=;
-        b=b/gjaxLk3USUI7Bg3vf031WLjuXG/3BY69nAJOn0a2W84hFZ0+Jx4BmcQ56A7oNvwh
-         iEfVUk8kARP5oxgSwzB264+Tld/FwmsJSWEp/v+NtJczPiMB0ydiwrLEB9eo8wIAo7ub
-         kTDg0VC2utLuW9z2qfHSxs/y4Cp0+giMTS000uA+0Nq0ToE+JLVosgBIv2c1m3mOFtIt
-         8nSyW5ER3ZSc1RH3UrraYU3cP0vXqQ36s0peKJUaAE4hpG3omXAkTxlMzaLGi1joDOYO
-         wDKO+OVZ/94anJ89Pruf10HKs/LDYoYx0+2HaS6cm40dPVQ1LMfeNmrRrPnAHteK9QUq
-         +WTg==
-X-Gm-Message-State: AOAM530zIdZQL5DgvXjhsctXbB0lqy/kryyMFGAddp0wbE0e7AD2rQbD
-        F0vYosGqjSN2Jq36a9s6y1v7
-X-Google-Smtp-Source: ABdhPJwyawLSN7Yp9ZuQ5OJzfKBAFZLsLLnA5M91VV0i9TSZFR3Zg1mYlKv0c0kitIx8hIaM/yvTeA==
-X-Received: by 2002:a63:724a:: with SMTP id c10mr1772848pgn.124.1612938336434;
-        Tue, 09 Feb 2021 22:25:36 -0800 (PST)
-Received: from work ([103.66.79.29])
-        by smtp.gmail.com with ESMTPSA id u19sm928497pjy.20.2021.02.09.22.25.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 09 Feb 2021 22:25:35 -0800 (PST)
-Date:   Wed, 10 Feb 2021 11:55:31 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Aleksander Morgado <aleksander@aleksander.es>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
-Message-ID: <20210210062531.GA13668@work>
-References: <YBfi573Bdfxy0GBt@kroah.com>
- <20210201121322.GC108653@thinkpad>
- <20210202042208.GB840@work>
- <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org>
- <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com>
- <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAAP7ucLZ5jKbKriSp39OtDLotbv72eBWKFCfqCbAF854kCBU8w@mail.gmail.com>
- <20210209081744.43eea7b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S231157AbhBJG2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 01:28:30 -0500
+Received: from foss.arm.com ([217.140.110.172]:32968 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231892AbhBJG1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 01:27:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 04818ED1;
+        Tue,  9 Feb 2021 22:26:58 -0800 (PST)
+Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.208.215])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 33AA33F719;
+        Tue,  9 Feb 2021 22:26:52 -0800 (PST)
+From:   Jianlin Lv <Jianlin.Lv@arm.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, mhiramat@kernel.org, fche@redhat.com,
+        irogers@google.com, sumanthk@linux.ibm.com
+Cc:     Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH v2] perf probe: fix kretprobe issue caused by GCC bug
+Date:   Wed, 10 Feb 2021 14:26:46 +0800
+Message-Id: <20210210062646.2377995-1-Jianlin.Lv@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209081744.43eea7b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 08:17:44AM -0800, Jakub Kicinski wrote:
-> On Tue, 9 Feb 2021 10:20:30 +0100 Aleksander Morgado wrote:
-> > This may be a stupid suggestion, but would the integration look less a
-> > backdoor if it would have been named "mhi_wwan" and it exposed already
-> > all the AT+DIAG+QMI+MBIM+NMEA possible channels as chardevs, not just
-> > QMI?
-> 
-> What's DIAG? Who's going to remember that this is a backdoor driver 
-> a year from now when Qualcomm sends a one liner patches which just 
-> adds a single ID to open another channel?
+Perf failed to add kretprobe event with debuginfo of vmlinux which is
+compiled by gcc with -fpatchable-function-entry option enabled.
+The same issue with kernel module.
 
-I really appreciate your feedback on this driver eventhough I'm not
-inclined with you calling this driver a "backdoor interface". But can
-you please propose a solution on how to make this driver a good one as
-per your thoughts?
+Issue:
 
-I really don't know what bothers you even if the userspace tools making
-use of these chardevs are available openly (you can do the audit and see
-if anything wrong we are doing). And exposing the raw access to the
-hardware is not a new thing in kernel. There are several existing
-subsystems/drivers does this as pointed out by Bjorn. Moreover we don't
-have in-kernel APIs for the functionalities exposed by this driver and
-creating one is not feasible as explained by many.
+  # perf probe  -v 'kernel_clone%return $retval'
+  ......
+  Writing event: r:probe/kernel_clone__return _text+599624 $retval
+  Failed to write event: Invalid argument
+    Error: Failed to add events. Reason: Invalid argument (Code: -22)
 
-So please let us know the path forward on this series. We are open to
-any suggestions but you haven't provided one till now.
+  # cat /sys/kernel/debug/tracing/error_log
+  [156.75] trace_kprobe: error: Retprobe address must be an function entry
+  Command: r:probe/kernel_clone__return _text+599624 $retval
+                                        ^
 
-Thanks,
-Mani
+  # llvm-dwarfdump  vmlinux |grep  -A 10  -w 0x00df2c2b
+  0x00df2c2b:   DW_TAG_subprogram
+                DW_AT_external  (true)
+                DW_AT_name      ("kernel_clone")
+                DW_AT_decl_file ("/home/code/linux-next/kernel/fork.c")
+                DW_AT_decl_line (2423)
+                DW_AT_decl_column       (0x07)
+                DW_AT_prototyped        (true)
+                DW_AT_type      (0x00dcd492 "pid_t")
+                DW_AT_low_pc    (0xffff800010092648)
+                DW_AT_high_pc   (0xffff800010092b9c)
+                DW_AT_frame_base        (DW_OP_call_frame_cfa)
+
+  # cat /proc/kallsyms |grep kernel_clone
+  ffff800010092640 T kernel_clone
+  # readelf -s vmlinux |grep -i kernel_clone
+  183173: ffff800010092640  1372 FUNC    GLOBAL DEFAULT    2 kernel_clone
+
+  # objdump -d vmlinux |grep -A 10  -w \<kernel_clone\>:
+  ffff800010092640 <kernel_clone>:
+  ffff800010092640:       d503201f        nop
+  ffff800010092644:       d503201f        nop
+  ffff800010092648:       d503233f        paciasp
+  ffff80001009264c:       a9b87bfd        stp     x29, x30, [sp, #-128]!
+  ffff800010092650:       910003fd        mov     x29, sp
+  ffff800010092654:       a90153f3        stp     x19, x20, [sp, #16]
+
+The entry address of kernel_clone converted by debuginfo is _text+599624
+(0x92648), which is consistent with the value of DW_AT_low_pc attribute.
+But the symbolic address of kernel_clone from /proc/kallsyms is
+ffff800010092640.
+
+This issue is found on arm64, -fpatchable-function-entry=2 is enabled when
+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y;
+Just as objdump displayed the assembler contents of kernel_clone,
+GCC generate 2 NOPs  at the beginning of each function.
+
+kprobe_on_func_entry detects that (_text+599624) is not the entry address
+of the function, which leads to the failure of adding kretprobe event.
+
+---
+kprobe_on_func_entry
+->_kprobe_addr
+->kallsyms_lookup_size_offset
+->arch_kprobe_on_func_entry		// FALSE
+---
+
+The cause of the issue is that the first instruction in the compile unit
+indicated by DW_AT_low_pc does not include NOPs.
+This issue exists in all gcc versions that support
+-fpatchable-function-entry option.
+
+I have reported it to the GCC community:
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=98776
+
+Currently arm64 and PA-RISC may enable fpatchable-function-entry option.
+The kernel compiled with clang does not have this issue.
+
+FIX:
+
+This GCC issue only cause the registration failure of the kretprobe event
+which doesn't need debuginfo. So, stop using debuginfo for retprobe.
+map will be used to query the probe function address.
+
+Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+---
+v2: stop using debuginfo for retprobe, and update changelog.
+---
+ tools/perf/util/probe-event.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 8eae2afff71a..a59d3268adb0 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -894,6 +894,16 @@ static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
+ 	struct debuginfo *dinfo;
+ 	int ntevs, ret = 0;
+ 
++	/* Workaround for gcc #98776 issue.
++	 * Perf failed to add kretprobe event with debuginfo of vmlinux which is
++	 * compiled by gcc with -fpatchable-function-entry option enabled. The
++	 * same issue with kernel module. The retprobe doesn`t need debuginfo.
++	 * This workaround solution use map to query the probe function address
++	 * for retprobe event.
++	 */
++	if (pev->point.retprobe)
++		return 0;
++
+ 	dinfo = open_debuginfo(pev->target, pev->nsi, !need_dwarf);
+ 	if (!dinfo) {
+ 		if (need_dwarf)
+-- 
+2.25.1
+
