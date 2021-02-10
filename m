@@ -2,152 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83B0316A55
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DF0316A58
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbhBJPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:35:54 -0500
-Received: from mail-bn8nam11on2079.outbound.protection.outlook.com ([40.107.236.79]:50915
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231352AbhBJPfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:35:41 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g0TuV4Q031w2vHetK9et8nOmTERG7K8goenIIqtjsV/KqTeWx9O6RvqIDh232IjHsvedNLLTslrYR8+zIT2HHTY4+LAlLso139oddDNh/8LMP/6v74lDpwxRyNjhJQWnPsEBlC44wKBwvrz0SyqNixPF3jG9WQ/7lWI4NnyjhynPF0UWgRVzER/GzqRXv8rLaHf+QvISmSo8ho1jWq7mEwTEnOYhjYiS7jd82MGhiR6nbcXwTLqJJp8mXfJckpujNhGlmuzBk/gNJ5ygJ0rEWS/MwLFPN13LY6KT4gsQWVqjZVaRadgWBcgpX/JHgEROC6RbdwK8RP0cPIm2F+vK7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3+SnlSNrWJT67oOPYeSzM+X0yCBo40Em9fnwadcLJ/Q=;
- b=lDZEcH9wI8I4Wnvo/MWM1VLdCyUT22YNtsBWTAerCxLsHPTSUootHcvxXiTapMXyUyuKJpW3LkD8pvvkuAVqFQbOjpA0TkJiUqeuEOu3MBdZGIgImXC1ESRKaNZVlkgAuPd+Ln8wtPAZWWLX/rUnPlqMWN4duw76YyIhG+7YbM+IlN3ZX87q70MNBGW/pipQk49oZ2cZfgUC0TSwzQgNGJmC57jNOo+/vHW5S4JYAqkidCKJBHThz26JEDU/zmIPpchuTMT1Yi63LETBX4pBZ5IRVCFyzos+m8R4ZDjpZV2CCE36TyoueOmyUeC7RR/mjNj0sXBbgw9xQ79VmGeqfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3+SnlSNrWJT67oOPYeSzM+X0yCBo40Em9fnwadcLJ/Q=;
- b=bfIDh4h3pnHPnyREwG8l8p3/jku5h7rN/J7PHeO5USWF3qeJc6AeuVn8pMpx9rjVYtm6afF8mnK+wApE+AtA8La+JyaYBF9i0DGxjzMiuRsh1B7fe349uNavxcvvBfPlcQ4OX9i6W1FXQgufBb5V1nKRmd8DVB0YYiu3a7x5RL0=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB3790.namprd12.prod.outlook.com (2603:10b6:208:164::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Wed, 10 Feb
- 2021 15:34:46 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
- 15:34:46 +0000
-Subject: Re: drm/nouneau: 5.11 cycle regression bisected to 461619f5c324
- "drm/nouveau: switch to new allocator"
-To:     Mike Galbraith <efault@gmx.de>, lkml <linux-kernel@vger.kernel.org>
-Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
-        Dave Airlie <airlied@redhat.com>
-References: <1d663cd74af91e23f4f24ebbdd65ef3ba72c15fc.camel@gmx.de>
- <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
- <2793c200beb530ed4a8ac32c5eea0f5aaa53c7e8.camel@gmx.de>
- <bfd62492-e6a9-3899-dd7d-87b7800f45c7@amd.com>
- <41cc52bd57a466f29ea81676d42f57a7b9da7dd8.camel@gmx.de>
- <5df26bda-9ff8-168f-e5a3-0bb503ffcca9@amd.com>
- <eeea2d002142ec7f8737b9d0fb5128b0cdb2ae58.camel@gmx.de>
- <468ec16b-d716-5bd4-db2b-fb79e6c72a4f@amd.com>
- <6b2fa70c333d49dee64fa3c96cd7b7c99e8a6e9b.camel@gmx.de>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <b72ee235-2a79-bf88-a220-6e34d30a4bbe@amd.com>
-Date:   Wed, 10 Feb 2021 16:34:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <6b2fa70c333d49dee64fa3c96cd7b7c99e8a6e9b.camel@gmx.de>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:843:1ceb:6ae0:4a57]
-X-ClientProxiedBy: AM0PR10CA0057.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:150::37) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S231431AbhBJPh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232046AbhBJPhR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 10:37:17 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F38C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:36:36 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d13so1415698plg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:36:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AExeMbU6/3BxOHLnhv3fYTbsrsNViVB+RCtpeImP3T8=;
+        b=b3Ae+56yg1cB1V8FTSmCrOT0NAYqlRdeUMT2k/4uSx5NA5k10+m8hcnijT2xXmt9QH
+         h9O15ZWnBdAf/0UBAhiQRKMmV4ZMpBiLv4i1uXHJ6X8ew9qUQecxzNDMCJ1Ie8absEa2
+         BurQ2T+PVNOwhQZrApTAZF8jtbZvqvFGKclqEBjR6JIxSLOSsCsGNhk5pMq41xQVv6gi
+         Jsx8vhiJGkSKGQuqEwSN8mQnt+zCsGWJeegTi69txmqy94HKS5vaCD2GrIMDdY6Ddu6C
+         1nHXcjjtMhHjRV+cyv5SxHN645T5UmvjxGHseSIcUKDpeY0kWxIRJjD7ouM15B+ZilUI
+         /SIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AExeMbU6/3BxOHLnhv3fYTbsrsNViVB+RCtpeImP3T8=;
+        b=NnBdkEA5WJ0u47G4xOLtY+4thneELvI/yQ4UFtPhEhdtkkVYkt+pHWeASp1duRQLL6
+         mpQUkJ9IdDctNf/LTjvyq6KmlFOvBH/X4DDbixyJDgZb/TmiMlvTeYsAtU2QlKj3p5F3
+         G/kfOQaeA1e5/g5kn2aTWLEJRag49HRmMrl22aMcBpLyaEgYoPA0tW1tkO34/Teabe8Q
+         snBOHAZcWm7XF0+BiTeey+X9TtVEL2wxoJyx4phw3H7PpANps5LKthRdMIUVvar7MMGp
+         WD1Spju0E2oKRe2n33viHnHOzXAtdkMWI4ztO8ltr9QMkejASPLR6woIkQYIE36bePre
+         n7Jg==
+X-Gm-Message-State: AOAM5318JU4SjHgScvodo/nyqpNaf6LuwIfnxp3l+MXshTaxHsw9XFeG
+        9qOt/f8+olTPYzxuB9nnd+9x2UW6cWA=
+X-Google-Smtp-Source: ABdhPJwyfWnpxMVVCqKFPkQcSKqZvbs0LaPo4DQFOW+BgK9wBo3szV3izhRJt4FsVlgJ6AXy6glWZw==
+X-Received: by 2002:a17:90a:4598:: with SMTP id v24mr3520249pjg.135.1612971396414;
+        Wed, 10 Feb 2021 07:36:36 -0800 (PST)
+Received: from localhost ([103.200.106.135])
+        by smtp.gmail.com with ESMTPSA id k69sm2841896pfd.4.2021.02.10.07.36.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 07:36:35 -0800 (PST)
+Date:   Wed, 10 Feb 2021 21:06:21 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: gdm724x: Fix DMA from stack
+Message-ID: <20210210153621.3nmwsegn5a7mb5v5@archlinux>
+References: <20210210142512.23152-1-ameynarkhede03@gmail.com>
+ <YCPz7jy6BLRzmvU3@kroah.com>
+ <20210210150133.chf4gwefgcvaewnd@archlinux>
+ <20210210151924.GA20820@kadam>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:843:1ceb:6ae0:4a57] (2a02:908:1252:fb60:843:1ceb:6ae0:4a57) by AM0PR10CA0057.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 15:34:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: aef481b1-22f4-4a04-d80d-08d8cdd96541
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3790:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB379056A1C17C21FCAB049ED1838D9@MN2PR12MB3790.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GDi2zVAdK430qmtCgDI/DXW8sUZyC014ExiZS7rdvnCu8cYi3IBjjdfonzdjwh4fxEgXMsZ5rKeYEWeA/A2ulUxYvF0W97IJMUWjRlWmDW9GwX8aU/l0dx0wk8plku2i6yM9qc9Bx3rL7EMHwqm2j/+CC1GND2/k1ZWD7Qnl6uq1JBPFYh1vOEJ5aOPpK4J0DWgsu2THWX0WrwG/CrcC+Kw1oYUH7BRKESpzx1NImTq60qbmIbvP4Crri+ktvV6urF270KnmbcHFXc1bCfdb5pKokrKGaBeVIOLEfDh2U8/QJ4eXEush8vSeKpWShmkZ9NFB/YqPMSXM2Of58eWEg7umOVZGhR+UJ/UOKHCD8Xcp4V0fohtBMo6DV2KDqoY12yrUqj2+cfbqBAKg8KV+vsz0YIJUgJNxT4SUxO04nCCeQAUSfks6hTpM5NiPdFUtKgfJys3MBtzpmnrATLeuMwpLLLdZb2oRqLEfzUFUCuEJTAs0DW+/VAqPF5rWtUT3C27N9mmrZ3t31DuhfmVXFLUqkgL/3buWeTHCTA0pKclZvkrv5Q+402cQtYolWwiEnvxp9JMhozwCbacFkRWCqOBvc5MmOi/KNn3MRC2L9HA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(376002)(366004)(6666004)(31686004)(6486002)(5660300002)(16526019)(31696002)(86362001)(2616005)(186003)(316002)(110136005)(2906002)(54906003)(52116002)(8936002)(4326008)(478600001)(8676002)(36756003)(66556008)(66946007)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-15?Q?kb+KjCccwesJES9FRRTZBzQvGtHZeyjq60VNF9OGkzzmpjTza5Gg/EkxT?=
- =?iso-8859-15?Q?4iCFfilWa1qTtGYQXyP7UACg2I22knnoO9FIHvrU5Xeej6Vs4orHTzWGz?=
- =?iso-8859-15?Q?hFNaNlv6rWYK/MXU5vpFCcYs/dFETLR/6gX0sPT0qEVSnE7EKJSRVP+93?=
- =?iso-8859-15?Q?ItSr4K7H3ORXnGj5rBKl2fC0hZfYY6Peo39iCT3wTPPdw4q2De18l+nX6?=
- =?iso-8859-15?Q?3eDNHbgzVxeqXvSXxf1K4MMn50SlG0CPlTmoap18pCNdkL9naweXqoYx/?=
- =?iso-8859-15?Q?0pxIx7kl2RaeBelpa5Gu3tzBAW1Fy2IvJLs9OTI48uSkkIk/PzaKhSphU?=
- =?iso-8859-15?Q?lYhQxet7XzT1sVx3te/ilEghBDIVMghIrtbS0dzQ2URfY+6eyK9PvC6ZV?=
- =?iso-8859-15?Q?aULnRZbGMwaPVG908V16of9oFyxQAjwuqIuTB82gvJI2x3j+hmXh3sZmG?=
- =?iso-8859-15?Q?qwxaKbY1NobbxKsBxlw0haBufpyZ0/QnH9mQOXdGl8BwN+Q3+4q9WjFKL?=
- =?iso-8859-15?Q?Hos0YsvP4sWu0cHdQzgaFcwpkq+24q9Q1jD7nnzFX/duaGdeiApgi9BAQ?=
- =?iso-8859-15?Q?VnXKmshCoa4nolqAs9mAriYq/ul89f7RNuEelEjhaa3Gsr3Q4xUYmZRlG?=
- =?iso-8859-15?Q?k3P4idnooGGRShCP2AHJp0gzaM6JilA/teIx1kMFh4yi6lGn1AXsnVyfX?=
- =?iso-8859-15?Q?cZE3X3p+9trsdm9WGu+11QZgyEONIC1g6AadNIIHcWQPTOEd94awsEV6a?=
- =?iso-8859-15?Q?X9UxZPPuqM1jMSujFzvVpj5Y5EPKwevc0pNW/69G/UmLcDlsQJMwL8wTk?=
- =?iso-8859-15?Q?tOux0nvj5SakVPFDQRGKCrg4DyIxxeeTLBGQp/XPYI4UB3PfC4/OCMh0a?=
- =?iso-8859-15?Q?wbUtepDP7kobvaKMpC6i3BmmYhr8r9koWnACm9XuWIGb776hSxLRAtP0k?=
- =?iso-8859-15?Q?m6zBu+eRFwDMKxY+ejzZcL1sFzDimYpbGh+85K9m6MGdgeg/hRtBNapzR?=
- =?iso-8859-15?Q?n2i1qsxgn+y6ZXPDzqXVIQGWhrL7GZXDPt2836/eoj+00GhUT+2uF+sFr?=
- =?iso-8859-15?Q?/csUMafyLU70MstI2V7jqww6XhB/8Hfmobjc8vm+LJf/by5ecYzEeX5A1?=
- =?iso-8859-15?Q?IaMpMsmmEOdcIuKf8g5v2lm7onupA39gFZiGja0HXDru+ouaJfFBSMfgT?=
- =?iso-8859-15?Q?XxdeUFkIAxZJ8DZgr8pX86Qsa6lroI++aGz8US3cgmmJIV1Y4EjibMZ94?=
- =?iso-8859-15?Q?tUSkDI91OalvEhhJPoWmt3jmqkzggrweqFXXLksKrjZnb64+2vEQuEgmK?=
- =?iso-8859-15?Q?knX7ptXPNRxoVjmbKu1SPFLzEo8zpxNmxAlCeaIRr9gYb0H2GR46+Ht2R?=
- =?iso-8859-15?Q?oPytwAeN+VPGxi0ZNET0lCpSPYRNgH8jmRnbpCpkvJ+nF3vhVNUpecREj?=
- =?iso-8859-15?Q?5uip/Z4FtLQfoG+zS5HJFYNfcmbMkKIB1PTfYKzX?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aef481b1-22f4-4a04-d80d-08d8cdd96541
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 15:34:46.6664
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W7Xa+ZRLLFPcygTDrSDxFeiVA/eAeWEE0ntsvunhBL+ZXwuQK/zpnhjIZzWOuEwG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3790
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jyslrfw62hrxq7ip"
+Content-Disposition: inline
+In-Reply-To: <20210210151924.GA20820@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--jyslrfw62hrxq7ip
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Am 10.02.21 um 16:30 schrieb Mike Galbraith:
-> On Wed, 2021-02-10 at 14:26 +0100, Christian König wrote:
->> Am 10.02.21 um 13:22 schrieb Mike Galbraith:
->>> On Wed, 2021-02-10 at 12:44 +0100, Christian König wrote:
->>>> Please try to add a "return NULL" at the beginning of ttm_pool_type_take().
->>>>
->>>> That should effectively disable using the pool.
->>> That did away with the yield looping, but it doesn't take long for the
->>> display to freeze.  I ssh'd in from lappy, but there was nada in dmesg.
->> Yeah, that is expected. Without taking pages from the pool we leak
->> memory like sieve.
->>
->> At least we could narrow down the problem quite a bit with that.
->>
->> Can you test the attached patch and see if it helps?
-> Yup, that seems to have fixed it all up.  Another one bites the dust ;)
-
-Ah! So basically nouveau relies on that the pages are cleared.
-
-Yeah, that wasn't consitently implemented before. Some code path was 
-clearing the page, some wasn't.
-
-Any objections that I add a Reported-and-tested-by: Mike Galbraith 
-<efault@gmx.de> ?
-
-Regards,
-Christian.
-
+On 21/02/10 06:19PM, Dan Carpenter wrote:
+> On Wed, Feb 10, 2021 at 08:31:33PM +0530, Amey Narkhede wrote:
+> > On 21/02/10 03:55PM, Greg KH wrote:
+> > > On Wed, Feb 10, 2021 at 07:55:12PM +0530, Amey Narkhede wrote:
+> > > > Stack allocated buffers cannot be used for DMA
+> > > > on all architectures so allocate hci_packet buffer
+> > > > using kmalloc.
+> > > >
+> > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > > ---
+> > > > Changes in v3:
+> > > > 	- Remove superfluous buf pointer
+> > > > 	- Reduce size of allocation of hci_packet to match number of
+> > > > 	bytes used for DMA
+> > > >
+> > > >  drivers/staging/gdm724x/gdm_usb.c | 10 +++++++---
+> > > >  1 file changed, 7 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
+> > > > index dc4da66c3..80c58a3ef 100644
+> > > > --- a/drivers/staging/gdm724x/gdm_usb.c
+> > > > +++ b/drivers/staging/gdm724x/gdm_usb.c
+> > > > @@ -56,20 +56,24 @@ static int gdm_usb_recv(void *priv_dev,
+> > > >
+> > > >  static int request_mac_address(struct lte_udev *udev)
+> > > >  {
+> > > > -	u8 buf[16] = {0,};
+> > > > -	struct hci_packet *hci = (struct hci_packet *)buf;
+> > > > +	struct hci_packet *hci;
+> > > >  	struct usb_device *usbdev = udev->usbdev;
+> > > >  	int actual;
+> > > >  	int ret = -1;
+> > > >
+> > > > +	hci = kmalloc(5, GFP_KERNEL);
+> > >
+> > > Why "5" and not:
+> > > 	hci = kmalloc(sizeof(*hci), GFP_KERNEL);
 >
-> 	-Mike
+> 5 is correct and sizeof(*hci) is 4.  The hci struct ends in a zero
+> element array.  You could do:
 >
+> 	hci = kmalloc(struct_size(hci, data, 1), GFP_KERNEL);
+>
+> I'm not sure it's more readable.  But you still will have to resend
+> because the patch passes "&hci" to usb_bulk_msg() instead of "hci" so it
+> will corrupt memory.
+>
+> I always encourage people to write the patch and then sit on it over
+> night and send it the next day.
+>
+> regards,
+> dan carpenter
+>
+Yes I was about to send patch with kmalloc(sizeof(*hci) + sizeof(u8)).
+Now I'll take your advice and send the patch tomorrow.
 
+Thanks,
+Amey
+
+--jyslrfw62hrxq7ip
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEb5tNK+B4oWmn+0Z9BBTsy/Z3yzYFAmAj/XQACgkQBBTsy/Z3
+yzbaowgAmz+E/S2FJPQNOQbR3rn7hOqy0HcAUM5WNjZ8Q4Qnd5+K28z5mr1M47or
+VFNNjtfq1pr46zPGUUm3sIsd+nfYkun5Ya+KlV6nbsw5uUqnUKQktietlN25k7No
+MkEEze4w8FLZ55tgW0SuHPR+iAR++1FZuMDgDmJhlWJYN/oiHBqgq6TsRsRi3sT0
+pev8ihSRzZRERb+msPAX8URUT+6qC+r7iHNMFfU9k9SpUBf1KRtzmab4F6+nZwRp
+WUEeALP6HrKiMfWs6+74Hyp+MCyhHTOQ+BgUs5O51DKXT07NGf4BdfdAW+UwO1Ws
+3grFxtVbeqWgnDKlWPCgOX0CEeuiGA==
+=6vKP
+-----END PGP SIGNATURE-----
+
+--jyslrfw62hrxq7ip--
