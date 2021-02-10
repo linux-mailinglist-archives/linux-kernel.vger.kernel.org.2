@@ -2,60 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E285F317143
+	by mail.lfdr.de (Postfix) with ESMTP id 5805E317142
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbhBJUYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:24:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233530AbhBJUVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:21:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3504064F00;
-        Wed, 10 Feb 2021 20:19:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612988382;
-        bh=TvmjjBQMashqYeR34N26U0gn1dIqetjqzDH8k6T1CEc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CbhpmMz7Jt7VTYtX6pogHQfXCZURWdX4XSBQb/7jryW82Er+JQQMEcZjVHuHt+qMo
-         YJ5xH6JVY6VfcrpRV3+DzBivr4Hr1LJkq3mbhsiYkQMuRVHsXq7WOy3No0+bblYsXz
-         QdpYyu4hssn2veqh2Gf23upcZq+MEvfm/efo7XrTU7ARBjNeUuJ06n9y0jPe6ISj51
-         rF38GvtsJ68cKM3h54Cl9+kqJ8Clb6YiZPsbBLSRn06IUUcsBB+BfJHt5UkB2OrGCD
-         LbXDdWXB5uYW9fV5dW1aNEJfQO9a8SRSNsS0Ip14jM64glIl4I4ySDPmq8gaPEtH6A
-         Ffs68JU2jNniQ==
-Date:   Wed, 10 Feb 2021 12:19:40 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v4 4/5] dm: support key eviction from keyslot managers of
- underlying devices
-Message-ID: <YCQ/3EJuufLXMiG4@gmail.com>
-References: <20210201051019.1174983-1-satyat@google.com>
- <20210201051019.1174983-5-satyat@google.com>
+        id S232876AbhBJUXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:23:55 -0500
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:35001 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232779AbhBJUU0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 15:20:26 -0500
+Received: by mail-oo1-f49.google.com with SMTP id t196so805673oot.2;
+        Wed, 10 Feb 2021 12:20:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DdUAMoXuKZ+5xDWH+zZnA9Uz3pPWgYxEKaaqaCeEKjY=;
+        b=WeiY3hYTli4St2lkKxJ4ZwXh7U48mJDKYHCdkSudPcsU/fT13b7o7/3wxQFhA4zvd8
+         jt5vD90Mn7esL94kFTjQio6/DDhUd4q6q/vUJm81BCjBzeRh4NkF5kE/N0zFMQu4No1N
+         IGMU1Ebr1/qqkZHrOWxndZpiMM9xBSB09qHLwMmVXxoIQNk3xC9IDrTI5q2MwlMc2XLr
+         G2lMF3KqfCrI/7r43SGVHqCQbzgOE5zYN2lJeey1WlZ7+DZkin98yZ5+xSaTfzoba646
+         rD5wZHGaj9TKOpld7Z92eTN+VHDZRukZyquY2cstpAcJmpDTVIghkNB5cAy5U4kozBKY
+         r35w==
+X-Gm-Message-State: AOAM530G77eInWDSUjGTNtbj/UWKGw1x5LA9aOFAkfPA7uHWoN8gtbBR
+        o/JKHDvcI8FSCZ5SYOGSm4u9lD7Ucw==
+X-Google-Smtp-Source: ABdhPJy1IN1Yh7dpt4SPnBNScBJGDEEHZOoTyNAsC9iWUzaC3NzgrIrAvS3HBzaqBAE96xk4D9VJbg==
+X-Received: by 2002:a4a:d155:: with SMTP id o21mr3323924oor.72.1612988385714;
+        Wed, 10 Feb 2021 12:19:45 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s123sm588610oos.3.2021.02.10.12.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 12:19:45 -0800 (PST)
+Received: (nullmailer pid 2691900 invoked by uid 1000);
+        Wed, 10 Feb 2021 20:19:43 -0000
+Date:   Wed, 10 Feb 2021 14:19:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Piyush Mehta <piyush.mehta@xilinx.com>
+Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
+        p.zabel@pengutronix.de, git@xilinx.com, sgoud@xilinx.com,
+        michal.simek@xilinx.com, robh+dt@kernel.org
+Subject: Re: [PATCH V3 1/2] dt-bindings: ata: ahci: ceva: Update
+ documentation for CEVA Controller
+Message-ID: <20210210201943.GA2691845@robh.at.kernel.org>
+References: <1612807436-5238-1-git-send-email-piyush.mehta@xilinx.com>
+ <1612807436-5238-2-git-send-email-piyush.mehta@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210201051019.1174983-5-satyat@google.com>
+In-Reply-To: <1612807436-5238-2-git-send-email-piyush.mehta@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 05:10:18AM +0000, Satya Tangirala wrote:
-> Now that device mapper supports inline encryption, add the ability to
-> evict keys from all underlying devices. When an upper layer requests
-> a key eviction, we simply iterate through all underlying devices
-> and evict that key from each device.
+On Mon, 08 Feb 2021 23:33:55 +0530, Piyush Mehta wrote:
+> This patch updates the documentation for the CEVA controller for adding
+> the optional properties for 'phys' and 'resets'.
 > 
-> Co-developed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
+> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> ---
+>  Documentation/devicetree/bindings/ata/ahci-ceva.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
-This latest version looks good to me.  If it's needed despite my
-Co-developed-by, feel free to add:
-
-	Reviewed-by: Eric Biggers <ebiggers@google.com>
-
-- Eric
+Acked-by: Rob Herring <robh@kernel.org>
