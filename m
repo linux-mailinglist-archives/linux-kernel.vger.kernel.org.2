@@ -2,74 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393D6316256
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1761F31626D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhBJJev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhBJJbz (ORCPT
+        id S229974AbhBJJhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:37:16 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13340 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhBJJeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:31:55 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42432C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 01:31:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xY0hkqiKqnJQrakw6J8JZNYRgYTVBcbM/Rzktro6Llw=; b=OWitRgZasw1Xq5eAW+kBJ7qZBE
-        UKOvKbARKPkrVnypsXIrGZyEgAtrt8U3MOtdJJ+Uihw0bIInnHxeDOHQ02rAQ6XT1Rlx00ztpyq6s
-        3RGR3do0ITa/bwn9KWF6W6qVFEYSOhm/YcX9lsKTPIvmorA/OB6Pvwc8enGSYlDGfAtfeYhlr3xer
-        nDzWMVuSKOTVRwEN7xSFnbUcVHt4gjBxXWW+fA/SP3aE3MWreBvoBm/aYQSXBHlaW1+P56ivRcI/0
-        MUC+2eqx4UI4xooUERvEeSSU6YZ3+qWmbNzfmQDREUidXdBEvPd3zGjcx25woWNZwgPnEmUqRHEVC
-        Bl+72zAw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9lq0-0005WC-3t; Wed, 10 Feb 2021 09:31:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D5706301EFB;
-        Wed, 10 Feb 2021 10:31:06 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C2190202761A3; Wed, 10 Feb 2021 10:31:06 +0100 (CET)
-Date:   Wed, 10 Feb 2021 10:31:06 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2.1 2/3] objtool,x86: Additionally decode: mov %rsp,
- (%reg)
-Message-ID: <YCOn2uzMFnT4Y/yp@hirez.programming.kicks-ass.net>
-References: <20210209091600.075402197@infradead.org>
- <20210209093521.924097404@infradead.org>
- <YCOiowWtr8XTT+mN@hirez.programming.kicks-ass.net>
+        Wed, 10 Feb 2021 04:34:46 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DbF021LFbz7jXq;
+        Wed, 10 Feb 2021 17:32:02 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 10 Feb 2021
+ 17:33:18 +0800
+Subject: Re: [PATCH] PCI: Use subdir-ccflags-* to inherit debug flag
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <linux-pci@vger.kernel.org>, <prime.zeng@huawei.com>,
+        <linuxarm@openeuler.org>, Masahiro Yamada <masahiroy@kernel.org>,
+        "Michal Marek" <michal.lkml@markovi.net>,
+        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210209212510.GA513360@bjorn-Precision-5520>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <f65c648d-fdce-b4e9-b4bf-17c7543d1c5b@hisilicon.com>
+Date:   Wed, 10 Feb 2021 17:33:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCOiowWtr8XTT+mN@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210209212510.GA513360@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:08:51AM +0100, Peter Zijlstra wrote:
-> +				/* skip nontrivial SIB */
-> +				if (modrm_rm == 4 && sib != 0x24)
-> +					break;
+On 2021/2/10 5:25, Bjorn Helgaas wrote:
+> [+cc Masahiro, Michal, linux-kbuild, linux-kernel]
+> 
+> On Thu, Feb 04, 2021 at 07:30:15PM +0800, Yicong Yang wrote:
+>> From: Junhao He <hejunhao2@hisilicon.com>
+>>
+>> Use subdir-ccflags-* instead of ccflags-* to inherit the debug
+>> settings from Kconfig when traversing subdirectories.
+>>
+>> Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> I applied this with Krzysztof's reviewed-by and the commit log below
+> to pci/misc for v5.12, thanks!
+> 
+> Feel free to copy or improve the commit log for use elsewhere.
+> 
 
-Hmm,, maybe that should be:
+thanks for improving the commit. i admit that i didn't make the it
+clear enough. it's much better now.
 
-	if (modrm_rm == 4 && !(sib == 0x24 && rex_b == rex_x))
+Thanks,
+Yicong
 
-Because what we have is that once we have a SIB byte, rex_b is for
-sib_base and rex_x is always sib_index, and we need to ensure that
-sib_base == sib_index for the trivial case.
+>> ---
+>>  drivers/pci/Makefile | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+>> index 11cc794..d62c4ac 100644
+>> --- a/drivers/pci/Makefile
+>> +++ b/drivers/pci/Makefile
+>> @@ -36,4 +36,4 @@ obj-$(CONFIG_PCI_ENDPOINT)	+= endpoint/
+>>  obj-y				+= controller/
+>>  obj-y				+= switch/
+>>  
+>> -ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+>> +subdir-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+> 
+> commit e8e9aababe60 ("PCI: Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy")
+> Author: Junhao He <hejunhao2@hisilicon.com>
+> Date:   Thu Feb 4 19:30:15 2021 +0800
+> 
+>     PCI: Apply CONFIG_PCI_DEBUG to entire drivers/pci hierarchy
+>     
+>     CONFIG_PCI_DEBUG=y adds -DDEBUG to CFLAGS, which enables things like
+>     pr_debug() and dev_dbg() (and hence pci_dbg()).  Previously we added
+>     -DDEBUG for files in drivers/pci/, but not files in subdirectories of
+>     drivers/pci/.
+>     
+>     Add -DDEBUG to CFLAGS for all files below drivers/pci/ so CONFIG_PCI_DEBUG
+>     applies to the entire hierarchy.
+>     
+>     [bhelgaas: commit log]
+>     Link: https://lore.kernel.org/r/1612438215-33105-1-git-send-email-yangyicong@hisilicon.com
+>     Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+>     Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>     Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+>     Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+> 
+> diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+> index 11cc79411e2d..d62c4ac4ae1b 100644
+> --- a/drivers/pci/Makefile
+> +++ b/drivers/pci/Makefile
+> @@ -36,4 +36,4 @@ obj-$(CONFIG_PCI_ENDPOINT)	+= endpoint/
+>  obj-y				+= controller/
+>  obj-y				+= switch/
+>  
+> -ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+> +subdir-ccflags-$(CONFIG_PCI_DEBUG) := -DDEBUG
+> 
+> .
+> 
 
-
-/me changes...
