@@ -2,144 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6056315CBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B669315CBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbhBJB7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:59:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22906 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233752AbhBJA3b (ORCPT
+        id S235231AbhBJB7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:59:50 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:42958 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233717AbhBJA3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 19:29:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612916882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s7nJXjhQgNiPsFSxGFj8Vgmj0d3wdxtzmHxHcBXO3yM=;
-        b=f91NWxOEy62yJWy+SkOHUehhx3LGNAGRrmrVtOCE7+LxjLUo2WzUlLfbF7yoy9qZAPlfpk
-        Yl5CzFQQsLBXRe5kwqLhG8GiBPy6zZ7SQ463kzyoGFjyZHipsvJak7UfzEjMBoWuBlGoYy
-        WX1JWDBOCGgzo0yHO7/F+OzaFf3r8YE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-txyAapGtMqaRTWU0PK6oEg-1; Tue, 09 Feb 2021 19:28:00 -0500
-X-MC-Unique: txyAapGtMqaRTWU0PK6oEg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDB73835E20;
-        Wed, 10 Feb 2021 00:27:57 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-119-222.rdu2.redhat.com [10.10.119.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 090906E71D;
-        Wed, 10 Feb 2021 00:27:52 +0000 (UTC)
-Subject: Re: [PATCH v2 06/28] locking/rwlocks: Add contention detection for
- rwlocks
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Davidlohr Bueso <dbueso@suse.de>
-References: <20210202185734.1680553-1-bgardon@google.com>
- <20210202185734.1680553-7-bgardon@google.com>
- <20210209203908.GA255655@roeck-us.net>
- <3ee109cd-e406-4a70-17e8-dfeae7664f5f@redhat.com>
- <20210209222519.GA178687@roeck-us.net>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <fc7792e2-26f1-2b37-fb79-002d8d6d4ef7@redhat.com>
-Date:   Tue, 9 Feb 2021 19:27:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 9 Feb 2021 19:29:32 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 677A622B35;
+        Tue,  9 Feb 2021 19:28:33 -0500 (EST)
+Date:   Wed, 10 Feb 2021 11:28:38 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+cc:     tanxiaofei <tanxiaofei@huawei.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
+Subject: RE: [Linuxarm]  Re: [PATCH for-next 00/32] spin lock usage optimization
+ for SCSI drivers
+In-Reply-To: <6712a7f16b99489db2828098dc3e03b2@hisilicon.com>
+Message-ID: <968b5f7a-5375-f0c6-c8c4-26ea6dabd9d1@telegraphics.com.au>
+References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com> <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au> <e949a474a9284ac6951813bfc8b34945@hisilicon.com> <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
+ <6712a7f16b99489db2828098dc3e03b2@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209222519.GA178687@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 5:25 PM, Guenter Roeck wrote:
-> On Tue, Feb 09, 2021 at 04:46:02PM -0500, Waiman Long wrote:
->> On 2/9/21 3:39 PM, Guenter Roeck wrote:
->>> On Tue, Feb 02, 2021 at 10:57:12AM -0800, Ben Gardon wrote:
->>>> rwlocks do not currently have any facility to detect contention
->>>> like spinlocks do. In order to allow users of rwlocks to better manage
->>>> latency, add contention detection for queued rwlocks.
->>>>
->>>> CC: Ingo Molnar <mingo@redhat.com>
->>>> CC: Will Deacon <will@kernel.org>
->>>> Acked-by: Peter Zijlstra <peterz@infradead.org>
->>>> Acked-by: Davidlohr Bueso <dbueso@suse.de>
->>>> Acked-by: Waiman Long <longman@redhat.com>
->>>> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
->>>> Signed-off-by: Ben Gardon <bgardon@google.com>
->>> When building mips:defconfig, this patch results in:
->>>
->>> Error log:
->>> In file included from include/linux/spinlock.h:90,
->>>                    from include/linux/ipc.h:5,
->>>                    from include/uapi/linux/sem.h:5,
->>>                    from include/linux/sem.h:5,
->>>                    from include/linux/compat.h:14,
->>>                    from arch/mips/kernel/asm-offsets.c:12:
->>> arch/mips/include/asm/spinlock.h:17:28: error: redefinition of 'queued_spin_unlock'
->>>      17 | #define queued_spin_unlock queued_spin_unlock
->>>         |                            ^~~~~~~~~~~~~~~~~~
->>> arch/mips/include/asm/spinlock.h:22:20: note: in expansion of macro 'queued_spin_unlock'
->>>      22 | static inline void queued_spin_unlock(struct qspinlock *lock)
->>>         |                    ^~~~~~~~~~~~~~~~~~
->>> In file included from include/asm-generic/qrwlock.h:17,
->>>                    from ./arch/mips/include/generated/asm/qrwlock.h:1,
->>>                    from arch/mips/include/asm/spinlock.h:13,
->>>                    from include/linux/spinlock.h:90,
->>>                    from include/linux/ipc.h:5,
->>>                    from include/uapi/linux/sem.h:5,
->>>                    from include/linux/sem.h:5,
->>>                    from include/linux/compat.h:14,
->>>                    from arch/mips/kernel/asm-offsets.c:12:
->>> include/asm-generic/qspinlock.h:94:29: note: previous definition of 'queued_spin_unlock' was here
->>>      94 | static __always_inline void queued_spin_unlock(struct qspinlock *lock)
->>>         |                             ^~~~~~~~~~~~~~~~~~
->> I think the compile error is caused by the improper header file inclusion
->> ordering. Can you try the following change to see if it can fix the compile
->> error?
->>
-> That results in:
->
-> In file included from ./arch/mips/include/generated/asm/qrwlock.h:1,
->                   from ./arch/mips/include/asm/spinlock.h:13,
->                   from ./include/linux/spinlock.h:90,
->                   from ./include/linux/ipc.h:5,
->                   from ./include/uapi/linux/sem.h:5,
->                   from ./include/linux/sem.h:5,
->                   from ./include/linux/compat.h:14,
->                   from arch/mips/kernel/asm-offsets.c:12:
-> ./include/asm-generic/qrwlock.h: In function 'queued_rwlock_is_contended':
-> ./include/asm-generic/qrwlock.h:127:9: error: implicit declaration of function 'arch_spin_is_locked'
->
-> Guenter
+On Tue, 9 Feb 2021, Song Bao Hua (Barry Song) wrote:
 
-It is because in arch/mips/include/asm/spinlock.h, asm/qrwlock.h is 
-included before asm/qspinlock.h. The compilation error should be gone if 
-the asm/qrwlock.h is removed or moved after asm/qspinlock.h.
+> > On Tue, 9 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> > 
+> > > > On Sun, 7 Feb 2021, Xiaofei Tan wrote:
+> > > >
+> > > > > Replace spin_lock_irqsave with spin_lock in hard IRQ of SCSI 
+> > > > > drivers. There are no function changes, but may speed up if 
+> > > > > interrupt happen too often.
+> > > >
+> > > > This change doesn't necessarily work on platforms that support 
+> > > > nested interrupts.
+> > > >
+> > > > Were you able to measure any benefit from this change on some 
+> > > > other platform?
+> > >
+> > > I think the code disabling irq in hardIRQ is simply wrong. Since 
+> > > this commit
+> > >
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc 
+> > > genirq: Run irq handlers with interrupts disabled
+> > >
+> > > interrupt handlers are definitely running in a irq-disabled context 
+> > > unless irq handlers enable them explicitly in the handler to permit 
+> > > other interrupts.
+> > >
+> > 
+> > Repeating the same claim does not somehow make it true. 
+> 
+> Sorry for I didn't realize xiaofei had replied.
+> 
 
-I did a x86 build and there was no compilation issue.
+I was referring to the claim in patch 00/32, i.e. that interrupt handlers 
+only run when irqs are disabled.
 
-Cheers,
-Longman
+> > If you put your claim to the test, you'll see that that interrupts are 
+> > not disabled on m68k when interrupt handlers execute.
+> 
+> Sounds like an implementation issue of m68k since IRQF_DISABLED has been 
+> totally removed.
+> 
 
+It's true that IRQF_DISABLED could be used to avoid the need for irq locks 
+in interrupt handlers. So, if you want to remove irq locks from interrupt 
+handlers, today you can't use IRQF_DISABLED to help you. So what?
+
+> > 
+> > The Interrupt Priority Level (IPL) can prevent any given irq handler 
+> > from being re-entered, but an irq with a higher priority level may be 
+> > handled during execution of a lower priority irq handler.
+> > 
+> 
+> We used to have IRQF_DISABLED to support so-called "fast interrupt" to 
+> avoid this. 
+> 
+> But the concept has been totally removed. That is interesting if m68k 
+> still has this issue.
+> 
+
+Prioritized interrupts are beneficial. Why would you want to avoid them?
+
+Moreover, there's no reason to believe that m68k is the only platform that 
+supports nested interrupts.
+
+> > sonic_interrupt() uses an irq lock within an interrupt handler to 
+> > avoid issues relating to this. This kind of locking may be needed in 
+> > the drivers you are trying to patch. Or it might not. Apparently, 
+> > no-one has looked.
+> 
+> Thanks
+> Barry
+> 
