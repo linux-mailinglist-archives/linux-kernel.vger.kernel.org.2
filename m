@@ -2,249 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C33316710
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93112316715
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbhBJMqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:46:53 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:40902 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232045AbhBJMpA (ORCPT
+        id S231186AbhBJMr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:47:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230419AbhBJMqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:45:00 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l9opz-0002dr-49; Wed, 10 Feb 2021 12:43:19 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Colin Ian King <colin.king@canonical.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] scripts/spelling.txt: add more spellings to spelling.txt
-Date:   Wed, 10 Feb 2021 12:43:18 +0000
-Message-Id: <20210210124318.55082-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        Wed, 10 Feb 2021 07:46:43 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB87C061786;
+        Wed, 10 Feb 2021 04:46:02 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id 7so2407757wrz.0;
+        Wed, 10 Feb 2021 04:46:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rjLWgX3Eg/gC3RV2khv5c8f9NWNyEch31NnXlurt3Ss=;
+        b=GSU8nJJHRxGKxEYvAVHgEZ99IaPo0P82K2x/ng7rcD0jt+NV3L03A27i1H57yxSIxh
+         /ix5ODPDpCQiJftDGoj9wOWsLSy5xcMrn+tClntvA+wmxdJmfrzx/MUqJJiXEwHDeC0I
+         dtbDh2tJORkIrYHkE0g9fUS4N7old4ebGv+D75QpkkmjRxu5mBL4hkboAi4chmFY1GCe
+         Y2dfPmWdzLtFxoNTJ9JD7aJkXPQY2iwoVdYi1dtnv87ZxOfDg2VxkIe6rfQj0mrAKf3Z
+         HpJwhtERMHvMhNT7nvtQiVT7CsRyqedvV18w1GxtWP3xZNK7/ghrnLa+gxewO8yaMSeU
+         lzjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rjLWgX3Eg/gC3RV2khv5c8f9NWNyEch31NnXlurt3Ss=;
+        b=XQD+J3CWZkOCaoKxZgvq4F6rPAyPbAt1gkxXewuLbk/2P7pqeW0U92c3MgOo0Ge+hj
+         YQgWfZIzumaGAiWQzmO0DWm5JReqXhCThSEC7J7rkYxewodEV7lXLvcNlSHn/joPs0vG
+         KCAfLh8KxmIk+YTRURPiSi8gJlDthBNS0WTi8f4f0szslQtOrzBK3pdy4lHz9hSbN0hY
+         D7lcpfDbx41Em9pUhrId68FTqpQcz5jsRNMjWFJ54wnsjZafnpubq8Vjaqq99wyhZRhu
+         2COX2YSj+8zd5LLWF/JzaVQodjGQwf3sbwHV+z5EH4JSdf8kzXKDmnlR8sWxiL17RjDw
+         caMA==
+X-Gm-Message-State: AOAM531oS+GPgJFnTtSqS+51NVeAAAFNuFCevmHVt/bxd4+izJL5zFbV
+        O/aqkdZR4x360co/iadf558=
+X-Google-Smtp-Source: ABdhPJyGB+U3gO1kAGzHQsdpRDV8svemT3zKAyNPWMoEzioiHLuUbNy6AOhrhPwCNeE3NNBWZeMhYA==
+X-Received: by 2002:a5d:4d8d:: with SMTP id b13mr3334138wru.178.1612961161574;
+        Wed, 10 Feb 2021 04:46:01 -0800 (PST)
+Received: from ziggy.stardust (static-188-169-27-46.ipcom.comunitel.net. [46.27.169.188])
+        by smtp.gmail.com with ESMTPSA id f17sm2826671wrx.57.2021.02.10.04.46.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 04:46:01 -0800 (PST)
+To:     Weiyi Lu <weiyi.lu@mediatek.com>, Rob Herring <robh@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <1608642587-15634-1-git-send-email-weiyi.lu@mediatek.com>
+ <1608642587-15634-11-git-send-email-weiyi.lu@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH v6 10/22] clk: mediatek: Add MT8192 basic clocks support
+Message-ID: <b16e4693-1dc6-e13c-3cc9-feb5005179dd@gmail.com>
+Date:   Wed, 10 Feb 2021 13:46:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1608642587-15634-11-git-send-email-weiyi.lu@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Here are some of the more common spelling mistakes and typos that I've
-found while fixing up spelling mistakes in the kernel since September 2020
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- scripts/spelling.txt | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+On 22/12/2020 14:09, Weiyi Lu wrote:
+> Add MT8192 basic clock providers, include topckgen, apmixedsys,
+> infracfg and pericfg.
+> 
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+> ---
+>  drivers/clk/mediatek/Kconfig      |    8 +
+>  drivers/clk/mediatek/Makefile     |    1 +
+>  drivers/clk/mediatek/clk-mt8192.c | 1326 +++++++++++++++++++++++++++++++++++++
+>  drivers/clk/mediatek/clk-mux.h    |   15 +
+>  4 files changed, 1350 insertions(+)
+>  create mode 100644 drivers/clk/mediatek/clk-mt8192.c
+> 
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index a47006de990e..2e3ba91a5072 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -340,6 +340,7 @@ comppatible||compatible
- compres||compress
- compresion||compression
- comression||compression
-+comunicate||communicate
- comunication||communication
- conbination||combination
- conditionaly||conditionally
-@@ -467,6 +468,7 @@ developpment||development
- deveolpment||development
- devided||divided
- deviece||device
-+devision||division
- diable||disable
- dicline||decline
- dictionnary||dictionary
-@@ -480,6 +482,7 @@ difinition||definition
- digial||digital
- dimention||dimension
- dimesions||dimensions
-+diconnected||disconnected
- disgest||digest
- dispalying||displaying
- diplay||display
-@@ -519,6 +522,7 @@ downlads||downloads
- droped||dropped
- droput||dropout
- druing||during
-+dyanmic||dynamic
- dynmaic||dynamic
- eanable||enable
- eanble||enable
-@@ -543,6 +547,7 @@ encrupted||encrypted
- encrypiton||encryption
- encryptio||encryption
- endianess||endianness
-+enpoint||endpoint
- enhaced||enhanced
- enlightnment||enlightenment
- enqueing||enqueuing
-@@ -644,6 +649,7 @@ forwardig||forwarding
- frambuffer||framebuffer
- framming||framing
- framwork||framework
-+frequence||frequency
- frequncy||frequency
- frequancy||frequency
- frome||from
-@@ -686,10 +692,12 @@ handfull||handful
- hanlde||handle
- hanled||handled
- happend||happened
-+hardare||hardware
- harware||hardware
- havind||having
- heirarchically||hierarchically
- helpfull||helpful
-+heterogenous||heterogeneous
- hexdecimal||hexadecimal
- hybernate||hibernate
- hierachy||hierarchy
-@@ -734,6 +742,7 @@ inconsistant||inconsistent
- increas||increase
- incremeted||incremented
- incrment||increment
-+incuding||including
- inculde||include
- indendation||indentation
- indended||intended
-@@ -744,6 +753,7 @@ indiate||indicate
- indicat||indicate
- inexpect||inexpected
- inferface||interface
-+infinit||infinite
- infomation||information
- informatiom||information
- informations||information
-@@ -774,6 +784,7 @@ instace||instance
- instal||install
- instanciate||instantiate
- instanciated||instantiated
-+instuments||instruments
- insufficent||insufficient
- inteface||interface
- integreated||integrated
-@@ -872,6 +883,7 @@ mailformed||malformed
- malplaced||misplaced
- malplace||misplace
- managable||manageable
-+managament||management
- managment||management
- mangement||management
- manger||manager
-@@ -890,6 +902,7 @@ meetign||meeting
- memeory||memory
- memmber||member
- memoery||memory
-+memroy||memory
- ment||meant
- mergable||mergeable
- mesage||message
-@@ -1003,6 +1016,7 @@ overlaping||overlapping
- overide||override
- overrided||overridden
- overriden||overridden
-+overrrun||overrun
- overun||overrun
- overwritting||overwriting
- overwriten||overwritten
-@@ -1039,6 +1053,7 @@ peforming||performing
- peice||piece
- pendantic||pedantic
- peprocessor||preprocessor
-+perfomance||performance
- perfoming||performing
- perfomring||performing
- periperal||peripheral
-@@ -1104,6 +1119,7 @@ prodecure||procedure
- progamming||programming
- progams||programs
- progess||progress
-+programable||programmable
- programers||programmers
- programm||program
- programms||programs
-@@ -1148,6 +1164,7 @@ recieved||received
- recieve||receive
- reciever||receiver
- recieves||receives
-+recieving||receiving
- recogniced||recognised
- recognizeable||recognizable
- recommanded||recommended
-@@ -1251,6 +1268,7 @@ searchs||searches
- secquence||sequence
- secund||second
- segement||segment
-+seleted||selected
- semaphone||semaphore
- senario||scenario
- senarios||scenarios
-@@ -1267,6 +1285,7 @@ seqeunce||sequence
- seqeuncer||sequencer
- seqeuencer||sequencer
- sequece||sequence
-+sequemce||sequence
- sequencial||sequential
- serivce||service
- serveral||several
-@@ -1337,6 +1356,7 @@ suble||subtle
- substract||subtract
- submited||submitted
- submition||submission
-+succeded||succeeded
- suceed||succeed
- succesfully||successfully
- succesful||successful
-@@ -1357,6 +1377,7 @@ supportin||supporting
- suppoted||supported
- suppported||supported
- suppport||support
-+supprot||support
- supress||suppress
- surpressed||suppressed
- surpresses||suppresses
-@@ -1405,6 +1426,7 @@ thresold||threshold
- throught||through
- trackling||tracking
- troughput||throughput
-+trys||tries
- thses||these
- tiggers||triggers
- tiggered||triggered
-@@ -1418,7 +1440,9 @@ traking||tracking
- tramsmitted||transmitted
- tramsmit||transmit
- tranasction||transaction
-+tranceiver||transceiver
- tranfer||transfer
-+tranmission||transmission
- transcevier||transceiver
- transciever||transceiver
- transferd||transferred
-@@ -1472,6 +1496,7 @@ unnecesary||unnecessary
- unneedingly||unnecessarily
- unnsupported||unsupported
- unmached||unmatched
-+unprecise||imprecise
- unregester||unregister
- unresgister||unregister
- unrgesiter||unregister
-@@ -1507,6 +1532,7 @@ varient||variant
- vaule||value
- verbse||verbose
- veify||verify
-+veriosn||version
- verisons||versions
- verison||version
- verson||version
--- 
-2.30.0
+[...]
 
+> +static int clk_mt8192_apmixed_probe(struct platform_device *pdev)
+> +{
+> +	struct clk_onecell_data *clk_data;
+> +	struct device_node *node = pdev->dev.of_node;
+> +	int r;
+> +
+> +	clk_data = mtk_alloc_clk_data(CLK_APMIXED_NR_CLK);
+> +	if (!clk_data)
+> +		return -ENOMEM;
+> +
+> +	mtk_clk_register_plls(node, plls, ARRAY_SIZE(plls), clk_data);
+> +	r = mtk_clk_register_gates(node, apmixed_clks, ARRAY_SIZE(apmixed_clks), clk_data);
+> +	if (r)
+> +		return r;
+> +
+> +	return of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
+> +}
+> +
+> +static const struct of_device_id of_match_clk_mt8192[] = {
+> +	{
+> +		.compatible = "mediatek,mt8192-apmixedsys",
+> +		.data = clk_mt8192_apmixed_probe,
+> +	}, {
+> +		.compatible = "mediatek,mt8192-topckgen",
+> +		.data = clk_mt8192_top_probe,
+> +	}, {
+> +		.compatible = "mediatek,mt8192-infracfg",
+> +		.data = clk_mt8192_infra_probe,
+> +	}, {
+> +		.compatible = "mediatek,mt8192-pericfg",
+> +		.data = clk_mt8192_peri_probe,
+> +	}, {
+> +		/* sentinel */
+> +	}
+> +};
+> +
+> +static int clk_mt8192_probe(struct platform_device *pdev)
+> +{
+> +	int (*clk_probe)(struct platform_device *pdev);
+> +	int r;
+> +
+> +	clk_probe = of_device_get_match_data(&pdev->dev);
+> +	if (!clk_probe)
+> +		return -EINVAL;
+> +
+> +	r = clk_probe(pdev);
+> +	if (r)
+> +		dev_err(&pdev->dev, "could not register clock provider: %s: %d\n", pdev->name, r);
+> +
+> +	return r;
+> +}
+> +
+> +static struct platform_driver clk_mt8192_drv = {
+> +	.probe = clk_mt8192_probe,
+> +	.driver = {
+> +		.name = "clk-mt8192",
+> +		.of_match_table = of_match_clk_mt8192,
+> +	},
+> +};
+> +
+> +static int __init clk_mt8192_init(void)
+> +{
+> +	return platform_driver_register(&clk_mt8192_drv);
+> +}
+> +
+> +arch_initcall(clk_mt8192_init);
+
+Do we really need all these clocks that early?
+Why don't we use CLK_OF_DECLARE_DRIVER() then and why do we initialize some
+clocks CLK_OF_DECLARE_DRIVER and other with arch_initcall?
+
+I know that this is in other drivers for MediaTek SoCs, but that does not mean
+it's the right approach.
+
+
+> diff --git a/drivers/clk/mediatek/clk-mux.h b/drivers/clk/mediatek/clk-mux.h
+> index f5625f4..afbc7df 100644
+> --- a/drivers/clk/mediatek/clk-mux.h
+> +++ b/drivers/clk/mediatek/clk-mux.h
+> @@ -77,6 +77,21 @@ struct mtk_mux {
+>  			_width, _gate, _upd_ofs, _upd,			\
+>  			CLK_SET_RATE_PARENT)
+>  
+> +#define MUX_CLR_SET_UPD_FLAGS(_id, _name, _parents, _mux_ofs,		\
+> +			_mux_set_ofs, _mux_clr_ofs, _shift, _width,	\
+> +			_upd_ofs, _upd, _flags)				\
+> +		GATE_CLR_SET_UPD_FLAGS(_id, _name, _parents, _mux_ofs,	\
+> +			_mux_set_ofs, _mux_clr_ofs, _shift, _width,	\
+> +			0, _upd_ofs, _upd, _flags,			\
+> +			mtk_mux_clr_set_upd_ops)
+> +
+> +#define MUX_CLR_SET_UPD(_id, _name, _parents, _mux_ofs,			\
+> +			_mux_set_ofs, _mux_clr_ofs, _shift, _width,	\
+> +			_upd_ofs, _upd)					\
+> +		MUX_CLR_SET_UPD_FLAGS(_id, _name, _parents,		\
+> +			_mux_ofs, _mux_set_ofs, _mux_clr_ofs, _shift,	\
+> +			_width, _upd_ofs, _upd,	CLK_SET_RATE_PARENT)
+> +
+
+Why can't we do something like:
+
+#define MUX_CLR_SET_UPD(_id, _name, _parents, _mux_ofs,			\
+			_mux_set_ofs, _mux_clr_ofs, _shift, _width,	\
+			_upd_ofs, _upd)					\
+		GATE_CLR_SET_UPD_FLAGS(_id, _name, _parents, _mux_ofs,	\
+			_mux_set_ofs, _mux_clr_ofs, _shift, _width,	\
+			0, _upd_ofs, _upd, CLK_SET_RATE_PARENT,			\
+			mtk_mux_clr_set_upd_ops)
+
+>  struct clk *mtk_clk_register_mux(const struct mtk_mux *mux,
+>  				 struct regmap *regmap,
+>  				 spinlock_t *lock);
+> 
