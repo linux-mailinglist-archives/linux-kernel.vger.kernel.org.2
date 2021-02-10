@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330F5316441
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2336E316443
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhBJKtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:49:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbhBJKqd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:46:33 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C49C0613D6;
-        Wed, 10 Feb 2021 02:45:52 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id w2so3194077ejk.13;
-        Wed, 10 Feb 2021 02:45:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1rNLXcvXKP3m/fnPThWaXf4M817aZUPGjPuR43utm5Q=;
-        b=bQRtat1Xo7i63Co4iAOtYmLAkcqeWBNEsuqqBTZC/sdXBIAuIhxW+yEfTW7tMgqXNR
-         NaqrHFZLhkELQZJs+Rxzc6q22fgJ7363f58/IxCP6HhoDlKmUBej3Ud7JVC3V9cSXGem
-         M/20hpLtqmJRy0w3i1zTiJH+zAlGzK3m6GyQGGjRlikreB00qh2GmmGAic23HCI1QYq2
-         7wWLGrtE2dwuCysbP8+AGFZbanuCLPhXOwBiXqaUzPlZkm2CV1xqkaDh9CWquq87io07
-         dKu37qYD14SYEK9H9QJq9UyJdO0odBc/pu/TO6ffraYdMRCrTMr1SUVKvxJ4U+2g8Y/S
-         erXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1rNLXcvXKP3m/fnPThWaXf4M817aZUPGjPuR43utm5Q=;
-        b=rLJXn4303qDi21mTs11T4L1lDHhzNFm+jDk6z5YUylwLqMWm8wUSVeuZhUpeVxKoLT
-         R4A0I2GSrX4zhFoYZdXkxoKBjBvNBEc1SU427Gj8a6ykH/wqMG2PS5Qm3BqYRZR3bc+I
-         zEXf0QVGa8nVr6Q+vgmVJ+QUW/iFF8dQP0cpMvUfKrKPEzM93q8Z/nM4OaLYySXDwIi4
-         SZLAnXx/qlhYTvLh6VQoavjPFaPrKwyVkOCGLcUJ/L5nQIXX5qpwiY//dH04WIwl4siI
-         6oyZUFdLgGBYP9MRM1fEJv+Egyn/bVhmJuVOH1+Fpqw3yXwGohJojG8krddSEm4Eb+Qi
-         IPEQ==
-X-Gm-Message-State: AOAM5309HP132TJpu8WMcYpWhSPCugsKUdG7qkI2c9ziECFuLSM8vGvN
-        dyWJ3z7pRZj5vtMB3uETgda5fGACs8s=
-X-Google-Smtp-Source: ABdhPJxgAXMW3rVTYhwx790W2oXXaFQwqENLDhxih4f/pLVMsP5SR1/Wa7g89TQbRB6Uzekt0BcExQ==
-X-Received: by 2002:a17:906:4eda:: with SMTP id i26mr2229075ejv.467.1612953951473;
-        Wed, 10 Feb 2021 02:45:51 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id c18sm675126edu.20.2021.02.10.02.45.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 02:45:50 -0800 (PST)
-Date:   Wed, 10 Feb 2021 12:45:49 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Nikolay Aleksandrov <nikolay@nvidia.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 00/11] Cleanup in brport flags switchdev
- offload for DSA
-Message-ID: <20210210104549.ga3lgjafn5x3htwj@skbuf>
-References: <20210210091445.741269-1-olteanv@gmail.com>
- <a8e9284b-f0a6-0343-175d-8c323371ef8d@nvidia.com>
+        id S230495AbhBJKuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:50:15 -0500
+Received: from mout.gmx.net ([212.227.15.18]:53807 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231546AbhBJKry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:47:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1612953967;
+        bh=EqTF/IzJ5aBtYznj+Amlm5Eoid8+zvpUSrnir5sVj1k=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=CDvfnncOgwxH6WUJkccQiGI5/U4wa487EzVXLL99NEz5f16onunjdKv7hINeJNOQG
+         NFOktcuetDdvSNt0CHcQYbXqXtNtMVh91+zP6KMisn1DLYnEa5IqejyWWFx+dyM/7n
+         YkvBkJrYJPq9vKq0OdMa/6U1AUo65MAfBXM41dE0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N6bfw-1lyoWP2HS2-0183V2; Wed, 10
+ Feb 2021 11:46:07 +0100
+Message-ID: <2793c200beb530ed4a8ac32c5eea0f5aaa53c7e8.camel@gmx.de>
+Subject: Re: drm/nouneau: 5.11 cycle regression bisected to 461619f5c324
+ "drm/nouveau: switch to new allocator"
+From:   Mike Galbraith <efault@gmx.de>
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+Date:   Wed, 10 Feb 2021 11:46:06 +0100
+In-Reply-To: <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
+References: <1d663cd74af91e23f4f24ebbdd65ef3ba72c15fc.camel@gmx.de>
+         <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a8e9284b-f0a6-0343-175d-8c323371ef8d@nvidia.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TlnFB2qCR9sD5yLrO0YrLpiU7LAV2SWJqMOW94u5Zbq51X7TGM5
+ 4ljx3CZrWVsASZj+zaWZrJ36OBantMeREs493mwNwntisbHNKzQmL3hei8OIvHnPp+bef81
+ IFprrTG23DKkVVc+UINbbXXIaR7jtV7Hfgj1mRHsBjyIX4s/1k7sVvO2wmyKereZNVVB9Ee
+ Vh36khUriaWCKcIcY5IYA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2ZdsEagwagA=:bnQO0F7rHtkODJhhOkxCNL
+ 8a3QLax7WH2Hf8g+m/A+XgOirOCPc/XMZrpzHUGd/yps3LmRw5FYCssmYlNiSbkFsD0kk8FDE
+ 1F4tqRFGxEfB70aCKkiEGaIdQYm7GsjAnfYHYnzTDXxlH4T1HxpCF624tuHUqzY48w0O7P54k
+ T9bSKytO7TMYGL+NSjeU8SPbKdkiZc67TVmAZ1P/4EyBoXYKODUmBEEvznZpmBhtg/r2AAaKS
+ dDVc0M/Z6OmgrsWNltmhOL+OQ7c6I0q4kLXVdrDsfOGPyaQWTW3bSf9TdH83mkvQpKKjHuK+C
+ 2+Lyyn6uAPbMLVC2psy+BFNzL1iXHhFiBp2cvgyzcTq+BunSXM5z3b9nXB/c+hFqKjeo/vqd5
+ YWaHD1Cw8x2n7QKqv4bKB4gbR9bcUkW14M+Cym4GH/AAy23jB1I0XlZ9Wlm0iUE8OD7gWyr1/
+ B3OeLTc81GGzRo5+fDf+K8l0w7aU5imwngFaqR7GtKlWAawzESlO2/5gK2+i3cveM1LjPzTiv
+ T88a11Q695iFiYafOO9Q0NCZDF8KBsa+4+WUWE6aogxgaBhcmJZaThAgSouFF6UEnPYv1sFIi
+ at+QT7WCyjHCVOLqjIRVhY1OYREfGe/gHw7/U+xC73/zArA8Nv+btvedIVdkZxM3iNt/EbwN0
+ 9wed1s5EzU6K0jzfQ58cRLq57yr4ZPVsf2Cd6i+ZnpwvUnRzQrOb/BwehZKbDkE8MSwqFvPm8
+ E2VJ+fonXkWOXCV6ACMiCsqqiZ7JRl0IZRPhIUzsJIJOGLvFLkMJYZjvsT5izfIvO71yEs8WZ
+ SazNtCytbsGLytS5a8GogOVVjSrB1avSf3vnQh39bLeg2QWPHBSNrvVYmDppxnvB+7lboechY
+ vcAUf8ItG6reC3HAWDlw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolay,
+On Wed, 2021-02-10 at 11:34 +0100, Christian K=F6nig wrote:
+>
+> What seems to happen here is that your system is low on resources and we
+> just try to free up pages.
 
-On Wed, Feb 10, 2021 at 12:31:43PM +0200, Nikolay Aleksandrov wrote:
-> Hi Vladimir,
-> Let's take a step back for a moment and discuss the bridge unlock/lock sequences
-> that come with this set. I'd really like to avoid those as they're a recipe
-> for future problems. The only good way to achieve that currently is to keep
-> the PRE_FLAGS call and do that in unsleepable context but move the FLAGS call
-> after the flags have been changed (if they have changed obviously). That would
-> make the code read much easier since we'll have all our lock/unlock sequences
-> in the same code blocks and won't play games to get sleepable context.
-> Please let's think and work in that direction, rather than having:
-> +	spin_lock_bh(&p->br->lock);
-> +	if (err) {
-> +		netdev_err(p->dev, "%s\n", extack._msg);
-> +		return err;
->  	}
-> +
-> 
-> which immediately looks like a bug even though after some code checking we can
-> verify it's ok. WDYT?
-> 
-> I plan to get rid of most of the br->lock since it's been abused for a very long
-> time because it's essentially STP lock, but people have started using it for other
-> things and I plan to fix that when I get more time.
+FWIW, box has oodles generic ram free right after boot.
 
-This won't make the sysfs codepath any nicer, will it?
+	-Mike
+
