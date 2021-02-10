@@ -2,47 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3315F316895
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 343D731689D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhBJOAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:00:51 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60126 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231237AbhBJOAJ (ORCPT
+        id S231939AbhBJOCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:02:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhBJOAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:00:09 -0500
+        Wed, 10 Feb 2021 09:00:25 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CE6C061788;
+        Wed, 10 Feb 2021 05:59:28 -0800 (PST)
 Date:   Wed, 10 Feb 2021 13:59:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1612965566;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=saDKPjsdTkVMcdsh6HJLQ77MX1WJzo7YGOauV4u1GrE=;
-        b=Cq+YPEVVWAR0e/QCYPeuQdhY9jMkxMZninxdeBiN3obmw8DCQRka3rhLn5izjnlhES3ZOL
-        5IPg7umQBdUxTikepzaH93qFbt9Bov11xpcmRNFoOMZsuIPqOEA+6U3jgz0sOzHQ2pJHJ9
-        456t15q3QHwsgx1MJxqg+knrhM4QIpkQz1PNOx+XAB0anpC0mR+9TPuRbdrQYpl/cSZo/n
-        YcwuU1eVsSsaPovhQN0Rv/si9RosCZ7hDVFKEZOpMJjbdBQGnnCPcSrpT9V+qwLju4zt3v
-        LnHCyKdj7sNNHvrM0q8PRoW3TqVjfQcy4nU3wYKWc+Pti+KdPA8wp43iHbQruA==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5jAdhnlW0nGE7VLL8H6UNIFgCTpB00SbcsNVapYSPNw=;
+        b=GpCMnoN+AKP1P6wOZpxIBpM8T997wGK1JKYmA159DXh5G7pOqN1fETfUTwJUFzynDxdJsB
+        +xfNT1Uk7Nm8NAfjNhRjupERkLSDmDUlcbpMX1dw0B817jO66MF+r3VA3WYWm3jrMawu66
+        XB6isg0kvH4SB9igaLOIfqhtQ5Dqfgx/5svdFhl++0n6meVTikvYHyGaapAhfoLUKwFlK6
+        Frv7rQTAd52ilLyDrSRtoY7HuD5ihH2MDKlPiFrObIN+2dREe2IGI7X9vvM8FnBcMPkawz
+        XmewVPxy3nxKvvKwbrow1L4B9n18x4A0tKCgB4yy1XSpEyC1gE071xhX4NO0cw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1612965566;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=saDKPjsdTkVMcdsh6HJLQ77MX1WJzo7YGOauV4u1GrE=;
-        b=JAEalScjsf7kDdjZZtfCPFcj0reF6qGQx9N5BrlJJt3DugIRNfme5D18IxIUEKDWsPCsv7
-        jJtZ4Ki9DrF1t1Cg==
-From:   "tip-bot2 for Sven Schnelle" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5jAdhnlW0nGE7VLL8H6UNIFgCTpB00SbcsNVapYSPNw=;
+        b=LuRr+sG0xchAqK/fThdxAgOeVnfRM/0XNAnd7CwP1xws9bCpHVqs91+MCYcwfasfVx6Bsz
+        UA2U/B9YkHqRKZBQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] s390: Use arch_local_irq_{save,restore}() in
- early boot code
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: locking/core] lockdep: Noinstr annotate warn_bogus_irq_restore()
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
+In-Reply-To: <YCKyYg53mMp4E7YI@hirez.programming.kicks-ass.net>
+References: <YCKyYg53mMp4E7YI@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <161296556578.23325.2595288129888927828.tip-bot2@tip-bot2>
+Message-ID: <161296556600.23325.14185228723423902592.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -53,43 +62,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     b38085ba60246fccc2f49d2ac162528dedbc4e71
-Gitweb:        https://git.kernel.org/tip/b38085ba60246fccc2f49d2ac162528dedbc4e71
-Author:        Sven Schnelle <svens@linux.ibm.com>
-AuthorDate:    Wed, 10 Feb 2021 14:24:16 +01:00
+Commit-ID:     c8cc7e853192d520ab6a5957f5081034103587ae
+Gitweb:        https://git.kernel.org/tip/c8cc7e853192d520ab6a5957f5081034103587ae
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 09 Feb 2021 09:30:03 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Wed, 10 Feb 2021 14:44:39 +01:00
 
-s390: Use arch_local_irq_{save,restore}() in early boot code
+lockdep: Noinstr annotate warn_bogus_irq_restore()
 
-Commit 997acaf6b4b5 ("lockdep: report broken irq restoration") makes
-compiling s390 fail because the irq enable/disable functions are now
-no longer fully contained in header files.
+  vmlinux.o: warning: objtool: lock_is_held_type()+0x107: call to warn_bogus_irq_restore() leaves .noinstr.text section
+
+As per the general rule that WARNs are allowed to violate noinstr to
+get out, annotate it away.
 
 Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Link: https://lkml.kernel.org/r/YCKyYg53mMp4E7YI@hirez.programming.kicks-ass.net
 ---
- drivers/s390/char/sclp_early_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/locking/irqflag-debug.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/s390/char/sclp_early_core.c b/drivers/s390/char/sclp_early_core.c
-index ec9f8ad..b7329af 100644
---- a/drivers/s390/char/sclp_early_core.c
-+++ b/drivers/s390/char/sclp_early_core.c
-@@ -66,13 +66,13 @@ int sclp_early_cmd(sclp_cmdw_t cmd, void *sccb)
- 	unsigned long flags;
- 	int rc;
+diff --git a/kernel/locking/irqflag-debug.c b/kernel/locking/irqflag-debug.c
+index 9603d20..810b503 100644
+--- a/kernel/locking/irqflag-debug.c
++++ b/kernel/locking/irqflag-debug.c
+@@ -4,8 +4,10 @@
+ #include <linux/export.h>
+ #include <linux/irqflags.h>
  
--	raw_local_irq_save(flags);
-+	flags = arch_local_irq_save();
- 	rc = sclp_service_call(cmd, sccb);
- 	if (rc)
- 		goto out;
- 	sclp_early_wait_irq();
- out:
--	raw_local_irq_restore(flags);
-+	arch_local_irq_restore(flags);
- 	return rc;
+-void warn_bogus_irq_restore(void)
++noinstr void warn_bogus_irq_restore(void)
+ {
++	instrumentation_begin();
+ 	WARN_ONCE(1, "raw_local_irq_restore() called with IRQs enabled\n");
++	instrumentation_end();
  }
- 
+ EXPORT_SYMBOL(warn_bogus_irq_restore);
