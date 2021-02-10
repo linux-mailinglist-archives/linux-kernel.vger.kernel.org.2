@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DC3316BA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3784316BAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhBJQse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:48:34 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:38483 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbhBJQsF (ORCPT
+        id S233068AbhBJQte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:49:34 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:34623 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232236AbhBJQsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:48:05 -0500
-Received: by mail-ot1-f45.google.com with SMTP id e4so2388550ote.5;
-        Wed, 10 Feb 2021 08:47:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=adc+2nnIR7t1ejzx3W6cWVT9M1mXeq25Jq+T/s+mbV4=;
-        b=MUaJMoMz0uwfSlLGz60dOxalvkmapIayNDYiQ3lNWXBzz1PwzbpfsBLwQnIGtH0To8
-         tIU+PX35CPKCoZn87l/yc/BQs3wiPgMnddEJB+QDrFxUzUqJlxq+n2WXGZ70d/u4B+4c
-         5rVOnMOQ6UN4DdiDmcpSOaSltRtGs2iNvuq8rV/Cg3dI53AyZZDWm+Z8FeXoXHvpb4Gx
-         BygSR1801Im4wwRDAKMTHM6oe8b3DGHmSD2WvIG9y9ap01y7/g+mFv67ryx6TrYJRmPR
-         psyZF27KOVKxWJZxUu/OWcRJA7qcyNwNw2Lzp7rkNa79Ont6w9P9nngN5gXjqiIK82Qw
-         PdDw==
-X-Gm-Message-State: AOAM533ud44iWOJ6lrBET6AphN9+AlujuzF7ir3Y5u4JXSKfj5deQPD7
-        mFU3BlNtpNyPbNcxcf4WhA==
-X-Google-Smtp-Source: ABdhPJzDBx6iO9hFxjii9+Tc5ZPdKtL7/LaOdiPcwmllkri6r4LtMp26ANi5eTLgATXAnBb8PjSItg==
-X-Received: by 2002:a9d:2277:: with SMTP id o110mr2841529ota.30.1612975644823;
-        Wed, 10 Feb 2021 08:47:24 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g11sm567977oif.9.2021.02.10.08.47.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 08:47:23 -0800 (PST)
-Received: (nullmailer pid 2308105 invoked by uid 1000);
-        Wed, 10 Feb 2021 16:47:22 -0000
-Date:   Wed, 10 Feb 2021 10:47:22 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>, drinkcat@chromium.org,
-        devicetree@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v6 1/4] dt-bindings: spmi: modify the constraint
- 'maxItems' to 'minItems'
-Message-ID: <20210210164722.GA2308044@robh.at.kernel.org>
-References: <1612675154-2747-1-git-send-email-hsin-hsiung.wang@mediatek.com>
- <1612675154-2747-2-git-send-email-hsin-hsiung.wang@mediatek.com>
+        Wed, 10 Feb 2021 11:48:42 -0500
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 6474522FB3;
+        Wed, 10 Feb 2021 17:47:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1612975676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=taQ9ZDXzhRhp/CcYP3gEH20xljinVs76d11A1gR7cew=;
+        b=X51IBq6MjkTgRAu2HK7S4uFyCiNhixgtuHtzN99mNdXcDajwB4jWOS0F9oL3TXPp6NL94M
+        bibb5KyNtdfg7CHes7KtsCc7aRF1Ez8F33zIQzCzQFrOfS8KchxBYJsizuG8YFUBqpkuC5
+        P8Ai0XFDBkDde6umC9L+nWXSW4l5/Eg=
+From:   Michael Walle <michael@walle.cc>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH net-next v2 0/9] net: phy: icplus: cleanups and new features
+Date:   Wed, 10 Feb 2021 17:47:37 +0100
+Message-Id: <20210210164746.26336-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612675154-2747-2-git-send-email-hsin-hsiung.wang@mediatek.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 07 Feb 2021 13:19:11 +0800, Hsin-Hsiung Wang wrote:
-> The constraint of 'maxItem: 1' might be larger than 1, so we modify it
-> to 'minItem: 1'.
-> 
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> ---
-> changes since v5:
-> - update the constraint of minItem to 1.
-> ---
->  Documentation/devicetree/bindings/spmi/spmi.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+Cleanup the PHY drivers for IPplus devices and add PHY counters and MDIX
+support for the IP101A/G.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Patch 5 adds a model detection based on the behavior of the PHY.
+Unfortunately, the IP101A shares the PHY ID with the IP101G. But the latter
+provides more features. Try to detect the newer model by accessing the page
+selection register. If it is writeable, it is assumed, that it is a IP101G.
+
+With this detection in place, we can now access registers >= 16 in a
+correct way on the IP101G; that is by first selecting the correct page.
+This might previouly worked, because no one ever set another active page
+before booting linux.
+
+The last two patches add the new features.
+
+Michael Walle (9):
+  net: phy: icplus: use PHY_ID_MATCH_MODEL() macro
+  net: phy: icplus: use PHY_ID_MATCH_EXACT() for IP101A/G
+  net: phy: icplus: drop address operator for functions
+  net: phy: icplus: use the .soft_reset() of the phy-core
+  net: phy: icplus: split IP101A/G driver
+  net: phy: icplus: don't set APS_EN bit on IP101G
+  net: phy: icplus: fix paged register access
+  net: phy: icplus: add PHY counter for IP101G
+  net: phy: icplus: add MDI/MDIX support for IP101A/G
+
+ drivers/net/phy/icplus.c | 378 ++++++++++++++++++++++++++++++++-------
+ 1 file changed, 318 insertions(+), 60 deletions(-)
+
+-- 
+2.20.1
+
