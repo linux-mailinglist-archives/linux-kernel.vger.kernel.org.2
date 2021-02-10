@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4469C3163AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4C631638E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhBJKWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:22:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48952 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230497AbhBJKJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:09:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612951696; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ig9aYUdY0A4bRb/viKrqlRI25TdZpdS3B9s1FAQ8d5M=;
-        b=RmTN3T8/hICAOC6l1XMuobPQa8aGQBEt6sUVbhhqfPzbXPp+lhGVtVyXxTbsWfvsph963Y
-        Y1kkh53nLblH/DL0vjjcxYLKFTWG2ENavtqu0YDAbpmAWSF91HpdIw5A9ksXepM6G9BQTb
-        2HvhpCJwB3kbezOlEomfoSNoAl56rhQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5AA3DAE14;
-        Wed, 10 Feb 2021 10:08:16 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 11:08:15 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: Fix missing mem cgroup soft limit tree updates
-Message-ID: <YCOwjz/F15wci5qG@dhcp22.suse.cz>
-References: <cover.1612902157.git.tim.c.chen@linux.intel.com>
- <3b6e4e9aa8b3ee1466269baf23ed82d90a8f791c.1612902157.git.tim.c.chen@linux.intel.com>
+        id S229604AbhBJKSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:18:18 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:56148 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230392AbhBJKHT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:07:19 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11AA6Qra022867;
+        Wed, 10 Feb 2021 05:06:26 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 36hr7qc5xc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 05:06:26 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 11AA6LE1035794
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 10 Feb 2021 05:06:21 -0500
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 10 Feb 2021 02:06:20 -0800
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
+ Wed, 10 Feb 2021 02:06:19 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 10 Feb 2021 02:06:19 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11AA5x0F018045;
+        Wed, 10 Feb 2021 05:06:16 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>, <rafael@kernel.org>,
+        <gregkh@linuxfoundation.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v4 09/17] iio: buffer: dmaengine: obtain buffer object from attribute
+Date:   Wed, 10 Feb 2021 12:08:15 +0200
+Message-ID: <20210210100823.46780-10-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210210100823.46780-1-alexandru.ardelean@analog.com>
+References: <20210210100823.46780-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3b6e4e9aa8b3ee1466269baf23ed82d90a8f791c.1612902157.git.tim.c.chen@linux.intel.com>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-10_03:2021-02-10,2021-02-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 spamscore=0 phishscore=0
+ suspectscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102100098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 09-02-21 12:29:47, Tim Chen wrote:
-> On a per node basis, the mem cgroup soft limit tree on each node tracks
-> how much a cgroup has exceeded its soft limit memory limit and sorts
-> the cgroup by its excess usage.  On page release, the trees are not
-> updated right away, until we have gathered a batch of pages belonging to
-> the same cgroup. This reduces the frequency of updating the soft limit tree
-> and locking of the tree and associated cgroup.
-> 
-> However, the batch of pages could contain pages from multiple nodes but
-> only the soft limit tree from one node would get updated.  Change the
-> logic so that we update the tree in batch of pages, with each batch of
-> pages all in the same mem cgroup and memory node.  An update is issued for
-> the batch of pages of a node collected till now whenever we encounter
-> a page belonging to a different node.
+The reference to the IIO buffer object is stored on the attribute object.
+So we need to unwind it to obtain it.
 
-I do agree with Johannes here. This shouldn't be done unconditionally
-for all memcgs. Wouldn't it be much better to do the fix up in the
-mem_cgroup_soft_reclaim path instead. Simply check the excess before
-doing any reclaim?
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/buffer/industrialio-buffer-dmaengine.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Btw. have you seen this triggering a noticeable misbehaving? I would
-expect this to have a rather small effect considering how many sources
-of memcg_check_events we have.
-
-Unless I have missed something this has been introduced by 747db954cab6
-("mm: memcontrol: use page lists for uncharge batching"). Please add
-Fixes tag as well if this is really worth fixing.
-
-> Reviewed-by: Ying Huang <ying.huang@intel.com>
-> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-> ---
->  mm/memcontrol.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index d72449eeb85a..f5a4a0e4e2ec 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6804,6 +6804,7 @@ struct uncharge_gather {
->  	unsigned long pgpgout;
->  	unsigned long nr_kmem;
->  	struct page *dummy_page;
-> +	int nid;
->  };
->  
->  static inline void uncharge_gather_clear(struct uncharge_gather *ug)
-> @@ -6849,7 +6850,9 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
->  	 * exclusive access to the page.
->  	 */
->  
-> -	if (ug->memcg != page_memcg(page)) {
-> +	if (ug->memcg != page_memcg(page) ||
-> +	    /* uncharge batch update soft limit tree on a node basis */
-> +	    (ug->dummy_page && ug->nid != page_to_nid(page))) {
->  		if (ug->memcg) {
->  			uncharge_batch(ug);
->  			uncharge_gather_clear(ug);
-> @@ -6869,6 +6872,7 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
->  		ug->pgpgout++;
->  
->  	ug->dummy_page = page;
-> +	ug->nid = page_to_nid(page);
->  	page->memcg_data = 0;
->  	css_put(&ug->memcg->css);
->  }
-> -- 
-> 2.20.1
-
+diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+index b0cb9a35f5cd..1e9e8fdd0719 100644
+--- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
++++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+@@ -133,8 +133,9 @@ static ssize_t iio_dmaengine_buffer_get_length_align(struct device *dev,
+ 	struct device_attribute *attr, char *buf)
+ {
+ 	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
++	struct iio_buffer *buffer = to_iio_dev_attr(attr)->buffer;
+ 	struct dmaengine_buffer *dmaengine_buffer =
+-		iio_buffer_to_dmaengine_buffer(indio_dev->buffer);
++		iio_buffer_to_dmaengine_buffer(buffer);
+ 
+ 	return sprintf(buf, "%zu\n", dmaengine_buffer->align);
+ }
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
