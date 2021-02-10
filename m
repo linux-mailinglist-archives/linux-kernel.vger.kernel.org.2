@@ -2,169 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA42316D19
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0314316D1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbhBJRok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
+        id S232990AbhBJRpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:45:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232927AbhBJRnw (ORCPT
+        with ESMTP id S232956AbhBJRor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:43:52 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C7EC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:43:12 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id a5so1416827otq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:43:12 -0800 (PST)
+        Wed, 10 Feb 2021 12:44:47 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6BAC06178C
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:44:03 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id h16so2102652qth.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:44:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LOwEXRdvVMZvfZEaxMVJf2OldGo/hEkLnws83/gy1v0=;
-        b=aSVQeyO4q1SyZ99Fx7g8reh4zcI1aH3PnMoub+qk1TikH0aJexvkhIzg4srOUi51Pr
-         b+AAPUlkcwrzbLD4NYqC4amBaspRGlM01Vo4Fkjax6nExQQ/Znn0hckIUG3tLzxeKD8V
-         xFUNFSxUmoaeOlJbCq1EzPzfPxhFV3+GCpZZo=
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Kp9VxT0l5e82WMvJl6zKhHzYkWyThl8sjsI4PSbhtao=;
+        b=NezJ9F3TumQ53/0CPMMBZdB31STBNhPUEmIpyE4NjCvRpro+HwGZLTRB2C4BpSzpix
+         EwSeSW16t65QQQl8cADKiETGXxdLj863Yu3Y7WMpyNBDklUSkk3pBalmy/MJ+DGjZQd2
+         1y9Ots+z6plRZIUv6MfmjigLSIYa79h/okguhGm1o5gYEGNHzXFDpxC4YYiMvOWFD0hA
+         f8c9mh7eul8RS9GIhSULqREuZRWsfXu6B42QEyAVxXSVgkmeFsQhvAaWzRJXEIDX0MJp
+         Sz/qZW/eIMDEIzmpfDRYVWV/F2ZGey5Bjtf/JZudlAjo/adPmfxtKDEbks/v2b2m16bf
+         t9nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LOwEXRdvVMZvfZEaxMVJf2OldGo/hEkLnws83/gy1v0=;
-        b=Ndh78LvZZhuqrZqKr+iLQ981atnJvhaswTEZNX07WHv1w5lkeXJtDxYOzgFeTyD+dq
-         /RqqvKIuesyO4nFNNbFgHl4jAEB1mblfTsCjEkKq5bM92gm7y1KcUA3SCYCkaX3fQc4a
-         TzUhAHJhjeSA+JXD3FYQ8mrGzfc459OZBFo2rYLVmc8ZN8JJjsqWNjgVfcgjNYseTvjp
-         bvV7NhYz5XXgND/BjoZgRSTP5a/HVVwFtzKQf+12JBKNiFNA+155qW1K7a5mOUHIRonW
-         bg/dA0LlZDo/7nIjtYS7LmNUyz5vrs4LjjHJaNe+WJCjEsZBrr1zIsA2wzuXC9G2a+GM
-         du0w==
-X-Gm-Message-State: AOAM531RH8U6oUk4L7Q46PL2M5yO0ybnZ9LQzjFpAnGww/jN5MZKVjXV
-        qAASrlEv0EXqstg+hdE+mX5pm/qbTnurqDfd97wfsqObBymhgA==
-X-Google-Smtp-Source: ABdhPJyf0c/kQbPLFv9k7KYsyYq25CZR3JWicuNJgZ3n4s/yKoff44lu/fP6XuJ5GLjcgeB2grbmGucW3joUFNL7tbI=
-X-Received: by 2002:a9d:2270:: with SMTP id o103mr2896760ota.303.1612978991821;
- Wed, 10 Feb 2021 09:43:11 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kp9VxT0l5e82WMvJl6zKhHzYkWyThl8sjsI4PSbhtao=;
+        b=cJnc172fKI6srMRmIlqJHA6WH07d+4B/sRfIj3Mh+Y900XSnvUgzV7CsH4GYtz9s9L
+         lOcr/yokzuv4prvUK3paiw3BsWGeeTX3onW6ixEUkXwQ49niyWtPod6MKUUiDLdHpfwZ
+         Cy7WAxeqrwZr4QcmQRNXEUFOIKzZ77TCtVmkbLzuIt5Mu804aEDHZgtBrJGZbnfQRoye
+         p1xwv1aoxWnaqo2qmtwwF/0wHmzUsL63mPGk+RSz4p0TgPYkvAtKvZ23lgmkwTrooJ8I
+         0oG0ypmY3TxUKVc+H/ZHj19za46QizH6T5802UOnwyIVNEfVxvhmwgtmDWZT7tx45Na5
+         LbDg==
+X-Gm-Message-State: AOAM530RrV1aqCY9VZxzY5GrSF2yxZZeG/odLL3tN7LXCYlaSrZ8L2Ap
+        CgOnUzoSL5Iqh3C7aN5gRjyDy7xZMAZlTw==
+X-Google-Smtp-Source: ABdhPJy73q4/FStEav3Dr/Jy6CwTpE+xAHGLoNkaLR/SmiaKey6KJJ6kq86MIFzeoBASX4ZeXVYpvQ==
+X-Received: by 2002:ac8:ace:: with SMTP id g14mr3661775qti.156.1612979042488;
+        Wed, 10 Feb 2021 09:44:02 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id k8sm1944304qkk.79.2021.02.10.09.44.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 09:44:01 -0800 (PST)
+Date:   Wed, 10 Feb 2021 12:44:00 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v2] mm: page-writeback: simplify memcg handling in
+ test_clear_page_writeback()
+Message-ID: <YCQbYAWg4nvBFL6h@cmpxchg.org>
+References: <20210209214543.112655-1-hannes@cmpxchg.org>
+ <alpine.LSU.2.11.2102092058290.7553@eggly.anvils>
+ <alpine.LSU.2.11.2102100813050.8131@eggly.anvils>
 MIME-Version: 1.0
-References: <20210205133632.2827730-1-daniel.vetter@ffwll.ch>
-In-Reply-To: <20210205133632.2827730-1-daniel.vetter@ffwll.ch>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 10 Feb 2021 18:43:00 +0100
-Message-ID: <CAKMK7uFdR=SGD+LwH4nES0afYzuxzKr0EbHQ=Ea03appvVwD9Q@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Also set up legacy files only after sysfs init
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2102100813050.8131@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Wed, Feb 10, 2021 at 08:22:00AM -0800, Hugh Dickins wrote:
+> On Tue, 9 Feb 2021, Hugh Dickins wrote:
+> > On Tue, 9 Feb 2021, Johannes Weiner wrote:
+> > 
+> > > Page writeback doesn't hold a page reference, which allows truncate to
+> > > free a page the second PageWriteback is cleared. This used to require
+> > > special attention in test_clear_page_writeback(), where we had to be
+> > > careful not to rely on the unstable page->memcg binding and look up
+> > > all the necessary information before clearing the writeback flag.
+> > > 
+> > > Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
+> > > BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
+> > > explicit reference on the page, and this dance is no longer needed.
+> > > 
+> > > Use unlock_page_memcg() and dec_lruvec_page_stat() directly.
+> > 
+> > s/stat()/state()/
+> > 
+> > This is a nice cleanup: I hadn't seen that connection at all.
+> > 
+> > But I think you should take it further:
+> > __unlock_page_memcg() can then be static in mm/memcontrol.c,
+> > and its declarations deleted from include/linux/memcontrol.h?
+> 
+> And further: void lock_page_memcg(page), not returning memcg.
 
-Can you ack this for merging through my topic branch with the other
-follow_pfn/iomem revoke fixes for 5.12?
+You're right on all counts!
 
-If not, what's the plan for getting this (or equivalent functionality)
-in for 5.13? I have more of these follow_pfn/iomem revoke patches on
-top, so I'd like to get the first cut merged sooner than later if
-possible. And the other prep work has been in -next since -rc1.
+> > And further: delete __dec_lruvec_state() and dec_lruvec_state()
+> > from include/linux/vmstat.h - unless you feel that every "inc"
+> > ought to be matched by a "dec", even when unused.
 
-Thanks, Daniel
+Hey look, there isn't a user for the __inc, either :) There is one for
+inc, but I don't insist on having symmetry there.
 
-On Fri, Feb 5, 2021 at 2:36 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote=
-:
->
-> We are already doing this for all the regular sysfs files on PCI
-> devices, but not yet on the legacy io files on the PCI buses. Thus far
-> no problem, but in the next patch I want to wire up iomem revoke
-> support. That needs the vfs up and running already to make sure that
-> iomem_get_mapping() works.
->
-> Wire it up exactly like the existing code in
-> pci_create_sysfs_dev_files(). Note that pci_remove_legacy_files()
-> doesn't need a check since the one for pci_bus->legacy_io is
-> sufficient.
->
-> An alternative solution would be to implement a callback in sysfs to
-> set up the address space from iomem_get_mapping() when userspace calls
-> mmap(). This also works, but Greg didn't really like that just to work
-> around an ordering issue when the kernel loads initially.
->
-> v2: Improve commit message (Bjorn)
->
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: linux-pci@vger.kernel.org
-> ---
->  drivers/pci/pci-sysfs.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index fb072f4b3176..0c45b4f7b214 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *b)
->  {
->         int error;
->
-> +       if (!sysfs_initialized)
-> +               return;
-> +
->         b->legacy_io =3D kcalloc(2, sizeof(struct bin_attribute),
->                                GFP_ATOMIC);
->         if (!b->legacy_io)
-> @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev *pde=
-v)
->  static int __init pci_sysfs_init(void)
->  {
->         struct pci_dev *pdev =3D NULL;
-> +       struct pci_bus *pbus =3D NULL;
->         int retval;
->
->         sysfs_initialized =3D 1;
-> @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
->                 }
->         }
->
-> +       while ((pbus =3D pci_find_next_bus(pbus)))
-> +               pci_create_legacy_files(pbus);
-> +
->         return 0;
->  }
->  late_initcall(pci_sysfs_init);
-> --
-> 2.30.0
->
+> > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > 
+> > Acked-by: Hugh Dickins <hughd@google.com>
 
+Thanks for the review and good feedback.
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+How about this v2?
+
+---
+
+From 5bcc0f468460aa2670c40318bb657e8b08ef96d5 Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Tue, 9 Feb 2021 16:22:42 -0500
+Subject: [PATCH] mm: page-writeback: simplify memcg handling in
+ test_clear_page_writeback()
+
+Page writeback doesn't hold a page reference, which allows truncate to
+free a page the second PageWriteback is cleared. This used to require
+special attention in test_clear_page_writeback(), where we had to be
+careful not to rely on the unstable page->memcg binding and look up
+all the necessary information before clearing the writeback flag.
+
+Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
+BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
+explicit reference on the page, and this dance is no longer needed.
+
+Use unlock_page_memcg() and dec_lruvec_page_state() directly.
+
+This removes the last user of the lock_page_memcg() return value,
+change it to void. Touch up the comments in there as well. This also
+removes the last extern user of __unlock_page_memcg(), make it
+static. Further, it removes the last user of dec_lruvec_state(),
+delete it, along with a few other unused helpers.
+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Hugh Dickins <hughd@google.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+---
+ include/linux/memcontrol.h | 10 ++--------
+ include/linux/vmstat.h     | 24 +++---------------------
+ mm/memcontrol.c            | 36 +++++++++++-------------------------
+ mm/page-writeback.c        |  9 +++------
+ 4 files changed, 19 insertions(+), 60 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index a44b2d51aecc..b17053af3287 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -874,8 +874,7 @@ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg);
+ extern bool cgroup_memory_noswap;
+ #endif
+ 
+-struct mem_cgroup *lock_page_memcg(struct page *page);
+-void __unlock_page_memcg(struct mem_cgroup *memcg);
++void lock_page_memcg(struct page *page);
+ void unlock_page_memcg(struct page *page);
+ 
+ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val);
+@@ -1269,12 +1268,7 @@ mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+ {
+ }
+ 
+-static inline struct mem_cgroup *lock_page_memcg(struct page *page)
+-{
+-	return NULL;
+-}
+-
+-static inline void __unlock_page_memcg(struct mem_cgroup *memcg)
++static inline void lock_page_memcg(struct page *page)
+ {
+ }
+ 
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index 506d625163a1..3299cd69e4ca 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -512,16 +512,10 @@ static inline void mod_lruvec_page_state(struct page *page,
+ 
+ #endif /* CONFIG_MEMCG */
+ 
+-static inline void __inc_lruvec_state(struct lruvec *lruvec,
+-				      enum node_stat_item idx)
+-{
+-	__mod_lruvec_state(lruvec, idx, 1);
+-}
+-
+-static inline void __dec_lruvec_state(struct lruvec *lruvec,
+-				      enum node_stat_item idx)
++static inline void inc_lruvec_state(struct lruvec *lruvec,
++				    enum node_stat_item idx)
+ {
+-	__mod_lruvec_state(lruvec, idx, -1);
++	mod_lruvec_state(lruvec, idx, 1);
+ }
+ 
+ static inline void __inc_lruvec_page_state(struct page *page,
+@@ -536,18 +530,6 @@ static inline void __dec_lruvec_page_state(struct page *page,
+ 	__mod_lruvec_page_state(page, idx, -1);
+ }
+ 
+-static inline void inc_lruvec_state(struct lruvec *lruvec,
+-				    enum node_stat_item idx)
+-{
+-	mod_lruvec_state(lruvec, idx, 1);
+-}
+-
+-static inline void dec_lruvec_state(struct lruvec *lruvec,
+-				    enum node_stat_item idx)
+-{
+-	mod_lruvec_state(lruvec, idx, -1);
+-}
+-
+ static inline void inc_lruvec_page_state(struct page *page,
+ 					 enum node_stat_item idx)
+ {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 9e455815fb7a..e29d3d64c27e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2124,11 +2124,10 @@ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg)
+  * This function protects unlocked LRU pages from being moved to
+  * another cgroup.
+  *
+- * It ensures lifetime of the returned memcg. Caller is responsible
+- * for the lifetime of the page; __unlock_page_memcg() is available
+- * when @page might get freed inside the locked section.
++ * It ensures lifetime of the locked memcg. Caller is responsible
++ * for the lifetime of the page.
+  */
+-struct mem_cgroup *lock_page_memcg(struct page *page)
++void lock_page_memcg(struct page *page)
+ {
+ 	struct page *head = compound_head(page); /* rmap on tail pages */
+ 	struct mem_cgroup *memcg;
+@@ -2138,21 +2137,15 @@ struct mem_cgroup *lock_page_memcg(struct page *page)
+ 	 * The RCU lock is held throughout the transaction.  The fast
+ 	 * path can get away without acquiring the memcg->move_lock
+ 	 * because page moving starts with an RCU grace period.
+-	 *
+-	 * The RCU lock also protects the memcg from being freed when
+-	 * the page state that is going to change is the only thing
+-	 * preventing the page itself from being freed. E.g. writeback
+-	 * doesn't hold a page reference and relies on PG_writeback to
+-	 * keep off truncation, migration and so forth.
+          */
+ 	rcu_read_lock();
+ 
+ 	if (mem_cgroup_disabled())
+-		return NULL;
++		return;
+ again:
+ 	memcg = page_memcg(head);
+ 	if (unlikely(!memcg))
+-		return NULL;
++		return;
+ 
+ #ifdef CONFIG_PROVE_LOCKING
+ 	local_irq_save(flags);
+@@ -2161,7 +2154,7 @@ struct mem_cgroup *lock_page_memcg(struct page *page)
+ #endif
+ 
+ 	if (atomic_read(&memcg->moving_account) <= 0)
+-		return memcg;
++		return;
+ 
+ 	spin_lock_irqsave(&memcg->move_lock, flags);
+ 	if (memcg != page_memcg(head)) {
+@@ -2170,24 +2163,17 @@ struct mem_cgroup *lock_page_memcg(struct page *page)
+ 	}
+ 
+ 	/*
+-	 * When charge migration first begins, we can have locked and
+-	 * unlocked page stat updates happening concurrently.  Track
+-	 * the task who has the lock for unlock_page_memcg().
++	 * When charge migration first begins, we can have multiple
++	 * critical sections holding the fast-path RCU lock and one
++	 * holding the slowpath move_lock. Track the task who has the
++	 * move_lock for unlock_page_memcg().
+ 	 */
+ 	memcg->move_lock_task = current;
+ 	memcg->move_lock_flags = flags;
+-
+-	return memcg;
+ }
+ EXPORT_SYMBOL(lock_page_memcg);
+ 
+-/**
+- * __unlock_page_memcg - unlock and unpin a memcg
+- * @memcg: the memcg
+- *
+- * Unlock and unpin a memcg returned by lock_page_memcg().
+- */
+-void __unlock_page_memcg(struct mem_cgroup *memcg)
++static void __unlock_page_memcg(struct mem_cgroup *memcg)
+ {
+ 	if (memcg && memcg->move_lock_task == current) {
+ 		unsigned long flags = memcg->move_lock_flags;
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index eb34d204d4ee..f6c2c3165d4d 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2722,12 +2722,9 @@ EXPORT_SYMBOL(clear_page_dirty_for_io);
+ int test_clear_page_writeback(struct page *page)
+ {
+ 	struct address_space *mapping = page_mapping(page);
+-	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
+ 	int ret;
+ 
+-	memcg = lock_page_memcg(page);
+-	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
++	lock_page_memcg(page);
+ 	if (mapping && mapping_use_writeback_tags(mapping)) {
+ 		struct inode *inode = mapping->host;
+ 		struct backing_dev_info *bdi = inode_to_bdi(inode);
+@@ -2755,11 +2752,11 @@ int test_clear_page_writeback(struct page *page)
+ 		ret = TestClearPageWriteback(page);
+ 	}
+ 	if (ret) {
+-		dec_lruvec_state(lruvec, NR_WRITEBACK);
++		dec_lruvec_page_state(page, NR_WRITEBACK);
+ 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
+ 		inc_node_page_state(page, NR_WRITTEN);
+ 	}
+-	__unlock_page_memcg(memcg);
++	unlock_page_memcg(page);
+ 	return ret;
+ }
+ 
+-- 
+2.30.0
+
