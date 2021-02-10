@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CADF31666D
+	by mail.lfdr.de (Postfix) with ESMTP id 4894F31666E
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhBJMRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:17:16 -0500
-Received: from angie.orcam.me.uk ([157.25.102.26]:47364 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhBJMMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:12:16 -0500
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 6D0429200B4; Wed, 10 Feb 2021 13:11:28 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 657BD9200B3;
-        Wed, 10 Feb 2021 13:11:28 +0100 (CET)
-Date:   Wed, 10 Feb 2021 13:11:28 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-cc:     Arnd Bergmann <arnd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Paul Burton <paulburton@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] MIPS: make kgdb depend on FPU support
-In-Reply-To: <20210210113830.xeechzpctz5repv5@maple.lan>
-Message-ID: <alpine.DEB.2.21.2102101252580.35623@angie.orcam.me.uk>
-References: <20210122110307.934543-1-arnd@kernel.org> <20210122110307.934543-2-arnd@kernel.org> <alpine.DEB.2.21.2102081748280.35623@angie.orcam.me.uk> <20210210113830.xeechzpctz5repv5@maple.lan>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S231710AbhBJMRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:17:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229837AbhBJMM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:12:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ED3664DF0;
+        Wed, 10 Feb 2021 12:11:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612959108;
+        bh=bSAc2e8m/A9jQUXC9A9vzo6+rAFEk18X6U6Ix90KYLk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZWcUFfV9ySiW0wXQCYcD8KMJ9NesEQ6GES8PYaU+BhYAwzuEAtJpiiKwKL8m+Yb6E
+         nvX90N9PxzNWM9l6SGzWifCjemhfDpYFCJJljV4YDTqPzomRX2d80oW8fDSuTpxnIB
+         AeBG+oS5kY/1eAGUf7nWgcpDBp0y5McDuFcaE7So=
+Date:   Wed, 10 Feb 2021 13:11:44 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stefan Ursella <stefan.ursella@wolfvision.net>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Tomasz =?utf-8?Q?Meresi=C5=84ski?= <tomasz@meresinski.eu>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] usb: quirks: add quirk to start video capture on ELMO
+ L-12F document camera reliable
+Message-ID: <YCPNgNblgqQPcnY6@kroah.com>
+References: <20210210102821.31779-1-stefan.ursella@wolfvision.net>
+ <20210210115144.17014-1-stefan.ursella@wolfvision.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210115144.17014-1-stefan.ursella@wolfvision.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021, Daniel Thompson wrote:
-
-> >  Wrapping the relevant parts of this file into #ifdef MIPS_FP_SUPPORT 
-> > would be as easy though and would qualify as a proper fix given that we 
-> > have no XML description support for the MIPS target (so we need to supply 
-> > the inexistent registers in the protocol; or maybe we can return NULL in 
-> > `dbg_get_reg' to get them padded out in the RSP packet, I haven't checked 
-> > if generic KGDB code supports this feature).
+On Wed, Feb 10, 2021 at 12:51:43PM +0100, Stefan Ursella wrote:
+> Without this quirk starting a video capture from the device often fails with
 > 
-> Returning NULL should be fine.
+> kernel: uvcvideo: Failed to set UVC probe control : -110 (exp. 34).
 > 
-> The generic code will cope OK. The values in the f.p. registers may
-> act a little odd if gdb uses a 'G' packet to set them to non-zero values
-> (since kgdb will cache the values gdb sent it) but the developer
-> operating the debugger will probably figure out what is going on without
-> too much pain.
+> Signed-off-by: Stefan Ursella <stefan.ursella@wolfvision.net>
+> ---
+>  drivers/usb/core/quirks.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 84b5da0a26a5..270ad082d3ba 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -381,6 +381,9 @@ static const struct usb_device_id usb_quirk_list[] = {
+>  	/* X-Rite/Gretag-Macbeth Eye-One Pro display colorimeter */
+>  	{ USB_DEVICE(0x0971, 0x2000), .driver_info = USB_QUIRK_NO_SET_INTF },
+>  
+> +	/* ELMO L-12F document camera */
+> +	{ USB_DEVICE(0x09a1, 0x0028), .driver_info = USB_QUIRK_DELAY_CTRL_MSG },
+> +
+>  	/* Broadcom BCM92035DGROM BT dongle */
+>  	{ USB_DEVICE(0x0a5c, 0x2021), .driver_info = USB_QUIRK_RESET_RESUME },
+>  
+> -- 
+> 2.17.1
+> 
 
- Ack, thanks!
+Hi,
 
- NB if GDB sees a register padded out (FAOD it means all-x's rather than a 
-hex string placed throughout the respective slot) in a `g' packet, then it 
-will mark the register internally as "unavailable" and present it to the 
-receiver of the information as such rather than giving any specific value.  
-I don't remember offhand what the syntax for the `G' packet is in that 
-case; possibly GDB just sends all-zeros, and in any case you can't make 
-GDB write any specific value to such a register via any user interface.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
- The way the unavailability is shown depends on the interface used, i.e. 
-it will be different between the `info all-registers'/`info register $reg' 
-commands, and the `p $reg' command (or any expression involving `$reg'), 
-and the MI interface.  But in any case it will be unambiguous.
+You are receiving this message because of the following common error(s)
+as indicated below:
 
- In no case however there will be user confusion for such registers.
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
 
-  Maciej
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
