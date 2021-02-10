@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF39316C66
+	by mail.lfdr.de (Postfix) with ESMTP id DD96F316C67
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhBJRSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:18:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35790 "EHLO mx2.suse.de"
+        id S232317AbhBJRSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:18:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232683AbhBJRRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:17:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612977421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dvw6lO/krvYEguk6lpQWl/lG+Hg8h0QutF3y6sNkrWQ=;
-        b=MozZHVfPcbekPoUWP9Z7Okgj9rqa5ORtTxPHPZObd0M48kJ+sZy/VJOqbvp4pN0n+tuMme
-        UPqpiOB0eQk8QT5nBRcVegBFhgfF4/+ATagmGytTPUOnlX8OpjCKPovewy7BVr7F6QtDr8
-        m8NTz//MsGeH0z+0oJQYZbP4ucU/ECQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E3B89AC97;
-        Wed, 10 Feb 2021 17:17:00 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 18:16:59 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        john.ogness@linutronix.de, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3] printk: fix deadlock when kernel panic
-Message-ID: <YCQVC6oBKKjtM/yg@alley>
-References: <20210210034823.64867-1-songmuchun@bytedance.com>
+        id S232670AbhBJRSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:18:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD4AF64E7D;
+        Wed, 10 Feb 2021 17:17:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612977443;
+        bh=20+vSD4yH5JxdBX4woYl2DAKnSili5Vlf5bTt8/yO5s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bSjHLQ10A+dP0phuwBL01NWSLBXeTYLV4zmEre8SfC1vTdRP7GRTRCm6i414De3ZX
+         p531WLavpnwjkGtxOmiPiMmvF41EsQPDqtw/ZPvfeddNSYSzpzVes7Z8UWmKy0mMDq
+         ZA44vNwHUx5Lujqw1YkEmdZ3teLj4DhwbjGJ4ks0D8VbMEaQm/GEYj28DWrq9Mma+B
+         0EhWIpBhoiCA0X3TPsm31pcrUe4eGPYE8wJrVIScv6zP/L5QB/xqPHu4l0fYiVtfUc
+         A1iWa/+UbKwxDloebISpGohN/JtVTeRaUSYWEteNJYLtA3HNLmO/JogFOecz8r78j2
+         m2u3jhc+lcUng==
+Date:   Wed, 10 Feb 2021 10:17:22 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Lee Jones <lee.jones@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the rdma tree
+Message-ID: <20210210171722.GA1670976@ubuntu-m3-large-x86>
+References: <20210210211149.3498db8a@canb.auug.org.au>
+ <20210210134742.GY4247@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210034823.64867-1-songmuchun@bytedance.com>
+In-Reply-To: <20210210134742.GY4247@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-02-10 11:48:23, Muchun Song wrote:
-> printk_safe_flush_on_panic() caused the following deadlock on our
-> server:
+On Wed, Feb 10, 2021 at 09:47:42AM -0400, Jason Gunthorpe wrote:
+> On Wed, Feb 10, 2021 at 09:11:49PM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the rdma tree, today's linux-next build (htmldocs) produced
+> > this warning:
+> > 
+> > drivers/infiniband/core/device.c:859: warning: Function parameter or member 'dev' not described in 'ib_port_immutable_read'
+> > drivers/infiniband/core/device.c:859: warning: Function parameter or member 'port' not described in 'ib_port_immutable_read'
+> > 
+> > Introduced by commit
+> > 
+> >   7416790e2245 ("RDMA/core: Introduce and use API to read port immutable data")
 > 
-> CPU0:                                         CPU1:
-> panic                                         rcu_dump_cpu_stacks
->   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
->     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
->                                                     __printk_safe_flush
->                                                       raw_spin_lock_irqsave(&read_lock)
->     // send NMI to other processors
->     apic_send_IPI_allbutself(NMI_VECTOR)
->                                                         // NMI interrupt, dead loop
->                                                         crash_nmi_callback
->   printk_safe_flush_on_panic
->     printk_safe_flush
->       __printk_safe_flush
->         // deadlock
->         raw_spin_lock_irqsave(&read_lock)
+> drivers/infinband is W=1 clean right now in linux-next
 > 
-> DEADLOCK: read_lock is taken on CPU1 and will never get released.
+> But how can I build *only* drivers/infiniband using W=1 so I can keep
+> it that way?
 > 
-> It happens when panic() stops a CPU by NMI while it has been in
-> the middle of printk_safe_flush().
+> The rest of the kernel is not clean and creates too much warning noise
+> to be usable, even with my mini config.
 > 
-> Handle the lock the same way as logbuf_lock. The printk_safe buffers
-> are flushed only when both locks can be safely taken. It can avoid
-> the deadlock _in this particular case_ at expense of losing contents
-> of printk_safe buffers.
+> Just doing a 'make W=1 drivers/infiniband' is sort of OK, but then I
+> end up compiling things twice
 > 
-> Note: It would actually be safe to re-init the locks when all CPUs were
->       stopped by NMI. But it would require passing this information
->       from arch-specific code. It is not worth the complexity.
->       Especially because logbuf_lock and printk_safe buffers have been
->       obsoleted by the lockless ring buffer.
+> Does anyone know a good solution?
 > 
-> Fixes: cf9b1106c81c ("printk/nmi: flush NMI messages on the system panic")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
-> Cc: <stable@vger.kernel.org>
+> Jason
+> 
 
-The patch is committed on printk/linux.git, branch for-5.12.
+Hi Jason,
 
-Best Regards,
-Petr
+There was at one point an effort from Andrew Lunn to allow subsystems to
+opt in W=1 unconditionally but Masahiro had some concerns with both
+approaches:
+
+https://lore.kernel.org/r/20200919190258.3673246-1-andrew@lunn.ch/
+https://lore.kernel.org/r/20201001011232.4050282-1-andrew@lunn.ch/
+
+It looks like btrfs has just opted to copy the W=1 flags into its
+Makefile:
+
+https://git.kernel.org/next/linux-next/c/3a7b58d632b24ec3321f1ee3027bd407e09e515e
+
+Cheers,
+Nathan
