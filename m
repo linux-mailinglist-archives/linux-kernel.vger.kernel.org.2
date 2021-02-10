@@ -2,133 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0423167B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:16:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB7A3167B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhBJNQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:16:06 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:49754 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229862AbhBJNPl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:15:41 -0500
-X-IronPort-AV: E=Sophos;i="5.81,168,1610406000"; 
-   d="scan'208";a="492258135"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 14:14:54 +0100
-Date:   Wed, 10 Feb 2021 14:14:54 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Daniel Vetter <daniel@ffwll.ch>
-cc:     Lee Jones <lee.jones@linaro.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        kernel-janitors@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-fbdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] video: use getter/setter functions
-In-Reply-To: <YCPbxSHWMipTz+mB@phenom.ffwll.local>
-Message-ID: <alpine.DEB.2.22.394.2102101414100.2881@hadrien>
-References: <20210209211325.1261842-1-Julia.Lawall@inria.fr> <20210210082341.GH220368@dell> <YCPbxSHWMipTz+mB@phenom.ffwll.local>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S231623AbhBJNQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:16:22 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:60258 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231553AbhBJNP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:15:59 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l9pKn-005Jyp-4D; Wed, 10 Feb 2021 14:15:09 +0100
+Date:   Wed, 10 Feb 2021 14:15:09 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: dsa: mv88e6xxx: NET_DSA_MV88E6XXX_PTP should depend
+ on NET_DSA_MV88E6XXX
+Message-ID: <YCPcXc6tO7E1806g@lunn.ch>
+References: <20210210081110.1185217-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-2043823747-1612962895=:2881"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210081110.1185217-1-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, Feb 10, 2021 at 09:11:10AM +0100, Geert Uytterhoeven wrote:
+> Making global2 support mandatory removed the Kconfig symbol
+> NET_DSA_MV88E6XXX_GLOBAL2.  This symbol also served as an intermediate
+> symbol to make NET_DSA_MV88E6XXX_PTP depend on NET_DSA_MV88E6XXX.  With
+> the symbol removed, the user is always asked about PTP support for
+> Marvell 88E6xxx switches, even if the latter support is not enabled.
+> 
+> Fix this by reinstating the dependency.
+> 
+> Fixes: 63368a7416df144b ("net: dsa: mv88e6xxx: Make global2 support mandatory")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
---8323329-2043823747-1612962895=:2881
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-
-
-On Wed, 10 Feb 2021, Daniel Vetter wrote:
-
-> On Wed, Feb 10, 2021 at 08:23:41AM +0000, Lee Jones wrote:
-> > On Tue, 09 Feb 2021, Julia Lawall wrote:
-> >
-> > > Use getter and setter functions, for platform_device structures and a
-> > > spi_device structure.
-> > >
-> > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > >
-> > > ---
-> > >  drivers/video/backlight/qcom-wled.c                                  |    2 +-
-> >
-> > This patch is fine.
-> >
-> > Could you please split it out and submit it separately though please.
->
-> Or just apply the entire patch through backlight tree, there's nothing
-> going on in fbdev anyway I think.
-
-I was indeed not sure how much to split this up.  If it is desired to
-split it more, I can do that.
-
-julia
-
->
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->
-> >
-> > >  drivers/video/fbdev/amifb.c                                          |    4 ++--
-> > >  drivers/video/fbdev/da8xx-fb.c                                       |    4 ++--
-> > >  drivers/video/fbdev/imxfb.c                                          |    2 +-
-> > >  drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c |    6 +++---
-> > >  drivers/video/fbdev/omap2/omapfb/dss/dpi.c                           |    4 ++--
-> > >  drivers/video/fbdev/omap2/omapfb/dss/dsi.c                           |    4 ++--
-> > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c                         |    2 +-
-> > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c                         |    2 +-
-> > >  drivers/video/fbdev/xilinxfb.c                                       |    2 +-
-> > >  10 files changed, 16 insertions(+), 16 deletions(-)
-> >
-> > ...]
-> >
-> > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > > index 3bc7800eb0a9..091f07e7c145 100644
-> > > --- a/drivers/video/backlight/qcom-wled.c
-> > > +++ b/drivers/video/backlight/qcom-wled.c
-> > > @@ -1692,7 +1692,7 @@ static int wled_probe(struct platform_device *pdev)
-> > >
-> > >  static int wled_remove(struct platform_device *pdev)
-> > >  {
-> > > -	struct wled *wled = dev_get_drvdata(&pdev->dev);
-> > > +	struct wled *wled = platform_get_drvdata(pdev);
-> > >
-> > >  	mutex_destroy(&wled->lock);
-> > >  	cancel_delayed_work_sync(&wled->ovp_work);
-> >
-> > For my own reference (apply this as-is to your sign-off block):
-> >
-> >   Acked-for-Backlight-by: Lee Jones <lee.jones@linaro.org>
-> >
-> > --
-> > Lee Jones [李琼斯]
-> > Senior Technical Lead - Developer Services
-> > Linaro.org │ Open source software for Arm SoCs
-> > Follow Linaro: Facebook | Twitter | Blog
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
->
---8323329-2043823747-1612962895=:2881--
+    Andrew
