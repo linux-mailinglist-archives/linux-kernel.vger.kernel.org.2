@@ -2,139 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A1C316913
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9505316917
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhBJOZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:25:52 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:4404 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhBJOZt (ORCPT
+        id S231668AbhBJO0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:26:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231626AbhBJO0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:25:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612967149; x=1644503149;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=F7Pd2b9DeG2r46oRjSvo1Jq81YxiehO3b+tnE31zDrg=;
-  b=GI73z+d1Tnk5o6w9697gmSg89t06VzorTIaNXtMk/yXZZvdk08owH1Wi
-   EVA7w18EoqLwHICt+AHoLWzglVZX1+wYf6WkTVd1z4blvktcysE2Nd3uE
-   lRF5Tq/YbjDpkXvtK0DJHfq4OK1UmfKvu737qwCEnG5nnY3aAp1u/12Ap
-   JdrpieyamsbsecW3SJAdjPnlCGxy/MKuHw6jGUg0hxRlUbFPPCj609YjA
-   H8plBYVqYw6qCwnJpw//6ounIA4uF90PUNT/CcwcQ0UX4yTVcB/T5RQ+6
-   1VZ82HLrxQ7wHnQ1p812IGSe/IddKUoRfgQ0HLIc6NrqPQb+r0yCFZJqK
-   Q==;
-IronPort-SDR: JwhbqzhZt55m0O+W4gvXqlgL5wIl8O2M7n3D/nevSJQ89EhPZk4NEDd+rcACbfteRJ66nxI9Bn
- Nd0ckDUNb1n5UFt2NT5aBxtsANwSzyRNOcZzfyjaEgmbKAv5ilg0pgFjjibHIW891k8Axgb0VA
- U4QlufibQpXCR1TdgSpyVl91lcYCp67kZ+iul+CqbRwgW9FwrsI8Nf2XBOrseUxMnvndlnXbxf
- 9qneyjFvYBZh/XuYVue9qpD4Ok5E+EVdONiBaFOaETSXwHlBASAyj8hXd00e6ePi2c+h6K3+/Z
- uEE=
-X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
-   d="scan'208";a="108712449"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 07:24:32 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 10 Feb 2021 07:24:31 -0700
-Received: from soft-dev10.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Wed, 10 Feb 2021 07:24:29 -0700
-References: <20210210132751.1422386-1-geert+renesas@glider.be> <87mtwcujd0.fsf@microchip.com> <CAMuHMdVpHUmwfob6t_aWvaVVHpSDpF5HvLe_W5+KY9ky5A-qEw@mail.gmail.com> <20210210141728.GO351084@piout.net> <CAMuHMdXWVYB0vZ9Q3G9jGAv3J8nDReKzgSmDj4ykny6rH1cKGw@mail.gmail.com>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Steen Hegelund" <Steen.Hegelund@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pinctrl: PINCTRL_MICROCHIP_SGPIO should depend on ARCH_SPARX5 || SOC_VCOREIII
-In-Reply-To: <CAMuHMdXWVYB0vZ9Q3G9jGAv3J8nDReKzgSmDj4ykny6rH1cKGw@mail.gmail.com>
-Date:   Wed, 10 Feb 2021 15:24:28 +0100
-Message-ID: <87lfbwuhk3.fsf@microchip.com>
+        Wed, 10 Feb 2021 09:26:25 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93886C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 06:25:44 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id z6so1378092pfq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 06:25:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U8I480O/49ORaRi+QiD8YAganudXzh1u6v9aJFMTd2A=;
+        b=bgoACTLsYcSXdtbBijoA/1R+6cPM5HJOZ8Yyuk/AfUNzddLT/TYI0kdOP/Gx22wVx/
+         Q35AMhua5Rtxfw0aMVZ8OTSokS8svhyX1nVCM9SxVQ54oCMJ/MrKADpsbTAZ1G+ZHKaD
+         c38ZvYGfbkMjdVavs98HgBZnp++3AInu6ICuiIB/HzDQAb2/WOkyXEgW5QogbnBDnh57
+         Uq8HPDbHx+/BQEWD1RfTqvDe+LlloFNuL7V0+CTWFJfX3+oWCwc12D6Z7hHHSJDXNH7v
+         Nj9GMNxs5kt6oT5lklWQO2OQz07GM3VpIYi4ZUtDseDkxodRY59seYX6AB3jo86AZJ4t
+         0klg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U8I480O/49ORaRi+QiD8YAganudXzh1u6v9aJFMTd2A=;
+        b=GvCuTbATEASfZC9MoHueUJIeCL2sULvMCVoq3AnqWEl2a1O8iin3zgARd7/odoa9EL
+         8fzpxGgB5kBhfP5xYzxlK+WEvaS2yP4USYtO0gR4c1xpEx3jsaGx9hANpADNHmMHNdIS
+         PteEaZHKTjvx6QkaG/2s7p09oOqywJ8crizFXTusKHPRMzUoi7X1J3AEQtDmiOM8mn5L
+         ik4TBOGckO07jekW72RON9QHlEfFG0H3R3eZZiOgiQd8pn6AdyrjEfJyGO7BFBtCjU30
+         mtRe1jFTba+ONvRYt4Tc4oLvSniaeqQ08/4w/erOtRevF/2hfVsujJeEbeRkkvUNypMF
+         HHSQ==
+X-Gm-Message-State: AOAM533+7bkuNOmZAB+UxFf5uP8elFfjUL+5bfeFkGIwB1JNcW+smcSh
+        jJN2IxEGk30TaaPLJmucn5o=
+X-Google-Smtp-Source: ABdhPJwNsxiX3m6b8wB4JOUQEeiU1TCrZ9qTvxdOAd7YXjO9GMBSXn+F/Syac/p+9o6PzBCZFglnKA==
+X-Received: by 2002:a05:6a00:1707:b029:1cc:2d49:9f29 with SMTP id h7-20020a056a001707b02901cc2d499f29mr3328564pfc.8.1612967143985;
+        Wed, 10 Feb 2021 06:25:43 -0800 (PST)
+Received: from localhost.localdomain ([103.200.106.135])
+        by smtp.googlemail.com with ESMTPSA id a30sm2565800pfh.66.2021.02.10.06.25.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 06:25:43 -0800 (PST)
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     gregkh@linuxfoundation.org, dan.carpenter@oracle.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: [PATCH v3] staging: gdm724x: Fix DMA from stack
+Date:   Wed, 10 Feb 2021 19:55:12 +0530
+Message-Id: <20210210142512.23152-1-ameynarkhede03@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Stack allocated buffers cannot be used for DMA
+on all architectures so allocate hci_packet buffer
+using kmalloc.
 
-Geert Uytterhoeven writes:
+Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+---
+Changes in v3:
+	- Remove superfluous buf pointer
+	- Reduce size of allocation of hci_packet to match number of
+	bytes used for DMA
 
-> Hi Alexandre,
->
-> On Wed, Feb 10, 2021 at 3:17 PM Alexandre Belloni
-> <alexandre.belloni@bootlin.com> wrote:
->> On 10/02/2021 14:53:01+0100, Geert Uytterhoeven wrote:
->> > On Wed, Feb 10, 2021 at 2:45 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->> > > Geert Uytterhoeven writes:
->> > > > the Microsemi/Microchip Serial GPIO device is present only Microsemi
->> > > > VCore III and Microchip Sparx5 SoCs.  Hence add a dependency on
->> > > > ARCH_SPARX5 || SOC_VCOREIII, to prevent asking the user about this
->> > > > driver when configuring a kernel without support for these SoCs.
->> > > >
->> > > > Fixes: 7e5ea974e61c8dd0 ("pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO")
->> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->> > > > ---
->> > > >  drivers/pinctrl/Kconfig | 4 ++--
->> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
->> > > >
->> > > > diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
->> > > > index 113073d5f89bbf70..3b75b1d7d3d1f1b0 100644
->> > > > --- a/drivers/pinctrl/Kconfig
->> > > > +++ b/drivers/pinctrl/Kconfig
->> > > > @@ -353,8 +353,8 @@ config PINCTRL_OCELOT
->> > > >
->> > > >  config PINCTRL_MICROCHIP_SGPIO
->> > > >         bool "Pinctrl driver for Microsemi/Microchip Serial GPIO"
->> > > > -       depends on OF
->> > > > -       depends on HAS_IOMEM
->> > > > +       depends on OF && HAS_IOMEM
->> > > > +       depends on ARCH_SPARX5 || SOC_VCOREIII || COMPILE_TEST
->> > > >         select GPIOLIB
->> > > >         select GPIOLIB_IRQCHIP
->> > > >         select GENERIC_PINCONF
->> > >
->> > > Thank you for your patch. Unfortunately, it makes it impossible to use
->> > > the driver across PCIe - which is a specifically desired configuration.
->> > >
->> > > Could you add CONFIG_PCI to the || chain?
->> >
->> > Sure.
->> >
->> > Is PCIe the only other transport over which the register can be accessed?
->> > Or can this also be done over e.g. SPI, like on Ocelot[1]?
->> >
->> > [1] https://lore.kernel.org/linux-gpio/20200511145329.GV34497@piout.net/
->> >
->>
->> Yes, this driver IP is also available on Ocelot (this is SOC_VCOREIII)
->> so this is also available over SPI.
->
-> Hence would you consider
->
->     depends on ARCH_SPARX5 || SOC_VCOREIII || PCI || SPI || COMPILE_TEST
->
-> acceptable?  Or would that be futile, as must systems have PCI and/or
-> SPI enabled anyway?
->
-> Gr{oetje,eeting}s,
->
->                         Geert
+ drivers/staging/gdm724x/gdm_usb.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Yes, that would be fine, but as you say - not have a lot of impact.
+diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
+index dc4da66c3..80c58a3ef 100644
+--- a/drivers/staging/gdm724x/gdm_usb.c
++++ b/drivers/staging/gdm724x/gdm_usb.c
+@@ -56,20 +56,24 @@ static int gdm_usb_recv(void *priv_dev,
 
-Up to you...
+ static int request_mac_address(struct lte_udev *udev)
+ {
+-	u8 buf[16] = {0,};
+-	struct hci_packet *hci = (struct hci_packet *)buf;
++	struct hci_packet *hci;
+ 	struct usb_device *usbdev = udev->usbdev;
+ 	int actual;
+ 	int ret = -1;
 
----Lars
++	hci = kmalloc(5, GFP_KERNEL);
++	if (!hci)
++		return -ENOMEM;
++
+ 	hci->cmd_evt = gdm_cpu_to_dev16(udev->gdm_ed, LTE_GET_INFORMATION);
+ 	hci->len = gdm_cpu_to_dev16(udev->gdm_ed, 1);
+ 	hci->data[0] = MAC_ADDRESS;
 
--- 
-Lars Povlsen,
-Microchip
+-	ret = usb_bulk_msg(usbdev, usb_sndbulkpipe(usbdev, 2), buf, 5,
++	ret = usb_bulk_msg(usbdev, usb_sndbulkpipe(usbdev, 2), &hci, 5,
+ 			   &actual, 1000);
+
+ 	udev->request_mac_addr = 1;
++	kfree(hci);
+
+ 	return ret;
+ }
+--
+2.30.1
