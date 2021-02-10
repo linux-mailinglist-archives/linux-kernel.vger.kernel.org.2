@@ -2,81 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5ADA3171D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC513171D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhBJVAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:00:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhBJU75 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:59:57 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621F4C06174A;
-        Wed, 10 Feb 2021 12:59:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=9IRtNqEmK8Laefd+/4Ewdw8Hx7Xiy1aEskWzH6jRsIU=; b=apJMwiwwQiyxEeakKKM35sEEpp
-        TqDhuh2JkGfyfE+v6rm1NDGbP7fTI/kwDaVioxWbwnVNM/sk/h5Hc8YlkRerphKRgPvWAEmyX7tv7
-        +5/s6opzHhga9VTbn3OJ6x3nvtWbmfGu88qFLYcaCUK+F7LUUTyZyA5HYvjEBeTAX7yeTjYjYFakh
-        Eh07w3+TZFmDk0R3F+BGkZr0Wr6qrEePK/f96y+fLWMTI+VJaHKdAwsLDrBeGuTOuKA/GqRqGubD1
-        bdFI6uVWvI+PcXxM8WFOFtuWb/t+qUspqwV+2iVY1cvbapaZdvNRaS+oZaQeXvyAK3+VYZT7hJUle
-        xTkRkdXg==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9wZu-0004OD-TH; Wed, 10 Feb 2021 20:59:15 +0000
-Subject: Re: [PATCH] drivers: scsi: aic7xxx: Fix the spelling verson to
- version in the file aic79xx.h
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, hare@suse.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210209143146.3987352-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1737dbee-40ea-41f4-8453-38b7c435290c@infradead.org>
-Date:   Wed, 10 Feb 2021 12:59:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232801AbhBJVAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:00:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231193AbhBJVAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 16:00:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 194F764DE7;
+        Wed, 10 Feb 2021 20:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612990779;
+        bh=8UVcBcBHgwUxXmdgoCQ0LoimmZZgbh9qAu0ypgoozQM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O/7DHup661kD7BHH5z8EHVcdfxNpadTFO7zBNfdUcfayg7KJcoNwsnei/VmtDu/ft
+         1AS19f9C3h0nMWSbGTnpkesv0ACKcdsyIHojzH9BS7jm9gjm3E5ztstpUWbp7Y+fSY
+         frQS1JoJptmgYK4O0A6BRfjqZIlt4MAshvlS/rigIUJyN+V0ZCmAFo95rCExXnBbkQ
+         HY5CmLtckc/uf8pMorCohr9FpbWPGhAY2IrADVKhSHxkH9+3JCIndCsGOGftq3I8SB
+         XQ2UxhFYd27xbTyjVALvg1r8pWPL8xIlpDtsM+vrm2pKVZY+zC3CnGGnd3t0s2fGU2
+         1Fp86/Btwq1UQ==
+Received: by mail-ed1-f47.google.com with SMTP id v7so4634444eds.10;
+        Wed, 10 Feb 2021 12:59:39 -0800 (PST)
+X-Gm-Message-State: AOAM530fNqxxP8OqmMbiUV1IZIlYe4XfUJko0qmrJV/EBo+JeBSkcps1
+        YddUOJjkjNZ0HD9x7YgkLpnZ7B1tc3Y5VvGAEw==
+X-Google-Smtp-Source: ABdhPJxacO0wf1xtajhT6TgBmNau1cOl6EP0XT0wnGuAql3GiyYkRv8xoZQ8EpumIQDdN7LoduVFbTVtabNCICboevM=
+X-Received: by 2002:a50:ee10:: with SMTP id g16mr5022978eds.62.1612990777710;
+ Wed, 10 Feb 2021 12:59:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210209143146.3987352-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210210214720.02e6a6be@canb.auug.org.au> <YCQjfqH415zIhhyz@kroah.com>
+ <CAGETcx88Ln2XxuLN7P2BVhzB=OQxPLLsBN7WLL1j2JtR4+Z8ow@mail.gmail.com>
+ <CAGETcx9zM2OdbNDcC7pXGtY9yqRgb-wt0YzFv6wfNgQi0gM+8w@mail.gmail.com>
+ <CAL_JsqLrRQs2Q_ui2SLdEBJ7FuYNpC-_K+9yoQjyMDbhaRbLiQ@mail.gmail.com> <CAGETcx9dPER2NoOx5vcS7BbCNw=Bao20kKk82uMe_8Bjf-XoFw@mail.gmail.com>
+In-Reply-To: <CAGETcx9dPER2NoOx5vcS7BbCNw=Bao20kKk82uMe_8Bjf-XoFw@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 10 Feb 2021 14:59:26 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+54eRFoSwmo0jSqo9oj88zrLhOQLNRgPtctfZgB_0ahQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+54eRFoSwmo0jSqo9oj88zrLhOQLNRgPtctfZgB_0ahQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the driver-core tree
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg KH <greg@kroah.com>, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 6:31 AM, Bhaskar Chowdhury wrote:
-> 
-> s/verson/version/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On Wed, Feb 10, 2021 at 2:44 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Wed, Feb 10, 2021 at 12:15 PM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > On Wed, Feb 10, 2021 at 1:17 PM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Wed, Feb 10, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > On Wed, Feb 10, 2021 at 10:18 AM Greg KH <greg@kroah.com> wrote:
+> > > > >
+> > > > > On Wed, Feb 10, 2021 at 09:47:20PM +1100, Stephen Rothwell wrote:
+> > > > > > Hi all,
+> > > > > >
+> > > > > > After merging the driver-core tree, today's linux-next build (sparc64
+> > > > > > defconfig) failed like this:
+> > > > > >
+> > > > > > drivers/of/property.o: In function `parse_interrupts':
+> > > > > > property.c:(.text+0x14e0): undefined reference to `of_irq_parse_one'
+> > > > > >
+> > > > > > Caused by commit
+> > > > > >
+> > > > > >   f265f06af194 ("of: property: Fix fw_devlink handling of interrupts/interrupts-extended")
+> > > > > >
+> > > > > > CONFIG_OF_IRQ depends on !SPARC so of_irq_parse_one() needs a stub.
+> >
+> > It's always Sparc!
+> >
+> > > > > > I have added the following patch for today.
+> > > > > >
+> > > > > > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > > > Date: Wed, 10 Feb 2021 21:27:56 +1100
+> > > > > > Subject: [PATCH] of: irq: make a stub for of_irq_parse_one()
+> > > > > >
+> > > > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > > > ---
+> > > > > >  include/linux/of_irq.h | 9 +++++++--
+> > > > > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > > >
+> > > > Thanks Stephen!
+> > >
+> > > Actually the stub needs to return an error. 0 indicates it found the interrupt.
+> >
+> > I have a slight preference if you could add an 'if
+> > (!IS_ENABLED(CONFIG_OF_IRQ))' at the caller instead.
+> >
+> > If you grep of_irq_parse_one, you'll see there's only a few users
+> > which means it's on my hit list to make it private. Stub functions
+> > give the impression 'use everywhere'.
+>
+> I already sent out a fix :(
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Okay, it's fine. I misread Greg's mail.
 
+> Will that check optimize out the code and not cause build errors? If
+> so, I can send out a patch later.
 
-> ---
->  drivers/scsi/aic7xxx/aic79xx.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/aic7xxx/aic79xx.h b/drivers/scsi/aic7xxx/aic79xx.h
-> index dd5dfd4f30a5..c31e48fcebc7 100644
-> --- a/drivers/scsi/aic7xxx/aic79xx.h
-> +++ b/drivers/scsi/aic7xxx/aic79xx.h
-> @@ -1175,7 +1175,7 @@ struct ahd_softc {
->  	uint8_t			  tqinfifonext;
-> 
->  	/*
-> -	 * Cached verson of the hs_mailbox so we can avoid
-> +	 * Cached version of the hs_mailbox so we can avoid
->  	 * pausing the sequencer during mailbox updates.
->  	 */
->  	uint8_t			  hs_mailbox;
-> --
+Yes, it will not trigger link errors. You could still get compile
+errors if say a struct member is ifdef'ed out.
 
-
--- 
-~Randy
-
+Rob
