@@ -2,162 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D135F31734C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E785D31734F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbhBJW0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:26:20 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:2019 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhBJW0S (ORCPT
+        id S232779AbhBJW1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:27:45 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:44339 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhBJW1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:26:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1612995977; x=1644531977;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=TU5jSROIvbkMcX2RYmL0vxPJjdG8mahbecy2r6cfz7A=;
-  b=LMP/AC1nfDih2WMv0m3RsQDSlxgjFl3/3JvgC3q6OYwCPv3YKRsXqyO5
-   QhKOQ7lsUw1sfkNkCxdSNH/5/8/qxhy9sphd6yKxq1QZJzzc2C/mn5TCA
-   TbDJSBSWz0fmprDwppp20qF3bTNd6rSrIy/abZciq6mO0Gd8RMhhkhcNa
-   Nr4f6PX94X3yxiMcLHKM2oaIroMJupIW9kt3bFhJJlic7T2IyulkE7Rs7
-   gYZeDbFpXBhm1PEGxA8gkbfenhkBc3eYYY+Wa3asOOq5bAOOBtjsZU0fO
-   HZ0Rrvvr5le+pv7rEw3lgLSqfmpZ0RGoiW9r4bRyJLAidWxVxqXG3QbIn
-   A==;
-IronPort-SDR: S0W0ZhUgvK1uAK+GwMN/Jl0bpHCUaQWpXR6hsQ3jQ21yhVhmiPoiA52IDzMZR9qoCNYNF2R0aq
- ReuCYToIV602NxYzM8fhaDt3BXXAgLtx022yyYB5vFmS6zREsh4vVDTAVjMpDHl+4PA86T+Fk8
- EzK70E6Fif7PbQbx2BAJ2NgpGOqF+cqUtclN1KAv4D6LjvhsaZcptv1ZYX8aVWAvn/vgGRyRpU
- kL0WSiq7mfTmNoa+aKmEFW5KQ16nV584/d/zqQN9NAnmnZGrzgZ949RbkyZENZ4B3YJziU5Gx6
- 37Q=
-X-IronPort-AV: E=Sophos;i="5.81,169,1610380800"; 
-   d="scan'208";a="160875736"
-Received: from mail-co1nam04lp2054.outbound.protection.outlook.com (HELO NAM04-CO1-obe.outbound.protection.outlook.com) ([104.47.45.54])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Feb 2021 06:25:11 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ncR1x6nd+dIa3qb2hNw3lgdMWeSqmBGuqy73norA+yT0IA90HtKg7gUrAvcvMG0Vr86j8uIJ4as++dF00q7j33PiL63CFZ7jC/sU60FYtHiK96tmu0N9sT7fGxMXYrjwzfL/07bZRKY06cm7vqYVBDFJwFKwGQOkT3Ob2NCyG0wgHSWoCqGV96TZjvaTByDTgSmUa8F6L3jlPvEcxwSsSPlfEf+ilA9BfrjSlN8kh5tmi4yRz2ceCgkd2yOhbbHUW0PIppjPyumMDFq0F/poFxS7qtctkXHd4hSZ7yPIwMEJdqBb13/MxlONem0y358R4/YW94Ohqc8MzRVzCFkOyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1ms85j7CCgIevU5LJS1Al7eH56ggTj+CxEKSZwDRPpI=;
- b=Sf5h4Q8/80GvvE+HC+dF7p0xgN9m98AP++3l88NQlI9HV7hdPVhe89Vi1GdrJAnjMfPhIjYi6ZmaM6WYTakjgKVT9KfAOPz8FPSwgawQT17bTvnh5yLc74dLoNwdc2BiDURF4L05uUHSH/Gs0FrpQnEXXGgolZTs2mgxtNxs/YuDFIcK2bEbeBcAwlM5rdSNwAHwKjmMVOvX/ia7cyWGS69MUeyStj/cvEketvc4TFFRdc4jvM4gjGmkzKjaIQr1ECc7LEPq6+m2cfyP2MR5I8iV8x/KcQhIhLPq3Xu/0nc8Z3KsU5lyU3ZrNI/8yGiKRrMaAHIBsaWzvjeYTAYv8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1ms85j7CCgIevU5LJS1Al7eH56ggTj+CxEKSZwDRPpI=;
- b=IiiQiffJnnpmp3h/5Z0Pg1E3/ErkW9BTtdYowoCRP8cs4YiFPOw/O6GtoSoWScieuyAvHhy55OI3fzTHgxzOSF+Makk0TVuMjCZFYa1Ol/yxoe4n0vN0FtCNcUYjwD42Ac/OK4Y0BI6Wlys+QrdGW3UUI0kyclDci65kMsKkO9w=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by SJ0PR04MB7567.namprd04.prod.outlook.com (2603:10b6:a03:32d::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Wed, 10 Feb
- 2021 22:25:08 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::1d83:38d9:143:4c9c]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::1d83:38d9:143:4c9c%5]) with mapi id 15.20.3825.027; Wed, 10 Feb 2021
- 22:25:08 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     kernel test robot <lkp@intel.com>,
-        Brian Foster <bfoster@redhat.com>
-CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] xfs: fix boolreturn.cocci warnings
-Thread-Topic: [PATCH] xfs: fix boolreturn.cocci warnings
-Thread-Index: AQHW/+jp4tDkLzyfjEeAfuLQ2dkAeQ==
-Date:   Wed, 10 Feb 2021 22:25:08 +0000
-Message-ID: <BYAPR04MB496561665A02FAADEC3D885D868D9@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <202102110412.GVAOIBVp-lkp@intel.com>
- <20210210200916.GA96657@7319c0dab462>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2607:fb90:482b:10d6:f4fe:f24b:7108:1811]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6bcde688-07fb-4d97-4a5c-08d8ce12b965
-x-ms-traffictypediagnostic: SJ0PR04MB7567:
-x-microsoft-antispam-prvs: <SJ0PR04MB75670F72E2E4B241ACBE618D868D9@SJ0PR04MB7567.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:121;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: x0clep87Ryb8VeFjbyXC5WlDtB7uMW2Pt9uNmGAGqSa7px+1VPUU29FV2/OmuMWrp37/sj4331WKvXpiao1xDx1EG9jBpjAsKDw1qyULg1W90+Bzk44fH3DWDln0Chi/TPUUdAdLZN9cj2MhH6ghA+LHXXPYO1KarckOCxsy1nzsjVE9PVss+BXoQuPQZZhiyL2Mv81V/npRMD+cKGETX/FMX5vMT7In2hvgpXSRiHMO2Lr3BWIVfCJPKVhRZbXqX+kSqwCRnVweh7pJs97Zl/ulF/TcurSnMmHIYK89dfqEcaqeqb7cb9UH7ty5I7B66m8USxq7S3iLEwXtmS3M8HD7iy2Pan/J5+MspabUMZW6AZF6/vSotW8EWoP/4QjeriDt6MIyux8TFCUrw+/i7+p4fJVsFmL67OX9PTuiZTT46HsLXWO9mzmt2ySkcuJCOAVyJ2BqYeINh8Yp//4GsHayPVYSPJo5iORe+1Zss51Go2A5GOpGlcNjx5xvuvMUEh4aIzcjIzjLYkYrtIW2/C4mRNhxOKkT6uyckNXpQznIuhkquVVGPrRTEskXst16Gss9QcbUc8O7QDPEsA4QQ4z3Bb0xRtOHedLBsM0aNno=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(366004)(346002)(39860400002)(478600001)(5660300002)(8936002)(33656002)(4744005)(316002)(8676002)(4326008)(55016002)(966005)(76116006)(66476007)(66446008)(9686003)(64756008)(2906002)(66946007)(66556008)(71200400001)(52536014)(53546011)(6506007)(83380400001)(186003)(7696005)(110136005)(86362001)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?6HJByYUvxe++/MrRQPnJUFAsr4bmA4SpGiS/dL0AOXDtMd3435SMqJNbqrM+?=
- =?us-ascii?Q?YmeZ7bVRbJkdHdLqHiKIViOjtZwpH8m5I4YQFAZ+8PPctw3iE0KS05qdmHX0?=
- =?us-ascii?Q?ZzaVgVDOdlZW3bKmGbkMkpfWiNzxgtGgfJmkG9m44xGquJlQgmSb5T6n5w7q?=
- =?us-ascii?Q?TOGBkB7GG4aKXFoWoIV9AD6/ipF8+AvB/UNpwfz1AjREuFws9h4Oxf3VKqus?=
- =?us-ascii?Q?XnDq8USEzCAom8wKnrpK3hHvEgrt6LEN0dbSnRQTKJ6P1kHlv9AeU1crWYL7?=
- =?us-ascii?Q?TGCWviMEDIeeglLpRjWnVZWmIGMTV8wigQ+cwMIB+X+BfYYG6tqBxijiHzhd?=
- =?us-ascii?Q?bpltJEiO/UVG0avexWqVRBYFgffKMXJcuk1NReF+wUeoqw8Hx2zRwJcOilr6?=
- =?us-ascii?Q?YvipFyJul8cmQC+cCRWHYZfV99HQTu8lOTeSSASxnPd7OhXQZZs28O1+PhYj?=
- =?us-ascii?Q?QUDPfhetwxilJsxUveLmZoDzLhNPPLGnkFmHvitcHn1hIGzzm8QoZx8VAAsw?=
- =?us-ascii?Q?sUxDHWpgIijnSy1RWNIgp0WdEIB1EVHyz0OLufEv1zW7ADhcuy8g5pQ2i9Aa?=
- =?us-ascii?Q?bV3NzkMWE7s2Tng5FUM/6k6FEsVVzwQzng9inziSTEim8q37CwSJGLVSpCjX?=
- =?us-ascii?Q?5XwYa1hu4DNNRidPOAT6nu+sA4V4GwK3c5opcn/+/Cz7zuQCCf+dRC0aXf+g?=
- =?us-ascii?Q?18jEkmym1UKvI7pE2WD6f87ThjVQHKzootxA6canPTH5e97zLezQdpRMrH4A?=
- =?us-ascii?Q?v8nVwNc00ph457j2xRpOTyccd+JGziO758gOAlUfpFn0VVD3t57nH7qOdoP2?=
- =?us-ascii?Q?7j7xizzADFZX3G29EyokjF+yaLT6AQvLijncQtp44uLnMt9TLQAioJ6IJTsz?=
- =?us-ascii?Q?BaupIIVuUvOWqcUoKh1xBCJqBLmw1uEO0P2ljwwwXJh61a4zWnMyQAC73/1t?=
- =?us-ascii?Q?VlBj5WU4JBM3bi+6IX205zkxGHPsbkbky1MDlzzxvDXE7pnBp0quFs6uURXI?=
- =?us-ascii?Q?b5shHbguE7NgNNSfCxQ6R/utdrdsPur9OBnOjRIIsajemsCPzcrzZ+cuB/ac?=
- =?us-ascii?Q?YMjyHmlHblEochDZpY0uxeZvxFFks+Sxq5V/L4CpMAE8pjSM/G8HVb9YYAn4?=
- =?us-ascii?Q?vaN0k69bzCRtMR6VYHgzTTRo/BYRrHKwLE5oQNXmR8HG7kLWL3gNswWlR+/o?=
- =?us-ascii?Q?drAeltlmWXaXKm0L7aqW5zQMxy/ihHWm+KtvUQchMDSLOUFqYrDX1ZRqUTmx?=
- =?us-ascii?Q?W8A5etiAWfMUNY7fbF2lFw5TAVPPjaKwEbehIoM3u0kDzgXgKHXRV1GTwbYR?=
- =?us-ascii?Q?WBMunlbp9l8SqMKhf1nxej++kS7oVI/Dcj4YvlIA66VnAOOVPUJMmEqKI+QP?=
- =?us-ascii?Q?Wxll+ZaOmWP/V0yYSfFR6VTWHph1Ezjt3GbXyYt/tCRVoKkbvA=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 10 Feb 2021 17:27:41 -0500
+Received: by mail-oi1-f178.google.com with SMTP id r75so3896215oie.11;
+        Wed, 10 Feb 2021 14:27:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l9TC4esxc+xfZ+c0X7hu9IPnSeq6h5D3GimauTtA6CI=;
+        b=eE1JpQ9rpRTBhqDLlBvc8MFFUClqnf8RzyBsp2E+zuZGgPj0nLlfUvq/b3Gn7lsPjc
+         /R85nzzNjqtEqkjVXRWWoTWT0QgbOFI45fkIovfh5axF/Q8WYKy9odYE5mtOIfSJ0Gx6
+         Bstl9967+7suTNCv829gmlar5SnX04yC1WRYwo2tXi3Id7g4qZGX22iqiD6tD1CDk/4k
+         F1Qi9HztWRmEIYdZPpGf7OUZJ1UmtunFaNRi8JXFAIDuFiY7yQHPSU+31jVKUPPJj0eW
+         8OOjQpTCR/ggURlUXCie+m+LCKyQWawoGWrKJhN642QrjBKjXsSZwLzMmBp7XF7W+sFY
+         5C3A==
+X-Gm-Message-State: AOAM533biR3xuKQYqXNjvtSwbfnHZsiGrvhIm2vpB+dzg9xb4qEMyoYr
+        ZjPFwqFfqFw2R0oaFC0PIQ==
+X-Google-Smtp-Source: ABdhPJyhbITafpylWo59tDvDK8qPhE9mMpcG59cDZyK9lB/d60Ay75Fxuyb+WkQU2JX3kHrTnrZrBQ==
+X-Received: by 2002:a05:6808:649:: with SMTP id z9mr836073oih.154.1612996019876;
+        Wed, 10 Feb 2021 14:26:59 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 203sm752187oie.14.2021.02.10.14.26.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 14:26:58 -0800 (PST)
+Received: (nullmailer pid 2918770 invoked by uid 1000);
+        Wed, 10 Feb 2021 22:26:57 -0000
+Date:   Wed, 10 Feb 2021 16:26:57 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org, phil@raspberrypi.com,
+        wahrenst@gmx.net, linux-arm-kernel@lists.infradead.org,
+        mripard@kernel.org, eric@anholt.net, devicetree@vger.kernel.org
+Subject: Re: [RFC/PATCH v2 01/16] dt-bindings: soc: bcm: bcm2835-pm: Convert
+ bindings to DT schema
+Message-ID: <20210210222657.GA2911555@robh.at.kernel.org>
+References: <20210209125912.3398-1-nsaenzjulienne@suse.de>
+ <20210209125912.3398-2-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6bcde688-07fb-4d97-4a5c-08d8ce12b965
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2021 22:25:08.7122
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: byFkvauUqEQb0rIUbtXs94JlBKVMY3lhjB9HnKGSc4l9QyhWSeQaSbMPdoq1UtGAPTm4c2pjezTjrdoqBCGLIt1CmP7ZcyUqH4jwcdXHIbA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7567
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209125912.3398-2-nsaenzjulienne@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 12:11 PM, kernel test robot wrote:=0A=
-> From: kernel test robot <lkp@intel.com>=0A=
->=0A=
-> fs/xfs/xfs_log.c:1062:9-10: WARNING: return of 0/1 in function 'xfs_log_n=
-eed_covered' with return type bool=0A=
->=0A=
->  Return statements in functions returning bool should use=0A=
->  true/false instead of 1/0.=0A=
-> Generated by: scripts/coccinelle/misc/boolreturn.cocci=0A=
->=0A=
-> Fixes: 37444fc4cc39 ("xfs: lift writable fs check up into log worker task=
-")=0A=
-> CC: Brian Foster <bfoster@redhat.com>=0A=
-> Reported-by: kernel test robot <lkp@intel.com>=0A=
-> Signed-off-by: kernel test robot <lkp@intel.com>=0A=
-> ---=0A=
->=0A=
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.=
-git xfs-5.12-merge=0A=
-> head:   560ab6c0d12ebccabb83638abe23a7875b946f9a=0A=
-> commit: 37444fc4cc398266fe0f71a9c0925620d44fb76a [25/36] xfs: lift writab=
-le fs check up into log worker task=0A=
-Looks good.=0A=
-=0A=
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
+On Tue, Feb 09, 2021 at 01:58:57PM +0100, Nicolas Saenz Julienne wrote:
+> This converts the brcm,bcm2835-pm bindings from text to proper schema.
+> 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> ---
+>  .../bindings/soc/bcm/brcm,bcm2835-pm.txt      | 46 -----------
+>  .../bindings/soc/bcm/brcm,bcm2835-pm.yaml     | 79 +++++++++++++++++++
+>  2 files changed, 79 insertions(+), 46 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.txt b/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.txt
+> deleted file mode 100644
+> index 72ff033565e5..000000000000
+> --- a/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.txt
+> +++ /dev/null
+> @@ -1,46 +0,0 @@
+> -BCM2835 PM (Power domains, watchdog)
+> -
+> -The PM block controls power domains and some reset lines, and includes
+> -a watchdog timer.  This binding supersedes the brcm,bcm2835-pm-wdt
+> -binding which covered some of PM's register range and functionality.
+> -
+> -Required properties:
+> -
+> -- compatible:		Should be "brcm,bcm2835-pm"
+> -- reg:			Specifies base physical address and size of the two
+> -			  register ranges ("PM" and "ASYNC_BRIDGE" in that
+> -			  order)
+> -- clocks:		a) v3d: The V3D clock from CPRMAN
+> -			b) peri_image: The PERI_IMAGE clock from CPRMAN
+> -			c) h264: The H264 clock from CPRMAN
+> -			d) isp: The ISP clock from CPRMAN
+> -- #reset-cells: 	Should be 1.  This property follows the reset controller
+> -			  bindings[1].
+> -- #power-domain-cells:	Should be 1.  This property follows the power domain
+> -			  bindings[2].
+> -
+> -Optional properties:
+> -
+> -- timeout-sec:		Contains the watchdog timeout in seconds
+> -- system-power-controller: Whether the watchdog is controlling the
+> -    system power.  This node follows the power controller bindings[3].
+> -
+> -[1] Documentation/devicetree/bindings/reset/reset.txt
+> -[2] Documentation/devicetree/bindings/power/power-domain.yaml
+> -[3] Documentation/devicetree/bindings/power/power-controller.txt
+> -
+> -Example:
+> -
+> -pm {
+> -	compatible = "brcm,bcm2835-pm", "brcm,bcm2835-pm-wdt";
+> -	#power-domain-cells = <1>;
+> -	#reset-cells = <1>;
+> -	reg = <0x7e100000 0x114>,
+> -	      <0x7e00a000 0x24>;
+> -	clocks = <&clocks BCM2835_CLOCK_V3D>,
+> -		 <&clocks BCM2835_CLOCK_PERI_IMAGE>,
+> -		 <&clocks BCM2835_CLOCK_H264>,
+> -		 <&clocks BCM2835_CLOCK_ISP>;
+> -	clock-names = "v3d", "peri_image", "h264", "isp";
+> -	system-power-controller;
+> -};
+> diff --git a/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml b/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
+> new file mode 100644
+> index 000000000000..8bc65e5f62a7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/bcm/brcm,bcm2835-pm.yaml
+> @@ -0,0 +1,79 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/soc/bcm/brcm,bcm2835-pm.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: BCM2835 PM (Power domains, watchdog)
+> +
+> +description: |
+> +  The PM block controls power domains and some reset lines, and includes a
+> +  watchdog timer.
+> +
+> +maintainers:
+> +  - Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> +
+> +allOf:
+> +  - $ref: ../../watchdog/watchdog.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - brcm,bcm2835-pm
+> +      - const: brcm,bcm2835-pm-wdt
+
+Odd...
+
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description: Specifies base physical address and size of the two register
+> +                 ranges, "PM" and "ASYNC_BRIDGE" in that order.
+
+The number, what they are and order are captured with:
+
+items:
+  - description: PM registers
+  - description: ASYNC_BRIDGE registers
+
+'Specifies base physical address and size' is every 'reg'.
+
+> +
+> +  "#power-domain-cells":
+> +    const: 1
+> +
+> +  "#reset-cells":
+> +    const: 1
+> +
+> +  clocks:
+> +    minItems: 4
+> +    maxItems: 4
+> +
+> +  clock-names:
+> +    items:
+> +      - const: v3d
+> +      - const: peri_image
+> +      - const: h264
+> +      - const: isp
+> +
+> +  system-power-controller:
+> +    type: boolean
+> +
+> +  timeout-sec: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#power-domain-cells"
+> +  - "#reset-cells"
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/bcm2835.h>
+> +
+> +    watchdog@7e100000 {
+> +        compatible = "brcm,bcm2835-pm", "brcm,bcm2835-pm-wdt";
+> +        #power-domain-cells = <1>;
+> +        #reset-cells = <1>;
+> +        reg = <0x7e100000 0x114>,
+> +              <0x7e00a000 0x24>;
+> +        clocks = <&clocks BCM2835_CLOCK_V3D>,
+> +        	 <&clocks BCM2835_CLOCK_PERI_IMAGE>,
+> +        	 <&clocks BCM2835_CLOCK_H264>,
+> +        	 <&clocks BCM2835_CLOCK_ISP>;
+> +        clock-names = "v3d", "peri_image", "h264", "isp";
+> +        system-power-controller;
+> +    };
+> -- 
+> 2.30.0
+> 
