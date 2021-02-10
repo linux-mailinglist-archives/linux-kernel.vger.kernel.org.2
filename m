@@ -2,134 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81E53169AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4452B3169B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhBJPDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:03:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231939AbhBJPCc (ORCPT
+        id S231642AbhBJPEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:04:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58859 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231961AbhBJPEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:02:32 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A6AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:01:51 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id z6so1439958pfq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:01:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=beJP1mYrkSB9mBgiVe08BgvkPCu0WrVWSYUe1T5cFT8=;
-        b=JmIFfWvmUP1+frG/lAkaqmY/IXMtopiZCRe9kvND+RaZK7hebEHmzLVsHrefm3xOPB
-         0y0NhuswZTgIKWPwQ/DrS7xlAGDDGiRn9vDgcXrxyuFg7DIcd70f+lrzaqDLoXC8+wtu
-         9+3SiFHFTHnfmzqHg2iFD49T97GUrn71t4r5Xk01IaoaomKo1l0iFv3vhTRcVsuhHaHk
-         7/bPo8fKQ9AJh6zt+/r/NJP9ukPSDGNqSVBkLK1InlyiV5S/524LW4jio2oqM9C+LoS3
-         WSfXz06h8XuECd5Yn6F0+GHo1Dp4outBSdWLsHUjjyuZS2/TK/2AK1bm+9b4ctbINZME
-         KFsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=beJP1mYrkSB9mBgiVe08BgvkPCu0WrVWSYUe1T5cFT8=;
-        b=lNF/qKdacqsGbGokJAvvTBAZPaVbAdSi6dt7EshjvLdt31Uupvn9g2DJ7V+vk6FJ08
-         wTVT9IlrgAEgqsesTjq68CgACfVFlbWIfEqUP2YBHqj3owRu2P00dOaWWz15ei/bYhC7
-         xBzCO/JJ3TCu1eHaHKCWN2MQnNu0681cnHEXjaxetbffo03O6I9Gqi0LREF0HMO1Cn/S
-         AoI3BUjvNdJUYRlPNljWDiAdys/Qo79h+M4T4NuvJ/RBXa+5vy9DcbJoCtvnfZgup2hr
-         DEN/EmY1dGSsJ9PMXTv1aOOHPo5vP0mNPk8YNOdt2YcBrgYdkFYo/cGIEg7H640FJ77w
-         U6rA==
-X-Gm-Message-State: AOAM530tRTBau/U9iU9vLSHlem0jwtYyiU2fdIavVDIHN/FdxPC7mwVX
-        yU9Bzt0wPvevBRLS4iWqRNOgjlVENqE=
-X-Google-Smtp-Source: ABdhPJwC+Uvy/gzCp/1OSVlsPTqUU2JoH2LX9RLXrZ9/C4CeS5MQZnrciTxFhUyij+/J5IWuTSH1tQ==
-X-Received: by 2002:a62:5a45:0:b029:1e5:4c81:c59 with SMTP id o66-20020a625a450000b02901e54c810c59mr3645349pfb.51.1612969308755;
-        Wed, 10 Feb 2021 07:01:48 -0800 (PST)
-Received: from localhost ([103.200.106.135])
-        by smtp.gmail.com with ESMTPSA id u3sm2901202pfm.144.2021.02.10.07.01.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 07:01:48 -0800 (PST)
-Date:   Wed, 10 Feb 2021 20:31:33 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [PATCH v3] staging: gdm724x: Fix DMA from stack
-Message-ID: <20210210150133.chf4gwefgcvaewnd@archlinux>
-References: <20210210142512.23152-1-ameynarkhede03@gmail.com>
- <YCPz7jy6BLRzmvU3@kroah.com>
+        Wed, 10 Feb 2021 10:04:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612969374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5MXaPbc/42qFdop710unD1yxd2cY2cL3Z6ntoAVSBA8=;
+        b=i5CtJ61wp1Jrrli+374mV7FqxjcNSQQarX4bHDVyjTExAgYxbLm15pBR7wVnST/gDH8yti
+        xwwkObS0STWgJeu8tNv2W1cmqqThts+6hb80NjIbRs9XEAADDM2BIsQcWW6nVU13BBMwAB
+        1eCjwXtrZI2q5S6u7wpsSjMO2Qc0Ob8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-bQQyr9rGOxeqh9cI2Wqvww-1; Wed, 10 Feb 2021 10:02:45 -0500
+X-MC-Unique: bQQyr9rGOxeqh9cI2Wqvww-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED8B4427CF;
+        Wed, 10 Feb 2021 15:02:42 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-115-20.rdu2.redhat.com [10.10.115.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 470F460C15;
+        Wed, 10 Feb 2021 15:02:41 +0000 (UTC)
+Subject: Re: [next] [mips] spinlock.h:17:28: error: redefinition of
+ 'queued_spin_unlock'
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-mips@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Paul Burton <paul.burton@mips.com>, Will Deacon <will@kernel.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+References: <CA+G9fYtkWdeL7-nfXW8+VbaCK7swinU_Ksn67RW4FFD+cx8VYg@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <8e1322cf-4498-43b6-1dbd-665b7f016815@redhat.com>
+Date:   Wed, 10 Feb 2021 10:02:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ydswyj5saqachrzt"
-Content-Disposition: inline
-In-Reply-To: <YCPz7jy6BLRzmvU3@kroah.com>
+In-Reply-To: <CA+G9fYtkWdeL7-nfXW8+VbaCK7swinU_Ksn67RW4FFD+cx8VYg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ydswyj5saqachrzt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On 21/02/10 03:55PM, Greg KH wrote:
-> On Wed, Feb 10, 2021 at 07:55:12PM +0530, Amey Narkhede wrote:
-> > Stack allocated buffers cannot be used for DMA
-> > on all architectures so allocate hci_packet buffer
-> > using kmalloc.
-> >
-> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > ---
-> > Changes in v3:
-> > 	- Remove superfluous buf pointer
-> > 	- Reduce size of allocation of hci_packet to match number of
-> > 	bytes used for DMA
-> >
-> >  drivers/staging/gdm724x/gdm_usb.c | 10 +++++++---
-> >  1 file changed, 7 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
-> > index dc4da66c3..80c58a3ef 100644
-> > --- a/drivers/staging/gdm724x/gdm_usb.c
-> > +++ b/drivers/staging/gdm724x/gdm_usb.c
-> > @@ -56,20 +56,24 @@ static int gdm_usb_recv(void *priv_dev,
-> >
-> >  static int request_mac_address(struct lte_udev *udev)
-> >  {
-> > -	u8 buf[16] = {0,};
-> > -	struct hci_packet *hci = (struct hci_packet *)buf;
-> > +	struct hci_packet *hci;
-> >  	struct usb_device *usbdev = udev->usbdev;
-> >  	int actual;
-> >  	int ret = -1;
-> >
-> > +	hci = kmalloc(5, GFP_KERNEL);
+On 2/10/21 12:30 AM, Naresh Kamboju wrote:
+> While building Linux next tag 20210209 mips uImage.gz failed with below configs
 >
-> Why "5" and not:
-> 	hci = kmalloc(sizeof(*hci), GFP_KERNEL);
-> ?
+>    - mips (cavium_octeon_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+>    - mips (malta_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+>    - mips (nlm_xlp_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+>    - mips (defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
 >
-> thanks,
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=mips
+> CROSS_COMPILE=mips-linux-gnu- 'CC=sccache mips-linux-gnu-gcc'
+> 'HOSTCC=sccache gcc' uImage.gz
+> In file included from /include/linux/spinlock.h:90,
+>                   from /include/linux/ipc.h:5,
+>                   from /include/uapi/linux/sem.h:5,
+>                   from /include/linux/sem.h:5,
+>                   from /include/linux/compat.h:14,
+>                   from /arch/mips/kernel/asm-offsets.c:12:
+> /arch/mips/include/asm/spinlock.h:17:28: error: redefinition of
+> 'queued_spin_unlock'
+>     17 | #define queued_spin_unlock queued_spin_unlock
+>        |                            ^~~~~~~~~~~~~~~~~~
 >
-> greg k-h
-I really need a cup of coffee :)
-I'll send v4
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>
+> build link,
+> https://builds.tuxbuild.com/1oF9lkBAeWM2WvR11O2Yun8ERNT/
+>
+I have just posted a patch to reorder qspinlock.h and qrwlock.h include 
+ordering. Hopefully that can fix the compilation problem though I don't 
+have a mips building environment to verify that.
 
-Thanks,
-Amey
+Cheers,
+Longman
 
---ydswyj5saqachrzt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEb5tNK+B4oWmn+0Z9BBTsy/Z3yzYFAmAj9U0ACgkQBBTsy/Z3
-yzblYAf9H3EOJk/l30Do38RCSkbDmugXm/zeGUYvILtXRiTHX/xDK2Bzo/c1j2Gz
-jiqUFbLs1/MgehpgDxj4bST8Z0FeGLOOhkf+Jr/KRNbAUwy4GB8KcUhBI8+v7s/U
-icimCI49xSO3yk4SN17BfADrODZM4oUuQPewlfHNYYYg+amq1PGYHBIre4vHWWdg
-/jzDLtQG8vJqPBDgLKBRWwwGPxQfvR6Vxpqs0lw394r/LQePk5lau+GSgCBPsqZp
-8cAyIHu4xmD601IjbcmlPCRJpXHPFzCWzw0Y+iI9IbKLkDYe1828pgoPFojR5/Hf
-zv93hZDStFHoE9kE6KwuRLlNYJ8JWQ==
-=Ux+e
------END PGP SIGNATURE-----
-
---ydswyj5saqachrzt--
