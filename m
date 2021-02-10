@@ -2,187 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C7D316F0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6F5316F0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbhBJSpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:45:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57530 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234117AbhBJSen (ORCPT
+        id S234215AbhBJSqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232367AbhBJSe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:34:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612981995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=U/kEUdiVTFSkXdDlFfnN0pNfEfW0SscYP5LvJr9uMD4=;
-        b=R/tfgvZuQ4G37CYzZET2pIZtBvkJ7VLpKg3kEmvqYnS/ufIiuF3FsT5YF+k30ItpFVlbsl
-        0AQ4qKgsb3CtXkE0NsYkFwCtfo+dcHNzGrNCgOp8v17Xx6NG92GbgGCxSyhcrd0T0+WzdS
-        Jsl4DSnCKHyWdMaAUWTdAcS6IeszSnU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-7FXvma-PPKic8Esl0H0dDw-1; Wed, 10 Feb 2021 13:33:10 -0500
-X-MC-Unique: 7FXvma-PPKic8Esl0H0dDw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7678801977;
-        Wed, 10 Feb 2021 18:33:06 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 066025C1BD;
-        Wed, 10 Feb 2021 18:33:01 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Waiman Long <longman@redhat.com>,
-        Ben Gardon <bgardon@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT
-        (AARCH64 ARCHITECTURE)),
-        linux-mips@vger.kernel.org (open list:MIPS),
-        sparclinux@vger.kernel.org (open list:SPARC + UltraSPARC
-        (sparc/sparc64)),
-        linux-xtensa@linux-xtensa.org (open list:TENSILICA XTENSA PORT (xtensa)),
-        linux-arch@vger.kernel.org (open list:GENERIC INCLUDE/ASM HEADER FILES),
-        linux-csky@vger.kernel.org (open list:C-SKY ARCHITECTURE)
-Subject: [PATCH] locking/arch: Move qrwlock.h include after qspinlock.h
-Date:   Wed, 10 Feb 2021 13:33:01 -0500
-Message-Id: <20210210183301.453422-1-pbonzini@redhat.com>
+        Wed, 10 Feb 2021 13:34:58 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43253C061574;
+        Wed, 10 Feb 2021 10:34:18 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id e9so1693705plh.3;
+        Wed, 10 Feb 2021 10:34:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dj5e+JdQ9inL9MdyTwQAUMaybZD9FtdxxaVKbEntvms=;
+        b=Ub/5H3X0wZ2QMT2YY41+mARnKBQEPOq+YPST8XpKW0Pbcd1aIThNMaFuOFpzOKv7ui
+         gCpXUI6xVEOLJOBkQhRdz7WZ/lC7QDMCa6jTx0SnpWBgHRXA46ADflD43HMcXKowHFBi
+         mvBx2gVx1OwX4RNyp/s51QSzG8v3ZvX1jK2IZnOuDFjeGBeh/8Nk5e2l8RPW2fdBzM6Q
+         /LM1URg4t2WO6LDd9vjfR0S6PcgdNxDfGxTOcOvCtza1XgdI2I174URB291rOU2Akfws
+         F1KvpdIe4wGnxH4AZcTk5gA61Kb97mwu2opyLH64S65Cn2Hz5BVd61lByN4e0OtM/+D2
+         sidA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=dj5e+JdQ9inL9MdyTwQAUMaybZD9FtdxxaVKbEntvms=;
+        b=DWGVaiyo1g1o68l/bqllOEmH96esomib3L/c8xQMv1/RrhNSlraxBR9tJqB3Q4AlF8
+         bZY92TW1Gz+c6qjq73Og3vr6O9dS5QLS1Hdl4gQq32h44LN100UU43PQXVFwLpLhRNZM
+         wa1c2sDPQGjtm9X54ekbvlOjv88a03UOj/UnFBdUrv+wIw8a60YPd7OEq+COYgghRjX7
+         BwjnJDlZ8ovhXHafvFyD0D7tXW5Ughz1PIqnFk/Cog670qi8ug9e1akJKNfM0cWpWWYM
+         V5bRIWxv1B7uhWDFE938TzUqX9B3oCmR94q3KiJUdv6nqIvR85UQdoKQfV6DyA3eqBQp
+         qI7g==
+X-Gm-Message-State: AOAM531s8GUMXXHnqunv2CwrcHRI3to/UPJOszcL//sv+woQBg4sLXS0
+        i3tWaawKmSgeRKx4URaCItgX8jFlkBk=
+X-Google-Smtp-Source: ABdhPJzzfNc3Tgk6r1NRjnnlY4LFIZVY7qJEHNHAxqnO4Rxu2KkTVn41dp8KvzmYQgMfOsYFQ/ngKQ==
+X-Received: by 2002:a17:90a:4148:: with SMTP id m8mr228227pjg.184.1612982057749;
+        Wed, 10 Feb 2021 10:34:17 -0800 (PST)
+Received: from [10.67.49.228] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id d124sm2592077pfa.149.2021.02.10.10.34.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 10:34:17 -0800 (PST)
+Subject: Re: [PATCH net-next] net: phy: introduce phydev->port
+To:     Michael Walle <michael@walle.cc>,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210209163852.17037-1-michael@walle.cc>
+ <41e4f35c87607e69cb87c4ef421d4a77@walle.cc>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
+ xGlkaOSDuu09rxuW+69Y2f1TzjFuGpBk4ysWOR85O2Nx8AJ6fYGCoeTbovrNlGT1M9obSFGQ
+ X3IzRnWoqlfudjTO5TKoqkbOgpYqIo5n1QbEjCCwCwCg3DOH/4ug2AUUlcIT9/l3pGvoRJ0E
+ AICDzi3l7pmC5IWn2n1mvP5247urtHFs/uusE827DDj3K8Upn2vYiOFMBhGsxAk6YKV6IP0d
+ ZdWX6fqkJJlu9cSDvWtO1hXeHIfQIE/xcqvlRH783KrihLcsmnBqOiS6rJDO2x1eAgC8meAX
+ SAgsrBhcgGl2Rl5gh/jkeA5ykwbxA/9u1eEuL70Qzt5APJmqVXR+kWvrqdBVPoUNy/tQ8mYc
+ nzJJ63ng3tHhnwHXZOu8hL4nqwlYHRa9eeglXYhBqja4ZvIvCEqSmEukfivk+DlIgVoOAJbh
+ qIWgvr3SIEuR6ayY3f5j0f2ejUMYlYYnKdiHXFlF9uXm1ELrb0YX4GMHz7QnRmxvcmlhbiBG
+ YWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+iGYEExECACYCGyMGCwkIBwMCBBUCCAME
+ FgIDAQIeAQIXgAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2DvCVAJ4u4/bPF4P3jxb4qEY8I2gS
+ 6hG0gACffNWlqJ2T4wSSn+3o7CCZNd7SLSC5BA0ESM+4EhAQAL/o09boR9D3Vk1Tt7+gpYr3
+ WQ6hgYVON905q2ndEoA2J0dQxJNRw3snabHDDzQBAcqOvdi7YidfBVdKi0wxHhSuRBfuOppu
+ pdXkb7zxuPQuSveCLqqZWRQ+Cc2QgF7SBqgznbe6Ngout5qXY5Dcagk9LqFNGhJQzUGHAsIs
+ hap1f0B1PoUyUNeEInV98D8Xd/edM3mhO9nRpUXRK9Bvt4iEZUXGuVtZLT52nK6Wv2EZ1TiT
+ OiqZlf1P+vxYLBx9eKmabPdm3yjalhY8yr1S1vL0gSA/C6W1o/TowdieF1rWN/MYHlkpyj9c
+ Rpc281gAO0AP3V1G00YzBEdYyi0gaJbCEQnq8Vz1vDXFxHzyhgGz7umBsVKmYwZgA8DrrB0M
+ oaP35wuGR3RJcaG30AnJpEDkBYHznI2apxdcuTPOHZyEilIRrBGzDwGtAhldzlBoBwE3Z3MY
+ 31TOpACu1ZpNOMysZ6xiE35pWkwc0KYm4hJA5GFfmWSN6DniimW3pmdDIiw4Ifcx8b3mFrRO
+ BbDIW13E51j9RjbO/nAaK9ndZ5LRO1B/8Fwat7bLzmsCiEXOJY7NNpIEpkoNoEUfCcZwmLrU
+ +eOTPzaF6drw6ayewEi5yzPg3TAT6FV3oBsNg3xlwU0gPK3v6gYPX5w9+ovPZ1/qqNfOrbsE
+ FRuiSVsZQ5s3AAMFD/9XjlnnVDh9GX/r/6hjmr4U9tEsM+VQXaVXqZuHKaSmojOLUCP/YVQo
+ 7IiYaNssCS4FCPe4yrL4FJJfJAsbeyDykMN7wAnBcOkbZ9BPJPNCbqU6dowLOiy8AuTYQ48m
+ vIyQ4Ijnb6GTrtxIUDQeOBNuQC/gyyx3nbL/lVlHbxr4tb6YkhkO6shjXhQh7nQb33FjGO4P
+ WU11Nr9i/qoV8QCo12MQEo244RRA6VMud06y/E449rWZFSTwGqb0FS0seTcYNvxt8PB2izX+
+ HZA8SL54j479ubxhfuoTu5nXdtFYFj5Lj5x34LKPx7MpgAmj0H7SDhpFWF2FzcC1bjiW9mjW
+ HaKaX23Awt97AqQZXegbfkJwX2Y53ufq8Np3e1542lh3/mpiGSilCsaTahEGrHK+lIusl6mz
+ Joil+u3k01ofvJMK0ZdzGUZ/aPMZ16LofjFA+MNxWrZFrkYmiGdv+LG45zSlZyIvzSiG2lKy
+ kuVag+IijCIom78P9jRtB1q1Q5lwZp2TLAJlz92DmFwBg1hyFzwDADjZ2nrDxKUiybXIgZp9
+ aU2d++ptEGCVJOfEW4qpWCCLPbOT7XBr+g/4H3qWbs3j/cDDq7LuVYIe+wchy/iXEJaQVeTC
+ y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU4hPBBgRAgAPAhsMBQJU
+ X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
+ HGuUuzv+GKZ6nsysJ7kCDQRXG8fwARAA6q/pqBi5PjHcOAUgk2/2LR5LjjesK50bCaD4JuNc
+ YDhFR7Vs108diBtsho3w8WRd9viOqDrhLJTroVckkk74OY8r+3t1E0Dd4wHWHQZsAeUvOwDM
+ PQMqTUBFuMi6ydzTZpFA2wBR9x6ofl8Ax+zaGBcFrRlQnhsuXLnM1uuvS39+pmzIjasZBP2H
+ UPk5ifigXcpelKmj6iskP3c8QN6x6GjUSmYx+xUfs/GNVSU1XOZn61wgPDbgINJd/THGdqiO
+ iJxCLuTMqlSsmh1+E1dSdfYkCb93R/0ZHvMKWlAx7MnaFgBfsG8FqNtZu3PCLfizyVYYjXbV
+ WO1A23riZKqwrSJAATo5iTS65BuYxrFsFNPrf7TitM8E76BEBZk0OZBvZxMuOs6Z1qI8YKVK
+ UrHVGFq3NbuPWCdRul9SX3VfOunr9Gv0GABnJ0ET+K7nspax0xqq7zgnM71QEaiaH17IFYGS
+ sG34V7Wo3vyQzsk7qLf9Ajno0DhJ+VX43g8+AjxOMNVrGCt9RNXSBVpyv2AMTlWCdJ5KI6V4
+ KEzWM4HJm7QlNKE6RPoBxJVbSQLPd9St3h7mxLcne4l7NK9eNgNnneT7QZL8fL//s9K8Ns1W
+ t60uQNYvbhKDG7+/yLcmJgjF74XkGvxCmTA1rW2bsUriM533nG9gAOUFQjURkwI8jvMAEQEA
+ AYkCaAQYEQIACQUCVxvH8AIbAgIpCRBhV5kVtWN2DsFdIAQZAQIABgUCVxvH8AAKCRCH0Jac
+ RAcHBIkHD/9nmfog7X2ZXMzL9ktT++7x+W/QBrSTCTmq8PK+69+INN1ZDOrY8uz6htfTLV9+
+ e2W6G8/7zIvODuHk7r+yQ585XbplgP0V5Xc8iBHdBgXbqnY5zBrcH+Q/oQ2STalEvaGHqNoD
+ UGyLQ/fiKoLZTPMur57Fy1c9rTuKiSdMgnT0FPfWVDfpR2Ds0gpqWePlRuRGOoCln5GnREA/
+ 2MW2rWf+CO9kbIR+66j8b4RUJqIK3dWn9xbENh/aqxfonGTCZQ2zC4sLd25DQA4w1itPo+f5
+ V/SQxuhnlQkTOCdJ7b/mby/pNRz1lsLkjnXueLILj7gNjwTabZXYtL16z24qkDTI1x3g98R/
+ xunb3/fQwR8FY5/zRvXJq5us/nLvIvOmVwZFkwXc+AF+LSIajqQz9XbXeIP/BDjlBNXRZNdo
+ dVuSU51ENcMcilPr2EUnqEAqeczsCGpnvRCLfVQeSZr2L9N4svNhhfPOEscYhhpHTh0VPyxI
+ pPBNKq+byuYPMyk3nj814NKhImK0O4gTyCK9b+gZAVvQcYAXvSouCnTZeJRrNHJFTgTgu6E0
+ caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
+ 6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <558e057f-69a4-cb16-ef0f-9e3d005060ea@gmail.com>
+Date:   Wed, 10 Feb 2021 10:34:13 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <41e4f35c87607e69cb87c4ef421d4a77@walle.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-include/asm-generic/qrwlock.h was trying to get arch_spin_is_locked via
-asm-generic/qspinlock.h.  However, this does not work because architectures
-might be using queued rwlocks but not queued spinlocks (csky), or because they
-might be defining their own queued_* macros before including asm/qspinlock.h.
+On 2/10/21 3:20 AM, Michael Walle wrote:
+> 
+> Am 2021-02-09 17:38, schrieb Michael Walle:
+>> --- a/drivers/net/phy/phy.c
+>> +++ b/drivers/net/phy/phy.c
+>> @@ -308,7 +308,7 @@ void phy_ethtool_ksettings_get(struct phy_device
+>> *phydev,
+>>      if (phydev->interface == PHY_INTERFACE_MODE_MOCA)
+>>          cmd->base.port = PORT_BNC;
+>>      else
+>> -        cmd->base.port = PORT_MII;
+>> +        cmd->base.port = phydev->port;
+>>      cmd->base.transceiver = phy_is_internal(phydev) ?
+>>                  XCVR_INTERNAL : XCVR_EXTERNAL;
+>>      cmd->base.phy_address = phydev->mdio.addr;
+> 
+> Russell, the phylink has a similiar place where PORT_MII is set. I don't
+> know
+> if we'd have to change that, too.
+> 
+> Also, I wanted to look into the PHY_INTERFACE_MODE_MOCA thing and if we can
+> get rid of the special case here and just set phydev->port to PORT_BNC
+> in the
+> driver. Florian, maybe you have a comment on this?
 
-To fix this, ensure that asm/spinlock.h always includes qrwlock.h after
-defining arch_spin_is_locked (either directly for csky, or via
-asm/qspinlock.h for other architectures).  The only inclusion elsewhere
-is in kernel/locking/qrwlock.c.  That one is really unnecessary because
-the file is only compiled in SMP configurations (config QUEUED_RWLOCKS
-depends on SMP) and in that case linux/spinlock.h already includes
-asm/qrwlock.h if needed, via asm/spinlock.h.
+For GENET, it's simple because we can do this:
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Cc: Waiman Long <longman@redhat.com>
-Fixes: 26128cb6c7e6 ("locking/rwlocks: Add contention detection for rwlocks")
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Ben Gardon <bgardon@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
-	v1->v2: Fix sparc too.  Add a comment in qrwlock.h itself.
-	Remove unnecessary inclusion in kernel/locking/qrwlock.c
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index fcca023f22e5..34cbd008a3af 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -777,6 +777,8 @@ static int bcmgenet_get_link_ksettings(struct
+net_device *dev,
+                return -ENODEV;
 
- arch/arm64/include/asm/spinlock.h    | 2 +-
- arch/mips/include/asm/spinlock.h     | 2 +-
- arch/sparc/include/asm/spinlock_64.h | 2 +-
- arch/xtensa/include/asm/spinlock.h   | 2 +-
- include/asm-generic/qrwlock.h        | 3 ++-
- kernel/locking/qrwlock.c             | 1 -
- 6 files changed, 6 insertions(+), 6 deletions(-)
+        phy_ethtool_ksettings_get(dev->phydev, cmd);
++       if (dev->phydev->interface == PHY_INTERFACE_MODE_MOCA)
++               cmd->base.port = PORT_BNC;
 
-diff --git a/arch/arm64/include/asm/spinlock.h b/arch/arm64/include/asm/spinlock.h
-index 9083d6992603..0525c0b089ed 100644
---- a/arch/arm64/include/asm/spinlock.h
-+++ b/arch/arm64/include/asm/spinlock.h
-@@ -5,8 +5,8 @@
- #ifndef __ASM_SPINLOCK_H
- #define __ASM_SPINLOCK_H
- 
--#include <asm/qrwlock.h>
- #include <asm/qspinlock.h>
-+#include <asm/qrwlock.h>
- 
- /* See include/linux/spinlock.h */
- #define smp_mb__after_spinlock()	smp_mb()
-diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
-index 8a88eb265516..6ce2117e49f6 100644
---- a/arch/mips/include/asm/spinlock.h
-+++ b/arch/mips/include/asm/spinlock.h
-@@ -10,7 +10,6 @@
- #define _ASM_SPINLOCK_H
- 
- #include <asm/processor.h>
--#include <asm/qrwlock.h>
- 
- #include <asm-generic/qspinlock_types.h>
- 
-@@ -27,5 +26,6 @@ static inline void queued_spin_unlock(struct qspinlock *lock)
+        return 0;
  }
- 
- #include <asm/qspinlock.h>
-+#include <asm/qrwlock.h>
- 
- #endif /* _ASM_SPINLOCK_H */
-diff --git a/arch/sparc/include/asm/spinlock_64.h b/arch/sparc/include/asm/spinlock_64.h
-index 7fc82a233f49..3a9a0b0c7465 100644
---- a/arch/sparc/include/asm/spinlock_64.h
-+++ b/arch/sparc/include/asm/spinlock_64.h
-@@ -11,8 +11,8 @@
- 
- #include <asm/processor.h>
- #include <asm/barrier.h>
--#include <asm/qrwlock.h>
- #include <asm/qspinlock.h>
-+#include <asm/qrwlock.h>
- 
- #endif /* !(__ASSEMBLY__) */
- 
-diff --git a/arch/xtensa/include/asm/spinlock.h b/arch/xtensa/include/asm/spinlock.h
-index 584b0de6f2ca..41c449ece2d8 100644
---- a/arch/xtensa/include/asm/spinlock.h
-+++ b/arch/xtensa/include/asm/spinlock.h
-@@ -12,8 +12,8 @@
- #define _XTENSA_SPINLOCK_H
- 
- #include <asm/barrier.h>
--#include <asm/qrwlock.h>
- #include <asm/qspinlock.h>
-+#include <asm/qrwlock.h>
- 
- #define smp_mb__after_spinlock()	smp_mb()
- 
-diff --git a/include/asm-generic/qrwlock.h b/include/asm-generic/qrwlock.h
-index 0020d3b820a7..7ae0ece07b4e 100644
---- a/include/asm-generic/qrwlock.h
-+++ b/include/asm-generic/qrwlock.h
-@@ -14,7 +14,8 @@
- #include <asm/processor.h>
- 
- #include <asm-generic/qrwlock_types.h>
--#include <asm-generic/qspinlock.h>
-+
-+/* Must be included from asm/spinlock.h after defining arch_spin_is_locked.  */
- 
- /*
-  * Writer states & reader shift and bias.
-diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
-index fe9ca92faa2a..4786dd271b45 100644
---- a/kernel/locking/qrwlock.c
-+++ b/kernel/locking/qrwlock.c
-@@ -12,7 +12,6 @@
- #include <linux/percpu.h>
- #include <linux/hardirq.h>
- #include <linux/spinlock.h>
--#include <asm/qrwlock.h>
- 
- /**
-  * queued_read_lock_slowpath - acquire read lock of a queue rwlock
--- 
-2.26.2
 
+but for bcm_sf2.c, we would need to add plumbing between the DSA core
+and the DSA driver in order to override the cmd structure with the
+desired port and that would be most likely the only driver needing that,
+should we really bother? There is also potentially a 3rd driver coming
+down the road (bgmac) which would need to report MoCA/BNC.
+
+I don't see this scaling very well nor being such a big issue to have
+that in the PHYLIB and PHYLINK.
+-- 
+Florian
