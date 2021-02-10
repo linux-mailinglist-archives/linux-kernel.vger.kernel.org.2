@@ -2,61 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E6231611A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:33:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF00931611D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhBJId3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:33:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229692AbhBJIbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:31:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FDD264E25;
-        Wed, 10 Feb 2021 08:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612945822;
-        bh=FhmD7Id8w3BM/pFcOmfQtXONHAx6/gP1u36wip+6LZE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L+wbN9cIgPfofgXFq5dSbqfj1IZS05GEfowCsPAPuWVSqBkyuyCnCu7pOeET2rV++
-         caPfaIC3Dghhh7IagFk5uTLdJsp6/XorKy/tNbACLyabiMojFaEWlZjSYt48pJ7a5/
-         bopXUMxHBwbScmC621LwhBwqqPH58JYujm3DEqLU=
-Date:   Wed, 10 Feb 2021 09:30:19 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/120] 5.10.15-rc1 review
-Message-ID: <YCOZm6xtxYmwC7VQ@kroah.com>
-References: <20210208145818.395353822@linuxfoundation.org>
- <20210209181444.GB142754@roeck-us.net>
+        id S229672AbhBJIeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:34:50 -0500
+Received: from smtprelay0031.hostedemail.com ([216.40.44.31]:33310 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229797AbhBJIbP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 03:31:15 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id A4164182E668C;
+        Wed, 10 Feb 2021 08:30:24 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1535:1593:1594:1605:1606:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3653:3865:3867:3868:3871:3873:4118:4321:4605:5007:6737:7652:10004:10848:11026:11232:11473:11658:11914:12043:12048:12296:12297:12438:12555:12679:12740:12895:12986:13439:13894:14096:14097:14659:21080:21433:21451:21611:21627:21939:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: game81_0e0f4882760e
+X-Filterd-Recvd-Size: 7147
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 10 Feb 2021 08:30:22 +0000 (UTC)
+Message-ID: <87437daafdd86fa5c765ff9b17b6c7b097f0c317.camel@perches.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: use to octal permissions for debugfs
+ files
+From:   Joe Perches <joe@perches.com>
+To:     Drew Fustini <drew@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Date:   Wed, 10 Feb 2021 00:30:21 -0800
+In-Reply-To: <20210210074946.155417-2-drew@beagleboard.org>
+References: <20210210074946.155417-1-drew@beagleboard.org>
+         <20210210074946.155417-2-drew@beagleboard.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209181444.GB142754@roeck-us.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:14:44AM -0800, Guenter Roeck wrote:
-> On Mon, Feb 08, 2021 at 03:59:47PM +0100, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.15 release.
-> > There are 120 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 10 Feb 2021 14:57:55 +0000.
-> > Anything received after that time might be too late.
-> > 
+On Tue, 2021-02-09 at 23:49 -0800, Drew Fustini wrote:
+> Switch over pinctrl debugfs files to use octal permissions as they are
+> preferred over symbolic permissions. Refer to commit f90774e1fd27
+> ("checkpatch: look for symbolic permissions and suggest octal instead").
 > 
-> Build results:
-> 	total: 154 pass: 154 fail: 0
-> Qemu test results:
-> 	total: 427 pass: 427 fail: 0
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> ---
+>  drivers/pinctrl/core.c    | 6 +++---
+>  drivers/pinctrl/pinconf.c | 4 ++--
+>  drivers/pinctrl/pinmux.c  | 4 ++--
+>  3 files changed, 7 insertions(+), 7 deletions(-)
 > 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+> index 3663d87f51a0..c9c28f653799 100644
+> --- a/drivers/pinctrl/core.c
+> +++ b/drivers/pinctrl/core.c
+> @@ -1914,11 +1914,11 @@ static void pinctrl_init_debugfs(void)
+>  		return;
+>  	}
+>  
+> 
+> -	debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
+> +	debugfs_create_file("pinctrl-devices", 0400,
+>  			    debugfs_root, NULL, &pinctrl_devices_fops);
 
-Great, thanks for testing.
+NAK.  You've changed the permission levels.
 
-greg k-h
+S_IRUGO is 0444 not 0400.
+And you have to keep the S_IFREG or'd along with the octal.
+
+include/linux/stat.h:#define S_IRUGO            (S_IRUSR|S_IRGRP|S_IROTH)
+
+checkpatch does this conversion using this command line:
+
+$ ./scripts/checkpatch.pl -f --show-types --terse drivers/pinctrl/*.[ch] --types=SYMBOLIC_PERMS --fix-inplace
+drivers/pinctrl/core.c:1893: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+drivers/pinctrl/core.c:1895: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+drivers/pinctrl/core.c:1897: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+drivers/pinctrl/core.c:1919: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+drivers/pinctrl/core.c:1921: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+drivers/pinctrl/core.c:1923: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+total: 0 errors, 6 warnings, 2302 lines checked
+drivers/pinctrl/pinconf.c:373: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+drivers/pinctrl/pinconf.c:375: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+total: 0 errors, 2 warnings, 379 lines checked
+drivers/pinctrl/pinmux.c:679: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+drivers/pinctrl/pinmux.c:681: WARNING:SYMBOLIC_PERMS: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+total: 0 errors, 2 warnings, 854 lines checked
+
+$ git diff --stat -p drivers/pinctrl/
+ drivers/pinctrl/core.c    | 12 ++++++------
+ drivers/pinctrl/pinconf.c |  4 ++--
+ drivers/pinctrl/pinmux.c  |  4 ++--
+ 3 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index 7d3370289938..6992b805ae41 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -1890,11 +1890,11 @@ static void pinctrl_init_device_debugfs(struct pinctrl_dev *pctldev)
+ 			dev_name(pctldev->dev));
+ 		return;
+ 	}
+-	debugfs_create_file("pins", S_IFREG | S_IRUGO,
++	debugfs_create_file("pins", S_IFREG | 0444,
+ 			    device_root, pctldev, &pinctrl_pins_fops);
+-	debugfs_create_file("pingroups", S_IFREG | S_IRUGO,
++	debugfs_create_file("pingroups", S_IFREG | 0444,
+ 			    device_root, pctldev, &pinctrl_groups_fops);
+-	debugfs_create_file("gpio-ranges", S_IFREG | S_IRUGO,
++	debugfs_create_file("gpio-ranges", S_IFREG | 0444,
+ 			    device_root, pctldev, &pinctrl_gpioranges_fops);
+ 	if (pctldev->desc->pmxops)
+ 		pinmux_init_device_debugfs(device_root, pctldev);
+@@ -1916,11 +1916,11 @@ static void pinctrl_init_debugfs(void)
+ 		return;
+ 	}
+ 
+-	debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
++	debugfs_create_file("pinctrl-devices", S_IFREG | 0444,
+ 			    debugfs_root, NULL, &pinctrl_devices_fops);
+-	debugfs_create_file("pinctrl-maps", S_IFREG | S_IRUGO,
++	debugfs_create_file("pinctrl-maps", S_IFREG | 0444,
+ 			    debugfs_root, NULL, &pinctrl_maps_fops);
+-	debugfs_create_file("pinctrl-handles", S_IFREG | S_IRUGO,
++	debugfs_create_file("pinctrl-handles", S_IFREG | 0444,
+ 			    debugfs_root, NULL, &pinctrl_fops);
+ }
+ 
+diff --git a/drivers/pinctrl/pinconf.c b/drivers/pinctrl/pinconf.c
+index 02c075cc010b..f9ee12b50428 100644
+--- a/drivers/pinctrl/pinconf.c
++++ b/drivers/pinctrl/pinconf.c
+@@ -370,9 +370,9 @@ DEFINE_SHOW_ATTRIBUTE(pinconf_groups);
+ void pinconf_init_device_debugfs(struct dentry *devroot,
+ 			 struct pinctrl_dev *pctldev)
+ {
+-	debugfs_create_file("pinconf-pins", S_IFREG | S_IRUGO,
++	debugfs_create_file("pinconf-pins", S_IFREG | 0444,
+ 			    devroot, pctldev, &pinconf_pins_fops);
+-	debugfs_create_file("pinconf-groups", S_IFREG | S_IRUGO,
++	debugfs_create_file("pinconf-groups", S_IFREG | 0444,
+ 			    devroot, pctldev, &pinconf_groups_fops);
+ }
+ 
+diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
+index 36a11c9e893a..ea7559a25fed 100644
+--- a/drivers/pinctrl/pinmux.c
++++ b/drivers/pinctrl/pinmux.c
+@@ -676,9 +676,9 @@ DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
+ void pinmux_init_device_debugfs(struct dentry *devroot,
+ 			 struct pinctrl_dev *pctldev)
+ {
+-	debugfs_create_file("pinmux-functions", S_IFREG | S_IRUGO,
++	debugfs_create_file("pinmux-functions", S_IFREG | 0444,
+ 			    devroot, pctldev, &pinmux_functions_fops);
+-	debugfs_create_file("pinmux-pins", S_IFREG | S_IRUGO,
++	debugfs_create_file("pinmux-pins", S_IFREG | 0444,
+ 			    devroot, pctldev, &pinmux_pins_fops);
+ }
+ 
+
