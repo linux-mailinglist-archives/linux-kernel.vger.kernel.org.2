@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D91315D16
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122F6315D17
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbhBJCSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:18:33 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:37563 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbhBJBY7 (ORCPT
+        id S233583AbhBJCS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:18:59 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:64947 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233849AbhBJBZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 20:24:59 -0500
-Received: by mail-io1-f72.google.com with SMTP id e10so672251ioc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 17:24:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2vMkVRm2x4zbU65Zq94duQZfZU4RCzVVhgNBmR6/9hQ=;
-        b=L8qzoYmhJaAfgX/nKw4KE0/1lQdLvFAG32+Z8JDvqEfnmJECgi2RyqAK6GB2yhqtcz
-         uSO8Zvd1khbQofGDa8zGHdnvTCgmJCxvzVVdBdqgp8YqEZyhUz6qlUMhph99BcbQ5Ky0
-         cWNKZQMIrdC+Nyl8uivFkfN5LHfTIRaA1ZyIGXHGXwHozzBAKZSo0Gaqo1IS1cRu0Qgn
-         pSfPRmfDXSCFfsNFiE9bH01hvkBfYpP+33n8NfOdeHrDkyI/7Ftb2fSQtDuY2cp2Ji9G
-         TlfWxQ8uHn6g0hgiivrhKoU/tXjqy2zc+bo57kTbIcXuR+ZFP0jpi638q52YFUrthf5s
-         LQ8w==
-X-Gm-Message-State: AOAM533M7XBWatEIVqU+Ypj6Njex3CeIUmZvWJBJBbTMeXlrcF0wbanP
-        /ftRc5zHVClSN1DtqPMngRgexPKDMZPrf7z2mzxPstSUKMXR
-X-Google-Smtp-Source: ABdhPJzqkqqDFx8Mjm98Xwt5yO10GQ6mjXcZkdI+PWhSxcUD19xgunM/mIya0VQyZ4vkI7kEhl9Lk6bDVUcPRbju0rvNeMd50Dn6
+        Tue, 9 Feb 2021 20:25:49 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612920323; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=crnOxWpIuPLDk8CHOm8tJgYEx2TSD17ehthjOi5/ff0=; b=H8EICxZXMncRnYU7Leyl89jwAquEj+U1p/xdPV74DvhCBEG42eM7ZpMd3NaQrgQEIoFsf4NL
+ bghfSeKdV4McIz5EOVuyfNFTNd9E1sx7fyn/M/Jlg4H0g6GhHBf9XdsT0f5T/OtH6jUnYFKf
+ Zn3AjYgQv2aJgD0+6B2K61YTmYE=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 602335e7f112b7872c7941a8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 01:24:55
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 596BDC43464; Wed, 10 Feb 2021 01:24:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F893C433C6;
+        Wed, 10 Feb 2021 01:24:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7F893C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Tue, 9 Feb 2021 18:24:51 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/msm: fix a6xx_gmu_clear_oob
+Message-ID: <20210210012450.GA26503@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Jonathan Marek <jonathan@marek.ca>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210208185557.15703-1-jonathan@marek.ca>
 MIME-Version: 1.0
-X-Received: by 2002:a92:dd0a:: with SMTP id n10mr619114ilm.191.1612920258517;
- Tue, 09 Feb 2021 17:24:18 -0800 (PST)
-Date:   Tue, 09 Feb 2021 17:24:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000f622105baf14335@google.com>
-Subject: UBSAN: shift-out-of-bounds in xprt_do_reserve
-From:   syzbot <syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com>
-To:     anna.schumaker@netapp.com, bfields@fieldses.org,
-        chuck.lever@oracle.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        trond.myklebust@hammerspace.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208185557.15703-1-jonathan@marek.ca>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Feb 08, 2021 at 01:55:54PM -0500, Jonathan Marek wrote:
+> The cleanup patch broke a6xx_gmu_clear_oob, fix it by adding the missing
+> bitshift operation.
+> 
+> Fixes: 555c50a4a19b ("drm/msm: Clean up GMU OOB set/clear handling")
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 
-syzbot found the following issue on:
+Thanks.  I feel silly that I missed that.
 
-HEAD commit:    dd86e7fa Merge tag 'pci-v5.11-fixes-2' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=105930c4d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=266a5362c89c8127
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3a0fa110fd630ab56c8
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ba3038d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15cf0d64d00000
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index 71c917f909af..91cf46f84025 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -339,7 +339,7 @@ void a6xx_gmu_clear_oob(struct a6xx_gmu *gmu, enum a6xx_gmu_oob_state state)
+>  	else
+>  		bit = a6xx_gmu_oob_bits[state].ack_new;
+>  
+> -	gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET, bit);
+> +	gmu_write(gmu, REG_A6XX_GMU_HOST2GMU_INTR_SET, 1 << bit);
+>  }
+>  
+>  /* Enable CPU control of SPTP power power collapse */
+> -- 
+> 2.26.1
+> 
 
-================================================================================
-UBSAN: shift-out-of-bounds in net/sunrpc/xprt.c:658:14
-shift exponent 536870976 is too large for 64-bit type 'unsigned long'
-CPU: 1 PID: 8411 Comm: syz-executor902 Not tainted 5.11.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x137/0x1be lib/dump_stack.c:120
- ubsan_epilogue lib/ubsan.c:148 [inline]
- __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
- xprt_calc_majortimeo net/sunrpc/xprt.c:658 [inline]
- xprt_init_majortimeo net/sunrpc/xprt.c:686 [inline]
- xprt_request_init net/sunrpc/xprt.c:1805 [inline]
- xprt_do_reserve+0x751/0x770 net/sunrpc/xprt.c:1815
- __rpc_execute+0x1e1/0xb00 net/sunrpc/sched.c:891
- rpc_run_task+0x5a4/0x740 net/sunrpc/clnt.c:1140
- rpc_call_sync net/sunrpc/clnt.c:1169 [inline]
- rpc_ping net/sunrpc/clnt.c:2682 [inline]
- rpc_create_xprt+0x2f3/0x700 net/sunrpc/clnt.c:477
- rpc_create+0x5df/0x8a0 net/sunrpc/clnt.c:593
- nfs_create_rpc_client+0x5a0/0x740 fs/nfs/client.c:536
- nfs_init_client+0x53/0xf0 fs/nfs/client.c:653
- nfs_init_server fs/nfs/client.c:692 [inline]
- nfs_create_server+0x82d/0x2130 fs/nfs/client.c:996
- nfs_try_get_tree+0x385/0x1040 fs/nfs/super.c:939
- vfs_get_tree+0x86/0x270 fs/super.c:1496
- do_new_mount fs/namespace.c:2881 [inline]
- path_mount+0x17ad/0x2a00 fs/namespace.c:3211
- do_mount fs/namespace.c:3224 [inline]
- __do_sys_mount fs/namespace.c:3432 [inline]
- __se_sys_mount+0x28c/0x320 fs/namespace.c:3409
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x43ef89
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe0a856338 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 000000000043ef89
-RDX: 0000000020fb5ffc RSI: 0000000020000080 RDI: 00000000200000c0
-RBP: 0000000000402f70 R08: 000000002000a000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403000
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-================================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
