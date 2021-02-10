@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39389315F88
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78592315F8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbhBJGeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 01:34:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
+        id S231971AbhBJGgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 01:36:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbhBJGef (ORCPT
+        with ESMTP id S231967AbhBJGgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 01:34:35 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F8FC061574;
-        Tue,  9 Feb 2021 22:33:54 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id d2so573832pjs.4;
-        Tue, 09 Feb 2021 22:33:54 -0800 (PST)
+        Wed, 10 Feb 2021 01:36:21 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5103EC061574;
+        Tue,  9 Feb 2021 22:35:41 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id w20so859696qta.0;
+        Tue, 09 Feb 2021 22:35:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IgfJFLW1z3gVepYjmhnQ4mZUHtKbQsPBUsYEXTNmLYY=;
-        b=S4R8vtRxt1u/T8R6CF5zagqoMYBD9y9ejUwMrI5K+DlyGSbKOHi6wT64gPbGUSwLkX
-         hlkwlcN/kdpCCPhzocImdzQXR7+Zo35Rmdqa3o95DJ76DFnFT+GISHa+ce8DsmUEwDUj
-         2FozhpC6CvJqrLeML12gZ9Gqc3VDoQ1POY/VCDbeUqfKGxLWR84rrg0QjyfGKoufG8OW
-         9SN97LWHGPT+dbRoYcbsW+bcGi4EO8ku6SwIzhdDWgIdYQTqM10IGRW814t942ElJIfI
-         6CzwC6TJQFUbAKlD9SWt7/I7rBhBkdu70BUwt6Agq7MstzLmT2Fpz8IymDSWsQaxqFVm
-         G8hw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OXavdBpvyb1Dd4oqB+h0ECTg4yI3fOv5ICocqflKLWs=;
+        b=U3TeKQmh4y3CaWmZxGHT2aKYLXNMmaTMhX74o7qey2Zqpli88QlRz1Xs6iuoUXdHpp
+         vrDeFbsUwEWi9FKGrl/Vq8lyG/053P0M7F+3caw1kPcsncgM7m+SOqRxTLW369Uj/FFq
+         A9qAxPNoHSKxxAxQ4h6PCTAT6kKIn8aoSohjxh7M15EiZ2Qlcez9KGqofJ+nPPNs1QUx
+         9wUhYhnS7JNDZoy+WNsipI0nlpIZKUnH+4QuClQMepS8wOkv61BhtZ57FjpYx+xCISVn
+         TLP+LLYgiCtBirVf4LfoqCjegiT3D+R7lUdUz6OYnOoczhRPL11mVNSvXNcSxevXYVoh
+         +NYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IgfJFLW1z3gVepYjmhnQ4mZUHtKbQsPBUsYEXTNmLYY=;
-        b=EDaAjcMZo1KnwU0CNOXL3TiZFyam+ywwhRC+aW2MyqoIv/2OFV0dvPibh8yIg9U4SL
-         GxvPOmwbNqbvpS4VjFA3NxcV29gBEZAHg8Qvd84C0owIfptL46A1n5DDYJU0fRa6MtR1
-         vIJ87Dh3GM3bxDW8o3HkH6zTu4+L5YTiDwvyY6AmzZM7e2HBUzK69pHIA4FxAf4mticq
-         z0ELL/5Rr8Kjvg3Ucs9UJPFpQ1jwQdBBjMdo4MA9e7CeGMQxyfMjOqL+17PZDP68c1dz
-         TEh6t/BZUVzUayc34vZOVnLCkmysEMThfLwYv9jLWX1zgXybFE7SmAJcZtQEIClGO/df
-         vj8A==
-X-Gm-Message-State: AOAM530r0LemGsxlldwRnUEIVRAQwyrlTYy/RZ/2xq+zQIbxQMDerd80
-        qcFcxvSP75XbAA6sxLukDKw+w6b4za46rg==
-X-Google-Smtp-Source: ABdhPJxxA4QoyVcc435f7Ljs/HZo0zZz0RwIIR/6k4cG0fKnZTaDLGa3NA1TipjoC/VgBv+SS5XVAQ==
-X-Received: by 2002:a17:90a:470b:: with SMTP id h11mr1677204pjg.186.1612938834051;
-        Tue, 09 Feb 2021 22:33:54 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id q1sm1044688pgr.58.2021.02.09.22.33.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 22:33:53 -0800 (PST)
-Date:   Wed, 10 Feb 2021 15:33:51 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     pmladek@suse.com, sergey.senozhatsky@gmail.com,
-        rostedt@goodmis.org, john.ogness@linutronix.de,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3] printk: fix deadlock when kernel panic
-Message-ID: <YCN+T5X7/uzv2n0c@jagdpanzerIV.localdomain>
-References: <20210210034823.64867-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OXavdBpvyb1Dd4oqB+h0ECTg4yI3fOv5ICocqflKLWs=;
+        b=IBPyk6Txk53zbQ7VvJdSfrFz8TR7Y3E3m/l8VVxzjuPqGlP6PJHjqNFQzK3VyLMc4C
+         w4RSLFjAnLkVsXIdeKj+nqyCi1pzSkCBF0U91AIP1EjcNhnBiu37JjoYWC7UqBXysjEQ
+         5I1AbuovSY6/YeGPByi+rLW8m3mLGiSs8E5bYOwh5jyVaVfZiQEUfRnWN5dx9AgMwk9/
+         SVkai3y5PeVO29jYOde7mT1jzb04YBstGxPWHfR5lRGuwQzE/mMc3DYi8CL27D0K0qbc
+         j1lA8bOEty0iy/s0xCb1o95oXuG7gYUYVy9a+9zyyCFr86USWYVS3PVXkbRI8Y/F3AUo
+         OjYw==
+X-Gm-Message-State: AOAM531NDFnNUCOCnSqWyKcZFQpeIiyFg9aVPDAHqO90Ddj2JngpL2s3
+        jl7GGwWI3HlOOIgz/832vaNJz9I2nO8HKs5gqMTZ6qe5Uwhrhg==
+X-Google-Smtp-Source: ABdhPJxAa/ZPqVfua2S148lPQM0vsrXWY7jYa5ufize6XE/GEpwPCHJc4pF60zzqGbSqwjyqF2HO1qXRtmfQ24UTEcw=
+X-Received: by 2002:ac8:6f06:: with SMTP id g6mr1460808qtv.360.1612938940598;
+ Tue, 09 Feb 2021 22:35:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210034823.64867-1-songmuchun@bytedance.com>
+References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
+ <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com> <20210208115112.GD8645@sirena.org.uk>
+ <CAA+D8AMRGRRk6FzdiqaHAP1=dPJngNgmdGmU59vrroXA9BMyXw@mail.gmail.com> <20210209222953.GF4916@sirena.org.uk>
+In-Reply-To: <20210209222953.GF4916@sirena.org.uk>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Wed, 10 Feb 2021 14:35:29 +0800
+Message-ID: <CAA+D8AN=SDMLhuNbstzHL_H2p_L6cr+oCXbauNB0gGs2BW5tmA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] ASoC: fsl_rpmsg: Add CPU DAI driver for audio base
+ on rpmsg
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
+        Timur Tabi <timur@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/02/10 11:48), Muchun Song wrote:
-> printk_safe_flush_on_panic() caused the following deadlock on our
-> server:
-> 
-> CPU0:                                         CPU1:
-> panic                                         rcu_dump_cpu_stacks
->   kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
->     register_nmi_handler(crash_nmi_callback)      printk_safe_flush
->                                                     __printk_safe_flush
->                                                       raw_spin_lock_irqsave(&read_lock)
->     // send NMI to other processors
->     apic_send_IPI_allbutself(NMI_VECTOR)
->                                                         // NMI interrupt, dead loop
->                                                         crash_nmi_callback
->   printk_safe_flush_on_panic
->     printk_safe_flush
->       __printk_safe_flush
->         // deadlock
->         raw_spin_lock_irqsave(&read_lock)
-> 
-> DEADLOCK: read_lock is taken on CPU1 and will never get released.
-> 
-> It happens when panic() stops a CPU by NMI while it has been in
-> the middle of printk_safe_flush().
-> 
-> Handle the lock the same way as logbuf_lock. The printk_safe buffers
-> are flushed only when both locks can be safely taken. It can avoid
-> the deadlock _in this particular case_ at expense of losing contents
-> of printk_safe buffers.
-> 
-> Note: It would actually be safe to re-init the locks when all CPUs were
->       stopped by NMI. But it would require passing this information
->       from arch-specific code. It is not worth the complexity.
->       Especially because logbuf_lock and printk_safe buffers have been
->       obsoleted by the lockless ring buffer.
-> 
-> Fixes: cf9b1106c81c ("printk/nmi: flush NMI messages on the system panic")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
-> Cc: <stable@vger.kernel.org>
+On Wed, Feb 10, 2021 at 6:30 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Feb 09, 2021 at 05:16:16PM +0800, Shengjiu Wang wrote:
+> > On Mon, Feb 8, 2021 at 7:53 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> > > hw_params() can be called multiple times and there's no need for it to
+> > > be balanced with hw_free(), I'd move this to a different callback (DAPM
+> > > should work well).
+>
+> > Which callback should I use? Is there an example?
+>
+> Like I say I'd actually recommend moving this control to DAPM.
 
-Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+I may understand your point, you suggest to use the .set_bias_level
+interface. But in my case I need to enable the clock in earlier stage
+and keep the clock on when system go to suspend.
 
-	-ss
+I am not sure .set_bias_level can met my requirement. we start
+the Chinese new year holiday now, so currently I can't do test for this
+recommendation.
+
+Maybe we can keep current implementation, can we?
+Later after I do the test, I can submit another patch for it.
+
+Best regards
+Wang Shengjiu
