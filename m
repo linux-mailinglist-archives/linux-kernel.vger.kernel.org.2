@@ -2,224 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE011316063
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE91F316065
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhBJHwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 02:52:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
+        id S233188AbhBJHxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 02:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233006AbhBJHvX (ORCPT
+        with ESMTP id S232823AbhBJHvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 02:51:23 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A88C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 23:50:43 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id j11so735068plt.11
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 23:50:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=naMFlYH6UhpEHmxz8VEooRy+MFEkCdlTQ0W0MTZJ7X4=;
-        b=pE+etDMi+lgK9jmZte9q0cGLwj+h3PK29yLX+ClA/x/LI8kv6b6PPNWZPhYcqzpsFx
-         KfAMYgQUYhgUi7VF2AIHVwgrtLwzv2Ufq63Zo5vdzI3aj+ySoYnm3FnQMka81ZGBJPqf
-         7vJG0ONhhGD71IFc8N2ByEwmdwChzZtF90qAt/giypuFvWD8Bewyw+I/tb9D8AxI8FL5
-         lE9Yxe1PCAMGf0/OHTZoV+nA5zfCv3BHcOqjW275N33xo/PQ+0peoM+syLh+lkL1YikN
-         O3iUqd9tm3MSX3aapxGkog9QFJLdG+PvV45JXmGkxoxiyfMS9LTahPNpVwjZs73IZMfA
-         YwSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=naMFlYH6UhpEHmxz8VEooRy+MFEkCdlTQ0W0MTZJ7X4=;
-        b=ZCrfrSKrbJ60XflNfyMvYoyIjI8sfbFe7/K702nRAJ3nFWgXX6AQgaFR4twutsABDh
-         FsUDq6lpJbfUz6sWU6x1n5t2McLRx1ivzQy4jmvKH+9PTaqSf86q6ccKp1Nila69d9j9
-         vlZk9dTqQqQAKNYEd4ujyM5Uja3Fi3iuDFI9uybpOBpkTtG375wzIXJZ3XQpBG2LfB7u
-         xtrE6KWTEjeP8V02Fo5XBrwyaDQPCajPCvkNrutQG8xHHdospm+J6Mi+k7RW1VwBW3gz
-         BWcTBWTs1/LKZMKLJw+TOAYYAhSWidwg93kjpXdbZdXrDrRcA2wVD2wQjOrZlPbh4CrN
-         l8Pg==
-X-Gm-Message-State: AOAM531oiQBcQJtusmLjFIKG+DxcjzJKvcSh/uuOt7tlWRLmr0gEUsj1
-        oimCZJ+BAKlKKb92eRMIN6x6vw==
-X-Google-Smtp-Source: ABdhPJzU1TbjG7FA2zFcbiny6Opf8oep9SSpoWE65laH/UwIwPU28PZ1LvRbpS++r0Iz25E2eUpW5Q==
-X-Received: by 2002:a17:90a:7404:: with SMTP id a4mr1877586pjg.167.1612943442715;
-        Tue, 09 Feb 2021 23:50:42 -0800 (PST)
-Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:7b19:df69:92d6:528e])
-        by smtp.gmail.com with ESMTPSA id b25sm1261710pfp.26.2021.02.09.23.50.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 23:50:42 -0800 (PST)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH v2 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
-Date:   Tue,  9 Feb 2021 23:49:47 -0800
-Message-Id: <20210210074946.155417-3-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210210074946.155417-1-drew@beagleboard.org>
-References: <20210210074946.155417-1-drew@beagleboard.org>
+        Wed, 10 Feb 2021 02:51:33 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE266C06178B;
+        Tue,  9 Feb 2021 23:50:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=75/kkYZe/pkc80wGhtF+H66lSSRAfzzQx0D4VyGJYnM=; b=JT1BqEwmM9zxtlDgMoW6fDiG8i
+        npJnqAR0tvL9KG8BKntwBo1wHF6lz8fN/0Q0r0sMmDjYOZgLHagUMx2WHO3VQSTu17HXUBgv57Q1y
+        QSNqf5No+lLaXAju0SeotMAe7XtaDWkwMH3KH3/CABqdPWsCftTCb9+6xTS+isgMPB0D7inlERiYG
+        dKksrQ6/+nvARgbXGOhgqI+frybYxzleeryXCGYFEjtNKi238LHqCOuq3aEEBze6c3ADXAYIMetQ9
+        Eg8MP79t/ytmkiWHN00YNl1ph3yKBDMjxCvVJp1i4iG55al3F+8J7QhNFRQp1Vu6Ua9VSjrjtMeRK
+        J1gpo6GA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9kGJ-008XLu-Qk; Wed, 10 Feb 2021 07:50:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A553A3006D0;
+        Wed, 10 Feb 2021 08:50:08 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 38132201D19B1; Wed, 10 Feb 2021 08:50:08 +0100 (CET)
+Date:   Wed, 10 Feb 2021 08:50:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] ubsan: remove overflow checks
+Message-ID: <YCOQMIjZUGWqvHgA@hirez.programming.kicks-ass.net>
+References: <YCJCaDIzIaUZG27F@hirez.programming.kicks-ass.net>
+ <20210209232348.20510-1-ryabinin.a.a@gmail.com>
+ <202102091617.8FD77890@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202102091617.8FD77890@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "pinmux-select" to debugfs which will activate a function and group
-when 2 integers "<function-selector> <group-selector>" are written to
-the file. The write operation pinmux_select() handles this by checking
-if fsel and gsel are valid selectors and then calling ops->set_mux().
+On Tue, Feb 09, 2021 at 04:19:03PM -0800, Kees Cook wrote:
+> On Wed, Feb 10, 2021 at 02:23:48AM +0300, Andrey Ryabinin wrote:
+> > Since GCC 8.0 -fsanitize=signed-integer-overflow doesn't work with -fwrapv.
+> > -fwrapv makes signed overflows defines and GCC essentially disables
+> > ubsan checks. On GCC < 8.0 -fwrapv doesn't have influence on
+> > -fsanitize=signed-integer-overflow setting, so it kinda works
+> > but generates false-positves and violates uaccess rules:
+> > 
+> > lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
+> > 
+> > Disable signed overflow checks to avoid these problems.
+> > Remove unsigned overflow checks as well.
+> > Unsigned overflow appeared as side effect of the commit
+> >  cdf8a76fda4a ("ubsan: move cc-option tests into Kconfig"),
+> > but it never worked (kernel doesn't boot). And unsigned overflows
+> > are allowed by C standard, so it just pointless.
+> > 
+> > Signed-off-by: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> 
+> NAK, please don't remove the entire thing. I want this to work again
+> with -fwrapv, and it's not entirely broken under Clang. But the feature
+> shouldn't be removed from the kernel.
+> 
+> I'd prefer Peter's fix instead.
 
-The existing "pinmux-functions" debugfs file lists the pin functions
-registered for the pin controller. For example:
+But what do you want it to do? This is UBsan, there's no UB.
 
-function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
-function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
-function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
-function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
-function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
-function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
+If you want signed overflow warnings, call it something else. But I'll
+still hate it :-)
 
-To activate function pinmux-i2c1 (fsel 4) and group pinmux-i2c1-pins
-(gsel 4):
+FWIW:
 
-echo '4 4' > pinmux-select
-
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- drivers/pinctrl/pinmux.c | 106 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 106 insertions(+)
-
-diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
-index 7f6190eaedbb..b8cd0c3bedf7 100644
---- a/drivers/pinctrl/pinmux.c
-+++ b/drivers/pinctrl/pinmux.c
-@@ -673,6 +673,110 @@ void pinmux_show_setting(struct seq_file *s,
- DEFINE_SHOW_ATTRIBUTE(pinmux_functions);
- DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
- 
-+
-+#define PINMUX_MAX_NAME 64
-+static ssize_t pinmux_select(struct file *file, const char __user *user_buf,
-+				   size_t len, loff_t *ppos)
-+{
-+	struct seq_file *sfile = file->private_data;
-+	struct pinctrl_dev *pctldev = sfile->private;
-+	const struct pinmux_ops *pmxops = pctldev->desc->pmxops;
-+	const char *const *groups;
-+	char *buf, *fname, *gname;
-+	unsigned int num_groups;
-+	int fsel, gsel, ret;
-+
-+	if (len > (PINMUX_MAX_NAME * 2)) {
-+		dev_err(pctldev->dev, "write too big for buffer");
-+		return -EINVAL;
-+	}
-+
-+	buf = devm_kzalloc(pctldev->dev, PINMUX_MAX_NAME * 2, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	fname = devm_kzalloc(pctldev->dev, PINMUX_MAX_NAME, GFP_KERNEL);
-+	if (!fname) {
-+		ret = -ENOMEM;
-+		goto free_buf;
-+	}
-+
-+	gname = devm_kzalloc(pctldev->dev, PINMUX_MAX_NAME, GFP_KERNEL);
-+	if (!buf) {
-+		ret = -ENOMEM;
-+		goto free_fname;
-+	}
-+
-+	ret = strncpy_from_user(buf, user_buf, PINMUX_MAX_NAME * 2);
-+	if (ret < 0) {
-+		dev_err(pctldev->dev, "failed to copy buffer from userspace");
-+		goto free_gname;
-+	}
-+	buf[len-1] = '\0';
-+
-+	ret = sscanf(buf, "%s %s", fname, gname);
-+	if (ret != 2) {
-+		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
-+		goto free_gname;
-+	}
-+
-+	fsel = pinmux_func_name_to_selector(pctldev, fname);
-+	if (fsel < 0) {
-+		dev_err(pctldev->dev, "invalid function %s in map table\n", fname);
-+		ret = -EINVAL;
-+		goto free_gname;
-+	}
-+
-+	ret = pmxops->get_function_groups(pctldev, fsel, &groups, &num_groups);
-+	if (ret) {
-+		dev_err(pctldev->dev, "no groups for function %d (%s)", fsel, fname);
-+		goto free_gname;
-+
-+	}
-+
-+	ret = match_string(groups, num_groups, gname);
-+	if (ret < 0) {
-+		dev_err(pctldev->dev, "invalid group %s", gname);
-+		goto free_gname;
-+	}
-+
-+	ret = pinctrl_get_group_selector(pctldev, gname);
-+	if (ret < 0) {
-+		dev_err(pctldev->dev, "failed to get group selectorL %s", gname);
-+		goto free_gname;
-+	}
-+	gsel = ret;
-+
-+	ret = pmxops->set_mux(pctldev, fsel, gsel);
-+	if (ret) {
-+		dev_err(pctldev->dev, "set_mux() failed: %d", ret);
-+		goto free_gname;
-+	}
-+
-+	return len;
-+free_buf:
-+	devm_kfree(pctldev->dev, buf);
-+free_fname:
-+	devm_kfree(pctldev->dev, fname);
-+free_gname:
-+	devm_kfree(pctldev->dev, gname);
-+	return ret;
-+}
-+
-+static int pinmux_select_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, NULL, inode->i_private);
-+}
-+
-+static const struct file_operations pinmux_select_ops = {
-+	.owner = THIS_MODULE,
-+	.open = pinmux_select_open,
-+	.read = seq_read,
-+	.write = pinmux_select,
-+	.llseek = no_llseek,
-+	.release = single_release,
-+};
-+
- void pinmux_init_device_debugfs(struct dentry *devroot,
- 			 struct pinctrl_dev *pctldev)
- {
-@@ -680,6 +784,8 @@ void pinmux_init_device_debugfs(struct dentry *devroot,
- 			    devroot, pctldev, &pinmux_functions_fops);
- 	debugfs_create_file("pinmux-pins", 0400,
- 			    devroot, pctldev, &pinmux_pins_fops);
-+	debugfs_create_file("pinmux-select", 0200,
-+			    devroot, pctldev, &pinmux_select_ops);
- }
- 
- #endif /* CONFIG_DEBUG_FS */
--- 
-2.25.1
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
