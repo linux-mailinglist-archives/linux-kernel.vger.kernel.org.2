@@ -2,134 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51483167A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C93E3167AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbhBJNN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:13:57 -0500
-Received: from mga04.intel.com ([192.55.52.120]:33979 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231274AbhBJNNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:13:49 -0500
-IronPort-SDR: k64Vw1m3Gjdq3el6FPWMrDO34lazzhBSDnZ+7AUrEBYyOMSfRjFkyH70+NbZlMSWkzbQEzvgsg
- Tt5WvNrsyqRw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="179511408"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="179511408"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 05:11:59 -0800
-IronPort-SDR: BL9+1nmLci4/8MMUJ/aw/lReQKu2LIjbjH8kyvz/4Hu4ctBi9HZOAlvhvVB8B2OqfjcyHVQ+zz
- FCH/Dy9b97lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="488745370"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Feb 2021 05:11:56 -0800
-Subject: Re: [PATCH] xhci-pci: Set AMD Renoir USB controller to D3 when
- shutdown
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Aaron Ma <aaron.ma@canonical.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Lee Jones <lee.jones@linaro.org>, peter.chen@nxp.com,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-References: <20210204051850.64857-1-aaron.ma@canonical.com>
- <CAAd53p4euFiw7pfDnD2H8oMVeeTqQ_c+wOFDLM2xPccn5MewiA@mail.gmail.com>
- <cd4595e6-67da-885c-1a67-6dfd71425b8c@canonical.com>
- <CAAd53p4z1ydFi5pwOZJnsrBDPNVLKU0ygqa0+kdZdXWYocPLgQ@mail.gmail.com>
- <YCJJrVp2DvCzigCw@kroah.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <00de6927-3fa6-a9a3-2d65-2b4d4e8f0012@linux.intel.com>
-Date:   Wed, 10 Feb 2021 15:13:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230521AbhBJNPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:15:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231261AbhBJNO4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:14:56 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1614EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:14:15 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id u14so2513439wri.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:14:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yd/N+I5kkzyOJpCnRN7vd7lwOUGF6B7BATQPc1K2fYQ=;
+        b=Ku2flnqwc5D6z3d9GmRgcHXuXbDphKiJCNyjgnzoxVdwxDs/52BrDyb7OcLZWnkYAz
+         UR5IZLaVzdRpurLn7fxlbf1b3mo/RM5L29GsZ6tgTpsyMRaO55uRbNi615w5EEGuzuiH
+         EftzrNQu9uZtxv0u8BEWObc6EWl1rD8xoM1xc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=yd/N+I5kkzyOJpCnRN7vd7lwOUGF6B7BATQPc1K2fYQ=;
+        b=X2dFYDWFKU+Y964zWsuAvFW/9mePlC/Cn9TX44+Cmjg+UYNpBaZ5eCPChOt4qg5SWZ
+         5zwbxGKbF1Bt584r3xFZcLYUEqd2i86kFdgfQ2AKYGBm+LFJoV56l2dcHpSX1TfUtp+F
+         p0fEEiXpwtlvgnDHhlIvWPnwoI1KbjmQt4avIDtInsWLpMM0EL1se9DXUyv42ZVl4NNp
+         ciIWbp07XzEZ+YZtQYAp7uM2mCj41M+OYbVQPsqK05eFnmK3p5GkPyCvGh24bhhHvq9U
+         iOmEPdYohhrnSWWghpsF03f2nQ1Nq2jhwDN9RHSOBUbU1gvVeeg1Ha8pSDn1nJwePMvp
+         YXGw==
+X-Gm-Message-State: AOAM531ZpMHtSF+PqBv2G+ylJd1luRhQ8KT6NX5jtno5W8az7vFfTcOf
+        D+l5v42OnQHAddacj4TsTRNLrw==
+X-Google-Smtp-Source: ABdhPJzaMMmb4JfbfYiORqaQNccdJmyShOrVZsJEkutd675pXDThmmVuBjfO9+5KkU1bjFmrTMFG0A==
+X-Received: by 2002:a05:6000:1374:: with SMTP id q20mr3489704wrz.44.1612962853806;
+        Wed, 10 Feb 2021 05:14:13 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id r1sm2894759wrl.95.2021.02.10.05.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 05:14:13 -0800 (PST)
+Date:   Wed, 10 Feb 2021 14:14:11 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        nouveau@lists.freedesktop.org
+Subject: Re: [PATCH 0/3] drm/ttm: constify static vm_operations_structs
+Message-ID: <YCPcIwxso67M3VqR@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        nouveau@lists.freedesktop.org
+References: <20210209234817.55112-1-rikard.falkeborn@gmail.com>
+ <e819cb08-98b6-c87d-4d95-338e06f88a48@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <YCJJrVp2DvCzigCw@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <e819cb08-98b6-c87d-4d95-338e06f88a48@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9.2.2021 10.37, Greg Kroah-Hartman wrote:
-> On Fri, Feb 05, 2021 at 02:50:15PM +0800, Kai-Heng Feng wrote:
->> On Fri, Feb 5, 2021 at 2:45 PM Aaron Ma <aaron.ma@canonical.com> wrote:
->>>
->>>
->>> On 2/5/21 12:27 PM, Kai-Heng Feng wrote:
->>>> Can you please test the following patch, which should address the root cause:
->>>> https://lore.kernel.org/linux-acpi/20201201213019.1558738-1-furquan@google.com/
->>>>
->>>> It also helps another AMD laptop on S5:
->>>> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1912935
->>>>
->>>
->>> No, this patch doesn't help on ThinkPad AMD platform.
->>
->> Thanks for the confirmation!
->>
->> Acked-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+On Wed, Feb 10, 2021 at 08:45:56AM +0100, Christian König wrote:
+> Reviewed-by: Christian König <christian.koenig@amd.com> for the series.
+
+Smash it into -misc?
+-Daniel
+
 > 
-> Mathias, want me to take this in my tree now, or are you going to send
-> me more patches for 5.12-rc1?
+> Am 10.02.21 um 00:48 schrieb Rikard Falkeborn:
+> > Constify a few static vm_operations_struct that are never modified. Their
+> > only usage is to assign their address to the vm_ops field in the
+> > vm_area_struct, which is a pointer to const vm_operations_struct. Make them
+> > const to allow the compiler to put them in read-only memory.
+> > 
+> > With this series applied, all static struct vm_operations_struct in the
+> > kernel tree are const.
+> > 
+> > Rikard Falkeborn (3):
+> >    drm/amdgpu/ttm: constify static vm_operations_struct
+> >    drm/radeon/ttm: constify static vm_operations_struct
+> >    drm/nouveau/ttm: constify static vm_operations_struct
+> > 
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 2 +-
+> >   drivers/gpu/drm/nouveau/nouveau_ttm.c   | 2 +-
+> >   drivers/gpu/drm/radeon/radeon_ttm.c     | 2 +-
+> >   3 files changed, 3 insertions(+), 3 deletions(-)
+> > 
 > 
 
-Nothing more for 5.12-rc1 from me.
-
-Could this be a PCI quirk instead of xhci?
-Maybe there is some PCI flag for this already, haven't checked yet.
-
-We want a specific PCI device to go to PCI D3cold at PCI shutdown...
-
-If not, then adding this to xhci is fine for me as well
-
-Thanks
--Mathias 
-
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
