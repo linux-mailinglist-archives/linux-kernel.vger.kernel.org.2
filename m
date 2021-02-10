@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB613163B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49A4316328
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhBJKYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:24:41 -0500
-Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:58501 "EHLO
-        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhBJKMd (ORCPT
+        id S229475AbhBJKFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230412AbhBJKAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:12:33 -0500
-X-Greylist: delayed 858 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Feb 2021 05:12:29 EST
-Received: from ios.cs.uni-dortmund.de (ios.cs.uni-dortmund.de [129.217.43.100])
-        (authenticated bits=0)
-        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 11A9unNX027344
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 10:56:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
-        s=unimail; t=1612951017;
-        bh=HPi4PR1X2ZJY9+JjYLzNxyQAsDi3SUIOPqfv2OzAdSQ=;
-        h=From:To:Cc:Subject:Date;
-        b=C3ZWOFGsjiS+o2dyE2P3lkBLkR7MJpdzsVr/KZuHAos+9Ct/sD+cwzytvxFBle8jK
-         idmg3TfrIMT4wuCPKkl6uhFGhlg6vSj2gXD06O6blzmanPFf84nM411pfE552Yt+7T
-         cqQaK55yo1K/GK4ZXtNYTj1J6uI1c9fzBjDhduFU=
-From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Cc:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] Updated locking documentation for transaction_t
-Date:   Wed, 10 Feb 2021 10:56:48 +0100
-Message-Id: <20210210095649.51836-1-alexander.lochmann@tu-dortmund.de>
-X-Mailer: git-send-email 2.20.1
+        Wed, 10 Feb 2021 05:00:19 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B99AC061788;
+        Wed, 10 Feb 2021 01:57:06 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id m2so891855pgq.5;
+        Wed, 10 Feb 2021 01:57:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ihCVLM8wbPa6uVw1PsjcMBaBbOPs7zo6mYASTSqfzA8=;
+        b=TgPmxqUHIW5DCYehR/z+rrcAFpH8wGHP96YkwUesuJ/V0x8emrbmiCj9ZeWcXLDizh
+         qTeYPBXJPdmQeVwV77TYy4tjQBJfYuuX4IpmohLFCO9kA46MQqpkhvsA3ZAJ31C6Exda
+         0CB3KUP9JCPAyl+lQtKUKNnH1XAoxbuOjKy9oOjBa7c7TTEPg6OdguAnhbMNfkssun1s
+         vRYRPhrtECIlReln01IKk630sopMxpMgJSM3vD+OuQ6xT6BxVU28XzZND8UYJM4lfFT5
+         /2GJghHPJ0hnOzmnZXrS0mZ0W096uDDinL9+lySrhUrzIGGYUuF9w56yAPqjss3U+xCD
+         fUig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ihCVLM8wbPa6uVw1PsjcMBaBbOPs7zo6mYASTSqfzA8=;
+        b=umRSKyNEAgIyBOBLU/Dd4zAzSBReK8rYeHGq3vcICBFN4rjfk0BU/KNNPFV7SDM0nn
+         9WDvf/QC84PcXwRb7iNdADhR8vxsXHDZhgIeE/3glBiL4H7ZhrwSPR+63+hr9Cv7UJ3I
+         cPqRZfctJx3vMU8aVggKBV6OUQcjjdT5adbH5CGKBVu6XQA1GJUvl6t1vPBGLAYh5UGY
+         bO4B1jum9AZNN3FgtBziy6bOQc6S3jhpYhb45CyfpdsOZgj9rqI/9CxVMTYan4gdU5kG
+         YGCK7dW3YeCFPkno54Tk+YLK8Nl0TwBuOlmYiUAFS9SPDo5aSGdhWIyNkZRrEwNcAxPr
+         O+tQ==
+X-Gm-Message-State: AOAM533jQ8BlV4KqKZFHMCajC7wOP3xa3x6PKErwHrz8MXH3TLuLRMi6
+        ZOY75yZ1PAAWqkRirjBPlBCPLRFP3a7Vc7YTp6Q=
+X-Google-Smtp-Source: ABdhPJwo8ZrfqL4qcTNa4Jbwrg/Nlk5mIJst4AA8mfBJbgBT//InnNkUrDi1bkHKvtp/rSUeJ/WB+qCq8xPW+bpmnBs=
+X-Received: by 2002:a63:3d0:: with SMTP id 199mr2400502pgd.4.1612951025778;
+ Wed, 10 Feb 2021 01:57:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210210074946.155417-1-drew@beagleboard.org> <20210210074946.155417-3-drew@beagleboard.org>
+In-Reply-To: <20210210074946.155417-3-drew@beagleboard.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 10 Feb 2021 11:56:49 +0200
+Message-ID: <CAHp75VcDVVZ=hg5hfRTs9hJ20gdEE_Xhccyg859nsvtyxTXCyw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some members of transaction_t are allowed to be read without
-any lock being held if consistency doesn't matter.
-Based on LockDoc's findings, we extended the locking
-documentation of those members.
-Each one of them is marked with a short comment:
-"no lock for quick racy checks".
+On Wed, Feb 10, 2021 at 9:50 AM Drew Fustini <drew@beagleboard.org> wrote:
+>
+> Add "pinmux-select" to debugfs which will activate a function and group
+> when 2 integers "<function-selector> <group-selector>" are written to
+> the file. The write operation pinmux_select() handles this by checking
+> if fsel and gsel are valid selectors and then calling ops->set_mux().
+>
+> The existing "pinmux-functions" debugfs file lists the pin functions
+> registered for the pin controller. For example:
+>
+> function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
+> function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
+> function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
+> function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
+> function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
+> function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
+>
+> To activate function pinmux-i2c1 (fsel 4) and group pinmux-i2c1-pins
+> (gsel 4):
+>
+> echo '4 4' > pinmux-select
 
-Signed-off-by: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Signed-off-by: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>
----
- include/linux/jbd2.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+...
 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 99d3cd051ac3..18f77d9b1745 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -594,18 +594,18 @@ struct transaction_s
- 	 */
- 	unsigned long		t_log_start;
- 
--	/* Number of buffers on the t_buffers list [j_list_lock] */
-+	/* Number of buffers on the t_buffers list [j_list_lock, no lock for quick racy checks] */
- 	int			t_nr_buffers;
- 
- 	/*
- 	 * Doubly-linked circular list of all buffers reserved but not yet
--	 * modified by this transaction [j_list_lock]
-+	 * modified by this transaction [j_list_lock, no lock for quick racy checks]
- 	 */
- 	struct journal_head	*t_reserved_list;
- 
- 	/*
- 	 * Doubly-linked circular list of all metadata buffers owned by this
--	 * transaction [j_list_lock]
-+	 * transaction [j_list_lock, no lock for quick racy checks]
- 	 */
- 	struct journal_head	*t_buffers;
- 
-@@ -631,7 +631,7 @@ struct transaction_s
- 	/*
- 	 * Doubly-linked circular list of metadata buffers being shadowed by log
- 	 * IO.  The IO buffers on the iobuf list and the shadow buffers on this
--	 * list match each other one for one at all times. [j_list_lock]
-+	 * list match each other one for one at all times. [j_list_lock, no lock for quick racy checks]
- 	 */
- 	struct journal_head	*t_shadow_list;
- 
--- 
-2.20.1
+>  DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
+>
 
+> +
+
+One blank line (existed) is enough.
+
+> +#define PINMUX_MAX_NAME 64
+
+...
+
+> +       buf = devm_kzalloc(pctldev->dev, PINMUX_MAX_NAME * 2, GFP_KERNEL);
+
+You have to (re-)read documentation about Device Managed Resources.
+Keyword here is *device*! Pay attention to it. TL;DR: misuse of device
+managed resources here.
+Potentially memory exhausting (local DoS attack), but see below.
+
+> +       if (!buf)
+> +               return -ENOMEM;
+
+...
+
+> +       devm_kfree(pctldev->dev, buf);
+
+Calling devm_kfree() or other devm_*() release kinda APIs is a red
+flag in 99%. See above.
+
+--
+With Best Regards,
+Andy Shevchenko
