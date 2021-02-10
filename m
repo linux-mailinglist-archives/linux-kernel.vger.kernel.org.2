@@ -2,84 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015B731646B
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2CD31646C
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhBJK4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:56:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbhBJKxN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:53:13 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD55C061574;
-        Wed, 10 Feb 2021 02:52:25 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id 18so1021693pfz.3;
-        Wed, 10 Feb 2021 02:52:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5aQ3P4pzj3MIu+x6a2h0jZYuvjE+2Bw6hXq6j4YSBkE=;
-        b=TYxdWTbB/BabarLs4YVgppIIivafvxLP7lWhOGbgvAl4Xl+RqRBjR9WqlWhSfnM6vU
-         m6LPN8dnmaZHzCJx/2ilVNL+DAudR9YIgrYHjX+Q8BEEdXBYZ5/KqF6JzwMMIRjMVzU5
-         vraqt53tPXV9/Ero9FbwbGbZm42V5TV137/KIaaMzGdHOLQzIAd7AmRPu8HBH3TwAWx/
-         XEV/VGTCodtPYpV76gXJx1PDZAaOR41As25Bk820QO0lgQCpY3ogRZybSgazHC8Jg5Ke
-         9wlJfwGYL4wwIPtIDw6zxW9Xcx6SXTq2RjWGGpVC6o2Zvu5OrsIqU76Vat6LUrOrNh7P
-         Egiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5aQ3P4pzj3MIu+x6a2h0jZYuvjE+2Bw6hXq6j4YSBkE=;
-        b=Lsxkhev8wuFikA6HM8muiMkLCh4DvYq2C4vJdNIEVKob2KhGRgANXbodPLhbGcBtsG
-         U/0GSANi1Ru95adNJ6W0lTa1VZ/O8wN2Grw2bFaXciqguiCmRqUMQYLKHmk7LxBL8S8r
-         ngiiSdAm+qWlJm2YucUqYjz3IiLno/QlWS8krayWS4Dk3ZInSviVbUxIcknqPxQG4FyJ
-         WF8dPB38x+VwJdUWDuzwatWYnC650196rbeJdVV45cAxjBYUQ4Mx0eChECGaaEQ+nz5I
-         0BBVFgx3meqsfjWr5IPH7IyLScyABUKo0ZGaAXYPgd/U6R9hGN+oW1Rea3FcOuEb9jHo
-         ySxA==
-X-Gm-Message-State: AOAM530801Lkxjp1NLH1RZcVfYFsLIbhfomwr3uOiOk2ZprEcFQvQrtc
-        KrB0w+xYEG61x2ES31N3JLzY5eW3N/eSGO/DSE8=
-X-Google-Smtp-Source: ABdhPJwOgx0mlW1I19ll8xr+Ox7zptfTi+i1hB84L28gHB6LbA89rI9+N5B5whOLRx8DBrF89TBSSW7fEOvaxhlUM08=
-X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
- q20-20020a056a000854b02901b762330c5fmr2472078pfk.73.1612954344590; Wed, 10
- Feb 2021 02:52:24 -0800 (PST)
+        id S230317AbhBJK44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:56:56 -0500
+Received: from mail-bn8nam11on2078.outbound.protection.outlook.com ([40.107.236.78]:53888
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231708AbhBJKxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:53:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q57nNzybtx8IgoHaSCqePu2shiAldTzKTwdLeO63UoFEX4kJTCMDvln0dBH3t+I3ZM+lhkay6QyjqUcAXn0LNzD3yd2O+kxgVtgsZmHUHHp9uugsiQ9IRbm0IPLxhmlBArd9+4QBf7fOV0XlZaav33hEMoK5OUouQnj2lgeDmI614tizzMTZyxRjjMpUJLZ0hTF+8c8SNu2IFlb+K00SymuDQV3KhZTYehy+FxvJUXwgfiJa2ZvvHiWRCmtaIHo9exeZBSwZguo1f34ey+nem4FyEjx4qSKku1IHyGxCcLlYwQ/jciUcbncU95bSah2U/0TpyWTUYTVsA2vvnAsVdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1dRNM9/WedbS4Yekj8d6ZD+FQ+B4iVdh9VXS/bXxbfM=;
+ b=RmptUaoroO1f8uwOqrk6rE3zxJzmCRIsobsx6BFCUCxfvstIeMhxtlGdGYPGRvJrhhmmOnkmT6pN4sGU9VOwaBk2OEFW8Db1NoO1Nr8YVRqUmLfgGkvaF2FK7RgUKaJ+iEY8ArrSVsvXG+TTImCAp7zPUUuuJwuSaXc0Sd0IyvjoBRW3cOaqTtHO5T4l2v3OqZiyfsJ3SL54Bijmv3C1PBuVjODYZx+6XGOZ/JXk/i0ZVePevrStQHKBz6I71eQg51tTJwt/F8ytDNAyHx1xkkigm5/l4HJcj54iov6aFo86V8RioZX02694CwXzLlQPEWkMnnsm+M8ULGVh3mmEBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1dRNM9/WedbS4Yekj8d6ZD+FQ+B4iVdh9VXS/bXxbfM=;
+ b=bNIEkwoiBYnPEd69z7/AWYPVC2OKd7bhEetvnBNXtzVnXBNS7HXNolcbkMd0C+2j5rHs8GdOt3K/b1DajOLnlMqN9z7+SHqQ+i64OWao8DHVWV1lUQmG0B+/yG7Aqo8b1lcn6WWA3XqlGX2DRgfGfdX3e3UbUIV87XIM4U4m5BI=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB3886.namprd12.prod.outlook.com (2603:10b6:208:16a::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Wed, 10 Feb
+ 2021 10:52:17 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
+ 10:52:17 +0000
+Subject: Re: drm/nouneau: 5.11 cycle regression bisected to 461619f5c324
+ "drm/nouveau: switch to new allocator"
+To:     Mike Galbraith <efault@gmx.de>, lkml <linux-kernel@vger.kernel.org>
+Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+References: <1d663cd74af91e23f4f24ebbdd65ef3ba72c15fc.camel@gmx.de>
+ <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
+ <2793c200beb530ed4a8ac32c5eea0f5aaa53c7e8.camel@gmx.de>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <bfd62492-e6a9-3899-dd7d-87b7800f45c7@amd.com>
+Date:   Wed, 10 Feb 2021 11:52:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <2793c200beb530ed4a8ac32c5eea0f5aaa53c7e8.camel@gmx.de>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:1e1:ad6e:a509:1753]
+X-ClientProxiedBy: AM0PR05CA0096.eurprd05.prod.outlook.com
+ (2603:10a6:208:136::36) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <1612774677-56758-1-git-send-email-luojiaxing@huawei.com> <1612774677-56758-3-git-send-email-luojiaxing@huawei.com>
-In-Reply-To: <1612774677-56758-3-git-send-email-luojiaxing@huawei.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 10 Feb 2021 12:52:08 +0200
-Message-ID: <CAHp75Vcr+L-+UiX_CMHB6UtVxg1ZX+q+=R878jyjP+aRSrJFWw@mail.gmail.com>
-Subject: Re: [PATCH for next v1 2/2] gpio: grgpio: Replace spin_lock_irqsave
- with spin_lock in grgpio_irq_handler()
-To:     Luo Jiaxing <luojiaxing@huawei.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxarm@openeuler.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:1e1:ad6e:a509:1753] (2a02:908:1252:fb60:1e1:ad6e:a509:1753) by AM0PR05CA0096.eurprd05.prod.outlook.com (2603:10a6:208:136::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Wed, 10 Feb 2021 10:52:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ce6f47c8-90b6-451a-d882-08d8cdb1ee7e
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3886:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB388639E1388C4ED7A64ADF6C838D9@MN2PR12MB3886.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HX/dr+90tgKRP3i1JOs+FKoYDqXWs+Synh+OXpEnvDo5dreNUQCQ9+kPNykypobsMvgWXLLqy7epNSbOFfN60+DxxUgs6K5jFztoz57SsyXFkSogLc87tWLhN2fTkLs5/+JIBPBngm4r+/54wQEt8ebJ7quHIOo+c9dNZNtMUHqDfuzj2+3pixJV/B/+kY0A9IAhqf4B27bGeI/ZH2MP2fIOo0rfHcmvdbQR5kU3MuQxPhg2hy0mAaOlGqQep40nZtC/E24PxKU+fmn718Oup7sPuyd+KkMMdnJAzn4wVzfEUSxZu3GaxuiN0O88RKilbkR9Ss1vgXV4e8CoCI9/1smQS4iSYaVkDqVF/RRDwXwvWH+ne4es/VQ9yt9KHtWcJCiuRbLrntp/z1dozynRjMmKxCJCVzIchaW6JCDD2szY+59Lyoo1C6Q7zx2+Rd4upnTvtwjuxWM1mcgUe396evuxxB6nw+3Rg/fPWZAssVVP6q2CNqYo96HUedQK0u0k4HWH89dhy/b0ZKvJZrgLvdTFd8d1eYC9HoMz+0FYH0Tdea15sy2dy0ypSf8knSpLRYTLHyref/Au8BzAc6xSGA/W70gXjAfBPfGQSi+0lsc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(39860400002)(366004)(83380400001)(66476007)(2906002)(6666004)(478600001)(5660300002)(66946007)(66574015)(86362001)(8676002)(31686004)(31696002)(52116002)(6486002)(4326008)(16526019)(186003)(110136005)(66556008)(316002)(54906003)(8936002)(4744005)(2616005)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-15?Q?ePbr2bJkV4Svth8RlidCKc3z2o01vlIeOpgVRC4C/tY6GvnfsjAsTVgMp?=
+ =?iso-8859-15?Q?luOTZq09z1phL2zgDQn9G0pDXVqb2SNERqOfgoKZmVWERYgsStgwU/k/I?=
+ =?iso-8859-15?Q?N0SQ/XcBtzWNvXfQvdcSxou4zCE0jlNv8GloW2V/XQFpbqvk0BZ8Q84pd?=
+ =?iso-8859-15?Q?eiC9E595X48rsHIxDO7titZwnokQu8KDOKBWryCIgv7BQ9rlSHjfffm6D?=
+ =?iso-8859-15?Q?6uW62p+cQstTCVNddtebAzOS74Kx+EWIALoyEpu9RDifRFS6rePB8e8Sy?=
+ =?iso-8859-15?Q?PG+xuLJkvH/70eSBXmqSN5i+fMJuXbFoF/xV01HhMhHoEZxM8sW9bbyWm?=
+ =?iso-8859-15?Q?PJdIn9DVex9TiIFjq9BxGMQq1gS7aMAu5e+ct7amMHJhcLyCn8h1Q8dJD?=
+ =?iso-8859-15?Q?7T/x/XtaYdnWuYl9lhaxiV3GW5xZybw9+OU2057zPQaNoXP9zT6ta0A0U?=
+ =?iso-8859-15?Q?jQ0BgaSmR4TMwGvm5MJgK6ZTMwQWLXZZmh3xTaExnm4skRgwnFYVcobPB?=
+ =?iso-8859-15?Q?EsBGhVHiyCH4i67x9B6AF4MlAu18JerthCP/l1bW30PdElVBZAF2B0b/C?=
+ =?iso-8859-15?Q?GrMo3kG30aRIrF2MIroKtA/svEmUq9uab+teeH2EWbfs+YigXEtZa/KtR?=
+ =?iso-8859-15?Q?puKhpXDz1iAydrx2hVomFKCoyNQS3QPaHYvJcDXPvt2sPgHXTo0zZIdMT?=
+ =?iso-8859-15?Q?5OhvZQks3xDW9oqESXojtBBTcBQS0axAlmn5cuK1mRKaR1QejxaNL0UwB?=
+ =?iso-8859-15?Q?iYdGQIf+KZ0bFbQUey7JSYR8w4bI2kUijVQPIsCZAmEBHBq+8IYKx2cr1?=
+ =?iso-8859-15?Q?lGnEOV6kUMKcKetWs6irUhBiQH9DveIlcNudfT7JAncu+f7O07LQTjRU4?=
+ =?iso-8859-15?Q?dttUa1USrYDyUpOXIbmRlOPFKq3k8Vi3UjVe7W9HE0Zucrosge5OpMN8j?=
+ =?iso-8859-15?Q?2OEOTFbK62LFYdGgXry7gMgh3m4O10ID2IDzGJ/ojxwxYRZqZIQ5dQfRq?=
+ =?iso-8859-15?Q?NzCNz9elrS+FUMOoB2TkG/8DKGEDmmWQUoeI+34kzCMhqg9N90o8sNS8x?=
+ =?iso-8859-15?Q?P/1EmLDd1nVHg/PYyZc3neecf9tQ4XERQRvzq3Yn3JwG5l7WD4BeomMmV?=
+ =?iso-8859-15?Q?YZwMYdywjWdtA9iQ7y4KuEEjnK9puZJbhVPYTEoZvpYVuUR0ovrXnlD0H?=
+ =?iso-8859-15?Q?iVJqSZsaUnlFp5vDglKDg+APTIzkzxmGTvF9p4y02XYN5wFrAYazvUs14?=
+ =?iso-8859-15?Q?Luaa9taSMU3iQou+lV47uMr7l3Kz0SDINiRrIMtCXHOUeQGvTsofLMIwV?=
+ =?iso-8859-15?Q?gGtCFsSM+v7MHyywsljwpJ8ZQ9U2X0sz2pwSg4B9ps+Kto8qdhzQHTzXz?=
+ =?iso-8859-15?Q?GLRFa1sGt5WHc7Ixcmd2gQD9YBitr60SrQFBOcCy2DcPXrmkJjVE/w6qD?=
+ =?iso-8859-15?Q?P3U/bzgBJj+uCTK18bQ2Pw5FtHRoyYIuIyXX1L0+?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce6f47c8-90b6-451a-d882-08d8cdb1ee7e
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 10:52:17.0619
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zUSJOKxFcSN/ID+qWyvtwfk05xN611ZbTriMtcHMZxreaNby99G54BbBDC5Y7ipk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3886
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 10:58 AM Luo Jiaxing <luojiaxing@huawei.com> wrote:
+
+
+Am 10.02.21 um 11:46 schrieb Mike Galbraith:
+> On Wed, 2021-02-10 at 11:34 +0100, Christian König wrote:
+>> What seems to happen here is that your system is low on resources and we
+>> just try to free up pages.
+> FWIW, box has oodles generic ram free right after boot.
+
+Then I have no idea what happens here.
+
+The returned pages are identical, only the overhead to allocate them is 
+reduced significantly.
+
+The only other idea I have is that this somehow changes the timing and 
+exposes a bug somewhere else.
+
+You could try to replace the "for (order = min(MAX_ORDER - 1UL, 
+__fls(num_pages)); num_pages;" in ttm_pool_alloc() with "for (order = 0; 
+num_pages;" to get the old behavior.
+
+Regards,
+Christian.
+
 >
-> There is no need to use API with _irqsave in grgpio_irq_handler(),
-> because it already be in a irq-disabled context.
+> 	-Mike
+>
 
-It seems you haven't read the code. The handler here is shared. And
-lock there is about something else that we discussed in the cover
-letter.
-Moreover, the driver is quite outdated and code inside is horrible
-according to the modern APIs / standards.
-
-I would rather remove the driver completely.
-
--- 
-With Best Regards,
-Andy Shevchenko
