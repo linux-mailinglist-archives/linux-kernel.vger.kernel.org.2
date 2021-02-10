@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF437316EBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD370316EBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbhBJSdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:33:17 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6586 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233802AbhBJSWy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:22:54 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602424470000>; Wed, 10 Feb 2021 10:21:59 -0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 18:21:58 +0000
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 18:21:55 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 10 Feb 2021 18:21:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FKHcUstYCRqvqHKYQjdXJeSaBaMEZkhpQ41QVwP4IOsk0L6JeXjdZAIlkOkXa5XeYC/N1g05LdpQoEVTTnnAwZOhCTycCROSKQNVEBV51dDLxxTFPmV7v8r/A43ik32X4TBs40yDXsvn0PmsmHZsab72OCke49HALO3AUFKxKyEoW7pWGD3kBaY51jo6aAh9/4OvUivo5pEh0vtrMvqv2Z+ojiJWIjzfjs7H0+G08bHFHKLcCy5sIpuob6IQusAGDlBApG/JZu2sVKF36Bnn8nYzZgM6/Tw9WWF0gBWTxuAD2H+TIO4dcHjd9TR2YYx58BMEpPPo6DR55HDNIIBKfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HxX7Pzg8y2DsfnPBAhoJgKbINqTpx/eDLSvpdTrGyIw=;
- b=N5rmVutEPgci4aaKfC7TB0dbZnBNtjS2c3zO40BO2YYydK+GyV24uDXJmca/Ik5PVnNmNOafCyo9l6FjaC/7MCxZ1h3oKv6Do6OLNVQMV+/yMbSr/eM9EqDNzvUH4/9oKmZRtOBCBraXQxZ9QJlnuP+EMZyeCdNZEhoImwI/ZPZvkjsXHgW5XrxmHXf5X9aiafEo7mz4mztiYERwacIABltJRcdFM4YCJLg8a6VfuLvZoaWA1nycVGKjInDiWVDU7D8bLwVbiGxY2Naq0Qt0QFPaQ3T3eIKSVDnA7TvHOXJXnX74b8wacorTvZOJ6Az0jwFXbDYn7buv9m82EzWWyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4250.namprd12.prod.outlook.com (2603:10b6:5:21a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Wed, 10 Feb
- 2021 18:21:52 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
- 18:21:52 +0000
-Date:   Wed, 10 Feb 2021 14:21:50 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-CC:     <mkalderon@marvell.com>, <aelior@marvell.com>,
-        <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] DMA/qedr: Use true and false for bool variable
-Message-ID: <20210210182150.GB1470084@nvidia.com>
-References: <1612949901-109873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1612949901-109873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-ClientProxiedBy: MN2PR02CA0035.namprd02.prod.outlook.com
- (2603:10b6:208:fc::48) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S234444AbhBJSd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:33:56 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:40348 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234184AbhBJSXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:23:04 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612981363; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=KfKCXxFIC+tK9m9tzuQMc3z9VZ1bjrydp4kE9hsnCBQ=; b=paTpdWyLZGyVWKrzKzWHnMGv+GgiOx+SESkve61FRSqzpn23RE6MRGXfCKgEPUDSRpayBuX3
+ vJDeTSMmzg4qVi36srqw7t7nfShBtqT/uioHW2kYGvnC5J5Tx54e+IaGtqa1Rkq/adqS62tF
+ ERXOzt2Y1KlhwI5X2DL5t6QeMMc=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60242473e3df861f4ba9f821 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 18:22:43
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 682BCC43463; Wed, 10 Feb 2021 18:22:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.106] (unknown [49.204.180.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8B514C433C6;
+        Wed, 10 Feb 2021 18:22:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8B514C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+Subject: Re: [PATCH v1 1/2] dt-bindings: clock: Add SC7280 GCC clock binding
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org
+References: <1608058114-29025-1-git-send-email-tdas@codeaurora.org>
+ <1608058114-29025-2-git-send-email-tdas@codeaurora.org>
+ <161048197433.3661239.10431667618674179787@swboyd.mtv.corp.google.com>
+From:   Taniya Das <tdas@codeaurora.org>
+Message-ID: <ccc9edc3-1200-356e-7bb3-863c3d284490@codeaurora.org>
+Date:   Wed, 10 Feb 2021 23:52:35 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR02CA0035.namprd02.prod.outlook.com (2603:10b6:208:fc::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Wed, 10 Feb 2021 18:21:51 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9u7a-006ASR-Oz; Wed, 10 Feb 2021 14:21:50 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612981319; bh=AWULQz6G59wup+rf+snjWP6zT2Sm19u/cEacDt8bp5o=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=J2Nju+eAbUCk+1aT9Alfc1P0TLGlzHSnF4JIcQrcXayv98dwm9eKD3QZ/LYY0Ctrz
-         xQ7FxpLsndYFUoZshDjxSAwnnavsXYuaeRqS1tTXJn91otXepuaHpv2YTj85gMMl5E
-         nFgzwP3HTQELf7eCE5cgLHxx/MZQ9A1tyVDViwwr2rRGrGIjacfpXxG2R8XwDKaXER
-         v70647FU77XZ5LPX0oSLhz4oKKlBiUbHvRt/dZ9iFecTJ7iL22ksa3fqu1LTZQiXJG
-         u1DjguyOFq3TW0SuykyHPG2lbEuM9DKBNEfKkJdWAvKYd41SjyO6M+1Yo7EuMdRLA7
-         QWThYrGcYAK9w==
+In-Reply-To: <161048197433.3661239.10431667618674179787@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 05:38:21PM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warning:
->=20
-> ./drivers/infiniband/hw/qedr/qedr.h:629:9-10: WARNING: return of 0/1 in
-> function 'qedr_qp_has_rq' with return type bool.
->=20
-> ./drivers/infiniband/hw/qedr/qedr.h:620:9-10: WARNING: return of 0/1 in
-> function 'qedr_qp_has_sq' with return type bool.
->=20
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> Acked-by: Michal Kalderon=C2=A0<michal.kalderon@marvell.com>
-> ---
->  drivers/infiniband/hw/qedr/qedr.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+Thanks Stephen for your review comments.
 
-Applied to for-next, thanks
+On 1/13/2021 1:36 AM, Stephen Boyd wrote:
 
-Jason
+>> +  clock-names:
+>> +    items:
+>> +      - const: bi_tcxo
+>> +      - const: bi_tcxo_ao
+>> +      - const: sleep_clk
+>> +      - const: pcie_0_pipe_clk
+>> +      - const: pcie_1_pipe_clk
+>> +      - const: usb3_phy_wrapper_gcc_usb30_pipe_clk
+> 
+> Don't ufs phy clks also go into gcc?
+> 
+
+The latest patch has this updated.
+
+>> +
+>> +  '#clock-cells':
+>> +    const: 1
+>> +
+>> +  '#reset-cells':
+>> +    const: 1
+>> +
+>> +  '#power-domain-cells':
+>> +    const: 1
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  protected-clocks:
+>> +    description:
+>> +      Protected clock specifier list as per common clock binding.
+> 
+> I suppose this is fine.
+> 
+
+Removed the above in the latest patch.
+
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
+
+--
