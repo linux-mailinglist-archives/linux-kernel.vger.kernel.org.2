@@ -2,165 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F34317044
+	by mail.lfdr.de (Postfix) with ESMTP id B83C8317045
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhBJTfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232312AbhBJTeZ (ORCPT
+        id S231205AbhBJTgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:36:01 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:33758 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232487AbhBJTe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:34:25 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4536AC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:33:33 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id d26so1945487pfn.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:33:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5bTpxzmhyqMaSkCM7ds9uXFXoaDcIa78EBDnlUPl2tM=;
-        b=VWbs0iMTi2vxgqSwLGR1NXJdtgPJJ6t4i0fxXfJCU5WzFFtliBM/eTDIg5VfwrHuVh
-         oH1P/5nO3zxEOnMd9vQFOtU3haSm17GRulcWBQzjEjFXR4fgrpUzh5+QedWYnWjBhM3t
-         iJxFNTw5/lOdvOHNgy3tzs1MED1SyuOioaqak=
+        Wed, 10 Feb 2021 14:34:26 -0500
+Received: by mail-ot1-f52.google.com with SMTP id c16so2947607otp.0;
+        Wed, 10 Feb 2021 11:34:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=5bTpxzmhyqMaSkCM7ds9uXFXoaDcIa78EBDnlUPl2tM=;
-        b=TZx8M6z07mxSoQuzd/qFA6BJH2OW8psrBEg0L8OR6niExMR41uDvJUah1FNsr3gLw/
-         +/YlBnADmpohF0eAtBB0rWOhUvx/zI/tSLiu+Zd4DDgyPNQez5H7O/z3yPIc8rCU41Hr
-         EPIvSVaWnHR6JvxTd96sdc8jrcwd6iMTz4nnC4Ocp20r74fHiPnZ20gRMu8WWf+Lp6gE
-         /JzwGEjP81Aarzxnu/IQuMxtDAqyHWYKUIN4qr0l84kru+4fPSo7toWlGVM1w822PBCp
-         Zj++nDHbRB+luNrwsMCRjY3Ag8GpRxg1651Y0r+QEHJpIPgFb2Dy79aRrsYyz36zZJ7C
-         MlJA==
-X-Gm-Message-State: AOAM530yixRoHUgcgjzAmgCKbFSieK6EeBjd8B+PnJx2PfBeAJeX9oJz
-        3gwPxs0BJqws8wAQtAArXJsH+A==
-X-Google-Smtp-Source: ABdhPJyb9Yi+7DfO6DoJ8QQltqWHPhVAwYYQxHwDF6BnEPn/Zzx5qk5FkuYTK7JIoitwMok0JH75Tw==
-X-Received: by 2002:a63:5459:: with SMTP id e25mr4520747pgm.403.1612985612828;
-        Wed, 10 Feb 2021 11:33:32 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o185sm2139133pfb.196.2021.02.10.11.33.31
+        bh=WJP0klzEwgDZ/2iWW0PFvy76OgVpkGGEA11Lmo6SvQs=;
+        b=dyb6ocQgoFV+I4KrNOoZw+Rn7SuImn8Ldkv/cRvylcrSvam/nEJxf7T+0Zqp+huN9A
+         vHorvU8L5z6CbDNyBAvUScf9ZV61v+OdofmLnk1YokT59rogeq+QiQDPmlaZN+/8Fk1w
+         25BljqMCRz60kY6XzAEQcosHjypUVIG01hPxQcuF0uvlTSQvHUQwx4/IccD/F1ZBVUcF
+         fHuuQdvNenb9AmiOfvAjojbws+Y2S8Nw54WX6ctXUk49AH0Tnl6BVksZGYYCrsvS3muq
+         mnztfkOdKWGfMTmJu21U/isnrmJXYGPByXDxrvjVqHT2VqJf5tEwJPadMvU+lqj25hnj
+         RZng==
+X-Gm-Message-State: AOAM530pnKZP21dbzmjPB0Zl43RnUQDOsAm93TePb6fb5gULjRNSjRLw
+        svafxlYM/9SDScZwogN2DQ==
+X-Google-Smtp-Source: ABdhPJyi5+padksHgBI9S7lV1Nqq9A/4KHpFpydckNAVQU2HDvSbq94O8o32Nk7ZrLscKRUg+3fnFw==
+X-Received: by 2002:a05:6830:110a:: with SMTP id w10mr3238829otq.11.1612985623337;
+        Wed, 10 Feb 2021 11:33:43 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p20sm533507oos.46.2021.02.10.11.33.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 11:33:32 -0800 (PST)
-Date:   Wed, 10 Feb 2021 11:33:30 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>, haitao.huang@intel.com
-Subject: Re: [PATCH v20 02/25] x86/cet/shstk: Add Kconfig option for
- user-mode control-flow protection
-Message-ID: <202102101133.3C94A64@keescook>
-References: <20210210175703.12492-1-yu-cheng.yu@intel.com>
- <20210210175703.12492-3-yu-cheng.yu@intel.com>
+        Wed, 10 Feb 2021 11:33:42 -0800 (PST)
+Received: (nullmailer pid 2609314 invoked by uid 1000);
+        Wed, 10 Feb 2021 19:33:41 -0000
+Date:   Wed, 10 Feb 2021 13:33:41 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     mchehab@kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        todor.too@gmail.com, Jonathan Marek <jonathan@marek.ca>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        linux-media@vger.kernel.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        angelogioacchino.delregno@somainline.org, robh+dt@kernel.org,
+        Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [PATCH v4 19/22] media: dt-bindings: media: Remove qcom,camss
+ documentation
+Message-ID: <20210210193341.GA2609254@robh.at.kernel.org>
+References: <20210205104414.299732-1-robert.foss@linaro.org>
+ <20210205104414.299732-20-robert.foss@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210175703.12492-3-yu-cheng.yu@intel.com>
+In-Reply-To: <20210205104414.299732-20-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:56:40AM -0800, Yu-cheng Yu wrote:
-> Shadow Stack provides protection against function return address
-> corruption.  It is active when the processor supports it, the kernel has
-> CONFIG_X86_CET enabled, and the application is built for the feature.
-> This is only implemented for the 64-bit kernel.  When it is enabled, legacy
-> non-Shadow Stack applications continue to work, but without protection.
+On Fri, 05 Feb 2021 11:44:11 +0100, Robert Foss wrote:
+> This documentation has been incorporated in dtschema dt-bindings
+> for the devices supported by CAMSS and is no longer helpful.
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
 > ---
->  arch/x86/Kconfig           | 23 +++++++++++++++++++++++
->  arch/x86/Kconfig.assembler |  5 +++++
->  2 files changed, 28 insertions(+)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 21f851179ff0..1138b5fa9b4f 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -28,6 +28,7 @@ config X86_64
->  	select ARCH_HAS_GIGANTIC_PAGE
->  	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128
->  	select ARCH_USE_CMPXCHG_LOCKREF
-> +	select ARCH_HAS_SHADOW_STACK
->  	select HAVE_ARCH_SOFT_DIRTY
->  	select MODULES_USE_ELF_RELA
->  	select NEED_DMA_MAP_STATE
-> @@ -1951,6 +1952,28 @@ config X86_SGX
->  
->  	  If unsure, say N.
->  
-> +config ARCH_HAS_SHADOW_STACK
-> +	def_bool n
-> +
-> +config X86_CET
-> +	prompt "Intel Control-flow protection for user-mode"
-> +	def_bool n
-> +	depends on X86_64
-
-This depends isn't needed any more. With that fixed:
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
-> +	depends on AS_WRUSS
-> +	depends on ARCH_HAS_SHADOW_STACK
-> +	select ARCH_USES_HIGH_VMA_FLAGS
-> +	help
-> +	  Control-flow protection is a set of hardware features which place
-> +	  additional restrictions on indirect branches.  These help
-> +	  mitigate ROP attacks.  Applications must be enabled to use it,
-> +	  and old userspace does not get protection "for free".
-> +	  Support for this feature is present on Tiger Lake family of
-> +	  processors released in 2020 or later.  Enabling this feature
-> +	  increases kernel text size by 3.7 KB.
-> +	  See Documentation/x86/intel_cet.rst for more information.
-> +
-> +	  If unsure, say N.
-> +
->  config EFI
->  	bool "EFI runtime service support"
->  	depends on ACPI
-> diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
-> index 26b8c08e2fc4..00c79dd93651 100644
-> --- a/arch/x86/Kconfig.assembler
-> +++ b/arch/x86/Kconfig.assembler
-> @@ -19,3 +19,8 @@ config AS_TPAUSE
->  	def_bool $(as-instr,tpause %ecx)
->  	help
->  	  Supported by binutils >= 2.31.1 and LLVM integrated assembler >= V7
-> +
-> +config AS_WRUSS
-> +	def_bool $(as-instr,wrussq %rax$(comma)(%rbx))
-> +	help
-> +	  Supported by binutils >= 2.31 and LLVM integrated assembler
-> -- 
-> 2.21.0
+>  .../devicetree/bindings/media/qcom,camss.txt  | 236 ------------------
+>  1 file changed, 236 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/media/qcom,camss.txt
 > 
 
--- 
-Kees Cook
+Reviewed-by: Rob Herring <robh@kernel.org>
