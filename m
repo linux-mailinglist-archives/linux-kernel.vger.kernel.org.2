@@ -2,113 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD370316EBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B98316EC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhBJSd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:33:56 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:40348 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234184AbhBJSXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:23:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612981363; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=KfKCXxFIC+tK9m9tzuQMc3z9VZ1bjrydp4kE9hsnCBQ=; b=paTpdWyLZGyVWKrzKzWHnMGv+GgiOx+SESkve61FRSqzpn23RE6MRGXfCKgEPUDSRpayBuX3
- vJDeTSMmzg4qVi36srqw7t7nfShBtqT/uioHW2kYGvnC5J5Tx54e+IaGtqa1Rkq/adqS62tF
- ERXOzt2Y1KlhwI5X2DL5t6QeMMc=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60242473e3df861f4ba9f821 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 18:22:43
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 682BCC43463; Wed, 10 Feb 2021 18:22:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.106] (unknown [49.204.180.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8B514C433C6;
-        Wed, 10 Feb 2021 18:22:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8B514C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH v1 1/2] dt-bindings: clock: Add SC7280 GCC clock binding
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org
-References: <1608058114-29025-1-git-send-email-tdas@codeaurora.org>
- <1608058114-29025-2-git-send-email-tdas@codeaurora.org>
- <161048197433.3661239.10431667618674179787@swboyd.mtv.corp.google.com>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <ccc9edc3-1200-356e-7bb3-863c3d284490@codeaurora.org>
-Date:   Wed, 10 Feb 2021 23:52:35 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234071AbhBJSei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:34:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233990AbhBJSXi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:23:38 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201F5C06174A;
+        Wed, 10 Feb 2021 10:22:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=gPBD8cTxN1KK/x/IZ1OsnMclVj6MDrV+W4PD4XUJ32o=; b=Xj03N7O/Kc6vuVSLTEccU0XeHS
+        wFhDD/VKvxNxurRqJQWJkd5jSM5uMLUr4R+S/HYr5AqtNfphvP/mjf6qFgwaAx6y+dFmoFjGhi+Bw
+        XIhyHpJebQNKv7fpyuWzfoSLoswz6UYnlrxnMIXu/aq5F9pA25thFxf6k7H8mmf90Z6Y7GVR6TMx6
+        HMovF9T0nlg6VSS0x/3yic7AG6h8FjCvPAHqb7zD6ERaHH9D9kDdpfVHet2qzuT48cmIWzY+CiAvW
+        WJ3KSJ3SrEmLc5+U6WXlmkTd/Wgv1AJ/T2SM3nr+biGVoaZqTqbfNMxEayLcBSPk0YTxKIm6KlepA
+        W52s2Ifg==;
+Received: from [2601:1c0:6280:3f0::cf3b] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l9u8b-00055K-3n; Wed, 10 Feb 2021 18:22:53 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrey Vagin <avagin@openvz.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH] Documentation: ioctl: add entry for nsfs.h
+Date:   Wed, 10 Feb 2021 10:22:48 -0800
+Message-Id: <20210210182248.18101-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <161048197433.3661239.10431667618674179787@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Stephen for your review comments.
+All userspace ioctls major/magic number should be documented in
+Documentation/userspace-api/ioctl/ioctl-number.rst, so add
+the entry for <linux/nsfs.h>.
 
-On 1/13/2021 1:36 AM, Stephen Boyd wrote:
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrey Vagin <avagin@openvz.org>
+Cc: Serge Hallyn <serge@hallyn.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: linux-doc@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>
+---
+Feel free to modify the patch as needed.
 
->> +  clock-names:
->> +    items:
->> +      - const: bi_tcxo
->> +      - const: bi_tcxo_ao
->> +      - const: sleep_clk
->> +      - const: pcie_0_pipe_clk
->> +      - const: pcie_1_pipe_clk
->> +      - const: usb3_phy_wrapper_gcc_usb30_pipe_clk
-> 
-> Don't ufs phy clks also go into gcc?
-> 
+Probably don't need to backport:
+# Fixes: 6786741dbf99 ("nsfs: add ioctl to get an owning user namespace for ns file descriptor")
 
-The latest patch has this updated.
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
+ 1 file changed, 1 insertion(+)
 
->> +
->> +  '#clock-cells':
->> +    const: 1
->> +
->> +  '#reset-cells':
->> +    const: 1
->> +
->> +  '#power-domain-cells':
->> +    const: 1
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  protected-clocks:
->> +    description:
->> +      Protected clock specifier list as per common clock binding.
-> 
-> I suppose this is fine.
-> 
-
-Removed the above in the latest patch.
-
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
-
---
+--- lnx-511-rc7.orig/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ lnx-511-rc7/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -344,6 +344,7 @@ Code  Seq#    Include File
+ 0xB5  00-0F  uapi/linux/rpmsg.h                                      <mailto:linux-remoteproc@vger.kernel.org>
+ 0xB6  all    linux/fpga-dfl.h
+ 0xB7  all    uapi/linux/remoteproc_cdev.h                            <mailto:linux-remoteproc@vger.kernel.org>
++0xB7  all    uapi/linux/nsfs.h                                       <mailto:Andrei Vagin <avagin@openvz.org>>
+ 0xC0  00-0F  linux/usb/iowarrior.h
+ 0xCA  00-0F  uapi/misc/cxl.h
+ 0xCA  10-2F  uapi/misc/ocxl.h
