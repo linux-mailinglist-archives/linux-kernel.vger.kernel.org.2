@@ -2,86 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDF3316B30
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57460316B29
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhBJQ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:28:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25447 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232273AbhBJQ1z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:27:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612974388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rkhGNQG431H7a4/O/oJ6RWaDYdESXQ6nPiGIWilyChA=;
-        b=Uwrx4zEYYtu9vUSqhdAWZzKNbjaKGxdHXlPgiZDvDWeyVfZM+UO+OuaHmzuAWrHdGGcQBv
-        bTocK/H5gNQpQ15mgTFO8T1jHO7H0Hk6fBv9QVmIyhEm94FeNnlkasGWq360gR/HFo2wVI
-        Qg2AdXslQ99dRa0k+34dkFTFTj3RzsE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-p0MuO-BePTO6J66lsbPGRA-1; Wed, 10 Feb 2021 11:26:24 -0500
-X-MC-Unique: p0MuO-BePTO6J66lsbPGRA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 229B6801962;
-        Wed, 10 Feb 2021 16:26:23 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-120-169.rdu2.redhat.com [10.10.120.169])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AD029190D0;
-        Wed, 10 Feb 2021 16:26:21 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-input@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH RFC] input/elants_i2c: Detect enum overflow
-Date:   Wed, 10 Feb 2021 10:25:28 -0600
-Message-Id: <59e2e82d1e40df11ab38874c03556a31c6b2f484.1612974132.git.jpoimboe@redhat.com>
+        id S232286AbhBJQ0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:26:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:40342 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232049AbhBJQ0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:26:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B42D311D4;
+        Wed, 10 Feb 2021 08:25:50 -0800 (PST)
+Received: from [10.57.49.26] (unknown [10.57.49.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 22A6E3F73B;
+        Wed, 10 Feb 2021 08:25:49 -0800 (PST)
+Subject: Re: bcm2711_thermal: Kernel panic - not syncing: Asynchronous SError
+ Interrupt
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        stefan.wahren@i2se.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Robin Murphy <robin.murphy@arm.con>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+References: <20210210114829.2915de78@gollum>
+ <6d9ca41b4ad2225db102da654d38bc61f6c1c111.camel@suse.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <35e17dc9-c88d-582f-607d-1d90b20868fa@arm.com>
+Date:   Wed, 10 Feb 2021 16:25:47 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <6d9ca41b4ad2225db102da654d38bc61f6c1c111.camel@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an enum value were to get added without updating this switch
-statement, the unreachable() annotation would trigger undefined
-behavior, causing execution to fall through the end of the function,
-into the next one.
+On 2021-02-10 13:15, Nicolas Saenz Julienne wrote:
+> [ Add Robin, Catalin and Florian in case they want to chime in ]
+> 
+> Hi Juerg, thanks for the report!
+> 
+> On Wed, 2021-02-10 at 11:48 +0100, Juerg Haefliger wrote:
+>> Trying to dump the BCM2711 registers kills the kernel:
+>>
+>> # cat /sys/kernel/debug/regmap/dummy-avs-monitor\@fd5d2000/range
+>> 0-efc
+>> # cat /sys/kernel/debug/regmap/dummy-avs-monitor\@fd5d2000/registers
+>>
+>> [   62.857661] SError Interrupt on CPU1, code 0xbf000002 -- SError
+> 
+> So ESR's IDS (bit 24) is set, which means it's an 'Implementation Defined
+> SError,' hence IIUC the rest of the error code is meaningless to anyone outside
+> of Broadcom/RPi.
 
-Make the error handling more robust for an unexpected enum value, by
-doing BUG() instead of unreachable().
+It's imp-def from the architecture's PoV, but the implementation in this 
+case is Cortex-A72, where 0x000002 means an attributable, containable 
+Slave Error:
 
-Fixes the following objtool warning:
+https://developer.arm.com/documentation/100095/0003/system-control/aarch64-register-descriptions/exception-syndrome-register--el1-and-el3?lang=en
 
-  drivers/input/touchscreen/elants_i2c.o: warning: objtool: elants_i2c_initialize() falls through to next function elants_i2c_resume()
+In other words, the thing at the other end of an interconnect 
+transaction said "no" :)
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- drivers/input/touchscreen/elants_i2c.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+(The fact that Cortex-A72 gets too far ahead of itself to take it as a 
+synchronous external abort is a mild annoyance, but hey...)
 
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index 6f57ec579f00..4c2b579f6c8b 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -656,8 +656,7 @@ static int elants_i2c_initialize(struct elants_data *ts)
- 			error = elants_i2c_query_ts_info_ektf(ts);
- 		break;
- 	default:
--		unreachable();
--		break;
-+		BUG();
- 	}
- 
- 	if (error)
--- 
-2.29.2
+> The regmap is created through the following syscon device:
+> 
+> 	avs_monitor: avs-monitor@7d5d2000 {
+> 		compatible = "brcm,bcm2711-avs-monitor",
+> 			     "syscon", "simple-mfd";
+> 		reg = <0x7d5d2000 0xf00>;
+> 
+> 		thermal: thermal {
+> 			compatible = "brcm,bcm2711-thermal";
+> 			#thermal-sensor-cells = <0>;
+> 		};
+> 	};
+> 
+> I've done some tests with devmem, and the whole <0x7d5d2000 0xf00> range is
+> full of addresses that trigger this same error. Also note that as per Florian's
+> comments[1]: "AVS_RO_REGISTERS_0: 0x7d5d2200 - 0x7d5d22e3." But from what I can
+> tell, at least 0x7d5d22b0 seems to be faulty too.
+> 
+> Any ideas/comments? My guess is that those addresses are marked somehow as
+> secure, and only for VC4 to access (VC4 is RPi4's co-processor). Ultimately,
+> the solution is to narrow the register range exposed by avs-monitor to whatever
+> bcm2711-thermal needs (which is ATM a single 32bit register).
 
+When a peripheral decodes a region of address space, nobody says it has 
+to accept accesses to *every* address in that space; registers may be 
+sparsely populated, and although some devices might be "nice" and make 
+unused areas behave as RAZ/WI, others may throw slave errors if you poke 
+at the wrong places. As you note, in a TrustZone-aware device some 
+registers may only exist in one or other of the Secure/Non-Secure 
+address spaces.
+
+Even when there is a defined register at a given address, it still 
+doesn't necessarily accept all possible types of access; it wouldn't be 
+particularly friendly, but a device *could* have, say, some registers 
+that support 32-bit accesses and others that only support 16-bit 
+accesses, and thus throw slave errors if you do the wrong thing in the 
+wrong place.
+
+It really all depends on the device itself.
+
+Robin.
+
+> 
+> Regards,
+> Nicolas
+> 
+> [1] https://lore.kernel.org/linux-pm/82125042-684a-b4e2-fbaa-45a393b2ce5e@gmx.net/
+> 
+>> [   62.857671] CPU: 1 PID: 478 Comm: cat Not tainted 5.11.0-rc7 #4
+>> [   62.857674] Hardware name: Raspberry Pi 4 Model B Rev 1.2 (DT)
+>> [   62.857676] pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
+>> [   62.857679] pc : regmap_mmio_read32le+0x1c/0x34
+>> [   62.857681] lr : regmap_mmio_read+0x50/0x80
+>> [   62.857682] sp : ffff8000105c3c00
+>> [   62.857685] x29: ffff8000105c3c00 x28: 0000000000000014
+>> [   62.857694] x27: 0000000000000014 x26: ffffd2ea1c2060b0
+>> [   62.857699] x25: ffff4e34408ecc00 x24: 0000000000000efc
+>> [   62.857704] x23: ffff8000105c3e20 x22: ffff8000105c3d3c
+>> [   62.857710] x21: ffff8000105c3d3c x20: 0000000000000014
+>> [   62.857715] x19: ffff4e344037a900 x18: 0000000000000020
+>> [   62.857720] x17: 0000000000000000 x16: 0000000000000000
+>> [   62.857725] x15: ffff4e3447ac40f0 x14: 0000000000000003
+>> [   62.857730] x13: ffff4e34422c0000 x12: ffff4e34422a0046
+>> [   62.857735] x11: ffffd2ea1c8765e0 x10: 0000000000000000
+>> [   62.857741] x9 : ffffd2ea1b9495a0 x8 : ffff4e34429ef980
+>> [   62.857746] x7 : 000000000000000f x6 : ffff4e34422a004b
+>> [   62.857751] x5 : 00000000fffffff9 x4 : 0000000000000000
+>> [   62.857757] x3 : ffffd2ea1b949550 x2 : ffffd2ea1b949330
+>> [   62.857761] x1 : 0000000000000014 x0 : 0000000000000000
+>> [   62.857767] Kernel panic - not syncing: Asynchronous SError Interrupt
+>> [   62.857770] CPU: 1 PID: 478 Comm: cat Not tainted 5.11.0-rc7 #4
+>> [   62.857773] Hardware name: Raspberry Pi 4 Model B Rev 1.2 (DT)
+>> [   62.857775] Call trace:
+>> [   62.857777]  dump_backtrace+0x0/0x1e0
+>> [   62.857778]  show_stack+0x24/0x70
+>> [   62.857780]  dump_stack+0xd0/0x12c
+>> [   62.857782]  panic+0x168/0x370
+>> [   62.857783]  nmi_panic+0x98/0xa0
+>> [   62.857786]  arm64_serror_panic+0x8c/0x98
+>> [   62.857787]  do_serror+0x3c/0x6c
+>> [   62.857789]  el1_error+0x78/0xf0
+>> [   62.857791]  regmap_mmio_read32le+0x1c/0x34
+>> [   62.857793]  _regmap_bus_reg_read+0x24/0x30
+>> [   62.857795]  _regmap_read+0x6c/0x17c
+>> [   62.857797]  regmap_read+0x58/0x84
+>> [   62.857799]  regmap_read_debugfs+0x138/0x3f4
+>> [   62.857801]  regmap_map_read_file+0x34/0x40
+>> [   62.857803]  full_proxy_read+0x6c/0xc0
+>> [   62.857805]  vfs_read+0xb8/0x1e4
+>> [   62.857807]  ksys_read+0x78/0x10c
+>> [   62.857809]  __arm64_sys_read+0x28/0x34
+>> [   62.857811]  el0_svc_common.constprop.0+0x7c/0x194
+>> [   62.857813]  do_el0_svc+0x30/0x9c
+>> [   62.857814]  el0_svc+0x20/0x30
+>> [   62.857816]  el0_sync_handler+0x1a4/0x1b0
+>> [   62.857818]  el0_sync+0x174/0x180
+>> [   62.857842] SMP: stopping secondary CPUs
+>> [   62.857845] Kernel Offset: 0x52ea0b080000 from 0xffff800010000000
+>> [   62.857847] PHYS_OFFSET: 0xffffb1cc00000000
+>> [   62.857849] CPU features: 0x00240022,61806000
+>> [   62.857851] Memory Limit: none
+>>
+>> Sprinkling printks around regmap_read [1] shows that reading from 0x14 (20)
+>> seems to cause the issue:
+>>
+>>
+>> [   40.456230] map=ffff020a069c9c00, from=0, to=3836, count=131072
+>> [   40.462520] map=ffff020a069c9c00, i=0
+>> [   40.466319] ret=0, val=0
+>> [   40.468922] map=ffff020a069c9c00, i=4
+>> [   40.472684] ret=0, val=0
+>> [   40.475292] map=ffff020a069c9c00, i=8
+>> [   40.479048] ret=0, val=0
+>> [   40.481649] map=ffff020a069c9c00, i=12
+>> [   40.485492] ret=0, val=0
+>> [   40.488080] map=ffff020a069c9c00, i=16
+>> [   40.491922] ret=0, val=0
+>> [   40.494523] map=ffff020a069c9c00, i=20
+>> [   40.498497] SError Interrupt on CPU0, code 0xbf000002 -- SError
+>> [   40.498499] CPU: 0 PID: 486 Comm: cat Not tainted 5.11.0-rc7+ #8
+>> [   40.498501] Hardware name: Raspberry Pi 4 Model B Rev 1.2 (DT)
+>>
+>>
+>> ...Juerg
+>>
+>> [1]
+>> diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
+>> index ff2ee87987c7..9465f5a2f3b8 100644
+>> --- a/drivers/base/regmap/regmap-debugfs.c
+>> +++ b/drivers/base/regmap/regmap-debugfs.c
+>> @@ -229,6 +229,7 @@ static ssize_t regmap_read_debugfs(struct regmap *map, unsigned int from,
+>>          if (count > (PAGE_SIZE << (MAX_ORDER - 1)))
+>>                  count = PAGE_SIZE << (MAX_ORDER - 1);
+>>   
+>>
+>> +       printk("map=%px, from=%d, to=%d, count=%ld\n", map, from, to, count);
+>>          buf = kmalloc(count, GFP_KERNEL);
+>>          if (!buf)
+>>                  return -ENOMEM;
+>> @@ -253,7 +254,9 @@ static ssize_t regmap_read_debugfs(struct regmap *map, unsigned int from,
+>>                          buf_pos += map->debugfs_reg_len + 2;
+>>   
+>>
+>>                          /* Format the value, write all X if we can't read */
+>> +                       printk("map=%px, i=%d\n", map, i);
+>>                          ret = regmap_read(map, i, &val);
+>> +                       printk("ret=%ld, val=%x\n", ret, val);
+>>                          if (ret == 0)
+>>                                  snprintf(buf + buf_pos, count - buf_pos,
+>>                                           "%.*x", map->debugfs_val_len, val);
+>>
+> 
+> 
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
