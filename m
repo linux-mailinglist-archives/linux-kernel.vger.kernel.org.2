@@ -2,120 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93AC316A07
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C99316A1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhBJPXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:23:03 -0500
-Received: from mga14.intel.com ([192.55.52.115]:50365 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230043AbhBJPWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:22:48 -0500
-IronPort-SDR: uRlPqm5Cz6MsYpyeuSDGW3aDrLYXaEYrFuvBUWqHQKO+JyhqF3sJt94Ui9Z5EVBJDhVojleC2o
- Mja/toY5BKTg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="181315852"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="181315852"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 07:22:05 -0800
-IronPort-SDR: ecCbGYn/Lv2+PsJiYCla/4ix7kx0ByxM3XbjCyxEzzx+lQlLqxHT5X6iZb/YsXK68fe/2SkKsp
- rdtN/msbIGmQ==
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="488779012"
-Received: from tryu-mobl2.amr.corp.intel.com (HELO [10.209.100.152]) ([10.209.100.152])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 07:22:04 -0800
-Subject: Re: [PATCH] x86, sched: Allow NUMA nodes to share an LLC on Intel
- platforms
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Alison Schofield <alison.schofield@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Prarit Bhargava <prarit@redhat.com>, brice.goglin@gmail.com
-References: <20210209223943.9834-1-alison.schofield@intel.com>
- <YCOTujUj3D53uGjd@hirez.programming.kicks-ass.net>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b717d5cd-e40d-c86a-05de-a512a5e3b0af@intel.com>
-Date:   Wed, 10 Feb 2021 07:22:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231996AbhBJP0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:26:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhBJPZX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 10:25:23 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CBEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:24:41 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id w1so4870705ejf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:24:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4aW7+bqzSkwg4GkezviAvU8O+1pGE5lGyhjOL2uEFFc=;
+        b=WKu4dVPxki/iRV7Ygrt2fHQ86P6H3AXhQiayLdJf6MXq/7d8tehEzPvBmPLIl4i3mH
+         wGpRzaLUjLW2343x/GoQhNMt/gYQ7Bn/+gOw8ReeaoLq3FsUloHoczUogsPxbuk83aSm
+         pvbYbs3l1C+7ShjE+F/vdiMcCw4/bonOYBWw+UPsWXiHWSgnG7QxL4CwSQYy1qzMyomA
+         x35zoyp2W5pwKRwgNPeRhbLijgjc6Vz6luFnTLarvF71S0pcEyi/8T5xiUho3c9LHS7q
+         E5yy+b6OhQfrk/S/QivJgtsE3LrglQSySi5QGhNxa/kP9BtvUHuxBQHQPXELoftePz6Q
+         IK6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4aW7+bqzSkwg4GkezviAvU8O+1pGE5lGyhjOL2uEFFc=;
+        b=XDw3mHrqtN4XuM27/CBs6LvRcTYdKIV+PdOkH3vVNhanBZTB/SfSIf27WnxGw14m/X
+         CUeIX+nbDUxL8/eLxuP2muarE3YRR6DKOPm5llLWGZbc8YwkDbZD4jgOIUiCXNz8N50F
+         JAZMgTThZLq1VzIRNlAS+jtjMQJS7Re2rfwtM9Henpb0DVMen9WLlVocEW/u3mWOrsvA
+         ebRNFX71vykoP25b8x3OoCj9toRf87htPhfzzY0TYP5JcXHe/mbCkb7QBnRN7X9lYSgc
+         GOY1sCZajUHDLKEUMM6c/DQ9+q3GlqSrPGJGmvTXRbSxV4FN6Ge+HWD7Me5yKOWDB577
+         Y4qA==
+X-Gm-Message-State: AOAM533XPE8ji1x1zDHuLgmCKmOqWYsefeqyMuIUT5KtIpls1jrV33xM
+        Lj2mIJfcg7/uU3NyPIPT3gxHhWTLMl3yAIQzc9/T7YvCNi6y1NXZ
+X-Google-Smtp-Source: ABdhPJxYhVyRhFYeu14oygGNiBEYx0kkZcWCucEoUMbfsyJUNG7oMa6NJWoFfQf6Xigon3DpfILd1rY3a40h4YWsPJE=
+X-Received: by 2002:a17:906:24d1:: with SMTP id f17mr3398125ejb.503.1612970680122;
+ Wed, 10 Feb 2021 07:24:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YCOTujUj3D53uGjd@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CA+G9fYtkWdeL7-nfXW8+VbaCK7swinU_Ksn67RW4FFD+cx8VYg@mail.gmail.com>
+ <8e1322cf-4498-43b6-1dbd-665b7f016815@redhat.com>
+In-Reply-To: <8e1322cf-4498-43b6-1dbd-665b7f016815@redhat.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 10 Feb 2021 20:54:28 +0530
+Message-ID: <CA+G9fYvM7Tv0fe0EEqiW1x3ODSe6cc-aqA9h-BMf+_gFOKL_Lw@mail.gmail.com>
+Subject: Re: [next] [mips] spinlock.h:17:28: error: redefinition of 'queued_spin_unlock'
+To:     Waiman Long <longman@redhat.com>
+Cc:     linux-mips@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Paul Burton <paul.burton@mips.com>,
+        Will Deacon <will@kernel.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 12:05 AM, Peter Zijlstra wrote:
->> +	if (IS_ENABLED(CONFIG_NUMA))
->> +		set_cpu_bug(c, X86_BUG_NUMA_SHARES_LLC);
->>  }
-> This seens wrong too, it shouldn't be allowed pre SKX. And ideally only
-> be allowed when SNC is enabled.
+On Wed, 10 Feb 2021 at 20:32, Waiman Long <longman@redhat.com> wrote:
+>
+> On 2/10/21 12:30 AM, Naresh Kamboju wrote:
+> > While building Linux next tag 20210209 mips uImage.gz failed with below configs
+> >
+> >    - mips (cavium_octeon_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+> >    - mips (malta_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+> >    - mips (nlm_xlp_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+> >    - mips (defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+> >
+> > make --silent --keep-going --jobs=8
+> > O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=mips
+> > CROSS_COMPILE=mips-linux-gnu- 'CC=sccache mips-linux-gnu-gcc'
+> > 'HOSTCC=sccache gcc' uImage.gz
+> > In file included from /include/linux/spinlock.h:90,
+> >                   from /include/linux/ipc.h:5,
+> >                   from /include/uapi/linux/sem.h:5,
+> >                   from /include/linux/sem.h:5,
+> >                   from /include/linux/compat.h:14,
+> >                   from /arch/mips/kernel/asm-offsets.c:12:
+> > /arch/mips/include/asm/spinlock.h:17:28: error: redefinition of
+> > 'queued_spin_unlock'
+> >     17 | #define queued_spin_unlock queued_spin_unlock
+> >        |                            ^~~~~~~~~~~~~~~~~~
+> >
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> >
+> > build link,
+> > https://builds.tuxbuild.com/1oF9lkBAeWM2WvR11O2Yun8ERNT/
+> >
+> I have just posted a patch to reorder qspinlock.h and qrwlock.h include
+> ordering. Hopefully that can fix the compilation problem though I don't
+> have a mips building environment to verify that.
 
-Originally, this just added a few more models to the list of CPUs with
-SNC.  I was hoping for something a bit more durable that we wouldn't
-have to go back and poke at every year or two.
 
-> Please make this more specific than: all Intel CPUs. Ofcourse, since you
-> all knew this was an issue, you could've made it discoverable
-> _somewhere_ :-(
+That was a global problem now it is getting solved by "tuxmake "
 
-You're totally right, of course.  The hardware could enumerate SNC as a
-feature explicitly somewhere.  But, that's a little silly because all of
-the information that it's enumerating about the CPU caches and NUMA
-nodes present and correct is *correct*.  The secondary information would
-only be for the CPU to say, "yeah, I'm really sure about that other stuff".
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
 
-I think this sanity check has outlived its usefulness.
+tuxmake --runtime podman --target-arch mips --toolchain gcc-10
+--kconfig cavium_octeon_defconfig
+
+build link,
+https://builds.tuxbuild.com/1oF9lkBAeWM2WvR11O2Yun8ERNT/
+
+- Naresh
