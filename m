@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACDF316521
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D13331651F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbhBJLXv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 10 Feb 2021 06:23:51 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:46601 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbhBJLPp (ORCPT
+        id S231724AbhBJLXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:23:40 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:57147 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230448AbhBJLPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:15:45 -0500
-X-Originating-IP: 90.2.4.167
-Received: from xps13 (aputeaux-654-1-105-167.w90-2.abo.wanadoo.fr [90.2.4.167])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 44AA11BF206;
-        Wed, 10 Feb 2021 11:14:55 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 12:14:29 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>
-Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
-Message-ID: <20210210121429.4fb5ecf3@xps13>
-In-Reply-To: <CAJfpegugbvppOKhJ8KjSVGgZOGVuj6NSiy4n18mbD7Ui3wme6g@mail.gmail.com>
-References: <20210124232007.21639-1-richard@nod.at>
-        <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
-        <1507208626.379155.1612906761549.JavaMail.zimbra@nod.at>
-        <CAJfpegugbvppOKhJ8KjSVGgZOGVuj6NSiy4n18mbD7Ui3wme6g@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 10 Feb 2021 06:15:17 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id C9C5522EE4;
+        Wed, 10 Feb 2021 12:14:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1612955676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O3hOdHbd8TlmpvkNZrPrCPOXWwvYrsaTiI23G0yqJfE=;
+        b=A4y9998+3utye6ediaZeN35Q4/BQTaiQLICs4Eo6vqFSnpcz5L7OoHPoB4wRpAndy5adHz
+        bx6twguoCzqkoDQ1SfHUN4l3brqXVBXAMKs3UXQcGce6nPM1JZvu623j3KYoaK8uEPQaSA
+        TDiBwvDzY8J/dmk8fI3uGFvqMO9+hIM=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 10 Feb 2021 12:14:35 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next 7/9] net: phy: icplus: select page before writing
+ control register
+In-Reply-To: <20210210104900.GS1463@shell.armlinux.org.uk>
+References: <20210209164051.18156-1-michael@walle.cc>
+ <20210209164051.18156-8-michael@walle.cc>
+ <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
+ <20210210103059.GR1463@shell.armlinux.org.uk>
+ <d35f726f82c6c743519f3d8a36037dfa@walle.cc>
+ <20210210104900.GS1463@shell.armlinux.org.uk>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <3a9716ffafc632d2963d3eee673fb0b1@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miklos,
-
-Miklos Szeredi <miklos@szeredi.hu> wrote on Wed, 10 Feb 2021 11:16:45
-+0100:
-
-> On Tue, Feb 9, 2021 at 10:39 PM Richard Weinberger <richard@nod.at> wrote:
-> >
-> > Miklos,
-> >
-> > ----- Ursprüngliche Mail -----  
-> > > If you look at fuse_do_ioctl() it does variable length input and
-> > > output at the same time.  I guess you need something similar to that.  
-> >
-> > I'm not sure whether I understand correctly.
-> >
-> > In MUSE one use case would be attaching two distinct (variable length) buffers to a
-> > single FUSE request, in both directions.
-> > If I read fuse_do_ioctl() correctly, it attaches always a single buffer per request
-> > but does multiple requests.  
+Am 2021-02-10 11:49, schrieb Russell King - ARM Linux admin:
+> On Wed, Feb 10, 2021 at 11:38:18AM +0100, Michael Walle wrote:
+>> Am 2021-02-10 11:30, schrieb Russell King - ARM Linux admin:
+>> > On Wed, Feb 10, 2021 at 08:03:07AM +0100, Heiner Kallweit wrote:
+>> > > On 09.02.2021 17:40, Michael Walle wrote:
+>> > > > +out:
+>> > > > +	return phy_restore_page(phydev, oldpage, err);
+>> > >
+>> > > If a random page was set before entering config_init, do we actually
+>> > > want
+>> > > to restore it? Or wouldn't it be better to set the default page as
+>> > > part
+>> > > of initialization?
+>> >
+>> > I think you've missed asking one key question: does the paging on this
+>> > PHY affect the standardised registers at 0..15 inclusive, or does it
+>> > only affect registers 16..31?
+>> 
+>> For this PHY it affects only registers >=16. But that doesn't 
+>> invaldiate
+>> the point that for other PHYs this might affect all regsisters. Eg. 
+>> ones
+>> where you could select between fiber and copper pages, right?
 > 
-> Right.
-> 
-> > In MUSE we cold go the same path and issue up to two requests.
-> > One for in-band and optionally a second one for the out-of-band data.
-> > Hmmm?  
-> 
-> Does in-band and OOB data need to be handled together?
+> You are modifying the code using ip101a_g_* functions, which is only
+> used for the IP101A and IP101G PHYs. Do these devices support fiber
+> in a way that change the first 16 registers?
 
-Short answer: yes.
+The PHY doesn't support fiber and register 0..15 are always available
+regardless of the selected page for the IP101G.
 
-> If so, then two requests is not a good option.
+genphy_() stuff will work, but the IP101G PHY driver specific functions,
+like interrupt and mdix will break if someone is messing with the page
+register from userspace.
 
-More detailed answer:
+So Heiner's point was, that there are other PHY drivers which
+also break when a user changes registers from userspace and no one
+seemed to cared about that for now.
 
-There is a type of MTD device (NAND devices) which are composed, for
-each page, of X in-band bytes plus Y out-of-band metadata bytes.
+I guess it boils down to: how hard should we try to get the driver
+behave correctly if the user is changing registers. Or can we
+just make the assumption that if the PHY driver sets the page
+selection to its default, all the other callbacks will work
+on this page.
 
-Accessing either the in-band data, or the out-of-band data, or both at
-the same time are all valid use cases.
-
-* Read operation details:
-  From a hardware point of view, the out-of-band data is (almost)
-  always retrieved when the in-band data is read because it contains
-  meta-data used to correct eventual bitflips. In this case, if both
-  areas are requested, it is highly non-efficient to do two requests,
-  that's why the MTD core allows to do both at the same time.
-* Write operation details:
-  Even worse, in the write case, you *must* write both at the same
-  time. It is physically impossible to do one after the other (still
-  with actual hardware, of course).
-
-That is why it is preferable that MUSE will be able to access both in
-a single request.
-
-Thanks,
-Miquèl
+-michael
