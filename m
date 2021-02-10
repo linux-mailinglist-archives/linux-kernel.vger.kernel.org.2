@@ -2,154 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E10316D0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA42316D19
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhBJRmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:42:43 -0500
-Received: from mga02.intel.com ([134.134.136.20]:59687 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232738AbhBJRmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:42:24 -0500
-IronPort-SDR: 4f7j/4CAWXqupxvv+mrZm2ItpqU9AlZuTbhxic2M9XAsV1PW7xmip3q+rGCYx5eHocY3mZOzwY
- KLrENGhXRTgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="169245631"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="169245631"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 09:41:57 -0800
-IronPort-SDR: wjZP32tJvp/ajSGKYPIxtQQB3Ct8yiqhQZ7juR3aCb9DOn6EhYFJ1EqOaAMHEgO6YP64aveDI2
- xcAc+DtTevNg==
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="488817501"
-Received: from tryu-mobl2.amr.corp.intel.com (HELO [10.209.100.152]) ([10.209.100.152])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 09:41:56 -0800
-Subject: Re: [PATCH] x86, sched: Allow NUMA nodes to share an LLC on Intel
- platforms
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Luck, Tony" <tony.luck@intel.com>
-Cc:     "Schofield, Alison" <alison.schofield@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Prarit Bhargava <prarit@redhat.com>,
-        "brice.goglin@gmail.com" <brice.goglin@gmail.com>
-References: <20210209223943.9834-1-alison.schofield@intel.com>
- <af770863e70340d294c324fd7004f658@intel.com>
- <YCOU+1GT4+hxqH5/@hirez.programming.kicks-ass.net>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <aa1c9908-999f-7a84-300e-48122076a4da@intel.com>
-Date:   Wed, 10 Feb 2021 09:41:55 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232037AbhBJRok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:44:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232927AbhBJRnw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:43:52 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C7EC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:43:12 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id a5so1416827otq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:43:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LOwEXRdvVMZvfZEaxMVJf2OldGo/hEkLnws83/gy1v0=;
+        b=aSVQeyO4q1SyZ99Fx7g8reh4zcI1aH3PnMoub+qk1TikH0aJexvkhIzg4srOUi51Pr
+         b+AAPUlkcwrzbLD4NYqC4amBaspRGlM01Vo4Fkjax6nExQQ/Znn0hckIUG3tLzxeKD8V
+         xFUNFSxUmoaeOlJbCq1EzPzfPxhFV3+GCpZZo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LOwEXRdvVMZvfZEaxMVJf2OldGo/hEkLnws83/gy1v0=;
+        b=Ndh78LvZZhuqrZqKr+iLQ981atnJvhaswTEZNX07WHv1w5lkeXJtDxYOzgFeTyD+dq
+         /RqqvKIuesyO4nFNNbFgHl4jAEB1mblfTsCjEkKq5bM92gm7y1KcUA3SCYCkaX3fQc4a
+         TzUhAHJhjeSA+JXD3FYQ8mrGzfc459OZBFo2rYLVmc8ZN8JJjsqWNjgVfcgjNYseTvjp
+         bvV7NhYz5XXgND/BjoZgRSTP5a/HVVwFtzKQf+12JBKNiFNA+155qW1K7a5mOUHIRonW
+         bg/dA0LlZDo/7nIjtYS7LmNUyz5vrs4LjjHJaNe+WJCjEsZBrr1zIsA2wzuXC9G2a+GM
+         du0w==
+X-Gm-Message-State: AOAM531RH8U6oUk4L7Q46PL2M5yO0ybnZ9LQzjFpAnGww/jN5MZKVjXV
+        qAASrlEv0EXqstg+hdE+mX5pm/qbTnurqDfd97wfsqObBymhgA==
+X-Google-Smtp-Source: ABdhPJyf0c/kQbPLFv9k7KYsyYq25CZR3JWicuNJgZ3n4s/yKoff44lu/fP6XuJ5GLjcgeB2grbmGucW3joUFNL7tbI=
+X-Received: by 2002:a9d:2270:: with SMTP id o103mr2896760ota.303.1612978991821;
+ Wed, 10 Feb 2021 09:43:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YCOU+1GT4+hxqH5/@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210205133632.2827730-1-daniel.vetter@ffwll.ch>
+In-Reply-To: <20210205133632.2827730-1-daniel.vetter@ffwll.ch>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 10 Feb 2021 18:43:00 +0100
+Message-ID: <CAKMK7uFdR=SGD+LwH4nES0afYzuxzKr0EbHQ=Ea03appvVwD9Q@mail.gmail.com>
+Subject: Re: [PATCH] PCI: Also set up legacy files only after sysfs init
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 12:10 AM, Peter Zijlstra wrote:
-> On Tue, Feb 09, 2021 at 11:09:27PM +0000, Luck, Tony wrote:
->>> +#define X86_BUG_NUMA_SHARES_LLC		X86_BUG(25) /* CPU may enumerate an LLC shared by multiple NUMA nodes */
->>
->> During internal review I wondered why this is a "BUG" rather than a "FEATURE" bit.
->>
->> Apparently, the suggestion for "BUG" came from earlier community discussions.
->>
->> Historically it may have seemed reasonable to say that a cache cannot span
->> NUMA domains. But with more and more things moving off the motherboard
->> and into the socket, this doesn't seem too weird now.
-> 
-> If you look at the details this SNC LLC span doesn't behave quite right
-> either.
+Hi Bjorn,
 
-Yes, the rules are weird.  I came to the conclusion that there's no
-precise way to enumerate these rules with the existing CPUID-based cache
-enumeration.
+Can you ack this for merging through my topic branch with the other
+follow_pfn/iomem revoke fixes for 5.12?
 
-I can send you my powerpoint slides. ;)
+If not, what's the plan for getting this (or equivalent functionality)
+in for 5.13? I have more of these follow_pfn/iomem revoke patches on
+top, so I'd like to get the first cut merged sooner than later if
+possible. And the other prep work has been in -next since -rc1.
 
-> It really isn't a regular cache, but behaves a bit like a mash-up of the
-> s390 book caches and a normal LLC.
-> 
-> Did anybody play with adding the book domain to these SNC
-> configurations?
+Thanks, Daniel
 
-Nope.  Probably mostly because we don't have a great way of generating it.
+On Fri, Feb 5, 2021 at 2:36 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote=
+:
+>
+> We are already doing this for all the regular sysfs files on PCI
+> devices, but not yet on the legacy io files on the PCI buses. Thus far
+> no problem, but in the next patch I want to wire up iomem revoke
+> support. That needs the vfs up and running already to make sure that
+> iomem_get_mapping() works.
+>
+> Wire it up exactly like the existing code in
+> pci_create_sysfs_dev_files(). Note that pci_remove_legacy_files()
+> doesn't need a check since the one for pci_bus->legacy_io is
+> sufficient.
+>
+> An alternative solution would be to implement a callback in sysfs to
+> set up the address space from iomem_get_mapping() when userspace calls
+> mmap(). This also works, but Greg didn't really like that just to work
+> around an ordering issue when the kernel loads initially.
+>
+> v2: Improve commit message (Bjorn)
+>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: linux-pci@vger.kernel.org
+> ---
+>  drivers/pci/pci-sysfs.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index fb072f4b3176..0c45b4f7b214 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *b)
+>  {
+>         int error;
+>
+> +       if (!sysfs_initialized)
+> +               return;
+> +
+>         b->legacy_io =3D kcalloc(2, sizeof(struct bin_attribute),
+>                                GFP_ATOMIC);
+>         if (!b->legacy_io)
+> @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev *pde=
+v)
+>  static int __init pci_sysfs_init(void)
+>  {
+>         struct pci_dev *pdev =3D NULL;
+> +       struct pci_bus *pbus =3D NULL;
+>         int retval;
+>
+>         sysfs_initialized =3D 1;
+> @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
+>                 }
+>         }
+>
+> +       while ((pbus =3D pci_find_next_bus(pbus)))
+> +               pci_create_legacy_files(pbus);
+> +
+>         return 0;
+>  }
+>  late_initcall(pci_sysfs_init);
+> --
+> 2.30.0
+>
 
-For those playing along at home, I think Peter is talking about this:
 
-static struct sched_domain_topology_level s390_topology[] = {
-        { cpu_thread_mask, cpu_smt_flags, SD_INIT_NAME(SMT) },
-        { cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
-        { cpu_book_mask, SD_INIT_NAME(BOOK) },
-        { cpu_drawer_mask, SD_INIT_NAME(DRAWER) },
-        { cpu_cpu_mask, SD_INIT_NAME(DIE) },
-        { NULL, },
-};
-
-From arch/s390/kernel/topology.c
-
-> Can we detect SNC other than by this quirk?
-
-I'm sure there's _a_ way, but nothing that's architectural.  The kernel
-has literally been given all the information about the topology that it
-needs from the CPU and the firmware.  The problem is that that
-information resembles garbage that the kernel has been presented with in
-the past.
-
-I guess you're saying that it would be nice to have some other bit of
-info that the kernel can use to boost its confidence that the
-hardware/bios are being sane.
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
