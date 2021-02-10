@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2D4317137
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B5D31713F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhBJUVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:21:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44836 "EHLO mail.kernel.org"
+        id S233781AbhBJUW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:22:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232268AbhBJUUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:20:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5508E64EDA;
-        Wed, 10 Feb 2021 20:19:22 +0000 (UTC)
+        id S232802AbhBJUUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 15:20:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8DE0464EE7;
+        Wed, 10 Feb 2021 20:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612988362;
-        bh=ZwiqYsk3HyYV9gW5oNg5nLObl1K+lf3F4NsqZVrOyuc=;
+        s=k20201202; t=1612988364;
+        bh=A52N/E4Jr5ACqoxP7TM9+8AxbrFnGYdYr5TGb6wlYVI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=M6k3MVgzhCRBycPqDjiHYN/BdvxdgY5+bnFB/hL7vR/+OzrFhMW7NtQwzi2ipOs5K
-         12BeeLzG9NiQvc5qkpIHVoHMw3GP5a0ceEciIDZvaor971lpNRjejtp49ByiRufTl6
-         JRQ8MX8KcQRolQPAglSiJN75Vn96wazwLY+wk9yhxKhOLN+H9hCmKJrJDiZ1kbgk8z
-         2rAn2j+Xat+AATPkIuk57F3LvB7NhZH52MerAlsrSGDoFuDOwNUdUr5OQeatyWAveh
-         uqLB54K+Vpu0ZefXjQeVcEas6KLYu8pK0QIFn10eAXCpST4Y6zkHv7S7YBD8YZjNZf
-         NvWGYWoKyscdg==
+        b=CyUpSLBrVOfcZLfcx+0jj4vmle238VV1t6dmjCYKcJyssUddn1ggwtIZAFBvkNGOg
+         GYcGUqWiF0b+u/5qlQ53hjNx1Et+fu/0TGN2nKWxAkaHyBa8Si4zB7fL7wSDpvSzl0
+         FFxN1bQbI+bz3jHBgfEaNMuof15yG175h4dre2noGdoebNDC7EJaGoNaio69x+M+wF
+         MuFIeldwG9YeRSQviZWyurCsCaM1ySf5wiHVQROUVJ/vj4L3RHyBRiYcNzzQv+mpgc
+         d8/yFrdN3ggyIepD90WfPSMOXc2langhIfVVi207CQDr0AXA+UNFomMBHxGZGKmYWF
+         ZisRR2MhVDqDQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4A9FB609E2;
-        Wed, 10 Feb 2021 20:19:22 +0000 (UTC)
-Subject: Re: [GIT PULL] ACPI fix for v5.11-rc8
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 88DD2609E2;
+        Wed, 10 Feb 2021 20:19:24 +0000 (UTC)
+Subject: Re: [GIT PULL] dmaengine fixes for v5.11
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0ikQ6D0V2c7xL0_jHm+UwiwqgRSSm=4fCqPkkApZe54Ow@mail.gmail.com>
-References: <CAJZ5v0ikQ6D0V2c7xL0_jHm+UwiwqgRSSm=4fCqPkkApZe54Ow@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0ikQ6D0V2c7xL0_jHm+UwiwqgRSSm=4fCqPkkApZe54Ow@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.11-rc8
-X-PR-Tracked-Commit-Id: fe0af09074bfeb46a35357e67635eefe33cdfc49
+In-Reply-To: <20210210100036.GD2774@vkoul-mobl.Dlink>
+References: <20210210100036.GD2774@vkoul-mobl.Dlink>
+X-PR-Tracked-List-Id: <dmaengine.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210210100036.GD2774@vkoul-mobl.Dlink>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix2-5.11
+X-PR-Tracked-Commit-Id: b6c14d7a83802046f7098e9bae78fbde23affa74
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a3961497bd9c7ca94212922a46729a9410568eb8
-Message-Id: <161298836224.25163.17920638099953713327.pr-tracker-bot@kernel.org>
-Date:   Wed, 10 Feb 2021 20:19:22 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
+X-PR-Merge-Commit-Id: 708c2e41814209e5dde27c61ad032f4c1ed3624b
+Message-Id: <161298836455.25163.2339646608440759813.pr-tracker-bot@kernel.org>
+Date:   Wed, 10 Feb 2021 20:19:24 +0000
+To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 10 Feb 2021 18:45:22 +0100:
+The pull request you sent on Wed, 10 Feb 2021 15:30:36 +0530:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.11-rc8
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix2-5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a3961497bd9c7ca94212922a46729a9410568eb8
+https://git.kernel.org/torvalds/c/708c2e41814209e5dde27c61ad032f4c1ed3624b
 
 Thank you!
 
