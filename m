@@ -2,127 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8330431623C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0A73161B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbhBJJ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:29:50 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:42310 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbhBJJ1a (ORCPT
+        id S229770AbhBJJAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:00:53 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:51205 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhBJIyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:27:30 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A7P4ks064221;
-        Wed, 10 Feb 2021 07:27:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=PK9fMGHwpz+ti3YeKTbOGmbp7BImCWA1WUOV+d0Xy9Y=;
- b=Hs9ipYTQ5MYmDke0nl6dDslO3l4af9MnkB/htBagRlp72YNBouUAuCNgC0J9tdy0lfUO
- KqzggoOyXpO+8ocbTFGGRHOnq+st8d+fMD/oFC0/Bc3KNWi42SaP8cZfu23I5W73L9hC
- VUGA24AgieET9GsvCVjrBi1QmmQYxl/9s4p410CTUx0b135S3l6UXi8m+FUkjO2FZBDd
- 0etNTwW9kp8KBRqpRlN6J5Njyos8F038/sRrgsmZkV4OXWNhLzTWwY/Dr8xc8BsLedzK
- 2qQTPSfvQkV1lMADdxxTkiflLr49U1FTgRwOiH+PIvw0eCrAd2vX29DzYpB527hpvbO+ kg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 36hjhqt8tr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 07:27:33 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A7PwHs025894;
-        Wed, 10 Feb 2021 07:27:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 36j4ppsykd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 07:27:30 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11A7RRgG021177;
-        Wed, 10 Feb 2021 07:27:28 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 09 Feb 2021 23:27:26 -0800
-Date:   Wed, 10 Feb 2021 10:27:17 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     karthik alapati <mail@karthek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: fix block comments alignment
-Message-ID: <20210210072717.GS2696@kadam>
-References: <YCLaHXD/sUKM5HZE@karthik-strix-linux.karthek.com>
+        Wed, 10 Feb 2021 03:54:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612947264; x=1644483264;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=wWrcWzYHT/+HXPulQO8+35r8GPSI1mInaaUPzsCjy7I=;
+  b=g9XqqFceGHNmmhs7KlLi4i0kILYe7I6t1ts4VJoyko9hyz0j+d/ym3VE
+   9t4peFLE0nJK/u6SZUleLApClaXdgC2Q0frA+9/kLMthntwZYuTghqjFn
+   vBUwoLxjRyUVfl+zh+UG+0943dDXJgsK3PZ3rJTqmCTfEdYAwnrLmD3wt
+   BImPDYaEdOVEdZ+mx+VpzYpLZqazwhTQ3DE2xNo9RAi/9I3FSUxK5nCgP
+   o1h2bWxyT+GXVcU2MJGTB2MMHhDJ2OJBRedFdXOilrxv9gjejJ9EV5kCP
+   vY+4p/yvxckVdHNso4H1ROsXutVQnjfjTGBYA/B0kDjDqgKHSnCyUo3Rq
+   g==;
+IronPort-SDR: JSBLNSD4g+ogyghFy5uARjdwUViMZSZ4gbZwwoP7xi4kVLXWak+adDqaSanal6OEgRp+YEWnl/
+ Cqj004BI/fwpZ/vf+i8+8+zHawUC3aE3RpDIH6/l5czEK57UMMRh37TYIDNsYxIyQDAiNg0us4
+ rcgws40jFpFPLEXDtLuhclNqjRTBKREh5Lnz1z696wM1yf27d9+kUfvsbeTvNyYfANnDa1dKG2
+ nX9clMFxtDqPcVY+++vJSzH66ON4KzJLUC0tDxKg7oo1OAVTB3HxY5hQgc3mxdBXazF6yiu94c
+ aYQ=
+X-IronPort-AV: E=Sophos;i="5.81,167,1610434800"; 
+   d="scan'208";a="106091807"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 01:53:07 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 10 Feb 2021 01:53:07 -0700
+Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 10 Feb 2021 01:53:05 -0700
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH v14 2/4] phy: Add media type and speed serdes configuration interfaces
+Date:   Wed, 10 Feb 2021 09:52:53 +0100
+Message-ID: <20210210085255.2006824-3-steen.hegelund@microchip.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210210085255.2006824-1-steen.hegelund@microchip.com>
+References: <20210210085255.2006824-1-steen.hegelund@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCLaHXD/sUKM5HZE@karthik-strix-linux.karthek.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100075
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1011 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102100075
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:23:17AM +0530, karthik alapati wrote:
-> fix checkpatch.pl warning for "block comments should align the * on each line"
-> 
-> Signed-off-by: karthik alapati <mail@karthek.com>
-> ---
->  .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   | 204 +++++++++---------
->  1 file changed, 102 insertions(+), 102 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-> index cf23414d7..003f954c2 100644
-> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-> @@ -20,16 +20,16 @@
->  #define MAX_DOZE_WAITING_TIMES_9x 64
->  
->  /**
-> -* Function:	phy_CalculateBitShift
-> -*
-> -* OverView:	Get shifted position of the BitMask
-> -*
-> -* Input:
-> -*		u32 	BitMask,
-> -*
-> -* Output:	none
-> -* Return:		u32 	Return the shift bit bit position of the mask
-> -*/
-> + * Function:	phy_CalculateBitShift
-> + *
-> + * OverView:	Get shifted position of the BitMask
-> + *
-> + * Input:
-> + *		u32 	BitMask,
+Provide new phy configuration interfaces for media type and speed that
+allows allows e.g. PHYs used for ethernet to be configured with this
+information.
 
-Why is this on a different line??
+Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ drivers/phy/phy-core.c  | 30 ++++++++++++++++++++++++++++++
+ include/linux/phy/phy.h | 26 ++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+)
 
-> + *
-> + * Output:	none
-> + * Return:		u32 	Return the shift bit bit position of the mask
-
-The "u32" is indented more than the "none".  "bit bit" is probably a
-typo?
-
-> + */
->  static	u32 phy_CalculateBitShift(u32 BitMask)
->  {
->  	u32 i;
-
-There is a proper kernel-doc style that function comments are supposed
-to use.  https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html
-
-./scripts/kernel-doc -v -none drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-
-regards,
-dan carpenter
+diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
+index 71cb10826326..ccb575b13777 100644
+--- a/drivers/phy/phy-core.c
++++ b/drivers/phy/phy-core.c
+@@ -373,6 +373,36 @@ int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode)
+ }
+ EXPORT_SYMBOL_GPL(phy_set_mode_ext);
+ 
++int phy_set_media(struct phy *phy, enum phy_media media)
++{
++	int ret;
++
++	if (!phy || !phy->ops->set_media)
++		return 0;
++
++	mutex_lock(&phy->mutex);
++	ret = phy->ops->set_media(phy, media);
++	mutex_unlock(&phy->mutex);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(phy_set_media);
++
++int phy_set_speed(struct phy *phy, int speed)
++{
++	int ret;
++
++	if (!phy || !phy->ops->set_speed)
++		return 0;
++
++	mutex_lock(&phy->mutex);
++	ret = phy->ops->set_speed(phy, speed);
++	mutex_unlock(&phy->mutex);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(phy_set_speed);
++
+ int phy_reset(struct phy *phy)
+ {
+ 	int ret;
+diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+index e435bdb0bab3..e4fd69a1faa7 100644
+--- a/include/linux/phy/phy.h
++++ b/include/linux/phy/phy.h
+@@ -44,6 +44,12 @@ enum phy_mode {
+ 	PHY_MODE_DP
+ };
+ 
++enum phy_media {
++	PHY_MEDIA_DEFAULT,
++	PHY_MEDIA_SR,
++	PHY_MEDIA_DAC,
++};
++
+ /**
+  * union phy_configure_opts - Opaque generic phy configuration
+  *
+@@ -64,6 +70,8 @@ union phy_configure_opts {
+  * @power_on: powering on the phy
+  * @power_off: powering off the phy
+  * @set_mode: set the mode of the phy
++ * @set_media: set the media type of the phy (optional)
++ * @set_speed: set the speed of the phy (optional)
+  * @reset: resetting the phy
+  * @calibrate: calibrate the phy
+  * @release: ops to be performed while the consumer relinquishes the PHY
+@@ -75,6 +83,8 @@ struct phy_ops {
+ 	int	(*power_on)(struct phy *phy);
+ 	int	(*power_off)(struct phy *phy);
+ 	int	(*set_mode)(struct phy *phy, enum phy_mode mode, int submode);
++	int	(*set_media)(struct phy *phy, enum phy_media media);
++	int	(*set_speed)(struct phy *phy, int speed);
+ 
+ 	/**
+ 	 * @configure:
+@@ -215,6 +225,8 @@ int phy_power_off(struct phy *phy);
+ int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode);
+ #define phy_set_mode(phy, mode) \
+ 	phy_set_mode_ext(phy, mode, 0)
++int phy_set_media(struct phy *phy, enum phy_media media);
++int phy_set_speed(struct phy *phy, int speed);
+ int phy_configure(struct phy *phy, union phy_configure_opts *opts);
+ int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
+ 		 union phy_configure_opts *opts);
+@@ -344,6 +356,20 @@ static inline int phy_set_mode_ext(struct phy *phy, enum phy_mode mode,
+ #define phy_set_mode(phy, mode) \
+ 	phy_set_mode_ext(phy, mode, 0)
+ 
++static inline int phy_set_media(struct phy *phy, enum phy_media media)
++{
++	if (!phy)
++		return 0;
++	return -ENOSYS;
++}
++
++static inline int phy_set_speed(struct phy *phy, int speed)
++{
++	if (!phy)
++		return 0;
++	return -ENOSYS;
++}
++
+ static inline enum phy_mode phy_get_mode(struct phy *phy)
+ {
+ 	return PHY_MODE_INVALID;
+-- 
+2.30.0
 
