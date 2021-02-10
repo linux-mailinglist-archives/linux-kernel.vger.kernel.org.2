@@ -2,105 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D51316A61
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F325316A65
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbhBJPjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:39:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230048AbhBJPjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:39:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47C2764DA5;
-        Wed, 10 Feb 2021 15:39:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612971540;
-        bh=UmFQ9LVN1sbDvFGlexMO9nwDPmQ4xxV03atwcYGV+pw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NzWmVUtoGG76LVFlqhysU3JpLDxUvQBi6njFUh6JGOkt6CbjseqgqzAqS+HaHdmfk
-         T1XuWkdk5zPEx/9xLQaTza0Y/MeMuhnXGQ4ZsJ1nrkY6ndPKGqYONNd+4tyv0TPcbp
-         cbTzyicTC7YJi5IoUYNq2rNOYtPl7ZEzN0Q5t4ehLU+WA4UMrHzZqJmn9pA3a2U+9H
-         NBhxOfNGPwfhxZ/Ib+CGKBuIqxeO//97USv+mY2rIxCb/00SToRpINZm6S17fFaTU+
-         v8WCV+RHf2qZ5VNRVkQKCHeHDm0eiJO/6xl+e0xoybXefr16H/iFnlXkR/9geyt2Xr
-         kUKg94zDyIa6w==
-Date:   Wed, 10 Feb 2021 15:38:08 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
-        Timur Tabi <timur@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v2 2/7] ASoC: fsl_rpmsg: Add CPU DAI driver for audio
- base on rpmsg
-Message-ID: <20210210153808.GB4748@sirena.org.uk>
-References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
- <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com>
- <20210208115112.GD8645@sirena.org.uk>
- <CAA+D8AMRGRRk6FzdiqaHAP1=dPJngNgmdGmU59vrroXA9BMyXw@mail.gmail.com>
- <20210209222953.GF4916@sirena.org.uk>
- <CAA+D8AN=SDMLhuNbstzHL_H2p_L6cr+oCXbauNB0gGs2BW5tmA@mail.gmail.com>
+        id S231865AbhBJPkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:40:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230171AbhBJPkj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 10:40:39 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A8BC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:39:58 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id e7so2219391ile.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:39:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qDl4CCE0OwCB7qsCrXMRxBsldApx/gMG/Xd+PX38HZo=;
+        b=LghKDe9x6NYsi2+BwBp3icQqOIU4phR9JRegBoYg4pQ7ytzanMJPp9fQw/F17gti7a
+         /EDZboG8FSFdsopSm5nNgachxZeDYf6+G1yvmMMuoW8q/BtI/f/JXGqGC9OS6IoxAaZr
+         ch+6cgsMYlCQckHkpamlS63OXlMMjHF1w1IaLgQf+Li9DJKEuZBvZJqkFGuCfqOSuAvM
+         THHjvsKx9x58jfHsT6Vdq25/oosMSdBsXl/LXDcsOtqyF3E+OZpiedQw24gc0Wd8AHRp
+         9gJdMmkdhIZrcOOz57IKOMZuEPIkFzcGd1DNzJ3IRUtbIDRPe6hfdoQKMj6NNgIJ5d54
+         q5cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qDl4CCE0OwCB7qsCrXMRxBsldApx/gMG/Xd+PX38HZo=;
+        b=PmeCNnOYK3pFUrSMX313gT2WM8HZpssUxpavfKT7qEc3Alte4p5f4LJNSZE859YXfV
+         V71ZWgXaYAzqpbh6XGl02lYQA7HPKAAELD5G2pldPcFfcktwBUQbuo80f3gXYUIJrrQr
+         UnB1jD9qZaWqJpIMumuNpyvKU4yY+SqQYlTJZRzzTW6u7Ib2c07Y9hNbZTQwX4Dch68U
+         +D2E9bfiGlU+Trpt7bC4ShqYUFp2vG7HK0fyjPqFyMK5VxlnfwvaETKQCnK/gMuhlAqa
+         zjy+9MeN1goPe9V3h4fbxaVTaeJzSxv61qSSXxhGKOyfDxOOQCqWZ2BWbR2sPUct8ePU
+         n+eQ==
+X-Gm-Message-State: AOAM533MpRwWLpXvM+vauyQgwyNIbMMDl4bzII3GX5cF0vYkt4dDQlMT
+        bHVIBF4BvzfXnzTUqNDEmNrD5PEEigBo4OONmn4=
+X-Google-Smtp-Source: ABdhPJwk+LPmhwSrTf4cQJbVCfTtoRDNNTrQY/g/SKHr7OfqqeXIexVX3Q+8/XjIoo0HFagd6Sf7GalhOasblcJPr1g=
+X-Received: by 2002:a05:6e02:b:: with SMTP id h11mr1612543ilr.168.1612971597724;
+ Wed, 10 Feb 2021 07:39:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tsOsTdHNUZQcU9Ye"
-Content-Disposition: inline
-In-Reply-To: <CAA+D8AN=SDMLhuNbstzHL_H2p_L6cr+oCXbauNB0gGs2BW5tmA@mail.gmail.com>
-X-Cookie: Are we live or on tape?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210209105613.42747-1-laoar.shao@gmail.com> <20210209105613.42747-4-laoar.shao@gmail.com>
+ <YCKT8WCPGU+HBY91@alley> <CALOAHbBO6gXzbXjnH_EPsk4v-AdEQNhwNez7mbM6oTaut1pokw@mail.gmail.com>
+ <YCPWypWctDMGWUpA@alley>
+In-Reply-To: <YCPWypWctDMGWUpA@alley>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 10 Feb 2021 23:39:21 +0800
+Message-ID: <CALOAHbAc1dRUbWfyiOf3BXeQ5uByxBMNqHvHWZ3Vmg9AXVhjgg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] vsprintf: dump full information of page flags in pGp
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
+        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Joe Perches <joe@perches.com>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 10, 2021 at 8:51 PM Petr Mladek <pmladek@suse.com> wrote:
+>
+> On Wed 2021-02-10 00:21:37, Yafang Shao wrote:
+> > On Tue, Feb 9, 2021 at 9:53 PM Petr Mladek <pmladek@suse.com> wrote:
+> > >
+> > > On Tue 2021-02-09 18:56:13, Yafang Shao wrote:
+> > > > Currently the pGp only shows the names of page flags, rather than
+> > > > the full information including section, node, zone, last cpupid and
+> > > > kasan tag. While it is not easy to parse these information manually
+> > > > because there're so many flavors. Let's interpret them in pGp as well.
+> > > >
+> > > > To be compitable with the existed format of pGp, the new introduced ones
+> > > > also use '|' as the separator, then the user tools parsing pGp won't
+> > > > need to make change, suggested by Matthew. The new information is
+> > > > tracked onto the end of the existed one.
+> > > >
+> > > > On example of the output in mm/slub.c as follows,
+> > > > - Before the patch,
+> > > > [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+> > > >
+> > > > - After the patch,
+> > > > [ 8838.835456] Slab 0x000000002828b78a objects=33 used=3 fp=0x00000000d04efc88 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> > > >
+> > > > The documentation and test cases are also updated. The output of the
+> > > > test cases as follows,
+> > > > [  501.485081] test_printf: loaded.
+> > > > [  501.485768] test_printf: all 388 tests passed
+> > > > [  501.488762] test_printf: unloaded.
+> > > >
+> > >
+> > > > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> > > > index 14c9a6af1b23..3f26611adb34 100644
+> > > > --- a/lib/vsprintf.c
+> > > > +++ b/lib/vsprintf.c
+> > > > @@ -1916,6 +1916,66 @@ char *format_flags(char *buf, char *end, unsigned long flags,
+> > > >       return buf;
+> > > >  }
+> > > >
+> > > > +struct page_flags_layout {
+> > > > +     int width;
+> > > > +     int shift;
+> > > > +     int mask;
+> > > > +     const struct printf_spec *spec;
+> > > > +     const char *name;
+> > > > +};
+> > > > +
+> > > > +static const struct page_flags_layout pfl[] = {
+> > > > +     {SECTIONS_WIDTH, SECTIONS_PGSHIFT, SECTIONS_MASK,
+> > > > +      &default_dec_spec, "section"},
+> > > > +     {NODES_WIDTH, NODES_PGSHIFT, NODES_MASK,
+> > > > +      &default_dec_spec, "node"},
+> > > > +     {ZONES_WIDTH, ZONES_PGSHIFT, ZONES_MASK,
+> > > > +      &default_dec_spec, "zone"},
+> > > > +     {LAST_CPUPID_WIDTH, LAST_CPUPID_PGSHIFT, LAST_CPUPID_MASK,
+> > > > +      &default_flag_spec, "lastcpupid"},
+> > > > +     {KASAN_TAG_WIDTH, KASAN_TAG_PGSHIFT, KASAN_TAG_MASK,
+> > > > +      &default_flag_spec, "kasantag"},
+> > > > +};
+> > > > +
+> > > > +static
+> > > > +char *format_page_flags(char *buf, char *end, unsigned long flags)
+> > > > +{
+> > > > +     DECLARE_BITMAP(mask, ARRAY_SIZE(pfl));
+> > > > +     unsigned long last;
+> > > > +     int i;
+> > > > +
+> > > > +     if (flags & (BIT(NR_PAGEFLAGS) - 1)) {
+> > > > +             if (buf < end)
+> > > > +                     *buf = '|';
+> > > > +             buf++;
+> > > > +     }
+> > >
+> > > This is far from obvious. You print '|' here because you printed
+> > > something somewhere else. See below.
+> > >
+> > > > +
+> > > > +     for (i = 0; i < ARRAY_SIZE(pfl); i++)
+> > > > +             __assign_bit(i, mask, pfl[i].width);
+> > >
+> > > The bitmap looks like an overkill. If I get it correctly, it is a
+> > > tricky way to handle only flags defined by the used build
+> > > configuration. See below.
+> > >
+> > > > +     last = find_last_bit(mask, ARRAY_SIZE(pfl));
+> > > > +
+> > > > +     for_each_set_bit(i, mask, ARRAY_SIZE(pfl)) {
+> > > > +             /* Format: Flag Name + '=' (equals sign) + Number + '|' (separator) */
+> > > > +             buf = string(buf, end, pfl[i].name, *pfl[i].spec);
+> > > > +
+> > > > +             if (buf < end)
+> > > > +                     *buf = '=';
+> > > > +             buf++;
+> > > > +             buf = number(buf, end, (flags >> pfl[i].shift) & pfl[i].mask,
+> > > > +                          *pfl[i].spec);
+> > > > +
+> > > > +             /* No separator for the last entry */
+> > > > +             if (i != last) {
+> > > > +                     if (buf < end)
+> > > > +                             *buf = '|';
+> > > > +                     buf++;
+> > > > +             }
+> > > > +     }
+> > > > +
+> > > > +     return buf;
+> > > > +}
+> > > > +
+> > > >  static noinline_for_stack
+> > > >  char *flags_string(char *buf, char *end, void *flags_ptr,
+> > > >                  struct printf_spec spec, const char *fmt)
+> > > > @@ -1929,10 +1989,10 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
+> > > >       switch (fmt[1]) {
+> > > >       case 'p':
+> > > >               flags = *(unsigned long *)flags_ptr;
+> > > > -             /* Remove zone id */
+> > > > -             flags &= (1UL << NR_PAGEFLAGS) - 1;
+> > > >               names = pageflag_names;
+> > >
+> > > The "names" variable is needed only with "break;" when using the final
+> > > format_flags(buf, end, flags, names);
+> > >
+> > > > -             break;
+> > > > +             buf = format_flags(buf, end, flags & (BIT(NR_PAGEFLAGS) - 1), names);
+> > > > +             buf = format_page_flags(buf, end, flags);
+> > >
+> > > I am sorry for my ignorance. I am not familiar with MM.
+> > > But it is pretty hard to understand what call does what.
+> > >
+> > > I have found the following comment in include/linux/page_flags.h:
+> > >
+> > >  * The page flags field is split into two parts, the main flags area
+> > >  * which extends from the low bits upwards, and the fields area which
+> > >  * extends from the high bits downwards.
+> > >
+> > > Sigh, I know that you already reworked this several times because
+> > > people "nitpicked" about the code style. But it seems that it
+> > > rather diverged instead of converged.
+> > >
+> > > What about the following?
+> > >
+> > > Note: It is inpired by the names "main area" and "fields area"
+> > >       mentioned in the above comment from page_flags.h.
+> > >       I have later realized that "page_flags_layout" actually made
+> > >       sense as well. Feel free to rename page_flags_fileds
+> > >       back to page_flags_layout.
+> > >
+> > > Anyway, this is my proposal:
+> > >
+> >
+> > This proposal is similar to v2.
+> > I don't mind changing it back with your additional better naming.
+>
+> Great.
+>
+> > By the way, it will be better to make a little change per Joe's
+> > suggestion on v2 that using a pointer instead of the index, for
+> > example,
+> >
+> >  for (p = pff; p < pff + ARRAY_SIZE(pff); p++) {
+>
+> This looks a bit non-standard. IMHO, Joe was not against using index.
+> He proposed:
+>
+>         for (i = 0; i < ARRAY_SIZE(pfl) && buf < end; i++) {
+>
+> , see
+> https://lore.kernel.org/lkml/e5ea9e8b1190c2a397a1b84dd55bb9c706dc7058.camel@perches.com/
+>
+> I am not sure about the (buf < end) check. It might be some
+> optimization or it did fit the the old code.
+>
+> Anyway, I like the currently used:
+>
+>         for (i = 0; i < ARRAY_SIZE(pff); i++) {
+>
+> It is standard, easy to understand, and thus more safe. I am sure that
+> compiler will optimize it very well.
+>
 
---tsOsTdHNUZQcU9Ye
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fair enough, I will do it as you suggested in the next version.
 
-On Wed, Feb 10, 2021 at 02:35:29PM +0800, Shengjiu Wang wrote:
-> On Wed, Feb 10, 2021 at 6:30 AM Mark Brown <broonie@kernel.org> wrote:
-
-> > Like I say I'd actually recommend moving this control to DAPM.
-
-> I may understand your point, you suggest to use the .set_bias_level
-> interface. But in my case I need to enable the clock in earlier stage
-> and keep the clock on when system go to suspend.
-
-The device can be kept alive over system suspend if that's needed, or
-possibly it sounds like runtime PM is a better fit?  There's callbacks
-in the core to keep the device runtime PM enabled while it's open which
-is probably about the time range you're looking for.
-
-> I am not sure .set_bias_level can met my requirement. we start
-> the Chinese new year holiday now, so currently I can't do test for this
-> recommendation.
-
-
-> Maybe we can keep current implementation, can we?
-> Later after I do the test, I can submit another patch for it.
-
-Well, the current version is clearly going to leak clock enables with
-valid userspace so=20
-
---tsOsTdHNUZQcU9Ye
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAj/d8ACgkQJNaLcl1U
-h9DudQf/TaziP/3fIA/+VtOM1vmRz+Y+qg+fko13UVOigl8UEJA/n+4WEegQRoJG
-uDTO557iKp/JwY4o5tXxXQxGZhGMhhDg3MDhWbWx0QJ9y/bMhD4R+sZ421eYHwLI
-0cjTI9P2I+EiYtMsTICqZgFmEtR+wJHwtJyXTWaIXDPtJYCJuxGBK4mIxn+2YO72
-yXEhmkzRVFDFSMhOR0aPUfAD7yMMvRP8UM0R7VBtwXavEtV9ZHrMqxkibnoMt8oX
-ONd0cWMywupFjGVZQalfZJyHmnawloUrOg6V5NU5pS7dvIyMgUCgqcwg+8STUDRF
-/ynzOHGXxgiNb5x9zte6dG9YVbs3vw==
-=A1BK
------END PGP SIGNATURE-----
-
---tsOsTdHNUZQcU9Ye--
+-- 
+Thanks
+Yafang
