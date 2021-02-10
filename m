@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3057316567
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 062B4316578
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhBJLmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
+        id S229884AbhBJLpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:45:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhBJLkS (ORCPT
+        with ESMTP id S229826AbhBJLme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:40:18 -0500
+        Wed, 10 Feb 2021 06:42:34 -0500
 Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF91CC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:38:33 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id h12so2106567wrw.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:38:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4C7C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:40:32 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id g10so2148000wrx.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:40:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4rVMlP6gjKEMU63mGD7671tvTyj9ZrG88p6nRruDhD4=;
-        b=p+ZA4r4TVfUrnZEfFnCd4KrXSrjCFPfAoCXkwDVb+g+0YP5QvF640W8kPI8xhn2h/X
-         RaWcQtC8Vv1HKNhNaNO6nBAYIxzVbFCdTwl+ZcCpv4t0J9tybTQJzBNzeZ+v6ERAMNRX
-         nAKrbYTXLfbZwM5EOuj/nQhPIvQX7L5WVtblJHqwlbw4/pGwZTgDpb6r3Se5WwvAEhTI
-         4sMreTWc++yMZ9Cniv2TEy8QnMGe6j0p5DX4CTWekgUsPPRc6gxIY4o3bG98lhRQuuX7
-         2HnGNCQaZVSSYDznUIkyKYM/yHEuZibq8t5AaBwK0zLQgbd2xF6wN3/bMy1MbaOxr9Fa
-         zPkA==
+        h=to:cc:references:from:subject:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=5GoJC4V0UCuiiuIOTJUq3dIm+H2v/ROpsGNFKYUDXXU=;
+        b=Qi5XNSOFPAVFMr0fcYS7hcd3qhkQTLTVqeruUI9G2lw1lgceAhsT2AYnmtP9wVURdp
+         7PAZENJo35MBq8rQiYSjPTTkHrTP7/qncDHbV+j3O/Euq6kAKQ62yDYuIJt+c2OCtoWo
+         Z4/hWslhlVa7iv2ROx5r/aDDHKf9F4YXl4w1QlvqxlgrSdJAr7E0qROdgDvjDyfhqgfe
+         XCEIodx+aMr7xnX23ufyqWM6AsdTipeHFNJ/JTXE7tUMVl99QyGEQizweoERsWY2v8xb
+         LQa0bCMlSi9rEAAEUBWCIIp9/A1e5xW4rv3S9mQKzCLlDfTkdFm0JVqbj6uUKFAmd/pV
+         3uTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4rVMlP6gjKEMU63mGD7671tvTyj9ZrG88p6nRruDhD4=;
-        b=ipJ8N39aSyld7UMhTc/vXxj8Zxudt6EKslBCJGztogScr4O23snGaCyPl06Ny0SZnS
-         0ZtonqlsTRmCAVHc9/eWqQQImRD624W9DuTtqfii6Y2Ro0p5Z+YeRKpJBgi74dwHZOXg
-         WcJ/Y9Y6t7Nrd5CvJ6sd/nKPaG186HOw2/JjVSx1esHqrKecojc9S9ImJoUYvFIIGnBK
-         dreQqkOp9thMmkJmWtAjfaHmfIDYJ6KPNWtUSNxnIXXJ9L6bRx6xgScgR6xMfDvzDVWt
-         wwunFiHWgreQvhegXs3f4/TiiunMBJjZyNnHAXc7WU77pNgKpOdTd/YD1L6Vo4rQUN4p
-         C7kA==
-X-Gm-Message-State: AOAM530ZFzRNtTvfBf3BVK5qaxDNurhethnjBK+2INNRAjFZl/Vlp+NP
-        4wzwISpGeRorDObi6l3AunTy8wf+1ujvbA==
-X-Google-Smtp-Source: ABdhPJxenO/CxL4IFitEtlZPB+o7QMqk6v4NdIgkJGXMIYWJgtUiJQHJ3TNJZ43z/uypizwijnpCGA==
-X-Received: by 2002:a5d:5010:: with SMTP id e16mr3107436wrt.202.1612957112546;
-        Wed, 10 Feb 2021 03:38:32 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id k11sm2680097wrl.84.2021.02.10.03.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 03:38:31 -0800 (PST)
-Date:   Wed, 10 Feb 2021 11:38:30 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Paul Burton <paulburton@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] MIPS: make kgdb depend on FPU support
-Message-ID: <20210210113830.xeechzpctz5repv5@maple.lan>
-References: <20210122110307.934543-1-arnd@kernel.org>
- <20210122110307.934543-2-arnd@kernel.org>
- <alpine.DEB.2.21.2102081748280.35623@angie.orcam.me.uk>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5GoJC4V0UCuiiuIOTJUq3dIm+H2v/ROpsGNFKYUDXXU=;
+        b=jz40yEe8qa2SHxiFCJM5jV6jgHUTPfe1FrU8OnzwZ6vIO9phXBneZDq3Y0To0RmIsO
+         0vAqiOPgLIWaJ5ev01GOJXdjp81TYG7O63AWIwlobMLhYDhoLvNAZ2YyAW7p6+T5yYMH
+         5AXyEHmxASRO+UnPrL68+HryFwQk+5noIeljvz/FhO+xVoh4MnvCZSGklLpbhw/fJKa2
+         U1Hk8l97bZzh4XrBFSRbW09xxQa/vaBEIdK6JkFcsulEgRWZJO778XEvhaxU8G75F1Uq
+         gQqyT2XOQ2mnmZF6uKgR/IElOUSV86afjoGK6kRgMWBCbsQYDX0hhGtc3+bZXxFxSuuu
+         d4uQ==
+X-Gm-Message-State: AOAM5318urUs0IZmOHpo5/+j+sSCcZAZ0Njtmx2W6yH6izHmgHFrICYI
+        Pi1906zsT5YbA1xUUobjjvzkc4aydYA/nw==
+X-Google-Smtp-Source: ABdhPJxzau1EbOBPcSPe2+wNcHLxx/mMRPnSIsn0pb7u1nT2J0Pqr4ogGG9I/HtSEhRYsfiKnwqv7w==
+X-Received: by 2002:a5d:6712:: with SMTP id o18mr3077510wru.375.1612957231068;
+        Wed, 10 Feb 2021 03:40:31 -0800 (PST)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id c62sm2216146wmd.43.2021.02.10.03.40.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 03:40:30 -0800 (PST)
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210210104724.340991-1-vkoul@kernel.org>
+ <20210210104724.340991-2-vkoul@kernel.org>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Subject: Re: [PATCH 2/2] interconnect: qcom: Add SM8350 interconnect provider
+ driver
+Message-ID: <8ab6dfcc-a710-1ecd-6774-1f54ce30685c@linaro.org>
+Date:   Wed, 10 Feb 2021 13:40:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2102081748280.35623@angie.orcam.me.uk>
+In-Reply-To: <20210210104724.340991-2-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 06:03:08PM +0100, Maciej W. Rozycki wrote:
-> On Fri, 22 Jan 2021, Arnd Bergmann wrote:
+Hi Vinod,
+
+On 2/10/21 12:47, Vinod Koul wrote:
+> Add driver for the Qualcomm interconnect buses found in SM8i350 based
+
+SM8i350?
+
+> platforms. The topology consists of several NoCs that are controlled by
+> a remote processor that collects the aggregated bandwidth for each
+> master-slave pairs.
 > 
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > kgdb fails to build when the FPU support is disabled:
-> > 
-> > arch/mips/kernel/kgdb.c: In function 'dbg_set_reg':
-> > arch/mips/kernel/kgdb.c:147:35: error: 'struct thread_struct' has no member named 'fpu'
-> >   147 |    memcpy((void *)&current->thread.fpu.fcr31, mem,
-> >       |                                   ^
-> > arch/mips/kernel/kgdb.c:155:34: error: 'struct thread_struct' has no member named 'fpu'
-> >   155 |   memcpy((void *)&current->thread.fpu.fpr[fp_reg], mem,
-> > 
-> > This is only relevant for CONFIG_EXPERT=y, so disallowing it
-> > in Kconfig is an easier workaround than fixing it properly.
+> Generated from downstream interconnect driver written by David Dai
 > 
->  Wrapping the relevant parts of this file into #ifdef MIPS_FP_SUPPORT 
-> would be as easy though and would qualify as a proper fix given that we 
-> have no XML description support for the MIPS target (so we need to supply 
-> the inexistent registers in the protocol; or maybe we can return NULL in 
-> `dbg_get_reg' to get them padded out in the RSP packet, I haven't checked 
-> if generic KGDB code supports this feature).
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>   drivers/interconnect/qcom/Kconfig  |  10 +
+>   drivers/interconnect/qcom/Makefile |   2 +
+>   drivers/interconnect/qcom/sm8350.c | 635 +++++++++++++++++++++++++++++
+>   3 files changed, 647 insertions(+)
+>   create mode 100644 drivers/interconnect/qcom/sm8350.c
+> 
+> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qcom/Kconfig
+> index a8f93ba265f8..2ad0aea8336a 100644
+> --- a/drivers/interconnect/qcom/Kconfig
+> +++ b/drivers/interconnect/qcom/Kconfig
+> @@ -85,5 +85,15 @@ config INTERCONNECT_QCOM_SM8250
+>   	  This is a driver for the Qualcomm Network-on-Chip on sm8250-based
+>   	  platforms.
+>   
+> +config INTERCONNECT_QCOM_SM8350
+> +	tristate "Qualcomm SM8350 interconnect driver"
+> +	depends on INTERCONNECT_QCOM
+> +	depends on (QCOM_RPMH && QCOM_COMMAND_DB && OF) || COMPILE_TEST
 
-Returning NULL should be fine.
+Maybe depend on INTERCONNECT_QCOM_RPMH_POSSIBLE instead of the above.
 
-The generic code will cope OK. The values in the f.p. registers may
-act a little odd if gdb uses a 'G' packet to set them to non-zero values
-(since kgdb will cache the values gdb sent it) but the developer
-operating the debugger will probably figure out what is going on without
-too much pain.
-
-
-Daniel.
+Thanks,
+Georgi
