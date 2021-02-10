@@ -2,51 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D014316D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A853316D43
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbhBJRry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:47:54 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33120 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233120AbhBJRqp (ORCPT
+        id S232854AbhBJRtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:49:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233238AbhBJRra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:46:45 -0500
-Date:   Wed, 10 Feb 2021 17:45:54 -0000
+        Wed, 10 Feb 2021 12:47:30 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D7CC0613D6;
+        Wed, 10 Feb 2021 09:46:47 -0800 (PST)
+Date:   Wed, 10 Feb 2021 17:45:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612979155;
+        s=2020; t=1612979156;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ODU2rioZ76L9LXKcbA7zNdT/RoXKeLN3WJLMdjrAwMc=;
-        b=kVRjYTart+jDnkFQUZ6biXKTi3ocXwSnvqaiobJzcs2LGfZDTFVSSkpVQafFTzu772b64K
-        Hmp5HanKS2BJjCdekXltddATeCcZLdVEH/SzC1acZpiDEK6wDeKTVqVHsZeclPx/6mjJbB
-        KSZ4Xki1966+Zh4HD0YU4rtKEqc3/md7lLWbVHe91s66utbStqUA44KKEqQZ4tUZepSahe
-        SX+uddImrdsiULjClMXy6Mfjg8vFg7BBcG+/0z3M57r85iPet/jYXOu2R+R5cwuc7W9yGu
-        83gKwWzNqpyh+7RZp+WNOer37RYUQ6CQcMET/gMWii2dhMH6zSUG1AbAp6TEHg==
+        bh=Zp08V0qMUz4l32cBV0XmFNs3wbjGfVf7sl8cfA8pw5c=;
+        b=f4798bnDpiKZcTcxjvPFVs+WBIfbzevH6kFRjXg0mn3V59zYcYiVglvIbHWIYLMVATBmoX
+        smWiR92e/xjJ9+jdL8SJ86f278zqBcVFY6b8Lw8XwBi2KL7YsjmjsTRP0HM9/5wATp5uPA
+        FbQJxZPNWMMElPdtqb07U31TM33PBAbzfetbNgCCPtwFQ2Ydytsxmms1hxHaPndy7iNoLy
+        /h/idVylTDL5fwlNfCydEpXwwiHWefLYL3iJMLZSxo57davky+tkrhQ3tf6v5okCekh+va
+        HwRflneq57sMLOQ6YEb3ok9tzqfi0rVLyGGaEqiBNmmv2kXqyr+3hiKR/DADMQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612979155;
+        s=2020e; t=1612979156;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ODU2rioZ76L9LXKcbA7zNdT/RoXKeLN3WJLMdjrAwMc=;
-        b=g/y3VgA6ST2l0k8Kj9qpeC23WBpIvlS/kNEZMqyVkovEX44Q59uhlhqCiyDGF2Z3l0mCzi
-        7PjXY/gwqvrYSmCA==
+        bh=Zp08V0qMUz4l32cBV0XmFNs3wbjGfVf7sl8cfA8pw5c=;
+        b=QpnQ0bbwnsDXDyp4mwRn8fMRdifdAD7IpipWZTkLgWpeGQ9QoCtan/XgdCkvdK7Mt9b7l5
+        hHvKhkTFVc+FgKCA==
 From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/{fault,efi}: Fix and rename efi_recover_from_page_fault()
+Subject: [tip: x86/mm] x86/fault: Correct a few user vs kernel checks wrt WRUSS
 Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <f43b1e80830dc78ed60ed8b0826f4f189254570c.1612924255.git.luto@kernel.org>
-References: <f43b1e80830dc78ed60ed8b0826f4f189254570c.1612924255.git.luto@kernel.org>
+In-Reply-To: <a7b7bcea730bd4069e6b7e629236bb2cf526c2fb.1612924255.git.luto@kernel.org>
+References: <a7b7bcea730bd4069e6b7e629236bb2cf526c2fb.1612924255.git.luto@kernel.org>
 MIME-Version: 1.0
-Message-ID: <161297915421.23325.12410595112961336936.tip-bot2@tip-bot2>
+Message-ID: <161297915574.23325.6956352117154470598.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,123 +60,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/mm branch of tip:
 
-Commit-ID:     c46f52231e79af025e2c89e889d69ec20a4c024f
-Gitweb:        https://git.kernel.org/tip/c46f52231e79af025e2c89e889d69ec20a4c024f
+Commit-ID:     56e62cd28aaae2fcbec8af67b05843c47c6da170
+Gitweb:        https://git.kernel.org/tip/56e62cd28aaae2fcbec8af67b05843c47c6da170
 Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Tue, 09 Feb 2021 18:33:46 -08:00
+AuthorDate:    Tue, 09 Feb 2021 18:33:38 -08:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 10 Feb 2021 18:39:23 +01:00
+CommitterDate: Wed, 10 Feb 2021 14:13:32 +01:00
 
-x86/{fault,efi}: Fix and rename efi_recover_from_page_fault()
+x86/fault: Correct a few user vs kernel checks wrt WRUSS
 
-efi_recover_from_page_fault() doesn't recover -- it does a special EFI
-mini-oops.  Rename it to make it clear that it crashes.
+In general, page fault errors for WRUSS should be just like get_user(),
+etc.  Fix three bugs in this area:
 
-While renaming it, I noticed a blatant bug: a page fault oops in a
-different thread happening concurrently with an EFI runtime service call
-would be misinterpreted as an EFI page fault.  Fix that.
+There is a comment that says that, if the kernel can't handle a page fault
+on a user address due to OOM, the OOM-kill-and-retry logic would be
+skipped.  The code checked kernel *privilege*, not kernel mode, so it
+missed WRUSS.  This means that the kernel would malfunction if it got OOM
+on a WRUSS fault -- this would be a kernel-mode, user-privilege fault, and
+the OOM killer would be invoked and the handler would retry the faulting
+instruction.
 
-This isn't quite exact. The situation could be improved by using a
-special CS for calls into EFI.
+A failed user access from kernel while a fatal signal is pending should
+fail even if the instruction in question was WRUSS.
 
- [ bp: Massage commit message and simplify in interrupt check. ]
+do_sigbus() should not send SIGBUS for WRUSS -- it should handle it like
+any other kernel mode failure.
 
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/f43b1e80830dc78ed60ed8b0826f4f189254570c.1612924255.git.luto@kernel.org
+Link: https://lkml.kernel.org/r/a7b7bcea730bd4069e6b7e629236bb2cf526c2fb.1612924255.git.luto@kernel.org
 ---
- arch/x86/include/asm/efi.h     |  2 +-
- arch/x86/mm/fault.c            | 11 ++++++-----
- arch/x86/platform/efi/quirks.c | 16 ++++++++++++----
- 3 files changed, 19 insertions(+), 10 deletions(-)
+ arch/x86/mm/fault.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
-index c98f783..4b7706d 100644
---- a/arch/x86/include/asm/efi.h
-+++ b/arch/x86/include/asm/efi.h
-@@ -150,7 +150,7 @@ extern void __init efi_apply_memmap_quirks(void);
- extern int __init efi_reuse_config(u64 tables, int nr_tables);
- extern void efi_delete_dummy_variable(void);
- extern void efi_switch_mm(struct mm_struct *mm);
--extern void efi_recover_from_page_fault(unsigned long phys_addr);
-+extern void efi_crash_gracefully_on_page_fault(unsigned long phys_addr);
- extern void efi_free_boot_services(void);
- 
- /* kexec external ABI */
 diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 1c3054b..7b3a125 100644
+index 013910b..b110484 100644
 --- a/arch/x86/mm/fault.c
 +++ b/arch/x86/mm/fault.c
-@@ -16,7 +16,7 @@
- #include <linux/prefetch.h>		/* prefetchw			*/
- #include <linux/context_tracking.h>	/* exception_enter(), ...	*/
- #include <linux/uaccess.h>		/* faulthandler_disabled()	*/
--#include <linux/efi.h>			/* efi_recover_from_page_fault()*/
-+#include <linux/efi.h>			/* efi_crash_gracefully_on_page_fault()*/
- #include <linux/mm_types.h>
- 
- #include <asm/cpufeature.h>		/* boot_cpu_has, ...		*/
-@@ -25,7 +25,7 @@
- #include <asm/vsyscall.h>		/* emulate_vsyscall		*/
- #include <asm/vm86.h>			/* struct vm86			*/
- #include <asm/mmu_context.h>		/* vma_pkey()			*/
--#include <asm/efi.h>			/* efi_recover_from_page_fault()*/
-+#include <asm/efi.h>			/* efi_crash_gracefully_on_page_fault()*/
- #include <asm/desc.h>			/* store_idt(), ...		*/
- #include <asm/cpu_entry_area.h>		/* exception stack		*/
- #include <asm/pgtable_areas.h>		/* VMALLOC_START, ...		*/
-@@ -701,11 +701,12 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
- #endif
- 
- 	/*
--	 * Buggy firmware could access regions which might page fault, try to
--	 * recover from such faults.
-+	 * Buggy firmware could access regions which might page fault.  If
-+	 * this happens, EFI has a special OOPS path that will try to
-+	 * avoid hanging the system.
- 	 */
- 	if (IS_ENABLED(CONFIG_EFI))
--		efi_recover_from_page_fault(address);
-+		efi_crash_gracefully_on_page_fault(address);
- 
- oops:
- 	/*
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-index 5a40fe4..67d93a2 100644
---- a/arch/x86/platform/efi/quirks.c
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -687,15 +687,25 @@ int efi_capsule_setup_info(struct capsule_info *cap_info, void *kbuff,
-  * @return: Returns, if the page fault is not handled. This function
-  * will never return if the page fault is handled successfully.
-  */
--void efi_recover_from_page_fault(unsigned long phys_addr)
-+void efi_crash_gracefully_on_page_fault(unsigned long phys_addr)
+@@ -945,7 +945,7 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
+ 	  vm_fault_t fault)
  {
- 	if (!IS_ENABLED(CONFIG_X86_64))
+ 	/* Kernel mode? Handle exceptions or die: */
+-	if (!(error_code & X86_PF_USER)) {
++	if (!user_mode(regs)) {
+ 		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
  		return;
- 
- 	/*
-+	 * If we get an interrupt/NMI while processing an EFI runtime service
-+	 * then this is a regular OOPS, not an EFI failure.
-+	 */
-+	if (in_interrupt())
-+		return;
-+
-+	/*
- 	 * Make sure that an efi runtime service caused the page fault.
-+	 * READ_ONCE() because we might be OOPSing in a different thread,
-+	 * and we don't want to trip KTSAN while trying to OOPS.
- 	 */
--	if (efi_rts_work.efi_rts_id == EFI_NONE)
-+	if (READ_ONCE(efi_rts_work.efi_rts_id) == EFI_NONE ||
-+	    current_work() != &efi_rts_work.work)
- 		return;
- 
- 	/*
-@@ -747,6 +757,4 @@ void efi_recover_from_page_fault(unsigned long phys_addr)
- 		set_current_state(TASK_IDLE);
- 		schedule();
  	}
--
--	return;
+@@ -1217,7 +1217,14 @@ do_kern_addr_fault(struct pt_regs *regs, unsigned long hw_error_code,
  }
+ NOKPROBE_SYMBOL(do_kern_addr_fault);
+ 
+-/* Handle faults in the user portion of the address space */
++/*
++ * Handle faults in the user portion of the address space.  Nothing in here
++ * should check X86_PF_USER without a specific justification: for almost
++ * all purposes, we should treat a normal kernel access to user memory
++ * (e.g. get_user(), put_user(), etc.) the same as the WRUSS instruction.
++ * The one exception is AC flag handling, which is, per the x86
++ * architecture, special for WRUSS.
++ */
+ static inline
+ void do_user_addr_fault(struct pt_regs *regs,
+ 			unsigned long error_code,
+@@ -1406,14 +1413,14 @@ good_area:
+ 	if (likely(!(fault & VM_FAULT_ERROR)))
+ 		return;
+ 
+-	if (fatal_signal_pending(current) && !(error_code & X86_PF_USER)) {
++	if (fatal_signal_pending(current) && !user_mode(regs)) {
+ 		no_context(regs, error_code, address, 0, 0);
+ 		return;
+ 	}
+ 
+ 	if (fault & VM_FAULT_OOM) {
+ 		/* Kernel mode? Handle exceptions or die: */
+-		if (!(error_code & X86_PF_USER)) {
++		if (!user_mode(regs)) {
+ 			no_context(regs, error_code, address,
+ 				   SIGSEGV, SEGV_MAPERR);
+ 			return;
