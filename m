@@ -2,132 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F001A317328
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D5A31733C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhBJWSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:18:10 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:36421 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhBJWRr (ORCPT
+        id S232477AbhBJWVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:21:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232045AbhBJWVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:17:47 -0500
-Received: by mail-oi1-f175.google.com with SMTP id k204so3909838oih.3;
-        Wed, 10 Feb 2021 14:17:32 -0800 (PST)
+        Wed, 10 Feb 2021 17:21:01 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C13C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:20:21 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id 18so2236727pfz.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:20:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z0iXqoizGv91iyESBFZbI0I06iIFsCEP1OVkjYLnlPA=;
+        b=Miw6iK6/OvFwa7tHc1eUpNg6VrNTbW9r3+7lFtnixy33N4q94B2iBjswjV3wBykU+9
+         ALEKv76fL34vruF33g+D41IBv44wlvAt10T8XyC5qGgJs8raPOoYzpHkzWAbN+6O1wb1
+         TdWa81hT2enNnkZBd/NAxbY2WoMWr4M5R7if0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=X/+AS1PnO/pIi25zgPnySrTJigYkK7rUzHnIa2wA10c=;
-        b=CmvT4wHzGKQRzTA5B7tw6mefyFDXTWu8dzQkPwK3hyBCtlU9ZvtSftD7BloAwx1kcS
-         LLQ5luPthoD3xbWfMsMaJLWieRMjmUijhEJKElz/Ryak1Af9UxPQ2Jk3ZlirQhqVXcNB
-         RNW8W7IRtybFugg/m7rW3LI78EtpFvwLYu0oDD5pn+WO+hSRlqsShGyWQ6ObqGFZIBNg
-         jH9xdZtGQK7J5QT4aFROclRg/C7/lBKUL5nsIHC2qeuC7sI8uMzNScrWdRzY+TepX5XZ
-         cm3f+2vmT1bsf/epmIlt1k8vV3gMEfBM9iDnvuHDk2a2yWOkgnhB9bB+pV9YyQHGgv/0
-         hi9A==
-X-Gm-Message-State: AOAM531VI6Lfy9DDg59sQjDLWSQMCJUuP4NNEQteOPwWDLqolajGi6bF
-        7VcLO3Zo2efEFgG4uq4NLw==
-X-Google-Smtp-Source: ABdhPJwBaK5/uRRp67UJ2r6hTbPKpERNoPUPShLujM3MmLo48Htw1DUx13FzI0PYRRUmqbkp9mKjSg==
-X-Received: by 2002:aca:ab89:: with SMTP id u131mr818003oie.170.1612995426687;
-        Wed, 10 Feb 2021 14:17:06 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a20sm155592oid.47.2021.02.10.14.17.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 14:17:05 -0800 (PST)
-Received: (nullmailer pid 2901206 invoked by uid 1000);
-        Wed, 10 Feb 2021 22:17:04 -0000
-Date:   Wed, 10 Feb 2021 16:17:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, timur@kernel.org,
-        nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 7/7] ASoC: dt-bindings: imx-rpmsg: Add binding doc for
- rpmsg machine driver
-Message-ID: <20210210221704.GA2894134@robh.at.kernel.org>
-References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
- <1612693435-31418-8-git-send-email-shengjiu.wang@nxp.com>
+        bh=Z0iXqoizGv91iyESBFZbI0I06iIFsCEP1OVkjYLnlPA=;
+        b=fzAO+hG0S/Z3t4zukn7yoksMECIPT+R3yqtcu6et9QY8Vt3tDbz7OuufFiM838JCM/
+         CvDD00j+1ctSej8SMOslZqIoi6nQbUF+SPbdZeVK4iI2Y+8i/pwHp4cknQHtTbNSQHYL
+         9gIARot45eleoKeZ031suI+a+dF+s2eiZVo2mad4ZRPjzGY7pNAXwDSCEt4AVUexr481
+         7eldfWC44iUgnWghQBuJwKIaSoj7OjPnw6Q7hEswSXWaPkMmOVfRQ8gEG+Yx/UmN76xG
+         YOPGUUXH4r6+/BxIetC1eVetHZ6WjSkadJL38vZnQE7dp0YjktRsLzUlxYGGV0ZMsBWy
+         x8Mg==
+X-Gm-Message-State: AOAM5330y8AcIe7P1PRBPNXO5zrjEWq2GB7aXSDIlrMMiSIKLax74buX
+        YHOGAHgLAT9Y5WmbHtcfLxjQuA==
+X-Google-Smtp-Source: ABdhPJwxIyrwCZVepYfSfD+e4R52iXFCJYsOnislND8kiKov6V5bb2es7O8gG7efrH8gABeV3cGHXQ==
+X-Received: by 2002:a63:ec0e:: with SMTP id j14mr5132698pgh.62.1612995621142;
+        Wed, 10 Feb 2021 14:20:21 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:d8e6:826a:fc50:2158])
+        by smtp.gmail.com with UTF8SMTPSA id q15sm2804340pfk.181.2021.02.10.14.20.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 14:20:20 -0800 (PST)
+Date:   Wed, 10 Feb 2021 14:20:18 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>
+Subject: Re: [PATCH v5 3/4] usb: host: xhci-plat: Create platform device for
+ onboard hubs in probe()
+Message-ID: <YCRcIuCxB8nYi7/e@google.com>
+References: <20210210171040.684659-1-mka@chromium.org>
+ <20210210091015.v5.3.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid>
+ <20210210210645.xapaua7djdsvr3ca@kozik-lap>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1612693435-31418-8-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20210210210645.xapaua7djdsvr3ca@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 06:23:55PM +0800, Shengjiu Wang wrote:
-> Imx-rpmsg is a new added machine driver for supporting audio on Cortex-M
-> core. The Cortex-M core will control the audio interface, DMA and audio
-> codec, setup the pipeline, the audio driver on Cortex-A core side is just
-> to communitcate with M core, it is a virtual sound card and don't touch
-> the hardware.
+Hi Krzysztof,
 
-I don't understand why there are 2 nodes for this other than you happen 
-to want to split this into 2 Linux drivers. It's 1 h/w thing. 
+On Wed, Feb 10, 2021 at 10:06:45PM +0100, Krzysztof Kozlowski wrote:
+> On Wed, Feb 10, 2021 at 09:10:38AM -0800, Matthias Kaehlcke wrote:
+> > Check during probe() if a hub supported by the onboard_usb_hub
+> > driver is connected to the controller. If such a hub is found
+> > create the corresponding platform device. This requires the
+> > device tree to have a node for the hub with its vendor and
+> > product id (which is not common for USB devices). Further the
+> > platform device is only created when CONFIG_USB_ONBOARD_HUB=y/m.
+> > 
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> > 
+> > Changes in v5:
+> > - patch added to the series
+> > 
+> >  drivers/usb/host/xhci-plat.c | 16 ++++++++++++++++
+> >  include/linux/usb/hcd.h      |  2 ++
+> >  2 files changed, 18 insertions(+)
+> > 
+> > diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+> > index 4d34f6005381..e785fa109eea 100644
+> > --- a/drivers/usb/host/xhci-plat.c
+> > +++ b/drivers/usb/host/xhci-plat.c
+> > @@ -15,6 +15,7 @@
+> >  #include <linux/of.h>
+> >  #include <linux/of_device.h>
+> >  #include <linux/platform_device.h>
+> > +#include <linux/usb/onboard_hub.h>
+> >  #include <linux/usb/phy.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/acpi.h>
+> > @@ -184,6 +185,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
+> >  	int			ret;
+> >  	int			irq;
+> >  	struct xhci_plat_priv	*priv = NULL;
+> > +	struct device_node	*np;
+> >  
+> >  
+> >  	if (usb_disabled())
+> > @@ -356,6 +358,17 @@ static int xhci_plat_probe(struct platform_device *pdev)
+> >  	 */
+> >  	pm_runtime_forbid(&pdev->dev);
+> >  
+> > +	np = usb_of_get_device_node(hcd->self.root_hub, hcd->self.busnum);
+> > +	if (np && of_is_onboard_usb_hub(np)) {
+> 
+> This looks hackish... what if later we have something else than hub?
+> Another if()?
+> 
+> What if hub could be connected to something else than XHCI controller?
 
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../bindings/sound/imx-audio-rpmsg.yaml       | 48 +++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml b/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
-> new file mode 100644
-> index 000000000000..b941aeb80678
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/imx-audio-rpmsg.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX audio complex with rpmsg
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx-audio-rpmsg
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User specified audio sound card name
-> +
-> +  audio-cpu:
-> +    description: The phandle of an CPU DAI controller
-> +
-> +  rpmsg-out:
-> +    description: |
-> +      This is a boolean property. If present, the transmitting function
-> +      will be enabled,
-> +
-> +  rpmsg-in:
-> +    description: |
-> +      This is a boolean property. If present, the receiving function
-> +      will be enabled.
-> +
-> +required:
-> +  - compatible
-> +  - model
-> +  - audio-cpu
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    sound-rpmsg {
-> +        compatible = "fsl,imx-audio-rpmsg";
-> +        model = "ak4497-audio";
-> +        audio-cpu = <&rpmsg_audio>;
-> +        rpmsg-out;
-> +    };
-> -- 
-> 2.27.0
-> 
+In earlier versions this was standalone driver, which was more flexible and
+didn't require cooperation from the XHCI driver:
+
+https://lore.kernel.org/patchwork/patch/1313001/
+
+Rob Herring raised objections about the DT bindings, since the USB hub would be
+represented twice in the DT, once in the USB hierachry (with an explicit node or
+implicitly) plus a node for the platform device for the new driver:
+
+https://lore.kernel.org/patchwork/patch/1305395/
+https://lore.kernel.org/patchwork/patch/1313000/
+
+Alan Stern suggested to create the platform device in the XHCI platform driver:
+
+https://lore.kernel.org/patchwork/patch/1313000/#1510227
+
+I wasn't super happy about involving xhci-plat, but at least the code is minimal
+and all the device specific stuff is handled by the onboard_usb_hub driver.
+
+If you have better suggestions that might satisfy all parties please let us
+know :)
+
+Matthias
