@@ -2,100 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026AA317180
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED27C317186
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhBJUjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:39:37 -0500
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:38559 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhBJUj3 (ORCPT
+        id S232343AbhBJUlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:41:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231642AbhBJUlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:39:29 -0500
-Received: by mail-wm1-f53.google.com with SMTP id y134so3088996wmd.3;
-        Wed, 10 Feb 2021 12:39:12 -0800 (PST)
+        Wed, 10 Feb 2021 15:41:31 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329F4C06174A;
+        Wed, 10 Feb 2021 12:40:50 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id j12so2047779pfj.12;
+        Wed, 10 Feb 2021 12:40:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2yhiCvUyqwB+Gy0G+54/j5J/bjxh290iesA/97iqEAo=;
+        b=OdRNp4c7kpkYf5N4fUld+qsh3IV2vC1G+QZuGpVTAIxPMLrAd8Hsj+s6MUe1ZYVZzk
+         R4oR6A6qNRygdg3bZpb2kc2OBo3vsC2esX4uI3AN8GEAw4o35hw9v+NtI8fLZ8xGEs5F
+         FC2XcervKdOtyOpAF2qmgrPJHUWUzX3zSao0sArifhlRa8BsBXtiPbFGJgv6S+ztsgwy
+         iJXU2aRC4wy0pRIAU0KCIK7TXKyBDx2FhkzT0Z8pbEgfpad8zEtGOOwHtjxFKydQ9i/p
+         2BM+IGJjNy/MssZ5XZXciuIWIWzRVHzl4S15mW/ZCPtlij1ifmIeEKo2ynDB2hEQd3jn
+         4xGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4A+2k+XaOQDQdRLdda2hXalHoLO2FataTE4xahcLSg0=;
-        b=E8DSUB7Svq9EBiCSaBxAWL6wZVpp6GlHFDXo+AhS7gf72CzzSEAatpzk4u79z2WWT8
-         CcJtlJniZ/Vm0uMJ92JbWplquoiDKhGCKEeGRweMYOPEqPuXYGFpzHlpHLJu8EED1UJ7
-         0SkusU98uvsaA2jPJt1Y+6NSf/6AW+piBcNmJU46ha8PWtFzGUYAGHnrxAZglUf2DoBh
-         asyPimd0CWFbRby9518QYA88V2EX6NHcOMo6+b0nIp+lNQPxILribRtGMjeiOkoLLwSg
-         rHIEa0YiSidpbCaxMoWJlblqwO8huaGcpWthkiMj/zW7ppl7oR6te32F9QLF4Jk33ije
-         RnoA==
-X-Gm-Message-State: AOAM5307iGxgL+swI37iOxdshgBg9eTbNTHc801M1SsqUQfarbamDhWJ
-        wF1ZjFDG6EJmSv6wwXZ29xQ=
-X-Google-Smtp-Source: ABdhPJwVUNzMD7J+9bMSfrZJ1hAngscnt61sEbrrRpwQSlkDT09B252mXklgnu3RkTtE1a95uj41nA==
-X-Received: by 2002:a1c:9a12:: with SMTP id c18mr802274wme.146.1612989527156;
-        Wed, 10 Feb 2021 12:38:47 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id s64sm4572510wms.21.2021.02.10.12.38.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 12:38:45 -0800 (PST)
-Date:   Wed, 10 Feb 2021 21:38:44 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Cc:     sre@kernel.org, linux-pm@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH 1/2] power: supply: bq25980: Applies
- multiple fixes brought on
-Message-ID: <20210210203844.pg2646qbnclth7zx@kozik-lap>
-References: <20210209230527.26712-1-r-rivera-matos@ti.com>
- <CAJKOXPdy4BJMSb7KXhU8vYrJ2+qWPOw0MzTGhXQEgh1xHDZFNw@mail.gmail.com>
- <8f952bd9-1849-af7e-d54f-b897c653a126@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2yhiCvUyqwB+Gy0G+54/j5J/bjxh290iesA/97iqEAo=;
+        b=XOZRcc2rPTO1bGr2YHdHaKa8bnj9wMK2PnKqDEYD3s93eBzOQosb3PizoZ5gTmR88b
+         GtZ3CHU40ywSQgAMKPIxcGcbUs0N9nQspovZNS0HSrkqk8YLxgR/duHU5cpUepZJBKup
+         lEIhVBgMW8bhg4c22B32zBGvG/TCvfpGuxOjhvxm3Pc4bb6GiuUf6tEj+rA+evAFCluC
+         eonz4IuzBhe47+SHTmjTo7ANhhhsg1KnullfjmjbhYWvYcmaqgv662wuThW89EeArdi4
+         vH1zCgieO7jR8kuZLPi5XVCIb/dNvOOc9kR30wwAl6+11BY5CQI2JzqBiElNw67++aPf
+         zWSQ==
+X-Gm-Message-State: AOAM530UE/y+K0YQMu04T89c8FpfJj67ldPkjM5UggHSSqnW34e0x2dZ
+        KrWazsid97a+ND6XSVw7Fa6lz6NApDt0ZI4pVjLL92vq
+X-Google-Smtp-Source: ABdhPJy2FblGuzAVVcOqh4QvALojrRqVJhHUlOaYQIOWyV8p8OzDVYkmAoxVIekTRr9cQaq9lTOvm4vbldoZhAWmIQk=
+X-Received: by 2002:a63:2d3:: with SMTP id 202mr4670857pgc.438.1612989649405;
+ Wed, 10 Feb 2021 12:40:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8f952bd9-1849-af7e-d54f-b897c653a126@ti.com>
+References: <20210207185140.3653350-1-aford173@gmail.com> <20210210201841.GA2688439@robh.at.kernel.org>
+In-Reply-To: <20210210201841.GA2688439@robh.at.kernel.org>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 10 Feb 2021 14:40:38 -0600
+Message-ID: <CAHCN7xJwd=u8O33j0Gkaw7=5-k5F=pEuSxqoe+hV=LxAPMk_vQ@mail.gmail.com>
+Subject: Re: [PATCH V3 1/2] dt-bindings: clk: versaclock5: Add optional load
+ capacitance property
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:50:03PM -0600, Ricardo Rivera-Matos wrote:
-> Krzysztof,
-> 
-> On 2/10/21 2:20 AM, Krzysztof Kozlowski wrote:
-> > On Wed, 10 Feb 2021 at 00:52, Ricardo Rivera-Matos
-> > <r-rivera-matos@ti.com> wrote:
-> > > fix: corrects various register step size and offset values
-> > > 
-> > > fix: corrects bq25980_get_input_curr_lim() and bq25980_set_input_curr_lim()
-> > > 
-> > > fix: corrects bq25980_get_const_charge_curr() and bq25980_set_const_charge_curr()
-> > > 
-> > > fix: corrects BQ25960_BATOVP_MIN_uV, BQ25960_BATOVP_OFFSET_uV,
-> > > 
-> > > BQ25960_BATOVP_STEP_uV, and BQ25960_BATOVP_MAX_uV
-> > > 
-> > > fix: corrects busocp_sc_min and busocp_byp_min members
-> > > 
-> > > fix: removes unnecessary polarity check from bq25980_get_adc_ibus()
-> > > 
-> > > fix: removes unnecessary polarity check from bq25980_get_adc_ibat()
-> > > 
-> > > fix: clamps ibat_adc to match datasheet change
-> > Thanks for the patch.
-> > 
-> > Only one fix at a time and please exactly describe what is being fixed
-> > using proper sentences (starting with capital letter, ending with a
-> > full stop... and usually description needs multiple of such
-> > sentences). You add here multiple changes without proper description
-> > of a problem being fixed. This is not the correct style of a patch.
-> ACK, this patch is meant to implement changes brought on by a new datasheet
-> revision.
+On Wed, Feb 10, 2021 at 2:18 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Sun, Feb 07, 2021 at 12:51:38PM -0600, Adam Ford wrote:
+> > There are two registers which can set the load capacitance for
+> > XTAL1 and XTAL2. These are optional registers when using an
+> > external crystal.  Since XTAL1 and XTAL2 will set to the same value,
+> > update the binding to support a single property called
+> > xtal-load-femtofarads.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > ---
+> > V3:  No Change
+> > V2:  No Change
+> >
+> > A couple people suggested that I not use the $ref, but without it,
+> > the bindings check failed with errors.
+> >
+> > diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > index 2ac1131fd922..c268debe5b8d 100644
+> > --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > @@ -59,6 +59,12 @@ properties:
+> >      minItems: 1
+> >      maxItems: 2
+> >
+> > +  idt,xtal-load-femtofarads:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+>
+> Don't need a type with standard unit suffix.
 
-Only one "fix" in commit msg mentions datasheet.
+If I remove that line, the binding check fails.
 
-> The revision tweaked the register step size and offset values to
-> improve the accuracy. I can rebase and reword the patch if that works for
-> you.
-
-Yes, please. "corrects bq25980_get_input_curr_lim() and
-bq25980_set_input_curr_lim()" tells me absolutely nothing what was wrong
-and how it's get corrected.
-
-Best regards,
-Krzysztof
-
+adam
+>
+> > +    minimum: 9000
+> > +    maximum: 22760
+> > +    description: Optional load capacitor for XTAL1 and XTAL2
+> > +
+> >  patternProperties:
+> >    "^OUT[1-4]$":
+> >      type: object
+> > --
+> > 2.25.1
+> >
