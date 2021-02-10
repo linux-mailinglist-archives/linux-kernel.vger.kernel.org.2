@@ -2,142 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386293160E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 285823160E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233965AbhBJIXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:23:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
+        id S233970AbhBJIXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:23:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233870AbhBJIWd (ORCPT
+        with ESMTP id S233023AbhBJIXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:22:33 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02825C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:21:53 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id i71so1170452ybg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:21:52 -0800 (PST)
+        Wed, 10 Feb 2021 03:23:18 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9B4C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:22:37 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id gb24so691947pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:22:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=65vR6SG2Bxgu7fYiRhCh88Vjzb2irw6GGGy0yalIXkM=;
-        b=LPbRwhPQ6/yQZRRqLwpjkO9i9cYhEEfxPQrDEn0JhbQhI/zaZgHbTrB1WOrAsW48Nm
-         8DnAO761rA7a0hr8Kz+pzOWJBzU9mEZn+REW8D/LtHnD07SW/TW6j48zTLeiUdla/XLj
-         iJOCcCOU+O7dIIVzKrW2UwvoyFOcZSTDkOeTMjPls9pF2UcFI39WS7De+VRQk0QFQgwW
-         IosoVwgFpBw0afved4rHh9++rElFdWER0kM9K55YZtccijBsujCCeVQyCavCVbjFcvHx
-         znEXnaFjysy0sU1GlufpmXpMW4w2cb3O2PlTHXkMTJ6WqsDnhq97jj8a/U+dj5SRxv7F
-         BpBA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=AnB71wxQaaj1DZCEfr1ClX/e8caxjStydgZpaceaxuc=;
+        b=ZwsxXoH+I21Niwd2GH7mvqLmE4PgFKT706cHiWvBvF0gMDV8ViHrNNArx3wqwm87nS
+         j+fkvZSPuz4P4KzoF6h7uaYeCpuynzrQ9jUtNMLFEWZRcxzjsXlz0+cl2NWAICXzqwQ2
+         UNaMtCXCIlVy4lbq6eyH/JwlrmSSs0uBrqiqs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=65vR6SG2Bxgu7fYiRhCh88Vjzb2irw6GGGy0yalIXkM=;
-        b=fZ+GQD9p6lb4qqo7Ks1x0KljoMZeVdnXs/hikpqRLw40A9C74+QyUmJ+7GKBJGSXZt
-         n8aUghqq5B2OEQ3TTBbZP8k0wXX+vRkHac6gp1vq7ovTGMYLnBfYFPiOpDOdPRRfOoq2
-         nzhVspjEzRk7Ew1D0uqPGcGYnSwthnzEnjI+fJJdfd/lrH+D9zYLMyQgrxzR72VHcJGp
-         DQAz/LScnuWcuOzAuwUUjRmVX1QHmlNzaDyJgmBHYarTmBPuCWNzZLtrxWHF2k4nCb7u
-         o15MxJuUM6jBXKgENAklzkVRbkDv35Os+mPU8A65Bq7jWpVIDhjCLC+pkOhwMnXF09qy
-         KQhA==
-X-Gm-Message-State: AOAM5324tau1IfjoIQbtneEcG6/wBW/p9HGjrgxd+6hQ8zOtLrei9eoX
-        ck9dN9iOToQhaOoJpxDV55xoQrG0yp1qqVc0e4ERRA==
-X-Google-Smtp-Source: ABdhPJyxSaGGlwuex18FZi5K/pPfGnm1HqMPKKiFTci/lion367u1Sx4ALhiN7Mx+aV+ZmbAQe0CtgNZMlo7WHnbNZU=
-X-Received: by 2002:a25:2a84:: with SMTP id q126mr2506790ybq.167.1612945312267;
- Wed, 10 Feb 2021 00:21:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=AnB71wxQaaj1DZCEfr1ClX/e8caxjStydgZpaceaxuc=;
+        b=n8ovkfjEtIDIFq9nXqTUp/L82I3GKqwN1WK58VdIGRJ7RBbIVZfziERoWObkJ1/DgO
+         zRCgKqAyGIc2/kniGT4uV1CrFcXqpCxv5hC4aK7Syyysh4pZ8OkH88EIrxlmnBD1xpGU
+         r7UO8MbVOmiCarjNospZk7f/8xWCtsbkmQnBdvoaj7iFXNKi4Ii+5Lw70NKkhacWZbdh
+         6qq5VAxpRhmyPh3kdXeKyhXhzk1gEQxqiVIe7lAMyBGugfyTaswjbzS+41VTi2+l0+Ix
+         WT/FTp+DJgxO9uqE+xU3GXu4h+hRUr9Icle3RDaE9FDc07ImaeTm9jBzceMJ3tPw5uQ1
+         l8PA==
+X-Gm-Message-State: AOAM530MxqP7kUZngC8R/5wHlQDO80oGRmPt3xVvQmmGSiTF6le15rpV
+        0OTX3IqjXJvtM/ieYHU0xVfutw==
+X-Google-Smtp-Source: ABdhPJzIGQLD9dMHxNbPgPsTDYr263svJeW+Kb7bbTyQOqEluZfEPjRU2Pe/q/V9GXPgemoOfAIs2Q==
+X-Received: by 2002:a17:902:8342:b029:e1:1465:4bf0 with SMTP id z2-20020a1709028342b02900e114654bf0mr2015644pln.76.1612945357471;
+        Wed, 10 Feb 2021 00:22:37 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v26sm1287767pff.195.2021.02.10.00.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 00:22:36 -0800 (PST)
+Date:   Wed, 10 Feb 2021 00:22:35 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH] checkpatch: add warning for non-lore mailing list URLs
+Message-ID: <202102092344.22A86166@keescook>
+References: <20201217235615.43328-1-helgaas@kernel.org>
+ <3e21b6e87e219d6538a193a9021b965fd8180025.camel@perches.com>
 MIME-Version: 1.0
-References: <1612426177-6611-1-git-send-email-amit.pundir@linaro.org>
- <889e6ed8-133a-9416-be3b-5b2a97ea7fbb@somainline.org> <CAMi1Hd3bgDaqsH+txFVEnBc9dsGbrgic5TK7uq4GwqqkM6seiw@mail.gmail.com>
- <9bbeb403-2937-aebd-91ff-5682f9112dee@somainline.org>
-In-Reply-To: <9bbeb403-2937-aebd-91ff-5682f9112dee@somainline.org>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Wed, 10 Feb 2021 13:51:16 +0530
-Message-ID: <CAMi1Hd24xe9sppQ_R20eF-W0uV2hsZZDZ=G-hYHxcarSB8YSLg@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add DSI and
- panel bits
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3e21b6e87e219d6538a193a9021b965fd8180025.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Dec 17, 2020 at 04:50:41PM -0800, Joe Perches wrote:
+> On Thu, 2020-12-17 at 17:56 -0600, Bjorn Helgaas wrote:
+> > From: Bjorn Helgaas <bhelgaas@google.com>
+> > 
+> > The lkml.org, marc.info, spinics.net, etc archives are not quite as useful
+> > as lore.kernel.org because they use different styles, add advertising, and
+> > may disappear in the future.  The lore archives are more consistent and
+> > more likely to stick around, so prefer https://lore.kernel.org URLs when
+> > they exist.
+> 
+> Hi Bjorn.
+> 
+> I like the idea, thanks, but a couple notes.
+> 
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -564,6 +564,17 @@ sub find_standard_signature {
+> >  	return "";
+> >  }
+>  
+> > +our $obsolete_archives = qr{(?xi:
+> > +	freedesktop.org/archives/dri-devel|
+> > +	lists.infradead.org|
+> > +	lkml.org|
+> > +	mail-archive.com|
+> > +	mailman.alsa-project.org/pipermail|
+> > +	marc.info|
+> > +	ozlabs.org/pipermail|
+> > +	spinics.net
+> > +)};
+> 
+> Strictly, these all need \Q \E escaping so uses like lkmlAorg do not match.
+> 
+> 
+> > @@ -3101,6 +3112,12 @@ sub process {
+> >  			}
+> >  		}
+> >  
+> > +# Check for mailing list archives other than lore.kernel.org
+> > +		if ($line =~ /(http|https):\/\/\S*$obsolete_archives/) {
+> 
+> The https?:// doesn't seem necessary.  Perhaps:
+> 
+> 		if ($line =~ m{\b$obsolete_archives}) {
+> 
+> > +			WARN("PREFER_LORE_ARCHIVE",
+> > +			     "Use lore.kernel.org archive links when possible; see https://lore.kernel.org/lists.html\n" . $herecurr);
+> 
+> Perhaps:
+> 			     "Prefer lore.kernel.org links. see: https://www.kernel.org/lore.html#linking-to-list-discussions-from-commits\n" . $herecurr);
+> 
+> So maybe instead:
+> ---
+>  scripts/checkpatch.pl | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 00085308ed9d..c2a324d628a6 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -564,6 +564,17 @@ sub find_standard_signature {
+>  	return "";
+>  }
+>  
+> +our $obsolete_archives = qr{(?xi:
+> +	\Qfreedesktop.org/archives/dri-devel\E |
+> +	\Qlists.infradead.org\E |
+> +	\Qlkml.org\E |
+> +	\Qmail-archive.com\E |
+> +	\Qmailman.alsa-project.org/pipermail\E |
+> +	\Qmarc.info\E |
+> +	\Qozlabs.org/pipermail\E |
+> +	\Qspinics.net\E
+> +)};
+> +
+>  our @typeListMisordered = (
+>  	qr{char\s+(?:un)?signed},
+>  	qr{int\s+(?:(?:un)?signed\s+)?short\s},
+> @@ -3101,6 +3112,12 @@ sub process {
+>  			}
+>  		}
+>  
+> +		# Check for mailing list archives other than lore.kernel.org
+> +		if ($rawline =~ m{\b$obsolete_archives}) {
+> +			WARN("PREFER_LORE_ARCHIVE",
+> +			     "Use lore.kernel.org archive links when possible - see https://lore.kernel.org/lists.html\n" . $herecurr);
+> +		}
+> +
+>  # Check for added, moved or deleted files
+>  		if (!$reported_maintainer_file && !$in_commit_log &&
+>  		    ($line =~ /^(?:new|deleted) file mode\s*\d+\s*$/ ||
+> 
+> 
 
-On Mon, 8 Feb 2021 at 20:11, Konrad Dybcio <konrad.dybcio@somainline.org> wrote:
->
->
-> >>> +      ports {
-> >>> +              port@1 {
-> >>> +                      endpoint {
-> >>> +                              remote-endpoint = <&tianma_nt36672a_in_0>;
-> >>> +                              data-lanes = <0 1 2 3>;
-> >>> +                      };
-> >>> +              };
-> >>> +      };
-> >> The endpoint has a label, you can simply use &dsi0_out {};.
-> > I didn't get what you meant there. Care to point to some reference dts
-> > snippet please?
->
-> sdm845.dtsi, L4139 as of v5.11-rc7:
->
->
-> port@1 {
->                         reg = <1>;
->                         dsi0_out: endpoint {
->                         };
->                     };
->
->
-> This means you can essentially do:
->
-> &dsi0_out {
->
->     remote-endpoint = <&tianma_nt36672a_in_0>;
->     lanes = <0 1 2 3>;
->
-> };
->
->
-> in your dt :)
->
+Ah, nice. Yes, this would be great to get added. Joe, can you respin as
+a full path? Please consider it:
 
-Thank you. Added in v3.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
->
-> >>> +              vddpos-supply = <&lab>;
-> >>> +              vddneg-supply = <&ibb>;
-> >> With Angelo's latest series [1] merged in, I reckon you should explicitly configure lab/ibb (like in [2]),
-> >> as wrong settings (which CAN BE SET BY THE BOOTLOADER in some instances!!) can lead to hardware damage.
-> > So iirc in the case of beryllium device, these regulators are pre set
-> > by the bootloader and I can't find any reference of we
-> > setting/resetting it explicitly to switch ON the panel and display. So
-> > far default lab/ibb nodes are working fine for us and I'm hesitant to
-> > tinker around anything regulator related that can potentially damage
-> > the hardware. Having said that, I do see lab/ibb nodes being set in
-> > the downstream dts, with relevant soft-start and discharge-resistor
-> > properties and I can try switching to that once the new lab/ibb
-> > changes land upstream.
-> >
-> > Regards,
-> > Amit Pundir
-> >
-> I understand your concerns, however we actually did find out that at least one device had LAB/IBB set up by the bootloader in a way that could potentially damage the electronics, so I'm just making you aware. If it works as-is, it's probably OK.
-
-Device seem to be booting fine with downstream labibb regulator node
-changes, hence added them in v3 as well. Smoke tested on
-5.11.0-rc7-next-20210209.
-
-Regards,
-Amit Pundir
-
->
->
-> Konrad
->
+-- 
+Kees Cook
