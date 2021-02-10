@@ -2,163 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 054F031680E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61924316811
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhBJNcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:32:41 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:41634 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhBJNce (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:32:34 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_smtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
- id fef06e97a1c7c808; Wed, 10 Feb 2021 14:31:49 +0100
-Received: from kreacher.localnet (89-64-80-225.dynamic.chello.pl [89.64.80.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id E0A5E6608FC;
-        Wed, 10 Feb 2021 14:31:48 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>
-Subject: Re: [PATCH v1 7/7] ACPI: property: Allow counting a single value as an array of 1 element
-Date:   Wed, 10 Feb 2021 14:31:48 +0100
-Message-ID: <3881654.NPl3a4M0kB@kreacher>
-In-Reply-To: <CAJZ5v0hx78JHnP5-5xFTPr0Rh9FvPCzAzTCyBaT6eLZ3Dd-mFA@mail.gmail.com>
-References: <20210210114320.3478-1-andriy.shevchenko@linux.intel.com> <20210210114320.3478-7-andriy.shevchenko@linux.intel.com> <CAJZ5v0hx78JHnP5-5xFTPr0Rh9FvPCzAzTCyBaT6eLZ3Dd-mFA@mail.gmail.com>
+        id S230192AbhBJNdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:33:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229710AbhBJNdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:33:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CE3D64E16
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:32:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612963956;
+        bh=67zKQD2KM75eGx35o/MSJcJksqT5rW9r/UKnaw9Bk7w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oizrbogHwx/wSl3QZ/A6L6hqtVlTK/wx1SKV/BL2epauNUBfqSk3olmX6GMhJlOqW
+         rI/AUlpO4hsHMnvcq+IUETqOUx5eSEBq54GTd7SMkpyKxf8AWxTqrfjSlF0LOlGJwL
+         2jHUUbfLQnnr0H/rVJPDt0cv29SQzr0hVrzKEZXEvf1RnARkH6a3GIdIh9H1MYiA27
+         2HHQsBoIbBQS7KtQO7Xy4LPH/Y5hQt7HgFM3pycpaWpPCO/OoVODbHbPoOKJEaEcvh
+         J22xunSWppvJJ1nTkeRpztH767EHhblQUn9zVMH/m3eojMAgpLxthsSsa8I2wQ8VCq
+         GVkSsnJKY1f7Q==
+Received: by mail-oi1-f171.google.com with SMTP id k204so1997147oih.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:32:36 -0800 (PST)
+X-Gm-Message-State: AOAM5321sGKevNxgWTBJIKPQt6rh9NCFLnJWnd16DWwMkE16jU9BeM6H
+        WMmPnfbzT+AVf395mBcDv+HLV0Nkoc20FDCIW8A=
+X-Google-Smtp-Source: ABdhPJwxA7ofv7xxiJ1HmHQ5p00YdK//OA4Wn256QwYaT1EM1s61zip8ts4vJhVfzwxTDoNBEiw6BBvSY/HYKtpKCq8=
+X-Received: by 2002:aca:2117:: with SMTP id 23mr2085930oiz.4.1612963955644;
+ Wed, 10 Feb 2021 05:32:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdehfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgfelheffhfetffelhfelteejffetteetgfetkeejvdfhfeeftdeufeevgeevieevnecukfhppeekledrieegrdektddrvddvheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrvddvhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvghnsgeskhgvrhhnvghl
- rdhorhhgpdhrtghpthhtoheptggrlhhvihhnrdhjohhhnhhsohhnsehoshhsrdhngihprdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+References: <20210210103908.1720658-1-hikalium@google.com>
+In-Reply-To: <20210210103908.1720658-1-hikalium@google.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 10 Feb 2021 14:32:19 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1ViL91_uEtOwuvTi34A9gMPF-+82eOLNKh8knt+h811A@mail.gmail.com>
+Message-ID: <CAK8P3a1ViL91_uEtOwuvTi34A9gMPF-+82eOLNKh8knt+h811A@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] Introduce a way to adjust CLOCK_BOOTTIME from
+ userspace for VM guests
+To:     Hikaru Nishida <hikalium@chromium.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        suleiman@google.com, Alexander Graf <graf@amazon.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, February 10, 2021 1:36:00 PM CET Rafael J. Wysocki wrote:
-> On Wed, Feb 10, 2021 at 12:51 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > We allow to read the single value as a first element in the array.
-> > Unfortunately the counting doesn't work in this case and we can't
-> > call fwnode_property_count_*() API without getting an error.
-> 
-> It would be good to mention what the symptom of the issue is here.
-> 
-> > Modify acpi_data_prop_read() to always try the single value read
-> > and thus allow counting the single value as an array of 1 element.
-> >
-> > Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> This is a bug fix, so it should go in before the cleanups in this series IMO.
-> 
-> Also it looks like stable@vger material.
-> 
-> > ---
-> >  drivers/acpi/property.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
-> > index 236316ee0e25..d6100585fceb 100644
-> > --- a/drivers/acpi/property.c
-> > +++ b/drivers/acpi/property.c
-> > @@ -913,12 +913,14 @@ static int acpi_data_prop_read(const struct acpi_device_data *data,
-> >         const union acpi_object *items;
-> >         int ret;
-> >
-> > -       if (val && nval == 1) {
-> > +       /* Try to read as a single value first */
-> > +       if (!val || nval == 1) {
-> >                 ret = acpi_data_prop_read_single(data, propname, proptype, val);
-> 
-> This returns -EINVAL if val is NULL.
-> 
-> >                 if (ret >= 0)
-> > -                       return ret;
-> > +                       return val ? ret : 1;
-> 
-> So val cannot be NULL here.
-> 
-> >         }
-> >
-> > +       /* It's not the single value, get an array instead */
-> >         ret = acpi_data_get_property_array(data, propname, ACPI_TYPE_ANY, &obj);
-> >         if (ret)
-> >                 return ret;
-> > --
-> 
-> To me, acpi_fwnode_property_read_string_array() needs to special-case
-> val == NULL and nval == 0.
+On Wed, Feb 10, 2021 at 11:39 AM Hikaru Nishida <hikalium@chromium.org> wrote:
+> From: Hikaru Nishida <hikalium@chromium.org>
+>
+> We'd like to add a sysfs interface that enable us to advance
+> CLOCK_BOOTTIME from userspace. The use case of this change is that
+> adjusting guest's CLOCK_BOOTTIME as host suspends to ensure that the
+> guest can notice the device has been suspended.
+> We have an application that rely on the difference between
+> CLOCK_BOOTTIME and CLOCK_MONOTONIC to detect whether the device went
+> suspend or not. However, the logic did not work well on VM environment
+> since most VMs are pausing the VM guests instead of actually suspending
+> them on the host's suspension.
+> With following patches, we can adjust CLOCK_BOOTTIME without actually
+> suspending guest and make the app working as intended.
+> I think this feature is also useful for other VM solutions since there
+> was no way to do this from userspace.
+>
+> As far as I checked, it is working as expected but is there any concern
+> about this change? If so, please let me know.
 
-Well, scratch this.
+I think the correct internal interface to call would be
+timekeeping_inject_sleeptime64(), which changes boottime in a
+safe way.
 
-Something like the patch below (untested) should be sufficient to address this
-if I'm not mistaken.
+Not sure what should call it, but kvmclock as Alex suggested might
+be the right place.
 
----
- drivers/acpi/property.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
-
-Index: linux-pm/drivers/acpi/property.c
-===================================================================
---- linux-pm.orig/drivers/acpi/property.c
-+++ linux-pm/drivers/acpi/property.c
-@@ -787,14 +787,14 @@ static int acpi_data_prop_read_single(co
- 	const union acpi_object *obj;
- 	int ret;
- 
--	if (!val)
--		return -EINVAL;
--
- 	if (proptype >= DEV_PROP_U8 && proptype <= DEV_PROP_U64) {
- 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_INTEGER, &obj);
- 		if (ret)
- 			return ret;
- 
-+		if (!val)
-+			return 1;
-+
- 		switch (proptype) {
- 		case DEV_PROP_U8:
- 			if (obj->integer.value > U8_MAX)
-@@ -820,7 +820,8 @@ static int acpi_data_prop_read_single(co
- 		if (ret)
- 			return ret;
- 
--		*(char **)val = obj->string.pointer;
-+		if (val)
-+			*(char **)val = obj->string.pointer;
- 
- 		return 1;
- 	} else {
-@@ -928,10 +929,16 @@ static int acpi_data_prop_read(const str
- 	const union acpi_object *items;
- 	int ret;
- 
--	if (val && nval == 1) {
-+	if (nval == 1) {
- 		ret = acpi_data_prop_read_single(data, propname, proptype, val);
- 		if (ret >= 0)
- 			return ret;
-+
-+		/*
-+		 * Reading this property as a single-value one failed, but its
-+		 * value may still be represented as one-element array, so
-+		 * continue.
-+		 */
- 	}
- 
- 	ret = acpi_data_get_property_array(data, propname, ACPI_TYPE_ANY, &obj);
-
-
-
-
+         Arnd
