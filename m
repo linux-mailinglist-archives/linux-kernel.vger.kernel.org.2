@@ -2,188 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84A3315D1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE19315D1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbhBJCUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:20:21 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60264 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234905AbhBJBah (ORCPT
+        id S234749AbhBJCVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:21:07 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:54837 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234845AbhBJBcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 20:30:37 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 11A1Rjml022070;
-        Tue, 9 Feb 2021 17:29:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=rvS8m/OZfe3xoVbz9OdPiBteV2pJOn030SHgKciycb8=;
- b=lG6imbrjtFHdW2Z4B50GSt7EKv8v9t8QsDYb02PEN2zMLOWkOT57kfJ0ACeOR/zt7loe
- dZjDZLzrEp23LPgUv/jk5S84qd2pNEYnKPdV+tolIfrT0F8xnCiSQfJNpcOq4/JPxbjN
- Trpy1DZX3wfHZEbI68jdQM0T0iCAuX47VUg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 36hqnthuja-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 09 Feb 2021 17:29:38 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Feb 2021 17:29:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fNHyzt2ajePis3M6eAdnMcOS74INW1J5/5NF15eabiCvetLwRlWQG6U5gKKu1s7pe8D9Ps43Sxfz1G2VYJ1xZroDMT3pWgxDMVJK32aiQM5qZhqPWS1joyQ/u9rd2+OFJxwsVnhTSG21hgSTPP10anMh6XmyWWG602erxIufEt9RCexwEhaCNjcvIebXlbr4tZmyLkTIt8/BOFvLwsjgxWxKfUDi74wcwiEMJy4lNkykhtzO+2YeIWoHoz8aUdvF0DEu0vCKxm2jp9zW3swu6+V/azr6xAN00ySff3qIL6SICwONywYG0ihOOD6ipHBHMczk0i05cYF2Mix13a3wyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rvS8m/OZfe3xoVbz9OdPiBteV2pJOn030SHgKciycb8=;
- b=PIYnWB1EvFGaPSOokUN4q7O6iX7MnVB5ahjymAZp+zI5MfG/uL74PZkHzhntpRA4DGRObT1mPbuC3cFkWSigjQaxYGEpk1Fw/1Ree7L4/m9wGtcgiS3pJsdq4bvVuqATSAgo4InFZEIxbRsLGP5tLmE3gUWlzM/rh9QGgp93cveDAT37Pokj43txwWgEbbCElhWnTVEtpb5uJnyeXHCE2+QQKNLICc4Qjcmwg1Mvuv6ngEtJvYIAJSM1EWIxPW1AB91+kqYR0GrYg9Zaa1ae+tHSonAJ/li4Uym5okddGth110oSucnqMCBY3vjqjIWGlDw/W6N0k6QDMIrAybF8Kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rvS8m/OZfe3xoVbz9OdPiBteV2pJOn030SHgKciycb8=;
- b=JgSUJRUkHxDfo18RVmLTSyFF46Nm1vgodSXRR9ibDmXfd6E6dMZkEs20cU1ylShE5EsqclvNUejfkJNsCfHDteHbcAiOU6hCZi1t8aLGCzVFPvqZKuRSznco96bk2FWBB0kRnHEI19AjN5/CfMdDbCNbhjGrwHZwbTAxBAM54T8=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3350.namprd15.prod.outlook.com (2603:10b6:a03:109::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Wed, 10 Feb
- 2021 01:29:36 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3825.030; Wed, 10 Feb 2021
- 01:29:36 +0000
-Date:   Tue, 9 Feb 2021 17:29:32 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Yang Shi <shy828301@gmail.com>
-CC:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v7 PATCH 06/12] mm: vmscan: add shrinker_info_protected() helper
-Message-ID: <20210210012932.GP524633@carbon.DHCP.thefacebook.com>
-References: <20210209174646.1310591-1-shy828301@gmail.com>
- <20210209174646.1310591-7-shy828301@gmail.com>
- <20210210002218.GJ524633@carbon.DHCP.thefacebook.com>
- <CAHbLzkp6q60pGBGKB-H6k5YoCy8ZHcLVj4rrZOsXi3=jOfbGzQ@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkp6q60pGBGKB-H6k5YoCy8ZHcLVj4rrZOsXi3=jOfbGzQ@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:f6e4]
-X-ClientProxiedBy: MW4PR04CA0249.namprd04.prod.outlook.com
- (2603:10b6:303:88::14) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:f6e4) by MW4PR04CA0249.namprd04.prod.outlook.com (2603:10b6:303:88::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 01:29:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ced2486d-eb3d-4a31-2d21-08d8cd6353e8
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3350:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB33509A5A9A7F323923F1A78DBE8D9@BYAPR15MB3350.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vs+0dTOKr+JtDMN14tclktEesjN49Xqrnh3a1mgld1dx8yNKjMU+i5GFdNut4kR++jlmcqCXSd0O2/HtFsMy8NS8ud585fXJrIzZSdoDfo153b4NcO8wPaUwKnF0K2T7VCpKOJY/oe8lo1eVK5Y+5ymBqW9obsS/BpOJtjdykkWi6Rv3Afz1njv9oyzP+rfSpYJOiR+5eSaAmvaZgMGWx7ume31Xrusm1hrlfd3eKhe1qRA4rPcWrYLsjw7mmjHqoosAdj/PR8PMpCSZQ7VTUzhp3WbRrsclnoRPDchjzgIauXpo5FwE1SFt9C0TyI4yonc+tyz5JSvh7BDyrSS+xaM1QuOB4HCTrVWXjRG67ESVR0d5Q6T6i45/9aLfqXGV5nfjkjXhDUEYpQJhZ5m0xeYBJnoLq5OjlfP/V75PtOIO9c0boTNQsSYWWP3xjyvm5Jmdmqe4C1WAf4s/HJt+xeQfrg6c9Z8acRJR4UFeaxrVIVTN6DQDG4Tv8ycHCi6DvQIKPUiRry3cPgYuZSm8rw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(39860400002)(346002)(136003)(366004)(66556008)(8936002)(4326008)(86362001)(9686003)(66946007)(66476007)(16526019)(186003)(55016002)(478600001)(7696005)(52116002)(6506007)(8676002)(2906002)(7416002)(1076003)(53546011)(316002)(6666004)(5660300002)(6916009)(83380400001)(54906003)(33656002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?CKIiY9FL0ha2H2zoBglQW+SIGItkvUSK34BH5rKO6zsW+ygDs+hPu9OvAPbM?=
- =?us-ascii?Q?d1+umDFI99znFu3lqblTpm1IocRYBHRes5aHhSfSXljamSxWlKZBpL2UnnQQ?=
- =?us-ascii?Q?vaHgvXDhhWYDVLPZdNvOTr32oH2lYd58alu3t4Ke/dm4Zn8rLSrWhMxThyNb?=
- =?us-ascii?Q?y23Rh/G8If440DBOcThZmwa3r99b5y5IWofN/4myg2i2Nxgwew1WZWek+dxI?=
- =?us-ascii?Q?DDul++okVh2Jx3GA5c2rOI/BMEBBJzcE+VIvVEVpBSU80n0z18rmDLukZSfA?=
- =?us-ascii?Q?74n3GgdXpi/VaDnEeRX1iRQ6fMedAHW3JJTNsINztiiMOTQmXIUrTTi76H3r?=
- =?us-ascii?Q?zBB43W6p1nyQGu8sHYYWrTOX7bu43Ne3RmCscoUhi1rH2QGHMtrLevM5evp2?=
- =?us-ascii?Q?V32lNWnhC3ac4Ptxm5cTm59neWmbVpC250Qfo2vlA4VKv1ueMlTZcUpSrroG?=
- =?us-ascii?Q?vmlvqdpY3RTxbY4O8wNsinxM5PUwEOsRi/6pXarQ6IqupqLouq0mQYMad63O?=
- =?us-ascii?Q?2v8Ng9c4eEkx+d6T/mlLcdZ8yigjg0vUNhN18kvlwTg+X5kCv3Ik6c5rsALg?=
- =?us-ascii?Q?351xRdd75hXiuO7EBTMul5pqbsB0ahjhxzIuaBi27qryRSRC9kUtiBHIuyxC?=
- =?us-ascii?Q?UOWFOpd0isQohQVsf8PzNcNrXuHAKuUu4MkhM8O1CsZRiEkq5VOju139Tbzq?=
- =?us-ascii?Q?t34C5dCQ0EX3aSfDksuQ74j2tIRbL8qBxso9GQ9xEBhHtN3fRJWFEWcMA0S3?=
- =?us-ascii?Q?pzxArY/AheoHWBb5Z4jFG+MXd5jR00KrnYX2EY3kTxYr+9OnRJt4W6HzJw0s?=
- =?us-ascii?Q?xxmVFefTYLwOyJQgi4N2Cg/BEK+hNccEme1mOeeTQMrMq7zdQ6dV0rsSE1Si?=
- =?us-ascii?Q?3OA1thgXf3Kky/m23Gd1XV/YFfOcjjiSb7q631dUBcOibZtb3uYr8YYQ4CKE?=
- =?us-ascii?Q?dkTVXh4VdCYMDZj7p4y76h62tcTNyECJF64g+eTixNxx68D55FIyq5bYUURe?=
- =?us-ascii?Q?cV6TSXzn9lg7qDNNrqvkBUMJWAkLVa+lJVvLQJbtzIsVZjoo7lVf/mDOS1dX?=
- =?us-ascii?Q?bVGV88qCcl/l2o8gFSXzQAv4881oiFhHfOWqDWQrGA9aKMVy/4xd+at83i7g?=
- =?us-ascii?Q?u3Ih2w+nK7eVhaiyB6oTx6PAPskk3M2qBGt6+ePnChQ/DrQ7KS9MYABc8IOW?=
- =?us-ascii?Q?4vVWRk4tkxE5qZUIpdX74x1PbWuTuUXBSuXEhge1BDKoLrXX3pOWULIV1xsE?=
- =?us-ascii?Q?nAPd3Sk1BIS02jj5nPwPT5sRj1HdikqgfXlcekPjn96Hs4+M3PfRIbjG0FPx?=
- =?us-ascii?Q?ofpKPFO/uZ+/wec9Avbx/8ZAoT3G2FKpGkXYTgcfEk2d7ldvhQ2ecDg9VsZI?=
- =?us-ascii?Q?c8/vWaw=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ced2486d-eb3d-4a31-2d21-08d8cd6353e8
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 01:29:36.7355
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jMDDxpLkiKIMGtzDMZfhW/AsFqyzHR0D0XkfwLKJ3SSBqhBMWMmYWIgGgvm5aCA6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3350
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_08:2021-02-09,2021-02-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 spamscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 bulkscore=0 mlxlogscore=867
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100012
-X-FB-Internal: deliver
+        Tue, 9 Feb 2021 20:32:42 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D3B6A580282;
+        Tue,  9 Feb 2021 20:31:32 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Tue, 09 Feb 2021 20:31:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm2; bh=s6nVz
+        auOg7gdaQYo/9fMFzd6zZgEJznU8/zLh2CdmOo=; b=MEXjeX3rRsUgs0ZDcn5vz
+        QpFqnnHy2vR1gLGXE2JUlbaipu3xNNMijwn0/eiASJ7oeI3Q33cIl3ho84QYEbLQ
+        FlGZ9aG7QFYxa/qL8pd73Ly5R1vZNBqrlvY/OI4dpjr1EgqKq3W0/zj8b9PM2834
+        VkLKipeW772ZYzYo6p0Ln25HVsAkAqGZEqqyc1Lmq4J/X/HYj5Maf2JzUCV9u0J/
+        ox7LXeRskYgp71FU1Es7zHzOVSbL9sZLP2H1mQvivyj4k4dKReWv8ql1AE1wHx9Z
+        Zc9d4+0kETLTIyCiz9J1i17Qs/p3ZeXPXTRU9fi5I/JnqNRJxYSVoE0IAx7LXNyP
+        w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=s6nVzauOg7gdaQYo/9fMFzd6zZgEJznU8/zLh2Cdm
+        Oo=; b=ZNmYjG/ZFbB3ZX12HoeFDrMAvmcSvkgSXVVNd1essph1wxtgysSQ/Ar8p
+        yTPdIjDCzpjYngxNJKOejGvE5BxgZ3p0RIXUgNJ0G5MIUYFtcQCyn5lORmXVDavo
+        DlQ06hxokmRMwGucnanksUwQKVDM0XZh2fqtez6ToHfnx1/XQH0WO6zKc0IY/K/C
+        4jp/1VFU5spt+23R9PG86St1GyPaUBRa4e6kBZdgcKZsLucGvHKf2aAG0Yn7BE30
+        6+wQtjesK8dKWmN5YKpKVtQSpzvrcksN/yyKFcigqo/wtpGAhUNFZdECA03emMje
+        Y93EqN73w/JxQI8nf9kNiZ1kuV4bg==
+X-ME-Sender: <xms:czcjYFma3q3L73P8PK0ZS9T2ECdQxpz2K7SkBnRfrGVhfuWq2haQ_w>
+    <xme:czcjYA3KdcYntNHd4LXehIyak3LIeFG0g0w4QwF5YTH5oymGR6dvUEwoMtPM1PPJ1
+    RY4_ue2XaX3AQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheeigdefiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepnhhnvght
+    uceonhhnvghtsehfrghsthhmrghilhdrfhhmqeenucggtffrrghtthgvrhhnpeeugeekvd
+    ehheevheetieetudeljedvvddtieevvdeukeejgfeuheffueelueegueenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnnhgvthesfhgrshhtmh
+    grihhlrdhfmh
+X-ME-Proxy: <xmx:czcjYLoNC9XxFq-xySFKpkf4r9g_dvM8xMDAh4QtmCi1-_thPxoHWQ>
+    <xmx:czcjYFlgZdxWOepSB7uUSbXuYxOcfeLOPtSZkElXP7eqotoatqJGwA>
+    <xmx:czcjYD3ACSh_liAFqXMa4gcU-pJNEz8S47EOHJpU21-PvsMhMVlsFw>
+    <xmx:dDcjYNOQ-TXMBAyf5bctxW0NxDGsOugwGEcYso_wmwin2kcD2qDOtw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 2AFF6A0005E; Tue,  9 Feb 2021 20:31:31 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
+Mime-Version: 1.0
+Message-Id: <ac03801e-87e2-4e57-b131-bff52f03579d@www.fastmail.com>
+In-Reply-To: <20210210002619.43104a9b@kernel.org>
+References: <d59ba191-43db-4b7b-b201-62a60ca752c0@www.fastmail.com>
+ <20210209213330.hnc7op72zoj24mgz@pali>
+ <7b0988cc-eeb8-4ea7-92f6-e8234ca910d3@www.fastmail.com>
+ <20210209224223.p22yhjdy7ibzepss@pali>
+ <93745280-dbe9-491c-a79d-c9c364b83880@www.fastmail.com>
+ <20210209225630.mdwnzkvnaz3r4blt@pali>
+ <a86c5069-d423-44db-92dd-b3e406b7ec91@www.fastmail.com>
+ <20210210002619.43104a9b@kernel.org>
+Date:   Tue, 09 Feb 2021 17:31:10 -0800
+From:   nnet <nnet@fastmail.fm>
+To:     =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
+Cc:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, a.heider@gmail.com,
+        andrew@lunn.ch, gerald@gk2.net, gregory.clement@bootlin.com,
+        kostap@marvell.com, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luka.perkov@sartura.hr, miquel.raynal@bootlin.com,
+        mturquette@baylibre.com, rmk+kernel@armlinux.org.uk,
+        sboyd@kernel.org, tmn505@gmail.com, vladimir.vid@sartura.hr
+Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
+ =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:07:07PM -0800, Yang Shi wrote:
-> On Tue, Feb 9, 2021 at 4:22 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > On Tue, Feb 09, 2021 at 09:46:40AM -0800, Yang Shi wrote:
-> > > The shrinker_info is dereferenced in a couple of places via rcu_dereference_protected
-> > > with different calling conventions, for example, using mem_cgroup_nodeinfo helper
-> > > or dereferencing memcg->nodeinfo[nid]->shrinker_info.  And the later patch
-> > > will add more dereference places.
-> > >
-> > > So extract the dereference into a helper to make the code more readable.  No
-> > > functional change.
-> > >
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > ---
-> > >  mm/vmscan.c | 15 ++++++++++-----
-> > >  1 file changed, 10 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index 9436f9246d32..273efbf4d53c 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -190,6 +190,13 @@ static int shrinker_nr_max;
-> > >  #define NR_MAX_TO_SHR_MAP_SIZE(nr_max) \
-> > >       (DIV_ROUND_UP(nr_max, BITS_PER_LONG) * sizeof(unsigned long))
-> > >
-> > > +static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
-> > > +                                                  int nid)
-> > > +{
-> > > +     return rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
-> > > +                                      lockdep_is_held(&shrinker_rwsem));
-> > > +}
-> > > +
-> >
-> >
-> > I'd probably drop the "protected" suffix (because there is no unprotected version,
-> > right?).
-> 
-> No, actually there is one "unprotected" call in set_shrinker_bit().
+On Tue, Feb 9, 2021, at 3:26 PM, Marek Beh=C3=BAn wrote:
+> On Tue, 09 Feb 2021 15:16:45 -0800
+> nnet <nnet@fastmail.fm> wrote:
+>=20
+> > I've two of these and I've just swapped them (and re-pasted the heat=
+ sinks).
+> >=20
+> > The second one ran under load for awhile and now has frozen as well.=
 
-Ah, ok. Then it makes sense. Sorry.
+> >=20
+> > Under a moderate load `wget -O /dev/null <large.bin>` @X00Mbits they=
+ are fine.
+> >=20
+> > Under a 1 min speed test of load ~200Mbits routed WireGuard they fre=
+eze.
+> >=20
+> > They fine with both those workloads @1000_800.
+> >=20
+> > Perhaps it's heat? Unfortunately I don't have any numbers on that AT=
+M.
+>=20
+> Try disabling cpufreq in kernel completely, compile boot image at
+> 1200 MHz. If it continues freezing, then I fear we can't help you with=
 
-> 
-> >
-> > Other than that LGTM.
-> >
-> > Acked-by: Roman Gushchin <guro@fb.com>
+> 1200 MHz :(
+
+cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencie=
+s=20
+200000 300000 600000 1200000=20
+
+I'm not getting any freezes with 1.2GHz fixed after 20 minutes of load:
+
+echo 1200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+
+Setting it back to min 200MHz I get a freeze within a minute:
+
+echo 200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+
+> Marek
+>
