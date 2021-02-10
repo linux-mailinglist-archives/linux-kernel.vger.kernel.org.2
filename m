@@ -2,134 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48988316B4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E71316B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhBJQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:32:01 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:61294 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232476AbhBJQaC (ORCPT
+        id S232538AbhBJQfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:35:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31052 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232449AbhBJQar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:30:02 -0500
-Date:   Wed, 10 Feb 2021 16:29:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612974548; bh=yJJMTncfQhh58ye6yAPpr/XHKg/skCQ3mD0O/lX7vIM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=MIIGrlbocUP9/X5eBiQ6YcfpGp9ltvi+Th4d3DSHmsQarWwtzfHN49zBjeQHI4QOJ
-         i/BW63QCJt8wAJ+BtnGiPY2Xov9j2D4fsjROnr/PAiWr11aJRj17b2K3bmLM6sorrT
-         +AM1YN/fhcIITzOeqs20CTnXMoZD3r/TOxnOHW9SCMjtclxsXBSXJKLjLyVGTfqVyz
-         cvJ4mGJOAsnnBe21knbrY+T+Pei9omB0QioRn3ACPFMsn0L+Wbjb3RxDG7gD9AlwmT
-         Eaey5EWGdRXV3n/3iH1zzvFCyh2CzvHbV2xd/8NH0cJS1KQ3Sv5JFS5aTlGcAapfMr
-         dwDf4bEh8gyKQ==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Florian Westphal <fw@strlen.de>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v4 net-next 03/11] skbuff: make __build_skb_around() return void
-Message-ID: <20210210162732.80467-4-alobakin@pm.me>
-In-Reply-To: <20210210162732.80467-1-alobakin@pm.me>
-References: <20210210162732.80467-1-alobakin@pm.me>
+        Wed, 10 Feb 2021 11:30:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612974560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MizTFqaPr9s83orSxyP4M9HI4/HyznwEJQAwf0cC91A=;
+        b=TmZibWHbb7DvB6E0/P/SyloUADQuyFpEB2ikHXEYPUl447OJcJTRxpoNJyAYTZt6GlOXV/
+        hhLh2wJxNr4sKglGtV4R7JwBuQa61U6oK8dKR+5oizUDHYRuAhwWJsnroiwVQmXERC1nNG
+        SwILLMkkdgqtVJabFs94/Szktn2Htdc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-IuDV1FoyPIq_VD0rQY5azw-1; Wed, 10 Feb 2021 11:29:16 -0500
+X-MC-Unique: IuDV1FoyPIq_VD0rQY5azw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F6421005501;
+        Wed, 10 Feb 2021 16:29:14 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4622660C0F;
+        Wed, 10 Feb 2021 16:29:08 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
+References: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com> <591237.1612886997@warthog.procyon.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1330472.1612974547.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Date:   Wed, 10 Feb 2021 16:29:07 +0000
+Message-ID: <1330473.1612974547@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__build_skb_around() can never fail and always returns passed skb.
-Make it return void to simplify and optimize the code.
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> The PG_fscache bit waiting functions are completely crazy. The comment
+> about "this will wake up others" is actively wrong, and the waiting
+> function looks insane, because you're mixing the two names for
+> "fscache" which makes the code look totally incomprehensible. Why
+> would we wait for PF_fscache, when PG_private_2 was set? Yes, I know
+> why, but the code looks entirely nonsensical.
+
+How about the attached change to make it more coherent and fix the doc
+comment?
+
+David
 ---
- net/core/skbuff.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+commit 9a28f7e68602193ce020a41f855f71cc55f693b9
+Author: David Howells <dhowells@redhat.com>
+Date:   Wed Feb 10 10:53:02 2021 +0000
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 70289f22a6f4..c7d184e11547 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -120,8 +120,8 @@ static void skb_under_panic(struct sk_buff *skb, unsign=
-ed int sz, void *addr)
+    netfs: Rename unlock_page_fscache() and wait_on_page_fscache()
+    =
+
+    Rename unlock_page_fscache() to unlock_page_private_2() and
+    wait_on_page_fscache() to wait_on_page_private_2() and change the
+    references to PG_fscache to PG_private_2 also.  This makes these funct=
+ions
+    look more generic and doesn't mix the terminology.
+    =
+
+    Fix the kdoc comment as the wake up mechanism doesn't wake up all the
+    sleepers.  Note the example usage case for the functions in conjunctio=
+n
+    with the cache also.
+    =
+
+    Alias the functions in linux/netfs.h.
+    =
+
+    Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+    Signed-off-by: David Howells <dhowells@redhat.com>
+
+diff --git a/include/linux/netfs.h b/include/linux/netfs.h
+index 2ffdef1ded91..d4cb6e6f704c 100644
+--- a/include/linux/netfs.h
++++ b/include/linux/netfs.h
+@@ -24,6 +24,8 @@
+ #define ClearPageFsCache(page)		ClearPagePrivate2((page))
+ #define TestSetPageFsCache(page)	TestSetPagePrivate2((page))
+ #define TestClearPageFsCache(page)	TestClearPagePrivate2((page))
++#define wait_on_page_fscache(page)	wait_on_page_private_2((page))
++#define unlock_page_fscache(page)	unlock_page_private_2((page))
+ =
+
+ enum netfs_read_source {
+ 	NETFS_FILL_WITH_ZEROES,
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 4935ad6171c1..a88ccc9ab0b1 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -591,7 +591,7 @@ extern int __lock_page_async(struct page *page, struct=
+ wait_page_queue *wait);
+ extern int __lock_page_or_retry(struct page *page, struct mm_struct *mm,
+ 				unsigned int flags);
+ extern void unlock_page(struct page *page);
+-extern void unlock_page_fscache(struct page *page);
++extern void unlock_page_private_2(struct page *page);
+ =
+
+ /*
+  * Return true if the page was successfully locked
+@@ -683,16 +683,17 @@ static inline int wait_on_page_locked_killable(struc=
+t page *page)
  }
-=20
- /* Caller must provide SKB that is memset cleared */
--static struct sk_buff *__build_skb_around(struct sk_buff *skb,
--=09=09=09=09=09  void *data, unsigned int frag_size)
-+static void __build_skb_around(struct sk_buff *skb, void *data,
-+=09=09=09       unsigned int frag_size)
- {
- =09struct skb_shared_info *shinfo;
- =09unsigned int size =3D frag_size ? : ksize(data);
-@@ -144,8 +144,6 @@ static struct sk_buff *__build_skb_around(struct sk_buf=
-f *skb,
- =09atomic_set(&shinfo->dataref, 1);
-=20
- =09skb_set_kcov_handle(skb, kcov_common_handle());
--
--=09return skb;
- }
-=20
+ =
+
  /**
-@@ -176,8 +174,9 @@ struct sk_buff *__build_skb(void *data, unsigned int fr=
-ag_size)
- =09=09return NULL;
-=20
- =09memset(skb, 0, offsetof(struct sk_buff, tail));
-+=09__build_skb_around(skb, data, frag_size);
-=20
--=09return __build_skb_around(skb, data, frag_size);
-+=09return skb;
+- * wait_on_page_fscache - Wait for PG_fscache to be cleared on a page
++ * wait_on_page_private_2 - Wait for PG_private_2 to be cleared on a page
+  * @page: The page
+  *
+- * Wait for the fscache mark to be removed from a page, usually signifyin=
+g the
+- * completion of a write from that page to the cache.
++ * Wait for the PG_private_2 page bit to be removed from a page.  This is=
+, for
++ * example, used to handle a netfs page being written to a local disk cac=
+he,
++ * thereby allowing writes to the cache for the same page to be serialise=
+d.
+  */
+-static inline void wait_on_page_fscache(struct page *page)
++static inline void wait_on_page_private_2(struct page *page)
+ {
+ 	if (PagePrivate2(page))
+-		wait_on_page_bit(compound_head(page), PG_fscache);
++		wait_on_page_bit(compound_head(page), PG_private_2);
  }
-=20
- /* build_skb() is wrapper over __build_skb(), that specifically
-@@ -210,9 +209,9 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
- =09if (unlikely(!skb))
- =09=09return NULL;
-=20
--=09skb =3D __build_skb_around(skb, data, frag_size);
-+=09__build_skb_around(skb, data, frag_size);
-=20
--=09if (skb && frag_size) {
-+=09if (frag_size) {
- =09=09skb->head_frag =3D 1;
- =09=09if (page_is_pfmemalloc(virt_to_head_page(data)))
- =09=09=09skb->pfmemalloc =3D 1;
---=20
-2.30.1
+ =
 
+ extern void put_and_wait_on_page_locked(struct page *page);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 91fcae006d64..7d321152d579 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1467,22 +1467,24 @@ void unlock_page(struct page *page)
+ EXPORT_SYMBOL(unlock_page);
+ =
+
+ /**
+- * unlock_page_fscache - Unlock a page pinned with PG_fscache
++ * unlock_page_private_2 - Unlock a page that's locked with PG_private_2
+  * @page: The page
+  *
+- * Unlocks the page and wakes up sleepers in wait_on_page_fscache().  Als=
+o
+- * wakes those waiting for the lock and writeback bits because the wakeup
+- * mechanism is shared.  But that's OK - those sleepers will just go back=
+ to
+- * sleep.
++ * Unlocks a page that's locked with PG_private_2 and wakes up sleepers i=
+n
++ * wait_on_page_private_2().
++ *
++ * This is, for example, used when a netfs page is being written to a loc=
+al
++ * disk cache, thereby allowing writes to the cache for the same page to =
+be
++ * serialised.
+  */
+-void unlock_page_fscache(struct page *page)
++void unlock_page_private_2(struct page *page)
+ {
+ 	page =3D compound_head(page);
+ 	VM_BUG_ON_PAGE(!PagePrivate2(page), page);
+-	clear_bit_unlock(PG_fscache, &page->flags);
+-	wake_up_page_bit(page, PG_fscache);
++	clear_bit_unlock(PG_private_2, &page->flags);
++	wake_up_page_bit(page, PG_private_2);
+ }
+-EXPORT_SYMBOL(unlock_page_fscache);
++EXPORT_SYMBOL(unlock_page_private_2);
+ =
+
+ /**
+  * end_page_writeback - end writeback against a page
 
