@@ -2,215 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6953161C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B513161C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhBJJCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:02:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhBJI4M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:56:12 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FB5C061788
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:55:31 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id p186so1271717ybg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:55:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EIYUBkGMy3qE6aqOle/QpEgFxQFoJfY+aVajMelV3xs=;
-        b=qqKG0XSv+akp+PhEDy+mWsosrzGxxmJtkSfE/RiAHtParBQ1+/HeO672kBHv8o8i3G
-         eesnT9wcGJbvHbEc1b+g2cn0zA0r/mdAvB5O6SsxerFnvgsLpiD28pUxjoC2ILa9euYV
-         xYnXmOzzgBvMfFgJOHoRR+nS/1qfbPS4DJMg3ElQZbbZMS9S72aPCJBFR1jKl5o7SEK9
-         gRY86ph1NI9lK898i7M4Bbmis02HInlo2BaYGfBFxcGzfZwvNSrCXXoPaZIT3IgxwxES
-         KbI+yTrvPRW7RVetJNStLFzDlDblpefA1Q7CbbkLfvL9z8TfDasFOAyUL0v8uoBv3qq/
-         JRYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EIYUBkGMy3qE6aqOle/QpEgFxQFoJfY+aVajMelV3xs=;
-        b=X3Vdmurf20p/DiM1Lgiw6Sod/d5hlPK0ay728hOHMGE713g8OlepAcTTT6iwZBoDPH
-         DX1xHRgjf54aZCsYn+syx6ut8isPu1HAdPS0/u+fZMpaAq7qxjYgSvaTJUfuQwGaCZ5C
-         viQxIaZvYIwC+WLJPDhxafeTYBr+CHwFC4u5WBV9+Vf/CL4HR92IDuQ7wwzmLMP13JE7
-         j2L1vzM0X+ywXl/+4HMEG443RM9kgLjPUzYDHoOqjHRM7oF72cIzC74N2Ak1RAdtdpjy
-         7L55HrWzYN+ye6kCE5Z/+YQWWwmxsQQkSv8x+1QQVEx4VLK5Un2TJdulE5qmXhMgiDtD
-         Zc4w==
-X-Gm-Message-State: AOAM530QuGOI4pSvEYHcSZEOAdmxvOEZiViL4mAC2I5D8JM+uLOumVdv
-        EuWscgnXzkpzUjE2CsfxSiUFm4OrKSSZm+S0sJslJA==
-X-Google-Smtp-Source: ABdhPJwwgYm9gSe18/JyjErLTRz5FCOkyXxd4stR4ZaLz//fROhqjDQGN2y2rtdVkMLB3bpoDtl1Y3uYT/scb2Xt5zw=
-X-Received: by 2002:a05:6902:1025:: with SMTP id x5mr2865453ybt.96.1612947330653;
- Wed, 10 Feb 2021 00:55:30 -0800 (PST)
+        id S230221AbhBJJDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:03:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54024 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhBJI43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 03:56:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D5AA7B152;
+        Wed, 10 Feb 2021 08:55:40 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 09:55:34 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com
+Subject: Re: [RFC][PATCH 06/13] mm/migrate: update migration order during on
+ hotplug events
+Message-ID: <20210210085529.GA25285@linux>
+References: <20210126003411.2AC51464@viggo.jf.intel.com>
+ <20210126003423.8D2B5637@viggo.jf.intel.com>
+ <20210202114157.GA12139@linux>
+ <cb60195d-24cb-f800-399c-8da888ca6385@intel.com>
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com> <47ca46aa-99f3-5203-8aa7-65c6443bd965@microchip.com>
-In-Reply-To: <47ca46aa-99f3-5203-8aa7-65c6443bd965@microchip.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 10 Feb 2021 00:54:54 -0800
-Message-ID: <CAGETcx862JPn8759tk-69WySBvokxMXJaaOVY7L6V8FLwfpV8g@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Brown, Len" <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cb60195d-24cb-f800-399c-8da888ca6385@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:19 AM <Tudor.Ambarus@microchip.com> wrote:
->
-> Hi, Saravana,
->
-> On 2/6/21 12:26 AM, Saravana Kannan wrote:
-> > There are a lot of devices/drivers where they never have a struct device
-> > created for them or the driver initializes the hardware without ever
-> > binding to the struct device.
-> >
-> > This series is intended to avoid any boot regressions due to such
-> > devices/drivers when fw_devlink=on and also address the handling of
-> > optional suppliers.
-> >
-> > Patch 1 and 2 addresses the issue of firmware nodes that look like
-> > they'll have struct devices created for them, but will never actually
-> > have struct devices added for them. For example, DT nodes with a
-> > compatible property that don't have devices added for them.
-> >
-> > Patch 3 and 4 allow for handling optional DT bindings.
-> >
-> > Patch 5 sets up a generic API to handle drivers that never bind with
-> > their devices.
-> >
-> > Patch 6 through 8 update different frameworks to use the new API.
-> >
-> > Thanks,
-> > Saravana
-> >
-> > Saravana Kannan (8):
-> >   driver core: fw_devlink: Detect supplier devices that will never be
-> >     added
-> >   of: property: Don't add links to absent suppliers
-> >   driver core: Add fw_devlink.strict kernel param
-> >   of: property: Add fw_devlink support for optional properties
-> >   driver core: fw_devlink: Handle suppliers that don't use driver core
-> >   irqdomain: Mark fwnodes when their irqdomain is added/removed
-> >   PM: domains: Mark fwnodes when their powerdomain is added/removed
-> >   clk: Mark fwnodes when their clock provider is added/removed
-> >
-> >  .../admin-guide/kernel-parameters.txt         |  5 ++
-> >  drivers/base/core.c                           | 58 ++++++++++++++++++-
-> >  drivers/base/power/domain.c                   |  2 +
-> >  drivers/clk/clk.c                             |  3 +
-> >  drivers/of/property.c                         | 16 +++--
-> >  include/linux/fwnode.h                        | 20 ++++++-
-> >  kernel/irq/irqdomain.c                        |  2 +
-> >  7 files changed, 98 insertions(+), 8 deletions(-)
-> >
->
-> Even with this patch set applied, sama5d2_xplained can not boot.
-> Patch at [1] makes sama5d2_xplained boot again. Stephen applied it
-> to clk-next.
+On Tue, Feb 09, 2021 at 03:45:55PM -0800, Dave Hansen wrote:
+> On 2/2/21 3:42 AM, Oscar Salvador wrote:
+> >> +static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
+> >> +						 unsigned long action, void *arg)
+> >> +{
+> >> +	switch (action) {
+> >> +	case MEM_GOING_OFFLINE:
+> >> +		/*
+> >> +		 * Make sure there are not transient states where
+> >> +		 * an offline node is a migration target.  This
+> >> +		 * will leave migration disabled until the offline
+> >> +		 * completes and the MEM_OFFLINE case below runs.
+> >> +		 */
+> >> +		disable_all_migrate_targets();
+> >> +		break;
+> >> +	case MEM_OFFLINE:
+> >> +	case MEM_ONLINE:
+> >> +		/*
+> >> +		 * Recalculate the target nodes once the node
+> >> +		 * reaches its final state (online or offline).
+> >> +		 */
+> >> +		__set_migration_target_nodes();
+> >> +		break;
+> >> +	case MEM_CANCEL_OFFLINE:
+> >> +		/*
+> >> +		 * MEM_GOING_OFFLINE disabled all the migration
+> >> +		 * targets.  Reenable them.
+> >> +		 */
+> >> +		__set_migration_target_nodes();
+> >> +		break;
+> >> +	case MEM_GOING_ONLINE:
+> >> +	case MEM_CANCEL_ONLINE:
+> >> +		break;
+> >> +	}
+> >> +
+> >> +	return notifier_from_errno(0);
+> >> +}
+> > This looks good, and I kinda like it.
+> > But in this case, all we care about is whether NUMA node does or does
+> > not have memory, so we have to remove/added into the demotion list.
+> > So, would make more sense to have a kinda helper in
+> > node_states_{set,clear}_node that calls the respective functions
+> > (disable_all_migrate_targets and __set_migration_target_nodes)?
+> 
+> Of, you're saying that we could do this in the hotplug code itself
+> instead of from a notifier?  I agree, we *could*.  That would be more
+> efficient.  But, I do like the idea of doing this from a notifier
+> because it's a bit less brittle.
+> 
+> Do you feel strongly about this one?
 
-I'm glad you won't actually have any boot issues in 5.12, but the fact
-you need [1] with this series doesn't make a lot of sense to me
-because:
+Hi Dave,
 
-1. The FWNODE_FLAG_INITIALIZED flag will be set for the clock fwnode
-in question way before any consumer devices are added.
-2. Any consumer device added after (1) will stop trying to link to the
-clock device.
+No, I do not. I even had mixed feelings myself when suggesting this as well.
+As you said, it would be more optimum, but it feels kinda wrong placing the
+call directly in hotplug code.
 
-Are you somehow adding a consumer to the clock fwnode before (1)?
+So all in all, I think your approach is more neat and clean, and more than
+enough for now.
 
-Can you try this patch without your clk fix? I was trying to avoid
-looping through a list, but looks like your case might somehow need
-it?
+I yet have to dive in the details, but I got one more question.
+Can we have CONFIG_MEMORY_HOTPLUG && !CONFIG_HOTPLUG_CPU scenarios?
+I wonder because I do not see a stub function in case CONFIG_HOTPLUG_CPU
+is not enabled, so I guess we cannot.
 
--Saravana
+I am asking this because migrate_on_reclaim_callback() is envolved
+with CONFIG_MEMORY_HOTPLUG, but calls cpuhp_setup_state, and I was not
+sure whether we would have some dependency here?
 
-+++ b/drivers/base/core.c
-@@ -943,6 +943,31 @@ static void device_links_missing_supplier(struct
-device *dev)
-        }
- }
-
-+static int fw_devlink_check_suppliers(struct device *dev)
-+{
-+       struct fwnode_link *link;
-+       int ret = 0;
-+
-+       if (!dev->fwnode ||fw_devlink_is_permissive())
-+               return 0;
-+
-+       /*
-+        * Device waiting for supplier to become available is not allowed to
-+        * probe.
-+        */
-+       mutex_lock(&fwnode_link_lock);
-+       list_for_each_entry(link, &dev->fwnode->suppliers, c_hook) {
-+               if (link->supplier->flags & FWNODE_FLAG_INITIALIZED)
-+                       continue;
-+
-+               ret = -EPROBE_DEFER;
-+               break;
-+       }
-+       mutex_unlock(&fwnode_link_lock);
-+
-+       return ret;
-+}
-+
- /**
-  * device_links_check_suppliers - Check presence of supplier drivers.
-  * @dev: Consumer device.
-@@ -964,21 +989,13 @@ int device_links_check_suppliers(struct device *dev)
-        struct device_link *link;
-        int ret = 0;
-
--       /*
--        * Device waiting for supplier to become available is not allowed to
--        * probe.
--        */
--       mutex_lock(&fwnode_link_lock);
--       if (dev->fwnode && !list_empty(&dev->fwnode->suppliers) &&
--           !fw_devlink_is_permissive()) {
-+       if (fw_devlink_check_suppliers(dev)) {
-                dev_dbg(dev, "probe deferral - wait for supplier %pfwP\n",
-                        list_first_entry(&dev->fwnode->suppliers,
-                        struct fwnode_link,
-                        c_hook)->supplier);
--               mutex_unlock(&fwnode_link_lock);
-                return -EPROBE_DEFER;
-        }
--       mutex_unlock(&fwnode_link_lock);
-
-        device_links_write_lock();
+Thanks
 
 
-
->
-> Cheers,
-> ta
->
-> [1] https://lore.kernel.org/lkml/20210203154332.470587-1-tudor.ambarus@microchip.com/
+-- 
+Oscar Salvador
+SUSE L3
