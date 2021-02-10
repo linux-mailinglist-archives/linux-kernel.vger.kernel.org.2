@@ -2,65 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11ADA3167B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0423167B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhBJNPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:15:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33400 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhBJNPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:15:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612962889; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YXlzSTaXY6VGS+lXun8+3WilTa+ZmzeXpybuBpOGnB0=;
-        b=tc8DXR3zb3fPd+DpCb/lbZWXNwTb4QRhZ16qpJYpxZmKE3auPVVXFVToVze7O0tm5ttPkK
-        y9g24hF8MV7RgiZDK+JkOd1Ve7j1YRB624GenhhyRi8Jh2Ctwom7f64n0U822vUKfzkrhS
-        EvlUz+DSXVm5mZomNqJZs6rwwj0nrsA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3E805AE3F;
-        Wed, 10 Feb 2021 13:14:49 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 14:14:48 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Timur Tabi <timur@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/3] lib/test_printf: use KSTM_MODULE_GLOBALS macro
-Message-ID: <YCPcSMqxFdI2LrHS@alley>
-References: <20210210051814.845713-1-timur@kernel.org>
- <20210210051814.845713-2-timur@kernel.org>
+        id S231148AbhBJNQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:16:06 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:49754 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229862AbhBJNPl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:15:41 -0500
+X-IronPort-AV: E=Sophos;i="5.81,168,1610406000"; 
+   d="scan'208";a="492258135"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 14:14:54 +0100
+Date:   Wed, 10 Feb 2021 14:14:54 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Daniel Vetter <daniel@ffwll.ch>
+cc:     Lee Jones <lee.jones@linaro.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        kernel-janitors@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-fbdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] video: use getter/setter functions
+In-Reply-To: <YCPbxSHWMipTz+mB@phenom.ffwll.local>
+Message-ID: <alpine.DEB.2.22.394.2102101414100.2881@hadrien>
+References: <20210209211325.1261842-1-Julia.Lawall@inria.fr> <20210210082341.GH220368@dell> <YCPbxSHWMipTz+mB@phenom.ffwll.local>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210051814.845713-2-timur@kernel.org>
+Content-Type: multipart/mixed; boundary="8323329-2043823747-1612962895=:2881"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-02-09 23:18:12, Timur Tabi wrote:
-> Instead of defining the total/failed test counters manually,
-> test_printf should use the kselftest macro created for this
-> purpose.
-> 
-> Signed-off-by: Timur Tabi <ttabi@nvidia.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+--8323329-2043823747-1612962895=:2881
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 
-Best Regards,
-Petr
+
+
+On Wed, 10 Feb 2021, Daniel Vetter wrote:
+
+> On Wed, Feb 10, 2021 at 08:23:41AM +0000, Lee Jones wrote:
+> > On Tue, 09 Feb 2021, Julia Lawall wrote:
+> >
+> > > Use getter and setter functions, for platform_device structures and a
+> > > spi_device structure.
+> > >
+> > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> > >
+> > > ---
+> > >  drivers/video/backlight/qcom-wled.c                                  |    2 +-
+> >
+> > This patch is fine.
+> >
+> > Could you please split it out and submit it separately though please.
+>
+> Or just apply the entire patch through backlight tree, there's nothing
+> going on in fbdev anyway I think.
+
+I was indeed not sure how much to split this up.  If it is desired to
+split it more, I can do that.
+
+julia
+
+>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>
+> >
+> > >  drivers/video/fbdev/amifb.c                                          |    4 ++--
+> > >  drivers/video/fbdev/da8xx-fb.c                                       |    4 ++--
+> > >  drivers/video/fbdev/imxfb.c                                          |    2 +-
+> > >  drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c |    6 +++---
+> > >  drivers/video/fbdev/omap2/omapfb/dss/dpi.c                           |    4 ++--
+> > >  drivers/video/fbdev/omap2/omapfb/dss/dsi.c                           |    4 ++--
+> > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c                         |    2 +-
+> > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c                         |    2 +-
+> > >  drivers/video/fbdev/xilinxfb.c                                       |    2 +-
+> > >  10 files changed, 16 insertions(+), 16 deletions(-)
+> >
+> > ...]
+> >
+> > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> > > index 3bc7800eb0a9..091f07e7c145 100644
+> > > --- a/drivers/video/backlight/qcom-wled.c
+> > > +++ b/drivers/video/backlight/qcom-wled.c
+> > > @@ -1692,7 +1692,7 @@ static int wled_probe(struct platform_device *pdev)
+> > >
+> > >  static int wled_remove(struct platform_device *pdev)
+> > >  {
+> > > -	struct wled *wled = dev_get_drvdata(&pdev->dev);
+> > > +	struct wled *wled = platform_get_drvdata(pdev);
+> > >
+> > >  	mutex_destroy(&wled->lock);
+> > >  	cancel_delayed_work_sync(&wled->ovp_work);
+> >
+> > For my own reference (apply this as-is to your sign-off block):
+> >
+> >   Acked-for-Backlight-by: Lee Jones <lee.jones@linaro.org>
+> >
+> > --
+> > Lee Jones [李琼斯]
+> > Senior Technical Lead - Developer Services
+> > Linaro.org │ Open source software for Arm SoCs
+> > Follow Linaro: Facebook | Twitter | Blog
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+>
+--8323329-2043823747-1612962895=:2881--
