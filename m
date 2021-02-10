@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9062F3169D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AAA3169D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhBJPMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:12:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229888AbhBJPMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:12:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF2D364E8A;
-        Wed, 10 Feb 2021 15:11:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612969894;
-        bh=hPXyaQSE16HS4JjkXDjB+KDzgBNn+pb7fdb5Az3QmIQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JdBtByfhY5z2xzcHBsPMzh/Y7zogtHZws7c+QoiG4ExOuP/PqU8H6T5EVRnw0nMiu
-         eldOEwRHFkh91TIZwmomWGOr1c3v4I4fnQLixDLgDu77i3kS+NVNe4ZRnH1iGCuh4J
-         cPNfnVThCPiy9HNSnIwsG+U/qJwiYBZmwrmuM7zb4sVUAV/g3/qEfYsRgex4NAHfxd
-         pW6dbjpG7H/OD3fJSw8qyW12izVQpdfPafYHEbuEwEZBcXwV5vWZnnXhNI2FDnkl5W
-         rS3bhw5qn68yi7ZUucDgJn5ImAkJ+WUBmaWci7ECV1aOuwl9aCQ6pE0vaq+/sjIwlC
-         JrGf54GnMSpqg==
-Received: by mail-ot1-f49.google.com with SMTP id 100so2086243otg.3;
-        Wed, 10 Feb 2021 07:11:34 -0800 (PST)
-X-Gm-Message-State: AOAM533OeFFV769PMOSsF4lAIx6LoVjOlRNmi6yegyghs0bp+u0xp4Vu
-        QksV/8KKqzor7WiImuFhtY01xgYAs6F6r2B3ifo=
-X-Google-Smtp-Source: ABdhPJyxw25d4unAcUUXFmXp8RTny23ZJk4/Xuro9GkNCZIQ812tY8p2lZe8wiaU7n6ICxfP0MXLC6g8BwPVLEWfNdc=
-X-Received: by 2002:a05:6830:18e6:: with SMTP id d6mr2448540otf.251.1612969894126;
- Wed, 10 Feb 2021 07:11:34 -0800 (PST)
+        id S231801AbhBJPNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:13:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhBJPNJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 10:13:09 -0500
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE181C061786;
+        Wed, 10 Feb 2021 07:12:28 -0800 (PST)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id B8FA83C2; Wed, 10 Feb 2021 16:12:26 +0100 (CET)
+Date:   Wed, 10 Feb 2021 16:12:25 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     daniel.kiper@oracle.com, x86@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 0/7] x86/seves: Support 32-bit boot path and other updates
+Message-ID: <20210210151224.GC7302@8bytes.org>
+References: <20210210102135.30667-1-joro@8bytes.org>
+ <20210210145835.GE358613@fedora>
 MIME-Version: 1.0
-References: <20210210141140.1506212-1-geert+renesas@glider.be> <20210210141140.1506212-4-geert+renesas@glider.be>
-In-Reply-To: <20210210141140.1506212-4-geert+renesas@glider.be>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 10 Feb 2021 16:11:17 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2qt0CpQ+o36Zz73_uap4ms8W0UAXS8Cd9BRoKMTCGL_A@mail.gmail.com>
-Message-ID: <CAK8P3a2qt0CpQ+o36Zz73_uap4ms8W0UAXS8Cd9BRoKMTCGL_A@mail.gmail.com>
-Subject: Re: [PATCH 3/4] asm-generic: div64: Remove always-true __div64_const32_is_OK()
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Michal Simek <monstr@monstr.eu>, Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210145835.GE358613@fedora>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 3:11 PM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
-> Since commit cafa0010cd51fb71 ("Raise the minimum required gcc version
-> to 4.6"), the kernel can no longer be compiled using gcc-3.
-> Hence __div64_const32_is_OK() is always true, and the corresponding
-> check can thus be removed.
->
-> While at it, remove the whitespace error that hurts my eyes, and add the
-> missing curly braces for the final else statement, as per coding style.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  include/asm-generic/div64.h | 14 ++++----------
+Hi Konrad,
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+On Wed, Feb 10, 2021 at 09:58:35AM -0500, Konrad Rzeszutek Wilk wrote:
+> What GRUB versions are we talking about (CC-ing Daniel Kiper, who owns
+> GRUB).
+
+I think this was about 32-bit GRUB builds used by distributions. I
+personally tested it with a kernel which has EFI support disabled, in
+this case the OVMF firmware will also boot into the startup_32 boot
+path.
+
+> By 'some firmware' we talking SeaBIOS?
+
+No, SeaBIOS is not supported for SEV-ES, only OVMF has handling for #VC
+so far.
+
+Regards,
+
+	Joerg
