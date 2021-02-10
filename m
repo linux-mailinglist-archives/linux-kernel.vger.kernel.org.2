@@ -2,157 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C4E316C1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0180316C21
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhBJRJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:09:43 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12084 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbhBJRJi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:09:38 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602413290001>; Wed, 10 Feb 2021 09:08:57 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 17:08:52 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 10 Feb 2021 17:08:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xr8dzprd4CR5Itxj34qeb5N15Qpvxv9L40SJYfE4cLhxoNkeyadhtNpRs+gzGXIFa7U5WQP8XMZnCe5Va3B8mCPFdsgNdfC84m7JslkCHF8fJpOGeB3H58TcuJ52EOkAaLw6WOaKJI2vs9fhWdvufIQOgHBn6s+2zIpMJeMICVtnPGmtXgIB57+tmermmK0EFNhtIgMqUDrZHcVFJh0yQ96c+lo6HjgqgUusV+vB9wPTaqhKBV48kN1gfJND0wEC3wDsB+nIE/YxOOh2MaZIBlKkpgg+p25iDflGDWKmQmnV+1sjceMWQ67hHDGynN3kbqI1osB6aXVHPQEQL2rO8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CMVrPdzmnWdAICLX1m1OZnLF0fc/smwcqy7dNbQSc4g=;
- b=mH4G573WlaOAgIak9N67OwRA8XyuNZ8vJV10zJQnkVFzwaE9RJzq47b6GW+qCMVbGlKeXCdIIKdqwUBtIDd6XdY9Ij1vPkP3QXcObLqswEIuNYkIwlQbZbFf/4lpveUYqCr396GFbR6ktaazxIzLH+DlDHzTY/MaMqDDNun3nbeZeUMy104iCMpTa+wgJd0QFJiMx6YqCBeVDQRtsLCKchkPUARBDPEP/hwXeKG5GVJYEtZbW1AOonCD8LCrQyFNvIcH2qCDQmUrjgkRAPcrnEoACHuBYte6Z9JqG0hRbRvvoCo7Rlex5+07AiBRggIvi4KWENQhm9j+Ikqy8xHZ/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4513.namprd12.prod.outlook.com (2603:10b6:5:2ad::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Wed, 10 Feb
- 2021 17:08:50 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
- 17:08:50 +0000
-Date:   Wed, 10 Feb 2021 13:08:47 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "liranl@nvidia.com" <liranl@nvidia.com>,
-        "oren@nvidia.com" <oren@nvidia.com>,
-        "tzahio@nvidia.com" <tzahio@nvidia.com>,
-        "leonro@nvidia.com" <leonro@nvidia.com>,
-        "yarong@nvidia.com" <yarong@nvidia.com>,
-        "aviadye@nvidia.com" <aviadye@nvidia.com>,
-        "shahafs@nvidia.com" <shahafs@nvidia.com>,
-        "artemp@nvidia.com" <artemp@nvidia.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "ACurrid@nvidia.com" <ACurrid@nvidia.com>,
-        "gmataev@nvidia.com" <gmataev@nvidia.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "aik@ozlabs.ru" <aik@ozlabs.ru>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v2 0/9] Introduce vfio-pci-core subsystem
-Message-ID: <20210210170847.GE4247@nvidia.com>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <MWHPR11MB18867A429497117960344A798C8D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210210133452.GW4247@nvidia.com>
- <20210210093746.7736b25c@omen.home.shazbot.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210210093746.7736b25c@omen.home.shazbot.org>
-X-ClientProxiedBy: MN2PR06CA0003.namprd06.prod.outlook.com
- (2603:10b6:208:23d::8) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S232190AbhBJRKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:10:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231481AbhBJRKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:10:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F58364E77;
+        Wed, 10 Feb 2021 17:09:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612976966;
+        bh=7seGJWhCZNh4jS921GuRjIARtdD3+bBH7qwyHjoxvp8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rK6f2dOzywGvkXtBdIQlvOksgz9tfxk584TbglR4hEPYrIdrgfVxhutXlmRAxEo18
+         JD6cfZ+gIVb59zcqaEDegCirX8WrVumiYyyLtaR12DdF9PkZU9UXHuAv9kA4QRVQDI
+         ifpLmLBdHJQ0huclP/l8LfdLEVaIf3UDPZuhnSG8=
+Date:   Wed, 10 Feb 2021 18:09:23 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     stable <stable@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chris Mason <clm@fb.com>, Tejun Heo <tj@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, rostedt <rostedt@goodmis.org>,
+        Michael Jeanson <mjeanson@efficios.com>
+Subject: Re: [stable 4.4, 4.9, 4.14, 4.19 LTS] Missing fix "memcg: fix a
+ crash in wb_workfn when a device disappears"
+Message-ID: <YCQTQyRlCsJHXzIQ@kroah.com>
+References: <537870616.15400.1612973059419.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR06CA0003.namprd06.prod.outlook.com (2603:10b6:208:23d::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 17:08:49 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9syt-0067GF-Ld; Wed, 10 Feb 2021 13:08:47 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612976937; bh=CMVrPdzmnWdAICLX1m1OZnLF0fc/smwcqy7dNbQSc4g=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=lDTUcR9VrR6AmFJFV5VFrJanPF0d4rOQ/xQXO/L+5ErPT9GdebGC5nZ1voIx2EaLp
-         AeAbOHHqguD8NwEaluEyHpHvOnTe5O6GvyweSLY9aeTQKoO8nXK/jO2I6i1dJjznwj
-         PaqBY4xCaq6E9DaIWbbtBrG0Thj1oJ2R2PNDPOsyG/4Zi69pZ8Ar4kl3RElj0Bp13I
-         wA9JRfEur7PzP5HSm9HHxaOIdh8fUglPlb1UY2BvvV13zvT4Id7/CMklssbA9etqRi
-         lta/TanSlRzQQpWlSw5VI+fg+xf/pso/+qZ0PI+4Q7PdIqF7qI2sp/z1uhDauZhQ4V
-         IFAUFmEl5Amtg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <537870616.15400.1612973059419.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:37:46AM -0700, Alex Williamson wrote:
-
-> > >  register a migration region and intercept guest writes to specific
-> > > registers. [PATCH 4/9] demonstrates the former but not the latter
-> > > (which is allowed in v1).  
-> > 
-> > And this is why, the ROI to wrapper every vfio op in a PCI op just to
-> > keep vfio_pci_device completely private is poor :(
+On Wed, Feb 10, 2021 at 11:04:19AM -0500, Mathieu Desnoyers wrote:
+> Hi,
 > 
-> Says someone who doesn't need to maintain the core, fixing bugs and
-> adding features, while not breaking vendor driver touching private data
-> in unexpected ways ;)
+> While reconciling the lttng-modules writeback instrumentation with its counterpart
+> within the upstream Linux kernel, I notice that the following commit introduced in
+> 5.6 is present in stable branches 5.4 and 5.5, but is missing from LTS stable branches
+> for 4.4, 4.9, 4.14, 4.19:
+> 
+> commit 68f23b89067fdf187763e75a56087550624fdbee
+> ("memcg: fix a crash in wb_workfn when a device disappears")
+> 
+> Considering that this fix was CC'd to the stable mailing list, is there any
+> reason why it has not been integrated into those LTS branches ?
 
-Said as someone that maintains a driver subsystem 25x larger than VFIO
-that is really experienced in "crazy things drivers do". :)
+Yes, it doesn't apply at all.  If you think this is needed, I will
+gladly take backported and tested patches.
 
-Private/public is rarely at the top of my worries, and I'm confident
-to say this is the general kernel philosophy. Again, look anywhere, we
-rarely have private data split out of major structs like struct
-device, struct netdev, struct pci_device, etc. This data has to be
-public because we are using C and we expect inline functions,
-container_of() and so on to work. It is rarely done with hidden
-structs.
+But why do you think this is needed in older kernels?  Have you hit
+this in real-life?
 
-If we can get private data in some places it is a nice win, but not
-worth making a mess to achieve. eg I would not give up the normal
-container_of pattern just to obscure some struct, the overall ROI is
-bad.
+thanks,
 
-Drivers always do unexpected and crazy things, I wouldn't get fixated
-on touching private data as the worst sin a driver can do :(
-
-So, no, I don't agree that exposing a struct vfio_pci_device is the
-end of the world - it is normal in the kernel to do this kind of
-thing, and yes drivers can do crazy things with that if crazy slips
-past the review process.
-
-Honestly I expect people to test their drivers and fix things if a
-core change broke them. It happens, QA finds it, it gets fixed, normal
-stuff for Linux, IMHO.
-
-> > > Then what exact extension is talked here by creating another subsystem
-> > > module? or are we talking about some general library which can be
-> > > shared by underlying mdev device drivers to reduce duplicated
-> > > emulation code?  
-> > 
-> > IMHO it is more a design philosophy that the end driver should
-> > implement the vfio_device_ops directly vs having a stack of ops
-> > structs.
-
-> Like Kevin though, I don't really understand the hand-wave
-> application to mdev.  Sure, vfio-mdev could be collapsed now that
-> we've rejected that there could be other drivers binding to mdev
-> devices,
-
-Again, I think the point Max was trying to make is only that vfio_mdev
-can follow the same design as proposed here and replace the
-mdev_parent_ops with the vfio_device_ops.
-
-Jason
+greg k-h
