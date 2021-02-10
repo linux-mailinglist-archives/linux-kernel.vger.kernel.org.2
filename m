@@ -2,115 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2962317235
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F05317237
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhBJVWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:22:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
+        id S232876AbhBJVWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:22:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232556AbhBJVVu (ORCPT
+        with ESMTP id S232879AbhBJVV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:21:50 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD3CC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:21:10 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id 18so3707931oiz.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:21:10 -0800 (PST)
+        Wed, 10 Feb 2021 16:21:58 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A053AC061788
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:21:18 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id 8so1924898plc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 13:21:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ip1AHGKwKY2VNyKo96TDsETMQmOB/EbZSzj9oNoDO2U=;
-        b=NWB5+chUooMs3Trh8sFoEbpC18itlf2XkqapW5z3nrQz7shRIGfGWseyQcnnL4V85x
-         HEpqNisHFxn8XKsIDQ144kk61XB2k82rqs9qxy63/SOGXYSfKhqht1LTRZJBKORiMt+t
-         +sHQua3NFMbahX/45R5RmXGkcX/rKvYPvc5E8=
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=VmbmOG1RvWgMmrfMbgNf26feXFao3UuT1VTN22bup7c=;
+        b=DX0dBvf4d+R7lQL1Ms5GhYCTcBz2ZuWktobEUOjmyGUOZaB4wueIuhiYutLJlarVl5
+         N57PH6CnMoyo4mtoUf6OB3LCfdwPTKVrDt9Vs0yDAk5rnANFl8U6YU6ofHlNTLoxSBuQ
+         2rbTFgn4Q++/Nlhkmd6Z/gKXl/84cTWwPFEzm+Bx1hsazB6qhHIfX3al1/GirfXMXTCy
+         MIB0HRkfGuSyeQprW6LJG0fWHYL6FE7Bw9MxxEIb5joy1c3HF6B5AE9xukxtYZRPSNTk
+         E11JjmwVqul6Gv62mS/AreNj8V1arybgM10A40W6djXI+irCsSUHcI6nGBxAzKF/2ZXY
+         lGqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ip1AHGKwKY2VNyKo96TDsETMQmOB/EbZSzj9oNoDO2U=;
-        b=Jt0SpYqbDoLgUFLZ79SE0zJr2rsLUL96qGhYdqea2Ym8tcbIlEeFXBWC3N6OEeyvB+
-         MtdmDekA64P+5M/OIeIqZKzBpRzLgnjkqBQIqcdWV5vr9bhlLQFWxID+LhPuQt+qCOsm
-         s2fPNszbeNGM4AQs7stRbh7J1dCks0T2ATa8RsO1Oka5c5U+8ahq/7bnQr0qBMXD8XAY
-         hw4VFdRmWsXQI2AltawT4jzkGPQfy8+PQ9w2a2gyPRtHre9DahD36s+W0Fhi6wWG8Gul
-         4Lw5hpuZW0La7adiWEyJ9qvuwOizfyKZ8Idpv5RzvUCL/82HYfWPsFRCn84XRxpNOATj
-         XTAA==
-X-Gm-Message-State: AOAM53287nDQ0Sa7gkvEGUhFTL/v/eYWKTSewmeGC23ZcfzD3ZGovSQI
-        lHMkG4qhobRxqUc5+onS5SyyFw==
-X-Google-Smtp-Source: ABdhPJxrT8FYtLTqI2w9XouF8Nl/Ld4dzKncBZAgYE5/OdBRp3ZyZcfZDRKJ9fkokKBDb8panqyRpA==
-X-Received: by 2002:aca:af91:: with SMTP id y139mr718825oie.88.1612992069497;
-        Wed, 10 Feb 2021 13:21:09 -0800 (PST)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l4sm597454oou.8.2021.02.10.13.21.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=VmbmOG1RvWgMmrfMbgNf26feXFao3UuT1VTN22bup7c=;
+        b=C5XqMk6jPlPN6k7EQL8bJ+PljOrC8noio0A6nDvqChIeUXF9f/OsYKZ7H5B6rQafoH
+         I8xYbtIw5Uqkg4eoHXf9XX93pmGPZGhUmwculoToOUlHXUJoOtWsEszNsScq27s+DIQ0
+         sHMF2qNVDeVLIFdtd7MP0Tkka6TN6PwX/QcA6EsT5dw1ywvmtrAK4Wh7GlqTgDbsG/Ux
+         I63AK8aReirjqte88bweHffQr2P0A+RorD+qbCljHQasoB8x8+vQOb1V9LgcFpSjWFkV
+         +1/xhaHGRRVUgXYfrSJLyC2fY7EaNYxV3VSP1uD2w+1zIw68XdArdX2fwOEirMVh9TAw
+         Q7Gw==
+X-Gm-Message-State: AOAM532b6uSg2qkXu5hHeGuNuzL3P1LlFmd4QFplrD6xp/zoRpEZAPBS
+        t2MLunoieWyfdA7E9TiDqUzREQ==
+X-Google-Smtp-Source: ABdhPJwpZ7D8Q9O5u4cv8uREKEYN+Xq8fqH7QuuqPQ5opKBvtMaT3UctwRa5RB/sAFK8vqT1HSflDQ==
+X-Received: by 2002:a17:902:9a92:b029:e2:dbb6:7442 with SMTP id w18-20020a1709029a92b02900e2dbb67442mr4776919plp.50.1612992078158;
+        Wed, 10 Feb 2021 13:21:18 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:7b19:df69:92d6:528e])
+        by smtp.gmail.com with ESMTPSA id d10sm3089068pfn.218.2021.02.10.13.21.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 13:21:09 -0800 (PST)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ath10k: hold RCU lock when calling ieee80211_find_sta_by_ifaddr()
-Date:   Wed, 10 Feb 2021 14:21:07 -0700
-Message-Id: <20210210212107.40373-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 10 Feb 2021 13:21:17 -0800 (PST)
+Date:   Wed, 10 Feb 2021 13:21:15 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Subject: Re: [PATCH v2 1/2] pinctrl: use to octal permissions for debugfs
+ files
+Message-ID: <20210210212115.GA216435@x1>
+References: <20210210074946.155417-1-drew@beagleboard.org>
+ <20210210074946.155417-2-drew@beagleboard.org>
+ <87437daafdd86fa5c765ff9b17b6c7b097f0c317.camel@perches.com>
+ <CAHp75VeJT0dPATD-Ux+JCEYxNTigbOn_6D_F1VQkfL=vuiCBPQ@mail.gmail.com>
+ <ef9bc69ea67b70557265f117ce2a09f8019bb17d.camel@perches.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ef9bc69ea67b70557265f117ce2a09f8019bb17d.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ieee80211_find_sta_by_ifaddr() must be called under the RCU lock and
-the resulting pointer is only valid under RCU lock as well.
+On Wed, Feb 10, 2021 at 04:36:00AM -0800, Joe Perches wrote:
+> On Wed, 2021-02-10 at 12:18 +0200, Andy Shevchenko wrote:
+> > On Wed, Feb 10, 2021 at 10:30 AM Joe Perches <joe@perches.com> wrote:
+> > > On Tue, 2021-02-09 at 23:49 -0800, Drew Fustini wrote:
+> > 
+> > > > -     debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
+> > > > +     debugfs_create_file("pinctrl-devices", 0400,
+> > > >                           debugfs_root, NULL, &pinctrl_devices_fops);
+> > > 
+> > > NAK.  You've changed the permission levels.
+> > 
+> > NAK is usually given when the whole idea is broken. Here is not the
+> > case and you may have helped to amend the patch.
+> 
+> NAK IMO just means the patch should not be applied, not that the
+> concept is broken.
+> 
+> > ...
+> > 
+> > > And you have to keep the S_IFREG or'd along with the octal.
+> > 
+> > Perhaps time to read the code?
+> > https://elixir.bootlin.com/linux/latest/source/fs/debugfs/inode.c#L387
+> 
+> Then the commit message is also broken.
+> 
+> > > checkpatch does this conversion using this command line:
+> > > 
+> > > $ ./scripts/checkpatch.pl -f --show-types --terse drivers/pinctrl/*.[ch] --types=SYMBOLIC_PERMS --fix-inplace
+> > 
+> > NAK! See above.
+> 
+> The command line above is for octal conversion of the symbolic permissions.
+> 
+> Any other conversion would be for a different purpose and that purpose and
+> should be described in the commit message.
+> 
+> 
 
-Fix ath10k_wmi_tlv_op_pull_peer_stats_info() to hold RCU lock before it
-calls ieee80211_find_sta_by_ifaddr() and release it when the resulting
-pointer is no longer needed.
+Thanks for review comments from all.
 
-This problem was found while reviewing code to debug RCU warn from
-ath10k_wmi_tlv_parse_peer_stats_info().
+I will change from the incorrect 0400 to 0444.
 
-Link: https://lore.kernel.org/linux-wireless/7230c9e5-2632-b77e-c4f9-10eca557a5bb@linuxfoundation.org/
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
-Changes since v1:
-- v1 also included fix to ath10k_wmi_tlv_parse_peer_stats_info()
-  RCU wrn which was already fixed. v2 drops that and fixes just
-  ath10k_wmi_event_tdls_peer()
- 
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+As for S_IFREG, it does seem like leaving off S_IFREG is the most common
+case when using octal permissions with debugfs_create_*():
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index bfdd017f1405..d97b33f789e4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -576,13 +576,13 @@ static void ath10k_wmi_event_tdls_peer(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_TDLS_TEARDOWN_REASON_TX:
- 	case WMI_TDLS_TEARDOWN_REASON_RSSI:
- 	case WMI_TDLS_TEARDOWN_REASON_PTR_TIMEOUT:
-+		rcu_read_lock();
- 		station = ieee80211_find_sta_by_ifaddr(ar->hw,
- 						       ev->peer_macaddr.addr,
- 						       NULL);
- 		if (!station) {
- 			ath10k_warn(ar, "did not find station from tdls peer event");
--			kfree(tb);
--			return;
-+			goto exit;
- 		}
- 		arvif = ath10k_get_arvif(ar, __le32_to_cpu(ev->vdev_id));
- 		ieee80211_tdls_oper_request(
-@@ -593,6 +593,9 @@ static void ath10k_wmi_event_tdls_peer(struct ath10k *ar, struct sk_buff *skb)
- 					);
- 		break;
- 	}
-+
-+exit:
-+	rcu_read_unlock();
- 	kfree(tb);
- }
- 
--- 
-2.27.0
+$ git grep debugfs_create drivers/ |grep 0444 |grep -v S_IFREG | wc -l
+302
+$ git grep debugfs_create drivers/ |grep 0444 |grep S_IFREG | wc -l
+9
 
+As noted by Andy, this is okay as the S_IFREG flag is added to the mode
+__debugfs_create_file() inside fs/debugfs/inode.c. I will note this in
+the commit message.
+
+Thank you,
+Drew
