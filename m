@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68507316932
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEA1316940
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhBJOc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:32:59 -0500
-Received: from mga07.intel.com ([134.134.136.100]:1095 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229639AbhBJOcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:32:54 -0500
-IronPort-SDR: D40Zc3DGVrt9bQTmqVlD9tJeynD4CCPXpja715CFqTRuguPlAnVomcoh8eTSaxL9awxT2ccQvf
- lyutunM/AC8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="246144354"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="246144354"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 06:31:07 -0800
-IronPort-SDR: iokoZIAq5W+IsiPfGY0fW94n0g4TrEXc4wSF8e5IDWFjF0IZb6ZkO1c5yyZCXpUkztDKNPTE2o
- 0h/LtnmMMKkA==
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="380123320"
-Received: from bartoszo-mobl1.ger.corp.intel.com (HELO [10.252.56.156]) ([10.252.56.156])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 06:31:05 -0800
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210210141138.11a6ad09@canb.auug.org.au>
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Message-ID: <670f6c7e-1f71-ffce-f9dd-07c7f6164c22@linux.intel.com>
-Date:   Wed, 10 Feb 2021 15:31:03 +0100
+        id S231255AbhBJOiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:38:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31733 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229853AbhBJOiR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:38:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612967810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y0cOXkjjqhYfEYLaqUjm8JsPqdbJg8o77yvHL5dd1FI=;
+        b=Y3say0TpC41qZp4QdNYGwLeJTHMOg5L3PSGvETdG8iP1A+cTYtfFxVbtp+P8PWjv9iusmp
+        X+HH2b5mqOml7OXf3VNTGp6af4JL147fN7PHqsJrU6XPENDCIj+4yGMacr43pJ+BTp7gas
+        s8y1/ZNzPfN0RTKeBrT4moB/AZvvfH0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-n8rUQhb7MnOwA1wTH2RqWA-1; Wed, 10 Feb 2021 09:36:45 -0500
+X-MC-Unique: n8rUQhb7MnOwA1wTH2RqWA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C36780196E;
+        Wed, 10 Feb 2021 14:36:44 +0000 (UTC)
+Received: from [10.36.113.218] (ovpn-113-218.ams2.redhat.com [10.36.113.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C6DE918AA1;
+        Wed, 10 Feb 2021 14:36:42 +0000 (UTC)
+Subject: Re: [RFC PATCH 2/2] mm,page_alloc: Make alloc_contig_range handle
+ free hugetlb pages
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210208103812.32056-1-osalvador@suse.de>
+ <20210208103812.32056-3-osalvador@suse.de>
+ <9ed946df-9c6c-9a4d-4be9-2f32809974f7@redhat.com>
+ <20210210142424.GC3636@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <6e999708-2edb-c25f-4aee-217d2f3cc037@redhat.com>
+Date:   Wed, 10 Feb 2021 15:36:41 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210210141138.11a6ad09@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210210142424.GC3636@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Op 2021-02-10 om 04:11 schreef Stephen Rothwell:
-> Hi all,
->
-> After merging the drm-misc tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->
-> drivers/gpu/drm/v3d/v3d_sched.c:263:1: error: return type is an incomplete type
->   263 | v3d_gpu_reset_for_timeout(struct v3d_dev *v3d, struct drm_sched_job *sched_job)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c: In function 'v3d_gpu_reset_for_timeout':
-> drivers/gpu/drm/v3d/v3d_sched.c:289:9: error: 'return' with a value, in function returning void [-Werror=return-type]
->   289 |  return DRM_GPU_SCHED_STAT_NOMINAL;
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:263:1: note: declared here
->   263 | v3d_gpu_reset_for_timeout(struct v3d_dev *v3d, struct drm_sched_job *sched_job)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c: At top level:
-> drivers/gpu/drm/v3d/v3d_sched.c:298:1: error: return type is an incomplete type
->   298 | v3d_cl_job_timedout(struct drm_sched_job *sched_job, enum v3d_queue q,
->       | ^~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c: In function 'v3d_cl_job_timedout':
-> drivers/gpu/drm/v3d/v3d_sched.c:309:10: error: 'return' with a value, in function returning void [-Werror=return-type]
->   309 |   return DRM_GPU_SCHED_STAT_NOMINAL;
->       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:298:1: note: declared here
->   298 | v3d_cl_job_timedout(struct drm_sched_job *sched_job, enum v3d_queue q,
->       | ^~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c: At top level:
-> drivers/gpu/drm/v3d/v3d_sched.c:316:1: error: return type is an incomplete type
->   316 | v3d_bin_job_timedout(struct drm_sched_job *sched_job)
->       | ^~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:325:1: error: return type is an incomplete type
->   325 | v3d_render_job_timedout(struct drm_sched_job *sched_job)
->       | ^~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:334:1: error: return type is an incomplete type
->   334 | v3d_generic_job_timedout(struct drm_sched_job *sched_job)
->       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:342:1: error: return type is an incomplete type
->   342 | v3d_csd_job_timedout(struct drm_sched_job *sched_job)
->       | ^~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c: In function 'v3d_csd_job_timedout':
-> drivers/gpu/drm/v3d/v3d_sched.c:353:10: error: 'return' with a value, in function returning void [-Werror=return-type]
->   353 |   return DRM_GPU_SCHED_STAT_NOMINAL;
->       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:342:1: note: declared here
->   342 | v3d_csd_job_timedout(struct drm_sched_job *sched_job)
->       | ^~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c: At top level:
-> drivers/gpu/drm/v3d/v3d_sched.c:362:18: error: initialization of 'enum drm_gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type 'void (*)(struct drm_sched_job *)' [-Werror=incompatible-pointer-types]
->   362 |  .timedout_job = v3d_bin_job_timedout,
->       |                  ^~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:362:18: note: (near initialization for 'v3d_bin_sched_ops.timedout_job')
-> drivers/gpu/drm/v3d/v3d_sched.c:369:18: error: initialization of 'enum drm_gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type 'void (*)(struct drm_sched_job *)' [-Werror=incompatible-pointer-types]
->   369 |  .timedout_job = v3d_render_job_timedout,
->       |                  ^~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:369:18: note: (near initialization for 'v3d_render_sched_ops.timedout_job')
-> drivers/gpu/drm/v3d/v3d_sched.c:376:18: error: initialization of 'enum drm_gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type 'void (*)(struct drm_sched_job *)' [-Werror=incompatible-pointer-types]
->   376 |  .timedout_job = v3d_generic_job_timedout,
->       |                  ^~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:376:18: note: (near initialization for 'v3d_tfu_sched_ops.timedout_job')
-> drivers/gpu/drm/v3d/v3d_sched.c:383:18: error: initialization of 'enum drm_gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type 'void (*)(struct drm_sched_job *)' [-Werror=incompatible-pointer-types]
->   383 |  .timedout_job = v3d_csd_job_timedout,
->       |                  ^~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:383:18: note: (near initialization for 'v3d_csd_sched_ops.timedout_job')
-> drivers/gpu/drm/v3d/v3d_sched.c:390:18: error: initialization of 'enum drm_gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type 'void (*)(struct drm_sched_job *)' [-Werror=incompatible-pointer-types]
->   390 |  .timedout_job = v3d_generic_job_timedout,
->       |                  ^~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/v3d/v3d_sched.c:390:18: note: (near initialization for 'v3d_cache_clean_sched_ops.timedout_job')
->
-> Caused by commit
->
->   c10983e14e8f ("drm/scheduler: Job timeout handler returns status (v3)")
->
-> I have used the drm-misc tree from next-20210209 for today.
->
-Hey,
+On 10.02.21 15:24, Oscar Salvador wrote:
+> On Wed, Feb 10, 2021 at 09:23:59AM +0100, David Hildenbrand wrote:
+>> On 08.02.21 11:38, Oscar Salvador wrote:
+>>> Free hugetlb pages are trickier to handle as to in order to guarantee
+>>> no userspace appplication disruption, we need to replace the
+>>> current free hugepage with a new one.
+>>>
+>>> In order to do that, a new function called alloc_and_dissolve_huge_page
+>>> in introduced.
+>>> This function will first try to get a new fresh hugetlb page, and if it
+>>> succeeds, it will dissolve the old one.
+>>>
+>>
+>> Thanks for looking into this! Can we move this patch to #1 in the series? It
+>> is the easier case.
+>>
+>> I also wonder if we should at least try on the memory unplug path to keep
+>> nr_pages by at least trying to allocate at new one if required, and printing
+>> a warning if that fails (after all, we're messing with something configured
+>> by the admin - "nr_pages"). Note that gigantic pages are special (below).
+> 
+> So, do you mean to allocate a new fresh hugepage in case we have a free
+> hugetlb page within the range we are trying to offline? That makes some
+> sense I guess.
+> 
+> I can have a look at that, and make hotplug code use the new
+> alloc_and_dissolve().
 
-I reverted the commit in drm-misc-next-fixes. It should be good now. :)
+Yes, with the difference that hotplug code most probably wants to 
+continue even if allocation failed (printing a warning) - mimix existing 
+behavior. For alloc_contig, I'd say, fail if we cannot "relocate free 
+huge pages that are still required to no modify nr_pages".
 
-I must have accidentally cherry picked it when grabbing all fixes.
+alloc_and_dissolve() should only allocate a page if really required 
+(e.g., not sure if we could skip allocation in some cases - like with 
+surplus pages, needs some investigation), such that the admin-configured 
+nr_pages stays unchanged.
 
-~Maarten
+-- 
+Thanks,
+
+David / dhildenb
 
