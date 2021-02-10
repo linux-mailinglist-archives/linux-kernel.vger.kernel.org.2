@@ -2,139 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0C9316377
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3494B3163AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhBJKPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:15:25 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:61586 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230418AbhBJKHX (ORCPT
+        id S231255AbhBJKXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:23:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49137 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230493AbhBJKKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:07:23 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11AA6Vbl023183;
-        Wed, 10 Feb 2021 05:06:31 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36hr7qc5xm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 05:06:31 -0500
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 11AA6Tpc025933
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 10 Feb 2021 05:06:30 -0500
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Wed, 10 Feb 2021 02:06:28 -0800
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
- Wed, 10 Feb 2021 02:06:28 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 10 Feb 2021 02:06:28 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11AA5x0K018045;
-        Wed, 10 Feb 2021 05:06:25 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <dragos.bogdan@analog.com>, <rafael@kernel.org>,
-        <gregkh@linuxfoundation.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v4 14/17] iio: core: rename 'dev' -> 'indio_dev' in iio_device_alloc()
-Date:   Wed, 10 Feb 2021 12:08:20 +0200
-Message-ID: <20210210100823.46780-15-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210210100823.46780-1-alexandru.ardelean@analog.com>
-References: <20210210100823.46780-1-alexandru.ardelean@analog.com>
+        Wed, 10 Feb 2021 05:10:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612951710;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ontaDL3XvHswihYEf1iBGmLwX9Q6quQQDImWbCzSgjA=;
+        b=W+ZtDtESJ/g+SlT2S3JO4cKESIlpec5YEZUPEMZQLVZj/x49m/Uw9OOERlOjXgP+MdzPmb
+        gJLAXq0VJkgkfeucGWFnrGIgQDAc6gsaaVXj0XnvJWv9RZa4ZdE9jfV9mBRRD9uAO56hUA
+        iULKrDU0qUPNbqZlv3Rg6VAg6FjquLM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-XDTVWMfpOZC1p8INQTxVWA-1; Wed, 10 Feb 2021 05:08:26 -0500
+X-MC-Unique: XDTVWMfpOZC1p8INQTxVWA-1
+Received: by mail-ej1-f71.google.com with SMTP id p1so2155982ejo.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:08:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ontaDL3XvHswihYEf1iBGmLwX9Q6quQQDImWbCzSgjA=;
+        b=Gi9yAjlu05YDu902HnEvyH7YZhcgu/PqrStBxs9Xg3mNay/syEp6bhH59Hgt4Ff13/
+         mC+CH2UY3fpw9W+8YKSOduguBbx0Yxl2xO7QcJC3ZJ9o5v5jW3owVcA9bR51Dri4Sjjp
+         G9JuP94iOVOWKMDtC+Pn0TleSZQbprayE+yFfqnQE0YjHhUBtEaonAtjmxzrIChNEJYV
+         7WkutHm6Ce8e11UdxBsw0uTs6LOEPt++szrY2ss7lZYVSJjAavTfqC4ga8pQbZ2dM1Bd
+         3OTWdpM3N7UbEawpaGb/w4noZwptQVjdptx3ol1nnHKbYV3IoFxem/1FxKJuPGW2KOWN
+         jriQ==
+X-Gm-Message-State: AOAM533S1WGGI1QhvVqO0nIbsxWZ60K+vpX2n+jq1clr3/AIzGPWsP8o
+        m+YBhTwMt7nuXdEgACvSCS+q2oN/VQIflruG3Dbr7ubzTgZ5AMJ7e+qLyECBWrH774gNWC1OxJd
+        6pR+Zjsn9VJlMtvwKjg7OwEPO
+X-Received: by 2002:a05:6402:702:: with SMTP id w2mr2511041edx.78.1612951705281;
+        Wed, 10 Feb 2021 02:08:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx0LU/mdAflFnADXNKIn3t7DOly8D6XltpB9BIjATe9vPTcbrofZaI6VVEMbq9k9xFmYLXzuA==
+X-Received: by 2002:a05:6402:702:: with SMTP id w2mr2511028edx.78.1612951705069;
+        Wed, 10 Feb 2021 02:08:25 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id g9sm777753ejp.55.2021.02.10.02.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 02:08:24 -0800 (PST)
+Date:   Wed, 10 Feb 2021 11:08:21 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Parav Pandit <parav@nvidia.com>, Eli Cohen <elic@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vdpa/mlx5: fix param validation in mlx5_vdpa_get_config()
+Message-ID: <20210210100821.aaye2cgmrpwhhzgn@steredhat>
+References: <20210208161741.104939-1-sgarzare@redhat.com>
+ <20210208133312-mutt-send-email-mst@kernel.org>
+ <fc523fbe-b742-0ebe-84d1-2b7e5529f00b@redhat.com>
+ <20210209042530-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_03:2021-02-10,2021-02-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 clxscore=1015 spamscore=0 phishscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100098
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210209042530-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'dev' variable name usually refers to 'struct device' types. However in
-iio_device_alloc() this was used for the 'struct iio_dev' type, which was
-sometimes causing minor confusions.
+On Tue, Feb 09, 2021 at 04:31:23AM -0500, Michael S. Tsirkin wrote:
+>On Tue, Feb 09, 2021 at 11:24:03AM +0800, Jason Wang wrote:
+>>
+>> On 2021/2/9 上午2:38, Michael S. Tsirkin wrote:
+>> > On Mon, Feb 08, 2021 at 05:17:41PM +0100, Stefano Garzarella wrote:
+>> > > It's legal to have 'offset + len' equal to
+>> > > sizeof(struct virtio_net_config), since 'ndev->config' is a
+>> > > 'struct virtio_net_config', so we can safely copy its content under
+>> > > this condition.
+>> > >
+>> > > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+>> > > Cc: stable@vger.kernel.org
+>> > > Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>> > > ---
+>> > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
+>> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+>> > >
+>> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>> > > index dc88559a8d49..10e9b09932eb 100644
+>> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>> > > @@ -1820,7 +1820,7 @@ static void mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset,
+>> > >   	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+>> > >   	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+>> > > -	if (offset + len < sizeof(struct virtio_net_config))
+>> > > +	if (offset + len <= sizeof(struct virtio_net_config))
+>> > >   		memcpy(buf, (u8 *)&ndev->config + offset, len);
+>> > >   }
+>> > Actually first I am not sure we need these checks at all.
+>> > vhost_vdpa_config_validate already validates the values, right?
+>>
+>>
+>> I think they're working at different levels. There's no guarantee that
+>> vhost-vdpa is the driver for this vdpa device.
+>
+>In fact, get_config returns void, so userspace can easily get
+>trash if it passes incorrect parameters by mistake, there is
+>no way for userspace to find out whether that is the case :(
+>
+>Any objections to returning the # of bytes copied, or -1
+>on error?
 
-This change renames the variable to 'indio_dev', which is the usual name
-used around IIO for 'struct iio_dev' type objects.
-It makes grepping a bit easier as well.
+Make sense for me, but are we sure we don't break userspace if we return 
+the number of bytes instead of 0 on success?
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/industrialio-core.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+I had a quick look at QEMU and it looks like we consider success if the 
+return value is >= 0, but I need to check further.
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index febb3a0d91f3..86ddc752ea96 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1602,7 +1602,7 @@ struct device_type iio_device_type = {
- struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
- {
- 	struct iio_dev_opaque *iio_dev_opaque;
--	struct iio_dev *dev;
-+	struct iio_dev *indio_dev;
- 	size_t alloc_size;
- 
- 	alloc_size = sizeof(struct iio_dev_opaque);
-@@ -1615,31 +1615,31 @@ struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
- 	if (!iio_dev_opaque)
- 		return NULL;
- 
--	dev = &iio_dev_opaque->indio_dev;
--	dev->priv = (char *)iio_dev_opaque +
-+	indio_dev = &iio_dev_opaque->indio_dev;
-+	indio_dev->priv = (char *)iio_dev_opaque +
- 		ALIGN(sizeof(struct iio_dev_opaque), IIO_ALIGN);
- 
--	dev->dev.parent = parent;
--	dev->dev.type = &iio_device_type;
--	dev->dev.bus = &iio_bus_type;
--	device_initialize(&dev->dev);
--	dev_set_drvdata(&dev->dev, (void *)dev);
--	mutex_init(&dev->mlock);
--	mutex_init(&dev->info_exist_lock);
-+	indio_dev->dev.parent = parent;
-+	indio_dev->dev.type = &iio_device_type;
-+	indio_dev->dev.bus = &iio_bus_type;
-+	device_initialize(&indio_dev->dev);
-+	dev_set_drvdata(&indio_dev->dev, (void *)indio_dev);
-+	mutex_init(&indio_dev->mlock);
-+	mutex_init(&indio_dev->info_exist_lock);
- 	INIT_LIST_HEAD(&iio_dev_opaque->channel_attr_list);
- 
--	dev->id = ida_simple_get(&iio_ida, 0, 0, GFP_KERNEL);
--	if (dev->id < 0) {
-+	indio_dev->id = ida_simple_get(&iio_ida, 0, 0, GFP_KERNEL);
-+	if (indio_dev->id < 0) {
- 		/* cannot use a dev_err as the name isn't available */
- 		pr_err("failed to get device id\n");
- 		kfree(iio_dev_opaque);
- 		return NULL;
- 	}
--	dev_set_name(&dev->dev, "iio:device%d", dev->id);
-+	dev_set_name(&indio_dev->dev, "iio:device%d", indio_dev->id);
- 	INIT_LIST_HEAD(&iio_dev_opaque->buffer_list);
- 	INIT_LIST_HEAD(&iio_dev_opaque->ioctl_handlers);
- 
--	return dev;
-+	return indio_dev;
- }
- EXPORT_SYMBOL(iio_device_alloc);
- 
--- 
-2.17.1
+>
+>>
+>> >
+>> > Second, what will happen when we extend the struct and then
+>> > run new userspace on an old kernel? Looks like it will just
+>> > fail right? So what is the plan?
+>>
+>>
+>> In this case, get_config() should match the spec behaviour. That is to say
+>> the size of config space depends on the feature negotiated.
+>>
+>> Thanks
+>
+>Yes but spec says config space can be bigger than specified by features:
+>
+>	Drivers MUST NOT limit structure size and device configuration space size. Instead, drivers SHOULD only
+>	check that device configuration space is large enough to contain the fields necessary for device operation.
+>
+
+So IIUC in the driver we should copy as much as we can.
+
+If you agree, I can send an RFC series and we can continue the 
+discussion on it, but I think we should queue this patch for stable 
+branches.
+
+Thanks,
+Stefano
 
