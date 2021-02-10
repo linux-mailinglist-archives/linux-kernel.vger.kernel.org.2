@@ -2,74 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14121316C8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB33316C90
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhBJRZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:25:19 -0500
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:46311 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbhBJRZA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:25:00 -0500
-Received: by mail-ot1-f48.google.com with SMTP id r21so2476833otk.13;
-        Wed, 10 Feb 2021 09:24:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8nNFiLXbySId1/XyNUqt5xlgqNafoMDnEfdcSbaBkSc=;
-        b=Bwn6KHLEyAg9Ss+RRSiBsjMzhGUXRej8q11ZZvvBJYFO2b4uV+JEkBRV0tnheE4f7W
-         x3hS5JDKN2JdX5g008yPvm8nsw2b0BNpHNQUMt3ulMKjRP1SMSYnJ/x+O+cYHmaFptDa
-         lTWwpVWhk8VLcuphQUkaPEfUAGY5IILlSpo97lvDzIFC02qmuxEGcBPflvtV/veaavW7
-         6c5/K4vFNknTF1FUJ5irgQage891uO1ocguUiFJE3TN9WM0cWbJRSnuE9Ap8cI7IUfw0
-         8DPgS4L7IAB3p5V6KbP0AQMJstW9upyBRc8/6OHrfm2HEoLsH5SURTX7c+rpfwdqsXEk
-         benA==
-X-Gm-Message-State: AOAM533cdFKDDR3eo+ZFS4RmUwyopjzWZdcj5l3JLV512sJFOaVaLHzz
-        VAB9yhpnQ9I1FbsBID8uhA==
-X-Google-Smtp-Source: ABdhPJwxJhxyU838P5kr+mpJ1CXXyIzFrPmOrIk4EQh1nYd0zbXwgroTPA6OF11JO28JV3Ur2mvM5Q==
-X-Received: by 2002:a05:6830:1d45:: with SMTP id p5mr2918738oth.272.1612977860067;
-        Wed, 10 Feb 2021 09:24:20 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x201sm567169oix.2.2021.02.10.09.24.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 09:24:19 -0800 (PST)
-Received: (nullmailer pid 2377742 invoked by uid 1000);
-        Wed, 10 Feb 2021 17:24:17 -0000
-Date:   Wed, 10 Feb 2021 11:24:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     stefanc@marvell.com
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        atenart@kernel.org, sebastian.hesselbarth@gmail.com,
-        devicetree@vger.kernel.org, andrew@lunn.ch,
-        thomas.petazzoni@bootlin.com, ymarkman@marvell.com,
-        rmk+kernel@armlinux.org.uk, nadavh@marvell.com, kuba@kernel.org,
-        mw@semihalf.com, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        gregory.clement@bootlin.com, linux@armlinux.org.uk
-Subject: Re: [PATCH v12 net-next 01/15] doc: marvell: add CM3 address space
- and PPv2.3 description
-Message-ID: <20210210172417.GA2377694@robh.at.kernel.org>
-References: <1612950500-9682-1-git-send-email-stefanc@marvell.com>
- <1612950500-9682-2-git-send-email-stefanc@marvell.com>
+        id S232439AbhBJR0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:26:17 -0500
+Received: from mga07.intel.com ([134.134.136.100]:16540 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232369AbhBJRZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:25:51 -0500
+IronPort-SDR: j+aKT7uzyUjDZvF0vmSjbdaGl+T3hlTVfQ2gEpeyXihpJ/KX/SbCOZ8coM/nXKR3T/DhZ05Tkb
+ A+NPLmtOlTMg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="246182656"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="246182656"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 09:25:10 -0800
+IronPort-SDR: aAKQ1+QgbwhYBX0O9sVPWjTKw2kCdCnHhi62c3sBH+DCR2dX09yUfRQJocFgBTAwKsst3k8ok4
+ MTExIcWw6AUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="380219874"
+Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 10 Feb 2021 09:25:08 -0800
+Received: from kbuild by cd560a204411 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l9tEh-00039t-LQ; Wed, 10 Feb 2021 17:25:07 +0000
+Date:   Thu, 11 Feb 2021 01:24:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/media/venus/hfi_cmds] BUILD SUCCESS
+ e7d451cef70317bd0267ddd26062dc238f8c6e47
+Message-ID: <602416da.iZqae7Dbk7nyl6OY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612950500-9682-2-git-send-email-stefanc@marvell.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 11:48:06 +0200, stefanc@marvell.com wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
-> 
-> Patch adds CM3 address space and PPv2.3 description.
-> 
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> Acked-by: Marcin Wojtas <mw@semihalf.com>
-> ---
->  Documentation/devicetree/bindings/net/marvell-pp2.txt | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/media/venus/hfi_cmds
+branch HEAD: e7d451cef70317bd0267ddd26062dc238f8c6e47  media: venus: hfi_cmds.h: Replace one-element array with flexible-array member
 
-Acked-by: Rob Herring <robh@kernel.org>
+elapsed time: 1249m
+
+configs tested: 89
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                       m5249evb_defconfig
+sh                   sh7770_generic_defconfig
+mips                         cobalt_defconfig
+arc                        nsimosci_defconfig
+arm                       versatile_defconfig
+powerpc                     stx_gp3_defconfig
+sh                        sh7785lcr_defconfig
+powerpc                      pasemi_defconfig
+arm                             mxs_defconfig
+arc                              alldefconfig
+mips                          ath79_defconfig
+xtensa                  audio_kc705_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210209
+x86_64               randconfig-a001-20210209
+x86_64               randconfig-a005-20210209
+x86_64               randconfig-a004-20210209
+x86_64               randconfig-a002-20210209
+x86_64               randconfig-a003-20210209
+i386                 randconfig-a001-20210209
+i386                 randconfig-a005-20210209
+i386                 randconfig-a003-20210209
+i386                 randconfig-a002-20210209
+i386                 randconfig-a006-20210209
+i386                 randconfig-a004-20210209
+i386                 randconfig-a016-20210209
+i386                 randconfig-a013-20210209
+i386                 randconfig-a012-20210209
+i386                 randconfig-a014-20210209
+i386                 randconfig-a011-20210209
+i386                 randconfig-a015-20210209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210209
+x86_64               randconfig-a014-20210209
+x86_64               randconfig-a015-20210209
+x86_64               randconfig-a012-20210209
+x86_64               randconfig-a016-20210209
+x86_64               randconfig-a011-20210209
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
