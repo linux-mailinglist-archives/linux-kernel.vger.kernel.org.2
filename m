@@ -2,76 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D9D316681
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A67A316680
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhBJMVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:21:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54224 "EHLO mx2.suse.de"
+        id S229609AbhBJMV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:21:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55984 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231481AbhBJMSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:18:17 -0500
+        id S230412AbhBJMTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:19:40 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E7F4EAC97;
-        Wed, 10 Feb 2021 12:17:33 +0000 (UTC)
-Subject: Re: [PATCH] mm: remove lru_add_drain_all in alloc_contig_range
-To:     Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-References: <20210209175048.361638-1-minchan@kernel.org>
- <accc057c-e639-7510-f722-4a4d166c80b6@redhat.com>
- <20210209190332.GA3363@localhost.localdomain>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <49491777-6d61-db4d-5e90-7a8b9045faca@suse.cz>
-Date:   Wed, 10 Feb 2021 13:17:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        by mx2.suse.de (Postfix) with ESMTP id 5454EAC43;
+        Wed, 10 Feb 2021 12:18:58 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 12:18:53 +0000
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH RFC 0/6] Add roundrobin raid1 read policy
+Message-ID: <20210210121853.GA23499@wotan.suse.de>
+References: <20210209203041.21493-1-mrostecki@suse.de>
+ <4f24ef7f-c1cf-3cda-b12f-a2c8c84a7e45@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210209190332.GA3363@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f24ef7f-c1cf-3cda-b12f-a2c8c84a7e45@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 8:03 PM, Oscar Salvador wrote:
-> On Tue, Feb 09, 2021 at 07:17:59PM +0100, David Hildenbrand wrote:
->> I was expecting some magical reason why this is still required but I am not
->> able to find a compelling one. Maybe this is really some historical
->> artifact.
->> 
->> Let's see if other people know why this call here still exists.
+On Wed, Feb 10, 2021 at 02:52:01PM +0800, Anand Jain wrote:
+> On 10/02/2021 04:30, Michal Rostecki wrote:
+> > From: Michal Rostecki <mrostecki@suse.com>
+> > 
+> > This patch series adds a new raid1 read policy - roundrobin. For each
+> > request, it selects the mirror which has lower load than queue depth.
+> > Load is defined  as the number of inflight requests + a penalty value
+> > (if the scheduled request is not local to the last processed request for
+> > a rotational disk).
+> > 
+> > The series consists of preparational changes which add necessary
+> > information to the btrfs_device struct and the change with the policy.
+> > 
+> > This policy was tested with fio and compared with the default `pid`
+> > policy.
+> > 
+> > The singlethreaded test has the following parameters:
+> > 
+> >    [global]
+> >    name=btrfs-raid1-seqread
+> >    filename=btrfs-raid1-seqread
+> >    rw=read
+> >    bs=64k
+> >    direct=0
+> >    numjobs=1
+> >    time_based=0
+> > 
+> >    [file1]
+> >    size=10G
+> >    ioengine=libaio
+> > 
+> > and shows the following results:
+> > 
+> > - raid1c3 with 3 HDDs:
+> >    3 x Segate Barracuda ST2000DM008 (2TB)
+> >    * pid policy
+> >      READ: bw=217MiB/s (228MB/s), 217MiB/s-217MiB/s (228MB/s-228MB/s),
+> >      io=10.0GiB (10.7GB), run=47082-47082msec
+> >    * roundrobin policy
+> >      READ: bw=409MiB/s (429MB/s), 409MiB/s-409MiB/s (429MB/s-429MB/s),
+> >      io=10.0GiB (10.7GB), run=25028-25028mse
 > 
-> I also stumbled upon this while working on adding hugetlb support for
-> alloc_acontig_range [1].
-> I have to confess I puzzled me a bit.
 > 
-> I saw it going back to when the function was first introduced by 
+> > - raid1c3 with 2 HDDs and 1 SSD:
+> >    2 x Segate Barracuda ST2000DM008 (2TB)
+> >    1 x Crucial CT256M550SSD1 (256GB)
+> >    * pid policy (the worst case when only HDDs were chosen)
+> >      READ: bw=220MiB/s (231MB/s), 220MiB/s-220MiB/s (231MB/s-231MB/s),
+> >      io=10.0GiB (10.7GB), run=46577-46577mse
+> >    * pid policy (the best case when SSD was used as well)
+> >      READ: bw=513MiB/s (538MB/s), 513MiB/s-513MiB/s (538MB/s-538MB/s),
+> >      io=10.0GiB (10.7GB), run=19954-19954msec
+> >    * roundrobin (there are no noticeable differences when testing multiple
+> >      times)
+> >      READ: bw=541MiB/s (567MB/s), 541MiB/s-541MiB/s (567MB/s-567MB/s),
+> >      io=10.0GiB (10.7GB), run=18933-18933msec
+> > 
+> > The multithreaded test has the following parameters:
+> > 
+> >    [global]
+> >    name=btrfs-raid1-seqread
+> >    filename=btrfs-raid1-seqread
+> >    rw=read
+> >    bs=64k
+> >    direct=0
+> >    numjobs=8
+> >    time_based=0
+> > 
+> >    [file1]
+> >    size=10G
+> >    ioengine=libaio
+> > 
+> > and shows the following results:
+> > 
+> > - raid1c3 with 3 HDDs: 3 x Segate Barracuda ST2000DM008 (2TB)
+> >    3 x Segate Barracuda ST2000DM008 (2TB)
+> >    * pid policy
+> >      READ: bw=1569MiB/s (1645MB/s), 196MiB/s-196MiB/s (206MB/s-206MB/s),
+> >      io=80.0GiB (85.9GB), run=52210-52211msec
+> >    * roundrobin
+> >      READ: bw=1733MiB/s (1817MB/s), 217MiB/s-217MiB/s (227MB/s-227MB/s),
+> >      io=80.0GiB (85.9GB), run=47269-47271msec
+> > - raid1c3 with 2 HDDs and 1 SSD:
+> >    2 x Segate Barracuda ST2000DM008 (2TB)
+> >    1 x Crucial CT256M550SSD1 (256GB)
+> >    * pid policy
+> >      READ: bw=1843MiB/s (1932MB/s), 230MiB/s-230MiB/s (242MB/s-242MB/s),
+> >      io=80.0GiB (85.9GB), run=44449-44450msec
+> >    * roundrobin
+> >      READ: bw=2485MiB/s (2605MB/s), 311MiB/s-311MiB/s (326MB/s-326MB/s),
+> >      io=80.0GiB (85.9GB), run=32969-32970msec
+> > 
 > 
-> commit 041d3a8cdc18dc375a128d90bbb753949a81b1fb
-> Author: Michal Nazarewicz <mina86@mina86.com>
-> Date:   Thu Dec 29 13:09:50 2011 +0100
+>  Both of the above test cases are sequential. How about some random IO
+>  workload?
 > 
->     mm: page_alloc: introduce alloc_contig_range()
+>  Also, the seek time for non-rotational devices does not exist. So it is
+>  a good idea to test with ssd + nvme and all nvme or all ssd.
 > 
-> 
-> It does not make much sense to me. At this point our pages are free, so
-> we do not care about LRU handling here.
-> But I might be missing something.
 
-AFAICS, at the time page migration used putback_lru_page() to release the
-migration source page. This would put the page on lru pvec even if it was in
-fact not mapped anywhere anymore, and only the drain would actually free it.
-Seems Minchan optimized this in 2016 by c6c919eb90e0 ("mm: use put_page() to
-free page instead of putback_lru_page()")
+Good idea. I will test random I/O and will try to test all-nvme /
+all-ssd and mixed nonrot.
 
-> [1] https://lore.kernel.org/linux-mm/20210208103935.GA32103@linux/T/#md651fc6e73c656105179382f92f8b2d6073051d1
+> > To measure the performance of each policy and find optimal penalty
+> > values, I created scripts which are available here:
+> > 
+> > https://gitlab.com/vadorovsky/btrfs-perf
+> > https://github.com/mrostecki/btrfs-perf
+> > 
+> > Michal Rostecki (6):
 > 
 > 
+> >    btrfs: Add inflight BIO request counter
+> >    btrfs: Store the last device I/O offset
+> 
+> These patches look good. But as only round-robin policy requires
+> to monitor the inflight and last-offset. Could you bring them under
+> if policy=roundrobin? Otherwise, it is just a waste of CPU cycles
+> if the policy != roundrobin.
+> 
 
+If I bring those stats under if policy=roundrobin, they are going to be
+inaccurate if someone switches policies on the running system, after
+doing any I/O in that filesystem.
+
+I'm open to suggestions how can I make those stats as lightweight as
+possible. Unfortunately, I don't think I can store the last physical
+location without atomic_t.
+
+The BIO percpu counter is probably the least to be worried about, though
+I could maybe get rid of it entirely in favor of using part_stat_read().
+
+> >    btrfs: Add stripe_physical function
+> >    btrfs: Check if the filesystem is has mixed type of devices
+> 
+> Thanks, Anand
+> 
+> >    btrfs: sysfs: Add directory for read policies
+> >    btrfs: Add roundrobin raid1 read policy
+> > 
+> >   fs/btrfs/ctree.h   |   3 +
+> >   fs/btrfs/disk-io.c |   3 +
+> >   fs/btrfs/sysfs.c   | 144 ++++++++++++++++++++++++++----
+> >   fs/btrfs/volumes.c | 218 +++++++++++++++++++++++++++++++++++++++++++--
+> >   fs/btrfs/volumes.h |  22 +++++
+> >   5 files changed, 366 insertions(+), 24 deletions(-)
+> > 
+> 
+
+Thanks for review,
+Michal
