@@ -2,95 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28980317107
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 835FF31710B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhBJUQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:16:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43712 "EHLO mail.kernel.org"
+        id S232995AbhBJURj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:17:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232633AbhBJUPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:15:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35E3664EDC;
-        Wed, 10 Feb 2021 20:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612988102;
-        bh=r/No3x3rSk0JYnz2UamJxVPWG/1ISWzATXx2W1f9E04=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tdT6r7r6eJMWlC552xlSFdforr/wNL0FhzRUrC+ju16LkunzX707FWzyjgAZk9gy3
-         3LRbAockGDUgi/BGSzGg0PdxiusWj/f1guxVkqIQlHrVABF5vRs9vD2VVkabnrypRc
-         k/naUOzADzYC04Q069OJn64tev058ePKH8adonDwydveyqCeRKsR6ZvGY9H9LZ7uyB
-         ehT40x3/XJaEhFn1gKXun4g1hzsallbCuwp3abEsf/LRT7oZJETcwQTWDLkkLPo+vT
-         RkNUj6JVnEx1hEvZ7Zt75jKyzMig34cqTPG9nX6UjYviaco9N3UtxWuj3CdLleNeW9
-         xPElaD1Ti4Ldw==
-Received: by mail-ej1-f52.google.com with SMTP id sa23so6471561ejb.0;
-        Wed, 10 Feb 2021 12:15:02 -0800 (PST)
-X-Gm-Message-State: AOAM533xls1ALlRljv95zKJbi+seFDoG9dU7b6HjOkO2gHpjZ4WvkFaT
-        jSIZNIWLzue3LZ77jNh7dB0KL1XhnpafMIEEuQ==
-X-Google-Smtp-Source: ABdhPJy4NyRQrC+yxTcZyeNeARG05mZWAUz1l9/Io0wEWT/h680z3Nef++CU9ppswAxT2p4Y8e+3G2+6unKgqsXEKzw=
-X-Received: by 2002:a17:906:fca1:: with SMTP id qw1mr4421793ejb.130.1612988100766;
- Wed, 10 Feb 2021 12:15:00 -0800 (PST)
+        id S230229AbhBJURf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 15:17:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57FD564EDC;
+        Wed, 10 Feb 2021 20:16:54 +0000 (UTC)
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     gregkh@linuxfoundation.org
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH v3] driver core: auxiliary bus: Fix calling stage for auxiliary bus init
+Date:   Wed, 10 Feb 2021 13:16:11 -0700
+Message-Id: <20210210201611.1611074-1-dave.jiang@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210210214720.02e6a6be@canb.auug.org.au> <YCQjfqH415zIhhyz@kroah.com>
- <CAGETcx88Ln2XxuLN7P2BVhzB=OQxPLLsBN7WLL1j2JtR4+Z8ow@mail.gmail.com> <CAGETcx9zM2OdbNDcC7pXGtY9yqRgb-wt0YzFv6wfNgQi0gM+8w@mail.gmail.com>
-In-Reply-To: <CAGETcx9zM2OdbNDcC7pXGtY9yqRgb-wt0YzFv6wfNgQi0gM+8w@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 10 Feb 2021 14:14:48 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLrRQs2Q_ui2SLdEBJ7FuYNpC-_K+9yoQjyMDbhaRbLiQ@mail.gmail.com>
-Message-ID: <CAL_JsqLrRQs2Q_ui2SLdEBJ7FuYNpC-_K+9yoQjyMDbhaRbLiQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the driver-core tree
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg KH <greg@kroah.com>, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 1:17 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Wed, Feb 10, 2021 at 11:06 AM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Wed, Feb 10, 2021 at 10:18 AM Greg KH <greg@kroah.com> wrote:
-> > >
-> > > On Wed, Feb 10, 2021 at 09:47:20PM +1100, Stephen Rothwell wrote:
-> > > > Hi all,
-> > > >
-> > > > After merging the driver-core tree, today's linux-next build (sparc64
-> > > > defconfig) failed like this:
-> > > >
-> > > > drivers/of/property.o: In function `parse_interrupts':
-> > > > property.c:(.text+0x14e0): undefined reference to `of_irq_parse_one'
-> > > >
-> > > > Caused by commit
-> > > >
-> > > >   f265f06af194 ("of: property: Fix fw_devlink handling of interrupts/interrupts-extended")
-> > > >
-> > > > CONFIG_OF_IRQ depends on !SPARC so of_irq_parse_one() needs a stub.
+When the auxiliary device code is built into the kernel, it can be executed
+before the auxiliary bus is registered. This causes bus->p to be not
+allocated and triggers a NULL pointer dereference when the auxiliary bus
+device gets added with bus_add_device(). Call the auxiliary_bus_init()
+under driver_init() so the bus is initialized before devices.
 
-It's always Sparc!
+Below is the kernel splat for the bug:
+[ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
+[ 1.950670] #PF: supervisor read access in kernel mode
+[ 1.950670] #PF: error_code(0x0000) - not-present page
+[ 1.950670] PGD 0
+[ 1.950670] Oops: 0000 1 SMP NOPTI
+[ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
+[ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
+[ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
+78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
+[ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
+[ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
+[ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
+[ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
+[ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
+[ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
+[ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
+[ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
+[ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+[ 1.950670] PKRU: 55555554
+[ 1.950670] Call Trace:
+[ 1.950670] device_add+0x3ee/0x850
+[ 1.950670] __auxiliary_device_add+0x47/0x60
+[ 1.950670] idxd_pci_probe+0xf77/0x1180
+[ 1.950670] local_pci_probe+0x4a/0x90
+[ 1.950670] pci_device_probe+0xff/0x1b0
+[ 1.950670] really_probe+0x1cf/0x440
+[ 1.950670] ? rdinit_setup+0x31/0x31
+[ 1.950670] driver_probe_device+0xe8/0x150
+[ 1.950670] device_driver_attach+0x58/0x60
+[ 1.950670] __driver_attach+0x8f/0x150
+[ 1.950670] ? device_driver_attach+0x60/0x60
+[ 1.950670] ? device_driver_attach+0x60/0x60
+[ 1.950670] bus_for_each_dev+0x79/0xc0
+[ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
+[ 1.950670] driver_attach+0x1e/0x20
+[ 1.950670] bus_add_driver+0x154/0x1f0
+[ 1.950670] driver_register+0x70/0xc0
+[ 1.950670] __pci_register_driver+0x54/0x60
+[ 1.950670] idxd_init_module+0xe2/0xfc
+[ 1.950670] ? idma64_platform_driver_init+0x19/0x19
+[ 1.950670] do_one_initcall+0x4a/0x1e0
+[ 1.950670] kernel_init_freeable+0x1fc/0x25c
+[ 1.950670] ? rest_init+0xba/0xba
+[ 1.950670] kernel_init+0xe/0x116
+[ 1.950670] ret_from_fork+0x1f/0x30
+[ 1.950670] Modules linked in:
+[ 1.950670] CR2: 0000000000000060
+[ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
 
-> > > > I have added the following patch for today.
-> > > >
-> > > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > Date: Wed, 10 Feb 2021 21:27:56 +1100
-> > > > Subject: [PATCH] of: irq: make a stub for of_irq_parse_one()
-> > > >
-> > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > > ---
-> > > >  include/linux/of_irq.h | 9 +++++++--
-> > > >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > Thanks Stephen!
->
-> Actually the stub needs to return an error. 0 indicates it found the interrupt.
+Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
+Acked-by: Dave Ertman <david.m.ertman@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+---
 
-I have a slight preference if you could add an 'if
-(!IS_ENABLED(CONFIG_OF_IRQ))' at the caller instead.
+v3:
+- Change init function to return void. (GregKH)
+v2:
+- Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
 
-If you grep of_irq_parse_one, you'll see there's only a few users
-which means it's on my hit list to make it private. Stub functions
-give the impression 'use everywhere'.
+ drivers/base/base.h      |  5 +++++
+ drivers/base/auxiliary.c | 13 +++----------
+ drivers/base/init.c      |  1 +
+ 3 files changed, 9 insertions(+), 10 deletions(-)
 
-Rob
+diff --git a/drivers/base/base.h b/drivers/base/base.h
+index f5600a83124f..52b3d7b75c27 100644
+--- a/drivers/base/base.h
++++ b/drivers/base/base.h
+@@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
+ extern int platform_bus_init(void);
+ extern void cpu_dev_init(void);
+ extern void container_dev_init(void);
++#ifdef CONFIG_AUXILIARY_BUS
++extern void auxiliary_bus_init(void);
++#else
++static inline void auxiliary_bus_init(void) { }
++#endif
+ 
+ struct kobject *virtual_device_parent(struct device *dev);
+ 
+diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+index 8336535f1e11..d8b314e7d0fd 100644
+--- a/drivers/base/auxiliary.c
++++ b/drivers/base/auxiliary.c
+@@ -15,6 +15,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/string.h>
+ #include <linux/auxiliary_bus.h>
++#include "base.h"
+ 
+ static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
+ 							    const struct auxiliary_device *auxdev)
+@@ -260,19 +261,11 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
+ }
+ EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
+ 
+-static int __init auxiliary_bus_init(void)
++void __init auxiliary_bus_init(void)
+ {
+-	return bus_register(&auxiliary_bus_type);
++	WARN_ON(bus_register(&auxiliary_bus_type));
+ }
+ 
+-static void __exit auxiliary_bus_exit(void)
+-{
+-	bus_unregister(&auxiliary_bus_type);
+-}
+-
+-module_init(auxiliary_bus_init);
+-module_exit(auxiliary_bus_exit);
+-
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("Auxiliary Bus");
+ MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
+diff --git a/drivers/base/init.c b/drivers/base/init.c
+index 908e6520e804..a9f57c22fb9e 100644
+--- a/drivers/base/init.c
++++ b/drivers/base/init.c
+@@ -32,6 +32,7 @@ void __init driver_init(void)
+ 	 */
+ 	of_core_init();
+ 	platform_bus_init();
++	auxiliary_bus_init();
+ 	cpu_dev_init();
+ 	memory_dev_init();
+ 	container_dev_init();
+-- 
+2.26.2
+
