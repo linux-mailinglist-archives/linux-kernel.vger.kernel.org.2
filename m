@@ -2,198 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C16316BC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8265A316BC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhBJQwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:52:38 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:39949 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233088AbhBJQty (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:49:54 -0500
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id C73D523E83;
-        Wed, 10 Feb 2021 17:48:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1612975681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HOk8FU5aNzbxZFRMHXvhBJsCoU8i/72M6o4pS66b2UU=;
-        b=bQnI9A2DPvVPWMVpfchXUVMuVndTc4oRIF8BPrG2hBMTgvqsbJNGjim7hVp/mhmZS7w7Xx
-        iP38Vz4ALaUJ3nRpoR8ZwbjJNAJ7mQBnJSJNdhB0bx8A2FdGIlDEyzRgY6IhYC3PygSZ/u
-        jhh+y4nTcms84yuMMOVOHbHFzANueHQ=
-From:   Michael Walle <michael@walle.cc>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH net-next v2 9/9] net: phy: icplus: add MDI/MDIX support for IP101A/G
-Date:   Wed, 10 Feb 2021 17:47:46 +0100
-Message-Id: <20210210164746.26336-10-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210210164746.26336-1-michael@walle.cc>
-References: <20210210164746.26336-1-michael@walle.cc>
+        id S233277AbhBJQwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:52:21 -0500
+Received: from mga03.intel.com ([134.134.136.65]:53339 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233087AbhBJQtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:49:51 -0500
+IronPort-SDR: k4QgDAZxiXRIQ1Wx9gufipSaKME6IDYduo92w47UnMqWnpKFwrTq4PpVJDmIAzgXUemmgeoaSo
+ ygbLzyHA6QhQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="182174754"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="182174754"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:49:06 -0800
+IronPort-SDR: nPop3UUEPWzWG5fYpSunzvTaGuD6gWSniBaNF3DXgUFmgxy8A0z61/KAFosXfm+zC90iYn5hx8
+ aJeiJSXGNRfA==
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="396773601"
+Received: from lgrunes-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.135.4])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:49:06 -0800
+Date:   Wed, 10 Feb 2021 08:49:04 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Ariel.Sibley@microchip.com
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        cbrowy@avery-design.com, hch@infradead.org,
+        dan.j.williams@intel.com, david@redhat.com, rientjes@google.com,
+        ira.weiny@intel.com, jcm@jonmasters.org,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        rdunlap@infradead.org, vishal.l.verma@intel.com,
+        jgroves@micron.com, sean.v.kelley@intel.com
+Subject: Re: [PATCH v2 5/8] cxl/mem: Add a "RAW" send command
+Message-ID: <20210210164904.lfhtfvlyeypfpjhe@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-6-ben.widawsky@intel.com>
+ <MN2PR11MB36455574E25237635D3F9CC0888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR11MB36455574E25237635D3F9CC0888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the operations to set desired mode and retrieve the current
-mode.
+On 21-02-10 15:26:27, Ariel.Sibley@microchip.com wrote:
+> > diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> > index c4ba3aa0a05d..08eaa8e52083 100644
+> > --- a/drivers/cxl/Kconfig
+> > +++ b/drivers/cxl/Kconfig
+> > @@ -33,6 +33,24 @@ config CXL_MEM
+> > 
+> >           If unsure say 'm'.
+> > 
+> > +config CXL_MEM_RAW_COMMANDS
+> > +       bool "RAW Command Interface for Memory Devices"
+> > +       depends on CXL_MEM
+> > +       help
+> > +         Enable CXL RAW command interface.
+> > +
+> > +         The CXL driver ioctl interface may assign a kernel ioctl command
+> > +         number for each specification defined opcode. At any given point in
+> > +         time the number of opcodes that the specification defines and a device
+> > +         may implement may exceed the kernel's set of associated ioctl function
+> > +         numbers. The mismatch is either by omission, specification is too new,
+> > +         or by design. When prototyping new hardware, or developing /
+> > debugging
+> > +         the driver it is useful to be able to submit any possible command to
+> > +         the hardware, even commands that may crash the kernel due to their
+> > +         potential impact to memory currently in use by the kernel.
+> > +
+> > +         If developing CXL hardware or the driver say Y, otherwise say N.
+> 
+> Blocking RAW commands by default will prevent vendors from developing user
+> space tools that utilize vendor specific commands. Vendors of CXL.mem devices
+> should take ownership of ensuring any vendor defined commands that could cause
+> user data to be exposed or corrupted are disabled at the device level for
+> shipping configurations.
 
-This feature was tested with an IP101G.
+Thanks for brining this up Ariel. If there is a recommendation on how to codify
+this, I would certainly like to know because the explanation will be long.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 ---
-Changes since v1:
- - none, except that the callbacks are register for both IP101A and IP101G
-   PHY drivers
 
- drivers/net/phy/icplus.c | 93 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 93 insertions(+)
+The background:
 
-diff --git a/drivers/net/phy/icplus.c b/drivers/net/phy/icplus.c
-index 52ba5a697025..26b591e18120 100644
---- a/drivers/net/phy/icplus.c
-+++ b/drivers/net/phy/icplus.c
-@@ -37,12 +37,17 @@ MODULE_LICENSE("GPL");
- #define IP1001_SPEC_CTRL_STATUS_2	20	/* IP1001 Spec. Control Reg 2 */
- #define IP1001_APS_ON			11	/* IP1001 APS Mode  bit */
- #define IP101A_G_APS_ON			BIT(1)	/* IP101A/G APS Mode bit */
-+#define IP101A_G_AUTO_MDIX_DIS		BIT(11)
- #define IP101A_G_IRQ_CONF_STATUS	0x11	/* Conf Info IRQ & Status Reg */
- #define	IP101A_G_IRQ_PIN_USED		BIT(15) /* INTR pin used */
- #define IP101A_G_IRQ_ALL_MASK		BIT(11) /* IRQ's inactive */
- #define IP101A_G_IRQ_SPEED_CHANGE	BIT(2)
- #define IP101A_G_IRQ_DUPLEX_CHANGE	BIT(1)
- #define IP101A_G_IRQ_LINK_CHANGE	BIT(0)
-+#define IP101A_G_PHY_STATUS		18
-+#define IP101A_G_MDIX			BIT(9)
-+#define IP101A_G_PHY_SPEC_CTRL		30
-+#define IP101A_G_FORCE_MDIX		BIT(3)
- 
- #define IP101G_PAGE_CONTROL				0x14
- #define IP101G_PAGE_CONTROL_MASK			GENMASK(4, 0)
-@@ -297,6 +302,90 @@ static int ip101g_config_init(struct phy_device *phydev)
- 	return ip101a_g_config_intr_pin(phydev);
- }
- 
-+static int ip101a_g_read_status(struct phy_device *phydev)
-+{
-+	int oldpage, ret, stat1, stat2;
-+
-+	ret = genphy_read_status(phydev);
-+	if (ret)
-+		return ret;
-+
-+	oldpage = phy_select_page(phydev, IP101G_DEFAULT_PAGE);
-+
-+	ret = __phy_read(phydev, IP10XX_SPEC_CTRL_STATUS);
-+	if (ret < 0)
-+		goto out;
-+	stat1 = ret;
-+
-+	ret = __phy_read(phydev, IP101A_G_PHY_SPEC_CTRL);
-+	if (ret < 0)
-+		goto out;
-+	stat2 = ret;
-+
-+	if (stat1 & IP101A_G_AUTO_MDIX_DIS) {
-+		if (stat2 & IP101A_G_FORCE_MDIX)
-+			phydev->mdix_ctrl = ETH_TP_MDI_X;
-+		else
-+			phydev->mdix_ctrl = ETH_TP_MDI;
-+	} else {
-+		phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
-+	}
-+
-+	if (stat2 & IP101A_G_MDIX)
-+		phydev->mdix = ETH_TP_MDI_X;
-+	else
-+		phydev->mdix = ETH_TP_MDI;
-+
-+	ret = 0;
-+
-+out:
-+	return phy_restore_page(phydev, oldpage, ret);
-+}
-+
-+static int ip101a_g_config_mdix(struct phy_device *phydev)
-+{
-+	u16 ctrl = 0, ctrl2 = 0;
-+	int oldpage, ret;
-+
-+	switch (phydev->mdix_ctrl) {
-+	case ETH_TP_MDI:
-+		ctrl = IP101A_G_AUTO_MDIX_DIS;
-+		break;
-+	case ETH_TP_MDI_X:
-+		ctrl = IP101A_G_AUTO_MDIX_DIS;
-+		ctrl2 = IP101A_G_FORCE_MDIX;
-+		break;
-+	case ETH_TP_MDI_AUTO:
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	oldpage = phy_select_page(phydev, IP101G_DEFAULT_PAGE);
-+
-+	ret = __phy_modify(phydev, IP10XX_SPEC_CTRL_STATUS,
-+			   IP101A_G_AUTO_MDIX_DIS, ctrl);
-+	if (ret)
-+		goto out;
-+
-+	ret = __phy_modify(phydev, IP101A_G_PHY_SPEC_CTRL,
-+			   IP101A_G_FORCE_MDIX, ctrl2);
-+
-+out:
-+	return phy_restore_page(phydev, oldpage, ret);
-+}
-+
-+static int ip101a_g_config_aneg(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	ret = ip101a_g_config_mdix(phydev);
-+	if (ret)
-+		return ret;
-+
-+	return genphy_config_aneg(phydev);
-+}
-+
- static int ip101a_g_ack_interrupt(struct phy_device *phydev)
- {
- 	int err;
-@@ -503,6 +592,8 @@ static struct phy_driver icplus_driver[] = {
- 	.config_intr	= ip101a_g_config_intr,
- 	.handle_interrupt = ip101a_g_handle_interrupt,
- 	.config_init	= ip101a_config_init,
-+	.config_aneg	= ip101a_g_config_aneg,
-+	.read_status	= ip101a_g_read_status,
- 	.soft_reset	= genphy_soft_reset,
- 	.suspend	= genphy_suspend,
- 	.resume		= genphy_resume,
-@@ -516,6 +607,8 @@ static struct phy_driver icplus_driver[] = {
- 	.config_intr	= ip101a_g_config_intr,
- 	.handle_interrupt = ip101a_g_handle_interrupt,
- 	.config_init	= ip101g_config_init,
-+	.config_aneg	= ip101a_g_config_aneg,
-+	.read_status	= ip101a_g_read_status,
- 	.soft_reset	= genphy_soft_reset,
- 	.get_sset_count = ip101g_get_sset_count,
- 	.get_strings	= ip101g_get_strings,
--- 
-2.20.1
+The enabling/disabling of the Kconfig option is driven by the distribution
+and/or system integrator. Even if we made the default 'y', nothing stops them
+from changing that. if you are using this driver in production and insist on
+using RAW commands, you are free to carry around a small patch to get rid of the
+WARN (it is a one-liner).
 
+To recap why this is in place - the driver owns the sanctity of the device and
+therefore a [large] part of the whole system. What we can do as driver writers
+is figure out the set of commands that are "safe" and allow those. Aside from
+being able to validate them, we're able to mediate them with other parallel
+operations that might conflict. We gain the ability to squint extra hard at bug
+reports. We provide a reason to try to use a well defined part of the spec.
+Realizing that only allowing that small set of commands in a rapidly growing
+ecosystem is not a welcoming API; we decided on RAW.
+
+Vendor commands can be one of two types:
+1. Some functionality probably most vendors want.
+2. Functionality that is really single vendor specific.
+
+Hopefully we can agree that the path for case #1 is to work with the consortium
+to standardize a command that does what is needed and that can eventually become
+part of UAPI. The situation is unfortunate, but temporary. If you won't be able
+to upgrade your kernel, patch out the WARN as above.
+
+The second situation is interesting and does need some more thought and
+discussion.
+
+---
+
+I see 3 realistic options for truly vendor specific commands.
+1. Tough noogies. Vendors aren't special and they shouldn't do that.
+2. modparam to disable the WARN for specific devices (let the sysadmin decide)
+3. Try to make them part of UAPI.
+
+The right answer to me is #1, but I also realize I live in the real world.
+
+#2 provides too much flexibility. Vendors will just do what they please and
+distros and/or integrators will be seen as hostile if they don't accommodate.
+
+I like #3, but I have a feeling not everyone will agree. My proposal for vendor
+specific commands is, if it's clear it's truly a unique command, allow adding it
+as part of UAPI (moving it out of RAW). I expect like 5 of these, ever. If we
+start getting multiple per vendor, we've failed. The infrastructure is already
+in place to allow doing this pretty easily. I think we'd have to draw up some
+guidelines (like adding test cases for the command) to allow these to come in.
+Anything with command effects is going to need extra scrutiny.
+
+In my opinion, as maintainers of the driver, we do owe the community an answer
+as to our direction for this. Dan, what is your thought?
