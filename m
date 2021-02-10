@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B960F316898
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481BF3168A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhBJOBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:01:12 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60182 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbhBJOAO (ORCPT
+        id S231972AbhBJOCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:02:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231709AbhBJOAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:00:14 -0500
+        Wed, 10 Feb 2021 09:00:30 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645C8C06178B;
+        Wed, 10 Feb 2021 05:59:32 -0800 (PST)
 Date:   Wed, 10 Feb 2021 13:59:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1612965571;
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5twxcMTESUJy4VsUJZl6DxaJC26vQah7lRxd18c0y4U=;
-        b=w6N3urLKu9UZMLqxyN7q7nQ50Qi8AA0LSMFtHyDNO+nCEpwfyE4brNF+gt6BRqOVI/7Wfn
-        d5WqlVzcsvdeiAGFWZ7LUcWtlQUkyQvBpu41HJMPlk29cx/+s4JBPJXi4agg4iBntketvw
-        SFf5Oi/y4cbgL7vpcc29H79uiI6qiM0stIVl5KFG1ArJdW1+7k3zomRxABolFZnigymEX/
-        3Su53p7r8Ah/cajfVRK6W7GuS66h3bD+cufT88QD5wp7T0Eq/SliuCzaDydbBZQsH8TYXS
-        JS4uMNn11F0qNH2m7plT2TrfcxoIkKQfItHdgl68ZM4DAgQvKHFsxUZ4O0wI+Q==
+        bh=SXxaxPVmthlLPYH94L3qiYzVbFKur4bVfH0likKjx/I=;
+        b=sLK9N5civ3FNz/7ptJJWBIR6pfEzvSKguZo6TxTc4KjSbw6nieBPrWOciP1lUGWoJAF9pm
+        P5O+TQXALUDrOlySBRpoBB3BedMjBrxUof/a2rABBu3vLNPJOsd9ljIj1RGJzhUVSgMbNF
+        l88Qp5/iOTx9YKaIqu1ATX5CgoYv3dz3LN4smZr1QGHZANZ1jAgmlnvaFYTlEFLG9a3zIj
+        9VQPI+np9B45l5FbjO9nVLKCP89L+Jf2DhPDaoneWqdAvy0ZXX4p+ko9Vk+pP1gwv1BQ+3
+        757Yp4Kys3V7JtEkgxjtwRmIm1L/fIDm9Lk7MGUTln2klVmOefvgkmVvUMQUkw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1612965571;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,23 +36,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5twxcMTESUJy4VsUJZl6DxaJC26vQah7lRxd18c0y4U=;
-        b=CY2XDSbuZjPdjzJfW1lJXi4H6LdCA4VerYFoKSfJlCBjAC/Lcsk2DirVQL5tSJzQQJwDA+
-        LftQAiXzKPEDUnBA==
-From:   "tip-bot2 for Jim Mattson" <tip-bot2@linutronix.de>
+        bh=SXxaxPVmthlLPYH94L3qiYzVbFKur4bVfH0likKjx/I=;
+        b=cdMAdKlEGCgKacrNwSem3GP6inD1R6GeKhx4Y2VZZRQYyTJKXwDOjufEdBXDFko5S0ZVfb
+        u6IYn+yMWt6bQpAw==
+From:   "tip-bot2 for Zhang Rui" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/kvm: Add Cascade Lake Xeon steppings to
- isolation_ucodes[]
-Cc:     Jim Mattson <jmattson@google.com>,
+Subject: [tip: perf/core] perf/x86/rapl: Add msr mask support
+Cc:     Zhang Rui <rui.zhang@intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210205191324.2889006-1-jmattson@google.com>
-References: <20210205191324.2889006-1-jmattson@google.com>
+In-Reply-To: <20210204161816.12649-1-rui.zhang@intel.com>
+References: <20210204161816.12649-1-rui.zhang@intel.com>
 MIME-Version: 1.0
-Message-ID: <161296557060.23325.2852849746600741313.tip-bot2@tip-bot2>
+Message-ID: <161296557037.23325.12133894476994706739.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,44 +62,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     b3c3361fe325074d4144c29d46daae4fc5a268d5
-Gitweb:        https://git.kernel.org/tip/b3c3361fe325074d4144c29d46daae4fc5a268d5
-Author:        Jim Mattson <jmattson@google.com>
-AuthorDate:    Fri, 05 Feb 2021 11:13:24 -08:00
+Commit-ID:     ffb20c2e52e8709b5fc9951e8863e31efb1f2cba
+Gitweb:        https://git.kernel.org/tip/ffb20c2e52e8709b5fc9951e8863e31efb1f2cba
+Author:        Zhang Rui <rui.zhang@intel.com>
+AuthorDate:    Fri, 05 Feb 2021 00:18:14 +08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Wed, 10 Feb 2021 14:44:54 +01:00
 
-perf/x86/kvm: Add Cascade Lake Xeon steppings to isolation_ucodes[]
+perf/x86/rapl: Add msr mask support
 
-Cascade Lake Xeon parts have the same model number as Skylake Xeon
-parts, so they are tagged with the intel_pebs_isolation
-quirk. However, as with Skylake Xeon H0 stepping parts, the PEBS
-isolation issue is fixed in all microcode versions.
+In some cases, when probing a perf MSR, we're probing certain bits of the
+MSR instead of the whole register, thus only these bits should be checked.
 
-Add the Cascade Lake Xeon steppings (5, 6, and 7) to the
-isolation_ucodes[] table so that these parts benefit from Andi's
-optimization in commit 9b545c04abd4f ("perf/x86/kvm: Avoid unnecessary
-work in guest filtering").
+For example, for RAPL ENERGY_STATUS MSR, only the lower 32 bits represents
+the energy counter, and the higher 32bits are reserved.
 
-Signed-off-by: Jim Mattson <jmattson@google.com>
+Introduce a new mask field in struct perf_msr to allow probing certain
+bits of a MSR.
+
+This change is transparent to the current perf_msr_probe() users.
+
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Link: https://lkml.kernel.org/r/20210205191324.2889006-1-jmattson@google.com
+Link: https://lkml.kernel.org/r/20210204161816.12649-1-rui.zhang@intel.com
 ---
- arch/x86/events/intel/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/events/probe.c | 7 ++++++-
+ arch/x86/events/probe.h | 7 ++++---
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 67a7246..5bac48d 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -4513,6 +4513,9 @@ static const struct x86_cpu_desc isolation_ucodes[] = {
- 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 2, 0x0b000014),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 3, 0x00000021),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 4, 0x00000000),
-+	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 5, 0x00000000),
-+	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 6, 0x00000000),
-+	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 7, 0x00000000),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_L,		 3, 0x0000007c),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE,		 3, 0x0000007c),
- 	INTEL_CPU_DESC(INTEL_FAM6_KABYLAKE,		 9, 0x0000004e),
+diff --git a/arch/x86/events/probe.c b/arch/x86/events/probe.c
+index 136a1e8..600bf8d 100644
+--- a/arch/x86/events/probe.c
++++ b/arch/x86/events/probe.c
+@@ -28,6 +28,7 @@ perf_msr_probe(struct perf_msr *msr, int cnt, bool zero, void *data)
+ 	for (bit = 0; bit < cnt; bit++) {
+ 		if (!msr[bit].no_check) {
+ 			struct attribute_group *grp = msr[bit].grp;
++			u64 mask;
+ 
+ 			/* skip entry with no group */
+ 			if (!grp)
+@@ -44,8 +45,12 @@ perf_msr_probe(struct perf_msr *msr, int cnt, bool zero, void *data)
+ 			/* Virt sucks; you cannot tell if a R/O MSR is present :/ */
+ 			if (rdmsrl_safe(msr[bit].msr, &val))
+ 				continue;
++
++			mask = msr[bit].mask;
++			if (!mask)
++				mask = ~0ULL;
+ 			/* Disable zero counters if requested. */
+-			if (!zero && !val)
++			if (!zero && !(val & mask))
+ 				continue;
+ 
+ 			grp->is_visible = NULL;
+diff --git a/arch/x86/events/probe.h b/arch/x86/events/probe.h
+index 4c8e0af..261b9bd 100644
+--- a/arch/x86/events/probe.h
++++ b/arch/x86/events/probe.h
+@@ -4,10 +4,11 @@
+ #include <linux/sysfs.h>
+ 
+ struct perf_msr {
+-	u64			  msr;
+-	struct attribute_group	 *grp;
++	u64			msr;
++	struct attribute_group	*grp;
+ 	bool			(*test)(int idx, void *data);
+-	bool			  no_check;
++	bool			no_check;
++	u64			mask;
+ };
+ 
+ unsigned long
