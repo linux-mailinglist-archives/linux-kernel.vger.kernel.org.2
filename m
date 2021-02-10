@@ -2,90 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6C8316D09
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E10316D0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbhBJRmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:42:37 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:62870 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbhBJRmS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:42:18 -0500
-Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11AHfZjc062357;
-        Thu, 11 Feb 2021 02:41:35 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
- Thu, 11 Feb 2021 02:41:35 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11AHfZVx062313
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 11 Feb 2021 02:41:35 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 0/3][RESEND] add support for never printing hashed
- addresses
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210210051814.845713-1-timur@kernel.org>
- <6da0be5a-7cb0-4943-e61f-7c3275e60cb6@i-love.sakura.ne.jp>
- <20210210111836.2468f10a@gandalf.local.home>
- <e996ff2f-d350-1399-bb6b-8373bf70e687@i-love.sakura.ne.jp>
- <YCQPs9qg8dbSOh0S@smile.fi.intel.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <af2488cc-f2e1-533e-0e42-457d756fb5d9@i-love.sakura.ne.jp>
-Date:   Thu, 11 Feb 2021 02:41:29 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232675AbhBJRmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:42:43 -0500
+Received: from mga02.intel.com ([134.134.136.20]:59687 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232738AbhBJRmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:42:24 -0500
+IronPort-SDR: 4f7j/4CAWXqupxvv+mrZm2ItpqU9AlZuTbhxic2M9XAsV1PW7xmip3q+rGCYx5eHocY3mZOzwY
+ KLrENGhXRTgA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="169245631"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="169245631"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 09:41:57 -0800
+IronPort-SDR: wjZP32tJvp/ajSGKYPIxtQQB3Ct8yiqhQZ7juR3aCb9DOn6EhYFJ1EqOaAMHEgO6YP64aveDI2
+ xcAc+DtTevNg==
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="488817501"
+Received: from tryu-mobl2.amr.corp.intel.com (HELO [10.209.100.152]) ([10.209.100.152])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 09:41:56 -0800
+Subject: Re: [PATCH] x86, sched: Allow NUMA nodes to share an LLC on Intel
+ platforms
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Luck, Tony" <tony.luck@intel.com>
+Cc:     "Schofield, Alison" <alison.schofield@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Prarit Bhargava <prarit@redhat.com>,
+        "brice.goglin@gmail.com" <brice.goglin@gmail.com>
+References: <20210209223943.9834-1-alison.schofield@intel.com>
+ <af770863e70340d294c324fd7004f658@intel.com>
+ <YCOU+1GT4+hxqH5/@hirez.programming.kicks-ass.net>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <aa1c9908-999f-7a84-300e-48122076a4da@intel.com>
+Date:   Wed, 10 Feb 2021 09:41:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YCQPs9qg8dbSOh0S@smile.fi.intel.com>
+In-Reply-To: <YCOU+1GT4+hxqH5/@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/02/11 1:54, Andy Shevchenko wrote:
-> On Thu, Feb 11, 2021 at 01:39:41AM +0900, Tetsuo Handa wrote:
->> On 2021/02/11 1:18, Steven Rostedt wrote:
->>> The point of this exercise is to be able to debug the *same* kernel that
->>> someone is having issues with. And this is to facilitate that debugging.
+On 2/10/21 12:10 AM, Peter Zijlstra wrote:
+> On Tue, Feb 09, 2021 at 11:09:27PM +0000, Luck, Tony wrote:
+>>> +#define X86_BUG_NUMA_SHARES_LLC		X86_BUG(25) /* CPU may enumerate an LLC shared by multiple NUMA nodes */
 >>
->> That's too difficult to use. If a problem is not reproducible, we will have
->> no choice but always specify "never hash pointers" command line option. If a
->> problem is reproducible, we can rebuild that kernel with "never hash pointers"
->> config option turned on.
+>> During internal review I wondered why this is a "BUG" rather than a "FEATURE" bit.
+>>
+>> Apparently, the suggestion for "BUG" came from earlier community discussions.
+>>
+>> Historically it may have seemed reasonable to say that a cache cannot span
+>> NUMA domains. But with more and more things moving off the motherboard
+>> and into the socket, this doesn't seem too weird now.
 > 
-> I think what you are targeting is something like dynamic debug approach where
-> you can choose which prints to enable/disable and what enable/disable in them.
+> If you look at the details this SNC LLC span doesn't behave quite right
+> either.
 
-What I'm targeting is "zero interaction from kernel command line options" like
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/usb/usbip?id=f1bdf414e7dd0cbc26460425719fc3ea479947a2 .
+Yes, the rules are weird.  I came to the conclusion that there's no
+precise way to enumerate these rules with the existing CPUID-based cache
+enumeration.
 
+I can send you my powerpoint slides. ;)
+
+> It really isn't a regular cache, but behaves a bit like a mash-up of the
+> s390 book caches and a normal LLC.
 > 
-> In that case you specifically apply a command line option and enable only files
-> / lines in the files.
+> Did anybody play with adding the book domain to these SNC
+> configurations?
 
-While there is boot-config feature for specifying very long kernel command line
-options, I can't enforce syzkaller users (including syzbot) to switch what to
-enable/disable via kernel command line options. Let alone defining a kernel
-command line option for single-purpose debug printk() changes like shown above.
+Nope.  Probably mostly because we don't have a great way of generating it.
 
+For those playing along at home, I think Peter is talking about this:
+
+static struct sched_domain_topology_level s390_topology[] = {
+        { cpu_thread_mask, cpu_smt_flags, SD_INIT_NAME(SMT) },
+        { cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
+        { cpu_book_mask, SD_INIT_NAME(BOOK) },
+        { cpu_drawer_mask, SD_INIT_NAME(DRAWER) },
+        { cpu_cpu_mask, SD_INIT_NAME(DIE) },
+        { NULL, },
+};
+
+From arch/s390/kernel/topology.c
+
+> Can we detect SNC other than by this quirk?
+
+I'm sure there's _a_ way, but nothing that's architectural.  The kernel
+has literally been given all the information about the topology that it
+needs from the CPU and the firmware.  The problem is that that
+information resembles garbage that the kernel has been presented with in
+the past.
+
+I guess you're saying that it would be nice to have some other bit of
+info that the kernel can use to boost its confidence that the
+hardware/bios are being sane.
