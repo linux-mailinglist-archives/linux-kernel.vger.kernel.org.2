@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62293174C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7FE3174CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:55:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234030AbhBJXxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:53:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50364 "EHLO
+        id S234077AbhBJXyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbhBJXxe (ORCPT
+        with ESMTP id S233906AbhBJXyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:53:34 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5B7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:52:54 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id u15so2167117plf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:52:54 -0800 (PST)
+        Wed, 10 Feb 2021 18:54:13 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAECC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:53:33 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id e12so2161948pls.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:53:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sw+4hTERsJ95x3OUdaatH7l2UPgiDomv1hcpD2ZxNqI=;
-        b=iJXkbpWf9Xp9xhd3DRYZ2iFa+7t+86a8D1EhkB4lVs1Jtkp98ZoO0ydYq8PgTIPRr4
-         dSaxK+vQmGFp9dQB0ww/CwlfJfiTutb1O8n9myj/Wmm33DjVB5MncTpa43TXJ13vv7V+
-         ferU4u8NBVxNEEaAJ4Mg1LtlV3GgwwL3I0+BEoZq6WofvfSJ0AY+iZJZreNVB4ye9KdY
-         1wPlb+xVvc8U7Ju38o22ipV6TGntk8LGOjhpP7nhuXJ8e7kLur9RicbJROdLeVc5YXjl
-         vIIxnvVra6opi/iIvwS5QntTDhyVL12trjJwws+W2pT5m/Xc8zRqA6eFfdYBufAsRnZS
-         nRJA==
+        bh=zj5l2TaWH01pVxKiROmW9tqp3Gf3tRU4tqswJVkyijs=;
+        b=LUu2Ql3S3LZ6KRQdIRM44fZdlo9FETEcPbpWfwzfWP/OwB2kfGhk0NBQZ444Y6gS84
+         cqqRyzWrA01gsetE2YnXTYM25dF340zx9L4r0rMEqS6FXzVh7ZPSlX9j3AdbC/MEDIai
+         +6zU4S0K5cbNDo9xidyAHRDKZc7J+1uFcCg8s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=sw+4hTERsJ95x3OUdaatH7l2UPgiDomv1hcpD2ZxNqI=;
-        b=hVOChk75ifDgtDhxI4639nCW7zJzO1Lnko1IuJAmaNrkZQ6CjE0kRcwwNdgGRZLmUJ
-         TpWhnsP8qC9KfRhmbqyXbs6ncgz9t5iTtQ/IWScM2KsZ24OAE39+h/tIqnwt8IBhv0Bm
-         WSx192Q9MQI/yGvKw2IGmK4bBejH/DUxbhXQUBnp8SBZs6qDuy70ipMeaZNz9IlD0IXw
-         tHoATvI4bU21VlxJZw9uD7Oul1doiag0QxsuMDVeIYUhbLu9fFvVpz621J6mcofl045E
-         P1hkjhB6ox12xgcdWux0mtotd35sIallP0oFWaAIeZv5rXgjrbLQG5YRJzLl9DOtCvj8
-         l6YA==
-X-Gm-Message-State: AOAM531CbW/4b6w6ZYG9SQ3XUBQf8Kqmk7a7AAiRDhjaUFmmiymQG2Yi
-        og5HTqyAvl/bkH1O4yyM3PE=
-X-Google-Smtp-Source: ABdhPJzSFkYB5GmLFSQZ4TnxB4yVnLTWzjlffBbDKs0fNJIFqC+FmWj5cvxz/qSViIuEQeRal1XKjA==
-X-Received: by 2002:a17:90a:1f4c:: with SMTP id y12mr1356739pjy.52.1613001174226;
-        Wed, 10 Feb 2021 15:52:54 -0800 (PST)
-Received: from voyager.lan ([45.124.203.14])
-        by smtp.gmail.com with ESMTPSA id y16sm3288419pgg.20.2021.02.10.15.52.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zj5l2TaWH01pVxKiROmW9tqp3Gf3tRU4tqswJVkyijs=;
+        b=F9Qx78corzJdFCBcbAMZfzAh+quZDKk3cGWCZecAgYDyFBLq1d6p+1DXkHJCnhlF5X
+         XNR2EyAk7GczFaAxcb58WL8ApE0K26LS0dBuQ+xSsHxFV6gAWZPMWEU0OtBuvUmtKAmq
+         PBu5WeVfjytJONasg7/w9LHZVsUWfqrwyQaagKoVeBrQtwNvmoINcIkMsDaZ6caZYqMH
+         nvXtJScxa8T49+O0nnxUvWgjvz74hwjKpzztp4j8zPqL7fzfNcPfv8K2UakhINiL4D4B
+         JOhrMSgzYOdheKtTGiagVdaDQcyD4j+eRZmKy2fM75FV3hHn/9Qh07cIEXEoO1rEVbLm
+         xb9Q==
+X-Gm-Message-State: AOAM530sBBAifCt7VHb22VQNVCF72GiVgtMBCzteK8rQMttPn5vY3eQ5
+        SDZGjVvSBjo3umhHQOzprV8Vfw==
+X-Google-Smtp-Source: ABdhPJxn6d4HljoUCZrvAdpCoL1DwQblJ3hzAj4YtXGibEqSQ9vSwDUtsmWUD2TANhfUPPfmDuB62A==
+X-Received: by 2002:a17:90a:80c5:: with SMTP id k5mr1260909pjw.217.1613001213199;
+        Wed, 10 Feb 2021 15:53:33 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 9sm3463308pgw.61.2021.02.10.15.53.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 15:52:53 -0800 (PST)
-Sender: "joel.stan@gmail.com" <joel.stan@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-To:     Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: kexec: Remove unused kexec_reinit callback
-Date:   Thu, 11 Feb 2021 10:22:43 +1030
-Message-Id: <20210210235243.398810-1-joel@jms.id.au>
-X-Mailer: git-send-email 2.30.0
+        Wed, 10 Feb 2021 15:53:32 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, Joe Perches <joe@perches.com>,
+        Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org
+Subject: [PATCH] usb: Replace lkml.org links with lore
+Date:   Wed, 10 Feb 2021 15:53:30 -0800
+Message-Id: <20210210235330.3292719-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+X-Patch-Hashes: v=1; h=sha256; g=d9c7823dad2ef78111b271ca0324a207be917bb3; i=D9zEhuNzLfa2liVytchUXDtYkln8bkxLBm379ZBYaEE=; m=kc8NgBcNkR1FdAUFoBcecPqIFWVDlhJwDI99K+gzg58=; p=UFVmbKtTxGlQA7W+7EMSXF0tvEoDMPhJZjpruI0gZTk=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmAkcfkACgkQiXL039xtwCYb+Q//Z9j +9FVgqmMRXE4nuTCPZfOr+xm1NHy0g6uanlaeK6qSazb/6IlwHZJEyBqFa9QEJTiCnqCbroi8hZuM hUHjYDbLzVynrDOVtIbWtWBaAEzZg/bMnwVDgz/PTTPrXRQUgqgDF21GHB+UCq6DM8UhOXwicSCQq GoawUmcNITtl5UDK8yEni6DLOgazLzoMH7/kecxCBFpKsJqNXzxb9a70GD8o8Q1QxWk1Co8bZlMss x2oCqS83UfLDe19pJGkfXyVT9auobZmfKss4THh9Qh2Fh+4zLjU/646T75LnxbloVSSEaPuMdtMxJ QGM4XX7cnXjO6umi/g+spE7/9mnJpuhDoBI977KfkTNHy8eEqUy5WPBfgtPdo8aBJh0WnJX/4niDe h+hjwzF56BibI2XW3fh2nDPX9r9KJN4/1QL00m18wxAue2W1DK4EVHpnWvN/EhRCvP2UPdCHjlwvD dSZmFFWa2fleEjwefhAstayJygRdE+BJeC7EgrZ1MTvD0O4Zt/jcbscDn6TYwkd4IpPZrqiFlfdVH MXRFJbd4ojlnfB6Y7NRI/h8nl8E+cgsJmodAcJ09kAvOcAXwu+TyAYFvso8czBnwxrzaVIENaHYbO bRZsiLjgoAS8tP+pUfKAqbX7oyYbRSpTWxcZavfd+jmdzuF/O9MpUh71azfOUOXY=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The last (only?) user of this was removed in commit ba364fc752da ("ARM:
-Kirkwood: Remove mach-kirkwood"), back in v3.17.
+As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
+links with lore"), replace lkml.org links with lore to better use a
+single source that's more likely to stay available long-term.
 
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm/include/asm/kexec.h    | 3 ---
- arch/arm/kernel/machine_kexec.c | 8 --------
- 2 files changed, 11 deletions(-)
+ drivers/usb/serial/ark3116.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/include/asm/kexec.h b/arch/arm/include/asm/kexec.h
-index 22751b5b5735..e62832dcba76 100644
---- a/arch/arm/include/asm/kexec.h
-+++ b/arch/arm/include/asm/kexec.h
-@@ -56,9 +56,6 @@ static inline void crash_setup_regs(struct pt_regs *newregs,
- 	}
- }
- 
--/* Function pointer to optional machine-specific reinitialization */
--extern void (*kexec_reinit)(void);
--
- static inline unsigned long phys_to_boot_phys(phys_addr_t phys)
- {
- 	return phys_to_idmap(phys);
-diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
-index 2b09dad7935e..f567032a09c0 100644
---- a/arch/arm/kernel/machine_kexec.c
-+++ b/arch/arm/kernel/machine_kexec.c
-@@ -147,11 +147,6 @@ void machine_crash_shutdown(struct pt_regs *regs)
- 	pr_info("Loading crashdump kernel...\n");
- }
- 
--/*
-- * Function pointer to optional machine-specific reinitialization
-- */
--void (*kexec_reinit)(void);
--
- void machine_kexec(struct kimage *image)
- {
- 	unsigned long page_list, reboot_entry_phys;
-@@ -187,9 +182,6 @@ void machine_kexec(struct kimage *image)
- 
- 	pr_info("Bye!\n");
- 
--	if (kexec_reinit)
--		kexec_reinit();
--
- 	soft_restart(reboot_entry_phys);
- }
- 
+diff --git a/drivers/usb/serial/ark3116.c b/drivers/usb/serial/ark3116.c
+index f0ac7bb07ac1..b9bedfe9bd09 100644
+--- a/drivers/usb/serial/ark3116.c
++++ b/drivers/usb/serial/ark3116.c
+@@ -717,9 +717,10 @@ MODULE_DESCRIPTION(DRIVER_DESC);
+  * hardware bug or something.
+  *
+  * According to a patch provided here
+- * (http://lkml.org/lkml/2009/7/26/56), the ARK3116 can also be used
+- * as an IrDA dongle. Since I do not have such a thing, I could not
+- * investigate that aspect. However, I can speculate ;-).
++ * https://lore.kernel.org/lkml/200907261419.50702.linux@rainbow-software.org
++ * the ARK3116 can also be used as an IrDA dongle. Since I do not have
++ * such a thing, I could not investigate that aspect. However, I can
++ * speculate ;-).
+  *
+  * - IrDA encodes data differently than RS232. Most likely, one of
+  *   the bits in registers 9..E enables the IR ENDEC (encoder/decoder).
 -- 
-2.30.0
+2.25.1
 
