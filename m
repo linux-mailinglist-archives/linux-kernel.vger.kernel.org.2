@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E94E316A20
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838C6316A2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhBJP1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:27:39 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:46462 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhBJP1e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:27:34 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l9rO9-0007dY-2z; Wed, 10 Feb 2021 15:26:45 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Huazhong Tan <tanhuazhong@huawei.com>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] net: hns3: Fix uninitialized return from function
-Date:   Wed, 10 Feb 2021 15:26:44 +0000
-Message-Id: <20210210152644.137770-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        id S232024AbhBJP2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:28:46 -0500
+Received: from 8bytes.org ([81.169.241.247]:55410 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232054AbhBJP2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 10:28:15 -0500
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 929CB3C2; Wed, 10 Feb 2021 16:27:32 +0100 (CET)
+Date:   Wed, 10 Feb 2021 16:27:31 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     daniel.kiper@oracle.com, x86@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 0/7] x86/seves: Support 32-bit boot path and other updates
+Message-ID: <20210210152730.GD7302@8bytes.org>
+References: <20210210102135.30667-1-joro@8bytes.org>
+ <20210210145835.GE358613@fedora>
+ <20210210151224.GC7302@8bytes.org>
+ <20210210151938.GH358613@fedora>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210151938.GH358613@fedora>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Feb 10, 2021 at 10:19:38AM -0500, Konrad Rzeszutek Wilk wrote:
+> I think I am missing something obvious here - but why would you want
+> EFI support disabled?
 
-Currently function hns3_reset_notify_uninit_enet is returning
-the contents of the uninitialized variable ret.  Fix this by
-removing ret (since it is no longer used) and replace it with
-a return of the literal value 0.
+I don't want EFI support disabled, this is just a way to trigger this
+boot-path. In real life it is triggered by 32-bit GRUB EFI builds. But I
+havn't had one of those for testing, so I used another way to trigger
+this path.
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: 64749c9c38a9 ("net: hns3: remove redundant return value of hns3_uninit_all_ring()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Regards,
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 9565b7999426..bf4302a5cf95 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -4640,7 +4640,6 @@ static int hns3_reset_notify_uninit_enet(struct hnae3_handle *handle)
- {
- 	struct net_device *netdev = handle->kinfo.netdev;
- 	struct hns3_nic_priv *priv = netdev_priv(netdev);
--	int ret;
- 
- 	if (!test_and_clear_bit(HNS3_NIC_STATE_INITED, &priv->state)) {
- 		netdev_warn(netdev, "already uninitialized\n");
-@@ -4662,7 +4661,7 @@ static int hns3_reset_notify_uninit_enet(struct hnae3_handle *handle)
- 
- 	hns3_put_ring_config(priv);
- 
--	return ret;
-+	return 0;
- }
- 
- static int hns3_reset_notify(struct hnae3_handle *handle,
--- 
-2.30.0
-
+	Joerg
