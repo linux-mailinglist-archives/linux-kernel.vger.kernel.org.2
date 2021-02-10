@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5805E317142
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBA931714D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhBJUXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:23:55 -0500
-Received: from mail-oo1-f49.google.com ([209.85.161.49]:35001 "EHLO
-        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232779AbhBJUU0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:20:26 -0500
-Received: by mail-oo1-f49.google.com with SMTP id t196so805673oot.2;
-        Wed, 10 Feb 2021 12:20:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DdUAMoXuKZ+5xDWH+zZnA9Uz3pPWgYxEKaaqaCeEKjY=;
-        b=WeiY3hYTli4St2lkKxJ4ZwXh7U48mJDKYHCdkSudPcsU/fT13b7o7/3wxQFhA4zvd8
-         jt5vD90Mn7esL94kFTjQio6/DDhUd4q6q/vUJm81BCjBzeRh4NkF5kE/N0zFMQu4No1N
-         IGMU1Ebr1/qqkZHrOWxndZpiMM9xBSB09qHLwMmVXxoIQNk3xC9IDrTI5q2MwlMc2XLr
-         G2lMF3KqfCrI/7r43SGVHqCQbzgOE5zYN2lJeey1WlZ7+DZkin98yZ5+xSaTfzoba646
-         rD5wZHGaj9TKOpld7Z92eTN+VHDZRukZyquY2cstpAcJmpDTVIghkNB5cAy5U4kozBKY
-         r35w==
-X-Gm-Message-State: AOAM530G77eInWDSUjGTNtbj/UWKGw1x5LA9aOFAkfPA7uHWoN8gtbBR
-        o/JKHDvcI8FSCZ5SYOGSm4u9lD7Ucw==
-X-Google-Smtp-Source: ABdhPJy1IN1Yh7dpt4SPnBNScBJGDEEHZOoTyNAsC9iWUzaC3NzgrIrAvS3HBzaqBAE96xk4D9VJbg==
-X-Received: by 2002:a4a:d155:: with SMTP id o21mr3323924oor.72.1612988385714;
-        Wed, 10 Feb 2021 12:19:45 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s123sm588610oos.3.2021.02.10.12.19.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 12:19:45 -0800 (PST)
-Received: (nullmailer pid 2691900 invoked by uid 1000);
-        Wed, 10 Feb 2021 20:19:43 -0000
-Date:   Wed, 10 Feb 2021 14:19:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Piyush Mehta <piyush.mehta@xilinx.com>
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
-        p.zabel@pengutronix.de, git@xilinx.com, sgoud@xilinx.com,
-        michal.simek@xilinx.com, robh+dt@kernel.org
-Subject: Re: [PATCH V3 1/2] dt-bindings: ata: ahci: ceva: Update
- documentation for CEVA Controller
-Message-ID: <20210210201943.GA2691845@robh.at.kernel.org>
-References: <1612807436-5238-1-git-send-email-piyush.mehta@xilinx.com>
- <1612807436-5238-2-git-send-email-piyush.mehta@xilinx.com>
+        id S232462AbhBJUZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:25:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232087AbhBJUX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 15:23:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 86D7F64EDA;
+        Wed, 10 Feb 2021 20:20:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612988458;
+        bh=hyh4oYnHRl0T2UHxse6hCm4A+6K6tdLmZoVhWLW90aY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=dPGOHBbtXiBUL/oA83VyFDaxW758DeDHSzwLe5BiK0szUNICR93C7xVCF7jppGGGI
+         8XszMTKFkov3H10sswdQxPUbHBq/gNcpFPcFAbS8AfKDanP1vt7SBK+ubi641MpBDK
+         nqHw2tcWNPdKafpoaBS2Z808LhvTj+S+RhuqiCCR2s0c4F57FxAzHpP2eZbfa7VggR
+         crBvfEhxvmfyLYD8IFM5hIJlRZFFqAwqK3lkyTx7kyiuiH0sAf6F5oA6gyXprqzn2U
+         2jziAHP9TYziIkZ8h41YdGL9g0WrOjy82nBrfiDsMZbenmygjo6Pysp0IoIhDf4egv
+         Ndtmlx2J5La7Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7EDCB609E2;
+        Wed, 10 Feb 2021 20:20:58 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612807436-5238-2-git-send-email-piyush.mehta@xilinx.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Simplify the calculation of variables
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161298845851.26937.13987525502107193203.git-patchwork-notify@kernel.org>
+Date:   Wed, 10 Feb 2021 20:20:58 +0000
+References: <1612860398-102839-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1612860398-102839-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        shuah@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 08 Feb 2021 23:33:55 +0530, Piyush Mehta wrote:
-> This patch updates the documentation for the CEVA controller for adding
-> the optional properties for 'phys' and 'resets'.
-> 
-> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
-> ---
->  Documentation/devicetree/bindings/ata/ahci-ceva.txt | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+Hello:
 
-Acked-by: Rob Herring <robh@kernel.org>
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Tue,  9 Feb 2021 16:46:38 +0800 you wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./tools/testing/selftests/bpf/xdpxceiver.c:954:28-30: WARNING !A || A &&
+> B is equivalent to !A || B.
+> 
+> ./tools/testing/selftests/bpf/xdpxceiver.c:932:28-30: WARNING !A || A &&
+> B is equivalent to !A || B.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Simplify the calculation of variables
+    https://git.kernel.org/bpf/bpf-next/c/bd2d4e6c6e9f
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
