@@ -2,86 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6927831652C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E37316533
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhBJL05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbhBJLQu (ORCPT
+        id S231596AbhBJL1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:27:55 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:52499 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231327AbhBJLSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:16:50 -0500
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D4CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:16:32 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id v17so455315uat.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:16:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KesY18AcWLGUy1+xAu93YHQU7oPPXOAxrMzYm03zej0=;
-        b=MKsFyk7FCs5EVbtBRB4+bpYnfoOa7GQDvT62yJUnSuDW1Y3ay929Yc/0yEAnGtRnOP
-         tbfBvt2jXZEMHBFGaQICQVpcJ3ahkVX1GlDnykXyOKd5M9CYD9sXJQvjPyQy6fpFS9gj
-         DHcEvppD4kEh36ucyTSaIZ4QR5Gyjt1ENqkg0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KesY18AcWLGUy1+xAu93YHQU7oPPXOAxrMzYm03zej0=;
-        b=eoytP7Wyn5KPBrCQoOza6bdbGrebdl2SV2JuFYDhT+ZxhPB2dJQ5Y7MMy283bLJ1g5
-         Is36N7A3CuaeQqL7TRDLAuFDkf2b08X5ed2ZxXW77z51Cl51Kqv+Yu8LrE21RsF7Vywl
-         96ZflAwJVGG+02Zy/ckChWbDannXWiCan3P/USvxDmnh5F7mkLK7fnkfeq8ep8yrl/Gh
-         BgQJmxbxod4LFYK/PrcSFdf/69RzOdgXhXUsNfV7YdAYn/1rskRWN0XdC1LVlD4OuUwm
-         DkCaa3MwV1CiBNQjwuktL7nY8o+UgL12Jb5LF5KZ9udsY5AMQSwnc89y86H64ienTVn/
-         r4nw==
-X-Gm-Message-State: AOAM530lTYQQlM/P5rR+IyEUwxCWae5C0cIZJ9YW/H5tODBWUxzsmWU0
-        LzS/B3bHglHmnec3CD8289QIdwU9XNQTCzRdylD7kQ==
-X-Google-Smtp-Source: ABdhPJw+znjMus7CT/o2Zjx7x1TnmdaxLQKXbNQeO9qunOH9MES6E+RLMHCPQV7J1YVHg6pzJwwqikVGSpgZk+baFkw=
-X-Received: by 2002:ab0:3c91:: with SMTP id a17mr1253415uax.9.1612955791144;
- Wed, 10 Feb 2021 03:16:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20210124232007.21639-1-richard@nod.at> <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
- <563952295.378372.1612881357746.JavaMail.zimbra@nod.at> <1923896038.379134.1612901174023.JavaMail.zimbra@nod.at>
- <CAJfpegufojx4q_CfR6L-fzSyQw9QXJZKy5xKVZZWaepADkL=Kw@mail.gmail.com>
-In-Reply-To: <CAJfpegufojx4q_CfR6L-fzSyQw9QXJZKy5xKVZZWaepADkL=Kw@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 10 Feb 2021 12:16:20 +0100
-Message-ID: <CAJfpegv-UDcgzkFiZXdoif2qjws5_xXh2bQSNbNdviQHhxzZHA@mail.gmail.com>
-Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 10 Feb 2021 06:18:37 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5D0835C0107;
+        Wed, 10 Feb 2021 06:17:48 -0500 (EST)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Wed, 10 Feb 2021 06:17:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=0fdKeLd8QX+rSLuXLX+b0CYKjNLxAm1
+        HABjyUxFi+3w=; b=r9wzb11hpbRv2mFi5VAl6HORCjqgJsPE4Ru29lO7HBJQvnn
+        zUZaTDba9nAjH89ih7Iygzt8f356vDDvTKsfkn2z+/v3hM/RuHf0MgQu7a7pi5uc
+        xfqbAB8rgHCbsV41mVIpmoU3kMY9vCxwOx9wd7CRIU4x/PUvSZJ8S1uPy2lh2WtM
+        aFVzXcvEGLUocJ+oQfRU9jr4w6T/SmSDGR9xR3KG7msBeSZQ1+Y+QJTnIP2AGmOZ
+        uT3OUzHNVOdge63eewEvEkOhMqXHahjAHKNHFqUs3tvRbV/Jo+idp5Jni41YX2KF
+        22l+8iGpgp18IOxxHKQ7TAA/dfKYkgSWzHBGa2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=0fdKeL
+        d8QX+rSLuXLX+b0CYKjNLxAm1HABjyUxFi+3w=; b=FSha391jRNHCjkdYxY1mJ3
+        9n10XowBVDosqEttfe1Fp50KH4AM2r1kGfFupyszMuO3eSBmJZ68I8hsy2S++GN2
+        eM3o5MflHNb/55Khcqz1uGs49x0w1zZp+QlnWEM4u/iZoun9pOM9Lxf3AR5wSGk0
+        nzG8KYdpfpIXdAi9D1ATjrWm5otuQn81YWjVsNZ6AEBGgyUkz07Xu2mteY5ix7XG
+        1vr4wsAy2+5v7ap8yjhuQMJB690yx03txnngodWG4MJ9jm1cIgqqAdz3dJ5VRZiu
+        KHrrDbKYlpTokoaJJC7wuw/a/YV1Py5QxSsSSNTvzsmkw+oZsEukxCV0G/FrCAhQ
+        ==
+X-ME-Sender: <xms:28AjYAeYCRn1CJieUAt8bL3nO5fDeM3fyF8UrgkD8hFrs_7zL_P85Q>
+    <xme:28AjYCMhFsh4yL0B0HMA8tbi8FobYzlKb5vdbz-AmaFM6ICD8c_Rb3PkL1_LN-jQZ
+    i_ueWxpqAytuX2WkwU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgddviecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedflfhirgig
+    uhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhepkeelheethfehffdttdelieevfeeiheeuudeifeeugeeuieel
+    iedtueejheehhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:28AjYBjm1fCTccv1x94xvBntvuThFZU7CrIBvnNWXAnHly6oB5zMxA>
+    <xmx:28AjYF_0z-rIeqkeoiRsOvNp-UMVeTZg1RFSjLMxjJk11zec3u7kAg>
+    <xmx:28AjYMsq8LVThNPaJAmVVCCaLMiaHckSKoEExwrOFKzCCxvIyOKlVw>
+    <xmx:3MAjYB86JhDFUz-NXPSz5Hfo-Wwrg9v3uwuBoD71tyH4njtbj9yHkg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 10868130005D; Wed, 10 Feb 2021 06:17:47 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
+Mime-Version: 1.0
+Message-Id: <dffca8b3-8850-4cf4-9e69-8f2544695199@www.fastmail.com>
+In-Reply-To: <20210209093224.7085-6-zhangqing@loongson.cn>
+References: <20210209093224.7085-1-zhangqing@loongson.cn>
+ <20210209093224.7085-6-zhangqing@loongson.cn>
+Date:   Wed, 10 Feb 2021 19:17:25 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Qing Zhang" <zhangqing@loongson.cn>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Marc Zyngier" <maz@kernel.org>,
+        "Huacai Chen" <chenhuacai@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "Xingxing Su" <suxingxing@loongson.cn>
+Subject: Re: [PATCH 5/6] irqchip/loongson-liointc: irqchip add 2.0 version.
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 11:12 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-> But this is just a start.  From the big structures still left in
-> <net/fuse.h> CUSE only uses the following fields:
->
-> fc: .minor, max_read, max_write, rcu, release, initialized, num_waiting
-> fm: .fc
-> ff: .fm
-> fud: .fc
->
-> Dealing with the last 3 is trivial:  create and alloc function for the
-> fm, and create accessor functions for the accessed fields.
->
-> Dealing with fc properly is probably a bit more involved, but does not
-> seem to be too compex at first glance.
->
-> Do you want to take a stab at cleaning this up further?
 
-On second thought, I'll finish this off, since I know the internal API better.
+On Tue, Feb 9, 2021, at 5:32 PM, Qing Zhang wrote:
+> Add IO interrupt controller support for Loongson 2k1000, different
+> from the 3a series is that 2K1000 has 64 interrupt sources, 0-31
+> correspond to the device tree liointc0 device node, and the other
+> correspond to liointc1 node.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
 
-Thanks,
-Miklos
+You should document dt binding changes.
+
+Thanks
+
+- Jiaxun
+
+> ---
+>  drivers/irqchip/irq-loongson-liointc.c | 55 +++++++++++++++++++++-----
+>  1 file changed, 46 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-loongson-liointc.c 
+> b/drivers/irqchip/irq-loongson-liointc.c
+> index 9ed1bc473663..496e73bde597 100644
+> --- a/drivers/irqchip/irq-loongson-liointc.c
+> +++ b/drivers/irqchip/irq-loongson-liointc.c
+> @@ -20,6 +20,7 @@
+>  
+>  #define LIOINTC_CHIP_IRQ	32
+>  #define LIOINTC_NUM_PARENT 4
+> +#define LIOINTC_NUM_CORES	4
+>  
+>  #define LIOINTC_INTC_CHIP_START	0x20
+>  
+> @@ -42,6 +43,7 @@ struct liointc_handler_data {
+>  struct liointc_priv {
+>  	struct irq_chip_generic		*gc;
+>  	struct liointc_handler_data	handler[LIOINTC_NUM_PARENT];
+> +	void __iomem			*core_isr[LIOINTC_NUM_CORES];
+>  	u8				map_cache[LIOINTC_CHIP_IRQ];
+>  	bool				has_lpc_irq_errata;
+>  };
+> @@ -51,11 +53,12 @@ static void liointc_chained_handle_irq(struct 
+> irq_desc *desc)
+>  	struct liointc_handler_data *handler = 
+> irq_desc_get_handler_data(desc);
+>  	struct irq_chip *chip = irq_desc_get_chip(desc);
+>  	struct irq_chip_generic *gc = handler->priv->gc;
+> +	int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
+>  	u32 pending;
+>  
+>  	chained_irq_enter(chip, desc);
+>  
+> -	pending = readl(gc->reg_base + LIOINTC_REG_INTC_STATUS);
+> +	pending = readl(handler->priv->core_isr[core]);
+>  
+>  	if (!pending) {
+>  		/* Always blame LPC IRQ if we have that bug */
+> @@ -141,6 +144,15 @@ static void liointc_resume(struct irq_chip_generic *gc)
+>  }
+>  
+>  static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
+> +static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
+> +
+> +static void __iomem *liointc_get_reg_byname(struct device_node *node,
+> +						const char *name)
+> +{
+> +	int index = of_property_match_string(node, "reg-names", name);
+> +
+> +	return of_iomap(node, index);
+> +}
+>  
+>  int __init liointc_of_init(struct device_node *node,
+>  				struct device_node *parent)
+> @@ -159,10 +171,28 @@ int __init liointc_of_init(struct device_node *node,
+>  	if (!priv)
+>  		return -ENOMEM;
+>  
+> -	base = of_iomap(node, 0);
+> -	if (!base) {
+> -		err = -ENODEV;
+> -		goto out_free_priv;
+> +	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
+> +		base = liointc_get_reg_byname(node, "main");
+> +		if (!base) {
+> +			err = -ENODEV;
+> +			goto out_free_priv;
+> +		}
+> +		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
+> +			priv->core_isr[i] =
+> +				liointc_get_reg_byname(node, core_reg_names[i]);
+> +		}
+> +		if (!priv->core_isr[0]) {
+> +			err = -ENODEV;
+> +			goto out_iounmap_base;
+> +		}
+> +	} else {
+> +		base = of_iomap(node, 0);
+> +		if (!base) {
+> +			err = -ENODEV;
+> +			goto out_free_priv;
+> +		}
+> +		for (i = 0; i < LIOINTC_NUM_CORES; i++)
+> +			priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
+>  	}
+>  
+>  	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
+> @@ -172,7 +202,7 @@ int __init liointc_of_init(struct device_node *node,
+>  	}
+>  	if (!have_parent) {
+>  		err = -ENODEV;
+> -		goto out_iounmap;
+> +		goto out_iounmap_isr;
+>  	}
+>  
+>  	sz = of_property_read_variable_u32_array(node,
+> @@ -183,7 +213,7 @@ int __init liointc_of_init(struct device_node *node,
+>  	if (sz < 4) {
+>  		pr_err("loongson-liointc: No parent_int_map\n");
+>  		err = -ENODEV;
+> -		goto out_iounmap;
+> +		goto out_iounmap_isr;
+>  	}
+>  
+>  	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
+> @@ -195,7 +225,7 @@ int __init liointc_of_init(struct device_node *node,
+>  	if (!domain) {
+>  		pr_err("loongson-liointc: cannot add IRQ domain\n");
+>  		err = -EINVAL;
+> -		goto out_iounmap;
+> +		goto out_iounmap_isr;
+>  	}
+>  
+>  	err = irq_alloc_domain_generic_chips(domain, 32, 1,
+> @@ -260,7 +290,13 @@ int __init liointc_of_init(struct device_node *node,
+>  
+>  out_free_domain:
+>  	irq_domain_remove(domain);
+> -out_iounmap:
+> +out_iounmap_isr:
+> +	for (i = 0; i < LIOINTC_NUM_CORES; i++) {
+> +		if (!priv->core_isr[i])
+> +			continue;
+> +		iounmap(priv->core_isr[i]);
+> +	}
+> +out_iounmap_base:
+>  	iounmap(base);
+>  out_free_priv:
+>  	kfree(priv);
+> @@ -270,3 +306,4 @@ int __init liointc_of_init(struct device_node *node,
+>  
+>  IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", 
+> liointc_of_init);
+>  IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", 
+> liointc_of_init);
+> +IRQCHIP_DECLARE(loongson_liointc_2_0, "loongson,liointc-2.0", 
+> liointc_of_init);
+> -- 
+> 2.20.1
+> 
+>
+
+-- 
+- Jiaxun
