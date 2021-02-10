@@ -2,201 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A8B31640D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E08A4316413
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhBJKjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:39:53 -0500
-Received: from mail-eopbgr770074.outbound.protection.outlook.com ([40.107.77.74]:26663
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231314AbhBJKfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:35:46 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bdu4evIs3erYfMUx1woR1Ar7oh0+A1uwoTAKiSP8Zrr0G9+Ln+P2Nu8zAOExLZ6VC6QSrB3JIgyJtnigNPoFB74+EXKblnom6ISOTE/SrFzpRRtYns4C5Q6Scf2zoFDPhVkaEyebqNWBCdPAi3xytFNwn91zVUSsfEB5YlsWoB80uHRKGB8QQAjF+iMeNI+zdBuIDBbx1dIZVwoBe802mwRM9T2nt5xxu8H8qm8DeokqXbqBo8BvuWv3H9patzdkhMu3ErvS/SuwMZCkjy+pDKzBf/nns6DPjae/g37WZfnDE7Ty5Hk8L9V4fXACsivsr5sy8yy17oboCbCpUQBrAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bto4WmNPcgXD+wz5UMt6QkHg3rPgG8ycjqyoeNdN/UI=;
- b=hDbXXtwPCxsvJ0tC2tYOKNapaTCeg4NVAmKqHDJG7xsEeJIrmMnC58odwfX24pbNetjPv9oe7G7A4yC9iFugmO6R/RgJ1QGRGj6anKqZeRmN8SmJp/YXqE17JOYg1HkQDObzOU6WAeRNADPH8bWp4OFNEOOLiwOtIBnO45fLzXFfxtKy1DoFTsnEDBeAtoMj3ai/CBM779k6i0zFgVGnP5t76Xq3TGh5ebqscnK09pdVqMpD/ESmdD0edSuw3Ui4+tU3QHfskfAomezLue8IP5NDsVJqy3+DcCjf0AIyfRsNu0+BaxWNOOBA+7BOOfb2RbAxP0/aCzZFgoUGygex3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bto4WmNPcgXD+wz5UMt6QkHg3rPgG8ycjqyoeNdN/UI=;
- b=jTnQ8OdY2BO4tFfxagU9m69rwco/2/kbkdzNSh0SSaqodPr+6jGTLy42IZTJ4HnisMo1Yl6gRXbgyVpYY/PweRD04oNYCWk5Kf1mmXg9i8e8+jaNed0I5bkRXhr1gy0SCau0VPTiwOTwDGD84EaBfp8h+Oiz+ZcSuHCsuKCwjh4=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB4739.namprd12.prod.outlook.com (2603:10b6:208:81::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Wed, 10 Feb
- 2021 10:34:53 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
- 10:34:53 +0000
-Subject: Re: drm/nouneau: 5.11 cycle regression bisected to 461619f5c324
- "drm/nouveau: switch to new allocator"
-To:     Mike Galbraith <efault@gmx.de>, lkml <linux-kernel@vger.kernel.org>
-Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
-        Dave Airlie <airlied@redhat.com>
-References: <1d663cd74af91e23f4f24ebbdd65ef3ba72c15fc.camel@gmx.de>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
-Date:   Wed, 10 Feb 2021 11:34:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <1d663cd74af91e23f4f24ebbdd65ef3ba72c15fc.camel@gmx.de>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:1e1:ad6e:a509:1753]
-X-ClientProxiedBy: AM3PR07CA0093.eurprd07.prod.outlook.com
- (2603:10a6:207:6::27) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S231419AbhBJKlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:41:52 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:42263 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230417AbhBJKjI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:39:08 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 59A0323E64;
+        Wed, 10 Feb 2021 11:38:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1612953498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wh0vTlN5xwzrmuM0AHqMMV/jTENHTG631Hbx7eavitU=;
+        b=Ja1dQUdofMfZzdNohvdRWJcjdbK5gNJ5QfdLojNaWUP0Bz1x2+Ses6OB922d6G4OpHyOSb
+        ZZYrqzxVZym7uacqfIbLjHTwCxFdhbCXIhg72XIHqcAL+90f04vhiMCq5OtEhEIZHds/Ji
+        KaBnAH2nS+r4dY9T95BYOosF487Oyb0=
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:1e1:ad6e:a509:1753] (2a02:908:1252:fb60:1e1:ad6e:a509:1753) by AM3PR07CA0093.eurprd07.prod.outlook.com (2603:10a6:207:6::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Wed, 10 Feb 2021 10:34:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 04d43ea8-8939-49ac-236c-08d8cdaf8042
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4739:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4739014B304D993A91487402838D9@BL0PR12MB4739.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8SiuGOe0UQZZvL/Dr+mCRwolDs7MTi/w77waf39t+BSpuxjON+qvp/Rhsj6ysH6Fs3lLBiHOz+XYn0x3rMkct2vRVZU6ggSwsL4zS8cQtcNb55rjy/jivSKxlMtMEbpbyWmAmfnGMGpEMuTkF/2IR9bGt03o7/dpbTM5Yb3XaSEeN7qHIHH6wIMjOXWYHS3BVB1uDvmP7yww4zW2FfgypyAv7ZPJhq2x4IKkj+sz9i38Hz6Z9MoqEIBhecUraYEvlAqCZXKJQ7PXWA1747Wo//Y/2vgDRaiR2dbKn5Z4tU4w069GeQLRBy/KrlDqsyG5cZkj8P4fb7UNeXsKGqN0FZTk1EP/i5Nyrr6ZMOJOFZz0DZ1n33klyQQ5Fhg+HaWfFyaY2+gZjjJeuhB5NC+Kr8nQe8shhkHIte/JK7hzjd2jz/tgQtMeETG8+Bwo0y2tYFgpawski/3UC6OyxP4e1Vr/tthPqaf5Jsq+fp3DOd5c6RLRKmzSCWsdBCehe0W2lvCGGSv3u3JtWn5kFXRqbYG1LJSP5IXgZX82zDuvkbT7MoQGUFfCxxSuM/Z5i6j6UTm4zz8tQITARo7VHE0TRvoU1NoV4VTvctfpL+NPaU5O9A3C+muw7Y8XqrkZKO9DoYCwdAGdpjPV6z545ElYBA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(39860400002)(366004)(5660300002)(83380400001)(8936002)(8676002)(45080400002)(86362001)(31696002)(52116002)(2616005)(66574015)(54906003)(66556008)(186003)(16526019)(2906002)(66476007)(4326008)(478600001)(6486002)(316002)(66946007)(36756003)(110136005)(31686004)(6666004)(966005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-15?Q?iuti1pbmkGAuTKBh5PC9GBsaizprYyX3gBTWlidGHv3BL+c1ABazmHQrM?=
- =?iso-8859-15?Q?hcudwL20FA9AydOqSUpTi3dJhGSXASipQ79aph2RbbCjUCMPfXjJWOpOS?=
- =?iso-8859-15?Q?/57os1Ik4sTmwy2upZwh9UG9nbv5hW/zCsTBWMcOMOKQMNH+3IcXYgpU4?=
- =?iso-8859-15?Q?AFCszOYytb/+nmzyAqh3fSuhDYq+DltOLTI+aS+UA1fALEVE0fwknHsMr?=
- =?iso-8859-15?Q?Nto5xZzgQxAmLOeyAtIvXUaBWMj6FADiYl1MK1BpkYsjDCUNlcgN240wp?=
- =?iso-8859-15?Q?lKlNT2FMKdzdKDCi8SnPG7JTVM2lY0D75ku22EwzKx6AquEIVHugMZ64e?=
- =?iso-8859-15?Q?i1ZVMRmsgs/JcalxGKnXZ01z4zAp7/3vD1qz6GlNdIiCyzh7jHsbYj/jK?=
- =?iso-8859-15?Q?R3+tmRKcG0Wkt3xXaeu+WY5kCA4JRrlSwj3ODJb8JHWZPvKZQ5F4l8g5I?=
- =?iso-8859-15?Q?86X9PtzUmjCgl1uVSeUwUGST9g3rs0KcfXmk+GHZG4RyhMP0WDrBWlrs5?=
- =?iso-8859-15?Q?2T2KuE182uGQaw/cB0HlFAh0Ivcrr0SERDi710faT/xEJEOt+xzgQdG9K?=
- =?iso-8859-15?Q?of7yn4M1zyZsFFrLQR2D8sOeFIF+gj0fJZYrbe5pcxmnCLrICQAGbld4h?=
- =?iso-8859-15?Q?dqZuf2vvM7NeqS3AFIimxYGODxjA4Ht2SBjAwWM4PHwajpIKNAkHVv3rQ?=
- =?iso-8859-15?Q?y6J7rbCX1gR9KWfWy7H3e2yfoVUQIN/nK4aqDgdnLk6e7nLrI201un0BD?=
- =?iso-8859-15?Q?abOxx3trAEzHrTz5WjgZIFP/AH5aVmUBYmp7vHTs28SN+YhdVlyaAF26U?=
- =?iso-8859-15?Q?oFdsiS0qDK7kb0+Fg6gaus0qeSzPc5tX4wRl4zm8LOZcayesi2JO3znCR?=
- =?iso-8859-15?Q?ACvffwct2zkVxO2biWLc22/9EYVhc6WN+5T6dMgOCSger3T5/C9ZUML04?=
- =?iso-8859-15?Q?QhbKQRg9/Sf13wkVw0CgHEayhDedMOp6NwP4LmHgugDvOzMeWzAuJbBLR?=
- =?iso-8859-15?Q?xsxaUqHZYKw+vNB+MRKP47ZhTLo7UrHqjLtJpCPQQHg2So7TkSE4GB3PP?=
- =?iso-8859-15?Q?QvMZ67cZEx9Ndk5MsG6VqUFY1C6/Y/RpufgvWd9lVOuSEM/t90NaNm+Vw?=
- =?iso-8859-15?Q?/TvaLwUMA+k48KxjKyP184Gip6I1v51VVSrAiyoO7z4/kXQ51YYNsqDcT?=
- =?iso-8859-15?Q?w0BfxB4N1zgK2EWkbi70oeS+9QQ8li3b/ItoCJJ+b/TCVGyB4GGPj2UBu?=
- =?iso-8859-15?Q?WYxT+i95piAXVs702alcSH0zk4d41IZvQ2To4Dc/8n3Qzs0aibiBsNnHj?=
- =?iso-8859-15?Q?XlTXIUv7xV5/t5vIyAlaQDUhdXpWDTc1+RuQi3SbuSJoyn7rO0ANdahN3?=
- =?iso-8859-15?Q?6Rb0Xy9Liy/IcrbhWwKCzFcNdohi6Y3Aay1PIe8Oh/4VuUBrcQ7FLu2Kr?=
- =?iso-8859-15?Q?ZWL8xp+I1KqCIkURF8zdXIusEXRVfsVAbVT9eb0d?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04d43ea8-8939-49ac-236c-08d8cdaf8042
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 10:34:53.4380
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ArQ7bB6Dxwk/GllfYWlMaLQVwHhibRIRmx0DO3+vs94HWcH+RFLLL3hcCiWvJvZ1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4739
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 10 Feb 2021 11:38:18 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next 7/9] net: phy: icplus: select page before writing
+ control register
+In-Reply-To: <20210210103059.GR1463@shell.armlinux.org.uk>
+References: <20210209164051.18156-1-michael@walle.cc>
+ <20210209164051.18156-8-michael@walle.cc>
+ <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
+ <20210210103059.GR1463@shell.armlinux.org.uk>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <d35f726f82c6c743519f3d8a36037dfa@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+Am 2021-02-10 11:30, schrieb Russell King - ARM Linux admin:
+> On Wed, Feb 10, 2021 at 08:03:07AM +0100, Heiner Kallweit wrote:
+>> On 09.02.2021 17:40, Michael Walle wrote:
+>> > +out:
+>> > +	return phy_restore_page(phydev, oldpage, err);
+>> 
+>> If a random page was set before entering config_init, do we actually 
+>> want
+>> to restore it? Or wouldn't it be better to set the default page as 
+>> part
+>> of initialization?
+> 
+> I think you've missed asking one key question: does the paging on this
+> PHY affect the standardised registers at 0..15 inclusive, or does it
+> only affect registers 16..31?
 
-do you have more information than just system stuck in a loop?
+For this PHY it affects only registers >=16. But that doesn't invaldiate
+the point that for other PHYs this might affect all regsisters. Eg. ones
+where you could select between fiber and copper pages, right?
 
-What seems to happen here is that your system is low on resources and we 
-just try to free up pages.
+> If it doesn't affect the standardised registers, then the genphy_*
+> functions don't care which page is selected.
 
-Previously the allocation would just have failed with an out of memory 
-condition.
-
-Regards,
-Christian.
-
-Am 10.02.21 um 11:13 schrieb Mike Galbraith:
-> Greetings,
->
-> The symptom is tasks stuck waiting for lord knows what by calling
-> sched_yield() in a loop (less than wonderful, sched_yield() sucks).
-> After boot to KDE login, I immediately see tracker-extract chewing cpu
-> in aforementioned loop. Firing up evolution and poking 'new' to
-> compose, WebKitWebProcess joins in the yield loop fun.
->
-> Hand rolled reverts of 256dd44b "drm/ttm: nuke old page allocator" and
-> the fingered commit cures the problem for me at 207665fd in the bisect
-> log below, and at master and tip HEAD.
->
-> There's a "things that make ya go hmm" aspect to this thing though.  If
-> you look at the bisect log below, the starting "bad" is 207665fd.  That
-> commit DOES NOT exhibit the yield loop symptom immediately out of the
-> box, but DOES after applying the much needed fix...
->
-> 	660a59953f4f "drm/nouveau: fix multihop when move doesn't work"
->
-> ...to prevent an earlier regression from quickly appearing, one which
-> Dave will likely recall having fixed.  Relevant?  No idea, but seems
-> worth mentioning.
->
-> Box: aging generic i4790 box with its equally aged Nvidia GTX 980.
->
->
-> 461619f5c3242aaee9ec3f0b7072719bd86ea207 is the first bad commit
-> commit 461619f5c3242aaee9ec3f0b7072719bd86ea207
-> Author: Christian König <christian.koenig@amd.com>
-> Date:   Sat Oct 24 13:13:25 2020 +0200
->
->      drm/nouveau: switch to new allocator
->
->      It should be able to handle all cases now.
->
->      Signed-off-by: Christian König <christian.koenig@amd.com>
->      Reviewed-by: Dave Airlie <airlied@redhat.com>
->      Reviewed-by: Madhav Chauhan <madhav.chauhan@amd.com>
->      Tested-by: Huang Rui <ray.huang@amd.com>
->      Link: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.freedesktop.org%2Fpatch%2F397082%2F%3Fseries%3D83051%26rev%3D1&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C8af0b5f635fe41d2eab508d8cdac7c5c%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637485488031207323%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=7%2Bi9YU1C7NpS%2FMC0FDrpcVtsZU6MHRUrvPPzdq6Q40A%3D&amp;reserved=0
->
->   drivers/gpu/drm/nouveau/nouveau_bo.c  | 30 ++----------------------------
->   drivers/gpu/drm/nouveau/nouveau_drv.h |  1 -
->   2 files changed, 2 insertions(+), 29 deletions(-)
->
-> git bisect start
-> # good: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
-> git bisect good 3f995f8e0b540342612d3f6b1fc299f5bf486987
-> # bad: [207665fd37561f97591e74d0ee80f24bdf06b789] Merge tag 'exynos-drm-next-for-v5.11' of git://git.kernel.org/pub/scm/linux/kernel/git/daeinki/drm-exynos into drm-next
-> git bisect bad 207665fd37561f97591e74d0ee80f24bdf06b789
-> # good: [f8394f232b1eab649ce2df5c5f15b0e528c92091] Linux 5.10-rc3
-> git bisect good f8394f232b1eab649ce2df5c5f15b0e528c92091
-> # good: [b3bf99daaee96a141536ce5c60a0d6dba6ec1d23] drm/i915/display: Defer initial modeset until after GGTT is initialised
-> git bisect good b3bf99daaee96a141536ce5c60a0d6dba6ec1d23
-> # good: [dfbbfe3c17651fa0fcf2658fb90317df08e52bb2] drm/amd/display: Add formats for DCC with 2/3 planes.
-> git bisect good dfbbfe3c17651fa0fcf2658fb90317df08e52bb2
-> # bad: [112e505a76de69f8667e2fe8da38433f754364a8] Merge drm/drm-next into drm-misc-next
-> git bisect bad 112e505a76de69f8667e2fe8da38433f754364a8
-> # bad: [49a3f51dfeeecb52c5aa28c5cb9592fe5e39bf95] drm/gem: Use struct dma_buf_map in GEM vmap ops and convert GEM backends
-> git bisect bad 49a3f51dfeeecb52c5aa28c5cb9592fe5e39bf95
-> # bad: [d7e0798925ea9272f8c8e66ceb1f7c51823e50ab] dt-bindings: display: bridge: Intel KeemBay DSI
-> git bisect bad d7e0798925ea9272f8c8e66ceb1f7c51823e50ab
-> # bad: [c489573b5b6ce6442ad4658d9d5ec77839b91622] Merge drm/drm-next into drm-misc-next
-> git bisect bad c489573b5b6ce6442ad4658d9d5ec77839b91622
-> # bad: [8567d51555c12d169c4e0f796030051fff1c318d] drm/vmwgfx: switch to new allocator
-> git bisect bad 8567d51555c12d169c4e0f796030051fff1c318d
-> # good: [5144eead3f8c80ac7f913c07139442fede94003e] drm: xlnx: Use dma_request_chan for DMA channel request
-> git bisect good 5144eead3f8c80ac7f913c07139442fede94003e
-> # good: [e93b2da9799e5cb97760969f3e1f02a5bdac29fe] drm/amdgpu: switch to new allocator v2
-> git bisect good e93b2da9799e5cb97760969f3e1f02a5bdac29fe
-> # bad: [461619f5c3242aaee9ec3f0b7072719bd86ea207] drm/nouveau: switch to new allocator
-> git bisect bad 461619f5c3242aaee9ec3f0b7072719bd86ea207
-> # good: [0fe3cf3a53b5c1205ec7d321be1185b075dff205] drm/radeon: switch to new allocator v2
-> git bisect good 0fe3cf3a53b5c1205ec7d321be1185b075dff205
-> # first bad commit: [461619f5c3242aaee9ec3f0b7072719bd86ea207] drm/nouveau: switch to new allocator
->
-
+-- 
+-michael
