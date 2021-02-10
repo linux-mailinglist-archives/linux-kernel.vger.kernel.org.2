@@ -2,92 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746EE316E97
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4FF316E96
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbhBJS20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:28:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233809AbhBJSSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:18:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADAE064EE9;
-        Wed, 10 Feb 2021 18:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612981009;
-        bh=Y3M41xwZVH3Dio4o/VsIyICva0DpELAmRG0OwZz7C1Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QM7pBvQZXERvSGVgvVQf7/8bIgSjJ1LFA/QqdCKHjseU3TJdXhwdyRqlAohdiep5Y
-         ccCj9qMxQ00ZZL5/zdNDgyrMtC/uJJIhU5zT90AAT5gh5E4CRD8NIo1utDowjzRE6L
-         RSXQIstLwQh+q983wgmIG69dRBcZICctI9Yzzh3HjAaHF+YoO5+HRfkGDbOcKLs4E9
-         KmnqwHD8vgvZxBhHsjXiByuC4u7CiPVwRyCqEFr3QEl6GQNSQjLhqYUpPGV0xpLPoM
-         BBAx3oxFCcyYCN/7z2GTGIwbl0dJb3vp85lJkX6pplDCGq8WX8xOn88uv8E/euu1+9
-         i/DEf4jgqEj1g==
-Received: by mail-qv1-f46.google.com with SMTP id ew18so1303424qvb.4;
-        Wed, 10 Feb 2021 10:16:49 -0800 (PST)
-X-Gm-Message-State: AOAM530v2gKJZGkjfatpIhCp8IVAGpWyVOgwFT2G+TuN5S0RqlG1+2j+
-        YjxpUjcmE01LVVG8GgpeQxf1ARBQ0jAsU2ngNA==
-X-Google-Smtp-Source: ABdhPJxvrP8Mx1Q6brlIT04YJdW8GZAt91MQw70k4YzGnJ4FdepboyPbcyxHhdadzSfGAHVYcBki3D4fuCUyMhVxlvI=
-X-Received: by 2002:ad4:45ca:: with SMTP id v10mr4316438qvt.11.1612981008833;
- Wed, 10 Feb 2021 10:16:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru> <20201205155621.3045-10-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201205155621.3045-10-Sergey.Semin@baikalelectronics.ru>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 10 Feb 2021 12:16:37 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+0iZC5NcXkn9K+yPZ+7-j-Ee6n-teitrUjSkOYo=3MLQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+0iZC5NcXkn9K+yPZ+7-j-Ee6n-teitrUjSkOYo=3MLQ@mail.gmail.com>
-Subject: Re: [PATCH v3 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
- "usb"-prefixed names
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        id S234235AbhBJS2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:28:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233979AbhBJSR7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:17:59 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA68FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:17:08 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id s107so2667303otb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:17:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=91NW65f73U7tYhbJABgMADCsijsHeCS7/BirUy4WduQ=;
+        b=OxwdccxRTP96g+fMXhEYybO558hFLAVazpm1K6QnlWYbLFxFvi3bv6qyLkhnoj04j1
+         ZzVszy64t4gEWGJ2RJC2akOHvrhGq3e66vtD0XujJT0EDa/gkXbDciXtLBl0ZDgZUbKb
+         qQLBUyi3YehJZfh/hnL7Opj3vBafr5wHPzFY0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=91NW65f73U7tYhbJABgMADCsijsHeCS7/BirUy4WduQ=;
+        b=Ny9gS0RNyk3YuU3AATSEFAViNUdLAdxEyFR+FSaxHrYQTln8wln6Fw7JhRYG4WKF/b
+         9JJeB5PBpruHg5wRWvCXN3OLtCq9uPuFYgXup+at3q7qWnqvNtQbR4GeZlYbyTz/Fx1m
+         IxOFPq5uZFugAWBBF6q2M8xqm/emvbH7koxrhcOqYic9pZ6Y5/vk80OHzeNB8pPu/lzB
+         8dVr3gRESwkX6Oe3AtW9Vtoh6ZxHAn3g1p4CaE7kJ4tehBOENiTEgKL2Wqj/e3Q+8UeP
+         EFZRTzDZN0hDgqusy2Qc09Q8ECfnKXykrZolcjSe3HVD0HOig77MvtsCMC3xiUJY1h2u
+         j8NA==
+X-Gm-Message-State: AOAM530N2IZz086g+vX2DGXWYt2UhahmGG4O3NyufydZja42NqgfXm0F
+        WukYb8AhFxqsnnUxxmSolkK57g==
+X-Google-Smtp-Source: ABdhPJydl2EaK2PBkFer3n1me1DSriI+1gZ2TRvOI8C3NSbG2umNfS0X1EZeLC2o6jx3iipJ5MaHcQ==
+X-Received: by 2002:a05:6830:131a:: with SMTP id p26mr2969403otq.134.1612981028007;
+        Wed, 10 Feb 2021 10:17:08 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n7sm542873otk.48.2021.02.10.10.17.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 10:17:07 -0800 (PST)
+Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        syzkaller-bugs@googlegroups.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <000000000000647eff05b3f7e0d4@google.com>
+ <20201113120055.11748-1-hdanton@sina.com>
+ <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
+ <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
+ <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
+ <9bdd3f10-bddb-bd87-d7ad-b4b706477006@i-love.sakura.ne.jp>
+ <6b8da36f-a994-7604-77f4-52e29434605f@linuxfoundation.org>
+ <5f9ec159-77d8-ffba-21d1-2810e059f998@i-love.sakura.ne.jp>
+ <a06093f1-22b3-7d72-bc6c-f99f4e0d0de9@linuxfoundation.org>
+ <40617d66-1334-13a0-de9b-bd7cc1155ce5@i-love.sakura.ne.jp>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <43d8d6bf-53f3-11e6-894d-c257f7f4bd07@linuxfoundation.org>
+Date:   Wed, 10 Feb 2021 11:17:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <40617d66-1334-13a0-de9b-bd7cc1155ce5@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 9:56 AM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
->
-> In accordance with the USB HCD/DRD schema all the USB controllers are
-> supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
-> existing DT-nodes will be renamed in a subsequent patch let's first make
-> sure the DWC3 Qualcomm driver supports them and second falls back to the
-> deprecated naming so not to fail on the legacy DTS-files passed to the
-> newer kernels.
->
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index c703d552bbcf..49ad8d507d37 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -630,7 +630,8 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
->         struct device           *dev = &pdev->dev;
->         int                     ret;
->
-> -       dwc3_np = of_get_child_by_name(np, "dwc3");
-> +       dwc3_np = of_get_child_by_name(np, "usb") ?:
-> +                 of_get_child_by_name(np, "dwc3");
+On 1/29/21 7:25 PM, Tetsuo Handa wrote:
+> On 2021/01/30 6:18, Shuah Khan wrote:
+>> In this console log:
+> 
+> It seems "this console log" refers to https://syzkaller.appspot.com/x/log.txt?x=10453034500000 .
+> 
+>>
+>> 06:57:50 executing program 1:
+>> socketpair$tipc(0x1e, 0x2, 0x0, &(0x7f00000000c0)={<r0=>0xffffffffffffffff})
+>> sendmsg$BATADV_CMD_GET_TRANSTABLE_LOCAL(r0, &(0x7f00000002c0)={&(0x7f00000001c0), 0xc, &(0x7f0000000280)={0x0, 0xd001010000000000}}, 0x0)
+>>
+>> [ 1151.090883][T23361] vhci_hcd vhci_hcd.0: pdev(4) rhport(0) sockfd(4)
+>> [ 1151.097445][T23361] vhci_hcd vhci_hcd.0: devid(0) speed(1) speed_str(low-speed)
+>> 06:57:50 executing program 0:
+>> r0 = syz_open_dev$binderN(&(0x7f0000000680)='/dev/binder#\x00', 0x0, 0x0)
+>> ioctl$BINDER_WRITE_READ(r0, 0xc0306201, &(0x7f0000000cc0)={0x88, 0x0, &(0x7f0000000b80)=[@transaction={0x40406300, {0x2, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}, @transaction={0x40406300, {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}], 0x0, 0x0, 0x0})
+>>
+>> [ 1151.164402][T23363] vhci_hcd: connection closed
+>> [ 1151.167346][  T240] vhci_hcd: stop threads
+>>
+>>
+>> [ 1151.178329][T26761] usb 17-1: new low-speed USB device number 2 using vhci_hcd
+>>
+>>
+>> SK: Looking at the console log, it looks like while connection is being
+>>      torn down,
+> 
+> Excuse me, but it looks like (what comes here) while connection is being torn down ?
+> I'm not familiar with driver code.
+> 
+>>
+>>
+>> [ 1151.181245][  T240] vhci_hcd: release socket
+>>
+>>
+>> Can you share your your test code for this program:
+>> "executing program 1"
+> 
+> I don't think program 1 is relevant. I think program 4
+> 
+>    06:57:50 executing program 4:
+>    r0 = socket$tipc(0x1e, 0x2, 0x0)
+>    syz_usbip_server_init(0x1)
+>    close_range(r0, 0xffffffffffffffff, 0x0)
+> 
+> which calls syz_usbip_server_init() as with other duplicates is relevant.
+> 
+>>
+>> Also your setup? Do you run usbip_host and vhci_hcd both?
+> 
+> Who are you referring to with "you/your" ? I'm not running syzkaller in my setup
+> and I don't have test code.
+> 
+> I'm just proposing printing more messages in order to confirm the ordering of
+> events and member values in structures.
+> 
 
-Is there some reason using compatible instead wouldn't work here?
+I am looking to understand the syzbot configuration and a reproducer
+to be able to debug and fix the problem. How is syzbot triggering the
+vhci_hcd attach and detach sequence?
 
->         if (!dwc3_np) {
->                 dev_err(dev, "failed to find dwc3 core child\n");
->                 return -ENODEV;
-> --
-> 2.29.2
->
+This helps me determine all these fix suggestions that are coming in
+are fixes or papering over a real problem.
+
+thanks,
+-- Shuah
