@@ -2,82 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7FF316AED
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57258316AF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbhBJQQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:16:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhBJQQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:16:09 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F59C06174A;
-        Wed, 10 Feb 2021 08:15:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=CYJcVmBGnQFQ/SiKsdw+9m6uk0EkGnIzHiS6mQ/l9EA=; b=IIReaBY3my2Iiy3g/T1IDkRjGn
-        I/mGj7K2xxWQ4IrS96nsAacFfLoUHzv+hl97OwdoNt5AFmzLqnuoA/Yem+YYHLJDqxzYtGUt2xfQ4
-        POWLBJrukyfs5JiHcB/chu/F2QEqNOLUCPLhkOvinmdn2P4ewS/GzuOrN8DnsPk1AeAF6+0cu+uUB
-        O8LJhO92OHrh1qjXZjUC6Vh3/hIJlMl46fDrIQzq6TumEM7Be0z4u4xzp7VVlusJHM9MWOlhNuyFE
-        92mpXhtORZCkGRp9nh41k8ir21ZNFmI3ZcB4N/ly6i9FDYpz5rPbQRUBK5AbbjQwSdCAttK4hdjE8
-        JgGynQ7A==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9s9F-00063d-Kw; Wed, 10 Feb 2021 16:15:26 +0000
-Subject: Re: [PATCH] arch: x86: entry: vdso: Fix the spelling postive to
- positive in the file vsgx.S
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, jarkko@kernel.org,
-        luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210210084610.1213418-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <9a5bc424-d438-7d30-4bc6-8367554b4bd4@infradead.org>
-Date:   Wed, 10 Feb 2021 08:15:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232085AbhBJQRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:17:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42956 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230028AbhBJQRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:17:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CDBD2B02C;
+        Wed, 10 Feb 2021 16:16:35 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] Revert "MIPS: kernel: {ftrace,kgdb}: Set correct address limit for cache flushes"
+Date:   Wed, 10 Feb 2021 17:16:13 +0100
+Message-Id: <20210210161615.21228-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210210084610.1213418-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 12:46 AM, Bhaskar Chowdhury wrote:
-> 
-> 
-> s/postive/positive/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+This reverts commit 6ebda44f366478d1eea180d93154e7d97b591f50.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+All icache flushes in this code paths are done via flush_icache_range(),
+which only uses normal cache instruction. And this is the correct thing
+for EVA mode, too. So no need to do set_fs(KERNEL_DS) here.
 
-> ---
->  arch/x86/entry/vdso/vsgx.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/entry/vdso/vsgx.S b/arch/x86/entry/vdso/vsgx.S
-> index 86a0e94f68df..99dafac992e2 100644
-> --- a/arch/x86/entry/vdso/vsgx.S
-> +++ b/arch/x86/entry/vdso/vsgx.S
-> @@ -137,7 +137,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
-> 
->  	/*
->  	 * If the return from callback is zero or negative, return immediately,
-> -	 * else re-execute ENCLU with the postive return value interpreted as
-> +	 * else re-execute ENCLU with the positive return value interpreted as
->  	 * the requested ENCLU function.
->  	 */
->  	cmp	$0, %eax
-> --
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/kernel/ftrace.c |  4 ----
+ arch/mips/kernel/kgdb.c   | 18 +-----------------
+ 2 files changed, 1 insertion(+), 21 deletions(-)
 
-
+diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
+index f57e68f40a34..666b9969c1bd 100644
+--- a/arch/mips/kernel/ftrace.c
++++ b/arch/mips/kernel/ftrace.c
+@@ -73,7 +73,6 @@ static inline void ftrace_dyn_arch_init_insns(void)
+ static int ftrace_modify_code(unsigned long ip, unsigned int new_code)
+ {
+ 	int faulted;
+-	mm_segment_t old_fs;
+ 
+ 	/* *(unsigned int *)ip = new_code; */
+ 	safe_store_code(new_code, ip, faulted);
+@@ -81,10 +80,7 @@ static int ftrace_modify_code(unsigned long ip, unsigned int new_code)
+ 	if (unlikely(faulted))
+ 		return -EFAULT;
+ 
+-	old_fs = get_fs();
+-	set_fs(KERNEL_DS);
+ 	flush_icache_range(ip, ip + 8);
+-	set_fs(old_fs);
+ 
+ 	return 0;
+ }
+diff --git a/arch/mips/kernel/kgdb.c b/arch/mips/kernel/kgdb.c
+index ea781b29f7f1..de779e23faf2 100644
+--- a/arch/mips/kernel/kgdb.c
++++ b/arch/mips/kernel/kgdb.c
+@@ -32,7 +32,6 @@
+ #include <asm/cacheflush.h>
+ #include <asm/processor.h>
+ #include <asm/sigcontext.h>
+-#include <linux/uaccess.h>
+ #include <asm/irq_regs.h>
+ 
+ static struct hard_trap_info {
+@@ -210,14 +209,7 @@ void arch_kgdb_breakpoint(void)
+ 
+ void kgdb_call_nmi_hook(void *ignored)
+ {
+-	mm_segment_t old_fs;
+-
+-	old_fs = get_fs();
+-	set_fs(KERNEL_DS);
+-
+ 	kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
+-
+-	set_fs(old_fs);
+ }
+ 
+ static int compute_signal(int tt)
+@@ -302,7 +294,6 @@ static int kgdb_mips_notify(struct notifier_block *self, unsigned long cmd,
+ 	struct die_args *args = (struct die_args *)ptr;
+ 	struct pt_regs *regs = args->regs;
+ 	int trap = (regs->cp0_cause & 0x7c) >> 2;
+-	mm_segment_t old_fs;
+ 
+ #ifdef CONFIG_KPROBES
+ 	/*
+@@ -317,17 +308,11 @@ static int kgdb_mips_notify(struct notifier_block *self, unsigned long cmd,
+ 	if (user_mode(regs))
+ 		return NOTIFY_DONE;
+ 
+-	/* Kernel mode. Set correct address limit */
+-	old_fs = get_fs();
+-	set_fs(KERNEL_DS);
+-
+ 	if (atomic_read(&kgdb_active) != -1)
+ 		kgdb_nmicallback(smp_processor_id(), regs);
+ 
+-	if (kgdb_handle_exception(trap, compute_signal(trap), cmd, regs)) {
+-		set_fs(old_fs);
++	if (kgdb_handle_exception(trap, compute_signal(trap), cmd, regs))
+ 		return NOTIFY_DONE;
+-	}
+ 
+ 	if (atomic_read(&kgdb_setting_breakpoint))
+ 		if ((trap == 9) && (regs->cp0_epc == (unsigned long)breakinst))
+@@ -337,7 +322,6 @@ static int kgdb_mips_notify(struct notifier_block *self, unsigned long cmd,
+ 	local_irq_enable();
+ 	__flush_cache_all();
+ 
+-	set_fs(old_fs);
+ 	return NOTIFY_STOP;
+ }
+ 
 -- 
-~Randy
+2.29.2
 
