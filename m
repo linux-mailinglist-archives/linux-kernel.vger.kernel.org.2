@@ -2,160 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300AF316B28
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD2F316B2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbhBJQ0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:26:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
+        id S231599AbhBJQ1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:27:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbhBJQ0i (ORCPT
+        with ESMTP id S232014AbhBJQ1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:26:38 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02E7C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:25:57 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id e11so1913140qtg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:25:57 -0800 (PST)
+        Wed, 10 Feb 2021 11:27:24 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE183C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:26:37 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id b145so1588924pfb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:26:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VFKJ1VfMBcbGkawO76gmyG8p+Q1Mad1n6dxTBahJkr0=;
-        b=uv/G2ftC4Tas4KOvuDL3kAaYQ3qUipYuDYZkBomqwNx47G381mc1mjfa9w+T1GiVuv
-         U+MYgxwQDiBFBLgEaZI9CjCZ/s+pcpt9qwVbIWkiLlr8qMM/5UBhIororO4lg7i+cmHh
-         HuFmc0sAPx0I2dIYGrHsP51zoyYVEYYWUwblmObaJzV3dSQomLPNfdh0nswZGyY/SXCA
-         OEWnpNl8G8pl7c/uJo4/7+XcEQgV/Dq+jqBF+3JmHjUejmOpy4uRzjRhiuYlIVpUmzN2
-         nG/+D3UE4TcMCybqaMZZzy7sy/7BjHtJ56PBEpzwwItlcSrYApe0rHNlNAdnxi/B1jXh
-         TZQQ==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3XEVXKVqEiCt5vuaec4vVpy06+wZ2dKpFomwefF9KMs=;
+        b=eYUe8RRn2A68Oj2Im2yzv+RtrdWOSSJergCiUDRS7+6jdMoLhYOVloYXmoPVAQO15S
+         c3CFltDh2/bTqJAZDGoGcCTSmaEol3aSBJ8TT2korgdzLBhF+IKm6GPoIUEGVA4A960u
+         MXxMaMdP3m2CaXp6IURKghkAbLSddakZRqzGyaUSl8mrKnrcXyDbesexRylqqm5S1Kqy
+         EK4gXGDcRHoTXQEiAOsWCva22WTZA3bkiZPXNVbDpXn0eGO6jdMZGiRzd8LkaUqCWksc
+         caiSZP/zSR6L19/LTsX6y3huFS3g/lif4oE1xQXsvqHvIM8To3tp/om7YhpEgKBAF3P0
+         mRJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VFKJ1VfMBcbGkawO76gmyG8p+Q1Mad1n6dxTBahJkr0=;
-        b=ZvJ1c/UbyolABCzToIp+QwajKYT4QEREk2uNo4wPbNAArgzWKLV3iijChEsrSrskbT
-         Z6FxixQMPCLmqQ19qIf939gyKl7zLKZIwDEpuE6TkEo5HVJtULyhfISULltjq57WYHEM
-         VSDaMlNYLV4o0RNJLU4acxw0E1c3MNxa4xvvIWokUdC+gLsc0E6AbmY1UyKzlF4N7OIV
-         bZ4bgg40tbeq1RnBrgVDBqO4QT776iWzJcovQ69HYVFM7lADuAoTCZzr2Npi5TjD3tqC
-         4dQGGFOpQAaVEd/VgWr3/iHjkkQIv7aZNhi2qsP8nTHe0mCWitH+CqQtFQNqTcd0auP4
-         cvDQ==
-X-Gm-Message-State: AOAM530fCxC9YpcIAFbYKUmcwXSVV1y2nDJS5I+ArYh4R//mDC3Wu0+r
-        p5iJVxEbcGwAFVSdgFjjmZOwFuGxcxKT01Xh
-X-Google-Smtp-Source: ABdhPJyLNYwtdOwsmR+YuZQDNKjNbCtVCbBJOXVazA5w/jgTriOpufEKNoQuPuJUv+AE3j7HbMf8hQ==
-X-Received: by 2002:ac8:7cad:: with SMTP id z13mr3464858qtv.96.1612974356366;
-        Wed, 10 Feb 2021 08:25:56 -0800 (PST)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id f131sm1815319qke.15.2021.02.10.08.25.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 08:25:55 -0800 (PST)
-Subject: Re: [PATCH v5 1/2] nbd: Fix NULL pointer in flush_workqueue
-To:     Sun Ke <sunke32@huawei.com>, axboe@kernel.dk, Markus.Elfring@web.de
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org
-References: <20210205065650.2357457-1-sunke32@huawei.com>
- <20210205065650.2357457-2-sunke32@huawei.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <a38d7926-5989-dfd8-b27b-37a2b92797f0@toxicpanda.com>
-Date:   Wed, 10 Feb 2021 11:25:54 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=3XEVXKVqEiCt5vuaec4vVpy06+wZ2dKpFomwefF9KMs=;
+        b=g7tYhPMSykXHKpdjc/4yBEwGmipa1iy1N0ZhaNT1eyfkHkdSrXj2iGyL+JRFQp2lxx
+         NWl5yvtLY/pxTa8pNECgi5cyQunL8bzyCUm4Aq56TU7Y7kPtEDAcc00UEDwfmvKy2JuP
+         ikGoFEBUlXQKN/ZA0QnlkfPuYyXWVRmsK0uoAkqXFyHsdleo/7ZZxIIjtxdyH+WuOsX2
+         9sGt8NyrnNSsiuLKtr+kHWXxGLhbIkhIwC0F4ZnBwh86jMlg+sjFXMD3vVYEumRQxgl+
+         RFpHGKtynArHPmTQRb1v65bfg0Fx127upZjnXdJK7qq37l9JLyQhb8ZImAMqkS8f4fmm
+         HyZA==
+X-Gm-Message-State: AOAM533XpsYc6LGMdXIMSh8crt8zdnzCkVgZBAp/CJQm7kqWENHC2QDE
+        +JOxle2HQP6ryKmXQLuZ31E=
+X-Google-Smtp-Source: ABdhPJx/HMb8jcj3j7HsbYcnK1tfCvYY09LLiTC2+woVLJE79zJrllGk4oF9DjqtwJqlD/r4oY2R3w==
+X-Received: by 2002:a62:7e8c:0:b029:1e1:6431:7ce with SMTP id z134-20020a627e8c0000b02901e1643107cemr4062314pfc.6.1612974397405;
+        Wed, 10 Feb 2021 08:26:37 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:e5b0:be96:1dfb:a1f6])
+        by smtp.gmail.com with ESMTPSA id d133sm2690245pfd.6.2021.02.10.08.26.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 08:26:36 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     sumit.semwal@linaro.org, john.stultz@linaro.org
+Cc:     LKML <linux-kernel@vger.kernel.org>, surenb@google.com,
+        hridya@google.com, joaodias@google.com,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH] dma-buf: system_heap: do not warn for costly allocation
+Date:   Wed, 10 Feb 2021 08:26:32 -0800
+Message-Id: <20210210162632.3903128-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
 MIME-Version: 1.0
-In-Reply-To: <20210205065650.2357457-2-sunke32@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/5/21 1:56 AM, Sun Ke wrote:
-> Open /dev/nbdX first, the config_refs will be 1 and
-> the pointers in nbd_device are still null. Disconnect
-> /dev/nbdX, then reference a null recv_workq. The
-> protection by config_refs in nbd_genl_disconnect is useless.
-> 
-> [  656.366194] BUG: kernel NULL pointer dereference, address: 0000000000000020
-> [  656.368943] #PF: supervisor write access in kernel mode
-> [  656.369844] #PF: error_code(0x0002) - not-present page
-> [  656.370717] PGD 10cc87067 P4D 10cc87067 PUD 1074b4067 PMD 0
-> [  656.371693] Oops: 0002 [#1] SMP
-> [  656.372242] CPU: 5 PID: 7977 Comm: nbd-client Not tainted 5.11.0-rc5-00040-g76c057c84d28 #1
-> [  656.373661] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-> [  656.375904] RIP: 0010:mutex_lock+0x29/0x60
-> [  656.376627] Code: 00 0f 1f 44 00 00 55 48 89 fd 48 83 05 6f d7 fe 08 01 e8 7a c3 ff ff 48 83 05 6a d7 fe 08 01 31 c0 65 48 8b 14 25 00 6d 01 00 <f0> 48 0f b1 55 d
-> [  656.378934] RSP: 0018:ffffc900005eb9b0 EFLAGS: 00010246
-> [  656.379350] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> [  656.379915] RDX: ffff888104cf2600 RSI: ffffffffaae8f452 RDI: 0000000000000020
-> [  656.380473] RBP: 0000000000000020 R08: 0000000000000000 R09: ffff88813bd6b318
-> [  656.381039] R10: 00000000000000c7 R11: fefefefefefefeff R12: ffff888102710b40
-> [  656.381599] R13: ffffc900005eb9e0 R14: ffffffffb2930680 R15: ffff88810770ef00
-> [  656.382166] FS:  00007fdf117ebb40(0000) GS:ffff88813bd40000(0000) knlGS:0000000000000000
-> [  656.382806] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  656.383261] CR2: 0000000000000020 CR3: 0000000100c84000 CR4: 00000000000006e0
-> [  656.383819] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [  656.384370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [  656.384927] Call Trace:
-> [  656.385111]  flush_workqueue+0x92/0x6c0
-> [  656.385395]  nbd_disconnect_and_put+0x81/0xd0
-> [  656.385716]  nbd_genl_disconnect+0x125/0x2a0
-> [  656.386034]  genl_family_rcv_msg_doit.isra.0+0x102/0x1b0
-> [  656.386422]  genl_rcv_msg+0xfc/0x2b0
-> [  656.386685]  ? nbd_ioctl+0x490/0x490
-> [  656.386954]  ? genl_family_rcv_msg_doit.isra.0+0x1b0/0x1b0
-> [  656.387354]  netlink_rcv_skb+0x62/0x180
-> [  656.387638]  genl_rcv+0x34/0x60
-> [  656.387874]  netlink_unicast+0x26d/0x590
-> [  656.388162]  netlink_sendmsg+0x398/0x6c0
-> [  656.388451]  ? netlink_rcv_skb+0x180/0x180
-> [  656.388750]  ____sys_sendmsg+0x1da/0x320
-> [  656.389038]  ? ____sys_recvmsg+0x130/0x220
-> [  656.389334]  ___sys_sendmsg+0x8e/0xf0
-> [  656.389605]  ? ___sys_recvmsg+0xa2/0xf0
-> [  656.389889]  ? handle_mm_fault+0x1671/0x21d0
-> [  656.390201]  __sys_sendmsg+0x6d/0xe0
-> [  656.390464]  __x64_sys_sendmsg+0x23/0x30
-> [  656.390751]  do_syscall_64+0x45/0x70
-> [  656.391017]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Fixes: e9e006f5fcf2 ("nbd: fix max number of supported devs")
-> Suggested-by: Markus Elfring <Markus.Elfring@web.de>
-> Signed-off-by: Sun Ke <sunke32@huawei.com>
-> ---
-> v4: Share exception handling code for if branches
-> v3: Do not use unlock and add put_nbd.
-> v2: Use jump target unlock.
-> ---
->   drivers/block/nbd.c | 11 +++++++----
->   1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index e6ea5d344f87..3c9b3bf3f4c2 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -2014,17 +2014,20 @@ static int nbd_genl_disconnect(struct sk_buff *skb, struct genl_info *info)
->   	mutex_lock(&nbd_index_mutex);
->   	nbd = idr_find(&nbd_index_idr, index);
->   	if (!nbd) {
-> -		mutex_unlock(&nbd_index_mutex);
->   		printk(KERN_ERR "nbd: couldn't find device at index %d\n",
->   		       index);
-> -		return -EINVAL;
-> +		goto unlock_index;
->   	}
-> -	if (!refcount_inc_not_zero(&nbd->refs)) {
-> -		mutex_unlock(&nbd_index_mutex);
-> +	mutex_lock(&nbd->config_lock);
-> +	if (!refcount_inc_not_zero(&nbd->refs) || !nbd->recv_workq) {
+Linux VM is not hard to support PAGE_ALLOC_COSTLY_ODER allocation
+so normally expects driver passes __GFP_NOWARN in that case
+if they has fallback options.
 
-We can't safely take the ->config_log if we don't have a ref.  Just add
+system_heap in dmabuf is the case so do not flood into demsg
+with the warning for recording more precious information logs.
+(below is ION warning example I got but dmabuf system heap is
+nothing different).
 
-if (nbd->recv_workq)
-	flush_workqueue(nbd->recv_workq);
+[ 1233.911533][  T460] warn_alloc: 11 callbacks suppressed
+[ 1233.911539][  T460] allocator@2.0-s: page allocation failure: order:4, mode:0x140dc2(GFP_HIGHUSER|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
+[ 1233.926235][  T460] Call trace:
+[ 1233.929370][  T460]  dump_backtrace+0x0/0x1d8
+[ 1233.933704][  T460]  show_stack+0x18/0x24
+[ 1233.937701][  T460]  dump_stack+0xc0/0x140
+[ 1233.941783][  T460]  warn_alloc+0xf4/0x148
+[ 1233.945862][  T460]  __alloc_pages_slowpath+0x9fc/0xa10
+[ 1233.951101][  T460]  __alloc_pages_nodemask+0x278/0x2c0
+[ 1233.956285][  T460]  ion_page_pool_alloc+0xd8/0x100
+[ 1233.961144][  T460]  ion_system_heap_allocate+0xbc/0x2f0
+[ 1233.966440][  T460]  ion_buffer_create+0x68/0x274
+[ 1233.971130][  T460]  ion_buffer_alloc+0x8c/0x110
+[ 1233.975733][  T460]  ion_dmabuf_alloc+0x44/0xe8
+[ 1233.980248][  T460]  ion_ioctl+0x100/0x320
+[ 1233.984332][  T460]  __arm64_sys_ioctl+0x90/0xc8
+[ 1233.988934][  T460]  el0_svc_common+0x9c/0x168
+[ 1233.993360][  T460]  do_el0_svc+0x1c/0x28
+[ 1233.997358][  T460]  el0_sync_handler+0xd8/0x250
+[ 1234.001989][  T460]  el0_sync+0x148/0x180
 
-to nbd_disconnect_and_put().  Problem solved, we can't drop it until we drop our 
-last config ref, and we're holding a config ref here.  We could probably add it 
-in the meantime, but at this point we've disconnected all of our sockets so it 
-doesn't matter.  Thanks,
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ drivers/dma-buf/heaps/system_heap.c | 9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
 
-Josef
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 29e49ac17251..33c25a5e06f9 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -40,7 +40,7 @@ struct dma_heap_attachment {
+ 	bool mapped;
+ };
+ 
+-#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
++#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO \
+ 				| __GFP_NORETRY) & ~__GFP_RECLAIM) \
+ 				| __GFP_COMP)
+ #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+@@ -315,6 +315,7 @@ static struct page *alloc_largest_available(unsigned long size,
+ 					    unsigned int max_order)
+ {
+ 	struct page *page;
++	unsigned long gfp_flags;
+ 	int i;
+ 
+ 	for (i = 0; i < NUM_ORDERS; i++) {
+@@ -323,7 +324,11 @@ static struct page *alloc_largest_available(unsigned long size,
+ 		if (max_order < orders[i])
+ 			continue;
+ 
+-		page = alloc_pages(order_flags[i], orders[i]);
++		gfp_flags = order_flags[i];
++		if (orders[i] > PAGE_ALLOC_COSTLY_ORDER)
++			gfp_flags |= __GFP_NOWARN;
++
++		page = alloc_pages(gfp_flags, orders[i]);
+ 		if (!page)
+ 			continue;
+ 		return page;
+-- 
+2.30.0.478.g8a0d178c01-goog
+
