@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B343165CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F5B3165C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhBJL5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:57:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
+        id S230499AbhBJL5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhBJLy7 (ORCPT
+        with ESMTP id S230442AbhBJLys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:54:59 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09E6C061756;
-        Wed, 10 Feb 2021 03:54:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=OmYUKKN9uN+7YYNFuulRwO/nSJIKxc8GX+ietg4bF6U=; b=WMN95oqUKQGH3YtBOCm6BlAu5
-        YX1yDNoo+qxDmI7vrXvREGVucPPwM22WS8khNbOjwFJJGadkoP/OkARe70lVGksYGEtYlPiVC5lAn
-        X2h5pV7BSp4bqFgsN3sb29xu9T2L2UO/K6wkXkdsLN66vcwE0SiSeS08yAHrZ7K9ygiTTr3pwhBHh
-        /WjKrNS3FNtZvTDHAOYvhhjgXGhInNeAMz6NQvO2NXzrhVvkPdAsnwZfVIkZ/xbmBpw4QYeiv6nIx
-        aULxVz87h7T/8rJr4n9uNo96NaHFXScUx2Jkr3Ntz+kdesFqyGgPRuIPPLKtu/AK/SzjxT3xHUy9+
-        rvRnmL/TQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41590)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l9o4W-0004cd-GB; Wed, 10 Feb 2021 11:54:16 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l9o4W-00052Y-2k; Wed, 10 Feb 2021 11:54:16 +0000
-Date:   Wed, 10 Feb 2021 11:54:16 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Michael Walle <michael@walle.cc>
-Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next] net: phy: introduce phydev->port
-Message-ID: <20210210115415.GV1463@shell.armlinux.org.uk>
-References: <20210209163852.17037-1-michael@walle.cc>
- <41e4f35c87607e69cb87c4ef421d4a77@walle.cc>
+        Wed, 10 Feb 2021 06:54:48 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57ECFC06174A;
+        Wed, 10 Feb 2021 03:54:07 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id p21so2336592lfu.11;
+        Wed, 10 Feb 2021 03:54:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6veChv4X2YgMkhqCjE3a4k98qt78vadEJiIFGLbQqGA=;
+        b=dq4h2Z1bp4yyUD4/iweE7BDC/dgwKbB1ELrS7y/SGpIN+bKRZ/fy0hMbCOiw6zh9IS
+         uX62+GAxVOSsKyCi1iON64P00AomIHKRe50+iLD1NypY7+xkChQgzYjfHNaJP4QsY3qX
+         VN7eLq+3OXargRIChaj0r401CUyONM8xUBCS6ul5rwMqgf+Mp7832LRdS0yeT0Pe0/8Y
+         P8Z/hGt2IrG5FuuUGa2fiX7QtC/elurswsN8W3JfUignGttd4oF3Yy7PTQmRpEU7CQA2
+         xOaxsQcQpXD4FnmPg2e5F+ORG52ObGs4kAphkQPv9na6xu2l1DjPeY0LPaHEEEfgQc1T
+         Ynpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6veChv4X2YgMkhqCjE3a4k98qt78vadEJiIFGLbQqGA=;
+        b=IVRGqsXlmzH0K7vZsbyXf3FCS2hC5Nc5LPZIKiM3YPi0+nlowFxKEaETyn5viW5oxP
+         2CBiUqppuSYPRA/7XBsXenpXAZkKbMgSWTXHRuEeiDzTkE9hqPnWMnDOpWUxhVVq3w/H
+         CTxbjJzLw64QL0ZLpofU28MWpPdhSsNf2fVP1deaQyAgMCAecbsitbw9ro5D1uySWsH/
+         MiR1NIE2OchtSiaISDJrVsjRppTrXBz7j6ijEviEWbM4QsSXF/MhhRG6x5Ls+r/ot4Zp
+         D3TLEuAt1K/I9uTxl+m5ppouoEPFpjHpMOQSTYOB2N9MB+DVZF2UDGY0ltcYO/I8xakk
+         5rFw==
+X-Gm-Message-State: AOAM532txh4+PaCVT02IIMg1/X/tjIfi72fwZSwSFfW5cZN//wFTnsvs
+        kwqZszTnhBkC9/uHD+ED0rc=
+X-Google-Smtp-Source: ABdhPJwkWJ5YNQgnHyQiLmMseJ7t4hfkEOodwCLrc2yr1oyu5Z+yylfPCOG2gpxWjOTYJaiS/VZb2g==
+X-Received: by 2002:a19:4092:: with SMTP id n140mr1488415lfa.150.1612958045766;
+        Wed, 10 Feb 2021 03:54:05 -0800 (PST)
+Received: from [192.168.31.34] (109-252-130-105.dynamic.spd-mgts.ru. [109.252.130.105])
+        by smtp.gmail.com with ESMTPSA id u26sm290316lfk.148.2021.02.10.03.54.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 03:54:05 -0800 (PST)
+Subject: Re: [PATCH] ubsan: remove overflow checks
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <YCJCaDIzIaUZG27F@hirez.programming.kicks-ass.net>
+ <20210209232348.20510-1-ryabinin.a.a@gmail.com>
+ <202102091617.8FD77890@keescook>
+From:   Andrey Rybainin <ryabinin.a.a@gmail.com>
+Message-ID: <460f8e86-f602-d3ae-1287-0042c510a165@gmail.com>
+Date:   Wed, 10 Feb 2021 14:55:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <41e4f35c87607e69cb87c4ef421d4a77@walle.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <202102091617.8FD77890@keescook>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:20:02PM +0100, Michael Walle wrote:
+
+
+On 2/10/21 3:19 AM, Kees Cook wrote:
+> On Wed, Feb 10, 2021 at 02:23:48AM +0300, Andrey Ryabinin wrote:
+>> Since GCC 8.0 -fsanitize=signed-integer-overflow doesn't work with -fwrapv.
+>> -fwrapv makes signed overflows defines and GCC essentially disables
+>> ubsan checks. On GCC < 8.0 -fwrapv doesn't have influence on
+>> -fsanitize=signed-integer-overflow setting, so it kinda works
+>> but generates false-positves and violates uaccess rules:
+>>
+>> lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
+>>
+>> Disable signed overflow checks to avoid these problems.
+>> Remove unsigned overflow checks as well.
+>> Unsigned overflow appeared as side effect of the commit
+>>  cdf8a76fda4a ("ubsan: move cc-option tests into Kconfig"),
+>> but it never worked (kernel doesn't boot). And unsigned overflows
+>> are allowed by C standard, so it just pointless.
+>>
+>> Signed-off-by: Andrey Ryabinin <ryabinin.a.a@gmail.com>
 > 
-> Am 2021-02-09 17:38, schrieb Michael Walle:
-> > --- a/drivers/net/phy/phy.c
-> > +++ b/drivers/net/phy/phy.c
-> > @@ -308,7 +308,7 @@ void phy_ethtool_ksettings_get(struct phy_device
-> > *phydev,
-> >  	if (phydev->interface == PHY_INTERFACE_MODE_MOCA)
-> >  		cmd->base.port = PORT_BNC;
-> >  	else
-> > -		cmd->base.port = PORT_MII;
-> > +		cmd->base.port = phydev->port;
-> >  	cmd->base.transceiver = phy_is_internal(phydev) ?
-> >  				XCVR_INTERNAL : XCVR_EXTERNAL;
-> >  	cmd->base.phy_address = phydev->mdio.addr;
+> NAK, please don't remove the entire thing. I want this to work again
+> with -fwrapv, and it's not entirely broken under Clang. But the feature
+> shouldn't be removed from the kernel.
 > 
-> Russell, the phylink has a similiar place where PORT_MII is set. I don't
-> know if we'd have to change that, too.
 
-What would we change it to?
+This is dead code. How exactly it's useful to keep it? You can always resurrect it later when you'll need it.
+Clang has the same behavior as GCC > 8, signed-integer-overflow does nothing when compiled -fwrapv or -fno-strict-overflow
 
-If there's no PHY attached and no SFP, what kind of interface do we
-have? As we've no idea what's on the media side, assuming that we are
-presenting a MII-like interface to stuff outside of what we control is
-entirely reasonable.
-
-Claiming the world is TP would be entirely wrong, there may not be a
-RJ45 jack. Consider the case where the MAC is connected to a switch.
-It's a MII-like link. It's certianly not TP, BNC, fiber, AUI, or
-direct attach.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
