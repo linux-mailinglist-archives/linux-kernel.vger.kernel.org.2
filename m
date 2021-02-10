@@ -2,200 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FFB316F9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF654316FA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhBJTGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:06:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234446AbhBJTF4 (ORCPT
+        id S234354AbhBJTHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:07:03 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:51986 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhBJTGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:05:56 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13118C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:05:12 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id j19so4416327lfr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:05:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AUZZJPcdsZ4nXWPrdOtnVl3JVvpEylf0g26f/cJWrEs=;
-        b=tdvdvopNJa/CNXblKmh3zsQ94QYlwXgnTc3W2rw3GKaWji6T1d806HNk5jlGGQsE0d
-         Z3BzOj8nXe/DC40o+NAgzKZEhnAAmT+MybnSvLG2UiVRby+UfPnUmHXxsNbU7/THaivB
-         IJok8KZuYBmdglvY9AXbeqg2N79bWTTZAvbuVrJ/jApGhi9wm0hMJLi3kDsrycTWwkH+
-         KeQqcA/kzuUA1N4LUQGmsMhnfPeZKVkijrSX1wnSYD7t5hFI06+M7TAv4qerUeyHPFAm
-         84uVebInrFDi44XE03vgB3Mbxtn8cTyAwnIJLm2UKF/hTrvWBymtDXcbDo+kC+Za5e0s
-         IaxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AUZZJPcdsZ4nXWPrdOtnVl3JVvpEylf0g26f/cJWrEs=;
-        b=mZ7HRFqybqj5z0I8cGMCFJnwBLdGE0GoupzANfgDj7Jwqce1V+9MPsHdP34+er1gaL
-         HOqKmqyVYShGueu90LVS/oiivNrIQBRBEEDbVqop7K2qg5Nmhjo3ejbFziKry7JvqhqO
-         lB+3n4la9YcEj435MZ501wg7lhCoIFiRjndu+3Od4fcshuf8EkO43AZhErIKHv2f8jOD
-         pI6cKi3jcBpd6cyWffeH8Oc5V6unIFtZStCTjXYZm9qTfk4hA3QYJy7PddEOOKR/MjV7
-         nVfjr4UK3e/tgZbwznDdGY13f58K2GWZYUS/Jox2luX+6+5EdzQ1SVCTAXr0ZexcB0hp
-         moug==
-X-Gm-Message-State: AOAM530cLNF8o7AH9EKJyyG34C3q9VYTvRJiF8MLyMGI/V1b59o2OhwE
-        QHPXUybTueVgYd/Vl72oDloIYg==
-X-Google-Smtp-Source: ABdhPJx+dGCB5Wuq+4IRhfx1FPsG7SMl/CyZGsYTUvPGsDbtVXH2raDj8I9KusXJvxhAT7I/ejZXMg==
-X-Received: by 2002:a19:4843:: with SMTP id v64mr2309414lfa.178.1612983910472;
-        Wed, 10 Feb 2021 11:05:10 -0800 (PST)
-Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
-        by smtp.gmail.com with ESMTPSA id s16sm390025ljc.121.2021.02.10.11.05.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 11:05:09 -0800 (PST)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     soc@kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, tsbogend@alpha.franken.de,
-        mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, chris@zankel.net, jcmvbkbc@gmail.com,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        mst@redhat.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org, arnd@arndb.de,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] arm64: defconfig: enable modern virtio pci device
-Date:   Wed, 10 Feb 2021 20:05:06 +0100
-Message-Id: <20210210190506.1923684-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.30.0
+        Wed, 10 Feb 2021 14:06:44 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AJ4aeD162805;
+        Wed, 10 Feb 2021 19:05:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=wJepcm1G3WY4luzOFFwanPvz7D03bJCF3/6VVjzKfs8=;
+ b=We/AJ+CnE3Yo4RIreHwhZCi91BQ5thRZUlodewhIaBfOZehW48Gmh7cE6o+wNn00+Z+z
+ ucfaNG3J3B4urgiTva03GEmdydUy6T0Jm+0tm8GjS3X2ciFxTy1vqa0cuVkJ3Mgw8NCl
+ cBa3aBxU7b7RFeWFqeN4CM9Q2toZ7Zkm5xGxcTWNMMeTtDLySPT211zQgkHsAs5rzcNj
+ hUMZu8EoPhXbQB5PDiIf3TMu/D9AzNHfBKxo8rjBlHt2kG9Q4c49pROLaxhxateEgixf
+ RnPCffN0MRLkbp0rOKE+Rpaq9gNHp4KXwBr003bDn8bh2DGI75bavAsH255hB6naI8J1 8A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 36hjhqvqee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 19:05:48 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AJ54sl144233;
+        Wed, 10 Feb 2021 19:05:46 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 36j51xys52-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 19:05:46 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11AJ5iai031925;
+        Wed, 10 Feb 2021 19:05:44 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 11:05:42 -0800
+Date:   Wed, 10 Feb 2021 22:05:29 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     kbuild@lists.01.org, Drew Fustini <drew@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org
+Subject: Re: [PATCH v2 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
+Message-ID: <20210210190528.GE20820@kadam>
+References: <20210210074946.155417-3-drew@beagleboard.org>
+ <20210210182044.GY2696@kadam>
+ <CAMuHMdUTG-0PMsP--i4KE2RA_zOaQgpUDksvtU8dLPW9dSpoug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUTG-0PMsP--i4KE2RA_zOaQgpUDksvtU8dLPW9dSpoug@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100169
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100169
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since patch ("virtio-pci: introduce modern device module") got added it
-is not possible to boot a defconfig kernel in qemu with a virtio pci
-device.  Add CONFIG_VIRTIO_PCI_MODERN=y fragment makes the kernel able
-to boot.
+On Wed, Feb 10, 2021 at 07:39:16PM +0100, Geert Uytterhoeven wrote:
+> Hi Dan,
+> 
+> On Wed, Feb 10, 2021 at 7:21 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > 99b2f99aa41aa7 Drew Fustini  2021-02-09  694    buf = devm_kzalloc(pctldev->dev, PINMUX_MAX_NAME * 2, GFP_KERNEL);
+> > 99b2f99aa41aa7 Drew Fustini  2021-02-09  695    if (!buf)
+> > 99b2f99aa41aa7 Drew Fustini  2021-02-09  696            return -ENOMEM;
+> > 99b2f99aa41aa7 Drew Fustini  2021-02-09  697
+> > 99b2f99aa41aa7 Drew Fustini  2021-02-09  698    fname = devm_kzalloc(pctldev->dev, PINMUX_MAX_NAME, GFP_KERNEL);
+> > 99b2f99aa41aa7 Drew Fustini  2021-02-09  699    if (!fname) {
+> > 99b2f99aa41aa7 Drew Fustini  2021-02-09  700            ret = -ENOMEM;
+> > 99b2f99aa41aa7 Drew Fustini  2021-02-09  701            goto free_buf;
+> >
+> > The gotos are out of order.  They should be in mirror/reverse order of
+> > the allocations:
+> >
+> > free_gmane:
+> >         devm_kfree(pctldev->dev, gname);
+> > free_fname:
+> >         devm_kfree(pctldev->dev, fname);
+> > free_buf:
+> >         devm_kfree(pctldev->dev, buf);
+> >
+> > But also why do we need to use devm_kfree() at all?  I thought the whole
+> > point of devm_ functions was that they are garbage collected
+> > automatically for you.  Can we not just delete all error handling and
+> > return -ENOMEM here?
+> 
+> No, because the lifetime of the objects allocated here does not match the
+> lifetime of dev.  If they're not freed here, they will only be freed when the
+> device is unbound.  As the user can access the sysfs files at will, he can
+> OOM the system.
+> 
 
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- arch/arm/configs/multi_v7_defconfig         | 1 +
- arch/arm64/configs/defconfig                | 1 +
- arch/mips/configs/loongson3_defconfig       | 1 +
- arch/mips/configs/malta_kvm_guest_defconfig | 1 +
- arch/powerpc/configs/guest.config           | 1 +
- arch/riscv/configs/defconfig                | 1 +
- arch/riscv/configs/rv32_defconfig           | 1 +
- arch/xtensa/configs/virt_defconfig          | 1 +
- kernel/configs/kvm_guest.config             | 1 +
- 9 files changed, 9 insertions(+)
+Then why not use vanilla kmalloc()?
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 3823da605430..02297ed49b20 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -972,6 +972,7 @@ CONFIG_DW_DMAC=y
- CONFIG_RCAR_DMAC=y
- CONFIG_RENESAS_USB_DMAC=m
- CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_PCI_MODERN=y
- CONFIG_VIRTIO_MMIO=y
- CONFIG_STAGING=y
- CONFIG_MFD_NVEC=y
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 83c28da85834..8334e9cb4608 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -910,6 +910,7 @@ CONFIG_TI_K3_UDMA_GLUE_LAYER=y
- CONFIG_VFIO=y
- CONFIG_VFIO_PCI=y
- CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_PCI_MODERN=y
- CONFIG_VIRTIO_BALLOON=y
- CONFIG_VIRTIO_MMIO=y
- CONFIG_XEN_GNTDEV=y
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 0e79f81217bc..ac5f2dcbffb1 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -324,6 +324,7 @@ CONFIG_RTC_DRV_CMOS=y
- CONFIG_RTC_DRV_GOLDFISH=y
- CONFIG_DMADEVICES=y
- CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_PCI_MODERN=y
- CONFIG_VIRTIO_BALLOON=m
- CONFIG_VIRTIO_INPUT=y
- CONFIG_VIRTIO_MMIO=y
-diff --git a/arch/mips/configs/malta_kvm_guest_defconfig b/arch/mips/configs/malta_kvm_guest_defconfig
-index 9185e0a0aa45..043633cdb406 100644
---- a/arch/mips/configs/malta_kvm_guest_defconfig
-+++ b/arch/mips/configs/malta_kvm_guest_defconfig
-@@ -332,6 +332,7 @@ CONFIG_RTC_DRV_CMOS=y
- CONFIG_UIO=m
- CONFIG_UIO_CIF=m
- CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_PCI_MODERN=y
- CONFIG_VIRTIO_BALLOON=y
- CONFIG_VIRTIO_MMIO=y
- CONFIG_EXT2_FS=y
-diff --git a/arch/powerpc/configs/guest.config b/arch/powerpc/configs/guest.config
-index 209f58515d88..fbff632c8633 100644
---- a/arch/powerpc/configs/guest.config
-+++ b/arch/powerpc/configs/guest.config
-@@ -5,6 +5,7 @@ CONFIG_NET_FAILOVER=y
- CONFIG_VIRTIO_CONSOLE=y
- CONFIG_VIRTIO=y
- CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_PCI_MODERN=y
- CONFIG_KVM_GUEST=y
- CONFIG_EPAPR_PARAVIRT=y
- CONFIG_VIRTIO_BALLOON=y
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index 8c3d1e451703..b7fa7a1a0c6d 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -85,6 +85,7 @@ CONFIG_MMC=y
- CONFIG_MMC_SPI=y
- CONFIG_RTC_CLASS=y
- CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_PCI_MODERN=y
- CONFIG_VIRTIO_BALLOON=y
- CONFIG_VIRTIO_INPUT=y
- CONFIG_VIRTIO_MMIO=y
-diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
-index 2c2cda6cc1c5..68296101fa06 100644
---- a/arch/riscv/configs/rv32_defconfig
-+++ b/arch/riscv/configs/rv32_defconfig
-@@ -84,6 +84,7 @@ CONFIG_MMC=y
- CONFIG_MMC_SPI=y
- CONFIG_RTC_CLASS=y
- CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_PCI_MODERN=y
- CONFIG_VIRTIO_BALLOON=y
- CONFIG_VIRTIO_INPUT=y
- CONFIG_VIRTIO_MMIO=y
-diff --git a/arch/xtensa/configs/virt_defconfig b/arch/xtensa/configs/virt_defconfig
-index 6d1387dfa96f..7fad1c2454fd 100644
---- a/arch/xtensa/configs/virt_defconfig
-+++ b/arch/xtensa/configs/virt_defconfig
-@@ -74,6 +74,7 @@ CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
- # CONFIG_USB_SUPPORT is not set
- CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_PCI_MODERN=y
- CONFIG_VIRTIO_INPUT=y
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_EXT3_FS=y
-diff --git a/kernel/configs/kvm_guest.config b/kernel/configs/kvm_guest.config
-index 208481d91090..8dea6df20006 100644
---- a/kernel/configs/kvm_guest.config
-+++ b/kernel/configs/kvm_guest.config
-@@ -22,6 +22,7 @@ CONFIG_S390_GUEST=y
- CONFIG_VIRTIO=y
- CONFIG_VIRTIO_MENU=y
- CONFIG_VIRTIO_PCI=y
-+CONFIG_VIRTIO_PCI_MODERN=y
- CONFIG_VIRTIO_BLK=y
- CONFIG_VIRTIO_CONSOLE=y
- CONFIG_VIRTIO_NET=y
--- 
-2.30.0
+regards,
+dan carpenter
 
