@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C25316871
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9257E31687B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhBJNzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:55:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231499AbhBJNyR (ORCPT
+        id S231919AbhBJN5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:57:53 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:60062 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231546AbhBJNyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:54:17 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA43C061786;
-        Wed, 10 Feb 2021 05:53:36 -0800 (PST)
+        Wed, 10 Feb 2021 08:54:19 -0500
 Date:   Wed, 10 Feb 2021 13:53:33 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612965213;
+        s=2020; t=1612965214;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/rD0ODAFWZXsqDtzh/zsqRGhdaA02yb5kS7jJ3TKkgs=;
-        b=p/5jVmjDRwzoWjR6Wrf6l7XlnN+ruz5YS1w7hFHgfxDYnn9ug3VoRLwPd9bajpgqYLLorK
-        BAU7+DfTGgY6oAiIG1D7CAZmfbb7M9EOCNDEVK08b/V+/4Fzlt1JlGUk/fEWNVUVBem/pS
-        vHVpq8ifhuXXuqAEqha/Ue2LgCOg4h3srtnaLOooAGmHcAIMrDNGkdlDOlhp2v6RCmaWcz
-        PuWw28iJaCYp/Uh0a36mEVSpBczE/AtPOpHhG05ELalgs/LE1zxerDhXLftA8rw7VwQ106
-        hJ2tsk/xybr7rQcrV2VRqEb/g2IE5K4AG7+5iBMzvzXEsXNN3LwafO1s4qsy/Q==
+        bh=/qiOnCrpWgSV4zWzTwIRtHFBfKvrZcNgm6eKxfH11Hs=;
+        b=V98RPZKftKl/nFipCEGty6uIm1YLRQv+D9FwfBZsv/VyoC3CoMmW1WAj86s68YTYdz87An
+        g/K3gTl94kdbtnIHW8csHeJZjs8Q1r23FEH1b5utnFR4LxGoZ3nbvpjK71nKoEynOIFNKV
+        GgwY16A26ugLB09WMxs/0r3EwxDPzWdQZBJx1Plgo0GM4RHJU1C20bxshhzI+cETRsV2Uj
+        IbsifDW3GBExbrf/ePHBzNJxZbdCi/KFbrBs07RxJXr0DhFOId/Rx4ptBorB446E+Do/YP
+        UQDZOAjUAm3OOsc9afP3+h4iYpHS7MIRHgmkkFjPD2dF70Fh6LHhrFsHiY8h5w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612965213;
+        s=2020e; t=1612965214;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/rD0ODAFWZXsqDtzh/zsqRGhdaA02yb5kS7jJ3TKkgs=;
-        b=lG1bwHUNH3Pp1AmpydqK9yDJ666oIG8kOnJHGlA1zK+s0V+m4eQ/gGTfEOlfYjFNSUw7vh
-        bg6NvCA2b6RBDhBw==
-From:   "tip-bot2 for Juri Lelli" <tip-bot2@linutronix.de>
+        bh=/qiOnCrpWgSV4zWzTwIRtHFBfKvrZcNgm6eKxfH11Hs=;
+        b=AFmz1C5DzMdrLqWly6cgj9InvciKpJssxSA4zP4J/o0gtL7YcHLWKj0/qL9/Id0PzydvZi
+        JxX7itrneTKIGGAg==
+From:   "tip-bot2 for Sven Schnelle" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/features: Fix hrtick reprogramming
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+Subject: [tip: sched/core] uprobes: (Re)add missing get_uprobe() in __find_uprobe()
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210208073554.14629-2-juri.lelli@redhat.com>
-References: <20210208073554.14629-2-juri.lelli@redhat.com>
+In-Reply-To: <20210209150711.36778-1-svens@linux.ibm.com>
+References: <20210209150711.36778-1-svens@linux.ibm.com>
 MIME-Version: 1.0
-Message-ID: <161296521335.23325.17083054579544872785.tip-bot2@tip-bot2>
+Message-ID: <161296521396.23325.14276433329775454608.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,92 +58,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     0abadfdf696f648ed32fa1bd16d4e0358de19bab
-Gitweb:        https://git.kernel.org/tip/0abadfdf696f648ed32fa1bd16d4e0358de19bab
-Author:        Juri Lelli <juri.lelli@redhat.com>
-AuthorDate:    Mon, 08 Feb 2021 08:35:53 +01:00
+Commit-ID:     2c3496a02cb06ffe957854d8488a5799d7bfb252
+Gitweb:        https://git.kernel.org/tip/2c3496a02cb06ffe957854d8488a5799d7bfb252
+Author:        Sven Schnelle <svens@linux.ibm.com>
+AuthorDate:    Tue, 09 Feb 2021 16:07:11 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 10 Feb 2021 14:44:49 +01:00
+CommitterDate: Wed, 10 Feb 2021 14:44:48 +01:00
 
-sched/features: Fix hrtick reprogramming
+uprobes: (Re)add missing get_uprobe() in __find_uprobe()
 
-Hung tasks and RCU stall cases were reported on systems which were not
-100% busy. Investigation of such unexpected cases (no sign of potential
-starvation caused by tasks hogging the system) pointed out that the
-periodic sched tick timer wasn't serviced anymore after a certain point
-and that caused all machinery that depends on it (timers, RCU, etc.) to
-stop working as well. This issues was however only reproducible if
-HRTICK was enabled.
+commit c6bc9bd06dff ("rbtree, uprobes: Use rbtree helpers")
+accidentally removed the refcount increase. Add it again.
 
-Looking at core dumps it was found that the rbtree of the hrtimer base
-used also for the hrtick was corrupted (i.e. next as seen from the base
-root and actual leftmost obtained by traversing the tree are different).
-Same base is also used for periodic tick hrtimer, which might get "lost"
-if the rbtree gets corrupted.
-
-Much alike what described in commit 1f71addd34f4c ("tick/sched: Do not
-mess with an enqueued hrtimer") there is a race window between
-hrtimer_set_expires() in hrtick_start and hrtimer_start_expires() in
-__hrtick_restart() in which the former might be operating on an already
-queued hrtick hrtimer, which might lead to corruption of the base.
-
-Use hrtick_start() (which removes the timer before enqueuing it back) to
-ensure hrtick hrtimer reprogramming is entirely guarded by the base
-lock, so that no race conditions can occur.
-
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-Signed-off-by: Luis Claudio R. Goncalves <lgoncalv@redhat.com>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Fixes: c6bc9bd06dff ("rbtree, uprobes: Use rbtree helpers")
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210208073554.14629-2-juri.lelli@redhat.com
+Link: https://lkml.kernel.org/r/20210209150711.36778-1-svens@linux.ibm.com
 ---
- kernel/sched/core.c  | 8 +++-----
- kernel/sched/sched.h | 1 +
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ kernel/events/uprobes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index cec507b..18d51ab 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -355,8 +355,9 @@ static enum hrtimer_restart hrtick(struct hrtimer *timer)
- static void __hrtick_restart(struct rq *rq)
- {
- 	struct hrtimer *timer = &rq->hrtick_timer;
-+	ktime_t time = rq->hrtick_time;
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index fd5160d..3ea7f8f 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -661,7 +661,7 @@ static struct uprobe *__find_uprobe(struct inode *inode, loff_t offset)
+ 	struct rb_node *node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
  
--	hrtimer_start_expires(timer, HRTIMER_MODE_ABS_PINNED_HARD);
-+	hrtimer_start(timer, time, HRTIMER_MODE_ABS_PINNED_HARD);
+ 	if (node)
+-		return __node_2_uprobe(node);
++		return get_uprobe(__node_2_uprobe(node));
+ 
+ 	return NULL;
  }
- 
- /*
-@@ -380,7 +381,6 @@ static void __hrtick_start(void *arg)
- void hrtick_start(struct rq *rq, u64 delay)
- {
- 	struct hrtimer *timer = &rq->hrtick_timer;
--	ktime_t time;
- 	s64 delta;
- 
- 	/*
-@@ -388,9 +388,7 @@ void hrtick_start(struct rq *rq, u64 delay)
- 	 * doesn't make sense and can cause timer DoS.
- 	 */
- 	delta = max_t(s64, delay, 10000LL);
--	time = ktime_add_ns(timer->base->get_time(), delta);
--
--	hrtimer_set_expires(timer, time);
-+	rq->hrtick_time = ktime_add_ns(timer->base->get_time(), delta);
- 
- 	if (rq == this_rq())
- 		__hrtick_restart(rq);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 2185b3b..0dfdd52 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1031,6 +1031,7 @@ struct rq {
- 	call_single_data_t	hrtick_csd;
- #endif
- 	struct hrtimer		hrtick_timer;
-+	ktime_t 		hrtick_time;
- #endif
- 
- #ifdef CONFIG_SCHEDSTATS
