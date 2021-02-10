@@ -2,73 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AAA3169D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D03153169DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbhBJPNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:13:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhBJPNJ (ORCPT
+        id S231481AbhBJPPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:15:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27581 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230294AbhBJPP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:13:09 -0500
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE181C061786;
-        Wed, 10 Feb 2021 07:12:28 -0800 (PST)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id B8FA83C2; Wed, 10 Feb 2021 16:12:26 +0100 (CET)
-Date:   Wed, 10 Feb 2021 16:12:25 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     daniel.kiper@oracle.com, x86@kernel.org,
-        Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 0/7] x86/seves: Support 32-bit boot path and other updates
-Message-ID: <20210210151224.GC7302@8bytes.org>
-References: <20210210102135.30667-1-joro@8bytes.org>
- <20210210145835.GE358613@fedora>
+        Wed, 10 Feb 2021 10:15:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612970039;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=64yAKhf/pzRpCahMyzllKj4FXtslcoEEd5sylPeTwZY=;
+        b=HvxtuPk4NmcFwMGiDQzYszU/tfcWO+hNH01RuBwr70XSA0cpzxFkUCs2qbBDcr8q6iHjYI
+        xg679eiYRSTxPUEY+/XvavAxjul+ZPlI0zyWWFB760BV9AhF07UQ243SSx7Ux7UaPdQy1o
+        5wfc54UmrJ6BSPUTdhPi5wE40pp8xf8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-O24rLHeQPGyF_cnHOTj5Bw-1; Wed, 10 Feb 2021 10:13:55 -0500
+X-MC-Unique: O24rLHeQPGyF_cnHOTj5Bw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F708107ACE3;
+        Wed, 10 Feb 2021 15:13:53 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 34A1E10013DB;
+        Wed, 10 Feb 2021 15:13:51 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Add EFI_CERT_X509_GUID support for dbx/mokx entries
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210145835.GE358613@fedora>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+Date:   Wed, 10 Feb 2021 15:13:50 +0000
+Message-ID: <1323922.1612970030@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
 
-On Wed, Feb 10, 2021 at 09:58:35AM -0500, Konrad Rzeszutek Wilk wrote:
-> What GRUB versions are we talking about (CC-ing Daniel Kiper, who owns
-> GRUB).
+Hi Linus,
 
-I think this was about 32-bit GRUB builds used by distributions. I
-personally tested it with a kernel which has EFI support disabled, in
-this case the OVMF firmware will also boot into the startup_32 boot
-path.
+This set of patches from Eric Snowberg that add support for
+EFI_CERT_X509_GUID entries in the dbx and mokx UEFI tables (such entries
+cause matching certificates to be rejected).  These are currently ignored
+and only the hash entries are made use of.
 
-> By 'some firmware' we talking SeaBIOS?
+These patches fix CVE-2020-26541.
 
-No, SeaBIOS is not supported for SEV-ES, only OVMF has handling for #VC
-so far.
+To quote Eric:
 
-Regards,
+	This is the fifth patch series for adding support for
+	EFI_CERT_X509_GUID entries [1].  It has been expanded to not only
+	include dbx entries but also entries in the mokx.  Additionally my
+	series to preload these certificate [2] has also been included.
 
-	Joerg
+	This series is based on v5.11-rc4.
+
+	[1] https://patchwork.kernel.org/project/linux-security-module/patch/20200916004927.64276-1-eric.snowberg@oracle.com/
+	[2] https://lore.kernel.org/patchwork/cover/1315485/
+
+Note that this is based on top of the collected minor fixes I sent you a
+preceding pull request for.  If you would rather this was not based on my
+keys-misc branch, but was instead based on your tree directly, I can rebase
+it.  Note that there would be very minor conflict between the two branches,
+but I think git merge should be able to handle it automatically.
+
+David
+---
+The following changes since commit 8f0bfc25c907f38e7f9dc498e8f43000d77327ef:
+
+  watch_queue: rectify kernel-doc for init_watch() (2021-01-26 11:16:34 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/keys-cve-2020-26541
+
+for you to fetch changes up to 0b641da796d30d00f3b055e7a94ce9426107428a:
+
+  integrity: Load mokx variables into the blacklist keyring (2021-02-03 15:39:04 +0000)
+
+----------------------------------------------------------------
+Fix CVE-2020-26541
+
+----------------------------------------------------------------
+Eric Snowberg (4):
+      certs: Add EFI_CERT_X509_GUID support for dbx entries
+      certs: Move load_system_certificate_list to a common function
+      certs: Add ability to preload revocation certs
+      integrity: Load mokx variables into the blacklist keyring
+
+ certs/Kconfig                                      |  8 ++++
+ certs/Makefile                                     | 20 ++++++--
+ certs/blacklist.c                                  | 49 +++++++++++++++++++
+ certs/blacklist.h                                  | 12 +++++
+ certs/common.c                                     | 56 ++++++++++++++++++++++
+ certs/common.h                                     |  9 ++++
+ certs/revocation_certificates.S                    | 21 ++++++++
+ certs/system_keyring.c                             | 55 ++++-----------------
+ include/keys/system_keyring.h                      | 11 +++++
+ scripts/Makefile                                   |  1 +
+ .../integrity/platform_certs/keyring_handler.c     | 11 +++++
+ security/integrity/platform_certs/load_uefi.c      | 20 +++++++-
+ 12 files changed, 222 insertions(+), 51 deletions(-)
+ create mode 100644 certs/common.c
+ create mode 100644 certs/common.h
+ create mode 100644 certs/revocation_certificates.S
+
