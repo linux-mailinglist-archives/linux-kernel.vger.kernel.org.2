@@ -2,71 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55978316B44
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48988316B4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhBJQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:31:15 -0500
-Received: from mga18.intel.com ([134.134.136.126]:32202 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232366AbhBJQaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:30:01 -0500
-IronPort-SDR: lTjb4cQGJIjUySLmek255K23yym3kNe6KK4mr9CG0uGurB4jMbe9gLrQgFAEEGvFL+SNj9XPDQ
- feZJ7UbXODcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="169778346"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="169778346"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:29:02 -0800
-IronPort-SDR: AYf6TBHe7hFQu5odPDodiEpYgJjxIRpODyBbKEVhKr2MPMRfJ6K0GrwNMuXpEvdqeYHyXXgvj7
- 0MggOcPvgHqA==
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="396767390"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:29:02 -0800
-Date:   Wed, 10 Feb 2021 08:29:01 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Sterba <dsterba@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V2 4/8] mm/highmem: Add VM_BUG_ON() to mem*_page() calls
-Message-ID: <20210210162901.GB3014244@iweiny-DESK2.sc.intel.com>
-References: <20210210062221.3023586-1-ira.weiny@intel.com>
- <20210210062221.3023586-5-ira.weiny@intel.com>
- <20210210125502.GD2111784@infradead.org>
+        id S232583AbhBJQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:32:01 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:61294 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232476AbhBJQaC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:30:02 -0500
+Date:   Wed, 10 Feb 2021 16:29:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612974548; bh=yJJMTncfQhh58ye6yAPpr/XHKg/skCQ3mD0O/lX7vIM=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=MIIGrlbocUP9/X5eBiQ6YcfpGp9ltvi+Th4d3DSHmsQarWwtzfHN49zBjeQHI4QOJ
+         i/BW63QCJt8wAJ+BtnGiPY2Xov9j2D4fsjROnr/PAiWr11aJRj17b2K3bmLM6sorrT
+         +AM1YN/fhcIITzOeqs20CTnXMoZD3r/TOxnOHW9SCMjtclxsXBSXJKLjLyVGTfqVyz
+         cvJ4mGJOAsnnBe21knbrY+T+Pei9omB0QioRn3ACPFMsn0L+Wbjb3RxDG7gD9AlwmT
+         Eaey5EWGdRXV3n/3iH1zzvFCyh2CzvHbV2xd/8NH0cJS1KQ3Sv5JFS5aTlGcAapfMr
+         dwDf4bEh8gyKQ==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v4 net-next 03/11] skbuff: make __build_skb_around() return void
+Message-ID: <20210210162732.80467-4-alobakin@pm.me>
+In-Reply-To: <20210210162732.80467-1-alobakin@pm.me>
+References: <20210210162732.80467-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210125502.GD2111784@infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:55:02PM +0000, Christoph Hellwig wrote:
-> On Tue, Feb 09, 2021 at 10:22:17PM -0800, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Add VM_BUG_ON bounds checks to ensure the newly lifted and created page
-> > memory operations do not result in corrupted data in neighbor pages and
-> > to make them consistent with zero_user().[1][2]
-> 
-> s/VM_BUG_ON/BUG_ON/g ?
+__build_skb_around() can never fail and always returns passed skb.
+Make it return void to simplify and optimize the code.
 
-Andrew wanted VM_BUG_ON.[1]
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ net/core/skbuff.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-And I thought it was a good idea.  Any file system development should have
-tests with DEBUG_VM which should cover Matthew's concern while not having the
-overhead in production.  Seemed like a decent compromise?
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 70289f22a6f4..c7d184e11547 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -120,8 +120,8 @@ static void skb_under_panic(struct sk_buff *skb, unsign=
+ed int sz, void *addr)
+ }
+=20
+ /* Caller must provide SKB that is memset cleared */
+-static struct sk_buff *__build_skb_around(struct sk_buff *skb,
+-=09=09=09=09=09  void *data, unsigned int frag_size)
++static void __build_skb_around(struct sk_buff *skb, void *data,
++=09=09=09       unsigned int frag_size)
+ {
+ =09struct skb_shared_info *shinfo;
+ =09unsigned int size =3D frag_size ? : ksize(data);
+@@ -144,8 +144,6 @@ static struct sk_buff *__build_skb_around(struct sk_buf=
+f *skb,
+ =09atomic_set(&shinfo->dataref, 1);
+=20
+ =09skb_set_kcov_handle(skb, kcov_common_handle());
+-
+-=09return skb;
+ }
+=20
+ /**
+@@ -176,8 +174,9 @@ struct sk_buff *__build_skb(void *data, unsigned int fr=
+ag_size)
+ =09=09return NULL;
+=20
+ =09memset(skb, 0, offsetof(struct sk_buff, tail));
++=09__build_skb_around(skb, data, frag_size);
+=20
+-=09return __build_skb_around(skb, data, frag_size);
++=09return skb;
+ }
+=20
+ /* build_skb() is wrapper over __build_skb(), that specifically
+@@ -210,9 +209,9 @@ struct sk_buff *build_skb_around(struct sk_buff *skb,
+ =09if (unlikely(!skb))
+ =09=09return NULL;
+=20
+-=09skb =3D __build_skb_around(skb, data, frag_size);
++=09__build_skb_around(skb, data, frag_size);
+=20
+-=09if (skb && frag_size) {
++=09if (frag_size) {
+ =09=09skb->head_frag =3D 1;
+ =09=09if (page_is_pfmemalloc(virt_to_head_page(data)))
+ =09=09=09skb->pfmemalloc =3D 1;
+--=20
+2.30.1
 
-Ira
 
-[1] https://lore.kernel.org/lkml/20210209131103.b46e80db675fec8bec8d2ad1@linux-foundation.org/
-
-> 
-> Otherwise looks good:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
