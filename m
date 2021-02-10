@@ -2,114 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0110631704C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443B831704F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbhBJTg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:36:26 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:35216 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbhBJTe2 (ORCPT
+        id S232854AbhBJTg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:36:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51866 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232764AbhBJTfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:34:28 -0500
-Date:   Wed, 10 Feb 2021 22:33:25 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
- "usb"-prefixed names
-Message-ID: <20210210193325.inp7rgpsfr624zhd@mobilestation>
-References: <20210210172850.20849-1-Sergey.Semin@baikalelectronics.ru>
- <20210210172850.20849-10-Sergey.Semin@baikalelectronics.ru>
- <CAL_JsqJBknqhCSUOdpZVbtmp6TYetBQPLoQUCT6DTFajpChaSA@mail.gmail.com>
- <20210210184051.ncvvs5xgyo7o3uzq@mobilestation>
- <YCQse9EtEHtLVe9A@builder.lan>
+        Wed, 10 Feb 2021 14:35:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612985615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tfw6nVO2fS12r+MnN1Y2VhTe0OzbmAC5Uh/3J+HaiN0=;
+        b=JhenM6biNnjPZnYhKHIrOrFT0dj/K4cQwt/te7PZMbFB3o2FWkFk2a1KUuKMGWzLBSkODw
+        XBrJEwoKh7343DaY6pNlc0M/HAymkiix2+sgRvZQqXaS/vrr7idUG+lEN0ya4bMlfO9U5d
+        g55JPaX9XUUKVZUo1wizNb2p+/OgH+I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-116-eWL8DPmbOr6W5GYW1UIf4w-1; Wed, 10 Feb 2021 14:33:32 -0500
+X-MC-Unique: eWL8DPmbOr6W5GYW1UIf4w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E2AB5225;
+        Wed, 10 Feb 2021 19:33:31 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E7FFD60C0F;
+        Wed, 10 Feb 2021 19:33:27 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 14:33:27 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Satya Tangirala <satyat@google.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v4 0/5] add support for inline encryption to device mapper
+Message-ID: <20210210193327.GA8226@redhat.com>
+References: <20210201051019.1174983-1-satyat@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YCQse9EtEHtLVe9A@builder.lan>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20210201051019.1174983-1-satyat@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:56:59PM -0600, Bjorn Andersson wrote:
-> On Wed 10 Feb 12:40 CST 2021, Serge Semin wrote:
-> 
-> > On Wed, Feb 10, 2021 at 12:17:27PM -0600, Rob Herring wrote:
-> > > On Wed, Feb 10, 2021 at 11:29 AM Serge Semin
-> > > <Sergey.Semin@baikalelectronics.ru> wrote:
-> > > >
-> > > > In accordance with the USB HCD/DRD schema all the USB controllers are
-> > > > supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
-> > > > existing DT-nodes will be renamed in a subsequent patch let's first make
-> > > > sure the DWC3 Qualcomm driver supports them and second falls back to the
-> > > > deprecated naming so not to fail on the legacy DTS-files passed to the
-> > > > newer kernels.
-> > > >
-> > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > ---
-> > > >  drivers/usb/dwc3/dwc3-qcom.c | 3 ++-
-> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> > > > index c703d552bbcf..49ad8d507d37 100644
-> > > > --- a/drivers/usb/dwc3/dwc3-qcom.c
-> > > > +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> > > > @@ -630,7 +630,8 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
-> > > >         struct device           *dev = &pdev->dev;
-> > > >         int                     ret;
-> > > >
-> > > > -       dwc3_np = of_get_child_by_name(np, "dwc3");
-> > > > +       dwc3_np = of_get_child_by_name(np, "usb") ?:
-> > > > +                 of_get_child_by_name(np, "dwc3");
-> > > 
-> > 
-> > > Is there some reason using compatible instead wouldn't work here?
-> > 
-> > I don't know for sure. The fix has been requested in the framework of
-> > this discussion:
-> > https://lore.kernel.org/linux-usb/20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru/#t
-> > by the driver maintainer Bjorn. To get a firm answer it's better to
-> > have him asked.
-> 
-> My feedback was simply that it has to catch both cases, I didn't
-> consider the fact that we have a compatible to match against.
-> 
-> > As I see it having of_get_compatible_child() utilized
-> > here would also work. At least for the available in kernel dt-files.
-> > See the affected dts-es in:
-> > https://lore.kernel.org/linux-usb/20210210172850.20849-11-Sergey.Semin@baikalelectronics.ru/
-> > 
-> > A problem may happen if some older versions of DTS-es had another
-> > compatible string in the dwc3 sub-node...
-> > 
-> 
-> Afaict all Qualcomm dts files has "snps,dwc3", so you can match against
-> that instead.
+On Mon, Feb 01 2021 at 12:10am -0500,
+Satya Tangirala <satyat@google.com> wrote:
 
-Ok then. I'll replace of_get_child_by_name() here with
-of_get_compatible_child() matching just against "snps,dwc3" in v7. Can you
-confirm that noone ever had a Qcom-based hardware described with dts having
-the "synopsys,dwc3" compatible used as the DWC USB3 sub-node here? That
-string has been marked as deprecated recently because the vendor-prefix
-was changed sometime ago, but the original driver still accept it.
-
-Alternatively to be on a safe side we could match against both
-compatibles here as Rob suggests. What do you think?
-
--Sergey
-
+> This patch series adds support for inline encryption to the device mapper.
 > 
-> Regards,
-> Bjorn
+> Patch 1 introduces the "passthrough" keyslot manager.
+> 
+> The regular keyslot manager is designed for inline encryption hardware that
+> have only a small fixed number of keyslots. A DM device itself does not
+> actually have only a small fixed number of keyslots - it doesn't actually
+> have any keyslots in the first place, and programming an encryption context
+> into a DM device doesn't make much semantic sense. It is possible for a DM
+> device to set up a keyslot manager with some "sufficiently large" number of
+> keyslots in its request queue, so that upper layers can use the inline
+> encryption capabilities of the DM device's underlying devices, but the
+> memory being allocated for the DM device's keyslots is a waste since they
+> won't actually be used by the DM device.
+> 
+> The passthrough keyslot manager solves this issue - when the block layer
+> sees that a request queue has a passthrough keyslot manager, it doesn't
+> attempt to program any encryption context into the keyslot manager. The
+> passthrough keyslot manager only allows the device to expose its inline
+> encryption capabilities, and a way for upper layers to evict keys if
+> necessary.
+> 
+> There also exist inline encryption hardware that can handle encryption
+> contexts directly, and allow users to pass them a data request along with
+> the encryption context (as opposed to inline encryption hardware that
+> require users to first program a keyslot with an encryption context, and
+> then require the users to pass the keyslot index with the data request).
+> Such devices can also make use of the passthrough keyslot manager.
+> 
+> Patch 2 introduces some keyslot manager functions useful for the device
+> mapper.
+> 
+> Patch 3 introduces the changes for inline encryption support for the device
+> mapper. A DM device only exposes the intersection of the crypto
+> capabilities of its underlying devices. This is so that in case a bio with
+> an encryption context is eventually mapped to an underlying device that
+> doesn't support that encryption context, the blk-crypto-fallback's cipher
+> tfms are allocated ahead of time by the call to blk_crypto_start_using_key.
+> 
+> Each DM target can now also specify the "DM_TARGET_PASSES_CRYPTO" flag in
+> the target type features to opt-in to supporting passing through the
+> underlying inline encryption capabilities.  This flag is needed because it
+> doesn't make much semantic sense for certain targets like dm-crypt to
+> expose the underlying inline encryption capabilities to the upper layers.
+> Again, the DM exposes inline encryption capabilities of the underlying
+> devices only if all of them opt-in to passing through inline encryption
+> support.
+> 
+> A keyslot manager is created for a table when it is loaded. However, the
+> mapped device's exposed capabilities *only* updated once the table is
+> swapped in (until the new table is swapped in, the mapped device continues
+> to expose the old table's crypto capabilities).
+> 
+> This patch only allows the keyslot manager's capabilities to *expand*
+> because of table changes. Any attempt to load a new table that doesn't
+> support a crypto capability that the old table did is rejected.
+> 
+> This patch also only exposes the intersection of the underlying device's
+> capabilities, which has the effect of causing en/decryption of a bio to
+> fall back to the kernel crypto API (if the fallback is enabled) whenever
+> any of the underlying devices doesn't support the encryption context of the
+> bio - it might be possible to make the bio only fall back to the kernel
+> crypto API if the bio's target underlying device doesn't support the bio's
+> encryption context, but the use case may be uncommon enough in the first
+> place not to warrant worrying about it right now.
+> 
+> Patch 4 makes DM evict a key from all its underlying devices when asked to
+> evict a key.
+> 
+> Patch 5 makes some DM targets opt-in to passing through inline encryption
+> support. It does not (yet) try to enable this option with dm-raid, since
+> users can "hot add" disks to a raid device, which makes this not completely
+> straightforward (we'll need to ensure that any "hot added" disks must have
+> a superset of the inline encryption capabilities of the rest of the disks
+> in the raid device, due to the way Patch 2 of this series works).
+> 
+> Changes v3 => v4:
+>  - Allocate the memory for the ksm of the mapped device in
+>    dm_table_complete(), and install the ksm in the md queue in __bind()
+>    (as suggested by Mike). Also drop patch 5 from v3 since it's no longer
+>    needed.
+>  - Some cleanups
+> 
+> Changes v2 => v3:
+>  - Split up the main DM patch into 4 separate patches
+>  - Removed the priv variable added to struct keyslot manager in v2
+>  - Use a flag in target type features for opting-in to inline encryption
+>    support, instead of using "may_passthrough_inline_crypto"
+>  - cleanups, improve docs and restructure code
+> 
+> Changes v1 => v2:
+>  - Introduce private field to struct blk_keyslot_manager
+>  - Allow the DM keyslot manager to expand its crypto capabilities if the
+>    table is changed.
+>  - Make DM reject table changes that would otherwise cause crypto
+>    capabilities to be dropped.
+>  - Allocate the DM device's keyslot manager only when at least one crypto
+>    capability is supported (since a NULL value for q->ksm represents "no
+>    crypto support" anyway).
+>  - Remove the struct blk_keyslot_manager field from struct mapped_device.
+>    This patch now relies on just directly setting up the keyslot manager in
+>    the request queue, since each DM device is tied to only 1 queue.
+> 
+> Satya Tangirala (5):
+>   block: keyslot-manager: Introduce passthrough keyslot manager
+>   block: keyslot-manager: Introduce functions for device mapper support
+>   dm: add support for passing through inline crypto support
+>   dm: support key eviction from keyslot managers of underlying devices
+>   dm: set DM_TARGET_PASSES_CRYPTO feature for some targets
+> 
+>  block/blk-crypto.c              |   1 +
+>  block/keyslot-manager.c         | 146 ++++++++++++++++++++++
+>  drivers/md/dm-core.h            |   5 +
+>  drivers/md/dm-flakey.c          |   4 +-
+>  drivers/md/dm-linear.c          |   5 +-
+>  drivers/md/dm-table.c           | 210 ++++++++++++++++++++++++++++++++
+>  drivers/md/dm.c                 |  18 ++-
+>  include/linux/device-mapper.h   |  11 ++
+>  include/linux/keyslot-manager.h |  11 ++
+>  9 files changed, 407 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.30.0.365.g02bc693789-goog
+> 
+
+This set looks good to me now.
+
+To avoid DM needing another rebase on block: Jens (and others), would
+you like to review patches 1 and 2 (and reply with your Reviewed-by) so
+I could pickup the DM required keyslot-manager changes along with
+patches 3-5?
+
+Thanks,
+Mike
+
