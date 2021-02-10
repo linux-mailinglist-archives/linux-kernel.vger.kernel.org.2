@@ -2,101 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972FC316B1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF25316B15
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232388AbhBJQYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:24:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:40286 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhBJQXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:23:55 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA94E11D4;
-        Wed, 10 Feb 2021 08:23:08 -0800 (PST)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 19FC33F73B;
-        Wed, 10 Feb 2021 08:23:04 -0800 (PST)
-Date:   Wed, 10 Feb 2021 16:22:14 +0000
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
-        tglx@linutronix.de, pbonzini@redhat.com, seanjc@google.com,
-        richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org,
-        suzuki.poulose@arm.com, steven.price@arm.com,
-        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com,
-        kernel-team@android.com
-Subject: Re: [PATCH v18 5/7] clocksource: Add clocksource id for arm arch
- counter
-Message-ID: <20210210162214.2e68e0da@slackpad.fritz.box>
-In-Reply-To: <20210208134029.3269384-6-maz@kernel.org>
-References: <20210208134029.3269384-1-maz@kernel.org>
-        <20210208134029.3269384-6-maz@kernel.org>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S232336AbhBJQX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:23:27 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:38930 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232009AbhBJQXJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:23:09 -0500
+Received: by mail-oi1-f169.google.com with SMTP id l19so2617880oih.6;
+        Wed, 10 Feb 2021 08:22:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vth8XAW3OyURtmhNnatsP5/LHcdSP/3zZ/uHnRpXRKc=;
+        b=N1ih5ssccjZOrnw1UX0F8wx3gDGtho+L/26PE+dcF0ItVf7ihxR9VkrXcZegkhnWiW
+         4PIWStQ6HLZP9a84pbtFhgbBQMljBQZd4eVRQeY10kQ7YAoPvQXhYdywBhLVklq4AP3h
+         E6zYexHHFFpZAxtCnJPnyOGe5fbdpJsw+wg9NQ0uzjchJ9E5kxQ+98Rxpu9nvPRvhOh9
+         +RnC4XogLT5F+fp1Apn4PANeE7IQb0IUvFwLVaIc8mK9ygAtITpeMG3HKqGrYhyPSHxn
+         PezeG9ctofwhOgPZ+dOLvetK5BF8PcaIKBMK1phzubDtAx8wJDUfYhBeKvvKaFGbMWUY
+         04dQ==
+X-Gm-Message-State: AOAM533b0TF2kldped3rj3ZubMv5WqFve2Bt+33zgGsFYval0mk9llbl
+        XeyVSCup9EcvBaCLbW/ITA==
+X-Google-Smtp-Source: ABdhPJzfxK7JznCTG1mpjgRDFFLjV0SKpKj+NHymT0VWGOpHsKTkHtAJz+FjiiuPdSHMH+x9xBnSjg==
+X-Received: by 2002:aca:3746:: with SMTP id e67mr2563353oia.68.1612974148441;
+        Wed, 10 Feb 2021 08:22:28 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w2sm469998otq.9.2021.02.10.08.22.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 08:22:27 -0800 (PST)
+Received: (nullmailer pid 2263747 invoked by uid 1000);
+        Wed, 10 Feb 2021 16:22:26 -0000
+Date:   Wed, 10 Feb 2021 10:22:26 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        a.fatoum@pengutronix.de, Saravana Kannan <saravanak@google.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, mirq-linux@rere.qmqm.pl,
+        Ludovic Desroches <Ludovic.Desroches@microchip.com>,
+        Codrin.Ciubotariu@microchip.com,
+        Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] clk: at91: Fix the declaration of the clocks
+Message-ID: <20210210162226.GA2246688@robh.at.kernel.org>
+References: <20210203154332.470587-1-tudor.ambarus@microchip.com>
+ <5bc4f5b7-5370-bdd5-143e-429c83447ce1@microchip.com>
+ <161291845517.418021.17378265940034341908@swboyd.mtv.corp.google.com>
+ <CAGETcx9fjRhNmEMF2QoerrzGctC6MMTy+_znVTgPEm1w-+ehqA@mail.gmail.com>
+ <CAMuHMdWBZq8n6-8e-GYEEs0V9ZW--CSDCs=+u_bkr=aRW4y=ZA@mail.gmail.com>
+ <YCOgnm2VkSinTYIk@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCOgnm2VkSinTYIk@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  8 Feb 2021 13:40:27 +0000
-Marc Zyngier <maz@kernel.org> wrote:
+On Wed, Feb 10, 2021 at 10:00:14AM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Feb 10, 2021 at 09:51:14AM +0100, Geert Uytterhoeven wrote:
+> > Hi Saravana,
+> > 
+> > On Wed, Feb 10, 2021 at 1:57 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > On Tue, Feb 9, 2021 at 4:54 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> > > > Quoting Tudor.Ambarus@microchip.com (2021-02-08 01:49:45)
+> > > > > Do you plan to take this patch for v5.12?
+> > > > > If fw_devlink will remain set to ON for v5.12, some of our boards will
+> > > > > no longer boot without this patch.
+> > > >
+> > > > Is fw_devlink defaulted to on for v5.12?
+> > >
+> > > Yes.
+> > 
+> > Have all issues been identified and understood?
+> > Have all issues been fixed, reviewed, and committed?
+> > Have all fixes entered linux-next?
+> > Have all fixes been migrated from submaintainers to maintainers?
 
-> From: Jianyong Wu <jianyong.wu@arm.com>
+This can never be true for these types of per platform issues. There are 
+folks that test linux-next Then there are ones that test rc1. And 
+(unfortunately) so-on ending at testing only LTS releases.
+
+> > We're already at v5.11-rc7.
+> > Yes, we can get fixes into v5.12-rc7. Or v5.12-rc9...
 > 
-> Add clocksource id to the ARM generic counter so that it can be easily
-> identified from callers such as ptp_kvm.
-> 
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Link: https://lore.kernel.org/r/20201209060932.212364-6-jianyong.wu@arm.com
+> Yeah, I'm leaning toward not making it the default for 5.12-rc1 because
+> not everything seems to be working, let's see how the rest of the week
+> goes...
 
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+I think there's some value waiting until after rc1 to turn off if just 
+to find a few more issues.
 
-Cheers,
-Andre
-
-> ---
->  drivers/clocksource/arm_arch_timer.c | 2 ++
->  include/linux/clocksource_ids.h      | 1 +
->  2 files changed, 3 insertions(+)
-> 
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index d0177824c518..8f12e223703f 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -16,6 +16,7 @@
->  #include <linux/cpu_pm.h>
->  #include <linux/clockchips.h>
->  #include <linux/clocksource.h>
-> +#include <linux/clocksource_ids.h>
->  #include <linux/interrupt.h>
->  #include <linux/of_irq.h>
->  #include <linux/of_address.h>
-> @@ -191,6 +192,7 @@ static u64 arch_counter_read_cc(const struct cyclecounter *cc)
->  
->  static struct clocksource clocksource_counter = {
->  	.name	= "arch_sys_counter",
-> +	.id	= CSID_ARM_ARCH_COUNTER,
->  	.rating	= 400,
->  	.read	= arch_counter_read,
->  	.mask	= CLOCKSOURCE_MASK(56),
-> diff --git a/include/linux/clocksource_ids.h b/include/linux/clocksource_ids.h
-> index 4d8e19e05328..16775d7d8f8d 100644
-> --- a/include/linux/clocksource_ids.h
-> +++ b/include/linux/clocksource_ids.h
-> @@ -5,6 +5,7 @@
->  /* Enum to give clocksources a unique identifier */
->  enum clocksource_ids {
->  	CSID_GENERIC		= 0,
-> +	CSID_ARM_ARCH_COUNTER,
->  	CSID_MAX,
->  };
->  
-
+Rob
