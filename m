@@ -2,180 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD340315DAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 04:04:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A98C315DB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 04:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhBJDE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 22:04:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233046AbhBJDDz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 22:03:55 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5E7C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 19:03:15 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id o38so283204pgm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 19:03:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=Wxig3GtqxXedKbj9Q8kimXAwZFTS7x210dcgDCTLRfY=;
-        b=DDcRoN4TcDmavE86AWNMBt2uA1D+sWvA2oy6qvrIIlGMHJqBXNjyJOxNZu2jqrLTMv
-         ovbL7oZaBfrHUcbLFUaGtoYPMKuLDmL8Vp/a7RfWcEuahUIEg9BkNtn+jEL8x7r+VSQy
-         be+bk+4Hp0Or2Bb8nKu7yDYVEpAVnG49mI4j+AxBY7RxT0DxRvvPjMS74Wmd4ZTg3sKu
-         3OdkhfJTYJRIl7TAjuFvjxx5vwfyzYK0/TfaXaQGKK7MvbvrcQ0x7zU1xYKCg1qe9+N/
-         g4A+UnbaPb195lia2MMaEbQ0ERI9oJAdIAit3tJg8aE2XLXjMghSwCoEyWDt6spe8afZ
-         WcyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=Wxig3GtqxXedKbj9Q8kimXAwZFTS7x210dcgDCTLRfY=;
-        b=g85x0/z/y+Qc1A169+qK6b94mRbt6U6vTMwmmj0BN2Ke7w5+9FAY1sCvlw0zaV/ooR
-         SLpgt6qO1WGWrdTBgttoP1ugCRTvJWIVb10PK/weowY96b0AJ/aD/lJwLAsFtiABruGN
-         QVDm/hzfkmzr7oZS25CFeVae46DeDAfBIcu1+V309SHajz8uNNlGWFX2pB2+6cAExwbE
-         hLiV/sR0Hdva4xRj/6edWQd1SnHTYzRO0C1W93WpTw5P+/6HE4GRMT8iLawWXkFZb0Gi
-         sSsZZW8Xc46rAUQWq/j6IYqav+Uuy39tSSSOXzud8/iDRDOz7cDMd5kUgEgyn2kG3EB8
-         Tlqw==
-X-Gm-Message-State: AOAM53324LKm3wNmKSDegfTobNhRVEVP4nxbUgQlBx2/gOxoNmG/gtt3
-        njPhGho4WzTubJTZVY7W9EMmgg==
-X-Google-Smtp-Source: ABdhPJyMAErOvZnDMTtvq5oKl3tV/0/Y/Ob/H2mzAkeSogBoC23ivxgzqWS7JviWmOOhMSaIjyTc7w==
-X-Received: by 2002:a65:4bc3:: with SMTP id p3mr1042950pgr.318.1612926194562;
-        Tue, 09 Feb 2021 19:03:14 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id c18sm284977pfo.171.2021.02.09.19.03.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Feb 2021 19:03:13 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <42511E9D-3786-4E70-B6BE-D7CB8F524912@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_B97C2B2A-E3FE-4E74-A627-67973AE4DA7B";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 1/2] ext4: Handle casefolding with encryption
-Date:   Tue, 9 Feb 2021 20:03:10 -0700
-In-Reply-To: <YCMZSjgUDtxaVem3@mit.edu>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Paul Lawrence <paullawrence@google.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-References: <20210203090745.4103054-2-drosen@google.com>
- <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca> <YBrP4NXAsvveIpwA@mit.edu>
- <YCMZSjgUDtxaVem3@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+        id S233692AbhBJDFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 22:05:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233561AbhBJDE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 22:04:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA3E64E4E;
+        Wed, 10 Feb 2021 03:03:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612926235;
+        bh=B9W2ijWUGdA9x4gTDEc2lDSped2NoF8LVJewm3gkuw8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=h0cDfyjgMlWyrUEfWBIbxOpTvLfTFGSCBnJ9VTUCfwHzUNcJDYjNM20rgVv2wnpsh
+         /wPCZ5RHFwgUHS8vmCS9FNbbj7BTMXH4nVj2cRKNhmS3VaYdWNFTAdZQTictbXE2+0
+         P5Pk9df3jA9osE1P7GQe6C4SAmYUQxiOlMrCp9SX+clMrZmG9wpnigVd0Xw+kpah+d
+         ROvh+rNuFcjSQXdFAwBl7wyBveTAkW2PwUHiVEK/e7o+oODE2hA5t/RMjD/2VoSwVM
+         gxU5HCLBRdw4fZwM7ZYZBAYLok0NtZFHg7UmlmdYJ4az3uYBHXqtnydyQcofrvSzto
+         xvl84uT0lQZ/w==
+Received: by mail-lf1-f45.google.com with SMTP id u25so709015lfc.2;
+        Tue, 09 Feb 2021 19:03:55 -0800 (PST)
+X-Gm-Message-State: AOAM530nZe5F4+WSVTlghkp/hfHEbaObFYDQzb3PVhYLmEb/ERstbhkL
+        UeJzcipox5QDBaHqvQLibBDkENX+ZF8n5T3nix0=
+X-Google-Smtp-Source: ABdhPJyO1ta6nqIVD3eMTqK+GqKkHPxTe/NlzJejyy2zt13giWb8Y2q82ODJhHVNmHA2pEMZeUtIYoNgUH/M6Opmkg4=
+X-Received: by 2002:a19:f00a:: with SMTP id p10mr551180lfc.355.1612926233485;
+ Tue, 09 Feb 2021 19:03:53 -0800 (PST)
+MIME-Version: 1.0
+References: <20210204074609.3553018-1-guoren@kernel.org> <20210204074609.3553018-2-guoren@kernel.org>
+ <c36b816b-6d80-9542-45fc-507c5cc302fb@linaro.org> <CAJF2gTSe7GUzPRvk6bK8AfQFp2uxae1Oo0w-ZtrtmcJmMWCqPw@mail.gmail.com>
+ <973602b9-83d1-8e22-60bf-cd77d606a126@linaro.org> <CAJF2gTQG-o5MRtdwc8ogJhGLGsj5AWR1ja26wiGU=wrLL8X2Zw@mail.gmail.com>
+ <a2f43b21-2e56-040f-b658-ccafa3b5fdc4@linaro.org>
+In-Reply-To: <a2f43b21-2e56-040f-b658-ccafa3b5fdc4@linaro.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 10 Feb 2021 11:03:42 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTP47MZaX4eh5RV-GRABtDpyxjd3C3kH8kyvafjBNGoig@mail.gmail.com>
+Message-ID: <CAJF2gTTP47MZaX4eh5RV-GRABtDpyxjd3C3kH8kyvafjBNGoig@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] drivers/clocksource: Fixup csky,mptimer compile
+ error with CPU_CK610
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
---Apple-Mail=_B97C2B2A-E3FE-4E74-A627-67973AE4DA7B
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+On Wed, Feb 10, 2021 at 4:26 AM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 09/02/2021 17:02, Guo Ren wrote:
+> > Hi Daniel,
+> >
+> > On Sun, Feb 7, 2021 at 5:29 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> >>
+> >> On 07/02/2021 04:31, Guo Ren wrote:
+> >>> Hi Daniel,
+> >>>
+> >>> On Thu, Feb 4, 2021 at 4:48 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> >>>>
+> >>>> On 04/02/2021 08:46, guoren@kernel.org wrote:
+> >>>>> From: Guo Ren <guoren@linux.alibaba.com>
+> >>>>>
+> >>>>> The timer-mp-csky.c only could support CPU_CK860 and it will
+> >>>>> compile error with CPU_CK610.
+> >>>>>
+> >>>>> It has been selected in arch/csky/Kconfig.
+> >>>>
+> >>>> It would be better if you fix the root cause of the compilation error.
+> >>> The timer-mp-csky.c has used specific instructions which only
+> >>> supported by CK860 and timer-mp-csky.c is only design for CK860.
+> >>
+> >> I guess you are referring to mfcr() ?
+> >>
+> >>> In arch/csky/Konfig we only select it with CK860.
+> >>>         select CSKY_MPINTC if CPU_CK860
+> >>>         select CSKY_MP_TIMER if CPU_CK860
+> >>>
+> >>> So here let's select timer-mp-csky.c in arch/csky/Kconfig, not in
+> >>> drivers/clocksource/Kconfig.
+> >>
+> >> The COMPILE_TEST option is there to let other architecture to compile
+> >> drivers and increase the compilation test coverage.
+> >>
+> >> The proposed change just removes the driver from this coverage.
+> > When we compile the csky arch with C860, it will be selected.
+> >
+> >>
+> >> Ideally, it would be better to keep it with the COMPILE_TEST option, so
+> >> changes impacting all the drivers can be caught before submitting the
+> >> patches.
+> >>
+> >> By just adding
+> >>
+> >> #ifndef mfcr
+> >> #define mfcr(a) 0
+> >> #endif
+> >
+> > 610 couldn't support CSKY_MP_TIMER and it's only for 860. So it's not
+> > a coding skill issue.
+>
+> I think there is a misunderstanding.
+>
+> When I want to compile on x64 all the timer drivers, I do enable
+> COMPILE_TEST, then the strings appear and the drivers can be selected.
+>
+> If the COMPILE_TEST is not enabled, the string does not appear, it is
+> not possible to enable/disable it and the platform must enable it from
+> the aforementioned arch/csky/Konfig.
+>
+> Actually, the timer drivers policy is : drivers can not be enabled from
+> the drivers/clocksource/Kconfig, it is up to the platform Kconfig to
+> select them. The exception is when the COMPILE_TEST option is set for
+> testing purpose.
+>
+> The timer must compile on any other archs and the stubs for the platform
+> specific calls must be provided.
+>
+> Did I miss something with your changes ?
+I think our biggest difference is:
+ - You think that CSKY_MPTIMER should not be related to the
+architecture, but can be compiled with any architecture.
+ - But I think CSKY_MPTIMER only could to be compiled with CSKY C860.
 
-On Feb 9, 2021, at 4:22 PM, Theodore Ts'o <tytso@mit.edu> wrote:
->=20
-> On Wed, Feb 03, 2021 at 11:31:28AM -0500, Theodore Ts'o wrote:
->> On Wed, Feb 03, 2021 at 03:55:06AM -0700, Andreas Dilger wrote:
->>>=20
->>> It looks like this change will break the dirdata feature, which is =
-similarly
->>> storing a data field beyond the end of the dirent. However, that =
-feature also
->>> provides for flags stored in the high bits of the type field to =
-indicate
->>> which of the fields are in use there.
->>> The first byte of each field stores
->>> the length, so it can be skipped even if the content is not =
-understood.
->>=20
->> Daniel, for context, the dirdata field is an out-of-tree feature =
-which
->> is used by Lustre, and so has fairly large deployed base.  So if =
-there
->> is a way that we can accomodate not breaking dirdata, that would be
->> good.
->>=20
->> Did the ext4 casefold+encryption implementation escape out to any
->> Android handsets?
->=20
-> So from an OOB chat with Daniel, it appears that the ext4
-> casefold+encryption implementation did in fact escape out to Android
-> handsets.  So I think what we will need to do, ultiumately, is support
-> one way of supporting the casefold IV in the case where "encryption &&
-> casefold", and another way when "encryption && casefold && dirdata".
->=20
-> That's going to be a bit sucky, but I don't think it should be that
-> complex.  Daniel, Andreas, does that make sense to you?
+But from the perspective of easy maintenance, I agree with your
+suggestion. I will adopt in next patch:
+> >> #ifndef mfcr
+> >> #define mfcr(a) 0
+> >> #endif
 
-I was just going to ping you about this, whether it made sense to remove
-this feature addition from the "maint" branch (i.e. make a 1.45.8 =
-without
-it), and keep it only in 1.46 or "next" to reduce its spread?
-
-Depending on the size of the "escape", it probably makes sense to move
-toward having e2fsck migrate from the current mechanism to using dirdata
-for all deployments.  In the current implementation, tools don't really
-know for sure if there is data beyond the filename in the dirent or not.
-
-I guess it is implicit with the casefold+encryption case for dirents in
-directories that have the encryption flag set in a filesystem that also
-has casefold enabled, but it's definitely not friendly to these features
-being enabled on an existing filesystem.
-
-For example, what if casefold is enabled on an existing filesystem that
-already has an encrypted directory?  Does the code _assume_ that there =
-is
-a hash beyond the name if the rec_len is long enough for this?  There =
-will
-definitely be some pre-existing dirents that will have a large rec_len
-(e.g. those at the end of the block, or with deleted entries immediately
-following), that do *not* have the proper hash stored in them.  There =
-may
-be random garbage at the end of the dirent, and since every value in the
-hash is valid, there is no way to know whether it is good or bad.
-
-With the dirdata mechanism, there would be a bit set in the "file_type"
-field that will indicate if the hash was present, as well as a length
-field (0x08) that is a second confirmation that this field is valid.
-
-Cheers, Andreas
+Thx
 
 
 
 
+--
+Best Regards
+ Guo Ren
 
-
---Apple-Mail=_B97C2B2A-E3FE-4E74-A627-67973AE4DA7B
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAjTO4ACgkQcqXauRfM
-H+CUXQ//UF7Nr25/LRaBips06YAxdNieUkUiO17hkfLNFs+ul1Ru7Bpbb9uyyzQ/
-i9GtW4QtBy0wQiG6NiYRUHcd96cORUx+DKIERr5Faw5hMd3PeigL90YYLLcjxFnf
-QJw9qc/8CjeAb0P8nAZOWFcnyi0FbEsZgQLG174j1kO8n30kYeliW3Y12oMpOTEG
-boYJHIehffrkLO4ctD304dX3933j4Na4MUsM9f2Mtiunr8XR9gimjcx77TkPQ272
-XLl1OXPNB0w2ZANzlzdsEX5cBZETglzwFNQ7cPRZ4f8Tw1PGD/wdoGBClgE8OBdg
-5Ptfe1oW7QlN1YOnk0jDWjvJ2YaiRpf638yeGUuMz2tU1DIqBSNOjwGj20n8FXz9
-wkATmC+o+l7jpE+mk87G38O6u2cdZJvGIDwcUKE31PRvZJ58OVgLs1dVMNbSjRAh
-jSoMNUUxEAvWj/ATJl5+vx9453F4dta9E29BlIs8ArQDEKrMRbtuZKWYA4X6lSzY
-kLLFH1uGyWRRrt2Vxc3PuIxU/JVWYTWGKAomXSNy574yMPTYWMq3SGqTiy7QwSc2
-OlghMC62ms4m/Gv9f7OitxPJjRRa7S2uToVbGWAcRubIkCYLFbM2+/7r9sHOE8iQ
-jZw+5CCqYnEejicxWyNIDO20kP+x/z7BQbQED/0DoqrEPq1Zl5s=
-=IOgG
------END PGP SIGNATURE-----
-
---Apple-Mail=_B97C2B2A-E3FE-4E74-A627-67973AE4DA7B--
+ML: https://lore.kernel.org/linux-csky/
