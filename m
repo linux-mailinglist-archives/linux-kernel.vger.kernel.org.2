@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AA53168F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D9A3168F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhBJOSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:18:52 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:17774 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231255AbhBJOSl (ORCPT
+        id S231481AbhBJOSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:18:25 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:58681 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhBJOSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:18:41 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11AEGPNB027370;
-        Wed, 10 Feb 2021 06:17:42 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=Lqq2GoXikNbD9if+1vmtyV2d/RVUrpvTAizpBSHm1Dw=;
- b=GbQsQU2U+UGdhHy1w3Bt9yrB2uZ+hMjp0NE/UgeFdj7mdWif1KC+NGCY0V/cEqoEhKIL
- D2reRZyDEhnFdqH/hemh3Ad0rdqgAFytfkuvhvaUmUZQ5Wgedeb964sHjNIB1DdWL0Bs
- oAtaOaKJkQwdkCbkmhoeLanhK2ul7myf2fMjWbFzQtX1gD3RSaLxM6TZqu0UbtEMlPqz
- wOE4D1T60kiofl0q11eYLxzbQE19PZQsVn3WhHYDUFClQjewq7L35TA6jZJDCbCMrFCg
- Wokq6ZS6fn3yoJIlXdzfgEdvdpJlN3FWrLbE3yJh5OFdieeAicm+h8pUNOjs7DHu9xR3 xw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 36hsbrm1xa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 06:17:42 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 10 Feb
- 2021 06:17:40 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 10 Feb 2021 06:17:40 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id AA9CE3F7040;
-        Wed, 10 Feb 2021 06:17:37 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>, <lironh@marvell.com>
-Subject: [net-next] net: mvpp2: add an entry to skip parser
-Date:   Wed, 10 Feb 2021 16:17:13 +0200
-Message-ID: <1612966633-11064-1-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
+        Wed, 10 Feb 2021 09:18:16 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 399F660019;
+        Wed, 10 Feb 2021 14:17:29 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 15:17:28 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pinctrl: PINCTRL_MICROCHIP_SGPIO should depend on
+ ARCH_SPARX5 || SOC_VCOREIII
+Message-ID: <20210210141728.GO351084@piout.net>
+References: <20210210132751.1422386-1-geert+renesas@glider.be>
+ <87mtwcujd0.fsf@microchip.com>
+ <CAMuHMdVpHUmwfob6t_aWvaVVHpSDpF5HvLe_W5+KY9ky5A-qEw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_05:2021-02-10,2021-02-10 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVpHUmwfob6t_aWvaVVHpSDpF5HvLe_W5+KY9ky5A-qEw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On 10/02/2021 14:53:01+0100, Geert Uytterhoeven wrote:
+> Hi Lars,
+> 
+> On Wed, Feb 10, 2021 at 2:45 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+> > Geert Uytterhoeven writes:
+> > > the Microsemi/Microchip Serial GPIO device is present only Microsemi
+> > > VCore III and Microchip Sparx5 SoCs.  Hence add a dependency on
+> > > ARCH_SPARX5 || SOC_VCOREIII, to prevent asking the user about this
+> > > driver when configuring a kernel without support for these SoCs.
+> > >
+> > > Fixes: 7e5ea974e61c8dd0 ("pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO")
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > ---
+> > >  drivers/pinctrl/Kconfig | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+> > > index 113073d5f89bbf70..3b75b1d7d3d1f1b0 100644
+> > > --- a/drivers/pinctrl/Kconfig
+> > > +++ b/drivers/pinctrl/Kconfig
+> > > @@ -353,8 +353,8 @@ config PINCTRL_OCELOT
+> > >
+> > >  config PINCTRL_MICROCHIP_SGPIO
+> > >         bool "Pinctrl driver for Microsemi/Microchip Serial GPIO"
+> > > -       depends on OF
+> > > -       depends on HAS_IOMEM
+> > > +       depends on OF && HAS_IOMEM
+> > > +       depends on ARCH_SPARX5 || SOC_VCOREIII || COMPILE_TEST
+> > >         select GPIOLIB
+> > >         select GPIOLIB_IRQCHIP
+> > >         select GENERIC_PINCONF
+> >
+> > Thank you for your patch. Unfortunately, it makes it impossible to use
+> > the driver across PCIe - which is a specifically desired configuration.
+> >
+> > Could you add CONFIG_PCI to the || chain?
+> 
+> Sure.
+> 
+> Is PCIe the only other transport over which the register can be accessed?
+> Or can this also be done over e.g. SPI, like on Ocelot[1]?
+> 
+> [1] https://lore.kernel.org/linux-gpio/20200511145329.GV34497@piout.net/
+> 
 
-This entry used when skipping the parser needed,
-for example, the custom header pretended to ethernet header.
+Yes, this driver IP is also available on Ocelot (this is SOC_VCOREIII)
+so this is also available over SPI.
 
-Suggested-by: Liron Himi <liron@marvell.com>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c | 15 +++++++++++++++
- drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h |  3 ++-
- 2 files changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-index 0b2ff08..b968a20 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-@@ -1173,6 +1173,21 @@ static void mvpp2_prs_mh_init(struct mvpp2 *priv)
- 	/* Update shadow table and hw entry */
- 	mvpp2_prs_shadow_set(priv, pe.index, MVPP2_PRS_LU_MH);
- 	mvpp2_prs_hw_write(priv, &pe);
-+
-+	/* Set MH entry that skip parser */
-+	pe.index = MVPP2_PE_MH_SKIP_PRS;
-+	mvpp2_prs_tcam_lu_set(&pe, MVPP2_PRS_LU_MH);
-+	mvpp2_prs_sram_shift_set(&pe, MVPP2_MH_SIZE,
-+				 MVPP2_PRS_SRAM_OP_SEL_SHIFT_ADD);
-+	mvpp2_prs_sram_bits_set(&pe, MVPP2_PRS_SRAM_LU_GEN_BIT, 1);
-+	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_FLOWS);
-+
-+	/* Mask all ports */
-+	mvpp2_prs_tcam_port_map_set(&pe, 0);
-+
-+	/* Update shadow table and hw entry */
-+	mvpp2_prs_shadow_set(priv, pe.index, MVPP2_PRS_LU_MH);
-+	mvpp2_prs_hw_write(priv, &pe);
- }
- 
- /* Set default entires (place holder) for promiscuous, non-promiscuous and
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h
-index 4b68dd3..c16e5b9 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h
-@@ -103,10 +103,11 @@
- #define MVPP2_PE_MAC_RANGE_START	(MVPP2_PE_MAC_RANGE_END - \
- 						MVPP2_PRS_MAC_RANGE_SIZE + 1)
- /* VLAN filtering range */
--#define MVPP2_PE_VID_FILT_RANGE_END     (MVPP2_PRS_TCAM_SRAM_SIZE - 31)
-+#define MVPP2_PE_VID_FILT_RANGE_END     (MVPP2_PRS_TCAM_SRAM_SIZE - 32)
- #define MVPP2_PE_VID_FILT_RANGE_START   (MVPP2_PE_VID_FILT_RANGE_END - \
- 					 MVPP2_PRS_VLAN_FILT_RANGE_SIZE + 1)
- #define MVPP2_PE_LAST_FREE_TID          (MVPP2_PE_MAC_RANGE_START - 1)
-+#define MVPP2_PE_MH_SKIP_PRS		(MVPP2_PRS_TCAM_SRAM_SIZE - 31)
- #define MVPP2_PE_IP6_EXT_PROTO_UN	(MVPP2_PRS_TCAM_SRAM_SIZE - 30)
- #define MVPP2_PE_IP6_ADDR_UN		(MVPP2_PRS_TCAM_SRAM_SIZE - 29)
- #define MVPP2_PE_IP4_ADDR_UN		(MVPP2_PRS_TCAM_SRAM_SIZE - 28)
 -- 
-1.9.1
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
