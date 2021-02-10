@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3247316C18
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715D3316C1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbhBJRIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:08:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232169AbhBJRHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:07:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6983E64E15;
-        Wed, 10 Feb 2021 17:07:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612976830;
-        bh=YURYTQOKCkXt94zDARkLXusCI3NBqyIqR4OuFkddUF0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mg9jzlREFBDrcM+oMkBI9FgvLJQ63MShadyTO/R7NANlZEW4S6rFtQMiwxjRhmWLZ
-         e96DYwRgW52o3arAdMgk2obwRpN6tRemAC+KTr7z4k0Mp49u/Ot3WHnJ+cCFjlDde8
-         s4AXcrpZH+v7BenV9mgR5zh4KYxc1K9Uwd8RcnF4=
-Date:   Wed, 10 Feb 2021 18:07:07 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
- "usb"-prefixed names
-Message-ID: <YCQSu8Zygxhmppgy@kroah.com>
-References: <20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru>
- <20201205155621.3045-10-Sergey.Semin@baikalelectronics.ru>
- <YBnZ8O+zI/dzrjDQ@builder.lan>
- <YBpnpj+0KHM1Q8l8@kroah.com>
- <20210210145640.xhvcnarq3xoeeesu@mobilestation>
+        id S231876AbhBJRIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:08:40 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:61123 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232107AbhBJRIK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:08:10 -0500
+Received: from fsav302.sakura.ne.jp (fsav302.sakura.ne.jp [153.120.85.133])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11AH7QGZ037842;
+        Thu, 11 Feb 2021 02:07:26 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav302.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp);
+ Thu, 11 Feb 2021 02:07:26 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11AH7QoT037837
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 11 Feb 2021 02:07:26 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 0/3][RESEND] add support for never printing hashed
+ addresses
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        akpm@linux-foundation.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        akinobu.mita@gmail.com, glider@google.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210210051814.845713-1-timur@kernel.org>
+ <6da0be5a-7cb0-4943-e61f-7c3275e60cb6@i-love.sakura.ne.jp>
+ <20210210111836.2468f10a@gandalf.local.home>
+ <e996ff2f-d350-1399-bb6b-8373bf70e687@i-love.sakura.ne.jp>
+ <20210210114633.1b755f6e@gandalf.local.home>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <cd421230-f6cd-fb79-64ad-d029bcee7b4e@i-love.sakura.ne.jp>
+Date:   Thu, 11 Feb 2021 02:07:21 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210145640.xhvcnarq3xoeeesu@mobilestation>
+In-Reply-To: <20210210114633.1b755f6e@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 05:56:40PM +0300, Serge Semin wrote:
-> On Wed, Feb 03, 2021 at 10:06:46AM +0100, Greg Kroah-Hartman wrote:
-> > On Tue, Feb 02, 2021 at 05:02:08PM -0600, Bjorn Andersson wrote:
-> > > On Sat 05 Dec 09:56 CST 2020, Serge Semin wrote:
-> > > 
-> > > > In accordance with the USB HCD/DRD schema all the USB controllers are
-> > > > supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
-> > > > existing DT-nodes will be renamed in a subsequent patch let's first make
-> > > > sure the DWC3 Qualcomm driver supports them and second falls back to the
-> > > > deprecated naming so not to fail on the legacy DTS-files passed to the
-> > > > newer kernels.
-> > > > 
-> > > 
-> > > Felipe, will you merge this, so that I can merge the dts patch depending
-> > > on this into the Qualcomm DT tree?
-> > 
-> > Patches this old are long-gone out of our queues.  If it needs to be
-> > applied to a linux-usb tree, please resend.
+On 2021/02/11 1:46, Steven Rostedt wrote:
+> On Thu, 11 Feb 2021 01:39:41 +0900
+> Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
 > 
-> Greg, Bjorn,
-> I've revised and resent the series. Please find the recently posted
-> patchset:
-> Link: https://lore.kernel.org/lkml/20210208135154.6645-1-Sergey.Semin@baikalelectronics.ru/
+>> On 2021/02/11 1:18, Steven Rostedt wrote:
+>>> The point of this exercise is to be able to debug the *same* kernel that
+>>> someone is having issues with. And this is to facilitate that debugging.  
+>>
+>> That's too difficult to use. If a problem is not reproducible, we will have
+>> no choice but always specify "never hash pointers" command line option. If a
+>> problem is reproducible, we can rebuild that kernel with "never hash pointers"
+>> config option turned on.
 > 
-> Alas I've forgotten to Cc the linux-usb mailing list. Should I resend
-> the series one more time?
+> Now the question is, why do you need the unhashed pointer?
 
-Please do.
+Because unhashed pointers might give some clue. We can rebuild the same kernel
+using the same kernel config / compiler etc. and compare unhashed pointers with
+addresses in System.map / kallsyms files without reproducing the problem.
+
+> 
+> Currently, the instruction pointer is what is fine right? You get the
+> a function and its offset. If there's something that is needed, perhaps we
+> should look at how to fix that, instead of just unhashing all pointers by
+> default.
+
+I'm not refusing to use kernel command line options. I'm expecting that we can
+also hardcode using kernel config options. Since boot-time switching via kernel
+command line options makes the kernel behave differently, less boot-time
+switching is better for avoiding unexpected problems (e.g. unintended LSM was
+enabled).
+
