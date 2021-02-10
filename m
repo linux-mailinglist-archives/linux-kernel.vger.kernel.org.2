@@ -2,60 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238E331675C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CC9316767
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhBJNBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:01:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
+        id S231937AbhBJNCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:02:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbhBJM5n (ORCPT
+        with ESMTP id S231701AbhBJM6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:57:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DD8C0613D6;
-        Wed, 10 Feb 2021 04:55:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SGAIOBNUj9OSbPY+0bXagC3zuJ1Bdm0CDwlnEQirSc8=; b=dTyIUjcND5JzcCbae6DADZuxLV
-        YRHONEqUMaoeAue709YkIlt0BqtQBFeTVJ09TUmIqwsOu3NKdS5w9PaeQr6CdCBMIronvbntDra2+
-        a+yCx0+cEmW7KJhE10v2CiN2VejC1AYdJk4/o4iATgZPxMe+Xh0XlmuivMZdsvvTiTrn8tp6EerkN
-        i68GQBrxVqh9Abuw+LuqRuazFxlfeEWEDwDUywaULX4/u1N69b07WBjw0RX07KGcPZwOD8Q1NTF4y
-        BEqtP7Hx7wqSRMa24LEafRkG6nNJeUoszR48Rbhj71Ld2t9i6AJcYRi2Na3Ilj6R4fnR0abjfTcqI
-        JdOrfKnA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l9p1p-008rZB-US; Wed, 10 Feb 2021 12:55:34 +0000
-Date:   Wed, 10 Feb 2021 12:55:33 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Sterba <dsterba@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V2 5/8] iov_iter: Remove memzero_page() in favor of
- zero_user()
-Message-ID: <20210210125533.GE2111784@infradead.org>
-References: <20210210062221.3023586-1-ira.weiny@intel.com>
- <20210210062221.3023586-6-ira.weiny@intel.com>
+        Wed, 10 Feb 2021 07:58:09 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65895C061574;
+        Wed, 10 Feb 2021 04:56:15 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id B7B3541FA3;
+        Wed, 10 Feb 2021 12:56:10 +0000 (UTC)
+Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
+ devicetree
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Tony Lindgren <tony@atomide.com>, Arnd Bergmann <arnd@kernel.org>,
+        DTML <devicetree@vger.kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20210204203951.52105-1-marcan@marcan.st>
+ <20210204203951.52105-19-marcan@marcan.st>
+ <20210208110441.25qc6yken4effd6c@kozik-lap>
+ <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
+ <YCOzLSqdsr83xf0b@atomide.com>
+ <4481998a-27f6-951e-bb4f-a9d2b95f211f@marcan.st>
+ <YCPE2lPpBlhCi7TH@atomide.com>
+ <4dd911d8-ce84-bf4d-3aae-95ef321b4a97@marcan.st>
+ <CAFr9PXkLRKHguszidJX2Qit0QUJ0QxFi3H=Wp2HDqpfJQYZEVw@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <3d61ca6d-98a1-b78a-07da-cd20834de5a1@marcan.st>
+Date:   Wed, 10 Feb 2021 21:56:08 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210062221.3023586-6-ira.weiny@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAFr9PXkLRKHguszidJX2Qit0QUJ0QxFi3H=Wp2HDqpfJQYZEVw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:22:18PM -0800, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On 10/02/2021 21.24, Daniel Palmer wrote:
+> This exact problem exists for MStar/SigmaStar too.
+> As it stands there is no documentation to show what the actual clock
+> tree looks like so everything is guess and I need to come up with numbers.
+> I'm interested to see what the solution to this is as it will come up again
+> when mainlining chips without documentation.
+
+So far the answer seems to be to take the best guess available, and then 
+we get to fix it until we have real users and breaking DT compatibility 
+is no longer an option... :-)
+
+>> The purpose of the clock in this particular case is just to make the
+>> uart driver work, since it wants to know its reference clock; there is
+>> work to be done here to figure out the real clock tree
 > 
-> zero_user() is already defined with the same interface and contains the
-> same code pattern as memzero_page().  Remove memzero_page() and use the
-> already defined common function zero_user()
+> FWIW arm/boot/dts/mstar-v7.dtsi has the same issue: Needs uart,
+> has no uart clock. In that instance the uart clock setup by u-boot
+> is passed to the uart driver as a property instead of creating a fake
+> clock.
 
-Looks good,
+In our case it's an existing driver (with patches) that is already 
+integrated with the clock infrastructure, so it makes sense to use a 
+fixed-clock instead of just an ad-hoc property.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
