@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CAD316969
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1044D316972
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhBJOuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:50:07 -0500
-Received: from mga11.intel.com ([192.55.52.93]:13533 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230028AbhBJOuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:50:02 -0500
-IronPort-SDR: xvWYcWCc+ABBAU9n+CTk/O48wMYVAFUzmW+n7F3pc0Yl4eGj54ztMO1m+87BP6k5DXGwQdixpU
- bqFZgeF+T9NA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="178573131"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="178573131"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 06:48:14 -0800
-IronPort-SDR: Fz0huz8BxvaKkQQkanZeVSu1UIU6Bo+Wu0wJVcXCJ0Pjnmyd43g1oBvY+jOVmOuS7MjfRsgyyo
- 4lzoiv+3soVw==
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="436696420"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 06:48:12 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l9qmo-003kft-6W; Wed, 10 Feb 2021 16:48:10 +0200
-Date:   Wed, 10 Feb 2021 16:48:10 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>
-Subject: Re: [PATCH v1 7/7] ACPI: property: Allow counting a single value as
- an array of 1 element
-Message-ID: <YCPyKjO7XPBFAgbn@smile.fi.intel.com>
-References: <20210210114320.3478-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0hx78JHnP5-5xFTPr0Rh9FvPCzAzTCyBaT6eLZ3Dd-mFA@mail.gmail.com>
- <3881654.NPl3a4M0kB@kreacher>
- <1946478.1QpZic6vku@kreacher>
+        id S229789AbhBJOwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:52:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhBJOwC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:52:02 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E4DC061574;
+        Wed, 10 Feb 2021 06:51:20 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id i8so4705610ejc.7;
+        Wed, 10 Feb 2021 06:51:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OvXV28pKYZQ6XN2BS9VfvmXTJ0BIn3jo9mdDyBLMsno=;
+        b=JHd97QPXdtdgWBVVFWf5uycI5zboNkqBWl6I7CyXj/rrhhwshsHn7XHwI1B+/vAXjW
+         dnbNILCCJfBL8l7EdB9hJ+rI3wA2aMa4JMYVxGnPVai/J0qsx2YWGh/lQDffC45qYCbd
+         CwNNnJKq0v1EYmIzcBpFOhuMcFCDZZas90G3OLMVxatwtofUqmnxL63wpAY3tRP+Fgks
+         Ch5dN3ZinRZ8Pv+uWje0NfpxbSPlwKOoWh0KRmaUkHBfjLXPSJeAwj+c3butvbzOZUWK
+         0rCryg0nj4BnJXC9n/6xMRk+vn8qV54JeKErlcyPWzDT7GrcJqg8osSpMoYvO/6Gt2sS
+         Y9MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OvXV28pKYZQ6XN2BS9VfvmXTJ0BIn3jo9mdDyBLMsno=;
+        b=dJCQffqWhSsx4anmgjnqVuWdadP8CykJ3D3H5tGgkS5aD8ztpdStmdBK4syuxjUSnu
+         +zvxq9R0T6txZtihr/3iBZ5encGzoMh63TxKXwp/GNj9RODjm7Gzu3BfNVgGfhhGQATd
+         FLrwlNg/LG1GI1j1xQF2TO/pVMlyskr7sRTw3NykzCTYmvNHkiWlpjA4QmVhY3aH8mEE
+         VIbw3kMkgWQJh6oXXpxhJLSrCrcNJLSvTNXNm9sp4fODTQpMamEVWORBsjYD8R8UHk3i
+         s8kL11fhIAYWNe3cTpRnfw+tRZ0vS0SZP6POQWzXTv2e8PdI02NNqCaePHAsDAF9zRlt
+         +haQ==
+X-Gm-Message-State: AOAM530vRcYALnymEMa5seIZcWt124zz6nv99gtMccITYiRsLxR5B6kG
+        /JiiIRsjeGxEUDVUe0wsSAm+Kc7WNVBwAnOXAfo=
+X-Google-Smtp-Source: ABdhPJzPlyWmeSdVzKHbGdY+4dp+tW+DNd3dY0E3hgFCW24SyIEA3c5b9IvR4dNAHTpoXcfb6xSIpDfL+yN3eh9pTqY=
+X-Received: by 2002:a17:906:fc5:: with SMTP id c5mr3182527ejk.538.1612968678886;
+ Wed, 10 Feb 2021 06:51:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1946478.1QpZic6vku@kreacher>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210210065925.22614-1-hxseverything@gmail.com>
+In-Reply-To: <20210210065925.22614-1-hxseverything@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 10 Feb 2021 09:50:43 -0500
+Message-ID: <CAF=yD-LLzAheej1upLdBOeJc9d0RUXMrL9f9+QVC-4thj1EG5Q@mail.gmail.com>
+Subject: Re: [PATCH/v2] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+To:     huangxuesen <hxseverything@gmail.com>
+Cc:     David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        huangxuesen <huangxuesen@kuaishou.com>,
+        Willem de Bruijn <willemb@google.com>,
+        chengzhiyong <chengzhiyong@kuaishou.com>,
+        wangli <wangli09@kuaishou.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:48:09PM +0100, Rafael J. Wysocki wrote:
-> On Wednesday, February 10, 2021 2:31:48 PM CET Rafael J. Wysocki wrote:
-> > On Wednesday, February 10, 2021 1:36:00 PM CET Rafael J. Wysocki wrote:
-> > > On Wed, Feb 10, 2021 at 12:51 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
+On Wed, Feb 10, 2021 at 1:59 AM huangxuesen <hxseverything@gmail.com> wrote:
+>
+> From: huangxuesen <huangxuesen@kuaishou.com>
+>
+> bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
+> encapsulation. But that is not appropriate when pushing Ethernet header.
+>
+> Add an option to further specify encap L2 type and set the inner_protocol
+> as ETH_P_TEB.
+>
+> Suggested-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: huangxuesen <huangxuesen@kuaishou.com>
+> Signed-off-by: chengzhiyong <chengzhiyong@kuaishou.com>
+> Signed-off-by: wangli <wangli09@kuaishou.com>
 
-Rafael, thanks for the review, my answers below.
+Thanks, this is exactly what I meant.
 
-> > > > We allow to read the single value as a first element in the array.
-> > > > Unfortunately the counting doesn't work in this case and we can't
-> > > > call fwnode_property_count_*() API without getting an error.
-> > > 
-> > > It would be good to mention what the symptom of the issue is here.
+Acked-by: Willem de Bruijn <willemb@google.com>
 
-fwnode_property_match_string() is not working as reported by Calvin.
-
-> > > > Modify acpi_data_prop_read() to always try the single value read
-> > > > and thus allow counting the single value as an array of 1 element.
-> > > >
-> > > > Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > 
-> > > This is a bug fix, so it should go in before the cleanups in this series IMO.
-
-Seems it was never worked, hence neither Fixes tag nor...
-
-> > > Also it looks like stable@vger material.
-
-...Cc to stable@.
-
-> > > > -       if (val && nval == 1) {
-> > > > +       /* Try to read as a single value first */
-> > > > +       if (!val || nval == 1) {
-> > > >                 ret = acpi_data_prop_read_single(data, propname, proptype, val);
-> > > 
-> > > This returns -EINVAL if val is NULL.
-
-Nope. That's why it's a patch 7. Patch 6 solves this.
-
-> > > >                 if (ret >= 0)
-> > > > -                       return ret;
-> > > > +                       return val ? ret : 1;
-> > > 
-> > > So val cannot be NULL here.
-
-Why not? I have changed conditional.
-
-> > > >         }
-
-> > > To me, acpi_fwnode_property_read_string_array() needs to special-case
-> > > val == NULL and nval == 0.
-
-nval can be anything in the case of val==NULL. So far neither of your proposals
-conform this.
-
-
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+One small point regarding Signed-off-by: It is customary to capitalize
+family and given names.
