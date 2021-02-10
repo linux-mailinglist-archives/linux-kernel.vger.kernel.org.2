@@ -2,126 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6917316A85
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD564316A8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhBJPyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:54:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
+        id S231937AbhBJP5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:57:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhBJPyt (ORCPT
+        with ESMTP id S231803AbhBJP5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:54:49 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7862CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:54:09 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id z6so3109181wrq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:54:09 -0800 (PST)
+        Wed, 10 Feb 2021 10:57:03 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C87FC061756;
+        Wed, 10 Feb 2021 07:56:23 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id c11so1512463pfp.10;
+        Wed, 10 Feb 2021 07:56:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=diEVw5/O8/Cy8oiBHC8W2XTuoIkYQ2nZAo/0L37zzlA=;
-        b=WrxKkBGiNt0lpiBKQGILDGQoZOf6yr0kAlqHLYYFYcjMSJ8NcuITvVF+C9QqhvC2Uy
-         +bgxUTlXmwUCh5S9/or4Zeju6IG4TBVuqSZI8F999LcKPyQHlhpbczAbbqulxjTJUG8U
-         o0L2/lMRI1xuAP8bfX8tiOtKLvjJE9dUwVs9BhgwvWTdDxttqbGEAtr0O2SoJP+9B9jV
-         8HFZUkAI0MJtPvIkG02y+T4g6VBbJd7dz0CmyolNqRQYomSQaHwGoFTrWiQ49U/gPPiy
-         xx8hodBASgNWiO64H9WubL+A13Jn5Dhe0NQ50NoHP6UgV6aRyPDQiyvOpb+07x376uZW
-         d4XQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=McQRFsxOcI8aHwHC0zjblj7atjYGCgUIoXv69mIC1Q4=;
+        b=YQgJ3cij+gOOioVvpKXjQqCFsFuVNYsWtI5SZO2XC8tJJGo4lxjRC0G+3GuzoTmteE
+         9wJ5M1nbWfqon52DmLiXjr6ZQgm9aYaimKuBJwxd+gv74MeYNHpyex93K1c4oqnL1pEj
+         vXwPVsck7bclSEx2JTNdX6FQ7uFxYJXGT52+PGAg/gvg92ggCVp2MEw7LX4fp6oDf/LT
+         hNwJfxYof8e/xPsF24GiNm3//MY4Hy+m40Da7/8P/CnSZ/jxk5QhAL6aaAwgPS2/No9l
+         W4APuHb/YAS37hyuPdfDaGR/WcCSbNi3maXql05N4fF5QtN3ykfVsB42A/O9TUF7HpIo
+         29eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=diEVw5/O8/Cy8oiBHC8W2XTuoIkYQ2nZAo/0L37zzlA=;
-        b=YP7sIk3TYHoH01QV128rJOCQRyErdH8BtWtlhAxWn9MMEIcY/KjU45c/G87G1ssqyJ
-         7x7gt3BRj5ji5BzWQjy9i5m8XagWqaeH6NwIbbuGOehBNuUqfLTIHy0y/N59TEVpN3o2
-         AZmWopKoJyCzTP0rf9bJV3vHKkWByIk1zhWdRLV42kooyXKNAkhv7wmVpT6o00TEZ6fm
-         t9mJKnmLYBfEfinpWw3YKxcBAWfLVjoGigHqO9QzSr//xzjS2NFW76qGGb4HaZH73kDY
-         ZWcaoBzhaeAWhDRxvH7/TTiExa0io8B3TmyvE23Fl13vf42fvPuhB9vtnXyp2+4QyTg+
-         2s6Q==
-X-Gm-Message-State: AOAM5316AA4UL8pf5d/QlSXUuQcnuAb/vF5e3nnXcBSxAsph7AwaigdV
-        SgBAwgQ7kChS7i1rqwzvaslNToQ5ajpUPQ==
-X-Google-Smtp-Source: ABdhPJw1QFVpKunbCZwyU8NE9x73nKK0p7MMY16TugmV4n0fp/nCj5n532ESqNTyy0hqmas54no7zQ==
-X-Received: by 2002:adf:ecd2:: with SMTP id s18mr4408622wro.311.1612972448181;
-        Wed, 10 Feb 2021 07:54:08 -0800 (PST)
-Received: from [192.168.0.13] ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id z6sm2787750wmi.39.2021.02.10.07.54.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Feb 2021 07:54:07 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH 1/2] bfq: remove some useless logic of
- bfq_update_next_in_service()
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <bc39aeb5-4fb6-db15-3ad5-b310f5d5b486@kernel.dk>
-Date:   Wed, 10 Feb 2021 16:54:15 +0100
-Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Chunguang Xu <brookxu.cn@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6FFDC28C-BB1B-45F8-B2E9-2BCDF2CC1B61@linaro.org>
-References: <1611917485-584-1-git-send-email-brookxu@tencent.com>
- <B4751549-78D9-4A84-8FB2-5DAA86ED39C8@linaro.org>
- <20210210152034.puimoewzgtnnp2zl@spock.localdomain>
- <bc39aeb5-4fb6-db15-3ad5-b310f5d5b486@kernel.dk>
-To:     Jens Axboe <axboe@kernel.dk>
-X-Mailer: Apple Mail (2.3445.104.11)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=McQRFsxOcI8aHwHC0zjblj7atjYGCgUIoXv69mIC1Q4=;
+        b=Rxmi2/2nyIkI2lGr+xnNuwSvbfXumy98hVKi8TRWUrQbKek1XhFGyzhJa6kJpmAVGz
+         Sm3+A0v/a7K8GBERNMuKATy4N6TA1/BAyiZrQBRxohJcbYhXF7J92OPnVAlMcS2cqCc4
+         P1IIGfsVAX/cztbteLPhBJ8a+PJl4YX2hs21FyJrp6gM+r1+IKwi/8nVCBJA0519vctX
+         fZw8Ws2T+il40wfdQ46XpMUn4RU5OFw7zBAOoV1RJV8sC6ZzL7JVTWj3CGKK6C8PEdEP
+         VZevXZY7bfRIB87EytZsDnGCNfa5E706AlP31zs439WrdQgvrDnoqKFjoHdGQ6b8bkse
+         9hQQ==
+X-Gm-Message-State: AOAM533m1N1oOIaEnrm8pklygIaoQsKCxPD3S8f8PmdNSElYondLqsyg
+        gbCK1reaU3lZ4zA2fx/fOz8=
+X-Google-Smtp-Source: ABdhPJwp4r/Cjuh2T6+N5kPz9EUYqrp3xdSXNE/SH3Ebur2+M/+RVQJI7xx1+2hzvyY1sI30fvuEag==
+X-Received: by 2002:a63:214e:: with SMTP id s14mr3680116pgm.101.1612972582469;
+        Wed, 10 Feb 2021 07:56:22 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:8209:ec67:2f9:2f8c])
+        by smtp.gmail.com with ESMTPSA id p12sm2535081pju.35.2021.02.10.07.56.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 07:56:22 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net-next RFC] net: hdlc_x25: Queue outgoing LAPB frames
+Date:   Wed, 10 Feb 2021 07:56:10 -0800
+Message-Id: <20210210155610.13753-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When sending packets, we will first hand over the (L3) packets to the
+LAPB module, then the LAPB module will hand over the corresponding LAPB
+(L2) frames back to us for us to transmit.
 
+The LAPB module can also emit LAPB (L2) frames at any time without an
+(L3) packet currently being sent, when it is trying to send (L3) packets
+queued up in its internal queue, or when it decides to send some (L2)
+control frame.
 
-> Il giorno 10 feb 2021, alle ore 16:21, Jens Axboe <axboe@kernel.dk> ha =
-scritto:
->=20
-> On 2/10/21 8:20 AM, Oleksandr Natalenko wrote:
->> On Wed, Feb 10, 2021 at 12:13:29PM +0100, Paolo Valente wrote:
->>>=20
->>>=20
->>>> Il giorno 29 gen 2021, alle ore 11:51, Chunguang Xu =
-<brookxu.cn@gmail.com> ha scritto:
->>>>=20
->>>> From: Chunguang Xu <brookxu@tencent.com>
->>>>=20
->>>> The if statement at the end of the function is obviously useless,
->>>> maybe we can delete it.
->>>>=20
->>>=20
->>> Thanks for spotting this mistake.
->>>=20
->>> Acked-by: Paolo Valente <paolo.valente@linaro.org>
->>>=20
->>>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
->>>> ---
->>>> block/bfq-wf2q.c | 3 ---
->>>> 1 file changed, 3 deletions(-)
->>>>=20
->>>> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
->>>> index 26776bd..070e34a 100644
->>>> --- a/block/bfq-wf2q.c
->>>> +++ b/block/bfq-wf2q.c
->>>> @@ -137,9 +137,6 @@ static bool bfq_update_next_in_service(struct =
-bfq_sched_data *sd,
->>>>=20
->>>> 	sd->next_in_service =3D next_in_service;
->>>>=20
->>>> -	if (!next_in_service)
->>>> -		return parent_sched_may_change;
->>>> -
->>=20
->> Unless I'm missing something, this has already been fixed here:
->>=20
->> =
-https://git.kernel.dk/cgit/linux-block/commit/?h=3Dfor-5.12/block&id=3D1a2=
-3e06cdab2be07cbda460c6417d7de564c48e6
->=20
-> Yep indeed.
->=20
+This means we need have a queue for these outgoing LAPB (L2) frames to
+avoid congestion. This queue needs to be controlled by the hardware
+drivers' netif_stop_queue and netif_wake_queue calls. So we need to use
+a qdisc TX queue for this purpose.
 
-I seemed to remember this patch as well. But my memory is rather weak.
+On the other hand, the outgoing (L3) packets don't need to be queued,
+because the LAPB module already has an internal queue for them.
 
-> --=20
-> Jens Axboe
+However, currently the outgoing LAPB (L2) frames are not queued. This
+can cause frames to be dropped by hardware drivers when they are busy.
+At the same time the (L3) packets are being queued and controlled by
+hardware drivers' netif_stop_queue and netif_wake_queue calls. This is
+unnecessary and meaningless.
+
+To solve this problem, we can split the HDLC device into two devices:
+a virtual X.25 device and an actual HDLC device, using the virtual
+X.25 device to send (L3) packets and using the actual HDLC device to
+queue LAPB (L2) frames. The outgoing LAPB queue will be controlled by
+hardware drivers' netif_stop_queue and netif_wake_queue calls, while
+outgoing (L3) packets will not be affected by these calls.
+
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ drivers/net/wan/hdlc_x25.c | 156 ++++++++++++++++++++++++++++++-------
+ 1 file changed, 127 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
+index bb164805804e..f21aaee364e2 100644
+--- a/drivers/net/wan/hdlc_x25.c
++++ b/drivers/net/wan/hdlc_x25.c
+@@ -23,6 +23,13 @@
+ 
+ struct x25_state {
+ 	x25_hdlc_proto settings;
++	struct net_device *x25_dev;
++	spinlock_t x25_dev_lock; /* Protects the x25_dev pointer */
++};
++
++/* Pointed to by netdev_priv(x25_dev) */
++struct x25_device {
++	struct net_device *hdlc_dev;
+ };
+ 
+ static int x25_ioctl(struct net_device *dev, struct ifreq *ifr);
+@@ -32,6 +39,11 @@ static struct x25_state *state(hdlc_device *hdlc)
+ 	return hdlc->state;
+ }
+ 
++static struct x25_device *dev_to_x25(struct net_device *dev)
++{
++	return netdev_priv(dev);
++}
++
+ /* These functions are callbacks called by LAPB layer */
+ 
+ static void x25_connect_disconnect(struct net_device *dev, int reason, int code)
+@@ -89,15 +101,10 @@ static int x25_data_indication(struct net_device *dev, struct sk_buff *skb)
+ 
+ static void x25_data_transmit(struct net_device *dev, struct sk_buff *skb)
+ {
+-	hdlc_device *hdlc = dev_to_hdlc(dev);
+-
++	skb->dev = dev_to_x25(dev)->hdlc_dev;
++	skb->protocol = htons(ETH_P_HDLC);
+ 	skb_reset_network_header(skb);
+-	skb->protocol = hdlc_type_trans(skb, dev);
+-
+-	if (dev_nit_active(dev))
+-		dev_queue_xmit_nit(skb, dev);
+-
+-	hdlc->xmit(skb, dev); /* Ignore return value :-( */
++	dev_queue_xmit(skb);
+ }
+ 
+ 
+@@ -163,17 +170,18 @@ static int x25_open(struct net_device *dev)
+ 		.data_indication = x25_data_indication,
+ 		.data_transmit = x25_data_transmit,
+ 	};
+-	hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct net_device *hdlc_dev = dev_to_x25(dev)->hdlc_dev;
++	hdlc_device *hdlc = dev_to_hdlc(hdlc_dev);
+ 	struct lapb_parms_struct params;
+ 	int result;
+ 
+ 	result = lapb_register(dev, &cb);
+ 	if (result != LAPB_OK)
+-		return result;
++		return -ENOMEM;
+ 
+ 	result = lapb_getparms(dev, &params);
+ 	if (result != LAPB_OK)
+-		return result;
++		return -EINVAL;
+ 
+ 	if (state(hdlc)->settings.dce)
+ 		params.mode = params.mode | LAPB_DCE;
+@@ -188,16 +196,104 @@ static int x25_open(struct net_device *dev)
+ 
+ 	result = lapb_setparms(dev, &params);
+ 	if (result != LAPB_OK)
+-		return result;
++		return -EINVAL;
+ 
+ 	return 0;
+ }
+ 
+ 
+ 
+-static void x25_close(struct net_device *dev)
++static int x25_close(struct net_device *dev)
+ {
+ 	lapb_unregister(dev);
++	return 0;
++}
++
++static const struct net_device_ops hdlc_x25_netdev_ops = {
++	.ndo_open       = x25_open,
++	.ndo_stop       = x25_close,
++	.ndo_start_xmit = x25_xmit,
++};
++
++static void x25_setup_virtual_dev(struct net_device *dev)
++{
++	dev->netdev_ops	     = &hdlc_x25_netdev_ops;
++	dev->type            = ARPHRD_X25;
++	dev->addr_len        = 0;
++	dev->hard_header_len = 0;
++}
++
++static int x25_hdlc_open(struct net_device *dev)
++{
++	struct hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct net_device *x25_dev;
++	char x25_dev_name[sizeof(x25_dev->name)];
++	int result;
++
++	if (strlen(dev->name) + 4 >= sizeof(x25_dev_name))
++		return -EINVAL;
++
++	strcpy(x25_dev_name, dev->name);
++	strcat(x25_dev_name, "_x25");
++
++	x25_dev = alloc_netdev(sizeof(struct x25_device), x25_dev_name,
++			       NET_NAME_PREDICTABLE, x25_setup_virtual_dev);
++	if (!x25_dev)
++		return -ENOMEM;
++
++	/* When transmitting data:
++	 * first we'll remove a pseudo header of 1 byte,
++	 * then the LAPB module will prepend an LAPB header of at most 3 bytes.
++	 */
++	x25_dev->needed_headroom = 3 - 1;
++	x25_dev->mtu = dev->mtu - (3 - 1);
++	dev_to_x25(x25_dev)->hdlc_dev = dev;
++
++	result = register_netdevice(x25_dev);
++	if (result) {
++		free_netdev(x25_dev);
++		return result;
++	}
++
++	spin_lock_bh(&state(hdlc)->x25_dev_lock);
++	state(hdlc)->x25_dev = x25_dev;
++	spin_unlock_bh(&state(hdlc)->x25_dev_lock);
++
++	return 0;
++}
++
++static void x25_hdlc_close(struct net_device *dev)
++{
++	struct hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct net_device *x25_dev = state(hdlc)->x25_dev;
++
++	if (x25_dev->flags & IFF_UP)
++		dev_close(x25_dev);
++
++	spin_lock_bh(&state(hdlc)->x25_dev_lock);
++	state(hdlc)->x25_dev = NULL;
++	spin_unlock_bh(&state(hdlc)->x25_dev_lock);
++
++	unregister_netdevice(x25_dev);
++	free_netdev(x25_dev);
++}
++
++static void x25_hdlc_start(struct net_device *dev)
++{
++	struct hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct net_device *x25_dev = state(hdlc)->x25_dev;
++
++	/* hdlc.c guarantees no racing so we're sure x25_dev is valid */
++	netif_carrier_on(x25_dev);
++}
++
++static void x25_hdlc_stop(struct net_device *dev)
++{
++	struct hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct net_device *x25_dev = state(hdlc)->x25_dev;
++
++	/* hdlc.c guarantees no racing so we're sure x25_dev is valid */
++	netif_carrier_off(x25_dev);
+ }
+ 
+ 
+@@ -205,27 +301,38 @@ static void x25_close(struct net_device *dev)
+ static int x25_rx(struct sk_buff *skb)
+ {
+ 	struct net_device *dev = skb->dev;
++	struct hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct net_device *x25_dev;
+ 
+ 	if ((skb = skb_share_check(skb, GFP_ATOMIC)) == NULL) {
+ 		dev->stats.rx_dropped++;
+ 		return NET_RX_DROP;
+ 	}
+ 
+-	if (lapb_data_received(dev, skb) == LAPB_OK)
+-		return NET_RX_SUCCESS;
+-
+-	dev->stats.rx_errors++;
++	spin_lock_bh(&state(hdlc)->x25_dev_lock);
++	x25_dev = state(hdlc)->x25_dev;
++	if (!x25_dev)
++		goto drop;
++	if (lapb_data_received(x25_dev, skb) != LAPB_OK)
++		goto drop;
++	spin_unlock_bh(&state(hdlc)->x25_dev_lock);
++	return NET_RX_SUCCESS;
++
++drop:
++	spin_unlock_bh(&state(hdlc)->x25_dev_lock);
++	dev->stats.rx_dropped++;
+ 	dev_kfree_skb_any(skb);
+ 	return NET_RX_DROP;
+ }
+ 
+ 
+ static struct hdlc_proto proto = {
+-	.open		= x25_open,
+-	.close		= x25_close,
++	.open		= x25_hdlc_open,
++	.close		= x25_hdlc_close,
++	.start		= x25_hdlc_start,
++	.stop		= x25_hdlc_stop,
+ 	.ioctl		= x25_ioctl,
+ 	.netif_rx	= x25_rx,
+-	.xmit		= x25_xmit,
+ 	.module		= THIS_MODULE,
+ };
+ 
+@@ -299,15 +406,6 @@ static int x25_ioctl(struct net_device *dev, struct ifreq *ifr)
+ 
+ 		memcpy(&state(hdlc)->settings, &new_settings, size);
+ 
+-		/* There's no header_ops so hard_header_len should be 0. */
+-		dev->hard_header_len = 0;
+-		/* When transmitting data:
+-		 * first we'll remove a pseudo header of 1 byte,
+-		 * then we'll prepend an LAPB header of at most 3 bytes.
+-		 */
+-		dev->needed_headroom = 3 - 1;
+-
+-		dev->type = ARPHRD_X25;
+ 		call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE, dev);
+ 		netif_dormant_off(dev);
+ 		return 0;
+-- 
+2.27.0
 
