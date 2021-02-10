@@ -2,167 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F167316475
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F1131647D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbhBJK7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:59:04 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:33841 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbhBJKzJ (ORCPT
+        id S231580AbhBJLAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:00:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231563AbhBJKzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:55:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=sandisk.com; i=@sandisk.com; q=dns/txt;
-  s=dkim.sandisk.com; t=1612954509; x=1644490509;
-  h=from:to:cc:subject:date:message-id;
-  bh=QUxTHn86SkMNd/9RtbLZhC4AogfF7Hfr2MyKmgOWQ8o=;
-  b=16/QuUsORQl95qKp853Fs1kQVl/yn312vjFZmjtnYCG2B/MEl2BjTmCg
-   Nb5hSPDEwNGs6vpje1V46GewtXwgWn3KimZ1i6+rWOUlTE2FZDJmHIoHw
-   UafalgNz5xihiu8/mmatZ7SVmAuhNJFCYi3pE//dyoFlH/yGVzabnQ+gx
-   3gjX2umFmDyRLhHtWuCALJDR6XUaNvEM+0RANoMtFcDWumPrSmnXVxC2/
-   kvlvia9REH5vBZciTIf/aBAT6sw6OHwLsbMiEhS4b2pH4OD/H0FwCJG5o
-   KRW9Ga9UeyOXqyCCdmMQPPQYpq0tr/XzEBLVUKpzZ2PbmKJgyk7ElVajF
-   g==;
-IronPort-SDR: Mz07YtmEThSCYZNLySvyJERs6SB/VropMK5Qv6pcy20IhFzK5F1UFsQ2iKldXF5bgGrMfZTtXB
- CnKb2IFNl0FT1cVCIEtGnanJko1esLeNObv+1BZLNkeoZurEuXSOfTHFyrFcxEJD8A+jwsfXq6
- thP5zNXR9k9gppFlRCenwoZR/EEcmNqOYSPLoEe3hrS9IYIqRILCqRNxENVDXiFIJ9ifhcwbo7
- lk95fUWNr0jrZc25HNmbEGtwaeKmPF/w7tS41sNBAu0hDlB4/8KTc/xp5t5PCSMzcxJ4u4pJy6
- lsI=
-X-IronPort-AV: E=Sophos;i="5.81,168,1610380800"; 
-   d="scan'208";a="270102607"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Feb 2021 18:53:51 +0800
-IronPort-SDR: k76807AJXGa4mp8wOvFLcGIaUAVjtOBLww/iScqD+793Olv34U8ImucbHwgH+J5g1Z+eIi08VW
- ebwVqi3Fzt52pAbMfzgxB8QKxzN1hF/intRa75S3m50ln8F9+1V6RjNURal6zIqy//bBsvVqXk
- QkRc2tQ2dbxUTEpkmkCdsSlcpccChwtEvpnIREhw2T+/Rw91GJKwreLj8dEcDfzZYPwdMTIYrL
- OUzSx98DnWN8JY+L2Lk4tBUSL0yOaGXDA+LJPSRV+dLVzcIQNJ//2ZIq8nKnYoIodrTXFbntap
- IdX6BbzN6H3HTMQSgDojdq2h
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 02:37:35 -0800
-IronPort-SDR: fMBKU3qIGmFehGUw1iQec26lbAGlShd6t1OWDxqFQyESmkYHRJOT1XSa/AqQM2hosPxnL4GwiL
- QcRzmDYG1nI0qI0KmI8szk/2SR46+aFKEd02j9ZAWJ+EoxpZI90FWWYrAURH84v71aVapqqa0i
- dqdlBHKwgASurc12zeeFGb8uw1GX+AVMS2XUAoLt7IE8JdB+yPJs3QQmXbk99GNMWUOQeQJ7Zm
- /fYPB4ZNJ4F8pgUWiaSuKTxjBF6zRyy9xwAiFCvvnaKQzqWjxSSFYJWGAspUSIoam3Vi9VMyif
- pzo=
-WDCIronportException: Internal
-Received: from cnf008142.ad.shared (HELO ilb001078.hgst.com) ([10.86.63.178])
-  by uls-op-cesaip02.wdc.com with ESMTP; 10 Feb 2021 02:53:50 -0800
-From:   Arthur Simchaev <Arthur.Simchaev@sandisk.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     alim.akhtar@samsung.com, Bean Huo <beanhuo@micron.com>,
-        Arthur Simchaev <arthur.simchaev@wdc.com>,
-        Arthur Simchaev <Arthur.Simchaev@sandisk.com>
-Subject: [PATCH] scsi: ufs: sysfs: add is_ascii_output entry
-Date:   Wed, 10 Feb 2021 12:53:45 +0200
-Message-Id: <1612954425-6705-1-git-send-email-Arthur.Simchaev@sandisk.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 10 Feb 2021 05:55:37 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD9BC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:54:57 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id u143so1014507pfc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:54:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jBIUHOWtg2dF5e3zXMZeQ47GV+A9ufzsrhcBdcwlOIo=;
+        b=PbcnLvfL7EHMpCXcXx+QTCQp2HAv0KSKug3hp/01z9XnzXtjBy8t7wN3PJ8eGZjY6q
+         6de8pm2zJtdayjbLy87dafKVYOPvXFhtMK1D8gvRSXxeq5BnytQLM/0pMOwuv9ZZLipK
+         DB3xXjXdOuboVfXx/o1U604M9QCJWHPunzVPLS8OSjMYyiDdR035eLT39EM0rVL0dSyI
+         3X0giWKXciV1u6YFxuluFkjRnPjSscWo1YpeVqZJ4WlixccDQDyqZWJ4A5Oy4mHP92xD
+         XrWzaa4SVG+aI5JSDODUH8CXlTpSbeIqPDgVmRyrp6FKfSZP02JWSQsky0unqbCP8zSL
+         Ph+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jBIUHOWtg2dF5e3zXMZeQ47GV+A9ufzsrhcBdcwlOIo=;
+        b=gga9H00zu9VtRvCKLrm6OQs21oiqcPPiMuVGnwe37kbm/thRRTQA100KDHxa9hfnGC
+         vPL49tEtyv+1ckP1CA7IbMXIGY1WHhe2AjJwbXQ/gY5KDRyJLpsD8QSlEvfkYvdD6/eB
+         TVh96YjDX2Ktw5SMLSnKavBYkFK0a6RBUcCoL04e9VqSeCVH5xK/v8SB1pCOPthvzu8n
+         W1dn4BKiZYVQ29uYEegD69Rh4z6AdblnAj0dNQyxPWpy800x0N7jKOn0AqPxvnUxErsC
+         zIhyaCGl2c85b53insz6+FyGOO/LvF2pz668ZWOEvXHqt7QBYiO+nFyKAfZJmyZk7KQ0
+         EScg==
+X-Gm-Message-State: AOAM530VkSuhYNs1zGZCaIWyCPxFSlGOC9m9vxwuWcRMnY0rSUE/zJob
+        2u7Onb1IUmvX6XcX+LKWk8Q=
+X-Google-Smtp-Source: ABdhPJzpgEDu8+JvRLSOi20pp034PJU0empTTSivHkAp73/RAwLGw3QhYWOtK3oKl1hKpRlNQ42WGA==
+X-Received: by 2002:a05:6a00:16cd:b029:1c9:6f5b:3d8c with SMTP id l13-20020a056a0016cdb02901c96f5b3d8cmr2776402pfc.1.1612954497049;
+        Wed, 10 Feb 2021 02:54:57 -0800 (PST)
+Received: from localhost ([103.200.106.135])
+        by smtp.gmail.com with ESMTPSA id y73sm2067698pfb.17.2021.02.10.02.54.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 02:54:56 -0800 (PST)
+Date:   Wed, 10 Feb 2021 16:24:41 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH v2] staging: gdm724x: Fix DMA from stack
+Message-ID: <20210210105441.56pvgjes3txfwn6c@archlinux>
+References: <20210210080134.1978-1-ameynarkhede03@gmail.com>
+ <YCOUIFVuvJuPP3lX@kroah.com>
+ <20210210085811.7dunnfly6cqw67m3@archlinux>
+ <YCOit8SI7k1Gv7dl@kroah.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="npqdei4u57mrjtde"
+Content-Disposition: inline
+In-Reply-To: <YCOit8SI7k1Gv7dl@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arthur Simchaev <arthur.simchaev@wdc.com>
 
-Currently the string descriptors sysfs entries are printing in ascii
-format. According to Jedec UFS spec the string descriptors data is
-Unicode and may not be ascii convertible. Therefore in case the device
-string descriptor contains non ascii convertible characters, it will
-produce a wrong output. In order to fix this issue, the new
-"is_ascii_output" entry will be added to string descriptor's sysfs
-directory. According to the entry value, the user will receive the
-string descriptor output in raw or ascii data
+--npqdei4u57mrjtde
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Arthur Simchaev <Arthur.Simchaev@sandisk.com>
----
- Documentation/ABI/testing/sysfs-driver-ufs |  9 +++++++++
- drivers/scsi/ufs/ufs-sysfs.c               | 32 ++++++++++++++++++++++++++++--
- 2 files changed, 39 insertions(+), 2 deletions(-)
+On 21/02/10 10:09AM, Greg KH wrote:
+> On Wed, Feb 10, 2021 at 02:28:11PM +0530, Amey Narkhede wrote:
+> > On 21/02/10 09:06AM, Greg KH wrote:
+> > > On Wed, Feb 10, 2021 at 01:31:34PM +0530, Amey Narkhede wrote:
+> > > > Stack allocated buffers cannot be used for DMA
+> > > > on all architectures so allocate hci_packet buffer
+> > > > using kzalloc().
+> > > >
+> > > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > > ---
+> > > > Changes in v2:
+> > > > 	- Fixed build warning
+> > > > 	- Fixed memory leak using kfree
+> > > >
+> > > >  drivers/staging/gdm724x/gdm_usb.c | 9 +++++++--
+> > > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
+> > > > index dc4da66c3..c4a9b90c5 100644
+> > > > --- a/drivers/staging/gdm724x/gdm_usb.c
+> > > > +++ b/drivers/staging/gdm724x/gdm_usb.c
+> > > > @@ -56,11 +56,15 @@ static int gdm_usb_recv(void *priv_dev,
+> > > >
+> > > >  static int request_mac_address(struct lte_udev *udev)
+> > > >  {
+> > > > -	u8 buf[16] = {0,};
+> > > > -	struct hci_packet *hci = (struct hci_packet *)buf;
+> > > > +	u8 *buf;
+> > > > +	struct hci_packet *hci;
+> > > >  	struct usb_device *usbdev = udev->usbdev;
+> > > >  	int actual;
+> > > >  	int ret = -1;
+> > > > +	buf = kzalloc(16, GFP_KERNEL);
+> > >
+> > > checkpatch did not complain about this?
+> > No. checkpatch shows no errors and warnings.
+>
+> Please add a blank line after variables and before logic.
+>
+Will do thanks.
+> > > And why do you need 'buf' anymore now?  Why not just allocate hci and
+> > > pass that to the request instead?  Saves you an extra cast and an extra
+> > > pointer.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> > Thanks. I'll send v3. I assume now we don't need kzalloc anymore as we initialize
+> > the hci_packet so kmalloc(sizeof(struct hci_packet),..) will do.
+>
+> Why is it needed now?  And why would that change?
+>
+> thanks,
+>
+> greg k-h
+I was thinking about allcoating hci_packet(hci) but as Dan said
+we only use first five bytes so kmalloc(5, ...) should work.
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index d1bc23c..c7d8d8d 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -561,6 +561,15 @@ Description:	This file contains a product revision string. The full
- 
- 		The file is read only.
- 
-+What:		/sys/bus/platform/drivers/ufshcd/*/string_descriptors/is_ascii_output
-+Date:		February 2021
-+Contact:	Arthur Simchaev <arthur.simchaev@wdc.com>
-+Description:	This entry could be used to set the string descriptor
-+		output format:
-+		0 will print raw string descriptor data as defined in
-+		UFS JEDEC spec.
-+		1 will convert the string descriptor data to ascii string
-+		and print it.
- 
- What:		/sys/class/scsi_device/*/device/unit_descriptor/boot_lun_id
- Date:		February 2018
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index acc54f5..83c8104 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -9,6 +9,8 @@
- #include "ufs.h"
- #include "ufs-sysfs.h"
- 
-+static bool is_ascii_output = true;
-+
- static const char *ufschd_uic_link_state_to_string(
- 			enum uic_link_state state)
- {
-@@ -693,7 +695,15 @@ static ssize_t _name##_show(struct device *dev,				\
- 				      SD_ASCII_STD);			\
- 	if (ret < 0)							\
- 		goto out;						\
--	ret = sysfs_emit(buf, "%s\n", desc_buf);			\
-+	if (is_ascii_output) {						\
-+		ret = sysfs_emit(buf, "%s\n", desc_buf);		\
-+	} else {							\
-+		int i;							\
-+									\
-+		for (i = 0; i < desc_buf[0]; i++)			\
-+			hex_byte_pack(buf + i * 2, desc_buf[i]);	\
-+		ret = sysfs_emit(buf, "%s\n", buf);			\
-+	}								\
- out:									\
- 	pm_runtime_put_sync(hba->dev);					\
- 	kfree(desc_buf);						\
-@@ -708,13 +718,31 @@ UFS_STRING_DESCRIPTOR(oem_id, _OEM_ID);
- UFS_STRING_DESCRIPTOR(serial_number, _SN);
- UFS_STRING_DESCRIPTOR(product_revision, _PRDCT_REV);
- 
-+static ssize_t is_ascii_output_show(struct device *dev,
-+				    struct device_attribute *attr, char *buf)
-+{
-+	return scnprintf(buf, PAGE_SIZE, "%d\n", is_ascii_output);
-+}
-+
-+static ssize_t is_ascii_output_store(struct device *dev,
-+				     struct device_attribute *attr,
-+				     const char *buf, size_t count)
-+{
-+	if (kstrtobool(buf, &is_ascii_output))
-+		return -EINVAL;
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(is_ascii_output);
-+
- static struct attribute *ufs_sysfs_string_descriptors[] = {
- 	&dev_attr_manufacturer_name.attr,
- 	&dev_attr_product_name.attr,
- 	&dev_attr_oem_id.attr,
- 	&dev_attr_serial_number.attr,
- 	&dev_attr_product_revision.attr,
--	NULL,
-+	&dev_attr_is_ascii_output.attr,
-+	NULL
- };
- 
- static const struct attribute_group ufs_sysfs_string_descriptors_group = {
--- 
-2.7.4
+Thanks,
+Amey
 
+--npqdei4u57mrjtde
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEb5tNK+B4oWmn+0Z9BBTsy/Z3yzYFAmAju3EACgkQBBTsy/Z3
+yzaCXgf/TkdeP+yE2c++y1LMX2H1wbyMJPaAsXWCaefA2pwj6IZbzoMV9d8E3RoE
+9zZBBPzr88FQ3QVapx8mcfnnFv5sAMFLpJCm0n2c8lnC7pmIICwKr2ZTck9tLcXU
+Mx7nYzBxVAunkn90KMkfjFy19J18BYi56Tca7FN+GHqlNR3Qd7wIy9EODk4krgU2
+voAHnwhq/15MzCL20hC7Zn3VEnZnAMXYYSZ33DETvcW3/0nobh/Nx5pWHw1vEwmL
+Ki7Pt4jjBMd48ht82jNMLkWd8IJYWAreSdN1iDKyq3jDzc52Op+wc8lGdZKg17q/
+WIGwoSfzcRmFz8hIk/lVXIj0Wkr0qg==
+=YyVo
+-----END PGP SIGNATURE-----
+
+--npqdei4u57mrjtde--
