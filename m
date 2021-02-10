@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B88763170BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6673170C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhBJT4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:56:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40978 "EHLO mail.kernel.org"
+        id S232892AbhBJT6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:58:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231987AbhBJT4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:56:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6720364EE6;
-        Wed, 10 Feb 2021 19:55:38 +0000 (UTC)
+        id S232342AbhBJT6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 14:58:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2AEF64EDC;
+        Wed, 10 Feb 2021 19:57:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612986938;
-        bh=ElHjRVDpTBGUt44dTaqqIQgE/uiYoro9zAeSbmvpjO8=;
+        s=k20201202; t=1612987073;
+        bh=uXsdHRudlt30/rf8TC5oPx2prLpjvAc0fxd+6KxQlyA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FKdzL3VUubLm16LA7nGgWiHA7wUTtWeudA77EbB1KZK6YT8yftZlvYeee8I16GWUU
-         QMu8VSPPW5hdNddTx/Xl/4t+f/PhvloatKpTHKihs/a6m1WFt3xz8tHl5M6011i0Z6
-         PynruIaekTHNVekiG1ZOoivuL1zSnvwPae4GIXbhmq1ra+gHrmWUK6ZEL4vn8tMFUm
-         /Ri8lH6PogA/pOhX5AdRrUQoMxeS6DU+rlSPPIahMPlQ+zTDmr4iestS1PRAFRl1YC
-         47wuzJXImXWVdWXz2znyYWb1seWpTpAkcyfAzNcGc3JFhNZ73pjiOT0hcz8isxcGZM
-         kbSH5TvKDgDiA==
-Date:   Wed, 10 Feb 2021 11:55:36 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v4 2/5] block: keyslot-manager: Introduce functions for
- device mapper support
-Message-ID: <YCQ6OBExblohlnfO@gmail.com>
-References: <20210201051019.1174983-1-satyat@google.com>
- <20210201051019.1174983-3-satyat@google.com>
+        b=gYmVaXnzh3cXpUvmggxxro5R5JrS2isourfy6gOZLXt2tz9e66fABoZ5PmAwXRzQO
+         5AYwh/WKCEr6LRWGFUT8i92gvs9m5JTR+XApJTqEtdDDIIItlY1hINGn7+GVVW2twP
+         7hzYeiVekifb3OEH+6+wULT+E17R4jrK4OV2Jk2lq7xgfuEBscvEtpZSLUvtmmfSHc
+         TPk6RpB/MyLFD6qYbdbjerhdJl8qN6KdNq+Fv+7ak2S3LUwzVbGCOjrQSTGN4MNz0u
+         otacXcQg+s5XXxi40nzCK4ZU3mHOamdndISV4ZuKe7THMpbLYYjuDM8WtfkGh9zuIV
+         E20+o+RIyFqhw==
+Date:   Wed, 10 Feb 2021 19:57:00 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v4 resend 00/13] MFD/extcon/ASoC: Rework arizona codec
+ jack-detect support
+Message-ID: <20210210195700.GG4748@sirena.org.uk>
+References: <20210204112502.88362-1-hdegoede@redhat.com>
+ <ba9c1add-8ac0-766b-4577-1c2769c0e5e6@redhat.com>
+ <20210209141420.GE4766@dell>
+ <c0b4c612-7f60-5126-4c4d-b7085bd356d0@redhat.com>
+ <20210209154511.GC220368@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XaUbO9McV5wPQijU"
 Content-Disposition: inline
-In-Reply-To: <20210201051019.1174983-3-satyat@google.com>
+In-Reply-To: <20210209154511.GC220368@dell>
+X-Cookie: Are we live or on tape?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 05:10:16AM +0000, Satya Tangirala wrote:
-> Introduce blk_ksm_update_capabilities() to update the capabilities of
-> a keyslot manager (ksm) in-place. The pointer to a ksm in a device's
-> request queue may not be easily replaced, because upper layers like
-> the filesystem might access it (e.g. for programming keys/checking
-> capabilities) at the same time the device wants to replace that
-> request queue's ksm (and free the old ksm's memory). This function
-> allows the device to update the capabilities of the ksm in its request
-> queue directly. Devices can safely update the ksm this way without any
-> synchronization with upper layers *only* if the updated (new) ksm
-> continues to support all the crypto capabilities that the old ksm did
-> (see description below for blk_ksm_is_superset() for why this is so).
-> 
-> Also introduce blk_ksm_is_superset() which checks whether one ksm's
-> capabilities are a (not necessarily strict) superset of another ksm's.
-> The blk-crypto framework requires that crypto capabilities that were
-> advertised when a bio was created continue to be supported by the
-> device until that bio is ended - in practice this probably means that
-> a device's advertised crypto capabilities can *never* "shrink" (since
-> there's no synchronization between bio creation and when a device may
-> want to change its advertised capabilities) - so a previously
-> advertised crypto capability must always continue to be supported.
-> This function can be used to check that a new ksm is a valid
-> replacement for an old ksm.
-> 
-> Signed-off-by: Satya Tangirala <satyat@google.com>
 
-Looks good, you can add:
+--XaUbO9McV5wPQijU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+On Tue, Feb 09, 2021 at 03:45:11PM +0000, Lee Jones wrote:
+> On Tue, 09 Feb 2021, Hans de Goede wrote:
+
+> > The alternative is Mark doing a PR from ASoC to MFD to get 5/5 from the previous set
+> > in MFD first, which seems less then ideal.
+
+> Well this set isn't likely to go in this cycle anyway, so actually the
+> problem should just go away.  Best to let the first set get sucked
+> into v5.12, then send this one up subsequently for v5.13.
+
+Yeah, that's probably easiest at this point.  the only other option that
+looks viable would be to add the MFD and extcon parts to the branch you
+already have, me to pull that in and then apply the ASoC bits in ASoC.
+
+--XaUbO9McV5wPQijU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAkOosACgkQJNaLcl1U
+h9BVMQf+PDB5T4KOnJZ++lK/k50W3hv+2FbDKIYBpiYodByRhgKZ54s+NJ8u/HBi
+SZiNYUR2j5uFjU1qIFVWLyHW+V+v790MXFB3j6ucarjXjeIp/2aPqfGRW6MwXnvL
+IZqeVniPhIjVI5roUuMGZUjglbrRTfx0Sb3vXqO0CyhRHm/5tc7/jxBQ0+pbm361
+f30bL2rQq4wXYh8R2Jdk5MpcE2k4gnQ4DmYdxczC/aW6ZpTEoZIsHMUNkiK+QGZ9
+t0qmvvuXKkQaQeUvNxt0um3lfCZGxzoUeUrh4PdAB9gTZQikR5vjvnqs6COqQkG0
+3Qvg83HX1BGiJjnuj+nzQv53C0njUQ==
+=WffB
+-----END PGP SIGNATURE-----
+
+--XaUbO9McV5wPQijU--
