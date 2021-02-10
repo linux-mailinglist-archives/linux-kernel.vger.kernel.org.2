@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E98B316A03
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378C1316A06
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbhBJPVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:21:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231759AbhBJPV1 (ORCPT
+        id S231801AbhBJPWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:22:43 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:29723 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231148AbhBJPWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:21:27 -0500
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB455C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:20:44 -0800 (PST)
-Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id BC2759831BB;
-        Wed, 10 Feb 2021 16:20:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1612970434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q7ojA/KR388M4BV02zdLByuP79wkh35otkGQ4vyB7ZU=;
-        b=lK9/GiRGp/fcBjlVdIqebCIqSnbX5jE4cQSwlBYXEAzJS5N0erF23SmD4O6EWsxKn5pNlN
-        VxJBMrmzISL2qjtKbdiHIqPQjWvztoH7hMjVot4OEssXAlz703DtS2R9qZO41xFEtJagTA
-        BXC1jTzGBmP+ORweuhO0bfkysVzKKjA=
-Date:   Wed, 10 Feb 2021 16:20:34 +0100
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Chunguang Xu <brookxu.cn@gmail.com>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] bfq: remove some useless logic of
- bfq_update_next_in_service()
-Message-ID: <20210210152034.puimoewzgtnnp2zl@spock.localdomain>
-References: <1611917485-584-1-git-send-email-brookxu@tencent.com>
- <B4751549-78D9-4A84-8FB2-5DAA86ED39C8@linaro.org>
+        Wed, 10 Feb 2021 10:22:36 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-58-L71bTu5bMWebATKm9fU25g-1; Wed, 10 Feb 2021 15:20:56 +0000
+X-MC-Unique: L71bTu5bMWebATKm9fU25g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 10 Feb 2021 15:20:54 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 10 Feb 2021 15:20:54 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'John Garry' <john.garry@huawei.com>,
+        Jianlin Lv <Jianlin.Lv@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "irogers@google.com" <irogers@google.com>,
+        "agerstmayr@redhat.com" <agerstmayr@redhat.com>,
+        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] perf tools: Fix arm64 build error with gcc-11
+Thread-Topic: [PATCH v2] perf tools: Fix arm64 build error with gcc-11
+Thread-Index: AQHW/5FHSHrwOv69RUGxaBJbWYvOE6pRgM3Q
+Date:   Wed, 10 Feb 2021 15:20:53 +0000
+Message-ID: <a2eb2a9066254093b50c3ed87171b902@AcuMS.aculab.com>
+References: <20210210032447.2248255-1-Jianlin.Lv@arm.com>
+ <5db96a5f-3749-7f54-15ce-27b932bcbca6@huawei.com>
+In-Reply-To: <5db96a5f-3749-7f54-15ce-27b932bcbca6@huawei.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <B4751549-78D9-4A84-8FB2-5DAA86ED39C8@linaro.org>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:13:29PM +0100, Paolo Valente wrote:
-> 
-> 
-> > Il giorno 29 gen 2021, alle ore 11:51, Chunguang Xu <brookxu.cn@gmail.com> ha scritto:
-> > 
-> > From: Chunguang Xu <brookxu@tencent.com>
-> > 
-> > The if statement at the end of the function is obviously useless,
-> > maybe we can delete it.
-> > 
-> 
-> Thanks for spotting this mistake.
-> 
-> Acked-by: Paolo Valente <paolo.valente@linaro.org>
-> 
-> > Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> > ---
-> > block/bfq-wf2q.c | 3 ---
-> > 1 file changed, 3 deletions(-)
-> > 
-> > diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-> > index 26776bd..070e34a 100644
-> > --- a/block/bfq-wf2q.c
-> > +++ b/block/bfq-wf2q.c
-> > @@ -137,9 +137,6 @@ static bool bfq_update_next_in_service(struct bfq_sched_data *sd,
-> > 
-> > 	sd->next_in_service = next_in_service;
-> > 
-> > -	if (!next_in_service)
-> > -		return parent_sched_may_change;
-> > -
+Li4uDQo+ID4gQEAgLTY5MSw2ICs2OTEsNyBAQCBzdGF0aWMgaW50IHJlZ3NfbWFwKHN0cnVjdCBy
+ZWdzX2R1bXAgKnJlZ3MsIHVpbnQ2NF90IG1hc2ssIGNoYXIgKmJmLCBpbnQgc2l6ZSkNCj4gPiAg
+IHsNCj4gPiAgIAl1bnNpZ25lZCBpbnQgaSA9IDAsIHI7DQo+ID4gICAJaW50IHByaW50ZWQgPSAw
+Ow0KPiA+ICsJY29uc3QgY2hhciAqcmVnX25hbWU7DQo+ID4NCj4gPiAgIAliZlswXSA9IDA7DQo+
+ID4NCj4gPiBAQCAtNzAwLDkgKzcwMSwxMCBAQCBzdGF0aWMgaW50IHJlZ3NfbWFwKHN0cnVjdCBy
+ZWdzX2R1bXAgKnJlZ3MsIHVpbnQ2NF90IG1hc2ssIGNoYXIgKmJmLCBpbnQgc2l6ZSkNCj4gPiAg
+IAlmb3JfZWFjaF9zZXRfYml0KHIsICh1bnNpZ25lZCBsb25nICopICZtYXNrLCBzaXplb2YobWFz
+aykgKiA4KSB7DQo+IA0KPiBhIGdvb2QgcHJhY3RpY2UgaXMgdG8gbGltaXQgc2NvcGUgb2YgdmFy
+aWFibGVzIGFzIG11Y2ggYXMgcG9zc2libGUsIHNvDQo+IHJlZ19uYW1lIGNvdWxkIGJlIGRlY2xh
+cmVkIGhlcmUNCg0KSSdkIGdvIGZvciBlaXRoZXIgZnVuY3Rpb24gc2NvcGUgb3IgYSB2ZXJ5IHNt
+YWxsIGlubmVyIGJsb2NrDQoobGlrZSB0aGlzIG9uZSkuDQoNCk90aGVyd2lzZSBpdCBnZXRzIHZl
+cnkgZGlmZmljdWx0IGZvciB0aGUgYXZlcmFnZSBodW1hbiAob3Igb3RoZXINCmludGVsbGlnZW50
+IGJlaW5nKSB0byBsb2NhdGUgdGhlIGRlZmluaXRpb24uDQoNCglEYXZpZA0KDQotDQpSZWdpc3Rl
+cmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtl
+eW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-Unless I'm missing something, this has already been fixed here:
-
-https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.12/block&id=1a23e06cdab2be07cbda460c6417d7de564c48e6
-
-> > 	return parent_sched_may_change;
-> > }
-> > 
-> > -- 
-> > 1.8.3.1
-> > 
-> 
-
--- 
-  Oleksandr Natalenko (post-factum)
