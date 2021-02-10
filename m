@@ -2,250 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADBE316EA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6584316E98
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbhBJS3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:29:45 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2539 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbhBJSTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:19:14 -0500
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DbSYk6bX5z67kqq;
-        Thu, 11 Feb 2021 02:13:30 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 10 Feb 2021 19:18:26 +0100
-Received: from localhost (10.47.67.2) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 10 Feb
- 2021 18:18:25 +0000
-Date:   Wed, 10 Feb 2021 18:17:25 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Jon Masters" <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v2 3/8] cxl/mem: Register CXL memX devices
-Message-ID: <20210210181725.00007865@Huawei.com>
-In-Reply-To: <20210210000259.635748-4-ben.widawsky@intel.com>
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
-        <20210210000259.635748-4-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S234278AbhBJS2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:28:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234116AbhBJSSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:18:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2B9764E15;
+        Wed, 10 Feb 2021 18:17:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612981059;
+        bh=JkIgv0PsH0aVjNdkXET4vD9GYKm1WPva9nrwwlYRssQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=V2rsf54QqKRJDTUiwppWXT6bgPy5pZbBfCw99VWJObQlRJ6nJbsQeJpFcymk2l02T
+         ca0EKvNzOqaEeYR37x+0ncfgsw+WE74a6ZOr0QG+ylb/NGe0Q1vcIceFY0l0hiqGFb
+         1AMuBqqQsHw9wlY+g2tyKggv7xejrCbFReVKYtrBt//OY1GexxT8L3u5sA+4l2tAOC
+         0X6FyzgYsAbkym4xz7m1rXP9bULzQqpwaVaxg5fljLWfaGYsJOYzWi7GMypOqzDUS1
+         1zXaeA/9l/xK37Mk9po0SgaTebGwCGgQh3Pu7eWQH336KREqlHGXOpP0JuNkRope9M
+         BaYGI6HX9rKMQ==
+Received: by mail-qv1-f44.google.com with SMTP id a1so1281511qvd.13;
+        Wed, 10 Feb 2021 10:17:39 -0800 (PST)
+X-Gm-Message-State: AOAM533o3YrAK/nTrAavflwKE8Jq2AZf0U+V6UCDjU2b8X3iDM37aCM3
+        rdh0Nby9sZH+WQwfbA3Q+yQGVwIcZP2VBGF6ew==
+X-Google-Smtp-Source: ABdhPJyNbqqxp2l81REmTIA1J/QVaz+CtqLOY8hLzE1VKv/bCCuxPtMwNDlAUzUHMbDvC1Y7FHZt2Ed4g1kpFU9Gr1A=
+X-Received: by 2002:a05:6214:209:: with SMTP id i9mr3996451qvt.4.1612981058968;
+ Wed, 10 Feb 2021 10:17:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.67.2]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210210172850.20849-1-Sergey.Semin@baikalelectronics.ru> <20210210172850.20849-10-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20210210172850.20849-10-Sergey.Semin@baikalelectronics.ru>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 10 Feb 2021 12:17:27 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJBknqhCSUOdpZVbtmp6TYetBQPLoQUCT6DTFajpChaSA@mail.gmail.com>
+Message-ID: <CAL_JsqJBknqhCSUOdpZVbtmp6TYetBQPLoQUCT6DTFajpChaSA@mail.gmail.com>
+Subject: Re: [PATCH v6 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
+ "usb"-prefixed names
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Feb 2021 16:02:54 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
-
-> From: Dan Williams <dan.j.williams@intel.com>
-> 
-> Create the /sys/bus/cxl hierarchy to enumerate:
-> 
-> * Memory Devices (per-endpoint control devices)
-> 
-> * Memory Address Space Devices (platform address ranges with
->   interleaving, performance, and persistence attributes)
-> 
-> * Memory Regions (active provisioned memory from an address space device
->   that is in use as System RAM or delegated to libnvdimm as Persistent
->   Memory regions).
-> 
-> For now, only the per-endpoint control devices are registered on the
-> 'cxl' bus. However, going forward it will provide a mechanism to
-> coordinate cross-device interleave.
-> 
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-
-One stray header, and a request for a tiny bit of reordering to
-make it easier to chase through creation and destruction.
-
-Either way with the header move to earlier patch I'm fine with this one.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  Documentation/ABI/testing/sysfs-bus-cxl       |  26 ++
->  .../driver-api/cxl/memory-devices.rst         |  17 +
->  drivers/cxl/Makefile                          |   3 +
->  drivers/cxl/bus.c                             |  29 ++
->  drivers/cxl/cxl.h                             |   4 +
->  drivers/cxl/mem.c                             | 301 +++++++++++++++++-
->  6 files changed, 378 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-cxl
->  create mode 100644 drivers/cxl/bus.c
-> 
-
-
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index 745f5e0bfce3..b3c56fa6e126 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -3,6 +3,7 @@
->  
->  #ifndef __CXL_H__
->  #define __CXL_H__
-> +#include <linux/range.h>
-
-Why is this coming in now? Feels like it should have been in earlier
-patch that started using struct range
-
->  
->  #include <linux/bitfield.h>
->  #include <linux/bitops.h>
-> @@ -55,6 +56,7 @@
->  	(FIELD_GET(CXLMDEV_RESET_NEEDED_MASK, status) !=                       \
->  	 CXLMDEV_RESET_NEEDED_NOT)
->  
-> +struct cxl_memdev;
->  /**
->   * struct cxl_mem - A CXL memory device
->   * @pdev: The PCI device associated with this CXL device.
-> @@ -72,6 +74,7 @@
->  struct cxl_mem {
->  	struct pci_dev *pdev;
->  	void __iomem *regs;
-> +	struct cxl_memdev *cxlmd;
->  
->  	void __iomem *status_regs;
->  	void __iomem *mbox_regs;
-> @@ -90,4 +93,5 @@ struct cxl_mem {
->  	} ram;
->  };
->  
-> +extern struct bus_type cxl_bus_type;
->  #endif /* __CXL_H__ */
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index 0a868a15badc..8bbd2495e237 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -1,11 +1,36 @@
+On Wed, Feb 10, 2021 at 11:29 AM Serge Semin
+<Sergey.Semin@baikalelectronics.ru> wrote:
 >
+> In accordance with the USB HCD/DRD schema all the USB controllers are
+> supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
+> existing DT-nodes will be renamed in a subsequent patch let's first make
+> sure the DWC3 Qualcomm driver supports them and second falls back to the
+> deprecated naming so not to fail on the legacy DTS-files passed to the
+> newer kernels.
+>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/usb/dwc3/dwc3-qcom.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index c703d552bbcf..49ad8d507d37 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -630,7 +630,8 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+>         struct device           *dev = &pdev->dev;
+>         int                     ret;
+>
+> -       dwc3_np = of_get_child_by_name(np, "dwc3");
+> +       dwc3_np = of_get_child_by_name(np, "usb") ?:
+> +                 of_get_child_by_name(np, "dwc3");
 
-> +
-> +static void cxl_memdev_release(struct device *dev)
-> +{
-> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-> +
-> +	percpu_ref_exit(&cxlmd->ops_active);
-> +	ida_free(&cxl_memdev_ida, cxlmd->id);
-> +	kfree(cxlmd);
-> +}
-> +
-...
+Is there some reason using compatible instead wouldn't work here?
 
-> +static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
-> +{
-> +	struct pci_dev *pdev = cxlm->pdev;
-> +	struct cxl_memdev *cxlmd;
-> +	struct device *dev;
-> +	struct cdev *cdev;
-> +	int rc;
-> +
-> +	cxlmd = kzalloc(sizeof(*cxlmd), GFP_KERNEL);
-> +	if (!cxlmd)
-> +		return -ENOMEM;
-> +	init_completion(&cxlmd->ops_dead);
-> +
-> +	/*
-> +	 * @cxlm is deallocated when the driver unbinds so operations
-> +	 * that are using it need to hold a live reference.
-> +	 */
-> +	cxlmd->cxlm = cxlm;
-> +	rc = percpu_ref_init(&cxlmd->ops_active, cxlmdev_ops_active_release, 0,
-> +			     GFP_KERNEL);
-> +	if (rc)
-> +		goto err_ref;
-> +
-> +	rc = ida_alloc_range(&cxl_memdev_ida, 0, CXL_MEM_MAX_DEVS, GFP_KERNEL);
-> +	if (rc < 0)
-> +		goto err_id;
-> +	cxlmd->id = rc;
-> +
-> +	dev = &cxlmd->dev;
-> +	device_initialize(dev);
-> +	dev->parent = &pdev->dev;
-> +	dev->bus = &cxl_bus_type;
-> +	dev->devt = MKDEV(cxl_mem_major, cxlmd->id);
-> +	dev->type = &cxl_memdev_type;
-> +	dev_set_name(dev, "mem%d", cxlmd->id);
-> +
-> +	cdev = &cxlmd->cdev;
-> +	cdev_init(cdev, &cxl_memdev_fops);
-> +
-> +	rc = cdev_device_add(cdev, dev);
-> +	if (rc)
-> +		goto err_add;
-> +
-> +	return devm_add_action_or_reset(dev->parent, cxlmdev_unregister, cxlmd);
-
-This had me scratching my head. The cxlmdev_unregister() if called normally
-or in the _or_reset() results in
-
-	percpu_ref_kill(&cxlmd->ops_active);
-	cdev_device_del(&cxlmd->cdev, dev);
-	wait_for_completion(&cxlmd->ops_dead);
-	cxlmd->cxlm = NULL;
-	put_device(dev);
-	/* If last ref this will result in */
-		percpu_ref_exit(&cxlmd->ops_active);
-		ida_free(&cxl_memdev_ida, cxlmd->id);
-		kfree(cxlmd);
-
-So it's doing all the correct things but not necessarily
-in the obvious order.
-
-For simplicity of review perhaps it's worth reordering probe a bit
-to get the ida immediately after the cxlmd alloc and
-for the cxlmdev_unregister() perhaps reorder the cdev_device_del()
-before the percpu_ref_kill().
-
-Trivial obvious as the ordering has no affect but makes it
-easy for reviewers to tick off setup vs tear down parts.
-
-> +
-> +err_add:
-> +	ida_free(&cxl_memdev_ida, cxlmd->id);
-> +err_id:
-> +	/*
-> +	 * Theoretically userspace could have already entered the fops,
-> +	 * so flush ops_active.
-> +	 */
-> +	percpu_ref_kill(&cxlmd->ops_active);
-> +	wait_for_completion(&cxlmd->ops_dead);
-> +	percpu_ref_exit(&cxlmd->ops_active);
-> +err_ref:
-> +	kfree(cxlmd);
-> +
-> +	return rc;
-> +}
-> +
-
-
-
-
+Rob
