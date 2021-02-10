@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE603171C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B663171C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhBJUz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:55:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233236AbhBJUzj (ORCPT
+        id S233298AbhBJU4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:56:08 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:39539 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233250AbhBJUzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:55:39 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE06C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:54:58 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id 189so2084517pfy.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:54:58 -0800 (PST)
+        Wed, 10 Feb 2021 15:55:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XK6hpz+PCOsL7W55wJU4s9nIbpn+lmg5rsc0pPcV4bs=;
-        b=DlkD+c2Ccf9no7hwfEx3lqTSksvhp1VVOdzKfCVsqGzVhqLgaFygvQUy7o3VV04mnL
-         fZkDQKqcNswW6+OtqTryQA4lo2GKWgMzeURDgKOBtt4mxHoClQUWVzGw20KEzWg4uiyf
-         XCNzAHV31atpRmRYe10BxajqVS3cJOa3Ep8TI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XK6hpz+PCOsL7W55wJU4s9nIbpn+lmg5rsc0pPcV4bs=;
-        b=MkDc/sTf8VhvjgNOKQdxOM9iDJwh/LJT84I1RMdvlxs7QEUI4Kd2tFJ6utylG0eGsY
-         7Lo1hhd9RGuLzaOhOVlq5WLdwjZ9qfy677uBmEX/mTGV0qOxK9Wi0KBrFQ6a1NxnRVS9
-         elDoFTAQfkR3JdRkzQCdJarlKnWj2ip3BLBaOvrFh7XT+aYP62iU5lm2R/QA3X7banY0
-         hJeLqiO8HBhMzeB+DqT4pTOSwRBT3H5Yrayhwu4Ki9HGjZiyePBo1uv29Mvy2tsEasX8
-         +2XSKl8hWr6SR5MW1VtILIEQy4f5Y+rVqFurbb/Mp574jNEwh7QcQYpTFEeHl1nvMOvn
-         Gqxw==
-X-Gm-Message-State: AOAM531M9npCx2chxvq8BKmWONUpquwoI+yJY56KVxsWK2o7wuAe/YjQ
-        ORtZ2dM7bF1o3n7aj+StKS4r9Q==
-X-Google-Smtp-Source: ABdhPJzaxDgY6uHenP6VKy3Z+OUoo1YD/3D6dOTKAoKYExeojilYLpdTH5T0TraQLPoS4LEtG0K5xQ==
-X-Received: by 2002:a63:a312:: with SMTP id s18mr4698497pge.229.1612990498607;
-        Wed, 10 Feb 2021 12:54:58 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 17sm3167706pgy.53.2021.02.10.12.54.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 12:54:58 -0800 (PST)
-Date:   Wed, 10 Feb 2021 12:54:57 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Andrei Vagin <avagin@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: [PATCH 3/3] selftest/arm64/ptrace: add tests for
- PTRACE_O_ARM64_RAW_REGS
-Message-ID: <202102101253.300A11108@keescook>
-References: <20210201194012.524831-1-avagin@gmail.com>
- <20210201194012.524831-4-avagin@gmail.com>
- <20210204154038.GC21058@willie-the-truck>
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1612990541; x=1644526541;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:mime-version:content-transfer-encoding:subject;
+  bh=i0HtIP/qbjGaP102XGawz/m1d/lEN9tlex3K4OxTdiY=;
+  b=VO71o7AT13fglcrLujB1vLZJQQjumW/QFTJgZEPnbuKgqt+xyCILscYf
+   mw5okPKoa/rnOAgGQAeKMHZ2WzK+UhJplnzPiZVjBtYdq+/2M7TD2Z6dN
+   cv3PIsAXmjY9Ig5wvCMleCBKjg7lSQTmSTiPEfgs+aCnDCIyGrAie9PJd
+   c=;
+X-IronPort-AV: E=Sophos;i="5.81,169,1610409600"; 
+   d="scan'208";a="81585673"
+Subject: Re: [PATCH 3/5] KVM: selftests: Fix hex vs. decimal snafu in Xen test
+Thread-Topic: [PATCH 3/5] KVM: selftests: Fix hex vs. decimal snafu in Xen test
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 10 Feb 2021 20:54:59 +0000
+Received: from EX13MTAUEE001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com (Postfix) with ESMTPS id 9FC0DB58F9;
+        Wed, 10 Feb 2021 20:54:58 +0000 (UTC)
+Received: from EX13D08UEB001.ant.amazon.com (10.43.60.245) by
+ EX13MTAUEE001.ant.amazon.com (10.43.62.200) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 10 Feb 2021 20:54:57 +0000
+Received: from EX13D08UEB001.ant.amazon.com (10.43.60.245) by
+ EX13D08UEB001.ant.amazon.com (10.43.60.245) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 10 Feb 2021 20:54:57 +0000
+Received: from EX13D08UEB001.ant.amazon.com ([10.43.60.245]) by
+ EX13D08UEB001.ant.amazon.com ([10.43.60.245]) with mapi id 15.00.1497.010;
+ Wed, 10 Feb 2021 20:54:57 +0000
+From:   "Woodhouse, David" <dwmw@amazon.co.uk>
+To:     "seanjc@google.com" <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>
+CC:     "jmattson@google.com" <jmattson@google.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>
+Thread-Index: AQHW/9peovAMIjtkIU+hjKs5M3Og/qpR3kQA
+Date:   Wed, 10 Feb 2021 20:54:57 +0000
+Message-ID: <f8999fded9ab51e0d8b383c4e7a300905a6bf5ed.camel@amazon.co.uk>
+References: <20210210182609.435200-1-seanjc@google.com>
+         <20210210182609.435200-4-seanjc@google.com>
+In-Reply-To: <20210210182609.435200-4-seanjc@google.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.161.244]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9A801057162CED4D848843345B96AF89@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204154038.GC21058@willie-the-truck>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 03:40:39PM +0000, Will Deacon wrote:
-> [+Kees]
-> 
-> On Mon, Feb 01, 2021 at 11:40:12AM -0800, Andrei Vagin wrote:
-> > Test output:
-> >  TAP version 13
-> >  1..2
-> >  # selftests: arm64/ptrace: ptrace_syscall_raw_regs_test
-> >  # 1..2
-> >  # ok 1 x7: 686920776f726c64
-> >  # ok 2 The child exited with code 0.
-> >  # # Totals: pass:2 fail:0 xfail:0 xpass:0 skip:0 error:0
-> >  ok 1 selftests: arm64/ptrace: ptrace_syscall_raw_regs_test
-> >  # selftests: arm64/ptrace: ptrace_syscall_regs_test
-> >  # 1..3
-> >  # ok 1 x7: 0
-> >  # ok 2 x7: 1
-> >  # ok 3 The child exited with code 0.
-> >  # # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
-> >  ok 2 selftests: arm64/ptrace: ptrace_syscall_regs_test
-> > 
-> > Signed-off-by: Andrei Vagin <avagin@gmail.com>
-> > ---
-> >  tools/testing/selftests/arm64/Makefile        |   2 +-
-> >  tools/testing/selftests/arm64/ptrace/Makefile |   6 +
-> >  .../ptrace/ptrace_syscall_raw_regs_test.c     | 142 +++++++++++++++++
-> >  .../arm64/ptrace/ptrace_syscall_regs_test.c   | 150 ++++++++++++++++++
-> >  4 files changed, 299 insertions(+), 1 deletion(-)
-> >  create mode 100644 tools/testing/selftests/arm64/ptrace/Makefile
-> >  create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_raw_regs_test.c
-> >  create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
-> 
-> Thanks for the tests!
-> 
-> We already have a pretty extensive set of syscall entry tests in
-> tools/testing/selftests/seccomp, so perhaps this would be better off as part
-> of that? Maybe worth a look.
+T24gV2VkLCAyMDIxLTAyLTEwIGF0IDEwOjI2IC0wODAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
+b3RlOg0KPiBUaGUgWGVuIHNoaW5mbyBzZWxmdGVzdCB1c2VzICc0MCcgd2hlbiBzZXR0aW5nIHRo
+ZSBHUEEgb2YgdGhlIHZDUFUgaW5mbw0KPiBzdHJ1Y3QsIGJ1dCBjaGVja3MgZm9yIHRoZSByZXN1
+bHQgYXQgJzB4NDAnLiAgQXJiaXRyYXJpbHkgdXNlIHRoZSBoZXgNCj4gdmVyc2lvbiB0byByZXNv
+bHZlIHRoZSBidWcuDQo+IA0KPiBGaXhlczogOGQ0ZTdlODA4MzhmICgiS1ZNOiB4ODY6IGRlY2xh
+cmUgWGVuIEhWTSBzaGFyZWQgaW5mbyBjYXBhYmlsaXR5IGFuZCBhZGQgdGVzdCBjYXNlIikNCj4g
+Q2M6IERhdmlkIFdvb2Rob3VzZSA8ZHdtd0BhbWF6b24uY28udWs+DQo+IFNpZ25lZC1vZmYtYnk6
+IFNlYW4gQ2hyaXN0b3BoZXJzb24gPHNlYW5qY0Bnb29nbGUuY29tPg0KDQpPb3BzLCBzb3JyeSBh
+Ym91dCB0aGF0LiBJJ20gYWN0dWFsbHkga2luZCBvZiBpbXByZXNzZWQgdGhhdCB0aGF0IG5vdA0K
+b25seSB3b3JrZWQgZm9yIG1lIGV2ZXJ5IHRpbWUgSSB0ZXN0ZWQgaXQsIGJ1dCBhbHNvIElJUkMg
+aXQgYWN0dWFsbHkNCipmYWlsZWQqIGZvciBtZSBvbiBhbGwgdGhlIG9jY2FzaW9ucyBJIGV4cGVj
+dGVkIGl0IHRvIGZhaWwuDQoNClJldmlld2VkLWJ5OiBEYXZpZCBXb29kaG91c2UgPGR3bXdAYW1h
+em9uLmNvLnVrPg0KDQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudHJlIChMb25kb24pIEx0ZC4g
+UmVnaXN0ZXJlZCBpbiBFbmdsYW5kIGFuZCBXYWxlcyB3aXRoIHJlZ2lzdHJhdGlvbiBudW1iZXIg
+MDQ1NDMyMzIgd2l0aCBpdHMgcmVnaXN0ZXJlZCBvZmZpY2UgYXQgMSBQcmluY2lwYWwgUGxhY2Us
+IFdvcnNoaXAgU3RyZWV0LCBMb25kb24gRUMyQSAyRkEsIFVuaXRlZCBLaW5nZG9tLgoKCg==
 
-I'm happy with this living in either place -- I can make an argument
-either way. If it's arm64-specific, maybe better to live outside of
-seccomp?
-
--- 
-Kees Cook
