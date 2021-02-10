@@ -2,130 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA19D316D24
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB71316D26
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233048AbhBJRqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:46:13 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:58847 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232059AbhBJRpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:45:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612979131; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=F1GpcX34diCDt4/f/fDxZq3DY8kVl7gzwfc9irW1MRA=;
- b=JVg78I0GTTJmLJD29paegRjCuZG49vRKnkjj5bQZc9uFxozMF24oPy2/r7/sNteJnXDqrL1D
- UKEO99Ctye89kZrL/M3C69iTgnSV5L9w6JN70j3Zy6iU0SxE3bx/JBgakC7f2sK0yO0zix0p
- Ja0WUzJVuI17cVOYMHQH9T1t5Ic=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60241baad5a7a3baae1835e5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 17:45:14
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6A01FC43468; Wed, 10 Feb 2021 17:45:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76594C43461;
-        Wed, 10 Feb 2021 17:45:13 +0000 (UTC)
+        id S232804AbhBJRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:46:40 -0500
+Received: from mail-wr1-f41.google.com ([209.85.221.41]:41955 "EHLO
+        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233058AbhBJRqQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:46:16 -0500
+Received: by mail-wr1-f41.google.com with SMTP id n6so3533920wrv.8;
+        Wed, 10 Feb 2021 09:46:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=zgBAojcyhJWbv1E+GzHMD8bBo3LM9waajJfrvw4DAmo=;
+        b=JGmhPqsE7S1VBBd9iXxMinRrSc9vrokOhDX7RxBRGkZpG1Rr57V5fLviYwPLOGn4H4
+         oPve/LOv1If7HaDbrfY8E1nvvpMHjc7//+0Csz9nqEA/J5lTnp7kOnJuJsSBdlQdJOE3
+         ss3AIeCaJ5XHpF5KN98ZhHAqfH41Njh4GcoNEWHhNc+87Y7TtSQuQ3wTGtItiSKx/R5V
+         L1AB9n4xqsYY7a2P/VWABKgGZQ5jroMkc54l4+Q/oWkTpOThEDst4CWDWrG/HPXWxb9V
+         h+C82oOs55bgQR1QFdInihTSxPYEQooIfWBLSXG3D59efT0EDWdPiJmJ8XFHe9t+Jgr8
+         rCzg==
+X-Gm-Message-State: AOAM533aDhODt/vlEVhVKRiYceZp657bQl6XSd7tDgOhIhl8GL7W9asP
+        Rx4TCbv1PzbEYv18vah13IJiVXtzuUyFmsq7uUtTi5TZZNk=
+X-Google-Smtp-Source: ABdhPJyziveJkAi3mG61RgtHSJANHb/BKK9fHYE5DRSIRzxvgHBFNrnIuzttYsDK5nSWqwfIgK1RBjO6FBSjwRasaNM=
+X-Received: by 2002:adf:e411:: with SMTP id g17mr4983803wrm.296.1612979134318;
+ Wed, 10 Feb 2021 09:45:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 10 Feb 2021 09:45:13 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     gregkh@linuxfoundation.org, hemantk@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        kvalo@codeaurora.org, ath11k@lists.infradead.org
-Subject: Re: [PATCH 1/1] mhi: Fix double dma free
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20210210082538.2494-2-manivannan.sadhasivam@linaro.org>
-References: <20210210082538.2494-1-manivannan.sadhasivam@linaro.org>
- <20210210082538.2494-2-manivannan.sadhasivam@linaro.org>
-Message-ID: <a6771f11aa2b3e032223e94f744d2f32@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 10 Feb 2021 18:45:22 +0100
+Message-ID: <CAJZ5v0ikQ6D0V2c7xL0_jHm+UwiwqgRSSm=4fCqPkkApZe54Ow@mail.gmail.com>
+Subject: [GIT PULL] ACPI fix for v5.11-rc8
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-10 12:25 AM, Manivannan Sadhasivam wrote:
-> From: Loic Poulain <loic.poulain@linaro.org>
-> 
-> mhi_deinit_chan_ctxt functionthat takes care of unitializing channel
-s/functionthat/function that, uninitializing
-> resources, including unmapping coherent MHI areas, can be called
-> from different path in case of controller unregistering/removal:
->  - From a client driver remove callback, via mhi_unprepare_channel
->  - From mhi_driver_remove that unitialize all channels
-uninitialize
-> 
-> mhi_driver_remove()
-> |-> driver->remove()
-> |    |-> mhi_unprepare_channel()
-> |        |-> mhi_deinit_chan_ctxt()
-> |...
-> |-> mhi_deinit_chan_ctxt()
-> 
-> This leads to double dma freeing...
-> 
-> Fix that by preventing deinit for already uninitialized channel.
-> 
-> Fixes: a7f422f2f89e ("bus: mhi: Fix channel close issue on driver 
-> remove")
-> Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> Reported-by: Kalle Valo <kvalo@codeaurora.org>
-> Tested-by: Kalle Valo <kvalo@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Link:
-> https://lore.kernel.org/r/1612894264-15956-1-git-send-email-loic.poulain@linaro.org
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/bus/mhi/core/init.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index aa575d3fb3ae..be4eebb0971b 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -557,6 +557,9 @@ void mhi_deinit_chan_ctxt(struct mhi_controller 
-> *mhi_cntrl,
->  	tre_ring = &mhi_chan->tre_ring;
->  	chan_ctxt = &mhi_cntrl->mhi_ctxt->chan_ctxt[mhi_chan->chan];
-> 
-> +	if (!chan_ctxt->rbase) /* Already uninitialized */
-> +		return;
-> +
->  	mhi_free_coherent(mhi_cntrl, tre_ring->alloc_size,
->  			  tre_ring->pre_aligned, tre_ring->dma_handle);
->  	vfree(buf_ring->base);
+Hi Linus,
 
-As mentioned in my previous email, I see some improvements can be made 
-to the commit
-message and title of this patch. Highlighted those above.
+Please pull from the tag
 
-Please update title to "bus: mhi: core: Fix double DMA free from 
-mhi_deinit_chan_ctxt()".
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.11-rc8
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+with top-most commit fe0af09074bfeb46a35357e67635eefe33cdfc49
+
+ Revert "ACPICA: Interpreter: fix memory leak by using existing buffer"
+
+on top of commit 92bf22614b21a2706f4993b278017e437f7785b3
+
+ Linux 5.11-rc7
+
+to receive an ACPI fix for 5.11-rc8.
+
+This reverts a problematic ACPICA commit that changed the code to
+attempt to update memory regions which may be read-only on some
+systems (Ard Biesheuvel).
+
+Thanks!
+
+
+---------------
+
+Ard Biesheuvel (1):
+      Revert "ACPICA: Interpreter: fix memory leak by using existing buffer"
+
+---------------
+
+ drivers/acpi/acpica/nsrepair2.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
