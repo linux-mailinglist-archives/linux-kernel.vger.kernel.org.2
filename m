@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CDF316012
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DC931600D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232906AbhBJH2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 02:28:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbhBJHYu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 02:24:50 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62E4C061756;
-        Tue,  9 Feb 2021 23:24:10 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id d6so961304ilo.6;
-        Tue, 09 Feb 2021 23:24:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=JxAVXkfRt732sFTu4WOeBN4VxK25wfM9E0zqBjpvjdE=;
-        b=eFt3k/Y0UriwZq/9CO31VZVCxiq0C9+CfFpRMNnk3OvJRvyLtOefzGijaSKzbNnvQ1
-         f/6KzQd1/9wNTUBw5djf726vmTr693ppeQ6r4q/wN2OnL+1QLKo+OlPsCIu7f66GNzPV
-         iE3skz6K8NDiK1GB8q9yuJJByhM1LB/SXF+NG/U4iG7MG9oWISKvd/VN+Yn15Q7AGtSW
-         2wGjnJIbUrUwSKgwnkrsiz0VrDIRWtL+0hySmMN6UbpeECGudnm+DpCCvQie+nIz/jqb
-         CBtd5Y70HNHfX3nWxY00l8tuVOVW6DGtcYQl7kaZGpVSXomP1on0r8Ez4nqbBbdbGWyl
-         j4CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=JxAVXkfRt732sFTu4WOeBN4VxK25wfM9E0zqBjpvjdE=;
-        b=h6jWRoe9Zs7piNsy0VZOvnSZ3B+f9ev9vQvQMrPesI3YdAX11P0vwhG3fL+Xc5WskE
-         a7v2EfmNykb/vkaWNZsyVuwbr94MPrORZGcpHuppGtVMH+n9k/RInUdvps88BqUvwdvm
-         DNvTJP8vA49PDMao5y4uDRDGzRuALz+w4ZPj1MYrWk1HcpneM+DmjDn2CZ2AiW7VevAS
-         FgfTIhqxZ5fo1XPHIhvDYxcqe0NpGV0SWem9fBwNG08jIPbt/h5RxkjlkKdF9e0MBVXO
-         ICqeBI2sjPyuCx+ulWBS4fqMTzzqrD88zvkaldpEb5O3aDvuFITEBpKghnTphIg74Ml9
-         c4TQ==
-X-Gm-Message-State: AOAM530MvlDsaHeK39r1gFre/PLVi3JkOVyCLs6SdCd3GtR64fFpcMUw
-        mPX8nSQmlR9yCR6/ryp8t18x7v5vyb2JRo8FTtw=
-X-Google-Smtp-Source: ABdhPJy3P0ddvjEDOh8APAyGjWR/fSWVFtjK3qjSAtJiIn7Cp5suhXrJfmimi4w98U4+ooMCH/onYk3kpXSg0PSbFxc=
-X-Received: by 2002:a05:6e02:4c9:: with SMTP id f9mr1739562ils.186.1612941850146;
- Tue, 09 Feb 2021 23:24:10 -0800 (PST)
+        id S232699AbhBJH07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 02:26:59 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:50354 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232516AbhBJHZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 02:25:06 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1l9jr5-0001Ii-En; Wed, 10 Feb 2021 18:24:08 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 10 Feb 2021 18:24:07 +1100
+Date:   Wed, 10 Feb 2021 18:24:07 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Suheil Chandran <schandran@marvell.com>,
+        Lukasz Bartosik <lbartosik@marvell.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 1/2] crypto: octeontx2 - fix -Wpointer-bool-conversion
+ warning
+Message-ID: <20210210072407.GM4493@gondor.apana.org.au>
+References: <20210204154230.1702563-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <CGME20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2@epcas1p1.samsung.com>
- <000001d6ff3e$62f336d0$28d9a470$@samsung.com> <CA+icZUUFFrEJccHDZPV9nzj7zav-RA53eWqgKkDyvwOxCaKKnQ@mail.gmail.com>
- <001401d6ff68$5acaf360$1060da20$@samsung.com>
-In-Reply-To: <001401d6ff68$5acaf360$1060da20$@samsung.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 10 Feb 2021 08:24:04 +0100
-Message-ID: <CA+icZUW0gS21ns1mVeJ7z-0W8XmfyuhggkwYHRXQjYy0jDZyNw@mail.gmail.com>
-Subject: Re: [ANNOUNCE] exfatprogs-1.1.0 version released
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Eric Sandeen <sandeen@sandeen.net>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        Nicolas Boos <nicolas.boos@wanadoo.fr>,
-        Hyunchul Lee <hyc.lee@gmail.com>,
-        Luca Stefani <luca.stefani.ge1@gmail.com>,
-        Matthieu CASTET <castet.matthieu@free.fr>,
-        Sven Hoexter <sven@stormbind.net>,
-        Ethan Sommer <e5ten.arch@gmail.com>,
-        Hyeongseok Kim <hyeongseok@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204154230.1702563-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 5:51 AM Namjae Jeon <namjae.jeon@samsung.com> wrote:
+On Thu, Feb 04, 2021 at 04:42:15PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When CONFIG_CPUMASK_OFFSTACK is disabled, clang reports a warning
+> about a bogus condition:
+> 
+> drivers/crypto/marvell/octeontx2/otx2_cptlf.c:334:21: error: address of array 'lfs->lf[slot].affinity_mask' will always evaluate to 'true' [-Werror,-Wpointer-bool-conversion]
+>                 if (lfs->lf[slot].affinity_mask)
+>                 ~~  ~~~~~~~~~~~~~~^~~~~~~~~~~~~
+> 
+> In this configuration, the free_cpumask_var() function does nothing,
+> so the condition could be skipped.
+> 
+> When the option is enabled, there is no warning, but the check
+> is also redundant because free_cpumask_var() falls back to kfree(),
+> which is documented as ignoring NULL pointers.
+> 
+> Remove the check to avoid the warning.
+> 
+> Fixes: 64506017030d ("crypto: octeontx2 - add LF framework")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/crypto/marvell/octeontx2/otx2_cptlf.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-> > Hope Sven will do a new release for Debian.
-> > ( Note that Debian/bullseye release  plans "Milestone 2" this Friday, February 12th (see [1] > "Key
-> > release dates" > "[2021-Feb-12] Soft Freeze"). Dunno which impact this might have on this. )
-> I hope he will do it, too!
->
-> Thanks Sedat:)
-
-I filed Debian Bug #982431 "exfatprogs: Update to version 1.1.0"
-
-- Sedat -
-
-[1] https://bugs.debian.org/982431
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
