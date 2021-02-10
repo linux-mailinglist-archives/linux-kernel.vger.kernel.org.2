@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C901A316A05
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A93AC316A07
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhBJPWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:22:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbhBJPWk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:22:40 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10C5C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:21:58 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id m20so2121793ilj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 07:21:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PTHP/d1Wnj5IF8gitLfB3aU+gA4FpGZG9JxnrDNzvss=;
-        b=n11hmjoebS3iiJDFKOxOqzT6bG62uhGtDccx7cai9mTGXhXPskWRPXwYLBct8vXv3r
-         QXCFs4Ei84UGd0cuBybIp3xnkI4pVIgxFuZo7Jv/35WV8MGPmQuMAD5R1K0AP/GnTojS
-         +OBfPCoJ9kmoBE9RfhSf13bLjTVI/cnzfJIbSLZc91T436iQSiCLNtd0mBFciG4gOElZ
-         ccLjfTX0fQkCN9AqtzAuOg4KReV4o7KTvKBJ+pUdXo3uUcQoFM9d/b4cxIj8wdWL2Bfk
-         gN2W/Tc13gbRp9Y+ZP+3o/dEHfXGIl6Q2k711BypZBVOC6EYz0aOKc/GNvMdeokOIHMI
-         D35Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PTHP/d1Wnj5IF8gitLfB3aU+gA4FpGZG9JxnrDNzvss=;
-        b=KVZ3GHjNWuSbHSAUFVR2qw04x6KcXm3d0JQXhDxGciGvU4lqMrSDUWpDr1NjM95Jf8
-         m8i8qD/6BrnJJzP+9Jr4Hggqiapwsg7/o8RZlzyACcCZdGoK4/DP4H7dD2Lq1ndvQUCM
-         EDK0nEJ7KTG8sw/+NqXiQyV4NF28rwiG1DaWzXkr0I9fq7olqvf9U9zazoiJmDiQPTu0
-         959bfJ6whwKurGkMJ5zBWUD0kh1hBcxIKOVlbyXcy3drtsvm90Gem1L63cYSW/UmL+G7
-         jfyrMVvsMkh1cR0yeIpgbyGMONH1pkBhyP7tyigTkjj0OzNbvazOo1ga2US4kBIxGiZb
-         4FaQ==
-X-Gm-Message-State: AOAM533aMcpta3eIqLzmE3xcFC8uh+KVOur2Uama7VSSiVayoD/MrI+f
-        cvF1t+l2syir5pf7rMRZ/+HmPiAmiu5dBD01
-X-Google-Smtp-Source: ABdhPJw5/Jm3n5wQy6m/lLnZSvMDFe4Now+YRkL0vIOX3A87p/z3b7q12yJXtoVcNI30FxftDOSDlQ==
-X-Received: by 2002:a05:6e02:144d:: with SMTP id p13mr1465504ilo.41.1612970517833;
-        Wed, 10 Feb 2021 07:21:57 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id k11sm1064228iop.45.2021.02.10.07.21.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 07:21:57 -0800 (PST)
-Subject: Re: [PATCH 1/2] bfq: remove some useless logic of
- bfq_update_next_in_service()
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Paolo Valente <paolo.valente@linaro.org>
-Cc:     Chunguang Xu <brookxu.cn@gmail.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1611917485-584-1-git-send-email-brookxu@tencent.com>
- <B4751549-78D9-4A84-8FB2-5DAA86ED39C8@linaro.org>
- <20210210152034.puimoewzgtnnp2zl@spock.localdomain>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <bc39aeb5-4fb6-db15-3ad5-b310f5d5b486@kernel.dk>
-Date:   Wed, 10 Feb 2021 08:21:56 -0700
+        id S231626AbhBJPXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:23:03 -0500
+Received: from mga14.intel.com ([192.55.52.115]:50365 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230043AbhBJPWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 10:22:48 -0500
+IronPort-SDR: uRlPqm5Cz6MsYpyeuSDGW3aDrLYXaEYrFuvBUWqHQKO+JyhqF3sJt94Ui9Z5EVBJDhVojleC2o
+ Mja/toY5BKTg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="181315852"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="181315852"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 07:22:05 -0800
+IronPort-SDR: ecCbGYn/Lv2+PsJiYCla/4ix7kx0ByxM3XbjCyxEzzx+lQlLqxHT5X6iZb/YsXK68fe/2SkKsp
+ rdtN/msbIGmQ==
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="488779012"
+Received: from tryu-mobl2.amr.corp.intel.com (HELO [10.209.100.152]) ([10.209.100.152])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 07:22:04 -0800
+Subject: Re: [PATCH] x86, sched: Allow NUMA nodes to share an LLC on Intel
+ platforms
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Alison Schofield <alison.schofield@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Prarit Bhargava <prarit@redhat.com>, brice.goglin@gmail.com
+References: <20210209223943.9834-1-alison.schofield@intel.com>
+ <YCOTujUj3D53uGjd@hirez.programming.kicks-ass.net>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <b717d5cd-e40d-c86a-05de-a512a5e3b0af@intel.com>
+Date:   Wed, 10 Feb 2021 07:22:03 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210210152034.puimoewzgtnnp2zl@spock.localdomain>
+In-Reply-To: <YCOTujUj3D53uGjd@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 8:20 AM, Oleksandr Natalenko wrote:
-> On Wed, Feb 10, 2021 at 12:13:29PM +0100, Paolo Valente wrote:
->>
->>
->>> Il giorno 29 gen 2021, alle ore 11:51, Chunguang Xu <brookxu.cn@gmail.com> ha scritto:
->>>
->>> From: Chunguang Xu <brookxu@tencent.com>
->>>
->>> The if statement at the end of the function is obviously useless,
->>> maybe we can delete it.
->>>
->>
->> Thanks for spotting this mistake.
->>
->> Acked-by: Paolo Valente <paolo.valente@linaro.org>
->>
->>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
->>> ---
->>> block/bfq-wf2q.c | 3 ---
->>> 1 file changed, 3 deletions(-)
->>>
->>> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
->>> index 26776bd..070e34a 100644
->>> --- a/block/bfq-wf2q.c
->>> +++ b/block/bfq-wf2q.c
->>> @@ -137,9 +137,6 @@ static bool bfq_update_next_in_service(struct bfq_sched_data *sd,
->>>
->>> 	sd->next_in_service = next_in_service;
->>>
->>> -	if (!next_in_service)
->>> -		return parent_sched_may_change;
->>> -
-> 
-> Unless I'm missing something, this has already been fixed here:
-> 
-> https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.12/block&id=1a23e06cdab2be07cbda460c6417d7de564c48e6
+On 2/10/21 12:05 AM, Peter Zijlstra wrote:
+>> +	if (IS_ENABLED(CONFIG_NUMA))
+>> +		set_cpu_bug(c, X86_BUG_NUMA_SHARES_LLC);
+>>  }
+> This seens wrong too, it shouldn't be allowed pre SKX. And ideally only
+> be allowed when SNC is enabled.
 
-Yep indeed.
+Originally, this just added a few more models to the list of CPUs with
+SNC.  I was hoping for something a bit more durable that we wouldn't
+have to go back and poke at every year or two.
 
--- 
-Jens Axboe
+> Please make this more specific than: all Intel CPUs. Ofcourse, since you
+> all knew this was an issue, you could've made it discoverable
+> _somewhere_ :-(
 
+You're totally right, of course.  The hardware could enumerate SNC as a
+feature explicitly somewhere.  But, that's a little silly because all of
+the information that it's enumerating about the CPU caches and NUMA
+nodes present and correct is *correct*.  The secondary information would
+only be for the CPU to say, "yeah, I'm really sure about that other stuff".
+
+I think this sanity check has outlived its usefulness.
