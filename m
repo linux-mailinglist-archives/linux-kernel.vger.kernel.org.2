@@ -2,128 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B3E316752
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 099FE3166F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhBJM71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:59:27 -0500
-Received: from mail-wm1-f44.google.com ([209.85.128.44]:37691 "EHLO
-        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhBJM4d (ORCPT
+        id S229806AbhBJMla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:41:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhBJMjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:56:33 -0500
-Received: by mail-wm1-f44.google.com with SMTP id m1so1766294wml.2;
-        Wed, 10 Feb 2021 04:56:16 -0800 (PST)
+        Wed, 10 Feb 2021 07:39:23 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B69C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:38:42 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d13so1149281plg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:38:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FGgoiPc7aIBkQBFYmDE5N2+yq/mJvkB3drGf6PUnm/s=;
+        b=g8sCdYH5CdMR55y7pAF0hD9UbO6qpw8vYLJ7tlrUuGFal77VWFt0e6UEViJ42Mww9R
+         xjBrWpd+hpcFljmsUaiI8m9zndJltVendNmgBaIFXZIRqHYcxYz6v5XAzFnERkk1tjLW
+         dJYGZgQ7w4ghMUhHr/9j2BS6gCCahfkH/LDnOhZIRa6Gv1GDUd9bAbM2UGjG6zAJm80G
+         mh9ZEGH8IzNvA45cEJDRZsNtm4ssFIi8/tN2bRlWT4cbncz9vbeYakgEDuVfUyPgHLhI
+         yZgdw/iYZlciXkmw93SS3tooENosRbUnZ38XqcjNAoNSurJMxUuZBmzirouVIvPDHX6J
+         uxRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=klyvuCb2s80xxmYVdUoIwTBI4ZLcJg7EZBGPH+l10fY=;
-        b=auU+VBRerIgXeBh0ER8IiXAVrUy335iZjMe8VdtnYnlqVpSsaWw3aSDN8LiFULtZWz
-         rDD5Pv1GIKgZFPtMp+uhw0OkbABy9kNoSKNcrHlwU/xM56W/56gLkA1bfMkh1icEd4jA
-         cdhVezh+Y9VTku9oJhss61NtMXFJ6hhoMZ10ZQ08YKiNjxStqBE/ztEbk16SWGhNXR+Y
-         kM/vTpKuivDQe7luv0DeOCesEewUpsK+u+HZAGETz1DMIPAfFvNZ7ggrVMj/y2E9Tjwq
-         +GBc7PjKmaOaChUBHOHTBwvDl3YQlilFKVkl6xuZgUhQRXT/QHvSJGoLZrAmcryZXSGa
-         sUvQ==
-X-Gm-Message-State: AOAM531gsE55ReQgMWG/6RypfSdjjn4mi7w3w29N+wm3RptDFhHeDsSR
-        eMCwt7HHeo27EGCDb08lZ0QNBVLbN2M=
-X-Google-Smtp-Source: ABdhPJxEJMv2xTHkhA5hRM6aKJJZhYfdlEBUHOKcxJzOPO3sXDi3h9DHp9MZv//bMkX9mQOgPEc9bA==
-X-Received: by 2002:a1c:3b8a:: with SMTP id i132mr2869183wma.26.1612961750425;
-        Wed, 10 Feb 2021 04:55:50 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id 64sm3601054wrc.50.2021.02.10.04.55.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 04:55:49 -0800 (PST)
-Date:   Wed, 10 Feb 2021 13:55:48 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Hector Martin <marcan@marcan.st>, Arnd Bergmann <arnd@kernel.org>,
-        devicetree@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        linux-kernel@vger.kernel.org, soc@kernel.org, robh+dt@kernel.org,
-        Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 18/18] arm64: apple: Add initial Mac Mini 2020 (M1)
- devicetree
-Message-ID: <20210210125548.sdeadc4ncoxu3ikj@kozik-lap>
-References: <20210204203951.52105-1-marcan@marcan.st>
- <20210204203951.52105-19-marcan@marcan.st>
- <20210208110441.25qc6yken4effd6c@kozik-lap>
- <cd67b2ce-9676-31b4-85f7-de1ec9b2bf72@marcan.st>
- <YCOzLSqdsr83xf0b@atomide.com>
- <4481998a-27f6-951e-bb4f-a9d2b95f211f@marcan.st>
- <YCPE2lPpBlhCi7TH@atomide.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FGgoiPc7aIBkQBFYmDE5N2+yq/mJvkB3drGf6PUnm/s=;
+        b=NC4EP8O9WSoqk/KISX0dqaIUGkYVzyi1t957NadNZFmvf/aKg7ROFnKnHagFtJ2wB/
+         AFM7/ZCc7ZDZrWfVo8j0Q6hEIqYZqLNWwuYj+U3bG2m9Hfhp8ypyAbsVHz/5OAus8/nj
+         gIPxvucVoW4IWwZv8dnKSd9SyF/1CYkuAaY3Dhw/Yt64eAJrjWgb4hP0Oad7vXseQ5LS
+         HfZBjfrFRwQ8ns9k9awnSWF+zgB1G76MzsNPzTWR/217jZlv5IL2kPWpXAQFnfAIpaTd
+         zToS3TEotFtyfI07ePitenXWPBh7ba2ESMWv1dkD3lJQRS5gvT9Ivev+ebW4Aufmvqpc
+         lX2Q==
+X-Gm-Message-State: AOAM5331NKYqQwm/dmWb7JtMQ8IBowXK4REZ6jco9YXfNnWpaYvopUMl
+        JaOiGoqKbtyk5nWi01jBftq8PWr5AnQ=
+X-Google-Smtp-Source: ABdhPJzOj+UG3da9yO/uTv8kGgOsB5HhJY3R/XAL4grP9eSZ/PEymR4XtLFvnDeNZNMsmUyu8e/wnQ==
+X-Received: by 2002:a17:90a:6708:: with SMTP id n8mr2963745pjj.38.1612960722000;
+        Wed, 10 Feb 2021 04:38:42 -0800 (PST)
+Received: from localhost ([47.251.3.230])
+        by smtp.gmail.com with ESMTPSA id o129sm958708pgo.27.2021.02.10.04.38.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Feb 2021 04:38:41 -0800 (PST)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Kees Cook <keescook@chromium.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Brian Gerst <brgerst@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>, Mike Hommey <mh@glandium.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Jay Lang <jaytlang@mit.edu>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>
+Subject: [PATCH V4 0/6] x86: Don't abuse tss.sp1
+Date:   Wed, 10 Feb 2021 21:39:11 +0800
+Message-Id: <20210210133917.2414-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YCPE2lPpBlhCi7TH@atomide.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:34:50PM +0200, Tony Lindgren wrote:
-> * Hector Martin <marcan@marcan.st> [210210 11:14]:
-> > On 10/02/2021 19.19, Tony Lindgren wrote:
-> > > * Hector Martin 'marcan' <marcan@marcan.st> [210208 12:05]:
-> > > > On 08/02/2021 20.04, Krzysztof Kozlowski wrote:
-> > > ...
-> > > 
-> > > > > > +	clk24: clk24 {
-> > > > > 
-> > > > > Just "clock". Node names should be generic.
-> > > > 
-> > > > Really? Almost every other device device tree uses unique clock node names.
-> > > 
-> > > Yeah please just use generic node name "clock". FYI, we're still hurting
-> > > because of this for the TI clock node names years after because the drivers
-> > > got a chance to rely on the clock node name..
-> > > 
-> > > Using "clock" means your clock driver code won't get a chance to wrongly
-> > > use the node name and you avoid similar issues.
-> > 
-> > That means it'll end up like this (so that we can have more than one
-> > fixed-clock):
-> > 
-> > clocks {
-> >     #address-cells = <1>;
-> >     #size-cells = <0>;
-> > 
-> >     clk123: clock@0 {
-> >         ...
-> >         reg = <0>
-> >     }
-> > 
-> >     clk456: clock@1 {
-> >         ...
-> >         reg = <1>
-> >     }
-> > }
-> > 
-> > Correct?
-> 
-> Yeah, just don't use an imaginary dummy index for the reg. Use a real
-> register offset from a clock controller instance base, and a register
-> bit offset too if needed.
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-No, there is no need for fake "clocks" node with fake addresses. If you
-have multiple clocks, the rules are the same as for other similar cases,
-e.g. leds:
+In x86_64, tss.sp1 is reused as cpu_current_top_of_stack.  We'd better
+directly use percpu since CR3 and gs_base is correct when it is used.
 
-{
-    clock-0 {
-       ...
-    };
+In x86_32, tss.sp1 is resued as thread.sp0 in three places in entry
+code.  We have the correct CR3 and %fs at two of the places.  The last
+one is sysenter.  This patchset makes %fs available earlier so that
+we can also use percpu in sysenter.  And add a percpu cpu_current_thread_sp0
+for thread.sp0 instead of tss.sp1
 
-    clock-1 {
-        ..
-    };
+[V3]: https://lore.kernel.org/lkml/20210127163231.12709-1-jiangshanlai@gmail.com/
+[V2]: https://lore.kernel.org/lkml/20210125173444.22696-1-jiangshanlai@gmail.com/
+[V1]: https://lore.kernel.org/lkml/20210123084900.3118-1-jiangshanlai@gmail.com/
 
-    soc@0 {
-    };
-}
+Changed from V3:
+	Update subjects as Borislav's imperative request. ^_^
+	Update changelog as Borislav suggested.
+	Change EXPORT_PER_CPU_SYMBOL to EXPORT_PER_CPU_SYMBOL_GPL.
 
-This should not generate any dtc W=1 warnings and work with dtschema
-(you need to check for both).
+Changed from V2:
+	Add missing "%ss:" reported by Brian Gerst.
 
-Best regards,
-Krzysztof
+Changed from V1:
+	Requested from Andy to also fix sp1 for x86_32.
+	Update comments in the x86_64 patch as Andy sugguested.
+
+Lai Jiangshan (6):
+  x86/entry/64: Move cpu_current_top_of_stack out of TSS
+  x86/entry/32: Use percpu instead of offset-calculation to get
+    thread.sp0 in SWITCH_TO_KERNEL_STACK
+  x86/entry/32: Switch to the task stack without emptying the entry
+    stack
+  x86/entry/32: Restore %fs before switching stack
+  x86/entry/32: Use percpu to get thread.sp0 in SYSENTER
+  x86/entry/32: Introduce cpu_current_thread_sp0 to replace
+    cpu_tss_rw.x86_tss.sp1
+
+ arch/x86/entry/entry_32.S          | 38 +++++++++++++++++-------------
+ arch/x86/include/asm/processor.h   | 12 ++--------
+ arch/x86/include/asm/switch_to.h   |  8 +------
+ arch/x86/include/asm/thread_info.h |  6 -----
+ arch/x86/kernel/asm-offsets.c      |  1 -
+ arch/x86/kernel/asm-offsets_32.c   | 10 --------
+ arch/x86/kernel/cpu/common.c       | 12 +++++++++-
+ arch/x86/kernel/process.c          |  7 ------
+ arch/x86/mm/pti.c                  |  7 +++---
+ 9 files changed, 39 insertions(+), 62 deletions(-)
+
+-- 
+2.19.1.6.gb485710b
 
