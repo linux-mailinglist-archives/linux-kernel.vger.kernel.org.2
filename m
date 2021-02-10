@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2AF315EDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 06:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2140315EDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 06:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhBJFTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 00:19:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33868 "EHLO mail.kernel.org"
+        id S231150AbhBJFTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 00:19:17 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:18047 "EHLO so15.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231293AbhBJFTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 00:19:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B3CC64E58;
-        Wed, 10 Feb 2021 05:18:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612934311;
-        bh=I2BSPPWhLYHIwlo8vH0d0TDjqAzcfQC805BuqNnnmNk=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=RdnfOXxWqDbptZQoafXn1gqplM/yFJNUoo4mjtLH9hL+/cRMmXFhC86IB3Y0DkRMt
-         SJ699QyB7va1oYHlq4T9nHCAQi1QorZ+alGpajITgJI57JlQwkGZuq6aLvDEMd2Xtr
-         jdWetB9k66fob1XsAP5K5M4ERb9eLAindsbLJOAhce+Vt4Fi1lFRssv6P2fcmC0r75
-         z3ml1YqsSX3c+ghFEAoRyuRVKdFYOvzJsKKlLtKluWFC/n7cVzwSiXJ1LtO4BXzqcg
-         3BoiVZ6kV0QpXVD75YxzrglTyOMo3mIVDbk8XoUUuco4jassY5DKk16XGkkpi2aNgw
-         hfaws0lzJpzBA==
-From:   Timur Tabi <timur@kernel.org>
-To:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 2/3] kselftest: add support for skipped tests
-Date:   Tue,  9 Feb 2021 23:18:13 -0600
-Message-Id: <20210210051814.845713-3-timur@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210210051814.845713-1-timur@kernel.org>
-References: <20210210051814.845713-1-timur@kernel.org>
+        id S231278AbhBJFTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 00:19:10 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612934347; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=yA4uPCcjgumhOn0bEUKjVJ4BqtcWpZ83bZnHx4aWj0s=; b=Q6rNZZtP/osBHZ+Sk+c425bct9i2+TxX7qF8N56N65rdGd4DRt/Qxyw2to4kZxdHApOhvGvl
+ wCa/rXshxXHpZ+YK4QrEIb4zGoP578vzigyJ1rMO8lE2wCbATRG0HQPKetcOt/cton+W+9lk
+ 8/CPu48pzP2RnuUAIRMcrixsPG4=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60236c9c8e43a988b781a34b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 05:18:20
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9E7F1C433C6; Wed, 10 Feb 2021 05:18:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C8A4AC433C6;
+        Wed, 10 Feb 2021 05:18:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C8A4AC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Paul McKenney <paulmck@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org,
+        Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: WARNING: suspicious RCU usage (5.11.0-rc7+ #1812 Tainted: G)
+References: <2578278.ATerS0GEoy@kreacher>
+        <YCJyJgEeiQqBRgzL@hirez.programming.kicks-ass.net>
+        <877dnhv4lg.fsf@codeaurora.org>
+        <CAJZ5v0iX0Bn7qjTB6S8exox_NYujAupUy4XkJAyFVNDjvnnZXg@mail.gmail.com>
+Date:   Wed, 10 Feb 2021 07:18:13 +0200
+In-Reply-To: <CAJZ5v0iX0Bn7qjTB6S8exox_NYujAupUy4XkJAyFVNDjvnnZXg@mail.gmail.com>
+        (Rafael J. Wysocki's message of "Tue, 9 Feb 2021 18:44:21 +0100")
+Message-ID: <87pn18tsa2.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the kselftest framework to all testing clients to
-specify that some tests were skipped.
+"Rafael J. Wysocki" <rafael@kernel.org> writes:
 
-Signed-off-by: Timur Tabi <ttabi@nvidia.com>
----
- tools/testing/selftests/kselftest_module.h | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+>> > AFAICT that's a simple 'use RCU without holding rcu_read_lock' warning.
+>> > I've not dug through ath10k to see who should be doing rcu_read_lock,
+>> > but the few places I did look at don't seem to have changed recently.
+>>
+>> Just this morning I applied a patch which should fix this:
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=2615e3cdbd9c0e864f5906279c952a309871d225
+>>
+>> Please let me know if it fixes the issue.
+>
+> The traces are gone after applying this patch, so it does help:
+>
+> Tested-by: Rafael J. Wysocki <rafael@kernel.org>
 
-diff --git a/tools/testing/selftests/kselftest_module.h b/tools/testing/selftests/kselftest_module.h
-index e8eafaf0941a..e2ea41de3f35 100644
---- a/tools/testing/selftests/kselftest_module.h
-+++ b/tools/testing/selftests/kselftest_module.h
-@@ -11,7 +11,8 @@
- 
- #define KSTM_MODULE_GLOBALS()			\
- static unsigned int total_tests __initdata;	\
--static unsigned int failed_tests __initdata
-+static unsigned int failed_tests __initdata;	\
-+static unsigned int skipped_tests __initdata
- 
- #define KSTM_CHECK_ZERO(x) do {						\
- 	total_tests++;							\
-@@ -21,11 +22,16 @@ static unsigned int failed_tests __initdata
- 	}								\
- } while (0)
- 
--static inline int kstm_report(unsigned int total_tests, unsigned int failed_tests)
-+static inline int kstm_report(unsigned int total_tests, unsigned int failed_tests,
-+			      unsigned int skipped_tests)
- {
--	if (failed_tests == 0)
--		pr_info("all %u tests passed\n", total_tests);
--	else
-+	if (failed_tests == 0) {
-+		if (skipped_tests) {
-+			pr_info("skipped %u tests\n", skipped_tests);
-+			pr_info("remaining %u tests passed\n", total_tests);
-+		} else
-+			pr_info("all %u tests passed\n", total_tests);
-+	} else
- 		pr_warn("failed %u out of %u tests\n", failed_tests, total_tests);
- 
- 	return failed_tests ? -EINVAL : 0;
-@@ -36,7 +42,7 @@ static int __init __module##_init(void)			\
- {							\
- 	pr_info("loaded.\n");				\
- 	selftest();					\
--	return kstm_report(total_tests, failed_tests);	\
-+	return kstm_report(total_tests, failed_tests, skipped_tests);	\
- }							\
- static void __exit __module##_exit(void)		\
- {							\
+Good, thanks for testing.
+
 -- 
-2.25.1
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
