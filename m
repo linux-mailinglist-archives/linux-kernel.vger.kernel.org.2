@@ -2,108 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C778316AAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483AD316AAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbhBJQEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:04:01 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:47614 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231744AbhBJQD5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:03:57 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1l9rxQ-0002Bd-0K; Wed, 10 Feb 2021 16:03:12 +0000
-To:     Sean Wang <sean.wang@mediatek.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        Soul Huang <Soul.Huang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: mt76: mt7921: add MCU support
-Message-ID: <57068965-649f-ef8e-0dd2-9d25b8bec1c7@canonical.com>
-Date:   Wed, 10 Feb 2021 16:03:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231744AbhBJQEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:04:34 -0500
+Received: from foss.arm.com ([217.140.110.172]:39946 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232086AbhBJQED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:04:03 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E0BA113E;
+        Wed, 10 Feb 2021 08:03:16 -0800 (PST)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE5D83F73B;
+        Wed, 10 Feb 2021 08:03:13 -0800 (PST)
+Subject: Re: [RFC PATCH v8 5/5] KVM: arm64: ioctl to fetch/store tags in a
+ guest
+To:     Peter Maydell <peter.maydell@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210205135803.48321-1-steven.price@arm.com>
+ <20210205135803.48321-6-steven.price@arm.com>
+ <CAFEAcA99kV_d6ev9wC4ySiyoD7Cp=HCD0v2bBhGSOU-KrzkqaQ@mail.gmail.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <1e09d70a-1443-c7bd-2d16-f50bc3993a83@arm.com>
+Date:   Wed, 10 Feb 2021 16:03:34 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <CAFEAcA99kV_d6ev9wC4ySiyoD7Cp=HCD0v2bBhGSOU-KrzkqaQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 08/02/2021 17:31, Peter Maydell wrote:
+> On Fri, 5 Feb 2021 at 13:58, Steven Price <steven.price@arm.com> wrote:
+>>
+>> The VMM may not wish to have it's own mapping of guest memory mapped
+>> with PROT_MTE because this causes problems if the VMM has tag checking
+>> enabled (the guest controls the tags in physical RAM and it's unlikely
+>> the tags are correct for the VMM).
+>>
+>> Instead add a new ioctl which allows the VMM to easily read/write the
+>> tags from guest memory, allowing the VMM's mapping to be non-PROT_MTE
+>> while the VMM can still read/write the tags for the purpose of
+>> migration.
+>>
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>>   arch/arm64/include/uapi/asm/kvm.h | 13 +++++++
+>>   arch/arm64/kvm/arm.c              | 57 +++++++++++++++++++++++++++++++
+>>   include/uapi/linux/kvm.h          |  1 +
+>>   3 files changed, 71 insertions(+)
+> 
+> Missing the update to the docs in Documentation/virtual/kvm/api.txt :-)
 
-Static analysis with Coverity on linux-next has found an issue with the
-following commit:
+Good point - although I was secretly hoping to get some feedback on the 
+concepts before writing the documentation! But I guess the documentation 
+will help with the review. I'll include some in the next posting.
 
-commit 1c099ab44727c8e42fe4de4d91b53cec3ef02860
-Author: Sean Wang <sean.wang@mediatek.com>
-Date:   Thu Jan 28 03:33:39 2021 +0800
+Thanks,
 
-    mt76: mt7921: add MCU support
-
-The analysis is as follows:
-
-390 static void
-391 mt7921_mcu_tx_rate_report(struct mt7921_dev *dev, struct sk_buff *skb,
-392                          u16 wlan_idx)
-393 {
-394        struct mt7921_mcu_wlan_info_event *wtbl_info =
-395                (struct mt7921_mcu_wlan_info_event *)(skb->data);
-396        struct rate_info rate = {};
-397        u8 curr_idx = wtbl_info->rate_info.rate_idx;
-398        u16 curr = le16_to_cpu(wtbl_info->rate_info.rate[curr_idx]);
-399        struct mt7921_mcu_peer_cap peer = wtbl_info->peer_cap;
-400        struct mt76_phy *mphy = &dev->mphy;
-
-   1. var_decl: Declaring variable stats without initializer.
-
-401        struct mt7921_sta_stats *stats;
-402        struct mt7921_sta *msta;
-403        struct mt76_wcid *wcid;
-404
-
-   2. Condition wlan_idx >= 288, taking false branch.
-
-405        if (wlan_idx >= MT76_N_WCIDS)
-406                return;
-
-   3. Condition 0 /* !((((sizeof ((*dev).mt76.wcid[wlan_idx]) == sizeof
-(char) || sizeof ((*dev).mt76.wcid[wlan_idx]) == sizeof (short)) ||
-sizeof ((*dev).mt76.wcid[wlan_idx]) == sizeof (int)) || sizeof
-((*dev).mt76.wcid[wlan_idx]) == sizeof (long)) || sizeof
-((*dev).mt76.wcid[wlan_idx]) == sizeof (long long)) */, taking false branch.
-
-   4. Condition debug_lockdep_rcu_enabled(), taking true branch.
-   5. Condition !__warned, taking true branch.
-   6. Condition 0, taking false branch.
-   7. Condition rcu_read_lock_held(), taking false branch.
-407        wcid = rcu_dereference(dev->mt76.wcid[wlan_idx]);
-   8. Condition !wcid, taking true branch.
-408        if (!wcid) {
-
-Uninitialized pointer write (UNINIT)
-   9. uninit_use: Using uninitialized value stats.
-
-409                stats->tx_rate = rate;
-410                return;
-411        }
-
-Line 409 dereferences pointer stats, however, this pointer has not yet
-been initialized.  The initialization occurs later:
-
-413        msta = container_of(wcid, struct mt7921_sta, wcid);
-414        stats = &msta->stats;
-
-Colin
+Steve
