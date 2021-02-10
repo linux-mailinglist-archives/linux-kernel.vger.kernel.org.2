@@ -2,407 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4685315D63
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FB5315D64
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234257AbhBJCgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:36:14 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:34354 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234393AbhBJCbB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 21:31:01 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A2Tuct005119;
-        Wed, 10 Feb 2021 02:30:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=Or2jmmlYiNXd2tTj0RQNVkDfZM+1wpjCjO6ANL1Cifc=;
- b=Olnl0Ikm7+lcl5t97nSVYwlR96wD+mwt7MuNHQHrl2p6mz+RKkOC6vVgS/vjjCQgoFLu
- txO7atdueo9LTRahi8ACWrvZ0zCHjpMrB8jzDLEiFUKnUGoMsx/6KWHM8tSXT46/DxJv
- zj2X+lfUGeQsUYjIXzFhE+UZSGvFQvG/uizZrt9QC26M8Pr2h9e1AHUAnjb7D+sAxcnR
- zMeTZRlVYcvzQRaau9EM+gl+rKNJOZUmllors55X9uzUiZMP5FhT0cxYzw/zqBpI0HlT
- oLhh6L2NupJYix982ew9juL3LyP/kij1QHn28KdYwWSKg7z0nJ3nvtcw/c1Ya6qT4nec OQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 36hgmaht0d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 02:30:08 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A2OejQ117026;
-        Wed, 10 Feb 2021 02:30:07 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
-        by userp3020.oracle.com with ESMTP id 36j4vs73pa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 02:30:07 +0000
+        id S235324AbhBJCgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:36:43 -0500
+Received: from mail-eopbgr80058.outbound.protection.outlook.com ([40.107.8.58]:48357
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235287AbhBJCci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 21:32:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ts1C3+1KWF4AmbTeVPssVzlf5AjVzFCv8HPRq1U/Mvs=;
+ b=4ez/Q7Ht7cQubS8Uf6jKwsEQoqaAhtnPf/bHpP2iQF8M0jW5LcMnW3Ycb2ueCH7pE9KFC/5cRjj/fAPcua2ajxVYQC6EtQe8IaXuVSOk+TsBBdkbI45UKeUFfenmZUD08meYTH0VS16jFk7rxOlnM1jbtvlDqaeN8SUwyZWjoEQ=
+Received: from AS8PR05CA0004.eurprd05.prod.outlook.com (2603:10a6:20b:311::9)
+ by DB6PR0802MB2375.eurprd08.prod.outlook.com (2603:10a6:4:87::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Wed, 10 Feb
+ 2021 02:31:46 +0000
+Received: from VE1EUR03FT049.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:20b:311:cafe::a) by AS8PR05CA0004.outlook.office365.com
+ (2603:10a6:20b:311::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend
+ Transport; Wed, 10 Feb 2021 02:31:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ VE1EUR03FT049.mail.protection.outlook.com (10.152.19.216) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 02:31:45 +0000
+Received: ("Tessian outbound 4d8113405d55:v71"); Wed, 10 Feb 2021 02:31:45 +0000
+X-CR-MTA-TID: 64aa7808
+Received: from e021c8cc2d45.1
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 4E02FB84-E3AA-4CC0-95B0-82EBE32342EA.1;
+        Wed, 10 Feb 2021 02:31:40 +0000
+Received: from EUR02-AM5-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id e021c8cc2d45.1
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Wed, 10 Feb 2021 02:31:40 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vp2O15Iv8cmzwyV/n8mNNtfvG4sPBcw0CMHk/pPxCntRLwdlrIDzQhcGPiW5RPMWzuVJl/Tc9K6c8By707sOQlxm3hGR7Kmj55z9wiPeo51qI2A8esjmhPK8xXO3oqcNp9Joys1vQ3XBo4jDDJIr+Ccl1W0wOs3wBBZvdebNcv+oD+PuQ608tklSNW2AR4wLod17uYPAl216wp7D9kvZ3+PTHvoooaDQiJQWr1XKias5GNC350fHV06PGm98rIjmjIx9EAPqz/XJZlQlbU97Kx4uqw4U0/87kMraPcLwNVa5NHlkI0JJoDAGuKI0kCKProfa0Pw8LaWm47v0SMtYJg==
+ b=TIaLYkeoEVYJGd2zJh1QFCzANwnfiNdXmEOYPCxEUHwQTdgEXMFYtmPh0/DRiIGuFKK1EhVvEb3XuS62GfXM3U9VWKGnRuwTN6cutVqu9VSaBh9YjyNOwIBze01hMYa4l5KzMKvuSbUQxY+kl23FNT+lJH3goW2ntASqKmHBBTyuGWgX8oD9ri7iMyMDAxrUN2I3ETTnJynFiU6cfDF1MjaBJlRNOM4g73v8d+74W4RuA7p1hyCDsDg0yfucl73FoMzYrk/8DHr1FaaRVtqJrQ4LDtc1cdhHpXy9Qz0VHAlu951F/xZ6epOt7gTlzuZcuohESYmptZbhsOeJ9MuIoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Or2jmmlYiNXd2tTj0RQNVkDfZM+1wpjCjO6ANL1Cifc=;
- b=CmU+6orvVem6VEoGmlUoGDJ/xzuqqAOJzsASgeJEmOgnXAlj/pGVdO1ZnWYCWRYCMg4GsbDkCswHq8Si14CZ/cK2W+j5qrxACB9BleTXuox3puoY0hCPLSYUqt/5JgPD/5ZbRgN2PKGHyRPcCIzBIh7IOZbcZGI3rMa5yxOWkVVPUSThLmv+OKSXlBTP7Nqmd2HEovNPESFVjdEnI9PDM5CbaVqGLy/9cgglvORxkRAiGTvWqYs3t9W8uj+9cYf617odsk63jZvYpBfWphJXeXv0hP5Oirh3IHBEo0Lmf7FklI4FPKAtGsc6/lkBahFLgbY4zDMfcLT7FQIX5BsjRg==
+ bh=Ts1C3+1KWF4AmbTeVPssVzlf5AjVzFCv8HPRq1U/Mvs=;
+ b=QJ7O+HISiN0hoYcOstjvgK0zoVo/Vv4lwNa8iWHpTWY3u6z9wLbD3DInGOIfirtheTNNyoj5zrDViHmbWIFS7rI1messG1mB4QHwl6HmBux6nXnOk3BxjPGZudirV1r4/X0IjnpSnJ/YLiNENZiBrQhzR+BWj146f0pGz2aIOrQk4fqp76WB076t3788uZyFRSxKw/mtNHps8opGfF5iBHSEPeDPDgMS6xHm3OZ2tlY4m0toJYOVn0ZUgocqeUXvv3L85ZRzkXPWkWwTtQn20TLAFCQOjBipj7wEDec4iZpdzXV4mnLKipm6pOT/0Zdp3dVH5WRDKEsYVTdWQSPwjQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Or2jmmlYiNXd2tTj0RQNVkDfZM+1wpjCjO6ANL1Cifc=;
- b=ZvR1dnSeaTZTG+76vZSZTiXgBI3MEXyreBLPXyO1nvJ8bDFISYT/7qCX3iHHWO7RVaozfr6OsIZpeglBlcZexhPbhnVlycDOHFWhNTE9S4YPQxs+7zHn9rW61G83vAYWwm2aCzHXfFLRfqbXlBov4UWQdES8zBYytsfNAaUmr0E=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3287.namprd10.prod.outlook.com (2603:10b6:a03:15c::11)
- by BYAPR10MB3128.namprd10.prod.outlook.com (2603:10b6:a03:14e::13) with
+ bh=Ts1C3+1KWF4AmbTeVPssVzlf5AjVzFCv8HPRq1U/Mvs=;
+ b=4ez/Q7Ht7cQubS8Uf6jKwsEQoqaAhtnPf/bHpP2iQF8M0jW5LcMnW3Ycb2ueCH7pE9KFC/5cRjj/fAPcua2ajxVYQC6EtQe8IaXuVSOk+TsBBdkbI45UKeUFfenmZUD08meYTH0VS16jFk7rxOlnM1jbtvlDqaeN8SUwyZWjoEQ=
+Received: from AM6PR08MB3589.eurprd08.prod.outlook.com (2603:10a6:20b:46::17)
+ by AM6PR08MB4565.eurprd08.prod.outlook.com (2603:10a6:20b:af::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Wed, 10 Feb
- 2021 02:30:05 +0000
-Received: from BYAPR10MB3287.namprd10.prod.outlook.com
- ([fe80::45b5:49d:d171:5359]) by BYAPR10MB3287.namprd10.prod.outlook.com
- ([fe80::45b5:49d:d171:5359%5]) with mapi id 15.20.3846.026; Wed, 10 Feb 2021
- 02:30:05 +0000
-Subject: Re: [PATCH v1] vdpa/mlx5: Restore the hardware used index after
- change map
-To:     Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lulu@redhat.com
-References: <20210204073618.36336-1-elic@nvidia.com>
- <81f5ce4f-cdb0-26cd-0dce-7ada824b1b86@oracle.com>
- <f2206fa2-0ddc-1858-54e7-71614b142e46@redhat.com>
- <20210208063736.GA166546@mtl-vdi-166.wap.labs.mlnx>
- <0d592ed0-3cea-cfb0-9b7b-9d2755da3f12@redhat.com>
- <20210208100445.GA173340@mtl-vdi-166.wap.labs.mlnx>
- <379d79ff-c8b4-9acb-1ee4-16573b601973@redhat.com>
- <20210209061232.GC210455@mtl-vdi-166.wap.labs.mlnx>
- <411ff244-a698-a312-333a-4fdbeb3271d1@redhat.com>
-From:   Si-Wei Liu <si-wei.liu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <a90dd931-43cc-e080-5886-064deb972b11@oracle.com>
-Date:   Tue, 9 Feb 2021 18:30:02 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-In-Reply-To: <411ff244-a698-a312-333a-4fdbeb3271d1@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Wed, 10 Feb
+ 2021 02:31:38 +0000
+Received: from AM6PR08MB3589.eurprd08.prod.outlook.com
+ ([fe80::d4d5:2dd2:1ac5:ba34]) by AM6PR08MB3589.eurprd08.prod.outlook.com
+ ([fe80::d4d5:2dd2:1ac5:ba34%4]) with mapi id 15.20.3825.030; Wed, 10 Feb 2021
+ 02:31:37 +0000
+From:   Jianlin Lv <Jianlin.Lv@arm.com>
+To:     "leo.yan@linaro.org" <leo.yan@linaro.org>
+CC:     "john.garry@huawei.com" <john.garry@huawei.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] perf tools: Fix arm64 build error with gcc-11
+Thread-Topic: [PATCH] perf tools: Fix arm64 build error with gcc-11
+Thread-Index: AQHW/teEh/7GSlALIkGh1GdzfE9lgKpPvWEAgADtV5A=
+Date:   Wed, 10 Feb 2021 02:31:37 +0000
+Message-ID: <AM6PR08MB3589CB41DDB314215B260F96988D9@AM6PR08MB3589.eurprd08.prod.outlook.com>
+References: <20210209113357.1535104-1-Jianlin.Lv@arm.com>
+ <20210209121728.GA12546@leoy-ThinkPad-X240s>
+In-Reply-To: <20210209121728.GA12546@leoy-ThinkPad-X240s>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [73.189.186.83]
-X-ClientProxiedBy: BY3PR03CA0009.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::14) To BYAPR10MB3287.namprd10.prod.outlook.com
- (2603:10b6:a03:15c::11)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.19] (73.189.186.83) by BY3PR03CA0009.namprd03.prod.outlook.com (2603:10b6:a03:39a::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Wed, 10 Feb 2021 02:30:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 661e1df6-3f60-49d9-974c-08d8cd6bc66b
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3128:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB3128B45624432CDE38FB12E4B18D9@BYAPR10MB3128.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1265;
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ts-tracking-id: 778C875BE61D084CA102C103B2A46E9C.0
+x-checkrecipientchecked: true
+Authentication-Results-Original: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=arm.com;
+x-originating-ip: [203.126.0.113]
+x-ms-publictraffictype: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 2019135c-1713-48cc-6ac2-08d8cd6c02c5
+x-ms-traffictypediagnostic: AM6PR08MB4565:|DB6PR0802MB2375:
+x-ld-processed: f34e5979-57d9-4aaa-ad4d-b122a662184d,ExtAddr
+x-ms-exchange-transport-forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0802MB23750F00780DC12631730FE6988D9@DB6PR0802MB2375.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+nodisclaimer: true
+x-ms-oob-tlc-oobclassifiers: OLM:8882;OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: ez+7f5qag/U4aSsb2WO31sRtQ2+PZNmo63kWUgfgWexKttvdm390gsZT+PYugw6ZUh/FSkltpNO6FchjFKlCvsw+pxeC0NDiefJbV3ctBClvDhnc9rPfX2s+te5cJs+SzPqcoQjTzwycodZUntuYbx2qT1SDNdiuDB47DGiYxjORfjA7K4so7phuYsM0MQbe22QTSnuOE2DLW16zrtMi/lvZ4n/UfimDScUQwwrKJz+YrUgBQHClGHdwbH1sVdsIxPV06ObXHyZXy5XAFex8BgcoXDyehG0UfBNjT+uZagbK3Vs1gM6scqkQxuleXihqYvV2k1jWkO/ooGmmsx8m8PUtH0y5tg7X/yfkb3eQq4wpSlxOaPB1aJHREm66+niZxlWJFeh1nei8xtKPbYhBeqgzGYN78DJOhlDkchLHHVYJggj655ikOEb2jtmMkV876qJ5eOUwxR/62RQG47ln3Oqpu6CliruMO7oWDKb+G8y6qJJE3d+RH6SsXAkp0DgHDY7Fal36uz4c9k41UvUlVdj0qa4sDnVKLZ/Yw5LCc3Oqs4ebFyanHVuRLR77Pe/cqFr0bsIhf3FgFZT/euX3B91jqiftqnPMP/Tz9qnkKTE=
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB3589.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(376002)(396003)(346002)(136003)(366004)(55016002)(86362001)(7416002)(83380400001)(966005)(6916009)(33656002)(8676002)(8936002)(4326008)(9686003)(2906002)(26005)(478600001)(7696005)(52536014)(64756008)(6506007)(66476007)(76116006)(66446008)(71200400001)(54906003)(5660300002)(66946007)(316002)(186003)(53546011)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?dTJVMkdPanIyNjltVDZ3b3puTlRlaDJnQ1dsSU9pRitoRWFINTlsOGVuNG9N?=
+ =?utf-8?B?ODhqcEt5WDNPU0ZFbGZML1hnSHVZUzgyTzFRUTVNMmlpNVVZNG94UjZpTnZz?=
+ =?utf-8?B?NUlEdk5EZ09vTVBiSTZSNjM5N3QyeFhNaE5vSk50RFErMEwxNmZiSWtacWpF?=
+ =?utf-8?B?THM2V2tQWVc1NEZUU1ZJZzR1T3p1ZkYzY2c2SUtQNFlVM2tCOTh0WGQrUGxx?=
+ =?utf-8?B?dzAyM2NUckxZUGVJeENTR0Q1SkI3RXE0bFgzRjY2SUI2QmhNQW40K2J5VlBa?=
+ =?utf-8?B?Sk81ck9QaWRkZDN4NHVQQlV3bDZPVnRYVU9MY2l6VVhXQVBVaHoxUlFEN2p6?=
+ =?utf-8?B?QlZsdE05dlV6bHpmWWhyd093WTA1QXZDWGxBTEVlSndNeVN4Wi9GNkFTZ01K?=
+ =?utf-8?B?Q3ErME1TamRGSXVQSmpLZ0FtNUNGRTRGMjE3MkE4NzNhUUh1bjdhcWoyZlpz?=
+ =?utf-8?B?K1JwdGxvRkx0enNVVWUxL0pqUFJUUTk2alNTandML281QXBLUDRjU3BSVUdR?=
+ =?utf-8?B?UlkvaUd5SzVVVXV5NXFkL3kyQVZ6bHhIdDRDUThSRkpOK3QxWWZJZ0ZzQmlu?=
+ =?utf-8?B?QVo0dlFGZ2NscTBwR25rZFdnRnk1Zm52OEdyWmlhaWgxQmV3V095RXo5eFU0?=
+ =?utf-8?B?TklsSU8vTjhNdXVPM1N6U0hzTHlvWVZBeWlsZW4xQTJ6NjZsZk1lNjZsZzRK?=
+ =?utf-8?B?alZYRFdiZDdIRjFJaGtFNm9Lc1FsaDF6Q2tqbG9pb1ZZVlg4MFltemV0Sm9I?=
+ =?utf-8?B?R3VtUGFKWUc0Y1o5UUtmMHBNRUZtaVJZTmRXYXYvd255S2JFbnZWZXdORzdB?=
+ =?utf-8?B?QUVIbEhqZGowdzF1QStUd09OVW81amo3UG52N3JuM1hqQnNkbjIzbVBoM1FD?=
+ =?utf-8?B?S0k5dm9RbkJWYXFCOGRENzZuUlNFVUdLb204dUkxdmZHdU9KSTErRkR4TUF3?=
+ =?utf-8?B?eEZ1MG53UnJGU2VkK3FRcGdMb3V0d2UzUDQ0eDdVbDE4UE11US9kV1d2RjFW?=
+ =?utf-8?B?UDVIbVNRVUlkM0ZZNStTK3ZtcDRjbGM5ZGxyeDI4d2dBNVgwV0dHZnNObkhx?=
+ =?utf-8?B?ZUhFRWJEaWhRcTNhVTV2cnZqTXFueTQ1SmZsNHlTdlZ5TEFaYk5YcWh1dlBV?=
+ =?utf-8?B?d01IYmpicEpnSXZWdjZWN2hmcUUxZ1Fab0xRS3E0ZFBrTnhsZ1lzTEluQkRp?=
+ =?utf-8?B?M3VYVkQ2aFo5anA3STFxUGxBMElGQkhaREJ0eU5CWWFKV2syRGUwMGFrKzJF?=
+ =?utf-8?B?Rm94akZQQ3dSK01oNzhoRmR6clRvbGYrMHl0VWl4MDExckJ6YU0zc25zYVI5?=
+ =?utf-8?B?ZE5TcFRZUWo0em5KMUNST0tsRU5IY2lGL2tJTHlJbDRMQThwdlg0dnl6TCtL?=
+ =?utf-8?B?ekduZVpxejA3dXRQUWlQSnE4TUE1WnBCNXl2TzFsNkNZSjBEOUpDUWZMcWgz?=
+ =?utf-8?B?ZEFpaDFuZVFCcFJ1bTV2ZUNpY25MLzY3U1RiOWcwNllrSEo4NHBNWExiZ3hS?=
+ =?utf-8?B?bDdoeGJ6Y1BKQVU2R1lMYmVGUVhDcTlMUUxKbDVrQ0Z3bkMzYXgyVUoxczlJ?=
+ =?utf-8?B?KzBEREc0TkJyaWw5ZnRhTjNaQkdVVzhrWjBuZFB2eTQrd3UyRk4yaWdQaGtx?=
+ =?utf-8?B?Z0ZSVTNjZVJBT2R2VzVlR0VhcjRPRlNuRmhmODZjVHA0N3RvZUdubWVuWUVG?=
+ =?utf-8?B?RmxESG5yR2VJNWZjOTNTSUkxeDdOSCtWZ3ZVUjZ3emd5MWlma1hDaWpJRkdx?=
+ =?utf-8?Q?CyCdT2DPdOPXw1ygA3+Ck6B7FVkVQgz7eJzIGgD?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB4565
+Original-Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: VE1EUR03FT049.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: 8202e561-58d1-4918-f9ff-08d8cd6bfdde
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BjHLI6qLU9FS2oiyhWzquUQn8jG1iznw8MXKBKBj6GlA5OdEiPZPL3MbDPux638H35YKpoo90RhOOhj5wpoLBN8jL9vxmnxttEeTaod1/Ti2TlHbKskGV77AyA1JAoodVeD0Hoe4u8Sx8dK6eepxSIbNuz9xj5Vc0RQ4D6yiexxrWg2HsDb3+Shg2ttXGduMfsThiaInW/zVTUHIRLZvtqMyi2FSNGr1LCk/kf5jr9MILnT9w2osdZAkumKrJ81ZSTSCkXmLxnoTl/E+gU15cMSaHNTOCb/d9FTZL7WTWpW7/3XXbVzJ63Gw1T6q+UL6l9fmVkO48V22NDefXLBRmrr8av958hOlVnyj/vZOIIeRzFpMlhqLJzgwLYxU+LXBtPeVE0gneQy5FE3Zc6JoKAmAOzMJy321vEPCP+3SB47jeGSsAh2lEthN+dAInjm8tbMrGIXUhCSOwMm8pNJosUUtxCqBG/dKtFzUR0bPixtN/kGPFdCkFRkNapm4Y5BJW8SCZtg5BqET30TnUgUG5OgNzkAFAJq1nEpb1aDhJtxvhYpsWJ8jVX/G7Du/0QKGvhDwpudLIKZ4jmlLkDcoam8SWmXbr/L5nG6SWTRQBp4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3287.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(366004)(376002)(396003)(346002)(31686004)(6486002)(53546011)(83380400001)(5660300002)(26005)(8936002)(86362001)(16526019)(2616005)(316002)(36916002)(110136005)(186003)(2906002)(16576012)(8676002)(4326008)(956004)(36756003)(478600001)(66476007)(31696002)(66946007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?alZwcEd1MnJvVEErWWFGY1hzaXFOZ2VVbnJKaEdVb0lQcjZDWW9EeFBPalR4?=
- =?utf-8?B?TnRpMDNjWXN0RE1MaTVteWgzUHpLVVNhdGthZlpXNlZsTG1CNG9WS004aFh1?=
- =?utf-8?B?QzRleHprUGNsdmRkaERQVW5NczNwT1U4ZnJJUnpIb0xYVXA1VStOWXBHQ3BF?=
- =?utf-8?B?Qmt0WEVaVTRmVjRmazhjaEJmNENRQi9zbXdlei9jakcyOEw2cnhCZGFlRDNy?=
- =?utf-8?B?Nk02YXNrSTlHRmppYnlxZHlrR0dsdlFPamVtYlh2bTAwNGQ0a0tScWVmR2N2?=
- =?utf-8?B?R1p2Qnp3Q3ZEc0tQaGkrQm9DUEJlUGZXRFZvcG1VWXpzZWZ6ME5vTHRQbDA2?=
- =?utf-8?B?SDB4M21RajIybTQrM1dwL1hueXcybW00MTBWeHpPZWozSHU0aTJ3bEJJcXly?=
- =?utf-8?B?c1BvS2o0RG9KU2RES0RiZkdhbG5lU3RBQkdKUkJMNFFkUWtOQlFXa2Q1SjVO?=
- =?utf-8?B?eGdNWXBnNDVITGFnNy9INWdpR2M1MDhRSGVtenB3RWl1S3BEVkoxdmVOaUJh?=
- =?utf-8?B?NGI2dEtNQTdkVTh2RVdlS1J0aTkySGxVQ1BsY3Q1YUJsVE13SGFrVHBST3dk?=
- =?utf-8?B?LzVqV0toVStLditYd1QrdXVHdzNUeXV1Nm5vTlhYV2k2TDBLR3gzaEtpWmZT?=
- =?utf-8?B?WW1qbkMwMkJTZS96ZmFxRGtVUmhtS25jVkxSQmhBaHY4S2VHVEN1V1NNLzZR?=
- =?utf-8?B?Wm5ubVVnU3RreG1QVVpWT3VsQThoTVN1OEZaeGUrV0ZjNHczekY5T2xkR0lM?=
- =?utf-8?B?WDJOVjZDNUNZaWxEbkkzV21kWWh1elFNR2dWa2tDckcwV0MwR2VtWkRxMGpT?=
- =?utf-8?B?dUZNVjZXajRQVEpVbGFQSW1MaHpKdFFyL2RpbmtWLzA4aVRhZHJLQnZHYmFY?=
- =?utf-8?B?L2dQenQ5MjBNL3ExM0Q1aTlDeE8zMFJWYnJKTzZKLzJ4RzVtbFdxYTBRcUgy?=
- =?utf-8?B?OWd6WGNZYmNXRG9XbHdTcU5oa25FaEtydnpOZ0JQTHNnbmZJR1dWS1dZTSsw?=
- =?utf-8?B?ME0rQzd2MHo4Z1FQTlBCU01MZWRKSmFTbWZSZmFFVFZYNGhNZGpoWFNWOE9T?=
- =?utf-8?B?eTlKVEFuM2dEMWpWZGdxY2dKalRPdzRxVTFFcHdHM0ZpaU1iV25GVysvSjBp?=
- =?utf-8?B?bkZucjg5dEVXenUrZHowWXJMQ1p0cUFtdDFmVzV1bEM4UU1RNFpOdmxCOVM3?=
- =?utf-8?B?K1hHUzZvMTJpVHptUitONWgvdklkZktudTlKZVJvd2Vud3paRzhHcjNFMndy?=
- =?utf-8?B?dFRRbFlKZ1g0aFZlT1NUSElUQStYNXpMb3VjZ3F4RFR0bW5lRTRmTHdqeWFw?=
- =?utf-8?B?YzYzbmZVRTl4cTF5N3M5dSttNjhDNmxwakR0c1c5NTVIMU1jaVZTcTZxdC9Z?=
- =?utf-8?B?ZFEyVHdxVThFRHJTV1IrOWR2SElPTnpEWElTZFpKWTNHNmxtNmVGYkZvOGQ4?=
- =?utf-8?B?QVFtUFJQTU1tc3liSGpOaFdUQm5QRkRTNzQ4UkFxWTBhYnpoRHJ0TkV5Q1NO?=
- =?utf-8?B?Um83SW5UODY2VWk5Q3ZWTnA0UlMvUFM2RlBHcGswU2JSTitWZTZYNTRuTFp3?=
- =?utf-8?B?dDRVbGtvU3RodVY4ZUdMaVk2MDR6Q1I0dm0zRnQ1ZGd3M1ZhZENiNGE2SVFQ?=
- =?utf-8?B?VVltczlNcUd0YVVmRCtFQW9lODZYTit2NUVSSEtmZmZITUQ5Qk12L2pjalNI?=
- =?utf-8?B?UzhyUjFDSkJzM3hQR3NKdVIxV0ZpcGFHSFZGSE9wS2dPVm1nMVQ4c1FvMzNm?=
- =?utf-8?Q?sLUkGM5Hpa98x9So+POtaQcRhO4eNc7qYAQjm4i?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 661e1df6-3f60-49d9-974c-08d8cd6bc66b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3287.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 02:30:04.9468
+X-Microsoft-Antispam-Message-Info: tOSKfmpTVVD9AehpwlSWxQmaVIrMatiU9DHRcnjHkl+O8V6hKUdUDpFs8087/guL27ucOVYVvaQjtUBUkyMNyGd3N08I/SwQ72wBkaN7ZBpDW/MXdoldqf7OjzVKmc7yl7B6txLAm0gQZxsjWNBtrRmGOuCbl1+9PppbO3we2p3jVCURztwDNteuxsL4VBPeQXmhQlqUIpQzkX6PjjF/uUWnjP1AvozLRF4NaM5vN5xUJazX5impZvVQ1tUuBESf6M7FwoLXBPchXN+vGw4U3oLVjkpNZqGegZWoRY9cPqEzjooLuZvXIO88xz2QxBYRF5bEcc5Qd+3FUmLC3XGXZHPsD+vh8u1liIY+/+cTBeXAg96E35TXkxkhR1S0szKbMlja9TURpjaxP/0Mli+qUCb4Z/jX+rCY9NHid4BYv3pTv2o1FB7JhXMm+zc7PpyiU8k4aKBNYX3hBUvDK0m131r2pmDibcl+H56HQ4kqLO0v+ckAZoRq1grCgcyBzWtWLyR/9QXIlKgLXyBvj/mbaH6MfISfiEGZZhn438hXP//HuS2Mn2p9/ApL5armxpSLuKXNFNhpCEdo8t0SgrCtkSUzmEimhczGB+gDM4zgYn2fbBy95DzkODMelkeydzstRQnc1kDx3Wbi6XfFXK/IHG3UfIw/3UrPN5OaqMry1C/GTZCKH+VyHD/kCnMVuqiHCxvKB3esUwkH0eyBvJ7Hsp0UfHv3RBe6HAdEJ1tlYNo=
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(39860400002)(346002)(36840700001)(46966006)(316002)(9686003)(336012)(47076005)(86362001)(7696005)(82310400003)(55016002)(82740400003)(8676002)(5660300002)(966005)(70206006)(478600001)(2906002)(70586007)(8936002)(4326008)(83380400001)(52536014)(36860700001)(186003)(26005)(54906003)(81166007)(33656002)(6506007)(53546011)(356005)(6862004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 02:31:45.7750
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P4f7/8KYrefICQdZic4K7FEr4flUwS9lZrZtRkZfIBcuLSpdj20YPanVnjRwlq8c69PrTyeQQw4hMJBhW66Pdw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3128
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100023
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102100024
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2019135c-1713-48cc-6ac2-08d8cd6c02c5
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT049.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0802MB2375
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/8/2021 10:37 PM, Jason Wang wrote:
->
-> On 2021/2/9 下午2:12, Eli Cohen wrote:
->> On Tue, Feb 09, 2021 at 11:20:14AM +0800, Jason Wang wrote:
->>> On 2021/2/8 下午6:04, Eli Cohen wrote:
->>>> On Mon, Feb 08, 2021 at 05:04:27PM +0800, Jason Wang wrote:
->>>>> On 2021/2/8 下午2:37, Eli Cohen wrote:
->>>>>> On Mon, Feb 08, 2021 at 12:27:18PM +0800, Jason Wang wrote:
->>>>>>> On 2021/2/6 上午7:07, Si-Wei Liu wrote:
->>>>>>>> On 2/3/2021 11:36 PM, Eli Cohen wrote:
->>>>>>>>> When a change of memory map occurs, the hardware resources are 
->>>>>>>>> destroyed
->>>>>>>>> and then re-created again with the new memory map. In such 
->>>>>>>>> case, we need
->>>>>>>>> to restore the hardware available and used indices. The driver 
->>>>>>>>> failed to
->>>>>>>>> restore the used index which is added here.
->>>>>>>>>
->>>>>>>>> Also, since the driver also fails to reset the available and used
->>>>>>>>> indices upon device reset, fix this here to avoid regression 
->>>>>>>>> caused by
->>>>>>>>> the fact that used index may not be zero upon device reset.
->>>>>>>>>
->>>>>>>>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported 
->>>>>>>>> mlx5
->>>>>>>>> devices")
->>>>>>>>> Signed-off-by: Eli Cohen<elic@nvidia.com>
->>>>>>>>> ---
->>>>>>>>> v0 -> v1:
->>>>>>>>> Clear indices upon device reset
->>>>>>>>>
->>>>>>>>>      drivers/vdpa/mlx5/net/mlx5_vnet.c | 18 ++++++++++++++++++
->>>>>>>>>      1 file changed, 18 insertions(+)
->>>>>>>>>
->>>>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>> index 88dde3455bfd..b5fe6d2ad22f 100644
->>>>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>>>>>>> @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
->>>>>>>>>          u64 device_addr;
->>>>>>>>>          u64 driver_addr;
->>>>>>>>>          u16 avail_index;
->>>>>>>>> +    u16 used_index;
->>>>>>>>>          bool ready;
->>>>>>>>>          struct vdpa_callback cb;
->>>>>>>>>          bool restore;
->>>>>>>>> @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
->>>>>>>>>          u32 virtq_id;
->>>>>>>>>          struct mlx5_vdpa_net *ndev;
->>>>>>>>>          u16 avail_idx;
->>>>>>>>> +    u16 used_idx;
->>>>>>>>>          int fw_state;
->>>>>>>>>            /* keep last in the struct */
->>>>>>>>> @@ -804,6 +806,7 @@ static int create_virtqueue(struct 
->>>>>>>>> mlx5_vdpa_net
->>>>>>>>> *ndev, struct mlx5_vdpa_virtque
->>>>>>>>>            obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in,
->>>>>>>>> obj_context);
->>>>>>>>>          MLX5_SET(virtio_net_q_object, obj_context, 
->>>>>>>>> hw_available_index,
->>>>>>>>> mvq->avail_idx);
->>>>>>>>> +    MLX5_SET(virtio_net_q_object, obj_context, hw_used_index,
->>>>>>>>> mvq->used_idx);
->>>>>>>>>          MLX5_SET(virtio_net_q_object, obj_context,
->>>>>>>>> queue_feature_bit_mask_12_3,
->>>>>>>>> get_features_12_3(ndev->mvdev.actual_features));
->>>>>>>>>          vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context,
->>>>>>>>> virtio_q_context);
->>>>>>>>> @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net
->>>>>>>>> *ndev, struct mlx5_vdpa_virtqueue *m
->>>>>>>>>      struct mlx5_virtq_attr {
->>>>>>>>>          u8 state;
->>>>>>>>>          u16 available_index;
->>>>>>>>> +    u16 used_index;
->>>>>>>>>      };
->>>>>>>>>        static int query_virtqueue(struct mlx5_vdpa_net *ndev, 
->>>>>>>>> struct
->>>>>>>>> mlx5_vdpa_virtqueue *mvq,
->>>>>>>>> @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct
->>>>>>>>> mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
->>>>>>>>>          memset(attr, 0, sizeof(*attr));
->>>>>>>>>          attr->state = MLX5_GET(virtio_net_q_object, 
->>>>>>>>> obj_context, state);
->>>>>>>>>          attr->available_index = MLX5_GET(virtio_net_q_object,
->>>>>>>>> obj_context, hw_available_index);
->>>>>>>>> +    attr->used_index = MLX5_GET(virtio_net_q_object, 
->>>>>>>>> obj_context,
->>>>>>>>> hw_used_index);
->>>>>>>>>          kfree(out);
->>>>>>>>>          return 0;
->>>>>>>>>      @@ -1535,6 +1540,16 @@ static void 
->>>>>>>>> teardown_virtqueues(struct
->>>>>>>>> mlx5_vdpa_net *ndev)
->>>>>>>>>          }
->>>>>>>>>      }
->>>>>>>>>      +static void clear_virtqueues(struct mlx5_vdpa_net *ndev)
->>>>>>>>> +{
->>>>>>>>> +    int i;
->>>>>>>>> +
->>>>>>>>> +    for (i = ndev->mvdev.max_vqs - 1; i >= 0; i--) {
->>>>>>>>> +        ndev->vqs[i].avail_idx = 0;
->>>>>>>>> +        ndev->vqs[i].used_idx = 0;
->>>>>>>>> +    }
->>>>>>>>> +}
->>>>>>>>> +
->>>>>>>>>      /* TODO: cross-endian support */
->>>>>>>>>      static inline bool mlx5_vdpa_is_little_endian(struct 
->>>>>>>>> mlx5_vdpa_dev
->>>>>>>>> *mvdev)
->>>>>>>>>      {
->>>>>>>>> @@ -1610,6 +1625,7 @@ static int save_channel_info(struct
->>>>>>>>> mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
->>>>>>>>>              return err;
->>>>>>>>>            ri->avail_index = attr.available_index;
->>>>>>>>> +    ri->used_index = attr.used_index;
->>>>>>>>>          ri->ready = mvq->ready;
->>>>>>>>>          ri->num_ent = mvq->num_ent;
->>>>>>>>>          ri->desc_addr = mvq->desc_addr;
->>>>>>>>> @@ -1654,6 +1670,7 @@ static void restore_channels_info(struct
->>>>>>>>> mlx5_vdpa_net *ndev)
->>>>>>>>>                  continue;
->>>>>>>>>                mvq->avail_idx = ri->avail_index;
->>>>>>>>> +        mvq->used_idx = ri->used_index;
->>>>>>>>>              mvq->ready = ri->ready;
->>>>>>>>>              mvq->num_ent = ri->num_ent;
->>>>>>>>>              mvq->desc_addr = ri->desc_addr;
->>>>>>>>> @@ -1768,6 +1785,7 @@ static void mlx5_vdpa_set_status(struct
->>>>>>>>> vdpa_device *vdev, u8 status)
->>>>>>>>>          if (!status) {
->>>>>>>>>              mlx5_vdpa_info(mvdev, "performing device reset\n");
->>>>>>>>>              teardown_driver(ndev);
->>>>>>>>> +        clear_virtqueues(ndev);
->>>>>>>> The clearing looks fine at the first glance, as it aligns with 
->>>>>>>> the other
->>>>>>>> state cleanups floating around at the same place. However, the 
->>>>>>>> thing is
->>>>>>>> get_vq_state() is supposed to be called right after to get 
->>>>>>>> sync'ed with
->>>>>>>> the latest internal avail_index from device while vq is 
->>>>>>>> stopped. The
->>>>>>>> index was saved in the driver software at vq suspension, but 
->>>>>>>> before the
->>>>>>>> virtq object is destroyed. We shouldn't clear the avail_index 
->>>>>>>> too early.
->>>>>>> Good point.
->>>>>>>
->>>>>>> There's a limitation on the virtio spec and vDPA framework that 
->>>>>>> we can not
->>>>>>> simply differ device suspending from device reset.
->>>>>>>
->>>>>> Are you talking about live migration where you reset the device but
->>>>>> still want to know how far it progressed in order to continue 
->>>>>> from the
->>>>>> same place in the new VM?
->>>>> Yes. So if we want to support live migration at we need:
->>>>>
->>>>> in src node:
->>>>> 1) suspend the device
->>>>> 2) get last_avail_idx via get_vq_state()
->>>>>
->>>>> in the dst node:
->>>>> 3) set last_avail_idx via set_vq_state()
->>>>> 4) resume the device
->>>>>
->>>>> So you can see, step 2 requires the device/driver not to forget the
->>>>> last_avail_idx.
->>>>>
->>>> Just to be sure, what really matters here is the used index. 
->>>> Becuase the
->>>> vriqtueue itself is copied from the src VM to the dest VM. The 
->>>> available
->>>> index is alreay there and we know the hardware reads it from there.
->>>
->>> So for "last_avail_idx" I meant the hardware internal avail index. 
->>> It's not
->>> stored in the virtqueue so we must migrate it from src to dest and 
->>> set them
->>> through set_vq_state(). Then in the destination, the virtqueue can be
->>> restarted from that index.
->>>
->> Consider this case: driver posted buffers till avail index becomes the
->> value 50. Hardware is executing but made it till 20 when virtqueue was
->> suspended due to live migration - this is indicated by hardware used
->> index equal 20.
->
->
-> So in this case the used index in the virtqueue should be 20? 
-> Otherwise we need not sync used index itself but all the used entries 
-> that is not committed to the used ring.
-
-In other word, for mlx5 vdpa there's no such internal last_avail_idx 
-stuff maintained by the hardware, right? And the used_idx in the 
-virtqueue is always in sync with the hardware used_index, and hardware 
-is supposed to commit pending used buffers to the ring while bumping up 
-the hardware used_index (and also committed to memory) altogether prior 
-to suspension, is my understanding correct here? Double checking if this 
-is the expected semantics of what 
-modify_virtqueue(MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND) should achieve.
-
-If the above is true, then it looks to me for mlx5 vdpa we should really 
-return h/w used_idx rather than the last_avail_idx through 
-get_vq_state(), in order to reconstruct the virt queue state post live 
-migration. For the set_map case, the internal last_avail_idx really 
-doesn't matter, although both indices are saved and restored 
-transparently as-is.
-
--Siwei
-
->
->
->> Now the vritqueue is copied to the new VM and the
->> hardware now has to continue execution from index 20. We need to tell
->> the hardware via configuring the last used_index.
->
->
-> If the hardware can not sync the index from the virtqueue, the driver 
-> can do the synchronization by make the last_used_idx equals to used 
-> index in the virtqueue.
->
-> Thanks
->
->
->>   So why don't we
->> restore the used index?
->>
->>>> So it puzzles me why is set_vq_state() we do not communicate the saved
->>>> used index.
->>>
->>> We don't do that since:
->>>
->>> 1) if the hardware can sync its internal used index from the virtqueue
->>> during device, then we don't need it
->>> 2) if the hardware can not sync its internal used index, the driver 
->>> (e.g as
->>> you did here) can do that.
->>>
->>> But there's no way for the hardware to deduce the internal avail 
->>> index from
->>> the virtqueue, that's why avail index is sycned.
->>>
->>> Thanks
->>>
->>>
->
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGVvIFlhbiA8bGVvLnlh
+bkBsaW5hcm8ub3JnPg0KPiBTZW50OiBUdWVzZGF5LCBGZWJydWFyeSA5LCAyMDIxIDg6MTcgUE0N
+Cj4gVG86IEppYW5saW4gTHYgPEppYW5saW4uTHZAYXJtLmNvbT4NCj4gQ2M6IGpvaG4uZ2FycnlA
+aHVhd2VpLmNvbTsgd2lsbEBrZXJuZWwub3JnOyBtYXRoaWV1LnBvaXJpZXJAbGluYXJvLm9yZzsN
+Cj4gcGV0ZXJ6QGluZnJhZGVhZC5vcmc7IG1pbmdvQHJlZGhhdC5jb207IGFjbWVAa2VybmVsLm9y
+ZzsgTWFyayBSdXRsYW5kDQo+IDxNYXJrLlJ1dGxhbmRAYXJtLmNvbT47IGFsZXhhbmRlci5zaGlz
+aGtpbkBsaW51eC5pbnRlbC5jb207DQo+IGpvbHNhQHJlZGhhdC5jb207IG5hbWh5dW5nQGtlcm5l
+bC5vcmc7IGxpbnV4LWFybS0NCj4ga2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtl
+cm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gcGVyZiB0b29sczog
+Rml4IGFybTY0IGJ1aWxkIGVycm9yIHdpdGggZ2NjLTExDQo+IA0KPiBIaSBKaWFubGluLA0KPiAN
+Cj4gT24gVHVlLCBGZWIgMDksIDIwMjEgYXQgMDc6MzM6NTdQTSArMDgwMCwgSmlhbmxpbiBMdiB3
+cm90ZToNCj4gPiBnY2MgdmVyc2lvbjogMTEuMC4wIDIwMjEwMjA4IChleHBlcmltZW50YWwpIChH
+Q0MpDQo+ID4NCj4gPiBGb2xsb3dpbmcgYnVpbGQgZXJyb3Igb24gYXJtNjQ6DQo+ID4NCj4gPiAu
+Li4uLi4uDQo+ID4gSW4gZnVuY3Rpb24g4oCYcHJpbnRm4oCZLA0KPiA+ICAgICBpbmxpbmVkIGZy
+b20g4oCYcmVnc19kdW1wX19wcmludGbigJkgYXQgdXRpbC9zZXNzaW9uLmM6MTE0MTozLA0KPiA+
+ICAgICBpbmxpbmVkIGZyb20g4oCYcmVnc19fcHJpbnRm4oCZIGF0IHV0aWwvc2Vzc2lvbi5jOjEx
+Njk6MjoNCj4gPiAvdXNyL2luY2x1ZGUvYWFyY2g2NC1saW51eC1nbnUvYml0cy9zdGRpbzIuaDox
+MDc6MTA6IFwNCj4gPiAgIGVycm9yOiDigJglLTVz4oCZIGRpcmVjdGl2ZSBhcmd1bWVudCBpcyBu
+dWxsIFstV2Vycm9yPWZvcm1hdC1vdmVyZmxvdz1dDQo+ID4NCj4gPiAxMDcgfCAgIHJldHVybiBf
+X3ByaW50Zl9jaGsgKF9fVVNFX0ZPUlRJRllfTEVWRUwgLSAxLCBfX2ZtdCwgXA0KPiA+ICAgICAg
+ICAgICAgICAgICBfX3ZhX2FyZ19wYWNrICgpKTsNCj4gPg0KPiA+IC4uLi4uLg0KPiA+IEluIGZ1
+bmN0aW9uIOKAmGZwcmludGbigJksDQo+ID4gICBpbmxpbmVkIGZyb20g4oCYcGVyZl9zYW1wbGVf
+X2ZwcmludGZfcmVncy5pc3Jh4oCZIGF0IFwNCj4gPiAgICAgYnVpbHRpbi1zY3JpcHQuYzo2MjI6
+MTQ6DQo+ID4gL3Vzci9pbmNsdWRlL2FhcmNoNjQtbGludXgtZ251L2JpdHMvc3RkaW8yLmg6MTAw
+OjEwOiBcDQo+ID4gCWVycm9yOiDigJglNXPigJkgZGlyZWN0aXZlIGFyZ3VtZW50IGlzIG51bGwg
+Wy1XZXJyb3I9Zm9ybWF0LW92ZXJmbG93PV0NCj4gPiAgIDEwMCB8ICAgcmV0dXJuIF9fZnByaW50
+Zl9jaGsgKF9fc3RyZWFtLCBfX1VTRV9GT1JUSUZZX0xFVkVMIC0gMSwgX19mbXQsDQo+ID4gICAx
+MDEgfCAgICAgICAgICAgICAgICAgICAgICAgICBfX3ZhX2FyZ19wYWNrICgpKTsNCj4gPg0KPiA+
+IGNjMTogYWxsIHdhcm5pbmdzIGJlaW5nIHRyZWF0ZWQgYXMgZXJyb3JzIC4uLi4uLi4NCj4gPg0K
+PiA+IFRoaXMgcGF0Y2ggZml4ZXMgV2Zvcm1hdC1vdmVyZmxvdyB3YXJuaW5ncyBieSByZXBsYWNp
+bmcgdGhlIHJldHVybg0KPiA+IHZhbHVlIE5VTEwgb2YgcGVyZl9yZWdfbmFtZSB3aXRoICJ1bmtu
+b3duIi4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEppYW5saW4gTHYgPEppYW5saW4uTHZAYXJt
+LmNvbT4NCj4gPiAtLS0NCj4gPiAgdG9vbHMvcGVyZi9hcmNoL2FybTY0L2luY2x1ZGUvcGVyZl9y
+ZWdzLmggfCA0ICsrLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBk
+ZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS90b29scy9wZXJmL2FyY2gvYXJtNjQv
+aW5jbHVkZS9wZXJmX3JlZ3MuaA0KPiA+IGIvdG9vbHMvcGVyZi9hcmNoL2FybTY0L2luY2x1ZGUv
+cGVyZl9yZWdzLmgNCj4gPiBpbmRleCBiYWFhNWU2NGEzZmIuLjkwMTQxOWY5MDdjMCAxMDA2NDQN
+Cj4gPiAtLS0gYS90b29scy9wZXJmL2FyY2gvYXJtNjQvaW5jbHVkZS9wZXJmX3JlZ3MuaA0KPiA+
+ICsrKyBiL3Rvb2xzL3BlcmYvYXJjaC9hcm02NC9pbmNsdWRlL3BlcmZfcmVncy5oDQo+ID4gQEAg
+LTg1LDEwICs4NSwxMCBAQCBzdGF0aWMgaW5saW5lIGNvbnN0IGNoYXIgKnBlcmZfcmVnX25hbWUo
+aW50IGlkKQ0KPiA+ICAJY2FzZSBQRVJGX1JFR19BUk02NF9QQzoNCj4gPiAgCQlyZXR1cm4gInBj
+IjsNCj4gPiAgCWRlZmF1bHQ6DQo+ID4gLQkJcmV0dXJuIE5VTEw7DQo+ID4gKwkJcmV0dXJuICJ1
+bmtub3duIjsNCj4gPiAgCX0NCj4gPg0KPiA+IC0JcmV0dXJuIE5VTEw7DQo+ID4gKwlyZXR1cm4g
+InVua25vd24iOw0KPiANCj4gVGhpcyBpc3N1ZSBpcyBhIGNvbW1vbiBpc3N1ZSBjcm9zc2luZyBh
+bGwgYXJjaHMuICBTbyBpdCdzIGJldHRlciB0byBjaGFuZ2UgdGhlDQo+IGNvZGUgaW4gdGhlIHBs
+YWNlcyB3aGVyZSBjYWxscyBwZXJmX3JlZ19uYW1lKCksIGUuZy4gaW4NCj4gdXRpbC9zZXNzaW9u
+LmM6DQo+IA0KPiAtLS0gYS90b29scy9wZXJmL3V0aWwvc2Vzc2lvbi5jDQo+ICsrKyBiL3Rvb2xz
+L3BlcmYvdXRpbC9zZXNzaW9uLmMNCj4gQEAgLTExMzUsMTIgKzExMzUsMTQgQEAgc3RhdGljIHZv
+aWQgYnJhbmNoX3N0YWNrX19wcmludGYoc3RydWN0DQo+IHBlcmZfc2FtcGxlICpzYW1wbGUsIGJv
+b2wgY2FsbHN0YWNrKSAgc3RhdGljIHZvaWQgcmVnc19kdW1wX19wcmludGYodTY0DQo+IG1hc2ss
+IHU2NCAqcmVncykgIHsNCj4gICAgICAgICB1bnNpZ25lZCByaWQsIGkgPSAwOw0KPiArICAgICAg
+IGNoYXIgKnJlZ19uYW1lOw0KPiANCj4gICAgICAgICBmb3JfZWFjaF9zZXRfYml0KHJpZCwgKHVu
+c2lnbmVkIGxvbmcgKikgJm1hc2ssIHNpemVvZihtYXNrKSAqIDgpIHsNCj4gICAgICAgICAgICAg
+ICAgIHU2NCB2YWwgPSByZWdzW2krK107DQo+IA0KPiArICAgICAgICAgICAgICAgcmVnX25hbWUg
+PSBwZXJmX3JlZ19uYW1lKHJpZCk7DQo+ICAgICAgICAgICAgICAgICBwcmludGYoIi4uLi4gJS01
+cyAweCUwMTYiIFBSSXg2NCAiXG4iLA0KPiAtICAgICAgICAgICAgICAgICAgICAgIHBlcmZfcmVn
+X25hbWUocmlkKSwgdmFsKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICByZWdfbmFtZSA/OiAi
+VW5rbm93biIsIHZhbCk7DQo+ICAgICAgICAgfQ0KPiAgfQ0KPiANCg0KVGhhbmtzIGZvciB5b3Vy
+IGNvbW1lbnRzLCBJIHdpbGwgc2VuZCBhIHYyIG9mIHRoZSBwYXRjaCB0b2RheS4NCg0KSmlhbmxp
+bg0KDQoNCj4gQW5kIGFub3RoZXIgcG90ZW50aWFsIGlzc3VlIGlzIHRoZSBmb3JtYXQgc3BlY2lm
+aWVyICIlLTVzIiwgaXQgcHJpbnRzIG91dA0KPiBtYXhpbXVtIHRvIDUgY2hhcnMsIGJ1dCBhY3R1
+YWxseSBzdHJpbmcgIlVua25vd24iIGhhcyA3IGNoYXJzLg0KPiBBY3R1YWxseSB0aGUgZm9ybWF0
+IHNwZWNpZmllciBicmVha3Mgb3RoZXIgYXJjaHMgcmVnaXN0ZXIgbmFtZXMsIGUuZy4NCj4gWzFd
+WzJdLCBzZWVtcyB0byBtZSwgaXQncyBiZXR0ZXIgdG8gY2hhbmdlIGFzICIlLThzIiwgeW91IG1p
+Z2h0IG5lZWQgdG8gdXNlIGENCj4gZGVkaWNhdGVkIHBhdGNoIGZvciBmb3JtYXQgc3BlY2lmaWVy
+IGNoYW5nZXMuDQo+IA0KPiBUaGFua3MsDQo+IExlbw0KPiANCj4gDQo+IFsxXQ0KPiBodHRwczov
+L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5n
+aXQvdHJlZS90b29scy8NCj4gcGVyZi9hcmNoL3Bvd2VycGMvaW5jbHVkZS9wZXJmX3JlZ3MuaCNu
+NTcNCj4gWzJdDQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
+Z2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90cmVlL3Rvb2xzLw0KPiBwZXJmL2FyY2gvY3NreS9pbmNs
+dWRlL3BlcmZfcmVncy5oI244Mw0K
