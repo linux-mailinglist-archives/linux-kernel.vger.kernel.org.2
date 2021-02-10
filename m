@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E94E3166E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E42B3166E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhBJMiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:38:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58240 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231773AbhBJMgj (ORCPT
+        id S231444AbhBJMjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:39:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhBJMgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:36:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612960512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r9BSzyb2e+6npXvlQKaKsVtbO2RXid50XjjwcfxjJRE=;
-        b=BmHn/CruB6Hdy7RURZ/fqy5AEQAXvK1uvo5s2o/ZvTeshmldmt16D0ZkZDPKf3PAEPX0RC
-        GoyJBpxKxax3WshYuAQv8xDUgFt2NxUh6SoOC3qIyi+ZNfRYzJH8hROmFLPNrfxMmhjVV+
-        DPpcecmBIDQrZSQhJaCdDvFJiifi/jE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-kw42BTlFN8eDbrW7OD9U9w-1; Wed, 10 Feb 2021 07:35:08 -0500
-X-MC-Unique: kw42BTlFN8eDbrW7OD9U9w-1
-Received: by mail-wr1-f71.google.com with SMTP id d7so1734990wri.23
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:35:08 -0800 (PST)
+        Wed, 10 Feb 2021 07:36:47 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34DDC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:36:06 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id j11so1694009wmi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:36:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hDKOpaktEStTreJr6wPyslF3miCA2TzjjN6jRt7iPts=;
+        b=MrdG9kg6X4KPiSGmo1DrNL18ceyfSYusJI3mskQH0LSvKNMm/WYcibKYxde2grkDwA
+         lfRYUMI+VGtFN6mcff2wRbB1VDk/nfeGXF+thBLQWEY7pglU3AujIpTInlvDRDqQmHbF
+         X9nSW12/I7Fc9rss3x+U4UClyuNyAX5HmHZD+36pZ33Syrsvcbc3BB9GM7IShNPKO4Az
+         BJUPdcg+DolMWdEKLgP5kF5tDx4V7+JCDHlR5TwGMqvtRTPw2mYkVFuKxD+BPUZJnYPz
+         UK8NejyKFQehkmOWOhWe7zmeTijKvVaQUJ2bY7dQc/jWeMJEoSqbrkApJovnC2LXV4uR
+         kAwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=r9BSzyb2e+6npXvlQKaKsVtbO2RXid50XjjwcfxjJRE=;
-        b=UXdRVIQj9Pj0LjPKwu/2moo8LCKdDyEZO0d0Bo4HbPwckmMYrWEa5SCaYNaNA/uy3q
-         duj4hbfcMfdiswa9PXKEiR8emjTisrjBh9GVphKL/J5E9avW7h1wARARAoKLLRNKwDb7
-         Y0A6Mqk+QgB/lmuo3b6YOYh6pNlFtrsuFLnD8uGNd1N9hzSwQuF+yOWR2vtf7npjsgdW
-         r9JR3ybt871+SrIc9G5InbjM/CO8tOFEwEDLGs58CfmvfPm9FYKdzp+Q1yV5B0muwzI4
-         MaxZgzlsAtWi6kAl18tSGnWYSI2JWG3lDpvL8ltU6QM7WgrzhWuQpjYdrNhIEyolJkLv
-         fzAQ==
-X-Gm-Message-State: AOAM531muxL6yHIMSuPXdAecrmp3PEDxNOipYPpRTK5atMLbnUmy3t6N
-        IfTdPOdGSRG5DDkRbi9AetyyacgkyrtZ2K9csBh9zeKrJA7guIrlpTxIq6EWBvQHlZST6f3bBzE
-        jemAMcY+suBDnYth22Yhdh8Kr
-X-Received: by 2002:adf:d852:: with SMTP id k18mr3485070wrl.262.1612960507773;
-        Wed, 10 Feb 2021 04:35:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzkbUgr0QieZfImnKg2Mg3kQ6hfRq4PRP6E/bJ3CbrAeTM6nxJpHt1GPBO96hNlreeAnnVNMA==
-X-Received: by 2002:adf:d852:: with SMTP id k18mr3485058wrl.262.1612960507639;
-        Wed, 10 Feb 2021 04:35:07 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id f2sm2856130wrt.7.2021.02.10.04.35.05
+         :mime-version:content-disposition:in-reply-to;
+        bh=hDKOpaktEStTreJr6wPyslF3miCA2TzjjN6jRt7iPts=;
+        b=TFV7/gO6O22VRA+ZZIFEzey4yhZIQgyddWcNJG5JDiLYWZRaeSQNqGSxIghCs/tx9i
+         3fCpcI2uWaiSmk3e5oP/JmKKVmp3hyzWax5pxjGNCjVhFmiZ3MpmmAuJ2+oD70/P0sqI
+         BPWOOlWhcb0BSwoWNHiPxG6jdZ2YxIkRSPrNfPweIbzIk7l87SqazOiiRcb5sD3rCct3
+         SLUexPkDpSeV3GemPJ950sGBQ8FYF2lbm4aN3MBX3lx5dxHivodyIxdGiGm8MEY/61Of
+         cumWhgmAu31HEOnY64cwSlY23OEGMsuFaCN8YtDT0lVc4Qq2/XY0E3wKyg+qUe+6GNAV
+         Ap+w==
+X-Gm-Message-State: AOAM531ZARRXkCGeQXysVHxXNVh0OckTtf7b+Q5qD/Bqqi/iE0zrh+d3
+        uw2+djX4VZyWMpp+TRdlVl0RIQZcfW55Un/l
+X-Google-Smtp-Source: ABdhPJwMyaa98MzWtViUgyDn/EoQoFW2AbbhBoAJhFVNN/hjyjBxi4bL5f3ApCiy1wnIScJOHnwxOA==
+X-Received: by 2002:a05:600c:4314:: with SMTP id p20mr2778220wme.52.1612960565373;
+        Wed, 10 Feb 2021 04:36:05 -0800 (PST)
+Received: from localhost ([49.207.131.89])
+        by smtp.gmail.com with ESMTPSA id i10sm3152614wrp.0.2021.02.10.04.36.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 04:35:06 -0800 (PST)
-Date:   Wed, 10 Feb 2021 07:35:03 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
-        lulu@redhat.com, sgarzare@redhat.com, rdunlap@infradead.org
-Subject: Re: [PATCH V3 16/19] virtio-pci: introduce modern device module
-Message-ID: <20210210073404-mutt-send-email-mst@kernel.org>
-References: <20210104065503.199631-1-jasowang@redhat.com>
- <20210104065503.199631-17-jasowang@redhat.com>
- <20210209091916-mutt-send-email-mst@kernel.org>
- <721bf1dc-0b06-7f2a-9685-064a7c281366@redhat.com>
+        Wed, 10 Feb 2021 04:36:04 -0800 (PST)
+Date:   Wed, 10 Feb 2021 18:05:53 +0530
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH] staging: ralink-gdma: Fix checkpatch.pl CHECK
+Message-ID: <20210210123553.bzkipyhvedvlcvcc@xps.yggdrail>
+References: <20210210120348.262328-1-aakashhemadri123@gmail.com>
+ <20210210121915.GX2696@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <721bf1dc-0b06-7f2a-9685-064a7c281366@redhat.com>
+In-Reply-To: <20210210121915.GX2696@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:44:03PM +0800, Jason Wang wrote:
-> 
-> On 2021/2/9 下午10:20, Michael S. Tsirkin wrote:
-> > On Mon, Jan 04, 2021 at 02:55:00PM +0800, Jason Wang wrote:
-> > > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> > > ---
-> > >   drivers/virtio/Kconfig                 |  10 +-
-> > >   drivers/virtio/Makefile                |   1 +
-> > >   drivers/virtio/virtio_pci_common.h     |  27 +-
-> > >   drivers/virtio/virtio_pci_modern.c     | 617 -------------------------
-> > >   drivers/virtio/virtio_pci_modern_dev.c | 599 ++++++++++++++++++++++++
-> > >   include/linux/virtio_pci_modern.h      | 111 +++++
-> > >   6 files changed, 721 insertions(+), 644 deletions(-)
-> > >   create mode 100644 drivers/virtio/virtio_pci_modern_dev.c
-> > >   create mode 100644 include/linux/virtio_pci_modern.h
-> > > 
-> > > diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
-> > > index 7b41130d3f35..6b9b81f4b8c2 100644
-> > > --- a/drivers/virtio/Kconfig
-> > > +++ b/drivers/virtio/Kconfig
-> > > @@ -12,6 +12,14 @@ config ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
-> > >   	  This option is selected if the architecture may need to enforce
-> > >   	  VIRTIO_F_ACCESS_PLATFORM
-> > > +config VIRTIO_PCI_MODERN
-> > > +	tristate "Modern Virtio PCI Device"
-> > > +	depends on PCI
-> > > +	help
-> > > +	  Modern PCI device implementation. This module implements the
-> > > +	  basic probe and control for devices which are based on modern
-> > > +	  PCI device with possible vendor specific extensions.
-> > > +
-> > >   menuconfig VIRTIO_MENU
-> > >   	bool "Virtio drivers"
-> > >   	default y
-> > > @@ -20,7 +28,7 @@ if VIRTIO_MENU
-> > >   config VIRTIO_PCI
-> > >   	tristate "PCI driver for virtio devices"
-> > > -	depends on PCI
-> > > +	depends on VIRTIO_PCI_MODERN
-> > >   	select VIRTIO
-> > >   	help
-> > >   	  This driver provides support for virtio based paravirtual device
-> > Looks like VIRTIO_PCI_MODERN is actually just a library that
-> > virtio pci uses. Is that right?
-> 
-> 
-> Right.
-> 
-> 
-> > In that case just select it
-> > automatically, let's not make users enable it manually.
-> 
-> 
-> I've considered to do this but the problem is that the module depends on PCI
-> so it can't be selected I think.
+On 21/02/10 03:19PM, Dan Carpenter wrote:
+> On Wed, Feb 10, 2021 at 05:33:48PM +0530, Aakash Hemadri wrote:
+> > Remove CHECK: Lines should not end with a '('
+> >
+> > Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> > ---
+> >
+> >  drivers/staging/ralink-gdma/ralink-gdma.c | 28 ++++++++++++-----------
+> >  1 file changed, 15 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
+> > index 655df317d0ee..a11f915f3308 100644
+> > --- a/drivers/staging/ralink-gdma/ralink-gdma.c
+> > +++ b/drivers/staging/ralink-gdma/ralink-gdma.c
+> > @@ -135,8 +135,7 @@ struct gdma_data {
+> >  	int (*start_transfer)(struct gdma_dmaengine_chan *chan);
+> >  };
+> >
+> > -static struct gdma_dma_dev *gdma_dma_chan_get_dev(
+> > -	struct gdma_dmaengine_chan *chan)
+> > +static struct gdma_dma_dev *gdma_dma_chan_get_dev(struct gdma_dmaengine_chan *chan)
+> >  {
+> >  	return container_of(chan->vchan.chan.device, struct gdma_dma_dev,
+> >  		ddev);
+> > @@ -510,10 +509,11 @@ static void gdma_dma_issue_pending(struct dma_chan *c)
+> >  	spin_unlock_irqrestore(&chan->vchan.lock, flags);
+> >  }
+> >
+> > -static struct dma_async_tx_descriptor *gdma_dma_prep_slave_sg(
+> > -		struct dma_chan *c, struct scatterlist *sgl,
+> > -		unsigned int sg_len, enum dma_transfer_direction direction,
+> > -		unsigned long flags, void *context)
+> > +static struct dma_async_tx_descriptor
+> > +	*gdma_dma_prep_slave_sg(struct dma_chan *c, struct scatterlist *sgl,
+>
+> Don't do it like this...  The original code is better so, I guess, lets
+> leave it as is.  There are two accepted ways to start a function in the
+> kernel:
+>
+> ONE:
+> static type
+> function_name(paramenters)
+>
+> TWO
+> static type function_name(paramenters)
+>
+> Either option will let you grep for the names of the functions:
+>
+> 	egrep "^[a-zA-Z]" dir/file.c | grep '('
+>
+> regards,
+> dan carpenter
+>
+>
 
-Drop the dependency, document that whoever selects it must depend on PCI.
+Appreciate the explanation,
+Will drop it
 
-> Thanks
-> 
-> 
-> > 
-
+thanks,
+aakash hemadri
