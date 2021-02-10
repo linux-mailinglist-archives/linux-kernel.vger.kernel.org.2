@@ -2,115 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26929315CFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD7F315CC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235348AbhBJCMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:12:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234717AbhBJA44 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 19:56:56 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D14C061794
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 16:53:43 -0800 (PST)
-Message-Id: <20210210002513.382806685@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612918421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=D23ic3BaNnGldICy/Rvj1vt2CAADFX+q7tl1/gXyEhg=;
-        b=Tje4rabqZnBBwT1c1/Z10BNq2oe8ZbyEz5gBtMgZnw8yb6lmZLe/LpyfbFUgUk6JA0Mkuv
-        vwIR51UqB0sPJ2AiZULMbuCZqh/bcr3v/Qem+znTCuRw/coQCsOiOwyZ6j+W7+1YzIUPFo
-        cZ6XgpuZyw6f++l7lopp7vVYycEzHTq/eWEfcKHVhVeOjaf/Q+JIHoSmY1qYAj2+RuxMoU
-        CN4rCeKsqZUufS1ozHcOlgNIoD5siERnvSdvJTViIWrATxh8GFh+PULC35u70vvNl4B+Lr
-        PPGJUmcqTVzFBQXLB1gTcJ9NwpDVQdA8716Quzbv0HX9U4DoD2L+7fOP7qq1mg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612918421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=D23ic3BaNnGldICy/Rvj1vt2CAADFX+q7tl1/gXyEhg=;
-        b=usgLHCGGUGkzgp0JeYciR1lOfYYUBQz3sVy2hVrfjY9zkWzixfPf1MC562dN54qdZKBg24
-        C+DM6FKi57Z9FdBQ==
-Date:   Wed, 10 Feb 2021 00:40:54 +0100
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Helge Deller <deller@gmx.de>,
+        id S234834AbhBJCAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:00:11 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:59014 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233826AbhBJA3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 19:29:41 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l9dN7-005CzA-Vx; Wed, 10 Feb 2021 01:28:45 +0100
+Date:   Wed, 10 Feb 2021 01:28:45 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Mickey Rachamim <mickeyr@marvell.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rich Felker <dalias@libc.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Subject: [patch V2 13/13] x86/softirq/64: Inline do_softirq_own_stack()
-References: <20210209234041.127454039@linutronix.de>
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [EXT] Re: [PATCH net-next 5/7] net: marvell: prestera: add LAG
+ support
+Message-ID: <YCMovY0veFPIQkTB@lunn.ch>
+References: <20210203165458.28717-1-vadym.kochan@plvision.eu>
+ <20210203165458.28717-6-vadym.kochan@plvision.eu>
+ <20210204211647.7b9a8ebf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87v9b249oq.fsf@waldekranz.com>
+ <20210208130557.56b14429@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YCKVAtu2Y8DAInI+@lunn.ch>
+ <20210209093500.53b55ca8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <BN6PR18MB158781B17E633670912AEED6BA8E9@BN6PR18MB1587.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN6PR18MB158781B17E633670912AEED6BA8E9@BN6PR18MB1587.namprd18.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+> Right at the beginning - we implemented PP function into the Kernel
+> driver like the SDMA operation (This is the RX/TX DMA engine).
 
-There is no reason to have this as a seperate function for a single caller.
+> We do plan to port more and more PP functions as Kernel drivers
+> along the way.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
-V2: Adopt to the new header file.
----
- arch/x86/include/asm/irq_stack.h     |    3 +--
- arch/x86/include/asm/softirq_stack.h |   11 +++++++++++
- arch/x86/kernel/irq_64.c             |    5 -----
- 3 files changed, 12 insertions(+), 7 deletions(-)
+It will be interesting to see how well you manage to handle the 'split
+brain' problem.
 
---- a/arch/x86/include/asm/irq_stack.h
-+++ b/arch/x86/include/asm/irq_stack.h
-@@ -194,7 +194,7 @@
-  * interrupts are pending to be processed. The interrupt stack cannot be in
-  * use here.
-  */
--#define run_softirq_on_irqstack()					\
-+#define do_softirq_own_stack()						\
- {									\
- 	__this_cpu_write(hardirq_stack_inuse, true);			\
- 	call_on_irqstack(__do_softirq, ASM_CALL_SOFTIRQ);		\
-@@ -202,7 +202,6 @@
- }
- 
- #else /* CONFIG_X86_64 */
--
- /* System vector handlers always run on the stack they interrupted. */
- #define run_sysvec_on_irqstack_cond(func, regs)				\
- {									\
---- /dev/null
-+++ b/arch/x86/include/asm/softirq_stack.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_X86_SOFTIRQ_STACK_H
-+#define _ASM_X86_SOFTIRQ_STACK_H
-+
-+#ifdef CONFIG_X86_64
-+# include <asm/irq_stack.h>
-+#else
-+# include <asm-generic/softirq_stack.h>
-+#endif
-+
-+#endif
---- a/arch/x86/kernel/irq_64.c
-+++ b/arch/x86/kernel/irq_64.c
-@@ -74,8 +74,3 @@ int irq_init_percpu_irqstack(unsigned in
- 		return 0;
- 	return map_irq_stack(cpu);
- }
--
--void do_softirq_own_stack(void)
--{
--	run_softirq_on_irqstack();
--}
+DMA packets to/from the host is pretty isolated from the rest of the
+driver. Look at DSA, it has completely separate drivers. But when you
+start having parts of the control plain in the driver poking switch
+registers, and parts of the control plane in the SDK poking registers,
+you have an interesting synchronisation problem.
 
+I guess stats would be a good place to start. Throw away the current
+code making an RPC into the SDK, and just directly get the values from
+the registers. No real synchronisation problems there. In fact, most
+of the ethtool get API calls should be reasonably easy to do via
+direct hardware access, rather than using the SDK RPC. Getting values
+like that should be easy to synchronise.
+
+     Andrew
