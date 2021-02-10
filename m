@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23F9316A77
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1A2316A7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhBJPrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:47:14 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:51685 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhBJPrI (ORCPT
+        id S231543AbhBJPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:50:31 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2533 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229917AbhBJPu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:47:08 -0500
-Received: from fsav104.sakura.ne.jp (fsav104.sakura.ne.jp [27.133.134.231])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11AFkPLq074787;
-        Thu, 11 Feb 2021 00:46:25 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav104.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp);
- Thu, 11 Feb 2021 00:46:25 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11AFkKCH074770
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 11 Feb 2021 00:46:25 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 0/3][RESEND] add support for never printing hashed
- addresses
-To:     Timur Tabi <timur@kernel.org>
-References: <20210210051814.845713-1-timur@kernel.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Message-ID: <6da0be5a-7cb0-4943-e61f-7c3275e60cb6@i-love.sakura.ne.jp>
-Date:   Thu, 11 Feb 2021 00:46:15 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 10 Feb 2021 10:50:27 -0500
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DbPGB6Kk7z67ln7;
+        Wed, 10 Feb 2021 23:44:50 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 10 Feb 2021 16:49:46 +0100
+Received: from [10.210.168.117] (10.210.168.117) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 10 Feb 2021 15:49:45 +0000
+Subject: Re: [PATCH v5 0/4] perf vendor events: Support PMU events for A64FX
+To:     "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>,
+        "'will@kernel.org'" <will@kernel.org>,
+        "'mathieu.poirier@linaro.org'" <mathieu.poirier@linaro.org>,
+        "'leo.yan@linaro.org'" <leo.yan@linaro.org>,
+        "'peterz@infradead.org'" <peterz@infradead.org>,
+        "'mingo@redhat.com'" <mingo@redhat.com>,
+        "'acme@kernel.org'" <acme@kernel.org>,
+        "'mark.rutland@arm.com'" <mark.rutland@arm.com>,
+        "'alexander.shishkin@linux.intel.com'" 
+        <alexander.shishkin@linux.intel.com>,
+        "'jolsa@redhat.com'" <jolsa@redhat.com>,
+        "'namhyung@kernel.org'" <namhyung@kernel.org>
+CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'linux-arm-kernel@lists.infradead.org'" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210202125140.1785583-1-nakamura.shun@jp.fujitsu.com>
+ <57c6b89d-e0b2-3df4-8dcf-2cc71f772cb4@huawei.com>
+ <OSBPR01MB4600991FC47D2E5A7E013F0CF7B49@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+ <OSBPR01MB46007C599F706F3C56B20E64F7B29@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+ <OSBPR01MB4600E5D5B5BF038D5A3F8544F78F9@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+ <5b507e0e-0887-ee86-4fcd-06567d3f370b@huawei.com>
+ <OSBPR01MB46003F3F8106E1AA231084D9F78D9@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <ae8b6d89-5fcd-bff6-6d4d-bb350dca38fe@huawei.com>
+Date:   Wed, 10 Feb 2021 15:48:09 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20210210051814.845713-1-timur@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <OSBPR01MB46003F3F8106E1AA231084D9F78D9@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.117]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/02/10 14:18, Timur Tabi wrote:
-> [accidentally sent from the wrong email address, so resending]
+On 10/02/2021 15:34, nakamura.shun@fujitsu.com wrote:
+> Hi, John
 > 
-> [The list of email addresses on CC: is getting quite lengthy,
-> so I hope I've included everyone.]
+>> So my series is now on remotes/origin/tmp.perf/core in Arnaldo's acme git, so
 > 
-> Although hashing addresses printed via printk does make the
-> kernel more secure, it interferes with debugging, especially
-> with some functions like print_hex_dump() which always uses
-> hashed addresses.
+>> you could resend against that.
+> 
+>> 
+> 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
+> 
+>> 
+> 
+>> Or again, put my series on perf/core and send against that.
+> 
+> I will resend based on tmp.perf/core.
 
-Oh, I was wishing
+Actually it is now on perf/core, so that is a better baseline.
 
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 3b53c73580c5..34c7e145ac3c 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -802,7 +802,7 @@ static char *ptr_to_id(char *buf, char *end, const void *ptr,
- 	 * Print the real pointer value for NULL and error pointers,
- 	 * as they are not actual addresses.
- 	 */
--	if (IS_ERR_OR_NULL(ptr))
-+	if (IS_ERR_OR_NULL(ptr) || IS_ENABLED(CONFIG_DEBUG_DONT_HASH_POINTERS))
- 		return pointer_string(buf, end, ptr, spec);
- 
- 	/* When debugging early boot use non-cryptographically secure hash. */
+> 
+>> As for patch 3/4, firstly I'd say that it is not a 'fix'. As well, please ensure it causes
+> 
+>> no regression on x86 or arm64. So like "perf list" output is same as before (with
+> 
+>> just that change), and also test some same perf events and metrics (x86 only) to
+> 
+>> ensure that they are ok.
+> 
+>> Please also ensure no regression on "perf test".
+> 
+> I will fix the subject of patch 3/4.
+> 
+> I have checked the following:
+> 
+> - perf list does not change for x86 and A64FX
+> 
+> - No regression on perf test
+> 
+> - No problem with FLOPs and PMU event counters on x86
+> 
+>> BTW, please config your mail client for no text encoding.
+> 
+> I will send it in HTML format.
 
-change as a kernel config option, for more we try to switch using kernel command line options,
-more we likely make errors with sharing appropriate kernel command line options
-(e.g. https://github.com/google/syzkaller/commit/99c64d5c672700d6c0de63d11db25a0678e47a75 ).
+Hmmm, that's not better. I think that the mail servers reject html.
+
+Please consult Documentation/process/email-clients.rst
+
+Thanks,
+John
+
