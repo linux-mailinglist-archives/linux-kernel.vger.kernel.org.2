@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0180316C21
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C00316C22
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbhBJRKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:10:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
+        id S232045AbhBJRLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:11:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231481AbhBJRKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:10:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F58364E77;
-        Wed, 10 Feb 2021 17:09:25 +0000 (UTC)
+        id S229834AbhBJRLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:11:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A03E64E57;
+        Wed, 10 Feb 2021 17:10:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612976966;
-        bh=7seGJWhCZNh4jS921GuRjIARtdD3+bBH7qwyHjoxvp8=;
+        s=korg; t=1612977036;
+        bh=8z3OEsp9NKfuNay4ZjCe+TWdXCGEUczVdkYt0rCdCJ4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rK6f2dOzywGvkXtBdIQlvOksgz9tfxk584TbglR4hEPYrIdrgfVxhutXlmRAxEo18
-         JD6cfZ+gIVb59zcqaEDegCirX8WrVumiYyyLtaR12DdF9PkZU9UXHuAv9kA4QRVQDI
-         ifpLmLBdHJQ0huclP/l8LfdLEVaIf3UDPZuhnSG8=
-Date:   Wed, 10 Feb 2021 18:09:23 +0100
+        b=D8BXrhHbniEx4+PwPnlKPe/JPOMd8hxNLEBprrt65zIJ3WXLtnBAf90fZvR+O6jzD
+         awyp7qz+mQHgH91J4H+/ilj+EX3CJ15fRRyft0cXk1eAC18iv+ORz973UXN+zSl8e/
+         569IsHBmkptX5hcCWD6Oe90y8AN/+H0Nt1mlyOAg=
+Date:   Wed, 10 Feb 2021 18:10:34 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     stable <stable@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, rostedt <rostedt@goodmis.org>,
-        Michael Jeanson <mjeanson@efficios.com>
-Subject: Re: [stable 4.4, 4.9, 4.14, 4.19 LTS] Missing fix "memcg: fix a
- crash in wb_workfn when a device disappears"
-Message-ID: <YCQTQyRlCsJHXzIQ@kroah.com>
-References: <537870616.15400.1612973059419.JavaMail.zimbra@efficios.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] coresight: Patches for v5.12 (part 2)
+Message-ID: <YCQTineSi2DMPyHs@kroah.com>
+References: <20210210163610.2338491-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <537870616.15400.1612973059419.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210210163610.2338491-1-mathieu.poirier@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 11:04:19AM -0500, Mathieu Desnoyers wrote:
-> Hi,
+On Wed, Feb 10, 2021 at 09:36:08AM -0700, Mathieu Poirier wrote:
+> Hi Greg,
 > 
-> While reconciling the lttng-modules writeback instrumentation with its counterpart
-> within the upstream Linux kernel, I notice that the following commit introduced in
-> 5.6 is present in stable branches 5.4 and 5.5, but is missing from LTS stable branches
-> for 4.4, 4.9, 4.14, 4.19:
+> Please see if you can add these 2 patches to your 5.12 tally.  No worries
+> if you think it is too close to the merge window, I'll simply queue them
+> for the next one.
 > 
-> commit 68f23b89067fdf187763e75a56087550624fdbee
-> ("memcg: fix a crash in wb_workfn when a device disappears")
+> Thanks,
+> Mathieu
 > 
-> Considering that this fix was CC'd to the stable mailing list, is there any
-> reason why it has not been integrated into those LTS branches ?
+> Leo Yan (1):
+>   Documentation: coresight: Add PID tracing description
+> 
+> Suzuki K Poulose (1):
+>   coresight: etm-perf: Support PID tracing for kernel at EL2
+> 
+>  Documentation/trace/coresight/coresight.rst   | 32 +++++++++++++++++++
+>  .../hwtracing/coresight/coresight-etm-perf.c  | 27 +++++++++++++++-
+>  .../coresight/coresight-etm4x-core.c          | 13 ++++++++
+>  include/linux/coresight-pmu.h                 |  3 ++
+>  4 files changed, 74 insertions(+), 1 deletion(-)
 
-Yes, it doesn't apply at all.  If you think this is needed, I will
-gladly take backported and tested patches.
-
-But why do you think this is needed in older kernels?  Have you hit
-this in real-life?
+This does not apply to my char-misc-next branch (the second patch does
+not apply, I'll take the first one.)  Can you fix it up and resend?
 
 thanks,
 
