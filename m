@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA20316EE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45753316EF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234173AbhBJSjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:39:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36230 "EHLO
+        id S234029AbhBJSmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:42:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbhBJS1D (ORCPT
+        with ESMTP id S234197AbhBJS1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:27:03 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E467C0617A9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:26:22 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id o16so2289016qkj.15
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:26:22 -0800 (PST)
+        Wed, 10 Feb 2021 13:27:51 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46231C0617AA
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:26:24 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id p4so2063495qvn.23
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:26:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=e/+smwaphYxpb2OBykRaiI2qxi+r1iC3TI9cKW9LQAY=;
-        b=SBHmhZobtoi3KqCYzyV03uf8QCxFqDBqLqXozwb3/jdSQmszqqm9TiOh6dwoO0jqtf
-         bBelHwWVkPhnpTt81RR2KVeERjmmK52LgFlViDjTmb0pUWAFWJySNdxqbEzuZZLsoxca
-         Ryl1zbekb/Ayi6V0ZGa+KgMlWLPAujl4ETHZWu7nOsk24fRLu6mG3qzyt0hSTxG5imY1
-         5S6nHum5lYGtJ9k/6X1+bAftzRodlEzz88hzLKcJFOusrfbud/b5iOKkHIQdCAp5+QbN
-         nnkHBRkaORYgphz/FK/Q4E6DyxlN8s1SU6aYwwF/AHZDNh5pxMUK9H8IPO2/cOEr8mpf
-         Q6oQ==
+        bh=QyQE3EdrqBvyx/EpOPhJj5SBwQHKK6yPydf0zBuWnjI=;
+        b=IZQDi86ZCM/UWeCQWeODOWfhtsGqzS5/TOXfadVuSw6WuPvR8j13JDMi2i0sh6vESF
+         IqAhmzewaORsdMThrJ9fVlCP/yep47VjEFXUTMJkhK3r5Zhwv9A+tQqr8bRCa6hFjoZM
+         G6SefOgNDG7bNlOY/Ue9Xivk/y6AZ7JJaBjyb9xm4HX+7ZRA5hWsHdjBaSM0URW9ku1e
+         RWbeGJiqdnlT/vqcmw92OFOT8xxDu3+SSOlnov4hDv0Ty3iqzSpRTVFcgHDlKhmjmtce
+         k1t/pP2AKolsdY9WIZZeEPTVi9Pb8oAnwhUhWG21frgllQ/vS9giudZ10Ft7+UaJbgf0
+         cheQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=e/+smwaphYxpb2OBykRaiI2qxi+r1iC3TI9cKW9LQAY=;
-        b=tNcQBDZjMEEJwBk/O3EEeP5yE+6OzdDo5ISnDMjocm6NtmpviqNVyGtL2rTdWmbXFW
-         HMbuDrKO7eRz3MiIiiwHnZZpgYWjmGHhWmZlRtw4tQnrhoWI3PCF4ujRQWWp1mwVTm3a
-         R5X/a7ZUPiEYX9f3tVqrpOr2VkntsNUk/sLWU3RWkkl3PKyYOQypN+oDvjkb8hZIciuK
-         0Pt5zjqGba1BDPBHl8XIHkO7QtPeQyEI6UJ5MjT2DIhRyI5fsDtxO6S+/TiaH7SbGxH4
-         GWKCXaO2d3roAjkyPnqRH1bS/T5v/gaLokOvT+lxTfLw42GK/uftXoio1NhHpvdqWN2F
-         3oAw==
-X-Gm-Message-State: AOAM533Be+zi4RVyzZyb7ZcrF/+4eUs1G/vNyW2Xgs+WPtWcfPiJPrTb
-        gpaqCPfmNE6iXEu6zfJKBzNwrfPyUVI=
-X-Google-Smtp-Source: ABdhPJxIbp6/W2XHdD5AboBQyWQNYv/qugOTUPti7CdCCnJohaae/ys6EzLmx61wIk3rmhTJbVA8Jd5jWKY=
+        bh=QyQE3EdrqBvyx/EpOPhJj5SBwQHKK6yPydf0zBuWnjI=;
+        b=JDJYzL37kCfJQpuTxQZgzaXDQI9TNnOhML8Kojk02xBeJHcsqLQdPLf7nXORtsqq5x
+         Kw6CF9phZSXMHCxpDzI231Ro1PKN+czjAsMsgmiTJOwEPzE0Fuh2wrP/UrbzUWQQXngt
+         KjhVfqF3zGW6YbnkcLK9urkSBDTOoip/+QEsLiXdKfvS5YOSZvL+N2ZBUclV8cAkcyPW
+         8mL3IEV1SHMpTd1tCCeAJBqqtXKEe7zCyx/jCSLGxnMdOdJHjkBg1wcv3ff2JmaCZrRp
+         dNevajGa0dCKzqUoCpknai159zRflWpOq/xTDuz+CxQwJsQrJYu9ZDbm3O4+4zxGv7nT
+         OOfA==
+X-Gm-Message-State: AOAM531GC8C+Np44ZZMoj0WTonFiVSq+PMm8nSxmZ2O3djNI26+kF87V
+        +M/Ep+zDvsX7kxcq4olyxlbL4fYBIp0=
+X-Google-Smtp-Source: ABdhPJz4sOmQy0NThSlPmmMSaR5smiCWwLuIHxk9+mbZKXuUI0AT3Lq++1jU3lJsPrUA7M5PBCzKczekcuE=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:11fc:33d:bf1:4cb8])
- (user=seanjc job=sendgmr) by 2002:ad4:54ad:: with SMTP id r13mr4104809qvy.48.1612981581338;
- Wed, 10 Feb 2021 10:26:21 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a0c:bd93:: with SMTP id n19mr4048142qvg.5.1612981583481;
+ Wed, 10 Feb 2021 10:26:23 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 10 Feb 2021 10:26:07 -0800
+Date:   Wed, 10 Feb 2021 10:26:08 -0800
 In-Reply-To: <20210210182609.435200-1-seanjc@google.com>
-Message-Id: <20210210182609.435200-4-seanjc@google.com>
+Message-Id: <20210210182609.435200-5-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210210182609.435200-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH 3/5] KVM: selftests: Fix hex vs. decimal snafu in Xen test
+Subject: [PATCH 4/5] KVM: sefltests: Don't bother mapping GVA for Xen shinfo test
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,30 +67,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Xen shinfo selftest uses '40' when setting the GPA of the vCPU info
-struct, but checks for the result at '0x40'.  Arbitrarily use the hex
-version to resolve the bug.
+Don't bother mapping the Xen shinfo pages into the guest, they don't need
+to be accessed using the GVAs and passing a define with "GPA" in the name
+to addr_gva2hpa() is confusing.
 
-Fixes: 8d4e7e80838f ("KVM: x86: declare Xen HVM shared info capability and add test case")
 Cc: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
-index cb3963957b3b..b2a3be9eba8e 100644
+index b2a3be9eba8e..9246ea310587 100644
 --- a/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
 +++ b/tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c
-@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
+@@ -80,7 +80,6 @@ int main(int argc, char *argv[])
+ 	/* Map a region for the shared_info page */
+ 	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+ 				    SHINFO_REGION_GPA, SHINFO_REGION_SLOT, 2, 0);
+-	virt_map(vm, SHINFO_REGION_GPA, SHINFO_REGION_GPA, 2, 0);
  
- 	struct kvm_xen_vcpu_attr vi = {
- 		.type = KVM_XEN_VCPU_ATTR_TYPE_VCPU_INFO,
--		.u.gpa = SHINFO_REGION_GPA + 40,
-+		.u.gpa = SHINFO_REGION_GPA + 0x40,
- 	};
- 	vcpu_ioctl(vm, VCPU_ID, KVM_XEN_VCPU_SET_ATTR, &vi);
+ 	struct kvm_xen_hvm_config hvmc = {
+ 		.flags = KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL,
+@@ -147,9 +146,9 @@ int main(int argc, char *argv[])
+ 	struct pvclock_wall_clock *wc;
+ 	struct pvclock_vcpu_time_info *ti, *ti2;
  
+-	wc = addr_gva2hva(vm, SHINFO_REGION_GPA + 0xc00);
+-	ti = addr_gva2hva(vm, SHINFO_REGION_GPA + 0x40 + 0x20);
+-	ti2 = addr_gva2hva(vm, PVTIME_ADDR);
++	wc = addr_gpa2hva(vm, SHINFO_REGION_GPA + 0xc00);
++	ti = addr_gpa2hva(vm, SHINFO_REGION_GPA + 0x40 + 0x20);
++	ti2 = addr_gpa2hva(vm, PVTIME_ADDR);
+ 
+ 	vm_ts.tv_sec = wc->sec;
+ 	vm_ts.tv_nsec = wc->nsec;
 -- 
 2.30.0.478.g8a0d178c01-goog
 
