@@ -2,96 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C821C316FA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62263316FA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234484AbhBJTHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:07:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234443AbhBJTHZ (ORCPT
+        id S234536AbhBJTIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:08:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49421 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234491AbhBJTHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:07:25 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4E6C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:06:45 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id i71so3090183ybg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:06:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rb6kfpEn37w3Z1+tXOK4d0Lp/MyJ0dZikm/EZhBTBJE=;
-        b=gMQ9qLxOMXqeZRBQfMAxo3v4WFHEriibFaPJY46u2B9xDSxTA1TpJYCL8L3R09JbXD
-         5rHuzBhTj/OKWT06LMJpupCXgXEaCjuxy2VrqzAW3irefuof9osnOi/rdA8qkwaevUvh
-         y/fwRf7f8VRnZNIuBI67yeEM7wTrtZJVytOPc8yA0dyoIL0o4YftK8CyEDXN8cv/t6NN
-         nEDQMX87mgvou5Ej6AmK5NEANvEq+Tk/GisEMcx8hU+pB8zUxh0cao6qAkYVO1QjV02x
-         6oRy9tGJlZcAVVovmiqxthDkeKgXRVZT3Bx/2woqESGL7XvnZxieb1A1KnZ7F6AQX/dF
-         UXqg==
+        Wed, 10 Feb 2021 14:07:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612983978;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mTO49+9LAVg0rMFnoR7UG6tSv24dSvHoSbA2pY65UM0=;
+        b=NeiLKnOeHI0k45+7Az/iFfhVLjMZfQkWvwlCmi84NqYqFncdOZQeKZ5ejk3kT0CvVPnDiG
+        0bXN4DgV1hmM7yfI69Lkjhb7dqqDMNaA5SIGogcyHdJqoSuGcobBEn2DLUyF9Uwle4/Mr1
+        dFUmohU4aKBOD8L24E65n2XFetIIi6s=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-2lC0UEciPMiRJR2pjWxiUA-1; Wed, 10 Feb 2021 14:06:16 -0500
+X-MC-Unique: 2lC0UEciPMiRJR2pjWxiUA-1
+Received: by mail-qt1-f198.google.com with SMTP id w92so2332779qte.20
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:06:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rb6kfpEn37w3Z1+tXOK4d0Lp/MyJ0dZikm/EZhBTBJE=;
-        b=ZMFlWfIFotiU4CFuHCrY+huheVRNpbQJlkcTJDHURAMUi/cDGfz9ZIy2wsPfSsb4q0
-         Kzz6XvDMfWB/iDhVg61kFtO2RdZw63lp6icv3Z1Lh9oJqSjE/dsF0AC7eOWKNJoF2rBB
-         uftVoy8X2GMG61aOElgOn+Uyq6JHzHS8Xqn3Ye/v0oLHBUEBTATwrh6Dh2LZunE2hlbs
-         r5iPyw0NiK71Kuo/RYb5aP2vWU8ahGgEbzOS67wVnQp3EEeBIj2j/6WX3JpPHD6+PpCt
-         Vyc0zBhc2Kj6DHc7YZ7W+yEQPSG7X9WFZq7UX6zkHxPjSIazxDR08Rh4GczzGO+XxMNy
-         AsKQ==
-X-Gm-Message-State: AOAM530jyXH3nLo1FWroCmLpEHExIOLTdEi8svJgzepe/B3as0jvunxO
-        N1jiQzwD5nKn6pOjT2absAAoEUZTqVI6cc9YjmSyhA==
-X-Google-Smtp-Source: ABdhPJw1Lz7E9I7pVPuCoZatjSA617zeIkbI3DiWdFuwhGM91ygzg4rd+NoZ9M8J6+reng2esEJaOR/O/8WvDcKhHmE=
-X-Received: by 2002:a25:aa43:: with SMTP id s61mr6831176ybi.32.1612984004474;
- Wed, 10 Feb 2021 11:06:44 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mTO49+9LAVg0rMFnoR7UG6tSv24dSvHoSbA2pY65UM0=;
+        b=X8un1dZT3/+XtV6ldNMtJywPem3cWL1pn0k0vU6C62L1ZeEQoeejcazVim8NM492ay
+         +H1k+zSJPrLaE9UAqqkhG6VUOHXWqeY2QKGmbC9I+l+Dln3gVjNEIhC4zLu3sfy1Q/R3
+         RozqZhWPKhkqzi4k1TSDFHAzeQepFuYCzoCftiFz0f0msSiJ3UL0iNfi61uI1JeBzRtV
+         gqzNyJhYk4PbbvIOa/6BuOFY1++n61dmhpbhIjgQqywBpKTp+woL8XxnVPWKxhHKrQh/
+         wYvahHNdq6cDL0/9Er/grOamZbGgcWfukn3gvkwJHXTJH3IDOvubPobndC85xX/LH3El
+         1gZg==
+X-Gm-Message-State: AOAM531/UczeUcvjGGNzw8Q824yLYRtpiDcUElAVRUCq2ke9/QtWSP3i
+        KnmT0fDeYcDWD6heDE7K23gAqY+drunia2vEX7rq2nv3CUDT0DJNcGQ34iZRLCyEevBgJEYHNqW
+        mLmFTWaZ0DI9Q0b7rax6d2kJe
+X-Received: by 2002:ac8:5448:: with SMTP id d8mr4222562qtq.6.1612983975769;
+        Wed, 10 Feb 2021 11:06:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx/tRv5jLjJTHr+SmhyryUCprE3egVTktEAB26vf0nH0SrxAd7lAW7psca7AdeRoRpnWVCiiA==
+X-Received: by 2002:ac8:5448:: with SMTP id d8mr4222534qtq.6.1612983975422;
+        Wed, 10 Feb 2021 11:06:15 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id o24sm1948099qtt.36.2021.02.10.11.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 11:06:14 -0800 (PST)
+Date:   Wed, 10 Feb 2021 14:06:12 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v4 08/10] userfaultfd: add UFFDIO_CONTINUE ioctl
+Message-ID: <20210210190612.GR103365@xz-x1>
+References: <20210204183433.1431202-1-axelrasmussen@google.com>
+ <20210204183433.1431202-9-axelrasmussen@google.com>
+ <20210208235411.GC71523@xz-x1>
+ <CAJHvVcgC1zXoVde2Uva9zm3TjzA7g-qOMPm7wxX0dXxxwTLs6A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210210214720.02e6a6be@canb.auug.org.au> <YCQjfqH415zIhhyz@kroah.com>
-In-Reply-To: <YCQjfqH415zIhhyz@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 10 Feb 2021 11:06:08 -0800
-Message-ID: <CAGETcx88Ln2XxuLN7P2BVhzB=OQxPLLsBN7WLL1j2JtR4+Z8ow@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the driver-core tree
-To:     Greg KH <greg@kroah.com>, Rob Herring <robh+dt@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJHvVcgC1zXoVde2Uva9zm3TjzA7g-qOMPm7wxX0dXxxwTLs6A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:18 AM Greg KH <greg@kroah.com> wrote:
->
-> On Wed, Feb 10, 2021 at 09:47:20PM +1100, Stephen Rothwell wrote:
-> > Hi all,
+On Wed, Feb 10, 2021 at 10:00:21AM -0800, Axel Rasmussen wrote:
+> > >  static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
+> > > @@ -417,10 +416,14 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
+> > >                                               unsigned long dst_addr,
+> > >                                               unsigned long src_addr,
+> > >                                               struct page **page,
+> > > -                                             bool zeropage,
+> > > +                                             enum mcopy_atomic_mode mode,
+> > >                                               bool wp_copy)
+> > >  {
+> > >       ssize_t err;
+> > > +     bool zeropage = (mode == MCOPY_ATOMIC_ZEROPAGE);
+> > > +
+> > > +     if (mode == MCOPY_ATOMIC_CONTINUE)
+> > > +             return -EINVAL;
 > >
-> > After merging the driver-core tree, today's linux-next build (sparc64
-> > defconfig) failed like this:
-> >
-> > drivers/of/property.o: In function `parse_interrupts':
-> > property.c:(.text+0x14e0): undefined reference to `of_irq_parse_one'
-> >
-> > Caused by commit
-> >
-> >   f265f06af194 ("of: property: Fix fw_devlink handling of interrupts/interrupts-extended")
-> >
-> > CONFIG_OF_IRQ depends on !SPARC so of_irq_parse_one() needs a stub.
-> > I have added the following patch for today.
-> >
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Wed, 10 Feb 2021 21:27:56 +1100
-> > Subject: [PATCH] of: irq: make a stub for of_irq_parse_one()
-> >
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > ---
-> >  include/linux/of_irq.h | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > So you still passed in the mode into mfill_atomic_pte() just to make sure
+> > CONTINUE is not called there.  It's okay, but again I think it's not extremely
+> > necessary: we should make sure to fail early at the entry of uffdio_continue()
+> > by checking against the vma type to be hugetlb, rather than reaching here.
+> 
+> Hmm, it's not quite as simple as that. We don't have the dst_vma yet
+> in uffdio_continue(), __mcopy_atomic looks it up.
+> 
+> I'd prefer not to look it up in uffdio_continue(), because I think
+> that means changing the API so all the ioctls look up the vma, and
+> then plumb it into __mcopy_atomic. (We don't want to look it up twice,
+> since each lookup has to traverse the rbtree.) This is complicated too
+> by the fact that the ioctl handlers would need to perform various
+> validation / checks - e.g., acquiring mmap_lock, dealing with
+> *mmap_changing, validating the range, ....
 
-Thanks Stephen!
+Sure.
 
--Saravana
+> 
+> We can move the enforcement up one more layer, into __mcopy_atomic,
+> easily enough, though.
 
->
-> Thanks for this, I'll go queue it up now.
->
-> greg k-h
+Right, that sounds good to me.  It should be right after the "if
+(!vma_is_anonymous(dst_vma) && !vma_is_shmem(dst_vma))" check.
+
+Thanks,
+
+-- 
+Peter Xu
+
