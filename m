@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E381C317451
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5192C31745F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbhBJXY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233926AbhBJXYg (ORCPT
+        id S233728AbhBJX2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:28:06 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19036 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234155AbhBJX05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:24:36 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A535CC061788;
-        Wed, 10 Feb 2021 15:23:55 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id l25so7135579eja.9;
-        Wed, 10 Feb 2021 15:23:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LVyB6aVFegjh/BB39Z/3gEanq6lvT/mhc2gjTlbR304=;
-        b=Ltsi8EvdBtQvRjoANMJcwrISpAFLvmJ2C8VxRcxriJbvaZ1H9uMjsHWcx4k1KVwIp0
-         bEprsSTU/icuARDSY1rU06I6BedOoXhuhcIgJh6jxcQt9ggsbMK3SyzdhcxnWfOWN9gT
-         E5PYWDallpyZg5bnCqT7zgXoUxWsagtNa206F8EEFkBmsPO6KcpFz/zIWRjDEVcWBl3U
-         m0CKh8UMubbkzKQ1GFQajoSPGu94+hVxEvlymy59SIYbcYLFwtM3w4Yu7fAPflkJsmfG
-         LbzrxtfSEmjjRz3SHakXq/z1GCjoceNkpUvScCPt/IKE/L2FAZmjSB2HX9PO1F40u57g
-         evTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LVyB6aVFegjh/BB39Z/3gEanq6lvT/mhc2gjTlbR304=;
-        b=Z126DDr/XTEWjcbQNU9ITxxEKF1kwLKL7YEQxjurwXEM66rwGxa+qTIUPgoEc2XE+g
-         G1QwW/FWJy766KiZ3rwk/YkYujEqAstzlnI4EjyEMB5fMx4lZv/guLzjEdMJ1MfML5Dc
-         dSm/KB9J62pzn5PyqOMQda+n/gsTKEqmT5urYELElGE0poYeHwOL2gvChkUisQnLfu8r
-         HAauXRqhh7o4aNmZPKcT1njNbZSH+DNeKyBTSLOTCx+8FCzun3QukdEiUMDoBo0UCEgy
-         Hjo1eu349jAa2a09SVqh+ACBcPpb2G4B8/FwfllBmk93Mbq9b345HPMpIFJPoBnpb61F
-         FHVw==
-X-Gm-Message-State: AOAM533kGjb2pwTL8s2oMoHNK+xJH25Z6Tdw8opVERCUO+Anrv5TvjFw
-        3JWQaAQmcuRHN7fWFhzZ+Ug=
-X-Google-Smtp-Source: ABdhPJzF0KSQ9DdcnciBemPnpUA2B28QOBhea1HzTO3oC0toBtKbhjUBAWV9/atUFBeQfPDx+7VJVA==
-X-Received: by 2002:a17:906:8519:: with SMTP id i25mr5508356ejx.106.1612999434425;
-        Wed, 10 Feb 2021 15:23:54 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id w18sm2263806edt.8.2021.02.10.15.23.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 15:23:53 -0800 (PST)
-Date:   Thu, 11 Feb 2021 01:23:52 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 04/11] net: bridge: offload initial and final
- port flags through switchdev
-Message-ID: <20210210232352.m7nqzvs2g4i74rx4@skbuf>
-References: <20210209151936.97382-1-olteanv@gmail.com>
- <20210209151936.97382-5-olteanv@gmail.com>
- <20210209185100.GA266253@shredder.lan>
- <20210209202045.obayorcud4fg2qqb@skbuf>
- <20210209220124.GA271860@shredder.lan>
- <20210209225153.j7u6zwnpdgskvr2v@skbuf>
- <20210210105949.GB287766@shredder.lan>
+        Wed, 10 Feb 2021 18:26:57 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11AN3HZl100879;
+        Wed, 10 Feb 2021 18:25:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=lya6aWx3adNpubBuqfgnGh2PFxWHF1T1ZwnR7eu0Zk4=;
+ b=J9rrM279ujDjvj/fUkJzd6OK3OioO03i8GspWCb7gRQ1Bz9r5n1MIYjzJfeeEcb9oUok
+ RL+mDDutQwGn6UXo2B/UY1RfNmw7z7VZW6jCV3PZ8G0MyzYRViZERgG2wu4594UBjnGY
+ hga5HoV+sDejMNvioGMyMbpIiw0o13sYehXc1p9T9qUwhJ1oTB2CZgv/aeHELGbEJsCM
+ ffq0WbxFRn4S0qN+dMGISMAmiVF9ffCxzaBLXmmItZPMoi4lHGn2fQdD4L0GtOXTFLmt
+ EylkaYvDeupZdzGgshnoC8ZFN81JhM8Tgm29VNiZiKvSSGg55mX2rSHCmJEFgh3zaLpx Mw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36mqngjb0a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 18:25:01 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11AN4BW0105431;
+        Wed, 10 Feb 2021 18:25:01 -0500
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36mqngjayx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 18:25:01 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11ANNW50012293;
+        Wed, 10 Feb 2021 23:24:59 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma04wdc.us.ibm.com with ESMTP id 36hjr9hgy7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 23:24:59 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11ANOxZD31129994
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 23:24:59 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30EAAAC05B;
+        Wed, 10 Feb 2021 23:24:59 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E9FC2AC059;
+        Wed, 10 Feb 2021 23:24:51 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.160.95.194])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Wed, 10 Feb 2021 23:24:51 +0000 (GMT)
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210209182200.30606-3-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v17 02/10] of: Add a common kexec FDT setup function
+In-reply-to: <20210209182200.30606-3-nramas@linux.microsoft.com>
+Date:   Wed, 10 Feb 2021 20:24:49 -0300
+Message-ID: <87y2fvo69q.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210105949.GB287766@shredder.lan>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-10_11:2021-02-10,2021-02-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 malwarescore=0 phishscore=0
+ adultscore=0 bulkscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102100200
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:59:49PM +0200, Ido Schimmel wrote:
-> > > The reverse, during unlinking, would be to refuse unlinking if the upper
-> > > has uppers of its own. netdev_upper_dev_unlink() needs to learn to
-> > > return an error and callers such as team/bond need to learn to handle
-> > > it, but it seems patchable.
-> >
-> > Again, this was treated prior to my deletion in this series and not by
-> > erroring out, I just really didn't think it through.
-> >
-> > So you're saying that if we impose that all switchdev drivers restrict
-> > the house of cards to be constructed from the bottom up, and destructed
-> > from the top down, then the notification of bridge port flags can stay
-> > in the bridge layer?
->
-> I actually don't think it's a good idea to have this in the bridge in
-> any case. I understand that it makes sense for some devices where
-> learning, flooding, etc are port attributes, but in other devices these
-> can be {port,vlan} attributes and then you need to take care of them
-> when a vlan is added / deleted and not only when a port is removed from
-> the bridge. So for such devices this really won't save anything. I would
-> thus leave it to the lower levels to decide.
 
-Just for my understanding, how are per-{port,vlan} attributes such as
-learning and flooding managed by the Linux bridge? How can I disable
-flooding only in a certain VLAN?
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+
+> From: Rob Herring <robh@kernel.org>
+>
+> Both arm64 and powerpc do essentially the same FDT /chosen setup for
+> kexec.  The differences are either omissions that arm64 should have
+> or additional properties that will be ignored.  The setup code can be
+> combined and shared by both powerpc and arm64.
+>
+> The differences relative to the arm64 version:
+>  - If /chosen doesn't exist, it will be created (should never happen).
+>  - Any old dtb and initrd reserved memory will be released.
+>  - The new initrd and elfcorehdr are marked reserved.
+>  - "linux,booted-from-kexec" is set.
+>
+> The differences relative to the powerpc version:
+>  - "kaslr-seed" and "rng-seed" may be set.
+>  - "linux,elfcorehdr" is set.
+>  - Any existing "linux,usable-memory-range" is removed.
+>
+> Combine the code for setting up the /chosen node in the FDT and updating
+> the memory reservation for kexec, for powerpc and arm64, in
+> of_kexec_alloc_and_setup_fdt() and move it to "drivers/of/kexec.c".
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  drivers/of/Makefile |   6 ++
+>  drivers/of/kexec.c  | 258 ++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/of.h  |  13 +++
+>  3 files changed, 277 insertions(+)
+>  create mode 100644 drivers/of/kexec.c
+
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
