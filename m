@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696B5316E26
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A73316E2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhBJSLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:11:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233571AbhBJSBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:01:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 171A864E6F;
-        Wed, 10 Feb 2021 18:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612980027;
-        bh=Zk7OqLQIa9Im9RmLh/iXB3llwfY7isgcOwpCyCEnmTQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RHhw7Ixm9JO/VgrXA5FpKhv2NNlOfhg2fKBr0WGqmhQM1acwzEJgsl/ErZLllTftO
-         NozAltpMUklKOGdpyBaLNL79Z1uPPl5n7nKzfpEVFy8J8Py7QHjX0FuXGHolAwAnP6
-         JMEhTob/3Tweom/dFQOHCH1iCXSLraw23EIayN6MtI9w5hpTzrAI2G1cA1ssus2Tn+
-         LOxE3T/mFOb9E8YGYgpFV/SVnH/m3uNL8DoHi1hFlX2mG48+A+VKsI+A0lsIylSMp2
-         7XqZ6yJaxvAY99GbHvaAF0P73glsX6b6SJE0rA//ivheIHRU/pwXSNMWStzW5/UdfA
-         kHIQyZNacCHkQ==
-Date:   Wed, 10 Feb 2021 13:00:25 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable <stable@vger.kernel.org>, Theodore Tso <tytso@mit.edu>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, rostedt <rostedt@goodmis.org>,
-        Michael Jeanson <mjeanson@efficios.com>
-Subject: Re: [stable 4.4, 4.9, 4.14, 4.19 LTS] Missing fix "memcg: fix a
- crash in wb_workfn when a device disappears"
-Message-ID: <20210210180025.GE4035784@sasha-vm>
-References: <537870616.15400.1612973059419.JavaMail.zimbra@efficios.com>
- <YCQTQyRlCsJHXzIQ@kroah.com>
- <2071967108.15704.1612977931149.JavaMail.zimbra@efficios.com>
+        id S234024AbhBJSLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:11:53 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:33878 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233502AbhBJSBd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:01:33 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A95AE2078945;
+        Wed, 10 Feb 2021 10:00:49 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A95AE2078945
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1612980050;
+        bh=R9xpAEULLlRloLEZ3aDp0NwjBNcG/EJw+NYFrjbxovk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=iLPpwBjLdWwIRAhzbc9LVKfkXHca9jl+5BYxYtIL/Nw2utUjaWoz3J/q4Khaingxp
+         9g+ioSTJJfSpxELua3hENK89gsOkGTSQniJuV52oPiEB0xSN23m+EYsm2a7+KTq4dr
+         1Fl6I+Swrn54OePYZFnQpIO72FEz7BkMY+hiVBu0=
+Subject: Re: [PATCH v17 05/10] powerpc: Move ima buffer fields to struct
+ kimage
+To:     Rob Herring <robh@kernel.org>
+Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
+        mpe@ellerman.id.au, james.morse@arm.com, sashal@kernel.org,
+        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210209182200.30606-6-nramas@linux.microsoft.com>
+ <20210210172018.GA2361245@robh.at.kernel.org>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <a508a7b9-ce90-a68a-8b07-7fc65052d98a@linux.microsoft.com>
+Date:   Wed, 10 Feb 2021 10:00:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <2071967108.15704.1612977931149.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210210172018.GA2361245@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:25:31PM -0500, Mathieu Desnoyers wrote:
->----- On Feb 10, 2021, at 12:09 PM, Greg Kroah-Hartman gregkh@linuxfoundation.org wrote:
->
->> On Wed, Feb 10, 2021 at 11:04:19AM -0500, Mathieu Desnoyers wrote:
->>> Hi,
->>>
->>> While reconciling the lttng-modules writeback instrumentation with its
->>> counterpart
->>> within the upstream Linux kernel, I notice that the following commit introduced
->>> in
->>> 5.6 is present in stable branches 5.4 and 5.5, but is missing from LTS stable
->>> branches
->>> for 4.4, 4.9, 4.14, 4.19:
->>>
->>> commit 68f23b89067fdf187763e75a56087550624fdbee
->>> ("memcg: fix a crash in wb_workfn when a device disappears")
->>>
->>> Considering that this fix was CC'd to the stable mailing list, is there any
->>> reason why it has not been integrated into those LTS branches ?
+On 2/10/21 9:20 AM, Rob Herring wrote:
+> On Tue, Feb 09, 2021 at 10:21:55AM -0800, Lakshmi Ramasubramanian wrote:
+>> The fields ima_buffer_addr and ima_buffer_size in "struct kimage_arch"
+>> for powerpc are used to carry forward the IMA measurement list across
+>> kexec system call.  These fields are not architecture specific, but are
+>> currently limited to powerpc.
 >>
->> Yes, it doesn't apply at all.  If you think this is needed, I will
->> gladly take backported and tested patches.
+>> arch_ima_add_kexec_buffer() defined in "arch/powerpc/kexec/ima.c"
+>> sets ima_buffer_addr and ima_buffer_size for the kexec system call.
+>> This function does not have architecture specific code, but is
+>> currently limited to powerpc.
 >>
->> But why do you think this is needed in older kernels?  Have you hit
->> this in real-life?
->
->No, I have not hit this in real-life. Looking at the patch commit message,
->the conditions needed to trigger this issue are very specific: memcg must
->be enabled, and a device must be hotremoved while writeback is going on,
->with writeback tracing active.
->
->AFAIU memcg was present in those LTS releases and devices can be hotremoved
->(please correct me if I'm wrong here), so all the preconditions appear to be
->met.
->
->Considering that I don't have the setup ready to reproduce this issue, I will
->have to defer to the original patch authors for a properly tested backport,
->if it happens to be relevant at all.
->
->I just though reporting what appears to be a missing fix in LTS branches
->would be the right thing to do.
+>> Move ima_buffer_addr and ima_buffer_size to "struct kimage".
+>> Rename arch_ima_add_kexec_buffer() to of_ima_add_kexec_buffer()
+>> and move it in drivers/of/kexec.c.
+>>
+>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>> Suggested-by: Will Deacon <will@kernel.org>
+>> ---
+>>   arch/powerpc/include/asm/ima.h     |  3 ---
+>>   arch/powerpc/include/asm/kexec.h   |  5 -----
+>>   arch/powerpc/kexec/ima.c           | 29 ++++++-----------------------
+>>   drivers/of/kexec.c                 | 23 +++++++++++++++++++++++
+>>   include/linux/kexec.h              |  3 +++
+>>   include/linux/of.h                 |  5 +++++
+>>   security/integrity/ima/ima_kexec.c |  3 ++-
+>>   7 files changed, 39 insertions(+), 32 deletions(-)
 
-Looks like it doesn't apply due to churn with tracepoints, I think it's
-fixable. Let me try and get something for <=4.19.
+>> diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
+>> index 469e09613cdd..9f33d215b9f2 100644
+>> --- a/drivers/of/kexec.c
+>> +++ b/drivers/of/kexec.c
+>> @@ -63,6 +63,29 @@ static int fdt_find_and_del_mem_rsv(void *fdt, unsigned long start, unsigned lon
+>>   	return -ENOENT;
+>>   }
+>>   
+>> +#ifdef CONFIG_IMA_KEXEC
+>> +/**
+>> + * of_ima_add_kexec_buffer - Add IMA buffer for next kernel
+>> + *
+>> + * @image: kimage struct to set IMA buffer data
+>> + * @load_addr: Starting address where IMA buffer is loaded at
+>> + * @size: Number of bytes in the IMA buffer
+>> + *
+>> + * Use this function to pass on the IMA buffer information to
+>> + * the next kernel across kexec system call.
+>> + *
+>> + * Return: 0 on success, negative errno on error.
+>> + */
+>> +int of_ima_add_kexec_buffer(struct kimage *image,
+>> +			    unsigned long load_addr, size_t size)
+>> +{
+>> +	image->ima_buffer_addr = load_addr;
+>> +	image->ima_buffer_size = size;
+>> +
+> 
+> There's nothing DT specific about this function, so this is the wrong
+> place for it. I would just remove it and directly set the members.
 
--- 
-Thanks,
-Sasha
+Will do.
+
+  -lakshmi
+
+
