@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48BF3166E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD683166EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhBJMjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:39:05 -0500
-Received: from smtprelay0193.hostedemail.com ([216.40.44.193]:60942 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229639AbhBJMgr (ORCPT
+        id S231846AbhBJMkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:40:13 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60106 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231634AbhBJMiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:36:47 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id F3DC31801D2F8;
-        Wed, 10 Feb 2021 12:36:03 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7652:9025:9040:10010:10400:10848:11026:11232:11658:11783:11889:11914:12043:12297:12438:12740:12895:13069:13095:13161:13223:13229:13311:13357:13439:13894:14181:14659:14721:21080:21433:21451:21611:21627:30012:30054:30060:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cork75_4203f8127610
-X-Filterd-Recvd-Size: 2735
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 10 Feb 2021 12:36:02 +0000 (UTC)
-Message-ID: <ef9bc69ea67b70557265f117ce2a09f8019bb17d.camel@perches.com>
-Subject: Re: [PATCH v2 1/2] pinctrl: use to octal permissions for debugfs
- files
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Date:   Wed, 10 Feb 2021 04:36:00 -0800
-In-Reply-To: <CAHp75VeJT0dPATD-Ux+JCEYxNTigbOn_6D_F1VQkfL=vuiCBPQ@mail.gmail.com>
-References: <20210210074946.155417-1-drew@beagleboard.org>
-         <20210210074946.155417-2-drew@beagleboard.org>
-         <87437daafdd86fa5c765ff9b17b6c7b097f0c317.camel@perches.com>
-         <CAHp75VeJT0dPATD-Ux+JCEYxNTigbOn_6D_F1VQkfL=vuiCBPQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 10 Feb 2021 07:38:01 -0500
+Received: from [IPv6:2003:c7:cf1c:ce00:58d3:2ef0:81e3:2560] (p200300c7cf1cce0058d32ef081e32560.dip0.t-ipconnect.de [IPv6:2003:c7:cf1c:ce00:58d3:2ef0:81e3:2560])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 931101F45534;
+        Wed, 10 Feb 2021 12:37:16 +0000 (GMT)
+Subject: Re: [RFC PATCH v6 01/11] media: v4l2-common: add normalized
+ pixelformat field to struct v4l2_format_info
+To:     Helen Koike <helen.koike@collabora.com>,
+        linux-media@vger.kernel.org
+Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, hans.verkuil@cisco.com,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
+        boris.brezillon@collabora.com, hiroh@chromium.org,
+        nicolas@ndufresne.ca, Brian.Starkey@arm.com, kernel@collabora.com,
+        narmstrong@baylibre.com, linux-kernel@vger.kernel.org,
+        frkoenig@chromium.org, stanimir.varbanov@linaro.org,
+        tfiga@chromium.org
+References: <20210114180738.1758707-1-helen.koike@collabora.com>
+ <20210114180738.1758707-2-helen.koike@collabora.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <dfe7ac82-a5c8-5414-9b82-b1a3b7fd9fe6@collabora.com>
+Date:   Wed, 10 Feb 2021 13:37:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210114180738.1758707-2-helen.koike@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-10 at 12:18 +0200, Andy Shevchenko wrote:
-> On Wed, Feb 10, 2021 at 10:30 AM Joe Perches <joe@perches.com> wrote:
-> > On Tue, 2021-02-09 at 23:49 -0800, Drew Fustini wrote:
+Hi!
+
+Am 14.01.21 um 19:07 schrieb Helen Koike:
+> Add normalization to pixelformats, so we can fallback to it when using
+> Ext API, and eliminating the handling of two variantes (M and non-M
+> formats).
 > 
-> > > -     debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
-> > > +     debugfs_create_file("pinctrl-devices", 0400,
-> > >                           debugfs_root, NULL, &pinctrl_devices_fops);
-> > 
-> > NAK.  You've changed the permission levels.
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
 > 
-> NAK is usually given when the whole idea is broken. Here is not the
-> case and you may have helped to amend the patch.
-
-NAK IMO just means the patch should not be applied, not that the
-concept is broken.
-
-> ...
+> ---
+> Changes in v6:
+> - New patch
+> ---
+>   drivers/media/v4l2-core/v4l2-common.c | 16 ++++++++--------
+>   include/media/v4l2-common.h           |  3 +++
+>   2 files changed, 11 insertions(+), 8 deletions(-)
 > 
-> > And you have to keep the S_IFREG or'd along with the octal.
+> diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
+> index 78007dba4677..002051b9dc0c 100644
+> --- a/drivers/media/v4l2-core/v4l2-common.c
+> +++ b/drivers/media/v4l2-core/v4l2-common.c
+> @@ -276,17 +276,17 @@ const struct v4l2_format_info *v4l2_format_info(u32 format)
+>   		{ .format = V4L2_PIX_FMT_GREY,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 1, .bpp = { 1, 0, 0, 0 }, .hdiv = 1, .vdiv = 1 },
+>   
+>   		/* YUV planar formats, non contiguous variant */
+> -		{ .format = V4L2_PIX_FMT_YUV420M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 2 },
+> -		{ .format = V4L2_PIX_FMT_YVU420M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 2 },
+> -		{ .format = V4L2_PIX_FMT_YUV422M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 1 },
+> +		{ .format = V4L2_PIX_FMT_YUV420M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 2, .norm= V4L2_PIX_FMT_YUV420 },
+'s/norm= /norm =/'
+
+Thanks,
+Dafna
+
+> +		{ .format = V4L2_PIX_FMT_YVU420M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 2, .norm= V4L2_PIX_FMT_YVU420 },
+> +		{ .format = V4L2_PIX_FMT_YUV422M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 1, .norm= V4L2_PIX_FMT_YUV422P },
+>   		{ .format = V4L2_PIX_FMT_YVU422M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 1 },
+> -		{ .format = V4L2_PIX_FMT_YUV444M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 1, .vdiv = 1 },
+> +		{ .format = V4L2_PIX_FMT_YUV444M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 1, .vdiv = 1, .norm= V4L2_PIX_FMT_YUV444 },
+>   		{ .format = V4L2_PIX_FMT_YVU444M, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 3, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 1, .vdiv = 1 },
+>   
+> -		{ .format = V4L2_PIX_FMT_NV12M,   .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 2, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 2 },
+> -		{ .format = V4L2_PIX_FMT_NV21M,   .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 2, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 2 },
+> -		{ .format = V4L2_PIX_FMT_NV16M,   .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 2, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 1 },
+> -		{ .format = V4L2_PIX_FMT_NV61M,   .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 2, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 1 },
+> +		{ .format = V4L2_PIX_FMT_NV12M,   .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 2, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 2, .norm = V4L2_PIX_FMT_NV12 },
+> +		{ .format = V4L2_PIX_FMT_NV21M,   .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 2, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 2, .norm = V4L2_PIX_FMT_NV21 },
+> +		{ .format = V4L2_PIX_FMT_NV16M,   .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 2, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 1, .norm = V4L2_PIX_FMT_NV16 },
+> +		{ .format = V4L2_PIX_FMT_NV61M,   .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 2, .comp_planes = 2, .bpp = { 1, 2, 0, 0 }, .hdiv = 2, .vdiv = 1, .norm = V4L2_PIX_FMT_NV61 },
+>   
+>   		/* Bayer RGB formats */
+>   		{ .format = V4L2_PIX_FMT_SBGGR8,	.pixel_enc = V4L2_PIXEL_ENC_BAYER, .mem_planes = 1, .comp_planes = 1, .bpp = { 1, 0, 0, 0 }, .hdiv = 1, .vdiv = 1 },
+> diff --git a/include/media/v4l2-common.h b/include/media/v4l2-common.h
+> index be36cbdcc1bd..7236af1cfa2f 100644
+> --- a/include/media/v4l2-common.h
+> +++ b/include/media/v4l2-common.h
+> @@ -483,6 +483,8 @@ enum v4l2_pixel_encoding {
+>    * @vdiv: Vertical chroma subsampling factor
+>    * @block_w: Per-plane macroblock pixel width (optional)
+>    * @block_h: Per-plane macroblock pixel height (optional)
+> + * @norm: The normalized format that should be used in Ext API. Should be set
+> + *	  to zero if @format is already the normalized version.
+>    */
+>   struct v4l2_format_info {
+>   	u32 format;
+> @@ -494,6 +496,7 @@ struct v4l2_format_info {
+>   	u8 vdiv;
+>   	u8 block_w[4];
+>   	u8 block_h[4];
+> +	u32 norm;
+>   };
+>   
+>   static inline bool v4l2_is_format_rgb(const struct v4l2_format_info *f)
 > 
-> Perhaps time to read the code?
-> https://elixir.bootlin.com/linux/latest/source/fs/debugfs/inode.c#L387
-
-Then the commit message is also broken.
-
-> > checkpatch does this conversion using this command line:
-> > 
-> > $ ./scripts/checkpatch.pl -f --show-types --terse drivers/pinctrl/*.[ch] --types=SYMBOLIC_PERMS --fix-inplace
-> 
-> NAK! See above.
-
-The command line above is for octal conversion of the symbolic permissions.
-
-Any other conversion would be for a different purpose and that purpose and
-should be described in the commit message.
-
-
