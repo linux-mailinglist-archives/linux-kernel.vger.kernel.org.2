@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E7C3173C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB813173C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233617AbhBJW4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:56:03 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:46374 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbhBJWzv (ORCPT
+        id S233680AbhBJW4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:56:23 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:40077 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231897AbhBJW4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:55:51 -0500
-Received: by mail-ot1-f50.google.com with SMTP id r21so3425803otk.13;
-        Wed, 10 Feb 2021 14:55:35 -0800 (PST)
+        Wed, 10 Feb 2021 17:56:19 -0500
+Received: by mail-ot1-f45.google.com with SMTP id i20so3466834otl.7;
+        Wed, 10 Feb 2021 14:56:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=w1YK7UNTu1HB40IxkkqVRuEb+aW6wO4/KWDnve1zAtI=;
-        b=j622xV6i335Ob57prvUAHcWBMznlhTmdlEWCUletyIAK2o0pNbYQMkHeTJ1xd5CEmn
-         kTWS27BBxj6L6ynV2BG2RJHMY+35D4165aZQHvsSsBkE1hEch9kP3tohqz6szvnf+vt+
-         VZcz3B+uIpkpPGMq6wAiDwHoxjbUw+I4FhcTrvIINvw/TeJsQ5VkZTIcXFjzJZea7skx
-         OcA3N6igWJRNnO4W1qZIqx7rbL9RYD3REdjOlbBmp1rSEl3GMt1T8y1AcTE+7pjgALVy
-         W4id8+Xef7zG1lozkqZj13NbPcXAcTscTn8zr9GhfAqMJLBy7If1Ae1dQR9iZidrT5DL
-         dyXg==
-X-Gm-Message-State: AOAM533KIh2PdUoB2D7ZCAwpXQDwz8TOq5Qv4kZVUxqy73YVINAy/tHI
-        rTYEMgZQnunREJm+m8tb2A==
-X-Google-Smtp-Source: ABdhPJzumyrQ1giKRY0y9McaknWrNANEdMLFRDns2459jtzKfyWuRGrA0MEhtV2VvNn0xyldNSZDMw==
-X-Received: by 2002:a9d:12c1:: with SMTP id g59mr2602649otg.116.1612997708883;
-        Wed, 10 Feb 2021 14:55:08 -0800 (PST)
+        bh=Uv4aJWJYHGLjPveszWg3xJuq8jmg9zeXVRApkBKWByA=;
+        b=n9q5VGf3v3KY6GbLMNLYUH7gS2VwicVN3QaD9YAux8jEwar4gqWRmeoXOKqgX1Kx9A
+         4RZCIzIggxQjf7YVIeVQPD/Uryp38RffoQjmpdX6FhvsOmQX6A+/5KEQGI25D0FXo3dV
+         qwCzWzh/IOT3y4Koc3QSkhrh/cJXdA5kaS+sdmeQLff0C3hoAFRc7Jz7E3hpLIJO2wu6
+         wYT05ez0+p8lRVP+aW2lMevrGkpb1N+cgiMzYKi3Mzy1+lVccF0PtHQ2hHqtXe2toahp
+         aircgXP2tJG+uasXQmeg9lIQQrDM3kJ27xzuZp8L9hBqFvFxx3SiYhUFf8nU0Rqs4Xci
+         HNeA==
+X-Gm-Message-State: AOAM530DxJchneenBoeVdJ+aFoXZOU/yTk0hncSN+gfwHKZ5YgpOVVzx
+        uynuwe0o/S4ytzAXK3ftZw==
+X-Google-Smtp-Source: ABdhPJyWT2qLAEOdHmFjAYVt7c27wJXJg0f0C4sn+bfsP3pe/e4IaBuYnyOdn5MWGeYnU3y8C9odLw==
+X-Received: by 2002:a05:6830:2089:: with SMTP id y9mr3983782otq.200.1612997737887;
+        Wed, 10 Feb 2021 14:55:37 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p67sm777226oih.21.2021.02.10.14.55.07
+        by smtp.gmail.com with ESMTPSA id l67sm741684oih.57.2021.02.10.14.55.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 14:55:08 -0800 (PST)
-Received: (nullmailer pid 2967891 invoked by uid 1000);
-        Wed, 10 Feb 2021 22:54:12 -0000
-Date:   Wed, 10 Feb 2021 16:54:12 -0600
+        Wed, 10 Feb 2021 14:55:37 -0800 (PST)
+Received: (nullmailer pid 2970438 invoked by uid 1000);
+        Wed, 10 Feb 2021 22:55:36 -0000
+Date:   Wed, 10 Feb 2021 16:55:36 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Irui Wang <irui.wang@mediatek.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/5] dt-bindings: media: mtk-vcodec: Add binding for
- MT8192 VENC
-Message-ID: <20210210225412.GA2966579@robh.at.kernel.org>
-References: <20210203083752.12586-1-irui.wang@mediatek.com>
- <20210203083752.12586-4-irui.wang@mediatek.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     gregkh@linuxfoundation.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] doc: devicetree: bindings: usb:  Chnage descibe to
+ describe in usbmisc-imx.txt
+Message-ID: <20210210225536.GA2968213@robh.at.kernel.org>
+References: <20210203153315.15170-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203083752.12586-4-irui.wang@mediatek.com>
+In-Reply-To: <20210203153315.15170-1-unixbhaskar@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:37:50PM +0800, Irui Wang wrote:
-> Updates binding document for mt8192 encoder driver.
+On Wed, Feb 03, 2021 at 09:03:15PM +0530, Bhaskar Chowdhury wrote:
 > 
-> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+
+Ironically, a typo in the subject. Will fix when applying.
+
+> s/descibe/describe/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->  .../bindings/media/mediatek-vcodec.txt        | 26 +++++++++++++++++++
->  1 file changed, 26 insertions(+)
+>  Documentation/devicetree/bindings/usb/usbmisc-imx.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> index e4644f8caee9..c7fac557006f 100644
-> --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> +++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> @@ -9,6 +9,7 @@ Required properties:
->    "mediatek,mt8173-vcodec-avc-enc" for mt8173 avc encoder.
->    "mediatek,mt8183-vcodec-enc" for MT8183 encoder.
->    "mediatek,mt8173-vcodec-dec" for MT8173 decoder.
-> +  "mediatek,mt8192-vcodec-enc" for MT8192 encoder.
->  - reg : Physical base address of the video codec registers and length of
->    memory mapped region.
->  - interrupts : interrupt number to the cpu.
-> @@ -128,3 +129,28 @@ vcodec_enc_lt: vcodec@19002000 {
->      assigned-clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
->      assigned-clock-parents = <&topckgen CLK_TOP_VCODECPLL_370P5>;
->    };
-> +
-> +vcodec_enc: vcodec@0x17020000 {
-
-Don't add an example just for a new compatible.
-
-> +    compatible = "mediatek,mt8192-vcodec-enc";
-> +    reg = <0 0x17020000 0 0x2000>;
-> +    iommus = <&iommu0 M4U_PORT_L7_VENC_RCPU>,
-> +             <&iommu0 M4U_PORT_L7_VENC_REC>,
-> +             <&iommu0 M4U_PORT_L7_VENC_BSDMA>,
-> +             <&iommu0 M4U_PORT_L7_VENC_SV_COMV>,
-> +             <&iommu0 M4U_PORT_L7_VENC_RD_COMV>,
-> +             <&iommu0 M4U_PORT_L7_VENC_CUR_LUMA>,
-> +             <&iommu0 M4U_PORT_L7_VENC_CUR_CHROMA>,
-> +             <&iommu0 M4U_PORT_L7_VENC_REF_LUMA>,
-> +             <&iommu0 M4U_PORT_L7_VENC_REF_CHROMA>,
-> +             <&iommu0 M4U_PORT_L7_VENC_SUB_R_LUMA>,
-> +             <&iommu0 M4U_PORT_L7_VENC_SUB_W_LUMA>;
-> +    interrupts = <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH 0>;
-> +    dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
-> +    mediatek,scp = <&scp>;
-> +    power-domains = <&scpsys MT8192_POWER_DOMAIN_VENC>;
-> +    clocks = <&vencsys CLK_VENC_SET1_VENC>;
-> +    clock-names = "venc-set1";
-> +    assigned-clocks = <&topckgen CLK_TOP_VENC_SEL>;
-> +    assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D4>;
-> +};
-> +
-> -- 
-> 2.25.1
+> diff --git a/Documentation/devicetree/bindings/usb/usbmisc-imx.txt b/Documentation/devicetree/bindings/usb/usbmisc-imx.txt
+> index b353b9816487..b796836d2ce7 100644
+> --- a/Documentation/devicetree/bindings/usb/usbmisc-imx.txt
+> +++ b/Documentation/devicetree/bindings/usb/usbmisc-imx.txt
+> @@ -1,7 +1,7 @@
+>  * Freescale i.MX non-core registers
+> 
+>  Required properties:
+> -- #index-cells: Cells used to descibe usb controller index. Should be <1>
+> +- #index-cells: Cells used to describe usb controller index. Should be <1>
+>  - compatible: Should be one of below:
+>  	"fsl,imx6q-usbmisc" for imx6q
+>  	"fsl,vf610-usbmisc" for Vybrid vf610
+> --
+> 2.26.2
 > 
