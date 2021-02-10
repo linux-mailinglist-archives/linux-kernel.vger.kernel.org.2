@@ -2,375 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB71F31651D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A25D316508
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhBJLXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:23:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
+        id S231439AbhBJLUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhBJLPA (ORCPT
+        with ESMTP id S230447AbhBJLOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:15:00 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551B3C0617AA
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:46 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id lw17so2805305pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:46 -0800 (PST)
+        Wed, 10 Feb 2021 06:14:02 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72A8C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:21 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id q8so1961115wru.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:13:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zGwObSDNhpTlCqU8x6dXBIYlNo68oQYaoM82x8ri0qg=;
-        b=UrqTWIRrmvhMgF0+rsFhusoe+vo7PodbDz5TOUeoVeEIpJVfMXDeOixZrmAqNg+DK5
-         h8tohSsQgyGIpkPHVnCrLCD4+05Y3rIVSY3xDiNqrEkS+OhuHqgsOBsB+Z1AcbYLtT6T
-         U3e0/ymTUlEQxk+ZdnwE6WzunS8NA5CP8AUE9kQ1F+sn0PdO1igvRVb9OeFBhX1zJ+Zv
-         a9235oUXKjNG8duajwSfpISOxc9bHc0zDT3AJi1dUKldxh/OYTjkl7+xa+Y+ngTrRr+o
-         lhfbpyllZq20HW/A91xjJq/Ga0hLKK+G/KH3URUEViu7jJhPAHvJnpuzk9KvKH9NovPE
-         g0eA==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=ylXnAL5nrH5hqi9xQ5ruoY6NoTAGtDS//0pow3R9ejA=;
+        b=cOaVoTLjKniO1+RCwXhpMGs84QivJKe+H6b5qbRUsbbX2ZvlfKzH0m0ML7u2JjRcYR
+         ZHrnJ1esZKsOovCoHlv1tghQ0ZsHX4VZ+iuiLoBXuBUb6hghtq0VTJKn98ZIssC3bWI7
+         PM2DBOmL30Jk18AQ5Dh774BnWXBKrnInWULmYdscr9XsxPeXGfh1tUOF2GampKCHk6vj
+         CCwmNu4X25uhE8POOnS9c9LAepl+aPE+Of0qTBN2ZjXoDU/Zniv6JbnLdfTrNtN6J7NQ
+         JqAD/uuvhnwAWpMPqk0ipYAVOgkJnHgWuEFp2OMKJ1YuGwB6fndynO28dRJ/eUGGmxye
+         z7Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zGwObSDNhpTlCqU8x6dXBIYlNo68oQYaoM82x8ri0qg=;
-        b=NNwLqM/4JFjsfbjnM06DuEl56HSxDJydNroOVoUowcqR7ryfA6hnLKIRH1fYe4bWcN
-         fJP+ia7iC2Gwu/bSsyXl+6ljeN353pJb7f+XY2iyObqwRTP767PLV9OFka7bdhrMBeWZ
-         tNxINu2fCA5teuV153i+QLiCL0EKV4v4sEr9rOs+P/OeecIZIw57Ug3xPR/bsmwqLSVw
-         QzxhViMhwbZKbPFUXk60Xcszt1NwjBFhXrIIph+q5AZbWTfuljNpDnUP5b01W+SnUBSh
-         pVXLLvSZukeyAb480CbkMM35aIvL95v472BHNt2g+2oxmNArF7b80vT/CSK5SpdSbl2E
-         nr7w==
-X-Gm-Message-State: AOAM531jTUjBFWeNHP3DdNmohDSkrLoxb2D+/8ZbHjhgwyGe3TtJxDm6
-        5NaqcKWUClBo59tZ3EZHAurvdA==
-X-Google-Smtp-Source: ABdhPJy+r6rtLibzjOCCFtQF2L9PvGahKD9sAKDALGchZv443jWMYNAOZNElTt4+RngC9IRWQlLH2Q==
-X-Received: by 2002:a17:90a:b282:: with SMTP id c2mr2711130pjr.54.1612955625786;
-        Wed, 10 Feb 2021 03:13:45 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id j26sm2004698pfa.35.2021.02.10.03.13.45
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=ylXnAL5nrH5hqi9xQ5ruoY6NoTAGtDS//0pow3R9ejA=;
+        b=YhTIdaJqHNnhLFKTURXgXnLr9obnFh4s8qks6nhvaNEmXXEIVSv8Kr40UXYu8IMX0v
+         iWMLY+59yP+yupQukk1GXCyZDUj4ffAAwEK038+V7pyUFINNZSCwmJ7FQ0Z4KX1Ih0cu
+         nnetei8GqhzKZXM+uvVY2Y2WdtvwCd338+tH9mopvBVeUYqgDYbkEKlNyMLhDPSC9smY
+         DzpoHQnnic/Oz3hxjT4JghbBxxItdJWSupjyVDTMwhT3tfB3VRE8kBJZFK+av+Y8VkmS
+         nrsad0Sl2ouqMpTcRgQgKumW27xws3MSUl4GzWxUWKjcKHjQeEuf+RoM+0EbhKf5Yqsk
+         PlFg==
+X-Gm-Message-State: AOAM5308N6Oa3uMQWr8yu+RIbM3ePH7/sl04bC5VbiH6JrFp64SEQDSN
+        qYzEIs4igC8blSISxyo9b7ffmw==
+X-Google-Smtp-Source: ABdhPJyVVSnriCmXHzlRk6cnZ/zh6Yhl8PjsKY+iqzqXmo6MMtWlIAbLci0odQfdo7kn5d7h56p2ig==
+X-Received: by 2002:adf:92a6:: with SMTP id 35mr3050131wrn.193.1612955600544;
+        Wed, 10 Feb 2021 03:13:20 -0800 (PST)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id t6sm1976264wmj.22.2021.02.10.03.13.19
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Feb 2021 03:13:45 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH V7 2/3] of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
-Date:   Wed, 10 Feb 2021 16:43:29 +0530
-Message-Id: <de269275b568b6a10b31afce6590df9214835a48.1612955268.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1612955268.git.viresh.kumar@linaro.org>
-References: <cover.1612955268.git.viresh.kumar@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 10 Feb 2021 03:13:19 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH 1/2] bfq: remove some useless logic of
+ bfq_update_next_in_service()
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <1611917485-584-1-git-send-email-brookxu@tencent.com>
+Date:   Wed, 10 Feb 2021 12:13:29 +0100
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B4751549-78D9-4A84-8FB2-5DAA86ED39C8@linaro.org>
+References: <1611917485-584-1-git-send-email-brookxu@tencent.com>
+To:     Chunguang Xu <brookxu.cn@gmail.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to build-test the same unit-test files using fdtoverlay tool,
-move the device nodes from the existing overlay_base.dts and
-testcases_common.dts files to .dtsi counterparts. The .dts files now
-include the new .dtsi files, resulting in exactly the same behavior as
-earlier.
 
-The .dtsi files can now be reused for compile time tests using
-fdtoverlay (will be done by a later commit).
 
-This is required because the base files passed to fdtoverlay tool
-shouldn't be overlays themselves (i.e. shouldn't have the /plugin/;
-tag).
+> Il giorno 29 gen 2021, alle ore 11:51, Chunguang Xu =
+<brookxu.cn@gmail.com> ha scritto:
+>=20
+> From: Chunguang Xu <brookxu@tencent.com>
+>=20
+> The if statement at the end of the function is obviously useless,
+> maybe we can delete it.
+>=20
 
-Note that this commit also moves "testcase-device2" node to
-testcases.dts from tests-interrupts.dtsi, as this node has a deliberate
-error in it and is only relevant for runtime testing done with
-unittest.c.
+Thanks for spotting this mistake.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
- drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
- drivers/of/unittest-data/testcases.dts        | 18 ++--
- .../of/unittest-data/testcases_common.dtsi    | 19 ++++
- .../of/unittest-data/tests-interrupts.dtsi    |  7 --
- 5 files changed, 118 insertions(+), 107 deletions(-)
- create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
- create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+Acked-by: Paolo Valente <paolo.valente@linaro.org>
 
-diff --git a/drivers/of/unittest-data/overlay_base.dts b/drivers/of/unittest-data/overlay_base.dts
-index 99ab9d12d00b..ab9014589c5d 100644
---- a/drivers/of/unittest-data/overlay_base.dts
-+++ b/drivers/of/unittest-data/overlay_base.dts
-@@ -2,92 +2,4 @@
- /dts-v1/;
- /plugin/;
- 
--/*
-- * Base device tree that overlays will be applied against.
-- *
-- * Do not add any properties in node "/".
-- * Do not add any nodes other than "/testcase-data-2" in node "/".
-- * Do not add anything that would result in dtc creating node "/__fixups__".
-- * dtc will create nodes "/__symbols__" and "/__local_fixups__".
-- */
--
--/ {
--	testcase-data-2 {
--		#address-cells = <1>;
--		#size-cells = <1>;
--
--		electric_1: substation@100 {
--			compatible = "ot,big-volts-control";
--			reg = < 0x00000100 0x100 >;
--			status = "disabled";
--
--			hvac_1: hvac-medium-1 {
--				compatible = "ot,hvac-medium";
--				heat-range = < 50 75 >;
--				cool-range = < 60 80 >;
--			};
--
--			spin_ctrl_1: motor-1 {
--				compatible = "ot,ferris-wheel-motor";
--				spin = "clockwise";
--				rpm_avail = < 50 >;
--			};
--
--			spin_ctrl_2: motor-8 {
--				compatible = "ot,roller-coaster-motor";
--			};
--		};
--
--		rides_1: fairway-1 {
--			#address-cells = <1>;
--			#size-cells = <1>;
--			compatible = "ot,rides";
--			status = "disabled";
--			orientation = < 127 >;
--
--			ride@100 {
--				#address-cells = <1>;
--				#size-cells = <1>;
--				compatible = "ot,roller-coaster";
--				reg = < 0x00000100 0x100 >;
--				hvac-provider = < &hvac_1 >;
--				hvac-thermostat = < 29 > ;
--				hvac-zones = < 14 >;
--				hvac-zone-names = "operator";
--				spin-controller = < &spin_ctrl_2 5 &spin_ctrl_2 7 >;
--				spin-controller-names = "track_1", "track_2";
--				queues = < 2 >;
--
--				track@30 {
--					reg = < 0x00000030 0x10 >;
--				};
--
--				track@40 {
--					reg = < 0x00000040 0x10 >;
--				};
--
--			};
--		};
--
--		lights_1: lights@30000 {
--			compatible = "ot,work-lights";
--			reg = < 0x00030000 0x1000 >;
--			status = "disabled";
--		};
--
--		lights_2: lights@40000 {
--			compatible = "ot,show-lights";
--			reg = < 0x00040000 0x1000 >;
--			status = "disabled";
--			rate = < 13 138 >;
--		};
--
--		retail_1: vending@50000 {
--			reg = < 0x00050000 0x1000 >;
--			compatible = "ot,tickets";
--			status = "disabled";
--		};
--
--	};
--};
--
-+#include "overlay_common.dtsi"
-diff --git a/drivers/of/unittest-data/overlay_common.dtsi b/drivers/of/unittest-data/overlay_common.dtsi
-new file mode 100644
-index 000000000000..08874a72556e
---- /dev/null
-+++ b/drivers/of/unittest-data/overlay_common.dtsi
-@@ -0,0 +1,91 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Base device tree that overlays will be applied against.
-+ *
-+ * Do not add any properties in node "/".
-+ * Do not add any nodes other than "/testcase-data-2" in node "/".
-+ * Do not add anything that would result in dtc creating node "/__fixups__".
-+ * dtc will create nodes "/__symbols__" and "/__local_fixups__".
-+ */
-+
-+/ {
-+	testcase-data-2 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		electric_1: substation@100 {
-+			compatible = "ot,big-volts-control";
-+			reg = < 0x00000100 0x100 >;
-+			status = "disabled";
-+
-+			hvac_1: hvac-medium-1 {
-+				compatible = "ot,hvac-medium";
-+				heat-range = < 50 75 >;
-+				cool-range = < 60 80 >;
-+			};
-+
-+			spin_ctrl_1: motor-1 {
-+				compatible = "ot,ferris-wheel-motor";
-+				spin = "clockwise";
-+				rpm_avail = < 50 >;
-+			};
-+
-+			spin_ctrl_2: motor-8 {
-+				compatible = "ot,roller-coaster-motor";
-+			};
-+		};
-+
-+		rides_1: fairway-1 {
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			compatible = "ot,rides";
-+			status = "disabled";
-+			orientation = < 127 >;
-+
-+			ride@100 {
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				compatible = "ot,roller-coaster";
-+				reg = < 0x00000100 0x100 >;
-+				hvac-provider = < &hvac_1 >;
-+				hvac-thermostat = < 29 > ;
-+				hvac-zones = < 14 >;
-+				hvac-zone-names = "operator";
-+				spin-controller = < &spin_ctrl_2 5 &spin_ctrl_2 7 >;
-+				spin-controller-names = "track_1", "track_2";
-+				queues = < 2 >;
-+
-+				track@30 {
-+					reg = < 0x00000030 0x10 >;
-+				};
-+
-+				track@40 {
-+					reg = < 0x00000040 0x10 >;
-+				};
-+
-+			};
-+		};
-+
-+		lights_1: lights@30000 {
-+			compatible = "ot,work-lights";
-+			reg = < 0x00030000 0x1000 >;
-+			status = "disabled";
-+		};
-+
-+		lights_2: lights@40000 {
-+			compatible = "ot,show-lights";
-+			reg = < 0x00040000 0x1000 >;
-+			status = "disabled";
-+			rate = < 13 138 >;
-+		};
-+
-+		retail_1: vending@50000 {
-+			reg = < 0x00050000 0x1000 >;
-+			compatible = "ot,tickets";
-+			status = "disabled";
-+		};
-+
-+	};
-+};
-+
-diff --git a/drivers/of/unittest-data/testcases.dts b/drivers/of/unittest-data/testcases.dts
-index a85b5e1c381a..04b9e7bb30d9 100644
---- a/drivers/of/unittest-data/testcases.dts
-+++ b/drivers/of/unittest-data/testcases.dts
-@@ -2,19 +2,15 @@
- /dts-v1/;
- /plugin/;
- 
-+#include "testcases_common.dtsi"
-+
- / {
- 	testcase-data {
--		changeset {
--			prop-update = "hello";
--			prop-remove = "world";
--			node-remove {
--			};
-+		testcase-device2 {
-+			compatible = "testcase-device";
-+			interrupt-parent = <&test_intc2>;
-+			interrupts = <1>; /* invalid specifier - too short */
- 		};
- 	};
-+
- };
--#include "tests-phandle.dtsi"
--#include "tests-interrupts.dtsi"
--#include "tests-match.dtsi"
--#include "tests-address.dtsi"
--#include "tests-platform.dtsi"
--#include "tests-overlay.dtsi"
-diff --git a/drivers/of/unittest-data/testcases_common.dtsi b/drivers/of/unittest-data/testcases_common.dtsi
-new file mode 100644
-index 000000000000..19292bbb4cbb
---- /dev/null
-+++ b/drivers/of/unittest-data/testcases_common.dtsi
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/ {
-+	testcase-data {
-+		changeset {
-+			prop-update = "hello";
-+			prop-remove = "world";
-+			node-remove {
-+			};
-+		};
-+	};
-+};
-+
-+#include "tests-phandle.dtsi"
-+#include "tests-interrupts.dtsi"
-+#include "tests-match.dtsi"
-+#include "tests-address.dtsi"
-+#include "tests-platform.dtsi"
-+#include "tests-overlay.dtsi"
-diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
-index ec175e800725..0e5914611107 100644
---- a/drivers/of/unittest-data/tests-interrupts.dtsi
-+++ b/drivers/of/unittest-data/tests-interrupts.dtsi
-@@ -61,12 +61,5 @@ testcase-device1 {
- 			interrupt-parent = <&test_intc0>;
- 			interrupts = <1>;
- 		};
--
--		testcase-device2 {
--			compatible = "testcase-device";
--			interrupt-parent = <&test_intc2>;
--			interrupts = <1>; /* invalid specifier - too short */
--		};
- 	};
--
- };
--- 
-2.25.0.rc1.19.g042ed3e048af
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> ---
+> block/bfq-wf2q.c | 3 ---
+> 1 file changed, 3 deletions(-)
+>=20
+> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+> index 26776bd..070e34a 100644
+> --- a/block/bfq-wf2q.c
+> +++ b/block/bfq-wf2q.c
+> @@ -137,9 +137,6 @@ static bool bfq_update_next_in_service(struct =
+bfq_sched_data *sd,
+>=20
+> 	sd->next_in_service =3D next_in_service;
+>=20
+> -	if (!next_in_service)
+> -		return parent_sched_may_change;
+> -
+> 	return parent_sched_may_change;
+> }
+>=20
+> --=20
+> 1.8.3.1
+>=20
 
