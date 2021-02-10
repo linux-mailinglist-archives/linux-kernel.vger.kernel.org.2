@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2336E316443
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A806631644F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhBJKuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:50:15 -0500
-Received: from mout.gmx.net ([212.227.15.18]:53807 "EHLO mout.gmx.net"
+        id S230376AbhBJKvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:51:08 -0500
+Received: from elvis.franken.de ([193.175.24.41]:39556 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231546AbhBJKry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:47:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1612953967;
-        bh=EqTF/IzJ5aBtYznj+Amlm5Eoid8+zvpUSrnir5sVj1k=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=CDvfnncOgwxH6WUJkccQiGI5/U4wa487EzVXLL99NEz5f16onunjdKv7hINeJNOQG
-         NFOktcuetDdvSNt0CHcQYbXqXtNtMVh91+zP6KMisn1DLYnEa5IqejyWWFx+dyM/7n
-         YkvBkJrYJPq9vKq0OdMa/6U1AUo65MAfBXM41dE0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.218.231]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N6bfw-1lyoWP2HS2-0183V2; Wed, 10
- Feb 2021 11:46:07 +0100
-Message-ID: <2793c200beb530ed4a8ac32c5eea0f5aaa53c7e8.camel@gmx.de>
-Subject: Re: drm/nouneau: 5.11 cycle regression bisected to 461619f5c324
- "drm/nouveau: switch to new allocator"
-From:   Mike Galbraith <efault@gmx.de>
-To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
-        Dave Airlie <airlied@redhat.com>
-Date:   Wed, 10 Feb 2021 11:46:06 +0100
-In-Reply-To: <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
-References: <1d663cd74af91e23f4f24ebbdd65ef3ba72c15fc.camel@gmx.de>
-         <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S229839AbhBJKsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:48:10 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l9n1q-00079N-00; Wed, 10 Feb 2021 11:47:26 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 4361AC0E24; Wed, 10 Feb 2021 11:46:51 +0100 (CET)
+Date:   Wed, 10 Feb 2021 11:46:51 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Subject: Re: MIPS noncoherent DMA cleanups v2
+Message-ID: <20210210104651.GA11540@alpha.franken.de>
+References: <20210210095641.23856-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TlnFB2qCR9sD5yLrO0YrLpiU7LAV2SWJqMOW94u5Zbq51X7TGM5
- 4ljx3CZrWVsASZj+zaWZrJ36OBantMeREs493mwNwntisbHNKzQmL3hei8OIvHnPp+bef81
- IFprrTG23DKkVVc+UINbbXXIaR7jtV7Hfgj1mRHsBjyIX4s/1k7sVvO2wmyKereZNVVB9Ee
- Vh36khUriaWCKcIcY5IYA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2ZdsEagwagA=:bnQO0F7rHtkODJhhOkxCNL
- 8a3QLax7WH2Hf8g+m/A+XgOirOCPc/XMZrpzHUGd/yps3LmRw5FYCssmYlNiSbkFsD0kk8FDE
- 1F4tqRFGxEfB70aCKkiEGaIdQYm7GsjAnfYHYnzTDXxlH4T1HxpCF624tuHUqzY48w0O7P54k
- T9bSKytO7TMYGL+NSjeU8SPbKdkiZc67TVmAZ1P/4EyBoXYKODUmBEEvznZpmBhtg/r2AAaKS
- dDVc0M/Z6OmgrsWNltmhOL+OQ7c6I0q4kLXVdrDsfOGPyaQWTW3bSf9TdH83mkvQpKKjHuK+C
- 2+Lyyn6uAPbMLVC2psy+BFNzL1iXHhFiBp2cvgyzcTq+BunSXM5z3b9nXB/c+hFqKjeo/vqd5
- YWaHD1Cw8x2n7QKqv4bKB4gbR9bcUkW14M+Cym4GH/AAy23jB1I0XlZ9Wlm0iUE8OD7gWyr1/
- B3OeLTc81GGzRo5+fDf+K8l0w7aU5imwngFaqR7GtKlWAawzESlO2/5gK2+i3cveM1LjPzTiv
- T88a11Q695iFiYafOO9Q0NCZDF8KBsa+4+WUWE6aogxgaBhcmJZaThAgSouFF6UEnPYv1sFIi
- at+QT7WCyjHCVOLqjIRVhY1OYREfGe/gHw7/U+xC73/zArA8Nv+btvedIVdkZxM3iNt/EbwN0
- 9wed1s5EzU6K0jzfQ58cRLq57yr4ZPVsf2Cd6i+ZnpwvUnRzQrOb/BwehZKbDkE8MSwqFvPm8
- E2VJ+fonXkWOXCV6ACMiCsqqiZ7JRl0IZRPhIUzsJIJOGLvFLkMJYZjvsT5izfIvO71yEs8WZ
- SazNtCytbsGLytS5a8GogOVVjSrB1avSf3vnQh39bLeg2QWPHBSNrvVYmDppxnvB+7lboechY
- vcAUf8ItG6reC3HAWDlw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210095641.23856-1-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-10 at 11:34 +0100, Christian K=F6nig wrote:
->
-> What seems to happen here is that your system is low on resources and we
-> just try to free up pages.
+On Wed, Feb 10, 2021 at 10:56:35AM +0100, Christoph Hellwig wrote:
+> Hi Thomas,
+> 
+> this series cleans up some of the mips (maybe) noncoherent support.
+> It also remove the need for the special <asm/dma-coherence.h> header only
+> provided by mips.
+> 
+> Changes since v1:
+>  - fix a bisection issue due to a missing brace
+>  - simplify the parameter parsing given that it happens after
+>    plat_mem_init
 
-FWIW, box has oodles generic ram free right after boot.
+LGTM and passed all tests I did so far. I'll give it a few days for
+others to look at and apply it to mips-next for 5.12.
 
-	-Mike
+Thomas.
 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
