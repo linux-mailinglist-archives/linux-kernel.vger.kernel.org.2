@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031C6316B94
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D22D316B9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:48:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232775AbhBJQqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:46:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233076AbhBJQmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:42:45 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C6EC061756;
-        Wed, 10 Feb 2021 08:42:05 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id f14so5326425ejc.8;
-        Wed, 10 Feb 2021 08:42:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T3OGEUXVqBRMwtyZ0DTJOgmQoVRlEeHXk2pk+BRLLdU=;
-        b=C6Dx+MpK4ZH+K2OxhilGb6z2GKpk0g2spNRQB5t3Do2XcKfVSbnvfBy//ndjIP/4hS
-         Bi2Xvj/A5pcPCojyCGdZyRGGH4UmRScvGmPxvwL5CzhI0PGJe7cJ536jp0bRQGHe+3mc
-         gXXHxuICSaNgGSQ8mXgUbGeyaw7jftTR6VTrAiGx5muzzDDwy1J1Ce3FJCJxJ3F/0oGd
-         BVX6GYuWNE9Fx3558QBeyq0WvyqCXKVpPBvpDJ7yDA6Uea9L3Fe6melbC6WNWa/inYWr
-         sReykCoOe7cMpcOD6gGEjEk3FxsApcBgQ+t5YkfGkh6s6KEvvXZqymjpLxMwZ65y7oPl
-         v18Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T3OGEUXVqBRMwtyZ0DTJOgmQoVRlEeHXk2pk+BRLLdU=;
-        b=T46qwPIo9Lkg9jyf/n+0OTB3Xwm8k8AA8DSobV2KzRsZJ5xD9U6t1yX17gTNDSbs7p
-         6KM4ZkHL+2C0+M454CFz8EXqXHoUZ5yVkPRDBxcN+BPYhtL9/wLmJLwnj/7NhAAqUoA5
-         wyDzg7bWxqbLFyqL76te0FXkbjlppXn9QoMjRjPhouKx0TeZRDa1oh6v/xe4EmGXVN/f
-         0yR1845b6JAyDFEfEMNI9LKOJdIvubmXJ5UdWw3IS8IqGMeegUn5AMSpPkakEjxmuo9+
-         xeksOpjrVkA4WWpQvCbFmww6XK2NPqaScIq3xvK2GskYRECqaCkMNQGBq7JUHeQuQECi
-         GmHw==
-X-Gm-Message-State: AOAM530IIdFwK3+4M5h42P8HXQPVqIpx722ta34I6oHK6nUEWQSsJ9h/
-        4eMEzjHcuJapi6gLxhMxj1cIiKCl7PcJqpvSou2fTCzEQg4=
-X-Google-Smtp-Source: ABdhPJxbZqIFBvHIHDqRAaYc66wR00X+57Ot3XMwL6jhGMUV979fKuVbb+4Hakv7nixS9LL3OyEKmJg3d7wjBZdxock=
-X-Received: by 2002:a17:906:eca5:: with SMTP id qh5mr3673714ejb.161.1612975324366;
- Wed, 10 Feb 2021 08:42:04 -0800 (PST)
+        id S232883AbhBJQrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:47:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232908AbhBJQrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:47:17 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6681564DDF;
+        Wed, 10 Feb 2021 16:46:35 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 11:46:33 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Timur Tabi <timur@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        akpm@linux-foundation.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        akinobu.mita@gmail.com, glider@google.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 0/3][RESEND] add support for never printing hashed
+ addresses
+Message-ID: <20210210114633.1b755f6e@gandalf.local.home>
+In-Reply-To: <e996ff2f-d350-1399-bb6b-8373bf70e687@i-love.sakura.ne.jp>
+References: <20210210051814.845713-1-timur@kernel.org>
+        <6da0be5a-7cb0-4943-e61f-7c3275e60cb6@i-love.sakura.ne.jp>
+        <20210210111836.2468f10a@gandalf.local.home>
+        <e996ff2f-d350-1399-bb6b-8373bf70e687@i-love.sakura.ne.jp>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210209174646.1310591-1-shy828301@gmail.com> <20210209174646.1310591-10-shy828301@gmail.com>
- <20210210012726.GO524633@carbon.DHCP.thefacebook.com> <CAHbLzkoKV6_w_KBp+cajvpxG2p8jN-es03C0ktk4tLdvULJwhg@mail.gmail.com>
- <1d751688-12a9-a5c3-2d9a-c4b9e65c7492@virtuozzo.com>
-In-Reply-To: <1d751688-12a9-a5c3-2d9a-c4b9e65c7492@virtuozzo.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 10 Feb 2021 08:41:52 -0800
-Message-ID: <CAHbLzkof4TL3cehgubYU-oAu_6x3ODnzDoOUyQDdn4xG0ts_-A@mail.gmail.com>
-Subject: Re: [v7 PATCH 09/12] mm: vmscan: use per memcg nr_deferred of shrinker
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 6:37 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->
-> On 10.02.2021 04:52, Yang Shi wrote:
-> > On Tue, Feb 9, 2021 at 5:27 PM Roman Gushchin <guro@fb.com> wrote:
-> >>
-> >> On Tue, Feb 09, 2021 at 09:46:43AM -0800, Yang Shi wrote:
-> >>> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
-> >>> will be used in the following cases:
-> >>>     1. Non memcg aware shrinkers
-> >>>     2. !CONFIG_MEMCG
-> >>>     3. memcg is disabled by boot parameter
-> >>>
-> >>> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> >>> ---
-> >>>  mm/vmscan.c | 78 ++++++++++++++++++++++++++++++++++++++++++++---------
-> >>>  1 file changed, 66 insertions(+), 12 deletions(-)
-> >>>
-> >>> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> >>> index d4b030a0b2a9..748aa6e90f83 100644
-> >>> --- a/mm/vmscan.c
-> >>> +++ b/mm/vmscan.c
-> >>> @@ -368,6 +368,24 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
-> >>>       up_write(&shrinker_rwsem);
-> >>>  }
-> >>>
-> >>> +static long count_nr_deferred_memcg(int nid, struct shrinker *shrinker,
-> >>> +                                 struct mem_cgroup *memcg)
-> >>
-> >> "Count" is not associated with xchg() semantics in my head, but I don't know
-> >> what's the better version. Maybe steal or pop?
-> >
-> > It is used to retrieve the nr_deferred value. I don't think "steal" or
-> > "pop" helps understand. Actually "count" is borrowed from
-> > count_objects() method of shrinker.
->
-> I'd also voted for another name.
->
-> xchg_nr_deferred() or steal/pop sound better for me.
+On Thu, 11 Feb 2021 01:39:41 +0900
+Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
 
-OK, I do have a hard time to understand steal/pop, but xchg sounds
-more self-explained to me.
+> On 2021/02/11 1:18, Steven Rostedt wrote:
+> > The point of this exercise is to be able to debug the *same* kernel that
+> > someone is having issues with. And this is to facilitate that debugging.  
+> 
+> That's too difficult to use. If a problem is not reproducible, we will have
+> no choice but always specify "never hash pointers" command line option. If a
+> problem is reproducible, we can rebuild that kernel with "never hash pointers"
+> config option turned on.
 
->
+Now the question is, why do you need the unhashed pointer?
+
+Currently, the instruction pointer is what is fine right? You get the
+a function and its offset. If there's something that is needed, perhaps we
+should look at how to fix that, instead of just unhashing all pointers by
+default.
+
+-- Steve
