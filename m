@@ -2,169 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A35331614C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C482316148
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhBJIoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:44:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49370 "EHLO mail.kernel.org"
+        id S230306AbhBJImy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:42:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229679AbhBJIi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:38:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B92664E53;
-        Wed, 10 Feb 2021 08:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612946298;
-        bh=ZuwM2mDuJ6k+gw3eFocM3ER40zA3AqWajT5QIt4bIHo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HkzWW9Hi/TVxB3hFSnCjRgBa0aqoScJFim3+0QJGipLHLwy72dMKQu+Xv4wI8x+KF
-         /XAKXc74q6PORPBV5L1i6H+cHfxcBv9MrPzXQ6246NcdViWwI5byFXFFO1EGshjvdv
-         u7KwcW6FLCcIvBXjfi7gdZzDk0YBjWGbulRRPWkvHeB+eMy9DP2BreNgkBcgJY1gsG
-         4+/cfZ84mIaOvK7dEpwPc/TNmNR9Uy0FRU0H35mr4+6KICRPpJ8SNH/zI6CYP/LkTa
-         3717sJSO2GjBhU+N5lQBThr233tNFxXNPLgXURkeUxO+a38EtGbY6avd2K0SeRDheV
-         BcqN+84rG6IpQ==
-Received: by mail-ed1-f50.google.com with SMTP id q2so1854684eds.11;
-        Wed, 10 Feb 2021 00:38:18 -0800 (PST)
-X-Gm-Message-State: AOAM533yvNLwo57xoFviLutIEz52krxayUXAxXzzFIZRgvS4m5VUwvY1
-        vAFN0l2ktaMpnkp5x4Z6PM1Qz2TSWSUGr3F/L8I=
-X-Google-Smtp-Source: ABdhPJzyp7Nqf2eUGKayKL3NGLdyz5Vm6yYdapcLoP/6d6EtfX9OUepULQfQKFuge4Lytm4yW/xmHWZrad8EtxNGzXo=
-X-Received: by 2002:a05:6402:1d82:: with SMTP id dk2mr2073308edb.132.1612946296758;
- Wed, 10 Feb 2021 00:38:16 -0800 (PST)
+        id S229598AbhBJIi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 03:38:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32A8164E45;
+        Wed, 10 Feb 2021 08:38:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612946293;
+        bh=QDHVbNnxZyUKPqYjqx1lQnSqISHhys7iQD3d0dJiMA4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=wuHMKFG52zb11Rd5Lr0R7ixCtpjQYMOsOXosVA3NUvzhw93yR0T4Zm5N/CHcLhMiF
+         5L+O2AqNK9Kqe8lqsv5Cc1FbekmARfahAJryG+LD4fA3H7442MCQMeP5gfvJJHVWtz
+         /gQi6StfYqrQt/TIXkc87Q/DhbTOe8EXcTy75sCg=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.9.257
+Date:   Wed, 10 Feb 2021 09:38:07 +0100
+Message-Id: <16129462872502@kroah.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210202021747.717-1-r-rivera-matos@ti.com> <20210202021747.717-2-r-rivera-matos@ti.com>
-In-Reply-To: <20210202021747.717-2-r-rivera-matos@ti.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 10 Feb 2021 09:38:04 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPfNVWpS+90mUmQoE+Hz4AQh3wa0od1NkYBXPJ1jbUQ1XQ@mail.gmail.com>
-Message-ID: <CAJKOXPfNVWpS+90mUmQoE+Hz4AQh3wa0od1NkYBXPJ1jbUQ1XQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] dt-bindings: power: Add the bq25790 dt bindings
-To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-Cc:     sre@kernel.org, linux-pm@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dmurphy@ti.com, Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 at 03:20, Ricardo Rivera-Matos <r-rivera-matos@ti.com> w=
-rote:
->
-> From: Dan Murphy <dmurphy@ti.com>
->
-> Add the bindings for the bq25790.
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+I'm announcing the release of the 4.9.257 kernel.
 
-Order of tags is entirely wrong. Did Rob review it before Dan write
-it?  Your Sob should be after Dan's (unless you wrote it at first?).\
+All users of the 4.9 kernel series must upgrade.
 
-> ---
->  .../bindings/power/supply/bq25790.yaml        | 95 +++++++++++++++++++
->  1 file changed, 95 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/bq2579=
-0.yaml
->
-> diff --git a/Documentation/devicetree/bindings/power/supply/bq25790.yaml =
-b/Documentation/devicetree/bindings/power/supply/bq25790.yaml
-> new file mode 100644
-> index 000000000000..6d9178ce5a2b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/supply/bq25790.yaml
-> @@ -0,0 +1,95 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2020 Texas Instruments Incorporated
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/power/supply/bq25790.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: TI BQ25790 Switch Mode Buck-Boost Charger
-> +
-> +maintainers:
-> +  - Dan Murphy <dmurphy@ti.com>
-> +
-> +description: |
-> +  BQ25790 is a highly integrated switch-mode buck-boost charger for 1-4 =
-cell
-> +  Li-ion batteries and Li-polymer batteries. The device charges a batter=
-y from a
-> +  wide range of input sources including legacy USB adapters to high volt=
-age USB
-> +  PD adapters and traditional barrel adapters.
-> +
-> +allOf:
-> +  - $ref: power-supply.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,bq25790
-> +      - ti,bq25792
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  ti,watchdog-timeout-ms:
-> +    default: 0
-> +    description: |
-> +      Watchdog timer in milli seconds. 0 (default) disables the watchdog=
-.
-> +    minimum: 0
-> +    maximum: 160000
+The updated 4.9.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.9.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Why do you need minimum/maximum if you enumerate the values?
+thanks,
 
-> +    enum: [ 0, 500, 1000, 2000, 20000, 40000, 80000, 160000]
-> +
-> +  input-voltage-limit-microvolt:
-> +    description: |
-> +      Minimum input voltage limit in micro volts with a 100000 micro vol=
-t step.
-> +    minimum: 3600000
-> +    maximum: 22000000
-> +
-> +  input-current-limit-microamp:
-> +    description: |
-> +      Maximum input current limit in micro amps with a 100000 micro amp =
-step.
-> +    minimum: 100000
-> +    maximum: 3300000
-> +
-> +  monitored-battery:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: phandle to the battery node being monitored
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: |
-> +      Interrupt sends an active low, 256 =CE=BCs pulse to host to report=
- the charger
-> +      device status and faults.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - monitored-battery
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    bat: battery {
-> +      compatible =3D "simple-battery";
-> +      constant-charge-current-max-microamp =3D <2000000>;
-> +      constant-charge-voltage-max-microvolt =3D <4200000>;
-> +      precharge-current-microamp =3D <160000>;
-> +      charge-term-current-microamp =3D <160000>;
-> +    };
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
+greg k-h
 
-Includes go to the beginning of example (and to beginning of DTS).
+------------
 
-Best regards,
-Krzysztof
+ Makefile                              |   10 -
+ arch/arm/mach-footbridge/dc21285.c    |   12 -
+ arch/x86/Makefile                     |    3 
+ arch/x86/include/asm/apic.h           |   10 -
+ arch/x86/include/asm/barrier.h        |   18 ++
+ arch/x86/kernel/apic/apic.c           |    4 
+ arch/x86/kernel/apic/x2apic_cluster.c |    6 
+ arch/x86/kernel/apic/x2apic_phys.c    |    6 
+ drivers/acpi/thermal.c                |   55 ++++--
+ drivers/input/joystick/xpad.c         |   17 +-
+ drivers/input/serio/i8042-x86ia64io.h |    2 
+ drivers/iommu/intel-iommu.c           |    6 
+ drivers/mmc/core/sdio_cis.c           |    6 
+ drivers/net/dsa/bcm_sf2.c             |    8 
+ drivers/net/ethernet/ibm/ibmvnic.c    |    6 
+ drivers/scsi/ibmvscsi/ibmvfc.c        |    4 
+ drivers/scsi/libfc/fc_exch.c          |   16 +
+ drivers/usb/class/usblp.c             |   19 +-
+ drivers/usb/dwc2/gadget.c             |    8 
+ drivers/usb/gadget/legacy/ether.c     |    4 
+ drivers/usb/host/xhci-ring.c          |   31 ++-
+ drivers/usb/serial/cp210x.c           |    2 
+ drivers/usb/serial/option.c           |    6 
+ fs/cifs/dir.c                         |   22 ++
+ fs/hugetlbfs/inode.c                  |    3 
+ include/linux/elfcore.h               |   22 ++
+ include/linux/hugetlb.h               |    3 
+ kernel/Makefile                       |    1 
+ kernel/elfcore.c                      |   25 ---
+ kernel/futex.c                        |  276 +++++++++++++++++++---------------
+ kernel/kprobes.c                      |    4 
+ kernel/locking/rtmutex-debug.c        |    9 -
+ kernel/locking/rtmutex-debug.h        |    3 
+ kernel/locking/rtmutex.c              |  127 +++++++++------
+ kernel/locking/rtmutex.h              |    2 
+ kernel/locking/rtmutex_common.h       |   12 -
+ mm/huge_memory.c                      |   37 ++--
+ mm/hugetlb.c                          |    9 -
+ net/lapb/lapb_out.c                   |    3 
+ net/mac80211/driver-ops.c             |    5 
+ net/mac80211/rate.c                   |    3 
+ net/mac80211/rx.c                     |    2 
+ net/sched/sch_api.c                   |    3 
+ sound/pci/hda/patch_realtek.c         |    2 
+ tools/objtool/elf.c                   |    7 
+ 45 files changed, 520 insertions(+), 319 deletions(-)
+
+Alexey Dobriyan (1):
+      Input: i8042 - unbreak Pegatron C15B
+
+Arnd Bergmann (1):
+      elfcore: fix building with clang
+
+Aurelien Aptel (1):
+      cifs: report error instead of invalid when revalidating a dentry fails
+
+Benjamin Valentin (1):
+      Input: xpad - sync supported devices with fork on GitHub
+
+Brian King (1):
+      scsi: ibmvfc: Set default timeout to avoid crash during migration
+
+Chenxin Jin (1):
+      USB: serial: cp210x: add new VID/PID for supporting Teraoka AD2000
+
+Christoph Schemmel (1):
+      USB: serial: option: Adding support for Cinterion MV31
+
+Dan Carpenter (1):
+      USB: gadget: legacy: fix an error code in eth_bind()
+
+Dave Hansen (1):
+      x86/apic: Add extra serialization for non-serializing MSRs
+
+Eric Dumazet (1):
+      net_sched: reject silly cell_log in qdisc_get_rtab()
+
+Felix Fietkau (2):
+      mac80211: fix fast-rx encryption check
+      mac80211: fix station rate table updates on assoc
+
+Fengnan Chang (1):
+      mmc: core: Limit retries when analyse of SDIO tuples fails
+
+Greg Kroah-Hartman (1):
+      Linux 4.9.257
+
+Heiko Stuebner (1):
+      usb: dwc2: Fix endpoint direction check in ep_from_windex
+
+Hugh Dickins (1):
+      mm: thp: fix MADV_REMOVE deadlock on shmem THP
+
+Javed Hasan (1):
+      scsi: libfc: Avoid invoking response handler twice if ep is already completed
+
+Jeremy Figgins (1):
+      USB: usblp: don't call usb_set_interface if there's a single alt
+
+Josh Poimboeuf (2):
+      objtool: Don't fail on missing symbol table
+      x86/build: Disable CET instrumentation in the kernel
+
+Lijun Pan (1):
+      ibmvnic: Ensure that CRQ entry read are correctly ordered
+
+Mathias Nyman (1):
+      xhci: fix bounce buffer usage for non-sg list case
+
+Muchun Song (3):
+      mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
+      mm: hugetlb: fix a race between isolating and freeing page
+      mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
+
+Nadav Amit (1):
+      iommu/vt-d: Do not use flush-queue when caching-mode is on
+
+Pan Bian (1):
+      net: dsa: bcm_sf2: put device node before return
+
+Peter Zijlstra (4):
+      futex,rt_mutex: Provide futex specific rt_mutex API
+      futex: Remove rt_mutex_deadlock_account_*()
+      futex: Rework inconsistent rt_mutex/futex_q state
+      futex: Avoid violating the 10th rule of futex
+
+Pho Tran (1):
+      USB: serial: cp210x: add pid/vid for WSDA-200-USB
+
+Rafael J. Wysocki (1):
+      ACPI: thermal: Do not call acpi_thermal_check() directly
+
+Russell King (1):
+      ARM: footbridge: fix dc21285 PCI configuration accessors
+
+Sasha Levin (1):
+      stable: clamp SUBLEVEL in 4.4 and 4.9
+
+Shih-Yuan Lee (FourDollars) (1):
+      ALSA: hda/realtek - Fix typo of pincfg for Dell quirk
+
+Thomas Gleixner (6):
+      futex: Replace pointless printk in fixup_owner()
+      futex: Provide and use pi_state_update_owner()
+      rtmutex: Remove unused argument from rt_mutex_proxy_unlock()
+      futex: Use pi_state_update_owner() in put_pi_state()
+      futex: Simplify fixup_pi_state_owner()
+      futex: Handle faults correctly for PI futexes
+
+Wang ShaoBo (1):
+      kretprobe: Avoid re-registration of the same kretprobe earlier
+
+Xie He (1):
+      net: lapb: Copy the skb before sending a packet
+
