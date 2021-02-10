@@ -2,109 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00024316859
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B764731685A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhBJNyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:54:00 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:33565 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbhBJNxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:53:54 -0500
-Received: by mail-oi1-f175.google.com with SMTP id g84so2079407oib.0;
-        Wed, 10 Feb 2021 05:53:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MFikpXfhNdl/eEzw3oQhEBfIDumYf2JlVlOqmQDedOI=;
-        b=Ognr5ljrmxUK7qbMTcFvter/n1ysZLlKlDbvTbdAlfrUgO1ykMuYvBf/iTgVymb4lH
-         /tQhwXchzdS7DrL+GuxtMlJUMTHXt/wCGUQ/E8j9IY++fIqVMmhye/UsMt/boidDYWk/
-         G0X5sw4Vr02W548SSX6pipT4w68a9Yk+NgwsPoNN0WhNfaHkaW3kQhBTWIoaQ9/XCxHI
-         jgr9V72iT0CTJYN9AGORu6o5wmM2RPbzDFqf2Z3jiarW4RrPiSNwXdMwWEFH7GkWbkMz
-         oNcA0L5o0veErYfLFSf10vfE1OwLFHP0EUQL3ZfqQK9LudtK5FMT1LSWg/oSHqy2kEUx
-         64Sw==
-X-Gm-Message-State: AOAM530HN5m7TJOSdNWMWC1quz0I6RNFP62FtEbNyt1Ok5ESBnPvYvRT
-        eUn7713m21PEnTk5gc/3XmTyetsNXJ1bFYXRAyoK5RVIf5E=
-X-Google-Smtp-Source: ABdhPJwgsM3k99jHtl8LWwiECKTK5AVq9Jm35syK4gPBHb1a8creoTJSnEuLotWNjQdpB470ixXnRbQtCmpaLYsG5dU=
-X-Received: by 2002:a54:4e88:: with SMTP id c8mr2058595oiy.148.1612965192777;
- Wed, 10 Feb 2021 05:53:12 -0800 (PST)
+        id S231274AbhBJNyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:54:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230263AbhBJNyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:54:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85B5264E77;
+        Wed, 10 Feb 2021 13:53:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612965199;
+        bh=yV6TURZhEtJ6Cwgc9q7dRhbULRCstmiM+RHhfwGM2ZU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JuFE+/H/htE9E/JO5D55Z9g4jY9h9NX1qVbDUM8eEX8uBvEEq15Yi6eAIg9CL3UTs
+         dmSgQzaaBxUTBYQETr46T+2eDsMYyHLJayQLZ/RfqnARndQ3ClGdbCNLNe8RFab8Gl
+         NKMj8qtJUfl3h/mBKInuJ3S15ZM3d6sASQDnlqAcB7Bj5YJbz/wC3wqh4HNDk65W1U
+         MMzEE1Q532KBw3uluuTIa/PbV2poQ14K32F1pyV/85SZOyGFlFWbSg2ayghHrk9CdD
+         V3Gf3PJP3XNUn82c8MTf1ff3AVnCD7TFJX0ySGDqM0ru+oZbTnsMGChgjoi9GJFF1+
+         mmS/2czj8Tnzw==
+Received: by mail-ot1-f44.google.com with SMTP id l23so1792924otn.10;
+        Wed, 10 Feb 2021 05:53:19 -0800 (PST)
+X-Gm-Message-State: AOAM53142gQjphtGRhT2WdKJUferF1dwNV6TbTD8dPrnR4bve7rnraoW
+        eQBhVm+RUHC62nzmBunBH9sOg8RLJgOEdS44NmE=
+X-Google-Smtp-Source: ABdhPJwb9CXfMxZUsIBeiH+dbVDlq4uugNf+KJ+ZAnHaP33UGz/UDaKmzdX0HWNyLIVQBUvu0kkylO78Qv9oAn+xQiA=
+X-Received: by 2002:a05:6830:18e6:: with SMTP id d6mr2159421otf.251.1612965198882;
+ Wed, 10 Feb 2021 05:53:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20210210132751.1422386-1-geert+renesas@glider.be> <87mtwcujd0.fsf@microchip.com>
-In-Reply-To: <87mtwcujd0.fsf@microchip.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 10 Feb 2021 14:53:01 +0100
-Message-ID: <CAMuHMdVpHUmwfob6t_aWvaVVHpSDpF5HvLe_W5+KY9ky5A-qEw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: PINCTRL_MICROCHIP_SGPIO should depend on
- ARCH_SPARX5 || SOC_VCOREIII
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+References: <20210118155242.7172-1-jbx6244@gmail.com> <6598201.ejJDZkT8p0@diego>
+ <CAK8P3a25iYksubCnQb1-e5yj=crEsK37RB9Hn4ZGZMwcVVrG7g@mail.gmail.com> <46108228.fMDQidcC6G@diego>
+In-Reply-To: <46108228.fMDQidcC6G@diego>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 10 Feb 2021 14:53:02 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0ALgbhTVJ7t3XRXALs9vBM=XBvkGhNKXxB+QTepo-3AQ@mail.gmail.com>
+Message-ID: <CAK8P3a0ALgbhTVJ7t3XRXALs9vBM=XBvkGhNKXxB+QTepo-3AQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] ARM: dts: rockchip: assign a fixed index to mmc
+ devices on rv1108 boards
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Johan Jonker <jbx6244@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lars,
-
-On Wed, Feb 10, 2021 at 2:45 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
-> Geert Uytterhoeven writes:
-> > the Microsemi/Microchip Serial GPIO device is present only Microsemi
-> > VCore III and Microchip Sparx5 SoCs.  Hence add a dependency on
-> > ARCH_SPARX5 || SOC_VCOREIII, to prevent asking the user about this
-> > driver when configuring a kernel without support for these SoCs.
-> >
-> > Fixes: 7e5ea974e61c8dd0 ("pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> >  drivers/pinctrl/Kconfig | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-> > index 113073d5f89bbf70..3b75b1d7d3d1f1b0 100644
-> > --- a/drivers/pinctrl/Kconfig
-> > +++ b/drivers/pinctrl/Kconfig
-> > @@ -353,8 +353,8 @@ config PINCTRL_OCELOT
-> >
-> >  config PINCTRL_MICROCHIP_SGPIO
-> >         bool "Pinctrl driver for Microsemi/Microchip Serial GPIO"
-> > -       depends on OF
-> > -       depends on HAS_IOMEM
-> > +       depends on OF && HAS_IOMEM
-> > +       depends on ARCH_SPARX5 || SOC_VCOREIII || COMPILE_TEST
-> >         select GPIOLIB
-> >         select GPIOLIB_IRQCHIP
-> >         select GENERIC_PINCONF
+On Wed, Feb 10, 2021 at 11:49 AM Heiko St=C3=BCbner <heiko@sntech.de> wrote=
+:
+> Am Mittwoch, 10. Februar 2021, 11:34:41 CET schrieb Arnd Bergmann:
+> > On Wed, Feb 10, 2021 at 12:50 AM Heiko St=C3=BCbner <heiko@sntech.de> w=
+rote:
+> > > Am Dienstag, 9. Februar 2021, 23:25:40 CET schrieb Arnd Bergmann:
+> > Each board should have its own aliases node that describes
+> > exactly which of the devices are wired up on that board, and
+> > in which order. If there are connectors on the board that
+> > are labeled in some form, then the aliases are meant to
+> > match what is written on the board or in its documentation.
 >
-> Thank you for your patch. Unfortunately, it makes it impossible to use
-> the driver across PCIe - which is a specifically desired configuration.
+> Then we're at least in the clear for i2c, serial and the rest ... as thes=
+e
+> are numbered in the soc documentation, and all boards I've seen so
+> far use these number also to identify these in schematics.
+
+Ok, that is helpful. It would still be good to ensure that only aliases
+exist for nodes that are actually enabled.
+
+> So an i2c2 is always i2c2 even if i2c1 is not populated.
 >
-> Could you add CONFIG_PCI to the || chain?
+> And of course doing
+>         i2c0 =3D &i2c2
+> would definitly confuse people to no end.
 
-Sure.
+I think that's just an unfortunate choice of the labels here,
+it's sometimes easier to just refer to the node by the full
+path instead of the label.
 
-Is PCIe the only other transport over which the register can be accessed?
-Or can this also be done over e.g. SPI, like on Ocelot[1]?
-
-[1] https://lore.kernel.org/linux-gpio/20200511145329.GV34497@piout.net/
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+      Arnd
