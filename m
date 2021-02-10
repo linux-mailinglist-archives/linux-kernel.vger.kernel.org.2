@@ -2,74 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2E531746C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9066C31746F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233948AbhBJXbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:31:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233668AbhBJXau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:30:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 62C4C64E74;
-        Wed, 10 Feb 2021 23:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612999807;
-        bh=zcUTY8llwMOnHoeTedDCN65DgA02Y2P4FA1HBAQJIZ8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Pwl7/DfbcyY7L5O5XzAlNDdqjGxZ0OY1sc2aEY6UzzeiuYrth5jLuJtwKY+hO00Iu
-         W6MkgM3wYfEXBAE3sbd+pN2JhcI2C3r0zWud/S/nO29BJYzcks9oL+W82eANL2ZyLb
-         LKXXa78oHnc9LrQ7LpLfYKYXp/ZSkIhfdeP5yn8F8hOzaDdbBBYILy7SZidTQasBAQ
-         Gb7ClwHtIWu8TPiO63/d/rGg0Z9MCZLdj9YpUtD0mAO/NE11/IufqObseCtT2my4wv
-         M8KdZMRFe1gKEoY1MUaJ4YSw5Krhb4hTZsW4MRrjKolVYJfTDZ1hJQQtpZBbBrWtAc
-         3lrE9gmTnu4kw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 40EA0609F1;
-        Wed, 10 Feb 2021 23:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233982AbhBJXcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:32:13 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23038 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233952AbhBJXcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 18:32:07 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11ANIMmD033480;
+        Wed, 10 Feb 2021 18:30:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=WwnxfDfiSUvaoRxLjsUAinYso5jcWLMQITma1Y77IiE=;
+ b=aSa2yX//b5kSC77R8wdXM77GzKfuLxawVVd+SVxyGyw+awLxwdvria14j4FzLGWjALpr
+ tMz6eGziaxLp2/B9S7kLstYHwOYpnntNnuV8JXXCYekh+ne9J+VV6y17gIrl1HMjSbmY
+ 9XezezrwKnU/+XqEP+53Vg2CBNsqBv/86d7Ba1xYTtv7yF+7iab5+uBrnPfGI7uqO86s
+ +4DxlQ6Ff6FHF3E3uTuLyv50QACTDiACCh37ssQ94eamT5E+p15bBrZfhK9KxdB8dVp7
+ bRsYIkyi4LWQFJKJ8N2MNwo+mVWAI5SmpKcDt23K7cawHwCUsfBV31i+vOSTnakX92Tj 5w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36ms1w064v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 18:30:52 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11ANLLv8052502;
+        Wed, 10 Feb 2021 18:30:51 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36ms1w064b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 18:30:51 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11ANSMsD024480;
+        Wed, 10 Feb 2021 23:30:50 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma02dal.us.ibm.com with ESMTP id 36hjraa03g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 23:30:50 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11ANUnFN19136844
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 23:30:49 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CEF0DAE05F;
+        Wed, 10 Feb 2021 23:30:49 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6960AE05C;
+        Wed, 10 Feb 2021 23:30:42 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.160.95.194])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Wed, 10 Feb 2021 23:30:42 +0000 (GMT)
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210209182200.30606-4-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v17 03/10] arm64: Use common of_kexec_alloc_and_setup_fdt()
+In-reply-to: <20210209182200.30606-4-nramas@linux.microsoft.com>
+Date:   Wed, 10 Feb 2021 20:30:40 -0300
+Message-ID: <87v9azo5zz.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] rxrpc: Fix missing dependency on NET_UDP_TUNNEL
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161299980726.17911.8770731503126341491.git-patchwork-notify@kernel.org>
-Date:   Wed, 10 Feb 2021 23:30:07 +0000
-References: <161288292553.585687.14447945995623785380.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161288292553.585687.14447945995623785380.stgit@warthog.procyon.org.uk>
-To:     David Howells <dhowells@redhat.com>
-Cc:     netdev@vger.kernel.org, lkp@intel.com, vfedorenko@novek.ru,
-        lucien.xin@gmail.com, alaa@dev.mellanox.co.il, kuba@kernel.org,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-10_11:2021-02-10,2021-02-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=847 mlxscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 adultscore=0 clxscore=1015
+ lowpriorityscore=0 bulkscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100200
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-On Tue, 09 Feb 2021 15:02:05 +0000 you wrote:
-> The changes to make rxrpc create the udp socket missed a bit to add the
-> Kconfig dependency on the udp tunnel code to do this.
-> 
-> Fix this by adding making AF_RXRPC select NET_UDP_TUNNEL.
-> 
-> Fixes: 1a9b86c9fd95 ("rxrpc: use udp tunnel APIs instead of open code in rxrpc_open_socket")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Reviewed-by: Xin Long <lucien.xin@gmail.com>
-> cc: alaa@dev.mellanox.co.il
-> cc: Jakub Kicinski <kuba@kernel.org>
-> 
-> [...]
+> From: Rob Herring <robh@kernel.org>
+>
+> The code for setting up the /chosen node in the device tree
+> and updating the memory reservation for the next kernel has been
+> moved to of_kexec_alloc_and_setup_fdt() defined in "drivers/of/kexec.c".
+>
+> Use the common of_kexec_alloc_and_setup_fdt() to setup the device tree
+> and update the memory reservation for kexec for arm64.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  arch/arm64/kernel/machine_kexec_file.c | 180 ++-----------------------
+>  1 file changed, 8 insertions(+), 172 deletions(-)
 
-Here is the summary with links:
-  - [net-next] rxrpc: Fix missing dependency on NET_UDP_TUNNEL
-    https://git.kernel.org/netdev/net-next/c/dc0e6056decc
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
