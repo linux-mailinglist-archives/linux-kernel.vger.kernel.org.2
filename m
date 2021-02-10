@@ -2,197 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435D2317435
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF74317437
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbhBJXTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:19:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
+        id S233641AbhBJXTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:19:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbhBJXRw (ORCPT
+        with ESMTP id S233460AbhBJXSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:17:52 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD49C061788
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:17:12 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id z21so2288978pgj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:17:12 -0800 (PST)
+        Wed, 10 Feb 2021 18:18:16 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18963C06178A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:17:36 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id o193so3538449qke.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:17:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=BTwUxqPBy6oly9LDaFC2hX+M9Co4cudRUllAJzC8WIw=;
-        b=uwy5NQNQG4iKZ2kChVPhflo/CEaJYLjMrYfCL4trZogE7OHxETTRCq+Bau8HP5KOKq
-         uzwJhw2yAKSzJx9lgyi9ySmukVSInb0KZH+9NAPF5sW7EZ/MKk9eceC6RDdbABClhhNm
-         cDO+qLfNmztaHVb87yDqtZb5Rj1m1QE4y8PZbmVDrBZMtc/LEi+xadvmo/E6t5q84baw
-         qzBKxmf6iAfvhdUxZODZeOWOdB6YhhKkvFieD+/vWp3ezPZDXyvj+NHIY8N88Kv7leup
-         6MyUuoeZax0EdMkepmqdDCpqWvw1T0hPxvR2UG48QTboCQ3PDn13y9FlG1Bg/2s2ja3R
-         +E5g==
+        bh=pvzBLzuUN3dC3Meck84dtvamYug02/uWoNAd2vuIlPw=;
+        b=LnAhhZAcjBbe2PDzz7862JnfK5LxIO+60i0EKD0KDKz7s9HABmOblaFNhZTUV95vQ3
+         TcpqQGbbR6j8YnR1u48ozRKREc9GR4REzg5lFNe+kdgPgDvdrcLmz2deN0izTXw3QuUf
+         CKyhoUazx10m4WzbeTW77xpOInKqOMQ7CZZmeYD6FJvFu6C+mD+/iqcr/2pidKc0Rnf7
+         Jqk0eHarHTXWC9Ze7H0NC0qbrN3xGiI28tIAu5vOpCKf9qh2y/Y6FHQpJgn5a2omapVU
+         xzuMi8DlLmhVFvqnvrlfvplkDzanCmmL9lY5FHEnYjX8v1QLa51LV3+MmFVbTpVtEgZS
+         vvMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=BTwUxqPBy6oly9LDaFC2hX+M9Co4cudRUllAJzC8WIw=;
-        b=Tv2hdkRYLmsb6cNd+ccjAisk6Vjcp9oZI2i6OCn8zQKwTXcl0LoLDGsqCvk8msUJtq
-         6VIFJ4usmESQT5Y4VP7dgbzRe+p2PWLDwWj9zdv0vN72aLfsU38pogjfK2GBLR6i1O4t
-         V0tKxKoixZPM3308UDcEqy4ddp/Mdcg8Uj/Z+gUlnUT3ejwGYaESLCsT3jYSXvFP7AZM
-         3HjA3jzIT/iPaFWULA8xZ2rhiQiSh4NXAH8tefOPP7AvYgrN0pnNVsSkjOqzdGNvW6nU
-         JaNAFP4B/lurfy08jgf937lS2uQ9+xSyY8pggNAAj4dvizMtdX5IrTlaWvp9NJuqbqk5
-         Xkyg==
-X-Gm-Message-State: AOAM531j+cxPrcrpcmS4qwmIr0Fx7UZ+XUGoHP3dxhXkpVT7Z8Y+Xk/u
-        WWJ2L8M0vymZfbIHzPgCnGU=
-X-Google-Smtp-Source: ABdhPJw0ClSRVFsFBf44hMDx5xn+gjAb/onebx0NyRO1CfWWMrlUkQ1v6c0oz1Lyn3dt0lpuPgur/A==
-X-Received: by 2002:a63:4713:: with SMTP id u19mr5195599pga.209.1612999030040;
-        Wed, 10 Feb 2021 15:17:10 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:e5b0:be96:1dfb:a1f6])
-        by smtp.gmail.com with ESMTPSA id s184sm3485743pfc.106.2021.02.10.15.17.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pvzBLzuUN3dC3Meck84dtvamYug02/uWoNAd2vuIlPw=;
+        b=ezJu5XLzz8DJ4U6j4GRM8mIJEkQDYsVqZbIX2/to315cGB8b614TYgKRcwPfPB5JU5
+         ZviwcbwyntDI8UF6drv3HXGHP9qghNdqaLMrC69S64966X7Xx1wOsWFr75X59o2QDT9p
+         K7zMP3A0nnWV1W7eRsErgcUyJqtU6gv3cobd1qu6jwljHtDYbM2Md1y3sE3T+CtGMIwL
+         LuzeskXj7KBL3N+6qQIGkRYh0PjyCevpYKTUdaKEdxcBnkl1wgIMdarlByUhWz/XjUle
+         PidlcIn7bGjy2f5A9nnOpYq9iN+mSwTzXUBh0FJqayotXcH4qa0+sZc9n7Hj/Si60TX8
+         y/3g==
+X-Gm-Message-State: AOAM531cdxRK6QcpqAA35M4FKYXZOKNXcE+MIbHrhm1t7p+e5CnIy4bb
+        7sk1/uS8EqJ0scL4WWMghF+N2A==
+X-Google-Smtp-Source: ABdhPJyaU4n/wmBj/Fq8bDuOMNR3xhmXrfFN0BiPQEns2xCAk/uD0k5Fsy15pBBnyBYamD9xuF/xGg==
+X-Received: by 2002:a37:484f:: with SMTP id v76mr5717061qka.312.1612999055416;
+        Wed, 10 Feb 2021 15:17:35 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id t128sm2549683qka.46.2021.02.10.15.17.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 15:17:08 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 10 Feb 2021 15:17:06 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        John Dias <joaodias@google.com>
-Subject: Re: [PATCH] dma-buf: system_heap: do not warn for costly allocation
-Message-ID: <YCRpclaUOkEWA83o@google.com>
-References: <20210210162632.3903128-1-minchan@kernel.org>
- <CALAqxLXzc3tfsr0hA6GS-zHjupWx++Bhcrs2pjbz00LNKeThOQ@mail.gmail.com>
- <YCQcfYRQ3eW+QiMz@google.com>
- <CALAqxLUaiOOrC6kWYSj1yg6qed32rQhfN4k99HNgn_=0kpFRJw@mail.gmail.com>
+        Wed, 10 Feb 2021 15:17:35 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l9yjm-006HMP-FB; Wed, 10 Feb 2021 19:17:34 -0400
+Date:   Wed, 10 Feb 2021 19:17:34 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Joao Martins <joao.m.martins@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v3 4/4] RDMA/umem: batch page unpin in __ib_umem_release()
+Message-ID: <20210210231734.GS4718@ziepe.ca>
+References: <20210205204127.29441-1-joao.m.martins@oracle.com>
+ <20210205204127.29441-5-joao.m.martins@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALAqxLUaiOOrC6kWYSj1yg6qed32rQhfN4k99HNgn_=0kpFRJw@mail.gmail.com>
+In-Reply-To: <20210205204127.29441-5-joao.m.martins@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:40:02PM -0800, John Stultz wrote:
-> On Wed, Feb 10, 2021 at 9:48 AM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > On Wed, Feb 10, 2021 at 09:32:09AM -0800, John Stultz wrote:
-> > > On Wed, Feb 10, 2021 at 8:26 AM Minchan Kim <minchan@kernel.org> wrote:
-> > > >
-> > > > Linux VM is not hard to support PAGE_ALLOC_COSTLY_ODER allocation
-> > > > so normally expects driver passes __GFP_NOWARN in that case
-> > > > if they has fallback options.
-> > > >
-> > > > system_heap in dmabuf is the case so do not flood into demsg
-> > > > with the warning for recording more precious information logs.
-> > > > (below is ION warning example I got but dmabuf system heap is
-> > > > nothing different).
-> > > >
-> > > > [ 1233.911533][  T460] warn_alloc: 11 callbacks suppressed
-> > > > [ 1233.911539][  T460] allocator@2.0-s: page allocation failure: order:4, mode:0x140dc2(GFP_HIGHUSER|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
-> > > > [ 1233.926235][  T460] Call trace:
-> > > > [ 1233.929370][  T460]  dump_backtrace+0x0/0x1d8
-> > > > [ 1233.933704][  T460]  show_stack+0x18/0x24
-> > > > [ 1233.937701][  T460]  dump_stack+0xc0/0x140
-> > > > [ 1233.941783][  T460]  warn_alloc+0xf4/0x148
-> > > > [ 1233.945862][  T460]  __alloc_pages_slowpath+0x9fc/0xa10
-> > > > [ 1233.951101][  T460]  __alloc_pages_nodemask+0x278/0x2c0
-> > > > [ 1233.956285][  T460]  ion_page_pool_alloc+0xd8/0x100
-> > > > [ 1233.961144][  T460]  ion_system_heap_allocate+0xbc/0x2f0
-> > > > [ 1233.966440][  T460]  ion_buffer_create+0x68/0x274
-> > > > [ 1233.971130][  T460]  ion_buffer_alloc+0x8c/0x110
-> > > > [ 1233.975733][  T460]  ion_dmabuf_alloc+0x44/0xe8
-> > > > [ 1233.980248][  T460]  ion_ioctl+0x100/0x320
-> > > > [ 1233.984332][  T460]  __arm64_sys_ioctl+0x90/0xc8
-> > > > [ 1233.988934][  T460]  el0_svc_common+0x9c/0x168
-> > > > [ 1233.993360][  T460]  do_el0_svc+0x1c/0x28
-> > > > [ 1233.997358][  T460]  el0_sync_handler+0xd8/0x250
-> > > > [ 1234.001989][  T460]  el0_sync+0x148/0x180
-> > > >
-> > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > > > ---
-> > > >  drivers/dma-buf/heaps/system_heap.c | 9 +++++++--
-> > > >  1 files changed, 7 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-> > > > index 29e49ac17251..33c25a5e06f9 100644
-> > > > --- a/drivers/dma-buf/heaps/system_heap.c
-> > > > +++ b/drivers/dma-buf/heaps/system_heap.c
-> > > > @@ -40,7 +40,7 @@ struct dma_heap_attachment {
-> > > >         bool mapped;
-> > > >  };
-> > > >
-> > > > -#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
-> > > > +#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO \
-> > > >                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
-> > > >                                 | __GFP_COMP)
-> > > >  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
-> > > > @@ -315,6 +315,7 @@ static struct page *alloc_largest_available(unsigned long size,
-> > > >                                             unsigned int max_order)
-> > > >  {
-> > > >         struct page *page;
-> > > > +       unsigned long gfp_flags;
-> > > >         int i;
-> > > >
-> > > >         for (i = 0; i < NUM_ORDERS; i++) {
-> > > > @@ -323,7 +324,11 @@ static struct page *alloc_largest_available(unsigned long size,
-> > > >                 if (max_order < orders[i])
-> > > >                         continue;
-> > > >
-> > > > -               page = alloc_pages(order_flags[i], orders[i]);
-> > > > +               gfp_flags = order_flags[i];
-> > > > +               if (orders[i] > PAGE_ALLOC_COSTLY_ORDER)
-> > > > +                       gfp_flags |= __GFP_NOWARN;
-> > > > +
-> > > > +               page = alloc_pages(gfp_flags, orders[i]);
-> > >
-> > > Would it be cleaner to just set up the flags properly in the
-> > > order_flags array? I'm not sure I understand why your patch does it
-> > > dynamically?
-> >
-> > That's exactly I had in my branch for aosp fix but I wanted to
-> > hear it explicitly from dmabuf maintainer since I was worried
-> > chaninging order-4 allocation behavior, especially,
-> > __GFP_NORETRY and &~__GFP_RECLAIM.
-> > (It will make allocation failure easier than old and that's not
-> > thing my patch is addressing).
+On Fri, Feb 05, 2021 at 08:41:27PM +0000, Joao Martins wrote:
+> Use the newly added unpin_user_page_range_dirty_lock()
+> for more quickly unpinning a consecutive range of pages
+> represented as compound pages. This will also calculate
+> number of pages to unpin (for the tail pages which matching
+> head page) and thus batch the refcount update.
 > 
-> Yea. I might stick to changing just the __GFP_NOWARN.
+> Running a test program which calls mr reg/unreg on a 1G in size
+> and measures cost of both operations together (in a guest using rxe)
+> with THP and hugetlbfs:
 > 
-> > If you want this, I am happy to change it. Shall I?
-> >
-> > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-> > index 29e49ac17251..865ec847013d 100644
-> > --- a/drivers/dma-buf/heaps/system_heap.c
-> > +++ b/drivers/dma-buf/heaps/system_heap.c
-> > @@ -44,7 +44,7 @@ struct dma_heap_attachment {
-> >                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
-> >                                 | __GFP_COMP)
-> >  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
-> > -static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
-> > +static gfp_t order_flags[] = {HIGH_ORDER_GFP, HIGH_ORDER_GFP, LOW_ORDER_GFP};
+> Before:
+> 590 rounds in 5.003 sec: 8480.335 usec / round
+> 6898 rounds in 60.001 sec: 8698.367 usec / round
 > 
-> Maybe can you define a MID_ORDER_GFP as LOW_ORDER | __GFP_NOWARN
-> (along with a comment in the code as to why) instead ?
+> After:
+> 2688 rounds in 5.002 sec: 1860.786 usec / round
+> 32517 rounds in 60.001 sec: 1845.225 usec / round
 > 
-> That avoids introducing any subtle behavioral change unintentionally.
+> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+> ---
+>  drivers/infiniband/core/umem.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 
-How about this one? Feel free to suggest better wording.
+Would best for this to go through Andrew's tree
 
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 29e49ac17251..6e17ff06331e 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -44,7 +44,13 @@ struct dma_heap_attachment {
-                                | __GFP_NORETRY) & ~__GFP_RECLAIM) \
-                                | __GFP_COMP)
- #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
--static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
-+/*
-+ * order-4 is PAGE_ALLOC_COSTLY_ORDER which is order allocator could fail
-+ * easier than lower orders. Since we have fallback order-0 allocation,
-+ * do not add warn.
-+ */
-+#define MID_ORDER_GFP (LOW_ORDER_GFP | __GFP_NOWARN)
-+static gfp_t order_flags[] = {HIGH_ORDER_GFP, MID_ORDER_GFP, LOW_ORDER_GFP};
- /*
-  * The selection of the orders used for allocation (1MB, 64K, 4K) is designed
-  * to match with the sizes often found in IOMMUs. Using order 4 pages instead
+Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+
+4x improvement is pretty good!
+
+Jason
