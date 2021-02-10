@@ -2,162 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B321B316535
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1072316539
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhBJL2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:28:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhBJLS6 (ORCPT
+        id S230104AbhBJL3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:29:25 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:41179 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231363AbhBJLTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:18:58 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E530C0613D6;
-        Wed, 10 Feb 2021 03:18:18 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DbHLb1h0Lz9sS8;
-        Wed, 10 Feb 2021 22:18:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612955895;
-        bh=oBO5OiuYs+2sa+05/4gDmvfXPteEllUKO90Wa7brXDw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZI1am5IssN6OKcV5bRcGLem9S6LTb3ViSdEUR49FjsjyV1o83/PCTwKFbESf87lwu
-         It7t6EmuYs9zjM73sJjEnBgiHKKcda0cKu4pXwmmhZ7FdJVDN/zxpGtO8jfJKBqTmD
-         TQyNzLkJzZtcaqvychS8NtCsYwr8/OJfsB2oeMPqBSngoImuoHiXazvWCczQWvgbfr
-         pTw+4WrW6fNXFhFuOd8dnTlwsnnw4BiNmfh0gg8xTi9z7wJ96mtvpHE0wAUxjRXYKD
-         F+98iiFTs7BvwIH6e7mPj99cCmEP6JS2iyA9yRyJrREBhiQVE0x/B7ulYdSlYSKBRd
-         McrSUDoyF+wiQ==
-Date:   Wed, 10 Feb 2021 22:18:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the powerpc tree
-Message-ID: <20210210221814.22c3ab52@canb.auug.org.au>
-In-Reply-To: <1612945076.ng7h3tp2jn.astroid@bobo.none>
-References: <20210209211921.777e3053@canb.auug.org.au>
-        <1612945076.ng7h3tp2jn.astroid@bobo.none>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DQzo9u+quVcAVqwzkONhjpI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Wed, 10 Feb 2021 06:19:49 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9C9405C01A8;
+        Wed, 10 Feb 2021 06:18:47 -0500 (EST)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Wed, 10 Feb 2021 06:18:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=WCNhaAAaBk9KdSN70j1Xv1565gVpc6V
+        x6H+1sDQrl3g=; b=rAekFHw7nm66D/0P2kTycMJo52xReIKj2V0BF4vYDRVVf+G
+        JY506sn0c5iZ9Q46VBTcsEeSBGUcFfdOScuww6lSsMDaI38QEMeVjQvglzt/uAnU
+        FLmDbp9kFaZ4nbf4qp5wpN/svDFGGJk0NLdyRrr32GtbkTDYVHckYJi1zhy+6FMy
+        CLCcZ2tlbP/GHqPqy/PK9A1DB9H086QiPbCue8JqgktXIWH+31jozMLAmVeZ4DEF
+        et20cEX+lCRW+n92xgxC5Pm2lF2jsLUZuadz7CB/ZfclQn9ElPmqelHZH9MnQSu6
+        RxrV8BZuUcLSAu7HuciPlWUL+aAzBXDpmaCTk2A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=WCNhaA
+        AaBk9KdSN70j1Xv1565gVpc6Vx6H+1sDQrl3g=; b=d6jWdK3d1S/AswISiq/HLS
+        nOIJeJwga1VgGPj+1PdoeKRkVywD0XtORFvycKb5G60Dm4dZw/JsiyEDUiIibgk3
+        Ou7JRZj7/CoqXx+lQv14Qm9NWISpFBACRGcOyS/WCn4S4smgbGtD/o0XIzZwNwGB
+        2/jMFX5kj70IvA5PaM43IGUfUu7cV0+hQrq6l55n9DI800zzQCtGXmolEc6dLHyy
+        Ti8IzlqCz9HJzAEsZQQc/33YuJM12GnWaJgGWOtWVq893JIbHTMB3s0q9489UzxL
+        REMak7rS0xtTb0HmHb75e//JneEQzkI5Kdu31I/+JvRsPGfsic23m5s5As2/dwNQ
+        ==
+X-ME-Sender: <xms:F8EjYMLe0_k8WnjZLDlKWiCtOfgvmtMVT5fKI-3APvZOrdjC-Dn5Tg>
+    <xme:F8EjYMJAJpic9VUuasUL7djZIXzfrcQk0OmXuCSTDlV6btag3fwk-W6BeqATYX0dT
+    YwPGSWYsTLLhG22i1I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgddviecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedflfhirgig
+    uhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhepkeelheethfehffdttdelieevfeeiheeuudeifeeugeeuieel
+    iedtueejheehhedunecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilh
+    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:F8EjYMs2sAwSlo7H4I7PgWyhllXE8DqXv47i6am7-ubPnw21jM2KLg>
+    <xmx:F8EjYJYiSYqZS2Ef48J9pSXLrkXtevbfYMi2I1TNpnTJDfQINtsG4A>
+    <xmx:F8EjYDZCwsjPrWx6G4oUqWY6OXRwRXhTGYdpJ6utlJnqzEj7dYjTuw>
+    <xmx:F8EjYH5_ifj_nRiRHZSC2Yym8MxYDxcmjMHZb4BICJAFQtiXvZGx1Q>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 61E70130005D; Wed, 10 Feb 2021 06:18:47 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
+Mime-Version: 1.0
+Message-Id: <37a2d6c2-9a56-429e-addc-3e52dd49abc9@www.fastmail.com>
+In-Reply-To: <20210209093224.7085-5-zhangqing@loongson.cn>
+References: <20210209093224.7085-1-zhangqing@loongson.cn>
+ <20210209093224.7085-5-zhangqing@loongson.cn>
+Date:   Wed, 10 Feb 2021 19:18:25 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Qing Zhang" <zhangqing@loongson.cn>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Marc Zyngier" <maz@kernel.org>,
+        "Huacai Chen" <chenhuacai@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "Xingxing Su" <suxingxing@loongson.cn>
+Subject: Re: [PATCH 4/6] MIPS: Loongson64: Add 2K1000 early_printk_port
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DQzo9u+quVcAVqwzkONhjpI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi Nick,
 
-On Wed, 10 Feb 2021 18:20:54 +1000 Nicholas Piggin <npiggin@gmail.com> wrot=
-e:
+On Tue, Feb 9, 2021, at 5:32 PM, Qing Zhang wrote:
+> Distinguish between 3A series CPU and 2K1000 CPU UART0.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
+
+Personally I don't like this kind of quirk.
+Probably we should use earlycon as Arm later.
+
+- Jiaxun
+
+> ---
+>  arch/mips/loongson64/init.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
+> index 8bef1ebab72d..a8ad02d8d088 100644
+> --- a/arch/mips/loongson64/init.c
+> +++ b/arch/mips/loongson64/init.c
+> @@ -120,7 +120,10 @@ void __init prom_init(void)
+>  #endif
+>  
+>  	/* Hardcode to CPU UART 0 */
+> -	setup_8250_early_printk_port(TO_UNCAC(LOONGSON_REG_BASE + 0x1e0), 0, 1024);
+> +	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R)
+> +		setup_8250_early_printk_port(TO_UNCAC(LOONGSON_REG_BASE), 0, 1024);
+> +	else
+> +		setup_8250_early_printk_port(TO_UNCAC(LOONGSON_REG_BASE + 0x1e0), 0, 1024);
+>  
+>  	register_smp_ops(&loongson3_smp_ops);
+>  	board_nmi_handler_setup = mips_nmi_setup;
+> -- 
+> 2.20.1
+> 
 >
-> Thanks for that, it's due to .noinstr section being put on the other=20
-> side of .text, so all our interrupt handler asm code can't reach them=20
-> directly anymore since the ppc interrupt wrappers patch added noinstr
-> attribute.
->=20
-> That's not strictly required though, we've used NOKPROBE_SYMBOL okay
-> until now. If you can take this patch for now, it should get=20
-> allyesconfig to build again. I'll fix it in the powerpc tree before the=20
-> merge window.
->=20
-> --
->=20
-> diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/=
-asm/interrupt.h
-> index 4badb3e51c19..fee1e4dd1e84 100644
-> --- a/arch/powerpc/include/asm/interrupt.h
-> +++ b/arch/powerpc/include/asm/interrupt.h
-> @@ -172,6 +172,8 @@ static inline void interrupt_nmi_exit_prepare(struct =
-pt_regs *regs, struct inter
->  #define DECLARE_INTERRUPT_HANDLER_RAW(func)				\
->  	__visible long func(struct pt_regs *regs)
-> =20
-> +#define ppc_noinstr         noinline notrace __no_kcsan __no_sanitize_ad=
-dress
-> +
->  /**
->   * DEFINE_INTERRUPT_HANDLER_RAW - Define raw interrupt handler function
->   * @func:	Function name of the entry point
-> @@ -198,7 +200,7 @@ static inline void interrupt_nmi_exit_prepare(struct =
-pt_regs *regs, struct inter
->  #define DEFINE_INTERRUPT_HANDLER_RAW(func)				\
->  static __always_inline long ____##func(struct pt_regs *regs);		\
->  									\
-> -__visible noinstr long func(struct pt_regs *regs)			\
-> +__visible ppc_noinstr long func(struct pt_regs *regs)			\
->  {									\
->  	long ret;							\
->  									\
-> @@ -228,7 +230,7 @@ static __always_inline long ____##func(struct pt_regs=
- *regs)
->  #define DEFINE_INTERRUPT_HANDLER(func)					\
->  static __always_inline void ____##func(struct pt_regs *regs);		\
->  									\
-> -__visible noinstr void func(struct pt_regs *regs)			\
-> +__visible ppc_noinstr void func(struct pt_regs *regs)			\
->  {									\
->  	struct interrupt_state state;					\
->  									\
-> @@ -262,7 +264,7 @@ static __always_inline void ____##func(struct pt_regs=
- *regs)
->  #define DEFINE_INTERRUPT_HANDLER_RET(func)				\
->  static __always_inline long ____##func(struct pt_regs *regs);		\
->  									\
-> -__visible noinstr long func(struct pt_regs *regs)			\
-> +__visible ppc_noinstr long func(struct pt_regs *regs)			\
->  {									\
->  	struct interrupt_state state;					\
->  	long ret;							\
-> @@ -297,7 +299,7 @@ static __always_inline long ____##func(struct pt_regs=
- *regs)
->  #define DEFINE_INTERRUPT_HANDLER_ASYNC(func)				\
->  static __always_inline void ____##func(struct pt_regs *regs);		\
->  									\
-> -__visible noinstr void func(struct pt_regs *regs)			\
-> +__visible ppc_noinstr void func(struct pt_regs *regs)			\
->  {									\
->  	struct interrupt_state state;					\
->  									\
-> @@ -331,7 +333,7 @@ static __always_inline void ____##func(struct pt_regs=
- *regs)
->  #define DEFINE_INTERRUPT_HANDLER_NMI(func)				\
->  static __always_inline long ____##func(struct pt_regs *regs);		\
->  									\
-> -__visible noinstr long func(struct pt_regs *regs)			\
-> +__visible ppc_noinstr long func(struct pt_regs *regs)			\
->  {									\
->  	struct interrupt_nmi_state state;				\
->  	long ret;							\
 
-Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>  # allyesconfig build
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DQzo9u+quVcAVqwzkONhjpI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAjwPYACgkQAVBC80lX
-0GyJ2wf/R6r3VqXBfy1DrsHhX6qAJjS3H4IdvG8McdGJg3R7BEKTzhYjsJTE/Gjd
-Wxzyx43pbVCow5FirOr7EHX91682ST4Jgwm+DTTe2q5A7TroV71YgmSW+ll4h7k0
-xyxUW/qvTqzcuxlRnR3q1EVKNRijWXxSr1uQyOzPMTLumnsEHxEcCE+ZA5EkzAJ0
-uRHNgvoA41/y8rVto97ci5JoJ1QU2ICztCou1/upA74kVb3eWCZH4GE1juUxYLgm
-b8j0xmilQK453L4cYFQuETCEQ72XAm5n4UJR3G+4/dUL+nOWLaD5ule87+dcrHMk
-de4IsPE4bxg9TPOpid3XqiVRLfPYCA==
-=XdXn
------END PGP SIGNATURE-----
-
---Sig_/DQzo9u+quVcAVqwzkONhjpI--
+-- 
+- Jiaxun
