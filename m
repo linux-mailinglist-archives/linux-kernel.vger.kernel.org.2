@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4143E3171CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5ADA3171D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbhBJU7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 15:59:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        id S232732AbhBJVAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:00:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhBJU7R (ORCPT
+        with ESMTP id S231193AbhBJU75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:59:17 -0500
+        Wed, 10 Feb 2021 15:59:57 -0500
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148ECC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:58:37 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621F4C06174A;
+        Wed, 10 Feb 2021 12:59:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
         Reply-To:Cc:Content-ID:Content-Description;
-        bh=0ms0vRESu8Bcv/sTPxLl8Qf1dWGUSO1Esx/tp2a3D2M=; b=nwOVo08sh1d4Mxb7zQIbuHbpFG
-        ZXcHiTfEsofJpK2P/c40W+sOaW16CEHohMDQ0aXFf4+JHPLriwuUcfGDgzQaauCVL4vO06NY4QOpL
-        1FnI3ZJW1w9UzbgDxsWNsJmz9OwBrid30eWYxbPmNTTh1/PAsKfwAg13egidO/hFgpN8Pr8Vm2/Xk
-        UKZqxvLzwNW/D9TlUremjMvjtOuZhv6St89QC+n3u2gisnCvM9F3XEkPzUxjUfXVNp5rR41mFGhLh
-        lGOYNS4m0a8uGkvw4yy1Tb83NBqZQsxARZvKWW6mz9ByG1aO1FVuaPp66d8Pldwr5h7K4HXWAR/rw
-        0HGwJIAg==;
+        bh=9IRtNqEmK8Laefd+/4Ewdw8Hx7Xiy1aEskWzH6jRsIU=; b=apJMwiwwQiyxEeakKKM35sEEpp
+        TqDhuh2JkGfyfE+v6rm1NDGbP7fTI/kwDaVioxWbwnVNM/sk/h5Hc8YlkRerphKRgPvWAEmyX7tv7
+        +5/s6opzHhga9VTbn3OJ6x3nvtWbmfGu88qFLYcaCUK+F7LUUTyZyA5HYvjEBeTAX7yeTjYjYFakh
+        Eh07w3+TZFmDk0R3F+BGkZr0Wr6qrEePK/f96y+fLWMTI+VJaHKdAwsLDrBeGuTOuKA/GqRqGubD1
+        bdFI6uVWvI+PcXxM8WFOFtuWb/t+qUspqwV+2iVY1cvbapaZdvNRaS+oZaQeXvyAK3+VYZT7hJUle
+        xTkRkdXg==;
 Received: from [2601:1c0:6280:3f0::cf3b]
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l9wZG-0004Ku-VT; Wed, 10 Feb 2021 20:58:35 +0000
-Subject: Re: [PATCH] include: uapi: linux: Fix the spelling simulatneous to
- simultaneous in the file capi.h
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20210209141445.3927167-1-unixbhaskar@gmail.com>
+        id 1l9wZu-0004OD-TH; Wed, 10 Feb 2021 20:59:15 +0000
+Subject: Re: [PATCH] drivers: scsi: aic7xxx: Fix the spelling verson to
+ version in the file aic79xx.h
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, hare@suse.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210209143146.3987352-1-unixbhaskar@gmail.com>
 From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e1c73570-3734-5548-cbf2-63bf58a9a40f@infradead.org>
-Date:   Wed, 10 Feb 2021 12:58:32 -0800
+Message-ID: <1737dbee-40ea-41f4-8453-38b7c435290c@infradead.org>
+Date:   Wed, 10 Feb 2021 12:59:10 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210209141445.3927167-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210209143146.3987352-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,33 +48,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 6:14 AM, Bhaskar Chowdhury wrote:
+On 2/9/21 6:31 AM, Bhaskar Chowdhury wrote:
 > 
-> s/simulatneous/simultaneous/
+> s/verson/version/
 > 
 > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
 Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-but you need to Cc: a maintainer who can merge this.
 
 > ---
->  include/uapi/linux/capi.h | 2 +-
+>  drivers/scsi/aic7xxx/aic79xx.h | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/include/uapi/linux/capi.h b/include/uapi/linux/capi.h
-> index 31f946f8a88d..4dcdb628d98b 100644
-> --- a/include/uapi/linux/capi.h
-> +++ b/include/uapi/linux/capi.h
-> @@ -24,7 +24,7 @@
->   */
+> diff --git a/drivers/scsi/aic7xxx/aic79xx.h b/drivers/scsi/aic7xxx/aic79xx.h
+> index dd5dfd4f30a5..c31e48fcebc7 100644
+> --- a/drivers/scsi/aic7xxx/aic79xx.h
+> +++ b/drivers/scsi/aic7xxx/aic79xx.h
+> @@ -1175,7 +1175,7 @@ struct ahd_softc {
+>  	uint8_t			  tqinfifonext;
 > 
->  typedef struct capi_register_params {	/* CAPI_REGISTER */
-> -	__u32 level3cnt;	/* No. of simulatneous user data connections */
-> +	__u32 level3cnt;	/* No. of simultaneous user data connections */
->  	__u32 datablkcnt;	/* No. of buffered data messages */
->  	__u32 datablklen;	/* Size of buffered data messages */
->  } capi_register_params;
+>  	/*
+> -	 * Cached verson of the hs_mailbox so we can avoid
+> +	 * Cached version of the hs_mailbox so we can avoid
+>  	 * pausing the sequencer during mailbox updates.
+>  	 */
+>  	uint8_t			  hs_mailbox;
 > --
 
 
