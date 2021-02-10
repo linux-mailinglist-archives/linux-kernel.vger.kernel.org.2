@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F83F316B70
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C1D316B74
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbhBJQjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:39:04 -0500
-Received: from mo-csw1114.securemx.jp ([210.130.202.156]:44956 "EHLO
+        id S232842AbhBJQjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:39:45 -0500
+Received: from mo-csw1116.securemx.jp ([210.130.202.158]:54786 "EHLO
         mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbhBJQc5 (ORCPT
+        with ESMTP id S232707AbhBJQc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Feb 2021 11:32:57 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 11AGUDFK028176; Thu, 11 Feb 2021 01:30:13 +0900
-X-Iguazu-Qid: 2wGrHHn4MsreK3NPsG
-X-Iguazu-QSIG: v=2; s=0; t=1612974613; q=2wGrHHn4MsreK3NPsG; m=fN/LI9jdkMEFZk9qrhRfPowd7tIX81bvTNdeCCXZ0+Q=
+Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 11AGUB4b006826; Thu, 11 Feb 2021 01:30:11 +0900
+X-Iguazu-Qid: 2wGqhgW4xaueMBSRto
+X-Iguazu-QSIG: v=2; s=0; t=1612974610; q=2wGqhgW4xaueMBSRto; m=ZHb/nLnVYDrFCjWRAERWKgGTvH0octWl57WAenaU1E0=
 Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
-        by relay.securemx.jp (mx-mr1112) id 11AGUCdi026257;
-        Thu, 11 Feb 2021 01:30:12 +0900
+        by relay.securemx.jp (mx-mr1112) id 11AGU9rA026238;
+        Thu, 11 Feb 2021 01:30:09 +0900
 Received: from enc01.toshiba.co.jp ([106.186.93.100])
-        by imx2.toshiba.co.jp  with ESMTP id 11AGUCAs007071;
-        Thu, 11 Feb 2021 01:30:12 +0900 (JST)
+        by imx2.toshiba.co.jp  with ESMTP id 11AGU9ma007062;
+        Thu, 11 Feb 2021 01:30:09 +0900 (JST)
 Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 11AGUBAE029453;
-        Thu, 11 Feb 2021 01:30:11 +0900
+        by enc01.toshiba.co.jp  with ESMTP id 11AGU8I3029439;
+        Thu, 11 Feb 2021 01:30:08 +0900
 From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 To:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -35,10 +35,10 @@ Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 3/4] MAINTAINERS: Add entries for Toshiba Visconti ethernet controller
-Date:   Thu, 11 Feb 2021 01:29:53 +0900
+Subject: [PATCH 4/4] arm: dts: visconti: Add DT support for Toshiba Visconti5 ethernet controller
+Date:   Thu, 11 Feb 2021 01:29:54 +0900
 X-TSB-HOP: ON
-Message-Id: <20210210162954.3955785-4-nobuhiro1.iwamatsu@toshiba.co.jp>
+Message-Id: <20210210162954.3955785-5-nobuhiro1.iwamatsu@toshiba.co.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210210162954.3955785-1-nobuhiro1.iwamatsu@toshiba.co.jp>
 References: <20210210162954.3955785-1-nobuhiro1.iwamatsu@toshiba.co.jp>
@@ -48,27 +48,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries for Toshiba Visconti ethernet controller binding and driver.
+Add the ethernet controller node in Toshiba Visconti5 SoC-specific DT file.
+And enable this node in TMPV7708 RM main board's board-specific DT file.
 
 Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 ---
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+ .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     | 18 ++++++++++++++
+ arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     | 24 +++++++++++++++++++
+ 2 files changed, 42 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cbf4b94f89d4..6be4bdaabf32 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2641,8 +2641,10 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/iwamatsu/linux-visconti.git
- F:	Documentation/devicetree/bindings/arm/toshiba.yaml
-+F:	Documentation/devicetree/bindings/net/toshiba,visconti-dwmac.yaml
- F:	Documentation/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
- F:	arch/arm64/boot/dts/toshiba/
-+F:	drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
- F:	drivers/pinctrl/visconti/
- N:	visconti
+diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+index ed0bf7f13f54..48fa8776e36f 100644
+--- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
++++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+@@ -41,3 +41,21 @@ &uart1 {
+ 	clocks = <&uart_clk>;
+ 	clock-names = "apb_pclk";
+ };
++
++&piether {
++	status = "okay";
++	phy-handle = <&phy0>;
++	phy-mode = "rgmii-id";
++	clocks = <&clk300mhz>, <&clk125mhz>;
++	clock-names = "stmmaceth", "phy_ref_clk";
++
++	mdio0 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++		phy0: ethernet-phy@1 {
++			device_type = "ethernet-phy";
++			reg = <0x1>;
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
+index 242f25f4e12a..fabb8d66ef93 100644
+--- a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
++++ b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
+@@ -134,6 +134,20 @@ uart_clk: uart-clk {
+ 		#clock-cells = <0>;
+ 	};
+ 
++	clk125mhz: clk125mhz {
++		compatible = "fixed-clock";
++		clock-frequency = <125000000>;
++		#clock-cells = <0>;
++		clock-output-names = "clk125mhz";
++	};
++
++	clk300mhz: clk300mhz {
++		compatible = "fixed-clock";
++		clock-frequency = <300000000>;
++		#clock-cells = <0>;
++		clock-output-names = "clk300mhz";
++	};
++
+ 	soc {
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+@@ -384,6 +398,16 @@ spi6: spi@28146000 {
+ 			#size-cells = <0>;
+ 			status = "disabled";
+ 		};
++
++		piether: ethernet@28000000 {
++			compatible = "toshiba,visconti-dwmac";
++			reg = <0 0x28000000 0 0x10000>;
++			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "macirq";
++			snps,txpbl = <4>;
++			snps,rxpbl = <4>;
++			status = "disabled";
++		};
+ 	};
+ };
  
 -- 
 2.27.0
