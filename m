@@ -2,401 +2,425 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AC331636C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 601393163AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhBJKOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:14:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58090 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbhBJKHL (ORCPT
+        id S230482AbhBJKWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:22:37 -0500
+Received: from mail-lj1-f177.google.com ([209.85.208.177]:43089 "EHLO
+        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhBJKIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:07:11 -0500
-Date:   Wed, 10 Feb 2021 10:06:25 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612951588;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HFElhJXcH/rTP70CatrXXqHYO6/EMpy4OYIZD9OGn2g=;
-        b=jrFU2gJWlzizNgJDMZi6Qgod3lyq+XhXYjjCou/bvbhr2J7Ka50oC4R83M2UGZVIfjuiSW
-        xMxXviS3p6DICnTlMhSFSfw3aFa5wvtRvdUVw8gxVCq+gpJ5qLhtD231TwnwACc+iX3HrP
-        K/lTmamUUGkzSKG1KpQtvVl5exorxZhAMC+YlD3nXvxPRJ56SMgwdP0LJF52XxAm0KWaZs
-        6McjisGkGDWJ6qEpWa7CcTy1qW7TW1Tk9MbxuhaKllhpl6lcRgcvGeK91wcZVyARKp7w36
-        5SlSn38hkuMFF5R+9QLl3BCXFg/s8VI/4XFgsoydY7jsdIVmRh5wckec/E5wgQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612951588;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HFElhJXcH/rTP70CatrXXqHYO6/EMpy4OYIZD9OGn2g=;
-        b=upvRInNcFI3Yr3copa3ylI3nSqN/GLwigGQyitE2qCLqVt3yHTKRDsg/dJOwH5cHjIn9+K
-        5zcMzPfCntfrFHDQ==
-From:   tip-bot2 for Uwe =?utf-8?q?Kleine-K=C3=B6nig?= 
-        <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/efm32: Drop unused timer code
-Cc:     u.kleine-koenig@pengutronix.de,
-        Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210115155130.185010-4-u.kleine-koenig@pengutronix.de>
-References: <20210115155130.185010-4-u.kleine-koenig@pengutronix.de>
+        Wed, 10 Feb 2021 05:08:09 -0500
+Received: by mail-lj1-f177.google.com with SMTP id a22so1996566ljp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:07:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HOXhb5p5qc/pWX9PJYKksGBsyx3asQexyjqEFHuDu7k=;
+        b=Amg0o4t/6VSwLvP6zUdJvLvb7LJ5jxW34HH4XFmO77cqCWYEcRUjdCItVQkDujfC9/
+         UmyfXLUZrhWEM6xHk15/QT6VqY5t1AmDij1GvnaaW4xIUTyrE54UhI5n44vif/t8LykE
+         uMZ8ojblQT8JI8WVyzkVq2B9H3+yuJQOxUdz6n/+5TJQWM0bcXtCKFDRIJh6Lx8zOWo/
+         Ui5dYNsLl1NANj5R0fo6dccwEthcfsh2eR9rrmamdT0qbcy+MccR7XTQOKqKcYUc5c0Q
+         K/OS3H5zRQUXI4i1plshiMzL6tqfc/TcWEZu5ytuXLP5Jt3YWbz/OyDiNp9ubWE1T3QU
+         E6Qg==
+X-Gm-Message-State: AOAM531DKjrjCW9LbvK/gAYI0sWIN9NGJUGI/qZlccv1Wgl9XteDvnNL
+        a4JMar0ii4uquikiXPCCc4Eu+2owRxpqhiI6xVI=
+X-Google-Smtp-Source: ABdhPJycxJS/NhiLucwAA85q0Gh5gWS9F2/aPW+l1ynGyjX77qc5h51icy6TopIi72S4VpK7gdvtCuFwo/b+50hzCV4=
+X-Received: by 2002:a2e:b0f3:: with SMTP id h19mr1414141ljl.233.1612951645060;
+ Wed, 10 Feb 2021 02:07:25 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <161295158547.23325.15638365010660281338.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20210203135830.38568-1-alexander.antonov@linux.intel.com>
+ <20210203135830.38568-3-alexander.antonov@linux.intel.com>
+ <CAM9d7ci5+Jq6VHvPVSkTCDWRmas4kN483h69kwitn7AEbdSP0w@mail.gmail.com> <6956156b-05ef-4628-52c2-62039946d8ba@linux.intel.com>
+In-Reply-To: <6956156b-05ef-4628-52c2-62039946d8ba@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 10 Feb 2021 19:07:13 +0900
+Message-ID: <CAM9d7cgqLwcLzr=tGR7pU2PJYNuTkBHCXF+XXaz55Y-LyvQjuQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] perf stat: Basic support for iostat in perf
+To:     Alexander Antonov <alexander.antonov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Mon, Feb 8, 2021 at 8:55 PM Alexander Antonov
+<alexander.antonov@linux.intel.com> wrote:
+>
+>
+> On 2/4/2021 3:22 PM, Namhyung Kim wrote:
+> > On Wed, Feb 3, 2021 at 10:58 PM Alexander Antonov
+> > <alexander.antonov@linux.intel.com> wrote:
+> >> Add basic flow for a new iostat mode in perf. Mode is intended to
+> >> provide four I/O performance metrics per each PCIe root port: Inbound Read,
+> >> Inbound Write, Outbound Read, Outbound Write.
+> >>
+> >> The actual code to compute the metrics and attribute it to
+> >> root port is in follow-on patches.
+> >>
+> >> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+> >> ---
+> >>   tools/perf/builtin-stat.c      | 31 ++++++++++++++++++++++++++
+> >>   tools/perf/util/iostat.h       | 32 +++++++++++++++++++++++++++
+> >>   tools/perf/util/stat-display.c | 40 +++++++++++++++++++++++++++++++++-
+> >>   tools/perf/util/stat-shadow.c  | 11 +++++++++-
+> >>   tools/perf/util/stat.h         |  1 +
+> >>   5 files changed, 113 insertions(+), 2 deletions(-)
+> >>   create mode 100644 tools/perf/util/iostat.h
+> >>
+> >> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> >> index 60fdb6a0805f..66c913692120 100644
+> >> --- a/tools/perf/builtin-stat.c
+> >> +++ b/tools/perf/builtin-stat.c
+> >> @@ -65,6 +65,7 @@
+> >>   #include "util/target.h"
+> >>   #include "util/time-utils.h"
+> >>   #include "util/top.h"
+> >> +#include "util/iostat.h"
+> >>   #include "asm/bug.h"
+> >>
+> >>   #include <linux/time64.h>
+> >> @@ -186,6 +187,7 @@ static struct perf_stat_config stat_config = {
+> >>          .metric_only_len        = METRIC_ONLY_LEN,
+> >>          .walltime_nsecs_stats   = &walltime_nsecs_stats,
+> >>          .big_num                = true,
+> >> +       .iostat_run             = false,
+> >>   };
+> >>
+> >>   static inline void diff_timespec(struct timespec *r, struct timespec *a,
+> >> @@ -723,6 +725,14 @@ static int parse_metric_groups(const struct option *opt,
+> >>          return metricgroup__parse_groups(opt, str, &stat_config.metric_events);
+> >>   }
+> >>
+> >> +__weak int iostat_parse(const struct option *opt __maybe_unused,
+> >> +                        const char *str __maybe_unused,
+> >> +                        int unset __maybe_unused)
+> >> +{
+> >> +       pr_err("iostat mode is not supported\n");
+> >> +       return -1;
+> >> +}
+> >> +
+> >>   static struct option stat_options[] = {
+> >>          OPT_BOOLEAN('T', "transaction", &transaction_run,
+> >>                      "hardware transaction statistics"),
+> >> @@ -803,6 +813,8 @@ static struct option stat_options[] = {
+> >>          OPT_CALLBACK('M', "metrics", &evsel_list, "metric/metric group list",
+> >>                       "monitor specified metrics or metric groups (separated by ,)",
+> >>                       parse_metric_groups),
+> >> +       OPT_CALLBACK_OPTARG(0, "iostat", &evsel_list, &stat_config, "root port",
+> >> +                           "measure PCIe metrics per root port", iostat_parse),
+> > Can we make the help string and default argument more generic?
+> > Something like "measure IO metrics provided by arch/platform"
+> > and the default value being "default". :)
+> >
+> Do you mean using "default" instead of "root port"?
+> What about the faceless "I/O unit"? :)
 
-Commit-ID:     523d83ef0979a9d0c8340913b40b696cb4f2f050
-Gitweb:        https://git.kernel.org/tip/523d83ef0979a9d0c8340913b40b696cb4f=
-2f050
-Author:        Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-AuthorDate:    Fri, 15 Jan 2021 16:51:26 +01:00
-Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Mon, 18 Jan 2021 16:29:54 +01:00
+Being a generic command, I cannot expect how it can be used later.
+So I'd suggest a more general name.
 
-clocksource/drivers/efm32: Drop unused timer code
 
-Support for this machine was just removed, so drop the now unused timer
-code, too.
+> >>          OPT_END()
+> >>   };
+> >>
+> >> @@ -1131,6 +1143,12 @@ __weak void arch_topdown_group_warn(void)
+> >>   {
+> >>   }
+> >>
+> >> +__weak int iostat_list(struct evlist *evlist __maybe_unused,
+> >> +                       struct perf_stat_config *config __maybe_unused)
+> >> +{
+> >> +       return 0;
+> >> +}
+> >> +
+> >>   /*
+> >>    * Add default attributes, if there were no attributes specified or
+> >>    * if -d/--detailed, -d -d or -d -d -d is used:
+> >> @@ -1682,6 +1700,10 @@ static void setup_system_wide(int forks)
+> >>          }
+> >>   }
+> >>
+> >> +__weak void iostat_release(struct evlist *evlist __maybe_unused)
+> >> +{
+> >> +}
+> >> +
+> >>   int cmd_stat(int argc, const char **argv)
+> >>   {
+> >>          const char * const stat_usage[] = {
+> >> @@ -1858,6 +1880,12 @@ int cmd_stat(int argc, const char **argv)
+> >>                  goto out;
+> >>          }
+> >>
+> >> +       if (stat_config.iostat_run) {
+> >> +               status = iostat_list(evsel_list, &stat_config);
+> > I think it's unnatural to call iostat_list() unconditionally here.
+> > How about this?
+> >
+> >      status = iostat_prepare(...);
+> >      if (status < 0)
+> >          goto out;
+> >
+> >      if (status == IOSTAT_LIST)
+> >          iostat_list(...);
+> >      else
+> >          ...
+> I think it's applicable.
+> In case of 'list' option we will just print list of root ports and exit.
+> Also listing of root ports is available in verbose mode. In this case we
+> will
+> print list and start the collection.
 
-Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210115155130.185010-4-u.kleine-koenig@pengu=
-tronix.de
----
- drivers/clocksource/Kconfig       |   9 +-
- drivers/clocksource/Makefile      |   1 +-
- drivers/clocksource/timer-efm32.c | 278 +-----------------------------
- 3 files changed, 288 deletions(-)
- delete mode 100644 drivers/clocksource/timer-efm32.c
+ok.
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 9f00b83..6bf89e2 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -242,15 +242,6 @@ config INTEGRATOR_AP_TIMER
- 	help
- 	  Enables support for the Integrator-AP timer.
-=20
--config CLKSRC_EFM32
--	bool "Clocksource for Energy Micro's EFM32 SoCs" if !ARCH_EFM32
--	depends on OF && ARM && (ARCH_EFM32 || COMPILE_TEST)
--	select CLKSRC_MMIO
--	default ARCH_EFM32
--	help
--	  Support to use the timers of EFM32 SoCs as clock source and clock
--	  event device.
--
- config CLKSRC_LPC32XX
- 	bool "Clocksource for LPC32XX" if COMPILE_TEST
- 	depends on HAS_IOMEM
-diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index 3c75cbb..0817338 100644
---- a/drivers/clocksource/Makefile
-+++ b/drivers/clocksource/Makefile
-@@ -43,7 +43,6 @@ obj-$(CONFIG_VT8500_TIMER)	+=3D timer-vt8500.o
- obj-$(CONFIG_NSPIRE_TIMER)	+=3D timer-zevio.o
- obj-$(CONFIG_BCM_KONA_TIMER)	+=3D bcm_kona_timer.o
- obj-$(CONFIG_CADENCE_TTC_TIMER)	+=3D timer-cadence-ttc.o
--obj-$(CONFIG_CLKSRC_EFM32)	+=3D timer-efm32.o
- obj-$(CONFIG_CLKSRC_STM32)	+=3D timer-stm32.o
- obj-$(CONFIG_CLKSRC_STM32_LP)	+=3D timer-stm32-lp.o
- obj-$(CONFIG_CLKSRC_EXYNOS_MCT)	+=3D exynos_mct.o
-diff --git a/drivers/clocksource/timer-efm32.c b/drivers/clocksource/timer-ef=
-m32.c
-deleted file mode 100644
-index 441a4b9..0000000
---- a/drivers/clocksource/timer-efm32.c
-+++ /dev/null
-@@ -1,278 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Copyright (C) 2013 Pengutronix
-- * Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>
-- */
--
--#define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
--
--#include <linux/kernel.h>
--#include <linux/clocksource.h>
--#include <linux/clockchips.h>
--#include <linux/irq.h>
--#include <linux/interrupt.h>
--#include <linux/of.h>
--#include <linux/of_address.h>
--#include <linux/of_irq.h>
--#include <linux/clk.h>
--
--#define TIMERn_CTRL			0x00
--#define TIMERn_CTRL_PRESC(val)			(((val) & 0xf) << 24)
--#define TIMERn_CTRL_PRESC_1024			TIMERn_CTRL_PRESC(10)
--#define TIMERn_CTRL_CLKSEL(val)			(((val) & 0x3) << 16)
--#define TIMERn_CTRL_CLKSEL_PRESCHFPERCLK	TIMERn_CTRL_CLKSEL(0)
--#define TIMERn_CTRL_OSMEN			0x00000010
--#define TIMERn_CTRL_MODE(val)			(((val) & 0x3) <<  0)
--#define TIMERn_CTRL_MODE_UP			TIMERn_CTRL_MODE(0)
--#define TIMERn_CTRL_MODE_DOWN			TIMERn_CTRL_MODE(1)
--
--#define TIMERn_CMD			0x04
--#define TIMERn_CMD_START			0x00000001
--#define TIMERn_CMD_STOP				0x00000002
--
--#define TIMERn_IEN			0x0c
--#define TIMERn_IF			0x10
--#define TIMERn_IFS			0x14
--#define TIMERn_IFC			0x18
--#define TIMERn_IRQ_UF				0x00000002
--
--#define TIMERn_TOP			0x1c
--#define TIMERn_CNT			0x24
--
--struct efm32_clock_event_ddata {
--	struct clock_event_device evtdev;
--	void __iomem *base;
--	unsigned periodic_top;
--};
--
--static int efm32_clock_event_shutdown(struct clock_event_device *evtdev)
--{
--	struct efm32_clock_event_ddata *ddata =3D
--		container_of(evtdev, struct efm32_clock_event_ddata, evtdev);
--
--	writel_relaxed(TIMERn_CMD_STOP, ddata->base + TIMERn_CMD);
--	return 0;
--}
--
--static int efm32_clock_event_set_oneshot(struct clock_event_device *evtdev)
--{
--	struct efm32_clock_event_ddata *ddata =3D
--		container_of(evtdev, struct efm32_clock_event_ddata, evtdev);
--
--	writel_relaxed(TIMERn_CMD_STOP, ddata->base + TIMERn_CMD);
--	writel_relaxed(TIMERn_CTRL_PRESC_1024 |
--		       TIMERn_CTRL_CLKSEL_PRESCHFPERCLK |
--		       TIMERn_CTRL_OSMEN |
--		       TIMERn_CTRL_MODE_DOWN,
--		       ddata->base + TIMERn_CTRL);
--	return 0;
--}
--
--static int efm32_clock_event_set_periodic(struct clock_event_device *evtdev)
--{
--	struct efm32_clock_event_ddata *ddata =3D
--		container_of(evtdev, struct efm32_clock_event_ddata, evtdev);
--
--	writel_relaxed(TIMERn_CMD_STOP, ddata->base + TIMERn_CMD);
--	writel_relaxed(ddata->periodic_top, ddata->base + TIMERn_TOP);
--	writel_relaxed(TIMERn_CTRL_PRESC_1024 |
--		       TIMERn_CTRL_CLKSEL_PRESCHFPERCLK |
--		       TIMERn_CTRL_MODE_DOWN,
--		       ddata->base + TIMERn_CTRL);
--	writel_relaxed(TIMERn_CMD_START, ddata->base + TIMERn_CMD);
--	return 0;
--}
--
--static int efm32_clock_event_set_next_event(unsigned long evt,
--					    struct clock_event_device *evtdev)
--{
--	struct efm32_clock_event_ddata *ddata =3D
--		container_of(evtdev, struct efm32_clock_event_ddata, evtdev);
--
--	writel_relaxed(TIMERn_CMD_STOP, ddata->base + TIMERn_CMD);
--	writel_relaxed(evt, ddata->base + TIMERn_CNT);
--	writel_relaxed(TIMERn_CMD_START, ddata->base + TIMERn_CMD);
--
--	return 0;
--}
--
--static irqreturn_t efm32_clock_event_handler(int irq, void *dev_id)
--{
--	struct efm32_clock_event_ddata *ddata =3D dev_id;
--
--	writel_relaxed(TIMERn_IRQ_UF, ddata->base + TIMERn_IFC);
--
--	ddata->evtdev.event_handler(&ddata->evtdev);
--
--	return IRQ_HANDLED;
--}
--
--static struct efm32_clock_event_ddata clock_event_ddata =3D {
--	.evtdev =3D {
--		.name =3D "efm32 clockevent",
--		.features =3D CLOCK_EVT_FEAT_ONESHOT | CLOCK_EVT_FEAT_PERIODIC,
--		.set_state_shutdown =3D efm32_clock_event_shutdown,
--		.set_state_periodic =3D efm32_clock_event_set_periodic,
--		.set_state_oneshot =3D efm32_clock_event_set_oneshot,
--		.set_next_event =3D efm32_clock_event_set_next_event,
--		.rating =3D 200,
--	},
--};
--
--static int __init efm32_clocksource_init(struct device_node *np)
--{
--	struct clk *clk;
--	void __iomem *base;
--	unsigned long rate;
--	int ret;
--
--	clk =3D of_clk_get(np, 0);
--	if (IS_ERR(clk)) {
--		ret =3D PTR_ERR(clk);
--		pr_err("failed to get clock for clocksource (%d)\n", ret);
--		goto err_clk_get;
--	}
--
--	ret =3D clk_prepare_enable(clk);
--	if (ret) {
--		pr_err("failed to enable timer clock for clocksource (%d)\n",
--		       ret);
--		goto err_clk_enable;
--	}
--	rate =3D clk_get_rate(clk);
--
--	base =3D of_iomap(np, 0);
--	if (!base) {
--		ret =3D -EADDRNOTAVAIL;
--		pr_err("failed to map registers for clocksource\n");
--		goto err_iomap;
--	}
--
--	writel_relaxed(TIMERn_CTRL_PRESC_1024 |
--		       TIMERn_CTRL_CLKSEL_PRESCHFPERCLK |
--		       TIMERn_CTRL_MODE_UP, base + TIMERn_CTRL);
--	writel_relaxed(TIMERn_CMD_START, base + TIMERn_CMD);
--
--	ret =3D clocksource_mmio_init(base + TIMERn_CNT, "efm32 timer",
--				    DIV_ROUND_CLOSEST(rate, 1024), 200, 16,
--				    clocksource_mmio_readl_up);
--	if (ret) {
--		pr_err("failed to init clocksource (%d)\n", ret);
--		goto err_clocksource_init;
--	}
--
--	return 0;
--
--err_clocksource_init:
--
--	iounmap(base);
--err_iomap:
--
--	clk_disable_unprepare(clk);
--err_clk_enable:
--
--	clk_put(clk);
--err_clk_get:
--
--	return ret;
--}
--
--static int __init efm32_clockevent_init(struct device_node *np)
--{
--	struct clk *clk;
--	void __iomem *base;
--	unsigned long rate;
--	int irq;
--	int ret;
--
--	clk =3D of_clk_get(np, 0);
--	if (IS_ERR(clk)) {
--		ret =3D PTR_ERR(clk);
--		pr_err("failed to get clock for clockevent (%d)\n", ret);
--		goto err_clk_get;
--	}
--
--	ret =3D clk_prepare_enable(clk);
--	if (ret) {
--		pr_err("failed to enable timer clock for clockevent (%d)\n",
--		       ret);
--		goto err_clk_enable;
--	}
--	rate =3D clk_get_rate(clk);
--
--	base =3D of_iomap(np, 0);
--	if (!base) {
--		ret =3D -EADDRNOTAVAIL;
--		pr_err("failed to map registers for clockevent\n");
--		goto err_iomap;
--	}
--
--	irq =3D irq_of_parse_and_map(np, 0);
--	if (!irq) {
--		ret =3D -ENOENT;
--		pr_err("failed to get irq for clockevent\n");
--		goto err_get_irq;
--	}
--
--	writel_relaxed(TIMERn_IRQ_UF, base + TIMERn_IEN);
--
--	clock_event_ddata.base =3D base;
--	clock_event_ddata.periodic_top =3D DIV_ROUND_CLOSEST(rate, 1024 * HZ);
--
--	clockevents_config_and_register(&clock_event_ddata.evtdev,
--					DIV_ROUND_CLOSEST(rate, 1024),
--					0xf, 0xffff);
--
--	ret =3D request_irq(irq, efm32_clock_event_handler, IRQF_TIMER,
--			  "efm32 clockevent", &clock_event_ddata);
--	if (ret) {
--		pr_err("Failed setup irq\n");
--		goto err_setup_irq;
--	}
--
--	return 0;
--
--err_setup_irq:
--err_get_irq:
--
--	iounmap(base);
--err_iomap:
--
--	clk_disable_unprepare(clk);
--err_clk_enable:
--
--	clk_put(clk);
--err_clk_get:
--
--	return ret;
--}
--
--/*
-- * This function asserts that we have exactly one clocksource and one
-- * clock_event_device in the end.
-- */
--static int __init efm32_timer_init(struct device_node *np)
--{
--	static int has_clocksource, has_clockevent;
--	int ret =3D 0;
--
--	if (!has_clocksource) {
--		ret =3D efm32_clocksource_init(np);
--		if (!ret) {
--			has_clocksource =3D 1;
--			return 0;
--		}
--	}
--
--	if (!has_clockevent) {
--		ret =3D efm32_clockevent_init(np);
--		if (!ret) {
--			has_clockevent =3D 1;
--			return 0;
--		}
--	}
--
--	return ret;
--}
--TIMER_OF_DECLARE(efm32compat, "efm32,timer", efm32_timer_init);
--TIMER_OF_DECLARE(efm32, "energymicro,efm32-timer", efm32_timer_init);
+> >
+> >> +               if (status || !stat_config.iostat_run)
+> >> +                       goto out;
+> >> +       }
+> >> +
+> >>          if (add_default_attributes())
+> >>                  goto out;
+> >>
+> >> @@ -2008,6 +2036,9 @@ int cmd_stat(int argc, const char **argv)
+> >>          perf_stat__exit_aggr_mode();
+> >>          perf_evlist__free_stats(evsel_list);
+> >>   out:
+> >> +       if (stat_config.iostat_run)
+> >> +               iostat_release(evsel_list);
+> >> +
+> >>          zfree(&stat_config.walltime_run);
+> >>
+> >>          if (smi_cost && smi_reset)
+> >> diff --git a/tools/perf/util/iostat.h b/tools/perf/util/iostat.h
+> >> new file mode 100644
+> >> index 000000000000..b34ebedfd5e6
+> >> --- /dev/null
+> >> +++ b/tools/perf/util/iostat.h
+> >> @@ -0,0 +1,32 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0 */
+> >> +/*
+> >> + * perf iostat
+> >> + *
+> >> + * Copyright (C) 2020, Intel Corporation
+> >> + *
+> >> + * Authors: Alexander Antonov <alexander.antonov@linux.intel.com>
+> >> + */
+> >> +
+> >> +#ifndef _IOSTAT_H
+> >> +#define _IOSTAT_H
+> >> +
+> >> +#include <subcmd/parse-options.h>
+> >> +#include "util/stat.h"
+> >> +#include "util/parse-events.h"
+> >> +#include "util/evlist.h"
+> >> +
+> >> +struct option;
+> >> +struct perf_stat_config;
+> >> +struct evlist;
+> >> +struct timespec;
+> >> +
+> >> +int iostat_parse(const struct option *opt, const char *str,
+> >> +                int unset __maybe_unused);
+> >> +void iostat_prefix(struct perf_stat_config *config, struct evlist *evlist,
+> >> +                  char *prefix, struct timespec *ts);
+> >> +void iostat_print_metric(struct perf_stat_config *config, struct evsel *evsel,
+> >> +                        struct perf_stat_output_ctx *out);
+> >> +int iostat_list(struct evlist *evlist, struct perf_stat_config *config);
+> >> +void iostat_release(struct evlist *evlist);
+> >> +
+> >> +#endif /* _IOSTAT_H */
+> >> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+> >> index db1bec115d0b..de78cf6962b9 100644
+> >> --- a/tools/perf/util/stat-display.c
+> >> +++ b/tools/perf/util/stat-display.c
+> >> @@ -16,6 +16,7 @@
+> >>   #include <linux/ctype.h>
+> >>   #include "cgroup.h"
+> >>   #include <api/fs/fs.h>
+> >> +#include "iostat.h"
+> >>
+> >>   #define CNTR_NOT_SUPPORTED     "<not supported>"
+> >>   #define CNTR_NOT_COUNTED       "<not counted>"
+> >> @@ -302,6 +303,11 @@ static void print_metric_header(struct perf_stat_config *config,
+> >>          struct outstate *os = ctx;
+> >>          char tbuf[1024];
+> >>
+> >> +       /* In case of iostat, print metric header for first root port only */
+> >> +       if (config->iostat_run &&
+> >> +           os->evsel->priv != os->evsel->evlist->selected->priv)
+> >> +               return;
+> >> +
+> >>          if (!valid_only_metric(unit))
+> >>                  return;
+> >>          unit = fixunit(tbuf, os->evsel, unit);
+> >> @@ -936,6 +942,8 @@ static void print_metric_headers(struct perf_stat_config *config,
+> >>                          fputs("time,", config->output);
+> >>                  fputs(aggr_header_csv[config->aggr_mode], config->output);
+> >>          }
+> >> +       if (config->iostat_run && !config->interval && !config->csv_output)
+> >> +               fprintf(config->output, "   port         ");
+> > It's too specific to the current implementation.
+> > Let's make it a callback or a weak function.
+> Okay,
+> This and other similar blocks will be updated.
+
+ok
+
+> >
+> >>          /* Print metrics headers only */
+> >>          evlist__for_each_entry(evlist, counter) {
+> >> @@ -954,6 +962,13 @@ static void print_metric_headers(struct perf_stat_config *config,
+> >>          fputc('\n', config->output);
+> >>   }
+> >>
+> >> +__weak void iostat_prefix(struct perf_stat_config *config __maybe_unused,
+> >> +                         struct evlist *evlist __maybe_unused,
+> >> +                         char *prefix __maybe_unused,
+> >> +                         struct timespec *ts __maybe_unused)
+> >> +{
+> >> +}
+> >> +
+> >>   static void print_interval(struct perf_stat_config *config,
+> >>                             struct evlist *evlist,
+> >>                             char *prefix, struct timespec *ts)
+> >> @@ -966,7 +981,10 @@ static void print_interval(struct perf_stat_config *config,
+> >>          if (config->interval_clear)
+> >>                  puts(CONSOLE_CLEAR);
+> >>
+> >> -       sprintf(prefix, "%6lu.%09lu%s", ts->tv_sec, ts->tv_nsec, config->csv_sep);
+> >> +       if (!config->iostat_run)
+> >> +               sprintf(prefix, "%6lu.%09lu%s", ts->tv_sec,
+> >> +                                               ts->tv_nsec,
+> >> +                                               config->csv_sep);
+> >>
+> >>          if ((num_print_interval == 0 && !config->csv_output) || config->interval_clear) {
+> >>                  switch (config->aggr_mode) {
+> >> @@ -996,6 +1014,7 @@ static void print_interval(struct perf_stat_config *config,
+> >>                                  fprintf(output, "                  counts %*s events\n", unit_width, "unit");
+> >>                          break;
+> >>                  case AGGR_PCIE_PORT:
+> >> +                       fprintf(output, "#           time    port        ");
+> > Ditto.
+> >
+> >>                          break;
+> >>                  case AGGR_GLOBAL:
+> >>                  default:
+> >> @@ -1174,6 +1193,10 @@ perf_evlist__print_counters(struct evlist *evlist,
+> >>          int interval = config->interval;
+> >>          struct evsel *counter;
+> >>          char buf[64], *prefix = NULL;
+> >> +       void *perf_device = NULL;
+> >> +
+> >> +       if (config->iostat_run)
+> >> +               evlist->selected = evlist__first(evlist);
+> >>
+> >>          if (interval)
+> >>                  print_interval(config, evlist, prefix = buf, ts);
+> >> @@ -1222,6 +1245,21 @@ perf_evlist__print_counters(struct evlist *evlist,
+> >>                  }
+> >>                  break;
+> >>          case AGGR_PCIE_PORT:
+> > Ditto.  Something like iostat_print_counters().
+> >
+> >> +               counter = evlist__first(evlist);
+> >> +               perf_evlist__set_selected(evlist, counter);
+> >> +               iostat_prefix(config, evlist, prefix = buf, ts);
+> >> +               fprintf(config->output, "%s", prefix);
+> >> +               evlist__for_each_entry(evlist, counter) {
+> >> +                       perf_device = evlist->selected->priv;
+> >> +                       if (perf_device && perf_device != counter->priv) {
+> >> +                               perf_evlist__set_selected(evlist, counter);
+> >> +                               iostat_prefix(config, evlist, prefix, ts);
+> >> +                               fprintf(config->output, "\n%s", prefix);
+> >> +                       }
+> >> +                       print_counter_aggr(config, counter, prefix);
+> > I'm not sure but do you assume each counter has different priv?
+> > I don't know if the output is correct (like call iostat_prefix() once
+> > and call print_counter_aggr() twice) when they have same one.
+> There are 4 counters which are related to single 'priv' field (it's used
+> for root
+> port object in iostat mode). This means if platform has, for example, 5 root
+> ports we will have 20 counters in summary. And print_counter_aggr() will be
+> called for each counter.
+> I call iostat_prefix() before the loop to print first root port and then
+> iostat_prefix() will be called when next counter is related to other
+> root port.
+
+Thanks for the explanation.
+
+> >
+> >> +                       if ((counter->idx + 1) == evlist->core.nr_entries)
+> >> +                               fputc('\n', config->output);
+> > Can we just move this out of the loop?
+> >
+> Yes, you are right, we can. I will update it.
+
+Thanks,
+Namhyung
+
+
+> >
+> >
+> >> +               }
+> >>                  break;
+> >>          case AGGR_UNSET:
+> >>          default:
+> >> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
+> >> index 2c41d47f6f83..083a450c6dc7 100644
+> >> --- a/tools/perf/util/stat-shadow.c
+> >> +++ b/tools/perf/util/stat-shadow.c
+> >> @@ -9,6 +9,7 @@
+> >>   #include "expr.h"
+> >>   #include "metricgroup.h"
+> >>   #include <linux/zalloc.h>
+> >> +#include "iostat.h"
+> >>
+> >>   /*
+> >>    * AGGR_GLOBAL: Use CPU 0
+> >> @@ -814,6 +815,12 @@ static void generic_metric(struct perf_stat_config *config,
+> >>                  zfree(&pctx.ids[i].name);
+> >>   }
+> >>
+> >> +__weak void iostat_print_metric(struct perf_stat_config *config __maybe_unused,
+> >> +                               struct evsel *evsel __maybe_unused,
+> >> +                               struct perf_stat_output_ctx *out __maybe_unused)
+> >> +{
+> >> +}
+> >> +
+> >>   void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+> >>                                     struct evsel *evsel,
+> >>                                     double avg, int cpu,
+> >> @@ -829,7 +836,9 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+> >>          struct metric_event *me;
+> >>          int num = 1;
+> >>
+> >> -       if (perf_evsel__match(evsel, HARDWARE, HW_INSTRUCTIONS)) {
+> >> +       if (config->iostat_run) {
+> >> +               iostat_print_metric(config, evsel, out);
+> >> +       } else if (perf_evsel__match(evsel, HARDWARE, HW_INSTRUCTIONS)) {
+> >>                  total = runtime_stat_avg(st, STAT_CYCLES, ctx, cpu);
+> >>
+> >>                  if (total) {
+> >> diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+> >> index c7544c28c02a..c2a2b28effd6 100644
+> >> --- a/tools/perf/util/stat.h
+> >> +++ b/tools/perf/util/stat.h
+> >> @@ -107,6 +107,7 @@ struct perf_stat_config {
+> >>          bool                     big_num;
+> >>          bool                     no_merge;
+> >>          bool                     walltime_run_table;
+> >> +       bool                     iostat_run;
+> >>          FILE                    *output;
+> >>          unsigned int             interval;
+> >>          unsigned int             timeout;
+> >> --
+> >> 2.19.1
+> >>
