@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC6B316C00
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E67316C02
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbhBJRBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:01:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232159AbhBJRBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:01:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4707564DF6;
-        Wed, 10 Feb 2021 17:00:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612976456;
-        bh=H7GaOW+CiBvaeY1yYaT/BLhAmPmDWl62qWGA8z+LWpE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=moAfNVCjfFxnZKnAhRc+lbDyBoG0CzSSD4svV6t34566SHtjaTQaILzmcSpytKcN6
-         6ZyunSK/Q0VeXwZNg99SMzv4TbQUenOMQ+F2lU+d41OfjFMaMvKYCo0xe/zUdOAOxp
-         aSA6T5N4akhoDz3agOWkj8TtDV9QIL7iUAKGzPY9R2lCbcS9t5bdad5fu9qgKwWjQ1
-         /XtDLtVe7ZjbWJuwuSPvT+JTmZO8w0V9oydRT26oW/RDRzLxxcGGefQKF+CEKtiSbC
-         U0GJpe1dEEhTZ9gLLm8bdLRt1FlI4cnosdVslVSvahasqIQwQffVygPUC9Ec4XVVY0
-         zSbRzHQucknLA==
-Date:   Wed, 10 Feb 2021 19:00:46 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com,
-        jejb@linux.ibm.com, dhowells@redhat.com, jens.wiklander@linaro.org,
-        corbet@lwn.net, jmorris@namei.org, serge@hallyn.com,
-        casey@schaufler-ca.com, janne.karhunen@gmail.com,
-        daniel.thompson@linaro.org, Markus.Wamser@mixed-mode.de,
-        lhinds@redhat.com, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH v8 1/4] KEYS: trusted: Add generic trusted keys framework
-Message-ID: <YCQRPo0o6MZ0pcUa@kernel.org>
-References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
- <1604419306-26105-2-git-send-email-sumit.garg@linaro.org>
+        id S233248AbhBJRC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:02:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233088AbhBJRCN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:02:13 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402BCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:01:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aUh0dYLcs0EmmNljHRiNDUD7+xy/uR4TKWhhdzvoI4Y=; b=ncD6hRh69zMf7I+/WfTq42FLV5
+        Bpy3g4+Ri6k6uQ8XVMoLg+YpNnd0oo5NZ4qsA2v5q3/+yIRJKzMr07sfmrzNfAUPsk8gpD0fMDQk7
+        hSC2wFZlSJJ1bp1ghJl5sI78dISR6hu3qOuzDU0Kh8pd+q1h/o58AQj/FU76Y5Y3rPedBSfWKcyNe
+        zaDvrNhyRUfDYQFaRZByt+OIfb/KJyvwGnV6D/QrjOHdbpFukhbFdEzh0n+ylUdDEW7KEeCRJ0uSc
+        +jEt1gYJT3kUS7OQsLgqaj2F0oa/luXfTm/AuLrGleewtpqT2sc0gQXHKsN/CpqH7/cBKJs2mzBPQ
+        GNZzEVJQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9srV-0097sr-Rz; Wed, 10 Feb 2021 17:01:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 66D1D301EFB;
+        Wed, 10 Feb 2021 18:01:07 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 58371207C4A13; Wed, 10 Feb 2021 18:01:07 +0100 (CET)
+Date:   Wed, 10 Feb 2021 18:01:07 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        yu-cheng.yu@intel.com
+Subject: Re: [RFC][PATCH] objtool: WARN about ENDBR instructions
+Message-ID: <YCQRU+b6b6iGGsev@hirez.programming.kicks-ass.net>
+References: <YCOb2byLJhLOjhrL@hirez.programming.kicks-ass.net>
+ <20210210160945.73n5zhlfcii5t637@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604419306-26105-2-git-send-email-sumit.garg@linaro.org>
+In-Reply-To: <20210210160945.73n5zhlfcii5t637@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 09:31:43PM +0530, Sumit Garg wrote:
-> +	case Opt_new:
-> +		key_len = payload->key_len;
-> +		ret = static_call(trusted_key_get_random)(payload->key,
-> +							  key_len);
-> +		if (ret != key_len) {
-> +			pr_info("trusted_key: key_create failed (%d)\n", ret);
-> +			goto out;
-> +		}
+On Wed, Feb 10, 2021 at 10:09:45AM -0600, Josh Poimboeuf wrote:
+> On Wed, Feb 10, 2021 at 09:39:53AM +0100, Peter Zijlstra wrote:
+> > 
+> > 
+> > Given all the ENDBR fun we recently had, do we want the below? Until
+> > someone comes and fixes up kprobes/ftrace/livepatch etc.. having them is
+> > a giant pain and we'd better warn about it.
+> 
+> Meh...
+> 
+> Is there a point in doing this, now that we killed it with
+> -fcf-protection=none?
+> 
+> That said, the patch is nicely small and localized.
 
-This repeats a regression in existing code, i.e. does not check
-"ret < 0" condition. I noticed this now when I rebased the code
-on top of my fixes.
-
-I.e. it's fixed in my master branch, which caused a merge conflict,
-and I found this.
-
-/Jarkko
+Yeah, paranoia, just making absolutely sure it doesn't sneak back in
+unexpected.
