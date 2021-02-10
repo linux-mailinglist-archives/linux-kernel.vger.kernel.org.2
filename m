@@ -2,110 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C42B315D39
+	by mail.lfdr.de (Postfix) with ESMTP id CCD5B315D3A
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235090AbhBJC01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:26:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235191AbhBJB5Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 20:57:16 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB13EC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 17:56:35 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id e9so351064plh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 17:56:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=cujEpEkxco6B8FhFOweauGZMK6zlCmv92EUaCj1tfZU=;
-        b=QcB3JRfzVYnUQKD4IJqERWsSeLYwfEHpJ5NGQfTXsDT2iBtVBJrKBYZB/3BvissB96
-         b81RVHnG94ZBmU2/7MkhzEwUuW3SfpukAisiI8EgrpVB4muQPHBJRlX5YYayteadex4n
-         l0Q65zSqJKetfa2EuqteJV/vKyOu6CIO49lBRssfiOAI7ztW9wosy93mgL9/1whL+rkm
-         xbc+T8P+zRK/mNvcXK1fNTgIJsTwFpf4vH3VSGfAzCTjKbbCRLPjAsspCpzquYoAUCNz
-         AWZjdDR7fOIOp9gBMZXNUaEuaGlWydZUXv/P2rGGcx6x5Y+Uz659BM7RKu18uTZQUEEV
-         pThA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=cujEpEkxco6B8FhFOweauGZMK6zlCmv92EUaCj1tfZU=;
-        b=QPsaLr7m3WLqbt5waAJ7g63F+iahXaT1zGkndFvprPtvunOQPJv4j1ehD6qmsq8RGY
-         VTar9X+yv0+QxsYFE3z7WsZBIVvv+O8zqcl/MPKFE/UYIONGMBEunctCLuR1JyBKd3Fa
-         h2RyXtwvq3OBkfyQHuPjYOKX1zo5XMLTZALIc6PBfzhT2fTh26rakITdCHxPcP2wRuMI
-         +T+GgJOvfpZp8+/B6iqgiXZHq0RzH7dPp8XpCbJCYPZhKSOmiEYxNWsduxctVqrnY/KV
-         SnMbY3QmqjGUmxPS9QSRTGmmWIMgBEpevuw7QBR5kKvfxz8eztzrLc5yFmefbZmILexs
-         rEdA==
-X-Gm-Message-State: AOAM532EBbG11nRLELCm01tGPI3xbUDuoHW7BTiTIu1Fpm6C7LTPL/qo
-        aAtGOi2wS70djo8G/6SKZMU=
-X-Google-Smtp-Source: ABdhPJzdG85BEtQNWf1RRd3yZaTPVEmX/rJLwzoukFhBukSeHLFyF5kK9HUhgm9mwpbTrI97H94B9A==
-X-Received: by 2002:a17:90a:5601:: with SMTP id r1mr761643pjf.236.1612922195487;
-        Tue, 09 Feb 2021 17:56:35 -0800 (PST)
-Received: from localhost (14-201-150-91.tpgi.com.au. [14.201.150.91])
-        by smtp.gmail.com with ESMTPSA id bk12sm279994pjb.1.2021.02.09.17.56.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 17:56:34 -0800 (PST)
-Date:   Wed, 10 Feb 2021 11:56:28 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v5 16/22] powerpc/syscall: Avoid stack frame in likely
- part of system_call_exception()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1612796617.git.christophe.leroy@csgroup.eu>
-        <981edfd50d4c980634b74c4bb76b765c499a87ec.1612796617.git.christophe.leroy@csgroup.eu>
-        <1612834634.qle1lc7n6y.astroid@bobo.none>
-        <f2b17529-e1b6-3d2c-a38b-51e91841e438@csgroup.eu>
-In-Reply-To: <f2b17529-e1b6-3d2c-a38b-51e91841e438@csgroup.eu>
+        id S233717AbhBJC05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:26:57 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:59148 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235225AbhBJB5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 9 Feb 2021 20:57:49 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l9ekd-005Dpr-KO; Wed, 10 Feb 2021 02:57:07 +0100
+Date:   Wed, 10 Feb 2021 02:57:07 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michael Walle <michael@walle.cc>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next 2/9] net: phy: icplus: use PHY_ID_MATCH_EXACT()
+ for IP101A/G
+Message-ID: <YCM9c9L/B8iS4IKi@lunn.ch>
+References: <20210209164051.18156-1-michael@walle.cc>
+ <20210209164051.18156-3-michael@walle.cc>
 MIME-Version: 1.0
-Message-Id: <1612921956.st2b8xlrew.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209164051.18156-3-michael@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of February 10, 2021 2:13 am:
->=20
->=20
-> Le 09/02/2021 =C3=A0 02:55, Nicholas Piggin a =C3=A9crit=C2=A0:
->> Excerpts from Christophe Leroy's message of February 9, 2021 1:10 am:
->>> When r3 is not modified, reload it from regs->orig_r3 to free
->>> volatile registers. This avoids a stack frame for the likely part
->>> of system_call_exception()
->>=20
->> This doesn't on my 64s build, but it does reduce one non volatile
->> register save/restore. With quite a bit more register pressure
->> reduction 64s can avoid the stack frame as well.
->=20
-> The stack frame is not due to the registers because on PPC64 you have the=
- redzone that you don't=20
-> have on PPC32.
->=20
-> As far as I can see, this is due to a call to .arch_local_irq_restore().
->=20
-> On ppc32 arch_local_irq_restore() is just a write to MSR.
+On Tue, Feb 09, 2021 at 05:40:44PM +0100, Michael Walle wrote:
+> According to the datasheet of the IP101A/G there is no revision field
+> and MII_PHYSID2 always reads as 0x0c54. Use PHY_ID_MATCH_EXACT() then.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Oh you're right there. We can actually inline fast paths of that I have=20
-a patch somewhere, but not sure if it's worthwhile.
+Lets hope the datasheet is correct and up to date, because this could
+cause a regression if wrong.
 
->> It's a cool trick but quite code and compiler specific so I don't know
->> how worthwhile it is to keep considering we're calling out into random
->> kernel C code after this.
->>=20
->> Maybe just keep it PPC32 specific for the moment, will have to do more
->> tuning for 64 and we have other stuff to do there first.
->>=20
->> If you are happy to make it 32-bit only then
->=20
-> I think we can leave without this, that's only one or two cycles won.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Okay for this round let's drop it for now.
-
-Thanks,
-Nick
+    Andrew
