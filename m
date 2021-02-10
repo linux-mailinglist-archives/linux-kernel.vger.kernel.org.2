@@ -2,117 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445A131677E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB4231677A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhBJNIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:08:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58601 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230268AbhBJNHH (ORCPT
+        id S231511AbhBJNHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231596AbhBJNGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:07:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612962339;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x01ruuxA0cfwcbVBCUqqYJWqKZiSU+Bm+OyEXVm7xtY=;
-        b=cXB6VDP99fgpJzgeIa/UJnhEM9OZSAB2ZdiigrqvFNpy10I4XCw4jNRn4XEdY15f6MGd9c
-        oS9XqzP/sX58bs3d0HF3b6GY2mmT6AWYOeZjmQtnkUI1iDeAdS/Cy4426cqW1zly4vFP8j
-        agzB6StLg8gdeO5sYRzXp/42iMXrKMM=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-_1A6827dPNuUPVCBE1rSCA-1; Wed, 10 Feb 2021 08:05:38 -0500
-X-MC-Unique: _1A6827dPNuUPVCBE1rSCA-1
-Received: by mail-pl1-f199.google.com with SMTP id n2so1648762plc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:05:37 -0800 (PST)
+        Wed, 10 Feb 2021 08:06:20 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A7EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:05:39 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id y9so4006927ejp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 05:05:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BOHWlzrGxv1diIztKsse/klmr7NSwYQVV9nNu4ohZ2Q=;
+        b=OW7E8VgnPaZOABILrTCfAcgtkYPl2z/WwNcui8n4M9VObCPknyvv9UeQPsFQ8Dnjm+
+         Vwz+gJwKwsn5hXjmAvqBuNMOfJY8vKjic9ociS5qa4vMutMX8THG8KAvIl6svwsqaUwG
+         2LlJhUFecqDHjV2RMAogbdvl632Mzt6X5EgfGvlfCou1QiSbRFEg/nwnshPUoHEOHsk5
+         kmu3FABT0LsbfUHG1JuEOyAbc/6sicTujDwM5TpcFbeLRb+kEf/EZbEJC6VvvgaA3j50
+         W1VU5MTgOxeLLy6KCd/1MzKzF121mmWuHK1I9v5ViLT5brI2PW8haeB4NaEqdfgh8TLv
+         fv5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=x01ruuxA0cfwcbVBCUqqYJWqKZiSU+Bm+OyEXVm7xtY=;
-        b=qSjdCFnHxpjXgAiMSKHhruzZMUTOpuXTqsxYkrdWBsbj71dK2RzAQE/bE31Ax317nW
-         F2i9p9diO7/WRqZRcjh6KmH5LZR4QUSYMxzoD5XBxoxrmwzl9le3d40uRpQFEcgBwAmQ
-         IrZeCzTVg9JjXDU9VFbgbYOUv6IQp/T3X3xM5lmTzC/gNg/7kV/V8Q/hcrvMHvqwbkFZ
-         q9vAsgqAJSsRzHznO2U2tVWBk5suYAyma+MQ8Mvuho4uTkClMTYLO8LnaXZQApDpAAnI
-         a4Rapk1kkQuooYmd6JkVz9N3MQrSkBsJchAbxzC7P2US18XLLh9uHgkRtgbb8dL8KKZZ
-         F4Fw==
-X-Gm-Message-State: AOAM532wzt0bYD68c0Eyx8Ml2J1LCW49CG6rIoWLI8lSQVBRRnhB1W6t
-        kCnn5FI5RvAf6/FEsjd/buV2HK+yXhw7J9HrvSeYKDOzZbqBeTWNHZya3mDSqD9qZ78IKBnfIet
-        8w5j79u6CSBWYInzLl+Rsc11Y
-X-Received: by 2002:a17:90a:9912:: with SMTP id b18mr3066428pjp.120.1612962336875;
-        Wed, 10 Feb 2021 05:05:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxdnKAhSt6eJBEp/ZLzVhLX2BIuwzX2ua4xi+0pCTvmPOXEWG9GP4YnGf6EeZ8KNgbnoje4fw==
-X-Received: by 2002:a17:90a:9912:: with SMTP id b18mr3066406pjp.120.1612962336608;
-        Wed, 10 Feb 2021 05:05:36 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 124sm2367866pfd.59.2021.02.10.05.05.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 05:05:35 -0800 (PST)
-Date:   Wed, 10 Feb 2021 21:05:25 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Chao Yu <chao@kernel.org>, Chao Yu <yuchao0@huawei.com>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        syzbot+c68f467cd7c45860e8d4@syzkaller.appspotmail.com
-Subject: Re: [PATCH] erofs: fix shift-out-of-bounds of blkszbits
-Message-ID: <20210210130525.GB1173803@xiangao.remote.csb>
-References: <20210120013016.14071-1-hsiangkao.ref@aol.com>
- <20210120013016.14071-1-hsiangkao@aol.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BOHWlzrGxv1diIztKsse/klmr7NSwYQVV9nNu4ohZ2Q=;
+        b=ZqUGLsXL6JaviszLeYrcfN2uyeotr+0G1UDyzhFPBvH4O4EEUj7xsM9Ci0zwDDSYfn
+         maFntIEXp4QTv5RE+cmobSjWksh7ryueZciAgBRiIfRJYm2FTxsNE/zcWWInrwt7nP6k
+         eUZehl+9pypJGrzvsrscbBvCXnaI8emuPRH7PgBWmToQXX5iLmNgTzSwfS046E5+EthQ
+         bVUc0Iwj3VR1dACCm9RgTR3etqVqC+8feAXfo4/MpoMleLCL+ZW1gfCC1ktnyfe4wobY
+         TxauAPTvSu9t1+spXqYh7rvSmDwTzb7OkN3G8YaeRFTBYwdOB4WO8RkaCsot1qAqCGzh
+         Jobw==
+X-Gm-Message-State: AOAM532WwdPif7Vznofwlv4sg/lZ7Cm3t9vrkHhZ24iC85XlDnFmxkrS
+        Wou7fS8F+rtd4Mu7S9bvKTQ1N/YMBzyC2JDvaRd1bFrSJNg=
+X-Google-Smtp-Source: ABdhPJyCMOuPY+9w42KfhFy/YmhWoMYu3SVuX8cnGCW2uxM+dGpPZrxj2OYBZMLCLpw9+Hp1v052PIBLfIgX5g9WnLo=
+X-Received: by 2002:a17:906:4707:: with SMTP id y7mr2801250ejq.445.1612962338160;
+ Wed, 10 Feb 2021 05:05:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210120013016.14071-1-hsiangkao@aol.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210204124357.3817-1-brgl@bgdev.pl> <YBv61eNnVksYq9mr@kroah.com>
+ <CAMpxmJXcVOHbozzhQQW2GPg-6ivCWL3pQmyC-oU_YW5NX=gK3w@mail.gmail.com>
+ <YBwGHWSV1/ZZm7u/@kroah.com> <CAMpxmJUof3DN2YHBOQm1Z-hrtS1cj6in5CAHowce++36XtqsnA@mail.gmail.com>
+ <YBwSuAjNu4FtXSn/@kroah.com>
+In-Reply-To: <YBwSuAjNu4FtXSn/@kroah.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 10 Feb 2021 14:05:27 +0100
+Message-ID: <CAMRc=MeBFCdcBWnm4nWTM3E7AnVhLmxQz_1C_YF3smA6ffXrDA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: uapi: use the preferred SPDX license identifier
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
+On Thu, Feb 4, 2021 at 4:29 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Feb 04, 2021 at 04:17:51PM +0100, Bartosz Golaszewski wrote:
+> > On Thu, Feb 4, 2021 at 3:35 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Thu, Feb 04, 2021 at 03:15:50PM +0100, Bartosz Golaszewski wrote:
+> > > > On Thu, Feb 4, 2021 at 2:47 PM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Thu, Feb 04, 2021 at 01:43:57PM +0100, Bartosz Golaszewski wrote:
+> > > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > > > >
+> > > > > > GPL-2.0 license identifier is deprecated, let's use the preferred
+> > > > > > identifier: GPL-2.0-only.
+> > > > > >
+> > > > > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > > > > ---
+> > > > > > Hi Kent, Greg,
+> > > > > >
+> > > > > > I started working on making libgpiod licensing reuse-compliant and noticed
+> > > > > > that the reuse-tool is telling me that the GPL-2.0 SPDX identifier in the
+> > > > > > GPIO uapi header is deprecated. Since I'm required to copy the header
+> > > > > > verbatim into libgpiod's repository, I think we need to fix that at source
+> > > > > > first.
+> > > > > >
+> > > > > >  include/uapi/linux/gpio.h | 2 +-
+> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/include/uapi/linux/gpio.h b/include/uapi/linux/gpio.h
+> > > > > > index e4eb0b8c5cf9..3e01ededbf36 100644
+> > > > > > --- a/include/uapi/linux/gpio.h
+> > > > > > +++ b/include/uapi/linux/gpio.h
+> > > > > > @@ -1,4 +1,4 @@
+> > > > > > -/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > > > > > +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+> > > > >
+> > > > > No, there is no need to convert the kernel to the "latest" spdx level,
+> > > > > when we started out there was no "-only" nonsense (hint no other license
+> > > > > has that crud), and "GPL-2.0" is a totally valid summary of the license.
+> > > > >
+> > > > > So please don't go changing it all in-kernel, that way lies madness.
+> > > > > Let's finish fixing up ALL kernel files before worrying about what SPDX
+> > > > > "version" we are at.
+> > > > >
+> > > >
+> > > > But then, the reuse script is telling me:
+> > > >
+> > > >     Unfortunately, your project is not compliant with version 3.0 of
+> > > > the REUSE Specification :-(
+> > > >
+> > > > because I'm using a deprecated license. :(
+> > >
+> > > Go yell at the REUSE people, there's no requirement to have the most
+> > > recent version of SPDX, is there?   :)
+> > >
+> > > And if that's the only thing wrong with the project when running 'reuse
+> > > lint' then you should be happy, no one will complain at all.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> >
+> > Ok, I get it but let me try one last time: there's absolutely no harm
+> > in merging this patch for the next release, is there? Currently there
+> > are around 15000 instances of "GPL-2.0-only" in the kernel vs 30000
+> > "GPL-2.0" - so the former is not that uncommon.
+>
+> It's up to the owner/maintainer of this file in the end, but I don't
+> want to see patches doing this for many more files, as it's pointless
+> churn as far as the kernel is concerned.
+>
 
-On Wed, Jan 20, 2021 at 09:30:16AM +0800, Gao Xiang wrote:
-> From: Gao Xiang <hsiangkao@redhat.com>
-> 
-> syzbot generated a crafted bitszbits which can be shifted
-> out-of-bounds[1]. So directly print unsupported blkszbits
-> instead of blksize.
-> 
-> [1] https://lore.kernel.org/r/000000000000c72ddd05b9444d2f@google.com
-> Reported-by: syzbot+c68f467cd7c45860e8d4@syzkaller.appspotmail.com
-> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+Since it's up to me to decide - I'll apply this but I'll clarify in
+the commit message why user-space may want this change.
 
-Could you kindly review this trivial syzaller patch as well? Since
-"erofs: initialized fields can only be observed after bit is set"
-is somewhat serious on some weak-memory-order designed platforms
-(no idea why our hisilison ARM64 platform didn't observe it before.)
-I intended to prepare this for 5.13 cycle directly with ongoing
-multi pcluster / LZMA in-kernel decompresion. But that regression
-seems a bit important to upstream for the next 5.12 cycle....
-
-Thanks,
-Gao Xiang
-
-> ---
->  fs/erofs/super.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-> index be10b16ea66e..d5a6b9b888a5 100644
-> --- a/fs/erofs/super.c
-> +++ b/fs/erofs/super.c
-> @@ -158,8 +158,8 @@ static int erofs_read_superblock(struct super_block *sb)
->  	blkszbits = dsb->blkszbits;
->  	/* 9(512 bytes) + LOG_SECTORS_PER_BLOCK == LOG_BLOCK_SIZE */
->  	if (blkszbits != LOG_BLOCK_SIZE) {
-> -		erofs_err(sb, "blksize %u isn't supported on this platform",
-> -			  1 << blkszbits);
-> +		erofs_err(sb, "blkszbits %u isn't supported on this platform",
-> +			  blkszbits);
->  		goto out;
->  	}
->  
-> -- 
-> 2.24.0
-> 
-
+Bart
