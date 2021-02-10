@@ -2,127 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE19315D1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3A0315D1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234749AbhBJCVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:21:07 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:54837 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234845AbhBJBcm (ORCPT
+        id S234982AbhBJCVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:21:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235107AbhBJBdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 20:32:42 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D3B6A580282;
-        Tue,  9 Feb 2021 20:31:32 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute4.internal (MEProxy); Tue, 09 Feb 2021 20:31:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type:content-transfer-encoding; s=fm2; bh=s6nVz
-        auOg7gdaQYo/9fMFzd6zZgEJznU8/zLh2CdmOo=; b=MEXjeX3rRsUgs0ZDcn5vz
-        QpFqnnHy2vR1gLGXE2JUlbaipu3xNNMijwn0/eiASJ7oeI3Q33cIl3ho84QYEbLQ
-        FlGZ9aG7QFYxa/qL8pd73Ly5R1vZNBqrlvY/OI4dpjr1EgqKq3W0/zj8b9PM2834
-        VkLKipeW772ZYzYo6p0Ln25HVsAkAqGZEqqyc1Lmq4J/X/HYj5Maf2JzUCV9u0J/
-        ox7LXeRskYgp71FU1Es7zHzOVSbL9sZLP2H1mQvivyj4k4dKReWv8ql1AE1wHx9Z
-        Zc9d4+0kETLTIyCiz9J1i17Qs/p3ZeXPXTRU9fi5I/JnqNRJxYSVoE0IAx7LXNyP
-        w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=s6nVzauOg7gdaQYo/9fMFzd6zZgEJznU8/zLh2Cdm
-        Oo=; b=ZNmYjG/ZFbB3ZX12HoeFDrMAvmcSvkgSXVVNd1essph1wxtgysSQ/Ar8p
-        yTPdIjDCzpjYngxNJKOejGvE5BxgZ3p0RIXUgNJ0G5MIUYFtcQCyn5lORmXVDavo
-        DlQ06hxokmRMwGucnanksUwQKVDM0XZh2fqtez6ToHfnx1/XQH0WO6zKc0IY/K/C
-        4jp/1VFU5spt+23R9PG86St1GyPaUBRa4e6kBZdgcKZsLucGvHKf2aAG0Yn7BE30
-        6+wQtjesK8dKWmN5YKpKVtQSpzvrcksN/yyKFcigqo/wtpGAhUNFZdECA03emMje
-        Y93EqN73w/JxQI8nf9kNiZ1kuV4bg==
-X-ME-Sender: <xms:czcjYFma3q3L73P8PK0ZS9T2ECdQxpz2K7SkBnRfrGVhfuWq2haQ_w>
-    <xme:czcjYA3KdcYntNHd4LXehIyak3LIeFG0g0w4QwF5YTH5oymGR6dvUEwoMtPM1PPJ1
-    RY4_ue2XaX3AQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheeigdefiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepnhhnvght
-    uceonhhnvghtsehfrghsthhmrghilhdrfhhmqeenucggtffrrghtthgvrhhnpeeugeekvd
-    ehheevheetieetudeljedvvddtieevvdeukeejgfeuheffueelueegueenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnnhgvthesfhgrshhtmh
-    grihhlrdhfmh
-X-ME-Proxy: <xmx:czcjYLoNC9XxFq-xySFKpkf4r9g_dvM8xMDAh4QtmCi1-_thPxoHWQ>
-    <xmx:czcjYFlgZdxWOepSB7uUSbXuYxOcfeLOPtSZkElXP7eqotoatqJGwA>
-    <xmx:czcjYD3ACSh_liAFqXMa4gcU-pJNEz8S47EOHJpU21-PvsMhMVlsFw>
-    <xmx:dDcjYNOQ-TXMBAyf5bctxW0NxDGsOugwGEcYso_wmwin2kcD2qDOtw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2AFF6A0005E; Tue,  9 Feb 2021 20:31:31 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
+        Tue, 9 Feb 2021 20:33:00 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02C6C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 17:32:20 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id w19so289382pgj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 17:32:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Kfk5Uw4Z7kJQuQ7PIMrKec+wBQ/rinHT9qe11xyQpf8=;
+        b=AJiI3ZdxkUaUHyU+IOdAYJKp0E7IJF0ky0J3sxnrHs/tdb4XB3fAiBLr4bKxReKF1I
+         X+SW8akxJltYR/R0txsCdf1HdPCGWXtqwA7xC8unWK8aAeEBp6p1B0vkMzDr92CsLmuN
+         Au/2UNetsbqVK4lx92ivUFtfz+BPvz3eR+/I6wA0MSLEjSHhPO1IyfGkiy8DdrbxW11c
+         QSzrhQXXz6DeqE7Ipr0rDkagxi3mguLzy4+Ch7bgauUYIqcTd60il7poy0Qp4W0Zgwqm
+         QlDw62zolzmduc1uo9cyyVOtcmUJ/bsTW9k5204RBvwPnt3nf1OqVg6gpto2mugHxbIy
+         sdjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Kfk5Uw4Z7kJQuQ7PIMrKec+wBQ/rinHT9qe11xyQpf8=;
+        b=AoshJfplfS2RT1LVm5TxC/rq4Iq4HdW+nKiIuAauQ2qIEVwxQDxN1TMzLhOSZ9cooG
+         319KOQDTj5NYTWDqWNBiRwhyzKb/bvmZlIwyvH+B5GasQ9LRxGEKIgDwN8TlokZPJ3mM
+         j68AXxkMLDhSFz5bp9LM5bUPaCcyt+OcrvLLixwgToyZVpf4C6/6olYBD+aP7mpkH6bH
+         SMnil3mBDkruIag+f2rwipZriO2mv3rCyvhfhq8mYLDVP4zAPA4BHgDt/UJN9p1ZvmeG
+         aK/bDuW60Qnc1G0xLlFAib9TXAMZQGW1QEDSBCbK5/aevSw0OdVO4ElMIhKqidEbfmpF
+         EatA==
+X-Gm-Message-State: AOAM531WTla/SbSZtRMGwFNiRGg3MCm3FVw7Iz4shj2dSxHrLm2ZVIFn
+        iyi9FJdkZAD5iiHEnBA0LBEJSGrn6c62Wg==
+X-Google-Smtp-Source: ABdhPJz8anVTJuRGoYEo7hpKIc/GDpTEUtNsCs7mbDXLFOx0LEzP+Ls9+h65Ys4zarn/v345/BbuEmPeAnHGmA==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:7dd9:967f:92f4:2aae])
+ (user=dlatypov job=sendgmr) by 2002:aa7:810d:0:b029:1dc:2639:8376 with SMTP
+ id b13-20020aa7810d0000b02901dc26398376mr724241pfi.27.1612920740133; Tue, 09
+ Feb 2021 17:32:20 -0800 (PST)
+Date:   Tue,  9 Feb 2021 17:32:06 -0800
+Message-Id: <20210210013206.136227-1-dlatypov@google.com>
 Mime-Version: 1.0
-Message-Id: <ac03801e-87e2-4e57-b131-bff52f03579d@www.fastmail.com>
-In-Reply-To: <20210210002619.43104a9b@kernel.org>
-References: <d59ba191-43db-4b7b-b201-62a60ca752c0@www.fastmail.com>
- <20210209213330.hnc7op72zoj24mgz@pali>
- <7b0988cc-eeb8-4ea7-92f6-e8234ca910d3@www.fastmail.com>
- <20210209224223.p22yhjdy7ibzepss@pali>
- <93745280-dbe9-491c-a79d-c9c364b83880@www.fastmail.com>
- <20210209225630.mdwnzkvnaz3r4blt@pali>
- <a86c5069-d423-44db-92dd-b3e406b7ec91@www.fastmail.com>
- <20210210002619.43104a9b@kernel.org>
-Date:   Tue, 09 Feb 2021 17:31:10 -0800
-From:   nnet <nnet@fastmail.fm>
-To:     =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
-Cc:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, a.heider@gmail.com,
-        andrew@lunn.ch, gerald@gk2.net, gregory.clement@bootlin.com,
-        kostap@marvell.com, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luka.perkov@sartura.hr, miquel.raynal@bootlin.com,
-        mturquette@baylibre.com, rmk+kernel@armlinux.org.uk,
-        sboyd@kernel.org, tmn505@gmail.com, vladimir.vid@sartura.hr
-Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
- =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH] ext4: add .kunitconfig fragment to enable ext4-specific tests
+From:   Daniel Latypov <dlatypov@google.com>
+To:     tytso@mit.edu
+Cc:     brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        kunit-dev@googlegroups.com, Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021, at 3:26 PM, Marek Beh=C3=BAn wrote:
-> On Tue, 09 Feb 2021 15:16:45 -0800
-> nnet <nnet@fastmail.fm> wrote:
->=20
-> > I've two of these and I've just swapped them (and re-pasted the heat=
- sinks).
-> >=20
-> > The second one ran under load for awhile and now has frozen as well.=
+As of [1], we no longer want EXT4_KUNIT_TESTS and others to `select`
+their deps. This means it can get harder to get all the right things
+selected as we gain more tests w/ more deps over time.
 
-> >=20
-> > Under a moderate load `wget -O /dev/null <large.bin>` @X00Mbits they=
- are fine.
-> >=20
-> > Under a 1 min speed test of load ~200Mbits routed WireGuard they fre=
-eze.
-> >=20
-> > They fine with both those workloads @1000_800.
-> >=20
-> > Perhaps it's heat? Unfortunately I don't have any numbers on that AT=
-M.
->=20
-> Try disabling cpufreq in kernel completely, compile boot image at
-> 1200 MHz. If it continues freezing, then I fear we can't help you with=
+This patch (and [2]) proposes we store kunitconfig fragments in-tree to
+represent sets of tests. (N.B. right now we only have one ext4 test).
 
-> 1200 MHz :(
+There's still a discussion to be had about how to have a hierarchy of
+these files (e.g. if one wanted to test all of fs/, not just fs/ext4).
 
-cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencie=
-s=20
-200000 300000 600000 1200000=20
+But this fragment would likely be a leaf node and isn't blocked on
+deciding if we want `import` statements and the like.
 
-I'm not getting any freezes with 1.2GHz fixed after 20 minutes of load:
+Usage
+=====
 
-echo 1200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+Before [2] (on its way to being merged):
+  $ cp fs/ext4/.kunitconfig .kunit/
+  $ ./tools/testing/kunit.py run
 
-Setting it back to min 200MHz I get a freeze within a minute:
+After [2]:
+  $ ./tools/testing/kunit.py run --kunitconfig=fs/ext4/.kunitconfig
 
-echo 200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+".kunitconfig" vs "kunitconfig"
+===============================
 
-> Marek
->
+See also: commit 14ee5cfd4512 ("kunit: Rename 'kunitconfig' to '.kunitconfig'").
+* The bit about .gitignore exluding it by default is now a con, however.
+* But there are a lot of directories with files that begin with "k" and
+  so this could cause some annoyance w/ tab completion*
+* This is the name kunit.py expects right now, so some people are used
+  to .kunitconfig over "kunitconfig"
+
+[1] https://lore.kernel.org/linux-ext4/20210122110234.2825685-1-geert@linux-m68k.org/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=243180f5924ed27ea417db39feb7f9691777688e
+
+* 372/5556 directories isn't too much, but still not a small number:
+$ find -type f -name 'k*' | xargs dirname | sort -u | wc -l
+372
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ fs/ext4/.kunitconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+ create mode 100644 fs/ext4/.kunitconfig
+
+diff --git a/fs/ext4/.kunitconfig b/fs/ext4/.kunitconfig
+new file mode 100644
+index 000000000000..bf51da7cd9fc
+--- /dev/null
++++ b/fs/ext4/.kunitconfig
+@@ -0,0 +1,3 @@
++CONFIG_KUNIT=y
++CONFIG_EXT4_FS=y
++CONFIG_EXT4_KUNIT_TESTS=y
+
+base-commit: 88bb507a74ea7d75fa49edd421eaa710a7d80598
+-- 
+2.30.0.478.g8a0d178c01-goog
+
