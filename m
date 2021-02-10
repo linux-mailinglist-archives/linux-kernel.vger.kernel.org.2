@@ -2,143 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068DD316AE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7B4316AE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhBJQOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
+        id S231984AbhBJQOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:14:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbhBJQOQ (ORCPT
+        with ESMTP id S230043AbhBJQOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:14:16 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933D5C061788
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:13:03 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id i9so2305888wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:13:03 -0800 (PST)
+        Wed, 10 Feb 2021 11:14:25 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A8FC06178B
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:13:09 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id m20so2290065ilj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:13:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9EqkICeAqFea9hutcJE8LTJk6fkCLGfHmOvQQmMvAJM=;
-        b=Hh49I+GceO/gmkekotuymhn3rjlU3YIypVisjoLOygTP1mgYBpzmbiY1B+Z5kDHv1H
-         X+1p+H/pZbOPlldO65mL33J/nmB6ms47MC+u60d9S34oT4MiRfwDpZZWh/qETmt/Om/y
-         olUsvQGKt/zp/HREvWDezf3EVhY9WQSBDq//vrYo+RtlXuw1teA/flfEzF4rT2UCYUo6
-         WEyPCuv9rP7JAXB7hd4Zk5CXQfiPo2bj7YDV4C/V4SfKbO6gG7O8nWSxiVamK32i6r03
-         Vi1DcAM4Whf1JnAWKjVWawTmQnF73oyA7TPneeQ1mIDpdIwY/evQfcTuEdgRAkLg3tZr
-         f/6A==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Sc0vbOHbxfn9JzOXGmtKhPpSM5gmhu52/wuwtc+m/jk=;
+        b=CQnI1cl/+RKOawcv1Cq/crfluAy6RYgUTGSmnwgRf/BdAc8rwoz1UigSks3ySZ3Bq0
+         XdSK4+gbQO6pBfnb+vvMEFG7JAT4MoYceD9fnSOfyIUTRbFyETH8LbTRcNIdzfUjp3uB
+         Y/2d/s5Tk1iNGW4xM8YKag3uhttUehCoZQ8NM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9EqkICeAqFea9hutcJE8LTJk6fkCLGfHmOvQQmMvAJM=;
-        b=o1YCLjAALQJHvB+wZfiSkZBI/Br+dfLybuqSmUFU59umh7gKhEYxNcPs1kR4osC0lx
-         yzfYdoE9wj0pn/oFyvpPQJpDFgMPkhn2XR+5SDZQXQIM8H8bBoWsayAKI8iBKr5uIj6C
-         9kk1ddL6ZkkvvQVqvKKUHP/II4za9F1zbDilkOegoUU2V6H0pkedHMA8P8+BnI5RDJVI
-         tuhb0DEEFbWFzUcNW8DE2SXM/MUf5wa5hdzNN2ljp9LP9r/LScfB1cY+EqVBdgNqXr+P
-         KjTNX9PMfHR/primnmPxaIXSskp+a69mWCIgGOccAVgFFrElmjPdt/INZVRQrVvIY0H4
-         ALYg==
-X-Gm-Message-State: AOAM5304rOmPdq1AxEXV0Fead5xAMqdsRV4ej8BYlb2wmqYU67GnaNEi
-        F0jg/Cx85+zjIb6YbnMGlSVHzQ==
-X-Google-Smtp-Source: ABdhPJxwjN9tnOjYE29ii/KagRZk+egL7JyD+GF9hT3oJWkCY7DOqROK+nqMjm3eItHTGs95G9LYOA==
-X-Received: by 2002:a05:600c:216:: with SMTP id 22mr3432179wmi.111.1612973581930;
-        Wed, 10 Feb 2021 08:13:01 -0800 (PST)
-Received: from x1 ([91.110.221.237])
-        by smtp.gmail.com with ESMTPSA id x9sm3275333wmb.14.2021.02.10.08.12.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 08:13:00 -0800 (PST)
-Date:   Wed, 10 Feb 2021 16:12:58 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Julia Lawall <Julia.Lawall@inria.fr>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        kernel-janitors@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-fbdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] video: use getter/setter functions
-Message-ID: <20210210161258.GA124276@x1>
-References: <20210209211325.1261842-1-Julia.Lawall@inria.fr>
- <20210210082341.GH220368@dell>
- <YCPbxSHWMipTz+mB@phenom.ffwll.local>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Sc0vbOHbxfn9JzOXGmtKhPpSM5gmhu52/wuwtc+m/jk=;
+        b=lR+JMOdIwwi9qLLyrXyKHnup/kd3iXSP8Qci3/hLRvbne6y8FJUoAX91e9sZH3QTPC
+         rzJwpFMJ6wWjtSPLcKMze856WGIlbRQiIzLzYIlveH09GNiX1EPqoGeCT8e6tMqCHpWa
+         tg1QKr0xd2jbtVqw626j4YuBibia7dXtcG5Ani/16Mf0btDo0HoKkxij2seno3b4nyAC
+         g7snvJbI5p4JusA72cWilVh65QLhLCw4wjbU8YU0Yqh5Tt8dSDXV+A1IQnMXZSu6Vn+N
+         BgU9aLqVpaK58IydH1EmyPwoThY6/6Y5RF2LO7gtXgUz+9YG2OZIjWRUlLvJ6eqcvjmW
+         CLjw==
+X-Gm-Message-State: AOAM530Vrn7UeWnHva93QxhiC0FjHGlNa4S31nKVtjWyNizyN1dqOnzK
+        VglapYrBIzLhrb7fuUfPEHnHvw==
+X-Google-Smtp-Source: ABdhPJxqFfEGP4eD56gpzU1NU9/JmnxIk/kszmquParxawZ26pe0lwC7X5CNw3qHfJ8ZwuPYQRSp3A==
+X-Received: by 2002:a05:6e02:1bec:: with SMTP id y12mr1694292ilv.214.1612973588981;
+        Wed, 10 Feb 2021 08:13:08 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i6sm1217646ilq.51.2021.02.10.08.13.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 08:13:08 -0800 (PST)
+Subject: Re: [PATCH 5/5] ath10k: reduce invalid ht params rate message noise
+To:     Kalle Valo <kvalo@codeaurora.org>, Wen Gong <wgong@codeaurora.org>
+Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
+        kuba@kernel.org, davem@davemloft.net,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1612915444.git.skhan@linuxfoundation.org>
+ <76a816d983e6c4d636311738396f97971b5523fb.1612915444.git.skhan@linuxfoundation.org>
+ <5c31f6dadbcc3dcb19239ad2b6106773@codeaurora.org>
+ <87h7mktjgi.fsf@codeaurora.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <db4cd172-6121-a0b7-6c3f-f95baae1c1ed@linuxfoundation.org>
+Date:   Wed, 10 Feb 2021 09:13:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YCPbxSHWMipTz+mB@phenom.ffwll.local>
+In-Reply-To: <87h7mktjgi.fsf@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021, Daniel Vetter wrote:
-
-> On Wed, Feb 10, 2021 at 08:23:41AM +0000, Lee Jones wrote:
-> > On Tue, 09 Feb 2021, Julia Lawall wrote:
-> > 
-> > > Use getter and setter functions, for platform_device structures and a
-> > > spi_device structure.
-> > > 
-> > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > > 
-> > > ---
-> > >  drivers/video/backlight/qcom-wled.c                                  |    2 +-
-> > 
-> > This patch is fine.
-> > 
-> > Could you please split it out and submit it separately though please.
+On 2/10/21 1:28 AM, Kalle Valo wrote:
+> Wen Gong <wgong@codeaurora.org> writes:
 > 
-> Or just apply the entire patch through backlight tree, there's nothing
-> going on in fbdev anyway I think.
+>> On 2021-02-10 08:42, Shuah Khan wrote:
+>>> ath10k_mac_get_rate_flags_ht() floods dmesg with the following
+>>> messages,
+>>> when it fails to find a match for mcs=7 and rate=1440.
+>>>
+>>> supported_ht_mcs_rate_nss2:
+>>> {7,  {1300, 2700, 1444, 3000} }
+>>>
+>>> ath10k_pci 0000:02:00.0: invalid ht params rate 1440 100kbps nss 2
+>>> mcs 7
+>>>
+>>> dev_warn_ratelimited() isn't helping the noise. Use dev_warn_once()
+>>> instead.
+>>>
+>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>> ---
+>>>   drivers/net/wireless/ath/ath10k/mac.c | 5 +++--
+>>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c
+>>> b/drivers/net/wireless/ath/ath10k/mac.c
+>>> index 3545ce7dce0a..276321f0cfdd 100644
+>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>> @@ -8970,8 +8970,9 @@ static void ath10k_mac_get_rate_flags_ht(struct
+>>> ath10k *ar, u32 rate, u8 nss, u8
+>>>   		*bw |= RATE_INFO_BW_40;
+>>>   		*flags |= RATE_INFO_FLAGS_SHORT_GI;
+>>>   	} else {
+>>> -		ath10k_warn(ar, "invalid ht params rate %d 100kbps nss %d mcs %d",
+>>> -			    rate, nss, mcs);
+>>> +		dev_warn_once(ar->dev,
+>>> +			      "invalid ht params rate %d 100kbps nss %d mcs %d",
+>>> +			      rate, nss, mcs);
+>>>   	}
+>>>   }
+>>
+>> The {7,  {1300, 2700, 1444, 3000} } is a correct value.
+>> The 1440 is report from firmware, its a wrong value, it has fixed in
+>> firmware.
 > 
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-I can do that.  Is that an fbdev Ack?
-
-> > >  drivers/video/fbdev/amifb.c                                          |    4 ++--
-> > >  drivers/video/fbdev/da8xx-fb.c                                       |    4 ++--
-> > >  drivers/video/fbdev/imxfb.c                                          |    2 +-
-> > >  drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c |    6 +++---
-> > >  drivers/video/fbdev/omap2/omapfb/dss/dpi.c                           |    4 ++--
-> > >  drivers/video/fbdev/omap2/omapfb/dss/dsi.c                           |    4 ++--
-> > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c                         |    2 +-
-> > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c                         |    2 +-
-> > >  drivers/video/fbdev/xilinxfb.c                                       |    2 +-
-> > >  10 files changed, 16 insertions(+), 16 deletions(-)
-> > 
-> > ...]
-> > 
-> > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > > index 3bc7800eb0a9..091f07e7c145 100644
-> > > --- a/drivers/video/backlight/qcom-wled.c
-> > > +++ b/drivers/video/backlight/qcom-wled.c
-> > > @@ -1692,7 +1692,7 @@ static int wled_probe(struct platform_device *pdev)
-> > >  
-> > >  static int wled_remove(struct platform_device *pdev)
-> > >  {
-> > > -	struct wled *wled = dev_get_drvdata(&pdev->dev);
-> > > +	struct wled *wled = platform_get_drvdata(pdev);
-> > >  
-> > >  	mutex_destroy(&wled->lock);
-> > >  	cancel_delayed_work_sync(&wled->ovp_work);
-> > 
-> > For my own reference (apply this as-is to your sign-off block):
-> > 
-> >   Acked-for-Backlight-by: Lee Jones <lee.jones@linaro.org>
-> > 
+> In what version?
 > 
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Here is the info:
+
+ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id 
+0x00340aff sub 17aa:0827
+
+ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00140-QCARMSWPZ-1 
+api 6 features wowlan,ignore-otp,mfp crc32 29eb8ca1
+
+ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 4ac0889b
+
+ath10k_pci 0000:02:00.0: htt-ver 3.60 wmi-op 4 htt-op 3 cal otp max-sta 
+32 raw 0 hwcrypto 1
+
+>> If change it to dev_warn_once, then it will have no chance to find the
+>> other wrong values which report by firmware, and it indicate
+>> a wrong value to mac80211/cfg80211 and lead "iw wlan0 station dump"
+>> get a wrong bitrate.
+> 
+
+Agreed.
+
+> I agree, we should keep this warning. If the firmware still keeps
+> sending invalid rates we should add a specific check to ignore the known
+> invalid values, but not all of them.
+> 
+
+Would it be helpful to adjust the default rate limits and set the to
+a higher value instead. It might be difficult to account all possible
+invalid values?
+
+Something like, ath10k_warn_ratelimited() to adjust the
+
+DEFAULT_RATELIMIT_INTERVAL and DEFAULT_RATELIMIT_BURST using
+DEFINE_RATELIMIT_STATE
+
+Let me know if you like this idea. I can send a patch in to do this.
+I will hang on to this firmware version for a little but longer, so
+we have a test case. :)
+
+thanks,
+-- Shuah
+
+
