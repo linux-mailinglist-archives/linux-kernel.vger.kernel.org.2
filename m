@@ -2,107 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BE3316EF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D566316EDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbhBJSm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:42:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        id S234316AbhBJShv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:37:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234228AbhBJS2R (ORCPT
+        with ESMTP id S234108AbhBJS0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:28:17 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DC5C06121C
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:26:27 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id f127so3371025ybf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:26:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=k5i+QStGtQxdagBNJrvuN+hHOAh+jl0k4jqWkBv5Txo=;
-        b=k+HQLP7ZAGZeXAn/ix0c4UhVWLdldPjZ/ibyMGb3EcJ5r7/SSlasbZ+peiPz4/dfeA
-         uEH5B6bRD+SOmm4eWj6xiJndkk0yc+3PpNeQKqMFVbkxN3167GuPxWYqF4f3xVIx/Oee
-         8EHYOGRtFSQxw+kOEtOxOGUOeCFlFcNpRE+ntpQoinGKhiX9laJ3bfuEgAacn/YQM+cl
-         vzcse75GvtyndIQxoxO3ATIPRX76hclb2stNW5gWjzQSbBGryw8cQXTlVxRdSyakt/h0
-         R/oS7dLb4gGHZJcOE86Y68qbBHhKMYJCQM1hvpuCHqh3g45VuoSTYRdnlnOepU+04GUk
-         9Umw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=k5i+QStGtQxdagBNJrvuN+hHOAh+jl0k4jqWkBv5Txo=;
-        b=YUVy5q7/doEvDOQz55WusFZMOh5QQx2FvWXVPDEck7tukloBd9OjVpjNmt7E9Y96tp
-         hAVrYEqRNxVw7X/+gyVAyTTcqFuZf+hzwBoPsuq7rC7jzvsk9tiX8dPJF40doWaKqUbU
-         0LjoahDPqxtZtuFoQlCzlKud8TDB9wW/O/52yq56hkp72KD5wPR2csWq45Ny2ZwW65B/
-         CP3OS/tvL/aCfDlHCFbZeeZ/nrhB0GG04L9RPMheTvlNLxWKa6zy61nvqaNTNZ2lB0EK
-         3vqJ0Wfror1GAi7eliAJS3sjUkM+7Y9MAjTweRveT4+iHpYTsYHB308zkdUfMvJl4GAW
-         0j+A==
-X-Gm-Message-State: AOAM532fb9qrvFQcn7Iu0hwqSfVHM2GUz2SLXaqK0Hb00ufnCjnIP+wO
-        sKRs9V7XDbPW4tY6r1nFqLc8iTCrn8M=
-X-Google-Smtp-Source: ABdhPJwsbfpnnRhdi/WJEW0HkFZzjg18vDB3jDEI9My/tl73gxM0LcJP75gzxbp7QADg77Mvqm7ahgtBfPQ=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:11fc:33d:bf1:4cb8])
- (user=seanjc job=sendgmr) by 2002:a25:1e42:: with SMTP id e63mr5919281ybe.270.1612981586793;
- Wed, 10 Feb 2021 10:26:26 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 10 Feb 2021 10:26:09 -0800
-In-Reply-To: <20210210182609.435200-1-seanjc@google.com>
-Message-Id: <20210210182609.435200-6-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210210182609.435200-1-seanjc@google.com>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH 5/5] KVM: x86/xen: Explicitly pad struct compat_vcpu_info to
- 64 bytes
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 10 Feb 2021 13:26:53 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9386AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:26:12 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612981571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HBuCn3mUPAVSytsaOkj6uZwzU9Wq36KTP7dWW+6MY18=;
+        b=xJ8HvxrRoGGICXuuRHzYBBmWSgerRiTthB7PcUIi/jrKMh37ht+9JZxKeji1KiKH97JP79
+        Xozmvn8+w8zsYhyHoeFMTJBgXWZbOv1dxA55xYsjDi//5xHzBNIjc+lB/o1+wjsx2Dk75q
+        TIXbN3PiYbccHILLWtXAvMR/ehChTag2NEU/RSRF+jUeDAmEwt+B5SiZnhzzubly1EZGQ+
+        9JbBmv+p0NC+ocjUaxalUcSEuuN+F+tTh3TiW5bY4r2FVucpiKJVBT98jc5SZm+81fqvkM
+        BbY0NR7gdF0dI6cZBt36f4h2lUdJwdUthvXRpuyT7ux5WNWs+CfPcRA3N8lFHw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612981571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HBuCn3mUPAVSytsaOkj6uZwzU9Wq36KTP7dWW+6MY18=;
+        b=ubDoMGXMYLFlyn4V3h1tLjPO+hpq/HL25V+yo+6rEvikU8m+T+uQ1+3t7aaYgTH/XyrI5B
+        yi8sDTevmezIjOBQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, "J. Avila" <elavila@google.com>
+Subject: Re: [PATCH] printk: avoid prb_first_valid_seq() where possible
+In-Reply-To: <YCLKvCNJwabVavAP@alley>
+References: <20210205141728.18117-1-john.ogness@linutronix.de> <YCLKvCNJwabVavAP@alley>
+Date:   Wed, 10 Feb 2021 19:32:10 +0106
+Message-ID: <874kij4w59.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a 2 byte pad to struct compat_vcpu_info so that the sum size of its
-fields is actually 64 bytes.  The effective size without the padding is
-also 64 bytes due to the compiler aligning evtchn_pending_sel to a 4-byte
-boundary, but depending on compiler alignment is subtle and unnecessary.
+On 2021-02-09, Petr Mladek <pmladek@suse.com> wrote:
+>> @@ -1629,9 +1631,13 @@ int do_syslog(int type, char __user *buf, int len, int source)
+>>  	/* Number of chars in the log buffer */
+>>  	case SYSLOG_ACTION_SIZE_UNREAD:
+>>  		logbuf_lock_irq();
+>> -		if (syslog_seq < prb_first_valid_seq(prb)) {
+>> -			/* messages are gone, move to first one */
+>> -			syslog_seq = prb_first_valid_seq(prb);
+>> +		if (prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
+>> +			if (info.seq != syslog_seq) {
+>> +				/* messages are gone, move to first one */
+>> +				syslog_seq = info.seq;
+>> +				syslog_partial = 0;
+>> +			}
+>> +		} else {
+>>  			syslog_partial = 0;
+>
+> I am scratching my head when prb_read_valid_info(prb,
+> syslog_seq, &info, NULL)) might fail.
 
-Opportunistically replace spaces with tables in the other fields.
+It can fail because the descriptor has been invalidated/recycled by
+writers and perhaps there is no valid record that has yet come after it.
 
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/xen.h | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+> It might fail when syslog_seq points to the next message
+> after the last valid one. In this case, we could return
+> immediately (after releasing the lock) because there are
+> zero unread messages.
 
-diff --git a/arch/x86/kvm/xen.h b/arch/x86/kvm/xen.h
-index 4b32489c0cec..b66a921776f4 100644
---- a/arch/x86/kvm/xen.h
-+++ b/arch/x86/kvm/xen.h
-@@ -49,11 +49,12 @@ struct compat_arch_vcpu_info {
- };
- 
- struct compat_vcpu_info {
--        uint8_t evtchn_upcall_pending;
--        uint8_t evtchn_upcall_mask;
--        uint32_t evtchn_pending_sel;
--        struct compat_arch_vcpu_info arch;
--        struct pvclock_vcpu_time_info time;
-+	uint8_t evtchn_upcall_pending;
-+	uint8_t evtchn_upcall_mask;
-+	uint16_t pad;
-+	uint32_t evtchn_pending_sel;
-+	struct compat_arch_vcpu_info arch;
-+	struct pvclock_vcpu_time_info time;
- }; /* 64 bytes (x86) */
- 
- struct compat_arch_shared_info {
--- 
-2.30.0.478.g8a0d178c01-goog
+Yes, we could just return 0 in this case. If we are returning and not
+modifying @syslog_seq, then there is no need to reset
+@syslog_partial. At some point a reader will notice that the record is
+gone and reset @syslog_partial accordingly.
 
+> Anyway, syslog_partial must be zero in this case. syslog_seq
+> should stay when the last read was partial. And there should
+> always be at least one valid message in the log buffer
+> be design.
+
+A record can be invalidated at any time. It is a normal case that a
+re-read of a record (to get the rest of the partial) can lead to the
+record no longer being available.
+
+> IMHO, it would deserve a comment and maybe even a warning.
+
+I don't think we need a warning. It is something that can happen and it
+is not a problem.
+
+> What about something like?
+>
+> 	/* Number of chars in the log buffer */
+> 	case SYSLOG_ACTION_SIZE_UNREAD:
+> 		logbuf_lock_irq();
+> 		if (!prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
+> 			/* No unread message */
+> 			if (syslog_partial) {
+> 				/* This should never happen. */
+> 				pr_err_once("Unable to read any message even when the last syslog read was partial: %zu", syslog_partial);
+> 				syslog_partial = 0;
+> 			}
+> 			logbuf_unlock_irq();
+> 			return 0;
+> 		}
+
+I recommend changing your suggestion to:
+
+> 		if (!prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
+>			/*
+>			 * No unread messages. No need to check/reset
+>			 * syslog_partial. When a reader does read a new
+>			 * message it will notice and appropriately update
+>			 * syslog_seq and reset syslog_partial.
+>			 */
+> 			logbuf_unlock_irq();
+> 			return 0;
+> 		}
+> 		if (info.seq != syslog_seq) {
+> 			/* messages are gone, move to first one */
+> 			syslog_seq = info.seq;
+> 			syslog_partial = 0;
+> 		}
+
+John Ogness
