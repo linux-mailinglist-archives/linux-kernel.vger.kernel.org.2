@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEA1316940
+	by mail.lfdr.de (Postfix) with ESMTP id 21A1031693F
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhBJOiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:38:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31733 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229853AbhBJOiR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:38:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612967810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y0cOXkjjqhYfEYLaqUjm8JsPqdbJg8o77yvHL5dd1FI=;
-        b=Y3say0TpC41qZp4QdNYGwLeJTHMOg5L3PSGvETdG8iP1A+cTYtfFxVbtp+P8PWjv9iusmp
-        X+HH2b5mqOml7OXf3VNTGp6af4JL147fN7PHqsJrU6XPENDCIj+4yGMacr43pJ+BTp7gas
-        s8y1/ZNzPfN0RTKeBrT4moB/AZvvfH0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-29-n8rUQhb7MnOwA1wTH2RqWA-1; Wed, 10 Feb 2021 09:36:45 -0500
-X-MC-Unique: n8rUQhb7MnOwA1wTH2RqWA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C36780196E;
-        Wed, 10 Feb 2021 14:36:44 +0000 (UTC)
-Received: from [10.36.113.218] (ovpn-113-218.ams2.redhat.com [10.36.113.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C6DE918AA1;
-        Wed, 10 Feb 2021 14:36:42 +0000 (UTC)
-Subject: Re: [RFC PATCH 2/2] mm,page_alloc: Make alloc_contig_range handle
- free hugetlb pages
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210208103812.32056-1-osalvador@suse.de>
- <20210208103812.32056-3-osalvador@suse.de>
- <9ed946df-9c6c-9a4d-4be9-2f32809974f7@redhat.com>
- <20210210142424.GC3636@localhost.localdomain>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <6e999708-2edb-c25f-4aee-217d2f3cc037@redhat.com>
-Date:   Wed, 10 Feb 2021 15:36:41 +0100
+        id S230384AbhBJOhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:37:54 -0500
+Received: from relay.sw.ru ([185.231.240.75]:55326 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229839AbhBJOhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:37:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=RhI6NeJ9fQNo1JPboHNL4BxIltZhtUXo85xF5hWE03A=; b=y3zos7qAfBdf3c+rhZOcLTbDMs
+        8qNwDjYKxRqyAFDdbAs0tjhPy4avG3Ib72BbIyhdAvkmlO3qViDQWrfUONt/4RA99n9urutXkxUVy
+        EUyIzUQTduEJToXG2ogPLOWE64xvPvq4Ia+TJwwK1Ss10B/zFzNBdF/02txNHyMBlxpA=;
+Received: from [192.168.15.133]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1l9qbm-0028G7-9l; Wed, 10 Feb 2021 17:36:46 +0300
+Subject: Re: [v7 PATCH 09/12] mm: vmscan: use per memcg nr_deferred of
+ shrinker
+To:     Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210209174646.1310591-1-shy828301@gmail.com>
+ <20210209174646.1310591-10-shy828301@gmail.com>
+ <20210210012726.GO524633@carbon.DHCP.thefacebook.com>
+ <CAHbLzkoKV6_w_KBp+cajvpxG2p8jN-es03C0ktk4tLdvULJwhg@mail.gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <1d751688-12a9-a5c3-2d9a-c4b9e65c7492@virtuozzo.com>
+Date:   Wed, 10 Feb 2021 17:36:56 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210210142424.GC3636@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAHbLzkoKV6_w_KBp+cajvpxG2p8jN-es03C0ktk4tLdvULJwhg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.02.21 15:24, Oscar Salvador wrote:
-> On Wed, Feb 10, 2021 at 09:23:59AM +0100, David Hildenbrand wrote:
->> On 08.02.21 11:38, Oscar Salvador wrote:
->>> Free hugetlb pages are trickier to handle as to in order to guarantee
->>> no userspace appplication disruption, we need to replace the
->>> current free hugepage with a new one.
->>>
->>> In order to do that, a new function called alloc_and_dissolve_huge_page
->>> in introduced.
->>> This function will first try to get a new fresh hugetlb page, and if it
->>> succeeds, it will dissolve the old one.
->>>
+On 10.02.2021 04:52, Yang Shi wrote:
+> On Tue, Feb 9, 2021 at 5:27 PM Roman Gushchin <guro@fb.com> wrote:
 >>
->> Thanks for looking into this! Can we move this patch to #1 in the series? It
->> is the easier case.
+>> On Tue, Feb 09, 2021 at 09:46:43AM -0800, Yang Shi wrote:
+>>> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
+>>> will be used in the following cases:
+>>>     1. Non memcg aware shrinkers
+>>>     2. !CONFIG_MEMCG
+>>>     3. memcg is disabled by boot parameter
+>>>
+>>> Signed-off-by: Yang Shi <shy828301@gmail.com>
+>>> ---
+>>>  mm/vmscan.c | 78 ++++++++++++++++++++++++++++++++++++++++++++---------
+>>>  1 file changed, 66 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>>> index d4b030a0b2a9..748aa6e90f83 100644
+>>> --- a/mm/vmscan.c
+>>> +++ b/mm/vmscan.c
+>>> @@ -368,6 +368,24 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
+>>>       up_write(&shrinker_rwsem);
+>>>  }
+>>>
+>>> +static long count_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+>>> +                                 struct mem_cgroup *memcg)
 >>
->> I also wonder if we should at least try on the memory unplug path to keep
->> nr_pages by at least trying to allocate at new one if required, and printing
->> a warning if that fails (after all, we're messing with something configured
->> by the admin - "nr_pages"). Note that gigantic pages are special (below).
+>> "Count" is not associated with xchg() semantics in my head, but I don't know
+>> what's the better version. Maybe steal or pop?
 > 
-> So, do you mean to allocate a new fresh hugepage in case we have a free
-> hugetlb page within the range we are trying to offline? That makes some
-> sense I guess.
-> 
-> I can have a look at that, and make hotplug code use the new
-> alloc_and_dissolve().
+> It is used to retrieve the nr_deferred value. I don't think "steal" or
+> "pop" helps understand. Actually "count" is borrowed from
+> count_objects() method of shrinker.
 
-Yes, with the difference that hotplug code most probably wants to 
-continue even if allocation failed (printing a warning) - mimix existing 
-behavior. For alloc_contig, I'd say, fail if we cannot "relocate free 
-huge pages that are still required to no modify nr_pages".
+I'd also voted for another name.
 
-alloc_and_dissolve() should only allocate a page if really required 
-(e.g., not sure if we could skip allocation in some cases - like with 
-surplus pages, needs some investigation), such that the admin-configured 
-nr_pages stays unchanged.
-
--- 
-Thanks,
-
-David / dhildenb
-
+xchg_nr_deferred() or steal/pop sound better for me.
