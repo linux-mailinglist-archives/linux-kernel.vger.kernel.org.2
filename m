@@ -2,78 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08A4316413
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 063EE316415
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhBJKlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:41:52 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:42263 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbhBJKjI (ORCPT
+        id S230296AbhBJKm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:42:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhBJKlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:39:08 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 59A0323E64;
-        Wed, 10 Feb 2021 11:38:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1612953498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wh0vTlN5xwzrmuM0AHqMMV/jTENHTG631Hbx7eavitU=;
-        b=Ja1dQUdofMfZzdNohvdRWJcjdbK5gNJ5QfdLojNaWUP0Bz1x2+Ses6OB922d6G4OpHyOSb
-        ZZYrqzxVZym7uacqfIbLjHTwCxFdhbCXIhg72XIHqcAL+90f04vhiMCq5OtEhEIZHds/Ji
-        KaBnAH2nS+r4dY9T95BYOosF487Oyb0=
+        Wed, 10 Feb 2021 05:41:10 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF9FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:40:29 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id o63so960293pgo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:40:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ujSeNrhwIUb4Pat8q055lQaymIiMVTMfJFrA21hrW/s=;
+        b=kNF7byEd3Ut0Yb1SbFuOki76zDSgw/dbIeI2k8kt4Nc4xtDY4vkp+IsZQkflTTYDfG
+         pul0ZYJAZILWH5G4i0xrGzHGh+MFdD7ZJ/ujemiCOW6aDMqb1ZPhwZlJdrvyf1ExMywp
+         sOBNKbbfrBmZkOQuzsJMOqFO6Phsi58Ow/tJg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ujSeNrhwIUb4Pat8q055lQaymIiMVTMfJFrA21hrW/s=;
+        b=EKw/B3kz6ceHscj3ttUxye265Xp/WSK33wcdiJfNYP3TIw1VJHX+Kq3+tJHNwX85bo
+         QrxGjDZx0cN1o5ugCuAUgtb98/yC94FGM6EL1pKvfU2NEiDwhZc9AzosISVG16qxsuJg
+         50Uu16hjJKviO8mTQxNZKALz64ZLrv3UNE2i3yagIYwq50YbC137LVjNe9DW3GOeAJUy
+         K/kPfDMQqCBTuTVovejd5AyZowsmwsUWysE6XVUzPYcfUXzKkp/kbTHH2tZMh+tUOogZ
+         G4ixzAbzeUvoRmUAddmPuUEkbSayI1ElgB0hVoxz3giqCCgWuVnUwL4aFPEzhTSj95PD
+         FTUw==
+X-Gm-Message-State: AOAM532waakNm1cOfg4FJ2PW1xAIi8ycdjUzgW/dqP0e/+23KPiFy0rc
+        b13xd3sBhcVuyNBvhOYmPyAoiykcZXDGQg==
+X-Google-Smtp-Source: ABdhPJyoW8PyH0d9XLYC3OAojIvhPD3+EJbjNDAi5SINSS6ht/nf9hpaCX6vjuPH9tPgvJbJeRapoQ==
+X-Received: by 2002:a63:27c5:: with SMTP id n188mr2498524pgn.193.1612953628723;
+        Wed, 10 Feb 2021 02:40:28 -0800 (PST)
+Received: from hikalium0.c.googlers.com.com (160.131.236.35.bc.googleusercontent.com. [35.236.131.160])
+        by smtp.gmail.com with ESMTPSA id j20sm1908729pfe.172.2021.02.10.02.40.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 02:40:27 -0800 (PST)
+From:   Hikaru Nishida <hikalium@chromium.org>
+X-Google-Original-From: Hikaru Nishida <hikalium@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     suleiman@google.com, Hikaru Nishida <hikalium@chromium.org>,
+        Alexander Graf <graf@amazon.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [RFC PATCH 0/2] Introduce a way to adjust CLOCK_BOOTTIME from userspace for VM guests
+Date:   Wed, 10 Feb 2021 19:39:06 +0900
+Message-Id: <20210210103908.1720658-1-hikalium@google.com>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 10 Feb 2021 11:38:18 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next 7/9] net: phy: icplus: select page before writing
- control register
-In-Reply-To: <20210210103059.GR1463@shell.armlinux.org.uk>
-References: <20210209164051.18156-1-michael@walle.cc>
- <20210209164051.18156-8-michael@walle.cc>
- <d5672062-c619-02a4-3bbe-dad44371331d@gmail.com>
- <20210210103059.GR1463@shell.armlinux.org.uk>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <d35f726f82c6c743519f3d8a36037dfa@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-02-10 11:30, schrieb Russell King - ARM Linux admin:
-> On Wed, Feb 10, 2021 at 08:03:07AM +0100, Heiner Kallweit wrote:
->> On 09.02.2021 17:40, Michael Walle wrote:
->> > +out:
->> > +	return phy_restore_page(phydev, oldpage, err);
->> 
->> If a random page was set before entering config_init, do we actually 
->> want
->> to restore it? Or wouldn't it be better to set the default page as 
->> part
->> of initialization?
-> 
-> I think you've missed asking one key question: does the paging on this
-> PHY affect the standardised registers at 0..15 inclusive, or does it
-> only affect registers 16..31?
+From: Hikaru Nishida <hikalium@chromium.org>
 
-For this PHY it affects only registers >=16. But that doesn't invaldiate
-the point that for other PHYs this might affect all regsisters. Eg. ones
-where you could select between fiber and copper pages, right?
 
-> If it doesn't affect the standardised registers, then the genphy_*
-> functions don't care which page is selected.
+Hi folks,
+
+We'd like to add a sysfs interface that enable us to advance
+CLOCK_BOOTTIME from userspace. The use case of this change is that
+adjusting guest's CLOCK_BOOTTIME as host suspends to ensure that the
+guest can notice the device has been suspended.
+We have an application that rely on the difference between
+CLOCK_BOOTTIME and CLOCK_MONOTONIC to detect whether the device went
+suspend or not. However, the logic did not work well on VM environment
+since most VMs are pausing the VM guests instead of actually suspending
+them on the host's suspension.
+With following patches, we can adjust CLOCK_BOOTTIME without actually
+suspending guest and make the app working as intended.
+I think this feature is also useful for other VM solutions since there
+was no way to do this from userspace.
+
+As far as I checked, it is working as expected but is there any concern
+about this change? If so, please let me know.
+
+Thanks,
+Hikaru Nishida
+
+
+Hikaru Nishida (2):
+  timekeeping: Add timekeeping_adjust_boottime
+  drivers/virt: introduce CLOCK_BOOTTIME adjustment sysfs interface
+    driver
+
+ drivers/virt/Kconfig        |  9 ++++++
+ drivers/virt/Makefile       |  1 +
+ drivers/virt/boottime_adj.c | 57 +++++++++++++++++++++++++++++++++++++
+ include/linux/timekeeping.h |  2 ++
+ kernel/time/timekeeping.c   | 26 +++++++++++++++++
+ 5 files changed, 95 insertions(+)
+ create mode 100644 drivers/virt/boottime_adj.c
 
 -- 
--michael
+2.30.0.478.g8a0d178c01-goog
+
