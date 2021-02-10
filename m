@@ -2,233 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43ED43163B1
+	by mail.lfdr.de (Postfix) with ESMTP id B41263163B2
 	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhBJKXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        id S229789AbhBJKX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhBJKKC (ORCPT
+        with ESMTP id S230148AbhBJKLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:10:02 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A864C06178C;
-        Wed, 10 Feb 2021 02:09:22 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id t63so1098409qkc.1;
-        Wed, 10 Feb 2021 02:09:22 -0800 (PST)
+        Wed, 10 Feb 2021 05:11:19 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99767C061793
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:10:38 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id q2so2186812eds.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 02:10:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=439nouC6+LIwVa5ziQQ6pS/1Ng+K5FgDPJVVQEDsYOU=;
-        b=oNKlosqtIIRr7vrl+u8UUD/1P0MKvMTu1yAdZyRLBHltZk9HXxUIv2DZSobn56WkWN
-         qnnA5yb0AF0gN70woOEAcavfI8Mc9pTU5m9hPntRWzFGtjO7gXklA4FvTVzFcv/1KO2o
-         pyyDZKibVF94VAG2nYDSPGI81marQwM8njFSHbD83Lph25hgajkzw1C8mOMCegV9raGF
-         Tl/8MVgpxIlrQwH8rRHogqwyFqRbTPRexuIbGiCzpTI2Qm6h6rvIl8kqF5x0afRNB8eU
-         ifhoeLVJqkKw0h7xWS5NrrjWkz/Gozb7gKwvvZh5+WpDOP1OCjKFMr0Ustpp90axI8b/
-         /qPA==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IZiMzhLdfVQZkFKa2UC3/BywnaDXeDau8xmJtr8dU38=;
+        b=DNbGyFxx3kCS9/j20Y9P0rU42KGYEhzoemRvo9Xx5kJTEHtH6dOpjcAMB2ApFDSSZ6
+         w+KePPGz15wBLKrgmQBv/viHii4cJ+ZfOBVKKMR02WAC48aYjp7NcjbGIKfP7NQ8LPk0
+         SSb4J4KKneDpKCbvsFqZASyTdtAFDyf5jcdwI7oSx/rA8dWPbG3dckmKRjY7Q6e9557K
+         /SheqyDEz6J+MxjG0oAaodZtA/Dn3uKhw6UCdJdaSLL+xC8lCnhs86plQIWDtdLE4Wez
+         Q5OanvDfJPW2jYJ83gBUDaaBcTvRloH4HjwfJwmAsFuRawX8ZMXEbcZRHgW7fXa9s0P+
+         osdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=439nouC6+LIwVa5ziQQ6pS/1Ng+K5FgDPJVVQEDsYOU=;
-        b=c1P1Y2BnVkvyIurA23Ste9f8YPO0jZPqXZteXQ1fYFpVHl/wctMWo669AFbE2MNpJI
-         +gc5xbeFGQy4A1fXvHCfHFrbdvaFZ4OtpVGBHXwaB30ZayL6/DzN9By6cxkD1sk3XnIc
-         MtGNWhnl9njeykVP/zS3OeXbNnGl8ozOr0wpMiSh4UO5Kwz2wRVak4EkxjYBKKVJ5HIH
-         RalnEFostMCMmUJzKwjeWCDjpNVW/XOHS0Ky+dx7vNXIb+X3FGZcGyMeCmNerxZUh5B8
-         9Bx8lc9t3vaJiDOdYh9RLj85Z9fy2BFn+Y2u0SKwHGw3nNOMFszjBjslnBb+yEpG+Wse
-         Vscg==
-X-Gm-Message-State: AOAM533NV79WaIxXwCFVJp5oLa55F04USORKdbW/4SxwIZ/an710u33k
-        ydcpH4kEOsStENkGDexrVkpObuEwaR0JXtOZF3o=
-X-Google-Smtp-Source: ABdhPJx3nKdURXZ+mHwtOkKrJ1uPZ+5hdZjVIOP6/zrn14iDE/ghYO81Kg+xZLLN4ysbzcfsyDr2/fPckscXeUtHXJc=
-X-Received: by 2002:ae9:ef8d:: with SMTP id d135mr2592352qkg.0.1612951761186;
- Wed, 10 Feb 2021 02:09:21 -0800 (PST)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=IZiMzhLdfVQZkFKa2UC3/BywnaDXeDau8xmJtr8dU38=;
+        b=rPdmyXofVaIG0h3Qrgqoaa5THfjRZ7dIdLi8I2tWvL+1vqRO1hvYwgjBn0WQpDwlt4
+         aTBuNaY3KIKc5zznb+CWUIQ51LXjisI7X+ppJV9fd9i74KE3C965pH9bmyvEL3voyho5
+         ElyRmdm4lVLJywKRGDbua28+a8Hqf9WIhNplTQ/fTAsYXLJUwxh5mYIJa4+df8jl17/V
+         GAu+izSZI5gPp0p1TvEfOK9ktfK0jF6oWDOLln9/fRQj0bxAWsFj4Hen5xl2SV/uqn94
+         oBPmOICa7h7mXIlJKH7iY9oAihjRgn8kWQTwYEcbGeloDT0LXgGvEkGdc8XUNhH/JSU2
+         JuGA==
+X-Gm-Message-State: AOAM532sxi54AKLjK322B4UqiRmW/w6i7LuaKqZupaj6cz9BOTXdc5i9
+        KYv3qXXUb/stJkTmA/FSVEPF9riCI3VCiA==
+X-Google-Smtp-Source: ABdhPJw3ICAK3+bqwsi4GntjzrrX6z/adbvvxabg48+ANL9VVY9BCW0wN267ea/MDJrlA67o/2HPQw==
+X-Received: by 2002:aa7:d790:: with SMTP id s16mr2447249edq.294.1612951830768;
+        Wed, 10 Feb 2021 02:10:30 -0800 (PST)
+Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id x25sm789313ejc.33.2021.02.10.02.10.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Feb 2021 02:10:30 -0800 (PST)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-spi@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: spi: zynq: Convert Zynq QSPI binding to yaml
+Date:   Wed, 10 Feb 2021 11:10:25 +0100
+Message-Id: <4ece21a7e9691ed1e775fd6b0b4046b1562e44bd.1612951821.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210209203041.21493-1-mrostecki@suse.de> <20210209203041.21493-5-mrostecki@suse.de>
-In-Reply-To: <20210209203041.21493-5-mrostecki@suse.de>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 10 Feb 2021 10:09:10 +0000
-Message-ID: <CAL3q7H7Y6Mh9L4niCHzUVOfo4_PDK9o6Ho_aZfxENOQsiWwk9g@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/6] btrfs: Check if the filesystem is has mixed type
- of devices
-To:     Michal Rostecki <mrostecki@suse.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 9:32 PM Michal Rostecki <mrostecki@suse.de> wrote:
->
-> From: Michal Rostecki <mrostecki@suse.com>
->
-> Add the btrfs_check_mixed() function which checks if the filesystem has
-> the mixed type of devices (non-rotational and rotational). This
-> information is going to be used in roundrobin raid1 read policy.
->
-> Signed-off-by: Michal Rostecki <mrostecki@suse.com>
-> ---
->  fs/btrfs/volumes.c | 44 ++++++++++++++++++++++++++++++++++++++++++--
->  fs/btrfs/volumes.h |  7 +++++++
->  2 files changed, 49 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 1ac364a2f105..1ad30a595722 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -617,6 +617,35 @@ static int btrfs_free_stale_devices(const char *path=
-,
->         return ret;
->  }
->
-> +/*
-> + * Checks if after adding the new device the filesystem is going to have=
- mixed
-> + * types of devices (non-rotational and rotational).
-> + *
-> + * @fs_devices:          list of devices
-> + * @new_device_rotating: if the new device is rotational
-> + *
-> + * Returns true if there are mixed types of devices, otherwise returns f=
-alse.
-> + */
-> +static bool btrfs_check_mixed(struct btrfs_fs_devices *fs_devices,
-> +                             bool new_device_rotating)
-> +{
-> +       struct btrfs_device *device, *prev_device;
-> +
-> +       list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> +               if (prev_device =3D=3D NULL &&
+Convert spi-zynq-qspi.txt to yaml.
 
-Hum, prev_device is not initialized when we enter the first iteration
-of the loop.
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
-> +                   device->rotating !=3D new_device_rotating)
-> +                       return true;
-> +               if (prev_device !=3D NULL &&
-> +                   (device->rotating !=3D prev_device->rotating ||
+Changes in v2:
+- s/additionalProperties: true/unevaluatedProperties: false/
 
-Here it's more dangerous, dereferencing an uninitialized pointer can
-result in a crash.
+ .../devicetree/bindings/spi/spi-zynq-qspi.txt | 25 --------
+ .../bindings/spi/xlnx,zynq-qspi.yaml          | 59 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 3 files changed, 60 insertions(+), 25 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
 
-With this fixed, it would be better to redo the benchmarks when using
-mixed device types.
+diff --git a/Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt b/Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
+deleted file mode 100644
+index 16b734ad3102..000000000000
+--- a/Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
++++ /dev/null
+@@ -1,25 +0,0 @@
+-Xilinx Zynq QSPI controller Device Tree Bindings
+--------------------------------------------------------------------
+-
+-Required properties:
+-- compatible		: Should be "xlnx,zynq-qspi-1.0".
+-- reg			: Physical base address and size of QSPI registers map.
+-- interrupts		: Property with a value describing the interrupt
+-			  number.
+-- clock-names		: List of input clock names - "ref_clk", "pclk"
+-			  (See clock bindings for details).
+-- clocks		: Clock phandles (see clock bindings for details).
+-
+-Optional properties:
+-- num-cs		: Number of chip selects used.
+-
+-Example:
+-	qspi: spi@e000d000 {
+-		compatible = "xlnx,zynq-qspi-1.0";
+-		reg = <0xe000d000 0x1000>;
+-		interrupt-parent = <&intc>;
+-		interrupts = <0 19 4>;
+-		clock-names = "ref_clk", "pclk";
+-		clocks = <&clkc 10>, <&clkc 43>;
+-		num-cs = <1>;
+-	};
+diff --git a/Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml b/Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
+new file mode 100644
+index 000000000000..1f1c40a9f320
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/xlnx,zynq-qspi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Xilinx Zynq QSPI controller
++
++description:
++  The Xilinx Zynq QSPI controller is used to access multi-bit serial flash
++  memory devices.
++
++allOf:
++  - $ref: "spi-controller.yaml#"
++
++maintainers:
++  - Michal Simek <michal.simek@xilinx.com>
++
++# Everything else is described in the common file
++properties:
++  compatible:
++    const: xlnx,zynq-qspi-1.0
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: reference clock
++      - description: peripheral clock
++
++  clock-names:
++    items:
++      - const: ref_clk
++      - const: pclk
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    spi@e000d000 {
++        compatible = "xlnx,zynq-qspi-1.0";
++        reg = <0xe000d000 0x1000>;
++        interrupt-parent = <&intc>;
++        interrupts = <0 19 4>;
++        clock-names = "ref_clk", "pclk";
++        clocks = <&clkc 10>, <&clkc 43>;
++        num-cs = <1>;
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 546aa66428c9..e494b061dcd1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2766,6 +2766,7 @@ W:	http://wiki.xilinx.com
+ T:	git https://github.com/Xilinx/linux-xlnx.git
+ F:	Documentation/devicetree/bindings/i2c/cdns,i2c-r1p10.yaml
+ F:	Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml
++F:	Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
+ F:	arch/arm/mach-zynq/
+ F:	drivers/block/xsysace.c
+ F:	drivers/clocksource/timer-cadence-ttc.c
+-- 
+2.30.0
 
-Thanks.
-
-> +                    device->rotating !=3D new_device_rotating))
-> +                       return true;
-> +
-> +               prev_device =3D device;
-> +       }
-> +
-> +       return false;
-> +}
-> +
->  /*
->   * This is only used on mount, and we are protected from competing thing=
-s
->   * messing with our fs_devices by the uuid_mutex, thus we do not need th=
-e
-> @@ -629,6 +658,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devi=
-ces *fs_devices,
->         struct request_queue *q;
->         struct block_device *bdev;
->         struct btrfs_super_block *disk_super;
-> +       bool rotating;
->         u64 devid;
->         int ret;
->
-> @@ -669,8 +699,12 @@ static int btrfs_open_one_device(struct btrfs_fs_dev=
-ices *fs_devices,
->         }
->
->         q =3D bdev_get_queue(bdev);
-> -       if (!blk_queue_nonrot(q))
-> +       rotating =3D !blk_queue_nonrot(q);
-> +       device->rotating =3D rotating;
-> +       if (rotating)
->                 fs_devices->rotating =3D true;
-> +       if (!fs_devices->mixed)
-> +               fs_devices->mixed =3D btrfs_check_mixed(fs_devices, rotat=
-ing);
->
->         device->bdev =3D bdev;
->         clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
-> @@ -2418,6 +2452,7 @@ static int btrfs_prepare_sprout(struct btrfs_fs_inf=
-o *fs_info)
->         fs_devices->open_devices =3D 0;
->         fs_devices->missing_devices =3D 0;
->         fs_devices->rotating =3D false;
-> +       fs_devices->mixed =3D false;
->         list_add(&seed_devices->seed_list, &fs_devices->seed_list);
->
->         generate_random_uuid(fs_devices->fsid);
-> @@ -2522,6 +2557,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_=
-info, const char *device_path
->         int seeding_dev =3D 0;
->         int ret =3D 0;
->         bool locked =3D false;
-> +       bool rotating;
->
->         if (sb_rdonly(sb) && !fs_devices->seeding)
->                 return -EROFS;
-> @@ -2621,8 +2657,12 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs=
-_info, const char *device_path
->
->         atomic64_add(device->total_bytes, &fs_info->free_chunk_space);
->
-> -       if (!blk_queue_nonrot(q))
-> +       rotating =3D !blk_queue_nonrot(q);
-> +       device->rotating =3D rotating;
-> +       if (rotating)
->                 fs_devices->rotating =3D true;
-> +       if (!fs_devices->mixed)
-> +               fs_devices->mixed =3D btrfs_check_mixed(fs_devices, rotat=
-ing);
->
->         orig_super_total_bytes =3D btrfs_super_total_bytes(fs_info->super=
-_copy);
->         btrfs_set_super_total_bytes(fs_info->super_copy,
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 6e544317a377..594f1207281c 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -147,6 +147,9 @@ struct btrfs_device {
->         /* I/O stats for raid1 mirror selection */
->         struct percpu_counter inflight;
->         atomic_t last_offset;
-> +
-> +       /* If the device is rotational */
-> +       bool rotating;
->  };
->
->  /*
-> @@ -274,6 +277,10 @@ struct btrfs_fs_devices {
->          * nonrot flag set
->          */
->         bool rotating;
-> +       /* Set when we find or add both nonrot and rot disks in the
-> +        * filesystem
-> +        */
-> +       bool mixed;
->
->         struct btrfs_fs_info *fs_info;
->         /* sysfs kobjects */
-> --
-> 2.30.0
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
