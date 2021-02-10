@@ -2,175 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38AD315FAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCF2315FAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhBJGpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 01:45:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53966 "EHLO mail.kernel.org"
+        id S231816AbhBJGqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 01:46:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232108AbhBJGpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 01:45:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0368264E40;
-        Wed, 10 Feb 2021 06:44:30 +0000 (UTC)
+        id S232119AbhBJGpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 01:45:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8081864E5A;
+        Wed, 10 Feb 2021 06:44:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612939471;
-        bh=jStEIUQ286km6S08MAjI4CNXSWcCYWhr03EXQEkdyT8=;
+        s=korg; t=1612939485;
+        bh=WiJgk07TjCR04Om+mu1V8PUBj7bUlsePiOX3zbKELQQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J6VrXJCkNNyAI2a1xFPH4Ijal2e2jsrsIrz65qUw7jh0Xm/6yOg67MyygKnpvgQMJ
-         VVfrZzu0hAOekY7nG5SlVtRb5Pv4mRhWARwEA4sn0zNnOKLlOnZsJ5TUDCyWFI4Ou3
-         e64JOeicXAsXHAOAE3PpfAUDUP1MyIbt2B+OiH64=
-Date:   Wed, 10 Feb 2021 07:44:27 +0100
+        b=rQ8pl7VdsfhFHG2MDQgVn9vPy7eSUdqFR+mEXDRJprkn+CDzEMZdCo1xkQEbetz1w
+         M2ZopFZldg8qxyrUHnaiQKeptuzlDz6sStBEkUll45VP3UYF+oGheptFi/RvyyQ4Me
+         wEwuTZVO+WIj3WGH7H7qrEqQx8R9YMJo9SLrtbMQ=
+Date:   Wed, 10 Feb 2021 07:44:41 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     Jacob Pan <jacob.jun.pan@intel.com>,
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
         Dave Ertman <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, rafael@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] driver core: auxiliary bus: Fix calling stage for
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] driver core: auxiliary bus: Fix calling stage for
  auxiliary bus init
-Message-ID: <YCOAy8S4FI8CPr59@kroah.com>
-References: <161290894138.1332691.10728435940944534434.stgit@djiang5-desk3.ch.intel.com>
+Message-ID: <YCOA2fr1CBSmepO7@kroah.com>
+References: <161289750572.1086235.9903492973331406876.stgit@djiang5-desk3.ch.intel.com>
+ <YCLfETxDjOUPISpw@kroah.com>
+ <CAPcyv4inpcwh5rH2bJSSqXuWCNxFAzLrbWLy-_yDAuzDenYURg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161290894138.1332691.10728435940944534434.stgit@djiang5-desk3.ch.intel.com>
+In-Reply-To: <CAPcyv4inpcwh5rH2bJSSqXuWCNxFAzLrbWLy-_yDAuzDenYURg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 03:17:00PM -0700, Dave Jiang wrote:
-> When the auxiliary device code is built into the kernel, it can be executed
-> before the auxiliary bus is registered. This causes bus->p to be not
-> allocated and triggers a NULL pointer dereference when the auxiliary bus
-> device gets added with bus_add_device(). Call the auxiliary_bus_init()
-> under driver_init() so the bus is initialized before devices.
+On Tue, Feb 09, 2021 at 12:01:06PM -0800, Dan Williams wrote:
+> On Tue, Feb 9, 2021 at 11:16 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> [..]
+> > > diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+> > > index 8336535f1e11..53f93a506626 100644
+> > > --- a/drivers/base/auxiliary.c
+> > > +++ b/drivers/base/auxiliary.c
+> > > @@ -270,7 +270,7 @@ static void __exit auxiliary_bus_exit(void)
+> > >       bus_unregister(&auxiliary_bus_type);
+> > >  }
+> > >
+> > > -module_init(auxiliary_bus_init);
+> > > +subsys_initcall(auxiliary_bus_init);
+> >
+> > Ah, the linker priority dance.  Are you _SURE_ this will solve this?
 > 
-> Below is the kernel splat for the bug:
-> [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
-> [ 1.950670] #PF: supervisor read access in kernel mode
-> [ 1.950670] #PF: error_code(0x0000) - not-present page
-> [ 1.950670] PGD 0
-> [ 1.950670] Oops: 0000 1 SMP NOPTI
-> [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
-> [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
-> [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
-> 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
-> [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
-> [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
-> [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
-> [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
-> [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
-> [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
-> [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
-> [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
-> [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-> [ 1.950670] PKRU: 55555554
-> [ 1.950670] Call Trace:
-> [ 1.950670] device_add+0x3ee/0x850
-> [ 1.950670] __auxiliary_device_add+0x47/0x60
-> [ 1.950670] idxd_pci_probe+0xf77/0x1180
-> [ 1.950670] local_pci_probe+0x4a/0x90
-> [ 1.950670] pci_device_probe+0xff/0x1b0
-> [ 1.950670] really_probe+0x1cf/0x440
-> [ 1.950670] ? rdinit_setup+0x31/0x31
-> [ 1.950670] driver_probe_device+0xe8/0x150
-> [ 1.950670] device_driver_attach+0x58/0x60
-> [ 1.950670] __driver_attach+0x8f/0x150
-> [ 1.950670] ? device_driver_attach+0x60/0x60
-> [ 1.950670] ? device_driver_attach+0x60/0x60
-> [ 1.950670] bus_for_each_dev+0x79/0xc0
-> [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
-> [ 1.950670] driver_attach+0x1e/0x20
-> [ 1.950670] bus_add_driver+0x154/0x1f0
-> [ 1.950670] driver_register+0x70/0xc0
-> [ 1.950670] __pci_register_driver+0x54/0x60
-> [ 1.950670] idxd_init_module+0xe2/0xfc
-> [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
-> [ 1.950670] do_one_initcall+0x4a/0x1e0
-> [ 1.950670] kernel_init_freeable+0x1fc/0x25c
-> [ 1.950670] ? rest_init+0xba/0xba
-> [ 1.950670] kernel_init+0xe/0x116
-> [ 1.950670] ret_from_fork+0x1f/0x30
-> [ 1.950670] Modules linked in:
-> [ 1.950670] CR2: 0000000000000060
-> [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
+> All users are module_init() today so it will work.... today. The
+> moment someone wants to use it in a built-in driver that uses
+> subsystem_init() it will ultimately be chased into driver_init().
 > 
-> Fixes: 7de3697e9cbd ("Add auxiliary bus support")
-> Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
-> Acked-by: Dave Ertman <david.m.ertman@intel.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-> ---
+> > Why not just call this explicitly in driver_init() so that you know it
+> > will be ok?  Just like we do for the platform bus?
 > 
-> v2:
-> - Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
-> 
->  drivers/base/auxiliary.c |   10 +---------
->  drivers/base/base.h      |    5 +++++
->  drivers/base/init.c      |    1 +
->  3 files changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-> index 8336535f1e11..8ff389653126 100644
-> --- a/drivers/base/auxiliary.c
-> +++ b/drivers/base/auxiliary.c
-> @@ -260,19 +260,11 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
->  }
->  EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
->  
-> -static int __init auxiliary_bus_init(void)
-> +int __init auxiliary_bus_init(void)
->  {
->  	return bus_register(&auxiliary_bus_type);
+> Cross that bridge when / if it happens?
 
-Ok, you return an int, and then...
-
->  }
->  
-> -static void __exit auxiliary_bus_exit(void)
-> -{
-> -	bus_unregister(&auxiliary_bus_type);
-> -}
-> -
-> -module_init(auxiliary_bus_init);
-> -module_exit(auxiliary_bus_exit);
-> -
->  MODULE_LICENSE("GPL v2");
->  MODULE_DESCRIPTION("Auxiliary Bus");
->  MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
-> diff --git a/drivers/base/base.h b/drivers/base/base.h
-> index f5600a83124f..978ad265c42e 100644
-> --- a/drivers/base/base.h
-> +++ b/drivers/base/base.h
-> @@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
->  extern int platform_bus_init(void);
->  extern void cpu_dev_init(void);
->  extern void container_dev_init(void);
-> +#ifdef CONFIG_AUXILIARY_BUS
-> +extern int auxiliary_bus_init(void);
-> +#else
-> +static inline int auxiliary_bus_init(void) { return 0; }
-> +#endif
->  
->  struct kobject *virtual_device_parent(struct device *dev);
->  
-> diff --git a/drivers/base/init.c b/drivers/base/init.c
-> index 908e6520e804..a9f57c22fb9e 100644
-> --- a/drivers/base/init.c
-> +++ b/drivers/base/init.c
-> @@ -32,6 +32,7 @@ void __init driver_init(void)
->  	 */
->  	of_core_init();
->  	platform_bus_init();
-> +	auxiliary_bus_init();
-
-Ignore it :(
-
-Please just make the function not return anything.
+Let's fix it properly now please.
 
 thanks,
 
