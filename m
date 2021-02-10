@@ -2,156 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A67316EFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6DA316EFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 19:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbhBJSoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 13:44:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52556 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234189AbhBJSaj (ORCPT
+        id S234030AbhBJSns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 13:43:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234195AbhBJSaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:30:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612981745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fYYBsxu73w7K0XguXXBeoWTwhLVvhJ5OOGR+uAgX+h4=;
-        b=YkF052rp7m5mLbunPUSNjSSkOpQdLb6hHYKdnRr78QHETCnCi/jkAo1aInhMJx3lK2jKW0
-        WiJp3OBlLcisVVnobi+dYqbXUaeY2yvsGWJQL4Gu+oESInkx+ckkT1PclClBTQriDfJnYY
-        gWbd9ear3GbCpgD6BrmdR7jhF1zl/Cw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-qtADkG5MOVey4vd8CGgtWw-1; Wed, 10 Feb 2021 13:29:00 -0500
-X-MC-Unique: qtADkG5MOVey4vd8CGgtWw-1
-Received: by mail-wm1-f71.google.com with SMTP id l21so1296402wmj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 10:29:00 -0800 (PST)
+        Wed, 10 Feb 2021 13:30:25 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BE9C06178B;
+        Wed, 10 Feb 2021 10:29:42 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id w36so4325677lfu.4;
+        Wed, 10 Feb 2021 10:29:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WD7reh8H3L0ENa8aBkz3DGqf37HyyKAGvekPvSYaYbU=;
+        b=u+MLD8XmKOAeWJqs7q1x5ZD6KU7FG9Es2xIJPgp4zpuGvmpLbI46TLqxzIKQQ4vCoz
+         k47z8ahAVHzBgDagTk6NekcHRsqdQOj/yxncEdUyZZ9bfOtt606mBVbriBPpk5oQRvJ+
+         uCyihZZLjgMQKOaKOI53lv3mzh54SSWj2G5gHAgJvVZONHNQUmg1dFDkNNpZVFoh2AIl
+         JEPCpF0rnhcM/CVf4VwtD4lqp4nXsCWHsN90K7tbjn2FbWpPh1syv0Sdm8+QUz/hkLLE
+         yd2j1fXRByuumTNxwv2MBHLsebqLQh8ARp5t3r1seIq3D978TDgVI5znLD8Go6VpFubj
+         SBYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fYYBsxu73w7K0XguXXBeoWTwhLVvhJ5OOGR+uAgX+h4=;
-        b=CHTmr6y+q5kzUSnVpByk10wjrBezODqS0jUR+jCCKiQ3aC67maU8elrHmNOMTySVTV
-         bN99Rl0TgrTAfummSkzClRORQNi5LeYbubKZ7ebLl1K8DKAIptjNWy4dy/dNEBWSWoza
-         3UYGhcyWsqWPCTS6IcIX7cJZGt92hRGQmr29SCcPu4AP6MCDhGduePgkmzP0qywmiSts
-         faEi5ciX5jVc8ez+0FChUOmrHRPLq3RjSlF+8zNsT8+5DfXOiZKaQOa+905XNehi6TFA
-         XjwIqbETdt3n5gpv4NZp7eod/CDyY9vcXa8D7vKI6PMhlSJEIHy+M+bMhnqOedykTzYy
-         2eXw==
-X-Gm-Message-State: AOAM531R2PopIlxQ+EMSNE4xrE4T5Bf5+oEiodwEPRXqs0sjjiOjh2l0
-        P7i57moIX9B+0l24kpaHU6zqAQxgoShnGXL8i1eokUuOFCkGf3beKURzRqc6WZHj/M6shW7bHuE
-        TDXNx76NL4FlW5eTQftz8PYcH
-X-Received: by 2002:a1c:4483:: with SMTP id r125mr223835wma.80.1612981739026;
-        Wed, 10 Feb 2021 10:28:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzmxlNWuCd4Xp+dCygWJQUgZ2qxgJCc955uVLjJdnKvNrD9YC2BN6UDsWfR7xqj2wXggvYDdg==
-X-Received: by 2002:a1c:4483:: with SMTP id r125mr223811wma.80.1612981738761;
-        Wed, 10 Feb 2021 10:28:58 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w2sm3766006wmg.27.2021.02.10.10.28.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 10:28:58 -0800 (PST)
-Subject: Re: [PATCH] locking/arch: Move qrwlock.h include after qspinlock.h
-To:     Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ben Gardon <bgardon@google.com>
-References: <20210210144556.10932-1-longman@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1d7d564c-cc73-372b-be8b-1cfd51cf476c@redhat.com>
-Date:   Wed, 10 Feb 2021 19:28:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WD7reh8H3L0ENa8aBkz3DGqf37HyyKAGvekPvSYaYbU=;
+        b=Qm3vzqPWktNsbfxYSUSi8WcquOTb1nD9kTyp6f0inncZSuL/IToTPIJgo3wiOzJvvK
+         ELh8ZhVybOBJvGUz36pNvc76UGDzzbJ5BRuz+OuBSSfgbKwTIJ0vGk18G1v/x1eNdqOq
+         EXrYej1hVRcRTihwXpPAWeAi6FlbuFQhb4NCCOzlJ4mSxFFfnOMD2BzmbS7R6YNqp06W
+         lV2i5f2obu86x4psv4VcUgy1VDTQDNUTtWPCIpzKQZV3M905OINoxq0rXvcC23/NRmzB
+         PJCrPJKp3H49x/IwDVGwWy4iLqx4WQPtnb0rTh9CpR6jg/b+TxNPi+JM9gdh2RzfqpFn
+         F9yA==
+X-Gm-Message-State: AOAM530gV8Qb+b+N7kjmKwQfWq6q7OMQciMC+TKZpgjrIjApUiXhvMou
+        Wx8Oe/3HiBgzvmts2mMF/4FJdi49zfIojrFnJ6edfzYiCHuaDg==
+X-Google-Smtp-Source: ABdhPJx7rhGWhwI5sDaxWsJELgVakM7N0i9Sxsa3sNM73cxT4SZbNjmwgAiQkMatL5Gtj+erB1Bzws36GZniH4UGAbA=
+X-Received: by 2002:a05:6512:a90:: with SMTP id m16mr2214728lfu.577.1612981780538;
+ Wed, 10 Feb 2021 10:29:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210210144556.10932-1-longman@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210203163348.30686-1-TheSven73@gmail.com> <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
+In-Reply-To: <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 10 Feb 2021 13:29:29 -0500
+Message-ID: <CAGngYiWt9Q4jWksiniC6vqUw29L3mOFuQpw7Dz_BK9Ye9FbQ1Q@mail.gmail.com>
+Subject: Re: [BUG REPORT] media: coda: mpeg4 decode corruption on i.MX6qp only
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/02/21 15:45, Waiman Long wrote:
-> The queued rwlock code has a dependency on the current spinlock
-> implementation (likely to be qspinlock), but not vice versa. Including
-> qrwlock.h before qspinlock.h can be problematic when expanding qrwlock
-> functionality.
-> 
-> If both qspinlock.h and qrwlock.h are to be included, the qrwlock.h
-> include should always be after qspinlock.h. Update the current set of
-> asm/spinlock.h files to enforce that.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+Found it!
 
-arch/sparc/include/asm/spinlock_64.h is missing.  Also, the include in 
-kernel/locking/qrwlock.c is not necessary (it may be there for aesthetic 
-reasons, but it complicates thing in this case).
+The i.MX6QuadPlus has two pairs of PREs, which use the extended
+section of the iRAM. The Classic does not have any PREs or extended
+iRAM:
 
-I'll send a v2 that is based on the kvm/next tree.
+pre1: pre@21c8000 {
+   compatible = "fsl,imx6qp-pre";
+    <snip>
+    fsl,iram = <&ocram2>;
+};
 
-Paolo
+pre3: pre@21ca000 {
+    compatible = "fsl,imx6qp-pre";
+    <snip>
+    fsl,iram = <&ocram3>;
+};
 
-> ---
->   arch/arm64/include/asm/spinlock.h  | 2 +-
->   arch/mips/include/asm/spinlock.h   | 2 +-
->   arch/xtensa/include/asm/spinlock.h | 2 +-
->   3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/spinlock.h b/arch/arm64/include/asm/spinlock.h
-> index 9083d6992603..0525c0b089ed 100644
-> --- a/arch/arm64/include/asm/spinlock.h
-> +++ b/arch/arm64/include/asm/spinlock.h
-> @@ -5,8 +5,8 @@
->   #ifndef __ASM_SPINLOCK_H
->   #define __ASM_SPINLOCK_H
->   
-> -#include <asm/qrwlock.h>
->   #include <asm/qspinlock.h>
-> +#include <asm/qrwlock.h>
->   
->   /* See include/linux/spinlock.h */
->   #define smp_mb__after_spinlock()	smp_mb()
-> diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
-> index 8a88eb265516..6ce2117e49f6 100644
-> --- a/arch/mips/include/asm/spinlock.h
-> +++ b/arch/mips/include/asm/spinlock.h
-> @@ -10,7 +10,6 @@
->   #define _ASM_SPINLOCK_H
->   
->   #include <asm/processor.h>
-> -#include <asm/qrwlock.h>
->   
->   #include <asm-generic/qspinlock_types.h>
->   
-> @@ -27,5 +26,6 @@ static inline void queued_spin_unlock(struct qspinlock *lock)
->   }
->   
->   #include <asm/qspinlock.h>
-> +#include <asm/qrwlock.h>
->   
->   #endif /* _ASM_SPINLOCK_H */
-> diff --git a/arch/xtensa/include/asm/spinlock.h b/arch/xtensa/include/asm/spinlock.h
-> index 584b0de6f2ca..41c449ece2d8 100644
-> --- a/arch/xtensa/include/asm/spinlock.h
-> +++ b/arch/xtensa/include/asm/spinlock.h
-> @@ -12,8 +12,8 @@
->   #define _XTENSA_SPINLOCK_H
->   
->   #include <asm/barrier.h>
-> -#include <asm/qrwlock.h>
->   #include <asm/qspinlock.h>
-> +#include <asm/qrwlock.h>
->   
->   #define smp_mb__after_spinlock()	smp_mb()
->   
-> 
+The CODA (VPU) driver uses the common section of iRAM:
 
+vpu: vpu@2040000 {
+    compatible = "cnm,coda960";
+    <snip>
+    iram = <&ocram>;
+};
+
+The VPU or the PREs are overrunning their assigned iRAM area. How do I
+know? Because if I change the PRE iRAM order, the problem disappears!
+
+PRE1: ocram2 change to ocram3
+PRE2: ocram2 change to ocram3
+PRE3: ocram3 change to ocram2
+PRE4: ocram3 change to ocram2
+
+Sven
