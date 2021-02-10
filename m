@@ -2,298 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3801B3160A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0911B3160A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 09:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbhBJIKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 03:10:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233520AbhBJII0 (ORCPT
+        id S233516AbhBJIKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 03:10:40 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:20628 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233572AbhBJIKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 03:08:26 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CBBC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:07:45 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id u14so1021700wmq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 00:07:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fHWF5TDlNwWGy88TN4XkKblCivGgDwghMb/yRIfXJVc=;
-        b=cinsfMD2U8mM0GToap11SPbtnC99Qfbe+bDzIyZs8ZgtVYwzcyy9ov4Otk+ESVw6W+
-         enU7QIVLrG26UvZoVOkpQR7ZYeIo0echDDgmZABpzXZ1/jONrJkVazvXpfRbyB4tcS/x
-         RHItnpJglH1r9NTQuB0Q8VsCiPbF5KBV4qCpaj/XFcZ6m/alLzgUxpCJAQIcFIJP8dQP
-         kq5cfw4X9cGevzuSetMbWmZmfXvbZiL3/7OMwJCyGE5VWK8ZANmlu4j/JyJt6itPRv1h
-         KqoD5NY36X70mtsPx21Q4QIXI+Cqhndc2nQS0IB2lZ1CXuo26qMh20ZRQKWEZiQ877bK
-         pLJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fHWF5TDlNwWGy88TN4XkKblCivGgDwghMb/yRIfXJVc=;
-        b=AhJhm6ryAzvUhyZiqEM3/T7USWdXQgVW6/TgudD6v+8YNipwN3eNu/nBZQ+kEzNed3
-         A6pzFvBmCxlS4BkOCehZkKp0ALT157xZOp9NcNTtT9g92DlTfC/MJi4mjPSOmyALpvmV
-         kDQ76fL742Mu7vJ0ePL4JrT0u9Go5jwUzIhFHqEaG8iL1VkrWw89cxauW5gUoEN5ecPT
-         79wMHQMTEy7ZiHaSXVqj2VwWtJTqRBexb2TV1zBxew5XnM7R9k15XaLK9vW6dHRA+6+q
-         CzHfnbi9SgV1YJ4YwDruZMkUoEGJggfalEXO1akthgdyK5GCH0cq6ZP9SjhnqTMRC7KX
-         r8TA==
-X-Gm-Message-State: AOAM530Yjuq5YpS4IWgzjiHQmD5HP68e4vasxh+h83rqyYpA/0ujyXBo
-        95Xo3eGqQBBYlu0UY01br0wk9Q==
-X-Google-Smtp-Source: ABdhPJyvyg0OOoJX/A+h1gkHVGS9Wu4fKqsYe0hXvbtoB5ZO1e+KN/++IwDacRxiYyAOFACphiYfrw==
-X-Received: by 2002:a05:600c:3589:: with SMTP id p9mr1782867wmq.18.1612944464625;
-        Wed, 10 Feb 2021 00:07:44 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:90c:e290:d403:f5fa:8912:cba5])
-        by smtp.gmail.com with ESMTPSA id c18sm12856597wmk.0.2021.02.10.00.07.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 00:07:44 -0800 (PST)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     vkoul@kernel.org, kishon@ti.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v2 2/2] phy: amlogic: Add G12A Analog MIPI D-PHY driver
-Date:   Wed, 10 Feb 2021 09:07:36 +0100
-Message-Id: <20210210080736.771803-3-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210210080736.771803-1-narmstrong@baylibre.com>
-References: <20210210080736.771803-1-narmstrong@baylibre.com>
+        Wed, 10 Feb 2021 03:10:08 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612944583; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=o7FD7RpIDEZnMLd+c9217BURghIrG/C2huZYnnOqH8g=;
+ b=T81PIVD2uLbqNAMljQQqlM3yWYPkCU6hBt13qEf03o7gHvtMvNNJx8okj9H0pc7f8GRwdzsI
+ m8ugS3z8ji3FOc+dq7UlJ7BmtYa3LMV6qjYyLfPVQ0TfyQMGc/XkTx89yc1QVu0g4W0kh9b/
+ dqtyxZVcG7xPnOaKe3nbKByA7NM=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 602394ab8e43a988b7c516ad (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 08:09:15
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8DBE3C43461; Wed, 10 Feb 2021 08:09:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C5C4C433C6;
+        Wed, 10 Feb 2021 08:09:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8C5C4C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/5] ath10k: fix conf_mutex lock assert in
+ ath10k_debug_fw_stats_request()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1c38ef6d39ed89a564bc817d964d923ff0676c53.1612915444.git.skhan@linuxfoundation.org>
+References: <1c38ef6d39ed89a564bc817d964d923ff0676c53.1612915444.git.skhan@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210210080915.8DBE3C43461@smtp.codeaurora.org>
+Date:   Wed, 10 Feb 2021 08:09:15 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Amlogic G12A SoCs embeds an Analog MIPI D-PHY used to communicate with DSI
-panels.
+Shuah Khan <skhan@linuxfoundation.org> wrote:
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/phy/amlogic/Kconfig                   |  12 ++
- drivers/phy/amlogic/Makefile                  |   1 +
- .../amlogic/phy-meson-g12a-mipi-dphy-analog.c | 177 ++++++++++++++++++
- 3 files changed, 190 insertions(+)
- create mode 100644 drivers/phy/amlogic/phy-meson-g12a-mipi-dphy-analog.c
+> ath10k_debug_fw_stats_request() is called ath10k_sta_statistics()
+> without holding conf_mutex. ath10k_debug_fw_stats_request() simply
+> returns when CONFIG_ATH10K_DEBUGFS is disabled.
+> 
+> When CONFIG_ATH10K_DEBUGFS is enabled, ath10k_debug_fw_stats_request()
+> code path isn't protected. This assert is triggered when CONFIG_LOCKDEP
+> and CONFIG_ATH10K_DEBUGFS are enabled.
+> 
+> All other ath10k_debug_fw_stats_request() callers hold conf_mutex.
+> Fix ath10k_sta_statistics() to do the same.
+> 
+> WARNING: CPU: 5 PID: 696 at drivers/net/wireless/ath/ath10k/debug.c:357 ath10k_debug_fw_stats_request+0x29a/0x2d0 [ath10k_core]
+> Modules linked in: rfcomm ccm fuse cmac algif_hash algif_skcipher af_alg bnep binfmt_misc nls_iso8859_1 intel_rapl_msr intel_rapl_common snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hda_core snd_hwdep snd_pcm amdgpu snd_seq_midi snd_seq_midi_event snd_rawmidi edac_mce_amd snd_seq ath10k_pci ath10k_core aesni_intel gpu_sched drm_ttm_helper btusb ttm glue_helper crypto_simd btrtl ath cryptd drm_kms_helper snd_seq_device btbcm snd_timer rapl btintel cec i2c_algo_bit mac80211 bluetooth fb_sys_fops input_leds ecdh_generic snd wmi_bmof syscopyarea ecc serio_raw efi_pstore ccp k10temp sysfillrect soundcore sysimgblt snd_pci_acp3x cfg80211 ipmi_devintf libarc4 ipmi_msghandler mac_hid sch_fq_codel parport_pc ppdev lp parport drm ip_tables x_tables autofs4 hid_generic usbhid hid crc32_pclmul psmouse ahci nvme libahci i2c_piix4 nvme_core r8169 realtek wmi video
+> CPU: 5 PID: 696 Comm: NetworkManager Tainted: G        W         5.11.0-rc7+ #20
+> Hardware name: LENOVO 10VGCTO1WW/3130, BIOS M1XKT45A 08/21/2019
+> RIP: 0010:ath10k_debug_fw_stats_request+0x29a/0x2d0 [ath10k_core]
+> Code: 83 c4 10 44 89 f8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 48 8d bf e8 20 00 00 be ff ff ff ff e8 de 2d 47 fa 85 c0 0f 85 8d fd ff ff <0f> 0b e9 86 fd ff ff 41 bf a1 ff ff ff 44 89 fa 48 c7 c6 2c 71 c4
+> RSP: 0018:ffffaffbc124b7d0 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: ffff93d02e4fec70 RCX: 0000000000000001
+> RDX: 0000000000000000 RSI: ffff93d00cba5248 RDI: ffff93d00ab309a0
+> RBP: ffffaffbc124b808 R08: 0000000000000000 R09: ffff93d02e4fec70
+> R10: 0000000000000001 R11: 0000000000000246 R12: ffff93d00cba3160
+> R13: ffff93d00cba3160 R14: ffff93d02e4fe4f0 R15: 0000000000000001
+> FS:  00007f7ce8d50bc0(0000) GS:ffff93d137d40000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fc3595ad160 CR3: 000000010d492000 CR4: 00000000003506e0
+> Call Trace:
+>  ? sta_info_get_bss+0xeb/0x1f0 [mac80211]
+>  ath10k_sta_statistics+0x4f/0x280 [ath10k_core]
+>  sta_set_sinfo+0xda/0xd20 [mac80211]
+>  ieee80211_get_station+0x58/0x80 [mac80211]
+>  nl80211_get_station+0xbd/0x340 [cfg80211]
+>  genl_family_rcv_msg_doit+0xe7/0x150
+>  genl_rcv_msg+0xe2/0x1e0
+>  ? nl80211_dump_station+0x3a0/0x3a0 [cfg80211]
+>  ? nl80211_send_station+0xef0/0xef0 [cfg80211]
+>  ? genl_get_cmd+0xd0/0xd0
+>  netlink_rcv_skb+0x55/0x100
+>  genl_rcv+0x29/0x40
+>  netlink_unicast+0x1a8/0x270
+>  netlink_sendmsg+0x253/0x480
+>  sock_sendmsg+0x65/0x70
+>  ____sys_sendmsg+0x219/0x260
+>  ? __import_iovec+0x32/0x170
+>  ___sys_sendmsg+0xb7/0x100
+>  ? end_opal_session+0x39/0xd0
+>  ? __fget_files+0xe0/0x1d0
+>  ? find_held_lock+0x31/0x90
+>  ? __fget_files+0xe0/0x1d0
+>  ? __fget_files+0x103/0x1d0
+>  ? __fget_light+0x32/0x80
+>  __sys_sendmsg+0x5a/0xa0
+>  ? syscall_enter_from_user_mode+0x21/0x60
+>  __x64_sys_sendmsg+0x1f/0x30
+>  do_syscall_64+0x38/0x50
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x7f7cea2c791d
+> Code: 28 89 54 24 1c 48 89 74 24 10 89 7c 24 08 e8 4a ee ff ff 8b 54 24 1c 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 44 24 08 e8 9e ee ff ff 48
+> RSP: 002b:00007ffedf612a30 EFLAGS: 00000293 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 00005618c4cfec00 RCX: 00007f7cea2c791d
+> RDX: 0000000000000000 RSI: 00007ffedf612a80 RDI: 000000000000000b
+> RBP: 00007ffedf612a80 R08: 0000000000000000 R09: 00005618c4e74000
+> R10: 00005618c4da0590 R11: 0000000000000293 R12: 00005618c4cfec00
+> R13: 00005618c4cfe2c0 R14: 00007f7cea32ef80 R15: 00005618c4cff340
+> irq event stamp: 520897
+> hardirqs last  enabled at (520903): [<ffffffffba501cc5>] console_unlock+0x4e5/0x5d0
+> hardirqs last disabled at (520908): [<ffffffffba501c38>] console_unlock+0x458/0x5d0
+> softirqs last  enabled at (520722): [<ffffffffbb201002>] asm_call_irq_on_stack+0x12/0x20
+> softirqs last disabled at (520717): [<ffffffffbb201002>] asm_call_irq_on_stack+0x12/0x20
+> 
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 
-diff --git a/drivers/phy/amlogic/Kconfig b/drivers/phy/amlogic/Kconfig
-index db5d0cd757e3..ac898a102bcc 100644
---- a/drivers/phy/amlogic/Kconfig
-+++ b/drivers/phy/amlogic/Kconfig
-@@ -49,6 +49,18 @@ config PHY_MESON_G12A_USB3_PCIE
- 	  in Meson G12A SoCs.
- 	  If unsure, say N.
- 
-+config PHY_MESON_G12A_MIPI_DPHY_ANALOG
-+	tristate "Meson G12A MIPI Analog DPHY driver"
-+	default ARCH_MESON
-+	depends on OF && (ARCH_MESON || COMPILE_TEST)
-+	select GENERIC_PHY
-+	select REGMAP_MMIO
-+	select GENERIC_PHY_MIPI_DPHY
-+	help
-+	  Enable this to support the Meson MIPI Analog DPHY found in Meson G12A
-+	  SoCs.
-+	  If unsure, say N.
-+
- config PHY_MESON_AXG_PCIE
- 	tristate "Meson AXG PCIE PHY driver"
- 	default ARCH_MESON
-diff --git a/drivers/phy/amlogic/Makefile b/drivers/phy/amlogic/Makefile
-index 8fa07fbd0d92..2eada0a683ca 100644
---- a/drivers/phy/amlogic/Makefile
-+++ b/drivers/phy/amlogic/Makefile
-@@ -3,6 +3,7 @@ obj-$(CONFIG_PHY_MESON8B_USB2)			+= phy-meson8b-usb2.o
- obj-$(CONFIG_PHY_MESON_GXL_USB2)		+= phy-meson-gxl-usb2.o
- obj-$(CONFIG_PHY_MESON_G12A_USB2)		+= phy-meson-g12a-usb2.o
- obj-$(CONFIG_PHY_MESON_G12A_USB3_PCIE)		+= phy-meson-g12a-usb3-pcie.o
-+obj-$(CONFIG_PHY_MESON_G12A_MIPI_DPHY_ANALOG)	+= phy-meson-g12a-mipi-dphy-analog.o
- obj-$(CONFIG_PHY_MESON_AXG_PCIE)		+= phy-meson-axg-pcie.o
- obj-$(CONFIG_PHY_MESON_AXG_MIPI_PCIE_ANALOG)	+= phy-meson-axg-mipi-pcie-analog.o
- obj-$(CONFIG_PHY_MESON_AXG_MIPI_DPHY)		+= phy-meson-axg-mipi-dphy.o
-diff --git a/drivers/phy/amlogic/phy-meson-g12a-mipi-dphy-analog.c b/drivers/phy/amlogic/phy-meson-g12a-mipi-dphy-analog.c
-new file mode 100644
-index 000000000000..6e9d416c0552
---- /dev/null
-+++ b/drivers/phy/amlogic/phy-meson-g12a-mipi-dphy-analog.c
-@@ -0,0 +1,177 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Meson G12A MIPI DSI Analog PHY
-+ *
-+ * Copyright (C) 2018 Amlogic, Inc. All rights reserved
-+ * Copyright (C) 2020 BayLibre, SAS
-+ * Author: Neil Armstrong <narmstrong@baylibre.com>
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/bitops.h>
-+#include <linux/module.h>
-+#include <linux/phy/phy.h>
-+#include <linux/regmap.h>
-+#include <linux/delay.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/platform_device.h>
-+#include <dt-bindings/phy/phy.h>
-+
-+#define HHI_MIPI_CNTL0 0x00
-+#define		HHI_MIPI_CNTL0_DIF_REF_CTL1	GENMASK(31, 16)
-+#define		HHI_MIPI_CNTL0_DIF_REF_CTL0	GENMASK(15, 0)
-+
-+#define HHI_MIPI_CNTL1 0x04
-+#define		HHI_MIPI_CNTL1_BANDGAP		BIT(16)
-+#define		HHI_MIPI_CNTL2_DIF_REF_CTL2	GENMASK(15, 0)
-+
-+#define HHI_MIPI_CNTL2 0x08
-+#define		HHI_MIPI_CNTL2_DIF_TX_CTL1	GENMASK(31, 16)
-+#define		HHI_MIPI_CNTL2_CH_EN		GENMASK(15, 11)
-+#define		HHI_MIPI_CNTL2_DIF_TX_CTL0	GENMASK(10, 0)
-+
-+#define DSI_LANE_0				BIT(4)
-+#define DSI_LANE_1				BIT(3)
-+#define DSI_LANE_CLK				BIT(2)
-+#define DSI_LANE_2				BIT(1)
-+#define DSI_LANE_3				BIT(0)
-+
-+struct phy_g12a_mipi_dphy_analog_priv {
-+	struct phy *phy;
-+	struct regmap *regmap;
-+	struct phy_configure_opts_mipi_dphy config;
-+};
-+
-+static int phy_g12a_mipi_dphy_analog_configure(struct phy *phy,
-+					       union phy_configure_opts *opts)
-+{
-+	struct phy_g12a_mipi_dphy_analog_priv *priv = phy_get_drvdata(phy);
-+	int ret;
-+
-+	ret = phy_mipi_dphy_config_validate(&opts->mipi_dphy);
-+	if (ret)
-+		return ret;
-+
-+	memcpy(&priv->config, opts, sizeof(priv->config));
-+
-+	return 0;
-+}
-+
-+static int phy_g12a_mipi_dphy_analog_power_on(struct phy *phy)
-+{
-+	struct phy_g12a_mipi_dphy_analog_priv *priv = phy_get_drvdata(phy);
-+	unsigned int reg;
-+
-+	regmap_write(priv->regmap, HHI_MIPI_CNTL0,
-+		     FIELD_PREP(HHI_MIPI_CNTL0_DIF_REF_CTL0, 0x8) |
-+		     FIELD_PREP(HHI_MIPI_CNTL0_DIF_REF_CTL1, 0xa487));
-+
-+	regmap_write(priv->regmap, HHI_MIPI_CNTL1,
-+		     FIELD_PREP(HHI_MIPI_CNTL2_DIF_REF_CTL2, 0x2e) |
-+		     HHI_MIPI_CNTL1_BANDGAP);
-+
-+	regmap_write(priv->regmap, HHI_MIPI_CNTL2,
-+		     FIELD_PREP(HHI_MIPI_CNTL2_DIF_TX_CTL0, 0x459) |
-+		     FIELD_PREP(HHI_MIPI_CNTL2_DIF_TX_CTL1, 0x2680));
-+
-+	reg = DSI_LANE_CLK;
-+	switch (priv->config.lanes) {
-+	case 4:
-+		reg |= DSI_LANE_3;
-+		fallthrough;
-+	case 3:
-+		reg |= DSI_LANE_2;
-+		fallthrough;
-+	case 2:
-+		reg |= DSI_LANE_1;
-+		fallthrough;
-+	case 1:
-+		reg |= DSI_LANE_0;
-+		break;
-+	default:
-+		reg = 0;
-+	}
-+
-+	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL2,
-+			   HHI_MIPI_CNTL2_CH_EN,
-+			   FIELD_PREP(HHI_MIPI_CNTL2_CH_EN, reg));
-+
-+	return 0;
-+}
-+
-+static int phy_g12a_mipi_dphy_analog_power_off(struct phy *phy)
-+{
-+	struct phy_g12a_mipi_dphy_analog_priv *priv = phy_get_drvdata(phy);
-+
-+	regmap_write(priv->regmap, HHI_MIPI_CNTL0, 0);
-+	regmap_write(priv->regmap, HHI_MIPI_CNTL1, 0);
-+	regmap_write(priv->regmap, HHI_MIPI_CNTL2, 0);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops phy_g12a_mipi_dphy_analog_ops = {
-+	.configure = phy_g12a_mipi_dphy_analog_configure,
-+	.power_on = phy_g12a_mipi_dphy_analog_power_on,
-+	.power_off = phy_g12a_mipi_dphy_analog_power_off,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int phy_g12a_mipi_dphy_analog_probe(struct platform_device *pdev)
-+{
-+	struct phy_provider *phy;
-+	struct device *dev = &pdev->dev;
-+	struct phy_g12a_mipi_dphy_analog_priv *priv;
-+	struct device_node *np = dev->of_node;
-+	struct regmap *map;
-+	int ret;
-+
-+	priv = devm_kmalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	/* Get the hhi system controller node */
-+	map = syscon_node_to_regmap(of_get_parent(dev->of_node));
-+	if (IS_ERR(map)) {
-+		dev_err(dev,
-+			"failed to get HHI regmap\n");
-+		return PTR_ERR(map);
-+	}
-+
-+	priv->regmap = map;
-+
-+	priv->phy = devm_phy_create(dev, np, &phy_g12a_mipi_dphy_analog_ops);
-+	if (IS_ERR(priv->phy)) {
-+		ret = PTR_ERR(priv->phy);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "failed to create PHY\n");
-+		return ret;
-+	}
-+
-+	phy_set_drvdata(priv->phy, priv);
-+	dev_set_drvdata(dev, priv);
-+
-+	phy = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+
-+	return PTR_ERR_OR_ZERO(phy);
-+}
-+
-+static const struct of_device_id phy_g12a_mipi_dphy_analog_of_match[] = {
-+	{
-+		.compatible = "amlogic,g12a-mipi-dphy-analog",
-+	},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, phy_g12a_mipi_dphy_analog_of_match);
-+
-+static struct platform_driver phy_g12a_mipi_dphy_analog_driver = {
-+	.probe = phy_g12a_mipi_dphy_analog_probe,
-+	.driver = {
-+		.name = "phy-meson-g12a-mipi-dphy-analog",
-+		.of_match_table = phy_g12a_mipi_dphy_analog_of_match,
-+	},
-+};
-+module_platform_driver(phy_g12a_mipi_dphy_analog_driver);
-+
-+MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
-+MODULE_DESCRIPTION("Meson G12A MIPI Analog D-PHY driver");
-+MODULE_LICENSE("GPL v2");
+Bad timing, just yesterday I applied an identical patch: 
+
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=7df28718928d08034b36168200d67b558ce36f3d
+
+Patch set to Superseded.
+
 -- 
-2.25.1
+https://patchwork.kernel.org/project/linux-wireless/patch/1c38ef6d39ed89a564bc817d964d923ff0676c53.1612915444.git.skhan@linuxfoundation.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
