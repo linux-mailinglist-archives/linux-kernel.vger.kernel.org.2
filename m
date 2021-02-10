@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B0F316A5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D51316A61
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:39:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhBJPi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:38:27 -0500
-Received: from vulcan.natalenko.name ([104.207.131.136]:45870 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231587AbhBJPiV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:38:21 -0500
-Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id D30FD983220;
-        Wed, 10 Feb 2021 16:37:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1612971458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ztM47SWFgv+hKg/NIGl3WD1OYgEOYWgwUcs7WbDNz7s=;
-        b=cwAmA4pK/5aTcdGwWMVT17brIeyxzM8uEu1doKiebNa3MuM/4zbxVHn94WRrcXHMVQO1g1
-        unAl513N9DbYcqVTE06c/8Zmd+Sw4E8mAnvrZJ3JknwzZu1ecFn8LvN16rBn1Di1w4BNU0
-        rB11IH6kZS6N5OEuNHWK3b8HzLAl0lU=
-Date:   Wed, 10 Feb 2021 16:37:38 +0100
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Chunguang Xu <brookxu.cn@gmail.com>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] bfq: amend the function name of
- bfq_may_expire_for_budg_timeout()
-Message-ID: <20210210153738.pdsiqnmucq5v5cck@spock.localdomain>
-References: <1611917485-584-1-git-send-email-brookxu@tencent.com>
- <1611917485-584-2-git-send-email-brookxu@tencent.com>
- <0A676DC9-E730-460A-8C39-9E1851343339@linaro.org>
+        id S231759AbhBJPjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:39:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230048AbhBJPjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 10:39:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47C2764DA5;
+        Wed, 10 Feb 2021 15:39:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612971540;
+        bh=UmFQ9LVN1sbDvFGlexMO9nwDPmQ4xxV03atwcYGV+pw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NzWmVUtoGG76LVFlqhysU3JpLDxUvQBi6njFUh6JGOkt6CbjseqgqzAqS+HaHdmfk
+         T1XuWkdk5zPEx/9xLQaTza0Y/MeMuhnXGQ4ZsJ1nrkY6ndPKGqYONNd+4tyv0TPcbp
+         cbTzyicTC7YJi5IoUYNq2rNOYtPl7ZEzN0Q5t4ehLU+WA4UMrHzZqJmn9pA3a2U+9H
+         NBhxOfNGPwfhxZ/Ib+CGKBuIqxeO//97USv+mY2rIxCb/00SToRpINZm6S17fFaTU+
+         v8WCV+RHf2qZ5VNRVkQKCHeHDm0eiJO/6xl+e0xoybXefr16H/iFnlXkR/9geyt2Xr
+         kUKg94zDyIa6w==
+Date:   Wed, 10 Feb 2021 15:38:08 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
+        Timur Tabi <timur@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v2 2/7] ASoC: fsl_rpmsg: Add CPU DAI driver for audio
+ base on rpmsg
+Message-ID: <20210210153808.GB4748@sirena.org.uk>
+References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
+ <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com>
+ <20210208115112.GD8645@sirena.org.uk>
+ <CAA+D8AMRGRRk6FzdiqaHAP1=dPJngNgmdGmU59vrroXA9BMyXw@mail.gmail.com>
+ <20210209222953.GF4916@sirena.org.uk>
+ <CAA+D8AN=SDMLhuNbstzHL_H2p_L6cr+oCXbauNB0gGs2BW5tmA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tsOsTdHNUZQcU9Ye"
 Content-Disposition: inline
-In-Reply-To: <0A676DC9-E730-460A-8C39-9E1851343339@linaro.org>
+In-Reply-To: <CAA+D8AN=SDMLhuNbstzHL_H2p_L6cr+oCXbauNB0gGs2BW5tmA@mail.gmail.com>
+X-Cookie: Are we live or on tape?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:13:59PM +0100, Paolo Valente wrote:
-> 
-> 
-> > Il giorno 29 gen 2021, alle ore 11:51, Chunguang Xu <brookxu.cn@gmail.com> ha scritto:
-> > 
-> > From: Chunguang Xu <brookxu@tencent.com>
-> > 
-> > The function name bfq_may_expire_for_budg_timeout() may be misspelled,
-> > try to fix it.
-> > 
-> 
-> Ok for me to make this name longer.
-> 
-> Thanks,
-> Paolo
-> 
-> > Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> > ---
-> > block/bfq-iosched.c | 6 +++---
-> > 1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-> > index 9e4eb0f..4f40c61 100644
-> > --- a/block/bfq-iosched.c
-> > +++ b/block/bfq-iosched.c
-> > @@ -4061,7 +4061,7 @@ static bool bfq_bfqq_budget_timeout(struct bfq_queue *bfqq)
-> >  * condition does not hold, or if the queue is slow enough to deserve
-> >  * only to be kicked off for preserving a high throughput.
-> >  */
-> > -static bool bfq_may_expire_for_budg_timeout(struct bfq_queue *bfqq)
-> > +static bool bfq_may_expire_for_budget_timeout(struct bfq_queue *bfqq)
-> > {
-> > 	bfq_log_bfqq(bfqq->bfqd, bfqq,
-> > 		"may_budget_timeout: wait_request %d left %d timeout %d",
-> > @@ -4350,7 +4350,7 @@ static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
-> > 	 * on the case where bfq_bfqq_must_idle() returns true, in
-> > 	 * bfq_completed_request().
-> > 	 */
-> > -	if (bfq_may_expire_for_budg_timeout(bfqq) &&
-> > +	if (bfq_may_expire_for_budget_timeout(bfqq) &&
-> > 	    !bfq_bfqq_must_idle(bfqq))
-> > 		goto expire;
-> > 
-> > @@ -5706,7 +5706,7 @@ static void bfq_completed_request(struct bfq_queue *bfqq, struct bfq_data *bfqd)
-> > 			 * of its reserved service guarantees.
-> > 			 */
-> > 			return;
-> > -		} else if (bfq_may_expire_for_budg_timeout(bfqq))
-> > +		} else if (bfq_may_expire_for_budget_timeout(bfqq))
-> > 			bfq_bfqq_expire(bfqd, bfqq, false,
-> > 					BFQQE_BUDGET_TIMEOUT);
-> > 		else if (RB_EMPTY_ROOT(&bfqq->sort_list) &&
-> > -- 
-> > 1.8.3.1
-> > 
-> 
 
-Was this sent to some mailing list? I don't see an original email with
-this patch.
+--tsOsTdHNUZQcU9Ye
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-  Oleksandr Natalenko (post-factum)
+On Wed, Feb 10, 2021 at 02:35:29PM +0800, Shengjiu Wang wrote:
+> On Wed, Feb 10, 2021 at 6:30 AM Mark Brown <broonie@kernel.org> wrote:
+
+> > Like I say I'd actually recommend moving this control to DAPM.
+
+> I may understand your point, you suggest to use the .set_bias_level
+> interface. But in my case I need to enable the clock in earlier stage
+> and keep the clock on when system go to suspend.
+
+The device can be kept alive over system suspend if that's needed, or
+possibly it sounds like runtime PM is a better fit?  There's callbacks
+in the core to keep the device runtime PM enabled while it's open which
+is probably about the time range you're looking for.
+
+> I am not sure .set_bias_level can met my requirement. we start
+> the Chinese new year holiday now, so currently I can't do test for this
+> recommendation.
+
+
+> Maybe we can keep current implementation, can we?
+> Later after I do the test, I can submit another patch for it.
+
+Well, the current version is clearly going to leak clock enables with
+valid userspace so=20
+
+--tsOsTdHNUZQcU9Ye
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAj/d8ACgkQJNaLcl1U
+h9DudQf/TaziP/3fIA/+VtOM1vmRz+Y+qg+fko13UVOigl8UEJA/n+4WEegQRoJG
+uDTO557iKp/JwY4o5tXxXQxGZhGMhhDg3MDhWbWx0QJ9y/bMhD4R+sZ421eYHwLI
+0cjTI9P2I+EiYtMsTICqZgFmEtR+wJHwtJyXTWaIXDPtJYCJuxGBK4mIxn+2YO72
+yXEhmkzRVFDFSMhOR0aPUfAD7yMMvRP8UM0R7VBtwXavEtV9ZHrMqxkibnoMt8oX
+ONd0cWMywupFjGVZQalfZJyHmnawloUrOg6V5NU5pS7dvIyMgUCgqcwg+8STUDRF
+/ynzOHGXxgiNb5x9zte6dG9YVbs3vw==
+=A1BK
+-----END PGP SIGNATURE-----
+
+--tsOsTdHNUZQcU9Ye--
