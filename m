@@ -2,145 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BD5316D01
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB769316D18
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:45:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbhBJRkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:40:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25201 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232462AbhBJRkM (ORCPT
+        id S232932AbhBJRoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232830AbhBJRnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:40:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612978723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ulIYs4vjX02SWt4rVxo1O7Hqi68QURFqQUhPnrYP8Yo=;
-        b=LT3DY1B9zY5ihNTzlCQxbxgttFyUqQnLpk5CkUTS0fiEGDtJDLrH56W1NixsRd5oswMqIP
-        zPRVWnfssoJ0eDN41e17soDP26BUHKXbeuJ7ecd7mxJJJu2tHLoSyKvpe460jg4y0Sz9jw
-        vlzIxAm85pfs6Z69kXRNwPVqRl8hx7M=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-489-8qdlWlLtO8u5TUO6_XoD_A-1; Wed, 10 Feb 2021 12:38:42 -0500
-X-MC-Unique: 8qdlWlLtO8u5TUO6_XoD_A-1
-Received: by mail-wr1-f71.google.com with SMTP id u15so2256275wrn.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:38:42 -0800 (PST)
+        Wed, 10 Feb 2021 12:43:23 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB30C061574;
+        Wed, 10 Feb 2021 09:42:42 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id l12so3568998wry.2;
+        Wed, 10 Feb 2021 09:42:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DG+Kk/mvSEl70a4MZYIsbuCj3RK0HikfGS5wv5kv6BU=;
+        b=cbA7lPXWfj1p85njhLAtiEEXFskNhI8Qf2lhnTOm3twQyvb023mIsT3VI1npSPzxKO
+         0j6aXoQkx0ZlV74ybHa929efsV0emGFmMhmTwAcs0hTjGj99ENJ5N3FvCkE4wj+gLBq0
+         yLaRqL6LruDmppC/2Bacuace4oE/bgCVYb7nZkfiYMCBb/43XwFBlKXU4MVF3Qy++5mN
+         5xER6/Jr+5XhG3sfAwyVTSI9s1T7qn6A9W9kyJYtO5M9cMLnx0gKbrc19cBLgIw26Oc+
+         uo73FybLxuk+ygfRcDYRc3866vCzoe04sWizvNfO2qrlOPdV6wKaUPd1YGj2UBjgEeIB
+         3JhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ulIYs4vjX02SWt4rVxo1O7Hqi68QURFqQUhPnrYP8Yo=;
-        b=Dqi+/D8knLWe6BRW98oQeuaYuJBbY8qFj7O83ph14nqjwNxOox3oE/Qp7Iudzsul9W
-         jE54fKFCihXaqeaINFKa1yHR2V2nL72KxOGMe2MJ+4PlMfYWAbndIATCUpG8Uu0yM0zc
-         UYuE/z4aH5Mvptj2s1DWyZ9BDQmmg9J8RjWUvWAvGN/pRN9xyL8azCkhqDtQ5zSESFgo
-         Cg90U3e7JU093HduQ5lEvrVTvH3qkGvvtFQLKc9b5ZijpMJXEKFLhoLp7ydlnKLLHhZ/
-         7Ira4FLGQrvtdTYV1yUfNerS2WOrxMZFc0qPJjy1XwCoxiKnt0urpdOcjuVh99Tr8pYq
-         nxow==
-X-Gm-Message-State: AOAM532b2vfDjTLRv38cbU7+240QsL4d0rW5GgvRcclYPgmg+nCzQrO9
-        zalZpcLEB43hda5QuP5VPvJiu100LeAb1XYYBIz17nizDx8E4P56zgPCS88xFtWTY9Q3qIcRF75
-        avOUIx8R/uBXZhfy2I3kUUrw6
-X-Received: by 2002:a5d:4d8d:: with SMTP id b13mr4631958wru.178.1612978721161;
-        Wed, 10 Feb 2021 09:38:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw8JVANRHxS+2EHhZNuHVwfrl6kd0Bb3JcxGG2kluWZGGBJ6/u/SH7eyaNJgQBWAKclRo4CIA==
-X-Received: by 2002:a5d:4d8d:: with SMTP id b13mr4631940wru.178.1612978720923;
-        Wed, 10 Feb 2021 09:38:40 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r17sm4171824wro.46.2021.02.10.09.38.37
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=DG+Kk/mvSEl70a4MZYIsbuCj3RK0HikfGS5wv5kv6BU=;
+        b=CJCE8Zb3V/toFF2I2KUuZJ7yJusuyV9c1oufg6Irt+soFItFREU/N9mKSrQcc9D2AH
+         2lBkD36rlAZkevWXDbJ2Np935rFw7JBT20rHluTEPlvoZnLHo4IOmvO9tRvD5h/Q3Mmj
+         hBkY+spY1FLEMA87yZcWTGPSJH8yen/ZAmRJ2n9AAY+pDiFMZ+Iz2nLKe72wZcsqYmjJ
+         Yjk8tHcZxc/iRgZjEAq9yevVuk7VvEpLHHkDylhVrDmBXz58vo6IVEM9cb7p45pNaarL
+         JDb+ambEMUS7tkhYmL0iS0UMJOTRUSId2QqgyAiStcfUEgfUqgTAzrwUIa8jiNMNmkC0
+         eCqQ==
+X-Gm-Message-State: AOAM530d/aKpMIga4RR1d/beYlIA1gFnyrbLKXwPcBHvPCyYeMAIXgtr
+        Y12yzenGVNuLG+7zgQiGeuDy7Ch1TTr9cA==
+X-Google-Smtp-Source: ABdhPJzuqq8oUeagES7+gL6+GQDnZYDPZ/m0NckVxNxIne86tQVURwSi9LbSYx83tkaS4HqQPyf7IQ==
+X-Received: by 2002:adf:d20c:: with SMTP id j12mr4877208wrh.407.1612978960642;
+        Wed, 10 Feb 2021 09:42:40 -0800 (PST)
+Received: from [192.168.8.194] ([148.252.132.126])
+        by smtp.gmail.com with ESMTPSA id f3sm3409536wme.26.2021.02.10.09.42.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 09:38:38 -0800 (PST)
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20210210155937.141569-1-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] KVM: nSVM: call nested_svm_load_cr3 on nested state load
-Message-ID: <9314afe0-7808-7877-0270-87f29a5f1191@redhat.com>
-Date:   Wed, 10 Feb 2021 18:38:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 10 Feb 2021 09:42:40 -0800 (PST)
+Subject: Re: [PATCH -next] fs: io_uring: build when CONFIG_NET is disabled
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org
+References: <20210210173740.22328-1-rdunlap@infradead.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ mQINBFmKBOQBEAC76ZFxLAKpDw0bKQ8CEiYJRGn8MHTUhURL02/7n1t0HkKQx2K1fCXClbps
+ bdwSHrhOWdW61pmfMbDYbTj6ZvGRvhoLWfGkzujB2wjNcbNTXIoOzJEGISHaPf6E2IQx1ik9
+ 6uqVkK1OMb7qRvKH0i7HYP4WJzYbEWVyLiAxUj611mC9tgd73oqZ2pLYzGTqF2j6a/obaqha
+ +hXuWTvpDQXqcOZJXIW43atprH03G1tQs7VwR21Q1eq6Yvy2ESLdc38EqCszBfQRMmKy+cfp
+ W3U9Mb1w0L680pXrONcnlDBCN7/sghGeMHjGKfNANjPc+0hzz3rApPxpoE7HC1uRiwC4et83
+ CKnncH1l7zgeBT9Oa3qEiBlaa1ZCBqrA4dY+z5fWJYjMpwI1SNp37RtF8fKXbKQg+JuUjAa9
+ Y6oXeyEvDHMyJYMcinl6xCqCBAXPHnHmawkMMgjr3BBRzODmMr+CPVvnYe7BFYfoajzqzq+h
+ EyXSl3aBf0IDPTqSUrhbmjj5OEOYgRW5p+mdYtY1cXeK8copmd+fd/eTkghok5li58AojCba
+ jRjp7zVOLOjDlpxxiKhuFmpV4yWNh5JJaTbwCRSd04sCcDNlJj+TehTr+o1QiORzc2t+N5iJ
+ NbILft19Izdn8U39T5oWiynqa1qCLgbuFtnYx1HlUq/HvAm+kwARAQABtDFQYXZlbCBCZWd1
+ bmtvdiAoc2lsZW5jZSkgPGFzbWwuc2lsZW5jZUBnbWFpbC5jb20+iQJOBBMBCAA4FiEE+6Ju
+ PTjTbx479o3OWt5b1Glr+6UFAlmKBOQCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQ
+ Wt5b1Glr+6WxZA//QueaKHzgdnOikJ7NA/Vq8FmhRlwgtP0+E+w93kL+ZGLzS/cUCIjn2f4Q
+ Mcutj2Neg0CcYPX3b2nJiKr5Vn0rjJ/suiaOa1h1KzyNTOmxnsqE5fmxOf6C6x+NKE18I5Jy
+ xzLQoktbdDVA7JfB1itt6iWSNoOTVcvFyvfe5ggy6FSCcP+m1RlR58XxVLH+qlAvxxOeEr/e
+ aQfUzrs7gqdSd9zQGEZo0jtuBiB7k98t9y0oC9Jz0PJdvaj1NZUgtXG9pEtww3LdeXP/TkFl
+ HBSxVflzeoFaj4UAuy8+uve7ya/ECNCc8kk0VYaEjoVrzJcYdKP583iRhOLlZA6HEmn/+Gh9
+ 4orG67HNiJlbFiW3whxGizWsrtFNLsSP1YrEReYk9j1SoUHHzsu+ZtNfKuHIhK0sU07G1OPN
+ 2rDLlzUWR9Jc22INAkhVHOogOcc5ajMGhgWcBJMLCoi219HlX69LIDu3Y34uIg9QPZIC2jwr
+ 24W0kxmK6avJr7+n4o8m6sOJvhlumSp5TSNhRiKvAHB1I2JB8Q1yZCIPzx+w1ALxuoWiCdwV
+ M/azguU42R17IuBzK0S3hPjXpEi2sK/k4pEPnHVUv9Cu09HCNnd6BRfFGjo8M9kZvw360gC1
+ reeMdqGjwQ68o9x0R7NBRrtUOh48TDLXCANAg97wjPoy37dQE7e5Ag0EWYoE5AEQAMWS+aBV
+ IJtCjwtfCOV98NamFpDEjBMrCAfLm7wZlmXy5I6o7nzzCxEw06P2rhzp1hIqkaab1kHySU7g
+ dkpjmQ7Jjlrf6KdMP87mC/Hx4+zgVCkTQCKkIxNE76Ff3O9uTvkWCspSh9J0qPYyCaVta2D1
+ Sq5HZ8WFcap71iVO1f2/FEHKJNz/YTSOS/W7dxJdXl2eoj3gYX2UZNfoaVv8OXKaWslZlgqN
+ jSg9wsTv1K73AnQKt4fFhscN9YFxhtgD/SQuOldE5Ws4UlJoaFX/yCoJL3ky2kC0WFngzwRF
+ Yo6u/KON/o28yyP+alYRMBrN0Dm60FuVSIFafSqXoJTIjSZ6olbEoT0u17Rag8BxnxryMrgR
+ dkccq272MaSS0eOC9K2rtvxzddohRFPcy/8bkX+t2iukTDz75KSTKO+chce62Xxdg62dpkZX
+ xK+HeDCZ7gRNZvAbDETr6XI63hPKi891GeZqvqQVYR8e+V2725w+H1iv3THiB1tx4L2bXZDI
+ DtMKQ5D2RvCHNdPNcZeldEoJwKoA60yg6tuUquvsLvfCwtrmVI2rL2djYxRfGNmFMrUDN1Xq
+ F3xozA91q3iZd9OYi9G+M/OA01husBdcIzj1hu0aL+MGg4Gqk6XwjoSxVd4YT41kTU7Kk+/I
+ 5/Nf+i88ULt6HanBYcY/+Daeo/XFABEBAAGJAjYEGAEIACAWIQT7om49ONNvHjv2jc5a3lvU
+ aWv7pQUCWYoE5AIbDAAKCRBa3lvUaWv7pfmcEACKTRQ28b1y5ztKuLdLr79+T+LwZKHjX++P
+ 4wKjEOECCcB6KCv3hP+J2GCXDOPZvdg/ZYZafqP68Yy8AZqkfa4qPYHmIdpODtRzZSL48kM8
+ LRzV8Rl7J3ItvzdBRxf4T/Zseu5U6ELiQdCUkPGsJcPIJkgPjO2ROG/ZtYa9DvnShNWPlp+R
+ uPwPccEQPWO/NP4fJl2zwC6byjljZhW5kxYswGMLBwb5cDUZAisIukyAa8Xshdan6C2RZcNs
+ rB3L7vsg/R8UCehxOH0C+NypG2GqjVejNZsc7bgV49EOVltS+GmGyY+moIzxsuLmT93rqyII
+ 5rSbbcTLe6KBYcs24XEoo49Zm9oDA3jYvNpeYD8rDcnNbuZh9kTgBwFN41JHOPv0W2FEEWqe
+ JsCwQdcOQ56rtezdCJUYmRAt3BsfjN3Jn3N6rpodi4Dkdli8HylM5iq4ooeb5VkQ7UZxbCWt
+ UVMKkOCdFhutRmYp0mbv2e87IK4erwNHQRkHUkzbsuym8RVpAZbLzLPIYK/J3RTErL6Z99N2
+ m3J6pjwSJY/zNwuFPs9zGEnRO4g0BUbwGdbuvDzaq6/3OJLKohr5eLXNU3JkT+3HezydWm3W
+ OPhauth7W0db74Qd49HXK0xe/aPrK+Cp+kU1HRactyNtF8jZQbhMCC8vMGukZtWaAwpjWiiH bA==
+Message-ID: <f9dbd75d-cbce-292a-b9e4-7cf8fb6f4cd7@gmail.com>
+Date:   Wed, 10 Feb 2021 17:38:53 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20210210155937.141569-1-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210210173740.22328-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/02/21 16:59, Maxim Levitsky wrote:
-> While KVM's MMU should be fully reset by loading of nested CR0/CR3/CR4
-> by KVM_SET_SREGS, we are not in nested mode yet when we do it and therefore
-> only root_mmu is reset.
+On 10/02/2021 17:37, Randy Dunlap wrote:
+> Fix build errors when CONFIG_NET is not enabled.
+
+Thanks, but already fixed up.
+
 > 
-> On regular nested entries we call nested_svm_load_cr3 which both updates the
-> guest's CR3 in the MMU when it is needed, and it also initializes
-> the mmu again which makes it initialize the walk_mmu as well when nested
-> paging is enabled in both host and guest.
-> 
-> Since we don't call nested_svm_load_cr3 on nested state load,
-> the walk_mmu can be left uninitialized, which can lead to a NULL pointer
-> dereference while accessing it if we happen to get a nested page fault
-> right after entering the nested guest first time after the migration and
-> we decide to emulate it, which leads to emulator trying to access
-> walk_mmu->gva_to_gpa which is NULL.
-> 
-> Therefore we should call this function on nested state load as well.
-> 
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Fixes: b268c951abf8 ("io_uring: don't propagate io_comp_state")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Pavel Begunkov <asml.silence@gmail.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: linux-fsdevel@vger.kernel.org
 > ---
->   arch/x86/kvm/svm/nested.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
+>  fs/io_uring.c |   18 ++++++------------
+>  1 file changed, 6 insertions(+), 12 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 519fe84f2100..c209f1232928 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -1282,6 +1282,14 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
->   
->   	nested_vmcb02_prepare_control(svm);
->   
-> +	ret = nested_svm_load_cr3(&svm->vcpu, vcpu->arch.cr3,
-> +				  nested_npt_enabled(svm));
-> +
-> +	if (ret) {
-> +		svm_leave_nested(svm);
-> +		goto out_free;
-> +	}
-> +
->   	kvm_make_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
->   	ret = 0;
->   out_free:
+> --- linux-next-20210210.orig/fs/io_uring.c
+> +++ linux-next-20210210/fs/io_uring.c
+> @@ -5145,14 +5145,12 @@ static int io_sendmsg_prep(struct io_kio
+>  	return -EOPNOTSUPP;
+>  }
+>  
+> -static int io_sendmsg(struct io_kiocb *req, unsigned int issue_flags,
+> -		      struct io_comp_state *cs)
+> +static int io_sendmsg(struct io_kiocb *req, unsigned int issue_flags)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+>  
+> -static int io_send(struct io_kiocb *req, unsigned int issue_flags,
+> -		   struct io_comp_state *cs)
+> +static int io_send(struct io_kiocb *req, unsigned int issue_flags)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> @@ -5163,14 +5161,12 @@ static int io_recvmsg_prep(struct io_kio
+>  	return -EOPNOTSUPP;
+>  }
+>  
+> -static int io_recvmsg(struct io_kiocb *req, unsigned int issue_flags,
+> -		      struct io_comp_state *cs)
+> +static int io_recvmsg(struct io_kiocb *req, unsigned int issue_flags)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+>  
+> -static int io_recv(struct io_kiocb *req, unsigned int issue_flags,
+> -		   struct io_comp_state *cs)
+> +static int io_recv(struct io_kiocb *req, unsigned int issue_flags)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> @@ -5180,8 +5176,7 @@ static int io_accept_prep(struct io_kioc
+>  	return -EOPNOTSUPP;
+>  }
+>  
+> -static int io_accept(struct io_kiocb *req, unsigned int issue_flags,
+> -		     struct io_comp_state *cs)
+> +static int io_accept(struct io_kiocb *req, unsigned int issue_flags)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> @@ -5191,8 +5186,7 @@ static int io_connect_prep(struct io_kio
+>  	return -EOPNOTSUPP;
+>  }
+>  
+> -static int io_connect(struct io_kiocb *req, unsigned int issue_flags,
+> -		      struct io_comp_state *cs)
+> +static int io_connect(struct io_kiocb *req, unsigned int issue_flags)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
 > 
 
-I think you have to delay this to KVM_REQ_GET_NESTED_STATE_PAGES, 
-because the !nested_npt case can be accessing memory before the VM is 
-started (PDPTRs!).
-
-In fact the same is true for VMX: this code
-
-         /* Shadow page tables on either EPT or shadow page tables. */
-         if (nested_vmx_load_cr3(vcpu, vmcs12->guest_cr3, 
-nested_cpu_has_ept(vmcs12),
-                                 entry_failure_code))
-                 return -EINVAL;
-
-must be moved from prepare_vmcs02 to both nested_vmx_enter_non_root_mode 
-and nested_get_vmcs12_pages.
-
-Thanks,
-
-Paolo
-
+-- 
+Pavel Begunkov
