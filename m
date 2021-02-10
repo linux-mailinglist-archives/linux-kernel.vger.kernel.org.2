@@ -2,97 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742D7316234
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8621531623A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhBJJ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:28:19 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:60220 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhBJJVd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:21:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612948893; x=1644484893;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=EitwlEv438Vmd9Yz8+ODUmwaJpdWozhshK4xgZMEcb8=;
-  b=uzd6CTjUCM9yY6cqS71Y2ZtRatyVPL/fdQ6nxSH5Lv5G7jOaJcJ1FRd3
-   6F3kOGTSbUdNDoEOgk4uglTZfZeq37kBrz8jF269bEwHFFrrSwg9aFEyd
-   UgwBsURNm8uQORshhBiaPrgH6YWjeHDstAChnyiQ1zgd5DuDDEExvv7V+
-   X173ZJc5OuaAKUpuBJ/nki5FRKarcd2gQrgC5wDUDQrCkYIx6BQ14SXQ7
-   WFneBE+MUhkbWk+MuUyGZAx0HJ50M0OyN0t3TBuHEPnki+mfLx2Qb45Eb
-   lexswB6irzO3FIEutfb6qLxBBdzczCcndwllG/S1trDQTMAV2voAy3m2Q
-   g==;
-IronPort-SDR: uNJO79MzmtsEIPOMimILqv/S7zXmwRGLa8qu61ploBfYutwXXKx23U5EmNj5R3hGt+Vbj61VZq
- W+c9WFWAPKexmr2aAasRBQdaQWup8f1NImVKcJAaaEjX2/YSQ6Ly0FmkCXwcOqCwl5f7A817vz
- HrXeLtIZ0vScXdKcw54I6myvRl5Ty0/EPl4HS8ObP5itbB/SmUzje1WgcyDPUBi9UCOt/nbNc/
- ICylSPy9qD7ShEQueWA4EtOf9XPtyII5irbd7sHGMKFvuUe7x7zCdy0vCVChERQ7s8Ek8XaehF
- XMU=
-X-IronPort-AV: E=Sophos;i="5.81,167,1610434800"; 
-   d="scan'208";a="109186009"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 02:20:09 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 10 Feb 2021 02:20:08 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 10 Feb 2021 02:20:06 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-Subject: [PATCH v5 3/3] arm64: dts: reset: add microchip sparx5 switch reset driver
-Date:   Wed, 10 Feb 2021 10:19:52 +0100
-Message-ID: <20210210091952.2013027-4-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210210091952.2013027-1-steen.hegelund@microchip.com>
-References: <20210210091952.2013027-1-steen.hegelund@microchip.com>
+        id S231316AbhBJJ2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:28:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhBJJYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 04:24:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6694E64DB1;
+        Wed, 10 Feb 2021 09:23:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612949022;
+        bh=oO2ra4rCsA8isDsXvlKjVgpSfxzLG4pt6aZLIilyCLk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jtvMtokUh5uRH2xaeT2qOIz8UIBGWpnsyrOZ7rNHI6N3Pb7jvej8V5N9DrMfq7Hsw
+         M6KgY1VIoop+am42kzmFiucfBE/RDkj6bG5M+z3jYyO8O7TQFDZm0N9NY6pVE2XCg5
+         p79niI0jXeHcaZAnVZ3pZux+l9I0HoOydjb0tsJoKkoCGXjIsTr6CDKTKrXrWGSaCp
+         ovopCtFfyAnCRmGQjcQvDAUGCOv2M/sp8tXi/J1R3OdZF/vzGZBzBcOcHg5nNBqZmx
+         H7bBsepov3895UtKk6K6V5+s05x8JHToI/ckeRSl3Rjp1HCgiJ1P/q0K6xAGwyZTzM
+         UnRj86AIx4s1g==
+Received: by pali.im (Postfix)
+        id E7CB0A56; Wed, 10 Feb 2021 10:23:39 +0100 (CET)
+Date:   Wed, 10 Feb 2021 10:23:39 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     nnet <nnet@fastmail.fm>
+Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>, a.heider@gmail.com,
+        andrew@lunn.ch, gerald@gk2.net, gregory.clement@bootlin.com,
+        kostap@marvell.com, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luka.perkov@sartura.hr, miquel.raynal@bootlin.com,
+        mturquette@baylibre.com, rmk+kernel@armlinux.org.uk,
+        sboyd@kernel.org, tmn505@gmail.com, vladimir.vid@sartura.hr
+Subject: Re: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base
+ CPU speed to 800 MHz from 1000 MHz
+Message-ID: <20210210092339.qy6wwuq6qr5m2ozr@pali>
+References: <20210209213330.hnc7op72zoj24mgz@pali>
+ <7b0988cc-eeb8-4ea7-92f6-e8234ca910d3@www.fastmail.com>
+ <20210209224223.p22yhjdy7ibzepss@pali>
+ <93745280-dbe9-491c-a79d-c9c364b83880@www.fastmail.com>
+ <20210209225630.mdwnzkvnaz3r4blt@pali>
+ <a86c5069-d423-44db-92dd-b3e406b7ec91@www.fastmail.com>
+ <20210210002619.43104a9b@kernel.org>
+ <ac03801e-87e2-4e57-b131-bff52f03579d@www.fastmail.com>
+ <1cd0c2ee-aa3a-4da2-9c0c-57cc5a1dad49@www.fastmail.com>
+ <a1277b1f-f829-4d02-9e54-68ab4faaa047@www.fastmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <a1277b1f-f829-4d02-9e54-68ab4faaa047@www.fastmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This provides reset driver support for the Microchip Sparx5 PCB134 and
-PCB135 reference boards.
+On Tuesday 09 February 2021 18:07:41 nnet wrote:
+> On Tue, Feb 9, 2021, at 5:51 PM, nnet wrote:
+> > On Tue, Feb 9, 2021, at 5:31 PM, nnet wrote:
+> > > On Tue, Feb 9, 2021, at 3:26 PM, Marek Behún wrote:
+> > > > On Tue, 09 Feb 2021 15:16:45 -0800
+> > > > nnet <nnet@fastmail.fm> wrote:
+> > > > 
+> > > > > I've two of these and I've just swapped them (and re-pasted the heat sinks).
+> > > > > 
+> > > > > The second one ran under load for awhile and now has frozen as well.
+> > > > > 
+> > > > > Under a moderate load `wget -O /dev/null <large.bin>` @X00Mbits they are fine.
+> > > > > 
+> > > > > Under a 1 min speed test of load ~200Mbits routed WireGuard they freeze.
+> > > > > 
+> > > > > They fine with both those workloads @1000_800.
+> > > > > 
+> > > > > Perhaps it's heat? Unfortunately I don't have any numbers on that ATM.
+> > > > 
+> > > > Try disabling cpufreq in kernel completely, compile boot image at
+> > > > 1200 MHz. If it continues freezing, then I fear we can't help you with
+> > > > 1200 MHz :(
+> > > 
+> > > cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies 
+> > > 200000 300000 600000 1200000 
+> > > 
+> > > I'm not getting any freezes with 1.2GHz fixed after 20 minutes of load:
+> > > 
+> > > echo 1200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+> > > 
+> > > Setting it back to min 200MHz I get a freeze within a minute:
+> > > 
+> > > echo 200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
 
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Hello! Could you please enable userspace governor during kernel
+compilation?
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 380281f312d8..06ecaa9ac8aa 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -132,9 +132,12 @@ mux: mux-controller {
- 			};
- 		};
- 
--		reset@611010008 {
--			compatible = "microchip,sparx5-chip-reset";
--			reg = <0x6 0x11010008 0x4>;
-+		reset: reset-controller@0 {
-+			compatible = "microchip,sparx5-switch-reset";
-+			reg = <0x6 0x00000000 0xd0>,
-+			      <0x6 0x11010000 0x10000>;
-+			reg-names = "cpu", "gcb";
-+			#reset-cells = <1>;
- 		};
- 
- 		uart0: serial@600100000 {
--- 
-2.30.0
+    CONFIG_CPU_FREQ_GOV_USERSPACE=y
 
+It can be activated via command:
+
+    echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+
+After that you can "force" CPU frequency to specific value, e.g.:
+
+    echo 1000000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed
+
+I need to know which switch (from --> to freq) cause this system hang.
+
+This patch series (via MIN_VOLT_MV_FOR_L0_L1_1GHZ) is fixing only
+switching from 500 MHz to 1000 MHz on 1 GHz variant. As only this switch
+is causing issue.
+
+I have used following simple bash script to check that switching between
+500 MHz and 1 GHz is stable:
+
+    while true; do
+        echo 1000000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+        echo 500000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+        echo 1000000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+        echo 500000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+    done
+
+(of course on 1.2 GHz variant you need to adjust values as only
+following frequencies 200000 300000 600000 1200000 are supported)
+
+> > > > Marek
+> > > >
+> > 
+> > > +#define MIN_VOLT_MV_FOR_L0_L1_1GHZ 1108
+> > 
+> > Based on the below at boot time might an equivalent of the above need 
+> > to be 1225 for 1.2GHz?
+> > 
+> > 1200_750
+> > SVC REV: 5, CPU VDD voltage: 1.225V
+> > 
+> > 1000_800
+> > SVC REV: 5, CPU VDD voltage: 1.108V
+
+This value is printed in WTMI avs.c by following code:
+
+    shift = OTP_SVC_SPEED_1000_OFF;
+    (OR)
+    shift = OTP_SVC_SPEED_1200_OFF;
+
+    vdd_otp = ((otp_data[OTP_DATA_SVC_SPEED_ID] >> shift) +
+                AVS_VDD_BASE) & AVS_VDD_MASK;
+    regval |= (vdd_otp << HIGH_VDD_LIMIT_OFF);
+    regval |= (vdd_otp << LOW_VDD_LIMIT_OFF);
+    printf("SVC REV: %d, CPU VDD voltage: %s\n", svc_rev,
+            avis_dump[vdd_otp].desc);
+
+So voltage value is read from the OTP memory.
+
+But I do not know what this value means.
+
+> I did this for a quick test for 1.2GHz:
+> 
+> +#define MIN_VOLT_MV_FOR_L0_L1_1GHZ 1225
+> 
+> This is working well so far. Frequency is shifting up/down with load applied/stopped.
