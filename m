@@ -2,237 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB705316677
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03A9316679
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhBJMUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:20:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231735AbhBJMPH (ORCPT
+        id S231479AbhBJMU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:20:29 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:9543 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231810AbhBJMQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:15:07 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D99C06178C;
-        Wed, 10 Feb 2021 04:14:26 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id g10so2273748wrx.1;
-        Wed, 10 Feb 2021 04:14:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q7A22HFZX3jXEwzvGwTrJ0RrA/5bp6I5QM9PjiZQMj4=;
-        b=SAlTCIaIviBiCo2jEAZBiVM0Cp17SOksISbD4NXPukDEjuVLs9A9WwdkwgwV6bvthm
-         yChi5QW8PkkYwhUL7oSryhzpm0GLR6PHEYdNbILvLkDPVm32E7e14L5iASnl9joFhbN2
-         5bZvdRHe3A++fmRnEkJeoeKRFmH8dA/asMB752eaUHQ5kuuHR2JdrMm5jckYmbx44PAy
-         p0XSRPrw7aUEzcE0N4fAgl+lJy0CTetcjjtp1nGfAGApxClhKE83g9cSkKHkQBiLGIVr
-         cYTdL0YciQqMCczFOpWjNEnzBt/xZlf6Iuk7VoJuJCWdy29W/CeeOUX6jjBmPd/ufDw/
-         XwBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q7A22HFZX3jXEwzvGwTrJ0RrA/5bp6I5QM9PjiZQMj4=;
-        b=P0VsDwU0epOebxqGQkdM9z5oomIexe6g2ThwRXp921VRNVy4KvWekvZeUhnRx2SqxQ
-         ubN1hXxChHMsT9t39mShyV5pDPxU8n3Q/+YXHRqlBGLU3nWmWYfxedApXAKCPPdJDgBe
-         +kpABFiz3Mt6VwceCVwOvmwIkHR1y+z8CVLyqBWjGZUctw5ARVtRN6RRTFRdFVN6zQ1k
-         4Awu/uDqCM+5GXheWcblxtMaoZG9mKEtfA5a2GDINDVRVDObKZ9I33TPCjU1EFGRDWYi
-         hDMKwvoG5eLWFFCMaWqpeHOf9GdH3p9yv9GQ2XncMcRiixk3MjBJJIATCttU1fHZBTW2
-         tsTw==
-X-Gm-Message-State: AOAM533dlvK7AYIFH9ITdH1YOOaN1SSDK1oaqifsj83JBnJ96SqeLqPV
-        LxzmWgNTMSvowoloyNoZrF9TbHXhX2w=
-X-Google-Smtp-Source: ABdhPJzbry3k1Rn85GUa+cGDkF68krhRjNxoxo/54kDRHvYAoECLQu0zXCMF35R3HHXY1n3SKoYwTw==
-X-Received: by 2002:a5d:5910:: with SMTP id v16mr3475979wrd.29.1612959265591;
-        Wed, 10 Feb 2021 04:14:25 -0800 (PST)
-Received: from ziggy.stardust (static-188-169-27-46.ipcom.comunitel.net. [46.27.169.188])
-        by smtp.gmail.com with ESMTPSA id u10sm2093058wmj.40.2021.02.10.04.14.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 04:14:25 -0800 (PST)
-Subject: Re: [PATCH v13 7/8] soc: mediatek: add mtk mutex support for MT8183
-To:     Enric Balletbo Serra <eballetbo@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <20210129092209.2584718-1-hsinyi@chromium.org>
- <20210129092209.2584718-8-hsinyi@chromium.org>
- <CAFqH_53pqgxV0UotaaXNTN=3gfDyHfAzZv6QH9JOdKyg2TEKvw@mail.gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <879e6699-75c1-476b-8114-83b97fd4e00a@gmail.com>
-Date:   Wed, 10 Feb 2021 13:14:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 10 Feb 2021 07:16:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612959399; x=1644495399;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KccJACx3UzbVR7vSn7sUPz8lucKU1UmDl4AZFOnoBwk=;
+  b=n76DgecbmO7+ptzQOOzHglLvcMPzPEle7FBizazAyD3QUwPBSn14SoYz
+   Fyt9C//Xe8jtFK0mM4T87gE31vpXEfqjVgpEJZ9PE7fbqEQtJXtstwCbI
+   gG3djc51UQqOI8AZjlymvZ7nI7ThYO7zeryWjbNY1w9MDSCtGo7yuejcQ
+   Gx0k/mIOoAcVHkNsgFzvO/XaIzujgoxJQU8ggNlGQwGjkI0uqCdqdsq/D
+   sUNycT+AlvtRVe+Quyi04uwQUpp5XP6P7kLcSgqbKDvigTSCSDUbTOGYH
+   HR5ivdYT72Exz93cL6WwDMouL3eDQPu1L0tlf7ssiNFXrdy9ISUzPt4e8
+   A==;
+IronPort-SDR: 6But5P5zXLp4ILDsM0zJcJXdRBox4KKHdUQHsa3kUKlhKboHKmbenpiLEG025yfVo4p6QS5v5c
+ 59OoTMuk0fmg5ZYkdAYdE6eWpwtfNWT1xHmLsAA6IMBhA7CymZHtRDnKuIpbkMEpAuwft5fRFx
+ WeELxPjiPpU4FnhYO5cy0coHwaUYUAAzkOzfJo/rao2AWj8w0S3SEavYByXY3cKMKoVj5Z8ruv
+ LVLSkv5L6ne+9VxWoUTtfNi9EQzaxAKzojg4hPkrX9lCh+OcAOPkc2Zikbn1VOQT8MmB7KgpV8
+ FPU=
+X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
+   d="scan'208";a="103288808"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 05:15:17 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 10 Feb 2021 05:15:17 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 10 Feb 2021 05:15:16 -0700
+Date:   Wed, 10 Feb 2021 13:15:16 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     "jiri@resnulli.us" <jiri@resnulli.us>,
+        "ivecera@redhat.com" <ivecera@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "roopa@nvidia.com" <roopa@nvidia.com>,
+        "nikolay@nvidia.com" <nikolay@nvidia.com>,
+        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "Claudiu Manoil" <claudiu.manoil@nxp.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>
+Subject: Re: [PATCH net-next v3 0/5] bridge: mrp: Extend br_mrp_switchdev_*
+Message-ID: <20210210121516.h2whdmshs2pyvuy5@soft-dev3.localdomain>
+References: <20210209202112.2545325-1-horatiu.vultur@microchip.com>
+ <20210210100831.acnycww3wkeb6imt@skbuf>
 MIME-Version: 1.0
-In-Reply-To: <CAFqH_53pqgxV0UotaaXNTN=3gfDyHfAzZv6QH9JOdKyg2TEKvw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20210210100831.acnycww3wkeb6imt@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The 02/10/2021 10:08, Vladimir Oltean wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> Hi Horatiu,
+> 
+> On Tue, Feb 09, 2021 at 09:21:07PM +0100, Horatiu Vultur wrote:
+> > This patch series extends MRP switchdev to allow the SW to have a better
+> > understanding if the HW can implement the MRP functionality or it needs
+> > to help the HW to run it. There are 3 cases:
+> > - when HW can't implement at all the functionality.
+> > - when HW can implement a part of the functionality but needs the SW
+> >   implement the rest. For example if it can't detect when it stops
+> >   receiving MRP Test frames but it can copy the MRP frames to CPU to
+> >   allow the SW to determine this.  Another example is generating the MRP
+> >   Test frames. If HW can't do that then the SW is used as backup.
+> > - when HW can implement completely the functionality.
+> >
+> > So, initially the SW tries to offload the entire functionality in HW, if
+> > that fails it tries offload parts of the functionality in HW and use the
+> > SW as helper and if also this fails then MRP can't run on this HW.
+> >
+> > Also implement the switchdev calls for Ocelot driver. This is an example
+> > where the HW can't run completely the functionality but it can help the SW
+> > to run it, by trapping all MRP frames to CPU.
+> >
+> > v3:
+> >  - implement the switchdev calls needed by Ocelot driver.
+> > v2:
+> >  - fix typos in comments and in commit messages
+> >  - remove some of the comments
+> >  - move repeated code in helper function
+> >  - fix issue when deleting a node when sw_backup was true
+> >
+> > Horatiu Vultur (5):
+> >   switchdev: mrp: Extend ring_role_mrp and in_role_mrp
+> >   bridge: mrp: Add 'enum br_mrp_hw_support'
+> >   bridge: mrp: Extend br_mrp_switchdev to detect better the errors
+> >   bridge: mrp: Update br_mrp to use new return values of
+> >     br_mrp_switchdev
+> >   net: mscc: ocelot: Add support for MRP
+> >
+> >  drivers/net/ethernet/mscc/ocelot_net.c     | 154 +++++++++++++++++++
+> >  drivers/net/ethernet/mscc/ocelot_vsc7514.c |   6 +
+> >  include/net/switchdev.h                    |   2 +
+> >  include/soc/mscc/ocelot.h                  |   6 +
+> >  net/bridge/br_mrp.c                        |  43 ++++--
+> >  net/bridge/br_mrp_switchdev.c              | 171 +++++++++++++--------
+> >  net/bridge/br_private_mrp.h                |  38 +++--
+> >  7 files changed, 327 insertions(+), 93 deletions(-)
+> >
+> > --
+> > 2.27.0
+> >
+> 
 
+Hi Vladimir,
 
-On 09/02/2021 15:48, Enric Balletbo Serra wrote:
-> Hi Hsin-Yi,
-> 
-> Thank you for your patch.
-> 
-> Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dv., 29 de gen.
-> 2021 a les 10:23:
->>
->> From: Yongqiang Niu <yongqiang.niu@mediatek.com>
->>
->> Add mtk mutex support for MT8183 SoC.
->>
->> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
->> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
->> Reviewed-by: CK Hu <ck.hu@mediatek.com>
-> 
-> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> 
-> FWIW this patch is required to have the display working on the
-> Chromebook IdeaPad Duet, so
-> 
-> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> 
-> Matthias, If I am not wrong, this patch is the only one that is not
-> applied for this series. I know that is too late for 5.12, but If
-> you're fine with it, could you pick this patch directly or do you
-> prefer a resend of this patch alone once you will start to accept
-> patches for the next release?
+> Which net-next commit can these patches be applied to? On the current
+> master I get:
 
-This patch is based on top of a patch that's in CK's branch.
-Let's wait for v5.12-rc1 then I'll take it. If I forget just ping me here/IRC
+Sorry for this. I had an extra patch when I created these patches. And
+based on this I have added the patch series. This extra patch was this
+one:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=b2bdba1cbc84
 
-Regards,
-Matthias
+Which was already applied to net. And I wanted to have it to be able to
+do more complete test of this patch series. Next time I should be more
+careful with this.
 
 > 
-> Thanks,
->   Enric
-> 
->> ---
->>  drivers/soc/mediatek/mtk-mutex.c | 50 ++++++++++++++++++++++++++++++++
->>  1 file changed, 50 insertions(+)
->>
->> diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
->> index f531b119da7a9..718a41beb6afb 100644
->> --- a/drivers/soc/mediatek/mtk-mutex.c
->> +++ b/drivers/soc/mediatek/mtk-mutex.c
->> @@ -14,6 +14,8 @@
->>
->>  #define MT2701_MUTEX0_MOD0                     0x2c
->>  #define MT2701_MUTEX0_SOF0                     0x30
->> +#define MT8183_MUTEX0_MOD0                     0x30
->> +#define MT8183_MUTEX0_SOF0                     0x2c
->>
->>  #define DISP_REG_MUTEX_EN(n)                   (0x20 + 0x20 * (n))
->>  #define DISP_REG_MUTEX(n)                      (0x24 + 0x20 * (n))
->> @@ -37,6 +39,18 @@
->>  #define MT8167_MUTEX_MOD_DISP_DITHER           15
->>  #define MT8167_MUTEX_MOD_DISP_UFOE             16
->>
->> +#define MT8183_MUTEX_MOD_DISP_RDMA0            0
->> +#define MT8183_MUTEX_MOD_DISP_RDMA1            1
->> +#define MT8183_MUTEX_MOD_DISP_OVL0             9
->> +#define MT8183_MUTEX_MOD_DISP_OVL0_2L          10
->> +#define MT8183_MUTEX_MOD_DISP_OVL1_2L          11
->> +#define MT8183_MUTEX_MOD_DISP_WDMA0            12
->> +#define MT8183_MUTEX_MOD_DISP_COLOR0           13
->> +#define MT8183_MUTEX_MOD_DISP_CCORR0           14
->> +#define MT8183_MUTEX_MOD_DISP_AAL0             15
->> +#define MT8183_MUTEX_MOD_DISP_GAMMA0           16
->> +#define MT8183_MUTEX_MOD_DISP_DITHER0          17
->> +
->>  #define MT8173_MUTEX_MOD_DISP_OVL0             11
->>  #define MT8173_MUTEX_MOD_DISP_OVL1             12
->>  #define MT8173_MUTEX_MOD_DISP_RDMA0            13
->> @@ -87,6 +101,11 @@
->>  #define MT2712_MUTEX_SOF_DSI3                  6
->>  #define MT8167_MUTEX_SOF_DPI0                  2
->>  #define MT8167_MUTEX_SOF_DPI1                  3
->> +#define MT8183_MUTEX_SOF_DSI0                  1
->> +#define MT8183_MUTEX_SOF_DPI0                  2
->> +
->> +#define MT8183_MUTEX_EOF_DSI0                  (MT8183_MUTEX_SOF_DSI0 << 6)
->> +#define MT8183_MUTEX_EOF_DPI0                  (MT8183_MUTEX_SOF_DPI0 << 6)
->>
->>  struct mtk_mutex {
->>         int id;
->> @@ -181,6 +200,20 @@ static const unsigned int mt8173_mutex_mod[DDP_COMPONENT_ID_MAX] = {
->>         [DDP_COMPONENT_WDMA1] = MT8173_MUTEX_MOD_DISP_WDMA1,
->>  };
->>
->> +static const unsigned int mt8183_mutex_mod[DDP_COMPONENT_ID_MAX] = {
->> +       [DDP_COMPONENT_AAL0] = MT8183_MUTEX_MOD_DISP_AAL0,
->> +       [DDP_COMPONENT_CCORR] = MT8183_MUTEX_MOD_DISP_CCORR0,
->> +       [DDP_COMPONENT_COLOR0] = MT8183_MUTEX_MOD_DISP_COLOR0,
->> +       [DDP_COMPONENT_DITHER] = MT8183_MUTEX_MOD_DISP_DITHER0,
->> +       [DDP_COMPONENT_GAMMA] = MT8183_MUTEX_MOD_DISP_GAMMA0,
->> +       [DDP_COMPONENT_OVL0] = MT8183_MUTEX_MOD_DISP_OVL0,
->> +       [DDP_COMPONENT_OVL_2L0] = MT8183_MUTEX_MOD_DISP_OVL0_2L,
->> +       [DDP_COMPONENT_OVL_2L1] = MT8183_MUTEX_MOD_DISP_OVL1_2L,
->> +       [DDP_COMPONENT_RDMA0] = MT8183_MUTEX_MOD_DISP_RDMA0,
->> +       [DDP_COMPONENT_RDMA1] = MT8183_MUTEX_MOD_DISP_RDMA1,
->> +       [DDP_COMPONENT_WDMA0] = MT8183_MUTEX_MOD_DISP_WDMA0,
->> +};
->> +
->>  static const unsigned int mt2712_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
->>         [MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
->>         [MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0,
->> @@ -198,6 +231,13 @@ static const unsigned int mt8167_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
->>         [MUTEX_SOF_DPI1] = MT8167_MUTEX_SOF_DPI1,
->>  };
->>
->> +/* Add EOF setting so overlay hardware can receive frame done irq */
->> +static const unsigned int mt8183_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
->> +       [MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
->> +       [MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0 | MT8183_MUTEX_EOF_DSI0,
->> +       [MUTEX_SOF_DPI0] = MT8183_MUTEX_SOF_DPI0 | MT8183_MUTEX_EOF_DPI0,
->> +};
->> +
->>  static const struct mtk_mutex_data mt2701_mutex_driver_data = {
->>         .mutex_mod = mt2701_mutex_mod,
->>         .mutex_sof = mt2712_mutex_sof,
->> @@ -227,6 +267,14 @@ static const struct mtk_mutex_data mt8173_mutex_driver_data = {
->>         .mutex_sof_reg = MT2701_MUTEX0_SOF0,
->>  };
->>
->> +static const struct mtk_mutex_data mt8183_mutex_driver_data = {
->> +       .mutex_mod = mt8183_mutex_mod,
->> +       .mutex_sof = mt8183_mutex_sof,
->> +       .mutex_mod_reg = MT8183_MUTEX0_MOD0,
->> +       .mutex_sof_reg = MT8183_MUTEX0_SOF0,
->> +       .no_clk = true,
->> +};
->> +
->>  struct mtk_mutex *mtk_mutex_get(struct device *dev)
->>  {
->>         struct mtk_mutex_ctx *mtx = dev_get_drvdata(dev);
->> @@ -457,6 +505,8 @@ static const struct of_device_id mutex_driver_dt_match[] = {
->>           .data = &mt8167_mutex_driver_data},
->>         { .compatible = "mediatek,mt8173-disp-mutex",
->>           .data = &mt8173_mutex_driver_data},
->> +       { .compatible = "mediatek,mt8183-disp-mutex",
->> +         .data = &mt8183_mutex_driver_data},
->>         {},
->>  };
->>  MODULE_DEVICE_TABLE(of, mutex_driver_dt_match);
->> --
->> 2.30.0.365.g02bc693789-goog
->>
->>
->> _______________________________________________
->> Linux-mediatek mailing list
->> Linux-mediatek@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> Applying: switchdev: mrp: Extend ring_role_mrp and in_role_mrp
+> Applying: bridge: mrp: Add 'enum br_mrp_hw_support'
+> Applying: bridge: mrp: Extend br_mrp_switchdev to detect better the errors
+> error: patch failed: net/bridge/br_mrp_switchdev.c:177
+> error: net/bridge/br_mrp_switchdev.c: patch does not apply
+> Patch failed at 0004 bridge: mrp: Extend br_mrp_switchdev to detect better the errors
+> hint: Use 'git am --show-current-patch' to see the failed patch
+> When you have resolved this problem, run "git am --continue".
+> If you prefer to skip this patch, run "git am --skip" instead.
+> To restore the original branch and stop patching, run "git am --abort".
+
+-- 
+/Horatiu
