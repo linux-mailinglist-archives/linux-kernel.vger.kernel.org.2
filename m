@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705C5316965
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CAD316969
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhBJOru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:47:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229917AbhBJOrq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:47:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612968378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=fPXbqURy6kSX4ZxoBdBuEq+FZUuby0EHA9k832hQnFM=;
-        b=X2pSm1cHDIH/x5FHLcrG4KW9NeagUJDeCotD0t6Mu/kvFkP+DEsmMO5g4xSOCAd8p9WcDy
-        2rZGoGxqs3EiJVo0d6QiZDBNuAata/iUyie7UOman50IKE98BvieddLSAZg0tZ7kkx7r/a
-        LIONWPG2/V+RWOcI6BibcCn9kfiIxbQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-oJQTCZx_MwWRjqm9NwJ5tQ-1; Wed, 10 Feb 2021 09:46:16 -0500
-X-MC-Unique: oJQTCZx_MwWRjqm9NwJ5tQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CD8B1005501;
-        Wed, 10 Feb 2021 14:46:13 +0000 (UTC)
-Received: from llong.com (ovpn-115-20.rdu2.redhat.com [10.10.115.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C24860936;
-        Wed, 10 Feb 2021 14:46:06 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ben Gardon <bgardon@google.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] locking/arch: Move qrwlock.h include after qspinlock.h
-Date:   Wed, 10 Feb 2021 09:45:56 -0500
-Message-Id: <20210210144556.10932-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S231309AbhBJOuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:50:07 -0500
+Received: from mga11.intel.com ([192.55.52.93]:13533 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230028AbhBJOuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:50:02 -0500
+IronPort-SDR: xvWYcWCc+ABBAU9n+CTk/O48wMYVAFUzmW+n7F3pc0Yl4eGj54ztMO1m+87BP6k5DXGwQdixpU
+ bqFZgeF+T9NA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="178573131"
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="178573131"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 06:48:14 -0800
+IronPort-SDR: Fz0huz8BxvaKkQQkanZeVSu1UIU6Bo+Wu0wJVcXCJ0Pjnmyd43g1oBvY+jOVmOuS7MjfRsgyyo
+ 4lzoiv+3soVw==
+X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
+   d="scan'208";a="436696420"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 06:48:12 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l9qmo-003kft-6W; Wed, 10 Feb 2021 16:48:10 +0200
+Date:   Wed, 10 Feb 2021 16:48:10 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>
+Subject: Re: [PATCH v1 7/7] ACPI: property: Allow counting a single value as
+ an array of 1 element
+Message-ID: <YCPyKjO7XPBFAgbn@smile.fi.intel.com>
+References: <20210210114320.3478-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0hx78JHnP5-5xFTPr0Rh9FvPCzAzTCyBaT6eLZ3Dd-mFA@mail.gmail.com>
+ <3881654.NPl3a4M0kB@kreacher>
+ <1946478.1QpZic6vku@kreacher>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1946478.1QpZic6vku@kreacher>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The queued rwlock code has a dependency on the current spinlock
-implementation (likely to be qspinlock), but not vice versa. Including
-qrwlock.h before qspinlock.h can be problematic when expanding qrwlock
-functionality.
+On Wed, Feb 10, 2021 at 02:48:09PM +0100, Rafael J. Wysocki wrote:
+> On Wednesday, February 10, 2021 2:31:48 PM CET Rafael J. Wysocki wrote:
+> > On Wednesday, February 10, 2021 1:36:00 PM CET Rafael J. Wysocki wrote:
+> > > On Wed, Feb 10, 2021 at 12:51 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
 
-If both qspinlock.h and qrwlock.h are to be included, the qrwlock.h
-include should always be after qspinlock.h. Update the current set of
-asm/spinlock.h files to enforce that.
+Rafael, thanks for the review, my answers below.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- arch/arm64/include/asm/spinlock.h  | 2 +-
- arch/mips/include/asm/spinlock.h   | 2 +-
- arch/xtensa/include/asm/spinlock.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+> > > > We allow to read the single value as a first element in the array.
+> > > > Unfortunately the counting doesn't work in this case and we can't
+> > > > call fwnode_property_count_*() API without getting an error.
+> > > 
+> > > It would be good to mention what the symptom of the issue is here.
 
-diff --git a/arch/arm64/include/asm/spinlock.h b/arch/arm64/include/asm/spinlock.h
-index 9083d6992603..0525c0b089ed 100644
---- a/arch/arm64/include/asm/spinlock.h
-+++ b/arch/arm64/include/asm/spinlock.h
-@@ -5,8 +5,8 @@
- #ifndef __ASM_SPINLOCK_H
- #define __ASM_SPINLOCK_H
- 
--#include <asm/qrwlock.h>
- #include <asm/qspinlock.h>
-+#include <asm/qrwlock.h>
- 
- /* See include/linux/spinlock.h */
- #define smp_mb__after_spinlock()	smp_mb()
-diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
-index 8a88eb265516..6ce2117e49f6 100644
---- a/arch/mips/include/asm/spinlock.h
-+++ b/arch/mips/include/asm/spinlock.h
-@@ -10,7 +10,6 @@
- #define _ASM_SPINLOCK_H
- 
- #include <asm/processor.h>
--#include <asm/qrwlock.h>
- 
- #include <asm-generic/qspinlock_types.h>
- 
-@@ -27,5 +26,6 @@ static inline void queued_spin_unlock(struct qspinlock *lock)
- }
- 
- #include <asm/qspinlock.h>
-+#include <asm/qrwlock.h>
- 
- #endif /* _ASM_SPINLOCK_H */
-diff --git a/arch/xtensa/include/asm/spinlock.h b/arch/xtensa/include/asm/spinlock.h
-index 584b0de6f2ca..41c449ece2d8 100644
---- a/arch/xtensa/include/asm/spinlock.h
-+++ b/arch/xtensa/include/asm/spinlock.h
-@@ -12,8 +12,8 @@
- #define _XTENSA_SPINLOCK_H
- 
- #include <asm/barrier.h>
--#include <asm/qrwlock.h>
- #include <asm/qspinlock.h>
-+#include <asm/qrwlock.h>
- 
- #define smp_mb__after_spinlock()	smp_mb()
- 
+fwnode_property_match_string() is not working as reported by Calvin.
+
+> > > > Modify acpi_data_prop_read() to always try the single value read
+> > > > and thus allow counting the single value as an array of 1 element.
+> > > >
+> > > > Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > 
+> > > This is a bug fix, so it should go in before the cleanups in this series IMO.
+
+Seems it was never worked, hence neither Fixes tag nor...
+
+> > > Also it looks like stable@vger material.
+
+...Cc to stable@.
+
+> > > > -       if (val && nval == 1) {
+> > > > +       /* Try to read as a single value first */
+> > > > +       if (!val || nval == 1) {
+> > > >                 ret = acpi_data_prop_read_single(data, propname, proptype, val);
+> > > 
+> > > This returns -EINVAL if val is NULL.
+
+Nope. That's why it's a patch 7. Patch 6 solves this.
+
+> > > >                 if (ret >= 0)
+> > > > -                       return ret;
+> > > > +                       return val ? ret : 1;
+> > > 
+> > > So val cannot be NULL here.
+
+Why not? I have changed conditional.
+
+> > > >         }
+
+> > > To me, acpi_fwnode_property_read_string_array() needs to special-case
+> > > val == NULL and nval == 0.
+
+nval can be anything in the case of val==NULL. So far neither of your proposals
+conform this.
+
+
+
+
 -- 
-2.18.1
+With Best Regards,
+Andy Shevchenko
+
 
