@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0B23161E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D1A3161EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbhBJJRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:17:19 -0500
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:62483 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhBJJOM (ORCPT
+        id S229913AbhBJJRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:17:49 -0500
+Received: from mail-qt1-f182.google.com ([209.85.160.182]:43609 "EHLO
+        mail-qt1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhBJJO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:14:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1612948452; x=1644484452;
-  h=to:cc:references:from:message-id:date:mime-version:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=04NIynoa/p0bYIjfkLz8VNDkF3qP7YQq7Yjflu2JPsY=;
-  b=vda68wgb5JTaNWF2yUT4QC5Hko2i4Cxv/or0TZ5qUMdxU+7uka0G4REX
-   8cNlm6BnJ4Kk+txl0S9mHlL9JjrYEsDGl/JjWi4a9MnbrXteMSURQVSur
-   1UtDA3juhR3X5xSJM0v9Dp2BVtz11B3YwnKbxpChQuNiLenehjFIc6TTn
-   o=;
-X-IronPort-AV: E=Sophos;i="5.81,167,1610409600"; 
-   d="scan'208";a="81286321"
-Subject: Re: [PATCH v2] nvme: Add 48-bit DMA address quirk for Amazon NVMe controllers
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 10 Feb 2021 09:13:23 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 7C57CA1838;
-        Wed, 10 Feb 2021 09:13:21 +0000 (UTC)
-Received: from EX13D08UEE001.ant.amazon.com (10.43.62.126) by
- EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 10 Feb 2021 09:13:21 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
- EX13D08UEE001.ant.amazon.com (10.43.62.126) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 10 Feb 2021 09:13:20 +0000
-Received: from u2196cf9297dc59.ant.amazon.com (10.1.212.32) by
- mail-relay.amazon.com (10.43.62.224) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Wed, 10 Feb 2021 09:13:18 +0000
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <serebrin@amazon.com>, <dwmw@amazon.co.uk>, <benh@amazon.com>,
-        <kbusch@kernel.org>, <axboe@fb.com>, <sagi@grimberg.me>,
-        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20210203094338.19473-1-sironi@amazon.de>
- <20210210003942.25700-1-sironi@amazon.de> <20210210073759.GA23269@lst.de>
-From:   Filippo Sironi <sironi@amazon.de>
-Message-ID: <8a375a50-1aad-96c5-2743-f91120fbc6f9@amazon.de>
-Date:   Wed, 10 Feb 2021 10:13:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 10 Feb 2021 04:14:59 -0500
+Received: by mail-qt1-f182.google.com with SMTP id d3so996873qtr.10;
+        Wed, 10 Feb 2021 01:14:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k2foprN11jPvL8F6T6kuwwDYHPt232FzT4lVXv/dAAs=;
+        b=XxLBwCn0Czm5ili8QdkM/Rh6RBf14N81oVagPDjO6Ho2IS4ggnqH3ragxXUKgxnBJX
+         NlKOI3zAK2iG2frcZnZ0Xohcp271h+lI13IH91S5abU0FXEHA63L1331GnZmPRv7nSs8
+         07DEkB9bw46vqHZ8G3vn0xguQUeljy2yrQTtnL0BDpPnY3E7Bn+U39FSEaoMZQtX0gta
+         SQb7tJfcEg52A8CapR6AC5bhTbO+xSLMcc+dlPYWkChpoq23ayPgCt4Qecpy9/EOVqJw
+         rpMUWShaFHFv0k8UJ0/R0UiwxPfgTOClwHxICckL5sFXTsEu94cTFO4PH/BiUrwN1brw
+         gBqw==
+X-Gm-Message-State: AOAM530b0x4HRYwVESyJ2qif0uY4VggnEEP6gATSjOqpIR+gRSzso+v5
+        /LGBMbNmztPMLbXyinzHeVoh+3TYF/ek9r5W+SE=
+X-Google-Smtp-Source: ABdhPJyiJTAt0q8MYJ8vdhT20PD2qMYb5gC/dcGBc9RoF5fw3VnDIJB3XMvy/JS7UcST5bgkskSxAf3+LSqjikwm7iY=
+X-Received: by 2002:ac8:4e8b:: with SMTP id 11mr1808204qtp.292.1612948457651;
+ Wed, 10 Feb 2021 01:14:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210210073759.GA23269@lst.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+References: <20210208181157.1324550-1-paul@crapouillou.net> <20210208192902.GR920417@kernel.org>
+In-Reply-To: <20210208192902.GR920417@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 10 Feb 2021 18:14:06 +0900
+Message-ID: <CAM9d7ciG7p4KKTdLgHTUJHS03VpQuou8Ns3VWAZYB9S9kyr4nw@mail.gmail.com>
+Subject: Re: [PATCH] perf stat: Use nftw() instead of ftw()
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Paul Cercueil <paul@crapouillou.net>, Jiri Olsa <jolsa@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        od@zcrc.me, linux-kernel <linux-kernel@vger.kernel.org>,
+        "stable # 4 . 5" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMi8xMC8yMSA4OjM3IEFNLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90ZToKPiAKPiBPbiBXZWQs
-IEZlYiAxMCwgMjAyMSBhdCAwMTozOTo0MkFNICswMTAwLCBGaWxpcHBvIFNpcm9uaSB3cm90ZToK
-Pj4gQW1hem9uIE5WTWUgY29udHJvbGxlcnMgZG8gbm90IHN1cHBvcnQgNjQtYml0IERNQSBhZGRy
-ZXNzZXM7IHRoZXkgYXJlCj4+IGxpbWl0ZWQgdG8gNDgtYml0IERNQSBhZGRyZXNzZXMuICBMZXQn
-cyBhZGQgYSBxdWlyayB0byBlbnN1cmUgdGhhdCB3ZQo+PiBtYWtlIHVzZSBvZiA0OC1iaXQgRE1B
-IGFkZHJlc3NlcyB0byBhdm9pZCBtaXNiZWhhdmlvci4KPiAKPiBUaGlzIHNob3VsZCBwcm9iYWJs
-eSBzYXkgc29tZSwgYW5kIG1lbnRpb24gdGhhdCB0aGV5IGRvIG5vdCBmb2xsb3cKPiB0aGUgc3Bl
-Yy4gIEJ1dCBJIGNhbiBmaXggdGhpcyB1cCB3aGVuIGFwcGx5aW5nIHRoZSBwYXRjaC4KPiAKClRo
-YW5rcyEKCkZpbGlwcG8KCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgK
-S3JhdXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFu
-IFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hh
-cmxvdHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4
-OSAyMzcgODc5CgoK
+Hi,
 
+On Tue, Feb 9, 2021 at 4:29 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+> Em Mon, Feb 08, 2021 at 06:11:57PM +0000, Paul Cercueil escreveu:
+> > ftw() has been obsolete for about 12 years now.
+> >
+> > Fixes: bb1c15b60b98 ("perf stat: Support regex pattern in --for-each-cgroup")
+> > CC: stable@vger.kernel.org
+> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > ---
+> >
+> > Notes:
+> >     NOTE: Not runtime-tested, I have no idea what I need to do in perf
+> >     to test this. But at least it compiles now with my uClibc-based
+> >     toolchain.
+>
+> Seems safe from reading the nftw() man page, the only typeflag that this
+> code is using is FTW_D and that is present in both ftw() and nftw().
+>
+> Applying,
+
+Didn't notice it was obsolete.
+
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks,
+Namhyung
