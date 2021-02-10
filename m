@@ -2,128 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9BE316B86
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B58A316B84
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhBJQnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:43:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232957AbhBJQir (ORCPT
+        id S233058AbhBJQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:42:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27541 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232836AbhBJQiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:38:47 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F89C061788
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:36:17 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id u143so1598468pfc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:36:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DHjPOaB9z0WBR9paX+T9/UPiJiQWfM7w1AksmlIdo9Y=;
-        b=Xe+iIF1J2RqqvQMPg6QGaiJ+0x0WzZ5tPKHx+tq9dsjURd6cnGQCotLlHJpEmN6mMV
-         qVHUcOOboYGFfuVDl86/5lnWStG+L67KwyWuJ8lkUoOhyc/5MvF71iI7UVukpDHx8gkJ
-         4PqLOn7Wl+eNVLPJne8U8GfQo1Rx9KkkfB8oekzqb7wwtFcguJa7KK+t/iu4qJxOnIob
-         prnEUyVDLg4f62AINDbry2FroaQykj/80Ts4B/7biiLHEcWlQ5BlfIM6RW97WAGNxfYx
-         +TQn6vxoOcOERCjA7B6XxMzgW55psimnZEfoHDdXYtG7zJtVeOHJxCnYmwy3TRz/qw7s
-         U02g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DHjPOaB9z0WBR9paX+T9/UPiJiQWfM7w1AksmlIdo9Y=;
-        b=DQ0A2DD1N02dP6ZpJUbqh9gQUP9bMbapyWqGuE/I1so5ZatAJqqIANhk1H2St/B95k
-         Ld8AzvlzmlVKxc6h3xL/rhsZJThG0Um6ioIXPk3Ts/9SvBy1scr+aBMi+CpIVlz/eyB/
-         lQnN6yCSemNUtjjf7vBVULsuFNaI4kENGar2e4qUY7cq/LtbZCnMgSrOmZZsXa3fSKIL
-         mIaXczup42b/Sfj24Drdw68flluEhc4C/mxg6QA4jLvNSEa733q0AKuGcnR2qQk+q0KG
-         wSXT2tajDxVU2EKIkYXg6OcYpj7Jk3geMS0iZ3kzodmPV4qc6OnUP1HkyiG8HlNWaBuk
-         HS/g==
-X-Gm-Message-State: AOAM533u6wJ3ZRMTV4no4/lxUyIbcVjxhs+F/0RDQyjDVj9lKkFA498a
-        B8a0bIOSwtdN0yV58tqBLyQIqi8W29q6Zw==
-X-Google-Smtp-Source: ABdhPJyz5/IWiVKrO5/qWYpapaKEdr3aBd6RAIgVCTKfri0RIj3bR4mUK9oulzhguZfsOvMeWX0VOA==
-X-Received: by 2002:a63:5525:: with SMTP id j37mr3885830pgb.191.1612974976999;
-        Wed, 10 Feb 2021 08:36:16 -0800 (PST)
-Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id bv21sm2914637pjb.15.2021.02.10.08.36.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 08:36:16 -0800 (PST)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] Documentation: coresight: Add PID tracing description
-Date:   Wed, 10 Feb 2021 09:36:10 -0700
-Message-Id: <20210210163610.2338491-3-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210210163610.2338491-1-mathieu.poirier@linaro.org>
-References: <20210210163610.2338491-1-mathieu.poirier@linaro.org>
+        Wed, 10 Feb 2021 11:38:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612975003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6q4l5j2A9zC8AOPQY3ki5vFxtQJE10uxKO//gAn5chg=;
+        b=P9Ja+CceJgu87YP1k1zZb1aycA4H8XFB5fB4HzNj0Nmwd7vqODKBcz+EhqVbIcpiWwl79/
+        Ul9zfWxLONn5DT0Vlh/9mpqdb0JjtDlEGIb4Z5BS8qp8KTNBlVHxSywPGjdmRw6GYQBSD2
+        y+jM33mMrk8Xwbuv6fKfCNbfBWYukG8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-223-0MlIkmEwOxCxZMmDqzOJ6A-1; Wed, 10 Feb 2021 11:36:42 -0500
+X-MC-Unique: 0MlIkmEwOxCxZMmDqzOJ6A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37F8D803F4C;
+        Wed, 10 Feb 2021 16:36:40 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4970D60657;
+        Wed, 10 Feb 2021 16:36:34 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wh+2gbF7XEjYc=HV9w_2uVzVf7vs60BPz0gFA=+pUm3ww@mail.gmail.com>
+References: <CAHk-=wh+2gbF7XEjYc=HV9w_2uVzVf7vs60BPz0gFA=+pUm3ww@mail.gmail.com> <591237.1612886997@warthog.procyon.org.uk> <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com> <20210209202134.GA308988@casper.infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1331024.1612974993.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 10 Feb 2021 16:36:33 +0000
+Message-ID: <1331025.1612974993@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-After support the PID tracing for the kernel in EL1 or EL2, the usage
-gets more complicated.
+> Does the code not hold a refcount already?
 
-This patch gives description for the PMU formats of contextID configs,
-this can help users to understand how to control the knobs for PID
-tracing when the kernel is in different ELs.
+The attached patch will do that.  Note that it's currently based on top of=
+ the
+patch that drops the PG_fscache alias, so it refers to PG_private_2.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
-Message-Id: <20210206150833.42120-9-leo.yan@linaro.org>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+I've run all three patches through xfstests over afs, both with and withou=
+t a
+cache, and Jeff has tested ceph with them.
+
+David
 ---
- Documentation/trace/coresight/coresight.rst | 32 +++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+commit 803a09110b41b9f6091a517fc8f5c4b15475048c
+Author: David Howells <dhowells@redhat.com>
+Date:   Wed Feb 10 11:35:15 2021 +0000
 
-diff --git a/Documentation/trace/coresight/coresight.rst b/Documentation/trace/coresight/coresight.rst
-index 0b73acb44efa..169749efd8d1 100644
---- a/Documentation/trace/coresight/coresight.rst
-+++ b/Documentation/trace/coresight/coresight.rst
-@@ -512,6 +512,38 @@ The --itrace option controls the type and frequency of synthesized events
- Note that only 64-bit programs are currently supported - further work is
- required to support instruction decode of 32-bit Arm programs.
- 
-+2.2) Tracing PID
+    netfs: Hold a ref on a page when PG_private_2 is set
+    =
+
+    Take a reference on a page when PG_private_2 is set and drop it once t=
+he
+    bit is unlocked.
+    =
+
+    Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+    Signed-off-by: David Howells <dhowells@redhat.com>
+
+diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
+index 9018224693e9..043d96ca2aad 100644
+--- a/fs/netfs/read_helper.c
++++ b/fs/netfs/read_helper.c
+@@ -10,6 +10,7 @@
+ #include <linux/fs.h>
+ #include <linux/mm.h>
+ #include <linux/pagemap.h>
++#include <linux/pagevec.h>
+ #include <linux/slab.h>
+ #include <linux/uio.h>
+ #include <linux/sched/mm.h>
+@@ -230,10 +231,13 @@ static void netfs_rreq_completed(struct netfs_read_r=
+equest *rreq)
+ static void netfs_rreq_unmark_after_write(struct netfs_read_request *rreq=
+)
+ {
+ 	struct netfs_read_subrequest *subreq;
++	struct pagevec pvec;
+ 	struct page *page;
+ 	pgoff_t unlocked =3D 0;
+ 	bool have_unlocked =3D false;
+ =
+
++	pagevec_init(&pvec);
 +
-+The kernel can be built to write the PID value into the PE ContextID registers.
-+For a kernel running at EL1, the PID is stored in CONTEXTIDR_EL1.  A PE may
-+implement Arm Virtualization Host Extensions (VHE), which the kernel can
-+run at EL2 as a virtualisation host; in this case, the PID value is stored in
-+CONTEXTIDR_EL2.
-+
-+perf provides PMU formats that program the ETM to insert these values into the
-+trace data; the PMU formats are defined as below:
-+
-+  "contextid1": Available on both EL1 kernel and EL2 kernel.  When the
-+                kernel is running at EL1, "contextid1" enables the PID
-+                tracing; when the kernel is running at EL2, this enables
-+                tracing the PID of guest applications.
-+
-+  "contextid2": Only usable when the kernel is running at EL2.  When
-+                selected, enables PID tracing on EL2 kernel.
-+
-+  "contextid":  Will be an alias for the option that enables PID
-+                tracing.  I.e,
-+                contextid == contextid1, on EL1 kernel.
-+                contextid == contextid2, on EL2 kernel.
-+
-+perf will always enable PID tracing at the relevant EL, this is accomplished by
-+automatically enable the "contextid" config - but for EL2 it is possible to make
-+specific adjustments using configs "contextid1" and "contextid2", E.g. if a user
-+wants to trace PIDs for both host and guest, the two configs "contextid1" and
-+"contextid2" can be set at the same time:
-+
-+  perf record -e cs_etm/contextid1,contextid2/u -- vm
-+
- 
- Generating coverage files for Feedback Directed Optimization: AutoFDO
- ---------------------------------------------------------------------
--- 
-2.25.1
+ 	rcu_read_lock();
+ =
+
+ 	list_for_each_entry(subreq, &rreq->subrequests, rreq_link) {
+@@ -247,6 +251,8 @@ static void netfs_rreq_unmark_after_write(struct netfs=
+_read_request *rreq)
+ 				continue;
+ 			unlocked =3D page->index;
+ 			unlock_page_private_2(page);
++			if (pagevec_add(&pvec, page) =3D=3D 0)
++				pagevec_release(&pvec);
+ 			have_unlocked =3D true;
+ 		}
+ 	}
+@@ -403,8 +409,10 @@ static void netfs_rreq_unlock(struct netfs_read_reque=
+st *rreq)
+ 				pg_failed =3D true;
+ 				break;
+ 			}
+-			if (test_bit(NETFS_SREQ_WRITE_TO_CACHE, &subreq->flags))
++			if (test_bit(NETFS_SREQ_WRITE_TO_CACHE, &subreq->flags)) {
++				get_page(page);
+ 				SetPagePrivate2(page);
++			}
+ 			pg_failed |=3D subreq_failed;
+ 			if (pgend < iopos + subreq->len)
+ 				break;
 
