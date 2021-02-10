@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094943173F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B99663173FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbhBJXIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:08:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
+        id S233680AbhBJXJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:09:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233792AbhBJXHy (ORCPT
+        with ESMTP id S233847AbhBJXH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:07:54 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C43C06178B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:06:39 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id p22so4189487ybc.18
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:06:39 -0800 (PST)
+        Wed, 10 Feb 2021 18:07:59 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C706C061793
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:06:42 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id i11so2924649qkn.21
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=GEZo8w0hgK50yVJrGIa5NClbFF0q/1wZWPqztqSAI8U=;
-        b=rn5yL60zWHOSQ+4padKHXvkuITHPNRNSNM+Cf+9acwDztaCvEP/GBVQ46b4K61tWUh
-         0rBN1xLJTmrJEjlUWrvyxWAHzpYRU+matvsXKhc05IbcvNWPj8T75zjBFATONuPPrZxP
-         omSVOmXteiC47KavBtmbXLlzcOdxpao3dOCmu9aeF4UKwlt2bQGEahNFJY4aBRP2PtFc
-         rlr6BsK92Pffqxz8x+FWpJtjLmil2U1AXIjWuvO10GvEQ8DFttN4VfIiO+5fHXVjSRjP
-         NwL5raeTygbl0rz7OCb3GgcHwErhtvIBEGR9Qc3TDbNsP7D8Sj/4OdNyyeNmRr5kUGvI
-         yULg==
+        bh=c19kP48HP44DYzRTxNvBkL6r5zKqdROTV6wmdYv7tSc=;
+        b=OwrLzE0kO7weELha4Kp1fyhG7sdykoXrp0hwGwAAbyFvISToZvRacz1aipJVy1fkZU
+         cgbCsaaFfNJ4JdQyKwFr3WMrkI0jYq6noOQD/foIe32KUAa8VdjEK3G+UW54t6hRADdb
+         wycUuoQd7td8LXJMQczRU7OyLqKoh1f0bKv74CLxndstbBo+kocEypj5wHubHb/3e4vF
+         yzuxhUF6i2pk2NHghivBINolGwgbwsRV713qAKG1LQHT3UhYQmx6OlHo3RlRaixnZKhV
+         9DAQwZ632SXkezIFRW9EEmwd1lKTW8wAt54/RSkjvrzinOCN0/I5/DHLslWvPCgOojxx
+         gQZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=GEZo8w0hgK50yVJrGIa5NClbFF0q/1wZWPqztqSAI8U=;
-        b=sxJ/GDJ0L0msgJs1ANFlGPusD7A4IsDVUPyyvyfeB2PD2u6bUp6CmrSqWV81auJMaj
-         HOx31NCFyCKrNoqdh5Kyp9QmXJ4AfEcS8qG1d8GAdRhRPqTM5v8sYvU8ZaO0jmfPb7x1
-         ScUvW2gyvrnVOx4qXMfLyqgmWG1CT8BefcRzipYb9AIIxkW9h13RLA77RLe9uQlshapL
-         I0JwlopTHt/K+0kY5RsKK7ZmCT/R2FU69i7LGeVGK1g7bDKJ4AEJTyHd9T9WGWHLEG0g
-         lveKSjWTeag047i4e3NH7CKjqUr/TtEKra1+HFQrDPTDaGbvKqsX0AlqQdhz5qMKgBPG
-         wMaQ==
-X-Gm-Message-State: AOAM532v9jcIH6sXZ8zJeNMK/urTlZwX1DYLLpJpLIo1325A81sY3JKX
-        TWw4PCk1YwklDuZnZTWDZZW6mH1R/II=
-X-Google-Smtp-Source: ABdhPJyKAtmGiuCuTcqrHgv9sAQanTocQ/PtnpyWOrlk2ZIw5XLV1hGfoeCCdeS0VxjghnW0oJbtesz/eSA=
+        bh=c19kP48HP44DYzRTxNvBkL6r5zKqdROTV6wmdYv7tSc=;
+        b=SxFJTEwqu4/PhNPLvjNrNMmdQ0phcEHh6SNJJYkesiHpv7Fb1HcOv6ScuDhPL+1MeD
+         N21ONdfcs65clLT2iIj51FM1sErpLnkndwBjq2lZT/KrVZKfwggQjjbH825IR1RcGLNz
+         Et7zIXBA8zRjb8EvmRIO+UavQHj9czidehUb+Xp0bHOo77AmEpJQAIixT7A1/Skie/We
+         46vFWs9EbqxPcGP0qlsHeoYIWf/MLmZn4l0mfze4zt8QahD1Dege3ljWnM/URJUNDHr/
+         myCp4J/yZ0bEJ5LeTFzKLBbyFur/fSmIs45iX8TbLLb7e/2id47D1P8KmaOtJ56k1JX2
+         tTqQ==
+X-Gm-Message-State: AOAM5328q5M2TWucevkKqG8kqaVr98iDNvBdYdDeNCJGekOMpi52ez0x
+        qQTNF9LFMOFXI67hS06Ash2kjja/Cbw=
+X-Google-Smtp-Source: ABdhPJwFT6XTMSr0mgp0F4wxa8DFbIUWyWCBFcDFVsnJMDNy8e1Pgi+q+46odnLgegTgvbm111Zk9SL5Sa4=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:11fc:33d:bf1:4cb8])
- (user=seanjc job=sendgmr) by 2002:a25:a241:: with SMTP id b59mr7767318ybi.289.1612998399020;
- Wed, 10 Feb 2021 15:06:39 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:1144:: with SMTP id
+ b4mr5496535qvt.12.1612998401429; Wed, 10 Feb 2021 15:06:41 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 10 Feb 2021 15:06:13 -0800
+Date:   Wed, 10 Feb 2021 15:06:14 -0800
 In-Reply-To: <20210210230625.550939-1-seanjc@google.com>
-Message-Id: <20210210230625.550939-4-seanjc@google.com>
+Message-Id: <20210210230625.550939-5-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210210230625.550939-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH 03/15] KVM: selftests: Align HVA for HugeTLB-backed memslots
+Subject: [PATCH 04/15] KVM: selftests: Force stronger HVA alignment (1gb) for hugepages
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -68,9 +68,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align the HVA for HugeTLB memslots, not just THP memslots.  Add an
-assert so any future backing types are forced to assess whether or not
-they need to be aligned.
+Align the HVA for hugepage memslots to 1gb, as opposed to incorrectly
+assuming all architectures' hugepages are 512*page_size.
+
+For x86, multiplying by 512 is correct, but only for 2mb pages, e.g.
+systems that support 1gb pages will never be able to use them for mapping
+guest memory, and thus those flows will not be exercised.
+
+For arm64, powerpc, and s390 (and mips?), hardcoding the multiplier to
+512 is either flat out wrong, or at best correct only in certain
+configurations.
+
+Hardcoding the _alignment_ to 1gb is a compromise between correctness and
+simplicity.  Due to the myriad flavors of hugepages across architectures,
+attempting to enumerate the exact hugepage size is difficult, and likely
+requires probing the kernel.
+
+But, there is no need for precision since a stronger alignment will not
+prevent creating a smaller hugepage.  For all but the most extreme cases,
+e.g. arm64's 16gb contiguous PMDs, aligning to 1gb is sufficient to allow
+KVM to back the guest with hugepages.
+
+Add the new alignment in kvm_util.h so that it can be used by callers of
+vm_userspace_mem_region_add(), e.g. to also ensure GPAs are aligned.
 
 Cc: Ben Gardon <bgardon@google.com>
 Cc: Yanan Wang <wangyanan55@huawei.com>
@@ -79,26 +99,63 @@ Cc: Peter Xu <peterx@redhat.com>
 Cc: Aaron Lewis <aaronlewis@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- tools/testing/selftests/kvm/lib/kvm_util.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/testing/selftests/kvm/include/kvm_util.h | 13 +++++++++++++
+ tools/testing/selftests/kvm/lib/kvm_util.c     |  4 +---
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
+diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+index 4b5d2362a68a..a7dbdf46aa51 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util.h
++++ b/tools/testing/selftests/kvm/include/kvm_util.h
+@@ -68,6 +68,19 @@ enum vm_guest_mode {
+ #define MIN_PAGE_SIZE		(1U << MIN_PAGE_SHIFT)
+ #define PTES_PER_MIN_PAGE	ptes_per_page(MIN_PAGE_SIZE)
+ 
++/*
++ * KVM_UTIL_HUGEPAGE_ALIGNMENT is selftest's required alignment for both host
++ * and guest addresses when backing guest memory with hugepages.  This is not
++ * the exact size of hugepages, rather it's a size that should allow backing
++ * the guest with hugepages on all architectures.  Precisely tracking the exact
++ * sizes across all architectures is more pain than gain, e.g. x86 supports 2mb
++ * and 1gb hugepages, arm64 supports 2mb and 1gb hugepages when using 4kb pages
++ * and 512mb hugepages when using 64kb pages (ignoring contiguous TLB entries),
++ * powerpc radix supports 1gb hugepages when using 64kb pages, s390 supports 1mb
++ * hugepages, and so on and so forth.
++ */
++#define KVM_UTIL_HUGEPAGE_ALIGNMENT	(1ULL << 30)
++
+ #define vm_guest_mode_string(m) vm_guest_mode_string[m]
+ extern const char * const vm_guest_mode_string[];
+ 
 diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 584167c6dbc7..deaeb47b5a6d 100644
+index deaeb47b5a6d..2e497fbab6ae 100644
 --- a/tools/testing/selftests/kvm/lib/kvm_util.c
 +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -731,8 +731,11 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
- 	alignment = 1;
- #endif
+@@ -18,7 +18,6 @@
+ #include <unistd.h>
+ #include <linux/kernel.h>
  
--	if (src_type == VM_MEM_SRC_ANONYMOUS_THP)
-+	if (src_type == VM_MEM_SRC_ANONYMOUS_THP ||
-+	    src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB)
- 		alignment = max(huge_page_size, alignment);
-+	else
-+		ASSERT_EQ(src_type, VM_MEM_SRC_ANONYMOUS);
+-#define KVM_UTIL_PGS_PER_HUGEPG 512
+ #define KVM_UTIL_MIN_PFN	2
  
- 	/* Add enough memory to align up if necessary */
- 	if (alignment > 1)
+ /*
+@@ -670,7 +669,6 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ {
+ 	int ret;
+ 	struct userspace_mem_region *region;
+-	size_t huge_page_size = KVM_UTIL_PGS_PER_HUGEPG * vm->page_size;
+ 	size_t alignment;
+ 
+ 	TEST_ASSERT(vm_adjust_num_guest_pages(vm->mode, npages) == npages,
+@@ -733,7 +731,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ 
+ 	if (src_type == VM_MEM_SRC_ANONYMOUS_THP ||
+ 	    src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB)
+-		alignment = max(huge_page_size, alignment);
++		alignment = max((size_t)KVM_UTIL_HUGEPAGE_ALIGNMENT, alignment);
+ 	else
+ 		ASSERT_EQ(src_type, VM_MEM_SRC_ANONYMOUS);
+ 
 -- 
 2.30.0.478.g8a0d178c01-goog
 
