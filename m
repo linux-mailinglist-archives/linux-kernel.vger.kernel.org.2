@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE6A316049
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A3A31606F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbhBJHrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 02:47:09 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12605 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232903AbhBJHqB (ORCPT
+        id S233244AbhBJHzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 02:55:51 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12533 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233145AbhBJHzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 02:46:01 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DbBbH46dMz165vT;
-        Wed, 10 Feb 2021 15:43:55 +0800 (CST)
-Received: from localhost.localdomain (10.175.102.38) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 10 Feb 2021 15:45:12 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Hulk Robot <hulkci@huawei.com>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>, <linux-ntb@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] NTB: Drop kfree for memory allocated with devm_kzalloc
-Date:   Wed, 10 Feb 2021 07:53:45 +0000
-Message-ID: <20210210075345.1096001-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 10 Feb 2021 02:55:47 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DbBp73RJQzMQFV;
+        Wed, 10 Feb 2021 15:53:19 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Wed, 10 Feb 2021
+ 15:54:58 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm/hugetlb: remove redundant reservation check condition in alloc_huge_page()
+Date:   Wed, 10 Feb 2021 02:54:43 -0500
+Message-ID: <20210210075443.26238-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.102.38]
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's not necessary to free memory allocated with devm_kzalloc
-and using kfree leads to a double free.
+If there is no reservation corresponding to a vma, map_chg is always != 0,
+i.e. we can not meet the condition where a vma does not have reservation
+while map_chg = 0.
 
-Fixes: 363baf7d6051 ("NTB: Add support for EPF PCI-Express Non-Transparent Bridge")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- drivers/ntb/hw/epf/ntb_hw_epf.c | 1 -
- 1 file changed, 1 deletion(-)
+ mm/hugetlb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ntb/hw/epf/ntb_hw_epf.c b/drivers/ntb/hw/epf/ntb_hw_epf.c
-index 2cccb7dff5dd..b019755e4e21 100644
---- a/drivers/ntb/hw/epf/ntb_hw_epf.c
-+++ b/drivers/ntb/hw/epf/ntb_hw_epf.c
-@@ -723,7 +723,6 @@ static void ntb_epf_pci_remove(struct pci_dev *pdev)
- 	ntb_unregister_device(&ndev->ntb);
- 	ntb_epf_cleanup_isr(ndev);
- 	ntb_epf_deinit_pci(ndev);
--	kfree(ndev);
- }
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 4f2c92ddbca4..36c3646fa55f 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2311,7 +2311,7 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
  
- static const struct ntb_epf_data j721e_data = {
+ 	/* If this allocation is not consuming a reservation, charge it now.
+ 	 */
+-	deferred_reserve = map_chg || avoid_reserve || !vma_resv_map(vma);
++	deferred_reserve = map_chg || avoid_reserve;
+ 	if (deferred_reserve) {
+ 		ret = hugetlb_cgroup_charge_cgroup_rsvd(
+ 			idx, pages_per_huge_page(h), &h_cg);
+-- 
+2.19.1
 
