@@ -2,541 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190C7316BDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9624A316BE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhBJQ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:56:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232315AbhBJQzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:55:40 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6466AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:55:01 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id t25so1620233pga.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:55:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GWwnKd6tF2LVRmV4liAlhg5JKWv+BbcGY0sepdq9qsw=;
-        b=qCug3jYp2GRbclEY543oynuXjVQPcBCUCUaY/TXKz0cQDMWd38ihLaIRY6i4pNS33D
-         DPNUT8H20KfqvLhuqhrlJOxbBV5EwWks3GVD0256OzSSd7i10IShv60RxhOgF7NIpMEX
-         mmTsLFocF6mflTDweRic0ZQUC8JQ5G9IdLGwxWjOMYl4y9FAq3G0nf9zViJnQ/ROmpF/
-         KBIZvmmlc1JMC6TQfjOhcC8ApzEj7ZFONBfEmXS7yWw3/hzNlaG8O4MSMkFTZunJDF+b
-         Zu7GbhGEaiV4q5XbvU/wEYfkNGtM3bGBjbiXozVHpxISnrQiUwZvl+YyeLyoiMa3DNkR
-         I49w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GWwnKd6tF2LVRmV4liAlhg5JKWv+BbcGY0sepdq9qsw=;
-        b=tmd28lAStdQ/u54ate1d/4M65PbyDL2AArvKt+dlw2So+H6UCNft/yl7p2hLPPbBAk
-         JyeqihzTbnEfYhB+/uH8PjM7wlGpHX02x+XPje0l4TQtiVViRb0gwqtx0xxbib5VrZVr
-         jiUqP413AfJTqQZD70tjr57rES86mWzKjKwEG/H0oI6mEYnQZ8CM8XNTZajadfpsXTXB
-         /Pf8v4NzGNjxyvfytcw3vp7rLE78zUR/BJk4u5lFfynqBxP+EOcg0s0AHp95eRLfPEAV
-         mctBaJLZc8ykQ+rJ60OTsdwU7EJfC0QXASRPXsqxFiIJEbwJVfkPmqHrSRNoCItAWEHy
-         UKnw==
-X-Gm-Message-State: AOAM531rf4HVeiBcyK5HRaDzicD42tPgDmGWJVrsKkbGNF1MK1SZJG10
-        /DsIX3W57ymcaFMB8FwBaBfa3g==
-X-Google-Smtp-Source: ABdhPJwTXvVvXtLtkgwgftAffJtLvmZLtvhI0rZUMb0jdwzz22GCMCiaaangi25sj0AG4Bz2zlKyYQ==
-X-Received: by 2002:a62:d453:0:b029:1d6:587b:5d31 with SMTP id u19-20020a62d4530000b02901d6587b5d31mr3797362pfl.58.1612976100788;
-        Wed, 10 Feb 2021 08:55:00 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id v4sm2732156pff.156.2021.02.10.08.54.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 08:55:00 -0800 (PST)
-Date:   Wed, 10 Feb 2021 09:54:58 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        suzuki.poulose@arm.com, mike.leach@linaro.org,
-        lcherian@marvell.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 11/14] coresight: sink: Add TRBE driver
-Message-ID: <20210210165458.GB2186000@xps15>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-12-git-send-email-anshuman.khandual@arm.com>
- <20210205175330.GB1636242@xps15>
- <20210209173913.GA2186000@xps15>
- <e5eff56e-d894-447f-2b49-b1f2a8967ed5@arm.com>
+        id S232930AbhBJQ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:57:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45950 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232381AbhBJQ4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:56:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 464A9AE38;
+        Wed, 10 Feb 2021 16:55:38 +0000 (UTC)
+Message-ID: <c6774af169854dc1d4efa272b439e80cea8cd8ff.camel@suse.de>
+Subject: Re: bcm2711_thermal: Kernel panic - not syncing: Asynchronous
+ SError Interrupt
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        stefan.wahren@i2se.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Robin Murphy <robin.murphy@arm.con>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Date:   Wed, 10 Feb 2021 17:55:36 +0100
+In-Reply-To: <35e17dc9-c88d-582f-607d-1d90b20868fa@arm.com>
+References: <20210210114829.2915de78@gollum>
+         <6d9ca41b4ad2225db102da654d38bc61f6c1c111.camel@suse.de>
+         <35e17dc9-c88d-582f-607d-1d90b20868fa@arm.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-/Z4SwmS0k1OHJgVFXm5W"
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e5eff56e-d894-447f-2b49-b1f2a8967ed5@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:42:29AM +0530, Anshuman Khandual wrote:
-> 
-> 
-> On 2/9/21 11:09 PM, Mathieu Poirier wrote:
-> > On Fri, Feb 05, 2021 at 10:53:30AM -0700, Mathieu Poirier wrote:
-> >> On Wed, Jan 27, 2021 at 02:25:35PM +0530, Anshuman Khandual wrote:
-> >>> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
-> >>> accessible via the system registers. The TRBE supports different addressing
-> >>> modes including CPU virtual address and buffer modes including the circular
-> >>> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
-> >>> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
-> >>> access to the trace buffer could be prohibited by a higher exception level
-> >>> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
-> >>> private interrupt (PPI) on address translation errors and when the buffer
-> >>> is full. Overall implementation here is inspired from the Arm SPE driver.
-> >>>
-> >>
-> >> I got this message when applying the patch: 
-> >>
-> >> Applying: coresight: sink: Add TRBE driver
-> >> .git/rebase-apply/patch:76: new blank line at EOF.
-> >> +
-> >> warning: 1 line adds whitespace errors.
-> >>  
-> >>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> >>> Cc: Mike Leach <mike.leach@linaro.org>
-> >>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> >>> ---
-> >>> Changes in V3:
-> >>>
-> >>> - Added new DT bindings document TRBE.yaml
-> >>> - Changed TRBLIMITR_TRIG_MODE_SHIFT from 2 to 3
-> >>> - Dropped isb() from trbe_reset_local()
-> >>> - Dropped gap between (void *) and buf->trbe_base
-> >>> - Changed 'int' to 'unsigned int' in is_trbe_available()
-> >>> - Dropped unused function set_trbe_running(), set_trbe_virtual_mode(),
-> >>>   set_trbe_enabled() and set_trbe_limit_pointer()
-> >>> - Changed get_trbe_flag_update(), is_trbe_programmable() and
-> >>>   get_trbe_address_align() to accept TRBIDR value
-> >>> - Changed is_trbe_running(), is_trbe_abort(), is_trbe_wrap(), is_trbe_trg(),
-> >>>   is_trbe_irq(), get_trbe_bsc() and get_trbe_ec() to accept TRBSR value
-> >>> - Dropped snapshot mode condition in arm_trbe_alloc_buffer()
-> >>> - Exit arm_trbe_init() when arm64_kernel_unmapped_at_el0() is enabled
-> >>> - Compute trbe_limit before trbe_write to get the updated handle
-> >>> - Added trbe_stop_and_truncate_event()
-> >>> - Dropped trbe_handle_fatal()
-> >>>
-> >>>  Documentation/trace/coresight/coresight-trbe.rst |   39 +
-> >>>  arch/arm64/include/asm/sysreg.h                  |    1 +
-> >>>  drivers/hwtracing/coresight/Kconfig              |   11 +
-> >>>  drivers/hwtracing/coresight/Makefile             |    1 +
-> >>>  drivers/hwtracing/coresight/coresight-trbe.c     | 1023 ++++++++++++++++++++++
-> >>>  drivers/hwtracing/coresight/coresight-trbe.h     |  160 ++++
-> >>>  6 files changed, 1235 insertions(+)
-> >>>  create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
-> >>>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
-> >>>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
-> >>>
 
-[...]
+--=-/Z4SwmS0k1OHJgVFXm5W
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> >>> +
-> >>> +static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
-> >>> +{
-> >>> +	struct perf_output_handle **handle_ptr = dev;
-> >>> +	struct perf_output_handle *handle = *handle_ptr;
-> >>> +	enum trbe_fault_action act;
-> >>> +
-> >>> +	WARN_ON(!is_trbe_irq(read_sysreg_s(SYS_TRBSR_EL1)));
-> >>> +	clr_trbe_irq();
-> >>> +
-> >>> +	/*
-> >>> +	 * Ensure the trace is visible to the CPUs and
-> >>> +	 * any external aborts have been resolved.
-> >>> +	 */
-> >>> +	trbe_drain_buffer();
-> >>> +	isb();
-> >>> +
-> >>> +	if (!perf_get_aux(handle))
-> >>> +		return IRQ_NONE;
-> >>> +
-> >>> +	if (!is_perf_trbe(handle))
-> >>> +		return IRQ_NONE;
-> >>> +
-> >>> +	irq_work_run();
-> > 
-> > There is a comment in the SPE driver about this.  Since this driver closely
-> > follows that implementation it would be nice to have the comments as well.
-> > Otherwise the reader has to constantly go back to the original driver.
-> 
-> Sure, will add the following comment before irq_work_run().
-> 
->         /*
->          * Ensure perf callbacks have completed, which may disable the
->          * profiling buffer in response to a TRUNCATION flag.
->          */
-> 
-> > 
-> > I will come back to this function later.
-> 
-> Okay.
-> 
-> > 
-> >>> +
-> >>> +	act = trbe_get_fault_act(handle);
-> >>> +	switch (act) {
-> >>> +	case TRBE_FAULT_ACT_WRAP:
-> >>> +		trbe_handle_overflow(handle);
-> >>> +		break;
-> >>> +	case TRBE_FAULT_ACT_SPURIOUS:
-> >>> +		trbe_handle_spurious(handle);
-> >>> +		break;
-> >>> +	case TRBE_FAULT_ACT_FATAL:
-> >>> +		trbe_stop_and_truncate_event(handle);
-> >>> +		break;
-> >>> +	}
-> >>> +	return IRQ_HANDLED;
-> >>> +}
-> >>> +
-> >>> +static const struct coresight_ops_sink arm_trbe_sink_ops = {
-> >>> +	.enable		= arm_trbe_enable,
-> >>> +	.disable	= arm_trbe_disable,
-> >>> +	.alloc_buffer	= arm_trbe_alloc_buffer,
-> >>> +	.free_buffer	= arm_trbe_free_buffer,
-> >>> +	.update_buffer	= arm_trbe_update_buffer,
-> >>> +};
-> >>> +
-> >>> +static const struct coresight_ops arm_trbe_cs_ops = {
-> >>> +	.sink_ops	= &arm_trbe_sink_ops,
-> >>> +};
-> >>> +
-> >>> +static ssize_t align_show(struct device *dev, struct device_attribute *attr, char *buf)
-> >>> +{
-> >>> +	struct trbe_cpudata *cpudata = dev_get_drvdata(dev);
-> >>> +
-> >>> +	return sprintf(buf, "%llx\n", cpudata->trbe_align);
-> >>> +}
-> >>> +static DEVICE_ATTR_RO(align);
-> >>> +
-> >>> +static ssize_t dbm_show(struct device *dev, struct device_attribute *attr, char *buf)
-> >>> +{
-> >>> +	struct trbe_cpudata *cpudata = dev_get_drvdata(dev);
-> >>> +
-> >>> +	return sprintf(buf, "%d\n", cpudata->trbe_dbm);
-> >>> +}
-> >>> +static DEVICE_ATTR_RO(dbm);
-> >>> +
-> >>> +static struct attribute *arm_trbe_attrs[] = {
-> >>> +	&dev_attr_align.attr,
-> >>> +	&dev_attr_dbm.attr,
-> >>> +	NULL,
-> >>> +};
-> >>> +
-> >>> +static const struct attribute_group arm_trbe_group = {
-> >>> +	.attrs = arm_trbe_attrs,
-> >>> +};
-> >>> +
-> >>> +static const struct attribute_group *arm_trbe_groups[] = {
-> >>> +	&arm_trbe_group,
-> >>> +	NULL,
-> >>> +};
-> >>> +
-> >>> +static void arm_trbe_probe_coresight_cpu(void *info)
-> >>> +{
-> >>> +	struct trbe_drvdata *drvdata = info;
-> >>> +	struct coresight_desc desc = { 0 };
-> >>> +	int cpu = smp_processor_id();
-> >>> +	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
-> >>> +	struct coresight_device *trbe_csdev = per_cpu(csdev_sink, cpu);
-> >>> +	u64 trbidr = read_sysreg_s(SYS_TRBIDR_EL1);
-> >>> +	struct device *dev;
-> >>> +
-> >>> +	if (WARN_ON(!cpudata))
-> >>> +		goto cpu_clear;
-> > 
-> > Where was the memory for cpudata allocated?  As far as I can tell, at this time
-> > it is just a pointer that was not allocated and as such it should be NULL.
-> 
-> cpudata gets allocated in arm_trbe_probe_coresight() just before calling
-> individual CPU based probes i.e arm_trbe_probe_coresight_cpu() directly
-> and via smp_call_function_many().
-> 
-> arm_trbe_device_probe()
-> 	arm_trbe_probe_coresight()
-> 		arm_trbe_probe_coresight_cpu()
+Hi Robin,
 
-Ah yes, my apologies here.  Looking at the code I realised I skipped
-arm_trbe_probe_coresight() and went straight to arm_trbe_probe_coresight_cpu().
-No wonder things didn't make sense.  I will take another look at this function. 
+On Wed, 2021-02-10 at 16:25 +0000, Robin Murphy wrote:
+> On 2021-02-10 13:15, Nicolas Saenz Julienne wrote:
+> > [ Add Robin, Catalin and Florian in case they want to chime in ]
+> >=20
+> > Hi Juerg, thanks for the report!
+> >=20
+> > On Wed, 2021-02-10 at 11:48 +0100, Juerg Haefliger wrote:
+> > > Trying to dump the BCM2711 registers kills the kernel:
+> > >=20
+> > > # cat /sys/kernel/debug/regmap/dummy-avs-monitor\@fd5d2000/range
+> > > 0-efc
+> > > # cat /sys/kernel/debug/regmap/dummy-avs-monitor\@fd5d2000/registers
+> > >=20
+> > > [   62.857661] SError Interrupt on CPU1, code 0xbf000002 -- SError
+> >=20
+> > So ESR's IDS (bit 24) is set, which means it's an 'Implementation Defin=
+ed
+> > SError,' hence IIUC the rest of the error code is meaningless to anyone=
+ outside
+> > of Broadcom/RPi.
+>=20
+> It's imp-def from the architecture's PoV, but the implementation in this=
+=20
+> case is Cortex-A72, where 0x000002 means an attributable, containable=20
+> Slave Error:
+>=20
+> https://developer.arm.com/documentation/100095/0003/system-control/aarch6=
+4-register-descriptions/exception-syndrome-register--el1-and-el3?lang=3Den
+>=20
+> In other words, the thing at the other end of an interconnect=20
+> transaction said "no" :)
+>=20
+> (The fact that Cortex-A72 gets too far ahead of itself to take it as a=
+=20
+> synchronous external abort is a mild annoyance, but hey...)
 
-> 
-> > 
-> >>> +
-> >>> +	if (trbe_csdev)
-> >>> +		return;
-> >>> +
-> >>> +	cpudata->cpu = smp_processor_id();
-> > 
-> > Why call this again when you already did above?  And how is
-> 
-> Right, this is redundant. Will just assign it as cpu which has already
-> been computed.
-> 
-> > arm_trbe_probe_coresight_cpu() is called for every CPU in the system?
-> 
-> During boot in arm_trbe_probe_coresight(), it is called once directly on
-> the executing cpu and on all other via smp_call_function_many().
-> 
-> > 
-> >>> +	cpudata->drvdata = drvdata;
-> >>> +	dev = &cpudata->drvdata->pdev->dev;
-> >>> +
-> >>> +	if (!is_trbe_available()) {
-> >>> +		pr_err("TRBE is not implemented on cpu %d\n", cpudata->cpu);
-> >>> +		goto cpu_clear;
-> >>> +	}
-> >>> +
-> >>> +	if (!is_trbe_programmable(trbidr)) {
-> >>> +		pr_err("TRBE is owned in higher exception level on cpu %d\n", cpudata->cpu);
-> >>> +		goto cpu_clear;
-> >>> +	}
-> >>> +	desc.name = devm_kasprintf(dev, GFP_KERNEL, "%s%d", DRVNAME, smp_processor_id());
-> >>> +	if (IS_ERR(desc.name))
-> >>> +		goto cpu_clear;
-> >>> +
-> >>> +	desc.type = CORESIGHT_DEV_TYPE_SINK;
-> >>> +	desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
-> >>> +	desc.ops = &arm_trbe_cs_ops;
-> >>> +	desc.pdata = dev_get_platdata(dev);
-> >>> +	desc.groups = arm_trbe_groups;
-> >>> +	desc.dev = dev;
-> >>> +	trbe_csdev = coresight_register(&desc);
-> >>> +	if (IS_ERR(trbe_csdev))
-> >>> +		goto cpu_clear;
-> >>> +
-> >>> +	dev_set_drvdata(&trbe_csdev->dev, cpudata);
-> >>> +	cpudata->trbe_dbm = get_trbe_flag_update(trbidr);
-> >>> +	cpudata->trbe_align = 1ULL << get_trbe_address_align(trbidr);
-> >>> +	if (cpudata->trbe_align > SZ_2K) {
-> >>> +		pr_err("Unsupported alignment on cpu %d\n", cpudata->cpu);
-> >>> +		goto cpu_clear;
-> >>> +	}
-> >>> +	per_cpu(csdev_sink, cpu) = trbe_csdev;
-> >>> +	trbe_reset_local();
-> >>> +	enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
-> >>> +	return;
-> >>> +cpu_clear:
-> >>> +	cpumask_clear_cpu(cpudata->cpu, &cpudata->drvdata->supported_cpus);
-> >>> +}
-> >>> +
-> >>> +static void arm_trbe_remove_coresight_cpu(void *info)
-> >>> +{
-> >>> +	int cpu = smp_processor_id();
-> >>> +	struct trbe_drvdata *drvdata = info;
-> >>> +	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
-> >>> +	struct coresight_device *trbe_csdev = per_cpu(csdev_sink, cpu);
-> >>> +
-> >>> +	if (trbe_csdev) {
-> >>> +		coresight_unregister(trbe_csdev);
-> >>> +		cpudata->drvdata = NULL;
-> >>> +		per_cpu(csdev_sink, cpu) = NULL;
-> >>> +	}
-> >>> +	disable_percpu_irq(drvdata->irq);
-> >>> +	trbe_reset_local();
-> >>> +}
-> >>> +
-> >>> +static int arm_trbe_probe_coresight(struct trbe_drvdata *drvdata)
-> >>> +{
-> >>> +	drvdata->cpudata = alloc_percpu(typeof(*drvdata->cpudata));
-> >>> +	if (IS_ERR(drvdata->cpudata))
-> >>> +		return PTR_ERR(drvdata->cpudata);
-> >>> +
-> >>> +	arm_trbe_probe_coresight_cpu(drvdata);
-> >>> +	smp_call_function_many(&drvdata->supported_cpus, arm_trbe_probe_coresight_cpu, drvdata, 1);
-> >>> +	return 0;
-> >>> +}
-> >>> +
-> >>> +static int arm_trbe_remove_coresight(struct trbe_drvdata *drvdata)
-> >>> +{
-> >>> +	arm_trbe_remove_coresight_cpu(drvdata);
-> >>> +	smp_call_function_many(&drvdata->supported_cpus, arm_trbe_remove_coresight_cpu, drvdata, 1);
-> >>> +	free_percpu(drvdata->cpudata);
-> >>> +	return 0;
-> >>> +}
-> >>> +
-> >>> +static int arm_trbe_cpu_startup(unsigned int cpu, struct hlist_node *node)
-> >>> +{
-> >>> +	struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
-> >>> +
-> >>> +	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
-> >>> +		if (!per_cpu(csdev_sink, cpu)) {
-> >>> +			arm_trbe_probe_coresight_cpu(drvdata);
-> >>> +		} else {
-> >>> +			trbe_reset_local();
-> >>> +			enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
-> >>> +		}
-> >>> +	}
-> >>> +	return 0;
-> >>> +}
-> >>> +
-> >>> +static int arm_trbe_cpu_teardown(unsigned int cpu, struct hlist_node *node)
-> >>> +{
-> >>> +	struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
-> >>> +
-> >>> +	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
-> >>> +		disable_percpu_irq(drvdata->irq);
-> >>> +		trbe_reset_local();
-> >>> +	}
-> >>> +	return 0;
-> >>> +}
-> >>> +
-> >>> +static int arm_trbe_probe_cpuhp(struct trbe_drvdata *drvdata)
-> >>> +{
-> >>> +	enum cpuhp_state trbe_online;
-> >>> +
-> >>> +	trbe_online = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, DRVNAME,
-> >>> +					arm_trbe_cpu_startup, arm_trbe_cpu_teardown);
-> >>> +	if (trbe_online < 0)
-> >>> +		return -EINVAL;
-> >>> +
-> >>> +	if (cpuhp_state_add_instance(trbe_online, &drvdata->hotplug_node))
-> >>> +		return -EINVAL;
-> >>> +
-> >>> +	drvdata->trbe_online = trbe_online;
-> >>> +	return 0;
-> >>> +}
-> >>> +
-> >>> +static void arm_trbe_remove_cpuhp(struct trbe_drvdata *drvdata)
-> >>> +{
-> >>> +	cpuhp_remove_multi_state(drvdata->trbe_online);
-> >>> +}
-> >>> +
-> >>> +static int arm_trbe_probe_irq(struct platform_device *pdev,
-> >>> +			      struct trbe_drvdata *drvdata)
-> >>> +{
-> >>> +	drvdata->irq = platform_get_irq(pdev, 0);
-> >>> +	if (!drvdata->irq) {
-> > 
-> > Please use function platform_get_irq() properly - there is even an example on
-> > how to do so in the documentation section of the function.
-> 
-> The documentation says, the format should be.
-> 
-> int irq = platform_get_irq(pdev, 0);
-> if (irq < 0)
-> 	return irq;
-> 
-> Will change the conditional check above.
-> 
-> > 
-> >>> +		pr_err("IRQ not found for the platform device\n");
-> >>> +		return -ENXIO;
-> > 
-> > Why use a different error code?
-> 
-> We could return the irq (which is < 0) but followed the SPE
-> driver which returns ENXIO here. Happy to change either way.
+Thanks for both your clarifications! Reading arm documentation is a skill o=
+n
+its own.
 
-Please use the right error code.
+> > The regmap is created through the following syscon device:
+> >=20
+> > 	avs_monitor: avs-monitor@7d5d2000 {
+> > 		compatible =3D "brcm,bcm2711-avs-monitor",
+> > 			     "syscon", "simple-mfd";
+> > 		reg =3D <0x7d5d2000 0xf00>;
+> >=20
+> > 		thermal: thermal {
+> > 			compatible =3D "brcm,bcm2711-thermal";
+> > 			#thermal-sensor-cells =3D <0>;
+> > 		};
+> > 	};
+> >=20
+> > I've done some tests with devmem, and the whole <0x7d5d2000 0xf00> rang=
+e is
+> > full of addresses that trigger this same error. Also note that as per F=
+lorian's
+> > comments[1]: "AVS_RO_REGISTERS_0: 0x7d5d2200 - 0x7d5d22e3." But from wh=
+at I can
+> > tell, at least 0x7d5d22b0 seems to be faulty too.
+> >=20
+> > Any ideas/comments? My guess is that those addresses are marked somehow=
+ as
+> > secure, and only for VC4 to access (VC4 is RPi4's co-processor). Ultima=
+tely,
+> > the solution is to narrow the register range exposed by avs-monitor to =
+whatever
+> > bcm2711-thermal needs (which is ATM a single 32bit register).
+>=20
+> When a peripheral decodes a region of address space, nobody says it has=
+=20
+> to accept accesses to *every* address in that space; registers may be=20
+> sparsely populated, and although some devices might be "nice" and make=
+=20
+> unused areas behave as RAZ/WI, others may throw slave errors if you poke=
+=20
+> at the wrong places. As you note, in a TrustZone-aware device some=20
+> registers may only exist in one or other of the Secure/Non-Secure=20
+> address spaces.
+>=20
+> Even when there is a defined register at a given address, it still=20
+> doesn't necessarily accept all possible types of access; it wouldn't be=
+=20
+> particularly friendly, but a device *could* have, say, some registers=20
+> that support 32-bit accesses and others that only support 16-bit=20
+> accesses, and thus throw slave errors if you do the wrong thing in the=
+=20
+> wrong place.
+>=20
+> It really all depends on the device itself.
 
-> 
-> > 
-> >>> +	}
-> >>> +
-> >>> +	if (!irq_is_percpu(drvdata->irq)) {
-> >>> +		pr_err("IRQ is not a PPI\n");
-> >>> +		return -EINVAL;
-> >>> +	}
-> >>> +
-> >>> +	if (irq_get_percpu_devid_partition(drvdata->irq, &drvdata->supported_cpus))
-> >>> +		return -EINVAL;
-> >>> +
-> >>> +	drvdata->handle = alloc_percpu(typeof(*drvdata->handle));
-> >>> +	if (!drvdata->handle)
-> >>> +		return -ENOMEM;
-> >>> +
-> >>> +	if (request_percpu_irq(drvdata->irq, arm_trbe_irq_handler, DRVNAME, drvdata->handle)) {
-> >>> +		free_percpu(drvdata->handle);
-> >>> +		return -EINVAL;
-> > 
-> > Here too you need to use the error code from the calling function rather than
-> > making your own.  Please revise for the entire patch.
-> 
-> Okay, will capture the return value from request_percpu_irq() and
-> return the same when it is an error case i.e being positive.
-> 
-> > 
-> >>> +	}
-> >>> +	return 0;
-> >>> +}
-> >>> +
-> >>> +static void arm_trbe_remove_irq(struct trbe_drvdata *drvdata)
-> >>> +{
-> >>> +	free_percpu_irq(drvdata->irq, drvdata->handle);
-> >>> +	free_percpu(drvdata->handle);
-> >>> +}
-> >>> +
-> >>> +static int arm_trbe_device_probe(struct platform_device *pdev)
-> >>> +{
-> >>> +	struct coresight_platform_data *pdata;
-> >>> +	struct trbe_drvdata *drvdata;
-> >>> +	struct device *dev = &pdev->dev;
-> >>> +	int ret;
-> >>> +
-> >>> +	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-> >>> +	if (IS_ERR(drvdata))
-> >>> +		return -ENOMEM;
-> > 
-> >         if (!drvdata)
-> 
-> Changed.
-> 
-> > 
-> >>> +
-> >>> +	pdata = coresight_get_platform_data(dev);
-> >>> +	if (IS_ERR(pdata)) {
-> >>> +		kfree(drvdata);
-> > 
-> > No need to do this since devm_kzalloc() was used above.
-> 
-> Suzuki had pointed out these issues, have already incorporated them i.e
-> dropped kfree() here.
-> 
+All in all, assuming there is no special device quirk to apply, the feeling=
+ I'm
+getting is to just let the error be. As you hint, firmware has no blame her=
+e,
+and debugfs is a 'best effort, zero guarantees' interface after all.
 
-To avoid getting tunel vision I don't look at other comments before reviewing a
-patchset.  As such it is possible to get redundant comments.
+Regards,
+Nicolas
 
-More to come shortly.
 
-> > 
-> >>> +		return -ENOMEM;
-> > 
-> > Why not using the error from coresight_get_platform_data() instead of
-> > masking it?
-> 
-> Okay, will return PTR_ERR(pdata) instead.
-> 
-> > 
-> >>> +	}
-> >>> +
-> >>> +	dev_set_drvdata(dev, drvdata);
-> >>> +	dev->platform_data = pdata;
-> >>> +	drvdata->pdev = pdev;
-> >>> +	ret = arm_trbe_probe_irq(pdev, drvdata);
-> >>> +	if (ret)
-> >>> +		goto irq_failed;
-> >>> +
-> >>> +	ret = arm_trbe_probe_coresight(drvdata);
-> >>> +	if (ret)
-> >>> +		goto probe_failed;
-> >>> +
-> >>> +	ret = arm_trbe_probe_cpuhp(drvdata);
-> >>> +	if (ret)
-> >>> +		goto cpuhp_failed;
-> >>> +
-> >>> +	return 0;
-> >>> +cpuhp_failed:
-> >>> +	arm_trbe_remove_coresight(drvdata);
-> >>> +probe_failed:
-> >>> +	arm_trbe_remove_irq(drvdata);
-> >>> +irq_failed:
-> >>> +	kfree(pdata);
-> >>> +	kfree(drvdata);
-> > 
-> > Same here - both @pdata and @drvdata have been allocated by devm_kzalloc().
-> > devm_kzalloc().
-> 
-> Dropped these kfree() statements.
-> 
-> - Anshuman
+--=-/Z4SwmS0k1OHJgVFXm5W
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAkEAgACgkQlfZmHno8
+x/7fnQf9ESYreLzcvUH7mg17Cx23iFWl7EHMsqkjbcWox+PGTb8Ix0/4EZ1ddTIr
+t/MNanamdbPKbN7O6K2FPYP4hSCikSXKOGNwEFo0Vnrap913p9rkL6Verg7Na/P5
+QzOUUHH1hd78j6yYlAfIoFyh7Vg+7VW7aGRp8QbpQ1JPFmiqoaZV5yiWVu1++n/D
+Ws+bZSuKWLp9NbiJBpdK/ghM7YujcYJzHL/55gMZx4zBFLTp4V26YR3I7Xy2Wd1C
+9/nXI5EzxOnXfStRyGwsV7O85uiJrUv/ThKxYXydmMXm/chbIW+f/8kLUgzCwMcw
+pvf6qmtSUR5jGt7T/gqAcbhFSsHs7g==
+=MM5M
+-----END PGP SIGNATURE-----
+
+--=-/Z4SwmS0k1OHJgVFXm5W--
+
