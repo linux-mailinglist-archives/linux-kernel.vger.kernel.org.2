@@ -2,435 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0A93172B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741EA3172BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 22:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbhBJVwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 16:52:38 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:41384 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232588AbhBJVwW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 16:52:22 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ALiK6M149758;
-        Wed, 10 Feb 2021 21:51:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=9GzjZwWezG8RobdygynVVQrfBsQ8qBzRixIVWK4T20E=;
- b=yhBaDhMaUV+vH8TWXGCmDPS/hrz7wGzy9rtk8niWDdybrB6P6ZQddm1z/58vWYany9jr
- CBEUoZcRK3B92DJYYFTgUJHLph6xviTbvAyFEWuO8f+nnuCZPIMU62l7fnJhRsXwqthU
- uD1tFaP5ypAvViXZeac55s8EtH2EckOuUQ+MvSPrijUKDejqVzSJ47f1rcSo5OAIqtue
- CP9elcyZ7uwWhpm5RffC9CaZG5+P8rmtoiUSnkGGDEKA3uaMBk5v1J5uV43g1MPweCF+
- GcJfC5HTywjQA+IdgzSp3XL0gS+jdBVEllIi4vAiyL5vtXamuRnXNS7O9I49Ny9JFeYP tQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 36hgmanc7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 21:51:14 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ALjUcZ001485;
-        Wed, 10 Feb 2021 21:51:13 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2045.outbound.protection.outlook.com [104.47.73.45])
-        by aserp3020.oracle.com with ESMTP id 36j51375v6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 21:51:13 +0000
+        id S231205AbhBJV6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 16:58:43 -0500
+Received: from mail-dm6nam10on2084.outbound.protection.outlook.com ([40.107.93.84]:60716
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231642AbhBJV6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 16:58:37 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UmuvofPMd9OjOJN/JruXHt8IPDB9k+VwPhBW8mIAFtMV4yX5hJnfVLwE0OmHjVCflyy59G8N5j9Eh6pjpYN1j4OMzYi7vM7JWah7rtP349P5gpV4Dk4orb+DsdHrWazWZ+vvLQCrw9pTdRKjWdz2BoPY9P9loxoTeCXZa5OzCdNZjkRAHry/wLZYCHGc06dkInWi3Z1cCfcXh1iUMRH7cjWYck63I4CZZ6I3DuT3aC8q+tQypxCJ0UTEWEUeuWmtOauDhdDEs37Zb1ittlatsxRgVCItWUZLnpl1hcThWOXuo2g/fG3FmnyGKtN8ZeE50K1Hghje62bFl4jsNmRxog==
+ b=bJu/CdNYkPMGerQ8Iq7LB2bK9Cn6f8EtpVKIh1K9nuNNNcdtD+xtUBCg5KkXw22VoBP7ieHBeNwRGhG5sB0z/SgnULgAcPDQgL/uibyXgMZr5juH+//ymLTKmNyINSsWitK6O8qtxdbTZTkmhvngIs6KGBX3o3XWWwhN04JY5CJeT5MI+/Lg3gM3HwDwnl9j9u503RydRXjvjxtguCEiZa+QFf9Y9P44Ij/2WrP/6XOQtilYhW90gu3zCTP5lBohc+j1aBMSh0fq5Y7EFjH3po6jI5INSiHcYm2QoGI06cTqtYZ2X7E6L/VN5yNCu76OH23H4LfgL37foIxCFcN3WQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9GzjZwWezG8RobdygynVVQrfBsQ8qBzRixIVWK4T20E=;
- b=MId9RK3g0qSSLMUvjHTTfPJrNdhlXKsoUW+t2CzZ2Enk6w3b/tcll7IZ672q/7W0mIJ/vgYZcJEwTS/lKXKxo5ZQ/u6yscUphYIWd5Wec9MA1nQr6+z8ih41k2BtHrvrvmy8EdmlfOAda6S9rCOCaF+0L1ZOVMZA4MHGE5HXRjj7m8XLMzH2p1sqE/PQlQ32qiMdhbZ94JMPXe/FQbTXd3+JmEVAT1sKnuTXAUsOZfc7a4YL35nD1+SztAUrjvaVYtfnoBG50BjEEKUpaucXbXfGLv53fY9N5K96sUSY1zF4oIk7dsr+JW+ozmGkBdry0oo9lYLjLI/ZJLqD4kmLqA==
+ bh=xRx3oBjFV1Rkjgw0f2XY6jO1BW+rM9+J8Hpcunu96XA=;
+ b=FbBpDMN1gViFPsXE5YdnwblCj62n3vvWqUmMml4f6DVRM0mBsGxk6M+osd+wkSeF9MWvyC/dm9WwANTOHvjq/A0MwHljeIkI0BNhMy9vcU4452AM7k+gy8UMZxpDXIKXV+83u4CDE9XqvtX6WTXK4iIqnqRK879ifmCpOoYln5GTO2kloUNEa5I8h3+wNaoNoM8z6MAhWvSk5Cha4ZBS9oG3wgXOTyCtGlT6NG8gpmdlmcim9dUePrgBG8QdbyiQsETDsPmXJ/kFzEEE0xqFM8secbiE97VdFJmnFsZcx7e+IZw3Vyg+CE2HO7AEqEgMYATIuOE5lac7PZGPLBEuYQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9GzjZwWezG8RobdygynVVQrfBsQ8qBzRixIVWK4T20E=;
- b=vBc7lzUQMmFmAE5UZnKZpod6AKm9rup4F9xV3zzzfdrR/ZtQ2Lyu/t0bS2+WpKFwCvxzALuvdO+vE49qkwNyE1Xl3+MT8hGqyNa/LYj9WtWkZyJEs7ZCIvZfORR1BllT71qxyogAw6/65bEZd7xHNZLt2b0cQ9Qa+3vpB/1lAw4=
-Received: from DM6PR10MB3851.namprd10.prod.outlook.com (2603:10b6:5:1fb::17)
- by DM5PR10MB1372.namprd10.prod.outlook.com (2603:10b6:3:10::8) with Microsoft
+ bh=xRx3oBjFV1Rkjgw0f2XY6jO1BW+rM9+J8Hpcunu96XA=;
+ b=PbqmyYLDhRIAMp3eYyyO//fADEV3RY8jdwD6vBIWE7u3jfd5DyxGvUJX7tSNn/wfv2zXmfRes3XhFTjkj2oD11eoWZt0YE5OjUPWRzgefSpWGo2jA8vpUQ7yoA13CrWMg9DbHIJLwjXJJagiB3jHDm+4E0638jCQuvu6lbGkx/M=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=windriver.com;
+Received: from DM6PR11MB3514.namprd11.prod.outlook.com (2603:10b6:5:61::26) by
+ DM6PR11MB3867.namprd11.prod.outlook.com (2603:10b6:5:4::27) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3846.27; Wed, 10 Feb 2021 21:51:11 +0000
-Received: from DM6PR10MB3851.namprd10.prod.outlook.com
- ([fe80::5c53:869:7452:46da]) by DM6PR10MB3851.namprd10.prod.outlook.com
- ([fe80::5c53:869:7452:46da%3]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
- 21:51:11 +0000
-Subject: Re: [PATCH 1/1] iscsi_ibft: KASAN false positive failure occurs in
- ibft_init()
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Konrad Rzeszutek Wilk <konrad@darnok.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>, pjones@redhat.com,
-        konrad@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>
-References: <1611684201-16262-1-git-send-email-george.kennedy@oracle.com>
- <YBG0glwiK1wyJTeN@Konrads-MacBook-Pro.local>
- <CACT4Y+a48smtXc6qJy9Wthwuqjk2gh6o7BK1tfWW46g7D_r-Lg@mail.gmail.com>
- <cc712c9c-7786-bb26-7082-04e564df98aa@oracle.com>
- <CACT4Y+bPDvmwk38DrKfGV8cbtS_abAMDCqr9OigcPfep0uk5AQ@mail.gmail.com>
- <20210203192856.GA324708@fedora>
- <CACT4Y+bscZGpMK-UXXzeFDeJtGYt-royR_=iTzTmBrwe3wOmTw@mail.gmail.com>
-From:   George Kennedy <george.kennedy@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <14124734-326e-87b3-a04a-b7190f1e1282@oracle.com>
-Date:   Wed, 10 Feb 2021 16:51:04 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-In-Reply-To: <CACT4Y+bscZGpMK-UXXzeFDeJtGYt-royR_=iTzTmBrwe3wOmTw@mail.gmail.com>
+ 15.20.3825.30; Wed, 10 Feb 2021 21:57:48 +0000
+Received: from DM6PR11MB3514.namprd11.prod.outlook.com
+ ([fe80::8d65:1cea:7dc:dbea]) by DM6PR11MB3514.namprd11.prod.outlook.com
+ ([fe80::8d65:1cea:7dc:dbea%3]) with mapi id 15.20.3825.030; Wed, 10 Feb 2021
+ 21:57:48 +0000
+To:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        kgdb-bugreport@liss.sourceforge.net, linux-kernel@vger.kernel.org,
+        patches@linaro.org
+References: <20210210142525.2876648-1-daniel.thompson@linaro.org>
+From:   Jason Wessel <jason.wessel@windriver.com>
+Subject: Re: [PATCH] kgdb: Remove kgdb_schedule_breakpoint()
+Message-ID: <12577be2-ac19-bce5-ede4-a7e6756cb138@windriver.com>
+Date:   Wed, 10 Feb 2021 15:57:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+In-Reply-To: <20210210142525.2876648-1-daniel.thompson@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Originating-IP: [108.20.187.119]
-X-ClientProxiedBy: BYAPR01CA0048.prod.exchangelabs.com (2603:10b6:a03:94::25)
- To DM6PR10MB3851.namprd10.prod.outlook.com (2603:10b6:5:1fb::17)
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [73.74.120.8]
+X-ClientProxiedBy: SJ0PR03CA0097.namprd03.prod.outlook.com
+ (2603:10b6:a03:333::12) To DM6PR11MB3514.namprd11.prod.outlook.com
+ (2603:10b6:5:61::26)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.246] (108.20.187.119) by BYAPR01CA0048.prod.exchangelabs.com (2603:10b6:a03:94::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Wed, 10 Feb 2021 21:51:09 +0000
+Received: from [10.0.2.15] (73.74.120.8) by SJ0PR03CA0097.namprd03.prod.outlook.com (2603:10b6:a03:333::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Wed, 10 Feb 2021 21:57:46 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 50f02c84-5816-42dd-3ba6-08d8ce0dfaa6
-X-MS-TrafficTypeDiagnostic: DM5PR10MB1372:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR10MB137218C8EBCE17BE1908E60CE68D9@DM5PR10MB1372.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 6f84566e-14ab-4f05-8e77-08d8ce0ee772
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3867:
+X-Microsoft-Antispam-PRVS: <DM6PR11MB3867CD5D306C9F015F68116D978D9@DM6PR11MB3867.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V+F7crlt91G/QtekVkqfA79nodMZUFeO3MuhBJJAHXVfKvNVwSvKT+jF8CgFXzTTd7qe95i7NVPlL9jiZhunBvl282noxC+OyfaCBeSm+VwiZrLxpPF7EPptirL1jDnRmNMVxB1YNrjjrkU8oLdX4CmGu7ji041OART9f8KNGLRv5bx3XqUvxmS4xnmm2I6NbJOUCbO824/joXDLRHimwd2YinRppAF0lobu3DozIQjsxFRrq1Ty1U3Jbf83AD3xG/v40fw3hptkoQfjzshHnMzx0I9YnHOgy4kDWSgu+Pp1jl+e+xPLrTCGGMtwW7gMt14Bst9ufcUX2UjaFoQk3JDGWl+IrqvP5fenhilkOHhwDZdDNIgrXq51xEo5ll/WQJiS9xvK9xVV3Plu8+BzyDzDCinnGZIsWNqVuZxxXu4sOrYeQxNFdfz4BguPG+mGPMZP/IsxCBCZUeeYXwOX43UCjme6m+hweSi5qLyZIFnVUy+yzqn4g1WpWI58d/mpYuXi9gd+hPb8D2alZn0rimXADMbNbnjrglhj8s8wUWnFybouctylYZQpuFkuZ+Eg7DjqBBUc1g4/3p8oqM7tSEldBINfluPBjje+a5Pi3dlF6oI9fef//5YLQCl45W8YYnNTZ5EPFSi/+XAezYrzFB7l19vu/0cXLg7ymH387kc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3851.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(396003)(346002)(39860400002)(136003)(31686004)(83380400001)(86362001)(31696002)(66556008)(66946007)(66476007)(107886003)(30864003)(8676002)(5660300002)(478600001)(6666004)(4326008)(966005)(16526019)(186003)(26005)(8936002)(53546011)(44832011)(36916002)(6486002)(36756003)(2616005)(956004)(2906002)(54906003)(110136005)(16576012)(316002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?b0dUNkd0N05vZkN1N3BCWEdrVEpKRkd0Z3JPdzRyWEVtMFJNMTBXcW0rdEta?=
- =?utf-8?B?YVF4b0ZqNGN0eDlVWWQzS25ndWFRc0V5WmxWMzA0RXpXdXNqanhCNEJ0Wlpv?=
- =?utf-8?B?ZXpRTHdjcXNLZG1YZXMvdzkyeHl0S2NDcXVlNlZqRDd5M2JMSy91VHNqRXBm?=
- =?utf-8?B?NlA1TU5KM2NoNGdSNkI2RER5V1V6STB6MzQ1VzIvK1RBTURGeUQ2OVlEMU5h?=
- =?utf-8?B?ZlJZUXRXNFJXVWE5MXo2blpFa1ZabU9LSzBCdkRndUhLeFZMVGpzcTh6TWJL?=
- =?utf-8?B?NHZLMXI2aXhNSU1aYkxOUWxPYzFMckVMNkpJWUxXdkxxV01CNG5rZks3bzNq?=
- =?utf-8?B?SzlSQXZpKzM1R3RZeVFYaDFKN1hKZDAwazFqVTFqZ3VFWDhRbzZmSDlyU2N6?=
- =?utf-8?B?dHA3RU83ZzE2eEUyZGljMHp4TmU1ZFZ1c1dCaC9wK3VCak9pbTkydEpKVXI3?=
- =?utf-8?B?aVBWRENaTDJid0VJWVgxUkUwVDdlYkRDOHZQQmdEVkIxR3kvV1g5TU5kUStt?=
- =?utf-8?B?dXFTZVRXdlFjZGpJTDQ5ZjJ4VHZ5a2ZtcUJVM2dZZ1UzZmxZMTlXUklwcndj?=
- =?utf-8?B?eDdKZ1hxWDJnOG96T1J0ajRkTWhnMm41djhYZlYxOWh4MENMdjJ5SGVITXJ0?=
- =?utf-8?B?SUhFRnkvTWdyMUoxdFBUNUxpM09SZ0JTZkxTb2Y0SGQwT1U1QVU0dmJGaXgz?=
- =?utf-8?B?L3piTHF0NXlYMDhHanNoaE84NDdoaVlzRVpmNlpPMmdXYk04cDAyQ3VkOGMx?=
- =?utf-8?B?QS9uOXQxQUtRSU55UWxhd28xdzNOUkRleU9iRVdPamd5NEFOVjBzZ1NOa1oy?=
- =?utf-8?B?aHNESVNwaldjS3A4Y3MxYUNiTVR5aGhiVmc3YVVuaG9HcEZObVdLVkVvWWd3?=
- =?utf-8?B?THdQQWpidjRvdHB6bmg2SFVkQ1YxT3pyaW1jV0xHWWVpdWdpSXR1M3NoRE8x?=
- =?utf-8?B?aStqWFRSS0wybFo4akFKK0x6ZWdnSjNtUHFNdTFBV25MaUpwKy9PNE05cFMr?=
- =?utf-8?B?djkyZWNpOUIvWjdoTXZ6TWxzUDFueWllWnFBWHBsTDFWanRab3RNQVlDeVZ5?=
- =?utf-8?B?dU9FY1Y0bnJ1c2hLbXNneStPeGJldEg1R281ZHdtUjVMa2NCREh2TytyLzMz?=
- =?utf-8?B?VlZ1VCtORThabWtJYW5uOWEyVE1QblZWMmR2QTVaNnBkY2xyN2QwSENObWNV?=
- =?utf-8?B?ZitTTUtMamxnbnp1cXNjS1B6TTIrUzZ3K1h4K0U1bWlqcVdjTVpXOGR6NVh2?=
- =?utf-8?B?OGNDeGdIU3Z4WUErYWZEQUY4QTZNSGt1YkhPWW9RSGNwcmVrV21rNkJGSVQ1?=
- =?utf-8?B?ZklyaStLTnFkQmRxb0tHTmZvbFY0WHNJVmpULzJJcmNVb2hob1ZGTVhEWm5u?=
- =?utf-8?B?YWNJVEhQMkgwcTRTZVdudC9ZNFhTZjFEZVM4Yjk3a1ZjUC9qQ2FlQVNyNENp?=
- =?utf-8?B?U2NmeDJOSWJIRWVJSG9MclB2L3ZSQzNhMElacFh0VGc3UEdMTHdobXJnYUdk?=
- =?utf-8?B?ei9FZkdHY2NMK2hyYXQ5alcybGVJVXhudU1qdzFUb1BGdkxDWWl4VVZ6Wmp5?=
- =?utf-8?B?R2ZCdmJjd051K05pczdvYUV5dk5Wbk5jTldrK2dTWi9IR2dPckZ1L0hUR1Bz?=
- =?utf-8?B?T0t6SDR3SjhzZDZpSjBJWElQaCtKOU1yM1U5cFAvTXFJcHpQd2NxQXVVWGNr?=
- =?utf-8?B?UTV5cGJlT3VXUHhveCtCcFFkbitmaDR2U1BuTnd0Tm5IWVZTRGYraHJHT3Bp?=
- =?utf-8?Q?Xw6ucEWAMYH97YoJlIhFWvkIELG0M/ShMutf484?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50f02c84-5816-42dd-3ba6-08d8ce0dfaa6
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3851.namprd10.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: OJo1M6NzkPE+lTg/siV3Gcsb2E93cg1W04YUg3Ai7aRU1cowxrs5baKz6X67Jlg7ebAbOE9dauwZr+jBGZIFTIxuFRgXQfSpU55UTN7c3igQYdZeHaimjJBnWssjnbwHr1dt03AFLUCLFQDQCKDNImemNZ7w+mrb87fSLCLib//NK92nNFnUsUlgKzFM5Nw6qbsgd8ZxIWND0acE+N1Yos5OPPNlj0Jv7UHPgR+Yd/hudoJAGAxzQeKqC4sEMNJQP+s4Sm3sB8b8eDGhGbOommgeFWQ6c1g4KFCrnzNCYTp+2wBSZTXR0nFTl9cHMnPwxXud6vLcGZqIDdw9oX0iJ09aPNlECE3Q/njiG08RLxV/lBwtUf8lJa9MQfE/f+u/d6cUgL5QLgRYDnKROOL54VYlTUliCSaHCUpmPqawNvlUQaanh9YZ8Sug0jD17mk5qQokyUYyL5N1bjeH3BkjJ1QbRAEbzDOtiej301M6eN4W/f5xNG6ZCV06tdRHIci5C02/kwCY5LOdBkT5/VdKD64I2lgPD1luXKthQcOWc7sojD7XYAZ34/NzHxVIvWKhupCoGdxPjmBRVrXDYzXy/vNER7D/3tSjIoZG4CB4eXE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3514.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39850400004)(346002)(376002)(396003)(44832011)(26005)(16576012)(316002)(53546011)(8936002)(956004)(2616005)(16526019)(186003)(8676002)(4326008)(6486002)(54906003)(2906002)(5660300002)(110136005)(478600001)(52116002)(66476007)(66556008)(66946007)(86362001)(36756003)(31686004)(31696002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZVpSZWlOVStQa2FLZkZTZ25YcGs5QW9aT3NlL21pMWpyczZCS05RNkh4VTVz?=
+ =?utf-8?B?MVlWTC80bktmMkhZSnloV1phNVhBYm44ZnBRa1FsY1RSbUY0NVM2dWV2R0wv?=
+ =?utf-8?B?cVhDczloNHh2UUY5eFIxZnJ4MXU0Sm9OYTlWTElwZEVmN3VLM29Qak1tRlZH?=
+ =?utf-8?B?RlhLN2tnVUJSbG4xTCtXdWg4a0xhWWdaMkh3VmlFeTFVaVRqa001ZGFud0xL?=
+ =?utf-8?B?bkxmUTExZXA0T24vMkJNMk9udnBTTmt5emszb25JbkdRQ1Bic1ZPWUl4dnZW?=
+ =?utf-8?B?WjNNcllKQWVSQnNLSjZTNy9rN3FTV1p5cmNVcUhEOGVXSE1HajdNc25OME9x?=
+ =?utf-8?B?bHZ1VUlUblRXMjFaVmUweXZNUmtUangrS3ZxMG4yTFdaTzU4SVVIVlcyZEha?=
+ =?utf-8?B?NTJ2VXBHa2VDTVNSSDVSNTN1amU4L0RlZHFJUmo0ck9JWkZEb2xPTFpJRkpm?=
+ =?utf-8?B?SXJMTFdaVjV4M1c3VkVVak1pL2IrZU1EWUhiM3NFQUtReS9UeUI0T05CUlM3?=
+ =?utf-8?B?ZDFlbW9ud1YzZWxjaHMwVXRsOW80QklkREZoRjM4TWcxNTBmWElZQVI2SlIx?=
+ =?utf-8?B?M0RIcDdIcDdLajRndWg5d3hPbk43SmFETnZ5U1ZJMi83a1Zvcm1MMzZpQ3Av?=
+ =?utf-8?B?NDAxRTA4cE9yZDE1cVB6VjdOSitHY0UwS2t0Q1FiYjZad0Zlb01WeUFtdS9L?=
+ =?utf-8?B?V2RVbmVLZHVTNkRrOEd5Y3R2Y2RVZVhCVzBnZy9JM3c2RVI3VEswMGxSU1VR?=
+ =?utf-8?B?QXM2TytHNXJycmVKZllqRDRkbkR2MVZCSXZFTis4TDVYR1pLbWtiNmRmQS9s?=
+ =?utf-8?B?cjRxYXN0QkgvTjlFR1M0VGRMaXY2ZjNxU3oySEhlWjdJNVRydnoyMkdYUUhM?=
+ =?utf-8?B?NHJvang5ZVhPR1JXUkNrLzFXUE42YTRoK1llUXFLU3VWbVBwK2taZndzUVJR?=
+ =?utf-8?B?NWUxSVloN01nMnhvTm8xUG1rQnJiTUtWc1dDTDNLdDQweXM1ejVySzdRb1lG?=
+ =?utf-8?B?Y0dvcGMxWk9pRXlqcWcyWEhHK2NsYVZ6RFZGVVh3SVpXMzFUTWVlS1hQbUMy?=
+ =?utf-8?B?aUowcEU1L3BZOHJJTjE1YW9pOGJDZG5Zai9UcGVyT2lhdEdqOVpDZzVjN0Mr?=
+ =?utf-8?B?eEtBcnJ4QisvS0wyQVNYWnh5ZlhpVmpCdTNyYkYxaEE4dGlBQ3YrVWZoU0o2?=
+ =?utf-8?B?TzA4SzNiL3ZGelNzQUZjSnJPa01hLzhvdjFrYURuSVNkRmFPUFdKTVBhc3Zz?=
+ =?utf-8?B?MXRMMkhyY2tXVlRmb2FMNS9taU1MY2IwdCtYSkh6Z1Avdi9HZE1WZkF3VU1v?=
+ =?utf-8?B?QzVnUkpBS1oxa0Q2b0s1a3dGTGlLVFpnRHBlaFRUMUQ1SzNrM2NxS3kwL1Bn?=
+ =?utf-8?B?TU1HeDM3Z0lROGtLNVV1YXZGL0JsY2tqekdTbUVUWjhCdHJjNW14aFhVNzZn?=
+ =?utf-8?B?NnVSbmpSTG9hdnBURHRMVWFuQ1BEOFBkejRyU0pnTVh3c0F0MllTUmdldU85?=
+ =?utf-8?B?V1JxN0NUU1IxazB2ZnJyRWFibXhZTERDbEliQmRlUytaUG9HVklJcktZa1Vt?=
+ =?utf-8?B?Q1lYRHBjSEJQdENyRnd6bjhZd0pjN1ppOHl3MU1GSm13QndjSjJQTFVFcEIz?=
+ =?utf-8?B?OVhKZy96bktvT09BcVAzaHFMUWFObmtTY3VsVS9ieHF2MU56MjlvRFpHQy91?=
+ =?utf-8?B?SE9oZDJRdEFzK1I3eEduWmtxWjFqNUVtQTNsdW5FaEdGaE5kdG1sUjZiei9k?=
+ =?utf-8?Q?Nfl4q+pXKW9M3A4a3fl/Faypglaj98v/ZlSRhUy?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f84566e-14ab-4f05-8e77-08d8ce0ee772
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3514.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 21:51:11.1847
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 21:57:48.2032
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yaJdmvlZCXqqWUD3ZxXOF7lHadEXYUeZjct+Cm6+80RjRex9uJ43WB2IzYf6KXGh3fYeF9yfbE8zk/YUi6oENxvMpjLC+iRy9MSMe8MpCVg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR10MB1372
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102100189
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102100189
+X-MS-Exchange-CrossTenant-UserPrincipalName: //l5Zid1Wnx6gGM+A0WEPWAFSXPsi4og6h7YfQa0kcyHMABy7FyySSY3tAgQ/vLgdKsZrjl9PTewry5LhpnGJnJ5EMK+fXrRwO+QBmXkgP4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3867
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 2/10/21 8:25 AM, Daniel Thompson wrote:
+> To the very best of my knowledge there has never been any in-tree
+> code that calls this function. It exists largely to support an
+> out-of-tree driver that provides kgdb-over-ethernet using the
+> netpoll API.
 
-On 2/3/2021 2:35 PM, Dmitry Vyukov wrote:
-> On Wed, Feb 3, 2021 at 8:29 PM Konrad Rzeszutek Wilk <konrad@darnok.org> wrote:
->> Hey Dmitry, Rafael, George, please see below..
->>
->> On Wed, Jan 27, 2021 at 10:10:07PM +0100, Dmitry Vyukov wrote:
->>> On Wed, Jan 27, 2021 at 9:01 PM George Kennedy
->>> <george.kennedy@oracle.com> wrote:
->>>> Hi Dmitry,
->>>>
->>>> On 1/27/2021 1:48 PM, Dmitry Vyukov wrote:
->>>>
->>>> On Wed, Jan 27, 2021 at 7:44 PM Konrad Rzeszutek Wilk
->>>> <konrad.wilk@oracle.com> wrote:
->>>>
->>>> On Tue, Jan 26, 2021 at 01:03:21PM -0500, George Kennedy wrote:
->>>>
->>>> During boot of kernel with CONFIG_KASAN the following KASAN false
->>>> positive failure will occur when ibft_init() reads the
->>>> ACPI iBFT table: BUG: KASAN: use-after-free in ibft_init
->>>>
->>>> The ACPI iBFT table is not allocated, and the iscsi driver uses
->>>> a pointer to it to calculate checksum, etc. KASAN complains
->>>> about this pointer with use-after-free, which this is not.
->>>>
->>>> Andrey, Alexander, Dmitry,
->>>>
->>>> I think this is the right way for this, but was wondering if you have
->>>> other suggestions?
->>>>
->>>> Thanks!
->>>>
->>>> Hi George, Konrad,
->>>>
->>>> Please provide a sample KASAN report and kernel version to match line numbers.
->>>>
->>>> 5.4.17-2102.200.0.0.20210106_0000
->>>>
->>>> [   24.413536] iBFT detected.
->>>> [   24.414074]
->>>> ==================================================================
->>>> [   24.407342] BUG: KASAN: use-after-free in ibft_init+0x134/0xb8b
->>>> [   24.407342] Read of size 4 at addr ffff8880be452004 by task swapper/0/1
->>>> [   24.407342]
->>>> [   24.407342] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.4.17-2102.200.0.0.20210106_0000.syzk #1
->>>> [   24.407342] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
->>>> [   24.407342] Call Trace:
->>>> [   24.407342]  dump_stack+0xd4/0x119
->>>> [   24.407342]  ? ibft_init+0x134/0xb8b
->>>> [   24.407342]  print_address_description.constprop.6+0x20/0x220
->>>> [   24.407342]  ? ibft_init+0x134/0xb8b
->>>> [   24.407342]  ? ibft_init+0x134/0xb8b
->>>> [   24.407342]  __kasan_report.cold.9+0x37/0x77
->>>> [   24.407342]  ? ibft_init+0x134/0xb8b
->>>> [   24.407342]  kasan_report+0x14/0x1b
->>>> [   24.407342]  __asan_report_load_n_noabort+0xf/0x11
->>>> [   24.407342]  ibft_init+0x134/0xb8b
->>>> [   24.407342]  ? dmi_sysfs_init+0x1a5/0x1a5
->>>> [   24.407342]  ? dmi_walk+0x72/0x89
->>>> [   24.407342]  ? ibft_check_initiator_for+0x159/0x159
->>>> [   24.407342]  ? rvt_init_port+0x110/0x101
->>>> [   24.407342]  ? ibft_check_initiator_for+0x159/0x159
->>>> [   24.407342]  do_one_initcall+0xc3/0x44d
->>>> [   24.407342]  ? perf_trace_initcall_level+0x410/0x405
->>>> [   24.407342]  kernel_init_freeable+0x551/0x673
->>>> [   24.407342]  ? start_kernel+0x94b/0x94b
->>>> [   24.407342]  ? __sanitizer_cov_trace_const_cmp1+0x1a/0x1c
->>>> [   24.407342]  ? __kasan_check_write+0x14/0x16
->>>> [   24.407342]  ? rest_init+0xe6/0xe6
->>>> [   24.407342]  kernel_init+0x16/0x1bd
->>>> [   24.407342]  ? rest_init+0xe6/0xe6
->>>> [   24.407342]  ret_from_fork+0x2b/0x36
->>>> [   24.407342]
->>>> [   24.407342] The buggy address belongs to the page:
->>>> [   24.407342] page:ffffea0002f91480 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1
->>>> [   24.407342] flags: 0xfffffc0000000()
->>>> [   24.407342] raw: 000fffffc0000000 ffffea0002fca588 ffffea0002fb1a88 0000000000000000
->>>> [   24.407342] raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->>>> [   24.407342] page dumped because: kasan: bad access detected
->>>> [   24.407342]
->>>> [   24.407342] Memory state around the buggy address:
->>>> [   24.407342]  ffff8880be451f00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>>> [   24.407342]  ffff8880be451f80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>>> [   24.407342] >ffff8880be452000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>>> [   24.407342]                    ^
->>>> [   24.407342]  ffff8880be452080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>>> [   24.407342]  ffff8880be452100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->>>> [   24.407342]
->>>> ==================================================================
->>>> [   24.407342] Disabling lock debugging due to kernel taint
->>>> [   24.451021] Kernel panic - not syncing: panic_on_warn set ...
->>>> [   24.452002] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G    B 5.4.17-2102.200.0.0.20210106_0000.syzk #1
->>>> [   24.452002] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
->>>> [   24.452002] Call Trace:
->>>> [   24.452002]  dump_stack+0xd4/0x119
->>>> [   24.452002]  ? ibft_init+0x102/0xb8b
->>>> [   24.452002]  panic+0x28f/0x6e0
->>>> [   24.452002]  ? __warn_printk+0xe0/0xe0
->>>> [   24.452002]  ? ibft_init+0x134/0xb8b
->>>> [   24.452002]  ? add_taint+0x68/0xb3
->>>> [   24.452002]  ? add_taint+0x68/0xb3
->>>> [   24.452002]  ? ibft_init+0x134/0xb8b
->>>> [   24.452002]  ? ibft_init+0x134/0xb8b
->>>> [   24.452002]  end_report+0x4c/0x54
->>>> [   24.452002]  __kasan_report.cold.9+0x55/0x77
->>>> [   24.452002]  ? ibft_init+0x134/0xb8b
->>>> [   24.452002]  kasan_report+0x14/0x1b
->>>> [   24.452002]  __asan_report_load_n_noabort+0xf/0x11
->>>> [   24.452002]  ibft_init+0x134/0xb8b
->>>> [   24.452002]  ? dmi_sysfs_init+0x1a5/0x1a5
->>>> [   24.452002]  ? dmi_walk+0x72/0x89
->>>> [   24.452002]  ? ibft_check_initiator_for+0x159/0x159
->>>> [   24.452002]  ? rvt_init_port+0x110/0x101
->>>> [   24.452002]  ? ibft_check_initiator_for+0x159/0x159
->>>> [   24.452002]  do_one_initcall+0xc3/0x44d
->>>> [   24.452002]  ? perf_trace_initcall_level+0x410/0x405
->>>> [   24.452002]  kernel_init_freeable+0x551/0x673
->>>> [   24.452002]  ? start_kernel+0x94b/0x94b
->>>> [   24.452002]  ? __sanitizer_cov_trace_const_cmp1+0x1a/0x1c
->>>> [   24.452002]  ? __kasan_check_write+0x14/0x16
->>>> [   24.452002]  ? rest_init+0xe6/0xe6
->>>> [   24.452002]  kernel_init+0x16/0x1bd
->>>> [   24.452002]  ? rest_init+0xe6/0xe6
->>>> [   24.452002]  ret_from_fork+0x2b/0x36
->>>> [   24.452002] Dumping ftrace buffer:
->>>> [   24.452002] ---------------------------------
->>>> [   24.452002] swapper/-1         1.... 24564337us : rdmaip_init: 2924: rdmaip_init: Active Bonding is DISABLED
->>>> [   24.452002] ---------------------------------
->>>> [   24.452002] Kernel Offset: disabled
->>>> [   24.452002] Rebooting in 1 seconds..
->>>>
->>>> Why does KASAN think the address is freed? For that to happen that
->>>> memory should have been freed. I don't remember any similar false
->>>> positives from KASAN, so this looks a bit suspicious.
->>>>
->>>> I'm not sure why KASAN thinks the address is freed. There are other modules where KASAN/KCOV is disabled on boot.
->>>> Could this be for a similar reason?
->>> Most of these files are disabled because they cause recursion in
->>> instrumentation, or execute too early in bootstrap process (before
->>> kasan_init).
->>>
->>> Somehow the table pointer in ibft_init points to a freed page. I
->>> tracked it down to here:
->>> https://elixir.bootlin.com/linux/v5.4.17/source/drivers/acpi/acpica/tbutils.c#L399
->>> but I can't find where this table_desc->pointer comes from. Perhaps it
->> It is what the BIOS generated. It usually points to some memory
->> location in right under 4GB and the BIOS stashes the DSDT, iBFT, and
->> other tables in there.
->>
->>> uses some allocation method that's not supported by KASAN? However,
->>> it's the only such case that I've seen, so it's a bit weird. Could it
->>> use something like memblock_alloc? Or maybe that page was in fact
->>> freed?... Too bad KASAN does not print free stack for pages, maybe
->>> it's not too hard to do if CONFIG_PAGE_OWNER is enabled...
->> Hm, there is a comment in the acpi_get_table speaking about the
->> requirement of having a acpi_put_table and:
->>
->>
->>   * DESCRIPTION: Finds and verifies an ACPI table. Table must be in the
->>   *              RSDT/XSDT.
->>   *              Note that an early stage acpi_get_table() call must be paired
->>   *              with an early stage acpi_put_table() call. otherwise the table
->>   *              pointer mapped by the early stage mapping implementation may be
->>   *              erroneously unmapped by the late stage unmapping implementation
->>   *              in an acpi_put_table() invoked during the late stage.
->>   *
->>
->> Which would imply that I should use acpi_put_table in the error path
->> (see below a patch), but also copy the structure instead of depending
->> on ACPI keeping it mapped for me. I think.
-> Hi Konrad,
->
-> Thanks for looking into this.
-> If ACPI unmaps this page, that would perfectly explain the KASAN report.
->
-> George, does this patch eliminate the KASAN report for you?
 
-Hi Dmitry,
+There was another out of tree user of this, but I don't know if
+this is still applicable today.  The scenario is around the
+ability to use a character sequence when kgdboc is active
+on the console such as <control-c>, to cause a break point, vs
+using a hardware break over a tty (because not all hardware supported this).
 
-No luck with the patch. Tried high level bisect instead. Here are the 
-results:
+I could send the original patch that implements this along, but
+I question if it is needed given the devices out there.  The reason
+the original patch existed at all was to deal with some pick serial
+hardware.
 
-BUG: KASAN: use-after-free in ibft_init+0x134/0xc49
+---- original out of tree patch header ----
 
-Bisect status:
-v5.11-rc6 Sun Jan 31 13:50:09 2021 -0800     Failed
-v5.11-rc1 Sun Dec 27 15:30:22 2020 -0800    Failed
-v5.10 Sun Dec 13 14:41:30 2020 -0800           Failed
-v5.10-rc6 Sun Nov 29 15:50:50 2020 -0800    Failed
-v5.10-rc5 Sun Nov 22 15:36:08 2020 -0800    Failed
-v5.10-rc4 Sun Nov 15 16:44:31 2020 -0800    Failed
-v5.10-rc3 Sun Nov 8 16:10:16 2020 -0800      Failed
-v5.10-rc2 Sun Nov 1 14:43:52 2020 -0800      Failed
-v5.10-rc1 Sun Oct 25 15:14:11 2020 -0700     Failed
-v5.9 Sun Oct 11 14:15:50 2020 -0700              OK - 10 reboots so far 
-w/o kasan failure
+Subject: [PATCH] kgdboc, tty: Add the rx polling call back capability
 
-So, will look at what changed between v5.9 and v5.10-rc1
+The idea is to allow kgdboc to intercept a <contorol-c> or any other
+character of preference to cause breakpoint interrupt which will start
+the kgdb interface running on the controlling terminal where the
+character was typed.
 
-Failure is intermittent, so takes a lot of retries.
+The default behavior of kgdboc changes such that the control-c will
+always generate an entry to kgdb unless the "n" option is used in the
+kgdb configuration line. IE: kgdboc=ttyS0,n,115200
 
-Thank you,
-George
+In order to make use of the new API, a low level serial driver must
+check to see if it should execute the callback function for each
+character that it processes.  This is similar to the approach used
+with the NET_POLL API's rx_hook.
 
->
->
->> CC-ing Rafeal.
->>
->>
->>  From c37da50fdfc62cd4f7b23562b55661478c90a17d Mon Sep 17 00:00:00 2001
->> From: Konrad Rzeszutek Wilk <konrad@darnok.org>
->> Date: Tue, 2 Feb 2021 17:28:28 +0000
->> Subject: [PATCH] ibft: Put ibft_addr back
->>
->> Signed-off-by: Konrad Rzeszutek Wilk <konrad@darnok.org>
->> ---
->>   drivers/firmware/iscsi_ibft.c | 19 +++++++++++++------
->>   1 file changed, 13 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/firmware/iscsi_ibft.c b/drivers/firmware/iscsi_ibft.c
->> index 7127a04..2a1a033 100644
->> --- a/drivers/firmware/iscsi_ibft.c
->> +++ b/drivers/firmware/iscsi_ibft.c
->> @@ -811,6 +811,10 @@ static void ibft_cleanup(void)
->>                  ibft_unregister();
->>                  iscsi_boot_destroy_kset(boot_kset);
->>          }
->> +       if (ibft_addr) {
->> +               acpi_put_table((struct acpi_table_header *)ibft_addr);
->> +               ibft_addr = NULL;
->> +       }
->>   }
->>
->>   static void __exit ibft_exit(void)
->> @@ -835,13 +839,15 @@ static void __init acpi_find_ibft_region(void)
->>   {
->>          int i;
->>          struct acpi_table_header *table = NULL;
->> +       acpi_status status;
->>
->>          if (acpi_disabled)
->>                  return;
->>
->>          for (i = 0; i < ARRAY_SIZE(ibft_signs) && !ibft_addr; i++) {
->> -               acpi_get_table(ibft_signs[i].sign, 0, &table);
->> -               ibft_addr = (struct acpi_table_ibft *)table;
->> +               status = acpi_get_table(ibft_signs[i].sign, 0, &table);
->> +               if (ACPI_SUCCESS(status))
->> +                       ibft_addr = (struct acpi_table_ibft *)table;
->>          }
->>   }
->>   #else
->> @@ -870,12 +876,13 @@ static int __init ibft_init(void)
->>
->>                  rc = ibft_check_device();
->>                  if (rc)
->> -                       return rc;
->> +                       goto out_free;
->>
->>                  boot_kset = iscsi_boot_create_kset("ibft");
->> -               if (!boot_kset)
->> -                       return -ENOMEM;
->> -
->> +               if (!boot_kset) {
->> +                       rc = -ENOMEM;
->> +                       goto out_free;
->> +               }
->>                  /* Scan the IBFT for data and register the kobjects. */
->>                  rc = ibft_register_kobjects(ibft_addr);
->>                  if (rc)
->> --
->> 1.8.3.1
->>
+The only changes to the tty layer introduced by this patch are:
+   * Add poll_rx_cb() call back for the low level driver
+   * Move the poll_init() into kgdboc and out of tty_find_polling_driv()
+   * change poll_init() to accept the rx callback parameter
+---
+  Documentation/DocBook/kgdb.tmpl  |   46 ++++++++++++++++++++++---
+  drivers/tty/serial/kgdboc.c      |   70 ++++++++++++++++++++++++++++++++++++++-
+  drivers/tty/serial/serial_core.c |   23 ++++++++++++
+  drivers/tty/tty_io.c             |    9 +----
+  include/linux/serial_core.h      |    3 +
+  include/linux/tty_driver.h       |    3 +
+  6 files changed, 139 insertions(+), 15 deletions(-)
 
+
+-------------------------------------------
+
+
+
+> 
+> kgdboe has been out-of-tree for more than 10 years and I don't
+> recall any serious attempt to upstream it at any point in the last
+> five. At this stage it looks better to stop carrying this code in
+> the kernel and integrate the code into the out-of-tree driver
+> instead.
+
+Because it has no in tree users, it absolutely makes the most
+sense to purge this function.
+
+Acked-by: Jason Wessel <jason.wessel@windriver.com>
+
+> 
+> The long term trajectory for the kernel looks likely to include
+> effort to remove or reduce the use of tasklets (something that has
+> also been true for the last 10 years). Thus the main real reason
+> for this patch is to make explicit that the in-tree kgdb features
+> do not require tasklets.
+> 
+> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+> ---
+> 
+> Notes:
+>      During this cycle two developers have proposed tidying up the
+>      DECLARE_TASKLET_OLD() in the debug core. Both threads ended with a
+>      suggestion to remove kgdb_schedule_breakpoint() but I don't recall
+>      seeing a follow up patch for either thread... so I wrote it myself.
+> 
+>   include/linux/kgdb.h      |  1 -
+>   kernel/debug/debug_core.c | 26 --------------------------
+>   2 files changed, 27 deletions(-)
+> 
+> diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> index 0d6cf64c8bb12..0444b44bd156d 100644
+> --- a/include/linux/kgdb.h
+> +++ b/include/linux/kgdb.h
+> @@ -325,7 +325,6 @@ extern char *kgdb_mem2hex(char *mem, char *buf, int count);
+>   extern int kgdb_hex2mem(char *buf, char *mem, int count);
+> 
+>   extern int kgdb_isremovedbreak(unsigned long addr);
+> -extern void kgdb_schedule_breakpoint(void);
+>   extern int kgdb_has_hit_break(unsigned long addr);
+> 
+>   extern int
+> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+> index 7f22c1c0ffe80..b636d517c02c4 100644
+> --- a/kernel/debug/debug_core.c
+> +++ b/kernel/debug/debug_core.c
+> @@ -119,7 +119,6 @@ static DEFINE_RAW_SPINLOCK(dbg_slave_lock);
+>    */
+>   static atomic_t			masters_in_kgdb;
+>   static atomic_t			slaves_in_kgdb;
+> -static atomic_t			kgdb_break_tasklet_var;
+>   atomic_t			kgdb_setting_breakpoint;
+> 
+>   struct task_struct		*kgdb_usethread;
+> @@ -1084,31 +1083,6 @@ static void kgdb_unregister_callbacks(void)
+>   	}
+>   }
+> 
+> -/*
+> - * There are times a tasklet needs to be used vs a compiled in
+> - * break point so as to cause an exception outside a kgdb I/O module,
+> - * such as is the case with kgdboe, where calling a breakpoint in the
+> - * I/O driver itself would be fatal.
+> - */
+> -static void kgdb_tasklet_bpt(unsigned long ing)
+> -{
+> -	kgdb_breakpoint();
+> -	atomic_set(&kgdb_break_tasklet_var, 0);
+> -}
+> -
+> -static DECLARE_TASKLET_OLD(kgdb_tasklet_breakpoint, kgdb_tasklet_bpt);
+> -
+> -void kgdb_schedule_breakpoint(void)
+> -{
+> -	if (atomic_read(&kgdb_break_tasklet_var) ||
+> -		atomic_read(&kgdb_active) != -1 ||
+> -		atomic_read(&kgdb_setting_breakpoint))
+> -		return;
+> -	atomic_inc(&kgdb_break_tasklet_var);
+> -	tasklet_schedule(&kgdb_tasklet_breakpoint);
+> -}
+> -EXPORT_SYMBOL_GPL(kgdb_schedule_breakpoint);
+> -
+>   /**
+>    *	kgdb_register_io_module - register KGDB IO module
+>    *	@new_dbg_io_ops: the io ops vector
+> 
+> base-commit: 19c329f6808995b142b3966301f217c831e7cf31
+> prerequisite-patch-id: 6d9085a2ef51882c80a4f13264cd12a14dcceb54
+> prerequisite-patch-id: c0a2cb664281d00a6e32867896374a617aafb358
+> prerequisite-patch-id: 6bbcef7ce98747090ecb13fd3eda74a241e47249
+> prerequisite-patch-id: 8bf7c51993c06ff88809d49ed59cbace3d94604e
+> --
+> 2.29.2
+> 
