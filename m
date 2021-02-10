@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E35315CFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 760B9315D01
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 03:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbhBJCNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 21:13:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        id S235010AbhBJCNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 21:13:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233902AbhBJA6F (ORCPT
+        with ESMTP id S234675AbhBJBCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 19:58:05 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75ECC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 16:57:24 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id y128so317575ybf.10
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 16:57:24 -0800 (PST)
+        Tue, 9 Feb 2021 20:02:12 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4FFC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 17:01:32 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id b8so261178plh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 17:01:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rCCDjzP34Ivl3lsXM9x/SwTdAdkeCOcYrLzlWFPV+tM=;
-        b=ex5ZWphpx1C8Ig4A82Vb5/qVMtJPVzW90lX+ay6ZhdHBl2wb+K4qpQ3MtpMqK130vn
-         zt47/aS7FgI7S4x/0mPyiezsLnNR+PCEmPoeYHmR67tHKS12czECs4z5pS3IV7pv4TTb
-         faVT5sVd1O5JvWkFjO15nZ+hB/RIldjZ3LhY/47D+/1rutICuNtmbCsF+/WYh15C7pcb
-         McTsc7OVSREU3bsydDFPdoE/ZM75JKiAIWeANdH6bl95PQQ5GymWxyva7nzCug8e6EjU
-         mZoAKG3BBOlRdUnm5p5675cMFoD5W0AoILySGAsRBZVFEtqv8hc3xTuGSikVvOkkfVgr
-         eKHA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=z9pd8U8xG5/S4aYV08rhas2DbNUJIVvsM0Bax6mL0fU=;
+        b=fw76ls4VnRbtA4EIKuNQq37UBgP0g9+GSKOqEacRxeh0uEJDVQv6/1mn0YLT1LYybG
+         M6xRexHC0W1FiPdKg6JpMLhnDIEuNeitFvsNw7j/QZHx6Q8RYtv7D1gO3HgTWD+Yw2uT
+         pja3w9j8MVg0qIeoYWJjbQSnH8ksNqvcT9ExjJsej/Jek0OrVPGfI8xw2ONtvoQuGHTw
+         Z3lqhoJaiM30YsqnrmBF4NC3AsiHKhI3ri4xjLBcgE4lQ2NQWAXX+CeYvmXvQ5098bxn
+         ED2aLkuRTTzBkz+QX+1clF62/2b18H8iYh5L81wJ5nWZccT1Qq36PWYS5GxRgfMqTL0j
+         mPjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rCCDjzP34Ivl3lsXM9x/SwTdAdkeCOcYrLzlWFPV+tM=;
-        b=nuRLa7Hvasl9Pumn7iPen5OOAY0OZKq8lBbyFDIqEfuEt9ZMO6sRkdjzr8HPVFmZZZ
-         Zk6HSQwK58E4OuTj+5BqhNLFxKpFVMitxCZVeB5ZvXioLr4G5t7v3UfuS7rDt3O7e+sc
-         9wv3dF7yrBUe7s1MVbmaQ4njobY9RCo/L+odkyNS7wiP8SmNpFj/tUnIG9bSSoxfUizg
-         GoeJg561oLcI3Ir/LWV/KKw78abCtZj51AXTEenO2gP3XEQZWhdXjpuD7X9v9GPPhAJS
-         77wIIY+CS33ntEwlZImW7vhi3Rkxf2IpYb3ZG2LzcllLQRjkpNvC7muPesg3AqGDHNkj
-         24ZA==
-X-Gm-Message-State: AOAM5335iPSjVQqa5StTTlRFZ1BiQd9tCm0ZpNQ0A4NZSVy/hqzQMdbK
-        a5RsjYSjUK+Y4dx4sAJNFMvC4lu06vYbHhnh/n/65g==
-X-Google-Smtp-Source: ABdhPJxehbw/5RJ+QRtKe+9zFRw3hl9x6b5uKwu1xvC+jjUVpzOAGXZopUVCCD0/vkx9XTYnqC+B2cLCn09LrqKdKmI=
-X-Received: by 2002:a25:cc89:: with SMTP id l131mr759286ybf.346.1612918643917;
- Tue, 09 Feb 2021 16:57:23 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=z9pd8U8xG5/S4aYV08rhas2DbNUJIVvsM0Bax6mL0fU=;
+        b=RWSYPetrAVnjsINARGCxt1E/FZEDi77EWz3L2pPGGBMYYNCcNqR2jg1jWviKCk8mWw
+         YpqocXRmfNVOzUKvbWcajCagJuFuJAfnV/2hqmU6MfAC0GZqtOEwZ5AfGbohyHI3jgpY
+         koMKrz2gvM8tkDlTYOhXLxb2TpkpvTNDuNpZrjDY664YSVoMUonu0i8WnfNibFzT8jo7
+         5fYaS7MFAFqGL0+Vh4MsyerqdrMinoPqGXbJAWtPtnhtFZOHCTRyxI/4hu8LNVeZSSva
+         7mqCav8DXINZOzkP38vgvU1+jyj3L/dL1engEkar0R2qK0K7VhSTqHojDP7UhYIiCp/1
+         lGfQ==
+X-Gm-Message-State: AOAM532owjL1REQvH/U9NPIEu8Ojolth6ntUUYZIoq6xuokeDAfdcGg4
+        8U/Vyq6+nWKSix9BYRSoEeQ=
+X-Google-Smtp-Source: ABdhPJxUBJEN53PV/5SO8BtqZ+6n9CebqWzpY++26jN7l0WWLQA2tti2CTIGc7RfQwEqVzIcDs5SiQ==
+X-Received: by 2002:a17:90a:9f94:: with SMTP id o20mr561046pjp.209.1612918891546;
+        Tue, 09 Feb 2021 17:01:31 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:5c0a:f013:8473:55a:6750:dd3e])
+        by smtp.gmail.com with ESMTPSA id z15sm222334pjz.41.2021.02.09.17.01.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 17:01:31 -0800 (PST)
+From:   Mukul Mehar <mukulmehar02@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     christian.gromm@microchip.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, Mukul Mehar <mukulmehar02@gmail.com>
+Subject: [PATCH v2] Drivers: staging: most: sound: Fixed styling issue.
+Date:   Wed, 10 Feb 2021 06:30:45 +0530
+Message-Id: <20210210010044.695996-1-mukulmehar02@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YCLF57aXZY8dooUH@kroah.com>
+References: <YCLF57aXZY8dooUH@kroah.com>
 MIME-Version: 1.0
-References: <20210203154332.470587-1-tudor.ambarus@microchip.com>
- <5bc4f5b7-5370-bdd5-143e-429c83447ce1@microchip.com> <161291845517.418021.17378265940034341908@swboyd.mtv.corp.google.com>
-In-Reply-To: <161291845517.418021.17378265940034341908@swboyd.mtv.corp.google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 9 Feb 2021 16:56:47 -0800
-Message-ID: <CAGETcx9fjRhNmEMF2QoerrzGctC6MMTy+_znVTgPEm1w-+ehqA@mail.gmail.com>
-Subject: Re: [PATCH] clk: at91: Fix the declaration of the clocks
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Ludovic Desroches <Ludovic.Desroches@microchip.com>,
-        Nicolas.Ferre@microchip.com,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        mirq-linux@rere.qmqm.pl,
-        Claudiu Beznea <Claudiu.Beznea@microchip.com>,
-        a.fatoum@pengutronix.de, Krzysztof Kozlowski <krzk@kernel.org>,
-        Codrin.Ciubotariu@microchip.com,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 4:54 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Tudor.Ambarus@microchip.com (2021-02-08 01:49:45)
-> > Hi, Michael, Stephen,
-> >
-> > Do you plan to take this patch for v5.12?
-> > If fw_devlink will remain set to ON for v5.12, some of our boards will
-> > no longer boot without this patch.
->
-> Is fw_devlink defaulted to on for v5.12?
+This patch fixes a warning, of the line ending with a '(',
+generated by checkpatch.pl.
 
-Yes.
+Signed-off-by: Mukul Mehar <mukulmehar02@gmail.com>
+---
+Changes since v1:
+ - Fixed indentation.
+---
+ drivers/staging/most/sound/sound.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
--Saravana
+diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
+index 4dd1bf95d1ce..4d497ce6d7b8 100644
+--- a/drivers/staging/most/sound/sound.c
++++ b/drivers/staging/most/sound/sound.c
+@@ -231,9 +231,9 @@ static int playback_thread(void *data)
+ 		wait_event_interruptible(channel->playback_waitq,
+ 					 kthread_should_stop() ||
+ 					 (channel->is_stream_running &&
+-					 (mbo = most_get_mbo(channel->iface,
+-					 channel->id,
+-					 &comp))));
++					  (mbo = most_get_mbo(channel->iface,
++							      channel->id,
++							      &comp))));
+ 		if (!mbo)
+ 			continue;
+ 
+-- 
+2.25.1
+
