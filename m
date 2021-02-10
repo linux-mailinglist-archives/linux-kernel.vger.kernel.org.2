@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EEF3168E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3153168EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhBJOQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:16:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhBJONP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:13:15 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7847EC06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 06:11:46 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id TSBj2400s4C55Sk01SBjmn; Wed, 10 Feb 2021 15:11:44 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l9qDX-005Ht0-8l; Wed, 10 Feb 2021 15:11:43 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l9qDW-006Jqr-Sp; Wed, 10 Feb 2021 15:11:42 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Russell King <linux@armlinux.org.uk>,
-        Michal Simek <monstr@monstr.eu>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 4/4] microblaze: Remove support for gcc < 4
-Date:   Wed, 10 Feb 2021 15:11:40 +0100
-Message-Id: <20210210141140.1506212-5-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210210141140.1506212-1-geert+renesas@glider.be>
-References: <20210210141140.1506212-1-geert+renesas@glider.be>
+        id S230362AbhBJORO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:17:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59092 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232110AbhBJOPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:15:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7E9F1AC43;
+        Wed, 10 Feb 2021 14:14:27 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 15:14:25 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mm,page_alloc: Make alloc_contig_range handle
+ in-use hugetlb pages
+Message-ID: <20210210141425.GB3636@localhost.localdomain>
+References: <20210208103812.32056-1-osalvador@suse.de>
+ <20210208103812.32056-2-osalvador@suse.de>
+ <6aa21eb3-7bee-acff-8f3c-7c13737066ba@redhat.com>
+ <20210210140941.GA3636@localhost.localdomain>
+ <d38527b5-140d-15e5-c1c4-f381602eab46@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d38527b5-140d-15e5-c1c4-f381602eab46@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit cafa0010cd51fb71 ("Raise the minimum required gcc version
-to 4.6") , the kernel can no longer be compiled using gcc-3.
-Hence drop support code for gcc-3.
+On Wed, Feb 10, 2021 at 03:11:05PM +0100, David Hildenbrand wrote:
+> On 10.02.21 15:09, Oscar Salvador wrote:
+> > On Wed, Feb 10, 2021 at 09:56:37AM +0100, David Hildenbrand wrote:
+> > > On 08.02.21 11:38, Oscar Salvador wrote:
+> > > > alloc_contig_range is not prepared to handle hugetlb pages and will
+> > > > fail if it ever sees one, but since they can be migrated as any other
+> > > > page (LRU and Movable), it makes sense to also handle them.
+> > > > 
+> > > > For now, do it only when coming from alloc_contig_range.
+> > > > 
+> > > > Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> > > > ---
+> > > >    mm/compaction.c | 17 +++++++++++++++++
+> > > >    mm/vmscan.c     |  5 +++--
+> > > >    2 files changed, 20 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/mm/compaction.c b/mm/compaction.c
+> > > > index e5acb9714436..89cd2e60da29 100644
+> > > > --- a/mm/compaction.c
+> > > > +++ b/mm/compaction.c
+> > > > @@ -940,6 +940,22 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+> > > >    			goto isolate_fail;
+> > > >    		}
+> > > > +		/*
+> > > > +		 * Handle hugetlb pages only when coming from alloc_contig
+> > > > +		 */
+> > > > +		if (PageHuge(page) && cc->alloc_contig) {
+> > > > +			if (page_count(page)) {
+> > > 
+> > > I wonder if we should care about races here. What if someone concurrently
+> > > allocates/frees?
+> > > 
+> > > Note that PageHuge() succeeds on tail pages, isolate_huge_page() not, i
+> > > assume we'll have to handle that as well.
+> > > 
+> > > I wonder if it would make sense to move some of the magic to hugetlb code
+> > > and handle it there with less chances for races (isolate if used,
+> > > alloc-and-dissolve if not).
+> > 
+> > Yes, it makes sense to keep the magic in hugetlb code.
+> > Note, though, that removing all races might be tricky.
+> > 
+> > isolate_huge_page() checks for PageHuge under hugetlb_lock,
+> > so there is a race between a call to PageHuge(x) and a subsequent
+> > call to isolate_huge_page().
+> > But we should be fine as isolate_huge_page will fail in case the page is
+> > no longer HugeTLB.
+> > 
+> > Also, since isolate_migratepages_block() gets called with ranges
+> > pageblock aligned, we should never be handling tail pages in the core
+> > of the function. E.g: the same way we handle THP:
+> 
+> Gigantic pages? (spoiler: see my comments to next patch :) )
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- arch/microblaze/kernel/module.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
+Oh, yeah, that sucks.
+We had the same problem in scan_movable_pages/has_unmovable_pages
+with such pages.
 
-diff --git a/arch/microblaze/kernel/module.c b/arch/microblaze/kernel/module.c
-index 9f12e3c2bb42a319..e5db3a57b9e30d9e 100644
---- a/arch/microblaze/kernel/module.c
-+++ b/arch/microblaze/kernel/module.c
-@@ -24,9 +24,6 @@ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
- 	Elf32_Sym *sym;
- 	unsigned long int *location;
- 	unsigned long int value;
--#if __GNUC__ < 4
--	unsigned long int old_value;
--#endif
- 
- 	pr_debug("Applying add relocation section %u to %u\n",
- 		relsec, sechdrs[relsec].sh_info);
-@@ -49,40 +46,17 @@ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
- 		 */
- 
- 		case R_MICROBLAZE_32:
--#if __GNUC__ < 4
--			old_value = *location;
--			*location = value + old_value;
--
--			pr_debug("R_MICROBLAZE_32 (%08lx->%08lx)\n",
--				old_value, value);
--#else
- 			*location = value;
--#endif
- 			break;
- 
- 		case R_MICROBLAZE_64:
--#if __GNUC__ < 4
--			/* Split relocs only required/used pre gcc4.1.1 */
--			old_value = ((location[0] & 0x0000FFFF) << 16) |
--					(location[1] & 0x0000FFFF);
--			value += old_value;
--#endif
- 			location[0] = (location[0] & 0xFFFF0000) |
- 					(value >> 16);
- 			location[1] = (location[1] & 0xFFFF0000) |
- 					(value & 0xFFFF);
--#if __GNUC__ < 4
--			pr_debug("R_MICROBLAZE_64 (%08lx->%08lx)\n",
--				old_value, value);
--#endif
- 			break;
- 
- 		case R_MICROBLAZE_64_PCREL:
--#if __GNUC__ < 4
--			old_value = (location[0] & 0xFFFF) << 16 |
--				(location[1] & 0xFFFF);
--			value -= old_value;
--#endif
- 			value -= (unsigned long int)(location) + 4;
- 			location[0] = (location[0] & 0xFFFF0000) |
- 					(value >> 16);
+Uhm, I will try to be more careful :-)
+
 -- 
-2.25.1
-
+Oscar Salvador
+SUSE L3
