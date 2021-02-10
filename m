@@ -2,74 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444A931739E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 504CE3173A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbhBJWqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:46:44 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:33643 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhBJWql (ORCPT
+        id S233599AbhBJWrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:47:12 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18636 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230229AbhBJWqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:46:41 -0500
-Received: by mail-ot1-f51.google.com with SMTP id c16so3468464otp.0;
-        Wed, 10 Feb 2021 14:46:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rt+gwj5IL0E6ocrhypHF62IUtRKF/oja1ySIwkJmpx0=;
-        b=uFHBkWTYnZDzWdJX4uIu8cxFDRuvSAVbQEFzBI4bfe7YlThAtIQiuXkNo9qyVE0iFp
-         RokikZu+iqRGn5Gxd3+BRjmgeyrLOFyFQg3cU4Ghxi9gFFQsvsBO41+QXmS7UEWmrJMB
-         47tbntk5m/qasEBUL+mEiR8G1OQR9roKm9gEViRszxoFHQhRuFKpooybx/p2pRGzV0oV
-         UOZ7M8ipbpF32cQteAzzj7++Q6az7tdnWBmOK1z+TiUtTP56NL+ygFYbTpxo0vhW2vkQ
-         Qg3UZG7ZKLAQCPU3u+ygmh5ScucXYE1yhWABjuP5BwBOOVdZNnxbAyK7vrpd8yBTfWKG
-         dSKA==
-X-Gm-Message-State: AOAM531mt9g9AoBY7ZmwMMpBuCCXX0wSw/L9vsK1NshAiBX+0WlszlW6
-        j4n3zHHWoqvZKCy0ROAkHQ==
-X-Google-Smtp-Source: ABdhPJwtpPcGW6T86iIO2MMcIJ1Zb0FpZxrT3asYjxFDY4ULaEzsendz5b5H6D4IorEe/V5Emt2KgQ==
-X-Received: by 2002:a9d:4e2:: with SMTP id 89mr3838108otm.140.1612997160165;
-        Wed, 10 Feb 2021 14:46:00 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k23sm754137oik.4.2021.02.10.14.45.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 14:45:59 -0800 (PST)
-Received: (nullmailer pid 2953009 invoked by uid 1000);
-        Wed, 10 Feb 2021 22:45:58 -0000
-Date:   Wed, 10 Feb 2021 16:45:58 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        monstr@monstr.eu, git@xilinx.com, devicetree@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] dt-bindings: spi: zynq: Convert Zynq QSPI binding to
- yaml
-Message-ID: <20210210224558.GA2952953@robh.at.kernel.org>
-References: <4ece21a7e9691ed1e775fd6b0b4046b1562e44bd.1612951821.git.michal.simek@xilinx.com>
+        Wed, 10 Feb 2021 17:46:55 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11AMXjer098838;
+        Wed, 10 Feb 2021 17:46:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=2au3AMlluLBKkZoOsIbltg1hE/3YCbFNe5zqqSQHIEw=;
+ b=SoAL3mc5VEfpYOqe66662HPIN136MUF6VwvrxVFjYnHFGk8JoqH+JleCy/50x/cFJbJ1
+ dfvlkt+LLIoKqmme7I1cc4DlW9CLVBVGAyLmkkPtSaVedqC6e7IuBtVha9l72R6eMmGi
+ 02WNTlZ4olvTN1m6VbyzO9BKnf23HvA/8O7h9Rlyepng36FQX8kWhDhExOOpAl6Z3PQo
+ Wk7NtPOvjBUHTDW1D3R2PccqZ0s1VjRvBhFg2hDSOkYiSkT252QJ4bf4ZMvrDoVPm5tN
+ 4bWV4QuNcI3LahUXKFkgSq01CloED6qsSbXJDMMOX9y3IE1z0xlQRuwkyOA25I1K4vLZ zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36mqvm914a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 17:46:14 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11AMZ2qm106327;
+        Wed, 10 Feb 2021 17:46:14 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36mqvm913s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 17:46:13 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11AMhfhJ011768;
+        Wed, 10 Feb 2021 22:46:11 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 36j94wmf53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 22:46:11 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11AMk8AP41484686
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 22:46:08 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA68E42066;
+        Wed, 10 Feb 2021 22:46:08 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0936042067;
+        Wed, 10 Feb 2021 22:46:08 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.25.242])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 10 Feb 2021 22:46:07 +0000 (GMT)
+Date:   Wed, 10 Feb 2021 23:46:06 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org, borntraeger@de.ibm.com,
+        kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+Message-ID: <20210210234606.1d0dbdec.pasic@linux.ibm.com>
+In-Reply-To: <59e8f084-c9ec-ce25-2326-b206e30d04d0@linux.ibm.com>
+References: <20210209194830.20271-1-akrowiak@linux.ibm.com>
+        <20210209194830.20271-2-akrowiak@linux.ibm.com>
+        <20210210115334.46635966.cohuck@redhat.com>
+        <20210210162429.261fc17c.pasic@linux.ibm.com>
+        <20210210163237.315d9a68.pasic@linux.ibm.com>
+        <59e8f084-c9ec-ce25-2326-b206e30d04d0@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ece21a7e9691ed1e775fd6b0b4046b1562e44bd.1612951821.git.michal.simek@xilinx.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-10_11:2021-02-10,2021-02-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 spamscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102100191
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 11:10:25 +0100, Michal Simek wrote:
-> Convert spi-zynq-qspi.txt to yaml.
+On Wed, 10 Feb 2021 17:05:48 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> On 2/10/21 10:32 AM, Halil Pasic wrote:
+> > On Wed, 10 Feb 2021 16:24:29 +0100
+> > Halil Pasic <pasic@linux.ibm.com> wrote:
+> >  
+> >>> Maybe you could
+> >>> - grab a reference to kvm while holding the lock
+> >>> - call the mask handling functions with that kvm reference
+> >>> - lock again, drop the reference, and do the rest of the processing?  
+> >> I agree, matrix_mdev->kvm can go NULL any time and we are risking
+> >> a null pointer dereference here.
+> >>
+> >> Another idea would be to do
+> >>
+> >>
+> >> static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+> >> {
+> >>          struct kvm *kvm;
+> >>                                                          
+> >>          mutex_lock(&matrix_dev->lock);
+> >>          if (matrix_mdev->kvm) {
+> >>                  kvm = matrix_mdev->kvm;
+> >>                  matrix_mdev->kvm = NULL;
+> >>                  mutex_unlock(&matrix_dev->lock);
+> >>                  kvm_arch_crypto_clear_masks(kvm);
+> >>                  mutex_lock(&matrix_dev->lock);
+> >>                  matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;  
+> > s/matrix_mdev->kvm/kvm  
+> >>                  vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
+> >>                  kvm_put_kvm(kvm);
+> >>          }
+> >>          mutex_unlock(&matrix_dev->lock);
+> >> }
+> >>
+> >> That way only one unset would actually do the unset and cleanup
+> >> and every other invocation would bail out with only checking
+> >> matrix_mdev->kvm.  
+> > But the problem with that is that we enable the the assign/unassign
+> > prematurely, which could interfere wit reset_queues(). Forget about
+> > it.  
 > 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
+> Not sure what you mean by this.
 > 
-> Changes in v2:
-> - s/additionalProperties: true/unevaluatedProperties: false/
-> 
->  .../devicetree/bindings/spi/spi-zynq-qspi.txt | 25 --------
->  .../bindings/spi/xlnx,zynq-qspi.yaml          | 59 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  3 files changed, 60 insertions(+), 25 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
->  create mode 100644 Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I mean because above I first do
+(1) matrix_mdev->kvm = NULL;
+and then do 
+(2) vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
+another thread could do 
+static ssize_t unassign_adapter_store(struct device *dev,                       
+                                      struct device_attribute *attr,            
+                                      const char *buf, size_t count)            
+{                                                                               
+        int ret;                                                                
+        unsigned long apid;                                                     
+        struct mdev_device *mdev = mdev_from_dev(dev);                          
+        struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);            
+                                                                                
+        /* If the guest is running, disallow un-assignment of adapter */        
+        if (matrix_mdev->kvm)                                                   
+                return -EBUSY;   
+...
+}
+between (1) and (2), and we would not bail out with -EBUSY because !!kvm
+because of (1). That means we would change matrix_mdev->matrix and we
+would not reset the queues that correspond to the apid that was just
+removed, because by the time we do the reset_queues, the queues are
+not in the matrix_mdev->matrix any more.
+
+Does that make sense?
