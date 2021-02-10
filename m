@@ -2,104 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF74317437
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8BB31743C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbhBJXTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:19:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233460AbhBJXSQ (ORCPT
+        id S233516AbhBJXUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:20:30 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6907 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232203AbhBJXUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:18:16 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18963C06178A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:17:36 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id o193so3538449qke.11
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:17:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pvzBLzuUN3dC3Meck84dtvamYug02/uWoNAd2vuIlPw=;
-        b=LnAhhZAcjBbe2PDzz7862JnfK5LxIO+60i0EKD0KDKz7s9HABmOblaFNhZTUV95vQ3
-         TcpqQGbbR6j8YnR1u48ozRKREc9GR4REzg5lFNe+kdgPgDvdrcLmz2deN0izTXw3QuUf
-         CKyhoUazx10m4WzbeTW77xpOInKqOMQ7CZZmeYD6FJvFu6C+mD+/iqcr/2pidKc0Rnf7
-         Jqk0eHarHTXWC9Ze7H0NC0qbrN3xGiI28tIAu5vOpCKf9qh2y/Y6FHQpJgn5a2omapVU
-         xzuMi8DlLmhVFvqnvrlfvplkDzanCmmL9lY5FHEnYjX8v1QLa51LV3+MmFVbTpVtEgZS
-         vvMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pvzBLzuUN3dC3Meck84dtvamYug02/uWoNAd2vuIlPw=;
-        b=ezJu5XLzz8DJ4U6j4GRM8mIJEkQDYsVqZbIX2/to315cGB8b614TYgKRcwPfPB5JU5
-         ZviwcbwyntDI8UF6drv3HXGHP9qghNdqaLMrC69S64966X7Xx1wOsWFr75X59o2QDT9p
-         K7zMP3A0nnWV1W7eRsErgcUyJqtU6gv3cobd1qu6jwljHtDYbM2Md1y3sE3T+CtGMIwL
-         LuzeskXj7KBL3N+6qQIGkRYh0PjyCevpYKTUdaKEdxcBnkl1wgIMdarlByUhWz/XjUle
-         PidlcIn7bGjy2f5A9nnOpYq9iN+mSwTzXUBh0FJqayotXcH4qa0+sZc9n7Hj/Si60TX8
-         y/3g==
-X-Gm-Message-State: AOAM531cdxRK6QcpqAA35M4FKYXZOKNXcE+MIbHrhm1t7p+e5CnIy4bb
-        7sk1/uS8EqJ0scL4WWMghF+N2A==
-X-Google-Smtp-Source: ABdhPJyaU4n/wmBj/Fq8bDuOMNR3xhmXrfFN0BiPQEns2xCAk/uD0k5Fsy15pBBnyBYamD9xuF/xGg==
-X-Received: by 2002:a37:484f:: with SMTP id v76mr5717061qka.312.1612999055416;
-        Wed, 10 Feb 2021 15:17:35 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id t128sm2549683qka.46.2021.02.10.15.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 15:17:35 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l9yjm-006HMP-FB; Wed, 10 Feb 2021 19:17:34 -0400
-Date:   Wed, 10 Feb 2021 19:17:34 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
+        Wed, 10 Feb 2021 18:20:22 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60246a0d0001>; Wed, 10 Feb 2021 15:19:41 -0800
+Received: from [10.2.50.67] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
+ 2021 23:19:41 +0000
+Subject: Re: [PATCH v3 3/4] mm/gup: add a range variant of
+ unpin_user_pages_dirty_lock()
+To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Doug Ledford <dledford@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
         Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v3 4/4] RDMA/umem: batch page unpin in __ib_umem_release()
-Message-ID: <20210210231734.GS4718@ziepe.ca>
 References: <20210205204127.29441-1-joao.m.martins@oracle.com>
- <20210205204127.29441-5-joao.m.martins@oracle.com>
+ <20210205204127.29441-4-joao.m.martins@oracle.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <6ce67c15-3bb3-3ccb-3c45-edb0efb3a38f@nvidia.com>
+Date:   Wed, 10 Feb 2021 15:19:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205204127.29441-5-joao.m.martins@oracle.com>
+In-Reply-To: <20210205204127.29441-4-joao.m.martins@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612999181; bh=FPDbkf9bycX12XeKfhn1RlZRPRS4j668V61lFIhF4zQ=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=pb8CprMoPgh3SW8Vrysu2qUQLAibhJIIpBJh9GFUPASzC3DConnSy/kHhHoQYrBw1
+         jdnU5p70FH1Ui3NL0b/YtyJWC2YZhsCx8sQ7ZFcoBvNi4r4D6cOdHVyv6Ju3808F5P
+         ewabyAawRX94Hae6meRvQpMBM7fzJpc+JzgwBWZy4Tv0iUe/S72ifD7HKDCEgY/7s3
+         q6BSmybp1vT2Paeeji9uZh1qIl5jZq4FEPVz7BZD7K8rNhymrwWDFND8y2+Beez5r4
+         qHfXrx0Grwgrn59Zam47B3JSD5B3p9QUTY6gXF4h85uJs9jDDZrHk8xfqMHZkWrUfH
+         K6R1F9Z9sAurw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 08:41:27PM +0000, Joao Martins wrote:
-> Use the newly added unpin_user_page_range_dirty_lock()
-> for more quickly unpinning a consecutive range of pages
-> represented as compound pages. This will also calculate
-> number of pages to unpin (for the tail pages which matching
-> head page) and thus batch the refcount update.
+On 2/5/21 12:41 PM, Joao Martins wrote:
+> Add a unpin_user_page_range_dirty_lock() API which takes a starting page
+> and how many consecutive pages we want to unpin and optionally dirty.
 > 
-> Running a test program which calls mr reg/unreg on a 1G in size
-> and measures cost of both operations together (in a guest using rxe)
-> with THP and hugetlbfs:
+> To that end, define another iterator for_each_compound_range()
+> that operates in page ranges as opposed to page array.
 > 
-> Before:
-> 590 rounds in 5.003 sec: 8480.335 usec / round
-> 6898 rounds in 60.001 sec: 8698.367 usec / round
+> For users (like RDMA mr_dereg) where each sg represents a
+> contiguous set of pages, we're able to more efficiently unpin
+> pages without having to supply an array of pages much of what
+> happens today with unpin_user_pages().
 > 
-> After:
-> 2688 rounds in 5.002 sec: 1860.786 usec / round
-> 32517 rounds in 60.001 sec: 1845.225 usec / round
-> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
 > Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
 > ---
->  drivers/infiniband/core/umem.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>   include/linux/mm.h |  2 ++
+>   mm/gup.c           | 62 ++++++++++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 64 insertions(+)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index a608feb0d42e..b76063f7f18a 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1265,6 +1265,8 @@ static inline void put_page(struct page *page)
+>   void unpin_user_page(struct page *page);
+>   void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+>   				 bool make_dirty);
+> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
+> +				      bool make_dirty);
+>   void unpin_user_pages(struct page **pages, unsigned long npages);
+>   
+>   /**
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 467a11df216d..938964d31494 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -215,6 +215,32 @@ void unpin_user_page(struct page *page)
+>   }
+>   EXPORT_SYMBOL(unpin_user_page);
+>   
+> +static inline void compound_range_next(unsigned long i, unsigned long npages,
+> +				       struct page **list, struct page **head,
+> +				       unsigned int *ntails)
 
-Would best for this to go through Andrew's tree
+Yes, the new names look good, and I have failed to find any logic errors, so:
 
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-4x improvement is pretty good!
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
-Jason
+> +{
+> +	struct page *next, *page;
+> +	unsigned int nr = 1;
+> +
+> +	if (i >= npages)
+> +		return;
+> +
+> +	next = *list + i;
+> +	page = compound_head(next);
+> +	if (PageCompound(page) && compound_order(page) >= 1)
+> +		nr = min_t(unsigned int,
+> +			   page + compound_nr(page) - next, npages - i);
+> +
+> +	*head = page;
+> +	*ntails = nr;
+> +}
+> +
+> +#define for_each_compound_range(__i, __list, __npages, __head, __ntails) \
+> +	for (__i = 0, \
+> +	     compound_range_next(__i, __npages, __list, &(__head), &(__ntails)); \
+> +	     __i < __npages; __i += __ntails, \
+> +	     compound_range_next(__i, __npages, __list, &(__head), &(__ntails)))
+> +
+>   static inline void compound_next(unsigned long i, unsigned long npages,
+>   				 struct page **list, struct page **head,
+>   				 unsigned int *ntails)
+> @@ -303,6 +329,42 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+>   }
+>   EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
+>   
+> +/**
+> + * unpin_user_page_range_dirty_lock() - release and optionally dirty
+> + * gup-pinned page range
+> + *
+> + * @page:  the starting page of a range maybe marked dirty, and definitely released.
+> + * @npages: number of consecutive pages to release.
+> + * @make_dirty: whether to mark the pages dirty
+> + *
+> + * "gup-pinned page range" refers to a range of pages that has had one of the
+> + * get_user_pages() variants called on that page.
+> + *
+> + * For the page ranges defined by [page .. page+npages], make that range (or
+> + * its head pages, if a compound page) dirty, if @make_dirty is true, and if the
+> + * page range was previously listed as clean.
+> + *
+> + * set_page_dirty_lock() is used internally. If instead, set_page_dirty() is
+> + * required, then the caller should a) verify that this is really correct,
+> + * because _lock() is usually required, and b) hand code it:
+> + * set_page_dirty_lock(), unpin_user_page().
+> + *
+> + */
+> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
+> +				      bool make_dirty)
+> +{
+> +	unsigned long index;
+> +	struct page *head;
+> +	unsigned int ntails;
+> +
+> +	for_each_compound_range(index, &page, npages, head, ntails) {
+> +		if (make_dirty && !PageDirty(head))
+> +			set_page_dirty_lock(head);
+> +		put_compound_head(head, ntails, FOLL_PIN);
+> +	}
+> +}
+> +EXPORT_SYMBOL(unpin_user_page_range_dirty_lock);
+> +
+>   /**
+>    * unpin_user_pages() - release an array of gup-pinned pages.
+>    * @pages:  array of pages to be marked dirty and released.
+> 
+
