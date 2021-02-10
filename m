@@ -2,98 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962CE3165B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56CC3165A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhBJLwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:52:43 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:53072 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhBJLqR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:46:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612957576; x=1644493576;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HiRooR0JRPW34th/7QSHeDW6g1Xmz/WY9IkNdXFN45o=;
-  b=EUoy18tJpFtBwDKPjQZW2bKumgPneRtSZOrWKJTwZvf+518vchPLcjeV
-   NmoGoLo7m2ruplzpCZGbX9eFqJ5SFiJ36DIw3tZVtyDpyWORnYdzL/NUo
-   O97KFtpKO+ADBX5cb7YzokppL7L4cbMUfwFl/3WLxq9lofW8hPeAjL6sP
-   7wAyNsb68O6j73iO4+v1ADWJR2PXVN83t7d1NW9h6bHCjzekxwtEFSHvy
-   PT7Y15nXvXowJoNVodlZUG9qHFuR2IRHotuAJMPICJukItAoUPl5pX9mW
-   dLcN4C9CfFqd7ChFzkEeabaIiX1+Jnsu2JEEDHx//tIKHo5bMpWI+xOs5
-   g==;
-IronPort-SDR: VRlDMKK2cHa3TxUR1JcmsJssA6kfjrVR7Z5f3Ls10/pKx5MNfbGzJXh0KqrAy6OgoxHnvFnykg
- xUIkDzlfEUgsWVTMJI6exxnVy6E2cZyksQSIZ9X7Qg+J1oajssVGB+YxTkbGImT7cAYeG/aF4s
- xhPVW6KZqdiT/345FloQXjz2v8LKSC/bROy7v1NYu9SxtBAD4SuVSYwtAM3otWs0cOpS264QX7
- 0GXcd8BB/xVxPezvoMlkvU++SuivhTUGOJt2Ns8Exffejay8FjVRuDMDkhMO21YWorfBxuGz2r
- pAI=
-X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
-   d="scan'208";a="114541474"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 04:44:59 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 10 Feb 2021 04:44:59 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 10 Feb 2021 04:44:53 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <corbet@lwn.net>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <khilman@kernel.org>,
-        <ulf.hansson@linaro.org>, <len.brown@intel.com>, <lenb@kernel.org>,
-        <pavel@ucw.cz>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <frowand.list@gmail.com>, <maz@kernel.org>,
-        <tglx@linutronix.de>, <saravanak@google.com>
-CC:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <m.szyprowski@samsung.com>, <geert@linux-m68k.org>,
-        <kernel-team@android.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH] clk: Mark fwnodes when their clock provider is added
-Date:   Wed, 10 Feb 2021 13:44:35 +0200
-Message-ID: <20210210114435.122242-2-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210210114435.122242-1-tudor.ambarus@microchip.com>
-References: <20210205222644.2357303-9-saravanak@google.com>
- <20210210114435.122242-1-tudor.ambarus@microchip.com>
+        id S229547AbhBJLt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:49:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229609AbhBJLpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 06:45:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2512464E2A;
+        Wed, 10 Feb 2021 11:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612957494;
+        bh=7TkHMquWewApmsNtom3Sk5kqBfrt9Txj5xLN/pBrQbQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DL62wACXYBcjnG+VbxBoQ4TYtFlxHK8gFj0AxepZjo6k1qqDqCpBL9Y6A0SgOCgXF
+         PNIrogaCWaCeEUIZCmh62iBX0N/x4R8rrXqFBUvBf5QwDCi5aSNHxQJJ8KzteVPR4L
+         jMMhqfzhPDf9dRrRi9DzsOrFnUn1i7Z3WmuFhNfUrO+N2mcRC5T3paGOCIWP3rajLt
+         +i+fPsbpHP4P+jNSrpnof2o+WFq1tgN2Nc0ALIG+ZwHzxZCkD+Tckx/k09YvnerwJC
+         GxPr7xqtz4iAyOV0qSZdbtR7qZutK2JXNmFv1tRdDs3oKeNdaVTnm9bF8saT3H+Sol
+         o3Mk1/eEziGlA==
+Date:   Wed, 10 Feb 2021 11:44:48 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v3 1/8] mm: Cleanup faultaround and finish_fault()
+ codepaths
+Message-ID: <20210210114448.GA28682@willie-the-truck>
+References: <20210114175934.13070-1-will@kernel.org>
+ <20210114175934.13070-2-will@kernel.org>
+ <20210209202449.GA104837@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209202449.GA104837@roeck-us.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a follow-up for:
-commit 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
+On Tue, Feb 09, 2021 at 12:24:49PM -0800, Guenter Roeck wrote:
+> On Thu, Jan 14, 2021 at 05:59:27PM +0000, Will Deacon wrote:
+> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> > 
+> > alloc_set_pte() has two users with different requirements: in the
+> > faultaround code, it called from an atomic context and PTE page table
+> > has to be preallocated. finish_fault() can sleep and allocate page table
+> > as needed.
+> > 
+> > PTL locking rules are also strange, hard to follow and overkill for
+> > finish_fault().
+> > 
+> > Let's untangle the mess. alloc_set_pte() has gone now. All locking is
+> > explicit.
+> > 
+> > The price is some code duplication to handle huge pages in faultaround
+> > path, but it should be fine, having overall improvement in readability.
+> > 
+> > Link: https://lore.kernel.org/r/20201229132819.najtavneutnf7ajp@box
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > [will: s/from from/from/ in comment; spotted by willy]
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > ---
+> >  fs/xfs/xfs_file.c       |   6 +-
+> >  include/linux/mm.h      |  12 ++-
+> >  include/linux/pgtable.h |  11 +++
+> >  mm/filemap.c            | 177 ++++++++++++++++++++++++++---------
+> >  mm/memory.c             | 199 ++++++++++++----------------------------
+> >  5 files changed, 213 insertions(+), 192 deletions(-)
+> > 
+> 
+> When building microblaze:mmu_defconfig:
+> 
+> mm/filemap.c: In function 'filemap_map_pages':
+> mm/filemap.c:3153:3: error: implicit declaration of function 'update_mmu_cache'; did you mean 'update_mmu_tlb'?
+> 
+> Bisect log attached.
 
-The above commit updated the deprecated of_clk_add_provider(),
-but missed to update the preferred of_clk_add_hw_provider().
-Update it now.
+Looks like a missing include.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Will
+
+--->8
+
+From 076f93117c067d5b6caab4773c6d6da130859cc4 Mon Sep 17 00:00:00 2001
+From: Will Deacon <will@kernel.org>
+Date: Wed, 10 Feb 2021 11:15:11 +0000
+Subject: [PATCH] mm: filemap: Fix microblaze build failure with
+ 'mmu_defconfig'
+
+Commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault()
+codepaths") added a call to 'update_mmu_cache()' in mm/filemap.c, which
+breaks the build for microblaze:
+
+  | mm/filemap.c: In function 'filemap_map_pages':
+  | mm/filemap.c:3153:3: error: implicit declaration of function 'update_mmu_cache'; did you mean 'update_mmu_tlb'?
+
+Include asm/tlbflush.h in mm/filemap.c to make sure that the function
+(or indeed, macro) is available.
+
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20210209202449.GA104837@roeck-us.net
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
- drivers/clk/clk.c | 2 ++
- 1 file changed, 2 insertions(+)
+ mm/filemap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 27ff90eacb1f..9370e4dfecae 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -4594,6 +4594,8 @@ int of_clk_add_hw_provider(struct device_node *np,
- 	if (ret < 0)
- 		of_clk_del_provider(np);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index fb7a8d9b5603..2ca13227747b 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -43,6 +43,7 @@
+ #include <linux/ramfs.h>
+ #include <linux/page_idle.h>
+ #include <asm/pgalloc.h>
++#include <asm/tlbflush.h>
+ #include "internal.h"
  
-+	fwnode_dev_initialized(&np->fwnode, true);
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(of_clk_add_hw_provider);
+ #define CREATE_TRACE_POINTS
 -- 
-2.25.1
+2.30.0.478.g8a0d178c01-goog
 
