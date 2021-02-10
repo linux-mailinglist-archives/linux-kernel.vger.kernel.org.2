@@ -2,204 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD823165B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB4D3165BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbhBJLwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:52:54 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:14715 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231437AbhBJLsW (ORCPT
+        id S231649AbhBJLxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:53:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231444AbhBJLsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:48:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1612957701; x=1644493701;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9diNDRqQHFEjVdCdXqYmIwlaA+jvd0iVcd4+rjBiIks=;
-  b=GtwOBdveErlu+ERoE84axo2ar+t30sLhdOvSx6EwQGMJTcvKo0Wg4aY8
-   ejdcqgejML6qGS5+37wVGLToi+Cmd+kAxIpcd1GAvMz1DhHASlEPOlHe7
-   nkk5vpqwqg22sWIJv0fvlfMAgKsllzivS0l2JRM+jYXY2dxLj7R1Cihku
-   gsh52vCj2O0vnSkFFQOiSSiDm25yuza06Hz647ZbZb+YH9bgm5dNotsoZ
-   s7NYfG9JzLt7CwyUoHfjKN+LNH+iOMBoQtvoPdQ9yULxOsztsqYWaUlfm
-   8ASWfEHA9dqQNPwmHDI58Nz8piv2be+eAc+4oI699N/AoiwazPpfxVt+Q
-   A==;
-IronPort-SDR: C/yerYggcc94jp9199Q0gtGSIRD0uRmUqh5NSFwjeLOjk0fVGi8cHj4tsUj7OE/2KgSKcy3B9e
- 6po4ufSk++LmlYIUvfQOPNMMxF61MHhHoRiYqkYWHc4ScSN8jrniRRA11QVQAQVpbcgDAUfS6f
- iUqPzmjHkB/V5pjZBnDa+7AV68QtXy2TgJzSxnMUzbCawSvvMiYHq2gnU/VyZunZetfJLA5Kfh
- PW2ZTlb1U3VtF68y0Myva9IdD1mvel67/SCKPk4ogeBfnj2FEm5LjHMgDc39UDIr26VLIRrOzS
- +S0=
-X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
-   d="scan'208";a="109198247"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 04:47:06 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 10 Feb 2021 04:46:55 -0700
-Received: from CHE-LT-I21427U.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 10 Feb 2021 04:46:51 -0700
-Message-ID: <6531ab6c7e40b7e2f73a6087b31ecfe0a8f214e4.camel@microchip.com>
-Subject: Re: [PATCH net-next 1/8] dt-bindings: net: dsa: dt bindings for
- microchip lan937x
-From:   Prasanna Vengateshan Varadharajan 
-        <prasanna.vengateshan@microchip.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <robh+dt@kernel.org>,
-        <kuba@kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <davem@davemloft.net>,
-        <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Date:   Wed, 10 Feb 2021 17:16:49 +0530
-In-Reply-To: <20210130020227.ahiee4goetpp2hb7@skbuf>
-References: <20210128064112.372883-1-prasanna.vengateshan@microchip.com>
-         <20210128064112.372883-2-prasanna.vengateshan@microchip.com>
-         <20210130020227.ahiee4goetpp2hb7@skbuf>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 10 Feb 2021 06:48:39 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DB5C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:47:56 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id z6so1114676pfq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:47:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FwhQWQcXOYcRdwhUuOHm0u5zszXz7WPkm4PdHoVK8WA=;
+        b=rXlyVjCrQGaXRg/2MVoSkt5wv3hssM0LAX+7UPuG3iMDCEBXXWTcGJ45kFm2LLFMyC
+         +qOD99PZITQ8T1RyJmAd+cpgt72dlFiKxtchZoLaDYsNUbHvOtm7sfCeBlTa9OFzQ0ya
+         LAUCJgeqIXReb1CHjrI56L8ArODTtGcdXRcLpEEKCBk2ms9zc9GXGoaU0ezH88fB+hqi
+         VIM/whY7w97RD3XA/O+mbPqOJdZUx01R1QoOZSOdvKdeV3sHYzoKU2G9Tr6O+Jmk3/2z
+         2tFv9kbK2rFuAdLbE+//BXSLq1VGMTNkYlRT6mK0dDFWFdNuAiTixFWtLZsNe0Mo7pGP
+         MhAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FwhQWQcXOYcRdwhUuOHm0u5zszXz7WPkm4PdHoVK8WA=;
+        b=S+39wNF/2tMRPHZjlnKerW0PK1TPQEm7V3s8RTh78/qXC3b9uG3cOXUubvlx8xa702
+         Rb89ACUTsf1N+voSdXVClHcWO0y92gHukM5o4//HqVGLvBbFs60kUYweM/45bMypjZRN
+         FPdLy9tQ/eY6iL9NHukZHvhzEELQ2BCdzpHaiL4sZs+ehTL/BwuNfXaZcqk5x4+6TRwf
+         zEm0oNqHXb9fiouw6g7UTR2gfRKqM300q3+/lTJMFWrBNKpy4U5bjEv0o96q9DxBnXt+
+         55iN2l+Pqt7YuhWxpg+kVY1X1dAYf8jw9ZDp3EsnSmxGNhVmYovFuz4TBx+PI7TJEMUb
+         O9bQ==
+X-Gm-Message-State: AOAM532AnKuNVi4h+J5KUPvhl4GOM9yxsxJYvpg+yYFaqggeb3MkDGtQ
+        9JxFfOciG8CX+Wtg7TCcCmStlK49JH4skeqpBKk=
+X-Google-Smtp-Source: ABdhPJyfVGi0uwy4EI40frHSBiF+i9wRYQo78rkrCkII3Yugzi/xQ6NQA8drVMpRv2Mww5VQufn8qYli9tYZcG1F4n0=
+X-Received: by 2002:a63:3d0:: with SMTP id 199mr2782236pgd.4.1612957675693;
+ Wed, 10 Feb 2021 03:47:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210210051814.845713-1-timur@kernel.org>
+In-Reply-To: <20210210051814.845713-1-timur@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 10 Feb 2021 13:47:39 +0200
+Message-ID: <CAHp75Vfai3cdBmxqE1mW27xj=+E2aWRoVfN-6mXw0miMAe-Exg@mail.gmail.com>
+Subject: Re: [PATCH 0/3][RESEND] add support for never printing hashed addresses
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-01-30 at 04:02 +0200, Vladimir Oltean wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
-> 
-Thanks for your time on reviewing the patch series.
+On Wed, Feb 10, 2021 at 10:33 AM Timur Tabi <timur@kernel.org> wrote:
+>
+> [accidentally sent from the wrong email address, so resending]
+>
+> [The list of email addresses on CC: is getting quite lengthy,
+> so I hope I've included everyone.]
+>
+> Although hashing addresses printed via printk does make the
+> kernel more secure, it interferes with debugging, especially
+> with some functions like print_hex_dump() which always uses
+> hashed addresses.
+>
+> To avoid having to choose between %p and %px, it's easier to
+> add a kernel command line that treats all %p as %px.  This
+> encourages developers to use %p more without making debugging
+> more difficult.
+>
+> Patches #1 and #2 upgrade the kselftest framework so that
+> it can report on tests that were skipped outright.  This
+> is needed for the test_printf module which will now skip
+> %p hashing tests if hashing is disabled.
+>
+> Patch #2 upgrades the printf library to check the command
+> line.  It also updates test_printf().
 
-> On Thu, Jan 28, 2021 at 12:11:05PM +0530, Prasanna Vengateshan wrote:
-> > +  spi-max-frequency:
-> > +    maximum: 50000000
-> 
-> And it actually works at 50 MHz? Cool.
-Yes.
+It's a bit hard in some mailers (like Gmail) to see the different
+versions of your patches.
+Can you use in the future
+ - either `git format-patch -v<N> ...`, where <N> is a version
+ - or `git format-patch --subject-prefix="PATCH vX / RESEND / etc" ...`
+?
 
-> 
-> > +
-> > +  reset-gpios:
-> > +    description: Optional gpio specifier for a reset line
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    //Ethernet switch connected via spi to the host, CPU port
-> > wired to eth1
-> > +    eth1 {
-> 
-> So if you do bother to add the DSA master in the example, can this be
-> &eth1 so that we could associate with the phandle below?
-Sure.
-
-> 
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +
-> > +      fixed-link {
-> > +        speed = <1000>;
-> > +        full-duplex;
-> > +      };
-> > +    };
-> > +
-> > +    spi1 {
-> 
-> Is this a label or a node name? spi1 or spi@1?
-This is a label.
-
-> 
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +      pinctrl-0 = <&pinctrl_spi_ksz>;
-> > +      cs-gpios = <0>, <0>, <0>, <&pioC 28 0>;
-> > +      id = <1>;
-> 
-> I know this is the SPI controller and thus mostly irrelevant, but
-> what
-> is "id = <1>"?
-id is not needed, i will remove it.
-
-> 
-> > +
-> > +      lan9374: switch@0 {
-> > +        compatible = "microchip,lan9374";
-> > +        reg = <0>;
-> > +
-> > +        spi-max-frequency = <44000000>;
-> > +
-> > +        ethernet-ports {
-> > +          #address-cells = <1>;
-> > +          #size-cells = <0>;
-> > +          port@0 {
-> > +            reg = <0>;
-> > +            label = "lan1";
-> > +          };
-> > +          port@1 {
-> > +            reg = <1>;
-> > +            label = "lan2";
-> > +          };
-> > +          port@2 {
-> > +            reg = <7>;
-> 
-> reg should match node index (port@2), here and everywhere below. As
-> for
-> the net device labels, I'm not sure if the mismatch is deliberate
-> there.
-reg & port node indexes are different here because to match with the
- physical to logical port mapping done in the LAN9374. I realized that
-the description is missing and that is to be added. However, should reg
-& port node index match for the net dev? 
-If it should be the same, then the same can be acheived by renaming a
-label (lanx) as well.
-
-> 
-> > +            label = "lan3";
-> > +          };
-> > +          port@3 {
-> > +            reg = <2>;
-> > +            label = "lan4";
-> > +          };
-> > +          port@4 {
-> > +            reg = <6>;
-> > +            label = "lan5";
-> > +          };
-> > +          port@5 {
-> > +            reg = <3>;
-> > +            label = "lan6";
-> > +          };
-> > +          port@6 {
-> > +            reg = <4>;
-> > +            label = "cpu";
-> 
-> label for CPU port is not needed/used.
-Sure, will remove it.
-
-> 
-> > +            ethernet = <&eth1>;
-> > +            fixed-link {
-> > +              speed = <1000>;
-> > +              full-duplex;
-> > +            };
-> > +          };
-> > +          port@7 {
-> > +            reg = <5>;
-> > +            label = "lan7";
-> > +            fixed-link {
-> > +              speed = <1000>;
-> > +              full-duplex;
-> > +            };
-> > +          };
-> > +        };
-> > +      };
-> > +    };
-
+-- 
+With Best Regards,
+Andy Shevchenko
