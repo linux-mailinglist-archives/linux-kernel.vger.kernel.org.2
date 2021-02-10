@@ -2,124 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA3D31690D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A1C316913
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 15:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhBJOZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 09:25:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56672 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229610AbhBJOZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:25:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8297BB152;
-        Wed, 10 Feb 2021 14:24:26 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 15:24:24 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] mm,page_alloc: Make alloc_contig_range handle
- free hugetlb pages
-Message-ID: <20210210142424.GC3636@localhost.localdomain>
-References: <20210208103812.32056-1-osalvador@suse.de>
- <20210208103812.32056-3-osalvador@suse.de>
- <9ed946df-9c6c-9a4d-4be9-2f32809974f7@redhat.com>
+        id S231520AbhBJOZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 09:25:52 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:4404 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhBJOZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:25:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612967149; x=1644503149;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=F7Pd2b9DeG2r46oRjSvo1Jq81YxiehO3b+tnE31zDrg=;
+  b=GI73z+d1Tnk5o6w9697gmSg89t06VzorTIaNXtMk/yXZZvdk08owH1Wi
+   EVA7w18EoqLwHICt+AHoLWzglVZX1+wYf6WkTVd1z4blvktcysE2Nd3uE
+   lRF5Tq/YbjDpkXvtK0DJHfq4OK1UmfKvu737qwCEnG5nnY3aAp1u/12Ap
+   JdrpieyamsbsecW3SJAdjPnlCGxy/MKuHw6jGUg0hxRlUbFPPCj609YjA
+   H8plBYVqYw6qCwnJpw//6ounIA4uF90PUNT/CcwcQ0UX4yTVcB/T5RQ+6
+   1VZ82HLrxQ7wHnQ1p812IGSe/IddKUoRfgQ0HLIc6NrqPQb+r0yCFZJqK
+   Q==;
+IronPort-SDR: JwhbqzhZt55m0O+W4gvXqlgL5wIl8O2M7n3D/nevSJQ89EhPZk4NEDd+rcACbfteRJ66nxI9Bn
+ Nd0ckDUNb1n5UFt2NT5aBxtsANwSzyRNOcZzfyjaEgmbKAv5ilg0pgFjjibHIW891k8Axgb0VA
+ U4QlufibQpXCR1TdgSpyVl91lcYCp67kZ+iul+CqbRwgW9FwrsI8Nf2XBOrseUxMnvndlnXbxf
+ 9qneyjFvYBZh/XuYVue9qpD4Ok5E+EVdONiBaFOaETSXwHlBASAyj8hXd00e6ePi2c+h6K3+/Z
+ uEE=
+X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
+   d="scan'208";a="108712449"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 07:24:32 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 10 Feb 2021 07:24:31 -0700
+Received: from soft-dev10.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Wed, 10 Feb 2021 07:24:29 -0700
+References: <20210210132751.1422386-1-geert+renesas@glider.be> <87mtwcujd0.fsf@microchip.com> <CAMuHMdVpHUmwfob6t_aWvaVVHpSDpF5HvLe_W5+KY9ky5A-qEw@mail.gmail.com> <20210210141728.GO351084@piout.net> <CAMuHMdXWVYB0vZ9Q3G9jGAv3J8nDReKzgSmDj4ykny6rH1cKGw@mail.gmail.com>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Steen Hegelund" <Steen.Hegelund@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pinctrl: PINCTRL_MICROCHIP_SGPIO should depend on ARCH_SPARX5 || SOC_VCOREIII
+In-Reply-To: <CAMuHMdXWVYB0vZ9Q3G9jGAv3J8nDReKzgSmDj4ykny6rH1cKGw@mail.gmail.com>
+Date:   Wed, 10 Feb 2021 15:24:28 +0100
+Message-ID: <87lfbwuhk3.fsf@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ed946df-9c6c-9a4d-4be9-2f32809974f7@redhat.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:23:59AM +0100, David Hildenbrand wrote:
-> On 08.02.21 11:38, Oscar Salvador wrote:
-> > Free hugetlb pages are trickier to handle as to in order to guarantee
-> > no userspace appplication disruption, we need to replace the
-> > current free hugepage with a new one.
-> > 
-> > In order to do that, a new function called alloc_and_dissolve_huge_page
-> > in introduced.
-> > This function will first try to get a new fresh hugetlb page, and if it
-> > succeeds, it will dissolve the old one.
-> > 
-> 
-> Thanks for looking into this! Can we move this patch to #1 in the series? It
-> is the easier case.
-> 
-> I also wonder if we should at least try on the memory unplug path to keep
-> nr_pages by at least trying to allocate at new one if required, and printing
-> a warning if that fails (after all, we're messing with something configured
-> by the admin - "nr_pages"). Note that gigantic pages are special (below).
 
-So, do you mean to allocate a new fresh hugepage in case we have a free
-hugetlb page within the range we are trying to offline? That makes some
-sense I guess.
+Geert Uytterhoeven writes:
 
-I can have a look at that, and make hotplug code use the new
-alloc_and_dissolve().
+> Hi Alexandre,
+>
+> On Wed, Feb 10, 2021 at 3:17 PM Alexandre Belloni
+> <alexandre.belloni@bootlin.com> wrote:
+>> On 10/02/2021 14:53:01+0100, Geert Uytterhoeven wrote:
+>> > On Wed, Feb 10, 2021 at 2:45 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+>> > > Geert Uytterhoeven writes:
+>> > > > the Microsemi/Microchip Serial GPIO device is present only Microsemi
+>> > > > VCore III and Microchip Sparx5 SoCs.  Hence add a dependency on
+>> > > > ARCH_SPARX5 || SOC_VCOREIII, to prevent asking the user about this
+>> > > > driver when configuring a kernel without support for these SoCs.
+>> > > >
+>> > > > Fixes: 7e5ea974e61c8dd0 ("pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO")
+>> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>> > > > ---
+>> > > >  drivers/pinctrl/Kconfig | 4 ++--
+>> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+>> > > >
+>> > > > diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+>> > > > index 113073d5f89bbf70..3b75b1d7d3d1f1b0 100644
+>> > > > --- a/drivers/pinctrl/Kconfig
+>> > > > +++ b/drivers/pinctrl/Kconfig
+>> > > > @@ -353,8 +353,8 @@ config PINCTRL_OCELOT
+>> > > >
+>> > > >  config PINCTRL_MICROCHIP_SGPIO
+>> > > >         bool "Pinctrl driver for Microsemi/Microchip Serial GPIO"
+>> > > > -       depends on OF
+>> > > > -       depends on HAS_IOMEM
+>> > > > +       depends on OF && HAS_IOMEM
+>> > > > +       depends on ARCH_SPARX5 || SOC_VCOREIII || COMPILE_TEST
+>> > > >         select GPIOLIB
+>> > > >         select GPIOLIB_IRQCHIP
+>> > > >         select GENERIC_PINCONF
+>> > >
+>> > > Thank you for your patch. Unfortunately, it makes it impossible to use
+>> > > the driver across PCIe - which is a specifically desired configuration.
+>> > >
+>> > > Could you add CONFIG_PCI to the || chain?
+>> >
+>> > Sure.
+>> >
+>> > Is PCIe the only other transport over which the register can be accessed?
+>> > Or can this also be done over e.g. SPI, like on Ocelot[1]?
+>> >
+>> > [1] https://lore.kernel.org/linux-gpio/20200511145329.GV34497@piout.net/
+>> >
+>>
+>> Yes, this driver IP is also available on Ocelot (this is SOC_VCOREIII)
+>> so this is also available over SPI.
+>
+> Hence would you consider
+>
+>     depends on ARCH_SPARX5 || SOC_VCOREIII || PCI || SPI || COMPILE_TEST
+>
+> acceptable?  Or would that be futile, as must systems have PCI and/or
+> SPI enabled anyway?
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
 
-Thanks for bringing this up, it is somsething I did not think about.
+Yes, that would be fine, but as you say - not have a lot of impact.
 
-> > +				/*
-> > +				 * Free hugetlb page. Allocate a new one and
-> > +				 * dissolve this is if succeed.
-> > +				 */
-> > +				if (alloc_and_dissolve_huge_page(page)) {
-> > +					unsigned long order = buddy_order_unsafe(page);
-> > +
-> > +					low_pfn += (1UL << order) - 1;
-> > +					continue;
-> > +				}
-> 
-> 
-> 
-> Note that there is a very ugly corner case we will have to handle gracefully
-> (I think also in patch #1):
-> 
-> Assume you allocated a gigantic page (and assume that we are not using CMA
-> for gigantic pages for simplicity). Assume you want to allocate another one.
-> alloc_pool_huge_page()->...->alloc_contig_pages() will stumble over the
-> first allocated page. It will try to alloc_and_dissolve_huge_page() the
-> existing gigantic page. To do that, it will
-> alloc_pool_huge_page()->...->alloc_contig_pages() ... and so on. Bad.
+Up to you...
 
-Heh, I was too naive. I have to confess I completely forgot about
-gigantic pages and this cyclic dependency.
-
-> We really don't want to mess with gigantic pages (migrate, dissolve) while
-> allocating a gigantic page. I think the easiest (and cleanest) way forward
-> is to not mess (isolate, migrate, dissolve) with gigantic pages at all.
-> 
-> Gigantic pages are not movable, so they won't be placed on random CMA /
-> ZONE_MOVABLE.
-> 
-> Some hstate_is_gigantic(h) calls (maybe inside
-> alloc_and_dissolve_huge_page() ? ) along with a nice comment might be good
-> enough to avoid having to pass down some kind of alloc_contig context. I
-> even think that should be handled inside
-> 
-> (the main issue is that in contrast to CMA, plain alloc_contig_pages() has
-> no memory about which parts were allocated and will simply try re-allocating
-> what it previously allocated and never freed - which is usually fine, unless
-> we're dealing with such special cases)
-> 
-> Apart from that, not messing with gigantic pages feels like the right
-> approach (allocating/migrating gigantic pages is just horribly slow and most
-> probably not worth it anyway).
-
-Yes, I also agree that we should leave out gigantic pages, at least for
-now.
-We might make it work in the future but I cannot come up with a fancy
-way to work around that right now, so it makes sense to cut down the
-complexity here.
-
-Thanks David for the insight!
+---Lars
 
 -- 
-Oscar Salvador
-SUSE L3
+Lars Povlsen,
+Microchip
