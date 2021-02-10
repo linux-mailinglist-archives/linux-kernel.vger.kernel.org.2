@@ -2,180 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F13316687
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A12C31668C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhBJMWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:22:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbhBJMUC (ORCPT
+        id S229937AbhBJMXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:23:47 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:37753 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230201AbhBJMWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:20:02 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD77C06174A;
-        Wed, 10 Feb 2021 04:19:22 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id r21so2234048wrr.9;
-        Wed, 10 Feb 2021 04:19:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ssW9O/eIVkXR6kVLbH1uKgyKlATY5TEX9NDvAFBdzbU=;
-        b=IDkESL79YgL6x6coqRDxvQiawlwVxIIJSkN/pWkDyFQ6rCgvQBzz1rNjapBgEr8r/b
-         qwwR2dYQtbSvZJdpWtLYMPKBAkCVuWeeoL8rEKP6XFyLLDPZPh7/T5Gv6WQubDLPO45N
-         BaJKfEJqbVlPONqfx+TTAN4uhIlbcWy2zYMeylp6b4/nPhLV3vMwQ/vKe1VMDZycNBQN
-         IofAdahVA++bpV9GrzBSO3R8iP5rmeuL4duwJ+38E4eJOt15ZXK5LEb2ACg7k6dLWbrL
-         Qtz7zl4p9J/FDbIl39/aWJvYy0+zksaYAQMK173lDu6FL38ZXfLjwU+AB3sD31KUnH5l
-         gGkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ssW9O/eIVkXR6kVLbH1uKgyKlATY5TEX9NDvAFBdzbU=;
-        b=iYVgdWyfFKNgvlAmwTPYdaW2b9q5uzAJRIbQ8A0MoU73PRmu6g1TNbEid+/QIk3Flg
-         n4nNNECc5t0fN4y7/fkil9Z4M6V5C/i+HtXGspjd22adxr0XjyOAbSi/6hK1gcVH4FJC
-         3xIiBXLZWp6mrw3OOGH3yeNdTjnJHVZ6KLiOjXV2x+6nWO9qUkEh3GH2UONwbvca54H5
-         QCPnlOWN8VvmUsKpfYgvbQ6O4k2Mo+3dv8msx1I9xfEM21OfP6072qfurOiPOAMS9Fc5
-         UMAWBk8HBtSRLI+AuQ5pjsJxEyxJggFWjvjuwcFV6u+AaAlYWWLiIixW6iFyAI1AXc3G
-         0Hzg==
-X-Gm-Message-State: AOAM532MqT/4/RH3zqlBcEj3P4Tahw5FVeyKeF1Uln/++/GK+R+rXB2/
-        VfnHysYIdYfFV++7VzhT+sY=
-X-Google-Smtp-Source: ABdhPJzuBlWj2KkjFfITOd5oA3b+7UPXGC+dYSAbizJbvSvcTU7UhE5sy9dOB6iNL20qS/uuzHmUHQ==
-X-Received: by 2002:adf:ab18:: with SMTP id q24mr3376501wrc.80.1612959561029;
-        Wed, 10 Feb 2021 04:19:21 -0800 (PST)
-Received: from ziggy.stardust (static-188-169-27-46.ipcom.comunitel.net. [46.27.169.188])
-        by smtp.gmail.com with ESMTPSA id g15sm2831049wrx.1.2021.02.10.04.19.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 04:19:20 -0800 (PST)
-Subject: Re: [PATCH v6 01/22] dt-bindings: ARM: Mediatek: Add new document
- bindings of imp i2c wrapper controller
-To:     Weiyi Lu <weiyi.lu@mediatek.com>, Rob Herring <robh@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <1608642587-15634-1-git-send-email-weiyi.lu@mediatek.com>
- <1608642587-15634-2-git-send-email-weiyi.lu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <010e346c-961b-88bb-aa48-398b23a7fb7a@gmail.com>
-Date:   Wed, 10 Feb 2021 13:19:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Wed, 10 Feb 2021 07:22:22 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BCB06580339;
+        Wed, 10 Feb 2021 07:21:10 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 10 Feb 2021 07:21:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=59eIP6
+        iK5oAsEPF1K6utOmxjB3gKIo17MRsOnasTigk=; b=VabUQI+zRdUii7LJ/wA//r
+        LziKohXq3ARhXQ0lsWKKSaXWzTpEGcKOvUkd5X8BQRt8riuCpMsbTi364D0WYitJ
+        Zv8TjMu1ffS0SwKjrLj9hyOgxpTp2T89DrkcA6whLsdeJ5W+1D1uHKOIuAkQnTcQ
+        7v/d+BichBUN/fXbmblAFFexxEpUpTdWwYs70Rkwh71CTNzlSLGnOvEcJoIUVhux
+        YWFuVliqGIqECMOl+r+f3gZgAjcu79rbMxGXhatmGvh00UK/U5ujhy8daiEQF3sp
+        Azg3LiDkAWh/4nEqaHr4w/TtjsXObzWTmddx5svMHWX9sJHFoZNsByNdxJhdZXVQ
+        ==
+X-ME-Sender: <xms:tM8jYMRpibJPGeFF0Qd0mUkTxgYwfL4Lrh9fjNbdGUNbkcQi5uio9g>
+    <xme:tM8jYJw8LjpZR_M1gL_gDLU4YupTaISNw4YJmk4GpYqztMc_FHqFbAYZh0GJ3D3cM
+    B1pO8WcLCJG6Y4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdeflecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
+    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
+    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
+    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:tM8jYJ1OVG_dKkuuLubTN_AEABOeiTEqBDQulkTWA1aS_-h2QUnw-A>
+    <xmx:tM8jYADzJQlAAqP6hqOthEX1X6rT_r2lST79q1WamjZzuyIbJYOHHg>
+    <xmx:tM8jYFg7vj2Dlo4v4oHFv2xfJeUaN3yolqJmfftYUGgQT8cn4M5nuQ>
+    <xmx:ts8jYMXEH6bxSH47zwN_J5GfYwko34yUzj_eo2VYz-eHsrXiDF8XdA>
+Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4ECB8240057;
+        Wed, 10 Feb 2021 07:21:08 -0500 (EST)
+Date:   Wed, 10 Feb 2021 14:21:05 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 00/11] Cleanup in brport flags switchdev
+ offload for DSA
+Message-ID: <20210210122105.GA294287@shredder.lan>
+References: <20210210091445.741269-1-olteanv@gmail.com>
+ <a8e9284b-f0a6-0343-175d-8c323371ef8d@nvidia.com>
+ <20210210104549.ga3lgjafn5x3htwj@skbuf>
+ <a58e9615-036c-0431-4ea6-004af4988b27@nvidia.com>
+ <20210210110125.rw6fvjtsqmmuglcg@skbuf>
+ <90b255e6-efd2-b234-7bfc-4285331e56b1@nvidia.com>
+ <20210210120106.g7blqje3wq4j5l6j@skbuf>
 MIME-Version: 1.0
-In-Reply-To: <1608642587-15634-2-git-send-email-weiyi.lu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210120106.g7blqje3wq4j5l6j@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22/12/2020 14:09, Weiyi Lu wrote:
-> This patch adds the new binding documentation of imp i2c wrapper controller
-> for Mediatek MT8192.
-
-The wrapper controller has only clock parts, or are the clock register mapped
-into the i2c wrapper block. In that case we might want to probe the clock driver
-through the i2c wrapper driver.
-
-Regards,
-Matthias
-
+On Wed, Feb 10, 2021 at 02:01:06PM +0200, Vladimir Oltean wrote:
+> On Wed, Feb 10, 2021 at 01:05:57PM +0200, Nikolay Aleksandrov wrote:
+> > On 10/02/2021 13:01, Vladimir Oltean wrote:
+> > > On Wed, Feb 10, 2021 at 12:52:33PM +0200, Nikolay Aleksandrov wrote:
+> > >> On 10/02/2021 12:45, Vladimir Oltean wrote:
+> > >>> Hi Nikolay,
+> > >>>
+> > >>> On Wed, Feb 10, 2021 at 12:31:43PM +0200, Nikolay Aleksandrov wrote:
+> > >>>> Hi Vladimir,
+> > >>>> Let's take a step back for a moment and discuss the bridge unlock/lock sequences
+> > >>>> that come with this set. I'd really like to avoid those as they're a recipe
+> > >>>> for future problems. The only good way to achieve that currently is to keep
+> > >>>> the PRE_FLAGS call and do that in unsleepable context but move the FLAGS call
+> > >>>> after the flags have been changed (if they have changed obviously). That would
+> > >>>> make the code read much easier since we'll have all our lock/unlock sequences
+> > >>>> in the same code blocks and won't play games to get sleepable context.
+> > >>>> Please let's think and work in that direction, rather than having:
+> > >>>> +	spin_lock_bh(&p->br->lock);
+> > >>>> +	if (err) {
+> > >>>> +		netdev_err(p->dev, "%s\n", extack._msg);
+> > >>>> +		return err;
+> > >>>>  	}
+> > >>>> +
+> > >>>>
+> > >>>> which immediately looks like a bug even though after some code checking we can
+> > >>>> verify it's ok. WDYT?
+> > >>>>
+> > >>>> I plan to get rid of most of the br->lock since it's been abused for a very long
+> > >>>> time because it's essentially STP lock, but people have started using it for other
+> > >>>> things and I plan to fix that when I get more time.
+> > >>>
+> > >>> This won't make the sysfs codepath any nicer, will it?
+> > >>>
+> > >>
+> > >> Currently we'll have to live with a hack that checks if the flags have changed. I agree
+> > >> it won't be pretty, but we won't have to unlock and lock again in the middle of the
+> > >> called function and we'll have all our locking in the same place, easier to verify and
+> > >> later easier to remove. Once I get rid of most of the br->lock usage we can revisit
+> > >> the drop of PRE_FLAGS if it's a problem. The alternative is to change the flags, then
+> > >> send the switchdev notification outside of the lock and revert the flags if it doesn't
+> > >> go through which doesn't sound much better.
+> > >> I'm open to any other suggestions, but definitely would like to avoid playing locking games.
+> > >> Even if it means casing out flag setting from all other store_ functions for sysfs.
+> > >
+> > > By casing out flag settings you mean something like this?
+> > >
+> > >
+> > > #define BRPORT_ATTR(_name, _mode, _show, _store)		\
+> > > const struct brport_attribute brport_attr_##_name = { 	        \
+> > > 	.attr = {.name = __stringify(_name), 			\
+> > > 		 .mode = _mode },				\
+> > > 	.show	= _show,					\
+> > > 	.store_unlocked	= _store,				\
+> > > };
+> > >
+> > > #define BRPORT_ATTR_FLAG(_name, _mask)				\
+> > > static ssize_t show_##_name(struct net_bridge_port *p, char *buf) \
+> > > {								\
+> > > 	return sprintf(buf, "%d\n", !!(p->flags & _mask));	\
+> > > }								\
+> > > static int store_##_name(struct net_bridge_port *p, unsigned long v) \
+> > > {								\
+> > > 	return store_flag(p, v, _mask);				\
+> > > }								\
+> > > static BRPORT_ATTR(_name, 0644,					\
+> > > 		   show_##_name, store_##_name)
+> > >
+> > > static ssize_t brport_store(struct kobject *kobj,
+> > > 			    struct attribute *attr,
+> > > 			    const char *buf, size_t count)
+> > > {
+> > > 	...
+> > >
+> > > 	} else if (brport_attr->store_unlocked) {
+> > > 		val = simple_strtoul(buf, &endp, 0);
+> > > 		if (endp == buf)
+> > > 			goto out_unlock;
+> > > 		ret = brport_attr->store_unlocked(p, val);
+> > > 	}
+> > >
+> >
+> > Yes, this can work but will need a bit more changes because of br_port_flags_change().
+> > Then the netlink side can be modeled in a similar way.
 > 
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> ---
->  .../arm/mediatek/mediatek,imp_iic_wrap.yaml        | 78 ++++++++++++++++++++++
->  1 file changed, 78 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
-> new file mode 100644
-> index 0000000..5d0cf37
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
-> @@ -0,0 +1,78 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,imp_iic_wrap.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek IMP I2C Wrapper Controller
-> +
-> +maintainers:
-> +  - Weiyi Lu <weiyi.lu@mediatek.com>
-> +
-> +description:
-> +  The Mediatek imp i2c wrapper controller provides functional configurations and clocks to the system.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - mediatek,mt8192-imp_iic_wrap_c
-> +          - mediatek,mt8192-imp_iic_wrap_e
-> +          - mediatek,mt8192-imp_iic_wrap_s
-> +          - mediatek,mt8192-imp_iic_wrap_ws
-> +          - mediatek,mt8192-imp_iic_wrap_w
-> +          - mediatek,mt8192-imp_iic_wrap_n
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +examples:
-> +  - |
-> +    imp_iic_wrap_c: syscon@11007000 {
-> +        compatible = "mediatek,mt8192-imp_iic_wrap_c", "syscon";
-> +        reg = <0 0x11007000 0 0x1000>;
-> +        #clock-cells = <1>;
-> +    };
-> +
-> +  - |
-> +    imp_iic_wrap_e: syscon@11cb1000 {
-> +        compatible = "mediatek,mt8192-imp_iic_wrap_e", "syscon";
-> +        reg = <0 0x11cb1000 0 0x1000>;
-> +        #clock-cells = <1>;
-> +    };
-> +
-> +  - |
-> +    imp_iic_wrap_s: syscon@11d03000 {
-> +        compatible = "mediatek,mt8192-imp_iic_wrap_s", "syscon";
-> +        reg = <0 0x11d03000 0 0x1000>;
-> +        #clock-cells = <1>;
-> +    };
-> +
-> +  - |
-> +    imp_iic_wrap_ws: syscon@11d23000 {
-> +        compatible = "mediatek,mt8192-imp_iic_wrap_ws", "syscon";
-> +        reg = <0 0x11d23000 0 0x1000>;
-> +        #clock-cells = <1>;
-> +    };
-> +
-> +  - |
-> +    imp_iic_wrap_w: syscon@11e01000 {
-> +        compatible = "mediatek,mt8192-imp_iic_wrap_w", "syscon";
-> +        reg = <0 0x11e01000 0 0x1000>;
-> +        #clock-cells = <1>;
-> +    };
-> +
-> +  - |
-> +    imp_iic_wrap_n: syscon@11f02000 {
-> +        compatible = "mediatek,mt8192-imp_iic_wrap_n", "syscon";
-> +        reg = <0 0x11f02000 0 0x1000>;
-> +        #clock-cells = <1>;
-> +    };
-> 
+> What I just don't understand is how others can get away with doing
+> sleepable work in atomic context but I can't make the notifier blocking
+> by dropping a spinlock which isn't needed there, because it looks ugly :D
+
+Can you please point to the bug? I'm not following
