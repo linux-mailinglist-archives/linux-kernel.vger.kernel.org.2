@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6AA317497
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D5331749A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbhBJXnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbhBJXnE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:43:04 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4491FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:42:24 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id l18so2150396pji.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 15:42:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MFikYFwybT43KhfwAWuo5Uo1WoOz2TApfJ3bBww9mwg=;
-        b=VG+XyCeqy1PsosZzW5tG9X0j+Wqu5CcJdhDlTwWzgW7dE+AO5liTnjqnmHfNdJKQlW
-         VDDlJWx6hPnV/d/nlK1UoDfmEzj/BxLHSK3BiNnLlFZMspPP05wCFBu1NZZoToSXXxn4
-         lJWt54Piiwz5BdqFDI2n768KxNZZyGW0OSVys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MFikYFwybT43KhfwAWuo5Uo1WoOz2TApfJ3bBww9mwg=;
-        b=KlTiHqr5S025NGlsC/KdZQ+R6oEPvZJmxlUPE0GP6ahsAc1hZ0TcmGrsX7pA4oDSTD
-         EQkFEobmH52y8r+G5ngW9ZsRoIqNKNx9nv7fUhQ2zzLW//KtJmxdU6GA42wJ0pQ7T2ig
-         1f1lg1jl8eovPg8AKvOColL78p95Ar2HMGbTdx6y4cyiJdhtO1pcvhwJc4ZrZbrFOGLD
-         oe6QPJuI8HikyiNErAlenWMuhBekAqjI0BZQBPH7YQhO4sCikL0mJGgrFUIY6kaA1+sT
-         caYkNGSSxsCVESrEzN8dq2oSDcEoit1D1bdxXbJYs0EFVsDwyEdTy8O/oMse3hSOUX8t
-         IbbQ==
-X-Gm-Message-State: AOAM533Wa+ylZtXcf5GrRhCMdxZ0+9XJH39lPUtHtNYljoN8xE30RIbP
-        CvfiXLrEdyoUjVlGikmDxWBpIw==
-X-Google-Smtp-Source: ABdhPJyVuOlyDCyajLNByOoKnfYyZbrMcDVvFbAy758bYFE4fFnjItMCFdOlA6gf0ugS1O0JJVYRcA==
-X-Received: by 2002:a17:90a:5217:: with SMTP id v23mr1302071pjh.126.1613000543878;
-        Wed, 10 Feb 2021 15:42:23 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u17sm3351670pfn.5.2021.02.10.15.42.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 15:42:23 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH] perf: Replace lkml.org links with lore
-Date:   Wed, 10 Feb 2021 15:42:19 -0800
-Message-Id: <20210210234220.2401035-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        id S233885AbhBJXoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:44:18 -0500
+Received: from mga01.intel.com ([192.55.52.88]:22165 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232169AbhBJXoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 18:44:14 -0500
+IronPort-SDR: Uu08YLl3OkzNKU4zjqFr8DHrb8355AgnhLNhVz2IymgMSfjZaDOva0+zoROnoPkcACgJMeGVM3
+ Dp+XYkdfcmdA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="201289781"
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="201289781"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 15:42:29 -0800
+IronPort-SDR: mRwkIkKabdn26fefoeK1Jpc+zLZoWHmjhGHkDA8+6vhxIzeKlbS0/sgxHuhb5nU1/OpNWDi0+R
+ G4Zb3CvGhjmA==
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="510607085"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 15:42:28 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id C54016365;
+        Wed, 10 Feb 2021 15:42:28 -0800 (PST)
+Date:   Wed, 10 Feb 2021 15:42:28 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Kees Cook <keescook@chromium.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Brian Gerst <brgerst@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Mike Rapoport <rppt@kernel.org>, Mike Hommey <mh@glandium.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Jay Lang <jaytlang@mit.edu>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>
+Subject: Re: [PATCH V4 0/6] x86: Don't abuse tss.sp1
+Message-ID: <20210210234228.GB75203@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20210210133917.2414-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=d89e1266230a4146f32e045cbb1d10e6aa793c24; i=kibymBR3NWr0zhqACHK8V2XQBH69LDXy/fMY3ecCoOs=; m=kc8NgBcNkR1FdAUFoBcecPqIFWVDlhJwDI99K+gzg58=; p=lVAPWxEVH+HmwgFOp4zCtDYuv+gQKMjZjkfptTz19L0=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmAkb1sACgkQiXL039xtwCalgw//eKt hNC9Rz5Cbt+D94sUvysx3qABbTcQ1ga57rjVfAWGMuIrbtMDr5ajIY6Gf8KIkNJC/QZu+fIjNaTrj 8ZUZR8IFPW2FEQjq0V0i/WI28SZiZeucpHR1TeSxo0xIs6Rno8vmMLepkQMUoA1PeQuPYj9QwIUT2 KOIVPh7wEBZvmVpK6VuVtIAI4eQpFAyYwQg9zNPvIlmVS/R2lDkGEaM/Qzl3kN2lFuyFgEGV4ClwW YH6WscsQ4OQzg20ZXe6C5vuSooHhw/cG51Ee0f69nEOUL4EnN5kYoC2RHScFQpSuEkV4PjhNZaJVM d6FHl6q/pK7r6YULSJWU/PNKubo+z3fE0SpselcTJ6/rCCfGiH/iAhjQldrn5emie/+eVn4OD/5Nt KYq/JX1YVKcAvsisk1MoamhzVXOvP4eNL4v3NFtXhXSRSlANheDNod3xNvwCC+rqMSjXWZ+heYpDt 0oU8bRdvhVWsufzN4b0kFY28J/nysrlMVpkVRWakZO4w3koQuMZDmzVmxinD6FqTbjUrfgl2KvJjg h9LWDAxWVLpwy6m8ybpYBzlZVHbPCAjlrnNhDTBCijDFXg0SdV2eqxvSAIxSXqCeDdDgqJJ8HLmCe CVyUXukhtYWLR2tPvz2TCT/W6JQxZNlMhGNt9h5/Gs8JaOhCyLZnCWqgZ5MWBnw0=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210133917.2414-1-jiangshanlai@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
-links with lore"), replace lkml.org links with lore to better use a
-single source that's more likely to stay available long-term.
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/perf/Documentation/examples.txt | 2 +-
- tools/perf/util/data-convert-bt.c     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/Documentation/examples.txt b/tools/perf/Documentation/examples.txt
-index a4e392156488..c0d22fbe9201 100644
---- a/tools/perf/Documentation/examples.txt
-+++ b/tools/perf/Documentation/examples.txt
-@@ -3,7 +3,7 @@
- 		****** perf by examples ******
- 		------------------------------
- 
--[ From an e-mail by Ingo Molnar, http://lkml.org/lkml/2009/8/4/346 ]
-+[ From an e-mail by Ingo Molnar, https://lore.kernel.org/lkml/20090804195717.GA5998@elte.hu ]
- 
- 
- First, discovery/enumeration of available counters can be done via
-diff --git a/tools/perf/util/data-convert-bt.c b/tools/perf/util/data-convert-bt.c
-index 27c5fef9ad54..8b67bd97d122 100644
---- a/tools/perf/util/data-convert-bt.c
-+++ b/tools/perf/util/data-convert-bt.c
-@@ -948,7 +948,7 @@ static char *change_name(char *name, char *orig_name, int dup)
- 		goto out;
- 	/*
- 	 * Add '_' prefix to potential keywork.  According to
--	 * Mathieu Desnoyers (https://lkml.org/lkml/2015/1/23/652),
-+	 * Mathieu Desnoyers (https://lore.kernel.org/lkml/1074266107.40857.1422045946295.JavaMail.zimbra@efficios.com),
- 	 * futher CTF spec updating may require us to use '$'.
- 	 */
- 	if (dup < 0)
--- 
-2.25.1
-
+On Wed, Feb 10, 2021 at 09:39:11PM +0800, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> In x86_64, tss.sp1 is reused as cpu_current_top_of_stack.  We'd better
+> directly use percpu since CR3 and gs_base is correct when it is used.
+Be more direct if not using percpu is incorrect in some way.
+> 
+> In x86_32, tss.sp1 is resued as thread.sp0 in three places in entry
+s/resued/reused
+> code.  We have the correct CR3 and %fs at two of the places.  The last
+> one is sysenter.  This patchset makes %fs available earlier so that
+> we can also use percpu in sysenter.  And add a percpu cpu_current_thread_sp0
+> for thread.sp0 instead of tss.sp1
+> 
+> [V3]: https://lore.kernel.org/lkml/20210127163231.12709-1-jiangshanlai@gmail.com/
+> [V2]: https://lore.kernel.org/lkml/20210125173444.22696-1-jiangshanlai@gmail.com/
+> [V1]: https://lore.kernel.org/lkml/20210123084900.3118-1-jiangshanlai@gmail.com/
+> 
+> Changed from V3:
+> 	Update subjects as Borislav's imperative request. ^_^
+> 	Update changelog as Borislav suggested.
+> 	Change EXPORT_PER_CPU_SYMBOL to EXPORT_PER_CPU_SYMBOL_GPL.
+> 
+> Changed from V2:
+> 	Add missing "%ss:" reported by Brian Gerst.
+> 
+> Changed from V1:
+> 	Requested from Andy to also fix sp1 for x86_32.
+> 	Update comments in the x86_64 patch as Andy sugguested.
+> 
+> Lai Jiangshan (6):
+>   x86/entry/64: Move cpu_current_top_of_stack out of TSS
+>   x86/entry/32: Use percpu instead of offset-calculation to get
+>     thread.sp0 in SWITCH_TO_KERNEL_STACK
+>   x86/entry/32: Switch to the task stack without emptying the entry
+>     stack
+>   x86/entry/32: Restore %fs before switching stack
+>   x86/entry/32: Use percpu to get thread.sp0 in SYSENTER
+>   x86/entry/32: Introduce cpu_current_thread_sp0 to replace
+>     cpu_tss_rw.x86_tss.sp1
+> 
+>  arch/x86/entry/entry_32.S          | 38 +++++++++++++++++-------------
+>  arch/x86/include/asm/processor.h   | 12 ++--------
+>  arch/x86/include/asm/switch_to.h   |  8 +------
+>  arch/x86/include/asm/thread_info.h |  6 -----
+>  arch/x86/kernel/asm-offsets.c      |  1 -
+>  arch/x86/kernel/asm-offsets_32.c   | 10 --------
+>  arch/x86/kernel/cpu/common.c       | 12 +++++++++-
+>  arch/x86/kernel/process.c          |  7 ------
+>  arch/x86/mm/pti.c                  |  7 +++---
+>  9 files changed, 39 insertions(+), 62 deletions(-)
+> 
+> -- 
+> 2.19.1.6.gb485710b
+> 
