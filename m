@@ -2,115 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87643163E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4177B3163F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhBJKdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:33:02 -0500
-Received: from 8bytes.org ([81.169.241.247]:55276 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230508AbhBJKWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:22:42 -0500
-Received: from cap.home.8bytes.org (p549adcf6.dip0.t-ipconnect.de [84.154.220.246])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id B66804B5;
-        Wed, 10 Feb 2021 11:21:58 +0100 (CET)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH 7/7] x86/sev-es: Replace open-coded hlt-loops with sev_es_terminate()
-Date:   Wed, 10 Feb 2021 11:21:35 +0100
-Message-Id: <20210210102135.30667-8-joro@8bytes.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210210102135.30667-1-joro@8bytes.org>
-References: <20210210102135.30667-1-joro@8bytes.org>
+        id S231281AbhBJKfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:35:16 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:48239 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230379AbhBJKXK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 05:23:10 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id A4818CC2;
+        Wed, 10 Feb 2021 05:22:02 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 10 Feb 2021 05:22:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=HHZt6j9O5o44t0OiG/8pfemJcp1
+        BVpkkyyBwZovhCjQ=; b=e1N4YEievDuoAZ5mZhIrzE733ZtydE1tIicwabkU1Sk
+        Adphc4DuFR/601M2O7gPBk8FfkaXnvvOJtbLffRm7/STqmnURFeAEvPxh7gCSPMO
+        vZFDvSl0JXqUzKOxzf0JkIoZIxjgNAk0xm/fLBktyGZFXoMm5/Nilz1LJz8k2U1g
+        XtDJpgGjBfW7EsooMpxQLuRh4LNwLIKOd1ZK7Bp6EF3QLiKjLRyF/m24NtRy6w/b
+        8N1SPqZLKItP/yuzXfIRLiskMMr6Refy+Na0nzrzd6fN+Lmm+dkk3GWnBwCQW/vp
+        usLlBlIb/gSNqCxyHo2HUuFQhYYYVtLKIogblGi1BOQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=HHZt6j
+        9O5o44t0OiG/8pfemJcp1BVpkkyyBwZovhCjQ=; b=NgE/eBmBrD0/rOx+cNzjM5
+        oFFWlpcd72qIbtg7Y4Vgs8rVdxs8oBSsNpzkBsDP4+SFx4aEyOFoGYQY0Wne9McH
+        YkW7AhLvswMA74DAcZIwQQ3rfPYQgELNkrTpPJJoUIIItfYZK4rH69EpMhBAzxHo
+        SZjTKsQD+Hzmv8e00LdtR8wFqERK6cp7wwkTHlYMNaINltHap8FswNJcsMc71GeC
+        MAuSfioqvilpyzn87s7S9ovpzsjB1Q2SpGmH+hU7klow52WLyPgGvM4eeJeDF7uf
+        xwJa1vFPxzrK1u4umUoiWEYy8VtnAA8iMxZJFRZPHKcUECirmFAWvrT6ozt9daUg
+        ==
+X-ME-Sender: <xms:x7MjYMivYxljRUd0mVD1OAW0CBx2kzOY5i9nAZGZWFtUSdI7bJ5NXw>
+    <xme:x7MjYFCktSP0rx8ZmXpl0BMVsPLJlWzyLLHNiig3J8ptObtW1CgkA_2UvLwrmBsHI
+    S0ARpGCDJQLhnxFMYI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgddugecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:x7MjYEEuFzcl3qSEaS9XxNSbFZ0IfYa_VAdrmTJ80uyJX1hmjGGPUw>
+    <xmx:x7MjYNSDPI8uLC4Oj49GxocqW58NhjZiYvCVfF7RrIMAactclTphWg>
+    <xmx:x7MjYJxd6PaWkp4ospj6r1qHVPK02cBA9dqr_OiLn5inE6cVjIX04w>
+    <xmx:yrMjYLsZP48tcv-YYxZk4MBBTSBcuphYcRwcN102fc2Yte4vKn87Ng>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A0A7E240065;
+        Wed, 10 Feb 2021 05:21:59 -0500 (EST)
+Date:   Wed, 10 Feb 2021 11:21:56 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Roman Stratiienko <r.stratiienko@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, megous@megous.com,
+        linux-sunxi@googlegroups.com, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v5 0/2] Implement DE2.0 and DE3.0 per-plane alpha support
+Message-ID: <20210210102156.e6n6eyuks5ibdn7m@gilmour>
+References: <20210128113940.347013-1-r.stratiienko@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dso2ssdrx6p64rlp"
+Content-Disposition: inline
+In-Reply-To: <20210128113940.347013-1-r.stratiienko@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
 
-There are a few places left in the SEV-ES C code where hlt loops and/or
-terminate requests are implemented. Replace them all with calls to
-sev_es_terminate().
+--dso2ssdrx6p64rlp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/boot/compressed/sev-es.c | 12 +++---------
- arch/x86/kernel/sev-es-shared.c   | 10 +++-------
- 2 files changed, 6 insertions(+), 16 deletions(-)
+On Thu, Jan 28, 2021 at 01:39:38PM +0200, Roman Stratiienko wrote:
+>=20
+> Please review/merge.
+>=20
+> v2:
+> Initial patch
+>=20
+> v3:
+> - Skip adding & applying alpha property if VI count > 1 (v3s case)
+>=20
+> v4:
+> Resend (author's email changed)
+>=20
+> v5:
+> Resend
 
-diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-index 27826c265aab..d904bd56b3e3 100644
---- a/arch/x86/boot/compressed/sev-es.c
-+++ b/arch/x86/boot/compressed/sev-es.c
-@@ -200,14 +200,8 @@ void do_boot_stage2_vc(struct pt_regs *regs, unsigned long exit_code)
- 	}
- 
- finish:
--	if (result == ES_OK) {
-+	if (result == ES_OK)
- 		vc_finish_insn(&ctxt);
--	} else if (result != ES_RETRY) {
--		/*
--		 * For now, just halt the machine. That makes debugging easier,
--		 * later we just call sev_es_terminate() here.
--		 */
--		while (true)
--			asm volatile("hlt\n");
--	}
-+	else if (result != ES_RETRY)
-+		sev_es_terminate(GHCB_SEV_ES_REASON_GENERAL_REQUEST);
- }
-diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
-index cdc04d091242..7c34be61258e 100644
---- a/arch/x86/kernel/sev-es-shared.c
-+++ b/arch/x86/kernel/sev-es-shared.c
-@@ -24,7 +24,7 @@ static bool __init sev_es_check_cpu_features(void)
- 	return true;
- }
- 
--static void sev_es_terminate(unsigned int reason)
-+static void __noreturn sev_es_terminate(unsigned int reason)
- {
- 	u64 val = GHCB_SEV_TERMINATE;
- 
-@@ -210,12 +210,8 @@ void __init do_vc_no_ghcb(struct pt_regs *regs, unsigned long exit_code)
- 	return;
- 
- fail:
--	sev_es_wr_ghcb_msr(GHCB_SEV_TERMINATE);
--	VMGEXIT();
--
--	/* Shouldn't get here - if we do halt the machine */
--	while (true)
--		asm volatile("hlt\n");
-+	/* Terminate the guest */
-+	sev_es_terminate(GHCB_SEV_ES_REASON_GENERAL_REQUEST);
- }
- 
- static enum es_result vc_insn_string_read(struct es_em_ctxt *ctxt,
--- 
-2.30.0
+Applied, thanks
+Maxime
 
+--dso2ssdrx6p64rlp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYCOzxAAKCRDj7w1vZxhR
+xbWJAQDuwFmBjnNnn8ZO8Op7wExYzbYJvkQV3In271yxLkzeEgD/f26+65IQW2Fd
+jtqVmN+mA6PSsWNs13bcX5Ge/RENZwU=
+=FXLO
+-----END PGP SIGNATURE-----
+
+--dso2ssdrx6p64rlp--
