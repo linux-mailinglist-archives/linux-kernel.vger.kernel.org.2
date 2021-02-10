@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45F63166F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AE73166F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhBJMmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:42:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46080 "EHLO
+        id S231959AbhBJMmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhBJMjm (ORCPT
+        with ESMTP id S231765AbhBJMjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:39:42 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F55C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:39:02 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id x136so1191714pfc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:39:02 -0800 (PST)
+        Wed, 10 Feb 2021 07:39:46 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EF2C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:39:06 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id q72so1038989pjq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:39:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JYaGyPsE3Q7eejkXPPgWBuxHXVlDYj0MP41m5sZqcsE=;
-        b=vLOU1+hkux1SmrHlHrvbbx5xdsSWegYQmmxy71Gq06z7q1ngzjYGq2fkwDY71JnpN6
-         btQ2xygWnTm6TegYLryFCVkiYOuoHhAQEEYrcTqDWJNbH0LagjQ5pIM3TYSpp5wVjQzM
-         grgsvGx7d5arEnI+QaW2hOSIg0oQkeDl72gLv0kDr4DT9e70/LMU3i7AAaun+ubdK78R
-         Jz1N9s00scwvDL+QvuAH6Jkp5B4rdHF+IlyTNvPdt/7A+j0nJYHlnI4WcFEyT3RRlDZf
-         rOysXeiI05d1pjXC3zEBFna/fFQj+W8JXzoTHiBrOjTcVAtCzx3JVzBLjuxGoXbDrS9j
-         7wQg==
+        bh=1kKmWJ/1uSmMbRL8VLbdU43IuEw0XN7ucB3p1m9mrNk=;
+        b=p3cpcZ/KOVrYtyOGMp7vqllvTv1oftb5uz61PpbAiaEQTVlLcB0+4P63zeqdw21KGD
+         PItem9T1lrgTyqDESjZjZr46nE4JcVqgz0BEzcjBONDp8mwicX5SewDqBn98UBslP+EV
+         5oUDrnWpYDfz+PxFuD0824puMTGB4Cxk6w5XDJo10rB0+DeDi46dPhMzEW+n4P/k+k7n
+         Z6KrzmyPACYUT+yZ/hGK5Gz3lmRv7CMaMfHLSlP6A+eFUO6XMsNKkybbYUai9ALJhsT6
+         kmgY3ZjujfL1bQAG28mAZIfQSmAU+lxOLN9bpbmXDPFVsy9b+3KO6gxFX2XzOi6lmnks
+         3kgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JYaGyPsE3Q7eejkXPPgWBuxHXVlDYj0MP41m5sZqcsE=;
-        b=eniNJdP+ORWM0SijYoRY39KZi/Ed/guJV+NEEazMZz6Gn9FIDku7ptUhYHQkyw6pfJ
-         12BCvceIIUSd9sb5mRdTPeQ1sYVq3kY2M1HKRZFT/3YQrzrY2EAEIuWF/hhWfszORyFS
-         bLFvGadXHurJoeY2A6dgxWWliGQkHMs1OdxWUaS4P6ZCT52utTMI7eykLwq8CXxnQQJK
-         S8xnwgWlBu8BBl7tVNEi98KJWdDOddK+uD06XmmVvJStOSoyaWMmTyBQNxgBQoptl6u7
-         BOa7iBUiYEI6KuGSTYWP00/uAL1kuvHeLyDJHG4V8fjMhO0sQLkGVK61tGUl1jwLAmz2
-         YkTQ==
-X-Gm-Message-State: AOAM532UfuJuYWukk5+lgKHpW+ea7vjFDPugrZnaOXbVTQnAGqFNslAu
-        ERxw5vKyXvIjelbbvX+HssjcCMpGjlI=
-X-Google-Smtp-Source: ABdhPJxb8DLxHPUFpGimy1e3z9VJLDWAcb5lk6bnupoQCx/U5j1OMj+fNmb/oKjSu9j1E3y+B1zUUw==
-X-Received: by 2002:a63:5904:: with SMTP id n4mr783847pgb.446.1612960741934;
-        Wed, 10 Feb 2021 04:39:01 -0800 (PST)
+        bh=1kKmWJ/1uSmMbRL8VLbdU43IuEw0XN7ucB3p1m9mrNk=;
+        b=ubv2FGEY5xbmgmJznvvoXK6O82OUjwCEx3Q7n6etSKoX55PW9T65f7mi+Ok+nnQtRe
+         5aMvL8lfV2LMWCEWfYI7Luqgg//4Gt0dJXcPLHaZZucMtXe2boA0dm6F4Xd5pMlieNwq
+         tqflMtkpe8T0fzmpP3MXT8KuHMXVYniQsBZVYqQ0kBHosSDsYcVC/cIIghPKqDC1+COc
+         nRfoZxI1yc71viHcMplIB3qUlcYTfxuHfZlQ1DUuK11cog9dgUUqUyN4yIgPGGalXNGk
+         PRz5W8IgLCyG9DQ4HSB/+9verodrqJFCOsHhUH4xCedU+W1p5ziSHT7JfQgqDtMC40gK
+         O6kg==
+X-Gm-Message-State: AOAM533VCa0bNlahZepocYBDBw73AOiMerob84tjllEsWQ5IOfUnTUNG
+        FRuL8ea/BCD80wKpXguZW9YYQaMYWlI=
+X-Google-Smtp-Source: ABdhPJxEv7WSrGZP88deKq3+v+ahWn21scw1B5ep4+NkrrMvQNaVuS6qP/HxPj8yrnguUeCawE1z4A==
+X-Received: by 2002:a17:902:ea93:b029:e2:b3fb:ca9f with SMTP id x19-20020a170902ea93b02900e2b3fbca9fmr2818083plb.4.1612960745673;
+        Wed, 10 Feb 2021 04:39:05 -0800 (PST)
 Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id c188sm2341565pfa.98.2021.02.10.04.39.00
+        by smtp.gmail.com with ESMTPSA id ck10sm2199667pjb.5.2021.02.10.04.39.04
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Feb 2021 04:39:01 -0800 (PST)
+        Wed, 10 Feb 2021 04:39:05 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -79,9 +79,9 @@ Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Anthony Steinhauser <asteinhauser@google.com>,
         Jay Lang <jaytlang@mit.edu>,
         "Chang S. Bae" <chang.seok.bae@intel.com>
-Subject: [PATCH V4 3/6] x86/entry/32: Switch to the task stack without emptying the entry stack
-Date:   Wed, 10 Feb 2021 21:39:14 +0800
-Message-Id: <20210210133917.2414-4-jiangshanlai@gmail.com>
+Subject: [PATCH V4 4/6] x86/entry/32: Restore %fs before switching stack
+Date:   Wed, 10 Feb 2021 21:39:15 +0800
+Message-Id: <20210210133917.2414-5-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20210210133917.2414-1-jiangshanlai@gmail.com>
 References: <20210210133917.2414-1-jiangshanlai@gmail.com>
@@ -93,50 +93,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Like the way x86_64 uses the entry stack when switching to the task stack,
-entry_SYSENTER_32 can also save the entry stack pointer to a register and
-then switch to the task stack.  So that it doesn't need to empty the entry
-stack by poping contents to registers and it has more space on the entry
-stack to save stuffs or scratch registers.
-
-It is a preparation for next patches which need to save user %fs in the
-entry stack before restoring kernel %fs and loading the task stack for
-stack switching.
+entry_SYSENTER_32 saves the user %fs in the entry stack and restores the
+kernel %fs before loading the task stack for stack switching, so that it
+can use percpu before switching stack in the next patch.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_32.S | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ arch/x86/entry/entry_32.S | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
 diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index 3b4d1a63d1f0..3e693db0963d 100644
+index 3e693db0963d..01f098c5b017 100644
 --- a/arch/x86/entry/entry_32.S
 +++ b/arch/x86/entry/entry_32.S
-@@ -905,19 +905,18 @@ SYM_FUNC_START(entry_SYSENTER_32)
+@@ -279,11 +279,13 @@
+ .Lfinished_frame_\@:
+ .endm
+ 
+-.macro SAVE_ALL pt_regs_ax=%eax switch_stacks=0 skip_gs=0 unwind_espfix=0
++.macro SAVE_ALL pt_regs_ax=%eax switch_stacks=0 skip_gs=0 skip_fs=0 unwind_espfix=0
+ 	cld
+ .if \skip_gs == 0
+ 	PUSH_GS
+ .endif
++
++.if \skip_fs == 0
+ 	pushl	%fs
+ 
  	pushl	%eax
+@@ -293,6 +295,7 @@
+ 	UNWIND_ESPFIX_STACK
+ .endif
+ 	popl	%eax
++.endif
+ 
+ 	FIXUP_FRAME
+ 	pushl	%es
+@@ -906,18 +909,27 @@ SYM_FUNC_START(entry_SYSENTER_32)
  	BUG_IF_WRONG_CR3 no_user_check=1
  	SWITCH_TO_KERNEL_CR3 scratch_reg=%eax
--	popl	%eax
--	popfl
  
--	/* Stack empty again, switch to task stack */
--	movl	TSS_entry2task_stack(%esp), %esp
-+	/* Switch to task stack */
-+	movl	%esp, %eax
-+	movl	(2*4+TSS_entry2task_stack)(%esp), %esp
++	/* Restore kernel %fs, so that we can use PERCPU */
++	pushl	%fs
++	movl	$(__KERNEL_PERCPU), %eax
++	movl	%eax, %fs
++
+ 	/* Switch to task stack */
+ 	movl	%esp, %eax
+-	movl	(2*4+TSS_entry2task_stack)(%esp), %esp
++	movl	(3*4+TSS_entry2task_stack)(%esp), %esp
  
  .Lsysenter_past_esp:
  	pushl	$__USER_DS		/* pt_regs->ss */
  	pushl	$0			/* pt_regs->sp (placeholder) */
--	pushfl				/* pt_regs->flags (except IF = 0) */
-+	pushl	%ss:4(%eax)		/* pt_regs->flags (except IF = 0) */
+-	pushl	%ss:4(%eax)		/* pt_regs->flags (except IF = 0) */
++	pushl	%ss:8(%eax)		/* pt_regs->flags (except IF = 0) */
  	pushl	$__USER_CS		/* pt_regs->cs */
  	pushl	$0			/* pt_regs->ip = 0 (placeholder) */
--	pushl	%eax			/* pt_regs->orig_ax */
-+	pushl	%ss:(%eax)		/* pt_regs->orig_ax */
- 	SAVE_ALL pt_regs_ax=$-ENOSYS	/* save rest, stack already switched */
+-	pushl	%ss:(%eax)		/* pt_regs->orig_ax */
+-	SAVE_ALL pt_regs_ax=$-ENOSYS	/* save rest, stack already switched */
++	pushl	%ss:4(%eax)		/* pt_regs->orig_ax */
++	PUSH_GS				/* pt_regs->gs */
++	pushl	%ss:(%eax)		/* pt_regs->fs */
++	/* save rest, stack and %fs already switched */
++	SAVE_ALL pt_regs_ax=$-ENOSYS skip_gs=1 skip_fs=1
++	SET_KERNEL_GS %edx
  
  	/*
+ 	 * SYSENTER doesn't filter flags, so we need to clear NT, AC
 -- 
 2.19.1.6.gb485710b
 
