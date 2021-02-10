@@ -2,160 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF693170B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068023170C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhBJTzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:55:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
+        id S232798AbhBJT4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:56:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232588AbhBJTzW (ORCPT
+        with ESMTP id S232432AbhBJT4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:55:22 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90ECAC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:54:41 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id p20so6333688ejb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:54:41 -0800 (PST)
+        Wed, 10 Feb 2021 14:56:23 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA11C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:55:42 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id k4so3244566ybp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:55:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=r8ql4t5FN+DQ5z6SKaawhVvoEWWehqT+I1El6GCGVQ4=;
-        b=UZb6WVbTWSGdh6Bv8sJ0CZE9rE5T4V6FvNnZjV+yO5TAkRphM7kzZ4CnBzE+DtGp7T
-         KZ8+plW5edXC0gs6ASCzCyGGBR3vCrnphh8APG2ELadQqqAiM6B+WMcvnSehEoq6sNnR
-         J0nHzUDbHdZRZcZYKFCy1GsHkZMhkqgChpVYtn/C9TaUk4wW/raUMMFvoMwLNKNjY53p
-         tB8hJhtHR/KBTboYiE5NKWek/XIXfGesldItsTvDTnGbmz5y37Km1pbFiJzGF+Bm1P+E
-         BzZCe/NLem1n16h0IqP8PtixD6bbV9Z+ODchWMMICWSnZG844Zm9P0nm/K/1rPyxZkA9
-         kwHQ==
+        bh=oExERL/T/0oMJ6g/yHZwloOKPrmB18DS3AGZFjvCYuQ=;
+        b=Ih6f+nFKCSlny/j5kMBWvNz+0gAQU1ehWl88piEDqDY+eHdO8gPthBlHS1jGmyiubg
+         rs9dpUJgssjTAF3dSq6pXEJCbuTcWEzYd//W3e3wj3jT+GqUbrgGPNPjwLbeIr/Hww11
+         EruevPLigxul9FCLV/La+bv7cs6I98IYWrTJ0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=r8ql4t5FN+DQ5z6SKaawhVvoEWWehqT+I1El6GCGVQ4=;
-        b=N6yZK8+iNypsmzFqZSFlU3p5SxDZmx8Fqznhk/UhWXxcBsyRq/fPyexAmrjNM7tTqZ
-         wbNPaXPqEd6t2utkThvl0J355uQ7uAyqdJW9ehtkKb3u7I1yYnqzw+8lDDYt7XAhooku
-         /iOvloGpWku4L2+/Xv9nrLkRgT78RhbRwKKdUBGWNAS15xiJI1E3l2k02ykWUWsYsNqe
-         /o9Dx1E7hzbx/LxxWmihaDe0CPdgSlvJcL6rNDF7dkz9I01FHcolyKBLt1hYh/1nT56U
-         CM/i9PKrDVqjr+QvOn0zMe+gv3O2KoFaG8NLD4HAtmijfoEJE1hQQhTVkXFvEpenQcEh
-         t/yQ==
-X-Gm-Message-State: AOAM531h4xw4DgY5nxZg/I0F/wxST2ogGhdt5BVjmhyw2goF3PnFDE3C
-        IXBw0UXbF0IHwTfWNTbtqAx7KGc8PVxHv/hzCqO1wQ==
-X-Google-Smtp-Source: ABdhPJyFlWbTp88uiBk8oj2jnks2vvVMZHRU5zQHaleujzXDGp2pVOAsUaO9gD/k4yZ6I0HiskQDvayp/pdzxo6NaBc=
-X-Received: by 2002:a17:906:57cd:: with SMTP id u13mr4661147ejr.341.1612986880263;
- Wed, 10 Feb 2021 11:54:40 -0800 (PST)
+        bh=oExERL/T/0oMJ6g/yHZwloOKPrmB18DS3AGZFjvCYuQ=;
+        b=FVe2/mmTwgd706g3HPGrRPpq3eJ61RDmDxvbraFxm8RlN34FmLuIjW+vtbknm5/IZ7
+         ok766llXIkPjnfOevTxGa54K/hmeLq6B9P8PW5gRsH0S9qrs6oW457KuSWbMBie2A2BQ
+         PwDw4wEuSVNzh3Kk4vWv7L3BqxkPPswB2owf9/hfw0sPPqpH273zBkCBaS/PqBJS5a+g
+         ebVgZJw/kWYgKCdAnzNiNzW585AAwAARSuSJCDucKIdscBnvSk5AV+9FEf2oDzSl9tVn
+         lvVP5ZUuaKrWTq/oqAQFA/1ssak9ieieM2yZI37/JojT6iEmwI/TrfiX9HR/p4+9h0G0
+         PROQ==
+X-Gm-Message-State: AOAM532iBcu8uRiCpEwRJo1VJau5kxQ23FeSI4DCFJIBNnzWaujVQrT8
+        zK2qmxbDqXsDloay2dIAVAqhq09POrKc+p41fXXFUA==
+X-Google-Smtp-Source: ABdhPJyvhNSAhGl8xid42/KvpXX96+wRY2I3VPthzjiitHeZoPdAQko+hhE0NmD4mjLBJpvM+O3UzFbUbf9UAZcYF7M=
+X-Received: by 2002:a25:1385:: with SMTP id 127mr6136492ybt.437.1612986942057;
+ Wed, 10 Feb 2021 11:55:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
- <20210210000259.635748-3-ben.widawsky@intel.com> <20210210174104.0000710a@Huawei.com>
- <20210210185319.chharluce2ly4cne@intel.com>
-In-Reply-To: <20210210185319.chharluce2ly4cne@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 10 Feb 2021 11:54:29 -0800
-Message-ID: <CAPcyv4i4_6HLNpw7p-1PD9cePuMuPkvUfx0ROT8M0Y7ftxzYfg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/8] cxl/mem: Find device capabilities
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-cxl@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
+References: <20210210111406.785541-1-revest@chromium.org> <20210210111406.785541-2-revest@chromium.org>
+ <CAEf4BzZ9yPYicLi5j6Xp8-Mco0yy5qWetSEsYpbzf14=CTa0_A@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ9yPYicLi5j6Xp8-Mco0yy5qWetSEsYpbzf14=CTa0_A@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 10 Feb 2021 20:55:31 +0100
+Message-ID: <CABRcYmLd96VYoYHDphfEzS+6TQLWTSqhf547aUm3tS5CL7mRxg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 2/5] bpf: Expose bpf_get_socket_cookie to
+ tracing programs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@google.com>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:53 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
-[..]
-> > Christoph raised this in v1, and I agree with him that his would me more compact
-> > and readable as
-> >
-> >       struct range pmem_range;
-> >       struct range ram_range;
-> >
-> > The discussion seemed to get lost without getting resolved that I can see.
-> >
+On Wed, Feb 10, 2021 at 8:52 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> I had been waiting for Dan to chime in, since he authored it. I'll change it and
-> he can yell if he cares.
-
-No concerns from me.
-
+> On Wed, Feb 10, 2021 at 3:14 AM Florent Revest <revest@chromium.org> wrote:
+> >
+> > This needs a new helper that:
+> > - can work in a sleepable context (using sock_gen_cookie)
+> > - takes a struct sock pointer and checks that it's not NULL
+> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > Acked-by: KP Singh <kpsingh@kernel.org>
+> > ---
 >
-> > > +
-> > > +   struct {
-> > > +           struct range range;
-> > > +   } ram;
-> >
-> > > +};
-> > > +
-> > > +#endif /* __CXL_H__ */
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index 99a6571508df..0a868a15badc 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> >
-> >
-> > ...
-> >
-> > > +static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
-> > > +                            struct mbox_cmd *mbox_cmd)
-> > > +{
-> > > +   struct device *dev = &cxlm->pdev->dev;
-> > > +
-> > > +   dev_dbg(dev, "Mailbox command (opcode: %#x size: %zub) timed out\n",
-> > > +           mbox_cmd->opcode, mbox_cmd->size_in);
-> > > +
-> > > +   if (IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
-> >
-> > Hmm.  Whilst I can see the advantage of this for debug, I'm not sure we want
-> > it upstream even under a rather evil looking CONFIG variable.
-> >
-> > Is there a bigger lock we can use to avoid chance of accidental enablement?
+> It's customary to send cover letter with patch sets of 2 or more
+> related patches. It's a good place to explain the motivation of a
+> patch set. And a good place to ack all patches in one go ;)
+
+You're right :) I first (naively!) thought it would be a short series
+but it grew bigger than I originally thought. I will make sure I do in
+the future. ;)
+
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 >
-> Any suggestions? I'm told this functionality was extremely valuable for NVDIMM,
-> though I haven't personally experienced it.
-
-Yeah, there was no problem with the identical mechanism in LIBNVDIMM
-land. However, I notice that the useful feature for LIBNVDIMM is the
-option to dump all payloads. This one only fires on timeouts which is
-less useful. So I'd say fix it to dump all payloads on the argument
-that the safety mechanism was proven with the LIBNVDIMM precedent, or
-delete it altogether to maintain v5.12 momentum. Payload dumping can
-be added later.
-
-[..]
-> > > diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> > > index e709ae8235e7..6267ca9ae683 100644
-> > > --- a/include/uapi/linux/pci_regs.h
-> > > +++ b/include/uapi/linux/pci_regs.h
-> > > @@ -1080,6 +1080,7 @@
-> > >
-> > >  /* Designated Vendor-Specific (DVSEC, PCI_EXT_CAP_ID_DVSEC) */
-> > >  #define PCI_DVSEC_HEADER1          0x4 /* Designated Vendor-Specific Header1 */
-> > > +#define PCI_DVSEC_HEADER1_LENGTH_MASK      0xFFF00000
-> >
-> > Seems sensible to add the revision mask as well.
-> > The vendor id currently read using a word read rather than dword, but perhaps
-> > neater to add that as well for completeness?
-> >
-> > Having said that, given Bjorn's comment on clashes and the fact he'd rather see
-> > this stuff defined in drivers and combined later (see review patch 1 and follow
-> > the link) perhaps this series should not touch this header at all.
 >
-> I'm fine to move it back.
-
-Yeah, we're playing tennis now between Bjorn's and Christoph's
-comments, but I like Bjorn's suggestion of "deduplicate post merge"
-given the bloom of DVSEC infrastructure landing at the same time.
+> >  include/linux/bpf.h            |  1 +
+> >  include/uapi/linux/bpf.h       |  8 ++++++++
+> >  kernel/trace/bpf_trace.c       |  2 ++
+> >  net/core/filter.c              | 12 ++++++++++++
+> >  tools/include/uapi/linux/bpf.h |  8 ++++++++
+> >  5 files changed, 31 insertions(+)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 321966fc35db..d212ae7d9731 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1888,6 +1888,7 @@ extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
+> >  extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
+> >  extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
+> >  extern const struct bpf_func_proto bpf_sock_from_file_proto;
+> > +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
+> >
+> >  const struct bpf_func_proto *bpf_tracing_func_proto(
+> >         enum bpf_func_id func_id, const struct bpf_prog *prog);
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 0b735c2729b2..a8d9ad543300 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1673,6 +1673,14 @@ union bpf_attr {
+> >   *     Return
+> >   *             A 8-byte long unique number.
+> >   *
+> > + * u64 bpf_get_socket_cookie(struct sock *sk)
+> > + *     Description
+> > + *             Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+> > + *             *sk*, but gets socket from a BTF **struct sock**. This helper
+> > + *             also works for sleepable programs.
+> > + *     Return
+> > + *             A 8-byte long unique number or 0 if *sk* is NULL.
+> > + *
+> >   * u32 bpf_get_socket_uid(struct sk_buff *skb)
+> >   *     Return
+> >   *             The owner UID of the socket associated to *skb*. If the socket
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 6c0018abe68a..845b2168e006 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1760,6 +1760,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >                 return &bpf_sk_storage_delete_tracing_proto;
+> >         case BPF_FUNC_sock_from_file:
+> >                 return &bpf_sock_from_file_proto;
+> > +       case BPF_FUNC_get_socket_cookie:
+> > +               return &bpf_get_socket_ptr_cookie_proto;
+> >  #endif
+> >         case BPF_FUNC_seq_printf:
+> >                 return prog->expected_attach_type == BPF_TRACE_ITER ?
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index e15d4741719a..57aaed478362 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -4631,6 +4631,18 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
+> >         .arg1_type      = ARG_PTR_TO_CTX,
+> >  };
+> >
+> > +BPF_CALL_1(bpf_get_socket_ptr_cookie, struct sock *, sk)
+> > +{
+> > +       return sk ? sock_gen_cookie(sk) : 0;
+> > +}
+> > +
+> > +const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto = {
+> > +       .func           = bpf_get_socket_ptr_cookie,
+> > +       .gpl_only       = false,
+> > +       .ret_type       = RET_INTEGER,
+> > +       .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+> > +};
+> > +
+> >  BPF_CALL_1(bpf_get_socket_cookie_sock_ops, struct bpf_sock_ops_kern *, ctx)
+> >  {
+> >         return __sock_gen_cookie(ctx->sk);
+> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> > index 0b735c2729b2..a8d9ad543300 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -1673,6 +1673,14 @@ union bpf_attr {
+> >   *     Return
+> >   *             A 8-byte long unique number.
+> >   *
+> > + * u64 bpf_get_socket_cookie(struct sock *sk)
+> > + *     Description
+> > + *             Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+> > + *             *sk*, but gets socket from a BTF **struct sock**. This helper
+> > + *             also works for sleepable programs.
+> > + *     Return
+> > + *             A 8-byte long unique number or 0 if *sk* is NULL.
+> > + *
+> >   * u32 bpf_get_socket_uid(struct sk_buff *skb)
+> >   *     Return
+> >   *             The owner UID of the socket associated to *skb*. If the socket
+> > --
+> > 2.30.0.478.g8a0d178c01-goog
+> >
