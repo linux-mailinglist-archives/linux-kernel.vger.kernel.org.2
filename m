@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B353169F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A11713169FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 16:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhBJPTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 10:19:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52420 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231984AbhBJPTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:19:33 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 85C93AB98;
-        Wed, 10 Feb 2021 15:18:50 +0000 (UTC)
-To:     Milan Broz <gmazyland@gmail.com>, Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mikulas Patocka <mpatocka@redhat.com>
-References: <70885d37-62b7-748b-29df-9e94f3291736@gmail.com>
- <20210108134140.GA9883@dhcp22.suse.cz>
- <abb752ce-4447-74cb-dfbc-03af1b38edfc@gmail.com>
- <9474cd07-676a-56ed-1942-5090e0b9a82f@suse.cz>
- <e6f84b27-ed29-0fa4-e466-536b529c5720@gmail.com>
- <6eebb858-d517-b70d-9202-f4e84221ed89@suse.cz>
- <dfc3fe66-07ac-6aba-e10b-c940cdb01ec1@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: Very slow unlockall()
-Message-ID: <273db3a6-28b1-6605-1743-ef86e7eb2b72@suse.cz>
-Date:   Wed, 10 Feb 2021 16:18:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231984AbhBJPU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 10:20:27 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:50738 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231744AbhBJPUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 10:20:19 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AFG04B025962;
+        Wed, 10 Feb 2021 15:19:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=P8IV7uMsBk5oTGTXCf1S0OWgFrqMXIJx/u2JuiFn8+s=;
+ b=OBDOnAiilReTFpcjpgTqjf7tzIkpa0QszJSr2s2Mn5yE1n2ykgZck9A56FYY0Nki491F
+ wVcONgagoZ8FFaAOGdByUj0qckLO5AfETwb+yG/jSjmF0vNOP2yRcTee1MjDx6wYZHNo
+ phe0z6rswYFfrZBsdnn9hSbkLusf4GsNk0ViyMAXI5ZNyV1rAhf5zUeskdFqHuf3lVJP
+ W6pPJ1CppppLkOnZqkdYelTeiyjPhuadmqzKHjk5PK5U/NLpwWfOwM4FbpMVO+lNMFbD
+ dQU2Bzd3vEIMqv1F088r2S2xlz8VGpCowGwWLMbny0rXEp1O+XQDtXPc+7Tz46kz2aw1 mg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 36m4upt9v5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 15:19:34 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AFEia8043940;
+        Wed, 10 Feb 2021 15:19:32 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 36j4vsxcg5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 15:19:32 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11AFJVR9006448;
+        Wed, 10 Feb 2021 15:19:31 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 07:19:30 -0800
+Date:   Wed, 10 Feb 2021 18:19:24 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: gdm724x: Fix DMA from stack
+Message-ID: <20210210151924.GA20820@kadam>
+References: <20210210142512.23152-1-ameynarkhede03@gmail.com>
+ <YCPz7jy6BLRzmvU3@kroah.com>
+ <20210210150133.chf4gwefgcvaewnd@archlinux>
 MIME-Version: 1.0
-In-Reply-To: <dfc3fe66-07ac-6aba-e10b-c940cdb01ec1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210150133.chf4gwefgcvaewnd@archlinux>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102100146
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
+ suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 8:19 PM, Milan Broz wrote:
-> On 01/02/2021 19:55, Vlastimil Babka wrote:
->> On 2/1/21 7:00 PM, Milan Broz wrote:
->>> On 01/02/2021 14:08, Vlastimil Babka wrote:
->>>> On 1/8/21 3:39 PM, Milan Broz wrote:
->>>>> On 08/01/2021 14:41, Michal Hocko wrote:
->>>>>> On Wed 06-01-21 16:20:15, Milan Broz wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> we use mlockall(MCL_CURRENT | MCL_FUTURE) / munlockall() in cryptsetup code
->>>>>>> and someone tried to use it with hardened memory allocator library.
->>>>>>>
->>>>>>> Execution time was increased to extreme (minutes) and as we found, the problem
->>>>>>> is in munlockall().
->>>>>>>
->>>>>>> Here is a plain reproducer for the core without any external code - it takes
->>>>>>> unlocking on Fedora rawhide kernel more than 30 seconds!
->>>>>>> I can reproduce it on 5.10 kernels and Linus' git.
->>>>>>>
->>>>>>> The reproducer below tries to mmap large amount memory with PROT_NONE (later never used).
->>>>>>> The real code of course does something more useful but the problem is the same.
->>>>>>>
->>>>>>> #include <stdio.h>
->>>>>>> #include <stdlib.h>
->>>>>>> #include <fcntl.h>
->>>>>>> #include <sys/mman.h>
->>>>>>>
->>>>>>> int main (int argc, char *argv[])
->>>>>>> {
->>>>>>>         void *p  = mmap(NULL, 1UL << 41, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->> 
->> So, this is 2TB memory area, but PROT_NONE means it's never actually populated,
->> although mlockall(MCL_CURRENT) should do that. Once you put PROT_READ |
->> PROT_WRITE there, the mlockall() starts taking ages.
->> 
->> So does that reflect your use case? munlockall() with large PROT_NONE areas? If
->> so, munlock_vma_pages_range() is indeed not optimized for that, but I would
->> expect such scenario to be uncommon, so better clarify first.
-> 
-> It is just a simple reproducer of the underlying problem, as suggested here 
-> https://gitlab.com/cryptsetup/cryptsetup/-/issues/617#note_478342301
-> 
-> We use mlockall() in cryptsetup and with hardened malloc it slows down unlock significantly.
-> (For the real case problem please read the whole issue report above.)
+On Wed, Feb 10, 2021 at 08:31:33PM +0530, Amey Narkhede wrote:
+> On 21/02/10 03:55PM, Greg KH wrote:
+> > On Wed, Feb 10, 2021 at 07:55:12PM +0530, Amey Narkhede wrote:
+> > > Stack allocated buffers cannot be used for DMA
+> > > on all architectures so allocate hci_packet buffer
+> > > using kmalloc.
+> > >
+> > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > ---
+> > > Changes in v3:
+> > > 	- Remove superfluous buf pointer
+> > > 	- Reduce size of allocation of hci_packet to match number of
+> > > 	bytes used for DMA
+> > >
+> > >  drivers/staging/gdm724x/gdm_usb.c | 10 +++++++---
+> > >  1 file changed, 7 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
+> > > index dc4da66c3..80c58a3ef 100644
+> > > --- a/drivers/staging/gdm724x/gdm_usb.c
+> > > +++ b/drivers/staging/gdm724x/gdm_usb.c
+> > > @@ -56,20 +56,24 @@ static int gdm_usb_recv(void *priv_dev,
+> > >
+> > >  static int request_mac_address(struct lte_udev *udev)
+> > >  {
+> > > -	u8 buf[16] = {0,};
+> > > -	struct hci_packet *hci = (struct hci_packet *)buf;
+> > > +	struct hci_packet *hci;
+> > >  	struct usb_device *usbdev = udev->usbdev;
+> > >  	int actual;
+> > >  	int ret = -1;
+> > >
+> > > +	hci = kmalloc(5, GFP_KERNEL);
+> >
+> > Why "5" and not:
+> > 	hci = kmalloc(sizeof(*hci), GFP_KERNEL);
 
-OK, finally read through the bug report, and learned two things:
+5 is correct and sizeof(*hci) is 4.  The hci struct ends in a zero
+element array.  You could do:
 
-1) the PROT_NONE is indeed intentional part of the reproducer
-2) Linux mailing lists still have a bad reputation and people avoid them. That's
-sad :( Well, thanks for overcoming that :)
+	hci = kmalloc(struct_size(hci, data, 1), GFP_KERNEL);
 
-Daniel there says "I think the Linux kernel implementation of mlockall is quite
-broken and tries to lock all the reserved PROT_NONE regions in advance which
-doesn't make any sense."
+I'm not sure it's more readable.  But you still will have to resend
+because the patch passes "&hci" to usb_bulk_msg() instead of "hci" so it
+will corrupt memory.
 
-From my testing this doesn't seem to be the case, as the mlockall() part is very
-fast, so I don't think it faults in and mlocks PROT_NONE areas. It only starts
-to be slow when changed to PROT_READ|PROT_WRITE. But the munlockall() part is
-slow even with PROT_NONE as we don't skip the PROT_NONE areas there. We probably
-can't just skip them, as they might actually contain mlocked pages if those were
-faulted first with PROT_READ/PROT_WRITE and only then changed to PROT_NONE.
+I always encourage people to write the patch and then sit on it over
+night and send it the next day.
 
-And the munlock (munlock_vma_pages_range()) is slow, because it uses
-follow_page_mask() in a loop incrementing addresses by PAGE_SIZE, so that's
-always traversing all levels of page tables from scratch. Funnily enough,
-speeding this up was my first linux-mm series years ago. But the speedup only
-works if pte's are present, which is not the case for unpopulated PROT_NONE
-areas. That use case was unexpected back then. We should probably convert this
-code to a proper page table walk. If there are large areas with unpopulated pmd
-entries (or even higher levels) we would traverse them very quickly.
+regards,
+dan carpenter
 
