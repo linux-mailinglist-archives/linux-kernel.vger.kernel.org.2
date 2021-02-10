@@ -2,154 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E5E31742B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9906C31742F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234129AbhBJXQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 18:16:19 -0500
-Received: from mga07.intel.com ([134.134.136.100]:42606 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234365AbhBJXM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:12:56 -0500
-IronPort-SDR: nUDrwDRbpSD3aUcJMxsa854nXEU6N6JTU/r0qSWzxErjOON+HKxjBhsliVWdUnB7OsDG2XkWgl
- 94c7uymgkFjg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="246232249"
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="246232249"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 15:08:12 -0800
-IronPort-SDR: J5CHyBi7XyrvWgi8j0A2KEHCS+pjoDeIH1IPqGUmtkFCNWP8VYOUJJ2J50zbidTXm9Sv1IxEE3
- VDsjh8AddL0g==
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="380347903"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 15:08:08 -0800
-Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id 6E6D620BDF;
-        Thu, 11 Feb 2021 01:08:01 +0200 (EET)
-Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@linux.intel.com>)
-        id 1l9yaX-0007ti-3g; Thu, 11 Feb 2021 01:08:01 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     linux-i2c@vger.kernel.org
-Cc:     Wolfram Sang <wsa@the-dreams.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-Subject: [PATCH v11 7/7] at24: Support probing while in non-zero ACPI D state
-Date:   Thu, 11 Feb 2021 01:08:00 +0200
-Message-Id: <20210210230800.30291-8-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210210230800.30291-1-sakari.ailus@linux.intel.com>
-References: <20210210230800.30291-1-sakari.ailus@linux.intel.com>
+        id S232891AbhBJXQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:16:52 -0500
+Received: from smtprelay0066.hostedemail.com ([216.40.44.66]:41828 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233574AbhBJXNi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 18:13:38 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 2F19018029DA9;
+        Wed, 10 Feb 2021 23:12:43 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3867:3871:3872:4321:4362:5007:7652:7903:10004:10400:10848:11026:11232:11658:11914:12049:12296:12297:12740:12760:12895:13069:13311:13357:13439:13548:14659:14721:21080:21611:21627:30054:30060:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: cork97_4c1518427613
+X-Filterd-Recvd-Size: 2099
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 10 Feb 2021 23:12:41 +0000 (UTC)
+Message-ID: <0bd0286b12832bdbe815325f581aec3a8ae3ca2d.camel@perches.com>
+Subject: Re: [PATCH v2 1/2] pinctrl: use to octal permissions for debugfs
+ files
+From:   Joe Perches <joe@perches.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Date:   Wed, 10 Feb 2021 15:12:39 -0800
+In-Reply-To: <20210210212115.GA216435@x1>
+References: <20210210074946.155417-1-drew@beagleboard.org>
+         <20210210074946.155417-2-drew@beagleboard.org>
+         <87437daafdd86fa5c765ff9b17b6c7b097f0c317.camel@perches.com>
+         <CAHp75VeJT0dPATD-Ux+JCEYxNTigbOn_6D_F1VQkfL=vuiCBPQ@mail.gmail.com>
+         <ef9bc69ea67b70557265f117ce2a09f8019bb17d.camel@perches.com>
+         <20210210212115.GA216435@x1>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In certain use cases (where the chip is part of a camera module, and the
-camera module is wired together with a camera privacy LED), powering on
-the device during probe is undesirable. Add support for the at24 to
-execute probe while being in ACPI D state other than 0 (which means fully
-powered on).
+On Wed, 2021-02-10 at 13:21 -0800, Drew Fustini wrote:
+> I will change from the incorrect 0400 to 0444.
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
----
- drivers/misc/eeprom/at24.c | 43 +++++++++++++++++++++++---------------
- 1 file changed, 26 insertions(+), 17 deletions(-)
+Thanks.
 
-diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index 926408b41270c..427520af9961e 100644
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -595,6 +595,7 @@ static int at24_probe(struct i2c_client *client)
- 	bool i2c_fn_i2c, i2c_fn_block;
- 	unsigned int i, num_addresses;
- 	struct at24_data *at24;
-+	bool full_power;
- 	struct regmap *regmap;
- 	bool writable;
- 	u8 test_byte;
-@@ -750,14 +751,16 @@ static int at24_probe(struct i2c_client *client)
- 
- 	i2c_set_clientdata(client, at24);
- 
--	err = regulator_enable(at24->vcc_reg);
--	if (err) {
--		dev_err(dev, "Failed to enable vcc regulator\n");
--		return err;
--	}
-+	full_power = acpi_dev_state_d0(&client->dev);
-+	if (full_power) {
-+		err = regulator_enable(at24->vcc_reg);
-+		if (err) {
-+			dev_err(dev, "Failed to enable vcc regulator\n");
-+			return err;
-+		}
- 
--	/* enable runtime pm */
--	pm_runtime_set_active(dev);
-+		pm_runtime_set_active(dev);
-+	}
- 	pm_runtime_enable(dev);
- 
- 	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
-@@ -768,14 +771,17 @@ static int at24_probe(struct i2c_client *client)
- 	}
- 
- 	/*
--	 * Perform a one-byte test read to verify that the
--	 * chip is functional.
-+	 * Perform a one-byte test read to verify that the chip is functional,
-+	 * unless powering on the device is to be avoided during probe (i.e.
-+	 * it's powered off right now).
- 	 */
--	err = at24_read(at24, 0, &test_byte, 1);
--	if (err) {
--		pm_runtime_disable(dev);
--		regulator_disable(at24->vcc_reg);
--		return -ENODEV;
-+	if (full_power) {
-+		err = at24_read(at24, 0, &test_byte, 1);
-+		if (err) {
-+			pm_runtime_disable(dev);
-+			regulator_disable(at24->vcc_reg);
-+			return -ENODEV;
-+		}
- 	}
- 
- 	pm_runtime_idle(dev);
-@@ -795,9 +801,11 @@ static int at24_remove(struct i2c_client *client)
- 	struct at24_data *at24 = i2c_get_clientdata(client);
- 
- 	pm_runtime_disable(&client->dev);
--	if (!pm_runtime_status_suspended(&client->dev))
--		regulator_disable(at24->vcc_reg);
--	pm_runtime_set_suspended(&client->dev);
-+	if (acpi_dev_state_d0(&client->dev)) {
-+		if (!pm_runtime_status_suspended(&client->dev))
-+			regulator_disable(at24->vcc_reg);
-+		pm_runtime_set_suspended(&client->dev);
-+	}
- 
- 	return 0;
- }
-@@ -834,6 +842,7 @@ static struct i2c_driver at24_driver = {
- 	.probe_new = at24_probe,
- 	.remove = at24_remove,
- 	.id_table = at24_ids,
-+	.flags = I2C_DRV_ACPI_WAIVE_D0_PROBE,
- };
- 
- static int __init at24_init(void)
--- 
-2.20.1
+> As for S_IFREG, it does seem like leaving off S_IFREG is the most common
+> case when using octal permissions with debugfs_create_*():
+> 
+> $ git grep debugfs_create drivers/ |grep 0444 |grep -v S_IFREG | wc -l
+> 302
+> $ git grep debugfs_create drivers/ |grep 0444 |grep S_IFREG | wc -l
+> 9
+
+It's ~2:1 when using S_IRUGO
+
+$ git grep debugfs_create_file drivers/ | grep S_IRUGO | grep -v S_IFREG | wc -l
+109
+$ git grep debugfs_create_file drivers/ | grep S_IRUGO | grep S_IFREG | wc -l
+48
+
 
