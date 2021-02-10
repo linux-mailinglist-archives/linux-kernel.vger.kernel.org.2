@@ -2,110 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A33C3166B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4D13166C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 13:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbhBJMbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 07:31:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34672 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231855AbhBJMaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:30:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6ABD7AC43;
-        Wed, 10 Feb 2021 12:29:26 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 12:29:25 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
-Message-ID: <20210210122925.GB23499@wotan.suse.de>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-7-mrostecki@suse.de>
- <20210210042428.GC12086@qmqm.qmqm.pl>
+        id S231857AbhBJMcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 07:32:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231868AbhBJMaN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:30:13 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097DCC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:29:33 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 190so1686383wmz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 04:29:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HSBGzyNlTheaTP9Pm689kFtenx8ASuk2y6uL2Tc/WCo=;
+        b=ja8uBoCHnX3lV+218wuF4ozP9tqIM2twFANPvabPFO9wvMTYXLQfh8QD46knAfpuMN
+         EmVCvgfqXLC0BwOPAqhj24425FF98V2EcIEOFDvxhjDl/LYym/D80JGuM/astu89Q6QU
+         jQ1x6wNKProSzpJHYNZO6b5d3UDcgJ43ManuVMdqQesg6SEmz8qyfYE7gW/uUJ+VtfD2
+         SGccTg91+1RR0uB/lUsQDCp+VfhPgSN2UrxntP3WOOz1d226AyI5+uFud9KZVI/a73Qc
+         r0bYtcmwIo/L4Wxt7QZiVUe1rMqML0+AgIAEWOKw9C+hCUdzedpRdcFe9cDabgssblUf
+         5kyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HSBGzyNlTheaTP9Pm689kFtenx8ASuk2y6uL2Tc/WCo=;
+        b=ONQPZMAblrPGjq2d1MlH0Hs75xR3xCBjmDsnYEuAR2CJc7GBUlZWO1DoIN+zuzfvrx
+         LdfoAYVfxVMaEyPoziTpd7Zxg/WRTbGP7mr9FT5w482Qni95tyxjfHMreOX5zOUieVgu
+         sPNQUyf23AHmGen9H3qKEqDmTwg/qkEaQU1/2J9hpBiHAn1GjBpbcKT0t9Wu5Tj6eBzk
+         VuwVSaRQhWYKavAd+SVzEdSgURw2ZOE6EIJxDXD0ThNaRx43pi0cna3rlVE0FXsSJQtf
+         yvVKpzUt1nuqQvz8T4YMLowk8G9ARlnUXxRexEcp+jDLZj3ZP3xS64Vn3jCQDU/9Q5t7
+         o4sQ==
+X-Gm-Message-State: AOAM533OplQ72dwWLzEafOXyG6HvonVW+5VvJXAxp6xOWTUP9mVNzvlp
+        KIh/B6W7Dx+XcccA/00RicUo/Q==
+X-Google-Smtp-Source: ABdhPJy8lL+GC/UgvYW10eu0d2mdCe/coatt2HAvvEKb9SYiGAKLYi3dUtCIF2vTvX8AshBPeMzWQA==
+X-Received: by 2002:a7b:cb92:: with SMTP id m18mr2732673wmi.35.1612960171708;
+        Wed, 10 Feb 2021 04:29:31 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id m18sm11864608wmq.1.2021.02.10.04.29.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 04:29:31 -0800 (PST)
+Date:   Wed, 10 Feb 2021 12:29:29 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] MIPS: make kgdb depend on FPU support
+Message-ID: <20210210122929.rgqfkoop4rsso3yo@maple.lan>
+References: <20210122110307.934543-1-arnd@kernel.org>
+ <20210122110307.934543-2-arnd@kernel.org>
+ <alpine.DEB.2.21.2102081748280.35623@angie.orcam.me.uk>
+ <20210210113830.xeechzpctz5repv5@maple.lan>
+ <alpine.DEB.2.21.2102101252580.35623@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210210042428.GC12086@qmqm.qmqm.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <alpine.DEB.2.21.2102101252580.35623@angie.orcam.me.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 05:24:28AM +0100, Michał Mirosław wrote:
-> On Tue, Feb 09, 2021 at 09:30:40PM +0100, Michal Rostecki wrote:
-> [...]
-> > For the array with 3 HDDs, not adding any penalty resulted in 409MiB/s
-> > (429MB/s) performance. Adding the penalty value 1 resulted in a
-> > performance drop to 404MiB/s (424MB/s). Increasing the value towards 10
-> > was making the performance even worse.
+On Wed, Feb 10, 2021 at 01:11:28PM +0100, Maciej W. Rozycki wrote:
+> On Wed, 10 Feb 2021, Daniel Thompson wrote:
+> 
+> > >  Wrapping the relevant parts of this file into #ifdef MIPS_FP_SUPPORT 
+> > > would be as easy though and would qualify as a proper fix given that we 
+> > > have no XML description support for the MIPS target (so we need to supply 
+> > > the inexistent registers in the protocol; or maybe we can return NULL in 
+> > > `dbg_get_reg' to get them padded out in the RSP packet, I haven't checked 
+> > > if generic KGDB code supports this feature).
 > > 
-> > For the array with 2 HDDs and 1 SSD, adding penalty value 1 to
-> > rotational disks resulted in the best performance - 541MiB/s (567MB/s).
-> > Not adding any value and increasing the value was making the performance
-> > worse.
+> > Returning NULL should be fine.
 > > 
-> > Adding penalty value to non-rotational disks was always decreasing the
-> > performance, which motivated setting it as 0 by default. For the purpose
-> > of testing, it's still configurable.
-> [...]
-> > +	bdev = map->stripes[mirror_index].dev->bdev;
-> > +	inflight = mirror_load(fs_info, map, mirror_index, stripe_offset,
-> > +			       stripe_nr);
-> > +	queue_depth = blk_queue_depth(bdev->bd_disk->queue);
-> > +
-> > +	return inflight < queue_depth;
-> [...]
-> > +	last_mirror = this_cpu_read(*fs_info->last_mirror);
-> [...]
-> > +	for (i = last_mirror; i < first + num_stripes; i++) {
-> > +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
-> > +					    stripe_nr)) {
-> > +			preferred_mirror = i;
-> > +			goto out;
-> > +		}
-> > +	}
-> > +
-> > +	for (i = first; i < last_mirror; i++) {
-> > +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
-> > +					    stripe_nr)) {
-> > +			preferred_mirror = i;
-> > +			goto out;
-> > +		}
-> > +	}
-> > +
-> > +	preferred_mirror = last_mirror;
-> > +
-> > +out:
-> > +	this_cpu_write(*fs_info->last_mirror, preferred_mirror);
+> > The generic code will cope OK. The values in the f.p. registers may
+> > act a little odd if gdb uses a 'G' packet to set them to non-zero values
+> > (since kgdb will cache the values gdb sent it) but the developer
+> > operating the debugger will probably figure out what is going on without
+> > too much pain.
 > 
-> This looks like it effectively decreases queue depth for non-last
-> device. After all devices are filled to queue_depth-penalty, only
-> a single mirror will be selected for next reads (until a read on
-> some other one completes).
+>  Ack, thanks!
 > 
+>  NB if GDB sees a register padded out (FAOD it means all-x's rather than a 
+> hex string placed throughout the respective slot) in a `g' packet, then it 
+> will mark the register internally as "unavailable" and present it to the 
+> receiver of the information as such rather than giving any specific value.  
+> I don't remember offhand what the syntax for the `G' packet is in that 
+> case; possibly GDB just sends all-zeros, and in any case you can't make 
+> GDB write any specific value to such a register via any user
+> interface.
 
-Good point. And if all devices are going to be filled for longer time,
-this function will keep selecting the last one. Maybe I should select
-last+1 in that case. Would that address your concern or did you have any
-other solution in mind?
+kgdb doesn't track register validity and adding would be a fairly big
+change. Everything internally (including some of the interactions with
+arch code) is based on updating a binary shadow of register state which
+is only bin2hex'ed just before transmitting a packet.
 
-Thanks for pointing that out.
+It will simply default them to zero and update them on a 'G' packet.
 
-> Have you tried testing with much more jobs / non-sequential accesses?
-> 
+>  The way the unavailability is shown depends on the interface used, i.e. 
+> it will be different between the `info all-registers'/`info register $reg' 
+> commands, and the `p $reg' command (or any expression involving `$reg'), 
+> and the MI interface.  But in any case it will be unambiguous.
 
-I didn't try with non-sequential accesses. Will do that before
-respinning v2.
+I guess this probably does create a technical protocol violation since
+kgdb will reject per-register read/write for register that its report
+says are zero rather then invalid.
 
-> Best Reagrds,
-> Michał Mirosław
 
-Regards,
-Michal
+Daniel.
