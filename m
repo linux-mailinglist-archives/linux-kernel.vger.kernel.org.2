@@ -2,76 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75197316C7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4CE316C80
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbhBJRW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:22:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43712 "EHLO mail.kernel.org"
+        id S232484AbhBJRXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:23:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232312AbhBJRWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:22:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5C2A64EBC;
-        Wed, 10 Feb 2021 17:21:53 +0000 (UTC)
+        id S232439AbhBJRWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 12:22:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D92164E7E;
+        Wed, 10 Feb 2021 17:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612977716;
-        bh=lxipoW35mWSIBNIGbM7Z2K+aGwYJwr9dKY4OANlak7k=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GGr4C1jJH4Zp9a/mEIU72UybzoYaT9/TIZxXNQmm5bAT/zvaeeSglDED9fUewnpO7
-         BrYrmiMW+g9SlVPVQksfYgQAbIVF0MTKkmMfi6NjxV87X1h2j8kZIMaBemRGPmn7+4
-         ZC1DyPS/e74GCSezb1hpd4YqPlSuerNNkhZdoLgis7oXUugfa5Lp86K7MOaToF8nkY
-         Euzi9bVksgdHYqKG+3cp+jI3MXdlyDiTu6Or/oIdGHWPIOg5OUhFyWq1Z574CStmXU
-         /Sq0uns4Ac01xgy0nc3+py4R0tedjVGEpLlH/raD2rf/eJctQlOCrCNFZzIHi93eN+
-         0gsZ67yEPIsbw==
-Subject: Re: [PATCH 0/3][RESEND] add support for never printing hashed
- addresses
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210210051814.845713-1-timur@kernel.org>
- <6da0be5a-7cb0-4943-e61f-7c3275e60cb6@i-love.sakura.ne.jp>
- <20210210111836.2468f10a@gandalf.local.home>
- <e996ff2f-d350-1399-bb6b-8373bf70e687@i-love.sakura.ne.jp>
- <20210210114633.1b755f6e@gandalf.local.home>
-From:   Timur Tabi <timur@kernel.org>
-Message-ID: <bfb425fb-0254-c1e3-62b3-d55a7cbb46ae@kernel.org>
-Date:   Wed, 10 Feb 2021 11:21:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        s=k20201202; t=1612977734;
+        bh=yw2XyAm2K8/xWuBIJ2NtL5vuJXnjpYH9iI0vb12aEP4=;
+        h=From:To:Subject:Date:From;
+        b=hahi1dY52NsLU0n4Hwlf18PcYZpDjPLLMrrccA24xF46GL6/cG5f8D3Q7r3sBhMzG
+         JiGfIYyJrd9fm5zUAWrninlaPHKGsLVBkArpKHK4bN6StulOlNEkFP+eh1hosda7Ug
+         f7bJ0Ca6vLQMfCLaUK8yurDuNLkP36uFW8YGjoLlKA66wEWFGaaAmf58uRvO14qmnj
+         3LKfoUHuGApByQTpUNRYz4H8A4eigI6lNI77YlD6Pz4SkgJDYgzsOy9fzKzjjUyKxS
+         +LfYVzEBtletd1SlMKC3Mm/EplKZzBDFkyeKKgIHMtJDtDsAPeJuTsQ8mB+M1nIaAe
+         nYhg3Uw0z6gDw==
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: cpuidle: exynos: include header in file pattern
+Date:   Wed, 10 Feb 2021 18:22:08 +0100
+Message-Id: <20210210172208.335048-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210210114633.1b755f6e@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Inclue the platform data header in Exynos cpuidle maintainer entry.
 
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 2/10/21 10:46 AM, Steven Rostedt wrote:
-> Now the question is, why do you need the unhashed pointer?
-> 
-> Currently, the instruction pointer is what is fine right? You get the
-> a function and its offset. If there's something that is needed, perhaps we
-> should look at how to fix that, instead of just unhashing all pointers by
-> default.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 674f42375acf..68e2b4cb4788 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4625,6 +4625,7 @@ L:	linux-samsung-soc@vger.kernel.org
+ S:	Supported
+ F:	arch/arm/mach-exynos/pm.c
+ F:	drivers/cpuidle/cpuidle-exynos.c
++F:	include/linux/platform_data/cpuidle-exynos.h
+ 
+ CPUIDLE DRIVER - ARM PSCI
+ M:	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+-- 
+2.25.1
 
-The original version of this patch only fixed print_hex_dump(), because 
-hashed addresses didn't make any sense for that.  Each address is 
-incremented by 16 or 32, but since they were all hashed, they may as 
-well have been random numbers.
