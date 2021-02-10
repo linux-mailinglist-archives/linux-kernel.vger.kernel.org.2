@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D5331739D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 444A931739E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhBJWqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:46:09 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:33590 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbhBJWqG (ORCPT
+        id S233557AbhBJWqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:46:44 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:33643 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhBJWql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:46:06 -0500
-Received: by mail-ot1-f47.google.com with SMTP id c16so3467129otp.0;
-        Wed, 10 Feb 2021 14:45:50 -0800 (PST)
+        Wed, 10 Feb 2021 17:46:41 -0500
+Received: by mail-ot1-f51.google.com with SMTP id c16so3468464otp.0;
+        Wed, 10 Feb 2021 14:46:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=cLfp4vSswyuWmvez+k7dSjR25plYWYjX5QWVBX7NjG0=;
-        b=hpIZBSaOTeFMvvt8FfT4VwNpasUx/8qyft1VOKxbnqBzR2BKyCCl2bnqPX3gYx5HPj
-         6KYrSjQ9mrd242LvQgDETUroDFMYHxvoeKHTQQGBolM3medkBtB0Ge14ds7kgQlQtzEw
-         kX8HwcBjbkXOn4vJEZhCGDx88l6IuoCCiFDUJNh4Ft6jVS2GFJYi4FPZsI4elI5R1+ap
-         8RMdyo9z8cUQ37Yt7+khXS0mBeb+lfqits9+UCdrwPSVCdwVN93NcUNaDAtMFEWuSTpn
-         pV1l50gvugqWOQTC/SvHx7rMXX8octCCzYtxulrNtlt4Z+MkUQUcLclrAxXVxMdyHhlt
-         SgnQ==
-X-Gm-Message-State: AOAM532CrUiodxZdlH7hyoMLryuVverOv2nYNrqMlANpMD9VgYQWG5n7
-        kTxa1C7BLiCqhAwUYjZlLQ9Qi48lfw==
-X-Google-Smtp-Source: ABdhPJxgIfhR/NHTUmAdgkuSkx+W5xseE3vW+L+ZM5omynBqOahP2u1Uzh0xHceLAWdzYthtb94llA==
-X-Received: by 2002:a9d:5f05:: with SMTP id f5mr3725087oti.234.1612997125173;
-        Wed, 10 Feb 2021 14:45:25 -0800 (PST)
+        bh=rt+gwj5IL0E6ocrhypHF62IUtRKF/oja1ySIwkJmpx0=;
+        b=uFHBkWTYnZDzWdJX4uIu8cxFDRuvSAVbQEFzBI4bfe7YlThAtIQiuXkNo9qyVE0iFp
+         RokikZu+iqRGn5Gxd3+BRjmgeyrLOFyFQg3cU4Ghxi9gFFQsvsBO41+QXmS7UEWmrJMB
+         47tbntk5m/qasEBUL+mEiR8G1OQR9roKm9gEViRszxoFHQhRuFKpooybx/p2pRGzV0oV
+         UOZ7M8ipbpF32cQteAzzj7++Q6az7tdnWBmOK1z+TiUtTP56NL+ygFYbTpxo0vhW2vkQ
+         Qg3UZG7ZKLAQCPU3u+ygmh5ScucXYE1yhWABjuP5BwBOOVdZNnxbAyK7vrpd8yBTfWKG
+         dSKA==
+X-Gm-Message-State: AOAM531mt9g9AoBY7ZmwMMpBuCCXX0wSw/L9vsK1NshAiBX+0WlszlW6
+        j4n3zHHWoqvZKCy0ROAkHQ==
+X-Google-Smtp-Source: ABdhPJwtpPcGW6T86iIO2MMcIJ1Zb0FpZxrT3asYjxFDY4ULaEzsendz5b5H6D4IorEe/V5Emt2KgQ==
+X-Received: by 2002:a9d:4e2:: with SMTP id 89mr3838108otm.140.1612997160165;
+        Wed, 10 Feb 2021 14:46:00 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 203sm763260oie.14.2021.02.10.14.45.23
+        by smtp.gmail.com with ESMTPSA id k23sm754137oik.4.2021.02.10.14.45.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 14:45:24 -0800 (PST)
-Received: (nullmailer pid 2951847 invoked by uid 1000);
-        Wed, 10 Feb 2021 22:45:23 -0000
-Date:   Wed, 10 Feb 2021 16:45:23 -0600
+        Wed, 10 Feb 2021 14:45:59 -0800 (PST)
+Received: (nullmailer pid 2953009 invoked by uid 1000);
+        Wed, 10 Feb 2021 22:45:58 -0000
+Date:   Wed, 10 Feb 2021 16:45:58 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: mailbox: omap: Update binding for
- AM64x SoCs
-Message-ID: <20210210224523.GA2951762@robh.at.kernel.org>
-References: <20210209193643.24824-1-s-anna@ti.com>
- <20210209193643.24824-2-s-anna@ti.com>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        monstr@monstr.eu, git@xilinx.com, devicetree@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] dt-bindings: spi: zynq: Convert Zynq QSPI binding to
+ yaml
+Message-ID: <20210210224558.GA2952953@robh.at.kernel.org>
+References: <4ece21a7e9691ed1e775fd6b0b4046b1562e44bd.1612951821.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209193643.24824-2-s-anna@ti.com>
+In-Reply-To: <4ece21a7e9691ed1e775fd6b0b4046b1562e44bd.1612951821.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 09 Feb 2021 13:36:42 -0600, Suman Anna wrote:
-> Update the existing OMAP Mailbox binding to include the info for
-> AM64x SoCs. There are some minor IP integration differences between
-> the AM64x SoCs and the previous AM65x and J721E SoC families.
+On Wed, 10 Feb 2021 11:10:25 +0100, Michal Simek wrote:
+> Convert spi-zynq-qspi.txt to yaml.
 > 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 > ---
-> v2: Remove AM64x example as per Rob's comments
-> v1: https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210127195600.23501-2-s-anna@ti.com/
 > 
->  Documentation/devicetree/bindings/mailbox/omap-mailbox.txt | 4 ++++
->  1 file changed, 4 insertions(+)
+> Changes in v2:
+> - s/additionalProperties: true/unevaluatedProperties: false/
+> 
+>  .../devicetree/bindings/spi/spi-zynq-qspi.txt | 25 --------
+>  .../bindings/spi/xlnx,zynq-qspi.yaml          | 59 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  3 files changed, 60 insertions(+), 25 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/xlnx,zynq-qspi.yaml
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
