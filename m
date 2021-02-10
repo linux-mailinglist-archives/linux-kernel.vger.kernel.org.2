@@ -2,121 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37464316C5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4157316C60
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 18:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhBJRQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 12:16:38 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:61373 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232554AbhBJRPI (ORCPT
+        id S232626AbhBJRRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 12:17:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54252 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232249AbhBJRQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 12:15:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612977287; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=cILPgz4XyqjUlXxwQuFYrgD9NT4tC0MMCHE1fPTd+sc=; b=YyGCfAXYBIofALWu122S419VbZ4DujQ8e9XImEXmnVjyHeCnEhrMYai/8kzIXmqpnae2dKwb
- OQWB6AXntzvv76korDN8G0KY2Bpi1FTht+vW2LGxEfpq96NEi0oBNfrEfL42kxQlIKWawFpE
- BvHfuzLvvfG52LT517tt8ew6DPE=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6024146b81f6c45dcefd5ee3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 10 Feb 2021 17:14:18
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 43640C43461; Wed, 10 Feb 2021 17:14:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82FD6C43462;
-        Wed, 10 Feb 2021 17:14:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 82FD6C43462
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v1 2/2] clk: qcom: rpmh: Add support for RPMH clocks on SC7280
-Date:   Wed, 10 Feb 2021 22:43:50 +0530
-Message-Id: <1612977230-11566-3-git-send-email-tdas@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612977230-11566-1-git-send-email-tdas@codeaurora.org>
-References: <1612977230-11566-1-git-send-email-tdas@codeaurora.org>
+        Wed, 10 Feb 2021 12:16:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612977291;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pnXK/IR7kwRHioWi4n+z2d1LBLzC5VDv46lVgWiUcLw=;
+        b=Mkk8Wppyt/l3RtjZFlfPIcoh8E+/hu6EIJMJnSxKfK6QhKwCrSuL7beedPykVhnxR17UvJ
+        lW4ghwTesdXdi2aC42bv8MHjGfZ75JHNz+kSwFlzV5XebyAoZ6fSMjad72I5+YutEoe//K
+        gcssSHyzrcLrusOnMECxVfULNU+nkdY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-IgicaziiOjiPdps8Nj9-fQ-1; Wed, 10 Feb 2021 12:14:49 -0500
+X-MC-Unique: IgicaziiOjiPdps8Nj9-fQ-1
+Received: by mail-wm1-f69.google.com with SMTP id u138so1213577wmu.8
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 09:14:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pnXK/IR7kwRHioWi4n+z2d1LBLzC5VDv46lVgWiUcLw=;
+        b=B8Shzoz4jFIvjU34mI+IlB48jIs3hodSS1apeqSK6apjWNom/OKxle0eZ/EoaTy7MS
+         O49d8uhNlPfOi9tP9oLI7q9cyndPcuJtLl8qU0bnOt9BukqDjKvvIKURjSwQWg6ozRYm
+         wsskRX9tAp0HOac7BaEVQzG8w/1mB2RyYJuSlzDennht+VJ/hXx9SUN5In6g4r946WtQ
+         NWI2aAXLXelItVqOqg+HrGMta1boQRo+bCasACPc7DANeS8e5mfQ1bIDyIpPTGMloohr
+         POfm6p8xZEI9v2BUENlqIbVGLviLbhwCplr6zBm/5YPC5rF7SEZdJ4QZD2l0SwrQnhiR
+         7iSg==
+X-Gm-Message-State: AOAM531xolvFHcJpFj/ghu9vu2tQFqYN0bE/YQ25rAOINWef4fBER/mh
+        dNxvuUisKbeYH7WTOdUyxT4Oujl5x6k+pTENVi5NtDV8rw12AO22ABgph5a+yVlTpkkZIMgJ4oV
+        lnx6BMLBIOEEkoWOb3tV9joq5
+X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr4764947wri.373.1612977288615;
+        Wed, 10 Feb 2021 09:14:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrpfJC7m73xLVSUOZX8qz5cgWYm6hrGbObJc78i3V++vWyATGZZhotcOFwqDWQAzyVJRcu1g==
+X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr4764930wri.373.1612977288448;
+        Wed, 10 Feb 2021 09:14:48 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id l83sm3440826wmf.4.2021.02.10.09.14.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 09:14:47 -0800 (PST)
+Subject: Re: [PATCH v3] KVM: x86/MMU: Do not check unsync status for root SP.
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>, seanjc@google.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org
+References: <20210209170111.4770-1-yu.c.zhang@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <aa265bd9-851e-1823-8807-df50cd9820ab@redhat.com>
+Date:   Wed, 10 Feb 2021 18:14:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210209170111.4770-1-yu.c.zhang@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for RPMH clocks on SC7280 SoCs.
+On 09/02/21 18:01, Yu Zhang wrote:
+> In shadow page table, only leaf SPs may be marked as unsync;
+> instead, for non-leaf SPs, we store the number of unsynced
+> children in unsync_children. Therefore, in kvm_mmu_sync_root(),
+> sp->unsync shall always be zero for the root SP and there is
+> no need to check it. Remove the check, and add a warning
+> inside mmu_sync_children() to assert that the flags are used
+> properly.
+> 
+> While at it, move the warning from mmu_need_write_protect()
+> to kvm_unsync_page().
+> 
+> Co-developed-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> ---
+>   arch/x86/kvm/mmu/mmu.c | 12 +++++++++---
+>   1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 86af58294272..5f482af125b4 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -1995,6 +1995,12 @@ static void mmu_sync_children(struct kvm_vcpu *vcpu,
+>   	LIST_HEAD(invalid_list);
+>   	bool flush = false;
+>   
+> +	/*
+> +	 * Only 4k SPTEs can directly be made unsync, the parent pages
+> +	 * should never be unsyc'd.
+> +	 */
+> +	WARN_ON_ONCE(parent->unsync);
+> +
+>   	while (mmu_unsync_walk(parent, &pages)) {
+>   		bool protected = false;
+>   
+> @@ -2502,6 +2508,8 @@ EXPORT_SYMBOL_GPL(kvm_mmu_unprotect_page);
+>   
+>   static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+>   {
+> +	WARN_ON(sp->role.level != PG_LEVEL_4K);
+> +
+>   	trace_kvm_mmu_unsync_page(sp);
+>   	++vcpu->kvm->stat.mmu_unsync;
+>   	sp->unsync = 1;
+> @@ -2524,7 +2532,6 @@ bool mmu_need_write_protect(struct kvm_vcpu *vcpu, gfn_t gfn,
+>   		if (sp->unsync)
+>   			continue;
+>   
+> -		WARN_ON(sp->role.level != PG_LEVEL_4K);
+>   		kvm_unsync_page(vcpu, sp);
+>   	}
+>   
+> @@ -3406,8 +3413,7 @@ void kvm_mmu_sync_roots(struct kvm_vcpu *vcpu)
+>   		 * mmu_need_write_protect() describe what could go wrong if this
+>   		 * requirement isn't satisfied.
+>   		 */
+> -		if (!smp_load_acquire(&sp->unsync) &&
+> -		    !smp_load_acquire(&sp->unsync_children))
+> +		if (!smp_load_acquire(&sp->unsync_children))
+>   			return;
+>   
+>   		write_lock(&vcpu->kvm->mmu_lock);
+> 
 
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
----
- drivers/clk/qcom/clk-rpmh.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+Queued, thanks.
 
-diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
-index 6a2a13c..c180959 100644
---- a/drivers/clk/qcom/clk-rpmh.c
-+++ b/drivers/clk/qcom/clk-rpmh.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2018-2021, The Linux Foundation. All rights reserved.
-  */
-
- #include <linux/clk-provider.h>
-@@ -486,6 +486,27 @@ static const struct clk_rpmh_desc clk_rpmh_sm8350 = {
- 	.num_clks = ARRAY_SIZE(sm8350_rpmh_clocks),
- };
-
-+static struct clk_hw *sc7280_rpmh_clocks[] = {
-+	[RPMH_CXO_CLK]      = &sdm845_bi_tcxo.hw,
-+	[RPMH_CXO_CLK_A]    = &sdm845_bi_tcxo_ao.hw,
-+	[RPMH_LN_BB_CLK2]   = &sdm845_ln_bb_clk2.hw,
-+	[RPMH_LN_BB_CLK2_A] = &sdm845_ln_bb_clk2_ao.hw,
-+	[RPMH_RF_CLK1]      = &sdm845_rf_clk1.hw,
-+	[RPMH_RF_CLK1_A]    = &sdm845_rf_clk1_ao.hw,
-+	[RPMH_RF_CLK3]      = &sdm845_rf_clk3.hw,
-+	[RPMH_RF_CLK3_A]    = &sdm845_rf_clk3_ao.hw,
-+	[RPMH_RF_CLK4]      = &sm8350_rf_clk4.hw,
-+	[RPMH_RF_CLK4_A]    = &sm8350_rf_clk4_ao.hw,
-+	[RPMH_IPA_CLK]      = &sdm845_ipa.hw,
-+	[RPMH_PKA_CLK]      = &sm8350_pka.hw,
-+	[RPMH_HWKM_CLK]     = &sm8350_hwkm.hw,
-+};
-+
-+static const struct clk_rpmh_desc clk_rpmh_sc7280 = {
-+	.clks = sc7280_rpmh_clocks,
-+	.num_clks = ARRAY_SIZE(sc7280_rpmh_clocks),
-+};
-+
- static struct clk_hw *of_clk_rpmh_hw_get(struct of_phandle_args *clkspec,
- 					 void *data)
- {
-@@ -575,6 +596,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
- 	{ .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
- 	{ .compatible = "qcom,sm8250-rpmh-clk", .data = &clk_rpmh_sm8250},
- 	{ .compatible = "qcom,sm8350-rpmh-clk", .data = &clk_rpmh_sm8350},
-+	{ .compatible = "qcom,sc7280-rpmh-clk", .data = &clk_rpmh_sc7280},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, clk_rpmh_match_table);
---
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
+Paolo
 
