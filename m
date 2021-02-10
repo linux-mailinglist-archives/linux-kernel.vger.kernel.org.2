@@ -2,89 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F3E3173CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7153173D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 00:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhBJW6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:58:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233741AbhBJW6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:58:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D51F764EBB;
-        Wed, 10 Feb 2021 22:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612997842;
-        bh=UJfsvvn0ix5B2B8amG6o871cR0JpZNABhACiEZxCNac=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ufNE5DNDh1Nz18RJZvqyxD8pqzzCI4sLMwzCHcu7bd4gyZbGlSGs7hl1FGfbrLhCN
-         TTtlr0jUuqQoiHt2McjjzMx9UD+zdntHOEkwpDeHXgekdkKtEvrplPYebrNktNFrO7
-         t38XpKrUzE8xhGYENhtb7ByvdhqLzdpDCNSITuMfFrrquD3m8HIDOete+TTEXnKJpM
-         dLHzgQU5A4fpLVbxuoAmhTVJmSKpxq1Z5plbKZ60beAO4OW2i8GANro1lLM4530d48
-         xS1oTmKteX6WCMoBJSzTGGLuulB1ZYX+EISCVqdt6hzTMR6U9t7cDoll9in8HTKmVL
-         MJ+jlPlu0NbQQ==
-Date:   Wed, 10 Feb 2021 16:57:20 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] media: venus: hfi_cmds.h: Replace one-element array
- with flexible-array member
-Message-ID: <20210210225720.GA13710@embeddedor>
+        id S233490AbhBJXAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 18:00:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231897AbhBJXAZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 18:00:25 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCF0C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:59:45 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id f23so5370445lfk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 14:59:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xrTlzAySlcJTUXRnlEJkf0lrI9Iuz7zvICLmzyym/xM=;
+        b=eMT+HrSpUk67s7D9Fb/wYqRRhLhygRRnmrKjid5+dGjRRdcWnl+Coe1Hmivi013BcD
+         vM7qrpbntHPGYw3ZR2mT73sG3gTPW+Ae1qRtuLiiI+dqqOKuimFiDxcTK8abjY31E3rf
+         Fmq+1ScDwhhI6jHG7o9mVfPDf1sBmPRQsQLW79d/E3O3s4IGItRepiKnHYMt1D30bRmR
+         MM+t2zmasxETxauJwuE6V8yQF8vBKu/UNkNA0RFX4nCUyjeyCijXg0fMI7T9wwjnhnNQ
+         0u4Vr+WykIzPW6B+1Kw9DctVhRNP42iVTrRSwiizbnXzW/vUetxSQ8bVn1+17zIlc7Ni
+         ft3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xrTlzAySlcJTUXRnlEJkf0lrI9Iuz7zvICLmzyym/xM=;
+        b=G2BFE7Sn0OQ1umrhXxnu/xbSz7LmjhBr+9woyvXUm4lcNRwJRYZDgZM18WkY1gy2Md
+         i/3PLVJuDrxS7N1hFQjdzU7gYLsiXarlSSEr3Kou/gnwc8rSMnuE34EgwVdUC5ku69RH
+         cYuAxljPXO4jvRFMJfWPtHCdB/IaGk3PKqDD/ft/Jp6QxAyuj0OpH+ngic5zg9XeqsuW
+         iNUaPtOPbj7g7Id3AFt2fNzcDphjTxJJA6QI+PP9gCdTEm5++c4gvjDrG+h1CjdUbp2U
+         OaehlUsGIQdfyilWv8ypW6mmEv2dJbK+tNiJ0rHX6FwYFI4mPVXiIN8n2rJsKH7qZ2kW
+         iyxA==
+X-Gm-Message-State: AOAM533DyIh7EhpwdurWg7z196wrLBA62Sq+dBqFQvKWF8cGVPl6hxVd
+        Lu91Tft7Q86BNE9zHKGRpmPW0Ir9ATgSh9qucybWpQ==
+X-Google-Smtp-Source: ABdhPJw6wefq5+DqM++nrhDWfNPnH6l/1z2hdn+8UkJNXwUTzgKLrXbPfqsQWUSSzXJb8EYLGptouvYaVvCRqnVy9jc=
+X-Received: by 2002:a19:4cc2:: with SMTP id z185mr2657923lfa.83.1612997983406;
+ Wed, 10 Feb 2021 14:59:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20210209214543.112655-1-hannes@cmpxchg.org> <alpine.LSU.2.11.2102092058290.7553@eggly.anvils>
+ <alpine.LSU.2.11.2102100813050.8131@eggly.anvils> <YCQbYAWg4nvBFL6h@cmpxchg.org>
+In-Reply-To: <YCQbYAWg4nvBFL6h@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 10 Feb 2021 14:59:32 -0800
+Message-ID: <CALvZod6vgYcpgskf7NaRagH999L6VkfnVtD1UDb+JhQceCuUEA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: page-writeback: simplify memcg handling in test_clear_page_writeback()
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Arjun Roy <arjunroy@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+On Wed, Feb 10, 2021 at 9:44 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Wed, Feb 10, 2021 at 08:22:00AM -0800, Hugh Dickins wrote:
+> > On Tue, 9 Feb 2021, Hugh Dickins wrote:
+> > > On Tue, 9 Feb 2021, Johannes Weiner wrote:
+> > >
+> > > > Page writeback doesn't hold a page reference, which allows truncate to
+> > > > free a page the second PageWriteback is cleared. This used to require
+> > > > special attention in test_clear_page_writeback(), where we had to be
+> > > > careful not to rely on the unstable page->memcg binding and look up
+> > > > all the necessary information before clearing the writeback flag.
+> > > >
+> > > > Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
+> > > > BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
+> > > > explicit reference on the page, and this dance is no longer needed.
+> > > >
+> > > > Use unlock_page_memcg() and dec_lruvec_page_stat() directly.
+> > >
+> > > s/stat()/state()/
+> > >
+> > > This is a nice cleanup: I hadn't seen that connection at all.
+> > >
+> > > But I think you should take it further:
+> > > __unlock_page_memcg() can then be static in mm/memcontrol.c,
+> > > and its declarations deleted from include/linux/memcontrol.h?
+> >
+> > And further: void lock_page_memcg(page), not returning memcg.
+>
+> You're right on all counts!
+>
+> > > And further: delete __dec_lruvec_state() and dec_lruvec_state()
+> > > from include/linux/vmstat.h - unless you feel that every "inc"
+> > > ought to be matched by a "dec", even when unused.
+>
+> Hey look, there isn't a user for the __inc, either :) There is one for
+> inc, but I don't insist on having symmetry there.
+>
+> > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > >
+> > > Acked-by: Hugh Dickins <hughd@google.com>
+>
+> Thanks for the review and good feedback.
+>
+> How about this v2?
+>
+> ---
+>
+> From 5bcc0f468460aa2670c40318bb657e8b08ef96d5 Mon Sep 17 00:00:00 2001
+> From: Johannes Weiner <hannes@cmpxchg.org>
+> Date: Tue, 9 Feb 2021 16:22:42 -0500
+> Subject: [PATCH] mm: page-writeback: simplify memcg handling in
+>  test_clear_page_writeback()
+>
+> Page writeback doesn't hold a page reference, which allows truncate to
+> free a page the second PageWriteback is cleared. This used to require
+> special attention in test_clear_page_writeback(), where we had to be
+> careful not to rely on the unstable page->memcg binding and look up
+> all the necessary information before clearing the writeback flag.
+>
+> Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
+> BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
+> explicit reference on the page, and this dance is no longer needed.
+>
+> Use unlock_page_memcg() and dec_lruvec_page_state() directly.
+>
+> This removes the last user of the lock_page_memcg() return value,
+> change it to void. Touch up the comments in there as well. This also
+> removes the last extern user of __unlock_page_memcg(), make it
+> static. Further, it removes the last user of dec_lruvec_state(),
+> delete it, along with a few other unused helpers.
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-Use flexible-array member in struct hfi_sys_set_property_pkt instead of
-one-element array.
-
-Also, this helps with the ongoing efforts to enable -Warray-bounds and
-fix the following warnings:
-
-drivers/media/platform/qcom/venus/hfi_cmds.c: In function ‘pkt_sys_coverage_config’:
-drivers/media/platform/qcom/venus/hfi_cmds.c:57:11: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
-   57 |  pkt->data[1] = mode;
-      |  ~~~~~~~~~^~~
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
-
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/109
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/602416da.iZqae7Dbk7nyl6OY%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/media/platform/qcom/venus/hfi_cmds.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.h b/drivers/media/platform/qcom/venus/hfi_cmds.h
-index 83705e237f1c..327ed90a2788 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.h
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.h
-@@ -68,7 +68,7 @@ struct hfi_sys_release_resource_pkt {
- struct hfi_sys_set_property_pkt {
- 	struct hfi_pkt_hdr hdr;
- 	u32 num_properties;
--	u32 data[1];
-+	u32 data[];
- };
- 
- struct hfi_sys_get_property_pkt {
--- 
-2.27.0
-
+The patch looks fine. I don't want to spoil the fun but just wanted to
+call out that I might bring back __unlock_page_memcg() for the memcg
+accounting of zero copy TCP memory work where we are uncharging the
+page in page_remove_rmap().
