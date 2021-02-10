@@ -2,277 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DEA315CAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7407D315CAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 02:58:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbhBJB46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 9 Feb 2021 20:56:58 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:41120 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234654AbhBJASB (ORCPT
+        id S235137AbhBJB5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 9 Feb 2021 20:57:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234488AbhBJATy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 9 Feb 2021 19:18:01 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11A0DFBU017992;
-        Tue, 9 Feb 2021 16:17:02 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Ac/X6sx6YpO2flbD5bHigjnmtiFMvzKNzutGYuUdnrc=;
- b=qKDdbZmST9lI8AL1QmigoCFdhL4pPGAHMcZmX+ebF7RacVEFeAafgrwURPDZhtRt2QQ6
- TPkZwRT3pvSHKEoLROXXOqZdCwwgZ+f8jkbK+npNWOOoS+3pafrSr8GN0V1kLYxpidF9
- VXP4VeoJwl3QRldUw6OAiZzn9346dwi2HUQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36hstph621-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 09 Feb 2021 16:17:01 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Feb 2021 16:16:59 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A6QlmrK9P6wvaYdEr+QoiGV60N4fEYrGZIfWcrb+KBExzNit8TAACBaLYzmflB0ky7F+B8DZfUrAtxIr1vPayjo7JvVjDVi0bQCanOxO+5qGomC5rjnvxK+LJ7/A1IR36cipvjjVMnn/djIutYOX2gAXZJPneiAmSZn4dpZNQOQiYdbSBJQfQamgJBW0bS/kSIPZR8DBZhgqtnnOrdz3iESp74f1x+6vg4V9Q/kIQaXWGhaGEDcgDp8Gdow/f2/Mxpc0vvJLHmS4/pf7kQCGGEg/JXBtYEm6z98HXgaosgJ1JsOfaE45k9wf0PA42tYt25+YaIen9syM3ZVqok4S0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ac/X6sx6YpO2flbD5bHigjnmtiFMvzKNzutGYuUdnrc=;
- b=W7VxcrxuTqOSQPmy1pUtL68CmXM+J4ZTVX8xflKv21xE6t0ELY4R0W+Pb0+e8bjybwb3lVXReLuZ2ooO1oTuR4Xxz8BxPp32S4oQZTGrLCxKqPzFWTuostik7ihW/DPaDDFZaezXc/b+N6eLOlmQsY91TVH+/LbwbSQSLUh03x98pPUhpaGc6ydnvjbKqOSMYhnSALaYFRCtavO2IDzuFTFBOlyfmwyt5OibdXHSU0lMW+/wdA3K6uF8JGIbghZcgqYdiAmfDTo4DlJxMrlmd9dDCnAuGLydr1m0KQWDC22iwkQcP6it79iVOpNWnivwzE+dGJgkR+Ewrioqtnn7Hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ac/X6sx6YpO2flbD5bHigjnmtiFMvzKNzutGYuUdnrc=;
- b=EpFcjFIUyCfA3HoQwuFDoE0BMh/ERGaEQywGqAt3zYi8oug0c04B0Dg4OSw+mkwYIoiQD+hwYB8xk+mjOaCryzEaLRhLxiGy+N4QYldCvpe83plhX+CQwMLkt+BIivkMsqyQoq3YXbi/9eND09qj8FFvvteSu9AlHNx5J+QsgVQ=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3285.namprd15.prod.outlook.com (2603:10b6:a03:103::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.27; Wed, 10 Feb
- 2021 00:16:52 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3825.030; Wed, 10 Feb 2021
- 00:16:52 +0000
-Date:   Tue, 9 Feb 2021 16:16:26 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Yang Shi <shy828301@gmail.com>
-CC:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v7 PATCH 05/12] mm: memcontrol: rename shrinker_map to
- shrinker_info
-Message-ID: <20210210001626.GI524633@carbon.DHCP.thefacebook.com>
-References: <20210209174646.1310591-1-shy828301@gmail.com>
- <20210209174646.1310591-6-shy828301@gmail.com>
- <20210209205014.GH524633@carbon.DHCP.thefacebook.com>
- <CAHbLzkr+5t5wTVRDih53ty-TcsMrmKxZ5iiPw1dwnDsz_URz=Q@mail.gmail.com>
+        Tue, 9 Feb 2021 19:19:54 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237CAC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  9 Feb 2021 16:19:06 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id cl8so130954pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 16:19:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eOvtNvvamWzk5fAMM5400wmusjPMpLNo7AkVdvkZoUA=;
+        b=c6LSFgjOV8WCPm3ZlWb0hTxpDeoDm8Ou8BeB+9oqqA0jTrgNXULiEuwH3E3p9YB3gQ
+         zeTq1tHYwx08n1qVhhzj+KXXGMr0Rv7ayNdEwCsBAGE9j4L/d8MbJv612qqmCvCGUD/6
+         7z6rVNIMeFGaLeRCEJpHschPD0zllqyS03TWc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eOvtNvvamWzk5fAMM5400wmusjPMpLNo7AkVdvkZoUA=;
+        b=gd75Z0GZn0hhT5b5hzxbtQmeNdJHb1XpCtMZZgMboRP4b30WgKVdsJp9jsODLid2zL
+         KiSmgaEf8ytgLS1Ta77Z6B+PnZF+58DgGeUHmfWCy+xvkxfQy0qLY506/iMswQAhE3lC
+         JW5Q4iFUSlwZ7Jbab034dYnNIR+ZGBAgXHKKo3sc7Y/J/cCzHWrQG0dGObgKHvo7uBTE
+         g9qTYD+BjrB1BO/yb1jsvanKC19jODL6xjWBLSu5OPgFUQec296dMR9/eYroZNOQ8dvs
+         +9cs70yWWAtCGBq7rdVbhd2vqaFPWHJ1ufxoLtRvY4fjykftMbUgdC++mBk1Tlt8r9ha
+         95GQ==
+X-Gm-Message-State: AOAM531q2LOVu1SYvDWb+LxsWZuUsni2aY0QywsEgLhYnXIsSRCTTLPu
+        J1RpujUPiqCboCaTZ0aFacR10w==
+X-Google-Smtp-Source: ABdhPJz63fQkRB+GrEpckLxrAT/+ZKSAP+RL8qHD17XOdtTIev6GFVqpAcC0kxKsjBPInbCy0vEBXg==
+X-Received: by 2002:a17:902:5999:b029:e2:d7f7:44f with SMTP id p25-20020a1709025999b02900e2d7f7044fmr429925pli.0.1612916345571;
+        Tue, 09 Feb 2021 16:19:05 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p68sm85964pfb.60.2021.02.09.16.19.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 16:19:04 -0800 (PST)
+Date:   Tue, 9 Feb 2021 16:19:03 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] ubsan: remove overflow checks
+Message-ID: <202102091617.8FD77890@keescook>
+References: <YCJCaDIzIaUZG27F@hirez.programming.kicks-ass.net>
+ <20210209232348.20510-1-ryabinin.a.a@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHbLzkr+5t5wTVRDih53ty-TcsMrmKxZ5iiPw1dwnDsz_URz=Q@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:262e]
-X-ClientProxiedBy: MWHPR03CA0007.namprd03.prod.outlook.com
- (2603:10b6:300:117::17) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:262e) by MWHPR03CA0007.namprd03.prod.outlook.com (2603:10b6:300:117::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 00:16:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dcc64995-b478-4619-c96b-08d8cd592a62
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3285:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3285444FC6E26F04E6738DE1BE8D9@BYAPR15MB3285.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lPJrESatMrj0JsybiwNLltMAKGjlYWA/cV8sOIOlENQelSYv1KwwaWoQWw3gTUIVuMvc8RrBFMLeNlWVWIMV/Om56Vi8jvZhxC0O+GZ7HcGUqZzXJZoNJJku3Bhj01t3HR1QOOr4nM6RPf8Vb2fqPm2hWs0zRziYtXvY4q0Msc5LGW056pIFCwNjHKBhNj9kxPD2UAk7AtnOU86OZHkkYclyLEq6e7Kvzl/DJvEvu6xwkRvP3jH48qWg9v+NfWIcaM9qpgGGuf8XuEs0uoUWTbicQ9vvGGBaLNxkIoInlvu39Cp96vtH9zwnkuWpA6O7ObWqXmPKQqXrwibnQknno8xGkN5m6dgwpLJaY2PYlBeFxWyarSfKzpqnn0Zrs+Fl5bJe2M4ySkBEC2/GihL+uud6Rfb4KXbp5D2XeFt8nMy1e+Hbx0tObeURBVGoePhb4McciOMVx8tpyMdvEofqs6KANFG9pi6b58cAHGsQudsxS2rz0P6XRDpmSgwMvtYNv5YLH/mGdsIMhsytbs95kA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(39860400002)(366004)(346002)(136003)(16526019)(53546011)(4326008)(8676002)(52116002)(7696005)(33656002)(9686003)(8936002)(83380400001)(86362001)(6916009)(66946007)(55016002)(66476007)(66556008)(5660300002)(6666004)(7416002)(54906003)(2906002)(478600001)(6506007)(186003)(316002)(1076003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?eQrpDUr+fFFbNiloCHinsDdAFfaqenDcLDmqBwyjNRpPpisVCcrFnO7j3XzN?=
- =?us-ascii?Q?GDzjuKPe4g+Z0tI6if+zRfzJc+DlX0eajJxbvEoCFEK1ZW7M5l6K9fWVtrUc?=
- =?us-ascii?Q?lPqiQPFeoulXQg+yrQE3jxnnjiIw4TKqsRKFNoQzfdAvHe8XY+zeNZpubQh7?=
- =?us-ascii?Q?fKoIcm92aHzEyiTNlWt71Lmf1eymSvJiOMAq3HkGrrIHmmsB+J3LzLn9YQ7t?=
- =?us-ascii?Q?RdETChozeIi+I6zvkwaY/ZP1ezIIm98txZ954H6FVRTQc2bNeDY/Iqwi0hnO?=
- =?us-ascii?Q?nDvwQB9ul+s7Le8cFNGR5Co9ySz7D3X8vOnzJXDT4Quwip68gn0g6DBY2RYM?=
- =?us-ascii?Q?cFkdIANLvdW0Tl4fX0ESyFtmftLUSEDnLkH39yOrOrXq0KD5kIZqgwy2msgi?=
- =?us-ascii?Q?J1Fr5Ua9H4w9N1keDGgO5xkSqkRdZRW8psKCCB/TkKA4na3UnD6k4vW1NNjG?=
- =?us-ascii?Q?SBDVsThP6JwPr0EOfe6YxktIfNoEiuai4c43PGAMTwAOiQgwqmoGUlPxdkJ2?=
- =?us-ascii?Q?OC/iBCzdq6bUB/uFDh6fVcbXLurCDCp1hwz3YuqoTNER7i0z8zVol+HMZFUt?=
- =?us-ascii?Q?bojIH1Ect0g6AxMuYGulE9K/Gg4ulpk2iHh9bHZL7ErwY1v4CROCEem+zU6V?=
- =?us-ascii?Q?J2FrQ+fXpy01m2V22DxwsWJROdSD7cUofN16YtU1vHUIzHjBINofMKQhhzKF?=
- =?us-ascii?Q?SsmC+mDsu44D03ObCOyI1rvN5xRJXa53yVMloSEayLXuRxDY/S7pJeiJxrEy?=
- =?us-ascii?Q?sQpqH3WzBFuR9Fg9G5wkgQ+juHAlW6/20V1G1AC4gjRpBUglTULtMivPRIiF?=
- =?us-ascii?Q?tIphF0wcxmvde+skgNPCda73wVpV8R5J/SA6XveZftn0VDgVk7VaXZFQvC8h?=
- =?us-ascii?Q?GbU1Qd9VpGw+s6+GXBxyaljK/iiZZjDDBvRczoRR+NRFd9qXNehDr/2ZEm/6?=
- =?us-ascii?Q?rPZVd0JTdtbBxoVoP9arN3nEVHP4QSSchqB9jR631cCVFkImDiQOdhoSz7Dx?=
- =?us-ascii?Q?JuyV+JmWbk3zplvH0M2hEN2ArObNEPcZyO7pDutgamkZjsqfMaioRN1AC8lw?=
- =?us-ascii?Q?voPUv3vUyh0TqJfF1Pj2iUcM50DkEFKLiOaxjbOV8ondnUukXqShRU9D+Hyz?=
- =?us-ascii?Q?jqGFbAVKp9yfEAyAq5ElBsRHP01tbxebyznpoUkhT2oZaR8BElZTl4OyuAbW?=
- =?us-ascii?Q?NWFyGeaUjZQU7GnzwmYE/bUs03taw2gdv/ZfrC6p3MZesIAtLtsiDvOMTCDE?=
- =?us-ascii?Q?06fYwDaY8PFTCsvSgvMnJzfV2907Lv2bWWB/bPxeiSXhsH09jV0Vry1c9fBX?=
- =?us-ascii?Q?UlwHi+EXj8tnOCd0SHhhh1NNACfISVZKGE0ikHqQfB5HauupttV6RBR1kv6z?=
- =?us-ascii?Q?LHsFUz8=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dcc64995-b478-4619-c96b-08d8cd592a62
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2021 00:16:52.1005
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fjZfUS71Z+sK4hmuJybGzhwn+JqC1Jm5N+JO4faIcz9VMzKSiSp+Xgi+ONVpOE2F
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3285
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_08:2021-02-09,2021-02-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- malwarescore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
- priorityscore=1501 phishscore=0 spamscore=0 lowpriorityscore=0
- clxscore=1015 adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102100000
-X-FB-Internal: deliver
+In-Reply-To: <20210209232348.20510-1-ryabinin.a.a@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 03:33:56PM -0800, Yang Shi wrote:
-> On Tue, Feb 9, 2021 at 12:50 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > On Tue, Feb 09, 2021 at 09:46:39AM -0800, Yang Shi wrote:
-> > > The following patch is going to add nr_deferred into shrinker_map, the change will
-> > > make shrinker_map not only include map anymore, so rename it to "memcg_shrinker_info".
-> > > And this should make the patch adding nr_deferred cleaner and readable and make
-> > > review easier.  Also remove the "memcg_" prefix.
-> > >
-> > > Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> > > Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > > ---
-> > >  include/linux/memcontrol.h |  8 ++---
-> > >  mm/memcontrol.c            |  6 ++--
-> > >  mm/vmscan.c                | 62 +++++++++++++++++++-------------------
-> > >  3 files changed, 38 insertions(+), 38 deletions(-)
-> > >
-> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > index 1739f17e0939..4c9253896e25 100644
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@ -96,7 +96,7 @@ struct lruvec_stat {
-> > >   * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
-> > >   * which have elements charged to this memcg.
-> > >   */
-> > > -struct memcg_shrinker_map {
-> > > +struct shrinker_info {
-> > >       struct rcu_head rcu;
-> > >       unsigned long map[];
-> > >  };
-> > > @@ -118,7 +118,7 @@ struct mem_cgroup_per_node {
-> > >
-> > >       struct mem_cgroup_reclaim_iter  iter;
-> > >
-> > > -     struct memcg_shrinker_map __rcu *shrinker_map;
-> > > +     struct shrinker_info __rcu      *shrinker_info;
-> >
-> > Nice!
-> >
-> > I really like how it looks now in comparison to the v1. Thank you for
-> > working on it!
+On Wed, Feb 10, 2021 at 02:23:48AM +0300, Andrey Ryabinin wrote:
+> Since GCC 8.0 -fsanitize=signed-integer-overflow doesn't work with -fwrapv.
+> -fwrapv makes signed overflows defines and GCC essentially disables
+> ubsan checks. On GCC < 8.0 -fwrapv doesn't have influence on
+> -fsanitize=signed-integer-overflow setting, so it kinda works
+> but generates false-positves and violates uaccess rules:
 > 
-> Thanks a lot for all the great comments from all of you.
+> lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
 > 
-> >
-> > >
-> > >       struct rb_node          tree_node;      /* RB tree node */
-> > >       unsigned long           usage_in_excess;/* Set to the value by which */
-> > > @@ -1581,8 +1581,8 @@ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
-> > >       return false;
-> > >  }
-> > >
-> > > -int alloc_shrinker_maps(struct mem_cgroup *memcg);
-> > > -void free_shrinker_maps(struct mem_cgroup *memcg);
-> > > +int alloc_shrinker_info(struct mem_cgroup *memcg);
-> > > +void free_shrinker_info(struct mem_cgroup *memcg);
-> > >  void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id);
-> > >  #else
-> > >  #define mem_cgroup_sockets_enabled 0
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index f5c9a0d2160b..f64ad0d044d9 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -5246,11 +5246,11 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
-> > >       struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-> > >
-> > >       /*
-> > > -      * A memcg must be visible for expand_shrinker_maps()
-> > > +      * A memcg must be visible for expand_shrinker_info()
-> > >        * by the time the maps are allocated. So, we allocate maps
-> > >        * here, when for_each_mem_cgroup() can't skip it.
-> > >        */
-> > > -     if (alloc_shrinker_maps(memcg)) {
-> > > +     if (alloc_shrinker_info(memcg)) {
-> > >               mem_cgroup_id_remove(memcg);
-> > >               return -ENOMEM;
-> > >       }
-> > > @@ -5314,7 +5314,7 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
-> > >       vmpressure_cleanup(&memcg->vmpressure);
-> > >       cancel_work_sync(&memcg->high_work);
-> > >       mem_cgroup_remove_from_trees(memcg);
-> > > -     free_shrinker_maps(memcg);
-> > > +     free_shrinker_info(memcg);
-> > >       memcg_free_kmem(memcg);
-> > >       mem_cgroup_free(memcg);
-> > >  }
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index 641077b09e5d..9436f9246d32 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -190,20 +190,20 @@ static int shrinker_nr_max;
-> > >  #define NR_MAX_TO_SHR_MAP_SIZE(nr_max) \
-> > >       (DIV_ROUND_UP(nr_max, BITS_PER_LONG) * sizeof(unsigned long))
-> > >
-> > > -static void free_shrinker_map_rcu(struct rcu_head *head)
-> > > +static void free_shrinker_info_rcu(struct rcu_head *head)
-> > >  {
-> > > -     kvfree(container_of(head, struct memcg_shrinker_map, rcu));
-> > > +     kvfree(container_of(head, struct shrinker_info, rcu));
-> > >  }
-> > >
-> > > -static int expand_one_shrinker_map(struct mem_cgroup *memcg,
-> > > +static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> > >                                  int size, int old_size)
-> > >  {
-> > > -     struct memcg_shrinker_map *new, *old;
-> > > +     struct shrinker_info *new, *old;
-> > >       int nid;
-> > >
-> > >       for_each_node(nid) {
-> > >               old = rcu_dereference_protected(
-> > > -                     mem_cgroup_nodeinfo(memcg, nid)->shrinker_map, true);
-> > > +                     mem_cgroup_nodeinfo(memcg, nid)->shrinker_info, true);
-> > >               /* Not yet online memcg */
-> > >               if (!old)
-> > >                       return 0;
-> > > @@ -216,17 +216,17 @@ static int expand_one_shrinker_map(struct mem_cgroup *memcg,
-> > >               memset(new->map, (int)0xff, old_size);
-> > >               memset((void *)new->map + old_size, 0, size - old_size);
-> > >
-> > > -             rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
-> > > -             call_rcu(&old->rcu, free_shrinker_map_rcu);
-> > > +             rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
-> > > +             call_rcu(&old->rcu, free_shrinker_info_rcu);
-> >
-> > Why not use kvfree_rcu() and get rid of free_shrinker_info_rcu() callback?
+> Disable signed overflow checks to avoid these problems.
+> Remove unsigned overflow checks as well.
+> Unsigned overflow appeared as side effect of the commit
+>  cdf8a76fda4a ("ubsan: move cc-option tests into Kconfig"),
+> but it never worked (kernel doesn't boot). And unsigned overflows
+> are allowed by C standard, so it just pointless.
 > 
-> Just because this patch is aimed to rename the structure. I think it
-> may be more preferred to have the cleanup in a separate patch?
+> Signed-off-by: Andrey Ryabinin <ryabinin.a.a@gmail.com>
 
-Completely up to you, I'm fine with either option.
+NAK, please don't remove the entire thing. I want this to work again
+with -fwrapv, and it's not entirely broken under Clang. But the feature
+shouldn't be removed from the kernel.
 
-Thanks!
+I'd prefer Peter's fix instead.
+
+-Kees
+
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> ---
+>  lib/Kconfig.ubsan      | 17 -----------
+>  lib/test_ubsan.c       | 49 ------------------------------
+>  lib/ubsan.c            | 68 ------------------------------------------
+>  scripts/Makefile.ubsan |  2 --
+>  4 files changed, 136 deletions(-)
+> 
+> diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+> index 3a0b1c930733..e5372a13511d 100644
+> --- a/lib/Kconfig.ubsan
+> +++ b/lib/Kconfig.ubsan
+> @@ -112,23 +112,6 @@ config UBSAN_UNREACHABLE
+>  	  This option enables -fsanitize=unreachable which checks for control
+>  	  flow reaching an expected-to-be-unreachable position.
+>  
+> -config UBSAN_SIGNED_OVERFLOW
+> -	bool "Perform checking for signed arithmetic overflow"
+> -	default UBSAN
+> -	depends on $(cc-option,-fsanitize=signed-integer-overflow)
+> -	help
+> -	  This option enables -fsanitize=signed-integer-overflow which checks
+> -	  for overflow of any arithmetic operations with signed integers.
+> -
+> -config UBSAN_UNSIGNED_OVERFLOW
+> -	bool "Perform checking for unsigned arithmetic overflow"
+> -	depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
+> -	depends on !X86_32 # avoid excessive stack usage on x86-32/clang
+> -	help
+> -	  This option enables -fsanitize=unsigned-integer-overflow which checks
+> -	  for overflow of any arithmetic operations with unsigned integers. This
+> -	  currently causes x86 to fail to boot.
+> -
+>  config UBSAN_OBJECT_SIZE
+>  	bool "Perform checking for accesses beyond the end of objects"
+>  	default UBSAN
+> diff --git a/lib/test_ubsan.c b/lib/test_ubsan.c
+> index 5e5d9355ef49..7e7bbd0f3fd2 100644
+> --- a/lib/test_ubsan.c
+> +++ b/lib/test_ubsan.c
+> @@ -11,51 +11,6 @@ typedef void(*test_ubsan_fp)(void);
+>  			#config, IS_ENABLED(config) ? "y" : "n");	\
+>  	} while (0)
+>  
+> -static void test_ubsan_add_overflow(void)
+> -{
+> -	volatile int val = INT_MAX;
+> -	volatile unsigned int uval = UINT_MAX;
+> -
+> -	UBSAN_TEST(CONFIG_UBSAN_SIGNED_OVERFLOW);
+> -	val += 2;
+> -
+> -	UBSAN_TEST(CONFIG_UBSAN_UNSIGNED_OVERFLOW);
+> -	uval += 2;
+> -}
+> -
+> -static void test_ubsan_sub_overflow(void)
+> -{
+> -	volatile int val = INT_MIN;
+> -	volatile unsigned int uval = 0;
+> -	volatile int val2 = 2;
+> -
+> -	UBSAN_TEST(CONFIG_UBSAN_SIGNED_OVERFLOW);
+> -	val -= val2;
+> -
+> -	UBSAN_TEST(CONFIG_UBSAN_UNSIGNED_OVERFLOW);
+> -	uval -= val2;
+> -}
+> -
+> -static void test_ubsan_mul_overflow(void)
+> -{
+> -	volatile int val = INT_MAX / 2;
+> -	volatile unsigned int uval = UINT_MAX / 2;
+> -
+> -	UBSAN_TEST(CONFIG_UBSAN_SIGNED_OVERFLOW);
+> -	val *= 3;
+> -
+> -	UBSAN_TEST(CONFIG_UBSAN_UNSIGNED_OVERFLOW);
+> -	uval *= 3;
+> -}
+> -
+> -static void test_ubsan_negate_overflow(void)
+> -{
+> -	volatile int val = INT_MIN;
+> -
+> -	UBSAN_TEST(CONFIG_UBSAN_SIGNED_OVERFLOW);
+> -	val = -val;
+> -}
+> -
+>  static void test_ubsan_divrem_overflow(void)
+>  {
+>  	volatile int val = 16;
+> @@ -155,10 +110,6 @@ static void test_ubsan_object_size_mismatch(void)
+>  }
+>  
+>  static const test_ubsan_fp test_ubsan_array[] = {
+> -	test_ubsan_add_overflow,
+> -	test_ubsan_sub_overflow,
+> -	test_ubsan_mul_overflow,
+> -	test_ubsan_negate_overflow,
+>  	test_ubsan_shift_out_of_bounds,
+>  	test_ubsan_out_of_bounds,
+>  	test_ubsan_load_invalid_value,
+> diff --git a/lib/ubsan.c b/lib/ubsan.c
+> index bec38c64d6a6..26229973049d 100644
+> --- a/lib/ubsan.c
+> +++ b/lib/ubsan.c
+> @@ -163,74 +163,6 @@ static void ubsan_epilogue(void)
+>  	}
+>  }
+>  
+> -static void handle_overflow(struct overflow_data *data, void *lhs,
+> -			void *rhs, char op)
+> -{
+> -
+> -	struct type_descriptor *type = data->type;
+> -	char lhs_val_str[VALUE_LENGTH];
+> -	char rhs_val_str[VALUE_LENGTH];
+> -
+> -	if (suppress_report(&data->location))
+> -		return;
+> -
+> -	ubsan_prologue(&data->location, type_is_signed(type) ?
+> -			"signed-integer-overflow" :
+> -			"unsigned-integer-overflow");
+> -
+> -	val_to_string(lhs_val_str, sizeof(lhs_val_str), type, lhs);
+> -	val_to_string(rhs_val_str, sizeof(rhs_val_str), type, rhs);
+> -	pr_err("%s %c %s cannot be represented in type %s\n",
+> -		lhs_val_str,
+> -		op,
+> -		rhs_val_str,
+> -		type->type_name);
+> -
+> -	ubsan_epilogue();
+> -}
+> -
+> -void __ubsan_handle_add_overflow(void *data,
+> -				void *lhs, void *rhs)
+> -{
+> -
+> -	handle_overflow(data, lhs, rhs, '+');
+> -}
+> -EXPORT_SYMBOL(__ubsan_handle_add_overflow);
+> -
+> -void __ubsan_handle_sub_overflow(void *data,
+> -				void *lhs, void *rhs)
+> -{
+> -	handle_overflow(data, lhs, rhs, '-');
+> -}
+> -EXPORT_SYMBOL(__ubsan_handle_sub_overflow);
+> -
+> -void __ubsan_handle_mul_overflow(void *data,
+> -				void *lhs, void *rhs)
+> -{
+> -	handle_overflow(data, lhs, rhs, '*');
+> -}
+> -EXPORT_SYMBOL(__ubsan_handle_mul_overflow);
+> -
+> -void __ubsan_handle_negate_overflow(void *_data, void *old_val)
+> -{
+> -	struct overflow_data *data = _data;
+> -	char old_val_str[VALUE_LENGTH];
+> -
+> -	if (suppress_report(&data->location))
+> -		return;
+> -
+> -	ubsan_prologue(&data->location, "negation-overflow");
+> -
+> -	val_to_string(old_val_str, sizeof(old_val_str), data->type, old_val);
+> -
+> -	pr_err("negation of %s cannot be represented in type %s:\n",
+> -		old_val_str, data->type->type_name);
+> -
+> -	ubsan_epilogue();
+> -}
+> -EXPORT_SYMBOL(__ubsan_handle_negate_overflow);
+> -
+> -
+>  void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs)
+>  {
+>  	struct overflow_data *data = _data;
+> diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
+> index 0e53a93e8f15..9e2092fd5206 100644
+> --- a/scripts/Makefile.ubsan
+> +++ b/scripts/Makefile.ubsan
+> @@ -8,8 +8,6 @@ ubsan-cflags-$(CONFIG_UBSAN_LOCAL_BOUNDS)	+= -fsanitize=local-bounds
+>  ubsan-cflags-$(CONFIG_UBSAN_SHIFT)		+= -fsanitize=shift
+>  ubsan-cflags-$(CONFIG_UBSAN_DIV_ZERO)		+= -fsanitize=integer-divide-by-zero
+>  ubsan-cflags-$(CONFIG_UBSAN_UNREACHABLE)	+= -fsanitize=unreachable
+> -ubsan-cflags-$(CONFIG_UBSAN_SIGNED_OVERFLOW)	+= -fsanitize=signed-integer-overflow
+> -ubsan-cflags-$(CONFIG_UBSAN_UNSIGNED_OVERFLOW)	+= -fsanitize=unsigned-integer-overflow
+>  ubsan-cflags-$(CONFIG_UBSAN_OBJECT_SIZE)	+= -fsanitize=object-size
+>  ubsan-cflags-$(CONFIG_UBSAN_BOOL)		+= -fsanitize=bool
+>  ubsan-cflags-$(CONFIG_UBSAN_ENUM)		+= -fsanitize=enum
+> -- 
+> 2.26.2
+> 
+
+-- 
+Kees Cook
