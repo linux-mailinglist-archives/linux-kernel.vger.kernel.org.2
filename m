@@ -2,70 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F52F316807
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054F031680E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhBJNaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:30:20 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:56348 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhBJNaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:30:15 -0500
-Received: from zn.tnic (p200300ec2f037400315ea78552594295.dip0.t-ipconnect.de [IPv6:2003:ec:2f03:7400:315e:a785:5259:4295])
+        id S230494AbhBJNcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:32:41 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:41634 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhBJNce (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:32:34 -0500
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_smtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
+ id fef06e97a1c7c808; Wed, 10 Feb 2021 14:31:49 +0100
+Received: from kreacher.localnet (89-64-80-225.dynamic.chello.pl [89.64.80.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2BC3F1EC04A9;
-        Wed, 10 Feb 2021 14:29:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612963771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=5alnFyQqfewF64h4BDFj4Y6OzUELAoQQee6RKH78b38=;
-        b=ETRoW+2aEhtNAAnK6ndPfin9XSbWzlEFbMwFZvbpz58zKfvMI65k8/nhzPk644m3RbKNl6
-        Jrn6AZy22YRmZiz4JWCh20yb9I063RJQiAqTqew00xvcE+/SYjga05tjDg2oNsrLJisJNm
-        P8ElG4uPcI8E4jHVfW53OcNrnhUdWaQ=
-Date:   Wed, 10 Feb 2021 14:29:28 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH v2 08/14] x86/fault: Skip erratum #93 workaround on new
- CPUs
-Message-ID: <20210210132928.GB14650@zn.tnic>
-References: <cover.1612924255.git.luto@kernel.org>
- <8969c688ee663e99901cf4b0383bc6662ce79707.1612924255.git.luto@kernel.org>
- <CALCETrW8m-4AG4aZUYx35p0kc2aWiUq4p-WCs0+BOtb3WWE3aA@mail.gmail.com>
+        by v370.home.net.pl (Postfix) with ESMTPSA id E0A5E6608FC;
+        Wed, 10 Feb 2021 14:31:48 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>
+Subject: Re: [PATCH v1 7/7] ACPI: property: Allow counting a single value as an array of 1 element
+Date:   Wed, 10 Feb 2021 14:31:48 +0100
+Message-ID: <3881654.NPl3a4M0kB@kreacher>
+In-Reply-To: <CAJZ5v0hx78JHnP5-5xFTPr0Rh9FvPCzAzTCyBaT6eLZ3Dd-mFA@mail.gmail.com>
+References: <20210210114320.3478-1-andriy.shevchenko@linux.intel.com> <20210210114320.3478-7-andriy.shevchenko@linux.intel.com> <CAJZ5v0hx78JHnP5-5xFTPr0Rh9FvPCzAzTCyBaT6eLZ3Dd-mFA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CALCETrW8m-4AG4aZUYx35p0kc2aWiUq4p-WCs0+BOtb3WWE3aA@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdehfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgfelheffhfetffelhfelteejffetteetgfetkeejvdfhfeeftdeufeevgeevieevnecukfhppeekledrieegrdektddrvddvheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrvddvhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvghnsgeskhgvrhhnvghl
+ rdhorhhgpdhrtghpthhtoheptggrlhhvihhnrdhjohhhnhhsohhnsehoshhsrdhngihprdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:06:02PM -0800, Andy Lutomirski wrote:
-> On Tue, Feb 9, 2021 at 6:33 PM Andy Lutomirski <luto@kernel.org> wrote:
+On Wednesday, February 10, 2021 1:36:00 PM CET Rafael J. Wysocki wrote:
+> On Wed, Feb 10, 2021 at 12:51 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 > >
-> > Erratum #93 applies to the first generation of AMD K8 CPUs.  Skip the
-> > workaround on newer CPUs.
+> > We allow to read the single value as a first element in the array.
+> > Unfortunately the counting doesn't work in this case and we can't
+> > call fwnode_property_count_*() API without getting an error.
 > 
-> Whoops, this breaks the !CPU_SUP_AMD build.  It needs a fixup like this:
+> It would be good to mention what the symptom of the issue is here.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=x86/fault&id=06772a3b6918bf6d6d0778946149b7d56ae30d80
+> > Modify acpi_data_prop_read() to always try the single value read
+> > and thus allow counting the single value as an array of 1 element.
+> >
+> > Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> Boris, do you want a v3?
+> This is a bug fix, so it should go in before the cleanups in this series IMO.
+> 
+> Also it looks like stable@vger material.
+> 
+> > ---
+> >  drivers/acpi/property.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+> > index 236316ee0e25..d6100585fceb 100644
+> > --- a/drivers/acpi/property.c
+> > +++ b/drivers/acpi/property.c
+> > @@ -913,12 +913,14 @@ static int acpi_data_prop_read(const struct acpi_device_data *data,
+> >         const union acpi_object *items;
+> >         int ret;
+> >
+> > -       if (val && nval == 1) {
+> > +       /* Try to read as a single value first */
+> > +       if (!val || nval == 1) {
+> >                 ret = acpi_data_prop_read_single(data, propname, proptype, val);
+> 
+> This returns -EINVAL if val is NULL.
+> 
+> >                 if (ret >= 0)
+> > -                       return ret;
+> > +                       return val ? ret : 1;
+> 
+> So val cannot be NULL here.
+> 
+> >         }
+> >
+> > +       /* It's not the single value, get an array instead */
+> >         ret = acpi_data_get_property_array(data, propname, ACPI_TYPE_ANY, &obj);
+> >         if (ret)
+> >                 return ret;
+> > --
+> 
+> To me, acpi_fwnode_property_read_string_array() needs to special-case
+> val == NULL and nval == 0.
 
-Do we even want to apply patch 8 at all? This has always ran on K8 NPT
-CPUs too and those are pretty much obsolete by now so I'm thinking,
-leave sleeping dogs lie...?
+Well, scratch this.
 
--- 
-Regards/Gruss,
-    Boris.
+Something like the patch below (untested) should be sufficient to address this
+if I'm not mistaken.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+---
+ drivers/acpi/property.c |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+Index: linux-pm/drivers/acpi/property.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/property.c
++++ linux-pm/drivers/acpi/property.c
+@@ -787,14 +787,14 @@ static int acpi_data_prop_read_single(co
+ 	const union acpi_object *obj;
+ 	int ret;
+ 
+-	if (!val)
+-		return -EINVAL;
+-
+ 	if (proptype >= DEV_PROP_U8 && proptype <= DEV_PROP_U64) {
+ 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_INTEGER, &obj);
+ 		if (ret)
+ 			return ret;
+ 
++		if (!val)
++			return 1;
++
+ 		switch (proptype) {
+ 		case DEV_PROP_U8:
+ 			if (obj->integer.value > U8_MAX)
+@@ -820,7 +820,8 @@ static int acpi_data_prop_read_single(co
+ 		if (ret)
+ 			return ret;
+ 
+-		*(char **)val = obj->string.pointer;
++		if (val)
++			*(char **)val = obj->string.pointer;
+ 
+ 		return 1;
+ 	} else {
+@@ -928,10 +929,16 @@ static int acpi_data_prop_read(const str
+ 	const union acpi_object *items;
+ 	int ret;
+ 
+-	if (val && nval == 1) {
++	if (nval == 1) {
+ 		ret = acpi_data_prop_read_single(data, propname, proptype, val);
+ 		if (ret >= 0)
+ 			return ret;
++
++		/*
++		 * Reading this property as a single-value one failed, but its
++		 * value may still be represented as one-element array, so
++		 * continue.
++		 */
+ 	}
+ 
+ 	ret = acpi_data_get_property_array(data, propname, ACPI_TYPE_ANY, &obj);
+
+
+
+
