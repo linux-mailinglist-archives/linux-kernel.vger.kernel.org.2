@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E5931735E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC43B317356
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 23:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhBJW3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 17:29:36 -0500
-Received: from mga04.intel.com ([192.55.52.120]:13270 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233231AbhBJW3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:29:20 -0500
-IronPort-SDR: 6+RfduXYzluN3zFtHuKW2QgWX099b7aYUULdRsCK7udSE/CNPPvMpLU0WyXEJNgqBJJvwtlBAq
- iQjFKttJAH+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="179604665"
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="179604665"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 14:27:28 -0800
-IronPort-SDR: nDXiYRkUJhAiSE75pYaCXSq6Um6G1p5XlHc+q8pJ4F24vpuu2T8A/3GQth18rtFulhkgZF982K
- GwRnHHgiW9TQ==
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="489084676"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 14:27:25 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 10BD420488;
-        Thu, 11 Feb 2021 00:27:23 +0200 (EET)
-Date:   Thu, 11 Feb 2021 00:27:23 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v10 2/7] i2c: Allow an ACPI driver to manage the device's
- power state during probe
-Message-ID: <20210210222722.GF3@paasikivi.fi.intel.com>
-References: <20210205132505.20173-1-sakari.ailus@linux.intel.com>
- <20210205132505.20173-3-sakari.ailus@linux.intel.com>
- <20210209210410.GA2380@kunai>
+        id S232957AbhBJW25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 17:28:57 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:35520 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232097AbhBJW2w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 17:28:52 -0500
+Date:   Thu, 11 Feb 2021 01:28:05 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Rob Herring <robh@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/16] dt-bindings: net: dwmac: Add DW GMAC GPIOs
+ properties
+Message-ID: <20210210222805.upoioue7uc6cat2v@mobilestation>
+References: <20210208140820.10410-1-Sergey.Semin@baikalelectronics.ru>
+ <20210208140820.10410-2-Sergey.Semin@baikalelectronics.ru>
+ <20210209231352.GA402351@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210209210410.GA2380@kunai>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210209231352.GA402351@robh.at.kernel.org>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:04:10PM +0100, Wolfram Sang wrote:
+On Tue, Feb 09, 2021 at 05:13:52PM -0600, Rob Herring wrote:
+> On Mon, Feb 08, 2021 at 05:08:05PM +0300, Serge Semin wrote:
+> > Synopsys DesignWare Ethernet controllers can be synthesized with
+> > General-Purpose IOs support. GPIOs can work either as inputs or as outputs
+> > thus belong to the gpi_i and gpo_o ports respectively. The ports width
+> > (number of possible inputs/outputs) and the configuration registers layout
+> > depend on the IP-core version. For instance, DW GMAC can have from 0 to 4
+> > GPIs and from 0 to 4 GPOs, while DW xGMAC have a wider ports width up to
+> > 16 pins of each one.
+> > 
+> > So the DW MAC DT-node can be equipped with "ngpios" property, which can't
+> > have a value greater than 32, standard GPIO-related properties like
+> > "gpio-controller" and "#gpio-cells", and, if GPIs are supposed to be
+> > detected, IRQ-controller related properties.
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > ---
+> >  .../devicetree/bindings/net/snps,dwmac.yaml     | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > index bdc437b14878..fcca23d3727e 100644
+> > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > @@ -110,6 +110,23 @@ properties:
+> >    reset-names:
+> >      const: stmmaceth
+> >  
+> > +  ngpios:
+> > +    description:
+> > +      Total number of GPIOs the MAC supports. The property shall include both
+> > +      the GPI and GPO ports width.
+> > +    minimum: 1
+> > +    maximum: 32
 > 
-> > + * @I2C_DRV_FL_ALLOW_LOW_POWER_PROBE: Let the ACPI driver manage the device's
-> > + *				      power state during probe and remove
-> 
-> Well, for the functional change, I am happy if the ACPI guys are happy.
-> The only minor nit for me would be removing the "_FL" snipplet from the
 
-I'm actually renaming this as I2C_DRV_ACPI_WAIVE_D0_PROBE, with similar
-changes to the function names. I opportunistically assume the ack holds
-still. :-) I'll post v11 soon.
+> Does the driver actually need this? I'd omit it if just to validate 
+> consumers are in range.
 
-> name of the define because I think it is clear enough that this is a
-> flag. If you need to resend anyhow, maybe it is worth a thought. It is
-> not a big issue, so anyway:
-> 
-> Acked-by: Wolfram Sang <wsa@kernel.org>
-> 
-> because I assume this will go in via the ACPI tree?
-> 
+I can't say for all possible DW MAC IP-cores (I've got manuals for
+GMAC and xGMAC only), but at least DW GMAC can't have more than four
+GPIs and four GPOs, while XGMACs can be synthesized with up to 16
+each. That's why I've set the upper boundary here as 32. But the
+driver uses the ngpios property do determine the total number GPIOs
+the core has been synthesized. Th number of GPIs and GPOs will be
+auto-detected then (by writing-reading to-from the GPI type field of
+the GPIO control register).
 
--- 
-Sakari Ailus
+> 
+> Are GPI and GPO counts independent? If so, this isn't really sufficient.
+
+Yeap, they are independent. What do you suggest then? Define some
+vendor-specific properties like snps,ngpis and snps,ngpos? If so then
+they seem more generic than vendor-specific, because the separated
+GPI and GPO space isn't an unique feature of the DW MAC GPIOs. Do we
+need to create a generic version of such properties then? (That much
+more changes then introduced here. We'd need to fix the dt-schema tool
+too then.)
+
+-Sergey
+
+> 
+> Rob
