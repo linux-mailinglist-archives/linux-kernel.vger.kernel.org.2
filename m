@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF53316240
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94C2316252
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhBJJa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:30:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
+        id S229853AbhBJJfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhBJJ2n (ORCPT
+        with ESMTP id S230106AbhBJJcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:28:43 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80599C061574;
-        Wed, 10 Feb 2021 01:28:03 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id n2so1173845iom.7;
-        Wed, 10 Feb 2021 01:28:03 -0800 (PST)
+        Wed, 10 Feb 2021 04:32:43 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A366C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 01:31:57 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id h12so1653442wrw.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 01:31:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=NTwYbPlnwjr/4U1k4zJKPsXSZtSc51AAjh+Aot+HfzA=;
-        b=hHvBZmTVaXKcA8YQ1iaTAUfBzV8BeigfL5B/DmnCInK3LcLA1FW+8RTTiJrZ7CNVCV
-         SOSd4RR9+A9e12oPkMPvywW+GPPH+oFG29Pc91S/KvekXEq9ULye7N0CPGsgqJpTjvwc
-         WemZLc+rdjqwTsQ6yCAEXfMpEEyg36aS6zXvbjExy56UU8fQBV6pXQkRHSRJu/TrfffG
-         WoM6Y6x+K+Mw8y1dtvFjOOTETVV4URXS/Lrx7JZJu0YOCwJgXAEmp3dexlvAf6o1ITZJ
-         TcJXvZgFO/kESrTe0UoW+ki2vFBRf53SRBT0ooecG181tHyngoNNEKRNiGBWZlm44QG9
-         II5g==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k5sKCODv0QrgXZ2RFmVU6ynQ+Rw3VG9UBUsttRl/jOY=;
+        b=yzn2RjyfE+Ymq+e4RPMMkQCkMSNwsPMS59gJgkIT2ZjbB7e995bEVoQTtwAWtUaEro
+         XtwQr2u1ntNWYpHVl8EZdnhtmBMsQ6rUrDlUg6vVDAyzgy8YeiU0gyPpfFXWend/xtpV
+         5PFOMIysnm0y5E+EcNg2bQh/0BPPsC3r/7lBDDK3TxeI0RzRIIktfgImIchwajbi3YAr
+         V4r2Iz1UwYUjBs/hjNgP6eLPV92Ei29AThVrQ9ZGNaDRF+NbS8PzapMcyPMVOmDZy62Z
+         JtiluXt7om/oKfKJL6XsL8XJW7wPsz3fYG8nbPYLC97dF1/+td6KTiFazGG8oCIRZZ1w
+         gefA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=NTwYbPlnwjr/4U1k4zJKPsXSZtSc51AAjh+Aot+HfzA=;
-        b=gU9AGRfhcvrtQZrDeN+VWjMAykoVaS2sTys0kqrVBTcZIXURKxqLgqdqWsK+Eqknyq
-         hzbLS7R9DR6ysPTq7NJmAspLjclUaPEPgOLMLIoxUGDpJNcdEcDl6prNkImCBo540t1d
-         O/3djCLbIQHEB3ezKjpPrD4bV4MVcvseW0xNpFMp4sFveHYFZMostBETTReZJBDUHdQJ
-         fXaS5unPGRKdolbDIZZ7UHInBRzgJJ5dJfUG1BPeyi5YFARBt2fp3V+vt6z/fvnPOwG+
-         HulE0cV9q6Fat4PGXjZkZeuFk6Ix5j02VXd1I6FMtLSFsGLT3wXyltwZvtg4hrUoVYk9
-         5/fw==
-X-Gm-Message-State: AOAM533FGrAOv1O5hZQGIPmyuSK0W9fzKaqCRPsSNFr/0/BIjxdDZ5yl
-        YESqQFhFrzqUdthvOj1Ug9K0xkUYvst8Xof5Szc=
-X-Google-Smtp-Source: ABdhPJzg6YCVbjut6i3poATewgVGLxIendfOaoudHkYCnRbJ8uqsdz0eBgzzmTDYHA9u5aW+NyXKj1SAWs4QKjemVcU=
-X-Received: by 2002:a02:74a:: with SMTP id f71mr2299910jaf.30.1612949282924;
- Wed, 10 Feb 2021 01:28:02 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k5sKCODv0QrgXZ2RFmVU6ynQ+Rw3VG9UBUsttRl/jOY=;
+        b=ObjfSoMEch3mSI9DrTDTFmaQ5DLpd4aXQRdekOtobfd4d5ECRFC6ool4vSxFbImwp9
+         Bj+f7z2qboB+JTnFpP/JQv94G39KQRLUMBFo1HWAk3vQed8uS1JJ9ZrpTn0HIFdGZovu
+         EqHmuJxvnWwefDOKMWGewdATyyYE1GsRE1A2m8LaQsXI2sg90oiLg+zghCerflxL5rg4
+         feumOiAnz8ffHYJvpJK9o+wjrWoE3O9ArTsh/WgYrRIYtsMLA8XayH8sboD2FueNukO1
+         WD9eyp18QJg0TmlO75pdA9SVsOD3eIWJHI+7KjlzfMszKWqDN2O8rgdldMgcRihXOITx
+         D/OQ==
+X-Gm-Message-State: AOAM532SiFjUFSKgf1ORxl4yp6eDR5ZHR2GZrBgi/ILrIHJHlGMXJlhH
+        bIiUurm5+RaUF12vjnK314nehQ==
+X-Google-Smtp-Source: ABdhPJxG5BW+H4n04fn0kKilEgXQaMM+3i3D3fQtUIGSsLB2BXZLKfjyhH8893sPibNZPZelUtg+WQ==
+X-Received: by 2002:a05:6000:c7:: with SMTP id q7mr2572228wrx.364.1612949516138;
+        Wed, 10 Feb 2021 01:31:56 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id t2sm2150583wru.53.2021.02.10.01.31.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 01:31:55 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 0/7] ASoC: codecs: add support for LPASS Codec TX and RX macros
+Date:   Wed, 10 Feb 2021 09:30:48 +0000
+Message-Id: <20210210093055.18350-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <CGME20210209235046epcas1p1416b5b121c0d78bfcb854aab46ea35c2@epcas1p1.samsung.com>
- <000001d6ff3e$62f336d0$28d9a470$@samsung.com> <CA+icZUUFFrEJccHDZPV9nzj7zav-RA53eWqgKkDyvwOxCaKKnQ@mail.gmail.com>
- <001401d6ff68$5acaf360$1060da20$@samsung.com> <CA+icZUW0gS21ns1mVeJ7z-0W8XmfyuhggkwYHRXQjYy0jDZyNw@mail.gmail.com>
-In-Reply-To: <CA+icZUW0gS21ns1mVeJ7z-0W8XmfyuhggkwYHRXQjYy0jDZyNw@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 10 Feb 2021 10:27:57 +0100
-Message-ID: <CA+icZUVmw0FpTTJB8Bv67EAOfuVJ+avNPw8_Vg3m0z_HHHehCQ@mail.gmail.com>
-Subject: Re: [ANNOUNCE] exfatprogs-1.1.0 version released
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Eric Sandeen <sandeen@sandeen.net>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        Nicolas Boos <nicolas.boos@wanadoo.fr>,
-        Hyunchul Lee <hyc.lee@gmail.com>,
-        Luca Stefani <luca.stefani.ge1@gmail.com>,
-        Matthieu CASTET <castet.matthieu@free.fr>,
-        Sven Hoexter <sven@stormbind.net>,
-        Ethan Sommer <e5ten.arch@gmail.com>,
-        Hyeongseok Kim <hyeongseok@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 8:24 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Wed, Feb 10, 2021 at 5:51 AM Namjae Jeon <namjae.jeon@samsung.com> wrote:
->
-> > > Hope Sven will do a new release for Debian.
-> > > ( Note that Debian/bullseye release  plans "Milestone 2" this Friday, February 12th (see [1] > "Key
-> > > release dates" > "[2021-Feb-12] Soft Freeze"). Dunno which impact this might have on this. )
-> > I hope he will do it, too!
-> >
-> > Thanks Sedat:)
->
-> I filed Debian Bug #982431 "exfatprogs: Update to version 1.1.0"
->
-> - Sedat -
->
-> [1] https://bugs.debian.org/982431
+This patchset adds support for two Codec Macro blocks(TX and RX) available in
+Qualcomm LPASS (Low Power Audio SubSystem).
 
-Who said Debian GNU/linux has outdated packages :-)?
+There are WSA, VA, TX and RX Macros on LPASS IP, each of the Macro block
+has specific connectivity like WSA Macros are intended to connect
+to WSA Smart speaker codecs via SoundWire. VA Macro is intended for DMICs,
+and TX/RX for Analog codecs via SoundWire like other WCD938x Codecs to provide
+headphone/ear/lineout/amic/dmic etc ..
 
-root# RELEASE="buildd-unstable" ; LC_ALL=C apt-get dist-upgrade -V -t $RELEASE
-...
-The following packages will be upgraded:
-  exfatprogs (1.0.4-1 => 1.1.0-1)
-1 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
-Need to get 37.2 kB of archives.
-After this operation, 61.4 kB of additional disk space will be used.
-Do you want to continue? [Y/n]
+Most of the work is derived from downstream Qualcomm kernels.
+Credits to various Qualcomm authors from Patrick Lai's team who have
+contributed to this code.
 
-- Sedat -
+This patchset has been tested on support to SM8250 MTP Development Board.
+This board has 2 WSA881X smart speakers with onboard DMIC connected to
+internal LPASS codec via WSA  and VA macros respectively and WCD938x
+TX and RX connected via Soundwire via TX and RX Macros reseptively.
+
+Thanks,
+srini
+
+Changes since v3:
+	- fixed two minor warnings reported by kernel test robot using clang
+
+Srinivas Kandagatla (7):
+  ASoC: qcom: dt-bindings: add bindings for lpass rx macro codec
+  ASoC: codecs: lpass-rx-macro: add support for lpass rx macro
+  ASoC: codecs: lpass-rx-macro: add dapm widgets and route
+  ASoC: codecs: lpass-rx-macro: add iir widgets
+  ASoC: qcom: dt-bindings: add bindings for lpass tx macro codec
+  ASoC: codecs: lpass-tx-macro: add support for lpass tx macro
+  ASoC: codecs: lpass-tx-macro: add dapm widgets and route
+
+ .../bindings/sound/qcom,lpass-rx-macro.yaml   |   62 +
+ .../bindings/sound/qcom,lpass-tx-macro.yaml   |   67 +
+ sound/soc/codecs/Kconfig                      |   10 +
+ sound/soc/codecs/Makefile                     |    4 +
+ sound/soc/codecs/lpass-rx-macro.c             | 3606 +++++++++++++++++
+ sound/soc/codecs/lpass-tx-macro.c             | 1874 +++++++++
+ 6 files changed, 5623 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+ create mode 100644 sound/soc/codecs/lpass-rx-macro.c
+ create mode 100644 sound/soc/codecs/lpass-tx-macro.c
+
+-- 
+2.21.0
+
