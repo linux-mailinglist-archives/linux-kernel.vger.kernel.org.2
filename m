@@ -2,234 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57460316B29
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300AF316B28
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 17:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbhBJQ0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 11:26:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:40342 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232049AbhBJQ0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:26:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B42D311D4;
-        Wed, 10 Feb 2021 08:25:50 -0800 (PST)
-Received: from [10.57.49.26] (unknown [10.57.49.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 22A6E3F73B;
-        Wed, 10 Feb 2021 08:25:49 -0800 (PST)
-Subject: Re: bcm2711_thermal: Kernel panic - not syncing: Asynchronous SError
- Interrupt
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        stefan.wahren@i2se.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Robin Murphy <robin.murphy@arm.con>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org
-References: <20210210114829.2915de78@gollum>
- <6d9ca41b4ad2225db102da654d38bc61f6c1c111.camel@suse.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <35e17dc9-c88d-582f-607d-1d90b20868fa@arm.com>
-Date:   Wed, 10 Feb 2021 16:25:47 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232312AbhBJQ0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 11:26:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232245AbhBJQ0i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 11:26:38 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02E7C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:25:57 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id e11so1913140qtg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 08:25:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VFKJ1VfMBcbGkawO76gmyG8p+Q1Mad1n6dxTBahJkr0=;
+        b=uv/G2ftC4Tas4KOvuDL3kAaYQ3qUipYuDYZkBomqwNx47G381mc1mjfa9w+T1GiVuv
+         U+MYgxwQDiBFBLgEaZI9CjCZ/s+pcpt9qwVbIWkiLlr8qMM/5UBhIororO4lg7i+cmHh
+         HuFmc0sAPx0I2dIYGrHsP51zoyYVEYYWUwblmObaJzV3dSQomLPNfdh0nswZGyY/SXCA
+         OEWnpNl8G8pl7c/uJo4/7+XcEQgV/Dq+jqBF+3JmHjUejmOpy4uRzjRhiuYlIVpUmzN2
+         nG/+D3UE4TcMCybqaMZZzy7sy/7BjHtJ56PBEpzwwItlcSrYApe0rHNlNAdnxi/B1jXh
+         TZQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VFKJ1VfMBcbGkawO76gmyG8p+Q1Mad1n6dxTBahJkr0=;
+        b=ZvJ1c/UbyolABCzToIp+QwajKYT4QEREk2uNo4wPbNAArgzWKLV3iijChEsrSrskbT
+         Z6FxixQMPCLmqQ19qIf939gyKl7zLKZIwDEpuE6TkEo5HVJtULyhfISULltjq57WYHEM
+         VSDaMlNYLV4o0RNJLU4acxw0E1c3MNxa4xvvIWokUdC+gLsc0E6AbmY1UyKzlF4N7OIV
+         bZ4bgg40tbeq1RnBrgVDBqO4QT776iWzJcovQ69HYVFM7lADuAoTCZzr2Npi5TjD3tqC
+         4dQGGFOpQAaVEd/VgWr3/iHjkkQIv7aZNhi2qsP8nTHe0mCWitH+CqQtFQNqTcd0auP4
+         cvDQ==
+X-Gm-Message-State: AOAM530fCxC9YpcIAFbYKUmcwXSVV1y2nDJS5I+ArYh4R//mDC3Wu0+r
+        p5iJVxEbcGwAFVSdgFjjmZOwFuGxcxKT01Xh
+X-Google-Smtp-Source: ABdhPJyLNYwtdOwsmR+YuZQDNKjNbCtVCbBJOXVazA5w/jgTriOpufEKNoQuPuJUv+AE3j7HbMf8hQ==
+X-Received: by 2002:ac8:7cad:: with SMTP id z13mr3464858qtv.96.1612974356366;
+        Wed, 10 Feb 2021 08:25:56 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id f131sm1815319qke.15.2021.02.10.08.25.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 08:25:55 -0800 (PST)
+Subject: Re: [PATCH v5 1/2] nbd: Fix NULL pointer in flush_workqueue
+To:     Sun Ke <sunke32@huawei.com>, axboe@kernel.dk, Markus.Elfring@web.de
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org
+References: <20210205065650.2357457-1-sunke32@huawei.com>
+ <20210205065650.2357457-2-sunke32@huawei.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <a38d7926-5989-dfd8-b27b-37a2b92797f0@toxicpanda.com>
+Date:   Wed, 10 Feb 2021 11:25:54 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <6d9ca41b4ad2225db102da654d38bc61f6c1c111.camel@suse.de>
+In-Reply-To: <20210205065650.2357457-2-sunke32@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-10 13:15, Nicolas Saenz Julienne wrote:
-> [ Add Robin, Catalin and Florian in case they want to chime in ]
+On 2/5/21 1:56 AM, Sun Ke wrote:
+> Open /dev/nbdX first, the config_refs will be 1 and
+> the pointers in nbd_device are still null. Disconnect
+> /dev/nbdX, then reference a null recv_workq. The
+> protection by config_refs in nbd_genl_disconnect is useless.
 > 
-> Hi Juerg, thanks for the report!
+> [  656.366194] BUG: kernel NULL pointer dereference, address: 0000000000000020
+> [  656.368943] #PF: supervisor write access in kernel mode
+> [  656.369844] #PF: error_code(0x0002) - not-present page
+> [  656.370717] PGD 10cc87067 P4D 10cc87067 PUD 1074b4067 PMD 0
+> [  656.371693] Oops: 0002 [#1] SMP
+> [  656.372242] CPU: 5 PID: 7977 Comm: nbd-client Not tainted 5.11.0-rc5-00040-g76c057c84d28 #1
+> [  656.373661] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+> [  656.375904] RIP: 0010:mutex_lock+0x29/0x60
+> [  656.376627] Code: 00 0f 1f 44 00 00 55 48 89 fd 48 83 05 6f d7 fe 08 01 e8 7a c3 ff ff 48 83 05 6a d7 fe 08 01 31 c0 65 48 8b 14 25 00 6d 01 00 <f0> 48 0f b1 55 d
+> [  656.378934] RSP: 0018:ffffc900005eb9b0 EFLAGS: 00010246
+> [  656.379350] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> [  656.379915] RDX: ffff888104cf2600 RSI: ffffffffaae8f452 RDI: 0000000000000020
+> [  656.380473] RBP: 0000000000000020 R08: 0000000000000000 R09: ffff88813bd6b318
+> [  656.381039] R10: 00000000000000c7 R11: fefefefefefefeff R12: ffff888102710b40
+> [  656.381599] R13: ffffc900005eb9e0 R14: ffffffffb2930680 R15: ffff88810770ef00
+> [  656.382166] FS:  00007fdf117ebb40(0000) GS:ffff88813bd40000(0000) knlGS:0000000000000000
+> [  656.382806] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  656.383261] CR2: 0000000000000020 CR3: 0000000100c84000 CR4: 00000000000006e0
+> [  656.383819] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  656.384370] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  656.384927] Call Trace:
+> [  656.385111]  flush_workqueue+0x92/0x6c0
+> [  656.385395]  nbd_disconnect_and_put+0x81/0xd0
+> [  656.385716]  nbd_genl_disconnect+0x125/0x2a0
+> [  656.386034]  genl_family_rcv_msg_doit.isra.0+0x102/0x1b0
+> [  656.386422]  genl_rcv_msg+0xfc/0x2b0
+> [  656.386685]  ? nbd_ioctl+0x490/0x490
+> [  656.386954]  ? genl_family_rcv_msg_doit.isra.0+0x1b0/0x1b0
+> [  656.387354]  netlink_rcv_skb+0x62/0x180
+> [  656.387638]  genl_rcv+0x34/0x60
+> [  656.387874]  netlink_unicast+0x26d/0x590
+> [  656.388162]  netlink_sendmsg+0x398/0x6c0
+> [  656.388451]  ? netlink_rcv_skb+0x180/0x180
+> [  656.388750]  ____sys_sendmsg+0x1da/0x320
+> [  656.389038]  ? ____sys_recvmsg+0x130/0x220
+> [  656.389334]  ___sys_sendmsg+0x8e/0xf0
+> [  656.389605]  ? ___sys_recvmsg+0xa2/0xf0
+> [  656.389889]  ? handle_mm_fault+0x1671/0x21d0
+> [  656.390201]  __sys_sendmsg+0x6d/0xe0
+> [  656.390464]  __x64_sys_sendmsg+0x23/0x30
+> [  656.390751]  do_syscall_64+0x45/0x70
+> [  656.391017]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> On Wed, 2021-02-10 at 11:48 +0100, Juerg Haefliger wrote:
->> Trying to dump the BCM2711 registers kills the kernel:
->>
->> # cat /sys/kernel/debug/regmap/dummy-avs-monitor\@fd5d2000/range
->> 0-efc
->> # cat /sys/kernel/debug/regmap/dummy-avs-monitor\@fd5d2000/registers
->>
->> [   62.857661] SError Interrupt on CPU1, code 0xbf000002 -- SError
+> Fixes: e9e006f5fcf2 ("nbd: fix max number of supported devs")
+> Suggested-by: Markus Elfring <Markus.Elfring@web.de>
+> Signed-off-by: Sun Ke <sunke32@huawei.com>
+> ---
+> v4: Share exception handling code for if branches
+> v3: Do not use unlock and add put_nbd.
+> v2: Use jump target unlock.
+> ---
+>   drivers/block/nbd.c | 11 +++++++----
+>   1 file changed, 7 insertions(+), 4 deletions(-)
 > 
-> So ESR's IDS (bit 24) is set, which means it's an 'Implementation Defined
-> SError,' hence IIUC the rest of the error code is meaningless to anyone outside
-> of Broadcom/RPi.
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index e6ea5d344f87..3c9b3bf3f4c2 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -2014,17 +2014,20 @@ static int nbd_genl_disconnect(struct sk_buff *skb, struct genl_info *info)
+>   	mutex_lock(&nbd_index_mutex);
+>   	nbd = idr_find(&nbd_index_idr, index);
+>   	if (!nbd) {
+> -		mutex_unlock(&nbd_index_mutex);
+>   		printk(KERN_ERR "nbd: couldn't find device at index %d\n",
+>   		       index);
+> -		return -EINVAL;
+> +		goto unlock_index;
+>   	}
+> -	if (!refcount_inc_not_zero(&nbd->refs)) {
+> -		mutex_unlock(&nbd_index_mutex);
+> +	mutex_lock(&nbd->config_lock);
+> +	if (!refcount_inc_not_zero(&nbd->refs) || !nbd->recv_workq) {
 
-It's imp-def from the architecture's PoV, but the implementation in this 
-case is Cortex-A72, where 0x000002 means an attributable, containable 
-Slave Error:
+We can't safely take the ->config_log if we don't have a ref.  Just add
 
-https://developer.arm.com/documentation/100095/0003/system-control/aarch64-register-descriptions/exception-syndrome-register--el1-and-el3?lang=en
+if (nbd->recv_workq)
+	flush_workqueue(nbd->recv_workq);
 
-In other words, the thing at the other end of an interconnect 
-transaction said "no" :)
+to nbd_disconnect_and_put().  Problem solved, we can't drop it until we drop our 
+last config ref, and we're holding a config ref here.  We could probably add it 
+in the meantime, but at this point we've disconnected all of our sockets so it 
+doesn't matter.  Thanks,
 
-(The fact that Cortex-A72 gets too far ahead of itself to take it as a 
-synchronous external abort is a mild annoyance, but hey...)
-
-> The regmap is created through the following syscon device:
-> 
-> 	avs_monitor: avs-monitor@7d5d2000 {
-> 		compatible = "brcm,bcm2711-avs-monitor",
-> 			     "syscon", "simple-mfd";
-> 		reg = <0x7d5d2000 0xf00>;
-> 
-> 		thermal: thermal {
-> 			compatible = "brcm,bcm2711-thermal";
-> 			#thermal-sensor-cells = <0>;
-> 		};
-> 	};
-> 
-> I've done some tests with devmem, and the whole <0x7d5d2000 0xf00> range is
-> full of addresses that trigger this same error. Also note that as per Florian's
-> comments[1]: "AVS_RO_REGISTERS_0: 0x7d5d2200 - 0x7d5d22e3." But from what I can
-> tell, at least 0x7d5d22b0 seems to be faulty too.
-> 
-> Any ideas/comments? My guess is that those addresses are marked somehow as
-> secure, and only for VC4 to access (VC4 is RPi4's co-processor). Ultimately,
-> the solution is to narrow the register range exposed by avs-monitor to whatever
-> bcm2711-thermal needs (which is ATM a single 32bit register).
-
-When a peripheral decodes a region of address space, nobody says it has 
-to accept accesses to *every* address in that space; registers may be 
-sparsely populated, and although some devices might be "nice" and make 
-unused areas behave as RAZ/WI, others may throw slave errors if you poke 
-at the wrong places. As you note, in a TrustZone-aware device some 
-registers may only exist in one or other of the Secure/Non-Secure 
-address spaces.
-
-Even when there is a defined register at a given address, it still 
-doesn't necessarily accept all possible types of access; it wouldn't be 
-particularly friendly, but a device *could* have, say, some registers 
-that support 32-bit accesses and others that only support 16-bit 
-accesses, and thus throw slave errors if you do the wrong thing in the 
-wrong place.
-
-It really all depends on the device itself.
-
-Robin.
-
-> 
-> Regards,
-> Nicolas
-> 
-> [1] https://lore.kernel.org/linux-pm/82125042-684a-b4e2-fbaa-45a393b2ce5e@gmx.net/
-> 
->> [   62.857671] CPU: 1 PID: 478 Comm: cat Not tainted 5.11.0-rc7 #4
->> [   62.857674] Hardware name: Raspberry Pi 4 Model B Rev 1.2 (DT)
->> [   62.857676] pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--)
->> [   62.857679] pc : regmap_mmio_read32le+0x1c/0x34
->> [   62.857681] lr : regmap_mmio_read+0x50/0x80
->> [   62.857682] sp : ffff8000105c3c00
->> [   62.857685] x29: ffff8000105c3c00 x28: 0000000000000014
->> [   62.857694] x27: 0000000000000014 x26: ffffd2ea1c2060b0
->> [   62.857699] x25: ffff4e34408ecc00 x24: 0000000000000efc
->> [   62.857704] x23: ffff8000105c3e20 x22: ffff8000105c3d3c
->> [   62.857710] x21: ffff8000105c3d3c x20: 0000000000000014
->> [   62.857715] x19: ffff4e344037a900 x18: 0000000000000020
->> [   62.857720] x17: 0000000000000000 x16: 0000000000000000
->> [   62.857725] x15: ffff4e3447ac40f0 x14: 0000000000000003
->> [   62.857730] x13: ffff4e34422c0000 x12: ffff4e34422a0046
->> [   62.857735] x11: ffffd2ea1c8765e0 x10: 0000000000000000
->> [   62.857741] x9 : ffffd2ea1b9495a0 x8 : ffff4e34429ef980
->> [   62.857746] x7 : 000000000000000f x6 : ffff4e34422a004b
->> [   62.857751] x5 : 00000000fffffff9 x4 : 0000000000000000
->> [   62.857757] x3 : ffffd2ea1b949550 x2 : ffffd2ea1b949330
->> [   62.857761] x1 : 0000000000000014 x0 : 0000000000000000
->> [   62.857767] Kernel panic - not syncing: Asynchronous SError Interrupt
->> [   62.857770] CPU: 1 PID: 478 Comm: cat Not tainted 5.11.0-rc7 #4
->> [   62.857773] Hardware name: Raspberry Pi 4 Model B Rev 1.2 (DT)
->> [   62.857775] Call trace:
->> [   62.857777]  dump_backtrace+0x0/0x1e0
->> [   62.857778]  show_stack+0x24/0x70
->> [   62.857780]  dump_stack+0xd0/0x12c
->> [   62.857782]  panic+0x168/0x370
->> [   62.857783]  nmi_panic+0x98/0xa0
->> [   62.857786]  arm64_serror_panic+0x8c/0x98
->> [   62.857787]  do_serror+0x3c/0x6c
->> [   62.857789]  el1_error+0x78/0xf0
->> [   62.857791]  regmap_mmio_read32le+0x1c/0x34
->> [   62.857793]  _regmap_bus_reg_read+0x24/0x30
->> [   62.857795]  _regmap_read+0x6c/0x17c
->> [   62.857797]  regmap_read+0x58/0x84
->> [   62.857799]  regmap_read_debugfs+0x138/0x3f4
->> [   62.857801]  regmap_map_read_file+0x34/0x40
->> [   62.857803]  full_proxy_read+0x6c/0xc0
->> [   62.857805]  vfs_read+0xb8/0x1e4
->> [   62.857807]  ksys_read+0x78/0x10c
->> [   62.857809]  __arm64_sys_read+0x28/0x34
->> [   62.857811]  el0_svc_common.constprop.0+0x7c/0x194
->> [   62.857813]  do_el0_svc+0x30/0x9c
->> [   62.857814]  el0_svc+0x20/0x30
->> [   62.857816]  el0_sync_handler+0x1a4/0x1b0
->> [   62.857818]  el0_sync+0x174/0x180
->> [   62.857842] SMP: stopping secondary CPUs
->> [   62.857845] Kernel Offset: 0x52ea0b080000 from 0xffff800010000000
->> [   62.857847] PHYS_OFFSET: 0xffffb1cc00000000
->> [   62.857849] CPU features: 0x00240022,61806000
->> [   62.857851] Memory Limit: none
->>
->> Sprinkling printks around regmap_read [1] shows that reading from 0x14 (20)
->> seems to cause the issue:
->>
->>
->> [   40.456230] map=ffff020a069c9c00, from=0, to=3836, count=131072
->> [   40.462520] map=ffff020a069c9c00, i=0
->> [   40.466319] ret=0, val=0
->> [   40.468922] map=ffff020a069c9c00, i=4
->> [   40.472684] ret=0, val=0
->> [   40.475292] map=ffff020a069c9c00, i=8
->> [   40.479048] ret=0, val=0
->> [   40.481649] map=ffff020a069c9c00, i=12
->> [   40.485492] ret=0, val=0
->> [   40.488080] map=ffff020a069c9c00, i=16
->> [   40.491922] ret=0, val=0
->> [   40.494523] map=ffff020a069c9c00, i=20
->> [   40.498497] SError Interrupt on CPU0, code 0xbf000002 -- SError
->> [   40.498499] CPU: 0 PID: 486 Comm: cat Not tainted 5.11.0-rc7+ #8
->> [   40.498501] Hardware name: Raspberry Pi 4 Model B Rev 1.2 (DT)
->>
->>
->> ...Juerg
->>
->> [1]
->> diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
->> index ff2ee87987c7..9465f5a2f3b8 100644
->> --- a/drivers/base/regmap/regmap-debugfs.c
->> +++ b/drivers/base/regmap/regmap-debugfs.c
->> @@ -229,6 +229,7 @@ static ssize_t regmap_read_debugfs(struct regmap *map, unsigned int from,
->>          if (count > (PAGE_SIZE << (MAX_ORDER - 1)))
->>                  count = PAGE_SIZE << (MAX_ORDER - 1);
->>   
->>
->> +       printk("map=%px, from=%d, to=%d, count=%ld\n", map, from, to, count);
->>          buf = kmalloc(count, GFP_KERNEL);
->>          if (!buf)
->>                  return -ENOMEM;
->> @@ -253,7 +254,9 @@ static ssize_t regmap_read_debugfs(struct regmap *map, unsigned int from,
->>                          buf_pos += map->debugfs_reg_len + 2;
->>   
->>
->>                          /* Format the value, write all X if we can't read */
->> +                       printk("map=%px, i=%d\n", map, i);
->>                          ret = regmap_read(map, i, &val);
->> +                       printk("ret=%ld, val=%x\n", ret, val);
->>                          if (ret == 0)
->>                                  snprintf(buf + buf_pos, count - buf_pos,
->>                                           "%.*x", map->debugfs_val_len, val);
->>
-> 
-> 
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+Josef
