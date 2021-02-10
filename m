@@ -2,159 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A103161DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:16:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E97943161E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 10:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhBJJP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 04:15:27 -0500
-Received: from mga12.intel.com ([192.55.52.136]:2680 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229452AbhBJJJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:09:54 -0500
-IronPort-SDR: AZeiuGlE3JtrJ4wwOvUfJq8xPEpoFzae+Sk0mEMQ0GZAMIucwiAX7r8ZnhTq4/koAwKioZHhmo
- DXn8T/Kl0iDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="161187523"
-X-IronPort-AV: E=Sophos;i="5.81,167,1610438400"; 
-   d="scan'208";a="161187523"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 01:08:38 -0800
-IronPort-SDR: Kz6ZfemumhEAq9F4BVwUv7KCZdmabwJi7Sytnn33e2Q49kMpto1hUA/ILEz36i+hnNjfFwKsrh
- fdGjUbN8hwFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,167,1610438400"; 
-   d="scan'208";a="436603672"
-Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 10 Feb 2021 01:08:37 -0800
-Received: from kbuild by cd560a204411 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l9lUC-0002rw-KX; Wed, 10 Feb 2021 09:08:36 +0000
-Date:   Wed, 10 Feb 2021 17:08:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/testing] BUILD SUCCESS
- 12577b728c005a482ecee137cda523cebfaa12d0
-Message-ID: <6023a280.0Hb+wIwfKQ1j/OkD%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230374AbhBJJPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 04:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229731AbhBJJKL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 04:10:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255F6C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 01:09:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dO0NJfmNcSuP+xVtY92vSbmQs6DWgIFj1BGa13sdq/o=; b=rZolrWGo1JD/UAL5vOlr5w68xz
+        ZptF0Qbem3xuQ/xZW3Up1xaVzf2HkJk7WB0pbL3lj7KN1mO3cXB3yywMOKFmmOh6BoEcw6s3rtu9w
+        +uAyv2C1lcjn5CSdU8Tl3c3Ksi+K0lXfi3GcJ0ZeHfbbIQxDW2xzdCL/sBCt+91VluKkiZiJ1Njqw
+        lomwLzhiC3MFwrDlw2C9f9tKa/ZPGUn/JzKULySf2pbd4LytuTWT8YbAVYFKdAnD0P4xaxGrz6FQG
+        fEf4EkreJ4WpPTaVXZ2lTUAQucGsJ42haB7RWhsUm1vytvWyQLJFVWz+AGLFqm+nhbxjYSDVUQCjF
+        VbLKtjxw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l9lUW-008cwT-1X; Wed, 10 Feb 2021 09:08:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CECC13006D0;
+        Wed, 10 Feb 2021 10:08:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AF543201D19B1; Wed, 10 Feb 2021 10:08:51 +0100 (CET)
+Date:   Wed, 10 Feb 2021 10:08:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2.1 2/3] objtool,x86: Additionally decode: mov %rsp, (%reg)
+Message-ID: <YCOiowWtr8XTT+mN@hirez.programming.kicks-ass.net>
+References: <20210209091600.075402197@infradead.org>
+ <20210209093521.924097404@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210209093521.924097404@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/testing
-branch HEAD: 12577b728c005a482ecee137cda523cebfaa12d0  scsi: mpt3sas: Replace one-element array with flexible-array in struct _MPI2_CONFIG_PAGE_IO_UNIT_3
 
-elapsed time: 752m
+Subject: objtool,x86: Additionally decode: mov %rsp, (%reg)
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Wed Feb 3 12:02:18 CET 2021
 
-configs tested: 97
-configs skipped: 3
+Where we already decode: mov %rsp, %reg, also decode mov %rsp, (%reg).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Nothing should match for this new stack-op.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          r7785rp_defconfig
-sparc64                             defconfig
-arm                     am200epdkit_defconfig
-sh                            shmin_defconfig
-powerpc                     tqm8540_defconfig
-mips                           ci20_defconfig
-s390                          debug_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                 linkstation_defconfig
-arm                            xcep_defconfig
-powerpc                mpc7448_hpc2_defconfig
-ia64                             alldefconfig
-powerpc                      pasemi_defconfig
-arm                             mxs_defconfig
-arc                              alldefconfig
-mips                          ath79_defconfig
-sh                           se7751_defconfig
-mips                     decstation_defconfig
-arm                        magician_defconfig
-m68k                        m5272c3_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210209
-i386                 randconfig-a005-20210209
-i386                 randconfig-a003-20210209
-i386                 randconfig-a002-20210209
-i386                 randconfig-a006-20210209
-i386                 randconfig-a004-20210209
-i386                 randconfig-a016-20210209
-i386                 randconfig-a013-20210209
-i386                 randconfig-a012-20210209
-i386                 randconfig-a014-20210209
-i386                 randconfig-a011-20210209
-i386                 randconfig-a015-20210209
-x86_64               randconfig-a006-20210209
-x86_64               randconfig-a001-20210209
-x86_64               randconfig-a005-20210209
-x86_64               randconfig-a004-20210209
-x86_64               randconfig-a002-20210209
-x86_64               randconfig-a003-20210209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a013-20210209
-x86_64               randconfig-a014-20210209
-x86_64               randconfig-a015-20210209
-x86_64               randconfig-a012-20210209
-x86_64               randconfig-a016-20210209
-x86_64               randconfig-a011-20210209
-
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ tools/objtool/arch/x86/decode.c |   42 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 34 insertions(+), 8 deletions(-)
+
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -222,15 +222,38 @@ int arch_decode_instruction(const struct
+ 		break;
+ 
+ 	case 0x89:
+-		if (rex_w && !rex_r && modrm_mod == 3 && modrm_reg == 4) {
++		if (rex_w && !rex_r && modrm_reg == 4) {
+ 
+-			/* mov %rsp, reg */
+-			ADD_OP(op) {
+-				op->src.type = OP_SRC_REG;
+-				op->src.reg = CFI_SP;
+-				op->dest.type = OP_DEST_REG;
+-				op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
++			if (modrm_mod == 3) {
++				/* mov %rsp, reg */
++				ADD_OP(op) {
++					op->src.type = OP_SRC_REG;
++					op->src.reg = CFI_SP;
++					op->dest.type = OP_DEST_REG;
++					op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
++				}
++				break;
++
++			} else {
++				/* skip nontrivial SIB */
++				if (modrm_rm == 4 && sib != 0x24)
++					break;
++
++				/* skip RIP relative displacement */
++				if (modrm_rm == 5 && modrm_mod == 0)
++					break;
++
++				/* mov %rsp, disp(%reg) */
++				ADD_OP(op) {
++					op->src.type = OP_SRC_REG;
++					op->src.reg = CFI_SP;
++					op->dest.type = OP_DEST_REG_INDIRECT;
++					op->dest.reg = op_to_cfi_reg[modrm_rm][rex_b];
++					op->dest.offset = insn.displacement.value;
++				}
++				break;
+ 			}
++
+ 			break;
+ 		}
+ 
+@@ -259,8 +282,10 @@ int arch_decode_instruction(const struct
+ 				op->dest.reg = CFI_BP;
+ 				op->dest.offset = insn.displacement.value;
+ 			}
++			break;
++		}
+ 
+-		} else if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
++		if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
+ 
+ 			/* mov reg, disp(%rsp) */
+ 			ADD_OP(op) {
+@@ -270,6 +295,7 @@ int arch_decode_instruction(const struct
+ 				op->dest.reg = CFI_SP;
+ 				op->dest.offset = insn.displacement.value;
+ 			}
++			break;
+ 		}
+ 
+ 		break;
