@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385D431653C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5844D31653E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbhBJLaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:30:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231617AbhBJLXG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:23:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472E0C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:22:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BpOvzmMGVYD8dl7fG6gpFSbb4HEvbQKLbeXQJY+2Ovs=; b=T3bbhSHkcN63BTsbbV+GfZZJl0
-        ldGeybH8MarFeKUtn/cpJjC8nky4HObilQRcdtUFvntnX6ZNiTYHYtKmx3HtUycHXjQ/Dsl+vI6uj
-        SaU5tgNESbAyA/Kuvzzg31p0NhkQMhFKK4mrPaSEC8R1oakNWhTF5Ei8ymzd4gFA8sMtWf+Sy2o0R
-        dAjE1y5zqxVc5h+Tzu+RFBm+hUSiJUVtkmCL2MApywlaO9aDdIEDZalQwvtSafVRashJooHoSeJh/
-        BfeFvlK5KEMXZqHiq3weT8vbYAaKbBSr+ct/UmQG/rJe7ttgXD2a5VRau9bzrWEfa2hMh15gnY66y
-        Gy3MOltA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l9nZ6-008lfT-2X; Wed, 10 Feb 2021 11:21:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B5C42301324;
-        Wed, 10 Feb 2021 12:21:44 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5B670203EBF29; Wed, 10 Feb 2021 12:21:44 +0100 (CET)
-Date:   Wed, 10 Feb 2021 12:21:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "morten.rasmussen@arm.com" <morten.rasmussen@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "xuwei (O)" <xuwei5@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        wanghuiqiang <wanghuiqiang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        Meelis Roos <mroos@linux.ee>
-Subject: Re: [PATCH v2] sched/topology: fix the issue groups don't span
- domain->span for NUMA diameter > 2
-Message-ID: <YCPByAdQ+rZFzYWp@hirez.programming.kicks-ass.net>
-References: <20210203111201.20720-1-song.bao.hua@hisilicon.com>
- <YCKGVBnXzRsE6/Er@hirez.programming.kicks-ass.net>
- <4bdaa3e1a54f445fa8e629ea392e7bce@hisilicon.com>
+        id S231319AbhBJLbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:31:00 -0500
+Received: from mout.gmx.net ([212.227.17.20]:44579 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230252AbhBJLYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 06:24:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1612956162;
+        bh=xGnyn2Ve5rJzraiaOOtNY8Cnxa5j1i2c93Pf6DRvJm0=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=foChY842YMt9/Ds5XNrMOw70cVqfEy+GjyLj7+7DyTv0WIGX2gvI99ibRnGE8002R
+         oIy9zWlMNAOU6zlRmjeX905gg8iHv80e59E7Cpw/GnUtOf3u8sBbgP52nvR55NxCqT
+         cTmXcIp0DVJSotlWCAqDLcUv7hll5a9KkLuzprMs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MCbIx-1l0CwL2Qmh-009hBv; Wed, 10
+ Feb 2021 12:22:42 +0100
+Message-ID: <41cc52bd57a466f29ea81676d42f57a7b9da7dd8.camel@gmx.de>
+Subject: Re: drm/nouneau: 5.11 cycle regression bisected to 461619f5c324
+ "drm/nouveau: switch to new allocator"
+From:   Mike Galbraith <efault@gmx.de>
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+Date:   Wed, 10 Feb 2021 12:22:41 +0100
+In-Reply-To: <bfd62492-e6a9-3899-dd7d-87b7800f45c7@amd.com>
+References: <1d663cd74af91e23f4f24ebbdd65ef3ba72c15fc.camel@gmx.de>
+         <43924195-c4e1-fce4-5766-aaefe2d6f766@amd.com>
+         <2793c200beb530ed4a8ac32c5eea0f5aaa53c7e8.camel@gmx.de>
+         <bfd62492-e6a9-3899-dd7d-87b7800f45c7@amd.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4bdaa3e1a54f445fa8e629ea392e7bce@hisilicon.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:68gmFSGFN0LnHujduM9XiX8QFw5u8N+Vf0SnN2VCeJb7Bx9apQW
+ aOlFZDgNFI0fgd2zYTiqKEm+D5I/e/ZE2MBua9IeHuLOi1WGhApCkPdnINMXP8i3fQuGNPv
+ JksQ3689oZYss2/+3g45o3GTm4CavvgULUdEH1H+Dsm+BBNiVfTO+9JsoodhoBkh7zkwAUh
+ fN3dwISvvn+17fTcPWI0Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:c2lH6Z3nDvg=:wnPKdrcufMshXe4hLgZhVX
+ qPzvrlrRPn1rSZEIRd/718+RZtITvdHormkxdrlIV9emEMjVckCJ7DEQiZLkeJHtgMZPWvay0
+ a+2eZUp2JHs/5x5lwEagWE7MOslpRficsdu+/fqeUKGb3z21QdVGbGpP3gUP/gs+rrmlmvYCm
+ 3v3tBKXdq+Jo2lgNlnKTd4eJIoYjBWUZ+taqQ2Re9ygBd6twiVTxfDTdH913kz/GkC+sK+D9I
+ g2cj0k//X/CB5jbxuVDdDg9xPairiESUfB/rgAardZGcDrWK3NwErxUpb6FfH8ibKjTzzn8+h
+ hwauuXkn/DfLdy/59RW29EG/beTpUfe/Wv6jDL1dXKgC8c0takaimV5/lqTu0aFHti9DbKZlS
+ woc7hG7C32B9FXAYKFbY+caQlfRY6SnqF/0huUyeQCaOmsOfnvHT3Y8e83VKXvW+f8bkH+3SK
+ s+hi8EewDvqCEm/5FgYfvya+BsRDd7pOSDPhaDwC2CDwgOCsnJlDsZCEaLcpgUqS7zBOEwnsB
+ utTkrN1zPaVkdwIViDzyLFZS6YCHJj2qf8+LvVp4hAl+mvgxNfsoprtZj1GE2wcFA4uX7Y4KG
+ OsDzz4rTtt25lZt85MWv9YWK1E4urO4PwZfqCu04lEFMkZKG9dsJ1GItXjrpy1PkzDIlG/4Oi
+ AKIHvCEDu02ZspRAhZuDUoRVPN9+PICgBrbFy08DxMch9a2H35IHeynkhdmliysupuXSK8y7s
+ hI2XyT/dbI5K95/GbU8CoTZEF/WkAG6NATLn/RyxpbEX+jDGWtnxf+zCgWY+j3RLg+vdNZN61
+ ieoTsubW3jCZRR3j3pa0JPisD1eaCpeOLCOIZFwc9CTBFtu7eTjNkrVVPu98z0nCE8EacqskR
+ VaNps2YkJT4vp9eukY0Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 08:58:15PM +0000, Song Bao Hua (Barry Song) wrote:
+On Wed, 2021-02-10 at 11:52 +0100, Christian K=F6nig wrote:
+>
+>
+> You could try to replace the "for (order =3D min(MAX_ORDER - 1UL,
+> __fls(num_pages)); num_pages;" in ttm_pool_alloc() with "for (order =3D =
+0;
+> num_pages;" to get the old behavior.
 
-> > I've finally had a moment to think about this, would it make sense to
-> > also break up group: node0+1, such that we then end up with 3 groups of
-> > equal size?
-> 
+That's a nogo too.
 
-> Since the sched_domain[n-1] of a part of node[m]'s siblings are able
-> to cover the whole span of sched_domain[n] of node[m], there is no
-> necessity to scan over all siblings of node[m], once sched_domain[n]
-> of node[m] has been covered, we can stop making more sched_groups. So
-> the number of sched_groups is small.
-> 
-> So historically, the code has never tried to make sched_groups result
-> in equal size. And it permits the overlapping of local group and remote
-> groups.
-
-Histrorically groups have (typically) always been the same size though.
-
-The reason I did ask is because when you get one large and a bunch of
-smaller groups, the load-balancing 'pull' is relatively smaller to the
-large groups.
-
-That is, IIRC should_we_balance() ensures only 1 CPU out of the group
-continues the load-balancing pass. So if, for example, we have one group
-of 4 CPUs and one group of 2 CPUs, then the group of 2 CPUs will pull
-1/2 times, while the group of 4 CPUs will pull 1/4 times.
-
-By making sure all groups are of the same level, and thus of equal size,
-this doesn't happen.
+	-Mike
 
