@@ -2,656 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007C63170CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9AA3170D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 21:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbhBJT7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
+        id S232530AbhBJUAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 15:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbhBJT7M (ORCPT
+        with ESMTP id S232192AbhBJUAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:59:12 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD24C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:58:32 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id gx20so1798506pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:58:32 -0800 (PST)
+        Wed, 10 Feb 2021 15:00:41 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B8AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:00:01 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id k22so1821000pll.6
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 12:00:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rJdB/sgQkrka332FpJ264hp+EiZ9dcP9q0J4GYGovng=;
-        b=On7U0LNn0WLtkxIH8UQVlWzBMAbKD0mWkE96dQqEToEm5sOOtYX219hO6uDftXHRz0
-         tLZKDJBOYso/m3R6WYyiPziC1WJ5YN44G3dP5t/KNm/pSPjgEArbG+kWDe3O81kpk44B
-         zI/TMz0n6dYbJpwjUGrjF5PURxHbP5PWN7XEw=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=X/pjMNA9NPnucWtVQcDsHQiSVC+LIE3WWhwdtkccKX8=;
+        b=JxQLYqRNws+0XiSmYepBrgKjB7oFcsU6m9dIg5b/cBkd6BsTUvM5BoWPxY8b55WUBV
+         i+wBOC0xuL7yIaRxS6/PfyrT6+p0/qD9pfFzvMzi/3nhEjRvj72Wo88GLE3h82O67I/p
+         Hkq7XaMmzdxDkZJkStYbGInzasx/czdunE/UDlVlW/2nwqQFK39aEdgkiJbPsOGQfki6
+         BMfTWwzYKiuOgZzaurBoEu/DVZXMUCl4UUxXBRCDa9zzPOf4uxKJ4YFVU/KFplo1Z/uL
+         mHTHJzYJWRCPwEiQ8xKhaosjIgJQAUwpSCwItAR3vzX5Yi3+Rlqn+JpVnGo6k68SPMH9
+         VFfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rJdB/sgQkrka332FpJ264hp+EiZ9dcP9q0J4GYGovng=;
-        b=qC+Jl/1sDJqRp90yS2p4JQogRsp+CBVH0j/tbM0hAHC9u3chSxDJ034tNa/WxmpX/s
-         Nr7t52uLLDw9gbH0hB9Cu6+vI7QsfbF3OLpsT8tF0wVV+cAoYE5ev8EVZ4p8s0Z4hPZx
-         ihl6tBsO9zCYmbDePOvDB7M3ECiSlKsn/qvVuw+XuziAh1pQ1/3xLsbVWbANValHn4u5
-         p8biSx3Q4vU8eBnaC7DdCk2RI1Xj4IQsQcgMoe8FYrQlFUyLZxEc0lIucX6RUWYab4FQ
-         MynWroteVupa3rYWKunwP67u2yvu3krCQ+dr1yrE98I0RPIWyp6Z/0koeCGtIXidaeeA
-         bmWg==
-X-Gm-Message-State: AOAM533JPwnTMrK1zZzKMo/W5XewU51HKhcnNdTwMToNBVV3/C4GpBAx
-        OZt4hvBpJ0qAMghPLHTgUplK+A==
-X-Google-Smtp-Source: ABdhPJw0QnGbFGYUFRzTeHES/2lKVc5CGyD8afL+dlpmMtkOyMp3uMT36tX5di6TSjjQYzfJWdIzFA==
-X-Received: by 2002:a17:90a:7bc2:: with SMTP id d2mr596856pjl.68.1612987112254;
-        Wed, 10 Feb 2021 11:58:32 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v1sm3178978pga.63.2021.02.10.11.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 11:58:31 -0800 (PST)
-Date:   Wed, 10 Feb 2021 11:58:30 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>, haitao.huang@intel.com
-Subject: Re: [PATCH v20 21/25] x86/cet/shstk: Handle signals for shadow stack
-Message-ID: <202102101154.CEF2606E@keescook>
-References: <20210210175703.12492-1-yu-cheng.yu@intel.com>
- <20210210175703.12492-22-yu-cheng.yu@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X/pjMNA9NPnucWtVQcDsHQiSVC+LIE3WWhwdtkccKX8=;
+        b=Luzq8nOSx7Opgl5ZONcVZnETE2zlnUJaR+lIJF8N5cJDYRpOj/r4HKVCEFpihbzSVC
+         rBuBTEv8z+g++rE8Ab5rz2TMzYa+NovbuPyw/sZqEJtEfBqfo8jGp+KDT3CTmB8In5jA
+         FYLOercQq8k68zCUA9cdMVs2yKJPJaXaoFm3iMQPPBuknpDZ3pEh9hbC+HAZGeGzzBzA
+         FqLd6x8pAwRQvBA9uT7fFDEIkVMHCCiB+2ibaTjhLlFoAtJCsVl7C2jg86JjkLKR55NB
+         MnqeD8G6xqddBXcLWqdgUNoSx5SwF+fI3tDz/knHL4o+hhp6nPW3abEZyIcUyajhXFM0
+         KeZQ==
+X-Gm-Message-State: AOAM530O3uW3k0hCzClxlV0X9mbylHYPiNnTQhrPYBXzQVOXR96fCRpI
+        YIXG6JRQNn3xInVbhPoc5WpueQ==
+X-Google-Smtp-Source: ABdhPJywKtOCis9FESO3dFlgiTKGML+vt7LocNs28KG6U3dQRCW1fqRB8r5RgpR9pPnlW/MYGXyTGg==
+X-Received: by 2002:a17:90b:224f:: with SMTP id hk15mr532927pjb.31.1612987200996;
+        Wed, 10 Feb 2021 12:00:00 -0800 (PST)
+Received: from ?IPv6:2620:10d:c085:21c1::194c? ([2620:10d:c090:400::5:a5c1])
+        by smtp.gmail.com with ESMTPSA id j3sm2865402pjs.50.2021.02.10.11.59.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 12:00:00 -0800 (PST)
+Subject: Re: [PATCH v4 0/5] add support for inline encryption to device mapper
+To:     Mike Snitzer <snitzer@redhat.com>,
+        Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>,
+        Eric Biggers <ebiggers@google.com>
+References: <20210201051019.1174983-1-satyat@google.com>
+ <20210210193327.GA8226@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c681d976-f1bd-482c-8ead-b099986b70e5@kernel.dk>
+Date:   Wed, 10 Feb 2021 12:59:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210175703.12492-22-yu-cheng.yu@intel.com>
+In-Reply-To: <20210210193327.GA8226@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:56:59AM -0800, Yu-cheng Yu wrote:
-> To deliver a signal, create a shadow stack restore token and put the token
-> and the signal restorer address on the shadow stack.  For sigreturn, verify
-> the token and restore from it the shadow stack pointer.
+On 2/10/21 12:33 PM, Mike Snitzer wrote:
+> On Mon, Feb 01 2021 at 12:10am -0500,
+> Satya Tangirala <satyat@google.com> wrote:
 > 
-> A shadow stack restore token marks a restore point of the shadow stack.
-> The token is distinctively different from any shadow stack address.
-
-How is it different? It seems like it just has the last 2 bits
-masked/set?
-
-> In sigreturn, restoring from a token ensures the target address is the
-> location pointed by the token.
-
-As in, a token (real stack address with 2-bit mask) is checked against
-the real stack address? I don't see a comparison -- it only checks that
-it is < TASK_SIZE.
-
-How does cet_restore_signal() figure into this? (As in, the MSR writes?)
-
--Kees
-
-> Introduce WRUSS, which is a kernel-mode instruction but writes directly to
-> user shadow stack.  It is used to construct the user signal stack as
-> described above.
+>> This patch series adds support for inline encryption to the device mapper.
+>>
+>> Patch 1 introduces the "passthrough" keyslot manager.
+>>
+>> The regular keyslot manager is designed for inline encryption hardware that
+>> have only a small fixed number of keyslots. A DM device itself does not
+>> actually have only a small fixed number of keyslots - it doesn't actually
+>> have any keyslots in the first place, and programming an encryption context
+>> into a DM device doesn't make much semantic sense. It is possible for a DM
+>> device to set up a keyslot manager with some "sufficiently large" number of
+>> keyslots in its request queue, so that upper layers can use the inline
+>> encryption capabilities of the DM device's underlying devices, but the
+>> memory being allocated for the DM device's keyslots is a waste since they
+>> won't actually be used by the DM device.
+>>
+>> The passthrough keyslot manager solves this issue - when the block layer
+>> sees that a request queue has a passthrough keyslot manager, it doesn't
+>> attempt to program any encryption context into the keyslot manager. The
+>> passthrough keyslot manager only allows the device to expose its inline
+>> encryption capabilities, and a way for upper layers to evict keys if
+>> necessary.
+>>
+>> There also exist inline encryption hardware that can handle encryption
+>> contexts directly, and allow users to pass them a data request along with
+>> the encryption context (as opposed to inline encryption hardware that
+>> require users to first program a keyslot with an encryption context, and
+>> then require the users to pass the keyslot index with the data request).
+>> Such devices can also make use of the passthrough keyslot manager.
+>>
+>> Patch 2 introduces some keyslot manager functions useful for the device
+>> mapper.
+>>
+>> Patch 3 introduces the changes for inline encryption support for the device
+>> mapper. A DM device only exposes the intersection of the crypto
+>> capabilities of its underlying devices. This is so that in case a bio with
+>> an encryption context is eventually mapped to an underlying device that
+>> doesn't support that encryption context, the blk-crypto-fallback's cipher
+>> tfms are allocated ahead of time by the call to blk_crypto_start_using_key.
+>>
+>> Each DM target can now also specify the "DM_TARGET_PASSES_CRYPTO" flag in
+>> the target type features to opt-in to supporting passing through the
+>> underlying inline encryption capabilities.  This flag is needed because it
+>> doesn't make much semantic sense for certain targets like dm-crypt to
+>> expose the underlying inline encryption capabilities to the upper layers.
+>> Again, the DM exposes inline encryption capabilities of the underlying
+>> devices only if all of them opt-in to passing through inline encryption
+>> support.
+>>
+>> A keyslot manager is created for a table when it is loaded. However, the
+>> mapped device's exposed capabilities *only* updated once the table is
+>> swapped in (until the new table is swapped in, the mapped device continues
+>> to expose the old table's crypto capabilities).
+>>
+>> This patch only allows the keyslot manager's capabilities to *expand*
+>> because of table changes. Any attempt to load a new table that doesn't
+>> support a crypto capability that the old table did is rejected.
+>>
+>> This patch also only exposes the intersection of the underlying device's
+>> capabilities, which has the effect of causing en/decryption of a bio to
+>> fall back to the kernel crypto API (if the fallback is enabled) whenever
+>> any of the underlying devices doesn't support the encryption context of the
+>> bio - it might be possible to make the bio only fall back to the kernel
+>> crypto API if the bio's target underlying device doesn't support the bio's
+>> encryption context, but the use case may be uncommon enough in the first
+>> place not to warrant worrying about it right now.
+>>
+>> Patch 4 makes DM evict a key from all its underlying devices when asked to
+>> evict a key.
+>>
+>> Patch 5 makes some DM targets opt-in to passing through inline encryption
+>> support. It does not (yet) try to enable this option with dm-raid, since
+>> users can "hot add" disks to a raid device, which makes this not completely
+>> straightforward (we'll need to ensure that any "hot added" disks must have
+>> a superset of the inline encryption capabilities of the rest of the disks
+>> in the raid device, due to the way Patch 2 of this series works).
+>>
+>> Changes v3 => v4:
+>>  - Allocate the memory for the ksm of the mapped device in
+>>    dm_table_complete(), and install the ksm in the md queue in __bind()
+>>    (as suggested by Mike). Also drop patch 5 from v3 since it's no longer
+>>    needed.
+>>  - Some cleanups
+>>
+>> Changes v2 => v3:
+>>  - Split up the main DM patch into 4 separate patches
+>>  - Removed the priv variable added to struct keyslot manager in v2
+>>  - Use a flag in target type features for opting-in to inline encryption
+>>    support, instead of using "may_passthrough_inline_crypto"
+>>  - cleanups, improve docs and restructure code
+>>
+>> Changes v1 => v2:
+>>  - Introduce private field to struct blk_keyslot_manager
+>>  - Allow the DM keyslot manager to expand its crypto capabilities if the
+>>    table is changed.
+>>  - Make DM reject table changes that would otherwise cause crypto
+>>    capabilities to be dropped.
+>>  - Allocate the DM device's keyslot manager only when at least one crypto
+>>    capability is supported (since a NULL value for q->ksm represents "no
+>>    crypto support" anyway).
+>>  - Remove the struct blk_keyslot_manager field from struct mapped_device.
+>>    This patch now relies on just directly setting up the keyslot manager in
+>>    the request queue, since each DM device is tied to only 1 queue.
+>>
+>> Satya Tangirala (5):
+>>   block: keyslot-manager: Introduce passthrough keyslot manager
+>>   block: keyslot-manager: Introduce functions for device mapper support
+>>   dm: add support for passing through inline crypto support
+>>   dm: support key eviction from keyslot managers of underlying devices
+>>   dm: set DM_TARGET_PASSES_CRYPTO feature for some targets
+>>
+>>  block/blk-crypto.c              |   1 +
+>>  block/keyslot-manager.c         | 146 ++++++++++++++++++++++
+>>  drivers/md/dm-core.h            |   5 +
+>>  drivers/md/dm-flakey.c          |   4 +-
+>>  drivers/md/dm-linear.c          |   5 +-
+>>  drivers/md/dm-table.c           | 210 ++++++++++++++++++++++++++++++++
+>>  drivers/md/dm.c                 |  18 ++-
+>>  include/linux/device-mapper.h   |  11 ++
+>>  include/linux/keyslot-manager.h |  11 ++
+>>  9 files changed, 407 insertions(+), 4 deletions(-)
+>>
+>> -- 
+>> 2.30.0.365.g02bc693789-goog
+>>
 > 
-> Currently there is no systematic facility for extending a signal context.
-> Introduce a signal context extension 'struct sc_ext', which is used to save
-> shadow stack restore token address and WAIT_ENDBR status.  WAIT_ENDBR will
-> be introduced later in the Indirect Branch Tracking (IBT) series, but add
-> that into sc_ext now to keep the struct stable in case the IBT series is
-> applied later.
+> This set looks good to me now.
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> ---
->  arch/x86/ia32/ia32_signal.c            |  17 +++
->  arch/x86/include/asm/cet.h             |   8 ++
->  arch/x86/include/asm/fpu/internal.h    |  10 ++
->  arch/x86/include/asm/special_insns.h   |  32 ++++++
->  arch/x86/include/uapi/asm/sigcontext.h |   9 ++
->  arch/x86/kernel/cet.c                  | 152 +++++++++++++++++++++++++
->  arch/x86/kernel/fpu/signal.c           | 100 ++++++++++++++++
->  arch/x86/kernel/signal.c               |  10 ++
->  8 files changed, 338 insertions(+)
-> 
-> diff --git a/arch/x86/ia32/ia32_signal.c b/arch/x86/ia32/ia32_signal.c
-> index 5e3d9b7fd5fb..aee3e367e184 100644
-> --- a/arch/x86/ia32/ia32_signal.c
-> +++ b/arch/x86/ia32/ia32_signal.c
-> @@ -35,6 +35,7 @@
->  #include <asm/sigframe.h>
->  #include <asm/sighandling.h>
->  #include <asm/smap.h>
-> +#include <asm/cet.h>
->  
->  static inline void reload_segments(struct sigcontext_32 *sc)
->  {
-> @@ -205,6 +206,7 @@ static void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
->  				 void __user **fpstate)
->  {
->  	unsigned long sp, fx_aligned, math_size;
-> +	void __user *restorer = NULL;
->  
->  	/* Default to using normal stack */
->  	sp = regs->sp;
-> @@ -218,8 +220,23 @@ static void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
->  		 ksig->ka.sa.sa_restorer)
->  		sp = (unsigned long) ksig->ka.sa.sa_restorer;
->  
-> +	if (ksig->ka.sa.sa_flags & SA_RESTORER) {
-> +		restorer = ksig->ka.sa.sa_restorer;
-> +	} else if (current->mm->context.vdso) {
-> +		if (ksig->ka.sa.sa_flags & SA_SIGINFO)
-> +			restorer = current->mm->context.vdso +
-> +				vdso_image_32.sym___kernel_rt_sigreturn;
-> +		else
-> +			restorer = current->mm->context.vdso +
-> +				vdso_image_32.sym___kernel_sigreturn;
-> +	}
-> +
->  	sp = fpu__alloc_mathframe(sp, 1, &fx_aligned, &math_size);
->  	*fpstate = (struct _fpstate_32 __user *) sp;
-> +
-> +	if (save_cet_to_sigframe(1, *fpstate, (unsigned long)restorer))
-> +		return (void __user *)-1L;
-> +
->  	if (copy_fpstate_to_sigframe(*fpstate, (void __user *)fx_aligned,
->  				     math_size) < 0)
->  		return (void __user *) -1L;
-> diff --git a/arch/x86/include/asm/cet.h b/arch/x86/include/asm/cet.h
-> index 5750fbcbb952..73435856ce54 100644
-> --- a/arch/x86/include/asm/cet.h
-> +++ b/arch/x86/include/asm/cet.h
-> @@ -6,6 +6,8 @@
->  #include <linux/types.h>
->  
->  struct task_struct;
-> +struct sc_ext;
-> +
->  /*
->   * Per-thread CET status
->   */
-> @@ -18,9 +20,15 @@ struct cet_status {
->  int cet_setup_shstk(void);
->  void cet_disable_shstk(void);
->  void cet_free_shstk(struct task_struct *p);
-> +int cet_verify_rstor_token(bool ia32, unsigned long ssp, unsigned long *new_ssp);
-> +void cet_restore_signal(struct sc_ext *sc);
-> +int cet_setup_signal(bool ia32, unsigned long rstor, struct sc_ext *sc);
->  #else
->  static inline void cet_disable_shstk(void) {}
->  static inline void cet_free_shstk(struct task_struct *p) {}
-> +static inline void cet_restore_signal(struct sc_ext *sc) { return; }
-> +static inline int cet_setup_signal(bool ia32, unsigned long rstor,
-> +				   struct sc_ext *sc) { return -EINVAL; }
->  #endif
->  
->  #endif /* __ASSEMBLY__ */
-> diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-> index 8d33ad80704f..2c1f59ebe9d8 100644
-> --- a/arch/x86/include/asm/fpu/internal.h
-> +++ b/arch/x86/include/asm/fpu/internal.h
-> @@ -443,6 +443,16 @@ static inline void copy_kernel_to_fpregs(union fpregs_state *fpstate)
->  	__copy_kernel_to_fpregs(fpstate, -1);
->  }
->  
-> +#ifdef CONFIG_X86_CET
-> +extern int save_cet_to_sigframe(int ia32, void __user *fp,
-> +				unsigned long restorer);
-> +#else
-> +static inline int save_cet_to_sigframe(int ia32, void __user *fp,
-> +				       unsigned long restorer)
-> +{
-> +	return 0;
-> +}
-> +#endif
->  extern int copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
->  
->  /*
-> diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-> index cc177b4431ae..d979d0deb3ae 100644
-> --- a/arch/x86/include/asm/special_insns.h
-> +++ b/arch/x86/include/asm/special_insns.h
-> @@ -234,6 +234,38 @@ static inline void clwb(volatile void *__p)
->  		: [pax] "a" (p));
->  }
->  
-> +#ifdef CONFIG_X86_CET
-> +#if defined(CONFIG_IA32_EMULATION) || defined(CONFIG_X86_X32)
-> +static inline int write_user_shstk_32(unsigned long addr, unsigned int val)
-> +{
-> +	asm_volatile_goto("1: wrussd %1, (%0)\n"
-> +			  _ASM_EXTABLE(1b, %l[fail])
-> +			  :: "r" (addr), "r" (val)
-> +			  :: fail);
-> +	return 0;
-> +fail:
-> +	return -EPERM;
-> +}
-> +#else
-> +static inline int write_user_shstk_32(unsigned long addr, unsigned int val)
-> +{
-> +	WARN_ONCE(1, "%s used but not supported.\n", __func__);
-> +	return -EFAULT;
-> +}
-> +#endif
-> +
-> +static inline int write_user_shstk_64(unsigned long addr, unsigned long val)
-> +{
-> +	asm_volatile_goto("1: wrussq %1, (%0)\n"
-> +			  _ASM_EXTABLE(1b, %l[fail])
-> +			  :: "r" (addr), "r" (val)
-> +			  :: fail);
-> +	return 0;
-> +fail:
-> +	return -EPERM;
-> +}
-> +#endif /* CONFIG_X86_CET */
-> +
->  #define nop() asm volatile ("nop")
->  
->  static inline void serialize(void)
-> diff --git a/arch/x86/include/uapi/asm/sigcontext.h b/arch/x86/include/uapi/asm/sigcontext.h
-> index 844d60eb1882..cf2d55db3be4 100644
-> --- a/arch/x86/include/uapi/asm/sigcontext.h
-> +++ b/arch/x86/include/uapi/asm/sigcontext.h
-> @@ -196,6 +196,15 @@ struct _xstate {
->  	/* New processor state extensions go here: */
->  };
->  
-> +/*
-> + * Located at the end of sigcontext->fpstate, aligned to 8.
-> + */
-> +struct sc_ext {
-> +	unsigned long total_size;
-> +	unsigned long ssp;
-> +	unsigned long wait_endbr;
-> +};
-> +
->  /*
->   * The 32-bit signal frame:
->   */
-> diff --git a/arch/x86/kernel/cet.c b/arch/x86/kernel/cet.c
-> index d25a03215984..08e43d9b5176 100644
-> --- a/arch/x86/kernel/cet.c
-> +++ b/arch/x86/kernel/cet.c
-> @@ -19,6 +19,8 @@
->  #include <asm/fpu/xstate.h>
->  #include <asm/fpu/types.h>
->  #include <asm/cet.h>
-> +#include <asm/special_insns.h>
-> +#include <uapi/asm/sigcontext.h>
->  
->  static void start_update_msrs(void)
->  {
-> @@ -72,6 +74,80 @@ static unsigned long alloc_shstk(unsigned long size, int flags)
->  	return addr;
->  }
->  
-> +#define TOKEN_MODE_MASK	3UL
-> +#define TOKEN_MODE_64	1UL
-> +#define IS_TOKEN_64(token) (((token) & TOKEN_MODE_MASK) == TOKEN_MODE_64)
-> +#define IS_TOKEN_32(token) (((token) & TOKEN_MODE_MASK) == 0)
-> +
-> +/*
-> + * Verify the restore token at the address of 'ssp' is
-> + * valid and then set shadow stack pointer according to the
-> + * token.
-> + */
-> +int cet_verify_rstor_token(bool ia32, unsigned long ssp,
-> +			   unsigned long *new_ssp)
-> +{
-> +	unsigned long token;
-> +
-> +	*new_ssp = 0;
-> +
-> +	if (!IS_ALIGNED(ssp, 8))
-> +		return -EINVAL;
-> +
-> +	if (get_user(token, (unsigned long __user *)ssp))
-> +		return -EFAULT;
-> +
-> +	/* Is 64-bit mode flag correct? */
-> +	if (!ia32 && !IS_TOKEN_64(token))
-> +		return -EINVAL;
-> +	else if (ia32 && !IS_TOKEN_32(token))
-> +		return -EINVAL;
-> +
-> +	token &= ~TOKEN_MODE_MASK;
-> +
-> +	/*
-> +	 * Restore address properly aligned?
-> +	 */
-> +	if ((!ia32 && !IS_ALIGNED(token, 8)) || !IS_ALIGNED(token, 4))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * Token was placed properly?
-> +	 */
-> +	if (((ALIGN_DOWN(token, 8) - 8) != ssp) || token >= TASK_SIZE_MAX)
-> +		return -EINVAL;
-> +
-> +	*new_ssp = token;
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Create a restore token on the shadow stack.
-> + * A token is always 8-byte and aligned to 8.
-> + */
-> +static int create_rstor_token(bool ia32, unsigned long ssp,
-> +			      unsigned long *new_ssp)
-> +{
-> +	unsigned long addr;
-> +
-> +	*new_ssp = 0;
-> +
-> +	if ((!ia32 && !IS_ALIGNED(ssp, 8)) || !IS_ALIGNED(ssp, 4))
-> +		return -EINVAL;
-> +
-> +	addr = ALIGN_DOWN(ssp, 8) - 8;
-> +
-> +	/* Is the token for 64-bit? */
-> +	if (!ia32)
-> +		ssp |= TOKEN_MODE_64;
-> +
-> +	if (write_user_shstk_64(addr, ssp))
-> +		return -EFAULT;
-> +
-> +	*new_ssp = addr;
-> +	return 0;
-> +}
-> +
->  int cet_setup_shstk(void)
->  {
->  	unsigned long addr, size;
-> @@ -145,3 +221,79 @@ void cet_free_shstk(struct task_struct *tsk)
->  	cet->shstk_base = 0;
->  	cet->shstk_size = 0;
->  }
-> +
-> +/*
-> + * Called from __fpu__restore_sig() and XSAVES buffer is protected by
-> + * set_thread_flag(TIF_NEED_FPU_LOAD) in the slow path.
-> + */
-> +void cet_restore_signal(struct sc_ext *sc_ext)
-> +{
-> +	struct cet_user_state *cet_user_state;
-> +	struct cet_status *cet = &current->thread.cet;
-> +	u64 msr_val = 0;
-> +
-> +	if (!static_cpu_has(X86_FEATURE_SHSTK))
-> +		return;
-> +
-> +	cet_user_state = get_xsave_addr(&current->thread.fpu.state.xsave,
-> +					XFEATURE_CET_USER);
-> +	if (!cet_user_state)
-> +		return;
-> +
-> +	if (cet->shstk_size) {
-> +		if (test_thread_flag(TIF_NEED_FPU_LOAD))
-> +			cet_user_state->user_ssp = sc_ext->ssp;
-> +		else
-> +			wrmsrl(MSR_IA32_PL3_SSP, sc_ext->ssp);
-> +
-> +		msr_val |= CET_SHSTK_EN;
-> +	}
-> +
-> +	if (test_thread_flag(TIF_NEED_FPU_LOAD))
-> +		cet_user_state->user_cet = msr_val;
-> +	else
-> +		wrmsrl(MSR_IA32_U_CET, msr_val);
-> +}
-> +
-> +/*
-> + * Setup the shadow stack for the signal handler: first,
-> + * create a restore token to keep track of the current ssp,
-> + * and then the return address of the signal handler.
-> + */
-> +int cet_setup_signal(bool ia32, unsigned long rstor_addr, struct sc_ext *sc_ext)
-> +{
-> +	struct cet_status *cet = &current->thread.cet;
-> +	unsigned long ssp = 0, new_ssp = 0;
-> +	int err;
-> +
-> +	if (cet->shstk_size) {
-> +		if (!rstor_addr)
-> +			return -EINVAL;
-> +
-> +		ssp = cet_get_shstk_addr();
-> +		err = create_rstor_token(ia32, ssp, &new_ssp);
-> +		if (err)
-> +			return err;
-> +
-> +		if (ia32) {
-> +			ssp = new_ssp - sizeof(u32);
-> +			err = write_user_shstk_32(ssp, (unsigned int)rstor_addr);
-> +		} else {
-> +			ssp = new_ssp - sizeof(u64);
-> +			err = write_user_shstk_64(ssp, rstor_addr);
-> +		}
-> +
-> +		if (err)
-> +			return err;
-> +
-> +		sc_ext->ssp = new_ssp;
-> +	}
-> +
-> +	if (ssp) {
-> +		start_update_msrs();
-> +		wrmsrl(MSR_IA32_PL3_SSP, ssp);
-> +		end_update_msrs();
-> +	}
-> +
-> +	return 0;
-> +}
-> diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-> index a4ec65317a7f..270e4649f435 100644
-> --- a/arch/x86/kernel/fpu/signal.c
-> +++ b/arch/x86/kernel/fpu/signal.c
-> @@ -52,6 +52,74 @@ static inline int check_for_xstate(struct fxregs_state __user *buf,
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_X86_CET
-> +int save_cet_to_sigframe(int ia32, void __user *fp, unsigned long restorer)
-> +{
-> +	int err = 0;
-> +
-> +	if (!current->thread.cet.shstk_size)
-> +		return 0;
-> +
-> +	if (fp) {
-> +		struct sc_ext ext = {};
-> +
-> +		err = cet_setup_signal(ia32, restorer, &ext);
-> +		if (!err) {
-> +			void __user *p = fp;
-> +
-> +			ext.total_size = sizeof(ext);
-> +
-> +			if (ia32)
-> +				p += sizeof(struct fregs_state);
-> +
-> +			p += fpu_user_xstate_size + FP_XSTATE_MAGIC2_SIZE;
-> +			p = (void __user *)ALIGN((unsigned long)p, 8);
-> +
-> +			if (copy_to_user(p, &ext, sizeof(ext)))
-> +				return -EFAULT;
-> +		}
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static int get_cet_from_sigframe(int ia32, void __user *fp, struct sc_ext *ext)
-> +{
-> +	int err = 0;
-> +
-> +	memset(ext, 0, sizeof(*ext));
-> +
-> +	if (!current->thread.cet.shstk_size)
-> +		return 0;
-> +
-> +	if (fp) {
-> +		void __user *p = fp;
-> +
-> +		if (ia32)
-> +			p += sizeof(struct fregs_state);
-> +
-> +		p += fpu_user_xstate_size + FP_XSTATE_MAGIC2_SIZE;
-> +		p = (void __user *)ALIGN((unsigned long)p, 8);
-> +
-> +		if (copy_from_user(ext, p, sizeof(*ext)))
-> +			return -EFAULT;
-> +
-> +		if (ext->total_size != sizeof(*ext))
-> +			return -EFAULT;
-> +
-> +		if (current->thread.cet.shstk_size)
-> +			err = cet_verify_rstor_token(ia32, ext->ssp, &ext->ssp);
-> +	}
-> +
-> +	return err;
-> +}
-> +#else
-> +static int get_cet_from_sigframe(int ia32, void __user *fp, struct sc_ext *ext)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
->  /*
->   * Signal frame handlers.
->   */
-> @@ -295,6 +363,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
->  	struct task_struct *tsk = current;
->  	struct fpu *fpu = &tsk->thread.fpu;
->  	struct user_i387_ia32_struct env;
-> +	struct sc_ext sc_ext;
->  	u64 user_xfeatures = 0;
->  	int fx_only = 0;
->  	int ret = 0;
-> @@ -335,6 +404,10 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
->  	if ((unsigned long)buf_fx % 64)
->  		fx_only = 1;
->  
-> +	ret = get_cet_from_sigframe(ia32_fxstate, buf, &sc_ext);
-> +	if (ret)
-> +		return ret;
-> +
->  	if (!ia32_fxstate) {
->  		/*
->  		 * Attempt to restore the FPU registers directly from user
-> @@ -349,6 +422,8 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
->  		pagefault_enable();
->  		if (!ret) {
->  
-> +			cet_restore_signal(&sc_ext);
-> +
->  			/*
->  			 * Restore supervisor states: previous context switch
->  			 * etc has done XSAVES and saved the supervisor states
-> @@ -423,6 +498,8 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
->  		if (unlikely(init_bv))
->  			copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
->  
-> +		cet_restore_signal(&sc_ext);
-> +
->  		/*
->  		 * Restore previously saved supervisor xstates along with
->  		 * copied-in user xstates.
-> @@ -491,12 +568,35 @@ int fpu__restore_sig(void __user *buf, int ia32_frame)
->  	return __fpu__restore_sig(buf, buf_fx, size);
->  }
->  
-> +#ifdef CONFIG_X86_CET
-> +static unsigned long fpu__alloc_sigcontext_ext(unsigned long sp)
-> +{
-> +	struct cet_status *cet = &current->thread.cet;
-> +
-> +	/*
-> +	 * sigcontext_ext is at: fpu + fpu_user_xstate_size +
-> +	 * FP_XSTATE_MAGIC2_SIZE, then aligned to 8.
-> +	 */
-> +	if (cet->shstk_size)
-> +		sp -= (sizeof(struct sc_ext) + 8);
-> +
-> +	return sp;
-> +}
-> +#else
-> +static unsigned long fpu__alloc_sigcontext_ext(unsigned long sp)
-> +{
-> +	return sp;
-> +}
-> +#endif
-> +
->  unsigned long
->  fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
->  		     unsigned long *buf_fx, unsigned long *size)
->  {
->  	unsigned long frame_size = xstate_sigframe_size();
->  
-> +	sp = fpu__alloc_sigcontext_ext(sp);
-> +
->  	*buf_fx = sp = round_down(sp - frame_size, 64);
->  	if (ia32_frame && use_fxsr()) {
->  		frame_size += sizeof(struct fregs_state);
-> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-> index ea794a083c44..1807379f1d86 100644
-> --- a/arch/x86/kernel/signal.c
-> +++ b/arch/x86/kernel/signal.c
-> @@ -46,6 +46,7 @@
->  #include <asm/syscall.h>
->  #include <asm/sigframe.h>
->  #include <asm/signal.h>
-> +#include <asm/cet.h>
->  
->  #ifdef CONFIG_X86_64
->  /*
-> @@ -239,6 +240,9 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
->  	unsigned long buf_fx = 0;
->  	int onsigstack = on_sig_stack(sp);
->  	int ret;
-> +#ifdef CONFIG_X86_64
-> +	void __user *restorer = NULL;
-> +#endif
->  
->  	/* redzone */
->  	if (IS_ENABLED(CONFIG_X86_64))
-> @@ -270,6 +274,12 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
->  	if (onsigstack && !likely(on_sig_stack(sp)))
->  		return (void __user *)-1L;
->  
-> +#ifdef CONFIG_X86_64
-> +	if (ka->sa.sa_flags & SA_RESTORER)
-> +		restorer = ka->sa.sa_restorer;
-> +	ret = save_cet_to_sigframe(0, *fpstate, (unsigned long)restorer);
-> +#endif
-> +
->  	/* save i387 and extended state */
->  	ret = copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size);
->  	if (ret < 0)
-> -- 
-> 2.21.0
-> 
-> 
+> To avoid DM needing another rebase on block: Jens (and others), would
+> you like to review patches 1 and 2 (and reply with your Reviewed-by) so
+> I could pickup the DM required keyslot-manager changes along with
+> patches 3-5?
+
+You can add my acked-by to 1+2 and queue it up.
 
 -- 
-Kees Cook
+Jens Axboe
+
