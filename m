@@ -2,191 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443B831704F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F34317044
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbhBJTg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:36:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51866 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232764AbhBJTfD (ORCPT
+        id S230257AbhBJTfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:35:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232312AbhBJTeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:35:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612985615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tfw6nVO2fS12r+MnN1Y2VhTe0OzbmAC5Uh/3J+HaiN0=;
-        b=JhenM6biNnjPZnYhKHIrOrFT0dj/K4cQwt/te7PZMbFB3o2FWkFk2a1KUuKMGWzLBSkODw
-        XBrJEwoKh7343DaY6pNlc0M/HAymkiix2+sgRvZQqXaS/vrr7idUG+lEN0ya4bMlfO9U5d
-        g55JPaX9XUUKVZUo1wizNb2p+/OgH+I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-116-eWL8DPmbOr6W5GYW1UIf4w-1; Wed, 10 Feb 2021 14:33:32 -0500
-X-MC-Unique: eWL8DPmbOr6W5GYW1UIf4w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E2AB5225;
-        Wed, 10 Feb 2021 19:33:31 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E7FFD60C0F;
-        Wed, 10 Feb 2021 19:33:27 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 14:33:27 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Satya Tangirala <satyat@google.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v4 0/5] add support for inline encryption to device mapper
-Message-ID: <20210210193327.GA8226@redhat.com>
-References: <20210201051019.1174983-1-satyat@google.com>
+        Wed, 10 Feb 2021 14:34:25 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4536AC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:33:33 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id d26so1945487pfn.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 11:33:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5bTpxzmhyqMaSkCM7ds9uXFXoaDcIa78EBDnlUPl2tM=;
+        b=VWbs0iMTi2vxgqSwLGR1NXJdtgPJJ6t4i0fxXfJCU5WzFFtliBM/eTDIg5VfwrHuVh
+         oH1P/5nO3zxEOnMd9vQFOtU3haSm17GRulcWBQzjEjFXR4fgrpUzh5+QedWYnWjBhM3t
+         iJxFNTw5/lOdvOHNgy3tzs1MED1SyuOioaqak=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5bTpxzmhyqMaSkCM7ds9uXFXoaDcIa78EBDnlUPl2tM=;
+        b=TZx8M6z07mxSoQuzd/qFA6BJH2OW8psrBEg0L8OR6niExMR41uDvJUah1FNsr3gLw/
+         +/YlBnADmpohF0eAtBB0rWOhUvx/zI/tSLiu+Zd4DDgyPNQez5H7O/z3yPIc8rCU41Hr
+         EPIvSVaWnHR6JvxTd96sdc8jrcwd6iMTz4nnC4Ocp20r74fHiPnZ20gRMu8WWf+Lp6gE
+         /JzwGEjP81Aarzxnu/IQuMxtDAqyHWYKUIN4qr0l84kru+4fPSo7toWlGVM1w822PBCp
+         Zj++nDHbRB+luNrwsMCRjY3Ag8GpRxg1651Y0r+QEHJpIPgFb2Dy79aRrsYyz36zZJ7C
+         MlJA==
+X-Gm-Message-State: AOAM530yixRoHUgcgjzAmgCKbFSieK6EeBjd8B+PnJx2PfBeAJeX9oJz
+        3gwPxs0BJqws8wAQtAArXJsH+A==
+X-Google-Smtp-Source: ABdhPJyb9Yi+7DfO6DoJ8QQltqWHPhVAwYYQxHwDF6BnEPn/Zzx5qk5FkuYTK7JIoitwMok0JH75Tw==
+X-Received: by 2002:a63:5459:: with SMTP id e25mr4520747pgm.403.1612985612828;
+        Wed, 10 Feb 2021 11:33:32 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o185sm2139133pfb.196.2021.02.10.11.33.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 11:33:32 -0800 (PST)
+Date:   Wed, 10 Feb 2021 11:33:30 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>, haitao.huang@intel.com
+Subject: Re: [PATCH v20 02/25] x86/cet/shstk: Add Kconfig option for
+ user-mode control-flow protection
+Message-ID: <202102101133.3C94A64@keescook>
+References: <20210210175703.12492-1-yu-cheng.yu@intel.com>
+ <20210210175703.12492-3-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210201051019.1174983-1-satyat@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210210175703.12492-3-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01 2021 at 12:10am -0500,
-Satya Tangirala <satyat@google.com> wrote:
+On Wed, Feb 10, 2021 at 09:56:40AM -0800, Yu-cheng Yu wrote:
+> Shadow Stack provides protection against function return address
+> corruption.  It is active when the processor supports it, the kernel has
+> CONFIG_X86_CET enabled, and the application is built for the feature.
+> This is only implemented for the 64-bit kernel.  When it is enabled, legacy
+> non-Shadow Stack applications continue to work, but without protection.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> ---
+>  arch/x86/Kconfig           | 23 +++++++++++++++++++++++
+>  arch/x86/Kconfig.assembler |  5 +++++
+>  2 files changed, 28 insertions(+)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 21f851179ff0..1138b5fa9b4f 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -28,6 +28,7 @@ config X86_64
+>  	select ARCH_HAS_GIGANTIC_PAGE
+>  	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128
+>  	select ARCH_USE_CMPXCHG_LOCKREF
+> +	select ARCH_HAS_SHADOW_STACK
+>  	select HAVE_ARCH_SOFT_DIRTY
+>  	select MODULES_USE_ELF_RELA
+>  	select NEED_DMA_MAP_STATE
+> @@ -1951,6 +1952,28 @@ config X86_SGX
+>  
+>  	  If unsure, say N.
+>  
+> +config ARCH_HAS_SHADOW_STACK
+> +	def_bool n
+> +
+> +config X86_CET
+> +	prompt "Intel Control-flow protection for user-mode"
+> +	def_bool n
+> +	depends on X86_64
 
-> This patch series adds support for inline encryption to the device mapper.
-> 
-> Patch 1 introduces the "passthrough" keyslot manager.
-> 
-> The regular keyslot manager is designed for inline encryption hardware that
-> have only a small fixed number of keyslots. A DM device itself does not
-> actually have only a small fixed number of keyslots - it doesn't actually
-> have any keyslots in the first place, and programming an encryption context
-> into a DM device doesn't make much semantic sense. It is possible for a DM
-> device to set up a keyslot manager with some "sufficiently large" number of
-> keyslots in its request queue, so that upper layers can use the inline
-> encryption capabilities of the DM device's underlying devices, but the
-> memory being allocated for the DM device's keyslots is a waste since they
-> won't actually be used by the DM device.
-> 
-> The passthrough keyslot manager solves this issue - when the block layer
-> sees that a request queue has a passthrough keyslot manager, it doesn't
-> attempt to program any encryption context into the keyslot manager. The
-> passthrough keyslot manager only allows the device to expose its inline
-> encryption capabilities, and a way for upper layers to evict keys if
-> necessary.
-> 
-> There also exist inline encryption hardware that can handle encryption
-> contexts directly, and allow users to pass them a data request along with
-> the encryption context (as opposed to inline encryption hardware that
-> require users to first program a keyslot with an encryption context, and
-> then require the users to pass the keyslot index with the data request).
-> Such devices can also make use of the passthrough keyslot manager.
-> 
-> Patch 2 introduces some keyslot manager functions useful for the device
-> mapper.
-> 
-> Patch 3 introduces the changes for inline encryption support for the device
-> mapper. A DM device only exposes the intersection of the crypto
-> capabilities of its underlying devices. This is so that in case a bio with
-> an encryption context is eventually mapped to an underlying device that
-> doesn't support that encryption context, the blk-crypto-fallback's cipher
-> tfms are allocated ahead of time by the call to blk_crypto_start_using_key.
-> 
-> Each DM target can now also specify the "DM_TARGET_PASSES_CRYPTO" flag in
-> the target type features to opt-in to supporting passing through the
-> underlying inline encryption capabilities.  This flag is needed because it
-> doesn't make much semantic sense for certain targets like dm-crypt to
-> expose the underlying inline encryption capabilities to the upper layers.
-> Again, the DM exposes inline encryption capabilities of the underlying
-> devices only if all of them opt-in to passing through inline encryption
-> support.
-> 
-> A keyslot manager is created for a table when it is loaded. However, the
-> mapped device's exposed capabilities *only* updated once the table is
-> swapped in (until the new table is swapped in, the mapped device continues
-> to expose the old table's crypto capabilities).
-> 
-> This patch only allows the keyslot manager's capabilities to *expand*
-> because of table changes. Any attempt to load a new table that doesn't
-> support a crypto capability that the old table did is rejected.
-> 
-> This patch also only exposes the intersection of the underlying device's
-> capabilities, which has the effect of causing en/decryption of a bio to
-> fall back to the kernel crypto API (if the fallback is enabled) whenever
-> any of the underlying devices doesn't support the encryption context of the
-> bio - it might be possible to make the bio only fall back to the kernel
-> crypto API if the bio's target underlying device doesn't support the bio's
-> encryption context, but the use case may be uncommon enough in the first
-> place not to warrant worrying about it right now.
-> 
-> Patch 4 makes DM evict a key from all its underlying devices when asked to
-> evict a key.
-> 
-> Patch 5 makes some DM targets opt-in to passing through inline encryption
-> support. It does not (yet) try to enable this option with dm-raid, since
-> users can "hot add" disks to a raid device, which makes this not completely
-> straightforward (we'll need to ensure that any "hot added" disks must have
-> a superset of the inline encryption capabilities of the rest of the disks
-> in the raid device, due to the way Patch 2 of this series works).
-> 
-> Changes v3 => v4:
->  - Allocate the memory for the ksm of the mapped device in
->    dm_table_complete(), and install the ksm in the md queue in __bind()
->    (as suggested by Mike). Also drop patch 5 from v3 since it's no longer
->    needed.
->  - Some cleanups
-> 
-> Changes v2 => v3:
->  - Split up the main DM patch into 4 separate patches
->  - Removed the priv variable added to struct keyslot manager in v2
->  - Use a flag in target type features for opting-in to inline encryption
->    support, instead of using "may_passthrough_inline_crypto"
->  - cleanups, improve docs and restructure code
-> 
-> Changes v1 => v2:
->  - Introduce private field to struct blk_keyslot_manager
->  - Allow the DM keyslot manager to expand its crypto capabilities if the
->    table is changed.
->  - Make DM reject table changes that would otherwise cause crypto
->    capabilities to be dropped.
->  - Allocate the DM device's keyslot manager only when at least one crypto
->    capability is supported (since a NULL value for q->ksm represents "no
->    crypto support" anyway).
->  - Remove the struct blk_keyslot_manager field from struct mapped_device.
->    This patch now relies on just directly setting up the keyslot manager in
->    the request queue, since each DM device is tied to only 1 queue.
-> 
-> Satya Tangirala (5):
->   block: keyslot-manager: Introduce passthrough keyslot manager
->   block: keyslot-manager: Introduce functions for device mapper support
->   dm: add support for passing through inline crypto support
->   dm: support key eviction from keyslot managers of underlying devices
->   dm: set DM_TARGET_PASSES_CRYPTO feature for some targets
-> 
->  block/blk-crypto.c              |   1 +
->  block/keyslot-manager.c         | 146 ++++++++++++++++++++++
->  drivers/md/dm-core.h            |   5 +
->  drivers/md/dm-flakey.c          |   4 +-
->  drivers/md/dm-linear.c          |   5 +-
->  drivers/md/dm-table.c           | 210 ++++++++++++++++++++++++++++++++
->  drivers/md/dm.c                 |  18 ++-
->  include/linux/device-mapper.h   |  11 ++
->  include/linux/keyslot-manager.h |  11 ++
->  9 files changed, 407 insertions(+), 4 deletions(-)
-> 
+This depends isn't needed any more. With that fixed:
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+> +	depends on AS_WRUSS
+> +	depends on ARCH_HAS_SHADOW_STACK
+> +	select ARCH_USES_HIGH_VMA_FLAGS
+> +	help
+> +	  Control-flow protection is a set of hardware features which place
+> +	  additional restrictions on indirect branches.  These help
+> +	  mitigate ROP attacks.  Applications must be enabled to use it,
+> +	  and old userspace does not get protection "for free".
+> +	  Support for this feature is present on Tiger Lake family of
+> +	  processors released in 2020 or later.  Enabling this feature
+> +	  increases kernel text size by 3.7 KB.
+> +	  See Documentation/x86/intel_cet.rst for more information.
+> +
+> +	  If unsure, say N.
+> +
+>  config EFI
+>  	bool "EFI runtime service support"
+>  	depends on ACPI
+> diff --git a/arch/x86/Kconfig.assembler b/arch/x86/Kconfig.assembler
+> index 26b8c08e2fc4..00c79dd93651 100644
+> --- a/arch/x86/Kconfig.assembler
+> +++ b/arch/x86/Kconfig.assembler
+> @@ -19,3 +19,8 @@ config AS_TPAUSE
+>  	def_bool $(as-instr,tpause %ecx)
+>  	help
+>  	  Supported by binutils >= 2.31.1 and LLVM integrated assembler >= V7
+> +
+> +config AS_WRUSS
+> +	def_bool $(as-instr,wrussq %rax$(comma)(%rbx))
+> +	help
+> +	  Supported by binutils >= 2.31 and LLVM integrated assembler
 > -- 
-> 2.30.0.365.g02bc693789-goog
+> 2.21.0
 > 
 
-This set looks good to me now.
-
-To avoid DM needing another rebase on block: Jens (and others), would
-you like to review patches 1 and 2 (and reply with your Reviewed-by) so
-I could pickup the DM required keyslot-manager changes along with
-patches 3-5?
-
-Thanks,
-Mike
-
+-- 
+Kees Cook
