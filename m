@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FAC315F41
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D4B315F4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 07:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbhBJGIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 01:08:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230179AbhBJGHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 01:07:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8137F64E45
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 06:06:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612937175;
-        bh=AYjIrqXzH092pJrb+fpYWCgWxniCzrONOCeX2GjsGQQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lyAOkCTjGENHmvAVf+psM+N+q/UL+SZjgD/6kFekVIFYTLKYXCjHJ1Y67xy4+K5SQ
-         hf2TN4Pphv3Z9+tTfnCQHWY5t+WO4uvM8UaeyWEpJqTtUmLjuQSTOjS7uYL6kAvrNO
-         k/7JbMhc8hFk7ACYY5Is3U/gO3Zkp5A8+XK2HK//8Udt4bJt7UkANItOGcPE04PT0B
-         xJCzKiuiNS7NCy+L7UzD5HgEmHzXff8hLME5/U8w1GBL+rMMAvybckOSIrqd+srpsS
-         ra4JQwU1hutkybIF7VGb7svG4Kq8gy4qOhAVUQAiY1NRXdkSxFuMsAqWVnPqDd4CIU
-         O6wr/nvLS7qFg==
-Received: by mail-ej1-f48.google.com with SMTP id sa23so1912243ejb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Feb 2021 22:06:15 -0800 (PST)
-X-Gm-Message-State: AOAM531BUmH2nXav4eAnaX9NqVuEsQHzLc9qKEsX8c6vrWs8YPxrC6Z8
-        FbDftBujxPNfeM+Q3Kb9Wbmem1f457DVea/qeFnb0w==
-X-Google-Smtp-Source: ABdhPJwTiLIv2hR8Rx9uP45u07KHJA7194PTpFCFdPazAHEGcM/mbiaSL40VkfUsoBuNVaygvJGNnr1/p3fAKWdIQAQ=
-X-Received: by 2002:a17:906:6bc5:: with SMTP id t5mr1332289ejs.253.1612937174055;
- Tue, 09 Feb 2021 22:06:14 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1612924255.git.luto@kernel.org> <8969c688ee663e99901cf4b0383bc6662ce79707.1612924255.git.luto@kernel.org>
-In-Reply-To: <8969c688ee663e99901cf4b0383bc6662ce79707.1612924255.git.luto@kernel.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 9 Feb 2021 22:06:02 -0800
-X-Gmail-Original-Message-ID: <CALCETrW8m-4AG4aZUYx35p0kc2aWiUq4p-WCs0+BOtb3WWE3aA@mail.gmail.com>
-Message-ID: <CALCETrW8m-4AG4aZUYx35p0kc2aWiUq4p-WCs0+BOtb3WWE3aA@mail.gmail.com>
-Subject: Re: [PATCH v2 08/14] x86/fault: Skip erratum #93 workaround on new CPUs
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
+        id S231616AbhBJGRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 01:17:15 -0500
+Received: from mail-lj1-f171.google.com ([209.85.208.171]:38052 "EHLO
+        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231569AbhBJGQk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 01:16:40 -0500
+Received: by mail-lj1-f171.google.com with SMTP id f19so1335232ljn.5;
+        Tue, 09 Feb 2021 22:16:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=j4G9EDf26Spz2kpabHzZmd930E3NJmkDL0N+wwadLRs=;
+        b=ga20xkqhZAWtk5OhkltF6gXu/IuSXpOMf7ef2lGR1hJyxxrgLrPLceaycx8rwDHxRG
+         3msHwXUYCsoqZCuF4d4EP2m/WYVwL7qXzDp7Lm/Y6CdvreDbCjI4S6zXXfmFbuPumm0q
+         Qf4n+3ZNJCHkl++uc42gjqb0kNW/rQ2BQSt9Iwvwqr9GWXF6YPICQZnQRdVENIQBr0p2
+         q+mfnFeVp4nhckGGRV43BsmCA53ZG1wQ0BVcEsnqX+vYc2nGSX+/9ybNDpio9GGHuywD
+         PaojJRFSPCtbRI8c63PZEMFhMzhWAV6tKgjzIkGUGANRhNP/ZOhPAQgOeouIowOX/Otl
+         YgDQ==
+X-Gm-Message-State: AOAM533Vdut+IJULxOyMxAKIk/5XkIy1Y6MegT0Y3tWSpboBhSq1PixR
+        HlVcZXixKXacTgVKF0uVziGEJPEwy87Gyg==
+X-Google-Smtp-Source: ABdhPJxtGGxJVAVTpKZLEkSXxldgTXWVMJ524tVQz+HX0vNwsESuMTY0xEs99AH1fvisI+u3oGDQbw==
+X-Received: by 2002:a2e:a590:: with SMTP id m16mr997787ljp.325.1612937751147;
+        Tue, 09 Feb 2021 22:15:51 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id i18sm141355lfe.177.2021.02.09.22.15.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 22:15:50 -0800 (PST)
+Message-ID: <79e133f33ed9bf03b255aab00542d360ad91174c.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH v7 2/6] mfd: Support ROHM BD9576MUF and BD9573MUF
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-watchdog@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+In-Reply-To: <20210209145507.GA220368@dell>
+References: <cover.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
+         <185621c77e5eaecea239e0146ea48bc7a2648b9f.1611324968.git.matti.vaittinen@fi.rohmeurope.com>
+         <20210209145507.GA220368@dell>
 Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Date:   Wed, 10 Feb 2021 08:15:44 +0200
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 6:33 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> Erratum #93 applies to the first generation of AMD K8 CPUs.  Skip the
-> workaround on newer CPUs.
+Hello Lee,
 
-Whoops, this breaks the !CPU_SUP_AMD build.  It needs a fixup like this:
+On Tue, 2021-02-09 at 14:55 +0000, Lee Jones wrote:
+> On Fri, 22 Jan 2021, Matti Vaittinen wrote:
+> 
+> > Add core support for ROHM BD9576MUF and BD9573MUF PMICs which are
+> > mainly used to power the R-Car series processors.
+> > 
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > ---
+> > +
+> > +static struct mfd_cell bd9573_mfd_cells[] = {
+> > +	{ .name = "bd9573-pmic", },
+> > +	{ .name = "bd9576-wdt", },
+> > +};
+> > +
+> > +static struct mfd_cell bd9576_mfd_cells[] = {
+> > +	{ .name = "bd9576-pmic", },
+> > +	{ .name = "bd9576-wdt", },
+> > +};
+> 
+> What is a PMIC in this context?
+> 
+> To me a PMIC is a bunch of devices.  What is this probing?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=x86/fault&id=06772a3b6918bf6d6d0778946149b7d56ae30d80
+I agree. PMIC is the IC as a whole. This name was not the best one. 
+> 
+> Maybe this is *-regulator?
 
-Boris, do you want a v3?
+That would be more descriptive and I can change this. However, it means
+I need to change the already applied regulator part too. Furthermore,
+all other ROHM PMIC drivers I've written use the <part-name>-pmic for
+regulators and so does a few other drivers at least for ICs from Maxim,
+Samsung and TI. That's why I don't think the <partname>-pmic is that
+confusing. If it was my decision, I would stick with the pmic for the
+sake of the consistency.
 
->
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
->  arch/x86/mm/fault.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index cbb1a9754473..3fe2f4800b69 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -442,9 +442,8 @@ static void dump_pagetable(unsigned long address)
->   */
->  static int is_errata93(struct pt_regs *regs, unsigned long address)
->  {
-> -#if defined(CONFIG_X86_64) && defined(CONFIG_CPU_SUP_AMD)
-> -       if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD
-> -           || boot_cpu_data.x86 != 0xf)
-> +#if defined(CONFIG_X86_64)
-> +       if (!is_amd_k8_pre_npt())
->                 return 0;
->
->         if (user_mode(regs))
-> --
-> 2.29.2
->
++
+> > +	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO, mfd,
+> > cells,
+> 
+> This nomenclature is confusing.
+> 
+> cells and num_cells would clear it up.
+
+I can change it.
++
+> > +#define BD957X_MAX_REGISTER 0x61
+> 
+> Nit: Can you tab these out for improved readability please?
+Sure, no problem.
+
+Thanks for the review!
+
+Best Regards
+	--Matti
+
+--
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland
+SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+
+Simon says - in Latin please.
+"non cogito me" dixit Rene Descarte, deinde evanescavit
+
+(Thanks for the translation Simon)
+
+
