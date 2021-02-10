@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD4A316322
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:04:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB613163B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhBJKDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbhBJKAT (ORCPT
+        id S230200AbhBJKYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:24:41 -0500
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:58501 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhBJKMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:00:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FAFC06178C;
-        Wed, 10 Feb 2021 01:57:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=YKTLEno4BoA1uPNMvgxx9dNuxXxSTmmhndwcXjQkrV4=; b=QvU3B3H4RDAcSNbKxreIM/Nr2Q
-        rINm9XHMOmzWqNGXWuaWXlZi2agPamfUhuRvESci2niE2s7ucyAxICbMghzEP0uXllV/8TgR6QSuI
-        OSQWGWlyQpRdyUFkCgsKZtkFr4CATjHpCbTxxW492l0tjxG917oQSXVrPh6uuMeA4XdU62HtaEh/C
-        lH/IEpNVg3r5yyM7/PRpj6U8DSc57FZRY/joYX5ZmsZX+RNFsbnrERSHBJbaExBd9XZg3qCsKbeOd
-        Oc2+Ow9eu063j8/76xXN7zKFH/SzMzUAIPzlskPSjJb28IwLsAIZ7GpjU0wMwRFNiMuggLn1wg946
-        7hpObaoQ==;
-Received: from [2001:4bb8:184:7d04:5e70:671e:7b3:191] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l9mF9-008g5d-Ea; Wed, 10 Feb 2021 09:57:09 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        Huacai Chen <chenhuacai@kernel.org>
-Subject: [PATCH 6/6] MIPS: remove CONFIG_DMA_PERDEV_COHERENT
-Date:   Wed, 10 Feb 2021 10:56:41 +0100
-Message-Id: <20210210095641.23856-7-hch@lst.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210210095641.23856-1-hch@lst.de>
-References: <20210210095641.23856-1-hch@lst.de>
+        Wed, 10 Feb 2021 05:12:33 -0500
+X-Greylist: delayed 858 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Feb 2021 05:12:29 EST
+Received: from ios.cs.uni-dortmund.de (ios.cs.uni-dortmund.de [129.217.43.100])
+        (authenticated bits=0)
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 11A9unNX027344
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 10:56:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
+        s=unimail; t=1612951017;
+        bh=HPi4PR1X2ZJY9+JjYLzNxyQAsDi3SUIOPqfv2OzAdSQ=;
+        h=From:To:Cc:Subject:Date;
+        b=C3ZWOFGsjiS+o2dyE2P3lkBLkR7MJpdzsVr/KZuHAos+9Ct/sD+cwzytvxFBle8jK
+         idmg3TfrIMT4wuCPKkl6uhFGhlg6vSj2gXD06O6blzmanPFf84nM411pfE552Yt+7T
+         cqQaK55yo1K/GK4ZXtNYTj1J6uI1c9fzBjDhduFU=
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Cc:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] Updated locking documentation for transaction_t
+Date:   Wed, 10 Feb 2021 10:56:48 +0100
+Message-Id: <20210210095649.51836-1-alexander.lochmann@tu-dortmund.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just select DMA_NONCOHERENT and ARCH_HAS_SETUP_DMA_OPS from the
-MIPS_GENERIC platform instead.
+Some members of transaction_t are allowed to be read without
+any lock being held if consistency doesn't matter.
+Based on LockDoc's findings, we extended the locking
+documentation of those members.
+Each one of them is marked with a short comment:
+"no lock for quick racy checks".
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
+Signed-off-by: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Signed-off-by: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>
 ---
- arch/mips/Kconfig              | 3 ++-
- arch/mips/mm/dma-noncoherent.c | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ include/linux/jbd2.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 1f1603a08a6d2d..32a693d033adfd 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -123,6 +123,7 @@ choice
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 99d3cd051ac3..18f77d9b1745 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -594,18 +594,18 @@ struct transaction_s
+ 	 */
+ 	unsigned long		t_log_start;
  
- config MIPS_GENERIC_KERNEL
- 	bool "Generic board-agnostic MIPS kernel"
-+	select ARCH_HAS_SETUP_DMA_OPS
- 	select MIPS_GENERIC
- 	select BOOT_RAW
- 	select BUILTIN_DTB
-@@ -132,7 +133,7 @@ config MIPS_GENERIC_KERNEL
- 	select CPU_MIPSR2_IRQ_EI
- 	select CPU_MIPSR2_IRQ_VI
- 	select CSRC_R4K
--	select DMA_PERDEV_COHERENT
-+	select DMA_NONCOHERENT
- 	select HAVE_PCI
- 	select IRQ_MIPS_CPU
- 	select MIPS_AUTO_PFN_OFFSET
-diff --git a/arch/mips/mm/dma-noncoherent.c b/arch/mips/mm/dma-noncoherent.c
-index 90b562753eb892..212f3ce75a6bd3 100644
---- a/arch/mips/mm/dma-noncoherent.c
-+++ b/arch/mips/mm/dma-noncoherent.c
-@@ -135,7 +135,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
- }
- #endif
+-	/* Number of buffers on the t_buffers list [j_list_lock] */
++	/* Number of buffers on the t_buffers list [j_list_lock, no lock for quick racy checks] */
+ 	int			t_nr_buffers;
  
--#ifdef CONFIG_DMA_PERDEV_COHERENT
-+#ifdef CONFIG_ARCH_HAS_SETUP_DMA_OPS
- void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
- 		const struct iommu_ops *iommu, bool coherent)
- {
+ 	/*
+ 	 * Doubly-linked circular list of all buffers reserved but not yet
+-	 * modified by this transaction [j_list_lock]
++	 * modified by this transaction [j_list_lock, no lock for quick racy checks]
+ 	 */
+ 	struct journal_head	*t_reserved_list;
+ 
+ 	/*
+ 	 * Doubly-linked circular list of all metadata buffers owned by this
+-	 * transaction [j_list_lock]
++	 * transaction [j_list_lock, no lock for quick racy checks]
+ 	 */
+ 	struct journal_head	*t_buffers;
+ 
+@@ -631,7 +631,7 @@ struct transaction_s
+ 	/*
+ 	 * Doubly-linked circular list of metadata buffers being shadowed by log
+ 	 * IO.  The IO buffers on the iobuf list and the shadow buffers on this
+-	 * list match each other one for one at all times. [j_list_lock]
++	 * list match each other one for one at all times. [j_list_lock, no lock for quick racy checks]
+ 	 */
+ 	struct journal_head	*t_shadow_list;
+ 
 -- 
-2.29.2
+2.20.1
 
