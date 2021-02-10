@@ -2,73 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308D831602E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D5C31604D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 08:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232713AbhBJHmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 02:42:21 -0500
-Received: from smtprelay0243.hostedemail.com ([216.40.44.243]:57246 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231520AbhBJHmA (ORCPT
+        id S233061AbhBJHru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 02:47:50 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:60130 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232955AbhBJHqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 02:42:00 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 81F6718010A5F;
-        Wed, 10 Feb 2021 07:41:15 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2194:2199:2393:2525:2553:2561:2564:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3350:3622:3865:3867:3868:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6742:6743:7652:7903:9025:9108:10004:10400:10848:11232:11658:11854:11914:12043:12297:12438:12555:12679:12740:12760:12895:12986:13069:13311:13357:13439:13845:14181:14659:14721:14819:21080:21324:21611:21627:21889:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: trip57_0a1601f2760e
-X-Filterd-Recvd-Size: 2373
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 10 Feb 2021 07:41:10 +0000 (UTC)
-Message-ID: <715cfa18165f472420496de96a0a08837de2902d.camel@perches.com>
-Subject: Re: [PATCH] Documentation: Replace lkml.org links with lore
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        bhelgaas@google.com, robh+dt@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kishon@ti.com, lorenzo.pieralisi@arm.com, hongxing.zhu@nxp.com,
-        l.stach@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, m-karicheri2@ti.com, songxiaowei@hisilicon.com,
-        wangbinghui@hisilicon.com, amurray@thegoodpenguin.co.uk,
-        sathyanarayanan.kuppuswamy@linux.intel.com, hkallweit1@gmail.com,
-        rafael.j.wysocki@intel.com, rdunlap@infradead.org,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Tue, 09 Feb 2021 23:41:09 -0800
-In-Reply-To: <202102092327.F6D8335A7@keescook>
-References: <20200627103050.71712-1-grandmaster@al2klimov.de>
-         <20200630180917.GA3455699@bjorn-Precision-5520>
-         <20200630140417.3a2dba67@lwn.net>
-         <77cdb7f32cfb087955bfc3600b86c40bed5d4104.camel@perches.com>
-         <202102092327.F6D8335A7@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 10 Feb 2021 02:46:38 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=songyang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UOLx6x._1612943154;
+Received: from localhost(mailfrom:songyang@linux.alibaba.com fp:SMTPD_---0UOLx6x._1612943154)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 10 Feb 2021 15:45:54 +0800
+From:   Yang Song <songyang@linux.alibaba.com>
+To:     dhowells@redhat.com, dwmw2@infradead.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     zhang.jia@linux.alibaba.com, tianjia.zhang@linux.alibaba.com,
+        songyang@linux.alibaba.com
+Subject: [PATCH] sign-file: add openssl engine support
+Date:   Wed, 10 Feb 2021 15:45:54 +0800
+Message-Id: <20210210074554.81100-1-songyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-02-09 at 23:28 -0800, Kees Cook wrote:
-> On Sun, Jan 10, 2021 at 12:41:44PM -0800, Joe Perches wrote:
-> > Replace the lkml.org links with lore to better use a single source
-> > that's more likely to stay available long-term.
-> 
-> What's the best way to teach checkpatch about this? I couldn't find the
-> right place to do it. (And more generally, can it also suggest https
-> over http?)
+Use a customized signature service supported by openssl engine
+to sign the kernel module.
+Add command line parameters that support engine for sign-file
+to use the customized openssl engine service to sign kernel modules.
 
-Bjorn's patch:
-https://lore.kernel.org/lkml/20201217235615.43328-1-helgaas@kernel.org/
+Signed-off-by: Yang Song <songyang@linux.alibaba.com>
+---
+ scripts/sign-file.c | 65 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 62 insertions(+), 3 deletions(-)
 
-And my comments:
-https://lore.kernel.org/lkml/3e21b6e87e219d6538a193a9021b965fd8180025.camel@perches.com/
+diff --git a/scripts/sign-file.c b/scripts/sign-file.c
+index fbd34b8e8f57..276068e9b595 100644
+--- a/scripts/sign-file.c
++++ b/scripts/sign-file.c
+@@ -70,7 +70,7 @@ static __attribute__((noreturn))
+ void format(void)
+ {
+ 	fprintf(stderr,
+-		"Usage: scripts/sign-file [-dp] <hash algo> <key> <x509> <module> [<dest>]\n");
++		"Usage: scripts/sign-file [-edp] [<openssl engine>] <hash algo> <key> <x509> <module> [<dest>]\n");
+ 	fprintf(stderr,
+ 		"       scripts/sign-file -s <raw sig> <hash algo> <x509> <module> [<dest>]\n");
+ 	exit(2);
+@@ -206,12 +206,54 @@ static X509 *read_x509(const char *x509_name)
+ 	return x509;
+ }
+ 
++/* Try to load an engine in a shareable library */
++static ENGINE *try_load_engine(const char *engine)
++{
++	ENGINE *e = ENGINE_by_id("dynamic");
++	if (e) {
++		if (!ENGINE_ctrl_cmd_string(e, "SO_PATH", engine, 0)
++			|| !ENGINE_ctrl_cmd_string(e, "LOAD", NULL, 0)) {
++			ENGINE_free(e);
++			e = NULL;
++		}
++	}
++	return e;
++}
++
++static ENGINE *setup_engine(const char *engine)
++{
++	ENGINE *e = NULL;
++
++	if (engine) {
++		e = ENGINE_by_id(engine);
++		if (e == NULL) {
++			e = try_load_engine(engine);
++			if (e == NULL) {
++				ERR(1, "invalid engine \"%s\"\n", engine);
++				return NULL;
++			}
++		}
++
++		if (!ENGINE_set_default(e, ENGINE_METHOD_ALL)) {
++			ERR(1, "can't use that engine\n");
++			ENGINE_free(e);
++			return NULL;
++		}
++
++		fprintf(stdout,  "engine \"%s\" set.\n", ENGINE_get_id(e));
++	}
++
++	return e;
++}
++
+ int main(int argc, char **argv)
+ {
+ 	struct module_signature sig_info = { .id_type = PKEY_ID_PKCS7 };
++	char *ossl_engine = NULL;
+ 	char *hash_algo = NULL;
+ 	char *private_key_name = NULL, *raw_sig_name = NULL;
+ 	char *x509_name, *module_name, *dest_name;
++	bool use_engine = false;
+ 	bool save_sig = false, replace_orig;
+ 	bool sign_only = false;
+ 	bool raw_sig = false;
+@@ -242,8 +284,9 @@ int main(int argc, char **argv)
+ #endif
+ 
+ 	do {
+-		opt = getopt(argc, argv, "sdpk");
++		opt = getopt(argc, argv, "sedpk");
+ 		switch (opt) {
++		case 'e': use_engine = true; break;
+ 		case 's': raw_sig = true; break;
+ 		case 'p': save_sig = true; break;
+ 		case 'd': sign_only = true; save_sig = true; break;
+@@ -257,13 +300,18 @@ int main(int argc, char **argv)
+ 
+ 	argc -= optind;
+ 	argv += optind;
+-	if (argc < 4 || argc > 5)
++	if (argc < 4 || argc > 6)
+ 		format();
+ 
+ 	if (raw_sig) {
+ 		raw_sig_name = argv[0];
+ 		hash_algo = argv[1];
+ 	} else {
++		if (use_engine) {
++			ossl_engine = argv[0];
++			argc--;
++			argv++;
++		}
+ 		hash_algo = argv[0];
+ 		private_key_name = argv[1];
+ 	}
+@@ -291,6 +339,17 @@ int main(int argc, char **argv)
+ 	ERR(!bm, "%s", module_name);
+ 
+ 	if (!raw_sig) {
++		if (use_engine) {
++			if (ossl_engine == NULL) {
++				fprintf(stderr, "Input openssl engine is null\n");
++				exit(1);
++			}
++
++			// Engine setup
++			ENGINE_load_builtin_engines();
++			setup_engine(ossl_engine);
++		}
++
+ 		/* Read the private key and the X.509 cert the PKCS#7 message
+ 		 * will point to.
+ 		 */
+-- 
+2.19.1.3.ge56e4f7
 
