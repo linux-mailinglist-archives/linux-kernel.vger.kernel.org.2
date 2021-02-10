@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B47331658A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A07F316582
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 12:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhBJLq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 06:46:57 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:44644 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229611AbhBJLnR (ORCPT
+        id S231256AbhBJLqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 06:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230028AbhBJLnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 06:43:17 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-114-K0rcHhlYNbmDFciqYAB-xA-1; Wed, 10 Feb 2021 11:41:36 +0000
-X-MC-Unique: K0rcHhlYNbmDFciqYAB-xA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 10 Feb 2021 11:41:34 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 10 Feb 2021 11:41:34 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Thomas Gleixner' <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rich Felker <dalias@libc.org>,
-        "Heiko Carstens" <hca@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Lai Jiangshan" <jiangshanlai+lkml@gmail.com>
-Subject: RE: [patch V2 03/13] x86/irq/64: Adjust the per CPU irq stack pointer
- by 8
-Thread-Topic: [patch V2 03/13] x86/irq/64: Adjust the per CPU irq stack
- pointer by 8
-Thread-Index: AQHW/1Hc/Ge+8Xn+UE+oxbMdwlawL6pRRBeg
-Date:   Wed, 10 Feb 2021 11:41:34 +0000
-Message-ID: <c7d8e27f99a5410dac934925e0f89a7c@AcuMS.aculab.com>
-References: <20210209234041.127454039@linutronix.de>
- <20210210002512.354260928@linutronix.de>
-In-Reply-To: <20210210002512.354260928@linutronix.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 10 Feb 2021 06:43:01 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F3AC061223
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:42:07 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id u14so1560527wmq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 03:42:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IN+db2cORNt7VkGGcBYrI5DAOlBAd7luCiB6c6UTORg=;
+        b=A+lqcb1Mco2IH4sWZvbvEORyp44FjHIA2kKgYhWKHPRcBkihslWgY+eyCxjObLl4xM
+         IJdLu77vzz0H46AfAyGLrLZ3P1y6a5z1GwgMJhI4clGjeFf+PyAsCenM3g5U2vflKhew
+         Ju+igjclW8aHFZvW5zgCxQyfWMS4Xu5pD9ywx63JFAYNlS4WSR6nbO70ZKcfoghRGb4z
+         Rf0JtLIheyrZWr3WvWIiahz7R05/j8oqaJTIUkNIo+kjiEWRTPpEAZUcmb+bwwR3TthY
+         w8gny9neoDuQOvARwJ0yj7al35enKLxoqYkPmwR0BkgrFFw+H8Knypppuo27DmWcolMY
+         g6AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IN+db2cORNt7VkGGcBYrI5DAOlBAd7luCiB6c6UTORg=;
+        b=TTK2W1MseoI3y0/rx9uiR1TE3wfyNHgjAaKxou+Lxt77BHAaD0fczCt10bila8ZRso
+         jLHgy1noq44F+TKP7IC7sNGOUj9hmcA3h1U5Y9+wl9R2Z2fFO/97oEovKnxG7vxPZhk0
+         0jUqWBcrU5LYoePQjQeZTPOOrapV+5kZGv36bGiGRjqvdRDf7RuAH/bGVzP+uY2CmNK/
+         AoN41mlqM0/MPPfpaPEw0To7FaGjLofuDJIt5Bj1U55U3ct4UkJtiE52FBdG0hdpUDje
+         O6Dk6J7bMuPE/UN67kgCXtNUjqQT35xNjCZo9csqVO8F4kaQPcjxGoewHzOjux1lYSai
+         pTMg==
+X-Gm-Message-State: AOAM530YoI42kdAP4HLS913+zy9ChuAWRfoP3SIGMZWziomou3xnNxbH
+        8blfpV/X/zbOWEZDdz5vzLb3dw==
+X-Google-Smtp-Source: ABdhPJzcqeZvzBcu69WDOYa0AXEj+jkTjIK/0ivShR9A511clPVo2aBOAWDwimsl6o1C8uR6vnac8Q==
+X-Received: by 2002:a7b:c215:: with SMTP id x21mr2619209wmi.61.1612957326535;
+        Wed, 10 Feb 2021 03:42:06 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id y63sm2154970wmd.21.2021.02.10.03.42.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 03:42:05 -0800 (PST)
+Date:   Wed, 10 Feb 2021 11:42:03 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, jdelvare@suse.com,
+        linux@roeck-us.net, giometti@enneenne.com, abbotti@mev.co.uk,
+        hsweeten@visionengravers.com, kw@linux.com, helgaas@kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kbuild@vger.kernel.org, masahiroy@kernel.org,
+        michal.lkml@markovi.net, linuxarm@openeuler.org,
+        prime.zeng@huawei.com
+Subject: Re: [PATCH 1/4] driver core: Use subdir-ccflags-* to inherit debug
+ flag
+Message-ID: <20210210114203.jvhst2veqbx73r5g@maple.lan>
+References: <1612518255-23052-1-git-send-email-yangyicong@hisilicon.com>
+ <1612518255-23052-2-git-send-email-yangyicong@hisilicon.com>
+ <YB0Vk6ERJ3lFc3WD@kroah.com>
+ <08017751-a1be-ea07-50de-73d14ab6d57e@hisilicon.com>
+ <YCEWtxYgbRPET4Sr@kroah.com>
+ <1f0b2f37-db56-c220-dfe1-8c376031404f@hisilicon.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f0b2f37-db56-c220-dfe1-8c376031404f@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogVGhvbWFzIEdsZWl4bmVyDQo+IFNlbnQ6IDA5IEZlYnJ1YXJ5IDIwMjEgMjM6NDENCj4g
-RnJvbTogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+DQo+IA0KPiBUaGUgcGVy
-IENQVSBoYXJkaXJxX3N0YWNrX3B0ciBjb250YWlucyB0aGUgcG9pbnRlciB0byB0aGUgaXJxIHN0
-YWNrIGluIHRoZQ0KPiBmb3JtIHRoYXQgaXQgaXMgcmVhZHkgdG8gYmUgYXNzaWduZWQgdG8gW0VS
-XVNQIHNvIHRoYXQgdGhlIGZpcnN0IHB1c2ggZW5kcw0KPiB1cCBvbiB0aGUgdG9wIGVudHJ5IG9m
-IHRoZSBzdGFjay4NCi4uLg0KPiBEbyB0aGUgLTggYWRqdXN0bWVudCByaWdodCB3aGVuIHN0b3Jp
-bmcgdGhlIHBvaW50ZXIgYW5kIG1ha2UgdGhlIGRhdGEgdHlwZQ0KPiBhIHZvaWQgcG9pbnRlciB0
-byBhdm9pZCBjb25mdXNpb24gdnMuIHRoZSBzdHJ1Y3QgaXJxX3N0YWNrIGRhdGEgdHlwZSB3aGlj
-aA0KPiBpcyBvbiA2NGJpdCBvbmx5IHVzZWQgdG8gZGVjbGFyZSB0aGUgYmFja2luZyBzdG9yZS4u
-Lg0KDQpJdCBtaWdodCBiZSBiZXR0ZXIgdG8gbWFrZSBpdCBhIHBvaW50ZXIgdG8gYW4gdW5kZWZp
-bmVkIHN0cnVjdC4NClRoYXQgd2lsbCBzdG9wIGFsbCBhY2NpZGVudGFsIGFzc2lnbm1lbnRzIC0g
-ZXhjZXB0IHRob3NlIHRoYXQNCmFyZSBhbHJlYWR5ICd2b2lkIConLg0KDQoJRGF2aWQNCg0KLQ0K
-UmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1p
-bHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVz
-KQ0K
+On Mon, Feb 08, 2021 at 09:09:20PM +0800, Yicong Yang wrote:
+> On 2021/2/8 18:47, Greg KH wrote:
+> > On Mon, Feb 08, 2021 at 06:44:52PM +0800, Yicong Yang wrote:
+> >> On 2021/2/5 17:53, Greg KH wrote:
+> >>> What does this offer in benefit of the existing way?  What is it fixing?
+> >>> Why do this "churn"?
+> >>
+> >> currently we have added ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG in the Makefile
+> >> of driver/base and driver/base/power, but not in the subdirectory
+> >> driver/base/firmware_loader. we cannot turn the debug on for subdirectory
+> >> firmware_loader if we config DEBUG_DRIVER and there is no kconfig option
+> >> for the it.
+> > 
+> > Is that necessary?  Does that directory need it?
+> 
+> there are several debug prints in firmware_loader/main.c:
+> 
+> ./main.c:207:   pr_debug("%s: fw-%s fw_priv=%p\n", __func__, fw_name, fw_priv);
+> ./main.c:245:                   pr_debug("batched request - sharing the same struct fw_priv and lookup for multiple requests\n");
+> <snip>
 
+Even if these are not in scope for CONFIG_DEBUG_DRVIER there is a
+config option that would allow you to observe them without changing
+any code (CONFIG_DYNAMIC_DEBUG).
+
+
+Daniel.
