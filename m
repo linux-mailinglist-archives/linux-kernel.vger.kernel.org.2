@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD3631709F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCEC3170A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 20:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhBJTve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 14:51:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232459AbhBJTvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 14:51:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EC6164ED4;
-        Wed, 10 Feb 2021 19:50:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612986643;
-        bh=DMCWUuwZO8nCkkKk62bJyf0P2K6CJcMPltVA7oTu5gA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RlfYtuoLje+Gl3HmSy7uSoiooY611BC7m+J27QBQyqiOd5EBYbeR4fzq09pvRrBH3
-         V47s7vVQ5/thSxpWPjxtemIQrTDbdOtn08kbO9ws+cvrcoXdB/7W9MAtvfGoXu6HJv
-         kZQlCL6xLa5UctdWmksutcHzqlmuaGzHFfP/JbDYVlCo9QNPs7lXVVfbNhUQUKnLCV
-         XBXGTcZNnCPv9Emks7jsEGAYf9v6MpyaFMxjj2a0ZFtunddrdthVhhC+ruZ1kFILZs
-         4uBm08/AHGVKhGTelZlrV7YC7vVX0zyblE/whjkqcG4lJNwcu3sdsKAghuXfI5oebs
-         +J4KTxuzIKMvQ==
-Date:   Wed, 10 Feb 2021 11:50:42 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        "Geethasowjanya Akula" <gakula@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
-Subject: Re: [Patch v4 net-next 0/7] ethtool support for fec and link
- configuration
-Message-ID: <20210210115042.77c40c09@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <MWHPR18MB1421079657254DAD7B37000ADE8D9@MWHPR18MB1421.namprd18.prod.outlook.com>
-References: <MWHPR18MB1421079657254DAD7B37000ADE8D9@MWHPR18MB1421.namprd18.prod.outlook.com>
+        id S232279AbhBJTwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 14:52:39 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42844 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhBJTw0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 14:52:26 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11AJpWtR004088;
+        Wed, 10 Feb 2021 13:51:32 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612986692;
+        bh=XzS/ZJanCrIZX7p0c1TNTRFEMN1N0SuLhFmG8GhLakg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=t19jm8m5xtSdV1iMjU5+aOt+4B24Iwg4szin03bFWKlCmb8J3aJzq4SuEBhijneLo
+         yezJHP1TU5ZZfRvwSS3sA9AqiGU1IB5bAEwQ8db7bVcfo3k4vxAyvS9C0RaXQexpDB
+         mNc2l38tkUvbgHkN53XAM3jgI+hHSAChC7CZHUgg=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11AJpVF8102199
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 10 Feb 2021 13:51:31 -0600
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 10
+ Feb 2021 13:51:31 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 10 Feb 2021 13:51:31 -0600
+Received: from [10.250.39.16] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11AJpVQM109838;
+        Wed, 10 Feb 2021 13:51:31 -0600
+Subject: Re: [EXTERNAL] Re: [PATCH 2/2] power: supply: bq25980: Moves
+ properties from battery node
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     <sre@kernel.org>, <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210209230527.26712-1-r-rivera-matos@ti.com>
+ <20210209230527.26712-2-r-rivera-matos@ti.com>
+ <CAJKOXPeqd7iMU+gVC-xT-MY6YKXrB88gsCyd9M0NX=wCtyWrmA@mail.gmail.com>
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Message-ID: <e815f46c-d035-b9db-0239-dba81ad8e02b@ti.com>
+Date:   Wed, 10 Feb 2021 13:51:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAJKOXPeqd7iMU+gVC-xT-MY6YKXrB88gsCyd9M0NX=wCtyWrmA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 17:06:29 +0000 Hariprasad Kelam wrote:
-> > On Tue, 9 Feb 2021 16:05:24 +0530 Hariprasad Kelam wrote:  
-> > > v4:
-> > > 	- Corrected indentation issues
-> > > 	- Use FEC_OFF if user requests for FEC_AUTO mode
-> > > 	- Do not clear fec stats in case of user changes
-> > > 	  fec mode
-> > > 	- dont hide fec stats depending on interface mode
-> > > 	  selection  
-> > 
-> > What about making autoneg modes symmetric between set and get?  
-> 
-> Get supports multi modes such that user can select one of the modes
-> to advertise. For time being set only supports single mode. Do let me
-> know if you want me to Add this in commit description.
 
-You use the same code for supported and advertising.
-Please add a check that there is only one advertising mode 
-reported so we don't have to take your word for it.
 
-Thanks.
+On 2/10/21 2:23 AM, Krzysztof Kozlowski wrote:
+> On Wed, 10 Feb 2021 at 00:52, Ricardo Rivera-Matos
+> <r-rivera-matos@ti.com> wrote:
+>> fix: exposes POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT on the
+>>
+>> charger node
+> Why is this a fix? Why is exposing this property wrong? What is the
+> problem here? Why do you start sentences with a small letter? Your
+> commit message should answer such questions.
+ACK, I will rebase and reword this commit message
+>
+> Best regards,
+> Krzysztof
+Best Regards,
+Ricardo
