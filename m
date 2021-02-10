@@ -2,75 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7AB31683A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8010831683F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 14:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhBJNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 08:44:58 -0500
-Received: from verein.lst.de ([213.95.11.211]:51232 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229818AbhBJNoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:44:54 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id EE0636736F; Wed, 10 Feb 2021 14:44:09 +0100 (CET)
-Date:   Wed, 10 Feb 2021 14:44:09 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dm-devel@redhat.com,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@lst.de, agk@redhat.com,
-        snitzer@redhat.com, rgoldwyn@suse.de, qi.fuli@fujitsu.com,
-        y-goto@fujitsu.com
-Subject: Re: [PATCH v3 10/11] xfs: Implement ->corrupted_range() for XFS
-Message-ID: <20210210134409.GF30109@lst.de>
-References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com> <20210208105530.3072869-11-ruansy.fnst@cn.fujitsu.com>
+        id S230331AbhBJNq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 08:46:56 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:35175 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhBJNqx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:46:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612964811; x=1644500811;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=ZK4J4t3KWKLxryUAQFN/kK0YWfWodwLhG+egShcVgjk=;
+  b=C/RYe1PGyEfQwLoZSoqPrBndsM1OVPO443SHdQEEuCyR/aZHHk4NP2K+
+   0nDTRLzRcVAOQ77eUz/GkeZM7BjAulHDBIW6lSMNGXkjR55CLr0wlXS0/
+   kLDFet54oBP+3CHNv5Mut3j8TIHchi4m0xH5ruvi+pHHPD4VTHLbzop5h
+   k+d7y2HfC9/a5Dyt7FRX3ubjavWN2xU8uuCEM4S6fRB9nf2/PXllhLHtO
+   Ol1hou/9glFxzOPIRRU2FriYsulEwBAIVwsVIiEsFPaBmH6egB4oQiAFv
+   eCYMLDzuGP/DRLJoHEShXLwEFHIasos90rnFov5HO+dozhtD90mj0ri25
+   Q==;
+IronPort-SDR: 0YM2d3k1fC5uD+d18/ORVHjsexLnkcU6bWKJubDijtuma1EpLElYgzgyBJqZ6bJseDv/VthiXn
+ guCoa1Eh4gUaz7c/oZrloXPJH8FoS/lrz6wQqXwcHEsfM0ixnXx45amA4hyoL/KGmI1SjJnuAK
+ k/OOWl/mTLMR6v5GXPbVi+RfEF+WeW4giC3X04RJT2i5zkn0uwu6+muiPLKOCYtUdwhKFA7t04
+ CFv2RCDEu7QJCMZXPdrdg9xmZUaIcA9QR6blI4TdW25E3FIRT5mXlOIwkCzjAB5HIfwrUR20xf
+ LEc=
+X-IronPort-AV: E=Sophos;i="5.81,168,1610434800"; 
+   d="scan'208";a="106116804"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Feb 2021 06:45:35 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 10 Feb 2021 06:45:35 -0700
+Received: from soft-dev10.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Wed, 10 Feb 2021 06:45:33 -0700
+References: <20210210132751.1422386-1-geert+renesas@glider.be>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <UNGLinuxDriver@microchip.com>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pinctrl: PINCTRL_MICROCHIP_SGPIO should depend on ARCH_SPARX5 || SOC_VCOREIII
+In-Reply-To: <20210210132751.1422386-1-geert+renesas@glider.be>
+Date:   Wed, 10 Feb 2021 14:45:31 +0100
+Message-ID: <87mtwcujd0.fsf@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208105530.3072869-11-ruansy.fnst@cn.fujitsu.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> +	if (XFS_RMAP_NON_INODE_OWNER(rec->rm_owner) ||
-> +	    (rec->rm_flags & (XFS_RMAP_ATTR_FORK | XFS_RMAP_BMBT_BLOCK))) {
-> +		// TODO check and try to fix metadata
-> +		rc = -EFSCORRUPTED;
-> +		xfs_force_shutdown(cur->bc_mp, SHUTDOWN_CORRUPT_META);
+Geert Uytterhoeven writes:
 
-Just return early here so that we can avoid the else later.
+> the Microsemi/Microchip Serial GPIO device is present only Microsemi
+> VCore III and Microchip Sparx5 SoCs.  Hence add a dependency on
+> ARCH_SPARX5 || SOC_VCOREIII, to prevent asking the user about this
+> driver when configuring a kernel without support for these SoCs.
+>
+> Fixes: 7e5ea974e61c8dd0 ("pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/pinctrl/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+> index 113073d5f89bbf70..3b75b1d7d3d1f1b0 100644
+> --- a/drivers/pinctrl/Kconfig
+> +++ b/drivers/pinctrl/Kconfig
+> @@ -353,8 +353,8 @@ config PINCTRL_OCELOT
+>
+>  config PINCTRL_MICROCHIP_SGPIO
+>         bool "Pinctrl driver for Microsemi/Microchip Serial GPIO"
+> -       depends on OF
+> -       depends on HAS_IOMEM
+> +       depends on OF && HAS_IOMEM
+> +       depends on ARCH_SPARX5 || SOC_VCOREIII || COMPILE_TEST
+>         select GPIOLIB
+>         select GPIOLIB_IRQCHIP
+>         select GENERIC_PINCONF
 
-> +		/*
-> +		 * Get files that incore, filter out others that are not in use.
-> +		 */
-> +		rc = xfs_iget(cur->bc_mp, cur->bc_tp, rec->rm_owner,
-> +			      XFS_IGET_INCORE, 0, &ip);
+Geert,
 
-Can we rename rc to error?
+Thank you for your patch. Unfortunately, it makes it impossible to use
+the driver across PCIe - which is a specifically desired configuration.
 
-> +		if (rc || !ip)
-> +			return rc;
+Could you add CONFIG_PCI to the || chain?
 
-No need to check for ip here.
+Cheers,
 
-> +		if (!VFS_I(ip)->i_mapping)
-> +			goto out;
-
-This can't happen either.
-
-> +
-> +		mapping = VFS_I(ip)->i_mapping;
-> +		if (IS_DAX(VFS_I(ip)))
-> +			rc = mf_dax_mapping_kill_procs(mapping, rec->rm_offset,
-> +						       *flags);
-> +		else {
-> +			rc = -EIO;
-> +			mapping_set_error(mapping, rc);
-> +		}
-
-By passing the method directly to the DAX device we should never get
-this called for the non-DAX case.
+-- 
+Lars Povlsen,
+Microchip
