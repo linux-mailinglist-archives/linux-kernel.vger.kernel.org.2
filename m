@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B14C3163A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FF8316396
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Feb 2021 11:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhBJKWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 05:22:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbhBJKID (ORCPT
+        id S230104AbhBJKUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 05:20:39 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58084 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230362AbhBJKHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 05:08:03 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170ABC06178B;
-        Wed, 10 Feb 2021 02:06:29 -0800 (PST)
-Date:   Wed, 10 Feb 2021 10:06:24 -0000
+        Wed, 10 Feb 2021 05:07:10 -0500
+Date:   Wed, 10 Feb 2021 10:06:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1612951587;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LVIUN0mDiPUJM7MQIns1ih3IA6LbLYq2HzLbxD1MGXg=;
-        b=fm0oIp7YCp3+JQTvivPGMHH2PzY/PA+VWZxjwk3YCKl19rOfZIXJ/SeI5f8pSYJh4Q05fT
-        q2N4MmcNPv7gWMIyyAjd/adrn8U57hlzMwILwqL0V8RWSWGlDBfXblhnCefadPb98VpSdJ
-        F8SDSLHil8e0aLy2kE8MrUctZcOZXPQPglUzNyOpsJ7sEyk6tSYKMGyK3X8UO1p4Z5cEw4
-        fovAA18N3KARx5wx3ot6dy3FBtjgTlhoH8KrlV9rjE1ygH6iTdodh95Gs68SpZ+fGz1Jc9
-        BD8qQkyauksAGsFRq8MOHc2j1rglaolzOBJCUVxsH2IuvB2ZhOI9vdCKUXi7vg==
+        bh=nJcrmQ57CHjcbwf0NnLOyiHFUbKWI4/RpoCBaREn3jo=;
+        b=nO13LaRzePzGFiwKzBy03s9gVc6NdLg862ns9Jx/Rz6jQy6xYfAOstcF0gjVQQCKqhILZz
+        7JzuJxnkGpChbWmTSbiIeni6gIkNy3w4pm7LrkKj+t/MfFvQBU83Rb0G5DD4+9JGurBR+8
+        QrH3bMKxIRYGHPi2KXvLH48snRYkmejazq8TUVY7dyQXpTOzx2T0yx7UsPNJ/m5gTa639i
+        0k6rRwZb9uZJC6P83kvjqlvcAF0x9IemVSqS37+zVWMnyyvF4KCxcvO+fbOI1dc7oZ+lCm
+        UqxGdXwqMWdBfcuk8TNO8PWrjYZLCBN1QZnj2CPXYPgSOB3ggn8DHdMRpaNX6g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1612951587;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +33,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LVIUN0mDiPUJM7MQIns1ih3IA6LbLYq2HzLbxD1MGXg=;
-        b=dgQrOprWi6f3gdeT8yag2SAtjQUe6gRQZ9ZjK2AYCkx7bggyb++GxUqQsYBAsw+48TLMZt
-        TeCh0WLIdc1th4BA==
-From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
+        bh=nJcrmQ57CHjcbwf0NnLOyiHFUbKWI4/RpoCBaREn3jo=;
+        b=pQhycNE1G48FrA8/p/DFuEEoz1iD6604X4OFoSwSF/uj1ZM+qOiiwHMGxtbg4LLkY/rjwz
+        mJFGJEUOaFRwF+BA==
+From:   "tip-bot2 for Bartosz Golaszewski" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/tango: Remove tango driver
-Cc:     Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>, Arnd Bergmann <arnd@arndb.de>,
+Subject: [tip: timers/core] clocksource/drivers/davinci: Move pr_fmt() before
+ the includes
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        David Lechner <david@lechnology.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210120131559.1971359-3-arnd@kernel.org>
-References: <20210120131559.1971359-3-arnd@kernel.org>
+In-Reply-To: <20210111140814.3668-1-brgl@bgdev.pl>
+References: <20210111140814.3668-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-Message-ID: <161295158456.23325.1332606250636032685.tip-bot2@tip-bot2>
+Message-ID: <161295158523.23325.8387673102530314590.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,122 +60,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     8fdb44176928fb3ef3e10d97eaf1aed82c90bd58
-Gitweb:        https://git.kernel.org/tip/8fdb44176928fb3ef3e10d97eaf1aed82c90bd58
-Author:        Arnd Bergmann <arnd@arndb.de>
-AuthorDate:    Wed, 20 Jan 2021 14:15:57 +01:00
+Commit-ID:     98509310e490bf3de13c96fbbbca8ef4af9db010
+Gitweb:        https://git.kernel.org/tip/98509310e490bf3de13c96fbbbca8ef4af9db010
+Author:        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+AuthorDate:    Mon, 11 Jan 2021 15:08:14 +01:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Wed, 03 Feb 2021 09:11:35 +01:00
+CommitterDate: Mon, 18 Jan 2021 16:31:39 +01:00
 
-clocksource/drivers/tango: Remove tango driver
+clocksource/drivers/davinci: Move pr_fmt() before the includes
 
-The tango platform is getting removed, so the driver is no
-longer needed.
+We no longer need to undef pr_fmt if we define our own before including
+any headers.
 
-Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
-Cc: Mans Rullgard <mans@mansr.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Acked-by: David Lechner <david@lechnology.com>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210120131559.1971359-3-arnd@kernel.org
+Link: https://lore.kernel.org/r/20210111140814.3668-1-brgl@bgdev.pl
 ---
- drivers/clocksource/Kconfig            |  8 +----
- drivers/clocksource/Makefile           |  1 +-
- drivers/clocksource/timer-tango-xtal.c | 57 +-------------------------
- 3 files changed, 66 deletions(-)
- delete mode 100644 drivers/clocksource/timer-tango-xtal.c
+ drivers/clocksource/timer-davinci.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index b26bb9e..b5250e4 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -551,14 +551,6 @@ config CLKSRC_MIPS_GIC
- 	select CLOCKSOURCE_WATCHDOG
- 	select TIMER_OF
+diff --git a/drivers/clocksource/timer-davinci.c b/drivers/clocksource/timer-davinci.c
+index bb4eee3..9996c05 100644
+--- a/drivers/clocksource/timer-davinci.c
++++ b/drivers/clocksource/timer-davinci.c
+@@ -7,6 +7,8 @@
+  * (with tiny parts adopted from code by Kevin Hilman <khilman@baylibre.com>)
+  */
  
--config CLKSRC_TANGO_XTAL
--	bool "Clocksource for Tango SoC" if COMPILE_TEST
--	depends on ARM
--	select TIMER_OF
--	select CLKSRC_MMIO
--	help
--	  This enables the clocksource for Tango SoC.
++#define pr_fmt(fmt) "%s: " fmt, __func__
++
+ #include <linux/clk.h>
+ #include <linux/clockchips.h>
+ #include <linux/interrupt.h>
+@@ -17,9 +19,6 @@
+ 
+ #include <clocksource/timer-davinci.h>
+ 
+-#undef pr_fmt
+-#define pr_fmt(fmt) "%s: " fmt, __func__
 -
- config CLKSRC_PXA
- 	bool "Clocksource for PXA or SA-11x0 platform" if COMPILE_TEST
- 	depends on HAS_IOMEM
-diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index ce8a3c0..1b05f03 100644
---- a/drivers/clocksource/Makefile
-+++ b/drivers/clocksource/Makefile
-@@ -71,7 +71,6 @@ obj-$(CONFIG_KEYSTONE_TIMER)		+= timer-keystone.o
- obj-$(CONFIG_INTEGRATOR_AP_TIMER)	+= timer-integrator-ap.o
- obj-$(CONFIG_CLKSRC_VERSATILE)		+= timer-versatile.o
- obj-$(CONFIG_CLKSRC_MIPS_GIC)		+= mips-gic-timer.o
--obj-$(CONFIG_CLKSRC_TANGO_XTAL)		+= timer-tango-xtal.o
- obj-$(CONFIG_CLKSRC_IMX_GPT)		+= timer-imx-gpt.o
- obj-$(CONFIG_CLKSRC_IMX_TPM)		+= timer-imx-tpm.o
- obj-$(CONFIG_TIMER_IMX_SYS_CTR)		+= timer-imx-sysctr.o
-diff --git a/drivers/clocksource/timer-tango-xtal.c b/drivers/clocksource/timer-tango-xtal.c
-deleted file mode 100644
-index 3f94e45..0000000
---- a/drivers/clocksource/timer-tango-xtal.c
-+++ /dev/null
-@@ -1,57 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/clocksource.h>
--#include <linux/sched_clock.h>
--#include <linux/of_address.h>
--#include <linux/printk.h>
--#include <linux/delay.h>
--#include <linux/init.h>
--#include <linux/clk.h>
--
--static void __iomem *xtal_in_cnt;
--static struct delay_timer delay_timer;
--
--static unsigned long notrace read_xtal_counter(void)
--{
--	return readl_relaxed(xtal_in_cnt);
--}
--
--static u64 notrace read_sched_clock(void)
--{
--	return read_xtal_counter();
--}
--
--static int __init tango_clocksource_init(struct device_node *np)
--{
--	struct clk *clk;
--	int xtal_freq, ret;
--
--	xtal_in_cnt = of_iomap(np, 0);
--	if (xtal_in_cnt == NULL) {
--		pr_err("%pOF: invalid address\n", np);
--		return -ENXIO;
--	}
--
--	clk = of_clk_get(np, 0);
--	if (IS_ERR(clk)) {
--		pr_err("%pOF: invalid clock\n", np);
--		return PTR_ERR(clk);
--	}
--
--	xtal_freq = clk_get_rate(clk);
--	delay_timer.freq = xtal_freq;
--	delay_timer.read_current_timer = read_xtal_counter;
--
--	ret = clocksource_mmio_init(xtal_in_cnt, "tango-xtal", xtal_freq, 350,
--				    32, clocksource_mmio_readl_up);
--	if (ret) {
--		pr_err("%pOF: registration failed\n", np);
--		return ret;
--	}
--
--	sched_clock_register(read_sched_clock, 32, xtal_freq);
--	register_current_timer_delay(&delay_timer);
--
--	return 0;
--}
--
--TIMER_OF_DECLARE(tango, "sigma,tick-counter", tango_clocksource_init);
+ #define DAVINCI_TIMER_REG_TIM12			0x10
+ #define DAVINCI_TIMER_REG_TIM34			0x14
+ #define DAVINCI_TIMER_REG_PRD12			0x18
