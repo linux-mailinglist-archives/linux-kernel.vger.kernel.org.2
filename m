@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BE53189BA
+	by mail.lfdr.de (Postfix) with ESMTP id CD9123189BB
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhBKLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:44:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhBKLM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:12:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D299764DA8;
-        Thu, 11 Feb 2021 11:12:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613041939;
-        bh=AfWh3LS8RGgPFEcFw9yxWHIBiMZsD+b4vCHxRz9Uoqk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mx5ujdB+2m2dHARodSMiqRArbBubV1FEfEU2WjoDvbfmOGLhqnQjHFWVCl5yVBorY
-         Zpzaiyib1vNNLVa3ZoGyGkt6/pOIWIXuZPmkikjjjrI0mWTaZbZZf2I43UvxH2BgkA
-         2gCx6mjYansczUPTaUvqaTDgr1xHKTMjRi8gYA3w=
-Date:   Thu, 11 Feb 2021 12:12:14 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     karthik alapati <mail@karthek.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: fix function comments to follow
- kernel-doc
-Message-ID: <YCURDrcCcAmVOIbL@kroah.com>
-References: <YCQvl3+KviQNh2JI@karthik-strix-linux.karthek.com>
+        id S231186AbhBKLo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:44:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhBKLPY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 06:15:24 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A7BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 03:14:36 -0800 (PST)
+Received: from zn.tnic (p200300ec2f094f007c127c6ae8522aa3.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:4f00:7c12:7c6a:e852:2aa3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 988B91EC0445;
+        Thu, 11 Feb 2021 12:14:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1613042068;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=QE7u08u7dLz7Vbz2fekrYrl+HcX5ZE5gTFobJJDANLA=;
+        b=IBeLvHzZYx3wz308cV7WwqKv1J218RjvYuJYsHK7hVA2it3JsJZkF15UTlxwC1bVqTkBK0
+        Dl+EXlP088X77Tx02FcSwY9x0Pzp7anAvYW0OzY8pKrx5c8iPhf4yzQsgJS0daT6DqO6HR
+        pDI4+vXneNirJlexKgoUWNW8Bz0MguY=
+Date:   Thu, 11 Feb 2021 12:14:26 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [tip:x86/mm] BUILD SUCCESS WITH WARNING
+ c46f52231e79af025e2c89e889d69ec20a4c024f
+Message-ID: <20210211111426.GB21330@zn.tnic>
+References: <60250afb.uuto1B/nlljRhghR%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YCQvl3+KviQNh2JI@karthik-strix-linux.karthek.com>
+In-Reply-To: <60250afb.uuto1B/nlljRhghR%lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 12:40:15AM +0530, karthik alapati wrote:
-> fix checkpatch.pl warning for "block comments should align the
->  * on each line" and make function comments follow kernel-doc
+On Thu, Feb 11, 2021 at 06:46:19PM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
+> branch HEAD: c46f52231e79af025e2c89e889d69ec20a4c024f  x86/{fault,efi}: Fix and rename efi_recover_from_page_fault()
 > 
-> Signed-off-by: karthik alapati <mail@karthek.com>
-> ---
->  .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   | 185 +++++++-----------
->  1 file changed, 73 insertions(+), 112 deletions(-)
+> possible Warning in current branch:
 > 
-> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-> index cf23414d7..1fd504181 100644
-> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
-> @@ -20,16 +20,11 @@
->  #define MAX_DOZE_WAITING_TIMES_9x 64
->  
->  /**
-> -* Function:	phy_CalculateBitShift
-> -*
-> -* OverView:	Get shifted position of the BitMask
-> -*
-> -* Input:
-> -*		u32 	BitMask,
-> -*
-> -* Output:	none
-> -* Return:		u32 	Return the shift bit bit position of the mask
-> -*/
-> + *	phy_CalculateBitShift - Get shifted position of the BitMask.
-> + *	@BitMask: Bitmask.
-> + *
-> + *	Return:	Return the shift bit position of the mask
-> + */
+> arch/x86/platform/efi/quirks.c:736 efi_crash_gracefully_on_page_fault() warn: ignoring unreachable code.
+> 
+> Warning ids grouped by kconfigs:
+> 
+> gcc_recent_errors
+> `-- x86_64-randconfig-m001-20210211
+>     `-- arch-x86-platform-efi-quirks.c-efi_crash_gracefully_on_page_fault()-warn:ignoring-unreachable-code.
 
-Why indent these comments by a tab?  A single space is fine.
+Very useful bug report. And I had already asked you guys to explain how
+one can reproduce this.
 
-thanks,
+So I'm going to ignore it for now.
 
-greg k-h
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
