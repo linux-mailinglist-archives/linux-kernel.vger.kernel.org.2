@@ -2,116 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73633191E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72D13191ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhBKSJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:09:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232564AbhBKRna (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:43:30 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62805C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:42:38 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id v5so9238094lft.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:42:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jZSkmFMKUaJrbCLhz//LG/yQTwJ20UA+ZhLO4rlMv6Q=;
-        b=T0oWKSDZPG/YK5zvZWGUzjfovRYMpGkdb/XjTgqTwQpfBTvZrXN1ttGWBZYE53e45Z
-         qQPGnAJ0ZzD9fU3yX3VY77mBHIdbs4osp5iy125l706vTtcz1U4AJuDSV/fqoi51ld2T
-         /8GeYToa3kWrJeF22TVKfHT3sdNL6YtPI4Mdvcb1VfRFfnBVkxypyv1mkJBhtUqf4Gqg
-         4V35P+VzD+huWSKOvWG2lLLrRfBa0BOfZYzBsRAfBRirG70+lfcCVy/nA78+z6/ZS3BX
-         qtayzEr3pCLZNW7F6YxJ57Bwb/86ldNI6ATHi8uVfc9LnrObvdraWWLqwRbjymDYIqZq
-         SADg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jZSkmFMKUaJrbCLhz//LG/yQTwJ20UA+ZhLO4rlMv6Q=;
-        b=LWmOmG4ZPzru0+XO+5J29utLpbVwrK3Tc8ws85Efn8gtWBL9+yeM03vPV+PWJX5f3V
-         t0YWXyO4mb4iWDuMZfimxiGOYPthJ2kFaZM1rGyYrzcGWblXv6n3/k8Tj+B4tQALhPEi
-         Rl1k4qqV7G+Gzge+VBy3o6zpAV4tjsI6GzNxG3zJ8Y01P48q+92CLv62vDej7tT132HZ
-         k5IoanMgv804ELMXNNitWql9jpFPKaWE2Y93l7uRIWY9z7XjScVqPDb4giMYlmM3tcKy
-         eVfKVUJfvbp19+ogdhD5hKaJN9oznMpfDzXcHC7Fg+SO0KxnZ6xmi04ddKO5hfo22BcX
-         UQaw==
-X-Gm-Message-State: AOAM532CN0+Vwjo73P9lyu5gBNZDCnw20dOe0rgiqM5+7MgwUzhtexTX
-        VRiaYbEcFHqzrk2YA7Qa2biWknRhaRihun1oLpFWcA==
-X-Google-Smtp-Source: ABdhPJwEjxAOyjeJEGLXRk58/2TU35873Io9Pa2XEehSvA8ZGSM3T+mkDQJ8L+qf+TMBP6LCCheKFu71WNaebuV6V6k=
-X-Received: by 2002:a19:6748:: with SMTP id e8mr4983032lfj.224.1613065356718;
- Thu, 11 Feb 2021 09:42:36 -0800 (PST)
+        id S232563AbhBKSKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:10:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231846AbhBKRnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:43:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E38CD64DEE;
+        Thu, 11 Feb 2021 17:43:06 +0000 (UTC)
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     gregkh@linuxfoundation.org
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH v4] driver core: auxiliary bus: Fix calling stage for auxiliary bus init
+Date:   Thu, 11 Feb 2021 10:42:49 -0700
+Message-Id: <20210211174249.1618488-1-dave.jiang@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210211152208.23811-1-vincenzo.frascino@arm.com>
-In-Reply-To: <20210211152208.23811-1-vincenzo.frascino@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 11 Feb 2021 18:42:25 +0100
-Message-ID: <CAAeHK+yBrWeXTXoR=_jrH55YORf6YPfcXYZOZNuEzRsuwq_CQQ@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: Fix warning in mte_get_random_tag()
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 4:22 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> The simplification of mte_get_random_tag() caused the introduction of the
-> warning below:
->
-> In file included from arch/arm64/include/asm/kasan.h:9,
->                  from include/linux/kasan.h:16,
->                  from mm/kasan/common.c:14:
-> mm/kasan/common.c: In function =E2=80=98mte_get_random_tag=E2=80=99:
-> arch/arm64/include/asm/mte-kasan.h:45:9: warning: =E2=80=98addr=E2=80=99 =
-is used
->                                          uninitialized [-Wuninitialized]
->    45 |         asm(__MTE_PREAMBLE "irg %0, %0"
->       |
->
-> Fix the warning using "=3Dr" for the address in the asm inline.
->
-> Fixes: c8f8de4c0887 ("arm64: kasan: simplify and inline MTE functions")
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Andrey Konovalov <andreyknvl@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
->
-> This patch is based on linux-next/akpm
->
->  arch/arm64/include/asm/mte-kasan.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/=
-mte-kasan.h
-> index 3d58489228c0..7ab500e2ad17 100644
-> --- a/arch/arm64/include/asm/mte-kasan.h
-> +++ b/arch/arm64/include/asm/mte-kasan.h
-> @@ -43,7 +43,7 @@ static inline u8 mte_get_random_tag(void)
->         void *addr;
->
->         asm(__MTE_PREAMBLE "irg %0, %0"
-> -               : "+r" (addr));
-> +               : "=3Dr" (addr));
->
->         return mte_get_ptr_tag(addr);
->  }
-> --
-> 2.30.0
->
+When the auxiliary device code is built into the kernel, it can be executed
+before the auxiliary bus is registered. This causes bus->p to be not
+allocated and triggers a NULL pointer dereference when the auxiliary bus
+device gets added with bus_add_device(). Call the auxiliary_bus_init()
+under driver_init() so the bus is initialized before devices.
 
-Acked-by: Andrey Konovalov <andreyknvl@google.com>
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
+Below is the kernel splat for the bug:
+[ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
+[ 1.950670] #PF: supervisor read access in kernel mode
+[ 1.950670] #PF: error_code(0x0000) - not-present page
+[ 1.950670] PGD 0
+[ 1.950670] Oops: 0000 1 SMP NOPTI
+[ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
+[ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
+[ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
+78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
+[ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
+[ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
+[ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
+[ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
+[ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
+[ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
+[ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
+[ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
+[ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+[ 1.950670] PKRU: 55555554
+[ 1.950670] Call Trace:
+[ 1.950670] device_add+0x3ee/0x850
+[ 1.950670] __auxiliary_device_add+0x47/0x60
+[ 1.950670] idxd_pci_probe+0xf77/0x1180
+[ 1.950670] local_pci_probe+0x4a/0x90
+[ 1.950670] pci_device_probe+0xff/0x1b0
+[ 1.950670] really_probe+0x1cf/0x440
+[ 1.950670] ? rdinit_setup+0x31/0x31
+[ 1.950670] driver_probe_device+0xe8/0x150
+[ 1.950670] device_driver_attach+0x58/0x60
+[ 1.950670] __driver_attach+0x8f/0x150
+[ 1.950670] ? device_driver_attach+0x60/0x60
+[ 1.950670] ? device_driver_attach+0x60/0x60
+[ 1.950670] bus_for_each_dev+0x79/0xc0
+[ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
+[ 1.950670] driver_attach+0x1e/0x20
+[ 1.950670] bus_add_driver+0x154/0x1f0
+[ 1.950670] driver_register+0x70/0xc0
+[ 1.950670] __pci_register_driver+0x54/0x60
+[ 1.950670] idxd_init_module+0xe2/0xfc
+[ 1.950670] ? idma64_platform_driver_init+0x19/0x19
+[ 1.950670] do_one_initcall+0x4a/0x1e0
+[ 1.950670] kernel_init_freeable+0x1fc/0x25c
+[ 1.950670] ? rest_init+0xba/0xba
+[ 1.950670] kernel_init+0xe/0x116
+[ 1.950670] ret_from_fork+0x1f/0x30
+[ 1.950670] Modules linked in:
+[ 1.950670] CR2: 0000000000000060
+[ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
+
+Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
+Acked-by: Dave Ertman <david.m.ertman@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+---
+
+v4:
+- Remove remaining module bits as it's not a kernel module. (GregKH)
+v3:
+- Change init function to return void. (GregKH)
+v2:
+- Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
+
+ drivers/base/base.h      |  5 +++++
+ drivers/base/auxiliary.c | 18 +++---------------
+ drivers/base/init.c      |  1 +
+ 3 files changed, 9 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/base/base.h b/drivers/base/base.h
+index f5600a83124f..52b3d7b75c27 100644
+--- a/drivers/base/base.h
++++ b/drivers/base/base.h
+@@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
+ extern int platform_bus_init(void);
+ extern void cpu_dev_init(void);
+ extern void container_dev_init(void);
++#ifdef CONFIG_AUXILIARY_BUS
++extern void auxiliary_bus_init(void);
++#else
++static inline void auxiliary_bus_init(void) { }
++#endif
+ 
+ struct kobject *virtual_device_parent(struct device *dev);
+ 
+diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+index 8336535f1e11..adc199dfba3c 100644
+--- a/drivers/base/auxiliary.c
++++ b/drivers/base/auxiliary.c
+@@ -15,6 +15,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/string.h>
+ #include <linux/auxiliary_bus.h>
++#include "base.h"
+ 
+ static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
+ 							    const struct auxiliary_device *auxdev)
+@@ -260,20 +261,7 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
+ }
+ EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
+ 
+-static int __init auxiliary_bus_init(void)
++void __init auxiliary_bus_init(void)
+ {
+-	return bus_register(&auxiliary_bus_type);
++	WARN_ON(bus_register(&auxiliary_bus_type));
+ }
+-
+-static void __exit auxiliary_bus_exit(void)
+-{
+-	bus_unregister(&auxiliary_bus_type);
+-}
+-
+-module_init(auxiliary_bus_init);
+-module_exit(auxiliary_bus_exit);
+-
+-MODULE_LICENSE("GPL v2");
+-MODULE_DESCRIPTION("Auxiliary Bus");
+-MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
+-MODULE_AUTHOR("Kiran Patil <kiran.patil@intel.com>");
+diff --git a/drivers/base/init.c b/drivers/base/init.c
+index 908e6520e804..a9f57c22fb9e 100644
+--- a/drivers/base/init.c
++++ b/drivers/base/init.c
+@@ -32,6 +32,7 @@ void __init driver_init(void)
+ 	 */
+ 	of_core_init();
+ 	platform_bus_init();
++	auxiliary_bus_init();
+ 	cpu_dev_init();
+ 	memory_dev_init();
+ 	container_dev_init();
+-- 
+2.26.2
+
