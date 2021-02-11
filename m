@@ -2,159 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C58C3189C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D804C3189CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhBKLqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:46:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40392 "EHLO mail.kernel.org"
+        id S231633AbhBKLsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:48:16 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:39039 "EHLO so15.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231294AbhBKLVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:21:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14FAC64DCF;
-        Thu, 11 Feb 2021 11:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613042428;
-        bh=rXRK0H6A/K2Wb0tbxmc7ZILxeVB76yptr2cmsMFQE74=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t3VWHvs0bXUxcCXOc97N7vSXyLqVUcEV92kaL6OdVxecAKxAQ7ns6LLG+vegpOVde
-         U9dBh6sezDjn5D92Ll5noX1Vr+yCYEIk5R0rIUlhKrjSS7aOZ0i+PaR/+DQIweUHh6
-         8FzOzWyaxJsUOVv2GFc6tXB0iA4Kh3UCZBlISlSmmeVmiew2dh6clqSD3WkV3s59X7
-         15MQmJD2s7JLI/6iNb4Cojk2vx4RU0Y7gohP8KiCudLNjAvDZFFfG0p33iCbt4dNcP
-         wEYFcHPp1StbE/lV4MGjTaz8WVMajl7z6z/1pA+KZbglGlxEBvUgFNkTEZP1OvrqS8
-         dLaGA+Ls37rug==
-Date:   Thu, 11 Feb 2021 13:20:08 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <20210211112008.GH242749@kernel.org>
-References: <20210208084920.2884-1-rppt@kernel.org>
- <20210208084920.2884-8-rppt@kernel.org>
- <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
- <20210208212605.GX242749@kernel.org>
- <YCJMDBss8Qhha7g9@dhcp22.suse.cz>
- <20210209090938.GP299309@linux.ibm.com>
- <YCKLVzBR62+NtvyF@dhcp22.suse.cz>
- <20210211071319.GF242749@kernel.org>
- <YCTtSrCEvuBug2ap@dhcp22.suse.cz>
+        id S231274AbhBKLVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 06:21:36 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613042471; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=ZMVEw+T1+2jFNHRLIczmtfsy/CV7EDResuKLWZr1Ipo=; b=c89YI2zezVEzxzFv444eqeHivSfvRO8u1lSiBkelKygXcczSGKxKySS1KPNHXQbN3rt0klX4
+ O4+gX96G/TTcarqlJ+9/HNZ95GzEraJ9bx9DSCgOjX1tjaqeQHnAOx8R0UyODp8y7Xo+bun+
+ +H++l7S+Qcc0Bxdfu3DxZU3GOf8=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 602512ff34db06ef79059421 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Feb 2021 11:20:31
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30EC9C43463; Thu, 11 Feb 2021 11:20:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B87A5C433ED;
+        Thu, 11 Feb 2021 11:20:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B87A5C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
+        kuba@kernel.org, davem@davemloft.net
+Subject: Re: [PATCH 4/5] ath10k: detect conf_mutex held ath10k_drain_tx() calls
+References: <cover.1612915444.git.skhan@linuxfoundation.org>
+        <a980abfb143f5240375f3f1046f0f26971c695e6.1612915444.git.skhan@linuxfoundation.org>
+        <87lfbwtjls.fsf@codeaurora.org>
+        <d6d8c7b8-f69d-01ef-6d66-8a33ea98920f@linuxfoundation.org>
+Date:   Thu, 11 Feb 2021 13:20:26 +0200
+In-Reply-To: <d6d8c7b8-f69d-01ef-6d66-8a33ea98920f@linuxfoundation.org> (Shuah
+        Khan's message of "Wed, 10 Feb 2021 08:57:04 -0700")
+Message-ID: <871rdmu9z9.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCTtSrCEvuBug2ap@dhcp22.suse.cz>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 09:39:38AM +0100, Michal Hocko wrote:
-> On Thu 11-02-21 09:13:19, Mike Rapoport wrote:
-> > On Tue, Feb 09, 2021 at 02:17:11PM +0100, Michal Hocko wrote:
-> > > On Tue 09-02-21 11:09:38, Mike Rapoport wrote:
-> [...]
-> > > > Citing my older email:
-> > > > 
-> > > >     I've hesitated whether to continue to use new flags to memfd_create() or to
-> > > >     add a new system call and I've decided to use a new system call after I've
-> > > >     started to look into man pages update. There would have been two completely
-> > > >     independent descriptions and I think it would have been very confusing.
-> > > 
-> > > Could you elaborate? Unmapping from the kernel address space can work
-> > > both for sealed or hugetlb memfds, no? Those features are completely
-> > > orthogonal AFAICS. With a dedicated syscall you will need to introduce
-> > > this functionality on top if that is required. Have you considered that?
-> > > I mean hugetlb pages are used to back guest memory very often. Is this
-> > > something that will be a secret memory usecase?
-> > > 
-> > > Please be really specific when giving arguments to back a new syscall
-> > > decision.
-> > 
-> > Isn't "syscalls have completely independent description" specific enough?
-> 
-> No, it's not as you can see from questions I've had above. More on that
-> below.
-> 
-> > We are talking about API here, not the implementation details whether
-> > secretmem supports large pages or not.
-> > 
-> > The purpose of memfd_create() is to create a file-like access to memory.
-> > The purpose of memfd_secret() is to create a way to access memory hidden
-> > from the kernel.
-> > 
-> > I don't think overloading memfd_create() with the secretmem flags because
-> > they happen to return a file descriptor will be better for users, but
-> > rather will be more confusing.
-> 
-> This is quite a subjective conclusion. I could very well argue that it
-> would be much better to have a single syscall to get a fd backed memory
-> with spedific requirements (sealing, unmapping from the kernel address
-> space). 
+Shuah Khan <skhan@linuxfoundation.org> writes:
 
-> Neither of us would be clearly right or wrong.
+> On 2/10/21 1:25 AM, Kalle Valo wrote:
+>> Shuah Khan <skhan@linuxfoundation.org> writes:
+>>
+>>> ath10k_drain_tx() must not be called with conf_mutex held as workers can
+>>> use that also. Add check to detect conf_mutex held calls.
+>>>
+>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>
+>> The commit log does not answer to "Why?". How did you find this? What
+>> actual problem are you trying to solve?
+>>
+>
+> I came across the comment block above the ath10k_drain_tx() as I was
+> reviewing at conf_mutex holds while I was debugging the conf_mutex
+> lock assert in ath10k_debug_fw_stats_request().
+>
+> My reasoning is that having this will help detect incorrect usages
+> of ath10k_drain_tx() while holding conf_mutex which could lead to
+> locking problems when async worker routines try to call this routine.
 
-100% agree :)
+Ok, makes sense. I prefer having this background info in the commit log,
+for example "found by code review" or something like that. Or just copy
+what you wrote above :)
 
-> A more important point is a future extensibility and usability, though.
-> So let's just think of few usecases I have outlined above. Is it
-> unrealistic to expect that secret memory should be sealable? What about
-> hugetlb? Because if the answer is no then a new API is a clear win as the
-> combination of flags would never work and then we would just suffer from
-> the syscall multiplexing without much gain. On the other hand if
-> combination of the functionality is to be expected then you will have to
-> jam it into memfd_create and copy the interface likely causing more
-> confusion. See what I mean?
+>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>> @@ -4566,6 +4566,7 @@ static void
+>>> ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
+>>>   /* Must not be called with conf_mutex held as workers can use that also. */
+>>>   void ath10k_drain_tx(struct ath10k *ar)
+>>>   {
+>>> +	WARN_ON(lockdep_is_held(&ar->conf_mutex));
+>>
+>> Empty line after WARN_ON().
+>>
+>
+> Will do.
+>
+>> Shouldn't this check debug_locks similarly lockdep_assert_held() does?
+>>
+>> #define lockdep_assert_held(l)	do {				\
+>> 		WARN_ON(debug_locks && !lockdep_is_held(l));	\
+>> 	} while (0)
+>>
+>> And I suspect you need #ifdef CONFIG_LOCKDEP which should fix the kbuild
+>> bot error.
+>>
+>
+> Yes.
+>
+>> But honestly I would prefer to have lockdep_assert_not_held() in
+>> include/linux/lockdep.h, much cleaner that way. Also
+>> i915_gem_object_lookup_rcu() could then use the same macro.
+>>
+>
+> Right. This is the right way to go. That was first instinct and
+> decided to have the discussion evolve in that direction. Now that
+> it has, I will combine this change with
+> include/linux/lockdep.h and add lockdep_assert_not_held()
+>
+> I think we might have other places in the kernel that could use
+> lockdep_assert_not_held() in addition to i915_gem_object_lookup_rcu()
 
-I see your point, but I think that overloading memfd_create definitely gets
-us into syscall multiplexing from day one and support for seals and huge
-pages in the secretmem will not make it less of a multiplexer.
+Great, thank you. The only problem is that lockdep.h changes have to go
+via some other tree, I just don't know which :) I think it would be
+easiest if also the ath10k patch goes via that other tree, I can ack the
+ath10k changes.
 
-Sealing is anyway controlled via fcntl() and I don't think
-MFD_ALLOW_SEALING makes much sense for the secretmem because it is there to
-prevent rogue file sealing in tmpfs/hugetlbfs.
-
-As for the huge pages, I'm not sure at all that supporting huge pages in
-secretmem will involve hugetlbfs. And even if yes, adding SECRETMEM_HUGE
-flag seems to me less confusing than saying "from kernel x.y you can use
-MFD_CREATE | MFD_SECRET | MFD_HUGE" etc for all possible combinations.
- 
-> I by no means do not insist one way or the other but from what I have
-> seen so far I have a feeling that the interface hasn't been thought
-> through enough.
-
-It has been, but we have different thoughts about it ;-)
+Another option is that I'll apply the ath10k patch after the lockdep.h
+change has trickled down to my tree, but that usually happens only after
+the merge window and means weeks of waiting. Either is fine for me.
 
 -- 
-Sincerely yours,
-Mike.
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
