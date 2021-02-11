@@ -2,272 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D84D3193C8
+	by mail.lfdr.de (Postfix) with ESMTP id E58B93193C9
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhBKUAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:00:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:56460 "EHLO foss.arm.com"
+        id S230318AbhBKUBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:01:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230412AbhBKT4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:56:06 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E9AF113E;
-        Thu, 11 Feb 2021 11:55:19 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05D123F73B;
-        Thu, 11 Feb 2021 11:55:16 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>
-Cc:     "vincent.guittot\@linaro.org" <vincent.guittot@linaro.org>,
-        "mgorman\@suse.de" <mgorman@suse.de>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "dietmar.eggemann\@arm.com" <dietmar.eggemann@arm.com>,
-        "morten.rasmussen\@arm.com" <morten.rasmussen@arm.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm\@openeuler.org" <linuxarm@openeuler.org>,
-        "xuwei \(O\)" <xuwei5@huawei.com>,
-        "Liguozhu \(Kenneth\)" <liguozhu@hisilicon.com>,
-        "tiantao \(H\)" <tiantao6@hisilicon.com>,
-        wanghuiqiang <wanghuiqiang@huawei.com>,
-        "Zengtao \(B\)" <prime.zeng@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "guodong.xu\@linaro.org" <guodong.xu@linaro.org>,
-        Meelis Roos <mroos@linux.ee>
-Subject: Re: [PATCH v2] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
-In-Reply-To: <YCPByAdQ+rZFzYWp@hirez.programming.kicks-ass.net>
-References: <20210203111201.20720-1-song.bao.hua@hisilicon.com> <YCKGVBnXzRsE6/Er@hirez.programming.kicks-ass.net> <4bdaa3e1a54f445fa8e629ea392e7bce@hisilicon.com> <YCPByAdQ+rZFzYWp@hirez.programming.kicks-ass.net>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Thu, 11 Feb 2021 19:55:11 +0000
-Message-ID: <jhjblcqtm5c.mognet@arm.com>
+        id S230046AbhBKT4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 14:56:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35E3164E15;
+        Thu, 11 Feb 2021 19:56:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613073362;
+        bh=NtykC3JX9VvS+pW6IU8EX2IEGkMX/SOoN9eWQt5qNN0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fjWIxkXgp1fwYOR4AgR931ujQFKeA+fTGZv0WRt5lj1T3bXKdqzgR83WRQncTwBXh
+         GrKgV2YvVaIen1awO/CYZFjfht5sP490j8jP50YBN6WnUKntoIBwacWRYTFxa6DK1V
+         OhItMyvGHQvRc/icmU1aVaOaVUL4G79TyroLaq3SICHPKNE3u0GC2xlfHZMajQ8jrG
+         tRJvwZxQFPEV/6+Gg7r28VgdtfgnczkJ/BiZSCadgYapwO/x7bCViBkht3TKfiXWup
+         6mX0foNqewjMTIbIBQEECgPEH00r2XbL26mgCJZgQa06cH3c5ElAYRqDkpXVH1X7Mq
+         YD2UT3RXuYr5g==
+Received: by pali.im (Postfix)
+        id C2ED6A80; Thu, 11 Feb 2021 20:55:59 +0100 (CET)
+Date:   Thu, 11 Feb 2021 20:55:59 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     nnet <nnet@fastmail.fm>
+Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>, a.heider@gmail.com,
+        andrew@lunn.ch, gerald@gk2.net, gregory.clement@bootlin.com,
+        kostap@marvell.com, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luka.perkov@sartura.hr, miquel.raynal@bootlin.com,
+        mturquette@baylibre.com, rmk+kernel@armlinux.org.uk,
+        sboyd@kernel.org, tmn505@gmail.com, vladimir.vid@sartura.hr
+Subject: Re: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base
+ CPU speed to 800 MHz from 1000 MHz
+Message-ID: <20210211195559.n2j4jnchl2ho54mg@pali>
+References: <20210209225630.mdwnzkvnaz3r4blt@pali>
+ <a86c5069-d423-44db-92dd-b3e406b7ec91@www.fastmail.com>
+ <20210210002619.43104a9b@kernel.org>
+ <ac03801e-87e2-4e57-b131-bff52f03579d@www.fastmail.com>
+ <1cd0c2ee-aa3a-4da2-9c0c-57cc5a1dad49@www.fastmail.com>
+ <a1277b1f-f829-4d02-9e54-68ab4faaa047@www.fastmail.com>
+ <20210210092339.qy6wwuq6qr5m2ozr@pali>
+ <d6971325-af71-4f71-91c2-7b661804c022@www.fastmail.com>
+ <20210210180322.rlfxdussqhejqpo6@pali>
+ <966f50f2-68b2-4d4f-85f0-396df112c0f4@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <966f50f2-68b2-4d4f-85f0-396df112c0f4@www.fastmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/02/21 12:21, Peter Zijlstra wrote:
-> On Tue, Feb 09, 2021 at 08:58:15PM +0000, Song Bao Hua (Barry Song) wrote:
->> So historically, the code has never tried to make sched_groups result
->> in equal size. And it permits the overlapping of local group and remote
->> groups.
->
-> Histrorically groups have (typically) always been the same size though.
->
-> The reason I did ask is because when you get one large and a bunch of
-> smaller groups, the load-balancing 'pull' is relatively smaller to the
-> large groups.
->
-> That is, IIRC should_we_balance() ensures only 1 CPU out of the group
-> continues the load-balancing pass. So if, for example, we have one group
-> of 4 CPUs and one group of 2 CPUs, then the group of 2 CPUs will pull
-> 1/2 times, while the group of 4 CPUs will pull 1/4 times.
->
-> By making sure all groups are of the same level, and thus of equal size,
-> this doesn't happen.
+On Wednesday 10 February 2021 11:08:59 nnet wrote:
+> On Wed, Feb 10, 2021, at 10:03 AM, Pali Rohár wrote:
+> > > > Hello! Could you please enable userspace governor during kernel
+> > > > compilation?
+> > > > 
+> > > >     CONFIG_CPU_FREQ_GOV_USERSPACE=y
+> > > > 
+> > > > It can be activated via command:
+> > > > 
+> > > >     echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+> > > > 
+> > > > After that you can "force" CPU frequency to specific value, e.g.:
+> > > > 
+> > > >     echo 1000000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed
+> > > > 
+> > > > I need to know which switch (from --> to freq) cause this system hang.
+> > > > 
+> > > > This patch series (via MIN_VOLT_MV_FOR_L0_L1_1GHZ) is fixing only
+> > > > switching from 500 MHz to 1000 MHz on 1 GHz variant. As only this switch
+> > > > is causing issue.
+> > > > 
+> > > > I have used following simple bash script to check that switching between
+> > > > 500 MHz and 1 GHz is stable:
+> > > > 
+> > > >     while true; do
+> > > >         echo 1000000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+> > > >         echo 500000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+> > > >         echo 1000000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+> > > >         echo 500000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+> > > >     done
+> > > 
+> > > echo userspace | tee /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+> > > while true; do
+> > >   echo 1200000 | tee /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+> > >   echo 600000 | tee /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+> > > done
+> > > 
+> > > >> +#define MIN_VOLT_MV_FOR_L0_L1_1GHZ 1108
+> > > 
+> > > With 1108 I get a freeze within a minute. The last output to stdout is 600000.
+> > > 
+> > > With 1120 it takes a few minutes.
+> > > 
+> > > With any of 1225, 1155, 1132 the device doesn't freeze over the full 5 minute load test.
+> > > 
+> > > I'm using ondemand now with the above at 1132 without issue so far.
+> > 
+> > Great, thank you for testing!
+> > 
+> > Can you check if switching between any two lower frequencies 200000
+> > 300000 600000 is stable?
+> 
+> This is stable using 1132 mV for MIN_VOLT_MV_FOR_L0_L1_1GHZ:
+> 
+> while true; do
+>   # down
+>   echo 1200000 | tee /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed;
+...
 
-So I hacked something that tries to do this, with the notable exception
-that it doesn't change the way the local group is generated. Breaking the
-assumption that the local group always spans the child domain doesn't sound
-like the best thing to do.
+Hello!
 
-Anywho, the below makes it so all !local NUMA groups are built using the
-same sched_domain_topology_level. Some of it is absolutely disgusting
-(esp. the sched_domains_curr_level stuff), I didn't bother with handling
-domain degeneration yet, and I trigger the WARN_ON in get_group()... But at
-least the topology gets built!
+Could you please re-run test without tee, in form as I have shown above?
+UART is slow and printing something to console adds delay which decrease
+probability that real issue is triggered as this is timing issue.
 
-AFAICT Barry's topology is handled the same. On that sunfire topology, it
-pretty much turns all remote groups into groups spanning a single
-node. That does almost double the number of groups for some domains,
-compared to Barry's current v3.
+Also please do tests just between two frequencies in loop as I observed
+that switching between more decreased probability to hit issue.
 
-If that is really a route we want to go down, I'll try to clean the below.
-
-(deposit your drinks before going any further)
---->8---
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 8f0f778b7c91..e74f48bdd226 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -187,7 +187,10 @@ struct sched_domain_topology_level {
- 	sched_domain_mask_f mask;
- 	sched_domain_flags_f sd_flags;
- 	int		    flags;
-+#ifdef CONFIG_NUMA
- 	int		    numa_level;
-+	int                 numa_sibling_level;
-+#endif
- 	struct sd_data      data;
- #ifdef CONFIG_SCHED_DEBUG
- 	char                *name;
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 3c50cc7285c9..5a9e6a4d5d89 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -742,6 +742,34 @@ enum s_alloc {
- 	sa_none,
- };
- 
-+/*
-+ * Topology list, bottom-up.
-+ */
-+static struct sched_domain_topology_level default_topology[] = {
-+#ifdef CONFIG_SCHED_SMT
-+	{ cpu_smt_mask, cpu_smt_flags, SD_INIT_NAME(SMT) },
-+#endif
-+#ifdef CONFIG_SCHED_MC
-+	{ cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
-+#endif
-+	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
-+	{ NULL, },
-+};
-+
-+static struct sched_domain_topology_level *sched_domain_topology =
-+	default_topology;
-+
-+#define for_each_sd_topology(tl)			\
-+	for (tl = sched_domain_topology; tl->mask; tl++)
-+
-+void set_sched_topology(struct sched_domain_topology_level *tl)
-+{
-+	if (WARN_ON_ONCE(sched_smp_initialized))
-+		return;
-+
-+	sched_domain_topology = tl;
-+}
-+
- /*
-  * Return the canonical balance CPU for this group, this is the first CPU
-  * of this group that's also in the balance mask.
-@@ -955,10 +983,12 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- 	struct sched_group *first = NULL, *last = NULL, *sg;
- 	const struct cpumask *span = sched_domain_span(sd);
- 	struct cpumask *covered = sched_domains_tmpmask;
-+	struct sched_domain_topology_level *tl;
- 	struct sd_data *sdd = sd->private;
- 	struct sched_domain *sibling;
- 	int i;
- 
-+	tl = container_of(sd->private, struct sched_domain_topology_level, data);
- 	cpumask_clear(covered);
- 
- 	for_each_cpu_wrap(i, span, cpu) {
-@@ -982,6 +1012,10 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- 		if (!cpumask_test_cpu(i, sched_domain_span(sibling)))
- 			continue;
- 
-+		/* Don't mess up local group being child sched domain */
-+		if (tl->numa_sibling_level != sd->level && i != cpu)
-+			sibling = *per_cpu_ptr(sched_domain_topology[tl->numa_sibling_level].data.sd, i);
-+
- 		sg = build_group_from_child_sched_domain(sibling, cpu);
- 		if (!sg)
- 			goto fail;
-@@ -989,7 +1023,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- 		sg_span = sched_group_span(sg);
- 		cpumask_or(covered, covered, sg_span);
- 
--		init_overlap_sched_group(sd, sg);
-+		init_overlap_sched_group(sibling, sg);
- 
- 		if (!first)
- 			first = sg;
-@@ -1440,34 +1474,6 @@ sd_init(struct sched_domain_topology_level *tl,
- 	return sd;
- }
- 
--/*
-- * Topology list, bottom-up.
-- */
--static struct sched_domain_topology_level default_topology[] = {
--#ifdef CONFIG_SCHED_SMT
--	{ cpu_smt_mask, cpu_smt_flags, SD_INIT_NAME(SMT) },
--#endif
--#ifdef CONFIG_SCHED_MC
--	{ cpu_coregroup_mask, cpu_core_flags, SD_INIT_NAME(MC) },
--#endif
--	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
--	{ NULL, },
--};
--
--static struct sched_domain_topology_level *sched_domain_topology =
--	default_topology;
--
--#define for_each_sd_topology(tl)			\
--	for (tl = sched_domain_topology; tl->mask; tl++)
--
--void set_sched_topology(struct sched_domain_topology_level *tl)
--{
--	if (WARN_ON_ONCE(sched_smp_initialized))
--		return;
--
--	sched_domain_topology = tl;
--}
--
- #ifdef CONFIG_NUMA
- 
- static const struct cpumask *sd_numa_mask(int cpu)
-@@ -1566,6 +1572,52 @@ static void init_numa_topology_type(void)
- 
- #define NR_DISTANCE_VALUES (1 << DISTANCE_BITS)
- 
-+void sched_init_numa_siblings(void)
-+{
-+	struct sched_domain_topology_level *tl;
-+	int tl_id = 0, sibling_tl_id = 0;
-+	const struct cpumask *mask;
-+	int last_written_tl = 0;
-+	int n, i, j;
-+
-+	for_each_sd_topology(tl) {
-+		if (!tl->numa_level)
-+			goto next;
-+
-+		for_each_node(n) {
-+			/* XXX: this *thing* needs to die */
-+			sched_domains_curr_level = tl->numa_level;
-+			i = cpumask_first(cpumask_of_node(n));
-+			mask = tl->mask(i);
-+
-+			for_each_cpu_wrap(j, mask, i) {
-+				sibling_tl_id = tl_id;
-+				sched_domains_curr_level = tl->numa_level;
-+
-+				/* Not subset? Down we go! */
-+				/* XXX bother about degeneration here? */
-+				do {
-+					sibling_tl_id--;
-+					sched_domains_curr_level--;
-+				} while (sibling_tl_id > 0 &&
-+					 !cpumask_subset(sched_domain_topology[sibling_tl_id].mask(j), mask));
-+
-+				/* Only write if first write or it lowers level */
-+				if (last_written_tl < tl_id ||
-+				    tl->numa_sibling_level > sibling_tl_id) {
-+					tl->numa_sibling_level = sibling_tl_id;
-+					last_written_tl = tl_id;
-+				}
-+			}
-+		}
-+next:
-+		if (last_written_tl < tl_id)
-+			tl->numa_sibling_level = tl_id;
-+
-+		tl_id++;
-+	}
-+}
-+
- void sched_init_numa(void)
- {
- 	struct sched_domain_topology_level *tl;
-@@ -1708,6 +1760,8 @@ void sched_init_numa(void)
- 	sched_max_numa_distance = sched_domains_numa_distance[nr_levels - 1];
- 
- 	init_numa_topology_type();
-+
-+	sched_init_numa_siblings();
- }
- 
- void sched_domains_numa_masks_set(unsigned int cpu)
+The real issue for 1 GHz variant of A3720 is only when doing switch from
+500 MHz to 1 GHz. So could you try to do some tests also without
+changing MIN_VOLT_MV_FOR_L0_L1_1GHZ and switching just between non-1.2
+frequencies (to verify that on 1.2 GHz variant it is also from 600 MHz
+to 1.2 GHz)?
