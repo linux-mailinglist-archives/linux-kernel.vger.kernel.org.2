@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4E0319039
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B85B319020
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhBKQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:42:24 -0500
-Received: from pv50p00im-ztdg10011301.me.com ([17.58.6.40]:59074 "EHLO
-        pv50p00im-ztdg10011301.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229944AbhBKPbm (ORCPT
+        id S231352AbhBKQf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231344AbhBKPbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:31:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1613057440;
-        bh=JR+lVwt36NeZVokhBbvGDtwHxUoQfVZjR1m7wDVCz1E=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=vmEnUIFWD1znxM/bGg6IxeCaf5PFw5fofPyPpX3XgkOI9FYgAA/V10WT7OkPjkfUQ
-         uMr04VXoIn16yHjb7cVezg18XseT9lnMunUprarjrQjb1AkPlMbD8uo0qoJ8OE2hDJ
-         UtkkDwarjWKy0NqbHc/E6ZRpxkR4WrxvP9os7ZltJccQHSVQ2391O9TOu0dZDsliix
-         sWaY1Lkyn0wnlPhVSBWrHw9KswTJfRh1oJDWbJ9EsYekzAkqevb1Mo3esqLSt+iYYQ
-         dIkfa/tnPYlpTKhelFf0j49Tdq72z5QDFrHDR+BYPtVCZ8ENjUT50ftiwgPh48csCR
-         7d5z2byWGmWEQ==
-Received: from everest.nathzi1505 (unknown [45.250.50.68])
-        by pv50p00im-ztdg10011301.me.com (Postfix) with ESMTPSA id 9F631760552;
-        Thu, 11 Feb 2021 15:30:37 +0000 (UTC)
-From:   Pritthijit Nath <pritthijit.nath@icloud.com>
-To:     vireshk@kernel.org, gregkh@linuxfoundation.org, johan@kernel.org,
-        elder@kernel.org
-Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Pritthijit Nath <pritthijit.nath@icloud.com>
-Subject: [PATCH] staging: greybus: Fixed misspelling and alignment issue in hid.c
-Date:   Thu, 11 Feb 2021 21:00:01 +0530
-Message-Id: <20210211153001.10358-1-pritthijit.nath@icloud.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 11 Feb 2021 10:31:16 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB8DC06178C
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:30:36 -0800 (PST)
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1lADvG-0006zC-Oo; Thu, 11 Feb 2021 16:30:26 +0100
+Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1lADvF-0000A5-MZ; Thu, 11 Feb 2021 16:30:25 +0100
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, kernel@pengutronix.de,
+        Jan Kara <jack@suse.com>, Richard Weinberger <richard@nod.at>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH v2 0/2] quota: Add mountpath based quota support
+Date:   Thu, 11 Feb 2021 16:30:21 +0100
+Message-Id: <20210211153024.32502-1-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change fixes a checkpatch CHECK style issue for "Alignment should match open parenthesis".
-In addition the misspelling of "transferred" also has been fixed.
+Current quotactl syscall uses a path to a block device to specify the
+filesystem to work on which makes it unsuitable for filesystems that
+do not have a block device. This series adds a new syscall quotactl_path()
+which replaces the path to the block device with a mountpath, but otherwise
+behaves like original quotactl.
 
-Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
----
- drivers/staging/greybus/hid.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This is done to add quota support to UBIFS. UBIFS quota support has been
+posted several times with different approaches to put the mountpath into
+the existing quotactl() syscall until it has been suggested to make it a
+new syscall instead, so here it is.
 
-diff --git a/drivers/staging/greybus/hid.c b/drivers/staging/greybus/hid.c
-index ed706f39e87a..adb91286803a 100644
---- a/drivers/staging/greybus/hid.c
-+++ b/drivers/staging/greybus/hid.c
-@@ -221,8 +221,8 @@ static void gb_hid_init_reports(struct gb_hid *ghid)
- }
- 
- static int __gb_hid_get_raw_report(struct hid_device *hid,
--		unsigned char report_number, __u8 *buf, size_t count,
--		unsigned char report_type)
-+				   unsigned char report_number, __u8 *buf, size_t count,
-+				   unsigned char report_type)
- {
- 	struct gb_hid *ghid = hid->driver_data;
- 	int ret;
-@@ -254,7 +254,7 @@ static int __gb_hid_output_raw_report(struct hid_device *hid, __u8 *buf,
- 
- 	ret = gb_hid_set_report(ghid, report_type, report_id, buf, len);
- 	if (report_id && ret >= 0)
--		ret++; /* add report_id to the number of transfered bytes */
-+		ret++; /* add report_id to the number of transferred bytes */
- 
- 	return 0;
- }
+I'm not posting the full UBIFS quota series here as it remains unchanged
+and I'd like to get feedback to the new syscall first. For those interested
+the most recent series can be found here: https://lwn.net/Articles/810463/
+
+Changes since (implicit) v1:
+- Ignore second path argument to Q_QUOTAON. With this quotactl_path() can
+  only do the Q_QUOTAON operation on filesystems which use hidden inodes
+  for quota metadata storage
+- Drop unnecessary quotactl_cmd_onoff() check
+
+Sascha Hauer (2):
+  quota: Add mountpath based quota support
+  quota: wire up quotactl_path
+
+ arch/alpha/kernel/syscalls/syscall.tbl      |  1 +
+ arch/arm/tools/syscall.tbl                  |  1 +
+ arch/arm64/include/asm/unistd.h             |  2 +-
+ arch/arm64/include/asm/unistd32.h           |  2 +
+ arch/ia64/kernel/syscalls/syscall.tbl       |  1 +
+ arch/m68k/kernel/syscalls/syscall.tbl       |  1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl |  1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl   |  1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl   |  1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl   |  1 +
+ arch/parisc/kernel/syscalls/syscall.tbl     |  1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl    |  1 +
+ arch/s390/kernel/syscalls/syscall.tbl       |  1 +
+ arch/sh/kernel/syscalls/syscall.tbl         |  1 +
+ arch/sparc/kernel/syscalls/syscall.tbl      |  1 +
+ arch/x86/entry/syscalls/syscall_32.tbl      |  1 +
+ arch/x86/entry/syscalls/syscall_64.tbl      |  1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl     |  1 +
+ fs/quota/quota.c                            | 49 +++++++++++++++++++++
+ include/linux/syscalls.h                    |  2 +
+ include/uapi/asm-generic/unistd.h           |  4 +-
+ kernel/sys_ni.c                             |  1 +
+ 22 files changed, 74 insertions(+), 2 deletions(-)
+
 -- 
-2.25.1
+2.20.1
 
