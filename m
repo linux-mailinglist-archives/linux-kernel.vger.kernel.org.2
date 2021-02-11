@@ -2,608 +2,502 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4FA3191EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39A83191F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231778AbhBKSLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:11:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48568 "EHLO mail.kernel.org"
+        id S229787AbhBKSLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:11:43 -0500
+Received: from mga02.intel.com ([134.134.136.20]:4486 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231882AbhBKRnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:43:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 170D764DCE;
-        Thu, 11 Feb 2021 17:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613065389;
-        bh=0TVsN3B9busffrYbPpx0QrDx1G/rmABwu48WP4fkaqI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sWhv6e4Hz7eN04UFeOhr80ldsdJ7Geabnl1ktKlykPe6BjhO4XWnc2++//xCLsjse
-         emCceyMzgb7lwW213g+bfvIjTc9erbMrSpg19DRQ7L2B0mjkkBs3dqWnyfDCJN8Trv
-         Nfs7RtKKMGB3H2wu4vkEi25K23KT4tPQkexKtLzmtaVN7g13eeClDkJhxTTuM8ToyH
-         ZauOrtAEUuMZ7YwrboyDz9v3SyfoFsJor/z/FnfW7+SrSRnQOdw9YDpP7XhDoeqUJH
-         4OqNa/m9z9ayISrblp2WkCrwS68yQReW+VoFZaBE5waO3ainQcFbROgPs8vpf3wvdE
-         dSvWB/ZIIxPfg==
-Date:   Thu, 11 Feb 2021 10:43:07 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        clang-built-linux@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peter Smith <peter.smith@arm.com>,
-        Renato Golin <rengolin@systemcall.eu>,
-        David Spickett <david.spickett@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v5 2/2] ARM: kprobes: rewrite test-arm.c in UAL
-Message-ID: <20210211174307.GA2804604@ubuntu-m3-large-x86>
-References: <20210211025149.3544593-1-ndesaulniers@google.com>
- <20210211025149.3544593-3-ndesaulniers@google.com>
+        id S232439AbhBKRrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:47:12 -0500
+IronPort-SDR: qUpi0zZKvC5FoKNmoa3V5m8MSZpe7qKRGaqF5UQfJjE2zJXDT1PIfggQkBEDQW/oIrgSapghX2
+ 1y91HfUYxB4g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="169412235"
+X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
+   d="scan'208";a="169412235"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 09:45:04 -0800
+IronPort-SDR: rDvZwF3246golPewl0O+aInDBwt8buurES4YPGm0Tx5j1HN2Y+HFXejnwAd8JPufiXP/YUTBQA
+ NY9CeC2oZJfg==
+X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
+   d="scan'208";a="510924079"
+Received: from reknight-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.134.254])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 09:45:03 -0800
+Date:   Thu, 11 Feb 2021 09:45:02 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v2 6/8] cxl/mem: Enable commands via CEL
+Message-ID: <20210211174502.72thmdqlh2q5tdu3@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-7-ben.widawsky@intel.com>
+ <20210211120215.00007d3d@Huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210211025149.3544593-3-ndesaulniers@google.com>
+In-Reply-To: <20210211120215.00007d3d@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 06:51:49PM -0800, Nick Desaulniers wrote:
-> Clang's integrated assembler only accepts UAL syntax, rewrite the
-> instructions that were changed by RVCTv2.1.  The document "Assembly
-> language changes after RVCTv2.1" was very helpful.
+On 21-02-11 12:02:15, Jonathan Cameron wrote:
+> On Tue, 9 Feb 2021 16:02:57 -0800
+> Ben Widawsky <ben.widawsky@intel.com> wrote:
 > 
->   .syntax unified
+> > CXL devices identified by the memory-device class code must implement
+> > the Device Command Interface (described in 8.2.9 of the CXL 2.0 spec).
+> > While the driver already maintains a list of commands it supports, there
+> > is still a need to be able to distinguish between commands that the
+> > driver knows about from commands that are optionally supported by the
+> > hardware.
+> > 
+> > The Command Effects Log (CEL) is specified in the CXL 2.0 specification.
+> > The CEL is one of two types of logs, the other being vendor specific.
 > 
-> directive is added, since -masm-syntax-unified is unreliable for older
-> but supported versions of GCC. See also:
+> I'd say "vendor specific debug" just so that no one thinks it has anything
+> to do with the rest of this description (which mentioned vendor specific
+> commands).
 > 
-> commit fe09d9c641f2 ("ARM: 8852/1: uaccess: use unified assembler language syntax")
+> > They are distinguished in hardware/spec via UUID. The CEL is useful for
+> > 2 things:
+> > 1. Determine which optional commands are supported by the CXL device.
+> > 2. Enumerate any vendor specific commands
+> > 
+> > The CEL is used by the driver to determine which commands are available
+> > in the hardware and therefore which commands userspace is allowed to
+> > execute. The set of enabled commands might be a subset of commands which
+> > are advertised in UAPI via CXL_MEM_SEND_COMMAND IOCTL.
+> > 
+> > The implementation leaves the statically defined table of commands and
+> > supplements it with a bitmap to determine commands that are enabled.
+> > This organization was chosen for the following reasons:
+> > - Smaller memory footprint. Doesn't need a table per device.
+> > - Reduce memory allocation complexity.
+> > - Fixed command IDs to opcode mapping for all devices makes development
+> >   and debugging easier.
+> > - Certain helpers are easily achievable, like cxl_for_each_cmd().
+> > 
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> >  drivers/cxl/cxl.h            |   2 +
+> >  drivers/cxl/mem.c            | 216 +++++++++++++++++++++++++++++++++++
+> >  include/uapi/linux/cxl_mem.h |   1 +
+> >  3 files changed, 219 insertions(+)
+> > 
+> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > index b3c56fa6e126..9a5e595abfa4 100644
+> > --- a/drivers/cxl/cxl.h
+> > +++ b/drivers/cxl/cxl.h
+> > @@ -68,6 +68,7 @@ struct cxl_memdev;
+> >   *                (CXL 2.0 8.2.8.4.3 Mailbox Capabilities Register)
+> >   * @mbox_mutex: Mutex to synchronize mailbox access.
+> >   * @firmware_version: Firmware version for the memory device.
+> > + * @enabled_commands: Hardware commands found enabled in CEL.
+> >   * @pmem: Persistent memory capacity information.
+> >   * @ram: Volatile memory capacity information.
+> >   */
+> > @@ -83,6 +84,7 @@ struct cxl_mem {
+> >  	size_t payload_size;
+> >  	struct mutex mbox_mutex; /* Protects device mailbox and firmware */
+> >  	char firmware_version[0x10];
+> > +	unsigned long *enabled_cmds;
+> >  
+> >  	struct {
+> >  		struct range range;
+> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > index 6d766a994dce..e9aa6ca18d99 100644
+> > --- a/drivers/cxl/mem.c
+> > +++ b/drivers/cxl/mem.c
+> > @@ -45,6 +45,8 @@ enum opcode {
+> >  	CXL_MBOX_OP_INVALID		= 0x0000,
+> >  	CXL_MBOX_OP_RAW			= CXL_MBOX_OP_INVALID,
+> >  	CXL_MBOX_OP_ACTIVATE_FW		= 0x0202,
+> > +	CXL_MBOX_OP_GET_SUPPORTED_LOGS	= 0x0400,
+> > +	CXL_MBOX_OP_GET_LOG		= 0x0401,
+> >  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
+> >  	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
+> >  	CXL_MBOX_OP_SET_LSA		= 0x4103,
+> > @@ -103,6 +105,19 @@ static DEFINE_IDA(cxl_memdev_ida);
+> >  static struct dentry *cxl_debugfs;
+> >  static bool raw_allow_all;
+> >  
+> > +enum {
+> > +	CEL_UUID,
+> > +	VENDOR_DEBUG_UUID
 > 
-> Link: https://developer.arm.com/documentation/dui0473/c/writing-arm-assembly-language/assembly-language-changes-after-rvctv2-1
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1271
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> Who wants to take a bet this will get extended at somepoint in the future?
+> Add a trailing comma to make that less noisy.
+> 
+> They would never have used a UUID if this wasn't expected to expand.
+> CXL spec calls out that "The following Log Identifier UUIDs are defined in _this_
+> specification" rather implying other specs may well define more.
+> Fun for the future!
+> 
+> > +};
+> > +
+> > +/* See CXL 2.0 Table 170. Get Log Input Payload */
+> > +static const uuid_t log_uuid[] = {
+> > +	[CEL_UUID] = UUID_INIT(0xda9c0b5, 0xbf41, 0x4b78, 0x8f, 0x79, 0x96,
+> > +			       0xb1, 0x62, 0x3b, 0x3f, 0x17),
+> > +	[VENDOR_DEBUG_UUID] = UUID_INIT(0xe1819d9, 0x11a9, 0x400c, 0x81, 0x1f,
+> > +					0xd6, 0x07, 0x19, 0x40, 0x3d, 0x86)
+> 
+> likewise on trailing comma
+> 
+> > +};
+> > +
+> >  /**
+> >   * struct cxl_mem_command - Driver representation of a memory device command
+> >   * @info: Command information as it exists for the UAPI
+> > @@ -111,6 +126,8 @@ static bool raw_allow_all;
+> >   *
+> >   *  * %CXL_CMD_FLAG_MANDATORY: Hardware must support this command. This flag is
+> >   *    only used internally by the driver for sanity checking.
+> > + *  * %CXL_CMD_INTERNAL_FLAG_PSEUDO: This is a pseudo command which doesn't have
+> > + *    a direct mapping to hardware. They are implicitly always enabled.
+> 
+> Stale comment?
+> 
+> >   *
+> >   * The cxl_mem_command is the driver's internal representation of commands that
+> >   * are supported by the driver. Some of these commands may not be supported by
+> > @@ -146,6 +163,7 @@ static struct cxl_mem_command mem_commands[] = {
+> >  #ifdef CONFIG_CXL_MEM_RAW_COMMANDS
+> >  	CXL_CMD(RAW, NONE, ~0, ~0),
+> >  #endif
+> > +	CXL_CMD(GET_SUPPORTED_LOGS, NONE, 0, ~0),
+> >  };
+> >  
+> >  /*
+> > @@ -627,6 +645,10 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
+> >  	c = &mem_commands[send_cmd->id];
+> >  	info = &c->info;
+> >  
+> > +	/* Check that the command is enabled for hardware */
+> > +	if (!test_bit(info->id, cxlm->enabled_cmds))
+> > +		return -ENOTTY;
+> > +
+> >  	if (info->flags & CXL_MEM_COMMAND_FLAG_KERNEL)
+> >  		return -EPERM;
+> >  
+> > @@ -869,6 +891,14 @@ static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo,
+> >  	mutex_init(&cxlm->mbox_mutex);
+> >  	cxlm->pdev = pdev;
+> >  	cxlm->regs = regs + offset;
+> > +	cxlm->enabled_cmds =
+> > +		devm_kmalloc_array(dev, BITS_TO_LONGS(cxl_cmd_count),
+> > +				   sizeof(unsigned long),
+> > +				   GFP_KERNEL | __GFP_ZERO);
+> 
+> Hmm. There doesn't seem to be a devm_bitmap_zalloc
+> 
+> Embarrassingly one of the google hits on the topic is me suggesting
+> this in a previous review (that I'd long since forgotten)
+> 
+> Perhaps one for a refactoring patch after this lands.
+> 
+> 
+> > +	if (!cxlm->enabled_cmds) {
+> > +		dev_err(dev, "No memory available for bitmap\n");
+> > +		return NULL;
+> > +	}
+> >  
+> >  	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
+> >  	return cxlm;
+> > @@ -1088,6 +1118,188 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+> >  	return rc;
+> >  }
+> >  
+> > +struct cxl_mbox_get_log {
+> > +	uuid_t uuid;
+> > +	__le32 offset;
+> > +	__le32 length;
+> > +} __packed;
+> > +
+> > +static int cxl_xfer_log(struct cxl_mem *cxlm, uuid_t *uuid, u32 size, u8 *out)
+> > +{
+> > +	u32 remaining = size;
+> > +	u32 offset = 0;
+> > +
+> > +	while (remaining) {
+> > +		u32 xfer_size = min_t(u32, remaining, cxlm->payload_size);
+> > +		struct cxl_mbox_get_log log = {
+> > +			.uuid = *uuid,
+> > +			.offset = cpu_to_le32(offset),
+> > +			.length = cpu_to_le32(xfer_size)
+> > +		};
+> > +		struct mbox_cmd mbox_cmd = {
+> > +			.opcode = CXL_MBOX_OP_GET_LOG,
+> > +			.payload_in = &log,
+> > +			.payload_out = out,
+> > +			.size_in = sizeof(log),
+> > +		};
+> > +		int rc;
+> > +
+> > +		rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+> > +		if (rc)
+> > +			return rc;
+> > +
+> > +		WARN_ON(mbox_cmd.size_out != xfer_size);
+> 
+> Just for completeness (as already addressed in one of Ben's replies
+> to earlier patch) this is missing handling for the return code.
+> 
+> > +
+> > +		out += xfer_size;
+> > +		remaining -= xfer_size;
+> > +		offset += xfer_size;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static inline struct cxl_mem_command *cxl_mem_find_command(u16 opcode)
+> > +{
+> > +	struct cxl_mem_command *c;
+> > +
+> > +	cxl_for_each_cmd(c)
+> > +		if (c->opcode == opcode)
+> > +			return c;
+> > +
+> > +	return NULL;
+> > +}
+> > +
+> > +static void cxl_enable_cmd(struct cxl_mem *cxlm,
+> > +			   const struct cxl_mem_command *cmd)
+> > +{
+> > +	if (test_and_set_bit(cmd->info.id, cxlm->enabled_cmds))
+> > +		dev_WARN_ONCE(&cxlm->pdev->dev, true, "cmd enabled twice\n");
+> > +}
+> > +
+> > +/**
+> > + * cxl_walk_cel() - Walk through the Command Effects Log.
+> > + * @cxlm: Device.
+> > + * @size: Length of the Command Effects Log.
+> > + * @cel: CEL
+> > + *
+> > + * Iterate over each entry in the CEL and determine if the driver supports the
+> > + * command. If so, the command is enabled for the device and can be used later.
+> > + */
+> > +static void cxl_walk_cel(struct cxl_mem *cxlm, size_t size, u8 *cel)
+> > +{
+> > +	struct cel_entry {
+> > +		__le16 opcode;
+> > +		__le16 effect;
+> > +	} *cel_entry;
+> 
+> Driver is currently marking a bunch of other structures packed that don't
+> need it. Perhaps do this one as well for consistency?
+> 
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Just for my memory later...
+I don't actually recall the history here. I had no intention originally to use
+__packed, but they just kind of got in there, and it doesn't really hurt so
+we've left them.
 
-> ---
->  arch/arm/probes/kprobes/test-arm.c  | 290 ++++++++++++++--------------
->  arch/arm/probes/kprobes/test-core.h |   1 +
->  2 files changed, 146 insertions(+), 145 deletions(-)
+There are a few CXL structures which need packed (which is unfortunate), but
+this isn't one of them.
+
+> > +	const int cel_entries = size / sizeof(*cel_entry);
+> > +	int i;
+> > +
+> > +	cel_entry = (struct cel_entry *)cel;
+> > +
+> > +	for (i = 0; i < cel_entries; i++) {
+> > +		const struct cel_entry *ce = &cel_entry[i];
 > 
-> diff --git a/arch/arm/probes/kprobes/test-arm.c b/arch/arm/probes/kprobes/test-arm.c
-> index 2543106a203e..a0dae35ffacd 100644
-> --- a/arch/arm/probes/kprobes/test-arm.c
-> +++ b/arch/arm/probes/kprobes/test-arm.c
-> @@ -55,25 +55,25 @@ void kprobe_arm_test_cases(void)
->  	TEST_GROUP("Data-processing (register), (register-shifted register), (immediate)")
->  
->  #define _DATA_PROCESSING_DNM(op,s,val)						\
-> -	TEST_RR(  op "eq" s "	r0,  r",1, VAL1,", r",2, val, "")		\
-> -	TEST_RR(  op "ne" s "	r1,  r",1, VAL1,", r",2, val, ", lsl #3")	\
-> -	TEST_RR(  op "cs" s "	r2,  r",3, VAL1,", r",2, val, ", lsr #4")	\
-> -	TEST_RR(  op "cc" s "	r3,  r",3, VAL1,", r",2, val, ", asr #5")	\
-> -	TEST_RR(  op "mi" s "	r4,  r",5, VAL1,", r",2, N(val),", asr #6")	\
-> -	TEST_RR(  op "pl" s "	r5,  r",5, VAL1,", r",2, val, ", ror #7")	\
-> -	TEST_RR(  op "vs" s "	r6,  r",7, VAL1,", r",2, val, ", rrx")		\
-> -	TEST_R(   op "vc" s "	r6,  r",7, VAL1,", pc, lsl #3")			\
-> -	TEST_R(   op "vc" s "	r6,  r",7, VAL1,", sp, lsr #4")			\
-> -	TEST_R(   op "vc" s "	r6,  pc, r",7, VAL1,", asr #5")			\
-> -	TEST_R(   op "vc" s "	r6,  sp, r",7, VAL1,", ror #6")			\
-> -	TEST_RRR( op "hi" s "	r8,  r",9, VAL1,", r",14,val, ", lsl r",0, 3,"")\
-> -	TEST_RRR( op "ls" s "	r9,  r",9, VAL1,", r",14,val, ", lsr r",7, 4,"")\
-> -	TEST_RRR( op "ge" s "	r10, r",11,VAL1,", r",14,val, ", asr r",7, 5,"")\
-> -	TEST_RRR( op "lt" s "	r11, r",11,VAL1,", r",14,N(val),", asr r",7, 6,"")\
-> -	TEST_RR(  op "gt" s "	r12, r13"       ", r",14,val, ", ror r",14,7,"")\
-> -	TEST_RR(  op "le" s "	r14, r",0, val, ", r13"       ", lsl r",14,8,"")\
-> -	TEST_R(   op "eq" s "	r0,  r",11,VAL1,", #0xf5")			\
-> -	TEST_R(   op "ne" s "	r11, r",0, VAL1,", #0xf5000000")		\
-> +	TEST_RR(  op s "eq	r0,  r",1, VAL1,", r",2, val, "")		\
-> +	TEST_RR(  op s "ne	r1,  r",1, VAL1,", r",2, val, ", lsl #3")	\
-> +	TEST_RR(  op s "cs	r2,  r",3, VAL1,", r",2, val, ", lsr #4")	\
-> +	TEST_RR(  op s "cc	r3,  r",3, VAL1,", r",2, val, ", asr #5")	\
-> +	TEST_RR(  op s "mi	r4,  r",5, VAL1,", r",2, N(val),", asr #6")	\
-> +	TEST_RR(  op s "pl	r5,  r",5, VAL1,", r",2, val, ", ror #7")	\
-> +	TEST_RR(  op s "vs	r6,  r",7, VAL1,", r",2, val, ", rrx")		\
-> +	TEST_R(   op s "vc	r6,  r",7, VAL1,", pc, lsl #3")			\
-> +	TEST_R(   op s "vc	r6,  r",7, VAL1,", sp, lsr #4")			\
-> +	TEST_R(   op s "vc	r6,  pc, r",7, VAL1,", asr #5")			\
-> +	TEST_R(   op s "vc	r6,  sp, r",7, VAL1,", ror #6")			\
-> +	TEST_RRR( op s "hi	r8,  r",9, VAL1,", r",14,val, ", lsl r",0, 3,"")\
-> +	TEST_RRR( op s "ls	r9,  r",9, VAL1,", r",14,val, ", lsr r",7, 4,"")\
-> +	TEST_RRR( op s "ge	r10, r",11,VAL1,", r",14,val, ", asr r",7, 5,"")\
-> +	TEST_RRR( op s "lt	r11, r",11,VAL1,", r",14,N(val),", asr r",7, 6,"")\
-> +	TEST_RR(  op s "gt	r12, r13"       ", r",14,val, ", ror r",14,7,"")\
-> +	TEST_RR(  op s "le	r14, r",0, val, ", r13"       ", lsl r",14,8,"")\
-> +	TEST_R(   op s "eq	r0,  r",11,VAL1,", #0xf5")			\
-> +	TEST_R(   op s "ne	r11, r",0, VAL1,", #0xf5000000")		\
->  	TEST_R(   op s "	r7,  r",8, VAL2,", #0x000af000")		\
->  	TEST(     op s "	r4,  pc"        ", #0x00005a00")
->  
-> @@ -104,23 +104,23 @@ void kprobe_arm_test_cases(void)
->  	TEST_R(   op "	r",8, VAL2,", #0x000af000")
->  
->  #define _DATA_PROCESSING_DM(op,s,val)					\
-> -	TEST_R(   op "eq" s "	r0,  r",1, val, "")			\
-> -	TEST_R(   op "ne" s "	r1,  r",1, val, ", lsl #3")		\
-> -	TEST_R(   op "cs" s "	r2,  r",3, val, ", lsr #4")		\
-> -	TEST_R(   op "cc" s "	r3,  r",3, val, ", asr #5")		\
-> -	TEST_R(   op "mi" s "	r4,  r",5, N(val),", asr #6")		\
-> -	TEST_R(   op "pl" s "	r5,  r",5, val, ", ror #7")		\
-> -	TEST_R(   op "vs" s "	r6,  r",10,val, ", rrx")		\
-> -	TEST(     op "vs" s "	r7,  pc, lsl #3")			\
-> -	TEST(     op "vs" s "	r7,  sp, lsr #4")			\
-> -	TEST_RR(  op "vc" s "	r8,  r",7, val, ", lsl r",0, 3,"")	\
-> -	TEST_RR(  op "hi" s "	r9,  r",9, val, ", lsr r",7, 4,"")	\
-> -	TEST_RR(  op "ls" s "	r10, r",9, val, ", asr r",7, 5,"")	\
-> -	TEST_RR(  op "ge" s "	r11, r",11,N(val),", asr r",7, 6,"")	\
-> -	TEST_RR(  op "lt" s "	r12, r",11,val, ", ror r",14,7,"")	\
-> -	TEST_R(   op "gt" s "	r14, r13"       ", lsl r",14,8,"")	\
-> -	TEST(     op "eq" s "	r0,  #0xf5")				\
-> -	TEST(     op "ne" s "	r11, #0xf5000000")			\
-> +	TEST_R(   op s "eq	r0,  r",1, val, "")			\
-> +	TEST_R(   op s "ne	r1,  r",1, val, ", lsl #3")		\
-> +	TEST_R(   op s "cs	r2,  r",3, val, ", lsr #4")		\
-> +	TEST_R(   op s "cc	r3,  r",3, val, ", asr #5")		\
-> +	TEST_R(   op s "mi	r4,  r",5, N(val),", asr #6")		\
-> +	TEST_R(   op s "pl	r5,  r",5, val, ", ror #7")		\
-> +	TEST_R(   op s "vs	r6,  r",10,val, ", rrx")		\
-> +	TEST(     op s "vs	r7,  pc, lsl #3")			\
-> +	TEST(     op s "vs	r7,  sp, lsr #4")			\
-> +	TEST_RR(  op s "vc	r8,  r",7, val, ", lsl r",0, 3,"")	\
-> +	TEST_RR(  op s "hi	r9,  r",9, val, ", lsr r",7, 4,"")	\
-> +	TEST_RR(  op s "ls	r10, r",9, val, ", asr r",7, 5,"")	\
-> +	TEST_RR(  op s "ge	r11, r",11,N(val),", asr r",7, 6,"")	\
-> +	TEST_RR(  op s "lt	r12, r",11,val, ", ror r",14,7,"")	\
-> +	TEST_R(   op s "gt	r14, r13"       ", lsl r",14,8,"")	\
-> +	TEST(     op s "eq	r0,  #0xf5")				\
-> +	TEST(     op s "ne	r11, #0xf5000000")			\
->  	TEST(     op s "	r7,  #0x000af000")			\
->  	TEST(     op s "	r4,  #0x00005a00")
->  
-> @@ -352,7 +352,7 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe000029f) " @ mul r0, pc, r2")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0000f91) " @ mul r0, r1, pc")
->  	TEST_RR(    "muls	r0, r",1, VAL1,", r",2, VAL2,"")
-> -	TEST_RR(    "mullss	r7, r",8, VAL2,", r",9, VAL2,"")
-> +	TEST_RR(    "mulsls	r7, r",8, VAL2,", r",9, VAL2,"")
->  	TEST_R(     "muls	lr, r",4, VAL3,", r13")
->  	TEST_UNSUPPORTED(__inst_arm(0xe01f0291) " @ muls pc, r1, r2")
->  
-> @@ -361,7 +361,7 @@ void kprobe_arm_test_cases(void)
->  	TEST_RR(     "mla	lr, r",1, VAL2,", r",2, VAL3,", r13")
->  	TEST_UNSUPPORTED(__inst_arm(0xe02f3291) " @ mla pc, r1, r2, r3")
->  	TEST_RRR(    "mlas	r0, r",1, VAL1,", r",2, VAL2,", r",3,  VAL3,"")
-> -	TEST_RRR(    "mlahis	r7, r",8, VAL3,", r",9, VAL1,", r",10, VAL2,"")
-> +	TEST_RRR(    "mlashi	r7, r",8, VAL3,", r",9, VAL1,", r",10, VAL2,"")
->  	TEST_RR(     "mlas	lr, r",1, VAL2,", r",2, VAL3,", r13")
->  	TEST_UNSUPPORTED(__inst_arm(0xe03f3291) " @ mlas pc, r1, r2, r3")
->  
-> @@ -394,7 +394,7 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe081f392) " @ umull pc, r1, r2, r3")
->  	TEST_UNSUPPORTED(__inst_arm(0xe08f1392) " @ umull r1, pc, r2, r3")
->  	TEST_RR(  "umulls	r0, r1, r",2, VAL1,", r",3, VAL2,"")
-> -	TEST_RR(  "umulllss	r7, r8, r",9, VAL2,", r",10, VAL1,"")
-> +	TEST_RR(  "umullsls	r7, r8, r",9, VAL2,", r",10, VAL1,"")
->  	TEST_R(   "umulls	lr, r12, r",11,VAL3,", r13")
->  	TEST_UNSUPPORTED(__inst_arm(0xe091f392) " @ umulls pc, r1, r2, r3")
->  	TEST_UNSUPPORTED(__inst_arm(0xe09f1392) " @ umulls r1, pc, r2, r3")
-> @@ -405,7 +405,7 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe0af1392) " @ umlal pc, r1, r2, r3")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0a1f392) " @ umlal r1, pc, r2, r3")
->  	TEST_RRRR(  "umlals	r",0, VAL1,", r",1, VAL2,", r",2, VAL3,", r",3, VAL4)
-> -	TEST_RRRR(  "umlalles	r",8, VAL4,", r",9, VAL1,", r",10,VAL2,", r",11,VAL3)
-> +	TEST_RRRR(  "umlalsle	r",8, VAL4,", r",9, VAL1,", r",10,VAL2,", r",11,VAL3)
->  	TEST_RRR(   "umlals	r",14,VAL3,", r",7, VAL4,", r",5, VAL1,", r13")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0bf1392) " @ umlals pc, r1, r2, r3")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0b1f392) " @ umlals r1, pc, r2, r3")
-> @@ -416,7 +416,7 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe0c1f392) " @ smull pc, r1, r2, r3")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0cf1392) " @ smull r1, pc, r2, r3")
->  	TEST_RR(  "smulls	r0, r1, r",2, VAL1,", r",3, VAL2,"")
-> -	TEST_RR(  "smulllss	r7, r8, r",9, VAL2,", r",10, VAL1,"")
-> +	TEST_RR(  "smullsls	r7, r8, r",9, VAL2,", r",10, VAL1,"")
->  	TEST_R(   "smulls	lr, r12, r",11,VAL3,", r13")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0d1f392) " @ smulls pc, r1, r2, r3")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0df1392) " @ smulls r1, pc, r2, r3")
-> @@ -427,7 +427,7 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe0ef1392) " @ smlal pc, r1, r2, r3")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0e1f392) " @ smlal r1, pc, r2, r3")
->  	TEST_RRRR(  "smlals	r",0, VAL1,", r",1, VAL2,", r",2, VAL3,", r",3, VAL4)
-> -	TEST_RRRR(  "smlalles	r",8, VAL4,", r",9, VAL1,", r",10,VAL2,", r",11,VAL3)
-> +	TEST_RRRR(  "smlalsle	r",8, VAL4,", r",9, VAL1,", r",10,VAL2,", r",11,VAL3)
->  	TEST_RRR(   "smlals	r",14,VAL3,", r",7, VAL4,", r",5, VAL1,", r13")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0ff1392) " @ smlals pc, r1, r2, r3")
->  	TEST_UNSUPPORTED(__inst_arm(0xe0f0f392) " @ smlals r0, pc, r2, r3")
-> @@ -450,7 +450,7 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe10f0091) " @ swp r0, r1, [pc]")
->  #if __LINUX_ARM_ARCH__ < 6
->  	TEST_RP("swpb	lr, r",7,VAL2,", [r",8,0,"]")
-> -	TEST_R( "swpvsb	r0, r",1,VAL1,", [sp]")
-> +	TEST_R( "swpbvs	r0, r",1,VAL1,", [sp]")
->  #else
->  	TEST_UNSUPPORTED(__inst_arm(0xe148e097) " @ swpb	lr, r7, [r8]")
->  	TEST_UNSUPPORTED(__inst_arm(0x614d0091) " @ swpvsb	r0, r1, [sp]")
-> @@ -477,11 +477,11 @@ void kprobe_arm_test_cases(void)
->  	TEST_GROUP("Extra load/store instructions")
->  
->  	TEST_RPR(  "strh	r",0, VAL1,", [r",1, 48,", -r",2, 24,"]")
-> -	TEST_RPR(  "streqh	r",14,VAL2,", [r",11,0, ", r",12, 48,"]")
-> -	TEST_UNSUPPORTED(  "streqh	r14, [r13, r12]")
-> -	TEST_UNSUPPORTED(  "streqh	r14, [r12, r13]")
-> +	TEST_RPR(  "strheq	r",14,VAL2,", [r",11,0, ", r",12, 48,"]")
-> +	TEST_UNSUPPORTED(  "strheq	r14, [r13, r12]")
-> +	TEST_UNSUPPORTED(  "strheq	r14, [r12, r13]")
->  	TEST_RPR(  "strh	r",1, VAL1,", [r",2, 24,", r",3,  48,"]!")
-> -	TEST_RPR(  "strneh	r",12,VAL2,", [r",11,48,", -r",10,24,"]!")
-> +	TEST_RPR(  "strhne	r",12,VAL2,", [r",11,48,", -r",10,24,"]!")
->  	TEST_RPR(  "strh	r",2, VAL1,", [r",3, 24,"], r",4, 48,"")
->  	TEST_RPR(  "strh	r",10,VAL2,", [r",9, 48,"], -r",11,24,"")
->  	TEST_UNSUPPORTED(__inst_arm(0xe1afc0ba) "	@ strh r12, [pc, r10]!")
-> @@ -489,9 +489,9 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe089a0bf) "	@ strh r10, [r9], pc")
->  
->  	TEST_PR(   "ldrh	r0, [r",0,  48,", -r",2, 24,"]")
-> -	TEST_PR(   "ldrcsh	r14, [r",13,0, ", r",12, 48,"]")
-> +	TEST_PR(   "ldrhcs	r14, [r",13,0, ", r",12, 48,"]")
->  	TEST_PR(   "ldrh	r1, [r",2,  24,", r",3,  48,"]!")
-> -	TEST_PR(   "ldrcch	r12, [r",11,48,", -r",10,24,"]!")
-> +	TEST_PR(   "ldrhcc	r12, [r",11,48,", -r",10,24,"]!")
->  	TEST_PR(   "ldrh	r2, [r",3,  24,"], r",4, 48,"")
->  	TEST_PR(   "ldrh	r10, [r",9, 48,"], -r",11,24,"")
->  	TEST_UNSUPPORTED(__inst_arm(0xe1bfc0ba) "	@ ldrh r12, [pc, r10]!")
-> @@ -499,9 +499,9 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe099a0bf) "	@ ldrh r10, [r9], pc")
->  
->  	TEST_RP(   "strh	r",0, VAL1,", [r",1, 24,", #-2]")
-> -	TEST_RP(   "strmih	r",14,VAL2,", [r",13,0, ", #2]")
-> +	TEST_RP(   "strhmi	r",14,VAL2,", [r",13,0, ", #2]")
->  	TEST_RP(   "strh	r",1, VAL1,", [r",2, 24,", #4]!")
-> -	TEST_RP(   "strplh	r",12,VAL2,", [r",11,24,", #-4]!")
-> +	TEST_RP(   "strhpl	r",12,VAL2,", [r",11,24,", #-4]!")
->  	TEST_RP(   "strh	r",2, VAL1,", [r",3, 24,"], #48")
->  	TEST_RP(   "strh	r",10,VAL2,", [r",9, 64,"], #-48")
->  	TEST_RP(   "strh	r",3, VAL1,", [r",13,TEST_MEMORY_SIZE,", #-"__stringify(MAX_STACK_SIZE)"]!")
-> @@ -511,9 +511,9 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe0c9f3b0) "	@ strh pc, [r9], #48")
->  
->  	TEST_P(	   "ldrh	r0, [r",0,  24,", #-2]")
-> -	TEST_P(	   "ldrvsh	r14, [r",13,0, ", #2]")
-> +	TEST_P(	   "ldrhvs	r14, [r",13,0, ", #2]")
->  	TEST_P(	   "ldrh	r1, [r",2,  24,", #4]!")
-> -	TEST_P(	   "ldrvch	r12, [r",11,24,", #-4]!")
-> +	TEST_P(	   "ldrhvc	r12, [r",11,24,", #-4]!")
->  	TEST_P(	   "ldrh	r2, [r",3,  24,"], #48")
->  	TEST_P(	   "ldrh	r10, [r",9, 64,"], #-48")
->  	TEST(      "ldrh	r0, [pc, #0]")
-> @@ -521,18 +521,18 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe0d9f3b0) "	@ ldrh pc, [r9], #48")
->  
->  	TEST_PR(   "ldrsb	r0, [r",0,  48,", -r",2, 24,"]")
-> -	TEST_PR(   "ldrhisb	r14, [r",13,0,", r",12,  48,"]")
-> +	TEST_PR(   "ldrsbhi	r14, [r",13,0,", r",12,  48,"]")
->  	TEST_PR(   "ldrsb	r1, [r",2,  24,", r",3,  48,"]!")
-> -	TEST_PR(   "ldrlssb	r12, [r",11,48,", -r",10,24,"]!")
-> +	TEST_PR(   "ldrsbls	r12, [r",11,48,", -r",10,24,"]!")
->  	TEST_PR(   "ldrsb	r2, [r",3,  24,"], r",4, 48,"")
->  	TEST_PR(   "ldrsb	r10, [r",9, 48,"], -r",11,24,"")
->  	TEST_UNSUPPORTED(__inst_arm(0xe1bfc0da) "	@ ldrsb r12, [pc, r10]!")
->  	TEST_UNSUPPORTED(__inst_arm(0xe099f0db) "	@ ldrsb pc, [r9], r11")
->  
->  	TEST_P(	   "ldrsb	r0, [r",0,  24,", #-1]")
-> -	TEST_P(	   "ldrgesb	r14, [r",13,0, ", #1]")
-> +	TEST_P(	   "ldrsbge	r14, [r",13,0, ", #1]")
->  	TEST_P(	   "ldrsb	r1, [r",2,  24,", #4]!")
-> -	TEST_P(	   "ldrltsb	r12, [r",11,24,", #-4]!")
-> +	TEST_P(	   "ldrsblt	r12, [r",11,24,", #-4]!")
->  	TEST_P(	   "ldrsb	r2, [r",3,  24,"], #48")
->  	TEST_P(	   "ldrsb	r10, [r",9, 64,"], #-48")
->  	TEST(      "ldrsb	r0, [pc, #0]")
-> @@ -540,18 +540,18 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe0d9f3d0) "	@ ldrsb pc, [r9], #48")
->  
->  	TEST_PR(   "ldrsh	r0, [r",0,  48,", -r",2, 24,"]")
-> -	TEST_PR(   "ldrgtsh	r14, [r",13,0, ", r",12, 48,"]")
-> +	TEST_PR(   "ldrshgt	r14, [r",13,0, ", r",12, 48,"]")
->  	TEST_PR(   "ldrsh	r1, [r",2,  24,", r",3,  48,"]!")
-> -	TEST_PR(   "ldrlesh	r12, [r",11,48,", -r",10,24,"]!")
-> +	TEST_PR(   "ldrshle	r12, [r",11,48,", -r",10,24,"]!")
->  	TEST_PR(   "ldrsh	r2, [r",3,  24,"], r",4, 48,"")
->  	TEST_PR(   "ldrsh	r10, [r",9, 48,"], -r",11,24,"")
->  	TEST_UNSUPPORTED(__inst_arm(0xe1bfc0fa) "	@ ldrsh r12, [pc, r10]!")
->  	TEST_UNSUPPORTED(__inst_arm(0xe099f0fb) "	@ ldrsh pc, [r9], r11")
->  
->  	TEST_P(	   "ldrsh	r0, [r",0,  24,", #-1]")
-> -	TEST_P(	   "ldreqsh	r14, [r",13,0 ,", #1]")
-> +	TEST_P(	   "ldrsheq	r14, [r",13,0 ,", #1]")
->  	TEST_P(	   "ldrsh	r1, [r",2,  24,", #4]!")
-> -	TEST_P(	   "ldrnesh	r12, [r",11,24,", #-4]!")
-> +	TEST_P(	   "ldrshne	r12, [r",11,24,", #-4]!")
->  	TEST_P(	   "ldrsh	r2, [r",3,  24,"], #48")
->  	TEST_P(	   "ldrsh	r10, [r",9, 64,"], #-48")
->  	TEST(      "ldrsh	r0, [pc, #0]")
-> @@ -571,30 +571,30 @@ void kprobe_arm_test_cases(void)
->  
->  #if __LINUX_ARM_ARCH__ >= 5
->  	TEST_RPR(  "strd	r",0, VAL1,", [r",1, 48,", -r",2,24,"]")
-> -	TEST_RPR(  "strccd	r",8, VAL2,", [r",11,0, ", r",12,48,"]")
-> -	TEST_UNSUPPORTED(  "strccd r8, [r13, r12]")
-> -	TEST_UNSUPPORTED(  "strccd r8, [r12, r13]")
-> +	TEST_RPR(  "strdcc	r",8, VAL2,", [r",11,0, ", r",12,48,"]")
-> +	TEST_UNSUPPORTED(  "strdcc r8, [r13, r12]")
-> +	TEST_UNSUPPORTED(  "strdcc r8, [r12, r13]")
->  	TEST_RPR(  "strd	r",4, VAL1,", [r",2, 24,", r",3, 48,"]!")
-> -	TEST_RPR(  "strcsd	r",12,VAL2,", [r",11,48,", -r",10,24,"]!")
-> -	TEST_RPR(  "strd	r",2, VAL1,", [r",5, 24,"], r",4,48,"")
-> -	TEST_RPR(  "strd	r",10,VAL2,", [r",9, 48,"], -r",7,24,"")
-> +	TEST_RPR(  "strdcs	r",12,VAL2,", r13, [r",11,48,", -r",10,24,"]!")
-> +	TEST_RPR(  "strd	r",2, VAL1,", r3, [r",5, 24,"], r",4,48,"")
-> +	TEST_RPR(  "strd	r",10,VAL2,", r11, [r",9, 48,"], -r",7,24,"")
->  	TEST_UNSUPPORTED(__inst_arm(0xe1afc0fa) "	@ strd r12, [pc, r10]!")
->  
->  	TEST_PR(   "ldrd	r0, [r",0, 48,", -r",2,24,"]")
-> -	TEST_PR(   "ldrmid	r8, [r",13,0, ", r",12,48,"]")
-> +	TEST_PR(   "ldrdmi	r8, [r",13,0, ", r",12,48,"]")
->  	TEST_PR(   "ldrd	r4, [r",2, 24,", r",3, 48,"]!")
-> -	TEST_PR(   "ldrpld	r6, [r",11,48,", -r",10,24,"]!")
-> -	TEST_PR(   "ldrd	r2, [r",5, 24,"], r",4,48,"")
-> -	TEST_PR(   "ldrd	r10, [r",9,48,"], -r",7,24,"")
-> +	TEST_PR(   "ldrdpl	r6, [r",11,48,", -r",10,24,"]!")
-> +	TEST_PR(   "ldrd	r2, r3, [r",5, 24,"], r",4,48,"")
-> +	TEST_PR(   "ldrd	r10, r11, [r",9,48,"], -r",7,24,"")
->  	TEST_UNSUPPORTED(__inst_arm(0xe1afc0da) "	@ ldrd r12, [pc, r10]!")
->  	TEST_UNSUPPORTED(__inst_arm(0xe089f0db) "	@ ldrd pc, [r9], r11")
->  	TEST_UNSUPPORTED(__inst_arm(0xe089e0db) "	@ ldrd lr, [r9], r11")
->  	TEST_UNSUPPORTED(__inst_arm(0xe089c0df) "	@ ldrd r12, [r9], pc")
->  
->  	TEST_RP(   "strd	r",0, VAL1,", [r",1, 24,", #-8]")
-> -	TEST_RP(   "strvsd	r",8, VAL2,", [r",13,0, ", #8]")
-> +	TEST_RP(   "strdvs	r",8, VAL2,", [r",13,0, ", #8]")
->  	TEST_RP(   "strd	r",4, VAL1,", [r",2, 24,", #16]!")
-> -	TEST_RP(   "strvcd	r",12,VAL2,", [r",11,24,", #-16]!")
-> +	TEST_RP(   "strdvc	r",12,VAL2,", r13, [r",11,24,", #-16]!")
->  	TEST_RP(   "strd	r",2, VAL1,", [r",4, 24,"], #48")
->  	TEST_RP(   "strd	r",10,VAL2,", [r",9, 64,"], #-48")
->  	TEST_RP(   "strd	r",6, VAL1,", [r",13,TEST_MEMORY_SIZE,", #-"__stringify(MAX_STACK_SIZE)"]!")
-> @@ -603,9 +603,9 @@ void kprobe_arm_test_cases(void)
->  	TEST_UNSUPPORTED(__inst_arm(0xe1efc3f0) "	@ strd r12, [pc, #48]!")
->  
->  	TEST_P(	   "ldrd	r0, [r",0, 24,", #-8]")
-> -	TEST_P(	   "ldrhid	r8, [r",13,0, ", #8]")
-> +	TEST_P(	   "ldrdhi	r8, [r",13,0, ", #8]")
->  	TEST_P(	   "ldrd	r4, [r",2, 24,", #16]!")
-> -	TEST_P(	   "ldrlsd	r6, [r",11,24,", #-16]!")
-> +	TEST_P(	   "ldrdls	r6, [r",11,24,", #-16]!")
->  	TEST_P(	   "ldrd	r2, [r",5, 24,"], #48")
->  	TEST_P(	   "ldrd	r10, [r",9,6,"], #-48")
->  	TEST_UNSUPPORTED(__inst_arm(0xe1efc3d0) "	@ ldrd r12, [pc, #48]!")
-> @@ -1084,63 +1084,63 @@ void kprobe_arm_test_cases(void)
->  	TEST_GROUP("Branch, branch with link, and block data transfer")
->  
->  	TEST_P(   "stmda	r",0, 16*4,", {r0}")
-> -	TEST_P(   "stmeqda	r",4, 16*4,", {r0-r15}")
-> -	TEST_P(   "stmneda	r",8, 16*4,"!, {r8-r15}")
-> +	TEST_P(   "stmdaeq	r",4, 16*4,", {r0-r15}")
-> +	TEST_P(   "stmdane	r",8, 16*4,"!, {r8-r15}")
->  	TEST_P(   "stmda	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
->  	TEST_P(   "stmda	r",13,0,   "!, {pc}")
->  
->  	TEST_P(   "ldmda	r",0, 16*4,", {r0}")
-> -	TEST_BF_P("ldmcsda	r",4, 15*4,", {r0-r15}")
-> -	TEST_BF_P("ldmccda	r",7, 15*4,"!, {r8-r15}")
-> +	TEST_BF_P("ldmdacs	r",4, 15*4,", {r0-r15}")
-> +	TEST_BF_P("ldmdacc	r",7, 15*4,"!, {r8-r15}")
->  	TEST_P(   "ldmda	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
->  	TEST_BF_P("ldmda	r",14,15*4,"!, {pc}")
->  
->  	TEST_P(   "stmia	r",0, 16*4,", {r0}")
-> -	TEST_P(   "stmmiia	r",4, 16*4,", {r0-r15}")
-> -	TEST_P(   "stmplia	r",8, 16*4,"!, {r8-r15}")
-> +	TEST_P(   "stmiami	r",4, 16*4,", {r0-r15}")
-> +	TEST_P(   "stmiapl	r",8, 16*4,"!, {r8-r15}")
->  	TEST_P(   "stmia	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
->  	TEST_P(   "stmia	r",14,0,   "!, {pc}")
->  
->  	TEST_P(   "ldmia	r",0, 16*4,", {r0}")
-> -	TEST_BF_P("ldmvsia	r",4, 0,   ", {r0-r15}")
-> -	TEST_BF_P("ldmvcia	r",7, 8*4, "!, {r8-r15}")
-> +	TEST_BF_P("ldmiavs	r",4, 0,   ", {r0-r15}")
-> +	TEST_BF_P("ldmiavc	r",7, 8*4, "!, {r8-r15}")
->  	TEST_P(   "ldmia	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
->  	TEST_BF_P("ldmia	r",14,15*4,"!, {pc}")
->  
->  	TEST_P(   "stmdb	r",0, 16*4,", {r0}")
-> -	TEST_P(   "stmhidb	r",4, 16*4,", {r0-r15}")
-> -	TEST_P(   "stmlsdb	r",8, 16*4,"!, {r8-r15}")
-> +	TEST_P(   "stmdbhi	r",4, 16*4,", {r0-r15}")
-> +	TEST_P(   "stmdbls	r",8, 16*4,"!, {r8-r15}")
->  	TEST_P(   "stmdb	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
->  	TEST_P(   "stmdb	r",13,4,   "!, {pc}")
->  
->  	TEST_P(   "ldmdb	r",0, 16*4,", {r0}")
-> -	TEST_BF_P("ldmgedb	r",4, 16*4,", {r0-r15}")
-> -	TEST_BF_P("ldmltdb	r",7, 16*4,"!, {r8-r15}")
-> +	TEST_BF_P("ldmdbge	r",4, 16*4,", {r0-r15}")
-> +	TEST_BF_P("ldmdblt	r",7, 16*4,"!, {r8-r15}")
->  	TEST_P(   "ldmdb	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
->  	TEST_BF_P("ldmdb	r",14,16*4,"!, {pc}")
->  
->  	TEST_P(   "stmib	r",0, 16*4,", {r0}")
-> -	TEST_P(   "stmgtib	r",4, 16*4,", {r0-r15}")
-> -	TEST_P(   "stmleib	r",8, 16*4,"!, {r8-r15}")
-> +	TEST_P(   "stmibgt	r",4, 16*4,", {r0-r15}")
-> +	TEST_P(   "stmible	r",8, 16*4,"!, {r8-r15}")
->  	TEST_P(   "stmib	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
->  	TEST_P(   "stmib	r",13,-4,  "!, {pc}")
->  
->  	TEST_P(   "ldmib	r",0, 16*4,", {r0}")
-> -	TEST_BF_P("ldmeqib	r",4, -4,", {r0-r15}")
-> -	TEST_BF_P("ldmneib	r",7, 7*4,"!, {r8-r15}")
-> +	TEST_BF_P("ldmibeq	r",4, -4,", {r0-r15}")
-> +	TEST_BF_P("ldmibne	r",7, 7*4,"!, {r8-r15}")
->  	TEST_P(   "ldmib	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
->  	TEST_BF_P("ldmib	r",14,14*4,"!, {pc}")
->  
->  	TEST_P(   "stmdb	r",13,16*4,"!, {r3-r12,lr}")
-> -	TEST_P(	  "stmeqdb	r",13,16*4,"!, {r3-r12}")
-> -	TEST_P(   "stmnedb	r",2, 16*4,", {r3-r12,lr}")
-> +	TEST_P(	  "stmdbeq	r",13,16*4,"!, {r3-r12}")
-> +	TEST_P(   "stmdbne	r",2, 16*4,", {r3-r12,lr}")
->  	TEST_P(   "stmdb	r",13,16*4,"!, {r2-r12,lr}")
->  	TEST_P(   "stmdb	r",0, 16*4,", {r0-r12}")
->  	TEST_P(   "stmdb	r",0, 16*4,", {r0-r12,lr}")
->  
->  	TEST_BF_P("ldmia	r",13,5*4, "!, {r3-r12,pc}")
-> -	TEST_P(	  "ldmccia	r",13,5*4, "!, {r3-r12}")
-> -	TEST_BF_P("ldmcsia	r",2, 5*4, "!, {r3-r12,pc}")
-> +	TEST_P(	  "ldmiacc	r",13,5*4, "!, {r3-r12}")
-> +	TEST_BF_P("ldmiacs	r",2, 5*4, "!, {r3-r12,pc}")
->  	TEST_BF_P("ldmia	r",13,4*4, "!, {r2-r12,pc}")
->  	TEST_P(   "ldmia	r",0, 16*4,", {r0-r12}")
->  	TEST_P(   "ldmia	r",0, 16*4,", {r0-r12,lr}")
-> @@ -1174,80 +1174,80 @@ void kprobe_arm_test_cases(void)
->  #define TEST_COPROCESSOR(code) TEST_UNSUPPORTED(code)
->  
->  #define COPROCESSOR_INSTRUCTIONS_ST_LD(two,cc)					\
-> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13, #4]")			\
-> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13, #-4]")			\
-> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13, #4]!")			\
-> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13, #-4]!")			\
-> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13], #4")			\
-> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13], #-4")			\
-> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13], {1}")			\
-> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13, #4]")			\
-> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13, #-4]")			\
-> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13, #4]!")			\
-> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13, #-4]!")			\
-> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13], #4")			\
-> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13], #-4")			\
-> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13], {1}")			\
-> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13, #4]")			\
-> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13, #-4]")			\
-> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13, #4]!")			\
-> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13, #-4]!")			\
-> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13], #4")			\
-> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13], #-4")			\
-> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13], {1}")			\
-> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13, #4]")			\
-> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13, #-4]")			\
-> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13, #4]!")			\
-> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13, #-4]!")			\
-> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13], #4")			\
-> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13], #-4")			\
-> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13], {1}")			\
-> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13, #4]")			\
-> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13, #-4]")			\
-> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13, #4]!")			\
-> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13, #-4]!")			\
-> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13], #4")			\
-> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13], #-4")			\
-> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13], {1}")			\
-> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13, #4]")			\
-> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13, #-4]")			\
-> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13, #4]!")			\
-> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13, #-4]!")			\
-> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13], #4")			\
-> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13], #-4")			\
-> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13], {1}")			\
-> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13, #4]")			\
-> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13, #-4]")			\
-> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13, #4]!")			\
-> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13, #-4]!")			\
-> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13], #4")			\
-> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13], #-4")			\
-> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13], {1}")			\
-> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13, #4]")			\
-> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13, #-4]")			\
-> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13, #4]!")			\
-> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13, #-4]!")			\
-> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13], #4")			\
-> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13], #-4")			\
-> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13], {1}")			\
->  										\
-> -	TEST_COPROCESSOR( "stc"two"	0, cr0, [r15, #4]")			\
-> -	TEST_COPROCESSOR( "stc"two"	0, cr0, [r15, #-4]")			\
-> +	TEST_COPROCESSOR( "stc"two"	p0, cr0, [r15, #4]")			\
-> +	TEST_COPROCESSOR( "stc"two"	p0, cr0, [r15, #-4]")			\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##daf0001) "	@ stc"two"	0, cr0, [r15, #4]!")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##d2f0001) "	@ stc"two"	0, cr0, [r15, #-4]!")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##caf0001) "	@ stc"two"	0, cr0, [r15], #4")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c2f0001) "	@ stc"two"	0, cr0, [r15], #-4")	\
-> -	TEST_COPROCESSOR( "stc"two"	0, cr0, [r15], {1}")			\
-> -	TEST_COPROCESSOR( "stc"two"l	0, cr0, [r15, #4]")			\
-> -	TEST_COPROCESSOR( "stc"two"l	0, cr0, [r15, #-4]")			\
-> +	TEST_COPROCESSOR( "stc"two"	p0, cr0, [r15], {1}")			\
-> +	TEST_COPROCESSOR( "stc"two"l	p0, cr0, [r15, #4]")			\
-> +	TEST_COPROCESSOR( "stc"two"l	p0, cr0, [r15, #-4]")			\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##def0001) "	@ stc"two"l	0, cr0, [r15, #4]!")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##d6f0001) "	@ stc"two"l	0, cr0, [r15, #-4]!")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##cef0001) "	@ stc"two"l	0, cr0, [r15], #4")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c6f0001) "	@ stc"two"l	0, cr0, [r15], #-4")	\
-> -	TEST_COPROCESSOR( "stc"two"l	0, cr0, [r15], {1}")			\
-> -	TEST_COPROCESSOR( "ldc"two"	0, cr0, [r15, #4]")			\
-> -	TEST_COPROCESSOR( "ldc"two"	0, cr0, [r15, #-4]")			\
-> +	TEST_COPROCESSOR( "stc"two"l	p0, cr0, [r15], {1}")			\
-> +	TEST_COPROCESSOR( "ldc"two"	p0, cr0, [r15, #4]")			\
-> +	TEST_COPROCESSOR( "ldc"two"	p0, cr0, [r15, #-4]")			\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##dbf0001) "	@ ldc"two"	0, cr0, [r15, #4]!")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##d3f0001) "	@ ldc"two"	0, cr0, [r15, #-4]!")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##cbf0001) "	@ ldc"two"	0, cr0, [r15], #4")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c3f0001) "	@ ldc"two"	0, cr0, [r15], #-4")	\
-> -	TEST_COPROCESSOR( "ldc"two"	0, cr0, [r15], {1}")			\
-> -	TEST_COPROCESSOR( "ldc"two"l	0, cr0, [r15, #4]")			\
-> -	TEST_COPROCESSOR( "ldc"two"l	0, cr0, [r15, #-4]")			\
-> +	TEST_COPROCESSOR( "ldc"two"	p0, cr0, [r15], {1}")			\
-> +	TEST_COPROCESSOR( "ldc"two"l	p0, cr0, [r15, #4]")			\
-> +	TEST_COPROCESSOR( "ldc"two"l	p0, cr0, [r15, #-4]")			\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##dff0001) "	@ ldc"two"l	0, cr0, [r15, #4]!")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##d7f0001) "	@ ldc"two"l	0, cr0, [r15, #-4]!")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##cff0001) "	@ ldc"two"l	0, cr0, [r15], #4")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c7f0001) "	@ ldc"two"l	0, cr0, [r15], #-4")	\
-> -	TEST_COPROCESSOR( "ldc"two"l	0, cr0, [r15], {1}")
-> +	TEST_COPROCESSOR( "ldc"two"l	p0, cr0, [r15], {1}")
->  
->  #define COPROCESSOR_INSTRUCTIONS_MC_MR(two,cc)					\
->  										\
-> -	TEST_COPROCESSOR( "mcrr"two"	0, 15, r0, r14, cr0")			\
-> -	TEST_COPROCESSOR( "mcrr"two"	15, 0, r14, r0, cr15")			\
-> +	TEST_COPROCESSOR( "mcrr"two"	p0, 15, r0, r14, cr0")			\
-> +	TEST_COPROCESSOR( "mcrr"two"	p15, 0, r14, r0, cr15")			\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c4f00f0) "	@ mcrr"two"	0, 15, r0, r15, cr0")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c40ff0f) "	@ mcrr"two"	15, 0, r15, r0, cr15")	\
-> -	TEST_COPROCESSOR( "mrrc"two"	0, 15, r0, r14, cr0")			\
-> -	TEST_COPROCESSOR( "mrrc"two"	15, 0, r14, r0, cr15")			\
-> +	TEST_COPROCESSOR( "mrrc"two"	p0, 15, r0, r14, cr0")			\
-> +	TEST_COPROCESSOR( "mrrc"two"	p15, 0, r14, r0, cr15")			\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c5f00f0) "	@ mrrc"two"	0, 15, r0, r15, cr0")	\
->  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c50ff0f) "	@ mrrc"two"	15, 0, r15, r0, cr15")	\
-> -	TEST_COPROCESSOR( "cdp"two"	15, 15, cr15, cr15, cr15, 7")		\
-> -	TEST_COPROCESSOR( "cdp"two"	0, 0, cr0, cr0, cr0, 0")		\
-> -	TEST_COPROCESSOR( "mcr"two"	15, 7, r15, cr15, cr15, 7")		\
-> -	TEST_COPROCESSOR( "mcr"two"	0, 0, r0, cr0, cr0, 0")			\
-> -	TEST_COPROCESSOR( "mrc"two"	15, 7, r15, cr15, cr15, 7")		\
-> -	TEST_COPROCESSOR( "mrc"two"	0, 0, r0, cr0, cr0, 0")
-> +	TEST_COPROCESSOR( "cdp"two"	p15, 15, cr15, cr15, cr15, 7")		\
-> +	TEST_COPROCESSOR( "cdp"two"	p0, 0, cr0, cr0, cr0, 0")		\
-> +	TEST_COPROCESSOR( "mcr"two"	p15, 7, r15, cr15, cr15, 7")		\
-> +	TEST_COPROCESSOR( "mcr"two"	p0, 0, r0, cr0, cr0, 0")		\
-> +	TEST_COPROCESSOR( "mrc"two"	p15, 7, r14, cr15, cr15, 7")		\
-> +	TEST_COPROCESSOR( "mrc"two"	p0, 0, r0, cr0, cr0, 0")
->  
->  	COPROCESSOR_INSTRUCTIONS_ST_LD("",e)
->  #if __LINUX_ARM_ARCH__ >= 5
-> diff --git a/arch/arm/probes/kprobes/test-core.h b/arch/arm/probes/kprobes/test-core.h
-> index 19a5b2add41e..f1d5583e7bbb 100644
-> --- a/arch/arm/probes/kprobes/test-core.h
-> +++ b/arch/arm/probes/kprobes/test-core.h
-> @@ -108,6 +108,7 @@ struct test_arg_end {
->  
->  #define TESTCASE_START(title)					\
->  	__asm__ __volatile__ (					\
-> +	".syntax unified				\n\t"	\
->  	"bl	__kprobes_test_case_start		\n\t"	\
->  	".pushsection .rodata				\n\t"	\
->  	"10:						\n\t"	\
-> -- 
-> 2.30.0.478.g8a0d178c01-goog
+> Given ce is only ever used to get the ce->opcode maybe better using that
+> as the local variable?
+> 
+> 		u16 opcode = le16_to_cpu(cel_entry[i].opcode)
+> 
+> Obviously that might change depending on later patches though.
+> 
+
+Thanks. I did this and got rid of the const below and was able to remove the
+line split below.
+
+You'll learn I'm a little const-happy.
+
+> 
+> > +		const struct cxl_mem_command *cmd =
+> > +			cxl_mem_find_command(le16_to_cpu(ce->opcode));
+> > +
+> > +		if (!cmd) {
+> > +			dev_dbg(&cxlm->pdev->dev, "Unsupported opcode 0x%04x",
+> 
+> Unsupported by who? (driver rather than hardware)
+> 
+> > +				le16_to_cpu(ce->opcode));
+> > +			continue;
+> > +		}
+> > +
+> > +		cxl_enable_cmd(cxlm, cmd);
+> > +	}
+> > +}
+> > +
+> > +/**
+> > + * cxl_mem_enumerate_cmds() - Enumerate commands for a device.
+> > + * @cxlm: The device.
+> > + *
+> > + * Returns 0 if enumerate completed successfully.
+> > + *
+> > + * CXL devices have optional support for certain commands. This function will
+> > + * determine the set of supported commands for the hardware and update the
+> > + * enabled_cmds bitmap in the @cxlm.
+> > + */
+> > +static int cxl_mem_enumerate_cmds(struct cxl_mem *cxlm)
+> > +{
+> > +	struct device *dev = &cxlm->pdev->dev;
+> > +	struct cxl_mbox_get_supported_logs {
+> > +		__le16 entries;
+> > +		u8 rsvd[6];
+> > +		struct gsl_entry {
+> > +			uuid_t uuid;
+> > +			__le32 size;
+> > +		} __packed entry[2];
+> > +	} __packed gsl;
+> > +	struct mbox_cmd mbox_cmd = {
+> > +		.opcode = CXL_MBOX_OP_GET_SUPPORTED_LOGS,
+> > +		.payload_out = &gsl,
+> > +		.size_in = 0,
+> > +	};
+> > +	int i, rc;
+> > +
+> > +	rc = cxl_mem_mbox_get(cxlm);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> > +	rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+> > +	if (rc)
+> > +		goto out;
+> > +
+> > +	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS) {
+> > +		rc = -ENXIO;
+> > +		goto out;
+> > +	}
+> > +
+> > +	if (mbox_cmd.size_out > sizeof(gsl)) {
+> > +		dev_warn(dev, "%zu excess logs\n",
+> > +			 (mbox_cmd.size_out - sizeof(gsl)) /
+> > +				 sizeof(struct gsl_entry));
+> 
+> This could well happen given spec seems to allow for other
+> entries defined by other specs.
+
+Interesting. When I read the spec before (multiple times) I was certain it said
+other UUIDs aren't allowed. You're correct though that the way it is worded,
+this is a bad check. AIUI, the spec permits any UUID and as such I think we
+should remove tainting for unknown UUIDs. Let me put the exact words:
+
+Table 169 & 170
+"Log Identifier: UUID representing the log to retrieve data for. The following
+ Log Identifier UUIDs are defined in this specification"
+
+To me this implies UUIDs from other (not "this") specifications are permitted.
+
+Dan, I'd like your opinion here. I'm tempted to change the current WARN to a
+dev_dbg or somesuch.
+
+> 
+> Note that it's this path that I mentioned earlier as requiring we sanity
+> check the output size available before calling mempcy_fromio into it
+> with the hardware supported size.
+
+Since posting, I've already reworked this somewhat based on the other changes
+and it should be safe now.
+
+
+> 
+> 
+> > +	}
+> > +
+> > +	for (i = 0; i < le16_to_cpu(gsl.entries); i++) {
+> > +		u32 size = le32_to_cpu(gsl.entry[i].size);
+> > +		uuid_t uuid = gsl.entry[i].uuid;
+> > +		u8 *log;
+> > +
+> > +		dev_dbg(dev, "Found LOG type %pU of size %d", &uuid, size);
+> > +
+> > +		if (!uuid_equal(&uuid, &log_uuid[CEL_UUID]))
+> > +			continue;
+> > +
+> > +		/*
+> > +		 * It's a hardware bug if the log size is less than the input
+> > +		 * payload size because there are many mandatory commands.
+> > +		 */
+> > +		if (sizeof(struct cxl_mbox_get_log) > size) {
+> 
+> If you are going to talk about less than in the comment, I'd flip the condition
+> around so it lines up. Trivial obviously but nice to tidy up.
+> 
+> > +			dev_err(dev, "CEL log size reported was too small (%d)",
+> > +				size);
+> > +			rc = -ENOMEM;
+> > +			goto out;
+> > +		}
+> > +
+> > +		log = kvmalloc(size, GFP_KERNEL);
+> > +		if (!log) {
+> > +			rc = -ENOMEM;
+> > +			goto out;
+> > +		}
+> > +
+> > +		rc = cxl_xfer_log(cxlm, &uuid, size, log);
+> > +		if (rc) {
+> > +			kvfree(log);
+> > +			goto out;
+> > +		}
+> > +
+> > +		cxl_walk_cel(cxlm, size, log);
+> > +		kvfree(log);
+> > +	}
+> > +
+> > +out:
+> > +	cxl_mem_mbox_put(cxlm);
+> > +	return rc;
+> > +}
+> > +
+> >  /**
+> >   * cxl_mem_identify() - Send the IDENTIFY command to the device.
+> >   * @cxlm: The device to identify.
+> > @@ -1211,6 +1423,10 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  	if (rc)
+> >  		return rc;
+> >  
+> > +	rc = cxl_mem_enumerate_cmds(cxlm);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> >  	rc = cxl_mem_identify(cxlm);
+> >  	if (rc)
+> >  		return rc;
+> > diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+> > index 72d1eb601a5d..c5e75b9dad9d 100644
+> > --- a/include/uapi/linux/cxl_mem.h
+> > +++ b/include/uapi/linux/cxl_mem.h
+> > @@ -23,6 +23,7 @@
+> >  	___C(INVALID, "Invalid Command"),                                 \
+> >  	___C(IDENTIFY, "Identify Command"),                               \
+> >  	___C(RAW, "Raw device command"),                                  \
+> > +	___C(GET_SUPPORTED_LOGS, "Get Supported Logs"),                   \
+> >  	___C(MAX, "Last command")
+> >  
+> >  #define ___C(a, b) CXL_MEM_COMMAND_ID_##a
 > 
