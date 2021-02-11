@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A434319659
+	by mail.lfdr.de (Postfix) with ESMTP id 2779F319656
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhBKXKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 18:10:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhBKXKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 18:10:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F14AF64DF3;
-        Thu, 11 Feb 2021 23:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613084973;
-        bh=5lHiqnqqzqNi5/OSSDr9bdxtAGi+3a9C3En/9Cfu+Ss=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KdQTRQFGFCn97Jxdu/WPirdvPSClIiQe3eCuboHTtWi+7E6/HzcS9qnWDJfg5uDFN
-         ZY5PuEAEMXaKZcGprf7SdyWk9I93Lln3hFbxMp/KrXIzze9mx092L3Jh7i5UxEbimS
-         cejoByXzKhnjLnxouWOf/ewU3WweBYFzmyuAwZ+NBMVNgyCt3ntX2Xw6TB28PoSs4H
-         mwoZV1kJ8Ervt9UJn0zr12hQYhd+uIYZ9COxTA7mUSvHvGQIa7oorM8qITwmhhkYJK
-         xRQGEMhSjFJwWRNKbKOuAa8QLAh9zI5u11sQAct0mWsv9haX/Z+R9q39gWv4lXPETF
-         dH+b9ZCWAtkuQ==
-Date:   Fri, 12 Feb 2021 01:09:10 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <20210211230910.GL242749@kernel.org>
-References: <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
- <20210208212605.GX242749@kernel.org>
- <YCJMDBss8Qhha7g9@dhcp22.suse.cz>
- <20210209090938.GP299309@linux.ibm.com>
- <YCKLVzBR62+NtvyF@dhcp22.suse.cz>
- <20210211071319.GF242749@kernel.org>
- <YCTtSrCEvuBug2ap@dhcp22.suse.cz>
- <0d66baec-1898-987b-7eaf-68a015c027ff@redhat.com>
- <20210211112702.GI242749@kernel.org>
- <05082284-bd85-579f-2b3e-9b1af663eb6f@redhat.com>
+        id S229837AbhBKXKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 18:10:05 -0500
+Received: from angie.orcam.me.uk ([157.25.102.26]:47402 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhBKXKC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 18:10:02 -0500
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 2AC2B9200B4; Fri, 12 Feb 2021 00:09:20 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 242799200B3;
+        Fri, 12 Feb 2021 00:09:20 +0100 (CET)
+Date:   Fri, 12 Feb 2021 00:09:20 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Thomas Gleixner <tglx@linutronix.de>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Serge Belyshev <belyshev@depni.sinp.msu.ru>,
+        Dirk Gouders <dirk@gouders.net>,
+        =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH V2] rtc: mc146818: Dont test for bit 0-5 in Register D
+In-Reply-To: <87wnvrbmqx.fsf@nanos.tec.linutronix.de>
+Message-ID: <alpine.DEB.2.21.2102120001450.35623@angie.orcam.me.uk>
+References: <20201206214613.444124194@linutronix.de> <20201206220541.594826678@linutronix.de> <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net> <871re7hlsg.fsf@nanos.tec.linutronix.de> <98cb59e8-ecb4-e29d-0b8f-73683ef2bee7@digikod.net>
+ <87y2gfg18p.fsf@nanos.tec.linutronix.de> <87tur3fx7w.fsf@nanos.tec.linutronix.de> <ghft2hwevu.fsf@gouders.net> <877dnrc2sv.fsf@depni.sinp.msu.ru> <8735yfd2q4.fsf@nanos.tec.linutronix.de> <87zh0nbnha.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wg_-_FP+B6ePabvj55_ok1YbYCsGHzYsZ064FpE4RqkTQ@mail.gmail.com> <87wnvrbmqx.fsf@nanos.tec.linutronix.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <05082284-bd85-579f-2b3e-9b1af663eb6f@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 01:07:10PM +0100, David Hildenbrand wrote:
-> On 11.02.21 12:27, Mike Rapoport wrote:
-> > On Thu, Feb 11, 2021 at 10:01:32AM +0100, David Hildenbrand wrote:
-> 
-> So let's talk about the main user-visible differences to other memfd files
-> (especially, other purely virtual files like hugetlbfs). With secretmem:
-> 
-> - File content can only be read/written via memory mappings.
-> - File content cannot be swapped out.
-> 
-> I think there are still valid ways to modify file content using syscalls:
-> e.g., fallocate(PUNCH_HOLE). Things like truncate also seems to work just
-> fine.
- 
-These work perfectly with any file, so maybe we should have added
-memfd_create as a flag to open(2) back then and now the secretmem file
-descriptors?
- 
-> > > AFAIKS, we would need MFD_SECRET and disallow
-> > > MFD_ALLOW_SEALING and MFD_HUGETLB.
-> > 
-> > So here we start to multiplex.
-> 
-> Yes. And as Michal said, maybe we can support combinations in the future.
+On Mon, 1 Feb 2021, Thomas Gleixner wrote:
 
-Isn't there a general agreement that syscall multiplexing is not a good
-thing?
-memfd_create already has flags validation that does not look very nice.
-Adding there only MFD_SECRET will make it a bit less nice, but when we'll
-grow new functionality into secretmem that will become horrible.
- 
--- 
-Sincerely yours,
-Mike.
+> >> While it cures the problem on the reporters machine it breaks machines
+> >> with Intel chipsets which use bit 0-5 of the D register. So check only
+> >> for bit 6 being 0 which is the case on these Intel machines as well.
+> >
+> > This looks fine, but it might also be worth it simply just checking
+> > for the only really special value: 0xff, and going "ok, that looks
+> > like missing hardware".
+> >
+> > That's what a few other drivers historically do in their probing
+> > routines, so it's not unheard of (ie you can find drivers doing that
+> > kind of
+> >
+> >         /* If we read 0xff from the LSR, there is no UART here. */
+> >         if (inb(.. port ..) == 0xff)
+> >
+> > in their init routines.
+> >
+> > Not a big deal either way, I just think it would be more in like with
+> > what other places do in similar situations
+> 
+> Yeah, we can do that as well. Either way is fine.
+
+ Given that evidently vendors appear to start playing with 146818 clones 
+it may be worth it to peek at the D and the C register and checking they 
+are not 0xff both at a time for robustness before concluding no RTC is 
+present.  The C register is supposed to hold zeros in bits 3:0.  A read of 
+the C register will drop interrupt bits, but I guess it does not matter at 
+the probe time.
+
+ FWIW,
+
+  Maciej
