@@ -2,153 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE663192C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 051863192CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhBKTEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 14:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        id S231273AbhBKTFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 14:05:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbhBKTBr (ORCPT
+        with ESMTP id S229553AbhBKTEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:01:47 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8649C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 11:01:06 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id t11so4547782pgu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 11:01:06 -0800 (PST)
+        Thu, 11 Feb 2021 14:04:12 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBB0C061756;
+        Thu, 11 Feb 2021 11:03:31 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id df22so8115783edb.1;
+        Thu, 11 Feb 2021 11:03:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=38z+MQX41khqI4CrfgsdKCbVUZuEtmzm0vpGYv2oT/g=;
-        b=P1Z9ylhoK6aFfRrdpwiLZS0OMGndod97oFC7yb3dqZvLg8Gx9QYB5OA2npK10G3+RR
-         HkRwR4kDaLOHc+i+OOoqADEaeU/NtIUC8trKUbXNr4B0nVfwzzr5gjEuK5AQLfdmCLxD
-         ln1JifQ5EgUk0XAuMpl7m4gSTEaWhoNvQWqp0=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kPhjJXfm6+kQOfWXztpcCTmvFWPa71ZgKqQVo0Ho3dI=;
+        b=LbEITIm2GF+EoJHZQsnzpUgZgvHIg5RwynEU8X4cKVwcjKRQR2RsxXo51p/+1zFcws
+         QGC+VhHbZ+k6ZZHoC77bPdXNybPWU8F195qO3EuBjlLnkuzC8nuolstUQtygL4yS0wg7
+         +ybDxAHK92k01MK0Bo6ohfv25/rM7+ZldYlZKYJMIBhiPLC36mhPjjBkcRjYDIEObD9H
+         IFZ0uTiLNCLtJrc818Pq38rMOX5DO7sO+vXaP/x8vMr8paxiexMElapjeFWsi0PVwhNe
+         oPFIEteK+DFnC8XYMYqEczsvsrFKK3gs815OGb4Js0Imr2IEzsnlI8vLf7/bhCbGmSAH
+         u9Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=38z+MQX41khqI4CrfgsdKCbVUZuEtmzm0vpGYv2oT/g=;
-        b=kbv5NjPOkGku3YFxidmqxs70OyVDerB4lu9M35E7XmawYU3kb2ox22wv+TTb8Rw28q
-         hmiZ4RVvlChPrsnfMbKpbhGYESFMHoNCKqLFT5Kxyi22aehVx5D4B7EmU7vPLyVhv3e2
-         99OI7GG1N4bAUw74SDHmt83bHJTUTMZvoHS9tr/8v/D0f8q8KLPOsUA2yQzNOZVC7FeG
-         6sx1uF5G4k/uPONgkAz5z/dQeZ1crbc/aBiAKUeXsMmdYM+IM3Q8dEiS2/aA6K8J/cj3
-         RkTNCFYufcS5CAN6HfB6TY3dHp9oCQQVieeDOMAl9QakU2bwub4iuyqYkyQwFZ20i4Kc
-         fiUw==
-X-Gm-Message-State: AOAM532IYW4+js+UZp/9I4OGMG5Pu9m5ahCpZn0PIV1jIvKglhRD0sov
-        jStgNnKiDTZVezL9FB6fJrbMmg==
-X-Google-Smtp-Source: ABdhPJwUJi9shALaYdk06rsyxl0whyeAsF17SGdQZ6EWt5HbYkjEqoshMB5Iyt3Fo0kD28w5VX6qpQ==
-X-Received: by 2002:a62:5a45:0:b029:1e5:4c81:c59 with SMTP id o66-20020a625a450000b02901e54c810c59mr9388889pfb.51.1613070066195;
-        Thu, 11 Feb 2021 11:01:06 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:fc92:99c:fc2f:8603])
-        by smtp.gmail.com with UTF8SMTPSA id a37sm6555705pgm.79.2021.02.11.11.01.04
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kPhjJXfm6+kQOfWXztpcCTmvFWPa71ZgKqQVo0Ho3dI=;
+        b=L5ePyR/t5B/Q0UQbqJMlCtK3hPBMIhYqJ77vUgg+wyifXBZfJrpRi2zM9dw+YSYHJB
+         aQwN7+GDzNsQdAn8PBIwXTP2f6DeqC/v0BD9C/zy27EDNN5c/Jvf5OmybcXygJyptirw
+         SZ8vVC67d1pPw7oKksJ+4/u+HRY0n+uGlvMhdLPWkQzn1ZgYGKVA8CHpE+QuYGKGgYna
+         AfGKS7nh+D0pKp8O6he+QbkMLSAAdrAfQEslCiCwdeMao28fgTjtvpZk5zNLPkHeot2C
+         //6e1406/EnzKZoGo3jr4/b33+hQXdIZB/+bDt9OUme4fvgmJAB9Mqm7ssiQpGkkGifv
+         JvGA==
+X-Gm-Message-State: AOAM532C6ytSlAPgGGG8GG5swRZbL4NNgI0sxOwK4R6qApHvTVFD3zlb
+        d+AZggVfiBOdIQEH1BIyobT5yP6jN78=
+X-Google-Smtp-Source: ABdhPJyv83sxlk478XZcaUgFcnkwG3zGSGIsUAkaWmG7NrTEmMV7xeaMHHKhQtpVfdcTmBIe2qMf8Q==
+X-Received: by 2002:a05:6402:1383:: with SMTP id b3mr9336825edv.131.1613070210543;
+        Thu, 11 Feb 2021 11:03:30 -0800 (PST)
+Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
+        by smtp.gmail.com with ESMTPSA id r23sm5045171ejd.56.2021.02.11.11.03.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 11:01:05 -0800 (PST)
-Date:   Thu, 11 Feb 2021 11:01:03 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
+        Thu, 11 Feb 2021 11:03:30 -0800 (PST)
+Subject: Re: [PATCH 1/2] uio: Add late_release callback to uio_info
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Subject: Re: [PATCH v5 3/4] usb: host: xhci-plat: Create platform device for
- onboard hubs in probe()
-Message-ID: <YCV+7z8Y/l0eyse9@google.com>
-References: <20210210171040.684659-1-mka@chromium.org>
- <20210210091015.v5.3.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid>
- <YCTVjx480BzT+saO@kroah.com>
- <YCV7XGloQIjtFAqf@google.com>
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Mike Christie <michael.christie@oracle.com>
+References: <20210210194031.7422-1-bostroesser@gmail.com>
+ <20210210194031.7422-2-bostroesser@gmail.com> <YCQ4aEz29P26ZxaL@kroah.com>
+ <7bc9eef9-0a9e-58a9-11f1-2c32010c70f0@gmail.com> <YCTT8HQ7PobTyUz4@kroah.com>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <fb4d82c3-2add-d745-2044-bb90c98c954f@gmail.com>
+Date:   Thu, 11 Feb 2021 20:03:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YCV7XGloQIjtFAqf@google.com>
+In-Reply-To: <YCTT8HQ7PobTyUz4@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 10:45:48AM -0800, Matthias Kaehlcke wrote:
-> Hi Greg,
+On 11.02.21 07:51, Greg Kroah-Hartman wrote:
+> On Wed, Feb 10, 2021 at 08:57:11PM +0100, Bodo Stroesser wrote:
+>> On 10.02.21 20:47, Greg Kroah-Hartman wrote:
+>>> On Wed, Feb 10, 2021 at 08:40:30PM +0100, Bodo Stroesser wrote:
+>>>> If uio_unregister_device() is called while userspace daemon
+>>>> still holds the uio device open or mmap'ed, uio will not call
+>>>> uio_info->release() on later close / munmap.
+>>>>
+>>>> At least one user of uio (tcmu) should not free resources (pages
+>>>> allocated by tcmu which are mmap'ed to userspace) while uio
+>>>> device still is open, because that could cause userspace daemon
+>>>> to be killed by SIGSEGV or SIGBUS. Therefore tcmu frees the
+>>>> pages only after it called uio_unregister_device _and_ the device
+>>>> was closed.
+>>>> So, uio not calling uio_info->release causes trouble.
+>>>> tcmu currently leaks memory in that case.
+>>>>
+>>>> Just waiting for userspace daemon to exit before calling
+>>>> uio_unregister_device I think is not the right solution, because
+>>>> daemon would not become aware of kernel code wanting to destroy
+>>>> the uio device.
+>>>> After uio_unregister_device was called, reading or writing the
+>>>> uio device returns -EIO, which normally results in daemon exit.
+>>>>
+>>>> This patch adds new callback pointer 'late_release' to struct
+>>>> uio_info. If uio user sets this callback, it will be called by
+>>>> uio if userspace closes / munmaps the device after
+>>>> uio_unregister_device was executed.
+>>>>
+>>>> That way we can use uio_unregister_device() to notify userspace
+>>>> that we are going to destroy the device, but still get a call
+>>>> to late_release when uio device is finally closed.
+>>>>
+>>>> Signed-off-by: Bodo Stroesser <bostroesser@gmail.com>
+>>>> ---
+>>>>    Documentation/driver-api/uio-howto.rst | 10 ++++++++++
+>>>>    drivers/uio/uio.c                      |  4 ++++
+>>>>    include/linux/uio_driver.h             |  4 ++++
+>>>>    3 files changed, 18 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/driver-api/uio-howto.rst b/Documentation/driver-api/uio-howto.rst
+>>>> index 907ffa3b38f5..a2d57a7d623a 100644
+>>>> --- a/Documentation/driver-api/uio-howto.rst
+>>>> +++ b/Documentation/driver-api/uio-howto.rst
+>>>> @@ -265,6 +265,16 @@ the members are required, others are optional.
+>>>>       function. The parameter ``irq_on`` will be 0 to disable interrupts
+>>>>       and 1 to enable them.
+>>>> +-  ``int (*late_release)(struct uio_info *info, struct inode *inode)``:
+>>>> +   Optional. If you define your own :c:func:`open()`, you will
+>>>> +   in certain cases also want a custom :c:func:`late_release()`
+>>>> +   function. If uio device is unregistered - by calling
+>>>> +   :c:func:`uio_unregister_device()` - while it is open or mmap'ed by
+>>>> +   userspace, the custom :c:func:`release()` function will not be
+>>>> +   called when userspace later closes the device. An optionally
+>>>> +   specified :c:func:`late_release()` function will be called in that
+>>>> +   situation.
+>>>> +
+>>>>    Usually, your device will have one or more memory regions that can be
+>>>>    mapped to user space. For each region, you have to set up a
+>>>>    ``struct uio_mem`` in the ``mem[]`` array. Here's a description of the
+>>>> diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
+>>>> index ea96e319c8a0..0b2636f8d373 100644
+>>>> --- a/drivers/uio/uio.c
+>>>> +++ b/drivers/uio/uio.c
+>>>> @@ -532,6 +532,8 @@ static int uio_release(struct inode *inode, struct file *filep)
+>>>>    	mutex_lock(&idev->info_lock);
+>>>>    	if (idev->info && idev->info->release)
+>>>>    		ret = idev->info->release(idev->info, inode);
+>>>> +	else if (idev->late_info && idev->late_info->late_release)
+>>>> +		ret = idev->late_info->late_release(idev->late_info, inode);
+>>>>    	mutex_unlock(&idev->info_lock);
+>>>
+>>> Why can't release() be called here?  Why doesn't your driver define a
+>>> release() if it cares about this information?  Why do we need 2
+>>> different callbacks that fire at exactly the same time?
+>>>
+>>> This feels really wrong.
+>>>
+>>> greg k-h
+>>>
+>>
+>> tcmu has a release callback. But uio can't call it after
+>> uio_unregister_device was executed, because in uio_unregister_device
+>> uio sets the uio_device::info to NULL.
 > 
-> On Thu, Feb 11, 2021 at 07:58:23AM +0100, Greg Kroah-Hartman wrote:
-> > On Wed, Feb 10, 2021 at 09:10:38AM -0800, Matthias Kaehlcke wrote:
-> > > Check during probe() if a hub supported by the onboard_usb_hub
-> > > driver is connected to the controller. If such a hub is found
-> > > create the corresponding platform device. This requires the
-> > > device tree to have a node for the hub with its vendor and
-> > > product id (which is not common for USB devices). Further the
-> > > platform device is only created when CONFIG_USB_ONBOARD_HUB=y/m.
-> > > 
-> > > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > > ---
-> > > 
-> > > Changes in v5:
-> > > - patch added to the series
-> > > 
-> > >  drivers/usb/host/xhci-plat.c | 16 ++++++++++++++++
-> > >  include/linux/usb/hcd.h      |  2 ++
-> > >  2 files changed, 18 insertions(+)
-> > > 
-> > > diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-> > > index 4d34f6005381..e785fa109eea 100644
-> > > --- a/drivers/usb/host/xhci-plat.c
-> > > +++ b/drivers/usb/host/xhci-plat.c
-> > > @@ -15,6 +15,7 @@
-> > >  #include <linux/of.h>
-> > >  #include <linux/of_device.h>
-> > >  #include <linux/platform_device.h>
-> > > +#include <linux/usb/onboard_hub.h>
-> > >  #include <linux/usb/phy.h>
-> > >  #include <linux/slab.h>
-> > >  #include <linux/acpi.h>
-> > > @@ -184,6 +185,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
-> > >  	int			ret;
-> > >  	int			irq;
-> > >  	struct xhci_plat_priv	*priv = NULL;
-> > > +	struct device_node	*np;
-> > >  
-> > >  
-> > >  	if (usb_disabled())
-> > > @@ -356,6 +358,17 @@ static int xhci_plat_probe(struct platform_device *pdev)
-> > >  	 */
-> > >  	pm_runtime_forbid(&pdev->dev);
-> > >  
-> > > +	np = usb_of_get_device_node(hcd->self.root_hub, hcd->self.busnum);
-> > > +	if (np && of_is_onboard_usb_hub(np)) {
-> > > +		struct platform_device *pdev;
-> > > +
-> > > +		pdev = of_platform_device_create(np, NULL, NULL);
-> > 
-> > A platform device is a child of another platform device?  Ok, but
-> > really, why?  What uses this device?
-> 
-> In earlier versions there was a standalone platform device:
-> https://lore.kernel.org/patchwork/patch/1313001/
-> 
-> However this was rejected by Rob, since the DT would require a node for the
-> platform device and (implicit or explicit) nodes for the USB devices,
-> representing the same physical device:
-> 
-> https://lore.kernel.org/patchwork/patch/1305395/
-> https://lore.kernel.org/patchwork/patch/1313000/
-> 
-> Both Doug Anderson and myself argued that it seems legitimate to distinguish
-> between the devices connected to the USB bus, and the chip which might have
-> GPIOs, regulators, clocks, ... but apparently our arguments were not
-> convincing enough.
+> As it should because the driver could then be gone.  It should NEVER
+> call back into it again.
 
-To let the xhci-plat driver create the platform device was suggested by Alan:
+OTOH, uio does try_module_get(idev->owner) in uio_open before calling
+the driver's open callback and module_put(idev_owner) in uio_release
+after calling driver's release callback. So driver's release callback
+is guaranteed to exist until last release is done.
 
-https://lore.kernel.org/patchwork/patch/1313000/#1510227
+Apart from that, tcmu also has an uio_info::mmap callback. In that
+callback it installs its own vm_operations_struct::fault handler.
+This handler also can happen to be called as long as userspace holds
+the uio device mmap'ed. I think, this is not a problem due to the
+above mentioned mechanism.
 
-Personally I would favor a standalone platform device, since it provides more
-flexiblity (also works for hubs connected to a non-root hub) and doesn't require
-cooperation from other driver, however I doubt I could convince Rob of the
-corresponding DT bindings.
+tcmu just has to ensure, that the tcmu device, which contains the 
+uio_info - is kept until the final release call happens. Unfortunately
+this call will not happen if uio device is open during
+uio_unregister_device. That's why tcmu sometimes leaks memory.
+
+> 
+>> So, uio would never call both callbacks for the same release action,
+>> but would call release before uio_unregister_device is executed, and
+>> late_release after that.
+> 
+> That's not ok.
+> 
+>> Of course it would be good for tcmu if uio would call uio_info:release even
+>> after uio_unregister_device, but changing this AFAICS could cause
+>> trouble in other drivers using uio.
+> 
+> You are confusing two different lifetime rules here it seems.  One is
+> the char device and one is the struct device.  They work independently
+> as different users affect them.
+I'm not sure I get your point.
+
+> 
+> So if one is removed from the system, do not try to keep a callback to
+> it, otherwise you will crash.
+
+That's why I tried to change uio in a compatible way, so other drivers
+based on it are not afflicted by the change. I saw, that some drivers
+based on uio free their resources directly after calling
+uio_unregister_device. Executing their release callback later would
+definitely cause trouble.
+
+> 
+> And why is scsi using the uio driver in the first place?  That feels
+> really odd to me.  Why not just make a "real" driver if you want to
+> somehow tie these two lifetimes together?
+
+Why tcmu driver is based on uio I don't know. I inherited the driver as
+it is. Maybe it would have been better to not base it on uio, I don't
+know. But changing this now would cause an API change for all existing
+userspace apps, e.g. tcmu-runner. I think I should avoid that and
+therefore have to find an acceptable solution for the tcmu/uio
+combination.
+
+> 
+> thanks,
+> 
+> greg k-h
+> 
