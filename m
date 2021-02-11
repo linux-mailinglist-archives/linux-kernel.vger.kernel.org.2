@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0809931913C
+	by mail.lfdr.de (Postfix) with ESMTP id 780B031913D
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232512AbhBKRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:37:57 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:35583 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhBKQk1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:40:27 -0500
-Received: by mail-oi1-f178.google.com with SMTP id l3so6778181oii.2;
-        Thu, 11 Feb 2021 08:40:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8q2NiznoWVHuUMkmRhG9I02yDUgNpmTMAt3YoQyfIGk=;
-        b=RGLHmA221z8aU7u1IS1sRT8yqYqIJMDyvqois51hPWANv4R8/5f8t0SUtFkqqM6eaz
-         n7+sQ9TRINJMFq9C+S7DapFyzL/JbIUWQ3rf8G3jftUw9pwBozz+7vdwePQf2HV09xp9
-         xltSjFLp9grG2HobDHKMFU3vUGESdGToCREWE9aFIeoutP72Hc3eAB0J48nEHDQ7i4bJ
-         GiwRk6HxzI2A6lyeQ4Xp2vwQ0csDP5mXp1O/MqpvbofZznXOjK4hPpxzsWRE2E2Cw8L1
-         gbQ5fcV7pUirTH2Zak2GGui2v2bdXm/FEYSmVmsVEIMWz6U+HMVPOLH4WEfJlud4raqX
-         yUKw==
-X-Gm-Message-State: AOAM5334z8Lm7aGeMR7nZELnQOUvdIQzliaDjKOoEgY5xxPk6G3lOQe5
-        4a0wbt82usxum/k45o0pcO/Xql9s+VisfN51oR8=
-X-Google-Smtp-Source: ABdhPJzyQFbX0hSlRZwJpCaG0gnL07XQ4sZ9sbCMqGdf1PZ/ue9UJTn+QzFgmJlhxkJqET2zef5RWey55AhZUUOtyWc=
-X-Received: by 2002:aca:3d85:: with SMTP id k127mr3459892oia.157.1613061585919;
- Thu, 11 Feb 2021 08:39:45 -0800 (PST)
+        id S231403AbhBKRif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:38:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33650 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230326AbhBKQmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 11:42:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613061677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=49277//KwxbjQ405XwayXDeBcBaVqNsLWaTMf3MliEo=;
+        b=YV5YY0wNG1juqlUn4dbLg5e38JEvoh38LhXzPWw7qoeQqD4eW6kYuna41RTqh46JN+/Mry
+        5awcoW5BM4BtWa4GjbgXfx6pzlWQm1G/96w08Tmo16oMjOTkVb74Y8m4+5necwrZ+bpTJk
+        JUcMDs3qmoMDTdlggXe5mSkmOda7ZSY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C4B87AC43;
+        Thu, 11 Feb 2021 16:41:17 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 17:41:16 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: possible deadlock in start_this_handle (2)
+Message-ID: <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
+References: <20210211104947.GL19070@quack2.suse.cz>
+ <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
+ <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
+ <20210211121020.GO19070@quack2.suse.cz>
+ <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
+ <20210211125717.GH308988@casper.infradead.org>
+ <YCUr99//z8hJmnDH@dhcp22.suse.cz>
+ <20210211132533.GI308988@casper.infradead.org>
+ <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+ <20210211142630.GK308988@casper.infradead.org>
 MIME-Version: 1.0
-References: <20210210114320.3478-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0hx78JHnP5-5xFTPr0Rh9FvPCzAzTCyBaT6eLZ3Dd-mFA@mail.gmail.com>
- <3881654.NPl3a4M0kB@kreacher> <1946478.1QpZic6vku@kreacher>
- <YCPyKjO7XPBFAgbn@smile.fi.intel.com> <CAJZ5v0jq1+q3HKDEzgBUWtZY8H0kaiR=bNi1WUsdg3BTAyiPgw@mail.gmail.com>
- <YCP+xOuic5fPx+7i@smile.fi.intel.com> <CAJZ5v0iCe=GuauCVzLG83urBHghO0suabHcMg2Kw54XFjBqCbw@mail.gmail.com>
- <YCVQWgg6L5YcAXO1@smile.fi.intel.com>
-In-Reply-To: <YCVQWgg6L5YcAXO1@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 11 Feb 2021 17:39:34 +0100
-Message-ID: <CAJZ5v0juLyE=vCyw5_qZus3YC65kY=mOhrcb7OoWZQtZNnr_Ag@mail.gmail.com>
-Subject: Re: [PATCH v1 7/7] ACPI: property: Allow counting a single value as
- an array of 1 element
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211142630.GK308988@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 4:42 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Feb 10, 2021 at 04:44:34PM +0100, Rafael J. Wysocki wrote:
-> > On Wed, Feb 10, 2021 at 4:42 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Wed, Feb 10, 2021 at 04:01:16PM +0100, Rafael J. Wysocki wrote:
-> > > > On Wed, Feb 10, 2021 at 3:48 PM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Wed, Feb 10, 2021 at 02:48:09PM +0100, Rafael J. Wysocki wrote:
-> > > > > > On Wednesday, February 10, 2021 2:31:48 PM CET Rafael J. Wysocki wrote:
-> > > > > > > On Wednesday, February 10, 2021 1:36:00 PM CET Rafael J. Wysocki wrote:
-> > > > > > > > On Wed, Feb 10, 2021 at 12:51 PM Andy Shevchenko
-> > > > > > > > <andriy.shevchenko@linux.intel.com> wrote:
->
-> ...
->
-> > > > > > > > > -       if (val && nval == 1) {
-> > > > > > > > > +       /* Try to read as a single value first */
-> > > > > > > > > +       if (!val || nval == 1) {
-> > > > > > > > >                 ret = acpi_data_prop_read_single(data, propname, proptype, val);
-> > > > > > > >
-> > > > > > > > This returns -EINVAL if val is NULL.
-> > > > >
-> > > > > Nope. That's why it's a patch 7. Patch 6 solves this.
-> > > >
-> > > > That's my point.  Patch 7 should be the first one in the series.
-> > >
-> > > Ah, okay. Since you want this let me rebase.
-> >
-> > Thanks!
->
-> I started rebasing and realised that your approach has swapped the error codes,
-> i.e. if it's a single-value and it is, e.g., 16-bit wide, the u8 read will
-> return 1, while it has to return -EOVERFLOW.
+On Thu 11-02-21 14:26:30, Matthew Wilcox wrote:
+> On Thu, Feb 11, 2021 at 03:20:41PM +0100, Michal Hocko wrote:
+> > On Thu 11-02-21 13:25:33, Matthew Wilcox wrote:
+> > > On Thu, Feb 11, 2021 at 02:07:03PM +0100, Michal Hocko wrote:
+> > > > On Thu 11-02-21 12:57:17, Matthew Wilcox wrote:
+> > > > > > current->flags should be always manipulated from the user context. But
+> > > > > > who knows maybe there is a bug and some interrupt handler is calling it.
+> > > > > > This should be easy to catch no?
+> > > > > 
+> > > > > Why would it matter if it were?
+> > > > 
+> > > > I was thinking about a clobbered state because updates to ->flags are
+> > > > not atomic because this shouldn't ever be updated concurrently. So maybe
+> > > > a racing interrupt could corrupt the flags state?
+> > > 
+> > > I don't think that's possible.  Same-CPU races between interrupt and
+> > > process context are simpler because the CPU always observes its own writes
+> > > in order and the interrupt handler completes "between" two instructions.
+> > 
+> > I have to confess I haven't really thought the scenario through. My idea
+> > was to simply add a simple check for an irq context into ->flags setting
+> > routine because this should never be done in the first place. Not only
+> > for scope gfp flags but any other PF_ flags IIRC.
+> 
+> That's not automatically clear to me.  There are plenty of places
+> where an interrupt borrows the context of the task that it happens to
+> have interrupted.  Specifically, interrupts should be using GFP_ATOMIC
+> anyway, so this doesn't really make a lot of sense, but I don't think
+> it's necessarily wrong for an interrupt to call a function that says
+> "Definitely don't make GFP_FS allocations between these two points".
 
-Well, that's a bug in my patch.
+Not sure I got your point. IRQ context never does reclaim so anything
+outside of NOWAIT/ATOMIC is pointless. But you might be refering to a
+future code where GFP_FS might have a meaning outside of the reclaim
+context?
 
-I thought that you would reorder the series to put the fix into the
-front of it, but I didn't really mean to rebase it on top of my patch.
-Sorry for the confusion.
+Anyway if we are to allow modifying PF_ flags from an interrupt contenxt
+then I believe we should make that code IRQ aware at least. I do not
+feel really comfortable about async modifications when this is stated to
+be safe doing in a non atomic way.
 
-However, not that you have started to do it apparently, let me post
-that patch properly with all of the issues addressed.
+But I suspect we have drifted away from the original issue. I thought
+that a simple check would help us narrow down this particular case and
+somebody messing up from the IRQ context didn't sound like a completely
+off.
 
-> If you prefer, I can move two patches to the beginning, so one will be a good
-> prerequisite for this fix. And I'm still unsure about stable (Fixes tag is okay
-> to me), because the counting never worked from the day 1.
-
-Well, the code has never worked as intended, so why don't we make
-"stable" work as intended too?
+-- 
+Michal Hocko
+SUSE Labs
