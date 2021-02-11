@@ -2,270 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA2F318DEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACD4318DE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhBKPRl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Feb 2021 10:17:41 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:51358 "EHLO gloria.sntech.de"
+        id S229965AbhBKPNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:13:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231282AbhBKOod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:44:33 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lADAX-0002Dn-Fl; Thu, 11 Feb 2021 15:42:09 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Sebastian Fricke <sebastian.fricke@posteo.net>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hjc@rock-chips.com, robh+dt@kernel.org,
-        linux-media@vger.kernel.org, dafna.hirschfeld@collabora.com,
-        helen.koike@collabora.com, ezequiel@collabora.com,
-        cmuellner@linux.com
-Subject: Re: [PATCH 0/6] Support second Image Signal Processor on rk3399
-Date:   Thu, 11 Feb 2021 15:42:08 +0100
-Message-ID: <16789691.tv2OnDr8pf@diego>
-In-Reply-To: <20210211052515.qdqe256cipdwwrz6@basti-TUXEDO-Book-XA1510>
-References: <20210202145632.1263136-1-heiko@sntech.de> <808992741.0ifERbkFSE@diego> <20210211052515.qdqe256cipdwwrz6@basti-TUXEDO-Book-XA1510>
+        id S231197AbhBKOoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 09:44:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5428764E7A;
+        Thu, 11 Feb 2021 14:43:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613054590;
+        bh=HIfI4zvgKyR/JmQ+MbMdDh6FwBoPjPjXgns66wz8fAg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LxETXxWvAEag4weyJLBLrj286mBIldgdBn8wOQcriful/Ffq5cPQC0Fbpbai3OxJl
+         snJonqQY1Ek73Q8xY9cTrg9h6qyWjFkKCtv+hP5Xy8nqZXpT7ljhy0CyFknAcANW9V
+         YD4VQS9x/WYrmS7MR70ljf2x2BdzY+nFiafYDy8YP/wffGcAeTorHUoBDYMnbvfz6m
+         ZD4cYQam1xBjeBqHYR7qZsVsAn8Soza0vRNOgPVsv3XfNCfv68Etg0WAE1GWnzMPPz
+         u9hC9bOPGLYpvpmnYmjZsiMpIjtK9TaLbCSxOUU1C2Vta2vmSwadCwvG3R1YqXspr4
+         x8rEWqCfpg07A==
+Received: by mail-ej1-f42.google.com with SMTP id bl23so10433559ejb.5;
+        Thu, 11 Feb 2021 06:43:10 -0800 (PST)
+X-Gm-Message-State: AOAM532aF/7NfRwT5D8ZRzR86m9XDN8RWuUKtAEso3HQb+YQJSPOsgKc
+        rEI+J2Q/PhlhPzhtcZtEtavO64eezmv8Y0mwxA==
+X-Google-Smtp-Source: ABdhPJwWel9VyFtMO1t8Xd9hmMIghxDUryjOtIt5lyixWmc3hGCNmz+5uparR5CAe9DhrX4DT98QMj6oCm0bnN3D2as=
+X-Received: by 2002:a17:906:57cd:: with SMTP id u13mr8863365ejr.341.1613054588880;
+ Thu, 11 Feb 2021 06:43:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+References: <cover.1612867682.git.michal.simek@xilinx.com> <076994fc051e9230a3fef9e3eb5ec932104ef16a.1612867682.git.michal.simek@xilinx.com>
+ <20210210222241.GA2901449@robh.at.kernel.org> <584bfee2-17a6-5935-b61c-b49824bcf857@xilinx.com>
+In-Reply-To: <584bfee2-17a6-5935-b61c-b49824bcf857@xilinx.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 11 Feb 2021 08:42:55 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJedhX6typpUKbnzV7CLK6UZVjq3CyG9iY_j5DLPqvVdw@mail.gmail.com>
+Message-ID: <CAL_JsqJedhX6typpUKbnzV7CLK6UZVjq3CyG9iY_j5DLPqvVdw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: usb: misc: Add binding for Microchip
+ usb5744 hub
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
+        Piyush Mehta <piyush.mehta@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux USB List <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
-
-Am Donnerstag, 11. Februar 2021, 06:25:15 CET schrieb Sebastian Fricke:
-> Hey Heiko,
-> 
-> On 10.02.2021 12:15, Heiko Stübner wrote:
-> >Hi Sebastian,
-> >
-> >Am Freitag, 5. Februar 2021, 15:55:56 CET schrieb Heiko Stübner:
-> >> Hi Sebastian,
+On Thu, Feb 11, 2021 at 3:35 AM Michal Simek <michal.simek@xilinx.com> wrot=
+e:
+>
+> Hi Rob,
+>
+> On 2/10/21 11:22 PM, Rob Herring wrote:
+> > On Tue, Feb 09, 2021 at 11:48:09AM +0100, Michal Simek wrote:
+> >> From: Piyush Mehta <piyush.mehta@xilinx.com>
 > >>
-> >> I did some tests myself today as well and can confirm your
-> >> hdmi related finding - at least when plugged in on boot.
+> >> Added dt binding for usb5744 driver.
 > >>
-> >> I tried some combinations of camera vs. hdmi and it seems
-> >> really only when hdmi is plugged in on boot
-> >
-> >as you can see in v2, it should work now even with hdmi
-> >connected on boot. My patch ignored the grf-clock when
-> >doing the grf-based init.
-> >
-> >All clocks are on during boot and I guess the hdmi-driver
-> >did disable it after its probe. The phy_power_on functions
-> >did handle it correctly already, so it was only happening
-> >with hdmi connected on boot.
-> 
-> Thank you very much for solving that problem, I've tested the scenarios
-> described below and it works like a charm. (With your V2)
-> >
-> >
-> >Btw. do you plan on submitting your ov13850 driver
-> >soonish?
-> 
-> Actually, I have posted the patch already see here:
-> https://patchwork.kernel.org/project/linux-media/patch/20210130182313.32903-2-sebastian.fricke@posteo.net/
-
-very cool to see
-
-> I currently review the requested changes and questions and will soon
-> post a second version, but I expect quite some time until it is actually
-> merged.
-
-could you Cc me on future versions?
-
-
-Thanks
-Heiko
-> 
-> Greetings,
-> Sebastian
-> 
-> >
-> >
+> >> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> >> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> >> ---
 > >>
-> >> (1)
-> >> - boot
-> >> - camera
-> >> --> works
+> >> Changes in v2: None
 > >>
-> >> (2)
-> >> - boot
-> >> - camera
-> >> - hdmi plugged in
-> >> - hdmi works
-> >> - camera
-> >> --> works
+> >>  .../bindings/usb/microchip,usb5744.yaml       | 56 ++++++++++++++++++=
++
+> >>  MAINTAINERS                                   |  1 +
+> >>  2 files changed, 57 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/usb/microchip,us=
+b5744.yaml
 > >>
-> >> (3)
-> >> - hdmi plugged in
-> >> - boot
-> >> - hdmi works
-> >> - camera
-> >> --> camera doesn't work
-> >>
-> >> (4)
-> >> - boot
-> >> - hdmi plugged in
-> >> - hdmi works
-> >> - camera
-> >> -> camera works
-> >>
-> >>
-> >> With a bit of brute-force [0] it seems the camera also works again even
-> >> with hdmi connected on boot. So conclusion would be that some clock
-> >> is misbehaving.
-> >>
-> >> Now we'll "only" need to find out which one that is.
-> >>
-> >>
-> >> Heiko
-> >>
-> >>
-> >> [0]
-> >> Don't disable any clock gates
-> >>
-> >> diff --git a/drivers/clk/clk-gate.c b/drivers/clk/clk-gate.c
-> >> index 070dc47e95a1..8daf1fc3388c 100644
-> >> --- a/drivers/clk/clk-gate.c
-> >> +++ b/drivers/clk/clk-gate.c
-> >> @@ -61,6 +61,9 @@ static void clk_gate_endisable(struct clk_hw *hw, int enable)
-> >>
-> >>         set ^= enable;
-> >>
-> >> +if (!enable)
-> >> +return;
+> >> diff --git a/Documentation/devicetree/bindings/usb/microchip,usb5744.y=
+aml b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> >> new file mode 100644
+> >> index 000000000000..fe222f6db81d
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/usb/microchip,usb5744.yaml
+> >> @@ -0,0 +1,56 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: "http://devicetree.org/schemas/usb/microchip,usb5744.yaml#"
+> >> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 > >> +
-> >>         if (gate->lock)
-> >>                 spin_lock_irqsave(gate->lock, flags);
-> >>         else
-> >>
-> >>
-> >>
-> >> Am Freitag, 5. Februar 2021, 09:15:47 CET schrieb Heiko Stübner:
-> >> > Hi Sebastian,
-> >> >
-> >> > Am Freitag, 5. Februar 2021, 07:43:35 CET schrieb Sebastian Fricke:
-> >> > > On 03.02.2021 20:54, Heiko Stübner wrote:
-> >> > > >Am Mittwoch, 3. Februar 2021, 19:14:22 CET schrieb Sebastian Fricke:
-> >> > > >> I have tested your patch set on my nanoPC-T4, here is a complete log
-> >> > > >> with:
-> >> > > >> - relevant kernel log entries
-> >> > > >> - system information
-> >> > > >> - media ctl output
-> >> > > >> - sysfs entry information
-> >> > > >>
-> >> > > >> https://paste.debian.net/1183874/
-> >> > > >>
-> >> > > >> Additionally, to your patchset I have applied the following patches:
-> >> > > >> https://github.com/initBasti/Linux_kernel_media_tree_fork/commits/dual_cam_setup
-> >> > > >>
-> >> > > >> And just to not cause confusion the `media_dev` entries come from this
-> >> > > >> unmerged series:
-> >> > > >> https://patchwork.kernel.org/project/linux-media/list/?series=426269
-> >> > > >>
-> >> > > >> I have actually been able to stream with both of my cameras at the same
-> >> > > >> time using the libcamera cam command.
-> >> > > >> I would like to thank you a lot for making this possible.
-> >> > > >
-> >> > > >Thanks for testing a dual camera setup. On my board I could only test
-> >> > > >the second ISP. And really glad it works for you tool :-) .
-> >> > > >
-> >> > > >Out of curiosity, do you also see that green tint in the images the cameras
-> >> > > >produce?
-> >> > >
-> >> > > Yes, I do. Actually, I currently have two forms of a green tint, on my
-> >> > > OV13850 everything is quite dark and greenish, which is caused by the
-> >> > > missing 3A algorithms. On my OV4689, I have big patches of the image
-> >> > > with bright green color and flickering, I investigated if this is
-> >> > > connected to the 2nd ISP instance, but that doesn't seem to be the case
-> >> > > as I have the same results when I switch the CSI ports of the cameras.
-> >> > >
-> >> > > I have found another issue, while testing I discovered following
-> >> > > issue:
-> >> > > When I start the system with an HDMI monitor connected, then the camera
-> >> > > on the 2nd port doesn't work. This is probably because the RX/TX is
-> >> > > reserved as a TX.
-> >> > > But it made me wonder because if the system has an RX, a TX, and
-> >> > > an RX/TX, why isn't the pure TX used by the monitor and the
-> >> > > cameras take RX and RX/TX?
-> >> > > Or do you think that this is maybe a malfunction of this patch?
-> >> >
-> >> > I don't think it is an issue with this specific series, but still puzzling.
-> >> >
-> >> > I.e. the DPHYs are actually only relevant to the DSI controllers,
-> >> > with TX0 being connected to DSI0 and TX1RX1 being connected
-> >> > to DSI1. So having an hdmi display _in theory_ shouldn't matter at all.
-> >> >
-> >> > Out of curiosity what happens, when you boot without hdmi connected
-> >> > turn on the cameras, connect the hdmi after this, try the cameras again?
-> >> >
-> >> >
-> >> > Heiko
-> >> >
-> >> > >
-> >> > > >
-> >> > > >Thanks
-> >> > > >Heiko
-> >> > >
-> >> > > Greetings,
-> >> > > Sebastian
-> >> > >
-> >> > > >
-> >> > > >
-> >> > > >> If you like to you can add:
-> >> > > >> Tested-by: Sebastian Fricke <sebastian.fricke@posteo.net>
-> >> > > >>
-> >> > > >> On 02.02.2021 15:56, Heiko Stuebner wrote:
-> >> > > >> >The rk3399 has two ISPs and right now only the first one is usable.
-> >> > > >> >The second ISP is connected to the TXRX dphy on the soc.
-> >> > > >> >
-> >> > > >> >The phy of ISP1 is only accessible through the DSI controller's
-> >> > > >> >io-memory, so this series adds support for simply using the dsi
-> >> > > >> >controller is a phy if needed.
-> >> > > >> >
-> >> > > >> >That solution is needed at least on rk3399 and rk3288 but no-one
-> >> > > >> >has looked at camera support on rk3288 at all, so right now
-> >> > > >> >only implement the rk3399 specifics.
-> >> > > >> >
-> >> > > >> >
-> >> > > >> >Heiko Stuebner (6):
-> >> > > >> >  drm/rockchip: dsi: add own additional pclk handling
-> >> > > >> >  dt-bindings: display: rockchip-dsi: add optional #phy-cells property
-> >> > > >> >  drm/rockchip: dsi: add ability to work as a phy instead of full dsi
-> >> > > >> >  arm64: dts: rockchip: add #phy-cells to mipi-dsi1
-> >> > > >> >  arm64: dts: rockchip: add cif clk-control pinctrl for rk3399
-> >> > > >> >  arm64: dts: rockchip: add isp1 node on rk3399
-> >> > > >> >
-> >> > > >> > .../display/rockchip/dw_mipi_dsi_rockchip.txt |   1 +
-> >> > > >> > arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  39 ++
-> >> > > >> > drivers/gpu/drm/rockchip/Kconfig              |   2 +
-> >> > > >> > .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 342 ++++++++++++++++++
-> >> > > >> > 4 files changed, 384 insertions(+)
-> >> > > >> >
-> >> > > >>
-> >> > > >
-> >> > > >
-> >> > > >
-> >> > > >
-> >> > >
-> >> >
-> >> >
-> >>
-> >>
+> >> +title: Bindings for the Microchip USB5744 4-port Hub Controller
+> >> +
+> >> +description:
+> >> +  Microchip=E2=80=99s USB5744 SmartHub=E2=84=A2 IC is a 4 port, Super=
+Speed (SS)/Hi-Speed (HS),
+> >> +  low power, low pin count configurable and fully compliant with the =
+USB 3.1
+> >> +  Gen 1 specification. The USB5744 also supports Full Speed (FS) and =
+Low Speed
+> >> +  (LS) USB signaling, offering complete coverage of all defined USB o=
+perating
+> >> +  speeds. The new SuperSpeed hubs operate in parallel with the USB 2.=
+0
+> >> +  controller, so 5 Gbps SuperSpeed data transfers are not affected by=
+ slower
+> >> +  USB 2.0 traffic.
+> >> +
+> >> +maintainers:
+> >> +  - Piyush Mehta <piyush.mehta@xilinx.com>
+> >> +  - Michal Simek <michal.simek@xilinx.com>
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    const: microchip,usb5744
+> >> +
+> >> +  reg:
+> >> +    maxItems: 1
+> >> +    description: |
+> >> +      Specifies the i2c slave address, it is required and should be 0=
+x2d
+> >> +      if I2C is used.
 > >
-> >
-> >
-> >
-> 
+> > If I2C is not used, then this should be underneath the USB host as a US=
+B
+> > device. That also implies a different compatible string. I'd suggest yo=
+u
+> > just say I2C is required if that's your use.
+>
+> We can't say that i2c is required because we have both cases. One is
+> really usb hub connected over i2c which at least requires to send one
+> smbus command to start operate. But it can be extended to add more
+> features - limit speeds, disable ports, etc.
+>
+> And the second is really the same usb hub without i2c connected which
+> runs in default mode. But reset is required to ensure proper reset
+> sequence.
+> Hub also have external clock chip which is not handled now because it is
+> just crystal on the board but if you want I can also model it via fixed
+> clock and call clock enable for it.
+>
+> It is the same use case as is with
+> Documentation/devicetree/bindings/usb/usb3503.txt
 
+Yes, there are examples of how we don't want to do it.
 
+> Can you please elaborate why different compatible string should be used?
+> It is still the same device and not quite sure why different compatible
+> string should be used.
+>
+> Do you also want to example where this node is the part of usb node?
 
+See usb/usb-device.txt. And there is this[1] under review.
 
+For these cases with I2C, I'd really rather see the hub always under
+the USB bus with a link to the I2C bus when connected.
+
+Rob
+
+[1] https://lore.kernel.org/linux-devicetree/20210210091015.v5.1.I248292623=
+d3d0f6a4f0c5bc58478ca3c0062b49a@changeid/
