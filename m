@@ -2,121 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C841831933D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A4D319340
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhBKTkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 14:40:05 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:32068 "EHLO so15.mailgun.net"
+        id S230241AbhBKTkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 14:40:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229731AbhBKTkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:40:00 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613072380; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7ZShCPlqDj9fscjkgLTRVv6M92I9n+gZhGfFsm84qH4=;
- b=Sf6KUk9r13x/K/87AvTpzwVFoKZf39NIZOTjtFno3OQVnPXUGdFs8lZep3Jmbgb40V+20wEr
- glfygx4SJjvwLqVeKAilpUx/wBnmq2MMKokByuTG6z2setCcEFXFBetKP/rDOfwfjLkqKr/c
- uSxYNzphzwl+zHNknDu3ThKmI9k=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 602587dbf112b7872cc26a7c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Feb 2021 19:39:07
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A864EC43461; Thu, 11 Feb 2021 19:39:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 984C3C433CA;
-        Thu, 11 Feb 2021 19:39:05 +0000 (UTC)
+        id S231264AbhBKTkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 14:40:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A65664E42;
+        Thu, 11 Feb 2021 19:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613072366;
+        bh=LguSyM2AivDGUxr0ZbABm+fz9iY7GOwz9PKFxyl5pRQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QE/owqm/xyrvnuTwZvUsN/dOzbkXdXJop6JG7B1kItBAZBbwHEgkv463F9FTErir4
+         WbnUMU5HUqa2jLkJqAlv3HjeLPt2rhIdJp+CB3zkM2x0/IzTxfq5GMMSN/dwQNgwU/
+         tEllBvPsqdCbG06UhlSHt1Oup/vu+aTVHGebf74X7VaADrPq/yC6FjUceOD8M04iUi
+         VyujGjWFlSh7DfZxpt1YLelUsdxi7u/XoRYzGmPq1aQPqgQaiAaSCRM3iXSRai5uBb
+         +Y4aKQubp3NhMFC7zAi1DFEN8o3ITsALPaACnYz6Mt1DiI1Yk0H4rRyM5zx/ERlVVq
+         faOrvpgZ+2+7g==
+Received: by mail-ot1-f46.google.com with SMTP id a5so5101298otq.4;
+        Thu, 11 Feb 2021 11:39:26 -0800 (PST)
+X-Gm-Message-State: AOAM532s6uPOy0ndp0QN6v+YhHCIdjgWo6xBe1rCrtXLpS0A6VQs6agW
+        PWOvlnfdmJ6yZscwy6u57fsOOv02/ZnjDG7S3ck=
+X-Google-Smtp-Source: ABdhPJwlJLC08Hs32j3VQ4tuDEm96M3xWArw+pyHZ6NV9IYI5yNNiZ9bgO7gNQllaYhS6Eko401GzFWT6VkVterMw/U=
+X-Received: by 2002:a05:6830:18e6:: with SMTP id d6mr7022758otf.251.1613072365543;
+ Thu, 11 Feb 2021 11:39:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 11 Feb 2021 11:39:05 -0800
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v2] [RFC] mm: fs: Invalidate BH LRU during page migration
-In-Reply-To: <20210211140950.GJ308988@casper.infradead.org>
-References: <cover.1613020616.git.cgoldswo@codeaurora.org>
- <c083b0ab6e410e33ca880d639f90ef4f6f3b33ff.1613020616.git.cgoldswo@codeaurora.org>
- <20210211140950.GJ308988@casper.infradead.org>
-Message-ID: <60485ac195c0b1eecac2c99d8bca7fcb@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
+ <1612774577-55943-2-git-send-email-luojiaxing@huawei.com> <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
+In-Reply-To: <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 11 Feb 2021 20:39:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
+Message-ID: <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
+Subject: Re: [PATCH for next v1 1/2] gpio: omap: Replace raw_spin_lock_irqsave
+ with raw_spin_lock in omap_gpio_irq_handler()
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Luo Jiaxing <luojiaxing@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linuxarm@openeuler.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-11 06:09, Matthew Wilcox wrote:
-> On Wed, Feb 10, 2021 at 09:35:40PM -0800, Chris Goldsworthy wrote:
->> +/* These are used to control the BH LRU invalidation during page 
->> migration */
->> +static struct cpumask lru_needs_invalidation;
->> +static bool bh_lru_disabled = false;
-> 
-> As I asked before, what protects this on an SMP system?
-> 
+On Thu, Feb 11, 2021 at 7:25 PM Grygorii Strashko
+<grygorii.strashko@ti.com> wrote:
+> On 08/02/2021 10:56, Luo Jiaxing wrote:
+> > There is no need to use API with _irqsave in omap_gpio_irq_handler(),
+> > because it already be in a irq-disabled context.
+>
+> NACK.
+> Who said that this is always hard IRQ handler?
+> What about RT-kernel or boot with "threadirqs"?
 
-Sorry Matthew, I misconstrued your earlier question in V1, and thought 
-you had been referring to compile-time protection (so as to prevent 
-build breakages).  It is not protected, so I'll need to change this into 
-an atomic counter that is incremented and decremented by bh_lru_enable() 
-and bh_lru_disable() respectively (such that if the counter is greater 
-than zero, we bail).
+In those cases, the interrupt handler is just a normal thread, so the
+preempt_disable() that is implied by raw_spin_lock() is sufficient.
 
->> @@ -1292,7 +1296,9 @@ static inline void check_irqs_on(void)
->>  /*
->>   * Install a buffer_head into this cpu's LRU.  If not already in the 
->> LRU, it is
->>   * inserted at the front, and the buffer_head at the back if any is 
->> evicted.
->> - * Or, if already in the LRU it is moved to the front.
->> + * Or, if already in the LRU it is moved to the front. Note that if 
->> LRU is
->> + * disabled because of an ongoing page migration, we won't insert bh 
->> into the
->> + * LRU.
-> 
-> And also, why do we need to do this?  The page LRU has no equivalent
-> mechanism to prevent new pages being added to the per-CPU LRU lists.
-> If a BH has just been used, isn't that a strong hint that this page is
-> a bad candidate for migration?
+Disabling interrupts inside of an interrupt handler is always incorrect,
+the patch looks like a useful cleanup to me, if only for readability.
 
-I had assumed that up until now, that pages in the page cache aren't an 
-issue, such that they're dropped during migration as needed. Looking at 
-try_to_free_buffers[1], I don't see any handling for the page cache.  I 
-will need to do due diligence and follow up on this.
-
-As for the question on necessity, if there is a case in which preventing 
-buffer_heads from being added to the BH LRU ensures that the containing 
-page can be migrated, then I would say that the change is justified, 
-since adds another scenario in which migration is guaranteed (I will 
-follow up on this as well).
-
-Regards,
-
-Chris.
-
-[1] https://elixir.bootlin.com/linux/latest/source/fs/buffer.c#L3225
-
--- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+       Arnd
