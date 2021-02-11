@@ -2,228 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060B6318427
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 05:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B05431842A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 05:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhBKEA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 23:00:58 -0500
-Received: from mail-pf1-f175.google.com ([209.85.210.175]:33872 "EHLO
-        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhBKEAx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 23:00:53 -0500
-Received: by mail-pf1-f175.google.com with SMTP id m6so2882575pfk.1;
-        Wed, 10 Feb 2021 20:00:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZaxGDPHRm4EL6EG2S0VxxdedUr3yRC4gGuEFBAHXe0s=;
-        b=WMPFtwtKnSKGYFE8BvfRWKxEjvfDAD+kdRzTr2sqNTrlCxFkGnn/wygvk3j2Xbbe0P
-         GtZy/MgiGR6xyUYFz+FFs6kqhY6hjJrLhLRGO+Fk23+zw11P25tiXuJvzWyU7Ai1Rkal
-         P6jYvwMaVQ7xGkb4co9Ur2SgEZ8Og0QKZxJ0FC9q5l+FNzBaauUc/4Qwv9xtT9gdQIWZ
-         6iaZo8hzp5IYbJPqH5nwodaj1wK7EcYvqZdWJ7bNULsz3e2/PJvvMH8GGNoqk/IhvklL
-         +3e8+Lp63V9FTuarOpRkj5hA58eia936EuSv7hxMm1EzVAE3AjcHKDHdgLozd+P4tQGw
-         Q1AA==
-X-Gm-Message-State: AOAM533cnOeoDzLSz4RP066vhVDyKxFd+vy66/s14+9awITdqfHfzs/j
-        b1/UQLIWUZUVNof5DpxDJSb3z98uiqTC7g==
-X-Google-Smtp-Source: ABdhPJwnCZYdnND+e9X9uhPG3Qba1SSuaS7ehetzZAcYFu0N5s1xP0tm4qZynev1KPAuGmoflVoRQw==
-X-Received: by 2002:a63:4a1a:: with SMTP id x26mr6398683pga.260.1613016012320;
-        Wed, 10 Feb 2021 20:00:12 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id ob6sm3226750pjb.30.2021.02.10.20.00.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 20:00:11 -0800 (PST)
-Date:   Wed, 10 Feb 2021 20:00:10 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org, lars@metafoo.de,
-        linux-fpga@vger.kernel.org, mdf@kernel.org, ardeleanalex@gmail.com,
-        Mircea Caprioru <mircea.caprioru@analog.com>
-Subject: Re: [PATCH 1/2] include: fpga: adi-axi-common.h: add definitions for
- supported FPGAs
-Message-ID: <YCSryh6kOhA+0xHc@epycbox.lan>
-References: <20210210101535.47979-1-alexandru.ardelean@analog.com>
+        id S229451AbhBKECZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 23:02:25 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:17560 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229623AbhBKECW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 23:02:22 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613016120; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Lq8DdjXqqA8/XH5/DT58A0SitVBIZI3XjzGmex+9Mk8=;
+ b=Op6UAo16afVepH2UGiblBk3ETAgM2OgJN9aIRMFmQCiuInAsxVCy6OFsxc2dmlwzoIQoecr+
+ 6U072TfDesyvcSxzOTvq7O25Hhc4VPPQAxPck6jWhGfSb89t6XghgLFHq2E9Un6do4RmvKcI
+ smwA+TlqukL9t0aidJDHsVxNN+0=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6024ac1834db06ef794a3619 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Feb 2021 04:01:28
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1BF92C43461; Thu, 11 Feb 2021 04:01:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4379C433C6;
+        Thu, 11 Feb 2021 04:01:26 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210101535.47979-1-alexandru.ardelean@analog.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 11 Feb 2021 09:31:26 +0530
+From:   mdalam@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, corbet@lwn.net, agross@kernel.org,
+        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
+        mdalam=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
+ support
+In-Reply-To: <YCLH4ZOMjLbywl4u@builder.lan>
+References: <20210112101056.GI2771@vkoul-mobl>
+ <e3cf7c4fc02c54d17fd2fd213f39005b@codeaurora.org>
+ <20210115055806.GE2771@vkoul-mobl>
+ <97ce29b230164a5848a38f6448d1be60@codeaurora.org>
+ <20210119164511.GE2771@vkoul-mobl>
+ <534308caab7c18730ad0cc25248d116f@codeaurora.org>
+ <20210201060508.GK2771@vkoul-mobl>
+ <9d33d73682f24d92338757e1823ccd88@codeaurora.org>
+ <20210201064314.GM2771@vkoul-mobl>
+ <73c871d3d674607fafc7b79e602ec587@codeaurora.org>
+ <YCLH4ZOMjLbywl4u@builder.lan>
+Message-ID: <75b305066801fbfefa162326c63d1241@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexandru,
+On 2021-02-09 23:05, Bjorn Andersson wrote:
+> On Mon 01 Feb 09:50 CST 2021, mdalam@codeaurora.org wrote:
+> 
+>> On 2021-02-01 12:13, Vinod Koul wrote:
+>> > On 01-02-21, 11:52, mdalam@codeaurora.org wrote:
+>> > > On 2021-02-01 11:35, Vinod Koul wrote:
+>> > > > On 27-01-21, 23:56, mdalam@codeaurora.org wrote:
+>> >
+>> > > > >   The actual LOCK/UNLOCK flag should be set on hardware command
+>> > > > > descriptor.
+>> > > > >   so this flag setting should be done in DMA engine driver. The user
+>> > > > > of the
+>> > > > > DMA
+>> > > > >   driver like (in case of IPQ5018) Crypto can use flag
+>> > > > > "DMA_PREP_LOCK" &
+>> > > > > "DMA_PREP_UNLOCK"
+>> > > > >   while preparing CMD descriptor before submitting to the DMA
+>> > > > > engine. In DMA
+>> > > > > engine driver
+>> > > > >   we are checking these flasgs on CMD descriptor and setting actual
+>> > > > > LOCK/UNLOCK flag on hardware
+>> > > > >   descriptor.
+>> > > >
+>> > > >
+>> > > > I am not sure I comprehend this yet.. when is that we would need to do
+>> > > > this... is this for each txn submitted to dmaengine.. or something
+>> > > > else..
+>> > >
+>> > >  Its not for each transaction submitted to dmaengine. We have to set
+>> > > this
+>> > > only
+>> > >  once on CMD descriptor. So when A53 crypto driver need to change
+>> > > the crypto
+>> > > configuration
+>> > >  then first it will lock the all other pipes using setting the LOCK
+>> > > flag bit
+>> > > on CMD
+>> > >  descriptor and then it can start the transaction , on data
+>> > > descriptor this
+>> > > flag will
+>> > >  not get set once all transaction will be completed the A53 crypto
+>> > > driver
+>> > > release the lock on
+>> > >  all other pipes using UNLOCK flag on CMD descriptor. So LOCK/UNLOCK
+>> > > will be
+>> > > only once and not for
+>> > >  the each transaction.
+>> >
+>> > Okay so why cant the bam driver check cmd descriptor and do lock/unlock
+>> > as below, why do we need users to do this.
+>> >
+>> >         if (flags & DMA_PREP_CMD) {
+>> >                 do_lock_bam();
+>> 
+>>  User will not decide to do this LOCK/UNLOCK mechanism. It depends on
+>>  use case.  This LOCK/UNLOCK mechanism not required always. It needs
+>>  only when hardware will be shared between different core with
+>>  different driver.
+> 
+> So you have a single piece of crypto hardware and you're using the 
+> BAM's
+> LOCK/UNLOCK feature to implement a "mutex" on a particular BAM channel?
 
-On Wed, Feb 10, 2021 at 12:15:34PM +0200, Alexandru Ardelean wrote:
-> From: Mircea Caprioru <mircea.caprioru@analog.com>
+   Yes, In IPQ5018 SoC we are having only one Crypto and it will be 
+shared between
+   UBI32 core & A53 core, and these two cores are running different 
+driver to use Crypto.
+   The LOCK/UNLOCK flag can be set only on CMD descriptor.
 > 
-> All (newer) FPGA IP cores supported by Analog Devices, store information in
+>>  The LOCK/UNLOCK flags provides SW to enter ordering between pipes
+>> execution.
+>>  (Generally, the BAM pipes are total independent from each other and 
+>> work in
+>> parallel manner).
+>>  This LOCK/UNLOCK flags are part of actual pipe hardware descriptor.
+>> 
+>>  Pipe descriptor having the following flags:
+>>  INT : Interrupt
+>>  EOT: End of transfer
+>>  EOB: End of block
+>>  NWD: Notify when done
+>>  CMD: Command
+>>  LOCK: Lock
+>>  UNLOCK: Unlock
+>>  etc.
+>> 
+>>  Here the BAM driver is common driver for (QPIC, Crypto, QUP etc. in
+>> IPQ5018)
+>>  So here only Crypto will be shared b/w multiple cores so For crypto 
+>> request
+>> only the LOCK/UNLOCK
+>>  mechanism required.
+>>  For other request like for QPIC driver, QUPT driver etc. its not 
+>> required.
+>> So Crypto driver has to raise the flag for
+>>  LOCK/UNLOCK while preparing CMD descriptor. The actual locking will 
+>> happen
+>> in BAM driver only using condition
+>>  if (flags & DMA_PREP_CMD) {
+>>      if (flags & DMA_PREP_LOCK)
+>>         desc->flags |= cpu_to_le16(DESC_FLAG_LOCK);
+>>  }
+>> 
+>>  So Crypto driver should set this flag DMA_PREP_LOCK while preparing 
+>> CMD
+>> descriptor.
+>>  So LOCK should be set on actual hardware pipe descriptor with 
+>> descriptor
+>> type CMD.
+>> 
+> 
+> It sounds fairly clear that the actual descriptor modification must
+> happen in the BAM driver, but the question in my mind is how this is
+> exposed to the DMAengine clients (e.g. crypto, QPIC etc).
 
-Nit: extra ',' ?
-> the synthesized designs. This information describes various parameters,
-> including the family of boards on which this is deployed, speed-grade, and
-> so on.
-> 
-> Currently, some of these definitions are deployed mostly on Xilinx boards,
-> but they have been considered also for FPGA boards from other vendors.
-Let's add them together with the code that uses them.
-> 
-> The register definitions are described at this link:
->   https://wiki.analog.com/resources/fpga/docs/hdl/regmap
-> (the 'Base (common to all cores)' section).
-> 
-> Acked-by: Moritz Fischer <mdf@kernel.org>
-This patchset is very different from the reviewed one earlier. Please
-don't just copy Acked-by's.
+   I have added these two flags "DMA_PREP_LOCK" & "DMA_PREP_UNLOCK" In 
+enum dma_ctrl_flags.
 
-> Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
-> 
-> This is a continuation of this old set:
-> https://lore.kernel.org/linux-clk/20200929144417.89816-1-alexandru.ardelean@analog.com/
-> 
-> Particularly patches:
->   https://lore.kernel.org/linux-clk/20200929144417.89816-15-alexandru.ardelean@analog.com/
->   https://lore.kernel.org/linux-clk/20200929144417.89816-16-alexandru.ardelean@analog.com/
-> 
-> That was v4, but this patchset was split away from it, to resolve
-> discussion on some other patches in that set.
-> 
-> The other patches were accepted here:
->   https://lore.kernel.org/linux-clk/20210201151245.21845-1-alexandru.ardelean@analog.com/
-> 
->  include/linux/fpga/adi-axi-common.h | 103 ++++++++++++++++++++++++++++
->  1 file changed, 103 insertions(+)
-> 
-> diff --git a/include/linux/fpga/adi-axi-common.h b/include/linux/fpga/adi-axi-common.h
-> index 141ac3f251e6..1a7f18e3a384 100644
-> --- a/include/linux/fpga/adi-axi-common.h
-> +++ b/include/linux/fpga/adi-axi-common.h
-> @@ -13,6 +13,9 @@
->  
->  #define ADI_AXI_REG_VERSION			0x0000
->  
-> +#define ADI_AXI_REG_FPGA_INFO			0x001C
-> +#define ADI_AXI_REG_FPGA_VOLTAGE		0x0140
-> +
->  #define ADI_AXI_PCORE_VER(major, minor, patch)	\
->  	(((major) << 16) | ((minor) << 8) | (patch))
->  
-> @@ -20,4 +23,104 @@
->  #define ADI_AXI_PCORE_VER_MINOR(version)	(((version) >> 8) & 0xff)
->  #define ADI_AXI_PCORE_VER_PATCH(version)	((version) & 0xff)
->  
-> +#define ADI_AXI_INFO_FPGA_VOLTAGE(val)		((val) & 0xffff)
-> +
-> +#define ADI_AXI_INFO_FPGA_TECH(info)		(((info) >> 24) & 0xff)
-> +#define ADI_AXI_INFO_FPGA_FAMILY(info)		(((info) >> 16) & 0xff)
-> +#define ADI_AXI_INFO_FPGA_SPEED_GRADE(info)	(((info) >> 8) & 0xff)
-> +#define ADI_AXI_INFO_FPGA_DEV_PACKAGE(info)	((info) & 0xff)
+   enum dma_ctrl_flags {
+         DMA_PREP_INTERRUPT = (1 << 0),
+@@ -202,6 +205,8 @@ enum dma_ctrl_flags {
+         DMA_PREP_CMD = (1 << 7),
+         DMA_PREP_REPEAT = (1 << 8),
+         DMA_PREP_LOAD_EOT = (1 << 9),
++       DMA_PREP_LOCK = (1 << 10),
++       DMA_PREP_UNLOCK = (1 << 11),
+  };
 
-Do we really need all the macros?
-> +
-> +/**
-> + * FPGA Technology definitions
-> + */
-> +#define ADI_AXI_FPGA_TECH_XILINX_UNKNOWN		0
-> +#define ADI_AXI_FPGA_TECH_XILINS_SERIES7		1
-> +#define ADI_AXI_FPGA_TECH_XILINX_ULTRASCALE		2
-> +#define ADI_AXI_FPGA_TECH_XILINX_ULTRASCALE_PLUS	3
-> +
-> +#define ADI_AXI_FPGA_TECH_INTEL_UNKNOWN			100
-> +#define ADI_AXI_FPGA_TECH_INTEL_CYCLONE_5		101
-> +#define ADI_AXI_FPGA_TECH_INTEL_CYCLONE_10		102
-> +#define ADI_AXI_FPGA_TECH_INTEL_ARRIA_10		103
-> +#define ADI_AXI_FPGA_TECH_INTEL_STRATIX_10		104
-> +
-> +/**
-> + * FPGA Family definitions
-> + */
-> +#define ADI_AXI_FPGA_FAMILY_UNKNOWN			0
-> +
-> +#define ADI_AXI_FPGA_FAMILY_XILINX_ARTIX		1
-> +#define ADI_AXI_FPGA_FAMILY_XILINX_KINTEX		2
-> +#define ADI_AXI_FPGA_FAMILY_XILINX_VIRTEX		3
-> +#define ADI_AXI_FPGA_FAMILY_XILINX_ZYNQ			4
-> +
-> +#define ADI_AXI_FPGA_FAMILY_INTEL_SX			1
-> +#define ADI_AXI_FPGA_FAMILY_INTEL_GX			2
-> +#define ADI_AXI_FPGA_FAMILY_INTEL_GT			3
-> +#define ADI_AXI_FPGA_FAMILY_INTEL_GZ			4
-> +
-> +/**
-> + * FPGA Speed-grade definitions
-> + */
-> +#define ADI_AXI_FPGA_SPEED_GRADE_UNKNOWN		0
-> +
-> +#define ADI_AXI_FPGA_SPEED_GRADE_XILINX_1		10
-> +#define ADI_AXI_FPGA_SPEED_GRADE_XILINX_1L		11
-> +#define ADI_AXI_FPGA_SPEED_GRADE_XILINX_1H		12
-> +#define ADI_AXI_FPGA_SPEED_GRADE_XILINX_1HV		13
-> +#define ADI_AXI_FPGA_SPEED_GRADE_XILINX_1LV		14
-> +#define ADI_AXI_FPGA_SPEED_GRADE_XILINX_2		20
-> +#define ADI_AXI_FPGA_SPEED_GRADE_XILINX_2L		21
-> +#define ADI_AXI_FPGA_SPEED_GRADE_XILINX_2LV		22
-> +#define ADI_AXI_FPGA_SPEED_GRADE_XILINX_3		30
-> +
-> +#define ADI_AXI_FPGA_SPEED_GRADE_INTEL_1		1
-> +#define ADI_AXI_FPGA_SPEED_GRADE_INTEL_2		2
-> +#define ADI_AXI_FPGA_SPEED_GRADE_INTEL_3		3
-> +#define ADI_AXI_FPGA_SPEED_GRADE_INTEL_4		4
-> +#define ADI_AXI_FPGA_SPEED_GRADE_INTEL_5		5
-> +#define ADI_AXI_FPGA_SPEED_GRADE_INTEL_6		6
-> +#define ADI_AXI_FPGA_SPEED_GRADE_INTEL_7		7
-> +#define ADI_AXI_FPGA_SPEED_GRADE_INTEL_8		8
-> +#define ADI_AXI_FPGA_SPEED_GRADE_INTEL_9		9
-> +
-> +/**
-> + * FPGA Device Package definitions
-> + */
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_UNKNOWN		0
-> +
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_RF		1
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_FL		2
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_FF		3
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_FB		4
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_HC		5
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_FH		6
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_CS		7
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_CP		8
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_FT		9
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_FG		10
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_SB		11
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_RB		12
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_RS		13
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_CL		14
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_SF		15
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_BA		16
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_FA		17
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_FS		18
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_XILINX_FI		19
-> +
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_BGA		1
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_PGA		2
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_FBGA		3
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_HBGA		4
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_PDIP		5
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_EQFP		6
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_PLCC		7
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_PQFP		8
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_RQFP		9
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_TQFP		10
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_UBGA		11
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_UFBGA		12
-> +#define ADI_AXI_FPGA_DEV_PACKAGE_INTEL_MBGA		13
+  So these flags we get passed while preparing CMD descriptor in Crypto 
+driver. Based on these
+  flags only i am setting LOCK/UNLOCK flags on actual hardware descriptor 
+in BAM driver.
 
-What is using those? Do these package impact anything behavioral?
-> +
->  #endif /* ADI_AXI_COMMON_H_ */
-> -- 
-> 2.17.1
+   if (flags & DMA_PREP_CMD) {
+      if (flags & DMA_PREP_LOCK)
+          desc->flags |= cpu_to_le16(DESC_FLAG_LOCK);
+
+> 
+> What is the life span of the locked state? Do you always provide a
+> series of descriptors that starts with a LOCK and ends with an UNLOCK?
+> Or do you envision that the crypto driver provides a LOCK descriptor 
+> and
+> at some later point provides a UNLOCK descriptor?
 > 
 
-- Moritz
+   While preparing CMD descriptor we will use this LOCK/UNLOCK flags. So 
+if i wanted to write
+   some 20 registers of Crypto HW via BAM then i will prepare multiple 
+command descriptor
+   let's say 20 CMD descriptor so in the very first CMD descriptor I will 
+set the LOCK (DMA_PREP_LOCK ) flag and
+   in the the last CMD descriptor I will set the UNLOCK (DMA_PREP_UNLOCK 
+) flag.
 
-PS: The subject line could use a bit of work, too :)
+> 
+> Finally, this patch just adds the BAM part of things, where is the 
+> patch
+> that actually makes use of this feature?
+> 
+   Yes , this patch will add BAM part of things. For Crypto i will push 
+another patch
+   which will use this feature.
+
+> Regards,
+> Bjorn
+> 
+>> >
+>> > The point here is that this seems to be internal to dma and should be
+>> > handled by dma driver.
+>> >
+>>   This LOCK/UNLOK flags are part of actual hardware descriptor so this
+>> should be handled by BAM driver only.
+>>   If we set condition like this
+>>   if (flags & DMA_PREP_CMD) {
+>>                 do_lock_bam();
+>>   Then LOCK/UNLOCK will be applied for all the CMD descriptor 
+>> including
+>> (QPIC driver, QUP driver , Crypto driver etc.).
+>>   So this is not our intension. So we need to set this LOCK/UNLOCK 
+>> only for
+>> the drivers it needs. So Crypto driver needs
+>>   locking mechanism so we will set LOCK/UNLOCK flag on Crypto driver 
+>> request
+>> only for other driver request like QPIC driver,
+>>   QUP driver will not set this.
+>> 
+>> > Also if we do this, it needs to be done for specific platforms..
+>> >
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> > Thanks
