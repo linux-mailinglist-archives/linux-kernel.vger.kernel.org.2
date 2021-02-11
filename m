@@ -2,77 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C27319496
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C0E319498
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhBKUgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:36:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48818 "EHLO mail.kernel.org"
+        id S231355AbhBKUhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:37:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229617AbhBKUgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:36:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89D7C64D73;
-        Thu, 11 Feb 2021 20:35:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613075731;
-        bh=09XWYIqyUCLDxvi5gQzO/ldzLZFs0vKFvLJwHYRvx2k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RqZTSeWhnVoY7SOKERAfHik04eTojWSyJI9La+60zSsB7NNWbmyB1AoTcvmYNseX9
-         f75SCZMW7seTcfe4RvtQzTHv6Si7prB6NF9tUOcCTJ7NegQKmh1Y7b+Kzm9TgZ7GtG
-         plby2Tgd/muiO8noNzKyyxDM85HmLjNs6Al4hlYc=
-Date:   Thu, 11 Feb 2021 21:35:27 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     lee.jones@linaro.org, kuba@kernel.org, johannes@sipsolutions.net,
-        colin.king@canonical.com, arnd@arndb.de,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: wimax/i2400m: fix some byte order issues found
- by sparse
-Message-ID: <YCWVD34rU5Lu71/S@kroah.com>
-References: <20210211202908.4604-1-mail@anirudhrb.com>
+        id S229849AbhBKUhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 15:37:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D862964DDF;
+        Thu, 11 Feb 2021 20:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613075785;
+        bh=s6MK6AyHiNoTAcSPwsbFg/BT3aG4WkFax9HWorC7jXI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=iLcHnCs+ioTDI5dxVpm31eMs90IveMF2b7IkPgBT3Rwn1SHdVcM4p92Q+R5VJ7Bd3
+         mEMcF11/QlxhBF0TXZL1zSKQpx6VGY5Tb2Jlb6yeilM/ivhr+KTGLGfw3qTNvsLYTu
+         DyW6WuR1JXVJ5opcXulv7iVKOfe/YjM4x5JWiqf4Ou1a3Io/Y6YiN0uwJkJMXUlMQa
+         M94mUC3/mpLtKUSKrje3v2wOGV43Ej4DPUadui5vMuHuPrWT8sIdxAbe9cIjbbJ8Hg
+         Ptu1Sdczvc5Rwuu1vwBBWrHkn/mjorCBz3qjmNux7s8MkB6t3OZsTL1y+/6h4OMq8b
+         tIS6VlmtImmPw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211202908.4604-1-mail@anirudhrb.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210119061715.6043-1-ryan_chen@aspeedtech.com>
+References: <20210118100813.30821-2-ryan_chen@aspeedtech.com> <20210119061715.6043-1-ryan_chen@aspeedtech.com>
+Subject: Re: [PATCH v2] clk: aspeed: Fix APLL calculate formula from ast2600-A2
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Ryan Chen <ryan_chen@aspeedtech.com>
+To:     BMC-SW@aspeedtech.com, Michael Turquette <mturquette@baylibre.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>, andrewrj@aj.id.au,
+        joel@linux.ibm.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 11 Feb 2021 12:36:23 -0800
+Message-ID: <161307578346.1254594.3414342188074176198@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 01:59:08AM +0530, Anirudh Rayabharam wrote:
-> Fix sparse byte-order warnings in the i2400m_bm_cmd_prepare()
-> function:
-> 
-> wimax/i2400m/fw.c:194:36: warning: restricted __le32 degrades to integer
-> wimax/i2400m/fw.c:195:34: warning: invalid assignment: +=
-> wimax/i2400m/fw.c:195:34:    left side has type unsigned int
-> wimax/i2400m/fw.c:195:34:    right side has type restricted __le32
-> wimax/i2400m/fw.c:196:32: warning: restricted __le32 degrades to integer
-> wimax/i2400m/fw.c:196:47: warning: restricted __le32 degrades to integer
-> wimax/i2400m/fw.c:196:66: warning: restricted __le32 degrades to integer
-> 
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Quoting Ryan Chen (2021-01-18 22:17:15)
+> Starting from A2, the A-PLL calculation has changed. Use the
+> existing formula for A0/A1 and the new formula for A2 onwards.
+>=20
+> Fixes: d3d04f6c330a ("clk: Add support for AST2600 SoC")
+> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
 > ---
->  drivers/staging/wimax/i2400m/fw.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/staging/wimax/i2400m/fw.c b/drivers/staging/wimax/i2400m/fw.c
-> index b2fd4bd2c5f9..bce651a6b543 100644
-> --- a/drivers/staging/wimax/i2400m/fw.c
-> +++ b/drivers/staging/wimax/i2400m/fw.c
-> @@ -189,12 +189,16 @@ void i2400m_bm_cmd_prepare(struct i2400m_bootrom_header *cmd)
->  {
->  	if (i2400m_brh_get_use_checksum(cmd)) {
->  		int i;
-> -		u32 checksum = 0;
-> +		__le32 checksum = 0;
 
-__le32 is only for when the data crosses the kernel/user boundry, just
-use le32 in the kernel for stuff like this.
-
->  		const u32 *checksum_ptr = (void *) cmd->payload;
-
-Add a blank line here, right?
-
-thanks,
-
-greg k-h
+Applied to clk-next
