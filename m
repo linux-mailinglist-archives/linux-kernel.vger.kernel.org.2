@@ -2,69 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B13B3185FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 09:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F68B318600
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 09:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhBKH66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbhBKHzq (ORCPT
+        id S229873AbhBKH7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:59:42 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:54590 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhBKH5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:55:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9706C061574;
-        Wed, 10 Feb 2021 23:55:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EeOzfJuSTldasiU5dcRi5/b+yzk5lcmev6/Z55mnnwY=; b=B39AlWogL/4j5viG83SuK/pegS
-        903mj5yHZ/rJ38j2cwnbinvTfb5Ya971svsDIyWY4zDRSZa98wGx9PNaRhYE8/RLBwtS7UfrMnEBC
-        4GrkVdiR8TdPC9HT/qcVKyXZR3LwE98ZvZMuoNV4kj9wC+XkOmH8G0UZ6E7gUq8Xqp0cyDLg5e7Cz
-        wm3Ki+aRfX4T6ebtn5Hf6N/wHZgU5qjn32xC6N6jwDtIXaDE1DRN0dTguVzCGqyhcv3sCHCLOG9UY
-        1T2/t3jAWWj5dnaXs8JhEYjFQRjh0IejQaQ5Wmrl8VPAvM1y32op2KL/yTZWku8AqoN5y+SZFjYrR
-        sYNBFeNA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lA6og-009wQc-VY; Thu, 11 Feb 2021 07:55:11 +0000
-Date:   Thu, 11 Feb 2021 07:55:10 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alistair Popple <apopple@nvidia.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm-ppc@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>
-Subject: Re: [PATCH 0/9] Add support for SVM atomics in Nouveau
-Message-ID: <20210211075510.GA2368090@infradead.org>
-References: <20210209010722.13839-1-apopple@nvidia.com>
- <CAKMK7uGwg2-DTU7Zrco=TSkcR4yTqN1AF0hvVYEAbuj4BUYi5Q@mail.gmail.com>
- <3426910.QXTomnrpqD@nvdebian>
- <CAKMK7uHp+BzHF1=JhKjv5HYm_j0SVqsGdRqjUxVFYx4GSEPucg@mail.gmail.com>
- <57fe0deb-8bf6-d3ee-3545-11109e946528@nvidia.com>
- <20210210175913.GO4718@ziepe.ca>
+        Thu, 11 Feb 2021 02:57:38 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B7uORR012915;
+        Thu, 11 Feb 2021 07:57:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=kiJNzaZF4pw+YTlqD1Smavke2NjfLZS+kTOUdQog8Zg=;
+ b=UuqFp5ppXhwG5ouO/SsCBkIeSrx0Vqy1J4J2jB6vVe8B5D+o9WkuPdzTVwJCNSE6hTTD
+ t8r3jqs1XneKepuCxgqwAoC8DSmbRX9sEvf5Cn1hxTlPsFlCg+0o94lj5ddn5SWBCY4H
+ 3+D2Nf0cgDKrJYsHhI0lTlIvf/0DGUxPYIuSCxaN+RqqqxjBljehD3SRn+qV7OVAlrVF
+ a15MwDAV4lO2OtYjGubWGnlHQi/bsHux64RyqWHKUJdQpvzniQRC3n/8qLbL2D+b7S/Q
+ zNyVoSUVEAlJhPVvfNZa8BtclPfUQN8gc45WmIGgnr6Iqq150WkI9EGsMAAwChLEgdsN sQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 36m4upvynm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 07:57:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B7tVE3142935;
+        Thu, 11 Feb 2021 07:57:24 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 36j513qeu0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 07:57:24 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11B7vNID007258;
+        Thu, 11 Feb 2021 07:57:23 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 23:57:23 -0800
+Date:   Thu, 11 Feb 2021 10:57:15 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     karthik alapati <mail@karthek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: remove obsolete commented out code
+Message-ID: <20210211075715.GD2696@kadam>
+References: <YCQvsdlnbnQN4Ruf@karthik-strix-linux.karthek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210175913.GO4718@ziepe.ca>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YCQvsdlnbnQN4Ruf@karthik-strix-linux.karthek.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110071
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
+ suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:59:13PM -0400, Jason Gunthorpe wrote:
-> Really what you want to do here is leave the CPU page in the VMA and
-> the page tables where it started and deny CPU access to the page. Then
-> all the proper machinery will continue to work.
-> 
-> IMHO "migration" is the wrong idea if the data isn't actually moving.
+On Thu, Feb 11, 2021 at 12:40:41AM +0530, karthik alapati wrote:
+> @@ -867,10 +845,8 @@ static void PHY_HandleSwChnlAndSetBW8723B(
+>  	if (bSetBandWidth)
+>  		pHalData->bSetChnlBW = true;
+>  
+> -	if (!pHalData->bSetChnlBW && !pHalData->bSwChnl) {
+> -		/* DBG_871X("<= PHY_HandleSwChnlAndSetBW8812: bSwChnl %d, bSetChnlBW %d\n", pHalData->bSwChnl, pHalData->bSetChnlBW); */
+> +	if (!pHalData->bSetChnlBW && !pHalData->bSwChnl)
+>  		return;
+> -	}
 
-Agreed.
+In this case, the + line is correct.  Good job.
+
+>  
+>  
+>  	if (pHalData->bSwChnl) {
+> @@ -929,9 +905,7 @@ void PHY_SetSwChnlBWMode8723B(
+>  	u8 Offset80
+>  )
+>  {
+> -	/* DBG_871X("%s() ===>\n", __func__); */
+>  
+>  	PHY_HandleSwChnlAndSetBW8723B(Adapter, true, true, channel, Bandwidth, Offset40, Offset80, channel);
+>  
+> -	/* DBG_871X("<==%s()\n", __func__); */
+
+Please delete the blank lines as well.
+
+regards,
+dan carpenter
+
