@@ -2,180 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D0B319324
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B06319328
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhBKTcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 14:32:06 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:47729 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229873AbhBKTcC (ORCPT
+        id S230000AbhBKTdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 14:33:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhBKTdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:32:02 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613071902; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=XGJQvy9vglXLQ+epQAjyXyaHaGPS9ccTR8kWxCegrDQ=;
- b=O+hOEEldWkHtugntzeameRsgKzhsvwIVjrok64jeVDZxWtULBr9DqCEcWkoO4ipDcHL764tt
- jndm/aVDvX9/GEvjLTwgvDEkunxgfhPNIUVsIL0EuHadKPSOqGLEaNEaSccgqrY4x7Kc1UtX
- t808NXeAnTc2h8We+4rNE2LrrI4=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 602585e9e4842e9128f6b86e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Feb 2021 19:30:49
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 05125C43463; Thu, 11 Feb 2021 19:30:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0CEADC433CA;
-        Thu, 11 Feb 2021 19:30:47 +0000 (UTC)
+        Thu, 11 Feb 2021 14:33:12 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A01C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 11:32:31 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id j12so4309380pfj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 11:32:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rHG55bobZvUkJrIVKEFe5OS7Zmw/0/Q73OMR8fPHjoo=;
+        b=bZqAgMtkJcqTDxpPaQyQrgxoNw6KaB5AA7+y2TO2tDXW8HP8btnSqrI8NGTaNynudx
+         /foDkhJJqw3verKGvpdhSeMK0DCECV8Q8/gRg2Gkeife19zdTtw0eRuJqzgXYpOoBti5
+         ZG3b23818AAVz2bqLLWNi4PXAtzYWdXFi2JXk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rHG55bobZvUkJrIVKEFe5OS7Zmw/0/Q73OMR8fPHjoo=;
+        b=Ncpwgqpe9DZoW8wo9o8mDt9/89YoHvZjmqJx26qAVaMNEZsLkcJ6jxODLKSlqqYvTq
+         1yTxVfbyIOCWO96Ay3v6itW+1VMvP3Z6wMHSdBAdXXZLEGw0SYhxFu+5wB46iGEuhKQx
+         HJW27lC/HK+dKiwFh7wqw1QlBP699WSSz0MVxmsyYJPMOrYR9tZcSlY6mPH70rXNLZ2y
+         j2aJMkEAF2LYW2xdwoRJVVAcKFazUYosu1NLkspgym5vPKJhSyXuQxzNZ9axD/fNFsK9
+         RTYlcI0hN+zuNa1CkWPSqipx8ykdNnF7bypkvp900/iAEstZHcNWdTjDTzPlcR2iRJ4k
+         DL3A==
+X-Gm-Message-State: AOAM532KBj/m7nlRFUUNqfncN9P+IQBQZjZz4ASgVhMbk/cO1aHGMDss
+        tLLamtenk2Vk1G6MTwgo+0KZKGXQVmQW6A==
+X-Google-Smtp-Source: ABdhPJyKGbHO2GsS6XKrVxfPT7hS9jNKog3TVa4CFjN5koRCBhIL8rzy5JsAo+LkAmeK1cJLV6SlZQ==
+X-Received: by 2002:a62:1788:0:b029:1cd:367d:2bec with SMTP id 130-20020a6217880000b02901cd367d2becmr9396625pfx.38.1613071951133;
+        Thu, 11 Feb 2021 11:32:31 -0800 (PST)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:f98b:dce0:afc3:118c])
+        by smtp.gmail.com with ESMTPSA id f3sm6816556pgh.75.2021.02.11.11.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 11:32:30 -0800 (PST)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH] platform/chrome: cros_ec_typec: Flush pending work
+Date:   Thu, 11 Feb 2021 11:32:21 -0800
+Message-Id: <20210211193221.610867-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-Date:   Fri, 12 Feb 2021 01:00:47 +0530
-From:   mdalam@codeaurora.org
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH V4] mtd: rawnand: qcom: update last code word register
-In-Reply-To: <20210211150759.506f3463@xps13>
-References: <1611869959-5109-1-git-send-email-mdalam@codeaurora.org>
- <20210210090144.GE19226@work> <20210211150759.506f3463@xps13>
-Message-ID: <fe43b382fd48d7fb494dd66a4b5ac80a@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-11 19:37, Miquel Raynal wrote:
-> Hello,
-> 
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
-> 10 Feb 2021 14:31:44 +0530:
-> 
->> On Fri, Jan 29, 2021 at 03:09:19AM +0530, Md Sadre Alam wrote:
->> > From QPIC version 2.0 onwards new register got added to
->> > read last codeword. This change will add the READ_LOCATION_LAST_CW_n
->> > register.
->> >
->> > For first three code word READ_LOCATION_n register will be
->> > use.For last code word READ_LOCATION_LAST_CW_n register will be
->> > use.
-> 
-> Sorry for the late notice, I think the patch is fine but if you don't
-> mind I would like to propose a small change that should simplify your
-> patch a lot, see below.
-> 
->> >
->> > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
->> 
->> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->> 
->> Thanks,
->> Mani
->> 
->> > ---
->> > [V4]
->> >  * Modified condition for nandc_set_read_loc_last() in qcom_nandc_read_cw_raw().
->> >  * Added one additional argument "last_cw" to the function config_nand_cw_read()
->> >    to handle last code word condition.
->> >  * Changed total number of last code word register "NAND_READ_LOCATION_LAST_CW_0" to 4
->> >    while doing code word configuration.
->> >  drivers/mtd/nand/raw/qcom_nandc.c | 110 +++++++++++++++++++++++++++++---------
->> >  1 file changed, 84 insertions(+), 26 deletions(-)
->> >
->> > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
->> > index 667e4bf..9484be8 100644
->> > --- a/drivers/mtd/nand/raw/qcom_nandc.c
->> > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
->> > @@ -48,6 +48,10 @@
->> >  #define	NAND_READ_LOCATION_1		0xf24
->> >  #define	NAND_READ_LOCATION_2		0xf28
->> >  #define	NAND_READ_LOCATION_3		0xf2c
->> > +#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
->> > +#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
->> > +#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
->> > +#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
->> >
->> >  /* dummy register offsets, used by write_reg_dma */
->> >  #define	NAND_DEV_CMD1_RESTORE		0xdead
->> > @@ -187,6 +191,12 @@ nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
->> >  	      ((size) << READ_LOCATION_SIZE) |			\
->> >  	      ((is_last) << READ_LOCATION_LAST))
->> >
->> > +#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
->> > +nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
->> > +	      ((offset) << READ_LOCATION_OFFSET) |		\
->> > +	      ((size) << READ_LOCATION_SIZE) |			\
->> > +	      ((is_last) << READ_LOCATION_LAST))
->> > +
-> 
-> You could rename the macro nandc_set_read_loc() into
-> nandc_set_read_loc_first() or anything else that make sense, then have
-> a helper which does:
-> 
-> nandc_set_read_loc()
-> {
-> 	if (condition for first)
-> 		return nandc_set_read_loc_first();
-> 	else
-> 		return nandc_set_read_loc_last();
-> }
-> 
+When a PD notifier event arrives, a new work event won't be enqueued if
+the current one hasn't completed. This could lead to dropped events.
 
-   Yes this is more precise way & simplify the patch a lot.
-   But for this i have to change these two macro as a function.
+So, flush any pending work before scheduling the new instance.
 
-   nandc_set_read_loc() & nandc_set_read_loc_last().
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+---
+ drivers/platform/chrome/cros_ec_typec.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-   Since for last code word register we are using Token Pasting 
-Operator##.
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index db83c03ae5cd..2fac95e7a455 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -1031,6 +1031,7 @@ static int cros_ec_typec_event(struct notifier_block *nb,
+ {
+ 	struct cros_typec_data *typec = container_of(nb, struct cros_typec_data, nb);
+ 
++	flush_work(&typec->port_work);
+ 	schedule_work(&typec->port_work);
+ 
+ 	return NOTIFY_OK;
+-- 
+2.30.0.478.g8a0d178c01-goog
 
-   So if i am implementing like the below.
-
-   /* helper to configure location register values */
-   static void nandc_set_read_loc(struct qcom_nand_controller *nandc, int 
-reg,
-                   int offset, int size, int is_last, bool last_cw)
-   {
-           if (last_cw)
-                   return nandc_set_read_loc_last(nandc, reg, offset, 
-size, is_last);
-           else
-                   return nandc_set_read_loc_first(nandc, reg, offset, 
-size, is_last);
-  }
-
-   So here for macro expansion reg should be a value not a variable else 
-it will be expended like
-   NAND_READ_LOCATION_LAST_CW_reg instead of 
-NAND_READ_LOCATION_LAST_CW_0,1,2,3 etc.
-
-  the call for nandc_set_read_loc() as nandc_set_read_loc(nandc, 0, 
-read_loc, data_size1, 0, true); ---> for last code word.
-  nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0, false); ---> for 
-first three code wrod.
-
-
-  So is this ok for you to convert these two macro into function ?
-
-> And in the rest of your patch you won't have to touch anything else.
-> 
-> Thanks,
-> Miquèl
