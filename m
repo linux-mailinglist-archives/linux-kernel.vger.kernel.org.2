@@ -2,159 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B65E318A31
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C47318A2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbhBKMOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:14:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33404 "EHLO mx2.suse.de"
+        id S230281AbhBKMNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:13:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:51092 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230357AbhBKMLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:11:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C65DAAD29;
-        Thu, 11 Feb 2021 12:10:20 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 795A31E14B2; Thu, 11 Feb 2021 13:10:20 +0100 (CET)
-Date:   Thu, 11 Feb 2021 13:10:20 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.cz>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: possible deadlock in start_this_handle (2)
-Message-ID: <20210211121020.GO19070@quack2.suse.cz>
-References: <000000000000563a0205bafb7970@google.com>
- <20210211104947.GL19070@quack2.suse.cz>
- <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
- <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
+        id S229712AbhBKMLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 07:11:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D6301063;
+        Thu, 11 Feb 2021 04:10:12 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73EA03F73B;
+        Thu, 11 Feb 2021 04:10:08 -0800 (PST)
+Subject: Re: [PATCH V2 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
+ memory
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        linux-mm@kvack.org,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <1612239114-28428-1-git-send-email-anshuman.khandual@arm.com>
+ <1612239114-28428-2-git-send-email-anshuman.khandual@arm.com>
+ <20210202123215.GA16868@willie-the-truck>
+ <20210202123524.GB16868@willie-the-truck>
+ <f32e7caa-3414-9dd7-eb8c-220da1d925a1@redhat.com>
+ <20210202125152.GC16868@willie-the-truck>
+ <4d8f5156-8628-5531-1485-322ad92aa15c@redhat.com>
+ <0e649f28-4d54-319d-f876-8a93870cda7f@arm.com>
+ <20210205185552.GA23216@willie-the-truck>
+ <20210211115354.GB29894@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <23e5eb93-a39c-c68e-eac1-c5ccf9036079@arm.com>
+Date:   Thu, 11 Feb 2021 17:40:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210211115354.GB29894@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11-02-21 12:28:48, Dmitry Vyukov wrote:
-> On Thu, Feb 11, 2021 at 12:22 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Thu, Feb 11, 2021 at 11:49 AM Jan Kara <jack@suse.cz> wrote:
-> > >
-> > > Hello,
-> > >
-> > > added mm guys to CC.
-> > >
-> > > On Wed 10-02-21 05:35:18, syzbot wrote:
-> > > > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15cbce90d00000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> > > > userspace arch: i386
-> > > >
-> > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
-> > > >
-> > > > ======================================================
-> > > > WARNING: possible circular locking dependency detected
-> > > > 5.11.0-rc6-syzkaller #0 Not tainted
-> > > > ------------------------------------------------------
-> > > > kswapd0/2246 is trying to acquire lock:
-> > > > ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
-> > > >
-> > > > but task is already holding lock:
-> > > > ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
-> > > >
-> > > > which lock already depends on the new lock.
-> > > >
-> > > > the existing dependency chain (in reverse order) is:
-> > > >
-> > > > -> #2 (fs_reclaim){+.+.}-{0:0}:
-> > > >        __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
-> > > >        fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
-> > > >        might_alloc include/linux/sched/mm.h:193 [inline]
-> > > >        slab_pre_alloc_hook mm/slab.h:493 [inline]
-> > > >        slab_alloc_node mm/slub.c:2817 [inline]
-> > > >        __kmalloc_node+0x5f/0x430 mm/slub.c:4015
-> > > >        kmalloc_node include/linux/slab.h:575 [inline]
-> > > >        kvmalloc_node+0x61/0xf0 mm/util.c:587
-> > > >        kvmalloc include/linux/mm.h:781 [inline]
-> > > >        ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
-> > > >        ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
-> > > >        ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
-> > > >        ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
-> > > >        ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
-> > > >        ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
-> > > >        ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
-> > > >        __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
-> > > >        __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
-> > > >        __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
-> > > >        vfs_setxattr+0x135/0x320 fs/xattr.c:291
-> > > >        setxattr+0x1ff/0x290 fs/xattr.c:553
-> > > >        path_setxattr+0x170/0x190 fs/xattr.c:572
-> > > >        __do_sys_setxattr fs/xattr.c:587 [inline]
-> > > >        __se_sys_setxattr fs/xattr.c:583 [inline]
-> > > >        __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
-> > > >        do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
-> > > >        __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
-> > > >        do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
-> > > >        entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> > >
-> > > This stacktrace should never happen. ext4_xattr_set() starts a transaction.
-> > > That internally goes through start_this_handle() which calls:
-> > >
-> > >         handle->saved_alloc_context = memalloc_nofs_save();
-> > >
-> > > and we restore the allocation context only in stop_this_handle() when
-> > > stopping the handle. And with this fs_reclaim_acquire() should remove
-> > > __GFP_FS from the mask and not call __fs_reclaim_acquire().
-> > >
-> > > Now I have no idea why something here didn't work out. Given we don't have
-> > > a reproducer it will be probably difficult to debug this. I'd note that
-> > > about year and half ago similar report happened (got autoclosed) so it may
-> > > be something real somewhere but it may also be just some HW glitch or
-> > > something like that.
-> >
-> > HW glitch is theoretically possible. But if we are considering such
-> > causes, I would say a kernel memory corruption is way more likely, we
-> > have hundreds of known memory-corruption-capable bugs open. In most
-> > cases they are caught by KASAN before doing silent damage. But KASAN
-> > can miss some cases.
-> >
-> > I see at least 4 existing bugs with similar stack:
-> > https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> > https://syzkaller.appspot.com/bug?extid=a7ab8df042baaf42ae3c
-> > https://syzkaller.appspot.com/bug?id=c814a55a728493959328551c769ede4c8ff72aab
-> > https://syzkaller.appspot.com/bug?id=426ad9adca053dafcd698f3a48ad5406dccc972b
-> >
-> > All in all, I would not assume it's a memory corruption. When we had
-> > bugs that actually caused silent memory corruption, that caused a
-> > spike of random one-time crashes all over the kernel. This does not
-> > look like it.
+
+
+On 2/11/21 5:23 PM, Will Deacon wrote:
+> On Fri, Feb 05, 2021 at 06:55:53PM +0000, Will Deacon wrote:
+>> On Wed, Feb 03, 2021 at 09:20:39AM +0530, Anshuman Khandual wrote:
+>>> On 2/2/21 6:26 PM, David Hildenbrand wrote:
+>>>> On 02.02.21 13:51, Will Deacon wrote:
+>>>>> On Tue, Feb 02, 2021 at 01:39:29PM +0100, David Hildenbrand wrote:
+>>>>>> As I expressed already, long term we should really get rid of the arm64
+>>>>>> variant and rather special-case the generic one. Then we won't go out of
+>>>>>> sync - just as it happened with ZONE_DEVICE handling here.
+>>>>>
+>>>>> Why does this have to be long term? This ZONE_DEVICE stuff could be the
+>>>>> carrot on the stick :)
+>>>>
+>>>> Yes, I suggested to do it now, but Anshuman convinced me that doing a
+>>>> simple fix upfront might be cleaner --- for example when it comes to
+>>>> backporting :)
+>>>
+>>> Right. The current pfn_valid() breaks for ZONE_DEVICE memory and this fixes
+>>> the problem in the present context which can be easily backported if required.
+>>>
+>>> Changing or rather overhauling the generic code with new configs as proposed
+>>> earlier (which I am planning to work on subsequently) would definitely be an
+>>> improvement for the current pfn_valid() situation in terms of maintainability
+>>> but then it should not stop us from fixing the problem now.
+>>
+>> Alright, I've mulled this over a bit. I don't agree that this patch helps
+>> with maintainability (quite the opposite, in fact), but perfection is the
+>> enemy of the good so I'll queue the series for 5.12. However, I'll revert
+>> the changes at the first sign of a problem, so please do work towards a
+>> generic solution which can replace this in the medium term.
 > 
-> I wonder if memalloc_nofs_save (or any other manipulation of
-> current->flags) could have been invoked from interrupt context? I
-> think it could cause the failure mode we observe (extremely rare
-> disappearing flags). It may be useful to add a check for task context
-> there.
+> ... and dropped. These patches appear to be responsible for a boot
+> regression reported by CKI:
 
-That's an interesting idea. I'm not sure if anything does manipulate
-current->flags from inside an interrupt (definitely memalloc_nofs_save()
-doesn't seem to be) but I'd think that in fully preemtible kernel,
-scheduler could preempt the task inside memalloc_nofs_save() and the
-current->flags manipulation could also clash with a manipulation of these
-flags by the scheduler if there's any?
+Ahh, boot regression ? These patches only change the behaviour
+for non boot memory only.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> 
+> https://lore.kernel.org/r/cki.8D1CB60FEC.K6NJMEFQPV@redhat.com
+
+Will look into the logs and see if there is something pointing to
+the problem.
