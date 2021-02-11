@@ -2,241 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855C73189F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745593189F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhBKL6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:58:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34276 "EHLO
+        id S231531AbhBKL67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:58:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22043 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230328AbhBKLjb (ORCPT
+        by vger.kernel.org with ESMTP id S231685AbhBKLmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:39:31 -0500
+        Thu, 11 Feb 2021 06:42:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613043479;
+        s=mimecast20190719; t=1613043645;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=jBJpn4LbluSU72a0eU+ANLaBQa/dsUCCbpTQvGN+K1w=;
-        b=UL+FuWYpqI8fgpgnsbr8CvDSg/Rbsy5iHR8kmWYvNHzf2QmxIYvi/k7JCHHPzfFrdfbleG
-        kUBZQ/GnBb8kYy2XB9uB+zSllAXO0jRisGuz8A3O0uVEhy198+cHyAsBC80GQ+r2ZtvkzT
-        OH1AZOqRhCmCxEu9QD07tI1n8fEkH4I=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-EoMickD6PHCgFWrT25nI4w-1; Thu, 11 Feb 2021 06:37:57 -0500
-X-MC-Unique: EoMickD6PHCgFWrT25nI4w-1
-Received: by mail-ed1-f69.google.com with SMTP id f21so4427845edx.10
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 03:37:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jBJpn4LbluSU72a0eU+ANLaBQa/dsUCCbpTQvGN+K1w=;
-        b=oaqZHpQaJbI1hbNhXlv0uq0TyW+wbXVhpY7vWstbJ2syvs2uc4aFfpkj2DDdu7v9lR
-         QKlnh3k2qb+1QAC8j/OokR37RrnMmPS71vrZeuBFtAUW4xCGAZYClRCrBJ8hfHsD0tQM
-         9RQp6GH7zsA5uLhfWNRUjmYRZxIaNUsUmtO7542t6mvx+h1KnZUQJ8Oaf8UZBDoMFxJL
-         7gEXPvNsZM+736CTMPyPe0UUWxWEzPguhDchyVSuD6n9DjTy2SHLfePFnMYzOHZzxJet
-         d8XbaFYYo4OnI/GtgaSe9irP+xwaWAZ9cxEW2YKCSOBsf4MEcavxkIv6VFe1mTpg2CXT
-         ET7g==
-X-Gm-Message-State: AOAM531OYOLXmMyn5QLnkNtumZusvnjHmBVY9Jj8uh3HXxtxfYlQ3pxI
-        i8lDtrv7zkQ+0eAB0OY5AlpE1sm+Os4HPQIF9b7RF3oZo76o+72ChoUsY6mtb5XDJ4Hlp+L9N6x
-        3iBLU/UbJxkZaggNSfie8x36D
-X-Received: by 2002:a17:906:37c1:: with SMTP id o1mr7920799ejc.488.1613043476412;
-        Thu, 11 Feb 2021 03:37:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyJnUUecMhZKbbTG7xRbeEA9y+GaY0YJsrOqETOe26tn0T3XY70P75PsWnGdEkMaW63FaTK2w==
-X-Received: by 2002:a17:906:37c1:: with SMTP id o1mr7920773ejc.488.1613043476196;
-        Thu, 11 Feb 2021 03:37:56 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id m7sm3982087ejk.52.2021.02.11.03.37.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 03:37:55 -0800 (PST)
-Date:   Thu, 11 Feb 2021 12:37:53 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v4 03/17] af_vsock: separate receive data loop
-Message-ID: <20210211113753.o4zco3yromuxpvo2@steredhat>
-References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
- <20210207151508.804615-1-arseny.krasnov@kaspersky.com>
+        bh=vUoDjptBfW2j+T80yjumKevzhFB51qnZmG+ldDF5KQQ=;
+        b=ibhHYvpILB6LeTcPw3dmVnXrdfk++X8cftMyToVlsjV0BhuilM1+cIDJKRpGhJDBxOBOrM
+        uJW0wkApzkV2n69S8rkb07ndBdYnydlrqYlvVz5LNTFndLYyT6glVbZxI+mXx2kR2aG1S2
+        KYd/j5DazWTBADZhAYWFo271SyiAvQE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-jA-X_cteNgqQURcGYrtNkg-1; Thu, 11 Feb 2021 06:40:43 -0500
+X-MC-Unique: jA-X_cteNgqQURcGYrtNkg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 501C21936B60;
+        Thu, 11 Feb 2021 11:40:41 +0000 (UTC)
+Received: from krava (unknown [10.40.195.165])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 71078100164C;
+        Thu, 11 Feb 2021 11:40:38 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 12:40:37 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        namhyung@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
+Subject: Re: [PATCH 00/49] Add Alder Lake support for perf
+Message-ID: <YCUXte/CMEQlCq4f@krava>
+References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210207151508.804615-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 06:15:05PM +0300, Arseny Krasnov wrote:
->This moves STREAM specific data receive logic to dedicated function:
->'__vsock_stream_recvmsg()', while checks that will be same for both
->types of socket are in shared function: 'vsock_connectible_recvmsg()'.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 117 +++++++++++++++++++++++----------------
-> 1 file changed, 68 insertions(+), 49 deletions(-)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 38927695786f..66c8a932f49b 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1898,65 +1898,22 @@ static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wait,
-> 	return err;
-> }
->
->-static int
->-vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->-			  int flags)
->+static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
->+				  size_t len, int flags)
-> {
->-	struct sock *sk;
->-	struct vsock_sock *vsk;
->+	struct vsock_transport_recv_notify_data recv_data;
-> 	const struct vsock_transport *transport;
->-	int err;
->-	size_t target;
->+	struct vsock_sock *vsk;
-> 	ssize_t copied;
->+	size_t target;
-> 	long timeout;
->-	struct vsock_transport_recv_notify_data recv_data;
->+	int err;
->
-> 	DEFINE_WAIT(wait);
->
->-	sk = sock->sk;
-> 	vsk = vsock_sk(sk);
->-	err = 0;
->-
->-	lock_sock(sk);
->-
-> 	transport = vsk->transport;
->
->-	if (!transport || sk->sk_state != TCP_ESTABLISHED) {
->-		/* Recvmsg is supposed to return 0 if a peer performs an
->-		 * orderly shutdown. Differentiate between that case and when a
->-		 * peer has not connected or a local shutdown occured with the
->-		 * SOCK_DONE flag.
->-		 */
->-		if (sock_flag(sk, SOCK_DONE))
->-			err = 0;
->-		else
->-			err = -ENOTCONN;
->-
->-		goto out;
->-	}
->-
->-	if (flags & MSG_OOB) {
->-		err = -EOPNOTSUPP;
->-		goto out;
->-	}
->-
->-	/* We don't check peer_shutdown flag here since peer may actually shut
->-	 * down, but there can be data in the queue that a local socket can
->-	 * receive.
->-	 */
->-	if (sk->sk_shutdown & RCV_SHUTDOWN) {
->-		err = 0;
->-		goto out;
->-	}
->-
->-	/* It is valid on Linux to pass in a zero-length receive buffer.  This
->-	 * is not an error.  We may as well bail out now.
->-	 */
->-	if (!len) {
->-		err = 0;
->-		goto out;
->-	}
->-
-> 	/* We must not copy less than target bytes into the user's buffer
-> 	 * before returning successfully, so we wait for the consume queue to
-> 	 * have that much data to consume before dequeueing.  Note that this
+On Mon, Feb 08, 2021 at 07:24:57AM -0800, kan.liang@linux.intel.com wrote:
 
-At the end of __vsock_stream_recvmsg() you are calling release_sock(sk) 
-and it's wrong since we are releasing it in vsock_connectible_recvmsg().
+SNIP
 
-Please fix it.
+> Jin Yao (24):
+>   perf jevents: Support unit value "cpu_core" and "cpu_atom"
+>   perf util: Save pmu name to struct perf_pmu_alias
+>   perf pmu: Save detected hybrid pmus to a global pmu list
+>   perf pmu: Add hybrid helper functions
+>   perf list: Support --cputype option to list hybrid pmu events
+>   perf stat: Hybrid evsel uses its own cpus
+>   perf header: Support HYBRID_TOPOLOGY feature
+>   perf header: Support hybrid CPU_PMU_CAPS
+>   tools headers uapi: Update tools's copy of linux/perf_event.h
+>   perf parse-events: Create two hybrid hardware events
+>   perf parse-events: Create two hybrid cache events
+>   perf parse-events: Support hardware events inside PMU
+>   perf list: Display pmu prefix for partially supported hybrid cache
+>     events
+>   perf parse-events: Support hybrid raw events
+>   perf stat: Support --cputype option for hybrid events
+>   perf stat: Support metrics with hybrid events
+>   perf evlist: Create two hybrid 'cycles' events by default
+>   perf stat: Add default hybrid events
+>   perf stat: Uniquify hybrid event name
+>   perf stat: Merge event counts from all hybrid PMUs
+>   perf stat: Filter out unmatched aggregation for hybrid event
+>   perf evlist: Warn as events from different hybrid PMUs in a group
+>   perf Documentation: Document intel-hybrid support
+>   perf evsel: Adjust hybrid event and global event mixed group
+> 
+> Kan Liang (22):
+>   perf/x86/intel: Hybrid PMU support for perf capabilities
+>   perf/x86: Hybrid PMU support for intel_ctrl
+>   perf/x86: Hybrid PMU support for counters
+>   perf/x86: Hybrid PMU support for unconstrained
+>   perf/x86: Hybrid PMU support for hardware cache event
+>   perf/x86: Hybrid PMU support for event constraints
+>   perf/x86: Hybrid PMU support for extra_regs
+>   perf/x86/intel: Factor out intel_pmu_check_num_counters
+>   perf/x86/intel: Factor out intel_pmu_check_event_constraints
+>   perf/x86/intel: Factor out intel_pmu_check_extra_regs
+>   perf/x86: Expose check_hw_exists
+>   perf/x86: Remove temporary pmu assignment in event_init
+>   perf/x86: Factor out x86_pmu_show_pmu_cap
+>   perf/x86: Register hybrid PMUs
+>   perf/x86: Add structures for the attributes of Hybrid PMUs
+>   perf/x86/intel: Add attr_update for Hybrid PMUs
+>   perf/x86: Support filter_match callback
+>   perf/x86/intel: Add Alder Lake Hybrid support
+>   perf: Introduce PERF_TYPE_HARDWARE_PMU and PERF_TYPE_HW_CACHE_PMU
+>   perf/x86/intel/uncore: Add Alder Lake support
+>   perf/x86/msr: Add Alder Lake CPU support
+>   perf/x86/cstate: Add Alder Lake CPU support
+> 
+> Ricardo Neri (2):
+>   x86/cpufeatures: Enumerate Intel Hybrid Technology feature bit
+>   x86/cpu: Describe hybrid CPUs in cpuinfo_x86
+> 
+> Zhang Rui (1):
+>   perf/x86/rapl: Add support for Intel Alder Lake
 
->@@ -2020,6 +1977,68 @@ vsock_connectible_recvmsg(struct socket *sock, 
->struct msghdr *msg, size_t len,
-> 	return err;
-> }
->
->+static int
->+vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->+			  int flags)
->+{
->+	struct sock *sk;
->+	struct vsock_sock *vsk;
->+	const struct vsock_transport *transport;
->+	int err;
->+
->+	DEFINE_WAIT(wait);
->+
->+	sk = sock->sk;
->+	vsk = vsock_sk(sk);
->+	err = 0;
->+
->+	lock_sock(sk);
->+
->+	transport = vsk->transport;
->+
->+	if (!transport || sk->sk_state != TCP_ESTABLISHED) {
->+		/* Recvmsg is supposed to return 0 if a peer performs an
->+		 * orderly shutdown. Differentiate between that case and when a
->+		 * peer has not connected or a local shutdown occurred with the
->+		 * SOCK_DONE flag.
->+		 */
->+		if (sock_flag(sk, SOCK_DONE))
->+			err = 0;
->+		else
->+			err = -ENOTCONN;
->+
->+		goto out;
->+	}
->+
->+	if (flags & MSG_OOB) {
->+		err = -EOPNOTSUPP;
->+		goto out;
->+	}
->+
->+	/* We don't check peer_shutdown flag here since peer may actually shut
->+	 * down, but there can be data in the queue that a local socket can
->+	 * receive.
->+	 */
->+	if (sk->sk_shutdown & RCV_SHUTDOWN) {
->+		err = 0;
->+		goto out;
->+	}
->+
->+	/* It is valid on Linux to pass in a zero-length receive buffer.  This
->+	 * is not an error.  We may as well bail out now.
->+	 */
->+	if (!len) {
->+		err = 0;
->+		goto out;
->+	}
->+
->+	err = __vsock_stream_recvmsg(sk, msg, len, flags);
->+
->+out:
->+	release_sock(sk);
->+	return err;
->+}
->+
+hi,
+would you have git branch with all this somewhere?
 
-The rest of the patch LGTM.
-
-Stefano
+thanks,
+jirka
 
