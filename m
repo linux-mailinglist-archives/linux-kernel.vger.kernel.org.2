@@ -2,226 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF913182DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0103182DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhBKA6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 19:58:20 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:48080 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhBKA5H (ORCPT
+        id S230333AbhBKBCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 20:02:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhBKBCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:57:07 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B0tWoJ035740;
-        Thu, 11 Feb 2021 00:56:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=rMmb7pREtLtxV/yjryHAOO3l6yTHNkrI7DuMRG6Zsl4=;
- b=cgxnwLPKekQyc2qr0Ut+eQSewZMgIPXIKr24y3kl2Z6JNtSQ4cc+zE/9zhORvLtumF0J
- Ijxx1vLjEzWMqvSPZZSekDNJnJjcxEGaGKh9tVcP3+WWz1kRnj0fVKx9s42OAOrJnvdi
- k0N6yGl+6XFjB1E8fcYqpukxh1Hiqp/Vw/Pz4IxugHKUqayMQHggvzjtfb3sxqECw3uF
- +/Qtr10TIOBx53j3gL+Cj4vsFZdalfsBIz1mOmQUemJGJQu9v34LKz1Kd68HiiA/6Eii
- Edm1kR6yaEzulW/hgT8tHdVgfbhfZAfa1+ZqSLLHaFxhPtnEuOaJbBhmUSJThFqPyR4/ mA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 36hgmanr83-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 00:56:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B0tTS7025713;
-        Thu, 11 Feb 2021 00:56:05 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-        by aserp3020.oracle.com with ESMTP id 36j513c0st-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 00:56:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DwnMyoLcbe0+uprvhvV9eeqvJpncvsWH1gO2iq+jdV/QwfNxuuCq1vmUeuBB3ii/gdleCRwukD59VF2Yg+ruI6iVxMx2ewyK0Rgbtxk8e2BUz8EekOBcHPkkXs/jvdmbW8w0/Vo3DMdlrN6NU23tEa3QNlz8OrOwGpaITvXFPQEImildVc8ewVainlkMr0AhqkaUYOxBIqQH8eRxh8xc6g0B1Z2543mkr9kwZGGakgwHxs3iK+/thTGzPX7/h4fvuYUPBuhlWoW8UOy77/fNK28ingdwg26Q2MWuA4vhIP2VWksXDiWdfdfb5b0IcaLC5dztS/S242gcbwDnJu8Yjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rMmb7pREtLtxV/yjryHAOO3l6yTHNkrI7DuMRG6Zsl4=;
- b=c7C5MjoW1XfeBvJsBvXSk7xWASpxxaJIchgjaDHCgJIU6k7t91bvNaEI0VH3oeIFeCKXDox/4NDVhg2awxzyEfXh4PtksUYNWyzwgJfwW/njaluMTsl0XcsPSYH4AbVpL0VNK8EwasIpNaiA37c10gLm2MZHAinI09OsEPTyWsstA6bFZweYhH+lNM0uLr5xMwnpjQRzlD0J4gpWJkulD2xTHezFv+w5CPQr23NNIOHu2Wsp4hewdGlo6FqMIIfxFPo2vd1AXBDdvcaahLWs906N6rcEVc6GyQ9qavw+C2/7MoqHRLH22US62zKkZDQJOcnBgepCESCnCXmZkPyrZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 10 Feb 2021 20:02:50 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1620C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:02:10 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id z21so2645591iob.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:02:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rMmb7pREtLtxV/yjryHAOO3l6yTHNkrI7DuMRG6Zsl4=;
- b=rXXp/wH/+mzqnJ4vtJq7LjNHeBAmXoSBtVDyeHRkNdjDd1vJ0wy/nv6Y59W7WFujizCWRuWtmHc6nYkyhJRETOyulI+YHW4yJyr+2yqs/uO1lTP80I8PkhDok3NSyny1/SqAHDFNcTdwLLCz619AvmXpVd7qDcTCMDsbECYWdNY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
- by MWHPR1001MB2302.namprd10.prod.outlook.com (2603:10b6:301:2f::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Thu, 11 Feb
- 2021 00:56:03 +0000
-Received: from MWHPR10MB1389.namprd10.prod.outlook.com
- ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
- ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3846.028; Thu, 11 Feb 2021
- 00:56:03 +0000
-Subject: Re: [RFC PATCH 1/2] mm,page_alloc: Make alloc_contig_range handle
- in-use hugetlb pages
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210208103812.32056-1-osalvador@suse.de>
- <20210208103812.32056-2-osalvador@suse.de>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <6783e871-e981-c845-16c3-c5ff3e6502ed@oracle.com>
-Date:   Wed, 10 Feb 2021 16:56:00 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20210208103812.32056-2-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MWHPR18CA0063.namprd18.prod.outlook.com
- (2603:10b6:300:39::25) To MWHPR10MB1389.namprd10.prod.outlook.com
- (2603:10b6:300:21::22)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UXPz8x009zJOB7UNZK68toCz+xiJ1t8lXIR6DThDxyo=;
+        b=qfv6e6bp2CKLC3U11i/OzkwTqQcAjNwXNLo4uHaSMp/SkdJn5nXlBT9PunvcIvqSzt
+         tpf36qMgsFkeH5CEy4XZGU1u8aPo9ly+ImNKZNJf3qR58XlyglNK2/z5r6sKcaxnRkQw
+         Gu17bGiI0pQjI8fcVwVxkCqIucTDsBFvpFPXVbazSAJofdGBiGqf4fa7gVaR/pJuG0Ng
+         uiU0ecbm1TQwmDhPl8PVSI0n81xRuj1p7vlwmpMi3AwZvLzTxN5dtecgGoKrADGwMC+/
+         rwEIbwy5Lnj/Pl9q+jdD3TNHgASwv58/xXxo1dQChT5EppWeVOvnCgHNqplfBXUorP9z
+         QwfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UXPz8x009zJOB7UNZK68toCz+xiJ1t8lXIR6DThDxyo=;
+        b=ANBnimeQlAD+/28YMJa7fCuj/QNBzRFcHtOGGHqW6d1/uindejYCJE8ZaqTfS9F/l7
+         3f97AT5FuiLiV4svlKYa97LYJT2krg1pQMbm9JZWAulnjFnSDeb8/wgdcQTDkiUnhkme
+         dOfVokZXxhiZNUQlRN+C+5Jc7mD5AyT5GfclvRhNpMaMR/3Fw625xR/15BklAeQWe3HF
+         4RkcXNbsuB0o0fOQ9mtTDNoychR27yOvseRXeaDuCe6L706zZE2QgTszeCrBwLe8+pO2
+         PpUTaDPJds+YoPC2Nt3j52ecIUYBIA7gvkWYlJVHF0VHwGcFzQeGiDJxJkDFYLUeuQlS
+         XzBg==
+X-Gm-Message-State: AOAM531jp2unCKiEUuVZTzVLLIZiHUkcSgXtLU8i76NHKyeR595l7prM
+        JuUazB30N4MVrT+yNqYvhqMpgTcWh836KXbxiHgxLA==
+X-Google-Smtp-Source: ABdhPJyaTVEr/tPirJU5lXHJ0wfXo4qC5Dap7iQCSpN9lAgwCd3ZXFSaJlIoHgABSrvSD/yBiQ5hMMJlvAfJW5uek8U=
+X-Received: by 2002:a05:6602:2e01:: with SMTP id o1mr3312618iow.9.1613005329871;
+ Wed, 10 Feb 2021 17:02:09 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MWHPR18CA0063.namprd18.prod.outlook.com (2603:10b6:300:39::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Thu, 11 Feb 2021 00:56:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 97a30b5b-3ba9-4e51-f8e4-08d8ce27cde8
-X-MS-TrafficTypeDiagnostic: MWHPR1001MB2302:
-X-Microsoft-Antispam-PRVS: <MWHPR1001MB23027E914F6CD558F66E2F7CE28C9@MWHPR1001MB2302.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0PmiZhTxvjaB3bT53MUkVlvvbqeSJ0ZYOnD0KJUJDUcrMGo02RK9o5IS5jQXuATnhyaA+mY52foulSV5ruZUYmP4pK1VGVkry1z8WxOM3upOrZv8D8vNR76fs0SGyneUxERXE+wKrgYrreQ2WU7FZdvkhnEcFPF+YTf4z2dyL0FvBVFNPJF8CBbSeDDmEQZXRuOY5iLN9rKttIith7rFTj9mtnidQyn/lqRE5gqgtni8fP7XBvThSmzruubfvYkjNNd53+4KYSsXBaFp6O7/2DyISGDubmBJe/DoVPzpRqEwVDXZNY8bVxqHaITWzUubMYB3wjRCVFdI8V0qnZpSVhToGOED+1/QG04ZYgN/UAQW2VfKx6ElWmYKLZdzc60zrKbqDzyw0fpFkKy+5mVVqrN0mOaLA6RuszFSZ5oSwD1hNd3/Kxf1z0CUnwTGrT7QPPNtj1qrpeCbkb2il7o3BgFLyjpHxqsbpamW9FGJH1SQZLOjN9VPXlfTrT9wHI3g81hkNCcIcKVMa83TWxeZQ3F/9VfLnJ9GK+KmIeayJBnDSW8rf+KrHO9qUfz2DB1q2bA3WokTaVoaajqt5QKyCIcXR/OslMLBSO/U0wNrzjI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(136003)(376002)(39860400002)(2616005)(956004)(16526019)(478600001)(186003)(53546011)(44832011)(52116002)(6486002)(6916009)(26005)(86362001)(66946007)(31686004)(66556008)(2906002)(5660300002)(8936002)(54906003)(16576012)(316002)(31696002)(8676002)(66476007)(4326008)(36756003)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MVorOThUUFFGZGRMVkIxNFlmcC83QTFYRUdGdlkvUXdWTGVwMDdCL1ZRcnhC?=
- =?utf-8?B?OExaeFZJUkVMNm1hZStQVnpTdVlyTnVqdWRPTk9UTllVWnhmTmUvQXVhMUZG?=
- =?utf-8?B?R3l2c1o2S1k3bkxoVkZBa1loWEVhM3dYK2NKUmVRME5ONlJwQmdiM00zSFk2?=
- =?utf-8?B?bEtJcjZoSWxma2EvT29ndCt1QnBVWlRDbFgwaUZwaHYvdGUvT3RYaFpCbkRH?=
- =?utf-8?B?SkJZbWNBTXQvUU5rcS9NNjFnbzJrL3YrMytndDJJRVJiN1cyTUQzMlhpOHVi?=
- =?utf-8?B?YlAvLzhsbkVrRE9ZdS9US25xVkl0S01lR1dtQ24vdWFTZ3VuWlppLzZ4RnFV?=
- =?utf-8?B?djVCOGFxWkNiUVFhVEUzN0doR1lTczk5RytwcnFZOU9BWHJKWUZ5bDZpcWhE?=
- =?utf-8?B?bndjZVBsQUg2bEtGU0l1ekNSck5MYTdIVEZlSUF1bzlCcElYZzAvUkZhZDMy?=
- =?utf-8?B?ZVJqQ2pOSDR5aDdBalFZVFhRbFFsU3FMei9LSmxaaFZ3OFEvWnl4a0E4WHN1?=
- =?utf-8?B?T2UxZDR1N0lGc05Edis0YlhKWFhOVEFlam03VVVEekZFa0hJSnIwL1R1bENj?=
- =?utf-8?B?NjNQVXBac1FkemlzYlludTRMdm1XYUswYm1jaHlxMkg3dkZGMjdVcmZGcEdj?=
- =?utf-8?B?aEtuVHNPZ3hoekkvckYxQ3FYRmUzays1Sm1UbDhqZk9kOUhFZ2JYSis3bktR?=
- =?utf-8?B?bDR0bU9yRndNSHdXME9nOUZLWG1tN0ZLeTlBYmVpc3Vpdjd1VFk2SkVIZlJG?=
- =?utf-8?B?WVVKWkxXU2xBcDVOQUxkbkZjdTl0N3NPTTFrVGZtaEN6WnlNR0tRZHpMMUhs?=
- =?utf-8?B?cUpmT2hYVjNrMnlBSng4VDBBUDB6M2w2Lys5ZHUrektQd2pabm1MZUFIRDBo?=
- =?utf-8?B?TEhqTWVOdjdMVHdVVjgwVDdYNG5BVlNtSUJPaHFuVUV0TVV2RGJLbUpxZnph?=
- =?utf-8?B?TmF0clVCVjM3YW5ndDlkSzZSTk9Ic091TzREUFJESzFoODh4Y21VRzdBZWVm?=
- =?utf-8?B?bkNSZ1lpWGFiM2s2QlphT204L1pvc2VmQkRpR05lcU56YVl5VEhyb3RRdXBh?=
- =?utf-8?B?TDhxb0ZWaWJtdGZWd20vV2prTXRxUXR0Zm02dEhhcE1zMXhnVnNtNkVDNllV?=
- =?utf-8?B?WkRzL2xNY3VGQTJEcHQ0QU9xajBqazVnUm5VWFFTaDFPREwzSkM0bFVUaCtk?=
- =?utf-8?B?ai81Z3YwdzF1K0JjeDdYYzBKUXFjckJFb3BZSFptRVh2ckR5cmpXZGxsck8y?=
- =?utf-8?B?c3FSZy9HM0loRXRnVUxXaW1JcXBDUWlic0Urd0lUbFkrNHhRa1NNSTBLOXEz?=
- =?utf-8?B?M0FqUkJ4MENxWGJLQmlCTElaQ0hodys3MnlhYjRlT1lla3k0ZXlQZ0VHME5X?=
- =?utf-8?B?WGFEd01sc1FZUHBoMExJNmNoR1Z6M0FhYTVFdk04M0QvTGlHVjFxMnRvK0tR?=
- =?utf-8?B?eC9Nb0tGOFMzRVpCRThmRWs5Qk00RzN6eGdVYjMxOXJsTktpV0c5Nnpyd090?=
- =?utf-8?B?MWJML2dnQkRZTVlxQ3BpY3E3NUxtaGN3U0pKd1RXckM2R0M0YWZaeTNnTFJB?=
- =?utf-8?B?anp2b2d5eUZLalMzdTdKdmRtRXhTcU56b3NxV3BIM281eVN6S2kyWDN2YmlR?=
- =?utf-8?B?b0J6UDZzQ1luQmdUTkhjZWtJTWtZUUJuK0hZL3d3c1RhNjZ4NElKSDg5VUYx?=
- =?utf-8?B?Q1RrSW1vWENxRUcrVlhTT1NUTUE0ZElqZWIrOVNyMVh2cnpEYmhwaXhZcVNG?=
- =?utf-8?Q?/9ZOSGu5ffU2G7SsVmwkCUw2dAEXpYcM6yTUFMU?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97a30b5b-3ba9-4e51-f8e4-08d8ce27cde8
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 00:56:02.9647
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ryz7Plp0ofx4ZCResfu122kmVQXRnf7V9sgeKApbLHGPuPD4+RD3S+4gtL2o7Z5qYD1FKGkCFCh3yj+vJg5Qzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2302
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102110003
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102110003
+References: <20210210230625.550939-1-seanjc@google.com> <20210210230625.550939-6-seanjc@google.com>
+In-Reply-To: <20210210230625.550939-6-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 10 Feb 2021 17:01:58 -0800
+Message-ID: <CANgfPd_1O-Ziw-CyES+VZaPebkxHoDkRX3WYvEFMLP+6nukAaA@mail.gmail.com>
+Subject: Re: [PATCH 05/15] KVM: selftests: Require GPA to be aligned when
+ backed by hugepages
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 2:38 AM, Oscar Salvador wrote:
-> alloc_contig_range is not prepared to handle hugetlb pages and will
-> fail if it ever sees one, but since they can be migrated as any other
-> page (LRU and Movable), it makes sense to also handle them.
-> 
-> For now, do it only when coming from alloc_contig_range.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+On Wed, Feb 10, 2021 at 3:06 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Assert that the GPA for a memslot backed by a hugepage is 1gb aligned,
+> and fix perf_test_util accordingly.  Lack of GPA alignment prevents KVM
+> from backing the guest with hugepages, e.g. x86's write-protection of
+> hugepages when dirty logging is activated is otherwise not exercised.
+>
+> Add a comment explaining that guest_page_size is for non-huge pages to
+> try and avoid confusion about what it actually tracks.
+>
+> Cc: Ben Gardon <bgardon@google.com>
+> Cc: Yanan Wang <wangyanan55@huawei.com>
+> Cc: Andrew Jones <drjones@redhat.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Aaron Lewis <aaronlewis@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  mm/compaction.c | 17 +++++++++++++++++
->  mm/vmscan.c     |  5 +++--
->  2 files changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index e5acb9714436..89cd2e60da29 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -940,6 +940,22 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->  			goto isolate_fail;
->  		}
->  
-> +		/*
-> +		 * Handle hugetlb pages only when coming from alloc_contig
-> +		 */
-> +		if (PageHuge(page) && cc->alloc_contig) {
-> +			if (page_count(page)) {
-
-Thanks for doing this!
-
-I agree with everything in the discussion you and David had.  This code
-is racy, but since we are scanning lockless there is no way to eliminate
-them all.  Best to just minimize the windows and document.
--- 
-Mike Kravetz
-
-> +				/*
-> +				 * Hugetlb page in-use. Isolate and migrate.
-> +				 */
-> +				if (isolate_huge_page(page, &cc->migratepages)) {
-> +					low_pfn += compound_nr(page) - 1;
-> +					goto isolate_success_no_list;
-> +				}
-> +			}
-> +			goto isolate_fail;
-> +		}
+>  tools/testing/selftests/kvm/lib/kvm_util.c       | 2 ++
+>  tools/testing/selftests/kvm/lib/perf_test_util.c | 9 +++++++++
+>  2 files changed, 11 insertions(+)
+>
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 2e497fbab6ae..855d20784ba7 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -735,6 +735,8 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>         else
+>                 ASSERT_EQ(src_type, VM_MEM_SRC_ANONYMOUS);
+>
+> +       ASSERT_EQ(guest_paddr, align(guest_paddr, alignment));
 > +
->  		/*
->  		 * Check may be lockless but that's ok as we recheck later.
->  		 * It's possible to migrate LRU and non-lru movable pages.
-> @@ -1041,6 +1057,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->  
->  isolate_success:
->  		list_add(&page->lru, &cc->migratepages);
-> +isolate_success_no_list:
->  		cc->nr_migratepages += compound_nr(page);
->  		nr_isolated += compound_nr(page);
->  
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index b1b574ad199d..0803adca4469 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1506,8 +1506,9 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
->  	LIST_HEAD(clean_pages);
->  
->  	list_for_each_entry_safe(page, next, page_list, lru) {
-> -		if (page_is_file_lru(page) && !PageDirty(page) &&
-> -		    !__PageMovable(page) && !PageUnevictable(page)) {
-> +		if (!PageHuge(page) && page_is_file_lru(page) &&
-> +		    !PageDirty(page) && !__PageMovable(page) &&
-> +		    !PageUnevictable(page)) {
->  			ClearPageActive(page);
->  			list_move(&page->lru, &clean_pages);
->  		}
-> 
+>         /* Add enough memory to align up if necessary */
+>         if (alignment > 1)
+>                 region->mmap_size += alignment;
+> diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
+> index 81490b9b4e32..f187b86f2e14 100644
+> --- a/tools/testing/selftests/kvm/lib/perf_test_util.c
+> +++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
+> @@ -58,6 +58,11 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+>         pr_info("Testing guest mode: %s\n", vm_guest_mode_string(mode));
+>
+>         perf_test_args.host_page_size = getpagesize();
+> +
+> +       /*
+> +        * Snapshot the non-huge page size.  This is used by the guest code to
+> +        * access/dirty pages at the logging granularity.
+> +        */
+>         perf_test_args.guest_page_size = vm_guest_mode_params[mode].page_size;
+>
+>         guest_num_pages = vm_adjust_num_guest_pages(mode,
+> @@ -87,6 +92,10 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+>         guest_test_phys_mem = (vm_get_max_gfn(vm) - guest_num_pages) *
+>                               perf_test_args.guest_page_size;
+>         guest_test_phys_mem &= ~(perf_test_args.host_page_size - 1);
+> +       if (backing_src == VM_MEM_SRC_ANONYMOUS_THP ||
+> +           backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB)
+> +               guest_test_phys_mem &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
+
+You could use the align helper here as well. That would make this a
+little easier for me to read.
+
+> +
+>  #ifdef __s390x__
+>         /* Align to 1M (segment size) */
+>         guest_test_phys_mem &= ~((1 << 20) - 1);
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
