@@ -2,334 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27191319244
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA319319249
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhBKSaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:30:07 -0500
-Received: from mga12.intel.com ([192.55.52.136]:55991 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230170AbhBKS2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:28:24 -0500
-IronPort-SDR: 8+MtpKwllv4BrtHjc9OYZD1lW1ZitHlF9nerl/vusjaRivIEEk+MdMwLz0OgUjeCd3OlPvxvlT
- i4xx/Lig0kow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="161436845"
-X-IronPort-AV: E=Sophos;i="5.81,171,1610438400"; 
-   d="scan'208";a="161436845"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 10:27:43 -0800
-IronPort-SDR: elIk349DQyDh644AggX470YSysO1hkJJFZIpOHWMiAjHOmHsmKeibjlEjNzDOkq6fRqExZpyXq
- 6+g2DxOLUkng==
-X-IronPort-AV: E=Sophos;i="5.81,171,1610438400"; 
-   d="scan'208";a="380840785"
-Received: from reknight-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.134.254])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 10:27:42 -0800
-Date:   Thu, 11 Feb 2021 10:27:41 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v2 2/8] cxl/mem: Find device capabilities
-Message-ID: <20210211182741.yrojts2cdyoufsfl@intel.com>
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
- <20210210000259.635748-3-ben.widawsky@intel.com>
- <20210210133252.000047af@Huawei.com>
- <20210210150759.00005684@Huawei.com>
- <20210210165557.7fuqbyr7e7zjoxaa@intel.com>
- <20210210181605.ecbl3m5ep4rszpqs@intel.com>
- <20210211095548.00000da7@Huawei.com>
+        id S232049AbhBKSbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:31:24 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:37872 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhBKS3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 13:29:10 -0500
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 11BIS0xX020916;
+        Fri, 12 Feb 2021 03:28:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 11BIS0xX020916
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613068081;
+        bh=Hbd1jHEJ4+0Y3UNlpXUZ2xllNrQK93rgVJKBwvGVmL4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=miTs4Pey9xkNLrJ2iWuNzoQNU9S2BxtyRuYzf27ztbI74N7hG/hA+9Qa2Qrq5yh1C
+         BAk/UXxEmqOmtrClLGUsX8y7LRuEIPEb8UbheNKhWYwkGa84s17uaRQQgfYn0mMeTj
+         +b4mWiPASD6moydGDqYozZQ0mShu+fLUH6l1/Z5mxucS+QOpKFPo+cwy82OJHdvGNb
+         bO+swK3Y9h7P6FtJDAbNYLgyj7wSZgS3QhaVcuXueLO73E56hYhMRYyvrYjVmJ5hQT
+         UMNMv3uC1aT64x3AKbGl92VtJkgBrJtZ5dvtVDod2KqsM0nGIMPmPK7yc6a2ueIcq3
+         X48yrgMOs8jww==
+X-Nifty-SrcIP: [209.85.215.180]
+Received: by mail-pg1-f180.google.com with SMTP id j5so4478477pgb.11;
+        Thu, 11 Feb 2021 10:28:00 -0800 (PST)
+X-Gm-Message-State: AOAM530wA1hfMI9DvO2M325NlPo1oVeWEH7ZLv3xIWjauuOQIW9PfJyB
+        YqGSVM6g9/Yzj9qPfZf+Sgt64BbYaXMnggzazAg=
+X-Google-Smtp-Source: ABdhPJySHBd6FtH0OZ1WIyS/vX7OAJIXGGAN3M0cbxk7sYoN2HS/yMkjc3bsSAuUa15koo8k803PqJbDR5RWBtdAKms=
+X-Received: by 2002:a62:b416:0:b029:1e4:fb5a:55bb with SMTP id
+ h22-20020a62b4160000b02901e4fb5a55bbmr8972253pfn.80.1613068079796; Thu, 11
+ Feb 2021 10:27:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211095548.00000da7@Huawei.com>
+References: <cover.1612955268.git.viresh.kumar@linaro.org> <44dad578df8a848fc378cd358f03b071f44c9a5b.1612955268.git.viresh.kumar@linaro.org>
+In-Reply-To: <44dad578df8a848fc378cd358f03b071f44c9a5b.1612955268.git.viresh.kumar@linaro.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 12 Feb 2021 03:27:23 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARa8GzhhvZWV_KAW=MC0DRcSsfPsQ-KTBRRpbBgBqY=ig@mail.gmail.com>
+Message-ID: <CAK7LNARa8GzhhvZWV_KAW=MC0DRcSsfPsQ-KTBRRpbBgBqY=ig@mail.gmail.com>
+Subject: Re: [PATCH V7 1/3] kbuild: Add generic rule to apply fdtoverlay
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-11 09:55:48, Jonathan Cameron wrote:
-> On Wed, 10 Feb 2021 10:16:05 -0800
-> Ben Widawsky <ben.widawsky@intel.com> wrote:
-> 
-> > On 21-02-10 08:55:57, Ben Widawsky wrote:
-> > > On 21-02-10 15:07:59, Jonathan Cameron wrote:  
-> > > > On Wed, 10 Feb 2021 13:32:52 +0000
-> > > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > > >   
-> > > > > On Tue, 9 Feb 2021 16:02:53 -0800
-> > > > > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > > > >   
-> > > > > > Provide enough functionality to utilize the mailbox of a memory device.
-> > > > > > The mailbox is used to interact with the firmware running on the memory
-> > > > > > device. The flow is proven with one implemented command, "identify".
-> > > > > > Because the class code has already told the driver this is a memory
-> > > > > > device and the identify command is mandatory.
-> > > > > > 
-> > > > > > CXL devices contain an array of capabilities that describe the
-> > > > > > interactions software can have with the device or firmware running on
-> > > > > > the device. A CXL compliant device must implement the device status and
-> > > > > > the mailbox capability. Additionally, a CXL compliant memory device must
-> > > > > > implement the memory device capability. Each of the capabilities can
-> > > > > > [will] provide an offset within the MMIO region for interacting with the
-> > > > > > CXL device.
-> > > > > > 
-> > > > > > The capabilities tell the driver how to find and map the register space
-> > > > > > for CXL Memory Devices. The registers are required to utilize the CXL
-> > > > > > spec defined mailbox interface. The spec outlines two mailboxes, primary
-> > > > > > and secondary. The secondary mailbox is earmarked for system firmware,
-> > > > > > and not handled in this driver.
-> > > > > > 
-> > > > > > Primary mailboxes are capable of generating an interrupt when submitting
-> > > > > > a background command. That implementation is saved for a later time.
-> > > > > > 
-> > > > > > Link: https://www.computeexpresslink.org/download-the-specification
-> > > > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>    
-> > > > > 
-> > > > > Hi Ben,
-> > > > > 
-> > > > >   
-> > > > > > +/**
-> > > > > > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
-> > > > > > + * @cxlm: The CXL memory device to communicate with.
-> > > > > > + * @mbox_cmd: Command to send to the memory device.
-> > > > > > + *
-> > > > > > + * Context: Any context. Expects mbox_lock to be held.
-> > > > > > + * Return: -ETIMEDOUT if timeout occurred waiting for completion. 0 on success.
-> > > > > > + *         Caller should check the return code in @mbox_cmd to make sure it
-> > > > > > + *         succeeded.    
-> > > > > 
-> > > > > cxl_xfer_log() doesn't check mbox_cmd->return_code and for my test it currently
-> > > > > enters an infinite loop as a result.  
-> > > 
-> > > I meant to fix that.
-> > >   
-> > > > > 
-> > > > > I haven't checked other paths, but to my mind it is not a good idea to require
-> > > > > two levels of error checking - the example here proves how easy it is to forget
-> > > > > one.  
-> > > 
-> > > Demonstrably, you're correct. I think it would be good to have a kernel only
-> > > mbox command that does the error checking though. Let me type something up and
-> > > see how it looks.  
-> > 
-> > Hi Jonathan. What do you think of this? The bit I'm on the fence about is if I
-> > should validate output size too. I like the simplicity as it is, but it requires
-> > every caller to possibly check output size, which is kind of the same problem
-> > you're originally pointing out.
-> 
-> The simplicity is good and this is pretty much what I expected you would end up with
-> (always reassuring)
-> 
-> For the output, perhaps just add another parameter to the wrapper for minimum
-> output length expected?
-> 
-> Now you mention the length question.  It does rather feel like there should also
-> be some protection on memcpy_fromio() copying too much data if the hardware
-> happens to return an unexpectedly long length.  Should never happen, but
-> the hardening is worth adding anyway given it's easy to do.
-> 
-> Jonathan
-> 
-
-I like it.
-
-diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-index 2e199b05f686..58071a203212 100644
---- a/drivers/cxl/mem.c
-+++ b/drivers/cxl/mem.c
-@@ -293,7 +293,7 @@ static void cxl_mem_mbox_put(struct cxl_mem *cxlm)
-  * See __cxl_mem_mbox_send_cmd()
-  */
- static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, u16 opcode, u8 *in,
--				 size_t in_size, u8 *out)
-+				 size_t in_size, u8 *out, size_t out_min_size)
- {
- 	struct mbox_cmd mbox_cmd = {
- 		.opcode = opcode,
-@@ -303,6 +303,9 @@ static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, u16 opcode, u8 *in,
- 	};
- 	int rc;
- 
-+	if (out_min_size > cxlm->payload_size)
-+		return -E2BIG;
-+
- 	rc = cxl_mem_mbox_get(cxlm);
- 	if (rc)
- 		return rc;
-@@ -316,6 +319,9 @@ static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, u16 opcode, u8 *in,
- 	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS)
- 		return -ENXIO;
- 
-+	if (mbox_cmd.size_out < out_min_size)
-+		return -ENODATA;
-+
- 	return mbox_cmd.size_out;
- }
- 
-@@ -505,15 +511,10 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
- 	int rc;
- 
- 	rc = cxl_mem_mbox_send_cmd(cxlm, CXL_MBOX_OP_IDENTIFY, NULL, 0,
--				   (u8 *)&id);
-+				   (u8 *)&id, sizeof(id));
- 	if (rc < 0)
- 		return rc;
- 
--	if (rc < sizeof(id)) {
--		dev_err(&cxlm->pdev->dev, "Short identify data\n");
--		return -ENXIO;
--	}
--
- 	/*
- 	 * TODO: enumerate DPA map, as 'ram' and 'pmem' do not alias.
- 	 * For now, only the capacity is exported in sysfs
+On Wed, Feb 10, 2021 at 8:13 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> From: Rob Herring <robh@kernel.org>
+>
+> Add a generic rule to apply fdtoverlay in Makefile.lib, so every
+> platform doesn't need to carry the complex rule.
+>
+> The platform's Makefile only needs to have this now:
+>
+>  DTC_FLAGS_foo_base += -@
+>  foo-dtbs := foo_base.dtb foo_overlay1.dtbo foo_overlay2.dtbo
+>  overlay-y := foo.dtb
 
 
-> 
-> > 
-> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > index 55c5f5a6023f..ad7b2077ab28 100644
-> > --- a/drivers/cxl/mem.c
-> > +++ b/drivers/cxl/mem.c
-> > @@ -284,7 +284,7 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
-> >  }
-> >  
-> >  /**
-> > - * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
-> > + * __cxl_mem_mbox_send_cmd() - Execute a mailbox command
-> >   * @cxlm: The CXL memory device to communicate with.
-> >   * @mbox_cmd: Command to send to the memory device.
-> >   *
-> > @@ -296,7 +296,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
-> >   * This is a generic form of the CXL mailbox send command, thus the only I/O
-> >   * operations used are cxl_read_mbox_reg(). Memory devices, and perhaps other
-> >   * types of CXL devices may have further information available upon error
-> > - * conditions.
-> > + * conditions. Driver facilities wishing to send mailbox commands should use the
-> > + * wrapper command.
-> >   *
-> >   * The CXL spec allows for up to two mailboxes. The intention is for the primary
-> >   * mailbox to be OS controlled and the secondary mailbox to be used by system
-> > @@ -304,8 +305,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
-> >   * not need to coordinate with each other. The driver only uses the primary
-> >   * mailbox.
-> >   */
-> > -static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
-> > -				 struct mbox_cmd *mbox_cmd)
-> > +static int __cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
-> > +				   struct mbox_cmd *mbox_cmd)
-> >  {
-> >  	void __iomem *payload = cxlm->mbox_regs + CXLDEV_MBOX_PAYLOAD_OFFSET;
-> >  	u64 cmd_reg, status_reg;
-> > @@ -469,6 +470,54 @@ static void cxl_mem_mbox_put(struct cxl_mem *cxlm)
-> >  	mutex_unlock(&cxlm->mbox_mutex);
-> >  }
-> >  
-> > +/**
-> > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
-> > + * @cxlm: The CXL memory device to communicate with.
-> > + * @opcode: Opcode for the mailbox command.
-> > + * @in: The input payload for the mailbox command.
-> > + * @in_size: The length of the input payload
-> > + * @out: Caller allocated buffer for the output.
-> > + *
-> > + * Context: Any context. Will acquire and release mbox_mutex.
-> > + * Return:
-> > + *  * %>=0	- Number of bytes returned in @out.
-> > + *  * %-EBUSY	- Couldn't acquire exclusive mailbox access.
-> > + *  * %-EFAULT	- Hardware error occurred.
-> > + *  * %-ENXIO	- Command completed, but device reported an error.
-> > + *
-> > + * Mailbox commands may execute successfully yet the device itself reported an
-> > + * error. While this distinction can be useful for commands from userspace, the
-> > + * kernel will often only care when both are successful.
-> > + *
-> > + * See __cxl_mem_mbox_send_cmd()
-> > + */
-> > +static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, u16 opcode, u8 *in,
-> > +				 size_t in_size, u8 *out)
-> > +{
-> > +	struct mbox_cmd mbox_cmd = {
-> > +		.opcode = opcode,
-> > +		.payload_in = in,
-> > +		.size_in = in_size,
-> > +		.payload_out = out,
-> > +	};
-> > +	int rc;
-> > +
-> > +	rc = cxl_mem_mbox_get(cxlm);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	rc = __cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
-> > +	cxl_mem_mbox_put(cxlm);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	/* TODO: Map return code to proper kernel style errno */
-> > +	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS)
-> > +		return -ENXIO;
-> > +
-> > +	return mbox_cmd.size_out;
-> > +}
-> > +
-> >  /**
-> >   * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
-> >   * @cxlmd: The CXL memory device to communicate with.
-> > @@ -1380,33 +1429,18 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
-> >  		u8 poison_caps;
-> >  		u8 qos_telemetry_caps;
-> >  	} __packed id;
-> > -	struct mbox_cmd mbox_cmd = {
-> > -		.opcode = CXL_MBOX_OP_IDENTIFY,
-> > -		.payload_out = &id,
-> > -		.size_in = 0,
-> > -	};
-> >  	int rc;
-> >  
-> > -	/* Retrieve initial device memory map */
-> > -	rc = cxl_mem_mbox_get(cxlm);
-> > -	if (rc)
-> > -		return rc;
-> > -
-> > -	rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
-> > -	cxl_mem_mbox_put(cxlm);
-> > -	if (rc)
-> > +	rc = cxl_mem_mbox_send_cmd(cxlm, CXL_MBOX_OP_IDENTIFY, NULL, 0,
-> > +				   (u8 *)&id);
-> > +	if (rc < 0)
-> >  		return rc;
-> >  
-> > -	/* TODO: Handle retry or reset responses from firmware. */
-> > -	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS) {
-> > -		dev_err(&cxlm->pdev->dev, "Mailbox command failed (%d)\n",
-> > -			mbox_cmd.return_code);
-> > +	if (rc < sizeof(id)) {
-> > +		dev_err(&cxlm->pdev->dev, "Short identify data\n",
-> >  		return -ENXIO;
-> >  	}
-> >  
-> > -	if (mbox_cmd.size_out != sizeof(id))
-> > -		return -ENXIO;
-> > -
-> >  	/*
-> >  	 * TODO: enumerate DPA map, as 'ram' and 'pmem' do not alias.
-> >  	 * For now, only the capacity is exported in sysfs
-> > 
-> > 
-> > [snip]
-> > 
-> 
+Please reuse dtb-y instead of introducing the new
+overlay-y syntax, that is,
+
+foo-dtbs := foo_base.dtb foo_overlay1.dtbo foo_overlay2.dtbo
+dtb-y := foo.dtb
+
+
+
+This resembles to composite modules.
+
+foo-objs := foo1.o foo2.o foo3.o
+obj-m := foo.o
+
+
+
+
+
+> Rearrange Makefile.lib to keep DT specific stuff together.
+>
+> The files from overlay-y (i.e. files generated by fdtoverlay) aren't
+> added to dtb-y here, as dtb-y is later used to generate .dt.yaml files
+> and the files in overlay-y don't have a corresponding dts file and make
+> dtbs_check fails for them.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> [ Viresh: Add commit log and replace dtb-y with overlay-y, handle
+>           CONFIG_OF_ALL_DTBS case, rearrange Makefile, don't add
+>           overlay-y to dtb-y to skip dtbs_check for them. ]
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  scripts/Makefile.lib | 39 +++++++++++++++++++++++++++------------
+>  1 file changed, 27 insertions(+), 12 deletions(-)
+>
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index b00855b247e0..a6e79e3be527 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -66,23 +66,16 @@ multi-used   := $(multi-used-y) $(multi-used-m)
+>  real-obj-y := $(foreach m, $(obj-y), $(if $(strip $($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-))),$($(m:.o=-objs)) $($(m:.o=-y)),$(m)))
+>  real-obj-m := $(foreach m, $(obj-m), $(if $(strip $($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-m)) $($(m:.o=-))),$($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-m)),$(m)))
+>
+> -always-y += $(always-m)
+> -
+> -# hostprogs-always-y += foo
+> -# ... is a shorthand for
+> -# hostprogs += foo
+> -# always-y  += foo
+> -hostprogs += $(hostprogs-always-y) $(hostprogs-always-m)
+> -always-y += $(hostprogs-always-y) $(hostprogs-always-m)
+> -
+> -# userprogs-always-y is likewise.
+> -userprogs += $(userprogs-always-y) $(userprogs-always-m)
+> -always-y += $(userprogs-always-y) $(userprogs-always-m)
+> +# Add base dtb and overlay dtbo
+> +dtb-y += $(foreach m,$(overlay-y), $(if $(strip $($(m:.dtb=-dtbs))),$($(m:.dtb=-dtbs)),))
+> +dtb-$(CONFIG_OF_ALL_DTBS) += $(foreach m,$(overlay-), $(if $(strip $($(m:.dtb=-dtbs))),$($(m:.dtb=-dtbs)),))
+>
+>  # DTB
+>  # If CONFIG_OF_ALL_DTBS is enabled, all DT blobs are built
+>  extra-y                                += $(dtb-y)
+> +extra-y                                += $(overlay-y)
+>  extra-$(CONFIG_OF_ALL_DTBS)    += $(dtb-)
+> +extra-$(CONFIG_OF_ALL_DTBS)    += $(overlay-)
+>
+>  ifneq ($(CHECK_DTBS),)
+>  extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
+> @@ -91,6 +84,19 @@ extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
+>  extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
+>  endif
+>
+> +always-y += $(always-m)
+> +
+> +# hostprogs-always-y += foo
+> +# ... is a shorthand for
+> +# hostprogs += foo
+> +# always-y  += foo
+> +hostprogs += $(hostprogs-always-y) $(hostprogs-always-m)
+> +always-y += $(hostprogs-always-y) $(hostprogs-always-m)
+> +
+> +# userprogs-always-y is likewise.
+> +userprogs += $(userprogs-always-y) $(userprogs-always-m)
+> +always-y += $(userprogs-always-y) $(userprogs-always-m)
+> +
+>  # Add subdir path
+>
+>  extra-y                := $(addprefix $(obj)/,$(extra-y))
+> @@ -332,6 +338,15 @@ $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
+>  $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+>         $(call if_changed_dep,dtc)
+>
+> +
+> +quiet_cmd_fdtoverlay = DTOVL   $@
+> +      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $(real-prereqs)
+> +
+> +.SECONDEXPANSION:
+> +
+> +$(obj)/%.dtb: $$(addprefix $$(obj)/,$$(%-dtbs)) FORCE
+> +       $(call if_changed,fdtoverlay)
+> +
+
+
+
+Please do not use .SECONDEXPANSION.
+
+This will parse the Makefile twice
+in _all_ directories, while only a few
+directories use the overlay-y syntax.
+
+
+Use the multi_depend macro.
+
+
+
+
+
+
+>  DT_CHECKER ?= dt-validate
+>  DT_BINDING_DIR := Documentation/devicetree/bindings
+>  # DT_TMP_SCHEMA may be overridden from Documentation/devicetree/bindings/Makefile
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
+
+
+--
+Best Regards
+Masahiro Yamada
