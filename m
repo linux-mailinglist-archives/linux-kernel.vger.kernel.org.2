@@ -2,48 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7AF431914C
+	by mail.lfdr.de (Postfix) with ESMTP id 6399C31914B
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhBKRlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:41:47 -0500
-Received: from relay.sw.ru ([185.231.240.75]:46364 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231347AbhBKQsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:48:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=oXZLziWhPu0Gxt1AEaJltuNOBVwsbPLtvv7bCVewRGs=; b=MQLqvmNXnlj1eL6Vx
-        FGReTJzxdR5dhLDUHLMLbu7YV9PE0pQR3UuFORqWBK8hy+E1N3a3AOTzWlvWuvqnZS1oOQe6zIHUV
-        XO0X6ZttcD4hyoDO5rkit0GV9/vz/CfQoe5aJLrePyXGmCDrgog+h3r2LfZ1J1dBt8bhD9uOQ7yg4
-        =;
-Received: from [192.168.15.211]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1lAF7L-002AG4-Pk; Thu, 11 Feb 2021 19:46:59 +0300
-Subject: Re: [v7 PATCH 05/12] mm: memcontrol: rename shrinker_map to
- shrinker_info
-To:     Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210209174646.1310591-1-shy828301@gmail.com>
- <20210209174646.1310591-6-shy828301@gmail.com>
- <20210209205014.GH524633@carbon.DHCP.thefacebook.com>
- <CAHbLzkr+5t5wTVRDih53ty-TcsMrmKxZ5iiPw1dwnDsz_URz=Q@mail.gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <5703130a-ea5b-3257-2ba0-3c25df010296@virtuozzo.com>
-Date:   Thu, 11 Feb 2021 19:47:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232464AbhBKRlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232106AbhBKQrv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 11:47:51 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB10C061574;
+        Thu, 11 Feb 2021 08:47:10 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id k10so5742142otl.2;
+        Thu, 11 Feb 2021 08:47:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5/Yz6keCPLS3+tINrvnKT5VxELdJ2l8Db2X2Isfn/1Q=;
+        b=lZvadAo7+OH+biPsE8/lUEhkgr4xk8GtCJ1hZYGBzAGWj26zIw4Z9PrqrNIpNTdkyt
+         D1MB+PIvSAUGT8YxrzV0u3HP6+yXgknMqF68ZsZpBmcARHYGpzOudx6WsQZVcT1X9IOE
+         MXFCmJQFRdbjbjt3c7QuIJTtcg0DkMuMP6ee7VA3NQm6RrdApkM1j7t9kjNZWaG7jT5u
+         FUGTSAd3BZeGcGwAyTqOoBseXsIPUdhDx/QsfAlTTEmk3HVRj1l0w2RtAT37DW8YCvvF
+         rKgRqm58M3+08857kmNb9glLKTEiKNh2DCtrl4i/+EpJtQFcJKcIhNgBBnPIG5N1zwAN
+         cYYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5/Yz6keCPLS3+tINrvnKT5VxELdJ2l8Db2X2Isfn/1Q=;
+        b=IMe0bfph/5foJEWvUG/Ed71Oe21rzDm041836RC8MxuyMpgaXupCZPbMV/W8yv//WS
+         DTjVzl5blS3lk/v8wTy1CYSsfsxxEB5B7hr1696eRwYb/HnEM2b81yRfjVue75gYW/wv
+         Chaq9OfEqqI5qL/3h4T4fRP7FNPhkz0y0h+xKiIYiXaIwORHTYac2VNWS+okXQEgEJhw
+         n5pGko4nwZvEcO8HBvgq5B4sJVYNhNdsDhznZ0zVHSf2wxF3OSSZOpYQeJy+B7eRlsaw
+         y9FZroNMXrDuzOkndG60QUM/wgZhR/NTOjHmHpwA7QshSMx6tIWZwV12hj4FklyvSPaa
+         F62A==
+X-Gm-Message-State: AOAM530omLCX0DxUTYJgcVO0ktS1sCj/SQDZBZMtFc7+3JALjZlFEklZ
+        PSumB6T5mbwjQCYT3UV7JXM=
+X-Google-Smtp-Source: ABdhPJzRotnnrNC6QU7qn326urnFVU8zpwcumua1Yt2pEUT/zLESmYQeUfWbDZ5Z0Fpii9gT5XsZPg==
+X-Received: by 2002:a05:6830:1c6c:: with SMTP id s12mr6421999otg.125.1613062029952;
+        Thu, 11 Feb 2021 08:47:09 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.33])
+        by smtp.googlemail.com with ESMTPSA id o14sm1092564otl.68.2021.02.11.08.47.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Feb 2021 08:47:09 -0800 (PST)
+Subject: Re: [PATCH iproute2-next V4] devlink: add support for port params
+ get/set
+To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        netdev@vger.kernel.org
+Cc:     jiri@nvidia.com, davem@davemloft.net, linux-kernel@vger.kernel.org,
+        kuba@kernel.org
+References: <20210209103151.2696-1-oleksandr.mazur@plvision.eu>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <cb7d21da-1300-fb6b-7c64-4caaf5601b34@gmail.com>
+Date:   Thu, 11 Feb 2021 09:47:07 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkr+5t5wTVRDih53ty-TcsMrmKxZ5iiPw1dwnDsz_URz=Q@mail.gmail.com>
+In-Reply-To: <20210209103151.2696-1-oleksandr.mazur@plvision.eu>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -51,135 +70,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.02.2021 02:33, Yang Shi wrote:
-> On Tue, Feb 9, 2021 at 12:50 PM Roman Gushchin <guro@fb.com> wrote:
->>
->> On Tue, Feb 09, 2021 at 09:46:39AM -0800, Yang Shi wrote:
->>> The following patch is going to add nr_deferred into shrinker_map, the change will
->>> make shrinker_map not only include map anymore, so rename it to "memcg_shrinker_info".
->>> And this should make the patch adding nr_deferred cleaner and readable and make
->>> review easier.  Also remove the "memcg_" prefix.
->>>
->>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->>> Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
->>> Signed-off-by: Yang Shi <shy828301@gmail.com>
->>> ---
->>>  include/linux/memcontrol.h |  8 ++---
->>>  mm/memcontrol.c            |  6 ++--
->>>  mm/vmscan.c                | 62 +++++++++++++++++++-------------------
->>>  3 files changed, 38 insertions(+), 38 deletions(-)
->>>
->>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->>> index 1739f17e0939..4c9253896e25 100644
->>> --- a/include/linux/memcontrol.h
->>> +++ b/include/linux/memcontrol.h
->>> @@ -96,7 +96,7 @@ struct lruvec_stat {
->>>   * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
->>>   * which have elements charged to this memcg.
->>>   */
->>> -struct memcg_shrinker_map {
->>> +struct shrinker_info {
->>>       struct rcu_head rcu;
->>>       unsigned long map[];
->>>  };
->>> @@ -118,7 +118,7 @@ struct mem_cgroup_per_node {
->>>
->>>       struct mem_cgroup_reclaim_iter  iter;
->>>
->>> -     struct memcg_shrinker_map __rcu *shrinker_map;
->>> +     struct shrinker_info __rcu      *shrinker_info;
->>
->> Nice!
->>
->> I really like how it looks now in comparison to the v1. Thank you for
->> working on it!
+On 2/9/21 3:31 AM, Oleksandr Mazur wrote:
+> Add implementation for the port parameters
+> getting/setting.
+> Add bash completion for port param.
+> Add man description for port param.
 > 
-> Thanks a lot for all the great comments from all of you.
-> 
->>
->>>
->>>       struct rb_node          tree_node;      /* RB tree node */
->>>       unsigned long           usage_in_excess;/* Set to the value by which */
->>> @@ -1581,8 +1581,8 @@ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
->>>       return false;
->>>  }
->>>
->>> -int alloc_shrinker_maps(struct mem_cgroup *memcg);
->>> -void free_shrinker_maps(struct mem_cgroup *memcg);
->>> +int alloc_shrinker_info(struct mem_cgroup *memcg);
->>> +void free_shrinker_info(struct mem_cgroup *memcg);
->>>  void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id);
->>>  #else
->>>  #define mem_cgroup_sockets_enabled 0
->>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>> index f5c9a0d2160b..f64ad0d044d9 100644
->>> --- a/mm/memcontrol.c
->>> +++ b/mm/memcontrol.c
->>> @@ -5246,11 +5246,11 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->>>       struct mem_cgroup *memcg = mem_cgroup_from_css(css);
->>>
->>>       /*
->>> -      * A memcg must be visible for expand_shrinker_maps()
->>> +      * A memcg must be visible for expand_shrinker_info()
->>>        * by the time the maps are allocated. So, we allocate maps
->>>        * here, when for_each_mem_cgroup() can't skip it.
->>>        */
->>> -     if (alloc_shrinker_maps(memcg)) {
->>> +     if (alloc_shrinker_info(memcg)) {
->>>               mem_cgroup_id_remove(memcg);
->>>               return -ENOMEM;
->>>       }
->>> @@ -5314,7 +5314,7 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
->>>       vmpressure_cleanup(&memcg->vmpressure);
->>>       cancel_work_sync(&memcg->high_work);
->>>       mem_cgroup_remove_from_trees(memcg);
->>> -     free_shrinker_maps(memcg);
->>> +     free_shrinker_info(memcg);
->>>       memcg_free_kmem(memcg);
->>>       mem_cgroup_free(memcg);
->>>  }
->>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>> index 641077b09e5d..9436f9246d32 100644
->>> --- a/mm/vmscan.c
->>> +++ b/mm/vmscan.c
->>> @@ -190,20 +190,20 @@ static int shrinker_nr_max;
->>>  #define NR_MAX_TO_SHR_MAP_SIZE(nr_max) \
->>>       (DIV_ROUND_UP(nr_max, BITS_PER_LONG) * sizeof(unsigned long))
->>>
->>> -static void free_shrinker_map_rcu(struct rcu_head *head)
->>> +static void free_shrinker_info_rcu(struct rcu_head *head)
->>>  {
->>> -     kvfree(container_of(head, struct memcg_shrinker_map, rcu));
->>> +     kvfree(container_of(head, struct shrinker_info, rcu));
->>>  }
->>>
->>> -static int expand_one_shrinker_map(struct mem_cgroup *memcg,
->>> +static int expand_one_shrinker_info(struct mem_cgroup *memcg,
->>>                                  int size, int old_size)
->>>  {
->>> -     struct memcg_shrinker_map *new, *old;
->>> +     struct shrinker_info *new, *old;
->>>       int nid;
->>>
->>>       for_each_node(nid) {
->>>               old = rcu_dereference_protected(
->>> -                     mem_cgroup_nodeinfo(memcg, nid)->shrinker_map, true);
->>> +                     mem_cgroup_nodeinfo(memcg, nid)->shrinker_info, true);
->>>               /* Not yet online memcg */
->>>               if (!old)
->>>                       return 0;
->>> @@ -216,17 +216,17 @@ static int expand_one_shrinker_map(struct mem_cgroup *memcg,
->>>               memset(new->map, (int)0xff, old_size);
->>>               memset((void *)new->map + old_size, 0, size - old_size);
->>>
->>> -             rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
->>> -             call_rcu(&old->rcu, free_shrinker_map_rcu);
->>> +             rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
->>> +             call_rcu(&old->rcu, free_shrinker_info_rcu);
->>
->> Why not use kvfree_rcu() and get rid of free_shrinker_info_rcu() callback?
-> 
-> Just because this patch is aimed to rename the structure. I think it
-> may be more preferred to have the cleanup in a separate patch?
+> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+> ---
 
-I'd voted for a separate patch
+applied to iproute2-next.
+
+In the future, please add example commands - get/set/show, and the show
+commands should have examples for normal and json.
