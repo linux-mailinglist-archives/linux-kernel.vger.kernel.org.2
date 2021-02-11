@@ -2,89 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95E931930D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D137319313
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhBKTYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 14:24:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229978AbhBKTY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:24:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B82764DF3;
-        Thu, 11 Feb 2021 19:23:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613071428;
-        bh=q212lYt4ihrp76ADLXHJK6ZM1oxf7oDEPHFpC8j7mN8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=O8Tfs1pEG2o3QsWaAKYQ20RF7SOR9YTFw+ljpvuTbsla77w7Er5ET1eCmg1otpjSH
-         omX+vbHYtajcHNYvObKGVNvSetIZDQs00avD2WA5VE556cGER6WMfy0gx/ExoH4P/P
-         6JYGzuGcm/qrb8mEFLVcosH6dbwRkr02XQlxI+p2Xh6Xm7Ysxjch9zwmFwo8eV4V3q
-         JcgXAkL1YkROEoOBbCkCnffHZKCPzFrmLnYnvLyHNDhJi+5kllYzreAQYy0s11KDdf
-         7zVEJf3TUDOs7Vwdut5UVrls8V2O+sVo+1c2PQF9W/CX+jRKocX9zZ3wwQJWRKeDtH
-         EHVRoPqc8wkNQ==
-Content-Type: text/plain; charset="utf-8"
+        id S229790AbhBKT1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 14:27:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhBKT1E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 14:27:04 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A04C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 11:26:24 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id e11so5002262qtg.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 11:26:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SPfnsSxHjOU0EO90H+0z4pIXdOqXdbqu3ojr4t/JMSA=;
+        b=KJXpTn4FoVCntABO/wHHn91KO2J+Q+z3ozOL0wPxCTOjdE3VwScClNNzKmgw9b1O9K
+         SsKKc4aBwTmqZLu1Z0dtK1uLD2pUi4vpQP7RLAl6yOTn5IzB9u0vlnzySrLNd/9yYHLR
+         RM0PjSKru9EVccJRkScy6P7b0LV2YqV0qZxIGHf31cZ7CkdpU/aq6+VC4Z97kHMkq43s
+         Gs6lvKKqdTofYDWogH66RAcLlQ1JmAsuMcnF49XkAmJd21Gf5Bd6Lmx9sd0Z3ihstj8F
+         X/l8J91WVLv7vNhA/TO+iWkqahCakyNOxhYuGbTYUClGFoAoilFB4pDZ25PdfEld9P3j
+         lvAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SPfnsSxHjOU0EO90H+0z4pIXdOqXdbqu3ojr4t/JMSA=;
+        b=sei5EvkUeuSYodYb4RZR6fs//jqvaO3B6Dnl5Bf9OsaQx3lkuw4qowWP3qBX5F2Yp5
+         5QKg435IxNh9ZbpG7v15HF1P/GeVkblv1vv3fu2cmrydjohgjxKBRr/1q3ofLY7QtxZv
+         QtdU/SPzZRXl0i0IkPkMiYOf1kxbyptHxWUc4OWZd7nlOiPdV6gdM7DzLH6q5qJmuSz+
+         RkSHmdZd1/xoEhuEjDGn+IVLVSDQiauws515ehbFnO/wKuwKIdHuONsIKeHvH7M5wr8U
+         YUcJq9qTLm3DUY74AfrmriP7Nz7vOtXypbw+5yC27I29klqC78aG+GgYIJyC3LrJPthh
+         XZ1g==
+X-Gm-Message-State: AOAM533DuTF5WxuMNl8ne/SSm37pJ+t7Lux6dSPyYUuQyY+HoVqKy4kW
+        xP7/EJw/9e01fEIXhoq+CdgMKppCblDJTVYQXy5bHA==
+X-Google-Smtp-Source: ABdhPJzi/HMDdzkfbFoD2hx2WTj4HKVz46WWQqa5il0MFIDdf2QKAcCtgCWR5EItM/AR8RN/HDig5gtCFoxpUlC7q5A=
+X-Received: by 2002:ac8:a82:: with SMTP id d2mr8771145qti.343.1613071583329;
+ Thu, 11 Feb 2021 11:26:23 -0800 (PST)
 MIME-Version: 1.0
+References: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
+ <1613040542-16500-6-git-send-email-stefanc@marvell.com> <20210211114238.GD1463@shell.armlinux.org.uk>
+ <CO6PR18MB38739CA874F3748919C8361CB08C9@CO6PR18MB3873.namprd18.prod.outlook.com>
+In-Reply-To: <CO6PR18MB38739CA874F3748919C8361CB08C9@CO6PR18MB3873.namprd18.prod.outlook.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 11 Feb 2021 20:26:10 +0100
+Message-ID: <CAPv3WKcXM9CP4bgo5CYdTcZ9ivyAr=4bTArfrAFp7-8dMjiMtQ@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH v13 net-next 05/15] net: mvpp2: add PPv23
+ version definition
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "atenart@kernel.org" <atenart@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210126124540.3320214-9-lee.jones@linaro.org>
-References: <20210126124540.3320214-1-lee.jones@linaro.org> <20210126124540.3320214-9-lee.jones@linaro.org>
-Subject: Re: [PATCH 08/21] clk: clkdev: Ignore suggestion to use gnu_printf() as it's not appropriate here
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org
-To:     lee.jones@linaro.org
-Date:   Thu, 11 Feb 2021 11:23:47 -0800
-Message-ID: <161307142704.1254594.1986201109191269158@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Lee Jones (2021-01-26 04:45:27)
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  drivers/clk/clkdev.c: In function =E2=80=98vclkdev_alloc=E2=80=99:
->  drivers/clk/clkdev.c:173:3: warning: function =E2=80=98vclkdev_alloc=E2=
-=80=99 might be a candidate for =E2=80=98gnu_printf=E2=80=99 format attribu=
-te [-Wsuggest-attribute=3Dformat]
->=20
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/clk/clkdev.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-> index 0f2e3fcf0f19f..5e5f25d568724 100644
-> --- a/drivers/clk/clkdev.c
-> +++ b/drivers/clk/clkdev.c
-> @@ -153,6 +153,11 @@ struct clk_lookup_alloc {
->         char    con_id[MAX_CON_ID];
->  };
-> =20
-> +#pragma GCC diagnostic push
-> +#ifndef __clang__
-> +#pragma GCC diagnostic ignored "-Wsuggest-attribute=3Dformat"
-> +#endif
-
-Can this be some macro banished to compiler.h?
-
-> +
->  static struct clk_lookup * __ref
->  vclkdev_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
->         va_list ap)
-> @@ -177,6 +182,8 @@ vclkdev_alloc(struct clk_hw *hw, const char *con_id, =
-const char *dev_fmt,
->         return &cla->cl;
->  }
-> =20
-> +#pragma GCC diagnostic pop
-> +
->  static struct clk_lookup *
->  vclkdev_create(struct clk_hw *hw, const char *con_id, const char *dev_fm=
-t,
->         va_list ap)
-> --=20
-> 2.25.1
+czw., 11 lut 2021 o 12:49 Stefan Chulski <stefanc@marvell.com> napisa=C5=82=
+(a):
 >
+> > ----------------------------------------------------------------------
+> > On Thu, Feb 11, 2021 at 12:48:52PM +0200, stefanc@marvell.com wrote:
+> > > From: Stefan Chulski <stefanc@marvell.com>
+> > >
+> > > This patch add PPv23 version definition.
+> > > PPv23 is new packet processor in CP115.
+> > > Everything that supported by PPv22, also supported by PPv23.
+> > > No functional changes in this stage.
+> > >
+> > > Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+> > > Acked-by: Marcin Wojtas <mw@semihalf.com>
+> >
+> > Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+> >
+> > > @@ -7049,6 +7049,11 @@ static int mvpp2_probe(struct platform_device
+> > *pdev)
+> > >                     priv->port_map |=3D BIT(i);
+> > >     }
+> > >
+> > > +   if (priv->hw_version !=3D MVPP21) {
+> > > +           if (mvpp2_read(priv, MVPP2_VER_ID_REG) =3D=3D
+> > MVPP2_VER_PP23)
+> > > +                   priv->hw_version =3D MVPP23;
+> > > +   }
+> > > +
+> >
+> > The only minor comment I have on this is... the formatting of the above=
+.
+> > Wouldn't:
+> >
+> >       if (priv->hw_version >=3D MVPP22 &&
+> >           mvpp2_read(priv, MVPP2_VER_ID_REG) =3D=3D MVPP2_VER_PP23)
+> >               priv->hw_version =3D MVPP23;
+> >
+> > read better?
+> >
+> > Do we need to even check priv->hw_version here? Isn't this register
+> > implemented in PPv2.1 where it contains the value zero?
+>
+> Yes, we can just:
+>         if (mvpp2_read(priv, MVPP2_VER_ID_REG) =3D=3D MVPP2_VER_PP23)
+>                 priv->hw_version =3D MVPP23;
+>
+>
+
+I checked the A375 specs and cannot see this particular register. Can
+you please double check whether this register is in the old version of
+the IP and the Functional Spec is incomplete?
+
+Thanks,
+Marcin
