@@ -2,878 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F50318439
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 05:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED7131843C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 05:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbhBKEQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 23:16:28 -0500
-Received: from mga02.intel.com ([134.134.136.20]:53795 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229452AbhBKEQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 23:16:25 -0500
-IronPort-SDR: Jei8Gy8nz3H+pvNYOeJrF1Mqh/YEZgK9M81c3owL95Bzb1WTgX/3QBUAN/geeZ79DpUoLR7Z8c
- fxtdNgZkU5+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="169317923"
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="169317923"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 20:15:43 -0800
-IronPort-SDR: 0pxbHlCADCLWk3Laj89TqAiKs6pxnx0GUZUCmH0QKm4WPxNARUNi1cd5xwMt5AORCQDA6vTFm/
- kgfoTXiRJ8WQ==
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="436956182"
-Received: from rontiver-mobl.amr.corp.intel.com (HELO intel.com) ([10.212.99.95])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 20:15:41 -0800
-Date:   Wed, 10 Feb 2021 23:15:40 -0500
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>, greg.depoire@gmail.com,
-        Sean Paul <seanpaul@chromium.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@redhat.com>
-Subject: Re: [Intel-gfx] [RFC v4 10/11] drm/dp: Extract i915's eDP backlight
- code into DRM helpers
-Message-ID: <20210211041540.GI82362@intel.com>
-References: <20210208233902.1289693-1-lyude@redhat.com>
- <20210208233902.1289693-11-lyude@redhat.com>
+        id S229707AbhBKERb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 23:17:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhBKERT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 23:17:19 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727B7C061574;
+        Wed, 10 Feb 2021 20:16:39 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id nm1so2638280pjb.3;
+        Wed, 10 Feb 2021 20:16:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=d6XXSm05yAYK7MxQIvnC5Li5SPel5Sylz9f4M9rMQbA=;
+        b=OUpVDVStC18mNs0vHeJDSl9HhvfAaUXCjIMBhqAOBx/7YyyOhkZHLh0FvNoEIpIQPp
+         q5mqfcwfXfWHy6u1lyayaQkL4hpnMlnbCwN+bm2WjpJB84rVzVFfiwZfp03pQpqJ7Mh5
+         Zo5pJkfPKJxzv89/8m7f+eClZzRs7hpbwntEKuFECqZMe1voBfOfxlEOxPY+XGqTig4H
+         QpMX59GSb1EV+H3F11emfCeFwYaqLBNjtpxXoxDE2iQl5BWaLcJpU6e7FVhusZ7iLsOo
+         I33cVczpjAf9BYw298Dee57df69Lr0xNk51TRqQdD2H1nlt+V/ExxLzrrVizMRCjdoAa
+         Dv0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d6XXSm05yAYK7MxQIvnC5Li5SPel5Sylz9f4M9rMQbA=;
+        b=YkGQCFMy+uCcTznr/+vJEXjaei4bnFLwfuUMYF4e4Caj8mB3Reqcm2eXLAo0FOZVs4
+         fR5Xgjp6W6ngQe9COV1DlP+3Y7A4hIAGUCnfg4LzuYvVJZ1YpxJAhGhVvupn12anc37L
+         oP16WNTKOrECW49r3XW520HCh+zFxe5fGCRI38K5KjK9LHQvj2wuQg2Alb6knHDzUq7w
+         CI6ncGlDRgFjcl6ZNIywUHkrkzppNJZN/j2QJezgukm+3lpFkXekGJUXwikX7s/0FxF8
+         nrwwSpMbtJfikUrRg7X5ZhGa3+Ml7zS5Ke5SxuJwjab0c7Q1vcLD0YTen6tQ2VgbVkTP
+         e+QQ==
+X-Gm-Message-State: AOAM532huuOXXohkABJqu0b/L7H4uSpIm4yKLn1OdGf1YN6tMPg9wX3R
+        RrcIvA8vFQavDd5kg5cozVIQdneCEwA=
+X-Google-Smtp-Source: ABdhPJx6+RkKLRD4BbWV6pgLX/xUo9HrNNK6MgG926SjgmKOJQGAUJtRZJn8RqtIzkR5c3jUl9yGHA==
+X-Received: by 2002:a17:903:31d1:b029:de:8361:739b with SMTP id v17-20020a17090331d1b02900de8361739bmr6108584ple.85.1613016998604;
+        Wed, 10 Feb 2021 20:16:38 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id u26sm3652020pfm.61.2021.02.10.20.16.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 20:16:37 -0800 (PST)
+Subject: Re: [PATCH v3 net-next 04/11] net: dsa: configure proper brport flags
+ when ports leave the bridge
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
+References: <20210210091445.741269-1-olteanv@gmail.com>
+ <20210210091445.741269-5-olteanv@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <90e52ca0-e068-9a9e-9310-51e4dcd4ab09@gmail.com>
+Date:   Wed, 10 Feb 2021 20:16:31 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208233902.1289693-11-lyude@redhat.com>
+In-Reply-To: <20210210091445.741269-5-olteanv@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 06:39:00PM -0500, Lyude Paul wrote:
-> Since we're about to implement eDP backlight support in nouveau using the
-> standard protocol from VESA, we might as well just take the code that's
-> already written for this and move it into a set of shared DRM helpers.
-> 
-> Note that these helpers are intended to handle DPCD related backlight
-> control bits such as setting the brightness level over AUX, probing the
-> backlight's TCON, enabling/disabling the backlight over AUX if supported,
-> etc. Any PWM-related portions of backlight control are explicitly left up
-> to the driver, as these will vary from platform to platform.
-> 
-> The only exception to this is the calculation of the PWM frequency
-> pre-divider value. This is because the only platform-specific information
-> required for this is the PWM frequency of the panel, which the driver is
-> expected to provide if available. The actual algorithm for calculating this
-> value is standard and is defined in the eDP specification from VESA.
-> 
-> Note that these helpers do not yet implement the full range of features
-> the VESA backlight interface provides, and only provide the following
-> functionality (all of which was already present in i915's DPCD backlight
-> support):
-> 
-> * Basic control of brightness levels
-> * Basic probing of backlight capabilities
-> * Helpers for enabling and disabling the backlight
-> 
-> v3:
-> * Split out changes to i915's backlight code to separate patches to make it
->   easier to review
-> v4:
-> * Style/spelling changes from Thomas Zimmermann
-> 
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Cc: Jani Nikula <jani.nikula@intel.com>
-> Cc: Dave Airlie <airlied@gmail.com>
-> Cc: greg.depoire@gmail.com
-> ---
->  drivers/gpu/drm/drm_dp_helper.c               | 332 ++++++++++++++++++
->  .../drm/i915/display/intel_display_types.h    |   5 +-
->  .../drm/i915/display/intel_dp_aux_backlight.c | 285 ++-------------
->  include/drm/drm_dp_helper.h                   |  48 +++
->  4 files changed, 412 insertions(+), 258 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-> index eedbb48815b7..1a3d4679d720 100644
-> --- a/drivers/gpu/drm/drm_dp_helper.c
-> +++ b/drivers/gpu/drm/drm_dp_helper.c
-> @@ -3082,3 +3082,335 @@ int drm_dp_pcon_convert_rgb_to_ycbcr(struct drm_dp_aux *aux, u8 color_spc)
->  	return 0;
->  }
->  EXPORT_SYMBOL(drm_dp_pcon_convert_rgb_to_ycbcr);
-> +
-> +/**
-> + * drm_edp_backlight_set_level() - Set the backlight level of an eDP panel via AUX
-> + * @aux: The DP AUX channel to use
-> + * @bl: Backlight capability info from drm_edp_backlight_init()
-> + * @level: The brightness level to set
-> + *
-> + * Sets the brightness level of an eDP panel's backlight. Note that the panel's backlight must
-> + * already have been enabled by the driver by calling drm_edp_backlight_enable().
-> + *
-> + * Returns: %0 on success, negative error code on failure
-> + */
-> +int drm_edp_backlight_set_level(struct drm_dp_aux *aux, const struct drm_edp_backlight_info *bl,
-> +				u16 level)
-> +{
-> +	int ret;
-> +	u8 buf[2] = { 0 };
-> +
-> +	if (bl->lsb_reg_used) {
-> +		buf[0] = (level & 0xff00) >> 8;
-> +		buf[1] = (level & 0x00ff);
-> +	} else {
-> +		buf[0] = level;
-> +	}
-> +
-> +	ret = drm_dp_dpcd_write(aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB, buf, sizeof(buf));
-> +	if (ret != sizeof(buf)) {
-> +		DRM_ERROR("%s: Failed to write aux backlight level: %d\n", aux->name, ret);
-> +		return ret < 0 ? ret : -EIO;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_edp_backlight_set_level);
-> +
-> +static int
-> +drm_edp_backlight_set_enable(struct drm_dp_aux *aux, const struct drm_edp_backlight_info *bl,
-> +			     bool enable)
-> +{
-> +	int ret;
-> +	u8 buf;
-> +
-> +	/* The panel uses something other then DPCD for enabling its backlight */
-> +	if (!bl->aux_enable)
-> +		return 0;
-> +
-> +	ret = drm_dp_dpcd_readb(aux, DP_EDP_DISPLAY_CONTROL_REGISTER, &buf);
-> +	if (ret != 1) {
-> +		DRM_ERROR("%s: Failed to read eDP display control register: %d\n", aux->name, ret);
-> +		return ret < 0 ? ret : -EIO;
-> +	}
-> +	if (enable)
-> +		buf |= DP_EDP_BACKLIGHT_ENABLE;
-> +	else
-> +		buf &= ~DP_EDP_BACKLIGHT_ENABLE;
-> +
-> +	ret = drm_dp_dpcd_writeb(aux, DP_EDP_DISPLAY_CONTROL_REGISTER, buf);
-> +	if (ret != 1) {
-> +		DRM_ERROR("%s: Failed to write eDP display control register: %d\n", aux->name, ret);
-> +		return ret < 0 ? ret : -EIO;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * drm_edp_backlight_enable() - Enable an eDP panel's backlight using DPCD
-> + * @aux: The DP AUX channel to use
-> + * @bl: Backlight capability info from drm_edp_backlight_init()
-> + * @level: The initial backlight level to set via AUX, if there is one
-> + *
-> + * This function handles enabling DPCD backlight controls on a panel over DPCD, while additionally
-> + * restoring any important backlight state such as the given backlight level, the brightness byte
-> + * count, backlight frequency, etc.
-> + *
-> + * Note that certain panels, while supporting brightness level controls over DPCD, may not support
-> + * having their backlights enabled via the standard %DP_EDP_DISPLAY_CONTROL_REGISTER. On such panels
-> + * &drm_edp_backlight_info.aux_enable will be set to %false, this function will skip the step of
-> + * programming the %DP_EDP_DISPLAY_CONTROL_REGISTER, and the driver must perform the required
-> + * implementation specific step for enabling the backlight after calling this function.
-> + *
-> + * Returns: %0 on success, negative error code on failure.
-> + */
-> +int drm_edp_backlight_enable(struct drm_dp_aux *aux, const struct drm_edp_backlight_info *bl,
-> +			     const u16 level)
-> +{
-> +	int ret;
-> +	u8 dpcd_buf, new_dpcd_buf;
-> +
-> +	ret = drm_dp_dpcd_readb(aux, DP_EDP_BACKLIGHT_MODE_SET_REGISTER, &dpcd_buf);
-> +	if (ret != 1) {
-> +		DRM_DEBUG_KMS("%s: Failed to read backlight mode: %d\n", aux->name, ret);
-> +		return ret < 0 ? ret : -EIO;
-> +	}
-> +
-> +	new_dpcd_buf = dpcd_buf;
-> +
-> +	if ((dpcd_buf & DP_EDP_BACKLIGHT_CONTROL_MODE_MASK) != DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD) {
-> +		new_dpcd_buf &= ~DP_EDP_BACKLIGHT_CONTROL_MODE_MASK;
-> +		new_dpcd_buf |= DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD;
-> +
-> +		ret = drm_dp_dpcd_writeb(aux, DP_EDP_PWMGEN_BIT_COUNT, bl->pwmgen_bit_count);
-> +		if (ret != 1)
-> +			DRM_DEBUG_KMS("%s: Failed to write aux pwmgen bit count: %d\n",
-> +				      aux->name, ret);
-> +	}
-> +
-> +	if (bl->pwm_freq_pre_divider) {
-> +		ret = drm_dp_dpcd_writeb(aux, DP_EDP_BACKLIGHT_FREQ_SET, bl->pwm_freq_pre_divider);
-> +		if (ret != 1)
-> +			DRM_DEBUG_KMS("%s: Failed to write aux backlight frequency: %d\n",
-> +				      aux->name, ret);
-> +		else
-> +			new_dpcd_buf |= DP_EDP_BACKLIGHT_FREQ_AUX_SET_ENABLE;
-> +	}
-> +
-> +	if (new_dpcd_buf != dpcd_buf) {
-> +		ret = drm_dp_dpcd_writeb(aux, DP_EDP_BACKLIGHT_MODE_SET_REGISTER, new_dpcd_buf);
-> +		if (ret != 1) {
-> +			DRM_DEBUG_KMS("%s: Failed to write aux backlight mode: %d\n",
-> +				      aux->name, ret);
-> +			return ret < 0 ? ret : -EIO;
-> +		}
-> +	}
-> +
-> +	ret = drm_edp_backlight_set_level(aux, bl, level);
-> +	if (ret < 0)
-> +		return ret;
-> +	ret = drm_edp_backlight_set_enable(aux, bl, true);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_edp_backlight_enable);
-> +
-> +/**
-> + * drm_edp_backlight_disable() - Disable an eDP backlight using DPCD, if supported
-> + * @aux: The DP AUX channel to use
-> + * @bl: Backlight capability info from drm_edp_backlight_init()
-> + *
-> + * This function handles disabling DPCD backlight controls on a panel over AUX. Note that some
-> + * panels have backlights that are enabled/disabled by other means, despite having their brightness
-> + * values controlled through DPCD. On such panels &drm_edp_backlight_info.aux_enable will be set to
-> + * %false, this function will become a no-op (and we will skip updating
-> + * %DP_EDP_DISPLAY_CONTROL_REGISTER), and the driver must take care to perform it's own
-> + * implementation specific step for disabling the backlight.
-> + *
-> + * Returns: %0 on success or no-op, negative error code on failure.
-> + */
-> +int drm_edp_backlight_disable(struct drm_dp_aux *aux, const struct drm_edp_backlight_info *bl)
-> +{
-> +	int ret;
-> +
-> +	ret = drm_edp_backlight_set_enable(aux, bl, false);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_edp_backlight_disable);
-> +
-> +static inline int
-> +drm_edp_backlight_probe_max(struct drm_dp_aux *aux, struct drm_edp_backlight_info *bl,
-> +			    u16 driver_pwm_freq_hz, const u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE])
-> +{
-> +	int fxp, fxp_min, fxp_max, fxp_actual, f = 1;
-> +	int ret;
-> +	u8 pn, pn_min, pn_max;
-> +
-> +	ret = drm_dp_dpcd_readb(aux, DP_EDP_PWMGEN_BIT_COUNT, &pn);
-> +	if (ret != 1) {
-> +		DRM_DEBUG_KMS("%s: Failed to read pwmgen bit count cap: %d\n", aux->name, ret);
-> +		return -ENODEV;
-> +	}
-> +
-> +	pn &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
-> +	bl->max = (1 << pn) - 1;
-> +	if (!driver_pwm_freq_hz)
-> +		return 0;
-> +
-> +	/*
-> +	 * Set PWM Frequency divider to match desired frequency provided by the driver.
-> +	 * The PWM Frequency is calculated as 27Mhz / (F x P).
-> +	 * - Where F = PWM Frequency Pre-Divider value programmed by field 7:0 of the
-> +	 *             EDP_BACKLIGHT_FREQ_SET register (DPCD Address 00728h)
-> +	 * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
-> +	 *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
-> +	 */
-> +
-> +	/* Find desired value of (F x P)
-> +	 * Note that, if F x P is out of supported range, the maximum value or minimum value will
-> +	 * applied automatically. So no need to check that.
-> +	 */
-> +	fxp = DIV_ROUND_CLOSEST(1000 * DP_EDP_BACKLIGHT_FREQ_BASE_KHZ, driver_pwm_freq_hz);
-> +
-> +	/* Use highest possible value of Pn for more granularity of brightness adjustment while
-> +	 * satifying the conditions below.
-> +	 * - Pn is in the range of Pn_min and Pn_max
-> +	 * - F is in the range of 1 and 255
-> +	 * - FxP is within 25% of desired value.
-> +	 *   Note: 25% is arbitrary value and may need some tweak.
-> +	 */
-> +	ret = drm_dp_dpcd_readb(aux, DP_EDP_PWMGEN_BIT_COUNT_CAP_MIN, &pn_min);
-> +	if (ret != 1) {
-> +		DRM_DEBUG_KMS("%s: Failed to read pwmgen bit count cap min: %d\n", aux->name, ret);
-> +		return 0;
-> +	}
-> +	ret = drm_dp_dpcd_readb(aux, DP_EDP_PWMGEN_BIT_COUNT_CAP_MAX, &pn_max);
-> +	if (ret != 1) {
-> +		DRM_DEBUG_KMS("%s: Failed to read pwmgen bit count cap max: %d\n", aux->name, ret);
-> +		return 0;
-> +	}
-> +	pn_min &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
-> +	pn_max &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
-> +
-> +	/* Ensure frequency is within 25% of desired value */
-> +	fxp_min = DIV_ROUND_CLOSEST(fxp * 3, 4);
-> +	fxp_max = DIV_ROUND_CLOSEST(fxp * 5, 4);
-> +	if (fxp_min < (1 << pn_min) || (255 << pn_max) < fxp_max) {
-> +		DRM_DEBUG_KMS("%s: Driver defined backlight frequency (%d) out of range\n",
-> +			      aux->name, driver_pwm_freq_hz);
-> +		return 0;
-> +	}
-> +
-> +	for (pn = pn_max; pn >= pn_min; pn--) {
-> +		f = clamp(DIV_ROUND_CLOSEST(fxp, 1 << pn), 1, 255);
-> +		fxp_actual = f << pn;
-> +		if (fxp_min <= fxp_actual && fxp_actual <= fxp_max)
-> +			break;
-> +	}
-> +
-> +	ret = drm_dp_dpcd_writeb(aux, DP_EDP_PWMGEN_BIT_COUNT, pn);
-> +	if (ret != 1) {
-> +		DRM_DEBUG_KMS("%s: Failed to write aux pwmgen bit count: %d\n", aux->name, ret);
-> +		return 0;
-> +	}
-> +	bl->pwmgen_bit_count = pn;
-> +	bl->max = (1 << pn) - 1;
-> +
-> +	if (edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP) {
-> +		bl->pwm_freq_pre_divider = f;
-> +		DRM_DEBUG_KMS("%s: Using backlight frequency from driver (%dHz)\n",
-> +			      aux->name, driver_pwm_freq_hz);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
 
-thanks for the clean up...
-up to this point it was easy to see the code added and code remove matches...
 
-> +static inline int
-> +drm_edp_backlight_probe_level(struct drm_dp_aux *aux, struct drm_edp_backlight_info *bl,
-> +			      u8 *current_mode)
-> +{
-> +	int ret;
-> +	u8 buf[2];
-> +	u8 mode_reg;
-> +
-> +	ret = drm_dp_dpcd_readb(aux, DP_EDP_BACKLIGHT_MODE_SET_REGISTER, &mode_reg);
-> +	if (ret != 1) {
-> +		DRM_DEBUG_KMS("%s: Failed to read backlight mode: %d\n", aux->name, ret);
-> +		return ret < 0 ? ret : -EIO;
-> +	}
-> +
-> +	*current_mode = (mode_reg & DP_EDP_BACKLIGHT_CONTROL_MODE_MASK);
-> +	if (*current_mode == DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD) {
-
-However I'm afraid that on this area here we have something that could be
-improved further...
-
-> +		int size = 1 + bl->lsb_reg_used;
-> +
-> +		ret = drm_dp_dpcd_read(aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB, buf, size);
-> +		if (ret != size) {
-> +			DRM_DEBUG_KMS("%s: Failed to read backlight level: %d\n", aux->name, ret);
-
-But probably the biggest blocker is the "regression" of the debug logs.
-Not just in this point, but I mean everywhere...
-the use of the old DRM_DEBUG_KMS should be avoided here imho.
-Although it is backlight, what it would mean integrated and only
-one device available, this will at least change how we see the logs..
-
-Any change of using drm_dbg_*(drm, ?!
-
-> +			return ret < 0 ? ret : -EIO;
-> +		}
-> +
-> +		if (bl->lsb_reg_used)
-> +			return (buf[0] << 8) | buf[1];
-> +		else
-> +			return buf[0];
-> +	}
-> +
-> +	/*
-> +	 * If we're not in DPCD control mode yet, the programmed brightness value is meaningless and
-> +	 * the driver should assume max brightness
-> +	 */
-> +	return bl->max;
-> +}
-> +
-> +/**
-> + * drm_edp_backlight_init() - Probe a display panel's TCON using the standard VESA eDP backlight
-> + * interface.
-> + * @aux: The DP aux device to use for probing
-> + * @bl: The &drm_edp_backlight_info struct to fill out with information on the backlight
-> + * @driver_pwm_freq_hz: Optional PWM frequency from the driver in hz
-> + * @edp_dpcd: A cached copy of the eDP DPCD
-> + * @current_level: Where to store the probed brightness level
-> + * @current_mode: Where to store the currently set backlight control mode
-> + *
-> + * Initializes a &drm_edp_backlight_info struct by probing @aux for it's backlight capabilities,
-> + * along with also probing the current and maximum supported brightness levels.
-> + *
-> + * If @driver_pwm_freq_hz is non-zero, this will be used as the backlight frequency. Otherwise, the
-> + * default frequency from the panel is used.
-> + *
-> + * Returns: %0 on success, negative error code on failure.
-> + */
-> +int
-> +drm_edp_backlight_init(struct drm_dp_aux *aux, struct drm_edp_backlight_info *bl,
-> +		       u16 driver_pwm_freq_hz, const u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE],
-> +		       u16 *current_level, u8 *current_mode)
-> +{
-> +	int ret;
-> +
-> +	if (edp_dpcd[1] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP)
-> +		bl->aux_enable = true;
-> +	if (edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT)
-> +		bl->lsb_reg_used = true;
-> +
-> +	ret = drm_edp_backlight_probe_max(aux, bl, driver_pwm_freq_hz, edp_dpcd);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = drm_edp_backlight_probe_level(aux, bl, current_mode);
-> +	if (ret < 0)
-> +		return ret;
-> +	*current_level = ret;
-> +
-> +	DRM_DEBUG_KMS("%s: Found backlight level=%d/%d pwm_freq_pre_divider=%d mode=%x\n",
-> +		      aux->name, *current_level, bl->max, bl->pwm_freq_pre_divider, *current_mode);
-> +	DRM_DEBUG_KMS("%s: Backlight caps: pwmgen_bit_count=%d lsb_reg_used=%d aux_enable=%d\n",
-> +		      aux->name, bl->pwmgen_bit_count, bl->lsb_reg_used, bl->aux_enable);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drm_edp_backlight_init);
-> diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
-> index 1d8984077e8a..9f43d0b14e11 100644
-> --- a/drivers/gpu/drm/i915/display/intel_display_types.h
-> +++ b/drivers/gpu/drm/i915/display/intel_display_types.h
-> @@ -264,10 +264,7 @@ struct intel_panel {
->  		/* DPCD backlight */
->  		union {
->  			struct {
-> -				u8 pwmgen_bit_count;
-> -				u8 pwm_freq_pre_divider;
-> -				bool lsb_reg_used;
-> -				bool aux_enable;
-> +				struct drm_edp_backlight_info info;
->  			} vesa;
->  			struct {
->  				bool sdr_uses_aux;
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index a98d9bd4b0ed..286eb337448e 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -270,114 +270,19 @@ intel_dp_aux_hdr_setup_backlight(struct intel_connector *connector, enum pipe pi
->  }
->  
->  /* VESA backlight callbacks */
-> -static bool intel_dp_aux_vesa_backlight_dpcd_mode(struct intel_connector *connector)
-> -{
-> -	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> -	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> -	int ret;
-> -	u8 mode_reg;
-> -
-> -	ret = drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_BACKLIGHT_MODE_SET_REGISTER, &mode_reg);
-> -	if (ret != 1) {
-> -		drm_dbg_kms(&i915->drm, "Failed to read backlight mode: %d\n", ret);
-> -		return false;
-> -	}
-> -
-> -	return (mode_reg & DP_EDP_BACKLIGHT_CONTROL_MODE_MASK) ==
-> -	       DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD;
-> -}
-> -
-> -/*
-> - * Read the current backlight value from DPCD register(s) based
-> - * on if 8-bit(MSB) or 16-bit(MSB and LSB) values are supported
-> - */
->  static u32 intel_dp_aux_vesa_get_backlight(struct intel_connector *connector, enum pipe unused)
->  {
-> -	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> -	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> -	int ret;
-> -	u8 read_val[2] = { 0x0 };
-> -	u16 level = 0;
-> -
-> -	/*
-> -	 * If we're not in DPCD control mode yet, the programmed brightness
-> -	 * value is meaningless and we should assume max brightness
-> -	 */
-> -	if (!intel_dp_aux_vesa_backlight_dpcd_mode(connector))
-> -		return connector->panel.backlight.max;
-> -
-> -	ret = drm_dp_dpcd_read(&intel_dp->aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB, &read_val,
-> -			       sizeof(read_val));
-> -	if (ret != sizeof(read_val)) {
-> -		drm_dbg_kms(&i915->drm, "Failed to read brightness level: %d\n", ret);
-> -		return 0;
-> -	}
-> -
-> -	if (connector->panel.backlight.edp.vesa.lsb_reg_used)
-> -		level = (read_val[0] << 8 | read_val[1]);
-> -	else
-> -		level = read_val[0];
-> -
-> -	return level;
-> +	return connector->panel.backlight.level;
->  }
->  
-> -/*
-> - * Sends the current backlight level over the aux channel, checking if its using
-> - * 8-bit or 16 bit value (MSB and LSB)
-> - */
->  static void
-> -intel_dp_aux_vesa_set_backlight(const struct drm_connector_state *conn_state,
-> -				u32 level)
-> +intel_dp_aux_vesa_set_backlight(const struct drm_connector_state *conn_state, u32 level)
->  {
->  	struct intel_connector *connector = to_intel_connector(conn_state->connector);
-> -	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> -	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> -	int ret;
-> -	u8 vals[2] = { 0x0 };
-> -
-> -	/* Write the MSB and/or LSB */
-> -	if (connector->panel.backlight.edp.vesa.lsb_reg_used) {
-> -		vals[0] = (level & 0xFF00) >> 8;
-> -		vals[1] = (level & 0xFF);
-> -	} else {
-> -		vals[0] = level;
-> -	}
-> -
-> -	ret = drm_dp_dpcd_write(&intel_dp->aux, DP_EDP_BACKLIGHT_BRIGHTNESS_MSB, vals,
-> -				sizeof(vals));
-> -	if (ret != sizeof(vals)) {
-> -		drm_dbg_kms(&i915->drm, "Failed to write aux backlight level: %d\n", ret);
-> -		return;
-> -	}
-> -}
-> -
-> -static void set_vesa_backlight_enable(struct intel_connector *connector, bool enable)
-> -{
-> -	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> -	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> -	int ret;
-> -	u8 reg_val = 0;
-> -
-> -	/* Early return when display use other mechanism to enable backlight. */
-> -	if (!connector->panel.backlight.edp.vesa.aux_enable)
-> -		return;
-> -
-> -	ret = drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_DISPLAY_CONTROL_REGISTER, &reg_val);
-> -	if (ret != 1) {
-> -		drm_dbg_kms(&i915->drm, "Failed to read eDP display control register: %d\n", ret);
-> -		return;
-> -	}
-> -
-> -	if (enable)
-> -		reg_val |= DP_EDP_BACKLIGHT_ENABLE;
-> -	else
-> -		reg_val &= ~(DP_EDP_BACKLIGHT_ENABLE);
-> +	struct intel_panel *panel = &connector->panel;
-> +	struct intel_dp *intel_dp = enc_to_intel_dp(connector->encoder);
->  
-> -	ret = drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_DISPLAY_CONTROL_REGISTER, reg_val);
-> -	if (ret != 1) {
-> -		drm_dbg_kms(&i915->drm, "Failed to %s aux backlight: %d\n",
-> -			    enable ? "enable" : "disable", ret);
-> -	}
-> +	drm_edp_backlight_set_level(&intel_dp->aux, &panel->backlight.edp.vesa.info, level);
->  }
->  
->  static void
-> @@ -385,170 +290,46 @@ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
->  				   const struct drm_connector_state *conn_state, u32 level)
->  {
->  	struct intel_connector *connector = to_intel_connector(conn_state->connector);
-> -	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> -	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->  	struct intel_panel *panel = &connector->panel;
-> -	int ret;
-> -	u8 dpcd_buf, new_dpcd_buf;
-> -	u8 pwmgen_bit_count = panel->backlight.edp.vesa.pwmgen_bit_count;
-> -
-> -	ret = drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_BACKLIGHT_MODE_SET_REGISTER, &dpcd_buf);
-> -	if (ret != 1) {
-> -		drm_dbg_kms(&i915->drm, "Failed to read backlight mode: %d\n", ret);
-> -		return;
-> -	}
-> -
-> -	new_dpcd_buf = dpcd_buf;
-> -
-> -	if ((dpcd_buf & DP_EDP_BACKLIGHT_CONTROL_MODE_MASK) != DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD) {
-> -		new_dpcd_buf &= ~DP_EDP_BACKLIGHT_CONTROL_MODE_MASK;
-> -		new_dpcd_buf |= DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD;
-> -
-> -		ret = drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT, pwmgen_bit_count);
-> -		if (ret != 1)
-> -			drm_dbg_kms(&i915->drm, "Failed to write aux pwmgen bit count: %d\n", ret);
-> -	}
-> -
-> -	if (panel->backlight.edp.vesa.pwm_freq_pre_divider) {
-> -		ret = drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_BACKLIGHT_FREQ_SET,
-> -					 panel->backlight.edp.vesa.pwm_freq_pre_divider);
-> -		if (ret == 1)
-> -			new_dpcd_buf |= DP_EDP_BACKLIGHT_FREQ_AUX_SET_ENABLE;
-> -		else
-> -			drm_dbg_kms(&i915->drm, "Failed to write aux backlight frequency: %d\n",
-> -				    ret);
-> -	}
-> -
-> -	if (new_dpcd_buf != dpcd_buf) {
-> -		ret = drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_BACKLIGHT_MODE_SET_REGISTER,
-> -					 new_dpcd_buf);
-> -		if (ret != 1)
-> -			drm_dbg_kms(&i915->drm, "Failed to write aux backlight mode: %d\n", ret);
-> -	}
-> +	struct intel_dp *intel_dp = enc_to_intel_dp(connector->encoder);
->  
-> -	intel_dp_aux_vesa_set_backlight(conn_state, level);
-> -	set_vesa_backlight_enable(connector, true);
-> +	drm_edp_backlight_enable(&intel_dp->aux, &panel->backlight.edp.vesa.info, level);
->  }
->  
->  static void intel_dp_aux_vesa_disable_backlight(const struct drm_connector_state *old_conn_state,
->  						u32 level)
->  {
-> -	set_vesa_backlight_enable(to_intel_connector(old_conn_state->connector), false);
-> -}
-> -
-> -/*
-> - * Compute PWM frequency divider value based off the frequency provided to us by the vbt.
-> - * The PWM Frequency is calculated as 27Mhz / (F x P).
-> - * - Where F = PWM Frequency Pre-Divider value programmed by field 7:0 of the
-> - *             EDP_BACKLIGHT_FREQ_SET register (DPCD Address 00728h)
-> - * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
-> - *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
-> - */
-> -static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connector)
-> -{
-> -	struct drm_i915_private *i915 = to_i915(connector->base.dev);
-> -	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> +	struct intel_connector *connector = to_intel_connector(old_conn_state->connector);
->  	struct intel_panel *panel = &connector->panel;
-> -	u32 max_backlight = 0;
-> -	int ret, freq, fxp, fxp_min, fxp_max, fxp_actual, f = 1;
-> -	u8 pn, pn_min, pn_max;
-> -
-> -	ret = drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT, &pn);
-> -	if (ret != 1) {
-> -		drm_dbg_kms(&i915->drm, "Failed to read pwmgen bit count cap: %d\n", ret);
-> -		return 0;
-> -	}
-> -
-> -	pn &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
-> -	max_backlight = (1 << pn) - 1;
-> -
-> -	/* Find desired value of (F x P)
-> -	 * Note that, if F x P is out of supported range, the maximum value or
-> -	 * minimum value will applied automatically. So no need to check that.
-> -	 */
-> -	freq = i915->vbt.backlight.pwm_freq_hz;
-> -	drm_dbg_kms(&i915->drm, "VBT defined backlight frequency %u Hz\n",
-> -		    freq);
-> -	if (!freq) {
-> -		drm_dbg_kms(&i915->drm,
-> -			    "Use panel default backlight frequency\n");
-> -		return max_backlight;
-> -	}
-> -
-> -	fxp = DIV_ROUND_CLOSEST(KHz(DP_EDP_BACKLIGHT_FREQ_BASE_KHZ), freq);
-> -
-> -	/* Use highest possible value of Pn for more granularity of brightness
-> -	 * adjustment while satifying the conditions below.
-> -	 * - Pn is in the range of Pn_min and Pn_max
-> -	 * - F is in the range of 1 and 255
-> -	 * - FxP is within 25% of desired value.
-> -	 *   Note: 25% is arbitrary value and may need some tweak.
-> -	 */
-> -	ret = drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT_CAP_MIN, &pn_min);
-> -	if (ret != 1) {
-> -		drm_dbg_kms(&i915->drm, "Failed to read pwmgen bit count cap min: %d\n", ret);
-> -		return max_backlight;
-> -	}
-> -	ret = drm_dp_dpcd_readb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT_CAP_MAX, &pn_max);
-> -	if (ret != 1) {
-> -		drm_dbg_kms(&i915->drm, "Failed to read pwmgen bit count cap max: %d\n", ret);
-> -		return max_backlight;
-> -	}
-> -	pn_min &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
-> -	pn_max &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
-> -
-> -	/* Ensure frequency is within 25% of desired value */
-> -	fxp_min = DIV_ROUND_CLOSEST(fxp * 3, 4);
-> -	fxp_max = DIV_ROUND_CLOSEST(fxp * 5, 4);
-> -
-> -	if (fxp_min < (1 << pn_min) || (255 << pn_max) < fxp_max) {
-> -		drm_dbg_kms(&i915->drm,
-> -			    "VBT defined backlight frequency out of range\n");
-> -		return max_backlight;
-> -	}
-> -
-> -	for (pn = pn_max; pn >= pn_min; pn--) {
-> -		f = clamp(DIV_ROUND_CLOSEST(fxp, 1 << pn), 1, 255);
-> -		fxp_actual = f << pn;
-> -		if (fxp_min <= fxp_actual && fxp_actual <= fxp_max)
-> -			break;
-> -	}
-> -
-> -	drm_dbg_kms(&i915->drm, "Using eDP pwmgen bit count of %d\n", pn);
-> -	ret = drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_PWMGEN_BIT_COUNT, pn);
-> -	if (ret != 1) {
-> -		drm_dbg_kms(&i915->drm, "Failed to write aux pwmgen bit count: %d\n", ret);
-> -		return max_backlight;
-> -	}
-> -
-> -	panel->backlight.edp.vesa.pwmgen_bit_count = pn;
-> -	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP)
-> -		panel->backlight.edp.vesa.pwm_freq_pre_divider = f;
-> -
-> -	max_backlight = (1 << pn) - 1;
-> +	struct intel_dp *intel_dp = enc_to_intel_dp(connector->encoder);
->  
-> -	return max_backlight;
-> +	drm_edp_backlight_disable(&intel_dp->aux, &panel->backlight.edp.vesa.info);
->  }
->  
-> -static int intel_dp_aux_vesa_setup_backlight(struct intel_connector *connector,
-> -					     enum pipe pipe)
-> +static int intel_dp_aux_vesa_setup_backlight(struct intel_connector *connector, enum pipe pipe)
->  {
->  	struct intel_dp *intel_dp = intel_attached_dp(connector);
->  	struct intel_panel *panel = &connector->panel;
-> +	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> +	u16 current_level;
-> +	u8 current_mode;
-> +	int ret;
->  
-> -	if (intel_dp->edp_dpcd[1] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP)
-> -		panel->backlight.edp.vesa.aux_enable = true;
-> -	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_BYTE_COUNT)
-> -		panel->backlight.edp.vesa.lsb_reg_used = true;
-> -
-> -	panel->backlight.max = intel_dp_aux_vesa_calc_max_backlight(connector);
-> -	if (!panel->backlight.max)
-> -		return -ENODEV;
-> +	ret = drm_edp_backlight_init(&intel_dp->aux, &panel->backlight.edp.vesa.info,
-> +				     i915->vbt.backlight.pwm_freq_hz, intel_dp->edp_dpcd,
-> +				     &current_level, &current_mode);
-> +	if (ret < 0)
-> +		return ret;
->  
-> +	panel->backlight.max = panel->backlight.edp.vesa.info.max;
->  	panel->backlight.min = 0;
-> -	panel->backlight.level = intel_dp_aux_vesa_get_backlight(connector, pipe);
-> -	panel->backlight.enabled = intel_dp_aux_vesa_backlight_dpcd_mode(connector) &&
-> -				   panel->backlight.level != 0;
-> +	if (current_mode == DP_EDP_BACKLIGHT_CONTROL_MODE_DPCD) {
-> +		panel->backlight.level = current_level;
-> +		panel->backlight.enabled = panel->backlight.level != 0;
-> +	} else {
-> +		panel->backlight.level = panel->backlight.max;
-> +		panel->backlight.enabled = false;
-> +	}
->  
->  	return 0;
->  }
-> @@ -559,16 +340,12 @@ intel_dp_aux_supports_vesa_backlight(struct intel_connector *connector)
->  	struct intel_dp *intel_dp = intel_attached_dp(connector);
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->  
-> -	/* Check the eDP Display control capabilities registers to determine if
-> -	 * the panel can support backlight control over the aux channel.
-> -	 *
-> -	 * TODO: We currently only support AUX only backlight configurations, not backlights which
-> +	/* TODO: We currently only support AUX only backlight configurations, not backlights which
->  	 * require a mix of PWM and AUX controls to work. In the mean time, these machines typically
->  	 * work just fine using normal PWM controls anyway.
->  	 */
-> -	if (intel_dp->edp_dpcd[1] & DP_EDP_TCON_BACKLIGHT_ADJUSTMENT_CAP &&
-> -	    (intel_dp->edp_dpcd[1] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP) &&
-> -	    (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP)) {
-> +	if ((intel_dp->edp_dpcd[1] & DP_EDP_BACKLIGHT_AUX_ENABLE_CAP) &&
-> +	    drm_edp_backlight_supported(intel_dp->edp_dpcd)) {
->  		drm_dbg_kms(&i915->drm, "AUX Backlight Control Supported!\n");
->  		return true;
->  	}
-> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-> index edffd1dcca3e..1eca0b42fc45 100644
-> --- a/include/drm/drm_dp_helper.h
-> +++ b/include/drm/drm_dp_helper.h
-> @@ -1790,6 +1790,24 @@ drm_dp_sink_can_do_video_without_timing_msa(const u8 dpcd[DP_RECEIVER_CAP_SIZE])
->  		DP_MSA_TIMING_PAR_IGNORED;
->  }
->  
-> +/**
-> + * drm_edp_backlight_supported() - Check an eDP DPCD for VESA backlight support
-> + * @edp_dpcd: The DPCD to check
-> + *
-> + * Note that currently this function will return %false for panels which support various DPCD
-> + * backlight features but which require the brightness be set through PWM, and don't support setting
-> + * the brightness level via the DPCD. This is a TODO.
-> + *
-> + * Returns: %True if @edp_dpcd indicates that VESA backlight controls are supported, %false
-> + * otherwise
-> + */
-> +static inline bool
-> +drm_edp_backlight_supported(const u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE])
-> +{
-> +	return (edp_dpcd[1] & DP_EDP_TCON_BACKLIGHT_ADJUSTMENT_CAP) &&
-> +		(edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP);
-> +}
-> +
->  /*
->   * DisplayPort AUX channel
->   */
-> @@ -2089,6 +2107,36 @@ drm_dp_has_quirk(const struct drm_dp_desc *desc, enum drm_dp_quirk quirk)
->  	return desc->quirks & BIT(quirk);
->  }
->  
-> +/**
-> + * struct drm_edp_backlight_info - Probed eDP backlight info struct
-> + * @pwmgen_bit_count: The pwmgen bit count
-> + * @pwm_freq_pre_divider: The PWM frequency pre-divider value being used for this backlight, if any
-> + * @max: The maximum backlight level that may be set
-> + * @lsb_reg_used: Do we also write values to the DP_EDP_BACKLIGHT_BRIGHTNESS_LSB register?
-> + * @aux_enable: Does the panel support the AUX enable cap?
-> + *
-> + * This structure contains various data about an eDP backlight, which can be populated by using
-> + * drm_edp_backlight_init().
-> + */
-> +struct drm_edp_backlight_info {
-> +	u8 pwmgen_bit_count;
-> +	u8 pwm_freq_pre_divider;
-> +	u16 max;
-> +
-> +	bool lsb_reg_used : 1;
-> +	bool aux_enable : 1;
-> +};
-> +
-> +int
-> +drm_edp_backlight_init(struct drm_dp_aux *aux, struct drm_edp_backlight_info *bl,
-> +		       u16 driver_pwm_freq_hz, const u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE],
-> +		       u16 *current_level, u8 *current_mode);
-> +int drm_edp_backlight_set_level(struct drm_dp_aux *aux, const struct drm_edp_backlight_info *bl,
-> +				u16 level);
-> +int drm_edp_backlight_enable(struct drm_dp_aux *aux, const struct drm_edp_backlight_info *bl,
-> +			     u16 level);
-> +int drm_edp_backlight_disable(struct drm_dp_aux *aux, const struct drm_edp_backlight_info *bl);
-> +
->  #ifdef CONFIG_DRM_DP_CEC
->  void drm_dp_cec_irq(struct drm_dp_aux *aux);
->  void drm_dp_cec_register_connector(struct drm_dp_aux *aux,
-> -- 
-> 2.29.2
+On 2/10/2021 1:14 AM, Vladimir Oltean wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
 > 
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+> For a DSA switch port operating in standalone mode, address learning
+> doesn't make much sense since that is a bridge function. In fact,
+> address learning even breaks setups such as this one:
+> 
+>    +---------------------------------------------+
+>    |                                             |
+>    | +-------------------+                       |
+>    | |        br0        |    send      receive  |
+>    | +--------+-+--------+ +--------+ +--------+ |
+>    | |        | |        | |        | |        | |
+>    | |  swp0  | |  swp1  | |  swp2  | |  swp3  | |
+>    | |        | |        | |        | |        | |
+>    +-+--------+-+--------+-+--------+-+--------+-+
+>           |         ^           |          ^
+>           |         |           |          |
+>           |         +-----------+          |
+>           |                                |
+>           +--------------------------------+
+> 
+> because if the switch has a single FDB (can offload a single bridge)
+> then source address learning on swp3 can "steal" the source MAC address
+> of swp2 from br0's FDB, because learning frames coming from swp2 will be
+> done twice: first on the swp1 ingress port, second on the swp3 ingress
+> port. So the hardware FDB will become out of sync with the software
+> bridge, and when swp2 tries to send one more packet towards swp1, the
+> ASIC will attempt to short-circuit the forwarding path and send it
+> directly to swp3 (since that's the last port it learned that address on),
+> which it obviously can't, because swp3 operates in standalone mode.
+> 
+> So DSA drivers operating in standalone mode should still configure a
+> list of bridge port flags even when they are standalone. Currently DSA
+> attempts to call dsa_port_bridge_flags with 0, which disables egress
+> flooding of unknown unicast and multicast, something which doesn't make
+> much sense. For the switches that implement .port_egress_floods - b53
+> and mv88e6xxx, it probably doesn't matter too much either, since they
+> can possibly inject traffic from the CPU into a standalone port,
+> regardless of MAC DA, even if egress flooding is turned off for that
+> port, but certainly not all DSA switches can do that - sja1105, for
+> example, can't. So it makes sense to use a better common default there,
+> such as "flood everything".
+> 
+> It should also be noted that what DSA calls "dsa_port_bridge_flags()"
+> is a degenerate name for just calling .port_egress_floods(), since
+> nothing else is implemented - not learning, in particular. But disabling
+> address learning, something that this driver is also coding up for, will
+> be supported by individual drivers once .port_egress_floods is replaced
+> with a more generic .port_bridge_flags.
+> 
+> Previous attempts to code up this logic have been in the common bridge
+> layer, but as pointed out by Ido Schimmel, there are corner cases that
+> are missed when doing that:
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210209151936.97382-5-olteanv@gmail.com/
+> 
+> So, at least for now, let's leave DSA in charge of setting port flags
+> before and after the bridge join and leave.
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
