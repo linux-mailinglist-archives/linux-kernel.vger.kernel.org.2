@@ -2,128 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C0F318A19
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F198A318A1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhBKMIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:08:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231487AbhBKL7k (ORCPT
+        id S231592AbhBKMKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:10:12 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:42250 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230328AbhBKMCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:59:40 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC13C061574;
-        Thu, 11 Feb 2021 03:58:49 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id u16so1652729wmq.1;
-        Thu, 11 Feb 2021 03:58:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ObOPE3Vxw9na61V0nCVGRHaYvQwK9e3MP9lFm6Pn/DM=;
-        b=WhEfeNahuHSnhs1wD7y0pT8PtEV20fASmSIfOaChNE8De45D/94euh8T+PYlykHH/D
-         Bll//mbnzGIylluxY2ifqW/wiRUx9x4pZSPuOQ5i37bSZ8dtEU+e+lK7pPhxdOONCVns
-         hp4DScKOdMMFahoEDXZ0+U8kf8/NkgOtJ5jNpHFcf2+20un6BNw79/6hGMX7NYrg8vLp
-         2SuKaqP3hxu0XBPTK2hvzJQkQF+4g/AVIRdLOYOgHRS2vJmUoFX5zu+yMR2oSr/MvJXA
-         YtDSezGN4TQ8V0984dWfI/R1dakCfEBB8WwkHjJwY4DHKsavzKygF3+n/IJe5cM6LiQs
-         /AkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ObOPE3Vxw9na61V0nCVGRHaYvQwK9e3MP9lFm6Pn/DM=;
-        b=s0PVes3og/0LMQzauAuW8ogl6Xa2d8fQee62QvDPMw/4sXz0k/aOIDT5HUmy1GSGqj
-         HkWLUzRfZsYB1p/J1yrVu+akFXtf3FQpAx/tK+iNHhxSpw/0mZfGBPicoOFdUxzpRdr1
-         n7bfqVImj2IgSGXhcYSQUHuwXah9OFK0Y8HRH2oH8hu9RJjq3GrfsN8rn88bde5SOGPH
-         g+DgT6gUhSkJHl3A4WIGAg4xAXAG8AdPBIJieCZjy8Q13xqJsPrk7W27jrLh7H6uf52V
-         e5m74Owdqjhwq74pgfqaohZED46uIIvlk8iFptdfkbGjke5f+KS7JFO0sZZ60bH6uXu4
-         alPQ==
-X-Gm-Message-State: AOAM530DBr8ZgbCQjWBVPn98PH7hQNxsJH4xeMzqS4OjSa4duBq2bJMA
-        Jwh9/lOiW5AAxrn1dOr4bzp/fVyRQRGh9Q==
-X-Google-Smtp-Source: ABdhPJzwBdXYcgzpPyh6B5OyvA4ZsH8yFVbfUv0QT/5HyVa9ggvzBWp3jphrqpVYa9UBOHLpMR57bA==
-X-Received: by 2002:a05:600c:4f14:: with SMTP id l20mr5011471wmq.155.1613044728374;
-        Thu, 11 Feb 2021 03:58:48 -0800 (PST)
-Received: from [192.168.2.202] (p5487b829.dip0.t-ipconnect.de. [84.135.184.41])
-        by smtp.gmail.com with ESMTPSA id x18sm9596308wmi.8.2021.02.11.03.58.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 03:58:47 -0800 (PST)
-Subject: Re: [PATCH] platform/surface: aggregator: Fix access of unaligned
- value
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-test-robot <lkp@intel.com>
-References: <20210210230411.1938660-1-luzmaximilian@gmail.com>
- <YCUFgF9gmyeO+796@smile.fi.intel.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <b68b7547-5be4-c823-d015-febb5e7f84e9@gmail.com>
-Date:   Thu, 11 Feb 2021 12:58:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 11 Feb 2021 07:02:21 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BBmu7I193682;
+        Thu, 11 Feb 2021 12:01:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=JlHMtwzoGJad+lRl/QAFsxOviAa1mqmYy7Gmfhb0yxA=;
+ b=yLKjGowP88OgerhM4QsQJ+nql7HBpLv3Qt6SQOJHvqzEYiDTdnfaGA1S/GgAJm8qtKlZ
+ BaTvzdUqf2UYVFjzopxB+4dQmmNhOkPnUYgwg2+EOTWbR3NXkpiR3a+iRfk4nswELsoD
+ phirJNPMNuTgdsJEqMczW9vDDE0//q1/Sc6Hs15cEWE5IUdwT19ZuhtnE1ZjdTBkVuaf
+ rJyzwMvow6OJmTkVYyKR28wzlzkexGHd1LUfQu/gSANThi4F0C6QA+/QjdoZdWtP/ZcB
+ l95IuEuzzLFmKEd/3Sae552n5VP5Uy6M+dHo8U6/mAlyK7zyq5fFECuXvpP6nOEhqJQS og== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 36mv9dsc6v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 12:01:15 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BBolL2143114;
+        Thu, 11 Feb 2021 12:01:12 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 36j4vu5h33-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 12:01:12 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11BC16ou027776;
+        Thu, 11 Feb 2021 12:01:06 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 11 Feb 2021 04:01:05 -0800
+Date:   Thu, 11 Feb 2021 15:00:51 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v4 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
+Message-ID: <20210211120051.GN20820@kadam>
+References: <20210210222851.232374-1-drew@beagleboard.org>
+ <20210210222851.232374-3-drew@beagleboard.org>
 MIME-Version: 1.0
-In-Reply-To: <YCUFgF9gmyeO+796@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210222851.232374-3-drew@beagleboard.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110108
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
+ mlxscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 11:22 AM, Andy Shevchenko wrote:
-> On Thu, Feb 11, 2021 at 12:04:11AM +0100, Maximilian Luz wrote:
->> The raw message frame length is unaligned and explicitly marked as
->> little endian. It should not be accessed without the appropriatte
->> accessor functions. Fix this.
+On Wed, Feb 10, 2021 at 02:28:54PM -0800, Drew Fustini wrote:
+> Add "pinmux-select" to debugfs which will activate a function and group
+> when "<function-name group-name>" are written to the file. The write
+> operation pinmux_select() handles this by checking that the names map to
+> valid selectors and then calling ops->set_mux().
 > 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Though a few nit-picks below.
+> The existing "pinmux-functions" debugfs file lists the pin functions
+> registered for the pin controller. For example:
 > 
->> Reported-by: kernel-test-robot <lkp@intel.com>
->> Fixes: c167b9c7e3d6 ("platform/surface: Add Surface Aggregator subsystem")
->> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
->> ---
->>   drivers/platform/surface/aggregator/ssh_packet_layer.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/platform/surface/aggregator/ssh_packet_layer.c b/drivers/platform/surface/aggregator/ssh_packet_layer.c
->> index 583315db8b02..9a78188d8d1c 100644
->> --- a/drivers/platform/surface/aggregator/ssh_packet_layer.c
->> +++ b/drivers/platform/surface/aggregator/ssh_packet_layer.c
->> @@ -1774,7 +1774,8 @@ static size_t ssh_ptl_rx_eval(struct ssh_ptl *ptl, struct ssam_span *source)
->>   		break;
->>   	}
->>   
->> -	return aligned.ptr - source->ptr + SSH_MESSAGE_LENGTH(frame->len);
->> +	return aligned.ptr - source->ptr
->> +		+ SSH_MESSAGE_LENGTH(get_unaligned_le16(&frame->len));
+> function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
+> function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
+> function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
+> function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
+> function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
+> function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
 > 
-> I would leave + on previous line.
-
-I can fix that if it bugs you.
-
-> Also it's possible to annotate temporary variable and use it, but it seems not
-> worth to do.
-
-Now that you mention it, we already have the correct frame length in
-payload.len. Let me draft up a new patch with that.
-
-> Side question: Do you think the below is correct (& operator)?
+> To activate function pinmux-i2c1 and group pinmux-i2c1-pins:
 > 
->          sp.len = get_unaligned_le16(&((struct ssh_frame *)sf.ptr)->len);
+> echo "pinmux-i2c1 pinmux-i2c1-pins" > pinmux-select
 > 
-> To me seems like you take an address to len member rather its value.
-
-That's the point though, no? The signature is
-
-         u16 get_unaligned_le16(const void *p)
-
-so we do want a pointer to the len member. So I believe that is correct.
-
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> ---
+>  drivers/pinctrl/pinmux.c | 107 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 107 insertions(+)
 > 
->>   }
->>   
->>   static int ssh_ptl_rx_threadfn(void *data)
-> 
+> diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
+> index c651b2db0925..23fa32f0a067 100644
+> --- a/drivers/pinctrl/pinmux.c
+> +++ b/drivers/pinctrl/pinmux.c
+> @@ -673,6 +673,111 @@ void pinmux_show_setting(struct seq_file *s,
+>  DEFINE_SHOW_ATTRIBUTE(pinmux_functions);
+>  DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
+>  
+> +#define PINMUX_MAX_NAME 64
+> +static ssize_t pinmux_select(struct file *file, const char __user *user_buf,
+> +				   size_t len, loff_t *ppos)
+> +{
+> +	struct seq_file *sfile = file->private_data;
+> +	struct pinctrl_dev *pctldev = sfile->private;
+> +	const struct pinmux_ops *pmxops = pctldev->desc->pmxops;
+> +	const char *const *groups;
+> +	char *buf, *fname, *gname;
+> +	unsigned int num_groups;
+> +	int fsel, gsel, ret;
+> +
+> +	if (len > (PINMUX_MAX_NAME * 2)) {
+> +		dev_err(pctldev->dev, "write too big for buffer");
+> +		return -EINVAL;
+> +	}
+> +
+> +	buf = kzalloc(PINMUX_MAX_NAME * 2, GFP_KERNEL);
+> +	if (!buf)
+> +		return -ENOMEM;
+> +
+> +	fname = kzalloc(PINMUX_MAX_NAME, GFP_KERNEL);
+> +	if (!fname) {
+> +		ret = -ENOMEM;
+> +		goto free_buf;
+> +	}
+> +
+> +	gname = kzalloc(PINMUX_MAX_NAME, GFP_KERNEL);
+> +	if (!buf) {
+> +		ret = -ENOMEM;
+> +		goto free_fname;
+> +	}
+> +
+> +	ret = strncpy_from_user(buf, user_buf, PINMUX_MAX_NAME * 2);
+> +	if (ret < 0) {
+> +		dev_err(pctldev->dev, "failed to copy buffer from userspace");
+> +		goto free_gname;
+> +	}
+> +	buf[len-1] = '\0';
+> +
+> +	ret = sscanf(buf, "%s %s", fname, gname);
+> +	if (ret != 2) {
+> +		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
+> +		goto free_gname;
+> +	}
+> +
+> +	fsel = pinmux_func_name_to_selector(pctldev, fname);
+> +	if (fsel < 0) {
+> +		dev_err(pctldev->dev, "invalid function %s in map table\n", fname);
+> +		ret = -EINVAL;
+> +		goto free_gname;
+> +	}
+> +
+> +	ret = pmxops->get_function_groups(pctldev, fsel, &groups, &num_groups);
+> +	if (ret) {
+> +		dev_err(pctldev->dev, "no groups for function %d (%s)", fsel, fname);
+> +		goto free_gname;
+> +
+> +	}
+> +
+> +	ret = match_string(groups, num_groups, gname);
+> +	if (ret < 0) {
+> +		dev_err(pctldev->dev, "invalid group %s", gname);
+> +		goto free_gname;
+> +	}
+> +
+> +	ret = pinctrl_get_group_selector(pctldev, gname);
+> +	if (ret < 0) {
+> +		dev_err(pctldev->dev, "failed to get group selectorL %s", gname);
+> +		goto free_gname;
+> +	}
+> +	gsel = ret;
+> +
+> +	ret = pmxops->set_mux(pctldev, fsel, gsel);
+> +	if (ret) {
+> +		dev_err(pctldev->dev, "set_mux() failed: %d", ret);
+> +		goto free_gname;
+> +	}
+> +
+> +	return len;
+> +
+> +free_gname:
+> +	devm_kfree(pctldev->dev, gname);
+> +free_fname:
+> +	devm_kfree(pctldev->dev, fname);
+> +free_buf:
+> +	devm_kfree(pctldev->dev, buf);
+
+Ugh...  I honestly thought Smatch was supposed to print a warning when
+you used devm_kfree() on kzalloc()ed memory, but I guess the warning is
+only the other way around.
+
+Smatch does complain about it as a leak because it was expecting a
+regular free.
+
+drivers/pinctrl/pinmux.c:330 pinmux_func_name_to_selector() warn: potential NULL parameter dereference 'fname'
+drivers/pinctrl/pinmux.c:764 pinmux_select() warn: possible memory leak of 'gname'
+drivers/pinctrl/pinmux.c:764 pinmux_select() warn: sscanf doesn't return error codes
+drivers/pinctrl/pinmux.c:764 pinmux_select() warn: returning success when sscanf failed
+
+And what about the success path?  Shouldn't we free these on the success
+path as well?
+
+regards,
+dan carpenter
+
