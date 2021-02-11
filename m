@@ -2,75 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E0731845C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 05:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD6B318466
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 05:42:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhBKEhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 23:37:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhBKEhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 23:37:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 907EC64E76;
-        Thu, 11 Feb 2021 04:36:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613018214;
-        bh=XPvkfWu9iNJg4IpOigCGzYQHEusZWZkAU9p+NvAt1YM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TqoxAr5ndqFZA3fFbH12bdnKldyE86TVZVo2kDVCzTEqRRAEYrx4NQCZUfDvgUYwp
-         PsxIr1wZYi5V7rNVfE3yY59JvnX/ryV9/94SfPwszqVkKJv+qfUGIo9co3oCPIAWEW
-         7RR1QISbfpHGdFpnGWCDHqTr8ag04FCBOb5KxNS1yxAeksPrgjC6iMrLzZ7p0WAvM4
-         ArcyrKgxCGisxa+ZN3f+xb/bOAf23WcfGTjui24UzcwD+1Xc9mGiafg257SjCKo/JY
-         99k9/zGGv2tdfekcI03aeTFASie3MLobZsqJCToUERZIJffzSvE48GtJORx9s+p8ER
-         wm9QW3H0lmgkQ==
-Date:   Thu, 11 Feb 2021 10:06:50 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:VOLTAGE AND CURRENT REGULATOR FRAMEWORK" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] regulator: qcom-rpmh: fix pm8009 ldo7
-Message-ID: <20210211043650.GG2774@vkoul-mobl.Dlink>
-References: <20210211034935.5622-1-jonathan@marek.ca>
+        id S229648AbhBKElz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 23:41:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhBKElo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 23:41:44 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E1CC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 20:41:04 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id jj19so8015006ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 20:41:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sl6/My6OzOs0T7wZB4oePD5pENhmSvczhT0K8Arc7LI=;
+        b=WkyTT/tlVuOu/QtJMR4TMPtKI3ZroEdf6vo0pV6EA6pmvld9AUZh5AcBIdoQsmyy5W
+         ujhDIglIq4no4S4FnPjAJEON+41CXF/kZhVZc/Of6nBcJmH2ckxq7jFNww9nR/DwT+h/
+         8UqUiI1xPm3fisBJZevopAV8RlTeHFLm996qBPYad35tPwuvIkQ2wNljHBO7QuzsU8pl
+         m6UjMx88Bp2ax8h59hFBDU+mEcT6OxV4L26reH2yIq5jyt3ZKaGUX00yc6uufxWXKc/K
+         6TpW44YRo7+SiphYrSoLs6Eu0cjTNKyi8E8jF9IRE0pU/01y+thIBuSGcpnf168C/Bou
+         mgcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sl6/My6OzOs0T7wZB4oePD5pENhmSvczhT0K8Arc7LI=;
+        b=psi93shDhnwbKhb5nIm9ixDEYMEfXPFG28JovmIZ/xDZQ8gPgZFa7o0eeg1MjVTxoh
+         QvARzascb8w3hNreJKO9USNaOFsDzXj8RjJeUR7ZNLx9AfO/O6A9p9R87v7MPEqM6msT
+         EI8ZrVvUbqLoRmvsuVXfbab++zklYEcGXR1iYrc2YEWqTsxjM6iPERjj+W4hR3P4CZYd
+         T9wnbxjGDd8zOrmXgzNpkiA01W07Fu1Rt7fAPlqvfOqm/plJ2sXib0cq9gDxd5o9H6cZ
+         44D6gUX+YnBCR5/oLvF+XjAOuN9v+7b/7+4LKRIQLuqWPjXG6fD+8hfN/oveSLe3vTNT
+         BllQ==
+X-Gm-Message-State: AOAM531FA3GoBMLexG9IWHvPwUZ6mcgLen/j5mKMHbnCnc06cb0SZZId
+        /FdjR+UDNXmEk3YXFGQZDSKmjCyNNByG9RRk0FOq1Q==
+X-Google-Smtp-Source: ABdhPJyqM5HE0PbHSNMhdSZjzjNWswbaPuS/dDwtU5r1wQLbe3Pkm5vgDMrXrmlgqG9PntEEBlBF3kFxRImOkT4QFcE=
+X-Received: by 2002:a17:906:78a:: with SMTP id l10mr6139548ejc.264.1613018462922;
+ Wed, 10 Feb 2021 20:41:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211034935.5622-1-jonathan@marek.ca>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-5-ben.widawsky@intel.com> <20210210184540.00007536@Huawei.com>
+In-Reply-To: <20210210184540.00007536@Huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 10 Feb 2021 20:40:52 -0800
+Message-ID: <CAPcyv4hRUB3jxdCV06y0kYMbKbGroEW6F9yOQ4KB_z6YgWBZ4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 4/8] cxl/mem: Add basic IOCTL interface
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Chris Browy <cbrowy@avery-design.com>, Christoph Hellwig
+        <hch@infradead.org>, Dan Williams <dan.j.williams@intel.com>, David
+        Hildenbrand <david@redhat.com>, David Rientjes" <rientjes@google.com>,
+        "Jon Masters <jcm@jonmasters.org>, Rafael Wysocki
+        <rafael.j.wysocki@intel.com>, Randy Dunlap" <rdunlap@infradead.org>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Williams <dan.j.willams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-02-21, 22:49, Jonathan Marek wrote:
-> Use the correct name to avoid ldo7 commands being sent to ldo6's address.
+On Wed, Feb 10, 2021 at 10:47 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+[..]
+> > +#define CXL_CMDS                                                          \
+> > +     ___C(INVALID, "Invalid Command"),                                 \
+> > +     ___C(IDENTIFY, "Identify Command"),                               \
+> > +     ___C(MAX, "Last command")
+> > +
+> > +#define ___C(a, b) CXL_MEM_COMMAND_ID_##a
+> > +enum { CXL_CMDS };
+> > +
+> > +#undef ___C
+> > +#define ___C(a, b) { b }
+> > +static const struct {
+> > +     const char *name;
+> > +} cxl_command_names[] = { CXL_CMDS };
+> > +#undef ___C
+>
+> Unless there are going to be a lot of these, I'd just write them out long hand
+> as much more readable than the macro magic.
 
-Thanks for spotting and fixing it.
+This macro magic isn't new to Linux it was introduced with ftrace:
 
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
+See "cpp tricks and treats": https://lwn.net/Articles/383362/
 
-> Fixes: 06369bcc15a1 ("regulator: qcom-rpmh: Add support for SM8150")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  drivers/regulator/qcom-rpmh-regulator.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
-> index 05f1b4e150f4..043dc2fd39eb 100644
-> --- a/drivers/regulator/qcom-rpmh-regulator.c
-> +++ b/drivers/regulator/qcom-rpmh-regulator.c
-> @@ -937,7 +937,7 @@ static const struct rpmh_vreg_init_data pm8009_vreg_data[] = {
->  	RPMH_VREG("ldo4",   "ldo%s4",  &pmic5_nldo,      "vdd-l4"),
->  	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_pldo,      "vdd-l5-l6"),
->  	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_pldo,      "vdd-l5-l6"),
-> -	RPMH_VREG("ldo7",   "ldo%s6",  &pmic5_pldo_lv,   "vdd-l7"),
-> +	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo_lv,   "vdd-l7"),
->  	{},
->  };
->  
-> -- 
-> 2.26.1
+>
+> enum {
+>         CXL_MEM_COMMAND_ID_INVALID,
+>         CXL_MEM_COMMAND_ID_IDENTIFY,
+>         CXL_MEM_COMMAND_ID_MAX
+> };
+>
+> static const struct {
+>         const char *name;
+> } cxl_command_names[] = {
+>         [CXL_MEM_COMMAND_ID_INVALID] = { "Invalid Command" },
+>         [CXL_MEM_COMMAND_ID_IDENTIFY] = { "Identify Comamnd" },
+>         /* I hope you never need the Last command to exist in here as that sounds like a bug */
+> };
+>
+> That's assuming I actually figured the macro fun out correctly.
+> To my mind it's worth doing this stuff for 'lots' no so much for 3.
 
--- 
-~Vinod
+The list will continue to expand, and it eliminates the "did you
+remember to update cxl_command_names" review burden permanently.
