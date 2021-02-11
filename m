@@ -2,134 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33537318792
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72068318793
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhBKJ6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 04:58:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhBKJyV (ORCPT
+        id S230286AbhBKJ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 04:58:35 -0500
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:36104 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230144AbhBKJzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 04:54:21 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59707C061756;
-        Thu, 11 Feb 2021 01:53:41 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id fa16so3093906pjb.1;
-        Thu, 11 Feb 2021 01:53:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/2/r886KQW4/hmgGlGU/bFt+5s/atopbbN5Yr8MK8T8=;
-        b=vQystuV8OWeUPFQ3fFsiGIqaSCxcNFDVbhkLn8xcohJXWQYYbiqtdKXbckM/D9dXCj
-         fKfz2kijNBYFNr1/O3rZVTte5r+2gb9FoXlFVJ18L1BEtiy1mj0aydeUAFMbUdY+fL3t
-         v56Qrbz5YTHi3tcxlPE6C3GmKyjzFV/l1B8uDD4k8gT4/oXpV4Q+BeLY8RxxionPZtaF
-         JaTGGQFKDYAxh6gZXVQAN+orJ5fbL/1iykRtYV3EueJ0ryiyxDOA4T6mEF/bgvP28BQL
-         hqtTEfVqaVaCV7S/ISIF+VVf6afLIpQwNZADARhn53ecri4gZOZZOhQzsAjCpIiqBmyW
-         6KjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/2/r886KQW4/hmgGlGU/bFt+5s/atopbbN5Yr8MK8T8=;
-        b=Aq9eBqAMHcRJ6elRm2ttzu2/U12F1YSeXwhL9h/x1cyXVOg4YDOhDfmaBSzuVeoBnf
-         ekQV1LLmxWHuV4j/zZWFSBTBhu1OkZF8eDtulAQJrMfa8EEeZ26XclqxRCvv503PkAWQ
-         4fZ0U2r7wdBIE62xzMKH+PIyG+655311OihUAwGHi8XgCySck3nNh1puET36rH1buIHO
-         GyslQwa5UlExzA0blxfnD92b2BjgS65RCd45kPOsHpOLbR6ipdTUFnetg7sRcIRoKwtw
-         a3wSDw5IsHifnHzH37GdZfg+q4jVtqAIbODtHv8zHk6tQfTGNBM0zI9m2UASnINbV7tt
-         RFbg==
-X-Gm-Message-State: AOAM5316mF4AovNAANe/S4xnFYqF6sNkyNJPjjX3cjmYxJSChAwUCRTx
-        q7x5t8wCD644/K3Y8Eo4zF5CNQPpReTAE/G9wJ0=
-X-Google-Smtp-Source: ABdhPJy+YBCILgGQR6FWOWTfpw13kwHqTUdrByKLx3NGo6g9JeyKlKtrYRmpysTlLijpT38oXfcXSyWU5WPSPL2KbwE=
-X-Received: by 2002:a17:902:be14:b029:e1:bec9:f4a7 with SMTP id
- r20-20020a170902be14b02900e1bec9f4a7mr7208681pls.21.1613037220776; Thu, 11
- Feb 2021 01:53:40 -0800 (PST)
+        Thu, 11 Feb 2021 04:55:11 -0500
+Received: from [192.168.111.113] (p4fd971d4.dip0.t-ipconnect.de [79.217.113.212])
+        (authenticated bits=0)
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 11B9rpY7010928
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Thu, 11 Feb 2021 10:53:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
+        s=unimail; t=1613037232;
+        bh=hEny8mHNdB5omE4FqgLpGkOemODjAlaz9MQDbNDOuec=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=dTBbDs5s2y2XfvCMZ+7qGnOL17EizipLyeD3HGWiyD3ozTYJHTdVO+ZBBnXpslzpg
+         wKfAdlkMhLMfP29RU2Q2RQgukK5276up5IrV+wdZUTmOZ8z94kSI4YC4yQwrAFKrGc
+         KK1rk0SjCG878UEMgR/924yv/PJUxPvZ2G5zf6XE=
+Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
+To:     Jan Kara <jack@suse.cz>
+Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
+ <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
+ <20210211093027.GI19070@quack2.suse.cz>
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Message-ID: <1803ac43-d6fc-4de8-78a0-7fc807f9c036@tu-dortmund.de>
+Date:   Thu, 11 Feb 2021 10:53:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210210222851.232374-1-drew@beagleboard.org> <20210210222851.232374-3-drew@beagleboard.org>
- <CAMuHMdW3dZWEbHzXZ-62S-bb3WKbrfwR_EKf7b_fQ6z913SX1A@mail.gmail.com>
-In-Reply-To: <CAMuHMdW3dZWEbHzXZ-62S-bb3WKbrfwR_EKf7b_fQ6z913SX1A@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 11 Feb 2021 11:53:24 +0200
-Message-ID: <CAHp75VeBbv8YzsnOsdXKOwPFd2WpjueCwMgm9mQPR2Xq4zW3QQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210211093027.GI19070@quack2.suse.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="xR6At3BscXEfQMytnEQ6uJIgWbuzasC1X"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 10:09 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Wed, Feb 10, 2021 at 11:33 PM Drew Fustini <drew@beagleboard.org> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--xR6At3BscXEfQMytnEQ6uJIgWbuzasC1X
+Content-Type: multipart/mixed; boundary="b63HI2vDGUjw0rmQ83RumwUtZ7tnYQBbd";
+ protected-headers="v1"
+From: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+To: Jan Kara <jack@suse.cz>
+Cc: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+ Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <1803ac43-d6fc-4de8-78a0-7fc807f9c036@tu-dortmund.de>
+Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
+References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
+ <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
+ <20210211093027.GI19070@quack2.suse.cz>
+In-Reply-To: <20210211093027.GI19070@quack2.suse.cz>
 
-
-> > +#define PINMUX_MAX_NAME 64
-
-> > +       if (len > (PINMUX_MAX_NAME * 2)) {
-> > +               dev_err(pctldev->dev, "write too big for buffer");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       buf = kzalloc(PINMUX_MAX_NAME * 2, GFP_KERNEL);
-
-> > +       ret = strncpy_from_user(buf, user_buf, PINMUX_MAX_NAME * 2);
->
-> While this guarantees buf is not overflowed...
->
-> > +       if (ret < 0) {
-> > +               dev_err(pctldev->dev, "failed to copy buffer from userspace");
-> > +               goto free_gname;
-> > +       }
-> > +       buf[len-1] = '\0';
-> > +
-> > +       ret = sscanf(buf, "%s %s", fname, gname);
->
-> ... one of the two strings can still be longer than PINMUX_MAX_NAME,
-> thus overflowing fname or gname.
->
-> As buf is already a copy, it may be easier to just find the strings in
-> buf, write the NUL terminators into buf, and set up fname and gname
-> to point to the strings inside buf.
-
-You beat me up to it. I was about to comment the same.
-
-So, indeed, instead of sscanf it's simply better and faster to do just
-something like
-
-fname = strstrip(buf) ;
-if (*fname == '\0') {
-  ...
-  return -EINVAL;
-}
-
-gname = strchr(fname, ' ');
-if (!gname) {
- ...
-  return -EINVAL;
-}
-*gname++ = '\0';
-
-on top of the buf pointer.
-
-> > +       if (ret != 2) {
-> > +               dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
-> > +               goto free_gname;
-> > +       }
+--b63HI2vDGUjw0rmQ83RumwUtZ7tnYQBbd
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+On 11.02.21 10:30, Jan Kara wrote:
+>>   	 */
+>>   	unsigned long		t_log_start;
+>>  =20
+>> -	/* Number of buffers on the t_buffers list [j_list_lock] */
+>> +	/* Number of buffers on the t_buffers list [j_list_lock, no lock for=
+ quick racy checks] */
+>>   	int			t_nr_buffers;
+>=20
+> So this case is actually somewhat different now that I audited the uses=
+=2E
+> There are two types of users - commit code (fs/jbd2/commit.c) and other=
+s.
+> Other users properly use j_list_lock to access t_nr_buffers. Commit cod=
+e
+> does not use any locks because committing transaction is fully in
+> ownership of the jbd2 thread and all other users need to check & wait f=
+or
+> commit to be finished before doing anything with the transaction's buff=
+ers.
+Mhm I see.
+What about '[..., no locks needed for jbd2 thread]'?
+
+How do the others wait for the commit to be finished?
+
+- Alex
+
+--=20
+Technische Universit=C3=A4t Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
+
+
+--b63HI2vDGUjw0rmQ83RumwUtZ7tnYQBbd--
+
+--xR6At3BscXEfQMytnEQ6uJIgWbuzasC1X
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEElhZsUHzVP0dbkjCRWT7tBbw+9v0FAmAk/q8FAwAAAAAACgkQWT7tBbw+9v3Z
+ChAAhoUoJXxPDqGorG3wSL5TocAPktm+zk4lWB1iSWFFSnIW9tHPIt3BU3TU/3WNP59XGRPy52Qv
+uPY16Es7Newbojhiay3+ImfAJjWjepm6+F0On4QHzQO/vMw+1n8s03V32V6fVB10EbV59rsjD9TJ
+uDtSSNaogT8E9q5dQe/xDlmmPQGrN/J35YdPowYC7qof1gRQLBJfpHyQyzWb06lvt6mBNg75fC7l
+7LfMnn6EqM5RdNva4DyfHPY7JaEkE9ktG3YnuPU5F3KvpE74luogqz5fC/CdZ7Kdv0Jv1Wi2X7AA
+/8dYb+d/zSLxtkndHKoCaXfWfL0A2X4hw2Nnpd+2C8nnRIO1q2CV8r+FILgatIPq1wgvovskmhQA
+fbGm4vh0Bw2gfMGGVtjGGgoLzT93XUMWQ7uD9VstQvchOB0vKfKy/Nzv4LLPRFS4lTWtVvZtJfQR
+rwD6KHQn7thgiVjgEoh9LAdtg7/FsvznOjcuOL+fPYA6acMkF+5aCemtel/fkrrbPP8QZk+eJj/O
+DkRSjSfBmnw6RSPkrolZ3y9kVzZFjqO7sUGCTVtey/URABPQb+VjtLS+1mJ7+QvnMSuDpd5aKAJH
+azfVgwCPrcopu+i7KYsTWzKpR4eENDmOWhUvzFvoko4dUVvU/N90H7Aelp/k1CUfvYEgJ4TlhJ/G
+CWc=
+=hu8m
+-----END PGP SIGNATURE-----
+
+--xR6At3BscXEfQMytnEQ6uJIgWbuzasC1X--
