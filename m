@@ -2,90 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466A93185CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B4A3185D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhBKHlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:41:06 -0500
-Received: from mail-wm1-f41.google.com ([209.85.128.41]:39519 "EHLO
-        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhBKHkB (ORCPT
+        id S229592AbhBKHl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:41:58 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:35338 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229844AbhBKHlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:40:01 -0500
-Received: by mail-wm1-f41.google.com with SMTP id u14so4422907wmq.4;
-        Wed, 10 Feb 2021 23:39:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Slvp0O5a2xW0GJAJWB769mdLBLRDIEx9/k/OPk1qyq4=;
-        b=cC68LBYr4+ZcSKieQD0/ELHVXYjV5SBAkH9z0d7eVn0W4zu/i83a/tFVoeWCEe0loU
-         ot5e2UPe+eQTXejQm2dKcE5pWx5V1oUPX9TxqitUpPfpFBlKkUAvrMnku0HHMy1EkANN
-         RxriAMYYAUD7fN3+ocPDsV4ufnA4u/lhr9Ms/cL9rCbxW+chFL10nAxToNQ36G02GCbY
-         OvlxHGEIf52mZEWcu6o+OVLPXf3uoPxPN+B0jbE+2mKtPxdHwMDVk/cpt3+Cbgsn2GsF
-         hkUMxM/DOcJDdYSUy0qp1hAjyjw56J9kV23C6Dr0UkpRFbguk+s+UZ7czXprj99ny4az
-         fleQ==
-X-Gm-Message-State: AOAM5330dFhHAnFS3s+WlB2q1HT9VtWdIvLSGimagTiuA52lWtDCtQym
-        ifh/pJfL3AlQV1CGpM7yKAE=
-X-Google-Smtp-Source: ABdhPJzVTOoTs07kV3snqP5vt6nM5+VZaU78wa1lEsRAPeojg+oKlbGxjk5Brt02b4Igkbi4e4XTcA==
-X-Received: by 2002:a05:600c:430a:: with SMTP id p10mr3597169wme.142.1613029158759;
-        Wed, 10 Feb 2021 23:39:18 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id j71sm8445307wmj.31.2021.02.10.23.39.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 23:39:18 -0800 (PST)
-Date:   Thu, 11 Feb 2021 08:39:16 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 2/3] ARM: dts: exynos: Add charger supply for I9100
-Message-ID: <20210211073916.apyqfins3x2q44yq@kozik-lap>
-References: <20210130172747.2022977-1-timon.baetz@protonmail.com>
- <20210130172747.2022977-3-timon.baetz@protonmail.com>
- <20210211065850.1e4a8943.timon.baetz@protonmail.com>
+        Thu, 11 Feb 2021 02:41:06 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B7dq2w049553;
+        Thu, 11 Feb 2021 07:39:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Xj95ASAjbUV7QJXd/VYGSl4qH3K4T8/ob/2L5yucxTE=;
+ b=epCr8gaFVA5EBWAHKhx6XGHGe7IdEqADDtgL5LJEpUs+VrnPLltvlldBmT1yx4eNiiXI
+ AkrJIrv7sWjWs/rWcMTBFDDSkKT0K6buS4iJMIV//RY6kvJeq71+oWx33yAeKO1GZ8S+
+ qdqrVJKGsWfNGUR0LU3ijzkP+yzRN8BdXN8ObMBonYyeygqhohZZAACc93GPHTr21YIW
+ HzDQoYg/47hquPmKKT4+EavD1emFbQDJUNJenS5yNWgaVghxYqJKHrmmdCbeefECgs6/
+ ULOaQSArPzklz5lGp++glSD6kvcfPwnLtsRBzNdNweusd9duG2CgMbcH8cIrwuakZHkx Tg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 36hkrn6aug-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 07:39:52 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B7YkQ7025912;
+        Thu, 11 Feb 2021 07:39:51 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 36j4vtvbar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 07:39:50 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11B7dljr025561;
+        Thu, 11 Feb 2021 07:39:47 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 23:39:46 -0800
+Date:   Thu, 11 Feb 2021 10:39:38 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Subject: Re: [PATCH v4 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
+Message-ID: <20210211073938.GL20820@kadam>
+References: <20210210222851.232374-1-drew@beagleboard.org>
+ <20210210222851.232374-3-drew@beagleboard.org>
+ <20210211071153.GJ20820@kadam>
+ <7b4105ca8671a2962910deb5418a934bf07d1458.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210211065850.1e4a8943.timon.baetz@protonmail.com>
+In-Reply-To: <7b4105ca8671a2962910deb5418a934bf07d1458.camel@perches.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110068
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 05:59:04AM +0000, Timon Baetz wrote:
-> On Sat, 30 Jan 2021 17:29:31 +0000, Timon Baetz wrote:
-> > The regulator is used for charging control by max8997_charger driver.
+On Wed, Feb 10, 2021 at 11:24:23PM -0800, Joe Perches wrote:
+> On Thu, 2021-02-11 at 10:11 +0300, Dan Carpenter wrote:
+> > On Wed, Feb 10, 2021 at 02:28:54PM -0800, Drew Fustini wrote:
+> > > +	ret = strncpy_from_user(buf, user_buf, PINMUX_MAX_NAME * 2);
+> > > +	if (ret < 0) {
+> > > +		dev_err(pctldev->dev, "failed to copy buffer from userspace");
+> > > +		goto free_gname;
+> > > +	}
+> > > +	buf[len-1] = '\0';
+> > > +
+> > > +	ret = sscanf(buf, "%s %s", fname, gname);
+> > > +	if (ret != 2) {
+> > > +		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
+> > > +		goto free_gname;
 > > 
-> > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> > ---
-> >  arch/arm/boot/dts/exynos4210-i9100.dts | 2 ++
-> >  1 file changed, 2 insertions(+)
+> > We need a "ret = -EINVAL;" before the goto.  sscanf doesn't return error
+> > codes.  Normally we would write it like so:
 > > 
-> > diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exynos4210-i9100.dts
-> > index 304a8ee2364c..dad950daafb4 100644
-> > --- a/arch/arm/boot/dts/exynos4210-i9100.dts
-> > +++ b/arch/arm/boot/dts/exynos4210-i9100.dts
-> > @@ -384,6 +384,8 @@ pmic@66 {
-> >  		pinctrl-0 = <&max8997_irq>, <&otg_gp>, <&usb_sel>;
-> >  		pinctrl-names = "default";
-> >  
-> > +		charger-supply = <&charger_reg>;
-> > +
-> >  		regulators {
-> >  			vadc_reg: LDO1 {
-> >  				regulator-name = "VADC_3.3V_C210";
+> > 	if (sscanf(buf, "%s %s", fname, gname) != 2) {
+> > 		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
+> > 		ret = -EINVAL;
+> > 		goto free_gname;
+> > 	}
+> > 
+> > I'm going to write a Smatch check for this today.
 > 
-> Now that the bindings have been accepted and integrated into linux-next,
-> is anything else blocking this?
+> It's a pretty frequently used style:
+> 
+> $ git grep -P '\w+\s*=\s+sscanf\b' | wc -l
+> 327
 
-No, patch is fine. It's just too late in the cycle, so I'll take the
-patch after merge window.
+Yeah.  That's true.  I looked through a couple of those and they were
+fine.  (Sample size 2)  But the other format is more common.
 
-Best regards,
-Krzysztof
+$ git grep sscanf | grep = | wc -l
+803
+
+I have written a Smatch check to complain whenever we propogate the
+return value from sscanf.  I'll let you know tomorrow how that goes.
+
+I should write another check which says "On this error path, we know
+sscanf was not equal to the value we wanted but we are still returning
+success".
+
+regards,
+dan carpenter
 
