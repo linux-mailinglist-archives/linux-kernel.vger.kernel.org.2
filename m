@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E463185A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 385123185AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhBKHZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:25:10 -0500
-Received: from smtprelay0232.hostedemail.com ([216.40.44.232]:58398 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229533AbhBKHZI (ORCPT
+        id S229585AbhBKHaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:30:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhBKHaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:25:08 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id B098A180A68C3;
-        Thu, 11 Feb 2021 07:24:26 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:966:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3872:4321:4385:5007:7652:7903:10004:10226:10400:10848:11026:11232:11473:11658:11914:12050:12297:12663:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21451:21611:21627:21990:30012:30054:30070:30079:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cart80_3f0d51b27616
-X-Filterd-Recvd-Size: 2439
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 11 Feb 2021 07:24:24 +0000 (UTC)
-Message-ID: <7b4105ca8671a2962910deb5418a934bf07d1458.camel@perches.com>
-Subject: Re: [PATCH v4 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
-From:   Joe Perches <joe@perches.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Date:   Wed, 10 Feb 2021 23:24:23 -0800
-In-Reply-To: <20210211071153.GJ20820@kadam>
-References: <20210210222851.232374-1-drew@beagleboard.org>
-         <20210210222851.232374-3-drew@beagleboard.org>
-         <20210211071153.GJ20820@kadam>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 11 Feb 2021 02:30:03 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42FBC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 23:29:22 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id z21so3285884pgj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 23:29:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IoDDbkA/vaVMnIhw4JfZZr78ZUSJQGF5SzLjqNA/02k=;
+        b=AfYvwAFxBGw1L7iqcTOKb2C9mrdYp60863Zp9hiAKSst+SivGV97uPQnkZkXDPD/KB
+         cOzdQzT4laOXT5vfDEx0OqIP7KxBD4a3pIQJdTtq9sXjCnWpX6R1U7r3NWcBM4lyqOEm
+         TeKNWLn6ZUXodwlF/EL85swYXOF6h02a4Nym1oVshFWM9sZ4WPhkQ8Z5fp3vFOONaSXw
+         bUaGwHWIRj+gITfaPwhgIf09ERFtclYoRDZmSL19yjfqm2BhhuTQK/KSaJY6RBTwPPqJ
+         GusSVYjtiDgp/YEsmQX55SHDd65KMnwc/Ljqz0yv+VZGbxTh1aP4GauftSYVcPHdtw4Y
+         H78g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IoDDbkA/vaVMnIhw4JfZZr78ZUSJQGF5SzLjqNA/02k=;
+        b=i6GkV79WqlckJAnGTYnZCTV268Js0yyDbG9+ufADFDVxRc/LeF+iXpn6gwTMxHNJj0
+         7Q81yzfk9Youh4YgDC4TD60zUcJqEDa/awftVgWvJ53c8EdXWbK6ldVkcVD+fCvsC/9D
+         grPqP7j7GR3+csn0tZzEpJLtR4wxM+e4O+WfHe2SE2RlzDy58aUfSLOcFoYKcS5i0qPK
+         LmpKhFZU1aUnQlSywjpS0+5OTckbIKa/sDiB2VkQUssFqP/UFe5yMn3jC3VbFay5SwAB
+         xyvPmLE9YjalVKK2z4PYIyu/cuPjIxoivQEsfqWgEuG+W6E0jgRfDT6uPGkbRGc2gDOa
+         +rbA==
+X-Gm-Message-State: AOAM533NA6cB58WYZGAQ7heOJB87x9Ep5/vt7RkF5Wb1gUyzieUZr/hY
+        kGH24qe5qZ5+kupl+O1fq3U=
+X-Google-Smtp-Source: ABdhPJweZgGWWflwwkOY5Zk3zlAcE2Qnmnuh80XdqSlaeYlRF5IALhiKLwUY/lzK9tTSrANZ/0hz3Q==
+X-Received: by 2002:a65:620f:: with SMTP id d15mr6771122pgv.218.1613028561862;
+        Wed, 10 Feb 2021 23:29:21 -0800 (PST)
+Received: from localhost ([2601:1c0:6c02:1d30:195b:5ddb:5efc:9045])
+        by smtp.gmail.com with ESMTPSA id cq2sm4059864pjb.55.2021.02.10.23.29.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Feb 2021 23:29:21 -0800 (PST)
+From:   Adithya Chandrakasan <adithya.chandrakasan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     Adithya Chandrakasan <adithya.chandrakasan@gmail.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org
+Subject: [PATCH] The Patch fixes the missing a blank line warning
+Date:   Wed, 10 Feb 2021 23:29:18 -0800
+Message-Id: <20210211072918.376837-1-adithya.chandrakasan@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-02-11 at 10:11 +0300, Dan Carpenter wrote:
-> On Wed, Feb 10, 2021 at 02:28:54PM -0800, Drew Fustini wrote:
-> > +	ret = strncpy_from_user(buf, user_buf, PINMUX_MAX_NAME * 2);
-> > +	if (ret < 0) {
-> > +		dev_err(pctldev->dev, "failed to copy buffer from userspace");
-> > +		goto free_gname;
-> > +	}
-> > +	buf[len-1] = '\0';
-> > +
-> > +	ret = sscanf(buf, "%s %s", fname, gname);
-> > +	if (ret != 2) {
-> > +		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
-> > +		goto free_gname;
-> 
-> We need a "ret = -EINVAL;" before the goto.  sscanf doesn't return error
-> codes.  Normally we would write it like so:
-> 
-> 	if (sscanf(buf, "%s %s", fname, gname) != 2) {
-> 		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
-> 		ret = -EINVAL;
-> 		goto free_gname;
-> 	}
-> 
-> I'm going to write a Smatch check for this today.
+FILE: mm/util.c:930: WARNING: Missing a blank line after declarations
 
-It's a pretty frequently used style:
+Signed-off-by: Adithya Chandrakasan <adithya.chandrakasan@gmail.com>
+---
+ mm/util.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-$ git grep -P '\w+\s*=\s+sscanf\b' | wc -l
-327
-
-A grep with -A5 seems to show most use some additional error assignment
-when checking the return value.
-
-$ git grep -P -A5 '\w+\s*=\s+sscanf\b' | grep -P '(?:return|=)\s*\-E' | wc -l
-174
-
+diff --git a/mm/util.c b/mm/util.c
+index 8c9b7d1e7c49..60286876636d 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -927,6 +927,7 @@ int get_cmdline(struct task_struct *task, char *buffer, int buflen)
+ 	unsigned int len;
+ 	struct mm_struct *mm = get_task_mm(task);
+ 	unsigned long arg_start, arg_end, env_start, env_end;
++
+ 	if (!mm)
+ 		goto out;
+ 	if (!mm->arg_end)
+-- 
+2.25.1
 
