@@ -2,210 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7584E3191C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E403191C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbhBKSCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:02:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21972 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232450AbhBKRhp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:37:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613064976;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iI21Pcg7YQSwB2wQEIgSvnGnSK7Kb/kyFlXapjRwTPg=;
-        b=eG8TkWenij/eCWwBBtVPSiMHKv7DFklGlr26njX/WAG225qsQIV5voAo2mgvd5QmjxQK2t
-        m9o6gimktm8ynvMQI6bNnDRJYbNe5+E6uUkwqYNcXwgKq0XRPmCqahsJTCSWDbFNyMpiKy
-        8PxtSd3YuIH4cTo5mBBzOmm3jGuorZc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-491-Gj4ll3mqPfG2iEePjc3b1g-1; Thu, 11 Feb 2021 12:36:13 -0500
-X-MC-Unique: Gj4ll3mqPfG2iEePjc3b1g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 132CC803F48;
-        Thu, 11 Feb 2021 17:36:10 +0000 (UTC)
-Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 298E85C1BD;
-        Thu, 11 Feb 2021 17:36:02 +0000 (UTC)
-Subject: Re: [PATCH v13 05/15] iommu/smmuv3: Get prepared for nested stage
- support
-To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
-        alex.williamson@redhat.com
-Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
-        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
-        zhangfei.gao@linaro.org
-References: <20201118112151.25412-1-eric.auger@redhat.com>
- <20201118112151.25412-6-eric.auger@redhat.com>
- <118a047b-91f4-3c84-867f-6c0b89f9011e@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <0d949aef-6719-2ef4-f1cd-f323b4d4130b@redhat.com>
-Date:   Thu, 11 Feb 2021 18:36:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S232764AbhBKSDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:03:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231571AbhBKRi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:38:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B90361490;
+        Thu, 11 Feb 2021 17:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613065083;
+        bh=0Q6Dr6gj34SZio42kO6yIcEFm1D+ME9MHr/wTQOn+dk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZcvotxopvE7PGwY3XGIJ/Y8iS56hXGjuvTaMiT53kpbsO8z582xT2oGEzyssQsyhv
+         Mchz7uRab+TPYNZrVcZUXDS3jVYTKA26lqI+gCr5XYj/D2bF568hlBAm51m86EDGRM
+         U3rDWZfCb2KUMlNf76YPpmoDOHUBl/WXBU5h/RTin45n/A2FK9fVa4DLnk++S+Anb1
+         R41dYrHeTr7bL5rg6HTrR5CMNF/VnEtjb19UnenhP6KLjSY1mlN1q13ttFGCuEv0Nk
+         EBNd4SoH2afb9KbckD6ImvlAx2sBMt6npJRQ/EuL4nYkpaAnbC3TtSA7D6VbP7wNS0
+         DctEW9U/kRA0g==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E3A2A3522694; Thu, 11 Feb 2021 09:38:02 -0800 (PST)
+Date:   Thu, 11 Feb 2021 09:38:02 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: linux-next: manual merge of the rcu tree with the block tree
+Message-ID: <20210211173802.GM2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210211164852.7489b87d@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <118a047b-91f4-3c84-867f-6c0b89f9011e@huawei.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211164852.7489b87d@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keqian,
-
-On 2/2/21 8:14 AM, Keqian Zhu wrote:
-> Hi Eric,
+On Thu, Feb 11, 2021 at 04:48:52PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> On 2020/11/18 19:21, Eric Auger wrote:
->> When nested stage translation is setup, both s1_cfg and
->> s2_cfg are set.
->>
->> We introduce a new smmu domain abort field that will be set
->> upon guest stage1 configuration passing.
->>
->> arm_smmu_write_strtab_ent() is modified to write both stage
->> fields in the STE and deal with the abort field.
->>
->> In nested mode, only stage 2 is "finalized" as the host does
->> not own/configure the stage 1 context descriptor; guest does.
->>
->> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>
->> ---
->> v10 -> v11:
->> - Fix an issue reported by Shameer when switching from with vSMMU
->>   to without vSMMU. Despite the spec does not seem to mention it
->>   seems to be needed to reset the 2 high 64b when switching from
->>   S1+S2 cfg to S1 only. Especially dst[3] needs to be reset (S2TTB).
->>   On some implementations, if the S2TTB is not reset, this causes
->>   a C_BAD_STE error
->> ---
->>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 64 +++++++++++++++++----
->>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 +
->>  2 files changed, 56 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> index 18ac5af1b284..412ea1bafa50 100644
->> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> @@ -1181,8 +1181,10 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->>  	 * three cases at the moment:
->>  	 *
->>  	 * 1. Invalid (all zero) -> bypass/fault (init)
->> -	 * 2. Bypass/fault -> translation/bypass (attach)
->> -	 * 3. Translation/bypass -> bypass/fault (detach)
->> +	 * 2. Bypass/fault -> single stage translation/bypass (attach)
->> +	 * 3. Single or nested stage Translation/bypass -> bypass/fault (detach)
->> +	 * 4. S2 -> S1 + S2 (attach_pasid_table)
->> +	 * 5. S1 + S2 -> S2 (detach_pasid_table)
+> Today's linux-next merge of the rcu tree got conflicts in:
 > 
-> The following line "BUG_ON(ste_live && !nested);" forbids this transform.
-
-Yes as pointed out by Kunkun, there is always an abort in-between. I
-will restore the original comment.
-
-> And I have a look at the 6th patch, the transform seems S1 + S2 -> abort.
-> So after detach, the status is not the same as that before attach. Does it
-> match our expectation?
-
-Indeed at detach time I think I should reset the abort() flag as this
-latter is not imposed anymore by the guest.
-
-Thanks!
-
-Eric
-
-
+>   include/linux/rcupdate.h
+>   kernel/rcu/tree.c
+>   kernel/rcu/tree_plugin.h
 > 
->>  	 *
->>  	 * Given that we can't update the STE atomically and the SMMU
->>  	 * doesn't read the thing in a defined order, that leaves us
->> @@ -1193,7 +1195,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->>  	 * 3. Update Config, sync
->>  	 */
->>  	u64 val = le64_to_cpu(dst[0]);
->> -	bool ste_live = false;
->> +	bool s1_live = false, s2_live = false, ste_live;
->> +	bool abort, nested = false, translate = false;
->>  	struct arm_smmu_device *smmu = NULL;
->>  	struct arm_smmu_s1_cfg *s1_cfg;
->>  	struct arm_smmu_s2_cfg *s2_cfg;
->> @@ -1233,6 +1236,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->>  		default:
->>  			break;
->>  		}
->> +		nested = s1_cfg->set && s2_cfg->set;
->> +		translate = s1_cfg->set || s2_cfg->set;
->>  	}
->>  
->>  	if (val & STRTAB_STE_0_V) {
->> @@ -1240,23 +1245,36 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->>  		case STRTAB_STE_0_CFG_BYPASS:
->>  			break;
->>  		case STRTAB_STE_0_CFG_S1_TRANS:
->> +			s1_live = true;
->> +			break;
->>  		case STRTAB_STE_0_CFG_S2_TRANS:
->> -			ste_live = true;
->> +			s2_live = true;
->> +			break;
->> +		case STRTAB_STE_0_CFG_NESTED:
->> +			s1_live = true;
->> +			s2_live = true;
->>  			break;
->>  		case STRTAB_STE_0_CFG_ABORT:
->> -			BUG_ON(!disable_bypass);
->>  			break;
->>  		default:
->>  			BUG(); /* STE corruption */
->>  		}
->>  	}
->>  
->> +	ste_live = s1_live || s2_live;
->> +
->>  	/* Nuke the existing STE_0 value, as we're going to rewrite it */
->>  	val = STRTAB_STE_0_V;
->>  
->>  	/* Bypass/fault */
->> -	if (!smmu_domain || !(s1_cfg->set || s2_cfg->set)) {
->> -		if (!smmu_domain && disable_bypass)
->> +
->> +	if (!smmu_domain)
->> +		abort = disable_bypass;
->> +	else
->> +		abort = smmu_domain->abort;
->> +
->> +	if (abort || !translate) {
->> +		if (abort)
->>  			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_ABORT);
->>  		else
->>  			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_BYPASS);
->> @@ -1274,8 +1292,16 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->>  		return;
->>  	}
->>  
->> +	BUG_ON(ste_live && !nested);
->> +
->> +	if (ste_live) {
->> +		/* First invalidate the live STE */
->> +		dst[0] = cpu_to_le64(STRTAB_STE_0_CFG_ABORT);
->> +		arm_smmu_sync_ste_for_sid(smmu, sid);
->> +	}
->> +
-> [...]
+> between commits:
 > 
-> Thanks,
-> Keqian
+>   3a7b5c87a0b2 ("rcu/nocb: Perform deferred wake up before last idle's need_resched() check")
+>   e4234f21d2ea ("rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers")
+>   14bbd41d5109 ("entry/kvm: Explicitly flush pending rcuog wakeup before last rescheduling point")
+
+Frederic had me move these out of the section of the -rcu commits for
+the v5.12 merge window, saying that they were not yet ready.
+
+Jens, are these needed to prevent failures in the block tree?  If so,
+there were some commits added late in v5.11 that might also get rid
+of your failures.  If those v5.11 commits don't help the block tree,
+let's figure out what we need to do here...  ;-)
+
+> from the block tree and commits:
 > 
+>   d97b07818240 ("rcu/nocb: De-offloading CB kthread")
+>   254e11efde66 ("rcu/nocb: Re-offload support")
+
+These two are part of my pull request.
+
+>   eba362724509 ("rcu: Remove superfluous rdp fetch")
+
+This one has some chance of going in.
+
+> from the rcu tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+
+Thank you for calling our attention to this collision!
+
+							Thanx, Paul
+
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc include/linux/rcupdate.h
+> index 36c2119de702,fa819f878cb1..000000000000
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@@ -110,10 -112,12 +112,14 @@@ static inline void rcu_user_exit(void) 
+>   
+>   #ifdef CONFIG_RCU_NOCB_CPU
+>   void rcu_init_nohz(void);
+>  +void rcu_nocb_flush_deferred_wakeup(void);
+> + int rcu_nocb_cpu_offload(int cpu);
+> + int rcu_nocb_cpu_deoffload(int cpu);
+>   #else /* #ifdef CONFIG_RCU_NOCB_CPU */
+>   static inline void rcu_init_nohz(void) { }
+>  +static inline void rcu_nocb_flush_deferred_wakeup(void) { }
+> + static inline int rcu_nocb_cpu_offload(int cpu) { return -EINVAL; }
+> + static inline int rcu_nocb_cpu_deoffload(int cpu) { return 0; }
+>   #endif /* #else #ifdef CONFIG_RCU_NOCB_CPU */
+>   
+>   /**
+> diff --cc kernel/rcu/tree.c
+> index ce17b8477442,c1ae1e52f638..000000000000
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@@ -643,7 -649,7 +649,6 @@@ static noinstr void rcu_eqs_enter(bool 
+>   	instrumentation_begin();
+>   	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
+>   	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+> - 	rdp = this_cpu_ptr(&rcu_data);
+>  -	do_nocb_deferred_wakeup(rdp);
+>   	rcu_prepare_for_idle();
+>   	rcu_preempt_deferred_qs(current);
+>   
+> diff --cc kernel/rcu/tree_plugin.h
+> index cdc1b7651c03,ba1ae1e4b215..000000000000
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@@ -2186,19 -2341,201 +2346,208 @@@ static void do_nocb_deferred_wakeup_tim
+>    * This means we do an inexact common-case check.  Note that if
+>    * we miss, ->nocb_timer will eventually clean things up.
+>    */
+>  -static void do_nocb_deferred_wakeup(struct rcu_data *rdp)
+>  +static bool do_nocb_deferred_wakeup(struct rcu_data *rdp)
+>   {
+>   	if (rcu_nocb_need_deferred_wakeup(rdp))
+>  -		do_nocb_deferred_wakeup_common(rdp);
+>  +		return do_nocb_deferred_wakeup_common(rdp);
+>  +	return false;
+>  +}
+>  +
+>  +void rcu_nocb_flush_deferred_wakeup(void)
+>  +{
+>  +	do_nocb_deferred_wakeup(this_cpu_ptr(&rcu_data));
+>   }
+>  +EXPORT_SYMBOL_GPL(rcu_nocb_flush_deferred_wakeup);
+>   
+> + static int rdp_offload_toggle(struct rcu_data *rdp,
+> + 			       bool offload, unsigned long flags)
+> + 	__releases(rdp->nocb_lock)
+> + {
+> + 	struct rcu_segcblist *cblist = &rdp->cblist;
+> + 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+> + 	bool wake_gp = false;
+> + 
+> + 	rcu_segcblist_offload(cblist, offload);
+> + 
+> + 	if (rdp->nocb_cb_sleep)
+> + 		rdp->nocb_cb_sleep = false;
+> + 	rcu_nocb_unlock_irqrestore(rdp, flags);
+> + 
+> + 	/*
+> + 	 * Ignore former value of nocb_cb_sleep and force wake up as it could
+> + 	 * have been spuriously set to false already.
+> + 	 */
+> + 	swake_up_one(&rdp->nocb_cb_wq);
+> + 
+> + 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+> + 	if (rdp_gp->nocb_gp_sleep) {
+> + 		rdp_gp->nocb_gp_sleep = false;
+> + 		wake_gp = true;
+> + 	}
+> + 	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
+> + 
+> + 	if (wake_gp)
+> + 		wake_up_process(rdp_gp->nocb_gp_kthread);
+> + 
+> + 	return 0;
+> + }
+> + 
+> + static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+> + {
+> + 	struct rcu_segcblist *cblist = &rdp->cblist;
+> + 	unsigned long flags;
+> + 	int ret;
+> + 
+> + 	pr_info("De-offloading %d\n", rdp->cpu);
+> + 
+> + 	rcu_nocb_lock_irqsave(rdp, flags);
+> + 	/*
+> + 	 * If there are still pending work offloaded, the offline
+> + 	 * CPU won't help much handling them.
+> + 	 */
+> + 	if (cpu_is_offline(rdp->cpu) && !rcu_segcblist_empty(&rdp->cblist)) {
+> + 		rcu_nocb_unlock_irqrestore(rdp, flags);
+> + 		return -EBUSY;
+> + 	}
+> + 
+> + 	ret = rdp_offload_toggle(rdp, false, flags);
+> + 	swait_event_exclusive(rdp->nocb_state_wq,
+> + 			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
+> + 							SEGCBLIST_KTHREAD_GP));
+> + 	rcu_nocb_lock_irqsave(rdp, flags);
+> + 	/* Make sure nocb timer won't stay around */
+> + 	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_OFF);
+> + 	rcu_nocb_unlock_irqrestore(rdp, flags);
+> + 	del_timer_sync(&rdp->nocb_timer);
+> + 
+> + 	/*
+> + 	 * Flush bypass. While IRQs are disabled and once we set
+> + 	 * SEGCBLIST_SOFTIRQ_ONLY, no callback is supposed to be
+> + 	 * enqueued on bypass.
+> + 	 */
+> + 	rcu_nocb_lock_irqsave(rdp, flags);
+> + 	rcu_nocb_flush_bypass(rdp, NULL, jiffies);
+> + 	rcu_segcblist_set_flags(cblist, SEGCBLIST_SOFTIRQ_ONLY);
+> + 	/*
+> + 	 * With SEGCBLIST_SOFTIRQ_ONLY, we can't use
+> + 	 * rcu_nocb_unlock_irqrestore() anymore. Theoretically we
+> + 	 * could set SEGCBLIST_SOFTIRQ_ONLY with cb unlocked and IRQs
+> + 	 * disabled now, but let's be paranoid.
+> + 	 */
+> + 	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+> + 
+> + 	return ret;
+> + }
+> + 
+> + static long rcu_nocb_rdp_deoffload(void *arg)
+> + {
+> + 	struct rcu_data *rdp = arg;
+> + 
+> + 	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
+> + 	return __rcu_nocb_rdp_deoffload(rdp);
+> + }
+> + 
+> + int rcu_nocb_cpu_deoffload(int cpu)
+> + {
+> + 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> + 	int ret = 0;
+> + 
+> + 	if (rdp == rdp->nocb_gp_rdp) {
+> + 		pr_info("Can't deoffload an rdp GP leader (yet)\n");
+> + 		return -EINVAL;
+> + 	}
+> + 	mutex_lock(&rcu_state.barrier_mutex);
+> + 	cpus_read_lock();
+> + 	if (rcu_rdp_is_offloaded(rdp)) {
+> + 		if (cpu_online(cpu))
+> + 			ret = work_on_cpu(cpu, rcu_nocb_rdp_deoffload, rdp);
+> + 		else
+> + 			ret = __rcu_nocb_rdp_deoffload(rdp);
+> + 		if (!ret)
+> + 			cpumask_clear_cpu(cpu, rcu_nocb_mask);
+> + 	}
+> + 	cpus_read_unlock();
+> + 	mutex_unlock(&rcu_state.barrier_mutex);
+> + 
+> + 	return ret;
+> + }
+> + EXPORT_SYMBOL_GPL(rcu_nocb_cpu_deoffload);
+> + 
+> + static int __rcu_nocb_rdp_offload(struct rcu_data *rdp)
+> + {
+> + 	struct rcu_segcblist *cblist = &rdp->cblist;
+> + 	unsigned long flags;
+> + 	int ret;
+> + 
+> + 	/*
+> + 	 * For now we only support re-offload, ie: the rdp must have been
+> + 	 * offloaded on boot first.
+> + 	 */
+> + 	if (!rdp->nocb_gp_rdp)
+> + 		return -EINVAL;
+> + 
+> + 	pr_info("Offloading %d\n", rdp->cpu);
+> + 	/*
+> + 	 * Can't use rcu_nocb_lock_irqsave() while we are in
+> + 	 * SEGCBLIST_SOFTIRQ_ONLY mode.
+> + 	 */
+> + 	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
+> + 	/* Re-enable nocb timer */
+> + 	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
+> + 	/*
+> + 	 * We didn't take the nocb lock while working on the
+> + 	 * rdp->cblist in SEGCBLIST_SOFTIRQ_ONLY mode.
+> + 	 * Every modifications that have been done previously on
+> + 	 * rdp->cblist must be visible remotely by the nocb kthreads
+> + 	 * upon wake up after reading the cblist flags.
+> + 	 *
+> + 	 * The layout against nocb_lock enforces that ordering:
+> + 	 *
+> + 	 *  __rcu_nocb_rdp_offload()   nocb_cb_wait()/nocb_gp_wait()
+> + 	 * -------------------------   ----------------------------
+> + 	 *      WRITE callbacks           rcu_nocb_lock()
+> + 	 *      rcu_nocb_lock()           READ flags
+> + 	 *      WRITE flags               READ callbacks
+> + 	 *      rcu_nocb_unlock()         rcu_nocb_unlock()
+> + 	 */
+> + 	ret = rdp_offload_toggle(rdp, true, flags);
+> + 	swait_event_exclusive(rdp->nocb_state_wq,
+> + 			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB) &&
+> + 			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
+> + 
+> + 	return ret;
+> + }
+> + 
+> + static long rcu_nocb_rdp_offload(void *arg)
+> + {
+> + 	struct rcu_data *rdp = arg;
+> + 
+> + 	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
+> + 	return __rcu_nocb_rdp_offload(rdp);
+> + }
+> + 
+> + int rcu_nocb_cpu_offload(int cpu)
+> + {
+> + 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> + 	int ret = 0;
+> + 
+> + 	mutex_lock(&rcu_state.barrier_mutex);
+> + 	cpus_read_lock();
+> + 	if (!rcu_rdp_is_offloaded(rdp)) {
+> + 		if (cpu_online(cpu))
+> + 			ret = work_on_cpu(cpu, rcu_nocb_rdp_offload, rdp);
+> + 		else
+> + 			ret = __rcu_nocb_rdp_offload(rdp);
+> + 		if (!ret)
+> + 			cpumask_set_cpu(cpu, rcu_nocb_mask);
+> + 	}
+> + 	cpus_read_unlock();
+> + 	mutex_unlock(&rcu_state.barrier_mutex);
+> + 
+> + 	return ret;
+> + }
+> + EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
+> + 
+>   void __init rcu_init_nohz(void)
+>   {
+>   	int cpu;
+
 
