@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD89E318D40
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA7F318D53
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhBKOWY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Feb 2021 09:22:24 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:60685 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhBKOJA (ORCPT
+        id S231843AbhBKOYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 09:24:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32895 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232200AbhBKOLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:09:00 -0500
-Received: from xps13 (aputeaux-654-1-105-167.w90-2.abo.wanadoo.fr [90.2.4.167])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id B9DC810000F;
-        Thu, 11 Feb 2021 14:08:00 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 15:07:59 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Md Sadre Alam <mdalam@codeaurora.org>,
-        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH V4] mtd: rawnand: qcom: update last code word register
-Message-ID: <20210211150759.506f3463@xps13>
-In-Reply-To: <20210210090144.GE19226@work>
-References: <1611869959-5109-1-git-send-email-mdalam@codeaurora.org>
-        <20210210090144.GE19226@work>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 11 Feb 2021 09:11:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613052594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1db50KVoxPV8DsdAaKXwwrLzCGY6SPMsnN2pRLnSac0=;
+        b=RMdJEepTCqa1COsmf9XWUqTLQ/TrvG5lmR7c8g0l3p7Jr+yVhuOCkQc66r9EgVSH/AiUSP
+        e65xr+gfTmOWJlvu491xC8kqXTP4NOmwpfnLMyac6rpDSJpLRkMd4Fo1mx5056WoOEE0HV
+        +ULFstSMqkN6svYcTYfSwumaYEpSHpA=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-fhxboqYmNdKeMAu8BtesMg-1; Thu, 11 Feb 2021 09:09:52 -0500
+X-MC-Unique: fhxboqYmNdKeMAu8BtesMg-1
+Received: by mail-lj1-f199.google.com with SMTP id s13so281577ljm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:09:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1db50KVoxPV8DsdAaKXwwrLzCGY6SPMsnN2pRLnSac0=;
+        b=Sl9yKNRTZl+CKk4nGR1OO0gkOSrJVmebiNSSHl3a7nBS+Tx05G+4bgpAqBK7/CnnA3
+         0bzUQxoJLEGiGVidFka9aaHBUH8lcaulFCXCU4ydcn+d2fdQtxJVgphJbhSlG5forPWp
+         qoEFxqQ9/+0gJHBdXOH4Q80DnGE+Pe3JBKZRsJNruTQlorsAamvY8pYeNuDzU2TZwP53
+         LFxLoGbx+z5mA7UfHUulXa5Gn8M4Nzu6OfHYjos0dgIXicNxtzxDlrxG/ZaQ8WrQ056v
+         iKHSfUBXPm08pEcsHZSf8j+7KAyQu72E5E4uypgYpXITCYdxUOgaw5Y71v/3qnvY69WY
+         55Rg==
+X-Gm-Message-State: AOAM532ZfxqiHjRaMZsvYhi2AVfsSYOEBxqE8ft+rtydxOJDx7EIv19X
+        5ZZWpqAMEjpq77h8re+l/XhEbF+2konmpG/QIXQChhcgk82+NZtQ67t0hqJgkKmUqMZgmV4diWP
+        lbNpwrPxed5C+3R+4bCPHvVFBOl9IBoOdVWmaSRgF
+X-Received: by 2002:a2e:9a88:: with SMTP id p8mr5078752lji.227.1613052590910;
+        Thu, 11 Feb 2021 06:09:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyjxxXK6iYKZ2EdAbSoUbHxDhHAH5y+j7zo5+cHMQNHTys4vr0Q/FHQHZf3JG4E2JSsuZKYcK55UPqgFawIlrk=
+X-Received: by 2002:a2e:9a88:: with SMTP id p8mr5078724lji.227.1613052590631;
+ Thu, 11 Feb 2021 06:09:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210204010157.1823669-1-aklimov@redhat.com> <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
+ <CAFBcO+_Z1LKqPPwEKq-XGX+RnWQa+vFBVJ9D9y0MNHGUkM_4Jw@mail.gmail.com>
+ <YBv5qDBdb/VAq0Vw@hirez.programming.kicks-ass.net> <87eehvz6sx.fsf@oracle.com>
+In-Reply-To: <87eehvz6sx.fsf@oracle.com>
+From:   Alexey Klimov <aklimov@redhat.com>
+Date:   Thu, 11 Feb 2021 14:09:39 +0000
+Message-ID: <CAFBcO+_zMa8kC0cHnjAK6axX=CEL7UvS31ak_Vxr2gBO-JnH0Q@mail.gmail.com>
+Subject: Re: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on
+ cpu onlining
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        yury.norov@gmail.com, tglx@linutronix.de,
+        Joshua Baker <jobaker@redhat.com>, audralmitchel@gmail.com,
+        arnd@arndb.de, gregkh@linuxfoundation.org, rafael@kernel.org,
+        tj@kernel.org, lizefan@huawei.com,
+        Qais Yousef <qais.yousef@arm.com>, hannes@cmpxchg.org,
+        Alexey Klimov <klimov.linux@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Feb 5, 2021 at 12:41 AM Daniel Jordan
+<daniel.m.jordan@oracle.com> wrote:
+>
+> Peter Zijlstra <peterz@infradead.org> writes:
 
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
-10 Feb 2021 14:31:44 +0530:
+[...]
 
-> On Fri, Jan 29, 2021 at 03:09:19AM +0530, Md Sadre Alam wrote:
-> > From QPIC version 2.0 onwards new register got added to
-> > read last codeword. This change will add the READ_LOCATION_LAST_CW_n
-> > register.
-> > 
-> > For first three code word READ_LOCATION_n register will be
-> > use.For last code word READ_LOCATION_LAST_CW_n register will be
-> > use.
+> >> > One concequence of this is that you'll now get a bunch of notifications
+> >> > across things like suspend/hybernate.
+> >>
+> >> The patch doesn't change the number of kobject_uevent()s. The
+> >> userspace will get the same number of uevents as before the patch (at
+> >> least if I can rely on my eyes).
+> >
+> > bringup_hibernate_cpu() didn't used to generate an event, it does now.
+> > Same for bringup_nonboot_cpus().
+>
+> Both of those call cpu_up(), which only gets a cpuset_wait_for_hotplug()
+> in this patch.  No new events generated from that, right, it's just a
+> wrapper for a flush_work()?
+>
+> > Also, looking again, you don't seem to be reinstating the OFFLINE event
+> > you took out.
+>
+> It seems to be reinstated in cpuhp_smt_disable()?
 
-Sorry for the late notice, I think the patch is fine but if you don't
-mind I would like to propose a small change that should simplify your
-patch a lot, see below.
+Peter, what Daniel said.
+cpuset_wait_for_hotplug() doesn't generate an event.
 
-> > 
-> > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>  
-> 
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Thanks,
-> Mani
-> 
-> > ---
-> > [V4]
-> >  * Modified condition for nandc_set_read_loc_last() in qcom_nandc_read_cw_raw().
-> >  * Added one additional argument "last_cw" to the function config_nand_cw_read()
-> >    to handle last code word condition.
-> >  * Changed total number of last code word register "NAND_READ_LOCATION_LAST_CW_0" to 4
-> >    while doing code word configuration.
-> >  drivers/mtd/nand/raw/qcom_nandc.c | 110 +++++++++++++++++++++++++++++---------
-> >  1 file changed, 84 insertions(+), 26 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> > index 667e4bf..9484be8 100644
-> > --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> > @@ -48,6 +48,10 @@
-> >  #define	NAND_READ_LOCATION_1		0xf24
-> >  #define	NAND_READ_LOCATION_2		0xf28
-> >  #define	NAND_READ_LOCATION_3		0xf2c
-> > +#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
-> > +#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
-> > +#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
-> > +#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
-> >  
-> >  /* dummy register offsets, used by write_reg_dma */
-> >  #define	NAND_DEV_CMD1_RESTORE		0xdead
-> > @@ -187,6 +191,12 @@ nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
-> >  	      ((size) << READ_LOCATION_SIZE) |			\
-> >  	      ((is_last) << READ_LOCATION_LAST))
-> >  
-> > +#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
-> > +nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
-> > +	      ((offset) << READ_LOCATION_OFFSET) |		\
-> > +	      ((size) << READ_LOCATION_SIZE) |			\
-> > +	      ((is_last) << READ_LOCATION_LAST))
-> > +
+The offline event was moved below in the same function:
 
-You could rename the macro nandc_set_read_loc() into
-nandc_set_read_loc_first() or anything else that make sense, then have
-a helper which does:
++
++ /* Tell user space about the state changes */
++ for_each_cpu(cpu, mask) {
++ dev = get_cpu_device(cpu);
++ kobject_uevent(&dev->kobj, KOBJ_OFFLINE);
++ }
++
++ free_cpumask_var(mask);
 
-nandc_set_read_loc()
-{
-	if (condition for first)
-		return nandc_set_read_loc_first();
-	else
-		return nandc_set_read_loc_last();
-}
+Daniel,
+thanks for your comments. I'll update the patch and resend.
 
-And in the rest of your patch you won't have to touch anything else.
+Best regards,
+Alexey
 
-Thanks,
-Miquèl
