@@ -2,177 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8B13191F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC983191F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbhBKSMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:12:03 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:35901 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbhBKRtd (ORCPT
+        id S232814AbhBKSNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:13:19 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:44314 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232648AbhBKRvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:49:33 -0500
-Received: by mail-wm1-f43.google.com with SMTP id i9so6595403wmq.1;
-        Thu, 11 Feb 2021 09:49:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fCJHjf1MjgpxPkhng9R5nM8PO3m4mG6rPr4oi+gwZSk=;
-        b=LzmQ/pz8erjaQ0/Z07kqfkWyC8IhJZA9Z3lQeyH6bGwQEUI6MV3nC7p6yxj0/Z7H9T
-         d8ydRecpPFNi2P8l7VIaBUga8EDCgYgNy3oH/2UA4/1uJO3/6TzOxzan7qk2D9rCar40
-         AYkpWTyQBgLFR6fk9WhY4SkM0IJa/CRf2BHR+PH+GFENdu6YiseKOG6SufE1J/dz8TTN
-         iAGqGzZcD+tQR6mEEKNcrhy/S2x9R8A7nlOI8uXPMr3chPCetyxrR6uOyEIo/bgUYKqc
-         FsGg+vy1b/k0oLfgGGRRaSKZifUYDspoged5Mtco0b404HBv0WHUw2iAtBv20xFBChv1
-         EZhw==
-X-Gm-Message-State: AOAM532CtM2sNrqK99hpWnEccfZEshli8ncP31RIufyNBD9rryvnXYDd
-        kjfO5oJ7fJD2oZ/YMLcsm2yuVkxW9YSassY3p+Q=
-X-Google-Smtp-Source: ABdhPJxMcqspNOmle6ZKTyY8kLNaG+NsymGJ6QBeHtJ36F63+UmcV5iSWbai/XyWqB8G01YsWnFaeuhJNDuRsljEPDM=
-X-Received: by 2002:a1c:bc89:: with SMTP id m131mr6197346wmf.32.1613065730253;
- Thu, 11 Feb 2021 09:48:50 -0800 (PST)
+        Thu, 11 Feb 2021 12:51:37 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BHho6B139539;
+        Thu, 11 Feb 2021 17:50:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=h/29uddYSg1ojgXTI7rWxe+96QmSvcVyeY7vZmWglyk=;
+ b=t4N22omcJfagqzpiHJw7iziKwGlVSxYdJEoeaCFYxTaEHUWVi4iHu6NfEGi0IAIyLpfX
+ jv/FlOE868lzFUAWfkeSjvRvTRldW4xnVWwX/FwQTJbk/0gZN6+wNYISzKsdLdLRIb9H
+ w9aWd70uA43qPUhQ+GK9sPnfQ8CM/zrzBM94eeYA9qNy69tNa9KDLNUhxaUEk/Wda0Xv
+ jmA/GjXhQ9Tp7FxSp6U5WVhtEoM+BH2ttOLvORbMyEKyV5Jv2wEyJVI5E6K30r+h8Cub
+ OviX9jxlU7MwLRITScji53Q/eMM0rILIZLKqdU0jkPDPodp1hNO7Fg1HlK9BA5+yXJ4O sQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 36hkrn8eex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 17:50:04 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BHj8uB100109;
+        Thu, 11 Feb 2021 17:50:04 GMT
+Received: from nam02-cy1-obe.outbound.protection.outlook.com (mail-cys01nam02lp2056.outbound.protection.outlook.com [104.47.37.56])
+        by userp3030.oracle.com with ESMTP id 36j520bbrh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 17:50:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YpEyPOyHVFqp4viLw0BajumGJh2io4RWKyNsvY6zL+lFOtvliJ2d0wUSvgUuCin3pBd49hIaYd01oIQgLxQsXknNKeiVdSsyDb4oMmyY+9IisC25sBDLpvvU3IwL8siphCOE1uSpTlXOw5/ycwPlUdstiWuY/pBikHtRBjhISqs+Ie+c6MEDpt8M+mR4dpF7uq5K9wnwQ+tT3eA1cl10npX6tUw4nHdSThRkToH0xJ/bSLNVFMkjd8yX5I1YC2qPakJmG++9n6PxnLdU+FPFGokh2J6mGialuj+5N8ARJpVPddV0GsCJqnqu0p6eagfjSwrPWeyx+esLt/td9ipTnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h/29uddYSg1ojgXTI7rWxe+96QmSvcVyeY7vZmWglyk=;
+ b=BtnBjVL/nfTMChEwwXsY/kYdrwdwTsQ+/ZgUmUHYPSizLl8JLLmx7CyHrMotlUOnJLi/ZiwI9CU2midDOWQPT+io7bqNnQGPCiZbyDcvHVctmWF6N21pQssn/CRNtZxCQJFYsoYEfkLynhbvdih01tDkaEqxnscYBFJ8ggIqyihivO4/ODYLyRq04eU+nd2jwUcKhR8amHD/l31OEK++71clGRosZDNYMpIyZn9o8g1nraUWLNGYfkiNaEyeBnelxLJ1DqYJ2gRo86DIiwIn90c/xL9K9qfWf0GnSC4KahwdsYyh2a4gNb3qVx8K/Oxx5keDQASDtIJEEFnNtNks8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h/29uddYSg1ojgXTI7rWxe+96QmSvcVyeY7vZmWglyk=;
+ b=n5YOGErDVMY5j/SgvOXMcUJ3clzULorQE5IZeg1JLso2aJ0xsjeGNPtYi+20rRXNXfXsAPkwxVr3CSmHvB/3rUMvNdx2sBVqWAICIJWUzz8ExG9ZaGXZqq5P4MLkCgAwo8RtNTV+zwHip8mwEBdtiKc2MFSFt8lhNI1GqV/E+XU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from CH2PR10MB4118.namprd10.prod.outlook.com (2603:10b6:610:a4::8)
+ by CH2PR10MB4053.namprd10.prod.outlook.com (2603:10b6:610:a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Thu, 11 Feb
+ 2021 17:50:02 +0000
+Received: from CH2PR10MB4118.namprd10.prod.outlook.com
+ ([fe80::b4f8:316f:3a25:faac]) by CH2PR10MB4118.namprd10.prod.outlook.com
+ ([fe80::b4f8:316f:3a25:faac%7]) with mapi id 15.20.3846.025; Thu, 11 Feb 2021
+ 17:50:02 +0000
+Subject: Re: [PATCH][next][V2] fs/jfs: fix potential integer overflow on shift
+ of a int
+To:     Colin King <colin.king@canonical.com>,
+        jfs-discussion@lists.sourceforge.net
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210211130108.171493-1-colin.king@canonical.com>
+From:   Dave Kleikamp <dave.kleikamp@oracle.com>
+Message-ID: <5225934e-c3ea-9481-ba66-5a70dca8ba53@oracle.com>
+Date:   Thu, 11 Feb 2021 11:49:59 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210211130108.171493-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [68.201.65.98]
+X-ClientProxiedBy: SN2PR01CA0019.prod.exchangelabs.com (2603:10b6:804:2::29)
+ To CH2PR10MB4118.namprd10.prod.outlook.com (2603:10b6:610:a4::8)
 MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com>
- <56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com> <CAGETcx9FAAa+gUOTJX76DGGOAE4g3cTbZhwNQ-pLioYzg=fTOw@mail.gmail.com>
- <17939709-f6f4-fa9c-836f-9779081c4087@nvidia.com> <CAGETcx_1x7LFprsEM+-X8Y42-sbajBav5Bik4U=s4Z5XCSZtUg@mail.gmail.com>
- <e11bc6a2-ec9d-ea3b-71f7-13c9f764bbfc@nvidia.com> <6a43e209-1d2d-b10a-4564-0289d54135d3@nvidia.com>
- <CAGETcx9ZaBLRVPqiSkPf_4Tm5dDLNbLBM2RmHk1jr7yLp_1CCQ@mail.gmail.com>
- <CAJZ5v0iv9fRzM8cbGrPhutPNpod-gLWcZ8fWzDpfJ=NUVmm5Og@mail.gmail.com> <CAGETcx9qA-nq01ojfP73UJ0KjJCxd3Qhes0hatQGzNKYxuUj-w@mail.gmail.com>
-In-Reply-To: <CAGETcx9qA-nq01ojfP73UJ0KjJCxd3Qhes0hatQGzNKYxuUj-w@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 11 Feb 2021 18:48:38 +0100
-Message-ID: <CAJZ5v0g+cd_r=UzzEXAQAqVnVyN3czv4WCyBib5=e2a4X53VNA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.190] (68.201.65.98) by SN2PR01CA0019.prod.exchangelabs.com (2603:10b6:804:2::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26 via Frontend Transport; Thu, 11 Feb 2021 17:50:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5982452a-7fbe-45b8-e790-08d8ceb574ce
+X-MS-TrafficTypeDiagnostic: CH2PR10MB4053:
+X-Microsoft-Antispam-PRVS: <CH2PR10MB4053AE4D20588FEB6E42194A878C9@CH2PR10MB4053.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JmTWgenZHUCYu7OIPMvod4c+XbCAkfS8ms97x4OOFKDXPQw7rBrqTh+YTKJAU5QKjgGCbbJuSrnM63h9IdgKd+6VohvvsDP/i03g8klkOeXeCjxpXLRSv5X33bkxCsevF0PjbV9THaa3+0M3CJ741JC+W9N3H93usq/uX6auaVzYZPTaHxixMpTEepUbWnJ+cI7WTdWdEDR54Qo4EohEraMyYz61yMGi5A3F53cYtfz1zPWKuWP47YXpq8Xcm3ldHLRlCjJHZmk6ZgK7Af5qV6pea/12MInZJZV9IL54ouqxrLy3k3TG0UtbZ7fPbGpE26WI0HSkv1TwkzX/eUwL6hK2n4DOT9zbCP5bZNNTj378t6uR153zpgGkVnfGyGF4Zm6Zfqx1HicdmXZ3lPmz0lUGoLCCyGXQi8695ofTIObEEPgU6PKWGnsQ66NeAAFIvtVyZmqtRQzCwUQPDEhhwZHqbAarf9hKXl6Ov7qSwqFOypRUtOB8KSOc7GrGKzrtgvlxKvu0JbjDAaJqomgEpnJl9zNHdvcbXXif0KYJ+QglxNBoJRbKcJ8tOkPbjC+H
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4118.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(39860400002)(346002)(376002)(31686004)(6486002)(316002)(16576012)(5660300002)(83380400001)(36756003)(478600001)(186003)(66946007)(2906002)(956004)(53546011)(26005)(44832011)(86362001)(8676002)(2616005)(4326008)(31696002)(66476007)(16526019)(8936002)(66556008)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?R3JSVXRmRWtYOTBxOW91NUpXSDRXMUk1QTRWdEw5bXBLS0NTSENiSjU2RU5R?=
+ =?utf-8?B?eFdxVnJVaWFEV3pKdHR2WnpmZzlza0xpLy9CUUQ0K1ovbkxYUHJIYzMrbktH?=
+ =?utf-8?B?R1Q2ME85TTA0Ulh2S2lENXZpREI3UjJvejBPSzN2dUNmQnppM3pGUnNLRDc3?=
+ =?utf-8?B?RndvU0pabHR5dWZFbGV1Z3J4bjk1Q3k2S2xvYkJnZXE0bUZIRVhFdEMzU1Zy?=
+ =?utf-8?B?ZUVZcjBibUsyckxjeWJPdS93SVB4bTlDRk8wMk9yMHlzUlBLWnJBOC8rVVRy?=
+ =?utf-8?B?YzNHTEJGWVhoNFRaa3crS2JhMVVSdFRyUmJMNHlWUGluMWhwQkJtczR4N2VY?=
+ =?utf-8?B?ZDB6aGplbDRkUU9NRDhvTUU1eHdIQ094c2tySElRRUlyR2o1cFoybW1CVVNO?=
+ =?utf-8?B?eXY4UG03S2Jlckhsa21ZeEdOZlpvWHZwWVQ4QmkyVit6UGRrc2NUNjBWTnY3?=
+ =?utf-8?B?SzhTeWFJMTFFZTdNSWUyR2F3Z1NCVHJ5cDFMTG9pYXd3WDJPeHdmRlBxZnRm?=
+ =?utf-8?B?V2xZRGE1Mk5IRzdqYlJURm9PckVlTlNRYThQM3oyamRiL3c0ZFlaVEtLL1R1?=
+ =?utf-8?B?aGVHaFNFQkc5L282eVRlVldwaE9JT2RCWUxjMUhKZEJiVEhzTUJTMDJESjZp?=
+ =?utf-8?B?Q2hEcEsycTdUZXFVUWluajREeGFoS2RxMlNGVGdGU204NDZwUitUK0ZRT1VL?=
+ =?utf-8?B?byttNG9VdS9lZ0dySytrQzZPL2VqNnQ0cVFYQkxuVVlHaitCM3drZDRKRGsz?=
+ =?utf-8?B?ZlJwWGZ5M09IaW0yY1J4UG5qR3N2VEcyM2o0Q0pEYVVMYmRJUGY2clN5MWo3?=
+ =?utf-8?B?VGhPQmswOFU0M25FM0ZCWjRENUYyUmM2Y1pJaUhpdndjem96Z0UvQ2JHSjVG?=
+ =?utf-8?B?QjFLT0VUSE5zem5VMnI1eFZORWd2THRyY29uSXB3a0FjWWlmdERjM3FVZzVw?=
+ =?utf-8?B?NlRnTHE0RUhDM1pIUTNuRXdDSnIrVWdoU29ERzNLZ2RhcXRpNWx1UU0yTFBj?=
+ =?utf-8?B?Y1hxemYvRnkyYmc3cXpYOGhEaUt6UzBPQ0pOWW9SalAxVnlXNkxqaGY1VnlP?=
+ =?utf-8?B?OEhheE84aFRBRHlFZGs2NnNoSVRXUnlkM1VBcTMwWlhxK0xWSEtXNDhhN21w?=
+ =?utf-8?B?aWlSdWR5R0NjMExuZHV2STFhblZKNGMwbmVqcFhKbzBsMjhNRk4wM2UvNW0z?=
+ =?utf-8?B?eVpMVThhTzNGSVE2elAyRmphUjdCd08zSjBkTWlIZmdvR2RWUENFZ0s5VGth?=
+ =?utf-8?B?bmNPR0wrU0dkTGtwMVVqWS9TUDZTWCsyTFBUanJwSDBybXBjblIrbExIdXNS?=
+ =?utf-8?B?MW9KWGxyZkhGSENHajRaKzc5Rk52TEw1MEpZdEgyYVVpc001YzVZbCttdzB0?=
+ =?utf-8?B?MmpCclBuL2M0MmY1eTMyRG1FckJibmZldHhJSWE0QUFWdHVCdnJpUUl6OWl2?=
+ =?utf-8?B?MHdJTElZNEZUZzNiUWIzbWZ2anFVL1pOSkFNM0k5NlhMUjNLYWI2Y0VCNktr?=
+ =?utf-8?B?MExwWi9hUGlsMUxSNFhZd040T1dVZVMyalhhcnFCSDNQT2NLcUlsSnF5UnNB?=
+ =?utf-8?B?dUpEYUJvM2k4RUtRYm1yYWhqUkpTWFRvMUtPQi9kcTNYVU5mcDlMSDdtQTVt?=
+ =?utf-8?B?NlBrRUFvVWRLU0tqOTZxdUFScmkvbUZiSEx6VEQ1NXBVVmFnSHhKOCswOFMx?=
+ =?utf-8?B?d1VQaEhGQnp3ZHl3enZaYzJSRFZtMWFMYkM5alFiMzJpNEQ2dEN2V3FyVnBY?=
+ =?utf-8?Q?9Fe5c3fQHkL1+fKD00lpohLSSZncQkC2EYVYjaU?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5982452a-7fbe-45b8-e790-08d8ceb574ce
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4118.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 17:50:02.3286
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 229xvgK81bY0hulkQzjTCPokdMq9VmvkyvvK+svTqAFmuurv10Cd4+KGEAaNPsaXNpDWZgYJhsRGxA2L05r3uM9kxVTd2iRkC+DtwZAUYcI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4053
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110145
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 6:15 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Thu, Feb 11, 2021 at 7:03 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Thu, Feb 11, 2021 at 1:02 AM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Thu, Jan 28, 2021 at 7:03 AM Jon Hunter <jonathanh@nvidia.com> wrote:
-> > > >
-> > > >
-> > > > On 14/01/2021 16:56, Jon Hunter wrote:
-> > > > >
-> > > > > On 14/01/2021 16:47, Saravana Kannan wrote:
-> > > > >
-> > > > > ...
-> > > > >
-> > > > >>> Yes this is the warning shown here [0] and this is coming from
-> > > > >>> the 'Generic PHY stmmac-0:00' device.
-> > > > >>
-> > > > >> Can you print the supplier and consumer device when this warning is
-> > > > >> happening and let me know? That'd help too. I'm guessing the phy is
-> > > > >> the consumer.
-> > > > >
-> > > > >
-> > > > > Sorry I should have included that. I added a print to dump this on
-> > > > > another build but failed to include here.
-> > > > >
-> > > > > WARNING KERN Generic PHY stmmac-0:00: supplier 2200000.gpio (status 1)
-> > > > >
-> > > > > The status is the link->status and looks like the supplier is the
-> > > > > gpio controller. I have verified that the gpio controller is probed
-> > > > > before this successfully.
-> > > > >
-> > > > >> So the warning itself isn't a problem -- it's not breaking anything or
-> > > > >> leaking memory or anything like that. But the device link is jumping
-> > > > >> states in an incorrect manner. With enough context of this code (why
-> > > > >> the device_bind_driver() is being called directly instead of going
-> > > > >> through the normal probe path), it should be easy to fix (I'll just
-> > > > >> need to fix up the device link state).
-> > > > >
-> > > > > Correct, the board seems to boot fine, we just get this warning.
-> > > >
-> > > >
-> > > > Have you had chance to look at this further?
-> > >
-> > > Hi Jon,
-> > >
-> > > I finally got around to looking into this. Here's the email[1] that
-> > > describes why it's done this way.
-> > >
-> > > [1] - https://lore.kernel.org/lkml/YCRjmpKjK0pxKTCP@lunn.ch/
-> > >
-> > > >
-> > > > The following does appear to avoid the warning, but I am not sure if
-> > > > this is the correct thing to do ...
-> > > >
-> > > > index 9179825ff646..095aba84f7c2 100644
-> > > > --- a/drivers/base/dd.c
-> > > > +++ b/drivers/base/dd.c
-> > > > @@ -456,6 +456,10 @@ int device_bind_driver(struct device *dev)
-> > > >  {
-> > > >         int ret;
-> > > >
-> > > > +       ret = device_links_check_suppliers(dev);
-> > > > +       if (ret)
-> > > > +               return ret;
-> > > > +
-> > > >         ret = driver_sysfs_add(dev);
-> > > >         if (!ret)
-> > > >                 driver_bound(dev);
-> > >
-> > > So digging deeper into the usage of device_bind_driver and looking at
-> > > [1], it doesn't look like returning an error here is a good option.
-> > > When device_bind_driver() is called, the driver's probe function isn't
-> > > even called. So, there's no way for the driver to even defer probing
-> > > based on any of the suppliers. So, we have a couple of options:
-> > >
-> > > 1. Delete all the links to suppliers that haven't bound.
-> >
-> > Or maybe convert them to stateless links?  Would that be doable at all?
->
-> Yeah, I think it should be doable.
->
-> >
-> > > We'll still leave the links to active suppliers alone in case it helps with
-> > > suspend/resume correctness.
-> > > 2. Fix the warning to not warn on suppliers that haven't probed if the
-> > > device's driver has no probe function. But this will also need fixing
-> > > up the cleanup part when device_release_driver() is called. Also, I'm
-> > > not sure if device_bind_driver() is ever called when the driver
-> > > actually has a probe() function.
-> > >
-> > > Rafael,
-> > >
-> > > Option 1 above is pretty straightforward.
-> >
-> > I would prefer this ->
->
-> Ok
->
-> >
-> > > Option 2 would look something like what's at the end of this email +
-> > > caveat about whether the probe check is sufficient.
-> >
-> > -> because "fix the warning" really means that we haven't got the
-> > device link state machine right and getting it right may imply a major
-> > redesign.
-> >
-> > Overall, I'd prefer to take a step back and allow things to stabilize
-> > for a while to let people catch up with this.
->
-> Are you referring to if/when we implement Option 2? Or do you want to
-> step back for a while even before implementing Option 1?
+On 2/11/21 7:01 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
+> arithmetic and then assigned to a signed 64 bit integer. In the case where
+> l2nb is 32 or more this can lead to an overflow.  Avoid this by shifting
+> the value 1LL instead.
+> 
+> Addresses-Coverity: ("Uninitentional integer overflow")
+> Fixes: b40c2e665cd5 ("fs/jfs: TRIM support for JFS Filesystem")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-I would do option 1 and if then see what happens and maybe go back
-from there if need be until getting a reasonably stable situation
-(that is all of the systems that used to work before still work at
-least).
+Looks good. I'll include it in the next jfs drop.
+
+Thanks,
+Shaggy
+
+> ---
+> 
+> V2: shift 1LL rather than using BIT_ULL macro as suggested by
+>      Dave Kleikamp.
+> 
+> ---
+>   fs/jfs/jfs_dmap.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+> index 94b7c1cb5ceb..7aee15608619 100644
+> --- a/fs/jfs/jfs_dmap.c
+> +++ b/fs/jfs/jfs_dmap.c
+> @@ -1656,7 +1656,7 @@ s64 dbDiscardAG(struct inode *ip, int agno, s64 minlen)
+>   		} else if (rc == -ENOSPC) {
+>   			/* search for next smaller log2 block */
+>   			l2nb = BLKSTOL2(nblocks) - 1;
+> -			nblocks = 1 << l2nb;
+> +			nblocks = 1LL << l2nb;
+>   		} else {
+>   			/* Trim any already allocated blocks */
+>   			jfs_error(bmp->db_ipbmap->i_sb, "-EIO\n");
+> 
