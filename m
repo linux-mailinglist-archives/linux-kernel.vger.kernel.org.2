@@ -2,80 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5678318BAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EDE318BB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhBKNLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:11:55 -0500
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:39853 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbhBKMva (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:51:30 -0500
-Received: by mail-wm1-f47.google.com with SMTP id u14so5623877wmq.4;
-        Thu, 11 Feb 2021 04:51:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1w9Gel/BDEgF0HYKw28X9TdpiF9WT8pY5DoSNZYjXzA=;
-        b=AUt8Ob/dpHa/bjRSevIKH7aBTdl1k4KB4za4S3bNfeLkQ5385/NywQP12d+9aSaupA
-         8zgIpNkkUP42MjzU+tBz97cFXED0YmI0icaq/yHReMeMYnIS+B99z5qir3bqqeEL3R62
-         q4MGLfpu5wzDM7niAfZ8FAPc+UAIgsC2n74i4r/pPieZVjVN/J2OfLjn89PZDHm/w2Z+
-         YTvgSRwYIJnBWJY/hMUQX8tLMaTxl3LScqGfzFPvNK4Xxwx8zJEbqERgk7QAMPHn7q0t
-         7VP6gAq0Uo3+hTSdf7b6yq+LNO7ug1k0iQsWz3PLzcLcTMqIhTGwIaPjrjJihcYe9iab
-         YNLA==
-X-Gm-Message-State: AOAM532NOnDIZMffhAOCF4hENyA00y7nK2Ih3/t1RK87SXSb1jxSSCrJ
-        JnJcOzT4LeQ1Xzdc+GY675g=
-X-Google-Smtp-Source: ABdhPJzuGv6MDsymKFmAJXVoINRB9Wz1HODA1moVdXNW9P7qY3SoA1Ngmv9AyQ2pFkClNPaqCdbCkg==
-X-Received: by 2002:a1c:2783:: with SMTP id n125mr4985553wmn.74.1613047848403;
-        Thu, 11 Feb 2021 04:50:48 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id n10sm4947026wro.39.2021.02.11.04.50.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 04:50:47 -0800 (PST)
-Date:   Thu, 11 Feb 2021 13:50:46 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v5 04/15] PCI: Add pci_find_vsec_capability() to find a
- specific VSEC
-Message-ID: <YCUoJuK8TBsJAnp7@rocinante>
-References: <cover.1613034728.git.gustavo.pimentel@synopsys.com>
- <45b51292876f238afe3f6865113cd9d72d33e51a.1613034728.git.gustavo.pimentel@synopsys.com>
+        id S231962AbhBKNMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:12:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231209AbhBKMwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 07:52:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22BD164E08;
+        Thu, 11 Feb 2021 12:52:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613047928;
+        bh=0R3pW2EmjrX1ocLLRW7YVSQVF3AM5YQu4du6c2wq2Cw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PmdRJVmbDzuGBw+u/rzWf1P9+iKVbnK6Nj3+S1sARxrulssIcd2kYPxysRj0cHUOh
+         ePGR4HEdllFuum1T/CCIBt37r3xQWX2WUov+YVEvFhdvA262YtIg4JwEZjOYJLFTiR
+         +HwcwwYe5xVODEoJgyuAi+9+yxiEnvUwAXoT4ppj9VN65qFSiIwB5+kAxVNOrnC4sj
+         mO+eQDBmpZ7DzEmh8erLxODifQB8iFDiDGB6gAOAntipjh/iORkF2utCgSyVnth5Dn
+         80vLeNoXQw68wQ7oJy2+tvpJharSY8VEltnxMonyIYGzVCvt7IZ6NwDSHzK/N8h6pg
+         EevTyyG+jNDsw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6F9E240513; Thu, 11 Feb 2021 09:52:05 -0300 (-03)
+Date:   Thu, 11 Feb 2021 09:52:05 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 05/24] perf daemon: Add client socket support
+Message-ID: <20210211125205.GA1131885@kernel.org>
+References: <20210208200908.1019149-1-jolsa@kernel.org>
+ <20210208200908.1019149-6-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <45b51292876f238afe3f6865113cd9d72d33e51a.1613034728.git.gustavo.pimentel@synopsys.com>
+In-Reply-To: <20210208200908.1019149-6-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
+Em Mon, Feb 08, 2021 at 09:08:49PM +0100, Jiri Olsa escreveu:
+> +__maybe_unused
+> +static int send_cmd(struct daemon *daemon, union cmd *cmd)
+> +{
+> +	int ret = -1, fd;
+> +	char *line = NULL;
+> +	size_t len = 0;
+> +	ssize_t nread;
+> +	FILE *in = NULL;
+> +
+> +	if (setup_client_config(daemon))
+> +		return -1;
+> +
+> +	fd = setup_client_socket(daemon);
+> +	if (fd < 0)
+> +		return -1;
+> +
+> +	if (sizeof(*cmd) != writen(fd, cmd, sizeof(*cmd))) {
+> +		perror("failed: write");
+> +		goto out;
+> +	}
+> +
+> +	in = fdopen(fd, "r");
+> +	if (!in) {
+> +		perror("failed: fdopen");
+> +		goto out;
+> +	}
+> +
+> +	while ((nread = getline(&line, &len, in)) != -1) {
+> +		fwrite(line, nread, 1, stdout);
+> +		fflush(stdout);
+> +	}
+> +
+> +	ret = 0;
+> +	fclose(in);
+> +out:
+> +	/* If in is defined, then fd is closed via fclose. */
+> +	if (!in)
+> +		close(fd);
+> +	return ret;
+> +}
+> +
 
-[...]
-> + * Typically this function will be called by the pci driver, which passes
+So I had to add the patch below to deal with this in some systems:
 
-It would be "PCI" here.
+  cc1: warnings being treated as errors
+  builtin-daemon.c: In function 'send_cmd':  MKDIR    /tmp/build/perf/bench/
+  
+  builtin-daemon.c:1368: error: ignoring return value of 'fwrite', declared with attribute warn_unused_result
+    MKDIR    /tmp/build/perf/tests/
+  make[3]: *** [/tmp/build/perf/builtin-daemon.o] Error 1
 
-> + * through argument the 'struct pci_dev *' already pointing for the device
-> + * config space that is associated with the vendor and device ID which will
-> + * know which ID to search and what to do with it, however, it might be
+And also to not leak the 'line' buffer allocated by getline(), since you
+initialized line to NULL and len to zero, man page says:
 
-Probably "there might be".
+	 If *lineptr is set to NULL and *n is set 0 before the call,
+	 then getline() will allocate a buffer for storing the line.
+	 This buffer should be freed by the user program even if
+	 getline() failed.
 
-> + * cases that this function could be called outside of this scope and
-> + * therefore is the caller responsibility to check the vendor and/or
-[...]
 
-A suggestion.  This commit message is a little hard to read and could be
-improved.
-
-It might just be me (by and large, and I am not a native English
-speaker), but it's actually easier to figure out what the function does
-after reading the implementation that from the comment. :)
-
-Krzysztof
+diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+index e0880c5ee39c89bd..0a282c4e23a9fd9a 100644
+--- a/tools/perf/builtin-daemon.c
++++ b/tools/perf/builtin-daemon.c
+@@ -344,12 +344,15 @@ static int send_cmd(struct daemon *daemon, union cmd *cmd)
+ 	}
+ 
+ 	while ((nread = getline(&line, &len, in)) != -1) {
+-		fwrite(line, nread, 1, stdout);
++		if (fwrite(line, nread, 1, stdout) != 1)
++			goto out_fclose;
+ 		fflush(stdout);
+ 	}
+ 
+ 	ret = 0;
++out_fclose:
+ 	fclose(in);
++	free(line);
+ out:
+ 	/* If in is defined, then fd is closed via fclose. */
+ 	if (!in)
