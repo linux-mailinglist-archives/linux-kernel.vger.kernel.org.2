@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEDB31902C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 753F9319045
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhBKQjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:39:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55766 "EHLO mail.kernel.org"
+        id S229997AbhBKQpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:45:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231401AbhBKPb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:31:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3456864F02;
-        Thu, 11 Feb 2021 15:05:28 +0000 (UTC)
+        id S231347AbhBKPhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:37:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 864BD64EFD;
+        Thu, 11 Feb 2021 15:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613055928;
-        bh=PIvIrg/Ezj7k1jZbQ+Hy7tkM+UZcwVFygpMDtZgDeqY=;
+        s=korg; t=1613055911;
+        bh=Mntyyw9pDo73Mx8hzXtsDcqsj83PlObc6cNFP+pQy/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b0ztMlLf2lph+4JlO8jQvT9MHeE8PIAlpvqnznP9RzHUslwSSrjIaFtb9Nvndmrcs
-         sGmadiiwp+lf0bSfJ/0wSI7SEXl+QP50N7QnnWq/d71nVprOu9OFE6K1vObM9usQQy
-         ezWCiNIVlN/fwnE9utWriV2/pcGZ9ZmZBQzgk+SI=
+        b=djsmI0ybpiUD0wnt8J/nZT9C0YfnFxIuyCFe2EW6WEb3OIEbtZndyqVKVQP7hxuxf
+         Wjm3vsWg/OGUwoeoi/dL4fDaMi8HzDfQFr/EHIpfap44eZg/7RYzuwBeCdUgMFD+T0
+         dCHEFkXKs0v6UtnrVpLLY+J4AyaaRos/0fOfBBAA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Libin Yang <libin.yang@intel.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 30/54] ASoC: Intel: sof_sdw: set proper flags for Dell TGL-H SKU 0A5E
-Date:   Thu, 11 Feb 2021 16:02:14 +0100
-Message-Id: <20210211150154.200546593@linuxfoundation.org>
+Subject: [PATCH 5.10 33/54] iwlwifi: pcie: add a NULL check in iwl_pcie_txq_unmap
+Date:   Thu, 11 Feb 2021 16:02:17 +0100
+Message-Id: <20210211150154.329490410@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
 References: <20210211150152.885701259@linuxfoundation.org>
@@ -44,47 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Libin Yang <libin.yang@intel.com>
+From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 
-[ Upstream commit 9ad9bc59dde106e56dd59ce2bec7c1b08e1f0eb4 ]
+[ Upstream commit 98c7d21f957b10d9c07a3a60a3a5a8f326a197e5 ]
 
-Add flag "SOF_RT711_JD_SRC_JD2", flag "SOF_RT715_DAI_ID_FIX"
-and "SOF_SDW_FOUR_SPK" to the Dell TGL-H based SKU "0A5E".
+I hit a NULL pointer exception in this function when the
+init flow went really bad.
 
-Signed-off-by: Libin Yang <libin.yang@intel.com>
-Co-developed-by: Hui Wang <hui.wang@canonical.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20210125081117.814488-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20210115130252.2e8da9f2c132.I0234d4b8ddaf70aaa5028a20c863255e05bc1f84@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/pcie/tx.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index b29946eb43551..a8d43c87cb5a2 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -57,6 +57,16 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		.driver_data = (void *)(SOF_RT711_JD_SRC_JD2 |
- 					SOF_RT715_DAI_ID_FIX),
- 	},
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A5E")
-+		},
-+		.driver_data = (void *)(SOF_RT711_JD_SRC_JD2 |
-+					SOF_RT715_DAI_ID_FIX |
-+					SOF_SDW_FOUR_SPK),
-+	},
- 	{
- 		.callback = sof_sdw_quirk_cb,
- 		.matches = {
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
+index 966be5689d63a..ed54d04e43964 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
+@@ -299,6 +299,11 @@ static void iwl_pcie_txq_unmap(struct iwl_trans *trans, int txq_id)
+ 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
+ 	struct iwl_txq *txq = trans->txqs.txq[txq_id];
+ 
++	if (!txq) {
++		IWL_ERR(trans, "Trying to free a queue that wasn't allocated?\n");
++		return;
++	}
++
+ 	spin_lock_bh(&txq->lock);
+ 	while (txq->write_ptr != txq->read_ptr) {
+ 		IWL_DEBUG_TX_REPLY(trans, "Q %d Free %d\n",
 -- 
 2.27.0
 
