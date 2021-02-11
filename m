@@ -2,395 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AF331928F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1F0319291
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhBKSyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:54:09 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:11151 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhBKSxn (ORCPT
+        id S230427AbhBKSys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:54:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhBKSxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:53:43 -0500
-Date:   Thu, 11 Feb 2021 18:52:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613069578; bh=vxbPqVTP+yyafvrJZY9PHRZqLx4yQzye7I3rd2J7vYA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=hdpHWAPPVJSfSTDCnL7IrePIyXrssmVMikJKnEfj1zNtT60PgPQEptiqX8ao3gDdz
-         rJOjTHAUrg5IQD9fFYBgDNAAIhxwdS1grrpSxwW+NCwire8854n34cPIvt2LZhTLcJ
-         3O5snRqMytivIrAU4FPpQW/0crg2s47l/803LviV2XtFRvwPLS54IZV2ga+YiEH3Ai
-         CLi1lkVQOIcrjGORtThg7d+TMcMWMuwBJZUV4E/i61ozMt/GnWHNVikGJm3SFg5zH2
-         lXRP6nLLmJIqKPlw0GVmxJj219VhnR4NETA71MqFnK+pwImYG6FnzpxLPOw4pN81Hp
-         WMiwE4Md2J6TA==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Florian Westphal <fw@strlen.de>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v5 net-next 01/11] skbuff: move __alloc_skb() next to the other skb allocation functions
-Message-ID: <20210211185220.9753-2-alobakin@pm.me>
-In-Reply-To: <20210211185220.9753-1-alobakin@pm.me>
-References: <20210211185220.9753-1-alobakin@pm.me>
+        Thu, 11 Feb 2021 13:53:54 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A340C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:53:14 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id b145so4261652pfb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:53:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=xpndM70yEhgRGe+KrDE0IH979jxYXm9ttbsYqDRk0G8=;
+        b=E06KTUuHa1N69lin9dfmfYrh3O7liQ7sjr9V4elOQ0pI9DtEuIM5pG2uYR0na8s/M6
+         y1xZbYr2CEvGVbC36Tob7tY+JTq4jDUSnRPaiBUr+DKoYI+5ba5OITaRwuNTJOTAPFSG
+         Aovxw10AMACoyXiGbcmoGniQfdbGRwP+Kg0gM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=xpndM70yEhgRGe+KrDE0IH979jxYXm9ttbsYqDRk0G8=;
+        b=HmzkyjHNLMdDh0uqJ/Lshwu3b1EiSAl/Ni6jrz+6xkMNj5gSvo7byyAhvHF1dzzxCM
+         +yCLgqMgW6EJL103s22wad6Fq4QcpZ7xChDAFWd9XiVtwV8ydWIW9q5A+qGSJcIt6BcX
+         6Zkk2c/D20NTOK16V4N4Ye7AbEg0qznqhQpySZr3jp07oOBN4cFyGw48RvLrKDnxJZ2e
+         mH8f1a8lCwF8o/e7fykZW0GijB5tk0CDxQaac7ORvUevyH9sIsvBjwH0EYudt8JxXskZ
+         zkR8WJ4QkyW6UaZbpDs/xpB0oA9lMir8k4NYcT+IhsXii7SRNYlHx87Jd2QvmMsrlmIy
+         AQCA==
+X-Gm-Message-State: AOAM533PHUZFLipM3d8vzpaqIK3rmYNiy9ABl2uf/txPq3JG9oMerC+T
+        SAiZiLhVc5gea3iD7tSz22FJ+Q==
+X-Google-Smtp-Source: ABdhPJw8Blpx5814w0cjHHgcrzerf/Iogn69/ocypYsIcg51r8DSqgTTrtUWGhhJ72/bqO6V3z8odA==
+X-Received: by 2002:a65:654e:: with SMTP id a14mr9560819pgw.265.1613069593951;
+        Thu, 11 Feb 2021 10:53:13 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:f038:5688:cf3c:eca2])
+        by smtp.gmail.com with ESMTPSA id t17sm6812101pfc.43.2021.02.11.10.53.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 10:53:12 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <YCU9zoiw8EZktw5U@kroah.com>
+References: <20201207170533.10738-1-mark.rutland@arm.com> <202012081319.D5827CF@keescook> <X9DkdTGAiAEfUvm5@kroah.com> <161300376813.1254594.5196098885798133458@swboyd.mtv.corp.google.com> <YCU9zoiw8EZktw5U@kroah.com>
+Subject: Re: [PATCH] lkdtm: don't move ctors to .rodata
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Thu, 11 Feb 2021 10:53:10 -0800
+Message-ID: <161306959090.1254594.16358795480052823449@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation before reusing several functions in all three skb
-allocation variants, move __alloc_skb() next to the
-__netdev_alloc_skb() and __napi_alloc_skb().
-No functional changes.
+Quoting Greg Kroah-Hartman (2021-02-11 06:23:10)
+> On Wed, Feb 10, 2021 at 04:36:08PM -0800, Stephen Boyd wrote:
+> > Quoting Greg Kroah-Hartman (2020-12-09 06:51:33)
+> > > On Tue, Dec 08, 2020 at 01:20:56PM -0800, Kees Cook wrote:
+> > > > On Mon, Dec 07, 2020 at 05:05:33PM +0000, Mark Rutland wrote:
+> > > > > [    0.969110] Code: 00000003 00000000 00000000 00000000 (0000000=
+0)
+> > > > > [    0.970815] ---[ end trace b5339784e20d015c ]---
+> > > > >=20
+> > > > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > > >=20
+> > > > Oh, eek. Why was a ctor generated at all? But yes, this looks good.
+> > > > Greg, can you pick this up please?
+> > > >=20
+> > > > Acked-by: Kees Cook <keescook@chromium.org>
+> > >=20
+> > > Now picked up, thanks.
+> > >=20
+> >=20
+> > Can this be backported to 5.4 and 5.10 stable trees? I just ran across
+> > this trying to use kasan on 5.4 with lkdtm and it blows up early. This
+> > patch applies on 5.4 cleanly but doesn't compile because it's missing
+> > noinstr. Here's a version of the patch that introduces noinstr on 5.4.97
+> > so this patch can be picked to 5.4 stable trees.
+>=20
+> Why 5.10?  This showed up in 5.8, so how would it be needed there?
+>=20
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/core/skbuff.c | 284 +++++++++++++++++++++++-----------------------
- 1 file changed, 142 insertions(+), 142 deletions(-)
-
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index d380c7b5a12d..a0f846872d19 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -119,148 +119,6 @@ static void skb_under_panic(struct sk_buff *skb, unsi=
-gned int sz, void *addr)
- =09skb_panic(skb, sz, addr, __func__);
- }
-=20
--/*
-- * kmalloc_reserve is a wrapper around kmalloc_node_track_caller that tell=
-s
-- * the caller if emergency pfmemalloc reserves are being used. If it is an=
-d
-- * the socket is later found to be SOCK_MEMALLOC then PFMEMALLOC reserves
-- * may be used. Otherwise, the packet data may be discarded until enough
-- * memory is free
-- */
--#define kmalloc_reserve(size, gfp, node, pfmemalloc) \
--=09 __kmalloc_reserve(size, gfp, node, _RET_IP_, pfmemalloc)
--
--static void *__kmalloc_reserve(size_t size, gfp_t flags, int node,
--=09=09=09       unsigned long ip, bool *pfmemalloc)
--{
--=09void *obj;
--=09bool ret_pfmemalloc =3D false;
--
--=09/*
--=09 * Try a regular allocation, when that fails and we're not entitled
--=09 * to the reserves, fail.
--=09 */
--=09obj =3D kmalloc_node_track_caller(size,
--=09=09=09=09=09flags | __GFP_NOMEMALLOC | __GFP_NOWARN,
--=09=09=09=09=09node);
--=09if (obj || !(gfp_pfmemalloc_allowed(flags)))
--=09=09goto out;
--
--=09/* Try again but now we are using pfmemalloc reserves */
--=09ret_pfmemalloc =3D true;
--=09obj =3D kmalloc_node_track_caller(size, flags, node);
--
--out:
--=09if (pfmemalloc)
--=09=09*pfmemalloc =3D ret_pfmemalloc;
--
--=09return obj;
--}
--
--/* =09Allocate a new skbuff. We do this ourselves so we can fill in a few
-- *=09'private' fields and also do memory statistics to find all the
-- *=09[BEEP] leaks.
-- *
-- */
--
--/**
-- *=09__alloc_skb=09-=09allocate a network buffer
-- *=09@size: size to allocate
-- *=09@gfp_mask: allocation mask
-- *=09@flags: If SKB_ALLOC_FCLONE is set, allocate from fclone cache
-- *=09=09instead of head cache and allocate a cloned (child) skb.
-- *=09=09If SKB_ALLOC_RX is set, __GFP_MEMALLOC will be used for
-- *=09=09allocations in case the data is required for writeback
-- *=09@node: numa node to allocate memory on
-- *
-- *=09Allocate a new &sk_buff. The returned buffer has no headroom and a
-- *=09tail room of at least size bytes. The object has a reference count
-- *=09of one. The return is the buffer. On a failure the return is %NULL.
-- *
-- *=09Buffers may only be allocated from interrupts using a @gfp_mask of
-- *=09%GFP_ATOMIC.
-- */
--struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
--=09=09=09    int flags, int node)
--{
--=09struct kmem_cache *cache;
--=09struct skb_shared_info *shinfo;
--=09struct sk_buff *skb;
--=09u8 *data;
--=09bool pfmemalloc;
--
--=09cache =3D (flags & SKB_ALLOC_FCLONE)
--=09=09? skbuff_fclone_cache : skbuff_head_cache;
--
--=09if (sk_memalloc_socks() && (flags & SKB_ALLOC_RX))
--=09=09gfp_mask |=3D __GFP_MEMALLOC;
--
--=09/* Get the HEAD */
--=09skb =3D kmem_cache_alloc_node(cache, gfp_mask & ~__GFP_DMA, node);
--=09if (!skb)
--=09=09goto out;
--=09prefetchw(skb);
--
--=09/* We do our best to align skb_shared_info on a separate cache
--=09 * line. It usually works because kmalloc(X > SMP_CACHE_BYTES) gives
--=09 * aligned memory blocks, unless SLUB/SLAB debug is enabled.
--=09 * Both skb->head and skb_shared_info are cache line aligned.
--=09 */
--=09size =3D SKB_DATA_ALIGN(size);
--=09size +=3D SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
--=09data =3D kmalloc_reserve(size, gfp_mask, node, &pfmemalloc);
--=09if (!data)
--=09=09goto nodata;
--=09/* kmalloc(size) might give us more room than requested.
--=09 * Put skb_shared_info exactly at the end of allocated zone,
--=09 * to allow max possible filling before reallocation.
--=09 */
--=09size =3D SKB_WITH_OVERHEAD(ksize(data));
--=09prefetchw(data + size);
--
--=09/*
--=09 * Only clear those fields we need to clear, not those that we will
--=09 * actually initialise below. Hence, don't put any more fields after
--=09 * the tail pointer in struct sk_buff!
--=09 */
--=09memset(skb, 0, offsetof(struct sk_buff, tail));
--=09/* Account for allocated memory : skb + skb->head */
--=09skb->truesize =3D SKB_TRUESIZE(size);
--=09skb->pfmemalloc =3D pfmemalloc;
--=09refcount_set(&skb->users, 1);
--=09skb->head =3D data;
--=09skb->data =3D data;
--=09skb_reset_tail_pointer(skb);
--=09skb->end =3D skb->tail + size;
--=09skb->mac_header =3D (typeof(skb->mac_header))~0U;
--=09skb->transport_header =3D (typeof(skb->transport_header))~0U;
--
--=09/* make sure we initialize shinfo sequentially */
--=09shinfo =3D skb_shinfo(skb);
--=09memset(shinfo, 0, offsetof(struct skb_shared_info, dataref));
--=09atomic_set(&shinfo->dataref, 1);
--
--=09if (flags & SKB_ALLOC_FCLONE) {
--=09=09struct sk_buff_fclones *fclones;
--
--=09=09fclones =3D container_of(skb, struct sk_buff_fclones, skb1);
--
--=09=09skb->fclone =3D SKB_FCLONE_ORIG;
--=09=09refcount_set(&fclones->fclone_ref, 1);
--
--=09=09fclones->skb2.fclone =3D SKB_FCLONE_CLONE;
--=09}
--
--=09skb_set_kcov_handle(skb, kcov_common_handle());
--
--out:
--=09return skb;
--nodata:
--=09kmem_cache_free(cache, skb);
--=09skb =3D NULL;
--=09goto out;
--}
--EXPORT_SYMBOL(__alloc_skb);
--
- /* Caller must provide SKB that is memset cleared */
- static struct sk_buff *__build_skb_around(struct sk_buff *skb,
- =09=09=09=09=09  void *data, unsigned int frag_size)
-@@ -408,6 +266,148 @@ void *__netdev_alloc_frag_align(unsigned int fragsz, =
-unsigned int align_mask)
- }
- EXPORT_SYMBOL(__netdev_alloc_frag_align);
-=20
-+/*
-+ * kmalloc_reserve is a wrapper around kmalloc_node_track_caller that tell=
-s
-+ * the caller if emergency pfmemalloc reserves are being used. If it is an=
-d
-+ * the socket is later found to be SOCK_MEMALLOC then PFMEMALLOC reserves
-+ * may be used. Otherwise, the packet data may be discarded until enough
-+ * memory is free
-+ */
-+#define kmalloc_reserve(size, gfp, node, pfmemalloc) \
-+=09 __kmalloc_reserve(size, gfp, node, _RET_IP_, pfmemalloc)
-+
-+static void *__kmalloc_reserve(size_t size, gfp_t flags, int node,
-+=09=09=09       unsigned long ip, bool *pfmemalloc)
-+{
-+=09void *obj;
-+=09bool ret_pfmemalloc =3D false;
-+
-+=09/*
-+=09 * Try a regular allocation, when that fails and we're not entitled
-+=09 * to the reserves, fail.
-+=09 */
-+=09obj =3D kmalloc_node_track_caller(size,
-+=09=09=09=09=09flags | __GFP_NOMEMALLOC | __GFP_NOWARN,
-+=09=09=09=09=09node);
-+=09if (obj || !(gfp_pfmemalloc_allowed(flags)))
-+=09=09goto out;
-+
-+=09/* Try again but now we are using pfmemalloc reserves */
-+=09ret_pfmemalloc =3D true;
-+=09obj =3D kmalloc_node_track_caller(size, flags, node);
-+
-+out:
-+=09if (pfmemalloc)
-+=09=09*pfmemalloc =3D ret_pfmemalloc;
-+
-+=09return obj;
-+}
-+
-+/* =09Allocate a new skbuff. We do this ourselves so we can fill in a few
-+ *=09'private' fields and also do memory statistics to find all the
-+ *=09[BEEP] leaks.
-+ *
-+ */
-+
-+/**
-+ *=09__alloc_skb=09-=09allocate a network buffer
-+ *=09@size: size to allocate
-+ *=09@gfp_mask: allocation mask
-+ *=09@flags: If SKB_ALLOC_FCLONE is set, allocate from fclone cache
-+ *=09=09instead of head cache and allocate a cloned (child) skb.
-+ *=09=09If SKB_ALLOC_RX is set, __GFP_MEMALLOC will be used for
-+ *=09=09allocations in case the data is required for writeback
-+ *=09@node: numa node to allocate memory on
-+ *
-+ *=09Allocate a new &sk_buff. The returned buffer has no headroom and a
-+ *=09tail room of at least size bytes. The object has a reference count
-+ *=09of one. The return is the buffer. On a failure the return is %NULL.
-+ *
-+ *=09Buffers may only be allocated from interrupts using a @gfp_mask of
-+ *=09%GFP_ATOMIC.
-+ */
-+struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
-+=09=09=09    int flags, int node)
-+{
-+=09struct kmem_cache *cache;
-+=09struct skb_shared_info *shinfo;
-+=09struct sk_buff *skb;
-+=09u8 *data;
-+=09bool pfmemalloc;
-+
-+=09cache =3D (flags & SKB_ALLOC_FCLONE)
-+=09=09? skbuff_fclone_cache : skbuff_head_cache;
-+
-+=09if (sk_memalloc_socks() && (flags & SKB_ALLOC_RX))
-+=09=09gfp_mask |=3D __GFP_MEMALLOC;
-+
-+=09/* Get the HEAD */
-+=09skb =3D kmem_cache_alloc_node(cache, gfp_mask & ~__GFP_DMA, node);
-+=09if (!skb)
-+=09=09goto out;
-+=09prefetchw(skb);
-+
-+=09/* We do our best to align skb_shared_info on a separate cache
-+=09 * line. It usually works because kmalloc(X > SMP_CACHE_BYTES) gives
-+=09 * aligned memory blocks, unless SLUB/SLAB debug is enabled.
-+=09 * Both skb->head and skb_shared_info are cache line aligned.
-+=09 */
-+=09size =3D SKB_DATA_ALIGN(size);
-+=09size +=3D SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-+=09data =3D kmalloc_reserve(size, gfp_mask, node, &pfmemalloc);
-+=09if (!data)
-+=09=09goto nodata;
-+=09/* kmalloc(size) might give us more room than requested.
-+=09 * Put skb_shared_info exactly at the end of allocated zone,
-+=09 * to allow max possible filling before reallocation.
-+=09 */
-+=09size =3D SKB_WITH_OVERHEAD(ksize(data));
-+=09prefetchw(data + size);
-+
-+=09/*
-+=09 * Only clear those fields we need to clear, not those that we will
-+=09 * actually initialise below. Hence, don't put any more fields after
-+=09 * the tail pointer in struct sk_buff!
-+=09 */
-+=09memset(skb, 0, offsetof(struct sk_buff, tail));
-+=09/* Account for allocated memory : skb + skb->head */
-+=09skb->truesize =3D SKB_TRUESIZE(size);
-+=09skb->pfmemalloc =3D pfmemalloc;
-+=09refcount_set(&skb->users, 1);
-+=09skb->head =3D data;
-+=09skb->data =3D data;
-+=09skb_reset_tail_pointer(skb);
-+=09skb->end =3D skb->tail + size;
-+=09skb->mac_header =3D (typeof(skb->mac_header))~0U;
-+=09skb->transport_header =3D (typeof(skb->transport_header))~0U;
-+
-+=09/* make sure we initialize shinfo sequentially */
-+=09shinfo =3D skb_shinfo(skb);
-+=09memset(shinfo, 0, offsetof(struct skb_shared_info, dataref));
-+=09atomic_set(&shinfo->dataref, 1);
-+
-+=09if (flags & SKB_ALLOC_FCLONE) {
-+=09=09struct sk_buff_fclones *fclones;
-+
-+=09=09fclones =3D container_of(skb, struct sk_buff_fclones, skb1);
-+
-+=09=09skb->fclone =3D SKB_FCLONE_ORIG;
-+=09=09refcount_set(&fclones->fclone_ref, 1);
-+
-+=09=09fclones->skb2.fclone =3D SKB_FCLONE_CLONE;
-+=09}
-+
-+=09skb_set_kcov_handle(skb, kcov_common_handle());
-+
-+out:
-+=09return skb;
-+nodata:
-+=09kmem_cache_free(cache, skb);
-+=09skb =3D NULL;
-+=09goto out;
-+}
-+EXPORT_SYMBOL(__alloc_skb);
-+
- /**
-  *=09__netdev_alloc_skb - allocate an skbuff for rx on a specific device
-  *=09@dev: network device to receive on
---=20
-2.30.1
-
-
+Sorry for the confusion. Can commit 655389666643 ("vmlinux.lds.h: Create
+section for protection against instrumentation") and commit 3f618ab33234
+("lkdtm: don't move ctors to .rodata") be backported to 5.4.y and only
+commit 3f618ab3323407ee4c6a6734a37eb6e9663ebfb9 be backported to 5.10.y?
