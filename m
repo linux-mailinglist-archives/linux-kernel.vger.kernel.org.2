@@ -2,118 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AA03192E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3D13192E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhBKTPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 14:15:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
+        id S230419AbhBKTQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 14:16:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbhBKTPX (ORCPT
+        with ESMTP id S229873AbhBKTP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:15:23 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8D5C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 11:14:43 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id j12so4277720pfj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 11:14:43 -0800 (PST)
+        Thu, 11 Feb 2021 14:15:59 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DB3C061574;
+        Thu, 11 Feb 2021 11:15:18 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id l12so8150802edt.3;
+        Thu, 11 Feb 2021 11:15:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=qqEry60T4DmTyCAXWg4gMVAOjQbNyth0ovp4BVqxCc8=;
-        b=UnD7UfzYJXS9wCo8RcNk2NVDC0RL2SLfwid1NILUmfiMlyGyHHPF2HoFUXvjv1h3y8
-         nyYd3031FB5XuwbTMIWp+2C7dPZ+sPJN7vq3FHxvZ3595t0tSOR0uvkvB/SRTNZhTsfa
-         uTwOFWatxO8GhXs47gLTt8iYdWhCLLKQb40/M=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6aiFefqoimb6TFhPhRuNGjxw3R3UdnJbDOdGhYcf71E=;
+        b=u4NieD2DpZipPoDbNyb/O29FcpWoDFTEF5fVeUcQTfXHWoLGXlQid9V+apL8Ac0OTx
+         vLPeGmb2H7cO+Zo6GzVfk/aqVX5vNPx0jIYVkSe2EJEB+Cukt7sAd5oVQYnue4RQdxl3
+         mm0FLTPcAEHNVRdGmF3iVdf0Zt/JbGAjrgO2sinnSWRlbmLxKIUFsvngM6FluQ3YpAhg
+         oNU0SPvRzOPDeY0prhkg3nCXCy6Mfs3smJ6EBXOZ8EIcDKMpNuR9cAnVYAvOcPQ+HheF
+         TiuKKmMbylyQHrRIveNrELq3Nq/oAFkmEAWu4G5VoYHqDXKPymxkbJ1pNEoWlFH04aQM
+         qXxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=qqEry60T4DmTyCAXWg4gMVAOjQbNyth0ovp4BVqxCc8=;
-        b=HO0RE2pMDm3uiGKZE2K+VeeAjHYsedRO392vQreogJeQPTvFu1cpDUAGvdsBDV7riB
-         lcEG17kGcMshHMS3HyZ9yIf1R3Y5WuYZfyaXtdf/8srKN/CWXNFc4Ee80mdNnzVzYHyA
-         ru+WaPLxMq24d04JHCKTmjh4uzrx6YufGHcN6AfOye8DHA2yFAd1GhxKyFIDB0VrIwgP
-         Y247QZmyhlTYbLmbSRanc5y5dtDurzqS0JtuOjW9M6nYmnq7cMOqY781u1OTpa8M+QpV
-         /LlqxyuUlZg1iQO1+IQWRGm18JXTR0HxM8pK0EWaZCf6IQF/pHXmAClJgaGA2kAmX+aS
-         vp6A==
-X-Gm-Message-State: AOAM530LSji5hBvcaSR/1vBEqiolDj1qsPFTj4um2AQ0hNuh/U+M4Pzs
-        559HL00iHTbhIr3kyFxNpWHDIw==
-X-Google-Smtp-Source: ABdhPJxaHXPT1uNqwUJY66FnRWUqcI1rm9E9OacVvqIg74qBdRv36OEYX0LSltX6WM39oME+ct7jqQ==
-X-Received: by 2002:a62:1708:0:b029:1da:2f7a:3639 with SMTP id 8-20020a6217080000b02901da2f7a3639mr8920114pfx.78.1613070881351;
-        Thu, 11 Feb 2021 11:14:41 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:f038:5688:cf3c:eca2])
-        by smtp.gmail.com with ESMTPSA id y24sm6307848pfr.152.2021.02.11.11.14.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 11:14:40 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6aiFefqoimb6TFhPhRuNGjxw3R3UdnJbDOdGhYcf71E=;
+        b=qerUfV40V6DQ1oz1hPkYGGP8hCY3VlPhB1qk2y5Ed1FIqVBdoPyF51ZaPQSu7J8yXT
+         JMDqgifssf8cC4mbNl/20KJWiOkH7eEBHY+/fof/ybyRbL7FDkC8W6saxJX7/QLgdotm
+         gN69LQHj1zunOafV7K4BfoLEdYR9WKvGq4M+FvCM1dlF4liOu8jXqEG+WzbeKS2gfUcj
+         sy++Gv5+N/bWFvm5qyzFaX0iwoj8kmYADP/SW6PgNB5I2MEinfTdvriGcGIDqH+2N8y0
+         LkfoK/yx6JQ+dUH382h5VMXtuffpA1pTRsuWm/PqZHM9cUW7rWINgxvh/2MH4BiboyVF
+         oJ1A==
+X-Gm-Message-State: AOAM533VRYIx8O8HBbYyEasneO0Xl6D6/6gzEZvIqsOpyYK1PrUn7e9X
+        i6UZkhXjgOA8BZMrkUa6Ujnpunfct1RNP3RCCvM=
+X-Google-Smtp-Source: ABdhPJzNIhQdqijCqLZpM87eKqzcbgw66UVqZknP5r/7I6cuRetDOJRWQczlIO90h30Zd653oNIsnZ+LZgL36LjUpcQ=
+X-Received: by 2002:aa7:de82:: with SMTP id j2mr9740116edv.313.1613070916975;
+ Thu, 11 Feb 2021 11:15:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YCRcIuCxB8nYi7/e@google.com>
-References: <20210210171040.684659-1-mka@chromium.org> <20210210091015.v5.3.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid> <20210210210645.xapaua7djdsvr3ca@kozik-lap> <YCRcIuCxB8nYi7/e@google.com>
-Subject: Re: [PATCH v5 3/4] usb: host: xhci-plat: Create platform device for onboard hubs in probe()
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Date:   Thu, 11 Feb 2021 11:14:39 -0800
-Message-ID: <161307087919.1254594.11784819060723374369@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210209174646.1310591-1-shy828301@gmail.com> <20210209174646.1310591-13-shy828301@gmail.com>
+ <acd1915c-306b-08a8-9e0f-b06c1e09fb4c@suse.cz> <CAHbLzkpF9+NUp2yUf_yKHHngKXGDya4Mj3ZTc-2rm3yFNw_==A@mail.gmail.com>
+ <a56fa0f1-3ac6-49f1-31c1-8bfec961d04e@suse.cz>
+In-Reply-To: <a56fa0f1-3ac6-49f1-31c1-8bfec961d04e@suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 11 Feb 2021 11:15:04 -0800
+Message-ID: <CAHbLzkpqTGWKQuK7HB0o5PPVoebdM83gsPo_Uo7NTD-e_foGWQ@mail.gmail.com>
+Subject: Re: [v7 PATCH 12/12] mm: vmscan: shrink deferred objects proportional
+ to priority
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Matthias Kaehlcke (2021-02-10 14:20:18)
->=20
-> On Wed, Feb 10, 2021 at 10:06:45PM +0100, Krzysztof Kozlowski wrote:
-> >=20
-> > This looks hackish... what if later we have something else than hub?
-> > Another if()?
-> >=20
-> > What if hub could be connected to something else than XHCI controller?
->=20
-> In earlier versions this was standalone driver, which was more flexible a=
-nd
-> didn't require cooperation from the XHCI driver:
->=20
-> https://lore.kernel.org/patchwork/patch/1313001/
->=20
-> Rob Herring raised objections about the DT bindings, since the USB hub wo=
-uld be
-> represented twice in the DT, once in the USB hierachry (with an explicit =
-node or
-> implicitly) plus a node for the platform device for the new driver:
->=20
-> https://lore.kernel.org/patchwork/patch/1305395/
-> https://lore.kernel.org/patchwork/patch/1313000/
->=20
-> Alan Stern suggested to create the platform device in the XHCI platform d=
-river:
->=20
-> https://lore.kernel.org/patchwork/patch/1313000/#1510227
->=20
-> I wasn't super happy about involving xhci-plat, but at least the code is =
-minimal
-> and all the device specific stuff is handled by the onboard_usb_hub drive=
-r.
->=20
-> If you have better suggestions that might satisfy all parties please let =
-us
-> know :)
->=20
+On Thu, Feb 11, 2021 at 10:52 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 2/11/21 6:29 PM, Yang Shi wrote:
+> > On Thu, Feb 11, 2021 at 5:10 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> >> >       trace_mm_shrink_slab_start(shrinker, shrinkctl, nr,
+> >> >                                  freeable, delta, total_scan, priority);
+> >> > @@ -737,10 +708,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >> >               cond_resched();
+> >> >       }
+> >> >
+> >> > -     if (next_deferred >= scanned)
+> >> > -             next_deferred -= scanned;
+> >> > -     else
+> >> > -             next_deferred = 0;
+> >> > +     next_deferred = max_t(long, (nr - scanned), 0) + total_scan;
+> >>
+> >> And here's the bias I think. Suppose we scanned 0 due to e.g. GFP_NOFS. We count
+> >> as newly deferred both the "delta" part of total_scan, which is fine, but also
+> >> the "nr >> priority" part, where we failed to our share of the "reduce
+> >> nr_deferred" work, but I don't think it means we should also increase
+> >> nr_deferred by that amount of failed work.
+> >
+> > Here "nr" is the saved deferred work since the last scan, "scanned" is
+> > the scanned work in this round, total_scan is the *unscanned" work
+> > which is actually "total_scan - scanned" (total_scan is decreased by
+> > scanned in each loop). So, the logic is "decrease any scanned work
+> > from deferred then add newly unscanned work to deferred". IIUC this is
+> > what "deferred" means even before this patch.
+>
+> Hm I thought the logic was "increase by any new work (delta) that wasn't done,
+> decrease by old deferred work that was done now". My examples with scanned = 0
+> and scanned = total_work (total_work before subtracting scanned from it) should
+> demonstrate that the logic is different with your patch.
 
-Is it possible to use the graph binding to connect the USB controller on
-the SoC to the port on the hub? Then the hub would be a standalone node
-at the root of DT connected to the USB controller (or phy) and xhci code
-could probe the firmware to see if there's a graph connection downstream
-that is a powered hub like this. I didn't see this idea mentioned in the
-previous discussions, but maybe I missed it.
+I think we are on the same page about the logic. But I agree the
+formula implemented in the code is wrong.
+
+>
+> >> OTOH if we succeed and scan exactly the whole goal, we are subtracting from
+> >> nr_deferred both the "nr >> priority" part, which is correct, but also delta,
+> >> which was new work, not deferred one, so that's incorrect IMHO as well.
+> >
+> > I don't think so. The deferred comes from new work, why not dec new
+> > work from deferred?
+> >
+> > And, the old code did:
+> >
+> > if (next_deferred >= scanned)
+> >                 next_deferred -= scanned;
+> >         else
+> >                 next_deferred = 0;
+> >
+> > IIUC, it also decreases the new work (the scanned includes both last
+> > deferred and new delata).
+>
+> Yes, but in the old code, next_deferred starts as
+>
+> nr = count_nr_deferred()...
+> total_scan = nr;
+> delta = ... // something based on freeable
+> total_scan += delta;
+> next_deferred = total_scan; // in the common case total_scan >= 0
+>
+> ... and that's "total_scan" before "scanned" is subtracted from it, so it
+> includes the new_work ("delta"), so then it's OK to do "next_deferred -= scanned";
+>
+> I still think your formula is (unintentionally) changing the logic. You can also
+> look at it from different angle, it's effectively (without the max_t() part) "nr
+> - scanned + total_scan" where total_scan is actually "total_scan - scanned" as
+> you point your yourself. So "scanned" is subtracted twice? That can't be correct...
+
+Yes, I think you are right, it can not be correct. Actually I wanted
+plus the unscanned delta part to the next_deferred. But my formula
+actually not only decs scanned twice but also adds unscanned deferred
+back again. So it seems the formula suggested by you is correct. Will
+correct this in v8. Thanks a lot for helping get out of the maze. Will
+add some notes right before the formula as well.
+
+>
+> >> So the calculation should probably be something like this?
+> >>
+> >>         next_deferred = max_t(long, nr + delta - scanned, 0);
+> >>
+> >> Thanks,
+> >> Vlastimil
+> >>
+> >> > +     next_deferred = min(next_deferred, (2 * freeable));
+> >> > +
+> >> >       /*
+> >> >        * move the unused scan count back into the shrinker in a
+> >> >        * manner that handles concurrent updates.
+> >> >
+> >>
+> >
+>
