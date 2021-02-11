@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21A6318FBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02465318F78
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbhBKQSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:18:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52630 "EHLO mail.kernel.org"
+        id S231501AbhBKQFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:05:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230484AbhBKPWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:22:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 808EB64F33;
-        Thu, 11 Feb 2021 15:07:36 +0000 (UTC)
+        id S229623AbhBKPUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:20:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7700664F30;
+        Thu, 11 Feb 2021 15:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613056057;
-        bh=nbq3R7u7lI402KPHaihlSCT8lHxHJ8UorM+o0WDzCac=;
+        s=korg; t=1613056026;
+        bh=2/71MJlEV2yQgVTkYl4oNdU3wbyu25jp7ArwNz2UvEM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vmkb9d2zzjgba/iBDh2pkTDXHTAXsXrngXo/dQEjOef0I4CuUgX9eAGGt42DjhAud
-         yo5z9bFR0tW39oLcfIBHZWeSrA3AVl2XDMEanceax3oFV+bPKKiBO/ZWNK6rja4mSr
-         /NbmlprxIQi3nN/dG/a3kjzd0u4h9qXicnmRytHk=
+        b=aEoOwA44XDpU7O90qL12mSQH0yAweH9PGKjXFOJKXmHOJX7bcpspG3f97ndY628YD
+         Ugn42HHItKu/Pn00nwzu3ZhmFfN+W54gbqDPxzPTc5d7VvptilexmwY5slA1dszXB4
+         wUdtuH9Ud3T4d1JAWuAUB7Z7LZ+lMw0ooSDr303o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianlin Lv <Jianlin.Lv@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        stable@vger.kernel.org, pierre.gondois@arm.com,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 01/24] tracing/kprobe: Fix to support kretprobe events on unloaded modules
-Date:   Thu, 11 Feb 2021 16:02:35 +0100
-Message-Id: <20210211150147.819199739@linuxfoundation.org>
+Subject: [PATCH 4.19 03/24] fgraph: Initialize tracing_graph_pause at task creation
+Date:   Thu, 11 Feb 2021 16:02:37 +0100
+Message-Id: <20210211150147.902688534@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210211150147.743660073@linuxfoundation.org>
 References: <20210211150147.743660073@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,133 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 97c753e62e6c31a404183898d950d8c08d752dbd upstream.
+commit 7e0a9220467dbcfdc5bc62825724f3e52e50ab31 upstream.
 
-Fix kprobe_on_func_entry() returns error code instead of false so that
-register_kretprobe() can return an appropriate error code.
+On some archs, the idle task can call into cpu_suspend(). The cpu_suspend()
+will disable or pause function graph tracing, as there's some paths in
+bringing down the CPU that can have issues with its return address being
+modified. The task_struct structure has a "tracing_graph_pause" atomic
+counter, that when set to something other than zero, the function graph
+tracer will not modify the return address.
 
-append_trace_kprobe() expects the kprobe registration returns -ENOENT
-when the target symbol is not found, and it checks whether the target
-module is unloaded or not. If the target module doesn't exist, it
-defers to probe the target symbol until the module is loaded.
+The problem is that the tracing_graph_pause counter is initialized when the
+function graph tracer is enabled. This can corrupt the counter for the idle
+task if it is suspended in these architectures.
 
-However, since register_kretprobe() returns -EINVAL instead of -ENOENT
-in that case, it always fail on putting the kretprobe event on unloaded
-modules. e.g.
+   CPU 1				CPU 2
+   -----				-----
+  do_idle()
+    cpu_suspend()
+      pause_graph_tracing()
+          task_struct->tracing_graph_pause++ (0 -> 1)
 
-Kprobe event:
-/sys/kernel/debug/tracing # echo p xfs:xfs_end_io >> kprobe_events
-[   16.515574] trace_kprobe: This probe might be able to register after target module is loaded. Continue.
+				start_graph_tracing()
+				  for_each_online_cpu(cpu) {
+				    ftrace_graph_init_idle_task(cpu)
+				      task-struct->tracing_graph_pause = 0 (1 -> 0)
 
-Kretprobe event: (p -> r)
-/sys/kernel/debug/tracing # echo r xfs:xfs_end_io >> kprobe_events
-sh: write error: Invalid argument
-/sys/kernel/debug/tracing # cat error_log
-[   41.122514] trace_kprobe: error: Failed to register probe event
-  Command: r xfs:xfs_end_io
-             ^
+      unpause_graph_tracing()
+          task_struct->tracing_graph_pause-- (0 -> -1)
 
-To fix this bug, change kprobe_on_func_entry() to detect symbol lookup
-failure and return -ENOENT in that case. Otherwise it returns -EINVAL
-or 0 (succeeded, given address is on the entry).
+The above should have gone from 1 to zero, and enabled function graph
+tracing again. But instead, it is set to -1, which keeps it disabled.
 
-Link: https://lkml.kernel.org/r/161176187132.1067016.8118042342894378981.stgit@devnote2
+There's no reason that the field tracing_graph_pause on the task_struct can
+not be initialized at boot up.
 
 Cc: stable@vger.kernel.org
-Fixes: 59158ec4aef7 ("tracing/kprobes: Check the probe on unloaded module correctly")
-Reported-by: Jianlin Lv <Jianlin.Lv@arm.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Fixes: 380c4b1411ccd ("tracing/function-graph-tracer: append the tracing_graph_flag")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211339
+Reported-by: pierre.gondois@arm.com
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/kprobes.h     |    2 +-
- kernel/kprobes.c            |   34 +++++++++++++++++++++++++---------
- kernel/trace/trace_kprobe.c |    4 ++--
- 3 files changed, 28 insertions(+), 12 deletions(-)
+ init/init_task.c      |    3 ++-
+ kernel/trace/ftrace.c |    2 --
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -245,7 +245,7 @@ extern void kprobes_inc_nmissed_count(st
- extern bool arch_within_kprobe_blacklist(unsigned long addr);
- extern int arch_populate_kprobe_blacklist(void);
- extern bool arch_kprobe_on_func_entry(unsigned long offset);
--extern bool kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long offset);
-+extern int kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long offset);
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -168,7 +168,8 @@ struct task_struct init_task
+ 	.lockdep_recursion = 0,
+ #endif
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+-	.ret_stack	= NULL,
++	.ret_stack		= NULL,
++	.tracing_graph_pause	= ATOMIC_INIT(0),
+ #endif
+ #if defined(CONFIG_TRACING) && defined(CONFIG_PREEMPT)
+ 	.trace_recursion = 0,
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -6875,7 +6875,6 @@ static int alloc_retstack_tasklist(struc
+ 		}
  
- extern bool within_kprobe_blacklist(unsigned long addr);
- extern int kprobe_add_ksym_blacklist(unsigned long entry);
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1921,29 +1921,45 @@ bool __weak arch_kprobe_on_func_entry(un
- 	return !offset;
- }
- 
--bool kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long offset)
-+/**
-+ * kprobe_on_func_entry() -- check whether given address is function entry
-+ * @addr: Target address
-+ * @sym:  Target symbol name
-+ * @offset: The offset from the symbol or the address
-+ *
-+ * This checks whether the given @addr+@offset or @sym+@offset is on the
-+ * function entry address or not.
-+ * This returns 0 if it is the function entry, or -EINVAL if it is not.
-+ * And also it returns -ENOENT if it fails the symbol or address lookup.
-+ * Caller must pass @addr or @sym (either one must be NULL), or this
-+ * returns -EINVAL.
-+ */
-+int kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long offset)
+ 		if (t->ret_stack == NULL) {
+-			atomic_set(&t->tracing_graph_pause, 0);
+ 			atomic_set(&t->trace_overrun, 0);
+ 			t->curr_ret_stack = -1;
+ 			t->curr_ret_depth = -1;
+@@ -7088,7 +7087,6 @@ static DEFINE_PER_CPU(struct ftrace_ret_
+ static void
+ graph_init_task(struct task_struct *t, struct ftrace_ret_stack *ret_stack)
  {
- 	kprobe_opcode_t *kp_addr = _kprobe_addr(addr, sym, offset);
- 
- 	if (IS_ERR(kp_addr))
--		return false;
-+		return PTR_ERR(kp_addr);
- 
--	if (!kallsyms_lookup_size_offset((unsigned long)kp_addr, NULL, &offset) ||
--						!arch_kprobe_on_func_entry(offset))
--		return false;
-+	if (!kallsyms_lookup_size_offset((unsigned long)kp_addr, NULL, &offset))
-+		return -ENOENT;
- 
--	return true;
-+	if (!arch_kprobe_on_func_entry(offset))
-+		return -EINVAL;
-+
-+	return 0;
- }
- 
- int register_kretprobe(struct kretprobe *rp)
- {
--	int ret = 0;
-+	int ret;
- 	struct kretprobe_instance *inst;
- 	int i;
- 	void *addr;
- 
--	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
--		return -EINVAL;
-+	ret = kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset);
-+	if (ret)
-+		return ret;
- 
- 	/* If only rp->kp.addr is specified, check reregistering kprobes */
- 	if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -112,9 +112,9 @@ bool trace_kprobe_on_func_entry(struct t
- {
- 	struct trace_kprobe *tk = (struct trace_kprobe *)call->data;
- 
--	return kprobe_on_func_entry(tk->rp.kp.addr,
-+	return (kprobe_on_func_entry(tk->rp.kp.addr,
- 			tk->rp.kp.addr ? NULL : tk->rp.kp.symbol_name,
--			tk->rp.kp.addr ? 0 : tk->rp.kp.offset);
-+			tk->rp.kp.addr ? 0 : tk->rp.kp.offset) == 0);
- }
- 
- bool trace_kprobe_error_injectable(struct trace_event_call *call)
+-	atomic_set(&t->tracing_graph_pause, 0);
+ 	atomic_set(&t->trace_overrun, 0);
+ 	t->ftrace_timestamp = 0;
+ 	/* make curr_ret_stack visible before we add the ret_stack */
 
 
