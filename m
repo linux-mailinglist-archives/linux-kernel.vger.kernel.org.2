@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF648318591
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 560C3318597
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhBKHN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:13:26 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:51000 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhBKHNW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:13:22 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B78kFm120041;
-        Thu, 11 Feb 2021 07:12:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=pSbVfKgu7eIJjgTqh9AyZUoJkFb11jRAkYyjkWpaPf4=;
- b=B98kCmijzkCGspzl9qXlkBLuXQWXCxkPB9lKcbYHMEMb2YPKhKpD7nHcbpj5VRzHbvbX
- UzydUYHWtBeuI12D0lv1FPU0vi9/6UzBG7L+mjTN2nCcZYz13gjd4UQu7RCkkXQ/3SR9
- XGiTwnjlo8CpJAi600/8j9om9VLIlcZFqmdYVUmPbrjWmswcsCqy/KBYlD8B6dlcBbOL
- J34TBFj0l4EBEfV96Vbogn9yAJKWyNsi5auYaT7peRkji9WgQm/egkZZei2PxUD4uW1U
- 29OysGP36FTgzcpvfo7zAtK0na1GHg4zXehCBlmOfs2itIVeZrmKOuAIj/Fc55TkRy4V XA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 36mv9drh2g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 07:12:19 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B7A1Je064036;
-        Thu, 11 Feb 2021 07:12:17 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 36j4pr5g7r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 07:12:16 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11B7C5WS011045;
-        Thu, 11 Feb 2021 07:12:06 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 10 Feb 2021 23:12:05 -0800
-Date:   Thu, 11 Feb 2021 10:11:53 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v4 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
-Message-ID: <20210211071153.GJ20820@kadam>
-References: <20210210222851.232374-1-drew@beagleboard.org>
- <20210210222851.232374-3-drew@beagleboard.org>
+        id S229729AbhBKHOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:14:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229517AbhBKHOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 02:14:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ABFC64E70;
+        Thu, 11 Feb 2021 07:13:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613027617;
+        bh=mFb5e+mcFjieGwWXbuKlq9q0UpNNbyeAq1/dwdNreuY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r612v7W+RCFxSqtS+kG65T2iZaVwzZel4btR0FeMO2RkiMdOJ50IMLVhWxhHEVjeq
+         RWIWvUmaSjvpNuRiWAmSDAzQxhntPIcqMrjyseEOwkEKs8om6hanjiK/XvklN5gvM6
+         4IRSCxhZL6+efdSsP/rZVDzTJVVy90foUNPuGiwSGjLg9nOaHA3e8aP5tOIg2ASxIJ
+         Sp6nUBHKEK6j6j934tjzENjbujdOFEbYvxhqtUewKvYJI0DUbn0exEQp0qLWLIqa56
+         Txi+Gq3TeUWe+Arxca2HZee6BKF625xZfgl8d82Twk0iYyM/fBr2k70XriEGyOWcL0
+         DaEcHGkrjBISA==
+Date:   Thu, 11 Feb 2021 09:13:19 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <20210211071319.GF242749@kernel.org>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-8-rppt@kernel.org>
+ <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
+ <20210208212605.GX242749@kernel.org>
+ <YCJMDBss8Qhha7g9@dhcp22.suse.cz>
+ <20210209090938.GP299309@linux.ibm.com>
+ <YCKLVzBR62+NtvyF@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210222851.232374-3-drew@beagleboard.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102110063
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
- mlxscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102110063
+In-Reply-To: <YCKLVzBR62+NtvyF@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:28:54PM -0800, Drew Fustini wrote:
-> +	ret = strncpy_from_user(buf, user_buf, PINMUX_MAX_NAME * 2);
-> +	if (ret < 0) {
-> +		dev_err(pctldev->dev, "failed to copy buffer from userspace");
-> +		goto free_gname;
-> +	}
-> +	buf[len-1] = '\0';
-> +
-> +	ret = sscanf(buf, "%s %s", fname, gname);
-> +	if (ret != 2) {
-> +		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
-> +		goto free_gname;
+On Tue, Feb 09, 2021 at 02:17:11PM +0100, Michal Hocko wrote:
+> On Tue 09-02-21 11:09:38, Mike Rapoport wrote:
+> > On Tue, Feb 09, 2021 at 09:47:08AM +0100, Michal Hocko wrote:
+> > > 
+> > > OK, so IIUC this means that the model is to hand over memory from host
+> > > to guest. I thought the guest would be under control of its address
+> > > space and therefore it operates on the VMAs. This would benefit from
+> > > an additional and more specific clarification.
+> > 
+> > How guest would operate on VMAs if the interface between host and guest is
+> > virtual hardware?
+> 
+> I have to say that I am not really familiar with this area so my view
+> might be misleading or completely wrong. I thought that the HW address
+> ranges are mapped to the guest process and therefore have a VMA.
 
-We need a "ret = -EINVAL;" before the goto.  sscanf doesn't return error
-codes.  Normally we would write it like so:
+There is a qemu process that currently has mappings of what guest sees as
+its physical memory, but qemu is a part of hypervisor, i.e. host.
+ 
+> > Citing my older email:
+> > 
+> >     I've hesitated whether to continue to use new flags to memfd_create() or to
+> >     add a new system call and I've decided to use a new system call after I've
+> >     started to look into man pages update. There would have been two completely
+> >     independent descriptions and I think it would have been very confusing.
+> 
+> Could you elaborate? Unmapping from the kernel address space can work
+> both for sealed or hugetlb memfds, no? Those features are completely
+> orthogonal AFAICS. With a dedicated syscall you will need to introduce
+> this functionality on top if that is required. Have you considered that?
+> I mean hugetlb pages are used to back guest memory very often. Is this
+> something that will be a secret memory usecase?
+> 
+> Please be really specific when giving arguments to back a new syscall
+> decision.
 
-	if (sscanf(buf, "%s %s", fname, gname) != 2) {
-		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
-		ret = -EINVAL;
-		goto free_gname;
-	}
+Isn't "syscalls have completely independent description" specific enough?
 
-I'm going to write a Smatch check for this today.
+We are talking about API here, not the implementation details whether
+secretmem supports large pages or not.
 
-> +	}
-> +
-> +	fsel = pinmux_func_name_to_selector(pctldev, fname);
-> +	if (fsel < 0) {
-> +		dev_err(pctldev->dev, "invalid function %s in map table\n", fname);
-> +		ret = -EINVAL;
+The purpose of memfd_create() is to create a file-like access to memory.
+The purpose of memfd_secret() is to create a way to access memory hidden
+from the kernel.
 
-ret = fsel;
+I don't think overloading memfd_create() with the secretmem flags because
+they happen to return a file descriptor will be better for users, but
+rather will be more confusing.
 
-> +		goto free_gname;
-> +	}
-> +
-
-regards,
-dan carpenter
+-- 
+Sincerely yours,
+Mike.
