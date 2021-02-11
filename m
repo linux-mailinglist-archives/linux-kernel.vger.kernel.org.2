@@ -2,93 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8E9319672
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FFD31967B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbhBKXQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 18:16:53 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42967 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229625AbhBKXQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 18:16:51 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DcCDT5ktbz9sB4;
-        Fri, 12 Feb 2021 10:16:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1613085369;
-        bh=JbKi0c2idc6mQ5P+7UOfhT57sxfNnkjIaB1g66SBgiI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lmS+g0ar9/UR2FqRNjQQ4PAjRXry97KjlKNIQLciIzmHujXJrQkLNabzt069V8ywA
-         Zz4I9oST3URr/a19IqfG30YbQspKwT5bNPxHyNyDrcqm1C8sQlX4XGbWuRD++knW67
-         hbNm/CXJjTdmxPOmxyK2MEOYZ/5ugUO+dAUjTU6WV9PjwOfoZqMr9t0QXeCQ18SMqj
-         xFzFDiX80UIY/75GJSi+5vTXshVVFegIFgXc1wEhPGBYaZuwTy1iTgI7bh+AIlHH8C
-         7pQN39bH/ANxYdT7Llo9ac/cUZMfMoTygI6XoJYNA7hDRzIfSG6+idJVOolFbEvu1v
-         uCXURul9/inOg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     aneesh.kumar@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.11-8 tag
-Date:   Fri, 12 Feb 2021 10:15:59 +1100
-Message-ID: <87blcqnqkw.fsf@mpe.ellerman.id.au>
+        id S229730AbhBKXUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 18:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhBKXTz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 18:19:55 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079B8C061756;
+        Thu, 11 Feb 2021 15:19:15 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id u15so4177284plf.1;
+        Thu, 11 Feb 2021 15:19:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IawPhYvhu3AkS9vPcoIjPCh4BAXno8jnWq7wzFVXxAc=;
+        b=GdmmvbM5Y1JE6okKyMR+qvc3OXxIRt+dtvdrbtwTDpLGdbHh8DVjppxR4fUe6Cqaaw
+         vASMhZf4ZQM0aD9yAhyp3+HXx/4lh3g8njKYkk7CjTwyYUSX7oeCpCXPSTyJXmfYxDU2
+         PNXsG3CXAfnjJB1G2b5TBBxLeltVodLAjCwVYwV5QeFe8VZxvhexlZb07clLiYFPVP7B
+         j5xpW0YA6XTw4YX+byOOkPqfYmFDFhjSXKgiysVv5vWjJ9wNG6kRNTkmiZyGdlaqhIXr
+         r525N0Y4dusp7itOD+yUsbEzRjCjWdrgGdhDgqkTgkVFdhoxTU+GTNWLSds0Ho6V+jqK
+         hHJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IawPhYvhu3AkS9vPcoIjPCh4BAXno8jnWq7wzFVXxAc=;
+        b=OLOpDdvXHjE5d+mocmnC/je5gZoi4qgw62NPxKsSzJ/HMfE+e+Mo5ARD7GcvI9wLQG
+         IIhKvj3AKw0U711yvps/HXOi0HX42XwvlrMtM9dOVeRnDhFosHgP/UZy5kIktlzaDRIm
+         EbNAxc92uBNO4RtBzt1QOSjfQkmWqyN9j87uqS5K2KP+F4sk0JtAfvbrvIGjhJ8OeHnx
+         fL3ahcPNPjKdBiU3+mEfJcQhQwcb5Igoz/5qR4aomg0NmYl2DTTLgEZtsyMIc/ixhwue
+         LpXYGsLFVq2mTmztuxNRPjRs91eDQztxqxpw6M6vdu1nwmTihRPmAahpzm7G0vzpRPO3
+         1u3g==
+X-Gm-Message-State: AOAM5319zQRDU/mvFoT6IM0D9juDRfgDbevCcbLPQput/bQjrzcQ7GCT
+        3ZsLZhw+ERnaU8RBAiTYaIwOjztf56CFnQ==
+X-Google-Smtp-Source: ABdhPJyKkmINMYjuCjY9rSXXrIA/PM5PRrvkJbFz2vrHTPH5aitG2RpkQATnPfpY7/QBdAx8Qgi+Sw==
+X-Received: by 2002:a17:90a:7c06:: with SMTP id v6mr68337pjf.37.1613085554161;
+        Thu, 11 Feb 2021 15:19:14 -0800 (PST)
+Received: from vm-120.slytdz3n204uxoeeqq2h5obquh.xx.internal.cloudapp.net ([52.247.223.84])
+        by smtp.gmail.com with ESMTPSA id c9sm5950309pjr.44.2021.02.11.15.19.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 15:19:13 -0800 (PST)
+From:   Melanie Plageman <melanieplageman@gmail.com>
+To:     linux-scsi@vger.kernel.org
+Cc:     andres@anarazel.de, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Melanie Plageman (Microsoft)" <melanieplageman@gmail.com>
+Subject: [PATCH v3] scsi: storvsc: Parameterize number hardware queues
+Date:   Thu, 11 Feb 2021 23:18:03 +0000
+Message-Id: <20210211231803.25463-1-melanieplageman@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+From: "Melanie Plageman (Microsoft)" <melanieplageman@gmail.com>
 
-Hi Linus,
+Add ability to set the number of hardware queues with new module parameter,
+storvsc_max_hw_queues. The default value remains the number of CPUs.  This
+functionality is useful in some environments (e.g. Microsoft Azure) where
+decreasing the number of hardware queues has been shown to improve
+performance.
 
-Please pull one final powerpc fix for 5.11:
+Signed-off-by: Melanie Plageman (Microsoft) <melanieplageman@gmail.com>
+---
+ drivers/scsi/storvsc_drv.c | 28 ++++++++++++++++++++++++++--
+ 1 file changed, 26 insertions(+), 2 deletions(-)
 
-The following changes since commit 24321ac668e452a4942598533d267805f291fdc9:
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index 2e4fa77445fd..a64e6664c915 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -378,10 +378,14 @@ static u32 max_outstanding_req_per_channel;
+ static int storvsc_change_queue_depth(struct scsi_device *sdev, int queue_depth);
+ 
+ static int storvsc_vcpus_per_sub_channel = 4;
++static int storvsc_max_hw_queues = -1;
+ 
+ module_param(storvsc_ringbuffer_size, int, S_IRUGO);
+ MODULE_PARM_DESC(storvsc_ringbuffer_size, "Ring buffer size (bytes)");
+ 
++module_param(storvsc_max_hw_queues, int, S_IRUGO|S_IWUSR);
++MODULE_PARM_DESC(storvsc_max_hw_queues, "Maximum number of hardware queues");
++
+ module_param(storvsc_vcpus_per_sub_channel, int, S_IRUGO);
+ MODULE_PARM_DESC(storvsc_vcpus_per_sub_channel, "Ratio of VCPUs to subchannels");
+ 
+@@ -1897,6 +1901,7 @@ static int storvsc_probe(struct hv_device *device,
+ {
+ 	int ret;
+ 	int num_cpus = num_online_cpus();
++	int num_present_cpus = num_present_cpus();
+ 	struct Scsi_Host *host;
+ 	struct hv_host_device *host_dev;
+ 	bool dev_is_ide = ((dev_id->driver_data == IDE_GUID) ? true : false);
+@@ -2004,8 +2009,19 @@ static int storvsc_probe(struct hv_device *device,
+ 	 * For non-IDE disks, the host supports multiple channels.
+ 	 * Set the number of HW queues we are supporting.
+ 	 */
+-	if (!dev_is_ide)
+-		host->nr_hw_queues = num_present_cpus();
++	if (!dev_is_ide) {
++		if (storvsc_max_hw_queues == -1)
++			host->nr_hw_queues = num_present_cpus;
++		else if (storvsc_max_hw_queues > num_present_cpus ||
++			 storvsc_max_hw_queues == 0 ||
++			storvsc_max_hw_queues < -1) {
++			storvsc_log(device, STORVSC_LOGGING_WARN,
++				"Resetting invalid storvsc_max_hw_queues value to default.\n");
++			host->nr_hw_queues = num_present_cpus;
++			storvsc_max_hw_queues = -1;
++		} else
++			host->nr_hw_queues = storvsc_max_hw_queues;
++	}
+ 
+ 	/*
+ 	 * Set the error handler work queue.
+@@ -2169,6 +2185,14 @@ static int __init storvsc_drv_init(void)
+ 		vmscsi_size_delta,
+ 		sizeof(u64)));
+ 
++	if (storvsc_max_hw_queues > num_present_cpus() ||
++		storvsc_max_hw_queues == 0 ||
++		storvsc_max_hw_queues < -1) {
++		pr_warn("Setting storvsc_max_hw_queues to -1. %d is invalid.\n",
++			storvsc_max_hw_queues);
++		storvsc_max_hw_queues = -1;
++	}
++
+ #if IS_ENABLED(CONFIG_SCSI_FC_ATTRS)
+ 	fc_transport_template = fc_attach_transport(&fc_transport_functions);
+ 	if (!fc_transport_template)
+-- 
+2.20.1
 
-  powerpc/64/signal: Fix regression in __kernel_sigtramp_rt64() semantics (2021-02-02 22:14:41 +1100)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.11-8
-
-for you to fetch changes up to 8c511eff1827239f24ded212b1bcda7ca5b16203:
-
-  powerpc/kuap: Allow kernel thread to access userspace after kthread_use_mm (2021-02-06 23:13:04 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.11 #8
-
-One fix for a regression seen in io_uring, introduced by our support for KUAP
-(Kernel User Access Prevention) with the Hash MMU.
-
-Thanks to: Aneesh Kumar K.V, Zorro Lang.
-
-- ------------------------------------------------------------------
-Aneesh Kumar K.V (1):
-      powerpc/kuap: Allow kernel thread to access userspace after kthread_use_mm
-
-
- arch/powerpc/include/asm/book3s/64/kup.h   | 16 +++++++++++-----
- arch/powerpc/include/asm/book3s/64/pkeys.h |  4 ----
- arch/powerpc/mm/book3s64/pkeys.c           |  1 +
- 3 files changed, 12 insertions(+), 9 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmAlumMACgkQUevqPMjh
-pYBb9BAAqpyhvEjDiyP0xeHUTQ9UsNMnNUW7Hp03jJYH+EKWC9nT7kb3TY1eNyk5
-KyMBOtXiQsggzWDE31bR32BpH/JChSeRPaCO4HHdDS9t+3ZIo16RTFksdiIhCN6m
-nI4WhnfrdZszstMRsKWzfoLRVDGyNi0hyyQaMS3ypuKvRmozZk6u9K/YNXMa97Wf
-ihhB0lYRdfMNgxMm66uaqEtzYt3Z4dRj9Y24LQirJnp32xK+sNgoleHl4gvvKG3m
-r7CogqHlcExbkD3dl/PPe/SVEesfXpmTrQPCvJmi0qWm9NzkduQWrSEkUkUp1YQD
-T0pBHnCxtI7GAAQpCphBA3gjrz03Og4/RAXmfESgI0JHyh7Vihx91XOwuonuJndn
-5ThY2D9+nkZ2vnlis2/AoLx6ClbNgZysr0iAOsRyd2SYR9Er2CcPZ4OuNHXWTHlz
-G4SmVYiZj9gnSrzqlEGIqBOVWdykV+x+xkLLQx86HUAI+7f1mFV1+dJ4E5NLGKzS
-jB+XwwG2y6q6SnJt2iiybqDu9K1lPWnKFLNeb4at7GfpJ4riKNcRSYrkY9xYxmkR
-kgKyXfW+rNt1RcIoy65kNa3hSnXi4p9wc5Lph7joS7zTkZIKR2E3QUJjGQao85Qa
-rNxccSz3X7ZAL9OEJP/4nE72Zf3VXkzuKbB79D3dhFJ8SJmbPqQ=
-=GDL5
------END PGP SIGNATURE-----
