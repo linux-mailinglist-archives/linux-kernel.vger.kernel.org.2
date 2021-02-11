@@ -2,182 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B1531924C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A6631924F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232359AbhBKScL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:32:11 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:63290 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231144AbhBKSar (ORCPT
+        id S232679AbhBKScY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:32:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231337AbhBKSbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:30:47 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_smtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
- id a112a8a4c721731e; Thu, 11 Feb 2021 19:30:03 +0100
-Received: from kreacher.localnet (89-64-80-250.dynamic.chello.pl [89.64.80.250])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id D9C46661037;
-        Thu, 11 Feb 2021 19:30:01 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: [PATCH] ACPI: property: Fix fwnode string properties matching
-Date:   Thu, 11 Feb 2021 19:30:01 +0100
-Message-ID: <5831274.1ZjA0VymzF@kreacher>
+        Thu, 11 Feb 2021 13:31:18 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A76C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:30:38 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id t196so1518990oot.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:30:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r9+HPdy88LuNzw7CIi6Ld4av+X55WJ9pzXOwOLwNHOE=;
+        b=v5bBAJO0D9kbSk+SQC4rKXBMPVAH5CsB7WbuPjMO8ioZfAwvf+A0D1tXkcm2RoHETU
+         2S/wE/Lzwn9jfXRADna4tqdL/O2iZMUkVHtsuW+48j3l5AN5sP/CvObaud2VMg2VJIfF
+         bPXlk9eXfhBQM+RiTR8IX9BVdKRxiCSqlWTfKZ9MbiTGzShbqDgKHRdzLFtYDXm4jZoH
+         /xaiTAyZMHeJ66zAAkMZoMxbJXNnUdI226g+le+qA5/GNaQrok22j4JvqKNyBDsR8yLS
+         uQwDSAgBX4YflByhq6/BRMWOq6JD6ovkqw373F26uvvH+3nSt7ycbw1cOP7057rr9oB0
+         1tFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r9+HPdy88LuNzw7CIi6Ld4av+X55WJ9pzXOwOLwNHOE=;
+        b=TLwlK7LiFMJY9AyeMD+dT1NAmLEtbZfE5LtdyVrZEhdqbu3MVxXv87bD9ez1uWBEoX
+         uAl//ahLTae+e/27eaK892EawG2MDvSpesI6YvA6pahFKkbwRo3MtRDdI/ih5/sm24Zj
+         IvkWd12fvt4AeBa0Yz89TSPvqi9QKWj71JS376tbD8M64u3tdKvC13xbDfj81iWv4zh6
+         tO41/sZkibaIdEzZXF8dDX0lAwRvUArJYOJTUasof/ytQUm3p0qsjwApcoNTQZut1W3U
+         9eq91ysTZHdVKhxP+QRNQex06Nye8O4p1Rtz67cRqQ7J4h+naBu9x6/5HUgea4A5oDP1
+         opwQ==
+X-Gm-Message-State: AOAM530V+PUeZr+pgVkQ1oKtc828+GQOY9i/BppQmEicQiJoYjni4vsS
+        h5t7VxjCy35JCz5WxvNRiKqplJon4x+FUVA1hN32kg==
+X-Google-Smtp-Source: ABdhPJxZ5V2xaPLSoSTNPCWH0nPKZLl9JUX0OzAdpMfc+5uHARdOACsQWJhrgoB6ou0Hv6YF7rUMALoN5Ilf93pGXrc=
+X-Received: by 2002:a4a:858c:: with SMTP id t12mr6312870ooh.20.1613068237502;
+ Thu, 11 Feb 2021 10:30:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrheelgdduudduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtvdenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeevudefgfeguedtjedvhfetveegleduveeuvedvjeekleefhfduhfefheekffefveenucfkphepkeelrdeigedrkedtrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrddvhedtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheprghnughrihihrdhshhgvvhgthhgvnhhkoheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthht
- oheptggrlhhvihhnrdhjohhhnhhsohhnsehoshhsrdhngihprdgtohhmpdhrtghpthhtohepshgrkhgrrhhirdgrihhluhhssehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=12 Fuz1=12 Fuz2=12
+References: <20210211173044.141215027@infradead.org>
+In-Reply-To: <20210211173044.141215027@infradead.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 11 Feb 2021 10:30:25 -0800
+Message-ID: <CAKwvOd=9Xx=w6vWq8Tb160dM3a9uDPNCP-Yt0it7E0804HxnsQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH v2 0/7] objtool x86 decoder fixes
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Feb 11, 2021 at 9:40 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Hi,
+>
+> Since I had to look at instruction decoding for the stack swizzle thing, I
+> ended up with a few more changes to the objtool x86 decoder.
+>
+> These patches are lightly tested (they build defconfig and allmodconfig using
+> GCC10), but older versions have seen some robot exposure and other compilers.
 
-Property matching does not work for ACPI fwnodes if the value of the
-given property is not represented as a package in the _DSD package
-containing it.  For example, the "compatible" property in the _DSD
-below
+Did a quick test of x86_64 defconfig on -next with
+https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=objtool/core&id=2a512829840eb97a8b52eca7058e56d484468f2d
+and ToT LLVM. No new warnings/issues observed during a build.
 
-  Name (_DSD, Package () {
-    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-    Package () {
-      Package () {"compatible", "ethernet-phy-ieee802.3-c45"}
-    }
-  })
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 
-will not be found by fwnode_property_match_string(), because the ACPI
-code handling device properties does not regard the single value as a
-"list" in that case.
-
-Namely, fwnode_property_match_string() invoked to match a given
-string property value first calls fwnode_property_read_string_array()
-with the last two arguments equal to NULL and 0, respectively, in
-order to count the items in the value of the given property, with the
-assumption that this value may be an array.  For ACPI fwnodes, that
-operation is carried out by acpi_node_prop_read() which calls
-acpi_data_prop_read() for this purpose.  However, when the return
-(val) pointer is NULL, that function only looks for a property whose
-value is a package without checking the single-value case at all.
-
-To fix that, make acpi_data_prop_read() check the single-value case
-regardless of the return pointer value if its return pointer argument
-is NULL and modify acpi_data_prop_read_single() handling that case to
-attempt to read the value of the property if the return pointer is
-NULL and return 1 if that succeeds.
-
-Fixes: 3708184afc77 ("device property: Move FW type specific functionality to FW specific files")
-Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc: 4.13+ <stable@vger.kernel.org> # 4.13+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/property.c |   44 +++++++++++++++++++++++++++++++++-----------
- 1 file changed, 33 insertions(+), 11 deletions(-)
-
-Index: linux-pm/drivers/acpi/property.c
-===================================================================
---- linux-pm.orig/drivers/acpi/property.c
-+++ linux-pm/drivers/acpi/property.c
-@@ -787,9 +787,6 @@ static int acpi_data_prop_read_single(co
- 	const union acpi_object *obj;
- 	int ret;
- 
--	if (!val)
--		return -EINVAL;
--
- 	if (proptype >= DEV_PROP_U8 && proptype <= DEV_PROP_U64) {
- 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_INTEGER, &obj);
- 		if (ret)
-@@ -799,28 +796,43 @@ static int acpi_data_prop_read_single(co
- 		case DEV_PROP_U8:
- 			if (obj->integer.value > U8_MAX)
- 				return -EOVERFLOW;
--			*(u8 *)val = obj->integer.value;
-+
-+			if (val)
-+				*(u8 *)val = obj->integer.value;
-+
- 			break;
- 		case DEV_PROP_U16:
- 			if (obj->integer.value > U16_MAX)
- 				return -EOVERFLOW;
--			*(u16 *)val = obj->integer.value;
-+
-+			if (val)
-+				*(u16 *)val = obj->integer.value;
-+
- 			break;
- 		case DEV_PROP_U32:
- 			if (obj->integer.value > U32_MAX)
- 				return -EOVERFLOW;
--			*(u32 *)val = obj->integer.value;
-+
-+			if (val)
-+				*(u32 *)val = obj->integer.value;
-+
- 			break;
- 		default:
--			*(u64 *)val = obj->integer.value;
-+			if (val)
-+				*(u64 *)val = obj->integer.value;
-+
- 			break;
- 		}
-+
-+		if (!val)
-+			return 1;
- 	} else if (proptype == DEV_PROP_STRING) {
- 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_STRING, &obj);
- 		if (ret)
- 			return ret;
- 
--		*(char **)val = obj->string.pointer;
-+		if (val)
-+			*(char **)val = obj->string.pointer;
- 
- 		return 1;
- 	} else {
-@@ -834,7 +846,7 @@ int acpi_dev_prop_read_single(struct acp
- {
- 	int ret;
- 
--	if (!adev)
-+	if (!adev || !val)
- 		return -EINVAL;
- 
- 	ret = acpi_data_prop_read_single(&adev->data, propname, proptype, val);
-@@ -928,10 +940,20 @@ static int acpi_data_prop_read(const str
- 	const union acpi_object *items;
- 	int ret;
- 
--	if (val && nval == 1) {
-+	if (nval == 1 || !val) {
- 		ret = acpi_data_prop_read_single(data, propname, proptype, val);
--		if (ret >= 0)
-+		/*
-+		 * The overflow error means that the property is there and it is
-+		 * single-value, but its type does not match, so return.
-+		 */
-+		if (ret >= 0 || ret == -EOVERFLOW)
- 			return ret;
-+
-+		/*
-+		 * Reading this property as a single-value one failed, but its
-+		 * value may still be represented as one-element array, so
-+		 * continue.
-+		 */
- 	}
- 
- 	ret = acpi_data_get_property_array(data, propname, ACPI_TYPE_ANY, &obj);
+>
+> v2:
+>  - actually Cc'ed LKML :/
+>
 
 
-
+-- 
+Thanks,
+~Nick Desaulniers
