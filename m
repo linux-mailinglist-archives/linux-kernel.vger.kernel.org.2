@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB4D318C33
+	by mail.lfdr.de (Postfix) with ESMTP id 5158B318C32
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbhBKNhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:37:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53887 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231734AbhBKNO1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:14:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613049179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0/ylQ7keEMZM2vB0HyhfCbqRdrDWn9fjEd0p4iPMH+0=;
-        b=ZrN1Hp6uR5vLudFdPw2lMEXsT0qmHm9wGJMwypm55O1WhwhlcYbt/Msq3heDho8wSyewFJ
-        qPO0a3sayxLu/g1SDKonLcFSHCziAg+hha4JsMmR6ltfA1M/QsnwqTolbtmIKRNeNAaUou
-        L/Amd0v2LGtnlzE+bUyZTeHMF0GvhZ0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-79-h3S7f7aZM5OJsa89OFrPIw-1; Thu, 11 Feb 2021 08:12:55 -0500
-X-MC-Unique: h3S7f7aZM5OJsa89OFrPIw-1
-Received: by mail-wr1-f69.google.com with SMTP id o16so2475344wrn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:12:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0/ylQ7keEMZM2vB0HyhfCbqRdrDWn9fjEd0p4iPMH+0=;
-        b=MXTMcIsMYcfzwqsxQDUIGzSe/QuJfonujAPhpLm9iqRoguEiKdiZUUIJzyCkH9Wv3M
-         I67CwfzVZwRXd+rHnIhLfjZfeP8XFSsUzJwOz3la0NWYsvjgeTWrzTAROQmsCYKrDyKQ
-         iZWe+HeBnM1xQ/XWp4SLNGZYTuJHXgkyrn4RYoJ7aeNrziigcxUl5ATIrs6duSXHSyww
-         gMBUGAivaC2je+A0IcmWaCKprCT5PzetzkcElzJFNSl2wmo6G87oNQuru77qznyNexTA
-         eEpJPpXil1NDM//biU5rXw+u5u8fMg85Mxn9uqA0/dzxd+TivPMzhO+63VbpcyI35jIj
-         yvRw==
-X-Gm-Message-State: AOAM532QaX/15ldgsD8vixq9r2/6xUu69d4mYXuxyUdW/WB61MwrJDQf
-        b7lSlXvyS/1UqZB7EBgnT/qGXg1jia05VHeZR30KQPaQMgt5J2t2G0sYqzV/5RaAOysa0XeG4fy
-        D2/o8/MpqsUZLrScvEJ0uOgpM
-X-Received: by 2002:a7b:ce17:: with SMTP id m23mr4931796wmc.80.1613049174454;
-        Thu, 11 Feb 2021 05:12:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw86omcCww3Grv2u7cdAIF2HtKvKP9q6OhV7oOtjNAZkcp+eceV3hNZ0A7cl6cyg04lcA/l/Q==
-X-Received: by 2002:a7b:ce17:: with SMTP id m23mr4931784wmc.80.1613049174338;
-        Thu, 11 Feb 2021 05:12:54 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d15sm739684wru.80.2021.02.11.05.12.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 05:12:53 -0800 (PST)
-Subject: Re: [PATCH 09/15] KVM: selftests: Move per-VM GPA into perf_test_args
-To:     Sean Christopherson <seanjc@google.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
-References: <20210210230625.550939-1-seanjc@google.com>
- <20210210230625.550939-10-seanjc@google.com>
- <CANgfPd8itawTsza-SPSMehUEAAJ4DWtSQX4QRbHg1kX4c6VRBg@mail.gmail.com>
- <YCSOtMzs9OWO2AsR@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <756fed52-8151-97ee-11f2-91f150afab42@redhat.com>
-Date:   Thu, 11 Feb 2021 14:12:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S231922AbhBKNhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:37:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54404 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231253AbhBKNO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:14:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 99560AD29;
+        Thu, 11 Feb 2021 13:13:42 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3F01D1E14B2; Thu, 11 Feb 2021 14:13:42 +0100 (CET)
+Date:   Thu, 11 Feb 2021 14:13:42 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Cc:     Jan Kara <jack@suse.cz>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
+Message-ID: <20210211131342.GQ19070@quack2.suse.cz>
+References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
+ <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
+ <20210211093027.GI19070@quack2.suse.cz>
+ <1803ac43-d6fc-4de8-78a0-7fc807f9c036@tu-dortmund.de>
 MIME-Version: 1.0
-In-Reply-To: <YCSOtMzs9OWO2AsR@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1803ac43-d6fc-4de8-78a0-7fc807f9c036@tu-dortmund.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/02/21 02:56, Sean Christopherson wrote:
->>> +       pta->gpa = (vm_get_max_gfn(vm) - guest_num_pages) * pta->guest_page_size;
->>> +       pta->gpa &= ~(pta->host_page_size - 1);
->> Also not related to this patch, but another case for align.
->>
->>>          if (backing_src == VM_MEM_SRC_ANONYMOUS_THP ||
->>>              backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB)
->>> -               guest_test_phys_mem &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
->>> -
->>> +               pta->gpa &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
->> also align
->>
->>>   #ifdef __s390x__
->>>          /* Align to 1M (segment size) */
->>> -       guest_test_phys_mem &= ~((1 << 20) - 1);
->>> +       pta->gpa &= ~((1 << 20) - 1);
->> And here again (oof)
+On Thu 11-02-21 10:53:51, Alexander Lochmann wrote:
 > 
-> Yep, I'll fix all these and the align() comment in v2.
+> 
+> On 11.02.21 10:30, Jan Kara wrote:
+> > >   	 */
+> > >   	unsigned long		t_log_start;
+> > > -	/* Number of buffers on the t_buffers list [j_list_lock] */
+> > > +	/* Number of buffers on the t_buffers list [j_list_lock, no lock for quick racy checks] */
+> > >   	int			t_nr_buffers;
+> > 
+> > So this case is actually somewhat different now that I audited the uses.
+> > There are two types of users - commit code (fs/jbd2/commit.c) and others.
+> > Other users properly use j_list_lock to access t_nr_buffers. Commit code
+> > does not use any locks because committing transaction is fully in
+> > ownership of the jbd2 thread and all other users need to check & wait for
+> > commit to be finished before doing anything with the transaction's buffers.
+> Mhm I see.
+> What about '[..., no locks needed for jbd2 thread]'?
 
-This is not exactly align in fact; it is x & ~y rather than (x + y) & 
-~y.  Are you going to introduce a round-down macro or is it a bug?  (I 
-am lazy...).
+Sounds good to me.
 
-Paolo
+> How do the others wait for the commit to be finished?
 
+Well, usually they just don't touch buffers belonging to the committing
+transation, they just store in b_next_transaction that after commit is
+done, buffer should be added to the currently running transaction. There
+are some exceptions though - e.g. jbd2_journal_invalidatepage() (called
+from truncate code) which returns EBUSY in some rare cases and we use
+jbd2_log_wait_commit() in ext4_wait_for_tail_page_commit() to wait for
+commit to be done before we know it is safe to destroy the buffer.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
