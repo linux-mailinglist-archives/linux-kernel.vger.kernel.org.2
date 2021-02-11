@@ -2,59 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25D4318794
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E04253187AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhBKJ7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 04:59:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
+        id S230238AbhBKKCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:02:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbhBKJzb (ORCPT
+        with ESMTP id S230288AbhBKJ6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 04:55:31 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E24C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 01:54:50 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id e12so3049474pls.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 01:54:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wcz3AQJyepgs6E3Mhy+qpeJeGUBWMUKWfxuRMoRrU+I=;
-        b=W40w3jlQ178sIb6XnOXVB0x9dFaVjJYV0dcsC45zN/UsV9asePx7aMgfCt1F/zD3PK
-         B/cuDHa1KHlCpt7gT3FoeJgvvF9mCydP7kBcp5p2BBjuewhpPkjp/5C2W3URNmn0Ou9g
-         bgTb3bHPlj2q8Hhpb0biWq+/tZjCnOfw/Q3B1qE+q4WovUho+yVx8E34VvlqeaRytiyl
-         jzGMGzhRNSNmQ5tFt4dhpYCYVJPM6EAwKUU64Q8Ddc1VEaY6qbrKpy0vAZJmb/k7xcwL
-         xsNKy1MueZrBbTm+Wuwo8sHc/fCM2fB4tnRwLd7nSEyi7iRaSIJtzNSgGJhOOyUdlqRJ
-         xaZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wcz3AQJyepgs6E3Mhy+qpeJeGUBWMUKWfxuRMoRrU+I=;
-        b=bx34mZpueT+fUjM6mp13NEedqA2ydHfqlbFGzcOuboY82vfnDdgQrovWYb6IWQJXTb
-         d+WnldYQnkb9Zi1QOPltnTKfb5NkMPaz1PZUlXQf2vD58o3oIBAMo93ftC7Xo7lowR0j
-         h9Z9lTNnB7n1Lo65yW+78Uxw0SVwAKJW0fdR2Wt0ivsvQ2jhXZGC2eFyMjim6cvuGbU9
-         G0yRuGVu45ZO6C1Ig1jmbf9E1qUv/C3ycuqXycrFS0HrXmR01xW4IMhI+nCHtkFVcnlz
-         sSsw95jiBMNcDonJ72pDAe9j3lRk4vOqhlsz9VnRgGaNpadTaN5XPG/JPHcRCusqEXNS
-         4+hQ==
-X-Gm-Message-State: AOAM533SWQVK2qW9JMMlDyuRO1/Q1a7DPalK7Q2cv+bMi5G/6kUO8isT
-        5vJeBBETKGRoQ+gwY8Gr914=
-X-Google-Smtp-Source: ABdhPJwV1rcv6wGkjVZ8flLv4pmrLtBs1E2FL3ApE5mLK8efWmbyclpYoAXRUjxrJdjzDcqHGzwx8A==
-X-Received: by 2002:a17:902:8c8f:b029:e0:1663:fd34 with SMTP id t15-20020a1709028c8fb02900e01663fd34mr6901568plo.84.1613037290390;
-        Thu, 11 Feb 2021 01:54:50 -0800 (PST)
-Received: from localhost.localdomain ([27.5.41.215])
-        by smtp.gmail.com with ESMTPSA id y24sm4959382pfr.152.2021.02.11.01.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 01:54:50 -0800 (PST)
-From:   Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
-To:     johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org
-Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] staging: greybus: Added do - while in multi statement macro
-Date:   Thu, 11 Feb 2021 15:24:44 +0530
-Message-Id: <20210211095444.54447-1-hemanshagnihotri27@gmail.com>
+        Thu, 11 Feb 2021 04:58:38 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DCFC06178A;
+        Thu, 11 Feb 2021 01:57:57 -0800 (PST)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4DbsV66BM5z1rync;
+        Thu, 11 Feb 2021 10:56:46 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4DbsV64sP3z1qqkk;
+        Thu, 11 Feb 2021 10:56:46 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id YOUNmZ5bNsfv; Thu, 11 Feb 2021 10:56:45 +0100 (CET)
+X-Auth-Info: /ITW3VU/8mHRcQSUWUiZtyRIXNsD9A4dI4pl25FvgWY=
+Received: from localhost (dslb-002-207-026-175.002.207.pools.vodafone-ip.de [2.207.26.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu, 11 Feb 2021 10:56:45 +0100 (CET)
+From:   Claudius Heine <ch@denx.de>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Claudius Heine <ch@denx.de>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE IMX
+        / MXC ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Cc:     Marek Vasut <marex@denx.de>
+Subject: [PATCH] pinctrl: imx: imx8mm: fix pad offset of SD1_DATA0 pin
+Date:   Thu, 11 Feb 2021 10:54:12 +0100
+Message-Id: <20210211095413.1043102-1-ch@denx.de>
 X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -62,32 +53,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add fixes an checkpatch error for "Macros with multiple statements
-should be enclosed in a do - while loop"
+There is a 0 missing in the pad register offset. This patch adds it.
 
-Signed-off-by: Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
+Signed-off-by: Claudius Heine <ch@denx.de>
 ---
- drivers/staging/greybus/loopback.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/greybus/loopback.c b/drivers/staging/greybus/loopback.c
-index 2471448ba42a..6dd95d648999 100644
---- a/drivers/staging/greybus/loopback.c
-+++ b/drivers/staging/greybus/loopback.c
-@@ -162,10 +162,11 @@ static ssize_t name##_avg_show(struct device *dev,		\
- }									\
- static DEVICE_ATTR_RO(name##_avg)
- 
--#define gb_loopback_stats_attrs(field)				\
-+#define gb_loopback_stats_attrs(field) do { \
- 	gb_loopback_ro_stats_attr(field, min, u);		\
- 	gb_loopback_ro_stats_attr(field, max, u);		\
--	gb_loopback_ro_avg_attr(field)
-+	gb_loopback_ro_avg_attr(field);				\
-+	} while (0)
- 
- #define gb_loopback_attr(field, type)					\
- static ssize_t field##_show(struct device *dev,				\
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
+index 5ccc4cc91959d..a003e6af33533 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
++++ b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
+@@ -124,7 +124,7 @@
+ #define MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD                                     0x0A4 0x30C 0x000 0x0 0x0
+ #define MX8MM_IOMUXC_SD1_CMD_GPIO2_IO1                                      0x0A4 0x30C 0x000 0x5 0x0
+ #define MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0                                 0x0A8 0x310 0x000 0x0 0x0
+-#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x31  0x000 0x5 0x0
++#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x310 0x000 0x5 0x0
+ #define MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1                                 0x0AC 0x314 0x000 0x0 0x0
+ #define MX8MM_IOMUXC_SD1_DATA1_GPIO2_IO3                                    0x0AC 0x314 0x000 0x5 0x0
+ #define MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2                                 0x0B0 0x318 0x000 0x0 0x0
 -- 
 2.30.0
 
