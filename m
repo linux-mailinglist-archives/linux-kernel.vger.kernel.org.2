@@ -2,264 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33EB318818
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A51B31881F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhBKKZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:25:48 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2545 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhBKKTb (ORCPT
+        id S229824AbhBKK1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:27:34 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10430 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230138AbhBKKVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:19:31 -0500
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dbsqs4v78z67mM4;
-        Thu, 11 Feb 2021 18:12:09 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 11 Feb 2021 11:18:47 +0100
-Received: from localhost (10.47.31.44) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 11 Feb
- 2021 10:18:46 +0000
-Date:   Thu, 11 Feb 2021 10:17:46 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Jon Masters" <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v2 3/8] cxl/mem: Register CXL memX devices
-Message-ID: <20210211101746.00005e8c@Huawei.com>
-In-Reply-To: <20210210181725.00007865@Huawei.com>
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
-        <20210210000259.635748-4-ben.widawsky@intel.com>
-        <20210210181725.00007865@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Thu, 11 Feb 2021 05:21:54 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602505140000>; Thu, 11 Feb 2021 02:21:08 -0800
+Received: from [10.26.49.8] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Feb
+ 2021 10:21:05 +0000
+Subject: Re: phy_attach_direct()'s use of device_bind_driver()
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Saravana Kannan <saravanak@google.com>
+CC:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Thierry Reding" <treding@nvidia.com>
+References: <CAGETcx9YpCUMmHjyydMtOJP9SKBbVsHNB-9SspD9u=txJ12Gug@mail.gmail.com>
+ <YCRkidArVGlesPfy@lunn.ch>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <5176f496-facb-d7b0-9f4e-a9e4b8974178@nvidia.com>
+Date:   Thu, 11 Feb 2021 10:21:03 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <YCRkidArVGlesPfy@lunn.ch>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.31.44]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613038868; bh=SljrkEVHDmi6xA8MKmgtTpSTzDd2Vz3b1ust/JTNqig=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=MMLGArFdzoF7FHQjCanG/GBKSJ8WlQ7YLkM32dEFhchpZoW9/o101ST5rm75hv+L9
+         kpnX0wl0z1rcR24xBTLWbP1IPfRFZ3NPSn5uWW3SU4q6T8stbnSXoSFS3U7sBKkgwp
+         3XER6VJFs/QntXgvrayXvvhvWfjnxMObN3mzLj6Z973RkR2QfFkBdAGmDRtYLYZqRy
+         43zKexpg8HdHEz7aqtaltdd8KVmkg/1yPetg/56/sRGDSVKe3UnlagVLVYRfBAY0gs
+         d2hVqjzoP/Cj7H2soWLdM3Gk3Wd1XocsYQd/llYk+hn8d6Igk5NkU4tXV9QHsqDI9i
+         8Q8OxTYNZ+giw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 18:17:25 +0000
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-> On Tue, 9 Feb 2021 16:02:54 -0800
-> Ben Widawsky <ben.widawsky@intel.com> wrote:
+On 10/02/2021 22:56, Andrew Lunn wrote:
+> On Wed, Feb 10, 2021 at 02:13:48PM -0800, Saravana Kannan wrote:
+>> Hi,
+>>
+>> This email was triggered by this other email[1].
 > 
-> > From: Dan Williams <dan.j.williams@intel.com>
-> > 
-> > Create the /sys/bus/cxl hierarchy to enumerate:
-> > 
-> > * Memory Devices (per-endpoint control devices)
-> > 
-> > * Memory Address Space Devices (platform address ranges with
-> >   interleaving, performance, and persistence attributes)
-> > 
-> > * Memory Regions (active provisioned memory from an address space device
-> >   that is in use as System RAM or delegated to libnvdimm as Persistent
-> >   Memory regions).
-> > 
-> > For now, only the per-endpoint control devices are registered on the
-> > 'cxl' bus. However, going forward it will provide a mechanism to
-> > coordinate cross-device interleave.
-> > 
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>  
-> 
-> One stray header, and a request for a tiny bit of reordering to
-> make it easier to chase through creation and destruction.
-> 
-> Either way with the header move to earlier patch I'm fine with this one.
-> 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> And it appears the Tegra194 Jetson Xavier uses the Marvell 88E1512
+> PHY. So ensure the Marvell driver is available, and it should get
+> probed in the usual way, the fallback driver will not be needed.
 
-Actually thinking more on this, what is the justification for the
-complexity + overhead of a percpu_refcount vs a refcount
 
-I don't think this is a high enough performance path for it to matter.
-Perhaps I'm missing a usecase where it does?
+Yes that is correct. Enabling the Marvell PHY does fix this indeed and
+so I can enable that as part of our testsuite. We were seeing the same
+warning on Tegra186 Jetson TX2 and enabling the BRCM PHY resolves that
+as well. I will ensure that these are enabled going forward.
 
-Jonathan
+Cheers
+Jon
 
-> 
-> > ---
-> >  Documentation/ABI/testing/sysfs-bus-cxl       |  26 ++
-> >  .../driver-api/cxl/memory-devices.rst         |  17 +
-> >  drivers/cxl/Makefile                          |   3 +
-> >  drivers/cxl/bus.c                             |  29 ++
-> >  drivers/cxl/cxl.h                             |   4 +
-> >  drivers/cxl/mem.c                             | 301 +++++++++++++++++-
-> >  6 files changed, 378 insertions(+), 2 deletions(-)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-cxl
-> >  create mode 100644 drivers/cxl/bus.c
-> >   
-> 
-> 
-> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> > index 745f5e0bfce3..b3c56fa6e126 100644
-> > --- a/drivers/cxl/cxl.h
-> > +++ b/drivers/cxl/cxl.h
-> > @@ -3,6 +3,7 @@
-> >  
-> >  #ifndef __CXL_H__
-> >  #define __CXL_H__
-> > +#include <linux/range.h>  
-> 
-> Why is this coming in now? Feels like it should have been in earlier
-> patch that started using struct range
-> 
-> >  
-> >  #include <linux/bitfield.h>
-> >  #include <linux/bitops.h>
-> > @@ -55,6 +56,7 @@
-> >  	(FIELD_GET(CXLMDEV_RESET_NEEDED_MASK, status) !=                       \
-> >  	 CXLMDEV_RESET_NEEDED_NOT)
-> >  
-> > +struct cxl_memdev;
-> >  /**
-> >   * struct cxl_mem - A CXL memory device
-> >   * @pdev: The PCI device associated with this CXL device.
-> > @@ -72,6 +74,7 @@
-> >  struct cxl_mem {
-> >  	struct pci_dev *pdev;
-> >  	void __iomem *regs;
-> > +	struct cxl_memdev *cxlmd;
-> >  
-> >  	void __iomem *status_regs;
-> >  	void __iomem *mbox_regs;
-> > @@ -90,4 +93,5 @@ struct cxl_mem {
-> >  	} ram;
-> >  };
-> >  
-> > +extern struct bus_type cxl_bus_type;
-> >  #endif /* __CXL_H__ */
-> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > index 0a868a15badc..8bbd2495e237 100644
-> > --- a/drivers/cxl/mem.c
-> > +++ b/drivers/cxl/mem.c
-> > @@ -1,11 +1,36 @@
-> >  
-> 
-> > +
-> > +static void cxl_memdev_release(struct device *dev)
-> > +{
-> > +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-> > +
-> > +	percpu_ref_exit(&cxlmd->ops_active);
-> > +	ida_free(&cxl_memdev_ida, cxlmd->id);
-> > +	kfree(cxlmd);
-> > +}
-> > +  
-> ...
-> 
-> > +static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
-> > +{
-> > +	struct pci_dev *pdev = cxlm->pdev;
-> > +	struct cxl_memdev *cxlmd;
-> > +	struct device *dev;
-> > +	struct cdev *cdev;
-> > +	int rc;
-> > +
-> > +	cxlmd = kzalloc(sizeof(*cxlmd), GFP_KERNEL);
-> > +	if (!cxlmd)
-> > +		return -ENOMEM;
-> > +	init_completion(&cxlmd->ops_dead);
-> > +
-> > +	/*
-> > +	 * @cxlm is deallocated when the driver unbinds so operations
-> > +	 * that are using it need to hold a live reference.
-> > +	 */
-> > +	cxlmd->cxlm = cxlm;
-> > +	rc = percpu_ref_init(&cxlmd->ops_active, cxlmdev_ops_active_release, 0,
-> > +			     GFP_KERNEL);
-> > +	if (rc)
-> > +		goto err_ref;
-> > +
-> > +	rc = ida_alloc_range(&cxl_memdev_ida, 0, CXL_MEM_MAX_DEVS, GFP_KERNEL);
-> > +	if (rc < 0)
-> > +		goto err_id;
-> > +	cxlmd->id = rc;
-> > +
-> > +	dev = &cxlmd->dev;
-> > +	device_initialize(dev);
-> > +	dev->parent = &pdev->dev;
-> > +	dev->bus = &cxl_bus_type;
-> > +	dev->devt = MKDEV(cxl_mem_major, cxlmd->id);
-> > +	dev->type = &cxl_memdev_type;
-> > +	dev_set_name(dev, "mem%d", cxlmd->id);
-> > +
-> > +	cdev = &cxlmd->cdev;
-> > +	cdev_init(cdev, &cxl_memdev_fops);
-> > +
-> > +	rc = cdev_device_add(cdev, dev);
-> > +	if (rc)
-> > +		goto err_add;
-> > +
-> > +	return devm_add_action_or_reset(dev->parent, cxlmdev_unregister, cxlmd);  
-> 
-> This had me scratching my head. The cxlmdev_unregister() if called normally
-> or in the _or_reset() results in
-> 
-> 	percpu_ref_kill(&cxlmd->ops_active);
-> 	cdev_device_del(&cxlmd->cdev, dev);
-> 	wait_for_completion(&cxlmd->ops_dead);
-> 	cxlmd->cxlm = NULL;
-> 	put_device(dev);
-> 	/* If last ref this will result in */
-> 		percpu_ref_exit(&cxlmd->ops_active);
-> 		ida_free(&cxl_memdev_ida, cxlmd->id);
-> 		kfree(cxlmd);
-> 
-> So it's doing all the correct things but not necessarily
-> in the obvious order.
-> 
-> For simplicity of review perhaps it's worth reordering probe a bit
-> to get the ida immediately after the cxlmd alloc and
-> for the cxlmdev_unregister() perhaps reorder the cdev_device_del()
-> before the percpu_ref_kill().
-> 
-> Trivial obvious as the ordering has no affect but makes it
-> easy for reviewers to tick off setup vs tear down parts.
-> 
-> > +
-> > +err_add:
-> > +	ida_free(&cxl_memdev_ida, cxlmd->id);
-> > +err_id:
-> > +	/*
-> > +	 * Theoretically userspace could have already entered the fops,
-> > +	 * so flush ops_active.
-> > +	 */
-> > +	percpu_ref_kill(&cxlmd->ops_active);
-> > +	wait_for_completion(&cxlmd->ops_dead);
-> > +	percpu_ref_exit(&cxlmd->ops_active);
-> > +err_ref:
-> > +	kfree(cxlmd);
-> > +
-> > +	return rc;
-> > +}
-> > +  
-> 
-> 
-> 
-> 
-
+-- 
+nvpublic
