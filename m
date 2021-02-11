@@ -2,121 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A086B3195D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 23:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9EC3195D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 23:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhBKW0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 17:26:35 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:37775 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhBKW0P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 17:26:15 -0500
-Received: by mail-ot1-f45.google.com with SMTP id a5so5543912otq.4;
-        Thu, 11 Feb 2021 14:25:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=59hf+6O4K21P81t02yR2JJsizjTVRLh6ZVSrQljA/sc=;
-        b=PzeLWQRKM5kVo8msW/nlweGOtaCQktFulmgltCVNpy/Ty6+hE70jqhjM7KQ9cCG24W
-         OqtQupMTrOnCzUNpu3aoIAT75z9ugth1irgQgkh1HG0Pc+zAsoY4AvRHZIcm9uD3brOc
-         qd0z+W7xzpFHLHnSa+dwFreKoR6LIuUoZ+zXNq+ZuLZwtxiBanYFcmWC5B1kgN8X80CQ
-         85ZmHNal9LfELmtxUezz6qAGKSS76Zr/jo1KIbsXVeSbdF+rGgXBZHzVcAaOgbCEJHN5
-         244x4Egh8bpwwOLcxszeUCJvVDciM26KEeJkW8VA4+3s3WA3UyEQtqWtEnajnYrq3X0Y
-         YSZA==
-X-Gm-Message-State: AOAM532xjRPyDILmadSj6dkPhmunrHaZ24dO+J+SkH8XSI+6tWFx/9it
-        T1cDfFCJ+UmaFADbSkYPAQ==
-X-Google-Smtp-Source: ABdhPJyoVcKGRF5I+pIki+Oo8A5jCC9o1Ifs/C5d7kBMPZRLIA+fMwLf/LFw7mtzzAZNV7Q3EHU3YQ==
-X-Received: by 2002:a9d:605a:: with SMTP id v26mr136880otj.275.1613082333675;
-        Thu, 11 Feb 2021 14:25:33 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id j25sm978030otn.55.2021.02.11.14.25.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 14:25:32 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org
-Cc:     Paul Mackerras <paulus@samba.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-usb@vger.kernel.org, cocci@systeme.lip6.fr,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: [PATCH 2/2] driver core: platform: Drop of_device_node_put() wrapper
-Date:   Thu, 11 Feb 2021 16:25:26 -0600
-Message-Id: <20210211222526.1318236-3-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210211222526.1318236-1-robh@kernel.org>
-References: <20210211222526.1318236-1-robh@kernel.org>
+        id S230144AbhBKW2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 17:28:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:57676 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229882AbhBKW2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 17:28:11 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28B69113E;
+        Thu, 11 Feb 2021 14:27:24 -0800 (PST)
+Received: from [10.57.8.126] (unknown [10.57.8.126])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB3C33F73D;
+        Thu, 11 Feb 2021 14:27:21 -0800 (PST)
+Subject: Re: [RFC][PATCH 1/3] PM /devfreq: add user frequency limits into
+ devfreq struct
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com, amitk@kernel.org, rui.zhang@intel.com,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+References: <20210126104001.20361-1-lukasz.luba@arm.com>
+ <CGME20210126104217epcas1p349c717ccf0ea4f964153040b48c72352@epcas1p3.samsung.com>
+ <20210126104001.20361-2-lukasz.luba@arm.com>
+ <ea409e2f-f3ca-437f-d787-7ba793a2c226@samsung.com>
+ <5bd13e13-202f-d059-da29-f82806c33a38@arm.com>
+ <fe7763c8-22f7-65ad-94ee-3c4a78a3f6eb@arm.com>
+Message-ID: <932c04da-46bf-8867-6b10-c6af83a36588@arm.com>
+Date:   Thu, 11 Feb 2021 22:27:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <fe7763c8-22f7-65ad-94ee-3c4a78a3f6eb@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_device_node_put() is just a wrapper for of_node_put(). The platform
-driver core is already polluted with of_node pointers and the only 'get'
-already uses of_node_get() (though typically the get would happen in
-of_device_alloc()).
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- drivers/base/platform.c   | 2 +-
- include/linux/of_device.h | 7 -------
- 2 files changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 95fd1549f87d..c31bc9e92dd1 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -571,7 +571,7 @@ static void platform_device_release(struct device *dev)
- 	struct platform_object *pa = container_of(dev, struct platform_object,
- 						  pdev.dev);
- 
--	of_device_node_put(&pa->pdev.dev);
-+	of_node_put(&pa->pdev.dev->of_node);
- 	kfree(pa->pdev.dev.platform_data);
- 	kfree(pa->pdev.mfd_cell);
- 	kfree(pa->pdev.resource);
-diff --git a/include/linux/of_device.h b/include/linux/of_device.h
-index d7a407dfeecb..1d7992a02e36 100644
---- a/include/linux/of_device.h
-+++ b/include/linux/of_device.h
-@@ -38,11 +38,6 @@ extern int of_device_request_module(struct device *dev);
- extern void of_device_uevent(struct device *dev, struct kobj_uevent_env *env);
- extern int of_device_uevent_modalias(struct device *dev, struct kobj_uevent_env *env);
- 
--static inline void of_device_node_put(struct device *dev)
--{
--	of_node_put(dev->of_node);
--}
--
- static inline struct device_node *of_cpu_device_node_get(int cpu)
- {
- 	struct device *cpu_dev;
-@@ -94,8 +89,6 @@ static inline int of_device_uevent_modalias(struct device *dev,
- 	return -ENODEV;
- }
- 
--static inline void of_device_node_put(struct device *dev) { }
--
- static inline const struct of_device_id *of_match_device(
- 		const struct of_device_id *matches, const struct device *dev)
- {
--- 
-2.27.0
+On 2/11/21 11:07 AM, Lukasz Luba wrote:
+> Hi Chanwoo,
+> 
+> On 2/3/21 10:21 AM, Lukasz Luba wrote:
+>> Hi Chanwoo,
+>>
+>> Thank you for looking at this.
+>>
+>> On 2/3/21 10:11 AM, Chanwoo Choi wrote:
+>>> Hi Lukasz,
+>>>
+>>> When accessing the max_freq and min_freq at devfreq-cooling.c,
+>>> even if can access 'user_max_freq' and 'lock' by using the 'devfreq' 
+>>> instance,
+>>> I think that the direct access of variables 
+>>> (lock/user_max_freq/user_min_freq)
+>>> of struct devfreq are not good.
+>>>
+>>> Instead, how about using the 'DEVFREQ_TRANSITION_NOTIFIER'
+>>> notification with following changes of 'struct devfreq_freq'?
+>>
+>> I like the idea with devfreq notification. I will have to go through the
+>> code to check that possibility.
+>>
+>>> Also, need to add codes into devfreq_set_target() for initializing
+>>> 'new_max_freq' and 'new_min_freq' before sending the DEVFREQ_POSTCHANGE
+>>> notification.
+>>>
+>>> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
+>>> index 147a229056d2..d5726592d362 100644
+>>> --- a/include/linux/devfreq.h
+>>> +++ b/include/linux/devfreq.h
+>>> @@ -207,6 +207,8 @@ struct devfreq {
+>>>   struct devfreq_freqs {
+>>>          unsigned long old;
+>>>          unsigned long new;
+>>> +       unsigned long new_max_freq;
+>>> +       unsigned long new_min_freq;
+>>>   };
+>>>
+>>>
+>>> And I think that new 'user_min_freq'/'user_max_freq' are not necessary.
+>>> You can get the current max_freq/min_freq by using the following steps:
+>>>
+>>>     get_freq_range(devfreq, &min_freq, &max_freq);
+>>>     dev_pm_opp_find_freq_floor(pdev, &min_freq);
+>>>     dev_pm_opp_find_freq_floor(pdev, &max_freq);
+>>>
+>>> So that you can get the 'max_freq/min_freq' and then
+>>> initialize the 'freqs.new_max_freq and freqs.new_min_freq'
+>>> with them as following:
+>>>
+>>> in devfreq_set_target()
+>>>     get_freq_range(devfreq, &min_freq, &max_freq);
+>>>     dev_pm_opp_find_freq_floor(pdev, &min_freq);
+>>>     dev_pm_opp_find_freq_floor(pdev, &max_freq);
+>>>     freqs.new_max_freq = min_freq;
+>>>     freqs.new_max_freq = max_freq;
+>>>     devfreq_notify_transition(devfreq, &freqs, DEVFREQ_POSTCHANGE);
+>>
+>> I will plumb it in and check that option. My concern is that function
+>> get_freq_range() would give me the max_freq value from PM QoS, which
+>> might be my thermal limit - lower that user_max_freq. Then I still
+>> need
+>>
+>> I've been playing with PM QoS notifications because I thought it would
+>> be possible to be notified in thermal for all new set values - even from
+>> devfreq sysfs user max_freq write, which has value higher that the
+>> current limit set by thermal governor. Unfortunately PM QoS doesn't
+>> send that information by design. PM QoS also by desing won't allow
+>> me to check first two limits in the plist - which would be thermal
+>> and user sysfs max_freq.
+>>
+>> I will experiment with this notifications and share the results.
+>> That you for your comments.
+> 
+> I have experimented with your proposal. Unfortunately, the value stored
+> in the pm_qos which is read by get_freq_range() is not the user max
+> freq. It's the value from thermal devfreq cooling when that one is
+> lower. Which is OK in the overall design, but not for my IPA use case.
+> 
+> What comes to my mind is two options:
+> 1) this patch proposal, with simple solution of two new variables
+> protected by mutex, which would maintain user stored values
+> 2) add a new notification chain in devfreq to notify about new
+> user written value, to which devfreq cooling would register; that
+> would allow devfreq cooling to get that value instantly and store
+> locally
 
+3) How about new define for existing notification chain:
+#define DEVFREQ_USER_CHANGE            (2)
+
+Then a modified devfreq_notify_transition() would get:
+@@ -339,6 +339,10 @@ static int devfreq_notify_transition(struct devfreq 
+*devfreq,
+ 
+srcu_notifier_call_chain(&devfreq->transition_notifier_list,
+                                 DEVFREQ_POSTCHANGE, freqs);
+                 break;
++       case DEVFREQ_USER_CHANGE:
++               srcu_notifier_call_chain(&devfreq->transition_notifier_list,
++                               DEVFREQ_USER_CHANGE, freqs);
++               break;
+         default:
+                 return -EINVAL;
+         }
+
+If that is present, I can plumb your suggestion with:
+struct devfreq_freq {
++       unsigned long new_max_freq;
++       unsigned long new_min_freq;
+
+and populate them with values in the max_freq_store() by adding at the
+end:
+
+freqs.new_max_freq = max_freq;
+mutex_lock();
+devfreq_notify_transition(devfreq, &freqs, DEVFREQ_USER_CHANGE);
+mutex_unlock();
+
+I would handle this notification in devfreq cooling and keep the
+value there, for future IPA checks.
+
+If you agree, I can send next version of the patch set.
+
+> 
+> What do you think Chanwoo?
+> 
+> Regards,
+> Lukasz
