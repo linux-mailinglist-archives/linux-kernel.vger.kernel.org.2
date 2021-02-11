@@ -2,270 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B05431842A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 05:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9D531842E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 05:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbhBKECZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 23:02:25 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:17560 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229623AbhBKECW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 23:02:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613016120; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Lq8DdjXqqA8/XH5/DT58A0SitVBIZI3XjzGmex+9Mk8=;
- b=Op6UAo16afVepH2UGiblBk3ETAgM2OgJN9aIRMFmQCiuInAsxVCy6OFsxc2dmlwzoIQoecr+
- 6U072TfDesyvcSxzOTvq7O25Hhc4VPPQAxPck6jWhGfSb89t6XghgLFHq2E9Un6do4RmvKcI
- smwA+TlqukL9t0aidJDHsVxNN+0=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6024ac1834db06ef794a3619 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Feb 2021 04:01:28
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1BF92C43461; Thu, 11 Feb 2021 04:01:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4379C433C6;
-        Thu, 11 Feb 2021 04:01:26 +0000 (UTC)
+        id S229649AbhBKEGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 23:06:42 -0500
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:37681 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229452AbhBKEGi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 23:06:38 -0500
+Received: by mail-pg1-f171.google.com with SMTP id z21so2916393pgj.4;
+        Wed, 10 Feb 2021 20:06:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YmprhBUucZtKdCmu+LAa/i7gnU89uApOkepqzbffePM=;
+        b=iaNUsbrvkAnxEKNI/suPdo35uWbfrwyvj58EdmyeXtaz2k89NYamqkBJOJxcTCNLP1
+         3m2CdrWRfpfX61DwYK0jkNexmCgNXcL7ZY/8z98Cz/t9hqtYsujKwAqnIPg74Wanld/F
+         Mi5dkAPM7tdZXwlrBWlu8yVAKKw349GLr+dWStsYYwPzzQExNc5YCs16RSlE2e/brA4H
+         nHR89AhH4ECSoGLFy+awlvrEBBpltUZGMM0PG8C0qIM0WNynAlkgdyBMH7qlQBztnz9l
+         GjxeA5xLNG8DS7jorP0GtNPUhCQ5FTjst5cWEh4Q3H2AGweDcmbmjKWKUPdC+LR3uIIJ
+         JJhQ==
+X-Gm-Message-State: AOAM531tJLPJ/9KLYZdrxl90CU/su+ZXr36+kBmOuaoySznquGFN9UXB
+        ZJzSTnZW4ZUbgKGkLcAYFGZdXOYt+aRrrg==
+X-Google-Smtp-Source: ABdhPJwo/ejHlo1FzbyvQYlQmh5g0eMEySpfj3sTg0+aiNhiw864/oHn2Dlv72HCQOUE7clB/FbORA==
+X-Received: by 2002:a63:f74f:: with SMTP id f15mr6320181pgk.186.1613016358110;
+        Wed, 10 Feb 2021 20:05:58 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id z186sm3758954pgb.78.2021.02.10.20.05.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 20:05:57 -0800 (PST)
+Date:   Wed, 10 Feb 2021 20:05:56 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org, lars@metafoo.de,
+        linux-fpga@vger.kernel.org, mdf@kernel.org, ardeleanalex@gmail.com,
+        Mircea Caprioru <mircea.caprioru@analog.com>
+Subject: Re: [PATCH 2/2] clk: axi-clkgen: Add support for FPGA info
+Message-ID: <YCStJFVsYIB2ogKU@epycbox.lan>
+References: <20210210101535.47979-1-alexandru.ardelean@analog.com>
+ <20210210101535.47979-2-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 11 Feb 2021 09:31:26 +0530
-From:   mdalam@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, corbet@lwn.net, agross@kernel.org,
-        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
-        mdalam=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
- support
-In-Reply-To: <YCLH4ZOMjLbywl4u@builder.lan>
-References: <20210112101056.GI2771@vkoul-mobl>
- <e3cf7c4fc02c54d17fd2fd213f39005b@codeaurora.org>
- <20210115055806.GE2771@vkoul-mobl>
- <97ce29b230164a5848a38f6448d1be60@codeaurora.org>
- <20210119164511.GE2771@vkoul-mobl>
- <534308caab7c18730ad0cc25248d116f@codeaurora.org>
- <20210201060508.GK2771@vkoul-mobl>
- <9d33d73682f24d92338757e1823ccd88@codeaurora.org>
- <20210201064314.GM2771@vkoul-mobl>
- <73c871d3d674607fafc7b79e602ec587@codeaurora.org>
- <YCLH4ZOMjLbywl4u@builder.lan>
-Message-ID: <75b305066801fbfefa162326c63d1241@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210101535.47979-2-alexandru.ardelean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-09 23:05, Bjorn Andersson wrote:
-> On Mon 01 Feb 09:50 CST 2021, mdalam@codeaurora.org wrote:
+On Wed, Feb 10, 2021 at 12:15:35PM +0200, Alexandru Ardelean wrote:
+> From: Mircea Caprioru <mircea.caprioru@analog.com>
 > 
->> On 2021-02-01 12:13, Vinod Koul wrote:
->> > On 01-02-21, 11:52, mdalam@codeaurora.org wrote:
->> > > On 2021-02-01 11:35, Vinod Koul wrote:
->> > > > On 27-01-21, 23:56, mdalam@codeaurora.org wrote:
->> >
->> > > > >   The actual LOCK/UNLOCK flag should be set on hardware command
->> > > > > descriptor.
->> > > > >   so this flag setting should be done in DMA engine driver. The user
->> > > > > of the
->> > > > > DMA
->> > > > >   driver like (in case of IPQ5018) Crypto can use flag
->> > > > > "DMA_PREP_LOCK" &
->> > > > > "DMA_PREP_UNLOCK"
->> > > > >   while preparing CMD descriptor before submitting to the DMA
->> > > > > engine. In DMA
->> > > > > engine driver
->> > > > >   we are checking these flasgs on CMD descriptor and setting actual
->> > > > > LOCK/UNLOCK flag on hardware
->> > > > >   descriptor.
->> > > >
->> > > >
->> > > > I am not sure I comprehend this yet.. when is that we would need to do
->> > > > this... is this for each txn submitted to dmaengine.. or something
->> > > > else..
->> > >
->> > >  Its not for each transaction submitted to dmaengine. We have to set
->> > > this
->> > > only
->> > >  once on CMD descriptor. So when A53 crypto driver need to change
->> > > the crypto
->> > > configuration
->> > >  then first it will lock the all other pipes using setting the LOCK
->> > > flag bit
->> > > on CMD
->> > >  descriptor and then it can start the transaction , on data
->> > > descriptor this
->> > > flag will
->> > >  not get set once all transaction will be completed the A53 crypto
->> > > driver
->> > > release the lock on
->> > >  all other pipes using UNLOCK flag on CMD descriptor. So LOCK/UNLOCK
->> > > will be
->> > > only once and not for
->> > >  the each transaction.
->> >
->> > Okay so why cant the bam driver check cmd descriptor and do lock/unlock
->> > as below, why do we need users to do this.
->> >
->> >         if (flags & DMA_PREP_CMD) {
->> >                 do_lock_bam();
->> 
->>  User will not decide to do this LOCK/UNLOCK mechanism. It depends on
->>  use case.  This LOCK/UNLOCK mechanism not required always. It needs
->>  only when hardware will be shared between different core with
->>  different driver.
+> This patch adds support for vco maximum and minimum ranges in accordance
+VCO
+> with fpga speed grade, voltage, device package, technology and family. This
+FPGA
+> new information is extracted from two new registers implemented in the ip
+> core: ADI_REG_FPGA_INFO and ADI_REG_FPGA_VOLTAGE, which are stored in the
+> 'include/linux/fpga/adi-axi-common.h' file as they are common to all ADI
+> FPGA cores.
+Either all caps FPGA or all non-caps.
 > 
-> So you have a single piece of crypto hardware and you're using the 
-> BAM's
-> LOCK/UNLOCK feature to implement a "mutex" on a particular BAM channel?
-
-   Yes, In IPQ5018 SoC we are having only one Crypto and it will be 
-shared between
-   UBI32 core & A53 core, and these two cores are running different 
-driver to use Crypto.
-   The LOCK/UNLOCK flag can be set only on CMD descriptor.
+> Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  drivers/clk/clk-axi-clkgen.c | 52 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 51 insertions(+), 1 deletion(-)
 > 
->>  The LOCK/UNLOCK flags provides SW to enter ordering between pipes
->> execution.
->>  (Generally, the BAM pipes are total independent from each other and 
->> work in
->> parallel manner).
->>  This LOCK/UNLOCK flags are part of actual pipe hardware descriptor.
->> 
->>  Pipe descriptor having the following flags:
->>  INT : Interrupt
->>  EOT: End of transfer
->>  EOB: End of block
->>  NWD: Notify when done
->>  CMD: Command
->>  LOCK: Lock
->>  UNLOCK: Unlock
->>  etc.
->> 
->>  Here the BAM driver is common driver for (QPIC, Crypto, QUP etc. in
->> IPQ5018)
->>  So here only Crypto will be shared b/w multiple cores so For crypto 
->> request
->> only the LOCK/UNLOCK
->>  mechanism required.
->>  For other request like for QPIC driver, QUPT driver etc. its not 
->> required.
->> So Crypto driver has to raise the flag for
->>  LOCK/UNLOCK while preparing CMD descriptor. The actual locking will 
->> happen
->> in BAM driver only using condition
->>  if (flags & DMA_PREP_CMD) {
->>      if (flags & DMA_PREP_LOCK)
->>         desc->flags |= cpu_to_le16(DESC_FLAG_LOCK);
->>  }
->> 
->>  So Crypto driver should set this flag DMA_PREP_LOCK while preparing 
->> CMD
->> descriptor.
->>  So LOCK should be set on actual hardware pipe descriptor with 
->> descriptor
->> type CMD.
->> 
+> diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
+> index ac6ff736ac8f..e4d6c87f8a07 100644
+> --- a/drivers/clk/clk-axi-clkgen.c
+> +++ b/drivers/clk/clk-axi-clkgen.c
+> @@ -8,6 +8,7 @@
+>  
+>  #include <linux/platform_device.h>
+>  #include <linux/clk-provider.h>
+> +#include <linux/fpga/adi-axi-common.h>
+>  #include <linux/slab.h>
+>  #include <linux/io.h>
+>  #include <linux/of.h>
+> @@ -240,6 +241,50 @@ static void axi_clkgen_read(struct axi_clkgen *axi_clkgen,
+>  	*val = readl(axi_clkgen->base + reg);
+>  }
+>  
+> +static void axi_clkgen_setup_ranges(struct axi_clkgen *axi_clkgen)
+> +{
+> +	struct axi_clkgen_limits *limits = &axi_clkgen->limits;
+> +	unsigned int reg_value;
+> +	unsigned int tech, family, speed_grade, voltage;
+Reverse xmas-tree please.
+
+xxxxxx
+xxx
+x
+> +
+> +	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_FPGA_INFO, &reg_value);
+> +	tech = ADI_AXI_INFO_FPGA_TECH(reg_value);
+> +	family = ADI_AXI_INFO_FPGA_FAMILY(reg_value);
+> +	speed_grade = ADI_AXI_INFO_FPGA_SPEED_GRADE(reg_value);
+> +
+> +	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_FPGA_VOLTAGE, &reg_value);
+> +	voltage = ADI_AXI_INFO_FPGA_VOLTAGE(reg_value);
+> +
+> +	switch (speed_grade) {
+> +	case ADI_AXI_FPGA_SPEED_GRADE_XILINX_1 ... ADI_AXI_FPGA_SPEED_GRADE_XILINX_1LV:
+> +		limits->fvco_max = 1200000;
+> +		limits->fpfd_max = 450000;
+> +		break;
+> +	case ADI_AXI_FPGA_SPEED_GRADE_XILINX_2 ... ADI_AXI_FPGA_SPEED_GRADE_XILINX_2LV:
+> +		limits->fvco_max = 1440000;
+> +		limits->fpfd_max = 500000;
+> +		if ((family == ADI_AXI_FPGA_FAMILY_XILINX_KINTEX) |
+> +		    (family == ADI_AXI_FPGA_FAMILY_XILINX_ARTIX)) {
+> +			if (voltage < 950) {
+> +				limits->fvco_max = 1200000;
+> +				limits->fpfd_max = 450000;
+> +			}
+> +		}
+> +		break;
+> +	case ADI_AXI_FPGA_SPEED_GRADE_XILINX_3:
+> +		limits->fvco_max = 1600000;
+> +		limits->fpfd_max = 550000;
+> +		break;
+> +	default:
+No warning? Does PCORE_VER_MAJOR(ver) > 0x04 not imply this to be known
+or valid?
+> +		break;
+> +	};
+> +
+Maybe:
+"For Ultrascale+ the speedgrades don't matter" or something as a comment?
+> +	if (tech == ADI_AXI_FPGA_TECH_XILINX_ULTRASCALE_PLUS) {
+> +		limits->fvco_max = 1600000;
+> +		limits->fvco_min = 800000;
+> +	}
+> +}
+> +
+>  static int axi_clkgen_wait_non_busy(struct axi_clkgen *axi_clkgen)
+>  {
+>  	unsigned int timeout = 10000;
+> @@ -510,7 +555,7 @@ static int axi_clkgen_probe(struct platform_device *pdev)
+>  	struct clk_init_data init;
+>  	const char *parent_names[2];
+>  	const char *clk_name;
+> -	unsigned int i;
+> +	unsigned int i, ver;
+>  	int ret;
+>  
+>  	dflt_limits = device_get_match_data(&pdev->dev);
+> @@ -537,6 +582,11 @@ static int axi_clkgen_probe(struct platform_device *pdev)
+>  
+>  	memcpy(&axi_clkgen->limits, dflt_limits, sizeof(axi_clkgen->limits));
+>  
+> +	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_VERSION, &ver);
+> +
+> +	if (ADI_AXI_PCORE_VER_MAJOR(ver) > 0x04)
+Nit: 0x4 is fine?
+> +		axi_clkgen_setup_ranges(axi_clkgen);
+> +
+>  	clk_name = pdev->dev.of_node->name;
+>  	of_property_read_string(pdev->dev.of_node, "clock-output-names",
+>  		&clk_name);
+> -- 
+> 2.17.1
 > 
-> It sounds fairly clear that the actual descriptor modification must
-> happen in the BAM driver, but the question in my mind is how this is
-> exposed to the DMAengine clients (e.g. crypto, QPIC etc).
-
-   I have added these two flags "DMA_PREP_LOCK" & "DMA_PREP_UNLOCK" In 
-enum dma_ctrl_flags.
-
-   enum dma_ctrl_flags {
-         DMA_PREP_INTERRUPT = (1 << 0),
-@@ -202,6 +205,8 @@ enum dma_ctrl_flags {
-         DMA_PREP_CMD = (1 << 7),
-         DMA_PREP_REPEAT = (1 << 8),
-         DMA_PREP_LOAD_EOT = (1 << 9),
-+       DMA_PREP_LOCK = (1 << 10),
-+       DMA_PREP_UNLOCK = (1 << 11),
-  };
-
-  So these flags we get passed while preparing CMD descriptor in Crypto 
-driver. Based on these
-  flags only i am setting LOCK/UNLOCK flags on actual hardware descriptor 
-in BAM driver.
-
-   if (flags & DMA_PREP_CMD) {
-      if (flags & DMA_PREP_LOCK)
-          desc->flags |= cpu_to_le16(DESC_FLAG_LOCK);
-
-> 
-> What is the life span of the locked state? Do you always provide a
-> series of descriptors that starts with a LOCK and ends with an UNLOCK?
-> Or do you envision that the crypto driver provides a LOCK descriptor 
-> and
-> at some later point provides a UNLOCK descriptor?
-> 
-
-   While preparing CMD descriptor we will use this LOCK/UNLOCK flags. So 
-if i wanted to write
-   some 20 registers of Crypto HW via BAM then i will prepare multiple 
-command descriptor
-   let's say 20 CMD descriptor so in the very first CMD descriptor I will 
-set the LOCK (DMA_PREP_LOCK ) flag and
-   in the the last CMD descriptor I will set the UNLOCK (DMA_PREP_UNLOCK 
-) flag.
-
-> 
-> Finally, this patch just adds the BAM part of things, where is the 
-> patch
-> that actually makes use of this feature?
-> 
-   Yes , this patch will add BAM part of things. For Crypto i will push 
-another patch
-   which will use this feature.
-
-> Regards,
-> Bjorn
-> 
->> >
->> > The point here is that this seems to be internal to dma and should be
->> > handled by dma driver.
->> >
->>   This LOCK/UNLOK flags are part of actual hardware descriptor so this
->> should be handled by BAM driver only.
->>   If we set condition like this
->>   if (flags & DMA_PREP_CMD) {
->>                 do_lock_bam();
->>   Then LOCK/UNLOCK will be applied for all the CMD descriptor 
->> including
->> (QPIC driver, QUP driver , Crypto driver etc.).
->>   So this is not our intension. So we need to set this LOCK/UNLOCK 
->> only for
->> the drivers it needs. So Crypto driver needs
->>   locking mechanism so we will set LOCK/UNLOCK flag on Crypto driver 
->> request
->> only for other driver request like QPIC driver,
->>   QUP driver will not set this.
->> 
->> > Also if we do this, it needs to be done for specific platforms..
->> >
->> 
->> 
->> 
->> 
->> 
->> 
->> 
->> > Thanks
+Thanks,
+Moritz
