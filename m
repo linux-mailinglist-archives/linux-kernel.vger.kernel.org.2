@@ -2,561 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A848318D8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16947318DB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhBKOko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 09:40:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbhBKOhZ (ORCPT
+        id S229952AbhBKOwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 09:52:07 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:10832 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhBKOjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:37:25 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED32C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:36:43 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id l12so4434181wry.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:36:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=wMDJyfcVFhFNl0wKwC0aWzQLSr6DwAG2EzqZD+MLPtA=;
-        b=CgEpKdVG3S9UND7jz8O+rwCPfHSPrerCfQDfo5WE8t+ZiiERKgRyI1IdywvoDYGn/2
-         vRspvU+MX+fCNVALk3mfhzUntZClpibH/lzOQXETaOVvbyEb+xiM7PnLJzguiNDTm2CB
-         g6nDC0bgmbdPea1QZfMnPHNCuJia6uFQoBt2r6Zfs0vF2AePLbFiWNSD33w+Ahn4MM3P
-         hYKH1sLSC/CIm2lL5C18GYK7jKIIp1S8r9ZyqQKZ6vfU+m6+TZxVFZ/OB1rSu+LAX1ns
-         B392NwCUE5ELWuF3svs166KUgwEzqdSH6vyHBgImVdhRT2tNmnajOfj5BiiAVOiIW4/p
-         P6cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=wMDJyfcVFhFNl0wKwC0aWzQLSr6DwAG2EzqZD+MLPtA=;
-        b=E/SQZY+oHD9qBqC9SkbaH7wBvIuCyu2iWRxy4ptXdlGqjleE67UgRdO0o95WTG4z65
-         hi6s3T+UC78hsE5zmBWV4rJeehkbXCPEMNX5Am35PxFH5PE+kPnjxafO2Z9ax9QBmM46
-         Sk/W552a2+gsSc4d2S6p79YwV8a4qSkgTBzEXMynPEsGuQ9YY0y4HteSSF/Hr+Ya7saU
-         WDfOF5lpn0Ned7CfZy0PkXhYyWR1xiKBbPU2RgQFLQdV2Z05LZavkExBF77d2PUNWyh7
-         zFWYwYQSh0R4K5qRBFQJmZ/AGX/TwsNDrnYYDELb6bPqzwNQXRBI3eTphosurfNICswW
-         Ppbw==
-X-Gm-Message-State: AOAM532o7UBsglBPGFwzAjcglh9bv1y/Xyubahf+acf/4rYK/EspRqrD
-        hZBy84GVSUlGAiCCb+qdCPM=
-X-Google-Smtp-Source: ABdhPJxD95y6ho7hMJfPOAmSpOIaXbPffBzSWYVoaFlQc8licPemn6Lcr97hdBto2rYbABBO/MsXdA==
-X-Received: by 2002:a05:6000:186f:: with SMTP id d15mr6058542wri.237.1613054202337;
-        Thu, 11 Feb 2021 06:36:42 -0800 (PST)
-Received: from LEGION ([27.255.58.138])
-        by smtp.gmail.com with ESMTPSA id f8sm4952857wrp.65.2021.02.11.06.36.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 06:36:41 -0800 (PST)
-Date:   Thu, 11 Feb 2021 19:36:37 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     gregkh@linuxfoundation.org, jerome.pouiller@silabs.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     musamaanjum@gmail.com
-Subject: [PATCH] staging: wfx: remove unused included header files
-Message-ID: <20210211143637.GA177425@LEGION>
+        Thu, 11 Feb 2021 09:39:45 -0500
+Date:   Thu, 11 Feb 2021 14:38:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1613054323; bh=gLXlYt9sVB2KVePA5uDpF6vfKRoqKT612iOxzbWMbgg=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=dF/y1md9+NCpW0+ccZKfo1AofayKcPVie2oNpyokfHgroLAoQDmcbzHbsfnUUE7Wu
+         UpGvAkf5LArGJ+86RlDB6Ssm7wCwGS81IDs9kyb39AREipU6gAWb74wPjONKj/b/eC
+         ni2IvJ4jbLgvOKpaGIXSc5wGipgDI0DZoa647znaLoM9BgfuTZBqCN1d/6oFdKba1Z
+         0QSzTRyFfk4kDa4CZEX+G7/kx6ZNndQh1yAtYJPrEj00GQGzWTIKWLcklM2CZsrwJq
+         AZubIy4yMoYo3azt+1WdemanM92L5f3USct+HKHMMHi974Alz9+2GjWSue+iUU45QB
+         DzE9/C4lz/aEQ==
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v4 net-next 08/11] skbuff: introduce {,__}napi_build_skb() which reuses NAPI cache heads
+Message-ID: <20210211143818.2078-1-alobakin@pm.me>
+In-Reply-To: <20210211135459.075d954b@carbon>
+References: <20210210162732.80467-1-alobakin@pm.me> <20210210162732.80467-9-alobakin@pm.me> <20210211135459.075d954b@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many header files have been included, but never used. Those header
-files have been removed.
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+Date: Thu, 11 Feb 2021 13:54:59 +0100
 
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
- drivers/staging/wfx/bh.c              | 1 -
- drivers/staging/wfx/bh.h              | 4 ----
- drivers/staging/wfx/bus.h             | 3 ---
- drivers/staging/wfx/bus_sdio.c        | 6 ------
- drivers/staging/wfx/bus_spi.c         | 7 -------
- drivers/staging/wfx/data_rx.c         | 5 -----
- drivers/staging/wfx/data_tx.c         | 5 -----
- drivers/staging/wfx/data_tx.h         | 3 ---
- drivers/staging/wfx/debug.c           | 6 ------
- drivers/staging/wfx/fwio.c            | 2 --
- drivers/staging/wfx/hif_api_cmd.h     | 4 ----
- drivers/staging/wfx/hif_api_general.h | 9 ---------
- drivers/staging/wfx/hif_tx.c          | 4 ----
- drivers/staging/wfx/hif_tx_mib.c      | 5 -----
- drivers/staging/wfx/hwio.c            | 3 ---
- drivers/staging/wfx/hwio.h            | 2 --
- drivers/staging/wfx/key.c             | 2 --
- drivers/staging/wfx/key.h             | 2 --
- drivers/staging/wfx/main.c            | 7 -------
- drivers/staging/wfx/main.h            | 3 ---
- drivers/staging/wfx/queue.c           | 4 ----
- drivers/staging/wfx/queue.h           | 3 ---
- drivers/staging/wfx/scan.h            | 2 --
- drivers/staging/wfx/sta.c             | 6 ------
- drivers/staging/wfx/sta.h             | 2 --
- drivers/staging/wfx/traces.h          | 3 ---
- drivers/staging/wfx/wfx.h             | 3 ---
- 27 files changed, 106 deletions(-)
+> On Wed, 10 Feb 2021 16:30:23 +0000
+> Alexander Lobakin <alobakin@pm.me> wrote:
+>=20
+> > Instead of just bulk-flushing skbuff_heads queued up through
+> > napi_consume_skb() or __kfree_skb_defer(), try to reuse them
+> > on allocation path.
+>=20
+> Maybe you are already aware of this dynamics, but high speed NICs will
+> usually run the TX "cleanup" (opportunistic DMA-completion) in the napi
+> poll function call, and often before processing RX packets. Like
+> ixgbe_poll[1] calls ixgbe_clean_tx_irq() before ixgbe_clean_rx_irq().
 
-diff --git a/drivers/staging/wfx/bh.c b/drivers/staging/wfx/bh.c
-index ed53d0b45592..cd6bcfdfbe9a 100644
---- a/drivers/staging/wfx/bh.c
-+++ b/drivers/staging/wfx/bh.c
-@@ -5,7 +5,6 @@
-  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/gpio/consumer.h>
- #include <net/mac80211.h>
- 
- #include "bh.h"
-diff --git a/drivers/staging/wfx/bh.h b/drivers/staging/wfx/bh.h
-index 78c49329e22a..92ef3298d4ac 100644
---- a/drivers/staging/wfx/bh.h
-+++ b/drivers/staging/wfx/bh.h
-@@ -8,10 +8,6 @@
- #ifndef WFX_BH_H
- #define WFX_BH_H
- 
--#include <linux/atomic.h>
--#include <linux/wait.h>
--#include <linux/workqueue.h>
--
- struct wfx_dev;
- 
- struct wfx_hif {
-diff --git a/drivers/staging/wfx/bus.h b/drivers/staging/wfx/bus.h
-index ca04b3da6204..ea3911485307 100644
---- a/drivers/staging/wfx/bus.h
-+++ b/drivers/staging/wfx/bus.h
-@@ -8,9 +8,6 @@
- #ifndef WFX_BUS_H
- #define WFX_BUS_H
- 
--#include <linux/mmc/sdio_func.h>
--#include <linux/spi/spi.h>
--
- #define WFX_REG_CONFIG        0x0
- #define WFX_REG_CONTROL       0x1
- #define WFX_REG_IN_OUT_QUEUE  0x2
-diff --git a/drivers/staging/wfx/bus_sdio.c b/drivers/staging/wfx/bus_sdio.c
-index e06d7e1ebe9c..588edce44854 100644
---- a/drivers/staging/wfx/bus_sdio.c
-+++ b/drivers/staging/wfx/bus_sdio.c
-@@ -5,19 +5,13 @@
-  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/module.h>
- #include <linux/mmc/sdio.h>
- #include <linux/mmc/sdio_func.h>
- #include <linux/mmc/card.h>
--#include <linux/interrupt.h>
- #include <linux/of_irq.h>
--#include <linux/irq.h>
- 
- #include "bus.h"
- #include "wfx.h"
--#include "hwio.h"
--#include "main.h"
--#include "bh.h"
- 
- static const struct wfx_platform_data wfx_sdio_pdata = {
- 	.file_fw = "wfm_wf200",
-diff --git a/drivers/staging/wfx/bus_spi.c b/drivers/staging/wfx/bus_spi.c
-index a99125d1a30d..f89855abe9f8 100644
---- a/drivers/staging/wfx/bus_spi.c
-+++ b/drivers/staging/wfx/bus_spi.c
-@@ -6,19 +6,12 @@
-  * Copyright (c) 2011, Sagrad Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/module.h>
--#include <linux/delay.h>
--#include <linux/gpio/consumer.h>
- #include <linux/spi/spi.h>
--#include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/of.h>
- 
- #include "bus.h"
- #include "wfx.h"
--#include "hwio.h"
--#include "main.h"
--#include "bh.h"
- 
- #define SET_WRITE 0x7FFF        /* usage: and operation */
- #define SET_READ 0x8000         /* usage: or operation */
-diff --git a/drivers/staging/wfx/data_rx.c b/drivers/staging/wfx/data_rx.c
-index 385f2d42a0e2..2cfa16279220 100644
---- a/drivers/staging/wfx/data_rx.c
-+++ b/drivers/staging/wfx/data_rx.c
-@@ -5,13 +5,8 @@
-  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/etherdevice.h>
--#include <net/mac80211.h>
--
- #include "data_rx.h"
- #include "wfx.h"
--#include "bh.h"
--#include "sta.h"
- 
- static void wfx_rx_handle_ba(struct wfx_vif *wvif, struct ieee80211_mgmt *mgmt)
- {
-diff --git a/drivers/staging/wfx/data_tx.c b/drivers/staging/wfx/data_tx.c
-index 77fb104efdec..76f26e3c4381 100644
---- a/drivers/staging/wfx/data_tx.c
-+++ b/drivers/staging/wfx/data_tx.c
-@@ -6,14 +6,9 @@
-  * Copyright (c) 2010, ST-Ericsson
-  */
- #include <net/mac80211.h>
--#include <linux/etherdevice.h>
- 
--#include "data_tx.h"
- #include "wfx.h"
--#include "bh.h"
- #include "sta.h"
--#include "queue.h"
--#include "debug.h"
- #include "traces.h"
- #include "hif_tx_mib.h"
- 
-diff --git a/drivers/staging/wfx/data_tx.h b/drivers/staging/wfx/data_tx.h
-index 401363d6b563..6b3020097efa 100644
---- a/drivers/staging/wfx/data_tx.h
-+++ b/drivers/staging/wfx/data_tx.h
-@@ -8,9 +8,6 @@
- #ifndef WFX_DATA_TX_H
- #define WFX_DATA_TX_H
- 
--#include <linux/list.h>
--#include <net/mac80211.h>
--
- #include "hif_api_cmd.h"
- #include "hif_api_mib.h"
- 
-diff --git a/drivers/staging/wfx/debug.c b/drivers/staging/wfx/debug.c
-index eedada78c25f..3e87d13eb358 100644
---- a/drivers/staging/wfx/debug.c
-+++ b/drivers/staging/wfx/debug.c
-@@ -5,15 +5,9 @@
-  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/debugfs.h>
--#include <linux/seq_file.h>
--#include <linux/crc32.h>
--
- #include "debug.h"
- #include "wfx.h"
- #include "sta.h"
--#include "main.h"
--#include "hif_tx.h"
- #include "hif_tx_mib.h"
- 
- #define CREATE_TRACE_POINTS
-diff --git a/drivers/staging/wfx/fwio.c b/drivers/staging/wfx/fwio.c
-index 1b8aec02d169..1bb9054871c4 100644
---- a/drivers/staging/wfx/fwio.c
-+++ b/drivers/staging/wfx/fwio.c
-@@ -6,8 +6,6 @@
-  * Copyright (c) 2010, ST-Ericsson
-  */
- #include <linux/firmware.h>
--#include <linux/slab.h>
--#include <linux/mm.h>
- #include <linux/bitfield.h>
- 
- #include "fwio.h"
-diff --git a/drivers/staging/wfx/hif_api_cmd.h b/drivers/staging/wfx/hif_api_cmd.h
-index 11bc1a58edae..d6b961092606 100644
---- a/drivers/staging/wfx/hif_api_cmd.h
-+++ b/drivers/staging/wfx/hif_api_cmd.h
-@@ -8,10 +8,6 @@
- #ifndef WFX_HIF_API_CMD_H
- #define WFX_HIF_API_CMD_H
- 
--#include <linux/ieee80211.h>
--
--#include "hif_api_general.h"
--
- enum hif_requests_ids {
- 	HIF_REQ_ID_RESET                = 0x0a,
- 	HIF_REQ_ID_READ_MIB             = 0x05,
-diff --git a/drivers/staging/wfx/hif_api_general.h b/drivers/staging/wfx/hif_api_general.h
-index 24188945718d..70b253d0265d 100644
---- a/drivers/staging/wfx/hif_api_general.h
-+++ b/drivers/staging/wfx/hif_api_general.h
-@@ -8,15 +8,6 @@
- #ifndef WFX_HIF_API_GENERAL_H
- #define WFX_HIF_API_GENERAL_H
- 
--#ifdef __KERNEL__
--#include <linux/types.h>
--#include <linux/if_ether.h>
--#else
--#include <net/ethernet.h>
--#include <stdint.h>
--#define __packed __attribute__((__packed__))
--#endif
--
- #define HIF_ID_IS_INDICATION      0x80
- #define HIF_COUNTER_MAX           7
- 
-diff --git a/drivers/staging/wfx/hif_tx.c b/drivers/staging/wfx/hif_tx.c
-index 63b437261eb7..17dc13321978 100644
---- a/drivers/staging/wfx/hif_tx.c
-+++ b/drivers/staging/wfx/hif_tx.c
-@@ -6,11 +6,7 @@
-  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/etherdevice.h>
--
--#include "hif_tx.h"
- #include "wfx.h"
--#include "bh.h"
- #include "hwio.h"
- #include "debug.h"
- #include "sta.h"
-diff --git a/drivers/staging/wfx/hif_tx_mib.c b/drivers/staging/wfx/hif_tx_mib.c
-index 1926cf1b62be..6432ed86505c 100644
---- a/drivers/staging/wfx/hif_tx_mib.c
-+++ b/drivers/staging/wfx/hif_tx_mib.c
-@@ -6,13 +6,8 @@
-  * Copyright (c) 2010, ST-Ericsson
-  * Copyright (C) 2010, ST-Ericsson SA
-  */
--
--#include <linux/etherdevice.h>
--
- #include "wfx.h"
--#include "hif_tx.h"
- #include "hif_tx_mib.h"
--#include "hif_api_mib.h"
- 
- int hif_set_output_power(struct wfx_vif *wvif, int val)
- {
-diff --git a/drivers/staging/wfx/hwio.c b/drivers/staging/wfx/hwio.c
-index 36fbc5b5d64c..089bb41be149 100644
---- a/drivers/staging/wfx/hwio.c
-+++ b/drivers/staging/wfx/hwio.c
-@@ -5,13 +5,10 @@
-  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/kernel.h>
--#include <linux/delay.h>
- #include <linux/slab.h>
- 
- #include "hwio.h"
- #include "wfx.h"
--#include "bus.h"
- #include "traces.h"
- 
- /*
-diff --git a/drivers/staging/wfx/hwio.h b/drivers/staging/wfx/hwio.h
-index 0b8e4f7157df..8bb9bcfc3182 100644
---- a/drivers/staging/wfx/hwio.h
-+++ b/drivers/staging/wfx/hwio.h
-@@ -8,8 +8,6 @@
- #ifndef WFX_HWIO_H
- #define WFX_HWIO_H
- 
--#include <linux/types.h>
--
- struct wfx_dev;
- 
- int wfx_data_read(struct wfx_dev *wdev, void *buf, size_t buf_len);
-diff --git a/drivers/staging/wfx/key.c b/drivers/staging/wfx/key.c
-index 2ab82bed4c1b..c93d07dcdc10 100644
---- a/drivers/staging/wfx/key.c
-+++ b/drivers/staging/wfx/key.c
-@@ -5,12 +5,10 @@
-  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/etherdevice.h>
- #include <net/mac80211.h>
- 
- #include "key.h"
- #include "wfx.h"
--#include "hif_tx_mib.h"
- 
- static int wfx_alloc_key(struct wfx_dev *wdev)
- {
-diff --git a/drivers/staging/wfx/key.h b/drivers/staging/wfx/key.h
-index 70a44d0ca35e..4dc9feadaba2 100644
---- a/drivers/staging/wfx/key.h
-+++ b/drivers/staging/wfx/key.h
-@@ -8,8 +8,6 @@
- #ifndef WFX_KEY_H
- #define WFX_KEY_H
- 
--#include <net/mac80211.h>
--
- struct wfx_dev;
- struct wfx_vif;
- 
-diff --git a/drivers/staging/wfx/main.c b/drivers/staging/wfx/main.c
-index e7bc1988124a..b9ea9a93fe1a 100644
---- a/drivers/staging/wfx/main.c
-+++ b/drivers/staging/wfx/main.c
-@@ -10,28 +10,21 @@
-  * Copyright (c) 2006, Michael Wu <flamingice@sourmilk.net>
-  * Copyright (c) 2004-2006 Jean-Baptiste Note <jbnote@gmail.com>, et al.
-  */
--#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_net.h>
--#include <linux/gpio/consumer.h>
- #include <linux/mmc/sdio_func.h>
- #include <linux/spi/spi.h>
--#include <linux/etherdevice.h>
- #include <linux/firmware.h>
- 
--#include "main.h"
- #include "wfx.h"
- #include "fwio.h"
- #include "hwio.h"
- #include "bus.h"
--#include "bh.h"
- #include "sta.h"
- #include "key.h"
- #include "scan.h"
- #include "debug.h"
--#include "data_tx.h"
- #include "hif_tx_mib.h"
--#include "hif_api_cmd.h"
- 
- #define WFX_PDS_MAX_SIZE 1500
- 
-diff --git a/drivers/staging/wfx/main.h b/drivers/staging/wfx/main.h
-index a0db322383a3..086bcc041b90 100644
---- a/drivers/staging/wfx/main.h
-+++ b/drivers/staging/wfx/main.h
-@@ -10,11 +10,8 @@
- #ifndef WFX_MAIN_H
- #define WFX_MAIN_H
- 
--#include <linux/device.h>
- #include <linux/gpio/consumer.h>
- 
--#include "hif_api_general.h"
--
- struct wfx_dev;
- struct hwbus_ops;
- 
-diff --git a/drivers/staging/wfx/queue.c b/drivers/staging/wfx/queue.c
-index 31c37f69c295..3bddf282a4ce 100644
---- a/drivers/staging/wfx/queue.c
-+++ b/drivers/staging/wfx/queue.c
-@@ -5,13 +5,9 @@
-  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/sched.h>
- #include <net/mac80211.h>
- 
--#include "queue.h"
- #include "wfx.h"
--#include "sta.h"
--#include "data_tx.h"
- #include "traces.h"
- 
- void wfx_tx_lock(struct wfx_dev *wdev)
-diff --git a/drivers/staging/wfx/queue.h b/drivers/staging/wfx/queue.h
-index 80ba19455ef3..e43aa9dfbc45 100644
---- a/drivers/staging/wfx/queue.h
-+++ b/drivers/staging/wfx/queue.h
-@@ -8,9 +8,6 @@
- #ifndef WFX_QUEUE_H
- #define WFX_QUEUE_H
- 
--#include <linux/skbuff.h>
--#include <linux/atomic.h>
--
- struct wfx_dev;
- struct wfx_vif;
- 
-diff --git a/drivers/staging/wfx/scan.h b/drivers/staging/wfx/scan.h
-index c7496a766478..e5b7eef78858 100644
---- a/drivers/staging/wfx/scan.h
-+++ b/drivers/staging/wfx/scan.h
-@@ -8,8 +8,6 @@
- #ifndef WFX_SCAN_H
- #define WFX_SCAN_H
- 
--#include <net/mac80211.h>
--
- struct wfx_dev;
- struct wfx_vif;
- 
-diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
-index 196779a1b89a..5585f9e876e1 100644
---- a/drivers/staging/wfx/sta.c
-+++ b/drivers/staging/wfx/sta.c
-@@ -5,17 +5,11 @@
-  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
-  * Copyright (c) 2010, ST-Ericsson
-  */
--#include <linux/etherdevice.h>
- #include <net/mac80211.h>
- 
- #include "sta.h"
- #include "wfx.h"
--#include "fwio.h"
--#include "bh.h"
--#include "key.h"
- #include "scan.h"
--#include "debug.h"
--#include "hif_tx.h"
- #include "hif_tx_mib.h"
- 
- #define HIF_MAX_ARP_IP_ADDRTABLE_ENTRIES 2
-diff --git a/drivers/staging/wfx/sta.h b/drivers/staging/wfx/sta.h
-index d7b5df5ea4e6..a3fb9fc93fa4 100644
---- a/drivers/staging/wfx/sta.h
-+++ b/drivers/staging/wfx/sta.h
-@@ -8,8 +8,6 @@
- #ifndef WFX_STA_H
- #define WFX_STA_H
- 
--#include <net/mac80211.h>
--
- struct wfx_dev;
- struct wfx_vif;
- 
-diff --git a/drivers/staging/wfx/traces.h b/drivers/staging/wfx/traces.h
-index e34c7a538c65..afe1074e09b3 100644
---- a/drivers/staging/wfx/traces.h
-+++ b/drivers/staging/wfx/traces.h
-@@ -12,11 +12,8 @@
- #define _WFX_TRACE_H
- 
- #include <linux/tracepoint.h>
--#include <net/mac80211.h>
- 
- #include "bus.h"
--#include "hif_api_cmd.h"
--#include "hif_api_mib.h"
- 
- /* The hell below need some explanations. For each symbolic number, we need to
-  * define it with TRACE_DEFINE_ENUM() and in a list for __print_symbolic.
-diff --git a/drivers/staging/wfx/wfx.h b/drivers/staging/wfx/wfx.h
-index 94898680ccde..a185b82795c4 100644
---- a/drivers/staging/wfx/wfx.h
-+++ b/drivers/staging/wfx/wfx.h
-@@ -10,9 +10,6 @@
- #ifndef WFX_H
- #define WFX_H
- 
--#include <linux/completion.h>
--#include <linux/workqueue.h>
--#include <linux/mutex.h>
- #include <linux/nospec.h>
- #include <net/mac80211.h>
- 
--- 
-2.25.1
+Sure. 1G MIPS is my home project (I'll likely migrate to ARM64 cluster
+in 2-3 months). I mostly work with 10-100G NICs at work.
+
+> If traffic is symmetric (or is routed-back same interface) then this
+> SKB recycle scheme will be highly efficient. (I had this part of my
+> initial patchset and tested it on ixgbe).
+>=20
+> [1] https://elixir.bootlin.com/linux/v5.11-rc7/source/drivers/net/etherne=
+t/intel/ixgbe/ixgbe_main.c#L3149
+
+That's exactly why I introduced this feature. Firstly driver enriches
+the cache with the consumed skbs from Tx completion queue, and then
+it just decaches them back on Rx completion cycle. That's how things
+worked most of the time on my test setup.
+
+The reason why Paolo proposed this as an option, and why I agreed
+it's safer to do instead of unconditional switching, is that
+different platforms and setup may react differently on this.
+We don't have an ability to test the entire zoo, so we propose
+an option for driver and network core developers to test and use
+"on demand".
+As I wrote in reply to Paolo, there might be cases when even the
+core networking code may benefit from this.
+
+> > If the cache is empty on allocation, bulk-allocate the first
+> > 16 elements, which is more efficient than per-skb allocation.
+> > If the cache is full on freeing, bulk-wipe the second half of
+> > the cache (32 elements).
+> > This also includes custom KASAN poisoning/unpoisoning to be
+> > double sure there are no use-after-free cases.
+> >=20
+> > To not change current behaviour, introduce a new function,
+> > napi_build_skb(), to optionally use a new approach later
+> > in drivers.
+> >=20
+> > Note on selected bulk size, 16:
+> >  - this equals to XDP_BULK_QUEUE_SIZE, DEV_MAP_BULK_SIZE
+> >    and especially VETH_XDP_BATCH, which is also used to
+> >    bulk-allocate skbuff_heads and was tested on powerful
+> >    setups;
+> >  - this also showed the best performance in the actual
+> >    test series (from the array of {8, 16, 32}).
+> >=20
+> > Suggested-by: Edward Cree <ecree.xilinx@gmail.com> # Divide on two halv=
+es
+> > Suggested-by: Eric Dumazet <edumazet@google.com>   # KASAN poisoning
+> > Cc: Dmitry Vyukov <dvyukov@google.com>             # Help with KASAN
+> > Cc: Paolo Abeni <pabeni@redhat.com>                # Reduced batch size
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  include/linux/skbuff.h |  2 +
+> >  net/core/skbuff.c      | 94 ++++++++++++++++++++++++++++++++++++------
+> >  2 files changed, 83 insertions(+), 13 deletions(-)
+> >=20
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index 0e0707296098..906122eac82a 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -1087,6 +1087,8 @@ struct sk_buff *build_skb(void *data, unsigned in=
+t frag_size);
+> >  struct sk_buff *build_skb_around(struct sk_buff *skb,
+> >  =09=09=09=09 void *data, unsigned int frag_size);
+> > =20
+> > +struct sk_buff *napi_build_skb(void *data, unsigned int frag_size);
+> > +
+> >  /**
+> >   * alloc_skb - allocate a network buffer
+> >   * @size: size to allocate
+> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > index 860a9d4f752f..9e1a8ded4acc 100644
+> > --- a/net/core/skbuff.c
+> > +++ b/net/core/skbuff.c
+> > @@ -120,6 +120,8 @@ static void skb_under_panic(struct sk_buff *skb, un=
+signed int sz, void *addr)
+> >  }
+> > =20
+> >  #define NAPI_SKB_CACHE_SIZE=0964
+> > +#define NAPI_SKB_CACHE_BULK=0916
+> > +#define NAPI_SKB_CACHE_HALF=09(NAPI_SKB_CACHE_SIZE / 2)
+> > =20
+>=20
+>=20
+> --=20
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+
+Thanks,
+Al
 
