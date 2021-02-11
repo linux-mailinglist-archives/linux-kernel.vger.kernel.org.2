@@ -2,103 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1BE3191BE
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAA23191BF
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhBKSBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:01:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbhBKReR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:34:17 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E2CC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:33:37 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id r75so6946493oie.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:33:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8P4xaiVI2tG5b2Ole1+tnRAqZYtVrf1Whd339/8WB6E=;
-        b=Z7604+y34s6xeuNm8+wCbPBgFd8e3828pzQ7LIQY6cCrUgusKKUU//W1K74Ram4Mjr
-         /GehiA5L2HNaOD/080Z7HsglI2qkhP1tvsfaz3RpwH3oxFStnn2UxYLJIuL9q8YHtjcl
-         Mc9Hboop2KfBy3Zq6GUCuI8+RfXoPxFEYmk1yIUHi9rlq4kqOoQ9yeAh4PgKkT6STNCq
-         sa6lOsfeGvtddTG8xb3BiJiRZ6Hm5Ag+ldsY6HnjtxuYwbdjlu95k3kjedFqrGEc2eq7
-         oDiukko4tEMupzQluzSZ8C7ea5oHMQQgOVxIdShF+9kC9AUt4xoc0sm6Jc4DG6f1eFaG
-         5GEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8P4xaiVI2tG5b2Ole1+tnRAqZYtVrf1Whd339/8WB6E=;
-        b=XmYtAhRk5Ds63laAOkEA5fS1sBJUOBoEMvAHpGzp767I5/yU53v0KZ9qCBidqhFLxn
-         QMfSRB30lorRRgrX3NIaoZZJ9XjhBL0uRQh9NUOwcdrE+piQFeileiQIhDO/OcxPIst5
-         Ey/FgZg/K3I15JbMdGFYZsFm1CNQpV5OLxhKpTcO20XE4JS1yuGs+7oNDG7VwieYwREA
-         3r2jd+QFzxLOGJYjDavsBR3MuIL33Sy6ZywEI9rwBqN6W4J3XLe1ygmhF5T/Pn7fmCJR
-         25Ri+2/1OFIm8Xe+88PWaoMbJ27NoEdSs1NoNZbcW3kIES+Yg3kW8FL7tpX75SHASzK0
-         o51g==
-X-Gm-Message-State: AOAM5312iqtE/0Eb3ppa+xuPnsmjme6rVi3+urrJ58WC+1VsOm+Dj/Dg
-        9KiPCxdO2ciGpdtuH4y420+D/FEB24z3zjTB1YFRGg==
-X-Google-Smtp-Source: ABdhPJzxhIqMQoPXo1/OKDNuoU8KVYGDFfutR+x8G74OkgvrTWUFeqz/2TpHQNK/HJ/TWverkr8tq3R38cTEtHGsZCA=
-X-Received: by 2002:aca:3b06:: with SMTP id i6mr3487837oia.81.1613064816828;
- Thu, 11 Feb 2021 09:33:36 -0800 (PST)
+        id S230265AbhBKSBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:01:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229792AbhBKRe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:34:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E4B164E7A;
+        Thu, 11 Feb 2021 17:33:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613064827;
+        bh=fPZrMeC/nj/TSc+t1C2/jwpmACS6xFLAOrT8VYD75Rk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cOLvZMA/6jyaMJC1fVNZhHudnniCCzvrZqo8tFK0s1LTrssVEu8OIy2+XmVKHRvcZ
+         0hGS24LjEuzGlcAsOkF1ninGLQq/zR/+4YJEPn9esDWxiiES57tiqCO6rtLmVAIRLy
+         0/olJdLyaFAwkt4q1c8tGPVDglCZzWTcC1GSBfoo=
+Date:   Thu, 11 Feb 2021 18:33:44 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3] driver core: auxiliary bus: Fix calling stage for
+ auxiliary bus init
+Message-ID: <YCVqeBXcHHtvx1p1@kroah.com>
+References: <20210210201611.1611074-1-dave.jiang@intel.com>
+ <YCTUjimQhVi7VSrw@kroah.com>
+ <5d5c3208-ba77-900c-460a-bb4b7a356b58@intel.com>
 MIME-Version: 1.0
-References: <20210210230625.550939-1-seanjc@google.com> <20210210230625.550939-10-seanjc@google.com>
- <CANgfPd8itawTsza-SPSMehUEAAJ4DWtSQX4QRbHg1kX4c6VRBg@mail.gmail.com>
- <YCSOtMzs9OWO2AsR@google.com> <756fed52-8151-97ee-11f2-91f150afab42@redhat.com>
- <YCVUAdx3DYLPNwJU@google.com>
-In-Reply-To: <YCVUAdx3DYLPNwJU@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 11 Feb 2021 09:33:25 -0800
-Message-ID: <CANgfPd_W+wqx_UXHR7OWCBY7KEnsdNC12QZmGNjzOSBb1XOUyQ@mail.gmail.com>
-Subject: Re: [PATCH 09/15] KVM: selftests: Move per-VM GPA into perf_test_args
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5d5c3208-ba77-900c-460a-bb4b7a356b58@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 7:58 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Thu, Feb 11, 2021, Paolo Bonzini wrote:
-> > On 11/02/21 02:56, Sean Christopherson wrote:
-> > > > > +       pta->gpa = (vm_get_max_gfn(vm) - guest_num_pages) * pta->guest_page_size;
-> > > > > +       pta->gpa &= ~(pta->host_page_size - 1);
-> > > > Also not related to this patch, but another case for align.
-> > > >
-> > > > >          if (backing_src == VM_MEM_SRC_ANONYMOUS_THP ||
-> > > > >              backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB)
-> > > > > -               guest_test_phys_mem &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
-> > > > > -
-> > > > > +               pta->gpa &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
-> > > > also align
-> > > >
-> > > > >   #ifdef __s390x__
-> > > > >          /* Align to 1M (segment size) */
-> > > > > -       guest_test_phys_mem &= ~((1 << 20) - 1);
-> > > > > +       pta->gpa &= ~((1 << 20) - 1);
-> > > > And here again (oof)
-> > >
-> > > Yep, I'll fix all these and the align() comment in v2.
-> >
-> > This is not exactly align in fact; it is x & ~y rather than (x + y) & ~y.
-> > Are you going to introduce a round-down macro or is it a bug?  (I am
-> > lazy...).
->
-> Good question.  I, too, was lazy.  I didn't look at the guts of align() when I
-> moved it, and I didn't look closely at Ben's suggestion.  I'll take a closer
-> look today and make sure everything is doing what it's supposed to do.
+On Thu, Feb 11, 2021 at 09:21:29AM -0700, Dave Jiang wrote:
+> 
+> On 2/10/2021 11:54 PM, Greg KH wrote:
+> > On Wed, Feb 10, 2021 at 01:16:11PM -0700, Dave Jiang wrote:
+> > > When the auxiliary device code is built into the kernel, it can be executed
+> > > before the auxiliary bus is registered. This causes bus->p to be not
+> > > allocated and triggers a NULL pointer dereference when the auxiliary bus
+> > > device gets added with bus_add_device(). Call the auxiliary_bus_init()
+> > > under driver_init() so the bus is initialized before devices.
+> > > 
+> > > Below is the kernel splat for the bug:
+> > > [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
+> > > [ 1.950670] #PF: supervisor read access in kernel mode
+> > > [ 1.950670] #PF: error_code(0x0000) - not-present page
+> > > [ 1.950670] PGD 0
+> > > [ 1.950670] Oops: 0000 1 SMP NOPTI
+> > > [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
+> > > [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> > > [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
+> > > [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
+> > > 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
+> > > [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
+> > > [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
+> > > [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
+> > > [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
+> > > [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
+> > > [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
+> > > [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
+> > > [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
+> > > [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+> > > [ 1.950670] PKRU: 55555554
+> > > [ 1.950670] Call Trace:
+> > > [ 1.950670] device_add+0x3ee/0x850
+> > > [ 1.950670] __auxiliary_device_add+0x47/0x60
+> > > [ 1.950670] idxd_pci_probe+0xf77/0x1180
+> > > [ 1.950670] local_pci_probe+0x4a/0x90
+> > > [ 1.950670] pci_device_probe+0xff/0x1b0
+> > > [ 1.950670] really_probe+0x1cf/0x440
+> > > [ 1.950670] ? rdinit_setup+0x31/0x31
+> > > [ 1.950670] driver_probe_device+0xe8/0x150
+> > > [ 1.950670] device_driver_attach+0x58/0x60
+> > > [ 1.950670] __driver_attach+0x8f/0x150
+> > > [ 1.950670] ? device_driver_attach+0x60/0x60
+> > > [ 1.950670] ? device_driver_attach+0x60/0x60
+> > > [ 1.950670] bus_for_each_dev+0x79/0xc0
+> > > [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
+> > > [ 1.950670] driver_attach+0x1e/0x20
+> > > [ 1.950670] bus_add_driver+0x154/0x1f0
+> > > [ 1.950670] driver_register+0x70/0xc0
+> > > [ 1.950670] __pci_register_driver+0x54/0x60
+> > > [ 1.950670] idxd_init_module+0xe2/0xfc
+> > > [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
+> > > [ 1.950670] do_one_initcall+0x4a/0x1e0
+> > > [ 1.950670] kernel_init_freeable+0x1fc/0x25c
+> > > [ 1.950670] ? rest_init+0xba/0xba
+> > > [ 1.950670] kernel_init+0xe/0x116
+> > > [ 1.950670] ret_from_fork+0x1f/0x30
+> > > [ 1.950670] Modules linked in:
+> > > [ 1.950670] CR2: 0000000000000060
+> > > [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
+> > > 
+> > > Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+> > > Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
+> > > Acked-by: Dave Ertman <david.m.ertman@intel.com>
+> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+> > > ---
+> > > 
+> > > v3:
+> > > - Change init function to return void. (GregKH)
+> > > v2:
+> > > - Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
+> > > 
+> > >   drivers/base/base.h      |  5 +++++
+> > >   drivers/base/auxiliary.c | 13 +++----------
+> > >   drivers/base/init.c      |  1 +
+> > >   3 files changed, 9 insertions(+), 10 deletions(-)
+> > > 
+> > > diff --git a/drivers/base/base.h b/drivers/base/base.h
+> > > index f5600a83124f..52b3d7b75c27 100644
+> > > --- a/drivers/base/base.h
+> > > +++ b/drivers/base/base.h
+> > > @@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
+> > >   extern int platform_bus_init(void);
+> > >   extern void cpu_dev_init(void);
+> > >   extern void container_dev_init(void);
+> > > +#ifdef CONFIG_AUXILIARY_BUS
+> > > +extern void auxiliary_bus_init(void);
+> > > +#else
+> > > +static inline void auxiliary_bus_init(void) { }
+> > > +#endif
+> > >   struct kobject *virtual_device_parent(struct device *dev);
+> > > diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+> > > index 8336535f1e11..d8b314e7d0fd 100644
+> > > --- a/drivers/base/auxiliary.c
+> > > +++ b/drivers/base/auxiliary.c
+> > > @@ -15,6 +15,7 @@
+> > >   #include <linux/pm_runtime.h>
+> > >   #include <linux/string.h>
+> > >   #include <linux/auxiliary_bus.h>
+> > > +#include "base.h"
+> > >   static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
+> > >   							    const struct auxiliary_device *auxdev)
+> > > @@ -260,19 +261,11 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
+> > >   }
+> > >   EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
+> > > -static int __init auxiliary_bus_init(void)
+> > > +void __init auxiliary_bus_init(void)
+> > >   {
+> > > -	return bus_register(&auxiliary_bus_type);
+> > > +	WARN_ON(bus_register(&auxiliary_bus_type));
+> > If this fails you have worse problems, what is this WARN_ON() going to
+> > help with except give you a crashdump right before something else in the
+> > kernel dies?
+> 
+> My thinking was that it would point to the area of failure rather than much
+> later down the road, and the person debugging can know where it failed.
+> Also, gcc v10 is no longer happy with (void) bus_register() and complains.
+> If there's a different way you'd rather do this please advise.
 
-Ooh, great point Paolo, that helper is indeed rounding up. My comment
-in patch #2 was totally wrong. I forgot anyone would ever want to
-round up. :/
-My misunderstanding and the above use cases are probably good evidence
-that it would be helpful to have both align_up and align_down helpers.
+Ah, yeah, I forgot it was a __must_check function.  Ok, let's leave it
+like this, as in a way, it's nicer than what happens when the platform
+bus code fails to initialize :)
+
+thanks,
+
+greg k-h
