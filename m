@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B876C3183DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 04:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B1E3183DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 04:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhBKDHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 22:07:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhBKDHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 22:07:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90C9364E2E;
-        Thu, 11 Feb 2021 03:06:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613012786;
-        bh=T95zpwNhmbI5C/Y3yzoaQbujINFDdaissul65TKmVbc=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=LogmMHTvL7RtJ8jHBDboQ0cANK9qOLCWsXFNT3j2o2pz/oxdOgJD+9F+gMJD4xkD0
-         /w43iW6qrR8UALcJhIGbmdPwEWGy7fHJUSi6PU7zaiRamdWxhtuDfeZCzaCsuteLFR
-         f7pD55EQJoPXM3l3+Wj9zx5t0b0S2EPEd2UBOJfw7tA53oKe2wsW3ELHPQI+vU0Upi
-         nIBISEOgG6izgUgqZ5LpUYTdfwyVZKbAuzVG83vzV5K8kQf7KEDCJfMdePwJEPH7gj
-         vhmwVaDy59Ot37TIvkefPAfxLOJOpriQmnGnSIJAJmupQEesbiJgR/IMInwDgeDgIh
-         enGkU/mEOWafQ==
-Content-Type: text/plain; charset="utf-8"
+        id S229940AbhBKDIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 22:08:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhBKDIZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 22:08:25 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA5DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 19:07:45 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id cv23so2499473pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 19:07:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3mhBJs7OoyfS2zcVrbQAP79xwHQs56wVRNi/BY1bbvY=;
+        b=zWdzLtxtpSIzvCC92tWtiO8n8oojDUA7anDSZzkEE4lkpolIANyXBag5Fmb/HGhQXb
+         51RfYqW84ZIIY9q5iK6XVAvOxC3KBHEhDeDRUdYytDRk1P5/NxCqs9Bu/mxKU510V1t2
+         o3nhicKcHDi+EGf2cASP5264ruoQlNnSgkmCTTQtNKMNejvYZc6CnyN44tzcPoNIliI7
+         XO4pOcOOsOWs57gS9dbEMbzQMb4kxrj2AUdpjOzREo65XYPi/td+jcf8M93/GGLTt5/D
+         bg4+O9zgy8/rOXJ/TJvDfaNPwkvPRyzRbHG6X9pks0Tf7DMt5xddNWG7gOieZFU704MH
+         WQhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3mhBJs7OoyfS2zcVrbQAP79xwHQs56wVRNi/BY1bbvY=;
+        b=qvKyDmYbKu9xdB11aBgpop5HzamSb40dRQ4mVY9ijpDSOMev9fK/ehbK6b6QRv3lit
+         SpuPofnGAZ3oi04h8zaO1lrWwzenvbwGjqT28efVwJk57pGcZQrG4C64R4PFtf+jwDHi
+         1qesFxWsYL3ljc0XcLDr/wzeKfgo66OwLhLNlryv8homwkoU7htgy/dwVS5+PHT46pg2
+         8bK8af56pFoLMsmWruXVxm0IK+tco8jo7pyJ9up2rQId/PLLgexBYgRitpuozVZqsWPY
+         2EG/Lu3NLEob6z5aEB71+NwIzTICN1oOKqk8etP2RwwBExkyxWIsrb/65hBBdGGG34AR
+         PTwQ==
+X-Gm-Message-State: AOAM532843NFOqsyRfYoO28HfGc2Xh5CSfRT1qXujIcUD6XdBm+rH4ib
+        WyLzRGldQ1vlUSEtYBBQEjT2oQ==
+X-Google-Smtp-Source: ABdhPJyS3EIC1/0cxujchAyzsIFrMFqk/EK4Apvf/tfm5JIYYCsOoMqnVgrUU8+L9AA6Vl2lzq8YOQ==
+X-Received: by 2002:a17:90a:ca8d:: with SMTP id y13mr1992054pjt.76.1613012865254;
+        Wed, 10 Feb 2021 19:07:45 -0800 (PST)
+Received: from ?IPv6:2620:10d:c085:21e1::11c9? ([2620:10d:c090:400::5:9df6])
+        by smtp.gmail.com with ESMTPSA id p8sm3778200pgh.0.2021.02.10.19.07.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 19:07:44 -0800 (PST)
+Subject: Re: [PATCH] block: Replace lkml.org links with lore
+To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Joe Perches <joe@perches.com>, Justin Sanders <justin@coraid.com>,
+        linux-block@vger.kernel.org
+References: <20210210235159.3190756-1-keescook@chromium.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8cdd00cd-c17f-fe69-fa07-b144a64c55e5@kernel.dk>
+Date:   Wed, 10 Feb 2021 20:07:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210119085546.725005-2-jckuo@nvidia.com>
-References: <20210119085546.725005-1-jckuo@nvidia.com> <20210119085546.725005-2-jckuo@nvidia.com>
-Subject: Re: [PATCH v6 01/15] clk: tegra: Add PLLE HW power sequencer control
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        nkristam@nvidia.com, JC Kuo <jckuo@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>
-To:     JC Kuo <jckuo@nvidia.com>, gregkh@linuxfoundation.org,
-        jonathanh@nvidia.com, kishon@ti.com, robh@kernel.org,
-        thierry.reding@gmail.com
-Date:   Wed, 10 Feb 2021 19:06:25 -0800
-Message-ID: <161301278546.1254594.2076696450962679318@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210210235159.3190756-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting JC Kuo (2021-01-19 00:55:32)
-> PLLE has a hardware power sequencer logic which is a state machine
-> that can power on/off PLLE without any software intervention. The
-> sequencer has two inputs, one from XUSB UPHY PLL and the other from
-> SATA UPHY PLL. PLLE provides reference clock to XUSB and SATA UPHY
-> PLLs. When both of the downstream PLLs are powered-off, PLLE hardware
-> power sequencer will automatically power off PLLE for power saving.
->=20
-> XUSB and SATA UPHY PLLs also have their own hardware power sequencer
-> logic. XUSB UPHY PLL is shared between XUSB SuperSpeed ports and PCIE
-> controllers. The XUSB UPHY PLL hardware power sequencer has inputs
-> from XUSB and PCIE. When all of the XUSB SuperSpeed ports and PCIE
-> controllers are in low power state, XUSB UPHY PLL hardware power
-> sequencer automatically power off PLL and flags idle to PLLE hardware
-> power sequencer. Similar applies to SATA UPHY PLL.
->=20
-> PLLE hardware power sequencer has to be enabled after both downstream
-> sequencers are enabled.
->=20
-> This commit adds two helper functions:
-> 1. tegra210_plle_hw_sequence_start() for XUSB PADCTL driver to enable
->    PLLE hardware sequencer at proper time.
->=20
-> 2. tegra210_plle_hw_sequence_is_enabled() for XUSB PADCTL driver to
->    check whether PLLE hardware sequencer has been enabled or not.
->=20
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
-> Acked-by: Thierry Reding <treding@nvidia.com>
-> ---
+On 2/10/21 4:51 PM, Kees Cook wrote:
+> As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
+> links with lore"), replace lkml.org links with lore to better use a
+> single source that's more likely to stay available long-term.
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Applied, thanks.
+
+-- 
+Jens Axboe
+
