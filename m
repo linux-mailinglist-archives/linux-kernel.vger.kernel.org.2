@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E717E3191A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8423191A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhBKRyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
+        id S232555AbhBKRze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:55:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhBKRVX (ORCPT
+        with ESMTP id S232103AbhBKRVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:21:23 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE0AC06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:20:43 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id cv23so3765209pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:20:43 -0800 (PST)
+        Thu, 11 Feb 2021 12:21:24 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55ACC06178B
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:20:44 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id cv23so3765246pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:20:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SaDNVFpV/oFZvL50IMJ+aksLQj8pFjVfZykazLuHDNY=;
-        b=FhSYnclEl45NUQwZyMCL9KrsTnrrQdPC8N/u6KPWUi7Mhb80cnnl0Sb75wPs3ngQEa
-         8tZ9X6Vz9jK1+Wr4lVRaHokdr4GIhQK2jQd0hyWBiuMthDHgf2PDcfvLm+bs3+XqTsSj
-         71VAi/YFpe7xcpFXIJEgaXix5rSVTEHkuGSToFdsU9lc+RRMwx6r9p5pMMYQqs+fHdTq
-         RJUvCjvBZNIqHXQiObfsm9Z9A/wg5z8GM3XwlGJVxg84nfhrzUlyQGyf9nouxWVZj9ff
-         FHPdninbRM/p6qQ0zWixnGQ8J2O3RvOzznKJcnQW4r7MxhC41DJmHgSbUapgHpGPzNEO
-         igsw==
+        bh=+pBdoJRBXleKxB8wo1I9O3wHqsrEFbMsCy/MeRKScyU=;
+        b=xruiXdpiQF8AmvkCscGpjvJJbVHNZ6QvxlENArXvaVCmgKfT9Hzhlq3YXOCRgxQorY
+         47CWKXMx3w1KSWVx9SB9jhOcjAC0liBCVRoBzfeHvVxQJhAdxeCwr+WYE3q98fabHgdx
+         gWplWcryTBfiRC2/yKbZVsqV7gt+SrZEBJ9j0p2f8o/f1A4x7eLLnGz454OwMLMGFPkX
+         kVly1A7EcNp+tpq0c6MsxmtchVKseNNlclfj9cwzooJBjxxIHKC4gM8pVU33IVmWEgmo
+         TWpsGQfiBvBhKhPH9PRrJFmV6+qzFOEp2wnHhrcUEykFzinVaZeQCjT22110/XO7cgey
+         2b0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SaDNVFpV/oFZvL50IMJ+aksLQj8pFjVfZykazLuHDNY=;
-        b=mnwSW7l58uCf79n/842Ee7gkoefZBM4Qf3CJK+W4GxT8+rdgfoIZOSh7ZE7Zw4RcTQ
-         YepEQJpNmd9yEp0sb6o7hY3ji9Bj5qkHPc/WL9PuuyMWs/U4cIxrakVSdqAd7ISUS7kU
-         Yu6g4qQyfzQtc3GMurgkV+2XtirxiIEdcYFLWjKmScCEvaXg1+r2H4lmcDjbXc/LIVMz
-         ZmeUvusu0vTcR8tIcs/FiLZXblcsEe4bhkJQjbxjMn6YunxQbkQFDLsDng0oJ/NLXmNg
-         PIs33IJa+Br8gkLKqHpU1Mx7quP1Ts0Qm4FDsnHcPurBsDK9YU8tuUgAv813RDCw2gWZ
-         kvCw==
-X-Gm-Message-State: AOAM531vswy1crpddA6xuI1BM04yiIxv63DL/l01qR9oSnvezQ/rsqdv
-        w4/t4JeiNEcAdZ9h/p1xaPf6UbhdDTM18w==
-X-Google-Smtp-Source: ABdhPJx9AyXjl0xrq1EZG664/xo5G+Uack/Ewln/jfeLWEPzUBZLYtHIKPjUN8vEdennJGsaUVBNvg==
-X-Received: by 2002:a17:903:1d0:b029:df:d098:f1cb with SMTP id e16-20020a17090301d0b02900dfd098f1cbmr8480698plh.49.1613064042909;
-        Thu, 11 Feb 2021 09:20:42 -0800 (PST)
+        bh=+pBdoJRBXleKxB8wo1I9O3wHqsrEFbMsCy/MeRKScyU=;
+        b=jClLFfAxrmnnxEztto0iyoVt//oC3BefQWXvau1kUro6CC6JjM8f7LzRkYRvBHR9MH
+         HG81bCtrI5/eFMde66AoPZqbJT/6jydH60zB+YbcCPY61Ps/IhXdVqMl0M/yyldfbdxl
+         VC5z6TDpwwZqxMcv2Q9OUscQ0sCC+lai2QWI0wgzZENV7+icgGIt5csDn9TIf131qmpG
+         FM+uipbkqWN+ZB0kDXJ8h1CDF4RKuJoYqZACgBgkPpMtIX8xfhQZdOdlEh564pabH4aM
+         kElW84J5aCjtxqHZIkdkyOk3a1eoMCes29I2eIkf1A4P7/oMsXWwE1CYVzXlMZBC5DGk
+         SP/g==
+X-Gm-Message-State: AOAM531it76oOZyMuh0BkQcYi+AT4KkL3jQf1Z/36xIXCgPGI+IpUuUj
+        2g+odKl+989jg/XZez+DubXsTA==
+X-Google-Smtp-Source: ABdhPJyCQqcPuSxqV87BAX/F8FMN0MIrDmSxnKPMLgIzm7zC8ATMtaXW8SD6+i76SOmF49pGy0Kfbw==
+X-Received: by 2002:a17:902:e211:b029:e2:843c:426e with SMTP id u17-20020a170902e211b02900e2843c426emr8436544plb.16.1613064044226;
+        Thu, 11 Feb 2021 09:20:44 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id e15sm7415384pgr.81.2021.02.11.09.20.41
+        by smtp.gmail.com with ESMTPSA id e15sm7415384pgr.81.2021.02.11.09.20.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 09:20:41 -0800 (PST)
+        Thu, 11 Feb 2021 09:20:43 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] coresight: etm-perf: Clarify comment on perf options
-Date:   Thu, 11 Feb 2021 10:20:36 -0700
-Message-Id: <20210211172038.2483517-2-mathieu.poirier@linaro.org>
+Subject: [PATCH v2 2/3] coresight: etm-perf: Support PID tracing for kernel at EL2
+Date:   Thu, 11 Feb 2021 10:20:37 -0700
+Message-Id: <20210211172038.2483517-3-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210211172038.2483517-1-mathieu.poirier@linaro.org>
 References: <20210211172038.2483517-1-mathieu.poirier@linaro.org>
@@ -63,78 +63,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-In theory, the options should be arbitrary values and are neutral for
-any ETM version; so far perf tool uses ETMv3.5/PTM ETMCR config bits
-except for register's bit definitions, also uses as options.
+When the kernel is running at EL2, the PID is stored in CONTEXTIDR_EL2.
+So, tracing CONTEXTIDR_EL1 doesn't give us the pid of the process.
+Thus we should trace the VMID with VMIDOPT set to trace CONTEXTIDR_EL2
+instead of CONTEXTIDR_EL1.  Given that we have an existing config
+option "contextid" and this will be useful for tracing virtual machines
+(when we get to support virtualization).
 
-This can introduce confusion, especially if we want to add a new option
-but the new option is not supported by ETMv3.5/PTM ETMCR.  But on the
-other hand, we cannot change options since these options are generic
-CoreSight PMU ABI.
+So instead, this patch extends option CTXTID with an extra bit
+ETM_OPT_CTXTID2 (bit 15), thus on an EL2 kernel, we will have another
+bit available for the perf tool: ETM_OPT_CTXTID is for kernel running in
+EL1, ETM_OPT_CTXTID2 is used when kernel runs in EL2 with VHE enabled.
 
-For easier maintenance and avoid confusion, this patch refines the
-comment to clarify perf options, and gives out the background info for
-these bits are coming from ETMv3.5/PTM.  Afterwards, we should take
-these options as general knobs, and if there have any confliction with
-ETMv3.5/PTM, should consider to define saperate macros for ETMv3.5/PTM
-ETMCR config bits.
+The tool must be backward compatible for users, i.e, "contextid" today
+traces PID and that should remain the same; for this purpose, the perf
+tool is updated to automatically set corresponding bit for the
+"contextid" config, therefore, the user doesn't have to bother which EL
+the kernel is running.
 
-Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+  i.e, perf record -e cs_etm/contextid/u --
+
+will always do the "pid" tracing, independent of the kernel EL.
+
+The driver parses the format "contextid", which traces CONTEXTIDR_EL1
+for ETM_OPT_CTXTID (on EL1 kernel) and traces CONTEXTIDR_EL2 for
+ETM_OPT_CTXTID2 (on EL2 kernel).
+
+Besides the enhancement for format "contexid", extra two formats are
+introduced: "contextid1" and "contextid2".  This considers to support
+tracing both CONTEXTIDR_EL1 and CONTEXTIDR_EL2 when the kernel is
+running at EL2.  Finally, the PMU formats are defined as follow:
+
+  "contextid1": Available on both EL1 kernel and EL2 kernel.  When the
+                kernel is running at EL1, "contextid1" enables the PID
+		tracing; when the kernel is running at EL2, this enables
+		tracing the PID of guest applications.
+
+  "contextid2": Only usable when the kernel is running at EL2.  When
+                selected, enables PID tracing on EL2 kernel.
+
+  "contextid":  Will be an alias for the option that enables PID
+                tracing.  I.e,
+                contextid == contextid1, on EL1 kernel.
+                contextid == contextid2, on EL2 kernel.
+
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Al Grant <al.grant@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+[ Added two config formats: contextid1, contextid2 ]
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-Id: <20210206150833.42120-2-leo.yan@linaro.org>
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
+Message-Id: <20210206150833.42120-4-leo.yan@linaro.org>
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- .../hwtracing/coresight/coresight-etm-perf.c    |  5 ++++-
- include/linux/coresight-pmu.h                   | 17 ++++++++++++-----
- 2 files changed, 16 insertions(+), 6 deletions(-)
+ .../hwtracing/coresight/coresight-etm-perf.c  | 27 ++++++++++++++++++-
+ .../coresight/coresight-etm4x-core.c          | 13 +++++++++
+ include/linux/coresight-pmu.h                 |  3 +++
+ 3 files changed, 42 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index bdc34ca449f7..465ef1aa8c82 100644
+index 465ef1aa8c82..0f603b4094f2 100644
 --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
 +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -27,7 +27,10 @@ static bool etm_perf_up;
- static DEFINE_PER_CPU(struct perf_output_handle, ctx_handle);
- static DEFINE_PER_CPU(struct coresight_device *, csdev_src);
- 
--/* ETMv3.5/PTM's ETMCR is 'config' */
-+/*
-+ * The PMU formats were orignally for ETMv3.5/PTM's ETMCR 'config';
-+ * now take them as general formats and apply on all ETMs.
-+ */
+@@ -32,15 +32,40 @@ static DEFINE_PER_CPU(struct coresight_device *, csdev_src);
+  * now take them as general formats and apply on all ETMs.
+  */
  PMU_FORMAT_ATTR(cycacc,		"config:" __stringify(ETM_OPT_CYCACC));
- PMU_FORMAT_ATTR(contextid,	"config:" __stringify(ETM_OPT_CTXTID));
+-PMU_FORMAT_ATTR(contextid,	"config:" __stringify(ETM_OPT_CTXTID));
++/* contextid1 enables tracing CONTEXTIDR_EL1 for ETMv4 */
++PMU_FORMAT_ATTR(contextid1,	"config:" __stringify(ETM_OPT_CTXTID));
++/* contextid2 enables tracing CONTEXTIDR_EL2 for ETMv4 */
++PMU_FORMAT_ATTR(contextid2,	"config:" __stringify(ETM_OPT_CTXTID2));
  PMU_FORMAT_ATTR(timestamp,	"config:" __stringify(ETM_OPT_TS));
+ PMU_FORMAT_ATTR(retstack,	"config:" __stringify(ETM_OPT_RETSTK));
+ /* Sink ID - same for all ETMs */
+ PMU_FORMAT_ATTR(sinkid,		"config2:0-31");
+ 
++/*
++ * contextid always traces the "PID".  The PID is in CONTEXTIDR_EL1
++ * when the kernel is running at EL1; when the kernel is at EL2,
++ * the PID is in CONTEXTIDR_EL2.
++ */
++static ssize_t format_attr_contextid_show(struct device *dev,
++					  struct device_attribute *attr,
++					  char *page)
++{
++	int pid_fmt = ETM_OPT_CTXTID;
++
++#if defined(CONFIG_CORESIGHT_SOURCE_ETM4X)
++	pid_fmt = is_kernel_in_hyp_mode() ? ETM_OPT_CTXTID2 : ETM_OPT_CTXTID;
++#endif
++	return sprintf(page, "config:%d\n", pid_fmt);
++}
++
++struct device_attribute format_attr_contextid =
++	__ATTR(contextid, 0444, format_attr_contextid_show, NULL);
++
+ static struct attribute *etm_config_formats_attr[] = {
+ 	&format_attr_cycacc.attr,
+ 	&format_attr_contextid.attr,
++	&format_attr_contextid1.attr,
++	&format_attr_contextid2.attr,
+ 	&format_attr_timestamp.attr,
+ 	&format_attr_retstack.attr,
+ 	&format_attr_sinkid.attr,
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index c8ecd91e289e..15016f757828 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -550,6 +550,19 @@ static int etm4_parse_event_config(struct etmv4_drvdata *drvdata,
+ 		/* bit[6], Context ID tracing bit */
+ 		config->cfg |= BIT(ETM4_CFG_BIT_CTXTID);
+ 
++	/*
++	 * If set bit ETM_OPT_CTXTID2 in perf config, this asks to trace VMID
++	 * for recording CONTEXTIDR_EL2.  Do not enable VMID tracing if the
++	 * kernel is not running in EL2.
++	 */
++	if (attr->config & BIT(ETM_OPT_CTXTID2)) {
++		if (!is_kernel_in_hyp_mode()) {
++			ret = -EINVAL;
++			goto out;
++		}
++		config->cfg |= BIT(ETM4_CFG_BIT_VMID) | BIT(ETM4_CFG_BIT_VMID_OPT);
++	}
++
+ 	/* return stack - enable if selected and supported */
+ 	if ((attr->config & BIT(ETM_OPT_RETSTK)) && drvdata->retstack)
+ 		/* bit[12], Return stack enable bit */
 diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
-index b0e35eec6499..5dc47cfdcf07 100644
+index 5dc47cfdcf07..4ac5c081af93 100644
 --- a/include/linux/coresight-pmu.h
 +++ b/include/linux/coresight-pmu.h
-@@ -10,11 +10,18 @@
- #define CORESIGHT_ETM_PMU_NAME "cs_etm"
- #define CORESIGHT_ETM_PMU_SEED  0x10
- 
--/* ETMv3.5/PTM's ETMCR config bit */
--#define ETM_OPT_CYCACC  12
--#define ETM_OPT_CTXTID	14
--#define ETM_OPT_TS      28
--#define ETM_OPT_RETSTK	29
-+/*
-+ * Below are the definition of bit offsets for perf option, and works as
-+ * arbitrary values for all ETM versions.
-+ *
-+ * Most of them are orignally from ETMv3.5/PTM's ETMCR config, therefore,
-+ * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
-+ * directly use below macros as config bits.
-+ */
-+#define ETM_OPT_CYCACC		12
-+#define ETM_OPT_CTXTID		14
-+#define ETM_OPT_TS		28
-+#define ETM_OPT_RETSTK		29
+@@ -20,14 +20,17 @@
+  */
+ #define ETM_OPT_CYCACC		12
+ #define ETM_OPT_CTXTID		14
++#define ETM_OPT_CTXTID2		15
+ #define ETM_OPT_TS		28
+ #define ETM_OPT_RETSTK		29
  
  /* ETMv4 CONFIGR programming bits for the ETM OPTs */
  #define ETM4_CFG_BIT_CYCACC	4
+ #define ETM4_CFG_BIT_CTXTID	6
++#define ETM4_CFG_BIT_VMID	7
+ #define ETM4_CFG_BIT_TS		11
+ #define ETM4_CFG_BIT_RETSTK	12
++#define ETM4_CFG_BIT_VMID_OPT	15
+ 
+ static inline int coresight_get_trace_id(int cpu)
+ {
 -- 
 2.25.1
 
