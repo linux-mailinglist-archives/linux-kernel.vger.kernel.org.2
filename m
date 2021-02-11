@@ -2,136 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EEB31899F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9313189A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhBKLiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:38:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:50132 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231470AbhBKLIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:08:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2467C31B;
-        Thu, 11 Feb 2021 03:07:13 -0800 (PST)
-Received: from [10.57.13.164] (unknown [10.57.13.164])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E5803F73B;
-        Thu, 11 Feb 2021 03:07:10 -0800 (PST)
-Subject: Re: [RFC][PATCH 1/3] PM /devfreq: add user frequency limits into
- devfreq struct
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com, amitk@kernel.org, rui.zhang@intel.com,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
-References: <20210126104001.20361-1-lukasz.luba@arm.com>
- <CGME20210126104217epcas1p349c717ccf0ea4f964153040b48c72352@epcas1p3.samsung.com>
- <20210126104001.20361-2-lukasz.luba@arm.com>
- <ea409e2f-f3ca-437f-d787-7ba793a2c226@samsung.com>
- <5bd13e13-202f-d059-da29-f82806c33a38@arm.com>
-Message-ID: <fe7763c8-22f7-65ad-94ee-3c4a78a3f6eb@arm.com>
-Date:   Thu, 11 Feb 2021 11:07:08 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S229954AbhBKLjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:39:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhBKLJJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 06:09:09 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958E8C061786;
+        Thu, 11 Feb 2021 03:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=v7B7fHaW3Pp4ZozkuVSMVbnsnAHO8uAyG66cNYc6odE=; b=PoyX2SqGSZloO83H2r4Lv2qQw
+        gUZDFSKrKQaoILac4/+411OM9BpxjKH8U3cvAy8a5aWGKpIAhEFFbrSvbC9yui7iq+7ZZGLV6zCpg
+        4QU1IlbVa8uL04CB8d9bczbZj8Nex8eBkUjtaGO2FFovXEVNYP/d89MTzvbyIloanQ1lGix19m7Is
+        y20gAPrMtBalJ4tzQLAILBqAxcz9zCguhruaxAZnUo3pWWOqYaUnh0P4aM23WvbEit4PjHDBkQDxZ
+        nxuH2WD9I/KJbjBxjK9CiFNgAwTBstXZYFV7Tx8JH4gF3bzq//RT1m3tzGnxQodgh4b9MCgvYxCUy
+        pgoCGzFaQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41990)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lA9pS-00061k-NH; Thu, 11 Feb 2021 11:08:10 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lA9pR-00061W-Qj; Thu, 11 Feb 2021 11:08:09 +0000
+Date:   Thu, 11 Feb 2021 11:08:09 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
+        andrew@lunn.ch, atenart@kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, sebastian.hesselbarth@gmail.com,
+        gregory.clement@bootlin.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v13 net-next 04/15] net: mvpp2: always compare hw-version
+ vs MVPP21
+Message-ID: <20210211110809.GB1463@shell.armlinux.org.uk>
+References: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
+ <1613040542-16500-5-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <5bd13e13-202f-d059-da29-f82806c33a38@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1613040542-16500-5-git-send-email-stefanc@marvell.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chanwoo,
+On Thu, Feb 11, 2021 at 12:48:51PM +0200, stefanc@marvell.com wrote:
+> @@ -1199,7 +1199,7 @@ static bool mvpp2_port_supports_xlg(struct mvpp2_port *port)
+>  
+>  static bool mvpp2_port_supports_rgmii(struct mvpp2_port *port)
+>  {
+> -	return !(port->priv->hw_version == MVPP22 && port->gop_id == 0);
+> +	return !(port->priv->hw_version != MVPP21 && port->gop_id == 0);
 
-On 2/3/21 10:21 AM, Lukasz Luba wrote:
-> Hi Chanwoo,
-> 
-> Thank you for looking at this.
-> 
-> On 2/3/21 10:11 AM, Chanwoo Choi wrote:
->> Hi Lukasz,
->>
->> When accessing the max_freq and min_freq at devfreq-cooling.c,
->> even if can access 'user_max_freq' and 'lock' by using the 'devfreq' 
->> instance,
->> I think that the direct access of variables 
->> (lock/user_max_freq/user_min_freq)
->> of struct devfreq are not good.
->>
->> Instead, how about using the 'DEVFREQ_TRANSITION_NOTIFIER'
->> notification with following changes of 'struct devfreq_freq'?
-> 
-> I like the idea with devfreq notification. I will have to go through the
-> code to check that possibility.
-> 
->> Also, need to add codes into devfreq_set_target() for initializing
->> 'new_max_freq' and 'new_min_freq' before sending the DEVFREQ_POSTCHANGE
->> notification.
->>
->> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
->> index 147a229056d2..d5726592d362 100644
->> --- a/include/linux/devfreq.h
->> +++ b/include/linux/devfreq.h
->> @@ -207,6 +207,8 @@ struct devfreq {
->>   struct devfreq_freqs {
->>          unsigned long old;
->>          unsigned long new;
->> +       unsigned long new_max_freq;
->> +       unsigned long new_min_freq;
->>   };
->>
->>
->> And I think that new 'user_min_freq'/'user_max_freq' are not necessary.
->> You can get the current max_freq/min_freq by using the following steps:
->>
->>     get_freq_range(devfreq, &min_freq, &max_freq);
->>     dev_pm_opp_find_freq_floor(pdev, &min_freq);
->>     dev_pm_opp_find_freq_floor(pdev, &max_freq);
->>
->> So that you can get the 'max_freq/min_freq' and then
->> initialize the 'freqs.new_max_freq and freqs.new_min_freq'
->> with them as following:
->>
->> in devfreq_set_target()
->>     get_freq_range(devfreq, &min_freq, &max_freq);
->>     dev_pm_opp_find_freq_floor(pdev, &min_freq);
->>     dev_pm_opp_find_freq_floor(pdev, &max_freq);
->>     freqs.new_max_freq = min_freq;
->>     freqs.new_max_freq = max_freq;
->>     devfreq_notify_transition(devfreq, &freqs, DEVFREQ_POSTCHANGE);
-> 
-> I will plumb it in and check that option. My concern is that function
-> get_freq_range() would give me the max_freq value from PM QoS, which
-> might be my thermal limit - lower that user_max_freq. Then I still
-> need
-> 
-> I've been playing with PM QoS notifications because I thought it would
-> be possible to be notified in thermal for all new set values - even from
-> devfreq sysfs user max_freq write, which has value higher that the
-> current limit set by thermal governor. Unfortunately PM QoS doesn't
-> send that information by design. PM QoS also by desing won't allow
-> me to check first two limits in the plist - which would be thermal
-> and user sysfs max_freq.
-> 
-> I will experiment with this notifications and share the results.
-> That you for your comments.
+I'm still very much of the opinion (as raised several revisions back)
+that using > MVPP21 or >= MVPP22 would be a lot better - especially
+when we have situations like this. Having negatives within negatives
+does not help readability.
 
-I have experimented with your proposal. Unfortunately, the value stored
-in the pm_qos which is read by get_freq_range() is not the user max
-freq. It's the value from thermal devfreq cooling when that one is
-lower. Which is OK in the overall design, but not for my IPA use case.
-
-What comes to my mind is two options:
-1) this patch proposal, with simple solution of two new variables
-protected by mutex, which would maintain user stored values
-2) add a new notification chain in devfreq to notify about new
-user written value, to which devfreq cooling would register; that
-would allow devfreq cooling to get that value instantly and store
-locally
-
-What do you think Chanwoo?
-
-Regards,
-Lukasz
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
