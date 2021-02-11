@@ -2,249 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E4B31848F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5569A318483
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhBKFUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 00:20:04 -0500
-Received: from mail-bn8nam12on2054.outbound.protection.outlook.com ([40.107.237.54]:56385
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229544AbhBKFTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 00:19:50 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UKclnsJipKqWEjUl13y3uaPpwoL7G+dF3//J/PVIaF8Dzj2GFuWrTWXGSjeFIi/GigF5ojZi5sB6qzSImH3S0FO648udbIGPJlUi5zUFns81jy4LcqOn3+LRrJ2CRPUnNB8ZuSdseEy8306zriKPHX6OBQHBCi3JeYV3pZUOGAwxbEEo2jxa1J7c5myf7lTk11F/6wIeYFg5LK4eYtT5hyR3oMqlA1QFAQG31tyQDj/DUJ+D5sDVc3d6OpcIf87zCyoc23xeYUar1WIcOxTHAFKzHF/a4HZ+4vpTyRh+ebyWa4Y56AkBDY1WBOc5JFXuavn0rG/UmZ78dip3UDEkrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w+gVoX9UOal0itc7XT89rnENLF2jWd5TCPiORmwunvw=;
- b=E9OeOOeWoajgOvSbS0w20KsiVlyvpS8Ht3wBRy1jML4bTiGI9Ge43uK+jwZOqnOkx2Aoi3bnESKrbzUyRMV0Lo8ZKMiOVCZZTzMgIV/azeGZ49szXKbpgT9ZhNZk7lQdfY2sDqAyVX4Bhm8H/SPpbnQSacJ87wzImyWXBnrReufxxSCm/uR00AUXp27UQc/cwFVOJVkCCiACvrbUrKtp2RdrNAihyLew5SC1BIfVVJyxOTZ2O9t6m1JM6SmOpeHYvmT0mKFeWOd0JSvnbregbGP5ewG59uGp+jQ8M1FFAiHF6NCd51HVHoi4SmPd2t1D8gppFUoBay7q8tRCK+MSMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w+gVoX9UOal0itc7XT89rnENLF2jWd5TCPiORmwunvw=;
- b=Dw5dxJ68KuJd5jfQG8nN0Gc85V6gCEQYJevTLA48wth94IrimEqDTJbiwWfKn+ZZFtF7u+L1E9oBDNgEEuRC4fIvT2LA44vd6LZ1goB3lQAaJPFPzvfBfYUIQH7GryVO3DQvCvwHSsP3Sufe10FGt6QQY9XKScCQopr21yXGVAo=
-Received: from SN4PR0401CA0008.namprd04.prod.outlook.com
- (2603:10b6:803:21::18) by SN6PR02MB5311.namprd02.prod.outlook.com
- (2603:10b6:805:6a::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Thu, 11 Feb
- 2021 05:18:55 +0000
-Received: from SN1NAM02FT017.eop-nam02.prod.protection.outlook.com
- (2603:10b6:803:21:cafe::3b) by SN4PR0401CA0008.outlook.office365.com
- (2603:10b6:803:21::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend
- Transport; Thu, 11 Feb 2021 05:18:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT017.mail.protection.outlook.com (10.152.72.115) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3846.25 via Frontend Transport; Thu, 11 Feb 2021 05:18:55 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 10 Feb 2021 21:18:36 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Wed, 10 Feb 2021 21:18:36 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- mdf@kernel.org,
- trix@redhat.com,
- robh+dt@kernel.org,
- linux-fpga@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- chinnikishore369@gmail.com
-Received: from [10.140.6.60] (port=49268 helo=xhdnavam40.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <nava.manne@xilinx.com>)
-        id 1lA4N9-0000QK-48; Wed, 10 Feb 2021 21:18:35 -0800
-From:   Nava kishore Manne <nava.manne@xilinx.com>
-To:     <mdf@kernel.org>, <trix@redhat.com>, <robh+dt@kernel.org>,
-        <michal.simek@xilinx.com>, <linux-fpga@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <chinnikishore369@gmail.com>
-CC:     <git@xilinx.com>, Nava kishore Manne <nava.manne@xilinx.com>
-Subject: [PATCH v2 2/2] fpga: Add support for Xilinx DFX AXI Shutdown manager
-Date:   Thu, 11 Feb 2021 10:41:48 +0530
-Message-ID: <20210211051148.16722-3-nava.manne@xilinx.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210211051148.16722-1-nava.manne@xilinx.com>
-References: <20210211051148.16722-1-nava.manne@xilinx.com>
+        id S229636AbhBKFP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 00:15:26 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50376 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229447AbhBKFPT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 00:15:19 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11B537aM050054;
+        Thu, 11 Feb 2021 00:14:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=9CC5t8mlrCkuptJncg5MpcYUgaVwrBRsUNJCUVnY5Ew=;
+ b=Ncn1IH5pZmFpMRtGxe45IIpawGgL0+3VFAFzQMEE7F+nyGN6x2hrZdG0zIzXIPkvTNmT
+ YtR5JAn9EGpzdZFkmYXruMhiX7WP2E5MGzqRga62rBoShkKlriZpZDl7sL9ta7gxKvRs
+ AcjgOmJ7WFWISkKJOnal1wz/cRKBKzI43lMV8J7uH2tcfFQ+Q+xTxjsZQ9NADDd6/jIx
+ jI436p7Xm5KOqvzZvXbl/lXG3od9/4NFx1p3x8BpxcpImO8W/m3E1qdJ1IeixxZYORsO
+ OCTb8MoX/a32CNv+M2Bs5yiL9hNZqA0Qb0ux0t+7S+m4hwDo2wCY80SWI7+R8mQxDjBV aA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36mwsygqrx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 00:14:11 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11B53Hjc050896;
+        Thu, 11 Feb 2021 00:14:10 -0500
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36mwsygqrm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 00:14:10 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11B5COpS031718;
+        Thu, 11 Feb 2021 05:14:09 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma01wdc.us.ibm.com with ESMTP id 36hjr9kaur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 05:14:09 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11B5E8wZ17236284
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 05:14:08 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6EDED7805F;
+        Thu, 11 Feb 2021 05:14:08 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA8637805C;
+        Thu, 11 Feb 2021 05:13:58 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.160.95.194])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Thu, 11 Feb 2021 05:13:58 +0000 (GMT)
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210209182200.30606-11-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v17 10/10] arm64: Enable passing IMA log to next kernel
+ on kexec
+In-reply-to: <20210209182200.30606-11-nramas@linux.microsoft.com>
+Date:   Thu, 11 Feb 2021 02:13:56 -0300
+Message-ID: <87ft23nq3v.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3bc5f199-bbbd-4993-d68a-08d8ce4c8768
-X-MS-TrafficTypeDiagnostic: SN6PR02MB5311:
-X-Microsoft-Antispam-PRVS: <SN6PR02MB531188C9629B3ED6D3CF8AF5C28C9@SN6PR02MB5311.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tIkuIbWISWW/KxXhjoa2FiJ5HWCFp3ODhG0I/qqMx2NAIpV/tH1JcYg/BQITkoEKxvdH+Z5poqcG9K0jBfhArtD1YvLbMJ+o9QehkkYMTJqiTq/E6Qunm6TUQmY7xzlRMShirXWX89aw2XM+IWHGrSmjBk7mEPGtuUHzDxTVpCwZ1vGNyzVFvAEEXC21jzCV8vqlL0AhbuJj6FsCHNDcK04HfX+fdMvrRuKWvP//A9id8rGaf/Q7k/1Sv55oHTFd69wHotjvEkGzEAoTQMJ+EPHSz0L8qCb9knSDucQng+Xe/ZdmA1riyw0AFtRixO+mXVRq/mj45B5zpgeXc8WRCIdmHIODwcvj9wvwX6aLmpuYlO8Ifhu4miT/3XQ2hYuBFk2odb+DedDzFZsnwTMXwNlpZH5yp5SBRDeqVz4nPrS2AWXAoomoBzO24SB5gs7VqeB6Ckp2b7Ts8NdHgqqkhzEhfnuQ24So86uYNfBzOn98HeEK2noj+H3iwwYXzsbViANwWJ1E8qjiZIXRrOtyIu2mVYEVhuV9+gdGZHJvepXj/21+i4vzMee9SyOpuO/94LZZfuPCQkc/9Fsogoyc2kzWJNfCw2P+CILf9qI0rpEf4CFyp15WUMKR48oN14a9w/sRvWOlFKnCwuYHQLD6npGeazr/KFhV16vm4kRE65GanFppqNanY30mNbO+djK9b50bJaBBCK9yc2eIxG8SSw==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(36840700001)(46966006)(6666004)(356005)(7636003)(4326008)(9786002)(107886003)(82310400003)(47076005)(186003)(336012)(1076003)(36906005)(5660300002)(36860700001)(2906002)(82740400003)(54906003)(7696005)(26005)(36756003)(83380400001)(8676002)(110136005)(8936002)(426003)(70586007)(316002)(478600001)(70206006)(2616005)(102446001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 05:18:55.6756
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bc5f199-bbbd-4993-d68a-08d8ce4c8768
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT017.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5311
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_04:2021-02-10,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 clxscore=1015 priorityscore=1501 spamscore=0
+ adultscore=0 phishscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for Xilinx Dynamic Function eXchange(DFX) AXI
-shutdown manager IP. It can be used to safely handling the AXI traffic
-on a Reconfigurable Partition when it is undergoing dynamic reconfiguration
-and there by preventing system deadlock that may occur if AXI transactions
-are interrupted during reconfiguration.
 
-PR-Decoupler and AXI shutdown manager are completely different IPs.
-But both the IP registers are compatible and also both belong to the
-same sub-system (fpga-bridge).So using same driver for both IP's.
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
----
-Changes for v2:
-                -Fixed some minor coding issues as suggested by
-                 Tom Rix.
+> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC, if CONFIG_IMA
+> is enabled, to indicate that the IMA measurement log information is
+> present in the device tree for ARM64.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+> ---
+>  arch/arm64/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
- drivers/fpga/Kconfig               |  9 +++++++-
- drivers/fpga/xilinx-pr-decoupler.c | 37 ++++++++++++++++++++++++++----
- 2 files changed, 40 insertions(+), 6 deletions(-)
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index 5645226ca3ce..bf85b9a65ec2 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -118,10 +118,17 @@ config XILINX_PR_DECOUPLER
- 	depends on FPGA_BRIDGE
- 	depends on HAS_IOMEM
- 	help
--	  Say Y to enable drivers for Xilinx LogiCORE PR Decoupler.
-+	  Say Y to enable drivers for Xilinx LogiCORE PR Decoupler
-+	  or Xilinx Dynamic Function eXchnage AIX Shutdown Manager.
- 	  The PR Decoupler exists in the FPGA fabric to isolate one
- 	  region of the FPGA from the busses while that region is
- 	  being reprogrammed during partial reconfig.
-+	  The Dynamic Function eXchange AXI shutdown manager prevents
-+	  AXI traffic from passing through the bridge. The controller
-+	  safely handles AXI4MM and AXI4-Lite interfaces on a
-+	  Reconfigurable Partition when it is undergoing dynamic
-+	  reconfiguration, preventing the system deadlock that can
-+	  occur if AXI transactions are interrupted by DFX.
- 
- config FPGA_REGION
- 	tristate "FPGA Region"
-diff --git a/drivers/fpga/xilinx-pr-decoupler.c b/drivers/fpga/xilinx-pr-decoupler.c
-index 7d69af230567..78a6f5324193 100644
---- a/drivers/fpga/xilinx-pr-decoupler.c
-+++ b/drivers/fpga/xilinx-pr-decoupler.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (c) 2017, National Instruments Corp.
-- * Copyright (c) 2017, Xilix Inc
-+ * Copyright (c) 2017, Xilinx Inc
-  *
-  * FPGA Bridge Driver for the Xilinx LogiCORE Partial Reconfiguration
-  * Decoupler IP Core.
-@@ -18,7 +18,12 @@
- #define CTRL_CMD_COUPLE		0
- #define CTRL_OFFSET		0
- 
-+struct xlnx_config_data {
-+	const char *name;
-+};
-+
- struct xlnx_pr_decoupler_data {
-+	const struct xlnx_config_data *ipconfig;
- 	void __iomem *io_base;
- 	struct clk *clk;
- };
-@@ -76,15 +81,28 @@ static const struct fpga_bridge_ops xlnx_pr_decoupler_br_ops = {
- 	.enable_show = xlnx_pr_decoupler_enable_show,
- };
- 
-+static const struct xlnx_config_data decoupler_config = {
-+	.name = "Xilinx PR Decoupler",
-+};
-+
-+static const struct xlnx_config_data shutdown_config = {
-+	.name = "Xilinx DFX AXI Shutdown Manager",
-+};
-+
- static const struct of_device_id xlnx_pr_decoupler_of_match[] = {
--	{ .compatible = "xlnx,pr-decoupler-1.00", },
--	{ .compatible = "xlnx,pr-decoupler", },
-+	{ .compatible = "xlnx,pr-decoupler-1.00", .data = &decoupler_config },
-+	{ .compatible = "xlnx,pr-decoupler", .data = &decoupler_config },
-+	{ .compatible = "xlnx,dfx-axi-shutdown-manager-1.00",
-+					.data = &shutdown_config },
-+	{ .compatible = "xlnx,dfx-axi-shutdown-manager",
-+					.data = &shutdown_config },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, xlnx_pr_decoupler_of_match);
- 
- static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
- {
-+	struct device_node *np = pdev->dev.of_node;
- 	struct xlnx_pr_decoupler_data *priv;
- 	struct fpga_bridge *br;
- 	int err;
-@@ -94,6 +112,14 @@ static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
- 	if (!priv)
- 		return -ENOMEM;
- 
-+	if (np) {
-+		const struct of_device_id *match;
-+
-+		match = of_match_node(xlnx_pr_decoupler_of_match, np);
-+		if (match && match->data)
-+			priv->ipconfig = match->data;
-+	}
-+
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	priv->io_base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(priv->io_base))
-@@ -114,7 +140,7 @@ static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
- 
- 	clk_disable(priv->clk);
- 
--	br = devm_fpga_bridge_create(&pdev->dev, "Xilinx PR Decoupler",
-+	br = devm_fpga_bridge_create(&pdev->dev, priv->ipconfig->name,
- 				     &xlnx_pr_decoupler_br_ops, priv);
- 	if (!br) {
- 		err = -ENOMEM;
-@@ -125,7 +151,8 @@ static int xlnx_pr_decoupler_probe(struct platform_device *pdev)
- 
- 	err = fpga_bridge_register(br);
- 	if (err) {
--		dev_err(&pdev->dev, "unable to register Xilinx PR Decoupler");
-+		dev_err(&pdev->dev, "unable to register %s",
-+			priv->ipconfig->name);
- 		goto err_clk;
- 	}
- 
 -- 
-2.18.0
-
+Thiago Jung Bauermann
+IBM Linux Technology Center
