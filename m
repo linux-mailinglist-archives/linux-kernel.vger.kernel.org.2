@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1667A318E99
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B023318EAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhBKPa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 10:30:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48940 "EHLO mail.kernel.org"
+        id S231186AbhBKPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:32:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230000AbhBKPFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:05:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1797064E92;
-        Thu, 11 Feb 2021 15:03:13 +0000 (UTC)
+        id S230080AbhBKPLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:11:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48DA764EC9;
+        Thu, 11 Feb 2021 15:03:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613055794;
-        bh=ngdDiRYZvdAYFJ4HNKZllQP5UAl/wFpBhYihJg39oNU=;
+        s=korg; t=1613055828;
+        bh=ZFcLfTMHJpVmW+Qgh8W6WNIdzkO2s/1s5+MiBxyEikc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08rYDYv8m+WSO/7VmDije7bkefYIqNimm91SB3JkyhMp8f7s/B1AnJnpXFFf0Gfpc
-         rBDtrAhxTaRfjj79qf2LiqyphJuHWKS8MaTcaXn6RXjUj4w/PknUmXql5xA8Xs2qVE
-         itNRfRl1Q0s0tAqsz0C9umTW46/Vj1snm4HTHKTU=
+        b=K4TA0rmORugznvtH2MnqSOEANZzQblokJK3LHjNj/yxj8h2XC53MIYYK7CmQOaey0
+         2vUyggbPN24OU9yShTTWp6p6E+iyTEGHnGTsYE23oV3FvjGchfosZXrnpdobUDxXjR
+         A5uXuMmbw+Q9jbjcFXEz9imSj47wk/wsd/M3qmEI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: [PATCH 5.10 10/54] io_uring: replace inflight_wait with tctx->wait
-Date:   Thu, 11 Feb 2021 16:01:54 +0100
-Message-Id: <20210211150153.326935464@linuxfoundation.org>
+        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 22/54] drm/nouveau/nvif: fix method count when pushing an array
+Date:   Thu, 11 Feb 2021 16:02:06 +0100
+Message-Id: <20210211150153.851623903@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
 References: <20210211150152.885701259@linuxfoundation.org>
@@ -39,92 +40,263 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-[ Upstream commit c98de08c990e190fc7cc3aaf8079b4a0674c6425 ]
+[ Upstream commit d502297008142645edf5c791af424ed321e5da84 ]
 
-As tasks now cancel only theirs requests, and inflight_wait is awaited
-only in io_uring_cancel_files(), which should be called with ->in_idle
-set, instead of keeping a separate inflight_wait use tctx->wait.
-
-That will add some spurious wakeups but actually is safer from point of
-not hanging the task.
-
-e.g.
-task1                   | IRQ
-                        | *start* io_complete_rw_common(link)
-                        |        link: req1 -> req2 -> req3(with files)
-*cancel_files()         |
-io_wq_cancel(), etc.    |
-                        | put_req(link), adds to io-wq req2
-schedule()              |
-
-So, task1 will never try to cancel req2 or req3. If req2 is
-long-standing (e.g. read(empty_pipe)), this may hang.
-
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |   13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/nouveau/include/nvif/push.h | 216 ++++++++++----------
+ 1 file changed, 108 insertions(+), 108 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -286,7 +286,6 @@ struct io_ring_ctx {
- 		struct list_head	timeout_list;
- 		struct list_head	cq_overflow_list;
+diff --git a/drivers/gpu/drm/nouveau/include/nvif/push.h b/drivers/gpu/drm/nouveau/include/nvif/push.h
+index 168d7694ede5c..6d3a8a3d2087b 100644
+--- a/drivers/gpu/drm/nouveau/include/nvif/push.h
++++ b/drivers/gpu/drm/nouveau/include/nvif/push.h
+@@ -123,131 +123,131 @@ PUSH_KICK(struct nvif_push *push)
+ } while(0)
+ #endif
  
--		wait_queue_head_t	inflight_wait;
- 		struct io_uring_sqe	*sq_sqes;
- 	} ____cacheline_aligned_in_smp;
+-#define PUSH_1(X,f,ds,n,c,o,p,s,mA,dA) do {                            \
+-	PUSH_##o##_HDR((p), s, mA, (c)+(n));                           \
+-	PUSH_##f(X, (p), X##mA, 1, o, (dA), ds, "");                   \
++#define PUSH_1(X,f,ds,n,o,p,s,mA,dA) do {                             \
++	PUSH_##o##_HDR((p), s, mA, (ds)+(n));                         \
++	PUSH_##f(X, (p), X##mA, 1, o, (dA), ds, "");                  \
+ } while(0)
+-#define PUSH_2(X,f,ds,n,c,o,p,s,mB,dB,mA,dA,a...) do {                 \
+-	PUSH_ASSERT((mB) - (mA) == (1?PUSH_##o##_INC), "mthd1");       \
+-	PUSH_1(X, DATA_, 1, ds, (c)+(n), o, (p), s, X##mA, (dA), ##a); \
+-	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                   \
++#define PUSH_2(X,f,ds,n,o,p,s,mB,dB,mA,dA,a...) do {                  \
++	PUSH_ASSERT((mB) - (mA) == (1?PUSH_##o##_INC), "mthd1");      \
++	PUSH_1(X, DATA_, 1, (ds) + (n), o, (p), s, X##mA, (dA), ##a); \
++	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                  \
+ } while(0)
+-#define PUSH_3(X,f,ds,n,c,o,p,s,mB,dB,mA,dA,a...) do {                 \
+-	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd2");       \
+-	PUSH_2(X, DATA_, 1, ds, (c)+(n), o, (p), s, X##mA, (dA), ##a); \
+-	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                   \
++#define PUSH_3(X,f,ds,n,o,p,s,mB,dB,mA,dA,a...) do {                  \
++	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd2");      \
++	PUSH_2(X, DATA_, 1, (ds) + (n), o, (p), s, X##mA, (dA), ##a); \
++	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                  \
+ } while(0)
+-#define PUSH_4(X,f,ds,n,c,o,p,s,mB,dB,mA,dA,a...) do {                 \
+-	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd3");       \
+-	PUSH_3(X, DATA_, 1, ds, (c)+(n), o, (p), s, X##mA, (dA), ##a); \
+-	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                   \
++#define PUSH_4(X,f,ds,n,o,p,s,mB,dB,mA,dA,a...) do {                  \
++	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd3");      \
++	PUSH_3(X, DATA_, 1, (ds) + (n), o, (p), s, X##mA, (dA), ##a); \
++	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                  \
+ } while(0)
+-#define PUSH_5(X,f,ds,n,c,o,p,s,mB,dB,mA,dA,a...) do {                 \
+-	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd4");       \
+-	PUSH_4(X, DATA_, 1, ds, (c)+(n), o, (p), s, X##mA, (dA), ##a); \
+-	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                   \
++#define PUSH_5(X,f,ds,n,o,p,s,mB,dB,mA,dA,a...) do {                  \
++	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd4");      \
++	PUSH_4(X, DATA_, 1, (ds) + (n), o, (p), s, X##mA, (dA), ##a); \
++	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                  \
+ } while(0)
+-#define PUSH_6(X,f,ds,n,c,o,p,s,mB,dB,mA,dA,a...) do {                 \
+-	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd5");       \
+-	PUSH_5(X, DATA_, 1, ds, (c)+(n), o, (p), s, X##mA, (dA), ##a); \
+-	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                   \
++#define PUSH_6(X,f,ds,n,o,p,s,mB,dB,mA,dA,a...) do {                  \
++	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd5");      \
++	PUSH_5(X, DATA_, 1, (ds) + (n), o, (p), s, X##mA, (dA), ##a); \
++	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                  \
+ } while(0)
+-#define PUSH_7(X,f,ds,n,c,o,p,s,mB,dB,mA,dA,a...) do {                 \
+-	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd6");       \
+-	PUSH_6(X, DATA_, 1, ds, (c)+(n), o, (p), s, X##mA, (dA), ##a); \
+-	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                   \
++#define PUSH_7(X,f,ds,n,o,p,s,mB,dB,mA,dA,a...) do {                  \
++	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd6");      \
++	PUSH_6(X, DATA_, 1, (ds) + (n), o, (p), s, X##mA, (dA), ##a); \
++	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                  \
+ } while(0)
+-#define PUSH_8(X,f,ds,n,c,o,p,s,mB,dB,mA,dA,a...) do {                 \
+-	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd7");       \
+-	PUSH_7(X, DATA_, 1, ds, (c)+(n), o, (p), s, X##mA, (dA), ##a); \
+-	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                   \
++#define PUSH_8(X,f,ds,n,o,p,s,mB,dB,mA,dA,a...) do {                  \
++	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd7");      \
++	PUSH_7(X, DATA_, 1, (ds) + (n), o, (p), s, X##mA, (dA), ##a); \
++	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                  \
+ } while(0)
+-#define PUSH_9(X,f,ds,n,c,o,p,s,mB,dB,mA,dA,a...) do {                 \
+-	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd8");       \
+-	PUSH_8(X, DATA_, 1, ds, (c)+(n), o, (p), s, X##mA, (dA), ##a); \
+-	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                   \
++#define PUSH_9(X,f,ds,n,o,p,s,mB,dB,mA,dA,a...) do {                  \
++	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd8");      \
++	PUSH_8(X, DATA_, 1, (ds) + (n), o, (p), s, X##mA, (dA), ##a); \
++	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                  \
+ } while(0)
+-#define PUSH_10(X,f,ds,n,c,o,p,s,mB,dB,mA,dA,a...) do {                \
+-	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd9");       \
+-	PUSH_9(X, DATA_, 1, ds, (c)+(n), o, (p), s, X##mA, (dA), ##a); \
+-	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                   \
++#define PUSH_10(X,f,ds,n,o,p,s,mB,dB,mA,dA,a...) do {                 \
++	PUSH_ASSERT((mB) - (mA) == (0?PUSH_##o##_INC), "mthd9");      \
++	PUSH_9(X, DATA_, 1, (ds) + (n), o, (p), s, X##mA, (dA), ##a); \
++	PUSH_##f(X, (p), X##mB, 0, o, (dB), ds, "");                  \
+ } while(0)
  
-@@ -1220,7 +1219,6 @@ static struct io_ring_ctx *io_ring_ctx_a
- 	INIT_LIST_HEAD(&ctx->iopoll_list);
- 	INIT_LIST_HEAD(&ctx->defer_list);
- 	INIT_LIST_HEAD(&ctx->timeout_list);
--	init_waitqueue_head(&ctx->inflight_wait);
- 	spin_lock_init(&ctx->inflight_lock);
- 	INIT_LIST_HEAD(&ctx->inflight_list);
- 	INIT_DELAYED_WORK(&ctx->file_put_work, io_file_put_work);
-@@ -5894,6 +5892,7 @@ static int io_req_defer(struct io_kiocb
- static void io_req_drop_files(struct io_kiocb *req)
- {
- 	struct io_ring_ctx *ctx = req->ctx;
-+	struct io_uring_task *tctx = req->task->io_uring;
- 	unsigned long flags;
+-#define PUSH_1D(X,o,p,s,mA,dA)                            \
+-	PUSH_1(X, DATA_, 1, 1, 0, o, (p), s, X##mA, (dA))
+-#define PUSH_2D(X,o,p,s,mA,dA,mB,dB)                      \
+-	PUSH_2(X, DATA_, 1, 1, 0, o, (p), s, X##mB, (dB), \
+-					     X##mA, (dA))
+-#define PUSH_3D(X,o,p,s,mA,dA,mB,dB,mC,dC)                \
+-	PUSH_3(X, DATA_, 1, 1, 0, o, (p), s, X##mC, (dC), \
+-					     X##mB, (dB), \
+-					     X##mA, (dA))
+-#define PUSH_4D(X,o,p,s,mA,dA,mB,dB,mC,dC,mD,dD)          \
+-	PUSH_4(X, DATA_, 1, 1, 0, o, (p), s, X##mD, (dD), \
+-					     X##mC, (dC), \
+-					     X##mB, (dB), \
+-					     X##mA, (dA))
+-#define PUSH_5D(X,o,p,s,mA,dA,mB,dB,mC,dC,mD,dD,mE,dE)    \
+-	PUSH_5(X, DATA_, 1, 1, 0, o, (p), s, X##mE, (dE), \
+-					     X##mD, (dD), \
+-					     X##mC, (dC), \
+-					     X##mB, (dB), \
+-					     X##mA, (dA))
++#define PUSH_1D(X,o,p,s,mA,dA)                         \
++	PUSH_1(X, DATA_, 1, 0, o, (p), s, X##mA, (dA))
++#define PUSH_2D(X,o,p,s,mA,dA,mB,dB)                   \
++	PUSH_2(X, DATA_, 1, 0, o, (p), s, X##mB, (dB), \
++					  X##mA, (dA))
++#define PUSH_3D(X,o,p,s,mA,dA,mB,dB,mC,dC)             \
++	PUSH_3(X, DATA_, 1, 0, o, (p), s, X##mC, (dC), \
++					  X##mB, (dB), \
++					  X##mA, (dA))
++#define PUSH_4D(X,o,p,s,mA,dA,mB,dB,mC,dC,mD,dD)       \
++	PUSH_4(X, DATA_, 1, 0, o, (p), s, X##mD, (dD), \
++					  X##mC, (dC), \
++					  X##mB, (dB), \
++					  X##mA, (dA))
++#define PUSH_5D(X,o,p,s,mA,dA,mB,dB,mC,dC,mD,dD,mE,dE) \
++	PUSH_5(X, DATA_, 1, 0, o, (p), s, X##mE, (dE), \
++					  X##mD, (dD), \
++					  X##mC, (dC), \
++					  X##mB, (dB), \
++					  X##mA, (dA))
+ #define PUSH_6D(X,o,p,s,mA,dA,mB,dB,mC,dC,mD,dD,mE,dE,mF,dF) \
+-	PUSH_6(X, DATA_, 1, 1, 0, o, (p), s, X##mF, (dF),    \
+-					     X##mE, (dE),    \
+-					     X##mD, (dD),    \
+-					     X##mC, (dC),    \
+-					     X##mB, (dB),    \
+-					     X##mA, (dA))
++	PUSH_6(X, DATA_, 1, 0, o, (p), s, X##mF, (dF),       \
++					  X##mE, (dE),       \
++					  X##mD, (dD),       \
++					  X##mC, (dC),       \
++					  X##mB, (dB),       \
++					  X##mA, (dA))
+ #define PUSH_7D(X,o,p,s,mA,dA,mB,dB,mC,dC,mD,dD,mE,dE,mF,dF,mG,dG) \
+-	PUSH_7(X, DATA_, 1, 1, 0, o, (p), s, X##mG, (dG),          \
+-					     X##mF, (dF),          \
+-					     X##mE, (dE),          \
+-					     X##mD, (dD),          \
+-					     X##mC, (dC),          \
+-					     X##mB, (dB),          \
+-					     X##mA, (dA))
++	PUSH_7(X, DATA_, 1, 0, o, (p), s, X##mG, (dG),             \
++					  X##mF, (dF),             \
++					  X##mE, (dE),             \
++					  X##mD, (dD),             \
++					  X##mC, (dC),             \
++					  X##mB, (dB),             \
++					  X##mA, (dA))
+ #define PUSH_8D(X,o,p,s,mA,dA,mB,dB,mC,dC,mD,dD,mE,dE,mF,dF,mG,dG,mH,dH) \
+-	PUSH_8(X, DATA_, 1, 1, 0, o, (p), s, X##mH, (dH),                \
+-					     X##mG, (dG),                \
+-					     X##mF, (dF),                \
+-					     X##mE, (dE),                \
+-					     X##mD, (dD),                \
+-					     X##mC, (dC),                \
+-					     X##mB, (dB),                \
+-					     X##mA, (dA))
++	PUSH_8(X, DATA_, 1, 0, o, (p), s, X##mH, (dH),                   \
++					  X##mG, (dG),                   \
++					  X##mF, (dF),                   \
++					  X##mE, (dE),                   \
++					  X##mD, (dD),                   \
++					  X##mC, (dC),                   \
++					  X##mB, (dB),                   \
++					  X##mA, (dA))
+ #define PUSH_9D(X,o,p,s,mA,dA,mB,dB,mC,dC,mD,dD,mE,dE,mF,dF,mG,dG,mH,dH,mI,dI) \
+-	PUSH_9(X, DATA_, 1, 1, 0, o, (p), s, X##mI, (dI),                      \
+-					     X##mH, (dH),                      \
+-					     X##mG, (dG),                      \
+-					     X##mF, (dF),                      \
+-					     X##mE, (dE),                      \
+-					     X##mD, (dD),                      \
+-					     X##mC, (dC),                      \
+-					     X##mB, (dB),                      \
+-					     X##mA, (dA))
++	PUSH_9(X, DATA_, 1, 0, o, (p), s, X##mI, (dI),                         \
++					  X##mH, (dH),                         \
++					  X##mG, (dG),                         \
++					  X##mF, (dF),                         \
++					  X##mE, (dE),                         \
++					  X##mD, (dD),                         \
++					  X##mC, (dC),                         \
++					  X##mB, (dB),                         \
++					  X##mA, (dA))
+ #define PUSH_10D(X,o,p,s,mA,dA,mB,dB,mC,dC,mD,dD,mE,dE,mF,dF,mG,dG,mH,dH,mI,dI,mJ,dJ) \
+-	PUSH_10(X, DATA_, 1, 1, 0, o, (p), s, X##mJ, (dJ),                            \
+-					      X##mI, (dI),                            \
+-					      X##mH, (dH),                            \
+-					      X##mG, (dG),                            \
+-					      X##mF, (dF),                            \
+-					      X##mE, (dE),                            \
+-					      X##mD, (dD),                            \
+-					      X##mC, (dC),                            \
+-					      X##mB, (dB),                            \
+-					      X##mA, (dA))
++	PUSH_10(X, DATA_, 1, 0, o, (p), s, X##mJ, (dJ),                               \
++					   X##mI, (dI),                               \
++					   X##mH, (dH),                               \
++					   X##mG, (dG),                               \
++					   X##mF, (dF),                               \
++					   X##mE, (dE),                               \
++					   X##mD, (dD),                               \
++					   X##mC, (dC),                               \
++					   X##mB, (dB),                               \
++					   X##mA, (dA))
  
- 	if (req->work.flags & IO_WQ_WORK_FILES) {
-@@ -5905,8 +5904,8 @@ static void io_req_drop_files(struct io_
- 	spin_unlock_irqrestore(&ctx->inflight_lock, flags);
- 	req->flags &= ~REQ_F_INFLIGHT;
- 	req->work.flags &= ~IO_WQ_WORK_FILES;
--	if (waitqueue_active(&ctx->inflight_wait))
--		wake_up(&ctx->inflight_wait);
-+	if (atomic_read(&tctx->in_idle))
-+		wake_up(&tctx->wait);
- }
+-#define PUSH_1P(X,o,p,s,mA,dp,ds)                           \
+-	PUSH_1(X, DATAp, ds, ds, 0, o, (p), s, X##mA, (dp))
+-#define PUSH_2P(X,o,p,s,mA,dA,mB,dp,ds)                     \
+-	PUSH_2(X, DATAp, ds, ds, 0, o, (p), s, X##mB, (dp), \
+-					       X##mA, (dA))
+-#define PUSH_3P(X,o,p,s,mA,dA,mB,dB,mC,dp,ds)               \
+-	PUSH_3(X, DATAp, ds, ds, 0, o, (p), s, X##mC, (dp), \
+-					       X##mB, (dB), \
+-					       X##mA, (dA))
++#define PUSH_1P(X,o,p,s,mA,dp,ds)                       \
++	PUSH_1(X, DATAp, ds, 0, o, (p), s, X##mA, (dp))
++#define PUSH_2P(X,o,p,s,mA,dA,mB,dp,ds)                 \
++	PUSH_2(X, DATAp, ds, 0, o, (p), s, X##mB, (dp), \
++					   X##mA, (dA))
++#define PUSH_3P(X,o,p,s,mA,dA,mB,dB,mC,dp,ds)           \
++	PUSH_3(X, DATAp, ds, 0, o, (p), s, X##mC, (dp), \
++					   X##mB, (dB), \
++					   X##mA, (dA))
  
- static void __io_clean_op(struct io_kiocb *req)
-@@ -8605,8 +8604,8 @@ static void io_uring_cancel_files(struct
- 			break;
- 		}
- 		if (found)
--			prepare_to_wait(&ctx->inflight_wait, &wait,
--						TASK_UNINTERRUPTIBLE);
-+			prepare_to_wait(&task->io_uring->wait, &wait,
-+					TASK_UNINTERRUPTIBLE);
- 		spin_unlock_irq(&ctx->inflight_lock);
- 
- 		/* We need to keep going until we don't find a matching req */
-@@ -8619,7 +8618,7 @@ static void io_uring_cancel_files(struct
- 		/* cancellations _may_ trigger task work */
- 		io_run_task_work();
- 		schedule();
--		finish_wait(&ctx->inflight_wait, &wait);
-+		finish_wait(&task->io_uring->wait, &wait);
- 	}
- }
- 
+ #define PUSH_(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,IMPL,...) IMPL
+ #define PUSH(A...) PUSH_(A, PUSH_10P, PUSH_10D,          \
+-- 
+2.27.0
+
 
 
