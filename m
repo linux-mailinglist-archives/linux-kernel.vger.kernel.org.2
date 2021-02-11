@@ -2,143 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162413185F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4AD3185F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbhBKH53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:57:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBKHwG (ORCPT
+        id S229974AbhBKH5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:57:40 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:45118 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhBKHyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:52:06 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B513C061797
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 23:52:09 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id fa16so2947416pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 23:52:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=06Yprus+hDrW2/xZYx/mlg+VxWu/BiZE+sW68Jmo1RI=;
-        b=Ra6kYfi1+ZunK+HKHgtBU6GmKSsL+3PXTyKBlp2Te91gDQ+k3OFcoTzcZuYbf0YKox
-         g2O7fkQAmi8uN/PS6M6qSqjJ7oroSwB0cG6KYReSyAAaoy4LEl8/T/BRNWoOIZOWWaAn
-         lxRTTfd8BweGMjMB6gP0AZq1xWVOdz1ONAaxnJSVDy2iXF2BqaE9LOA1UJmKlNsoKndj
-         JRSkby1T/HI0M2h/OGKTaxxrWM6rI2LYib9K/ZJB5oz+7bKyXgBFyWa3pPmchZi1GgJP
-         hA8fC03P7H61aIfhoAHk61fSf4rhuUnEgpPsvnKsjMcCWVnaDoBtOwPC5yITh+AfZISA
-         lrmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=06Yprus+hDrW2/xZYx/mlg+VxWu/BiZE+sW68Jmo1RI=;
-        b=lqBZx2l9C5Cn6RG0/SIl/4AmVZyg0aSSKs/P1Mh8F2KbnzJ6yp/YWbSi4/XVcKO3Jc
-         cFX2TxA1ZE1TjOl9DeDu2sgRgUE0F2BANdy63ktMPu8QFdYyccSuI3TJPmMnXavsDDJk
-         D5uOUu7eFq3f085n2nanbqXKj3/iZPr5BRb6J91B5UF0wcDmuvfcN2KA48L4jJgtZu5P
-         pYfrjOOM/0n/WEcCkYtd6UGiVmp4RwDCWLWStbhJI1NoPTJfGe9nUp93HUg4v2cb7KPI
-         bBOvDCRX/LUoY4ydjB5BZ5BVhJzUN3AuAMoa/TlOEpfhtb1M2KsVDDGoJcUkSGndArAK
-         6SAg==
-X-Gm-Message-State: AOAM533Q306/aC48IljtoG6EoCRBH5i5lKurkq/riZLHzP1pLPHwgXgP
-        zPewxKti0dqviOT+B93Ee2EaAEWtjtH5SA==
-X-Google-Smtp-Source: ABdhPJyy0FX3Oitq2i/n8vZ/zcw0IGZLhXbnM/DumP0UFq6ucImVOTkrrFRRQq21ahUAErD/li4k6A==
-X-Received: by 2002:a17:902:fe03:b029:e1:2c46:f3fd with SMTP id g3-20020a170902fe03b02900e12c46f3fdmr6683457plj.62.1613029928698;
-        Wed, 10 Feb 2021 23:52:08 -0800 (PST)
-Received: from x1 ([2601:1c0:4701:ae70:3a7f:bbfb:1664:2a63])
-        by smtp.gmail.com with ESMTPSA id r189sm4731832pgr.10.2021.02.10.23.52.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 23:52:08 -0800 (PST)
-Date:   Wed, 10 Feb 2021 23:52:06 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v4 1/2] pinctrl: use to octal permissions for debugfs
- files
-Message-ID: <20210211075206.GA295123@x1>
-References: <20210210222851.232374-1-drew@beagleboard.org>
- <20210210222851.232374-2-drew@beagleboard.org>
- <408ca31f3f43f4db40998f607f582aeb0ffbab1e.camel@perches.com>
+        Thu, 11 Feb 2021 02:54:25 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B7sKgo074906;
+        Thu, 11 Feb 2021 07:54:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=i6n7sXbk2/5jgSAk6kvAAiFXKSfaZfj+0X2zJAxZBtg=;
+ b=hF3SEs7WuSchO3btJZEQDg7xsfS5SHDbw52HUq1pGKzDuKmoykqQQ32Zo1eC87WCbnhq
+ Bpsn/k2W+JZfLOo1IuOM1GlMn+p/DBH1S83Pz6/kefPDJayRtwchdEuoBdJCPSrMF6dL
+ 4fh6vO/GLTyUoHXmQqdRow6Vi0Z6Y6Zi9ZVfa4J4arJXtuv24eHwxypZzhgDAFC7G1FI
+ /spfYTndRpfJL+Q5Bx14mxuGnbU6wbN78M5HXn3LPeWPwFBTQXvkI5pwSizxTNRcQyem
+ fuvOoV1WmH5ws51NzqtEsxumX4obdsvuP8j7JkfcpvIU0ywdCdgeiUjRTU1c2Rk0D5t6 /g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 36hkrn6cg0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 07:54:20 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B7pW0D132884;
+        Thu, 11 Feb 2021 07:54:18 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 36j513qbmn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 07:54:18 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11B7sH8B004513;
+        Thu, 11 Feb 2021 07:54:17 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 23:54:15 -0800
+Date:   Thu, 11 Feb 2021 10:53:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     karthik alapati <mail@karthek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: remove obsolete commented out code
+Message-ID: <20210211075356.GC2696@kadam>
+References: <YCQvsdlnbnQN4Ruf@karthik-strix-linux.karthek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <408ca31f3f43f4db40998f607f582aeb0ffbab1e.camel@perches.com>
+In-Reply-To: <YCQvsdlnbnQN4Ruf@karthik-strix-linux.karthek.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110070
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 11:36:39PM -0800, Joe Perches wrote:
-> On Wed, 2021-02-10 at 14:28 -0800, Drew Fustini wrote:
-> > Switch over pinctrl debugfs files to use octal permissions as they are
-> > preferred over symbolic permissions. Refer to commit f90774e1fd27
-> > ("checkpatch: look for symbolic permissions and suggest octal instead").
-> > 
-> > Note: S_IFREG flag is added to the mode by __debugfs_create_file()
-> > in fs/debugfs/inode.c
-> > 
-> > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> > ---
-> >  drivers/pinctrl/core.c    | 6 +++---
-> >  drivers/pinctrl/pinconf.c | 4 ++--
-> >  drivers/pinctrl/pinmux.c  | 4 ++--
-> >  3 files changed, 7 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-> > index 3663d87f51a0..02f8710afb9c 100644
-> > --- a/drivers/pinctrl/core.c
-> > +++ b/drivers/pinctrl/core.c
-> > @@ -1914,11 +1914,11 @@ static void pinctrl_init_debugfs(void)
-> >  		return;
-> >  	}
-> >  
-> > 
-> > -	debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
-> > +	debugfs_create_file("pinctrl-devices", 0444,
-> >  			    debugfs_root, NULL, &pinctrl_devices_fops);
-> > -	debugfs_create_file("pinctrl-maps", S_IFREG | S_IRUGO,
-> > +	debugfs_create_file("pinctrl-maps", 0444,
-> >  			    debugfs_root, NULL, &pinctrl_maps_fops);
-> > -	debugfs_create_file("pinctrl-handles", S_IFREG | S_IRUGO,
-> > +	debugfs_create_file("pinctrl-handles", 0444,
-> >  			    debugfs_root, NULL, &pinctrl_fops);
-> >  }
-> 
-> Why aren't you also converting this block in the same file?
-> 
-> @@ -1890,11 +1890,11 @@ static void pinctrl_init_device_debugfs(struct pinctrl_dev *pctldev)
->                         dev_name(pctldev->dev));
->                 return;
->         }
-> -       debugfs_create_file("pins", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pins", S_IFREG | 0444,
->                             device_root, pctldev, &pinctrl_pins_fops);
-> -       debugfs_create_file("pingroups", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pingroups", S_IFREG | 0444,
->                             device_root, pctldev, &pinctrl_groups_fops);
-> -       debugfs_create_file("gpio-ranges", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("gpio-ranges", S_IFREG | 0444,
->                             device_root, pctldev, &pinctrl_gpioranges_fops);
->         if (pctldev->desc->pmxops)
->                 pinmux_init_device_debugfs(device_root, pctldev);
-> 
-> 
+On Thu, Feb 11, 2021 at 12:40:41AM +0530, karthik alapati wrote:
+> fix some checkpatch "Block comments use * on subsequent lines"
+> warnings and remove obsolete code
 > 
 
-Thank you, that is a very good point.  I should have included those
-calls to debugfs_create_file() in the patch as well.  I will fix that
-in the next revision.  It looks like I also need to change how sscanf()
-is being handle per the other thread of discussion.
+This isn't the correct commit message.  It should say something like:
+"There is a bunch of messy, commented out code.  Just delete it."
 
-Thanks,
-Drew
+
+> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: karthik alapati <mail@karthek.com>
+> ---
+>  .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   | 44 ++++---------------
+>  1 file changed, 9 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
+> index 1fd504181..3d22bd304 100644
+> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
+> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_phycfg.c
+> @@ -57,8 +57,6 @@ u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask)
+>  	return 0;
+>  #endif
+>  
+> -	/* RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_QueryBBReg(): RegAddr(%#lx), BitMask(%#lx)\n", RegAddr, BitMask)); */
+> -
+>  	OriginalValue = rtw_read32(Adapter, RegAddr);
+>  	BitShift = phy_CalculateBitShift(BitMask);
+>  
+> @@ -94,8 +92,6 @@ void PHY_SetBBReg_8723B(
+>  	return;
+>  #endif
+>  
+> -	/* RT_TRACE(COMP_RF, DBG_TRACE, ("--->PHY_SetBBReg(): RegAddr(%#lx), BitMask(%#lx), Data(%#lx)\n", RegAddr, BitMask, Data)); */
+> -
+>  	if (BitMask != bMaskDWord) { /* if not "double word" write */
+>  		OriginalValue = rtw_read32(Adapter, RegAddr);
+>  		BitShift = phy_CalculateBitShift(BitMask);
+> @@ -159,13 +155,9 @@ static u32 phy_RFSerialRead_8723B(
+>  	if (RfPiEnable) {
+>  		/*  Read from BBreg8b8, 12 bits for 8190, 20bits for T65 RF */
+>  		retValue = PHY_QueryBBReg(Adapter, pPhyReg->rfLSSIReadBackPi|MaskforPhySet, bLSSIReadBackData);
+> -
+> -		/* RT_DISP(FINIT, INIT_RF, ("Readback from RF-PI : 0x%x\n", retValue)); */
+>  	} else {
+>  		/* Read from BBreg8a0, 12 bits for 8190, 20 bits for T65 RF */
+>  		retValue = PHY_QueryBBReg(Adapter, pPhyReg->rfLSSIReadBack|MaskforPhySet, bLSSIReadBackData);
+> -
+> -		/* RT_DISP(FINIT, INIT_RF, ("Readback from RF-SI : 0x%x\n", retValue)); */
+>  	}
+>  	return retValue;
+>  
+> @@ -230,15 +222,13 @@ static void phy_RFSerialWrite_8723B(
+>  	/*  */
+>  	/*  Put write addr in [5:0]  and write data in [31:16] */
+>  	/*  */
+> -	/* DataAndAddr = (Data<<16) | (NewOffset&0x3f); */
+> -	DataAndAddr = ((NewOffset<<20) | (Data&0x000fffff)) & 0x0fffffff;	/*  T65 RF */
+> +	DataAndAddr = ((NewOffset<<20) | (Data&0x000fffff)) & 0x0fffffff;
+> +	/*  T65 RF */
+
+The patch is supposed to be deleting code so we don't want any + lines
+which change code.  Only deletes.  Also don't put the coment after the
+the code which it's commenting on.
+
+> @@ -761,20 +745,20 @@ static void phy_PostSetBwMode8723B(struct adapter *Adapter)
+>  
+>  		PHY_SetBBReg(Adapter, rFPGA1_RFMOD, bRFMOD, 0x1);
+>  
+> -		/*  Set Control channel to upper or lower. These settings are required only for 40MHz */
+> +		/**
+> +		 * Set Control channel to upper or lower. These settings are required only
+> +		 * for 40MHz
+> +		 */
+
+Yeah.  Get rid of these plus lines and resend.
+
+regards,
+dan carpenter
+
