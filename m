@@ -2,82 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F337318537
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FA5318539
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhBKGYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 01:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
+        id S229577AbhBKG0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 01:26:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhBKGYf (ORCPT
+        with ESMTP id S229451AbhBKG0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 01:24:35 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C040AC06174A;
-        Wed, 10 Feb 2021 22:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=ORJIOgAJ2KY93EhL4wb57KAdwo8JGQSLCsh+Dw1LNw4=; b=sACq8E3zfoJh83W1vU2gaOvN03
-        GxtpKW2k+3HQx0oH68bj4NzzVtu5z24lgIdyhNifxrQjvNwGmlneugtl4OSejpgHLudIrETSYed2N
-        6MLi/12H4FsW7Yqvzd3/qcoraSZo/O2Kig+unO2l4JfHb5vOvNbi9KfFvxx0sd5Tw3WbPxXjvgANn
-        8615RYdZXdkzV19zDxP9YtC5JQ6yO702350Kbc82PDkR+m+AQhb9QDE1/Af2XoFwCBrclvAOzQsCG
-        kdg26FbSXMTTn03AHpH3TAncPpmfgvhmUftjJRSX/BEm+VrdE8Axp/RBhbbzfTMObBRpK7Kfd3zjd
-        PgN529zg==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lA5OH-0007vA-S4; Thu, 11 Feb 2021 06:23:50 +0000
-Subject: Re: [PATCH v2 3/3] fpga: versal-fpga: Add versal fpga manager driver
-To:     Nava kishore Manne <nava.manne@xilinx.com>, mdf@kernel.org,
-        trix@redhat.com, robh+dt@kernel.org, michal.simek@xilinx.com,
-        linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        chinnikishore369@gmail.com
-Cc:     git@xilinx.com,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-References: <20210211060532.23662-1-nava.manne@xilinx.com>
- <20210211060532.23662-4-nava.manne@xilinx.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7016de66-f254-2bd6-ce29-3b44133feaa0@infradead.org>
-Date:   Wed, 10 Feb 2021 22:23:44 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 11 Feb 2021 01:26:30 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4AAC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 22:25:50 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id m22so6573792lfg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 22:25:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a172++GKBLp4j2cPZ3xSzTWnzK4BLacsMzqqmF8v+TE=;
+        b=WBpA8brY2RCW6NuIzbHlbWFdDzpUcH0uxC8tByIVFAxMDnfaB1GmcSu96JbG2cG++4
+         Qmm+TEp1d5x5i3XD9b4mPmqa47rUy4qh4nZFQ81VkUZHe2iv4FZ6Sn7vks+65Ud0Wrel
+         hBKhv+cf6FwOFup48Xi4ztNVwIhr21FD/0f9SJ/gVubrqPz+5P6WUagdgvT8yTzbW9hB
+         Nr6rVR06R41X3fYBsRjrdVZccp2UxmfrtNaZRJekVWAxPm/dukdS/wTWvag7hIgLazcI
+         MpjverAgYDmrJI7uMJaa4oOLXsdOUT2Gk/4ONACyt+GViqLlfPI4puvC9+Rfg+13H3Ow
+         vvrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a172++GKBLp4j2cPZ3xSzTWnzK4BLacsMzqqmF8v+TE=;
+        b=TVAfegsu2SRJdEImoDwRhLH/9r2zHQs6cFDW+xV5K54CG4C8UsjeZ29yxeI4ILI7f0
+         Qv6eUBRI+GBL629FfqrGSS9wB8GgO7O6/iFP0z9vN0gNDImeM2NuRazWIhZm1eQryPQY
+         cnpRCQYulQl55k1wJgCuVizLHbxRl4Azyjv+zDtmpFyfO/kZsnVZ41MRFCgQ27tkEUII
+         9DGiKT8lfu9sUSb4bWayAXrSK6D9ZzY7cOmUVST9lXpNifdbI6i+o+8aC35YFnndpQrg
+         AZrjcQXK6kZbL3nFQto5fJQ0H0V0+aclLNPqxm8BvuDHWz5h2We0LcgK6rjiaoSZ/Qet
+         4h+A==
+X-Gm-Message-State: AOAM531e1iLyHRM99RxqEi1xaggiXhy9N6aF7NYFtZaN2tGAMsclD+8d
+        r4iUcPsR/n4hQXSBaFKSd2E=
+X-Google-Smtp-Source: ABdhPJzQ8QWb+QBHz9JARn4nvO4Z+FjrNcSK/SiqjhEGuwa9KBxwoLNr7RNApN81B+t3NDXVlB45gg==
+X-Received: by 2002:a19:9154:: with SMTP id y20mr3460756lfj.2.1613024748279;
+        Wed, 10 Feb 2021 22:25:48 -0800 (PST)
+Received: from TRWS9215.usr.ingenico.loc ([213.143.229.14])
+        by smtp.gmail.com with ESMTPSA id l24sm794420lje.50.2021.02.10.22.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 22:25:47 -0800 (PST)
+From:   Fatih YILDIRIM <yildirim.fatih@gmail.com>
+To:     gregkh@linuxfoundation.org, gustavo@embeddedor.com
+Cc:     Fatih YILDIRIM <yildirim.fatih@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Macros with complex values should be enclosed in parentheses.
+Date:   Thu, 11 Feb 2021 09:25:43 +0300
+Message-Id: <20210211062543.9817-1-yildirim.fatih@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210211060532.23662-4-nava.manne@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+Signed-off-by: Fatih YILDIRIM <yildirim.fatih@gmail.com>
+---
+Hi,
+I have a coding style fix.
+By the way, I'm following the Eudyptula Challenge Linux kernel tasks
+and this is my first patch related to my task no 10.
+I hope I'm doing it the right way.
+Thanks for your understanding and kind comments.
 
-On 2/10/21 10:05 PM, Nava kishore Manne wrote:
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index bf85b9a65ec2..dcd2ed5a7956 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -223,4 +223,12 @@ config FPGA_MGR_ZYNQMP_FPGA
->  	  to configure the programmable logic(PL) through PS
->  	  on ZynqMP SoC.
->  
-> +config FPGA_MGR_VERSAL_FPGA
-> +        tristate "Xilinx Versal FPGA"
-> +        depends on ARCH_ZYNQMP || COMPILE_TEST
-> +        help
-> +          Select this option to enable FPGA manager driver support for
-> +          Xilinx Versal SOC. This driver uses the versal soc firmware
+ drivers/staging/ks7010/ks_hostif.h | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-How about consistently capitalizing Versal and SOC (above and below)?
-
-> +          interface to load programmable logic(PL) images
-> +          on versal soc.
->  endif # FPGA
-
-
-thanks.
+diff --git a/drivers/staging/ks7010/ks_hostif.h b/drivers/staging/ks7010/ks_hostif.h
+index 39138191a556..c62a494ed6bb 100644
+--- a/drivers/staging/ks7010/ks_hostif.h
++++ b/drivers/staging/ks7010/ks_hostif.h
+@@ -498,20 +498,20 @@ struct hostif_mic_failure_request {
+ #define TX_RATE_FIXED		5
+ 
+ /* 11b rate */
+-#define TX_RATE_1M	(u8)(10 / 5)	/* 11b 11g basic rate */
+-#define TX_RATE_2M	(u8)(20 / 5)	/* 11b 11g basic rate */
+-#define TX_RATE_5M	(u8)(55 / 5)	/* 11g basic rate */
+-#define TX_RATE_11M	(u8)(110 / 5)	/* 11g basic rate */
++#define TX_RATE_1M	((u8)(10 / 5))	/* 11b 11g basic rate */
++#define TX_RATE_2M	((u8)(20 / 5))	/* 11b 11g basic rate */
++#define TX_RATE_5M	((u8)(55 / 5))	/* 11g basic rate */
++#define TX_RATE_11M	((u8)(110 / 5))	/* 11g basic rate */
+ 
+ /* 11g rate */
+-#define TX_RATE_6M	(u8)(60 / 5)	/* 11g basic rate */
+-#define TX_RATE_12M	(u8)(120 / 5)	/* 11g basic rate */
+-#define TX_RATE_24M	(u8)(240 / 5)	/* 11g basic rate */
+-#define TX_RATE_9M	(u8)(90 / 5)
+-#define TX_RATE_18M	(u8)(180 / 5)
+-#define TX_RATE_36M	(u8)(360 / 5)
+-#define TX_RATE_48M	(u8)(480 / 5)
+-#define TX_RATE_54M	(u8)(540 / 5)
++#define TX_RATE_6M	((u8)(60 / 5))	/* 11g basic rate */
++#define TX_RATE_12M	((u8)(120 / 5))	/* 11g basic rate */
++#define TX_RATE_24M	((u8)(240 / 5))	/* 11g basic rate */
++#define TX_RATE_9M	((u8)(90 / 5))
++#define TX_RATE_18M	((u8)(180 / 5))
++#define TX_RATE_36M	((u8)(360 / 5))
++#define TX_RATE_48M	((u8)(480 / 5))
++#define TX_RATE_54M	((u8)(540 / 5))
+ 
+ static inline bool is_11b_rate(u8 rate)
+ {
 -- 
-~Randy
+2.20.1
 
