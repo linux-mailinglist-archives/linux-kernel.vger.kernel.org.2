@@ -2,107 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB833185C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D9B3185C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhBKHhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:37:43 -0500
-Received: from smtprelay0190.hostedemail.com ([216.40.44.190]:36094 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229674AbhBKHhe (ORCPT
+        id S229731AbhBKHi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:38:56 -0500
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:36803 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhBKHiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:37:34 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 9C69A18224D6A;
-        Thu, 11 Feb 2021 07:36:42 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1381:1431:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3867:3868:3870:3871:3873:4321:4605:5007:6119:6737:7514:7652:7903:10004:10400:10848:11026:11232:11658:11914:12043:12048:12296:12297:12438:12555:12740:12895:13019:13439:13894:14093:14096:14097:14181:14659:14721:21080:21433:21611:21627:21939:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cough69_3f08c9527616
-X-Filterd-Recvd-Size: 3608
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 11 Feb 2021 07:36:40 +0000 (UTC)
-Message-ID: <408ca31f3f43f4db40998f607f582aeb0ffbab1e.camel@perches.com>
-Subject: Re: [PATCH v4 1/2] pinctrl: use to octal permissions for debugfs
- files
-From:   Joe Perches <joe@perches.com>
-To:     Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Wed, 10 Feb 2021 23:36:39 -0800
-In-Reply-To: <20210210222851.232374-2-drew@beagleboard.org>
-References: <20210210222851.232374-1-drew@beagleboard.org>
-         <20210210222851.232374-2-drew@beagleboard.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 11 Feb 2021 02:38:50 -0500
+Received: by mail-wm1-f41.google.com with SMTP id i9so4428353wmq.1;
+        Wed, 10 Feb 2021 23:38:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LxKOIKQV5J6hSTwMNu2jSYURsf4f6bPJNoLyJbXs+QA=;
+        b=BMNLX9xpfj+sY58Ib+LnAbFcEzS8eZfegvOzJ2V9UjdSUEnQVpeTNW0UqrjYQiRZY7
+         iHu/NrCNfdP63xe+Y5Oy5oexKVLFEcZq739gLcCKatGe0iKoV73AaWFZOQcMSdXNB2TV
+         r3f12BCtqMRSJQUhvFVjrTv8DlKv6yNM3ZH8OK9717SdeQ8E6QdzCTgimiQFfZTMRAXc
+         UXnhOJrWa0Znmk9HOiHCuU1kyIeR38WKkL6WK8oSKErzqzanvYPFlHWFvx9zgiI2UrHr
+         uRzSjqULgZmNiK2LzaGo0TarSybkz/AL14/Dym/6YQTtrzjj0UDqpeGQLrDEzX+m5iu/
+         wRog==
+X-Gm-Message-State: AOAM532mUUfA93MZPMPAShyXJ5fz0MXiSD7awbpS7KjZ+xt3UsJK1FNq
+        UsCobSSeDLZ/qjxAfHl6ar/mKsWjO+k=
+X-Google-Smtp-Source: ABdhPJw4Ad7tK2AjLYy0JTUCSdlcdh0DVe39DvnF/jD4WYYAIcgqXZVE/Ng70Z+0Ezx1HaIG60TuDg==
+X-Received: by 2002:a1c:5608:: with SMTP id k8mr3632791wmb.91.1613029089156;
+        Wed, 10 Feb 2021 23:38:09 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id z185sm9142925wmb.0.2021.02.10.23.38.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 23:38:08 -0800 (PST)
+Date:   Thu, 11 Feb 2021 08:38:07 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Cc:     sre@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] power: supply: bq25980: Move props from battery
+ node
+Message-ID: <20210211073807.sh6uwv3dt3eqxyy7@kozik-lap>
+References: <20210210225646.10055-1-r-rivera-matos@ti.com>
+ <20210210225646.10055-2-r-rivera-matos@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210210225646.10055-2-r-rivera-matos@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-10 at 14:28 -0800, Drew Fustini wrote:
-> Switch over pinctrl debugfs files to use octal permissions as they are
-> preferred over symbolic permissions. Refer to commit f90774e1fd27
-> ("checkpatch: look for symbolic permissions and suggest octal instead").
+On Wed, Feb 10, 2021 at 04:56:46PM -0600, Ricardo Rivera-Matos wrote:
+> Currently POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT and
 > 
-> Note: S_IFREG flag is added to the mode by __debugfs_create_file()
-> in fs/debugfs/inode.c
+> POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE are exposed on the battery node
 > 
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> and this is incorrect.
+> 
+> This patch exposes POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT and
+> 
+> POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE on the charger node rather
+> 
+> than the battery node.
+
+Now it makes sense if you only formatted it in human-readable way.
+Please fix your git/editor/email client/desktop unless you used such
+formatting intentionally. If it was intentional, then please don't - do
+like everyone else in Linux kernel (git log will help).
+
+Best regards,
+Krzysztof
+
+> 
+> Fixes: 5069185fc18e ("power: supply: bq25980: Add support for the BQ259xx family")
+> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
 > ---
->  drivers/pinctrl/core.c    | 6 +++---
->  drivers/pinctrl/pinconf.c | 4 ++--
->  drivers/pinctrl/pinmux.c  | 4 ++--
->  3 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-> index 3663d87f51a0..02f8710afb9c 100644
-> --- a/drivers/pinctrl/core.c
-> +++ b/drivers/pinctrl/core.c
-> @@ -1914,11 +1914,11 @@ static void pinctrl_init_debugfs(void)
->  		return;
->  	}
->  
-> 
-> -	debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
-> +	debugfs_create_file("pinctrl-devices", 0444,
->  			    debugfs_root, NULL, &pinctrl_devices_fops);
-> -	debugfs_create_file("pinctrl-maps", S_IFREG | S_IRUGO,
-> +	debugfs_create_file("pinctrl-maps", 0444,
->  			    debugfs_root, NULL, &pinctrl_maps_fops);
-> -	debugfs_create_file("pinctrl-handles", S_IFREG | S_IRUGO,
-> +	debugfs_create_file("pinctrl-handles", 0444,
->  			    debugfs_root, NULL, &pinctrl_fops);
->  }
-
-Why aren't you also converting this block in the same file?
-
-@@ -1890,11 +1890,11 @@ static void pinctrl_init_device_debugfs(struct pinctrl_dev *pctldev)
-                        dev_name(pctldev->dev));
-                return;
-        }
--       debugfs_create_file("pins", S_IFREG | S_IRUGO,
-+       debugfs_create_file("pins", S_IFREG | 0444,
-                            device_root, pctldev, &pinctrl_pins_fops);
--       debugfs_create_file("pingroups", S_IFREG | S_IRUGO,
-+       debugfs_create_file("pingroups", S_IFREG | 0444,
-                            device_root, pctldev, &pinctrl_groups_fops);
--       debugfs_create_file("gpio-ranges", S_IFREG | S_IRUGO,
-+       debugfs_create_file("gpio-ranges", S_IFREG | 0444,
-                            device_root, pctldev, &pinctrl_gpioranges_fops);
-        if (pctldev->desc->pmxops)
-                pinmux_init_device_debugfs(device_root, pctldev);
-
-
-
+>  drivers/power/supply/bq25980_charger.c | 40 ++++++++------------------
+>  1 file changed, 12 insertions(+), 28 deletions(-)
