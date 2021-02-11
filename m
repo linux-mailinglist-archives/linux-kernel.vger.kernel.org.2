@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5C8318BE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE921318BF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhBKNVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:21:53 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:34941 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbhBKNAd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:00:33 -0500
-Received: by mail-wm1-f43.google.com with SMTP id n10so3781045wmq.0;
-        Thu, 11 Feb 2021 05:00:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tUpWYsc5jdodYaLWtSE9NnDVepwL7jind+IhCH0cN9M=;
-        b=RBrVsHnPsxUbildIkoEKUUTxlJycJfEVko8JMM/qndPDoTczYu/g/vmGHAI2wVWWZX
-         XEHNXfnHFyzvRLtiClPkbsavaDGgFZVOGw0HSKdsKCpDpb4NbAx964fGFkGYkMFQQdWv
-         W73Kp9WGEPtj2aTOS8ia4Yl4X7GDUYirgJXSP5mRqQYjOJlxvoGPsdNPkxkgvyAbjOwb
-         pw9H2cuARBguqj5lhI2WzGAXMLDdgiheTOTfIRMung4kb/QNDW5G9LGG7eBmuySDh6Oq
-         ZpQQaPqhNfmi6bEl5w/mkw9RC8eLUgrs/8e2UodMlrHfsn32fb/+jK9djcPsg++WTIx9
-         5Snw==
-X-Gm-Message-State: AOAM531jRSUy0DjGoJ8kPOB9WE+tOZTBGVcaRgnNod+V2RCjcO+bSu3i
-        eT5UKFrF0jXQrLhh6aibHKw=
-X-Google-Smtp-Source: ABdhPJwvwZCNzdFQJSLLk7Tks9nMvG6jkf6nAJ3vPcakCyGjpFE6iO9YmFLK/h7AXd+S0/zx3Dls7Q==
-X-Received: by 2002:a1c:6308:: with SMTP id x8mr5230099wmb.78.1613048390462;
-        Thu, 11 Feb 2021 04:59:50 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id 17sm9888576wmf.32.2021.02.11.04.59.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 04:59:50 -0800 (PST)
-Date:   Thu, 11 Feb 2021 13:59:48 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v5 05/15] dmaengine: dw-edma: Add PCIe VSEC data
- retrieval support
-Message-ID: <YCUqRCw1QQD8wa//@rocinante>
-References: <cover.1613034728.git.gustavo.pimentel@synopsys.com>
- <6fe327ce082c450e8494b0a1216eb2c8aa82fa98.1613034728.git.gustavo.pimentel@synopsys.com>
+        id S231685AbhBKNY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:24:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230450AbhBKNCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:02:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F35A564E2E;
+        Thu, 11 Feb 2021 13:01:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613048471;
+        bh=WnyGBvukUkLqPxdNkfpak87sM7oXRCrIkT9BS5tTt3I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dMLfKjEpazSyrsLUGmSOTD7Y6xG8Xx9++lGFL0JkZwLMAskDhuywP1IXGdhMo/edT
+         TMJ4qR1p2L/bUB7vBJXB9dx6d6PYvcuoEA5/cKpD3v56/X1tLgr+xjov/1izDzungN
+         yNL7TVil1i82hO8iam3C01PT+NhGhvQ3w8mSB9KQaifMdEzvtvPQUeW98kXLmwMEdk
+         mLmAZ6jsTym8ilmR7UdjATvdtxcZLTCyoPYjaOetv/RncW+gU+o3dxaIxsi3HJE6WP
+         JWm8QEseg0zhLYK5toOUR07c72i+Jv1PflXK42A6DADuo7laMpCvF6VlGi7V1mbqtQ
+         2phajwNgHslOw==
+Date:   Thu, 11 Feb 2021 13:00:18 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     robh@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharadg@nvidia.com
+Subject: Re: [PATCH 2/3] Revert "ASoC: audio-graph-card: Add clocks property
+ to endpoint node"
+Message-ID: <20210211130018.GB5217@sirena.org.uk>
+References: <1612939421-19900-1-git-send-email-spujar@nvidia.com>
+ <1612939421-19900-3-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
 Content-Disposition: inline
-In-Reply-To: <6fe327ce082c450e8494b0a1216eb2c8aa82fa98.1613034728.git.gustavo.pimentel@synopsys.com>
+In-Reply-To: <1612939421-19900-3-git-send-email-spujar@nvidia.com>
+X-Cookie: Do not pick the flowers.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
 
-> +	/*
-> +	 * Tries to find if exists a PCIe Vendor-Specific Extended Capability
-> +	 * for the DMA, if exists one, then reconfigures with the new data
-[...]
+--24zk1gE8NUlDmwG9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-What about "if one exists" and "then reconfigures it".  Missing period
-at the end of the sentence.
+On Wed, Feb 10, 2021 at 12:13:40PM +0530, Sameer Pujar wrote:
+> An endpoint is not a device and it is recommended to use clocks property
+> in the device node. Hence reverting the original change.
 
-Krzysztof
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
+
+--24zk1gE8NUlDmwG9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAlKmEACgkQJNaLcl1U
+h9AqpggAgl/pYTDMcCSFre1v3IzW62gDhJyT5/i75NSiBoD9gGhTSyWoEguV0Iy3
+CR8KieeeZYDCNBlnXqFh7el6vB7flEfJZrJLcOFxIcOfios3ijLes48HFcQlkIEx
+/Iqz9w76tw6tEj5ZXqD+D7SecR/E94+Wun2AbxbtY4gDizqGCxGJGgCLoQ3NklGL
+6KSCuOsX/njb9vvBfl1Kk2U7IdMc0EuRdAobYB0hWKKri8m0RGmVxWGVXb/3yec7
+KAShGbuZfcnmIWi9SycNi7uoq5KIwOQql5A9FkgQ1cp/8nUz1NCKc1bQlp6noLOM
+iiD03c83baYnzjduuuDbuKRsL3b9hQ==
+=K+NY
+-----END PGP SIGNATURE-----
+
+--24zk1gE8NUlDmwG9--
