@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E3331952D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C0E319531
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhBKVcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 16:32:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35740 "EHLO mail.kernel.org"
+        id S229623AbhBKVdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 16:33:24 -0500
+Received: from mga07.intel.com ([134.134.136.100]:62873 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229623AbhBKVcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 16:32:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE51E64DEA;
-        Thu, 11 Feb 2021 21:31:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613079087;
-        bh=aIsuo3YD/N88Yx4c/ywWeUam/kTnR9n5/rvhXdOyAPU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZAavQj13k3DH+DdmtSl48iKOBvayKhpXGmxIoWfk3J7ASWky+96e/mgrNGcnH8SKf
-         Kqh47uE3I9BQ1LwZG9iT7WHmoyKXEedIydEgDy3MBaEZLbrQCcqB2AbODicgNFvfTg
-         uSzZRCyieCJijEvN4VbJC4bkBZNdJkkSfcIIEXGk=
-Date:   Thu, 11 Feb 2021 22:31:23 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pritthijit Nath <pritthijit.nath@icloud.com>
-Cc:     forest@alittletooquiet.net, oscar.carter@gmx.com,
-        tvboxspy@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: vt6656: Fixed issue with alignment in rf.c
-Message-ID: <YCWiKwTKxvDLcHHP@kroah.com>
-References: <20210211212647.7077-1-pritthijit.nath@icloud.com>
+        id S229863AbhBKVdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 16:33:16 -0500
+IronPort-SDR: npkp9PrmGxWvc9ER9Tp/eTfpo9Yg+C8nuVJ677aUa3pOxUT5ToppVd9h62f/ddhL+4PQCfMOAC
+ kB44GN/kYxVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="246387234"
+X-IronPort-AV: E=Sophos;i="5.81,171,1610438400"; 
+   d="scan'208";a="246387234"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 13:32:35 -0800
+IronPort-SDR: 94fL2dEMOOjUai1Z6WRLjIcOaL566MkT4Yx4UtrDx0NKQ5rXJvT2HTbpxHigw+8AFoTZD4Oiwh
+ kGkF2eke5vXA==
+X-IronPort-AV: E=Sophos;i="5.81,171,1610438400"; 
+   d="scan'208";a="578946605"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 13:32:35 -0800
+Date:   Thu, 11 Feb 2021 13:32:35 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     dsterba@suse.cz, Andrew Morton <akpm@linux-foundation.org>,
+        clm@fb.com, josef@toxicpanda.com,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V2 0/8] btrfs: convert kmaps to core page calls
+Message-ID: <20210211213235.GK3014244@iweiny-DESK2.sc.intel.com>
+References: <20210210062221.3023586-1-ira.weiny@intel.com>
+ <20210211193803.GH1993@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210211212647.7077-1-pritthijit.nath@icloud.com>
+In-Reply-To: <20210211193803.GH1993@suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 02:56:47AM +0530, Pritthijit Nath wrote:
-> This change fixes a checkpatch CHECK style issue for "Alignment should
-> match open parenthesis".
+On Thu, Feb 11, 2021 at 08:38:03PM +0100, David Sterba wrote:
+> On Tue, Feb 09, 2021 at 10:22:13PM -0800, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > Per the conversation on V1 it looks like Andrew would like this to go through
+> > the btrfs tree.  I think that is fine.  The other users of
+> > memcpy_[to|from]_page are probably not ready and I believe could be taken in an
+> > early rc after David submits.
+> > 
+> > Is that ok with you David?
 > 
-> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
-> ---
->  drivers/staging/vt6656/rf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Yes.
 > 
-> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
-> index 5b8da06e3916..bcd4d467e03a 100644
-> --- a/drivers/staging/vt6656/rf.c
-> +++ b/drivers/staging/vt6656/rf.c
-> @@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
+> The branch is now in
+> https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/log/?h=kmap-conversion
+> let me know if I've missed acked-by or reviewed-by, I added those sent
+> to the mailinglist and added mine to the btrfs ones and to the iov_iter
+> patch.
+
+Looks good.  Thank you!
+
 > 
->  			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
->  				ret = vnt_rf_write_embedded(priv,
-> -					vt3226d0_lo_current_table[hw_value]);
-> +							    vt3226d0_lo_current_table[hw_value]);
->  				if (ret)
->  					return ret;
->  			}
-> --
-> 2.25.1
+> I'll add the patchset to my for-next so it gets picked by linux-next and
+> will keep testing it for at least a week.
+> 
+> Though this is less than the expected time before merge window, the
+> reasoning is that it's exporting helpers that are going to be used in
+> various subsystems. The changes in btrfs are simple and would allow to
+> focus on the other less trivial conversions. ETA for the pull request is
+> mid of the 2nd week of the merge window or after rc1.
 
+Thanks for working with me on this.  Yes these were the more straight forward
+conversions.  The next set will require more review and I should have them
+posted soon at least for RFC.  Unfortunately, there are 2 places which are
+proving difficult to follow the mapping orders required of kmap_local_page().
+I'll open that discussion with the next round of conversions.
 
-Hi,
+For now, thank you again,
+Ira
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
