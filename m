@@ -2,346 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D88319623
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 23:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8423D319627
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 23:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhBKW4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 17:56:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        id S229968AbhBKW7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 17:59:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhBKWzf (ORCPT
+        with ESMTP id S229794AbhBKW7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 17:55:35 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A59FC061574;
-        Thu, 11 Feb 2021 14:54:55 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id q10so1185344plk.2;
-        Thu, 11 Feb 2021 14:54:55 -0800 (PST)
+        Thu, 11 Feb 2021 17:59:22 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE12C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 14:58:41 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id q20so4656131pfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 14:58:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=+tJoBnc8KR21oS215xMDwJ2EmSo2UjR67iWiW0FMZzc=;
-        b=u+xB31LXo856rD2SkaUibLBlHLr1qez3qTwe4fiWBqz51qvRowRgsgqb1rp7iuFyvE
-         YoslJWKKUJAsRKxhtf2rojniUXB5EJxLftpr9rXEwqcKmbGEXM95bccECg1DDfLAWQsl
-         Hy8+AC1ZBimKKG8jKrdNUjFiZTvA8NEpVFrK/WkbHMsd72429angyDUYS3sece/pZtsN
-         wRzA3L72yJpSFGTOmD/bycLst36kytgU+9fgi6r5LoK5eNkic7JBksCQUKE8EHLgG8pE
-         AkI+gMFs2Iz7AoGtZpGS7syhnnWGJUoaKg3yYryZrv9o0gWROAladhmSP/97WjWpbXcU
-         zDYw==
+        bh=amreorW5Wp+rgEfeKxxFdgVmmwkgOKq0HeoNDJfuGV4=;
+        b=fTdADRcOOLN4WHK2Zt6UP3ji0Zp3Utp9E9xyVb7aSxKdyCDUFDXgECBkyWNT+nwRn8
+         rHNZFEobZ0FVNNcZSJ2c1O7yDS3iXY9Rras9gFtz5URWhATRqQWGskClTm1KPBZy3m0b
+         4KTw9JUNTiBisgotkHv7R/Tqbo7lrUYGCdWGcDYhfK1TT7HrkNEtqfmSyVJk20ClVQyR
+         IICwGksNJvFntlbkNjSM3qGZyXSaEkI+27gcm8oFnfILOKt3bGXg2f+K1rMIsGx8e9xn
+         t0fcrD/sNFjQGeCzHqBruUxo/f3ASwpX3jEAAnvRfyDcEmwan6o1MedRlLRq4aYIjbFJ
+         ME0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=+tJoBnc8KR21oS215xMDwJ2EmSo2UjR67iWiW0FMZzc=;
-        b=k/33sjJ2RqSdike6k1jhBkkewXm06UYZPSBzKBmpMvAwUkt9eXD2QnVE5ToiycRS1j
-         PwlaaGg0ml0DU0yseCNT4fSgLFUxWqRO4iitepOsB2HXOmzUFEYF4ke9yZAU1oeOgWx0
-         8fAUkJVPXFphzBCWKhWbPWBkwCnChwUddjDKRVeRoYeV7+gE9wfqzcotXz2RNswskdSb
-         u8w+3qPyHWISCUiwM0W0v7cV0w38ieBZl8oVmgBzDvCQUQz05xMtOCf2xvwBvs+P2GfU
-         s8ACAY5OZ2TG4JTMRwfRvp6VSyMpVEblIRSBNuRtAn2Vk5wad8AWpHg0kY0dBPUUJLWC
-         VlHw==
-X-Gm-Message-State: AOAM531G6V4Csi5WYt8vypqJkAS43V0b+ZQiRXYak2QCbs8nCvsy38G1
-        mwCup104am16SITh6B6jwF0=
-X-Google-Smtp-Source: ABdhPJxOA0JK0aLrbeujk4Enl3c9fty8lI4Mr99IlleIjZgaGlixzYHKjUwQXG6NWG29uWjv1NUtAg==
-X-Received: by 2002:a17:902:a710:b029:e3:b18:7e5b with SMTP id w16-20020a170902a710b02900e30b187e5bmr119281plq.17.1613084094449;
-        Thu, 11 Feb 2021 14:54:54 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:2149:cbd5:4673:bc93])
-        by smtp.gmail.com with ESMTPSA id b25sm6821310pfp.26.2021.02.11.14.54.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=amreorW5Wp+rgEfeKxxFdgVmmwkgOKq0HeoNDJfuGV4=;
+        b=C+gZBYZrIarzzFhvt0f+7MB1GdCX0LHvIyfCG9k7R9shAWByWDo2ZBVytS3nQld7vp
+         ngtiDoiav8lA1ZjWZNAZUwWq5tJ1sBHoOE77tDJ9k2PBP0nyPPTVFEgvHJmK6s5eluDE
+         TotDolhY2WdK4CuALQITVYYd36EbRJXGPqLgdr7es8LkbPWaDV8k0vYx8K4HgVxpSXgO
+         RUj8bW/AQcp/Nx/bwrASitRwe2dHcUxmuHfkhYXQhMVYNap8gzzwVcfl2c0qyRRK2lyT
+         rYLtZkouLCVr4c463yz7pEbQA1wExyIDlujLMvVSkXTFRctU/G5gJqZhZxjmvKQxCcdI
+         wT5w==
+X-Gm-Message-State: AOAM530LyjHXqGnI8wHG0eSq2ubTQD7ssaSGwz/QcEoI+WEhlr6sUCS/
+        rmApjwN1HVlcsoAZ4nHwHpILOg==
+X-Google-Smtp-Source: ABdhPJyoyyDeZHN2igF/Aa4CBWlQghor7IDCot2l7wTM7pQVHEvTAoANtTfktIz6cSZNPRruC+6nHQ==
+X-Received: by 2002:a63:fe13:: with SMTP id p19mr370840pgh.119.1613084321254;
+        Thu, 11 Feb 2021 14:58:41 -0800 (PST)
+Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
+        by smtp.gmail.com with ESMTPSA id o14sm7499206pgr.44.2021.02.11.14.58.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 14:54:53 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 11 Feb 2021 14:54:51 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>, david@redhat.com,
-        vbabka@suse.cz
-Subject: Re: [PATCH v2] [RFC] mm: fs: Invalidate BH LRU during page migration
-Message-ID: <YCW1u3Si/GsyI6td@google.com>
-References: <cover.1613020616.git.cgoldswo@codeaurora.org>
- <c083b0ab6e410e33ca880d639f90ef4f6f3b33ff.1613020616.git.cgoldswo@codeaurora.org>
- <20210211140950.GJ308988@casper.infradead.org>
- <60485ac195c0b1eecac2c99d8bca7fcb@codeaurora.org>
+        Thu, 11 Feb 2021 14:58:40 -0800 (PST)
+Date:   Thu, 11 Feb 2021 22:58:37 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH v4 3/5] dm: add support for passing through inline crypto
+ support
+Message-ID: <YCW2nWmHCunU1DwV@google.com>
+References: <20210201051019.1174983-1-satyat@google.com>
+ <20210201051019.1174983-4-satyat@google.com>
+ <YCQ/WjAsVA2gdb7d@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <60485ac195c0b1eecac2c99d8bca7fcb@codeaurora.org>
+In-Reply-To: <YCQ/WjAsVA2gdb7d@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 11:39:05AM -0800, Chris Goldsworthy wrote:
-> On 2021-02-11 06:09, Matthew Wilcox wrote:
-> > On Wed, Feb 10, 2021 at 09:35:40PM -0800, Chris Goldsworthy wrote:
-> > > +/* These are used to control the BH LRU invalidation during page
-> > > migration */
-> > > +static struct cpumask lru_needs_invalidation;
-> > > +static bool bh_lru_disabled = false;
+On Wed, Feb 10, 2021 at 12:17:30PM -0800, Eric Biggers wrote:
+> On Mon, Feb 01, 2021 at 05:10:17AM +0000, Satya Tangirala wrote:
+> > Update the device-mapper core to support exposing the inline crypto
+> > support of the underlying device(s) through the device-mapper device.
 > > 
-> > As I asked before, what protects this on an SMP system?
+> > This works by creating a "passthrough keyslot manager" for the dm
+> > device, which declares support for encryption settings which all
+> > underlying devices support.  When a supported setting is used, the bio
+> > cloning code handles cloning the crypto context to the bios for all the
+> > underlying devices.  When an unsupported setting is used, the blk-crypto
+> > fallback is used as usual.
 > > 
-> 
-> Sorry Matthew, I misconstrued your earlier question in V1, and thought you
-> had been referring to compile-time protection (so as to prevent build
-> breakages).  It is not protected, so I'll need to change this into an atomic
-> counter that is incremented and decremented by bh_lru_enable() and
-> bh_lru_disable() respectively (such that if the counter is greater than
-> zero, we bail).
-> 
-> > > @@ -1292,7 +1296,9 @@ static inline void check_irqs_on(void)
-> > >  /*
-> > >   * Install a buffer_head into this cpu's LRU.  If not already in
-> > > the LRU, it is
-> > >   * inserted at the front, and the buffer_head at the back if any is
-> > > evicted.
-> > > - * Or, if already in the LRU it is moved to the front.
-> > > + * Or, if already in the LRU it is moved to the front. Note that if
-> > > LRU is
-> > > + * disabled because of an ongoing page migration, we won't insert
-> > > bh into the
-> > > + * LRU.
+> > Crypto support on each underlying device is ignored unless the
+> > corresponding dm target opts into exposing it.  This is needed because
+> > for inline crypto to semantically operate on the original bio, the data
+> > must not be transformed by the dm target.  Thus, targets like dm-linear
+> > can expose crypto support of the underlying device, but targets like
+> > dm-crypt can't.  (dm-crypt could use inline crypto itself, though.)
 > > 
-> > And also, why do we need to do this?  The page LRU has no equivalent
-> > mechanism to prevent new pages being added to the per-CPU LRU lists.
-> > If a BH has just been used, isn't that a strong hint that this page is
-> > a bad candidate for migration?
+> > A DM device's table can only be changed if the "new" inline encryption
+> > capabilities are a (*not* necessarily strict) superset of the "old" inline
+> > encryption capabilities.  Attempts to make changes to the table that result
+> > in some inline encryption capability becoming no longer supported will be
+> > rejected.
+> > 
+> > For the sake of clarity, key eviction from underlying devices will be
+> > handled in a future patch.
+> > 
+> > Co-developed-by: Eric Biggers <ebiggers@google.com>
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > Signed-off-by: Satya Tangirala <satyat@google.com>
 > 
-> I had assumed that up until now, that pages in the page cache aren't an
-> issue, such that they're dropped during migration as needed. Looking at
-> try_to_free_buffers[1], I don't see any handling for the page cache.  I will
-> need to do due diligence and follow up on this.
+> I don't see any obvious issues with this latest version.  I assume you've tested
+> it on real hardware?
 > 
-> As for the question on necessity, if there is a case in which preventing
-> buffer_heads from being added to the BH LRU ensures that the containing page
-> can be migrated, then I would say that the change is justified, since adds
-> another scenario in which migration is guaranteed (I will follow up on this
-> as well).
-
-
-
-First of all, Thanks for the work, Chris.
-
-Looks like this is not only bh_lru problem but also general problem for
-LRU pagevecs. Furthemore, there are other hidden cache meachnism to hold
-additional page refcount until they are flush.
-(I have seen pages in pagevec with additional refcount on migration
-could make migration failure since early LRU draining right before
-migrate_pages). Even though migrate_pages has retrial logic, it just
-relies on the luck so the CMA allocation is still fragile for failure.
-
-Ccing more folks, a random thought.
-The idea is disable such cache mechanism for a while critical migration(
-e.g., CMA) is going on. With the migrate_pending, we could apply draining
-whenever we find additional refcount problem.
-
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 96c7604f69b3..17b8c1efdbf3 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -48,6 +48,7 @@
- #include <linux/sched/mm.h>
- #include <trace/events/block.h>
- #include <linux/fscrypt.h>
-+#include <linux/migrate.h>
- 
- #include "internal.h"
- 
-@@ -1300,6 +1301,9 @@ static void bh_lru_install(struct buffer_head *bh)
- 	struct bh_lru *b;
- 	int i;
- 
-+	if (migrate_pending())
-+		return;
-+
- 	check_irqs_on();
- 	bh_lru_lock();
- 
-diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-index 3a389633b68f..047d5358fe0d 100644
---- a/include/linux/migrate.h
-+++ b/include/linux/migrate.h
-@@ -46,6 +46,8 @@ extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
- extern void putback_movable_page(struct page *page);
- 
- extern void migrate_prep(void);
-+extern void migrate_finish(void);
-+extern bool migrate_pending(void);
- extern void migrate_prep_local(void);
- extern void migrate_page_states(struct page *newpage, struct page *page);
- extern void migrate_page_copy(struct page *newpage, struct page *page);
-@@ -67,6 +69,7 @@ static inline int isolate_movable_page(struct page *page, isolate_mode_t mode)
- 	{ return -EBUSY; }
- 
- static inline int migrate_prep(void) { return -ENOSYS; }
-+static inline void migrate_finish(void) {}
- static inline int migrate_prep_local(void) { return -ENOSYS; }
- 
- static inline void migrate_page_states(struct page *newpage, struct page *page)
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 6961238c7ef5..46d9986c7bf0 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -1208,6 +1208,8 @@ int do_migrate_pages(struct mm_struct *mm, const nodemask_t *from,
- 			break;
- 	}
- 	mmap_read_unlock(mm);
-+	migrate_finish();
-+
- 	if (err < 0)
- 		return err;
- 	return busy;
-@@ -1371,6 +1373,10 @@ static long do_mbind(unsigned long start, unsigned long len,
- 	mmap_write_unlock(mm);
- mpol_out:
- 	mpol_put(new);
-+
-+	if (flags & (MPOL_MF_MOVE | MPOL_MF_MOVE_ALL))
-+		migrate_finish();
-+
- 	return err;
- }
- 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index a69da8aaeccd..3130a27e4e94 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -57,6 +57,8 @@
- 
- #include "internal.h"
- 
-+static atomic_t migrate_pending_count = ATOMIC_INIT(0);
-+
- /*
-  * migrate_prep() needs to be called before we start compiling a list of pages
-  * to be migrated using isolate_lru_page(). If scheduling work on other CPUs is
-@@ -64,13 +66,12 @@
-  */
- void migrate_prep(void)
- {
-+	atomic_inc(&migrate_pending_count);
- 	/*
- 	 * Clear the LRU lists so pages can be isolated.
--	 * Note that pages may be moved off the LRU after we have
--	 * drained them. Those pages will fail to migrate like other
--	 * pages that may be busy.
- 	 */
- 	lru_add_drain_all();
-+	invalidate_bh_lrus();
- }
- 
- /* Do the necessary work of migrate_prep but not if it involves other CPUs */
-@@ -79,6 +80,16 @@ void migrate_prep_local(void)
- 	lru_add_drain();
- }
- 
-+void migrate_finish(void)
-+{
-+	atomic_dec(&migrate_pending_count);
-+}
-+
-+bool migrate_pending(void)
-+{
-+	return atomic_read(&migrate_pending_count);
-+}
-+
- int isolate_movable_page(struct page *page, isolate_mode_t mode)
- {
- 	struct address_space *mapping;
-@@ -1837,6 +1848,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
- 	if (err >= 0)
- 		err = err1;
- out:
-+	migrate_finish();
- 	return err;
- }
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index f8fbee73dd6d..4ced6d559073 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8493,6 +8493,9 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
- 		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
- 				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
- 	}
-+
-+	migrate_finish();
-+
- 	if (ret < 0) {
- 		putback_movable_pages(&cc->migratepages);
- 		return ret;
-diff --git a/mm/swap.c b/mm/swap.c
-index 31b844d4ed94..55f9e8c8ca5b 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -36,6 +36,7 @@
- #include <linux/hugetlb.h>
- #include <linux/page_idle.h>
- #include <linux/local_lock.h>
-+#include <linux/migrate.h>
- 
- #include "internal.h"
- 
-@@ -252,7 +253,8 @@ void rotate_reclaimable_page(struct page *page)
- 		get_page(page);
- 		local_lock_irqsave(&lru_rotate.lock, flags);
- 		pvec = this_cpu_ptr(&lru_rotate.pvec);
--		if (!pagevec_add(pvec, page) || PageCompound(page))
-+		if (!pagevec_add(pvec, page) || PageCompound(page)
-+					|| migrate_pending())
- 			pagevec_lru_move_fn(pvec, pagevec_move_tail_fn);
- 		local_unlock_irqrestore(&lru_rotate.lock, flags);
- 	}
-@@ -343,7 +345,8 @@ static void activate_page(struct page *page)
- 		local_lock(&lru_pvecs.lock);
- 		pvec = this_cpu_ptr(&lru_pvecs.activate_page);
- 		get_page(page);
--		if (!pagevec_add(pvec, page) || PageCompound(page))
-+		if (!pagevec_add(pvec, page) || PageCompound(page)
-+					|| migrate_pending())
- 			pagevec_lru_move_fn(pvec, __activate_page);
- 		local_unlock(&lru_pvecs.lock);
- 	}
-@@ -458,7 +461,7 @@ void lru_cache_add(struct page *page)
- 	get_page(page);
- 	local_lock(&lru_pvecs.lock);
- 	pvec = this_cpu_ptr(&lru_pvecs.lru_add);
--	if (!pagevec_add(pvec, page) || PageCompound(page))
-+	if (!pagevec_add(pvec, page) || PageCompound(page) || migrate_pending())
- 		__pagevec_lru_add(pvec);
- 	local_unlock(&lru_pvecs.lock);
- }
-@@ -654,7 +657,8 @@ void deactivate_file_page(struct page *page)
- 		local_lock(&lru_pvecs.lock);
- 		pvec = this_cpu_ptr(&lru_pvecs.lru_deactivate_file);
- 
--		if (!pagevec_add(pvec, page) || PageCompound(page))
-+		if (!pagevec_add(pvec, page) || PageCompound(page) ||
-+					migrate_pending())
- 			pagevec_lru_move_fn(pvec, lru_deactivate_file_fn);
- 		local_unlock(&lru_pvecs.lock);
- 	}
-@@ -676,7 +680,8 @@ void deactivate_page(struct page *page)
- 		local_lock(&lru_pvecs.lock);
- 		pvec = this_cpu_ptr(&lru_pvecs.lru_deactivate);
- 		get_page(page);
--		if (!pagevec_add(pvec, page) || PageCompound(page))
-+		if (!pagevec_add(pvec, page) || PageCompound(page) ||
-+					migrate_pending())
- 			pagevec_lru_move_fn(pvec, lru_deactivate_fn);
- 		local_unlock(&lru_pvecs.lock);
- 	}
-@@ -698,7 +703,8 @@ void mark_page_lazyfree(struct page *page)
- 		local_lock(&lru_pvecs.lock);
- 		pvec = this_cpu_ptr(&lru_pvecs.lru_lazyfree);
- 		get_page(page);
--		if (!pagevec_add(pvec, page) || PageCompound(page))
-+		if (!pagevec_add(pvec, page) || PageCompound(page)
-+					|| migrate_pending())
- 			pagevec_lru_move_fn(pvec, lru_lazyfree_fn);
- 		local_unlock(&lru_pvecs.lock);
- 	}
--- 
-2.30.0.478.g8a0d178c01-goog
-
+> If it's needed despite my Co-developed-by, feel free to add:
+> 
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
+> 
+> A few nits about comments, in case you resend:
+> 
+Thanks! I addressed the nits, added acked/reviewed-bys and resent v5.
