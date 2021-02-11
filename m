@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9E1318EF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1896E318F00
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhBKPl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 10:41:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
+        id S231443AbhBKPmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:42:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229908AbhBKPNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230097AbhBKPNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Feb 2021 10:13:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D83E64EF6;
-        Thu, 11 Feb 2021 15:04:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2707664EF2;
+        Thu, 11 Feb 2021 15:04:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613055890;
-        bh=tgG5ZuzJMSSY7xXkHOE2YZTZXgxpiFihf6Aiob7jUp8=;
+        s=korg; t=1613055892;
+        bh=Tu/ihzwj0fdIKZC3D8WmvryBsJDFFHOXxBFv25QlwuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tEbSjnI+kaZklhLbd6CVL71mEXXufU7mgnhZsxDPKDl0QQlvZ8EvobTYKVt+wo/Q7
-         bdGrVduZPL0sIRqBRVuqRy0xjr9DCRRj8bzH2HL1h7ywd7cn0pb2iS7Dv3GMdcugNX
-         L4QKxAu5V/0zb8mUbEazHtgjbRnO/9SgUXI0/gvc=
+        b=KaJkMuVU1FYkbfKAjn8rXIsd8aCiTAsKDoZJuYAGHe2lG9lNlLkbcFO70WRaGeBJe
+         9KqhzDgTBQze0OXeXmmXFVcN2olearzOxXqp/YYEyHlA1H2Vd4/0p5VdEpuxM30aYn
+         5vkGHW578IxU7JKzjW+Gi+jP4bRNEITL3jEmbo4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, Imre Deak <imre.deak@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH 5.10 48/54] drm/i915: Skip vswing programming for TBT
-Date:   Thu, 11 Feb 2021 16:02:32 +0100
-Message-Id: <20210211150154.962908516@linuxfoundation.org>
+        Joachim Henke <joachim.henke@t-systems.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 49/54] nilfs2: make splice write available again
+Date:   Thu, 11 Feb 2021 16:02:33 +0100
+Message-Id: <20210211150155.010025735@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
 References: <20210211150152.885701259@linuxfoundation.org>
@@ -41,50 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ville Syrjälä <ville.syrjala@linux.intel.com>
+From: Joachim Henke <joachim.henke@t-systems.com>
 
-commit eaf5bfe37db871031232d2bf2535b6ca92afbad8 upstream.
+commit a35d8f016e0b68634035217d06d1c53863456b50 upstream.
 
-In thunderbolt mode the PHY is owned by the thunderbolt controller.
-We are not supposed to touch it. So skip the vswing programming
-as well (we already skipped the other steps not applicable to TBT).
+Since 5.10, splice() or sendfile() to NILFS2 return EINVAL.  This was
+caused by commit 36e2c7421f02 ("fs: don't allow splice read/write
+without explicit ops").
 
-Touching this stuff could supposedly interfere with the PHY
-programming done by the thunderbolt controller.
+This patch initializes the splice_write field in file_operations, like
+most file systems do, to restore the functionality.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210128155948.13678-1-ville.syrjala@linux.intel.com
-Reviewed-by: Imre Deak <imre.deak@intel.com>
-(cherry picked from commit f8c6b615b921d8a1bcd74870f9105e62b0bceff3)
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Link: https://lkml.kernel.org/r/1612784101-14353-1-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Joachim Henke <joachim.henke@t-systems.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: <stable@vger.kernel.org>	[5.10+]
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/display/intel_ddi.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/nilfs2/file.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-
---- a/drivers/gpu/drm/i915/display/intel_ddi.c
-+++ b/drivers/gpu/drm/i915/display/intel_ddi.c
-@@ -2597,6 +2597,9 @@ static void icl_mg_phy_ddi_vswing_sequen
- 	u32 n_entries, val;
- 	int ln, rate = 0;
+--- a/fs/nilfs2/file.c
++++ b/fs/nilfs2/file.c
+@@ -141,6 +141,7 @@ const struct file_operations nilfs_file_
+ 	/* .release	= nilfs_release_file, */
+ 	.fsync		= nilfs_sync_file,
+ 	.splice_read	= generic_file_splice_read,
++	.splice_write   = iter_file_splice_write,
+ };
  
-+	if (enc_to_dig_port(encoder)->tc_mode == TC_PORT_TBT_ALT)
-+		return;
-+
- 	if (type != INTEL_OUTPUT_HDMI) {
- 		struct intel_dp *intel_dp = enc_to_intel_dp(encoder);
- 
-@@ -2741,6 +2744,9 @@ tgl_dkl_phy_ddi_vswing_sequence(struct i
- 	u32 n_entries, val, ln, dpcnt_mask, dpcnt_val;
- 	int rate = 0;
- 
-+	if (enc_to_dig_port(encoder)->tc_mode == TC_PORT_TBT_ALT)
-+		return;
-+
- 	if (type != INTEL_OUTPUT_HDMI) {
- 		struct intel_dp *intel_dp = enc_to_intel_dp(encoder);
- 
+ const struct inode_operations nilfs_file_inode_operations = {
 
 
