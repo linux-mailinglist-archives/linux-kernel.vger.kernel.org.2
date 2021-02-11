@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549A8318FA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDD7318F9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhBKQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:13:31 -0500
-Received: from m12-13.163.com ([220.181.12.13]:43618 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229837AbhBKPWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:22:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=Q/+NP
-        hN+99lUgbabLKtXpk35WqE8GnVeyhv0MG+hTYY=; b=W3b4NGNPzNlQV2ms/tD3v
-        jjCEhE8qDKNEEMUbAvL0QfgGOvgQIUh9D8v/EWhDXhxgee7w72zNdLOwLHrcntDK
-        kNspimnZtNlCq49QIiwXxhIHUJMIGoDU7tmAsnfJnPwvQ4+68KtBYBCEqy0NvHIu
-        eNdIxdJ6tZJD1nSMwK2hYQ=
-Received: from [192.168.31.184] (unknown [61.152.197.77])
-        by smtp9 (Coremail) with SMTP id DcCowACH5o5uDiVgMq9qew--.26070S2;
-        Thu, 11 Feb 2021 19:01:03 +0800 (CST)
-Subject: Re: [PATCH] kswapd: no need reclaim cma pages triggered by unmovable
- allocation
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        rostedt@goodmis.org, mingo@redhat.com, vbabka@suse.cz,
-        rientjes@google.com, willy@linux.intel.com,
-        pankaj.gupta.linux@gmail.com, bhe@redhat.com, ying.huang@intel.com,
-        minchan@kernel.org, ruxian.feng@transsion.com,
-        kai.cheng@transsion.com, zhao.xu@transsion.com,
-        yunfeng.lan@transsion.com, zhouxianrong@tom.com,
-        zhou xianrong <xianrong.zhou@transsion.com>
-References: <20210209082313.21969-1-xianrong_zhou@163.com>
- <YCJUnWLlcSGoR1sT@dhcp22.suse.cz>
- <bc294334-eec3-f755-cb51-0e302e82809b@163.com>
- <YCPcRj/e9NdQIV9S@dhcp22.suse.cz>
-From:   zhou xianrong <xianrong_zhou@163.com>
-Message-ID: <d692865c-82ae-103f-b48e-9b7682de28b6@163.com>
-Date:   Thu, 11 Feb 2021 19:01:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229787AbhBKQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:12:30 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:57824 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhBKPEs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:04:48 -0500
+Date:   Thu, 11 Feb 2021 15:01:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1613055699;
+        bh=V6GFdB/+L/DZHe/sLaUq7G6+q6BNgR4hjKmXmpQtQlQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=fqEfGOTqtGlLdgzNDk0tSUF/ZvbwzfUbqoPsR1f7AGTUodJTf5Fvz0iHxfn2v9Dki
+         5IcnAYHxntRZzP/LB9yEenADY/KIT4e026Yfu1JB2U0drgM/1vpkE6KywhVfKeeVVF
+         GlZLVtwyDvdILD+yj+grEMg/qZWSHXz8BSe6Mfdo=
+To:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "wens@csie.org" <wens@csie.org>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH] arm: dts: sun5i: Add GPU node
+Message-ID: <3SosG1rcYyn7x4mZWYK0uLKhbdlJxf3irBb7V2qGMqgH0Adv_RvNjn5lsEsx1lii5uKgurcC-lhfQ8r_AprSs9oSl02eYxZvQBqPy0qt3pw=@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YCPcRj/e9NdQIV9S@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: DcCowACH5o5uDiVgMq9qew--.26070S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7KryfJF4rKrykGryfGr1kGrg_yoW8JFyxpF
-        Z3W3WUKa1kJFW5JrnFvw1FgFyIkw48Kry3J3WUurnIv3sxCrya9395Cr1j9FyFyr1UAF1Y
-        vrWjga47Xr1kZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNUUbUUUUU=
-X-Originating-IP: [61.152.197.77]
-X-CM-SenderInfo: h0ld02prqjs6xkrxqiywtou0bp/xtbBUQ82z1aD95lSwQAAsP
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+sun5i has the same Mali 400 GPU as sun4i with the same interrupts, clocks
+and resets. Add node for it in dts.
 
-On 2021/2/10 下午9:14, Michal Hocko wrote:
-> On Wed 10-02-21 12:07:57, zhou xianrong wrote:
->> On 2021/2/9 下午5:23, Michal Hocko wrote:
->>> On Tue 09-02-21 16:23:13, zhou wrote:
->>>> From: zhou xianrong <xianrong.zhou@transsion.com>
->>>>
->>>> For purpose of better migration cma pages are allocated after
->>>> failure movalbe allocations and are used normally for file pages
->>>> or anonymous pages.
->>>>
->>>> In reclaim path so many cma pages if configurated are reclaimed
->>>> from lru lists in kswapd mainly or direct reclaim triggered by
->>>> unmovable or reclaimable allocations. But these cma pages can not
->>>> be used by original unmovable or reclaimable allocations. So the
->>>> reclaim are unnecessary.
->>>>
->>>> In a same system if the cma pages were configurated to large then
->>>> more failture unmovable (vmalloc etc.) or reclaimable (slab etc.)
->>>> allocations are arised and then more kswapd rounds are triggered
->>>> and then more cma pages are reclaimed.
->>> Could you be more specific? Do you have any numbers and an example
->>> configuration when this is visible?
->> It should be implicit.
-> Right but the scale of the problem is an important part of _any_ patch
-> justification.
-Sorry. The relative description is  not suitable and should be removed.
+Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+---
+ arch/arm/boot/dts/sun5i.dtsi | 42 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/arch/arm/boot/dts/sun5i.dtsi b/arch/arm/boot/dts/sun5i.dtsi
+index c2b4fbf552a3..81203f19b6ce 100644
+--- a/arch/arm/boot/dts/sun5i.dtsi
++++ b/arch/arm/boot/dts/sun5i.dtsi
+@@ -726,6 +726,27 @@ i2c2: i2c@1c2b400 {
+ =09=09=09#size-cells =3D <0>;
+ =09=09};
+
++=09=09mali: gpu@1c40000 {
++=09=09=09compatible =3D "allwinner,sun4i-a10-mali", "arm,mali-400";
++=09=09=09reg =3D <0x01c40000 0x10000>;
++=09=09=09interrupts =3D <69>,
++=09=09=09=09     <70>,
++=09=09=09=09     <71>,
++=09=09=09=09     <72>,
++=09=09=09=09     <73>;
++=09=09=09interrupt-names =3D "gp",
++=09=09=09=09=09  "gpmmu",
++=09=09=09=09=09  "pp0",
++=09=09=09=09=09  "ppmmu0",
++=09=09=09=09=09  "pmu";
++=09=09=09clocks =3D <&ccu CLK_AHB_GPU>, <&ccu CLK_GPU>;
++=09=09=09clock-names =3D "bus", "core";
++=09=09=09resets =3D <&ccu RST_GPU>;
++
++=09=09=09assigned-clocks =3D <&ccu CLK_GPU>;
++=09=09=09assigned-clock-rates =3D <384000000>;
++=09=09};
++
+ =09=09timer@1c60000 {
+ =09=09=09compatible =3D "allwinner,sun5i-a13-hstimer";
+ =09=09=09reg =3D <0x01c60000 0x1000>;
+@@ -733,6 +754,27 @@ timer@1c60000 {
+ =09=09=09clocks =3D <&ccu CLK_AHB_HSTIMER>;
+ =09=09};
+
++=09=09mali: gpu@1c40000 {
++=09=09=09compatible =3D "allwinner,sun4i-a10-mali", "arm,mali-400";
++=09=09=09reg =3D <0x01c40000 0x10000>;
++=09=09=09interrupts =3D <69>,
++=09=09=09=09     <70>,
++=09=09=09=09     <71>,
++=09=09=09=09     <72>,
++=09=09=09=09     <73>;
++=09=09=09interrupt-names =3D "gp",
++=09=09=09=09=09  "gpmmu",
++=09=09=09=09=09  "pp0",
++=09=09=09=09=09  "ppmmu0",
++=09=09=09=09=09  "pmu";
++=09=09=09clocks =3D <&ccu CLK_AHB_GPU>, <&ccu CLK_GPU>;
++=09=09=09clock-names =3D "bus", "core";
++=09=09=09resets =3D <&ccu RST_GPU>;
++
++=09=09=09assigned-clocks =3D <&ccu CLK_GPU>;
++=09=09=09assigned-clock-rates =3D <384000000>;
++=09=09};
++
+ =09=09fe0: display-frontend@1e00000 {
+ =09=09=09compatible =3D "allwinner,sun5i-a13-display-frontend";
+ =09=09=09reg =3D <0x01e00000 0x20000>;
+--
+2.30.0
 
