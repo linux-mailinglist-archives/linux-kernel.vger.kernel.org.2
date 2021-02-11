@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5143182A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918033182A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:30:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhBKA3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 19:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
+        id S231292AbhBKAaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 19:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbhBKA32 (ORCPT
+        with ESMTP id S231159AbhBKAag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:29:28 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B17C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:28:48 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id k22so2217902pll.6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:28:48 -0800 (PST)
+        Wed, 10 Feb 2021 19:30:36 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF98FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:29:56 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id r38so2414749pgk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:29:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :mime-version;
-        bh=ZvQcOczii629syVY+34fhm29BJ0h+rgglUGpe4dO6rE=;
-        b=eErk/1OK3Ss20WaOTj9PZCH9uvgQfXw4UmH6+N11+bwmRK/yM9sLMEVPGCVK+majgl
-         JPZGb9BET1i+6mkoRgdudU+5uLfuzqHJV1E2CAOdJTECETMuMI+glhXnfnbEbOzO+GNs
-         ViBi/o6O1l1+vaZI31DX/b4COUHv2MzcE19JDJ2OnWKLUAk2o+CqFxusPgFPnphu9of5
-         bzNSoW6eBn7jWptw1Y8CAbXhLsJMm3kjDMzDA+cibGkJcd0GA3uyz0AavLwijNP8l1wW
-         G13L/dxbcvrweUc+t3/k27werqCl0vVGiy4lQRcfsBH0jGoScqx39oB0wB2b6kTyAgQc
-         gnPw==
+        bh=73zep3wYuHPlqFRaBwu8i/TF/0mKW1WjPZUjozHSNnU=;
+        b=X7t9hlTcycAun/i9OmTo6U7rQ77H2P12uYeJ6blTCJqMdXU0OKr9uSE+BqvOvH7aAo
+         yl32jZCnmWbzXDGzH3OEwTFandW4qFABfNpVZN3Bt579CCpx36oivZsGuuhziBNs0fIC
+         y8FDW+anjw0Y1u09UriXfdOe+Kb8PPcM2cwsfH7j1C2DYtfgfu5elnuRu58wd13YFCvf
+         lC4vII0Bgq7cSpICXSfZ5Gxnxz9b4/8CD0xulGE0xnKTjW9EcEYoODL2NFXUFEk+hZ+p
+         FdDKB6dXe1bDN7Q+ARdwU2KIlCgGM58HHt4r0Jly1jOUAH8KEX563ry+wpoo6Qkqy9CU
+         nNAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:mime-version;
-        bh=ZvQcOczii629syVY+34fhm29BJ0h+rgglUGpe4dO6rE=;
-        b=Vdc+SNPE1u1kCDOdUmAsOFxAQjV99QhvM/SBleb6OhBNbWXyBBPTW5qI2kMuBe3oqN
-         Yb+i79S6KvvMSNl5U++COXTkc43K97IoqD0gk7i+BiHaS+xWSbDNlOAjHnlvymSUFmWe
-         DFEeXkHEsKgj7AidAW6Q1WdvdCPSqswKwU2oGRSAytIIia75BM0O5b9TpNEg5pzELBO2
-         J/hfabfZT55UPM8/BLP4HjA1puRCjXGunZ5G8ixp8Fdkhpp8C/djpqun7cNHUVVqArch
-         WMpEvgorbom4yaad5DC2lLT81JlOsKCRkIR8ULUhoWYFGivqx8RhVDaPxXCG926ObEsu
-         IUIw==
-X-Gm-Message-State: AOAM531g77Uvzv4vWyZhb3FlEPxSFh7tSWwny9mQocV0XHUDdg/i9862
-        cnUIPXo5xEG5TCGtnvPEA6Jykg==
-X-Google-Smtp-Source: ABdhPJzUueKElbX4bUD4On1njk9XtXCoCP7wd7npmfwN45FTiMgxpKMoaxw9HuaTd4VmGmqQXnh2NQ==
-X-Received: by 2002:a17:902:a710:b029:e3:b18:7e5b with SMTP id w16-20020a170902a710b02900e30b187e5bmr2717176plq.17.1613003325898;
-        Wed, 10 Feb 2021 16:28:45 -0800 (PST)
+        bh=73zep3wYuHPlqFRaBwu8i/TF/0mKW1WjPZUjozHSNnU=;
+        b=aQSEVcsuKmJ+iwZtc0u2YYh5qo3FizdphUwkpjLlXK+9GHg2RzMZGsP6+wm/PXBzsE
+         pvmYFEsKe+f8MUf8/SPM9vCIkHPEnKwA1Qwci1b4KYoi3YQG9A63cA9bHhv1ysI4tim5
+         OTid0B2Tk+WSlgHVgDN28JA1Y6X9uNf8PlL0Y3yox2IRrUjvfLdPHuBtjsYDE5hKTZ87
+         GP4KA15oV3+ky+c2wHR7Hb/YAAhPKj35Ml5uCpFBO5tKorzrNm+eeHP/Bw+6oKf9eBzP
+         jWwiLlbHfnyOwBBRKaXZCKhFVk1BQsXwT+PTP8kZYeI84rmsTRDB8ivCWUsKhO70Md1x
+         +vkw==
+X-Gm-Message-State: AOAM530Y1LGD/CiOdnNrlJuNvCMPnX5eI6bX+hH6iR+6m9EMflQTHm/w
+        XVGJO1Z2ah9Gf0nV7EbhLuVZdw==
+X-Google-Smtp-Source: ABdhPJyiFMkn9EROtYf/Lu0C+2So2cHjdwGcbXa4PQcRR5EbPEJoi7L2IPCLRcIriZS9CChv+I+0XQ==
+X-Received: by 2002:a62:5344:0:b029:1c7:eeea:8bad with SMTP id h65-20020a6253440000b02901c7eeea8badmr5530204pfb.1.1613003396294;
+        Wed, 10 Feb 2021 16:29:56 -0800 (PST)
 Received: from [2620:15c:17:3:2904:7145:16e0:9c00] ([2620:15c:17:3:2904:7145:16e0:9c00])
-        by smtp.gmail.com with ESMTPSA id y2sm3283697pfe.118.2021.02.10.16.28.44
+        by smtp.gmail.com with ESMTPSA id z16sm3294795pgj.51.2021.02.10.16.29.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 16:28:45 -0800 (PST)
-Date:   Wed, 10 Feb 2021 16:28:44 -0800 (PST)
+        Wed, 10 Feb 2021 16:29:55 -0800 (PST)
+Date:   Wed, 10 Feb 2021 16:29:54 -0800 (PST)
 From:   David Rientjes <rientjes@google.com>
 To:     Zhiyuan Dai <daizhiyuan@phytium.com.cn>
 cc:     cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
         akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/slab: minor coding style tweaks
-In-Reply-To: <1612841499-32166-1-git-send-email-daizhiyuan@phytium.com.cn>
-Message-ID: <7af3a79a-6dfd-2ac2-80e-f623f47e648@google.com>
-References: <1612841499-32166-1-git-send-email-daizhiyuan@phytium.com.cn>
+Subject: Re: [PATCH] mm/slub: minor coding style tweaks
+In-Reply-To: <1612847403-5594-1-git-send-email-daizhiyuan@phytium.com.cn>
+Message-ID: <5b584841-a05d-a942-aeb3-e1b9f597a464@google.com>
+References: <1612847403-5594-1-git-send-email-daizhiyuan@phytium.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
@@ -66,8 +66,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, 9 Feb 2021, Zhiyuan Dai wrote:
 
-> Fixed some coding style issues, improve code reading.
-> This patch adds whitespace to clearly separate the parameters.
+> This patch adds whitespace to fix coding style issues,
+> improve code reading.
 > 
 > Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
 
