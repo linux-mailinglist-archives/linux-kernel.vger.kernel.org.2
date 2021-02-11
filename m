@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669343187D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F783187CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhBKKKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:10:38 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2544 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhBKKIb (ORCPT
+        id S230270AbhBKKIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:08:53 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:42450 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230353AbhBKKHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:08:31 -0500
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dbsd6739dz67mrk;
-        Thu, 11 Feb 2021 18:02:50 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 11 Feb 2021 11:07:48 +0100
-Received: from localhost (10.47.31.44) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 11 Feb
- 2021 10:07:47 +0000
-Date:   Thu, 11 Feb 2021 10:06:46 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>, <linux-cxl@vger.kernel.org>,
-        "Linux ACPI" <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy <cbrowy@avery-design.com>, Christoph Hellwig
-        <hch@infradead.org>, Dan Williams <dan.j.williams@intel.com>, David
-        Hildenbrand <david@redhat.com>, David Rientjes" <rientjes@google.com>,
-        "Jon Masters <jcm@jonmasters.org>, Rafael Wysocki
-        <rafael.j.wysocki@intel.com>, Randy Dunlap" <rdunlap@infradead.org>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        "kernel test robot" <lkp@intel.com>,
-        Dan Williams <dan.j.willams@intel.com>
-Subject: Re: [PATCH v2 4/8] cxl/mem: Add basic IOCTL interface
-Message-ID: <20210211100646.00007dcc@Huawei.com>
-In-Reply-To: <CAPcyv4hRUB3jxdCV06y0kYMbKbGroEW6F9yOQ4KB_z6YgWBZ4Q@mail.gmail.com>
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
-        <20210210000259.635748-5-ben.widawsky@intel.com>
-        <20210210184540.00007536@Huawei.com>
-        <CAPcyv4hRUB3jxdCV06y0kYMbKbGroEW6F9yOQ4KB_z6YgWBZ4Q@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Thu, 11 Feb 2021 05:07:42 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BA6n7U010983;
+        Thu, 11 Feb 2021 04:06:49 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=eeMJSCblT1p0TOiBEUAjvfSv8ttwzy/lb6Th6n73F0o=;
+ b=Qpwm6jQfNhjEu8H9Vy3AG3Rbzle6lBhHY9gqHGXeAG0x7qun4oBTfhnkcKx5qnC4Ezvn
+ 3VohhYXS2AHPtG+4NhtdQLhbtDS87JVy1wicacUiQTZRKyzA3yytiOpDrQakMtQwr9Qv
+ 0XyZv36sjiGa/r8jtgP9k69vQcZDRrchJXITde6Xwov3k4nyRp80lULtEWVXjMPdlp6J
+ 2Bwyh4wXIUjh2vBDxyiBiqnHgMlpFfRaJWl/cim50p+H00FBL0nE6+LVyxKcyq60o2PT
+ jwEcX3GoJI1lyw4ZhV8c/wbzTENbisyEes0Xqc1tPUq5CvX3nVB1B4gW5O6E9V7uAwK6 5g== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 36hrv2efce-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 11 Feb 2021 04:06:49 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 11 Feb
+ 2021 10:06:47 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Thu, 11 Feb 2021 10:06:47 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A908611CF;
+        Thu, 11 Feb 2021 10:06:47 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 10:06:47 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+CC:     Hulk Robot <hulkci@huawei.com>, Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] mfd: arizona: Make some symbols static
+Message-ID: <20210211100647.GY106851@ediswmail.ad.cirrus.com>
+References: <20210210075626.1096193-1-weiyongjun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.31.44]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210210075626.1096193-1-weiyongjun1@huawei.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=815 suspectscore=0
+ impostorscore=0 clxscore=1011 bulkscore=0 adultscore=0 malwarescore=0
+ spamscore=0 phishscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 20:40:52 -0800
-Dan Williams <dan.j.williams@intel.com> wrote:
-
-> On Wed, Feb 10, 2021 at 10:47 AM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> [..]
-> > > +#define CXL_CMDS                                                          \
-> > > +     ___C(INVALID, "Invalid Command"),                                 \
-> > > +     ___C(IDENTIFY, "Identify Command"),                               \
-> > > +     ___C(MAX, "Last command")
-> > > +
-> > > +#define ___C(a, b) CXL_MEM_COMMAND_ID_##a
-> > > +enum { CXL_CMDS };
-> > > +
-> > > +#undef ___C
-> > > +#define ___C(a, b) { b }
-> > > +static const struct {
-> > > +     const char *name;
-> > > +} cxl_command_names[] = { CXL_CMDS };
-> > > +#undef ___C  
-> >
-> > Unless there are going to be a lot of these, I'd just write them out long hand
-> > as much more readable than the macro magic.  
+On Wed, Feb 10, 2021 at 07:56:26AM +0000, Wei Yongjun wrote:
+> The sparse tool complains as follows:
 > 
-> This macro magic isn't new to Linux it was introduced with ftrace:
+> drivers/mfd/arizona-spi.c:28:31: warning:
+>  symbol 'reset_gpios' was not declared. Should it be static?
+> drivers/mfd/arizona-spi.c:29:31: warning:
+>  symbol 'ldoena_gpios' was not declared. Should it be static?
 > 
-> See "cpp tricks and treats": https://lwn.net/Articles/383362/
-
-Yeah. I've dealt with that one a few times. It's very cleaver and compact
-but a PITA to debug build errors related to it.
-
+> Those symbols are not used outside of arizona-spi.c, so this
+> commit marks them static.
 > 
-> >
-> > enum {
-> >         CXL_MEM_COMMAND_ID_INVALID,
-> >         CXL_MEM_COMMAND_ID_IDENTIFY,
-> >         CXL_MEM_COMMAND_ID_MAX
-> > };
-> >
-> > static const struct {
-> >         const char *name;
-> > } cxl_command_names[] = {
-> >         [CXL_MEM_COMMAND_ID_INVALID] = { "Invalid Command" },
-> >         [CXL_MEM_COMMAND_ID_IDENTIFY] = { "Identify Comamnd" },
-> >         /* I hope you never need the Last command to exist in here as that sounds like a bug */
-> > };
-> >
-> > That's assuming I actually figured the macro fun out correctly.
-> > To my mind it's worth doing this stuff for 'lots' no so much for 3.  
-> 
-> The list will continue to expand, and it eliminates the "did you
-> remember to update cxl_command_names" review burden permanently.
+> Fixes: e933836744a2 ("mfd: arizona: Add support for ACPI enumeration of WM5102 connected over SPI")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
 
-How about a compromise.  Add a comment giving how the first entry expands to
-avoid people (me at least :) having to think their way through it every time?
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Jonathan
-
+Thanks,
+Charles
