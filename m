@@ -2,128 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2B03194A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F703194AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhBKUll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:41:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        id S230352AbhBKUmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:42:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbhBKUlh (ORCPT
+        with ESMTP id S229918AbhBKUmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:41:37 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7AFC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:40:57 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id g10so8397908eds.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:40:57 -0800 (PST)
+        Thu, 11 Feb 2021 15:42:06 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA87C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:41:26 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id g5so2182778uak.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:41:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=o+MkWSBkvC/UMwT/VgZJGycfyB5NFr4bsCioBd7cfA4=;
-        b=coyflfwbCdbsJ3zzo0z6wSKT59iLTCQVdnZtGrbaNG8QIdR39uPo9V6tfCTRydcisL
-         4k5JGnBJW2bwe/Y98Ay8kKjlpA7C1M7t5HKlvHlD2W0hs4hkrrX9jMaaFPooSlzZaqeb
-         qnbKvbKvtFMP2Gcb2JhAqzQcRwHeCtf4BKRWIpIIHZen8wJEdzLIzoQePkCym3WVdGd/
-         8amklPn5Y1DQDOGZ65J3q4g6AmlJfZBY5cUKedCA145v+34ax7wnmlls4kKFRLPdURDS
-         HwZMs0P9MDREJORNNWoZRXavVtngNRUPbTJE6VBjR5mURUsu/qMEf25CUKIaBzJwIfJh
-         67gQ==
+        bh=JqZZZvFE5VxL++dFfoZprDhk9+CSenhmKTyUPdyCU/U=;
+        b=JwpYmrz5Pq9isvSseBiUCn4eQXQyfBr2OxOXWrBy7tw8o+XYqRFK+R2ucZp0cFdhaK
+         A4sSR+eNIBHOfYKj7ZwwWoMNYH1qP8OtXTYlKygnib3yOBIkWMO2BAsEd4R0rZWVDrU4
+         UQB2CNI9KgTkaZW/msOwTE9FUsXlVrt18/mRJUzfFqEXYlrgLt0Vxwx1wDYe7v4b0wKV
+         rJ9yO9NLkvzKJHpcirJ1nQVtIIu9dUAgZPIFkDx86PTwZf6zFB8pXXDqiVLhBjiSGy1W
+         3Txd7anedzyRr7l070exCjtnnQVhSA6MSHFx8e3l2nPByd1zdHNBPvjCE2cIpGXPRd8K
+         kGQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=o+MkWSBkvC/UMwT/VgZJGycfyB5NFr4bsCioBd7cfA4=;
-        b=lnQAIwp5dfg0Fxpp0SDPC7ITtQCUqA5+dOPom/BsuvzlA8wZyWMIlbEco2LZqkoXXa
-         ten+8XR0K6Xi8kdv1u88in7MBpK8Dd5TDOkEEpk8ksTOUQ04GE3EH+nPLvxfAgdKYiac
-         k40CTOli3MTb8vzcOhPem431DAy8SPYQjuNFiFSS53Gw3Gy1p2XfTkhQewhPBScwF6Uo
-         jUNhiN++tWTK1TnRSjdgvuOIjxphs+nVdqmvEU6Ezm3P4Pgiyt1n51mZ5a6i7Cq+9GxC
-         3W3yhGr7TUUHPgPi4kzjAfrhFQoBNuo8pCX5SH0xkfU5U1nUqv++J7M+BTbiPHCHMWUQ
-         yEIg==
-X-Gm-Message-State: AOAM5325r0Ch+z5xoQ5B6OU93wjbla+zmB0Ht2PboIK11hAjUh9PdgP3
-        G2Fmr2x8Wpp8s2rPk7ZUW+RpoauINg6/9taSg/pJzw==
-X-Google-Smtp-Source: ABdhPJwUwoQIw5/TCL2CLB2ZlTQ8uewrH9tgE5Yw4rRMQ6jMgq9i5WT/KqL+JKgKKFkIg69ICnqn7QI9yjjwV0IjT0U=
-X-Received: by 2002:a05:6402:3585:: with SMTP id y5mr9870835edc.97.1613076055992;
- Thu, 11 Feb 2021 12:40:55 -0800 (PST)
+        bh=JqZZZvFE5VxL++dFfoZprDhk9+CSenhmKTyUPdyCU/U=;
+        b=tSiTCP9WkCSvf14Gc9wFf/zNHs+If3542uQe+k0G1I/h0lKnYtcSP1BWBLLqE/LjQU
+         WoYAv9LBBYwB8poEUL/kDYW3pPKTl37vnqgOBmtPSEnqLynYRS1ZHz2BgK3JZO2rZEOi
+         3MtiOjApoWEpwymYOv+FE9Mmz/l2rToJCnu8yjmnk9CWVXUGv03Q/7Yxoz+TvZm9YtW/
+         or50aP3Pl62zjnVKvvCABjbQ5JBhALCzDf2VL1POCrR7c+hzctQPJY5/bFEa8W0e1jXd
+         7NafS5INuKAVFpTPq0jnZnjB50AQXy1RARb1WjB8Jmwo0TJhf8QPBspp/Et7LboKU5RX
+         K3GA==
+X-Gm-Message-State: AOAM531/uIVrsUpScZ1fCtdeoQUvd5BQVhKIdQ9vxsavh2eGJN/Y87G8
+        voH1eKeUeQoSRaPWTJeF8w6U/O6+MWrLJh37+kp0aA==
+X-Google-Smtp-Source: ABdhPJzIm5VtW1C8leqxolWHrGOE0VBLS/CwbuSyepxQoy46V+/+2C4/k7slInILzPb1rPE6aCMUoTA1e2xrIj9H8d8=
+X-Received: by 2002:ab0:2448:: with SMTP id g8mr6669684uan.89.1613076085437;
+ Thu, 11 Feb 2021 12:41:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
- <20210210000259.635748-4-ben.widawsky@intel.com> <20210210181725.00007865@Huawei.com>
- <20210211101746.00005e8c@Huawei.com>
-In-Reply-To: <20210211101746.00005e8c@Huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 11 Feb 2021 12:40:45 -0800
-Message-ID: <CAPcyv4hgzv7B7sv85A3No-bAgeADqfrhRySBrQBx43HVEMfnzg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/8] cxl/mem: Register CXL memX devices
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
+References: <20210211194258.4137998-1-nathan@kernel.org>
+In-Reply-To: <20210211194258.4137998-1-nathan@kernel.org>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Thu, 11 Feb 2021 12:41:14 -0800
+Message-ID: <CABCJKueyXp5EQnmZ7a6HR87oKwDBDukprnJWT620McSYFd1SMg@mail.gmail.com>
+Subject: Re: [PATCH] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Gabriel Somlo <somlo@cmu.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>, qemu-devel@nongnu.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 2:19 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
+Hi Nathan,
+
+On Thu, Feb 11, 2021 at 11:43 AM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> On Wed, 10 Feb 2021 18:17:25 +0000
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
+> which violates clang's CFI checking because fw_cfg_showrev()'s second
+> parameter is 'struct attribute', whereas the ->show() member of 'struct
+> kobj_structure' expects the second parameter to be of type 'struct
+> kobj_attribute'.
 >
-> > On Tue, 9 Feb 2021 16:02:54 -0800
-> > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> >
-> > > From: Dan Williams <dan.j.williams@intel.com>
-> > >
-> > > Create the /sys/bus/cxl hierarchy to enumerate:
-> > >
-> > > * Memory Devices (per-endpoint control devices)
-> > >
-> > > * Memory Address Space Devices (platform address ranges with
-> > >   interleaving, performance, and persistence attributes)
-> > >
-> > > * Memory Regions (active provisioned memory from an address space device
-> > >   that is in use as System RAM or delegated to libnvdimm as Persistent
-> > >   Memory regions).
-> > >
-> > > For now, only the per-endpoint control devices are registered on the
-> > > 'cxl' bus. However, going forward it will provide a mechanism to
-> > > coordinate cross-device interleave.
-> > >
-> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> >
-> > One stray header, and a request for a tiny bit of reordering to
-> > make it easier to chase through creation and destruction.
-> >
-> > Either way with the header move to earlier patch I'm fine with this one.
-> >
-> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> $ cat /sys/firmware/qemu_fw_cfg/rev
+> 3
 >
-> Actually thinking more on this, what is the justification for the
-> complexity + overhead of a percpu_refcount vs a refcount
+> $ dmesg | grep "CFI failure"
+> [   26.016832] CFI failure (target: fw_cfg_showrev+0x0/0x8):
+>
+> Fix this by converting fw_cfg_rev_attr to 'struct kobj_attribute' where
+> this would have been caught automatically by the incompatible pointer
+> types compiler warning. Update fw_cfg_showrev() accordingly.
+>
+> Fixes: 75f3e8e47f38 ("firmware: introduce sysfs driver for QEMU's fw_cfg device")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1299
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-A typical refcount does not have the block and drain semantics of a
-percpu_ref. I'm planning to circle back and make this a first class
-facility of the cdev interface borrowing the debugfs approach [1], but
-for now percpu_ref fits the bill locally.
+Looks good to me. Thank you for sending the patch!
 
-> I don't think this is a high enough performance path for it to matter.
-> Perhaps I'm missing a usecase where it does?
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
 
-It's less about percpu_ref performance and more about the
-percpu_ref_tryget_live() facility.
-
-[1]: http://lore.kernel.org/r/CAPcyv4jEYPsyh0bhbtKGRbK3bgp=_+=2rjx4X0gLi5-25VvDyg@mail.gmail.com
+Sami
