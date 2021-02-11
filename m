@@ -2,143 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F583189FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB7B3189FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhBKMA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:00:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57304 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230314AbhBKLq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:46:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0FDF5AD2B;
-        Thu, 11 Feb 2021 11:46:13 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id AA4181E14B2; Thu, 11 Feb 2021 12:46:12 +0100 (CET)
-Date:   Thu, 11 Feb 2021 12:46:12 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.cz>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: possible deadlock in start_this_handle (2)
-Message-ID: <20210211114612.GN19070@quack2.suse.cz>
-References: <000000000000563a0205bafb7970@google.com>
- <20210211104947.GL19070@quack2.suse.cz>
- <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
+        id S231703AbhBKMAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231613AbhBKLsL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 06:48:11 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ABCC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 03:47:31 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id x14so4821521qkm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 03:47:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ol2zHFPJjowYek6AVztGU5h3zLYK0Y4c0rCS+jDrmk0=;
+        b=JgbAxgrKLZk2qhCjoMg8wBMWCJN+a+IHZxIW8vOFAT83iamt5zCuENowqIDBPn/6X4
+         hrhQ+OIuZxX9K4G2G0O5apbQqTjRKkLWCy2u16QWvAoikA6nHK90LdFqS+TitLhlh7V+
+         GLpCjIejT3nv3BB4txNUk8m/F3OBhCaMK6QhRlZvzDBHjtdV9JX+npHslyIp/Z5j66+1
+         rNbOKvWH/e+6UxsB/jXspyPoRX5gDkEiuACED63WKMov+qa5Rms6Zdl07qhA6oyfBjxt
+         ruhNv1fgPFbyvGLUD8IzpKJUsKiggyNsdkHCKrpB+grIFfyCTP0Wxq6OfhM/jB0TA8Ud
+         Ci5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ol2zHFPJjowYek6AVztGU5h3zLYK0Y4c0rCS+jDrmk0=;
+        b=X3I0PLqOyz2Ba2WW2Ou0PPOqCX/y+0On7x57cu3kaqmlKwyS7FZ6D1L07mLEGvz4uL
+         EDRy5CFQZm8BTCIaVT+xgSx0i8eqsy6rDLTSUnZVcC2wTMosUelFAj9YmKYBwhKInYqf
+         lAsyp635vnZ9GkUhpkQfARchPlrsUuU8dVlvuRMUFoDE34oYvGRaW3Hf0kyF0et46VB0
+         KYiIicaiP9eHMr0T7BTfi5STS5/FKrtIsNp6eCjj+PCsS1sMEqKYBFTMquH+nrSUs6DM
+         fuYfq/O3apONBwxpBaNmb3dp7i5lH2qH2JTNlX4Sib5KrKd3SnO9Qnemhz83dxq88JdW
+         fc8g==
+X-Gm-Message-State: AOAM530YR+dfWKImZ7ht+lHC3GX82ZWhPAruO+ordxB42npEfMGDTV/g
+        exLpSDkozafN8WWwgqZywoTLjRZ2a8fr69KN2zO9LvQnJbo=
+X-Google-Smtp-Source: ABdhPJy8/ZW5AYGTC/xwOIdnqR3MaQKVcOiao4mOOQnfFH3GcLky+NN1KgF3mqBJmLWDcM7optEZzHTNj5hamnk+kBM=
+X-Received: by 2002:a37:a757:: with SMTP id q84mr1083651qke.501.1613044050063;
+ Thu, 11 Feb 2021 03:47:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <000000000000a05b3b05baf9a856@google.com> <20210211113718.GM19070@quack2.suse.cz>
+In-Reply-To: <20210211113718.GM19070@quack2.suse.cz>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 11 Feb 2021 12:47:18 +0100
+Message-ID: <CACT4Y+b7245_5yjTk5Mw1pFBdV_f2LypAVSAZVym9n1Q0v5c-Q@mail.gmail.com>
+Subject: Re: possible deadlock in dquot_commit
+To:     Jan Kara <jack@suse.cz>
+Cc:     syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11-02-21 12:22:39, Dmitry Vyukov wrote:
-> On Thu, Feb 11, 2021 at 11:49 AM Jan Kara <jack@suse.cz> wrote:
-> >
+On Thu, Feb 11, 2021 at 12:37 PM Jan Kara <jack@suse.cz> wrote:
+>
+> On Wed 10-02-21 03:25:22, syzbot wrote:
 > > Hello,
 > >
-> > added mm guys to CC.
+> > syzbot found the following issue on:
 > >
-> > On Wed 10-02-21 05:35:18, syzbot wrote:
-> > > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=15cbce90d00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> > > userspace arch: i386
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
-> > >
-> > > ======================================================
-> > > WARNING: possible circular locking dependency detected
-> > > 5.11.0-rc6-syzkaller #0 Not tainted
-> > > ------------------------------------------------------
-> > > kswapd0/2246 is trying to acquire lock:
-> > > ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
-> > >
-> > > but task is already holding lock:
-> > > ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
-> > >
-> > > which lock already depends on the new lock.
-> > >
-> > > the existing dependency chain (in reverse order) is:
-> > >
-> > > -> #2 (fs_reclaim){+.+.}-{0:0}:
-> > >        __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
-> > >        fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
-> > >        might_alloc include/linux/sched/mm.h:193 [inline]
-> > >        slab_pre_alloc_hook mm/slab.h:493 [inline]
-> > >        slab_alloc_node mm/slub.c:2817 [inline]
-> > >        __kmalloc_node+0x5f/0x430 mm/slub.c:4015
-> > >        kmalloc_node include/linux/slab.h:575 [inline]
-> > >        kvmalloc_node+0x61/0xf0 mm/util.c:587
-> > >        kvmalloc include/linux/mm.h:781 [inline]
-> > >        ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
-> > >        ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
-> > >        ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
-> > >        ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
-> > >        ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
-> > >        ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
-> > >        ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
-> > >        __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
-> > >        __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
-> > >        __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
-> > >        vfs_setxattr+0x135/0x320 fs/xattr.c:291
-> > >        setxattr+0x1ff/0x290 fs/xattr.c:553
-> > >        path_setxattr+0x170/0x190 fs/xattr.c:572
-> > >        __do_sys_setxattr fs/xattr.c:587 [inline]
-> > >        __se_sys_setxattr fs/xattr.c:583 [inline]
-> > >        __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
-> > >        do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
-> > >        __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
-> > >        do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
-> > >        entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=101cf2f8d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=e83e68d0a6aba5f6
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3b6f9218b1301ddda3e2
 > >
-> > This stacktrace should never happen. ext4_xattr_set() starts a transaction.
-> > That internally goes through start_this_handle() which calls:
+> > Unfortunately, I don't have any reproducer for this issue yet.
 > >
-> >         handle->saved_alloc_context = memalloc_nofs_save();
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com
 > >
-> > and we restore the allocation context only in stop_this_handle() when
-> > stopping the handle. And with this fs_reclaim_acquire() should remove
-> > __GFP_FS from the mask and not call __fs_reclaim_acquire().
+> > loop1: detected capacity change from 4096 to 0
+> > EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue. Quota mode: writeback.
+> > ======================================================
+> > WARNING: possible circular locking dependency detected
+> > 5.11.0-rc6-syzkaller #0 Not tainted
+> > ------------------------------------------------------
+> > syz-executor.1/16170 is trying to acquire lock:
+> > ffff8880795f5b28 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_commit+0x4d/0x420 fs/quota/dquot.c:476
 > >
-> > Now I have no idea why something here didn't work out. Given we don't have
-> > a reproducer it will be probably difficult to debug this. I'd note that
-> > about year and half ago similar report happened (got autoclosed) so it may
-> > be something real somewhere but it may also be just some HW glitch or
-> > something like that.
-> 
-> HW glitch is theoretically possible. But if we are considering such
-> causes, I would say a kernel memory corruption is way more likely, we
-> have hundreds of known memory-corruption-capable bugs open. In most
-> cases they are caught by KASAN before doing silent damage. But KASAN
-> can miss some cases.
-> 
-> I see at least 4 existing bugs with similar stack:
-> https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> https://syzkaller.appspot.com/bug?extid=a7ab8df042baaf42ae3c
-> https://syzkaller.appspot.com/bug?id=c814a55a728493959328551c769ede4c8ff72aab
-> https://syzkaller.appspot.com/bug?id=426ad9adca053dafcd698f3a48ad5406dccc972b
+> > but task is already holding lock:
+> > ffff88807960b438 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x5e1/0x17d0 fs/ext4/inode.c:630
+> >
+> > which lock already depends on the new lock.
+>
+> <snip>
+>
+> All snipped stacktraces look perfectly fine and the lock dependencies are as
+> expected.
+>
+> > 5 locks held by syz-executor.1/16170:
+> >  #0: ffff88802ad18b70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:947
+> >  #1: ffff88802fbec460 (sb_writers#5){.+.+}-{0:0}, at: ksys_write+0x12d/0x250 fs/read_write.c:658
+> >  #2: ffff88807960b648 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
+> >  #2: ffff88807960b648 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, at: ext4_buffered_write_iter+0xb6/0x4d0 fs/ext4/file.c:264
+> >  #3: ffff88807960b438 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x5e1/0x17d0 fs/ext4/inode.c:630
+> >  #4: ffffffff8bf1be58 (dquot_srcu){....}-{0:0}, at: i_dquot fs/quota/dquot.c:926 [inline]
+> >  #4: ffffffff8bf1be58 (dquot_srcu){....}-{0:0}, at: __dquot_alloc_space+0x1b4/0xb60 fs/quota/dquot.c:1671
+>
+> This actually looks problematic: We acquired &ei->i_data_sem/2 (i.e.,
+> I_DATA_SEM_QUOTA subclass) in ext4_map_blocks() called from
+> ext4_block_write_begin(). This suggests that the write has been happening
+> directly to the quota file (or that lockdep annotation of the inode went
+> wrong somewhere). Now we normally protect quota files with IMMUTABLE flag
+> so writing it should not be possible. We also don't allow clearing this
+> flag on used quota file. Finally I'd checked lockdep annotation and
+> everything looks correct. So at this point the best theory I have is that a
+> filesystem has been suitably corrupted and quota file supposed to be
+> inaccessible from userspace got exposed but I'd expect other problems to
+> hit first in that case. Anyway without a reproducer I have no more ideas...
 
-The last one looks different and likely unrelated (I don't see scoping API
-to be used anywhere in that subsystem) but the others look indeed valid. So
-I agree it seems to be some very hard to hit problem and likely not just a
-random corruption.
+There is a reproducer for 4.19 available on the dashboard. Maybe it will help.
+I don't why it did not pop up on upstream yet, there lots of potential
+reasons for this.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>                                                                 Honza
+>
+> >
+> > stack backtrace:
+> > CPU: 0 PID: 16170 Comm: syz-executor.1 Not tainted 5.11.0-rc6-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:79 [inline]
+> >  dump_stack+0x107/0x163 lib/dump_stack.c:120
+> >  check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+> >  check_prev_add kernel/locking/lockdep.c:2868 [inline]
+> >  check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+> >  validate_chain kernel/locking/lockdep.c:3608 [inline]
+> >  __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
+> >  lock_acquire kernel/locking/lockdep.c:5442 [inline]
+> >  lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
+> >  __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+> >  __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
+> >  dquot_commit+0x4d/0x420 fs/quota/dquot.c:476
+> >  ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6200
+> >  ext4_mark_dquot_dirty fs/ext4/super.c:6248 [inline]
+> >  ext4_mark_dquot_dirty+0x111/0x1b0 fs/ext4/super.c:6242
+> >  mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+> >  mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+> >  __dquot_alloc_space+0x5d4/0xb60 fs/quota/dquot.c:1709
+> >  dquot_alloc_space_nodirty include/linux/quotaops.h:297 [inline]
+> >  dquot_alloc_space include/linux/quotaops.h:310 [inline]
+> >  dquot_alloc_block include/linux/quotaops.h:334 [inline]
+> >  ext4_mb_new_blocks+0x5a9/0x51a0 fs/ext4/mballoc.c:4937
+> >  ext4_ext_map_blocks+0x20da/0x5fb0 fs/ext4/extents.c:4238
+> >  ext4_map_blocks+0x653/0x17d0 fs/ext4/inode.c:637
+> >  _ext4_get_block+0x241/0x590 fs/ext4/inode.c:793
+> >  ext4_block_write_begin+0x4f8/0x1190 fs/ext4/inode.c:1077
+> >  ext4_write_begin+0x4b5/0x14b0 fs/ext4/inode.c:1202
+> >  ext4_da_write_begin+0x672/0x1150 fs/ext4/inode.c:2961
+> >  generic_perform_write+0x20a/0x4f0 mm/filemap.c:3412
+> >  ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+> >  ext4_file_write_iter+0x423/0x14d0 fs/ext4/file.c:664
+> >  call_write_iter include/linux/fs.h:1901 [inline]
+> >  new_sync_write+0x426/0x650 fs/read_write.c:518
+> >  vfs_write+0x791/0xa30 fs/read_write.c:605
+> >  ksys_write+0x12d/0x250 fs/read_write.c:658
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > RIP: 0033:0x465b09
+> > Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007f8097ffc188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> > RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465b09
+> > RDX: 000000000d4ba0ff RSI: 00000000200009c0 RDI: 0000000000000003
+> > RBP: 00000000004b069f R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+> > R13: 00007ffefc77f01f R14: 00007f8097ffc300 R15: 0000000000022000
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210211113718.GM19070%40quack2.suse.cz.
