@@ -2,152 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2472D318B3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4BC318B26
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhBKMyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:54:14 -0500
-Received: from mail-lj1-f173.google.com ([209.85.208.173]:40563 "EHLO
-        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231731AbhBKMen (ORCPT
+        id S229683AbhBKMsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:48:54 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:55438 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231578AbhBKMc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:34:43 -0500
-Received: by mail-lj1-f173.google.com with SMTP id s18so7146077ljg.7;
-        Thu, 11 Feb 2021 04:34:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Vfzvo58svu0cI4ektpdyAWp8bMlg9yHoVOYTB38z9Ac=;
-        b=OLuZaeSGQxW636TorJxWplWt8D+FAFG7KVR7iWXrIM+8Qoky9cgn90zqaWtYSqBXiF
-         +RGC1VFSt5mw1UdJNTXfjPH4XJV+62wPSilLpIM7z3x8Uwgob6tfaaYKqZdeYryPwHWr
-         Xw56B+iafDiuLinwRmoJqOTt0IrSJ10QrASA2pdyUzQSyE6eoZkF2FmiTrJS9ShivSkB
-         N6YxoJ2BCEdicbpGh2izIYiN+XewMKoAp2CzTf4dtajyzzntTdyLgBMv/s6/K8bs77aa
-         QFyVFSsLp99Y9nVs6sfgbGKROyy2qOPureRQUbvlHGXu6UbMs0Xah7xi2ImSwAlss6Wl
-         xcMw==
-X-Gm-Message-State: AOAM533N6CLxlbke+7O77ie/+Ac3SVTXbyMbBVtTeUE+gmwZtUT8nSmo
-        vnZbTuyTkUb1gitL8g6jvCY=
-X-Google-Smtp-Source: ABdhPJzHrY+i8lXDbk3HhnSOBszJblF0GoFyWsjEXEiAT6oOCw77CztVBIUuVhV8buqRz4p4H9eXiQ==
-X-Received: by 2002:a05:651c:1029:: with SMTP id w9mr5010944ljm.142.1613046840288;
-        Thu, 11 Feb 2021 04:34:00 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id t13sm628114lfc.147.2021.02.11.04.33.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 04:33:59 -0800 (PST)
+        Thu, 11 Feb 2021 07:32:29 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BCPKvL030457;
+        Thu, 11 Feb 2021 07:31:37 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 36hrw905xk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 07:31:37 -0500
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 11BCVakK004818
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 11 Feb 2021 07:31:36 -0500
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 11 Feb 2021 07:31:35 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
+ Thu, 11 Feb 2021 07:31:35 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
+ Thu, 11 Feb 2021 07:31:35 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11BCVRdo011921;
+        Thu, 11 Feb 2021 07:31:32 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 3/3] tools: iio: add example for high-speed buffer support
 Date:   Thu, 11 Feb 2021 14:33:53 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [RFC PATCH 0/7] Extend regulator notification support
-Message-ID: <cover.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
+Message-ID: <20210211123353.78963-4-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210211123353.78963-1-alexandru.ardelean@analog.com>
+References: <20210211123353.78963-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_06:2021-02-10,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
+ priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend regulator notification support
+Following a recent update to the IIO buffer infrastructure, this change
+adds a basic example on how to access an IIO buffer via the new mmap()
+interface.
 
-This is an RFC series for getting feedback on extending the regulator
-notification and error flag support. Initial discussion on the topic can
-be found here:
-https://lore.kernel.org/lkml/6046836e22b8252983f08d5621c35ececb97820d.camel@fi.rohmeurope.com/
+The ioctl() for the high-speed mode needs to be enabled right from the
+start, before setting any parameters via sysfs (length, enable, etc), to
+make sure that the mmap mode is used and not the fileio mode.
 
-This series is built on top of the:
-commit 7aa382cfe714 ("regulator: mt6315: Add support for MT6315 regulator")
-regulator tree for-5.12 branch + The BD9576MUF support patch series v8
-which is not yet in-tree
-Here:
-https://lore.kernel.org/lkml/cover.1613031055.git.matti.vaittinen@fi.rohmeurope.com/
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ tools/iio/iio_generic_buffer.c | 184 +++++++++++++++++++++++++++++++--
+ 1 file changed, 178 insertions(+), 6 deletions(-)
 
-In a nutshell - the RFC adds:
-
-1. WARNING level events/error flags. (Patch 2)
-  Current regulator 'ERROR' event notifications for over/under
-  voltage, over current and over temperature are used to indicate
-  condition where monitored entity is so badly "off" that it actually
-  indicates a hardware error which can not be recovered. The most
-  typical hanling for that is believed to be a (graceful)
-  system-shutdown. Here we add set of 'WARNING' level flags to allow
-  sending notifications to consumers before things are 'that badly off'
-  so that consumer drivers can implement recovery-actions.
-2. Device-tree properties for specifying limit values. (Patches 1, 4)
-  Add limits for above mentioned 'ERROR' and 'WARNING' levels (which
-  send notifications to consumers) and also for a 'PROTECTION' level
-  (which will be used to immediately shut-down the regulator(s) W/O
-  informing consumer drivers. Typically implemented by hardware).
-  Property parsing is implemented in regulator core which then calls
-  callback operations for limit setting from the IC drivers. A
-  warning is emitted if protection is requested by device tree but the
-  underlying IC does not support configuring requested protection.
-3. Helpers which can be registered by IC. (Patch 3)
-  Target is to avoid implementing IRQ handling and IRQ storm protection
-  in each IC driver. (Many of the ICs implementin these IRQs do not allow
-  masking or acking the IRQ but keep the IRQ asserted for the whole
-  duration of problem keeping the processor in IRQ handling loop).
-
-The helper was attempted to be done so it could be used to implement
-roughly same logic as is used in qcom-labibb regulator. This means
-amongst other things a safety shut-down if IC registers are not readable.
-Using these shut-down retry counters are optional. The idea is that the
-helper could be also used by simpler ICs which do not provide status
-register(s) which can be used to check if error is still active.
-
-ICs which do not have such status register can simply omit the 'renable'
-callback (and retry-counts etc) - and helper assumes the situation is Ok
-and re-enables IRQ after given time period. If problem persists the
-handler is ran again and another notification is sent - but at least the
-delay allows processor to avoid IRQ loop.
-
-Patch 6 takes this notification support in use at BD9576MUF.
-
---
-
-Matti Vaittinen (7):
-  dt_bindings: Add protection limit properties
-  regulator: add warning flags
-  regulator: IRQ based event/error notification helpers
-  regulator: add property parsing and callbacks to set protection limits
-  dt-bindings: regulator: bd9576 add FET ON-resistance for OCW
-  regulator: bd9576: Support error reporting
-  regulator: bd9576: Fix the driver name in id table
-
- .../bindings/regulator/regulator.yaml         |   82 ++
- .../regulator/rohm,bd9576-regulator.yaml      |    5 +
- drivers/regulator/Makefile                    |    2 +-
- drivers/regulator/bd9576-regulator.c          | 1030 ++++++++++++++---
- drivers/regulator/core.c                      |  146 ++-
- drivers/regulator/irq_helpers.c               |  396 +++++++
- drivers/regulator/of_regulator.c              |   58 +
- drivers/regulator/qcom-labibb-regulator.c     |   10 +-
- drivers/regulator/stpmic1_regulator.c         |   17 +-
- include/linux/regulator/consumer.h            |   14 +
- include/linux/regulator/driver.h              |  170 ++-
- include/linux/regulator/machine.h             |   26 +
- 12 files changed, 1816 insertions(+), 140 deletions(-)
- create mode 100644 drivers/regulator/irq_helpers.c
-
+diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
+index fdd08514d556..af1a944edcdb 100644
+--- a/tools/iio/iio_generic_buffer.c
++++ b/tools/iio/iio_generic_buffer.c
+@@ -31,6 +31,7 @@
+ #include <stdbool.h>
+ #include <signal.h>
+ #include <sys/ioctl.h>
++#include <sys/mman.h>
+ #include <linux/iio/buffer.h>
+ #include "iio_utils.h"
+ 
+@@ -239,6 +240,133 @@ static int enable_disable_all_channels(char *dev_dir_name, int buffer_idx, int e
+ 	return 0;
+ }
+ 
++struct mmap_block {
++	struct iio_buffer_block block;
++	void *addr;
++};
++
++static struct mmap_block *enable_high_speed(int buf_fd, unsigned int block_size,
++					    int nblocks)
++{
++	struct iio_buffer_block_alloc_req req = { 0 };
++	struct mmap_block *mmaps = NULL;
++	int mmaps_cnt = 0;
++	int i, ret;
++
++	/**
++	 * Validate we can do high-speed by issuing BLOCK_FREE ioctl.
++	 * If using just BLOCK_ALLOC it's distinguish between ENOSYS
++	 * and other error types.
++	 */
++	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
++	if (ret < 0) {
++		errno = ENOSYS;
++		return NULL;
++	}
++
++	/* for now, this */
++	req.id = 0;
++	req.type = 0;
++	req.size = block_size;
++	req.count = nblocks;
++
++	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ALLOC_IOCTL, &req);
++	if (ret < 0)
++		return NULL;
++
++	if (req.count == 0) {
++		errno = ENOMEM;
++		return NULL;
++	}
++
++	if (req.count < nblocks) {
++		fprintf(stderr, "Requested %d blocks, got %d\n",
++			nblocks, req.count);
++		errno = ENOMEM;
++		return NULL;
++	}
++
++	mmaps = calloc(req.count, sizeof(*mmaps));
++	if (!mmaps) {
++		errno = ENOMEM;
++		return NULL;
++	}
++
++	for (i = 0; i < req.count; i++) {
++		mmaps[i].block.id = i;
++		ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_QUERY_IOCTL, &mmaps[i].block);
++		if (ret < 0)
++			goto error;
++
++		ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[i].block);
++		if (ret < 0)
++			goto error;
++
++		mmaps[i].addr = mmap(0, mmaps[i].block.size,
++				      PROT_READ | PROT_WRITE, MAP_SHARED,
++				      buf_fd, mmaps[i].block.data.offset);
++
++		if (mmaps[i].addr == MAP_FAILED)
++			goto error;
++
++		mmaps_cnt++;
++	}
++
++	return mmaps;
++
++error:
++	for (i = 0; i < mmaps_cnt; i++)
++		munmap(mmaps[i].addr, mmaps[i].block.size);
++	free(mmaps);
++	return NULL;
++}
++
++static int read_high_speed(int buf_fd, char *data, unsigned int block_size,
++			   struct mmap_block *mmaps, unsigned int mmaps_cnt)
++{
++	struct iio_buffer_block block;
++	int ret;
++
++	/**
++	 * This is where some buffer-pool management can do wonders,
++	 * but for the sake of this sample-code, we're just going to
++	 * copy the data and re-enqueue it back
++	 */
++	memset(&block, 0, sizeof(block));
++	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_DEQUEUE_IOCTL, &block);
++	if (ret < 0)
++		return ret;
++
++	/* check for weird conditions */
++	if (block.bytes_used > block_size) {
++		fprintf(stderr,
++			"Got a bigger block (%u) than expected (%u)\n",
++			block.bytes_used, block_size);
++		return -EFBIG;
++	}
++
++	if (block.bytes_used < block_size) {
++		/**
++		 * This can be normal, with some real-world data
++		 * terminating abruptly. But log it.
++		 */
++		fprintf(stderr,
++			"Got a smaller block (%u) than expected (%u)\n",
++			block.bytes_used, block_size);
++	}
++
++	/* memcpy() the data, we lose some more performance here :p */
++	memcpy(data, mmaps[block.id].addr, block.bytes_used);
++
++	/* and re-queue this back */
++	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[block.id].block);
++	if (ret < 0)
++		return ret;
++
++	return block.bytes_used;
++}
++
++
+ static void print_usage(void)
+ {
+ 	fprintf(stderr, "Usage: generic_buffer [options]...\n"
+@@ -249,6 +377,7 @@ static void print_usage(void)
+ 		"  -c <n>     Do n conversions, or loop forever if n < 0\n"
+ 		"  -e         Disable wait for event (new data)\n"
+ 		"  -g         Use trigger-less mode\n"
++		"  -h         Use high-speed buffer access\n"
+ 		"  -l <n>     Set buffer length to n samples\n"
+ 		"  --device-name -n <name>\n"
+ 		"  --device-num -N <num>\n"
+@@ -356,9 +485,15 @@ int main(int argc, char **argv)
+ 
+ 	struct iio_channel_info *channels = NULL;
+ 
++	static bool use_high_speed = false;
++	unsigned int block_size;
++	int nblocks = 16; /* default */
++	int mmaps_cnt = 0;
++	struct mmap_block *mmaps = NULL;
++
+ 	register_cleanup();
+ 
+-	while ((c = getopt_long(argc, argv, "aAb:c:egl:n:N:t:T:w:?", longopts,
++	while ((c = getopt_long(argc, argv, "aAb:c:eghl:n:N:t:T:w:?", longopts,
+ 				NULL)) != -1) {
+ 		switch (c) {
+ 		case 'a':
+@@ -396,6 +531,9 @@ int main(int argc, char **argv)
+ 		case 'g':
+ 			notrigger = 1;
+ 			break;
++		case 'h':
++			use_high_speed = true;
++			break;
+ 		case 'l':
+ 			errno = 0;
+ 			buf_len = strtoul(optarg, &dummy, 10);
+@@ -661,6 +799,29 @@ int main(int argc, char **argv)
+ 		goto error;
+ 	}
+ 
++	scan_size = size_from_channelarray(channels, num_channels);
++	block_size = scan_size * buf_len;
++	/**
++	 * Need to enable high-speed before configuring length/enable.
++	 * Otherwise, the DMA buffer will work in fileio mode,
++	 * and mmap won't work.
++	 */
++	if (use_high_speed) {
++		/**
++		 * The block_size for one block is the same as 'data', but it
++		 * doesn't need to be the same size. It is easier for the sake
++		 * of this example.
++		 */
++		mmaps = enable_high_speed(buf_fd, block_size, nblocks);
++		if (!mmaps) {
++			fprintf(stderr, "Could not enable high-speed mode\n");
++			ret = -errno;
++			goto error;
++		}
++		mmaps_cnt = nblocks;
++		printf("Using high-speed mode\n");
++	}
++
+ 	/* Setup ring buffer parameters */
+ 	ret = write_sysfs_int("length", buf_dir_name, buf_len);
+ 	if (ret < 0)
+@@ -675,8 +836,7 @@ int main(int argc, char **argv)
+ 		goto error;
+ 	}
+ 
+-	scan_size = size_from_channelarray(channels, num_channels);
+-	data = malloc(scan_size * buf_len);
++	data = malloc(block_size);
+ 	if (!data) {
+ 		ret = -ENOMEM;
+ 		goto error;
+@@ -719,7 +879,13 @@ int main(int argc, char **argv)
+ 			toread = 64;
+ 		}
+ 
+-		read_size = read(buf_fd, data, toread * scan_size);
++		if (use_high_speed) {
++			read_size = read_high_speed(buf_fd, data, block_size,
++						    mmaps, mmaps_cnt);
++		} else {
++			read_size = read(buf_fd, data, toread * scan_size);
++		}
++
+ 		if (read_size < 0) {
+ 			if (errno == EAGAIN) {
+ 				fprintf(stderr, "nothing available\n");
+@@ -738,8 +904,14 @@ int main(int argc, char **argv)
+ 
+ 	if (fd >= 0 && close(fd) == -1)
+ 		perror("Failed to close character device");
+-	if (buf_fd >= 0 && close(buf_fd) == -1)
+-		perror("Failed to close buffer");
++	for (i = 0; i < mmaps_cnt; i++)
++		munmap(mmaps[i].addr, mmaps[i].block.size);
++	free(mmaps);
++	if (buf_fd >= 0) {
++		ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
++		if (close(buf_fd) == -1)
++			perror("Failed to close buffer");
++	}
+ 	free(buffer_access);
+ 	free(data);
+ 	free(buf_dir_name);
 -- 
-2.25.4
+2.17.1
 
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
