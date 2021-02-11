@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F46318EEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9E1318EF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhBKPjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 10:39:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51714 "EHLO mail.kernel.org"
+        id S231145AbhBKPl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:41:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230047AbhBKPNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229908AbhBKPNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Feb 2021 10:13:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1BF864EF4;
-        Thu, 11 Feb 2021 15:04:46 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D83E64EF6;
+        Thu, 11 Feb 2021 15:04:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613055887;
-        bh=KWkwalSkb27ZGozz9AZ+d3puMXgUXrgcd9/nR7P7UaU=;
+        s=korg; t=1613055890;
+        bh=tgG5ZuzJMSSY7xXkHOE2YZTZXgxpiFihf6Aiob7jUp8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c1HkDfCnTDIXTWIa+e/zCqG/p8dy4YMSy+kl6vhRN02K3wgs043gBbUKTE/bXKSnY
-         rmMLl52vlhn+CcIEIXCf4XO3jI3hO3KkxK1Y5Uucf9ZOS17V2U/r8dqdOb1AibCoSg
-         MfE9oLoJ5+xDKQeOkqfBzMI1J8dbEWTJsGcz8c9o=
+        b=tEbSjnI+kaZklhLbd6CVL71mEXXufU7mgnhZsxDPKDl0QQlvZ8EvobTYKVt+wo/Q7
+         bdGrVduZPL0sIRqBRVuqRy0xjr9DCRRj8bzH2HL1h7ywd7cn0pb2iS7Dv3GMdcugNX
+         L4QKxAu5V/0zb8mUbEazHtgjbRnO/9SgUXI0/gvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Clinton Taylor <clinton.a.taylor@intel.com>,
         =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
         <ville.syrjala@linux.intel.com>, Imre Deak <imre.deak@intel.com>,
         Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH 5.10 47/54] drm/i915: Fix ICL MG PHY vswing handling
-Date:   Thu, 11 Feb 2021 16:02:31 +0100
-Message-Id: <20210211150154.924286991@linuxfoundation.org>
+Subject: [PATCH 5.10 48/54] drm/i915: Skip vswing programming for TBT
+Date:   Thu, 11 Feb 2021 16:02:32 +0100
+Message-Id: <20210211150154.962908516@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
 References: <20210211150152.885701259@linuxfoundation.org>
@@ -45,47 +43,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-commit a2a5f5628e5494ca9353f761f7fe783dfa82fb9a upstream.
+commit eaf5bfe37db871031232d2bf2535b6ca92afbad8 upstream.
 
-The MH PHY vswing table does have all the entries these days. Get
-rid of the old hacks in the code which claim otherwise.
+In thunderbolt mode the PHY is owned by the thunderbolt controller.
+We are not supposed to touch it. So skip the vswing programming
+as well (we already skipped the other steps not applicable to TBT).
 
-This hack was totally bogus anyway. The correct way to handle the
-lack of those two entries would have been to declare our max
-vswing and pre-emph to both be level 2.
+Touching this stuff could supposedly interfere with the PHY
+programming done by the thunderbolt controller.
 
-Cc: José Roberto de Souza <jose.souza@intel.com>
-Cc: Clinton Taylor <clinton.a.taylor@intel.com>
-Fixes: 9f7ffa297978 ("drm/i915/tc/icl: Update TC vswing tables")
+Cc: stable@vger.kernel.org
 Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201207203512.1718-1-ville.syrjala@linux.intel.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20210128155948.13678-1-ville.syrjala@linux.intel.com
 Reviewed-by: Imre Deak <imre.deak@intel.com>
-Reviewed-by: José Roberto de Souza <jose.souza@intel.com>
-(cherry picked from commit 5ec346476e795089b7dac8ab9dcee30c8d80ad84)
+(cherry picked from commit f8c6b615b921d8a1bcd74870f9105e62b0bceff3)
 Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/display/intel_ddi.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/i915/display/intel_ddi.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
 
 --- a/drivers/gpu/drm/i915/display/intel_ddi.c
 +++ b/drivers/gpu/drm/i915/display/intel_ddi.c
-@@ -2605,12 +2605,11 @@ static void icl_mg_phy_ddi_vswing_sequen
+@@ -2597,6 +2597,9 @@ static void icl_mg_phy_ddi_vswing_sequen
+ 	u32 n_entries, val;
+ 	int ln, rate = 0;
  
- 	ddi_translations = icl_get_mg_buf_trans(encoder, type, rate,
- 						&n_entries);
--	/* The table does not have values for level 3 and level 9. */
--	if (level >= n_entries || level == 3 || level == 9) {
-+	if (level >= n_entries) {
- 		drm_dbg_kms(&dev_priv->drm,
- 			    "DDI translation not found for level %d. Using %d instead.",
--			    level, n_entries - 2);
--		level = n_entries - 2;
-+			    level, n_entries - 1);
-+		level = n_entries - 1;
- 	}
++	if (enc_to_dig_port(encoder)->tc_mode == TC_PORT_TBT_ALT)
++		return;
++
+ 	if (type != INTEL_OUTPUT_HDMI) {
+ 		struct intel_dp *intel_dp = enc_to_intel_dp(encoder);
  
- 	/* Set MG_TX_LINK_PARAMS cri_use_fs32 to 0. */
+@@ -2741,6 +2744,9 @@ tgl_dkl_phy_ddi_vswing_sequence(struct i
+ 	u32 n_entries, val, ln, dpcnt_mask, dpcnt_val;
+ 	int rate = 0;
+ 
++	if (enc_to_dig_port(encoder)->tc_mode == TC_PORT_TBT_ALT)
++		return;
++
+ 	if (type != INTEL_OUTPUT_HDMI) {
+ 		struct intel_dp *intel_dp = enc_to_intel_dp(encoder);
+ 
 
 
