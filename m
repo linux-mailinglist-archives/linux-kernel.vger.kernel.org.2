@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F504318855
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CC231884D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhBKKiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:38:24 -0500
-Received: from elvis.franken.de ([193.175.24.41]:44696 "EHLO elvis.franken.de"
+        id S230272AbhBKKgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:36:00 -0500
+Received: from elvis.franken.de ([193.175.24.41]:44675 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhBKKcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:32:13 -0500
+        id S230124AbhBKKbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 05:31:42 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lA9FS-0005LQ-01; Thu, 11 Feb 2021 11:30:58 +0100
+        id 1lA9FS-0005LQ-02; Thu, 11 Feb 2021 11:30:58 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4B308C0E70; Thu, 11 Feb 2021 11:20:39 +0100 (CET)
-Date:   Thu, 11 Feb 2021 11:20:39 +0100
+        id 8394AC0E70; Thu, 11 Feb 2021 11:20:54 +0100 (CET)
+Date:   Thu, 11 Feb 2021 11:20:54 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Keguang Zhang <keguang.zhang@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@linux-mips.org, Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] MAINTAINERS: replace non-matching patterns for
- loongson{2,3}
-Message-ID: <20210211102039.GB7985@alpha.franken.de>
-References: <20210210083812.6126-1-lukas.bulwahn@gmail.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v3 RESEND] MIPS: Make check condition for SDBBP more
+ readable
+Message-ID: <20210211102054.GC7985@alpha.franken.de>
+References: <1612945826-4099-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210083812.6126-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <1612945826-4099-1-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:38:12AM +0100, Lukas Bulwahn wrote:
-> Commit ffe1f9356fbe ("MAINTAINERS: Add Loongson-2/Loongson-3 maintainers")
-> adds quite generic file entries for drivers/*/*loongson{2,3}* and
-> drivers/*/*/*loongson{2,3}* to be informed on changes to all loongson{2,3}
-> files in drivers.
+On Wed, Feb 10, 2021 at 04:30:26PM +0800, Tiezhu Yang wrote:
+> According to MIPS EJTAG Specification [1], a Debug Breakpoint
+> exception occurs when an SDBBP instruction is executed, the
+> CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
+> occurred.
 > 
-> However, only the pattern 'drivers/*/*loongson2*' matches to one file in
-> the repository, i.e., drivers/cpufreq/loongson2_cpufreq.c; all other
-> patterns have no file matches.
+> When I read the original code, it looks a little confusing
+> at first glance, just check bit DBp for SDBBP to make the
+> code more readable, it will be much easier to understand.
 > 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
 > 
->   warning: no file matches    F:    drivers/*/*/*loongson2*
->   warning: no file matches    F:    drivers/*/*/*loongson3*
->   warning: no file matches    F:    drivers/*/*loongson3*
-> 
-> As in the last two and half years, no further files and drivers have
-> showed up to match those patterns, just name the one file that matches
-> explicitly and delete the others without a match.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
-> applies cleanly on current master and next-20210209
 > 
-> Keguang, Huacai, Jiaxun, please ack.
+> RESEND due to send to mail list failed.
 > 
-> Thomas, please pick this minor non-urgent cleanup patch.
+> v3: update the commit message and modify the patch subject
 > 
->  MAINTAINERS | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+> v2: add MIPS_DEBUG_DBP definition
+> 
+>  arch/mips/include/asm/mipsregs.h | 4 ++++
+>  arch/mips/kernel/genex.S         | 4 ++--
+>  2 files changed, 6 insertions(+), 2 deletions(-)
 
 applied to mips-next.
 
