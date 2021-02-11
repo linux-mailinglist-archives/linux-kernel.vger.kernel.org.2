@@ -2,161 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CA2319236
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 759D9319238
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhBKS0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:26:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42044 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232640AbhBKSTj (ORCPT
+        id S231431AbhBKS1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:27:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231969AbhBKSVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:19:39 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11BIC9fe013532;
-        Thu, 11 Feb 2021 13:18:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=kBmFU0YCpofm9gB012qjiaFnmfB6/JRiWUFH28MqETs=;
- b=ssSMpJ5QNkgGUXaA40VEnjn8mJlfKHi+H6nuemWjlNVF1861jLZ4Kr5to2ZO2qyEU39l
- zXGC4KLRb6EqLotQX3en/c4h9cQkfiLCl9hUkS27waRGiS6MoEWKLYjSsT/bHvnceqBl
- 5gP8Azv9tsBu1V4g2quJoS4f51Ff+vUNm7VBXtM7DQmUQnK4tiZaomddUJWBsTUMA2Sw
- /XGH23zRD+H2/Kw+94kxlD++sJ1ZHWQAz/gbseELdWOZdYE3rWmdOt7gZcwJOcURZaL4
- IGXExPw7KzKVrTDg0MFMwqrzoaorjHlVuQptdLZ5aA6nDAiB9CFYqfoQPCZjbUO7e8b5 0w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36n9na08wk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 13:18:47 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11BICUXH015626;
-        Thu, 11 Feb 2021 13:18:47 -0500
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36n9na08wc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 13:18:47 -0500
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11BIDUHG000900;
-        Thu, 11 Feb 2021 18:18:47 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma05wdc.us.ibm.com with ESMTP id 36hjr9qkk0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 18:18:47 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11BIIkWF7996178
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 18:18:46 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6F9BA124054;
-        Thu, 11 Feb 2021 18:18:46 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5F60B124053;
-        Thu, 11 Feb 2021 18:18:46 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Feb 2021 18:18:46 +0000 (GMT)
-Subject: Re: [PATCH v7 3/4] x509: Add support for parsing x509 certs with
- ECDSA keys
-From:   Stefan Berger <stefanb@linux.ibm.com>
-To:     dhowells@redhat.com
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        patrick@puiterwijk.org, linux-integrity@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>
-References: <20210201151910.1465705-4-stefanb@linux.ibm.com>
- <202102111531.JYJl0c7G-lkp@intel.com>
- <b72f396e-fafa-cff3-cee2-a47ac5274dc4@linux.ibm.com>
-Message-ID: <58a980d7-ce90-2333-d5ae-014919e6c5d0@linux.ibm.com>
-Date:   Thu, 11 Feb 2021 13:18:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 11 Feb 2021 13:21:11 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDFDC061788
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:20:30 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id t11so4470578pgu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:20:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Cx7+IAlMjVEhgHQf7V03jqKNyPkobgGwu8xQGqHKAsI=;
+        b=t6mlYDY5o1l9HFJo3+mtRUEbkLgCwlPoyWFso3+T7umSCBjifIPc7mcSzE5cc8s6Wy
+         KosoWcL+NaUFa1UHqUHQqHiUDx0JccBybqIiecO4hla3BhxNjHJ18V5RfQaOj+G8+OSd
+         8yZ83RSQaM+k+FpGzTdruQ+oWZ6zHAJriVrTLUgj+B37QbHBWBWL8w+wyV4ZyG53TaDY
+         JJRrG6kn7V8M3wRwuv3OH3IbzhnDehmeL7ntRQjmR3mWOBaqmeOUorFHzr6vopySd7AI
+         T81S7KghtBTGQrHOGt6Ie/12bx7jYJL+IDWaBbJFddVQubqeRFh+tBRa2o79pypfW7vg
+         vhSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cx7+IAlMjVEhgHQf7V03jqKNyPkobgGwu8xQGqHKAsI=;
+        b=XqL2V7FmbqXLOl15IPdct6YHA20mGCyGB/REXEQoS1upMjBzQELgzbdOT/AvdpNaRv
+         xU2iXv0nZUrry2NrXs8FJhvAM43kJK6VCVdxycoUlwDIkLlWNyJVaD0RgB0yQrsoxyJB
+         0aGf8HBJc2od+HIAoiHW1sCswR1MuSa2lP+0Vj2opJqvxrvt7xtQ0VOWkIW0zg+HhBeX
+         iFz0W2nGQfV6qxzsCHobHEyboEwzWKr7KoClUsEkmFSklC/xB1TiZggS2stZ6xDG/rs5
+         br6E2zVN/PYPBm+8ktFHxhP9qPTv4t5s8Jgx4uTGSyzYmRiNuGVsZLe0auheeAKp3F3l
+         KyVg==
+X-Gm-Message-State: AOAM531sUKdcBpuX1923Z6z48UaCQtCMwfK+7Y2S5ghPAsQC9/WtihwL
+        Syg3XZ9TKi+3R6vl6oFqd5m62A==
+X-Google-Smtp-Source: ABdhPJyT1OtutfI2yZlQMRd6GQwZS5ubkKsOpQJWkSY8DquqEy+HFzt/ZE4JZ3Qw2Lm2cfb7Aa7Ejw==
+X-Received: by 2002:a63:4346:: with SMTP id q67mr9262090pga.223.1613067629710;
+        Thu, 11 Feb 2021 10:20:29 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:f588:a708:f347:3ebb])
+        by smtp.gmail.com with ESMTPSA id s135sm6452304pfs.206.2021.02.11.10.20.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 10:20:29 -0800 (PST)
+Date:   Thu, 11 Feb 2021 10:20:22 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Makarand Sonare <makarandsonare@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pshier@google.com,
+        jmattson@google.com, Ben Gardon <bgardon@google.com>
+Subject: Re: [RESEND PATCH ] KVM: VMX: Enable/disable PML when dirty logging
+ gets enabled/disabled
+Message-ID: <YCV1Zj+CJgyPN2jB@google.com>
+References: <20210210212308.2219465-1-makarandsonare@google.com>
+ <YCSAh31LP4QwBfHZ@google.com>
+ <d6dbe1e3-eaa9-f171-ce5f-6a00b21f1c9a@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <b72f396e-fafa-cff3-cee2-a47ac5274dc4@linux.ibm.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 phishscore=0 lowpriorityscore=0 malwarescore=0
- clxscore=1015 spamscore=0 suspectscore=0 bulkscore=0 mlxscore=0
- adultscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102110144
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d6dbe1e3-eaa9-f171-ce5f-6a00b21f1c9a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 12:30 PM, Stefan Berger wrote:
-> On 2/11/21 3:03 AM, kernel test robot wrote:
->> Hi Stefan,
->>
->> Thank you for the patch! Yet something to improve:
->>
->>>> crypto/asymmetric_keys/public_key.c:97: undefined reference to 
->>>> `parse_OID'
->
->
-> So the issue is that  only ASYMMETRIC_PUBLIC_KEY_SUBTYPE is selected 
-> in this config and the selection of OID_REGISTRY is missing. I am not 
-> sure whether ASYMMETRIC_PUBLIC_KEY_SUBTYPE should/could select 
-> OID_REGISTRY or whether that would be wrong... ?
+On Thu, Feb 11, 2021, Paolo Bonzini wrote:
+> On 11/02/21 01:55, Sean Christopherson wrote:
+> > > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > > index ee4ac2618ec59..c6e5b026bbfe8 100644
+> > > --- a/virt/kvm/kvm_main.c
+> > > +++ b/virt/kvm/kvm_main.c
+> > > @@ -307,6 +307,7 @@ bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req)
+> > >   {
+> > >   	return kvm_make_all_cpus_request_except(kvm, req, NULL);
+> > >   }
+> > > +EXPORT_SYMBOL_GPL(kvm_make_all_cpus_request);
+> > If we move enable_pml into x86.c then this export and several of the kvm_x86_ops
+> > go away.  I know this because I have a series I was about to send that does that,
+> > among several other things.  I suspect that kvm->arch.pml_enabled could also go
+> > away, but that's just a guess.
+> 
+> I don't like the idea of moving enable_pml into x86.c, but I'm ready to be
+> convinced otherwise.  In any case, for sure you can _check_ enable_pml from
+> x86.c via kvm_x86_ops.flush_log_dirty or kvm_x86_ops.cpu_dirty_log_size.
 
+Ya, after taking another look at my series, exposing enable_pml isn't necessary.
+What I really dislike is bouncing through VMX and exporting MMU functions for
+no real benefit.  The x86/MMU functions/behavior are tightly coupled to VMX's
+implementation, bouncing through kvm_x86_ops doesn't magically decouple things.
 
-David,
+Anyways, kvm_x86_ops.cpu_dirty_log_size can be change to a simple integer instead
+of a callback function, and with that change I'm happy using cpu_dirty_log_size
+as the check with x86.c/mmu.c to determine whether or not hardware dirty logging
+is supported.
 
-   if the above is not desired then the following change would let us 
-get rid of the offending parse_OID(). The below change is only for NIST 
-p192 in this experiment but shows that we need to add additional 
-strcmp() cases in x509_check_for_self_signed() since 
-cert->sig->pkey_algo is set to "ecdsa". I am not sure whether we should 
-derive from the signature which curve was used to create the signature 
-so that cert->sig->pkey_algo could be more specific and the simple 
-existing strcmp() would pass. So two possible ways to go forward. Which 
-way should we go?
-
-    Stefan
-
-
-diff --git a/crypto/asymmetric_keys/x509_cert_parser.c 
-b/crypto/asymmetric_keys/x509_cert_parser.c
-index 0aff4e584b11..71d83bb345c4 100644
---- a/crypto/asymmetric_keys/x509_cert_parser.c
-+++ b/crypto/asymmetric_keys/x509_cert_parser.c
-@@ -505,6 +505,8 @@ int x509_extract_key_data(void *context, size_t hdrlen,
-                         ctx->cert->pub->pkey_algo = "sm2";
-                         break;
-                 case OID_id_prime192v1:
-+                       ctx->cert->pub->pkey_algo = "ecdsa-nist-p192";
-+                       break;
-                 case OID_id_prime256v1:
-                         ctx->cert->pub->pkey_algo = "ecdsa";
-                         break;
-diff --git a/crypto/asymmetric_keys/x509_public_key.c 
-b/crypto/asymmetric_keys/x509_public_key.c
-index ae450eb8be14..3ebeed195b61 100644
---- a/crypto/asymmetric_keys/x509_public_key.c
-+++ b/crypto/asymmetric_keys/x509_public_key.c
-@@ -129,7 +129,10 @@ int x509_check_for_self_signed(struct 
-x509_certificate *cert)
-         }
-
-         ret = -EKEYREJECTED;
--       if (strcmp(cert->pub->pkey_algo, cert->sig->pkey_algo) != 0)
-+printk(KERN_INFO "%s: %s ==? %s\n", __func__, cert->pub->pkey_algo, 
-cert->sig->pkey_algo);
-+       if (strcmp(cert->pub->pkey_algo, cert->sig->pkey_algo) != 0 &&
-+           strncmp(cert->pub->pkey_algo, "ecdsa-nist-p", 12) != 0 &&
-+           strcmp(cert->sig->pkey_algo, "ecdsa") != 0)
-                 goto out;
-
-         ret = public_key_verify_signature(cert->pub, cert->sig);
-
-
->
->
->     Stefan
->
+Thanks for the early sanity check :-)
