@@ -2,175 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A009B318BD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D630318BD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhBKNR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:17:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231731AbhBKM6O (ORCPT
+        id S230438AbhBKNSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:18:49 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17492 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231825AbhBKM6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:58:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B537C061786;
-        Thu, 11 Feb 2021 04:57:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OOJcCp5dGtah7r/OuWyu9JlnfZ1xgctJqTySocWP2IM=; b=SU8KtONIrgFdxe/vuSphoAKLQ8
-        e/XKVqzNCzP62A6aEAfcK6sBTQUOfOpVQpVU1N2HxvpusZSmHS8wYx1szt8jNKbFW//xiidFeSLag
-        P7Ya2OJIk/2JbU2Khm0Tz4tPxTFYpBfZWBcghLBxoJ5J+3lbFoNHwI5Wu5Pae/6BoYqyQC6fkLnnQ
-        EQQ6/v3aFp5xFhCAdJG81vtQNq5Meo90xwPyit7Ekc4roQgiBbIJMMKXe8AgYG7w/BBHqJK5PhK0w
-        gKMzNpmtN1CXnJGb1DYYXu1LeEotRIZCEbDRwArabnDHrfstuUmBeEtFKXc1quVp2c5FpgKxIE9xn
-        aygAZs9w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lABX3-00AFTV-2E; Thu, 11 Feb 2021 12:57:21 +0000
-Date:   Thu, 11 Feb 2021 12:57:17 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jan Kara <jack@suse.cz>, Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
-Subject: Re: possible deadlock in start_this_handle (2)
-Message-ID: <20210211125717.GH308988@casper.infradead.org>
-References: <000000000000563a0205bafb7970@google.com>
- <20210211104947.GL19070@quack2.suse.cz>
- <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
- <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
- <20210211121020.GO19070@quack2.suse.cz>
- <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
+        Thu, 11 Feb 2021 07:58:48 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11BCk7aW026707;
+        Thu, 11 Feb 2021 07:58:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=QdQ7sXB56S7RetRm9u1Pk6q4tdb5or50B3OrRsZxoIE=;
+ b=NL61gHzLyTPA2i0MJ88yQicYC37FU/zLMxYpjaEx2fooMdgObU+2zZpJuNS5pW4N+EzX
+ VpEmQZhxMeYBHK9NP7323hHH/Vi94qK+9859EpmgaYA40fWS1zrUE9WacRUchOj8ViOZ
+ vck4E1nnnlw34e1ZgaQqQXfKbe1sqZs3s80Dxvn2TD109h4m9YdIryuLaHlXZ6w2qRHX
+ vFSPpt0U9gk6p1q/BG16JdjUISs/HO87+9j4yEeoUC9rpRD5sxg1MpDkj2T6NIOVdvVL
+ S0NLFImO4YTqXA69oHSu5z1Fmms/YgtNA+i5BIG8rcvGvyi5X5fSCeJVr9+tGYNu7YEI eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36n4tm0f2d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 07:58:05 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11BCw4m0088550;
+        Thu, 11 Feb 2021 07:58:04 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36n4tm0f1t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 07:58:04 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11BCgvjM014332;
+        Thu, 11 Feb 2021 12:58:03 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 36hskb2vup-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 12:58:03 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11BCw0tN14483794
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 12:58:00 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0ACBF52050;
+        Thu, 11 Feb 2021 12:58:00 +0000 (GMT)
+Received: from ibm-vm (unknown [9.145.1.216])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A02A852057;
+        Thu, 11 Feb 2021 12:57:59 +0000 (GMT)
+Date:   Thu, 11 Feb 2021 13:57:56 +0100
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] s390/kvm: extend kvm_s390_shadow_fault to return
+ entry pointer
+Message-ID: <20210211135756.249b535b@ibm-vm>
+In-Reply-To: <2a65f089-1728-7bc7-a2a8-a2c089a01cec@redhat.com>
+References: <20210209154302.1033165-1-imbrenda@linux.ibm.com>
+        <20210209154302.1033165-2-imbrenda@linux.ibm.com>
+        <2a65f089-1728-7bc7-a2a8-a2c089a01cec@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_05:2021-02-10,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ mlxscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999
+ lowpriorityscore=0 bulkscore=0 adultscore=0 phishscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 01:34:48PM +0100, Michal Hocko wrote:
-> On Thu 11-02-21 13:10:20, Jan Kara wrote:
-> > On Thu 11-02-21 12:28:48, Dmitry Vyukov wrote:
-> > > On Thu, Feb 11, 2021 at 12:22 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > >
-> > > > On Thu, Feb 11, 2021 at 11:49 AM Jan Kara <jack@suse.cz> wrote:
-> > > > >
-> > > > > Hello,
-> > > > >
-> > > > > added mm guys to CC.
-> > > > >
-> > > > > On Wed 10-02-21 05:35:18, syzbot wrote:
-> > > > > > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
-> > > > > > git tree:       upstream
-> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15cbce90d00000
-> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
-> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> > > > > > userspace arch: i386
-> > > > > >
-> > > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > > >
-> > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > > Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
-> > > > > >
-> > > > > > ======================================================
-> > > > > > WARNING: possible circular locking dependency detected
-> > > > > > 5.11.0-rc6-syzkaller #0 Not tainted
-> > > > > > ------------------------------------------------------
-> > > > > > kswapd0/2246 is trying to acquire lock:
-> > > > > > ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
-> > > > > >
-> > > > > > but task is already holding lock:
-> > > > > > ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
-> > > > > >
-> > > > > > which lock already depends on the new lock.
-> > > > > >
-> > > > > > the existing dependency chain (in reverse order) is:
-> > > > > >
-> > > > > > -> #2 (fs_reclaim){+.+.}-{0:0}:
-> > > > > >        __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
-> > > > > >        fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
-> > > > > >        might_alloc include/linux/sched/mm.h:193 [inline]
-> > > > > >        slab_pre_alloc_hook mm/slab.h:493 [inline]
-> > > > > >        slab_alloc_node mm/slub.c:2817 [inline]
-> > > > > >        __kmalloc_node+0x5f/0x430 mm/slub.c:4015
-> > > > > >        kmalloc_node include/linux/slab.h:575 [inline]
-> > > > > >        kvmalloc_node+0x61/0xf0 mm/util.c:587
-> > > > > >        kvmalloc include/linux/mm.h:781 [inline]
-> > > > > >        ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
-> > > > > >        ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
-> > > > > >        ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
-> > > > > >        ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
-> > > > > >        ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
-> > > > > >        ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
-> > > > > >        ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
-> > > > > >        __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
-> > > > > >        __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
-> > > > > >        __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
-> > > > > >        vfs_setxattr+0x135/0x320 fs/xattr.c:291
-> > > > > >        setxattr+0x1ff/0x290 fs/xattr.c:553
-> > > > > >        path_setxattr+0x170/0x190 fs/xattr.c:572
-> > > > > >        __do_sys_setxattr fs/xattr.c:587 [inline]
-> > > > > >        __se_sys_setxattr fs/xattr.c:583 [inline]
-> > > > > >        __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
-> > > > > >        do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
-> > > > > >        __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
-> > > > > >        do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
-> > > > > >        entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> > > > >
-> > > > > This stacktrace should never happen. ext4_xattr_set() starts a transaction.
-> > > > > That internally goes through start_this_handle() which calls:
-> > > > >
-> > > > >         handle->saved_alloc_context = memalloc_nofs_save();
-> > > > >
-> > > > > and we restore the allocation context only in stop_this_handle() when
-> > > > > stopping the handle. And with this fs_reclaim_acquire() should remove
-> > > > > __GFP_FS from the mask and not call __fs_reclaim_acquire().
-> > > > >
-> > > > > Now I have no idea why something here didn't work out. Given we don't have
-> > > > > a reproducer it will be probably difficult to debug this. I'd note that
-> > > > > about year and half ago similar report happened (got autoclosed) so it may
-> > > > > be something real somewhere but it may also be just some HW glitch or
-> > > > > something like that.
-> > > >
-> > > > HW glitch is theoretically possible. But if we are considering such
-> > > > causes, I would say a kernel memory corruption is way more likely, we
-> > > > have hundreds of known memory-corruption-capable bugs open. In most
-> > > > cases they are caught by KASAN before doing silent damage. But KASAN
-> > > > can miss some cases.
-> > > >
-> > > > I see at least 4 existing bugs with similar stack:
-> > > > https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> > > > https://syzkaller.appspot.com/bug?extid=a7ab8df042baaf42ae3c
-> > > > https://syzkaller.appspot.com/bug?id=c814a55a728493959328551c769ede4c8ff72aab
-> > > > https://syzkaller.appspot.com/bug?id=426ad9adca053dafcd698f3a48ad5406dccc972b
-> > > >
-> > > > All in all, I would not assume it's a memory corruption. When we had
-> > > > bugs that actually caused silent memory corruption, that caused a
-> > > > spike of random one-time crashes all over the kernel. This does not
-> > > > look like it.
-> > > 
-> > > I wonder if memalloc_nofs_save (or any other manipulation of
-> > > current->flags) could have been invoked from interrupt context? I
-> > > think it could cause the failure mode we observe (extremely rare
-> > > disappearing flags). It may be useful to add a check for task context
-> > > there.
-> > 
-> > That's an interesting idea. I'm not sure if anything does manipulate
-> > current->flags from inside an interrupt (definitely memalloc_nofs_save()
-> > doesn't seem to be) but I'd think that in fully preemtible kernel,
-> > scheduler could preempt the task inside memalloc_nofs_save() and the
-> > current->flags manipulation could also clash with a manipulation of these
-> > flags by the scheduler if there's any?
-> 
-> current->flags should be always manipulated from the user context. But
-> who knows maybe there is a bug and some interrupt handler is calling it.
-> This should be easy to catch no?
+On Thu, 11 Feb 2021 10:18:56 +0100
+David Hildenbrand <david@redhat.com> wrote:
 
-Why would it matter if it were?  We save the current value of the nofs
-flag and then restore it.  That would happen before the end of the
-interrupt handler.  So the interrupt isn't going to change the observed
-value of the flag by the task which is interrupted.
+> On 09.02.21 16:43, Claudio Imbrenda wrote:
+> > Extend kvm_s390_shadow_fault to return the pointer to the valid leaf
+> > DAT table entry, or to the invalid entry.
+> > 
+> > Also return some flags in the lower bits of the address:
+> > DAT_PROT: indicates that DAT protection applies because of the
+> >            protection bit in the segment (or, if EDAT, region)
+> > tables NOT_PTE: indicates that the address of the DAT table entry
+> > returned does not refer to a PTE, but to a segment or region table.
+> >   
+> 
+> I've been thinking about one possible issue, but I think it's not 
+> actually an issue. Just sharing so others can verify:
+> 
+> In case our guest uses huge pages / gigantic pages / ASCE R, we
+> create fake page tables (GMAP_SHADOW_FAKE_TABLE).
+> 
+> So, it could be that kvm_s390_shadow_fault()->gmap_shadow_pgt_lookup()
+> succeeds, however, we have a fake PTE in our hands. We lost the
+> actual guest STE/RTE address. (I think it could be recovered somehow
+> via page->index, thought)
+> 
+> But I guess, if there is a fake PTE, then there is not acutally
+> something that could go wrong in gmap_shadow_page() anymore that could
+> lead us in responding something wrong to the guest. We can only really
+> fail with -EINVAL, -ENOMEM or -EFAULT.
+
+this was also my reasoning
+
+> So if the guest changed anything in the meantime (e.g., zap a
+> segment), we would have unshadowed the whole fake page table
+> hierarchy and would simply retry.
+> 
+> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> >   arch/s390/kvm/gaccess.c | 30 +++++++++++++++++++++++++-----
+> >   arch/s390/kvm/gaccess.h |  5 ++++-
+> >   arch/s390/kvm/vsie.c    |  8 ++++----
+> >   3 files changed, 33 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
+> > index 6d6b57059493..e0ab83f051d2 100644
+> > --- a/arch/s390/kvm/gaccess.c
+> > +++ b/arch/s390/kvm/gaccess.c
+> > @@ -976,7 +976,9 @@ int kvm_s390_check_low_addr_prot_real(struct
+> > kvm_vcpu *vcpu, unsigned long gra)
+> >    * kvm_s390_shadow_tables - walk the guest page table and create
+> > shadow tables
+> >    * @sg: pointer to the shadow guest address space structure
+> >    * @saddr: faulting address in the shadow gmap
+> > - * @pgt: pointer to the page table address result
+> > + * @pgt: pointer to the beginning of the page table for the given
+> > address if
+> > + *       successful (return value 0), or to the first invalid DAT
+> > entry in
+> > + *       case of exceptions (return value > 0)
+> >    * @fake: pgt references contiguous guest memory block, not a
+> > pgtable */
+> >   static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long
+> > saddr, @@ -1034,6 +1036,7 @@ static int
+> > kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+> > rfte.val = ptr; goto shadow_r2t;
+> >   		}
+> > +		*pgt = ptr + vaddr.rfx * 8;
+> >   		rc = gmap_read_table(parent, ptr + vaddr.rfx * 8,
+> > &rfte.val);  
+> 
+> Using
+> 
+> gmap_read_table(parent, *pgt, &rfte.val);
+> 
+> or similar with a local variable might then be even clearer. But no 
+> strong opinion.
+
+that's also something I had thought about, in the end this minimizes
+the number of lines / variables while still being readable
+
+> >   		if (rc)
+> >   			return rc;
+> > @@ -1060,6 +1063,7 @@ static int kvm_s390_shadow_tables(struct gmap
+> > *sg, unsigned long saddr, rste.val = ptr;
+> >   			goto shadow_r3t;
+> >   		}
+> > +		*pgt = ptr + vaddr.rsx * 8;
+> >   		rc = gmap_read_table(parent, ptr + vaddr.rsx * 8,
+> > &rste.val); if (rc)
+> >   			return rc;
+> > @@ -1087,6 +1091,7 @@ static int kvm_s390_shadow_tables(struct gmap
+> > *sg, unsigned long saddr, rtte.val = ptr;
+> >   			goto shadow_sgt;
+> >   		}
+> > +		*pgt = ptr + vaddr.rtx * 8;
+> >   		rc = gmap_read_table(parent, ptr + vaddr.rtx * 8,
+> > &rtte.val); if (rc)
+> >   			return rc;
+> > @@ -1123,6 +1128,7 @@ static int kvm_s390_shadow_tables(struct gmap
+> > *sg, unsigned long saddr, ste.val = ptr;
+> >   			goto shadow_pgt;
+> >   		}
+> > +		*pgt = ptr + vaddr.sx * 8;
+> >   		rc = gmap_read_table(parent, ptr + vaddr.sx * 8,
+> > &ste.val); if (rc)
+> >   			return rc;
+> > @@ -1157,6 +1163,8 @@ static int kvm_s390_shadow_tables(struct gmap
+> > *sg, unsigned long saddr,
+> >    * @vcpu: virtual cpu
+> >    * @sg: pointer to the shadow guest address space structure
+> >    * @saddr: faulting address in the shadow gmap
+> > + * @datptr: will contain the address of the faulting DAT table
+> > entry, or of
+> > + *          the valid leaf, plus some flags
+> >    *
+> >    * Returns: - 0 if the shadow fault was successfully resolved
+> >    *	    - > 0 (pgm exception code) on exceptions while
+> > faulting @@ -1165,11 +1173,11 @@ static int
+> > kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+> >    *	    - -ENOMEM if out of memory
+> >    */
+> >   int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *sg,
+> > -			  unsigned long saddr)
+> > +			  unsigned long saddr, unsigned long
+> > *datptr) {
+> >   	union vaddress vaddr;
+> >   	union page_table_entry pte;
+> > -	unsigned long pgt;
+> > +	unsigned long pgt = 0;
+> >   	int dat_protection, fake;
+> >   	int rc;
+> >   
+> > @@ -1191,8 +1199,20 @@ int kvm_s390_shadow_fault(struct kvm_vcpu
+> > *vcpu, struct gmap *sg, pte.val = pgt + vaddr.px * PAGE_SIZE;
+> >   		goto shadow_page;
+> >   	}
+> > -	if (!rc)
+> > -		rc = gmap_read_table(sg->parent, pgt + vaddr.px *
+> > 8, &pte.val); +
+> > +	switch (rc) {
+> > +	case PGM_SEGMENT_TRANSLATION:
+> > +	case PGM_REGION_THIRD_TRANS:
+> > +	case PGM_REGION_SECOND_TRANS:
+> > +	case PGM_REGION_FIRST_TRANS:
+> > +		pgt |= NOT_PTE;
+> > +		break;
+> > +	case 0:
+> > +		pgt += vaddr.px * 8;
+> > +		rc = gmap_read_table(sg->parent, pgt, &pte.val);
+> > +	}
+> > +	if (*datptr)
+> > +		*datptr = pgt | dat_protection * DAT_PROT;
+> >   	if (!rc && pte.i)
+> >   		rc = PGM_PAGE_TRANSLATION;
+> >   	if (!rc && pte.z)
+> > diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
+> > index f4c51756c462..fec26bbb17ba 100644
+> > --- a/arch/s390/kvm/gaccess.h
+> > +++ b/arch/s390/kvm/gaccess.h
+> > @@ -359,7 +359,10 @@ void ipte_unlock(struct kvm_vcpu *vcpu);
+> >   int ipte_lock_held(struct kvm_vcpu *vcpu);
+> >   int kvm_s390_check_low_addr_prot_real(struct kvm_vcpu *vcpu,
+> > unsigned long gra); 
+> > +#define DAT_PROT 2
+> > +#define NOT_PTE 4  
+> 
+> What if our guest is using ASCE.R ?
+
+then we don't care.
+
+if the guest is using ASCE.R, then shadowing will always succeed, and
+the VSIE MVPG handler will retry right away.
+
+if you are worried about the the lowest order bit, it can only be set
+if a specific feature is enabled in the host, and KVM doesn't use /
+support it, so the guest can't use it for its guest.
+
+
+
