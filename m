@@ -2,246 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBD7318A00
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0144318A17
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhBKMBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:01:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43506 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231178AbhBKLtW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:49:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613044075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=622PK+GXq9S1qrkes0QjDaGHdMGIQhnkDb8cr2jJCIE=;
-        b=b15nW0YPkZq4X1/AZ2v8FBI1TVF7uZJZeVT6ZqvfcakqE1w2ekT9dganCpOSFXi5en5JX4
-        PQeKg+jKiqsrW0RAgaoXD8XRsYJznhb9XrlMAgGunzQJFoTPD3QfgwP3qnHxUEyaDDI50+
-        FCrN+pUGPjI8BTg/mhZeysK6LvNp+qQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-545-PkXjXCgzP16X2Qg1rcmGAg-1; Thu, 11 Feb 2021 06:47:53 -0500
-X-MC-Unique: PkXjXCgzP16X2Qg1rcmGAg-1
-Received: by mail-ed1-f69.google.com with SMTP id bo11so4549509edb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 03:47:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=622PK+GXq9S1qrkes0QjDaGHdMGIQhnkDb8cr2jJCIE=;
-        b=UO3B4y4oQELTFDhl2REwxnt7toip0ypXdedK+uEHNVJyPh+WeqWgqWN+95FZ/ummSL
-         tCjZ64l8/RsO/YPbKU6TSBkCUexpvDckLcJVoVuT+Feq4zoNIZoSIR1XkLBMN/jMquk+
-         epOL2Di2w6q+ZiSj3Hj+p346T+XPWxMLLnA4qiRd9ehauqg7lZvGd5DWetU5eJN+OfQ9
-         H5GDBebH+55LoFRhN19xe32NPMa28BTHlUiFpcbpiINLCqxXR//RqGkLUq6QT4xi9o2X
-         1h35XAb8NKJbzGFKQIQy32dmmVITyfz9l4b4UCDmkQ14YRYndKFb5VZ2M3m8XnJszDuS
-         bB4A==
-X-Gm-Message-State: AOAM532sZvbtriTxH1eSR5OT9JmxyzmgeNapWjU+7V88UrZfAWTnH59d
-        cy9sN28oLT/h8aLMBTQWdl1G2wsIu/321XpOjWt53wpNXkIRqx7jqpLsXfIMNU2OU4gtowxiXt5
-        /jHFZPZGVqBPJf47LUdIjLXBz
-X-Received: by 2002:a17:906:6087:: with SMTP id t7mr8301140ejj.90.1613044071889;
-        Thu, 11 Feb 2021 03:47:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzj6t5agYEkOXzy2VYeZHkZnED6Gv95JyBHm5LY8BHXS5lTBekja2hs7Ao+RNUkHsDuAOb8sg==
-X-Received: by 2002:a17:906:6087:: with SMTP id t7mr8301133ejj.90.1613044071704;
-        Thu, 11 Feb 2021 03:47:51 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id x17sm1593873edq.42.2021.02.11.03.47.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 03:47:51 -0800 (PST)
-Date:   Thu, 11 Feb 2021 12:47:48 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v4 04/17] af_vsock: implement SEQPACKET receive loop
-Message-ID: <20210211114748.jshxyiecqmbwzmv3@steredhat>
-References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
- <20210207151526.804741-1-arseny.krasnov@kaspersky.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+        id S231621AbhBKMGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:06:55 -0500
+Received: from gate.crashing.org ([63.228.1.57]:49270 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231272AbhBKL4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 06:56:39 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 11BBnBgY023491;
+        Thu, 11 Feb 2021 05:49:11 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 11BBnA8Q023484;
+        Thu, 11 Feb 2021 05:49:10 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Thu, 11 Feb 2021 05:49:10 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/bug: Remove specific powerpc BUG_ON()
+Message-ID: <20210211114910.GA28121@gate.crashing.org>
+References: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210207151526.804741-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 06:15:22PM +0300, Arseny Krasnov wrote:
->This adds receive loop for SEQPACKET. It looks like receive loop for
->STREAM, but there is a little bit difference:
->1) It doesn't call notify callbacks.
->2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
->   there is no sense for these values in SEQPACKET case.
->3) It waits until whole record is received or error is found during
->   receiving.
->4) It processes and sets 'MSG_TRUNC' flag.
->
->So to avoid extra conditions for two types of socket inside one loop, two
->independent functions were created.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> include/net/af_vsock.h   |  5 +++
-> net/vmw_vsock/af_vsock.c | 96 +++++++++++++++++++++++++++++++++++++++-
-> 2 files changed, 100 insertions(+), 1 deletion(-)
->
->diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->index b1c717286993..bb6a0e52be86 100644
->--- a/include/net/af_vsock.h
->+++ b/include/net/af_vsock.h
->@@ -135,6 +135,11 @@ struct vsock_transport {
-> 	bool (*stream_is_active)(struct vsock_sock *);
-> 	bool (*stream_allow)(u32 cid, u32 port);
->
->+	/* SEQ_PACKET. */
->+	size_t (*seqpacket_seq_get_len)(struct vsock_sock *);
->+	int (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
->+				     int flags, bool *msg_ready);
+On Thu, Feb 11, 2021 at 07:41:52AM +0000, Christophe Leroy wrote:
+> powerpc BUG_ON() is based on using twnei or tdnei instruction,
+> which obliges gcc to format the condition into a 0 or 1 value
+> in a register.
 
-CHECK: Alignment should match open parenthesis
-#35: FILE: include/net/af_vsock.h:141:
-+	int (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
-+				     int flags, bool *msg_ready);
+Huh?  Why is that?
 
-And to make checkpatch.pl happy please use the identifier name also for 
-the others parameter. I know we haven't done this before, but for new 
-code I think we can do it.
+Will it work better if this used __builtin_trap?  Or does the kernel only
+detect very specific forms of trap instructions?
 
->+
-> 	/* Notification. */
-> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
-> 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 66c8a932f49b..3d8af987216a 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1977,6 +1977,97 @@ static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
-> 	return err;
-> }
->
->+static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
->+				     size_t len, int flags)
->+{
->+	const struct vsock_transport *transport;
->+	const struct iovec *orig_iov;
->+	unsigned long orig_nr_segs;
->+	bool msg_ready;
->+	struct vsock_sock *vsk;
->+	size_t record_len;
->+	long timeout;
->+	int err = 0;
->+	DEFINE_WAIT(wait);
->+
->+	vsk = vsock_sk(sk);
->+	transport = vsk->transport;
->+
->+	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
->+	orig_nr_segs = msg->msg_iter.nr_segs;
->+	orig_iov = msg->msg_iter.iov;
->+	msg_ready = false;
->+	record_len = 0;
->+
->+	while (1) {
->+		err = vsock_wait_data(sk, &wait, timeout, NULL, 0);
->+
->+		if (err <= 0) {
->+			/* In case of any loop break(timeout, signal
->+			 * interrupt or shutdown), we report user that
->+			 * nothing was copied.
->+			 */
->+			err = 0;
->+			break;
->+		}
->+
->+		if (record_len == 0) {
->+			record_len =
->+				transport->seqpacket_seq_get_len(vsk);
->+
->+			if (record_len == 0)
->+				continue;
->+		}
->+
->+		err = transport->seqpacket_dequeue(vsk, msg,
->+					flags, &msg_ready);
+> By using a generic implementation, gcc will generate a branch
+> to the unconditional trap generated by BUG().
 
-A single line here should be okay.
+That is many more instructions than ideal.
 
->+		if (err < 0) {
->+			if (err == -EAGAIN) {
->+				iov_iter_init(&msg->msg_iter, READ,
->+					      orig_iov, orig_nr_segs,
->+					      len);
->+				/* Clear 'MSG_EOR' here, because dequeue
->+				 * callback above set it again if it was
->+				 * set by sender. This 'MSG_EOR' is from
->+				 * dropped record.
->+				 */
->+				msg->msg_flags &= ~MSG_EOR;
->+				record_len = 0;
->+				continue;
->+			}
->+
->+			err = -ENOMEM;
->+			break;
->+		}
->+
->+		if (msg_ready)
->+			break;
->+	}
->+
->+	if (sk->sk_err)
->+		err = -sk->sk_err;
->+	else if (sk->sk_shutdown & RCV_SHUTDOWN)
->+		err = 0;
->+
->+	if (msg_ready) {
->+		/* User sets MSG_TRUNC, so return real length of
->+		 * packet.
->+		 */
->+		if (flags & MSG_TRUNC)
->+			err = record_len;
->+		else
->+			err = len - msg->msg_iter.count;
->+
->+		/* Always set MSG_TRUNC if real length of packet is
->+		 * bigger than user's buffer.
->+		 */
->+		if (record_len > len)
->+			msg->msg_flags |= MSG_TRUNC;
->+	}
->+
->+	return err;
->+}
->+
-> static int
-> vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> 			  int flags)
->@@ -2032,7 +2123,10 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> 		goto out;
-> 	}
->
->-	err = __vsock_stream_recvmsg(sk, msg, len, flags);
->+	if (sk->sk_type == SOCK_STREAM)
->+		err = __vsock_stream_recvmsg(sk, msg, len, flags);
->+	else
->+		err = __vsock_seqpacket_recvmsg(sk, msg, len, flags);
->
-> out:
-> 	release_sock(sk);
+> As modern powerpc implement branch folding, that's even more efficient.
 
-The rest seems ok to me, but I need to get more familiar with SEQPACKET 
-before giving my R-b.
+What PowerPC cpus implement branch folding?  I know none.
 
-Thanks,
-Stefano
+Some example code generated via __builtin_trap:
 
+void trap(void) { __builtin_trap(); }
+void trap_if_0(int x) { if (x == 0) __builtin_trap(); }
+void trap_if_not_0(int x) { if (x != 0) __builtin_trap(); }
+
+-m64:
+
+trap:
+	trap
+trap_if_0:
+	tdeqi 3,0
+	blr
+trap_if_not_0:
+	tdnei 3,0
+	blr
+
+-m32:
+
+trap:
+	trap
+trap_if_0:
+	tweqi 3,0
+	blr
+trap_if_not_0:
+	twnei 3,0
+	blr
+
+
+Segher
