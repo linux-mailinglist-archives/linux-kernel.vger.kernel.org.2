@@ -2,193 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094C031926F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0130F319278
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhBKSkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:40:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
+        id S230013AbhBKSrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhBKSkA (ORCPT
+        with ESMTP id S229850AbhBKSqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:40:00 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97319C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:39:20 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id w11so6966132ybq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:39:20 -0800 (PST)
+        Thu, 11 Feb 2021 13:46:31 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403CBC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:45:51 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id q10so840526plk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:45:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=CS2iDjpZDTwxsyM6gA0CiISpb5Ai7JeBaJae0IrTLnY=;
-        b=G9k6K6R49J8Eml+NkQVIUeeXvA7P82RZ6BDCPNMacjwtKzHvW3Nxa/THEj7SSCeqxg
-         3UWL9AnkdRfb+oRDjNSLHuZyTVN9eoZieAuUq9UIf7Ks5VoljBP3s4WZxSeY45RpcitA
-         gsLMLP7U6RDk0xHvEC0TzC4UAEBwdKWd0vB4+LUgPR8wf+SGHmNw+2mQZNL2/g7uCiOd
-         yWN7n3bMgBOkU4O7UdxgmGaM0y30/8GfJ4Xz3+1g0NAxkZ0J6wWEfIZy5IIY51FN5EK1
-         CzhtmaSRZDYEx3uZAPJe3TNfNWdJDmzgynnTSA43tvqV6nLOG+EIzNhm5JgmZVoX0BH7
-         UqSA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QgIYTyhfH72b4fULrOrfaw7q3uY66r3eG0ZY6y6h27g=;
+        b=hFEBW2MXaPJFYKkCfGxQdNc1eSytYrBeXV3p6ZT1FrjSEGdacvycOmi8Rrwh5bYz/E
+         oxAhJutYjhrytLuCWHZqOdVBRUqq4PTcpkkHdX4o9eEdd3mqGLw+pourJhqeSlsRshJB
+         3JTlBxWOkUKkPcCMCY3h0D6zLNdTh9Ml8GXd4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=CS2iDjpZDTwxsyM6gA0CiISpb5Ai7JeBaJae0IrTLnY=;
-        b=WXNgTfPBHlii+gX8LrjZNICCNWcnHBbi8NYp2xwhszwJV8gUQ7nOq9PMSZ9cvOd6Mk
-         /NwHlHFLeFC58NQwRkMUz63ija6kbGy3ravxJ4qZkUfBZRLDDohJu3JtXQv155eXCZwZ
-         XonFalMvW+eo4Q2lJVUooqRF27/V4DnSVQ1hC/n5rujYl2ez/XIUNgsDnw62SYKKQ+kZ
-         unjWpNGORGiq/GQqFDK8QGnaKF2P6TaA+XT4oLJ9PHL2OQpm7Q8MNrxhWb7Zn8Js/KGg
-         QKmljyp+3RSIqEQ1zwXKHe7L/0e3FXtkpnLcRlD2TJmgz4zyqNa775AuGOizQNpOloum
-         /+zQ==
-X-Gm-Message-State: AOAM531Y5XjwbGZJxzpx6H3FXouqe01LzZLb4s1cvNaqKU/37yLNA5LO
-        2creZWBBbWN6b1eq26LlsgOkzBcZ9UP6
-X-Google-Smtp-Source: ABdhPJx7RhAnMeahYJYSa/gQr3EjwjKerfYYQyDhgKB0KJ3jPOXAXXDvQHfFTo3XK5x9SODpFIfEcqdYXRmX
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:8029:cf99:f706:da41])
- (user=irogers job=sendgmr) by 2002:a5b:98a:: with SMTP id c10mr13807836ybq.406.1613068759826;
- Thu, 11 Feb 2021 10:39:19 -0800 (PST)
-Date:   Thu, 11 Feb 2021 10:39:14 -0800
-Message-Id: <20210211183914.4093187-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] perf env: Remove unneeded internal/cpumap inclusions
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QgIYTyhfH72b4fULrOrfaw7q3uY66r3eG0ZY6y6h27g=;
+        b=X+W9Tba1nlf4q+783tgKfdjc3GmsCKJwdkfmLqdeMYltSiw+wGwA0QJUmTlOTvLXdc
+         X96kD46mOjFlrrb7rSXmIEffAosxwef3txDsiDPJzDk8fkMBbkGNWeCkwAFmNzNZXS2b
+         1wQ8q3rPCdwLiKnpaNa9bPZlUM1BLO7vz4dxaryiwiwW6mMdLc9qvuzwA/vYXU7KoyJi
+         glr67JY3mRXllsplmGrG92e3St4Zxc1AMfE37ez3rGyjk3YV+Eay7Y2u32225B9TO2HK
+         Ku4ztr8KFgZRsUMJ/Hz8TSl4eyMCveoMXbjQrnSYmN3CtrbPlEtkX5R5XH5Dh8fvOLU4
+         7ftQ==
+X-Gm-Message-State: AOAM533yJgDIqVhVYDivwqHVvhuPTpxhJyCvsx81c76G1mKohzin33fn
+        +2M2hMsdPr6WzH1oFgFAEn8rqw==
+X-Google-Smtp-Source: ABdhPJyWoJFOTr/Z0khlbxK+fLlWgo3O1EoJvvJueeEg2GOZoTLwS1zrIYglhtQ5DwbHOYjFzx6E9A==
+X-Received: by 2002:a17:90a:d34b:: with SMTP id i11mr5118092pjx.235.1613069150706;
+        Thu, 11 Feb 2021 10:45:50 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:fc92:99c:fc2f:8603])
+        by smtp.gmail.com with UTF8SMTPSA id d18sm5808929pjz.40.2021.02.11.10.45.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Feb 2021 10:45:50 -0800 (PST)
+Date:   Thu, 11 Feb 2021 10:45:48 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+Subject: Re: [PATCH v5 3/4] usb: host: xhci-plat: Create platform device for
+ onboard hubs in probe()
+Message-ID: <YCV7XGloQIjtFAqf@google.com>
+References: <20210210171040.684659-1-mka@chromium.org>
+ <20210210091015.v5.3.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid>
+ <YCTVjx480BzT+saO@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YCTVjx480BzT+saO@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor cleanup.
+Hi Greg,
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/bench/epoll-ctl.c               | 1 -
- tools/perf/bench/epoll-wait.c              | 1 -
- tools/perf/bench/futex-hash.c              | 1 -
- tools/perf/bench/futex-lock-pi.c           | 1 -
- tools/perf/bench/futex-requeue.c           | 1 -
- tools/perf/bench/futex-wake-parallel.c     | 1 -
- tools/perf/bench/futex-wake.c              | 1 -
- tools/perf/tests/openat-syscall-all-cpus.c | 1 -
- tools/perf/util/synthetic-events.c         | 1 -
- 9 files changed, 9 deletions(-)
+On Thu, Feb 11, 2021 at 07:58:23AM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Feb 10, 2021 at 09:10:38AM -0800, Matthias Kaehlcke wrote:
+> > Check during probe() if a hub supported by the onboard_usb_hub
+> > driver is connected to the controller. If such a hub is found
+> > create the corresponding platform device. This requires the
+> > device tree to have a node for the hub with its vendor and
+> > product id (which is not common for USB devices). Further the
+> > platform device is only created when CONFIG_USB_ONBOARD_HUB=y/m.
+> > 
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> > 
+> > Changes in v5:
+> > - patch added to the series
+> > 
+> >  drivers/usb/host/xhci-plat.c | 16 ++++++++++++++++
+> >  include/linux/usb/hcd.h      |  2 ++
+> >  2 files changed, 18 insertions(+)
+> > 
+> > diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+> > index 4d34f6005381..e785fa109eea 100644
+> > --- a/drivers/usb/host/xhci-plat.c
+> > +++ b/drivers/usb/host/xhci-plat.c
+> > @@ -15,6 +15,7 @@
+> >  #include <linux/of.h>
+> >  #include <linux/of_device.h>
+> >  #include <linux/platform_device.h>
+> > +#include <linux/usb/onboard_hub.h>
+> >  #include <linux/usb/phy.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/acpi.h>
+> > @@ -184,6 +185,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
+> >  	int			ret;
+> >  	int			irq;
+> >  	struct xhci_plat_priv	*priv = NULL;
+> > +	struct device_node	*np;
+> >  
+> >  
+> >  	if (usb_disabled())
+> > @@ -356,6 +358,17 @@ static int xhci_plat_probe(struct platform_device *pdev)
+> >  	 */
+> >  	pm_runtime_forbid(&pdev->dev);
+> >  
+> > +	np = usb_of_get_device_node(hcd->self.root_hub, hcd->self.busnum);
+> > +	if (np && of_is_onboard_usb_hub(np)) {
+> > +		struct platform_device *pdev;
+> > +
+> > +		pdev = of_platform_device_create(np, NULL, NULL);
+> 
+> A platform device is a child of another platform device?  Ok, but
+> really, why?  What uses this device?
 
-diff --git a/tools/perf/bench/epoll-ctl.c b/tools/perf/bench/epoll-ctl.c
-index ca2d591aad8a..ddaca75c3bc0 100644
---- a/tools/perf/bench/epoll-ctl.c
-+++ b/tools/perf/bench/epoll-ctl.c
-@@ -21,7 +21,6 @@
- #include <sys/resource.h>
- #include <sys/epoll.h>
- #include <sys/eventfd.h>
--#include <internal/cpumap.h>
- #include <perf/cpumap.h>
- 
- #include "../util/stat.h"
-diff --git a/tools/perf/bench/epoll-wait.c b/tools/perf/bench/epoll-wait.c
-index 75dca9773186..0a0ff1247c83 100644
---- a/tools/perf/bench/epoll-wait.c
-+++ b/tools/perf/bench/epoll-wait.c
-@@ -76,7 +76,6 @@
- #include <sys/epoll.h>
- #include <sys/eventfd.h>
- #include <sys/types.h>
--#include <internal/cpumap.h>
- #include <perf/cpumap.h>
- 
- #include "../util/stat.h"
-diff --git a/tools/perf/bench/futex-hash.c b/tools/perf/bench/futex-hash.c
-index 915bf3da7ce2..b65373ce5c4f 100644
---- a/tools/perf/bench/futex-hash.c
-+++ b/tools/perf/bench/futex-hash.c
-@@ -20,7 +20,6 @@
- #include <linux/kernel.h>
- #include <linux/zalloc.h>
- #include <sys/time.h>
--#include <internal/cpumap.h>
- #include <perf/cpumap.h>
- 
- #include "../util/stat.h"
-diff --git a/tools/perf/bench/futex-lock-pi.c b/tools/perf/bench/futex-lock-pi.c
-index bb25d8beb3b8..89c6d160379c 100644
---- a/tools/perf/bench/futex-lock-pi.c
-+++ b/tools/perf/bench/futex-lock-pi.c
-@@ -14,7 +14,6 @@
- #include <linux/kernel.h>
- #include <linux/zalloc.h>
- #include <errno.h>
--#include <internal/cpumap.h>
- #include <perf/cpumap.h>
- #include "bench.h"
- #include "futex.h"
-diff --git a/tools/perf/bench/futex-requeue.c b/tools/perf/bench/futex-requeue.c
-index 7a15c2e61022..5fa23295ee5f 100644
---- a/tools/perf/bench/futex-requeue.c
-+++ b/tools/perf/bench/futex-requeue.c
-@@ -20,7 +20,6 @@
- #include <linux/kernel.h>
- #include <linux/time64.h>
- #include <errno.h>
--#include <internal/cpumap.h>
- #include <perf/cpumap.h>
- #include "bench.h"
- #include "futex.h"
-diff --git a/tools/perf/bench/futex-wake-parallel.c b/tools/perf/bench/futex-wake-parallel.c
-index cd2b81a845ac..6e6f5247e1fe 100644
---- a/tools/perf/bench/futex-wake-parallel.c
-+++ b/tools/perf/bench/futex-wake-parallel.c
-@@ -29,7 +29,6 @@ int bench_futex_wake_parallel(int argc __maybe_unused, const char **argv __maybe
- #include <linux/time64.h>
- #include <errno.h>
- #include "futex.h"
--#include <internal/cpumap.h>
- #include <perf/cpumap.h>
- 
- #include <err.h>
-diff --git a/tools/perf/bench/futex-wake.c b/tools/perf/bench/futex-wake.c
-index 2dfcef3e371e..6d217868f53c 100644
---- a/tools/perf/bench/futex-wake.c
-+++ b/tools/perf/bench/futex-wake.c
-@@ -20,7 +20,6 @@
- #include <linux/kernel.h>
- #include <linux/time64.h>
- #include <errno.h>
--#include <internal/cpumap.h>
- #include <perf/cpumap.h>
- #include "bench.h"
- #include "futex.h"
-diff --git a/tools/perf/tests/openat-syscall-all-cpus.c b/tools/perf/tests/openat-syscall-all-cpus.c
-index 71f85e2cc127..f7dd6c463f04 100644
---- a/tools/perf/tests/openat-syscall-all-cpus.c
-+++ b/tools/perf/tests/openat-syscall-all-cpus.c
-@@ -15,7 +15,6 @@
- #include "tests.h"
- #include "thread_map.h"
- #include <perf/cpumap.h>
--#include <internal/cpumap.h>
- #include "debug.h"
- #include "stat.h"
- #include "util/counts.h"
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index c6f9db3faf83..0b767233ae1f 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -24,7 +24,6 @@
- #include <linux/perf_event.h>
- #include <asm/bug.h>
- #include <perf/evsel.h>
--#include <internal/cpumap.h>
- #include <perf/cpumap.h>
- #include <internal/lib.h> // page_size
- #include <internal/threadmap.h>
--- 
-2.30.0.478.g8a0d178c01-goog
+In earlier versions there was a standalone platform device:
+https://lore.kernel.org/patchwork/patch/1313001/
 
+However this was rejected by Rob, since the DT would require a node for the
+platform device and (implicit or explicit) nodes for the USB devices,
+representing the same physical device:
+
+https://lore.kernel.org/patchwork/patch/1305395/
+https://lore.kernel.org/patchwork/patch/1313000/
+
+Both Doug Anderson and myself argued that it seems legitimate to distinguish
+between the devices connected to the USB bus, and the chip which might have
+GPIOs, regulators, clocks, ... but apparently our arguments were not
+convincing enough.
