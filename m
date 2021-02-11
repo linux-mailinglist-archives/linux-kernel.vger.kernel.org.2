@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C508631887D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FE3318881
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhBKKpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:45:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57278 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230346AbhBKKlr (ORCPT
+        id S230107AbhBKKpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:45:44 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:38596 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230386AbhBKKnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:41:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613040021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oLC7a4i0K7MCY0/uq/IzIb60MqNgbIOajiBNYOXcbB4=;
-        b=Z+oR/DhxEET4AxuPd3uwDViVXYXqBMy4s6psAOM1Abi1CumAQjqjW1gogYMwQnkJwYYug6
-        4P+l1uF3ndxfrn/nQZO1mfLeMFgNu/oHIRYM0wyfJOFKc+lf3OpD29UC2ev6S4aMVb34AU
-        8Xt2CxvEww+rdPjL8j7LOdht7DL9KrM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-Gj-iRevKOk-_LL1hW5n8tg-1; Thu, 11 Feb 2021 05:40:16 -0500
-X-MC-Unique: Gj-iRevKOk-_LL1hW5n8tg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5ADAA100CCC0;
-        Thu, 11 Feb 2021 10:40:15 +0000 (UTC)
-Received: from [10.36.114.52] (ovpn-114-52.ams2.redhat.com [10.36.114.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 239E710016F7;
-        Thu, 11 Feb 2021 10:40:13 +0000 (UTC)
-Subject: Re: [RFC PATCH 1/2] mm,page_alloc: Make alloc_contig_range handle
- in-use hugetlb pages
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        Thu, 11 Feb 2021 05:43:14 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BAe4iX133188;
+        Thu, 11 Feb 2021 10:42:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Xe9sB7Qk1qSAsU9VhnDn4Awkf7iQtl1Nfir7ipFy1F4=;
+ b=RtGqtXNqnkDyIi+QLEsTU1j9zOqL7rih946dYG1W2hl+WFgHBjQT6Jy2M+41Smv5bHXE
+ ptRaRzQA/Wj4T1CQxqaj8mFjJC/aBpgIhZn0cDT691xgrPf0I09Iy6hNDsUnXjCV9JXT
+ 30Di0LOlnOW0LEaX4RbHcdkDlZz4Wez8HJK1ulANTjPbFmv14oIZoU7bnCxOH73CpgHg
+ sQS9w2zynWgUL7HpgmoKpA0alXWDgKwomZ/O9KvVw35CYTwNRgSSjGSb6o/269cUOj5u
+ o/s52183cRazEFUcUSaowO0h6vckCPje6C2GYv2OzOINuhkB7LWwMBWoBLVBt175j6qE /g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 36hgmaq3a9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 10:42:01 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BAfXM2141389;
+        Thu, 11 Feb 2021 10:41:59 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 36j513wf9g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 10:41:59 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11BAfvsB006111;
+        Thu, 11 Feb 2021 10:41:58 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 11 Feb 2021 02:41:57 -0800
+Date:   Thu, 11 Feb 2021 13:41:48 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        "Paul J . Murphy" <paul.j.murphy@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Martina Krasteva <martinax.krasteva@intel.com>,
+        Gjorgji Rosikopulos <gjorgjix.rosikopulos@intel.com>,
+        linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210208103812.32056-1-osalvador@suse.de>
- <20210208103812.32056-2-osalvador@suse.de>
- <6783e871-e981-c845-16c3-c5ff3e6502ed@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <007046e9-4655-42d1-0422-6a210f726eff@redhat.com>
-Date:   Thu, 11 Feb 2021 11:40:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+Subject: Re: [PATCH][next] media: i2c: imx334: Fix a read of the
+ uninitialized variable ret
+Message-ID: <20210211104148.GE2696@kadam>
+References: <20210210190752.146631-1-colin.king@canonical.com>
+ <20210210210303.GE3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <6783e871-e981-c845-16c3-c5ff3e6502ed@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210210303.GE3@paasikivi.fi.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110095
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.02.21 01:56, Mike Kravetz wrote:
-> On 2/8/21 2:38 AM, Oscar Salvador wrote:
->> alloc_contig_range is not prepared to handle hugetlb pages and will
->> fail if it ever sees one, but since they can be migrated as any other
->> page (LRU and Movable), it makes sense to also handle them.
->>
->> For now, do it only when coming from alloc_contig_range.
->>
->> Signed-off-by: Oscar Salvador <osalvador@suse.de>
->> ---
->>   mm/compaction.c | 17 +++++++++++++++++
->>   mm/vmscan.c     |  5 +++--
->>   2 files changed, 20 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/compaction.c b/mm/compaction.c
->> index e5acb9714436..89cd2e60da29 100644
->> --- a/mm/compaction.c
->> +++ b/mm/compaction.c
->> @@ -940,6 +940,22 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->>   			goto isolate_fail;
->>   		}
->>   
->> +		/*
->> +		 * Handle hugetlb pages only when coming from alloc_contig
->> +		 */
->> +		if (PageHuge(page) && cc->alloc_contig) {
->> +			if (page_count(page)) {
+On Wed, Feb 10, 2021 at 11:03:03PM +0200, Sakari Ailus wrote:
+> Hi Colin,
 > 
-> Thanks for doing this!
-> 
-> I agree with everything in the discussion you and David had.  This code
-> is racy, but since we are scanning lockless there is no way to eliminate
-> them all.  Best to just minimize the windows and document.
->
+> On Wed, Feb 10, 2021 at 07:07:52PM +0000, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > Currently there is a dev_err error message that is printing the
+> > error status in variable ret (that has not been set) instead of
+> > the correct error status from imx334->reset_gpio.  Fix this.
+> > 
+> > Addresses-Coverity: ("Uninitialized scalar variable")
+> > Fixes: 9746b11715c3 ("media: i2c: Add imx334 camera sensor driver")
+> > 
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >  drivers/media/i2c/imx334.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/media/i2c/imx334.c b/drivers/media/i2c/imx334.c
+> > index 07e31bc2ef18..f8b1caf26c9b 100644
+> > --- a/drivers/media/i2c/imx334.c
+> > +++ b/drivers/media/i2c/imx334.c
+> > @@ -790,7 +790,8 @@ static int imx334_parse_hw_config(struct imx334 *imx334)
+> >  	imx334->reset_gpio = devm_gpiod_get_optional(imx334->dev, "reset",
+> >  						     GPIOD_OUT_LOW);
+> >  	if (IS_ERR(imx334->reset_gpio)) {
+> > -		dev_err(imx334->dev, "failed to get reset gpio %d", ret);
+> > +		dev_err(imx334->dev, "failed to get reset gpio %ld",
+> > +			IS_ERR_VALUE(imx334->reset_gpio));
 
-Agreed - and make sure that we don't have strange side. (e.g., in the 
-next patch, allocate a new page, try to dissolve. Dissolving fails, what 
-happens to the just-allocated page?)
+IS_ERR_VALUE() isn't right.  It would always print 1 here.  It should
+just be PTR_ERR().
 
--- 
-Thanks,
+IS_ERR_VALUE() is like IS_ERR() but for when you're storing memory
+addresses in an unsigned long variable.  get_unmapped_area(), for
+example, returns unsigned longs.
 
-David / dhildenb
-
+regards,
+dan carpenter
