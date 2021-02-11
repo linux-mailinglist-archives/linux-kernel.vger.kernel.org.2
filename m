@@ -2,60 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64246318B99
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0D3318B91
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhBKNIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:08:36 -0500
-Received: from gate.crashing.org ([63.228.1.57]:34850 "EHLO gate.crashing.org"
+        id S229763AbhBKNGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:06:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229849AbhBKMqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:46:12 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 11BCd8nj001681;
-        Thu, 11 Feb 2021 06:39:08 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 11BCd7qd001680;
-        Thu, 11 Feb 2021 06:39:07 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Thu, 11 Feb 2021 06:39:07 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/bug: Remove specific powerpc BUG_ON()
-Message-ID: <20210211123907.GD28121@gate.crashing.org>
-References: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu> <20210211114910.GA28121@gate.crashing.org> <3b7f3a1e-0355-b6d4-14cd-300bf4d3629a@csgroup.eu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S229793AbhBKMkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 07:40:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BD9764E05;
+        Thu, 11 Feb 2021 12:40:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613047201;
+        bh=qjJTw4Ge1nQUpb57midRU3heEpiHLCmlvVagsllttyo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ns25xXL/is+KBrwNhowdssL582b2VsAwnEkeo3Ncm7EqMeoNCDBaQjI8YckevQOyG
+         0n0oAK7Fbv0YX4loOBVaJibp/potEpIua90/0eb1iIot+Q/AClwhZPkyF6rsI792Zm
+         lTluSe/rv3v3uC2+ZprlUCdGoNCnkXVmbqbA30L/gZuxM9XEXHQyVEPgeXdi3i+mRI
+         4uy6OSBkYXQqL4eSkB/Iu1PBNQDqd0UQyT7ZUNfqnbFlz5P6XD6QH3PfrrMNfDhqKW
+         g0Wo9oZ9LpgO0YCiTs4RL3hlxp4KLhf+ZK2MECfLPj99dxyrgfavBugGr3M1q6DVrr
+         n6Aa0MBk7X1Xw==
+Date:   Thu, 11 Feb 2021 12:39:07 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Michal Simek <monstr@monstr.eu>
+Cc:     LKML <linux-kernel@vger.kernel.org>, git <git@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: spi: zynq: Convert Zynq QSPI binding to
+ yaml
+Message-ID: <20210211123907.GA5217@sirena.org.uk>
+References: <4ece21a7e9691ed1e775fd6b0b4046b1562e44bd.1612951821.git.michal.simek@xilinx.com>
+ <CAHTX3dKPTC1+awBADMCcgX+=PXsHPw2Bz3Po5=CocdKzVy3bRg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3b7f3a1e-0355-b6d4-14cd-300bf4d3629a@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <CAHTX3dKPTC1+awBADMCcgX+=PXsHPw2Bz3Po5=CocdKzVy3bRg@mail.gmail.com>
+X-Cookie: Do not pick the flowers.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 01:26:12PM +0100, Christophe Leroy wrote:
-> >What PowerPC cpus implement branch folding?  I know none.
-> 
-> Extract from powerpc mpc8323 reference manual:
 
-> — Zero-cycle branch capability (branch folding)
+--h31gzZEtNLTqOjlF
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, this is not what is traditionally called branch folding (which
-stores the instruction being branched to in some cache, originally the
-instruction cache itself; somewhat similar (but different) to the BTIC
-on 750).  Overloaded terminology :-)
+On Thu, Feb 11, 2021 at 10:37:30AM +0100, Michal Simek wrote:
+> st 10. 2. 2021 v 11:10 odes=EDlatel Michal Simek <michal.simek@xilinx.com=
+> napsal:
 
-6xx/7xx CPUs had the branch execution unit in the frontend, and it would
-not issue a branch at all if it could be resolved then already.  Power4
-and later predict all branches, and most are not issued at all (those
-that do need to be executed, like bdnz, are).  At completion time it is
-checked if the prediction was correct (and corrective action is taken if
-not).
+> > +description:
+> > +  The Xilinx Zynq QSPI controller is used to access multi-bit serial f=
+lash
+> > +  memory devices.
 
+> Applied.
 
-Segher
+Doesn't really matter here but I would really expect subsystem binding
+documents to go through the subsystem tree.
+
+--h31gzZEtNLTqOjlF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAlJWoACgkQJNaLcl1U
+h9CROwf8CWGGnX7EkL4HWz4W+Ff9XeN7IdRAlRnqbuFXz/M4PGZOHhj121uHX/Rg
+d7nl2ndT3S2KinCRf3wh9H8KerCX9JMRob/ZGOqetZlJJqcUDN2WvVQuwMW2u+Ud
+116Fg0gfhNzoswprSSIB6qimJLE8xbLwcd1mbhuyCj/DgCtnz9qjl7XB9Pw+zwap
+cKCFBkcMrhl+uQ5dY8Skm7B/1YYfYBTeyawPXFykNdooolzgt8/kcD5ZarGJw2/w
+CZ8FIL+l1CCggNaV3eocXyR3gD15Cr3TLvqocuY/D5oVx8nrSEeZUizE66g/j9Uo
+ZNiYk0v5FuMJOeh1gAO9FlXvoL6LtA==
+=MCLa
+-----END PGP SIGNATURE-----
+
+--h31gzZEtNLTqOjlF--
