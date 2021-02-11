@@ -2,106 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C085318B4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5BA318B51
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhBKM7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:59:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34842 "EHLO mx2.suse.de"
+        id S230179AbhBKM7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:59:47 -0500
+Received: from foss.arm.com ([217.140.110.172]:51338 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbhBKMg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:36:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3346CAC69;
-        Thu, 11 Feb 2021 12:35:43 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 12:35:34 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
-Message-ID: <20210211123534.GA1263@wotan.suse.de>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-7-mrostecki@suse.de>
- <20210210042428.GC12086@qmqm.qmqm.pl>
- <20210210122925.GB23499@wotan.suse.de>
- <20210210125815.GA20903@qmqm.qmqm.pl>
- <20210210192304.GA28777@wotan.suse.de>
- <20210211022738.GB4933@qmqm.qmqm.pl>
+        id S231618AbhBKMhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 07:37:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D5D61063;
+        Thu, 11 Feb 2021 04:36:30 -0800 (PST)
+Received: from [10.57.48.86] (unknown [10.57.48.86])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 796B73F73B;
+        Thu, 11 Feb 2021 04:36:26 -0800 (PST)
+Subject: Re: [PATCH v3 6/8] perf cs-etm: Add helper cs_etm__get_pid_fmt()
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <Daniel.Kiss@arm.com>,
+        Denis Nikitin <denik@chromium.org>,
+        Al Grant <al.grant@arm.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210206150833.42120-1-leo.yan@linaro.org>
+ <20210206150833.42120-7-leo.yan@linaro.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <fa66fe64-ddd8-361c-1a98-4e669fcb0227@arm.com>
+Date:   Thu, 11 Feb 2021 12:36:16 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210211022738.GB4933@qmqm.qmqm.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210206150833.42120-7-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 03:27:38AM +0100, Michał Mirosław wrote:
-> On Wed, Feb 10, 2021 at 07:23:04PM +0000, Michal Rostecki wrote:
-> > On Wed, Feb 10, 2021 at 01:58:15PM +0100, Michał Mirosław wrote:
-> > > On Wed, Feb 10, 2021 at 12:29:25PM +0000, Michal Rostecki wrote:
-> > > > On Wed, Feb 10, 2021 at 05:24:28AM +0100, Michał Mirosław wrote:
-> > > > > This looks like it effectively decreases queue depth for non-last
-> > > > > device. After all devices are filled to queue_depth-penalty, only
-> > > > > a single mirror will be selected for next reads (until a read on
-> > > > > some other one completes).
-> > > > > 
-> > > > 
-> > > > Good point. And if all devices are going to be filled for longer time,
-> > > > this function will keep selecting the last one. Maybe I should select
-> > > > last+1 in that case. Would that address your concern or did you have any
-> > > > other solution in mind?
-> > > 
-> > > The best would be to postpone the selection until one device becomes free
-> > > again. But if that's not doable, then yes, you could make sure it stays
-> > > round-robin after filling the queues (the scheduling will loose the
-> > > "penalty"-driven adjustment though).
-> > 
-> > Or another idea - when all the queues are filled, return the mirror
-> > which has the lowest load (inflight + penalty), even though it's greater
-> > than queue depth. In that case the scheduling will not lose the penalty
-> > adjustment and the load is going to be spreaded more fair.
-> > 
-> > I'm not sure if postponing the selection is that good idea. I think it's
-> > better if the request is added to the iosched queue anyway, even if the
-> > disks' queues are filled, and let the I/O scheduler handle that. The
-> > length of the iosched queue (nr_requests, attribute of the iosched) is
-> > usually greater than queue depth (attribute of the devide), which means
-> > that it's fine to schedule more requests for iosched to handle.
-> > 
-> > IMO btrfs should use the information given by iosched only for heuristic
-> > mirror selection, rather than implement its own throttling logic.
-> > 
-> > Does it make sense to you?
-> > 
-> > An another idea could be an additional iteration in regard to
-> > nr_requests, if all load values are greater than queue depths, though it
-> > might be an overkill. I would prefer to stick to my first idea if
-> > everyone agrees.
+On 2/6/21 3:08 PM, Leo Yan wrote:
+> This patch adds helper function cs_etm__get_pid_fmt(), by passing
+> parameter "traceID", it returns the PID format.
 > 
-> What if iosched could provide an estimate of request's latency? Then
-> btrfs could always select the lowest. For reads from NVME/SSD I would
-> normally expect something simple: speed_factor * (pending_bytes + req_bytes).
-> For HDDs this could do more computation like looking into what is there
-> in the queue already.
-> 
-> This would deviate from simple round-robin scheme, though.
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-I think that idea is close to what Anand Jain did in his latency
-policy, though instead of trying to predict the latency of the currently
-scheduled request, it uses stats about previous read operations:
-
-https://patchwork.kernel.org/project/linux-btrfs/patch/63f6f00e2ecc741efd2200c3c87b5db52c6be2fd.1611114341.git.anand.jain@oracle.com/
-
-Indeed your idea would deviate from the simple round-robin, so maybe it
-would be good to try it, but as a separate policy in a separate
-patch(set).
-
-Regards,
-Michal
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
