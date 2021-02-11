@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F05E319003
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD693318FF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbhBKQa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:30:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53516 "EHLO mail.kernel.org"
+        id S230289AbhBKQ3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:29:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230469AbhBKPYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:24:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 822E064EC0;
-        Thu, 11 Feb 2021 15:03:37 +0000 (UTC)
+        id S231148AbhBKPZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:25:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D1364ED7;
+        Thu, 11 Feb 2021 15:04:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613055818;
-        bh=TCV7KUcTSr1en8/CCzAjSD+7rg3xTxSgUfFS669nnVU=;
+        s=korg; t=1613055843;
+        bh=NOcRe0VCK/Dl7v9QBx5nOMkcdzVJUUGVG2DqpXFpPcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WxXc628mxBkKqT8JsFkPy4z6kcRFxhkCo4YA56PGebBSFxIpU5xNLHBO0yLCMGci0
-         OK1fDOse/0NM85vrkX1vWrLuUWk6IchpItvJdxc6X8Oz5nVcuc6TYUYVIu3wrwlwHK
-         xz8IO3fFjPOkyBNTVSt4zqW+3nDBHVUHfpZAX/GE=
+        b=zsweVNRQuHKlYbQP6YIKBiuPjIvU8R00PJmP2UFl0iTlo5DOxyb86dhD30xV9vS34
+         gfpjDMNayT7oEJArwlrG0cpZ3wplzIf4+sB6xmU7r/lI2zFpyrgWUt5AuXlEV+fxa8
+         yZQJi2g3OWM6VZP2pwbHt00acDHe4O/18WBSFhxo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+b2bf2652983d23734c5c@syzkaller.appspotmail.com,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 19/54] af_key: relax availability checks for skb size calculation
-Date:   Thu, 11 Feb 2021 16:02:03 +0100
-Message-Id: <20210211150153.714973166@linuxfoundation.org>
+        stable@vger.kernel.org, Bard Liao <bard.liao@intel.com>,
+        Xiuli Pan <xiuli.pan@intel.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 28/54] ALSA: hda: intel-dsp-config: add PCI id for TGL-H
+Date:   Thu, 11 Feb 2021 16:02:12 +0100
+Message-Id: <20210211150154.113601291@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
 References: <20210211150152.885701259@linuxfoundation.org>
@@ -43,62 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+From: Bard Liao <bard.liao@intel.com>
 
-[ Upstream commit afbc293add6466f8f3f0c3d944d85f53709c170f ]
+[ Upstream commit c5b5ff607d6fe5f4284acabd07066f96ecf96ac4 ]
 
-xfrm_probe_algs() probes kernel crypto modules and changes the
-availability of struct xfrm_algo_desc. But there is a small window
-where ealg->available and aalg->available get changed between
-count_ah_combs()/count_esp_combs() and dump_ah_combs()/dump_esp_combs(),
-in this case we may allocate a smaller skb but later put a larger
-amount of data and trigger the panic in skb_put().
+Adding PCI id for TGL-H. Like for other TGL platforms, SOF is used if
+Soundwire codecs or PCH-DMIC is detected.
 
-Fix this by relaxing the checks when counting the size, that is,
-skipping the test of ->available. We may waste some memory for a few
-of sizeof(struct sadb_comb), but it is still much better than a panic.
-
-Reported-by: syzbot+b2bf2652983d23734c5c@syzkaller.appspotmail.com
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Bard Liao <bard.liao@intel.com>
+Reviewed-by: Xiuli Pan <xiuli.pan@intel.com>
+Reviewed-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20210125083051.828205-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/key/af_key.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/hda/intel-dsp-config.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/net/key/af_key.c b/net/key/af_key.c
-index c12dbc51ef5fe..ef9b4ac03e7b7 100644
---- a/net/key/af_key.c
-+++ b/net/key/af_key.c
-@@ -2902,7 +2902,7 @@ static int count_ah_combs(const struct xfrm_tmpl *t)
- 			break;
- 		if (!aalg->pfkey_supported)
- 			continue;
--		if (aalg_tmpl_set(t, aalg) && aalg->available)
-+		if (aalg_tmpl_set(t, aalg))
- 			sz += sizeof(struct sadb_comb);
- 	}
- 	return sz + sizeof(struct sadb_prop);
-@@ -2920,7 +2920,7 @@ static int count_esp_combs(const struct xfrm_tmpl *t)
- 		if (!ealg->pfkey_supported)
- 			continue;
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 1c5114dedda92..fe49e9a97f0ec 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -306,6 +306,10 @@ static const struct config_entry config_table[] = {
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0xa0c8,
+ 	},
++	{
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
++		.device = 0x43c8,
++	},
+ #endif
  
--		if (!(ealg_tmpl_set(t, ealg) && ealg->available))
-+		if (!(ealg_tmpl_set(t, ealg)))
- 			continue;
- 
- 		for (k = 1; ; k++) {
-@@ -2931,7 +2931,7 @@ static int count_esp_combs(const struct xfrm_tmpl *t)
- 			if (!aalg->pfkey_supported)
- 				continue;
- 
--			if (aalg_tmpl_set(t, aalg) && aalg->available)
-+			if (aalg_tmpl_set(t, aalg))
- 				sz += sizeof(struct sadb_comb);
- 		}
- 	}
+ /* Elkhart Lake */
 -- 
 2.27.0
 
