@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7BE3186C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E731F3186B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhBKJQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 04:16:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229957AbhBKJGz (ORCPT
+        id S229702AbhBKJPQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Feb 2021 04:15:16 -0500
+Received: from mail-ej1-f48.google.com ([209.85.218.48]:35252 "EHLO
+        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhBKJGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 04:06:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613034293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kM3Da8iocaqkxI1nhtzpteIP7lNMc8fHWHa3MuG0/jw=;
-        b=Cv8reZC3bDZrfgNR0KFgvRcb/6Q/76upaqDHllh1/3TMJv5MsyiIt8RGqK50eBv17pPnPL
-        y/BOc5/ZdLRj+cHAHRb1UAhCqJmPoYun1tCycLiiHv9q2zXBPCxCgpmTpgBo71ha5jTmw7
-        g7RUetzkA0utw6kPeL7QEI23DgmNPv0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-8LsMp0htPdGMiItJSwBZeg-1; Thu, 11 Feb 2021 04:04:51 -0500
-X-MC-Unique: 8LsMp0htPdGMiItJSwBZeg-1
-Received: by mail-wm1-f69.google.com with SMTP id q24so2903710wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 01:04:51 -0800 (PST)
+        Thu, 11 Feb 2021 04:06:25 -0500
+Received: by mail-ej1-f48.google.com with SMTP id a9so8899006ejr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 01:05:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kM3Da8iocaqkxI1nhtzpteIP7lNMc8fHWHa3MuG0/jw=;
-        b=ajV2X5yguXt2RoyypQOjEw7YX3kxrQcvMVt/DcoLpBXXq17ko+epq5jObdkVlxeON3
-         R6uEkKYeabNhvcRl30IPqwJWoFKFcEwC4gfdg8plCO4wcwJUt03qwpnLWovrLp7JT3jH
-         UxdK2ZMzWvIysgqofJd+RpN8RRDfTN96Z+zgx77ihfekxME3qeYrg8TvnjLAUiTSDk+g
-         PypyXvJByLI7tKMgeIkTg9R94rSv6d37l2grUEFKTKA0ZQR0vPeTFkyRiZQXQLzYgxs9
-         awNy/sRypXxQGN0I4giQ2OftMzoRqatTroc2TxTnSwfTtgDYEQxI15UTl8tmgMZ0dFpw
-         MVew==
-X-Gm-Message-State: AOAM532E510vw+MPoj8Kvo2qXr7ulG0M6XHhYWzeQIw5aNNBUZjuL/o5
-        kBd5mkUg5BM4vALA9Ac0JieFgd/J28kZC7vCbZdSPaeU589Xvw+Ac009dMybfsARvxDJeCQRltk
-        GS1zCkBFVNLwucuhsQREepxxS
-X-Received: by 2002:a1c:998a:: with SMTP id b132mr4043846wme.37.1613034290606;
-        Thu, 11 Feb 2021 01:04:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxOZKPoxZFJ8Sf+KV1ysVPtGVanqg/2Y3Zx7fdFcB0n+HtmfIIRwiXp0yxjoU2IC7ZFUwOCfw==
-X-Received: by 2002:a1c:998a:: with SMTP id b132mr4043825wme.37.1613034290458;
-        Thu, 11 Feb 2021 01:04:50 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id v1sm8871459wmj.31.2021.02.11.01.04.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 01:04:49 -0800 (PST)
-To:     Makarand Sonare <makarandsonare@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, seanjc@google.com, pshier@google.com,
-        jmattson@google.com
-Cc:     Ben Gardon <bgardon@google.com>
-References: <20210210212308.2219465-1-makarandsonare@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RESEND PATCH ] KVM: VMX: Enable/disable PML when dirty logging
- gets enabled/disabled
-Message-ID: <7c78c6df-36e7-1473-e834-3786e257ebc5@redhat.com>
-Date:   Thu, 11 Feb 2021 10:04:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=gNUXHZgHcejVF4iv95Z/ItrXjYCLnuO/hAbPuWh63jc=;
+        b=L8zfOCuMtDgzIUlBiEHBZjy0qUp4rwdtczYq/6b7wTknvQTMbwxtpfpNleyh2pgqXh
+         U2wohWT3aYx/c6J9l4ryT2cVjmj/VuwJ8HCq9gxBD1z6bPRNebEJUHEEdz/IFDDc7th/
+         dvGiR5kh6eMDU2qUw76XLp1kyzceOBoo7LMh1bpTMrQlUDrEMJnZobp1YRheVhBbrh/R
+         y1ZQI6t7gmmZq8Q3LOmezZcyzbO7tFuQYEvFiXGJSgTz5qrH/5dMc4ZHlEziXAXO4J7T
+         WV7FJ1EF8thW2Hz3qwo7irgZag6UviqkYpYbbd6cU9JJy6a5bjwsD99CEcWDKCUYSoOl
+         U7AA==
+X-Gm-Message-State: AOAM532o1zZVSjRX8UG+PlH7ScovBYFwCtY/dGtzOETyIb7HfGurQKMN
+        JhJhhIV5CqbNckonwQv20/I=
+X-Google-Smtp-Source: ABdhPJwT7chm+5A4A3+hGIqse7GCUso45r6Oqim+VOn/SYx+u73GMqoEu/MlDUXZfFTN2NMMfw5K0w==
+X-Received: by 2002:a17:906:8690:: with SMTP id g16mr7329486ejx.113.1613034319022;
+        Thu, 11 Feb 2021 01:05:19 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id r9sm3593947eju.74.2021.02.11.01.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 01:05:17 -0800 (PST)
+Date:   Thu, 11 Feb 2021 10:05:16 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Dan Murphy <dmurphy@ti.com>, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>
+Subject: Re: [RESEND PATCH v3] MAINTAINERS: add Dan Murphy as TI LP8xxx
+ drivers maintainer
+Message-ID: <20210211090516.gpcydiit6lmc6m5h@kozik-lap>
+References: <20210210172908.336537-1-krzk@kernel.org>
+ <1b31c98b-2344-c502-6071-89b9d4a886a5@ti.com>
+ <20210210173632.fcbmzk4zdcwb5kps@kozik-lap>
+ <20210211090327.GB4572@dell>
 MIME-Version: 1.0
-In-Reply-To: <20210210212308.2219465-1-makarandsonare@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210211090327.GB4572@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/02/21 22:23, Makarand Sonare wrote:
-> +void vmx_update_pml_in_vmcs(struct kvm_vcpu *vcpu)
-> +{
-> +	if (cpu_has_secondary_exec_ctrls()) {
-> +		if (is_guest_mode(vcpu)) {
-> +			to_vmx(vcpu)->nested.deferred_update_pml_vmcs = true;
-> +			return;
-> +		}
-> +
-> +		if (vcpu->kvm->arch.pml_enabled)
-> +			vmcs_set_bits(SECONDARY_VM_EXEC_CONTROL,
-> +				SECONDARY_EXEC_ENABLE_PML);
-> +		else
-> +			vmcs_clear_bits(SECONDARY_VM_EXEC_CONTROL,
-> +				SECONDARY_EXEC_ENABLE_PML);
-> +	}
-> +}
+On Thu, Feb 11, 2021 at 09:03:27AM +0000, Lee Jones wrote:
+> On Wed, 10 Feb 2021, Krzysztof Kozlowski wrote:
+> 
+> > On Wed, Feb 10, 2021 at 11:33:49AM -0600, Dan Murphy wrote:
+> > > Krzysztof
+> > > 
+> > > On 2/10/21 11:29 AM, Krzysztof Kozlowski wrote:
+> > > > Milo Kim's email in TI bounces with permanent error (550: Invalid
+> > > > recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> > > > credits and add Dan Murphy from TI to look after:
+> > > >   - TI LP855x backlight driver,
+> > > >   - TI LP8727 charger driver,
+> > > >   - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+> > > > 
+> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > > Cc: Dan Murphy <dmurphy@ti.com>
+> > > 
+> > > Unfortunately I need to remove my ACK.  My TI email will be disabled this
+> > > Friday.
+> > > 
+> > > No replacement has been identified
+> > 
+> > Ah, then I propose to mark entries as orphaned - without any maintainer.
+> > Other option is to remove them entirely so they will be covered by
+> > regular power supply entry.
+> > 
+> > Any preferences here?
+> 
+> Counter-proposal: Since they are driver-level entries, just remove
+> them altogether.  They are not orphaned as they will still come under
+> the subsystem umbrella.
 
+I also vote for this (that was actually my v1 of this patch).
 
-Since the execution controls are shadowed, they can be read quite 
-efficiently.  This means that there's no need for 
-vcpu->kvm->arch.pml_enabled, and also that the copy can be done 
-unconditionally in prepare_vmcs02 and nested_vmx_vmexit.
-
-If the above is not true, we should at least combine 
-change_vmcs01_virtual_apic_mode, reload_vmcs01_apic_access_page and the 
-new field in a single bit field, for example 
-vmx->nested.dirty_vmcs01_fields or vmx->nested.vmexit_requests.
-
-In any case I expect Sean to take care of submitting this patch and I 
-have to do nothing more about it, right?
-
-Paolo
+Best regards,
+Krzysztof
 
