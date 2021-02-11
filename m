@@ -2,52 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF4C31946C
+	by mail.lfdr.de (Postfix) with ESMTP id D206E31946D
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhBKUZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:25:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
+        id S231949AbhBKUZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:25:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230206AbhBKUWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:22:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2C6060238;
-        Thu, 11 Feb 2021 20:22:04 +0000 (UTC)
+        id S231470AbhBKUXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 15:23:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 33DB364DBA;
+        Thu, 11 Feb 2021 20:22:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613074924;
-        bh=UrvcE2lj85NlywIZvmXxFHTXwnJADqWlvkn2813E6AM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=oRZKh4NouHCR9wslVjSEdmi6T+qOV0i0Av4mwNpdAlh1DCVmZ1jnjwtahakjgcKQZ
-         h8bH1gTR3wESHbGDkYQyZfy2n0rf40oNlwwi+JMy0sD4OzXsH6eUCAFXy2M+eF5s37
-         fLKLF9eGVgkosCNF29gvSH6Bt3PUxY5lGJ/w+HQhWZCqiINTkZfMsbQaleHbBtb0Hv
-         kAesh/XqY410BTEA+9HcYHwDUxtMOJKBgyV3TleZ0B6RoKwabPV4xoDE9zeNIDE00b
-         uP/hl0sL1LvGuvcGiU2VPiDvUBp4j/Kb3QmhsSmh8FtpyIi6QOTu0j9121ePijcfk0
-         02KiklzoRyEYg==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210210161649.431741-1-vkoul@kernel.org>
-References: <20210210161649.431741-1-vkoul@kernel.org>
-Subject: Re: [PATCH] clk: qcom: gcc-sm8350: add gdsc
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-To:     Vinod Koul <vkoul@kernel.org>
-Date:   Thu, 11 Feb 2021 12:22:03 -0800
-Message-ID: <161307492343.1254594.17777628991790358745@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        s=k20201202; t=1613074954;
+        bh=Mkyex0H4/L67kgg7K1BB4FweSwcndtW+MOqnA9Rofek=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Ifv+iO+YP7uSPZ7tSw7vwTfEWWrYcJjwR59cICvNsm0081ZLYuQVMwG3DVi0ENpFK
+         UBG5YR66Ho4z60Raq976FjDW0SZQxToUpA+6gxGBUvz/LKn1WApmaE4KkTn2s9RAgO
+         w+u3ZvvU908rVGROMjllCHhOtQLCpSF5DulaAi/LbWYCOKrYHmQQzUU1WqzkBU7Gct
+         m8P5GU5xPfceE+dgaB1kBhksdBT4Jz4l15bSyMbSxG6KP2svT6avfAm1rj2kWmD22u
+         GCclqbBkjCs5EL7WJecL4T+1PlQzrlpG2BAgIlEB6sH/cUdyoszRAJiT3tSE+Fe9dW
+         q/fXDsx1wUK6Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2025D60951;
+        Thu, 11 Feb 2021 20:22:34 +0000 (UTC)
+Subject: Re: [GIT PULL] gpio: fixes for v5.11
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210211141843.32699-1-brgl@bgdev.pl>
+References: <20210211141843.32699-1-brgl@bgdev.pl>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210211141843.32699-1-brgl@bgdev.pl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.11
+X-PR-Tracked-Commit-Id: 28dc10eb77a2db7681b08e3b109764bbe469e347
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c05263df6c1ab82277cc3b2778b183b469a71a60
+Message-Id: <161307495406.16659.14078858185078572322.pr-tracker-bot@kernel.org>
+Date:   Thu, 11 Feb 2021 20:22:34 +0000
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Vinod Koul (2021-02-10 08:16:49)
-> Add the GDSC found in GCC for SM8350 SoC
->=20
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
+The pull request you sent on Thu, 11 Feb 2021 15:18:43 +0100:
 
-Applied to clk-next
+> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.11
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c05263df6c1ab82277cc3b2778b183b469a71a60
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
