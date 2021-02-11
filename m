@@ -2,199 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003A63186B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729083186B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhBKJHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 04:07:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44426 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229792AbhBKJDV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 04:03:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613034114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=87Impx6zBhFPew0MsLa4uFlCrkffLZXeuCsIAmOnb1o=;
-        b=Lk/M0qqeo34ImcbbCgR6VNkm4dMEWz1EyhOHirHngtdRHyhlfncwIHEYQMYH0Y3e2Qs1Rd
-        XHsxCqr7lkmdX9oKHSZaWj99yMAujEH2ETPqPH5qXYWC/k8AygFx5mmTKTQGv6bmmnPOMZ
-        jfw3xwGhj04iirr0U6S+EbCh9j6ZPOk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-CVxMxznvM0iwyXDkheMOxg-1; Thu, 11 Feb 2021 04:01:50 -0500
-X-MC-Unique: CVxMxznvM0iwyXDkheMOxg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B6F3E107B465;
-        Thu, 11 Feb 2021 09:01:44 +0000 (UTC)
-Received: from [10.36.114.52] (ovpn-114-52.ams2.redhat.com [10.36.114.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F05745DF58;
-        Thu, 11 Feb 2021 09:01:33 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-References: <20210208084920.2884-1-rppt@kernel.org>
- <20210208084920.2884-8-rppt@kernel.org> <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
- <20210208212605.GX242749@kernel.org> <YCJMDBss8Qhha7g9@dhcp22.suse.cz>
- <20210209090938.GP299309@linux.ibm.com> <YCKLVzBR62+NtvyF@dhcp22.suse.cz>
- <20210211071319.GF242749@kernel.org> <YCTtSrCEvuBug2ap@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <0d66baec-1898-987b-7eaf-68a015c027ff@redhat.com>
-Date:   Thu, 11 Feb 2021 10:01:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S229979AbhBKJJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 04:09:02 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:19053 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229836AbhBKJEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 04:04:11 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DbrHn6YFnz9v1r3;
+        Thu, 11 Feb 2021 10:02:45 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id I3uV6Lov9Lcj; Thu, 11 Feb 2021 10:02:45 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DbrHn5jcJz9v1qx;
+        Thu, 11 Feb 2021 10:02:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D48E48B81A;
+        Thu, 11 Feb 2021 10:02:46 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id m6etzR6U-SJI; Thu, 11 Feb 2021 10:02:46 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 469BC8B81B;
+        Thu, 11 Feb 2021 10:02:46 +0100 (CET)
+Subject: Re: [PATCH] powerpc/traps: Declare unrecoverable_exception() as
+ __noreturn
+To:     Gabriel Paubert <paubert@iram.es>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <f46a01750b1a00c9c43725899c9cf8eb6c6a0587.1613025208.git.christophe.leroy@csgroup.eu>
+ <20210211074723.GA16987@lt-gp.iram.es>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <51da512b-3d00-fb5e-7abc-60688960df65@csgroup.eu>
+Date:   Thu, 11 Feb 2021 10:02:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YCTtSrCEvuBug2ap@dhcp22.suse.cz>
+In-Reply-To: <20210211074723.GA16987@lt-gp.iram.es>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.02.21 09:39, Michal Hocko wrote:
-> On Thu 11-02-21 09:13:19, Mike Rapoport wrote:
->> On Tue, Feb 09, 2021 at 02:17:11PM +0100, Michal Hocko wrote:
->>> On Tue 09-02-21 11:09:38, Mike Rapoport wrote:
-> [...]
->>>> Citing my older email:
->>>>
->>>>      I've hesitated whether to continue to use new flags to memfd_create() or to
->>>>      add a new system call and I've decided to use a new system call after I've
->>>>      started to look into man pages update. There would have been two completely
->>>>      independent descriptions and I think it would have been very confusing.
->>>
->>> Could you elaborate? Unmapping from the kernel address space can work
->>> both for sealed or hugetlb memfds, no? Those features are completely
->>> orthogonal AFAICS. With a dedicated syscall you will need to introduce
->>> this functionality on top if that is required. Have you considered that?
->>> I mean hugetlb pages are used to back guest memory very often. Is this
->>> something that will be a secret memory usecase?
->>>
->>> Please be really specific when giving arguments to back a new syscall
->>> decision.
+
+
+Le 11/02/2021 à 08:47, Gabriel Paubert a écrit :
+> On Thu, Feb 11, 2021 at 06:34:43AM +0000, Christophe Leroy wrote:
+>> unrecoverable_exception() is never expected to return, most callers
+>> have an infiniteloop in case it returns.
 >>
->> Isn't "syscalls have completely independent description" specific enough?
-> 
-> No, it's not as you can see from questions I've had above. More on that
-> below.
-> 
->> We are talking about API here, not the implementation details whether
->> secretmem supports large pages or not.
+>> Ensure it really never returns by terminating it with a BUG(), and
+>> declare it __no_return.
 >>
->> The purpose of memfd_create() is to create a file-like access to memory.
->> The purpose of memfd_secret() is to create a way to access memory hidden
->> from the kernel.
+>> It always GCC to really simplify functions calling it. In the exemple below,
+> 
+> s/always/allows ?
+
+Yes
+
+> 
+> (Otherwise I can't parse it.)
+> 
+>> it avoids the stack frame in the likely fast path and avoids code duplication
+>> for the exit.
+> 
+> Indeed, nice code generation improvement.
+> 
 >>
->> I don't think overloading memfd_create() with the secretmem flags because
->> they happen to return a file descriptor will be better for users, but
->> rather will be more confusing.
+>> With this patch:
+>>
+>> 	00000348 <interrupt_exit_kernel_prepare>:
+>> 	 348:	81 43 00 84 	lwz     r10,132(r3)
+>> 	 34c:	71 48 00 02 	andi.   r8,r10,2
+>> 	 350:	41 82 00 2c 	beq     37c <interrupt_exit_kernel_prepare+0x34>
+>> 	 354:	71 4a 40 00 	andi.   r10,r10,16384
+>> 	 358:	40 82 00 20 	bne     378 <interrupt_exit_kernel_prepare+0x30>
+>> 	 35c:	80 62 00 70 	lwz     r3,112(r2)
+>> 	 360:	74 63 00 01 	andis.  r3,r3,1
+>> 	 364:	40 82 00 28 	bne     38c <interrupt_exit_kernel_prepare+0x44>
+>> 	 368:	7d 40 00 a6 	mfmsr   r10
+>> 	 36c:	7c 11 13 a6 	mtspr   81,r0
+>> 	 370:	7c 12 13 a6 	mtspr   82,r0
+>> 	 374:	4e 80 00 20 	blr
+>> 	 378:	48 00 00 00 	b       378 <interrupt_exit_kernel_prepare+0x30>
 > 
-> This is quite a subjective conclusion. I could very well argue that it
-> would be much better to have a single syscall to get a fd backed memory
-> with spedific requirements (sealing, unmapping from the kernel address
-> space). Neither of us would be clearly right or wrong. A more important
-> point is a future extensibility and usability, though. So let's just
-> think of few usecases I have outlined above. Is it unrealistic to expect
-> that secret memory should be sealable? What about hugetlb? Because if
-> the answer is no then a new API is a clear win as the combination of
-> flags would never work and then we would just suffer from the syscall
-> multiplexing without much gain. On the other hand if combination of the
-> functionality is to be expected then you will have to jam it into
-> memfd_create and copy the interface likely causing more confusion. See
-> what I mean?
+> Infinite loop (seems to be on test of MSR_PR)?
+
+Yes, that's what you get when CONFIG_BUG is not selected.
+
+/include/asm-generic/bug.h:
+
+#ifndef HAVE_ARCH_BUG
+#define BUG() do {} while (1)
+#endif
+
+
 > 
-> I by no means do not insist one way or the other but from what I have
-> seen so far I have a feeling that the interface hasn't been thought
-> through enough. Sure you have landed with fd based approach and that
-> seems fair. But how to get that fd seems to still have some gaps IMHO.
+> 	Gabriel
 > 
-
-I agree with Michal. This has been raised by different
-people already, including on LWN (https://lwn.net/Articles/835342/).
-
-I can follow Mike's reasoning (man page), and I am also fine if there is
-a valid reason. However, IMHO the basic description seems to match quite good:
-
-        memfd_create() creates an anonymous file and returns a file descriptor that refers to it.  The
-        file behaves like a regular file, and so can be modified, truncated, memory-mapped, and so on.
-        However,  unlike a regular file, it lives in RAM and has a volatile backing storage.  Once all
-        references to the file are dropped, it is automatically released.  Anonymous  memory  is  used
-        for  all  backing pages of the file.  Therefore, files created by memfd_create() have the same
-        semantics as other anonymous memory allocations such as those allocated using mmap(2) with the
-        MAP_ANONYMOUS flag.
-
-AFAIKS, we would need MFD_SECRET and disallow
-MFD_ALLOW_SEALING and MFD_HUGETLB.
-
-In addition, we could add MFD_SECRET_NEVER_MAP, which could disallow any kind of
-temporary mappings (eor migration). TBC.
-
----
-
-Some random thoughts regarding files.
-
-What is the page size of secretmem memory? Sometimes we use huge pages,
-sometimes we fallback to 4k pages. So I assume huge pages in general?
-
-What are semantics of MADV()/FALLOCATE() etc on such files?
-I assume PUNCH_HOLE fails in a nice way? does it work?
-
-Does mremap()/mremap(FIXED) work/is it blocked?
-
-Does mprotect() fail in a nice way?
-
-Is userfaultfd() properly fenced? Or does it even work (doubt)?
-
-How does it behave if I mmap(FIXED) something in between?
-In which granularity can I do that (->page-size?)?
-
-What are other granularity restrictions (->page size)?
-
-Don't want to open a big discussion here, just some random thoughts.
-Maybe it has all been already figured out and most of the answers
-above are "Fails with -EINVAL".
-
--- 
-Thanks,
-
-David / dhildenb
-
+>> 	 37c:	94 21 ff f0 	stwu    r1,-16(r1)
+>> 	 380:	7c 08 02 a6 	mflr    r0
+>> 	 384:	90 01 00 14 	stw     r0,20(r1)
+>> 	 388:	48 00 00 01 	bl      388 <interrupt_exit_kernel_prepare+0x40>
+>> 				388: R_PPC_REL24	unrecoverable_exception
+>> 	 38c:	38 e2 00 70 	addi    r7,r2,112
+>> 	 390:	3d 00 00 01 	lis     r8,1
+>> 	 394:	7c c0 38 28 	lwarx   r6,0,r7
+>> 	 398:	7c c6 40 78 	andc    r6,r6,r8
+>> 	 39c:	7c c0 39 2d 	stwcx.  r6,0,r7
+>> 	 3a0:	40 a2 ff f4 	bne     394 <interrupt_exit_kernel_prepare+0x4c>
+>> 	 3a4:	38 60 00 01 	li      r3,1
+>> 	 3a8:	4b ff ff c0 	b       368 <interrupt_exit_kernel_prepare+0x20>
+>>
+>> Without this patch:
+>>
+>> 	00000348 <interrupt_exit_kernel_prepare>:
+>> 	 348:	94 21 ff f0 	stwu    r1,-16(r1)
+>> 	 34c:	93 e1 00 0c 	stw     r31,12(r1)
+>> 	 350:	7c 7f 1b 78 	mr      r31,r3
+>> 	 354:	81 23 00 84 	lwz     r9,132(r3)
+>> 	 358:	71 2a 00 02 	andi.   r10,r9,2
+>> 	 35c:	41 82 00 34 	beq     390 <interrupt_exit_kernel_prepare+0x48>
+>> 	 360:	71 29 40 00 	andi.   r9,r9,16384
+>> 	 364:	40 82 00 28 	bne     38c <interrupt_exit_kernel_prepare+0x44>
+>> 	 368:	80 62 00 70 	lwz     r3,112(r2)
+>> 	 36c:	74 63 00 01 	andis.  r3,r3,1
+>> 	 370:	40 82 00 3c 	bne     3ac <interrupt_exit_kernel_prepare+0x64>
+>> 	 374:	7d 20 00 a6 	mfmsr   r9
+>> 	 378:	7c 11 13 a6 	mtspr   81,r0
+>> 	 37c:	7c 12 13 a6 	mtspr   82,r0
+>> 	 380:	83 e1 00 0c 	lwz     r31,12(r1)
+>> 	 384:	38 21 00 10 	addi    r1,r1,16
+>> 	 388:	4e 80 00 20 	blr
+>> 	 38c:	48 00 00 00 	b       38c <interrupt_exit_kernel_prepare+0x44>
+>> 	 390:	7c 08 02 a6 	mflr    r0
+>> 	 394:	90 01 00 14 	stw     r0,20(r1)
+>> 	 398:	48 00 00 01 	bl      398 <interrupt_exit_kernel_prepare+0x50>
+>> 				398: R_PPC_REL24	unrecoverable_exception
+>> 	 39c:	80 01 00 14 	lwz     r0,20(r1)
+>> 	 3a0:	81 3f 00 84 	lwz     r9,132(r31)
+>> 	 3a4:	7c 08 03 a6 	mtlr    r0
+>> 	 3a8:	4b ff ff b8 	b       360 <interrupt_exit_kernel_prepare+0x18>
+>> 	 3ac:	39 02 00 70 	addi    r8,r2,112
+>> 	 3b0:	3d 40 00 01 	lis     r10,1
+>> 	 3b4:	7c e0 40 28 	lwarx   r7,0,r8
+>> 	 3b8:	7c e7 50 78 	andc    r7,r7,r10
+>> 	 3bc:	7c e0 41 2d 	stwcx.  r7,0,r8
+>> 	 3c0:	40 a2 ff f4 	bne     3b4 <interrupt_exit_kernel_prepare+0x6c>
+>> 	 3c4:	38 60 00 01 	li      r3,1
+>> 	 3c8:	4b ff ff ac 	b       374 <interrupt_exit_kernel_prepare+0x2c>
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/include/asm/interrupt.h | 2 +-
+>>   arch/powerpc/kernel/interrupt.c      | 1 -
+>>   arch/powerpc/kernel/traps.c          | 2 ++
+>>   3 files changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+>> index dcff30e3919b..fa8bfb91f8df 100644
+>> --- a/arch/powerpc/include/asm/interrupt.h
+>> +++ b/arch/powerpc/include/asm/interrupt.h
+>> @@ -411,7 +411,7 @@ DECLARE_INTERRUPT_HANDLER(altivec_assist_exception);
+>>   DECLARE_INTERRUPT_HANDLER(CacheLockingException);
+>>   DECLARE_INTERRUPT_HANDLER(SPEFloatingPointException);
+>>   DECLARE_INTERRUPT_HANDLER(SPEFloatingPointRoundException);
+>> -DECLARE_INTERRUPT_HANDLER(unrecoverable_exception);
+>> +DECLARE_INTERRUPT_HANDLER(unrecoverable_exception) __noreturn;
+>>   DECLARE_INTERRUPT_HANDLER(WatchdogException);
+>>   DECLARE_INTERRUPT_HANDLER(kernel_bad_stack);
+>>   
+>> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+>> index eca3be36c18c..7e7106641ca9 100644
+>> --- a/arch/powerpc/kernel/interrupt.c
+>> +++ b/arch/powerpc/kernel/interrupt.c
+>> @@ -440,7 +440,6 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned
+>>   	return ret;
+>>   }
+>>   
+>> -void unrecoverable_exception(struct pt_regs *regs);
+>>   void preempt_schedule_irq(void);
+>>   
+>>   notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsigned long msr)
+>> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+>> index 2afa05ad21c8..1ff776e9e8e3 100644
+>> --- a/arch/powerpc/kernel/traps.c
+>> +++ b/arch/powerpc/kernel/traps.c
+>> @@ -2173,6 +2173,8 @@ DEFINE_INTERRUPT_HANDLER(unrecoverable_exception)
+>>   	pr_emerg("Unrecoverable exception %lx at %lx (msr=%lx)\n",
+>>   		 regs->trap, regs->nip, regs->msr);
+>>   	die("Unrecoverable exception", regs, SIGABRT);
+>> +	/* die() should not return */
+>> +	BUG();
+>>   }
+>>   NOKPROBE_SYMBOL(unrecoverable_exception);
+>>   
+>> -- 
+>> 2.25.0
+>>
+>   
+> 
