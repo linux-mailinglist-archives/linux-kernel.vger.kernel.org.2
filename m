@@ -2,132 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A22D318399
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1A531839B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhBKCeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 21:34:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
+        id S229783AbhBKCgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 21:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhBKCeJ (ORCPT
+        with ESMTP id S229564AbhBKCf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 21:34:09 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A12C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:33:29 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id z9so2465238pjl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:33:29 -0800 (PST)
+        Wed, 10 Feb 2021 21:35:57 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60401C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:35:17 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id e9so2454003plh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:35:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hFI5yMs4utCGVkTIq+kw76z9rISLs3vt2KceBV+AVLQ=;
-        b=PablRw/+VzBu2+dc0GcDX97Indy6T8rtWdl2Ct2/QMMOOc2wvRh6zI//vqs3V7EuVL
-         0kdUDZGnFIbo8jpIiGhCH1xEU+TdWcW5/nI9iScBu1Wg53Cp3CRPLde1z981RMp06q8F
-         fjX3Rz3tYDYgIgsUPtQj+EzJ8+ggz93zgIMTiQpBo0ymn7QmzasM8wEgR94UEG6Xgj6b
-         nVwT79lSu1gFY/eAt9a9DU04hhpWO4c7Isc7ZCC4KNWTw7WqE454jHP31YfcjchoY7w7
-         HT1l45Mmm9yb/5wWKFTlfpm/+b8EzUFIu6zZY9uY4SrXvC5IIsIqCIMhcinJ7IDIPBaN
-         GEdg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IZKBnioi6lgTPw8uFaPQLhjUKqaEYGrc2R8Xge9s1u0=;
+        b=ohem4GjwP/RcWqNYzmyoFCPCORlnCa+Mm7r0XcuhzvDg47gdnEUgu/MIPzkmVb1DDZ
+         j8NajRWfWgtreMXI4rM2jwazq3crKe2Q5ciXDFUAxKLsM+1qHsKSaaRn4xqHOKoO4Put
+         oyY2PYfbRmwF5sivA+ocGDOyqP4UC7+KXd1xTOjdgVu+5KqHul92mV2aqJSxLbIXfQiy
+         I2Lhxl5QQ+M4NHF2WwbfpcadelUOB9vlPgvfTNGlF6Ry3tE+APDbr+OMdyGf3qVYzRXd
+         ibefWfEMPPVNBaCh994pGGzowuH4bihIPV13LIKlaq8t9dS6/3BWzF2Ru0tSE8D/cpZR
+         +3sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=hFI5yMs4utCGVkTIq+kw76z9rISLs3vt2KceBV+AVLQ=;
-        b=PAtE/uESQrKTUYMd9b+xQpgTQdFjv4QmK/MacFa77Uh3hp2o1e/MbkBnZQeiS+VTvS
-         pPiAF30F2g3djTlHutjc8Roq/9Rg1uYSx4fDQ3kEthkvcKLapwlNTiaLdQ2gdGkMy3/D
-         jTY+MafdwhIlkS5jjkvHNKBS86Hpt4a2of38dvadtY24db8XQGX+SERtsjoM1Qk6FSY4
-         ZEtcQ15pKFji2OJRDGjhYWypp4wisPTNBSfg5FABzPDpGhPklsrYMT+LjG5QRZvD989d
-         J4WNnjcsp2GT0ukV3VDk7P0Yfw9K5/gwy4KGU4IOdF1Y+NOM0/nIGb7G1FVLDJ90ZPmW
-         iYIA==
-X-Gm-Message-State: AOAM531xKr9Wz2J/pr/aARt5gyD3NMIe31FQLF9q8iTXpcBiZxutCPSq
-        gtwgW3PZssBDBZCcg4Am27c=
-X-Google-Smtp-Source: ABdhPJzicJVWym89B8juaBqIm5UT7IXON0L7p0YLb0YbsqibNiiVZ2x4ADApQCTsAKKQI+Qgw7QikA==
-X-Received: by 2002:a17:90a:12c9:: with SMTP id b9mr1871725pjg.177.1613010808752;
-        Wed, 10 Feb 2021 18:33:28 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:e5b0:be96:1dfb:a1f6])
-        by smtp.gmail.com with ESMTPSA id p17sm3612583pgn.38.2021.02.10.18.33.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IZKBnioi6lgTPw8uFaPQLhjUKqaEYGrc2R8Xge9s1u0=;
+        b=K8hlWsyNmf1Z1USTo+OTkuS71qX9dvgZJOQF7by5h68NgA7BP02PON+CVNAnfBsYaT
+         fow9mFhCMJqgZsg2+mkwgrAP5yvbg4dT1gS+CpgUt+sbZu1W/1k4rkfKAAdcmlKfDGGU
+         QllfH8Xlg5rRgtXeCMUrR0bsz5XmhcR9HBv0KQ4L48FwlQ3sph3+x630RU1z8o+HWviE
+         od1YgaxRWKKc0R1/48BnEW+JWoCKNLwAnvnRg/265YajIEhkEcR+U/8tvfWhCbh+rJH1
+         OyBwplLH5JVInJLv/c8GIM3LwaRvVX9XA4VeFWt7y9G9mZflFo6vk97kctGleM2o6oOL
+         xBew==
+X-Gm-Message-State: AOAM530Ycse+k3wJ3ehT82CpufQFhbMn/91Mr92Q2vDhr3T6jZod4AiY
+        Xs1XoT0I5Ct01EDXMquJq7SjofEfVlidPw==
+X-Google-Smtp-Source: ABdhPJzmh3Pgc04oNcO87GJ5yYz/woJKA2njPXAtnp2SC9+9/nwXF7cLpwrA6dwRWUSTlpdpij0RfA==
+X-Received: by 2002:a17:902:e5cc:b029:de:cdab:2da5 with SMTP id u12-20020a170902e5ccb02900decdab2da5mr5589754plf.32.1613010916807;
+        Wed, 10 Feb 2021 18:35:16 -0800 (PST)
+Received: from localhost (121-45-171-254.tpgi.com.au. [121.45.171.254])
+        by smtp.gmail.com with ESMTPSA id x64sm3579238pfc.46.2021.02.10.18.35.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 18:33:27 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     sumit.semwal@linaro.org, john.stultz@linaro.org
-Cc:     LKML <linux-kernel@vger.kernel.org>, surenb@google.com,
-        hridya@google.com, joaodias@google.com,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH v2] dma-buf: system_heap: do not warn for costly allocation
-Date:   Wed, 10 Feb 2021 18:33:24 -0800
-Message-Id: <20210211023324.2331377-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+        Wed, 10 Feb 2021 18:35:15 -0800 (PST)
+Date:   Thu, 11 Feb 2021 13:35:11 +1100
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Weiping Zhang <zwp10758@gmail.com>
+Cc:     sblbir@amazon.com, davem@davemloft.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2] taskstats: add /proc/taskstats to fetch pid/tgid
+ status
+Message-ID: <20210211023511.GE286763@balbir-desktop>
+References: <CAA70yB6O2on1tpoA8TpT+Hp03iu_Xrpaa_d0HjVa75UFMTA4yg@mail.gmail.com>
+ <CAA70yB5evFpMSy-D9txv91NNHTguXsSVstAFQ3sYTTkDMy6F=A@mail.gmail.com>
+ <20210127111346.GB59838@balbir-desktop>
+ <CAA70yB6P4_JsZnCrBkYg=7eyT5KW0XucUY+Y7T8YYMnXj6iVXA@mail.gmail.com>
+ <20210204102020.GA286763@balbir-desktop>
+ <CAA70yB4P2jhOSH=MSc+2NNSmaH8ckF4M0v_vGwE7c9qShMGKew@mail.gmail.com>
+ <20210205000848.GB286763@balbir-desktop>
+ <CAA70yB7VwbuzuU0=SH+mhSkYBiC28G2NCe9vpqfHv27gyxafCw@mail.gmail.com>
+ <20210208055531.GD286763@balbir-desktop>
+ <CAA70yB74AH6J0iuhd5s4ONDVh71fEuh3Kr625H_CypyMP0Te+Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA70yB74AH6J0iuhd5s4ONDVh71fEuh3Kr625H_CypyMP0Te+Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmabuf system_heap allocation logic starts with the highest necessary
-allocation order before falling back to lower orders. The requested
-order can be higher than PAGE_ALLOC_COSTLY_ODER and failures to
-allocate will flood dmesg with warnings. Such high-order allocations
-are not unexpected and are handled by the system_heap's allocation
-fallback mechanism.
-Prevent these warnings when allocating higher than
-PAGE_ALLOC_COSTLY_ODER pages using __GFP_NOWARN flag.
+> > Still not convinced about it, I played around with it. The reason we did not
+> > use ioctl in the first place is to get the benefits of TLA with netlink, which
+> For monitoring long-time-running process the ioctl can meet our requirement,
+> it is more simple than netlink when we get the real user data(struct taskstats).
+> The netlink mode needs construct/parse extra strcutures like struct msgtemplate,
+> struct nlmsghdr, struct genlmsghdr. The ioctl mode only has one
+> structure (struct taskstats).
+> For complicated user case the netlink mode is more suitable, for this
+> simple user case
+> the ioctl mode is more suitable. From the test results we can see that
+> ioctl can save CPU
+> resource, it's useful to build a light-weight monitor tools.
 
-Below is ION warning example I got but dmabuf system heap is nothing different:
+I think your missing the value of TLA and the advantages of async
+send vs recv
 
-[ 1233.911533][  T460] warn_alloc: 11 callbacks suppressed
-[ 1233.911539][  T460] allocator@2.0-s: page allocation failure: order:4, mode:0x140dc2(GFP_HIGHUSER|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
-[ 1233.926235][  T460] Call trace:
-[ 1233.929370][  T460]  dump_backtrace+0x0/0x1d8
-[ 1233.933704][  T460]  show_stack+0x18/0x24
-[ 1233.937701][  T460]  dump_stack+0xc0/0x140
-[ 1233.941783][  T460]  warn_alloc+0xf4/0x148
-[ 1233.945862][  T460]  __alloc_pages_slowpath+0x9fc/0xa10
-[ 1233.951101][  T460]  __alloc_pages_nodemask+0x278/0x2c0
-[ 1233.956285][  T460]  ion_page_pool_alloc+0xd8/0x100
-[ 1233.961144][  T460]  ion_system_heap_allocate+0xbc/0x2f0
-[ 1233.966440][  T460]  ion_buffer_create+0x68/0x274
-[ 1233.971130][  T460]  ion_buffer_alloc+0x8c/0x110
-[ 1233.975733][  T460]  ion_dmabuf_alloc+0x44/0xe8
-[ 1233.980248][  T460]  ion_ioctl+0x100/0x320
-[ 1233.984332][  T460]  __arm64_sys_ioctl+0x90/0xc8
-[ 1233.988934][  T460]  el0_svc_common+0x9c/0x168
-[ 1233.993360][  T460]  do_el0_svc+0x1c/0x28
-[ 1233.997358][  T460]  el0_sync_handler+0xd8/0x250
-[ 1234.001989][  T460]  el0_sync+0x148/0x180
+> > ioctl's miss. IMHO, the overhead is not very significant even for
+> > 10,000 processes in your experiment. I am open to considering enhancing the
+> > interface to do a set of pid's.
+> It's a good approach to collect data in batch mode, I think we can support it in
+> both netlink and ioctl mode.
+> 
+> Add ioctl can give user mode choice and make user code more simple, it seems no
+> harm to taskstats framework, I'd like to support it.
+> 
+> Thanks very much
 
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
-* from v1 - https://lore.kernel.org/lkml/20210210162632.3903128-1-minchan@kernel.org/
- * better description - surenb
- * use mid_order_gfp - john.stultz
+In general the ioctl interface is quite fragile, conflicts in ioctl numbers,
+inability to check the types of the parameters passed in and out makes it
+not so good. Not to mention versioning issues, with the genl interface we have
+the flexibility to version requests. I would really hate to have two ways to
+do the same thing.
 
- drivers/dma-buf/heaps/system_heap.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+The overhead is there, do you see the overhead of 20ms per 10,000 calls significant?
+Does it affect your use case significantly?
 
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 29e49ac17251..e5f545ada587 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -40,11 +40,16 @@ struct dma_heap_attachment {
- 	bool mapped;
- };
- 
-+#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
-+/* 
-+ * Avoid warning on order-4 allocation failures as we'll fall back to
-+ * order-0 in that case.
-+ */
-+#define MID_ORDER_GFP (LOW_ORDER_GFP | __GFP_NOWARN)
- #define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
- 				| __GFP_NORETRY) & ~__GFP_RECLAIM) \
- 				| __GFP_COMP)
--#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
--static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
-+static gfp_t order_flags[] = {HIGH_ORDER_GFP, MID_ORDER_GFP, LOW_ORDER_GFP};
- /*
-  * The selection of the orders used for allocation (1MB, 64K, 4K) is designed
-  * to match with the sizes often found in IOMMUs. Using order 4 pages instead
--- 
-2.30.0.478.g8a0d178c01-goog
-
+Balbir Singh
