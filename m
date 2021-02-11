@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33593184CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E803184CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhBKFYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 00:24:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36454 "EHLO
+        id S229741AbhBKFYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 00:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhBKFX4 (ORCPT
+        with ESMTP id S229693AbhBKFX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Feb 2021 00:23:56 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DD9C06178B
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:22:36 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id z9so2772766pjl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:22:36 -0800 (PST)
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A68C061793
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:22:39 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id e9so2783190pjj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:22:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=0x0f.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AogpeLuC6h2kbFRYh8jcxM2VMpLXaY9SBeWFYBbrCSA=;
-        b=qemjCONMGzAQ0NwTu3cqoW70NuUDn+rAE++LbZMHgRYAkzC3ZjriXPCHEL1nsC+e8k
-         XlkeRggIgE9Y1wJcFeFWB0SXButixlGaBGIRn/qgK3XKgWtEUgaJBtOfSKHKOkRpnAy9
-         HJJrybQubhkyq8srL5lq26fpkNB4K8I88ydcA=
+        bh=Yf/rno8iZl7FiboO52D+Z5FCjHSUrFGjrs6kb9VfxZc=;
+        b=QQaYk92R9MSar5LbEY4Jz089WlCH6zJeIBpW8S733JOJGnjcFWJrEGr0M/A8U9M/A1
+         dEDNAK4kp66DRXzpc1gzgQDmyeR7Hf0RraVqbWZloY45Qi2EbgsDtk/T4hUxN0G2teON
+         /mWjK76kl02w6Yq5LcTtqGFIP4nc9SC7AOAz4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AogpeLuC6h2kbFRYh8jcxM2VMpLXaY9SBeWFYBbrCSA=;
-        b=oj3bPolCoKig0VqcCTwI1m0I6fzbcBuTv/7Vk/r62vN0cbJ99oN4ISfP2Gxiq9z6WX
-         M9Eo2H1zmvWynPoC397ieP8+nQ/LWFfd28WVvNMt6OjcOs2zlSIdchzzT47FfLCfWTTO
-         pWXVui0XdTIQ48G1TDhGWwyzZTi5iFuP2iVjcUxREnIht3d2wKxQZeWamA+qzw8B6OhM
-         AoMz/vQiMzaBmD75SJSl6jTRdXw6gh1IPOxvKlHE6Cfy+7WO+sSalUYz+pFlhIS+hLKR
-         MLn7s2K23jAUZXgYeb0v5o+PCQbcZAwBoHARWR4JmpQGCCk8r6XrGc1PxtsAqn7aFp2r
-         gjDw==
-X-Gm-Message-State: AOAM533razerpUsoEVrMFosvaxYYR0inI2M3fzyb5fERfyIZt393lFJg
-        i8CeMj35ERwfKk51jeRuXMtvog==
-X-Google-Smtp-Source: ABdhPJy2wFjME1q+iuw0xrlRvsS0mzOVToh4DLZZpe6O9KBDNwverFfIK2xGmM4pNCocfDDhCQ9WNQ==
-X-Received: by 2002:a17:90a:bf0c:: with SMTP id c12mr2446478pjs.36.1613020956478;
-        Wed, 10 Feb 2021 21:22:36 -0800 (PST)
+        bh=Yf/rno8iZl7FiboO52D+Z5FCjHSUrFGjrs6kb9VfxZc=;
+        b=qe4PhwJt4AT1aDdJsozqgulXCBzwDL6Ex9CW/0QxsnLLJkO8XS6gvJAI4jDToc+ZKl
+         WJqoHkxy4rofsrDa9VpBNqoWbHuopv6ZVU+O07OFUh+H+f7QUQrngeJY09VFF4Bn1sKT
+         AN8W1wxwrVysjnUoMFwojpRoOAn+2KIeq8O18lENDoXYLALUAysBVsrWA/AeIOSp2keh
+         QAVgxLilMfS/Xr9iGrDGrLmjS7FBY2rcZbkJ+ukQ1wyuob9mNMdGDj5UaVRSU1d845ui
+         dK+89Mfbq2RDCKCsx/ZwXu6lJGvQwT4BguLsLt0gdDZQUbKGxQLR1IX9nYZxzc8ddT6h
+         ZBRw==
+X-Gm-Message-State: AOAM531oM2TGuEzQkalY6ZxcQLUDFOkXNVk+MByN08qAKiP4HU1rNdY+
+        0D8fyLQFi6nkSjaL8g79Rf/iDnNtcL5elR5Q
+X-Google-Smtp-Source: ABdhPJyECE81mEOyMfrxozkhKJ8viUwa7YTWL+FWSQNlzFlE08xfRgbmMzRYgQT3Za4w3olp7HaKcg==
+X-Received: by 2002:a17:90a:b38b:: with SMTP id e11mr2441170pjr.214.1613020958643;
+        Wed, 10 Feb 2021 21:22:38 -0800 (PST)
 Received: from shiro.work (p345188-ipngn200408sizuokaden.shizuoka.ocn.ne.jp. [124.98.97.188])
-        by smtp.googlemail.com with ESMTPSA id o21sm3493511pjp.42.2021.02.10.21.22.34
+        by smtp.googlemail.com with ESMTPSA id o21sm3493511pjp.42.2021.02.10.21.22.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 21:22:36 -0800 (PST)
+        Wed, 10 Feb 2021 21:22:38 -0800 (PST)
 From:   Daniel Palmer <daniel@0x0f.com>
 To:     linux-clk@vger.kernel.org, sboyd@kernel.org,
         devicetree@vger.kernel.org
 Cc:     w@1wt.eu, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v2 2/7] dt-bindings: clk: mstar msc313 mpll binding description
-Date:   Thu, 11 Feb 2021 14:22:01 +0900
-Message-Id: <20210211052206.2955988-3-daniel@0x0f.com>
+Subject: [PATCH v2 3/7] clk: fixed: add devm helper for clk_hw_register_fixed_factor()
+Date:   Thu, 11 Feb 2021 14:22:02 +0900
+Message-Id: <20210211052206.2955988-4-daniel@0x0f.com>
 X-Mailer: git-send-email 2.30.0.rc2
 In-Reply-To: <20210211052206.2955988-1-daniel@0x0f.com>
 References: <20210211052206.2955988-1-daniel@0x0f.com>
@@ -63,79 +63,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a binding description for the MStar/SigmaStar MPLL clock block.
+Add a devm helper for clk_hw_register_fixed_factor() so that drivers that internally
+register fixed factor clocks for things like dividers don't need to manually unregister
+them on remove or if probe fails.
 
 Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
- .../bindings/clock/mstar,msc313-mpll.yaml     | 46 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 47 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/mstar,msc313-mpll.yaml
+ drivers/clk/clk-fixed-factor.c | 39 ++++++++++++++++++++++++++++------
+ include/linux/clk-provider.h   |  4 +++-
+ 2 files changed, 36 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/mstar,msc313-mpll.yaml b/Documentation/devicetree/bindings/clock/mstar,msc313-mpll.yaml
-new file mode 100644
-index 000000000000..0df5d75d4ebc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/mstar,msc313-mpll.yaml
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/mstar,msc313-mpll.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/clk/clk-fixed-factor.c b/drivers/clk/clk-fixed-factor.c
+index 910e6e74ae90..4f7bf3929d6d 100644
+--- a/drivers/clk/clk-fixed-factor.c
++++ b/drivers/clk/clk-fixed-factor.c
+@@ -64,10 +64,16 @@ const struct clk_ops clk_fixed_factor_ops = {
+ };
+ EXPORT_SYMBOL_GPL(clk_fixed_factor_ops);
+ 
++static void devm_clk_hw_register_fixed_factor_release(struct device *dev, void *res)
++{
++	clk_hw_unregister_fixed_factor(&((struct clk_fixed_factor *)res)->hw);
++}
 +
-+title: MStar/Sigmastar MSC313 MPLL
+ static struct clk_hw *
+ __clk_hw_register_fixed_factor(struct device *dev, struct device_node *np,
+ 		const char *name, const char *parent_name, int index,
+-		unsigned long flags, unsigned int mult, unsigned int div)
++		unsigned long flags, unsigned int mult, unsigned int div,
++		bool devm)
+ {
+ 	struct clk_fixed_factor *fix;
+ 	struct clk_init_data init = { };
+@@ -75,7 +81,15 @@ __clk_hw_register_fixed_factor(struct device *dev, struct device_node *np,
+ 	struct clk_hw *hw;
+ 	int ret;
+ 
+-	fix = kmalloc(sizeof(*fix), GFP_KERNEL);
++	/* You can't use devm without a dev */
++	if (devm && !dev)
++		return ERR_PTR(-EINVAL);
 +
-+maintainers:
-+  - Daniel Palmer <daniel@thingy.jp>
++	if (devm)
++		fix = devres_alloc(devm_clk_hw_register_fixed_factor_release,
++				sizeof(*fix), GFP_KERNEL);
++	else
++		fix = kmalloc(sizeof(*fix), GFP_KERNEL);
+ 	if (!fix)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -99,9 +113,13 @@ __clk_hw_register_fixed_factor(struct device *dev, struct device_node *np,
+ 	else
+ 		ret = of_clk_hw_register(np, hw);
+ 	if (ret) {
+-		kfree(fix);
++		if (devm)
++			devres_free(fix);
++		else
++			kfree(fix);
+ 		hw = ERR_PTR(ret);
+-	}
++	} else if (devm)
++		devres_add(dev, fix);
+ 
+ 	return hw;
+ }
+@@ -111,7 +129,7 @@ struct clk_hw *clk_hw_register_fixed_factor(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, parent_name, -1,
+-					      flags, mult, div);
++					      flags, mult, div, false);
+ }
+ EXPORT_SYMBOL_GPL(clk_hw_register_fixed_factor);
+ 
+@@ -153,6 +171,15 @@ void clk_hw_unregister_fixed_factor(struct clk_hw *hw)
+ }
+ EXPORT_SYMBOL_GPL(clk_hw_unregister_fixed_factor);
+ 
++struct clk_hw *devm_clk_hw_register_fixed_factor(struct device *dev,
++		const char *name, const char *parent_name, unsigned long flags,
++		unsigned int mult, unsigned int div)
++{
++	return __clk_hw_register_fixed_factor(dev, NULL, name, parent_name, -1,
++			flags, mult, div, true);
++}
++EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor);
 +
-+description: |
-+  The MStar/SigmaStar MSC313 and later ARMv7 chips have an MPLL block that
-+  takes the external xtal input and multiplies it to create a high
-+  frequency clock and divides that down into a number of clocks that
-+  peripherals use.
-+
-+properties:
-+  compatible:
-+    const: mstar,msc313-mpll
-+
-+  "#clock-cells":
-+    const: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - "#clock-cells"
-+  - clocks
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    mpll@206000 {
-+        compatible = "mstar,msc313-mpll";
-+        reg = <0x206000 0x200>;
-+        #clock-cells = <1>;
-+        clocks = <&xtal>;
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0622ff96ca2a..d004436c8860 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2145,6 +2145,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- W:	http://linux-chenxing.org/
- F:	Documentation/devicetree/bindings/arm/mstar/*
-+F:	Documentation/devicetree/bindings/clock/mstar,msc313-mpll.yaml
- F:	Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
- F:	arch/arm/boot/dts/mstar-*
- F:	arch/arm/mach-mstar/
+ #ifdef CONFIG_OF
+ static const struct of_device_id set_rate_parent_matches[] = {
+ 	{ .compatible = "allwinner,sun4i-a10-pll3-2x-clk" },
+@@ -185,7 +212,7 @@ static struct clk_hw *_of_fixed_factor_clk_setup(struct device_node *node)
+ 		flags |= CLK_SET_RATE_PARENT;
+ 
+ 	hw = __clk_hw_register_fixed_factor(NULL, node, clk_name, NULL, 0,
+-					    flags, mult, div);
++					    flags, mult, div, false);
+ 	if (IS_ERR(hw)) {
+ 		/*
+ 		 * Clear OF_POPULATED flag so that clock registration can be
+diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
+index e4316890661a..58f6fe866ae9 100644
+--- a/include/linux/clk-provider.h
++++ b/include/linux/clk-provider.h
+@@ -941,7 +941,9 @@ struct clk_hw *clk_hw_register_fixed_factor(struct device *dev,
+ 		const char *name, const char *parent_name, unsigned long flags,
+ 		unsigned int mult, unsigned int div);
+ void clk_hw_unregister_fixed_factor(struct clk_hw *hw);
+-
++struct clk_hw *devm_clk_hw_register_fixed_factor(struct device *dev,
++		const char *name, const char *parent_name, unsigned long flags,
++		unsigned int mult, unsigned int div);
+ /**
+  * struct clk_fractional_divider - adjustable fractional divider clock
+  *
 -- 
 2.30.0.rc2
 
