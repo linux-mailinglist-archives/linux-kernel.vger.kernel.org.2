@@ -2,133 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521493190F1
+	by mail.lfdr.de (Postfix) with ESMTP id C39A53190F2
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhBKRWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:22:51 -0500
-Received: from mga01.intel.com ([192.55.52.88]:35348 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231737AbhBKQYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:24:15 -0500
-IronPort-SDR: 3DOufxR+kvqdgU770cM1GNhpa2WuxUmFd+ywrXEVWRBE8CkgZ16vLMe29aHzG17Bf4Zjo8ylsR
- 4peaHxP/pizA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="201400265"
-X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="201400265"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:22:24 -0800
-IronPort-SDR: 5OxVEzNXUNBYV7Lt3nf9XNlEIDvN8hUR3k7WIZS9g/8gM/5y/gMnnul52xf6LeA6rv9b1fg4Gg
- BFtlYtn+GFxg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="437175826"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP; 11 Feb 2021 08:22:24 -0800
-Received: from [10.254.79.250] (kliang2-MOBL.ccr.corp.intel.com [10.254.79.250])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 2F0E0580266;
-        Thu, 11 Feb 2021 08:22:23 -0800 (PST)
-Subject: Re: [PATCH 00/49] Add Alder Lake support for perf
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
- <YCUXte/CMEQlCq4f@krava>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <38f93d32-d133-8170-3c3a-0fdfa04a9058@linux.intel.com>
-Date:   Thu, 11 Feb 2021 11:22:21 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232392AbhBKRW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:22:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhBKQZL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 11:25:11 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C2EC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:24:30 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id c1so4574518qtc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:24:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yy8l9ObkeV/ymXOaTl4aRZL4ekIQwJK2VWwZLNWsZ8M=;
+        b=diSaDExX5LrPCKbGY/gbzqk7cPOuQ4UYWZRKHMK4kG6PBiBsGfBhF8M0i9dLRamnOx
+         4qBlOT/gCE6i7K5nHit/vcV9QxJIU6kZz/pvphRFMxf5IwNZeiw45IHH7Deso3V7v1q8
+         66W04fm4k0vT281ppzJIjDIzLh8kfgPdPkOiXe9bl+y+VBtW9rEjRVtEtSmMNOwtBepg
+         UFfCPhqHMBGHFqaZX0skODncFT9QhRYzNJJ/QsTQK+X+9xRIihbLBzaIwCScODLmwFRW
+         IdjMbFqSwMeJqeDIK5qIMiba9WXt1BrR+tTKESYdXE2UvVumOc6zz5LwtuCYhm/Qfq3R
+         X9XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yy8l9ObkeV/ymXOaTl4aRZL4ekIQwJK2VWwZLNWsZ8M=;
+        b=Ep5+timGv+AoGn5ORnUtbhXbMNjjKa80NxtPwIDnMidoWlFSjMYHz2MNLyhsppPrfq
+         4gnToLqw10dh9lZv7ot0ppweoHWFkPS4C3hUd/7lmKZ3hI1Td+zu6xQlrdePjDJeOajw
+         3fCxqz2PJdOnImV4Q3Eg19olUkzLpJsUzk3S9QcvBOEfPFovpSE91f/2DYxlKVghOfzr
+         5xhHMIitZ4CVke+DUEy+eKBgF3p3KunsbhBObyd/8swAoJW4AL6jTDwSwVhJ1Jf0LfAo
+         PUXRSv1U1K2eoQCOwZ24GFb4x+BH01q1g6ojGcykCnaIdCqFYNWG4aVStXHvdSU16Q0G
+         BeLg==
+X-Gm-Message-State: AOAM533yM3JQ5L4YE9vRhJHgQPuLK2TskNBAtnBjEE32H0uL2bAIMsen
+        DrMFpzmcWBiULlu9JN+qq+cOWw==
+X-Google-Smtp-Source: ABdhPJyrUUKa4paqMq1JLAbdCli1GAhNhy7dThCCn+KHVt5BL8+sc4CYs8ePGHiLMKby6DEZ0Ut5vg==
+X-Received: by 2002:aed:3165:: with SMTP id 92mr8315722qtg.233.1613060669628;
+        Thu, 11 Feb 2021 08:24:29 -0800 (PST)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id i23sm3831778qtq.42.2021.02.11.08.24.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 08:24:29 -0800 (PST)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
+        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
+        dan.j.williams@intel.com, sashal@kernel.org,
+        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
+        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
+        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
+        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
+        linux-doc@vger.kernel.org, ira.weiny@intel.com,
+        linux-kselftest@vger.kernel.org, jmorris@namei.org
+Subject: [PATCH v10 00/14] prohibit pinning pages in ZONE_MOVABLE
+Date:   Thu, 11 Feb 2021 11:24:13 -0500
+Message-Id: <20210211162427.618913-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YCUXte/CMEQlCq4f@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changelog
+---------
+v10
+- Fixed !CONFIG_MMU compiler issues by adding is_zero_pfn() stub.
 
+v9
+- Renamed gpf_to_alloc_flags() to gfp_to_alloc_flags_cma(); thanks Lecopzer
+  Chen for noticing.
+- Fixed warning reported scripts/checkpatch.pl:
+  "Logical continuations should be on the previous line"
 
-On 2/11/2021 6:40 AM, Jiri Olsa wrote:
-> On Mon, Feb 08, 2021 at 07:24:57AM -0800, kan.liang@linux.intel.com wrote:
-> 
-> SNIP
-> 
->> Jin Yao (24):
->>    perf jevents: Support unit value "cpu_core" and "cpu_atom"
->>    perf util: Save pmu name to struct perf_pmu_alias
->>    perf pmu: Save detected hybrid pmus to a global pmu list
->>    perf pmu: Add hybrid helper functions
->>    perf list: Support --cputype option to list hybrid pmu events
->>    perf stat: Hybrid evsel uses its own cpus
->>    perf header: Support HYBRID_TOPOLOGY feature
->>    perf header: Support hybrid CPU_PMU_CAPS
->>    tools headers uapi: Update tools's copy of linux/perf_event.h
->>    perf parse-events: Create two hybrid hardware events
->>    perf parse-events: Create two hybrid cache events
->>    perf parse-events: Support hardware events inside PMU
->>    perf list: Display pmu prefix for partially supported hybrid cache
->>      events
->>    perf parse-events: Support hybrid raw events
->>    perf stat: Support --cputype option for hybrid events
->>    perf stat: Support metrics with hybrid events
->>    perf evlist: Create two hybrid 'cycles' events by default
->>    perf stat: Add default hybrid events
->>    perf stat: Uniquify hybrid event name
->>    perf stat: Merge event counts from all hybrid PMUs
->>    perf stat: Filter out unmatched aggregation for hybrid event
->>    perf evlist: Warn as events from different hybrid PMUs in a group
->>    perf Documentation: Document intel-hybrid support
->>    perf evsel: Adjust hybrid event and global event mixed group
->>
->> Kan Liang (22):
->>    perf/x86/intel: Hybrid PMU support for perf capabilities
->>    perf/x86: Hybrid PMU support for intel_ctrl
->>    perf/x86: Hybrid PMU support for counters
->>    perf/x86: Hybrid PMU support for unconstrained
->>    perf/x86: Hybrid PMU support for hardware cache event
->>    perf/x86: Hybrid PMU support for event constraints
->>    perf/x86: Hybrid PMU support for extra_regs
->>    perf/x86/intel: Factor out intel_pmu_check_num_counters
->>    perf/x86/intel: Factor out intel_pmu_check_event_constraints
->>    perf/x86/intel: Factor out intel_pmu_check_extra_regs
->>    perf/x86: Expose check_hw_exists
->>    perf/x86: Remove temporary pmu assignment in event_init
->>    perf/x86: Factor out x86_pmu_show_pmu_cap
->>    perf/x86: Register hybrid PMUs
->>    perf/x86: Add structures for the attributes of Hybrid PMUs
->>    perf/x86/intel: Add attr_update for Hybrid PMUs
->>    perf/x86: Support filter_match callback
->>    perf/x86/intel: Add Alder Lake Hybrid support
->>    perf: Introduce PERF_TYPE_HARDWARE_PMU and PERF_TYPE_HW_CACHE_PMU
->>    perf/x86/intel/uncore: Add Alder Lake support
->>    perf/x86/msr: Add Alder Lake CPU support
->>    perf/x86/cstate: Add Alder Lake CPU support
->>
->> Ricardo Neri (2):
->>    x86/cpufeatures: Enumerate Intel Hybrid Technology feature bit
->>    x86/cpu: Describe hybrid CPUs in cpuinfo_x86
->>
->> Zhang Rui (1):
->>    perf/x86/rapl: Add support for Intel Alder Lake
-> 
-> hi,
-> would you have git branch with all this somewhere?
-> 
+v8
+- Added reviewed by's from John Hubbard
+- Fixed subjects for selftests patches
+- Moved zero page check inside is_pinnable_page() as requested by Jason
+  Gunthorpe.
 
-Here is the git branch
+v7
+- Added reviewed-by's
+- Fixed a compile bug on non-mmu builds reported by robot
 
-https://github.com/kliang2/perf.git adl_enabling
+v6
+  Small update, but I wanted to send it out quicker, as it removes a
+  controversial patch and replaces it with something sane.
+- Removed forcing FOLL_WRITE for longterm gup, instead added a patch to
+  skip zero pages during migration.
+- Added reviewed-by's and minor log changes.
 
-Please note that the branch is on top of Peter's perf/core branch, which 
-doesn't include the latest perf tool changes. The perf tool patches in 
-the branch only includes the critical changes. There will be more tool 
-patches later, e.g., patches for perf mem, perf test etc.
+v5
+- Added the following patches to the beginning of series, which are fixes
+   to the other existing problems with CMA migration code:
+	mm/gup: check every subpage of a compound page during isolation
+	mm/gup: return an error on migration failure
+	mm/gup: check for isolation errors also at the beginning of series
+	mm/gup: do not allow zero page for pinned pages
+- remove .gfp_mask/.reclaim_idx changes from mm/vmscan.c
+- update movable zone header comment in patch 8 instead of patch 3, fix
+  the comment
+- Added acked, sign-offs
+- Updated commit logs based on feedback
+- Addressed issues reported by Michal and Jason.
+- Remove:
+	#define PINNABLE_MIGRATE_MAX	10
+	#define PINNABLE_ISOLATE_MAX	100
+   Instead: fail on the first migration failure, and retry isolation
+   forever as their failures are transient.
 
-Thanks,
-Kan
+- In self-set addressed some of the comments from John Hubbard, updated
+  commit logs, and added comments. Renamed gup->flags with gup->test_flags.
+
+v4
+- Address page migration comments. New patch:
+  mm/gup: limit number of gup migration failures, honor failures
+  Implements the limiting number of retries for migration failures, and
+  also check for isolation failures.
+  Added a test case into gup_test to verify that pages never long-term
+  pinned in a movable zone, and also added tests to fault both in kernel
+  and in userland.
+v3
+- Merged with linux-next, which contains clean-up patch from Jason,
+  therefore this series is reduced by two patches which did the same
+  thing.
+v2
+- Addressed all review comments
+- Added Reviewed-by's.
+- Renamed PF_MEMALLOC_NOMOVABLE to PF_MEMALLOC_PIN
+- Added is_pinnable_page() to check if page can be longterm pinned
+- Fixed gup fast path by checking is_in_pinnable_zone()
+- rename cma_page_list to movable_page_list
+- add a admin-guide note about handling pinned pages in ZONE_MOVABLE,
+  updated caveat about pinned pages from linux/mmzone.h
+- Move current_gfp_context() to fast-path
+
+---------
+When page is pinned it cannot be moved and its physical address stays
+the same until pages is unpinned.
+
+This is useful functionality to allows userland to implementation DMA
+access. For example, it is used by vfio in vfio_pin_pages().
+
+However, this functionality breaks memory hotplug/hotremove assumptions
+that pages in ZONE_MOVABLE can always be migrated.
+
+This patch series fixes this issue by forcing new allocations during
+page pinning to omit ZONE_MOVABLE, and also to migrate any existing
+pages from ZONE_MOVABLE during pinning.
+
+It uses the same scheme logic that is currently used by CMA, and extends
+the functionality for all allocations.
+
+For more information read the discussion [1] about this problem.
+[1] https://lore.kernel.org/lkml/CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com
+
+Previous versions:
+v1
+https://lore.kernel.org/lkml/20201202052330.474592-1-pasha.tatashin@soleen.com
+v2
+https://lore.kernel.org/lkml/20201210004335.64634-1-pasha.tatashin@soleen.com
+v3
+https://lore.kernel.org/lkml/20201211202140.396852-1-pasha.tatashin@soleen.com
+v4
+https://lore.kernel.org/lkml/20201217185243.3288048-1-pasha.tatashin@soleen.com
+v5
+https://lore.kernel.org/lkml/20210119043920.155044-1-pasha.tatashin@soleen.com
+v6
+https://lore.kernel.org/lkml/20210120014333.222547-1-pasha.tatashin@soleen.com
+v7
+https://lore.kernel.org/lkml/20210122033748.924330-1-pasha.tatashin@soleen.com
+v8
+https://lore.kernel.org/lkml/20210125194751.1275316-1-pasha.tatashin@soleen.com
+v9
+https://lore.kernel.org/lkml/20210201153827.444374-1-pasha.tatashin@soleen.com
+
+Pavel Tatashin (14):
+  mm/gup: don't pin migrated cma pages in movable zone
+  mm/gup: check every subpage of a compound page during isolation
+  mm/gup: return an error on migration failure
+  mm/gup: check for isolation errors
+  mm cma: rename PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN
+  mm: apply per-task gfp constraints in fast path
+  mm: honor PF_MEMALLOC_PIN for all movable pages
+  mm/gup: do not migrate zero page
+  mm/gup: migrate pinned pages out of movable zone
+  memory-hotplug.rst: add a note about ZONE_MOVABLE and page pinning
+  mm/gup: change index type to long as it counts pages
+  mm/gup: longterm pin migration cleanup
+  selftests/vm: gup_test: fix test flag
+  selftests/vm: gup_test: test faulting in kernel, and verify pinnable
+    pages
+
+ .../admin-guide/mm/memory-hotplug.rst         |   9 +
+ include/linux/migrate.h                       |   1 +
+ include/linux/mm.h                            |  19 ++
+ include/linux/mmzone.h                        |  13 +-
+ include/linux/pgtable.h                       |  12 ++
+ include/linux/sched.h                         |   2 +-
+ include/linux/sched/mm.h                      |  27 +--
+ include/trace/events/migrate.h                |   3 +-
+ mm/gup.c                                      | 174 ++++++++----------
+ mm/gup_test.c                                 |  29 +--
+ mm/gup_test.h                                 |   3 +-
+ mm/hugetlb.c                                  |   4 +-
+ mm/page_alloc.c                               |  33 ++--
+ tools/testing/selftests/vm/gup_test.c         |  36 +++-
+ 14 files changed, 208 insertions(+), 157 deletions(-)
+
+-- 
+2.25.1
+
