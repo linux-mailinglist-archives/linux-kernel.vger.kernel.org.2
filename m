@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD203318493
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3FC318497
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhBKFWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 00:22:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
+        id S229665AbhBKFXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 00:23:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBKFWN (ORCPT
+        with ESMTP id S229451AbhBKFXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 00:22:13 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC7EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:21:33 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id e4so4130917ote.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:21:33 -0800 (PST)
+        Thu, 11 Feb 2021 00:23:13 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5EDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:22:32 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id a24so810646plm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:22:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=HPtN3v+VEPRgIPL9sC8IW9YRdG+zfcqa9spnEAHVHV8=;
-        b=m1Gb+okdv2Fs1qwUqn2h1VbjXih63jajd/9o7eyliKOpiTFQieeUHvEZvgAbEC3Dca
-         284Fve4yGYLxI9sOujx4VJ8DTuV8apafDXJs9crX+jT8u4+aBChPa43JuoXyE+aeHIkx
-         gBylEgNJz4r+wnBt99WoXdllJllaMb09Vtwfd+xniu44aTR3o67S7OrOBdIiAOYwmvnf
-         0WZaCmlUm1BxKqAIVrodcq/l0TFcskqT3n4RcuYBGrB3h0v6JZBVJa32ViF2+YFlEmmj
-         UMFuaoKvn3ErQGPX5d9HD5P8SN6znSPMyo6sPVCC1hwVcDs+l760cg7GtF4zelEm5U8P
-         NO9A==
+        d=0x0f.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnNepfMt6SkUB80VLnkD+4T2OWTmkVQGDZU4Ef/AiRA=;
+        b=hKAPTehETeAxx7YcildAqVGRxa9k7ELIQjfmGk4Buh3w43CGMdrfgNra+j/Iglny9w
+         vgW1YGq5Y9ZGcps7qhIbqYR/NRZr5vIJUzI77l4Ze4v/bJLU+QGS8Rd80d4ZDz4w5ZYB
+         21CM1nhjRCggoqQyCGLAj2DatNv6lZel+kdhg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=HPtN3v+VEPRgIPL9sC8IW9YRdG+zfcqa9spnEAHVHV8=;
-        b=LEnoV8uGPVqjDu6X5n5JYwFQgqJMShdClvKXZ3Ce2VGpSI9s0Mblr+2c1GUhajt5oZ
-         twQlc1N69S8NovdCjBnMbfulRf1tat0cku7txSwaR4v6kWJ/s9Y0rqWWwYoMzMySd1Gv
-         qqukGY42mrvq3usGqIU+IdnggSao+CKT86kUpHemDocv03MCB+gwtfwT4mmCONt5X2Se
-         Evs0Mj/e3jCo7moyb67ZverVCM4FbW17E0k1z/u5ommTTPdMKpDJn2vWTR+hfiqw1wyo
-         i1r3SN251Eaz6ZHoQUhYkU75ApXc6Aw07LzJwSi57IQf2dg0i3JKdvF+mihWko9zrNl1
-         8SbA==
-X-Gm-Message-State: AOAM533NC9QjsZYMKiyEw3JFn6lef2zUdDKqXx05HToWil/DFMgg6fFf
-        UO2X742lumm3r/MOfgrdd/ExEA==
-X-Google-Smtp-Source: ABdhPJyRWtL3Bv2ltaYJ4QoDsfrueQOJpUj7UhB63jUM5UnjCwqn5Ot5cBO/2jrdreWRk6A88lMxjQ==
-X-Received: by 2002:a05:6830:2106:: with SMTP id i6mr4563109otc.260.1613020892962;
-        Wed, 10 Feb 2021 21:21:32 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y65sm966183oie.50.2021.02.10.21.21.30
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 10 Feb 2021 21:21:32 -0800 (PST)
-Date:   Wed, 10 Feb 2021 21:21:18 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Michal Hocko <mhocko@suse.com>
-cc:     Vlastimil Babka <vbabka@suse.cz>, Milan Broz <gmazyland@gmail.com>,
-        linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: Very slow unlockall()
-In-Reply-To: <YCQaqRGjZKYe64zR@dhcp22.suse.cz>
-Message-ID: <alpine.LSU.2.11.2102102051300.1872@eggly.anvils>
-References: <70885d37-62b7-748b-29df-9e94f3291736@gmail.com> <20210108134140.GA9883@dhcp22.suse.cz> <abb752ce-4447-74cb-dfbc-03af1b38edfc@gmail.com> <9474cd07-676a-56ed-1942-5090e0b9a82f@suse.cz> <e6f84b27-ed29-0fa4-e466-536b529c5720@gmail.com>
- <6eebb858-d517-b70d-9202-f4e84221ed89@suse.cz> <dfc3fe66-07ac-6aba-e10b-c940cdb01ec1@gmail.com> <273db3a6-28b1-6605-1743-ef86e7eb2b72@suse.cz> <YCQQad+rzpPiDmjL@dhcp22.suse.cz> <YCQaqRGjZKYe64zR@dhcp22.suse.cz>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnNepfMt6SkUB80VLnkD+4T2OWTmkVQGDZU4Ef/AiRA=;
+        b=lm0EWApJvlR1i3FsjGNzvqeD2pVRuHz8vhtmAvuARzy5Yk0qnI5I7mNltKImYN7aQF
+         9vhN2W3/09WckwjOVN6OWLos9k3aYNKQAXi1kCyLeiwD5GG8bkoMyaAyt6ybQGOMBU82
+         CGLydCoOfyJWThgFxnjGu5y4P4coIN3+DXPTh2O2cILdtXqvmCzua54Tyfb4lBCsvqF2
+         IUZaqy8PClDoPu4af5SAzSgPm/R2NqYhRfko6Eh9+qJVNf6MYIdyyV7F3XkZykqNKM3o
+         IanoohudKbRoBuJ3gqA/NxyGJqrLTdtT/Mec9A9op5C5BVNqqH6DDb2LgfhIucU4AaJJ
+         EPMw==
+X-Gm-Message-State: AOAM5327+PWLYNt3nEK16WluNjzyyN0kVN7Xkq5mxuV9t4h662VWNxu5
+        6sZVVD7NiwH/dBuRWec9rKxdkA==
+X-Google-Smtp-Source: ABdhPJxm9oq3kysAb4UsaHFK9obWwRxLAj7T0n4HlVeKP+0AkVLpg2wqoyeo8d/MtmBWD0fi4V2DXw==
+X-Received: by 2002:a17:90a:2ec7:: with SMTP id h7mr2350979pjs.200.1613020952009;
+        Wed, 10 Feb 2021 21:22:32 -0800 (PST)
+Received: from shiro.work (p345188-ipngn200408sizuokaden.shizuoka.ocn.ne.jp. [124.98.97.188])
+        by smtp.googlemail.com with ESMTPSA id o21sm3493511pjp.42.2021.02.10.21.22.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 21:22:31 -0800 (PST)
+From:   Daniel Palmer <daniel@0x0f.com>
+To:     linux-clk@vger.kernel.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     w@1wt.eu, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH v2 0/7] ARM: mstar: Basic MPLL support
+Date:   Thu, 11 Feb 2021 14:21:59 +0900
+Message-Id: <20210211052206.2955988-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.30.0.rc2
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021, Michal Hocko wrote:
-> On Wed 10-02-21 17:57:29, Michal Hocko wrote:
-> > On Wed 10-02-21 16:18:50, Vlastimil Babka wrote:
-> [...]
-> > > And the munlock (munlock_vma_pages_range()) is slow, because it uses
-> > > follow_page_mask() in a loop incrementing addresses by PAGE_SIZE, so that's
-> > > always traversing all levels of page tables from scratch. Funnily enough,
-> > > speeding this up was my first linux-mm series years ago. But the speedup only
-> > > works if pte's are present, which is not the case for unpopulated PROT_NONE
-> > > areas. That use case was unexpected back then. We should probably convert this
-> > > code to a proper page table walk. If there are large areas with unpopulated pmd
-> > > entries (or even higher levels) we would traverse them very quickly.
-> > 
-> > Yes, this is a good idea. I suspect it will be little bit tricky without
-> > duplicating a large part of gup page table walker.
-> 
-> Thinking about it some more, unmap_page_range would be a better model
-> for this operation.
+This series adds support for the MPLL block that is present in
+MStar/SigmaStar ARMv7 SoCs.
 
-Could do, I suppose; but I thought it was just a matter of going back to
-using follow_page_mask() in munlock_vma_pages_range() (whose fear of THP
-split looks overwrought, since an extra reference now prevents splitting);
-and enhancing follow_page_mask() to let the no_page_table() FOLL_DUMP
-case set ctx->page_mask appropriately (or perhaps it can be preset
-at a higher level, without having to pass ctx so far down, dunno).
+This block is intended to be set and forgotten about before
+Linux is running so all it actually does it read the registers
+and calculate what the output frequencies should be.
 
-Nice little job, but I couldn't quite spare the time to do it: needs a
-bit more care than I could afford (I suspect the page_increm business at
-the end of munlock_vma_pages_range() is good enough while THP tails are
-skipped one by one, but will need to be fixed to apply page_mask correctly
-to the start - __get_user_pages()'s page_increm-entation looks superior).
+We only care about this block because there are upstream dividers,
+gates, muxes etc that need something between the input crystal
+and themselves to calculate their own rates.
 
-Hugh
+Changes since v1:
+  - The clock output name related parts of the binding
+    description are gone. Clock names are generated inside the driver.
+    I dropped Rob's reviewed-by because of these changes.
+  - A devm helper has been added for clk_hw_register_fixed_factor()
+    to allow drivers to register multiple fixed factor clks  
+    without having to handle all of the clean up.             
+  - Numerous clean ups to the mpll driver itself based on Stephen's 
+    feedback.
+
+Daniel Palmer (7):
+  dt-bindings: clk: mstar msc313 mpll binding header
+  dt-bindings: clk: mstar msc313 mpll binding description
+  clk: fixed: add devm helper for clk_hw_register_fixed_factor()
+  clk: mstar: MStar/SigmaStar MPLL driver
+  ARM: mstar: Select MSTAR_MSC313_MPLL
+  ARM: mstar: Add the external clocks to the base dsti
+  ARM: mstar: Add mpll to base dtsi
+
+ .../bindings/clock/mstar,msc313-mpll.yaml     |  46 ++++++
+ MAINTAINERS                                   |   3 +
+ arch/arm/boot/dts/mstar-v7.dtsi               |  23 +++
+ arch/arm/mach-mstar/Kconfig                   |   1 +
+ drivers/clk/Kconfig                           |   1 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/clk-fixed-factor.c                |  39 ++++-
+ drivers/clk/mstar/Kconfig                     |   5 +
+ drivers/clk/mstar/Makefile                    |   6 +
+ drivers/clk/mstar/clk-msc313-mpll.c           | 155 ++++++++++++++++++
+ include/dt-bindings/clock/mstar-msc313-mpll.h |  19 +++
+ include/linux/clk-provider.h                  |   4 +-
+ 12 files changed, 296 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/mstar,msc313-mpll.yaml
+ create mode 100644 drivers/clk/mstar/Kconfig
+ create mode 100644 drivers/clk/mstar/Makefile
+ create mode 100644 drivers/clk/mstar/clk-msc313-mpll.c
+ create mode 100644 include/dt-bindings/clock/mstar-msc313-mpll.h
+
+-- 
+2.30.0.rc2
+
