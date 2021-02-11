@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3013831850B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A050B31850D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbhBKGCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 01:02:13 -0500
-Received: from mail-qk1-f175.google.com ([209.85.222.175]:43639 "EHLO
-        mail-qk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhBKGCF (ORCPT
+        id S229533AbhBKGFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 01:05:07 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:51927 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229457AbhBKGE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 01:02:05 -0500
-Received: by mail-qk1-f175.google.com with SMTP id m144so4207908qke.10
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 22:01:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3vzbRmZjGgrql1XHzPwT2L1PFTntGfeOkVZcxzUcGX0=;
-        b=lH7epCf2sI+nIhpk7BXrnAvwR7op2uzfI6oqQnWL2s4ZXGYiMhnJlPgqa3vxiO6fby
-         Tu+bO3qcwtiKwPMibJWMmm0e27Dk/Ep1QiWWr6LkUAoCZLQxDZx9z7uSEQp1tK8TZscP
-         jB4iW8+77aVufrX7/TMQ0mj44Fgy6X+7kmoTN9ESFIFgDWAKRv8qgUXz9V6DCUanpyFy
-         vMHu9uUZJal3NYNsOxjzymhKqT7rgPKitP0sIFXrz3KnRV5AT3oCmpCJe0HjaMkUbqMa
-         qIp1ZeDxV+R1BlJvNoyxN/HhYPbg6JI/hHEONUUhToCWUbkFB0ZMZ4dT6uVOEvWWeOfS
-         bgNQ==
-X-Gm-Message-State: AOAM5310wqr+QsC0el3xC2KMJRiavAk3kT7ag6ZORVUPMP9RbFsxUfKf
-        MNEjpNfcFY1OSdwyosdEdOshXhfYdTex4cn24fM=
-X-Google-Smtp-Source: ABdhPJzuj4HYTd2YgLBLC1RcGIiSDGIBcjsINSIivpFBxlbqWSdYo4AbiMxKIVJ+6SuxcsvFcxcw/DDGm1Zr22pheTU=
-X-Received: by 2002:a37:4b52:: with SMTP id y79mr7027844qka.132.1613023284612;
- Wed, 10 Feb 2021 22:01:24 -0800 (PST)
+        Thu, 11 Feb 2021 01:04:58 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UOPTk-a_1613023452;
+Received: from 30.27.210.10(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UOPTk-a_1613023452)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 11 Feb 2021 14:04:13 +0800
+Subject: Re: [PATCH v3 3/5] x86/sgx: Optimize the free_cnt count in
+ sgx_epc_section
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20210124062907.88229-1-tianjia.zhang@linux.alibaba.com>
+ <20210124062907.88229-4-tianjia.zhang@linux.alibaba.com>
+ <YBGlodsOaX4cWAtl@kernel.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <abd77ee8-0311-1664-f3ee-6d4a9fe512b1@linux.alibaba.com>
+Date:   Thu, 11 Feb 2021 14:04:12 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210208200908.1019149-1-jolsa@kernel.org> <20210208200908.1019149-7-jolsa@kernel.org>
-In-Reply-To: <20210208200908.1019149-7-jolsa@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 11 Feb 2021 15:01:12 +0900
-Message-ID: <CAM9d7cgURTm6UVUkOo8Tfv_zRGWBAtHqdLKxdSXYmToajjgALg@mail.gmail.com>
-Subject: Re: [PATCH 06/24] perf daemon: Add config file support
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YBGlodsOaX4cWAtl@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Hi,
 
-On Tue, Feb 9, 2021 at 5:09 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> +static int daemon__reconfig(struct daemon *daemon)
-> +{
-> +       struct daemon_session *session, *n;
-> +
-> +       list_for_each_entry_safe(session, n, &daemon->sessions, list) {
-> +               /* No change. */
-> +               if (session->state == OK)
-> +                       continue;
-> +
-> +               /* Remove session. */
-> +               if (session->state == KILL) {
-> +                       if (session->pid > 0) {
-> +                               daemon_session__kill(session);
-> +                               pr_info("reconfig: session '%s' killed\n", session->name);
-> +                       }
-> +                       daemon_session__remove(session);
-> +                       continue;
-> +               }
-> +
-> +               /* Reconfig session. */
-> +               if (session->pid > 0) {
-> +                       daemon_session__kill(session);
-> +                       pr_info("reconfig: session '%s' killed\n", session->name);
-> +               }
-> +               if (daemon_session__run(session, daemon))
-> +                       return -1;
+Sorry for the late reply.
 
-Shouldn't it be 'continue'?  If there's a problematic session
-it'll prevent others from being processed.  And it seems this
-code will try to run it again and again.  Maybe we can put it
-in the KILL state (or a new FAILED state) IMHO.
+On 1/28/21 1:40 AM, Jarkko Sakkinen wrote:
+> I could bet some money that this does not bring any significant
+> performance gain.
+> 
 
-Thanks,
-Namhyung
+Yes, this does not bring performance gains. This is not a change for 
+performance, mainly to make the value of free_cnt look more accurate.
 
-> +
-> +               session->state = OK;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int setup_config(struct daemon *daemon)
->  {
->         if (daemon->base_user) {
-> @@ -278,6 +614,9 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
->                 return -1;
->         }
->
-> +       if (setup_server_config(daemon))
-> +               return -1;
-> +
->         debug_set_file(daemon->out);
->         debug_set_display_time(true);
->
-> @@ -297,15 +636,23 @@ static int __cmd_start(struct daemon *daemon, struct option parent_options[],
->         signal(SIGTERM, sig_handler);
->
->         while (!done && !err) {
-> -               if (fdarray__poll(&fda, -1)) {
-> +               err = daemon__reconfig(daemon);
-> +
-> +               if (!err && fdarray__poll(&fda, -1)) {
-> +                       bool reconfig = false;
-> +
->                         if (fda.entries[sock_pos].revents & POLLIN)
->                                 err = handle_server_socket(daemon, sock_fd);
-> +
-> +                       if (reconfig)
-> +                               err = setup_server_config(daemon);
->                 }
->         }
->
->  out:
->         fdarray__exit(&fda);
->
-> +       daemon__kill(daemon);
->         daemon__exit(daemon);
->
->         if (sock_fd != -1)
-> --
-> 2.29.2
->
+> On Sun, Jan 24, 2021 at 02:29:05PM +0800, Tianjia Zhang wrote:
+>> `section->free_cnt` represents the free page in sgx_epc_section,
+>> which is assigned once after initialization. In fact, just after the
+>> initialization is completed, the pages are in the `init_laundry_list`
+>> list and cannot be allocated. This needs to be recovered by EREMOVE
+>> of function sgx_sanitize_section() before it can be used as a page
+>> that can be allocated. The sgx_sanitize_section() will be called in
+>> the kernel thread ksgxd.
+>>
+>> This patch moves the initialization of `section->free_cnt` from the
+>> initialization function `sgx_setup_epc_section()` to the function
+>> `sgx_sanitize_section()`, and then accumulates the count after the
+> 
+> Use single quotes instead of hyphens.
+> >> successful execution of EREMOVE. This seems to be more reasonable,
+>> free_cnt will also truly reflect the allocatable free pages in EPC.
+>>
+>> Sined-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>> Reviewed-by: Sean Christopherson <seanjc@google.com>
+>> ---
+>>   arch/x86/kernel/cpu/sgx/main.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+>> index 4465912174fd..e455ec7b3449 100644
+>> --- a/arch/x86/kernel/cpu/sgx/main.c
+>> +++ b/arch/x86/kernel/cpu/sgx/main.c
+>> @@ -48,6 +48,7 @@ static void sgx_sanitize_section(struct sgx_epc_section *section)
+>>   		if (!ret) {
+>>   			spin_lock(&section->lock);
+>>   			list_move(&page->list, &section->page_list);
+>> +			section->free_cnt++;
+>>   			spin_unlock(&section->lock);
+> 
+> Someone can try to allocate a page while sanitize process is in progress.
+> 
+> I think it is better to keep critical sections in the form that when you
+> leave from one, the global state is legit.
+> 
+
+Do you mean to move the critical section to protect the entire while 
+loop? Of course, this is also possible, sanitize is a process only 
+needed for initialization, and the possibility of conflict is very small.
+
+Best regards,
+Tianjia
+
