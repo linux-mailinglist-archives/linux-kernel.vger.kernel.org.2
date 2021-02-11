@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F703194AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713313194AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhBKUmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:42:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbhBKUmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:42:06 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA87C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:41:26 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id g5so2182778uak.10
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:41:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JqZZZvFE5VxL++dFfoZprDhk9+CSenhmKTyUPdyCU/U=;
-        b=JwpYmrz5Pq9isvSseBiUCn4eQXQyfBr2OxOXWrBy7tw8o+XYqRFK+R2ucZp0cFdhaK
-         A4sSR+eNIBHOfYKj7ZwwWoMNYH1qP8OtXTYlKygnib3yOBIkWMO2BAsEd4R0rZWVDrU4
-         UQB2CNI9KgTkaZW/msOwTE9FUsXlVrt18/mRJUzfFqEXYlrgLt0Vxwx1wDYe7v4b0wKV
-         rJ9yO9NLkvzKJHpcirJ1nQVtIIu9dUAgZPIFkDx86PTwZf6zFB8pXXDqiVLhBjiSGy1W
-         3Txd7anedzyRr7l070exCjtnnQVhSA6MSHFx8e3l2nPByd1zdHNBPvjCE2cIpGXPRd8K
-         kGQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JqZZZvFE5VxL++dFfoZprDhk9+CSenhmKTyUPdyCU/U=;
-        b=tSiTCP9WkCSvf14Gc9wFf/zNHs+If3542uQe+k0G1I/h0lKnYtcSP1BWBLLqE/LjQU
-         WoYAv9LBBYwB8poEUL/kDYW3pPKTl37vnqgOBmtPSEnqLynYRS1ZHz2BgK3JZO2rZEOi
-         3MtiOjApoWEpwymYOv+FE9Mmz/l2rToJCnu8yjmnk9CWVXUGv03Q/7Yxoz+TvZm9YtW/
-         or50aP3Pl62zjnVKvvCABjbQ5JBhALCzDf2VL1POCrR7c+hzctQPJY5/bFEa8W0e1jXd
-         7NafS5INuKAVFpTPq0jnZnjB50AQXy1RARb1WjB8Jmwo0TJhf8QPBspp/Et7LboKU5RX
-         K3GA==
-X-Gm-Message-State: AOAM531/uIVrsUpScZ1fCtdeoQUvd5BQVhKIdQ9vxsavh2eGJN/Y87G8
-        voH1eKeUeQoSRaPWTJeF8w6U/O6+MWrLJh37+kp0aA==
-X-Google-Smtp-Source: ABdhPJzIm5VtW1C8leqxolWHrGOE0VBLS/CwbuSyepxQoy46V+/+2C4/k7slInILzPb1rPE6aCMUoTA1e2xrIj9H8d8=
-X-Received: by 2002:ab0:2448:: with SMTP id g8mr6669684uan.89.1613076085437;
- Thu, 11 Feb 2021 12:41:25 -0800 (PST)
+        id S230013AbhBKUpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:45:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229707AbhBKUo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 15:44:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29CED64DA8;
+        Thu, 11 Feb 2021 20:44:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613076258;
+        bh=FtVPNbEO5qXmF5tcWfuPaV62+LSEKiJm7Eq3dBGfqnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KdpIAIFg4r+l68fJ5GYFst7DlovuGpweTusBDutQrnhacw626p5eRNJ8Z/VqkaELP
+         GzoEoA/uuKh7gBXeXm9ic/PCjTYE7Zs5GmkSN6ioyJt+gUhjWCWCcyRSYoVsw2/m9S
+         /sh7k4pDJN0ZYP2nKLwE+Tf/i7tgIAUZo2U50qK8=
+Date:   Thu, 11 Feb 2021 21:44:15 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Pritthijit Nath <pritthijit.nath@icloud.com>
+Cc:     tvboxspy@gmail.com, devel@driverdev.osuosl.org,
+        oscar.carter@gmx.com, forest@alittletooquiet.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: vt6656: Fixed issue with alignment in rf.c
+Message-ID: <YCWXH1MZy0cbDB3G@kroah.com>
+References: <20210211152426.10008-1-pritthijit.nath@icloud.com>
+ <YCWTlWj4KHT6Okq/@kroah.com>
+ <141aa6fe-972c-a9a2-f321-65a98ebccc41@icloud.com>
 MIME-Version: 1.0
-References: <20210211194258.4137998-1-nathan@kernel.org>
-In-Reply-To: <20210211194258.4137998-1-nathan@kernel.org>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 11 Feb 2021 12:41:14 -0800
-Message-ID: <CABCJKueyXp5EQnmZ7a6HR87oKwDBDukprnJWT620McSYFd1SMg@mail.gmail.com>
-Subject: Re: [PATCH] qemu_fw_cfg: Make fw_cfg_rev_attr a proper kobj_attribute
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Gabriel Somlo <somlo@cmu.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>, qemu-devel@nongnu.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <141aa6fe-972c-a9a2-f321-65a98ebccc41@icloud.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nathan,
+On Fri, Feb 12, 2021 at 02:07:50AM +0530, Pritthijit Nath wrote:
+> On 12/02/21 1:59 am, Greg KH wrote:
+> > On Thu, Feb 11, 2021 at 08:54:26PM +0530, Pritthijit Nath wrote:
+> >> This change fixes a checkpatch CHECK style issue for "Alignment should match open parenthesis".
+> >>
+> >> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
+> >> ---
+> >>  drivers/staging/vt6656/rf.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
+> >> index 5b8da06e3916..bcd4d467e03a 100644
+> >> --- a/drivers/staging/vt6656/rf.c
+> >> +++ b/drivers/staging/vt6656/rf.c
+> >> @@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
+> >>  
+> >>  			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
+> >>  				ret = vnt_rf_write_embedded(priv,
+> >> -					vt3226d0_lo_current_table[hw_value]);
+> >> +							    vt3226d0_lo_current_table[hw_value]);
+> >>  				if (ret)
+> >>  					return ret;
+> >>  			}
+> >> -- 
+> >> 2.25.1
+> > 
+> > Please run this change, with the changelog above, through
+> > checkpatch.pl, fix that, and resend.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> 
+> This change fixes a checkpatch CHECK style issue for "Alignment should 
+> match open parenthesis".
+> 
+> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
+> ---
+>  drivers/staging/vt6656/rf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
+> index 5b8da06e3916..bcd4d467e03a 100644
+> --- a/drivers/staging/vt6656/rf.c
+> +++ b/drivers/staging/vt6656/rf.c
+> @@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
+>  
+>  			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
+>  				ret = vnt_rf_write_embedded(priv,
+> -					vt3226d0_lo_current_table[hw_value]);
+> +							    vt3226d0_lo_current_table[hw_value]);
+>  				if (ret)
+>  					return ret;
+>  			}
 
-On Thu, Feb 11, 2021 at 11:43 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> fw_cfg_showrev() is called by an indirect call in kobj_attr_show(),
-> which violates clang's CFI checking because fw_cfg_showrev()'s second
-> parameter is 'struct attribute', whereas the ->show() member of 'struct
-> kobj_structure' expects the second parameter to be of type 'struct
-> kobj_attribute'.
->
-> $ cat /sys/firmware/qemu_fw_cfg/rev
-> 3
->
-> $ dmesg | grep "CFI failure"
-> [   26.016832] CFI failure (target: fw_cfg_showrev+0x0/0x8):
->
-> Fix this by converting fw_cfg_rev_attr to 'struct kobj_attribute' where
-> this would have been caught automatically by the incompatible pointer
-> types compiler warning. Update fw_cfg_showrev() accordingly.
->
-> Fixes: 75f3e8e47f38 ("firmware: introduce sysfs driver for QEMU's fw_cfg device")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1299
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+I can't take this type of submission, do you see other patches submitted
+this way on the mailing list?
 
-Looks good to me. Thank you for sending the patch!
+Also, you have a trailing space in your changelog text :(
 
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+thanks,
 
-Sami
+greg k-h
