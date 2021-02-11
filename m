@@ -2,157 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22257318E14
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2B7318E76
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhBKPU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 10:20:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhBKOyi (ORCPT
+        id S231244AbhBKP1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:27:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41560 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230465AbhBKO5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:54:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28316C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:53:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=k/UyUAhPG/k7IkD3jvnjnp4EZOFlaRkN5Al2ZjuSVx4=; b=a+NysX0qKOsKjq+rywEZEropjT
-        k+KFJhVjJdI3JYdW9b30n+sl3iJhKV1tv2RwiKm/M+iNVE6aEhPYMjj32YTWm3/Hvlmd1PqifOSSB
-        rKDQ6fTf//LgZq07mQ+HpbxiGLmF3/BE/QznekLFa+1HUwy5Hcidm1ZZSN+5x9lrHZpIivTCG0qFl
-        HiXAdpGVoI3cXm1/C+4IQVXnH/cNeWULRfJOFPqy1XNGxfSzQ5G+H/o8Wk/QOhDrwtAXB2j15nVgn
-        2HVQRJCSKXMcRdSUvtjV2/JtZSv4GUZyylaZuMaobcFNVzkrtib044WNlZ6QFIkZr++qrQkTRtuK7
-        MfFKjcGA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lADLg-00AMrc-8N; Thu, 11 Feb 2021 14:53:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1EB3F300446;
-        Thu, 11 Feb 2021 15:53:39 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 030912BB949E0; Thu, 11 Feb 2021 15:53:38 +0100 (CET)
-Date:   Thu, 11 Feb 2021 15:53:38 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vince Weaver <vincent.weaver@maine.edu>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        kan.liang@linux.intel.com
-Subject: Re: [perf] perf_fuzzer causes crash in intel_pmu_drain_pebs_nhm()
-Message-ID: <YCVE8q4MlbcU4fnV@hirez.programming.kicks-ass.net>
-References: <61a56699-aab4-ef6-ed8d-a22b6bf532d@maine.edu>
- <7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu>
+        Thu, 11 Feb 2021 09:57:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613055323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rv0AX4El3L9BRXhQ67Zd1G732A2I2MFEub7SaOhadis=;
+        b=ErnTkZskeCTVcqX5XIzjN5EBmRA1dde4ovWiSm8fINM+m5zMFipS4xQhGrtfz5KbX7O2cq
+        pxp9uvUpY2xK1cdfAy3lfhGmZh9rjlN8LQLx0xjbr5mzmy5NKcAKBrE4WpaQJpjFA8SZm1
+        b9mgo067wj6jOoI46fCJBLPGNsf+OlQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-3XopvuBpM9GU7hxzP4vlvQ-1; Thu, 11 Feb 2021 09:55:21 -0500
+X-MC-Unique: 3XopvuBpM9GU7hxzP4vlvQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36AF66D4EE;
+        Thu, 11 Feb 2021 14:55:17 +0000 (UTC)
+Received: from ovpn-115-49.ams2.redhat.com (ovpn-115-49.ams2.redhat.com [10.36.115.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 609AD60C17;
+        Thu, 11 Feb 2021 14:55:05 +0000 (UTC)
+Message-ID: <e30145f4fccae3f3543da88cef40633db42b59d2.camel@redhat.com>
+Subject: Re: [PATCH v4 net-next 09/11] skbuff: allow to optionally use NAPI
+ cache from __alloc_skb()
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Date:   Thu, 11 Feb 2021 15:55:04 +0100
+In-Reply-To: <20210211142811.1813-1-alobakin@pm.me>
+References: <20210210162732.80467-1-alobakin@pm.me>
+         <20210210162732.80467-10-alobakin@pm.me>
+         <58147c2d36ea7b6e0284d400229cd79185c53463.camel@redhat.com>
+         <20210211142811.1813-1-alobakin@pm.me>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7170d3b-c17f-1ded-52aa-cc6d9ae999f4@maine.edu>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-02-11 at 14:28 +0000, Alexander Lobakin wrote:
+> From: Paolo Abeni <pabeni@redhat.com> on Thu, 11 Feb 2021 11:16:40 +0100 wrote:
+> > What about changing __napi_alloc_skb() to always use
+> > the __napi_build_skb(), for both kmalloc and page backed skbs? That is,
+> > always doing the 'data' allocation in __napi_alloc_skb() - either via
+> > page_frag or via kmalloc() - and than call __napi_build_skb().
+> > 
+> > I think that should avoid adding more checks in __alloc_skb() and
+> > should probably reduce the number of conditional used
+> > by __napi_alloc_skb().
+> 
+> I thought of this too. But this will introduce conditional branch
+> to set or not skb->head_frag. So one branch less in __alloc_skb(),
+> one branch more here, and we also lose the ability to __alloc_skb()
+> with decached head.
 
-Kan, do you have time to look at this?
+Just to try to be clear, I mean something alike the following (not even
+build tested). In the fast path it has less branches than the current
+code - for both kmalloc and page_frag allocation.
 
-On Thu, Jan 28, 2021 at 02:49:47PM -0500, Vince Weaver wrote:
-> On Thu, 28 Jan 2021, Vince Weaver wrote:
-> 
-> > the perf_fuzzer has turned up a repeatable crash on my haswell system.
-> > 
-> > addr2line is not being very helpful, it points to DECLARE_PER_CPU_FIRST.
-> > I'll investigate more when I have the chance.
-> 
-> so I poked around some more.
-> 
-> This seems to be caused in
-> 
->    __intel_pmu_pebs_event()
-> 	get_next_pebs_record_by_bit()		ds.c line 1639
-> 		get_pebs_status(at)		ds.c line 1317
-> 			return ((struct pebs_record_nhm *)n)->status;
-> 
-> where "n" has the value of 0xc0 rather than a proper pointer.
-> 
-> this does seem to be repetable, but fairly deep in a fuzzing run so I 
-> don't have a quick reproducer.
-> 
-> Vince
-> 
-> 
-> > [96289.009646] BUG: kernel NULL pointer dereference, address: 0000000000000150
-> > [96289.017094] #PF: supervisor read access in kernel mode
-> > [96289.022588] #PF: error_code(0x0000) - not-present page
-> > [96289.028069] PGD 0 P4D 0 
-> > [96289.030796] Oops: 0000 [#1] SMP PTI
-> > [96289.034549] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.11.0-rc5+ #151
-> > [96289.043059] Hardware name: LENOVO 10AM000AUS/SHARKBAY, BIOS FBKT72AUS 01/26/2014
-> > [96289.050946] RIP: 0010:intel_pmu_drain_pebs_nhm+0x464/0x5f0
-> > [96289.056817] Code: 09 00 00 0f b6 c0 49 39 c4 74 2a 48 63 82 78 09 00 00 48 01 c5 48 39 6c 24 08 76 17 0f b6 05 14 70 3f 01 83 e0 0f 3c 03 77 a4 <48> 8b 85 90 00 00 00 eb 9f 31 ed 83 eb 01 83 fb 01 0f 85 30 ff ff
-> > [96289.076876] RSP: 0000:ffffffff822039e0 EFLAGS: 00010097
-> > [96289.082468] RAX: 0000000000000002 RBX: 0000000000000155 RCX: 0000000000000008
-> > [96289.090095] RDX: ffff88811ac118a0 RSI: ffffffff82203980 RDI: ffffffff82203980
-> > [96289.097746] RBP: 00000000000000c0 R08: 0000000000000000 R09: 0000000000000000
-> > [96289.105376] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-> > [96289.113008] R13: ffffffff82203bc0 R14: ffff88801c3cf800 R15: ffffffff829814a0
-> > [96289.120671] FS:  0000000000000000(0000) GS:ffff88811ac00000(0000) knlGS:0000000000000000
-> > [96289.129346] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [96289.135526] CR2: 0000000000000150 CR3: 000000000220c003 CR4: 00000000001706f0
-> > [96289.143159] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [96289.150803] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-> > [96289.158414] Call Trace:
-> > [96289.161041]  ? update_blocked_averages+0x532/0x620
-> > [96289.166152]  ? update_group_capacity+0x25/0x1d0
-> > [96289.171025]  ? cpumask_next_and+0x19/0x20
-> > [96289.175339]  ? update_sd_lb_stats.constprop.0+0x702/0x820
-> > [96289.181105]  intel_pmu_drain_pebs_buffer+0x33/0x50
-> > [96289.186259]  ? x86_pmu_commit_txn+0xbc/0xf0
-> > [96289.190749]  ? _raw_spin_lock_irqsave+0x1d/0x30
-> > [96289.195603]  ? timerqueue_add+0x64/0xb0
-> > [96289.199720]  ? update_load_avg+0x6c/0x5e0
-> > [96289.204001]  ? enqueue_task_fair+0x98/0x5a0
-> > [96289.208464]  ? timerqueue_del+0x1e/0x40
-> > [96289.212556]  ? uncore_msr_read_counter+0x10/0x20
-> > [96289.217513]  intel_pmu_pebs_disable+0x12a/0x130
-> > [96289.222324]  x86_pmu_stop+0x48/0xa0
-> > [96289.226076]  x86_pmu_del+0x40/0x160
-> > [96289.229813]  event_sched_out.isra.0+0x81/0x1e0
-> > [96289.234602]  group_sched_out.part.0+0x4f/0xc0
-> > [96289.239257]  __perf_event_disable+0xef/0x1d0
-> > [96289.243831]  event_function+0x8c/0xd0
-> > [96289.247785]  remote_function+0x3e/0x50
-> > [96289.251797]  flush_smp_call_function_queue+0x11b/0x1a0
-> > [96289.257268]  flush_smp_call_function_from_idle+0x38/0x60
-> > [96289.262944]  do_idle+0x15f/0x240
-> > [96289.266421]  cpu_startup_entry+0x19/0x20
-> > [96289.270639]  start_kernel+0x7df/0x804
-> > [96289.274558]  ? apply_microcode_early.cold+0xc/0x27
-> > [96289.279678]  secondary_startup_64_no_verify+0xb0/0xbb
-> > [96289.285078] Modules linked in: nf_tables libcrc32c nfnetlink intel_rapl_msr intel_rapl_common snd_hda_codec_realtek snd_hda_codec_generic snd_hda_codec_hdmi x86_pkg_temp_thermal ledtrig_audio intel_powerclamp snd_hda_intel coretemp snd_intel_dspcfg snd_hda_codec snd_hda_core kvm_intel kvm snd_hwdep irqbypass at24 snd_pcm tpm_tis crct10dif_pclmul snd_timer crc32_pclmul regmap_i2c wmi_bmof sg tpm_tis_core snd ghash_clmulni_intel tpm iTCO_wdt aesni_intel soundcore rng_core iTCO_vendor_support crypto_simd mei_me mei cryptd pcspkr evdev glue_helper binfmt_misc ip_tables x_tables autofs4 sr_mod sd_mod t10_pi cdrom i915 iosf_mbi ahci i2c_algo_bit libahci drm_kms_helper xhci_pci ehci_pci ehci_hcd libata xhci_hcd lpc_ich usbcore i2c_i801 drm crc32c_intel e1000e mfd_core scsi_mod usb_common i2c_smbus wmi fan thermal video button
-> > [96289.362498] CR2: 0000000000000150
-> > [96289.366070] ---[ end trace 80c577f99562015f ]---
-> > [96289.371007] RIP: 0010:intel_pmu_drain_pebs_nhm+0x464/0x5f0
-> > [96289.376868] Code: 09 00 00 0f b6 c0 49 39 c4 74 2a 48 63 82 78 09 00 00 48 01 c5 48 39 6c 24 08 76 17 0f b6 05 14 70 3f 01 83 e0 0f 3c 03 77 a4 <48> 8b 85 90 00 00 00 eb 9f 31 ed 83 eb 01 83 fb 01 0f 85 30 ff ff
-> > [96289.396981] RSP: 0000:ffffffff822039e0 EFLAGS: 00010097
-> > [96289.402573] RAX: 0000000000000002 RBX: 0000000000000155 RCX: 0000000000000008
-> > [96289.410226] RDX: ffff88811ac118a0 RSI: ffffffff82203980 RDI: ffffffff82203980
-> > [96289.417841] RBP: 00000000000000c0 R08: 0000000000000000 R09: 0000000000000000
-> > [96289.425461] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-> > [96289.433122] R13: ffffffff82203bc0 R14: ffff88801c3cf800 R15: ffffffff829814a0
-> > [96289.440774] FS:  0000000000000000(0000) GS:ffff88811ac00000(0000) knlGS:0000000000000000
-> > [96289.449374] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [96289.455507] CR2: 0000000000000150 CR3: 000000000220c003 CR4: 00000000001706f0
-> > [96289.463119] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [96289.470764] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-> > [96289.478408] Kernel panic - not syncing: Attempted to kill the idle task!
-> > [96289.485598] Kernel Offset: disabled
-> > [96289.489355] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
-> > 
-> > 
-> 
+---
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 785daff48030..a242fbe4730e 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -506,23 +506,12 @@ struct sk_buff *__napi_alloc_skb(struct napi_struct *napi, unsigned int len,
+ 				 gfp_t gfp_mask)
+ {
+ 	struct napi_alloc_cache *nc;
++	bool head_frag, pfmemalloc;
+ 	struct sk_buff *skb;
+ 	void *data;
+ 
+ 	len += NET_SKB_PAD + NET_IP_ALIGN;
+ 
+-	/* If requested length is either too small or too big,
+-	 * we use kmalloc() for skb->head allocation.
+-	 */
+-	if (len <= SKB_WITH_OVERHEAD(1024) ||
+-	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
+-	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
+-		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
+-		if (!skb)
+-			goto skb_fail;
+-		goto skb_success;
+-	}
+-
+ 	nc = this_cpu_ptr(&napi_alloc_cache);
+ 	len += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+ 	len = SKB_DATA_ALIGN(len);
+@@ -530,25 +519,34 @@ struct sk_buff *__napi_alloc_skb(struct napi_struct *napi, unsigned int len,
+ 	if (sk_memalloc_socks())
+ 		gfp_mask |= __GFP_MEMALLOC;
+ 
+-	data = page_frag_alloc(&nc->page, len, gfp_mask);
++	if (len <= SKB_WITH_OVERHEAD(1024) ||
++            len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
++            (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
++		data = kmalloc_reserve(len, gfp_mask, NUMA_NO_NODE, &pfmemalloc);
++		head_frag = 0;
++		len = 0;
++	} else {
++		data = page_frag_alloc(&nc->page, len, gfp_mask);
++		pfmemalloc = nc->page.pfmemalloc;
++		head_frag = 1;
++	}
+ 	if (unlikely(!data))
+ 		return NULL;
+ 
+ 	skb = __build_skb(data, len);
+ 	if (unlikely(!skb)) {
+-		skb_free_frag(data);
++		if (head_frag)
++			skb_free_frag(data);
++		else
++			kfree(data);
+ 		return NULL;
+ 	}
+ 
+-	if (nc->page.pfmemalloc)
+-		skb->pfmemalloc = 1;
+-	skb->head_frag = 1;
++	skb->pfmemalloc = pfmemalloc;
++	skb->head_frag = head_frag;
+ 
+-skb_success:
+ 	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
+ 	skb->dev = napi->dev;
+-
+-skb_fail:
+ 	return skb;
+ }
+ EXPORT_SYMBOL(__napi_alloc_skb);
+
