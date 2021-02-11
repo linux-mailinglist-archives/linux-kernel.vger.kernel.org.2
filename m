@@ -2,134 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9C73188E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BE63188F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhBKK7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:59:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48759 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230363AbhBKKty (ORCPT
+        id S231474AbhBKLDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:03:00 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:6844 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230477AbhBKKuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:49:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613040508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R0teWV0bmw9KGc7LQPs2FazYpPfP/2lb4xoFRMFqLtg=;
-        b=Yf/cnzxL/mi1KcY38T1a/9U2qMfYZxpHxGgvfD+vrF8PmJhduofOZTOCedg7/6Ji50BmIi
-        sMyR2kUzebbcA/sMcsJZe+8ZIdU3Sa7LYufSu9Cv73Pw/euv6aelNf4CFY4tC1j3whWynt
-        mBNCfctAUczv0u+X72lqK4YINdHNva0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-L4d7n19gMJe6KjiTGdmv4A-1; Thu, 11 Feb 2021 05:48:26 -0500
-X-MC-Unique: L4d7n19gMJe6KjiTGdmv4A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB1A6427C3;
-        Thu, 11 Feb 2021 10:48:24 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-113-131.ams2.redhat.com [10.36.113.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6CD151F442;
-        Thu, 11 Feb 2021 10:48:22 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz, libc-alpha@sourceware.org,
-        linux-api@vger.kernel.org
-Subject: LINUX_VERSION_CODE overflow (was: Re: Linux 4.9.256)
-References: <1612535085125226@kroah.com>
-Date:   Thu, 11 Feb 2021 11:48:41 +0100
-In-Reply-To: <1612535085125226@kroah.com> (Greg Kroah-Hartman's message of
-        "Fri, 5 Feb 2021 15:26:18 +0100")
-Message-ID: <87o8gqriba.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 11 Feb 2021 05:50:12 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BAj1Ei008594;
+        Thu, 11 Feb 2021 02:49:12 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=NdcqTGASo3MR+Cfyg1FEYnxcfpPfebZdCuwJjWXUPpo=;
+ b=OKtqOEhK4iFpFlDPwMEwvdf0L+pqQxB6ojIdI10kIbJh5GxnmY4Q38VGBrMOw1yM1oYa
+ hXoLS9sivOFNozxBtEeNYkr4FsCXUiICkEsBiZp/XekvjlxqW29Rk3KIHdPKZu51lm6n
+ LC9EZ1K9oObg8hk3Dw2E4RjpW2XTSFYLbktVUxpeb10m5W2nNbe9uW1EOo2sv1+K7zz1
+ NaOron2WE5LkyGtp7APXvMa1TK2h7z6WsB2JK+VfYsu9BvDM8+Vh5Lmye5HYAgjTPEKp
+ iwKyJF0V88C+1eJxgaX5Y1uRS1iHdZhs9ZCp7tQkICS5Y3rSuEld8AdMlHcTTh6+w5Pi 5Q== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36hugqef5a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 02:49:12 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
+ 2021 02:49:10 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
+ 2021 02:49:10 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 11 Feb 2021 02:49:09 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 109513F703F;
+        Thu, 11 Feb 2021 02:49:05 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <sebastian.hesselbarth@gmail.com>,
+        <gregory.clement@bootlin.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v13 net-next 00/15] net: mvpp2: Add TX Flow Control support
+Date:   Thu, 11 Feb 2021 12:48:47 +0200
+Message-ID: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_05:2021-02-10,2021-02-11 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Greg Kroah-Hartman:
+From: Stefan Chulski <stefanc@marvell.com>
 
-> I'm announcing the release of the 4.9.256 kernel.
->
-> This, and the 4.4.256 release are a little bit "different" than normal.
->
-> This contains only 1 patch, just the version bump from .255 to .256
-> which ends up causing the userspace-visable LINUX_VERSION_CODE to
-> behave a bit differently than normal due to the "overflow".
->
-> With this release, KERNEL_VERSION(4, 9, 256) is the same as KERNEL_VERSIO=
-N(4, 10, 0).
->
-> Nothing in the kernel build itself breaks with this change, but given
-> that this is a userspace visible change, and some crazy tools (like
-> glibc and gcc) have logic that checks the kernel version for different
-> reasons, I wanted to do this release as an "empty" release to ensure
-> that everything still works properly.
+Armada hardware has a pause generation mechanism in GOP (MAC).
+The GOP generate flow control frames based on an indication programmed in Ports Control 0 Register. There is a bit per port.
+However assertion of the PortX Pause bits in the ports control 0 register only sends a one time pause.
+To complement the function the GOP has a mechanism to periodically send pause control messages based on periodic counters.
+This mechanism ensures that the pause is effective as long as the Appropriate PortX Pause is asserted.
 
-As promised, I looked at this from the glibc perspective.
+Problem is that Packet Processor that actually can drop packets due to lack of resources not connected to the GOP flow control generation mechanism.
+To solve this issue Armada has firmware running on CM3 CPU dedicated for Flow Control support.
+Firmware monitors Packet Processor resources and asserts XON/XOFF by writing to Ports Control 0 Register.
 
-A dynamically linked glibc reads the LINUX_VERSION_CODE in the ELF note
-in the vDSO.
+MSS shared SRAM memory used to communicate between CM3 firmware and PP2 driver.
+During init PP2 driver informs firmware about used BM pools, RXQs, congestion and depletion thresholds.
 
-Statically linked binaries use the uname system call and parse the
-release field in struct utsname.  If the uname system call fails, there
-is also /proc fallback, but I believe that path is unused.
+The pause frames are generated whenever congestion or depletion in resources is detected.
+The back pressure is stopped when the resource reaches a sufficient level.
+So the congestion/depletion and sufficient level implement a hysteresis that reduces the XON/XOFF toggle frequency.
 
-The glibc dynamic linker falls back to uname if the vDSO cannot be
-located.
+Packet Processor v23 hardware introduces support for RX FIFO fill level monitor.
+Patch "add PPv23 version definition" to differ between v23 and v22 hardware.
+Patch "add TX FC firmware check" verifies that CM3 firmware supports Flow Control monitoring.
 
-The LINUX_VERSION_CODE format is also used in /etc/ld.so.cache.  This is
-difficult to change because a newer ldconfig is supposed to build a
-cache that is compatible with older glibc versions (two-way
-compatibility).  The information in /etc/ld.so.cache is copied from the
-ELF_NOTE_ABI/NT_GNU_ABI_TAG ELF note in the DSOs; the note format is not
-subject to overflows because it uses 32-bit values for the component
-versions.
+v12 --> v13
+- Remove bm_underrun_protect module_param
 
-glibc uses the current kernel's LINUX_VERSION_CODE for two purposes: for
-its own =E2=80=9Ckernel too old=E2=80=9D check (glibc refuses to start in t=
-his case),
-and to skip loading DSOs which have an ELF_NOTE_ABI/NT_GNU_ABI_TAG that
-indicates a higher kernel version than the current kernel.  glibc does
-not use LINUX_VERSION_CODE to detect features or activate workarounds
-for kernel bugs.
+v11 --> v12
+- Improve warning message in "net: mvpp2: add TX FC firmware check" patch
 
-The overflow from 4.9.256 to 4.10.0 means that we might get spurious
-passes on these checks.  Worst case, it can happen that if the system
-has a DSO in two versions on the library search path, one for kernel
-4.10 and one for kernel 4.9 or earlier (in that order), we now load the
-4.10 version on a 4.9 kernel.  Previously, loading the 4.10 DSO failed,
-and the fallback version for earlier kernels was used.  That would be
-real breakage.
+v10 --> v11
+- Improve "net: mvpp2: add CM3 SRAM memory map" comment
+- Move condition check to 'net: mvpp2: always compare hw-version vs MVPP21' patch
 
-Our options in userspace are limited because whatever changes we make to
-glibc today are unlikely to reach people running 4.4 or 4.9 kernels
-anytime soon, if ever.  Clamping the sublevel field of
-LINUX_VERSION_CODE in the vDSO to 255 only benefits dynamically linked
-binaries, but it could be that this is sufficient to paper over this
-issue.
+v9 --> v10
+- Add CM3 SRAM description to PPv2 documentation
 
-There's also the question whether these glibc checks are valuable at
-all.  It encourages kernel patching to lie about kernel versions, making
-diagnostics harder (e.g., reporting 3.10 if it's really a 2.6.32 with
-lots of system call backports).  The ELF_NOTE_ABI/NT_GNU_ABI_TAG DSO
-selection is known to cause endless problems with Qt, basically the only
-large-scale user of this feature.  Perhaps we should remove it, but it
-would also break the fallback DSO approach mentioned above.
+v8 --> v9
+- Replace generic pool allocation with devm_ioremap_resource
 
-Thanks,
-Florian
---=20
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'N=
-eill
+v7 --> v8
+- Reorder "always compare hw-version vs MVPP21" and "add PPv23 version definition" commits
+- Typo fixes
+- Remove condition fix from "add RXQ flow control configurations"
+
+v6 --> v7
+- Reduce patch set from 18 to 15 patches
+ - Documentation change combined into a single patch
+ - RXQ and BM size change combined into a single patch
+ - Ring size change check moved into "add RXQ flow control configurations" commit
+
+v5 --> v6
+- No change
+
+v4 --> v5
+- Add missed Signed-off
+- Fix warnings in patches 3 and 12
+- Add revision requirement to warning message
+- Move mss_spinlock into RXQ flow control configurations patch
+- Improve FCA RXQ non occupied descriptor threshold commit message
+
+v3 --> v4
+- Remove RFC tag
+
+v2 --> v3
+- Remove inline functions
+- Add PPv2.3 description into marvell-pp2.txt
+- Improve mvpp2_interrupts_mask/unmask procedure
+- Improve FC enable/disable procedure
+- Add priv->sram_pool check
+- Remove gen_pool_destroy call
+- Reduce Flow Control timer to x100 faster
+
+v1 --> v2
+- Add memory requirements information
+- Add EPROBE_DEFER if of_gen_pool_get return NULL
+- Move Flow control configuration to mvpp2_mac_link_up callback
+- Add firmware version info with Flow control support
+
+Konstantin Porotchkin (1):
+  dts: marvell: add CM3 SRAM memory to cp11x ethernet device tree
+
+Stefan Chulski (14):
+  doc: marvell: add CM3 address space and PPv2.3 description
+  net: mvpp2: add CM3 SRAM memory map
+  net: mvpp2: always compare hw-version vs MVPP21
+  net: mvpp2: add PPv23 version definition
+  net: mvpp2: increase BM pool and RXQ size
+  net: mvpp2: add FCA periodic timer configurations
+  net: mvpp2: add FCA RXQ non occupied descriptor threshold
+  net: mvpp2: enable global flow control
+  net: mvpp2: add RXQ flow control configurations
+  net: mvpp2: add ethtool flow control configuration support
+  net: mvpp2: add BM protection underrun feature support
+  net: mvpp2: add PPv23 RX FIFO flow control
+  net: mvpp2: set 802.3x GoP Flow Control mode
+  net: mvpp2: add TX FC firmware check
+
+ Documentation/devicetree/bindings/net/marvell-pp2.txt |   6 +-
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi         |   2 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h            | 124 ++++-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c       | 516 ++++++++++++++++++--
+ 4 files changed, 599 insertions(+), 49 deletions(-)
+
+-- 
+1.9.1
 
