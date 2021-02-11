@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBF7319059
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DAD319029
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhBKQuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:50:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57472 "EHLO mail.kernel.org"
+        id S231660AbhBKQit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:38:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229991AbhBKPjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:39:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15CD764EFA;
-        Thu, 11 Feb 2021 15:05:07 +0000 (UTC)
+        id S231425AbhBKPcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:32:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72F6664F0B;
+        Thu, 11 Feb 2021 15:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613055908;
-        bh=rmkHtqdHOAADIqXZNJsn2jznTd52r0jqSpRSJ7qc+mI=;
+        s=korg; t=1613055945;
+        bh=m6i17RICMcagB3fjBK0ektXxTsN0a4iiNGXmiZNNTos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v7l7lBA4zoxfke2mm1B43ati2b3jr9XHBAGprDUW2NOqe+F41gfEmnjhd9u2JPUqF
-         f1WmpLHb6QetM1HK11Rv326GLv+xRgDtfBK0XAZq72WgJBMTb8HA/SFsY+FaO9L6Ft
-         lTqK9g8FPeyBZYFKbnql9DUDlWRWFKDE06TZE+E8=
+        b=NQUwt6jY0N+YQjdn845994GR53j+GH0OhQ7LmXBMTwVNm19zr/hZvVywTzUmtREvV
+         m1oPcstEBfVJ7/7UKsBd+8m+KYnMokd7e3l83viAvmKpVnODLK98lm/0RC2yk6tRXH
+         bE/hpJmtKw5aCA91xkPGemqrCq/cP8taktZCHPgA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
-        syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 54/54] squashfs: add more sanity checks in xattr id lookup
+        stable@vger.kernel.org, Dave Wysochanski <dwysocha@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 15/24] SUNRPC: Move simple_get_bytes and simple_get_netobj into private header
 Date:   Thu, 11 Feb 2021 16:02:38 +0100
-Message-Id: <20210211150155.219688580@linuxfoundation.org>
+Message-Id: <20210211150149.184762626@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
-References: <20210211150152.885701259@linuxfoundation.org>
+In-Reply-To: <20210211150148.516371325@linuxfoundation.org>
+References: <20210211150148.516371325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,139 +40,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Lougher <phillip@squashfs.org.uk>
+From: Dave Wysochanski <dwysocha@redhat.com>
 
-commit 506220d2ba21791314af569211ffd8870b8208fa upstream.
+[ Upstream commit ba6dfce47c4d002d96cd02a304132fca76981172 ]
 
-Sysbot has reported a warning where a kmalloc() attempt exceeds the
-maximum limit.  This has been identified as corruption of the xattr_ids
-count when reading the xattr id lookup table.
+Remove duplicated helper functions to parse opaque XDR objects
+and place inside new file net/sunrpc/auth_gss/auth_gss_internal.h.
+In the new file carry the license and copyright from the source file
+net/sunrpc/auth_gss/auth_gss.c.  Finally, update the comment inside
+include/linux/sunrpc/xdr.h since lockd is not the only user of
+struct xdr_netobj.
 
-This patch adds a number of additional sanity checks to detect this
-corruption and others.
-
-1. It checks for a corrupted xattr index read from the inode.  This could
-   be because the metadata block is uncompressed, or because the
-   "compression" bit has been corrupted (turning a compressed block
-   into an uncompressed block).  This would cause an out of bounds read.
-
-2. It checks against corruption of the xattr_ids count.  This can either
-   lead to the above kmalloc failure, or a smaller than expected
-   table to be read.
-
-3. It checks the contents of the index table for corruption.
-
-[phillip@squashfs.org.uk: fix checkpatch issue]
-  Link: https://lkml.kernel.org/r/270245655.754655.1612770082682@webmail.123-reg.co.uk
-
-Link: https://lkml.kernel.org/r/20210204130249.4495-5-phillip@squashfs.org.uk
-Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
-Reported-by: syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/squashfs/xattr_id.c |   66 ++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 57 insertions(+), 9 deletions(-)
+ include/linux/sunrpc/xdr.h              |  3 +-
+ net/sunrpc/auth_gss/auth_gss.c          | 30 +-----------------
+ net/sunrpc/auth_gss/auth_gss_internal.h | 42 +++++++++++++++++++++++++
+ net/sunrpc/auth_gss/gss_krb5_mech.c     | 31 ++----------------
+ 4 files changed, 46 insertions(+), 60 deletions(-)
+ create mode 100644 net/sunrpc/auth_gss/auth_gss_internal.h
 
---- a/fs/squashfs/xattr_id.c
-+++ b/fs/squashfs/xattr_id.c
-@@ -31,10 +31,15 @@ int squashfs_xattr_lookup(struct super_b
- 	struct squashfs_sb_info *msblk = sb->s_fs_info;
- 	int block = SQUASHFS_XATTR_BLOCK(index);
- 	int offset = SQUASHFS_XATTR_BLOCK_OFFSET(index);
--	u64 start_block = le64_to_cpu(msblk->xattr_id_table[block]);
-+	u64 start_block;
- 	struct squashfs_xattr_id id;
- 	int err;
+diff --git a/include/linux/sunrpc/xdr.h b/include/linux/sunrpc/xdr.h
+index 9db6097c22c5d..a8d68c5a4ca61 100644
+--- a/include/linux/sunrpc/xdr.h
++++ b/include/linux/sunrpc/xdr.h
+@@ -27,8 +27,7 @@ struct rpc_rqst;
+ #define XDR_QUADLEN(l)		(((l) + 3) >> 2)
  
-+	if (index >= msblk->xattr_ids)
-+		return -EINVAL;
-+
-+	start_block = le64_to_cpu(msblk->xattr_id_table[block]);
-+
- 	err = squashfs_read_metadata(sb, &id, &start_block, &offset,
- 							sizeof(id));
- 	if (err < 0)
-@@ -50,13 +55,17 @@ int squashfs_xattr_lookup(struct super_b
  /*
-  * Read uncompressed xattr id lookup table indexes from disk into memory
+- * Generic opaque `network object.' At the kernel level, this type
+- * is used only by lockd.
++ * Generic opaque `network object.'
   */
--__le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 start,
-+__le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 table_start,
- 		u64 *xattr_table_start, int *xattr_ids)
- {
--	unsigned int len;
-+	struct squashfs_sb_info *msblk = sb->s_fs_info;
-+	unsigned int len, indexes;
- 	struct squashfs_xattr_id_table *id_table;
-+	__le64 *table;
-+	u64 start, end;
-+	int n;
+ #define XDR_MAX_NETOBJ		1024
+ struct xdr_netobj {
+diff --git a/net/sunrpc/auth_gss/auth_gss.c b/net/sunrpc/auth_gss/auth_gss.c
+index 5fc6c028f89c0..b7a71578bd986 100644
+--- a/net/sunrpc/auth_gss/auth_gss.c
++++ b/net/sunrpc/auth_gss/auth_gss.c
+@@ -29,6 +29,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/hashtable.h>
  
--	id_table = squashfs_read_table(sb, start, sizeof(*id_table));
-+	id_table = squashfs_read_table(sb, table_start, sizeof(*id_table));
- 	if (IS_ERR(id_table))
- 		return (__le64 *) id_table;
++#include "auth_gss_internal.h"
+ #include "../netns.h"
  
-@@ -70,13 +79,52 @@ __le64 *squashfs_read_xattr_id_table(str
- 	if (*xattr_ids == 0)
- 		return ERR_PTR(-EINVAL);
- 
--	/* xattr_table should be less than start */
--	if (*xattr_table_start >= start)
-+	len = SQUASHFS_XATTR_BLOCK_BYTES(*xattr_ids);
-+	indexes = SQUASHFS_XATTR_BLOCKS(*xattr_ids);
-+
-+	/*
-+	 * The computed size of the index table (len bytes) should exactly
-+	 * match the table start and end points
-+	 */
-+	start = table_start + sizeof(*id_table);
-+	end = msblk->bytes_used;
-+
-+	if (len != (end - start))
- 		return ERR_PTR(-EINVAL);
- 
--	len = SQUASHFS_XATTR_BLOCK_BYTES(*xattr_ids);
-+	table = squashfs_read_table(sb, start, len);
-+	if (IS_ERR(table))
-+		return table;
-+
-+	/* table[0], table[1], ... table[indexes - 1] store the locations
-+	 * of the compressed xattr id blocks.  Each entry should be less than
-+	 * the next (i.e. table[0] < table[1]), and the difference between them
-+	 * should be SQUASHFS_METADATA_SIZE or less.  table[indexes - 1]
-+	 * should be less than table_start, and again the difference
-+	 * shouls be SQUASHFS_METADATA_SIZE or less.
-+	 *
-+	 * Finally xattr_table_start should be less than table[0].
-+	 */
-+	for (n = 0; n < (indexes - 1); n++) {
-+		start = le64_to_cpu(table[n]);
-+		end = le64_to_cpu(table[n + 1]);
-+
-+		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
-+			kfree(table);
-+			return ERR_PTR(-EINVAL);
-+		}
-+	}
-+
-+	start = le64_to_cpu(table[indexes - 1]);
-+	if (start >= table_start || (table_start - start) > SQUASHFS_METADATA_SIZE) {
-+		kfree(table);
-+		return ERR_PTR(-EINVAL);
-+	}
- 
--	TRACE("In read_xattr_index_table, length %d\n", len);
-+	if (*xattr_table_start >= le64_to_cpu(table[0])) {
-+		kfree(table);
-+		return ERR_PTR(-EINVAL);
-+	}
- 
--	return squashfs_read_table(sb, start + sizeof(*id_table), len);
-+	return table;
+ #include <trace/events/rpcgss.h>
+@@ -125,35 +126,6 @@ gss_cred_set_ctx(struct rpc_cred *cred, struct gss_cl_ctx *ctx)
+ 	clear_bit(RPCAUTH_CRED_NEW, &cred->cr_flags);
  }
+ 
+-static const void *
+-simple_get_bytes(const void *p, const void *end, void *res, size_t len)
+-{
+-	const void *q = (const void *)((const char *)p + len);
+-	if (unlikely(q > end || q < p))
+-		return ERR_PTR(-EFAULT);
+-	memcpy(res, p, len);
+-	return q;
+-}
+-
+-static inline const void *
+-simple_get_netobj(const void *p, const void *end, struct xdr_netobj *dest)
+-{
+-	const void *q;
+-	unsigned int len;
+-
+-	p = simple_get_bytes(p, end, &len, sizeof(len));
+-	if (IS_ERR(p))
+-		return p;
+-	q = (const void *)((const char *)p + len);
+-	if (unlikely(q > end || q < p))
+-		return ERR_PTR(-EFAULT);
+-	dest->data = kmemdup(p, len, GFP_NOFS);
+-	if (unlikely(dest->data == NULL))
+-		return ERR_PTR(-ENOMEM);
+-	dest->len = len;
+-	return q;
+-}
+-
+ static struct gss_cl_ctx *
+ gss_cred_get_ctx(struct rpc_cred *cred)
+ {
+diff --git a/net/sunrpc/auth_gss/auth_gss_internal.h b/net/sunrpc/auth_gss/auth_gss_internal.h
+new file mode 100644
+index 0000000000000..c5603242b54bf
+--- /dev/null
++++ b/net/sunrpc/auth_gss/auth_gss_internal.h
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * linux/net/sunrpc/auth_gss/auth_gss_internal.h
++ *
++ * Internal definitions for RPCSEC_GSS client authentication
++ *
++ * Copyright (c) 2000 The Regents of the University of Michigan.
++ * All rights reserved.
++ *
++ */
++#include <linux/err.h>
++#include <linux/string.h>
++#include <linux/sunrpc/xdr.h>
++
++static inline const void *
++simple_get_bytes(const void *p, const void *end, void *res, size_t len)
++{
++	const void *q = (const void *)((const char *)p + len);
++	if (unlikely(q > end || q < p))
++		return ERR_PTR(-EFAULT);
++	memcpy(res, p, len);
++	return q;
++}
++
++static inline const void *
++simple_get_netobj(const void *p, const void *end, struct xdr_netobj *dest)
++{
++	const void *q;
++	unsigned int len;
++
++	p = simple_get_bytes(p, end, &len, sizeof(len));
++	if (IS_ERR(p))
++		return p;
++	q = (const void *)((const char *)p + len);
++	if (unlikely(q > end || q < p))
++		return ERR_PTR(-EFAULT);
++	dest->data = kmemdup(p, len, GFP_NOFS);
++	if (unlikely(dest->data == NULL))
++		return ERR_PTR(-ENOMEM);
++	dest->len = len;
++	return q;
++}
+diff --git a/net/sunrpc/auth_gss/gss_krb5_mech.c b/net/sunrpc/auth_gss/gss_krb5_mech.c
+index 6e5d6d2402158..b552dd4f32f80 100644
+--- a/net/sunrpc/auth_gss/gss_krb5_mech.c
++++ b/net/sunrpc/auth_gss/gss_krb5_mech.c
+@@ -21,6 +21,8 @@
+ #include <linux/sunrpc/xdr.h>
+ #include <linux/sunrpc/gss_krb5_enctypes.h>
+ 
++#include "auth_gss_internal.h"
++
+ #if IS_ENABLED(CONFIG_SUNRPC_DEBUG)
+ # define RPCDBG_FACILITY	RPCDBG_AUTH
+ #endif
+@@ -164,35 +166,6 @@ get_gss_krb5_enctype(int etype)
+ 	return NULL;
+ }
+ 
+-static const void *
+-simple_get_bytes(const void *p, const void *end, void *res, int len)
+-{
+-	const void *q = (const void *)((const char *)p + len);
+-	if (unlikely(q > end || q < p))
+-		return ERR_PTR(-EFAULT);
+-	memcpy(res, p, len);
+-	return q;
+-}
+-
+-static const void *
+-simple_get_netobj(const void *p, const void *end, struct xdr_netobj *res)
+-{
+-	const void *q;
+-	unsigned int len;
+-
+-	p = simple_get_bytes(p, end, &len, sizeof(len));
+-	if (IS_ERR(p))
+-		return p;
+-	q = (const void *)((const char *)p + len);
+-	if (unlikely(q > end || q < p))
+-		return ERR_PTR(-EFAULT);
+-	res->data = kmemdup(p, len, GFP_NOFS);
+-	if (unlikely(res->data == NULL))
+-		return ERR_PTR(-ENOMEM);
+-	res->len = len;
+-	return q;
+-}
+-
+ static inline const void *
+ get_key(const void *p, const void *end,
+ 	struct krb5_ctx *ctx, struct crypto_sync_skcipher **res)
+-- 
+2.27.0
+
 
 
