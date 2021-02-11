@@ -2,150 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4AD31882F
+	by mail.lfdr.de (Postfix) with ESMTP id C0579318830
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhBKK3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:29:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbhBKKZ0 (ORCPT
+        id S230186AbhBKK3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:29:34 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:58382 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhBKK0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:25:26 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1078AC061756;
-        Thu, 11 Feb 2021 02:24:42 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dbt6H1Sr6z9s1l;
-        Thu, 11 Feb 2021 21:24:39 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613039079;
-        bh=BUG7vAG2VrZC38eVKhxwglUAgWPvt1WFae0cPZ3pRG0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hH66fuAE7+vzbPt2y/cNbtBkQCxPeVSGdrlC/ozjijRgN+UT5hurPIpt1BOjBoKAi
-         m8VJIS0IxF4cw3EuyLS3+JTeOgxr7FCNfBaLwPCEwTriAYU42FnXHNex3IT+/CoFUF
-         wZo/JViZOEAxhJPCMPUGf5WzqxA8IpQBv5KRAQYV1Z8fSviBGxSlzg9YpO++O2rJls
-         Fkh9D0Ga+ZpwrhSbaxTsU/ZSE94KZaTu8hau0+IGORhNjlUKKX9Bj1RafGN1BY/Uka
-         vz8S73OLpQP9oOcKg9GhSXYrEKxrvsrKONU9Q7nVuRpvRb08ZR7P04nWtQ6JcksFQm
-         uUtJONT1BJdhg==
-Date:   Thu, 11 Feb 2021 21:24:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: linux-next: manual merge of the akpm-current tree with the fscache
- tree
-Message-ID: <20210211212437.6d3df60f@canb.auug.org.au>
+        Thu, 11 Feb 2021 05:26:01 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BAJLSJ055722;
+        Thu, 11 Feb 2021 10:25:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=0eA10JUU+vnzOAK2dr4O81XgTl1ViIyOfiYvDxlbexc=;
+ b=laaoKgA8EYjWqOrxjC3aoGWPr9mhluMvvg6x+VdIE5f7Y5toSH5zpeY0BeNX06tSsA74
+ lneZCv/r/h8Wj/NTZzOF4ZJo0XAKOPOxjajOhoC+RpLnwHcBhEQ1fPkniALFyx53zIYz
+ MY+0NeA+FcI8NbRISxaKCKGVbY5nIm24c6O4MivKyrKIn9F5H7xAhJsAmv65RwldmGWi
+ /+CLVmHUoq4l7kYbQcTgYKpJ+OuA5yTIsZ/DJpVA1o48FRiT5LC8pP6n0+hmW5oDiN9I
+ 6NOkR95sl3GTLhoO4jKA2/2qFkEg5maSNIQCgjLP561lyKEd5m5JSnaCRnmME75DIMhA yw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 36m4upwf6a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 10:25:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BAK2TS148191;
+        Thu, 11 Feb 2021 10:25:10 GMT
+Received: from nam02-bl2-obe.outbound.protection.outlook.com (mail-bl2nam02lp2052.outbound.protection.outlook.com [104.47.38.52])
+        by aserp3030.oracle.com with ESMTP id 36j4prcqj4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 10:25:09 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UejDlFgI5c2DI1rgdNm1L1DEgAGwQ5MA992yVDdLdFUD2oP6CO29Zwk/TAQGU2+X4l3I6bFEERPXQpTPecWX3SR8FeXnAGCw2/NTA2FlrQm4/bAfmtIAv3vQ7641dP/5Z50ZaQ9Y9Zlnj25gxnRNvLkpcUIe2BMopndfKvdt63fVWNCE8dr1Cj3mnIZLuCBvs2v+rvgTkGg1y06OVZcAn5xnKXoZVwJUjLTXT2UxU3C/e/qlEfo22xJhMHH6KoC4Jl+zwZScBkOoCGo9976W3K/VnYxun5HzKiHcIBDGUtaS8iko333E3jDSYxvpooDhJ2byF86oFKIptkFe5t37yQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0eA10JUU+vnzOAK2dr4O81XgTl1ViIyOfiYvDxlbexc=;
+ b=jJw4DHlzXKH5wUN4YVo/k4bnJklxRoPw/DkrLjea2KM3Qyv8Ef51vsApC/IpfA+Imjqn1aWxODErkdKK9NrJukX6jTI/SeSOgtz2SdZOFFYh6RGTaBMM4mODKMV02x53H7XpuNHRXE8rPhG8+IU72PVVre4KpZvGVTm89OJRVDH5LiZneJyKgv9/wsxckDNijYrx9DBJFL3VqnIs6QNnjsqBk3YDorYz4C6uHB/QhV7gx0YrYqjKYxtmdeWVze4dkh559Lvy2/GnaRhhhPGSVH0yTAyOZsTySoMuJocTb/PJWErHHyEQ5qd+w9aklGiKLWDjXBW9EOM391HqYANSvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0eA10JUU+vnzOAK2dr4O81XgTl1ViIyOfiYvDxlbexc=;
+ b=Ez6FkfEJzRfIg7bqlPwS/42VANsnL4mXpDBDNzYCmGTOJ9v7/Ng97uG9rbElwBcsBEkDicoc9Z6eF59//153y+j+cfLzBYgIEqG9TWOnDEpqht44fOvwoQf51L39keRe3mIxGMyhj8WktFx3nXUvD0X2F5fQqjmrGpGnFvE4YWw=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
+ by BYAPR10MB3398.namprd10.prod.outlook.com (2603:10b6:a03:15c::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.24; Thu, 11 Feb
+ 2021 10:25:07 +0000
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571%7]) with mapi id 15.20.3825.030; Thu, 11 Feb 2021
+ 10:25:07 +0000
+Subject: Re: [PATCH v3 3/4] mm/gup: add a range variant of
+ unpin_user_pages_dirty_lock()
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210205204127.29441-1-joao.m.martins@oracle.com>
+ <20210205204127.29441-4-joao.m.martins@oracle.com>
+ <20210210231519.GR4718@ziepe.ca>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <073406d4-6fcf-e21a-d16b-db129184bcab@oracle.com>
+Date:   Thu, 11 Feb 2021 10:24:59 +0000
+In-Reply-To: <20210210231519.GR4718@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [94.61.1.144]
+X-ClientProxiedBy: LO4P123CA0465.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1aa::20) To BYAPR10MB3077.namprd10.prod.outlook.com
+ (2603:10b6:a03:8c::12)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TAKX3aZ=qAMZbdB9aem2c04";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.67] (94.61.1.144) by LO4P123CA0465.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:1aa::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Thu, 11 Feb 2021 10:25:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c6e8eb34-ed31-44c6-eac2-08d8ce774d9f
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3398:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB33984CA66699D45F7D57D564BB8C9@BYAPR10MB3398.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xizj0qbAsBia/1onjYEQnu9NvPiXnYRTUgw7PYHCdSwi8qDdhnqGRKNteaShovldNm5IAfOva3gewHWjfD905VuAyeaHTuWU6uGQDYq6ASE+8W78zMM7xRe7O1UDh0Cso/mwjiZbvCDxPkiVxUZLMIJug6SkUQ2dv/pS7YdajvXnrftPTcasv+pviboXjsGMWDiaRSixE0UFsECJDb1y2nKh52bykFX/Crj79FlHcXPbfBWTNnMadpXpEsFc+QMUeWWG9eWG5vhMqgh5A/MMm461kdxoMV9xvdMqNQ32Zq3oGuymiM+5QZIsXRcPTzPMUuIIYq4ORMdQZI8YdFUWNAZuD5yflt0tsh9zzqlMvH8i0egVC06y0Ek3XT3BJlwrrHy31vxRmDWxyXVtnvQ45CLt8eEjFaslQ4kGizm092o0emzend+4insSM0TsgygKBhl9yVCJPv1RBJvd+nxEs3aYaKyV7aTg/YJlhle1mDYe1Hq7w9XQD4uScQMjPXVGd7PTjYwKXU6EwAn2CPys9NEgMfIixAlnDlXUAwVfX8hDylyaU0BJcRPndlqkfG4BmvMlSRChKdfHOHMFIPHXOS7XQfryDjKMzoA7+2rwtI8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(376002)(366004)(396003)(346002)(6486002)(8676002)(186003)(5660300002)(2906002)(2616005)(36756003)(956004)(16526019)(26005)(31686004)(6916009)(66556008)(8936002)(66946007)(4326008)(478600001)(316002)(54906003)(16576012)(66476007)(83380400001)(6666004)(86362001)(31696002)(53546011)(14143004)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?a1daWjZ5M3VsdUxTNFFSUXdHRFA5TkdXV2Z5dnEwd1cxd0s5bGVUY1RuUWgx?=
+ =?utf-8?B?UDhaU1h2b2xBNThXbWkveDJBRXBsbWF1UEV4bXhvdlB3amxCN1JuV3AyS3dI?=
+ =?utf-8?B?Z0NMY2NhZlBvNE9LNWtGRGdKeVNLVVVrL2xhS3QrUWpSN3drdHlUalRPdk8z?=
+ =?utf-8?B?YVgrUGRnQ0M0MnFpOUVpa0ZzMzJDZGpCek9SVEt5NXI4RzhjK0ZQVnY0dUZC?=
+ =?utf-8?B?SENGNW9qT2pJVFl2NGJLdkFmU24weGVNUEwwc0FIWUJ4RDVqdm9nbjBjeGJD?=
+ =?utf-8?B?akl6Skl0dnZWbTlVUjlCdllYQnNrL1lra1Q0dk9lUXViNFJaQ3lWQXNTUVFm?=
+ =?utf-8?B?THR5Z1ppODZaOUhmU2hyWCtiVzJJK1lacmVRTWVLS1MxaGNURmFEc3QxczAr?=
+ =?utf-8?B?dnVBZTNnT2RzY1BScU5Fcm05YkRMY2F4M3pERXFUNDk5SU56cUhodkpOeG50?=
+ =?utf-8?B?SjhsWlJUV2Q3SXF2cGE4YVhDdHEwRUNQbTAxSDVmUTl2UnpZZVJXaHJPdjZz?=
+ =?utf-8?B?WitDb0tnK01GeXIvZzZJa21WZ1Q3ZTJEWDBWQy8yWHNTSmQ3ck41elVYV3BM?=
+ =?utf-8?B?aTNacE9sN0Z5K0VubG1RVGpQR0lXcnF6OTNtUmIzV25kZHZJbDVNZXIvb2Zz?=
+ =?utf-8?B?K3ExbmJOZGpZRlk4NGxmM3dXNVpiVlhvQ2RNSWY4emxCMVk1QjNRZ0pXaHM0?=
+ =?utf-8?B?UG1tNC81YlFnUEdWMExFZngvRUZLNG85am5pQjRFZ3lnNXFjY1NMUTA4bmJq?=
+ =?utf-8?B?cWpQZkxRQzZvdkd2eENRZlNiZnBCdVhnamkwNXFHbEhNZ0hRdmFQSFl6RkRZ?=
+ =?utf-8?B?MXE5dFllbGVxR01GVjJvUzFwT3lSOFRwUVFoRnBNeHFCbGtGdENtRmcxOE12?=
+ =?utf-8?B?N1o3ZlNrV1dBeXZyYkFYSnJNTDkzb0JvTmozK2RkY1ZZQThzTnJjYllwSWxh?=
+ =?utf-8?B?SmJVK1o5VlhHajJJT25maVBJbndqY2RSR0ZZcVFyZU9hL2hrMS94djk1dzhl?=
+ =?utf-8?B?OUFSQzJjRW12Q2VNRmZjaTF6Z0VBdnphU3VlOS83Tk92UTVDbFp0WG1tNnNV?=
+ =?utf-8?B?OEhvenZwMWNOa3dzQU9abSs1SzZXZ2FRSUlSNVk5dnMxZHA4SXBpR1dCVDhW?=
+ =?utf-8?B?eStZREF2MEZadzh4NnJjV21yeXU2Qm1SdUI0bDJJazlFRXg5OUxVd2RpajFr?=
+ =?utf-8?B?ZzBuTHVNR3lLa2FpWXREaTBVemZua2dRczhkQlh0c045WkFpVXJRcnpxUjc5?=
+ =?utf-8?B?dU9ySklEZ0ViMWw2VnFBSVd6bHdTZkNTdStZSGllMjN1L2M1WjhnWTh2eEx6?=
+ =?utf-8?B?NTVycDU5OVZMRjMzdzBuUG9iNDJqeEM0cVpoSHRBUko0djcvN3ZMVkg0aUZy?=
+ =?utf-8?B?MjFCVzZOd0lFR1ltcVhWNnhDZVpUTEE4c1k5dy9GaURxSmVYR09vaThGY3kv?=
+ =?utf-8?B?RXh6d1RLYkdXdWtNNml5LzRMNXJRcStjVG52QzQvZ1d5K3BCRU9qa3ZUN25S?=
+ =?utf-8?B?cVlOZTFNT1RqdzRrY0NzZWRHNmM2eXlTN29DVjJBKzRTNlJIR3R2d09YWEdX?=
+ =?utf-8?B?aEk2MzFkekxqRTUybnZ4K0lLV3BLbmJXSEY1MXl5dENlT3BMcU50RGVLYVN3?=
+ =?utf-8?B?STZ2TkVGNEpGMTRodG8xSGRhM1dsUUtmMFptMk9GNjBZbUZhbUJ5dVg0NVkz?=
+ =?utf-8?B?Wngvd2tDVVl1NnlVV0ZLNVZQc3JFMmpsVmh5SGtjZWdSTlE5eENEM1JtOE54?=
+ =?utf-8?Q?vOFZITKBw75DW/c379jPvLgi1sHu2rr5iurAvM2?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6e8eb34-ed31-44c6-eac2-08d8ce774d9f
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 10:25:07.5019
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: es9Y6U9/eZpj9q1e7YyctxhPjRhzf7qWxYG962ZoIAlmlPqKr5rsE5okjL3Z1w8T2pQviY32GaadcGIpLrtW+Rsgb4BWmLuxej4678yAEhw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3398
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110092
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
+ suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TAKX3aZ=qAMZbdB9aem2c04
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+On 2/10/21 11:15 PM, Jason Gunthorpe wrote:
+> On Fri, Feb 05, 2021 at 08:41:26PM +0000, Joao Martins wrote:
+>> Add a unpin_user_page_range_dirty_lock() API which takes a starting page
+>> and how many consecutive pages we want to unpin and optionally dirty.
+>>
+>> To that end, define another iterator for_each_compound_range()
+>> that operates in page ranges as opposed to page array.
+>>
+>> For users (like RDMA mr_dereg) where each sg represents a
+>> contiguous set of pages, we're able to more efficiently unpin
+>> pages without having to supply an array of pages much of what
+>> happens today with unpin_user_pages().
+>>
+>> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+>> ---
+>>  include/linux/mm.h |  2 ++
+>>  mm/gup.c           | 62 ++++++++++++++++++++++++++++++++++++++++++++++
+>>  2 files changed, 64 insertions(+)
+> 
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> 
+Thanks!
 
-  include/linux/pagemap.h
-
-between commits:
-
-  13aecd8259dc ("mm: Implement readahead_control pageset expansion")
-  9a28f7e68602 ("netfs: Rename unlock_page_fscache() and wait_on_page_fscac=
-he()")
-
-from the fscache tree and commits:
-
-  cd669a9cbd89 ("mm/filemap: add mapping_seek_hole_data")
-  34c37da5f411 ("mm/filemap: pass a sleep state to put_and_wait_on_page_loc=
-ked")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/pagemap.h
-index a88ccc9ab0b1,20225b067583..000000000000
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@@ -682,22 -681,7 +682,21 @@@ static inline int wait_on_page_locked_k
-  	return wait_on_page_bit_killable(compound_head(page), PG_locked);
-  }
- =20
- +/**
- + * wait_on_page_private_2 - Wait for PG_private_2 to be cleared on a page
- + * @page: The page
- + *
- + * Wait for the PG_private_2 page bit to be removed from a page.  This is=
-, for
- + * example, used to handle a netfs page being written to a local disk cac=
-he,
- + * thereby allowing writes to the cache for the same page to be serialise=
-d.
- + */
- +static inline void wait_on_page_private_2(struct page *page)
- +{
- +	if (PagePrivate2(page))
- +		wait_on_page_bit(compound_head(page), PG_private_2);
- +}
- +
-- extern void put_and_wait_on_page_locked(struct page *page);
--=20
-+ int put_and_wait_on_page_locked(struct page *page, int state);
-  void wait_on_page_writeback(struct page *page);
-  extern void end_page_writeback(struct page *page);
-  void wait_for_stable_page(struct page *page);
-@@@ -772,11 -756,11 +771,13 @@@ int add_to_page_cache_lru(struct page *
-  				pgoff_t index, gfp_t gfp_mask);
-  extern void delete_from_page_cache(struct page *page);
-  extern void __delete_from_page_cache(struct page *page, void *shadow);
-- int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp=
-_mask);
-+ void replace_page_cache_page(struct page *old, struct page *new);
-  void delete_from_page_cache_batch(struct address_space *mapping,
-  				  struct pagevec *pvec);
- +void readahead_expand(struct readahead_control *ractl,
- +		      loff_t new_start, size_t new_len);
-+ loff_t mapping_seek_hole_data(struct address_space *, loff_t start, loff_=
-t end,
-+ 		int whence);
- =20
-  /*
-   * Like add_to_page_cache_locked, but used to add newly allocated pages:
-
---Sig_/TAKX3aZ=qAMZbdB9aem2c04
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAlBeUACgkQAVBC80lX
-0GywEQf5AU9Aw0yK8O15jq94iMibX/EZIzlQmZT+UyynCnQFLSLXFkRnggffBsqh
-duMSac4ZPvIQxhCsjvBcYPhcvzHOjACKzuBnA2X4FJEarrujLu7I+8rk5vYpNw8p
-uUmWO2k3sCeAVVAXtcnIcvsw1ykOunumFZNg73vSi0lU5OmWtcJA5Co5vUOSeFDQ
-4Le/MSYW8g9SNjeb4PlSolJSoUrIn5zmyTJOB0m485IV1DOXN0QycTk3B3Qi21bs
-AZAIfsIZyp5xrG2lmyhQbMsmQNfpy8c594W2facENEHVHfeP1DWwj6uR5kqDzkJZ
-M0xGT2WrVaQ95lvBtcPXk07krhn1wg==
-=SvDN
------END PGP SIGNATURE-----
-
---Sig_/TAKX3aZ=qAMZbdB9aem2c04--
+>> +/**
+>> + * unpin_user_page_range_dirty_lock() - release and optionally dirty
+>> + * gup-pinned page range
+>> + *
+>> + * @page:  the starting page of a range maybe marked dirty, and definitely released.
+>> + * @npages: number of consecutive pages to release.
+>> + * @make_dirty: whether to mark the pages dirty
+>> + *
+>> + * "gup-pinned page range" refers to a range of pages that has had one of the
+>> + * get_user_pages() variants called on that page.
+> 
+> Tidy this language though, this only works with the pin_user_pages
+> variants because it hardwires FOLL_PIN
+> 
+Yes, I can respin a v4 with that adjustment.
