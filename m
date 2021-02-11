@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD1A318CBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D160318CBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhBKNxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:53:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:52076 "EHLO foss.arm.com"
+        id S231791AbhBKNyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:54:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:52096 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231827AbhBKNkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:40:14 -0500
+        id S231843AbhBKNkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:40:19 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA05D1396;
-        Thu, 11 Feb 2021 05:39:26 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5154F139F;
+        Thu, 11 Feb 2021 05:39:31 -0800 (PST)
 Received: from e121896.arm.com (unknown [10.57.43.88])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 94DB93F73B;
-        Thu, 11 Feb 2021 05:39:22 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 34D3F3F73B;
+        Thu, 11 Feb 2021 05:39:27 -0800 (PST)
 From:   James Clark <james.clark@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
@@ -34,9 +34,9 @@ Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
         Andre Przywara <andre.przywara@arm.com>,
         Wei Li <liwei391@huawei.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH v2 3/6] perf arm-spe: Store operation type in packet
-Date:   Thu, 11 Feb 2021 15:38:53 +0200
-Message-Id: <20210211133856.2137-3-james.clark@arm.com>
+Subject: [PATCH v2 4/6] perf arm-spe: Fill address info for samples
+Date:   Thu, 11 Feb 2021 15:38:54 +0200
+Message-Id: <20210211133856.2137-4-james.clark@arm.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210211133856.2137-1-james.clark@arm.com>
 References: <20210211133856.2137-1-james.clark@arm.com>
@@ -48,7 +48,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Leo Yan <leo.yan@linaro.org>
 
-This patch is to store operation type in packet structure.
+To properly handle memory and branch samples, this patch divides into
+two functions for generating samples: arm_spe__synth_mem_sample() is for
+synthesizing memory and TLB samples; arm_spe__synth_branch_sample() is
+to synthesize branch samples.
+
+Arm SPE backend decoder has passed virtual and physical address through
+packets, the address info is stored into the synthesize samples in the
+function arm_spe__synth_mem_sample().
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 Signed-off-by: James Clark <james.clark@arm.com>
@@ -69,47 +76,135 @@ Cc: Andre Przywara <andre.przywara@arm.com>
 Cc: Wei Li <liwei391@huawei.com>
 Cc: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 6 ++++++
- tools/perf/util/arm-spe-decoder/arm-spe-decoder.h | 6 ++++++
- 2 files changed, 12 insertions(+)
+ tools/perf/util/arm-spe.c | 52 +++++++++++++++++++++++----------------
+ 1 file changed, 31 insertions(+), 21 deletions(-)
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-index 7aac3048b090..32fe41835fa6 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-@@ -182,6 +182,12 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
- 		case ARM_SPE_CONTEXT:
- 			break;
- 		case ARM_SPE_OP_TYPE:
-+			if (idx == SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC) {
-+				if (payload & 0x1)
-+					decoder->record.op = ARM_SPE_ST;
-+				else
-+					decoder->record.op = ARM_SPE_LD;
-+			}
- 			break;
- 		case ARM_SPE_EVENTS:
- 			if (payload & BIT(EV_L1D_REFILL))
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-index 7b845001afe7..59bdb7309674 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-@@ -24,9 +24,15 @@ enum arm_spe_sample_type {
- 	ARM_SPE_REMOTE_ACCESS	= 1 << 7,
- };
+diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
+index b134516e890b..578725344603 100644
+--- a/tools/perf/util/arm-spe.c
++++ b/tools/perf/util/arm-spe.c
+@@ -235,7 +235,6 @@ static void arm_spe_prep_sample(struct arm_spe *spe,
+ 	sample->cpumode = arm_spe_cpumode(spe, sample->ip);
+ 	sample->pid = speq->pid;
+ 	sample->tid = speq->tid;
+-	sample->addr = record->to_ip;
+ 	sample->period = 1;
+ 	sample->cpu = speq->cpu;
  
-+enum arm_spe_op_type {
-+	ARM_SPE_LD		= 1 << 0,
-+	ARM_SPE_ST		= 1 << 1,
-+};
+@@ -259,18 +258,37 @@ arm_spe_deliver_synth_event(struct arm_spe *spe,
+ 	return ret;
+ }
+ 
+-static int
+-arm_spe_synth_spe_events_sample(struct arm_spe_queue *speq,
+-				u64 spe_events_id)
++static int arm_spe__synth_mem_sample(struct arm_spe_queue *speq,
++				     u64 spe_events_id)
+ {
+ 	struct arm_spe *spe = speq->spe;
++	struct arm_spe_record *record = &speq->decoder->record;
++	union perf_event *event = speq->event_buf;
++	struct perf_sample sample = { 0 };
 +
- struct arm_spe_record {
- 	enum arm_spe_sample_type type;
- 	int err;
-+	u32 op;
- 	u64 from_ip;
- 	u64 to_ip;
- 	u64 timestamp;
++	arm_spe_prep_sample(spe, speq, event, &sample);
++
++	sample.id = spe_events_id;
++	sample.stream_id = spe_events_id;
++	sample.addr = record->virt_addr;
++	sample.phys_addr = record->phys_addr;
++
++	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
++}
++
++static int arm_spe__synth_branch_sample(struct arm_spe_queue *speq,
++					u64 spe_events_id)
++{
++	struct arm_spe *spe = speq->spe;
++	struct arm_spe_record *record = &speq->decoder->record;
+ 	union perf_event *event = speq->event_buf;
+-	struct perf_sample sample = { .ip = 0, };
++	struct perf_sample sample = { 0 };
+ 
+ 	arm_spe_prep_sample(spe, speq, event, &sample);
+ 
+ 	sample.id = spe_events_id;
+ 	sample.stream_id = spe_events_id;
++	sample.addr = record->to_ip;
+ 
+ 	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
+ }
+@@ -283,15 +301,13 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+ 
+ 	if (spe->sample_flc) {
+ 		if (record->type & ARM_SPE_L1D_MISS) {
+-			err = arm_spe_synth_spe_events_sample(
+-					speq, spe->l1d_miss_id);
++			err = arm_spe__synth_mem_sample(speq, spe->l1d_miss_id);
+ 			if (err)
+ 				return err;
+ 		}
+ 
+ 		if (record->type & ARM_SPE_L1D_ACCESS) {
+-			err = arm_spe_synth_spe_events_sample(
+-					speq, spe->l1d_access_id);
++			err = arm_spe__synth_mem_sample(speq, spe->l1d_access_id);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -299,15 +315,13 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+ 
+ 	if (spe->sample_llc) {
+ 		if (record->type & ARM_SPE_LLC_MISS) {
+-			err = arm_spe_synth_spe_events_sample(
+-					speq, spe->llc_miss_id);
++			err = arm_spe__synth_mem_sample(speq, spe->llc_miss_id);
+ 			if (err)
+ 				return err;
+ 		}
+ 
+ 		if (record->type & ARM_SPE_LLC_ACCESS) {
+-			err = arm_spe_synth_spe_events_sample(
+-					speq, spe->llc_access_id);
++			err = arm_spe__synth_mem_sample(speq, spe->llc_access_id);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -315,31 +329,27 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+ 
+ 	if (spe->sample_tlb) {
+ 		if (record->type & ARM_SPE_TLB_MISS) {
+-			err = arm_spe_synth_spe_events_sample(
+-					speq, spe->tlb_miss_id);
++			err = arm_spe__synth_mem_sample(speq, spe->tlb_miss_id);
+ 			if (err)
+ 				return err;
+ 		}
+ 
+ 		if (record->type & ARM_SPE_TLB_ACCESS) {
+-			err = arm_spe_synth_spe_events_sample(
+-					speq, spe->tlb_access_id);
++			err = arm_spe__synth_mem_sample(speq, spe->tlb_access_id);
+ 			if (err)
+ 				return err;
+ 		}
+ 	}
+ 
+ 	if (spe->sample_branch && (record->type & ARM_SPE_BRANCH_MISS)) {
+-		err = arm_spe_synth_spe_events_sample(speq,
+-						      spe->branch_miss_id);
++		err = arm_spe__synth_branch_sample(speq, spe->branch_miss_id);
+ 		if (err)
+ 			return err;
+ 	}
+ 
+ 	if (spe->sample_remote_access &&
+ 	    (record->type & ARM_SPE_REMOTE_ACCESS)) {
+-		err = arm_spe_synth_spe_events_sample(speq,
+-						      spe->remote_access_id);
++		err = arm_spe__synth_mem_sample(speq, spe->remote_access_id);
+ 		if (err)
+ 			return err;
+ 	}
 -- 
 2.28.0
 
