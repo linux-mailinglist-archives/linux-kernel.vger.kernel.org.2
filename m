@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D34319495
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFBB319491
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhBKUfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:35:48 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:32892 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhBKUfb (ORCPT
+        id S230046AbhBKUfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:35:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhBKUf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:35:31 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id BFD321C0B8A; Thu, 11 Feb 2021 21:34:31 +0100 (CET)
-Date:   Thu, 11 Feb 2021 21:34:31 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Claudiu.Beznea@microchip.com, linux@armlinux.org.uk,
-        andrew@lunn.ch, davem@davemloft.net, kuba@kernel.org,
-        rjw@rjwysocki.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH] net: phy: micrel: reconfigure the phy on resume
-Message-ID: <20210211203430.GA8510@amd>
-References: <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
- <ee0fd287-c737-faa5-eee1-99ffa120540a@gmail.com>
- <ae4e73e9-109f-fdb9-382c-e33513109d1c@microchip.com>
- <7976f7df-c22f-d444-c910-b0462b3d7f61@gmail.com>
- <d9fcf8da-c0b0-0f18-48e9-a7534948bc93@microchip.com>
- <20210114102508.GO1551@shell.armlinux.org.uk>
- <fe4c31a0-b807-0eb2-1223-c07d7580e1fc@microchip.com>
- <56366231-4a1f-48c3-bc29-6421ed834bdf@gmail.com>
- <20210211121701.GA31708@amd>
- <0ac6414e-b785-1f82-94a2-9aa26b357d02@gmail.com>
+        Thu, 11 Feb 2021 15:35:27 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02566C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:34:46 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id hs11so12113118ejc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:34:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tgwnKmmGdWDCxHejoZP0bKZIVRKg9fBvIThmjXyQsEw=;
+        b=T4khnwoqjyVlyFJZe9yf1Hqe4YwtQNZKtdD3iNfNqQ3nG8ihJ93iGi2kdceUV+6WzP
+         U30lqWYAoU4mnF/BTzmNiDn4M6OkmoL/HSgxMTpuO8yxCwt9b20YfLoT23FpwzW1dGZV
+         bJ9zVra/TCEhEZSE2YLcmboDfhtC1K936PkyqsjxzXjp6koe4GNl9qeIo5TqD11dyDhQ
+         rl8C6iPZN9DWwkPlmqnfjSZEIMNUIg8irYR1gK33qxg7+RjyMrbSLaErpObkBK/eVVOw
+         as5S3Ag8QkadmDt6w065AidBrxpozcVJ5kcqol0urwlsmpCou6dwkfgMj5QHHlihU880
+         k99w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tgwnKmmGdWDCxHejoZP0bKZIVRKg9fBvIThmjXyQsEw=;
+        b=WkdhPo/jM/CQXUX8UdUa/aqTk0LxB47afYWo4RdIGJTI9wOWtG/cEsFcmww1OyIPqA
+         6HZhQCtQnMb2WoUYVe76ux3RmRQxyzkgWF0MkVLvOHFxeHTYjtKeu0OZdiEJvugCb64V
+         Np2g2IL3iMA+ENx7KKpot9FMDquicv6hY2DrhJfVko2VKuE7310lqCW9aXxeXxTp2FHD
+         4FxwzHDkxsdOy4YlgXlM8EdiKunJud2C5vXHPWsjE1BAqqiymD/Kkdkl42ed5M4sPICN
+         L17P2+WO19l/uga4+s1VE6vYBfXUxjfr7foYqYhMBS0oHJ6gRxdSjYBJzitusYlVffQz
+         Gg5w==
+X-Gm-Message-State: AOAM533ay4f6NqTUG9Q79zGqWMBGLkq91SvJz73/lRQKHD+FIyjavp/P
+        gh0s0m5Jr1ix4YFHw7KXts65ubWGZhoYOYWv8Ne58g==
+X-Google-Smtp-Source: ABdhPJyw5zAj09pkfw9O4vZ91q761XWqJWsJYNmylmwXEAFa0RMljdC5RPj7aoX4jj2C6VUAHgj24Ehk/wHibuXDiBo=
+X-Received: by 2002:a17:906:36cc:: with SMTP id b12mr10342308ejc.323.1613075685691;
+ Thu, 11 Feb 2021 12:34:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
-Content-Disposition: inline
-In-Reply-To: <0ac6414e-b785-1f82-94a2-9aa26b357d02@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-7-ben.widawsky@intel.com> <20210211120215.00007d3d@Huawei.com>
+ <20210211174502.72thmdqlh2q5tdu3@intel.com>
+In-Reply-To: <20210211174502.72thmdqlh2q5tdu3@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 11 Feb 2021 12:34:35 -0800
+Message-ID: <CAPcyv4iXYxTc5uu7Jq0=X9C0+5QW8ZbnwebhWAw5c2DhwqY72Q@mail.gmail.com>
+Subject: Re: [PATCH v2 6/8] cxl/mem: Enable commands via CEL
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-cxl@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 11, 2021 at 9:45 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
+[..]
+> > > +   if (mbox_cmd.size_out > sizeof(gsl)) {
+> > > +           dev_warn(dev, "%zu excess logs\n",
+> > > +                    (mbox_cmd.size_out - sizeof(gsl)) /
+> > > +                            sizeof(struct gsl_entry));
+> >
+> > This could well happen given spec seems to allow for other
+> > entries defined by other specs.
+>
+> Interesting. When I read the spec before (multiple times) I was certain it said
+> other UUIDs aren't allowed. You're correct though that the way it is worded,
+> this is a bad check. AIUI, the spec permits any UUID and as such I think we
+> should remove tainting for unknown UUIDs. Let me put the exact words:
+>
+> Table 169 & 170
+> "Log Identifier: UUID representing the log to retrieve data for. The following
+>  Log Identifier UUIDs are defined in this specification"
+>
+> To me this implies UUIDs from other (not "this") specifications are permitted.
+>
+> Dan, I'd like your opinion here. I'm tempted to change the current WARN to a
+> dev_dbg or somesuch.
 
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu 2021-02-11 13:36:16, Heiner Kallweit wrote:
-> On 11.02.2021 13:17, Pavel Machek wrote:
-> > On Thu 2021-01-14 12:05:21, Heiner Kallweit wrote:
-> >> On 14.01.2021 11:41, Claudiu.Beznea@microchip.com wrote:
-> >>>
-> >>>
-> >>> On 14.01.2021 12:25, Russell King - ARM Linux admin wrote:
-> >>>>
-> >>>> As I've said, if phylib/PHY driver is not restoring the state of the
-> >>>> PHY on resume from suspend-to-ram, then that's an issue with phylib
-> >>>> and/or the phy driver.
-> >>>
-> >>> In the patch I proposed in this thread the restoring is done in PHY d=
-river.
-> >>> Do you think I should continue the investigation and check if somethi=
-ng
-> >>> should be done from the phylib itself?
-> >>>
-> >> It was the right move to approach the PM maintainers to clarify whether
-> >> the resume PM callback has to assume that power had been cut off and
-> >> it has to completely reconfigure the device. If they confirm this
-> >> understanding, then:
-> >=20
-> > Power to some devices can be cut during s2ram, yes.
-> >=20
-> Thanks for the confirmation.
->=20
-> >> - the general question remains why there's separate resume and restore
-> >>   callbacks, and what restore is supposed to do that resume doesn't
-> >>   have to do
-> >=20
-> > You'll often have same implementation, yes.
-> >=20
->=20
-> If resume and restore both have to assume that power was cut off,
-> then they have to fully re-initialize the device. Therefore it's still
-> not clear to me when you would have differing implementations for both
-> callbacks.
-
-Full re-init is easiest way, yes.
-
-But restore had different Linux kernel already booting on device, and
-maybe touching the hardware, and resume may or may not cut power to
-all devices.
-
-So yes they can be different.
-
-Regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---LZvS9be/3tNcYl/X
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAllNYACgkQMOfwapXb+vKKKwCeOJD/Y9x0bzJ0MCwFogtjpIS0
-Vp8An3BO6zNGlPXqApDmQl2M87YN/7FM
-=zSCl
------END PGP SIGNATURE-----
-
---LZvS9be/3tNcYl/X--
+Yeah, sounds ok, and the command is well defined to be a read-only,
+zero-side-effect affair. If a vendor did really want to sneak in a
+proprietary protocol over this interface it would be quite awkward.
