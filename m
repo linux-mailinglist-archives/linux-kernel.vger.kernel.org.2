@@ -2,222 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665EB318D5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 616C7318D5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhBKO1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 09:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        id S232025AbhBKO1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 09:27:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbhBKOTm (ORCPT
+        with ESMTP id S232137AbhBKOTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:19:42 -0500
-Received: from mail-wm1-x362.google.com (mail-wm1-x362.google.com [IPv6:2a00:1450:4864:20::362])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC9DC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:18:55 -0800 (PST)
-Received: by mail-wm1-x362.google.com with SMTP id n10so4041098wmq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:18:55 -0800 (PST)
+        Thu, 11 Feb 2021 09:19:34 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B06C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:18:52 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id b3so4351063wrj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:18:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=flowbird.group; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=X6a3XjmDak/vsr4FAYNcNkOoo6lQjp5prDu/T8MjYs4=;
-        b=PaMLeJ1ScHlVK9d06eDyMw6Uzh8Ov+ByK/0Vfx/1HuqrD04SW+qOGX/9tXJe7Jkhtf
-         02kv3FSr+XIxuYPctfML1aWlTAzS/Aa3Q1q6yxi02wyE8cObXlxtFLpFEnSoABPpsOtU
-         AizQtWIv7tNGvVG6LkzRb3bfxVEZTXvHNB0OfvtyFJNlNZEW8ab8q7Krv5Z9pmr4W9WA
-         EgQzCiuEutRKeSRY7TYwbZ6SjNpraoQB9Swe3OwZd+wt9/7EBd/vyxNgM9/TQdWcUoq+
-         lvBFs8I/NDRiqe/2lGqvdmEFNAvEFUH0KVCuZVyLlBfeUot0hFMtC790Wm5qVlqKvyiT
-         M/gg==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4qlsG/vgFwt6W3xkjjlbgx54qKfPJTS+Ij9Sun9FcVs=;
+        b=Xhez2VOzf2UdNPbuCWLRQEl2hhslKG12pJqxv8aIq9KoRKZmoHkeSdKERv69m06izW
+         2gOJ9+Vkzu8+Dzp68kmqcH37PaDSnYewwjZt47GufIzK7zsvHKbsfg3xIxUnQs76N7Bb
+         0na0UlLJhqcfAK1ptfKdCDgPNh5n+QUZxULQmwtNK71bFEBuyJByBKioSDNPbFjsJsEC
+         g5VVj/Lme7FpnUDAziLrEMkwZalVzjBRyW3iqDgUJlU0+a6Sr/zo+SIwiCFI+Q7aKtCA
+         x9YIqQ/wd9f65W6XARNiHq4F0YGNBbRInVepxvH4daNBXuEyXHGP0rG6FIhj7geNd4a2
+         NgsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=X6a3XjmDak/vsr4FAYNcNkOoo6lQjp5prDu/T8MjYs4=;
-        b=RVx+DtDnXmKL+5v2l/qlh8KczEB7vN5yDNx4K1kIIVyk9O2QzpoJICC+RRf65i/lDb
-         WosJnO/O9strRPdiK4xoxpziHXrZk9BkEEJ/rW5D5eKLKAap8IJ5/zPiXYiS2kOA/zJ/
-         dieO18RsjrIO9bhDxwDH1spu6TAg6d4WG7B0Nq20pwbSL0FofdIhJMxSBlsF5AtQISQA
-         ySGyncROHC67qMcKgFcVD9cdCdkZDkM2tIsbAJ2axdEc9Pji24MUBagohMqimmV2WhE4
-         6ZN8uSPcKcZi0/H929d07Sa6cZMqxTnF/zc+BooqTBjJ75h8QUBi8jjuZMpkMbqx/0tn
-         QO5w==
-X-Gm-Message-State: AOAM532PtO9PHPpcCCsBZ8SvHNblNoYM+TMoVNNCyhXJHNy752SEyhg3
-        F5+xcM8HBSxgfzS6nN5OcgGDYLeiYVPKy/A385iBQsklFx6+
-X-Google-Smtp-Source: ABdhPJzmbaQRYk1FPRG9nFSfphAIkK5ARQ/Tk+97XvI+n4pIOgAF7ES9DqgwRGeJ27BnVwhBv3weR8GU6n4+
-X-Received: by 2002:a7b:c193:: with SMTP id y19mr5363115wmi.23.1613053133686;
-        Thu, 11 Feb 2021 06:18:53 -0800 (PST)
-Received: from mta1.parkeon.com ([185.149.63.251])
-        by smtp-relay.gmail.com with ESMTPS id r16sm253298wrx.37.2021.02.11.06.18.53
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Thu, 11 Feb 2021 06:18:53 -0800 (PST)
-X-Relaying-Domain: flowbird.group
-Received: from [172.16.13.226] (port=59918 helo=PC12445-BES.dynamic.besancon.parkeon.com)
-        by mta1.parkeon.com with esmtp (Exim 4.71)
-        (envelope-from <martin.fuzzey@flowbird.group>)
-        id 1lACo1-0007Sd-5V; Thu, 11 Feb 2021 15:18:53 +0100
-From:   Martin Fuzzey <martin.fuzzey@flowbird.group>
-To:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: stm32mp1: wait for LSE to become ready after enabling
-Date:   Thu, 11 Feb 2021 15:17:52 +0100
-Message-Id: <1613053132-29632-1-git-send-email-martin.fuzzey@flowbird.group>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4qlsG/vgFwt6W3xkjjlbgx54qKfPJTS+Ij9Sun9FcVs=;
+        b=WptKMIsl3noxLgMNJZl91Shs+XpMv5yJoKu6BZWtbtSVsN7Pd0RbqMAh25EUJR08qN
+         4czLYZOHt2F2WBJGspr9xagyU6/QexQeyMewr8Fm8C6299+TAKEl4KnclQKuaXRqKSSn
+         2kKgEDFRovYseh7Q9XNn9JEuHuxDsMQ1o2vk1nA9vxu4kGL2WRVxMeiBkTlmx2rTRt1S
+         u4MOUhRgg6XxT3OSQgqgYPTwaPWfhbGzMWQTqY8XYFtLRqzW6s3MAhR+i82mkriaAO9I
+         dCJ7HEwox3MpM/Zg2uWl1USN74ADa7HZXb+qg06dak/zruJetwBeYMyqjFV+/pMQixaq
+         3UNw==
+X-Gm-Message-State: AOAM533krf0V7VHEGip8FYyMAEiXHh9Vi5BT17e+4h20Qqb+6FxAEEka
+        4cVabbu6AuSXen2TueQeLlD/kw==
+X-Google-Smtp-Source: ABdhPJw/KrCPg+OG007V3Udv45jp1L6+S3wsre2Kua+nluc+0WEdDxFz6eDB3N8qSAESXM6AQAeNvg==
+X-Received: by 2002:a5d:50d2:: with SMTP id f18mr6206045wrt.338.1613053131489;
+        Thu, 11 Feb 2021 06:18:51 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id f8sm4893997wrp.65.2021.02.11.06.18.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 06:18:51 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: fixes for v5.11
+Date:   Thu, 11 Feb 2021 15:18:43 +0100
+Message-Id: <20210211141843.32699-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After enabling the LSE clock it is necessary to wait to for
-the ready bit to be set.
-This takes 4096 cycles of the clock frequency (typically 32kHz)
+Linus,
 
-Currently this is not done and causes the RTC driver to fail to probe
-when built as a module:
-	stm32_rtc 5c004000.rtc: Can't enter in init mode. Prescaler config failed.
+This is hopefully the last batch of fixes for this release cycle. We
+have a minor fix for a Kconfig regression as well as fixes for older
+bugs in gpio-ep93xx.
 
-The reason is that if no built in driver uses LSE the clock framework will
-switch it off at the end of kernel boot. When the RTC driver is later
-probed as a module it will enable the LSE clock but since there is no
-wait the RTC driver will time out waiting for the RTC to initialise.
+Please pull,
+Bartosz
 
-When the RTC driver is built in it works, provided the LSE has already
-been enabled by the bootloader.
+The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
 
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
----
- drivers/clk/clk-stm32mp1.c | 73 +++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 69 insertions(+), 4 deletions(-)
+  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
 
-diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/clk-stm32mp1.c
-index a875649..b85ec88 100644
---- a/drivers/clk/clk-stm32mp1.c
-+++ b/drivers/clk/clk-stm32mp1.c
-@@ -10,6 +10,7 @@
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/io.h>
-+#include <linux/iopoll.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/slab.h>
-@@ -325,9 +326,19 @@ struct clock_config {
- 
- #define NO_ID ~0
- 
-+struct stm32_clk_rdy_gate {
-+	struct clk_gate gate;
-+	u32 timeout_us;
-+	u8 rdy_bit_idx;
-+};
-+
-+#define to_clk_rdy_gate(_gate) container_of(_gate, struct stm32_clk_rdy_gate, gate)
-+
- struct gate_cfg {
- 	u32 reg_off;
-+	u32 timeout_us;
- 	u8 bit_idx;
-+	u8 rdy_bit_idx;
- 	u8 gate_flags;
- };
- 
-@@ -469,6 +480,36 @@ static void mp1_gate_clk_disable(struct clk_hw *hw)
- 	.is_enabled	= clk_gate_is_enabled,
- };
- 
-+static int ready_gate_clk_enable(struct clk_hw *hw)
-+{
-+	struct clk_gate *gate = to_clk_gate(hw);
-+	struct stm32_clk_rdy_gate *rdy_gate = to_clk_rdy_gate(gate);
-+	int ret = 0;
-+
-+	if (!clk_gate_ops.is_enabled(hw)) {
-+		u32 val;
-+
-+		clk_gate_ops.enable(hw);
-+		ret = readl_relaxed_poll_timeout_atomic(
-+					gate->reg,
-+					val, (val & BIT(rdy_gate->rdy_bit_idx)),
-+					100, rdy_gate->timeout_us);
-+	}
-+
-+	return ret;
-+}
-+
-+static void ready_gate_clk_disable(struct clk_hw *hw)
-+{
-+	clk_gate_ops.disable(hw);
-+}
-+
-+static const struct clk_ops ready_gate_clk_ops = {
-+	.enable		= ready_gate_clk_enable,
-+	.disable	= ready_gate_clk_disable,
-+	.is_enabled	= clk_gate_is_enabled,
-+};
-+
- static struct clk_hw *_get_stm32_mux(void __iomem *base,
- 				     const struct stm32_mux_cfg *cfg,
- 				     spinlock_t *lock)
-@@ -535,7 +576,7 @@ static struct clk_hw *_get_stm32_div(void __iomem *base,
- 		const struct stm32_gate_cfg *cfg, spinlock_t *lock)
- {
- 	struct stm32_clk_mgate *mgate;
--	struct clk_gate *gate;
-+	struct stm32_clk_rdy_gate *rdy_gate;
- 	struct clk_hw *gate_hw;
- 
- 	if (cfg->mgate) {
-@@ -554,10 +595,15 @@ static struct clk_hw *_get_stm32_div(void __iomem *base,
- 		gate_hw = &mgate->gate.hw;
- 
- 	} else {
--		gate = kzalloc(sizeof(*gate), GFP_KERNEL);
--		if (!gate)
-+		struct clk_gate *gate;
-+
-+		rdy_gate = kzalloc(sizeof(*rdy_gate), GFP_KERNEL);
-+		if (!rdy_gate)
- 			return ERR_PTR(-ENOMEM);
- 
-+		gate = &rdy_gate->gate;
-+		rdy_gate->rdy_bit_idx = cfg->gate->rdy_bit_idx;
-+		rdy_gate->timeout_us = cfg->gate->timeout_us;
- 		gate->reg = cfg->gate->reg_off + base;
- 		gate->bit_idx = cfg->gate->bit_idx;
- 		gate->flags = cfg->gate->gate_flags;
-@@ -1211,6 +1257,23 @@ static struct clk_hw *_clk_register_cktim(struct device *dev,
- 	_STM32_GATE(_gate_offset, _gate_bit_idx, _gate_flags,\
- 		    NULL, NULL)\
- 
-+#define _READY_GATE(_gate_offset, _gate_bit_idx, _rdy_bit_idx, _timeout_us, _gate_flags)\
-+	(&(struct stm32_gate_cfg) {\
-+		&(struct gate_cfg) {\
-+			.reg_off	= _gate_offset,\
-+			.bit_idx	= _gate_bit_idx,\
-+			.rdy_bit_idx	= _rdy_bit_idx,\
-+			.timeout_us	= _timeout_us, \
-+			.gate_flags	= _gate_flags,\
-+		},\
-+		.ops		= &ready_gate_clk_ops,\
-+	})
-+
-+#define GATE_READY(_id, _name, _parent, _flags, _offset, _bit_idx, \
-+		   _rdy_bit_idx, _timeout_us, _gate_flags) \
-+	STM32_GATE(_id, _name, _parent, _flags,\
-+		   _READY_GATE(_offset, _bit_idx, _rdy_bit_idx, _timeout_us, _gate_flags))
-+
- #define _GATE_MP1(_gate_offset, _gate_bit_idx, _gate_flags)\
- 	_STM32_GATE(_gate_offset, _gate_bit_idx, _gate_flags,\
- 		    NULL, &mp1_gate_clk_ops)\
-@@ -1668,7 +1731,9 @@ enum {
- 		 RCC_OCENSETR, 4, 0),
- 	GATE_MP1(CK_HSI, "ck_hsi", "clk-hsi-div", 0, RCC_OCENSETR, 0, 0),
- 	GATE(CK_LSI, "ck_lsi", "clk-lsi", 0, RCC_RDLSICR, 0, 0),
--	GATE(CK_LSE, "ck_lse", "clk-lse", 0, RCC_BDCR, 0, 0),
-+	GATE_READY(CK_LSE, "ck_lse", "clk-lse", 0, RCC_BDCR, 0, 2,
-+		   /* Ready bit set after 4096 cycles of 32kHz clock 2* for safety */
-+		   USEC_PER_SEC / 32768 * 4096 * 2, 0),
- 
- 	FIXED_FACTOR(CK_HSE_DIV2, "clk-hse-div2", "ck_hse", 0, 1, 2),
- 
--- 
-1.9.1
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.11
+
+for you to fetch changes up to 28dc10eb77a2db7681b08e3b109764bbe469e347:
+
+  gpio: ep93xx: Fix single irqchip with multi gpiochips (2021-02-10 14:47:27 +0100)
+
+----------------------------------------------------------------
+gpio fixes for v5.11
+
+- don't build gpio-mxs unconditionally with COMPILE_TEST enabled
+- fix two problems with interrupt handling in gpio-ep93xx
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      gpio: mxs: GPIO_MXS should not default to y unconditionally
+
+Nikita Shubin (2):
+      gpio: ep93xx: fix BUG_ON port F usage
+      gpio: ep93xx: Fix single irqchip with multi gpiochips
+
+ drivers/gpio/Kconfig       |   3 +-
+ drivers/gpio/gpio-ep93xx.c | 216 +++++++++++++++++++++++++--------------------
+ 2 files changed, 120 insertions(+), 99 deletions(-)
