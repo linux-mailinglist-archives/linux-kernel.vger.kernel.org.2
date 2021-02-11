@@ -2,63 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE10F3190BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 103C13190C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhBKRPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:15:22 -0500
-Received: from mga04.intel.com ([192.55.52.120]:4719 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231477AbhBKQMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:12:30 -0500
-IronPort-SDR: 4ZiQKTlxAmdhQdND4fQeeOBeVm9sfXxgtTQ2ktYUSyxtDBvmrbAV85kccFPIG3hXqAa+hwbCoR
- eDRUqaWt3ZCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="179707358"
-X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="179707358"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:11:34 -0800
-IronPort-SDR: AnEqEOS4EETBMPL/ToQ+rFZDaxlzewFj7BulAEU1GsWTwWVRk46wiR+O9PSc1CQE2i+L1Irv8m
- ltaWIXR1WHhA==
-X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="362547479"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.225.14]) ([10.212.225.14])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:11:33 -0800
-Subject: Re: [PATCH v3] driver core: auxiliary bus: Fix calling stage for
- auxiliary bus init
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-References: <20210210201611.1611074-1-dave.jiang@intel.com>
- <YCTgYWEAxiBgq3xz@kroah.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <9896ca8c-f4c3-a4d2-05fd-675cd53069dd@intel.com>
-Date:   Thu, 11 Feb 2021 09:11:32 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231587AbhBKRPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:15:54 -0500
+Received: from conuserg-12.nifty.com ([210.131.2.79]:26451 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229837AbhBKQN4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 11:13:56 -0500
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 11BGC1x7021970;
+        Fri, 12 Feb 2021 01:12:01 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 11BGC1x7021970
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613059922;
+        bh=3/hwJtYyqVNBvsoXcMoZWlx6opZT0eYugHUwt0TrPzA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=p1+BosIh832dUiMNkkaFMFuhQ9cl3yVy+gi6iKWxgYlx/OnxC4B+M1yU8UkyUD9Yd
+         eEATrYFFlHJi9nDrSrlHUWTQEsbYitnU7xjbiMQaa/vC8IEOOpVQMvJpZlmAl69TCL
+         SI0k6YESbm7noHd682KMP2a/y3M2aAVyoNTCPIhv9DLkIIvPB/pzLrqz/i3F5+2Ru3
+         nNvChYaPFJXxpdIK0/v2h9yfhHj2Sz+i0Z8fahS/yILfAVvXr97FXVFo2SepYkKu5V
+         8vqymz8DJO7jrHFuo1E+UE4s40tE5dSHaRHxOnH3l4lFMUVH6ImnHlONVIiBT9yOFh
+         9tiDYr59KujXw==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] gen_compile_commands: prune some directories
+Date:   Fri, 12 Feb 2021 01:11:54 +0900
+Message-Id: <20210211161154.3892836-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <YCTgYWEAxiBgq3xz@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If directories are passed to gen_compile_commands.py, os.walk() traverses
+all the subdirectories to search for .cmd files, but we know some of them
+are not worth traversing.
 
-On 2/11/2021 12:44 AM, Greg KH wrote:
-> On Wed, Feb 10, 2021 at 01:16:11PM -0700, Dave Jiang wrote:
->>   MODULE_LICENSE("GPL v2");
->>   MODULE_DESCRIPTION("Auxiliary Bus");
->>   MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
-> As this code can not be built as a module, can you remove these lines as
-> well?  I don't think they do anything, and were never needed.
+Use the 'topdown' parameter of os.walk to prune them.
 
-Ok I will remove them.
+Documentation about the 'topdown' option of os.walk:
+  When topdown is True, the caller can modify the dirnames list
+  in-place (perhaps using del or slice assignment), and walk() will
+  only recurse into the subdirectories whose names remain in dirnames;
+  this can be used to prune the search, impose a specific order of
+  visiting, or even to inform walk() about directories the caller
+  creates or renames before it resumes walk() again. Modifying
+  dirnames when topdown is False has no effect on the behavior of
+  the walk, because in bottom-up mode the directories in dirnames
+  are generated before dirpath itself is generated.
 
+This commit prunes four directories, .git, Documentation, include, and
+tools.
 
-> thanks,
->
-> greg k-h
+The first three do not contain any C files. My main motivation is the
+last one, tools/ directory.
+
+Commit 6ca4c6d25949 ("gen_compile_commands: do not support .cmd files
+under tools/ directory") stopped supporting the tools/ directory.
+The current code no longer picks up .cmd files from the tools/
+directory.
+
+If you run:
+
+  ./scripts/clang-tools/gen_compile_commands.py --log_level=INFO
+
+then, you will see several "File ... not found" log messages.
+
+This is expected, and I do not want to support the tools/ directory.
+However, without an explicit comment "do not support tools/", somebody
+might try to get it back. Clarify this.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/clang-tools/gen_compile_commands.py | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+index 19963708bcf8..eb5faefbdf74 100755
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -20,7 +20,9 @@ _DEFAULT_LOG_LEVEL = 'WARNING'
+ _FILENAME_PATTERN = r'^\..*\.cmd$'
+ _LINE_PATTERN = r'^cmd_[^ ]*\.o := (.* )([^ ]*\.c)$'
+ _VALID_LOG_LEVELS = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+-
++# The tools/ directory adopts a different build system, and produces .cmd
++# files in a different format. Do not support it.
++_EXCLUDE_DIRS = ['.git', 'Documentation', 'include', 'tools']
+ 
+ def parse_arguments():
+     """Sets up and parses command-line arguments.
+@@ -80,8 +82,14 @@ def cmdfiles_in_dir(directory):
+     """
+ 
+     filename_matcher = re.compile(_FILENAME_PATTERN)
++    exclude_dirs = [ os.path.join(directory, d) for d in _EXCLUDE_DIRS ]
++
++    for dirpath, dirnames, filenames in os.walk(directory, topdown=True):
++        # Prune unwanted directories.
++        if dirpath in exclude_dirs:
++            dirnames[:] = []
++            continue
+ 
+-    for dirpath, _, filenames in os.walk(directory):
+         for filename in filenames:
+             if filename_matcher.match(filename):
+                 yield os.path.join(dirpath, filename)
+-- 
+2.27.0
+
