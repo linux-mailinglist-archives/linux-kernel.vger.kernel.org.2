@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA259318A47
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2513318A4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhBKMTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:19:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60919 "EHLO
+        id S231886AbhBKMVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:21:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22847 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230147AbhBKMPr (ORCPT
+        by vger.kernel.org with ESMTP id S231840AbhBKMSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:15:47 -0500
+        Thu, 11 Feb 2021 07:18:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613045656;
+        s=mimecast20190719; t=1613045831;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BEPfHOoOC9PkCRSqxehgaNL1z0I7JWFoen0MxY6aOAg=;
-        b=AuYYYtM4YPQiXLrU+mmQDhDY7HlqLkNfUD6bMoXXW7qWNzGV38AdvNuITmhoZ2I63gNnum
-        ApMfYF32II/0xDxHM5wOzX6fwPJ3pM9pmEtJoBQcby3LaRXMHXxw4zlW9MgDDAwFHCJWdA
-        7tJCThEGMhi8lggDbNdziwMfMZznvkM=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-puFAcDOQPNOdGZgpg3D0_g-1; Thu, 11 Feb 2021 07:14:14 -0500
-X-MC-Unique: puFAcDOQPNOdGZgpg3D0_g-1
-Received: by mail-ed1-f70.google.com with SMTP id i4so4561459edt.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 04:14:13 -0800 (PST)
+        bh=E1yuAMx44/76bqf49DYn2JPHR26BQBuYBzfgeTpXepM=;
+        b=V5jP+lOoaT00lygE2hcM3MuawAesMYW0Kz/1JZZADE8WIfCNojvlssyIXEk4RsrXnSGvuO
+        mQrKSdGfjA7SYwns/O8a9MjYZdfPqEiL6OyGuYCrdSM6l6yc1U7NmqJAlnmtHFqndSsGGS
+        3X7AZE2kgoHTkEoBkf2WWLrjW0q4Kxc=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-cJbwc0wZMyaPom8bLk6gyQ-1; Thu, 11 Feb 2021 07:17:06 -0500
+X-MC-Unique: cJbwc0wZMyaPom8bLk6gyQ-1
+Received: by mail-ej1-f71.google.com with SMTP id ia14so4663638ejc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 04:17:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=BEPfHOoOC9PkCRSqxehgaNL1z0I7JWFoen0MxY6aOAg=;
-        b=HhDeYRv+JQmtlX39ULMtCwRmOVZoaGpP9/kgqfcZly1qv5eZpXRZkC9wZ23bR1aG+x
-         XWyKavKvHbPhUmFabFJMa7U4BgDSWMDmsruBm9RrC0ejQVTUNB6/n1eIfKfsZro5dDWn
-         /c3L5D7x+o4JI1Z7F8o6Y4k2Qxj+1ZKqtim++biT5vwnE0KdzaP6RGaFWsNYB6p6eD4h
-         azKGtaZRTYeUuWI83GGK596+wd/mNug1FF7A5kOWq8S1LhZ/Mv2BljYV3SMsPKY5nFzs
-         rvjb4odyeRDbs23/xjRrxvBRkNsVGbjBDnlYzhFC4kVUue+5DjwALsmvUVhSSVoRlUII
-         HJGw==
-X-Gm-Message-State: AOAM530XW4zv4jdQE5EAyPUo9B8O9Lzq572SjE0Hv0SwbNrTMOLOdcq6
-        IGBGDEcALffajN4WKUNlyrMaKPMecrF0BQn8iHJLPztJEpsFLuPP3xPj0zZeyZhREabtbEdIYTz
-        KhHkvcSV6VA0P78TLVRgPTvbp
-X-Received: by 2002:a17:906:f8d1:: with SMTP id lh17mr2835204ejb.137.1613045652829;
-        Thu, 11 Feb 2021 04:14:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw7iYGVdrTZpB3saGpCtqnIsFnxkyZjFYwSdh7PVWVc2vA1axIrKedjuzKd7ebEYxovREQ/0w==
-X-Received: by 2002:a17:906:f8d1:: with SMTP id lh17mr2835178ejb.137.1613045652627;
-        Thu, 11 Feb 2021 04:14:12 -0800 (PST)
+        bh=E1yuAMx44/76bqf49DYn2JPHR26BQBuYBzfgeTpXepM=;
+        b=DKn6vdEpn+BJXCocIIlyiTe+sKjjbIUFXIeSIqCfSpJs+DQweB9sAdVMR4WHtA/MVy
+         46M6LEDV17XNgoYFumWIx92jDrIHQXePtupKwJ2/5w2ZYYUemNHMWT0twq7zCATmnb1a
+         oSB/VR9EQHz8ciaP18ucrcPhTGXy7HDP5WAKPhei40D3WSgxfjBgNo86rRAVoAl9eLr0
+         hgxAhl1AO0StJFCfHCw7bDyl19baOZJounOy6Z+0fJ8E+L2E7czW5Tm0gC3pbQpn33mh
+         ytDdZoGGSh60af7GODwBo17QcE29pB4WLYut9/jnl0wROoir7ynVdqyFq9SEkEihKPUO
+         fv0w==
+X-Gm-Message-State: AOAM531UdGpKpS9vWkmKxWen4+/4iSs/DSjSrHiZQ982aehsHXWfXqgb
+        xNcoI66pQp3twP4U8XWJeOencyB3nrYavOmEA57rKkVK6LhA50UQLwEqx4oSeUMKzDkFePg1n/F
+        RYhViAtq39iuRqPR18Ql82O74
+X-Received: by 2002:aa7:d6c2:: with SMTP id x2mr8057400edr.225.1613045825259;
+        Thu, 11 Feb 2021 04:17:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxarfD0dC+o1lTaNaYi8iRDZFDf94i0xlVO9sO1P+pAXgRHpADAlujD3wU7pg5278zwtG18ww==
+X-Received: by 2002:aa7:d6c2:: with SMTP id x2mr8057363edr.225.1613045825000;
+        Thu, 11 Feb 2021 04:17:05 -0800 (PST)
 Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id t23sm4115198ejs.4.2021.02.11.04.14.11
+        by smtp.gmail.com with ESMTPSA id hr31sm4057322ejc.125.2021.02.11.04.17.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 04:14:12 -0800 (PST)
-Date:   Thu, 11 Feb 2021 13:14:09 +0100
+        Thu, 11 Feb 2021 04:17:04 -0800 (PST)
+Date:   Thu, 11 Feb 2021 13:17:01 +0100
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
 Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
@@ -59,169 +59,97 @@ Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
         Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
         Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v4 05/17] af_vsock: separate wait space loop
-Message-ID: <20210211121409.y3yo3zzvm24rhmry@steredhat>
+Subject: Re: [RFC PATCH v4 06/17] af_vsock: implement send logic for SEQPACKET
+Message-ID: <20210211121701.4em23vgsqfdkdp5j@steredhat>
 References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
- <20210207151545.804889-1-arseny.krasnov@kaspersky.com>
+ <20210207151600.804998-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210207151545.804889-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <20210207151600.804998-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 06:15:41PM +0300, Arseny Krasnov wrote:
->This moves loop that waits for space on send to separate function,
->because it will be used for SEQ_BEGIN/SEQ_END sending before and
->after data transmission. Waiting for SEQ_BEGIN/SEQ_END is needed
->because such packets carries SEQPACKET header that couldn't be
->fragmented by credit mechanism, so to avoid it, sender waits until
->enough space will be ready.
+On Sun, Feb 07, 2021 at 06:15:57PM +0300, Arseny Krasnov wrote:
+>This adds some logic to current stream enqueue function for SEQPACKET
+>support:
+>1) Send record's begin/end marker.
+>2) Return value from enqueue function is whole record length or error
+>   for SOCK_SEQPACKET.
 >
 >Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
 >---
-> include/net/af_vsock.h   |  2 +
-> net/vmw_vsock/af_vsock.c | 93 ++++++++++++++++++++++++++--------------
-> 2 files changed, 62 insertions(+), 33 deletions(-)
+> include/net/af_vsock.h   |  2 ++
+> net/vmw_vsock/af_vsock.c | 22 ++++++++++++++++++++--
+> 2 files changed, 22 insertions(+), 2 deletions(-)
 >
 >diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->index bb6a0e52be86..19f6f22821ec 100644
+>index 19f6f22821ec..198d58c4c7ee 100644
 >--- a/include/net/af_vsock.h
 >+++ b/include/net/af_vsock.h
->@@ -205,6 +205,8 @@ void vsock_remove_sock(struct vsock_sock *vsk);
-> void vsock_for_each_connected_socket(void (*fn)(struct sock *sk));
-> int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk);
-> bool vsock_find_cid(unsigned int cid);
->+int vsock_wait_space(struct sock *sk, size_t space, int flags,
->+		     struct vsock_transport_send_notify_data *send_data);
+>@@ -136,6 +136,8 @@ struct vsock_transport {
+> 	bool (*stream_allow)(u32 cid, u32 port);
 >
-> /**** TAP ****/
->
+> 	/* SEQ_PACKET. */
+>+	int (*seqpacket_seq_send_len)(struct vsock_sock *, size_t len, int flags);
+>+	int (*seqpacket_seq_send_eor)(struct vsock_sock *, int flags);
+
+As before, we could add the identifier of the parameters.
+
+Other than that, the patch LGTM.
+
+Stefano
+
+> 	size_t (*seqpacket_seq_get_len)(struct vsock_sock *);
+> 	int (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
+> 				     int flags, bool *msg_ready);
 >diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 3d8af987216a..ea99261e88ac 100644
+>index ea99261e88ac..a033d3340ac4 100644
 >--- a/net/vmw_vsock/af_vsock.c
 >+++ b/net/vmw_vsock/af_vsock.c
->@@ -1693,6 +1693,64 @@ static int vsock_connectible_getsockopt(struct socket *sock,
-> 	return 0;
-> }
+>@@ -1806,6 +1806,12 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+> 	if (err < 0)
+> 		goto out;
 >
->+int vsock_wait_space(struct sock *sk, size_t space, int flags,
->+		     struct vsock_transport_send_notify_data *send_data)
->+{
->+	const struct vsock_transport *transport;
->+	struct vsock_sock *vsk;
->+	long timeout;
->+	int err;
->+
->+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
->+
->+	vsk = vsock_sk(sk);
->+	transport = vsk->transport;
->+	timeout = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
->+	err = 0;
->+
->+	add_wait_queue(sk_sleep(sk), &wait);
->+
->+	while (vsock_stream_has_space(vsk) < space &&
->+	       sk->sk_err == 0 &&
->+	       !(sk->sk_shutdown & SEND_SHUTDOWN) &&
->+	       !(vsk->peer_shutdown & RCV_SHUTDOWN)) {
-
-Maybe a new line here, like in the original code, would help the 
-readability.
-
->+		/* Don't wait for non-blocking sockets. */
->+		if (timeout == 0) {
->+			err = -EAGAIN;
->+			goto out_err;
->+		}
->+
->+		if (send_data) {
->+			err = transport->notify_send_pre_block(vsk, send_data);
->+			if (err < 0)
->+				goto out_err;
->+		}
->+
->+		release_sock(sk);
->+		timeout = wait_woken(&wait, TASK_INTERRUPTIBLE, timeout);
->+		lock_sock(sk);
->+		if (signal_pending(current)) {
->+			err = sock_intr_errno(timeout);
->+			goto out_err;
->+		} else if (timeout == 0) {
->+			err = -EAGAIN;
->+			goto out_err;
->+		}
+>+	if (sk->sk_type == SOCK_SEQPACKET) {
+>+		err = transport->seqpacket_seq_send_len(vsk, len, msg->msg_flags);
+>+		if (err < 0)
+>+			goto out;
 >+	}
 >+
->+	if (sk->sk_err) {
->+		err = -sk->sk_err;
->+	} else if ((sk->sk_shutdown & SEND_SHUTDOWN) ||
->+		   (vsk->peer_shutdown & RCV_SHUTDOWN)) {
->+		err = -EPIPE;
->+	}
->+
->+out_err:
->+	remove_wait_queue(sk_sleep(sk), &wait);
->+	return err;
->+}
->+EXPORT_SYMBOL_GPL(vsock_wait_space);
->+
-> static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 				     size_t len)
-> {
-
-After removing the wait loop in vsock_connectible_sendmsg(), we should 
-remove the 'timeout' variable because it is no longer used.
-
->@@ -1751,39 +1809,8 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
 > 	while (total_written < len) {
 > 		ssize_t written;
 >
->-		add_wait_queue(sk_sleep(sk), &wait);
->-		while (vsock_stream_has_space(vsk) == 0 &&
->-		       sk->sk_err == 0 &&
->-		       !(sk->sk_shutdown & SEND_SHUTDOWN) &&
->-		       !(vsk->peer_shutdown & RCV_SHUTDOWN)) {
->-
->-			/* Don't wait for non-blocking sockets. */
->-			if (timeout == 0) {
->-				err = -EAGAIN;
->-				remove_wait_queue(sk_sleep(sk), &wait);
->-				goto out_err;
->-			}
->-
->-			err = transport->notify_send_pre_block(vsk, &send_data);
->-			if (err < 0) {
->-				remove_wait_queue(sk_sleep(sk), &wait);
->-				goto out_err;
->-			}
->-
->-			release_sock(sk);
->-			timeout = wait_woken(&wait, TASK_INTERRUPTIBLE, timeout);
->-			lock_sock(sk);
->-			if (signal_pending(current)) {
->-				err = sock_intr_errno(timeout);
->-				remove_wait_queue(sk_sleep(sk), &wait);
->-				goto out_err;
->-			} else if (timeout == 0) {
->-				err = -EAGAIN;
->-				remove_wait_queue(sk_sleep(sk), &wait);
->-				goto out_err;
->-			}
->-		}
->-		remove_wait_queue(sk_sleep(sk), &wait);
->+		if (vsock_wait_space(sk, 1, msg->msg_flags, &send_data))
->+			goto out_err;
+>@@ -1852,9 +1858,21 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
 >
-> 		/* These checks occur both as part of and after the loop
-> 		 * conditional since we need to check before and after
+> 	}
+>
+>+	if (sk->sk_type == SOCK_SEQPACKET) {
+>+		err = transport->seqpacket_seq_send_eor(vsk, msg->msg_flags);
+>+		if (err < 0)
+>+			goto out;
+>+	}
+>+
+> out_err:
+>-	if (total_written > 0)
+>-		err = total_written;
+>+	if (total_written > 0) {
+>+		/* Return number of written bytes only if:
+>+		 * 1) SOCK_STREAM socket.
+>+		 * 2) SOCK_SEQPACKET socket when whole buffer is sent.
+>+		 */
+>+		if (sk->sk_type == SOCK_STREAM || total_written == len)
+>+			err = total_written;
+>+	}
+> out:
+> 	release_sock(sk);
+> 	return err;
 >-- 
 >2.25.1
 >
