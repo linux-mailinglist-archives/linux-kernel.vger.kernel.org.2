@@ -2,117 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9912B31886C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F83C31887B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhBKKmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:42:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43109 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229979AbhBKKj3 (ORCPT
+        id S230405AbhBKKnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:43:43 -0500
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:34232 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhBKKkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:39:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613039842;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+SyF2BtAE/25+uPwUADIprxwsW3nW9d5uxrpM+pqMWk=;
-        b=ZaPuMg1y7cJVFCGoGghwgMdemM6iNE9rxIgkrky5iyf5H0IXOtoQujsPCl3r/q1p/dW9hS
-        LTMY7P7mEj4dBKt+d0ytV84S/OMuZSfp0vkZ9An0Toj8X3mZDNyjIL3y3aDnAPLG2RkvOa
-        z7Q/r1L5GzqJZ0gIa20/awW0LVdrd6o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-IGQ8H91jP_aFvh3dBB3pjg-1; Thu, 11 Feb 2021 05:37:18 -0500
-X-MC-Unique: IGQ8H91jP_aFvh3dBB3pjg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CDDAB593B4;
-        Thu, 11 Feb 2021 10:37:16 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B6D9460BF1;
-        Thu, 11 Feb 2021 10:37:15 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] afs: Fix updating of i_mode due to 3rd party change
-From:   David Howells <dhowells@redhat.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     marc.dionne@auristor.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 11 Feb 2021 10:37:14 +0000
-Message-ID: <161303983470.1573213.1242074078169410167.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Thu, 11 Feb 2021 05:40:35 -0500
+Received: by mail-ed1-f49.google.com with SMTP id df22so6447704edb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:40:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fEHaEqfkX/bCOFj6WvJkc8sOHle2pKOr8Ss2R/h0+rg=;
+        b=S7/+9AwJzuEowD6/OdatnEBK4jQwTFHLnC+2qBT9lo3b8X/xWPpJWBIFEo1pl2hzkg
+         5ukO9ppDwNrFYVpEN4UbWp/clp5GZ2V/wkMr6FoqE8CMwZPJRNKIgdNUvGQKc/aQd9U9
+         0G5htnVjX88Ds595228v/6VxPgOiBk0yCpnmjWHgRh2IN1gRZjsp0rBt6UDwajdu9jTL
+         aWz7Tv6BroJ/T/WGT3iwNNgPST45kCWQhMLN+4qr3JapmtgFWM/icDEtzVaBAk85wolZ
+         FFif6mJJJ0az+tAzTLPgOx/+XFQAHX9f3PYjA7NHoTWmLdAXd4erGR+AR60WmamLTnvM
+         7xgg==
+X-Gm-Message-State: AOAM531OTi1F5ABMJkU2hPQbZUcYckPrcoILND8NW8DIFjgYyAHpHB19
+        NqTjWppfztxnoLWhu+kxI45ttfwRUV/Gew==
+X-Google-Smtp-Source: ABdhPJxkMyanZ1p+7Er/P/KJpQO8vzqz/H3KoMSia1z59D4yDXygc/Hpm+nY7jNcZQaxHPzaPSdTog==
+X-Received: by 2002:a50:d302:: with SMTP id g2mr7827149edh.75.1613039992492;
+        Thu, 11 Feb 2021 02:39:52 -0800 (PST)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id h15sm3877669ejj.43.2021.02.11.02.39.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Feb 2021 02:39:51 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id df22so6447640edb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:39:51 -0800 (PST)
+X-Received: by 2002:a05:6402:104e:: with SMTP id e14mr7915504edu.316.1613039991789;
+ Thu, 11 Feb 2021 02:39:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <YCQvl3+KviQNh2JI@karthik-strix-linux.karthek.com>
+ <YCQxeMVM92dtfEpO@karthik-strix-linux.karthek.com> <YCUBEMUyvRcQkFF7@kroah.com>
+In-Reply-To: <YCUBEMUyvRcQkFF7@kroah.com>
+From:   karthek <mail@karthek.com>
+Date:   Thu, 11 Feb 2021 16:09:39 +0530
+X-Gmail-Original-Message-ID: <CAJ5zXr0KkBy207yFx=hSWWqwduJDE=TydqWTjF0FFfyM0OvtrA@mail.gmail.com>
+Message-ID: <CAJ5zXr0KkBy207yFx=hSWWqwduJDE=TydqWTjF0FFfyM0OvtrA@mail.gmail.com>
+Subject: Re: [PATCH] staging: rtl8723bs: fix function comments to follow kernel-doc
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix afs_apply_status() to mask off the irrelevant bits from status->mode
-when OR'ing them into i_mode.  This can happen when a 3rd party chmod
-occurs.
+Sorry
 
-Also fix afs_inode_init_from_status() to mask off the mode bits when
-initialising i_mode.
-
-Fixes: 260a980317da ("[AFS]: Add "directory write" support.")
-Reported-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- fs/afs/inode.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index b0d7b892090d..d68abb9804b6 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -74,6 +74,7 @@ static int afs_inode_init_from_status(struct afs_operation *op,
- 	struct afs_file_status *status = &vp->scb.status;
- 	struct inode *inode = AFS_VNODE_TO_I(vnode);
- 	struct timespec64 t;
-+	mode_t mode = status->mode & S_IALLUGO;
- 
- 	_enter("{%llx:%llu.%u} %s",
- 	       vp->fid.vid, vp->fid.vnode, vp->fid.unique,
-@@ -103,13 +104,13 @@ static int afs_inode_init_from_status(struct afs_operation *op,
- 
- 	switch (status->type) {
- 	case AFS_FTYPE_FILE:
--		inode->i_mode	= S_IFREG | status->mode;
-+		inode->i_mode	= S_IFREG | mode;
- 		inode->i_op	= &afs_file_inode_operations;
- 		inode->i_fop	= &afs_file_operations;
- 		inode->i_mapping->a_ops	= &afs_fs_aops;
- 		break;
- 	case AFS_FTYPE_DIR:
--		inode->i_mode	= S_IFDIR | status->mode;
-+		inode->i_mode	= S_IFDIR | mode;
- 		inode->i_op	= &afs_dir_inode_operations;
- 		inode->i_fop	= &afs_dir_file_operations;
- 		inode->i_mapping->a_ops	= &afs_dir_aops;
-@@ -126,7 +127,7 @@ static int afs_inode_init_from_status(struct afs_operation *op,
- 			inode->i_fop	= &afs_mntpt_file_operations;
- 			inode->i_mapping->a_ops	= &afs_fs_aops;
- 		} else {
--			inode->i_mode	= S_IFLNK | status->mode;
-+			inode->i_mode	= S_IFLNK | mode;
- 			inode->i_op	= &afs_symlink_inode_operations;
- 			inode->i_mapping->a_ops	= &afs_fs_aops;
- 		}
-@@ -199,7 +200,7 @@ static void afs_apply_status(struct afs_operation *op,
- 	if (status->mode != vnode->status.mode) {
- 		mode = inode->i_mode;
- 		mode &= ~S_IALLUGO;
--		mode |= status->mode;
-+		mode |= status->mode & S_IALLUGO;
- 		WRITE_ONCE(inode->i_mode, mode);
- 	}
- 
-
-
+On Thu, Feb 11, 2021 at 3:34 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Feb 11, 2021 at 12:48:16AM +0530, karthek wrote:
+> > check this out
+>
+> Why ask us again when you already sent a patch?  Do you see any other
+> developers doing that on the mailing lists?
+>
+> thanks,
+>
+> greg k-h
