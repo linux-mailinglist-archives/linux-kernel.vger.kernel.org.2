@@ -2,88 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2743194D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12163194EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhBKVEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 16:04:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59334 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229517AbhBKVEh (ORCPT
+        id S230049AbhBKVMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 16:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229756AbhBKVMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 16:04:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613077391;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jaBoUEFNY4Hfsu8q49h7KfWFimnqp7p8cmVy/yVWHcQ=;
-        b=JOO7Dw5eooJTAPyRp0UnoBx6zOxcGxgUT35O+tcUwrooHMmabLNEGUrgDhhP32QgjEzq0K
-        c9FJ4x3S36Daq40GpOTevSdNHdzirCVTuU8LOUI/c/xf1s07PTXQwuoKN4X7z5cyNHQtjv
-        TpWARsJ08yO/dsj/SvGvOv2u/RglAiw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-2_TTrdD2OY25agubiKVEow-1; Thu, 11 Feb 2021 16:03:10 -0500
-X-MC-Unique: 2_TTrdD2OY25agubiKVEow-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C716E80403B;
-        Thu, 11 Feb 2021 21:03:08 +0000 (UTC)
-Received: from x2.localnet (ovpn-118-15.rdu2.redhat.com [10.10.118.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3B31E60636;
-        Thu, 11 Feb 2021 21:02:57 +0000 (UTC)
-From:   Steve Grubb <sgrubb@redhat.com>
-To:     Phil Sutter <phil@nwl.cc>, Richard Guy Briggs <rgb@redhat.com>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>, fw@strlen.de,
-        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
-        tgraf@infradead.org, Paul Moore <paul@paul-moore.com>
-Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change events
-Date:   Thu, 11 Feb 2021 16:02:55 -0500
-Message-ID: <4087569.ejJDZkT8p0@x2>
-Organization: Red Hat
-In-Reply-To: <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
-References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com> <20210211151606.GX3158@orbyte.nwl.cc> <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
+        Thu, 11 Feb 2021 16:12:20 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228BDC06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 13:10:59 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id l17so5193784wmq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 13:10:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=jS8uFEKJN3Q7z1nnFUZphS+85VjJXUxSu7oHf1ltyB0=;
+        b=pGXBmhZfxNzpUj3DU9XcdDqUsNIvFlQva7eCXTEz7Joxs93CRthvAWsMPl1oWP2n/g
+         8zadPY+2YOwrErplgbDWZMFrWbWBL1XjQLxrj4iEs/eGplAth/DV6vHCTvETe0cKQcmS
+         DnNyvgOUd31g2Xs9O206WfLVjzQQpI/elwoisiJlmKGo0sihidiD+QOJZAeX0aWHphz+
+         q/aK/ZU+IID6tZ1cciI7dFecLh3LfdynBqW/QIuhGGLDLfCXBY+FsmX9jpdUs1GJsG7D
+         ZlymHM76hmC80hAggXMs4oaui/l/NiVXXlXes79L1BHNy9rGno3L8PVIKwoydaGf9Ra+
+         qDGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jS8uFEKJN3Q7z1nnFUZphS+85VjJXUxSu7oHf1ltyB0=;
+        b=J6n703ThJbl8sq4jbz//hbngSGWMR43bVPpuTQzLqvmC13zY1lGlpSGMOFZrjusqQG
+         PV9EVnbaBIaAVDV4xQ9qNuQKFna7t14ByTNx9JSj/QH82RcDrcinTKC6eCv6JQ6WZy8q
+         rEbcqXciFzBhLr0Hy2ua3kMcBlnoofAZROUShUxSdm9S2GYGRbXRoQXB6kFZPpP0X0rq
+         RfRfcT5cu0exCzORGB5jAIAMcAyQXEAFbpibiRYRqa7yy4vb/6dSSslnU9ARzKqvspsd
+         USgEvarJjN41YmBxdVExjXOc+OMb48xDCYs4S36CW3IHDnxqXreAy8VSte9u6239h4Ki
+         02qQ==
+X-Gm-Message-State: AOAM530jksDsIWZKf2ZJ9QAQ/qwWKksMI1uNf9von9rNLnLyFuuUw4sT
+        Z/FgKCF049cwqS6gVriXHW0nkg==
+X-Google-Smtp-Source: ABdhPJw8JfvQOF+sCQO0uk/DNBEk4iFr6tFX4elV5/TCX1Zcujns/8wiUYi2u3IgXDuQprbG6IFt5Q==
+X-Received: by 2002:a7b:c010:: with SMTP id c16mr1885311wmb.134.1613077857539;
+        Thu, 11 Feb 2021 13:10:57 -0800 (PST)
+Received: from dell ([91.110.221.187])
+        by smtp.gmail.com with ESMTPSA id f7sm6932559wrm.92.2021.02.11.13.10.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 13:10:56 -0800 (PST)
+Date:   Thu, 11 Feb 2021 21:10:54 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris BREZILLON <boris.brezillon@free-electrons.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jan Kotas <jank@cadence.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Loc Ho <lho@apm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Nuvoton Technologies <tali.perry@nuvoton.com>,
+        NXP Linux Team <linux-imx@nxp.com>, openbmc@lists.ozlabs.org,
+        Patrick Venture <venture@google.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+        Richard Woodruff <r-woodruff2@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        =?iso-8859-1?Q?S=F6ren?= Brinkmann <soren.brinkmann@xilinx.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>
+Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
+Message-ID: <20210211211054.GD4572@dell>
+References: <20210126124540.3320214-1-lee.jones@linaro.org>
+ <161307643148.1254594.6590013599999468609@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <161307643148.1254594.6590013599999468609@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, February 11, 2021 11:29:34 AM EST Paul Moore wrote:
-> > If I'm not mistaken, iptables emits a single audit log per table, ipset
-> > doesn't support audit at all. So I wonder how much audit logging is
-> > required at all (for certification or whatever reason). How much
-> > granularity is desired?
- 
-  <snip> 
+On Thu, 11 Feb 2021, Stephen Boyd wrote:
 
-> I believe the netfilter auditing was mostly a nice-to-have bit of
-> functionality to help add to the completeness of the audit logs, but I
-> could very easily be mistaken.  Richard put together those patches, he
-> can probably provide the background/motivation for the effort.
+> Quoting Lee Jones (2021-01-26 04:45:19)
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > This is the last set.  Clock is clean after this.
+> 
+> Is it possible to slam in some patch that makes W=1 the default for the
+> clk directory? I'm trying to avoid seeing this patch series again.
 
-There are certifications which levy requirements on information flow control. 
-The firewall can decide if information should flow or be blocked. Information 
-flow decisions need to be auditable - which we have with the audit target. 
-That then swings in requirements on the configuration of the information flow 
-policy.
+One of my main goals of this project is that everyone (contributors,
+maintainers auto-builder robots etc) will be enabling W=1 builds
+*locally*.
 
-The requirements state a need to audit any management activity - meaning the 
-creation, modification, and/or deletion of a "firewall ruleset". Because it 
-talks constantly about a ruleset and then individual rules, I suspect only 1 
-summary event is needed to say something happened, who did it, and the 
-outcome. This would be in line with how selinux is treated: we have 1 summary 
-event for loading/modifying/unloading selinux policy.
+This isn't something you'll want to do at a global (i.e. in Mainline)
+level.  That's kinda the point of W=1.
 
-Hope this helps...
-
--Steve
-
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
