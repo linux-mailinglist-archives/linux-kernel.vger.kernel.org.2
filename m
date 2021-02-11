@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094DC318CC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DC3318CB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhBKN4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:56:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47506 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231437AbhBKNkf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:40:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613050746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JGimXPuqcoE+a6jS2uYizeEDGioIlqVcs0oa7fVjFEs=;
-        b=eoOKuVQuUlbULVHDfyhDPJGOLDvCYnOKY+bibZBgGRcTJRW9HgZUZv4FVW8JoJAFOqKs1T
-        Ymw/lREW35uPn5ivZxr2v5ky1drRaxx+AEAVxD+Jdmz7hk+rV2zbRn2zxPGaMROophzM5D
-        ZAwwHtZydPWvM0HEtb7cScGiZNE0Hbs=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-kAITXSciOGqJvMBy30lnbQ-1; Thu, 11 Feb 2021 08:39:04 -0500
-X-MC-Unique: kAITXSciOGqJvMBy30lnbQ-1
-Received: by mail-lj1-f199.google.com with SMTP id q8so3621739ljj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:39:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JGimXPuqcoE+a6jS2uYizeEDGioIlqVcs0oa7fVjFEs=;
-        b=M61h1tyv1Gh7DxuwaSiB8ukA3h9EfN4lU/KYBPdBS4rCo7fNxcbCeHqxjg8fTUnXGf
-         cLgpWY7/gMHhnzFkcZ48XSKogVT+aS7caNPvpseOOSwbLmhWv2XukUet4eXXns/mtYr6
-         DHBNraDUmO+phqVZR8OvM9YVzYGfvOoHksa06OzNFI/QwDk/39GMN9EZ0OUJSs96n3to
-         RfhuRQP6CBrXNw9EiYyntSuc6Ovpc6ogFuQB84R+WzO2/WsF4hwprK125Esd83vWW3y+
-         6QSF0VEqoRJuD68xMIwFLSu1aiVW84uUMIKNcvQyt2V0HVcGO6I56NVzAg820r5+Zdyr
-         jKzQ==
-X-Gm-Message-State: AOAM532DShvCS8EnUER8yw0eh9sKDCzK2zjpvwMoqvOVkfU/CrKsJCa8
-        dqVdS2vFQobRvl9TH/Lpnq/Jh07AKeo4nfthOeSWMHWb1tYJRsQYMpnPrVjH6U/CIRvJsqrg/6V
-        C3BHSbCbB+ON2WKYt0rDU8hBQ6gJcVf3K6f7PYnxJ
-X-Received: by 2002:a05:6512:613:: with SMTP id b19mr4621145lfe.220.1613050742884;
-        Thu, 11 Feb 2021 05:39:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyafdC4oQ79x7WQSko3/Od0YIHV05+67+o7ZE7cQPjfzaYfD75xXBj87fVYcrtLlGrUvyKomtWkrFvsHjf63dM=
-X-Received: by 2002:a05:6512:613:: with SMTP id b19mr4621135lfe.220.1613050742707;
- Thu, 11 Feb 2021 05:39:02 -0800 (PST)
+        id S231949AbhBKNvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:51:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:52058 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231794AbhBKNkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:40:10 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AC6B11B3;
+        Thu, 11 Feb 2021 05:39:22 -0800 (PST)
+Received: from e121896.arm.com (unknown [10.57.43.88])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 31EDF3F73B;
+        Thu, 11 Feb 2021 05:39:18 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Al Grant <al.grant@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH v2 2/6] perf arm-spe: Store memory address in packet
+Date:   Thu, 11 Feb 2021 15:38:52 +0200
+Message-Id: <20210211133856.2137-2-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210211133856.2137-1-james.clark@arm.com>
+References: <20210211133856.2137-1-james.clark@arm.com>
 MIME-Version: 1.0
-References: <20210204010157.1823669-1-aklimov@redhat.com> <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
- <20210205112219.kxdjpvjykrv6fi3x@e107158-lin>
-In-Reply-To: <20210205112219.kxdjpvjykrv6fi3x@e107158-lin>
-From:   Alexey Klimov <aklimov@redhat.com>
-Date:   Thu, 11 Feb 2021 13:38:51 +0000
-Message-ID: <CAFBcO+81bFBUuR=MrLttBEs8gKh0hx+EcJA2MCbqMzu=CUoybg@mail.gmail.com>
-Subject: Re: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on
- cpu onlining
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        yury.norov@gmail.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        tglx@linutronix.de, Joshua Baker <jobaker@redhat.com>,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, lizefan@huawei.com,
-        hannes@cmpxchg.org, Alexey Klimov <klimov.linux@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 11:22 AM Qais Yousef <qais.yousef@arm.com> wrote:
->
-> On 02/04/21 10:46, Peter Zijlstra wrote:
-> > On Thu, Feb 04, 2021 at 01:01:57AM +0000, Alexey Klimov wrote:
-> > > @@ -1281,6 +1282,11 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
-> > >     err = _cpu_up(cpu, 0, target);
-> > >  out:
-> > >     cpu_maps_update_done();
-> > > +
-> > > +   /* To avoid out of line uevent */
-> > > +   if (!err)
-> > > +           cpuset_wait_for_hotplug();
-> > > +
-> > >     return err;
-> > >  }
-> > >
-> >
-> > > @@ -2071,14 +2075,18 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
-> > >     struct device *dev = get_cpu_device(cpu);
-> > >
-> > >     dev->offline = false;
-> > > -   /* Tell user space about the state change */
-> > > -   kobject_uevent(&dev->kobj, KOBJ_ONLINE);
-> > >  }
-> > >
-> >
-> > One concequence of this is that you'll now get a bunch of notifications
-> > across things like suspend/hybernate.
->
-> And the resume latency will incur 5-30ms * nr_cpu_ids.
->
-> Since you just care about device_online(), isn't cpu_device_up() a better place
-> for the wait? This function is special helper for device_online(), leaving
-> suspend/resume and kexec paths free from having to do this unnecessary wait.
+From: Leo Yan <leo.yan@linaro.org>
 
-Yup, the same idea here once Peter mentioned bringup_nonboot_cpus()
-and bringup_hibernate_cpu().
+This patch is to store virtual and physical memory addresses in packet,
+which will be used for memory samples.
 
-Best regards,
-Alexey
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: James Clark <james.clark@arm.com>
+Reviewed-by: James Clark <james.clark@arm.com>
+Tested-by: James Clark <james.clark@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Al Grant <al.grant@arm.com>
+Cc: Andre Przywara <andre.przywara@arm.com>
+Cc: Wei Li <liwei391@huawei.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+---
+ tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 4 ++++
+ tools/perf/util/arm-spe-decoder/arm-spe-decoder.h | 2 ++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+index 90d575cee1b9..7aac3048b090 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+@@ -172,6 +172,10 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+ 				decoder->record.from_ip = ip;
+ 			else if (idx == SPE_ADDR_PKT_HDR_INDEX_BRANCH)
+ 				decoder->record.to_ip = ip;
++			else if (idx == SPE_ADDR_PKT_HDR_INDEX_DATA_VIRT)
++				decoder->record.virt_addr = ip;
++			else if (idx == SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS)
++				decoder->record.phys_addr = ip;
+ 			break;
+ 		case ARM_SPE_COUNTER:
+ 			break;
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+index 24727b8ca7ff..7b845001afe7 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+@@ -30,6 +30,8 @@ struct arm_spe_record {
+ 	u64 from_ip;
+ 	u64 to_ip;
+ 	u64 timestamp;
++	u64 virt_addr;
++	u64 phys_addr;
+ };
+ 
+ struct arm_spe_insn;
+-- 
+2.28.0
 
