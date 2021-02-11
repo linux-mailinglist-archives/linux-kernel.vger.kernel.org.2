@@ -2,91 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60407319218
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 664DF319219
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhBKSTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbhBKSAF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:00:05 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B3FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:59:24 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id u15so3732318plf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:59:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+om9eHtS9j/YdxgTsTfGj56DNm0I/KgrW6X/2Oi1Uis=;
-        b=aMI0kNpZOLIKo69EZWvigH+ZrGg1sMA7p0WKReEGFGURdA7v7G8PLbzWpPmkmX6Bk5
-         5UrLqs3i10MdHiIiaoe2kmn2v6pJ5YoH7wyGKxa9yJfA62/SQGOHq/0xmB4D0ijKjj7R
-         F9bO7kgi5gR6xdgaYQg/cZKA+kvNFiCelyvEdayok2915LDzTzJQbMd0Ly5AaCwt9gBT
-         n3r17efCwwpWYq93HCEil/9PoP7Km3Lfctz0TFZ3r56QD+obUSTTm1PZ9rRziQrDvfdy
-         PKQ6dSdXRFNGgYNLK/K3zHNn+0yt/a4YM7Lc1UPYKW2F5XP8V9tffH3OKv7RByHSVAro
-         dLDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+om9eHtS9j/YdxgTsTfGj56DNm0I/KgrW6X/2Oi1Uis=;
-        b=Q/D8VNeWjlvruRzE8/U3aBBDAAgqZNbZ8x+l1ahrDFtF64vAt+J4JBNP6MMDLAL2rb
-         wvUjijFPiTLpydfBuVOtpLzqwRzCmP8rbBuXQa27JtL21wif5eUpObsd758msClIs2Sh
-         1i304YQa4JBiY36jI3Z2YIpROk4W0jYLKRXO4DV33F9eAn06pMDvUU+WXIVgRdKl+0Zz
-         EI1QweZ63fZCjbS6qZObSNLBJu48xK5CyhQmD4xcRIgeytk/XMsm6euxWs+o3zq8JfwX
-         hWlAipsiAa3buK/7CA3XpiWr6w3oThL4V/Q8fcGUDrlyZjCdEwTZztio3PwU8wvzbp+H
-         r2qQ==
-X-Gm-Message-State: AOAM531OuCdNVDX1tKeqvQlT1iP1EsvSXV+LOWxFa2psbOO9VVM1b6PT
-        SxK9B0rB9Wf8tzmYaPS412k=
-X-Google-Smtp-Source: ABdhPJxrtP2fAwNHtKx0zlDJ5SHzwXPh1c6ZZeqKKHVEX5gLiJUxnBmmqlcHL/gYU2lWH6hotTjQOA==
-X-Received: by 2002:a17:902:6b43:b029:df:fb48:aecf with SMTP id g3-20020a1709026b43b02900dffb48aecfmr8452570plt.67.1613066363755;
-        Thu, 11 Feb 2021 09:59:23 -0800 (PST)
-Received: from localhost ([2601:1c0:6c02:1d30:4920:87a0:85cd:f278])
-        by smtp.gmail.com with ESMTPSA id c23sm6180015pfi.47.2021.02.11.09.59.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Feb 2021 09:59:23 -0800 (PST)
-From:   Adithya Chandrakasan <adithya.chandrakasan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     Adithya Chandrakasan <adithya.chandrakasan@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] Staging: mm: util.c: checkpatch.pl coding style warning fix
-Date:   Thu, 11 Feb 2021 09:59:14 -0800
-Message-Id: <0c1ce6d55fb011f29b2c22134f59829402eba175.1613066176.git.adithya.chandrakasan@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <bce53689-4a6e-c3c3-a09c-6e946a577f61@redhat.com>
-References: <bce53689-4a6e-c3c3-a09c-6e946a577f61@redhat.com>
+        id S232691AbhBKSTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:19:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232319AbhBKSA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 13:00:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 523F064E02;
+        Thu, 11 Feb 2021 17:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613066384;
+        bh=5NQkGCPFKYn2TDgg4hzWpzu/i5YcHPqaYq0sdeFJi18=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tJIp5sP2wH3RFt4T+RM7dwJRYz+YMq2cZsGqfJlIq45+pXAl1tVdOoRBQkIlSZxSk
+         uyEnGmq5qtTX1lN5jnryMpHNu+iJo/kyTYfla5ryqXOLWecUm235HDgaEjlbq1LJhg
+         LEyRuPZ2BKyEtFxejemlAL0c6dgwjDu92pz3eco0=
+Date:   Thu, 11 Feb 2021 18:59:41 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v4] driver core: auxiliary bus: Fix calling stage for
+ auxiliary bus init
+Message-ID: <YCVwjUUW+y4SaDoK@kroah.com>
+References: <20210211174249.1618488-1-dave.jiang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211174249.1618488-1-dave.jiang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FILE: mm/util.c:930:
-checkpatch.pl scripts basic coding style issues as below
-WARNING: Missing a blank line after declarations
+On Thu, Feb 11, 2021 at 10:42:49AM -0700, Dave Jiang wrote:
+> When the auxiliary device code is built into the kernel, it can be executed
+> before the auxiliary bus is registered. This causes bus->p to be not
+> allocated and triggers a NULL pointer dereference when the auxiliary bus
+> device gets added with bus_add_device(). Call the auxiliary_bus_init()
+> under driver_init() so the bus is initialized before devices.
+> 
+> Below is the kernel splat for the bug:
+> [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
+> [ 1.950670] #PF: supervisor read access in kernel mode
+> [ 1.950670] #PF: error_code(0x0000) - not-present page
+> [ 1.950670] PGD 0
+> [ 1.950670] Oops: 0000 1 SMP NOPTI
+> [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
+> [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
+> [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
+> 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
+> [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
+> [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
+> [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
+> [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
+> [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
+> [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
+> [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
+> [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
+> [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+> [ 1.950670] PKRU: 55555554
+> [ 1.950670] Call Trace:
+> [ 1.950670] device_add+0x3ee/0x850
+> [ 1.950670] __auxiliary_device_add+0x47/0x60
+> [ 1.950670] idxd_pci_probe+0xf77/0x1180
+> [ 1.950670] local_pci_probe+0x4a/0x90
+> [ 1.950670] pci_device_probe+0xff/0x1b0
+> [ 1.950670] really_probe+0x1cf/0x440
+> [ 1.950670] ? rdinit_setup+0x31/0x31
+> [ 1.950670] driver_probe_device+0xe8/0x150
+> [ 1.950670] device_driver_attach+0x58/0x60
+> [ 1.950670] __driver_attach+0x8f/0x150
+> [ 1.950670] ? device_driver_attach+0x60/0x60
+> [ 1.950670] ? device_driver_attach+0x60/0x60
+> [ 1.950670] bus_for_each_dev+0x79/0xc0
+> [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
+> [ 1.950670] driver_attach+0x1e/0x20
+> [ 1.950670] bus_add_driver+0x154/0x1f0
+> [ 1.950670] driver_register+0x70/0xc0
+> [ 1.950670] __pci_register_driver+0x54/0x60
+> [ 1.950670] idxd_init_module+0xe2/0xfc
+> [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
+> [ 1.950670] do_one_initcall+0x4a/0x1e0
+> [ 1.950670] kernel_init_freeable+0x1fc/0x25c
+> [ 1.950670] ? rest_init+0xba/0xba
+> [ 1.950670] kernel_init+0xe/0x116
+> [ 1.950670] ret_from_fork+0x1f/0x30
+> [ 1.950670] Modules linked in:
+> [ 1.950670] CR2: 0000000000000060
+> [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
+> 
+> Fixes: 7de3697e9cbd ("Add auxiliary bus support")
+> Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
+> Acked-by: Dave Ertman <david.m.ertman@intel.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+> ---
+> 
+> v4:
+> - Remove remaining module bits as it's not a kernel module. (GregKH)
+> v3:
+> - Change init function to return void. (GregKH)
+> v2:
+> - Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
+> 
+>  drivers/base/base.h      |  5 +++++
+>  drivers/base/auxiliary.c | 18 +++---------------
+>  drivers/base/init.c      |  1 +
+>  3 files changed, 9 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/base/base.h b/drivers/base/base.h
+> index f5600a83124f..52b3d7b75c27 100644
+> --- a/drivers/base/base.h
+> +++ b/drivers/base/base.h
+> @@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
+>  extern int platform_bus_init(void);
+>  extern void cpu_dev_init(void);
+>  extern void container_dev_init(void);
+> +#ifdef CONFIG_AUXILIARY_BUS
+> +extern void auxiliary_bus_init(void);
+> +#else
+> +static inline void auxiliary_bus_init(void) { }
+> +#endif
+>  
+>  struct kobject *virtual_device_parent(struct device *dev);
+>  
+> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+> index 8336535f1e11..adc199dfba3c 100644
+> --- a/drivers/base/auxiliary.c
+> +++ b/drivers/base/auxiliary.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/pm_runtime.h>
+>  #include <linux/string.h>
+>  #include <linux/auxiliary_bus.h>
+> +#include "base.h"
+>  
+>  static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
+>  							    const struct auxiliary_device *auxdev)
+> @@ -260,20 +261,7 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
+>  }
+>  EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
+>  
+> -static int __init auxiliary_bus_init(void)
+> +void __init auxiliary_bus_init(void)
+>  {
+> -	return bus_register(&auxiliary_bus_type);
+> +	WARN_ON(bus_register(&auxiliary_bus_type));
+>  }
+> -
+> -static void __exit auxiliary_bus_exit(void)
+> -{
+> -	bus_unregister(&auxiliary_bus_type);
+> -}
+> -
+> -module_init(auxiliary_bus_init);
+> -module_exit(auxiliary_bus_exit);
+> -
+> -MODULE_LICENSE("GPL v2");
+> -MODULE_DESCRIPTION("Auxiliary Bus");
+> -MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
+> -MODULE_AUTHOR("Kiran Patil <kiran.patil@intel.com>");
+> diff --git a/drivers/base/init.c b/drivers/base/init.c
+> index 908e6520e804..a9f57c22fb9e 100644
+> --- a/drivers/base/init.c
+> +++ b/drivers/base/init.c
+> @@ -32,6 +32,7 @@ void __init driver_init(void)
+>  	 */
+>  	of_core_init();
+>  	platform_bus_init();
+> +	auxiliary_bus_init();
+>  	cpu_dev_init();
+>  	memory_dev_init();
+>  	container_dev_init();
+> -- 
+> 2.26.2
+> 
 
-Signed-off-by: Adithya Chandrakasan <adithya.chandrakasan@gmail.com>
----
- mm/util.c | 1 +
- 1 file changed, 1 insertion(+)
+This is already in my tree, you got an email about it.  Do the module
+removal as a separate patch as it has nothing to do with this one as the
+code could never be built as a module, your patch did not change it, so
+you are doing 2 different things here.
 
-diff --git a/mm/util.c b/mm/util.c
-index 8c9b7d1e7c49..60286876636d 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -927,6 +927,7 @@ int get_cmdline(struct task_struct *task, char *buffer, int buflen)
- 	unsigned int len;
- 	struct mm_struct *mm = get_task_mm(task);
- 	unsigned long arg_start, arg_end, env_start, env_end;
-+
- 	if (!mm)
- 		goto out;
- 	if (!mm->arg_end)
--- 
-2.25.1
+{sigh}
 
+Intel owes me a new bottle of whisky.
+
+greg k-h
