@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AF4319564
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60206319566
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhBKVtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 16:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
+        id S229895AbhBKVue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 16:50:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBKVta (ORCPT
+        with ESMTP id S229469AbhBKVua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 16:49:30 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E00C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 13:48:50 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id t29so4539619pfg.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 13:48:50 -0800 (PST)
+        Thu, 11 Feb 2021 16:50:30 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96049C061574;
+        Thu, 11 Feb 2021 13:49:49 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id p21so10252447lfu.11;
+        Thu, 11 Feb 2021 13:49:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n1LR8bXA8m9yKBLdWfg/9jF4Dd+6Hiiy3Cbm06YIqOE=;
-        b=AauGAUa8Z69t8uDWvSpHf3f8FsUWV80P9nRC4+xUeA3Wq7qTN7D/38hTGgs/Bf4fi+
-         NfR89goWKn/X2atc8EfD77nAUyBn7PcZjfYv8Y06O9lmYnJeyFUVcoAQ1QClNjn6DDYa
-         Dj3LWymwXnXepu8ou7LuHCyeD5DgIk4ET2Jl9is7SLCd74Sk5QEGlBYSIl5jJ0oyYMSA
-         TITGHT0OXull26nXQf3y7ZmyfeLfAaa4Z/+mOFPs22dL83sJc4z8D2KGr4kVvUb7ppFG
-         yrTInENIJU3fEHdmUZ3wnuuuD1FttHOQY2YNwqCOgXgmGdOEF/wSDYAMTji+1dks0u9N
-         nbXg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Kx95rQc2Zpz76757QpOil3wNlv8GyzyyMZscHJbIHaQ=;
+        b=X97cLbdraTOLKeTspCLsaP5Ig7988WZhWe4sDZQZm5XkIsddDayN3D+Aryhjy6/vOe
+         +PbdMjCZwv69lrraeF7TUInlfWH0amaO8hIPZ/kJzCZrv1OIEmHBxIzrAoh4tRaCIoNk
+         Ty2sjl0ZUyP/hA2XoqfA45gU/Jn+/X8AbuCXAgeAjUOzWXPWQTlr91aLYZeRysM/Vvuc
+         dKaf5NAc6qRJGvERDFgiBhV0opgfp5zJCixBfy+I7wrauu1SZXgpZkMK8SZTBQyZds3H
+         y7xE8D3h6ko0UqCFOF8sTSZcBt+2T56uCjC8vqzjAYjrJz/XFocJUsK9jV7NYe5+8hUt
+         oi5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n1LR8bXA8m9yKBLdWfg/9jF4Dd+6Hiiy3Cbm06YIqOE=;
-        b=nJTucxxfod+DNh7zhJNDDMin4QuiBKUEETvXc8kPMrBt0+HgzoWAkRdC5d5Eul6TsI
-         leyEzAIqfNz0pcDa4AdLwzmWfrThZxYbQXQe9iFB+4tKJTEIvbbILLOEBjzQAlUcaFPn
-         6nszDbigT2azBYA8hF229/sqwjwLllhWIhV69nxEeTPhFiZf2FcgdswoP6obF8++OwW3
-         YYnBai2mvgjs6BPj43B6priJ1dvMkRxghkAXvnBw9k4CysH1Oley3mlyO+gnAWV7PW7/
-         gdzPZp/FfLKSAhI7+PfmLN8wyLoGSEdtvYWAH4WsvY/KFpDyx5KJUmwZn+xdnJOa8J71
-         mF7w==
-X-Gm-Message-State: AOAM532kFjP6uW7hxKOLWJA9GRWzqLbqbaipeohdD34zXawD+EIJdzuT
-        Fx5Dz80NGJChveNCnLvpEA/Y87Sg5upo4g==
-X-Google-Smtp-Source: ABdhPJwK1gQARuKwUrghUAY3dv6TbBMHswIcdfiEO747A2NrBrcHpV+/XMfT81czn8OsGsi8mNL0+Q==
-X-Received: by 2002:a63:4623:: with SMTP id t35mr169739pga.294.1613080130191;
-        Thu, 11 Feb 2021 13:48:50 -0800 (PST)
-Received: from horus.lan (71-34-94-168.ptld.qwest.net. [71.34.94.168])
-        by smtp.gmail.com with ESMTPSA id j20sm6556609pfe.172.2021.02.11.13.48.49
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kx95rQc2Zpz76757QpOil3wNlv8GyzyyMZscHJbIHaQ=;
+        b=SRviJGkV/Ys/1HgxtOX7iqeSqRn0G0HF0lEOMJeCJVBJq7R2H7a8VPqVBhZxker6xW
+         6MNMZbMq45ty4pq6L71oqLkKsNgnB4AZDXxcjLtR8n+A+3xPCwA5mFb4sNJpVwEvoe58
+         XwKnv3vqnYMNqG2LTpKmvwCbN1u06H2FngPY6Ye+nprof99wEtOgMCC+kFVuwmZhzKEz
+         OzRuXnIwsSjGRIHRx7y7MfXjumWGIzvAf0brvDmnBqBarsz0HPrZP6irEBtWswJgRXdP
+         79DGBxqMH39pzq6AesAnbTyevlsilOAfRRUR5W2zxtKpmDZZg8dZ4/R6opkyR/WPFDxj
+         Dw8Q==
+X-Gm-Message-State: AOAM531bjlY6yfQf97sJR7Y2WFDhX6+jfTl6j15wBAXkK9ZnWQb00JBU
+        Y577vWw/UaqKTAjyl6tJxy0=
+X-Google-Smtp-Source: ABdhPJytKvsVCYe3sCTowy+qfySxV9ULpHBuDmW6qYvrT0PS9Eci3pClxHAJFU7Y52bRt85to5dvHA==
+X-Received: by 2002:a19:6c7:: with SMTP id 190mr15088lfg.196.1613080188142;
+        Thu, 11 Feb 2021 13:49:48 -0800 (PST)
+Received: from mobilestation ([95.79.218.112])
+        by smtp.gmail.com with ESMTPSA id j22sm16182lfm.29.2021.02.11.13.49.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 13:48:49 -0800 (PST)
-From:   Jason Gerecke <killertofu@gmail.com>
-X-Google-Original-From: Jason Gerecke <jason.gerecke@wacom.com>
-To:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>
-Cc:     Jason Gerecke <jason.gerecke@wacom.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH] RFC: x86/jump_label: Mark arguments as const to satisfy asm constraints
-Date:   Thu, 11 Feb 2021 13:48:48 -0800
-Message-Id: <20210211214848.536626-1-jason.gerecke@wacom.com>
-X-Mailer: git-send-email 2.30.1
+        Thu, 11 Feb 2021 13:49:47 -0800 (PST)
+Date:   Fri, 12 Feb 2021 00:49:39 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linux-spi@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] spi: dw: Avoid stack content exposure
+Message-ID: <20210211214939.bwzojhjhazyxbi7i@mobilestation>
+References: <20210211203714.1929862-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211203714.1929862-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling an external kernel module with `-O0` or `-O1`, the following
-compile error may be reported:
+On Thu, Feb 11, 2021 at 12:37:14PM -0800, Kees Cook wrote:
+> Since "data" is u32, &data is a "u32 *" type, which means pointer math
+> will move in u32-sized steps. This was meant to be a byte offset, so
+> cast &data to "char *" to aim the copy into the correct location.
+> 
+> Seen with -Warray-bounds (and found by Coverity):
+> 
+> In file included from ./include/linux/string.h:269,
+>                  from ./arch/powerpc/include/asm/paca.h:15,
+>                  from ./arch/powerpc/include/asm/current.h:13,
+>                  from ./include/linux/mutex.h:14,
+>                  from ./include/linux/notifier.h:14,
+>                  from ./include/linux/clk.h:14,
+>                  from drivers/spi/spi-dw-bt1.c:12:
+> In function 'memcpy',
+>     inlined from 'dw_spi_bt1_dirmap_copy_from_map' at drivers/spi/spi-dw-bt1.c:87:3:
+> ./include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset 4 is out of the bounds [0, 4] of object 'data' with type 'u32' {aka 'unsigned int'} [-Warray-bounds]
+>    20 | #define __underlying_memcpy __builtin_memcpy
+>       |                             ^
+> ./include/linux/fortify-string.h:191:9: note: in expansion of macro '__underlying_memcpy'
+>   191 |  return __underlying_memcpy(p, q, size);
+>       |         ^~~~~~~~~~~~~~~~~~~
+> drivers/spi/spi-dw-bt1.c: In function 'dw_spi_bt1_dirmap_copy_from_map':
+> drivers/spi/spi-dw-bt1.c:77:6: note: 'data' declared here
+>    77 |  u32 data;
+>       |      ^~~~
 
-    ./arch/x86/include/asm/jump_label.h:25:2: error: impossible constraint in ‘asm’
-       25 |  asm_volatile_goto("1:"
-          |  ^~~~~~~~~~~~~~~~~
+Can't believe I missed that. Thanks!
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
-It appears that these lower optimization levels prevent GCC from detecting
-that the key/branch arguments can be treated as constants and used as
-immediate operands. To work around this, explicitly add the `const` label.
-
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
----
-Marked RFC since I'm not familiar with this subsystem or the asm blocks that
-are impacted. Extra-close inspection would be appreciated.
-
- arch/x86/include/asm/jump_label.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/jump_label.h b/arch/x86/include/asm/jump_label.h
-index 06c3cc22a058..7f2006645d84 100644
---- a/arch/x86/include/asm/jump_label.h
-+++ b/arch/x86/include/asm/jump_label.h
-@@ -20,7 +20,7 @@
- #include <linux/stringify.h>
- #include <linux/types.h>
- 
--static __always_inline bool arch_static_branch(struct static_key *key, bool branch)
-+static __always_inline bool arch_static_branch(struct static_key * const key, const bool branch)
- {
- 	asm_volatile_goto("1:"
- 		".byte " __stringify(STATIC_KEY_INIT_NOP) "\n\t"
-@@ -36,7 +36,7 @@ static __always_inline bool arch_static_branch(struct static_key *key, bool bran
- 	return true;
- }
- 
--static __always_inline bool arch_static_branch_jump(struct static_key *key, bool branch)
-+static __always_inline bool arch_static_branch_jump(struct static_key * const key, const bool branch)
- {
- 	asm_volatile_goto("1:"
- 		".byte 0xe9\n\t .long %l[l_yes] - 2f\n\t"
--- 
-2.30.1
-
+> 
+> Addresses-Coverity: CID 1497771 Out-of-bounds access
+> Fixes: abf00907538e ("spi: dw: Add Baikal-T1 SPI Controller glue driver")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/spi/spi-dw-bt1.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
+> index 4aa8596fb1f2..5be6b7b80c21 100644
+> --- a/drivers/spi/spi-dw-bt1.c
+> +++ b/drivers/spi/spi-dw-bt1.c
+> @@ -84,7 +84,7 @@ static void dw_spi_bt1_dirmap_copy_from_map(void *to, void __iomem *from, size_t
+>  	if (shift) {
+>  		chunk = min_t(size_t, 4 - shift, len);
+>  		data = readl_relaxed(from - shift);
+> -		memcpy(to, &data + shift, chunk);
+> +		memcpy(to, (char *)&data + shift, chunk);
+>  		from += chunk;
+>  		to += chunk;
+>  		len -= chunk;
+> -- 
+> 2.25.1
+> 
