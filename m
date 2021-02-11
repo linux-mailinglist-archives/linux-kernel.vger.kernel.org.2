@@ -2,209 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2423182FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAAF318306
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhBKBRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 20:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
+        id S230249AbhBKBWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 20:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhBKBRc (ORCPT
+        with ESMTP id S230046AbhBKBWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 20:17:32 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB959C061574;
-        Wed, 10 Feb 2021 17:16:50 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id l17so1949995wmq.2;
-        Wed, 10 Feb 2021 17:16:50 -0800 (PST)
+        Wed, 10 Feb 2021 20:22:52 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A954C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:22:12 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id q9so3731466ilo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:22:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WXGPmEvy9dSivvx3DCUoFQtWsNlJFnP4j+gTWZ6NVsM=;
-        b=XlEkgTkWybu3asiL2QYqXomweDCDbrx9AOVOg3gCmfHOTHvu+nKO3CY0BKHRbc1gfF
-         R2DkqQJNJa0Obpt13cLimlki6C6M9iU1LNzD5ZI3GwtUziL6Gqlc0qWw3NySnJTtE63U
-         HIcGRsNx1r8ovJOpO7ixW3CU7FvSj3WrHGu+aAZLYjsw5yXKZGtMgqrwZf5ffXZwxMFG
-         ZHLRV63bSljeJt+/6Kmtt/syY+zvfNsZkjXh/wJ4YFKxD/fmERkZoBMf1VpwMAAemG04
-         7M7nLayG4NMLJXqlJL3fw4IfX2GYMSYwNdSzklZG73q6hIAsC8xuIXVz6MiTjdCkebjw
-         E4cQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KHAwlqEsJZqXXlaYYLdWeimBUUl5Q8QJh5QhboJp+wI=;
+        b=P7iHgxs6yNhdEwBpGa0NSuD55vAH6c4rc2iIQk+cJwiKlYLeCZY/TbXB4+W+5r7O9T
+         eQjuiwP6CMfLCyhtnE3dDTgya76Q/hsUfeL1qVN2ZtmV1QU8c620dNdSpmU4i2rAtoYD
+         +sXQbEHBHioCwGMOGt8WzaIDzOEqFMmjjRkEo8GMtGb4WpQv2+EVRu7FQi4iwMP0ydd7
+         z56ETWRIKV4sC7hWcgdmBvOQenM3Z4YySEJ08tFLPm0i/fY2QBimgp8zQcC3tGLeloOT
+         FDHWWYCecQ+he0kh6yvUlJqfgKBjYV3JtSi2XbORQs98+YUFtlE3aVpv0488t8IRIxzU
+         vUHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WXGPmEvy9dSivvx3DCUoFQtWsNlJFnP4j+gTWZ6NVsM=;
-        b=ZRfDN8fc58KjqD5k8mc59bmiNaiJ5ikr1JOysjVWIcbakcJLsfsZf6SuVU3oCEuS1y
-         y9WcwmqelcWuu/USCCSjFipcvf4LVlOqTmzClJZ7qd0mhVpooyp8QXpxyvlj5CvzaPPY
-         eIlLTP9RbpVBn92/W10MP7GIn+TENeWB3VZU/HNpyfT+Lm4Z1uSvJ8uSLeGX0iLzWO8a
-         s3i5hfEPcXAFIHkcy1ToPDEBx1MD7NabHilJWaWYOP9FWLaM7KOqjwQxq109kbG6C28c
-         2J6KsOnNcDl7yOYbb46km7qRVhO3pW8xaAhJAQO0vk5kyo3RSmLm2aQO17oybd2Otvqa
-         5nag==
-X-Gm-Message-State: AOAM533DXUEqEQpr11bB9vSuQlrnFe119Fj1UuqJGeU3GaP+NeX1WJsC
-        1ZvGpSeoQ8bCzVgYOC5vwZ0gNLVHkyuwxw==
-X-Google-Smtp-Source: ABdhPJw2Vv+G2hjkNsT2yfIQL84InzdFMQTtDC1sDpINbwXBPaf+WSUchuWoay1KN9SpSAG5L4TTCw==
-X-Received: by 2002:a1c:48c4:: with SMTP id v187mr1989667wma.145.1613006209013;
-        Wed, 10 Feb 2021 17:16:49 -0800 (PST)
-Received: from [192.168.2.202] (pd9e5a48d.dip0.t-ipconnect.de. [217.229.164.141])
-        by smtp.gmail.com with ESMTPSA id a84sm5847877wme.12.2021.02.10.17.16.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 17:16:48 -0800 (PST)
-Subject: Re: [PATCH] PCI: Run platform power transition on initial D0 entry
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
-References: <20210210235749.GA617942@bjorn-Precision-5520>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <e768f68e-4f22-1b9a-e3d4-eb7dbdede58e@gmail.com>
-Date:   Thu, 11 Feb 2021 02:16:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KHAwlqEsJZqXXlaYYLdWeimBUUl5Q8QJh5QhboJp+wI=;
+        b=JfM2XlCvf9zi/RkuCdbAww9P71uW28dviQWGZ37Ck5ojEJxn5hAay1DOjI6m28c7ED
+         9ijLkldwaNR9VNoPJ7dt3+KT0xed6BytbtMjygpXDLjtp2exwGhMIRLWToXvMCl8RXOz
+         qiT5WSmGtHbsEjqeQEDTAwXGkQotmMwzn/rX+eb/UKpGZ/eJS1fzoYNFwvW7c3jsg4WL
+         BBJ72Dm8rtL3A24NThDh4MQGhaQLd+lfcx48XdzXfenbUj4JwVb5hVSd7k/ffv/U/FsW
+         jlYH7jAAr+cfFD7O1go2+/sOMzMjav3gabgW+s50Cj49KWR+5JYFXZ+qL0z8vPnuVzLp
+         l/lA==
+X-Gm-Message-State: AOAM533/p+EczCho2ziHGgUSUys/rx9k/0dAJJI4fdla/e6k1iFYASjU
+        pJyTT9PwgXZ0ExDMvkQbqX2fSe4cbdVQlx4i1b6fUw==
+X-Google-Smtp-Source: ABdhPJyF6xv4jvRlcmFQMIg11mawZvxzaXqUy0uOm7m+3OIGcKwQDvd6M3ZnL0G6CidlWheLmgVqf2DI6B/x2/fpk4k=
+X-Received: by 2002:a05:6e02:1888:: with SMTP id o8mr3504355ilu.154.1613006531238;
+ Wed, 10 Feb 2021 17:22:11 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210210235749.GA617942@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210210230625.550939-1-seanjc@google.com> <20210210230625.550939-10-seanjc@google.com>
+In-Reply-To: <20210210230625.550939-10-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 10 Feb 2021 17:22:00 -0800
+Message-ID: <CANgfPd8itawTsza-SPSMehUEAAJ4DWtSQX4QRbHg1kX4c6VRBg@mail.gmail.com>
+Subject: Re: [PATCH 09/15] KVM: selftests: Move per-VM GPA into perf_test_args
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 12:57 AM, Bjorn Helgaas wrote:
-> [+cc Rafael, linux-pm]
-> 
-> On Thu, Feb 04, 2021 at 11:06:40PM +0100, Maximilian Luz wrote:
->> On some devices and platforms, the initial platform power state is not
->> in sync with the power state of the PCI device.
->>
->> pci_enable_device_flags() updates the state of a PCI device by reading
->> from the PCI_PM_CTRL register. This may change the stored power state of
->> the device without running the appropriate platform power transition.
-> 
-> At this point in the code, setting dev->current_state based on the
-> value of PCI_PM_CTRL seems reasonable.  We're making the pci_dev state
-> match the PCI device hardware state.  This paragraph sort of implies
-> we're missing an "appropriate platform power transition" here, but I
-> don't think that's the case.
+On Wed, Feb 10, 2021 at 3:06 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Move the per-VM GPA into perf_test_args instead of storing it as a
+> separate global variable.  It's not obvious that guest_test_phys_mem
+> holds a GPA, nor that it's connected/coupled with per_vcpu->gpa.
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-In terms of PCI core, this is fine. But there's no attempt made at
-checking that the platform state (not the core state) is compatible with
-what we're setting here.
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-So the core state is correct and shows that the device is on, but
-unfortunately there's some ACPI code out there that seems to initialize
-some ACPI power resource to a state that doesn't match this (in this
-case off). So updating the state without also making sure that the power
-resource is also updated (e.g. turned on or at least marked as turned on
-here) leaves both states to be different (emphasis on leaves, the were
-already out-of-sync before that). E.g. in my case PCI says 'on'
-(correct) and ACPI says 'off' (wrong).
+> ---
+>  .../selftests/kvm/include/perf_test_util.h    |  8 +-----
+>  .../selftests/kvm/lib/perf_test_util.c        | 28 ++++++++-----------
+>  .../kvm/memslot_modification_stress_test.c    |  2 +-
+>  3 files changed, 13 insertions(+), 25 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/include/perf_test_util.h b/tools/testing/selftests/kvm/include/perf_test_util.h
+> index 4d53238b139f..cccf1c44bddb 100644
+> --- a/tools/testing/selftests/kvm/include/perf_test_util.h
+> +++ b/tools/testing/selftests/kvm/include/perf_test_util.h
+> @@ -29,6 +29,7 @@ struct perf_test_vcpu_args {
+>  struct perf_test_args {
+>         struct kvm_vm *vm;
+>         uint64_t host_page_size;
+> +       uint64_t gpa;
+>         uint64_t guest_page_size;
+>         int wr_fract;
+>
+> @@ -37,13 +38,6 @@ struct perf_test_args {
+>
+>  extern struct perf_test_args perf_test_args;
+>
+> -/*
+> - * Guest physical memory offset of the testing memory slot.
+> - * This will be set to the topmost valid physical address minus
+> - * the test memory size.
+> - */
+> -extern uint64_t guest_test_phys_mem;
+> -
+>  struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+>                                    uint64_t vcpu_memory_bytes,
+>                                    enum vm_mem_backing_src_type backing_src);
+> diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
+> index f22ce1836547..03f125236021 100644
+> --- a/tools/testing/selftests/kvm/lib/perf_test_util.c
+> +++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
+> @@ -9,8 +9,6 @@
+>
+>  struct perf_test_args perf_test_args;
+>
+> -uint64_t guest_test_phys_mem;
+> -
+>  /*
+>   * Guest virtual memory offset of the testing memory slot.
+>   * Must not conflict with identity mapped test code.
+> @@ -87,29 +85,25 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+>         TEST_ASSERT(guest_num_pages < vm_get_max_gfn(vm),
+>                     "Requested more guest memory than address space allows.\n"
+>                     "    guest pages: %lx max gfn: %x vcpus: %d wss: %lx]\n",
+> -                   guest_num_pages, vm_get_max_gfn(vm), vcpus,
+> -                   vcpu_memory_bytes);
+> +                   guest_num_pages, vm_get_max_gfn(vm), vcpus, vcpu_memory_bytes);
+>
+> -       guest_test_phys_mem = (vm_get_max_gfn(vm) - guest_num_pages) *
+> -                             pta->guest_page_size;
+> -       guest_test_phys_mem &= ~(pta->host_page_size - 1);
+> +       pta->gpa = (vm_get_max_gfn(vm) - guest_num_pages) * pta->guest_page_size;
+> +       pta->gpa &= ~(pta->host_page_size - 1);
 
-The problem is that when we now later transition the device into D3cold,
-the PCI core itself will do that transition just fine, but the PCI-ACPI
-(i.e. platform) part thinks the power resource is already off and won't
-do anything. And that prevents the device from actually being turned
-off.
+Also not related to this patch, but another case for align.
 
-Also running pci_set_power_state(..., PCI_D0) later does not fix that
-because the PCI core (correctly) believes that the device is already on
-and just returns doing nothing. So it doesn't even attempt to check the
-platform state, which is reasonable behavior if one assumes that the
-platform state is always in sync with the PCI core state. It's just that
-here, I think, we can't assume that they're in sync (mostly because ACPI
-/ platform stuff may be weird and buggy and we may not have control over
-that).
+>         if (backing_src == VM_MEM_SRC_ANONYMOUS_THP ||
+>             backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB)
+> -               guest_test_phys_mem &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
+> -
+> +               pta->gpa &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
 
-This is why I suggested replacing pci_set_power_state(dev, PCI_D0) with
-pci_power_up(dev). With PCI_D0, they essentially do the same thing,
-except for the (first) state check. Also both later call
-pci_platform_power_transition() and pci_raw_set_power_state(), which
-(should) have their individual state checks. So if the device is already
-in D0, this boils down to calling the pci_platform_power_transition()
-only.
+also align
 
-> But it would be nice if we could combine this bit from
-> pci_enable_device_flags() with the pci_set_power_state() in
-> do_pci_enable_device().
-> 
->> Due to the stored power-state being changed, the later call to
->> pci_set_power_state(..., PCI_D0) in do_pci_enable_device() can evaluate
->> to a no-op if the stored state has been changed to D0 via that. This
->> will then prevent the appropriate platform power transition to be run,
->> which can on some devices and platforms lead to platform and PCI power
->> state being entirely different, i.e. out-of-sync. On ACPI platforms,
->> this can lead to power resources not being turned on, even though they
->> are marked as required for D0.
->>
->> Specifically, on the Microsoft Surface Book 2 and 3, some ACPI power
->> regions that should be "on" for the D0 state (and others) are
->> initialized as "off" in ACPI, whereas the PCI device is in D0.
-> 
-> So some ACPI power regions are in fact "on" (because the PCI device
-> that requires them is in D0), but the ACPI core believes them to be
-> "off" (or probably "unknown, treated as 'off'")?
+>  #ifdef __s390x__
+>         /* Align to 1M (segment size) */
+> -       guest_test_phys_mem &= ~((1 << 20) - 1);
+> +       pta->gpa &= ~((1 << 20) - 1);
 
-Yes, that's pretty much it.
+And here again (oof)
 
-The problem I'm dealing with specifically is caused by the ACPI code in
-[1]. There, _STA gets initialized to 'off' and is only updated when the
-power transitions run (i.e. the _ON or _OFF methods). There's nothing in
-this ACPI code that checks the actual state of the PCI device, which
-causes this problem. So, to me, it seems that this code is expecting the
-_ON method to be called in PCI bring-up.
-
-[1]: https://github.com/linux-surface/acpidumps/blob/1ed05b95df844534229f752ea2267c8dd8ae7f8c/surface_book_2/dsdt.dsl#L19170-L19225
-
->> As the
->> state is updated in pci_enable_device_flags() without ensuring that the
->> platform state is also updated, the power resource will never be
->> properly turned on. Instead, it lives in a sort of on-but-marked-as-off
->> zombie-state, which confuses things down the line when attempting to
->> transition the device into D3cold: As the resource is already marked as
->> off, it won't be turned off and the device does not fully enter D3cold,
->> causing increased power consumption during (runtime-)suspend.
->>
->> By replacing pci_set_power_state() in do_pci_enable_device() with
->> pci_power_up(), we can force pci_platform_power_transition() to be
->> called, which will then check if the platform power state needs updating
->> and appropriate actions need to be taken.
->>
->> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-> 
-> I added Rafael & linux-pm because he should chime in here.
-> 
->> ---
->>
->> I'm not entirely sure if this is the best way to do this, so I'm open to
->> alternatives. In a previous version of this, I've tried to run the
->> platform/ACPI transition directly after the pci_read_config_word() in
->> pci_enable_device_flags(), however, that caused some regression in
->> intel-lpss-pci, specifically that then had trouble accessing its config
->> space for initial setup.
->>
->> This version has been tested for a while now on [1/2] without any
->> complaints. As this essentially only drops the initial are-we-already-
->> in-that-state-check, I don't expect any issues to be caused by that.
->>
->> [1]: https://github.com/linux-surface/linux-surface
->> [2]: https://github.com/linux-surface/kernel
->>
->> ---
->>   drivers/pci/pci.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
->> index b9fecc25d213..eb778e80d8cf 100644
->> --- a/drivers/pci/pci.c
->> +++ b/drivers/pci/pci.c
->> @@ -1802,7 +1802,7 @@ static int do_pci_enable_device(struct pci_dev *dev, int bars)
->>   	u16 cmd;
->>   	u8 pin;
->>   
->> -	err = pci_set_power_state(dev, PCI_D0);
->> +	err = pci_power_up(dev);
->>   	if (err < 0 && err != -EIO)
->>   		return err;
->>   
->> -- 
->> 2.30.0
->>
+>  #endif
+> -       pr_info("guest physical test memory offset: 0x%lx\n", guest_test_phys_mem);
+> +       pr_info("guest physical test memory offset: 0x%lx\n", pta->gpa);
+>
+>         /* Add an extra memory slot for testing */
+> -       vm_userspace_mem_region_add(vm, backing_src, guest_test_phys_mem,
+> -                                   PERF_TEST_MEM_SLOT_INDEX,
+> -                                   guest_num_pages, 0);
+> +       vm_userspace_mem_region_add(vm, backing_src, pta->gpa,
+> +                                   PERF_TEST_MEM_SLOT_INDEX, guest_num_pages, 0);
+>
+>         /* Do mapping for the demand paging memory slot */
+> -       virt_map(vm, guest_test_virt_mem, guest_test_phys_mem, guest_num_pages, 0);
+> +       virt_map(vm, guest_test_virt_mem, pta->gpa, guest_num_pages, 0);
+>
+>         ucall_init(vm, NULL);
+>
+> @@ -139,13 +133,13 @@ void perf_test_setup_vcpus(struct kvm_vm *vm, int vcpus,
+>                                          (vcpu_id * vcpu_memory_bytes);
+>                         vcpu_args->pages = vcpu_memory_bytes /
+>                                            pta->guest_page_size;
+> -                       vcpu_args->gpa = guest_test_phys_mem +
+> +                       vcpu_args->gpa = pta->gpa +
+>                                          (vcpu_id * vcpu_memory_bytes);
+>                 } else {
+>                         vcpu_args->gva = guest_test_virt_mem;
+>                         vcpu_args->pages = (vcpus * vcpu_memory_bytes) /
+>                                            pta->guest_page_size;
+> -                       vcpu_args->gpa = guest_test_phys_mem;
+> +                       vcpu_args->gpa = pta->gpa;
+>                 }
+>
+>                 pr_debug("Added VCPU %d with test mem gpa [%lx, %lx)\n",
+> diff --git a/tools/testing/selftests/kvm/memslot_modification_stress_test.c b/tools/testing/selftests/kvm/memslot_modification_stress_test.c
+> index 6096bf0a5b34..569bb1f55bdf 100644
+> --- a/tools/testing/selftests/kvm/memslot_modification_stress_test.c
+> +++ b/tools/testing/selftests/kvm/memslot_modification_stress_test.c
+> @@ -121,7 +121,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>
+>         add_remove_memslot(vm, p->memslot_modification_delay,
+>                            p->nr_memslot_modifications,
+> -                          guest_test_phys_mem +
+> +                          perf_test_args.gpa +
+>                            (guest_percpu_mem_size * nr_vcpus) +
+>                            perf_test_args.host_page_size +
+>                            perf_test_args.guest_page_size);
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
