@@ -2,218 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414F4318885
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB76831888C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhBKKq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:46:59 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2898 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhBKKoH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:44:07 -0500
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DbtTl72YMz5QcW;
-        Thu, 11 Feb 2021 18:41:31 +0800 (CST)
-Received: from dggemi711-chm.china.huawei.com (10.3.20.110) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 11 Feb 2021 18:43:18 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi711-chm.china.huawei.com (10.3.20.110) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 11 Feb 2021 18:43:18 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Thu, 11 Feb 2021 18:43:18 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
-        "sjenning@linux.vnet.ibm.com" <sjenning@linux.vnet.ibm.com>
-CC:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        "Linux Memory Management List" <linux-mm@kvack.org>
-Subject: RE: kernel BUG at mm/zswap.c:1275! (rc6 - git 61556703b610)
-Thread-Topic: kernel BUG at mm/zswap.c:1275! (rc6 - git 61556703b610)
-Thread-Index: AQHXAFP/pTUK4Kj84UiROgFUcTG6DapSwoOg
-Date:   Thu, 11 Feb 2021 10:43:18 +0000
-Message-ID: <2538f4c21dd2405aac2abb776047a0fa@hisilicon.com>
-References: <CABXGCsNEUpv9x93UeCa-wOjE0LgUdTCY2FTABJeFL=gGq4SX_g@mail.gmail.com>
-In-Reply-To: <CABXGCsNEUpv9x93UeCa-wOjE0LgUdTCY2FTABJeFL=gGq4SX_g@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.187]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230413AbhBKKsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:48:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230433AbhBKKoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 05:44:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84ADA64E13;
+        Thu, 11 Feb 2021 10:43:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613040221;
+        bh=MhyCNPilNp1n0/hhzu9n9mbGtPkE6nkufd4sqjrol+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uTR27TXA4/X1UAKf1pTli7gCRp6AgTTlhM4bABBjTpn/W67kGcS5vh/9+Yx/wilDd
+         0JoOSrePpT70xJ9mGkLqNhGpj3TDqpc3lCb70v8zKJTkADhLkg8Etf9CeMjLMZARjU
+         YwHC0r/JJT5hRyfH5ArPflcQe40DOc8lwliwxd2P1jsy2Szwu8AYpa1ktliE18fpBf
+         dvwkWeA8TCrf7L0UtvNec2h5bEAHkhfEWT1smXu6y3hU+NuC8YMXK638lixgEktDSQ
+         NHEg5NQDNT4yzSlFma8UQMhPMc8JfMhEuuyFnLfjA7XFVY/+nYnUO7IIE6nQv+UYXs
+         TyZ2OBP60htvg==
+Date:   Thu, 11 Feb 2021 11:43:35 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: fix CONFIG_TRIM_UNUSED_KSYMS build for ppc64
+Message-ID: <YCUKVyMcVoNDAYJv@gunter>
+References: <20210211061416.3747231-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210211061416.3747231-1-masahiroy@kernel.org>
+X-OS:   Linux gunter 5.10.12-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlraGFpbCBHYXZyaWxv
-diBbbWFpbHRvOm1pa2hhaWwudi5nYXZyaWxvdkBnbWFpbC5jb21dDQo+IFNlbnQ6IFRodXJzZGF5
-LCBGZWJydWFyeSAxMSwgMjAyMSA5OjU4IFBNDQo+IFRvOiBzamVubmluZ0BsaW51eC52bmV0Lmli
-bS5jb207IFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykNCj4gPHNvbmcuYmFvLmh1YUBoaXNpbGlj
-b24uY29tPg0KPiBDYzogTGludXggTGlzdCBLZXJuZWwgTWFpbGluZyA8bGludXgta2VybmVsQHZn
-ZXIua2VybmVsLm9yZz47IExpbnV4IE1lbW9yeQ0KPiBNYW5hZ2VtZW50IExpc3QgPGxpbnV4LW1t
-QGt2YWNrLm9yZz4NCj4gU3ViamVjdDoga2VybmVsIEJVRyBhdCBtbS96c3dhcC5jOjEyNzUhIChy
-YzYgLSBnaXQgNjE1NTY3MDNiNjEwKQ0KPiANCj4gSGkgZm9sa3MuDQo+IER1cmluZyB0aGUgNS4x
-MSB0ZXN0IGN5Y2xlIEkgY2F1Z2h0IGEgcmFyZSBidXQgcmVwZWF0YWJsZSBwcm9ibGVtIHdoZW4N
-Cj4gYWZ0ZXIgYSBkYXkgdXB0aW1lIGhhcHBlbnMgIkJVRyBhdCBtbS96c3dhcC5jOjEyNzUhIi4g
-SSBhbSBzdGlsbCBub3QNCj4gaGF2aW5nIGFuIGlkZWEgaG93IHRvIHJlcHJvZHVjZSBpdCwgYnV0
-IG1heWJlIHRoZSBhdXRob3JzIG9mIHRoaXMgY29kZQ0KPiBjb3VsZCBleHBsYWluIHdoYXQgaGFw
-cGVucyBoZXJlPw0KDQpBcmUgeW91IHVzaW5nIHpzbWFsbG9jPyBUaGVyZSBpcyBhIGtub3duIGJ1
-ZyBvbiB0aGUgY29tYmluYXRpb24NCm9mIHpzbWFsbG9jIGFuZCB6c3dhcCwgZml4ZWQgYnkgcGF0
-Y2hlcyBvZiB0aWFudGFvOg0KDQptbTogc2V0IHRoZSBzbGVlcF9tYXBwZWQgdG8gdHJ1ZSBmb3Ig
-emJ1ZCBhbmQgejNmb2xkDQptbS96c3dhcDogZml4IHZhcmlhYmxlICdlbnRyeScgaXMgdW5pbml0
-aWFsaXplZCB3aGVuIHVzZWQNCm1tL3pzd2FwOiBmaXggcG90ZW50aWFsIG1lbW9yeSBsZWFrDQpt
-bS96c3dhcDogYWRkIHRoZSBmbGFnIGNhbl9zbGVlcF9tYXBwZWQNCg0KYXQgTGludXgtbmV4dDoN
-Cmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L25leHQvbGlu
-dXgtbmV4dC5naXQvbG9nLz9xdD1hdXRob3ImcT10aWFudGFvNiU0MGhpc2lsaWNvbi5jb20NCg0K
-DQo+IA0KPiAkIGdyZXAgIm1tL3pzd2FwLmMiIGRtZXNnKi50eHQNCj4gZG1lc2cxMDEudHh0Olsx
-Mjc4NTAuNTEzMjAxXSBrZXJuZWwgQlVHIGF0IG1tL3pzd2FwLmM6MTI3NSENCj4gZG1lc2cxMS50
-eHQ6WzUyMjExLjk2Mjg2MV0ga2VybmVsIEJVRyBhdCBtbS96c3dhcC5jOjEyNzUhDQo+IGRtZXNn
-OC50eHQ6WzQ2NjEwLjY0MTg0M10ga2VybmVsIEJVRyBhdCBtbS96c3dhcC5jOjEyNzUhDQo+IA0K
-PiBbMTI3ODUwLjUxMzE5M10gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tDQo+
-IFsxMjc4NTAuNTEzMjAxXSBrZXJuZWwgQlVHIGF0IG1tL3pzd2FwLmM6MTI3NSENCj4gWzEyNzg1
-MC41MTMyMTBdIGludmFsaWQgb3Bjb2RlOiAwMDAwIFsjMV0gU01QIE5PUFRJDQo+IFsxMjc4NTAu
-NTEzMjE0XSBDUFU6IDYgUElEOiA0ODUxMzIgQ29tbTogYnJhdmUgVGFpbnRlZDogRyAgICAgICAg
-Vw0KPiAgICAtLS0tLS0tLS0gLS0tICA1LjExLjAtMC5yYzYuMjAyMTAyMDRnaXQ2MTU1NjcwM2I2
-MTAuMTQ1LmZjMzQueDg2XzY0DQo+ICMxDQo+IFsxMjc4NTAuNTEzMjE4XSBIYXJkd2FyZSBuYW1l
-OiBTeXN0ZW0gbWFudWZhY3R1cmVyIFN5c3RlbSBQcm9kdWN0DQo+IE5hbWUvUk9HIFNUUklYIFg1
-NzAtSSBHQU1JTkcsIEJJT1MgMzQwMiAwMS8xMy8yMDIxDQo+IFsxMjc4NTAuNTEzMjIxXSBSSVA6
-IDAwMTA6enN3YXBfZnJvbnRzd2FwX2xvYWQrMHgyNTgvMHgyNjANCj4gWzEyNzg1MC41MTMyMjhd
-IENvZGU6IGFiIDgzIGFhIGYwIDJmIDAwIDAwIDAxIDY1IGZmIDBkIGMzIDczIGNkIDU0IGViDQo+
-IDg4IDQ4IDhkIDdiIDEwIGU4IDc4IGI5IDlmIDAwIGM3IDQzIDEwIDAwIDAwIDAwIDAwIDQ0IDhi
-IDYzIDcwIGU5IDRhDQo+IGZmIGZmIGZmIDwwZj4gMGIgMGYgMGIgMGYgMGIgNjYgOTAgMGYgMWYg
-NDQgMDAgMDAgNDEgNTcgMzEgYzAgYjkgMGMgMDANCj4gMDAgMDANCj4gWzEyNzg1MC41MTMyMzFd
-IFJTUDogMDAwMDpmZmZmYTkyZTg2NmM3YzQ4IEVGTEFHUzogMDAwMTAyODINCj4gWzEyNzg1MC41
-MTMyMzVdIFJBWDogMDAwMDAwMDAwMDAwMDAwNiBSQlg6IGZmZmZjOTJlN2NhNjE4MzAgUkNYOg0K
-PiAwMDAwMDAwMDAwMDAwMDAxDQo+IFsxMjc4NTAuNTEzMjM4XSBSRFg6IDAwMDAwMDAwMDAwMDAw
-MDAgUlNJOiBmZmZmZmZmZmFiMzQyOWZlIFJESToNCj4gZmZmZjk3ZjRkMDM5MzAxMA0KPiBbMTI3
-ODUwLjUxMzI0MF0gUkJQOiBmZmZmOTdlZTU1NDRkMWMwIFIwODogMDAwMDAwMDAwMDAwMDAwMSBS
-MDk6DQo+IDAwMDAwMDAwMDAwMDAwMDANCj4gWzEyNzg1MC41MTMyNDJdIFIxMDogMDAwMDAwMDAw
-MDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOg0KPiAwMDAwMDAwMGZmZmZmZmVhDQo+
-IFsxMjc4NTAuNTEzMjQ0XSBSMTM6IGZmZmY5N2VlMDE2ODAwYzggUjE0OiBmZmZmOTdlZTAxNjgw
-MGMwIFIxNToNCj4gZmZmZmZmZmZjMGQ1NDAyMA0KPiBbMTI3ODUwLjUxMzI0N10gRlM6ICAwMDAw
-N2ZjYmU2MjhkZTQwKDAwMDApIEdTOmZmZmY5N2Y1MDc2MDAwMDAoMDAwMCkNCj4ga25sR1M6MDAw
-MDAwMDAwMDAwMDAwMA0KPiBbMTI3ODUwLjUxMzI0OV0gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAw
-MDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPiBbMTI3ODUwLjUxMzI1Ml0gQ1IyOiAwMDAwMzgx
-MjA4YzI5MjUwIENSMzogMDAwMDAwMDFjNTRlYTAwMCBDUjQ6DQo+IDAwMDAwMDAwMDAzNTBlZTAN
-Cj4gWzEyNzg1MC41MTMyNTRdIENhbGwgVHJhY2U6DQo+IFsxMjc4NTAuNTEzMjYxXSAgX19mcm9u
-dHN3YXBfbG9hZCsweGMzLzB4MTYwDQo+IFsxMjc4NTAuNTEzMjY1XSAgc3dhcF9yZWFkcGFnZSsw
-eDFjYS8weDNhMA0KPiBbMTI3ODUwLjUxMzI3MF0gIHN3YXBpbl9yZWFkYWhlYWQrMHgyZWUvMHg0
-ZTANCj4gWzEyNzg1MC41MTMyNzZdICBkb19zd2FwX3BhZ2UrMHg0YTQvMHg5MDANCj4gWzEyNzg1
-MC41MTMyNzldICA/IGxvY2tfcmVsZWFzZSsweDFlOS8weDQwMA0KPiBbMTI3ODUwLjUxMzI4M10g
-ID8gdHJhY2VfaGFyZGlycXNfb24rMHgxYi8weGUwDQo+IFsxMjc4NTAuNTEzMjg4XSAgaGFuZGxl
-X21tX2ZhdWx0KzB4ZTdkLzB4MTlkMA0KPiBbMTI3ODUwLjUxMzI5NF0gIGRvX3VzZXJfYWRkcl9m
-YXVsdCsweDFjNy8weDRjMA0KPiBbMTI3ODUwLjUxMzI5OV0gIGV4Y19wYWdlX2ZhdWx0KzB4Njcv
-MHgyYTANCj4gWzEyNzg1MC41MTMzMDRdICA/IGFzbV9leGNfcGFnZV9mYXVsdCsweDgvMHgzMA0K
-PiBbMTI3ODUwLjUxMzMwN10gIGFzbV9leGNfcGFnZV9mYXVsdCsweDFlLzB4MzANCj4gWzEyNzg1
-MC41MTMzMTBdIFJJUDogMDAzMzoweDU2MDI5NzY0MmY0NA0KPiBbMTI3ODUwLjUxMzMxNF0gQ29k
-ZTogNjQgNzUgMDcgNDUgOGIgNzYgMDMgNGQgMDMgZjUgNDUgOGIgNTYgZmYgNGQgMDMNCj4gZDUg
-NjYgNDEgODEgN2EgMDcgODMgMDAgMGYgODUgNGYgMDEgMDAgMDAgOGIgNWYgMTMgNDkgMDMgZGQg
-OGIgNWIgMDMNCj4gNDkgMDMgZGQgPDhiPiA0YiBmZiA0OSAwMyBjZCA2NiA4MSA3OSAwNyBhNSAw
-MCAwZiA4NSAwZiAwMCAwMCAwMCA4YiA0Yg0KPiAwZiBmNg0KPiBbMTI3ODUwLjUxMzMxN10gUlNQ
-OiAwMDJiOjAwMDA3ZmZjMDRjZDRiMzAgRUZMQUdTOiAwMDAxMDIwMg0KPiBbMTI3ODUwLjUxMzMy
-MF0gUkFYOiAwMDAwMDAwMDAwMDAwMDAwIFJCWDogMDAwMDM4MTIwOGMyOTI1MSBSQ1g6DQo+IDAw
-MDA1NjAyOTc2NDJmMDANCj4gWzEyNzg1MC41MTMzMjJdIFJEWDogMDAwMDM4MTIwODA0MjNiMSBS
-U0k6IDAwMDAzODEyMDliMTEyMzEgUkRJOg0KPiAwMDAwMzgxMjA5YjExNDFkDQo+IFsxMjc4NTAu
-NTEzMzIzXSBSQlA6IDAwMDA3ZmZjMDRjZDRiOTAgUjA4OiAwMDAwMDAwMDAwMDAwMDQzIFIwOToN
-Cj4gMDAwMDAwMDAwMDAwMDAyNA0KPiBbMTI3ODUwLjUxMzMyNV0gUjEwOiAwMDAwMzgxMjA4MDQy
-YTFkIFIxMTogMDAwMDM4MTIwOWIxMTQxZiBSMTI6DQo+IDAwMDAwMDAwMDliMTE0MWQNCj4gWzEy
-Nzg1MC41MTMzMjddIFIxMzogMDAwMDM4MTIwMDAwMDAwMCBSMTQ6IDAwMDAzODEyMDhiMzY4ZWQg
-UjE1Og0KPiAwMDAwM2QyZmI2YjdkYTEwDQo+IFsxMjc4NTAuNTEzMzMzXSBNb2R1bGVzIGxpbmtl
-ZCBpbjogdHVuIHNuZF9zZXFfZHVtbXkgc25kX2hydGltZXINCj4gdWlucHV0IHJmY29tbSBuZnRf
-b2JqcmVmIG5mX2Nvbm50cmFja19uZXRiaW9zX25zDQo+IG5mX2Nvbm50cmFja19icm9hZGNhc3Qg
-bmZ0X2ZpYl9pbmV0IG5mdF9maWJfaXB2NCBuZnRfZmliX2lwdjYgbmZ0X2ZpYg0KPiBuZnRfcmVq
-ZWN0X2luZXQgbmZfcmVqZWN0X2lwdjQgbmZfcmVqZWN0X2lwdjYgbmZ0X3JlamVjdCBuZnRfY3QN
-Cj4gbmZ0X2NoYWluX25hdCBpcDZ0YWJsZV9uYXQgaXA2dGFibGVfbWFuZ2xlIGlwNnRhYmxlX3Jh
-dw0KPiBpcDZ0YWJsZV9zZWN1cml0eSBpcHRhYmxlX25hdCBuZl9uYXQgbmZfY29ubnRyYWNrIG5m
-X2RlZnJhZ19pcHY2DQo+IG5mX2RlZnJhZ19pcHY0IGlwdGFibGVfbWFuZ2xlIGlwdGFibGVfcmF3
-IGlwdGFibGVfc2VjdXJpdHkgaXBfc2V0DQo+IG5mX3RhYmxlcyBuZm5ldGxpbmsgaXA2dGFibGVf
-ZmlsdGVyIGlwNl90YWJsZXMgaXB0YWJsZV9maWx0ZXIgY21hYw0KPiBibmVwIHpzdGQgc3VucnBj
-IHZmYXQgZmF0IGhpZF9sb2dpdGVjaF9oaWRwcCBoaWRfbG9naXRlY2hfZGoNCj4gc25kX2hkYV9j
-b2RlY19yZWFsdGVrIHNuZF9oZGFfY29kZWNfZ2VuZXJpYyBsZWR0cmlnX2F1ZGlvDQo+IHNuZF9o
-ZGFfY29kZWNfaGRtaSBzbmRfaGRhX2ludGVsIHNuZF9pbnRlbF9kc3BjZmcgc291bmR3aXJlX2lu
-dGVsDQo+IHNvdW5kd2lyZV9nZW5lcmljX2FsbG9jYXRpb24gbXQ3NngydSBtdDc2eDJfY29tbW9u
-IHNuZF9zb2NfY29yZQ0KPiBtdDc2eDAyX3VzYiBzbmRfY29tcHJlc3MgbXQ3Nl91c2Igc25kX3Bj
-bV9kbWFlbmdpbmUgc291bmR3aXJlX2NhZGVuY2UNCj4gaW50ZWxfcmFwbF9tc3IgaW50ZWxfcmFw
-bF9jb21tb24gaXdsbXZtIHNuZF9oZGFfY29kZWMgdXZjdmlkZW8NCj4gbXQ3NngwMl9saWIgc25k
-X3VzYl9hdWRpbyB2aWRlb2J1ZjJfdm1hbGxvYyBzbmRfaGRhX2NvcmUgbXQ3Ng0KPiB2aWRlb2J1
-ZjJfbWVtb3BzIHZpZGVvYnVmMl92NGwyIHZpZGVvYnVmMl9jb21tb24NCj4gWzEyNzg1MC41MTMz
-OTVdICBlZGFjX21jZV9hbWQgc25kX3VzYm1pZGlfbGliIGFjOTdfYnVzIHNuZF9od2RlcA0KPiB2
-aWRlb2RldiBtYWM4MDIxMSBidHVzYiBzbmRfc2VxIGt2bV9hbWQgc25kX3Jhd21pZGkgYnRydGwg
-YnRiY20gbWMNCj4gam95ZGV2IGJ0aW50ZWwgc25kX3NlcV9kZXZpY2Uga3ZtIGJsdWV0b290aCBz
-bmRfcGNtIGl3bHdpZmkgZWVlcGNfd21pDQo+IHNuZF90aW1lciBhc3VzX3dtaSB4cGFkIGlycWJ5
-cGFzcyBzcGFyc2Vfa2V5bWFwIGVjZGhfZ2VuZXJpYyBzbmQNCj4gbGliYXJjNCBmZl9tZW1sZXNz
-IHNwNTEwMF90Y28gcmFwbCB2aWRlbyBlY2MgcGNzcGtyIHdtaV9ibW9mIGNmZzgwMjExDQo+IHNv
-dW5kY29yZSBpMmNfcGlpeDQgazEwdGVtcCByZmtpbGwgYWNwaV9jcHVmcmVxIGJpbmZtdF9taXNj
-IGlwX3RhYmxlcw0KPiBhbWRncHUgZHJtX3R0bV9oZWxwZXIgdHRtIGlvbW11X3YyIGdwdV9zY2hl
-ZCBjcmN0MTBkaWZfcGNsbXVsDQo+IGNyYzMyX3BjbG11bCBjcmMzMmNfaW50ZWwgZHJtX2ttc19o
-ZWxwZXIgaWdiIGNlYyBudm1lIGRjYQ0KPiBnaGFzaF9jbG11bG5pX2ludGVsIGRybSBpMmNfYWxn
-b19iaXQgY2NwIG52bWVfY29yZSB3bWkgcGluY3RybF9hbWQNCj4gZnVzZQ0KPiBbMTI3ODUwLjUx
-MzQ1M10gLS0tWyBlbmQgdHJhY2UgOWQ3MzNhYjhkOGI4YzFmMiBdLS0tDQo+IFsxMjc4NTAuNTEz
-NDU2XSBSSVA6IDAwMTA6enN3YXBfZnJvbnRzd2FwX2xvYWQrMHgyNTgvMHgyNjANCj4gWzEyNzg1
-MC41MTM0NTldIENvZGU6IGFiIDgzIGFhIGYwIDJmIDAwIDAwIDAxIDY1IGZmIDBkIGMzIDczIGNk
-IDU0IGViDQo+IDg4IDQ4IDhkIDdiIDEwIGU4IDc4IGI5IDlmIDAwIGM3IDQzIDEwIDAwIDAwIDAw
-IDAwIDQ0IDhiIDYzIDcwIGU5IDRhDQo+IGZmIGZmIGZmIDwwZj4gMGIgMGYgMGIgMGYgMGIgNjYg
-OTAgMGYgMWYgNDQgMDAgMDAgNDEgNTcgMzEgYzAgYjkgMGMgMDANCj4gMDAgMDANCj4gWzEyNzg1
-MC41MTM0NjJdIFJTUDogMDAwMDpmZmZmYTkyZTg2NmM3YzQ4IEVGTEFHUzogMDAwMTAyODINCj4g
-WzEyNzg1MC41MTM0NjVdIFJBWDogMDAwMDAwMDAwMDAwMDAwNiBSQlg6IGZmZmZjOTJlN2NhNjE4
-MzAgUkNYOg0KPiAwMDAwMDAwMDAwMDAwMDAxDQo+IFsxMjc4NTAuNTEzNDY3XSBSRFg6IDAwMDAw
-MDAwMDAwMDAwMDAgUlNJOiBmZmZmZmZmZmFiMzQyOWZlIFJESToNCj4gZmZmZjk3ZjRkMDM5MzAx
-MA0KPiBbMTI3ODUwLjUxMzQ2OV0gUkJQOiBmZmZmOTdlZTU1NDRkMWMwIFIwODogMDAwMDAwMDAw
-MDAwMDAwMSBSMDk6DQo+IDAwMDAwMDAwMDAwMDAwMDANCj4gWzEyNzg1MC41MTM0NzFdIFIxMDog
-MDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOg0KPiAwMDAwMDAwMGZm
-ZmZmZmVhDQo+IFsxMjc4NTAuNTEzNDczXSBSMTM6IGZmZmY5N2VlMDE2ODAwYzggUjE0OiBmZmZm
-OTdlZTAxNjgwMGMwIFIxNToNCj4gZmZmZmZmZmZjMGQ1NDAyMA0KPiBbMTI3ODUwLjUxMzQ3NV0g
-RlM6ICAwMDAwN2ZjYmU2MjhkZTQwKDAwMDApIEdTOmZmZmY5N2Y1MDc2MDAwMDAoMDAwMCkNCj4g
-a25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KPiBbMTI3ODUwLjUxMzQ3OF0gQ1M6ICAwMDEwIERTOiAw
-MDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPiBbMTI3ODUwLjUxMzQ4MF0gQ1Iy
-OiAwMDAwMzgxMjA4YzI5MjUwIENSMzogMDAwMDAwMDFjNTRlYTAwMCBDUjQ6DQo+IDAwMDAwMDAw
-MDAzNTBlZTANCj4gDQo+ICQgL3Vzci9zcmMva2VybmVscy9gdW5hbWUgLXJgL3NjcmlwdHMvZmFk
-ZHIybGluZQ0KPiAvbGliL2RlYnVnL2xpYi9tb2R1bGVzL2B1bmFtZSAtcmAvdm1saW51eCB6c3dh
-cF9mcm9udHN3YXBfbG9hZCsweDI1OA0KPiB6c3dhcF9mcm9udHN3YXBfbG9hZCsweDI1OC8weDI2
-MDoNCj4genN3YXBfZnJvbnRzd2FwX2xvYWQgYXQgbW0venN3YXAuYzoxMjc1IChkaXNjcmltaW5h
-dG9yIDEpDQo+IA0KPiAkIGdpdCBibGFtZSBtbS96c3dhcC5jIC1MIDEyNjUsMTI4NQ0KPiBCbGFt
-aW5nIGxpbmVzOiAgIDElICgyMS8xNDcwKSwgZG9uZS4NCj4gMWVjM2I1ZmU2ZWVjNyAoQmFycnkg
-U29uZyAgICAgICAgIDIwMjAtMTItMTQgMTk6MTQ6MTggLTA4MDAgMTI2NSkNCj4gIGFjb21wX2N0
-eCA9IHJhd19jcHVfcHRyKGVudHJ5LT5wb29sLT5hY29tcF9jdHgpOw0KPiAxZWMzYjVmZTZlZWM3
-IChCYXJyeSBTb25nICAgICAgICAgMjAyMC0xMi0xNCAxOToxNDoxOCAtMDgwMCAxMjY2KQ0KPiAg
-bXV0ZXhfbG9jayhhY29tcF9jdHgtPm11dGV4KTsNCj4gMWVjM2I1ZmU2ZWVjNyAoQmFycnkgU29u
-ZyAgICAgICAgIDIwMjAtMTItMTQgMTk6MTQ6MTggLTA4MDAgMTI2NykNCj4gIHNnX2luaXRfb25l
-KCZpbnB1dCwgc3JjLCBlbnRyeS0+bGVuZ3RoKTsNCj4gMWVjM2I1ZmU2ZWVjNyAoQmFycnkgU29u
-ZyAgICAgICAgIDIwMjAtMTItMTQgMTk6MTQ6MTggLTA4MDAgMTI2OCkNCj4gIHNnX2luaXRfdGFi
-bGUoJm91dHB1dCwgMSk7DQo+IDFlYzNiNWZlNmVlYzcgKEJhcnJ5IFNvbmcgICAgICAgICAyMDIw
-LTEyLTE0IDE5OjE0OjE4IC0wODAwIDEyNjkpDQo+ICBzZ19zZXRfcGFnZSgmb3V0cHV0LCBwYWdl
-LCBQQUdFX1NJWkUsIDApOw0KPiAxZWMzYjVmZTZlZWM3IChCYXJyeSBTb25nICAgICAgICAgMjAy
-MC0xMi0xNCAxOToxNDoxOCAtMDgwMCAxMjcwKQ0KPiAgYWNvbXBfcmVxdWVzdF9zZXRfcGFyYW1z
-KGFjb21wX2N0eC0+cmVxLCAmaW5wdXQsICZvdXRwdXQsDQo+IGVudHJ5LT5sZW5ndGgsIGRsZW4p
-Ow0KPiAxZWMzYjVmZTZlZWM3IChCYXJyeSBTb25nICAgICAgICAgMjAyMC0xMi0xNCAxOToxNDox
-OCAtMDgwMCAxMjcxKQ0KPiAgcmV0ID0gY3J5cHRvX3dhaXRfcmVxKGNyeXB0b19hY29tcF9kZWNv
-bXByZXNzKGFjb21wX2N0eC0+cmVxKSwNCj4gJmFjb21wX2N0eC0+d2FpdCk7DQo+IDFlYzNiNWZl
-NmVlYzcgKEJhcnJ5IFNvbmcgICAgICAgICAyMDIwLTEyLTE0IDE5OjE0OjE4IC0wODAwIDEyNzIp
-DQo+ICBtdXRleF91bmxvY2soYWNvbXBfY3R4LT5tdXRleCk7DQo+IDFlYzNiNWZlNmVlYzcgKEJh
-cnJ5IFNvbmcgICAgICAgICAyMDIwLTEyLTE0IDE5OjE0OjE4IC0wODAwIDEyNzMpDQo+IGYxYzU0
-ODQ2ZWU0NTAgKERhbiBTdHJlZXRtYW4gICAgICAyMDE1LTA5LTA5IDE1OjM1OjE5IC0wNzAwIDEy
-NzQpDQo+ICB6cG9vbF91bm1hcF9oYW5kbGUoZW50cnktPnBvb2wtPnpwb29sLCBlbnRyeS0+aGFu
-ZGxlKTsNCj4gMmIyODExMTc4ZTg1NSAoU2V0aCBKZW5uaW5ncyAgICAgIDIwMTMtMDctMTAgMTY6
-MDU6MDMgLTA3MDAgMTI3NSkNCj4gIEJVR19PTihyZXQpOw0KPiAyYjI4MTExNzhlODU1IChTZXRo
-IEplbm5pbmdzICAgICAgMjAxMy0wNy0xMCAxNjowNTowMyAtMDcwMCAxMjc2KQ0KPiBhODVmODc4
-YjQ0M2Y4IChTcml2aWR5YSBEZXNpcmVkZHkgMjAxOC0wMS0zMSAxNjoxNTo1OSAtMDgwMCAxMjc3
-KSBmcmVlZW50cnk6DQo+IDJiMjgxMTE3OGU4NTUgKFNldGggSmVubmluZ3MgICAgICAyMDEzLTA3
-LTEwIDE2OjA1OjAzIC0wNzAwIDEyNzgpDQo+ICBzcGluX2xvY2soJnRyZWUtPmxvY2spOw0KPiAw
-YWIwYWJjZjUxMTU0IChXZWlqaWUgWWFuZyAgICAgICAgMjAxMy0xMS0xMiAxNTowODoyNyAtMDgw
-MCAxMjc5KQ0KPiAgenN3YXBfZW50cnlfcHV0KHRyZWUsIGVudHJ5KTsNCj4gMmIyODExMTc4ZTg1
-NSAoU2V0aCBKZW5uaW5ncyAgICAgIDIwMTMtMDctMTAgMTY6MDU6MDMgLTA3MDAgMTI4MCkNCj4g
-IHNwaW5fdW5sb2NrKCZ0cmVlLT5sb2NrKTsNCj4gMmIyODExMTc4ZTg1NSAoU2V0aCBKZW5uaW5n
-cyAgICAgIDIwMTMtMDctMTAgMTY6MDU6MDMgLTA3MDAgMTI4MSkNCj4gMmIyODExMTc4ZTg1NSAo
-U2V0aCBKZW5uaW5ncyAgICAgIDIwMTMtMDctMTAgMTY6MDU6MDMgLTA3MDAgMTI4MikNCj4gIHJl
-dHVybiAwOw0KPiAyYjI4MTExNzhlODU1IChTZXRoIEplbm5pbmdzICAgICAgMjAxMy0wNy0xMCAx
-NjowNTowMyAtMDcwMCAxMjgzKSB9DQo+IDJiMjgxMTE3OGU4NTUgKFNldGggSmVubmluZ3MgICAg
-ICAyMDEzLTA3LTEwIDE2OjA1OjAzIC0wNzAwIDEyODQpDQo+IDJiMjgxMTE3OGU4NTUgKFNldGgg
-SmVubmluZ3MgICAgICAyMDEzLTA3LTEwIDE2OjA1OjAzIC0wNzAwIDEyODUpIC8qDQo+IGZyZWVz
-IGFuIGVudHJ5IGluIHpzd2FwICovDQo+IA0KPiBGdWxsIGtlcm5lbCBsb2cgaXMgaGVyZTogaHR0
-cHM6Ly9wYXN0ZWJpbi5jb20vWnFlMEZZWUQNCj4gDQo+IC0tDQo+IEJlc3QgUmVnYXJkcywNCj4g
-TWlrZSBHYXZyaWxvdi4NCg==
++++ Masahiro Yamada [11/02/21 15:14 +0900]:
+>Stephen Rothwell reported a build error on ppc64 when
+>CONFIG_TRIM_UNUSED_KSYMS is enabled.
+>
+>Jessica Yu pointed out the cause of the error with the reference to the
+>ppc64 elf ABI:
+>  "Symbol names with a dot (.) prefix are reserved for holding entry
+>   point addresses. The value of a symbol named ".FN", if it exists,
+>   is the entry point of the function "FN".
+>
+>As it turned out, CONFIG_TRIM_UNUSED_KSYMS has never worked for ppc64,
+>which has been unnoticed until recently because this option depends on
+>!UNUSED_SYMBOLS hence is disabled by all{mod,yes}config. (Then, it was
+>uncovered by another patch removing UNUSED_SYMBOLS.)
+>
+>Removing the dot prefix in scripts/gen_autoksyms.sh fixes the issue.
+>Please note it must be done before 'sort -u', because modules have
+>both ._mcount and _mcount undefined when CONFIG_FUNCTION_TRACER=y.
+>
+>Link: https://lore.kernel.org/lkml/20210209210843.3af66662@canb.auug.org.au/
+>Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+>Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+
+Thanks a lot for the quick fix. This fixes the ppc64 build issue on my end:
+
+    Tested-by: Jessica Yu <jeyu@kernel.org>
+
+Do you plan to take this through the kbuild tree? If so, please let me
+know when you've applied it, then I can undo the temporary workaround
+I currently have in modules-next.
+
+Thank you!
+
+Jessica
