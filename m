@@ -2,68 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDD531837D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F19B318382
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhBKCMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 21:12:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230028AbhBKCLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 21:11:15 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4ADD764EC0;
-        Thu, 11 Feb 2021 02:09:51 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1lA1QU-00BAZ5-Bf; Wed, 10 Feb 2021 21:09:50 -0500
-Message-ID: <20210211020950.241040866@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 10 Feb 2021 21:09:39 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: [for-next][PATCH 12/12] selftests/ftrace: Add !event synthetic event syntax check
-References: <20210211020927.829775774@goodmis.org>
+        id S229829AbhBKCPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 21:15:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhBKCPp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 21:15:45 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47047C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:14:59 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id v24so5945877lfr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:14:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xlq1FVBhwgWF3vxp00fvfPJ9wwacLGe2ztYVgoXC39k=;
+        b=UF01NfU4wQuudZWfaYjsCSCpc6oO2aJEwrtBeA6eNSKqW5EfXZgcR5jvUNkOZQtrMl
+         yiLRr5pKIRtkrYncS5kcJX4Rm3cl+uLnUg//D0Z4lifuGg9Nlit6+JilvqZPWCFpR2X4
+         FKOxjU3Qx20oKs8wUthrfrXxsuPkK9JLMAMhHA9jU8p5awPHNzQjDZPeet6IFfgGtJPu
+         S9zT6o/V3z5NEVX/I3JIC4VV13LrHxj2nc2OmD/P6dTEIVfaEdYOfC+UGsyNKEzscddD
+         xIT6Zs/tJabe6GiqojzL02tVEfczgVXU/r8libJMdmYDj9TlKg+op0iCQb8HtWHlxH1g
+         e4Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xlq1FVBhwgWF3vxp00fvfPJ9wwacLGe2ztYVgoXC39k=;
+        b=IiWp978KFzA/fODpgo6SusV2zSrhuzMR9speTJdW+6PHTByNgy2A7h0qHCjAujq8wz
+         tXf7tmBSRhfe6EAvbf/kQlRGA94ltIzshK7MPjlRe+VR6HPIcp5tXrm8z93i+mLiPFSa
+         wGfngeAbMnoHwV+tNa6V8YmIcVYTc/ctO6r+OJ2b2ifC3nRt6lFilWjFgaWmOcWInRht
+         H7iezDnraQfyOcFibs1h1/Df2fVhQcP6Ft0+Jyu7peUBnFli3bV3PrK3evCP5z58BMpu
+         vhbDoggHDEwTx49OHcKh3znLJqHdZ9POashwatFkOrNNVZCpYZgyHdjubEYwzVH2XETH
+         P8cg==
+X-Gm-Message-State: AOAM5320vk1wlitcva0aJ5pPilIyd1YwBrb0shZRSe2begNRWKnwE4Lg
+        F+jUhvGR1vx5wWFhtpmnK8X8HO5P0clCf9euB1Aaug==
+X-Google-Smtp-Source: ABdhPJx6KkpcrO1Nf6G6ZPrsgV6uWIs7JbXXJC0yygfVuOOlKU8ncFgV9lZLCmxRYkwfnpBL0lqW47gsmmipRVdKPFY=
+X-Received: by 2002:a19:7603:: with SMTP id c3mr3132430lff.508.1613009697753;
+ Wed, 10 Feb 2021 18:14:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20210210162632.3903128-1-minchan@kernel.org> <CALAqxLXzc3tfsr0hA6GS-zHjupWx++Bhcrs2pjbz00LNKeThOQ@mail.gmail.com>
+ <YCQcfYRQ3eW+QiMz@google.com> <CALAqxLUaiOOrC6kWYSj1yg6qed32rQhfN4k99HNgn_=0kpFRJw@mail.gmail.com>
+ <YCRpclaUOkEWA83o@google.com>
+In-Reply-To: <YCRpclaUOkEWA83o@google.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 10 Feb 2021 18:14:46 -0800
+Message-ID: <CALAqxLU33Mt_mYXPUxcbZB6whynd2PRPuLHNJmX-mx+od6hXVw@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: system_heap: do not warn for costly allocation
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        John Dias <joaodias@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Zanussi <zanussi@kernel.org>
+On Wed, Feb 10, 2021 at 3:17 PM Minchan Kim <minchan@kernel.org> wrote:
+>
+> On Wed, Feb 10, 2021 at 01:40:02PM -0800, John Stultz wrote:
+> > On Wed, Feb 10, 2021 at 9:48 AM Minchan Kim <minchan@kernel.org> wrote:
+> > >
+> > > On Wed, Feb 10, 2021 at 09:32:09AM -0800, John Stultz wrote:
+> > > > On Wed, Feb 10, 2021 at 8:26 AM Minchan Kim <minchan@kernel.org> wrote:
+> > > > >
+> > > > > Linux VM is not hard to support PAGE_ALLOC_COSTLY_ODER allocation
+> > > > > so normally expects driver passes __GFP_NOWARN in that case
+> > > > > if they has fallback options.
+> > > > >
+> > > > > system_heap in dmabuf is the case so do not flood into demsg
+> > > > > with the warning for recording more precious information logs.
+> > > > > (below is ION warning example I got but dmabuf system heap is
+> > > > > nothing different).
+> > > > >
+> > > > > [ 1233.911533][  T460] warn_alloc: 11 callbacks suppressed
+> > > > > [ 1233.911539][  T460] allocator@2.0-s: page allocation failure: order:4, mode:0x140dc2(GFP_HIGHUSER|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
+> > > > > [ 1233.926235][  T460] Call trace:
+> > > > > [ 1233.929370][  T460]  dump_backtrace+0x0/0x1d8
+> > > > > [ 1233.933704][  T460]  show_stack+0x18/0x24
+> > > > > [ 1233.937701][  T460]  dump_stack+0xc0/0x140
+> > > > > [ 1233.941783][  T460]  warn_alloc+0xf4/0x148
+> > > > > [ 1233.945862][  T460]  __alloc_pages_slowpath+0x9fc/0xa10
+> > > > > [ 1233.951101][  T460]  __alloc_pages_nodemask+0x278/0x2c0
+> > > > > [ 1233.956285][  T460]  ion_page_pool_alloc+0xd8/0x100
+> > > > > [ 1233.961144][  T460]  ion_system_heap_allocate+0xbc/0x2f0
+> > > > > [ 1233.966440][  T460]  ion_buffer_create+0x68/0x274
+> > > > > [ 1233.971130][  T460]  ion_buffer_alloc+0x8c/0x110
+> > > > > [ 1233.975733][  T460]  ion_dmabuf_alloc+0x44/0xe8
+> > > > > [ 1233.980248][  T460]  ion_ioctl+0x100/0x320
+> > > > > [ 1233.984332][  T460]  __arm64_sys_ioctl+0x90/0xc8
+> > > > > [ 1233.988934][  T460]  el0_svc_common+0x9c/0x168
+> > > > > [ 1233.993360][  T460]  do_el0_svc+0x1c/0x28
+> > > > > [ 1233.997358][  T460]  el0_sync_handler+0xd8/0x250
+> > > > > [ 1234.001989][  T460]  el0_sync+0x148/0x180
+> > > > >
+> > > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > > > > ---
+> > > > >  drivers/dma-buf/heaps/system_heap.c | 9 +++++++--
+> > > > >  1 files changed, 7 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> > > > > index 29e49ac17251..33c25a5e06f9 100644
+> > > > > --- a/drivers/dma-buf/heaps/system_heap.c
+> > > > > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > > > > @@ -40,7 +40,7 @@ struct dma_heap_attachment {
+> > > > >         bool mapped;
+> > > > >  };
+> > > > >
+> > > > > -#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
+> > > > > +#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO \
+> > > > >                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+> > > > >                                 | __GFP_COMP)
+> > > > >  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> > > > > @@ -315,6 +315,7 @@ static struct page *alloc_largest_available(unsigned long size,
+> > > > >                                             unsigned int max_order)
+> > > > >  {
+> > > > >         struct page *page;
+> > > > > +       unsigned long gfp_flags;
+> > > > >         int i;
+> > > > >
+> > > > >         for (i = 0; i < NUM_ORDERS; i++) {
+> > > > > @@ -323,7 +324,11 @@ static struct page *alloc_largest_available(unsigned long size,
+> > > > >                 if (max_order < orders[i])
+> > > > >                         continue;
+> > > > >
+> > > > > -               page = alloc_pages(order_flags[i], orders[i]);
+> > > > > +               gfp_flags = order_flags[i];
+> > > > > +               if (orders[i] > PAGE_ALLOC_COSTLY_ORDER)
+> > > > > +                       gfp_flags |= __GFP_NOWARN;
+> > > > > +
+> > > > > +               page = alloc_pages(gfp_flags, orders[i]);
+> > > >
+> > > > Would it be cleaner to just set up the flags properly in the
+> > > > order_flags array? I'm not sure I understand why your patch does it
+> > > > dynamically?
+> > >
+> > > That's exactly I had in my branch for aosp fix but I wanted to
+> > > hear it explicitly from dmabuf maintainer since I was worried
+> > > chaninging order-4 allocation behavior, especially,
+> > > __GFP_NORETRY and &~__GFP_RECLAIM.
+> > > (It will make allocation failure easier than old and that's not
+> > > thing my patch is addressing).
+> >
+> > Yea. I might stick to changing just the __GFP_NOWARN.
+> >
+> > > If you want this, I am happy to change it. Shall I?
+> > >
+> > > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> > > index 29e49ac17251..865ec847013d 100644
+> > > --- a/drivers/dma-buf/heaps/system_heap.c
+> > > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > > @@ -44,7 +44,7 @@ struct dma_heap_attachment {
+> > >                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+> > >                                 | __GFP_COMP)
+> > >  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> > > -static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
+> > > +static gfp_t order_flags[] = {HIGH_ORDER_GFP, HIGH_ORDER_GFP, LOW_ORDER_GFP};
+> >
+> > Maybe can you define a MID_ORDER_GFP as LOW_ORDER | __GFP_NOWARN
+> > (along with a comment in the code as to why) instead ?
+> >
+> > That avoids introducing any subtle behavioral change unintentionally.
+>
+> How about this one? Feel free to suggest better wording.
+>
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> index 29e49ac17251..6e17ff06331e 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -44,7 +44,13 @@ struct dma_heap_attachment {
+>                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+>                                 | __GFP_COMP)
+>  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> -static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
+> +/*
+> + * order-4 is PAGE_ALLOC_COSTLY_ORDER which is order allocator could fail
+> + * easier than lower orders. Since we have fallback order-0 allocation,
+> + * do not add warn.
+> + */
 
-Add a check confirming that '!event' alone will remove a synthetic
-event.
+Maybe: "Avoid warning on order-4 allocation failures as we'll fall
+back to order-0 in that case."
 
-Link: https://lkml.kernel.org/r/1dff3f03d18542cece08c10d6323d8a8dba11e42.1612208610.git.zanussi@kernel.org
+> +#define MID_ORDER_GFP (LOW_ORDER_GFP | __GFP_NOWARN)
 
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- .../trigger/inter-event/trigger-synthetic-event-syntax.tc     | 4 ++++
- 1 file changed, 4 insertions(+)
+My only other nit is to suggest sorting the LOW/MID/HIGH defines.
 
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-syntax.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-syntax.tc
-index 59216f3cfb12..2968cdc7df30 100644
---- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-syntax.tc
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic-event-syntax.tc
-@@ -32,6 +32,10 @@ grep "myevent[[:space:]]u64 var1" synthetic_events
- # it is not possible to add same name event
- ! echo "myevent u64 var2" >> synthetic_events
- 
-+# make sure !synthetic event doesn't require a field
-+echo "!myevent" >> synthetic_events
-+echo "myevent u64 var1" >> synthetic_events
-+
- # Non-append open will cleanup all events and add new one
- echo "myevent u64 var2" > synthetic_events
- 
--- 
-2.29.2
-
-
+thanks
+-john
