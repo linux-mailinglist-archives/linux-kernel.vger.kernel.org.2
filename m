@@ -2,85 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BA1318561
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53939318564
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhBKGwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 01:52:09 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:55702 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229678AbhBKGvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 01:51:46 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613026286; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=2KpP5YTgEZT/MqWx9oBGC3EcB2HHt0YvagbBL1reDRU=;
- b=RBKuUEN9MMERe4Bxro5wWQZrbKQEmTODtfh3kMca7Y7Cc7Ih5TLALUXDmOMqGLz52e03gxtl
- yTShBvPUnPqwKmHrEaNxxX6nE4kwu0eqHLhZl6n3CgleOzDNKzyJsum5M/CZydGvIDzbRlsc
- QQLy5CUAjx2uNBG6zzSnu5H6Do0=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6024d3d4d5a7a3baaed4913b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Feb 2021 06:51:00
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EBF7BC433CA; Thu, 11 Feb 2021 06:50:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E460C43461;
-        Thu, 11 Feb 2021 06:50:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7E460C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S229742AbhBKGwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 01:52:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhBKGwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 01:52:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A422964D9A;
+        Thu, 11 Feb 2021 06:51:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613026291;
+        bh=/bqBzgsBwYu/4OWo8yzcEBn/7GQQ8Lv9Niz3kBW/VWM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1QJjeqSTOBLk8sQWqKjJZqLaZA933MTVDA3vE1bYAgp+pbNmVJam/IcUXg46nXzRS
+         0QAaaMpQZBWtebp8LATsgI2tZhJyAmpU8GsDdu24fK4SVwpUYtaH367sVMUzU83kaK
+         xjGz6S7Uyc+RmTHL23aiYf1ZlyJ6NfCJdu1OZR+s=
+Date:   Thu, 11 Feb 2021 07:51:28 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bodo Stroesser <bostroesser@gmail.com>
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Mike Christie <michael.christie@oracle.com>
+Subject: Re: [PATCH 1/2] uio: Add late_release callback to uio_info
+Message-ID: <YCTT8HQ7PobTyUz4@kroah.com>
+References: <20210210194031.7422-1-bostroesser@gmail.com>
+ <20210210194031.7422-2-bostroesser@gmail.com>
+ <YCQ4aEz29P26ZxaL@kroah.com>
+ <7bc9eef9-0a9e-58a9-11f1-2c32010c70f0@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 3/5] ath10k: change ath10k_offchan_tx_work() peer present
- msg
- to a warn
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <3b1f71272d56ee1d7f567fbce13bdb56cc06d342.1612915444.git.skhan@linuxfoundation.org>
-References: <3b1f71272d56ee1d7f567fbce13bdb56cc06d342.1612915444.git.skhan@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210211065059.EBF7BC433CA@smtp.codeaurora.org>
-Date:   Thu, 11 Feb 2021 06:50:59 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7bc9eef9-0a9e-58a9-11f1-2c32010c70f0@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shuah Khan <skhan@linuxfoundation.org> wrote:
-
-> Based on the comment block in this function and the FIXME for this, peer
-> being present for the offchannel tx is unlikely. Peer is deleted once tx
-> is complete. Change peer present msg to a warn to detect this condition.
+On Wed, Feb 10, 2021 at 08:57:11PM +0100, Bodo Stroesser wrote:
+> On 10.02.21 20:47, Greg Kroah-Hartman wrote:
+> > On Wed, Feb 10, 2021 at 08:40:30PM +0100, Bodo Stroesser wrote:
+> > > If uio_unregister_device() is called while userspace daemon
+> > > still holds the uio device open or mmap'ed, uio will not call
+> > > uio_info->release() on later close / munmap.
+> > > 
+> > > At least one user of uio (tcmu) should not free resources (pages
+> > > allocated by tcmu which are mmap'ed to userspace) while uio
+> > > device still is open, because that could cause userspace daemon
+> > > to be killed by SIGSEGV or SIGBUS. Therefore tcmu frees the
+> > > pages only after it called uio_unregister_device _and_ the device
+> > > was closed.
+> > > So, uio not calling uio_info->release causes trouble.
+> > > tcmu currently leaks memory in that case.
+> > > 
+> > > Just waiting for userspace daemon to exit before calling
+> > > uio_unregister_device I think is not the right solution, because
+> > > daemon would not become aware of kernel code wanting to destroy
+> > > the uio device.
+> > > After uio_unregister_device was called, reading or writing the
+> > > uio device returns -EIO, which normally results in daemon exit.
+> > > 
+> > > This patch adds new callback pointer 'late_release' to struct
+> > > uio_info. If uio user sets this callback, it will be called by
+> > > uio if userspace closes / munmaps the device after
+> > > uio_unregister_device was executed.
+> > > 
+> > > That way we can use uio_unregister_device() to notify userspace
+> > > that we are going to destroy the device, but still get a call
+> > > to late_release when uio device is finally closed.
+> > > 
+> > > Signed-off-by: Bodo Stroesser <bostroesser@gmail.com>
+> > > ---
+> > >   Documentation/driver-api/uio-howto.rst | 10 ++++++++++
+> > >   drivers/uio/uio.c                      |  4 ++++
+> > >   include/linux/uio_driver.h             |  4 ++++
+> > >   3 files changed, 18 insertions(+)
+> > > 
+> > > diff --git a/Documentation/driver-api/uio-howto.rst b/Documentation/driver-api/uio-howto.rst
+> > > index 907ffa3b38f5..a2d57a7d623a 100644
+> > > --- a/Documentation/driver-api/uio-howto.rst
+> > > +++ b/Documentation/driver-api/uio-howto.rst
+> > > @@ -265,6 +265,16 @@ the members are required, others are optional.
+> > >      function. The parameter ``irq_on`` will be 0 to disable interrupts
+> > >      and 1 to enable them.
+> > > +-  ``int (*late_release)(struct uio_info *info, struct inode *inode)``:
+> > > +   Optional. If you define your own :c:func:`open()`, you will
+> > > +   in certain cases also want a custom :c:func:`late_release()`
+> > > +   function. If uio device is unregistered - by calling
+> > > +   :c:func:`uio_unregister_device()` - while it is open or mmap'ed by
+> > > +   userspace, the custom :c:func:`release()` function will not be
+> > > +   called when userspace later closes the device. An optionally
+> > > +   specified :c:func:`late_release()` function will be called in that
+> > > +   situation.
+> > > +
+> > >   Usually, your device will have one or more memory regions that can be
+> > >   mapped to user space. For each region, you have to set up a
+> > >   ``struct uio_mem`` in the ``mem[]`` array. Here's a description of the
+> > > diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
+> > > index ea96e319c8a0..0b2636f8d373 100644
+> > > --- a/drivers/uio/uio.c
+> > > +++ b/drivers/uio/uio.c
+> > > @@ -532,6 +532,8 @@ static int uio_release(struct inode *inode, struct file *filep)
+> > >   	mutex_lock(&idev->info_lock);
+> > >   	if (idev->info && idev->info->release)
+> > >   		ret = idev->info->release(idev->info, inode);
+> > > +	else if (idev->late_info && idev->late_info->late_release)
+> > > +		ret = idev->late_info->late_release(idev->late_info, inode);
+> > >   	mutex_unlock(&idev->info_lock);
+> > 
+> > Why can't release() be called here?  Why doesn't your driver define a
+> > release() if it cares about this information?  Why do we need 2
+> > different callbacks that fire at exactly the same time?
+> > 
+> > This feels really wrong.
+> > 
+> > greg k-h
+> > 
 > 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> tcmu has a release callback. But uio can't call it after
+> uio_unregister_device was executed, because in uio_unregister_device
+> uio sets the uio_device::info to NULL.
 
-Patch applied to ath-next branch of ath.git, thanks.
+As it should because the driver could then be gone.  It should NEVER
+call back into it again.
 
-83bae26532ca ath10k: change ath10k_offchan_tx_work() peer present msg to a warn
+> So, uio would never call both callbacks for the same release action,
+> but would call release before uio_unregister_device is executed, and
+> late_release after that.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/3b1f71272d56ee1d7f567fbce13bdb56cc06d342.1612915444.git.skhan@linuxfoundation.org/
+That's not ok.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> Of course it would be good for tcmu if uio would call uio_info:release even
+> after uio_unregister_device, but changing this AFAICS could cause
+> trouble in other drivers using uio.
 
+You are confusing two different lifetime rules here it seems.  One is
+the char device and one is the struct device.  They work independently
+as different users affect them.
+
+So if one is removed from the system, do not try to keep a callback to
+it, otherwise you will crash.
+
+And why is scsi using the uio driver in the first place?  That feels
+really odd to me.  Why not just make a "real" driver if you want to
+somehow tie these two lifetimes together?
+
+thanks,
+
+greg k-h
