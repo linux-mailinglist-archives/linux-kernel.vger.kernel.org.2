@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A192131886A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9912B31886C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhBKKmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:42:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34833 "EHLO
+        id S230388AbhBKKmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:42:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43109 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230127AbhBKKjT (ORCPT
+        by vger.kernel.org with ESMTP id S229979AbhBKKj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:39:19 -0500
+        Thu, 11 Feb 2021 05:39:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613039824;
+        s=mimecast20190719; t=1613039842;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RqhIlOOXm2OfTrN0agJ7O4HLKITtUNyiTne5QniNN2I=;
-        b=dqiKo6c63NftDiQhO+1zccGMOYBnDTDbRJogfq47zBcEcA9sWoY7e6/sdN+ppARxplKWhc
-        4WfCKK72EW7tgFtMx+sCT0a1KOsg1KCqPfTE3x8SjPPX3gJTZ4O55UB9yx3kQdGYDfRz7C
-        PO2qL2EgNS2Vhp6MBP7EXDmpVkqHlos=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+SyF2BtAE/25+uPwUADIprxwsW3nW9d5uxrpM+pqMWk=;
+        b=ZaPuMg1y7cJVFCGoGghwgMdemM6iNE9rxIgkrky5iyf5H0IXOtoQujsPCl3r/q1p/dW9hS
+        LTMY7P7mEj4dBKt+d0ytV84S/OMuZSfp0vkZ9An0Toj8X3mZDNyjIL3y3aDnAPLG2RkvOa
+        z7Q/r1L5GzqJZ0gIa20/awW0LVdrd6o=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-bUAS80RNMB-1DacjiPlFmA-1; Thu, 11 Feb 2021 05:37:02 -0500
-X-MC-Unique: bUAS80RNMB-1DacjiPlFmA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-148-IGQ8H91jP_aFvh3dBB3pjg-1; Thu, 11 Feb 2021 05:37:18 -0500
+X-MC-Unique: IGQ8H91jP_aFvh3dBB3pjg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5FB0192CC40;
-        Thu, 11 Feb 2021 10:37:00 +0000 (UTC)
-Received: from [10.36.114.52] (ovpn-114-52.ams2.redhat.com [10.36.114.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C53525D9E8;
-        Thu, 11 Feb 2021 10:36:59 +0000 (UTC)
-Subject: This reply comments on the patch to fixes the missing a blank line
- warning
-To:     Adithya Chandrakasan <adithya.chandrakasan@gmail.com>,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org
-References: <20210211072918.376837-1-adithya.chandrakasan@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <bce53689-4a6e-c3c3-a09c-6e946a577f61@redhat.com>
-Date:   Thu, 11 Feb 2021 11:36:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CDDAB593B4;
+        Thu, 11 Feb 2021 10:37:16 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B6D9460BF1;
+        Thu, 11 Feb 2021 10:37:15 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix updating of i_mode due to 3rd party change
+From:   David Howells <dhowells@redhat.com>
+To:     viro@zeniv.linux.org.uk
+Cc:     marc.dionne@auristor.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 11 Feb 2021 10:37:14 +0000
+Message-ID: <161303983470.1573213.1242074078169410167.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <20210211072918.376837-1-adithya.chandrakasan@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-^
+Fix afs_apply_status() to mask off the irrelevant bits from status->mode
+when OR'ing them into i_mode.  This can happen when a 3rd party chmod
+occurs.
 
-Please create proper patch subjects. Nobody has a glue what you are 
-doing when looking at the subject.
+Also fix afs_inode_init_from_status() to mask off the mode bits when
+initialising i_mode.
 
-"mm/util: fix ??? warning"
+Fixes: 260a980317da ("[AFS]: Add "directory write" support.")
+Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-Which raises the question, what is ???
+ fs/afs/inode.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Compiler? static code checker? ... ?
+diff --git a/fs/afs/inode.c b/fs/afs/inode.c
+index b0d7b892090d..d68abb9804b6 100644
+--- a/fs/afs/inode.c
++++ b/fs/afs/inode.c
+@@ -74,6 +74,7 @@ static int afs_inode_init_from_status(struct afs_operation *op,
+ 	struct afs_file_status *status = &vp->scb.status;
+ 	struct inode *inode = AFS_VNODE_TO_I(vnode);
+ 	struct timespec64 t;
++	mode_t mode = status->mode & S_IALLUGO;
+ 
+ 	_enter("{%llx:%llu.%u} %s",
+ 	       vp->fid.vid, vp->fid.vnode, vp->fid.unique,
+@@ -103,13 +104,13 @@ static int afs_inode_init_from_status(struct afs_operation *op,
+ 
+ 	switch (status->type) {
+ 	case AFS_FTYPE_FILE:
+-		inode->i_mode	= S_IFREG | status->mode;
++		inode->i_mode	= S_IFREG | mode;
+ 		inode->i_op	= &afs_file_inode_operations;
+ 		inode->i_fop	= &afs_file_operations;
+ 		inode->i_mapping->a_ops	= &afs_fs_aops;
+ 		break;
+ 	case AFS_FTYPE_DIR:
+-		inode->i_mode	= S_IFDIR | status->mode;
++		inode->i_mode	= S_IFDIR | mode;
+ 		inode->i_op	= &afs_dir_inode_operations;
+ 		inode->i_fop	= &afs_dir_file_operations;
+ 		inode->i_mapping->a_ops	= &afs_dir_aops;
+@@ -126,7 +127,7 @@ static int afs_inode_init_from_status(struct afs_operation *op,
+ 			inode->i_fop	= &afs_mntpt_file_operations;
+ 			inode->i_mapping->a_ops	= &afs_fs_aops;
+ 		} else {
+-			inode->i_mode	= S_IFLNK | status->mode;
++			inode->i_mode	= S_IFLNK | mode;
+ 			inode->i_op	= &afs_symlink_inode_operations;
+ 			inode->i_mapping->a_ops	= &afs_fs_aops;
+ 		}
+@@ -199,7 +200,7 @@ static void afs_apply_status(struct afs_operation *op,
+ 	if (status->mode != vnode->status.mode) {
+ 		mode = inode->i_mode;
+ 		mode &= ~S_IALLUGO;
+-		mode |= status->mode;
++		mode |= status->mode & S_IALLUGO;
+ 		WRITE_ONCE(inode->i_mode, mode);
+ 	}
+ 
 
-
-Thanks
-
-On 11.02.21 08:29, Adithya Chandrakasan wrote:
-> FILE: mm/util.c:930: WARNING: Missing a blank line after declarations
-> 
-> Signed-off-by: Adithya Chandrakasan <adithya.chandrakasan@gmail.com>
-> ---
->   mm/util.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/mm/util.c b/mm/util.c
-> index 8c9b7d1e7c49..60286876636d 100644
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -927,6 +927,7 @@ int get_cmdline(struct task_struct *task, char *buffer, int buflen)
->   	unsigned int len;
->   	struct mm_struct *mm = get_task_mm(task);
->   	unsigned long arg_start, arg_end, env_start, env_end;
-> +
->   	if (!mm)
->   		goto out;
->   	if (!mm->arg_end)
-> 
-
-
--- 
-Thanks,
-
-David / dhildenb
 
