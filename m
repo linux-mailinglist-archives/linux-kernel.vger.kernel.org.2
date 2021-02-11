@@ -2,256 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226DE31830D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1414531830F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhBKB0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 20:26:08 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:40377 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbhBKB0A (ORCPT
+        id S229771AbhBKB12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 20:27:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229972AbhBKB1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 20:26:00 -0500
-Received: by mail-io1-f71.google.com with SMTP id x26so4124211ior.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:25:44 -0800 (PST)
+        Wed, 10 Feb 2021 20:27:24 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845CBC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:26:44 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id y5so3736454ilg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:26:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6tiT0juHAG7LVhaT0F44eBAB2bgXNLxaZJxsTDj1mbs=;
+        b=DzFjxy3gEGVjFmul7he+A/bOAPNHqHCEpK7zDeTHeubgSfCEbNv1/rsyTH9m3Xl86H
+         NMEtdIluV0GqiwdmX98XLyOc5yqMTZLlI9uQ+wJYr9oBv5JzOm6Q3bD60Ri2IcOIBEYc
+         0zmBLZZYY7C94JynijcgF+N1wtDFnHkggQL+vw+CdUQEla/Ipl676x55wAchbgJBHEfN
+         0Gm3KztQw29iQizfFb+/VAwxSpvjfh+jYpizz0wnNmK6xmggJdv5cK9d67vvrb2K9rmn
+         k04TTtP03eWbY6kpNnKCbQNxO4fKd9EqDm6/qltBOse7KzGiArN8/rqJ2jnBeeYqG8sa
+         UnXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=bucdl9qLgWxIaUXn6aXF56fRpOSbYgHtg+698czooKc=;
-        b=hkNjU9Rf28kTxt277+jYmc9uEsF4gH8Ur0crZfdH7IhGNia5rp+EQ8FBgvSBzay8fV
-         GT5RQPj6YTEmrywS2T3zv3qHPeuM74bUnuiPj0jK5kc072oQrmpf8dk9/Kzg5cjhM57M
-         /wVlzXdkNv01dT8Z/LRqyWa6PQbzORGk/p00Spbn0i8CNz+3DNNdQjmihhDQMbEu9kaQ
-         cp9KlFPlTVvrpvdMO0MM6N9NdldPpVGTblJSRHs2JXxjo2bg0H6LJpE8PckJ1xVg1n2k
-         Ruq1jhrjf3rc264+5yUpIrqxka88OX+t0FXf5ZS+YSxYp60E2iA4LYThBoSN9co+yvHF
-         6g8A==
-X-Gm-Message-State: AOAM5337QNB7GvoS6djR392QjA2SQ/Av4IgEvPP8Eu3wkQW3fy5BWqzI
-        ODoAA6Nn6ytgCqBnEnL5l30tXeDcAT4lvNWh64pz2/3PhsiM
-X-Google-Smtp-Source: ABdhPJxQskuHg1Zi+7C86ZLRqmaudByKDD4u8WVuts4JLYcNnfUwSD8oPrUYtGYp4M5+WP6Y2YIjQFgc2JIWj17byBy3jWiFOXv1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6tiT0juHAG7LVhaT0F44eBAB2bgXNLxaZJxsTDj1mbs=;
+        b=j1JN3RygEJamW8ouxrlkr34wFicHGM012vese9ZGsiPgiSexJyndqcgXOw8EorMqe+
+         rOIniACU1kyyv416uyA10Z3+3fQezSkbFAmQYcwox/GL28uQuDj0bhptXGCluqJMmxzS
+         zvoYHCpTillZVkc1MWyhm+SRVTs41HAo+DAqozaUBMlyqa5oO6TrECcaXTkh5zjE6dlb
+         OKk+l7q4NcrCtYJdRxsGFyW5T76ghvKoT369Bss/WwOnQyKuqNnWIU6Ujfdk74slpF+o
+         t6Ev30wHNbPX+axKZmYAdU31rQGS5NTqwCt0CAMT4D0WUVtNk/tRUyqDuAVpiXb5mowB
+         8xPA==
+X-Gm-Message-State: AOAM533s9e6lveiY4YMRMiHy7fAOCmzERsQpQ2R1h+W23+ksffp8w4gf
+        VGf9TVh5ueB5ANntcIcoNeUx8rxA9ZxMmYN7Oanj1w==
+X-Google-Smtp-Source: ABdhPJw+5V9QRIUiMsbYFXylIMP7U2FjMFoDHK7Od/aASZsK9vB0RImYeHNWQKIGYWgwqeY2viuQSQeZYLjUSnNs6U8=
+X-Received: by 2002:a92:c54e:: with SMTP id a14mr1190089ilj.285.1613006803830;
+ Wed, 10 Feb 2021 17:26:43 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3491:: with SMTP id t17mr6144607jal.81.1613006719315;
- Wed, 10 Feb 2021 17:25:19 -0800 (PST)
-Date:   Wed, 10 Feb 2021 17:25:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000086723c05bb056425@google.com>
-Subject: possible deadlock in fs_reclaim_acquire (2)
-From:   syzbot <syzbot+a7ab8df042baaf42ae3c@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
+References: <20210210230625.550939-1-seanjc@google.com> <20210210230625.550939-11-seanjc@google.com>
+In-Reply-To: <20210210230625.550939-11-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 10 Feb 2021 17:26:33 -0800
+Message-ID: <CANgfPd8PVLh0-+s5R6A_AXG6XZvo0GbEFrAu1zASWgeP_Zy4LQ@mail.gmail.com>
+Subject: Re: [PATCH 10/15] KVM: selftests: Remove perf_test_args.host_page_size
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Aaron Lewis <aaronlewis@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Feb 10, 2021 at 3:06 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Remove perf_test_args.host_page_size and instead use getpagesize() so
+> that it's somewhat obvious that, for tests that care about the host page
+> size, they care about the system page size, not the hardware page size,
+> e.g. that the logic is unchanged if hugepages are in play.
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-syzbot found the following issue on:
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-HEAD commit:    825b5991 Merge tag '5.11-rc6-smb3' of git://git.samba.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=117927bf500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
-dashboard link: https://syzkaller.appspot.com/bug?extid=a7ab8df042baaf42ae3c
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a7ab8df042baaf42ae3c@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.11.0-rc6-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.3/24553 is trying to acquire lock:
-ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_acquire+0xf7/0x150 mm/page_alloc.c:4348
-
-but task is already holding lock:
-ffff888019b6b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
-ffff888019b6b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15c/0x13e0 fs/ext4/xattr.c:2308
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&ei->xattr_sem){++++}-{3:3}:
-       down_read+0x95/0x440 kernel/locking/rwsem.c:1353
-       ext4_setattr+0x570/0x1fd0 fs/ext4/inode.c:5375
-       notify_change+0xb60/0x10a0 fs/attr.c:336
-       chown_common+0x4a9/0x550 fs/open.c:674
-       vfs_fchown fs/open.c:741 [inline]
-       vfs_fchown fs/open.c:733 [inline]
-       ksys_fchown+0x111/0x170 fs/open.c:752
-       __do_sys_fchown fs/open.c:760 [inline]
-       __se_sys_fchown fs/open.c:758 [inline]
-       __x64_sys_fchown+0x6f/0xb0 fs/open.c:758
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
--> #2 (jbd2_handle){++++}-{0:0}:
-       start_this_handle+0xfb4/0x1380 fs/jbd2/transaction.c:446
-       jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:503
-       __ext4_journal_start_sb+0x227/0x4a0 fs/ext4/ext4_jbd2.c:105
-       ext4_sample_last_mounted fs/ext4/file.c:804 [inline]
-       ext4_file_open+0x613/0xb40 fs/ext4/file.c:832
-       do_dentry_open+0x4b9/0x11b0 fs/open.c:817
-       do_open fs/namei.c:3254 [inline]
-       path_openat+0x1b9a/0x2730 fs/namei.c:3371
-       do_filp_open+0x17e/0x3c0 fs/namei.c:3398
-       do_open_execat+0x116/0x690 fs/exec.c:913
-       bprm_execve fs/exec.c:1801 [inline]
-       bprm_execve+0x4be/0x19a0 fs/exec.c:1788
-       do_execveat_common+0x626/0x7c0 fs/exec.c:1915
-       do_execve fs/exec.c:1983 [inline]
-       __do_sys_execve fs/exec.c:2059 [inline]
-       __se_sys_execve fs/exec.c:2054 [inline]
-       __x64_sys_execve+0x8f/0xc0 fs/exec.c:2054
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
--> #1 (sb_internal){.+.+}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1592 [inline]
-       sb_start_intwrite include/linux/fs.h:1709 [inline]
-       ext4_evict_inode+0xe6f/0x1940 fs/ext4/inode.c:241
-       evict+0x2ed/0x6b0 fs/inode.c:577
-       iput_final fs/inode.c:1653 [inline]
-       iput.part.0+0x57e/0x810 fs/inode.c:1679
-       iput fs/inode.c:1669 [inline]
-       inode_lru_isolate+0x301/0x4f0 fs/inode.c:778
-       __list_lru_walk_one+0x178/0x5c0 mm/list_lru.c:222
-       list_lru_walk_one+0x99/0xd0 mm/list_lru.c:266
-       list_lru_shrink_walk include/linux/list_lru.h:195 [inline]
-       prune_icache_sb+0xdc/0x140 fs/inode.c:803
-       super_cache_scan+0x38d/0x590 fs/super.c:107
-       do_shrink_slab+0x3e4/0x9f0 mm/vmscan.c:511
-       shrink_slab+0x16f/0x5d0 mm/vmscan.c:672
-       shrink_node_memcgs mm/vmscan.c:2665 [inline]
-       shrink_node+0x8cc/0x1de0 mm/vmscan.c:2780
-       kswapd_shrink_node mm/vmscan.c:3523 [inline]
-       balance_pgdat+0x745/0x1270 mm/vmscan.c:3681
-       kswapd+0x5b1/0xdb0 mm/vmscan.c:3938
-       kthread+0x3b1/0x4a0 kernel/kthread.c:292
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
--> #0 (fs_reclaim){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:2868 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
-       validate_chain kernel/locking/lockdep.c:3608 [inline]
-       __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
-       lock_acquire kernel/locking/lockdep.c:5442 [inline]
-       lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
-       __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
-       fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
-       might_alloc include/linux/sched/mm.h:193 [inline]
-       slab_pre_alloc_hook mm/slab.h:493 [inline]
-       slab_alloc_node mm/slub.c:2817 [inline]
-       __kmalloc_node+0x5f/0x430 mm/slub.c:4015
-       kmalloc_node include/linux/slab.h:575 [inline]
-       kvmalloc_node+0x61/0xf0 mm/util.c:587
-       kvmalloc include/linux/mm.h:781 [inline]
-       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
-       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
-       ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
-       ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
-       ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
-       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
-       ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
-       __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
-       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
-       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
-       vfs_setxattr+0x135/0x320 fs/xattr.c:291
-       setxattr+0x1ff/0x290 fs/xattr.c:553
-       path_setxattr+0x170/0x190 fs/xattr.c:572
-       __do_sys_setxattr fs/xattr.c:587 [inline]
-       __se_sys_setxattr fs/xattr.c:583 [inline]
-       __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
-       do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
-       __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
-       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
-       entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-
-other info that might help us debug this:
-
-Chain exists of:
-  fs_reclaim --> jbd2_handle --> &ei->xattr_sem
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&ei->xattr_sem);
-                               lock(jbd2_handle);
-                               lock(&ei->xattr_sem);
-  lock(fs_reclaim);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor.3/24553:
- #0: ffff888065bae460 (sb_writers#5){.+.+}-{0:0}, at: path_setxattr+0xb5/0x190 fs/xattr.c:570
- #1: ffff888019b6b688 (&type->i_mutex_dir_key#4){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
- #1: ffff888019b6b688 (&type->i_mutex_dir_key#4){++++}-{3:3}, at: vfs_setxattr+0x117/0x320 fs/xattr.c:290
- #2: ffff888019b6b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
- #2: ffff888019b6b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15c/0x13e0 fs/ext4/xattr.c:2308
-
-stack backtrace:
-CPU: 1 PID: 24553 Comm: syz-executor.3 Not tainted 5.11.0-rc6-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
- check_prev_add kernel/locking/lockdep.c:2868 [inline]
- check_prevs_add kernel/locking/lockdep.c:2993 [inline]
- validate_chain kernel/locking/lockdep.c:3608 [inline]
- __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
- lock_acquire kernel/locking/lockdep.c:5442 [inline]
- lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
- __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
- fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
- might_alloc include/linux/sched/mm.h:193 [inline]
- slab_pre_alloc_hook mm/slab.h:493 [inline]
- slab_alloc_node mm/slub.c:2817 [inline]
- __kmalloc_node+0x5f/0x430 mm/slub.c:4015
- kmalloc_node include/linux/slab.h:575 [inline]
- kvmalloc_node+0x61/0xf0 mm/util.c:587
- kvmalloc include/linux/mm.h:781 [inline]
- ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
- ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
- ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
- ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
- ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
- ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
- ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
- __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
- __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
- __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
- vfs_setxattr+0x135/0x320 fs/xattr.c:291
- setxattr+0x1ff/0x290 fs/xattr.c:553
- path_setxattr+0x170/0x190 fs/xattr.c:572
- __do_sys_setxattr fs/xattr.c:587 [inline]
- __se_sys_setxattr fs/xattr.c:583 [inline]
- __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
- do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
- __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7fe7549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f55c05fc EFLAGS: 00000296 ORIG_RAX: 00000000000000e2
-RAX: ffffffffffffffda RBX: 00000000200000c0 RCX: 00000000200001c0
-RDX: 0000000020001700 RSI: 0000000000000e01 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> ---
+>  tools/testing/selftests/kvm/demand_paging_test.c          | 8 ++++----
+>  tools/testing/selftests/kvm/include/perf_test_util.h      | 1 -
+>  tools/testing/selftests/kvm/lib/perf_test_util.c          | 6 ++----
+>  .../selftests/kvm/memslot_modification_stress_test.c      | 2 +-
+>  4 files changed, 7 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+> index 0cbf111e6c21..b937a65b0e6d 100644
+> --- a/tools/testing/selftests/kvm/demand_paging_test.c
+> +++ b/tools/testing/selftests/kvm/demand_paging_test.c
+> @@ -83,7 +83,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+>
+>         copy.src = (uint64_t)guest_data_prototype;
+>         copy.dst = addr;
+> -       copy.len = perf_test_args.host_page_size;
+> +       copy.len = getpagesize();
+>         copy.mode = 0;
+>
+>         clock_gettime(CLOCK_MONOTONIC, &start);
+> @@ -100,7 +100,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+>         PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
+>                        timespec_to_ns(ts_diff));
+>         PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
+> -                      perf_test_args.host_page_size, addr, tid);
+> +                      getpagesize(), addr, tid);
+>
+>         return 0;
+>  }
+> @@ -271,10 +271,10 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>
+>         perf_test_args.wr_fract = 1;
+>
+> -       guest_data_prototype = malloc(perf_test_args.host_page_size);
+> +       guest_data_prototype = malloc(getpagesize());
+>         TEST_ASSERT(guest_data_prototype,
+>                     "Failed to allocate buffer for guest data pattern");
+> -       memset(guest_data_prototype, 0xAB, perf_test_args.host_page_size);
+> +       memset(guest_data_prototype, 0xAB, getpagesize());
+>
+>         vcpu_threads = malloc(nr_vcpus * sizeof(*vcpu_threads));
+>         TEST_ASSERT(vcpu_threads, "Memory allocation failed");
+> diff --git a/tools/testing/selftests/kvm/include/perf_test_util.h b/tools/testing/selftests/kvm/include/perf_test_util.h
+> index cccf1c44bddb..223fe6b79a04 100644
+> --- a/tools/testing/selftests/kvm/include/perf_test_util.h
+> +++ b/tools/testing/selftests/kvm/include/perf_test_util.h
+> @@ -28,7 +28,6 @@ struct perf_test_vcpu_args {
+>
+>  struct perf_test_args {
+>         struct kvm_vm *vm;
+> -       uint64_t host_page_size;
+>         uint64_t gpa;
+>         uint64_t guest_page_size;
+>         int wr_fract;
+> diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
+> index 03f125236021..982a86c8eeaa 100644
+> --- a/tools/testing/selftests/kvm/lib/perf_test_util.c
+> +++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
+> @@ -57,8 +57,6 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+>
+>         pr_info("Testing guest mode: %s\n", vm_guest_mode_string(mode));
+>
+> -       pta->host_page_size = getpagesize();
+> -
+>         /*
+>          * Snapshot the non-huge page size.  This is used by the guest code to
+>          * access/dirty pages at the logging granularity.
+> @@ -68,7 +66,7 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+>         guest_num_pages = vm_adjust_num_guest_pages(mode,
+>                                 (vcpus * vcpu_memory_bytes) / pta->guest_page_size);
+>
+> -       TEST_ASSERT(vcpu_memory_bytes % pta->host_page_size == 0,
+> +       TEST_ASSERT(vcpu_memory_bytes % getpagesize() == 0,
+>                     "Guest memory size is not host page size aligned.");
+>         TEST_ASSERT(vcpu_memory_bytes % pta->guest_page_size == 0,
+>                     "Guest memory size is not guest page size aligned.");
+> @@ -88,7 +86,7 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+>                     guest_num_pages, vm_get_max_gfn(vm), vcpus, vcpu_memory_bytes);
+>
+>         pta->gpa = (vm_get_max_gfn(vm) - guest_num_pages) * pta->guest_page_size;
+> -       pta->gpa &= ~(pta->host_page_size - 1);
+> +       pta->gpa &= ~(getpagesize() - 1);
+>         if (backing_src == VM_MEM_SRC_ANONYMOUS_THP ||
+>             backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB)
+>                 pta->gpa &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
+> diff --git a/tools/testing/selftests/kvm/memslot_modification_stress_test.c b/tools/testing/selftests/kvm/memslot_modification_stress_test.c
+> index 569bb1f55bdf..b3b8f08e91ad 100644
+> --- a/tools/testing/selftests/kvm/memslot_modification_stress_test.c
+> +++ b/tools/testing/selftests/kvm/memslot_modification_stress_test.c
+> @@ -123,7 +123,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>                            p->nr_memslot_modifications,
+>                            perf_test_args.gpa +
+>                            (guest_percpu_mem_size * nr_vcpus) +
+> -                          perf_test_args.host_page_size +
+> +                          getpagesize() +
+>                            perf_test_args.guest_page_size);
+>
+>         run_vcpus = false;
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
