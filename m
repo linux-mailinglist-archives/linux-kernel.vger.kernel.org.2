@@ -2,146 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4873318C37
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40851318C38
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhBKNjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:39:11 -0500
-Received: from mout.kundenserver.de ([212.227.126.131]:37999 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhBKNSn (ORCPT
+        id S231379AbhBKNjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:39:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230242AbhBKNTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:18:43 -0500
-Received: from [192.168.1.155] ([95.114.27.115]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M8yPu-1lE3Av2zoM-0063xQ; Thu, 11 Feb 2021 14:15:51 +0100
-Subject: Re: [RFC PATCH 12/12] platform/x86/of: add support for PC Engines APU
- v2/3/4 boards
-To:     Rob Herring <robh+dt@kernel.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org
-References: <20210208222203.22335-1-info@metux.net>
- <20210208222203.22335-13-info@metux.net>
- <CAL_JsqJw+EjMoc92e-XMjn=0wat3TmcToHU1V2rW9UB9UhmDEA@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <1a96e003-e264-9f9b-4239-4b3b002c0198@metux.net>
-Date:   Thu, 11 Feb 2021 14:15:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 11 Feb 2021 08:19:05 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A444C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:18:23 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id w19so4590576qki.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:18:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TNbrNGEpNHvneHu+xk19nOO78YSnguGzc+qrUt8Ns9I=;
+        b=ACfPd8VaxtXZss6ecIfSTRn1q0RQ50rMA9La8hOx9/ojVo7ooRxL/3afPAct9nxVkR
+         ALypNL9GdLhiOKikzl3blb5AqkzlaSjvbNg/0Lcnc79VBGyEciT2KLTprEFdaJvz+u/Q
+         TfrShJIW6WjQ0ympnQ3AIpnUxBJqja46lebBO6j0zYWK+4tOXis4AAHRWGdvoLE6m5DN
+         mva5hVY43HnDlYh7NLmxtb10P5dPAYB7DNQGzCHl8fBoWc/id6xeRCuC5d08nQHze07y
+         g9iJe8/MIrGXuYbDy08DQG92v5Xrpb7kdb+KCvz2z/gBE197KxwIxaqvFlrqifTxiHmv
+         LUbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TNbrNGEpNHvneHu+xk19nOO78YSnguGzc+qrUt8Ns9I=;
+        b=e9jnSp0HPpfAD6Zn/VbQmrosLwEZ1HIc44QVU2tWRJ5etFJeFf9ek9uIncPyFS18YB
+         VJNSQpeHnUBKM2GjopqGBLcaF3HW7mCmiaoc5SrV6WpM9lkKY33h5DGCS3+NgK9V9nA3
+         R3k8on7h6lSFslx8zTTDN5E5n9FCsCHtLccOoLpWbp+g7TqdfNKUEsYjqXVkWqZdIBH0
+         bw+lMAzDvSovQsBvIgkl4rseFd6LHol0EtXc+kFVeL7kEDNaiHKDvy6kkWJSqoP6uytg
+         2UQJtJrKYWWyA7ErL7LoIf0ZVp6p2NjHSojZhrFqm5Ird5JJFCKuUbiQtvt1IsZWPbSn
+         Qzjw==
+X-Gm-Message-State: AOAM532K1KVhc8rDYshFLIVJP8y8SDN40atiqNZTAnjr2wTA8qDWfdk+
+        cj3hRo5JaXqw9TA9+2fp9SDAls9iTepL5mGu8OqdsQ==
+X-Google-Smtp-Source: ABdhPJxA6pzkZq0hAk0lQqeUPpSmGOTEnqyjDG6MHORn1Z6d6T5PVA9k6A2/h2zgWi0Z+OCZSulMRKjO+Rbx/+6EILM=
+X-Received: by 2002:a05:620a:49:: with SMTP id t9mr8683728qkt.231.1613049502035;
+ Thu, 11 Feb 2021 05:18:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJw+EjMoc92e-XMjn=0wat3TmcToHU1V2rW9UB9UhmDEA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:X03an0jzA7Ik2yin6U2Zx4JrFGvXamVp+aFMSxgk7gvcKjOnIG2
- wRS+NMnI958UjkK1bAW4exbjNEvRWZ4ey6UZ/64Wd23lvW+3NvDnpHNqEqa3EAzsTjMSeCb
- uDnDWaaxXEORuRz806oib9eZzBt5K/+/B3QtShlGtjSybccD7Yex6xVSQN8drwU+hYgwMdT
- UNQdvFXyUb8a8euhz5KLQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iBvfJPWk7OE=:tQXOSq539WLmvFCUNCOBEG
- W4jA2/b156mHHTcc63xYdiTc8DwuHKNNCPNatkoJNn+AmALQJ0VWiwHZKTWrgm2lcxJsMtRxo
- wnZVhG59kLAMEwXRwSLzyD4AD3Wb9d2jQW5gyYVXos+6kb0UQTDYQsboEZhxo9CKlLD/ceQtV
- Mi7uaSAvqgfTECa6MnBYgzbln8Xpp3rYHWQT6SGGgVKW2hN42JwUneuwrnyALk9Rzb53NNdtv
- PhoarSX7K0oU5Vn5AkuhYFzVvWl5xufuI9IV28Rajfp1IG/sq4zutlTf4t8jWUzoHH1D3JQdJ
- TixDQ5UEECULBXxxLM8BFIe5ZWUedHT8MiuHrWg0aW945siyMdOalTHlKHcUmBocrrC3M5F6z
- V1wlARoAS3v3rUDA1rv+uEcw5xpeCZ2pDY3NQMEdxwtWHerWKVdE2G/eEj/QW
+References: <000000000000563a0205bafb7970@google.com> <20210211104947.GL19070@quack2.suse.cz>
+ <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
+ <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
+ <20210211121020.GO19070@quack2.suse.cz> <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz> <20210211125717.GH308988@casper.infradead.org>
+In-Reply-To: <20210211125717.GH308988@casper.infradead.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 11 Feb 2021 14:18:09 +0100
+Message-ID: <CACT4Y+ZP5S1PLN7=q5Rw8zSOyOAUz=TjHQqZMX0aUxyBawaj6A@mail.gmail.com>
+Subject: Re: possible deadlock in start_this_handle (2)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.02.21 01:06, Rob Herring wrote:
+On Thu, Feb 11, 2021 at 1:57 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > > Hello,
+> > > > > >
+> > > > > > added mm guys to CC.
+> > > > > >
+> > > > > > On Wed 10-02-21 05:35:18, syzbot wrote:
+> > > > > > > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
+> > > > > > > git tree:       upstream
+> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15cbce90d00000
+> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
+> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
+> > > > > > > userspace arch: i386
+> > > > > > >
+> > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > > >
+> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
+> > > > > > >
+> > > > > > > ======================================================
+> > > > > > > WARNING: possible circular locking dependency detected
+> > > > > > > 5.11.0-rc6-syzkaller #0 Not tainted
+> > > > > > > ------------------------------------------------------
+> > > > > > > kswapd0/2246 is trying to acquire lock:
+> > > > > > > ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
+> > > > > > >
+> > > > > > > but task is already holding lock:
+> > > > > > > ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
+> > > > > > >
+> > > > > > > which lock already depends on the new lock.
+> > > > > > >
+> > > > > > > the existing dependency chain (in reverse order) is:
+> > > > > > >
+> > > > > > > -> #2 (fs_reclaim){+.+.}-{0:0}:
+> > > > > > >        __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
+> > > > > > >        fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
+> > > > > > >        might_alloc include/linux/sched/mm.h:193 [inline]
+> > > > > > >        slab_pre_alloc_hook mm/slab.h:493 [inline]
+> > > > > > >        slab_alloc_node mm/slub.c:2817 [inline]
+> > > > > > >        __kmalloc_node+0x5f/0x430 mm/slub.c:4015
+> > > > > > >        kmalloc_node include/linux/slab.h:575 [inline]
+> > > > > > >        kvmalloc_node+0x61/0xf0 mm/util.c:587
+> > > > > > >        kvmalloc include/linux/mm.h:781 [inline]
+> > > > > > >        ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
+> > > > > > >        ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
+> > > > > > >        ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
+> > > > > > >        ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
+> > > > > > >        ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
+> > > > > > >        ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
+> > > > > > >        ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
+> > > > > > >        __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
+> > > > > > >        __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+> > > > > > >        __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+> > > > > > >        vfs_setxattr+0x135/0x320 fs/xattr.c:291
+> > > > > > >        setxattr+0x1ff/0x290 fs/xattr.c:553
+> > > > > > >        path_setxattr+0x170/0x190 fs/xattr.c:572
+> > > > > > >        __do_sys_setxattr fs/xattr.c:587 [inline]
+> > > > > > >        __se_sys_setxattr fs/xattr.c:583 [inline]
+> > > > > > >        __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
+> > > > > > >        do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
+> > > > > > >        __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
+> > > > > > >        do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
+> > > > > > >        entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> > > > > >
+> > > > > > This stacktrace should never happen. ext4_xattr_set() starts a transaction.
+> > > > > > That internally goes through start_this_handle() which calls:
+> > > > > >
+> > > > > >         handle->saved_alloc_context = memalloc_nofs_save();
+> > > > > >
+> > > > > > and we restore the allocation context only in stop_this_handle() when
+> > > > > > stopping the handle. And with this fs_reclaim_acquire() should remove
+> > > > > > __GFP_FS from the mask and not call __fs_reclaim_acquire().
+> > > > > >
+> > > > > > Now I have no idea why something here didn't work out. Given we don't have
+> > > > > > a reproducer it will be probably difficult to debug this. I'd note that
+> > > > > > about year and half ago similar report happened (got autoclosed) so it may
+> > > > > > be something real somewhere but it may also be just some HW glitch or
+> > > > > > something like that.
+> > > > >
+> > > > > HW glitch is theoretically possible. But if we are considering such
+> > > > > causes, I would say a kernel memory corruption is way more likely, we
+> > > > > have hundreds of known memory-corruption-capable bugs open. In most
+> > > > > cases they are caught by KASAN before doing silent damage. But KASAN
+> > > > > can miss some cases.
+> > > > >
+> > > > > I see at least 4 existing bugs with similar stack:
+> > > > > https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
+> > > > > https://syzkaller.appspot.com/bug?extid=a7ab8df042baaf42ae3c
+> > > > > https://syzkaller.appspot.com/bug?id=c814a55a728493959328551c769ede4c8ff72aab
+> > > > > https://syzkaller.appspot.com/bug?id=426ad9adca053dafcd698f3a48ad5406dccc972b
+> > > > >
+> > > > > All in all, I would not assume it's a memory corruption. When we had
+> > > > > bugs that actually caused silent memory corruption, that caused a
+> > > > > spike of random one-time crashes all over the kernel. This does not
+> > > > > look like it.
+> > > >
+> > > > I wonder if memalloc_nofs_save (or any other manipulation of
+> > > > current->flags) could have been invoked from interrupt context? I
+> > > > think it could cause the failure mode we observe (extremely rare
+> > > > disappearing flags). It may be useful to add a check for task context
+> > > > there.
+> > >
+> > > That's an interesting idea. I'm not sure if anything does manipulate
+> > > current->flags from inside an interrupt (definitely memalloc_nofs_save()
+> > > doesn't seem to be) but I'd think that in fully preemtible kernel,
+> > > scheduler could preempt the task inside memalloc_nofs_save() and the
+> > > current->flags manipulation could also clash with a manipulation of these
+> > > flags by the scheduler if there's any?
+> >
+> > current->flags should be always manipulated from the user context. But
+> > who knows maybe there is a bug and some interrupt handler is calling it.
+> > This should be easy to catch no?
+>
+> Why would it matter if it were?  We save the current value of the nofs
+> flag and then restore it.  That would happen before the end of the
+> interrupt handler.  So the interrupt isn't going to change the observed
+> value of the flag by the task which is interrupted.
 
-Hi,
-
->> +/ {
->> +    apu2x {
->> +        compatible = "virtual,dmi-board";
->> +        dmi-sys-vendor = "PC engines";
->> +        dmi-board-name =
->> +          "APU2",
->> +          "apu2",
->> +          "PC engines apu2",
->> +          "APU3",
->> +          "apu3",
->> +          "PC engines apu3",
->> +          "APU4",
->> +          "apu4",
->> +          "PC engines apu4";
-> 
-> I think these DMI properties just need to be the compatible string(s).
-> We already have a way to do matching with DT and don't need a
-> secondary way. If you can
-
-It's not easy fitting that into one string, because we've got lots of
-combinations that need to be matched. In this specific case, I haven't
-seen any board where the vendor name isn't an exact match of the given
-string (that's why it's only one entry), but in the past seen several
-boards where even this changes between bios versions. The board names,
-more varying.
-
-Something that's not reflected in this example yet: there're even more
-subtle differences between production series (eg. certain pins not
-wired, etc). Supporting such things would need adding more matching
-rules and possibly runtime DT manipulations.
-
->> +        unbind {
->> +            acpi = "PNP0076:00", "PNP0B00:00";
->> +            platform = "platform-framebuffer.0", "PNP0103:00";
-> 
-> This node really needs to go. It's clearly Linuxisms. It either has to
-> go in the kernel or userspace.
-
-Note that the whole thing here *is* a Linuxism. This kind of DTs is
-built into the kernel, not in firmware or anywhere else. This stuff is
-only for cases where firmware is not giving, or giving broken
-information. And it's for replacing hand-written C code by a machine
-readable description.
-
-I had to put that in, since in some cases firmware (-versions) already
-enumerates some devices, but does it in a wrong or incomplete way.
-So, these devices need to be removed first, before the correct ones
-can be initialized. (note that this patch, for now, is just an hacking
-example - some details are still broken).
-
-If anybody has a better idea how to do that, let me know.
-
-In general, I'd like to have everything for one board (family) in one
-declarative file.
-
->> +        };
->> +        devices {
->> +            gpio1: gpio1 {
->> +                compatible = "amd,fch-gpio";
-> 
-> This of course will need to be documented.
-
-Yes, but that's a different issue. It's still in RFC stage.
-The gpio-amd-fch changes are in this patch queue for a complete example,
-but probably will be upstreamed separately.
-
->> +                gpio-controller;
->> +                status = "okay";
-> 
-> nit: That's the default.
-
-Okay, dropping it.
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Good question.
+I just think that fixing some of these assumptions as runtime checks
+is useful, as it will allow us to reduce infinite space of
+possibilities. What is called from what context. Maybe checking that
+PF_MEMALLOC_NOFS is indeed set when we enter memalloc_nofs_restore().
