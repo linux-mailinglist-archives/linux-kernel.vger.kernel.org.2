@@ -2,129 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C4631830B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226DE31830D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhBKBZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 20:25:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhBKBY7 (ORCPT
+        id S231287AbhBKB0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 20:26:08 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:40377 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230149AbhBKB0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 20:24:59 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88D5C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:24:19 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id e133so4034978iof.8
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:24:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zla1aseDY0i8ZjT1ec0ROE6/Adt1RXQPhkWU9OqIF0M=;
-        b=l2YGJfLf7V0TgKMNBOJIo9ucNdfO6LpRBqp6kriBbqmbnO755M7J8QgMaZr1Pxg470
-         OTgmn4sGMeWaAubUKhiZdpUpL4RGzRV6D2nwxvVq8hzbQAieow+Tqn9w5JCZJSGyGtkg
-         kvQ2xxE73PywQxzJBAISx1kI2YQBk8uq4zr9XXtzVTlo3z5DoCLgJzqeahBd1jVSFs99
-         dtxl/n9lSHnu1hHauy+q7Ll06aL+6CPyMPKvaZneHGGOGUlqYUIPmwXk6eWn9DaUZ51W
-         39ybxyjwqco+TUuTlbw7dzZ/IeYe31PQq/vA+1YQalafs4S1oS/Qv9XDX7YMdlnRdM/A
-         DeMw==
+        Wed, 10 Feb 2021 20:26:00 -0500
+Received: by mail-io1-f71.google.com with SMTP id x26so4124211ior.7
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 17:25:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zla1aseDY0i8ZjT1ec0ROE6/Adt1RXQPhkWU9OqIF0M=;
-        b=cXWb9e5gBf+RRoCxynXpPItlG5ryrvlQHsikYcPT72a8nIy4CWBdhAN/zErJOswVwq
-         hmunpB0x+HGXlTxHkoT417GU1oLqaj1C7Hd5jWycyouTZR2huQkW9/b8tUvpOmUC2HdV
-         hxOihnjpXtqtrhLoJT3AzyLCLh/ramGDmgO+A1BavYzZTizCvFv9M/wYTlBGADN5DGBZ
-         QwVveVi/gCcUeSkNEzpARzlP6gKvGcicDALZGjukee77YMnSfhVzZxnyZtFPcJUgsj0p
-         FvcQ5jJT91w+QD5etC84AjHbbdgI27nofh0tNIvu8vsy/yL1ug79JbNPogp0ZE+bEexD
-         oZXw==
-X-Gm-Message-State: AOAM531TE5fnBBto54gTwVNk0yTJvAzLB5Tf8lIYdi04BQejqnyCxlmS
-        2jRZEqR369KD+x8Db4NtQUVxQle78JaS1GkwxxrY4g==
-X-Google-Smtp-Source: ABdhPJyWLoD6wei5cy+7TWvW434EWRU0+F8jmfBMftYf6Xg5hlZI4LdGs/JzD+ElgPKL0RKSAAm6AFukc92t3pnf/GU=
-X-Received: by 2002:a02:30cb:: with SMTP id q194mr6182761jaq.57.1613006659142;
- Wed, 10 Feb 2021 17:24:19 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=bucdl9qLgWxIaUXn6aXF56fRpOSbYgHtg+698czooKc=;
+        b=hkNjU9Rf28kTxt277+jYmc9uEsF4gH8Ur0crZfdH7IhGNia5rp+EQ8FBgvSBzay8fV
+         GT5RQPj6YTEmrywS2T3zv3qHPeuM74bUnuiPj0jK5kc072oQrmpf8dk9/Kzg5cjhM57M
+         /wVlzXdkNv01dT8Z/LRqyWa6PQbzORGk/p00Spbn0i8CNz+3DNNdQjmihhDQMbEu9kaQ
+         cp9KlFPlTVvrpvdMO0MM6N9NdldPpVGTblJSRHs2JXxjo2bg0H6LJpE8PckJ1xVg1n2k
+         Ruq1jhrjf3rc264+5yUpIrqxka88OX+t0FXf5ZS+YSxYp60E2iA4LYThBoSN9co+yvHF
+         6g8A==
+X-Gm-Message-State: AOAM5337QNB7GvoS6djR392QjA2SQ/Av4IgEvPP8Eu3wkQW3fy5BWqzI
+        ODoAA6Nn6ytgCqBnEnL5l30tXeDcAT4lvNWh64pz2/3PhsiM
+X-Google-Smtp-Source: ABdhPJxQskuHg1Zi+7C86ZLRqmaudByKDD4u8WVuts4JLYcNnfUwSD8oPrUYtGYp4M5+WP6Y2YIjQFgc2JIWj17byBy3jWiFOXv1
 MIME-Version: 1.0
-References: <20210210230625.550939-1-seanjc@google.com> <20210210230625.550939-8-seanjc@google.com>
-In-Reply-To: <20210210230625.550939-8-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 10 Feb 2021 17:24:08 -0800
-Message-ID: <CANgfPd9DnjYO_mDqpxpAw3o_C=BbeH7hcFX5wJU_tg4nPbk=zA@mail.gmail.com>
-Subject: Re: [PATCH 07/15] KVM: selftests: Capture per-vCPU GPA in perf_test_vcpu_args
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
+X-Received: by 2002:a05:6638:3491:: with SMTP id t17mr6144607jal.81.1613006719315;
+ Wed, 10 Feb 2021 17:25:19 -0800 (PST)
+Date:   Wed, 10 Feb 2021 17:25:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000086723c05bb056425@google.com>
+Subject: possible deadlock in fs_reclaim_acquire (2)
+From:   syzbot <syzbot+a7ab8df042baaf42ae3c@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 3:06 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Capture the per-vCPU GPA in perf_test_vcpu_args so that tests can get
-> the GPA without having to calculate the GPA on their own.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Hello,
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+syzbot found the following issue on:
 
-> ---
->  tools/testing/selftests/kvm/include/perf_test_util.h | 1 +
->  tools/testing/selftests/kvm/lib/perf_test_util.c     | 9 ++++-----
->  2 files changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/include/perf_test_util.h b/tools/testing/selftests/kvm/include/perf_test_util.h
-> index 005f2143adeb..4d53238b139f 100644
-> --- a/tools/testing/selftests/kvm/include/perf_test_util.h
-> +++ b/tools/testing/selftests/kvm/include/perf_test_util.h
-> @@ -18,6 +18,7 @@
->  #define PERF_TEST_MEM_SLOT_INDEX       1
->
->  struct perf_test_vcpu_args {
-> +       uint64_t gpa;
->         uint64_t gva;
->         uint64_t pages;
->
-> diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
-> index 73b0fccc28b9..f22ce1836547 100644
-> --- a/tools/testing/selftests/kvm/lib/perf_test_util.c
-> +++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
-> @@ -127,7 +127,6 @@ void perf_test_setup_vcpus(struct kvm_vm *vm, int vcpus,
->                            bool partition_vcpu_memory_access)
->  {
->         struct perf_test_args *pta = &perf_test_args;
-> -       vm_paddr_t vcpu_gpa;
->         struct perf_test_vcpu_args *vcpu_args;
->         int vcpu_id;
->
-> @@ -140,17 +139,17 @@ void perf_test_setup_vcpus(struct kvm_vm *vm, int vcpus,
->                                          (vcpu_id * vcpu_memory_bytes);
->                         vcpu_args->pages = vcpu_memory_bytes /
->                                            pta->guest_page_size;
-> -                       vcpu_gpa = guest_test_phys_mem +
-> -                                  (vcpu_id * vcpu_memory_bytes);
-> +                       vcpu_args->gpa = guest_test_phys_mem +
-> +                                        (vcpu_id * vcpu_memory_bytes);
->                 } else {
->                         vcpu_args->gva = guest_test_virt_mem;
->                         vcpu_args->pages = (vcpus * vcpu_memory_bytes) /
->                                            pta->guest_page_size;
-> -                       vcpu_gpa = guest_test_phys_mem;
-> +                       vcpu_args->gpa = guest_test_phys_mem;
->                 }
->
->                 pr_debug("Added VCPU %d with test mem gpa [%lx, %lx)\n",
-> -                        vcpu_id, vcpu_gpa, vcpu_gpa +
-> +                        vcpu_id, vcpu_args->gpa, vcpu_args->gpa +
->                          (vcpu_args->pages * pta->guest_page_size));
->         }
->  }
-> --
-> 2.30.0.478.g8a0d178c01-goog
->
+HEAD commit:    825b5991 Merge tag '5.11-rc6-smb3' of git://git.samba.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=117927bf500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
+dashboard link: https://syzkaller.appspot.com/bug?extid=a7ab8df042baaf42ae3c
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a7ab8df042baaf42ae3c@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.11.0-rc6-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.3/24553 is trying to acquire lock:
+ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_acquire+0xf7/0x150 mm/page_alloc.c:4348
+
+but task is already holding lock:
+ffff888019b6b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ffff888019b6b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15c/0x13e0 fs/ext4/xattr.c:2308
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&ei->xattr_sem){++++}-{3:3}:
+       down_read+0x95/0x440 kernel/locking/rwsem.c:1353
+       ext4_setattr+0x570/0x1fd0 fs/ext4/inode.c:5375
+       notify_change+0xb60/0x10a0 fs/attr.c:336
+       chown_common+0x4a9/0x550 fs/open.c:674
+       vfs_fchown fs/open.c:741 [inline]
+       vfs_fchown fs/open.c:733 [inline]
+       ksys_fchown+0x111/0x170 fs/open.c:752
+       __do_sys_fchown fs/open.c:760 [inline]
+       __se_sys_fchown fs/open.c:758 [inline]
+       __x64_sys_fchown+0x6f/0xb0 fs/open.c:758
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #2 (jbd2_handle){++++}-{0:0}:
+       start_this_handle+0xfb4/0x1380 fs/jbd2/transaction.c:446
+       jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:503
+       __ext4_journal_start_sb+0x227/0x4a0 fs/ext4/ext4_jbd2.c:105
+       ext4_sample_last_mounted fs/ext4/file.c:804 [inline]
+       ext4_file_open+0x613/0xb40 fs/ext4/file.c:832
+       do_dentry_open+0x4b9/0x11b0 fs/open.c:817
+       do_open fs/namei.c:3254 [inline]
+       path_openat+0x1b9a/0x2730 fs/namei.c:3371
+       do_filp_open+0x17e/0x3c0 fs/namei.c:3398
+       do_open_execat+0x116/0x690 fs/exec.c:913
+       bprm_execve fs/exec.c:1801 [inline]
+       bprm_execve+0x4be/0x19a0 fs/exec.c:1788
+       do_execveat_common+0x626/0x7c0 fs/exec.c:1915
+       do_execve fs/exec.c:1983 [inline]
+       __do_sys_execve fs/exec.c:2059 [inline]
+       __se_sys_execve fs/exec.c:2054 [inline]
+       __x64_sys_execve+0x8f/0xc0 fs/exec.c:2054
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #1 (sb_internal){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1592 [inline]
+       sb_start_intwrite include/linux/fs.h:1709 [inline]
+       ext4_evict_inode+0xe6f/0x1940 fs/ext4/inode.c:241
+       evict+0x2ed/0x6b0 fs/inode.c:577
+       iput_final fs/inode.c:1653 [inline]
+       iput.part.0+0x57e/0x810 fs/inode.c:1679
+       iput fs/inode.c:1669 [inline]
+       inode_lru_isolate+0x301/0x4f0 fs/inode.c:778
+       __list_lru_walk_one+0x178/0x5c0 mm/list_lru.c:222
+       list_lru_walk_one+0x99/0xd0 mm/list_lru.c:266
+       list_lru_shrink_walk include/linux/list_lru.h:195 [inline]
+       prune_icache_sb+0xdc/0x140 fs/inode.c:803
+       super_cache_scan+0x38d/0x590 fs/super.c:107
+       do_shrink_slab+0x3e4/0x9f0 mm/vmscan.c:511
+       shrink_slab+0x16f/0x5d0 mm/vmscan.c:672
+       shrink_node_memcgs mm/vmscan.c:2665 [inline]
+       shrink_node+0x8cc/0x1de0 mm/vmscan.c:2780
+       kswapd_shrink_node mm/vmscan.c:3523 [inline]
+       balance_pgdat+0x745/0x1270 mm/vmscan.c:3681
+       kswapd+0x5b1/0xdb0 mm/vmscan.c:3938
+       kthread+0x3b1/0x4a0 kernel/kthread.c:292
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+-> #0 (fs_reclaim){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2868 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+       validate_chain kernel/locking/lockdep.c:3608 [inline]
+       __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
+       lock_acquire kernel/locking/lockdep.c:5442 [inline]
+       lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
+       __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
+       fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
+       might_alloc include/linux/sched/mm.h:193 [inline]
+       slab_pre_alloc_hook mm/slab.h:493 [inline]
+       slab_alloc_node mm/slub.c:2817 [inline]
+       __kmalloc_node+0x5f/0x430 mm/slub.c:4015
+       kmalloc_node include/linux/slab.h:575 [inline]
+       kvmalloc_node+0x61/0xf0 mm/util.c:587
+       kvmalloc include/linux/mm.h:781 [inline]
+       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
+       ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
+       ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
+       ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
+       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
+       ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
+       __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
+       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+       vfs_setxattr+0x135/0x320 fs/xattr.c:291
+       setxattr+0x1ff/0x290 fs/xattr.c:553
+       path_setxattr+0x170/0x190 fs/xattr.c:572
+       __do_sys_setxattr fs/xattr.c:587 [inline]
+       __se_sys_setxattr fs/xattr.c:583 [inline]
+       __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
+       do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
+       __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
+       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
+       entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+
+other info that might help us debug this:
+
+Chain exists of:
+  fs_reclaim --> jbd2_handle --> &ei->xattr_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->xattr_sem);
+                               lock(jbd2_handle);
+                               lock(&ei->xattr_sem);
+  lock(fs_reclaim);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor.3/24553:
+ #0: ffff888065bae460 (sb_writers#5){.+.+}-{0:0}, at: path_setxattr+0xb5/0x190 fs/xattr.c:570
+ #1: ffff888019b6b688 (&type->i_mutex_dir_key#4){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
+ #1: ffff888019b6b688 (&type->i_mutex_dir_key#4){++++}-{3:3}, at: vfs_setxattr+0x117/0x320 fs/xattr.c:290
+ #2: ffff888019b6b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
+ #2: ffff888019b6b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x15c/0x13e0 fs/ext4/xattr.c:2308
+
+stack backtrace:
+CPU: 1 PID: 24553 Comm: syz-executor.3 Not tainted 5.11.0-rc6-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+ check_prev_add kernel/locking/lockdep.c:2868 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+ validate_chain kernel/locking/lockdep.c:3608 [inline]
+ __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5442 [inline]
+ lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
+ __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
+ fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
+ might_alloc include/linux/sched/mm.h:193 [inline]
+ slab_pre_alloc_hook mm/slab.h:493 [inline]
+ slab_alloc_node mm/slub.c:2817 [inline]
+ __kmalloc_node+0x5f/0x430 mm/slub.c:4015
+ kmalloc_node include/linux/slab.h:575 [inline]
+ kvmalloc_node+0x61/0xf0 mm/util.c:587
+ kvmalloc include/linux/mm.h:781 [inline]
+ ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
+ ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
+ ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
+ ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
+ ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
+ ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
+ ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
+ __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+ __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+ vfs_setxattr+0x135/0x320 fs/xattr.c:291
+ setxattr+0x1ff/0x290 fs/xattr.c:553
+ path_setxattr+0x170/0x190 fs/xattr.c:572
+ __do_sys_setxattr fs/xattr.c:587 [inline]
+ __se_sys_setxattr fs/xattr.c:583 [inline]
+ __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
+ do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
+ __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fe7549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55c05fc EFLAGS: 00000296 ORIG_RAX: 00000000000000e2
+RAX: ffffffffffffffda RBX: 00000000200000c0 RCX: 00000000200001c0
+RDX: 0000000020001700 RSI: 0000000000000e01 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
