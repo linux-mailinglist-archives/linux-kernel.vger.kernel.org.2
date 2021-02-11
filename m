@@ -2,130 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13639318296
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C8D31829B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhBKAX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 19:23:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229983AbhBKAXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:23:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D25B64E31;
-        Thu, 11 Feb 2021 00:23:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613002989;
-        bh=PTT6ky04EJ9/t3h3wg4Vxk/mjQTZfuTYXD4lx+Mq7e8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KVi1giFbr8DsKGW5O2kJoT4vSN8nm+WB4OwFKBwFYucIwI25TzjPfoqA7oA6rC1vs
-         QHVzhNQOOrFfBNItLdrVXgFS6QUlqP02LClJ9QFDHYA28xtXdiZbGzMRldVdhbZHgv
-         7j6c4rLbB7em2XPPlDA5+bF+euwTsoGeYeOk4t7ChsflH8TrNKB1PyICAYt2f7+j2n
-         twPSqHoRqjcw5JXHK1C1Mt3bNczcHmGvkFBBe2m25QVyRnvZkn4lSkTCSuxIOKm7wv
-         WGGhDJXFAYd0f5Pn15cvjWL+bLGAJnQQi88fsvOhGdwdMJAgsHfE3osaMz9X6+XSA/
-         JsYPoFUJYcrXg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0DBD235238B1; Wed, 10 Feb 2021 16:23:09 -0800 (PST)
-Date:   Wed, 10 Feb 2021 16:23:09 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Li Zefan <lizefan@huawei.com>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v4 0/8] support for bitmap (and hence CPU) list "N"
- abbreviation
-Message-ID: <20210211002309.GL2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210209225907.78405-1-paul.gortmaker@windriver.com>
- <YCQJToq1d63BU55S@smile.fi.intel.com>
- <20210210175751.GH2743@paulmck-ThinkPad-P72>
- <CAAH8bW-oZG_h3F-d9Rc4wUwSZxNPR+sdeY41yZ+BpwAjXSCXWw@mail.gmail.com>
+        id S230385AbhBKAZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 19:25:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229756AbhBKAZy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 19:25:54 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B328CC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:25:13 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a9so7357793ejr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:25:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RHZyjDLOFDi0ZfkqD61Yg3tZtOTffsyWTFvMKMIBqsk=;
+        b=QOgP6URktIoHtmzQTAYppRNvm6zFn6NxboC+4KZJpsB3pxuX3MEWF3Lnf9Q+WxwZ2N
+         JjgvdfcoaNoZQrgwcZm/suJd93cwKcrNpKljF/PJf5KEUK6PBufCHbO6bg/6DwGSXAgj
+         7uvnK6KMd25eSy+ZgsF/OJu37jp0x/i87n0pH/yNUjCOsEc03FtXoS0DFE9L70cCXH8C
+         Ba6zwx2H2cOc5pueHFyGrm7TPMmewIUZf+wdjJ7OJWWr4sgQZ99p5QCF5b5bYGh450uR
+         qThsUJ5z58stqZ83AyDD5oHl8w+6AuqUEp5HlGniSR208pplcMWy0ouKOxN7rGwt3hrl
+         mLQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RHZyjDLOFDi0ZfkqD61Yg3tZtOTffsyWTFvMKMIBqsk=;
+        b=HCtaW405gPS+eBD2lC3mPnew5ZMyVpTO/mdzB/Ne2t75+vu4IVzfmmM0hy1jSYPWkM
+         ByRvZHZfkezsJc9TB9cTcn4EELus1FbJqnwJT/tbXDNWTbe66ib5ZD93zbkka30lK3/E
+         DOurYrHXZ2r3ZVtq5hdLM5I0AkAs3VKGUxYVzd0bCNV2BqzbIR/wSAhU8nZWqaXp10+T
+         ErEFy1PeQFnAn1D7hI3qwaCUCMOfErt17G+v+vQlHWVmcVgx7UrSquwFmDBosgCf7kVX
+         KvpLFaNq2f4oDC3PVD6ZMXjpWDh+D+zNI/jRuOFV+2PWSMeLZDjSFlv/k6dil4Mq4EsX
+         jWvw==
+X-Gm-Message-State: AOAM530QD7kPYFnpqzLPDYlFAeELrDQ9bO55BoO7Bai3Yfrc8+Fll+9l
+        FHyjkfGRq/xqqNgwPGCWchRg19ZV4Kec6beU6PdF
+X-Google-Smtp-Source: ABdhPJy0a3+FyBRiGWnsDbYetXqlm9kV3kpbG6lLHcGNtYRoztkaWSUQX0snDzneJ/A3OVGRTJdhSedCWBZx1y7huzI=
+X-Received: by 2002:a17:906:1199:: with SMTP id n25mr5455044eja.431.1613003112253;
+ Wed, 10 Feb 2021 16:25:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAH8bW-oZG_h3F-d9Rc4wUwSZxNPR+sdeY41yZ+BpwAjXSCXWw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210129164926.3939-1-nramas@linux.microsoft.com>
+In-Reply-To: <20210129164926.3939-1-nramas@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 10 Feb 2021 19:25:00 -0500
+Message-ID: <CAHC9VhQR7pq3h2ca28SynkRiT7D-aa=EowPkurci8Nug1W=ySQ@mail.gmail.com>
+Subject: Re: [PATCH v2] selinux: measure state and policy capabilities
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, sashal@kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 03:50:07PM -0800, Yury Norov wrote:
-> On Wed, Feb 10, 2021 at 9:57 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, Feb 10, 2021 at 06:26:54PM +0200, Andy Shevchenko wrote:
-> > > On Tue, Feb 09, 2021 at 05:58:59PM -0500, Paul Gortmaker wrote:
-> > > > The basic objective here was to add support for "nohz_full=8-N" and/or
-> > > > "rcu_nocbs="4-N" -- essentially introduce "N" as a portable reference
-> > > > to the last core, evaluated at boot for anything using a CPU list.
-> > >
-> > > I thought we kinda agreed that N is confusing and L is better.
-> > > N to me is equal to 32 on 32 core system as *number of cores / CPUs*. While L
-> > > sounds better as *last available CPU number*.
-> >
-> > The advantage of "N" is that people will automatically recognize it as
-> > "last thing" or number of things" because "N" has long been used in
-> > both senses.  In contrast, someone seeing "0-L" for the first time is
-> > likely to go "What???".
-> >
-> > Besides, why would someone interpret "N" as "number of CPUs" when doing
-> > that almost always gets you an invalid CPU number?
-> >
-> >                                                         Thanx, Paul
-> 
-> I have no strong opinion about a letter, but I like Andy's idea to make it
-> case-insensitive.
-> 
-> There is another comment from the previous iteration not addressed so far.
-> 
-> This idea of the N notation is to make the bitmap list interface more robust
-> when we share the configs between different machines. What we have now
-> is definitely a good thing, but not completely portable except for cases
-> 'N', '0-N' and 'N-N'.
-> 
-> For example, if one user adds rcu_nocbs= '4-N', and it works perfectly fine for
-> him, another user with s NR_CPUS == 2 will fail to boot with such a config.
-> 
-> This is not a problem of course in case of absolute values because nobody
-> guaranteed robustness. But this N feature would be barely useful in practice,
-> except for 'N', '0-N' and 'N-N' as I mentioned before, because there's always
-> a chance to end up with a broken config.
-> 
-> We can improve on robustness a lot if we take care about this case.For me,
-> the more reliable interface would look like this:
-> 1. chunks without N work as before.
-> 2. if 'a-N' is passed where a>=N, we drop chunk and print warning message
-> 3. if 'a-N' is passed where a>=N together with a control key, we set last bit
-> and print warning.
-> 
-> For example, on 2-core CPU:
-> "4-2" --> error
-> "4-4" --> error
-> "4-N" --> drop and warn
-> "X, 4-N" --> set last bit and warn
-> 
-> Any comments?
+On Fri, Jan 29, 2021 at 11:49 AM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+>
+> SELinux stores the configuration state and the policy capabilities
+> in kernel memory.  Changes to this data at runtime would have an impact
+> on the security guarantees provided by SELinux.  Measuring this data
+> through IMA subsystem provides a tamper-resistant way for
+> an attestation service to remotely validate it at runtime.
+>
+> Measure the configuration state and policy capabilities by calling
+> the IMA hook ima_measure_critical_data().
+>
+> To enable SELinux data measurement, the following steps are required:
+>
+>  1, Add "ima_policy=critical_data" to the kernel command line arguments
+>     to enable measuring SELinux data at boot time.
+>     For example,
+>       BOOT_IMAGE=/boot/vmlinuz-5.11.0-rc3+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
+>
+>  2, Add the following rule to /etc/ima/ima-policy
+>        measure func=CRITICAL_DATA label=selinux
+>
+> Sample measurement of SELinux state and policy capabilities:
+>
+> 10 2122...65d8 ima-buf sha256:13c2...1292 selinux-state 696e...303b
+>
+> Execute the following command to extract the measured data
+> from the IMA's runtime measurements list:
+>
+>   grep "selinux-state" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6 | xxd -r -p
+>
+> The output should be a list of key-value pairs. For example,
+>  initialized=1;enforcing=0;checkreqprot=1;network_peer_controls=1;open_perms=1;extended_socket_class=1;always_check_network=0;cgroup_seclabel=1;nnp_nosuid_transition=1;genfs_seclabel_symlinks=0;
+>
+> To verify the measurement is consistent with the current SELinux state
+> reported on the system, compare the integer values in the following
+> files with those set in the IMA measurement (using the following commands):
+>
+>  - cat /sys/fs/selinux/enforce
+>  - cat /sys/fs/selinux/checkreqprot
+>  - cat /sys/fs/selinux/policy_capabilities/[capability_file]
+>
+> Note that the actual verification would be against an expected state
+> and done on a separate system (likely an attestation server) requiring
+> "initialized=1;enforcing=1;checkreqprot=0;"
+> for a secure state and then whatever policy capabilities are actually
+> set in the expected policy (which can be extracted from the policy
+> itself via seinfo, for example).
+>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> Suggested-by: Paul Moore <paul@paul-moore.com>
+> ---
+>  security/selinux/ima.c         | 77 ++++++++++++++++++++++++++++++++--
+>  security/selinux/include/ima.h |  6 +++
+>  security/selinux/selinuxfs.c   |  6 +++
+>  security/selinux/ss/services.c |  2 +-
+>  4 files changed, 86 insertions(+), 5 deletions(-)
+>
+> diff --git a/security/selinux/ima.c b/security/selinux/ima.c
+> index 03715893ff97..5c7f73cd1117 100644
+> --- a/security/selinux/ima.c
+> +++ b/security/selinux/ima.c
+> @@ -13,18 +13,73 @@
+>  #include "ima.h"
+>
+>  /*
+> - * selinux_ima_measure_state - Measure hash of the SELinux policy
+> + * selinux_ima_collect_state - Read selinux configuration settings
+>   *
+> - * @state: selinux state struct
+> + * @state: selinux_state
+>   *
+> - * NOTE: This function must be called with policy_mutex held.
+> + * On success returns the configuration settings string.
+> + * On error, returns NULL.
+>   */
+> -void selinux_ima_measure_state(struct selinux_state *state)
+> +static char *selinux_ima_collect_state(struct selinux_state *state)
+> +{
+> +       const char *on = "=1;", *off = "=0;";
+> +       char *buf;
+> +       int buf_len, i;
+> +
+> +       /*
+> +        * Size of the following string including the terminating NULL char
+> +        *    initialized=0;enforcing=0;checkreqprot=0;
+> +        */
+> +       buf_len = 42;
 
-We really don't know the user's intent, and we cannot have complete
-portability without knowing the user's intent.  For example, "4-N" means
-"all but the first four CPUs", in which case an error is appropriate
-because "4-N" makes no more sense on a 2-CPU system than does "4-1".
-I could see a potential desire for some notation for "the last two CPUs",
-but let's please have a real need for such a thing before overengineering
-this patch series any further.
+It might be safer over the long term, and self-documenting, to do the
+following instead:
 
-To get the level of portability you seem to be looking for, we need some
-higher-level automation that knows how many CPUs there are and what
-the intent is.  That automation can then generate the cpumasks for a
-given system.  But for more typical situations, what Paul has now will
-work fine.
+  buf_len = strlen("initialized=0;enforcing=0;checkreqprot=0;") + 1;
 
-Paul Gortmaker's patch series is doing something useful.  We should
-not let potential future desires prevent us from taking a very useful
-step forward.
+> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++)
+> +               buf_len += strlen(selinux_policycap_names[i]) + 3;
 
-							Thanx, Paul
+'s/3/strlen(on)/' or is that too much?
+
+> +
+> +       buf = kzalloc(buf_len, GFP_KERNEL);
+> +       if (!buf)
+> +               return NULL;
+> +
+> +       strscpy(buf, "initialized", buf_len);
+
+I wonder if it might be a good idea to add a WARN_ON() to the various
+copies, e.g.:
+
+  rc = strXXX(...);
+  WARN_ON(rc);
+
+The strscpy/strlcat protections should ensure that nothing terrible
+happens with respect to wandering off the end of the string, or
+failing to NUL terminate, but they won't catch a logic error where the
+string is not allocated correctly (resulting in a truncated buffer).
+
+> +       strlcat(buf, selinux_initialized(state) ? on : off, buf_len);
+> +
+> +       strlcat(buf, "enforcing", buf_len);
+> +       strlcat(buf, enforcing_enabled(state) ? on : off, buf_len);
+> +
+> +       strlcat(buf, "checkreqprot", buf_len);
+> +       strlcat(buf, checkreqprot_get(state) ? on : off, buf_len);
+> +
+> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
+> +               strlcat(buf, selinux_policycap_names[i], buf_len);
+> +               strlcat(buf, state->policycap[i] ? on : off, buf_len);
+> +       }
+> +
+> +       return buf;
+> +}
+
+-- 
+paul moore
+www.paul-moore.com
