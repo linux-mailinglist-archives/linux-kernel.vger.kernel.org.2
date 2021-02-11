@@ -2,153 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53939318564
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E6731856B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhBKGwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 01:52:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229678AbhBKGwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 01:52:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A422964D9A;
-        Thu, 11 Feb 2021 06:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613026291;
-        bh=/bqBzgsBwYu/4OWo8yzcEBn/7GQQ8Lv9Niz3kBW/VWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1QJjeqSTOBLk8sQWqKjJZqLaZA933MTVDA3vE1bYAgp+pbNmVJam/IcUXg46nXzRS
-         0QAaaMpQZBWtebp8LATsgI2tZhJyAmpU8GsDdu24fK4SVwpUYtaH367sVMUzU83kaK
-         xjGz6S7Uyc+RmTHL23aiYf1ZlyJ6NfCJdu1OZR+s=
-Date:   Thu, 11 Feb 2021 07:51:28 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bodo Stroesser <bostroesser@gmail.com>
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Mike Christie <michael.christie@oracle.com>
-Subject: Re: [PATCH 1/2] uio: Add late_release callback to uio_info
-Message-ID: <YCTT8HQ7PobTyUz4@kroah.com>
-References: <20210210194031.7422-1-bostroesser@gmail.com>
- <20210210194031.7422-2-bostroesser@gmail.com>
- <YCQ4aEz29P26ZxaL@kroah.com>
- <7bc9eef9-0a9e-58a9-11f1-2c32010c70f0@gmail.com>
+        id S229756AbhBKGyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 01:54:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhBKGxz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 01:53:55 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE96DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 22:53:11 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id s11so5833281edd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 22:53:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NrN4FfPe5CMHaaU1dbu02FtdHBZWG5buzc/G7deMVgU=;
+        b=ray3Xpbvqqfw2/L13BH10nsKdUmzDf6NL/V5NUroNiILdUUKcR8KnIrjlyapwepevO
+         0bAudgtLnKfpQmFXBLBNaABqlntdajUrvBbDiTlI1J+A9YyJx9gfhQp2ERDLgw7Tpt/8
+         +TGEIRHLCRpoAW9iZLUI877S42N7JECtlXezEyIttuR5caQz/1BDChI83Bl2ePeY9sA1
+         cgQ9sV1GaHLql+df+gakuK5ayYdyjkqVSAT4RgXVcOnmm/qEiN8JHacIS+8WQivjMVco
+         +HhjHuhSSxsL/RO/SsTh2ib1zlw2FAdB1proZZ2FS0veiumBL1OZJASKjdyuyOPYaQwQ
+         jSTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NrN4FfPe5CMHaaU1dbu02FtdHBZWG5buzc/G7deMVgU=;
+        b=OUPGV4n/EBedyW86fpctpR/k+H6quqb/wBIOnF86BU8Q2brFJMzAvMla7rjI7gu53M
+         4OeV4QTRTo9bYEglIIlfOlVtjbUq+1CILElecJF8mswEpGubqEpgSjrf8u/3Okh/jDpn
+         u25ZW+SRjyshkH1tboUmdzpPsNOBqyTsFLXZv6oRX5PQCDj9bpNI1sBa6xTxU4vo/vuU
+         zUg0XDgjBfnrOYh7MVinUsMCS1iGZ09NXaMtMz2bOLwY8diFZkTug2kxK/HyC9WqXHeC
+         V3f1HnerWeXJ4nxfzsBM7XaW9L9sjHU/x66VZ0zlx3faz1L/NRslv+1XjIYa0GBO51f/
+         ifxw==
+X-Gm-Message-State: AOAM532Owdf7e2OM8MosOnbJ12NLMr9ZHX3gd3GLL28mBbEkEcE1emOh
+        H3wKfODWJ4EyClI4FFi3vTE=
+X-Google-Smtp-Source: ABdhPJwqGBgF72DY+3WAno6ovOdlez4lkzBI4kD6pM5/AlzGgPzxPbioIf3FiA7SW4E4vLOxd6HlZA==
+X-Received: by 2002:a05:6402:4310:: with SMTP id m16mr6793687edc.207.1613026390417;
+        Wed, 10 Feb 2021 22:53:10 -0800 (PST)
+Received: from localhost ([49.205.77.137])
+        by smtp.gmail.com with ESMTPSA id f6sm2993875edk.13.2021.02.10.22.53.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 22:53:10 -0800 (PST)
+Date:   Thu, 11 Feb 2021 12:23:05 +0530
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     Fatih YILDIRIM <yildirim.fatih@gmail.com>
+Cc:     gregkh@linuxfoundation.org, gustavo@embeddedor.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Macros with complex values should be enclosed in
+ parentheses.
+Message-ID: <20210211065305.llj6xr5phtnsv6ha@xps.yggdrail>
+References: <20210211062543.9817-1-yildirim.fatih@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7bc9eef9-0a9e-58a9-11f1-2c32010c70f0@gmail.com>
+In-Reply-To: <20210211062543.9817-1-yildirim.fatih@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 08:57:11PM +0100, Bodo Stroesser wrote:
-> On 10.02.21 20:47, Greg Kroah-Hartman wrote:
-> > On Wed, Feb 10, 2021 at 08:40:30PM +0100, Bodo Stroesser wrote:
-> > > If uio_unregister_device() is called while userspace daemon
-> > > still holds the uio device open or mmap'ed, uio will not call
-> > > uio_info->release() on later close / munmap.
-> > > 
-> > > At least one user of uio (tcmu) should not free resources (pages
-> > > allocated by tcmu which are mmap'ed to userspace) while uio
-> > > device still is open, because that could cause userspace daemon
-> > > to be killed by SIGSEGV or SIGBUS. Therefore tcmu frees the
-> > > pages only after it called uio_unregister_device _and_ the device
-> > > was closed.
-> > > So, uio not calling uio_info->release causes trouble.
-> > > tcmu currently leaks memory in that case.
-> > > 
-> > > Just waiting for userspace daemon to exit before calling
-> > > uio_unregister_device I think is not the right solution, because
-> > > daemon would not become aware of kernel code wanting to destroy
-> > > the uio device.
-> > > After uio_unregister_device was called, reading or writing the
-> > > uio device returns -EIO, which normally results in daemon exit.
-> > > 
-> > > This patch adds new callback pointer 'late_release' to struct
-> > > uio_info. If uio user sets this callback, it will be called by
-> > > uio if userspace closes / munmaps the device after
-> > > uio_unregister_device was executed.
-> > > 
-> > > That way we can use uio_unregister_device() to notify userspace
-> > > that we are going to destroy the device, but still get a call
-> > > to late_release when uio device is finally closed.
-> > > 
-> > > Signed-off-by: Bodo Stroesser <bostroesser@gmail.com>
-> > > ---
-> > >   Documentation/driver-api/uio-howto.rst | 10 ++++++++++
-> > >   drivers/uio/uio.c                      |  4 ++++
-> > >   include/linux/uio_driver.h             |  4 ++++
-> > >   3 files changed, 18 insertions(+)
-> > > 
-> > > diff --git a/Documentation/driver-api/uio-howto.rst b/Documentation/driver-api/uio-howto.rst
-> > > index 907ffa3b38f5..a2d57a7d623a 100644
-> > > --- a/Documentation/driver-api/uio-howto.rst
-> > > +++ b/Documentation/driver-api/uio-howto.rst
-> > > @@ -265,6 +265,16 @@ the members are required, others are optional.
-> > >      function. The parameter ``irq_on`` will be 0 to disable interrupts
-> > >      and 1 to enable them.
-> > > +-  ``int (*late_release)(struct uio_info *info, struct inode *inode)``:
-> > > +   Optional. If you define your own :c:func:`open()`, you will
-> > > +   in certain cases also want a custom :c:func:`late_release()`
-> > > +   function. If uio device is unregistered - by calling
-> > > +   :c:func:`uio_unregister_device()` - while it is open or mmap'ed by
-> > > +   userspace, the custom :c:func:`release()` function will not be
-> > > +   called when userspace later closes the device. An optionally
-> > > +   specified :c:func:`late_release()` function will be called in that
-> > > +   situation.
-> > > +
-> > >   Usually, your device will have one or more memory regions that can be
-> > >   mapped to user space. For each region, you have to set up a
-> > >   ``struct uio_mem`` in the ``mem[]`` array. Here's a description of the
-> > > diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
-> > > index ea96e319c8a0..0b2636f8d373 100644
-> > > --- a/drivers/uio/uio.c
-> > > +++ b/drivers/uio/uio.c
-> > > @@ -532,6 +532,8 @@ static int uio_release(struct inode *inode, struct file *filep)
-> > >   	mutex_lock(&idev->info_lock);
-> > >   	if (idev->info && idev->info->release)
-> > >   		ret = idev->info->release(idev->info, inode);
-> > > +	else if (idev->late_info && idev->late_info->late_release)
-> > > +		ret = idev->late_info->late_release(idev->late_info, inode);
-> > >   	mutex_unlock(&idev->info_lock);
-> > 
-> > Why can't release() be called here?  Why doesn't your driver define a
-> > release() if it cares about this information?  Why do we need 2
-> > different callbacks that fire at exactly the same time?
-> > 
-> > This feels really wrong.
-> > 
-> > greg k-h
-> > 
-> 
-> tcmu has a release callback. But uio can't call it after
-> uio_unregister_device was executed, because in uio_unregister_device
-> uio sets the uio_device::info to NULL.
+On 21/02/11 09:25AM, Fatih YILDIRIM wrote:
+> Signed-off-by: Fatih YILDIRIM <yildirim.fatih@gmail.com>
+> ---
+> Hi,
+> I have a coding style fix.
+> By the way, I'm following the Eudyptula Challenge Linux kernel tasks
+> and this is my first patch related to my task no 10.
+> I hope I'm doing it the right way.
+> Thanks for your understanding and kind comments.
+>
+>  drivers/staging/ks7010/ks_hostif.h | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/staging/ks7010/ks_hostif.h b/drivers/staging/ks7010/ks_hostif.h
+> index 39138191a556..c62a494ed6bb 100644
+> --- a/drivers/staging/ks7010/ks_hostif.h
+> +++ b/drivers/staging/ks7010/ks_hostif.h
+> @@ -498,20 +498,20 @@ struct hostif_mic_failure_request {
+>  #define TX_RATE_FIXED		5
+>
+>  /* 11b rate */
+> -#define TX_RATE_1M	(u8)(10 / 5)	/* 11b 11g basic rate */
+> -#define TX_RATE_2M	(u8)(20 / 5)	/* 11b 11g basic rate */
+> -#define TX_RATE_5M	(u8)(55 / 5)	/* 11g basic rate */
+> -#define TX_RATE_11M	(u8)(110 / 5)	/* 11g basic rate */
+> +#define TX_RATE_1M	((u8)(10 / 5))	/* 11b 11g basic rate */
+> +#define TX_RATE_2M	((u8)(20 / 5))	/* 11b 11g basic rate */
+> +#define TX_RATE_5M	((u8)(55 / 5))	/* 11g basic rate */
+> +#define TX_RATE_11M	((u8)(110 / 5))	/* 11g basic rate */
+>
+>  /* 11g rate */
+> -#define TX_RATE_6M	(u8)(60 / 5)	/* 11g basic rate */
+> -#define TX_RATE_12M	(u8)(120 / 5)	/* 11g basic rate */
+> -#define TX_RATE_24M	(u8)(240 / 5)	/* 11g basic rate */
+> -#define TX_RATE_9M	(u8)(90 / 5)
+> -#define TX_RATE_18M	(u8)(180 / 5)
+> -#define TX_RATE_36M	(u8)(360 / 5)
+> -#define TX_RATE_48M	(u8)(480 / 5)
+> -#define TX_RATE_54M	(u8)(540 / 5)
+> +#define TX_RATE_6M	((u8)(60 / 5))	/* 11g basic rate */
+> +#define TX_RATE_12M	((u8)(120 / 5))	/* 11g basic rate */
+> +#define TX_RATE_24M	((u8)(240 / 5))	/* 11g basic rate */
+> +#define TX_RATE_9M	((u8)(90 / 5))
+> +#define TX_RATE_18M	((u8)(180 / 5))
+> +#define TX_RATE_36M	((u8)(360 / 5))
+> +#define TX_RATE_48M	((u8)(480 / 5))
+> +#define TX_RATE_54M	((u8)(540 / 5))
+>
+>  static inline bool is_11b_rate(u8 rate)
+>  {
+> --
+> 2.20.1
+>
+> _______________________________________________
+> devel mailing list
+> devel@linuxdriverproject.org
+> http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
 
-As it should because the driver could then be gone.  It should NEVER
-call back into it again.
+Hey Fatih
 
-> So, uio would never call both callbacks for the same release action,
-> but would call release before uio_unregister_device is executed, and
-> late_release after that.
+Try looking at accepted patches before you send one through
+Like dan carpenter says sit on the patch for a day no matter how simple.
+I think greg's bot picked up you have no commit message
 
-That's not ok.
+Try using --annotate with git send-email to confirm your changes before
+you send it.
 
-> Of course it would be good for tcmu if uio would call uio_info:release even
-> after uio_unregister_device, but changing this AFAICS could cause
-> trouble in other drivers using uio.
+I too made such a mistake so relax and take time before you send
+Ideally send it to yourself first.
+I am also a mentee :)
 
-You are confusing two different lifetime rules here it seems.  One is
-the char device and one is the struct device.  They work independently
-as different users affect them.
-
-So if one is removed from the system, do not try to keep a callback to
-it, otherwise you will crash.
-
-And why is scsi using the uio driver in the first place?  That feels
-really odd to me.  Why not just make a "real" driver if you want to
-somehow tie these two lifetimes together?
-
-thanks,
-
-greg k-h
+cheers,
+aakash hemadri
