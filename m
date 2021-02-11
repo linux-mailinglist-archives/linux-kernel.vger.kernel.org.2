@@ -2,175 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FC2318E62
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9EA318E57
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhBKPZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 10:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhBKO50 (ORCPT
+        id S229743AbhBKPYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:24:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37739 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229655AbhBKO6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:57:26 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCDEC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:56:44 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id d7so5360652otq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:56:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RmVDQyx+Ndcv5SeblotXpQRe27Egv2RqGDvlo6R5U8w=;
-        b=E2yi8Dzo7qq3E3/flljC3xH7tiHdegmynb0SA7JlYIz5EM1sj6y32R7tM/aX9DYRic
-         K+hqQA0/ECrgtm5QdSQmTLpcu8HZWUSLZuquZhonvDmxHXsor2V3Ekd730+4qyLBylcH
-         5EHSAuBOoS1VnBHeezqtR3TIZEBKmUAZXQNaQ=
+        Thu, 11 Feb 2021 09:58:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613055429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gFCDuYQ0NJSVtwITqtQ+46tToq+Osod385U12POaAjM=;
+        b=DMAgDGCXEEhbaJaohPSpkCl4RESJNH8sa4rX64TdFCGieDOAle+rD1HoFTUHz9hViciDQI
+        S7cA5Sx5bod2fJG9bAA1DRovTpuEgRQ0BoU09eQzERhkpTLx2cvIW6Rjdn0r3SkY4bBdTB
+        UYCS7SSS8bG/sqY1g+cqh7SmIZCz+M4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-1Y15n9JqOXuBkB6PFUGZnA-1; Thu, 11 Feb 2021 09:57:05 -0500
+X-MC-Unique: 1Y15n9JqOXuBkB6PFUGZnA-1
+Received: by mail-ed1-f69.google.com with SMTP id i13so4604265edq.19
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:57:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RmVDQyx+Ndcv5SeblotXpQRe27Egv2RqGDvlo6R5U8w=;
-        b=PTUzjI6Norom6hatYhsAi1HyLKrsR997LEEMwuOGQslWMrMDVLJKf71yxvZPCFBANf
-         LI+hzYtZy3uwx9Dh7Rl4fllVy4YvNSuhEHNxUgqN2/OSFT92VGHRaPAbTFYWGlSmGNTj
-         ns0F8CRFwNMrx+tIdZkRsv9JW/ZjIevTW1dC9aWpz2kFwAvCdZl6wOhidEg+P8Z9XBJ0
-         q3q8O7iTFJPBnHwJsZq/4Z7o6uqoaH0AwWvj1I1l1wRM5qyR22NPMQOlWyqJ84+7T1gU
-         4a5SRQyBIUdEN8hJ/kGRgH+fT6a4k6oZFVPgDPqlnuXtH4wihpQBmKqX+rqkYp3TFcHx
-         iNQQ==
-X-Gm-Message-State: AOAM533b3+6ULrPzRZK2tf5ENBPZUpioqLLBlISUBz4HY6PALm6Sp1Z+
-        SW4U3UKagN8FYrRJUvGyufuCe44oIVxN4L0p/LJxWA==
-X-Google-Smtp-Source: ABdhPJw3fjkRP9gLP7q/RDjMJ5TKsouRdxxZLHu0I2VLcTiQg1aD1zxxpNTCk8c6mMpxWvFuDBl3KNzaOyf4zVs07lM=
-X-Received: by 2002:a9d:2270:: with SMTP id o103mr5794245ota.303.1613055403311;
- Thu, 11 Feb 2021 06:56:43 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gFCDuYQ0NJSVtwITqtQ+46tToq+Osod385U12POaAjM=;
+        b=Iwp54FSTFkNGbFClqRgMR0SjO6sQIKMkW/+zQHByO1fslSbXkENaUcdOzjf8XTmM8g
+         RsZ69Pbq8cfihXYaOjStarKbqQzNkAV/yXysFqzWtFGbsV5zks30N97DzNhL8ilZ+2Vy
+         NJUuzNcHYSUMIK8tFJa+5xqu2Go5IROJ+lhEjHMxYW5tjuJVkYZQQ2cYEoSe67Sy4VZ7
+         aDkcxxLs37Q7qw7F7lcpoi0TpqNkRuxxn4DOOtWupukt09AUcuzWtEhU7qzwLFwg2ubO
+         pu10YIE9o5xHnBHzKsWevMCR22bDFxzGcvZH0z1273htobcO5UIaq54SNe17+gQY+RNe
+         3N+Q==
+X-Gm-Message-State: AOAM533PcWNfaLF5tBTE3Hm93oI9JOHqMZ8WNES6a51ezRzsdHmJYW6w
+        8BalNrEaPuUayyPZNBFGIYsU4rwEzhmmiUvJlDX2HwujQ03E0L5TW5k6Kqc+n4csQGk8PDOTR88
+        GKaYbF4X+ajLOyPOBsrOvn1z7
+X-Received: by 2002:a17:906:af15:: with SMTP id lx21mr8842912ejb.139.1613055424623;
+        Thu, 11 Feb 2021 06:57:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyeH4FkCLGBkXk194sjR+p03o5Zq0FzJ5zSMRQEIg/gWSDHV6WIdPXXz75vHhwbeQrmSsX0sg==
+X-Received: by 2002:a17:906:af15:: with SMTP id lx21mr8842889ejb.139.1613055424403;
+        Thu, 11 Feb 2021 06:57:04 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id b11sm4582514eja.115.2021.02.11.06.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 06:57:03 -0800 (PST)
+Date:   Thu, 11 Feb 2021 15:57:01 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v4 00/17] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210211145701.qikgx5czosdwx3mm@steredhat>
+References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
+ <20210207111954-mutt-send-email-mst@kernel.org>
+ <8bd3789c-8df1-4383-f233-b4b854b30970@kaspersky.com>
 MIME-Version: 1.0
-References: <20210205133632.2827730-1-daniel.vetter@ffwll.ch> <20210210214053.GA610964@bjorn-Precision-5520>
-In-Reply-To: <20210210214053.GA610964@bjorn-Precision-5520>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu, 11 Feb 2021 15:56:30 +0100
-Message-ID: <CAKMK7uHi3Uvze3epTPC4613UzbT24LSO2GP8EkU8nxaKxOQBSA@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Also set up legacy files only after sysfs init
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <8bd3789c-8df1-4383-f233-b4b854b30970@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:40 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+Hi Arseny,
+
+On Mon, Feb 08, 2021 at 09:32:59AM +0300, Arseny Krasnov wrote:
 >
-> On Fri, Feb 05, 2021 at 02:36:32PM +0100, Daniel Vetter wrote:
-> > We are already doing this for all the regular sysfs files on PCI
-> > devices, but not yet on the legacy io files on the PCI buses. Thus far
-> > no problem, but in the next patch I want to wire up iomem revoke
-> > support. That needs the vfs up and running already to make sure that
-> > iomem_get_mapping() works.
-> >
-> > Wire it up exactly like the existing code in
-> > pci_create_sysfs_dev_files(). Note that pci_remove_legacy_files()
-> > doesn't need a check since the one for pci_bus->legacy_io is
-> > sufficient.
-> >
-> > An alternative solution would be to implement a callback in sysfs to
-> > set up the address space from iomem_get_mapping() when userspace calls
-> > mmap(). This also works, but Greg didn't really like that just to work
-> > around an ordering issue when the kernel loads initially.
-> >
-> > v2: Improve commit message (Bjorn)
-> >
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
->
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
->
-> I wish we weren't extending a known-racy mechanism to do this, but at
-> least we're not *adding* a brand new race.
+>On 07.02.2021 19:20, Michael S. Tsirkin wrote:
+>> On Sun, Feb 07, 2021 at 06:12:56PM +0300, Arseny Krasnov wrote:
+>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
+>>> transport.
+>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>> do it, two new packet operations were added: first for start of record
+>>>  and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+>>> both operations carries metadata - to maintain boundaries and payload
+>>> integrity. Metadata is introduced by adding special header with two
+>>> fields - message count and message length:
+>>>
+>>> 	struct virtio_vsock_seq_hdr {
+>>> 		__le32  msg_cnt;
+>>> 		__le32  msg_len;
+>>> 	} __attribute__((packed));
+>>>
+>>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+>>> packets(buffer of second virtio descriptor in chain) in the same way as
+>>> data transmitted in RW packets. Payload was chosen as buffer for this
+>>> header to avoid touching first virtio buffer which carries header of
+>>> packet, because someone could check that size of this buffer is equal
+>>> to size of packet header. To send record, packet with start marker is
+>>> sent first(it's header contains length of record and counter), then
+>>> counter is incremented and all data is sent as usual 'RW' packets and
+>>> finally SEQ_END is sent(it also carries counter of message, which is
+>>> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
+>>> incremented again. On receiver's side, length of record is known from
+>>> packet with start record marker. To check that no packets were dropped
+>>> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
+>>> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
+>>> 1) and length of data between two markers is compared to length in
+>>> SEQ_BEGIN header.
+>>> 	Now as  packets of one socket are not reordered neither on
+>>> vsock nor on vhost transport layers, such markers allows to restore
+>>> original record on receiver's side. If user's buffer is smaller that
+>>> record length, when all out of size data is dropped.
+>>> 	Maximum length of datagram is not limited as in stream socket,
+>>> because same credit logic is used. Difference with stream socket is
+>>> that user is not woken up until whole record is received or error
+>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>> 	Tests also implemented.
+>>>
+>>>  Arseny Krasnov (17):
+>>>   af_vsock: update functions for connectible socket
+>>>   af_vsock: separate wait data loop
+>>>   af_vsock: separate receive data loop
+>>>   af_vsock: implement SEQPACKET receive loop
+>>>   af_vsock: separate wait space loop
+>>>   af_vsock: implement send logic for SEQPACKET
+>>>   af_vsock: rest of SEQPACKET support
+>>>   af_vsock: update comments for stream sockets
+>>>   virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>>>   virtio/vsock: fetch length for SEQPACKET record
+>>>   virtio/vsock: add SEQPACKET receive logic
+>>>   virtio/vsock: rest of SOCK_SEQPACKET support
+>>>   virtio/vsock: setup SEQPACKET ops for transport
+>>>   vhost/vsock: setup SEQPACKET ops for transport
+>>>   vsock_test: add SOCK_SEQPACKET tests
+>>>   loopback/vsock: setup SEQPACKET ops for transport
+>>>   virtio/vsock: simplify credit update function API
+>>>
+>>>  drivers/vhost/vsock.c                   |   8 +-
+>>>  include/linux/virtio_vsock.h            |  15 +
+>>>  include/net/af_vsock.h                  |   9 +
+>>>  include/uapi/linux/virtio_vsock.h       |  16 +
+>>>  net/vmw_vsock/af_vsock.c                | 588 +++++++++++++++-------
+>>>  net/vmw_vsock/virtio_transport.c        |   5 +
+>>>  net/vmw_vsock/virtio_transport_common.c | 316 ++++++++++--
+>>>  net/vmw_vsock/vsock_loopback.c          |   5 +
+>>>  tools/testing/vsock/util.c              |  32 +-
+>>>  tools/testing/vsock/util.h              |   3 +
+>>>  tools/testing/vsock/vsock_test.c        | 126 +++++
+>>>  11 files changed, 895 insertions(+), 228 deletions(-)
+>>>
+>>>  TODO:
+>>>  - What to do, when server doesn't support SOCK_SEQPACKET. In current
+>>>    implementation RST is replied in the same way when listening port
+>>>    is not found. I think that current RST is enough,because case when
+>>>    server doesn't support SEQ_PACKET is same when listener missed(e.g.
+>>>    no listener in both cases).
 
-Yeah it's not great. Thanks for looking at both again, I'll fix up the
-typos on the 2nd one and merge them both.
+I think is fine.
 
-Cheers, Daniel
+>>    - virtio spec patch
+>Ok
 
->
-> > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: John Hubbard <jhubbard@nvidia.com>
-> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > Cc: Jan Kara <jack@suse.cz>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-samsung-soc@vger.kernel.org
-> > Cc: linux-media@vger.kernel.org
-> > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: linux-pci@vger.kernel.org
-> > ---
-> >  drivers/pci/pci-sysfs.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > index fb072f4b3176..0c45b4f7b214 100644
-> > --- a/drivers/pci/pci-sysfs.c
-> > +++ b/drivers/pci/pci-sysfs.c
-> > @@ -927,6 +927,9 @@ void pci_create_legacy_files(struct pci_bus *b)
-> >  {
-> >       int error;
-> >
-> > +     if (!sysfs_initialized)
-> > +             return;
-> > +
-> >       b->legacy_io =3D kcalloc(2, sizeof(struct bin_attribute),
-> >                              GFP_ATOMIC);
-> >       if (!b->legacy_io)
-> > @@ -1448,6 +1451,7 @@ void pci_remove_sysfs_dev_files(struct pci_dev *p=
-dev)
-> >  static int __init pci_sysfs_init(void)
-> >  {
-> >       struct pci_dev *pdev =3D NULL;
-> > +     struct pci_bus *pbus =3D NULL;
-> >       int retval;
-> >
-> >       sysfs_initialized =3D 1;
-> > @@ -1459,6 +1463,9 @@ static int __init pci_sysfs_init(void)
-> >               }
-> >       }
-> >
-> > +     while ((pbus =3D pci_find_next_bus(pbus)))
-> > +             pci_create_legacy_files(pbus);
-> > +
-> >       return 0;
-> >  }
-> >  late_initcall(pci_sysfs_init);
-> > --
-> > 2.30.0
-> >
-> >
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Yes, please prepare a patch to discuss the VIRTIO spec changes.
 
+For example for 'virtio_vsock_seq_hdr', I left a comment about 'msg_cnt' 
+naming that should be better to discuss with virtio guys.
 
+Anyway, I reviewed this series and I left some comments.
+I think we are in a good shape :-)
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks,
+Stefano
+
