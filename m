@@ -2,116 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDD7318F9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF8E318F9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhBKQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:12:30 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:57824 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhBKPEs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:04:48 -0500
-Date:   Thu, 11 Feb 2021 15:01:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1613055699;
-        bh=V6GFdB/+L/DZHe/sLaUq7G6+q6BNgR4hjKmXmpQtQlQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=fqEfGOTqtGlLdgzNDk0tSUF/ZvbwzfUbqoPsR1f7AGTUodJTf5Fvz0iHxfn2v9Dki
-         5IcnAYHxntRZzP/LB9yEenADY/KIT4e026Yfu1JB2U0drgM/1vpkE6KywhVfKeeVVF
-         GlZLVtwyDvdILD+yj+grEMg/qZWSHXz8BSe6Mfdo=
-To:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "wens@csie.org" <wens@csie.org>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH] arm: dts: sun5i: Add GPU node
-Message-ID: <3SosG1rcYyn7x4mZWYK0uLKhbdlJxf3irBb7V2qGMqgH0Adv_RvNjn5lsEsx1lii5uKgurcC-lhfQ8r_AprSs9oSl02eYxZvQBqPy0qt3pw=@protonmail.com>
+        id S231592AbhBKQLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:11:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229997AbhBKPFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:05:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AEA64DD8;
+        Thu, 11 Feb 2021 15:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613055792;
+        bh=Hou3EzeFGnnnBff3YIbD7vysuVQWFhpKzE/7+xwR/JM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XK+UVqywK0xA7PBMyonw7Jv8Uxx+ZJJJcrnH+1hIIxt3RuPgnY3NCjNIVkXjfIDm4
+         0s65otIwtYLMkIamzH7fXMOmYqXTKvS9myIIqX8VmHT2GDJJywD5dLeO5nRme4eF2m
+         VWTsivGahaaee7eNUKjt+0+iFsEcUYrY7J3OA7i4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: [PATCH 5.10 01/54] io_uring: simplify io_task_match()
+Date:   Thu, 11 Feb 2021 16:01:45 +0100
+Message-Id: <20210211150152.950719198@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
+References: <20210211150152.885701259@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sun5i has the same Mali 400 GPU as sun4i with the same interrupts, clocks
-and resets. Add node for it in dts.
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+[ Upstream commit 06de5f5973c641c7ae033f133ecfaaf64fe633a6 ]
+
+If IORING_SETUP_SQPOLL is set all requests belong to the corresponding
+SQPOLL task, so skip task checking in that case and always match.
+
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/sun5i.dtsi | 42 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ fs/io_uring.c |    6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun5i.dtsi b/arch/arm/boot/dts/sun5i.dtsi
-index c2b4fbf552a3..81203f19b6ce 100644
---- a/arch/arm/boot/dts/sun5i.dtsi
-+++ b/arch/arm/boot/dts/sun5i.dtsi
-@@ -726,6 +726,27 @@ i2c2: i2c@1c2b400 {
- =09=09=09#size-cells =3D <0>;
- =09=09};
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1472,11 +1472,7 @@ static bool io_task_match(struct io_kioc
+ 
+ 	if (!tsk || req->task == tsk)
+ 		return true;
+-	if (ctx->flags & IORING_SETUP_SQPOLL) {
+-		if (ctx->sq_data && req->task == ctx->sq_data->thread)
+-			return true;
+-	}
+-	return false;
++	return (ctx->flags & IORING_SETUP_SQPOLL);
+ }
+ 
+ /*
 
-+=09=09mali: gpu@1c40000 {
-+=09=09=09compatible =3D "allwinner,sun4i-a10-mali", "arm,mali-400";
-+=09=09=09reg =3D <0x01c40000 0x10000>;
-+=09=09=09interrupts =3D <69>,
-+=09=09=09=09     <70>,
-+=09=09=09=09     <71>,
-+=09=09=09=09     <72>,
-+=09=09=09=09     <73>;
-+=09=09=09interrupt-names =3D "gp",
-+=09=09=09=09=09  "gpmmu",
-+=09=09=09=09=09  "pp0",
-+=09=09=09=09=09  "ppmmu0",
-+=09=09=09=09=09  "pmu";
-+=09=09=09clocks =3D <&ccu CLK_AHB_GPU>, <&ccu CLK_GPU>;
-+=09=09=09clock-names =3D "bus", "core";
-+=09=09=09resets =3D <&ccu RST_GPU>;
-+
-+=09=09=09assigned-clocks =3D <&ccu CLK_GPU>;
-+=09=09=09assigned-clock-rates =3D <384000000>;
-+=09=09};
-+
- =09=09timer@1c60000 {
- =09=09=09compatible =3D "allwinner,sun5i-a13-hstimer";
- =09=09=09reg =3D <0x01c60000 0x1000>;
-@@ -733,6 +754,27 @@ timer@1c60000 {
- =09=09=09clocks =3D <&ccu CLK_AHB_HSTIMER>;
- =09=09};
-
-+=09=09mali: gpu@1c40000 {
-+=09=09=09compatible =3D "allwinner,sun4i-a10-mali", "arm,mali-400";
-+=09=09=09reg =3D <0x01c40000 0x10000>;
-+=09=09=09interrupts =3D <69>,
-+=09=09=09=09     <70>,
-+=09=09=09=09     <71>,
-+=09=09=09=09     <72>,
-+=09=09=09=09     <73>;
-+=09=09=09interrupt-names =3D "gp",
-+=09=09=09=09=09  "gpmmu",
-+=09=09=09=09=09  "pp0",
-+=09=09=09=09=09  "ppmmu0",
-+=09=09=09=09=09  "pmu";
-+=09=09=09clocks =3D <&ccu CLK_AHB_GPU>, <&ccu CLK_GPU>;
-+=09=09=09clock-names =3D "bus", "core";
-+=09=09=09resets =3D <&ccu RST_GPU>;
-+
-+=09=09=09assigned-clocks =3D <&ccu CLK_GPU>;
-+=09=09=09assigned-clock-rates =3D <384000000>;
-+=09=09};
-+
- =09=09fe0: display-frontend@1e00000 {
- =09=09=09compatible =3D "allwinner,sun5i-a13-display-frontend";
- =09=09=09reg =3D <0x01e00000 0x20000>;
---
-2.30.0
 
