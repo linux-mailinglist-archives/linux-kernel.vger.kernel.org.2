@@ -2,167 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934393191DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74403191BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhBKSIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:08:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbhBKRlh (ORCPT
+        id S230484AbhBKR74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:59:56 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40266 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231937AbhBKRch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:41:37 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2055FC061793
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:40:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=RsO1fzcMw6LSXdtwYBhdcS04778DCpQDYDEUwBTg9/w=; b=eOvnACDIlu03ZXMTbvSEdbgRmy
-        fX2mBLWxERSVQLuMpTL6BDdAsjk5GxrmwehRlVJBiwXijVaof1dD+/0T+MtJoSE/mmyv+jsN/Qwmv
-        BBt3U87+4ezkCsQGlBs4qrcEc7gHcLnomP21EhxBJMH4iachyNIk8oZEWI1vUTzJVcTNAZtU9jfSs
-        oNmPQAjsn40d5s/2Hcfb0zo9TRtopEE+r+SN3pAkSgkUZr9GghTNSKHi6mcX7H1k9EbsVV7PlAomL
-        LcUFi5n90QQJFAWPkYXqw2TfhNo+QvqiuNZJat2ZeomTBRUV2aZwJ8Nm96+mcdwP8gAouk39liqR3
-        1B09ZPpA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lAFxO-00AY0M-UT; Thu, 11 Feb 2021 17:40:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2553F3075F1;
-        Thu, 11 Feb 2021 18:40:45 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 17A6A2BCDFC7B; Thu, 11 Feb 2021 18:40:45 +0100 (CET)
-Message-ID: <20210211173627.588366777@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 11 Feb 2021 18:30:51 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [RFC][PATCH v2 7/7] objtool,x86: Rewrite ADD/SUB/AND
-References: <20210211173044.141215027@infradead.org>
+        Thu, 11 Feb 2021 12:32:37 -0500
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613064712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JMWNWeCK4yV3tnqhinoR6R2uMPrJnIXKAJ98gW1Wo7g=;
+        b=R2qZqaowSFUrPxp5l9Jx+MNWhM5Ua19fBXl6lUu6JilAC4l2md5A26FQUXwXeirhXKyA/O
+        fgiF7N6SMUn7TlRDf/G19ek0VXCFY4UwY4KeDFJPvcSyuYtXI/R/FG+D1l5KIcbTryi4lL
+        voT2Qk0NwbxCmWh/mlKvXo9TIPSKZnt6Z28Qavcr9PmRrelNwZLtc+Zm+6AK1hV2wVCcJe
+        hhx6vjcqzR8qturdn6NI23u2AOnZ287/535EJvfMLlaKeONcpcBEt+2a1glvchg41VGr4z
+        xJjEaZ/qY3XLB/OSWVVqrloOfCpQXO5mRClHonL1K78mXNE45NPfyM9CmozR7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613064712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JMWNWeCK4yV3tnqhinoR6R2uMPrJnIXKAJ98gW1Wo7g=;
+        b=i7osXWI4JvakixBV3ll9Ikb0s6a3vScMqL+XMYV38bH9+xQ6qodUnUFDoNcvk2I7Z05qUN
+        FFwhPiZGeU+78CBQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "J. Avila" <elavila@google.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] printk: avoid prb_first_valid_seq() where possible
+Date:   Thu, 11 Feb 2021 18:37:52 +0106
+Message-Id: <20210211173152.1629-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support sign extending and imm8 forms.
+If message sizes average larger than expected (more than 32
+characters), the data_ring will wrap before the desc_ring. Once the
+data_ring wraps, it will start invalidating descriptors. These
+invalid descriptors hang around until they are eventually recycled
+when the desc_ring wraps. Readers do not care about invalid
+descriptors, but they still need to iterate past them. If the
+average message size is much larger than 32 characters, then there
+will be many invalid descriptors preceding the valid descriptors.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+The function prb_first_valid_seq() always begins at the oldest
+descriptor and searches for the first valid descriptor. This can
+be rather expensive for the above scenario. And, in fact, because
+of its heavy usage in /dev/kmsg, there have been reports of long
+delays and even RCU stalls.
+
+For code that does not need to search from the oldest record,
+replace prb_first_valid_seq() usage with prb_read_valid_*()
+functions, which provide a start sequence number to search from.
+
+Fixes: 896fbe20b4e2333fb55 ("printk: use the lockless ringbuffer")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Reported-by: J. Avila <elavila@google.com>
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- tools/objtool/arch/x86/decode.c |   70 +++++++++++++++++++++++++++++-----------
- 1 file changed, 51 insertions(+), 19 deletions(-)
+ patch against next-20210211
 
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -98,13 +98,14 @@ int arch_decode_instruction(const struct
- 			    struct list_head *ops_list)
+ v2: Abort and report no unread messages if SYSLOG_ACTION_SIZE_UNREAD
+     fails to read the current or any newer record.
+
+ kernel/printk/printk.c | 28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 5a95c688621f..575a34b88936 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -735,9 +735,9 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
+ 		logbuf_lock_irq();
+ 	}
+ 
+-	if (user->seq < prb_first_valid_seq(prb)) {
++	if (r->info->seq != user->seq) {
+ 		/* our last seen message is gone, return error and reset */
+-		user->seq = prb_first_valid_seq(prb);
++		user->seq = r->info->seq;
+ 		ret = -EPIPE;
+ 		logbuf_unlock_irq();
+ 		goto out;
+@@ -812,6 +812,7 @@ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
+ static __poll_t devkmsg_poll(struct file *file, poll_table *wait)
  {
- 	struct insn insn;
--	int x86_64, sign;
-+	int x86_64;
- 	unsigned char op1, op2,
- 		      rex = 0, rex_b = 0, rex_r = 0, rex_w = 0, rex_x = 0,
- 		      modrm = 0, modrm_mod = 0, modrm_rm = 0, modrm_reg = 0,
- 		      sib = 0, /* sib_scale = 0, */ sib_index = 0, sib_base = 0;
- 	struct stack_op *op = NULL;
- 	struct symbol *sym;
-+	u64 imm;
+ 	struct devkmsg_user *user = file->private_data;
++	struct printk_info info;
+ 	__poll_t ret = 0;
  
- 	x86_64 = is_x86_64(elf);
- 	if (x86_64 == -1)
-@@ -200,12 +201,54 @@ int arch_decode_instruction(const struct
- 		*type = INSN_JUMP_CONDITIONAL;
- 		break;
+ 	if (!user)
+@@ -820,9 +821,9 @@ static __poll_t devkmsg_poll(struct file *file, poll_table *wait)
+ 	poll_wait(file, &log_wait, wait);
  
--	case 0x81:
--	case 0x83:
--		if (rex != 0x48)
-+	case 0x80 ... 0x83:
-+		/*
-+		 * 1000 00sw : mod OP r/m : immediate
-+		 *
-+		 * s - sign extend immediate
-+		 * w - imm8 / imm32
-+		 *
-+		 * OP: 000 ADD    100 AND
-+		 *     001 OR     101 SUB
-+		 *     010 ADC    110 XOR
-+		 *     011 SBB    111 CMP
-+		 */
-+
-+		/* 64bit only */
-+		if (!rex_w)
-+			break;
-+
-+		/* %rsp target only */
-+		if (!(modrm_mod == 3 && modrm_rm == CFI_SP))
- 			break;
+ 	logbuf_lock_irq();
+-	if (prb_read_valid(prb, user->seq, NULL)) {
++	if (prb_read_valid_info(prb, user->seq, &info, NULL)) {
+ 		/* return error when data has vanished underneath us */
+-		if (user->seq < prb_first_valid_seq(prb))
++		if (info.seq != user->seq)
+ 			ret = EPOLLIN|EPOLLRDNORM|EPOLLERR|EPOLLPRI;
+ 		else
+ 			ret = EPOLLIN|EPOLLRDNORM;
+@@ -1559,6 +1560,7 @@ static void syslog_clear(void)
  
--		if (modrm == 0xe4) {
-+		imm = insn.immediate.value;
-+		if (op1 & 2) { /* sign extend */
-+			if (op1 & 1) { /* imm32 */
-+				imm <<= 32;
-+				imm = (s64)imm >> 32;
-+			} else { /* imm8 */
-+				imm <<= 56;
-+				imm = (s64)imm >> 56;
-+			}
+ int do_syslog(int type, char __user *buf, int len, int source)
+ {
++	struct printk_info info;
+ 	bool clear = false;
+ 	static int saved_console_loglevel = LOGLEVEL_DEFAULT;
+ 	int error;
+@@ -1629,9 +1631,14 @@ int do_syslog(int type, char __user *buf, int len, int source)
+ 	/* Number of chars in the log buffer */
+ 	case SYSLOG_ACTION_SIZE_UNREAD:
+ 		logbuf_lock_irq();
+-		if (syslog_seq < prb_first_valid_seq(prb)) {
++		if (!prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
++			/* No unread messages. */
++			logbuf_unlock_irq();
++			return 0;
 +		}
-+
-+		switch (modrm_reg & 7) {
-+		case 5:
-+			imm = -imm;
-+			/* fallthrough */
-+		case 0:
-+			/* add/sub imm, %rsp */
-+			ADD_OP(op) {
-+				op->src.type = OP_SRC_ADD;
-+				op->src.reg = CFI_SP;
-+				op->src.offset = imm;
-+				op->dest.type = OP_DEST_REG;
-+				op->dest.reg = CFI_SP;
-+			}
-+			break;
-+
-+		case 4:
- 			/* and imm, %rsp */
- 			ADD_OP(op) {
- 				op->src.type = OP_SRC_AND;
-@@ -215,23 +258,12 @@ int arch_decode_instruction(const struct
- 				op->dest.reg = CFI_SP;
- 			}
- 			break;
--		}
- 
--		if (modrm == 0xc4)
--			sign = 1;
--		else if (modrm == 0xec)
--			sign = -1;
--		else
-+		default:
-+			/* WARN ? */
- 			break;
--
--		/* add/sub imm, %rsp */
--		ADD_OP(op) {
--			op->src.type = OP_SRC_ADD;
--			op->src.reg = CFI_SP;
--			op->src.offset = insn.immediate.value * sign;
--			op->dest.type = OP_DEST_REG;
--			op->dest.reg = CFI_SP;
++		if (info.seq != syslog_seq) {
+ 			/* messages are gone, move to first one */
+-			syslog_seq = prb_first_valid_seq(prb);
++			syslog_seq = info.seq;
+ 			syslog_partial = 0;
  		}
-+
- 		break;
+ 		if (source == SYSLOG_FROM_PROC) {
+@@ -1643,7 +1650,6 @@ int do_syslog(int type, char __user *buf, int len, int source)
+ 			error = prb_next_seq(prb) - syslog_seq;
+ 		} else {
+ 			bool time = syslog_partial ? syslog_time : printk_time;
+-			struct printk_info info;
+ 			unsigned int line_count;
+ 			u64 seq;
  
- 	case 0x89:
-
+@@ -3429,9 +3435,11 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper *dumper, bool syslog,
+ 		goto out;
+ 
+ 	logbuf_lock_irqsave(flags);
+-	if (dumper->cur_seq < prb_first_valid_seq(prb)) {
+-		/* messages are gone, move to first available one */
+-		dumper->cur_seq = prb_first_valid_seq(prb);
++	if (prb_read_valid_info(prb, dumper->cur_seq, &info, NULL)) {
++		if (info.seq != dumper->cur_seq) {
++			/* messages are gone, move to first available one */
++			dumper->cur_seq = info.seq;
++		}
+ 	}
+ 
+ 	/* last entry */
+-- 
+2.20.1
 
