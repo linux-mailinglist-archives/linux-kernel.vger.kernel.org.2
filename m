@@ -2,109 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA4C31916C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC67831916F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbhBKRqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:46:55 -0500
-Received: from mga18.intel.com ([134.134.136.126]:10646 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232157AbhBKRHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:07:09 -0500
-IronPort-SDR: FnuHcPMkszVrpCXMUN5UmMLjCU8O4g+m3QcGxINzAa4liWWenKT4Fdl87xUgDv84u2OXqWFYOQ
- 5TCm3Kfo2iBw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="169949768"
-X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="169949768"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 09:06:15 -0800
-IronPort-SDR: iC3TthRsi2WXqDiRTmxreEAOe1kyzpKHhXRUqFTpzJ+h0STRlUgiVFqS1rgkKv+r9CX1d7CE9U
- Li0T+mmtU1PQ==
-X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="437227438"
-Received: from jli125-mobl.gar.corp.intel.com (HELO [10.209.98.174]) ([10.209.98.174])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 09:06:13 -0800
-Subject: Re: [RFC 1/9] mm, arm64: Update PR_SET/GET_TAGGED_ADDR_CTRL interface
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Will Deacon <will@kernel.org>,
-        "H . J . Lu" <hjl.tools@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
- <20210205151631.43511-2-kirill.shutemov@linux.intel.com>
- <20210211165748.GA5238@arm.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <03b0f7d0-6b67-c48c-9250-ff4eadc221f2@intel.com>
-Date:   Thu, 11 Feb 2021 09:06:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232448AbhBKRrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232226AbhBKRH6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:07:58 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5F0C061788;
+        Thu, 11 Feb 2021 09:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=6WEYQQb0H1BdtLvpRHOyUD9ECxFdkNdhBC5U4O1Uj+w=; b=q/OrS2NZDj1wxWUThBwO3Etocq
+        /K3l52ZG+S5qOHsivKptiNrCujvRiupPXHyq1YUBXdXd22PRnY2XXkmQi1UY93wihy03yjy7mRBZ0
+        MA6QoDj1ceeJ5g8FUoSA3reBvzSoSwGfPGNc9X1aprNYn/Elcabo1I/yzJBNOXvnUhu86630h2q6h
+        qvMp4R33i1HJksidEe7ScaLwIQt1dNDXGHE3mvj/HtH+FN3l7va38qYJujPccZohi1Imd9ck0esAE
+        F+Es+wBaPjt6py6+U34ZTqDEM6OS89z+CNTq7XTbKtbUXp4O7gFdwakfUrcSFga/tL8iDjzUJxCql
+        OMpqZu1w==;
+Received: from [2601:1c0:6280:3f0::cf3b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lAFQs-0001uw-MB; Thu, 11 Feb 2021 17:07:11 +0000
+Subject: Re: [PATCH] docs: reporting-issues.rst: explain how to decode stack
+ traces
+To:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Joerg Roedel <joro@8bytes.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Damian Tometzki <linux@tometzki.de>
+References: <20210210054823.242262-1-linux@leemhuis.info>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bd9a3e43-d52f-d947-04bc-28d4cc524cb4@infradead.org>
+Date:   Thu, 11 Feb 2021 09:07:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210211165748.GA5238@arm.com>
+In-Reply-To: <20210210054823.242262-1-linux@leemhuis.info>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+Hi Thorsten,
 
-I noticed there are some ELF bits for ARM's BTI feature:
+Just a couple of small nits (or one that is repeated):
 
-	GNU_PROPERTY_AARCH64_FEATURE_1_BTI
+On 2/9/21 9:48 PM, Thorsten Leemhuis wrote:
+> Replace placeholder text about decoding stack traces with a section that
+> properly describes what a typical user should do these days. To make
+> it works for them, add a paragraph in an earlier section to ensure
+> people build their kernels with everything that's needed to decode stack
+> traces later.
+> 
+> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+> ---
+>  .../admin-guide/reporting-issues.rst          | 77 +++++++++++++------
+>  1 file changed, 55 insertions(+), 22 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
+> index 07879d01fe68..b9c07d8e3141 100644
+> --- a/Documentation/admin-guide/reporting-issues.rst
+> +++ b/Documentation/admin-guide/reporting-issues.rst
+> @@ -154,8 +154,8 @@ After these preparations you'll now enter the main part:
+>     that hear about it for the first time. And if you learned something in this
+>     process, consider searching again for existing reports about the issue.
+>  
+> - * If the failure includes a stack dump, like an Oops does, consider decoding
+> -   it to find the offending line of code.
+> + * If your failure involves a 'panic', 'oops', or 'warning', consider decoding
+> +   the kernel log to find the line of code that trigger the error.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/elf.h#n453
+                                                   triggered
 
-There's been talk of needing a similar set of bits on x86 for tagged
-pointers (LAM).  Do you have any plans to do something similar (ELF
-property bits) for any of the pointer tagging features?
+>  
+>   * If your problem is a regression, try to narrow down when the issue was
+>     introduced as much as possible.
+> @@ -869,6 +869,15 @@ pick up the configuration of your current kernel and then tries to adjust it
+>  somewhat for your system. That does not make the resulting kernel any better,
+>  but quicker to compile.
+>  
+>  
+>  Check 'taint' flag
+>  ------------------
+> @@ -923,31 +932,55 @@ instead you can join.
+>  Decode failure messages
+>  -----------------------
+>  
+> -.. note::
+> +    *If your failure involves a 'panic', 'oops', or 'warning', consider
+> +    decoding the kernel log to find the line of code that trigger the error.*
+
+                                                             triggered
+
+
+or it could be "code that triggers"... (just not "trigger").
+
+
+-- 
+~Randy
+
