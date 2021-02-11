@@ -2,110 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BA531899D
+	by mail.lfdr.de (Postfix) with ESMTP id 996AA31899E
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhBKLh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:37:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41968 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231461AbhBKLGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:06:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613041552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pMJzRr/L4i/Dq4M8UHSKGZOZ6wJPLPyiWgD0VYdU+Bk=;
-        b=YqY7bmv95n/xGzpd+Q/ZohZU1eDHEHg1lAbKJHPKWusDvnnVZx0TwMvx8zXwdleIGN4raH
-        zciHp1cgtkvgn4WTAsLQm+JfhqrsehAyv/EqbYoqWeWqDqWwuX1RvQC2WjJsv0TdOqQNZC
-        3B2cQkV4gGfFHWQ0lFU8s9wKi4jz2VE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 43CD7AD2B;
-        Thu, 11 Feb 2021 11:05:52 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 12:05:51 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, "J. Avila" <elavila@google.com>
-Subject: Re: [PATCH] printk: avoid prb_first_valid_seq() where possible
-Message-ID: <YCUPj5MK9mA65ST2@alley>
-References: <20210205141728.18117-1-john.ogness@linutronix.de>
- <YCLKvCNJwabVavAP@alley>
- <874kij4w59.fsf@jogness.linutronix.de>
+        id S231561AbhBKLhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:37:45 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:53858 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231152AbhBKLHm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 06:07:42 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BB63cP128023;
+        Thu, 11 Feb 2021 11:06:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=GiTaMAbIRvqIBQ+RpjfDs/lcGV/8NbrZwq2WqxCkbzA=;
+ b=myFWP82pozcA3AqWRl9lpiwiisN+dXkaviUQjJ1reVnjNIrcbzdkEHDVnoZZLFy5jCjY
+ Pe0w0jWXi1TLpJiTcDuQzfkTLmcCPor3tNKIOmysMKNOI90WmR179yXs9cXv0jo3zi8L
+ xiRyaARZnz0GfSByLxhqZfYBoQk0OdsbSdOrpBVKvU72eeChs0qE2grfz1oxWK+4oC5h
+ X9E2uRPuCEzBhpdfiC0SG2WSv00lqf1X+GpeFvVs/5Mdtut48zSsQhArJdP00elcvpv5
+ B4yA0bnBX4NlkPtmDjVZCt7tGEL5meDLvw56QuIx7EeJ1rJ4Cc8Gsc6TxtmxH6GUhU/u +A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 36m4upwjpk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 11:06:43 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BB5XVQ033690;
+        Thu, 11 Feb 2021 11:06:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 36j513x5d7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 11:06:41 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11BB6fSS024277;
+        Thu, 11 Feb 2021 11:06:41 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 11 Feb 2021 03:06:40 -0800
+Date:   Thu, 11 Feb 2021 14:06:30 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] staging: rtl8723bs: Replace one-element array with
+ flexible-array member in struct ndis_80211_var_ie
+Message-ID: <20210211110630.GG2696@kadam>
+References: <20210210224937.GA11922@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <874kij4w59.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210210224937.GA11922@embeddedor>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110100
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1011
+ suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-02-10 19:32:10, John Ogness wrote:
-> On 2021-02-09, Petr Mladek <pmladek@suse.com> wrote:
-> >> @@ -1629,9 +1631,13 @@ int do_syslog(int type, char __user *buf, int len, int source)
-> >>  	/* Number of chars in the log buffer */
-> >>  	case SYSLOG_ACTION_SIZE_UNREAD:
-> >>  		logbuf_lock_irq();
-> >> -		if (syslog_seq < prb_first_valid_seq(prb)) {
-> >> -			/* messages are gone, move to first one */
-> >> -			syslog_seq = prb_first_valid_seq(prb);
-> >> +		if (prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
-> >> +			if (info.seq != syslog_seq) {
-> >> +				/* messages are gone, move to first one */
-> >> +				syslog_seq = info.seq;
-> >> +				syslog_partial = 0;
-> >> +			}
-> >> +		} else {
-> >>  			syslog_partial = 0;
-> >
-> > I am scratching my head when prb_read_valid_info(prb,
-> > syslog_seq, &info, NULL)) might fail.
+On Wed, Feb 10, 2021 at 04:49:37PM -0600, Gustavo A. R. Silva wrote:
+> There is a regular need in the kernel to provide a way to declare having
+> a dynamically sized set of trailing elements in a structure. Kernel code
+> should always use “flexible array members”[1] for these cases. The older
+> style of one-element or zero-length arrays should no longer be used[2].
 > 
-> It can fail because the descriptor has been invalidated/recycled by
-> writers and perhaps there is no valid record that has yet come after it.
-
-I see. From some reasons I though that there should always be at
-least one message in the commited state. But it is enough when
-it is in reusable state. I should have double checked it.
-
-> I recommend changing your suggestion to:
+> Refactor the code according to the use of a flexible-array member in
+> struct ndis_80211_var_ie, instead of a one-element array.
 > 
-> > 		if (!prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
-> >			/*
-> >			 * No unread messages. No need to check/reset
-> >			 * syslog_partial. When a reader does read a new
-> >			 * message it will notice and appropriately update
-> >			 * syslog_seq and reset syslog_partial.
-> >			 */
-
-The following comment might be enough after all.
-
-			/* No unread messages. */
-
-My main concern was that we cleared syslog_partial and continued.
-I thought that we might miss a bug this way. But it seems to
-be perfectly fine. I just have to update my mental picture.
-
-Otherwise. the fact that syslog_partial will be fixed by the next
-successful call is more or less obvious if we change the code as you
-propose.
-
-Please, send an updated patch.
-
-Best Regards,
-Petr
-
-
-> > 			logbuf_unlock_irq();
-> > 			return 0;
-> > 		}
-> > 		if (info.seq != syslog_seq) {
-> > 			/* messages are gone, move to first one */
-> > 			syslog_seq = info.seq;
-> > 			syslog_partial = 0;
-> > 		}
+> Also, this helps with the ongoing efforts to enable -Warray-bounds and
+> fix the following warnings:
 > 
-> John Ogness
+>   CC [M]  drivers/staging/rtl8723bs/core/rtw_wlan_util.o
+> In file included from ./drivers/staging/rtl8723bs/include/drv_types.h:20,
+>                  from drivers/staging/rtl8723bs/core/rtw_wlan_util.c:9:
+> drivers/staging/rtl8723bs/core/rtw_wlan_util.c: In function ‘HT_caps_handler’:
+> ./drivers/staging/rtl8723bs/include/basic_types.h:108:11: warning: array subscript 1 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
+>   108 |  (EF1BYTE(*((u8 *)(__pstart))))
+>       |           ^
+> ./drivers/staging/rtl8723bs/include/basic_types.h:42:8: note: in definition of macro ‘EF1BYTE’
+>    42 |  ((u8)(_val))
+>       |        ^~~~
+> ./drivers/staging/rtl8723bs/include/basic_types.h:127:4: note: in expansion of macro ‘LE_P1BYTE_TO_HOST_1BYTE’
+>   127 |   (LE_P1BYTE_TO_HOST_1BYTE(__pstart) >> (__bitoffset)) & \
+>       |    ^~~~~~~~~~~~~~~~~~~~~~~
+> ./drivers/staging/rtl8723bs/include/rtw_ht.h:97:55: note: in expansion of macro ‘LE_BITS_TO_1BYTE’
+>    97 | #define GET_HT_CAPABILITY_ELE_RX_STBC(_pEleStart)     LE_BITS_TO_1BYTE((_pEleStart)+1, 0, 2)
+>       |                                                       ^~~~~~~~~~~~~~~~
+> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1104:58: note: in expansion of macro ‘GET_HT_CAPABILITY_ELE_RX_STBC’
+>  1104 |   if (TEST_FLAG(phtpriv->stbc_cap, STBC_HT_ENABLE_TX) && GET_HT_CAPABILITY_ELE_RX_STBC(pIE->data)) {
+>       |                                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1051:75: warning: array subscript 2 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
+>  1051 |    if ((pmlmeinfo->HT_caps.u.HT_cap_element.AMPDU_para & 0x3) > (pIE->data[i] & 0x3))
+>       |                                                                  ~~~~~~~~~^~~
+> drivers/staging/rtl8723bs/core/rtw_wlan_util.c: In function ‘check_assoc_AP’:
+> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1606:19: warning: array subscript 4 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
+>  1606 |      if (pIE->data[4] == 1)
+>       |          ~~~~~~~~~^~~
+> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1609:20: warning: array subscript 5 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
+>  1609 |       if (pIE->data[5] & RT_HT_CAP_USE_92SE)
+>       |           ~~~~~~~~~^~~
+> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1613:19: warning: array subscript 5 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
+>  1613 |      if (pIE->data[5] & RT_HT_CAP_USE_SOFTAP)
+>       |          ~~~~~~~~~^~~
+> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1617:20: warning: array subscript 6 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
+>  1617 |       if (pIE->data[6] & RT_HT_CAP_USE_JAGUAR_BCUT) {
+>       |           ~~~~~~~~~^~~
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+> 
+> Link: https://github.com/KSPP/linux/issues/79
+> Link: https://github.com/KSPP/linux/issues/109
+> Build-tested-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/602434b8.jc5DoXJ0bmHoxgIL%25lkp@intel.com/
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Looks okay to me.  I looked for potential issues with changing the
+sizeof the struct but couldn't find any.
+
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+regards,
+dan carpenter
+
