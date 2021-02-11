@@ -2,182 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9C3319049
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2236031902D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhBKQqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:46:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57036 "EHLO mail.kernel.org"
+        id S232079AbhBKQjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:39:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231354AbhBKPhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:37:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4350064F09;
-        Thu, 11 Feb 2021 15:05:33 +0000 (UTC)
+        id S231428AbhBKPcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:32:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D779964F00;
+        Thu, 11 Feb 2021 15:05:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613055933;
-        bh=oay6nCYT2aYEVTlzf7BDWQe0pcdXoheFAcG0rLPjmLM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bqzgzHjwmmAXVo4Pw1FeYUemx01TnUH76TFfUsYVyKiL/rAEmDy22jP26DN1hxi3I
-         EV0SpbcdO/rc6xLlS1NBNE/R5gOJDVuVFD5stAbN20RlYFMAWzc2KaTkT9eDwMuf36
-         iQUuXLZeYHUiyOWHsnS0NCYg6zHxiAgvy5vv5HAs=
+        s=korg; t=1613055931;
+        bh=9gkEar1lXObNGenUaVV4RdhKB5jiViZDgizeL0upHeE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=wJc5vuCW8YWYWkLWQN1Otc/I80+H4KoNpfsH7xrhAenEfM5ZWubOB8aBmg1jOU9UK
+         QpXrGcIFOGBOxHxsmcJcW9rKmnyophA0NcdwQenKiH0V3Nxq5RTBaAcjz0gyiR8k8a
+         I0AGqoGmB/sdBNCJUhQZrv2vcSu+ngFqMM2K9cCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: [PATCH 5.4 00/24] 5.4.98-rc1 review
-Date:   Thu, 11 Feb 2021 16:02:23 +0100
-Message-Id: <20210211150148.516371325@linuxfoundation.org>
+        stable@vger.kernel.org, Jianlin Lv <Jianlin.Lv@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 01/24] tracing/kprobe: Fix to support kretprobe events on unloaded modules
+Date:   Thu, 11 Feb 2021 16:02:24 +0100
+Message-Id: <20210211150148.591404324@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
+In-Reply-To: <20210211150148.516371325@linuxfoundation.org>
+References: <20210211150148.516371325@linuxfoundation.org>
 User-Agent: quilt/0.66
 X-stable: review
 X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.4.98-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.98-rc1
-X-KernelTest-Deadline: 2021-02-13T15:01+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.4.98 release.
-There are 24 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Responses should be made by Sat, 13 Feb 2021 15:01:39 +0000.
-Anything received after that time might be too late.
+commit 97c753e62e6c31a404183898d950d8c08d752dbd upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.98-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-and the diffstat can be found below.
+Fix kprobe_on_func_entry() returns error code instead of false so that
+register_kretprobe() can return an appropriate error code.
 
-thanks,
+append_trace_kprobe() expects the kprobe registration returns -ENOENT
+when the target symbol is not found, and it checks whether the target
+module is unloaded or not. If the target module doesn't exist, it
+defers to probe the target symbol until the module is loaded.
 
-greg k-h
+However, since register_kretprobe() returns -EINVAL instead of -ENOENT
+in that case, it always fail on putting the kretprobe event on unloaded
+modules. e.g.
 
--------------
-Pseudo-Shortlog of commits:
+Kprobe event:
+/sys/kernel/debug/tracing # echo p xfs:xfs_end_io >> kprobe_events
+[   16.515574] trace_kprobe: This probe might be able to register after target module is loaded. Continue.
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.4.98-rc1
+Kretprobe event: (p -> r)
+/sys/kernel/debug/tracing # echo r xfs:xfs_end_io >> kprobe_events
+sh: write error: Invalid argument
+/sys/kernel/debug/tracing # cat error_log
+[   41.122514] trace_kprobe: error: Failed to register probe event
+  Command: r xfs:xfs_end_io
+             ^
 
-Phillip Lougher <phillip@squashfs.org.uk>
-    squashfs: add more sanity checks in xattr id lookup
+To fix this bug, change kprobe_on_func_entry() to detect symbol lookup
+failure and return -ENOENT in that case. Otherwise it returns -EINVAL
+or 0 (succeeded, given address is on the entry).
 
-Phillip Lougher <phillip@squashfs.org.uk>
-    squashfs: add more sanity checks in inode lookup
+Link: https://lkml.kernel.org/r/161176187132.1067016.8118042342894378981.stgit@devnote2
 
-Phillip Lougher <phillip@squashfs.org.uk>
-    squashfs: add more sanity checks in id lookup
+Cc: stable@vger.kernel.org
+Fixes: 59158ec4aef7 ("tracing/kprobes: Check the probe on unloaded module correctly")
+Reported-by: Jianlin Lv <Jianlin.Lv@arm.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Peter Gonda <pgonda@google.com>
-    Fix unsynchronized access to sev members through svm_register_enc_region
+---
+ include/linux/kprobes.h     |    2 +-
+ kernel/kprobes.c            |   34 +++++++++++++++++++++++++---------
+ kernel/trace/trace_kprobe.c |   10 ++++++----
+ 3 files changed, 32 insertions(+), 14 deletions(-)
 
-Daniel Borkmann <daniel@iogearbox.net>
-    bpf: Fix 32 bit src register truncation on div/mod
-
-Mark Brown <broonie@kernel.org>
-    regulator: Fix lockdep warning resolving supplies
-
-Baolin Wang <baolin.wang@linux.alibaba.com>
-    blk-cgroup: Use cond_resched() when destroy blkgs
-
-Qii Wang <qii.wang@mediatek.com>
-    i2c: mediatek: Move suspend and resume handling to NOIRQ phase
-
-Dave Wysochanski <dwysocha@redhat.com>
-    SUNRPC: Handle 0 length opaque XDR object data properly
-
-Dave Wysochanski <dwysocha@redhat.com>
-    SUNRPC: Move simple_get_bytes and simple_get_netobj into private header
-
-Johannes Berg <johannes.berg@intel.com>
-    iwlwifi: mvm: guard against device removal in reprobe
-
-Gregory Greenman <gregory.greenman@intel.com>
-    iwlwifi: mvm: invalidate IDs of internal stations at mvm start
-
-Johannes Berg <johannes.berg@intel.com>
-    iwlwifi: pcie: fix context info memory leak
-
-Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-    iwlwifi: pcie: add a NULL check in iwl_pcie_txq_unmap
-
-Johannes Berg <johannes.berg@intel.com>
-    iwlwifi: mvm: take mutex for calling iwl_mvm_get_sync_time()
-
-Sara Sharon <sara.sharon@intel.com>
-    iwlwifi: mvm: skip power command when unbinding vif during CSA
-
-Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
-    ASoC: ak4458: correct reset polarity
-
-Trond Myklebust <trond.myklebust@hammerspace.com>
-    pNFS/NFSv4: Try to return invalid layout in pnfs_layout_process()
-
-Pan Bian <bianpan2016@163.com>
-    chtls: Fix potential resource leak
-
-Ricardo Ribalda <ribalda@chromium.org>
-    ASoC: Intel: Skylake: Zero snd_ctl_elem_value
-
-Shay Bar <shay.bar@celeno.com>
-    mac80211: 160MHz with extended NSS BW in CSA
-
-David Collins <collinsd@codeaurora.org>
-    regulator: core: avoid regulator_resolve_supply() race condition
-
-Cong Wang <cong.wang@bytedance.com>
-    af_key: relax availability checks for skb size calculation
-
-Masami Hiramatsu <mhiramat@kernel.org>
-    tracing/kprobe: Fix to support kretprobe events on unloaded modules
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 +-
- arch/x86/kvm/svm.c                                 | 18 +++---
- block/blk-cgroup.c                                 | 18 ++++--
- drivers/crypto/chelsio/chtls/chtls_cm.c            |  7 +--
- drivers/i2c/busses/i2c-mt65xx.c                    | 19 ++++++-
- .../net/wireless/intel/iwlwifi/mvm/debugfs-vif.c   |  3 +
- drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c  |  3 +
- drivers/net/wireless/intel/iwlwifi/mvm/ops.c       |  7 ++-
- drivers/net/wireless/intel/iwlwifi/mvm/sta.c       |  6 ++
- .../wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c   | 11 +++-
- drivers/net/wireless/intel/iwlwifi/pcie/tx.c       |  5 ++
- drivers/regulator/core.c                           | 44 +++++++++++----
- fs/nfs/pnfs.c                                      |  8 ++-
- fs/squashfs/export.c                               | 41 +++++++++++---
- fs/squashfs/id.c                                   | 40 ++++++++++---
- fs/squashfs/squashfs_fs_sb.h                       |  1 +
- fs/squashfs/super.c                                |  6 +-
- fs/squashfs/xattr.h                                | 10 +++-
- fs/squashfs/xattr_id.c                             | 66 +++++++++++++++++++---
- include/linux/kprobes.h                            |  2 +-
- include/linux/sunrpc/xdr.h                         |  3 +-
- kernel/bpf/verifier.c                              | 28 +++++----
- kernel/kprobes.c                                   | 34 ++++++++---
- kernel/trace/trace_kprobe.c                        | 10 ++--
- net/key/af_key.c                                   |  6 +-
- net/mac80211/spectmgmt.c                           | 10 +++-
- net/sunrpc/auth_gss/auth_gss.c                     | 30 +---------
- net/sunrpc/auth_gss/auth_gss_internal.h            | 45 +++++++++++++++
- net/sunrpc/auth_gss/gss_krb5_mech.c                | 31 +---------
- sound/soc/codecs/ak4458.c                          | 22 +++-----
- sound/soc/intel/skylake/skl-topology.c             |  2 +-
- 31 files changed, 364 insertions(+), 176 deletions(-)
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -232,7 +232,7 @@ extern void kprobes_inc_nmissed_count(st
+ extern bool arch_within_kprobe_blacklist(unsigned long addr);
+ extern int arch_populate_kprobe_blacklist(void);
+ extern bool arch_kprobe_on_func_entry(unsigned long offset);
+-extern bool kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long offset);
++extern int kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long offset);
+ 
+ extern bool within_kprobe_blacklist(unsigned long addr);
+ extern int kprobe_add_ksym_blacklist(unsigned long entry);
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1948,29 +1948,45 @@ bool __weak arch_kprobe_on_func_entry(un
+ 	return !offset;
+ }
+ 
+-bool kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long offset)
++/**
++ * kprobe_on_func_entry() -- check whether given address is function entry
++ * @addr: Target address
++ * @sym:  Target symbol name
++ * @offset: The offset from the symbol or the address
++ *
++ * This checks whether the given @addr+@offset or @sym+@offset is on the
++ * function entry address or not.
++ * This returns 0 if it is the function entry, or -EINVAL if it is not.
++ * And also it returns -ENOENT if it fails the symbol or address lookup.
++ * Caller must pass @addr or @sym (either one must be NULL), or this
++ * returns -EINVAL.
++ */
++int kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long offset)
+ {
+ 	kprobe_opcode_t *kp_addr = _kprobe_addr(addr, sym, offset);
+ 
+ 	if (IS_ERR(kp_addr))
+-		return false;
++		return PTR_ERR(kp_addr);
+ 
+-	if (!kallsyms_lookup_size_offset((unsigned long)kp_addr, NULL, &offset) ||
+-						!arch_kprobe_on_func_entry(offset))
+-		return false;
++	if (!kallsyms_lookup_size_offset((unsigned long)kp_addr, NULL, &offset))
++		return -ENOENT;
+ 
+-	return true;
++	if (!arch_kprobe_on_func_entry(offset))
++		return -EINVAL;
++
++	return 0;
+ }
+ 
+ int register_kretprobe(struct kretprobe *rp)
+ {
+-	int ret = 0;
++	int ret;
+ 	struct kretprobe_instance *inst;
+ 	int i;
+ 	void *addr;
+ 
+-	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
+-		return -EINVAL;
++	ret = kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset);
++	if (ret)
++		return ret;
+ 
+ 	/* If only rp->kp.addr is specified, check reregistering kprobes */
+ 	if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -220,9 +220,9 @@ bool trace_kprobe_on_func_entry(struct t
+ {
+ 	struct trace_kprobe *tk = trace_kprobe_primary_from_call(call);
+ 
+-	return tk ? kprobe_on_func_entry(tk->rp.kp.addr,
++	return tk ? (kprobe_on_func_entry(tk->rp.kp.addr,
+ 			tk->rp.kp.addr ? NULL : tk->rp.kp.symbol_name,
+-			tk->rp.kp.addr ? 0 : tk->rp.kp.offset) : false;
++			tk->rp.kp.addr ? 0 : tk->rp.kp.offset) == 0) : false;
+ }
+ 
+ bool trace_kprobe_error_injectable(struct trace_event_call *call)
+@@ -811,9 +811,11 @@ static int trace_kprobe_create(int argc,
+ 			trace_probe_log_err(0, BAD_PROBE_ADDR);
+ 			goto parse_error;
+ 		}
+-		if (kprobe_on_func_entry(NULL, symbol, offset))
++		ret = kprobe_on_func_entry(NULL, symbol, offset);
++		if (ret == 0)
+ 			flags |= TPARG_FL_FENTRY;
+-		if (offset && is_return && !(flags & TPARG_FL_FENTRY)) {
++		/* Defer the ENOENT case until register kprobe */
++		if (ret == -EINVAL && is_return) {
+ 			trace_probe_log_err(0, BAD_RETPROBE);
+ 			goto parse_error;
+ 		}
 
 
