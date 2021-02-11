@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3425A31894B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C29318909
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhBKLUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:20:32 -0500
-Received: from mail-ed1-f54.google.com ([209.85.208.54]:35017 "EHLO
-        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231144AbhBKKvZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:51:25 -0500
-Received: by mail-ed1-f54.google.com with SMTP id g10so6489209eds.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:51:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V0m6ZYdNg9bPuLZo7iX6eWN4cNFxLWh6FNh/M1D/UdU=;
-        b=Y1j/VzVMKV7EIIVGjMcQ48JcwVsMERxwYdoodjSmjmdUuFKUTLpyEWIB8SGiqOCznn
-         beUTubBPgZX1G/V1LrfBhobtfWUWkEmQ/9MqDOlMwB51MeuM2YRJ+BkDEVcXEyF7qeLm
-         L05p4eo1ALAn55V+5kreeSdio7gfrlbtnrDVlRAOWQbnKfHO2y70wK3NJ+Ts3xcguulJ
-         wXDUag+teG916SjQmO4EGGWzHZIxLo2MvUOM0Aup6cztax3u4qx2fPG144p8UQwZ8mYn
-         SljzMuAo6lWrJojFM26MaevctqN4TIUQ0cVx2b3ZZFoo8Ru9nkYcTaQeNkZvZOJVOAtC
-         U0ow==
-X-Gm-Message-State: AOAM531hHCgCDdDDDH1jJZ0GDL9GaFP5+JBdZMVYqcpgHeiVyfIH7p+G
-        ktqmNsbAj/63qM1crwcE/n/fjPhD7XEq2A==
-X-Google-Smtp-Source: ABdhPJxEaXFcU1SCOaEvQtj4XhQNd66yFyZ5EaDEwCxzg9vvwCqZ+8s8w5nFP6++Fv0wwBx1mq/PWg==
-X-Received: by 2002:a05:6402:5206:: with SMTP id s6mr7700455edd.92.1613040643283;
-        Thu, 11 Feb 2021 02:50:43 -0800 (PST)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
-        by smtp.gmail.com with ESMTPSA id c16sm3866120ejm.86.2021.02.11.02.50.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 02:50:42 -0800 (PST)
-Received: by mail-ej1-f50.google.com with SMTP id w1so9296792ejf.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:50:42 -0800 (PST)
-X-Received: by 2002:a17:906:b055:: with SMTP id bj21mr8020838ejb.355.1613040642341;
- Thu, 11 Feb 2021 02:50:42 -0800 (PST)
+        id S231171AbhBKLFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:05:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48168 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231145AbhBKKv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 05:51:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613040639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4s2C2BZFhkoBihiMEkn19ehOaFXagHjco1YWPm9BhEA=;
+        b=J/+yW0TLTI1Bs4oZleqC5qNCielOfUwlAdoe+IMOiBuxdCVl8giPKKxAa1AlyHDRZ+y0kP
+        FyzcgioyJ69R3FWdBYsPwFDy7E6O7ux5eua3GGXMNhMhDH3PabQiswLg/sHNeJdbUGA8cC
+        n0LnPz+/3ICYd5vgJ7eicvJY9sMKv4Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B5D99AEA3;
+        Thu, 11 Feb 2021 10:50:39 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 11:50:38 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+a7ab8df042baaf42ae3c@syzkaller.appspotmail.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Tahsin Erdogan <tahsin@google.com>, tytso@mit.edu
+Subject: Re: possible deadlock in fs_reclaim_acquire (2)
+Message-ID: <YCUL/icHBWeEV1Ex@dhcp22.suse.cz>
+References: <00000000000086723c05bb056425@google.com>
+ <20210211040729.12804-1-hdanton@sina.com>
+ <20210211102225.GK19070@quack2.suse.cz>
 MIME-Version: 1.0
-References: <YCQvsdlnbnQN4Ruf@karthik-strix-linux.karthek.com>
- <20210211075715.GD2696@kadam> <CAJ5zXr3ONFFHL7g8Xt=BjM9SJK16HEwiqhkBPTbrBTwa=DDqog@mail.gmail.com>
- <YCUK6Bi9lFziF6qG@kroah.com>
-In-Reply-To: <YCUK6Bi9lFziF6qG@kroah.com>
-From:   karthek <mail@karthek.com>
-Date:   Thu, 11 Feb 2021 16:20:30 +0530
-X-Gmail-Original-Message-ID: <CAJ5zXr26co5c5kCFqGN2Rt3Kbk+i5GKAsvzgF-4Zz3jg0xZ+bw@mail.gmail.com>
-Message-ID: <CAJ5zXr26co5c5kCFqGN2Rt3Kbk+i5GKAsvzgF-4Zz3jg0xZ+bw@mail.gmail.com>
-Subject: Re: [PATCH] staging: rtl8723bs: remove obsolete commented out code
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211102225.GK19070@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 4:16 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> A: http://en.wikipedia.org/wiki/Top_post
-> Q: Were do I find info about this thing called top-posting?
-> A: Because it messes up the order in which people normally read text.
-> Q: Why is top-posting such a bad thing?
-> A: Top-posting.
-> Q: What is the most annoying thing in e-mail?
->
-> A: No.
-> Q: Should I include quotations after my reply?
->
-> http://daringfireball.net/2007/07/on_top
->
-> On Thu, Feb 11, 2021 at 04:00:04PM +0530, karthek wrote:
-> > Should i send them as patch series?
->
-> Please do.
->
-> thanks,
->
-> greg k-h
+On Thu 11-02-21 11:22:25, Jan Kara wrote:
+> On Thu 11-02-21 12:07:29, Hillf Danton wrote:
 
-Yeah, it is clearly mentioned in lfd103 which i do remember
-but i want you to know that it's purely accidental
+I haven't received Hillf's email.
+
+[...]
+> > Fix 71b565ceff37 ("ext4: drop ext4_kvmalloc()") by restoring the
+> > GFP_NOFS introduced in dec214d00e0d ("ext4: xattr inode deduplication").
+> > 
+> > Note this may be the fix also to possible deadlock
+> >  Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
+> >  https://lore.kernel.org/linux-ext4/000000000000563a0205bafb7970@google.com/
+> 
+> Please no. Ext4 is using scoping API to limit allocations to GFP_NOFS
+> inside transactions. In this case something didn't work which seems like a
+> lockdep bug at the first sight but I'll talk to mm guys about it.
+> Definitely to problem doesn't seem to be in ext4.
+
+Agreed. kvmalloc(NOFS) is not even supported because vmalloc doesn't
+support GFP_KERNEL incompatible requests.
+> 
+> 								Honza
+> 
+> > 
+> > --- a/fs/ext4/xattr.c
+> > +++ b/fs/ext4/xattr.c
+> > @@ -1459,7 +1459,7 @@ ext4_xattr_inode_cache_find(struct inode
+> >  	if (!ce)
+> >  		return NULL;
+> >  
+> > -	ea_data = kvmalloc(value_len, GFP_KERNEL);
+> > +	ea_data = kvmalloc(value_len, GFP_NOFS);
+> >  	if (!ea_data) {
+> >  		mb_cache_entry_put(ea_inode_cache, ce);
+> >  		return NULL;
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+
+-- 
+Michal Hocko
+SUSE Labs
