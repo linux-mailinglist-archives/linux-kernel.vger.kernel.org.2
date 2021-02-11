@@ -2,122 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103C13190C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708523190C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbhBKRPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:15:54 -0500
-Received: from conuserg-12.nifty.com ([210.131.2.79]:26451 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbhBKQN4 (ORCPT
+        id S231289AbhBKRQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:16:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230337AbhBKQQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:13:56 -0500
-Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 11BGC1x7021970;
-        Fri, 12 Feb 2021 01:12:01 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 11BGC1x7021970
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613059922;
-        bh=3/hwJtYyqVNBvsoXcMoZWlx6opZT0eYugHUwt0TrPzA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=p1+BosIh832dUiMNkkaFMFuhQ9cl3yVy+gi6iKWxgYlx/OnxC4B+M1yU8UkyUD9Yd
-         eEATrYFFlHJi9nDrSrlHUWTQEsbYitnU7xjbiMQaa/vC8IEOOpVQMvJpZlmAl69TCL
-         SI0k6YESbm7noHd682KMP2a/y3M2aAVyoNTCPIhv9DLkIIvPB/pzLrqz/i3F5+2Ru3
-         nNvChYaPFJXxpdIK0/v2h9yfhHj2Sz+i0Z8fahS/yILfAVvXr97FXVFo2SepYkKu5V
-         8vqymz8DJO7jrHFuo1E+UE4s40tE5dSHaRHxOnH3l4lFMUVH6ImnHlONVIiBT9yOFh
-         9tiDYr59KujXw==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] gen_compile_commands: prune some directories
-Date:   Fri, 12 Feb 2021 01:11:54 +0900
-Message-Id: <20210211161154.3892836-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Thu, 11 Feb 2021 11:16:40 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B48C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:16:00 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id k22so3559318pll.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:16:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C2qV8cRM1f+oG7nQYFTQvlZIjOawBDZU0QDV55TybJs=;
+        b=RcLG3y0BxULLto97QdZQDXg+Qfb5d+THHz2J01HrinuEY2iLM8IstgqANrljfOH/Am
+         RIuEzyRNkPZrhHvBy4vchUvWjX4EUYXbO6aCP8OpQ4apXV99l9Hn++Gmtu6sbA2hCnIn
+         36QrCU16BDx5Ko9A930+IytLtM1sDEvGdOa/01pRDvHVf53IPoQ4jRHMMJGKcL6ppu9a
+         SHeahta8w4HC2DuhX5eE74xqheQxX2NsGRvzXfcRBcAUIXklOBtiZ7pFFrnN7/+JHePE
+         27ZJBISMR0dZpU7OSI1KUBsya9uWbCvGwnD3kFvxFf6d6jbVVbgXahWizB5ifYB+VVku
+         JSTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C2qV8cRM1f+oG7nQYFTQvlZIjOawBDZU0QDV55TybJs=;
+        b=eKOgp7g4M3uVMo3YqJyEpPatmOPvd4mG9cIjLUOaiDHH/+KKXwtM2/AdNRIjVMc+lq
+         q+/7+8Q17QBIOdgl2SqrS45njruxTemt/3TFFWwUEgR49Rokq5qmLwK7+cD7/KgpzfA5
+         +rE+y8vvCR+qPMCMZBXgS+TxSCNCCKrB35Si02Ux/Rw/iCFEjsafBp8GXlMWKs1GnvfB
+         zybQwgke0Nha8Jnlb26zl8E7QLnuj/9TgVuNcVV5XdBbVU9PRlpfAYn0MqtK53spTvNL
+         TlIb+4Xy1REWlH8OjE4CKj98/3UnZMTotP+drhiEq4d2t8pbuDOVDCwPZv00VoV9ARtu
+         k17w==
+X-Gm-Message-State: AOAM533c/QhkIu2L3IIrvoeUW+n1IlOIXIPmgISvyrFbp50HRFRKJM31
+        gkWDRwkQey7zoSZVpY9L90A=
+X-Google-Smtp-Source: ABdhPJyxXsEg83/R/SHxuOCsGmmE9ADPJCIFFyK0GskVNz6VLC2FUNSZXLm8JvGHgFl2XEQcsRTNTQ==
+X-Received: by 2002:a17:90a:ce84:: with SMTP id g4mr3774505pju.59.1613060159475;
+        Thu, 11 Feb 2021 08:15:59 -0800 (PST)
+Received: from localhost.localdomain ([27.5.41.215])
+        by smtp.gmail.com with ESMTPSA id a8sm5858380pju.29.2021.02.11.08.15.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 08:15:59 -0800 (PST)
+From:   Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
+To:     gregkh@linuxfoundation.org, lee.jones@linaro.org,
+        johannes@sipsolutions.net, kuba@kernel.org, arnd@arndb.de,
+        mail@anirudhrb.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: wimax: Fix some coding style problems
+Date:   Thu, 11 Feb 2021 21:45:53 +0530
+Message-Id: <20210211161553.140871-1-hemanshagnihotri27@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If directories are passed to gen_compile_commands.py, os.walk() traverses
-all the subdirectories to search for .cmd files, but we know some of them
-are not worth traversing.
+This fixes following warnings and errors as reported by checkpatch.pl:
+	1) WARNING: Missing a blank line after declarations
+	2) WARNING: Block comments use a trailing */ on a separate line
+	3) ERROR: code indent should use tabs where possible
+	4) ERROR: space required before the open parenthesis '('
+	5) ERROR: spaces required around that '?' (ctx:VxW)
+	6) ERROR: open brace '{' following struct go on the same line
 
-Use the 'topdown' parameter of os.walk to prune them.
-
-Documentation about the 'topdown' option of os.walk:
-  When topdown is True, the caller can modify the dirnames list
-  in-place (perhaps using del or slice assignment), and walk() will
-  only recurse into the subdirectories whose names remain in dirnames;
-  this can be used to prune the search, impose a specific order of
-  visiting, or even to inform walk() about directories the caller
-  creates or renames before it resumes walk() again. Modifying
-  dirnames when topdown is False has no effect on the behavior of
-  the walk, because in bottom-up mode the directories in dirnames
-  are generated before dirpath itself is generated.
-
-This commit prunes four directories, .git, Documentation, include, and
-tools.
-
-The first three do not contain any C files. My main motivation is the
-last one, tools/ directory.
-
-Commit 6ca4c6d25949 ("gen_compile_commands: do not support .cmd files
-under tools/ directory") stopped supporting the tools/ directory.
-The current code no longer picks up .cmd files from the tools/
-directory.
-
-If you run:
-
-  ./scripts/clang-tools/gen_compile_commands.py --log_level=INFO
-
-then, you will see several "File ... not found" log messages.
-
-This is expected, and I do not want to support the tools/ directory.
-However, without an explicit comment "do not support tools/", somebody
-might try to get it back. Clarify this.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
 ---
+ drivers/staging/wimax/i2400m/netdev.c |  2 +-
+ drivers/staging/wimax/i2400m/rx.c     | 20 +++++++++-------
+ drivers/staging/wimax/i2400m/tx.c     | 34 +++++++++++++++++++--------
+ drivers/staging/wimax/i2400m/usb-rx.c |  8 +++++--
+ drivers/staging/wimax/i2400m/usb.c    | 10 +++++---
+ drivers/staging/wimax/op-msg.c        |  1 +
+ drivers/staging/wimax/op-rfkill.c     |  7 ++++--
+ drivers/staging/wimax/stack.c         |  2 ++
+ 8 files changed, 58 insertions(+), 26 deletions(-)
 
- scripts/clang-tools/gen_compile_commands.py | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index 19963708bcf8..eb5faefbdf74 100755
---- a/scripts/clang-tools/gen_compile_commands.py
-+++ b/scripts/clang-tools/gen_compile_commands.py
-@@ -20,7 +20,9 @@ _DEFAULT_LOG_LEVEL = 'WARNING'
- _FILENAME_PATTERN = r'^\..*\.cmd$'
- _LINE_PATTERN = r'^cmd_[^ ]*\.o := (.* )([^ ]*\.c)$'
- _VALID_LOG_LEVELS = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
--
-+# The tools/ directory adopts a different build system, and produces .cmd
-+# files in a different format. Do not support it.
-+_EXCLUDE_DIRS = ['.git', 'Documentation', 'include', 'tools']
+diff --git a/drivers/staging/wimax/i2400m/netdev.c b/drivers/staging/wimax/i2400m/netdev.c
+index cd06eaf75e8b..5b53e59084c8 100644
+--- a/drivers/staging/wimax/i2400m/netdev.c
++++ b/drivers/staging/wimax/i2400m/netdev.c
+@@ -523,7 +523,7 @@ void i2400m_net_erx(struct i2400m *i2400m, struct sk_buff *skb,
  
- def parse_arguments():
-     """Sets up and parses command-line arguments.
-@@ -80,8 +82,14 @@ def cmdfiles_in_dir(directory):
-     """
- 
-     filename_matcher = re.compile(_FILENAME_PATTERN)
-+    exclude_dirs = [ os.path.join(directory, d) for d in _EXCLUDE_DIRS ]
+ 	d_fnstart(2, dev, "(i2400m %p skb %p [%u] cs %d)\n",
+ 		  i2400m, skb, skb->len, cs);
+-	switch(cs) {
++	switch (cs) {
+ 	case I2400M_CS_IPV4_0:
+ 	case I2400M_CS_IPV4:
+ 		i2400m_rx_fake_eth_header(i2400m->wimax_dev.net_dev,
+diff --git a/drivers/staging/wimax/i2400m/rx.c b/drivers/staging/wimax/i2400m/rx.c
+index 5b3a85035f6a..036210a1fd55 100644
+--- a/drivers/staging/wimax/i2400m/rx.c
++++ b/drivers/staging/wimax/i2400m/rx.c
+@@ -485,8 +485,7 @@ struct i2400m_roq_data {
+  * store the sequence number (sn) and the cs (packet type) coming from
+  * the RX payload header from the device.
+  */
+-struct i2400m_roq
+-{
++struct i2400m_roq {
+ 	unsigned ws;
+ 	struct sk_buff_head queue;
+ 	struct i2400m_roq_log *log;
+@@ -522,6 +521,7 @@ static
+ unsigned __i2400m_roq_nsn(struct i2400m_roq *roq, unsigned sn)
+ {
+ 	int r;
 +
-+    for dirpath, dirnames, filenames in os.walk(directory, topdown=True):
-+        # Prune unwanted directories.
-+        if dirpath in exclude_dirs:
-+            dirnames[:] = []
-+            continue
+ 	r =  ((int) sn - (int) roq->ws) % 2048;
+ 	if (r < 0)
+ 		r += 2048;
+@@ -556,7 +556,7 @@ void i2400m_roq_log_entry_print(struct i2400m *i2400m, unsigned index,
+ {
+ 	struct device *dev = i2400m_dev(i2400m);
  
--    for dirpath, _, filenames in os.walk(directory):
-         for filename in filenames:
-             if filename_matcher.match(filename):
-                 yield os.path.join(dirpath, filename)
+-	switch(e->type) {
++	switch (e->type) {
+ 	case I2400M_RO_TYPE_RESET:
+ 		dev_err(dev, "q#%d reset           ws %u cnt %u sn %u/%u"
+ 			" - new nws %u\n",
+@@ -694,7 +694,8 @@ void __i2400m_roq_queue(struct i2400m *i2400m, struct i2400m_roq *roq,
+ 	 * not empty, so we are not the first ones; we also know we
+ 	 * are not going to be the last ones. The list is sorted, so
+ 	 * we have to insert before the the first guy with an nsn_itr
+-	 * greater that our nsn. */
++	 * greater that our nsn.
++	 */
+ 	skb_queue_walk(&roq->queue, skb_itr) {
+ 		roq_data_itr = (struct i2400m_roq_data *) &skb_itr->cb;
+ 		nsn_itr = __i2400m_roq_nsn(roq, roq_data_itr->sn);
+@@ -1016,7 +1017,8 @@ void i2400m_rx_edata(struct i2400m *i2400m, struct sk_buff *skb_rx,
+ 	/* now we have to pull and trim so that the skb points to the
+ 	 * beginning of the IP packet; the netdev part will add the
+ 	 * ethernet header as needed - we know there is enough space
+-	 * because we checked in i2400m_rx_edata(). */
++	 * because we checked in i2400m_rx_edata().
++	 */
+ 	skb_pull(skb, payload + sizeof(*hdr) - (void *) skb->data);
+ 	skb_trim(skb, (void *) skb_end_pointer(skb) - payload - sizeof(*hdr));
+ 
+@@ -1046,7 +1048,7 @@ void i2400m_rx_edata(struct i2400m *i2400m, struct sk_buff *skb_rx,
+ 			 ro_type, ro_cin, roq->ws, ro_sn,
+ 			 __i2400m_roq_nsn(roq, ro_sn), size);
+ 		d_dump(2, dev, payload, size);
+-		switch(ro_type) {
++		switch (ro_type) {
+ 		case I2400M_RO_TYPE_RESET:
+ 			i2400m_roq_reset(i2400m, roq);
+ 			kfree_skb(skb);	/* no data here */
+@@ -1146,6 +1148,7 @@ int i2400m_rx_msg_hdr_check(struct i2400m *i2400m,
+ {
+ 	int result = -EIO;
+ 	struct device *dev = i2400m_dev(i2400m);
++
+ 	if (buf_size < sizeof(*msg_hdr)) {
+ 		dev_err(dev, "RX: HW BUG? message with short header (%zu "
+ 			"vs %zu bytes expected)\n", buf_size, sizeof(*msg_hdr));
+@@ -1313,6 +1316,7 @@ void i2400m_unknown_barker(struct i2400m *i2400m,
+ 	struct device *dev = i2400m_dev(i2400m);
+ 	char prefix[64];
+ 	const __le32 *barker = buf;
++
+ 	dev_err(dev, "RX: HW BUG? unknown barker %08x, "
+ 		"dropping %zu bytes\n", le32_to_cpu(*barker), size);
+ 	snprintf(prefix, sizeof(prefix), "%s %s: ",
+@@ -1346,7 +1350,7 @@ int i2400m_rx_setup(struct i2400m *i2400m)
+ {
+ 	int result = 0;
+ 
+-	i2400m->rx_reorder = i2400m_rx_reorder_disabled? 0 : 1;
++	i2400m->rx_reorder = i2400m_rx_reorder_disabled ? 0 : 1;
+ 	if (i2400m->rx_reorder) {
+ 		unsigned itr;
+ 		struct i2400m_roq_log *rd;
+@@ -1365,7 +1369,7 @@ int i2400m_rx_setup(struct i2400m *i2400m)
+ 			goto error_roq_log_alloc;
+ 		}
+ 
+-		for(itr = 0; itr < I2400M_RO_CIN + 1; itr++) {
++		for (itr = 0; itr < I2400M_RO_CIN + 1; itr++) {
+ 			__i2400m_roq_init(&i2400m->rx_roq[itr]);
+ 			i2400m->rx_roq[itr].log = &rd[itr];
+ 		}
+diff --git a/drivers/staging/wimax/i2400m/tx.c b/drivers/staging/wimax/i2400m/tx.c
+index e9436212fe54..b55cf09daee2 100644
+--- a/drivers/staging/wimax/i2400m/tx.c
++++ b/drivers/staging/wimax/i2400m/tx.c
+@@ -508,6 +508,7 @@ void i2400m_tx_skip_tail(struct i2400m *i2400m)
+ 	size_t tx_in = i2400m->tx_in % I2400M_TX_BUF_SIZE;
+ 	size_t tail_room = __i2400m_tx_tail_room(i2400m);
+ 	struct i2400m_msg_hdr *msg = i2400m->tx_buf + tx_in;
++
+ 	if (unlikely(tail_room == 0))
+ 		return;
+ 	BUG_ON(tail_room < sizeof(*msg));
+@@ -563,6 +564,7 @@ void i2400m_tx_new(struct i2400m *i2400m)
+ 	struct device *dev = i2400m_dev(i2400m);
+ 	struct i2400m_msg_hdr *tx_msg;
+ 	bool try_head = false;
++
+ 	BUG_ON(i2400m->tx_msg != NULL);
+ 	/*
+ 	 * In certain situations, TX queue might have enough space to
+@@ -622,9 +624,11 @@ void i2400m_tx_close(struct i2400m *i2400m)
+ 	if (tx_msg->size & I2400M_TX_SKIP)	/* a skipper? nothing to do */
+ 		goto out;
+ 	num_pls = le16_to_cpu(tx_msg->num_pls);
+-	/* We can get this situation when a new message was started
++	/*
++	 * We can get this situation when a new message was started
+ 	 * and there was no space to add payloads before hitting the
+-	 tail (and taking padding into consideration). */
++	 * tail (and taking padding into consideration).
++	 */
+ 	if (num_pls == 0) {
+ 		tx_msg->size |= I2400M_TX_SKIP;
+ 		goto out;
+@@ -655,9 +659,11 @@ void i2400m_tx_close(struct i2400m *i2400m)
+ 	if (padding > 0) {
+ 		pad_buf = i2400m_tx_fifo_push(i2400m, padding, 0, 0);
+ 		if (WARN_ON(pad_buf == NULL || pad_buf == TAIL_FULL)) {
+-			/* This should not happen -- append should verify
++			/*
++			 * This should not happen -- append should verify
+ 			 * there is always space left at least to append
+-			 * tx_block_size */
++			 * tx_block_size
++			 */
+ 			dev_err(dev,
+ 				"SW BUG! Possible data leakage from memory the "
+ 				"device should not read for padding - "
+@@ -728,9 +734,11 @@ int i2400m_tx(struct i2400m *i2400m, const void *buf, size_t buf_len,
+ 		  i2400m, buf, buf_len, pl_type);
+ 	padded_len = ALIGN(buf_len, I2400M_PL_ALIGN);
+ 	d_printf(5, dev, "padded_len %zd buf_len %zd\n", padded_len, buf_len);
+-	/* If there is no current TX message, create one; if the
++	/*
++	 * If there is no current TX message, create one; if the
+ 	 * current one is out of payload slots or we have a singleton,
+-	 * close it and start a new one */
++	 * close it and start a new one
++	 */
+ 	spin_lock_irqsave(&i2400m->tx_lock, flags);
+ 	/* If tx_buf is NULL, device is shutdown */
+ 	if (i2400m->tx_buf == NULL) {
+@@ -763,8 +771,10 @@ int i2400m_tx(struct i2400m *i2400m, const void *buf, size_t buf_len,
+ 	}
+ 	if (i2400m->tx_msg == NULL)
+ 		goto error_tx_new;
+-	/* So we have a current message header; now append space for
+-	 * the message -- if there is not enough, try the head */
++	/*
++	 * So we have a current message header; now append space for
++	 * the message -- if there is not enough, try the head
++	 */
+ 	ptr = i2400m_tx_fifo_push(i2400m, padded_len,
+ 				  i2400m->bus_tx_block_size, try_head);
+ 	if (ptr == TAIL_FULL) {	/* Tail is full, try head */
+@@ -779,6 +789,7 @@ int i2400m_tx(struct i2400m *i2400m, const void *buf, size_t buf_len,
+ 	} else {			/* Got space, copy it, set padding */
+ 		struct i2400m_msg_hdr *tx_msg = i2400m->tx_msg;
+ 		unsigned num_pls = le16_to_cpu(tx_msg->num_pls);
++
+ 		memcpy(ptr, buf, buf_len);
+ 		memset(ptr + buf_len, 0xad, padded_len - buf_len);
+ 		i2400m_pld_set(&tx_msg->pld[num_pls], buf_len, pl_type);
+@@ -799,8 +810,10 @@ int i2400m_tx(struct i2400m *i2400m, const void *buf, size_t buf_len,
+ 	}
+ error_tx_new:
+ 	spin_unlock_irqrestore(&i2400m->tx_lock, flags);
+-	/* kick in most cases, except when the TX subsys is down, as
+-	 * it might free space */
++	/*
++	 * kick in most cases, except when the TX subsys is down, as
++	 * it might free space
++	 */
+ 	if (likely(result != -ESHUTDOWN))
+ 		i2400m->bus_tx_kick(i2400m);
+ 	d_fnend(3, dev, "(i2400m %p skb %p [%zu bytes] pt %u) = %d\n",
+@@ -1008,6 +1021,7 @@ int i2400m_tx_setup(struct i2400m *i2400m)
+ void i2400m_tx_release(struct i2400m *i2400m)
+ {
+ 	unsigned long flags;
++
+ 	spin_lock_irqsave(&i2400m->tx_lock, flags);
+ 	kfree(i2400m->tx_buf);
+ 	i2400m->tx_buf = NULL;
+diff --git a/drivers/staging/wimax/i2400m/usb-rx.c b/drivers/staging/wimax/i2400m/usb-rx.c
+index 5b64bda7d9e7..5cb69c18478b 100644
+--- a/drivers/staging/wimax/i2400m/usb-rx.c
++++ b/drivers/staging/wimax/i2400m/usb-rx.c
+@@ -147,6 +147,7 @@ void i2400mu_rx_size_maybe_shrink(struct i2400mu *i2400mu)
+ 		size_t avg_rx_size =
+ 			i2400mu->rx_size_acc / i2400mu->rx_size_cnt;
+ 		size_t new_rx_size = i2400mu->rx_size / 2;
++
+ 		if (avg_rx_size < new_rx_size) {
+ 			if (new_rx_size % max_pkt_size == 0) {
+ 				new_rx_size -= 8;
+@@ -251,6 +252,7 @@ struct sk_buff *i2400mu_rx(struct i2400mu *i2400mu, struct sk_buff *rx_skb)
+ 		break;
+ 	case -EOVERFLOW: {		/* too small, reallocate */
+ 		struct sk_buff *new_skb;
++
+ 		rx_size = i2400mu_rx_size_grow(i2400mu);
+ 		if (rx_size <= (1 << 16))	/* cap it */
+ 			i2400mu->rx_size = rx_size;
+@@ -277,10 +279,12 @@ struct sk_buff *i2400mu_rx(struct i2400mu *i2400mu, struct sk_buff *rx_skb)
+ 			 (long) skb_end_offset(new_skb));
+ 		goto retry;
+ 	}
+-		/* In most cases, it happens due to the hardware scheduling a
++		/*
++		 * In most cases, it happens due to the hardware scheduling a
+ 		 * read when there was no data - unfortunately, we have no way
+ 		 * to tell this timeout from a USB timeout. So we just ignore
+-		 * it. */
++		 * it.
++		 */
+ 	case -ETIMEDOUT:
+ 		dev_err(dev, "RX: timeout: %d\n", result);
+ 		result = 0;
+diff --git a/drivers/staging/wimax/i2400m/usb.c b/drivers/staging/wimax/i2400m/usb.c
+index 481b1ccde983..d2d9acc9c397 100644
+--- a/drivers/staging/wimax/i2400m/usb.c
++++ b/drivers/staging/wimax/i2400m/usb.c
+@@ -327,7 +327,7 @@ int i2400mu_bus_reset(struct i2400m *i2400m, enum i2400m_reset_type rt)
+ }
+ 
+ static void i2400mu_get_drvinfo(struct net_device *net_dev,
+-                                struct ethtool_drvinfo *info)
++				struct ethtool_drvinfo *info)
+ {
+ 	struct i2400m *i2400m = net_dev_to_i2400m(net_dev);
+ 	struct i2400mu *i2400mu = container_of(i2400m, struct i2400mu, i2400m);
+@@ -349,6 +349,7 @@ void i2400mu_netdev_setup(struct net_device *net_dev)
+ {
+ 	struct i2400m *i2400m = net_dev_to_i2400m(net_dev);
+ 	struct i2400mu *i2400mu = container_of(i2400m, struct i2400mu, i2400m);
++
+ 	i2400mu_init(i2400mu);
+ 	i2400m_netdev_setup(net_dev);
+ 	net_dev->ethtool_ops = &i2400mu_ethtool_ops;
+@@ -651,9 +652,11 @@ int i2400mu_resume(struct usb_interface *iface)
+ 	}
+ 	d_printf(1, dev, "fw was up, resuming\n");
+ 	i2400mu_notification_setup(i2400mu);
+-	/* USB has flow control, so we don't need to give it time to
++	/*
++	 * USB has flow control, so we don't need to give it time to
+ 	 * come back; otherwise, we'd use something like a get-state
+-	 * command... */
++	 * command...
++	 */
+ out:
+ 	d_fnend(3, dev, "(iface %p) = %d\n", iface, ret);
+ 	return ret;
+@@ -702,6 +705,7 @@ static
+ int i2400mu_post_reset(struct usb_interface *iface)
+ {
+ 	struct i2400mu *i2400mu = usb_get_intfdata(iface);
++
+ 	return i2400m_post_reset(&i2400mu->i2400m);
+ }
+ 
+diff --git a/drivers/staging/wimax/op-msg.c b/drivers/staging/wimax/op-msg.c
+index e20ac7d84e82..fcf122384624 100644
+--- a/drivers/staging/wimax/op-msg.c
++++ b/drivers/staging/wimax/op-msg.c
+@@ -260,6 +260,7 @@ int wimax_msg_send(struct wimax_dev *wimax_dev, struct sk_buff *skb)
+ 	struct device *dev = wimax_dev_to_dev(wimax_dev);
+ 	void *msg = skb->data;
+ 	size_t size = skb->len;
++
+ 	might_sleep();
+ 
+ 	d_printf(1, dev, "CTX: wimax msg, %zu bytes\n", size);
+diff --git a/drivers/staging/wimax/op-rfkill.c b/drivers/staging/wimax/op-rfkill.c
+index 78b294481a59..862fdc900652 100644
+--- a/drivers/staging/wimax/op-rfkill.c
++++ b/drivers/staging/wimax/op-rfkill.c
+@@ -291,10 +291,12 @@ int wimax_rfkill(struct wimax_dev *wimax_dev, enum wimax_rf_state state)
+ 	mutex_lock(&wimax_dev->mutex);
+ 	result = wimax_dev_is_ready(wimax_dev);
+ 	if (result < 0) {
+-		/* While initializing, < 1.4.3 wimax-tools versions use
++		/*
++		 * While initializing, < 1.4.3 wimax-tools versions use
+ 		 * this call to check if the device is a valid WiMAX
+ 		 * device; so we allow it to proceed always,
+-		 * considering the radios are all off. */
++		 * considering the radios are all off.
++		 */
+ 		if (result == -ENOMEDIUM && state == WIMAX_RF_QUERY)
+ 			result = WIMAX_RF_OFF << 1 | WIMAX_RF_OFF;
+ 		goto error_not_ready;
+@@ -378,6 +380,7 @@ int wimax_rfkill_add(struct wimax_dev *wimax_dev)
+ void wimax_rfkill_rm(struct wimax_dev *wimax_dev)
+ {
+ 	struct device *dev = wimax_dev_to_dev(wimax_dev);
++
+ 	d_fnstart(3, dev, "(wimax_dev %p)\n", wimax_dev);
+ 	rfkill_unregister(wimax_dev->rfkill);
+ 	rfkill_destroy(wimax_dev->rfkill);
+diff --git a/drivers/staging/wimax/stack.c b/drivers/staging/wimax/stack.c
+index ace24a6dfd2d..0d0f6ab79bf5 100644
+--- a/drivers/staging/wimax/stack.c
++++ b/drivers/staging/wimax/stack.c
+@@ -156,6 +156,7 @@ int wimax_gnl_re_state_change_send(
+ {
+ 	int result = 0;
+ 	struct device *dev = wimax_dev_to_dev(wimax_dev);
++
+ 	d_fnstart(3, dev, "(wimax_dev %p report_skb %p)\n",
+ 		  wimax_dev, report_skb);
+ 	if (report_skb == NULL) {
+@@ -362,6 +363,7 @@ EXPORT_SYMBOL_GPL(wimax_state_change);
+ enum wimax_st wimax_state_get(struct wimax_dev *wimax_dev)
+ {
+ 	enum wimax_st state;
++
+ 	mutex_lock(&wimax_dev->mutex);
+ 	state = wimax_dev->state;
+ 	mutex_unlock(&wimax_dev->mutex);
 -- 
-2.27.0
+2.30.0
 
