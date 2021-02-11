@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F224318D16
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C6F318D1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhBKOPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 09:15:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhBKN4w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:56:52 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92E8C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:55:55 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id o15so3850111wmq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:55:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=y7BeZ+/BUSXUp6ZnHJ28TSsR2UmGZCVLb/+1NBYbAyw=;
-        b=N8HcYVOxTxPMgLuiKxIBdk3DK0joq313BIUWl9490BokNBGRmsQgyrYNvtVGa2pEgD
-         1XZZu4inu+vS25LtFGDfaqR/F5K1DRjqRPND1P6Udfiq0VhlxK/QJqFkHTXAVm4ZFjYT
-         SKW4OgWdigbS1xz9WBWWmJPs4HeOG/fLr+JRzjNCePs2FHW2aomVR6IzkpM1wAtjNxu0
-         Oy38fZS1fYTDw0SDvwq0f4tvdY6YRZzh7P7wtN2RE9FWM+erBHsPTvrT8Yq1QZ2mzrnX
-         zRnoBseZYD8Me+O8pJaL4SpeZCn00YUrBVBOCtDMEhl3nqyLNLVLP2pLALn1QTalsuIa
-         BtBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=y7BeZ+/BUSXUp6ZnHJ28TSsR2UmGZCVLb/+1NBYbAyw=;
-        b=pg5ZkvSmXCj8i4DvA5WIAI/q8eJO2my5ADhbBLw7UojxXcPWrAxoNQDcZfY0Y+cwN5
-         pU01i/V+1nHiR67+BHDTfA/qmBOFZX06gorlQV3Du3q9QVKtRPc74nGf0AHFqtBUtr1r
-         eSN5o5xG+y+aXOHY48sTTS8DTbWwoHP+yM0fFwtLkJQVwpuuM5MEX1sAoTs3aJ9a8iZq
-         mkS6vBw/SIsQ8gJFq/LMCdsDxLoyb1DjknhJztRIMFO0KqgckWMIMZ7ZyzefeMy5Aq5t
-         SfGIEZ6kUI1KrTXvoEWgLSlRvVYHNI8eS6BycMK6T+lHSuVNJTgXezWNFpTC+gP49VuM
-         2spg==
-X-Gm-Message-State: AOAM530HkNYmKdaKd1OaQneMYZXlEFn+uV9oO/M0aFGAQirX9+uRCCOy
-        Ylr7gmkHqUC+dbJxPpCOTdBzNY1eMxNVSQ==
-X-Google-Smtp-Source: ABdhPJwJMeSyjXEUpaFMgyDcAVMEN4qVEfSFh+iGLxXI8SrU1ayXcXKvXp8uO6xQOOx3NLKR6VGhTA==
-X-Received: by 2002:a1c:f70c:: with SMTP id v12mr5300102wmh.77.1613051754466;
-        Thu, 11 Feb 2021 05:55:54 -0800 (PST)
-Received: from LEGION ([27.255.58.138])
-        by smtp.gmail.com with ESMTPSA id l7sm5196595wrn.11.2021.02.11.05.55.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 05:55:54 -0800 (PST)
-Message-ID: <4d1d23e7798fa339c7ccc1b6046130292a8beba1.camel@gmail.com>
-Subject: Re: [PATCH] staging: wfx: avoid defining array of flexible struct
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 11 Feb 2021 18:55:50 +0500
-In-Reply-To: <6775209.aHiZMU1OZ3@pc-42>
-References: <20210211105026.GA45458@LEGION> <6775209.aHiZMU1OZ3@pc-42>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S231288AbhBKORL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 09:17:11 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:34866 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231425AbhBKN6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:58:15 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lACT7-005aPt-7q; Thu, 11 Feb 2021 14:57:17 +0100
+Date:   Thu, 11 Feb 2021 14:57:17 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: phy_attach_direct()'s use of device_bind_driver()
+Message-ID: <YCU3vaZ51XpksIpc@lunn.ch>
+References: <CAGETcx9YpCUMmHjyydMtOJP9SKBbVsHNB-9SspD9u=txJ12Gug@mail.gmail.com>
+ <YCRjmpKjK0pxKTCP@lunn.ch>
+ <CAGETcx-tBw_=VPvQVYcpPJBJjgQvp8UASrdMdSbSduahZpJf9w@mail.gmail.com>
+ <4f0086ad-1258-063d-0ace-fe4c6c114991@gmail.com>
+ <CAGETcx_9bmeLzOvDp8eCGdWtfwZNajCBCNSbyx7a_0T=FcSvwA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx_9bmeLzOvDp8eCGdWtfwZNajCBCNSbyx7a_0T=FcSvwA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Yeah, I plan to fix this. So I have a few more questions. In the
+> example I gave, what should happen if the gpios listed in the phy's DT
+> node aren't ready yet?
 
-> I think that "#include <linux/ieee80211.h>" is no more necessary.
-Good catch. I'll send another patch.
+There are four different use cases for GPIO.
 
-Thanks,
-Usama
+1) The GPIO is used to reset all devices on the MDIO bus. When the bus
+is registered with the core, the core will try to get this GPIO. If we
+get EPROBE_DEFER, the registration of the bus is deferred and tried
+again later. If the MAC driver tries to get the PHY device before the
+MDIO bus is enumerated, it should also get EPROBE_DEFER, and in the
+end everything should work.
 
+2) The GPIO is for a specific PHY. Here we have an oddity in the
+code. If the PHY responds to bus enumeration, before we start doing
+anything with the reset GPIO, it will be discovered on the bus. At
+this point, we try to get the GPIO. If that fails with EPROBE_DEFER,
+all the PHYs on the bus are unregistered, and the bus registration
+process fails with EPROBE_DEFER.
+
+3) The GPIO is for a specific PHY. However, the device does not
+respond to enumeration, because it is held in reset. You can get
+around this by placing the ID values into device tree. The bus is
+first enumerated in the normal way. And then devices which are listed
+in DT, but have not been found, and have ID registers are registered
+to the bus. This follows pretty much the same path as for a device
+which is discovered. Before the device is registered with the device
+core, we get the GPIOs, and handle the EPROBE_DEFER, unwinding
+everything.
+
+4) The GPIO does not use the normal name in DT. Or the PHY has some
+other resource, which phylib does nothing with. The driver specific to
+the hardware has code to handle the resource. It should try to get
+those resources during probe. If probe returns EPROBE_DEFER, the probe
+will be retried later. And when the MAC driver tries to find the PHY,
+it should also get EPROBE_DEFER.
+
+In case 4, the fallback driver has no idea about these PHY devices
+specific properties. They are not part of 802.3 clause 22. So it will
+ignore them. Probably the PHY will not work, because it is missing a
+reset, or a clock, or a regulator. But we don't really care about
+that. In order that the DT was accepted into the kernel, there must be
+a device specific driver which uses those properties. So the kernel
+installation is broken, that hardware specific driver is missing.
+
+	Andrew
