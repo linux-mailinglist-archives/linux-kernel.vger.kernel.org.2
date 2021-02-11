@@ -2,138 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7EA318B0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48663318B0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhBKMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:42:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24795 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230379AbhBKMYo (ORCPT
+        id S231653AbhBKMlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231822AbhBKMYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:24:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613046197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=faRpucM8bYk3+6I7D614thA2FMfgheqmON/unvovBDw=;
-        b=esxBciKJnRNdJvORnz4si/Ou7xDtRSAx5Dq70Zu2rH4DFpZ8rHQJkOy3tvOsDoLLJvZetM
-        Jwn/jBLo2KYmjRa+1xZuHLJU35tq518auK+e547LAw6SH7QwJJm+IrcgHlW609+0dfJE1X
-        MWTSeCqyg62YNOVRMKQiNLcx7fiwCZw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-aPNvSw21OQiRLgyafqWlog-1; Thu, 11 Feb 2021 07:23:15 -0500
-X-MC-Unique: aPNvSw21OQiRLgyafqWlog-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A20F81005501;
-        Thu, 11 Feb 2021 12:23:13 +0000 (UTC)
-Received: from gondolin (ovpn-112-229.ams2.redhat.com [10.36.112.229])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BA37B60936;
-        Thu, 11 Feb 2021 12:23:08 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 13:23:06 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, kwankhede@nvidia.com, pbonzini@redhat.com,
-        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
-Subject: Re: [PATCH 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-Message-ID: <20210211132306.64249174.cohuck@redhat.com>
-In-Reply-To: <6e2842e4-334d-6592-a781-5b85ec0ed13c@linux.ibm.com>
-References: <20210209194830.20271-1-akrowiak@linux.ibm.com>
-        <20210209194830.20271-2-akrowiak@linux.ibm.com>
-        <20210210115334.46635966.cohuck@redhat.com>
-        <6e2842e4-334d-6592-a781-5b85ec0ed13c@linux.ibm.com>
-Organization: Red Hat GmbH
+        Thu, 11 Feb 2021 07:24:10 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF5CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 04:23:28 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a9so9771532ejr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 04:23:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=98DRdWMtJ5a8j+v9HHj8zV5HAmHUhIOMtOsk+5Zo6vY=;
+        b=CF5lNLQVFU3hMolQxQlvsi0aU7Hp9V4iJ4niy6+p6TtAMfurVPzO2vp4HtLrMGzCAs
+         5NUr63Z7RgrtQpMFudwwFG5CiA5MAeUAu+nKkxDgXQrRVoxx+rdF50V3HTfLufCMIn/7
+         N6aUQzidhAsHI4dPCDIyoDSc6LCNH2wHdQjqK3zdGE8u6ubPK6KJ5yMwN2PSkzO+giJr
+         rvJJ6R3EahCoK+VQCNzyQNIjgyxC8PHs4G3JtTyMT069StR7eAKCuhc1ejZBA8Ac31YF
+         R54/45JuO836UUat9de8Wpxt0OOGw5/LtIH0HKDEYbh0o8JOQdcuYYPx0UZu8qjHntwA
+         l1uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=98DRdWMtJ5a8j+v9HHj8zV5HAmHUhIOMtOsk+5Zo6vY=;
+        b=TlBRGcIge+uW7fQbkVruyrtDdrBursoJyEspjibR9DPc6P/pes9RFyab26iSZuQlkK
+         5dFEzz7T9dsLdKamcgFcblJk8Z53hYxkWV6gM3xxvn2tUcLcPwG7ME19pwuuNvc9nJJR
+         kHUVkK/M0nXcYsBB5cXpmU5aA/K4uAJseQ+qzHWC1mkzm/cfHnz93hDu2VANbJQruRGw
+         YLCGXoC7lLTXCSun/dLNyYhBkqi5SahAhZn8iIplHKveL4hfJG00qYs2QZgFGOKPIvya
+         00wL5hGQJ8IjPRIKLkMXarfOi4iwe8kIjbuRCQmok6pref/Jo15ohGWHNeuAwv/Yqwil
+         zfCA==
+X-Gm-Message-State: AOAM531rG1YhA1WsAQ9vqyxrRkTpNVkJs2K0byQkKJxODvQMTxkLITGn
+        af9PFd1KbMf/vTCoXE5Mf30qlzPQFGgP3A==
+X-Google-Smtp-Source: ABdhPJz9w5j4Zrbo/kiuVFeF6khzTfzKMB3QRq15Mbb3ZvLvmLWmTjoeC+x8zWbwxtQC/MrlDiL57w==
+X-Received: by 2002:a17:906:c049:: with SMTP id bm9mr7996224ejb.535.1613046207179;
+        Thu, 11 Feb 2021 04:23:27 -0800 (PST)
+Received: from TRWS9215.usr.ingenico.loc ([95.13.23.74])
+        by smtp.gmail.com with ESMTPSA id a1sm3921239edj.6.2021.02.11.04.23.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 04:23:26 -0800 (PST)
+Date:   Thu, 11 Feb 2021 15:23:24 +0300
+From:   Fatih Yildirim <yildirim.fatih@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        gustavo@embeddedor.com
+Subject: Re: [PATCH -next] staging: ks7010: Macros with complex values
+Message-ID: <20210211122324.GA10415@TRWS9215.usr.ingenico.loc>
+References: <20210211092239.10291-1-yildirim.fatih@gmail.com>
+ <YCUAy1VhLV3lwa3H@kroah.com>
+ <20210211105704.GA10351@TRWS9215.usr.ingenico.loc>
+ <YCUQtJk1XMsBRGBz@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCUQtJk1XMsBRGBz@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 15:34:24 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> On 2/10/21 5:53 AM, Cornelia Huck wrote:
-> > On Tue,  9 Feb 2021 14:48:30 -0500
-> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> >  
-> >> This patch fixes a circular locking dependency in the CI introduced by
-> >> commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
-> >> pointer invalidated"). The lockdep only occurs when starting a Secure
-> >> Execution guest. Crypto virtualization (vfio_ap) is not yet supported for
-> >> SE guests; however, in order to avoid CI errors, this fix is being
-> >> provided.
-> >>
-> >> The circular lockdep was introduced when the masks in the guest's APCB
-> >> were taken under the matrix_dev->lock. While the lock is definitely
-> >> needed to protect the setting/unsetting of the KVM pointer, it is not
-> >> necessarily critical for setting the masks, so this will not be done under
-> >> protection of the matrix_dev->lock.
-> >>
-> >> Fixes: f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated")
-> >> Cc: stable@vger.kernel.org
-> >> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> >> ---
-> >>   drivers/s390/crypto/vfio_ap_ops.c | 75 ++++++++++++++++++-------------
-> >>   1 file changed, 45 insertions(+), 30 deletions(-)
-> >>
-> >>   static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
-> >>   {
-> >> -	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> >> -	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> >> -	vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> >> -	kvm_put_kvm(matrix_mdev->kvm);
-> >> -	matrix_mdev->kvm = NULL;
-> >> +	if (matrix_mdev->kvm) {  
-> > If you're doing setting/unsetting under matrix_dev->lock, is it
-> > possible that matrix_mdev->kvm gets unset between here and the next
-> > line, as you don't hold the lock?  
+On Thu, Feb 11, 2021 at 12:10:44PM +0100, Greg KH wrote:
+> On Thu, Feb 11, 2021 at 01:57:04PM +0300, Fatih YILDIRIM wrote:
+> > On Thu, Feb 11, 2021 at 11:02:51AM +0100, Greg KH wrote:
+> > > On Thu, Feb 11, 2021 at 12:22:39PM +0300, Fatih Yildirim wrote:
+> > > > Fix for checkpatch.pl warning:
+> > > > Macros with complex values should be enclosed in parentheses.
+> > > > 
+> > > > Signed-off-by: Fatih Yildirim <yildirim.fatih@gmail.com>
+> > > > ---
+> > > >  drivers/staging/ks7010/ks_hostif.h | 24 ++++++++++++------------
+> > > >  1 file changed, 12 insertions(+), 12 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/staging/ks7010/ks_hostif.h b/drivers/staging/ks7010/ks_hostif.h
+> > > > index 39138191a556..c62a494ed6bb 100644
+> > > > --- a/drivers/staging/ks7010/ks_hostif.h
+> > > > +++ b/drivers/staging/ks7010/ks_hostif.h
+> > > > @@ -498,20 +498,20 @@ struct hostif_mic_failure_request {
+> > > >  #define TX_RATE_FIXED		5
+> > > >  
+> > > >  /* 11b rate */
+> > > > -#define TX_RATE_1M	(u8)(10 / 5)	/* 11b 11g basic rate */
+> > > > -#define TX_RATE_2M	(u8)(20 / 5)	/* 11b 11g basic rate */
+> > > > -#define TX_RATE_5M	(u8)(55 / 5)	/* 11g basic rate */
+> > > > -#define TX_RATE_11M	(u8)(110 / 5)	/* 11g basic rate */
+> > > > +#define TX_RATE_1M	((u8)(10 / 5))	/* 11b 11g basic rate */
+> > > > +#define TX_RATE_2M	((u8)(20 / 5))	/* 11b 11g basic rate */
+> > > > +#define TX_RATE_5M	((u8)(55 / 5))	/* 11g basic rate */
+> > > > +#define TX_RATE_11M	((u8)(110 / 5))	/* 11g basic rate */
+> > > 
+> > > But these are not "complex macros" that need an extra () added to them,
+> > > right?
+> > > 
+> > > Checkpatch is a hint, it's not a code parser and can not always know
+> > > what is happening.  With your knowledge of C, does this look like
+> > > something that needs to be "fixed"?
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > Hi Greg,
+> > 
+> > Thanks for your reply.
+> > Actually, I'm following the Eudyptula Challenge and I'm at task 10.
 > 
-> That is highly unlikely because the only place the matrix_mdev->kvm
-> pointer is cleared is in this function which is called from only two
-> places: the notifier that handles the VFIO_GROUP_NOTIFY_SET_KVM
-> notification when the KVM pointer is cleared; the vfio_ap_mdev_release()
-> function which is called when the mdev fd is closed (i.e., when the guest
-> is shut down). The fact is, with the only end-to-end implementation
-> currently available, the notifier callback is never invoked to clear
-> the KVM pointer because the vfio_ap_mdev_release callback is
-> invoked first and it unregisters the notifier callback.
+> First rule of that challenge is that you are not allowed to talk about
+> it in public :)
 > 
-> Having said that, I suppose there is no guarantee that there will not
-> be different userspace clients in the future that do things in a
-> different order. At the very least, it wouldn't hurt to protect against
-> that as you suggest below.
-
-Yes, if userspace is able to use the interfaces in the certain way, we
-should always make sure that nothing bad happens if it does so, even if
-known userspace applications are well-behaved.
-
-[Can we make an 'evil userspace' test program, maybe? The hardware
-dependency makes this hard to run, though.]
-
+> That being said, you didn't answer any of my questions above :(
 > 
-> >
-> > Maybe you could
-> > - grab a reference to kvm while holding the lock
-> > - call the mask handling functions with that kvm reference
-> > - lock again, drop the reference, and do the rest of the processing?
-> >  
-> >> +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> >> +		mutex_lock(&matrix_dev->lock);
-> >> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> >> +		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-> >> +		kvm_put_kvm(matrix_mdev->kvm);
-> >> +		matrix_mdev->kvm = NULL;
-> >> +		mutex_unlock(&matrix_dev->lock);
-> >> +	}
-> >>   }  
-> 
+> greg k-h
 
+Ohh no, missed the rule. Sorry for that, I feel rookie :)
+You are right, they are not complex macros.
+Besides that, type cast operator doesn't have the highest precedence.
+So, I think we can use enclosing paranthesis.
+
+Thanks,
+Fatih
