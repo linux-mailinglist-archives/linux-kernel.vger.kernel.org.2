@@ -2,261 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBF231921B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C14F319223
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhBKSUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbhBKSEx (ORCPT
+        id S232684AbhBKSV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:21:57 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:55462 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232698AbhBKSH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:04:53 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED745C06178B
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:04:11 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id o38so4441244pgm.9
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:04:11 -0800 (PST)
+        Thu, 11 Feb 2021 13:07:28 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BHhoCl139241;
+        Thu, 11 Feb 2021 18:05:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=ZehWqMSHukTWgSu3KgloYLYvZQxkegyAN1gR7WfrTp8=;
+ b=V7PzM8+2GlKjhWA9FO2sSJ+w+yjdu8xmWverxQpaQsp2ucjUf2lIoqzQC8PTWsyUTlai
+ laBHMegJgGU4W1TCr6Aks8qHkMyuZy9h9r00lLhXeRfQWVhLfsXJLJ5BK68cEQTpxZ32
+ 1thKKWd1ERYQjUkf8AgISW1e+SvgRnHQQUrj6LcroxqI2UvaOQz2ubswl+sGRyLsUVE6
+ hp9sVaVcv/4wslqt7FlfeM3WYjJWUhRCdfXraMNV5Ako6bKq5v/clA53OpYVEkuxlpNS
+ B4nixogINSQgT3ajRZHf5U78W01tV1fkXe7czzBQ1TIXyxbmypK906t87K8/e7kTDkZt 9A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 36hkrn8g0b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 18:05:25 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BHk4tS041016;
+        Thu, 11 Feb 2021 18:05:25 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+        by aserp3030.oracle.com with ESMTP id 36j4prw0uq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 18:05:24 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XZ3RB9YrORn6J8Um+sP5fJCjg5riffMpBPYG5KrNy0WD0mbiHu9Nd53MfFb9avvhESIOMOxszjSbOuP8XqPLMo8FuVaEOAnV0uma+zgapBJlDFh8ImeoWNMTl/jWU97WZxKGf6+SQA+FPB1rqO1OXYfuM9p7q0EJeGn4HnQe9DBEiFl0OHFnAPo2KSLF9du3pmr9vidh2opEn8nWTW33Su6o4gxHkgXu/sfmwFLy6Yc1jph3Wd+5zrvxSZnoeLi6xyyycNOPKxhe9/fuNQKBaRYw2o3tIuGIn0AQ5ps6A1UKoIQTv5xG4cIjWRTv3+RyLnkO72ENv7aSq3YcYxp5Eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZehWqMSHukTWgSu3KgloYLYvZQxkegyAN1gR7WfrTp8=;
+ b=MpR9L6ECgo7m8y865ovuzMAcr1EUO56JiqoCo66nJqGIkjdgdrxbDKTCiEtap6JCxpP/rEKPEtS1bbAOyYDUi791TmLOQAgXdUR4DW3TWIKEIT3PnuBLxo+UMRTcNf+acO64UaiftfNQhnQd5huu6/esKvRXqUg6dQheNJONjlK1CpXNUvdoOtCihmoiqCZnYeFP4vDwa6T3Co5cxH9FfZf9EpUPJAjMWx0gxEulwiKB2nIKvAgikDwxPWjOuflNEIcRNnN9IUu057VSPh8779hWVZ4adxWZop1ayX1ei4ArsMRCkZB/iO8lzg+VT5UD6B8D4VFPOq+uTw5USNv6fA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ABmGACKj8AbXK76X6Oa7fcPA01DfnOcIma2NBDr+Ii8=;
-        b=gdDg+trAg1mnOAYW198dpCWFTvXYocL6QHdOt952qYu1iFidwX9K64iSDFdFlMpaas
-         /UPo99v23QnfYtMzFZCBYxt7DtkTQyRdQq0zB/TE8/VxDRKXUYnxvf4Ncf1zAer5315c
-         5JSozgsGTijUu53setjDkpshgqAIqJpq6Jvow=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ABmGACKj8AbXK76X6Oa7fcPA01DfnOcIma2NBDr+Ii8=;
-        b=YE2gfvZzTk2VXTT7aNo8VBCUkLWS4/13eTiVAI/Z4DBgjQ6BSBgmUSx98rpJMb5T7o
-         +RLcHf/cB06RUR6e3C/CIBW9OoU+7YrIOUA0JCF1dJIGoCKfvaDcJqs5m+9fd1diD/gW
-         PNe0CLcwalnMutbm450elRN9qsC6sMDyY9R7T/iY8lMvvCuP0K2i9miXQCG48kTZuSgh
-         eEwRcIdN4u6w/HnDIDJIVAnuMsjszl1bhm2DBfYdGUMzkc3SB0obWF05ElLu01qz2/sH
-         rECJ5uGnXg8luGu6kLrI250AxatEAhfN8CgcyiJugEsaR6bMtlaIM3VKdXT70wwHwrai
-         jGmg==
-X-Gm-Message-State: AOAM533qmXgTgmzx0kv6wsaLrj/bVT+0xahYY+4RehAinTydF83OEPV9
-        jl1c+9xeb/PD26FZwWV3+lWGdQ==
-X-Google-Smtp-Source: ABdhPJxgeZDClYTwM7w3KSD3XpIZZ3WMRSb8LUUqNHFWQ2sSL1PVnza2+m10uol/5oUW2d5jDTZqrA==
-X-Received: by 2002:a05:6a00:22d6:b029:1cb:35ac:d8e0 with SMTP id f22-20020a056a0022d6b02901cb35acd8e0mr8938502pfj.17.1613066651431;
-        Thu, 11 Feb 2021 10:04:11 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:fc92:99c:fc2f:8603])
-        by smtp.gmail.com with UTF8SMTPSA id h11sm3967858pjc.27.2021.02.11.10.04.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 10:04:10 -0800 (PST)
-Date:   Thu, 11 Feb 2021 10:04:08 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Al Cooper <alcooperx@gmail.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH v5 2/4] USB: misc: Add onboard_usb_hub driver
-Message-ID: <YCVxmA8VraYuwN3y@google.com>
-References: <20210210171040.684659-1-mka@chromium.org>
- <20210210091015.v5.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <YCTWpUqD7vSu0c4k@kroah.com>
-MIME-Version: 1.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZehWqMSHukTWgSu3KgloYLYvZQxkegyAN1gR7WfrTp8=;
+ b=J2GVM4RybH18h99A52Tpvg2XdRfWnQVinSA9ljywJYmjYcPe4R4SGZkQnqzsC8ReIJ7wq1ViAxsaj43NVBFJl9p1qrfO4Ykozr9n+3u6eYj1wphlJL57ZnEZGRUUL48g5TzHHaBvCcxUKxEJm5eB7yJBh0Cg5KqyY2bjnxfEuL4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
+ by MWHPR10MB1758.namprd10.prod.outlook.com (2603:10b6:301:9::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Thu, 11 Feb
+ 2021 18:05:22 +0000
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3846.028; Thu, 11 Feb 2021
+ 18:05:22 +0000
+Subject: Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, osalvador@suse.de, mhocko@suse.com,
+        song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com, joao.m.martins@oracle.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20210208085013.89436-1-songmuchun@bytedance.com>
+ <20210208085013.89436-5-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <72e772bc-7103-62da-d834-059eb5a3ce5b@oracle.com>
+Date:   Thu, 11 Feb 2021 10:05:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <20210208085013.89436-5-songmuchun@bytedance.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YCTWpUqD7vSu0c4k@kroah.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MWHPR13CA0045.namprd13.prod.outlook.com
+ (2603:10b6:300:95::31) To MWHPR10MB1389.namprd10.prod.outlook.com
+ (2603:10b6:300:21::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MWHPR13CA0045.namprd13.prod.outlook.com (2603:10b6:300:95::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.12 via Frontend Transport; Thu, 11 Feb 2021 18:05:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: be3b790a-6370-4d67-3e0c-08d8ceb79959
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1758:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1758387C415F3A99966FF426E28C9@MWHPR10MB1758.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8uEHhYgSZpi/+XR8WxcfJnAvwLrggnbkdoiXm8iE/yKuKg2i9EtoPH8h8DiwruklNbNysgD2iCvrHvPEYGJ5n9tfqv3UnhMDANAmisg7ScuL7lwRmpxhSaeXOTY3NYxtvNkstGSp6sLAarlbGzbKMkb/za+XW8QCy+tej7aj07A4QO3gSWHG0VB14BsehUY6pIkJ60iNscrfNd5WDgKYyHkF+TlLIgo6B7BAkXB4zieAw+kZkNU89fLVIFr558P5uK/le9nw6fwoLRz/ggbVggxyh1Sx+YMgsahb999U81L1kyay6craviCfnnCilDCwvqQenlNm2hDgPAe0ASxOkJ/vT8YjUvijeAC14The6Yovpp16Ug3YN2RUFgT80rW95QnFUay2l2z8X2+Umytpz9yDY7zwMnuHr/6Uy0SAIVqJazOI5blG9phC8Epq6fGhu/jczQME6Vyi2EyNRuCHOMKvyEXXgeh0bhhdPcQGrd7WRQyyNxXn+X9xFaVY2i+40F8ryB9Jo9Fa/1pnCAd8SzGi6+o0C/gx2XPVneOg3MnywmI18xGjHzYiURPG4022K+j57LmFvV87zpttxGTc4uxKQZNGJYfi8dzjLuXwpdywzkhrKZ/z7J/9PUzsJBZaTVldXkM0qKy0Nd+4OECfRuFYJTCjoociy4q4jNFJU+OIVoQUN4U/+cVj5gg926BYmtmokyOzPsGF65e+FNxnBg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(396003)(39860400002)(366004)(86362001)(8676002)(7406005)(31696002)(31686004)(36756003)(921005)(7416002)(83380400001)(6636002)(2906002)(4326008)(16576012)(5660300002)(52116002)(478600001)(966005)(8936002)(66556008)(66946007)(6486002)(26005)(316002)(16526019)(186003)(53546011)(66476007)(956004)(2616005)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NVBxenVRUU9QcmliSTNMbGYvR0g4ZHNLNTd6QnNOamkvUnl3OXMvWTUvbDN3?=
+ =?utf-8?B?U1VmQlhVR3Z4bU5aQi9RV1FycWN0UXBCdWlrNFovK0w2VDhlanZ3dG53WEt2?=
+ =?utf-8?B?Yms2eDF0QkRKbDRFNHNyQThiNVFuSzhKUmliWkJvMzFheUo4SnpHcXVpZ1BG?=
+ =?utf-8?B?aUx6KzJkN3BDNmd6NmdSUkREek5EU1FxTHQ4c2J5VkExUEVNa29sS0Q1WGZm?=
+ =?utf-8?B?T1I4bW0rbmdMd0wzZkNGckxzNGhwbVpJYW5iYUFxUnZLcStueHcvQWFibm05?=
+ =?utf-8?B?K0tJRUt2THplNTNBSzN5MFNTakp3TVpmRVNiWUtXV3I2WmtRWG5CZ3lFUzdO?=
+ =?utf-8?B?RlRTcEt6NEtQQXh4cW9oN1lESmxSQ2hQOWxBUkZNeXJqRGtyWEhML3BJaU5a?=
+ =?utf-8?B?djdvMVduQ1ZkNTF5S2Q3SzBCbmV2QVg0SzlTVEc3a3RWdUs2SStCTUdYb0NS?=
+ =?utf-8?B?bDE2TUh1dG5NSHF1V2E5b2RGYmtRT29jMEFiUy94d0paa1RZWnVZU1FpTFAx?=
+ =?utf-8?B?RXE5ZS9BV3M0Y2diSHFObWxhL3VVaENLODF4Y1hUNkhjTVV4dWIzaFBnQWNs?=
+ =?utf-8?B?OGhBdExINWFVd0VyNjhNdVdmTEhIMXhTeGJlVmtmbFpqb21SSWVJWm5FNnNi?=
+ =?utf-8?B?VDlkTlB2Nm5ydmpoTG9nSXlYSldGZXdVSEZHa09xSkwydUs1RFh1Ny9CUVZi?=
+ =?utf-8?B?RFlXMi9TZEl2aDR4S01iM0E3UTgrQkszQ1creVcvb3pQS3RnaFMwckhrM0FI?=
+ =?utf-8?B?dnc0Q2NDZGlKcFRsT0FqVzJLWmxPVjFOVW1keXd5S0dHbzV3eVNNTmEza2ta?=
+ =?utf-8?B?UUZFa1NMdlZzM0xPYmprcFVVU0hYbWRieUF6Nml6ODZmS2JRTlE0ekRSTmd3?=
+ =?utf-8?B?a0RDWCtXQ0UrNzd0K1Y2NkdmZldLYXlOb1F3VGNtNG9ocmk5UnFaZTRlSnlr?=
+ =?utf-8?B?c0NnL0JxUGxvSHRybTZUaDhyWEdXRHpvK3ZRUXRvcW9EekxCMzJtbkpBN3Rv?=
+ =?utf-8?B?K01CZ0NqMVVqK0hZWmY2UXJsT2NCbkJqeFptK3F0QkIvVkRiT3o0VE5IOVFj?=
+ =?utf-8?B?ZGdaU3FDMEdFL3FhRzlJc2FWeXNCKzVocDZNR1ZWL2RkTm1VSlRBQWJtVHJV?=
+ =?utf-8?B?dUdybTU0Y2QrQ21NTlpFVk8zNHZxdDF6Q0JhS1V0SXY5K2ZDSHY2OXVLV1NQ?=
+ =?utf-8?B?QjVpRUg2KzRUQTFoeUw1Y0pJOHpkckY1QjNRVFNUUlp3dE5FcWorNWZZcy92?=
+ =?utf-8?B?Tm5rSVhGaHovTUVQUnl2SGN5dDh6Vk9lUWlOalFOWDNLVmYraHVnWHFNcGFV?=
+ =?utf-8?B?MmhxZEhEalQ1c2NMMWZyaDJJcnZoRTcvNDZmSGlsUVltbHJDTUlDcWY0NFZN?=
+ =?utf-8?B?VmVrd3lBTDFtL0tnblQ1NUduaXpIb1pvYStDUEhxRmRvL0tVRUJObzNhNENQ?=
+ =?utf-8?B?aExBVTRRQ2t6b2ttcWhhbTQ5d0l5N2gxRVlvL3VYY0ZPWmI2Qjk5c1RIejJE?=
+ =?utf-8?B?cGRWL2Rnc1pGV0ZzWDg1Tm54MHFhTmhyakp1R1ZZWnhBbFZOQ3pwQkczcCtS?=
+ =?utf-8?B?VDlMYytDVGdSK1pBanFLYUVKYkdxL3lvNnFhQ0VyQ3Q1RzdCSnRRVjNHb1Y1?=
+ =?utf-8?B?N3lxZzVTSHdkUTVuNHRyOSttMlhqNlJqRHgxeWp3clp5clA3VE9kYWxoTTl6?=
+ =?utf-8?B?RVZJOFhvTlRZNW1VdFMyTjNibkkzQVB1RVE1OEtMN3luUkJZdXh3ejVTQzZ3?=
+ =?utf-8?Q?YR6haXUCD9YPITnbolrY67yJUknlbUrALeeheEX?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be3b790a-6370-4d67-3e0c-08d8ceb79959
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 18:05:22.3163
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zf6JxGMDc7hEgJf6jXBOCZB606ALvRnKHBZkIHWb2XOqyHrR04EUnwI6UMqBqRvJCP/Z5IuMVfbL1I9Rfv8+SA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1758
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110145
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Thu, Feb 11, 2021 at 08:03:01AM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Feb 10, 2021 at 09:10:37AM -0800, Matthias Kaehlcke wrote:
-> > +static int onboard_hub_add_usbdev(struct onboard_hub *hub, struct usb_device *udev)
-> > +{
-> > +	struct udev_node *node;
-> > +	char link_name[64];
-> > +	int ret = 0;
-> > +
-> > +	mutex_lock(&hub->lock);
-> > +
-> > +	if (hub->going_away) {
-> > +		ret = -EINVAL;
-> > +		goto unlock;
-> > +	}
-> > +
-> > +	node = devm_kzalloc(hub->dev, sizeof(*node), GFP_KERNEL);
-> > +	if (!node) {
-> > +		ret = -ENOMEM;
-> > +		goto unlock;
-> > +	}
-> > +
-> > +	node->udev = udev;
-> > +
-> > +	list_add(&node->list, &hub->udev_list);
-> > +
-> > +	snprintf(link_name, sizeof(link_name), "usb_dev.%s", dev_name(&udev->dev));
-> > +	WARN_ON(sysfs_create_link(&hub->dev->kobj, &udev->dev.kobj, link_name));
+On 2/8/21 12:50 AM, Muchun Song wrote:
+> When we free a HugeTLB page to the buddy allocator, we should allocate the
+> vmemmap pages associated with it. But we may cannot allocate vmemmap pages
+> when the system is under memory pressure, in this case, we just refuse to
+> free the HugeTLB page instead of looping forever trying to allocate the
+> pages.
 > 
-> Never use WARN_ON() unless you want the machine to reboot if it triggers
-> (panic on warn).
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/mm.h   |  2 ++
+>  mm/hugetlb.c         | 19 ++++++++++++-
+>  mm/hugetlb_vmemmap.c | 30 +++++++++++++++++++++
+>  mm/hugetlb_vmemmap.h |  6 +++++
+>  mm/sparse-vmemmap.c  | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  5 files changed, 130 insertions(+), 2 deletions(-)
 
-Ah, thanks, I wasn't aware of that. Will change to some type of log if the
-sysfs attributes stick around.
+Muchun has done a great job simplifying this patch series and addressing
+issues as they are brought up.  This patch addresses the issue which seems
+to be the biggest stumbling block to this series.  The need to allocate
+vmemmap pages to dissolve a hugetlb page to the buddy allocator.  The way
+it is addressed in this patch is to simply fail to dissolve the hugetlb
+page if the vmmemmap pages can not be allocated.  IMO, this is an 'acceptable'
+strategy.  If we find ourselves in this situation then we are likely to be
+hitting other corner cases in the system.  I wish there was a perfect way
+to address this issue, but we have been unable to come up with one.
 
-> But the larger question is what is this sysfs link for?  It's not
-> documented anywhere, and so, shouldn't be allowed.  Who is going to use
-> it and why is it needed?
+There was a decent discussion about this is a previous version of the
+series starting here:
+https://lore.kernel.org/linux-mm/20210126092942.GA10602@linux/
+In this thread various other options were suggested and discussed.
 
-Alan asked to add them: https://lore.kernel.org/patchwork/patch/1313000/#1514338
+I would like to come to some agreement on an acceptable way to handle this
+specific issue.  IMO, it makes little sense to continue refining other
+parts of this series if we can not figure out how to move forward on this
+issue.
 
-I'm fine with either way, let's just agree on something :)
-
-> > +
-> > +unlock:
-> > +	mutex_unlock(&hub->lock);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static void onboard_hub_remove_usbdev(struct onboard_hub *hub, struct usb_device *udev)
-> > +{
-> > +	struct udev_node *node;
-> > +	char link_name[64];
-> > +
-> > +	snprintf(link_name, sizeof(link_name), "usb_dev.%s", dev_name(&udev->dev));
-> > +	sysfs_remove_link(&hub->dev->kobj, link_name);
-> > +
-> > +	mutex_lock(&hub->lock);
-> > +
-> > +	list_for_each_entry(node, &hub->udev_list, list) {
-> > +		if (node->udev == udev) {
-> > +			list_del(&node->list);
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	mutex_unlock(&hub->lock);
-> > +}
-> > +
-> > +static ssize_t always_powered_in_suspend_show(struct device *dev, struct device_attribute *attr,
-> > +			   char *buf)
-> > +{
-> > +	struct onboard_hub *hub = dev_get_drvdata(dev);
-> > +
-> > +	return sprintf(buf, "%d\n", hub->always_powered_in_suspend);
-> 
-> sysfs_emit()?
-
-ok
-
-> And you forgot the Documentation/ABI/ entries for this driver, so it
-> really can not be reviewed...
-
-I'll add it in the next version.
-
-> > +}
-> > +
-> > +static ssize_t always_powered_in_suspend_store(struct device *dev, struct device_attribute *attr,
-> > +			    const char *buf, size_t count)
-> > +{
-> > +	struct onboard_hub *hub = dev_get_drvdata(dev);
-> > +	bool val;
-> > +	int ret;
-> > +
-> > +	ret = kstrtobool(buf, &val);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	hub->always_powered_in_suspend = val;
-> > +
-> > +	return count;
-> > +}
-> > +static DEVICE_ATTR_RW(always_powered_in_suspend);
-> > +
-> > +static struct attribute *onboard_hub_sysfs_entries[] = {
-> > +	&dev_attr_always_powered_in_suspend.attr,
-> > +	NULL,
-> > +};
-> > +
-> > +static const struct attribute_group onboard_hub_sysfs_group = {
-> > +	.attrs = onboard_hub_sysfs_entries,
-> > +};
-> > +
-> > +static int onboard_hub_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	struct onboard_hub *hub;
-> > +	int err;
-> > +
-> > +	hub = devm_kzalloc(dev, sizeof(*hub), GFP_KERNEL);
-> > +	if (!hub)
-> > +		return -ENOMEM;
-> > +
-> > +	hub->vdd = devm_regulator_get(dev, "vdd");
-> > +	if (IS_ERR(hub->vdd))
-> > +		return PTR_ERR(hub->vdd);
-> > +
-> > +	hub->dev = dev;
-> > +	mutex_init(&hub->lock);
-> > +	INIT_LIST_HEAD(&hub->udev_list);
-> > +
-> > +	dev_set_drvdata(dev, hub);
-> > +
-> > +	err = devm_device_add_group(dev, &onboard_hub_sysfs_group);
-> 
-> You just raced userspace and lost :(
-> 
-> Please use the correct api to add sysfs attributes to the device
-> automatically by the driver core.
-
-ok
-
-> But the larger question is why do you need them at all?  What do they
-> do that we can't already do with existing apis that you feel a one-off
-> api for this driver is required?
-
-The 'always_powered_in_suspend' attribute allows the admin to configure whether
-the hub should always been kept on in suspend. I'm know about existing APIs that
-would be suitable for that, but that might be just my ignorance. If you have any
-suggestions please let me know.
-
-> > +	if (err) {
-> > +		dev_err(dev, "failed to create sysfs entries: %d\n", err);
-> > +		return err;
-> > +	}
-> > +
-> > +	err = onboard_hub_power_on(hub);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	/*
-> > +	 * The USB driver might have been detached from the USB devices by
-> > +	 * onboard_hub_remove() make sure to re-attach it if needed.
-> > +	 */
-> > +	(void)driver_attach(&onboard_hub_usbdev_driver.drvwrap.driver);
-> 
-> (void)????
-> 
-> Please no, do it right.
-
-Ok, driver_attach() does not return an error when the driver is already
-attached, so it should be fine to change this to an error check.
-
-> But, why is a driver calling this function anyway?  That feels really
-> really wrong...
-
-I found during testing that this is needed to make sure the driver is attached
-again after it was released in onboard_hub_remove(). Alan requested to release
-the driver to avoid dangling references:
-https://lore.kernel.org/patchwork/patch/1310889/#1506598
-
-Thanks
-
-Matthias
+It would be great if David H, David R and Michal could share their opinions
+on this.  No need to review details the code yet (unless you want), but
+let's start a discussion on how to move past this issue if we can.
+-- 
+Mike Kravetz
