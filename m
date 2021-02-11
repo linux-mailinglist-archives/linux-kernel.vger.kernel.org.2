@@ -2,74 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7485D319077
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DB2319067
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhBKQ4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:56:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229647AbhBKPl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:41:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80F7A64E9A;
-        Thu, 11 Feb 2021 15:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613058052;
-        bh=KQNzTZZgEk2YLxXuy5hmyB3R3k6WHpCdU4PEwQbAo3o=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=V3sRrr1ZDTgVDtJ2VMo0baraI1RWjmzWu7ZZvZ2FRmT92fm+KChq1Bl1FwaHIQt9O
-         22xLSW6Kx9k0yD8/Uugd5nQaIZZD43A5eqxSbvfVst0S6Wl/ADFbRGgPzOtYl8HaHe
-         zM/ZBJQPCQaixM9BCMlPQpdpx01BMyqFidtqfRgbzb+4Baq3ZXm1C623L5JMuWNzGl
-         V9oAyIpaWOdGE4jqvXQR0HmyKS+soqrvGjng9WoJWw1Q2coYuqKubJ0x1lfn9gFzuv
-         RdNqntMBkOLdYiofE/aL76t1NGR1kN8skbjYN/GNRtwqS23LvifNNMuPqvynFaOAcj
-         2ut+sj/4RyJdw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     linux-kernel@vger.kernel.org, alexandre.belloni@bootlin.com,
-        linux-spi@vger.kernel.org, ludovic.desroches@microchip.com,
+        id S230238AbhBKQxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231308AbhBKPlD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:41:03 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C91DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:40:17 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id o15so4177158wmq.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:40:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=BQASuo84wfslsSEivWFaPBGKyJ+9IhWQICA1bAqw9pc=;
+        b=G/UnfUhjvghbtT5LL/ccChqvxR3VGoeJDY0GnhgqREnzARjQQ+nIuF6vtPkRJ67lFU
+         IOrCaSzzOWXuAcKHDhheox4KAPQXkPZ0VlDd70F+0DJpVVTh0rBkQDVTuSHeQ06xKPSb
+         c1cmmAz6bP+t0knwzzSCM+lT37KdOsOWUDOEw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=BQASuo84wfslsSEivWFaPBGKyJ+9IhWQICA1bAqw9pc=;
+        b=KcvQLSW0UhYWdsqbN4qpKmM3WAKbQrxwU2TO68D0SoqAsbXvo+5y/uVaFrliEHJ3sN
+         RU3JJHRFhHy1AJVrvww7e3l+DEVfDhy5SUJ2mP41wGiG1aYnbRfdz8rcw7ZWmzIu2aeY
+         5oMcmYWrsotdUUbPlFu9y0apP/iNdeI5QVVcxw6yum9nXnrv3f+80lqb5v67anVGyZu5
+         tXBeglGrgK3JDhshRAOyA6NLayXUEq0vZqmn9RAe8HtiblLsZK45wKA/b3YXJCwpiwi2
+         EBtuccFyHiu9JeBu9VUdB7yBC6BCkbVAkM+Z5abKGa6hXbr42XgPyK31pLZmh5vrEzLt
+         DJ6g==
+X-Gm-Message-State: AOAM5305ARe3DtmPbybDUAsDf9Ur9kGDLleQVYQXGNOEu+dyx24+MKzx
+        0qOVkDyWxCk6ZKCSqNqrnftPQQ==
+X-Google-Smtp-Source: ABdhPJyEz8KdbutPUEkFdfjjXqFBnVRyCrjCSeZ53ICqWwBwbN6UTPF9mpSKyi9zn1yrCN7w9m+Wqg==
+X-Received: by 2002:a1c:113:: with SMTP id 19mr5676819wmb.7.1613058015846;
+        Thu, 11 Feb 2021 07:40:15 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t2sm5773738wru.53.2021.02.11.07.40.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 07:40:15 -0800 (PST)
+Date:   Thu, 11 Feb 2021 16:40:13 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        kernel-janitors@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-fbdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>, linux-omap@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210210135428.204134-1-tudor.ambarus@microchip.com>
-References: <20210210135428.204134-1-tudor.ambarus@microchip.com>
-Subject: Re: [PATCH] spi: atmel-quadspi: Disable the QSPI IP at suspend()
-Message-Id: <161305799890.12648.15037245423068627644.b4-ty@kernel.org>
-Date:   Thu, 11 Feb 2021 15:39:58 +0000
+Subject: Re: [PATCH] video: use getter/setter functions
+Message-ID: <YCVP3ZKBsJUV0m8G@phenom.ffwll.local>
+Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        kernel-janitors@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+        linux-fbdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210209211325.1261842-1-Julia.Lawall@inria.fr>
+ <20210210082341.GH220368@dell>
+ <YCPbxSHWMipTz+mB@phenom.ffwll.local>
+ <20210210161258.GA124276@x1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210210161258.GA124276@x1>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 15:54:28 +0200, Tudor Ambarus wrote:
-> It is safer to disable the QSPI IP at suspend, in order to avoid
-> possible impact of glitches on the internal FSMs. This is a theoretical
-> fix, there were no problems seen as of now. Tested on sama5d2 and
-> sam9x60 versions of the IP.
+On Wed, Feb 10, 2021 at 04:12:58PM +0000, Lee Jones wrote:
+> On Wed, 10 Feb 2021, Daniel Vetter wrote:
+> 
+> > On Wed, Feb 10, 2021 at 08:23:41AM +0000, Lee Jones wrote:
+> > > On Tue, 09 Feb 2021, Julia Lawall wrote:
+> > > 
+> > > > Use getter and setter functions, for platform_device structures and a
+> > > > spi_device structure.
+> > > > 
+> > > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> > > > 
+> > > > ---
+> > > >  drivers/video/backlight/qcom-wled.c                                  |    2 +-
+> > > 
+> > > This patch is fine.
+> > > 
+> > > Could you please split it out and submit it separately though please.
+> > 
+> > Or just apply the entire patch through backlight tree, there's nothing
+> > going on in fbdev anyway I think.
+> > 
+> > Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> 
+> I can do that.  Is that an fbdev Ack?
 
-Applied to
+Yeah defacto I'm somehow stuck with that as maintainer of last resort :-)
+Iirc we've got an S: orphaned entry pointing at drm.git trees.
+-Daniel
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Thanks!
+> 
+> > > >  drivers/video/fbdev/amifb.c                                          |    4 ++--
+> > > >  drivers/video/fbdev/da8xx-fb.c                                       |    4 ++--
+> > > >  drivers/video/fbdev/imxfb.c                                          |    2 +-
+> > > >  drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c |    6 +++---
+> > > >  drivers/video/fbdev/omap2/omapfb/dss/dpi.c                           |    4 ++--
+> > > >  drivers/video/fbdev/omap2/omapfb/dss/dsi.c                           |    4 ++--
+> > > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c                         |    2 +-
+> > > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c                         |    2 +-
+> > > >  drivers/video/fbdev/xilinxfb.c                                       |    2 +-
+> > > >  10 files changed, 16 insertions(+), 16 deletions(-)
+> > > 
+> > > ...]
+> > > 
+> > > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
+> > > > index 3bc7800eb0a9..091f07e7c145 100644
+> > > > --- a/drivers/video/backlight/qcom-wled.c
+> > > > +++ b/drivers/video/backlight/qcom-wled.c
+> > > > @@ -1692,7 +1692,7 @@ static int wled_probe(struct platform_device *pdev)
+> > > >  
+> > > >  static int wled_remove(struct platform_device *pdev)
+> > > >  {
+> > > > -	struct wled *wled = dev_get_drvdata(&pdev->dev);
+> > > > +	struct wled *wled = platform_get_drvdata(pdev);
+> > > >  
+> > > >  	mutex_destroy(&wled->lock);
+> > > >  	cancel_delayed_work_sync(&wled->ovp_work);
+> > > 
+> > > For my own reference (apply this as-is to your sign-off block):
+> > > 
+> > >   Acked-for-Backlight-by: Lee Jones <lee.jones@linaro.org>
+> > > 
+> > 
+> 
+> -- 
+> Lee Jones [李琼斯]
+> Senior Technical Lead - Developer Services
+> Linaro.org │ Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-[1/1] spi: atmel-quadspi: Disable the QSPI IP at suspend()
-      commit: df6978b7ea6349eb32078c42b917559f5510aebd
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
