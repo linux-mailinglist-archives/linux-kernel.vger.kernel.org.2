@@ -2,156 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DE3319141
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51095319143
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhBKRjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:39:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbhBKQod (ORCPT
+        id S232394AbhBKRkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:40:03 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:53929 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231927AbhBKQql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:44:33 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31182C06178B
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:43:29 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id z32so4592457qtd.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:43:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TnTqaJo6o1YbIsxOlUU5El2AYFoCRaTMv2k74gwpYCk=;
-        b=j7wENnRNfYfPWqF0G9QGfDUzZk153Z4UQUmIveNotABQDwPIRR70vxmq35a7doUKCZ
-         /HcvOQ86RpZiIANzXlYIfy+cAgGoUtdPhMADXIwhA2mdI+cZmuULVLbyvajkEAzTFDUD
-         HlQENYNoYVeOG5qtbcqxQm6f93n6rMe0lE2Q/7B1Q0BVTLr+Tv6TXhbb4QBf/RUGDOIL
-         jvNkGUYiXZOX9S7SYbN6U7aMi36Jvs+F6dKWmArqhvay3h5S4R8nxzeejQBYTIaCr8Lu
-         7ak3Pb8RxDoS2+C/OcgfbO/o40kFyaZsGykValmew5XF14xbnK46yn5yPxRz3jn4yz/o
-         OW0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TnTqaJo6o1YbIsxOlUU5El2AYFoCRaTMv2k74gwpYCk=;
-        b=S7uYx7nPq3PPXZ8OcrG1n5Xoq2qY1q949a5T1GAoe2ISSzVgPQaXAro7kjCG0g57BW
-         ozeSBtjP/Und9ZrQIJ8lvtjY1z6hn1mNorKSaveJboM44hAJzFLvcHMehsEvVrwKIIrj
-         gHoBD1TeSCZezyXXRbSrI27+QMjW6wh7yNWMsvupoD0gjsBdUUvEe9QYe/bP8Xcch0NY
-         QDzg8JU/Fas0qvTP+/KFaD0Z6vma5qOCYlAjPhr15qOe2btss1tWmyFBNgKr+oTAPMbr
-         wplEHqq6q6tgytciD3l2jfnnL95MSIIt292MAzUg04sK09mmsvJu9+GtjCWguMphF78h
-         vRQw==
-X-Gm-Message-State: AOAM533Re8KXck/WDtMlLkmOs3Ck1COQaW56CUZwyPhnF2OiAMxEOmfC
-        BpRRGpE4vHG0L0h4gueg6Ew5nt85bPACLh7HF5OmdA==
-X-Google-Smtp-Source: ABdhPJyIzcNVaFrr0OmiD16y+FCSfW1u7IpTJXN6zk3LpMSJgVXwchFQE+2/kSNg4CVmCoH61WURtiFXXMwaao4ZUhM=
-X-Received: by 2002:ac8:59d6:: with SMTP id f22mr8369890qtf.230.1613061807236;
- Thu, 11 Feb 2021 08:43:27 -0800 (PST)
+        Thu, 11 Feb 2021 11:46:41 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id CB0E55C0101;
+        Thu, 11 Feb 2021 11:45:30 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 11 Feb 2021 11:45:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=wtqbOGzta9M177pSJSqcwXLiv9t
+        cri+slKWbRQesdkw=; b=b+Yp8sHDZDGAQfChbuZuG5lbeD94iiudNAkuYGNjaIo
+        MeR9FRrXu0jba0AfDGt/RBs4V7W7x9elh20KN7LiUSd3xMy9Btd4RcNkAwvhRD4Q
+        FPWayCY88l6+euWqQhu00tphBjS5iz5hSrt9iqyj5eqMTl3CmItXeG2KhaNEpZAw
+        m2ESaRYucIPNl+B+eCuP/TDQh0HBZBwK2PWzdhMNBPL+cHMz1zBcqLyn+MN0giBV
+        79Z+kg79hlvl5Yy7CdnGeGtz3C4xOIIaqtb1XBcpCX4caLRI12xGYXD+Kgz4ONJT
+        fRuKZetskfVT0dZiUl5WK2XkMyg+GfIld64HM63lQ6w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=wtqbOG
+        zta9M177pSJSqcwXLiv9tcri+slKWbRQesdkw=; b=CIvy4FE5KjS1QohfsfelQi
+        x58mP92CNbZmOqsXVxcs6PgQD58yQJNDMl7cMwO9phKIBShebP2EWVPOdAHLE2TD
+        setTRUj99/o51JboWdjJy0E3AzGkcH4ohRtYWZIW/wpTysEcGyjW+qkNNuSZMmgq
+        NjZ7Y+teyHTvsNd97e58A7N/mh3tLQJUVXNv1qc6d/3EyLwaFBWLivyIo/zPWCxA
+        yVYVtZDHTNppV5TFR0d7dveEp2WA6W4BjVr8cQq3S/go999PAhdO3qqS2gz3cYrT
+        EuHZHVaOY+DcLoxr6dGe8oc3GINZAkFxFyfWpH7X6F0ExqXnUIVKnixeZH7nIIvA
+        ==
+X-ME-Sender: <xms:KV8lYAHDMns51cy4hqrU02R1iJX64h8QY9ARcEhUskItqQ-Ef3Yj-g>
+    <xme:KV8lYC-gUI6jWUJkf-x5JpRlMAcNOGUMxVEovSaYjn6J1f6bhIEoFHSPSW3jKckJa
+    4C8hdzze0yNmAblHt0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheelgdeludcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:KV8lYKJlZCdE9w0S3DE1lIzcdSLi0kP222J5SA8rzykBkcL1TKTvxA>
+    <xmx:KV8lYFba5FqPd_EYO-N9F7iC2P9slHM74v16qCDm64b1Kj3Pp5Awxw>
+    <xmx:KV8lYEK-rBOUpcSnnbVTjRbY_aqNLp7Cy6hMiiCushVE1XtdktG1qg>
+    <xmx:Kl8lYEDn5FnWVzVQARwfL2IHHImfWhvoUk8mK7FGJnBrYhBVz4_h8Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3873F1080063;
+        Thu, 11 Feb 2021 11:45:29 -0500 (EST)
+Date:   Thu, 11 Feb 2021 17:45:26 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "wens@csie.org" <wens@csie.org>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] arm: dts: sun5i: Add GPU node
+Message-ID: <20210211164526.6n66ozyu7pcuigqq@gilmour>
+References: <nGyI_fodh-zDD7vDOH3sqaiGbOQprYmljxEKSlTdu9Ju5OcpUcLBIHndYSnzQKT0n6Yh4H4VX8ss-XPyuBMU6n8nX5Oag_4LrqrryrZaqx8=@protonmail.com>
 MIME-Version: 1.0
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
- <20210210000259.635748-6-ben.widawsky@intel.com> <MN2PR11MB36455574E25237635D3F9CC0888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
-In-Reply-To: <MN2PR11MB36455574E25237635D3F9CC0888D9@MN2PR11MB3645.namprd11.prod.outlook.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 11 Feb 2021 08:43:16 -0800
-Message-ID: <CAPcyv4i9q8CaOehPDe2m7gSWVmRtSxX37G8+D8RdCgiL6jt1JA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/8] cxl/mem: Add a "RAW" send command
-To:     Ariel.Sibley@microchip.com
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael J Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ufx4mccggtpm5zqb"
+Content-Disposition: inline
+In-Reply-To: <nGyI_fodh-zDD7vDOH3sqaiGbOQprYmljxEKSlTdu9Ju5OcpUcLBIHndYSnzQKT0n6Yh4H4VX8ss-XPyuBMU6n8nX5Oag_4LrqrryrZaqx8=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 7:27 AM <Ariel.Sibley@microchip.com> wrote:
->
-> > diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
-> > index c4ba3aa0a05d..08eaa8e52083 100644
-> > --- a/drivers/cxl/Kconfig
-> > +++ b/drivers/cxl/Kconfig
-> > @@ -33,6 +33,24 @@ config CXL_MEM
-> >
-> >           If unsure say 'm'.
-> >
-> > +config CXL_MEM_RAW_COMMANDS
-> > +       bool "RAW Command Interface for Memory Devices"
-> > +       depends on CXL_MEM
-> > +       help
-> > +         Enable CXL RAW command interface.
-> > +
-> > +         The CXL driver ioctl interface may assign a kernel ioctl comm=
-and
-> > +         number for each specification defined opcode. At any given po=
-int in
-> > +         time the number of opcodes that the specification defines and=
- a device
-> > +         may implement may exceed the kernel's set of associated ioctl=
- function
-> > +         numbers. The mismatch is either by omission, specification is=
- too new,
-> > +         or by design. When prototyping new hardware, or developing /
-> > debugging
-> > +         the driver it is useful to be able to submit any possible com=
-mand to
-> > +         the hardware, even commands that may crash the kernel due to =
-their
-> > +         potential impact to memory currently in use by the kernel.
-> > +
-> > +         If developing CXL hardware or the driver say Y, otherwise say=
- N.
->
-> Blocking RAW commands by default will prevent vendors from developing use=
-r space tools that utilize vendor specific commands. Vendors of CXL.mem dev=
-ices should take ownership of ensuring any vendor defined commands that cou=
-ld cause user data to be exposed or corrupted are disabled at the device le=
-vel for shipping configurations.
 
-What follows is my personal opinion as a Linux kernel developer, not
-necessarily the opinion of my employer...
+--ufx4mccggtpm5zqb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Aside from the convention that new functionality is always default N
-it is the Linux distributor that decides the configuration. In an
-environment where the kernel is developing features like
-CONFIG_SECURITY_LOCKDOWN_LSM that limit the ability of the kernel to
-subvert platform features like secure boot, it is incumbent upon
-drivers to evaluate what they must do to protect platform integrity.
-See the ongoing tightening of /dev/mem like interfaces for an example
-of the shrinking ability of root to have unfettered access to all
-platform/hardware capabilities.
+Hi,
 
-CXL is unique in that it impacts "System RAM" resources and that it
-interleaves multiple devices. Compare this to NVME where the blast
-radius of misbehavior is contained to an endpoint and is behind an
-IOMMU. The larger impact to me increases the responsibility of CXL
-enabling to review system impacts and vendor specific functionality is
-typically unreviewable.
+On Thu, Feb 11, 2021 at 03:25:23PM +0000, Yassine Oudjana wrote:
+> sun5i has the same Mali 400 GPU as sun4i with the same interrupts, clocks
+> and resets. Add node for it in dts.
+>=20
+> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
 
-There are 2 proposals I can see to improve the unreviewable problem.
-First, of course, get commands into the standard proper. One strawman
-proposal is to take the "Code First" process that seems to be working
-well for the ACPI and UEFI working groups and apply it to CXL command
-definitions. That vastly shortens the time between proposal and Linux
-enabling. The second proposal is to define a mechanism for de-facto
-standards to develop. That need I believe was the motivation for
-"designated vendor-specific" in the first instance? I.e. to share
-implementations across vendors pre-standardization.
+Unfortunately we already merged a similar patch for 5.12
 
-So, allocate a public id for the command space, publish a public
-specification, and then send kernel patches. This was the process for
-accepting command sets outside of ACPI into the LIBNVDIMM subsystem.
-See drivers/acpi/nfit/nfit.h for the reference to the public command
-sets.
+Maxime
+
+--ufx4mccggtpm5zqb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYCVfJgAKCRDj7w1vZxhR
+xdJsAQDWMP0NzuJynQroY3M3P0zkseK1FDwCfz9cLp0og84lDQEA77MjjALXJ0dY
+mJlFoN3QDzyi8TE2WxIbPwa9DHOSJwo=
+=nwOc
+-----END PGP SIGNATURE-----
+
+--ufx4mccggtpm5zqb--
