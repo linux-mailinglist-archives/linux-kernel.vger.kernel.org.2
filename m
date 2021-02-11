@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F783187CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF5C3187D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhBKKIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:08:53 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:42450 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230353AbhBKKHm (ORCPT
+        id S230253AbhBKKNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:13:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229836AbhBKKLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:07:42 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BA6n7U010983;
-        Thu, 11 Feb 2021 04:06:49 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=eeMJSCblT1p0TOiBEUAjvfSv8ttwzy/lb6Th6n73F0o=;
- b=Qpwm6jQfNhjEu8H9Vy3AG3Rbzle6lBhHY9gqHGXeAG0x7qun4oBTfhnkcKx5qnC4Ezvn
- 3VohhYXS2AHPtG+4NhtdQLhbtDS87JVy1wicacUiQTZRKyzA3yytiOpDrQakMtQwr9Qv
- 0XyZv36sjiGa/r8jtgP9k69vQcZDRrchJXITde6Xwov3k4nyRp80lULtEWVXjMPdlp6J
- 2Bwyh4wXIUjh2vBDxyiBiqnHgMlpFfRaJWl/cim50p+H00FBL0nE6+LVyxKcyq60o2PT
- jwEcX3GoJI1lyw4ZhV8c/wbzTENbisyEes0Xqc1tPUq5CvX3nVB1B4gW5O6E9V7uAwK6 5g== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 36hrv2efce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 11 Feb 2021 04:06:49 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 11 Feb
- 2021 10:06:47 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 11 Feb 2021 10:06:47 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A908611CF;
-        Thu, 11 Feb 2021 10:06:47 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 10:06:47 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-CC:     Hulk Robot <hulkci@huawei.com>, Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] mfd: arizona: Make some symbols static
-Message-ID: <20210211100647.GY106851@ediswmail.ad.cirrus.com>
-References: <20210210075626.1096193-1-weiyongjun1@huawei.com>
+        Thu, 11 Feb 2021 05:11:23 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0951AC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:10:43 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id r2so636775plr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:10:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0UWUI/kkDinmay7MvgnYpZn7ou/nW9tAWna4jMvJtvY=;
+        b=X4/N9a6jFvnHFA8dpCYtIvGz3rj4GP6BpvaHedwgXzGOBETztL3uI14VkXupf818UB
+         SOOaaJQad81JdAO9Dx1t2cliZrdNQ4ZkYaukHwhRmkeMp+fUTVebo5/67atzKn/DpRAt
+         6ykqKZ7p7OmvD7ru/GeeAlACeA67u1sMgkBsiMoK+eoPws8qtwwAFsdoh8Ic164VkFZC
+         qkkDpVdUEAlgzq7wFfIY8jveTpiBNk4uQ4eBmwXUga99ETm+1kboWHiISCz5PU7eyOVf
+         Kxu7gh8HrcB4cHLxabl+U8RwpIHDGSgtWLhFNhCfgL8lf54R442C6qQuMPlhCTvdmnd/
+         Em5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0UWUI/kkDinmay7MvgnYpZn7ou/nW9tAWna4jMvJtvY=;
+        b=uT99uhGlvgC1jh4PYeroRWdU/px7T64HFamwIiScy+rhOhfXup0u9h4/FGao+9DJkQ
+         hB5J3dGWHy/k1ENst4qfHQdK5+OsI8keKVd96ORcU7OeGDZ40ctoDSxRsdyd+Cd+PCyM
+         I084GyzFDI+IQPG59q8Kx4UkRpmRGCqFAgM2Kv0wnRww5jPSwkt374W0Ud3rbDizg0yx
+         QvdRZrz/OPxLpgxwp1FIiT+3piKqB8YpaST+N3mrDS/mFiFXpAXoOMwQoZl/aiRssUiC
+         YHmWUqlJ4VYT3oxFDLOVbYZjDkghF/9xU6KCTGqYE+Bh5XglYWoLZHt/t67Slur3szbI
+         c17w==
+X-Gm-Message-State: AOAM531JglFdGxeSdTCZ3GGiI2w5uTankREWQYXZNSAMAqsc8aqHPz0a
+        yu9XUxh6bLDNqaCkmYPT5Ujong==
+X-Google-Smtp-Source: ABdhPJyI4I2N7+f2yBokicCsqPV12GPsfMpH8tS1rxFrBawOPBvQFC5Pa0IK/8oSkGKZYpcmRkkM8w==
+X-Received: by 2002:a17:902:c408:b029:e2:ba09:d442 with SMTP id k8-20020a170902c408b02900e2ba09d442mr6875531plk.83.1613038242539;
+        Thu, 11 Feb 2021 02:10:42 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id mv14sm7847662pjb.0.2021.02.11.02.10.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 11 Feb 2021 02:10:41 -0800 (PST)
+Date:   Thu, 11 Feb 2021 15:40:39 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Hemansh Agnihotri <hemanshagnihotri27@gmail.com>,
+        devel@driverdev.osuosl.org, greybus-dev@lists.linaro.org,
+        elder@kernel.org, johan@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [greybus-dev] [PATCH 1/1] staging: greybus: Added do - while in
+ multi statement macro
+Message-ID: <20210211101039.m5q26qgxififotqp@vireshk-i7>
+References: <20210211095444.54447-1-hemanshagnihotri27@gmail.com>
+ <YCUAMgFa6i9vl9An@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210075626.1096193-1-weiyongjun1@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=815 suspectscore=0
- impostorscore=0 clxscore=1011 bulkscore=0 adultscore=0 malwarescore=0
- spamscore=0 phishscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102110089
+In-Reply-To: <YCUAMgFa6i9vl9An@kroah.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 07:56:26AM +0000, Wei Yongjun wrote:
-> The sparse tool complains as follows:
+On 11-02-21, 11:00, Greg KH wrote:
+> On Thu, Feb 11, 2021 at 03:24:44PM +0530, Hemansh Agnihotri wrote:
+> > This patch add fixes an checkpatch error for "Macros with multiple statements
+> > should be enclosed in a do - while loop"
+> > 
+> > Signed-off-by: Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
 > 
-> drivers/mfd/arizona-spi.c:28:31: warning:
->  symbol 'reset_gpios' was not declared. Should it be static?
-> drivers/mfd/arizona-spi.c:29:31: warning:
->  symbol 'ldoena_gpios' was not declared. Should it be static?
+> Any reason you didn't test-build your patch before sending it out?
 > 
-> Those symbols are not used outside of arizona-spi.c, so this
-> commit marks them static.
-> 
-> Fixes: e933836744a2 ("mfd: arizona: Add support for ACPI enumeration of WM5102 connected over SPI")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
+> That's a bit rude to reviewers :(
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+I also wonder how two people stumbled upon the exact same thing at the
+same time. Copy/paste ?
 
-Thanks,
-Charles
+https://lore.kernel.org/lkml/20210210221439.3489-2-yildirim.fatih@gmail.com/
+
+And of course NAK for the patch. The macro is used outside of any
+other routine, and is actually used to create routines. No do-while
+required here.
+
+-- 
+viresh
