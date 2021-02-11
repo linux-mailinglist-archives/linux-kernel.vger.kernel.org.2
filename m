@@ -2,120 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA02318E00
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EEA318E23
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhBKPTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 10:19:24 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13151 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhBKOuW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:50:22 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602543f90000>; Thu, 11 Feb 2021 06:49:29 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
- 2021 14:49:29 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.177)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Thu, 11 Feb 2021 14:49:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HzqM86tay4hV/V/HPORinh9SVEGz1ZkNMaPdNHoIZgQgtsm+yL2jUMo7IYFt3JxRNeQJ2mHmEGaWVTb5WnkcYJjV+0ls02ZjKm9GNlEiY0zlN6HbH3C34zhks773tRYWHnJFeGu8a67+Q1oWqAjfRzvVXnEI5D/gGrdkFuBViz/KcPD2C6iT2kAPSoHYSMWwLJp5RTu7zABc8cvMZDxBKvC1rvgQgV9Uv/bx9q4+SCLDzJ+AuYTmZAR+QA4SkI9JidbniLhL6NArN72XGMByObW6MBmoC7zMkNG9W2tWTshK/RKKsmwpT3gxYVqQcI+BVCNy34T6UMj3ijrNqjuBzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ErIPf6mjysjaYOMJQ1I+4T189UbJl5Ac4YEWLaoX1aE=;
- b=R/t+zfufRh9qszA2A9fCP6hc11MddC5Mxrc4cDCcsZmboKiWJT/t9P+YsUXWB55PPZm3wtoCPZEr9Q0/qJ35M0AGpEbfpIstHJJwLkC0GqLl7kKst1YoY9qczKZIeVrZMV68UpxIlZd/wk6UkFSH7LdPzEQ70Hc1EvZB8A8Q3vur6t12bvcGBt160Fag11MXdeLdCZLslsKRovML2JnC4643dX1qOSx3GbBHECWX9/yA8h/GxpsaEA84wqmJJ7CZ91UhfT5G0SjyyD3FO+zVm91OWUzuRLc+W5nlKBHTxjqknI/fswN0ol8Fs6G6vv0UagUU/pIMCY7vEUfSrgMZew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BY5PR12MB4855.namprd12.prod.outlook.com (2603:10b6:a03:1dd::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Thu, 11 Feb
- 2021 14:49:24 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::10d:e939:2f8f:71ca]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::10d:e939:2f8f:71ca%7]) with mapi id 15.20.3846.027; Thu, 11 Feb 2021
- 14:49:24 +0000
-Date:   Thu, 11 Feb 2021 10:49:22 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
-        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
-        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
-        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
-        <gmataev@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>
-Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
-Message-ID: <20210211144922.GM4247@nvidia.com>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <20210201162828.5938-9-mgurtovoy@nvidia.com>
- <20210201181454.22112b57.cohuck@redhat.com>
- <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
- <20210201114230.37c18abd@omen.home.shazbot.org>
- <20210202170659.1c62a9e8.cohuck@redhat.com>
- <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
- <806c138e-685c-0955-7c15-93cb1d4fe0d9@ozlabs.ru>
- <6c96f41a-0daa-12d4-528e-6db44df1a5a6@nvidia.com>
- <20210211085021.GD2378134@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210211085021.GD2378134@infradead.org>
-X-ClientProxiedBy: BL0PR02CA0077.namprd02.prod.outlook.com
- (2603:10b6:208:51::18) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
+        id S230376AbhBKPVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:21:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231341AbhBKOxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 09:53:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9463864E7E;
+        Thu, 11 Feb 2021 14:52:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613055171;
+        bh=y9W1QoA11D/YlFhp7AxmUd3UQsfGyTGGB4b+xoKvpDw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=E1IqgqsO4b5AXFtD7WsZkQRJS1/AHZL2t36GzJjggnGdE22TKkvR+jmIibh4A1xZ0
+         4lSnt50ezkumgvmdhcFspKes6vONqmnQQT4dn9jrzexA/b94OAh/TWuzYGh0Ebx2h/
+         XRZkZHdmwGsDpykWFwbquiIEv6WoC1R/G5bWoC48U9Nw6VA8psLepDHwIm49ibD4ZG
+         GQIQuf5RUQtnEeP6HG1OtoqS2tUyZu2tW9qRiCXVbGGT516p/0Znc3Fa77Hri6rZns
+         P65jHZl5iPs1UEY5Vohiq3NX97au7ubTFmPPWvuMYVjt4veXp8IITN1V2UncoKXdqa
+         /ms+UZgNQFG8A==
+Received: by mail-ej1-f42.google.com with SMTP id a9so10485807ejr.2;
+        Thu, 11 Feb 2021 06:52:51 -0800 (PST)
+X-Gm-Message-State: AOAM530QS+omPy3z+IUHCjFrBc5TcD1Q+URxbWTp1sNGW6DuZmrS6mlM
+        QOh7pUIH/X+tnnGBXpA3FYKyKSrypwuQnWrSXw==
+X-Google-Smtp-Source: ABdhPJzbMfh6cditDQ2L4N8t5L52D9PUJSbfLo3iVj5V1td26kANC6HGLI+jOPHwx42tG+2V29psrF71rJAhFg4JZhU=
+X-Received: by 2002:a17:906:f85:: with SMTP id q5mr8757682ejj.108.1613055170111;
+ Thu, 11 Feb 2021 06:52:50 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0077.namprd02.prod.outlook.com (2603:10b6:208:51::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Thu, 11 Feb 2021 14:49:23 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lADHW-006YHq-B7; Thu, 11 Feb 2021 10:49:22 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613054969; bh=ErIPf6mjysjaYOMJQ1I+4T189UbJl5Ac4YEWLaoX1aE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=g11EzGwuHh4fAN+RX1sq/2DW5gOEMsmdB7Y6jfcYmVFJYnbTQIQhE6dYMkJicMT4o
-         iJ9fYqxwipOIguAvwpbWmRkVd8gmwKGvXrmzsXbjRU2W6zxF5Z8k+xiM7ea2PJJur2
-         Mrr/lV2ptNmNpd7IN0hTRaGakV4E1pJ2D8ALrZZga3Y3JLPPJyzcy4yE37dHp0ReBs
-         WYUloxQ2m7Q6ZpYPGbQHKgwJul3YKBQacvCkZyrn9Fwxx41Mt/kut3in1WYZE7A5Kb
-         jP/1IubY1hy8F8NDOhIppc0E193JxUJbvlEEr9yF409o3hokUvNQuDCIUAaP8zmhlE
-         taKiPJpyvKTRg==
+References: <20210207185140.3653350-1-aford173@gmail.com> <20210210201841.GA2688439@robh.at.kernel.org>
+ <CAHCN7xJwd=u8O33j0Gkaw7=5-k5F=pEuSxqoe+hV=LxAPMk_vQ@mail.gmail.com>
+In-Reply-To: <CAHCN7xJwd=u8O33j0Gkaw7=5-k5F=pEuSxqoe+hV=LxAPMk_vQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 11 Feb 2021 08:52:37 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKXrax2GAzNR5UUUdY60PzBMKSMPB32AyP+YKPEtSvOhw@mail.gmail.com>
+Message-ID: <CAL_JsqKXrax2GAzNR5UUUdY60PzBMKSMPB32AyP+YKPEtSvOhw@mail.gmail.com>
+Subject: Re: [PATCH V3 1/2] dt-bindings: clk: versaclock5: Add optional load
+ capacitance property
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 08:50:21AM +0000, Christoph Hellwig wrote:
-> On Thu, Feb 04, 2021 at 11:12:49AM +0200, Max Gurtovoy wrote:
-> > But the PCI function (the bounded BDF) is GPU function or NVLINK function ?
-> > 
-> > If it's NVLINK function then we should fail probing in the host vfio-pci
-> > driver.
-> > 
-> > if its a GPU function so it shouldn't been called nvlink2 vfio-pci driver.
-> > Its just an extension in the GPU vfio-pci driver.
-> 
-> I suspect the trivial and correct answer is that we should just drop
-> the driver entirely.  It is for obsolete hardware that never had
-> upstream
+On Wed, Feb 10, 2021 at 2:40 PM Adam Ford <aford173@gmail.com> wrote:
+>
+> On Wed, Feb 10, 2021 at 2:18 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Sun, Feb 07, 2021 at 12:51:38PM -0600, Adam Ford wrote:
+> > > There are two registers which can set the load capacitance for
+> > > XTAL1 and XTAL2. These are optional registers when using an
+> > > external crystal.  Since XTAL1 and XTAL2 will set to the same value,
+> > > update the binding to support a single property called
+> > > xtal-load-femtofarads.
+> > >
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > ---
+> > > V3:  No Change
+> > > V2:  No Change
+> > >
+> > > A couple people suggested that I not use the $ref, but without it,
+> > > the bindings check failed with errors.
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > > index 2ac1131fd922..c268debe5b8d 100644
+> > > --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > > +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > > @@ -59,6 +59,12 @@ properties:
+> > >      minItems: 1
+> > >      maxItems: 2
+> > >
+> > > +  idt,xtal-load-femtofarads:
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> >
+> > Don't need a type with standard unit suffix.
+>
+> If I remove that line, the binding check fails.
 
-The HW is still in active deployment and use. The big system, Summit,
-only went to production sometime in 2019, so it is barely started on
-its lifecycle. Something around a 5-10 year operational lifetime would
-be pretty typical in this area.
+Ah, looks like femtofarads got added to property-units.txt but not the
+schemas. I'll add it, but fine to leave this as-is for now.
 
-> support for even using it in the guest.  It also is the reason for
-> keeping cruft in the always built-in powernv platform code alive that
-> is otherwise dead wood.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Or stated another way, once vfio-pci supports loadable extensions the
-non-upstream hardware could provide the extension it needs out of
-tree.
-
-Jason
+Rob
