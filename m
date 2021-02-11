@@ -2,85 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EA4319216
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E432D319217
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhBKSSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:18:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        id S230374AbhBKSSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbhBKRz2 (ORCPT
+        with ESMTP id S230021AbhBKR4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:55:28 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E64C0617AA;
-        Thu, 11 Feb 2021 09:54:46 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id q9so5864839ilo.1;
-        Thu, 11 Feb 2021 09:54:46 -0800 (PST)
+        Thu, 11 Feb 2021 12:56:16 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D95C061356
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:55:34 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id hs11so11444739ejc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:55:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/AfvkW3BT76jstfXfqadStre7RYjq2qJAUGIdvtsE0o=;
-        b=f+hCJFDRzhWI/elLipi7vdDNwx+HQbZlId6DRBmB4xcQKVmJ7wQrECDDoIdTSXdd0P
-         HCXfDml2Y5ocBIPcLi4EoyCh1pBJxUCAzmM4mcXwKlnvYMUEMyyABunjlVuk4dJ5tk8r
-         zndoJWHLD+ZrAWHlrhoZKoQHNEoYn0Oayx4rCETACwfucAXbuFkguwxETd5E2gVEvPNP
-         Qr1HH9ZIf/1h4zQ1OpfXbohycBqdwbFVps+KkuIT7ukEAhhKq33hfiTn726Dzoiph1Fo
-         ZBfi3kRCxEwPnBlJq10cTER2VkIee5gSV4kkqVILrBzbHvNMo0ZChqPOIuwPZqwrSe6e
-         n8Ow==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0pCiUpeBCgfpgLcOixXyMaSRCIE6sLsL8S3aPB3A1Nk=;
+        b=HeDif2XiXW0gIR/nSH+Ff81eWsT3unuN2il6MYQENm81dIPu9ZEv6DQmXsFiyarW/E
+         UuqRHRgndgNesCGAh8GQufF7YugahdZzCsyolVu5QT91ej07R7ArAlltahenuFa+nTqy
+         k/DOxllhUSBqR4lDuj9WMVOSylyiqNLGaJl3WyzfEQn2Ftm3/iwKJJbq2UWq6cPcuFR7
+         IppSm9OAh0K+8VIl12BFYndJOqLCCxFfDtax1enQaA0+vTVkkJTS3nyCVCT7NUebJkcT
+         wtmBhfUWrdhT3RadOSwxiRUvvzfV4A+3K9cyg2HFrOYoGeEt86IckSeDieAvdUMZOCw+
+         uzDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/AfvkW3BT76jstfXfqadStre7RYjq2qJAUGIdvtsE0o=;
-        b=LyTWB/r1KD8tEiFwEJrLb4baf7Dr/OuLBaE4uH5vC92jhuCDOVI5NumCZRr0+FnIQo
-         E3jHEPKmoWkp+fmgej4WKtMfGGlWmtK07CbMzsJL8+r/aclSnCKAnmGuV23dEVe59REI
-         YPE7G4MCURdygeMjegXMKpdubT6QEEiP/sWHNz1qNDtvn0il2vuAMGs9bkgPk0NBi55b
-         xOY31oqosf9+ivx3Z8S8MBjLQ+LgqzobWDIVGcZTWZHTyXu/ZU9jYOD8kcoDymZ43NQo
-         EZ0UxshNx3qS0wWOEp/CC1jrcHBmzBLYg0I9KZbctXVCS7HRwEuxznPUky1jkGx/HVBD
-         Jk7g==
-X-Gm-Message-State: AOAM533lo5WmlSVLT+v7R0wUIro99liHNuvE6q8fYp65rOlhpW5AXGaq
-        SoqqNFtmMjp0dWeCISgHFh0XKDC0ShsSYuYb2xA=
-X-Google-Smtp-Source: ABdhPJzNdjPD6PmZQTb31bRfX5TO+6K+2/TyE3PIjf76PP+42Djm3qgWNK/gWF1tgvgGhKr4CVqbgdX3O/hGt+4W+k4=
-X-Received: by 2002:a92:c090:: with SMTP id h16mr7020689ile.190.1613066086401;
- Thu, 11 Feb 2021 09:54:46 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0pCiUpeBCgfpgLcOixXyMaSRCIE6sLsL8S3aPB3A1Nk=;
+        b=Mn6gVSAb51pYT7PiI5TClvyXoLcMb+yiX5BxeAW4nQLjOOyMfADCPPmb7lCxU507S6
+         jqx9FpE1YiJd9OVrivlaDbc8TNFExlh8Mhn8BQ4mwU7C6/NbzxtXs6rmfKdG2LB7NGyT
+         nYLH+ZpPoskm13TGcqcPa3NSyvA0hpi0h1CGLJpyh/3f3vJNowsfYLODtqD09bKDeCiz
+         Y5MMc6ki2hoq0/czj/pNQTuRVQH9Y/Vku/Pgwim0sgJ0XDgklqZhYqLjSWIH8A0V4jFE
+         6uPUbmZKdzV38HjEJd+ipwxcW6gNoG+A11LK11va7reenyZ7nbB9SOG4eVqlflULchmq
+         vM3w==
+X-Gm-Message-State: AOAM530QpkvhTKvkrsiC4iwGydeQ2zulzrmy3GiKxJ2WknoJcut2RV+Q
+        M/iDs//ZjuqU/NoZsIaefduoG5yhh+9Fcg==
+X-Google-Smtp-Source: ABdhPJwQdtfNm5nZvjceAOzmmGCdMaSZl/CqH6DTGxgPqq7Z4GkOwRqQmeBrzORpe/zl38s7IazJkA==
+X-Received: by 2002:a17:906:184e:: with SMTP id w14mr9887272eje.56.1613066132520;
+        Thu, 11 Feb 2021 09:55:32 -0800 (PST)
+Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id g16sm4884187ejo.107.2021.02.11.09.55.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Feb 2021 09:55:31 -0800 (PST)
+Subject: Re: [PATCH 4/4] microblaze: Remove support for gcc < 4
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210210141140.1506212-1-geert+renesas@glider.be>
+ <20210210141140.1506212-5-geert+renesas@glider.be>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <1b072177-e212-67ce-7d72-c3d526a480f9@monstr.eu>
+Date:   Thu, 11 Feb 2021 18:55:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210211160930.1231035-1-ztong0001@gmail.com> <dcb02f4e-2fad-b44f-9bc0-098cb654b145@gmail.com>
-In-Reply-To: <dcb02f4e-2fad-b44f-9bc0-098cb654b145@gmail.com>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Thu, 11 Feb 2021 12:54:35 -0500
-Message-ID: <CAA5qM4B4AF=5UaGVT+Jgww-7SKbnA0pJORgvv9E9a8HwVOUPFw@mail.gmail.com>
-Subject: Re: [PATCH] enetc: auto select PHYLIB and MDIO_DEVRES
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210210141140.1506212-5-geert+renesas@glider.be>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the comments!
-I have sent a revised patch.
-- Tong
 
-On Thu, Feb 11, 2021 at 12:38 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> On 2/11/21 8:09 AM, Tong Zhang wrote:
-> > FSL_ENETC_MDIO use symbols from PHYLIB and MDIO_DEVRES, however they are
-> > not auto selected.
-> >
-> > ERROR: modpost: "__mdiobus_register" [drivers/net/ethernet/freescale/enetc/fsl-enetc-mdio.ko] undefined!
-> > ERROR: modpost: "mdiobus_unregister" [drivers/net/ethernet/freescale/enetc/fsl-enetc-mdio.ko] undefined!
-> > ERROR: modpost: "devm_mdiobus_alloc_size" [drivers/net/ethernet/freescale/enetc/fsl-enetc-mdio.ko] undefined!
-> >
-> > auto select MDIO_DEVRES and PHYLIB when FSL_ENETC_MDIO is selected.
->
-> depends on MDIO_DEVRES && MDIO_BUS
->
-> would be more appropriate because the symbols you reference are part of
-> the MDIO bus layer, which happens to associated with PHYLIB depending on
-> the configuration but as far as build goes you can separate the two.
-> --
-> Florian
+
+On 2/10/21 3:11 PM, Geert Uytterhoeven wrote:
+> Since commit cafa0010cd51fb71 ("Raise the minimum required gcc version
+> to 4.6") , the kernel can no longer be compiled using gcc-3.
+> Hence drop support code for gcc-3.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  arch/microblaze/kernel/module.c | 26 --------------------------
+>  1 file changed, 26 deletions(-)
+> 
+> diff --git a/arch/microblaze/kernel/module.c b/arch/microblaze/kernel/module.c
+> index 9f12e3c2bb42a319..e5db3a57b9e30d9e 100644
+> --- a/arch/microblaze/kernel/module.c
+> +++ b/arch/microblaze/kernel/module.c
+> @@ -24,9 +24,6 @@ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
+>  	Elf32_Sym *sym;
+>  	unsigned long int *location;
+>  	unsigned long int value;
+> -#if __GNUC__ < 4
+> -	unsigned long int old_value;
+> -#endif
+>  
+>  	pr_debug("Applying add relocation section %u to %u\n",
+>  		relsec, sechdrs[relsec].sh_info);
+> @@ -49,40 +46,17 @@ int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
+>  		 */
+>  
+>  		case R_MICROBLAZE_32:
+> -#if __GNUC__ < 4
+> -			old_value = *location;
+> -			*location = value + old_value;
+> -
+> -			pr_debug("R_MICROBLAZE_32 (%08lx->%08lx)\n",
+> -				old_value, value);
+> -#else
+>  			*location = value;
+> -#endif
+>  			break;
+>  
+>  		case R_MICROBLAZE_64:
+> -#if __GNUC__ < 4
+> -			/* Split relocs only required/used pre gcc4.1.1 */
+> -			old_value = ((location[0] & 0x0000FFFF) << 16) |
+> -					(location[1] & 0x0000FFFF);
+> -			value += old_value;
+> -#endif
+>  			location[0] = (location[0] & 0xFFFF0000) |
+>  					(value >> 16);
+>  			location[1] = (location[1] & 0xFFFF0000) |
+>  					(value & 0xFFFF);
+> -#if __GNUC__ < 4
+> -			pr_debug("R_MICROBLAZE_64 (%08lx->%08lx)\n",
+> -				old_value, value);
+> -#endif
+>  			break;
+>  
+>  		case R_MICROBLAZE_64_PCREL:
+> -#if __GNUC__ < 4
+> -			old_value = (location[0] & 0xFFFF) << 16 |
+> -				(location[1] & 0xFFFF);
+> -			value -= old_value;
+> -#endif
+>  			value -= (unsigned long int)(location) + 4;
+>  			location[0] = (location[0] & 0xFFFF0000) |
+>  					(value >> 16);
+> 
+
+Applied.
+
+Thanks,
+Michal
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
+
