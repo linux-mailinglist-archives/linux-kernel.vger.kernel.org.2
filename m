@@ -2,182 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6822318B12
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AC1318B1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbhBKMnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:43:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36775 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229639AbhBKM2u (ORCPT
+        id S230376AbhBKMp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:45:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbhBKM20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:28:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613046440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HMz6zYsvhAUacFy6he/Ff5pa+8L4MB4YjmA0Jw1xjYQ=;
-        b=iQr6ock4ozX6Qc1vCQmUbkw4AjYbn5tMI13JXOfNFb87+Z5DYnli3FIcNY8alu1g5AcXw6
-        8e+bM+zmzvnTlt5AZaJW8um81LGE3KDFAm4BROc9Z/QJbjUBjmhKVbk/DTgeISEHUH571t
-        bB9OxsfjB6StnCO3ru/CxR8EQRg4jdk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-PUNunsdKOTO7IVj-c7z4MA-1; Thu, 11 Feb 2021 07:27:18 -0500
-X-MC-Unique: PUNunsdKOTO7IVj-c7z4MA-1
-Received: by mail-ed1-f69.google.com with SMTP id d12so730499edp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 04:27:18 -0800 (PST)
+        Thu, 11 Feb 2021 07:28:26 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBABDC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 04:27:45 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id v15so3995079wrx.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 04:27:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hcVy2hhO5lDAWG0A6BnQz5rAwn+vZs+FFC39Fm9Ww1o=;
+        b=I9mSBvY7RXW4LEA30FsIfm6l9OmFw8BV5mszH1j2qz7Q9xDosqu7Ej5vHgf5/p50LY
+         GEKqChEshCwOyOIMrg4kB5WfZToSFT/9FO3fAVqaC3L2+/xhc1dg0u0N1f3X6Gd7THgf
+         sNiz/p5X6IECP1oIx2XXnp1kdomULAyTocQw45yq3hrvVqL/fLBAVLMqyECTqYimOi0b
+         xHFTJw7Nz2fjXEFs53IkNFyvljL3SvW4lCkBMazNJ0cZQwNGSCUaPFU+OKAjlwN9Zb6O
+         QFvHs2D5adRijSqp8PIHki2rGMHyLyWyjQfDuTwLk2+wNAa+joqzE1h+criO1aF3BLR7
+         KRpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HMz6zYsvhAUacFy6he/Ff5pa+8L4MB4YjmA0Jw1xjYQ=;
-        b=o3iX7z5HS7sJaNnpwRhp4SDswagjsSzMdXE3ZFc00qNsG4TDU4NoIuriTR4QF5VlMk
-         MTcUClxMVjtbAvcX8atIOsKMZKbhxGdyNuSjuantGJVaKXsAQZlifD/JioruB6TfxkvC
-         IAzDwKtelUZHmGR9f/hu1WwGzulmAVeX9WwyOw0XxRpczqXMBjaYf0YXEozf2Mw75DzE
-         PFO6peARU7zx/forbj/zov/tIyYVlE2zlRhf+MjIhyi2nqoBJ0PBP1P47q/q9ieI9AKS
-         xQBL7tQE50HN25MSm8dOpQPXtr8gZ3kep6bh8YO/5Qpavg4aGdBFVfQHS8zcv3p4p1na
-         /L2w==
-X-Gm-Message-State: AOAM533AIFSy2fZjtbWwifGrSHFilbK4guIn/26mypdcgSsgFye1QqQ+
-        iYXZUmI3p0EqS7Qe2aG4f/ioeEVTMGmOTXQVqCLXXflYKvDh82Kc2k9gQ3wziLds5d5yowTX1nK
-        4TTos8mOUBhAmDyk1T0EyyZg1
-X-Received: by 2002:a17:906:2747:: with SMTP id a7mr8529857ejd.250.1613046437362;
-        Thu, 11 Feb 2021 04:27:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyk6B6DSr3e6B0w/xlbcUeWXisr2RXOx2YRDpQHkAnrdl/RyyOhCzJ+iUDi0A/EsFUj4H9p5g==
-X-Received: by 2002:a17:906:2747:: with SMTP id a7mr8529844ejd.250.1613046437196;
-        Thu, 11 Feb 2021 04:27:17 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id bo24sm3698134edb.51.2021.02.11.04.27.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hcVy2hhO5lDAWG0A6BnQz5rAwn+vZs+FFC39Fm9Ww1o=;
+        b=o9YprFnl1SjWbj/7Lm8WSKfK6+C3oO54cLdTFXZlqc+1WdWVe9OD6/blPuYt9aQ8ir
+         0++0Qv4y3Z7a6Eg+HkuRYLJ8RTi/bnW6nimtu3Ygn1l6QZKsejbHV7SVdVPXLx7DW+FN
+         R+WrUvpyA+reIc3h2+jwZ/jM8JhEuodmGOFfkjRxFiwP4bSOuRr/LtLL/WWvcZOHadz4
+         2G/8ikH9TZkbfilMIpjH8bKTGMKvlsrNoM6Fvsa8ORl6WIgZ55evREsLNnhfVJkio7R1
+         XO+2mBBKy920vXhVSa0vMECyo+IoI4oAyeP6cLqVtw49VfOTRRuFK29Afd27N0G5XJ1R
+         v0WA==
+X-Gm-Message-State: AOAM5320AXIGywOB68QjglSewNh+nDEFMdZ4P23Jb8T9hZuOK9SXpNc+
+        8LbQ2S5jZM6XXXl9Tt5MwboZyQ==
+X-Google-Smtp-Source: ABdhPJy3KCGT43Q6w5VStd69GdPzuKwYkvZ0X9RuaIbErPiw89BI08DD7DOP6E9w6RMQnRe/8LxXyg==
+X-Received: by 2002:a05:6000:1546:: with SMTP id 6mr5447616wry.398.1613046464646;
+        Thu, 11 Feb 2021 04:27:44 -0800 (PST)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id d20sm4026477wrc.12.2021.02.11.04.27.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 04:27:16 -0800 (PST)
-Date:   Thu, 11 Feb 2021 13:27:14 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v4 07/17] af_vsock: rest of SEQPACKET support
-Message-ID: <20210211122714.rqiwg3qp3kuprktb@steredhat>
-References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
- <20210207151615.805115-1-arseny.krasnov@kaspersky.com>
+        Thu, 11 Feb 2021 04:27:44 -0800 (PST)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v5 0/7] ASoC: codecs: add support for LPASS Codec TX and RX macros
+Date:   Thu, 11 Feb 2021 12:27:28 +0000
+Message-Id: <20210211122735.5691-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210207151615.805115-1-arseny.krasnov@kaspersky.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 06:16:12PM +0300, Arseny Krasnov wrote:
->This does rest of SOCK_SEQPACKET support:
->1) Adds socket ops for SEQPACKET type.
->2) Allows to create socket with SEQPACKET type.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 37 ++++++++++++++++++++++++++++++++++++-
-> 1 file changed, 36 insertions(+), 1 deletion(-)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index a033d3340ac4..c77998a14018 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -452,6 +452,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 		new_transport = transport_dgram;
-> 		break;
-> 	case SOCK_STREAM:
->+	case SOCK_SEQPACKET:
-> 		if (vsock_use_local_transport(remote_cid))
-> 			new_transport = transport_local;
-> 		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
->@@ -459,6 +460,15 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 			new_transport = transport_g2h;
-> 		else
-> 			new_transport = transport_h2g;
->+
->+		if (sk->sk_type == SOCK_SEQPACKET) {
->+			if (!new_transport ||
->+			    !new_transport->seqpacket_seq_send_len ||
->+			    !new_transport->seqpacket_seq_send_eor ||
->+			    !new_transport->seqpacket_seq_get_len ||
->+			    !new_transport->seqpacket_dequeue)
->+				return -ESOCKTNOSUPPORT;
->+		}
+This patchset adds support for two Codec Macro blocks(TX and RX) available in
+Qualcomm LPASS (Low Power Audio SubSystem).
 
-Maybe we should move this check after the try_module_get() call, since 
-the memory pointed by 'new_transport' pointer can be deallocated in the 
-meantime.
+There are WSA, VA, TX and RX Macros on LPASS IP, each of the Macro block
+has specific connectivity like WSA Macros are intended to connect
+to WSA Smart speaker codecs via SoundWire. VA Macro is intended for DMICs,
+and TX/RX for Analog codecs via SoundWire like other WCD938x Codecs to provide
+headphone/ear/lineout/amic/dmic etc ..
 
-Also, if the socket had a transport before, we should deassign it before 
-returning an error.
+Most of the work is derived from downstream Qualcomm kernels.
+Credits to various Qualcomm authors from Patrick Lai's team who have
+contributed to this code.
 
-> 		break;
-> 	default:
-> 		return -ESOCKTNOSUPPORT;
->@@ -684,6 +694,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
->
-> 	switch (sk->sk_socket->type) {
-> 	case SOCK_STREAM:
->+	case SOCK_SEQPACKET:
-> 		spin_lock_bh(&vsock_table_lock);
-> 		retval = __vsock_bind_connectible(vsk, addr);
-> 		spin_unlock_bh(&vsock_table_lock);
->@@ -769,7 +780,7 @@ static struct sock *__vsock_create(struct net *net,
->
-> static bool sock_type_connectible(u16 type)
-> {
->-	return type == SOCK_STREAM;
->+	return (type == SOCK_STREAM) || (type == SOCK_SEQPACKET);
-> }
->
-> static void __vsock_release(struct sock *sk, int level)
->@@ -2199,6 +2210,27 @@ static const struct proto_ops vsock_stream_ops = {
-> 	.sendpage = sock_no_sendpage,
-> };
->
->+static const struct proto_ops vsock_seqpacket_ops = {
->+	.family = PF_VSOCK,
->+	.owner = THIS_MODULE,
->+	.release = vsock_release,
->+	.bind = vsock_bind,
->+	.connect = vsock_connect,
->+	.socketpair = sock_no_socketpair,
->+	.accept = vsock_accept,
->+	.getname = vsock_getname,
->+	.poll = vsock_poll,
->+	.ioctl = sock_no_ioctl,
->+	.listen = vsock_listen,
->+	.shutdown = vsock_shutdown,
->+	.setsockopt = vsock_connectible_setsockopt,
->+	.getsockopt = vsock_connectible_getsockopt,
->+	.sendmsg = vsock_connectible_sendmsg,
->+	.recvmsg = vsock_connectible_recvmsg,
->+	.mmap = sock_no_mmap,
->+	.sendpage = sock_no_sendpage,
->+};
->+
-> static int vsock_create(struct net *net, struct socket *sock,
-> 			int protocol, int kern)
-> {
->@@ -2219,6 +2251,9 @@ static int vsock_create(struct net *net, struct socket *sock,
-> 	case SOCK_STREAM:
-> 		sock->ops = &vsock_stream_ops;
-> 		break;
->+	case SOCK_SEQPACKET:
->+		sock->ops = &vsock_seqpacket_ops;
->+		break;
-> 	default:
-> 		return -ESOCKTNOSUPPORT;
-> 	}
->-- 
->2.25.1
->
+This patchset has been tested on support to SM8250 MTP Development Board.
+This board has 2 WSA881X smart speakers with onboard DMIC connected to
+internal LPASS codec via WSA  and VA macros respectively and WCD938x
+TX and RX connected via Soundwire via TX and RX Macros reseptively.
+
+Thanks,
+srini
+
+Changes since v4:
+	- One more ktest fix for unused-but-set-variable warning 
+	 and a fix for W=2 warning and removed unused macros
+	- added bindings ack from Rob
+
+Srinivas Kandagatla (7):
+  ASoC: qcom: dt-bindings: add bindings for lpass rx macro codec
+  ASoC: codecs: lpass-rx-macro: add support for lpass rx macro
+  ASoC: codecs: lpass-rx-macro: add dapm widgets and route
+  ASoC: codecs: lpass-rx-macro: add iir widgets
+  ASoC: qcom: dt-bindings: add bindings for lpass tx macro codec
+  ASoC: codecs: lpass-tx-macro: add support for lpass tx macro
+  ASoC: codecs: lpass-tx-macro: add dapm widgets and route
+
+ .../bindings/sound/qcom,lpass-rx-macro.yaml   |   62 +
+ .../bindings/sound/qcom,lpass-tx-macro.yaml   |   67 +
+ sound/soc/codecs/Kconfig                      |   10 +
+ sound/soc/codecs/Makefile                     |    4 +
+ sound/soc/codecs/lpass-rx-macro.c             | 3599 +++++++++++++++++
+ sound/soc/codecs/lpass-tx-macro.c             | 1862 +++++++++
+ 6 files changed, 5604 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
+ create mode 100644 sound/soc/codecs/lpass-rx-macro.c
+ create mode 100644 sound/soc/codecs/lpass-tx-macro.c
+
+-- 
+2.21.0
 
