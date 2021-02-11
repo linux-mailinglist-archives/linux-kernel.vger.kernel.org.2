@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA343182D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 337643182DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhBKA4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 19:56:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
+        id S230427AbhBKA4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 19:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbhBKAxK (ORCPT
+        with ESMTP id S231603AbhBKAx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:53:10 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C10C06174A;
-        Wed, 10 Feb 2021 16:52:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=yv1+O/uHfzIBsPuoTfwkhqPfAsKUlTuB4wwNfLpf8ho=; b=b4sYtAv7sYUrxCItJpHcs6Zup8
-        Fde9m3Aq5bgFvavX8anZJ17mWxmeDqk8ClpPvkhKuOhyMBrZOjKmvPDJd55EUloyIMdIhFHXsPk4o
-        h+xDpXo8TCbQmr5Hd1kWjOP32S0+EDt72Lf7L9pFem2Jn7dgeATveajW0GDf0blCbBPhHOwjfXUXH
-        RWRCBWAnVaoZtFM1Yuyi+QMa6ZweG1BArJf8okcjlfByFGkVjF0BEsceFLYr/KFneniuJ2VmEotlh
-        Nq2I4mgUgzpVQDGlHlIX9mDUKR4mIGZ9ljEGyL+Js3+/o/z5KeUu63PmIecJ3EU0XLOqqqnaYub8M
-        rrWayVyw==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lA0DX-0002Kq-U6; Thu, 11 Feb 2021 00:52:24 +0000
-Subject: Re: UBSAN: shift-out-of-bounds in xprt_do_reserve
-To:     syzbot <syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com>,
-        anna.schumaker@netapp.com, bfields@fieldses.org,
-        chuck.lever@oracle.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        trond.myklebust@hammerspace.com
-References: <0000000000000f622105baf14335@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <258ca358-d4ea-2bc0-9b0d-1d659eec04f7@infradead.org>
-Date:   Wed, 10 Feb 2021 16:52:18 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 10 Feb 2021 19:53:29 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B872EC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:52:49 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id q5so3648928ilc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:52:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d8N9hPSbBu5axkXydL7by5ffIfcZ5d4zvwt+JbttAFg=;
+        b=Z6E3jYo8SXInmt+VQduKkHUsMGMP8M1WWWItAepulVPM18vllH/qJOyrs0+LxyW4/i
+         IFtNhPIK6xkYHujt1/Q5bOZop475K2CeaG/rYSqYg2QlHaA3M55KUsXwDGi0U7M4rTfB
+         2EaXoj7oe+sepcoxLiG0ZNIIdImxYD6M/257nRA6TLuYuG/HkplYGLbNff6MnFDtuFf0
+         iBcUAZ95j15uX0Ek6JEyKtRlxoihg6ytWkjr1bEjYE+oRBhui/v9AEwWq3Do7L98PwAg
+         abN38cf+7L4FvbyS4l2RocfRexRTG2EZ2l7Zalp63XZO16qp976IOC+0oIFjClyrBJbd
+         +HLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d8N9hPSbBu5axkXydL7by5ffIfcZ5d4zvwt+JbttAFg=;
+        b=BYITOUtpi87y9jmlO/k95VRPY/f1Va1myiJWwOsxamNn+XFOExcWt+UDFeURO08wL3
+         Vr8iGE+NP3DDyOezDIJ2p2efL3Wfo4TQW//43zT9Vt+Y8t+xfG92TQfYdQqFg9tOcjrg
+         PBOxOr3DI0Hg5Dl6ZiIoSvxSCtG2tKNC0pyM/mNliWVsT/ImfWE8InPWsIqTJipb3im6
+         fzaMdASKDE/lFPMj2+KgI01NyCk/3UyAciTkPTPUrkmC60bKnCYAsdvvz1ldyZQvcEP4
+         +Em4oxP/+4boQ07c4V5ymt3RMgO44IPgVcsXoxCQsQfKgoD8gNbzN3Z6K6G8VvkVvnkX
+         p4MA==
+X-Gm-Message-State: AOAM533En4ERPuh8hKpfXYY2EYpfdKkPna/+jgdxLCvUW2fYI8zrwC9T
+        D6gQUzr3ADTnK1Awm1vDUwoLjlxovDog13TBpthB/A==
+X-Google-Smtp-Source: ABdhPJwJvt0uUQvh/UMgQHG+oW5Vwa7L0sy+WKKMNFnZ81BGJ20vc1ltaCpJT4cGZiayoqAuf26/Dj5PgNtgeqfJZ3c=
+X-Received: by 2002:a92:c54e:: with SMTP id a14mr1089471ilj.285.1613004769134;
+ Wed, 10 Feb 2021 16:52:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <0000000000000f622105baf14335@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210210230625.550939-1-seanjc@google.com> <20210210230625.550939-4-seanjc@google.com>
+In-Reply-To: <20210210230625.550939-4-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 10 Feb 2021 16:52:38 -0800
+Message-ID: <CANgfPd_ozRcsXR9_SsZpEk3_q6epL--=8FbktygNnCKLi5W5Cw@mail.gmail.com>
+Subject: Re: [PATCH 03/15] KVM: selftests: Align HVA for HugeTLB-backed memslots
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 5:24 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    dd86e7fa Merge tag 'pci-v5.11-fixes-2' of git://git.kernel..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=105930c4d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=266a5362c89c8127
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f3a0fa110fd630ab56c8
-> compiler:       Debian clang version 11.0.1-2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ba3038d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15cf0d64d00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com
+On Wed, Feb 10, 2021 at 3:06 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Align the HVA for HugeTLB memslots, not just THP memslots.  Add an
+> assert so any future backing types are forced to assess whether or not
+> they need to be aligned.
+>
+> Cc: Ben Gardon <bgardon@google.com>
+> Cc: Yanan Wang <wangyanan55@huawei.com>
+> Cc: Andrew Jones <drjones@redhat.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Aaron Lewis <aaronlewis@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-#syz dup: UBSAN: shift-out-of-bounds in xprt_calc_majortimeo
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-> ================================================================================
-> UBSAN: shift-out-of-bounds in net/sunrpc/xprt.c:658:14
-> shift exponent 536870976 is too large for 64-bit type 'unsigned long'
-> CPU: 1 PID: 8411 Comm: syz-executor902 Not tainted 5.11.0-rc6-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x137/0x1be lib/dump_stack.c:120
->  ubsan_epilogue lib/ubsan.c:148 [inline]
->  __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
->  xprt_calc_majortimeo net/sunrpc/xprt.c:658 [inline]
->  xprt_init_majortimeo net/sunrpc/xprt.c:686 [inline]
-
-
--- 
-~Randy
-
+> ---
+>  tools/testing/selftests/kvm/lib/kvm_util.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 584167c6dbc7..deaeb47b5a6d 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -731,8 +731,11 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>         alignment = 1;
+>  #endif
+>
+> -       if (src_type == VM_MEM_SRC_ANONYMOUS_THP)
+> +       if (src_type == VM_MEM_SRC_ANONYMOUS_THP ||
+> +           src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB)
+>                 alignment = max(huge_page_size, alignment);
+> +       else
+> +               ASSERT_EQ(src_type, VM_MEM_SRC_ANONYMOUS);
+>
+>         /* Add enough memory to align up if necessary */
+>         if (alignment > 1)
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
