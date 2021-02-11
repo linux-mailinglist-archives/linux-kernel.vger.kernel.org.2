@@ -2,146 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FFD31967B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92480319678
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhBKXUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 18:20:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
+        id S229710AbhBKXT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 18:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhBKXTz (ORCPT
+        with ESMTP id S229625AbhBKXT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 18:19:55 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079B8C061756;
-        Thu, 11 Feb 2021 15:19:15 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id u15so4177284plf.1;
-        Thu, 11 Feb 2021 15:19:15 -0800 (PST)
+        Thu, 11 Feb 2021 18:19:26 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074D1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 15:18:46 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id s23so808687oot.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 15:18:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IawPhYvhu3AkS9vPcoIjPCh4BAXno8jnWq7wzFVXxAc=;
-        b=GdmmvbM5Y1JE6okKyMR+qvc3OXxIRt+dtvdrbtwTDpLGdbHh8DVjppxR4fUe6Cqaaw
-         vASMhZf4ZQM0aD9yAhyp3+HXx/4lh3g8njKYkk7CjTwyYUSX7oeCpCXPSTyJXmfYxDU2
-         PNXsG3CXAfnjJB1G2b5TBBxLeltVodLAjCwVYwV5QeFe8VZxvhexlZb07clLiYFPVP7B
-         j5xpW0YA6XTw4YX+byOOkPqfYmFDFhjSXKgiysVv5vWjJ9wNG6kRNTkmiZyGdlaqhIXr
-         r525N0Y4dusp7itOD+yUsbEzRjCjWdrgGdhDgqkTgkVFdhoxTU+GTNWLSds0Ho6V+jqK
-         hHJw==
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3TjKSEVHUCuYyh3OcPWvBxul+LPuyfEayRgdZEUem+4=;
+        b=AdCz+zJeBhRM1ldCeGYNjIfs0hIYrhDGMgLvzyLTV0xYtLD5v40wAQs/kzBfVzOcJ9
+         klndgb+X00mhlhyfdpckBCuFHDuYtBo9GfLCX+rdCY8ddTttGe21zvvp97kyPLDOPHmW
+         RgPAb7IF6rJKxKYhVbqocsky2VLCGIWx31B913SRt5W7Uq5kgfylDC2y5DC/oK6PI50i
+         BFd/X99hFeVNHEZXAZIFMluT7ARvC7j2+nFdV/O2mTJ9pE4dAMYsKnqTxWOs+4RE9dik
+         aAzOJDCwAY7Es95He1aInqbyMh8gKcaFjJak6Ya44QaVqe2oYnECbNXld/CKDV6XjJ38
+         aSsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IawPhYvhu3AkS9vPcoIjPCh4BAXno8jnWq7wzFVXxAc=;
-        b=OLOpDdvXHjE5d+mocmnC/je5gZoi4qgw62NPxKsSzJ/HMfE+e+Mo5ARD7GcvI9wLQG
-         IIhKvj3AKw0U711yvps/HXOi0HX42XwvlrMtM9dOVeRnDhFosHgP/UZy5kIktlzaDRIm
-         EbNAxc92uBNO4RtBzt1QOSjfQkmWqyN9j87uqS5K2KP+F4sk0JtAfvbrvIGjhJ8OeHnx
-         fL3ahcPNPjKdBiU3+mEfJcQhQwcb5Igoz/5qR4aomg0NmYl2DTTLgEZtsyMIc/ixhwue
-         LpXYGsLFVq2mTmztuxNRPjRs91eDQztxqxpw6M6vdu1nwmTihRPmAahpzm7G0vzpRPO3
-         1u3g==
-X-Gm-Message-State: AOAM5319zQRDU/mvFoT6IM0D9juDRfgDbevCcbLPQput/bQjrzcQ7GCT
-        3ZsLZhw+ERnaU8RBAiTYaIwOjztf56CFnQ==
-X-Google-Smtp-Source: ABdhPJyKkmINMYjuCjY9rSXXrIA/PM5PRrvkJbFz2vrHTPH5aitG2RpkQATnPfpY7/QBdAx8Qgi+Sw==
-X-Received: by 2002:a17:90a:7c06:: with SMTP id v6mr68337pjf.37.1613085554161;
-        Thu, 11 Feb 2021 15:19:14 -0800 (PST)
-Received: from vm-120.slytdz3n204uxoeeqq2h5obquh.xx.internal.cloudapp.net ([52.247.223.84])
-        by smtp.gmail.com with ESMTPSA id c9sm5950309pjr.44.2021.02.11.15.19.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 15:19:13 -0800 (PST)
-From:   Melanie Plageman <melanieplageman@gmail.com>
-To:     linux-scsi@vger.kernel.org
-Cc:     andres@anarazel.de, kys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, wei.liu@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Melanie Plageman (Microsoft)" <melanieplageman@gmail.com>
-Subject: [PATCH v3] scsi: storvsc: Parameterize number hardware queues
-Date:   Thu, 11 Feb 2021 23:18:03 +0000
-Message-Id: <20210211231803.25463-1-melanieplageman@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3TjKSEVHUCuYyh3OcPWvBxul+LPuyfEayRgdZEUem+4=;
+        b=lR98ZQQXBI/APCHzYJpxPfAaYyQFLuf1SJFnm26460x58DCYCuGYvm92SpbjNAHnQ8
+         B8HwtPjujVs2H69O1RMkBACeeyjyoBYHt3ezIZ09E/+8J6UxnTCIhl9kywSnIeatHfQW
+         pLvq1D5v5AdXrjQs5soQy/VnM5SHbChcWhtu5MHeSZd0REbgFCz84jOpFJO/NPtsRgyi
+         0jHo3I1x2TwfWh5NSsu+TupqppZ2kOQ0takW1Jtt/SYvX0Rd/+0dR/+xQVOvLVG1RThV
+         LWvHP3asDJIyyYqyj55cIbCLqD/l+HOZjOqy52dEtflnaBMO5r+EKeY52+I+PTpQBqeV
+         HRTg==
+X-Gm-Message-State: AOAM532TZdzbCK9x/7TJKHUB/KAmZz67vhHUXzFSnlOHxshker8b/lWg
+        c8AdCz3suuTrHiST46wsKx0PWR4fSJKNkbOm6Gm0HCPaQ2zI
+X-Google-Smtp-Source: ABdhPJylMW05WemRZSV0gZB8kjtCXAnUiSDFYfY1tGXPRAnUkw8TfSw/M79EksvTO//yAvJ/rbNZT08oBLqozKZ0dN4=
+X-Received: by 2002:a4a:c896:: with SMTP id t22mr201496ooq.8.1613085525473;
+ Thu, 11 Feb 2021 15:18:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210131143033.7441-1-iwamatsu@nigauri.org> <dc9f110a-d998-2f79-aeaa-317ec6032891@xilinx.com>
+In-Reply-To: <dc9f110a-d998-2f79-aeaa-317ec6032891@xilinx.com>
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Date:   Fri, 12 Feb 2021 08:18:19 +0900
+Message-ID: <CABMQnV+eUq5GVYJR98ZSgVHhQ84FCkzW+hVa6vUoMzcMF9o30w@mail.gmail.com>
+Subject: Re: [PATCH] firmware: xilinx: Remove zynqmp_pm_get_eemi_ops() in IS_REACHABLE(CONFIG_ZYNQMP_FIRMWARE)
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Melanie Plageman (Microsoft)" <melanieplageman@gmail.com>
+Hi,
 
-Add ability to set the number of hardware queues with new module parameter,
-storvsc_max_hw_queues. The default value remains the number of CPUs.  This
-functionality is useful in some environments (e.g. Microsoft Azure) where
-decreasing the number of hardware queues has been shown to improve
-performance.
+Thanks for your review.
 
-Signed-off-by: Melanie Plageman (Microsoft) <melanieplageman@gmail.com>
----
- drivers/scsi/storvsc_drv.c | 28 ++++++++++++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
+2021=E5=B9=B42=E6=9C=881=E6=97=A5(=E6=9C=88) 19:08 Michal Simek <michal.sim=
+ek@xilinx.com>:
+>
+> Hi,
+>
+> On 1/31/21 3:30 PM, Nobuhiro Iwamatsu wrote:
+> > zynqmp_pm_get_eemi_ops() was removed in commit 4db8180ffe7c: "Firmware:=
+ xilinx:
+> > Remove eemi ops for fpga related APIs", but not in IS_REACHABLE(CONFIG_=
+ZYNQMP_FIRMWARE).
+> > This removed zynqmp_pm_get_eemi_ops() in IS_REACHABLE(CONFIG_ZYNQMP_FIR=
+MWARE), and also
+> > modify the documentation for this driver.
+> >
+> > Fixes: 4db8180ffe7c ("firmware: xilinx: Remove eemi ops for fpga relate=
+d APIs")
+> > Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> > ---
+> >  Documentation/driver-api/xilinx/eemi.rst | 27 +-----------------------
+> >  include/linux/firmware/xlnx-zynqmp.h     |  5 -----
+> >  2 files changed, 1 insertion(+), 31 deletions(-)
+> >
+> > diff --git a/Documentation/driver-api/xilinx/eemi.rst b/Documentation/d=
+river-api/xilinx/eemi.rst
+> > index 9dcbc6f18d75df..53416d25d309a8 100644
+> > --- a/Documentation/driver-api/xilinx/eemi.rst
+> > +++ b/Documentation/driver-api/xilinx/eemi.rst
+> > @@ -19,32 +19,7 @@ device to issue or respond to power management reque=
+sts.
+> >  EEMI ops is a structure containing all eemi APIs supported by Zynq MPS=
+oC.
+> >  The zynqmp-firmware driver maintain all EEMI APIs in zynqmp_eemi_ops
+> >  structure. Any driver who want to communicate with PMC using EEMI APIs
+>
+> The whole paragraph should be tuned. I would leave here just
+>
+> "Any driver who want to communicate with PMC using EEMI APIs
+> use the functions provided for each function."
+>
+> Because there is no reference to any eemi ops structure.
+>
+> The rest looks good to me.
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 2e4fa77445fd..a64e6664c915 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -378,10 +378,14 @@ static u32 max_outstanding_req_per_channel;
- static int storvsc_change_queue_depth(struct scsi_device *sdev, int queue_depth);
- 
- static int storvsc_vcpus_per_sub_channel = 4;
-+static int storvsc_max_hw_queues = -1;
- 
- module_param(storvsc_ringbuffer_size, int, S_IRUGO);
- MODULE_PARM_DESC(storvsc_ringbuffer_size, "Ring buffer size (bytes)");
- 
-+module_param(storvsc_max_hw_queues, int, S_IRUGO|S_IWUSR);
-+MODULE_PARM_DESC(storvsc_max_hw_queues, "Maximum number of hardware queues");
-+
- module_param(storvsc_vcpus_per_sub_channel, int, S_IRUGO);
- MODULE_PARM_DESC(storvsc_vcpus_per_sub_channel, "Ratio of VCPUs to subchannels");
- 
-@@ -1897,6 +1901,7 @@ static int storvsc_probe(struct hv_device *device,
- {
- 	int ret;
- 	int num_cpus = num_online_cpus();
-+	int num_present_cpus = num_present_cpus();
- 	struct Scsi_Host *host;
- 	struct hv_host_device *host_dev;
- 	bool dev_is_ide = ((dev_id->driver_data == IDE_GUID) ? true : false);
-@@ -2004,8 +2009,19 @@ static int storvsc_probe(struct hv_device *device,
- 	 * For non-IDE disks, the host supports multiple channels.
- 	 * Set the number of HW queues we are supporting.
- 	 */
--	if (!dev_is_ide)
--		host->nr_hw_queues = num_present_cpus();
-+	if (!dev_is_ide) {
-+		if (storvsc_max_hw_queues == -1)
-+			host->nr_hw_queues = num_present_cpus;
-+		else if (storvsc_max_hw_queues > num_present_cpus ||
-+			 storvsc_max_hw_queues == 0 ||
-+			storvsc_max_hw_queues < -1) {
-+			storvsc_log(device, STORVSC_LOGGING_WARN,
-+				"Resetting invalid storvsc_max_hw_queues value to default.\n");
-+			host->nr_hw_queues = num_present_cpus;
-+			storvsc_max_hw_queues = -1;
-+		} else
-+			host->nr_hw_queues = storvsc_max_hw_queues;
-+	}
- 
- 	/*
- 	 * Set the error handler work queue.
-@@ -2169,6 +2185,14 @@ static int __init storvsc_drv_init(void)
- 		vmscsi_size_delta,
- 		sizeof(u64)));
- 
-+	if (storvsc_max_hw_queues > num_present_cpus() ||
-+		storvsc_max_hw_queues == 0 ||
-+		storvsc_max_hw_queues < -1) {
-+		pr_warn("Setting storvsc_max_hw_queues to -1. %d is invalid.\n",
-+			storvsc_max_hw_queues);
-+		storvsc_max_hw_queues = -1;
-+	}
-+
- #if IS_ENABLED(CONFIG_SCSI_FC_ATTRS)
- 	fc_transport_template = fc_attach_transport(&fc_transport_functions);
- 	if (!fc_transport_template)
--- 
-2.20.1
+Thank you. I will add your point to the commit log and resend.
+Best regards,
+  Nobuhiro
 
+
+--=20
+Nobuhiro Iwamatsu
+   iwamatsu at {nigauri.org / debian.org}
+   GPG ID: 40AD1FA6
