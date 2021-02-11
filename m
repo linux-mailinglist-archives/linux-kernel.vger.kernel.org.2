@@ -2,135 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66ABB318D78
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9D7318D90
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhBKOdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 09:33:40 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16335 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhBKObh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:31:37 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60253f990000>; Thu, 11 Feb 2021 06:30:49 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
- 2021 14:30:49 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.107)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 11 Feb 2021 14:30:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iv19qMUXecajA/tbymTlDKYJeNyQMTkg/I9kTXAWBrLLi7OsbaWaH4NxXH7UjIhB2Woj7HbHoxV5RrLv02m0N2575Brf7+/sqtDzn2/l36JhpyOvW6GSAbm5pNkpNica1oQgy4ezp+IScqO6MiGFpEXiHsmCIsNpOCUv/7DQVgI4vmASlfqLnr2M0TA3PlvbXEDhcV09ZOS+rWwoG4qqCFzNIxXwz0eLFy7gAMw5p2oLcuIs4dzUN0NrsVrrvt9xya7Ccc3iikNuOqWMeJ3ORMLlqmGZsgIP3LSN0/ge5VEHuQMTzoQc1NsBzgz1ldTSDUe1PG+DbuRIN0lJKtAT/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U7nKd3dmyg2gLvH5i0GxKCYdZ6J7V3/q54MxPu5AyGw=;
- b=feM9Ba+dR/cDVqUBrWkftDrkLfYiX7MWcNC1J6LX2Q2gRft9AMe+liVp57ByGa+IxAccc6QPwLqBjlzrMLicg0DjD2lzI5MfPMnGpIROAt/kWaiSVRB27XXwXd7JbBWGoQHjsb92B8mTUe85Alh47sundjYiTTIZ1pNkwNOXFDemK2uEh/eQX3u/Yqurm2O/Zw5VR51JN1QFVbmfkqcgaFb1f9SlSXArB43qpo1ldKimflz9N+C0rcS66TaTVHqtqS4dJ2HIlygU2QMaBSo56J+LKZYuNBV7BC7DdNBLfPJpI/vzLlZRVFFOMxpzv30wjDZUuObs69AIG80Z92pgnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Thu, 11 Feb
- 2021 14:30:46 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::10d:e939:2f8f:71ca]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::10d:e939:2f8f:71ca%7]) with mapi id 15.20.3846.027; Thu, 11 Feb 2021
- 14:30:46 +0000
-Date:   Thu, 11 Feb 2021 10:30:44 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
-        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
-        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
-        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
-        <gmataev@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>,
-        <aik@ozlabs.ru>
-Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
-Message-ID: <20210211143044.GL4247@nvidia.com>
-References: <20210202105455.5a358980@omen.home.shazbot.org>
- <20210202185017.GZ4247@nvidia.com>
- <20210202123723.6cc018b8@omen.home.shazbot.org>
- <20210202204432.GC4247@nvidia.com>
- <5e9ee84e-d950-c8d9-ac70-df042f7d8b47@nvidia.com>
- <20210202143013.06366e9d@omen.home.shazbot.org>
- <20210202230604.GD4247@nvidia.com>
- <20210202165923.53f76901@omen.home.shazbot.org>
- <20210203135448.GG4247@nvidia.com> <20210211084703.GC2378134@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
+        id S231391AbhBKOoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 09:44:00 -0500
+Received: from gate.crashing.org ([63.228.1.57]:53778 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230071AbhBKOij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 09:38:39 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 11BEUxQ2020284;
+        Thu, 11 Feb 2021 08:30:59 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 11BEUxVp020283;
+        Thu, 11 Feb 2021 08:30:59 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Thu, 11 Feb 2021 08:30:59 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/bug: Remove specific powerpc BUG_ON()
+Message-ID: <20210211143059.GE28121@gate.crashing.org>
+References: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu> <20210211114910.GA28121@gate.crashing.org> <6126ca14-419a-9e15-7ffa-b295f26a552e@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210211084703.GC2378134@infradead.org>
-X-ClientProxiedBy: BLAPR03CA0073.namprd03.prod.outlook.com
- (2603:10b6:208:329::18) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0073.namprd03.prod.outlook.com (2603:10b6:208:329::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Thu, 11 Feb 2021 14:30:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lACzU-006XwK-BW; Thu, 11 Feb 2021 10:30:44 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613053849; bh=U7nKd3dmyg2gLvH5i0GxKCYdZ6J7V3/q54MxPu5AyGw=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=NJ9mFS1xoNChrioJDLDjYgOWP20ZAYXpq7ao7DBBs9Isjk+pB++FZMQj8GR71wA/S
-         5QB+B2ZL8XIe9xp2BeIQwZqkfDVtdh4b8oy3VtybyBtavUVwfEP8L9F2inGjZVmBbe
-         y0sXfVCpY94QtlJvuYIJ9bnEJG1beyLTL8H2Gn95GQbJVNfymHqmWvXnloyHZ0C+9B
-         P7CfJdRc0ku2qEhgkLDzx1+XMDy8L8IY9j3tGZP/TnWdpUduuDU98Bro8Lxb6zPZN7
-         mw59E3a2Yv36v6/Ftg/U/DyvzgEj/qt6uo+K+eGfCs4CiIEpAnHQwh1dZXQuvncN7+
-         pIR+VpZDM+q4Q==
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6126ca14-419a-9e15-7ffa-b295f26a552e@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 08:47:03AM +0000, Christoph Hellwig wrote:
-> On Wed, Feb 03, 2021 at 09:54:48AM -0400, Jason Gunthorpe wrote:
-> > If people are accepting that these device-specific drivers are
-> > required then we need to come to a community consensus to decide what
-> > direction to pursue:
-> > 
-> > * Do we embrace the driver core and use it to load VFIO modules like a
-> >   normal subsytem (this RFC)
-> > 
-> > OR 
-> > 
-> > * Do we make a driver-core like thing inside the VFIO bus drivers and
-> >   have them run their own special driver matching, binding, and loading
-> >   scheme. (May RFC)
-> > 
-> > Haven't heard a 3rd option yet..
+On Thu, Feb 11, 2021 at 03:09:43PM +0100, Christophe Leroy wrote:
+> Le 11/02/2021 à 12:49, Segher Boessenkool a écrit :
+> >On Thu, Feb 11, 2021 at 07:41:52AM +0000, Christophe Leroy wrote:
+> >>powerpc BUG_ON() is based on using twnei or tdnei instruction,
+> >>which obliges gcc to format the condition into a 0 or 1 value
+> >>in a register.
+> >
+> >Huh?  Why is that?
+> >
+> >Will it work better if this used __builtin_trap?  Or does the kernel only
+> >detect very specific forms of trap instructions?
 > 
-> The third option would be to use the driver core to bind the VFIO
-> submodules.  Define a new bus for it, which also uses the normal PCI IDs
-> for binding, and walk through those VFIO specific drivers when vfio_pci
-> is bound to a device.  That would provide a pretty clean abstraction
-> and could even keep the existing behavior of say bind to all VGA devices
-> with an Intel vendor ID (even if I think that is a bad idea).
+> We already made a try with __builtin_trap() 1,5 year ago, see 
+> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20510ce03cc9463f1c9e743c1d93b939de501b53.1566219503.git.christophe.leroy@c-s.fr/
+> 
+> The main problems encountered are:
+> - It is only possible to use it for BUG_ON, not for WARN_ON because GCC 
+> considers it as noreturn. Is there any workaround ?
 
-I think of this as some variant to the second option above.
+A trap is noreturn by definition:
 
-Maximally using the driver core to make subdrivers still means the
-VFIO side needs to reimplement all the existing matcher logic for PCI
-(and it means we don't generalize, so future CXL/etc, will need more
-VFIO special code)  It has to put this stuff on a new special bus and
-somehow make names and match tables for it.
+ -- Built-in Function: void __builtin_trap (void)
+     This function causes the program to exit abnormally.
 
-It also means we'd have to somehow fix vfio-pci to allow hot
-plug/unplug of the subdriver. The driver core doesn't really run
-synchronously for binding, so late binding would have to be
-accommodated somehow. It feels like adding a lot of complexity for
-very little gain to me.
+> - The kernel (With CONFIG_DEBUG_BUGVERBOSE) needs to be able to identify 
+> the source file and line corresponding to the trap. How can that be done 
+> with __builtin_trap() ?
 
-Personally I dislike the subdriver direction of the May RFC quite a
-bit, it has a lot of unfixable negatives for the admin side. The first
-option does present some challenges for userspace but I belive we can
-work through them.
+The DWARF debug info should be sufficient.  Perhaps you can post-process
+some way?
 
-Jason
+You can create a trap that falls through yourself (by having a trap-on
+condition with a condition that is always true, but make the compiler
+not see that).  This isn't efficient though.
+
+Could you file a feature request (in bugzilla)?  It is probably useful
+for generic code as well, but we could implement this for powerpc only
+if needed.
+
+
+Segher
