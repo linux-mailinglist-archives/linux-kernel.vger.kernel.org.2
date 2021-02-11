@@ -2,117 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3E13182AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AADF83182AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhBKAdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231404AbhBKAdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 19:33:55 -0500
+Received: from mga04.intel.com ([192.55.52.120]:25775 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231159AbhBKAdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 10 Feb 2021 19:33:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhBKAdo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:33:44 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613A8C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:33:03 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id l27so3698759qki.9
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FI7efxdLkrLWQRe2h+l+IMlmkcYgyIFOXgeNuZLjvTM=;
-        b=bycQ5yJtXDWmNNXRP0PrIO2BHNarVUWpIj1Op4PnadIWfTeHUhFPgAVAcbNAQ64VpH
-         gxfTtVSlBVO097jFW+zhdqSttQpMsvicByCNN7ar5id9u5oAPtspAY74GFvlnmfEHmhC
-         t8nupXeSt7Clnsv4DhVPcmUssp3sYyq0AsWT54E4hPYnU/koqUJzG/qwNWS7vPgXQQN3
-         YWn2m/e8g1FiLlSmgRgP3MF4D1d3AnGrxVkUC/yuiewY42CF582D/0HpJXSjfKINY+GG
-         aznJdtOMmyCCHd6oHMiKgq5Dik+4n3pRGtSCdoMQnrDnBZbDWZpcoxLRCFe2ZPWjsB/A
-         wG9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FI7efxdLkrLWQRe2h+l+IMlmkcYgyIFOXgeNuZLjvTM=;
-        b=BPHmC1fh4brzojlt034IZ+2oLCqWJag7LsFwpzi8lnGnfnN91f4cVH2M2WMx0dArZp
-         /GqA4JXH0xL3R+Np43Uo4Nxwact3jQ9wjVZwj7HaOO1PAOmeXdtWsb7Yh5vGwqaKGuCn
-         xgoj1XOix/ycTRffvENhEdXtzNkW3+C/BaYrB6tJOGO2uh+pczFEAwrFuGl9Xk/9gV4b
-         2BQwm4RBnI8o0/3CVRF1i9UAFTtcoPwW4/mFfhQwIQEpnlYk/rOH+JSET9Mb+/0ONmZm
-         KpwWiuQA5syEyYRvWtfDMo1bC6OBQee/aypAPxZfW6DTQRRQzJk1owXYEe39Vlynqroa
-         Tj0Q==
-X-Gm-Message-State: AOAM530n0/WbAa7v9wS+5JGzj1zrLF6TeHhOn9yNcK15HPkyBuTIMNfM
-        SQIvK+/1BfRebN/HKDMh8oqKqg==
-X-Google-Smtp-Source: ABdhPJw+WsFyBoPTEFShXk5UTUgRaU16ZfG6UUUpxD9HG2LBLCdo8+nkKZw9gz+A1oHoP1MvCo9r/A==
-X-Received: by 2002:a37:e20b:: with SMTP id g11mr6022864qki.292.1613003582320;
-        Wed, 10 Feb 2021 16:33:02 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id p12sm2428519qtw.27.2021.02.10.16.33.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 16:33:01 -0800 (PST)
-Date:   Wed, 10 Feb 2021 19:33:00 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Arjun Roy <arjunroy@google.com>
-Subject: Re: [PATCH v2] mm: page-writeback: simplify memcg handling in
- test_clear_page_writeback()
-Message-ID: <YCR7PMk4RAM1uVeM@cmpxchg.org>
-References: <20210209214543.112655-1-hannes@cmpxchg.org>
- <alpine.LSU.2.11.2102092058290.7553@eggly.anvils>
- <alpine.LSU.2.11.2102100813050.8131@eggly.anvils>
- <YCQbYAWg4nvBFL6h@cmpxchg.org>
- <CALvZod6vgYcpgskf7NaRagH999L6VkfnVtD1UDb+JhQceCuUEA@mail.gmail.com>
+IronPort-SDR: eqywnbvDESL52bMFyZbqCXaBI2xW8bEM4DKh9iYoX8vH6DyZBOjDr8YxI9GpqR4n4H6oxX4+HW
+ PymEdJpzFSMQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="179616564"
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="179616564"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 16:33:10 -0800
+IronPort-SDR: P9lXBacJMoTJJ2bIflAS4zUodEwPknlaxUCr4WyjO03lqbk8/46omSIM/StoCvT31EWxoWI8eE
+ fk35asmyRa3A==
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="436881733"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 16:33:09 -0800
+Date:   Wed, 10 Feb 2021 16:33:07 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Prathu Baronia <prathubaronia2011@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, chintan.pandya@oneplus.com,
+        Prathu Baronia <prathu.baronia@oneplus.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v4 1/1] mm/highmem: Remove deprecated kmap_atomic
+Message-ID: <20210211003307.GA3158182@iweiny-DESK2.sc.intel.com>
+References: <20210204073255.20769-1-prathu.baronia@oneplus.com>
+ <20210204073255.20769-2-prathu.baronia@oneplus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod6vgYcpgskf7NaRagH999L6VkfnVtD1UDb+JhQceCuUEA@mail.gmail.com>
+In-Reply-To: <20210204073255.20769-2-prathu.baronia@oneplus.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:59:32PM -0800, Shakeel Butt wrote:
-> On Wed, Feb 10, 2021 at 9:44 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > From 5bcc0f468460aa2670c40318bb657e8b08ef96d5 Mon Sep 17 00:00:00 2001
-> > From: Johannes Weiner <hannes@cmpxchg.org>
-> > Date: Tue, 9 Feb 2021 16:22:42 -0500
-> > Subject: [PATCH] mm: page-writeback: simplify memcg handling in
-> >  test_clear_page_writeback()
-> >
-> > Page writeback doesn't hold a page reference, which allows truncate to
-> > free a page the second PageWriteback is cleared. This used to require
-> > special attention in test_clear_page_writeback(), where we had to be
-> > careful not to rely on the unstable page->memcg binding and look up
-> > all the necessary information before clearing the writeback flag.
-> >
-> > Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
-> > BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
-> > explicit reference on the page, and this dance is no longer needed.
-> >
-> > Use unlock_page_memcg() and dec_lruvec_page_state() directly.
-> >
-> > This removes the last user of the lock_page_memcg() return value,
-> > change it to void. Touch up the comments in there as well. This also
-> > removes the last extern user of __unlock_page_memcg(), make it
-> > static. Further, it removes the last user of dec_lruvec_state(),
-> > delete it, along with a few other unused helpers.
-> >
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > Acked-by: Hugh Dickins <hughd@google.com>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
+On Thu, Feb 04, 2021 at 01:02:53PM +0530, Prathu Baronia wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> The patch looks fine. I don't want to spoil the fun but just wanted to
-> call out that I might bring back __unlock_page_memcg() for the memcg
-> accounting of zero copy TCP memory work where we are uncharging the
-> page in page_remove_rmap().
+> kmap_atomic() is being deprecated in favor of kmap_local_page().
+> 
+> Replace the uses of kmap_atomic() within the highmem code.
+> 
+> On profiling clear_huge_page() using ftrace an improvement
+> of 62% was observed on the below setup.
+> 
+> Setup:-
+> Below data has been collected on Qualcomm's SM7250 SoC THP enabled
+> (kernel v4.19.113) with only CPU-0(Cortex-A55) and CPU-7(Cortex-A76)
+> switched on and set to max frequency, also DDR set to perf governor.
+> 
+> FTRACE Data:-
+> 
+> Base data:-
+> Number of iterations: 48
+> Mean of allocation time: 349.5 us
+> std deviation: 74.5 us
+> 
+> v4 data:-
+> Number of iterations: 48
+> Mean of allocation time: 131 us
+> std deviation: 32.7 us
+> 
+> The following simple userspace experiment to allocate
+> 100MB(BUF_SZ) of pages and writing to it gave us a good insight,
+> we observed an improvement of 42% in allocation and writing timings.
+> -------------------------------------------------------------
+> Test code snippet
+> -------------------------------------------------------------
+>       clock_start();
+>       buf = malloc(BUF_SZ); /* Allocate 100 MB of memory */
+> 
+>         for(i=0; i < BUF_SZ_PAGES; i++)
+>         {
+>                 *((int *)(buf + (i*PAGE_SIZE))) = 1;
+>         }
+>       clock_end();
+> -------------------------------------------------------------
+> 
+> Malloc test timings for 100MB anon allocation:-
+> 
+> Base data:-
+> Number of iterations: 100
+> Mean of allocation time: 31831 us
+> std deviation: 4286 us
+> 
+> v4 data:-
+> Number of iterations: 100
+> Mean of allocation time: 18193 us
+> std deviation: 4915 us
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-That shouldn't be an issue. Just add it back if/when you need it and
-we have a legitimate in-tree user for it again. It still helps to
-remove it now; if someboy later goes through the git log to identify
-dependencies, they'll find your patch adding it and can stop looking.
+This already has my signed off by so I'm not going to 'review'.  With Prathu's
+testing information I hope this can land.
 
-Thanks for the review!
+Andrew did you see this patch?
+
+Thanks,
+Ira
+
+> Signed-off-by: Prathu Baronia <prathu.baronia@oneplus.com>
+> [Updated commit text with test data]
+> ---
+>  include/linux/highmem.h | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+> index d2c70d3772a3..9a202c7e4e26 100644
+> --- a/include/linux/highmem.h
+> +++ b/include/linux/highmem.h
+> @@ -146,9 +146,9 @@ static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
+>  #ifndef clear_user_highpage
+>  static inline void clear_user_highpage(struct page *page, unsigned long vaddr)
+>  {
+> -	void *addr = kmap_atomic(page);
+> +	void *addr = kmap_local_page(page);
+>  	clear_user_page(addr, vaddr, page);
+> -	kunmap_atomic(addr);
+> +	kunmap_local(addr);
+>  }
+>  #endif
+>  
+> @@ -199,9 +199,9 @@ alloc_zeroed_user_highpage_movable(struct vm_area_struct *vma,
+>  
+>  static inline void clear_highpage(struct page *page)
+>  {
+> -	void *kaddr = kmap_atomic(page);
+> +	void *kaddr = kmap_local_page(page);
+>  	clear_page(kaddr);
+> -	kunmap_atomic(kaddr);
+> +	kunmap_local(kaddr);
+>  }
+>  
+>  /*
+> @@ -216,7 +216,7 @@ static inline void zero_user_segments(struct page *page,
+>  		unsigned start1, unsigned end1,
+>  		unsigned start2, unsigned end2)
+>  {
+> -	void *kaddr = kmap_atomic(page);
+> +	void *kaddr = kmap_local_page(page);
+>  	unsigned int i;
+>  
+>  	BUG_ON(end1 > page_size(page) || end2 > page_size(page));
+> @@ -227,7 +227,7 @@ static inline void zero_user_segments(struct page *page,
+>  	if (end2 > start2)
+>  		memset(kaddr + start2, 0, end2 - start2);
+>  
+> -	kunmap_atomic(kaddr);
+> +	kunmap_local(kaddr);
+>  	for (i = 0; i < compound_nr(page); i++)
+>  		flush_dcache_page(page + i);
+>  }
+> @@ -252,11 +252,11 @@ static inline void copy_user_highpage(struct page *to, struct page *from,
+>  {
+>  	char *vfrom, *vto;
+>  
+> -	vfrom = kmap_atomic(from);
+> -	vto = kmap_atomic(to);
+> +	vfrom = kmap_local_page(from);
+> +	vto = kmap_local_page(to);
+>  	copy_user_page(vto, vfrom, vaddr, to);
+> -	kunmap_atomic(vto);
+> -	kunmap_atomic(vfrom);
+> +	kunmap_local(vto);
+> +	kunmap_local(vfrom);
+>  }
+>  
+>  #endif
+> @@ -267,11 +267,11 @@ static inline void copy_highpage(struct page *to, struct page *from)
+>  {
+>  	char *vfrom, *vto;
+>  
+> -	vfrom = kmap_atomic(from);
+> -	vto = kmap_atomic(to);
+> +	vfrom = kmap_local_page(from);
+> +	vto = kmap_local_page(to);
+>  	copy_page(vto, vfrom);
+> -	kunmap_atomic(vto);
+> -	kunmap_atomic(vfrom);
+> +	kunmap_local(vto);
+> +	kunmap_local(vfrom);
+>  }
+>  
+>  #endif
+> -- 
+> 2.17.1
+> 
