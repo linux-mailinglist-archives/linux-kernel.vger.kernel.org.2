@@ -2,198 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E477F318A01
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B78318A0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhBKMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:01:42 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:57730 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231396AbhBKLui (ORCPT
+        id S230527AbhBKMFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:05:03 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:46592 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230479AbhBKLvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:50:38 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BBjD96021304;
-        Thu, 11 Feb 2021 03:49:29 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0220;
- bh=+5NbkP6ZjGpRje/NICs1Yc92Zt3BNev3RcAWTVb35ec=;
- b=SQdYDNdJhdGX0Nqbxin3LIj4zhvJgbwSbAf7NXhWB7xHIMAFsectQlP9/YzVsD7wpjaM
- 9Y133RUpDpf2Vnp6LTEv7qCtG1DIzkCrnm6yu8QFvk9txfefmNuRFHG7yYbj84cf28Fi
- HkKLvUZVC05lwE3k8NV5dez1S+EXcnxbFyMiD6GGDNCvLIk/yHAV2blVOCh1sdwuee1P
- 22OXx0kVT8cdotkQ5gR96c/jQzqVZiXxmA1pJPO9uaibojd106k/uwbo/wgghAXfes5G
- wXYwLAwcl/523LkQtJmmjPTGcP/vpdJrtLgaY56vZj81zQTbpk5aqqT1fFQsIzrTRkLU 6A== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36hugqejp8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 03:49:28 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
- 2021 03:49:26 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by DC5-EXCH02.marvell.com (10.69.176.39) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Thu, 11 Feb 2021 03:49:26 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZfM817u0oV5YvibXNJ9saAfmCMbX9GWXgsqIewQn5DCIZ6hYMGzi3mUEF7htwQ6460X/AFRxbZ7j9Q8NL47Ewm31RLkcw87/YrjwfOeAX8qRx/yGvCIa5KUrlcYfKrfvtaHzXpDtJ1YJAH9pZXicvfDBGGL7JTBPxQBue665iM9rmFN8N+ORZUG6qGaHdQDShR4rfyVUptevJLsaxC0K3ZAni5ZMhYznNbDk+PhhaCFFrK6Tjx1XVN2r584kYziY0R/kz6qDAdMzeqxS576cyFiU4KDpVoPCtTHEfFqhdnQdQowDk7HunPRd92WfbzAQIeJIOGCoOHEiZ8oQUjehPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+5NbkP6ZjGpRje/NICs1Yc92Zt3BNev3RcAWTVb35ec=;
- b=SMPLxL+uZ5LWNTTTqCsn+21e3TkaL2OFii8JkxexBXHFEbFl02RkzU9GaPniRbULJ25wCgXiJIQNrRjAxO0VXxZa6I86kJLYB3x/7t3dzBvRIcJcHstieWhQ7kqm5JYZoVUsCmgH0heDp/VucwHtTJ5qau2megyf7qi+ErwCu1vI/LUeP34pa6VGAARhurSy7DjiB6IDBuSKqY3Iv537ytQYnD4q42V5HocbnN8PRJNs1jGN3njzyTkLbOiI0+eim7WBAqW9ftAYLz2is3YrgIF+haDyQYe/1DYrrhR0ZTijbSSKdYTfZ7sGqi10+zFCDg8rId965qO4SQncFEOncw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+5NbkP6ZjGpRje/NICs1Yc92Zt3BNev3RcAWTVb35ec=;
- b=okicaxzjI2CvL7xgzGRKYEG4v9aiii2xUN+b9PLW6AhVRt8ZcDfhUTwDk57ka2/lKAg1R5Hz5ayFR0CpCkgBFRAgGUOZmzfjuTxTe4sdM6pSzDxSjSk4Q2Nz6YoKAcVz08U/LsfZdS1zKQ/KAIeLPshn6qNiLL1YX3xr0iJ8OOU=
-Received: from CO6PR18MB3873.namprd18.prod.outlook.com (2603:10b6:5:350::23)
- by MW3PR18MB3514.namprd18.prod.outlook.com (2603:10b6:303:2d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Thu, 11 Feb
- 2021 11:49:25 +0000
-Received: from CO6PR18MB3873.namprd18.prod.outlook.com
- ([fe80::c041:1c61:e57:349a]) by CO6PR18MB3873.namprd18.prod.outlook.com
- ([fe80::c041:1c61:e57:349a%3]) with mapi id 15.20.3846.025; Thu, 11 Feb 2021
- 11:49:25 +0000
-From:   Stefan Chulski <stefanc@marvell.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Yan Markman <ymarkman@marvell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "atenart@kernel.org" <atenart@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [EXT] Re: [PATCH v13 net-next 05/15] net: mvpp2: add PPv23
- version definition
-Thread-Topic: [EXT] Re: [PATCH v13 net-next 05/15] net: mvpp2: add PPv23
- version definition
-Thread-Index: AQHXAGPWXLwlpUz4Jka63qgQr+Wit6pS1TYAgAABjpA=
-Date:   Thu, 11 Feb 2021 11:49:25 +0000
-Message-ID: <CO6PR18MB38739CA874F3748919C8361CB08C9@CO6PR18MB3873.namprd18.prod.outlook.com>
-References: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
- <1613040542-16500-6-git-send-email-stefanc@marvell.com>
- <20210211114238.GD1463@shell.armlinux.org.uk>
-In-Reply-To: <20210211114238.GD1463@shell.armlinux.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: armlinux.org.uk; dkim=none (message not signed)
- header.d=none;armlinux.org.uk; dmarc=none action=none
- header.from=marvell.com;
-x-originating-ip: [80.230.25.16]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2e71256e-3fc9-4a7a-9bce-08d8ce831492
-x-ms-traffictypediagnostic: MW3PR18MB3514:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR18MB3514747FB679E4C1F16A8659B08C9@MW3PR18MB3514.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XTrbi4nWC1U7AD4FDCWcrhbP4xn5UxRjqheEYPMMkNh3NI+XiF9xhaF9cmKV5VI/IW9dymS1m1GwPLx4s8hjrVVjBP/eSISxc3xzmLHGx4XKZAi5WghhN219Mc+BWECfmKZy9qNt59r/FyG58NJHmNCD2kMJOZYo6JqQ6t5a1SgnnrqIAwpjs83vitAPy8erI1MbyBNTUNRCCTGNdLKeO5db7I4Y1eTU8fYZdFdOvGgVWbQTnR4HTtzmkByz26q4lr79ztqjX5g0DtPxA31cDRgI3aeqUj9DMp5PhRkHdCRD5SjBuKqZvgxLSLU5UBPJrGgzPn8VRI0xw152TB6qONxC/zfxxfOVjN1nuulk0Xvv4U3sclmx1HE8t8mXfc+vPPYjQC9s8lbFb5vNTVvA7HcDsc5qs2LpIuAaFmiADIWi0Nz5ynW6KzJU+9BFCpS/aikudWo92UM1pTY1Yr8Uc2vr0aAr1EOOHoGtBHiUd8zWd3CSBIASyYj/B23wTOKM90hIGTQlohdzNEk5JiC+rA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR18MB3873.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(136003)(396003)(366004)(8676002)(6916009)(4326008)(2906002)(186003)(33656002)(478600001)(9686003)(71200400001)(54906003)(86362001)(316002)(66946007)(55016002)(6506007)(76116006)(26005)(66556008)(64756008)(8936002)(7416002)(5660300002)(66476007)(52536014)(66446008)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?HUATo2IlTOdej9/sqM0wIgKziG9IKte+MlIjhoKwW6L4kfsMfB7MAO9L4cJm?=
- =?us-ascii?Q?FuZT6YBH+olpEfEDsxiYtAkB10hgxw58HCoVS8znqD7yQmq1EeOao649Fx2c?=
- =?us-ascii?Q?RvSFs2brQbOLJhKBjsZX5G4L8HuJnOjPRmW22xoM5bwtvdzs4/EZQnP+hER2?=
- =?us-ascii?Q?XHbiY20/i65I/opF8bz5b4xT14TdHt/QlMQ4ADh4UUI6ddj3GPO85HiSbCgU?=
- =?us-ascii?Q?IrDeVbycihVxc4T25lbXUFhaLLvJB697GZBdwi8+7uT/6xIkzFGcVnb4kJ9X?=
- =?us-ascii?Q?sCFU06X8GiB1aysqroiZEreft7zx35ExLCC9Hpf2uU4nAQ4D1sreMDTWczT7?=
- =?us-ascii?Q?fJ/BwxXjv9V/qNu7A2D3U7cctxVkfNWle124JnII9XxMwEyuJTdL7qkBYgkK?=
- =?us-ascii?Q?h4MkpD7qn1gzGILc8oBTu3i8mDDVPoQbZhRST3FmAv/PaM5O3Lp6x/zYYYvv?=
- =?us-ascii?Q?byK0xBElXqMdktvTBlHj8CtpW18jSUx4nrL/6eqeoLIRSl0Ven8gIDBYtpaW?=
- =?us-ascii?Q?X5O5nfvCQL0aTDDFXaFM5mSMgCSenSFBXJ11v4wAoNHLSaAkG7HBgJJXr2Lx?=
- =?us-ascii?Q?vggiUXfejRFO7x/waclJu8AO23PvoyQv71F6cFNW0W0IDrrf7LlAPWN5dZAC?=
- =?us-ascii?Q?WRqIB6/F4/ILY17fiSSxTw2bxkwdOU9BjksvmQbbZydMRwdKHPCYnf2nkFsA?=
- =?us-ascii?Q?oubLSCGHZRU131SUGA5jSC43HyTPLYQ9S70/zOco/mqoWrwt210rznQ8eCz9?=
- =?us-ascii?Q?xWJy7IkEDh7qMFz6bHn2+9CDWEcNsgdtLrcq9+7xKklRMUa8o5uxfZvHcMCd?=
- =?us-ascii?Q?dUVlL7UUf3DKH1JkR1oURYeW4+mRCadI0c1aTE85BDKiSO8l9P9TXpplPFbu?=
- =?us-ascii?Q?agtcDzGUWeRCKihDsFDNU4R/WIwRnnaUXedMMUaXxqhGmellekNJ9YM3JK5j?=
- =?us-ascii?Q?yceT2dyMxxvsQcvQ/hIfP9aDtFjzI9r0dx7ZmVPfZGwnW+wPkRTzlNJkq398?=
- =?us-ascii?Q?ibrYGcVxIE6TfVxLH+EuhvHi7YuM1ZFW60MzBXPnlty4MkrqLRTEMNoVqvtL?=
- =?us-ascii?Q?+v+FqIpyZqd0AytH6W/5Vnpak0H3iXetyzUKf1x9dA19l/loH/z0kj12vhBn?=
- =?us-ascii?Q?yDcIXfYMU6LIsaROSr2XMtaUrEt+DOe0F5/nURifeQtWnIF4C9iL6a28MSB9?=
- =?us-ascii?Q?P6BMbRe7HXT7h1u8DYKu8ecrSx9VK9TiVxuh+LiT2LABnGlL5ljrdQNRS//r?=
- =?us-ascii?Q?ySpojPgwefT+W+Mn4eXeYd9uJQW3cBFWuxCKJk5TMOZCKPGRavEO1GXmd1f0?=
- =?us-ascii?Q?jOI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 11 Feb 2021 06:51:02 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BBo0dR048645;
+        Thu, 11 Feb 2021 11:50:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=YsI/Zeh9f/xay3JsrvRyaQYhQnGdspV5AyS2kpao2Dw=;
+ b=HU6OKgWsLE0C8LZ9EAAaPN0fv9C57nymhjHwExHIWsb/xOTWShzx7QXURcGFzLyMPGmP
+ HOrhmIIgdeQqIx0dSZtVfXkc5F0jN75Sg+ARqGuSEv0Nb0Z6A0pGcZixRfEHu6yqs8sd
+ wCDO8Tzx7ylO5OfqQJzpnZ9G9yN5ZZJ6XIXS8GuLcKqfg/EU6iO6mIeG6F0Ixlsoqovg
+ lAvZekdqn3gKUkaIkHLKtlw8FA35bIvR/MBNRw25JZa25R/fKyGD/jePG2PjJDUDQbru
+ auw8v7vgwCM+pDxGVLBN5+xyVUZ5fdjyFTzM4jv0wOnyM1ckOrSkNY7KbbBGc27og2Sk 4w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 36hgmaq8jc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 11:50:00 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BBimrZ125762;
+        Thu, 11 Feb 2021 11:49:55 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 36j4vu55x1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 11:49:55 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11BBnqfo014708;
+        Thu, 11 Feb 2021 11:49:52 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 11 Feb 2021 03:49:51 -0800
+Date:   Thu, 11 Feb 2021 14:49:43 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jan Kara <jack@suse.cz>, Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+a7ab8df042baaf42ae3c@syzkaller.appspotmail.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Tahsin Erdogan <tahsin@google.com>, tytso@mit.edu
+Subject: Re: possible deadlock in fs_reclaim_acquire (2)
+Message-ID: <20210211114943.GH2696@kadam>
+References: <00000000000086723c05bb056425@google.com>
+ <20210211040729.12804-1-hdanton@sina.com>
+ <20210211102225.GK19070@quack2.suse.cz>
+ <YCUL/icHBWeEV1Ex@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR18MB3873.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e71256e-3fc9-4a7a-9bce-08d8ce831492
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2021 11:49:25.3089
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GjKLNWnJc/6JXYb68QiEIiQpGdaecoXYtHZ4jwINBECyMQcb0OgCR8/SxEywGtP6AlkXwvTxZ1pzl/qMJ9eT/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR18MB3514
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_05:2021-02-10,2021-02-11 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCUL/icHBWeEV1Ex@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110107
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> ----------------------------------------------------------------------
-> On Thu, Feb 11, 2021 at 12:48:52PM +0200, stefanc@marvell.com wrote:
-> > From: Stefan Chulski <stefanc@marvell.com>
-> >
-> > This patch add PPv23 version definition.
-> > PPv23 is new packet processor in CP115.
-> > Everything that supported by PPv22, also supported by PPv23.
-> > No functional changes in this stage.
-> >
-> > Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> > Acked-by: Marcin Wojtas <mw@semihalf.com>
->=20
-> Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
->=20
-> > @@ -7049,6 +7049,11 @@ static int mvpp2_probe(struct platform_device
-> *pdev)
-> >  			priv->port_map |=3D BIT(i);
-> >  	}
-> >
-> > +	if (priv->hw_version !=3D MVPP21) {
-> > +		if (mvpp2_read(priv, MVPP2_VER_ID_REG) =3D=3D
-> MVPP2_VER_PP23)
-> > +			priv->hw_version =3D MVPP23;
-> > +	}
-> > +
->=20
-> The only minor comment I have on this is... the formatting of the above.
-> Wouldn't:
->=20
-> 	if (priv->hw_version >=3D MVPP22 &&
-> 	    mvpp2_read(priv, MVPP2_VER_ID_REG) =3D=3D MVPP2_VER_PP23)
-> 		priv->hw_version =3D MVPP23;
->=20
-> read better?
->=20
-> Do we need to even check priv->hw_version here? Isn't this register
-> implemented in PPv2.1 where it contains the value zero?
+On Thu, Feb 11, 2021 at 11:50:38AM +0100, 'Michal Hocko' via syzkaller-bugs wrote:
+> On Thu 11-02-21 11:22:25, Jan Kara wrote:
+> > On Thu 11-02-21 12:07:29, Hillf Danton wrote:
+> 
+> I haven't received Hillf's email.
+> 
+> [...]
+> > > Fix 71b565ceff37 ("ext4: drop ext4_kvmalloc()") by restoring the
+> > > GFP_NOFS introduced in dec214d00e0d ("ext4: xattr inode deduplication").
+> > > 
+> > > Note this may be the fix also to possible deadlock
+> > >  Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
+> > >  https://lore.kernel.org/linux-ext4/000000000000563a0205bafb7970@google.com/
+> > 
+> > Please no. Ext4 is using scoping API to limit allocations to GFP_NOFS
+> > inside transactions. In this case something didn't work which seems like a
+> > lockdep bug at the first sight but I'll talk to mm guys about it.
+> > Definitely to problem doesn't seem to be in ext4.
+> 
+> Agreed. kvmalloc(NOFS) is not even supported because vmalloc doesn't
+> support GFP_KERNEL incompatible requests.
 
-Yes, we can just:
- 	if (mvpp2_read(priv, MVPP2_VER_ID_REG) =3D=3D MVPP2_VER_PP23)
- 		priv->hw_version =3D MVPP23;
+Okay.  I have created a new Smatch warning when people pass GFP_NOFS
+to kvmalloc() and friends.  We'll see if it finds anything tomorrow.
 
-Thanks,
-Stefan.
+(We could probably find the same information with grep, but I run
+Smatch every day so it prevents future bugs).
 
-
-
-
+regards,
+dan carpenter
 
