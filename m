@@ -2,180 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D492A3190F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521493190F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhBKRWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:22:30 -0500
-Received: from mga11.intel.com ([192.55.52.93]:4462 "EHLO mga11.intel.com"
+        id S232360AbhBKRWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:22:51 -0500
+Received: from mga01.intel.com ([192.55.52.88]:35348 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231709AbhBKQYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:24:11 -0500
-IronPort-SDR: JI7d5lt3AY47vEHIkE82cjAJ4t3yzgi+JTLNp2va4zCNAyx25CYAyHZd9hGWW83AolQJfncWkC
- x/pzFQs3dvIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="178759386"
+        id S231737AbhBKQYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 11:24:15 -0500
+IronPort-SDR: 3DOufxR+kvqdgU770cM1GNhpa2WuxUmFd+ywrXEVWRBE8CkgZ16vLMe29aHzG17Bf4Zjo8ylsR
+ 4peaHxP/pizA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="201400265"
 X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="178759386"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:21:31 -0800
-IronPort-SDR: 6WS3lTWgexsTuIy+7/R0zkQ/tniOm3KBYsITW1YvWI98XkkEDLedh/tOu5yVioZ4Nj2u9xjm/O
- gFrWErDi+gSQ==
+   d="scan'208";a="201400265"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:22:24 -0800
+IronPort-SDR: 5OxVEzNXUNBYV7Lt3nf9XNlEIDvN8hUR3k7WIZS9g/8gM/5y/gMnnul52xf6LeA6rv9b1fg4Gg
+ BFtlYtn+GFxg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="362549874"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.225.14]) ([10.212.225.14])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:21:31 -0800
-Subject: Re: [PATCH v3] driver core: auxiliary bus: Fix calling stage for
- auxiliary bus init
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-References: <20210210201611.1611074-1-dave.jiang@intel.com>
- <YCTUjimQhVi7VSrw@kroah.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <5d5c3208-ba77-900c-460a-bb4b7a356b58@intel.com>
-Date:   Thu, 11 Feb 2021 09:21:29 -0700
+   d="scan'208";a="437175826"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 11 Feb 2021 08:22:24 -0800
+Received: from [10.254.79.250] (kliang2-MOBL.ccr.corp.intel.com [10.254.79.250])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 2F0E0580266;
+        Thu, 11 Feb 2021 08:22:23 -0800 (PST)
+Subject: Re: [PATCH 00/49] Add Alder Lake support for perf
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        namhyung@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
+References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+ <YCUXte/CMEQlCq4f@krava>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <38f93d32-d133-8170-3c3a-0fdfa04a9058@linux.intel.com>
+Date:   Thu, 11 Feb 2021 11:22:21 -0500
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YCTUjimQhVi7VSrw@kroah.com>
+In-Reply-To: <YCUXte/CMEQlCq4f@krava>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2/10/2021 11:54 PM, Greg KH wrote:
-> On Wed, Feb 10, 2021 at 01:16:11PM -0700, Dave Jiang wrote:
->> When the auxiliary device code is built into the kernel, it can be executed
->> before the auxiliary bus is registered. This causes bus->p to be not
->> allocated and triggers a NULL pointer dereference when the auxiliary bus
->> device gets added with bus_add_device(). Call the auxiliary_bus_init()
->> under driver_init() so the bus is initialized before devices.
->>
->> Below is the kernel splat for the bug:
->> [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
->> [ 1.950670] #PF: supervisor read access in kernel mode
->> [ 1.950670] #PF: error_code(0x0000) - not-present page
->> [ 1.950670] PGD 0
->> [ 1.950670] Oops: 0000 1 SMP NOPTI
->> [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
->> [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->> [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
->> [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
->> 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
->> [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
->> [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
->> [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
->> [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
->> [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
->> [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
->> [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
->> [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
->> [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
->> [ 1.950670] PKRU: 55555554
->> [ 1.950670] Call Trace:
->> [ 1.950670] device_add+0x3ee/0x850
->> [ 1.950670] __auxiliary_device_add+0x47/0x60
->> [ 1.950670] idxd_pci_probe+0xf77/0x1180
->> [ 1.950670] local_pci_probe+0x4a/0x90
->> [ 1.950670] pci_device_probe+0xff/0x1b0
->> [ 1.950670] really_probe+0x1cf/0x440
->> [ 1.950670] ? rdinit_setup+0x31/0x31
->> [ 1.950670] driver_probe_device+0xe8/0x150
->> [ 1.950670] device_driver_attach+0x58/0x60
->> [ 1.950670] __driver_attach+0x8f/0x150
->> [ 1.950670] ? device_driver_attach+0x60/0x60
->> [ 1.950670] ? device_driver_attach+0x60/0x60
->> [ 1.950670] bus_for_each_dev+0x79/0xc0
->> [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
->> [ 1.950670] driver_attach+0x1e/0x20
->> [ 1.950670] bus_add_driver+0x154/0x1f0
->> [ 1.950670] driver_register+0x70/0xc0
->> [ 1.950670] __pci_register_driver+0x54/0x60
->> [ 1.950670] idxd_init_module+0xe2/0xfc
->> [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
->> [ 1.950670] do_one_initcall+0x4a/0x1e0
->> [ 1.950670] kernel_init_freeable+0x1fc/0x25c
->> [ 1.950670] ? rest_init+0xba/0xba
->> [ 1.950670] kernel_init+0xe/0x116
->> [ 1.950670] ret_from_fork+0x1f/0x30
->> [ 1.950670] Modules linked in:
->> [ 1.950670] CR2: 0000000000000060
->> [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
->>
->> Fixes: 7de3697e9cbd ("Add auxiliary bus support")
->> Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
->> Acked-by: Dave Ertman <david.m.ertman@intel.com>
->> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
->> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
->> ---
->>
->> v3:
->> - Change init function to return void. (GregKH)
->> v2:
->> - Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
->>
->>   drivers/base/base.h      |  5 +++++
->>   drivers/base/auxiliary.c | 13 +++----------
->>   drivers/base/init.c      |  1 +
->>   3 files changed, 9 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/base/base.h b/drivers/base/base.h
->> index f5600a83124f..52b3d7b75c27 100644
->> --- a/drivers/base/base.h
->> +++ b/drivers/base/base.h
->> @@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
->>   extern int platform_bus_init(void);
->>   extern void cpu_dev_init(void);
->>   extern void container_dev_init(void);
->> +#ifdef CONFIG_AUXILIARY_BUS
->> +extern void auxiliary_bus_init(void);
->> +#else
->> +static inline void auxiliary_bus_init(void) { }
->> +#endif
->>   
->>   struct kobject *virtual_device_parent(struct device *dev);
->>   
->> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
->> index 8336535f1e11..d8b314e7d0fd 100644
->> --- a/drivers/base/auxiliary.c
->> +++ b/drivers/base/auxiliary.c
->> @@ -15,6 +15,7 @@
->>   #include <linux/pm_runtime.h>
->>   #include <linux/string.h>
->>   #include <linux/auxiliary_bus.h>
->> +#include "base.h"
->>   
->>   static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
->>   							    const struct auxiliary_device *auxdev)
->> @@ -260,19 +261,11 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
->>   }
->>   EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
->>   
->> -static int __init auxiliary_bus_init(void)
->> +void __init auxiliary_bus_init(void)
->>   {
->> -	return bus_register(&auxiliary_bus_type);
->> +	WARN_ON(bus_register(&auxiliary_bus_type));
-> If this fails you have worse problems, what is this WARN_ON() going to
-> help with except give you a crashdump right before something else in the
-> kernel dies?
 
-My thinking was that it would point to the area of failure rather than 
-much later down the road, and the person debugging can know where it 
-failed. Also, gcc v10 is no longer happy with (void) bus_register() and 
-complains. If there's a different way you'd rather do this please advise.
+On 2/11/2021 6:40 AM, Jiri Olsa wrote:
+> On Mon, Feb 08, 2021 at 07:24:57AM -0800, kan.liang@linux.intel.com wrote:
+> 
+> SNIP
+> 
+>> Jin Yao (24):
+>>    perf jevents: Support unit value "cpu_core" and "cpu_atom"
+>>    perf util: Save pmu name to struct perf_pmu_alias
+>>    perf pmu: Save detected hybrid pmus to a global pmu list
+>>    perf pmu: Add hybrid helper functions
+>>    perf list: Support --cputype option to list hybrid pmu events
+>>    perf stat: Hybrid evsel uses its own cpus
+>>    perf header: Support HYBRID_TOPOLOGY feature
+>>    perf header: Support hybrid CPU_PMU_CAPS
+>>    tools headers uapi: Update tools's copy of linux/perf_event.h
+>>    perf parse-events: Create two hybrid hardware events
+>>    perf parse-events: Create two hybrid cache events
+>>    perf parse-events: Support hardware events inside PMU
+>>    perf list: Display pmu prefix for partially supported hybrid cache
+>>      events
+>>    perf parse-events: Support hybrid raw events
+>>    perf stat: Support --cputype option for hybrid events
+>>    perf stat: Support metrics with hybrid events
+>>    perf evlist: Create two hybrid 'cycles' events by default
+>>    perf stat: Add default hybrid events
+>>    perf stat: Uniquify hybrid event name
+>>    perf stat: Merge event counts from all hybrid PMUs
+>>    perf stat: Filter out unmatched aggregation for hybrid event
+>>    perf evlist: Warn as events from different hybrid PMUs in a group
+>>    perf Documentation: Document intel-hybrid support
+>>    perf evsel: Adjust hybrid event and global event mixed group
+>>
+>> Kan Liang (22):
+>>    perf/x86/intel: Hybrid PMU support for perf capabilities
+>>    perf/x86: Hybrid PMU support for intel_ctrl
+>>    perf/x86: Hybrid PMU support for counters
+>>    perf/x86: Hybrid PMU support for unconstrained
+>>    perf/x86: Hybrid PMU support for hardware cache event
+>>    perf/x86: Hybrid PMU support for event constraints
+>>    perf/x86: Hybrid PMU support for extra_regs
+>>    perf/x86/intel: Factor out intel_pmu_check_num_counters
+>>    perf/x86/intel: Factor out intel_pmu_check_event_constraints
+>>    perf/x86/intel: Factor out intel_pmu_check_extra_regs
+>>    perf/x86: Expose check_hw_exists
+>>    perf/x86: Remove temporary pmu assignment in event_init
+>>    perf/x86: Factor out x86_pmu_show_pmu_cap
+>>    perf/x86: Register hybrid PMUs
+>>    perf/x86: Add structures for the attributes of Hybrid PMUs
+>>    perf/x86/intel: Add attr_update for Hybrid PMUs
+>>    perf/x86: Support filter_match callback
+>>    perf/x86/intel: Add Alder Lake Hybrid support
+>>    perf: Introduce PERF_TYPE_HARDWARE_PMU and PERF_TYPE_HW_CACHE_PMU
+>>    perf/x86/intel/uncore: Add Alder Lake support
+>>    perf/x86/msr: Add Alder Lake CPU support
+>>    perf/x86/cstate: Add Alder Lake CPU support
+>>
+>> Ricardo Neri (2):
+>>    x86/cpufeatures: Enumerate Intel Hybrid Technology feature bit
+>>    x86/cpu: Describe hybrid CPUs in cpuinfo_x86
+>>
+>> Zhang Rui (1):
+>>    perf/x86/rapl: Add support for Intel Alder Lake
+> 
+> hi,
+> would you have git branch with all this somewhere?
+> 
 
+Here is the git branch
 
->
-> Feels frivilous to me, but oh well, I'll take it for now...
->
-> thanks,
->
-> greg k-h
+https://github.com/kliang2/perf.git adl_enabling
+
+Please note that the branch is on top of Peter's perf/core branch, which 
+doesn't include the latest perf tool changes. The perf tool patches in 
+the branch only includes the critical changes. There will be more tool 
+patches later, e.g., patches for perf mem, perf test etc.
+
+Thanks,
+Kan
