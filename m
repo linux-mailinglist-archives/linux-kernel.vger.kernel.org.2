@@ -2,98 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6D6318B10
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6822318B12
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbhBKMmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:42:49 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:3710 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230357AbhBKM1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:27:52 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DbwqL5X0nz9txKd;
-        Thu, 11 Feb 2021 13:26:54 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Xo2pm2tx6n44; Thu, 11 Feb 2021 13:26:54 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DbwqL4YRZz9txKb;
-        Thu, 11 Feb 2021 13:26:54 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0E3868B827;
-        Thu, 11 Feb 2021 13:26:56 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id nAzHr9nVtaFv; Thu, 11 Feb 2021 13:26:55 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2D5398B81F;
-        Thu, 11 Feb 2021 13:26:55 +0100 (CET)
-Subject: Re: [PATCH] powerpc/bug: Remove specific powerpc BUG_ON()
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu>
- <20210211114910.GA28121@gate.crashing.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <3b7f3a1e-0355-b6d4-14cd-300bf4d3629a@csgroup.eu>
-Date:   Thu, 11 Feb 2021 13:26:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231883AbhBKMnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:43:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36775 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229639AbhBKM2u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 07:28:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613046440;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HMz6zYsvhAUacFy6he/Ff5pa+8L4MB4YjmA0Jw1xjYQ=;
+        b=iQr6ock4ozX6Qc1vCQmUbkw4AjYbn5tMI13JXOfNFb87+Z5DYnli3FIcNY8alu1g5AcXw6
+        8e+bM+zmzvnTlt5AZaJW8um81LGE3KDFAm4BROc9Z/QJbjUBjmhKVbk/DTgeISEHUH571t
+        bB9OxsfjB6StnCO3ru/CxR8EQRg4jdk=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-PUNunsdKOTO7IVj-c7z4MA-1; Thu, 11 Feb 2021 07:27:18 -0500
+X-MC-Unique: PUNunsdKOTO7IVj-c7z4MA-1
+Received: by mail-ed1-f69.google.com with SMTP id d12so730499edp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 04:27:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HMz6zYsvhAUacFy6he/Ff5pa+8L4MB4YjmA0Jw1xjYQ=;
+        b=o3iX7z5HS7sJaNnpwRhp4SDswagjsSzMdXE3ZFc00qNsG4TDU4NoIuriTR4QF5VlMk
+         MTcUClxMVjtbAvcX8atIOsKMZKbhxGdyNuSjuantGJVaKXsAQZlifD/JioruB6TfxkvC
+         IAzDwKtelUZHmGR9f/hu1WwGzulmAVeX9WwyOw0XxRpczqXMBjaYf0YXEozf2Mw75DzE
+         PFO6peARU7zx/forbj/zov/tIyYVlE2zlRhf+MjIhyi2nqoBJ0PBP1P47q/q9ieI9AKS
+         xQBL7tQE50HN25MSm8dOpQPXtr8gZ3kep6bh8YO/5Qpavg4aGdBFVfQHS8zcv3p4p1na
+         /L2w==
+X-Gm-Message-State: AOAM533AIFSy2fZjtbWwifGrSHFilbK4guIn/26mypdcgSsgFye1QqQ+
+        iYXZUmI3p0EqS7Qe2aG4f/ioeEVTMGmOTXQVqCLXXflYKvDh82Kc2k9gQ3wziLds5d5yowTX1nK
+        4TTos8mOUBhAmDyk1T0EyyZg1
+X-Received: by 2002:a17:906:2747:: with SMTP id a7mr8529857ejd.250.1613046437362;
+        Thu, 11 Feb 2021 04:27:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyk6B6DSr3e6B0w/xlbcUeWXisr2RXOx2YRDpQHkAnrdl/RyyOhCzJ+iUDi0A/EsFUj4H9p5g==
+X-Received: by 2002:a17:906:2747:: with SMTP id a7mr8529844ejd.250.1613046437196;
+        Thu, 11 Feb 2021 04:27:17 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id bo24sm3698134edb.51.2021.02.11.04.27.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 04:27:16 -0800 (PST)
+Date:   Thu, 11 Feb 2021 13:27:14 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v4 07/17] af_vsock: rest of SEQPACKET support
+Message-ID: <20210211122714.rqiwg3qp3kuprktb@steredhat>
+References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
+ <20210207151615.805115-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <20210211114910.GA28121@gate.crashing.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210207151615.805115-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Feb 07, 2021 at 06:16:12PM +0300, Arseny Krasnov wrote:
+>This does rest of SOCK_SEQPACKET support:
+>1) Adds socket ops for SEQPACKET type.
+>2) Allows to create socket with SEQPACKET type.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> net/vmw_vsock/af_vsock.c | 37 ++++++++++++++++++++++++++++++++++++-
+> 1 file changed, 36 insertions(+), 1 deletion(-)
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index a033d3340ac4..c77998a14018 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -452,6 +452,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+> 		new_transport = transport_dgram;
+> 		break;
+> 	case SOCK_STREAM:
+>+	case SOCK_SEQPACKET:
+> 		if (vsock_use_local_transport(remote_cid))
+> 			new_transport = transport_local;
+> 		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
+>@@ -459,6 +460,15 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+> 			new_transport = transport_g2h;
+> 		else
+> 			new_transport = transport_h2g;
+>+
+>+		if (sk->sk_type == SOCK_SEQPACKET) {
+>+			if (!new_transport ||
+>+			    !new_transport->seqpacket_seq_send_len ||
+>+			    !new_transport->seqpacket_seq_send_eor ||
+>+			    !new_transport->seqpacket_seq_get_len ||
+>+			    !new_transport->seqpacket_dequeue)
+>+				return -ESOCKTNOSUPPORT;
+>+		}
 
+Maybe we should move this check after the try_module_get() call, since 
+the memory pointed by 'new_transport' pointer can be deallocated in the 
+meantime.
 
-Le 11/02/2021 à 12:49, Segher Boessenkool a écrit :
-> On Thu, Feb 11, 2021 at 07:41:52AM +0000, Christophe Leroy wrote:
->> powerpc BUG_ON() is based on using twnei or tdnei instruction,
->> which obliges gcc to format the condition into a 0 or 1 value
->> in a register.
-> 
-> Huh?  Why is that?
-> 
-> Will it work better if this used __builtin_trap?  Or does the kernel only
-> detect very specific forms of trap instructions?
-> 
->> By using a generic implementation, gcc will generate a branch
->> to the unconditional trap generated by BUG().
-> 
-> That is many more instructions than ideal.
-> 
->> As modern powerpc implement branch folding, that's even more efficient.
-> 
-> What PowerPC cpus implement branch folding?  I know none.
+Also, if the socket had a transport before, we should deassign it before 
+returning an error.
 
-Extract from powerpc mpc8323 reference manual:
+> 		break;
+> 	default:
+> 		return -ESOCKTNOSUPPORT;
+>@@ -684,6 +694,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
+>
+> 	switch (sk->sk_socket->type) {
+> 	case SOCK_STREAM:
+>+	case SOCK_SEQPACKET:
+> 		spin_lock_bh(&vsock_table_lock);
+> 		retval = __vsock_bind_connectible(vsk, addr);
+> 		spin_unlock_bh(&vsock_table_lock);
+>@@ -769,7 +780,7 @@ static struct sock *__vsock_create(struct net *net,
+>
+> static bool sock_type_connectible(u16 type)
+> {
+>-	return type == SOCK_STREAM;
+>+	return (type == SOCK_STREAM) || (type == SOCK_SEQPACKET);
+> }
+>
+> static void __vsock_release(struct sock *sk, int level)
+>@@ -2199,6 +2210,27 @@ static const struct proto_ops vsock_stream_ops = {
+> 	.sendpage = sock_no_sendpage,
+> };
+>
+>+static const struct proto_ops vsock_seqpacket_ops = {
+>+	.family = PF_VSOCK,
+>+	.owner = THIS_MODULE,
+>+	.release = vsock_release,
+>+	.bind = vsock_bind,
+>+	.connect = vsock_connect,
+>+	.socketpair = sock_no_socketpair,
+>+	.accept = vsock_accept,
+>+	.getname = vsock_getname,
+>+	.poll = vsock_poll,
+>+	.ioctl = sock_no_ioctl,
+>+	.listen = vsock_listen,
+>+	.shutdown = vsock_shutdown,
+>+	.setsockopt = vsock_connectible_setsockopt,
+>+	.getsockopt = vsock_connectible_getsockopt,
+>+	.sendmsg = vsock_connectible_sendmsg,
+>+	.recvmsg = vsock_connectible_recvmsg,
+>+	.mmap = sock_no_mmap,
+>+	.sendpage = sock_no_sendpage,
+>+};
+>+
+> static int vsock_create(struct net *net, struct socket *sock,
+> 			int protocol, int kern)
+> {
+>@@ -2219,6 +2251,9 @@ static int vsock_create(struct net *net, struct socket *sock,
+> 	case SOCK_STREAM:
+> 		sock->ops = &vsock_stream_ops;
+> 		break;
+>+	case SOCK_SEQPACKET:
+>+		sock->ops = &vsock_seqpacket_ops;
+>+		break;
+> 	default:
+> 		return -ESOCKTNOSUPPORT;
+> 	}
+>-- 
+>2.25.1
+>
 
-High instruction and data throughput
-— Zero-cycle branch capability (branch folding)
-— Programmable static branch prediction on unresolved conditional branches
-— Two integer units with enhanced multipliers in thee300c2 for increased integer instruction
-throughput and a maximum two-cycle latency for multiply instructions
-— Instruction fetch unit capable of fetching two instructions per clock from the instruction cache
-— A six-entry instruction queue (IQ) that provides lookahead capability
-— Independent pipelines with feed-forwarding that reduces data dependencies in hardware
-— 16-Kbyte, four-way set-associative instruction and data caches on the e300c2.
-— Cache write-back or write-through operation programmable on a per-page or per-block basis
-— Features for instruction and data cache locking and protection
-— BPU that performs CR lookahead operations
-— Address translation facilities for 4-Kbyte page size, variable block size, and 256-Mbyte
-segment size
-— A 64-entry, two-way, set-associative ITLB and DTLB
-— Eight-entry data and instruction BAT arrays providing 128-Kbyte to 256-Mbyte blocks
-— Software table search operations and updates supported through fast trap mechanism
-— 52-bit virtual address; 32-bit physical address
-
-Christophe
