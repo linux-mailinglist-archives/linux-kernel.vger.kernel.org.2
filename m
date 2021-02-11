@@ -2,115 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FA5318539
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3326131853E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbhBKG0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 01:26:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhBKG0a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 01:26:30 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4AAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 22:25:50 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id m22so6573792lfg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 22:25:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a172++GKBLp4j2cPZ3xSzTWnzK4BLacsMzqqmF8v+TE=;
-        b=WBpA8brY2RCW6NuIzbHlbWFdDzpUcH0uxC8tByIVFAxMDnfaB1GmcSu96JbG2cG++4
-         Qmm+TEp1d5x5i3XD9b4mPmqa47rUy4qh4nZFQ81VkUZHe2iv4FZ6Sn7vks+65Ud0Wrel
-         hBKhv+cf6FwOFup48Xi4ztNVwIhr21FD/0f9SJ/gVubrqPz+5P6WUagdgvT8yTzbW9hB
-         Nr6rVR06R41X3fYBsRjrdVZccp2UxmfrtNaZRJekVWAxPm/dukdS/wTWvag7hIgLazcI
-         MpjverAgYDmrJI7uMJaa4oOLXsdOUT2Gk/4ONACyt+GViqLlfPI4puvC9+Rfg+13H3Ow
-         vvrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a172++GKBLp4j2cPZ3xSzTWnzK4BLacsMzqqmF8v+TE=;
-        b=TVAfegsu2SRJdEImoDwRhLH/9r2zHQs6cFDW+xV5K54CG4C8UsjeZ29yxeI4ILI7f0
-         Qv6eUBRI+GBL629FfqrGSS9wB8GgO7O6/iFP0z9vN0gNDImeM2NuRazWIhZm1eQryPQY
-         cnpRCQYulQl55k1wJgCuVizLHbxRl4Azyjv+zDtmpFyfO/kZsnVZ41MRFCgQ27tkEUII
-         9DGiKT8lfu9sUSb4bWayAXrSK6D9ZzY7cOmUVST9lXpNifdbI6i+o+8aC35YFnndpQrg
-         AZrjcQXK6kZbL3nFQto5fJQ0H0V0+aclLNPqxm8BvuDHWz5h2We0LcgK6rjiaoSZ/Qet
-         4h+A==
-X-Gm-Message-State: AOAM531e1iLyHRM99RxqEi1xaggiXhy9N6aF7NYFtZaN2tGAMsclD+8d
-        r4iUcPsR/n4hQXSBaFKSd2E=
-X-Google-Smtp-Source: ABdhPJzQ8QWb+QBHz9JARn4nvO4Z+FjrNcSK/SiqjhEGuwa9KBxwoLNr7RNApN81B+t3NDXVlB45gg==
-X-Received: by 2002:a19:9154:: with SMTP id y20mr3460756lfj.2.1613024748279;
-        Wed, 10 Feb 2021 22:25:48 -0800 (PST)
-Received: from TRWS9215.usr.ingenico.loc ([213.143.229.14])
-        by smtp.gmail.com with ESMTPSA id l24sm794420lje.50.2021.02.10.22.25.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 22:25:47 -0800 (PST)
-From:   Fatih YILDIRIM <yildirim.fatih@gmail.com>
-To:     gregkh@linuxfoundation.org, gustavo@embeddedor.com
-Cc:     Fatih YILDIRIM <yildirim.fatih@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Macros with complex values should be enclosed in parentheses.
-Date:   Thu, 11 Feb 2021 09:25:43 +0300
-Message-Id: <20210211062543.9817-1-yildirim.fatih@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229523AbhBKGfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 01:35:32 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:55710 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhBKGfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 01:35:30 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dbn0z31Swz9v06X;
+        Thu, 11 Feb 2021 07:34:43 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id q5QSYBhhbmsT; Thu, 11 Feb 2021 07:34:43 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dbn0z1d1Zz9v06P;
+        Thu, 11 Feb 2021 07:34:43 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 099738B815;
+        Thu, 11 Feb 2021 07:34:44 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id AveMarLnpIeC; Thu, 11 Feb 2021 07:34:43 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B115A8B771;
+        Thu, 11 Feb 2021 07:34:43 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 89DBB67377; Thu, 11 Feb 2021 06:34:43 +0000 (UTC)
+Message-Id: <f46a01750b1a00c9c43725899c9cf8eb6c6a0587.1613025208.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/traps: Declare unrecoverable_exception() as
+ __noreturn
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 11 Feb 2021 06:34:43 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Fatih YILDIRIM <yildirim.fatih@gmail.com>
+unrecoverable_exception() is never expected to return, most callers
+have an infiniteloop in case it returns.
+
+Ensure it really never returns by terminating it with a BUG(), and
+declare it __no_return.
+
+It always GCC to really simplify functions calling it. In the exemple below,
+it avoids the stack frame in the likely fast path and avoids code duplication
+for the exit.
+
+With this patch:
+
+	00000348 <interrupt_exit_kernel_prepare>:
+	 348:	81 43 00 84 	lwz     r10,132(r3)
+	 34c:	71 48 00 02 	andi.   r8,r10,2
+	 350:	41 82 00 2c 	beq     37c <interrupt_exit_kernel_prepare+0x34>
+	 354:	71 4a 40 00 	andi.   r10,r10,16384
+	 358:	40 82 00 20 	bne     378 <interrupt_exit_kernel_prepare+0x30>
+	 35c:	80 62 00 70 	lwz     r3,112(r2)
+	 360:	74 63 00 01 	andis.  r3,r3,1
+	 364:	40 82 00 28 	bne     38c <interrupt_exit_kernel_prepare+0x44>
+	 368:	7d 40 00 a6 	mfmsr   r10
+	 36c:	7c 11 13 a6 	mtspr   81,r0
+	 370:	7c 12 13 a6 	mtspr   82,r0
+	 374:	4e 80 00 20 	blr
+	 378:	48 00 00 00 	b       378 <interrupt_exit_kernel_prepare+0x30>
+	 37c:	94 21 ff f0 	stwu    r1,-16(r1)
+	 380:	7c 08 02 a6 	mflr    r0
+	 384:	90 01 00 14 	stw     r0,20(r1)
+	 388:	48 00 00 01 	bl      388 <interrupt_exit_kernel_prepare+0x40>
+				388: R_PPC_REL24	unrecoverable_exception
+	 38c:	38 e2 00 70 	addi    r7,r2,112
+	 390:	3d 00 00 01 	lis     r8,1
+	 394:	7c c0 38 28 	lwarx   r6,0,r7
+	 398:	7c c6 40 78 	andc    r6,r6,r8
+	 39c:	7c c0 39 2d 	stwcx.  r6,0,r7
+	 3a0:	40 a2 ff f4 	bne     394 <interrupt_exit_kernel_prepare+0x4c>
+	 3a4:	38 60 00 01 	li      r3,1
+	 3a8:	4b ff ff c0 	b       368 <interrupt_exit_kernel_prepare+0x20>
+
+Without this patch:
+
+	00000348 <interrupt_exit_kernel_prepare>:
+	 348:	94 21 ff f0 	stwu    r1,-16(r1)
+	 34c:	93 e1 00 0c 	stw     r31,12(r1)
+	 350:	7c 7f 1b 78 	mr      r31,r3
+	 354:	81 23 00 84 	lwz     r9,132(r3)
+	 358:	71 2a 00 02 	andi.   r10,r9,2
+	 35c:	41 82 00 34 	beq     390 <interrupt_exit_kernel_prepare+0x48>
+	 360:	71 29 40 00 	andi.   r9,r9,16384
+	 364:	40 82 00 28 	bne     38c <interrupt_exit_kernel_prepare+0x44>
+	 368:	80 62 00 70 	lwz     r3,112(r2)
+	 36c:	74 63 00 01 	andis.  r3,r3,1
+	 370:	40 82 00 3c 	bne     3ac <interrupt_exit_kernel_prepare+0x64>
+	 374:	7d 20 00 a6 	mfmsr   r9
+	 378:	7c 11 13 a6 	mtspr   81,r0
+	 37c:	7c 12 13 a6 	mtspr   82,r0
+	 380:	83 e1 00 0c 	lwz     r31,12(r1)
+	 384:	38 21 00 10 	addi    r1,r1,16
+	 388:	4e 80 00 20 	blr
+	 38c:	48 00 00 00 	b       38c <interrupt_exit_kernel_prepare+0x44>
+	 390:	7c 08 02 a6 	mflr    r0
+	 394:	90 01 00 14 	stw     r0,20(r1)
+	 398:	48 00 00 01 	bl      398 <interrupt_exit_kernel_prepare+0x50>
+				398: R_PPC_REL24	unrecoverable_exception
+	 39c:	80 01 00 14 	lwz     r0,20(r1)
+	 3a0:	81 3f 00 84 	lwz     r9,132(r31)
+	 3a4:	7c 08 03 a6 	mtlr    r0
+	 3a8:	4b ff ff b8 	b       360 <interrupt_exit_kernel_prepare+0x18>
+	 3ac:	39 02 00 70 	addi    r8,r2,112
+	 3b0:	3d 40 00 01 	lis     r10,1
+	 3b4:	7c e0 40 28 	lwarx   r7,0,r8
+	 3b8:	7c e7 50 78 	andc    r7,r7,r10
+	 3bc:	7c e0 41 2d 	stwcx.  r7,0,r8
+	 3c0:	40 a2 ff f4 	bne     3b4 <interrupt_exit_kernel_prepare+0x6c>
+	 3c4:	38 60 00 01 	li      r3,1
+	 3c8:	4b ff ff ac 	b       374 <interrupt_exit_kernel_prepare+0x2c>
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-Hi,
-I have a coding style fix.
-By the way, I'm following the Eudyptula Challenge Linux kernel tasks
-and this is my first patch related to my task no 10.
-I hope I'm doing it the right way.
-Thanks for your understanding and kind comments.
+ arch/powerpc/include/asm/interrupt.h | 2 +-
+ arch/powerpc/kernel/interrupt.c      | 1 -
+ arch/powerpc/kernel/traps.c          | 2 ++
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
- drivers/staging/ks7010/ks_hostif.h | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/staging/ks7010/ks_hostif.h b/drivers/staging/ks7010/ks_hostif.h
-index 39138191a556..c62a494ed6bb 100644
---- a/drivers/staging/ks7010/ks_hostif.h
-+++ b/drivers/staging/ks7010/ks_hostif.h
-@@ -498,20 +498,20 @@ struct hostif_mic_failure_request {
- #define TX_RATE_FIXED		5
+diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+index dcff30e3919b..fa8bfb91f8df 100644
+--- a/arch/powerpc/include/asm/interrupt.h
++++ b/arch/powerpc/include/asm/interrupt.h
+@@ -411,7 +411,7 @@ DECLARE_INTERRUPT_HANDLER(altivec_assist_exception);
+ DECLARE_INTERRUPT_HANDLER(CacheLockingException);
+ DECLARE_INTERRUPT_HANDLER(SPEFloatingPointException);
+ DECLARE_INTERRUPT_HANDLER(SPEFloatingPointRoundException);
+-DECLARE_INTERRUPT_HANDLER(unrecoverable_exception);
++DECLARE_INTERRUPT_HANDLER(unrecoverable_exception) __noreturn;
+ DECLARE_INTERRUPT_HANDLER(WatchdogException);
+ DECLARE_INTERRUPT_HANDLER(kernel_bad_stack);
  
- /* 11b rate */
--#define TX_RATE_1M	(u8)(10 / 5)	/* 11b 11g basic rate */
--#define TX_RATE_2M	(u8)(20 / 5)	/* 11b 11g basic rate */
--#define TX_RATE_5M	(u8)(55 / 5)	/* 11g basic rate */
--#define TX_RATE_11M	(u8)(110 / 5)	/* 11g basic rate */
-+#define TX_RATE_1M	((u8)(10 / 5))	/* 11b 11g basic rate */
-+#define TX_RATE_2M	((u8)(20 / 5))	/* 11b 11g basic rate */
-+#define TX_RATE_5M	((u8)(55 / 5))	/* 11g basic rate */
-+#define TX_RATE_11M	((u8)(110 / 5))	/* 11g basic rate */
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index eca3be36c18c..7e7106641ca9 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -440,7 +440,6 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned
+ 	return ret;
+ }
  
- /* 11g rate */
--#define TX_RATE_6M	(u8)(60 / 5)	/* 11g basic rate */
--#define TX_RATE_12M	(u8)(120 / 5)	/* 11g basic rate */
--#define TX_RATE_24M	(u8)(240 / 5)	/* 11g basic rate */
--#define TX_RATE_9M	(u8)(90 / 5)
--#define TX_RATE_18M	(u8)(180 / 5)
--#define TX_RATE_36M	(u8)(360 / 5)
--#define TX_RATE_48M	(u8)(480 / 5)
--#define TX_RATE_54M	(u8)(540 / 5)
-+#define TX_RATE_6M	((u8)(60 / 5))	/* 11g basic rate */
-+#define TX_RATE_12M	((u8)(120 / 5))	/* 11g basic rate */
-+#define TX_RATE_24M	((u8)(240 / 5))	/* 11g basic rate */
-+#define TX_RATE_9M	((u8)(90 / 5))
-+#define TX_RATE_18M	((u8)(180 / 5))
-+#define TX_RATE_36M	((u8)(360 / 5))
-+#define TX_RATE_48M	((u8)(480 / 5))
-+#define TX_RATE_54M	((u8)(540 / 5))
+-void unrecoverable_exception(struct pt_regs *regs);
+ void preempt_schedule_irq(void);
  
- static inline bool is_11b_rate(u8 rate)
- {
+ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsigned long msr)
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index 2afa05ad21c8..1ff776e9e8e3 100644
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -2173,6 +2173,8 @@ DEFINE_INTERRUPT_HANDLER(unrecoverable_exception)
+ 	pr_emerg("Unrecoverable exception %lx at %lx (msr=%lx)\n",
+ 		 regs->trap, regs->nip, regs->msr);
+ 	die("Unrecoverable exception", regs, SIGABRT);
++	/* die() should not return */
++	BUG();
+ }
+ NOKPROBE_SYMBOL(unrecoverable_exception);
+ 
 -- 
-2.20.1
+2.25.0
 
