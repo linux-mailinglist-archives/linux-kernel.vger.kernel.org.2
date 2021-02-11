@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFA531927B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE674319285
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhBKSrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:47:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
+        id S229929AbhBKSwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:52:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhBKSq6 (ORCPT
+        with ESMTP id S229553AbhBKSwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:46:58 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDFEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:46:18 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id m7so7197430oiw.12
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:46:18 -0800 (PST)
+        Thu, 11 Feb 2021 13:52:44 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6776C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:52:04 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id 100so6127815otg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:52:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=91GcU1VsBVz3FYSR+U/pa4MztTHbqU+7RC9yCYvzYc0=;
-        b=D75yU+4hQYTZNquIdcs8budOC8Xa/TjmEPESrTS6vnG1TcE3DidrBRttPPRsawIXxy
-         /lxfWlpqAg+LbTH7UwR6MCcjagqL7K/15Xio7Ua91TS082iUBO5trwzNXxZPZrQ4098M
-         7lA4V2N8q+gOvNB9KGMRFAPk3ggi7XiTzoeUdDd4HBtfFKh57mo4V4J21OiZE00esE+8
-         oygAEsgp9VrumXQ69HdVk/efA3aWIeunaJZ2Vxbk+7U5QPLvv+pOuG3/9XHHMpBPRjnF
-         3fU7EeDs1aAROMHMyLl8Uxy6r48LMELXXLxW8gBPEHv3VEMtBaM/DUQq6ggMB/v/aZx0
-         zYKg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OVkOWiTcef92BZcXSFNKI6urGv4ClWKqZ2aHBAwr9WI=;
+        b=OcKtPxTMPJ/pI5h/KaWloIQ13BI9MrFfYMnPg8duScubygGcThI6E2xXB64LlL6ubT
+         l6A6w3WjIxITYaBdZvnWhSpbX3kEGtxW/lS84byVX6UzXpL78+Suf8SNIYStVsamPob/
+         4TywyNhn7bkqLbDxNxNWkPxWBxOBI/fC0uP/GEZ1JYSJOmrYVAZ7v2mXU2OJVyJJkJfQ
+         FBoBD9I2C2ogJ/YmvzqfQUueaAbKAgNBGXNqO+KWrlNB1Nin66InnfiYX01UFOrA+or2
+         e1ym18sWol82D+9QLEBkjfSrLZcYkk77QtbbSIQn54G4kDYzKphdrSHM/JglFmm8qNvX
+         L2TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=91GcU1VsBVz3FYSR+U/pa4MztTHbqU+7RC9yCYvzYc0=;
-        b=jHoA0puY2K/ALDDEaWI2S+rca2NqPrji04E0ySZse9Vctf3tt+hxIXAh/m531czU2j
-         cWj8D6iuTqtfd4S4oFrjTAdIshAAPshLHv9Nl7NeU1cZvqQD0T54ZSLsSAAD5TBhNX6R
-         DDK19MfFILuBihZAeIBUzK3ccM0VwQGq/6Ql7G+tEFjkC3NvQJrEKVodkK3TySbNmUfu
-         6boOkVSBEDeF7AZso8F+Dj8D+vYXyitmYKcZGm19HPoBX/oTvVmLCRdlv4ytfHcOxobp
-         JyKSiXb+hq7d9SNfdF6tpGYZNYHkovXj5M6iEAGHPGt+ryFv4wWQN573ijMLjxgC1s+1
-         orvA==
-X-Gm-Message-State: AOAM532soy8s91CDoIgmpjB1MipMNyJeDiWvNuWhtBLKzd3nJnm/9bfs
-        jtVMC/OKjjUv2k7Yz9ViUGm+lL2qQ/zOk7drQdcWQA==
-X-Google-Smtp-Source: ABdhPJwnLvs6LPAcpWrc/9dCYZHZYfS+QKV2BP8u5znNiYmi4A5EUDRhQnB5T/HqH2lP0H40DExXmh5igB9xCy9ahFA=
-X-Received: by 2002:a05:6808:294:: with SMTP id z20mr3709431oic.14.1613069177774;
- Thu, 11 Feb 2021 10:46:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OVkOWiTcef92BZcXSFNKI6urGv4ClWKqZ2aHBAwr9WI=;
+        b=YXcosJuZ5ZyvaRW9yFhQVwb8mfhlIPGZfmx5vB0t9V6dNqJMQpSalV4N8PmrZLDueL
+         /IuAoph+YPSUZmaEbj86Z0FGTcza3RXPdZFroEcUzfa1CKFzo6TUp4qHRRsZ24DjeP1t
+         LAO3abt+kUKtLr9hUm6k6gVGhHOXzUmq1iskvR9kckJqaARXB2knERCTuZ+scf1sAT4Q
+         pjppu2lkrkKQen9x4my23KTuw2GKB3G1C8uoWCowh+wPVo/Vwzg9QnLxLPBwhut6v19J
+         HAofaVDCjNTQFvf0ZXIK4Pmb5P51yN24LK/bok/CMh6WtsHKev2eO8GVx6EOl38DTgDu
+         Vuyg==
+X-Gm-Message-State: AOAM533pnyri2X+NVx9pO3qFzqn+5hlcrIQgpz2UGY1rSS9bJ72bsIoK
+        QPmlLk6+M5psv3QD9AckFSf6ig==
+X-Google-Smtp-Source: ABdhPJwf6gkTQIas5Mts7gamBTwBrwhQ9GsZm1U8X195GnlW/kAkgV8Ivieym0/0ILPnR3HQuoP/Vg==
+X-Received: by 2002:a9d:77d6:: with SMTP id w22mr6796757otl.145.1613069523801;
+        Thu, 11 Feb 2021 10:52:03 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id b21sm122655otq.4.2021.02.11.10.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 10:52:03 -0800 (PST)
+Date:   Thu, 11 Feb 2021 12:52:01 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: remoteproc: qcom: pas: Add SM8350
+ remoteprocs
+Message-ID: <YCV80dfkxXEPBveo@builder.lan>
+References: <20210210104539.340349-1-vkoul@kernel.org>
 MIME-Version: 1.0
-References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
- <160812658044.3364.4188208281079332844.tip-bot2@tip-bot2> <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
- <YCU3Vdoqd+EI+zpv@kroah.com>
-In-Reply-To: <YCU3Vdoqd+EI+zpv@kroah.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 11 Feb 2021 10:46:05 -0800
-Message-ID: <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
-Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
- non-section symbols
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Xi Ruoyao <xry111@mengyan1223.wang>
-Cc:     "# 3.4.x" <stable@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210104539.340349-1-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 5:55 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Feb 11, 2021 at 09:32:03PM +0800, Xi Ruoyao wrote:
-> > Hi all,
-> >
-> > The latest GNU assembler (binutils-2.36.1) is removing unused section symbols
-> > like Clang [1].  So linux-5.10.15 can't be built with binutils-2.36.1 now.  It
-> > has been reported as https://bugzilla.kernel.org/show_bug.cgi?id=211693.
+On Wed 10 Feb 04:45 CST 2021, Vinod Koul wrote:
 
-Xi,
-Happy Lunar New Year to you, too, and thanks for the report.  Did you
-observe such segfaults for older branches of stable?
+> Add the SM8350 audio, compute, modem and sensor remoteprocs to the PAS
+> DT binding.
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  .../devicetree/bindings/remoteproc/qcom,adsp.txt     | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
+> index 54737024da20..41eaa2466aab 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
+> @@ -25,6 +25,10 @@ on the Qualcomm ADSP Hexagon core.
+>  		    "qcom,sm8250-adsp-pas"
+>  		    "qcom,sm8250-cdsp-pas"
+>  		    "qcom,sm8250-slpi-pas"
+> +		    "qcom,sm8350-adsp-pas"
+> +		    "qcom,sm8350-cdsp-pas"
+> +		    "qcom,sm8350-slpi-pas"
+> +		    "qcom,sm8350-mpss-pas"
+>  
+>  - interrupts-extended:
+>  	Usage: required
+> @@ -51,10 +55,14 @@ on the Qualcomm ADSP Hexagon core.
+>  	qcom,sm8250-adsp-pas:
+>  	qcom,sm8250-cdsp-pas:
+>  	qcom,sm8250-slpi-pas:
+> +	qcom,sm8350-adsp-pas:
+> +	qcom,sm8350-cdsp-pas:
+> +	qcom,sm8350-slpi-pas:
+>  		    must be "wdog", "fatal", "ready", "handover", "stop-ack"
+>  	qcom,qcs404-wcss-pas:
+>  	qcom,sc7180-mpss-pas:
+>  	qcom,sm8150-mpss-pas:
+> +	qcom,sm8350-mpss-pas:
+>  		    must be "wdog", "fatal", "ready", "handover", "stop-ack",
+>  		    "shutdown-ack"
+>  
+> @@ -113,14 +121,18 @@ on the Qualcomm ADSP Hexagon core.
+>  	qcom,sdm845-cdsp-pas:
+>  	qcom,sm8150-adsp-pas:
+>  	qcom,sm8150-cdsp-pas:
+> +	qcom,sm8250-cdsp-pas:
 
-> 2.36 of binutils fails to build the 4.4.y tree right now as well, but as
-> objtool isn't there, I don't know what to do about it :(
+This should be sm8350, I fixed this up and applied the patch.
 
-Greg,
-There may be multiple issues in the latest binutils release for the
-kernel; we should still avoid segfaults in host tools so I do
-recommend considering this patch for inclusion at least into 5.10.y.
-Arnd's report in https://github.com/ClangBuiltLinux/linux/issues/1207
-mentions this was found via randconfig testing, so likely some set of
-configs is needed to reproduce reliably.
-
-Do you have more info about the failure you're observing? Trolling
-lore, I only see:
-https://lore.kernel.org/stable/YCLeJcQFsDIsrAEc@kroah.com/
-(Maybe it was reported on a different list; I only searched stable ML).
--- 
 Thanks,
-~Nick Desaulniers
+Bjorn
+
+>  	qcom,sm8250-cdsp-pas:
+>  		    must be "cx", "load_state"
+>  	qcom,sc7180-mpss-pas:
+>  	qcom,sm8150-mpss-pas:
+> +	qcom,sm8350-mpss-pas:
+>  		    must be "cx", "load_state", "mss"
+>  	qcom,sm8250-adsp-pas:
+> +	qcom,sm8350-adsp-pas:
+>  	qcom,sm8150-slpi-pas:
+>  	qcom,sm8250-slpi-pas:
+> +	qcom,sm8350-slpi-pas:
+>  		    must be "lcx", "lmx", "load_state"
+>  
+>  - memory-region:
+> -- 
+> 2.26.2
+> 
