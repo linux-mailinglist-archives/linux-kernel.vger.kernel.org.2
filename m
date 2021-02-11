@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82C531873B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FFC31873C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhBKJiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 04:38:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44422 "EHLO mail.kernel.org"
+        id S230154AbhBKJjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 04:39:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44932 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230094AbhBKJbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 04:31:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DC4164DD7;
-        Thu, 11 Feb 2021 09:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613035820;
-        bh=owwOwMiQhlPcn1c+6oHqr0dP+lwt7+MoKjG7O+8g430=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cNDDhWYMIpQyU5enIIFHGRnhi2bmoNUpo2RVDVBhhU15tkx23KF63HJKvPwfk6/o2
-         NjCNSFutAyw2wXBycpnJFDbl581eNmjXVlSn0eIEJXkpK3/ckagPoo0VBgixiRvhZ7
-         Nu0BcdOLfEVgSIy0X2lI4TU6hSL99Jp9HvFvd6ZQ=
-Date:   Thu, 11 Feb 2021 10:30:16 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v5 1/6] misc: Add Synopsys DesignWare xData IP driver
-Message-ID: <YCT5KDnAWex8fvbz@kroah.com>
-References: <cover.1613034397.git.gustavo.pimentel@synopsys.com>
- <02835da8fc8c9293fecbe666a8db3fb79276fdde.1613034397.git.gustavo.pimentel@synopsys.com>
+        id S229775AbhBKJbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 04:31:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0CEDBAC6E;
+        Thu, 11 Feb 2021 09:30:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 64D131E14B2; Thu, 11 Feb 2021 10:30:27 +0100 (CET)
+Date:   Thu, 11 Feb 2021 10:30:27 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
+Message-ID: <20210211093027.GI19070@quack2.suse.cz>
+References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
+ <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <02835da8fc8c9293fecbe666a8db3fb79276fdde.1613034397.git.gustavo.pimentel@synopsys.com>
+In-Reply-To: <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 10:08:38AM +0100, Gustavo Pimentel wrote:
-> +static ssize_t write_show(struct device *dev, struct device_attribute *attr,
-> +			  char *buf)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
-> +	u64 rate;
-> +
-> +	mutex_lock(&dw->mutex);
-> +	dw_xdata_perf(dw, &rate, true);
-> +	mutex_unlock(&dw->mutex);
-> +
-> +	return sysfs_emit(buf, "%llu MB/s\n", rate);
+On Wed 10-02-21 10:57:39, Alexander Lochmann wrote:
+> Some members of transaction_t are allowed to be read without
+> any lock being held if consistency doesn't matter.
+> Based on LockDoc's findings, we extended the locking
+> documentation of those members.
+> Each one of them is marked with a short comment:
+> "no lock for quick racy checks".
+> 
+> Signed-off-by: Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+> Signed-off-by: Horst Schirmeier <horst.schirmeier@tu-dortmund.de>
 
-Do not put units in a sysfs file, that should be in the documentation,
-otherwise this forces userspace to "parse" the units which is a mess.
+Thanks for the patch! Some comments below...
 
-Same for the other sysfs file.
+> ---
+>  include/linux/jbd2.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 99d3cd051ac3..18f77d9b1745 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -594,18 +594,18 @@ struct transaction_s
+>  	 */
+>  	unsigned long		t_log_start;
+>  
+> -	/* Number of buffers on the t_buffers list [j_list_lock] */
+> +	/* Number of buffers on the t_buffers list [j_list_lock, no lock for quick racy checks] */
+>  	int			t_nr_buffers;
 
-And why do you need a lock for this show function?
+So this case is actually somewhat different now that I audited the uses.
+There are two types of users - commit code (fs/jbd2/commit.c) and others.
+Other users properly use j_list_lock to access t_nr_buffers. Commit code
+does not use any locks because committing transaction is fully in
+ownership of the jbd2 thread and all other users need to check & wait for
+commit to be finished before doing anything with the transaction's buffers.
 
-thanks,
+>  	/*
+>  	 * Doubly-linked circular list of all buffers reserved but not yet
+> -	 * modified by this transaction [j_list_lock]
+> +	 * modified by this transaction [j_list_lock, no lock for quick racy checks]
+>  	 */
+>  	struct journal_head	*t_reserved_list;
+>
+>  	/*
+>  	 * Doubly-linked circular list of all metadata buffers owned by this
+> -	 * transaction [j_list_lock]
+> +	 * transaction [j_list_lock, no lock for quick racy checks]
+>  	 */
+>  	struct journal_head	*t_buffers;
+> 
+> @@ -631,7 +631,7 @@ struct transaction_s
+>  	/*
+>  	 * Doubly-linked circular list of metadata buffers being shadowed by log
+>  	 * IO.  The IO buffers on the iobuf list and the shadow buffers on this
+> -	 * list match each other one for one at all times. [j_list_lock]
+> +	 * list match each other one for one at all times. [j_list_lock, no lock for quick racy checks]
+>  	 */
+>  	struct journal_head	*t_shadow_list;
 
-greg k-h
+The above three cases are the same as t_reserved_list.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
