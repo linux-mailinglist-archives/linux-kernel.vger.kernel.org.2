@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B1E3183DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 04:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D86B3183E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 04:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhBKDIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 22:08:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhBKDIZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 22:08:25 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA5DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 19:07:45 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id cv23so2499473pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 19:07:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3mhBJs7OoyfS2zcVrbQAP79xwHQs56wVRNi/BY1bbvY=;
-        b=zWdzLtxtpSIzvCC92tWtiO8n8oojDUA7anDSZzkEE4lkpolIANyXBag5Fmb/HGhQXb
-         51RfYqW84ZIIY9q5iK6XVAvOxC3KBHEhDeDRUdYytDRk1P5/NxCqs9Bu/mxKU510V1t2
-         o3nhicKcHDi+EGf2cASP5264ruoQlNnSgkmCTTQtNKMNejvYZc6CnyN44tzcPoNIliI7
-         XO4pOcOOsOWs57gS9dbEMbzQMb4kxrj2AUdpjOzREo65XYPi/td+jcf8M93/GGLTt5/D
-         bg4+O9zgy8/rOXJ/TJvDfaNPwkvPRyzRbHG6X9pks0Tf7DMt5xddNWG7gOieZFU704MH
-         WQhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3mhBJs7OoyfS2zcVrbQAP79xwHQs56wVRNi/BY1bbvY=;
-        b=qvKyDmYbKu9xdB11aBgpop5HzamSb40dRQ4mVY9ijpDSOMev9fK/ehbK6b6QRv3lit
-         SpuPofnGAZ3oi04h8zaO1lrWwzenvbwGjqT28efVwJk57pGcZQrG4C64R4PFtf+jwDHi
-         1qesFxWsYL3ljc0XcLDr/wzeKfgo66OwLhLNlryv8homwkoU7htgy/dwVS5+PHT46pg2
-         8bK8af56pFoLMsmWruXVxm0IK+tco8jo7pyJ9up2rQId/PLLgexBYgRitpuozVZqsWPY
-         2EG/Lu3NLEob6z5aEB71+NwIzTICN1oOKqk8etP2RwwBExkyxWIsrb/65hBBdGGG34AR
-         PTwQ==
-X-Gm-Message-State: AOAM532843NFOqsyRfYoO28HfGc2Xh5CSfRT1qXujIcUD6XdBm+rH4ib
-        WyLzRGldQ1vlUSEtYBBQEjT2oQ==
-X-Google-Smtp-Source: ABdhPJyS3EIC1/0cxujchAyzsIFrMFqk/EK4Apvf/tfm5JIYYCsOoMqnVgrUU8+L9AA6Vl2lzq8YOQ==
-X-Received: by 2002:a17:90a:ca8d:: with SMTP id y13mr1992054pjt.76.1613012865254;
-        Wed, 10 Feb 2021 19:07:45 -0800 (PST)
-Received: from ?IPv6:2620:10d:c085:21e1::11c9? ([2620:10d:c090:400::5:9df6])
-        by smtp.gmail.com with ESMTPSA id p8sm3778200pgh.0.2021.02.10.19.07.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 19:07:44 -0800 (PST)
-Subject: Re: [PATCH] block: Replace lkml.org links with lore
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Joe Perches <joe@perches.com>, Justin Sanders <justin@coraid.com>,
-        linux-block@vger.kernel.org
-References: <20210210235159.3190756-1-keescook@chromium.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8cdd00cd-c17f-fe69-fa07-b144a64c55e5@kernel.dk>
-Date:   Wed, 10 Feb 2021 20:07:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229672AbhBKDU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 22:20:28 -0500
+Received: from mga06.intel.com ([134.134.136.31]:5062 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229581AbhBKDU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 22:20:26 -0500
+IronPort-SDR: PDD8QJFuiYpPCPSIWJ5zH8bxaHI4lrJQ3r9ctypVsXc2AbULw08FKMdlco+EycCXPnTuRD7vhX
+ r9SuZkFsL9OQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="243676121"
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="243676121"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 19:19:45 -0800
+IronPort-SDR: WkkssKA/viF5ouDPH5JLBaAT60vsIrjtDowwCutkPdW8O2BBYnNHt4UtIl5sr7n8Eh48zYSqq4
+ ko2HA6PV+Ocw==
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="588271083"
+Received: from rontiver-mobl.amr.corp.intel.com (HELO intel.com) ([10.212.99.95])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 19:19:44 -0800
+Date:   Wed, 10 Feb 2021 22:19:43 -0500
+From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Yijun Shen <Yijun.Shen@dell.com>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
+Subject: Re: [Intel-gfx] [PATCH v5 1/4] drm/i915/gen9_bc: Recognize TGP PCH +
+ CML combos
+Message-ID: <20210211031943.GB82362@intel.com>
+References: <20210209212832.1401815-1-lyude@redhat.com>
+ <20210209212832.1401815-2-lyude@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210210235159.3190756-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209212832.1401815-2-lyude@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 4:51 PM, Kees Cook wrote:
-> As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
-> links with lore"), replace lkml.org links with lore to better use a
-> single source that's more likely to stay available long-term.
+On Tue, Feb 09, 2021 at 04:28:28PM -0500, Lyude Paul wrote:
+> Since Intel has introduced the gen9_bc platform, a combination of
+> Tigerpoint PCHs and CML CPUs, let's recognize such platforms as valid and
+> avoid WARNing on them.
+> 
+> Changes since v4:
+> * Split this into it's own patch - vsyrjala
+> 
+> Cc: Matt Roper <matthew.d.roper@intel.com>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Ville Syrjala <ville.syrjala@linux.intel.com>
+> [originally from Tejas's work]
+> Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 
-Applied, thanks.
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 
--- 
-Jens Axboe
-
+> ---
+>  drivers/gpu/drm/i915/intel_pch.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/intel_pch.c b/drivers/gpu/drm/i915/intel_pch.c
+> index 4813207fc053..7476f0e063c6 100644
+> --- a/drivers/gpu/drm/i915/intel_pch.c
+> +++ b/drivers/gpu/drm/i915/intel_pch.c
+> @@ -121,7 +121,8 @@ intel_pch_type(const struct drm_i915_private *dev_priv, unsigned short id)
+>  	case INTEL_PCH_TGP2_DEVICE_ID_TYPE:
+>  		drm_dbg_kms(&dev_priv->drm, "Found Tiger Lake LP PCH\n");
+>  		drm_WARN_ON(&dev_priv->drm, !IS_TIGERLAKE(dev_priv) &&
+> -			    !IS_ROCKETLAKE(dev_priv));
+> +			    !IS_ROCKETLAKE(dev_priv) &&
+> +			    !IS_GEN9_BC(dev_priv));
+>  		return PCH_TGP;
+>  	case INTEL_PCH_JSP_DEVICE_ID_TYPE:
+>  	case INTEL_PCH_JSP2_DEVICE_ID_TYPE:
+> -- 
+> 2.29.2
+> 
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
