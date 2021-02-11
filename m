@@ -2,187 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E720C3174E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6EB3174EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234136AbhBKABx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 19:01:53 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:47420 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbhBKABq (ORCPT
+        id S234138AbhBKADg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 19:03:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232399AbhBKADZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:01:46 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ANxaVS100498;
-        Thu, 11 Feb 2021 00:00:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=/7tRKLhmR9Fod6pz20+R5W+ybuNIeWcbqc39uZiR1tI=;
- b=Ntbtpy7INk0h0yZvHKzlktrnxq9EqPl4yprOwwcIM5wN+kP+hI7iHnWiQD6NEUfZ3Nc0
- fuklVi1mKUMBr5jEqfYiqnmnog9/eh/7Kpm2gw/wX4vY9CVwVaSkPSggq9znt5Qw8dp9
- Ey6w8XqwRBMtg8NUmWcVjKoyfNxWn8oUSH90xOSlcZavjWSvih1cTw5eyD2jhX8JB+NE
- f4xXmyhjJQgEEol9I0vktmHIsBgElEl14d2YmEIrVabqCkJIClzS+S0trmzX64A50nb9
- NtpGsppEk2m7mXy4cQ1MpTbD6+Y5Ea4S7roTwOvoXyvAoU2wX9wndnAZLcPTCO1hzdDV +g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 36m4upv23b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 00:00:53 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ANp4ga188251;
-        Thu, 11 Feb 2021 00:00:52 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2102.outbound.protection.outlook.com [104.47.55.102])
-        by userp3030.oracle.com with ESMTP id 36j51y8k49-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 00:00:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=byYJvCWDT+2R9wRMdLRe4u3SrUh/c1RM1IPz1FKAQV1rE8B3sav4wtly5A767QoqCyahZbvUG5kds6ca/dq8xE/lz2nfAWONAQjNVC0lBZOgssBOJ9l8sQN+BwrYRucsg3xW+W6J9PoGMZUHPbbiZyRi0DHQ4jnwf9WBJsRQyoU/AB7fZyBuDeg/zz1k4pi99k8/PEzt7pirQVBzRBnL7C5p7J65l4iU7EjjdFHlhKznCwQULkCJ+BDkOckwopQm1Gmldg3EWrpOVZxl+JtiY4LY++ge4QrgZS1WyXGUqoad8rdJtdel2SKlXd482dl7nqY3GoAA/GeT2En80donYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/7tRKLhmR9Fod6pz20+R5W+ybuNIeWcbqc39uZiR1tI=;
- b=IEt9pvzS21JhmgCAWlpXvQbN0uRwqqgmj4swSbFliSK1R2sd32tyGk1B8BlKfk++f79g/iRDONHYWrWf+BSfnhdvqpn28HDWDS4LeBFMVsSrg2nsKMPttm0BsqkOWgeVAcavoWQU6jT+GcQ36Ga2l82xNr16RhUOaxGeOCdXEuP33xOJCOpfXGfxkUqRSgA5mbUlv96G+zId1jhZwQPvCBWSKnuyKpKECMwZPmx/wdrj3I1H5kFE2ufKJqHxmsemo1S210S7/ttC4sbBlTsVBA+TA9Y/i/wuSGEfP3ReYpVaFn53zeQR38u3gfgYyTjdzeeyFCVYsP3uk1Z4jd+6Ow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 10 Feb 2021 19:03:25 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC831C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:02:44 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id l8so3828910ybe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:02:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/7tRKLhmR9Fod6pz20+R5W+ybuNIeWcbqc39uZiR1tI=;
- b=gDXsyVz3H7kmewicThsdwRMfGxv/aSfc8vDNA1Z0xzLf/bb3jnLst3X6Vd+iPuX7GTCBXYr9MIDqcferFe0TV4bl6QkNqkUPN1T/aezvmzBzZ1RqZ3bKosf8h4pv9kQ/syMYbhoSLXa9iO4ZcwJWQNNnHcSitMFur4Jdj/2ny1Q=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from SJ0PR10MB4494.namprd10.prod.outlook.com (2603:10b6:a03:2d4::12)
- by BY5PR10MB4290.namprd10.prod.outlook.com (2603:10b6:a03:203::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19; Thu, 11 Feb
- 2021 00:00:50 +0000
-Received: from SJ0PR10MB4494.namprd10.prod.outlook.com
- ([fe80::7445:f44:72aa:da07]) by SJ0PR10MB4494.namprd10.prod.outlook.com
- ([fe80::7445:f44:72aa:da07%4]) with mapi id 15.20.3825.031; Thu, 11 Feb 2021
- 00:00:50 +0000
-From:   rao.shoaib@oracle.com
-To:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, andy.rudoff@intel.com
-Cc:     willy@infradead.org, Rao Shoaib <rao.shoaib@oracle.com>
-Subject: [PATCH v2 1/1] af_unix: Allow Unix sockets to raise SIGURG
-Date:   Wed, 10 Feb 2021 16:00:43 -0800
-Message-Id: <20210211000043.136979-1-rao.shoaib@oracle.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [2606:b400:8301:1010::16aa]
-X-ClientProxiedBy: SJ0PR03CA0091.namprd03.prod.outlook.com
- (2603:10b6:a03:333::6) To SJ0PR10MB4494.namprd10.prod.outlook.com
- (2603:10b6:a03:2d4::12)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EgCGCJm5koYnhr/RPPq+n2xYwvOcBkd16wcMopchiKo=;
+        b=TAG8NoBLiTimTL7kRP0AsQpH3rdKezMcGidrjW+cis/Dn6ItzXe6guQQq2jHb1qcYu
+         o3d40ex2FJP+mZuVIiS3pzkZBnJTNsczlg7mVI30Tto3Gu0bcT3j3P6jOgWdeje2t67p
+         WF/QBtyXXuFjHPelyYNPonj4unnRui+4gKu8RQD0+ia0nenm6DSNUKZCFnuF/KKekd07
+         W54CxSOcIDiFLkhtJxAdx4wcPAWHSt16tDUKfmz1MHJFCsAevaYgOgsPANA3Ew7dcq5x
+         Eh4WiiREkxZN6ml3EJp/OecseDARpeCUyNiS0Qh6/04ivZP9f/vrizw9+qpQToG+ZqhH
+         suHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EgCGCJm5koYnhr/RPPq+n2xYwvOcBkd16wcMopchiKo=;
+        b=LmNCwN9QLwEYgYnQvpAye8Y5YtvC0BfpLbkIluGmENxpfDb7KS5pw/enu37ML8WG2P
+         YbKZKFFjigLYw2LPmVxCc91Egyo64C2l8JDL1jiwoVfFnc80vQ2FCnT5VHsbv6IwSyG7
+         XSdq2+DPO3PTuvrExq7HDj6PO/Y54rI1m7pv3ZFqxqhc4/m+o+JSKdzLlZpIVB7yTeff
+         i7tCrgJ3Ob9zgYzBi31aLe9vJUF983GswD/OeJOZYb+3u9Wxh0GesMkqd7ExFmd30wSS
+         wOTpcKM0XuJPjNAy4fzEr5PhFsYJEZz5xB7TACK8xq+Y8NCsC2ra66wsvmyDfElWMiNL
+         sHkA==
+X-Gm-Message-State: AOAM5334pw+dx1pHrmolo0McDu6mmz8kWJlviS7RLQtshlrT39As5u84
+        Mv4GlLJk41Q2f5FIXSWhOICKFueQgNMFltYLBFy2Xg==
+X-Google-Smtp-Source: ABdhPJw5AlLMwbA5hD7qHn3z6rWV/fIUFYudgqcn9BdEbeS9BxgyVHz3uICezGkmzxhnWTST55sS6PEHN0HfI6Iv0dg=
+X-Received: by 2002:a25:af0b:: with SMTP id a11mr7600189ybh.228.1613001763827;
+ Wed, 10 Feb 2021 16:02:43 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from shoaib-laptop.us.oracle.com (2606:b400:8301:1010::16aa) by SJ0PR03CA0091.namprd03.prod.outlook.com (2603:10b6:a03:333::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Thu, 11 Feb 2021 00:00:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a935c66e-b45f-41ad-3222-08d8ce2017ac
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4290:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR10MB42906593205B6CBF17D190CFEF8C9@BY5PR10MB4290.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OLPfKdm5rDo1PxtZ9afIeVFfPscFiVSIUHkuxO91uO+5vN9LsCDLqXVrkVlIEjRtKrwmG7N4W6OQdNFkzCqBQgXYAQlcOsqN5Cyecmm44N+X38HMBb9QwuIiShiIhR+7DzCcUBuVgUc8/9+sWyWp9U31xMjbUSbrlnFUg5ZvRZz92p42XOFLnmz86vnZfXM4ejSrJ5yQdjafZ9L6FeltvRF86Teu1L8mh+NlGgh2XspHt1uqiTAyBF7O+aKx6edubpvIiDQY63zOaFcagIhWVMp8ccVp8BC+9j8wGbRImNn9elql9+sBGYPXBLkQZlWBZvFkp7mbH8hW3jMajX9Ulyg1qidoh1n3mGsICto2yaLVHjyRbCFTvWPeUWEmHkBVT3u/liQQJ7D7PH6OMHO5oFYR2P9D/DjToTdfFDdHAw1/EelBixoImT3JyxT9TSvDYzO+587EWVpDgbdKfaZkSEmVo+TD5Qm8WLlNCNvhaqs0AYR2CZj57ZtQLMj71tZQBL3uRC4METjIWFwY55EG3Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4494.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(396003)(346002)(136003)(39860400002)(86362001)(2906002)(8676002)(9686003)(1076003)(2616005)(107886003)(4326008)(16526019)(6486002)(5660300002)(83380400001)(6666004)(7696005)(66946007)(66556008)(66476007)(8936002)(52116002)(186003)(316002)(478600001)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PgaLSBieWOMLlKU1hYw73zf+vBcyde9Ur0FcKlNiGDohLKZrAIdcUvOL99zE?=
- =?us-ascii?Q?Tq56GAeM3GugXIEtmR/LdvVKYTgxXDrVmG7UT7wAA8t6fMqaS/SrJRnwynr/?=
- =?us-ascii?Q?9ZJr/VKC6eYRstdc7zxhpH32EDQho/Z4kUXi0cwpH9o3RICzlzbPQeY7GeFq?=
- =?us-ascii?Q?QWkglZbcfSmxJJz5Ot4sFBjTwsjKOclWRdqqLdoD9rQ4uDuvcth/7SX79z59?=
- =?us-ascii?Q?9U6b0UgSMWSGGU+mP2X5EOHSxQyELWfNHuItmjy+KXms4AY5lOMpj+x/KzSG?=
- =?us-ascii?Q?YvZaVxQl3t4tNaaE3dW2w7GCSlgzeooyiC3hjzRcZJXKZRQdFGS7hu4JTAIb?=
- =?us-ascii?Q?hOIyNCW59NWlMxSQ9Nf4kWisw01vsLCy3PCiK0TgwuNEFGYKkVOWswi9juUU?=
- =?us-ascii?Q?nNopl3KREHdN57YOegVeUe7Z4Hcd2R1zLpGH/kJI0/q5w8IHsJsla8BJa2cA?=
- =?us-ascii?Q?KOxsgG5lBLrhdZkCb+m+9ZxFdZ8mHmtiycP+lGHy+fAJ7vPbwL4QMAX65eol?=
- =?us-ascii?Q?MRhxOzr2WMYsNYPwirbrOJIIQl4XvURzTsg/JEtNFOzDKF4zDrm63WA1vOuc?=
- =?us-ascii?Q?m/KDg3lFBF+1mVjul2lmd7eDC/JmVxi30nRIPR+wZtA1l5JmhgvRqajk7dvh?=
- =?us-ascii?Q?Wbq2ksKR0m6B+YQJ2X+ht0lQI3f80blBY0gj3e2D5yeW1oAfHYnN6hOR+bvs?=
- =?us-ascii?Q?k/QlC4sxPuMU+VFn57AeG5Bu9sTRaqpNIjGZnUyFmNvj8I9gZP8uRbI0IK49?=
- =?us-ascii?Q?us6OCdoz92SmWeF8o+QSMy0/Gac4so/cMAGucY8iQ8TQo1bvIAx8WFLeG1Jy?=
- =?us-ascii?Q?Vu9XELt7PUdf1sLNEltAe80hYppFeeAM/m84DHX5Bc2n1JNNhlJj6EymIKtl?=
- =?us-ascii?Q?fGsJ/HXDFnS9Zq9BmHyVx/N+PohhH/prDUTVEEGfUtKxPnEzo3IFdNbE1cGL?=
- =?us-ascii?Q?LPobHNN/YIgzAxyBpxwliaXxzymzYFTy4rRhfaBAUUwp6S+fcRf1DpxPYxEt?=
- =?us-ascii?Q?3GdX1pEhyl3IzBvpd0axyZUogqKPWc71YNo6o9ymURiTpNBSwCHwdOXA+BHx?=
- =?us-ascii?Q?HnVc7HQJPEOg+p8pKk84B7VvdCigxt6uFZsPZfQFJcvoOHRicdNPklSCSpLt?=
- =?us-ascii?Q?P4vN0rVvS/JkNNdzMTF4btKT911nPY5clU3rIVQv8KleRHIfRKKcYwMQtago?=
- =?us-ascii?Q?pK93+p+lD00TDo3ncxIRQIiwlNh4X6mKGaLpDxlyQHmLPMCAZ5jeLG4wM7lK?=
- =?us-ascii?Q?xzdEUMxeLmg/kJU38ZPMxIcSt4ZZvcALKEEnafaAYrlmK5yqSOcuTS2s/LRZ?=
- =?us-ascii?Q?7EVI+h4tc3CQ3hp4LBLndnKS83QRI8vVEiCh/4Rs/J160987c5nGFVklt6zJ?=
- =?us-ascii?Q?7AhMW2I=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a935c66e-b45f-41ad-3222-08d8ce2017ac
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4494.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 00:00:50.6312
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LD+uezehRlRMqIUkcMtxmvm0J8pzHKDOcEHIy7tW1LwtIaLxvsuFS70SWo/bB5PABB2HHe1Ic+8M16G1llL2dg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4290
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102100208
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
- suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102100209
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com> <CAGETcx9FAAa+gUOTJX76DGGOAE4g3cTbZhwNQ-pLioYzg=fTOw@mail.gmail.com>
+ <17939709-f6f4-fa9c-836f-9779081c4087@nvidia.com> <CAGETcx_1x7LFprsEM+-X8Y42-sbajBav5Bik4U=s4Z5XCSZtUg@mail.gmail.com>
+ <e11bc6a2-ec9d-ea3b-71f7-13c9f764bbfc@nvidia.com> <6a43e209-1d2d-b10a-4564-0289d54135d3@nvidia.com>
+In-Reply-To: <6a43e209-1d2d-b10a-4564-0289d54135d3@nvidia.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 10 Feb 2021 16:02:07 -0800
+Message-ID: <CAGETcx9ZaBLRVPqiSkPf_4Tm5dDLNbLBM2RmHk1jr7yLp_1CCQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rao Shoaib <rao.shoaib@oracle.com>
+On Thu, Jan 28, 2021 at 7:03 AM Jon Hunter <jonathanh@nvidia.com> wrote:
+>
+>
+> On 14/01/2021 16:56, Jon Hunter wrote:
+> >
+> > On 14/01/2021 16:47, Saravana Kannan wrote:
+> >
+> > ...
+> >
+> >>> Yes this is the warning shown here [0] and this is coming from
+> >>> the 'Generic PHY stmmac-0:00' device.
+> >>
+> >> Can you print the supplier and consumer device when this warning is
+> >> happening and let me know? That'd help too. I'm guessing the phy is
+> >> the consumer.
+> >
+> >
+> > Sorry I should have included that. I added a print to dump this on
+> > another build but failed to include here.
+> >
+> > WARNING KERN Generic PHY stmmac-0:00: supplier 2200000.gpio (status 1)
+> >
+> > The status is the link->status and looks like the supplier is the
+> > gpio controller. I have verified that the gpio controller is probed
+> > before this successfully.
+> >
+> >> So the warning itself isn't a problem -- it's not breaking anything or
+> >> leaking memory or anything like that. But the device link is jumping
+> >> states in an incorrect manner. With enough context of this code (why
+> >> the device_bind_driver() is being called directly instead of going
+> >> through the normal probe path), it should be easy to fix (I'll just
+> >> need to fix up the device link state).
+> >
+> > Correct, the board seems to boot fine, we just get this warning.
+>
+>
+> Have you had chance to look at this further?
 
-TCP sockets allow SIGURG to be sent to the process holding the other
-end of the socket.  Extend Unix sockets to have the same ability
-but only if the data length is zero.
+Hi Jon,
 
-The API is the same in that the sender uses sendmsg() with MSG_OOB to
-raise SIGURG.  Unix sockets behave in the same way as TCP sockets with
-SO_OOBINLINE set.
+I finally got around to looking into this. Here's the email[1] that
+describes why it's done this way.
 
-SIGURG is ignored by default, so applications which do not know about this
-feature will be unaffected.  In addition to installing a SIGURG handler,
-the receiving application must call F_SETOWN or F_SETOWN_EX to indicate
-which process or thread should receive the signal.
+[1] - https://lore.kernel.org/lkml/YCRjmpKjK0pxKTCP@lunn.ch/
 
-Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- net/unix/af_unix.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> The following does appear to avoid the warning, but I am not sure if
+> this is the correct thing to do ...
+>
+> index 9179825ff646..095aba84f7c2 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -456,6 +456,10 @@ int device_bind_driver(struct device *dev)
+>  {
+>         int ret;
+>
+> +       ret = device_links_check_suppliers(dev);
+> +       if (ret)
+> +               return ret;
+> +
+>         ret = driver_sysfs_add(dev);
+>         if (!ret)
+>                 driver_bound(dev);
 
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 92784e5..65f6179 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -1840,7 +1840,8 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
- 		return err;
- 
- 	err = -EOPNOTSUPP;
--	if (msg->msg_flags&MSG_OOB)
-+
-+	if (len && (msg->msg_flags & MSG_OOB))
- 		goto out_err;
- 
- 	if (msg->msg_namelen) {
-@@ -1856,6 +1857,9 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
- 	if (sk->sk_shutdown & SEND_SHUTDOWN)
- 		goto pipe_err;
- 
-+	if (msg->msg_flags & MSG_OOB)
-+		sk_send_sigurg(other);
-+
- 	while (sent < len) {
- 		size = len - sent;
- 
--- 
-1.8.3.1
+So digging deeper into the usage of device_bind_driver and looking at
+[1], it doesn't look like returning an error here is a good option.
+When device_bind_driver() is called, the driver's probe function isn't
+even called. So, there's no way for the driver to even defer probing
+based on any of the suppliers. So, we have a couple of options:
 
+1. Delete all the links to suppliers that haven't bound. We'll still
+leave the links to active suppliers alone in case it helps with
+suspend/resume correctness.
+2. Fix the warning to not warn on suppliers that haven't probed if the
+device's driver has no probe function. But this will also need fixing
+up the cleanup part when device_release_driver() is called. Also, I'm
+not sure if device_bind_driver() is ever called when the driver
+actually has a probe() function.
+
+Rafael,
+
+Option 1 above is pretty straightforward.
+Option 2 would look something like what's at the end of this email +
+caveat about whether the probe check is sufficient.
+
+Do you have a preference between Option 1 vs 2? Or do you have some
+other option in mind?
+
+Thanks,
+Saravana
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 5481b6940a02..8102b3c48bbc 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -1247,7 +1247,8 @@ void device_links_driver_bound(struct device *dev)
+                         */
+                        device_link_drop_managed(link);
+                } else {
+-                       WARN_ON(link->status != DL_STATE_CONSUMER_PROBE);
++                       WARN_ON(link->status != DL_STATE_CONSUMER_PROBE &&
++                               dev->driver->probe);
+                        WRITE_ONCE(link->status, DL_STATE_ACTIVE);
+                }
+
+@@ -1302,7 +1303,8 @@ static void __device_links_no_driver(struct device *dev)
+                if (link->supplier->links.status == DL_DEV_DRIVER_BOUND) {
+                        WRITE_ONCE(link->status, DL_STATE_AVAILABLE);
+                } else {
+-                       WARN_ON(!(link->flags & DL_FLAG_SYNC_STATE_ONLY));
++                       WARN_ON(!(link->flags & DL_FLAG_SYNC_STATE_ONLY) &&
++                               dev->driver->probe);
+                        WRITE_ONCE(link->status, DL_STATE_DORMANT);
+                }
+        }
