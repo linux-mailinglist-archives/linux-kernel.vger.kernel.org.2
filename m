@@ -2,435 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708523190C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A83E3190CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhBKRQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:16:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        id S231518AbhBKRRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:17:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbhBKQQk (ORCPT
+        with ESMTP id S231785AbhBKQSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:16:40 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B48C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:16:00 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id k22so3559318pll.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:16:00 -0800 (PST)
+        Thu, 11 Feb 2021 11:18:05 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A9BC061788;
+        Thu, 11 Feb 2021 08:17:24 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id i9so6328394wmq.1;
+        Thu, 11 Feb 2021 08:17:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C2qV8cRM1f+oG7nQYFTQvlZIjOawBDZU0QDV55TybJs=;
-        b=RcLG3y0BxULLto97QdZQDXg+Qfb5d+THHz2J01HrinuEY2iLM8IstgqANrljfOH/Am
-         RIuEzyRNkPZrhHvBy4vchUvWjX4EUYXbO6aCP8OpQ4apXV99l9Hn++Gmtu6sbA2hCnIn
-         36QrCU16BDx5Ko9A930+IytLtM1sDEvGdOa/01pRDvHVf53IPoQ4jRHMMJGKcL6ppu9a
-         SHeahta8w4HC2DuhX5eE74xqheQxX2NsGRvzXfcRBcAUIXklOBtiZ7pFFrnN7/+JHePE
-         27ZJBISMR0dZpU7OSI1KUBsya9uWbCvGwnD3kFvxFf6d6jbVVbgXahWizB5ifYB+VVku
-         JSTQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LeVuhNSNgGXvDUTsjxpKM9j++9wJsCI1K/P+t34L8KE=;
+        b=A/L26SdDU/WX1gJeecZ2MijyNbpFfJ7FDozB2hoNzdpayWIPfMCIfwU3ydIFHduKqb
+         7e/vhPxGCmxDwDAqnKPXUfF/tgQFsm7sEDyZosi0z1l0tDmUvCrfT7AEu7hnkTaChKtJ
+         tv+QPBExuysphi7xI0PuPUN8GtY50gyckxHGvHSmXz1MO4LSQMWOVVzSqPtA4RHc7Sh8
+         rpJMaeo31IXFtFzApu/NTTKV/V14VefFCSwuRMLG6kwEomj1savx51JCjHQALKsfir7G
+         +cNvNoLF353/XsRxfqvQNA3ieGsraZeSCc0sFm5j68hwk/J+5yr2ikn3mm4+bhfYPJjl
+         9TnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=C2qV8cRM1f+oG7nQYFTQvlZIjOawBDZU0QDV55TybJs=;
-        b=eKOgp7g4M3uVMo3YqJyEpPatmOPvd4mG9cIjLUOaiDHH/+KKXwtM2/AdNRIjVMc+lq
-         q+/7+8Q17QBIOdgl2SqrS45njruxTemt/3TFFWwUEgR49Rokq5qmLwK7+cD7/KgpzfA5
-         +rE+y8vvCR+qPMCMZBXgS+TxSCNCCKrB35Si02Ux/Rw/iCFEjsafBp8GXlMWKs1GnvfB
-         zybQwgke0Nha8Jnlb26zl8E7QLnuj/9TgVuNcVV5XdBbVU9PRlpfAYn0MqtK53spTvNL
-         TlIb+4Xy1REWlH8OjE4CKj98/3UnZMTotP+drhiEq4d2t8pbuDOVDCwPZv00VoV9ARtu
-         k17w==
-X-Gm-Message-State: AOAM533c/QhkIu2L3IIrvoeUW+n1IlOIXIPmgISvyrFbp50HRFRKJM31
-        gkWDRwkQey7zoSZVpY9L90A=
-X-Google-Smtp-Source: ABdhPJyxXsEg83/R/SHxuOCsGmmE9ADPJCIFFyK0GskVNz6VLC2FUNSZXLm8JvGHgFl2XEQcsRTNTQ==
-X-Received: by 2002:a17:90a:ce84:: with SMTP id g4mr3774505pju.59.1613060159475;
-        Thu, 11 Feb 2021 08:15:59 -0800 (PST)
-Received: from localhost.localdomain ([27.5.41.215])
-        by smtp.gmail.com with ESMTPSA id a8sm5858380pju.29.2021.02.11.08.15.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 08:15:59 -0800 (PST)
-From:   Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
-To:     gregkh@linuxfoundation.org, lee.jones@linaro.org,
-        johannes@sipsolutions.net, kuba@kernel.org, arnd@arndb.de,
-        mail@anirudhrb.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: wimax: Fix some coding style problems
-Date:   Thu, 11 Feb 2021 21:45:53 +0530
-Message-Id: <20210211161553.140871-1-hemanshagnihotri27@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        bh=LeVuhNSNgGXvDUTsjxpKM9j++9wJsCI1K/P+t34L8KE=;
+        b=k6zUsYBPK+i0h7VrIHpa9o8I+hpOs6fxQKM/9Mc9jmlVmPXxuTjuCioQqj/Zs7idnF
+         KkUwndYw2Q0dxB/yPSJSSCjnE23xlTmEuUG5sVW8cTXCvnk2MdQvZvjHSRH0rsNo1/zg
+         MfXf4ehi0CAi0S4L019gbqgMBXyi+3Sf9XxqBJeZhawQ6UZtrafY75wRKku2uz5hxoto
+         wwZL5oXfgQZKsS/7vzUhigK9B/EESZej1gyVxnL9Q8yZQBAglCgBN9tGoA01831MfM1v
+         4t3CIHbkmkCjt35Hp3C71JmsWQ1FP2jOAButsPatM4rBuufMUTSvUdZMq8u4gnhk64QF
+         aqTw==
+X-Gm-Message-State: AOAM531i+NTTqjyYDhXtFYjcU1E8jB43S1faENFVlBRGVk+nI/Ci4KZe
+        nz5qQQrfuy/MsBmQKCwjX4crUwkpKYRZkw==
+X-Google-Smtp-Source: ABdhPJwKMjLJU3wprW19WI7p5wSnqqpus7tWrBMiwTfzWwLzz2gC4Bk8MNKLs/rD+74Tn7LTzp/nog==
+X-Received: by 2002:a1c:9851:: with SMTP id a78mr5706235wme.66.1613060242652;
+        Thu, 11 Feb 2021 08:17:22 -0800 (PST)
+Received: from [192.168.2.202] (p5487b829.dip0.t-ipconnect.de. [84.135.184.41])
+        by smtp.gmail.com with ESMTPSA id r17sm5583159wrx.33.2021.02.11.08.17.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Feb 2021 08:17:22 -0800 (PST)
+Subject: Re: [PATCH] platform/surface: Add platform profile driver
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Bastien Nocera <hadess@hadess.net>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210208194903.3039142-1-luzmaximilian@gmail.com>
+ <cc9d27aa-955d-1cd1-19b8-9b18bdc6b8a2@redhat.com>
+ <c485a731-4378-239f-95e7-3b588f13cb66@gmail.com>
+ <dfc90822-d13e-cfc9-af99-0f7b78d2a286@redhat.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <caa365e1-b371-fdcb-f947-2cdb34d5bcf8@gmail.com>
+Date:   Thu, 11 Feb 2021 17:17:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <dfc90822-d13e-cfc9-af99-0f7b78d2a286@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes following warnings and errors as reported by checkpatch.pl:
-	1) WARNING: Missing a blank line after declarations
-	2) WARNING: Block comments use a trailing */ on a separate line
-	3) ERROR: code indent should use tabs where possible
-	4) ERROR: space required before the open parenthesis '('
-	5) ERROR: spaces required around that '?' (ctx:VxW)
-	6) ERROR: open brace '{' following struct go on the same line
 
-Signed-off-by: Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
----
- drivers/staging/wimax/i2400m/netdev.c |  2 +-
- drivers/staging/wimax/i2400m/rx.c     | 20 +++++++++-------
- drivers/staging/wimax/i2400m/tx.c     | 34 +++++++++++++++++++--------
- drivers/staging/wimax/i2400m/usb-rx.c |  8 +++++--
- drivers/staging/wimax/i2400m/usb.c    | 10 +++++---
- drivers/staging/wimax/op-msg.c        |  1 +
- drivers/staging/wimax/op-rfkill.c     |  7 ++++--
- drivers/staging/wimax/stack.c         |  2 ++
- 8 files changed, 58 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/staging/wimax/i2400m/netdev.c b/drivers/staging/wimax/i2400m/netdev.c
-index cd06eaf75e8b..5b53e59084c8 100644
---- a/drivers/staging/wimax/i2400m/netdev.c
-+++ b/drivers/staging/wimax/i2400m/netdev.c
-@@ -523,7 +523,7 @@ void i2400m_net_erx(struct i2400m *i2400m, struct sk_buff *skb,
- 
- 	d_fnstart(2, dev, "(i2400m %p skb %p [%u] cs %d)\n",
- 		  i2400m, skb, skb->len, cs);
--	switch(cs) {
-+	switch (cs) {
- 	case I2400M_CS_IPV4_0:
- 	case I2400M_CS_IPV4:
- 		i2400m_rx_fake_eth_header(i2400m->wimax_dev.net_dev,
-diff --git a/drivers/staging/wimax/i2400m/rx.c b/drivers/staging/wimax/i2400m/rx.c
-index 5b3a85035f6a..036210a1fd55 100644
---- a/drivers/staging/wimax/i2400m/rx.c
-+++ b/drivers/staging/wimax/i2400m/rx.c
-@@ -485,8 +485,7 @@ struct i2400m_roq_data {
-  * store the sequence number (sn) and the cs (packet type) coming from
-  * the RX payload header from the device.
-  */
--struct i2400m_roq
--{
-+struct i2400m_roq {
- 	unsigned ws;
- 	struct sk_buff_head queue;
- 	struct i2400m_roq_log *log;
-@@ -522,6 +521,7 @@ static
- unsigned __i2400m_roq_nsn(struct i2400m_roq *roq, unsigned sn)
- {
- 	int r;
-+
- 	r =  ((int) sn - (int) roq->ws) % 2048;
- 	if (r < 0)
- 		r += 2048;
-@@ -556,7 +556,7 @@ void i2400m_roq_log_entry_print(struct i2400m *i2400m, unsigned index,
- {
- 	struct device *dev = i2400m_dev(i2400m);
- 
--	switch(e->type) {
-+	switch (e->type) {
- 	case I2400M_RO_TYPE_RESET:
- 		dev_err(dev, "q#%d reset           ws %u cnt %u sn %u/%u"
- 			" - new nws %u\n",
-@@ -694,7 +694,8 @@ void __i2400m_roq_queue(struct i2400m *i2400m, struct i2400m_roq *roq,
- 	 * not empty, so we are not the first ones; we also know we
- 	 * are not going to be the last ones. The list is sorted, so
- 	 * we have to insert before the the first guy with an nsn_itr
--	 * greater that our nsn. */
-+	 * greater that our nsn.
-+	 */
- 	skb_queue_walk(&roq->queue, skb_itr) {
- 		roq_data_itr = (struct i2400m_roq_data *) &skb_itr->cb;
- 		nsn_itr = __i2400m_roq_nsn(roq, roq_data_itr->sn);
-@@ -1016,7 +1017,8 @@ void i2400m_rx_edata(struct i2400m *i2400m, struct sk_buff *skb_rx,
- 	/* now we have to pull and trim so that the skb points to the
- 	 * beginning of the IP packet; the netdev part will add the
- 	 * ethernet header as needed - we know there is enough space
--	 * because we checked in i2400m_rx_edata(). */
-+	 * because we checked in i2400m_rx_edata().
-+	 */
- 	skb_pull(skb, payload + sizeof(*hdr) - (void *) skb->data);
- 	skb_trim(skb, (void *) skb_end_pointer(skb) - payload - sizeof(*hdr));
- 
-@@ -1046,7 +1048,7 @@ void i2400m_rx_edata(struct i2400m *i2400m, struct sk_buff *skb_rx,
- 			 ro_type, ro_cin, roq->ws, ro_sn,
- 			 __i2400m_roq_nsn(roq, ro_sn), size);
- 		d_dump(2, dev, payload, size);
--		switch(ro_type) {
-+		switch (ro_type) {
- 		case I2400M_RO_TYPE_RESET:
- 			i2400m_roq_reset(i2400m, roq);
- 			kfree_skb(skb);	/* no data here */
-@@ -1146,6 +1148,7 @@ int i2400m_rx_msg_hdr_check(struct i2400m *i2400m,
- {
- 	int result = -EIO;
- 	struct device *dev = i2400m_dev(i2400m);
-+
- 	if (buf_size < sizeof(*msg_hdr)) {
- 		dev_err(dev, "RX: HW BUG? message with short header (%zu "
- 			"vs %zu bytes expected)\n", buf_size, sizeof(*msg_hdr));
-@@ -1313,6 +1316,7 @@ void i2400m_unknown_barker(struct i2400m *i2400m,
- 	struct device *dev = i2400m_dev(i2400m);
- 	char prefix[64];
- 	const __le32 *barker = buf;
-+
- 	dev_err(dev, "RX: HW BUG? unknown barker %08x, "
- 		"dropping %zu bytes\n", le32_to_cpu(*barker), size);
- 	snprintf(prefix, sizeof(prefix), "%s %s: ",
-@@ -1346,7 +1350,7 @@ int i2400m_rx_setup(struct i2400m *i2400m)
- {
- 	int result = 0;
- 
--	i2400m->rx_reorder = i2400m_rx_reorder_disabled? 0 : 1;
-+	i2400m->rx_reorder = i2400m_rx_reorder_disabled ? 0 : 1;
- 	if (i2400m->rx_reorder) {
- 		unsigned itr;
- 		struct i2400m_roq_log *rd;
-@@ -1365,7 +1369,7 @@ int i2400m_rx_setup(struct i2400m *i2400m)
- 			goto error_roq_log_alloc;
- 		}
- 
--		for(itr = 0; itr < I2400M_RO_CIN + 1; itr++) {
-+		for (itr = 0; itr < I2400M_RO_CIN + 1; itr++) {
- 			__i2400m_roq_init(&i2400m->rx_roq[itr]);
- 			i2400m->rx_roq[itr].log = &rd[itr];
- 		}
-diff --git a/drivers/staging/wimax/i2400m/tx.c b/drivers/staging/wimax/i2400m/tx.c
-index e9436212fe54..b55cf09daee2 100644
---- a/drivers/staging/wimax/i2400m/tx.c
-+++ b/drivers/staging/wimax/i2400m/tx.c
-@@ -508,6 +508,7 @@ void i2400m_tx_skip_tail(struct i2400m *i2400m)
- 	size_t tx_in = i2400m->tx_in % I2400M_TX_BUF_SIZE;
- 	size_t tail_room = __i2400m_tx_tail_room(i2400m);
- 	struct i2400m_msg_hdr *msg = i2400m->tx_buf + tx_in;
-+
- 	if (unlikely(tail_room == 0))
- 		return;
- 	BUG_ON(tail_room < sizeof(*msg));
-@@ -563,6 +564,7 @@ void i2400m_tx_new(struct i2400m *i2400m)
- 	struct device *dev = i2400m_dev(i2400m);
- 	struct i2400m_msg_hdr *tx_msg;
- 	bool try_head = false;
-+
- 	BUG_ON(i2400m->tx_msg != NULL);
- 	/*
- 	 * In certain situations, TX queue might have enough space to
-@@ -622,9 +624,11 @@ void i2400m_tx_close(struct i2400m *i2400m)
- 	if (tx_msg->size & I2400M_TX_SKIP)	/* a skipper? nothing to do */
- 		goto out;
- 	num_pls = le16_to_cpu(tx_msg->num_pls);
--	/* We can get this situation when a new message was started
-+	/*
-+	 * We can get this situation when a new message was started
- 	 * and there was no space to add payloads before hitting the
--	 tail (and taking padding into consideration). */
-+	 * tail (and taking padding into consideration).
-+	 */
- 	if (num_pls == 0) {
- 		tx_msg->size |= I2400M_TX_SKIP;
- 		goto out;
-@@ -655,9 +659,11 @@ void i2400m_tx_close(struct i2400m *i2400m)
- 	if (padding > 0) {
- 		pad_buf = i2400m_tx_fifo_push(i2400m, padding, 0, 0);
- 		if (WARN_ON(pad_buf == NULL || pad_buf == TAIL_FULL)) {
--			/* This should not happen -- append should verify
-+			/*
-+			 * This should not happen -- append should verify
- 			 * there is always space left at least to append
--			 * tx_block_size */
-+			 * tx_block_size
-+			 */
- 			dev_err(dev,
- 				"SW BUG! Possible data leakage from memory the "
- 				"device should not read for padding - "
-@@ -728,9 +734,11 @@ int i2400m_tx(struct i2400m *i2400m, const void *buf, size_t buf_len,
- 		  i2400m, buf, buf_len, pl_type);
- 	padded_len = ALIGN(buf_len, I2400M_PL_ALIGN);
- 	d_printf(5, dev, "padded_len %zd buf_len %zd\n", padded_len, buf_len);
--	/* If there is no current TX message, create one; if the
-+	/*
-+	 * If there is no current TX message, create one; if the
- 	 * current one is out of payload slots or we have a singleton,
--	 * close it and start a new one */
-+	 * close it and start a new one
-+	 */
- 	spin_lock_irqsave(&i2400m->tx_lock, flags);
- 	/* If tx_buf is NULL, device is shutdown */
- 	if (i2400m->tx_buf == NULL) {
-@@ -763,8 +771,10 @@ int i2400m_tx(struct i2400m *i2400m, const void *buf, size_t buf_len,
- 	}
- 	if (i2400m->tx_msg == NULL)
- 		goto error_tx_new;
--	/* So we have a current message header; now append space for
--	 * the message -- if there is not enough, try the head */
-+	/*
-+	 * So we have a current message header; now append space for
-+	 * the message -- if there is not enough, try the head
-+	 */
- 	ptr = i2400m_tx_fifo_push(i2400m, padded_len,
- 				  i2400m->bus_tx_block_size, try_head);
- 	if (ptr == TAIL_FULL) {	/* Tail is full, try head */
-@@ -779,6 +789,7 @@ int i2400m_tx(struct i2400m *i2400m, const void *buf, size_t buf_len,
- 	} else {			/* Got space, copy it, set padding */
- 		struct i2400m_msg_hdr *tx_msg = i2400m->tx_msg;
- 		unsigned num_pls = le16_to_cpu(tx_msg->num_pls);
-+
- 		memcpy(ptr, buf, buf_len);
- 		memset(ptr + buf_len, 0xad, padded_len - buf_len);
- 		i2400m_pld_set(&tx_msg->pld[num_pls], buf_len, pl_type);
-@@ -799,8 +810,10 @@ int i2400m_tx(struct i2400m *i2400m, const void *buf, size_t buf_len,
- 	}
- error_tx_new:
- 	spin_unlock_irqrestore(&i2400m->tx_lock, flags);
--	/* kick in most cases, except when the TX subsys is down, as
--	 * it might free space */
-+	/*
-+	 * kick in most cases, except when the TX subsys is down, as
-+	 * it might free space
-+	 */
- 	if (likely(result != -ESHUTDOWN))
- 		i2400m->bus_tx_kick(i2400m);
- 	d_fnend(3, dev, "(i2400m %p skb %p [%zu bytes] pt %u) = %d\n",
-@@ -1008,6 +1021,7 @@ int i2400m_tx_setup(struct i2400m *i2400m)
- void i2400m_tx_release(struct i2400m *i2400m)
- {
- 	unsigned long flags;
-+
- 	spin_lock_irqsave(&i2400m->tx_lock, flags);
- 	kfree(i2400m->tx_buf);
- 	i2400m->tx_buf = NULL;
-diff --git a/drivers/staging/wimax/i2400m/usb-rx.c b/drivers/staging/wimax/i2400m/usb-rx.c
-index 5b64bda7d9e7..5cb69c18478b 100644
---- a/drivers/staging/wimax/i2400m/usb-rx.c
-+++ b/drivers/staging/wimax/i2400m/usb-rx.c
-@@ -147,6 +147,7 @@ void i2400mu_rx_size_maybe_shrink(struct i2400mu *i2400mu)
- 		size_t avg_rx_size =
- 			i2400mu->rx_size_acc / i2400mu->rx_size_cnt;
- 		size_t new_rx_size = i2400mu->rx_size / 2;
-+
- 		if (avg_rx_size < new_rx_size) {
- 			if (new_rx_size % max_pkt_size == 0) {
- 				new_rx_size -= 8;
-@@ -251,6 +252,7 @@ struct sk_buff *i2400mu_rx(struct i2400mu *i2400mu, struct sk_buff *rx_skb)
- 		break;
- 	case -EOVERFLOW: {		/* too small, reallocate */
- 		struct sk_buff *new_skb;
-+
- 		rx_size = i2400mu_rx_size_grow(i2400mu);
- 		if (rx_size <= (1 << 16))	/* cap it */
- 			i2400mu->rx_size = rx_size;
-@@ -277,10 +279,12 @@ struct sk_buff *i2400mu_rx(struct i2400mu *i2400mu, struct sk_buff *rx_skb)
- 			 (long) skb_end_offset(new_skb));
- 		goto retry;
- 	}
--		/* In most cases, it happens due to the hardware scheduling a
-+		/*
-+		 * In most cases, it happens due to the hardware scheduling a
- 		 * read when there was no data - unfortunately, we have no way
- 		 * to tell this timeout from a USB timeout. So we just ignore
--		 * it. */
-+		 * it.
-+		 */
- 	case -ETIMEDOUT:
- 		dev_err(dev, "RX: timeout: %d\n", result);
- 		result = 0;
-diff --git a/drivers/staging/wimax/i2400m/usb.c b/drivers/staging/wimax/i2400m/usb.c
-index 481b1ccde983..d2d9acc9c397 100644
---- a/drivers/staging/wimax/i2400m/usb.c
-+++ b/drivers/staging/wimax/i2400m/usb.c
-@@ -327,7 +327,7 @@ int i2400mu_bus_reset(struct i2400m *i2400m, enum i2400m_reset_type rt)
- }
- 
- static void i2400mu_get_drvinfo(struct net_device *net_dev,
--                                struct ethtool_drvinfo *info)
-+				struct ethtool_drvinfo *info)
- {
- 	struct i2400m *i2400m = net_dev_to_i2400m(net_dev);
- 	struct i2400mu *i2400mu = container_of(i2400m, struct i2400mu, i2400m);
-@@ -349,6 +349,7 @@ void i2400mu_netdev_setup(struct net_device *net_dev)
- {
- 	struct i2400m *i2400m = net_dev_to_i2400m(net_dev);
- 	struct i2400mu *i2400mu = container_of(i2400m, struct i2400mu, i2400m);
-+
- 	i2400mu_init(i2400mu);
- 	i2400m_netdev_setup(net_dev);
- 	net_dev->ethtool_ops = &i2400mu_ethtool_ops;
-@@ -651,9 +652,11 @@ int i2400mu_resume(struct usb_interface *iface)
- 	}
- 	d_printf(1, dev, "fw was up, resuming\n");
- 	i2400mu_notification_setup(i2400mu);
--	/* USB has flow control, so we don't need to give it time to
-+	/*
-+	 * USB has flow control, so we don't need to give it time to
- 	 * come back; otherwise, we'd use something like a get-state
--	 * command... */
-+	 * command...
-+	 */
- out:
- 	d_fnend(3, dev, "(iface %p) = %d\n", iface, ret);
- 	return ret;
-@@ -702,6 +705,7 @@ static
- int i2400mu_post_reset(struct usb_interface *iface)
- {
- 	struct i2400mu *i2400mu = usb_get_intfdata(iface);
-+
- 	return i2400m_post_reset(&i2400mu->i2400m);
- }
- 
-diff --git a/drivers/staging/wimax/op-msg.c b/drivers/staging/wimax/op-msg.c
-index e20ac7d84e82..fcf122384624 100644
---- a/drivers/staging/wimax/op-msg.c
-+++ b/drivers/staging/wimax/op-msg.c
-@@ -260,6 +260,7 @@ int wimax_msg_send(struct wimax_dev *wimax_dev, struct sk_buff *skb)
- 	struct device *dev = wimax_dev_to_dev(wimax_dev);
- 	void *msg = skb->data;
- 	size_t size = skb->len;
-+
- 	might_sleep();
- 
- 	d_printf(1, dev, "CTX: wimax msg, %zu bytes\n", size);
-diff --git a/drivers/staging/wimax/op-rfkill.c b/drivers/staging/wimax/op-rfkill.c
-index 78b294481a59..862fdc900652 100644
---- a/drivers/staging/wimax/op-rfkill.c
-+++ b/drivers/staging/wimax/op-rfkill.c
-@@ -291,10 +291,12 @@ int wimax_rfkill(struct wimax_dev *wimax_dev, enum wimax_rf_state state)
- 	mutex_lock(&wimax_dev->mutex);
- 	result = wimax_dev_is_ready(wimax_dev);
- 	if (result < 0) {
--		/* While initializing, < 1.4.3 wimax-tools versions use
-+		/*
-+		 * While initializing, < 1.4.3 wimax-tools versions use
- 		 * this call to check if the device is a valid WiMAX
- 		 * device; so we allow it to proceed always,
--		 * considering the radios are all off. */
-+		 * considering the radios are all off.
-+		 */
- 		if (result == -ENOMEDIUM && state == WIMAX_RF_QUERY)
- 			result = WIMAX_RF_OFF << 1 | WIMAX_RF_OFF;
- 		goto error_not_ready;
-@@ -378,6 +380,7 @@ int wimax_rfkill_add(struct wimax_dev *wimax_dev)
- void wimax_rfkill_rm(struct wimax_dev *wimax_dev)
- {
- 	struct device *dev = wimax_dev_to_dev(wimax_dev);
-+
- 	d_fnstart(3, dev, "(wimax_dev %p)\n", wimax_dev);
- 	rfkill_unregister(wimax_dev->rfkill);
- 	rfkill_destroy(wimax_dev->rfkill);
-diff --git a/drivers/staging/wimax/stack.c b/drivers/staging/wimax/stack.c
-index ace24a6dfd2d..0d0f6ab79bf5 100644
---- a/drivers/staging/wimax/stack.c
-+++ b/drivers/staging/wimax/stack.c
-@@ -156,6 +156,7 @@ int wimax_gnl_re_state_change_send(
- {
- 	int result = 0;
- 	struct device *dev = wimax_dev_to_dev(wimax_dev);
-+
- 	d_fnstart(3, dev, "(wimax_dev %p report_skb %p)\n",
- 		  wimax_dev, report_skb);
- 	if (report_skb == NULL) {
-@@ -362,6 +363,7 @@ EXPORT_SYMBOL_GPL(wimax_state_change);
- enum wimax_st wimax_state_get(struct wimax_dev *wimax_dev)
- {
- 	enum wimax_st state;
-+
- 	mutex_lock(&wimax_dev->mutex);
- 	state = wimax_dev->state;
- 	mutex_unlock(&wimax_dev->mutex);
--- 
-2.30.0
+On 2/11/21 4:56 PM, Hans de Goede wrote:
+> Hi,
+> 
+> On 2/8/21 10:38 PM, Maximilian Luz wrote:
+>>
+>>
+>> On 2/8/21 9:27 PM, Hans de Goede wrote:
+> 
+> <snip>
+> 
+>>>> +static int convert_ssam_to_profile(struct ssam_device *sdev, enum ssam_tmp_profile p)
+>>>> +{
+>>>> +    switch (p) {
+>>>> +    case SSAM_TMP_PROFILE_NORMAL:
+>>>> +        return PLATFORM_PROFILE_QUIET;
+>>>> +
+>>>> +    case SSAM_TMP_PROFILE_BATTERY_SAVER:
+>>>> +        return PLATFORM_PROFILE_LOW_POWER;
+>>>> +
+>>>> +    case SSAM_TMP_PROFILE_BETTER_PERFORMANCE:
+>>>> +        return PLATFORM_PROFILE_BALANCED;
+>>>> +
+>>>> +    case SSAM_TMP_PROFILE_BEST_PERFORMANCE:
+>>>> +        return PLATFORM_PROFILE_PERFORMANCE;
+>>>> +
+>>>> +    default:
+>>>> +        dev_err(&sdev->dev, "invalid performance profile: %d", p);
+>>>> +        return -EINVAL;
+>>>> +    }
+>>>> +}
+>>>
+>>> I'm not sure about the mapping which you have chosen here. I know that at least for
+>>> gnome there are plans to make this stuff available in the UI:
+>>>
+>>> https://gitlab.gnome.org/Teams/Design/settings-mockups/-/blob/master/power/power.png
+>>> http://www.hadess.net/2020/09/power-profiles-daemon-new-project.html
+>>
+>> Thanks for those links!
+>>   
+>>> Notice there are only 3 levels in the UI, which will primarily be mapped to:
+>>>
+>>> PLATFORM_PROFILE_LOW_POWER
+>>> PLATFORM_PROFILE_BALANCED
+>>> PLATFORM_PROFILE_PERFORMANCE
+>>>
+>>> (with fallbacks to say QUIET for LOW_POWER of there is no LOW_POWER, but that
+>>> mostly is something for userspace to worry about).
+>>
+>> Interesting, I wasn't aware of that. I was aware of Bastien's work
+>> towards implementing user-space support for this but I hadn't yet looked
+>> at it in detail (e.g. the "fallback to quiet" is new to me).
+> 
+> Note that the fallback stuff would not apply here, since you do provide
+> all 3 of low-power, balanced and performance. But the current way gnome
+> will handle this means that it will be impossible to select "normal" from
+> the GNOME ui which feels wrong.
+> 
+>>> And the power-profile-daemon will likely restore the last used setting on boot,
+>>> meaning with your mapping that it will always switch the profile away from
+>>> SSAM_TMP_PROFILE_NORMAL, which I assume is the default profile picked at boot ?
+>>
+>> Pretty much, yeah. AFAICT booting doesn't reset it, but hard-resetting
+>> the EC does. Same difference though.
+>>   
+>>> So ideally we would map PLATFORM_PROFILE_BALANCED (which will be the default
+>>> GNOME / power-profile-daemon setting) to SSAM_TMP_PROFILE_NORMAL.
+>>>
+>>> I know the ABI docs say that drivers should try to use existing values, but
+>>> this seems like a good case to add a new value or 2 to the PLATFORM_PROFILE enum.
+>>>
+>>> During the discussion the following 2 options were given because some devices
+>>> may have more then one balanced profile:
+>>>
+>>> PLATFORM_PROFILE_BALANCED_LOW_POWER:
+>>>
+>>>                   balanced-low-power:     Balances between low power consumption
+>>>                                           and performance with a slight bias
+>>>                                           towards low power
+>>>
+>>> PLATFORM_PROFILE_BALANCED_PERFORMANCE:
+>>>
+>>>                   balanced-performance:   Balances between performance and low
+>>>                                           power consumption with a slight bias
+>>>                                           towards performance
+>>>
+>>> I think it would be better to add 1 or both of these, if we add both
+>>> we could e.g. do the following mappings:
+>>>
+>>> SSAM_TMP_PROFILE_BATTERY_SAVER      ->  PLATFORM_PROFILE_LOW_POWER
+>>> SSAM_TMP_PROFILE_NORMAL             ->  PLATFORM_PROFILE_BALANCED_LOW_POWER
+>>> SSAM_TMP_PROFILE_BETTER_PERFORMANCE ->  PLATFORM_PROFILE_BALANCED_PERFORMANCE
+>>> SSAM_TMP_PROFILE_BEST_PERFORMANCE   ->  PLATFORM_PROFILE_PERFORMANCE
+>>>
+>>> or we could do:
+>>>
+>>> SSAM_TMP_PROFILE_BATTERY_SAVER      ->  PLATFORM_PROFILE_LOW_POWER
+>>> SSAM_TMP_PROFILE_NORMAL             ->  PLATFORM_PROFILE_BALANCED
+>>> SSAM_TMP_PROFILE_BETTER_PERFORMANCE ->  PLATFORM_PROFILE_BALANCED_PERFORMANCE
+>>> SSAM_TMP_PROFILE_BEST_PERFORMANCE   ->  PLATFORM_PROFILE_PERFORMANCE
+>>>
+>>> I'm not sure which is best, I hope you have a better idea of that then me.
+>>>
+>>> I might even be wrong here and NORMAL might really be more about being QUIET
+>>> then it really being BALANCED ? In which case the mapping is fine as is.
+>>
+>> I can only really speak on the behavior of my Surface Book 2. On that
+>> device, the CPU is passively cooled, but the discrete GPU is actively
+>> cooled, so I can actually only really talk about active cooling behavior
+>> for the dGPU.
+>>
+>> On that, at least, the normal (Windows calls this 'recommended') profile
+>> feels like it targets quiet operation. Using the dGPU with that profile
+>> pretty much ensures that the dGPU will be limited in performance by a
+>> thermal limiter (around 75°C to 80°C; at least it feels that way), while
+>> the fan is somewhat audible but definitely not at maximum speed.
+>> Changing the profile to any higher profile (Windows calls those 'better
+>> performance' and 'best performance'), the fan becomes significantly more
+>> audible. I'm not entirely sure if the performance increase can solely be
+>> attributed to cooling though.
+>>
+>> As far as I've heard, that behavior seems to be similar on other devices
+>> with fans for CPU cooling, but I can try to get some more feedback on
+>> that.
+>>
+>> Based on all of this, I thought that this would most resemble a 'quiet'
+>> profile. But I'd also be fine with your second suggestion. Calling the
+>> last two options 'balanced performance' and 'performance' might be a bit
+>> closer to the Windows naming scheme. It doesn't seem like the normal
+>> profile does much power limiting in terms of actually capping the power
+>> limit of the dGPU, so I think calling this 'balanced' would also make
+>> sense to me, especially in light of Gnome's defaults.
+> 
+> Ack.
+> 
+> So that means that this is going to need to have a preparation patch
+> adding the 2 balanced variants which I mention above. Can you take care
+> of that in the next version?
 
+Sure. Already prepared a patch for the 'balanced-performance' one over at [1].
+Just needs some squashing and I can send in an updated series. Do you also want
+me to add the 'balanced-low-power' version? I'd have chosen 'balanced' and
+'balanced-performance' in the new mapping, so there wouldn't be any driver
+right now using that.
+  
+> And since that prep. patch needs to go through Rafael's PM tree anyways,
+> maybe also throw in a patch to make ACPI_PLATFORM_PROFILE not user selectable
+> and use select on it in the thinkpad_acpi and ideapad_laptop drivers?
+
+There's also already one at [1] for that just waiting to be sent :)
+
+[1]: https://github.com/linux-surface/kernel/commits/s/surface-platform-profile/next
+
+Regards,
+Max
+
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
+> 
+>>>> +
+>>>> +static int convert_profile_to_ssam(struct ssam_device *sdev, enum platform_profile_option p)
+>>>> +{
+>>>> +    switch (p) {
+>>>> +    case PLATFORM_PROFILE_LOW_POWER:
+>>>> +        return SSAM_TMP_PROFILE_BATTERY_SAVER;
+>>>> +
+>>>> +    case PLATFORM_PROFILE_QUIET:
+>>>> +        return SSAM_TMP_PROFILE_NORMAL;
+>>>> +
+>>>> +    case PLATFORM_PROFILE_BALANCED:
+>>>> +        return SSAM_TMP_PROFILE_BETTER_PERFORMANCE;
+>>>> +
+>>>> +    case PLATFORM_PROFILE_PERFORMANCE:
+>>>> +        return SSAM_TMP_PROFILE_BEST_PERFORMANCE;
+>>>> +
+>>>> +    default:
+>>>> +        /* This should have already been caught by platform_profile_store(). */
+>>>> +        WARN(true, "unsupported platform profile");
+>>>> +        return -EOPNOTSUPP;
+>>>> +    }
+>>>> +}
+>>>> +
+>>>> +static int ssam_platform_profile_get(struct platform_profile_handler *pprof,
+>>>> +                     enum platform_profile_option *profile)
+>>>> +{
+>>>> +    struct ssam_tmp_profile_device *tpd;
+>>>> +    enum ssam_tmp_profile tp;
+>>>> +    int status;
+>>>> +
+>>>> +    tpd = container_of(pprof, struct ssam_tmp_profile_device, handler);
+>>>> +
+>>>> +    status = ssam_tmp_profile_get(tpd->sdev, &tp);
+>>>> +    if (status)
+>>>> +        return status;
+>>>> +
+>>>> +    status = convert_ssam_to_profile(tpd->sdev, tp);
+>>>> +    if (status < 0)
+>>>> +        return status;
+>>>> +
+>>>> +    *profile = status;
+>>>> +    return 0;
+>>>> +}
+>>>> +
+>>>> +static int ssam_platform_profile_set(struct platform_profile_handler *pprof,
+>>>> +                     enum platform_profile_option profile)
+>>>> +{
+>>>> +    struct ssam_tmp_profile_device *tpd;
+>>>> +    int tp;
+>>>> +
+>>>> +    tpd = container_of(pprof, struct ssam_tmp_profile_device, handler);
+>>>> +
+>>>> +    tp = convert_profile_to_ssam(tpd->sdev, profile);
+>>>> +    if (tp < 0)
+>>>> +        return tp;
+>>>> +
+>>>> +    return ssam_tmp_profile_set(tpd->sdev, tp);
+>>>> +}
+>>>> +
+>>>> +static int surface_platform_profile_probe(struct ssam_device *sdev)
+>>>> +{
+>>>> +    struct ssam_tmp_profile_device *tpd;
+>>>> +
+>>>> +    tpd = devm_kzalloc(&sdev->dev, sizeof(*tpd), GFP_KERNEL);
+>>>> +    if (!tpd)
+>>>> +        return -ENOMEM;
+>>>> +
+>>>> +    tpd->sdev = sdev;
+>>>> +
+>>>> +    tpd->handler.profile_get = ssam_platform_profile_get;
+>>>> +    tpd->handler.profile_set = ssam_platform_profile_set;
+>>>> +
+>>>> +    set_bit(PLATFORM_PROFILE_LOW_POWER, tpd->handler.choices);
+>>>> +    set_bit(PLATFORM_PROFILE_QUIET, tpd->handler.choices);
+>>>> +    set_bit(PLATFORM_PROFILE_BALANCED, tpd->handler.choices);
+>>>> +    set_bit(PLATFORM_PROFILE_PERFORMANCE, tpd->handler.choices);
+>>>> +
+>>>> +    platform_profile_register(&tpd->handler);
+>>>> +    return 0;
+>>>> +}
+>>>> +
+>>>> +static void surface_platform_profile_remove(struct ssam_device *sdev)
+>>>> +{
+>>>> +    platform_profile_remove();
+>>>> +}
+>>>> +
+>>>> +static const struct ssam_device_id ssam_platform_profile_match[] = {
+>>>> +    { SSAM_SDEV(TMP, 0x01, 0x00, 0x01) },
+>>>> +    { },
+>>>> +};
+>>>> +MODULE_DEVICE_TABLE(ssam, ssam_platform_profile_match);
+>>>> +
+>>>> +static struct ssam_device_driver surface_platform_profile = {
+>>>> +    .probe = surface_platform_profile_probe,
+>>>> +    .remove = surface_platform_profile_remove,
+>>>> +    .match_table = ssam_platform_profile_match,
+>>>> +    .driver = {
+>>>> +        .name = "surface_platform_profile",
+>>>> +        .probe_type = PROBE_PREFER_ASYNCHRONOUS,
+>>>> +    },
+>>>> +};
+>>>> +module_ssam_device_driver(surface_platform_profile);
+>>>> +
+>>>> +MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
+>>>> +MODULE_DESCRIPTION("Platform Profile Support for Surface System Aggregator Module");
+>>>> +MODULE_LICENSE("GPL");
+>>>>
+>>>
+>>
+> 
