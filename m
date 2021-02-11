@@ -2,224 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47085318D09
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC106318D19
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBKOMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 09:12:33 -0500
-Received: from vsp-unauthed02.binero.net ([195.74.38.227]:7024 "EHLO
-        vsp-unauthed02.binero.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232106AbhBKNxJ (ORCPT
+        id S232226AbhBKOQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 09:16:34 -0500
+Received: from pv50p00im-ztdg10011201.me.com ([17.58.6.39]:36331 "EHLO
+        pv50p00im-ztdg10011201.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231912AbhBKN5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:53:09 -0500
-X-Greylist: delayed 464 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Feb 2021 08:53:08 EST
-X-Halon-ID: 405eb1ba-6c6f-11eb-b73f-0050569116f7
-Authorized-sender: niklas.soderlund@fsdn.se
-Received: from bismarck.berto.se (p54ac5521.dip0.t-ipconnect.de [84.172.85.33])
-        by bin-vsp-out-03.atm.binero.net (Halon) with ESMTPA
-        id 405eb1ba-6c6f-11eb-b73f-0050569116f7;
-        Thu, 11 Feb 2021 14:44:28 +0100 (CET)
-From:   =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>
-To:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>
-Subject: [PATCH v2] timekeeping: Allow runtime PM from change_clocksource()
-Date:   Thu, 11 Feb 2021 14:43:18 +0100
-Message-Id: <20210211134318.323910-1-niklas.soderlund+renesas@ragnatech.se>
-X-Mailer: git-send-email 2.30.0
+        Thu, 11 Feb 2021 08:57:37 -0500
+X-Greylist: delayed 611 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Feb 2021 08:57:36 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1613051166;
+        bh=WMQ2ew20gKuHcvkWuDVwaoOaOgxu5nNpW69z1RSBBQk=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=NJHTLTwpz0HnusHQihwPPv6xVzrCMZ134hQIQ9kRK4R58P171wAe+sANhWpjEW8L2
+         +NMjQ1BQkcMem7y5pYnTBUEn01fOqd8psZ/8SNoSE/slMxEr+GqMllvz57BBhMGAQx
+         ROMzsw1q3oxDqHtfjoW69EO5kJqZNSj/mIPJmlQZ2EfmeNqjONy/g4xfvzzH+c7rDA
+         0CozYOSE6gPUz2Feo0WFYz//Ulw87a1yMuTA/sG7DTuZZAS7lLHZnMVB57KI+gsQoR
+         a+dWgprTWABOquqeIF72Afh5rtwYxslvOgJCW02ofFTl/wIjhpPMPFKFQzfqe23dTe
+         opPjy9p/wmzqQ==
+Received: from everest.nathzi1505 (unknown [45.250.50.68])
+        by pv50p00im-ztdg10011201.me.com (Postfix) with ESMTPSA id 57F902A047F;
+        Thu, 11 Feb 2021 13:46:02 +0000 (UTC)
+From:   Pritthijit Nath <pritthijit.nath@icloud.com>
+To:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
+        oscar.carter@gmx.com, tvboxspy@gmail.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Pritthijit Nath <pritthijit.nath@icloud.com>
+Subject: [PATCH] staging: vt6656: Fixed alignment with issue in rf.c
+Date:   Thu, 11 Feb 2021 19:15:48 +0530
+Message-Id: <20210211134548.84956-1-pritthijit.nath@icloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_06:2021-02-10,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2102110120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct clocksource callbacks enable() and disable() are described as
-a way to allow clock sources to enter a power save mode [1]. But using
-runtime PM from these callbacks triggers a cyclic lockdep warning when
-switching clock source using change_clocksource().
+This change fixes a checkpatch CHECK style issue for "Alignment should match open parenthesis".
 
-This change allows the new clocksource to be enabled() and the old one
-to be disabled() without holding the timekeeper_lock. This solution is
-modeled on timekeeping_resume() and timekeeping_suspend() where the
-struct clocksource resume() and suspend() callbacks are called without
-holding the timekeeper_lock.
-
-Triggering and log of the deadlock warning,
-
-  # echo e60f0000.timer > /sys/devices/system/clocksource/clocksource0/current_clocksource
-  [  118.081095] ======================================================
-  [  118.087455] WARNING: possible circular locking dependency detected
-  [  118.093821] 5.10.0-rc6-arm64-renesas-00002-ga0cf8106e584 #37 Not tainted
-  [  118.100712] ------------------------------------------------------
-  [  118.107069] migration/0/11 is trying to acquire lock:
-  [  118.112269] ffff0000403ed220 (&dev->power.lock){-...}-{2:2}, at: __pm_runtime_resume+0x40/0x74
-  [  118.121172]
-  [  118.121172] but task is already holding lock:
-  [  118.127170] ffff8000113c8f88 (tk_core.seq.seqcount){----}-{0:0}, at: multi_cpu_stop+0xa4/0x190
-  [  118.136061]
-  [  118.136061] which lock already depends on the new lock.
-  [  118.136061]
-  [  118.144461]
-  [  118.144461] the existing dependency chain (in reverse order) is:
-  [  118.152149]
-  [  118.152149] -> #2 (tk_core.seq.seqcount){----}-{0:0}:
-  [  118.158900]        lock_acquire.part.0+0x120/0x330
-  [  118.163834]        lock_acquire+0x64/0x80
-  [  118.167971]        seqcount_lockdep_reader_access.constprop.0+0x74/0x100
-  [  118.174865]        ktime_get+0x28/0xa0
-  [  118.178729]        hrtimer_start_range_ns+0x210/0x2dc
-  [  118.183934]        generic_sched_clock_init+0x70/0x88
-  [  118.189134]        sched_clock_init+0x40/0x64
-  [  118.193622]        start_kernel+0x494/0x524
-  [  118.197926]
-  [  118.197926] -> #1 (hrtimer_bases.lock){-.-.}-{2:2}:
-  [  118.204491]        lock_acquire.part.0+0x120/0x330
-  [  118.209424]        lock_acquire+0x64/0x80
-  [  118.213557]        _raw_spin_lock_irqsave+0x7c/0xc4
-  [  118.218579]        hrtimer_start_range_ns+0x68/0x2dc
-  [  118.223690]        rpm_suspend+0x308/0x5dc
-  [  118.227909]        rpm_idle+0xc4/0x2a4
-  [  118.231771]        pm_runtime_work+0x98/0xc0
-  [  118.236171]        process_one_work+0x294/0x6f0
-  [  118.240836]        worker_thread+0x70/0x45c
-  [  118.245143]        kthread+0x154/0x160
-  [  118.249007]        ret_from_fork+0x10/0x20
-  [  118.253222]
-  [  118.253222] -> #0 (&dev->power.lock){-...}-{2:2}:
-  [  118.259607]        check_noncircular+0x128/0x140
-  [  118.268774]        __lock_acquire+0x13b0/0x204c
-  [  118.277780]        lock_acquire.part.0+0x120/0x330
-  [  118.287001]        lock_acquire+0x64/0x80
-  [  118.295375]        _raw_spin_lock_irqsave+0x7c/0xc4
-  [  118.304623]        __pm_runtime_resume+0x40/0x74
-  [  118.313644]        sh_cmt_start+0x1c4/0x260
-  [  118.322275]        sh_cmt_clocksource_enable+0x28/0x50
-  [  118.331891]        change_clocksource+0x9c/0x160
-  [  118.340910]        multi_cpu_stop+0xa4/0x190
-  [  118.349522]        cpu_stopper_thread+0x90/0x154
-  [  118.358429]        smpboot_thread_fn+0x244/0x270
-  [  118.367265]        kthread+0x154/0x160
-  [  118.375158]        ret_from_fork+0x10/0x20
-  [  118.383284]
-  [  118.383284] other info that might help us debug this:
-  [  118.383284]
-  [  118.402810] Chain exists of:
-  [  118.402810]   &dev->power.lock --> hrtimer_bases.lock --> tk_core.seq.seqcount
-  [  118.402810]
-  [  118.425597]  Possible unsafe locking scenario:
-  [  118.425597]
-  [  118.439130]        CPU0                    CPU1
-  [  118.447413]        ----                    ----
-  [  118.455641]   lock(tk_core.seq.seqcount);
-  [  118.463335]                                lock(hrtimer_bases.lock);
-  [  118.473507]                                lock(tk_core.seq.seqcount);
-  [  118.483787]   lock(&dev->power.lock);
-  [  118.491120]
-  [  118.491120]  *** DEADLOCK ***
-  [  118.491120]
-  [  118.507666] 2 locks held by migration/0/11:
-  [  118.515424]  #0: ffff8000113c9278 (timekeeper_lock){-.-.}-{2:2}, at: change_clocksource+0x2c/0x160
-  [  118.528257]  #1: ffff8000113c8f88 (tk_core.seq.seqcount){----}-{0:0}, at: multi_cpu_stop+0xa4/0x190
-  [  118.541248]
-  [  118.541248] stack backtrace:
-  [  118.553226] CPU: 0 PID: 11 Comm: migration/0 Not tainted 5.10.0-rc6-arm64-renesas-00002-ga0cf8106e584 #37
-  [  118.566923] Hardware name: Renesas Salvator-X 2nd version board based on r8a77965 (DT)
-  [  118.579051] Call trace:
-  [  118.585649]  dump_backtrace+0x0/0x190
-  [  118.593505]  show_stack+0x14/0x30
-  [  118.601001]  dump_stack+0xe8/0x130
-  [  118.608567]  print_circular_bug+0x1f0/0x200
-  [  118.616930]  check_noncircular+0x128/0x140
-  [  118.625231]  __lock_acquire+0x13b0/0x204c
-  [  118.633451]  lock_acquire.part.0+0x120/0x330
-  [  118.641958]  lock_acquire+0x64/0x80
-  [  118.649630]  _raw_spin_lock_irqsave+0x7c/0xc4
-  [  118.658186]  __pm_runtime_resume+0x40/0x74
-  [  118.666483]  sh_cmt_start+0x1c4/0x260
-  [  118.674327]  sh_cmt_clocksource_enable+0x28/0x50
-  [  118.683170]  change_clocksource+0x9c/0x160
-  [  118.691460]  multi_cpu_stop+0xa4/0x190
-  [  118.699384]  cpu_stopper_thread+0x90/0x154
-  [  118.707672]  smpboot_thread_fn+0x244/0x270
-  [  118.715961]  kthread+0x154/0x160
-  [  118.723360]  ret_from_fork+0x10/0x20
-  [  118.731465] clocksource: Switched to clocksource e60f0000.timer
-
-1. commit 4614e6adafa2c5e6 ("clocksource: add enable() and disable() callbacks")
-
-Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
 ---
- kernel/time/timekeeping.c | 36 +++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+ drivers/staging/vt6656/rf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 6aee5768c86ff7db..26ef4c9ef5c57081 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -1427,35 +1427,45 @@ static void __timekeeping_set_tai_offset(struct timekeeper *tk, s32 tai_offset)
- static int change_clocksource(void *data)
- {
- 	struct timekeeper *tk = &tk_core.timekeeper;
--	struct clocksource *new, *old;
-+	struct clocksource *new, *old = NULL;
- 	unsigned long flags;
-+	bool change = false;
+diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
+index 5b8da06e3916..bcd4d467e03a 100644
+--- a/drivers/staging/vt6656/rf.c
++++ b/drivers/staging/vt6656/rf.c
+@@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
  
- 	new = (struct clocksource *) data;
- 
--	raw_spin_lock_irqsave(&timekeeper_lock, flags);
--	write_seqcount_begin(&tk_core.seq);
--
--	timekeeping_forward_now(tk);
- 	/*
- 	 * If the cs is in module, get a module reference. Succeeds
- 	 * for built-in code (owner == NULL) as well.
- 	 */
- 	if (try_module_get(new->owner)) {
--		if (!new->enable || new->enable(new) == 0) {
--			old = tk->tkr_mono.clock;
--			tk_setup_internals(tk, new);
--			if (old->disable)
--				old->disable(old);
--			module_put(old->owner);
--		} else {
-+		if (!new->enable || new->enable(new) == 0)
-+			change = true;
-+		else
- 			module_put(new->owner);
--		}
- 	}
-+
-+	raw_spin_lock_irqsave(&timekeeper_lock, flags);
-+	write_seqcount_begin(&tk_core.seq);
-+
-+	timekeeping_forward_now(tk);
-+
-+	if (change) {
-+		old = tk->tkr_mono.clock;
-+		tk_setup_internals(tk, new);
-+	}
-+
- 	timekeeping_update(tk, TK_CLEAR_NTP | TK_MIRROR | TK_CLOCK_WAS_SET);
- 
- 	write_seqcount_end(&tk_core.seq);
- 	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
- 
-+	if (old) {
-+		if (old->disable)
-+			old->disable(old);
-+
-+		module_put(old->owner);
-+	}
-+
- 	return 0;
- }
- 
+ 			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
+ 				ret = vnt_rf_write_embedded(priv,
+-					vt3226d0_lo_current_table[hw_value]);
++							    vt3226d0_lo_current_table[hw_value]);
+ 				if (ret)
+ 					return ret;
+ 			}
 -- 
-2.30.0
+2.25.1
 
