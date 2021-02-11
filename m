@@ -2,174 +2,608 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72D13191ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4FA3191EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbhBKSKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:10:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48542 "EHLO mail.kernel.org"
+        id S231778AbhBKSLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:11:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231846AbhBKRnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:43:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E38CD64DEE;
-        Thu, 11 Feb 2021 17:43:06 +0000 (UTC)
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     gregkh@linuxfoundation.org
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH v4] driver core: auxiliary bus: Fix calling stage for auxiliary bus init
-Date:   Thu, 11 Feb 2021 10:42:49 -0700
-Message-Id: <20210211174249.1618488-1-dave.jiang@intel.com>
-X-Mailer: git-send-email 2.26.2
+        id S231882AbhBKRnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:43:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 170D764DCE;
+        Thu, 11 Feb 2021 17:43:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613065389;
+        bh=0TVsN3B9busffrYbPpx0QrDx1G/rmABwu48WP4fkaqI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sWhv6e4Hz7eN04UFeOhr80ldsdJ7Geabnl1ktKlykPe6BjhO4XWnc2++//xCLsjse
+         emCceyMzgb7lwW213g+bfvIjTc9erbMrSpg19DRQ7L2B0mjkkBs3dqWnyfDCJN8Trv
+         Nfs7RtKKMGB3H2wu4vkEi25K23KT4tPQkexKtLzmtaVN7g13eeClDkJhxTTuM8ToyH
+         ZauOrtAEUuMZ7YwrboyDz9v3SyfoFsJor/z/FnfW7+SrSRnQOdw9YDpP7XhDoeqUJH
+         4OqNa/m9z9ayISrblp2WkCrwS68yQReW+VoFZaBE5waO3ainQcFbROgPs8vpf3wvdE
+         dSvWB/ZIIxPfg==
+Date:   Thu, 11 Feb 2021 10:43:07 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        clang-built-linux@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peter Smith <peter.smith@arm.com>,
+        Renato Golin <rengolin@systemcall.eu>,
+        David Spickett <david.spickett@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v5 2/2] ARM: kprobes: rewrite test-arm.c in UAL
+Message-ID: <20210211174307.GA2804604@ubuntu-m3-large-x86>
+References: <20210211025149.3544593-1-ndesaulniers@google.com>
+ <20210211025149.3544593-3-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211025149.3544593-3-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the auxiliary device code is built into the kernel, it can be executed
-before the auxiliary bus is registered. This causes bus->p to be not
-allocated and triggers a NULL pointer dereference when the auxiliary bus
-device gets added with bus_add_device(). Call the auxiliary_bus_init()
-under driver_init() so the bus is initialized before devices.
+On Wed, Feb 10, 2021 at 06:51:49PM -0800, Nick Desaulniers wrote:
+> Clang's integrated assembler only accepts UAL syntax, rewrite the
+> instructions that were changed by RVCTv2.1.  The document "Assembly
+> language changes after RVCTv2.1" was very helpful.
+> 
+>   .syntax unified
+> 
+> directive is added, since -masm-syntax-unified is unreliable for older
+> but supported versions of GCC. See also:
+> 
+> commit fe09d9c641f2 ("ARM: 8852/1: uaccess: use unified assembler language syntax")
+> 
+> Link: https://developer.arm.com/documentation/dui0473/c/writing-arm-assembly-language/assembly-language-changes-after-rvctv2-1
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1271
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Below is the kernel splat for the bug:
-[ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
-[ 1.950670] #PF: supervisor read access in kernel mode
-[ 1.950670] #PF: error_code(0x0000) - not-present page
-[ 1.950670] PGD 0
-[ 1.950670] Oops: 0000 1 SMP NOPTI
-[ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
-[ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
-[ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
-78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
-[ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
-[ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
-[ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
-[ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
-[ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
-[ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
-[ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
-[ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
-[ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-[ 1.950670] PKRU: 55555554
-[ 1.950670] Call Trace:
-[ 1.950670] device_add+0x3ee/0x850
-[ 1.950670] __auxiliary_device_add+0x47/0x60
-[ 1.950670] idxd_pci_probe+0xf77/0x1180
-[ 1.950670] local_pci_probe+0x4a/0x90
-[ 1.950670] pci_device_probe+0xff/0x1b0
-[ 1.950670] really_probe+0x1cf/0x440
-[ 1.950670] ? rdinit_setup+0x31/0x31
-[ 1.950670] driver_probe_device+0xe8/0x150
-[ 1.950670] device_driver_attach+0x58/0x60
-[ 1.950670] __driver_attach+0x8f/0x150
-[ 1.950670] ? device_driver_attach+0x60/0x60
-[ 1.950670] ? device_driver_attach+0x60/0x60
-[ 1.950670] bus_for_each_dev+0x79/0xc0
-[ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
-[ 1.950670] driver_attach+0x1e/0x20
-[ 1.950670] bus_add_driver+0x154/0x1f0
-[ 1.950670] driver_register+0x70/0xc0
-[ 1.950670] __pci_register_driver+0x54/0x60
-[ 1.950670] idxd_init_module+0xe2/0xfc
-[ 1.950670] ? idma64_platform_driver_init+0x19/0x19
-[ 1.950670] do_one_initcall+0x4a/0x1e0
-[ 1.950670] kernel_init_freeable+0x1fc/0x25c
-[ 1.950670] ? rest_init+0xba/0xba
-[ 1.950670] kernel_init+0xe/0x116
-[ 1.950670] ret_from_fork+0x1f/0x30
-[ 1.950670] Modules linked in:
-[ 1.950670] CR2: 0000000000000060
-[ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-Fixes: 7de3697e9cbd ("Add auxiliary bus support")
-Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
-Acked-by: Dave Ertman <david.m.ertman@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
-
-v4:
-- Remove remaining module bits as it's not a kernel module. (GregKH)
-v3:
-- Change init function to return void. (GregKH)
-v2:
-- Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
-
- drivers/base/base.h      |  5 +++++
- drivers/base/auxiliary.c | 18 +++---------------
- drivers/base/init.c      |  1 +
- 3 files changed, 9 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/base/base.h b/drivers/base/base.h
-index f5600a83124f..52b3d7b75c27 100644
---- a/drivers/base/base.h
-+++ b/drivers/base/base.h
-@@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
- extern int platform_bus_init(void);
- extern void cpu_dev_init(void);
- extern void container_dev_init(void);
-+#ifdef CONFIG_AUXILIARY_BUS
-+extern void auxiliary_bus_init(void);
-+#else
-+static inline void auxiliary_bus_init(void) { }
-+#endif
- 
- struct kobject *virtual_device_parent(struct device *dev);
- 
-diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-index 8336535f1e11..adc199dfba3c 100644
---- a/drivers/base/auxiliary.c
-+++ b/drivers/base/auxiliary.c
-@@ -15,6 +15,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/string.h>
- #include <linux/auxiliary_bus.h>
-+#include "base.h"
- 
- static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
- 							    const struct auxiliary_device *auxdev)
-@@ -260,20 +261,7 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
- }
- EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
- 
--static int __init auxiliary_bus_init(void)
-+void __init auxiliary_bus_init(void)
- {
--	return bus_register(&auxiliary_bus_type);
-+	WARN_ON(bus_register(&auxiliary_bus_type));
- }
--
--static void __exit auxiliary_bus_exit(void)
--{
--	bus_unregister(&auxiliary_bus_type);
--}
--
--module_init(auxiliary_bus_init);
--module_exit(auxiliary_bus_exit);
--
--MODULE_LICENSE("GPL v2");
--MODULE_DESCRIPTION("Auxiliary Bus");
--MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
--MODULE_AUTHOR("Kiran Patil <kiran.patil@intel.com>");
-diff --git a/drivers/base/init.c b/drivers/base/init.c
-index 908e6520e804..a9f57c22fb9e 100644
---- a/drivers/base/init.c
-+++ b/drivers/base/init.c
-@@ -32,6 +32,7 @@ void __init driver_init(void)
- 	 */
- 	of_core_init();
- 	platform_bus_init();
-+	auxiliary_bus_init();
- 	cpu_dev_init();
- 	memory_dev_init();
- 	container_dev_init();
--- 
-2.26.2
-
+> ---
+>  arch/arm/probes/kprobes/test-arm.c  | 290 ++++++++++++++--------------
+>  arch/arm/probes/kprobes/test-core.h |   1 +
+>  2 files changed, 146 insertions(+), 145 deletions(-)
+> 
+> diff --git a/arch/arm/probes/kprobes/test-arm.c b/arch/arm/probes/kprobes/test-arm.c
+> index 2543106a203e..a0dae35ffacd 100644
+> --- a/arch/arm/probes/kprobes/test-arm.c
+> +++ b/arch/arm/probes/kprobes/test-arm.c
+> @@ -55,25 +55,25 @@ void kprobe_arm_test_cases(void)
+>  	TEST_GROUP("Data-processing (register), (register-shifted register), (immediate)")
+>  
+>  #define _DATA_PROCESSING_DNM(op,s,val)						\
+> -	TEST_RR(  op "eq" s "	r0,  r",1, VAL1,", r",2, val, "")		\
+> -	TEST_RR(  op "ne" s "	r1,  r",1, VAL1,", r",2, val, ", lsl #3")	\
+> -	TEST_RR(  op "cs" s "	r2,  r",3, VAL1,", r",2, val, ", lsr #4")	\
+> -	TEST_RR(  op "cc" s "	r3,  r",3, VAL1,", r",2, val, ", asr #5")	\
+> -	TEST_RR(  op "mi" s "	r4,  r",5, VAL1,", r",2, N(val),", asr #6")	\
+> -	TEST_RR(  op "pl" s "	r5,  r",5, VAL1,", r",2, val, ", ror #7")	\
+> -	TEST_RR(  op "vs" s "	r6,  r",7, VAL1,", r",2, val, ", rrx")		\
+> -	TEST_R(   op "vc" s "	r6,  r",7, VAL1,", pc, lsl #3")			\
+> -	TEST_R(   op "vc" s "	r6,  r",7, VAL1,", sp, lsr #4")			\
+> -	TEST_R(   op "vc" s "	r6,  pc, r",7, VAL1,", asr #5")			\
+> -	TEST_R(   op "vc" s "	r6,  sp, r",7, VAL1,", ror #6")			\
+> -	TEST_RRR( op "hi" s "	r8,  r",9, VAL1,", r",14,val, ", lsl r",0, 3,"")\
+> -	TEST_RRR( op "ls" s "	r9,  r",9, VAL1,", r",14,val, ", lsr r",7, 4,"")\
+> -	TEST_RRR( op "ge" s "	r10, r",11,VAL1,", r",14,val, ", asr r",7, 5,"")\
+> -	TEST_RRR( op "lt" s "	r11, r",11,VAL1,", r",14,N(val),", asr r",7, 6,"")\
+> -	TEST_RR(  op "gt" s "	r12, r13"       ", r",14,val, ", ror r",14,7,"")\
+> -	TEST_RR(  op "le" s "	r14, r",0, val, ", r13"       ", lsl r",14,8,"")\
+> -	TEST_R(   op "eq" s "	r0,  r",11,VAL1,", #0xf5")			\
+> -	TEST_R(   op "ne" s "	r11, r",0, VAL1,", #0xf5000000")		\
+> +	TEST_RR(  op s "eq	r0,  r",1, VAL1,", r",2, val, "")		\
+> +	TEST_RR(  op s "ne	r1,  r",1, VAL1,", r",2, val, ", lsl #3")	\
+> +	TEST_RR(  op s "cs	r2,  r",3, VAL1,", r",2, val, ", lsr #4")	\
+> +	TEST_RR(  op s "cc	r3,  r",3, VAL1,", r",2, val, ", asr #5")	\
+> +	TEST_RR(  op s "mi	r4,  r",5, VAL1,", r",2, N(val),", asr #6")	\
+> +	TEST_RR(  op s "pl	r5,  r",5, VAL1,", r",2, val, ", ror #7")	\
+> +	TEST_RR(  op s "vs	r6,  r",7, VAL1,", r",2, val, ", rrx")		\
+> +	TEST_R(   op s "vc	r6,  r",7, VAL1,", pc, lsl #3")			\
+> +	TEST_R(   op s "vc	r6,  r",7, VAL1,", sp, lsr #4")			\
+> +	TEST_R(   op s "vc	r6,  pc, r",7, VAL1,", asr #5")			\
+> +	TEST_R(   op s "vc	r6,  sp, r",7, VAL1,", ror #6")			\
+> +	TEST_RRR( op s "hi	r8,  r",9, VAL1,", r",14,val, ", lsl r",0, 3,"")\
+> +	TEST_RRR( op s "ls	r9,  r",9, VAL1,", r",14,val, ", lsr r",7, 4,"")\
+> +	TEST_RRR( op s "ge	r10, r",11,VAL1,", r",14,val, ", asr r",7, 5,"")\
+> +	TEST_RRR( op s "lt	r11, r",11,VAL1,", r",14,N(val),", asr r",7, 6,"")\
+> +	TEST_RR(  op s "gt	r12, r13"       ", r",14,val, ", ror r",14,7,"")\
+> +	TEST_RR(  op s "le	r14, r",0, val, ", r13"       ", lsl r",14,8,"")\
+> +	TEST_R(   op s "eq	r0,  r",11,VAL1,", #0xf5")			\
+> +	TEST_R(   op s "ne	r11, r",0, VAL1,", #0xf5000000")		\
+>  	TEST_R(   op s "	r7,  r",8, VAL2,", #0x000af000")		\
+>  	TEST(     op s "	r4,  pc"        ", #0x00005a00")
+>  
+> @@ -104,23 +104,23 @@ void kprobe_arm_test_cases(void)
+>  	TEST_R(   op "	r",8, VAL2,", #0x000af000")
+>  
+>  #define _DATA_PROCESSING_DM(op,s,val)					\
+> -	TEST_R(   op "eq" s "	r0,  r",1, val, "")			\
+> -	TEST_R(   op "ne" s "	r1,  r",1, val, ", lsl #3")		\
+> -	TEST_R(   op "cs" s "	r2,  r",3, val, ", lsr #4")		\
+> -	TEST_R(   op "cc" s "	r3,  r",3, val, ", asr #5")		\
+> -	TEST_R(   op "mi" s "	r4,  r",5, N(val),", asr #6")		\
+> -	TEST_R(   op "pl" s "	r5,  r",5, val, ", ror #7")		\
+> -	TEST_R(   op "vs" s "	r6,  r",10,val, ", rrx")		\
+> -	TEST(     op "vs" s "	r7,  pc, lsl #3")			\
+> -	TEST(     op "vs" s "	r7,  sp, lsr #4")			\
+> -	TEST_RR(  op "vc" s "	r8,  r",7, val, ", lsl r",0, 3,"")	\
+> -	TEST_RR(  op "hi" s "	r9,  r",9, val, ", lsr r",7, 4,"")	\
+> -	TEST_RR(  op "ls" s "	r10, r",9, val, ", asr r",7, 5,"")	\
+> -	TEST_RR(  op "ge" s "	r11, r",11,N(val),", asr r",7, 6,"")	\
+> -	TEST_RR(  op "lt" s "	r12, r",11,val, ", ror r",14,7,"")	\
+> -	TEST_R(   op "gt" s "	r14, r13"       ", lsl r",14,8,"")	\
+> -	TEST(     op "eq" s "	r0,  #0xf5")				\
+> -	TEST(     op "ne" s "	r11, #0xf5000000")			\
+> +	TEST_R(   op s "eq	r0,  r",1, val, "")			\
+> +	TEST_R(   op s "ne	r1,  r",1, val, ", lsl #3")		\
+> +	TEST_R(   op s "cs	r2,  r",3, val, ", lsr #4")		\
+> +	TEST_R(   op s "cc	r3,  r",3, val, ", asr #5")		\
+> +	TEST_R(   op s "mi	r4,  r",5, N(val),", asr #6")		\
+> +	TEST_R(   op s "pl	r5,  r",5, val, ", ror #7")		\
+> +	TEST_R(   op s "vs	r6,  r",10,val, ", rrx")		\
+> +	TEST(     op s "vs	r7,  pc, lsl #3")			\
+> +	TEST(     op s "vs	r7,  sp, lsr #4")			\
+> +	TEST_RR(  op s "vc	r8,  r",7, val, ", lsl r",0, 3,"")	\
+> +	TEST_RR(  op s "hi	r9,  r",9, val, ", lsr r",7, 4,"")	\
+> +	TEST_RR(  op s "ls	r10, r",9, val, ", asr r",7, 5,"")	\
+> +	TEST_RR(  op s "ge	r11, r",11,N(val),", asr r",7, 6,"")	\
+> +	TEST_RR(  op s "lt	r12, r",11,val, ", ror r",14,7,"")	\
+> +	TEST_R(   op s "gt	r14, r13"       ", lsl r",14,8,"")	\
+> +	TEST(     op s "eq	r0,  #0xf5")				\
+> +	TEST(     op s "ne	r11, #0xf5000000")			\
+>  	TEST(     op s "	r7,  #0x000af000")			\
+>  	TEST(     op s "	r4,  #0x00005a00")
+>  
+> @@ -352,7 +352,7 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe000029f) " @ mul r0, pc, r2")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0000f91) " @ mul r0, r1, pc")
+>  	TEST_RR(    "muls	r0, r",1, VAL1,", r",2, VAL2,"")
+> -	TEST_RR(    "mullss	r7, r",8, VAL2,", r",9, VAL2,"")
+> +	TEST_RR(    "mulsls	r7, r",8, VAL2,", r",9, VAL2,"")
+>  	TEST_R(     "muls	lr, r",4, VAL3,", r13")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe01f0291) " @ muls pc, r1, r2")
+>  
+> @@ -361,7 +361,7 @@ void kprobe_arm_test_cases(void)
+>  	TEST_RR(     "mla	lr, r",1, VAL2,", r",2, VAL3,", r13")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe02f3291) " @ mla pc, r1, r2, r3")
+>  	TEST_RRR(    "mlas	r0, r",1, VAL1,", r",2, VAL2,", r",3,  VAL3,"")
+> -	TEST_RRR(    "mlahis	r7, r",8, VAL3,", r",9, VAL1,", r",10, VAL2,"")
+> +	TEST_RRR(    "mlashi	r7, r",8, VAL3,", r",9, VAL1,", r",10, VAL2,"")
+>  	TEST_RR(     "mlas	lr, r",1, VAL2,", r",2, VAL3,", r13")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe03f3291) " @ mlas pc, r1, r2, r3")
+>  
+> @@ -394,7 +394,7 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe081f392) " @ umull pc, r1, r2, r3")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe08f1392) " @ umull r1, pc, r2, r3")
+>  	TEST_RR(  "umulls	r0, r1, r",2, VAL1,", r",3, VAL2,"")
+> -	TEST_RR(  "umulllss	r7, r8, r",9, VAL2,", r",10, VAL1,"")
+> +	TEST_RR(  "umullsls	r7, r8, r",9, VAL2,", r",10, VAL1,"")
+>  	TEST_R(   "umulls	lr, r12, r",11,VAL3,", r13")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe091f392) " @ umulls pc, r1, r2, r3")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe09f1392) " @ umulls r1, pc, r2, r3")
+> @@ -405,7 +405,7 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0af1392) " @ umlal pc, r1, r2, r3")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0a1f392) " @ umlal r1, pc, r2, r3")
+>  	TEST_RRRR(  "umlals	r",0, VAL1,", r",1, VAL2,", r",2, VAL3,", r",3, VAL4)
+> -	TEST_RRRR(  "umlalles	r",8, VAL4,", r",9, VAL1,", r",10,VAL2,", r",11,VAL3)
+> +	TEST_RRRR(  "umlalsle	r",8, VAL4,", r",9, VAL1,", r",10,VAL2,", r",11,VAL3)
+>  	TEST_RRR(   "umlals	r",14,VAL3,", r",7, VAL4,", r",5, VAL1,", r13")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0bf1392) " @ umlals pc, r1, r2, r3")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0b1f392) " @ umlals r1, pc, r2, r3")
+> @@ -416,7 +416,7 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0c1f392) " @ smull pc, r1, r2, r3")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0cf1392) " @ smull r1, pc, r2, r3")
+>  	TEST_RR(  "smulls	r0, r1, r",2, VAL1,", r",3, VAL2,"")
+> -	TEST_RR(  "smulllss	r7, r8, r",9, VAL2,", r",10, VAL1,"")
+> +	TEST_RR(  "smullsls	r7, r8, r",9, VAL2,", r",10, VAL1,"")
+>  	TEST_R(   "smulls	lr, r12, r",11,VAL3,", r13")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0d1f392) " @ smulls pc, r1, r2, r3")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0df1392) " @ smulls r1, pc, r2, r3")
+> @@ -427,7 +427,7 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0ef1392) " @ smlal pc, r1, r2, r3")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0e1f392) " @ smlal r1, pc, r2, r3")
+>  	TEST_RRRR(  "smlals	r",0, VAL1,", r",1, VAL2,", r",2, VAL3,", r",3, VAL4)
+> -	TEST_RRRR(  "smlalles	r",8, VAL4,", r",9, VAL1,", r",10,VAL2,", r",11,VAL3)
+> +	TEST_RRRR(  "smlalsle	r",8, VAL4,", r",9, VAL1,", r",10,VAL2,", r",11,VAL3)
+>  	TEST_RRR(   "smlals	r",14,VAL3,", r",7, VAL4,", r",5, VAL1,", r13")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0ff1392) " @ smlals pc, r1, r2, r3")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0f0f392) " @ smlals r0, pc, r2, r3")
+> @@ -450,7 +450,7 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe10f0091) " @ swp r0, r1, [pc]")
+>  #if __LINUX_ARM_ARCH__ < 6
+>  	TEST_RP("swpb	lr, r",7,VAL2,", [r",8,0,"]")
+> -	TEST_R( "swpvsb	r0, r",1,VAL1,", [sp]")
+> +	TEST_R( "swpbvs	r0, r",1,VAL1,", [sp]")
+>  #else
+>  	TEST_UNSUPPORTED(__inst_arm(0xe148e097) " @ swpb	lr, r7, [r8]")
+>  	TEST_UNSUPPORTED(__inst_arm(0x614d0091) " @ swpvsb	r0, r1, [sp]")
+> @@ -477,11 +477,11 @@ void kprobe_arm_test_cases(void)
+>  	TEST_GROUP("Extra load/store instructions")
+>  
+>  	TEST_RPR(  "strh	r",0, VAL1,", [r",1, 48,", -r",2, 24,"]")
+> -	TEST_RPR(  "streqh	r",14,VAL2,", [r",11,0, ", r",12, 48,"]")
+> -	TEST_UNSUPPORTED(  "streqh	r14, [r13, r12]")
+> -	TEST_UNSUPPORTED(  "streqh	r14, [r12, r13]")
+> +	TEST_RPR(  "strheq	r",14,VAL2,", [r",11,0, ", r",12, 48,"]")
+> +	TEST_UNSUPPORTED(  "strheq	r14, [r13, r12]")
+> +	TEST_UNSUPPORTED(  "strheq	r14, [r12, r13]")
+>  	TEST_RPR(  "strh	r",1, VAL1,", [r",2, 24,", r",3,  48,"]!")
+> -	TEST_RPR(  "strneh	r",12,VAL2,", [r",11,48,", -r",10,24,"]!")
+> +	TEST_RPR(  "strhne	r",12,VAL2,", [r",11,48,", -r",10,24,"]!")
+>  	TEST_RPR(  "strh	r",2, VAL1,", [r",3, 24,"], r",4, 48,"")
+>  	TEST_RPR(  "strh	r",10,VAL2,", [r",9, 48,"], -r",11,24,"")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe1afc0ba) "	@ strh r12, [pc, r10]!")
+> @@ -489,9 +489,9 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe089a0bf) "	@ strh r10, [r9], pc")
+>  
+>  	TEST_PR(   "ldrh	r0, [r",0,  48,", -r",2, 24,"]")
+> -	TEST_PR(   "ldrcsh	r14, [r",13,0, ", r",12, 48,"]")
+> +	TEST_PR(   "ldrhcs	r14, [r",13,0, ", r",12, 48,"]")
+>  	TEST_PR(   "ldrh	r1, [r",2,  24,", r",3,  48,"]!")
+> -	TEST_PR(   "ldrcch	r12, [r",11,48,", -r",10,24,"]!")
+> +	TEST_PR(   "ldrhcc	r12, [r",11,48,", -r",10,24,"]!")
+>  	TEST_PR(   "ldrh	r2, [r",3,  24,"], r",4, 48,"")
+>  	TEST_PR(   "ldrh	r10, [r",9, 48,"], -r",11,24,"")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe1bfc0ba) "	@ ldrh r12, [pc, r10]!")
+> @@ -499,9 +499,9 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe099a0bf) "	@ ldrh r10, [r9], pc")
+>  
+>  	TEST_RP(   "strh	r",0, VAL1,", [r",1, 24,", #-2]")
+> -	TEST_RP(   "strmih	r",14,VAL2,", [r",13,0, ", #2]")
+> +	TEST_RP(   "strhmi	r",14,VAL2,", [r",13,0, ", #2]")
+>  	TEST_RP(   "strh	r",1, VAL1,", [r",2, 24,", #4]!")
+> -	TEST_RP(   "strplh	r",12,VAL2,", [r",11,24,", #-4]!")
+> +	TEST_RP(   "strhpl	r",12,VAL2,", [r",11,24,", #-4]!")
+>  	TEST_RP(   "strh	r",2, VAL1,", [r",3, 24,"], #48")
+>  	TEST_RP(   "strh	r",10,VAL2,", [r",9, 64,"], #-48")
+>  	TEST_RP(   "strh	r",3, VAL1,", [r",13,TEST_MEMORY_SIZE,", #-"__stringify(MAX_STACK_SIZE)"]!")
+> @@ -511,9 +511,9 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0c9f3b0) "	@ strh pc, [r9], #48")
+>  
+>  	TEST_P(	   "ldrh	r0, [r",0,  24,", #-2]")
+> -	TEST_P(	   "ldrvsh	r14, [r",13,0, ", #2]")
+> +	TEST_P(	   "ldrhvs	r14, [r",13,0, ", #2]")
+>  	TEST_P(	   "ldrh	r1, [r",2,  24,", #4]!")
+> -	TEST_P(	   "ldrvch	r12, [r",11,24,", #-4]!")
+> +	TEST_P(	   "ldrhvc	r12, [r",11,24,", #-4]!")
+>  	TEST_P(	   "ldrh	r2, [r",3,  24,"], #48")
+>  	TEST_P(	   "ldrh	r10, [r",9, 64,"], #-48")
+>  	TEST(      "ldrh	r0, [pc, #0]")
+> @@ -521,18 +521,18 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0d9f3b0) "	@ ldrh pc, [r9], #48")
+>  
+>  	TEST_PR(   "ldrsb	r0, [r",0,  48,", -r",2, 24,"]")
+> -	TEST_PR(   "ldrhisb	r14, [r",13,0,", r",12,  48,"]")
+> +	TEST_PR(   "ldrsbhi	r14, [r",13,0,", r",12,  48,"]")
+>  	TEST_PR(   "ldrsb	r1, [r",2,  24,", r",3,  48,"]!")
+> -	TEST_PR(   "ldrlssb	r12, [r",11,48,", -r",10,24,"]!")
+> +	TEST_PR(   "ldrsbls	r12, [r",11,48,", -r",10,24,"]!")
+>  	TEST_PR(   "ldrsb	r2, [r",3,  24,"], r",4, 48,"")
+>  	TEST_PR(   "ldrsb	r10, [r",9, 48,"], -r",11,24,"")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe1bfc0da) "	@ ldrsb r12, [pc, r10]!")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe099f0db) "	@ ldrsb pc, [r9], r11")
+>  
+>  	TEST_P(	   "ldrsb	r0, [r",0,  24,", #-1]")
+> -	TEST_P(	   "ldrgesb	r14, [r",13,0, ", #1]")
+> +	TEST_P(	   "ldrsbge	r14, [r",13,0, ", #1]")
+>  	TEST_P(	   "ldrsb	r1, [r",2,  24,", #4]!")
+> -	TEST_P(	   "ldrltsb	r12, [r",11,24,", #-4]!")
+> +	TEST_P(	   "ldrsblt	r12, [r",11,24,", #-4]!")
+>  	TEST_P(	   "ldrsb	r2, [r",3,  24,"], #48")
+>  	TEST_P(	   "ldrsb	r10, [r",9, 64,"], #-48")
+>  	TEST(      "ldrsb	r0, [pc, #0]")
+> @@ -540,18 +540,18 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe0d9f3d0) "	@ ldrsb pc, [r9], #48")
+>  
+>  	TEST_PR(   "ldrsh	r0, [r",0,  48,", -r",2, 24,"]")
+> -	TEST_PR(   "ldrgtsh	r14, [r",13,0, ", r",12, 48,"]")
+> +	TEST_PR(   "ldrshgt	r14, [r",13,0, ", r",12, 48,"]")
+>  	TEST_PR(   "ldrsh	r1, [r",2,  24,", r",3,  48,"]!")
+> -	TEST_PR(   "ldrlesh	r12, [r",11,48,", -r",10,24,"]!")
+> +	TEST_PR(   "ldrshle	r12, [r",11,48,", -r",10,24,"]!")
+>  	TEST_PR(   "ldrsh	r2, [r",3,  24,"], r",4, 48,"")
+>  	TEST_PR(   "ldrsh	r10, [r",9, 48,"], -r",11,24,"")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe1bfc0fa) "	@ ldrsh r12, [pc, r10]!")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe099f0fb) "	@ ldrsh pc, [r9], r11")
+>  
+>  	TEST_P(	   "ldrsh	r0, [r",0,  24,", #-1]")
+> -	TEST_P(	   "ldreqsh	r14, [r",13,0 ,", #1]")
+> +	TEST_P(	   "ldrsheq	r14, [r",13,0 ,", #1]")
+>  	TEST_P(	   "ldrsh	r1, [r",2,  24,", #4]!")
+> -	TEST_P(	   "ldrnesh	r12, [r",11,24,", #-4]!")
+> +	TEST_P(	   "ldrshne	r12, [r",11,24,", #-4]!")
+>  	TEST_P(	   "ldrsh	r2, [r",3,  24,"], #48")
+>  	TEST_P(	   "ldrsh	r10, [r",9, 64,"], #-48")
+>  	TEST(      "ldrsh	r0, [pc, #0]")
+> @@ -571,30 +571,30 @@ void kprobe_arm_test_cases(void)
+>  
+>  #if __LINUX_ARM_ARCH__ >= 5
+>  	TEST_RPR(  "strd	r",0, VAL1,", [r",1, 48,", -r",2,24,"]")
+> -	TEST_RPR(  "strccd	r",8, VAL2,", [r",11,0, ", r",12,48,"]")
+> -	TEST_UNSUPPORTED(  "strccd r8, [r13, r12]")
+> -	TEST_UNSUPPORTED(  "strccd r8, [r12, r13]")
+> +	TEST_RPR(  "strdcc	r",8, VAL2,", [r",11,0, ", r",12,48,"]")
+> +	TEST_UNSUPPORTED(  "strdcc r8, [r13, r12]")
+> +	TEST_UNSUPPORTED(  "strdcc r8, [r12, r13]")
+>  	TEST_RPR(  "strd	r",4, VAL1,", [r",2, 24,", r",3, 48,"]!")
+> -	TEST_RPR(  "strcsd	r",12,VAL2,", [r",11,48,", -r",10,24,"]!")
+> -	TEST_RPR(  "strd	r",2, VAL1,", [r",5, 24,"], r",4,48,"")
+> -	TEST_RPR(  "strd	r",10,VAL2,", [r",9, 48,"], -r",7,24,"")
+> +	TEST_RPR(  "strdcs	r",12,VAL2,", r13, [r",11,48,", -r",10,24,"]!")
+> +	TEST_RPR(  "strd	r",2, VAL1,", r3, [r",5, 24,"], r",4,48,"")
+> +	TEST_RPR(  "strd	r",10,VAL2,", r11, [r",9, 48,"], -r",7,24,"")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe1afc0fa) "	@ strd r12, [pc, r10]!")
+>  
+>  	TEST_PR(   "ldrd	r0, [r",0, 48,", -r",2,24,"]")
+> -	TEST_PR(   "ldrmid	r8, [r",13,0, ", r",12,48,"]")
+> +	TEST_PR(   "ldrdmi	r8, [r",13,0, ", r",12,48,"]")
+>  	TEST_PR(   "ldrd	r4, [r",2, 24,", r",3, 48,"]!")
+> -	TEST_PR(   "ldrpld	r6, [r",11,48,", -r",10,24,"]!")
+> -	TEST_PR(   "ldrd	r2, [r",5, 24,"], r",4,48,"")
+> -	TEST_PR(   "ldrd	r10, [r",9,48,"], -r",7,24,"")
+> +	TEST_PR(   "ldrdpl	r6, [r",11,48,", -r",10,24,"]!")
+> +	TEST_PR(   "ldrd	r2, r3, [r",5, 24,"], r",4,48,"")
+> +	TEST_PR(   "ldrd	r10, r11, [r",9,48,"], -r",7,24,"")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe1afc0da) "	@ ldrd r12, [pc, r10]!")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe089f0db) "	@ ldrd pc, [r9], r11")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe089e0db) "	@ ldrd lr, [r9], r11")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe089c0df) "	@ ldrd r12, [r9], pc")
+>  
+>  	TEST_RP(   "strd	r",0, VAL1,", [r",1, 24,", #-8]")
+> -	TEST_RP(   "strvsd	r",8, VAL2,", [r",13,0, ", #8]")
+> +	TEST_RP(   "strdvs	r",8, VAL2,", [r",13,0, ", #8]")
+>  	TEST_RP(   "strd	r",4, VAL1,", [r",2, 24,", #16]!")
+> -	TEST_RP(   "strvcd	r",12,VAL2,", [r",11,24,", #-16]!")
+> +	TEST_RP(   "strdvc	r",12,VAL2,", r13, [r",11,24,", #-16]!")
+>  	TEST_RP(   "strd	r",2, VAL1,", [r",4, 24,"], #48")
+>  	TEST_RP(   "strd	r",10,VAL2,", [r",9, 64,"], #-48")
+>  	TEST_RP(   "strd	r",6, VAL1,", [r",13,TEST_MEMORY_SIZE,", #-"__stringify(MAX_STACK_SIZE)"]!")
+> @@ -603,9 +603,9 @@ void kprobe_arm_test_cases(void)
+>  	TEST_UNSUPPORTED(__inst_arm(0xe1efc3f0) "	@ strd r12, [pc, #48]!")
+>  
+>  	TEST_P(	   "ldrd	r0, [r",0, 24,", #-8]")
+> -	TEST_P(	   "ldrhid	r8, [r",13,0, ", #8]")
+> +	TEST_P(	   "ldrdhi	r8, [r",13,0, ", #8]")
+>  	TEST_P(	   "ldrd	r4, [r",2, 24,", #16]!")
+> -	TEST_P(	   "ldrlsd	r6, [r",11,24,", #-16]!")
+> +	TEST_P(	   "ldrdls	r6, [r",11,24,", #-16]!")
+>  	TEST_P(	   "ldrd	r2, [r",5, 24,"], #48")
+>  	TEST_P(	   "ldrd	r10, [r",9,6,"], #-48")
+>  	TEST_UNSUPPORTED(__inst_arm(0xe1efc3d0) "	@ ldrd r12, [pc, #48]!")
+> @@ -1084,63 +1084,63 @@ void kprobe_arm_test_cases(void)
+>  	TEST_GROUP("Branch, branch with link, and block data transfer")
+>  
+>  	TEST_P(   "stmda	r",0, 16*4,", {r0}")
+> -	TEST_P(   "stmeqda	r",4, 16*4,", {r0-r15}")
+> -	TEST_P(   "stmneda	r",8, 16*4,"!, {r8-r15}")
+> +	TEST_P(   "stmdaeq	r",4, 16*4,", {r0-r15}")
+> +	TEST_P(   "stmdane	r",8, 16*4,"!, {r8-r15}")
+>  	TEST_P(   "stmda	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
+>  	TEST_P(   "stmda	r",13,0,   "!, {pc}")
+>  
+>  	TEST_P(   "ldmda	r",0, 16*4,", {r0}")
+> -	TEST_BF_P("ldmcsda	r",4, 15*4,", {r0-r15}")
+> -	TEST_BF_P("ldmccda	r",7, 15*4,"!, {r8-r15}")
+> +	TEST_BF_P("ldmdacs	r",4, 15*4,", {r0-r15}")
+> +	TEST_BF_P("ldmdacc	r",7, 15*4,"!, {r8-r15}")
+>  	TEST_P(   "ldmda	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
+>  	TEST_BF_P("ldmda	r",14,15*4,"!, {pc}")
+>  
+>  	TEST_P(   "stmia	r",0, 16*4,", {r0}")
+> -	TEST_P(   "stmmiia	r",4, 16*4,", {r0-r15}")
+> -	TEST_P(   "stmplia	r",8, 16*4,"!, {r8-r15}")
+> +	TEST_P(   "stmiami	r",4, 16*4,", {r0-r15}")
+> +	TEST_P(   "stmiapl	r",8, 16*4,"!, {r8-r15}")
+>  	TEST_P(   "stmia	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
+>  	TEST_P(   "stmia	r",14,0,   "!, {pc}")
+>  
+>  	TEST_P(   "ldmia	r",0, 16*4,", {r0}")
+> -	TEST_BF_P("ldmvsia	r",4, 0,   ", {r0-r15}")
+> -	TEST_BF_P("ldmvcia	r",7, 8*4, "!, {r8-r15}")
+> +	TEST_BF_P("ldmiavs	r",4, 0,   ", {r0-r15}")
+> +	TEST_BF_P("ldmiavc	r",7, 8*4, "!, {r8-r15}")
+>  	TEST_P(   "ldmia	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
+>  	TEST_BF_P("ldmia	r",14,15*4,"!, {pc}")
+>  
+>  	TEST_P(   "stmdb	r",0, 16*4,", {r0}")
+> -	TEST_P(   "stmhidb	r",4, 16*4,", {r0-r15}")
+> -	TEST_P(   "stmlsdb	r",8, 16*4,"!, {r8-r15}")
+> +	TEST_P(   "stmdbhi	r",4, 16*4,", {r0-r15}")
+> +	TEST_P(   "stmdbls	r",8, 16*4,"!, {r8-r15}")
+>  	TEST_P(   "stmdb	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
+>  	TEST_P(   "stmdb	r",13,4,   "!, {pc}")
+>  
+>  	TEST_P(   "ldmdb	r",0, 16*4,", {r0}")
+> -	TEST_BF_P("ldmgedb	r",4, 16*4,", {r0-r15}")
+> -	TEST_BF_P("ldmltdb	r",7, 16*4,"!, {r8-r15}")
+> +	TEST_BF_P("ldmdbge	r",4, 16*4,", {r0-r15}")
+> +	TEST_BF_P("ldmdblt	r",7, 16*4,"!, {r8-r15}")
+>  	TEST_P(   "ldmdb	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
+>  	TEST_BF_P("ldmdb	r",14,16*4,"!, {pc}")
+>  
+>  	TEST_P(   "stmib	r",0, 16*4,", {r0}")
+> -	TEST_P(   "stmgtib	r",4, 16*4,", {r0-r15}")
+> -	TEST_P(   "stmleib	r",8, 16*4,"!, {r8-r15}")
+> +	TEST_P(   "stmibgt	r",4, 16*4,", {r0-r15}")
+> +	TEST_P(   "stmible	r",8, 16*4,"!, {r8-r15}")
+>  	TEST_P(   "stmib	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
+>  	TEST_P(   "stmib	r",13,-4,  "!, {pc}")
+>  
+>  	TEST_P(   "ldmib	r",0, 16*4,", {r0}")
+> -	TEST_BF_P("ldmeqib	r",4, -4,", {r0-r15}")
+> -	TEST_BF_P("ldmneib	r",7, 7*4,"!, {r8-r15}")
+> +	TEST_BF_P("ldmibeq	r",4, -4,", {r0-r15}")
+> +	TEST_BF_P("ldmibne	r",7, 7*4,"!, {r8-r15}")
+>  	TEST_P(   "ldmib	r",12,16*4,"!, {r1,r3,r5,r7,r8-r11,r14}")
+>  	TEST_BF_P("ldmib	r",14,14*4,"!, {pc}")
+>  
+>  	TEST_P(   "stmdb	r",13,16*4,"!, {r3-r12,lr}")
+> -	TEST_P(	  "stmeqdb	r",13,16*4,"!, {r3-r12}")
+> -	TEST_P(   "stmnedb	r",2, 16*4,", {r3-r12,lr}")
+> +	TEST_P(	  "stmdbeq	r",13,16*4,"!, {r3-r12}")
+> +	TEST_P(   "stmdbne	r",2, 16*4,", {r3-r12,lr}")
+>  	TEST_P(   "stmdb	r",13,16*4,"!, {r2-r12,lr}")
+>  	TEST_P(   "stmdb	r",0, 16*4,", {r0-r12}")
+>  	TEST_P(   "stmdb	r",0, 16*4,", {r0-r12,lr}")
+>  
+>  	TEST_BF_P("ldmia	r",13,5*4, "!, {r3-r12,pc}")
+> -	TEST_P(	  "ldmccia	r",13,5*4, "!, {r3-r12}")
+> -	TEST_BF_P("ldmcsia	r",2, 5*4, "!, {r3-r12,pc}")
+> +	TEST_P(	  "ldmiacc	r",13,5*4, "!, {r3-r12}")
+> +	TEST_BF_P("ldmiacs	r",2, 5*4, "!, {r3-r12,pc}")
+>  	TEST_BF_P("ldmia	r",13,4*4, "!, {r2-r12,pc}")
+>  	TEST_P(   "ldmia	r",0, 16*4,", {r0-r12}")
+>  	TEST_P(   "ldmia	r",0, 16*4,", {r0-r12,lr}")
+> @@ -1174,80 +1174,80 @@ void kprobe_arm_test_cases(void)
+>  #define TEST_COPROCESSOR(code) TEST_UNSUPPORTED(code)
+>  
+>  #define COPROCESSOR_INSTRUCTIONS_ST_LD(two,cc)					\
+> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13, #4]")			\
+> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13, #-4]")			\
+> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13, #4]!")			\
+> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13, #-4]!")			\
+> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13], #4")			\
+> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13], #-4")			\
+> -	TEST_COPROCESSOR("stc"two"	0, cr0, [r13], {1}")			\
+> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13, #4]")			\
+> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13, #-4]")			\
+> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13, #4]!")			\
+> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13, #-4]!")			\
+> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13], #4")			\
+> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13], #-4")			\
+> -	TEST_COPROCESSOR("stc"two"l	0, cr0, [r13], {1}")			\
+> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13, #4]")			\
+> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13, #-4]")			\
+> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13, #4]!")			\
+> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13, #-4]!")			\
+> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13], #4")			\
+> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13], #-4")			\
+> -	TEST_COPROCESSOR("ldc"two"	0, cr0, [r13], {1}")			\
+> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13, #4]")			\
+> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13, #-4]")			\
+> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13, #4]!")			\
+> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13, #-4]!")			\
+> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13], #4")			\
+> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13], #-4")			\
+> -	TEST_COPROCESSOR("ldc"two"l	0, cr0, [r13], {1}")			\
+> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13, #4]")			\
+> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13, #-4]")			\
+> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13, #4]!")			\
+> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13, #-4]!")			\
+> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13], #4")			\
+> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13], #-4")			\
+> +	TEST_COPROCESSOR("stc"two"	p0, cr0, [r13], {1}")			\
+> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13, #4]")			\
+> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13, #-4]")			\
+> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13, #4]!")			\
+> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13, #-4]!")			\
+> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13], #4")			\
+> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13], #-4")			\
+> +	TEST_COPROCESSOR("stc"two"l	p0, cr0, [r13], {1}")			\
+> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13, #4]")			\
+> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13, #-4]")			\
+> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13, #4]!")			\
+> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13, #-4]!")			\
+> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13], #4")			\
+> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13], #-4")			\
+> +	TEST_COPROCESSOR("ldc"two"	p0, cr0, [r13], {1}")			\
+> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13, #4]")			\
+> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13, #-4]")			\
+> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13, #4]!")			\
+> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13, #-4]!")			\
+> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13], #4")			\
+> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13], #-4")			\
+> +	TEST_COPROCESSOR("ldc"two"l	p0, cr0, [r13], {1}")			\
+>  										\
+> -	TEST_COPROCESSOR( "stc"two"	0, cr0, [r15, #4]")			\
+> -	TEST_COPROCESSOR( "stc"two"	0, cr0, [r15, #-4]")			\
+> +	TEST_COPROCESSOR( "stc"two"	p0, cr0, [r15, #4]")			\
+> +	TEST_COPROCESSOR( "stc"two"	p0, cr0, [r15, #-4]")			\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##daf0001) "	@ stc"two"	0, cr0, [r15, #4]!")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##d2f0001) "	@ stc"two"	0, cr0, [r15, #-4]!")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##caf0001) "	@ stc"two"	0, cr0, [r15], #4")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c2f0001) "	@ stc"two"	0, cr0, [r15], #-4")	\
+> -	TEST_COPROCESSOR( "stc"two"	0, cr0, [r15], {1}")			\
+> -	TEST_COPROCESSOR( "stc"two"l	0, cr0, [r15, #4]")			\
+> -	TEST_COPROCESSOR( "stc"two"l	0, cr0, [r15, #-4]")			\
+> +	TEST_COPROCESSOR( "stc"two"	p0, cr0, [r15], {1}")			\
+> +	TEST_COPROCESSOR( "stc"two"l	p0, cr0, [r15, #4]")			\
+> +	TEST_COPROCESSOR( "stc"two"l	p0, cr0, [r15, #-4]")			\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##def0001) "	@ stc"two"l	0, cr0, [r15, #4]!")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##d6f0001) "	@ stc"two"l	0, cr0, [r15, #-4]!")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##cef0001) "	@ stc"two"l	0, cr0, [r15], #4")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c6f0001) "	@ stc"two"l	0, cr0, [r15], #-4")	\
+> -	TEST_COPROCESSOR( "stc"two"l	0, cr0, [r15], {1}")			\
+> -	TEST_COPROCESSOR( "ldc"two"	0, cr0, [r15, #4]")			\
+> -	TEST_COPROCESSOR( "ldc"two"	0, cr0, [r15, #-4]")			\
+> +	TEST_COPROCESSOR( "stc"two"l	p0, cr0, [r15], {1}")			\
+> +	TEST_COPROCESSOR( "ldc"two"	p0, cr0, [r15, #4]")			\
+> +	TEST_COPROCESSOR( "ldc"two"	p0, cr0, [r15, #-4]")			\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##dbf0001) "	@ ldc"two"	0, cr0, [r15, #4]!")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##d3f0001) "	@ ldc"two"	0, cr0, [r15, #-4]!")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##cbf0001) "	@ ldc"two"	0, cr0, [r15], #4")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c3f0001) "	@ ldc"two"	0, cr0, [r15], #-4")	\
+> -	TEST_COPROCESSOR( "ldc"two"	0, cr0, [r15], {1}")			\
+> -	TEST_COPROCESSOR( "ldc"two"l	0, cr0, [r15, #4]")			\
+> -	TEST_COPROCESSOR( "ldc"two"l	0, cr0, [r15, #-4]")			\
+> +	TEST_COPROCESSOR( "ldc"two"	p0, cr0, [r15], {1}")			\
+> +	TEST_COPROCESSOR( "ldc"two"l	p0, cr0, [r15, #4]")			\
+> +	TEST_COPROCESSOR( "ldc"two"l	p0, cr0, [r15, #-4]")			\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##dff0001) "	@ ldc"two"l	0, cr0, [r15, #4]!")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##d7f0001) "	@ ldc"two"l	0, cr0, [r15, #-4]!")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##cff0001) "	@ ldc"two"l	0, cr0, [r15], #4")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c7f0001) "	@ ldc"two"l	0, cr0, [r15], #-4")	\
+> -	TEST_COPROCESSOR( "ldc"two"l	0, cr0, [r15], {1}")
+> +	TEST_COPROCESSOR( "ldc"two"l	p0, cr0, [r15], {1}")
+>  
+>  #define COPROCESSOR_INSTRUCTIONS_MC_MR(two,cc)					\
+>  										\
+> -	TEST_COPROCESSOR( "mcrr"two"	0, 15, r0, r14, cr0")			\
+> -	TEST_COPROCESSOR( "mcrr"two"	15, 0, r14, r0, cr15")			\
+> +	TEST_COPROCESSOR( "mcrr"two"	p0, 15, r0, r14, cr0")			\
+> +	TEST_COPROCESSOR( "mcrr"two"	p15, 0, r14, r0, cr15")			\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c4f00f0) "	@ mcrr"two"	0, 15, r0, r15, cr0")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c40ff0f) "	@ mcrr"two"	15, 0, r15, r0, cr15")	\
+> -	TEST_COPROCESSOR( "mrrc"two"	0, 15, r0, r14, cr0")			\
+> -	TEST_COPROCESSOR( "mrrc"two"	15, 0, r14, r0, cr15")			\
+> +	TEST_COPROCESSOR( "mrrc"two"	p0, 15, r0, r14, cr0")			\
+> +	TEST_COPROCESSOR( "mrrc"two"	p15, 0, r14, r0, cr15")			\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c5f00f0) "	@ mrrc"two"	0, 15, r0, r15, cr0")	\
+>  	TEST_UNSUPPORTED(__inst_arm(0x##cc##c50ff0f) "	@ mrrc"two"	15, 0, r15, r0, cr15")	\
+> -	TEST_COPROCESSOR( "cdp"two"	15, 15, cr15, cr15, cr15, 7")		\
+> -	TEST_COPROCESSOR( "cdp"two"	0, 0, cr0, cr0, cr0, 0")		\
+> -	TEST_COPROCESSOR( "mcr"two"	15, 7, r15, cr15, cr15, 7")		\
+> -	TEST_COPROCESSOR( "mcr"two"	0, 0, r0, cr0, cr0, 0")			\
+> -	TEST_COPROCESSOR( "mrc"two"	15, 7, r15, cr15, cr15, 7")		\
+> -	TEST_COPROCESSOR( "mrc"two"	0, 0, r0, cr0, cr0, 0")
+> +	TEST_COPROCESSOR( "cdp"two"	p15, 15, cr15, cr15, cr15, 7")		\
+> +	TEST_COPROCESSOR( "cdp"two"	p0, 0, cr0, cr0, cr0, 0")		\
+> +	TEST_COPROCESSOR( "mcr"two"	p15, 7, r15, cr15, cr15, 7")		\
+> +	TEST_COPROCESSOR( "mcr"two"	p0, 0, r0, cr0, cr0, 0")		\
+> +	TEST_COPROCESSOR( "mrc"two"	p15, 7, r14, cr15, cr15, 7")		\
+> +	TEST_COPROCESSOR( "mrc"two"	p0, 0, r0, cr0, cr0, 0")
+>  
+>  	COPROCESSOR_INSTRUCTIONS_ST_LD("",e)
+>  #if __LINUX_ARM_ARCH__ >= 5
+> diff --git a/arch/arm/probes/kprobes/test-core.h b/arch/arm/probes/kprobes/test-core.h
+> index 19a5b2add41e..f1d5583e7bbb 100644
+> --- a/arch/arm/probes/kprobes/test-core.h
+> +++ b/arch/arm/probes/kprobes/test-core.h
+> @@ -108,6 +108,7 @@ struct test_arg_end {
+>  
+>  #define TESTCASE_START(title)					\
+>  	__asm__ __volatile__ (					\
+> +	".syntax unified				\n\t"	\
+>  	"bl	__kprobes_test_case_start		\n\t"	\
+>  	".pushsection .rodata				\n\t"	\
+>  	"10:						\n\t"	\
+> -- 
+> 2.30.0.478.g8a0d178c01-goog
+> 
