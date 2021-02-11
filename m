@@ -2,90 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3D4318C86
+	by mail.lfdr.de (Postfix) with ESMTP id DFBA2318C87
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhBKNrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbhBKNc1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:32:27 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67818C061574;
-        Thu, 11 Feb 2021 05:31:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=D9CHTW+hSrLJ+MTxUD49Vye2O/Qwq/6hLfOIDMtGZF8=; b=NGqXU4aN88igflHdBTGwsWyzO
-        SOdOHOGSupIcIWlGuRrdrmtM/vy/5Ek7IXlXpJ9DXLVHsj8TAXx0Z7gvIQLqzNbgUEbZDBUO82OPC
-        FnlzmaPbI9uI9Vg/ZIXmhL3Z+0CFWEq9ap9EoZy+ZtUzXsf1dHhJesT70paAXDXkUVKI7mCugi4z9
-        GrVN23MNbTlmjE0cq6wUvm2VvCoTzDlta5K9zjqdbHFcu3lZTT3a4sSIVO60BGeOeEK3xCYNjcVDi
-        U/6EwrQ6MMjElPGPn6HHuYnNy8EOZ0ztodsxDRrLH2HIsGCIY1ZBgOpcfGDxm2GBkiXyZ7VnnTqIK
-        sySJupWkg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42052)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lAC4M-0006Dh-L7; Thu, 11 Feb 2021 13:31:42 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lAC4L-00068W-P3; Thu, 11 Feb 2021 13:31:41 +0000
-Date:   Thu, 11 Feb 2021 13:31:41 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Yan Markman <ymarkman@marvell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "atenart@kernel.org" <atenart@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH v13 net-next 08/15] net: mvpp2: add FCA RXQ non
- occupied descriptor threshold
-Message-ID: <20210211133141.GK1463@shell.armlinux.org.uk>
-References: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
- <1613040542-16500-9-git-send-email-stefanc@marvell.com>
- <20210211125009.GF1463@shell.armlinux.org.uk>
- <CO6PR18MB387356072132F306EBB1C9C2B08C9@CO6PR18MB3873.namprd18.prod.outlook.com>
+        id S232131AbhBKNsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:48:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57028 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230311AbhBKNd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:33:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613050356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z8QpkuKwFOuoCzlSfpkMbEMntQ0JgQj2Ria9Y2eQ5X4=;
+        b=LNu5rrw/53bJBbVAvw9MTl65Q2KhDVUcipbrntqj+KxZbKwvSy1VrZowz5Tn+RCX5BjTah
+        K1QT8BCTqBJhwkmRA2cmlHvj4KRA7kX+rTwZbeQZNoWMkd46v0ijSN46tG6dbhqgqGKTTQ
+        qsAeiLK6oWkEJxpLba0jum/KQRCJLuc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B2529AF31;
+        Thu, 11 Feb 2021 13:32:36 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 14:32:36 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH v5 2/4] lib: vsprintf: Fix handling of number field
+ widths in vsscanf
+Message-ID: <YCUx9EqdV4ZOXqyI@alley>
+References: <20210208140154.10964-1-rf@opensource.cirrus.com>
+ <20210208140154.10964-2-rf@opensource.cirrus.com>
+ <YCFWRp8a0sw3mUSI@smile.fi.intel.com>
+ <2f9f57a3-f0d6-1e07-36f9-682d65b481ad@opensource.cirrus.com>
+ <YCUpPUDIw7AydY9N@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CO6PR18MB387356072132F306EBB1C9C2B08C9@CO6PR18MB3873.namprd18.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <YCUpPUDIw7AydY9N@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 01:22:35PM +0000, Stefan Chulski wrote:
-> > Ditto.
+On Thu 2021-02-11 13:55:26, Petr Mladek wrote:
+> On Mon 2021-02-08 17:38:29, Richard Fitzgerald wrote:
+> > On 08/02/2021 15:18, Andy Shevchenko wrote:
+> > > On Mon, Feb 08, 2021 at 02:01:52PM +0000, Richard Fitzgerald wrote:
+> > > A nit-pick: What if we rewrite above as
+> > > 
+> > > static unsigned long long simple_strntoull(const char *cp, size_t max_chars,
+> > > 					   char **endp, unsigned int base)
+> > > {
+> > > 	unsigned long long result = 0ULL;
+> > > 	const char *startp = cp;
+> > > 	unsigned int rv;
+> > > 	size_t chars;
+> > > 
+> > > 	cp = _parse_integer_fixup_radix(cp, &base);
+> > > 	chars = cp - startp;
+> > > 	if (chars >= max_chars) {
+> > > 		/* We hit the limit */
+> > > 		cp = startp + max_chars;
+> > > 	} else {
+> > > 		rv = _parse_integer_limit(cp, base, &result, max_chars - chars);
+> > > 		/* FIXME */
+> > > 		cp += (rv & ~KSTRTOX_OVERFLOW);
+> > > 	}
+> > > 
+> > > 	if (endp)
+> > > 		*endp = (char *)cp;
+> > > 
+> > > 	return result;
+> > > }
+> > > 
+> > > ...
 > > 
-> > I don't think these need to be fixed in the net tree, but it would still be nice
-> > to fix the problem. Please do so, as an initial patch in your series - so we can
-> > then backport if it turns out to eventually be necessary.
 > > 
-> > Thanks.
+> > I don't mind rewriting that code if you prefer that way.
+> > I am used to working on other kernel subsytems where the preference is
+> > to bail out on the error case so that the "normal" case flows without
+> > nesting.
 > 
-> My series already has 15 patches and patchwork not happy about series with over 15 patches.
-> Maybe I can send this as separate patch to net-next(or net) first and base this series on this net-next tree with this patch?
+> Yeah. But in this case Andy's variant looks slightly better redable to me.
 
-In that case, send the fixes as a separate series and get that merged
-first. It shouldn't take very long to get the fixes merged.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> ...
+> 
+> > > 
+> > > > +			val.s = simple_strntoll(str,
+> > > > +						field_width > 0 ? field_width : SIZE_MAX,
+> > > > +						&next, base);
+> > > 
+> > > is? Also, is field_width == 0 should be treated as "parse to the MAX"?
+> > 
+> > Earlier code terminates scanning if the width parsed from the format
+> > string is <= 0.
+> 
+> > So field_width can only be -1 or > 0 here. But now you
+> > point it out, that test would be better as field_width >= 0 ... so
+> > it deals with 0 if it ever happened to sneak through to here
+> > somehow.
+> 
+> It might make sense to be proactive and change it to >= 0.
+> But I would do it in a separate patch. The "< 0" condition
+> matches the original code.
+
+Ah, I have missed that you have already sent v6 where you did this change
+in the same patch. There is no need to resend it just because of this.
+I am going to look at v6.
+
+Best Regards,
+Petr
