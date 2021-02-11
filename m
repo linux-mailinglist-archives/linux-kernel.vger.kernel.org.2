@@ -2,142 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0130F319278
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:47:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFA531927B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhBKSrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:47:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
+        id S230170AbhBKSrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:47:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhBKSqb (ORCPT
+        with ESMTP id S229531AbhBKSq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:46:31 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403CBC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:45:51 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id q10so840526plk.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:45:51 -0800 (PST)
+        Thu, 11 Feb 2021 13:46:58 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDFEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:46:18 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id m7so7197430oiw.12
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:46:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QgIYTyhfH72b4fULrOrfaw7q3uY66r3eG0ZY6y6h27g=;
-        b=hFEBW2MXaPJFYKkCfGxQdNc1eSytYrBeXV3p6ZT1FrjSEGdacvycOmi8Rrwh5bYz/E
-         oxAhJutYjhrytLuCWHZqOdVBRUqq4PTcpkkHdX4o9eEdd3mqGLw+pourJhqeSlsRshJB
-         3JTlBxWOkUKkPcCMCY3h0D6zLNdTh9Ml8GXd4=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=91GcU1VsBVz3FYSR+U/pa4MztTHbqU+7RC9yCYvzYc0=;
+        b=D75yU+4hQYTZNquIdcs8budOC8Xa/TjmEPESrTS6vnG1TcE3DidrBRttPPRsawIXxy
+         /lxfWlpqAg+LbTH7UwR6MCcjagqL7K/15Xio7Ua91TS082iUBO5trwzNXxZPZrQ4098M
+         7lA4V2N8q+gOvNB9KGMRFAPk3ggi7XiTzoeUdDd4HBtfFKh57mo4V4J21OiZE00esE+8
+         oygAEsgp9VrumXQ69HdVk/efA3aWIeunaJZ2Vxbk+7U5QPLvv+pOuG3/9XHHMpBPRjnF
+         3fU7EeDs1aAROMHMyLl8Uxy6r48LMELXXLxW8gBPEHv3VEMtBaM/DUQq6ggMB/v/aZx0
+         zYKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QgIYTyhfH72b4fULrOrfaw7q3uY66r3eG0ZY6y6h27g=;
-        b=X+W9Tba1nlf4q+783tgKfdjc3GmsCKJwdkfmLqdeMYltSiw+wGwA0QJUmTlOTvLXdc
-         X96kD46mOjFlrrb7rSXmIEffAosxwef3txDsiDPJzDk8fkMBbkGNWeCkwAFmNzNZXS2b
-         1wQ8q3rPCdwLiKnpaNa9bPZlUM1BLO7vz4dxaryiwiwW6mMdLc9qvuzwA/vYXU7KoyJi
-         glr67JY3mRXllsplmGrG92e3St4Zxc1AMfE37ez3rGyjk3YV+Eay7Y2u32225B9TO2HK
-         Ku4ztr8KFgZRsUMJ/Hz8TSl4eyMCveoMXbjQrnSYmN3CtrbPlEtkX5R5XH5Dh8fvOLU4
-         7ftQ==
-X-Gm-Message-State: AOAM533yJgDIqVhVYDivwqHVvhuPTpxhJyCvsx81c76G1mKohzin33fn
-        +2M2hMsdPr6WzH1oFgFAEn8rqw==
-X-Google-Smtp-Source: ABdhPJyWoJFOTr/Z0khlbxK+fLlWgo3O1EoJvvJueeEg2GOZoTLwS1zrIYglhtQ5DwbHOYjFzx6E9A==
-X-Received: by 2002:a17:90a:d34b:: with SMTP id i11mr5118092pjx.235.1613069150706;
-        Thu, 11 Feb 2021 10:45:50 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:fc92:99c:fc2f:8603])
-        by smtp.gmail.com with UTF8SMTPSA id d18sm5808929pjz.40.2021.02.11.10.45.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 10:45:50 -0800 (PST)
-Date:   Thu, 11 Feb 2021 10:45:48 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Subject: Re: [PATCH v5 3/4] usb: host: xhci-plat: Create platform device for
- onboard hubs in probe()
-Message-ID: <YCV7XGloQIjtFAqf@google.com>
-References: <20210210171040.684659-1-mka@chromium.org>
- <20210210091015.v5.3.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid>
- <YCTVjx480BzT+saO@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=91GcU1VsBVz3FYSR+U/pa4MztTHbqU+7RC9yCYvzYc0=;
+        b=jHoA0puY2K/ALDDEaWI2S+rca2NqPrji04E0ySZse9Vctf3tt+hxIXAh/m531czU2j
+         cWj8D6iuTqtfd4S4oFrjTAdIshAAPshLHv9Nl7NeU1cZvqQD0T54ZSLsSAAD5TBhNX6R
+         DDK19MfFILuBihZAeIBUzK3ccM0VwQGq/6Ql7G+tEFjkC3NvQJrEKVodkK3TySbNmUfu
+         6boOkVSBEDeF7AZso8F+Dj8D+vYXyitmYKcZGm19HPoBX/oTvVmLCRdlv4ytfHcOxobp
+         JyKSiXb+hq7d9SNfdF6tpGYZNYHkovXj5M6iEAGHPGt+ryFv4wWQN573ijMLjxgC1s+1
+         orvA==
+X-Gm-Message-State: AOAM532soy8s91CDoIgmpjB1MipMNyJeDiWvNuWhtBLKzd3nJnm/9bfs
+        jtVMC/OKjjUv2k7Yz9ViUGm+lL2qQ/zOk7drQdcWQA==
+X-Google-Smtp-Source: ABdhPJwnLvs6LPAcpWrc/9dCYZHZYfS+QKV2BP8u5znNiYmi4A5EUDRhQnB5T/HqH2lP0H40DExXmh5igB9xCy9ahFA=
+X-Received: by 2002:a05:6808:294:: with SMTP id z20mr3709431oic.14.1613069177774;
+ Thu, 11 Feb 2021 10:46:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YCTVjx480BzT+saO@kroah.com>
+References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
+ <160812658044.3364.4188208281079332844.tip-bot2@tip-bot2> <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
+ <YCU3Vdoqd+EI+zpv@kroah.com>
+In-Reply-To: <YCU3Vdoqd+EI+zpv@kroah.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 11 Feb 2021 10:46:05 -0800
+Message-ID: <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
+Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
+ non-section symbols
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Xi Ruoyao <xry111@mengyan1223.wang>
+Cc:     "# 3.4.x" <stable@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-tip-commits@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Thu, Feb 11, 2021 at 5:55 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Feb 11, 2021 at 09:32:03PM +0800, Xi Ruoyao wrote:
+> > Hi all,
+> >
+> > The latest GNU assembler (binutils-2.36.1) is removing unused section symbols
+> > like Clang [1].  So linux-5.10.15 can't be built with binutils-2.36.1 now.  It
+> > has been reported as https://bugzilla.kernel.org/show_bug.cgi?id=211693.
 
-On Thu, Feb 11, 2021 at 07:58:23AM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Feb 10, 2021 at 09:10:38AM -0800, Matthias Kaehlcke wrote:
-> > Check during probe() if a hub supported by the onboard_usb_hub
-> > driver is connected to the controller. If such a hub is found
-> > create the corresponding platform device. This requires the
-> > device tree to have a node for the hub with its vendor and
-> > product id (which is not common for USB devices). Further the
-> > platform device is only created when CONFIG_USB_ONBOARD_HUB=y/m.
-> > 
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > ---
-> > 
-> > Changes in v5:
-> > - patch added to the series
-> > 
-> >  drivers/usb/host/xhci-plat.c | 16 ++++++++++++++++
-> >  include/linux/usb/hcd.h      |  2 ++
-> >  2 files changed, 18 insertions(+)
-> > 
-> > diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-> > index 4d34f6005381..e785fa109eea 100644
-> > --- a/drivers/usb/host/xhci-plat.c
-> > +++ b/drivers/usb/host/xhci-plat.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/of.h>
-> >  #include <linux/of_device.h>
-> >  #include <linux/platform_device.h>
-> > +#include <linux/usb/onboard_hub.h>
-> >  #include <linux/usb/phy.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/acpi.h>
-> > @@ -184,6 +185,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
-> >  	int			ret;
-> >  	int			irq;
-> >  	struct xhci_plat_priv	*priv = NULL;
-> > +	struct device_node	*np;
-> >  
-> >  
-> >  	if (usb_disabled())
-> > @@ -356,6 +358,17 @@ static int xhci_plat_probe(struct platform_device *pdev)
-> >  	 */
-> >  	pm_runtime_forbid(&pdev->dev);
-> >  
-> > +	np = usb_of_get_device_node(hcd->self.root_hub, hcd->self.busnum);
-> > +	if (np && of_is_onboard_usb_hub(np)) {
-> > +		struct platform_device *pdev;
-> > +
-> > +		pdev = of_platform_device_create(np, NULL, NULL);
-> 
-> A platform device is a child of another platform device?  Ok, but
-> really, why?  What uses this device?
+Xi,
+Happy Lunar New Year to you, too, and thanks for the report.  Did you
+observe such segfaults for older branches of stable?
 
-In earlier versions there was a standalone platform device:
-https://lore.kernel.org/patchwork/patch/1313001/
+> 2.36 of binutils fails to build the 4.4.y tree right now as well, but as
+> objtool isn't there, I don't know what to do about it :(
 
-However this was rejected by Rob, since the DT would require a node for the
-platform device and (implicit or explicit) nodes for the USB devices,
-representing the same physical device:
+Greg,
+There may be multiple issues in the latest binutils release for the
+kernel; we should still avoid segfaults in host tools so I do
+recommend considering this patch for inclusion at least into 5.10.y.
+Arnd's report in https://github.com/ClangBuiltLinux/linux/issues/1207
+mentions this was found via randconfig testing, so likely some set of
+configs is needed to reproduce reliably.
 
-https://lore.kernel.org/patchwork/patch/1305395/
-https://lore.kernel.org/patchwork/patch/1313000/
-
-Both Doug Anderson and myself argued that it seems legitimate to distinguish
-between the devices connected to the USB bus, and the chip which might have
-GPIOs, regulators, clocks, ... but apparently our arguments were not
-convincing enough.
+Do you have more info about the failure you're observing? Trolling
+lore, I only see:
+https://lore.kernel.org/stable/YCLeJcQFsDIsrAEc@kroah.com/
+(Maybe it was reported on a different list; I only searched stable ML).
+-- 
+Thanks,
+~Nick Desaulniers
