@@ -2,139 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996AA31899E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96753189A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhBKLhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:37:45 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:53858 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhBKLHm (ORCPT
+        id S231197AbhBKLii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:38:38 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:59614 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231396AbhBKLIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:07:42 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BB63cP128023;
-        Thu, 11 Feb 2021 11:06:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=GiTaMAbIRvqIBQ+RpjfDs/lcGV/8NbrZwq2WqxCkbzA=;
- b=myFWP82pozcA3AqWRl9lpiwiisN+dXkaviUQjJ1reVnjNIrcbzdkEHDVnoZZLFy5jCjY
- Pe0w0jWXi1TLpJiTcDuQzfkTLmcCPor3tNKIOmysMKNOI90WmR179yXs9cXv0jo3zi8L
- xiRyaARZnz0GfSByLxhqZfYBoQk0OdsbSdOrpBVKvU72eeChs0qE2grfz1oxWK+4oC5h
- X9E2uRPuCEzBhpdfiC0SG2WSv00lqf1X+GpeFvVs/5Mdtut48zSsQhArJdP00elcvpv5
- B4yA0bnBX4NlkPtmDjVZCt7tGEL5meDLvw56QuIx7EeJ1rJ4Cc8Gsc6TxtmxH6GUhU/u +A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 36m4upwjpk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 11:06:43 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BB5XVQ033690;
-        Thu, 11 Feb 2021 11:06:42 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 36j513x5d7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 11:06:41 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11BB6fSS024277;
-        Thu, 11 Feb 2021 11:06:41 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 11 Feb 2021 03:06:40 -0800
-Date:   Thu, 11 Feb 2021 14:06:30 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] staging: rtl8723bs: Replace one-element array with
- flexible-array member in struct ndis_80211_var_ie
-Message-ID: <20210211110630.GG2696@kadam>
-References: <20210210224937.GA11922@embeddedor>
+        Thu, 11 Feb 2021 06:08:01 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BB74Bv028238;
+        Thu, 11 Feb 2021 12:07:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=selector1;
+ bh=OeVb/YX9vc0dVFhSp2zIejtpz3jrgkcK0rTNlrGiJj4=;
+ b=CpzT8oAZ5Hu7FV8crOCSrZWHKjASxYMNY2/yKUdKbAkkEVGu/tK0jxTht0f0ZCDACCRL
+ fbAZbOpHpDtiJokRokQs5Dg9HBSFBtNCKxESk6huJuU6eIFrTJNQnUqDLzqYU7pHfszN
+ 0u3ERONsLSyjFBjwB2AvgwG7b6GarPd8k1x6a1w5UzA0iKUOwcFCA8gXvhdALKX6pQ9k
+ cazu+tV4p5v4+DluT+UzALR+6l73A20X2mDUvowP9OA24/cp4kbgk3Fo5kIp6SMlCU7+
+ el6Ra4I6NQGcVV2p7WRpAtlPoRWIvOkanP61QAjtqqrhMfYjNcFLUaW3RGSY5S19Ph0J dg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36hr2cp4mk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 12:07:05 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3CBDD10002A;
+        Thu, 11 Feb 2021 12:07:04 +0100 (CET)
+Received: from Webmail-eu.st.com (gpxdag2node6.st.com [10.75.127.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2BDDC225892;
+        Thu, 11 Feb 2021 12:07:04 +0100 (CET)
+Received: from GPXDAG2NODE6.st.com (10.75.127.70) by GPXDAG2NODE6.st.com
+ (10.75.127.70) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Feb
+ 2021 12:07:03 +0100
+Received: from GPXDAG2NODE6.st.com ([fe80::bc43:6900:9b0:6519]) by
+ GPXDAG2NODE6.st.com ([fe80::bc43:6900:9b0:6519%19]) with mapi id
+ 15.00.1473.003; Thu, 11 Feb 2021 12:07:03 +0100
+From:   Valentin CARON - foss <valentin.caron@foss.st.com>
+To:     Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Erwan LE-RAY - foss <erwan.leray@foss.st.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ARM: dts: stm32: fix usart 2 & 3 pinconf to wake up with flow
+ control
+Thread-Topic: [PATCH] ARM: dts: stm32: fix usart 2 & 3 pinconf to wake up with
+ flow control
+Thread-Index: AQHXAGYHV6g+MvDZYkWHZvdvB4+Udw==
+Date:   Thu, 11 Feb 2021 11:07:03 +0000
+Message-ID: <20210211110620.31594-1-valentin.caron@foss.st.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.119]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210210224937.GA11922@embeddedor>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102110100
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1011
- suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102110100
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_05:2021-02-10,2021-02-11 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 04:49:37PM -0600, Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use “flexible array members”[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
-> 
-> Refactor the code according to the use of a flexible-array member in
-> struct ndis_80211_var_ie, instead of a one-element array.
-> 
-> Also, this helps with the ongoing efforts to enable -Warray-bounds and
-> fix the following warnings:
-> 
->   CC [M]  drivers/staging/rtl8723bs/core/rtw_wlan_util.o
-> In file included from ./drivers/staging/rtl8723bs/include/drv_types.h:20,
->                  from drivers/staging/rtl8723bs/core/rtw_wlan_util.c:9:
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c: In function ‘HT_caps_handler’:
-> ./drivers/staging/rtl8723bs/include/basic_types.h:108:11: warning: array subscript 1 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
->   108 |  (EF1BYTE(*((u8 *)(__pstart))))
->       |           ^
-> ./drivers/staging/rtl8723bs/include/basic_types.h:42:8: note: in definition of macro ‘EF1BYTE’
->    42 |  ((u8)(_val))
->       |        ^~~~
-> ./drivers/staging/rtl8723bs/include/basic_types.h:127:4: note: in expansion of macro ‘LE_P1BYTE_TO_HOST_1BYTE’
->   127 |   (LE_P1BYTE_TO_HOST_1BYTE(__pstart) >> (__bitoffset)) & \
->       |    ^~~~~~~~~~~~~~~~~~~~~~~
-> ./drivers/staging/rtl8723bs/include/rtw_ht.h:97:55: note: in expansion of macro ‘LE_BITS_TO_1BYTE’
->    97 | #define GET_HT_CAPABILITY_ELE_RX_STBC(_pEleStart)     LE_BITS_TO_1BYTE((_pEleStart)+1, 0, 2)
->       |                                                       ^~~~~~~~~~~~~~~~
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1104:58: note: in expansion of macro ‘GET_HT_CAPABILITY_ELE_RX_STBC’
->  1104 |   if (TEST_FLAG(phtpriv->stbc_cap, STBC_HT_ENABLE_TX) && GET_HT_CAPABILITY_ELE_RX_STBC(pIE->data)) {
->       |                                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1051:75: warning: array subscript 2 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
->  1051 |    if ((pmlmeinfo->HT_caps.u.HT_cap_element.AMPDU_para & 0x3) > (pIE->data[i] & 0x3))
->       |                                                                  ~~~~~~~~~^~~
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c: In function ‘check_assoc_AP’:
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1606:19: warning: array subscript 4 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
->  1606 |      if (pIE->data[4] == 1)
->       |          ~~~~~~~~~^~~
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1609:20: warning: array subscript 5 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
->  1609 |       if (pIE->data[5] & RT_HT_CAP_USE_92SE)
->       |           ~~~~~~~~~^~~
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1613:19: warning: array subscript 5 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
->  1613 |      if (pIE->data[5] & RT_HT_CAP_USE_SOFTAP)
->       |          ~~~~~~~~~^~~
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:1617:20: warning: array subscript 6 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
->  1617 |       if (pIE->data[6] & RT_HT_CAP_USE_JAGUAR_BCUT) {
->       |           ~~~~~~~~~^~~
-> 
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
-> 
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/109
-> Build-tested-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/602434b8.jc5DoXJ0bmHoxgIL%25lkp@intel.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Modify usart 2 & 3 pins to allow wake up from low power mode while the
+hardware flow control is activated. UART RTS pin need to stay configure
+in idle mode to receive characters in order to wake up.
 
-Looks okay to me.  I looked for potential issues with changing the
-sizeof the struct but couldn't find any.
+Fixes: 842ed898a757 ("ARM: dts: stm32: add usart2, usart3 and uart7 pins in=
+ stm32mp15-pinctrl")
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-regards,
-dan carpenter
-
+diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/s=
+tm32mp15-pinctrl.dtsi
+index 7b4249ed1983..060baa8b7e9d 100644
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -1891,10 +1891,15 @@
+ 	usart2_idle_pins_c: usart2-idle-2 {
+ 		pins1 {
+ 			pinmux =3D <STM32_PINMUX('D', 5, ANALOG)>, /* USART2_TX */
+-				 <STM32_PINMUX('D', 4, ANALOG)>, /* USART2_RTS */
+ 				 <STM32_PINMUX('D', 3, ANALOG)>; /* USART2_CTS_NSS */
+ 		};
+ 		pins2 {
++			pinmux =3D <STM32_PINMUX('D', 4, AF7)>; /* USART2_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate =3D <3>;
++		};
++		pins3 {
+ 			pinmux =3D <STM32_PINMUX('D', 6, AF7)>; /* USART2_RX */
+ 			bias-disable;
+ 		};
+@@ -1940,10 +1945,15 @@
+ 	usart3_idle_pins_b: usart3-idle-1 {
+ 		pins1 {
+ 			pinmux =3D <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+-				 <STM32_PINMUX('G', 8, ANALOG)>, /* USART3_RTS */
+ 				 <STM32_PINMUX('I', 10, ANALOG)>; /* USART3_CTS_NSS */
+ 		};
+ 		pins2 {
++			pinmux =3D <STM32_PINMUX('G', 8, AF8)>; /* USART3_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate =3D <0>;
++		};
++		pins3 {
+ 			pinmux =3D <STM32_PINMUX('B', 12, AF8)>; /* USART3_RX */
+ 			bias-disable;
+ 		};
+@@ -1976,10 +1986,15 @@
+ 	usart3_idle_pins_c: usart3-idle-2 {
+ 		pins1 {
+ 			pinmux =3D <STM32_PINMUX('B', 10, ANALOG)>, /* USART3_TX */
+-				 <STM32_PINMUX('G', 8, ANALOG)>, /* USART3_RTS */
+ 				 <STM32_PINMUX('B', 13, ANALOG)>; /* USART3_CTS_NSS */
+ 		};
+ 		pins2 {
++			pinmux =3D <STM32_PINMUX('G', 8, AF8)>; /* USART3_RTS */
++			bias-disable;
++			drive-push-pull;
++			slew-rate =3D <0>;
++		};
++		pins3 {
+ 			pinmux =3D <STM32_PINMUX('B', 12, AF8)>; /* USART3_RX */
+ 			bias-disable;
+ 		};
+--=20
+2.17.1
