@@ -2,108 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800FB318A1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C0F318A19
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhBKMJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:09:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32122 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230299AbhBKMA3 (ORCPT
+        id S230144AbhBKMIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:08:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231487AbhBKL7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:00:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613044735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PBbv8Ik3MJk5Ifs8Y2ot0HB2Ai76el9x4Ro3xXxLdLQ=;
-        b=BWrhp+s57HWmRJYlMh2yTfEGTIUGnnSrFjhqm9JHYM/7if/tYoMN/QISpH2i2HF89aFGnQ
-        X8L8wUVQRbWNZll94OFNavetvYLddRdf+p2BJ5Id39ZKbzCzTfpJJ1YBEwgC5KkwulKZJZ
-        evrsTft10dnELtphgsU64KVrpAnyoaU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-341-gBhHTZsqOq6Dw3-MLmTWMA-1; Thu, 11 Feb 2021 06:58:52 -0500
-X-MC-Unique: gBhHTZsqOq6Dw3-MLmTWMA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CAB080196C;
-        Thu, 11 Feb 2021 11:58:50 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.192.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C9DEA5D74A;
-        Thu, 11 Feb 2021 11:58:43 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 12:58:41 +0100
-From:   Andrew Jones <drjones@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Subject: Re: [PATCH 00/15] VM: selftests: Hugepage fixes and cleanups
-Message-ID: <20210211115841.sbs2a3p7xx4womrc@kamzik.brq.redhat.com>
-References: <20210210230625.550939-1-seanjc@google.com>
+        Thu, 11 Feb 2021 06:59:40 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC13C061574;
+        Thu, 11 Feb 2021 03:58:49 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id u16so1652729wmq.1;
+        Thu, 11 Feb 2021 03:58:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ObOPE3Vxw9na61V0nCVGRHaYvQwK9e3MP9lFm6Pn/DM=;
+        b=WhEfeNahuHSnhs1wD7y0pT8PtEV20fASmSIfOaChNE8De45D/94euh8T+PYlykHH/D
+         Bll//mbnzGIylluxY2ifqW/wiRUx9x4pZSPuOQ5i37bSZ8dtEU+e+lK7pPhxdOONCVns
+         hp4DScKOdMMFahoEDXZ0+U8kf8/NkgOtJ5jNpHFcf2+20un6BNw79/6hGMX7NYrg8vLp
+         2SuKaqP3hxu0XBPTK2hvzJQkQF+4g/AVIRdLOYOgHRS2vJmUoFX5zu+yMR2oSr/MvJXA
+         YtDSezGN4TQ8V0984dWfI/R1dakCfEBB8WwkHjJwY4DHKsavzKygF3+n/IJe5cM6LiQs
+         /AkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ObOPE3Vxw9na61V0nCVGRHaYvQwK9e3MP9lFm6Pn/DM=;
+        b=s0PVes3og/0LMQzauAuW8ogl6Xa2d8fQee62QvDPMw/4sXz0k/aOIDT5HUmy1GSGqj
+         HkWLUzRfZsYB1p/J1yrVu+akFXtf3FQpAx/tK+iNHhxSpw/0mZfGBPicoOFdUxzpRdr1
+         n7bfqVImj2IgSGXhcYSQUHuwXah9OFK0Y8HRH2oH8hu9RJjq3GrfsN8rn88bde5SOGPH
+         g+DgT6gUhSkJHl3A4WIGAg4xAXAG8AdPBIJieCZjy8Q13xqJsPrk7W27jrLh7H6uf52V
+         e5m74Owdqjhwq74pgfqaohZED46uIIvlk8iFptdfkbGjke5f+KS7JFO0sZZ60bH6uXu4
+         alPQ==
+X-Gm-Message-State: AOAM530DBr8ZgbCQjWBVPn98PH7hQNxsJH4xeMzqS4OjSa4duBq2bJMA
+        Jwh9/lOiW5AAxrn1dOr4bzp/fVyRQRGh9Q==
+X-Google-Smtp-Source: ABdhPJzwBdXYcgzpPyh6B5OyvA4ZsH8yFVbfUv0QT/5HyVa9ggvzBWp3jphrqpVYa9UBOHLpMR57bA==
+X-Received: by 2002:a05:600c:4f14:: with SMTP id l20mr5011471wmq.155.1613044728374;
+        Thu, 11 Feb 2021 03:58:48 -0800 (PST)
+Received: from [192.168.2.202] (p5487b829.dip0.t-ipconnect.de. [84.135.184.41])
+        by smtp.gmail.com with ESMTPSA id x18sm9596308wmi.8.2021.02.11.03.58.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Feb 2021 03:58:47 -0800 (PST)
+Subject: Re: [PATCH] platform/surface: aggregator: Fix access of unaligned
+ value
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-test-robot <lkp@intel.com>
+References: <20210210230411.1938660-1-luzmaximilian@gmail.com>
+ <YCUFgF9gmyeO+796@smile.fi.intel.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <b68b7547-5be4-c823-d015-febb5e7f84e9@gmail.com>
+Date:   Thu, 11 Feb 2021 12:58:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210230625.550939-1-seanjc@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <YCUFgF9gmyeO+796@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 03:06:10PM -0800, Sean Christopherson wrote:
-> Fix hugepage bugs in the KVM selftests that specifically affect dirty
-> logging and demand paging tests.  Found while attempting to verify KVM
-> changes/fixes related to hugepages and dirty logging (patches incoming in
-> a separate series).
+On 2/11/21 11:22 AM, Andy Shevchenko wrote:
+> On Thu, Feb 11, 2021 at 12:04:11AM +0100, Maximilian Luz wrote:
+>> The raw message frame length is unaligned and explicitly marked as
+>> little endian. It should not be accessed without the appropriatte
+>> accessor functions. Fix this.
 > 
-> Clean up the perf_test_args util on top of the hugepage fixes to clarify
-> what "page size" means, and to improve confidence in the code doing what
-> it thinks it's doing.  In a few cases, users of perf_test_args were
-> duplicating (approximating?) calculations made by perf_test_args, and it
-> wasn't obvious that both pieces of code were guaranteed to end up with the
-> same result.
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Though a few nit-picks below.
 > 
-> Sean Christopherson (15):
->   KVM: selftests: Explicitly state indicies for vm_guest_mode_params
->     array
->   KVM: selftests: Expose align() helpers to tests
->   KVM: selftests: Align HVA for HugeTLB-backed memslots
->   KVM: selftests: Force stronger HVA alignment (1gb) for hugepages
->   KVM: selftests: Require GPA to be aligned when backed by hugepages
->   KVM: selftests: Use shorthand local var to access struct
->     perf_tests_args
->   KVM: selftests: Capture per-vCPU GPA in perf_test_vcpu_args
->   KVM: selftests: Use perf util's per-vCPU GPA/pages in demand paging
->     test
->   KVM: selftests: Move per-VM GPA into perf_test_args
->   KVM: selftests: Remove perf_test_args.host_page_size
->   KVM: selftests: Create VM with adjusted number of guest pages for perf
->     tests
->   KVM: selftests: Fill per-vCPU struct during "perf_test" VM creation
->   KVM: selftests: Sync perf_test_args to guest during VM creation
->   KVM: selftests: Track size of per-VM memslot in perf_test_args
->   KVM: selftests: Get rid of gorilla math in memslots modification test
+>> Reported-by: kernel-test-robot <lkp@intel.com>
+>> Fixes: c167b9c7e3d6 ("platform/surface: Add Surface Aggregator subsystem")
+>> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+>> ---
+>>   drivers/platform/surface/aggregator/ssh_packet_layer.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/platform/surface/aggregator/ssh_packet_layer.c b/drivers/platform/surface/aggregator/ssh_packet_layer.c
+>> index 583315db8b02..9a78188d8d1c 100644
+>> --- a/drivers/platform/surface/aggregator/ssh_packet_layer.c
+>> +++ b/drivers/platform/surface/aggregator/ssh_packet_layer.c
+>> @@ -1774,7 +1774,8 @@ static size_t ssh_ptl_rx_eval(struct ssh_ptl *ptl, struct ssam_span *source)
+>>   		break;
+>>   	}
+>>   
+>> -	return aligned.ptr - source->ptr + SSH_MESSAGE_LENGTH(frame->len);
+>> +	return aligned.ptr - source->ptr
+>> +		+ SSH_MESSAGE_LENGTH(get_unaligned_le16(&frame->len));
 > 
->  .../selftests/kvm/demand_paging_test.c        |  39 ++---
->  .../selftests/kvm/dirty_log_perf_test.c       |  10 +-
->  .../testing/selftests/kvm/include/kvm_util.h  |  28 ++++
->  .../selftests/kvm/include/perf_test_util.h    |  18 +--
->  tools/testing/selftests/kvm/lib/kvm_util.c    |  36 ++---
->  .../selftests/kvm/lib/perf_test_util.c        | 139 ++++++++++--------
->  .../kvm/memslot_modification_stress_test.c    |  16 +-
->  7 files changed, 145 insertions(+), 141 deletions(-)
+> I would leave + on previous line.
+
+I can fix that if it bugs you.
+
+> Also it's possible to annotate temporary variable and use it, but it seems not
+> worth to do.
+
+Now that you mention it, we already have the correct frame length in
+payload.len. Let me draft up a new patch with that.
+
+> Side question: Do you think the below is correct (& operator)?
 > 
-> -- 
-> 2.30.0.478.g8a0d178c01-goog
->
+>          sp.len = get_unaligned_le16(&((struct ssh_frame *)sf.ptr)->len);
+> 
+> To me seems like you take an address to len member rather its value.
 
-For the series
+That's the point though, no? The signature is
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+         u16 get_unaligned_le16(const void *p)
 
-Thanks,
-drew
+so we do want a pointer to the len member. So I believe that is correct.
 
+> 
+>>   }
+>>   
+>>   static int ssh_ptl_rx_threadfn(void *data)
+> 
