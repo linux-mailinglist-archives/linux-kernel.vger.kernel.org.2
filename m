@@ -2,171 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EAA23191BF
+	by mail.lfdr.de (Postfix) with ESMTP id EEFD13191C0
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhBKSBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:01:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229792AbhBKRe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:34:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E4B164E7A;
-        Thu, 11 Feb 2021 17:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613064827;
-        bh=fPZrMeC/nj/TSc+t1C2/jwpmACS6xFLAOrT8VYD75Rk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cOLvZMA/6jyaMJC1fVNZhHudnniCCzvrZqo8tFK0s1LTrssVEu8OIy2+XmVKHRvcZ
-         0hGS24LjEuzGlcAsOkF1ninGLQq/zR/+4YJEPn9esDWxiiES57tiqCO6rtLmVAIRLy
-         0/olJdLyaFAwkt4q1c8tGPVDglCZzWTcC1GSBfoo=
-Date:   Thu, 11 Feb 2021 18:33:44 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v3] driver core: auxiliary bus: Fix calling stage for
- auxiliary bus init
-Message-ID: <YCVqeBXcHHtvx1p1@kroah.com>
-References: <20210210201611.1611074-1-dave.jiang@intel.com>
- <YCTUjimQhVi7VSrw@kroah.com>
- <5d5c3208-ba77-900c-460a-bb4b7a356b58@intel.com>
+        id S231281AbhBKSCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:02:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25344 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232425AbhBKRhJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:37:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613064938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ovn4XLZrYHU/jHtxdQ18Zp83BU5l3A71xzjYtmAEsIM=;
+        b=QlVNQ1zbudj41TTLdw1mN9a68JpT94/tRDCO1g3rQTTYAW9pKV6rKW6lqGI6gGUtJnyY+3
+        T1OOie/HgrBqY+HmJdC1YuAYmzDNDirB9WNz5KkN+5qnrjdDLiOatSNVKWYuWOgVWRoxwR
+        kiDD56P0Vu2+Hfcj52SjaxYpLM2IFi8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-Vcg4Znx-N2muzaI-yOl0lQ-1; Thu, 11 Feb 2021 12:35:34 -0500
+X-MC-Unique: Vcg4Znx-N2muzaI-yOl0lQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04833100A8EA;
+        Thu, 11 Feb 2021 17:35:32 +0000 (UTC)
+Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CFEA45D9D2;
+        Thu, 11 Feb 2021 17:35:24 +0000 (UTC)
+Subject: Re: [PATCH v13 06/15] iommu/smmuv3: Implement
+ attach/detach_pasid_table
+To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
+        alex.williamson@redhat.com
+Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
+        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
+        zhangfei.gao@linaro.org
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-7-eric.auger@redhat.com>
+ <4c3dded7-8b60-a303-3bdf-fa610f0e1a73@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <da89ce83-f27f-3b81-9d06-085eb9c4c046@redhat.com>
+Date:   Thu, 11 Feb 2021 18:35:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d5c3208-ba77-900c-460a-bb4b7a356b58@intel.com>
+In-Reply-To: <4c3dded7-8b60-a303-3bdf-fa610f0e1a73@huawei.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 09:21:29AM -0700, Dave Jiang wrote:
+Hi Keqian,
+
+On 2/2/21 9:03 AM, Keqian Zhu wrote:
+> Hi Eric,
 > 
-> On 2/10/2021 11:54 PM, Greg KH wrote:
-> > On Wed, Feb 10, 2021 at 01:16:11PM -0700, Dave Jiang wrote:
-> > > When the auxiliary device code is built into the kernel, it can be executed
-> > > before the auxiliary bus is registered. This causes bus->p to be not
-> > > allocated and triggers a NULL pointer dereference when the auxiliary bus
-> > > device gets added with bus_add_device(). Call the auxiliary_bus_init()
-> > > under driver_init() so the bus is initialized before devices.
-> > > 
-> > > Below is the kernel splat for the bug:
-> > > [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
-> > > [ 1.950670] #PF: supervisor read access in kernel mode
-> > > [ 1.950670] #PF: error_code(0x0000) - not-present page
-> > > [ 1.950670] PGD 0
-> > > [ 1.950670] Oops: 0000 1 SMP NOPTI
-> > > [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
-> > > [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> > > [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
-> > > [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
-> > > 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
-> > > [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
-> > > [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
-> > > [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
-> > > [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
-> > > [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
-> > > [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
-> > > [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
-> > > [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
-> > > [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-> > > [ 1.950670] PKRU: 55555554
-> > > [ 1.950670] Call Trace:
-> > > [ 1.950670] device_add+0x3ee/0x850
-> > > [ 1.950670] __auxiliary_device_add+0x47/0x60
-> > > [ 1.950670] idxd_pci_probe+0xf77/0x1180
-> > > [ 1.950670] local_pci_probe+0x4a/0x90
-> > > [ 1.950670] pci_device_probe+0xff/0x1b0
-> > > [ 1.950670] really_probe+0x1cf/0x440
-> > > [ 1.950670] ? rdinit_setup+0x31/0x31
-> > > [ 1.950670] driver_probe_device+0xe8/0x150
-> > > [ 1.950670] device_driver_attach+0x58/0x60
-> > > [ 1.950670] __driver_attach+0x8f/0x150
-> > > [ 1.950670] ? device_driver_attach+0x60/0x60
-> > > [ 1.950670] ? device_driver_attach+0x60/0x60
-> > > [ 1.950670] bus_for_each_dev+0x79/0xc0
-> > > [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
-> > > [ 1.950670] driver_attach+0x1e/0x20
-> > > [ 1.950670] bus_add_driver+0x154/0x1f0
-> > > [ 1.950670] driver_register+0x70/0xc0
-> > > [ 1.950670] __pci_register_driver+0x54/0x60
-> > > [ 1.950670] idxd_init_module+0xe2/0xfc
-> > > [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
-> > > [ 1.950670] do_one_initcall+0x4a/0x1e0
-> > > [ 1.950670] kernel_init_freeable+0x1fc/0x25c
-> > > [ 1.950670] ? rest_init+0xba/0xba
-> > > [ 1.950670] kernel_init+0xe/0x116
-> > > [ 1.950670] ret_from_fork+0x1f/0x30
-> > > [ 1.950670] Modules linked in:
-> > > [ 1.950670] CR2: 0000000000000060
-> > > [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
-> > > 
-> > > Fixes: 7de3697e9cbd ("Add auxiliary bus support")
-> > > Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
-> > > Acked-by: Dave Ertman <david.m.ertman@intel.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-> > > ---
-> > > 
-> > > v3:
-> > > - Change init function to return void. (GregKH)
-> > > v2:
-> > > - Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
-> > > 
-> > >   drivers/base/base.h      |  5 +++++
-> > >   drivers/base/auxiliary.c | 13 +++----------
-> > >   drivers/base/init.c      |  1 +
-> > >   3 files changed, 9 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/drivers/base/base.h b/drivers/base/base.h
-> > > index f5600a83124f..52b3d7b75c27 100644
-> > > --- a/drivers/base/base.h
-> > > +++ b/drivers/base/base.h
-> > > @@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
-> > >   extern int platform_bus_init(void);
-> > >   extern void cpu_dev_init(void);
-> > >   extern void container_dev_init(void);
-> > > +#ifdef CONFIG_AUXILIARY_BUS
-> > > +extern void auxiliary_bus_init(void);
-> > > +#else
-> > > +static inline void auxiliary_bus_init(void) { }
-> > > +#endif
-> > >   struct kobject *virtual_device_parent(struct device *dev);
-> > > diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-> > > index 8336535f1e11..d8b314e7d0fd 100644
-> > > --- a/drivers/base/auxiliary.c
-> > > +++ b/drivers/base/auxiliary.c
-> > > @@ -15,6 +15,7 @@
-> > >   #include <linux/pm_runtime.h>
-> > >   #include <linux/string.h>
-> > >   #include <linux/auxiliary_bus.h>
-> > > +#include "base.h"
-> > >   static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
-> > >   							    const struct auxiliary_device *auxdev)
-> > > @@ -260,19 +261,11 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
-> > > -static int __init auxiliary_bus_init(void)
-> > > +void __init auxiliary_bus_init(void)
-> > >   {
-> > > -	return bus_register(&auxiliary_bus_type);
-> > > +	WARN_ON(bus_register(&auxiliary_bus_type));
-> > If this fails you have worse problems, what is this WARN_ON() going to
-> > help with except give you a crashdump right before something else in the
-> > kernel dies?
+> On 2020/11/18 19:21, Eric Auger wrote:
+>> On attach_pasid_table() we program STE S1 related info set
+>> by the guest into the actual physical STEs. At minimum
+>> we need to program the context descriptor GPA and compute
+>> whether the stage1 is translated/bypassed or aborted.
+>>
+>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>>
+>> ---
+>> v7 -> v8:
+>> - remove smmu->features check, now done on domain finalize
+>>
+>> v6 -> v7:
+>> - check versions and comment the fact we don't need to take
+>>   into account s1dss and s1fmt
+>> v3 -> v4:
+>> - adapt to changes in iommu_pasid_table_config
+>> - different programming convention at s1_cfg/s2_cfg/ste.abort
+>>
+>> v2 -> v3:
+>> - callback now is named set_pasid_table and struct fields
+>>   are laid out differently.
+>>
+>> v1 -> v2:
+>> - invalidate the STE before changing them
+>> - hold init_mutex
+>> - handle new fields
+>> ---
+>>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 89 +++++++++++++++++++++
+>>  1 file changed, 89 insertions(+)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> index 412ea1bafa50..805acdc18a3a 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> @@ -2661,6 +2661,93 @@ static void arm_smmu_get_resv_regions(struct device *dev,
+>>  	iommu_dma_get_resv_regions(dev, head);
+>>  }
+>>  
+>> +static int arm_smmu_attach_pasid_table(struct iommu_domain *domain,
+>> +				       struct iommu_pasid_table_config *cfg)
+>> +{
+>> +	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+>> +	struct arm_smmu_master *master;
+>> +	struct arm_smmu_device *smmu;
+>> +	unsigned long flags;
+>> +	int ret = -EINVAL;
+>> +
+>> +	if (cfg->format != IOMMU_PASID_FORMAT_SMMUV3)
+>> +		return -EINVAL;
+>> +
+>> +	if (cfg->version != PASID_TABLE_CFG_VERSION_1 ||
+>> +	    cfg->vendor_data.smmuv3.version != PASID_TABLE_SMMUV3_CFG_VERSION_1)
+>> +		return -EINVAL;
+>> +
+>> +	mutex_lock(&smmu_domain->init_mutex);
+>> +
+>> +	smmu = smmu_domain->smmu;
+>> +
+>> +	if (!smmu)
+>> +		goto out;
+>> +
+>> +	if (smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
+>> +		goto out;
+>> +
+>> +	switch (cfg->config) {
+>> +	case IOMMU_PASID_CONFIG_ABORT:
+>> +		smmu_domain->s1_cfg.set = false;
+>> +		smmu_domain->abort = true;
+>> +		break;
+>> +	case IOMMU_PASID_CONFIG_BYPASS:
+>> +		smmu_domain->s1_cfg.set = false;
+>> +		smmu_domain->abort = false;
+> I didn't test it, but it seems that this will cause BUG() in arm_smmu_write_strtab_ent().
+> At the line "BUG_ON(ste_live && !nested);". Maybe I miss something?
+
+No you are fully correct. Shammeer hit the BUG_ON() when booting the
+guest with iommu.passthrough = 1. So I removed the BUG_ON(). The legacy
+BUG_ON(ste_live) still is there under the form of BUG_ON(s1_live).
+
+Thanks!
+
+Eric
+
+
 > 
-> My thinking was that it would point to the area of failure rather than much
-> later down the road, and the person debugging can know where it failed.
-> Also, gcc v10 is no longer happy with (void) bus_register() and complains.
-> If there's a different way you'd rather do this please advise.
+>> +		break;
+>> +	case IOMMU_PASID_CONFIG_TRANSLATE:
+>> +		/* we do not support S1 <-> S1 transitions */
+>> +		if (smmu_domain->s1_cfg.set)
+>> +			goto out;
+>> +
+>> +		/*
+>> +		 * we currently support a single CD so s1fmt and s1dss
+>> +		 * fields are also ignored
+>> +		 */
+>> +		if (cfg->pasid_bits)
+>> +			goto out;
+>> +
+>> +		smmu_domain->s1_cfg.cdcfg.cdtab_dma = cfg->base_ptr;
+>> +		smmu_domain->s1_cfg.set = true;
+>> +		smmu_domain->abort = false;
+>> +		break;
+>> +	default:
+>> +		goto out;
+>> +	}
+>> +	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
+>> +	list_for_each_entry(master, &smmu_domain->devices, domain_head)
+>> +		arm_smmu_install_ste_for_dev(master);
+>> +	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
+>> +	ret = 0;
+>> +out:
+>> +	mutex_unlock(&smmu_domain->init_mutex);
+>> +	return ret;
+>> +}
+>> +
+> [...]
+> 
+> Thanks,
+> Keqian
+> 
 
-Ah, yeah, I forgot it was a __must_check function.  Ok, let's leave it
-like this, as in a way, it's nicer than what happens when the platform
-bus code fails to initialize :)
-
-thanks,
-
-greg k-h
