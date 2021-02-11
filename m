@@ -2,174 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E940318322
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 118EA318326
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhBKBoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 20:44:11 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8224 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229743AbhBKBoG (ORCPT
+        id S229713AbhBKBrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 20:47:49 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:12014 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229564AbhBKBrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 20:44:06 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11B1WMT6078703;
-        Wed, 10 Feb 2021 20:42:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=vDDRZUahYyXldUj68jibr2HXimj2YM2P2Jgn9LzlN24=;
- b=FUGCUGH+Eqd5Fa5UGlaHe0jjtLtAxYgfMDuDHiom7D/vEbg9+Ebu63p7XUTWZRXPtjU7
- 3Q+eEClsYMJBZTtZrmTKpgDaWUBlj4G63gFJK335oD+5bimoPA0ZXw+WVKjXbQuKtRGP
- +sg1Op+s+320fDztY2VfLUtzVKYhpcjbzFLScbVpjgPX4ruKJgbcR0Zgcwdvzt17+mC4
- xu12+P5I1ojcrnO2dHTJXfozdFdg/p0cc3zBgE5NWUB0ENpvq9jHqkrJnTr1Lx5noPoO
- zx+ywCeGxhkfjdgzEhdevjSLETB3GDH+ytkvvhT544BTiylqvGaCY5AqrHa6KZd+Ar6a MQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36mtjd90ms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 20:42:47 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11B1XRrp083811;
-        Wed, 10 Feb 2021 20:42:45 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36mtjd90kb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 20:42:45 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11B1gIHx001102;
-        Thu, 11 Feb 2021 01:42:41 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma02dal.us.ibm.com with ESMTP id 36hjraayme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 01:42:41 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11B1gel418416028
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 01:42:40 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 91ECFBE04F;
-        Thu, 11 Feb 2021 01:42:40 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B86C0BE054;
-        Thu, 11 Feb 2021 01:42:30 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.160.95.194])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Thu, 11 Feb 2021 01:42:30 +0000 (GMT)
-References: <20210209182200.30606-1-nramas@linux.microsoft.com>
- <20210209182200.30606-5-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v17 04/10] powerpc: Use common
- of_kexec_alloc_and_setup_fdt()
-In-reply-to: <20210209182200.30606-5-nramas@linux.microsoft.com>
-Date:   Wed, 10 Feb 2021 22:42:27 -0300
-Message-ID: <87sg63nzwc.fsf@manicouagan.localdomain>
+        Wed, 10 Feb 2021 20:47:45 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11B1kgKj000429;
+        Wed, 10 Feb 2021 17:46:59 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=gs6fyn9yfF9dI/JDXWijLIK39SNU6Aw87aWCNNpRHU0=;
+ b=bYJ3su/hlGpEMUhNca6TwrHXFO1qJiPz5+7zKTVzKHz7qBpiDS7euJw3bCU40PZS49XJ
+ HU5SYM6s11Hwd7a93HueqQdVBhtGzP0HqI324SmWxPtnfnrWXFW2zBDPR2XqZOMw3MfX
+ /4qzI+xyw9n3NUg5qp+e8A004GokDRQYXP4h6lVBp1ISRvgc6Zaxrs+tD0XWBkD45htn
+ FtOZn4DRpwxNYDmCpzhIUmLPOaXb9isFOsJh3lv5FUf35J6PA4mu7NJqtWv897+M/F2W
+ 7e7iS1S2pW9xnv6dZOwQXrIsDvOGTF8u/zZ/SslDlfo3qLRhHHp0WE+p6PlFWhkvYlmp VQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36hugqdhb1-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 10 Feb 2021 17:46:59 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 10 Feb
+ 2021 17:46:58 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 10 Feb
+ 2021 17:46:57 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 10 Feb 2021 17:46:57 -0800
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id D3DEA3F7040;
+        Wed, 10 Feb 2021 17:46:53 -0800 (PST)
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <hkelam@marvell.com>,
+        <sbhatta@marvell.com>, <jerinj@marvell.com>,
+        <bbrezillon@kernel.org>, <arno@natisbad.org>,
+        <schalla@marvell.com>, Geetha sowjanya <gakula@marvell.com>
+Subject: [net-next v5 00/14] Add Marvell CN10K support
+Date:   Thu, 11 Feb 2021 07:16:17 +0530
+Message-ID: <20210211014631.9578-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
  definitions=2021-02-10_11:2021-02-10,2021-02-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- adultscore=0 suspectscore=0 bulkscore=0 clxscore=1015 malwarescore=0
- mlxscore=0 priorityscore=1501 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102110004
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The current admin function (AF) driver and the netdev driver supports
+OcteonTx2 silicon variants. The same OcteonTx2's
+Resource Virtualization Unit (RVU) is carried forward to the next-gen
+silicon ie OcteonTx3, with some changes and feature enhancements.
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+This patch set adds support for OcteonTx3 (CN10K) silicon and gets
+the drivers to the same level as OcteonTx2. No new OcteonTx3 specific
+features are added.
 
-> From: Rob Herring <robh@kernel.org>
->
-> The code for setting up the /chosen node in the device tree
-> and updating the memory reservation for the next kernel has been
-> moved to of_kexec_alloc_and_setup_fdt() defined in "drivers/of/kexec.c".
->
-> Use the common of_kexec_alloc_and_setup_fdt() to setup the device tree
-> and update the memory reservation for kexec for powerpc.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> ---
->  arch/powerpc/include/asm/kexec.h  |   1 +
->  arch/powerpc/kexec/elf_64.c       |  29 ++++---
->  arch/powerpc/kexec/file_load.c    | 132 +-----------------------------
->  arch/powerpc/kexec/file_load_64.c |   3 +
->  4 files changed, 25 insertions(+), 140 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/kexec.h b/arch/powerpc/include/asm/kexec.h
-> index dbf09d2f36d0..bdd0ddb9ac4d 100644
-> --- a/arch/powerpc/include/asm/kexec.h
-> +++ b/arch/powerpc/include/asm/kexec.h
-> @@ -111,6 +111,7 @@ struct kimage_arch {
->  	unsigned long elf_headers_mem;
->  	unsigned long elf_headers_sz;
->  	void *elf_headers;
-> +	void *fdt;
->  
->  #ifdef CONFIG_IMA_KEXEC
->  	phys_addr_t ima_buffer_addr;
-> diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
-> index d0e459bb2f05..bfabd06f99b1 100644
-> --- a/arch/powerpc/kexec/elf_64.c
-> +++ b/arch/powerpc/kexec/elf_64.c
-> @@ -19,6 +19,7 @@
->  #include <linux/kexec.h>
->  #include <linux/libfdt.h>
->  #include <linux/module.h>
-> +#include <linux/of.h>
->  #include <linux/of_fdt.h>
->  #include <linux/slab.h>
->  #include <linux/types.h>
-> @@ -29,7 +30,6 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
->  			unsigned long cmdline_len)
->  {
->  	int ret;
-> -	unsigned int fdt_size;
->  	unsigned long kernel_load_addr;
->  	unsigned long initrd_load_addr = 0, fdt_load_addr;
->  	void *fdt;
-> @@ -102,19 +102,13 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
->  		pr_debug("Loaded initrd at 0x%lx\n", initrd_load_addr);
->  	}
->  
-> -	fdt_size = fdt_totalsize(initial_boot_params) * 2;
-> -	fdt = kmalloc(fdt_size, GFP_KERNEL);
-> +	fdt = of_kexec_alloc_and_setup_fdt(image, initrd_load_addr,
-> +					   initrd_len, cmdline);
->  	if (!fdt) {
->  		pr_err("Not enough memory for the device tree.\n");
+Changes cover below HW level differences
+- PCIe BAR address changes wrt shared mailbox memory region
+- Receive buffer freeing to HW
+- Transmit packet's descriptor submission to HW
+- Programmable HW interface identifiers (channels)
+- Increased MTU support
+- A Serdes MAC block (RPM) configuration
 
-This error string can be a bit misleading now, since
-of_kexec_alloc_and_setup_fdt() can fail for reasons other than lack of
-memory. I suggest changing it to the error string from fdt_open_into()
-below:
+v4-v5
+Fixed sparse warnings.
 
-		pr_err("Error setting up the new device tree.\n");
+v3-v4
+Fixed compiler warnings.
 
-With this change:
+v2-v3
+Reposting as a single thread.
+Rebased on top latest net-next branch.
 
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+v1-v2
+Fixed check-patch reported issues.
 
-And also:
 
-Tested-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Geetha sowjanya (5):
+  octeontx2-af: cn10k: Update NIX/NPA context structure
+  octeontx2-af: cn10k: Update NIX and NPA context in debugfs
+  octeontx2-pf: cn10k: Initialise NIX context
+  octeontx2-pf: cn10k: Map LMTST region
+  octeontx2-pf: cn10k: Use LMTST lines for NPA/NIX operations
+
+Hariprasad Kelam (5):
+  octeontx2-af: cn10k: Add RPM MAC support
+  octeontx2-af: cn10K: Add MTU configuration
+  octeontx2-pf: cn10k: Get max mtu supported from admin function
+  octeontx2-af: cn10k: Add RPM Rx/Tx stats support
+  octeontx2-af: cn10k: MAC internal loopback support
+
+Rakesh Babu (1):
+  octeontx2-af: cn10k: Add RPM LMAC pause frame support
+
+Subbaraya Sundeep (3):
+  octeontx2-af: cn10k: Add mbox support for CN10K platform
+  octeontx2-pf: cn10k: Add mbox support for CN10K
+  octeontx2-af: cn10k: Add support for programmable channels
+
+ MAINTAINERS                                   |   2 +
+ .../ethernet/marvell/octeontx2/af/Makefile    |  10 +-
+ .../net/ethernet/marvell/octeontx2/af/cgx.c   | 315 ++++++---
+ .../net/ethernet/marvell/octeontx2/af/cgx.h   |  15 +-
+ .../ethernet/marvell/octeontx2/af/cgx_fw_if.h |   1 +
+ .../ethernet/marvell/octeontx2/af/common.h    |   5 +
+ .../marvell/octeontx2/af/lmac_common.h        | 131 ++++
+ .../net/ethernet/marvell/octeontx2/af/mbox.c  |  59 +-
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  70 +-
+ .../net/ethernet/marvell/octeontx2/af/ptp.c   |  12 +
+ .../net/ethernet/marvell/octeontx2/af/rpm.c   | 272 ++++++++
+ .../net/ethernet/marvell/octeontx2/af/rpm.h   |  57 ++
+ .../net/ethernet/marvell/octeontx2/af/rvu.c   | 159 ++++-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |  71 ++
+ .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 134 +++-
+ .../ethernet/marvell/octeontx2/af/rvu_cn10k.c | 261 ++++++++
+ .../marvell/octeontx2/af/rvu_debugfs.c        | 339 +++++++++-
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 112 +++-
+ .../ethernet/marvell/octeontx2/af/rvu_npc.c   |   4 +-
+ .../ethernet/marvell/octeontx2/af/rvu_reg.h   |  24 +
+ .../marvell/octeontx2/af/rvu_struct.h         | 604 ++++++------------
+ .../ethernet/marvell/octeontx2/nic/Makefile   |  10 +-
+ .../ethernet/marvell/octeontx2/nic/cn10k.c    | 182 ++++++
+ .../ethernet/marvell/octeontx2/nic/cn10k.h    |  17 +
+ .../marvell/octeontx2/nic/otx2_common.c       | 147 +++--
+ .../marvell/octeontx2/nic/otx2_common.h       | 111 +++-
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  73 ++-
+ .../ethernet/marvell/octeontx2/nic/otx2_reg.h |   4 +
+ .../marvell/octeontx2/nic/otx2_struct.h       |  10 +-
+ .../marvell/octeontx2/nic/otx2_txrx.c         |  72 ++-
+ .../marvell/octeontx2/nic/otx2_txrx.h         |   8 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |  52 +-
+ include/linux/soc/marvell/octeontx2/asm.h     |   8 +
+ 33 files changed, 2612 insertions(+), 739 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rpm.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rpm.h
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
 
 -- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+2.17.1
+
