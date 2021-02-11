@@ -2,86 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385123185AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4DE3185B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbhBKHaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
+        id S229655AbhBKHcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhBKHaD (ORCPT
+        with ESMTP id S229598AbhBKHbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:30:03 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42FBC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 23:29:22 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id z21so3285884pgj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 23:29:22 -0800 (PST)
+        Thu, 11 Feb 2021 02:31:53 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1CDC061574;
+        Wed, 10 Feb 2021 23:31:13 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id w4so4240425wmi.4;
+        Wed, 10 Feb 2021 23:31:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IoDDbkA/vaVMnIhw4JfZZr78ZUSJQGF5SzLjqNA/02k=;
-        b=AfYvwAFxBGw1L7iqcTOKb2C9mrdYp60863Zp9hiAKSst+SivGV97uPQnkZkXDPD/KB
-         cOzdQzT4laOXT5vfDEx0OqIP7KxBD4a3pIQJdTtq9sXjCnWpX6R1U7r3NWcBM4lyqOEm
-         TeKNWLn6ZUXodwlF/EL85swYXOF6h02a4Nym1oVshFWM9sZ4WPhkQ8Z5fp3vFOONaSXw
-         bUaGwHWIRj+gITfaPwhgIf09ERFtclYoRDZmSL19yjfqm2BhhuTQK/KSaJY6RBTwPPqJ
-         GusSVYjtiDgp/YEsmQX55SHDd65KMnwc/Ljqz0yv+VZGbxTh1aP4GauftSYVcPHdtw4Y
-         H78g==
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XtbI9v4khyRs8JwVyZgW9h25eiZw429zMUcaRL61TSQ=;
+        b=kWFx8ssYRVCx+En/7zNWSC44dqkIVpkDf2fCxIBTwnyr/1SJ18onTW2PqRcAcl6L3q
+         IG/4FwvZXrl1GJWkBWSZnfxcGbTNKl64gbcXUJ42tAmjPuNtK8K4sM1nI+uuFyzXQNm4
+         T1MhabGCxN/NJs0DkOQQGSSSwJgOTSVzudw3JkPQV7ak8P6AvJ5nCJLIgVJ8XCV8x3Za
+         GZm67qgCidrpRXP97jAOxqo//322wykj+D+CgBwvr8Gw/475bD8wnuk+ljGEb63rASxO
+         01rEyM+HfgI8TjGcP/tvZ+N/EwPKIuHro26DKlUMj85F9m2INkvrqIwBtijh6QQD0fGY
+         GY0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=IoDDbkA/vaVMnIhw4JfZZr78ZUSJQGF5SzLjqNA/02k=;
-        b=i6GkV79WqlckJAnGTYnZCTV268Js0yyDbG9+ufADFDVxRc/LeF+iXpn6gwTMxHNJj0
-         7Q81yzfk9Youh4YgDC4TD60zUcJqEDa/awftVgWvJ53c8EdXWbK6ldVkcVD+fCvsC/9D
-         grPqP7j7GR3+csn0tZzEpJLtR4wxM+e4O+WfHe2SE2RlzDy58aUfSLOcFoYKcS5i0qPK
-         LmpKhFZU1aUnQlSywjpS0+5OTckbIKa/sDiB2VkQUssFqP/UFe5yMn3jC3VbFay5SwAB
-         xyvPmLE9YjalVKK2z4PYIyu/cuPjIxoivQEsfqWgEuG+W6E0jgRfDT6uPGkbRGc2gDOa
-         +rbA==
-X-Gm-Message-State: AOAM533NA6cB58WYZGAQ7heOJB87x9Ep5/vt7RkF5Wb1gUyzieUZr/hY
-        kGH24qe5qZ5+kupl+O1fq3U=
-X-Google-Smtp-Source: ABdhPJweZgGWWflwwkOY5Zk3zlAcE2Qnmnuh80XdqSlaeYlRF5IALhiKLwUY/lzK9tTSrANZ/0hz3Q==
-X-Received: by 2002:a65:620f:: with SMTP id d15mr6771122pgv.218.1613028561862;
-        Wed, 10 Feb 2021 23:29:21 -0800 (PST)
-Received: from localhost ([2601:1c0:6c02:1d30:195b:5ddb:5efc:9045])
-        by smtp.gmail.com with ESMTPSA id cq2sm4059864pjb.55.2021.02.10.23.29.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Feb 2021 23:29:21 -0800 (PST)
-From:   Adithya Chandrakasan <adithya.chandrakasan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     Adithya Chandrakasan <adithya.chandrakasan@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org
-Subject: [PATCH] The Patch fixes the missing a blank line warning
-Date:   Wed, 10 Feb 2021 23:29:18 -0800
-Message-Id: <20210211072918.376837-1-adithya.chandrakasan@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=XtbI9v4khyRs8JwVyZgW9h25eiZw429zMUcaRL61TSQ=;
+        b=h4WPz7eSmUzRYq+WxhTOyJZN/hSXzVshi0Rb5pDYqkSDB24yJO/Ra8gPJBEYYUI2ef
+         paSMEmQTWkLAYNhBn56/xCQNe+NtMTCRXRt3QXbpXFSy2cwrPJpaIED/1vigRwQPo9UZ
+         aQiJJSosmbkB/Qb9pwRyuv4uYrnL73+qrepzX3EEYPD8P+Qx2txitw2uTne6yKD8+rQV
+         VC8D423HatwZhBhbs8e7OK44R7YSySE7DYvXp0Ylbeu4xjShEWc/ZwtNino6SmtsWAw9
+         a0RjPVVk4qbD4qTpCV29cvp77F9EXWJnnvU+oiEfMKCEOAG+FKjkgA/IxvsDNuwrjCqp
+         bf4A==
+X-Gm-Message-State: AOAM532L1dtGE4UjuC1ZgaZdjl6u/3kQgfYF23ByRqEkDb+X9F1qiOiU
+        KgMu4YspZRbavpBP2jZeT28=
+X-Google-Smtp-Source: ABdhPJzCfqNKRB+oQof/x/mPTQCgw3Y+8dbzGaVRG8OJj4g4HEIR4zeb3RY4zeVuc7z8fU5aMhjhyQ==
+X-Received: by 2002:a1c:720d:: with SMTP id n13mr3489965wmc.103.1613028671728;
+        Wed, 10 Feb 2021 23:31:11 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f1f:ad00:60ca:853:df03:450e? (p200300ea8f1fad0060ca0853df03450e.dip0.t-ipconnect.de. [2003:ea:8f1f:ad00:60ca:853:df03:450e])
+        by smtp.googlemail.com with ESMTPSA id z185sm9076648wmb.0.2021.02.10.23.31.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 23:31:11 -0800 (PST)
+To:     Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>
+References: <CAGETcx9YpCUMmHjyydMtOJP9SKBbVsHNB-9SspD9u=txJ12Gug@mail.gmail.com>
+ <YCRjmpKjK0pxKTCP@lunn.ch>
+ <CAGETcx-tBw_=VPvQVYcpPJBJjgQvp8UASrdMdSbSduahZpJf9w@mail.gmail.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: phy_attach_direct()'s use of device_bind_driver()
+Message-ID: <4f0086ad-1258-063d-0ace-fe4c6c114991@gmail.com>
+Date:   Thu, 11 Feb 2021 08:31:03 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <CAGETcx-tBw_=VPvQVYcpPJBJjgQvp8UASrdMdSbSduahZpJf9w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FILE: mm/util.c:930: WARNING: Missing a blank line after declarations
+On 11.02.2021 00:29, Saravana Kannan wrote:
+> On Wed, Feb 10, 2021 at 2:52 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>>
+>> On Wed, Feb 10, 2021 at 02:13:48PM -0800, Saravana Kannan wrote:
+>>> Hi,
+>>>
+>>> This email was triggered by this other email[1].
+>>>
+>>> Why is phy_attach_direct() directly calling device_bind_driver()
+>>> instead of using bus_probe_device()?
+>>
+>> Hi Saravana
+>>
+>> So this is to do with the generic PHY, which is a special case.
+>>
+>> First the normal case. The MDIO bus driver registers an MDIO bus using
+>> mdiobus_register(). This will enumerate the bus, finding PHYs on
+>> it. Each PHY device is registered with the device core, using the
+>> usual device_add(). The core will go through the registered PHY
+>> drivers and see if one can drive this hardware, based on the ID
+>> registers the PHY has at address 2 and 3. If a match is found, the
+>> driver probes the device, all in the usual way.
+>>
+>> Sometime later, the MAC driver wants to make use of the PHY
+>> device. This is often in the open() call of the MAC driver, when the
+>> interface is configured up. The MAC driver asks phylib to associate a
+>> PHY devices to the MAC device. In the normal case, the PHY has been
+>> probed, and everything is good to go.
+>>
+>> However, sometimes, there is no driver for the PHY. There is no driver
+>> for that hardware. Or the driver has not been built, or it is not on
+>> the disk, etc. So the device core has not been able to probe
+>> it. However, IEEE 802.3 clause 22 defines a minimum set of registers a
+>> PHY should support. And most PHY devices have this minimum. So there
+>> is a fall back driver, the generic PHY driver. It assumes the minimum
+>> registers are available, and does its best to drive the hardware. It
+>> often works, but not always. So if the MAC asks phylib to connect to a
+>> PHY which does not have a driver, we forcefully bind the generic
+>> driver to the device, and hope for the best.
+> 
+> Thanks for the detailed answer Andrew! I think it gives me enough
+> info/context to come up with a proper fix.
+> 
+>> We don't actually recommend using the generic driver. Use the specific
+>> driver for the hardware. But the generic driver can at least get you
+>> going, allow you to scp the correct driver onto the system, etc.
+> 
+> I'm not sure if I can control what driver they use. If I can fix this
+> warning, I'll probably try to do that.
+> 
+The genphy driver is a last resort, at least they lose functionality like
+downshift detection and control. Therefore they should go with the
+dedicated Marvell PHY driver.
 
-Signed-off-by: Adithya Chandrakasan <adithya.chandrakasan@gmail.com>
----
- mm/util.c | 1 +
- 1 file changed, 1 insertion(+)
+But right, this avoids the warning, but the underlying issue (probably
+in device_bind_driver()) still exists. Would be good if you can fix it.
 
-diff --git a/mm/util.c b/mm/util.c
-index 8c9b7d1e7c49..60286876636d 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -927,6 +927,7 @@ int get_cmdline(struct task_struct *task, char *buffer, int buflen)
- 	unsigned int len;
- 	struct mm_struct *mm = get_task_mm(task);
- 	unsigned long arg_start, arg_end, env_start, env_end;
-+
- 	if (!mm)
- 		goto out;
- 	if (!mm->arg_end)
--- 
-2.25.1
+> -Saravana
+> 
 
+Heiner
