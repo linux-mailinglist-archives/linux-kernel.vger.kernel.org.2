@@ -2,49 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2083187C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6D33187C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhBKKHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:07:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhBKKEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:04:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75C6564E92;
-        Thu, 11 Feb 2021 10:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613037844;
-        bh=jYOmfA2ySnqXWmc7HI+nczhGasVR4U01sAyBqP9xOkE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QqixWdqs4hL5QrKtcM64hQ1SNtwuB26IImiT/CtmwxyZms33VE1iY/lIRzZzUbCH2
-         y4sLGH4kU56F82JBRxN+XNCZyPLUbXjRbl8Mm61nfV3V9OAuq0vcY4wSo6ygJlPtsp
-         LBmwBAN9ZBX9yopKzm2bi1kneUG++O6s8q+U5JYI=
-Date:   Thu, 11 Feb 2021 11:04:00 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     karthek <mail@karthek.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] staging: rtl8723bs: fix function comments to follow
- kernel-doc
-Message-ID: <YCUBEMUyvRcQkFF7@kroah.com>
-References: <YCQvl3+KviQNh2JI@karthik-strix-linux.karthek.com>
- <YCQxeMVM92dtfEpO@karthik-strix-linux.karthek.com>
+        id S229867AbhBKKI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhBKKFm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 05:05:42 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B1FC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:05:02 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id fa16so3108384pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:05:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=6LL6HEN/TlIvgjV/qKDhMJslAnmqizgu+vOTXyLuIe0=;
+        b=p35Rgaoe/NHzNcM//KvM2suJwdKoGxwyruZkUwP7/rBRzL6qGUex30LwZjonYIYVVM
+         olRdWmBoKpOUDcUIHLlviqP7cQhkV72X1Z1LSjDlZZ2AY2kZuhoNARwR63ePu1iclq4+
+         0lmqreZ3NBi28ZdDjQPSYWjhu8hMP3Qu0L+7vRfyd/7GrDnGuJYPvic2faoCIgNsCD9E
+         DpW4zTOzFqQv635bnW4w+vfbL6M1/ECRZgXlus2Hw/MLc1F0RRjXThszMn1FLrFakFX/
+         YOZC+g2WSazUT9PbfxwkQwWeRcMGqsh/3+DIRzab6kk+4v3FKZ0W6Fe2rWAzezQNa63P
+         lymQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=6LL6HEN/TlIvgjV/qKDhMJslAnmqizgu+vOTXyLuIe0=;
+        b=VwBPaLQ2bMAq3xjStxteaJRqYXfOndzAt6xvkQ26ptlPteCJCgjHfNcS4+RzGys9Kd
+         8/2rbtVXTc8x4EdgYIn1N5FTEGRiZE1cxUf+f02vl+ZuLgtVK5w0TZx66rTRyT0B33BD
+         mRToQJ+Gn41PcEfuDXBN6GuaIlJbZtlKAnW7zJuVaC7qZ8i7u60mC3uLM7kD6FR4D8b+
+         km3tid+X/BbaVumjCIYKQrGnpeXKlG/sy9WN3+M2b4yGAOjYl4Kukf9R2fXPFie8503k
+         ZctFqdBtrpEoIeOfCfSdoJK1U99VyJrLY+7Q7FyEraDpn3fXyrBesg3Rkbn3y+CUTEfZ
+         0b8g==
+X-Gm-Message-State: AOAM530yRegoB4JRF/fMMQslvZF1Oef6jTCvPiPHWkunhbTioVJfmniO
+        Vpfrou3BObWBTahl3lzInI8vlJd/bxo=
+X-Google-Smtp-Source: ABdhPJw7en9Rdip4b1jO8Tx86JajlxFNgYrdaduyMhSqjEH+ic/FoFQBz2ksbyiZuNfN8ricNnsfSA==
+X-Received: by 2002:a17:90a:f00b:: with SMTP id bt11mr3236187pjb.76.1613037902231;
+        Thu, 11 Feb 2021 02:05:02 -0800 (PST)
+Received: from localhost (14-201-150-91.tpgi.com.au. [14.201.150.91])
+        by smtp.gmail.com with ESMTPSA id i10sm4851813pgt.85.2021.02.11.02.05.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 02:05:01 -0800 (PST)
+Date:   Thu, 11 Feb 2021 20:04:55 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] powerpc/bug: Remove specific powerpc BUG_ON()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCQxeMVM92dtfEpO@karthik-strix-linux.karthek.com>
+Message-Id: <1613036567.zvyupcz926.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 12:48:16AM +0530, karthek wrote:
-> check this out
+Excerpts from Christophe Leroy's message of February 11, 2021 5:41 pm:
+> powerpc BUG_ON() is based on using twnei or tdnei instruction,
+> which obliges gcc to format the condition into a 0 or 1 value
+> in a register.
+>=20
+> By using a generic implementation, gcc will generate a branch
+> to the unconditional trap generated by BUG().
 
-Why ask us again when you already sent a patch?  Do you see any other
-developers doing that on the mailing lists?
+We don't want to do this on 64s because that will lose the useful CFAR
+contents.
 
-thanks,
+Unfortunately the code generation is not great and the registers that=20
+give some useful information about the condition are often mangled :(
 
-greg k-h
+It would be nice if we could have a __builtin_trap_if that gcc would use=20
+conditional traps with, (and which never assumes following code is=20
+unreachable even for constant true, so we can use it with WARN and put=20
+explicit unreachable for BUG).
+
+>=20
+> As modern powerpc implement branch folding, that's even more efficient.
+
+I think POWER will speculate conditional traps as non faulting always
+so it should be just as good if not better than the branch.
+
+Thanks,
+Nick
