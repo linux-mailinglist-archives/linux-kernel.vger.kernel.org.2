@@ -2,167 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CF1318C39
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9EB318C4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhBKNkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:40:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55842 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231289AbhBKNUj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:20:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613049550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hmk14exEuAu1KNsA1eN9M3YU73ik9B3Wqe10eKOKhmo=;
-        b=eH7uNJNTrHC/2bUAM5UTu2sM0WL4Zb9uF6dBNwE/fKDKXspPXbZJ1s3HVPybNgRfGzcdP4
-        F9lzOhUTcrFUY81g9gfOyeW4U9JzfMKVm91Mm/tRTI66Z/FzyHStow1pZhUbv6fK+5W9za
-        yH0Yk53JhDLB43xLDH24Bo3zKy66KW0=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602--G6hEfRqNDySzDgq1jgaCA-1; Thu, 11 Feb 2021 08:19:08 -0500
-X-MC-Unique: -G6hEfRqNDySzDgq1jgaCA-1
-Received: by mail-ej1-f71.google.com with SMTP id yc4so4770781ejb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:19:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hmk14exEuAu1KNsA1eN9M3YU73ik9B3Wqe10eKOKhmo=;
-        b=BFyktH4VYYfkX5O2zhGbw5VDPAKtShLtZGryFCPGP0klmaxue9oBmiJF0xXTCjEJm4
-         L5csJnvi2ryJiVucLtr0MB3cRF2jO+iGn4DvU4plPMLDq4BS+ojffhlH860V6Jkd+Psm
-         6/f3CcZ1imRuI4IVCR2uK5jbu52vbMNpxHj0v2VZ2OhNxltHdjTjWlwYn02wCphwzHtp
-         zSVSfwiGDoNdtJ3QvxHCXXeK2CmC3CG7R2TTfnTyZXnHEYmPfubf+HWMVpi2rFkeQY9c
-         9ulAUKLE4IOP8uWyA08jDfnhxECZ5ZpDqsCCXEHKnXLW2rKo/hzUi0jP7brCWF88vbgl
-         tf7w==
-X-Gm-Message-State: AOAM530+HMupjBt965RMO+0QROEaxrSkbp5hJFqTQCAG9qS2NUG/y8fj
-        fZ3NLoXewp0cFTpPln/AJs58hxmuKU37FXboigeMFujwdY2WW4E3f88AypqVcKa5Oaf1is3yK1S
-        B6unuKHhyste+02jWtmaKc5Iw
-X-Received: by 2002:a17:907:210d:: with SMTP id qn13mr8293106ejb.377.1613049547482;
-        Thu, 11 Feb 2021 05:19:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyxJgriiJCTazbhHBmTN5Qv/1jX0/Iyqy0dukmtptWSTg97rk7GMZLbA0+lOCu+wbSRGVi5hg==
-X-Received: by 2002:a17:907:210d:: with SMTP id qn13mr8293081ejb.377.1613049547302;
-        Thu, 11 Feb 2021 05:19:07 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id g22sm4356281ejw.31.2021.02.11.05.19.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 05:19:06 -0800 (PST)
-Date:   Thu, 11 Feb 2021 14:19:04 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v4 08/17] af_vsock: update comments for stream sockets
-Message-ID: <20210211131904.ejkq3gltlqcffduq@steredhat>
-References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
- <20210207151632.805240-1-arseny.krasnov@kaspersky.com>
+        id S230182AbhBKNk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:40:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231695AbhBKNVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:21:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCAD664E7A;
+        Thu, 11 Feb 2021 13:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613049621;
+        bh=8uHnF8chlIvP+4xo52R4mAyVueiT8FN7qv0ldkJ0cwo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EcvTzta8NUiDuFjCjekoE2rz/F6Hw8DmtEHy8UqYkJgSoKzw8oiEE6P3ODUEclpKj
+         EUWfu8Dt1skUEguPs8pAo/c2GnDe2uT8QsS2gCa/ECRmtNVYLECxxG4MYCIao68WYM
+         vunqXL7JEeIVHm4tBmkTgXLxrAqJqjLnd+Ysgz9va/egYMcfPYxXSlrhfa02iUuhRY
+         Dciv9sHYYGWZm3iyZzE/3UiLKaZ4kx1hZ4+Qyfh7o7QhETSUVvKxGnf4bLRSbjKy+C
+         Z2BjYRIfL85DkJn05pel+v7WTGCaxr++x0/qO20meg0dQMqFJiG0sp4dW2RluQiA8X
+         6SvRpoMQvgcsQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 794BA40513; Thu, 11 Feb 2021 10:20:18 -0300 (-03)
+Date:   Thu, 11 Feb 2021 10:20:18 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 13/24] perf daemon: Allow only one daemon over base
+ directory
+Message-ID: <20210211132018.GE1131885@kernel.org>
+References: <20210208200908.1019149-1-jolsa@kernel.org>
+ <20210208200908.1019149-14-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210207151632.805240-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <20210208200908.1019149-14-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 06:16:29PM +0300, Arseny Krasnov wrote:
->This replaces 'stream' to 'connect oriented' in comments as SEQPACKET is
->also connect oriented.
+Em Mon, Feb 08, 2021 at 09:08:57PM +0100, Jiri Olsa escreveu:
+> Add 'lock' file under daemon base and flock it, so only one
+> perf daemon can run on top of it.
+> 
+> Each daemon tries to create and lock BASE/lock file, if it's
+> successful we are sure we're the only daemon running over
+> the BASE.
+> 
+> Once daemon is finished, file descriptor to lock file is
+> closed and lock is released.
+> 
+> Example:
+> 
+>   # cat ~/.perfconfig
+>   [daemon]
+>   base=/opt/perfdata
+> 
+>   [session-cycles]
+>   run = -m 10M -e cycles --overwrite --switch-output -a
+> 
+>   [session-sched]
+>   run = -m 20M -e sched:* --overwrite --switch-output -a
+> 
+> Starting the daemon:
+> 
+>   # perf daemon start
+> 
+> And try once more:
+> 
+>   # perf daemon start
+>   failed: another perf daemon (pid 775594) owns /opt/perfdata
+> 
+> will end up with an error, because there's already one running
+> on top of /opt/perfdata.
 
-I'm not a native speaker but maybe is better 'connection oriented' or 
-looking at socket(2) man page 'connection-based' is also fine.
+Had to add this:
 
-Thanks,
-Stefano
+Committer notes:
 
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 31 +++++++++++++++++--------------
-> 1 file changed, 17 insertions(+), 14 deletions(-)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index c77998a14018..6e5e192cb703 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -415,8 +415,8 @@ static void vsock_deassign_transport(struct vsock_sock *vsk)
->
-> /* Assign a transport to a socket and call the .init transport callback.
->  *
->- * Note: for stream socket this must be called when vsk->remote_addr is set
->- * (e.g. during the connect() or when a connection request on a listener
->+ * Note: for connect oriented socket this must be called when vsk->remote_addr
->+ * is set (e.g. during the connect() or when a connection request on a listener
->  * socket is received).
->  * The vsk->remote_addr is used to decide which transport to use:
->  *  - remote CID == VMADDR_CID_LOCAL or g2h->local_cid or VMADDR_CID_HOST if
->@@ -479,10 +479,10 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 			return 0;
->
-> 		/* transport->release() must be called with sock lock acquired.
->-		 * This path can only be taken during vsock_stream_connect(),
->-		 * where we have already held the sock lock.
->-		 * In the other cases, this function is called on a new socket
->-		 * which is not assigned to any transport.
->+		 * This path can only be taken during vsock_connect(), where we
->+		 * have already held the sock lock. In the other cases, this
->+		 * function is called on a new socket which is not assigned to
->+		 * any transport.
-> 		 */
-> 		vsk->transport->release(vsk);
-> 		vsock_deassign_transport(vsk);
->@@ -659,9 +659,10 @@ static int __vsock_bind_connectible(struct vsock_sock *vsk,
->
-> 	vsock_addr_init(&vsk->local_addr, new_addr.svm_cid, new_addr.svm_port);
->
->-	/* Remove stream sockets from the unbound list and add them to the hash
->-	 * table for easy lookup by its address.  The unbound list is simply an
->-	 * extra entry at the end of the hash table, a trick used by AF_UNIX.
->+	/* Remove connect oriented sockets from the unbound list and add them
->+	 * to the hash table for easy lookup by its address.  The unbound list
->+	 * is simply an extra entry at the end of the hash table, a trick used
->+	 * by AF_UNIX.
-> 	 */
-> 	__vsock_remove_bound(vsk);
-> 	__vsock_insert_bound(vsock_bound_sockets(&vsk->local_addr), vsk);
->@@ -952,10 +953,10 @@ static int vsock_shutdown(struct socket *sock, int mode)
-> 	if ((mode & ~SHUTDOWN_MASK) || !mode)
-> 		return -EINVAL;
->
->-	/* If this is a STREAM socket and it is not connected then bail out
->-	 * immediately.  If it is a DGRAM socket then we must first kick the
->-	 * socket so that it wakes up from any sleeping calls, for example
->-	 * recv(), and then afterwards return the error.
->+	/* If this is a connect oriented socket and it is not connected then
->+	 * bail out immediately.  If it is a DGRAM socket then we must first
->+	 * kick the socket so that it wakes up from any sleeping calls, for
->+	 * example recv(), and then afterwards return the error.
-> 	 */
->
-> 	sk = sock->sk;
->@@ -1786,7 +1787,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
->
-> 	transport = vsk->transport;
->
->-	/* Callers should not provide a destination with stream sockets. */
->+	/* Callers should not provide a destination with connect oriented
->+	 * sockets.
->+	 */
-> 	if (msg->msg_namelen) {
-> 		err = sk->sk_state == TCP_ESTABLISHED ? -EISCONN : -EOPNOTSUPP;
-> 		goto out;
->-- 
->2.25.1
->
+Provide lockf(F_TLOCK) when not available, i.e. transform:
 
+  lockf(fd, F_TLOCK, 0);
+
+into:
+
+  flock(fd, LOCK_EX | LOCK_NB);
+
+Which should be equivalent.
+
+Noticed when cross building to some odd Android NDK.
+
+------
+
+Patch:
+
+[acme@five perf]$ git diff
+diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
+index 1c17c9e10ca6a656..2890573540f7d027 100644
+--- a/tools/perf/builtin-daemon.c
++++ b/tools/perf/builtin-daemon.c
+@@ -914,6 +914,20 @@ static int setup_config(struct daemon *daemon)
+        return daemon->config_real ? 0 : -1;
+ }
+ 
++#ifndef F_TLOCK
++#define F_TLOCK 2
++
++#include <sys/file.h>
++
++static int lockf(int fd, int cmd, off_t len)
++{
++       if (cmd != F_TLOCK || len != 0)
++               return -1;
++
++       return flock(fd, LOCK_EX | LOCK_NB);
++}
++#endif // F_TLOCK
++
+ /*
+  * Each daemon tries to create and lock BASE/lock file,
+  * if it's successful we are sure we're the only daemon
+[acme@five perf]$
