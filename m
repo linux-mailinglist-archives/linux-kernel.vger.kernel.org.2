@@ -2,203 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD2C3190B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B41EB3190B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhBKRNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:13:22 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:13560 "EHLO so15.mailgun.net"
+        id S230073AbhBKRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:13:42 -0500
+Received: from mga17.intel.com ([192.55.52.151]:8125 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230170AbhBKQDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:03:49 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613059395; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=dND8Fw/N2yqIwZD3O288QSZRIeAgRKtIgjzd8mBfxKs=; b=w1eIZjpfaEf0BMUozm+lzlDEP3KI+IPbiY/dchlV3KJomjdAAYQtsC+F6fCT34rEDMmZzBl/
- 1R2Qzoq37sSHSqiRXMCMxVlHOoJyDaLBeD8V+PY4gtUfo5h36U6ALfKRKNTFdALyi5fl72u9
- UEa35oRLECH4Rzu8IYVYF387NuM=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60255524e3df861f4bbb2b58 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Feb 2021 16:02:44
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1756CC43464; Thu, 11 Feb 2021 16:02:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BF261C433C6;
-        Thu, 11 Feb 2021 16:02:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BF261C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Thu, 11 Feb 2021 09:02:37 -0700
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Eric Anholt <eric@anholt.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Rob Clark <robdclark@gmail.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/msm: a6xx: Make sure the SQE microcode is safe
-Message-ID: <20210211160237.GB26503@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Eric Anholt <eric@anholt.net>,
-        Jonathan Marek <jonathan@marek.ca>, Rob Clark <robdclark@gmail.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210210005205.783377-1-jcrouse@codeaurora.org>
- <8aa916f9-238a-779c-bcaf-51bfb2b761d2@codeaurora.org>
+        id S231518AbhBKQGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 11:06:23 -0500
+IronPort-SDR: Me4tdqzlpicdY4pTb4E+5U7KGErt+88IMspaScAwP29nIZfrVLvLZcRMh4aMBCeuMbMkZLSAkN
+ XIKA9++MsNmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="162016589"
+X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
+   d="scan'208";a="162016589"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:04:38 -0800
+IronPort-SDR: kQh2KysLd/vC5jPu93cDLmW2HWsnxnA1xndKMfK9uDSK6541kBYwVPYGyGzq2NHqFypOeB95A0
+ PL7J7I7hj0MA==
+X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
+   d="scan'208";a="380716457"
+Received: from reknight-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.134.254])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:04:37 -0800
+Date:   Thu, 11 Feb 2021 08:04:36 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v2 2/8] cxl/mem: Find device capabilities
+Message-ID: <20210211160436.qbvgfzqng37erwae@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-3-ben.widawsky@intel.com>
+ <20210210174104.0000710a@Huawei.com>
+ <20210210185319.chharluce2ly4cne@intel.com>
+ <CAPcyv4i4_6HLNpw7p-1PD9cePuMuPkvUfx0ROT8M0Y7ftxzYfg@mail.gmail.com>
+ <20210211100152.00000667@Huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8aa916f9-238a-779c-bcaf-51bfb2b761d2@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210211100152.00000667@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 06:50:28PM +0530, Akhil P Oommen wrote:
-> On 2/10/2021 6:22 AM, Jordan Crouse wrote:
-> >Most a6xx targets have security issues that were fixed with new versions
-> >of the microcode(s). Make sure that we are booting with a safe version of
-> >the microcode for the target and print a message and error if not.
-> >
-> >v2: Add more informative error messages and fix typos
-> >
-> >Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> >---
-> >
-> >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 77 ++++++++++++++++++++++-----
-> >  1 file changed, 64 insertions(+), 13 deletions(-)
-> >
-> >diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >index ba8e9d3cf0fe..064b7face504 100644
-> >--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >@@ -522,28 +522,73 @@ static int a6xx_cp_init(struct msm_gpu *gpu)
-> >  	return a6xx_idle(gpu, ring) ? 0 : -EINVAL;
-> >  }
-> >-static void a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
-> >+/*
-> >+ * Check that the microcode version is new enough to include several key
-> >+ * security fixes. Return true if the ucode is safe.
-> >+ */
-> >+static bool a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
-> >  		struct drm_gem_object *obj)
-> >  {
-> >+	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
-> >+	struct msm_gpu *gpu = &adreno_gpu->base;
-> >  	u32 *buf = msm_gem_get_vaddr(obj);
-> >+	bool ret = false;
-> >  	if (IS_ERR(buf))
-> >-		return;
-> >+		return false;
-> >  	/*
-> >-	 * If the lowest nibble is 0xa that is an indication that this microcode
-> >-	 * has been patched. The actual version is in dword [3] but we only care
-> >-	 * about the patchlevel which is the lowest nibble of dword [3]
-> >-	 *
-> >-	 * Otherwise check that the firmware is greater than or equal to 1.90
-> >-	 * which was the first version that had this fix built in
-> >+	 * Targets up to a640 (a618, a630 and a640) need to check for a
-> >+	 * microcode version that is patched to support the whereami opcode or
-> >+	 * one that is new enough to include it by default.
-> >  	 */
-> >-	if (((buf[0] & 0xf) == 0xa) && (buf[2] & 0xf) >= 1)
-> >-		a6xx_gpu->has_whereami = true;
-> >-	else if ((buf[0] & 0xfff) > 0x190)
-> >-		a6xx_gpu->has_whereami = true;
-> >+	if (adreno_is_a618(adreno_gpu) || adreno_is_a630(adreno_gpu) ||
-> >+		adreno_is_a640(adreno_gpu)) {
-> >+		/*
-> >+		 * If the lowest nibble is 0xa that is an indication that this
-> >+		 * microcode has been patched. The actual version is in dword
-> >+		 * [3] but we only care about the patchlevel which is the lowest
-> >+		 * nibble of dword [3]
-> >+		 *
-> >+		 * Otherwise check that the firmware is greater than or equal
-> >+		 * to 1.90 which was the first version that had this fix built
-> >+		 * in
-> >+		 */
-> >+		if ((((buf[0] & 0xf) == 0xa) && (buf[2] & 0xf) >= 1) ||
-> >+			(buf[0] & 0xfff) >= 0x190) {
-> >+			a6xx_gpu->has_whereami = true;
-> >+			ret = true;
-> >+			goto out;
-> >+		}
-> >+		DRM_DEV_ERROR(&gpu->pdev->dev,
-> >+			"a630 SQE ucode is too old. Have version %x need at least %x\n",
-> >+			buf[0] & 0xfff, 0x190);
-> >+	}  else {
-> >+		/*
-> >+		 * a650 tier targets don't need whereami but still need to be
-> >+		 * equal to or newer than 1.95 for other security fixes
-> >+		 */
-> >+		if (adreno_is_a650(adreno_gpu)) {
-> >+			if ((buf[0] & 0xfff) >= 0x195) {
-> >+				ret = true;
-> >+				goto out;
-> >+			}
-> >+
-> >+			DRM_DEV_ERROR(&gpu->pdev->dev,
-> >+				"a650 SQE ucode is too old. Have version %x need at least %x\n",
-> >+				buf[0] & 0xfff, 0x195);
-> >+		}
-> >+
-> >+		/*
-> >+		 * When a660 is added those targets should return true here
-> >+		 * since those have all the critical security fixes built in
-> >+		 * from the start
-> >+		 */
-> Or we can just initialize 'ret' as true.
-
-I thought about it and I think I want to force an accept list here instead of
-letting new targets get by with an implicit pass.
-
-Jordan
-
-> -Akhil
-> >+	}
-> >+out:
-> >  	msm_gem_put_vaddr(obj);
-> >+	return ret;
-> >  }
-> >  static int a6xx_ucode_init(struct msm_gpu *gpu)
-> >@@ -566,7 +611,13 @@ static int a6xx_ucode_init(struct msm_gpu *gpu)
-> >  		}
-> >  		msm_gem_object_set_name(a6xx_gpu->sqe_bo, "sqefw");
-> >-		a6xx_ucode_check_version(a6xx_gpu, a6xx_gpu->sqe_bo);
-> >+		if (!a6xx_ucode_check_version(a6xx_gpu, a6xx_gpu->sqe_bo)) {
-> >+			msm_gem_unpin_iova(a6xx_gpu->sqe_bo, gpu->aspace);
-> >+			drm_gem_object_put(a6xx_gpu->sqe_bo);
-> >+
-> >+			a6xx_gpu->sqe_bo = NULL;
-> >+			return -EPERM;
-> >+		}
-> >  	}
-> >  	gpu_write64(gpu, REG_A6XX_CP_SQE_INSTR_BASE_LO,
-> >
+On 21-02-11 10:01:52, Jonathan Cameron wrote:
+> On Wed, 10 Feb 2021 11:54:29 -0800
+> Dan Williams <dan.j.williams@intel.com> wrote:
+> 
+> > > > ...
+> > > >  
+> > > > > +static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+> > > > > +                            struct mbox_cmd *mbox_cmd)
+> > > > > +{
+> > > > > +   struct device *dev = &cxlm->pdev->dev;
+> > > > > +
+> > > > > +   dev_dbg(dev, "Mailbox command (opcode: %#x size: %zub) timed out\n",
+> > > > > +           mbox_cmd->opcode, mbox_cmd->size_in);
+> > > > > +
+> > > > > +   if (IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {  
+> > > >
+> > > > Hmm.  Whilst I can see the advantage of this for debug, I'm not sure we want
+> > > > it upstream even under a rather evil looking CONFIG variable.
+> > > >
+> > > > Is there a bigger lock we can use to avoid chance of accidental enablement?  
+> > >
+> > > Any suggestions? I'm told this functionality was extremely valuable for NVDIMM,
+> > > though I haven't personally experienced it.  
+> > 
+> > Yeah, there was no problem with the identical mechanism in LIBNVDIMM
+> > land. However, I notice that the useful feature for LIBNVDIMM is the
+> > option to dump all payloads. This one only fires on timeouts which is
+> > less useful. So I'd say fix it to dump all payloads on the argument
+> > that the safety mechanism was proven with the LIBNVDIMM precedent, or
+> > delete it altogether to maintain v5.12 momentum. Payload dumping can
+> > be added later.
+> 
+> I think I'd drop it for now - feels like a topic that needs more discussion.
+> 
+> Also, dumping this data to the kernel log isn't exactly elegant - particularly
+> if we dump a lot more of it.  Perhaps tracepoints?
 > 
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+I'll drop it. It's also a small enough bit to add on for developers. When I post
+v3, I will add that bit on top as an RFC. My personal preference FWIW is to use
+debugfs to store the payload of the last executed command.
+
+We went with this because of the mechanism's provenance (libnvdimm)
+
+> > 
+> > [..]
+> > > > > diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> > > > > index e709ae8235e7..6267ca9ae683 100644
+> > > > > --- a/include/uapi/linux/pci_regs.h
+> > > > > +++ b/include/uapi/linux/pci_regs.h
+> > > > > @@ -1080,6 +1080,7 @@
+> > > > >
+> > > > >  /* Designated Vendor-Specific (DVSEC, PCI_EXT_CAP_ID_DVSEC) */
+> > > > >  #define PCI_DVSEC_HEADER1          0x4 /* Designated Vendor-Specific Header1 */
+> > > > > +#define PCI_DVSEC_HEADER1_LENGTH_MASK      0xFFF00000  
+> > > >
+> > > > Seems sensible to add the revision mask as well.
+> > > > The vendor id currently read using a word read rather than dword, but perhaps
+> > > > neater to add that as well for completeness?
+> > > >
+> > > > Having said that, given Bjorn's comment on clashes and the fact he'd rather see
+> > > > this stuff defined in drivers and combined later (see review patch 1 and follow
+> > > > the link) perhaps this series should not touch this header at all.  
+> > >
+> > > I'm fine to move it back.  
+> > 
+> > Yeah, we're playing tennis now between Bjorn's and Christoph's
+> > comments, but I like Bjorn's suggestion of "deduplicate post merge"
+> > given the bloom of DVSEC infrastructure landing at the same time.
+> I guess it may depend on timing of this.  Personally I think 5.12 may be too aggressive.
+> 
+> As long as Bjorn can take a DVSEC deduplication as an immutable branch then perhaps
+> during 5.13 this tree can sit on top of that.
+> 
+> Jonathan
+> 
+> 
