@@ -2,189 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40851318C38
+	by mail.lfdr.de (Postfix) with ESMTP id B0CF1318C39
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhBKNjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhBKNTF (ORCPT
+        id S231858AbhBKNkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:40:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55842 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231289AbhBKNUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:19:05 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A444C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:18:23 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id w19so4590576qki.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:18:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TNbrNGEpNHvneHu+xk19nOO78YSnguGzc+qrUt8Ns9I=;
-        b=ACfPd8VaxtXZss6ecIfSTRn1q0RQ50rMA9La8hOx9/ojVo7ooRxL/3afPAct9nxVkR
-         ALypNL9GdLhiOKikzl3blb5AqkzlaSjvbNg/0Lcnc79VBGyEciT2KLTprEFdaJvz+u/Q
-         TfrShJIW6WjQ0ympnQ3AIpnUxBJqja46lebBO6j0zYWK+4tOXis4AAHRWGdvoLE6m5DN
-         mva5hVY43HnDlYh7NLmxtb10P5dPAYB7DNQGzCHl8fBoWc/id6xeRCuC5d08nQHze07y
-         g9iJe8/MIrGXuYbDy08DQG92v5Xrpb7kdb+KCvz2z/gBE197KxwIxaqvFlrqifTxiHmv
-         LUbw==
+        Thu, 11 Feb 2021 08:20:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613049550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hmk14exEuAu1KNsA1eN9M3YU73ik9B3Wqe10eKOKhmo=;
+        b=eH7uNJNTrHC/2bUAM5UTu2sM0WL4Zb9uF6dBNwE/fKDKXspPXbZJ1s3HVPybNgRfGzcdP4
+        F9lzOhUTcrFUY81g9gfOyeW4U9JzfMKVm91Mm/tRTI66Z/FzyHStow1pZhUbv6fK+5W9za
+        yH0Yk53JhDLB43xLDH24Bo3zKy66KW0=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-602--G6hEfRqNDySzDgq1jgaCA-1; Thu, 11 Feb 2021 08:19:08 -0500
+X-MC-Unique: -G6hEfRqNDySzDgq1jgaCA-1
+Received: by mail-ej1-f71.google.com with SMTP id yc4so4770781ejb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:19:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TNbrNGEpNHvneHu+xk19nOO78YSnguGzc+qrUt8Ns9I=;
-        b=e9jnSp0HPpfAD6Zn/VbQmrosLwEZ1HIc44QVU2tWRJ5etFJeFf9ek9uIncPyFS18YB
-         VJNSQpeHnUBKM2GjopqGBLcaF3HW7mCmiaoc5SrV6WpM9lkKY33h5DGCS3+NgK9V9nA3
-         R3k8on7h6lSFslx8zTTDN5E5n9FCsCHtLccOoLpWbp+g7TqdfNKUEsYjqXVkWqZdIBH0
-         bw+lMAzDvSovQsBvIgkl4rseFd6LHol0EtXc+kFVeL7kEDNaiHKDvy6kkWJSqoP6uytg
-         2UQJtJrKYWWyA7ErL7LoIf0ZVp6p2NjHSojZhrFqm5Ird5JJFCKuUbiQtvt1IsZWPbSn
-         Qzjw==
-X-Gm-Message-State: AOAM532K1KVhc8rDYshFLIVJP8y8SDN40atiqNZTAnjr2wTA8qDWfdk+
-        cj3hRo5JaXqw9TA9+2fp9SDAls9iTepL5mGu8OqdsQ==
-X-Google-Smtp-Source: ABdhPJxA6pzkZq0hAk0lQqeUPpSmGOTEnqyjDG6MHORn1Z6d6T5PVA9k6A2/h2zgWi0Z+OCZSulMRKjO+Rbx/+6EILM=
-X-Received: by 2002:a05:620a:49:: with SMTP id t9mr8683728qkt.231.1613049502035;
- Thu, 11 Feb 2021 05:18:22 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hmk14exEuAu1KNsA1eN9M3YU73ik9B3Wqe10eKOKhmo=;
+        b=BFyktH4VYYfkX5O2zhGbw5VDPAKtShLtZGryFCPGP0klmaxue9oBmiJF0xXTCjEJm4
+         L5csJnvi2ryJiVucLtr0MB3cRF2jO+iGn4DvU4plPMLDq4BS+ojffhlH860V6Jkd+Psm
+         6/f3CcZ1imRuI4IVCR2uK5jbu52vbMNpxHj0v2VZ2OhNxltHdjTjWlwYn02wCphwzHtp
+         zSVSfwiGDoNdtJ3QvxHCXXeK2CmC3CG7R2TTfnTyZXnHEYmPfubf+HWMVpi2rFkeQY9c
+         9ulAUKLE4IOP8uWyA08jDfnhxECZ5ZpDqsCCXEHKnXLW2rKo/hzUi0jP7brCWF88vbgl
+         tf7w==
+X-Gm-Message-State: AOAM530+HMupjBt965RMO+0QROEaxrSkbp5hJFqTQCAG9qS2NUG/y8fj
+        fZ3NLoXewp0cFTpPln/AJs58hxmuKU37FXboigeMFujwdY2WW4E3f88AypqVcKa5Oaf1is3yK1S
+        B6unuKHhyste+02jWtmaKc5Iw
+X-Received: by 2002:a17:907:210d:: with SMTP id qn13mr8293106ejb.377.1613049547482;
+        Thu, 11 Feb 2021 05:19:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyxJgriiJCTazbhHBmTN5Qv/1jX0/Iyqy0dukmtptWSTg97rk7GMZLbA0+lOCu+wbSRGVi5hg==
+X-Received: by 2002:a17:907:210d:: with SMTP id qn13mr8293081ejb.377.1613049547302;
+        Thu, 11 Feb 2021 05:19:07 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id g22sm4356281ejw.31.2021.02.11.05.19.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 05:19:06 -0800 (PST)
+Date:   Thu, 11 Feb 2021 14:19:04 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v4 08/17] af_vsock: update comments for stream sockets
+Message-ID: <20210211131904.ejkq3gltlqcffduq@steredhat>
+References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
+ <20210207151632.805240-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <000000000000563a0205bafb7970@google.com> <20210211104947.GL19070@quack2.suse.cz>
- <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
- <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
- <20210211121020.GO19070@quack2.suse.cz> <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz> <20210211125717.GH308988@casper.infradead.org>
-In-Reply-To: <20210211125717.GH308988@casper.infradead.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 11 Feb 2021 14:18:09 +0100
-Message-ID: <CACT4Y+ZP5S1PLN7=q5Rw8zSOyOAUz=TjHQqZMX0aUxyBawaj6A@mail.gmail.com>
-Subject: Re: possible deadlock in start_this_handle (2)
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210207151632.805240-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 1:57 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > > > > Hello,
-> > > > > >
-> > > > > > added mm guys to CC.
-> > > > > >
-> > > > > > On Wed 10-02-21 05:35:18, syzbot wrote:
-> > > > > > > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
-> > > > > > > git tree:       upstream
-> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15cbce90d00000
-> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
-> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> > > > > > > userspace arch: i386
-> > > > > > >
-> > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > > > >
-> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > > > Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
-> > > > > > >
-> > > > > > > ======================================================
-> > > > > > > WARNING: possible circular locking dependency detected
-> > > > > > > 5.11.0-rc6-syzkaller #0 Not tainted
-> > > > > > > ------------------------------------------------------
-> > > > > > > kswapd0/2246 is trying to acquire lock:
-> > > > > > > ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
-> > > > > > >
-> > > > > > > but task is already holding lock:
-> > > > > > > ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
-> > > > > > >
-> > > > > > > which lock already depends on the new lock.
-> > > > > > >
-> > > > > > > the existing dependency chain (in reverse order) is:
-> > > > > > >
-> > > > > > > -> #2 (fs_reclaim){+.+.}-{0:0}:
-> > > > > > >        __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
-> > > > > > >        fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
-> > > > > > >        might_alloc include/linux/sched/mm.h:193 [inline]
-> > > > > > >        slab_pre_alloc_hook mm/slab.h:493 [inline]
-> > > > > > >        slab_alloc_node mm/slub.c:2817 [inline]
-> > > > > > >        __kmalloc_node+0x5f/0x430 mm/slub.c:4015
-> > > > > > >        kmalloc_node include/linux/slab.h:575 [inline]
-> > > > > > >        kvmalloc_node+0x61/0xf0 mm/util.c:587
-> > > > > > >        kvmalloc include/linux/mm.h:781 [inline]
-> > > > > > >        ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
-> > > > > > >        ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
-> > > > > > >        ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
-> > > > > > >        ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
-> > > > > > >        ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
-> > > > > > >        ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
-> > > > > > >        ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
-> > > > > > >        __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
-> > > > > > >        __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
-> > > > > > >        __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
-> > > > > > >        vfs_setxattr+0x135/0x320 fs/xattr.c:291
-> > > > > > >        setxattr+0x1ff/0x290 fs/xattr.c:553
-> > > > > > >        path_setxattr+0x170/0x190 fs/xattr.c:572
-> > > > > > >        __do_sys_setxattr fs/xattr.c:587 [inline]
-> > > > > > >        __se_sys_setxattr fs/xattr.c:583 [inline]
-> > > > > > >        __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
-> > > > > > >        do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
-> > > > > > >        __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
-> > > > > > >        do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
-> > > > > > >        entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> > > > > >
-> > > > > > This stacktrace should never happen. ext4_xattr_set() starts a transaction.
-> > > > > > That internally goes through start_this_handle() which calls:
-> > > > > >
-> > > > > >         handle->saved_alloc_context = memalloc_nofs_save();
-> > > > > >
-> > > > > > and we restore the allocation context only in stop_this_handle() when
-> > > > > > stopping the handle. And with this fs_reclaim_acquire() should remove
-> > > > > > __GFP_FS from the mask and not call __fs_reclaim_acquire().
-> > > > > >
-> > > > > > Now I have no idea why something here didn't work out. Given we don't have
-> > > > > > a reproducer it will be probably difficult to debug this. I'd note that
-> > > > > > about year and half ago similar report happened (got autoclosed) so it may
-> > > > > > be something real somewhere but it may also be just some HW glitch or
-> > > > > > something like that.
-> > > > >
-> > > > > HW glitch is theoretically possible. But if we are considering such
-> > > > > causes, I would say a kernel memory corruption is way more likely, we
-> > > > > have hundreds of known memory-corruption-capable bugs open. In most
-> > > > > cases they are caught by KASAN before doing silent damage. But KASAN
-> > > > > can miss some cases.
-> > > > >
-> > > > > I see at least 4 existing bugs with similar stack:
-> > > > > https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> > > > > https://syzkaller.appspot.com/bug?extid=a7ab8df042baaf42ae3c
-> > > > > https://syzkaller.appspot.com/bug?id=c814a55a728493959328551c769ede4c8ff72aab
-> > > > > https://syzkaller.appspot.com/bug?id=426ad9adca053dafcd698f3a48ad5406dccc972b
-> > > > >
-> > > > > All in all, I would not assume it's a memory corruption. When we had
-> > > > > bugs that actually caused silent memory corruption, that caused a
-> > > > > spike of random one-time crashes all over the kernel. This does not
-> > > > > look like it.
-> > > >
-> > > > I wonder if memalloc_nofs_save (or any other manipulation of
-> > > > current->flags) could have been invoked from interrupt context? I
-> > > > think it could cause the failure mode we observe (extremely rare
-> > > > disappearing flags). It may be useful to add a check for task context
-> > > > there.
-> > >
-> > > That's an interesting idea. I'm not sure if anything does manipulate
-> > > current->flags from inside an interrupt (definitely memalloc_nofs_save()
-> > > doesn't seem to be) but I'd think that in fully preemtible kernel,
-> > > scheduler could preempt the task inside memalloc_nofs_save() and the
-> > > current->flags manipulation could also clash with a manipulation of these
-> > > flags by the scheduler if there's any?
-> >
-> > current->flags should be always manipulated from the user context. But
-> > who knows maybe there is a bug and some interrupt handler is calling it.
-> > This should be easy to catch no?
->
-> Why would it matter if it were?  We save the current value of the nofs
-> flag and then restore it.  That would happen before the end of the
-> interrupt handler.  So the interrupt isn't going to change the observed
-> value of the flag by the task which is interrupted.
+On Sun, Feb 07, 2021 at 06:16:29PM +0300, Arseny Krasnov wrote:
+>This replaces 'stream' to 'connect oriented' in comments as SEQPACKET is
+>also connect oriented.
 
-Good question.
-I just think that fixing some of these assumptions as runtime checks
-is useful, as it will allow us to reduce infinite space of
-possibilities. What is called from what context. Maybe checking that
-PF_MEMALLOC_NOFS is indeed set when we enter memalloc_nofs_restore().
+I'm not a native speaker but maybe is better 'connection oriented' or 
+looking at socket(2) man page 'connection-based' is also fine.
+
+Thanks,
+Stefano
+
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> net/vmw_vsock/af_vsock.c | 31 +++++++++++++++++--------------
+> 1 file changed, 17 insertions(+), 14 deletions(-)
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index c77998a14018..6e5e192cb703 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -415,8 +415,8 @@ static void vsock_deassign_transport(struct vsock_sock *vsk)
+>
+> /* Assign a transport to a socket and call the .init transport callback.
+>  *
+>- * Note: for stream socket this must be called when vsk->remote_addr is set
+>- * (e.g. during the connect() or when a connection request on a listener
+>+ * Note: for connect oriented socket this must be called when vsk->remote_addr
+>+ * is set (e.g. during the connect() or when a connection request on a listener
+>  * socket is received).
+>  * The vsk->remote_addr is used to decide which transport to use:
+>  *  - remote CID == VMADDR_CID_LOCAL or g2h->local_cid or VMADDR_CID_HOST if
+>@@ -479,10 +479,10 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+> 			return 0;
+>
+> 		/* transport->release() must be called with sock lock acquired.
+>-		 * This path can only be taken during vsock_stream_connect(),
+>-		 * where we have already held the sock lock.
+>-		 * In the other cases, this function is called on a new socket
+>-		 * which is not assigned to any transport.
+>+		 * This path can only be taken during vsock_connect(), where we
+>+		 * have already held the sock lock. In the other cases, this
+>+		 * function is called on a new socket which is not assigned to
+>+		 * any transport.
+> 		 */
+> 		vsk->transport->release(vsk);
+> 		vsock_deassign_transport(vsk);
+>@@ -659,9 +659,10 @@ static int __vsock_bind_connectible(struct vsock_sock *vsk,
+>
+> 	vsock_addr_init(&vsk->local_addr, new_addr.svm_cid, new_addr.svm_port);
+>
+>-	/* Remove stream sockets from the unbound list and add them to the hash
+>-	 * table for easy lookup by its address.  The unbound list is simply an
+>-	 * extra entry at the end of the hash table, a trick used by AF_UNIX.
+>+	/* Remove connect oriented sockets from the unbound list and add them
+>+	 * to the hash table for easy lookup by its address.  The unbound list
+>+	 * is simply an extra entry at the end of the hash table, a trick used
+>+	 * by AF_UNIX.
+> 	 */
+> 	__vsock_remove_bound(vsk);
+> 	__vsock_insert_bound(vsock_bound_sockets(&vsk->local_addr), vsk);
+>@@ -952,10 +953,10 @@ static int vsock_shutdown(struct socket *sock, int mode)
+> 	if ((mode & ~SHUTDOWN_MASK) || !mode)
+> 		return -EINVAL;
+>
+>-	/* If this is a STREAM socket and it is not connected then bail out
+>-	 * immediately.  If it is a DGRAM socket then we must first kick the
+>-	 * socket so that it wakes up from any sleeping calls, for example
+>-	 * recv(), and then afterwards return the error.
+>+	/* If this is a connect oriented socket and it is not connected then
+>+	 * bail out immediately.  If it is a DGRAM socket then we must first
+>+	 * kick the socket so that it wakes up from any sleeping calls, for
+>+	 * example recv(), and then afterwards return the error.
+> 	 */
+>
+> 	sk = sock->sk;
+>@@ -1786,7 +1787,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>
+> 	transport = vsk->transport;
+>
+>-	/* Callers should not provide a destination with stream sockets. */
+>+	/* Callers should not provide a destination with connect oriented
+>+	 * sockets.
+>+	 */
+> 	if (msg->msg_namelen) {
+> 		err = sk->sk_state == TCP_ESTABLISHED ? -EISCONN : -EOPNOTSUPP;
+> 		goto out;
+>-- 
+>2.25.1
+>
+
