@@ -2,104 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E3F318390
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF3B31838E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhBKC24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 21:28:56 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:63295 "EHLO rere.qmqm.pl"
+        id S229693AbhBKC2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 21:28:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229454AbhBKC2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 21:28:53 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4DbgXP1497z80;
-        Thu, 11 Feb 2021 03:28:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1613010485; bh=7etFCYWGEl/OZ7P9hv12y5xpLpd1kZTNFqO9sQS7uSE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bkTpBL8So8vuXm1sM+zV2aVcpLFtM7zC16lwCOfvTz6NyNTjfCUKIjP1EiI++gRUZ
-         C56ry08sPLk3qLDrfqWMjPZV5Hnb/tMXdL3rGjMxvXyMl7IBE3ArNph3oFGAYEbYTF
-         pqYzAqcnDj0q3P5uaZEfttjKlr+/jtywOJR7kZFB1NDkKj6wTt9TTgn6WNQlODNcra
-         DmYxj9kd81ONOGKIny7DsI3Iub9c+3cxdssFb/oDwRyIGtGLvGnDqEkYX+xrRy0eCy
-         RiyPnTrGD0s8eVV5xYsFqavDzh6sjESKUBYEkxfR3mp//ETl9t0wkKKyXcyGsY/mq4
-         AXTCh/sGfNDMg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Thu, 11 Feb 2021 03:27:38 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Michal Rostecki <mrostecki@suse.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
-Message-ID: <20210211022738.GB4933@qmqm.qmqm.pl>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-7-mrostecki@suse.de>
- <20210210042428.GC12086@qmqm.qmqm.pl>
- <20210210122925.GB23499@wotan.suse.de>
- <20210210125815.GA20903@qmqm.qmqm.pl>
- <20210210192304.GA28777@wotan.suse.de>
+        id S229454AbhBKC2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 21:28:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2916464E30;
+        Thu, 11 Feb 2021 02:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613010482;
+        bh=cEVcWPt97Wr0bZy0eBDwrn3QC7JXXN8/X6TxRjqIjXI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=dUyAPvKQwvu5ZpSHZQF9oi1vVselOwj8N8gpDkRJH7AmecXuUKgz966VnXazG8j3T
+         CLxlRRONFsk3Abx3fHBbnnFatbmZZjlX9xiOLElKy4T0kRFc91vjsS3VjJ5IpkhJV3
+         WVazt1eTx7enpR1xyCvSfmziW143xCJRaq2p7vb+EBpwwNiOAVekvIrX4S2sGTDp25
+         k0jEqGOlimqaHTG+KwdTHdzWv/UOI7twDrySJTI6E7dJLR9QFgwitVUlfwjcwlmhPW
+         ZHH02SPvCWdE4TFLipl9t7PbL2cOlWh+DA5J70pdXyZbjf1l3JuEO4ug67sAK+lD3U
+         ulskgMw/tTOnQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210210192304.GA28777@wotan.suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210210102904.xyr6bftn4ueuu74z@gilmour>
+References: <20210209175900.7092-1-jernej.skrabec@siol.net> <20210209175900.7092-2-jernej.skrabec@siol.net> <20210210102904.xyr6bftn4ueuu74z@gilmour>
+Subject: Re: [PATCH v3 1/5] clk: sunxi-ng: mp: fix parent rate change flag check
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     wens@csie.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-sunxi@googlegroups.com, Andre Heider <a.heider@gmail.com>
+To:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maxime Ripard <maxime@cerno.tech>, mturquette@baylibre.com
+Date:   Wed, 10 Feb 2021 18:28:00 -0800
+Message-ID: <161301048085.1254594.6786751472945742937@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 07:23:04PM +0000, Michal Rostecki wrote:
-> On Wed, Feb 10, 2021 at 01:58:15PM +0100, Micha³ Miros³aw wrote:
-> > On Wed, Feb 10, 2021 at 12:29:25PM +0000, Michal Rostecki wrote:
-> > > On Wed, Feb 10, 2021 at 05:24:28AM +0100, Micha³ Miros³aw wrote:
-> > > > This looks like it effectively decreases queue depth for non-last
-> > > > device. After all devices are filled to queue_depth-penalty, only
-> > > > a single mirror will be selected for next reads (until a read on
-> > > > some other one completes).
-> > > > 
-> > > 
-> > > Good point. And if all devices are going to be filled for longer time,
-> > > this function will keep selecting the last one. Maybe I should select
-> > > last+1 in that case. Would that address your concern or did you have any
-> > > other solution in mind?
-> > 
-> > The best would be to postpone the selection until one device becomes free
-> > again. But if that's not doable, then yes, you could make sure it stays
-> > round-robin after filling the queues (the scheduling will loose the
-> > "penalty"-driven adjustment though).
-> 
-> Or another idea - when all the queues are filled, return the mirror
-> which has the lowest load (inflight + penalty), even though it's greater
-> than queue depth. In that case the scheduling will not lose the penalty
-> adjustment and the load is going to be spreaded more fair.
-> 
-> I'm not sure if postponing the selection is that good idea. I think it's
-> better if the request is added to the iosched queue anyway, even if the
-> disks' queues are filled, and let the I/O scheduler handle that. The
-> length of the iosched queue (nr_requests, attribute of the iosched) is
-> usually greater than queue depth (attribute of the devide), which means
-> that it's fine to schedule more requests for iosched to handle.
-> 
-> IMO btrfs should use the information given by iosched only for heuristic
-> mirror selection, rather than implement its own throttling logic.
-> 
-> Does it make sense to you?
-> 
-> An another idea could be an additional iteration in regard to
-> nr_requests, if all load values are greater than queue depths, though it
-> might be an overkill. I would prefer to stick to my first idea if
-> everyone agrees.
+Quoting Maxime Ripard (2021-02-10 02:29:04)
+> Hi Mike, Stephen,
+>=20
+> On Tue, Feb 09, 2021 at 06:58:56PM +0100, Jernej Skrabec wrote:
+> > CLK_SET_RATE_PARENT flag is checked on parent clock instead of current
+> > one. Fix that.
+> >=20
+> > Fixes: 3f790433c3cb ("clk: sunxi-ng: Adjust MP clock parent rate when a=
+llowed")
+> > Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+> > Tested-by: Andre Heider <a.heider@gmail.com>
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+>=20
+> This is a last minute fix for us, can you merge it into clk-fixes directl=
+y?
+>=20
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+>=20
 
-What if iosched could provide an estimate of request's latency? Then
-btrfs could always select the lowest. For reads from NVME/SSD I would
-normally expect something simple: speed_factor * (pending_bytes + req_bytes).
-For HDDs this could do more computation like looking into what is there
-in the queue already.
-
-This would deviate from simple round-robin scheme, though.
-
-Best Regards
-Micha³ Miros³aw
+It's also fixing a problem that's been around since v5.0. Is something
+broken that needs fixing this late? The motivation could be added to the
+commit text because right now it looks like a typo fix spotted visually.
