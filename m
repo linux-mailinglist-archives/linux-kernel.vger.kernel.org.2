@@ -2,115 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCA531911E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDE8319120
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhBKRcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:32:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhBKQaa (ORCPT
+        id S232236AbhBKRcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:32:47 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26138 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231691AbhBKQaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 11 Feb 2021 11:30:30 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A75C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:29:46 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id f14so10968605ejc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 08:29:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=ABj8h6JxoKzCkEFlLOPlFl55Hb6x4ubH36UnScGj9KU=;
-        b=BNxr53Eh4Rd+L3Iw+fOTZ3NITnYeHKeJ8+3HLB+AB44V4L2zuKgso8bfqhIZT85PdG
-         MadFFUeEB8p8acfVuuXebGL5/coigQDu+Kkx9UYe62gOanXH4mBtMZG4A/EAZ7Dyr/6s
-         KVRhrf9gIWH1e+4bBOu/eJkfQExosu4Xf7VL02HVcfadCSvcZGikKnqJhnp8bXf67oT1
-         +WkfOdhxc4ETMZs3Vgj+UIOMy8beZbbLvmViZBtOybjqxmPjhgU4hfHpL/ffyD1I9rkL
-         yPqFnvkvqgJ4/bA6t+VSk0TaR7Mw6MV3oPTy16RPjBs2EjJaNHHJa+slCef/Ijb9pW98
-         qYiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=ABj8h6JxoKzCkEFlLOPlFl55Hb6x4ubH36UnScGj9KU=;
-        b=FeLz71g9/9k8vp96mIkiPE2e+CeWAwfHSdbqkP0uog8+BLq9IdhYHaEUXcliwIoYdL
-         6aWaMQ5z9gnZLQiZP1lFqZ23DSQ8kpnkJ94fSaLlMl1ghu1lHNtHmcFNRqliTUBpgakG
-         y5GB9p9ye1fEFUDlcZZnpP7kAFpt4ZOqeHxIsgwtPARkdtymy3k3mBEzRZlb6ACZAsV5
-         63g0/hILwFwxKwklwXioyGsRmTxBpIYVEs8xim54h6Q44ASpWylMD/kBOceLRcSEqGBw
-         LoT3+bmiOf8to+UYVH21DytlwvFSvwlDKFe5vdMPMcGgIhNVj/HjIYsceSsE7uSMOBcM
-         bghQ==
-X-Gm-Message-State: AOAM531q1B5w2UClDLP6M6SuDQl+/gSd8B/V2k4nqpcfUaKGCZtfEPVo
-        cnIgInwP9ukjdeQSnDgOVIA07wlZChboA6PkqFo1
-X-Google-Smtp-Source: ABdhPJweNZP4TzMhtMYaYgcn1PzXigwCB0MySFfbTC8o7Eq1L6ARWGPA1NXZPn9sU34dwjLDUP8/GMbabKeHGrzw3ck=
-X-Received: by 2002:a17:906:35d9:: with SMTP id p25mr9185445ejb.398.1613060985419;
- Thu, 11 Feb 2021 08:29:45 -0800 (PST)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11BGDsOJ036022;
+        Thu, 11 Feb 2021 11:29:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=1VwQ7jEAKnvB8fLAJVSh63TrP4R5BIlh1FXfJ8lm3Ew=;
+ b=JUQvUkV5B3gfrdV5fnpuaIwBJ/WysVIfYYdimsIH62BuCMeOVJ3llLnzuIpqbajCt2CO
+ HrUOyOyveieFbbGX6RHUehoobDrTBq+ZkbrpMLzii3lQ+I5BL6cN0VJzxgXp6iHqiYSy
+ H5ep5WLY/QgWLx0PbRFaoAaXMFbrJqZxldoIpYYSNA+dQYgxhSS3VoeJ1+3VtglFgFkW
+ NuCd1r8WpXij8uGBkmzemGNlR5ocEczEog9f5AiMPpbe5pDDWokFzqf98ZPEAzAbykWs
+ mMoaLG0eKL0lY3VNR5ZdDSWQRLQetR5Ycdtj/0DQh/oHwtJotul0vpdfciRRu/E3Gh+O sQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36n7wv0mth-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 11:29:45 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11BGE3ce036934;
+        Thu, 11 Feb 2021 11:29:45 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36n7wv0mst-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 11:29:44 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11BGRBO8021576;
+        Thu, 11 Feb 2021 16:29:43 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03wdc.us.ibm.com with ESMTP id 36hjr9pxu4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 16:29:43 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11BGTgHZ6488610
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 16:29:42 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18B57BE058;
+        Thu, 11 Feb 2021 16:29:42 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ABBE0BE056;
+        Thu, 11 Feb 2021 16:29:38 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.163.60.2])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 11 Feb 2021 16:29:38 +0000 (GMT)
+Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
+        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
+        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
+        kwankhede@nvidia.com, ACurrid@nvidia.com, gmataev@nvidia.com,
+        cjia@nvidia.com, yishaih@nvidia.com, aik@ozlabs.ru
+References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
+ <20210201162828.5938-9-mgurtovoy@nvidia.com>
+ <20210201181454.22112b57.cohuck@redhat.com>
+ <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
+ <20210201114230.37c18abd@omen.home.shazbot.org>
+ <20210202170659.1c62a9e8.cohuck@redhat.com>
+ <20210202171021.GW4247@nvidia.com>
+ <f49512dd-9a5c-b1d8-1609-da55e270635b@nvidia.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+Message-ID: <9fc2b752-88a3-0607-00fc-cb7414dcd5f6@linux.ibm.com>
+Date:   Thu, 11 Feb 2021 11:29:37 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
- <20210211151606.GX3158@orbyte.nwl.cc>
-In-Reply-To: <20210211151606.GX3158@orbyte.nwl.cc>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 11 Feb 2021 11:29:34 -0500
-Message-ID: <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
-Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change events
-To:     Phil Sutter <phil@nwl.cc>, Richard Guy Briggs <rgb@redhat.com>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        sgrubb@redhat.com, Ondrej Mosnacek <omosnace@redhat.com>,
-        fw@strlen.de, twoerner@redhat.com,
-        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f49512dd-9a5c-b1d8-1609-da55e270635b@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 priorityscore=1501 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 10:16 AM Phil Sutter <phil@nwl.cc> wrote:
-> Hi,
->
-> On Thu, Jun 04, 2020 at 09:20:49AM -0400, Richard Guy Briggs wrote:
-> > iptables, ip6tables, arptables and ebtables table registration,
-> > replacement and unregistration configuration events are logged for the
-> > native (legacy) iptables setsockopt api, but not for the
-> > nftables netlink api which is used by the nft-variant of iptables in
-> > addition to nftables itself.
-> >
-> > Add calls to log the configuration actions in the nftables netlink api.
->
-> As discussed offline already, these audit notifications are pretty hefty
-> performance-wise. In an internal report, 300% restore time of a ruleset
-> containing 70k set elements is measured.
+On 2/11/21 10:47 AM, Max Gurtovoy wrote:
+> 
+> On 2/2/2021 7:10 PM, Jason Gunthorpe wrote:
+>> On Tue, Feb 02, 2021 at 05:06:59PM +0100, Cornelia Huck wrote:
+>>
+>>> On the other side, we have the zdev support, which both requires s390
+>>> and applies to any pci device on s390.
+>> Is there a reason why CONFIG_VFIO_PCI_ZDEV exists? Why not just always
+>> return the s390 specific data in VFIO_DEVICE_GET_INFO if running on
+>> s390?
+>>
+>> It would be like returning data from ACPI on other platforms.
+> 
+> Agree.
+> 
+> all agree that I remove it ?
 
-If you're going to reference offline/off-list discussions in a post to
-a public list, perhaps the original discussion shouldn't have been
-off-list ;)  If you don't involve us in the discussion, we have to
-waste a lot of time getting caught up.
+I did some archives digging on the discussions around 
+CONFIG_VFIO_PCI_ZDEV and whether we should/should not have a Kconfig 
+switch around this; it was something that was carried over various 
+attempts to get the zdev support upstream, but I can't really find (or 
+think of) a compelling reason that a Kconfig switch must be kept for it. 
+  The bottom line is if you're on s390, you really want zdev support.
 
-> If I'm not mistaken, iptables emits a single audit log per table, ipset
-> doesn't support audit at all. So I wonder how much audit logging is
-> required at all (for certification or whatever reason). How much
-> granularity is desired?
+So: I don't have an objection so long as the net result is that 
+vfio_pci_zdev.o is always built in to vfio-pci(-core) for s390.
 
-That's a question for the people who track these certification
-requirements, which is thankfully not me at the moment.  Unless
-somebody else wants to speak up, Steve Grubb is probably the only
-person who tracks that sort of stuff and comments here.
+> 
+> we already have a check in the code:
+> 
+> if (ret && ret != -ENODEV) {
+>                                  pci_warn(vdev->vpdev.pdev, "Failed to 
+> setup zPCI info capabilities\n");
+>                                  return ret;
+> }
+> 
+> so in case its not zdev we should get -ENODEV and continue in the good 
+> flow.
+> 
+>>
+>> It really seems like part of vfio-pci-core
+>>
+>> Jason
 
-I believe the netfilter auditing was mostly a nice-to-have bit of
-functionality to help add to the completeness of the audit logs, but I
-could very easily be mistaken.  Richard put together those patches, he
-can probably provide the background/motivation for the effort.
-
-> I personally would notify once per transaction. This is easy and quick.
-> Once per table or chain should be acceptable, as well. At the very
-> least, we should not have to notify once per each element. This is the
-> last resort of fast ruleset adjustments. If we lose it, people are
-> better off with ipset IMHO.
->
-> Unlike nft monitor, auditd is not designed to be disabled "at will". So
-> turning it off for performance-critical workloads is no option.
-
-Patches are always welcome, but it might be wise to get to the bottom
-of the certification requirements first.
-
--- 
-paul moore
-www.paul-moore.com
