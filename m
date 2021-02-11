@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FC43186B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66083186BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhBKJP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 04:15:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229906AbhBKJGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 04:06:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9401161493;
-        Thu, 11 Feb 2021 09:04:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613034267;
-        bh=s6acHd5aTlo6n49Lkwr18bw9K57h309+9vm78Ih2dCs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FSKUkhCP0g6VmedvF0aQPzYO/lYhn/RcbMV0JRzgpFyE/rDvhQrg7OmQqIzg9QY/o
-         Br5NJKne3Pwkg3tM5tqcBFuA8wC+q3PJhuw4o2LCYFB5WeFLw7Oe66FREsGB7f0S9G
-         3/y5QjdVlw00Ad21aCTdCJO3HWBFrO/TGLDzq6HtAe+spCQp6ToWzcMC/eqU+7iZnV
-         WATuk84moqqfkcSNSAw+eRdg5AILaUN8b2t1XX6yYuXlhwW7N4UGO3kwP3ZTXWSYXt
-         ruq2eJVnbfs+EUT63+OD7fm30X4eSV4dZgWRvKOe4UXMj9KPX7YzhOAjBXfKmKrvos
-         yLs5VeWaf5d9g==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lA7ty-0004kk-Dl; Thu, 11 Feb 2021 10:04:42 +0100
+        id S229916AbhBKJPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 04:15:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36834 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229928AbhBKJGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 04:06:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613034287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cUh3btrpAi+FUHWUWD/UqAB9fZT3iRfs3I41QKzDr1I=;
+        b=A/PKF8Agm4YzXpKR0YTgdh3WqBPSdWpyfLVa8OcGTlaRAUHrnujgH9/bwL8uuEa7zdyfMD
+        nMlRhAT+uP5wQ+NMH8PUSba7Iae/dWMbs+jFvhExJb2JA7D863sGS/Jh4mkr9ZUwFDZ1v9
+        fegytXm82eq+GWIVM+kVW91ysb2YhOc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-211-cG43RO2nNcuEU81vkAwCTQ-1; Thu, 11 Feb 2021 04:04:45 -0500
+X-MC-Unique: cG43RO2nNcuEU81vkAwCTQ-1
+Received: by mail-wm1-f71.google.com with SMTP id y18so2886459wma.8
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 01:04:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cUh3btrpAi+FUHWUWD/UqAB9fZT3iRfs3I41QKzDr1I=;
+        b=Qo0atZC/vSp7QDSj7os1Q5OfTmv/mpW2ZNgwgOPS6SdZeaJsGranJSDls3lewiMXcu
+         WZNl3IBpD29Fvxljdbkb3HwDHKhvpqYyF4Nyk+Kh7fmmSBmS4fHmFzC9ju9b6XZ0KtzW
+         4A0He4/YE+6VwC3Tk+vQds6DPb2lL/7r9WRCNYSwafJVoWHaSLk4Q5/kUP/pvYCRJvF9
+         tON0pB+a8Df55oJAGtJhLu8zA5HjndR37lYHbBckAW+gQ0fMS1xQpgnVkwRBBWVhi4Mk
+         8fPLJT1+GzAV7oqtBv3uGPRny4dRYBTJFQ/jN1OlDZaIatu8W7dmkEsOBavetocPieV9
+         WYSw==
+X-Gm-Message-State: AOAM53213NpuYzy70QJFljyt+7MzcDHothFoQXTK9PJZ3o9gBIAYmY/c
+        mdWXZsLsnN+lkZHzd1tuWz+PPHyb96Ty8Dmkcent28oWgqR0jDaxPPfpSQR+HtD0LOFSIC2hbCf
+        EbRuX2hI5sFM1G2Pf4v7ZDNPJ
+X-Received: by 2002:a7b:c215:: with SMTP id x21mr4271349wmi.61.1613034284614;
+        Thu, 11 Feb 2021 01:04:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx4jVrYnD5gqRlpBFHbY3hwKi/T7kAxI5a04+w+9jI6nET5iaHm1TFgae9EvUpDBGz4t2Ft7A==
+X-Received: by 2002:a7b:c215:: with SMTP id x21mr4271326wmi.61.1613034284409;
+        Thu, 11 Feb 2021 01:04:44 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n66sm9487437wmn.25.2021.02.11.01.04.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Feb 2021 01:04:43 -0800 (PST)
+Subject: Re: [RESEND PATCH ] KVM: VMX: Enable/disable PML when dirty logging
+ gets enabled/disabled
+To:     Sean Christopherson <seanjc@google.com>,
+        Makarand Sonare <makarandsonare@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pshier@google.com, jmattson@google.com,
+        Ben Gardon <bgardon@google.com>
+References: <20210210212308.2219465-1-makarandsonare@google.com>
+ <YCSAh31LP4QwBfHZ@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d6dbe1e3-eaa9-f171-ce5f-6a00b21f1c9a@redhat.com>
 Date:   Thu, 11 Feb 2021 10:04:42 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg KH <greg@kroah.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        phone-devel@vger.kernel.org, tony@atomide.com
-Subject: Re: [RFC/context] add serdev interfaces to n_gsm
-Message-ID: <YCTzKm+70jwqkdLK@hovoldconsulting.com>
-References: <20210107224530.GA23250@duo.ucw.cz>
- <YBQvvUitX4MtRrh+@hovoldconsulting.com>
- <20210131170639.GA21067@duo.ucw.cz>
- <20210210212836.GA18497@duo.ucw.cz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rAT/ssUU3GkMr7C/"
-Content-Disposition: inline
-In-Reply-To: <20210210212836.GA18497@duo.ucw.cz>
+In-Reply-To: <YCSAh31LP4QwBfHZ@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/02/21 01:55, Sean Christopherson wrote:
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index ee4ac2618ec59..c6e5b026bbfe8 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -307,6 +307,7 @@ bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req)
+>>   {
+>>   	return kvm_make_all_cpus_request_except(kvm, req, NULL);
+>>   }
+>> +EXPORT_SYMBOL_GPL(kvm_make_all_cpus_request);
+> If we move enable_pml into x86.c then this export and several of the kvm_x86_ops
+> go away.  I know this because I have a series I was about to send that does that,
+> among several other things.  I suspect that kvm->arch.pml_enabled could also go
+> away, but that's just a guess.
 
---rAT/ssUU3GkMr7C/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't like the idea of moving enable_pml into x86.c, but I'm ready to 
+be convinced otherwise.  In any case, for sure you can _check_ 
+enable_pml from x86.c via kvm_x86_ops.flush_log_dirty or 
+kvm_x86_ops.cpu_dirty_log_size.
 
-On Wed, Feb 10, 2021 at 10:28:36PM +0100, Pavel Machek wrote:
-> Hi!
->=20
-> > > > +config GNSS_MOTMDM
-> > > > +	tristate "Motorola Modem TS 27.010 serdev GNSS receiver support"
-> > > > +	depends on SERIAL_DEV_N_GSM
-> > >=20
-> > > You need to post this driver together with the serdev-ngsm driver. Th=
-is
-> > > one cannot currently even be built without it, but we also need to see
-> > > the greater picture here.
-> >=20
-> > Well, here it is, for greater picture. But it is not ready. Current
-> > problem I have is gsm_serdev_register_tty_port(). The way I do
-> > platform device registration causes oops on module unload. Help with
-> > that would be welcome
->=20
-> I would not mind comments on parent patch and some help here.
->=20
-> Basically I tried to work around limitation in=20
->=20
-> int serdev_device_add(struct serdev_device *serdev)
-> {
-> ...
->        /* Only a single slave device is currently supported. */
->        if (ctrl->serdev) {
-> ...
+Paolo
 
-I haven't really had time to look at the code yet, but trying to work
-around the single-client (slave) assumption seems wrong. You still have
-only one client per port even if the mux driver provides multiple
-(virtual) ports.
-
-But judging from a quick look it appears that you are indeed registering
-one tty device per mux channel in gsm_serdev_register_tty_port() (as you
-should) so perhaps that's not the issue here.
-
-Do you have a stack trace from the oops? Are the client drivers holding
-the ports open while you unload the parent driver? That sounds like
-something which could go boom unless you pin the parent for example
-(serdev doesn't support hangups).
-
-Also, did you forget to post the gsm_tty_driver implementation? I don't
-see a definition of that symbol in the patch.
-
-Johan
-
---rAT/ssUU3GkMr7C/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCYCTzJAAKCRALxc3C7H1l
-CI+3AP9VA3K/m2t9z13w7b+tVZbUIrSxHOX/0DomC+lfFgg1pQD/ZE+MdHa704R5
-sm2pYuZFeNCfY6aLbitWO0uLlnOZPQo=
-=LyzA
------END PGP SIGNATURE-----
-
---rAT/ssUU3GkMr7C/--
