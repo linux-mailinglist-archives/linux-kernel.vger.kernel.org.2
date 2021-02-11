@@ -2,135 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9885E319196
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546F331919C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbhBKRxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:53:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhBKRSw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:18:52 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B35C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:18:11 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d13so3673659plg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:18:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=2Va0d5DLKmJ/vBD6ZtgEU+C4iwJe1g7ynRh/ylVryc4=;
-        b=KMBWmNG8WFCySwjMyO2je+ink+5pH3UJyvLsHL+4zn8IRQYjg0TJiDbLuahQJWniLR
-         DBZ3KSdJu0IuEYvrvnzy5EbhJ7UEVIExWceFJc/xxfGZImqiAGYeJrjyg5h+eu2vQ9lD
-         iySXL5sT9jjCInm5ASo67ncULa5FJesyT/BXjwIjaErWbt1pKb4KfYD2Vgs0zOYbS7x7
-         bku9ltYhf2Agf8DXinLHzFhloIXTDHvMyt/iRJMy0nYHMvDgzO13Id0TL7PS9ztPScXQ
-         wWSyWPfmT8pIaWsIl1NK7GUiH+VQGW0bSkoq6+7A3jEwjyiEnhfxoXzNfh+QTPr2vjPn
-         tYpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=2Va0d5DLKmJ/vBD6ZtgEU+C4iwJe1g7ynRh/ylVryc4=;
-        b=pkhMTvnu8+DBctNiqgy84jvlf9OT/xCeSf/vpQ7SmtgBgBmlnjmHZVsPPIDu24q709
-         pD+1NaVx9iGeom/LNcIP/U+K+sr7Ic5KqqzgJF/mwNw7ju/RZ54vygsOPZqI+1b/Rj0e
-         WtnbBOOj1F8k26LCTsBRt9zXa41lcKThS4s2W1me7J1psh7XbfDQXJPeiArUh/8wpMOE
-         jWTUmw/xJLu51AJqm/DX5sD4UVZB4ioOeiG3L7FaoMGAmM4mr7Zj8mxos7a/kQWuGP8k
-         OT+nZo9Cs27DLOcSkvOHiehz7FOG0dz+JM0Ldcc5RrgCnoZYtlti6Ps7F6jjVFfU3Ixl
-         kELw==
-X-Gm-Message-State: AOAM532E2bmxo/1JmIsMKbPldUF7RVHfwbbkh9Oj5HpiK5J0UtOTk6LB
-        XollYwBnRQ13zgY3DQlP7Lj0NHn7yNhDfg==
-X-Google-Smtp-Source: ABdhPJzsSHNjxdlE/n1tiPWh163tang06udG1kM1kfg0+KzmHOUO7GjIz6ZrldYrikuAB1Ps3L6IqQ==
-X-Received: by 2002:a17:90a:6347:: with SMTP id v7mr4970704pjs.22.1613063890677;
-        Thu, 11 Feb 2021 09:18:10 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:f588:a708:f347:3ebb])
-        by smtp.gmail.com with ESMTPSA id c84sm6383679pfb.16.2021.02.11.09.18.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 09:18:10 -0800 (PST)
-Date:   Thu, 11 Feb 2021 09:18:03 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: nVMX: Sync L2 guest CET states between L1/L2
-Message-ID: <YCVmyx8N6BYB7NGy@google.com>
-References: <20210209083708.2680-1-weijiang.yang@intel.com>
+        id S231138AbhBKRxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:53:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231860AbhBKRTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:19:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09A2A64E7D;
+        Thu, 11 Feb 2021 17:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613063950;
+        bh=CB9nGzI/AeQNscTNyB/VAn3SBkJwUg/HzJ5/zb+R07Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tDhjI/B1hXnJr0dwttH4OLH7fFxUd8iu4SIxRR8bspbrO5R1ndSua/KMYinHddsk/
+         QysOPh9WibZvE2jlyT6xizWkuLr1hJeYxvbnqs5i4MyoMEnvOQct4PMMax4BN01aAZ
+         FlNwFRdBeofsPtgKL/6i1VYs5ll51ROnr21o/ysDKtVKNcNHjCNqYYwkdwKO4qpEac
+         BwSpXIx3vLdYo/8wM39wZBp4SBsELeaxFZ6C0+muvD7URjAMJ9NBB+ulfflb8IEfkE
+         QnddslgegsFZiOmNFOuAXLHk6Z1om8/z5qzrSusCUOZNoGkjYBZVYREOjcJh88xl3e
+         rgeP0dn2qupCg==
+Date:   Thu, 11 Feb 2021 10:19:08 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gen_compile_commands: prune some directories
+Message-ID: <20210211171908.GA3820685@ubuntu-m3-large-x86>
+References: <20210211161154.3892836-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210209083708.2680-1-weijiang.yang@intel.com>
+In-Reply-To: <20210211161154.3892836-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021, Yang Weijiang wrote:
-> When L2 guest status has been changed by L1 QEMU/KVM, sync the change back
-> to L2 guest before the later's next vm-entry. On the other hand, if it's
-> changed due to L2 guest, sync it back so as to let L1 guest see the change.
+On Fri, Feb 12, 2021 at 01:11:54AM +0900, Masahiro Yamada wrote:
+> If directories are passed to gen_compile_commands.py, os.walk() traverses
+> all the subdirectories to search for .cmd files, but we know some of them
+> are not worth traversing.
 > 
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> Use the 'topdown' parameter of os.walk to prune them.
+> 
+> Documentation about the 'topdown' option of os.walk:
+>   When topdown is True, the caller can modify the dirnames list
+>   in-place (perhaps using del or slice assignment), and walk() will
+>   only recurse into the subdirectories whose names remain in dirnames;
+>   this can be used to prune the search, impose a specific order of
+>   visiting, or even to inform walk() about directories the caller
+>   creates or renames before it resumes walk() again. Modifying
+>   dirnames when topdown is False has no effect on the behavior of
+>   the walk, because in bottom-up mode the directories in dirnames
+>   are generated before dirpath itself is generated.
+> 
+> This commit prunes four directories, .git, Documentation, include, and
+> tools.
+> 
+> The first three do not contain any C files. My main motivation is the
+> last one, tools/ directory.
+> 
+> Commit 6ca4c6d25949 ("gen_compile_commands: do not support .cmd files
+> under tools/ directory") stopped supporting the tools/ directory.
+> The current code no longer picks up .cmd files from the tools/
+> directory.
+> 
+> If you run:
+> 
+>   ./scripts/clang-tools/gen_compile_commands.py --log_level=INFO
+> 
+> then, you will see several "File ... not found" log messages.
+> 
+> This is expected, and I do not want to support the tools/ directory.
+> However, without an explicit comment "do not support tools/", somebody
+> might try to get it back. Clarify this.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+
+Sorry, I did not realize that gen_compile_commands.py did not intend to
+support. I was only looking at the history for the current location, not
+the former one of scripts/gen_compile_commands.py.
+
+Acked-by: Nathan Chancellor <nathan@kernel.org>
+
 > ---
->  arch/x86/kvm/vmx/nested.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
 > 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 9728efd529a1..b9d8db8facea 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -2602,6 +2602,12 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
->  	/* Note: may modify VM_ENTRY/EXIT_CONTROLS and GUEST/HOST_IA32_EFER */
->  	vmx_set_efer(vcpu, vcpu->arch.efer);
+>  scripts/clang-tools/gen_compile_commands.py | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+> index 19963708bcf8..eb5faefbdf74 100755
+> --- a/scripts/clang-tools/gen_compile_commands.py
+> +++ b/scripts/clang-tools/gen_compile_commands.py
+> @@ -20,7 +20,9 @@ _DEFAULT_LOG_LEVEL = 'WARNING'
+>  _FILENAME_PATTERN = r'^\..*\.cmd$'
+>  _LINE_PATTERN = r'^cmd_[^ ]*\.o := (.* )([^ ]*\.c)$'
+>  _VALID_LOG_LEVELS = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+> -
+> +# The tools/ directory adopts a different build system, and produces .cmd
+> +# files in a different format. Do not support it.
+> +_EXCLUDE_DIRS = ['.git', 'Documentation', 'include', 'tools']
 >  
-> +	if (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE) {
-> +		vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
-> +		vmcs_writel(GUEST_INTR_SSP_TABLE, vmcs12->guest_ssp_tbl);
-> +		vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
-> +	}
+>  def parse_arguments():
+>      """Sets up and parses command-line arguments.
+> @@ -80,8 +82,14 @@ def cmdfiles_in_dir(directory):
+>      """
+>  
+>      filename_matcher = re.compile(_FILENAME_PATTERN)
+> +    exclude_dirs = [ os.path.join(directory, d) for d in _EXCLUDE_DIRS ]
 > +
-
-This is incomplete.  If VM_ENTRY_LOAD_CET_STATE is not set, then CET state needs
-to be propagated from vmcs01 to vmcs02.  See nested.vmcs01_debugctl and
-nested.vmcs01_guest_bndcfgs.
-
-It's tempting to say that we should add machinery to simplify implementing new
-fields that are conditionally loading, e.g. define an array that specifies the
-field, its control, and its offset in vmcs12, then process the array at the
-appropriate time.  That might be overkill though...
-
->  	/*
->  	 * Guest state is invalid and unrestricted guest is disabled,
->  	 * which means L1 attempted VMEntry to L2 with invalid state.
-> @@ -4152,6 +4158,12 @@ static void sync_vmcs02_to_vmcs12(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12)
+> +    for dirpath, dirnames, filenames in os.walk(directory, topdown=True):
+> +        # Prune unwanted directories.
+> +        if dirpath in exclude_dirs:
+> +            dirnames[:] = []
+> +            continue
 >  
->  	if (vmcs12->vm_exit_controls & VM_EXIT_SAVE_IA32_EFER)
->  		vmcs12->guest_ia32_efer = vcpu->arch.efer;
-> +
-> +	if (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE) {
-
-This is wrong, guest state is saved on VM-Exit if the control is _supported_,
-it doesn't have to be enabled.
-
-  If the processor supports the 1-setting of the “load CET” VM-entry control,
-  the contents of the IA32_S_CET and IA32_INTERRUPT_SSP_TABLE_ADDR MSRs are
-  saved into the corresponding fields. On processors that do not support Intel
-  64 architecture, bits 63:32 of these MSRs are not saved.
-
-And I'm pretty sure we should define these fields as a so called "rare" fields,
-i.e. add 'em to the case statement in is_vmcs12_ext_field() and process them in
-sync_vmcs02_to_vmcs12_rare().  CET isn't easily emulated, so they should almost
-never be read/written by a VMM, and thus aren't with synchronizing to vmcs12 on
-every exit.
-
-> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
-> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
-> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
-> +	}
->  }
->  
->  /*
+> -    for dirpath, _, filenames in os.walk(directory):
+>          for filename in filenames:
+>              if filename_matcher.match(filename):
+>                  yield os.path.join(dirpath, filename)
 > -- 
-> 2.26.2
+> 2.27.0
 > 
