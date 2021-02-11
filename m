@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B3A3191AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4342C31919E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbhBKR5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48802 "EHLO
+        id S232416AbhBKRyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:54:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhBKRWH (ORCPT
+        with ESMTP id S229968AbhBKRVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:22:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633CCC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:21:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4V4RhiH1UyWnF1PtklR0TeZu/LJmoRUY68pmD70X6pg=; b=cm8aslEvrbI3fGlEgYmSPP8j/o
-        WtSGBsoo62PW5j/jduzHluCay3av4lz54ilWJi90oqNk8xxskPcWev3AEzQp77bvGbtMpSou1aOda
-        j07498Ev5uESzoV2FaYlmfhqw7K4qIKaWCdmUo/pNitPPeodqmJcG+gE1KAUQGFooIKZobtklFmTH
-        5NwPLy0xUwmYHNXNWHujRt2do1DsDv5DyS19YFOTipD+761Blrg6Jf/baKTxiwILgY0OUGXhnWAsQ
-        AEzlASSpqtpSW6Bjae5cmxNTgFHiNbyRO+h1PUz1tWxBTtUxKxMbvGQ/5FW44z+4L/LMqXZYaSBqv
-        E9og+bnw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lAFdi-00AWc0-SA; Thu, 11 Feb 2021 17:20:28 +0000
-Date:   Thu, 11 Feb 2021 17:20:26 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Timur Tabi <timur@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 3/3] [v3] lib/vsprintf: debug_never_hash_pointers prints
- all addresses as unhashed
-Message-ID: <20210211172026.GL308988@casper.infradead.org>
-References: <20210210213453.1504219-1-timur@kernel.org>
- <20210210213453.1504219-4-timur@kernel.org>
- <20210211123118.GB31708@amd>
- <9f0c02d9-29d6-95ce-b9b7-27342aa70c6f@kernel.org>
+        Thu, 11 Feb 2021 12:21:21 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF73C061788
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:20:41 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id d2so3776440pjs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 09:20:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jf7uz7KkvG7cuDcx18HVh+0IJQIL4h8EveTLHjDAfiU=;
+        b=iCnUnCFOpfLcPGLQ1cfdZVP4ekS9UJfidbrUINg1rY3vIelBJ9xUq+mV7Wpqkkfybj
+         M5XX/HHJDwJMUS6QE1JLORhUHscDG1MxXRebf+82uD+8qxnSJvgFX+VqXaFX5+hMzISO
+         IZoCm8ZZ7tmulH89bbKUyDpejY0juzcZJyfK9JyrdSdiD1uqvkSKlCU89H53e9EALk4y
+         hmeU80bgxDam3iWslqmsR3bInjCsD6pgYDK43ucZALlVYkdMOqIWCArRH8IT7BssT/hp
+         wv0EIFQ1RQvXwZz43SINeReGz2QJSXYwAygZ//9WwaCEqm/3xetrkFKCY2BEDwyJUaqX
+         zOgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jf7uz7KkvG7cuDcx18HVh+0IJQIL4h8EveTLHjDAfiU=;
+        b=MQaIUSIyie1CfdIunn586M51nbQ5hLkMCZQfFyzf7VsGjWrE2MIUcYOw/2ERyBWek4
+         aOpm+PnKWEP7U0QYT5Izz270dy4cjRfEM1kIPIOp9rQ2lipzjAJLt4uX00fGyMXVGjoS
+         wG9xV2KddK7ST1zMS5P4jxa1A2AN3uWZxc7NnP+0TlqDRsn2xD2edk3NEuBnojO6EOjA
+         SoUcGtNT12RJsR0WejsI1Uehi4LL5iKjUY1p/kBPSZGFGS+qfH/384ykf4NEbU9GXO5L
+         /bRNMKmYx9PUT+4BpcpjTrTMevm6ahuqEoRfr/z+XaOhAgjMLoaus1uDykYkAd5Zdrnq
+         9Zvw==
+X-Gm-Message-State: AOAM530k20v1x8DeuCqd37RsuCKNaKSkCwKL2wINj2+MDIBHBWJ/WfTq
+        OiXA1JTD2jROLNIiHLAuQl2Ihg==
+X-Google-Smtp-Source: ABdhPJwY0Se4VDZCQ5dyTr1QsViauTzwNsI6dapdeOb6n28m3VplVdAODI9Ix3+fTwTpSLqT5DS37Q==
+X-Received: by 2002:a17:902:d48b:b029:e1:f87:265d with SMTP id c11-20020a170902d48bb02900e10f87265dmr8649453plg.1.1613064040857;
+        Thu, 11 Feb 2021 09:20:40 -0800 (PST)
+Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id e15sm7415384pgr.81.2021.02.11.09.20.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 09:20:40 -0800 (PST)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] coresight: Patches for v5.12 (part 2)    
+Date:   Thu, 11 Feb 2021 10:20:35 -0700
+Message-Id: <20210211172038.2483517-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9f0c02d9-29d6-95ce-b9b7-27342aa70c6f@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 11:08:12AM -0600, Timur Tabi wrote:
-> 
-> 
-> On 2/11/21 6:31 AM, Pavel Machek wrote:
-> > Can we make this something shorter? Clearly you don't want people
-> > placing this in their grub config, so they'll be most likely typing
-> > this a lot...
-> > 
-> > debug_pointers or debug_ptrs would be better.
-> 
-> dbg_unhash_ptrs?  "debug_ptrs" is too vague IMHO, and I want to keep the
-> word "hash" somewhere there to indicate exactly what's happening.
+Good morning,
 
-no_hash_pointers ?
+My previous submission had the wrong baseline and as such was missing a patch.
+This set applies properly on [1].
+
+Thanks for the patience,
+Mathieu
+
+[1]. 48139bad913d ACRN: update MAINTAINERS: mailing list is subscribers-only
+
+Leo Yan (2):
+  coresight: etm-perf: Clarify comment on perf options
+  Documentation: coresight: Add PID tracing description
+
+Suzuki K Poulose (1):
+  coresight: etm-perf: Support PID tracing for kernel at EL2
+
+ Documentation/trace/coresight/coresight.rst   | 32 +++++++++++++++++++
+ .../hwtracing/coresight/coresight-etm-perf.c  | 32 +++++++++++++++++--
+ .../coresight/coresight-etm4x-core.c          | 13 ++++++++
+ include/linux/coresight-pmu.h                 | 20 +++++++++---
+ 4 files changed, 90 insertions(+), 7 deletions(-)
+
+-- 
+2.25.1
+
