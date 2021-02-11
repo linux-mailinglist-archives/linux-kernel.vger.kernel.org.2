@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4343188DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D3C3188A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhBKK6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:58:40 -0500
-Received: from mga09.intel.com ([134.134.136.24]:5167 "EHLO mga09.intel.com"
+        id S230219AbhBKKwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:52:06 -0500
+Received: from mga12.intel.com ([192.55.52.136]:21973 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230011AbhBKKsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:48:35 -0500
-IronPort-SDR: AZS8tJf7lopxhpK8qxJgSghI38cxyueiSPWVUObYD7uLEVlViGEzj7DKlckGp0nztwo2PcGVE1
- a4eeMgcFLB2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="182356426"
+        id S230337AbhBKKrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 05:47:55 -0500
+IronPort-SDR: 4d7O3rFPujgvAf29h5yb7tZQXoHLPSFB59tmSJqwqefr+bN2DNzuVqEpk59hfm1xBygtibIOlz
+ QBsBbcDw+6QQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="161365724"
 X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="182356426"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 02:47:13 -0800
-IronPort-SDR: Xff4PmMxscOyXk5BAnDMl6Vi7FIs/NuldE/+ZU4Jyr8kwk+6gRP9/LZLfGkDowUM76D9MAr+b6
- Ll0fhgjFBEqg==
+   d="scan'208";a="161365724"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 02:47:12 -0800
+IronPort-SDR: 0grqb7KGYUy9Jk8Wa06Q+j6K17bvCE4FjCIi4i2Q6j2FEGcg09MzAyhrltxK3dmu9WaTP/SIP7
+ 8ZcxMbJbuM9g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
-   d="scan'208";a="414770415"
+   d="scan'208";a="359961759"
 Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Feb 2021 02:47:11 -0800
+  by orsmga003.jf.intel.com with ESMTP; 11 Feb 2021 02:47:11 -0800
 Received: from kbuild by cd560a204411 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lA9V8-0003ig-Cp; Thu, 11 Feb 2021 10:47:10 +0000
-Date:   Thu, 11 Feb 2021 18:46:21 +0800
+        id 1lA9V8-0003is-F7; Thu, 11 Feb 2021 10:47:10 +0000
+Date:   Thu, 11 Feb 2021 18:46:24 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/smp] BUILD SUCCESS
- 66040b2d5d41f85cb1a752a75260595344c5ec3b
-Message-ID: <60250afd.yfEy2LDSkGTl/LpW%lkp@intel.com>
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 70245f86c109e0eafb92ea9653184c0e44b4b35c
+Message-ID: <60250b00.BQHbO0i+o5cBszt9%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,13 +43,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/smp
-branch HEAD: 66040b2d5d41f85cb1a752a75260595344c5ec3b  smp: Process pending softirqs in flush_smp_call_function_from_idle()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 70245f86c109e0eafb92ea9653184c0e44b4b35c  x86/pci: Create PCI/MSI irqdomain after x86_init.pci.arch_init()
 
 elapsed time: 726m
 
-configs tested: 143
-configs skipped: 3
+configs tested: 134
+configs skipped: 69
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -96,25 +96,16 @@ arc                         haps_hs_defconfig
 arm                          prima2_defconfig
 powerpc                          g5_defconfig
 sh                  sh7785lcr_32bit_defconfig
-m68k                          amiga_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                     tqm8555_defconfig
-mips                        bcm63xx_defconfig
-sh                           se7721_defconfig
 mips                         tb0287_defconfig
 powerpc                    socrates_defconfig
 mips                            ar7_defconfig
 powerpc                     sbc8548_defconfig
+powerpc                     tqm8555_defconfig
 powerpc                          allmodconfig
 powerpc                 xes_mpc85xx_defconfig
 m68k                        m5407c3_defconfig
 powerpc                     ep8248e_defconfig
 mips                        omega2p_defconfig
-nios2                            alldefconfig
-mips                           ip27_defconfig
-powerpc                      katmai_defconfig
-arm                           tegra_defconfig
-xtensa                       common_defconfig
 riscv                            alldefconfig
 arm                        vexpress_defconfig
 m68k                            mac_defconfig
