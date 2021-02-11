@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9BA3196C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A42C83196CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhBKXjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 18:39:00 -0500
-Received: from ozlabs.org ([203.11.71.1]:36373 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhBKXi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 18:38:56 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DcCjx4nykz9sBJ;
-        Fri, 12 Feb 2021 10:38:13 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613086694;
-        bh=wfiP/uy1qHv/ayrF8P9eKHzB6FIdOy2YLI3SgWhi5hA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hnp0ER2qikKOUr3aLwjnbEVmRGcb6VisBH6EpxCxq7r+YTvcdoIBCY4MuRlVGWVZv
-         8wWcy+vIKGHKRlz1n66mJ74Wibw8R1edZj7STePwKoA8CO8/aEk/v/AbB2G0Rk9ufe
-         PlF1lTFgAI7yWVBiFEWc3tot/IwKs8WIqWORSIRgrVvqTXi3wJyIa2u0+b7L31tWXK
-         kywlBpSIv+eXKK6H7XpnKhgzWJG7toeib/ppjNp069466b8w0iLTssDenc1qB7BPTJ
-         8MuEH7GI9sNotxmJ+voXf++MtGLRAyWf3f/afQZ/4JaqZ4TirsUT6+S82TEj2volaq
-         jHewFZH9jrLxA==
-Date:   Fri, 12 Feb 2021 10:38:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>, David Howells <dhowells@redhat.com>
-Cc:     David Sterba <dsterba@suse.com>, Ira Weiny <ira.weiny@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the btrfs tree with the fscache tree
-Message-ID: <20210212103810.170b93e8@canb.auug.org.au>
+        id S229961AbhBKXk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 18:40:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhBKXku (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 18:40:50 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBB7C061574;
+        Thu, 11 Feb 2021 15:40:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=qvd/SYs4ftUzQOlcTaLsI7FkmKupYPRFZDx2eUjfsCw=; b=GWnoubWY02Y5IeNq9dITHyobTG
+        Vyn3ktpWXoGVR83LB32R2mOuDRTluYGYmIKrpMBPGFILGSHmc38j365nB+/3gYkEDdBqdW+dIenzF
+        j89N2p2/Ylvc1rzcaanrvb9tiY/9fduNJuJcMAOlrPNfZqr5U25QfkcWshDtulmiGTvWa0S0vWEDr
+        W/6qZE9Xk+BgC7qT6jbe7jrzWu45RAibAW5FS+eAzFKpIMk/bHE5YmdEbqTM52/487ljkQiPLpVDB
+        BVD2UUfE1gBgDp896VuWiK5SQVR4hwMWDuSqfb9AWNmMxuKHfhfcwK5rTGsFh+xzSZtYDweN2nQJz
+        5RJTS5+w==;
+Received: from [2601:1c0:6280:3f0::cf3b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lALZ9-0003hi-0u; Thu, 11 Feb 2021 23:40:07 +0000
+Subject: Re: [PATCH] misc: fastrpc: restrict user apps from sending kernel RPC
+ messages
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>, stable@vger.kernel.org
+References: <20210211233744.3348384-1-dmitry.baryshkov@linaro.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a11cdbfa-142e-57ae-cd5b-5e8aebd5f4cf@infradead.org>
+Date:   Thu, 11 Feb 2021 15:40:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1Sl9RCN.B0FAd1HbN=/XHgv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210211233744.3348384-1-dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1Sl9RCN.B0FAd1HbN=/XHgv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2/11/21 3:37 PM, Dmitry Baryshkov wrote:
+> Verify that user applications are not using the kernel RPC message
+> handle to restrict them from directly attaching to guest OS on the
+> remote subsystem. This is a port of CVE-2019-2308 fix.
+> 
+> Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Cc: Jonathan Marek <jonathan@marek.ca>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  drivers/misc/fastrpc.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+> index 815d01f785df..e7f3a22fdaa3 100644
+> --- a/drivers/misc/fastrpc.c
+> +++ b/drivers/misc/fastrpc.c
+> @@ -948,6 +948,11 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
+>  	if (!fl->cctx->rpdev)
+>  		return -EPIPE;
+>  
+> +	if (handle == FASTRPC_INIT_HANDLE && !kernel) {
+> +		dev_warn(fl->sctx->dev, "user app trying to send a kernel RPC message (%d)\n",  handle);
 
-Hi all,
+rate limit so that userspace cannot flood kernel log?
 
-Today's linux-next merge of the btrfs tree got a conflict in:
+> +		return -EPERM;
+> +	}
+> +
+>  	ctx = fastrpc_context_alloc(fl, kernel, sc, args);
+>  	if (IS_ERR(ctx))
+>  		return PTR_ERR(ctx);
+> 
 
-  lib/iov_iter.c
 
-between commit:
+-- 
+~Randy
 
-  11432a3cc061 ("iov_iter: Add ITER_XARRAY")
-
-from the fscache tree and commit:
-
-  325a835476e3 ("iov_iter: Remove memzero_page() in favor of zero_user()")
-
-from the btrfs tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc lib/iov_iter.c
-index 24413884b5ca,aa0d03b33a1e..000000000000
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@@ -1048,9 -961,8 +1028,9 @@@ size_t iov_iter_zero(size_t bytes, stru
-  		return pipe_zero(bytes, i);
-  	iterate_and_advance(i, bytes, v,
-  		clear_user(v.iov_base, v.iov_len),
-- 		memzero_page(v.bv_page, v.bv_offset, v.bv_len),
-+ 		zero_user(v.bv_page, v.bv_offset, v.bv_len),
- -		memset(v.iov_base, 0, v.iov_len)
- +		memset(v.iov_base, 0, v.iov_len),
-- 		memzero_page(v.bv_page, v.bv_offset, v.bv_len)
-++		zero_user(v.bv_page, v.bv_offset, v.bv_len)
-  	)
- =20
-  	return bytes;
-
---Sig_/1Sl9RCN.B0FAd1HbN=/XHgv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAlv+IACgkQAVBC80lX
-0Gwbwgf+Lw3uRQsaf2tqcI/JmSjSRPpAVKUbb9w52fT5GU6SpKA384D/z9mS0HBE
-LxWtPCQOIMJU9nvfNdpGLPrFW9hsRL6OwSchiaZvO+EVLNuiZuLOtsbk5WZCZQvV
-GAA22GwjY44umWOxKIbDc6+Dr2c049eLu7assumVni917pVrKdCRzccWhW6vHDzR
-/7wLvZk4qHJZ8VMibqxgmirv7IXL0Dkn05sH0mDtgmkLawH+U1S4EVKc7GCTixAy
-f24Y28JYwDnVEBLIQULvI8l7SPNbSlgHtqRLBf+dLyCH+6/c1PoG0oyKnO0FqG9s
-TI1WO/Ky6sU/AsFpTqdUbQDf8/1RNw==
-=auiZ
------END PGP SIGNATURE-----
-
---Sig_/1Sl9RCN.B0FAd1HbN=/XHgv--
