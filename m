@@ -2,102 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74616319642
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09719319648
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhBKXBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 18:01:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230158AbhBKXBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 18:01:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5643164E45;
-        Thu, 11 Feb 2021 23:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613084420;
-        bh=hUAjqC2ipIs0Uawoeq3MF0KtoPUw2dEume6J2zh1Ok8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ChPHLGJR8M7fV0WOl7AU6sIHS2iI2uOJfasXJnzJDgJPlCVVLNxYHQFEFWGQmO6FI
-         XE+DpVy0bm+NPz+62uHwsJhku474vUPnxP6zgiFkpTqIwFfdA5QBXvWZl5zDVm8Vi1
-         LJAbvxk6HEuZgGdVuo2YO6zoHoRSsRZLC65M+/wDfDGTGe0pGrAxnUBGc40fTPJDX1
-         VEPu9nOOJuPkMCYjp3f92UdQM7UYSlXn7A+hgXsQJCGjRHiJk4kKIycDFbajcAT2BZ
-         ohBT04MBuvj29OJHnhz/j7qg/c8ReORddae8XgxWuqKFNH2q5OlTy04HRQkl3cDWZp
-         B69j/Cwf74S5Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4170760A0F;
-        Thu, 11 Feb 2021 23:00:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230209AbhBKXCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 18:02:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229837AbhBKXCP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 18:02:15 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C565C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 15:01:35 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id o63so4994361pgo.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 15:01:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S2PQQ0wZ9rKvtqHbEKRPCYDXrvuY1Je3Fig5GLurKUw=;
+        b=KXgqNlRs3H8zvF5QqlTEt24uNPC3iSM1Y2o88fv0VyY4F5VLKucaaAso3rv03Qe2wc
+         SVx7o87efDfnT2+d98NLhqZVAPYPtdJwxEr3TaYM/gblZ8YBbeWPLfTE/JVnHuobxs9T
+         QTaozCcZRbbGWAkr5QuiT/lAU724+gf3G5R501FfZ1p+M7FE8E+H6nRF5lW265UPpWDP
+         6VEIOs5YwY3ySkS72ccgZZonTrWpidI7TLSkw550+bkldcSVa4p0qIRB5bqRgMEqsAmo
+         9RfFHetg4jB9h4YagkfWh4jWD3pLYRMUuYLJzfLp+Y9loujNSH1+Di78HMsfeGqiDh4i
+         FYxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S2PQQ0wZ9rKvtqHbEKRPCYDXrvuY1Je3Fig5GLurKUw=;
+        b=s7ZjHZonPFaHXfOVY3Pz1pEc1/AJFTOMEg0VmA3K5y6RByCyJ/cg+0LLRzYePlo94W
+         LZJKp0HJAiWh6saLXk97WC0ezbXD+gos9RBlST47NkP8WatidLL66NrfTP9FSwnpa9bp
+         BNIknhTOanYJxGygC8UyxeNG/mvW+QpxgSVuncj3jlkz1bTOf7lg9M7VDQJMsv4UKaT5
+         nZnoD9NUt4HkKyXDQqIlB26E+5HsHHa4UuRUElE+A3MFE8x0lGtnVF/p3CHNAosXIeh6
+         nlR7FmnOAJXoIgUhwuADGmo/6B/h+nQZka4s28VyaXInY8w0UiSABEyrnVhxARH+5wqn
+         vUjA==
+X-Gm-Message-State: AOAM532vfSrOvcRPqy8cm5e7hWHfohSf7lwF3w222hQnsbXeXll6UK4c
+        82pFUYy2d1K/CbnLMfALTuHTsA==
+X-Google-Smtp-Source: ABdhPJxxt2xRxHf1nl56GLsI9CGVrWK+YuqrhhMftY3Qk6dliUbXQXwSskF02sPLv66MVCa9bJve5g==
+X-Received: by 2002:a65:62cd:: with SMTP id m13mr405393pgv.108.1613084494210;
+        Thu, 11 Feb 2021 15:01:34 -0800 (PST)
+Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
+        by smtp.gmail.com with ESMTPSA id h15sm6776584pfo.84.2021.02.11.15.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 15:01:33 -0800 (PST)
+Date:   Thu, 11 Feb 2021 23:01:30 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Mike Snitzer <snitzer@redhat.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com,
+        Alasdair Kergon <agk@redhat.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v4 0/5] add support for inline encryption to device mapper
+Message-ID: <YCW3SlbDFNn+Xyac@google.com>
+References: <20210201051019.1174983-1-satyat@google.com>
+ <20210210193327.GA8226@redhat.com>
+ <c681d976-f1bd-482c-8ead-b099986b70e5@kernel.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v13 net-next 00/15] net: mvpp2: Add TX Flow Control support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161308442026.22878.3631243118969933506.git-patchwork-notify@kernel.org>
-Date:   Thu, 11 Feb 2021 23:00:20 +0000
-References: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
-In-Reply-To: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org,
-        linux@armlinux.org.uk, mw@semihalf.com, andrew@lunn.ch,
-        rmk+kernel@armlinux.org.uk, atenart@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        sebastian.hesselbarth@gmail.com, gregory.clement@bootlin.com,
-        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c681d976-f1bd-482c-8ead-b099986b70e5@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Thu, 11 Feb 2021 12:48:47 +0200 you wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
+On Wed, Feb 10, 2021 at 12:59:59PM -0700, Jens Axboe wrote:
+> On 2/10/21 12:33 PM, Mike Snitzer wrote:
+> > On Mon, Feb 01 2021 at 12:10am -0500,
+> > Satya Tangirala <satyat@google.com> wrote:
+> > 
+> >> This patch series adds support for inline encryption to the device mapper.
+> >>
+> >> Patch 1 introduces the "passthrough" keyslot manager.
+> >>
+> >> The regular keyslot manager is designed for inline encryption hardware that
+> >> have only a small fixed number of keyslots. A DM device itself does not
+> >> actually have only a small fixed number of keyslots - it doesn't actually
+> >> have any keyslots in the first place, and programming an encryption context
+> >> into a DM device doesn't make much semantic sense. It is possible for a DM
+> >> device to set up a keyslot manager with some "sufficiently large" number of
+> >> keyslots in its request queue, so that upper layers can use the inline
+> >> encryption capabilities of the DM device's underlying devices, but the
+> >> memory being allocated for the DM device's keyslots is a waste since they
+> >> won't actually be used by the DM device.
+> >>
+> >> The passthrough keyslot manager solves this issue - when the block layer
+> >> sees that a request queue has a passthrough keyslot manager, it doesn't
+> >> attempt to program any encryption context into the keyslot manager. The
+> >> passthrough keyslot manager only allows the device to expose its inline
+> >> encryption capabilities, and a way for upper layers to evict keys if
+> >> necessary.
+> >>
+> >> There also exist inline encryption hardware that can handle encryption
+> >> contexts directly, and allow users to pass them a data request along with
+> >> the encryption context (as opposed to inline encryption hardware that
+> >> require users to first program a keyslot with an encryption context, and
+> >> then require the users to pass the keyslot index with the data request).
+> >> Such devices can also make use of the passthrough keyslot manager.
+> >>
+> >> Patch 2 introduces some keyslot manager functions useful for the device
+> >> mapper.
+> >>
+> >> Patch 3 introduces the changes for inline encryption support for the device
+> >> mapper. A DM device only exposes the intersection of the crypto
+> >> capabilities of its underlying devices. This is so that in case a bio with
+> >> an encryption context is eventually mapped to an underlying device that
+> >> doesn't support that encryption context, the blk-crypto-fallback's cipher
+> >> tfms are allocated ahead of time by the call to blk_crypto_start_using_key.
+> >>
+> >> Each DM target can now also specify the "DM_TARGET_PASSES_CRYPTO" flag in
+> >> the target type features to opt-in to supporting passing through the
+> >> underlying inline encryption capabilities.  This flag is needed because it
+> >> doesn't make much semantic sense for certain targets like dm-crypt to
+> >> expose the underlying inline encryption capabilities to the upper layers.
+> >> Again, the DM exposes inline encryption capabilities of the underlying
+> >> devices only if all of them opt-in to passing through inline encryption
+> >> support.
+> >>
+> >> A keyslot manager is created for a table when it is loaded. However, the
+> >> mapped device's exposed capabilities *only* updated once the table is
+> >> swapped in (until the new table is swapped in, the mapped device continues
+> >> to expose the old table's crypto capabilities).
+> >>
+> >> This patch only allows the keyslot manager's capabilities to *expand*
+> >> because of table changes. Any attempt to load a new table that doesn't
+> >> support a crypto capability that the old table did is rejected.
+> >>
+> >> This patch also only exposes the intersection of the underlying device's
+> >> capabilities, which has the effect of causing en/decryption of a bio to
+> >> fall back to the kernel crypto API (if the fallback is enabled) whenever
+> >> any of the underlying devices doesn't support the encryption context of the
+> >> bio - it might be possible to make the bio only fall back to the kernel
+> >> crypto API if the bio's target underlying device doesn't support the bio's
+> >> encryption context, but the use case may be uncommon enough in the first
+> >> place not to warrant worrying about it right now.
+> >>
+> >> Patch 4 makes DM evict a key from all its underlying devices when asked to
+> >> evict a key.
+> >>
+> >> Patch 5 makes some DM targets opt-in to passing through inline encryption
+> >> support. It does not (yet) try to enable this option with dm-raid, since
+> >> users can "hot add" disks to a raid device, which makes this not completely
+> >> straightforward (we'll need to ensure that any "hot added" disks must have
+> >> a superset of the inline encryption capabilities of the rest of the disks
+> >> in the raid device, due to the way Patch 2 of this series works).
+> >>
+> >> Changes v3 => v4:
+> >>  - Allocate the memory for the ksm of the mapped device in
+> >>    dm_table_complete(), and install the ksm in the md queue in __bind()
+> >>    (as suggested by Mike). Also drop patch 5 from v3 since it's no longer
+> >>    needed.
+> >>  - Some cleanups
+> >>
+> >> Changes v2 => v3:
+> >>  - Split up the main DM patch into 4 separate patches
+> >>  - Removed the priv variable added to struct keyslot manager in v2
+> >>  - Use a flag in target type features for opting-in to inline encryption
+> >>    support, instead of using "may_passthrough_inline_crypto"
+> >>  - cleanups, improve docs and restructure code
+> >>
+> >> Changes v1 => v2:
+> >>  - Introduce private field to struct blk_keyslot_manager
+> >>  - Allow the DM keyslot manager to expand its crypto capabilities if the
+> >>    table is changed.
+> >>  - Make DM reject table changes that would otherwise cause crypto
+> >>    capabilities to be dropped.
+> >>  - Allocate the DM device's keyslot manager only when at least one crypto
+> >>    capability is supported (since a NULL value for q->ksm represents "no
+> >>    crypto support" anyway).
+> >>  - Remove the struct blk_keyslot_manager field from struct mapped_device.
+> >>    This patch now relies on just directly setting up the keyslot manager in
+> >>    the request queue, since each DM device is tied to only 1 queue.
+> >>
+> >> Satya Tangirala (5):
+> >>   block: keyslot-manager: Introduce passthrough keyslot manager
+> >>   block: keyslot-manager: Introduce functions for device mapper support
+> >>   dm: add support for passing through inline crypto support
+> >>   dm: support key eviction from keyslot managers of underlying devices
+> >>   dm: set DM_TARGET_PASSES_CRYPTO feature for some targets
+> >>
+> >>  block/blk-crypto.c              |   1 +
+> >>  block/keyslot-manager.c         | 146 ++++++++++++++++++++++
+> >>  drivers/md/dm-core.h            |   5 +
+> >>  drivers/md/dm-flakey.c          |   4 +-
+> >>  drivers/md/dm-linear.c          |   5 +-
+> >>  drivers/md/dm-table.c           | 210 ++++++++++++++++++++++++++++++++
+> >>  drivers/md/dm.c                 |  18 ++-
+> >>  include/linux/device-mapper.h   |  11 ++
+> >>  include/linux/keyslot-manager.h |  11 ++
+> >>  9 files changed, 407 insertions(+), 4 deletions(-)
+> >>
+> >> -- 
+> >> 2.30.0.365.g02bc693789-goog
+> >>
+> > 
+> > This set looks good to me now.
+> > 
+> > To avoid DM needing another rebase on block: Jens (and others), would
+> > you like to review patches 1 and 2 (and reply with your Reviewed-by) so
+> > I could pickup the DM required keyslot-manager changes along with
+> > patches 3-5?
 > 
-> Armada hardware has a pause generation mechanism in GOP (MAC).
-> The GOP generate flow control frames based on an indication programmed in Ports Control 0 Register. There is a bit per port.
-> However assertion of the PortX Pause bits in the ports control 0 register only sends a one time pause.
-> To complement the function the GOP has a mechanism to periodically send pause control messages based on periodic counters.
-> This mechanism ensures that the pause is effective as long as the Appropriate PortX Pause is asserted.
+> You can add my acked-by to 1+2 and queue it up.
 > 
-> [...]
-
-Here is the summary with links:
-  - [v13,net-next,01/15] doc: marvell: add CM3 address space and PPv2.3 description
-    https://git.kernel.org/netdev/net-next/c/1c2b4812b7da
-  - [v13,net-next,02/15] dts: marvell: add CM3 SRAM memory to cp11x ethernet device tree
-    https://git.kernel.org/netdev/net-next/c/60523583b07c
-  - [v13,net-next,03/15] net: mvpp2: add CM3 SRAM memory map
-    https://git.kernel.org/netdev/net-next/c/e54ad1e01c00
-  - [v13,net-next,04/15] net: mvpp2: always compare hw-version vs MVPP21
-    https://git.kernel.org/netdev/net-next/c/60dcd6b7d96e
-  - [v13,net-next,05/15] net: mvpp2: add PPv23 version definition
-    https://git.kernel.org/netdev/net-next/c/6af27a1dc422
-  - [v13,net-next,06/15] net: mvpp2: increase BM pool and RXQ size
-    https://git.kernel.org/netdev/net-next/c/d07ea73f37f9
-  - [v13,net-next,07/15] net: mvpp2: add FCA periodic timer configurations
-    https://git.kernel.org/netdev/net-next/c/2788d8418af5
-  - [v13,net-next,08/15] net: mvpp2: add FCA RXQ non occupied descriptor threshold
-    https://git.kernel.org/netdev/net-next/c/bf270fa3c445
-  - [v13,net-next,09/15] net: mvpp2: enable global flow control
-    https://git.kernel.org/netdev/net-next/c/a59d354208a7
-  - [v13,net-next,10/15] net: mvpp2: add RXQ flow control configurations
-    https://git.kernel.org/netdev/net-next/c/3bd17fdc08e9
-  - [v13,net-next,11/15] net: mvpp2: add ethtool flow control configuration support
-    https://git.kernel.org/netdev/net-next/c/76055831cf84
-  - [v13,net-next,12/15] net: mvpp2: add BM protection underrun feature support
-    https://git.kernel.org/netdev/net-next/c/eb30b269549a
-  - [v13,net-next,13/15] net: mvpp2: add PPv23 RX FIFO flow control
-    https://git.kernel.org/netdev/net-next/c/aca0e23584c9
-  - [v13,net-next,14/15] net: mvpp2: set 802.3x GoP Flow Control mode
-    https://git.kernel.org/netdev/net-next/c/262412d55acd
-  - [v13,net-next,15/15] net: mvpp2: add TX FC firmware check
-    https://git.kernel.org/netdev/net-next/c/9ca5e767ec34
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I resent the series (as v5) while addressing the comments Eric had on
+Patch 3 (the changes were only to comments, so no functional
+changes). I also added the acked/reviewed-bys.
+> -- 
+> Jens Axboe
+> 
