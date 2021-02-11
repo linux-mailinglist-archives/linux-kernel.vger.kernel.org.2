@@ -2,119 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD6B318466
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 05:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49036318477
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhBKElz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 23:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhBKElo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 23:41:44 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E1CC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 20:41:04 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id jj19so8015006ejc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 20:41:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sl6/My6OzOs0T7wZB4oePD5pENhmSvczhT0K8Arc7LI=;
-        b=WkyTT/tlVuOu/QtJMR4TMPtKI3ZroEdf6vo0pV6EA6pmvld9AUZh5AcBIdoQsmyy5W
-         ujhDIglIq4no4S4FnPjAJEON+41CXF/kZhVZc/Of6nBcJmH2ckxq7jFNww9nR/DwT+h/
-         8UqUiI1xPm3fisBJZevopAV8RlTeHFLm996qBPYad35tPwuvIkQ2wNljHBO7QuzsU8pl
-         m6UjMx88Bp2ax8h59hFBDU+mEcT6OxV4L26reH2yIq5jyt3ZKaGUX00yc6uufxWXKc/K
-         6TpW44YRo7+SiphYrSoLs6Eu0cjTNKyi8E8jF9IRE0pU/01y+thIBuSGcpnf168C/Bou
-         mgcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sl6/My6OzOs0T7wZB4oePD5pENhmSvczhT0K8Arc7LI=;
-        b=psi93shDhnwbKhb5nIm9ixDEYMEfXPFG28JovmIZ/xDZQ8gPgZFa7o0eeg1MjVTxoh
-         QvARzascb8w3hNreJKO9USNaOFsDzXj8RjJeUR7ZNLx9AfO/O6A9p9R87v7MPEqM6msT
-         EI8ZrVvUbqLoRmvsuVXfbab++zklYEcGXR1iYrc2YEWqTsxjM6iPERjj+W4hR3P4CZYd
-         T9wnbxjGDd8zOrmXgzNpkiA01W07Fu1Rt7fAPlqvfOqm/plJ2sXib0cq9gDxd5o9H6cZ
-         44D6gUX+YnBCR5/oLvF+XjAOuN9v+7b/7+4LKRIQLuqWPjXG6fD+8hfN/oveSLe3vTNT
-         BllQ==
-X-Gm-Message-State: AOAM531FA3GoBMLexG9IWHvPwUZ6mcgLen/j5mKMHbnCnc06cb0SZZId
-        /FdjR+UDNXmEk3YXFGQZDSKmjCyNNByG9RRk0FOq1Q==
-X-Google-Smtp-Source: ABdhPJyqM5HE0PbHSNMhdSZjzjNWswbaPuS/dDwtU5r1wQLbe3Pkm5vgDMrXrmlgqG9PntEEBlBF3kFxRImOkT4QFcE=
-X-Received: by 2002:a17:906:78a:: with SMTP id l10mr6139548ejc.264.1613018462922;
- Wed, 10 Feb 2021 20:41:02 -0800 (PST)
+        id S229493AbhBKFHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 00:07:03 -0500
+Received: from mga17.intel.com ([192.55.52.151]:55022 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhBKFHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 00:07:02 -0500
+IronPort-SDR: jXiuGZ+880MrrmVl1Wk46Cj4g2xtYTvWam38RViCLeIQjl4CYQzWBuMkwePdnWraPF06EDGNTE
+ fpOMJVGPkd8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="161944238"
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="161944238"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 21:06:21 -0800
+IronPort-SDR: se1U/ziyJXxaoJElrXDhqKg30WjZpu6jfzbhHGZjM31bN2roxtwVp/sU1y5/7lSsNQcEAL5zZ7
+ 3bLvuXje85nA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
+   d="scan'208";a="421327152"
+Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Feb 2021 21:06:20 -0800
+Received: from kbuild by cd560a204411 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lA4BG-0003Wb-Q1; Thu, 11 Feb 2021 05:06:18 +0000
+Date:   Thu, 11 Feb 2021 13:05:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.02.01a] BUILD SUCCESS
+ 52a8ca059c5eca36698a33cb16a373a6a1ed8978
+Message-ID: <6024bb31.Dn13GaaYKRwnHicP%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
- <20210210000259.635748-5-ben.widawsky@intel.com> <20210210184540.00007536@Huawei.com>
-In-Reply-To: <20210210184540.00007536@Huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 10 Feb 2021 20:40:52 -0800
-Message-ID: <CAPcyv4hRUB3jxdCV06y0kYMbKbGroEW6F9yOQ4KB_z6YgWBZ4Q@mail.gmail.com>
-Subject: Re: [PATCH v2 4/8] cxl/mem: Add basic IOCTL interface
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy <cbrowy@avery-design.com>, Christoph Hellwig
-        <hch@infradead.org>, Dan Williams <dan.j.williams@intel.com>, David
-        Hildenbrand <david@redhat.com>, David Rientjes" <rientjes@google.com>,
-        "Jon Masters <jcm@jonmasters.org>, Rafael Wysocki
-        <rafael.j.wysocki@intel.com>, Randy Dunlap" <rdunlap@infradead.org>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Williams <dan.j.willams@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:47 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
-[..]
-> > +#define CXL_CMDS                                                          \
-> > +     ___C(INVALID, "Invalid Command"),                                 \
-> > +     ___C(IDENTIFY, "Identify Command"),                               \
-> > +     ___C(MAX, "Last command")
-> > +
-> > +#define ___C(a, b) CXL_MEM_COMMAND_ID_##a
-> > +enum { CXL_CMDS };
-> > +
-> > +#undef ___C
-> > +#define ___C(a, b) { b }
-> > +static const struct {
-> > +     const char *name;
-> > +} cxl_command_names[] = { CXL_CMDS };
-> > +#undef ___C
->
-> Unless there are going to be a lot of these, I'd just write them out long hand
-> as much more readable than the macro magic.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.02.01a
+branch HEAD: 52a8ca059c5eca36698a33cb16a373a6a1ed8978  fixup! torture: Provide bare-metal modprobe-based advice
 
-This macro magic isn't new to Linux it was introduced with ftrace:
+elapsed time: 724m
 
-See "cpp tricks and treats": https://lwn.net/Articles/383362/
+configs tested: 118
+configs skipped: 2
 
->
-> enum {
->         CXL_MEM_COMMAND_ID_INVALID,
->         CXL_MEM_COMMAND_ID_IDENTIFY,
->         CXL_MEM_COMMAND_ID_MAX
-> };
->
-> static const struct {
->         const char *name;
-> } cxl_command_names[] = {
->         [CXL_MEM_COMMAND_ID_INVALID] = { "Invalid Command" },
->         [CXL_MEM_COMMAND_ID_IDENTIFY] = { "Identify Comamnd" },
->         /* I hope you never need the Last command to exist in here as that sounds like a bug */
-> };
->
-> That's assuming I actually figured the macro fun out correctly.
-> To my mind it's worth doing this stuff for 'lots' no so much for 3.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-The list will continue to expand, and it eliminates the "did you
-remember to update cxl_command_names" review burden permanently.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                           sama5_defconfig
+m68k                        mvme147_defconfig
+sh                        dreamcast_defconfig
+sh                                  defconfig
+powerpc                     powernv_defconfig
+arm                         palmz72_defconfig
+mips                       bmips_be_defconfig
+mips                        bcm47xx_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                  or1klitex_defconfig
+powerpc                      obs600_defconfig
+m68k                       m5249evb_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arc                        nsimosci_defconfig
+mips                         tb0219_defconfig
+m68k                            q40_defconfig
+mips                        qi_lb60_defconfig
+arm                           sunxi_defconfig
+xtensa                         virt_defconfig
+arm                        magician_defconfig
+mips                           ip32_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                  mpc885_ads_defconfig
+arc                         haps_hs_defconfig
+arm                          prima2_defconfig
+powerpc                          g5_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                        realview_defconfig
+arm                          badge4_defconfig
+mips                         tb0287_defconfig
+powerpc                    socrates_defconfig
+mips                            ar7_defconfig
+powerpc                     sbc8548_defconfig
+powerpc                     tqm8555_defconfig
+powerpc                          allmodconfig
+arm                             pxa_defconfig
+powerpc                 mpc832x_rdb_defconfig
+sh                           se7751_defconfig
+powerpc                     sequoia_defconfig
+ia64                         bigsur_defconfig
+ia64                      gensparse_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210209
+x86_64               randconfig-a001-20210209
+x86_64               randconfig-a005-20210209
+x86_64               randconfig-a004-20210209
+x86_64               randconfig-a002-20210209
+x86_64               randconfig-a003-20210209
+i386                 randconfig-a001-20210209
+i386                 randconfig-a005-20210209
+i386                 randconfig-a003-20210209
+i386                 randconfig-a002-20210209
+i386                 randconfig-a006-20210209
+i386                 randconfig-a004-20210209
+i386                 randconfig-a016-20210209
+i386                 randconfig-a013-20210209
+i386                 randconfig-a012-20210209
+i386                 randconfig-a014-20210209
+i386                 randconfig-a011-20210209
+i386                 randconfig-a015-20210209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210209
+x86_64               randconfig-a014-20210209
+x86_64               randconfig-a015-20210209
+x86_64               randconfig-a012-20210209
+x86_64               randconfig-a016-20210209
+x86_64               randconfig-a011-20210209
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
