@@ -2,61 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F284831944D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF0D319460
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhBKUVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:21:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231360AbhBKUT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:19:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC6E364DBA;
-        Thu, 11 Feb 2021 20:18:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613074727;
-        bh=4IO5OTb4cA9BvsvjPNrepg+s2Y756Ag74+fYnQa0c7o=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=gB6953b5gfH5a8x+F/1EKOOoU9aYzZ9znW/tHGQ0f34qHTnc683dro2Hvz4Lwn7iu
-         7Z3buFV77Ry+ubqZPAoBfXn/IlJlJKEFHaf68fZevRKwbilBnhuwQpXdrNj8qwuXxK
-         IZ7RZiJwms5rOXLAIqtO1+FJ7jUo+ivKrh2i8KEE2XUL0+xS+lz+0+gdxQTfPGO+p9
-         stgxDVz2GYYpi6tSRvXKl1ELvp5hGX16x3b+cgXT2dpXqJAb+QuIXRlrquCApoHWCr
-         UILNVvOCzN3iEPqVsek6xFOHwgQPL4VcvTkT5EJyX4QbC40VDDIjNIe9c87guHjVxp
-         ZX/SaaVaVHXDw==
-Content-Type: text/plain; charset="utf-8"
+        id S230180AbhBKUXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:23:21 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:24385 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231616AbhBKUUt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 15:20:49 -0500
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 11BKJbjV004020;
+        Fri, 12 Feb 2021 05:19:37 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 11BKJbjV004020
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613074777;
+        bh=3q85RvzHUnQVHf5EgSJ9LEngLtR72RZfrJmefS9Q5D0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EC+iBNh4mWXICOT952zRC4y2rDrSRY/Dr7Hf5V39cRFXg9BoYILqZ0n8H4sxHTQUm
+         pORJrWliZjy9acmlqzznYJQmi6kigO3vVV2W2IJiZymLH9+t7/s9TwATkI7CDZiTaB
+         eK+aga71NOzerbD1i2ah0WxGWxvwEMGzcsHhTiEdNaauKD9azQ0cPyzJ6hlXaGDXiO
+         0VKcoMGAoYCoTg2/HJ+4geAOAt7J5Yzwt+DA7mPKKv5MEFzOQa/3w6S6RbjvMlOmuR
+         HuLqMk1W7kk+5UKPKOU8s2qsmMf8YkBPZbK+2yf7iLV/GARRU9LyOwWt/HpOicmKne
+         6RJUcWcbfuvzg==
+X-Nifty-SrcIP: [209.85.210.174]
+Received: by mail-pf1-f174.google.com with SMTP id 189so4403423pfy.6;
+        Thu, 11 Feb 2021 12:19:37 -0800 (PST)
+X-Gm-Message-State: AOAM533Wt+31ysTwsAt90wwVPNKLiTfywGWPPoxbNklNImQj4EpZqLoQ
+        dbk9aA3XrrF0sLgpk2TCKl1STpo+hdyrLOYb05Y=
+X-Google-Smtp-Source: ABdhPJyippLQMQoQfn+gej5CZpaJxuwzIoVtjaNY/P5e7I73ipSgTgYqmXOayMt5lndNN96IFx1ib4JpGB0OPXBWX6I=
+X-Received: by 2002:a63:ff09:: with SMTP id k9mr9890788pgi.175.1613074776790;
+ Thu, 11 Feb 2021 12:19:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210113183817.447866-3-angelogioacchino.delregno@somainline.org>
-References: <20210113183817.447866-1-angelogioacchino.delregno@somainline.org> <20210113183817.447866-3-angelogioacchino.delregno@somainline.org>
-Subject: Re: [PATCH v2 2/9] clk: qcom: gcc-sdm660: Mark GPU CFG AHB clock as critical
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>, agross@kernel.org
-Date:   Thu, 11 Feb 2021 12:18:46 -0800
-Message-ID: <161307472654.1254594.9551324009085927503@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210207161352.2044572-1-sashal@kernel.org> <20210208175007.GA1501867@infradead.org>
+ <20210208182001.GA4035784@sasha-vm>
+In-Reply-To: <20210208182001.GA4035784@sasha-vm>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 12 Feb 2021 05:18:58 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQtQTwGt4SCK88a=y4ydASXoR30cCCmcFFdsUk=WY7tfA@mail.gmail.com>
+Message-ID: <CAK7LNAQtQTwGt4SCK88a=y4ydASXoR30cCCmcFFdsUk=WY7tfA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: simplify access to the kernel's version
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting AngeloGioacchino Del Regno (2021-01-13 10:38:10)
-> This clock is critical for any access to the GPU: gating it will
-> crash the system when the GPU has been initialized (so, you cannot
-> gate it unless you deinit the Adreno completely).
->=20
-> So, to achieve a working state with GPU on, set the CLK_IS_CRITICAL
-> flag to this clock.
->=20
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@soma=
-inline.org>
-> ---
+On Tue, Feb 9, 2021 at 3:20 AM Sasha Levin <sashal@kernel.org> wrote:
+>
+> On Mon, Feb 08, 2021 at 05:50:07PM +0000, Christoph Hellwig wrote:
+> >On Sun, Feb 07, 2021 at 11:13:52AM -0500, Sasha Levin wrote:
+> >> +            (u8)(LINUX_VERSION_MAJOR), (u8)(LINUX_VERSION_PATCHLEVEL),
+> >> +            (u16)(LINUX_VERSION_SUBLEVEL));
+> >
+> >No need for the casts and braces.
+> >
 
-Applied to clk-next
+
+I agree.
+
+Shall I remove the casts when I apply this?
+
+
+
+
+> >Otherwise this looks good, but please also kill off KERNEL_VERSION
+> >and LINUX_KERNEL_VERSION entirely while you're at it.
+>
+> I don't think there are in-tree users left?
+>
+> We can't remove it completely because userspace is still using it, so if
+> we drop those userspace will be sad.
+
+
+Right.
+Once we export a macros to userspace, we cannot remove it.
+
+
+
+
+
+> --
+> Thanks,
+> Sasha
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
