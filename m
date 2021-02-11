@@ -2,206 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA319319249
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B1531924C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbhBKSbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:31:24 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:37872 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhBKS3K (ORCPT
+        id S232359AbhBKScL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:32:11 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:63290 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231144AbhBKSar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:29:10 -0500
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 11BIS0xX020916;
-        Fri, 12 Feb 2021 03:28:00 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 11BIS0xX020916
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613068081;
-        bh=Hbd1jHEJ4+0Y3UNlpXUZ2xllNrQK93rgVJKBwvGVmL4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=miTs4Pey9xkNLrJ2iWuNzoQNU9S2BxtyRuYzf27ztbI74N7hG/hA+9Qa2Qrq5yh1C
-         BAk/UXxEmqOmtrClLGUsX8y7LRuEIPEb8UbheNKhWYwkGa84s17uaRQQgfYn0mMeTj
-         +b4mWiPASD6moydGDqYozZQ0mShu+fLUH6l1/Z5mxucS+QOpKFPo+cwy82OJHdvGNb
-         bO+swK3Y9h7P6FtJDAbNYLgyj7wSZgS3QhaVcuXueLO73E56hYhMRYyvrYjVmJ5hQT
-         UMNMv3uC1aT64x3AKbGl92VtJkgBrJtZ5dvtVDod2KqsM0nGIMPmPK7yc6a2ueIcq3
-         X48yrgMOs8jww==
-X-Nifty-SrcIP: [209.85.215.180]
-Received: by mail-pg1-f180.google.com with SMTP id j5so4478477pgb.11;
-        Thu, 11 Feb 2021 10:28:00 -0800 (PST)
-X-Gm-Message-State: AOAM530wA1hfMI9DvO2M325NlPo1oVeWEH7ZLv3xIWjauuOQIW9PfJyB
-        YqGSVM6g9/Yzj9qPfZf+Sgt64BbYaXMnggzazAg=
-X-Google-Smtp-Source: ABdhPJySHBd6FtH0OZ1WIyS/vX7OAJIXGGAN3M0cbxk7sYoN2HS/yMkjc3bsSAuUa15koo8k803PqJbDR5RWBtdAKms=
-X-Received: by 2002:a62:b416:0:b029:1e4:fb5a:55bb with SMTP id
- h22-20020a62b4160000b02901e4fb5a55bbmr8972253pfn.80.1613068079796; Thu, 11
- Feb 2021 10:27:59 -0800 (PST)
+        Thu, 11 Feb 2021 13:30:47 -0500
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_smtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
+ id a112a8a4c721731e; Thu, 11 Feb 2021 19:30:03 +0100
+Received: from kreacher.localnet (89-64-80-250.dynamic.chello.pl [89.64.80.250])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id D9C46661037;
+        Thu, 11 Feb 2021 19:30:01 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: [PATCH] ACPI: property: Fix fwnode string properties matching
+Date:   Thu, 11 Feb 2021 19:30:01 +0100
+Message-ID: <5831274.1ZjA0VymzF@kreacher>
 MIME-Version: 1.0
-References: <cover.1612955268.git.viresh.kumar@linaro.org> <44dad578df8a848fc378cd358f03b071f44c9a5b.1612955268.git.viresh.kumar@linaro.org>
-In-Reply-To: <44dad578df8a848fc378cd358f03b071f44c9a5b.1612955268.git.viresh.kumar@linaro.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 12 Feb 2021 03:27:23 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARa8GzhhvZWV_KAW=MC0DRcSsfPsQ-KTBRRpbBgBqY=ig@mail.gmail.com>
-Message-ID: <CAK7LNARa8GzhhvZWV_KAW=MC0DRcSsfPsQ-KTBRRpbBgBqY=ig@mail.gmail.com>
-Subject: Re: [PATCH V7 1/3] kbuild: Add generic rule to apply fdtoverlay
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrheelgdduudduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtvdenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeevudefgfeguedtjedvhfetveegleduveeuvedvjeekleefhfduhfefheekffefveenucfkphepkeelrdeigedrkedtrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrddvhedtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheprghnughrihihrdhshhgvvhgthhgvnhhkoheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthht
+ oheptggrlhhvihhnrdhjohhhnhhsohhnsehoshhsrdhngihprdgtohhmpdhrtghpthhtohepshgrkhgrrhhirdgrihhluhhssehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=12 Fuz1=12 Fuz2=12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 8:13 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> From: Rob Herring <robh@kernel.org>
->
-> Add a generic rule to apply fdtoverlay in Makefile.lib, so every
-> platform doesn't need to carry the complex rule.
->
-> The platform's Makefile only needs to have this now:
->
->  DTC_FLAGS_foo_base += -@
->  foo-dtbs := foo_base.dtb foo_overlay1.dtbo foo_overlay2.dtbo
->  overlay-y := foo.dtb
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+Property matching does not work for ACPI fwnodes if the value of the
+given property is not represented as a package in the _DSD package
+containing it.  For example, the "compatible" property in the _DSD
+below
+
+  Name (_DSD, Package () {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () {"compatible", "ethernet-phy-ieee802.3-c45"}
+    }
+  })
+
+will not be found by fwnode_property_match_string(), because the ACPI
+code handling device properties does not regard the single value as a
+"list" in that case.
+
+Namely, fwnode_property_match_string() invoked to match a given
+string property value first calls fwnode_property_read_string_array()
+with the last two arguments equal to NULL and 0, respectively, in
+order to count the items in the value of the given property, with the
+assumption that this value may be an array.  For ACPI fwnodes, that
+operation is carried out by acpi_node_prop_read() which calls
+acpi_data_prop_read() for this purpose.  However, when the return
+(val) pointer is NULL, that function only looks for a property whose
+value is a package without checking the single-value case at all.
+
+To fix that, make acpi_data_prop_read() check the single-value case
+regardless of the return pointer value if its return pointer argument
+is NULL and modify acpi_data_prop_read_single() handling that case to
+attempt to read the value of the property if the return pointer is
+NULL and return 1 if that succeeds.
+
+Fixes: 3708184afc77 ("device property: Move FW type specific functionality to FW specific files")
+Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc: 4.13+ <stable@vger.kernel.org> # 4.13+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/property.c |   44 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 33 insertions(+), 11 deletions(-)
+
+Index: linux-pm/drivers/acpi/property.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/property.c
++++ linux-pm/drivers/acpi/property.c
+@@ -787,9 +787,6 @@ static int acpi_data_prop_read_single(co
+ 	const union acpi_object *obj;
+ 	int ret;
+ 
+-	if (!val)
+-		return -EINVAL;
+-
+ 	if (proptype >= DEV_PROP_U8 && proptype <= DEV_PROP_U64) {
+ 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_INTEGER, &obj);
+ 		if (ret)
+@@ -799,28 +796,43 @@ static int acpi_data_prop_read_single(co
+ 		case DEV_PROP_U8:
+ 			if (obj->integer.value > U8_MAX)
+ 				return -EOVERFLOW;
+-			*(u8 *)val = obj->integer.value;
++
++			if (val)
++				*(u8 *)val = obj->integer.value;
++
+ 			break;
+ 		case DEV_PROP_U16:
+ 			if (obj->integer.value > U16_MAX)
+ 				return -EOVERFLOW;
+-			*(u16 *)val = obj->integer.value;
++
++			if (val)
++				*(u16 *)val = obj->integer.value;
++
+ 			break;
+ 		case DEV_PROP_U32:
+ 			if (obj->integer.value > U32_MAX)
+ 				return -EOVERFLOW;
+-			*(u32 *)val = obj->integer.value;
++
++			if (val)
++				*(u32 *)val = obj->integer.value;
++
+ 			break;
+ 		default:
+-			*(u64 *)val = obj->integer.value;
++			if (val)
++				*(u64 *)val = obj->integer.value;
++
+ 			break;
+ 		}
++
++		if (!val)
++			return 1;
+ 	} else if (proptype == DEV_PROP_STRING) {
+ 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_STRING, &obj);
+ 		if (ret)
+ 			return ret;
+ 
+-		*(char **)val = obj->string.pointer;
++		if (val)
++			*(char **)val = obj->string.pointer;
+ 
+ 		return 1;
+ 	} else {
+@@ -834,7 +846,7 @@ int acpi_dev_prop_read_single(struct acp
+ {
+ 	int ret;
+ 
+-	if (!adev)
++	if (!adev || !val)
+ 		return -EINVAL;
+ 
+ 	ret = acpi_data_prop_read_single(&adev->data, propname, proptype, val);
+@@ -928,10 +940,20 @@ static int acpi_data_prop_read(const str
+ 	const union acpi_object *items;
+ 	int ret;
+ 
+-	if (val && nval == 1) {
++	if (nval == 1 || !val) {
+ 		ret = acpi_data_prop_read_single(data, propname, proptype, val);
+-		if (ret >= 0)
++		/*
++		 * The overflow error means that the property is there and it is
++		 * single-value, but its type does not match, so return.
++		 */
++		if (ret >= 0 || ret == -EOVERFLOW)
+ 			return ret;
++
++		/*
++		 * Reading this property as a single-value one failed, but its
++		 * value may still be represented as one-element array, so
++		 * continue.
++		 */
+ 	}
+ 
+ 	ret = acpi_data_get_property_array(data, propname, ACPI_TYPE_ANY, &obj);
 
 
-Please reuse dtb-y instead of introducing the new
-overlay-y syntax, that is,
 
-foo-dtbs := foo_base.dtb foo_overlay1.dtbo foo_overlay2.dtbo
-dtb-y := foo.dtb
-
-
-
-This resembles to composite modules.
-
-foo-objs := foo1.o foo2.o foo3.o
-obj-m := foo.o
-
-
-
-
-
-> Rearrange Makefile.lib to keep DT specific stuff together.
->
-> The files from overlay-y (i.e. files generated by fdtoverlay) aren't
-> added to dtb-y here, as dtb-y is later used to generate .dt.yaml files
-> and the files in overlay-y don't have a corresponding dts file and make
-> dtbs_check fails for them.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> [ Viresh: Add commit log and replace dtb-y with overlay-y, handle
->           CONFIG_OF_ALL_DTBS case, rearrange Makefile, don't add
->           overlay-y to dtb-y to skip dtbs_check for them. ]
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  scripts/Makefile.lib | 39 +++++++++++++++++++++++++++------------
->  1 file changed, 27 insertions(+), 12 deletions(-)
->
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index b00855b247e0..a6e79e3be527 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -66,23 +66,16 @@ multi-used   := $(multi-used-y) $(multi-used-m)
->  real-obj-y := $(foreach m, $(obj-y), $(if $(strip $($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-))),$($(m:.o=-objs)) $($(m:.o=-y)),$(m)))
->  real-obj-m := $(foreach m, $(obj-m), $(if $(strip $($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-m)) $($(m:.o=-))),$($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-m)),$(m)))
->
-> -always-y += $(always-m)
-> -
-> -# hostprogs-always-y += foo
-> -# ... is a shorthand for
-> -# hostprogs += foo
-> -# always-y  += foo
-> -hostprogs += $(hostprogs-always-y) $(hostprogs-always-m)
-> -always-y += $(hostprogs-always-y) $(hostprogs-always-m)
-> -
-> -# userprogs-always-y is likewise.
-> -userprogs += $(userprogs-always-y) $(userprogs-always-m)
-> -always-y += $(userprogs-always-y) $(userprogs-always-m)
-> +# Add base dtb and overlay dtbo
-> +dtb-y += $(foreach m,$(overlay-y), $(if $(strip $($(m:.dtb=-dtbs))),$($(m:.dtb=-dtbs)),))
-> +dtb-$(CONFIG_OF_ALL_DTBS) += $(foreach m,$(overlay-), $(if $(strip $($(m:.dtb=-dtbs))),$($(m:.dtb=-dtbs)),))
->
->  # DTB
->  # If CONFIG_OF_ALL_DTBS is enabled, all DT blobs are built
->  extra-y                                += $(dtb-y)
-> +extra-y                                += $(overlay-y)
->  extra-$(CONFIG_OF_ALL_DTBS)    += $(dtb-)
-> +extra-$(CONFIG_OF_ALL_DTBS)    += $(overlay-)
->
->  ifneq ($(CHECK_DTBS),)
->  extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
-> @@ -91,6 +84,19 @@ extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
->  extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
->  endif
->
-> +always-y += $(always-m)
-> +
-> +# hostprogs-always-y += foo
-> +# ... is a shorthand for
-> +# hostprogs += foo
-> +# always-y  += foo
-> +hostprogs += $(hostprogs-always-y) $(hostprogs-always-m)
-> +always-y += $(hostprogs-always-y) $(hostprogs-always-m)
-> +
-> +# userprogs-always-y is likewise.
-> +userprogs += $(userprogs-always-y) $(userprogs-always-m)
-> +always-y += $(userprogs-always-y) $(userprogs-always-m)
-> +
->  # Add subdir path
->
->  extra-y                := $(addprefix $(obj)/,$(extra-y))
-> @@ -332,6 +338,15 @@ $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
->  $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
->         $(call if_changed_dep,dtc)
->
-> +
-> +quiet_cmd_fdtoverlay = DTOVL   $@
-> +      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $(real-prereqs)
-> +
-> +.SECONDEXPANSION:
-> +
-> +$(obj)/%.dtb: $$(addprefix $$(obj)/,$$(%-dtbs)) FORCE
-> +       $(call if_changed,fdtoverlay)
-> +
-
-
-
-Please do not use .SECONDEXPANSION.
-
-This will parse the Makefile twice
-in _all_ directories, while only a few
-directories use the overlay-y syntax.
-
-
-Use the multi_depend macro.
-
-
-
-
-
-
->  DT_CHECKER ?= dt-validate
->  DT_BINDING_DIR := Documentation/devicetree/bindings
->  # DT_TMP_SCHEMA may be overridden from Documentation/devicetree/bindings/Makefile
-> --
-> 2.25.0.rc1.19.g042ed3e048af
->
-
-
---
-Best Regards
-Masahiro Yamada
