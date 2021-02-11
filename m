@@ -2,193 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB7B3189FF
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBD7318A00
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 13:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhBKMAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:00:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbhBKLsL (ORCPT
+        id S231311AbhBKMBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:01:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43506 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231178AbhBKLtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:48:11 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ABCC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 03:47:31 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id x14so4821521qkm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 03:47:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ol2zHFPJjowYek6AVztGU5h3zLYK0Y4c0rCS+jDrmk0=;
-        b=JgbAxgrKLZk2qhCjoMg8wBMWCJN+a+IHZxIW8vOFAT83iamt5zCuENowqIDBPn/6X4
-         hrhQ+OIuZxX9K4G2G0O5apbQqTjRKkLWCy2u16QWvAoikA6nHK90LdFqS+TitLhlh7V+
-         GLpCjIejT3nv3BB4txNUk8m/F3OBhCaMK6QhRlZvzDBHjtdV9JX+npHslyIp/Z5j66+1
-         rNbOKvWH/e+6UxsB/jXspyPoRX5gDkEiuACED63WKMov+qa5Rms6Zdl07qhA6oyfBjxt
-         ruhNv1fgPFbyvGLUD8IzpKJUsKiggyNsdkHCKrpB+grIFfyCTP0Wxq6OfhM/jB0TA8Ud
-         Ci5A==
+        Thu, 11 Feb 2021 06:49:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613044075;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=622PK+GXq9S1qrkes0QjDaGHdMGIQhnkDb8cr2jJCIE=;
+        b=b15nW0YPkZq4X1/AZ2v8FBI1TVF7uZJZeVT6ZqvfcakqE1w2ekT9dganCpOSFXi5en5JX4
+        PQeKg+jKiqsrW0RAgaoXD8XRsYJznhb9XrlMAgGunzQJFoTPD3QfgwP3qnHxUEyaDDI50+
+        FCrN+pUGPjI8BTg/mhZeysK6LvNp+qQ=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-PkXjXCgzP16X2Qg1rcmGAg-1; Thu, 11 Feb 2021 06:47:53 -0500
+X-MC-Unique: PkXjXCgzP16X2Qg1rcmGAg-1
+Received: by mail-ed1-f69.google.com with SMTP id bo11so4549509edb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 03:47:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ol2zHFPJjowYek6AVztGU5h3zLYK0Y4c0rCS+jDrmk0=;
-        b=X3I0PLqOyz2Ba2WW2Ou0PPOqCX/y+0On7x57cu3kaqmlKwyS7FZ6D1L07mLEGvz4uL
-         EDRy5CFQZm8BTCIaVT+xgSx0i8eqsy6rDLTSUnZVcC2wTMosUelFAj9YmKYBwhKInYqf
-         lAsyp635vnZ9GkUhpkQfARchPlrsUuU8dVlvuRMUFoDE34oYvGRaW3Hf0kyF0et46VB0
-         KYiIicaiP9eHMr0T7BTfi5STS5/FKrtIsNp6eCjj+PCsS1sMEqKYBFTMquH+nrSUs6DM
-         fuYfq/O3apONBwxpBaNmb3dp7i5lH2qH2JTNlX4Sib5KrKd3SnO9Qnemhz83dxq88JdW
-         fc8g==
-X-Gm-Message-State: AOAM530YR+dfWKImZ7ht+lHC3GX82ZWhPAruO+ordxB42npEfMGDTV/g
-        exLpSDkozafN8WWwgqZywoTLjRZ2a8fr69KN2zO9LvQnJbo=
-X-Google-Smtp-Source: ABdhPJy8/ZW5AYGTC/xwOIdnqR3MaQKVcOiao4mOOQnfFH3GcLky+NN1KgF3mqBJmLWDcM7optEZzHTNj5hamnk+kBM=
-X-Received: by 2002:a37:a757:: with SMTP id q84mr1083651qke.501.1613044050063;
- Thu, 11 Feb 2021 03:47:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=622PK+GXq9S1qrkes0QjDaGHdMGIQhnkDb8cr2jJCIE=;
+        b=UO3B4y4oQELTFDhl2REwxnt7toip0ypXdedK+uEHNVJyPh+WeqWgqWN+95FZ/ummSL
+         tCjZ64l8/RsO/YPbKU6TSBkCUexpvDckLcJVoVuT+Feq4zoNIZoSIR1XkLBMN/jMquk+
+         epOL2Di2w6q+ZiSj3Hj+p346T+XPWxMLLnA4qiRd9ehauqg7lZvGd5DWetU5eJN+OfQ9
+         H5GDBebH+55LoFRhN19xe32NPMa28BTHlUiFpcbpiINLCqxXR//RqGkLUq6QT4xi9o2X
+         1h35XAb8NKJbzGFKQIQy32dmmVITyfz9l4b4UCDmkQ14YRYndKFb5VZ2M3m8XnJszDuS
+         bB4A==
+X-Gm-Message-State: AOAM532sZvbtriTxH1eSR5OT9JmxyzmgeNapWjU+7V88UrZfAWTnH59d
+        cy9sN28oLT/h8aLMBTQWdl1G2wsIu/321XpOjWt53wpNXkIRqx7jqpLsXfIMNU2OU4gtowxiXt5
+        /jHFZPZGVqBPJf47LUdIjLXBz
+X-Received: by 2002:a17:906:6087:: with SMTP id t7mr8301140ejj.90.1613044071889;
+        Thu, 11 Feb 2021 03:47:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzj6t5agYEkOXzy2VYeZHkZnED6Gv95JyBHm5LY8BHXS5lTBekja2hs7Ao+RNUkHsDuAOb8sg==
+X-Received: by 2002:a17:906:6087:: with SMTP id t7mr8301133ejj.90.1613044071704;
+        Thu, 11 Feb 2021 03:47:51 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id x17sm1593873edq.42.2021.02.11.03.47.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 03:47:51 -0800 (PST)
+Date:   Thu, 11 Feb 2021 12:47:48 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v4 04/17] af_vsock: implement SEQPACKET receive loop
+Message-ID: <20210211114748.jshxyiecqmbwzmv3@steredhat>
+References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
+ <20210207151526.804741-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <000000000000a05b3b05baf9a856@google.com> <20210211113718.GM19070@quack2.suse.cz>
-In-Reply-To: <20210211113718.GM19070@quack2.suse.cz>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 11 Feb 2021 12:47:18 +0100
-Message-ID: <CACT4Y+b7245_5yjTk5Mw1pFBdV_f2LypAVSAZVym9n1Q0v5c-Q@mail.gmail.com>
-Subject: Re: possible deadlock in dquot_commit
-To:     Jan Kara <jack@suse.cz>
-Cc:     syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210207151526.804741-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 12:37 PM Jan Kara <jack@suse.cz> wrote:
+On Sun, Feb 07, 2021 at 06:15:22PM +0300, Arseny Krasnov wrote:
+>This adds receive loop for SEQPACKET. It looks like receive loop for
+>STREAM, but there is a little bit difference:
+>1) It doesn't call notify callbacks.
+>2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
+>   there is no sense for these values in SEQPACKET case.
+>3) It waits until whole record is received or error is found during
+>   receiving.
+>4) It processes and sets 'MSG_TRUNC' flag.
 >
-> On Wed 10-02-21 03:25:22, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=101cf2f8d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=e83e68d0a6aba5f6
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3b6f9218b1301ddda3e2
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com
-> >
-> > loop1: detected capacity change from 4096 to 0
-> > EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue. Quota mode: writeback.
-> > ======================================================
-> > WARNING: possible circular locking dependency detected
-> > 5.11.0-rc6-syzkaller #0 Not tainted
-> > ------------------------------------------------------
-> > syz-executor.1/16170 is trying to acquire lock:
-> > ffff8880795f5b28 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_commit+0x4d/0x420 fs/quota/dquot.c:476
-> >
-> > but task is already holding lock:
-> > ffff88807960b438 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x5e1/0x17d0 fs/ext4/inode.c:630
-> >
-> > which lock already depends on the new lock.
+>So to avoid extra conditions for two types of socket inside one loop, two
+>independent functions were created.
 >
-> <snip>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> include/net/af_vsock.h   |  5 +++
+> net/vmw_vsock/af_vsock.c | 96 +++++++++++++++++++++++++++++++++++++++-
+> 2 files changed, 100 insertions(+), 1 deletion(-)
 >
-> All snipped stacktraces look perfectly fine and the lock dependencies are as
-> expected.
+>diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>index b1c717286993..bb6a0e52be86 100644
+>--- a/include/net/af_vsock.h
+>+++ b/include/net/af_vsock.h
+>@@ -135,6 +135,11 @@ struct vsock_transport {
+> 	bool (*stream_is_active)(struct vsock_sock *);
+> 	bool (*stream_allow)(u32 cid, u32 port);
 >
-> > 5 locks held by syz-executor.1/16170:
-> >  #0: ffff88802ad18b70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:947
-> >  #1: ffff88802fbec460 (sb_writers#5){.+.+}-{0:0}, at: ksys_write+0x12d/0x250 fs/read_write.c:658
-> >  #2: ffff88807960b648 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
-> >  #2: ffff88807960b648 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, at: ext4_buffered_write_iter+0xb6/0x4d0 fs/ext4/file.c:264
-> >  #3: ffff88807960b438 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x5e1/0x17d0 fs/ext4/inode.c:630
-> >  #4: ffffffff8bf1be58 (dquot_srcu){....}-{0:0}, at: i_dquot fs/quota/dquot.c:926 [inline]
-> >  #4: ffffffff8bf1be58 (dquot_srcu){....}-{0:0}, at: __dquot_alloc_space+0x1b4/0xb60 fs/quota/dquot.c:1671
->
-> This actually looks problematic: We acquired &ei->i_data_sem/2 (i.e.,
-> I_DATA_SEM_QUOTA subclass) in ext4_map_blocks() called from
-> ext4_block_write_begin(). This suggests that the write has been happening
-> directly to the quota file (or that lockdep annotation of the inode went
-> wrong somewhere). Now we normally protect quota files with IMMUTABLE flag
-> so writing it should not be possible. We also don't allow clearing this
-> flag on used quota file. Finally I'd checked lockdep annotation and
-> everything looks correct. So at this point the best theory I have is that a
-> filesystem has been suitably corrupted and quota file supposed to be
-> inaccessible from userspace got exposed but I'd expect other problems to
-> hit first in that case. Anyway without a reproducer I have no more ideas...
+>+	/* SEQ_PACKET. */
+>+	size_t (*seqpacket_seq_get_len)(struct vsock_sock *);
+>+	int (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
+>+				     int flags, bool *msg_ready);
 
-There is a reproducer for 4.19 available on the dashboard. Maybe it will help.
-I don't why it did not pop up on upstream yet, there lots of potential
-reasons for this.
+CHECK: Alignment should match open parenthesis
+#35: FILE: include/net/af_vsock.h:141:
++	int (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
++				     int flags, bool *msg_ready);
 
->                                                                 Honza
+And to make checkpatch.pl happy please use the identifier name also for 
+the others parameter. I know we haven't done this before, but for new 
+code I think we can do it.
+
+>+
+> 	/* Notification. */
+> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
+> 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 66c8a932f49b..3d8af987216a 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -1977,6 +1977,97 @@ static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
+> 	return err;
+> }
 >
-> >
-> > stack backtrace:
-> > CPU: 0 PID: 16170 Comm: syz-executor.1 Not tainted 5.11.0-rc6-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:79 [inline]
-> >  dump_stack+0x107/0x163 lib/dump_stack.c:120
-> >  check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
-> >  check_prev_add kernel/locking/lockdep.c:2868 [inline]
-> >  check_prevs_add kernel/locking/lockdep.c:2993 [inline]
-> >  validate_chain kernel/locking/lockdep.c:3608 [inline]
-> >  __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
-> >  lock_acquire kernel/locking/lockdep.c:5442 [inline]
-> >  lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
-> >  __mutex_lock_common kernel/locking/mutex.c:956 [inline]
-> >  __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
-> >  dquot_commit+0x4d/0x420 fs/quota/dquot.c:476
-> >  ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6200
-> >  ext4_mark_dquot_dirty fs/ext4/super.c:6248 [inline]
-> >  ext4_mark_dquot_dirty+0x111/0x1b0 fs/ext4/super.c:6242
-> >  mark_dquot_dirty fs/quota/dquot.c:347 [inline]
-> >  mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
-> >  __dquot_alloc_space+0x5d4/0xb60 fs/quota/dquot.c:1709
-> >  dquot_alloc_space_nodirty include/linux/quotaops.h:297 [inline]
-> >  dquot_alloc_space include/linux/quotaops.h:310 [inline]
-> >  dquot_alloc_block include/linux/quotaops.h:334 [inline]
-> >  ext4_mb_new_blocks+0x5a9/0x51a0 fs/ext4/mballoc.c:4937
-> >  ext4_ext_map_blocks+0x20da/0x5fb0 fs/ext4/extents.c:4238
-> >  ext4_map_blocks+0x653/0x17d0 fs/ext4/inode.c:637
-> >  _ext4_get_block+0x241/0x590 fs/ext4/inode.c:793
-> >  ext4_block_write_begin+0x4f8/0x1190 fs/ext4/inode.c:1077
-> >  ext4_write_begin+0x4b5/0x14b0 fs/ext4/inode.c:1202
-> >  ext4_da_write_begin+0x672/0x1150 fs/ext4/inode.c:2961
-> >  generic_perform_write+0x20a/0x4f0 mm/filemap.c:3412
-> >  ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
-> >  ext4_file_write_iter+0x423/0x14d0 fs/ext4/file.c:664
-> >  call_write_iter include/linux/fs.h:1901 [inline]
-> >  new_sync_write+0x426/0x650 fs/read_write.c:518
-> >  vfs_write+0x791/0xa30 fs/read_write.c:605
-> >  ksys_write+0x12d/0x250 fs/read_write.c:658
-> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > RIP: 0033:0x465b09
-> > Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007f8097ffc188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> > RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465b09
-> > RDX: 000000000d4ba0ff RSI: 00000000200009c0 RDI: 0000000000000003
-> > RBP: 00000000004b069f R08: 0000000000000000 R09: 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-> > R13: 00007ffefc77f01f R14: 00007f8097ffc300 R15: 0000000000022000
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+>+static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
+>+				     size_t len, int flags)
+>+{
+>+	const struct vsock_transport *transport;
+>+	const struct iovec *orig_iov;
+>+	unsigned long orig_nr_segs;
+>+	bool msg_ready;
+>+	struct vsock_sock *vsk;
+>+	size_t record_len;
+>+	long timeout;
+>+	int err = 0;
+>+	DEFINE_WAIT(wait);
+>+
+>+	vsk = vsock_sk(sk);
+>+	transport = vsk->transport;
+>+
+>+	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
+>+	orig_nr_segs = msg->msg_iter.nr_segs;
+>+	orig_iov = msg->msg_iter.iov;
+>+	msg_ready = false;
+>+	record_len = 0;
+>+
+>+	while (1) {
+>+		err = vsock_wait_data(sk, &wait, timeout, NULL, 0);
+>+
+>+		if (err <= 0) {
+>+			/* In case of any loop break(timeout, signal
+>+			 * interrupt or shutdown), we report user that
+>+			 * nothing was copied.
+>+			 */
+>+			err = 0;
+>+			break;
+>+		}
+>+
+>+		if (record_len == 0) {
+>+			record_len =
+>+				transport->seqpacket_seq_get_len(vsk);
+>+
+>+			if (record_len == 0)
+>+				continue;
+>+		}
+>+
+>+		err = transport->seqpacket_dequeue(vsk, msg,
+>+					flags, &msg_ready);
+
+A single line here should be okay.
+
+>+		if (err < 0) {
+>+			if (err == -EAGAIN) {
+>+				iov_iter_init(&msg->msg_iter, READ,
+>+					      orig_iov, orig_nr_segs,
+>+					      len);
+>+				/* Clear 'MSG_EOR' here, because dequeue
+>+				 * callback above set it again if it was
+>+				 * set by sender. This 'MSG_EOR' is from
+>+				 * dropped record.
+>+				 */
+>+				msg->msg_flags &= ~MSG_EOR;
+>+				record_len = 0;
+>+				continue;
+>+			}
+>+
+>+			err = -ENOMEM;
+>+			break;
+>+		}
+>+
+>+		if (msg_ready)
+>+			break;
+>+	}
+>+
+>+	if (sk->sk_err)
+>+		err = -sk->sk_err;
+>+	else if (sk->sk_shutdown & RCV_SHUTDOWN)
+>+		err = 0;
+>+
+>+	if (msg_ready) {
+>+		/* User sets MSG_TRUNC, so return real length of
+>+		 * packet.
+>+		 */
+>+		if (flags & MSG_TRUNC)
+>+			err = record_len;
+>+		else
+>+			err = len - msg->msg_iter.count;
+>+
+>+		/* Always set MSG_TRUNC if real length of packet is
+>+		 * bigger than user's buffer.
+>+		 */
+>+		if (record_len > len)
+>+			msg->msg_flags |= MSG_TRUNC;
+>+	}
+>+
+>+	return err;
+>+}
+>+
+> static int
+> vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+> 			  int flags)
+>@@ -2032,7 +2123,10 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+> 		goto out;
+> 	}
 >
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210211113718.GM19070%40quack2.suse.cz.
+>-	err = __vsock_stream_recvmsg(sk, msg, len, flags);
+>+	if (sk->sk_type == SOCK_STREAM)
+>+		err = __vsock_stream_recvmsg(sk, msg, len, flags);
+>+	else
+>+		err = __vsock_seqpacket_recvmsg(sk, msg, len, flags);
+>
+> out:
+> 	release_sock(sk);
+
+The rest seems ok to me, but I need to get more familiar with SEQPACKET 
+before giving my R-b.
+
+Thanks,
+Stefano
+
