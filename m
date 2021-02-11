@@ -2,177 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9EC3195D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 23:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8993195E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 23:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhBKW2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 17:28:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:57676 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229882AbhBKW2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 17:28:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28B69113E;
-        Thu, 11 Feb 2021 14:27:24 -0800 (PST)
-Received: from [10.57.8.126] (unknown [10.57.8.126])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB3C33F73D;
-        Thu, 11 Feb 2021 14:27:21 -0800 (PST)
-Subject: Re: [RFC][PATCH 1/3] PM /devfreq: add user frequency limits into
- devfreq struct
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com, amitk@kernel.org, rui.zhang@intel.com,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
-References: <20210126104001.20361-1-lukasz.luba@arm.com>
- <CGME20210126104217epcas1p349c717ccf0ea4f964153040b48c72352@epcas1p3.samsung.com>
- <20210126104001.20361-2-lukasz.luba@arm.com>
- <ea409e2f-f3ca-437f-d787-7ba793a2c226@samsung.com>
- <5bd13e13-202f-d059-da29-f82806c33a38@arm.com>
- <fe7763c8-22f7-65ad-94ee-3c4a78a3f6eb@arm.com>
-Message-ID: <932c04da-46bf-8867-6b10-c6af83a36588@arm.com>
-Date:   Thu, 11 Feb 2021 22:27:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S229763AbhBKWdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 17:33:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36004 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229478AbhBKWcz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 17:32:55 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11BMDpfi148712;
+        Thu, 11 Feb 2021 17:32:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ShQRyD10tU91FvYiAUdM/l349mIMyrxrOieoAPMQ+bA=;
+ b=rcTKgtCE2Eco+cbCxG91XKOtcKEY9HBvZzp1n4BCqGladxaEFdL+DFYjYTCWGV/lP8tt
+ E1GYPHSve99kLogk8igVEuQLSbgQ0+p+ErcPgGJ46g/+U1sEPS0bi3mti0uSZJ3/q8Ul
+ G0tuiYb3FagdrOdTdusqRqrR1IlLwsHkAFl9jtp8sQya3W5PyPl8ExPirXtICQnvrUBI
+ t2e/+Z9862QxT4jvqWbDUaIxubmdhhI8sb5F6FsqngXjyPM+MVxnT2UcmWnLWdMdM6fd
+ 8I4USNsVHj6ek4b1sjrsel8XyiuJkOtYnJLmI5HVtx0nq4tJL0booeZAC7WTIfoSBf52 zQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36nd6d0gca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 17:32:12 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11BMECNR149159;
+        Thu, 11 Feb 2021 17:32:12 -0500
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36nd6d0gbw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 17:32:12 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11BMRpab025384;
+        Thu, 11 Feb 2021 22:32:11 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01wdc.us.ibm.com with ESMTP id 36hjr9rwqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 22:32:11 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11BMWA3m7275144
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 22:32:10 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BBD1712406C;
+        Thu, 11 Feb 2021 22:32:10 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A864C12406B;
+        Thu, 11 Feb 2021 22:32:10 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 11 Feb 2021 22:32:10 +0000 (GMT)
+Subject: Re: [PATCH 5/5] ima: enable loading of build time generated key to
+ .ima keyring
+To:     Nayna Jain <nayna@linux.ibm.com>, linux-integrity@vger.kernel.org,
+        keyrings@vger.kernel.org
+Cc:     linux-security-module@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210211195435.135582-1-nayna@linux.ibm.com>
+ <20210211195435.135582-6-nayna@linux.ibm.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <804e0075-e435-f60b-e0a7-a9b48a76ce72@linux.ibm.com>
+Date:   Thu, 11 Feb 2021 17:32:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <fe7763c8-22f7-65ad-94ee-3c4a78a3f6eb@arm.com>
+In-Reply-To: <20210211195435.135582-6-nayna@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 impostorscore=0 phishscore=0 spamscore=0
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110170
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/11/21 2:54 PM, Nayna Jain wrote:
+> The kernel currently only loads the kernel module signing key onto
+> the builtin trusted keyring. To support IMA, load the module signing
+> key selectively either onto builtin or ima keyring based on MODULE_SIG
+> or MODULE_APPRAISE_MODSIG config respectively; and loads the CA kernel
+> key onto builtin trusted keyring.
+>
+> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
+> ---
+>   certs/system_keyring.c        | 56 +++++++++++++++++++++++++++--------
+>   include/keys/system_keyring.h |  9 +++++-
+>   security/integrity/digsig.c   |  4 +++
+>   3 files changed, 55 insertions(+), 14 deletions(-)
+>
+> diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+> index 798291177186..0bbbe501f8a7 100644
+> --- a/certs/system_keyring.c
+> +++ b/certs/system_keyring.c
+> @@ -26,6 +26,7 @@ static struct key *platform_trusted_keys;
+>   
+>   extern __initconst const u8 system_certificate_list[];
+>   extern __initconst const unsigned long system_certificate_list_size;
+> +extern __initconst const unsigned long module_cert_size;
+>   
+>   /**
+>    * restrict_link_to_builtin_trusted - Restrict keyring addition by built in CA
+> @@ -131,19 +132,12 @@ static __init int system_trusted_keyring_init(void)
+>    */
+>   device_initcall(system_trusted_keyring_init);
+>   
+> -/*
+> - * Load the compiled-in list of X.509 certificates.
+> - */
+> -static __init int load_system_certificate_list(void)
+> +static __init int load_cert(const u8 *p, const u8 *end, struct key *keyring,
+> +			    unsigned long flags)
+>   {
+>   	key_ref_t key;
+> -	const u8 *p, *end;
+>   	size_t plen;
+>   
+> -	pr_notice("Loading compiled-in X.509 certificates\n");
+> -
+> -	p = system_certificate_list;
+> -	end = p + system_certificate_list_size;
+>   	while (p < end) {
+>   		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
+>   		 * than 256 bytes in size.
+> @@ -158,16 +152,15 @@ static __init int load_system_certificate_list(void)
+>   		if (plen > end - p)
+>   			goto dodgy_cert;
+>   
+> -		key = key_create_or_update(make_key_ref(builtin_trusted_keys, 1),
+> +		key = key_create_or_update(make_key_ref(keyring, 1),
+>   					   "asymmetric",
+>   					   NULL,
+>   					   p,
+>   					   plen,
+>   					   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
+>   					   KEY_USR_VIEW | KEY_USR_READ),
+> -					   KEY_ALLOC_NOT_IN_QUOTA |
+> -					   KEY_ALLOC_BUILT_IN |
+> -					   KEY_ALLOC_BYPASS_RESTRICTION);
+> +					   flags);
+> +
+>   		if (IS_ERR(key)) {
+>   			pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
+>   			       PTR_ERR(key));
+> @@ -185,6 +178,43 @@ static __init int load_system_certificate_list(void)
+>   	pr_err("Problem parsing in-kernel X.509 certificate list\n");
+>   	return 0;
+>   }
+> +
+> +__init int load_module_cert(struct key *keyring, unsigned long flags)
+> +{
+> +	const u8 *p, *end;
+> +
+> +	if (!IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG))
+> +		return 0;
+> +
+> +	pr_notice("Loading compiled-in module X.509 certificates\n");
+> +
+> +	p = system_certificate_list;
+> +	end = p + module_cert_size;
+> +	load_cert(p, end, keyring, flags);
+> +
+> +	return 0;
+
+See my comment below.
 
 
-On 2/11/21 11:07 AM, Lukasz Luba wrote:
-> Hi Chanwoo,
-> 
-> On 2/3/21 10:21 AM, Lukasz Luba wrote:
->> Hi Chanwoo,
->>
->> Thank you for looking at this.
->>
->> On 2/3/21 10:11 AM, Chanwoo Choi wrote:
->>> Hi Lukasz,
->>>
->>> When accessing the max_freq and min_freq at devfreq-cooling.c,
->>> even if can access 'user_max_freq' and 'lock' by using the 'devfreq' 
->>> instance,
->>> I think that the direct access of variables 
->>> (lock/user_max_freq/user_min_freq)
->>> of struct devfreq are not good.
->>>
->>> Instead, how about using the 'DEVFREQ_TRANSITION_NOTIFIER'
->>> notification with following changes of 'struct devfreq_freq'?
->>
->> I like the idea with devfreq notification. I will have to go through the
->> code to check that possibility.
->>
->>> Also, need to add codes into devfreq_set_target() for initializing
->>> 'new_max_freq' and 'new_min_freq' before sending the DEVFREQ_POSTCHANGE
->>> notification.
->>>
->>> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
->>> index 147a229056d2..d5726592d362 100644
->>> --- a/include/linux/devfreq.h
->>> +++ b/include/linux/devfreq.h
->>> @@ -207,6 +207,8 @@ struct devfreq {
->>>   struct devfreq_freqs {
->>>          unsigned long old;
->>>          unsigned long new;
->>> +       unsigned long new_max_freq;
->>> +       unsigned long new_min_freq;
->>>   };
->>>
->>>
->>> And I think that new 'user_min_freq'/'user_max_freq' are not necessary.
->>> You can get the current max_freq/min_freq by using the following steps:
->>>
->>>     get_freq_range(devfreq, &min_freq, &max_freq);
->>>     dev_pm_opp_find_freq_floor(pdev, &min_freq);
->>>     dev_pm_opp_find_freq_floor(pdev, &max_freq);
->>>
->>> So that you can get the 'max_freq/min_freq' and then
->>> initialize the 'freqs.new_max_freq and freqs.new_min_freq'
->>> with them as following:
->>>
->>> in devfreq_set_target()
->>>     get_freq_range(devfreq, &min_freq, &max_freq);
->>>     dev_pm_opp_find_freq_floor(pdev, &min_freq);
->>>     dev_pm_opp_find_freq_floor(pdev, &max_freq);
->>>     freqs.new_max_freq = min_freq;
->>>     freqs.new_max_freq = max_freq;
->>>     devfreq_notify_transition(devfreq, &freqs, DEVFREQ_POSTCHANGE);
->>
->> I will plumb it in and check that option. My concern is that function
->> get_freq_range() would give me the max_freq value from PM QoS, which
->> might be my thermal limit - lower that user_max_freq. Then I still
->> need
->>
->> I've been playing with PM QoS notifications because I thought it would
->> be possible to be notified in thermal for all new set values - even from
->> devfreq sysfs user max_freq write, which has value higher that the
->> current limit set by thermal governor. Unfortunately PM QoS doesn't
->> send that information by design. PM QoS also by desing won't allow
->> me to check first two limits in the plist - which would be thermal
->> and user sysfs max_freq.
->>
->> I will experiment with this notifications and share the results.
->> That you for your comments.
-> 
-> I have experimented with your proposal. Unfortunately, the value stored
-> in the pm_qos which is read by get_freq_range() is not the user max
-> freq. It's the value from thermal devfreq cooling when that one is
-> lower. Which is OK in the overall design, but not for my IPA use case.
-> 
-> What comes to my mind is two options:
-> 1) this patch proposal, with simple solution of two new variables
-> protected by mutex, which would maintain user stored values
-> 2) add a new notification chain in devfreq to notify about new
-> user written value, to which devfreq cooling would register; that
-> would allow devfreq cooling to get that value instantly and store
-> locally
+> +}
+> +
+> +/*
+> + * Load the compiled-in list of X.509 certificates.
+> + */
+> +static __init int load_system_certificate_list(void)
+> +{
+> +	const u8 *p, *end;
+> +
+> +	pr_notice("Loading compiled-in X.509 certificates\n");
+> +
+> +#ifdef CONFIG_MODULE_SIG
+> +	p = system_certificate_list;
+> +#else
+> +	p = system_certificate_list + module_cert_size;
+> +#endif
+> +	end = p + system_certificate_list_size;
+> +	load_cert(p, end, builtin_trusted_keys, KEY_ALLOC_NOT_IN_QUOTA |
+> +						KEY_ALLOC_BUILT_IN |
+> +						KEY_ALLOC_BYPASS_RESTRICTION);
+> +	return 0;
 
-3) How about new define for existing notification chain:
-#define DEVFREQ_USER_CHANGE            (2)
 
-Then a modified devfreq_notify_transition() would get:
-@@ -339,6 +339,10 @@ static int devfreq_notify_transition(struct devfreq 
-*devfreq,
- 
-srcu_notifier_call_chain(&devfreq->transition_notifier_list,
-                                 DEVFREQ_POSTCHANGE, freqs);
-                 break;
-+       case DEVFREQ_USER_CHANGE:
-+               srcu_notifier_call_chain(&devfreq->transition_notifier_list,
-+                               DEVFREQ_USER_CHANGE, freqs);
-+               break;
-         default:
-                 return -EINVAL;
-         }
+The old  load_system_certificate_list always returned 0 and the new 
+load_cert also does. You could just do 'return load_cert(p, ...)' here 
+and still get the 0.
 
-If that is present, I can plumb your suggestion with:
-struct devfreq_freq {
-+       unsigned long new_max_freq;
-+       unsigned long new_min_freq;
 
-and populate them with values in the max_freq_store() by adding at the
-end:
 
-freqs.new_max_freq = max_freq;
-mutex_lock();
-devfreq_notify_transition(devfreq, &freqs, DEVFREQ_USER_CHANGE);
-mutex_unlock();
+> +}
+>   late_initcall(load_system_certificate_list);
+>   
+>   #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+> diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
+> index fb8b07daa9d1..e91c03376599 100644
+> --- a/include/keys/system_keyring.h
+> +++ b/include/keys/system_keyring.h
+> @@ -16,9 +16,16 @@ extern int restrict_link_by_builtin_trusted(struct key *keyring,
+>   					    const struct key_type *type,
+>   					    const union key_payload *payload,
+>   					    struct key *restriction_key);
+> -
+> +extern __init int load_module_cert(struct key *keyring, unsigned long flags);
+>   #else
+>   #define restrict_link_by_builtin_trusted restrict_link_reject
+> +
+> +static inline __init int load_module_cert(struct key *keyring,
+> +					  unsigned long flags)
+> +{
+> +	return 0;
+> +}
+> +
+>   #endif
+>   
+>   #ifdef CONFIG_SECONDARY_TRUSTED_KEYRING
+> diff --git a/security/integrity/digsig.c b/security/integrity/digsig.c
+> index 0f518dcfde05..4009d1e33fe0 100644
+> --- a/security/integrity/digsig.c
+> +++ b/security/integrity/digsig.c
+> @@ -111,8 +111,12 @@ static int __init __integrity_init_keyring(const unsigned int id,
+>   	} else {
+>   		if (id == INTEGRITY_KEYRING_PLATFORM)
+>   			set_platform_trusted_keys(keyring[id]);
+> +		if (id == INTEGRITY_KEYRING_IMA)
+> +			load_module_cert(keyring[id], KEY_ALLOC_NOT_IN_QUOTA);
+>   	}
+>   
+> +	pr_info("Loading key to ima keyring\n");
+> +
+>   	return err;
+>   }
+>   
 
-I would handle this notification in devfreq cooling and keep the
-value there, for future IPA checks.
+Otherwise lgtm.
 
-If you agree, I can send next version of the patch set.
 
-> 
-> What do you think Chanwoo?
-> 
-> Regards,
-> Lukasz
