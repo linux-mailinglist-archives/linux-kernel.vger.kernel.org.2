@@ -2,111 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8352331866F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 09:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBDF318671
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 09:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhBKIij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 03:38:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhBKIhV (ORCPT
+        id S229752AbhBKIrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 03:47:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35975 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229648AbhBKIkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 03:37:21 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E7CC061574;
-        Thu, 11 Feb 2021 00:36:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wg5fPTLM+1cZ9yRJ2/wT41q1NwpITJ04WaAL3iNvvr8=; b=CysCp9b6F7J9AuOhF4p35Ff0hh
-        Ze5GD0f2KT/7rpHeXg+2xDlZJZvp2BYXw+/rFwdWOcCU9xVt9B5QI0LP8AZnfiXjPGizp/o/Ig+1L
-        x/ztvT+EuNtLqfK3/Sq2jW1wB34ihHTsxf7rN/o52I8DFpT764V9KDdx+qA2/zS0aAzctrbigmHTY
-        MWPEIWWDC+pUtGJali6xzN0ai9GU3KUSv3zYkJG/UE71tfdQk5QAyrLFyuDLZutAbSNMGzY3qDIGQ
-        uoFy5PBAKb6Bi2P0PopaUcMRJy4IujPbSFaJdjeQeTnNgOO793QMQrp/9a+H6utei/t0v1ru0SVIj
-        ccvvlAhg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lA7SX-009yv8-8z; Thu, 11 Feb 2021 08:36:21 +0000
-Date:   Thu, 11 Feb 2021 08:36:21 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "liranl@nvidia.com" <liranl@nvidia.com>,
-        "oren@nvidia.com" <oren@nvidia.com>,
-        "tzahio@nvidia.com" <tzahio@nvidia.com>,
-        "leonro@nvidia.com" <leonro@nvidia.com>,
-        "yarong@nvidia.com" <yarong@nvidia.com>,
-        "aviadye@nvidia.com" <aviadye@nvidia.com>,
-        "shahafs@nvidia.com" <shahafs@nvidia.com>,
-        "artemp@nvidia.com" <artemp@nvidia.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "ACurrid@nvidia.com" <ACurrid@nvidia.com>,
-        "gmataev@nvidia.com" <gmataev@nvidia.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "aik@ozlabs.ru" <aik@ozlabs.ru>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v2 0/9] Introduce vfio-pci-core subsystem
-Message-ID: <20210211083621.GA2378134@infradead.org>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <MWHPR11MB18867A429497117960344A798C8D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210210133452.GW4247@nvidia.com>
+        Thu, 11 Feb 2021 03:40:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613032681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OshEwSbCv9NPTYWa6eOuk9tJUyjlTdPMJ4VCPbd4Iv0=;
+        b=jA2JVLJTkukMkR2ikr9OVXtknhAQWwUcsPmKlb+9a1eD8OEojApkiG++J6moabz/prgwtj
+        ipgeCYm8rYsez93AtYsOY+7m2QdHMdxBQiQZoZ4Up36f6XSZ1VVeBQTyf6FQogG2duhCW5
+        miESKHDbAYLdyA6LFFhWDVV3ZE9J4As=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-339-blTG32R_OI-ZaE04sIMUog-1; Thu, 11 Feb 2021 03:37:56 -0500
+X-MC-Unique: blTG32R_OI-ZaE04sIMUog-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 548D2AFA83;
+        Thu, 11 Feb 2021 08:37:54 +0000 (UTC)
+Received: from [10.36.114.52] (ovpn-114-52.ams2.redhat.com [10.36.114.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 83EC16268E;
+        Thu, 11 Feb 2021 08:37:51 +0000 (UTC)
+Subject: Re: [PATCH 0/3] mm/page_alloc: Fix pageblock_order with
+ HUGETLB_PAGE_SIZE_VARIABLE
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        akpm@linux-foundation.org, will@kernel.org
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <1613024531-19040-1-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <683c812a-ce3d-ef74-10d1-eaf8a3ae93d4@redhat.com>
+Date:   Thu, 11 Feb 2021 09:37:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210133452.GW4247@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1613024531-19040-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:34:52AM -0400, Jason Gunthorpe wrote:
-> > I'm a bit confused about the change from v1 to v2, especially about
-> > how to inject module specific operations. From live migration p.o.v
-> > it may requires two hook points at least for some devices (e.g. i40e 
-> > in original Yan's example):
+On 11.02.21 07:22, Anshuman Khandual wrote:
+> The following warning gets triggered while trying to boot a 64K page size
+> without THP config kernel on arm64 platform.
 > 
-> IMHO, it was too soon to give up on putting the vfio_device_ops in the
-> final driver- we should try to define a reasonable public/private
-> split of vfio_pci_device as is the norm in the kernel. No reason we
-> can't achieve that.
+> WARNING: CPU: 5 PID: 124 at mm/vmstat.c:1080 __fragmentation_index+0xa4/0xc0
+> Modules linked in:
+> CPU: 5 PID: 124 Comm: kswapd0 Not tainted 5.11.0-rc6-00004-ga0ea7d62002 #159
+> Hardware name: linux,dummy-virt (DT)
+> [    8.810673] pstate: 20400005 (nzCv daif +PAN -UAO -TCO BTYPE=--)
+> [    8.811732] pc : __fragmentation_index+0xa4/0xc0
+> [    8.812555] lr : fragmentation_index+0xf8/0x138
+> [    8.813360] sp : ffff0000864079b0
+> [    8.813958] x29: ffff0000864079b0 x28: 0000000000000372
+> [    8.814901] x27: 0000000000007682 x26: ffff8000135b3948
+> [    8.815847] x25: 1fffe00010c80f48 x24: 0000000000000000
+> [    8.816805] x23: 0000000000000000 x22: 000000000000000d
+> [    8.817764] x21: 0000000000000030 x20: ffff0005ffcb4d58
+> [    8.818712] x19: 000000000000000b x18: 0000000000000000
+> [    8.819656] x17: 0000000000000000 x16: 0000000000000000
+> [    8.820613] x15: 0000000000000000 x14: ffff8000114c6258
+> [    8.821560] x13: ffff6000bff969ba x12: 1fffe000bff969b9
+> [    8.822514] x11: 1fffe000bff969b9 x10: ffff6000bff969b9
+> [    8.823461] x9 : dfff800000000000 x8 : ffff0005ffcb4dcf
+> [    8.824415] x7 : 0000000000000001 x6 : 0000000041b58ab3
+> [    8.825359] x5 : ffff600010c80f48 x4 : dfff800000000000
+> [    8.826313] x3 : ffff8000102be670 x2 : 0000000000000007
+> [    8.827259] x1 : ffff000086407a60 x0 : 000000000000000d
+> [    8.828218] Call trace:
+> [    8.828667]  __fragmentation_index+0xa4/0xc0
+> [    8.829436]  fragmentation_index+0xf8/0x138
+> [    8.830194]  compaction_suitable+0x98/0xb8
+> [    8.830934]  wakeup_kcompactd+0xdc/0x128
+> [    8.831640]  balance_pgdat+0x71c/0x7a0
+> [    8.832327]  kswapd+0x31c/0x520
+> [    8.832902]  kthread+0x224/0x230
+> [    8.833491]  ret_from_fork+0x10/0x30
+> [    8.834150] ---[ end trace 472836f79c15516b ]---
 > 
-> >  register a migration region and intercept guest writes to specific
-> > registers. [PATCH 4/9] demonstrates the former but not the latter
-> > (which is allowed in v1).
+> This warning comes from __fragmentation_index() when the requested order
+> is greater than MAX_ORDER.
 > 
-> And this is why, the ROI to wrapper every vfio op in a PCI op just to
-> keep vfio_pci_device completely private is poor :(
-
-Yes.  If Alex has a strong preference to keep some values private
-a split between vfio_pci_device vfio_pci_device_priv might be doable,
-but it is somewhat silly.
-
-> > Then another question. Once we have this framework in place, do we 
-> > mandate this approach for any vendor specific tweak or still allow
-> > doing it as vfio_pci_core extensions (such as igd and zdev in this
-> > series)?
+> static int __fragmentation_index(unsigned int order,
+> 				 struct contig_page_info *info)
+> {
+>          unsigned long requested = 1UL << order;
 > 
-> I would say no to any further vfio_pci_core extensions that are tied
-> to specific PCI devices. Things like zdev are platform features, they
-> are not tied to specific PCI devices
-
-Yes, ZDEV is just a special case of exposing extra information for any
-PCI device on s390.  It does not fit any split up vfio_pci framework.
-In fact I wonder why it even has its own config option.
-
-> > vfio-mdev is just the channel to bring VFIO APIs through mdev core
-> > to underlying vendor specific mdev device driver, which is already
-> > granted flexibility to tweak whatever needs through mdev_parent_ops.
+>          if (WARN_ON_ONCE(order >= MAX_ORDER)) <===== Triggered here
+>                  return 0;
 > 
-> This is the second thing, and it could just be deleted. The actual
-> final mdev driver can just use vfio_device_ops directly. The
-> redirection shim in vfio_mdev.c doesn't add value.
+> Digging it further reveals that pageblock_order has been assigned a value
+> which is greater than MAX_ORDER failing the above check. But why this
+> happened ? Because HUGETLB_PAGE_ORDER for the given config on arm64 is
+> greater than MAX_ORDER.
+> 
+> The solution involves enabling HUGETLB_PAGE_SIZE_VARIABLE which would make
+> pageblock_order a variable instead of constant HUGETLB_PAGE_ORDER. But that
+> change alone also did not really work as pageblock_order still got assigned
+> as HUGETLB_PAGE_ORDER in set_pageblock_order(). HUGETLB_PAGE_ORDER needs to
+> be less than MAX_ORDER for its appropriateness as pageblock_order otherwise
+> just fallback to MAX_ORDER - 1 as before. While here it also fixes a build
+> problem via type casting MAX_ORDER in rmem_cma_setup().
 
-Yes, that would simplify a lot of things.
+I'm wondering, is there any real value in allowing FORCE_MAX_ZONEORDER 
+to be "11" with ARM64_64K_PAGES/ARM64_16K_PAGES?
+
+Meaning: are there any real use cases that actually build a kernel 
+without TRANSPARENT_HUGEPAGE and with ARM64_64K_PAGES/ARM64_16K_PAGES?
+
+As builds are essentially broken, I assume this is not that relevant? Or 
+how long has it been broken?
+
+It might be easier to just drop the "TRANSPARENT_HUGEPAGE" part from the 
+FORCE_MAX_ZONEORDER config.
+
+-- 
+Thanks,
+
+David / dhildenb
+
