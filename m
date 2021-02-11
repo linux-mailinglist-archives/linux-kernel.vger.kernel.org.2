@@ -2,97 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261BE319220
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BD431921C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhBKSVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:21:25 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:45357 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbhBKSH0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:07:26 -0500
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 11BI68ph007158;
-        Fri, 12 Feb 2021 03:06:09 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 11BI68ph007158
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613066769;
-        bh=aS3nyEL/blW5wl23rHjvf+MLUviMkrYPfXwTmR8wSjY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S9kLixX3pD9FKGMhONjpCHVDG75yKZ74Txol3Cn0AjuwMtTh0TJ6ATylA9FAa9DMy
-         DqC1QnFzpnoRgp9NMmwa+RMmQeXWDxOhxGWPLOFS6M+rCF64KssgHZLTl5SNgSFZ6M
-         8A7a8gZqdjzUgnmZq5hiUSp1uTc5+pSgc+HIrhdLM6Agm38Ha2NA9paC9lb7OQw7DP
-         8uw45aa2PZLCSsSF+DJJTYpKu4fmXuiNZ4cVgDmpktHh+tLjWm+dfZt/KfUIbp8CrF
-         q6hrGdTISGbOBAtCmeCt2f8bgxb43jer/ooS0QvsZdMNWY8XMfBpJ2yjb76Jpu8/Q0
-         vQqwtED9eB/Ng==
-X-Nifty-SrcIP: [209.85.210.171]
-Received: by mail-pf1-f171.google.com with SMTP id c11so4157368pfp.10;
-        Thu, 11 Feb 2021 10:06:09 -0800 (PST)
-X-Gm-Message-State: AOAM53339D35ytcJxSq0m3rQ7Rtjn0tLvTbBoILv0enhtj6lXkNilr0u
-        BmC+3AOAyF0wJQ24bdbiiCTy9Zm2TCXiUKydZoM=
-X-Google-Smtp-Source: ABdhPJymrPJ4TnzIzA6fnOCPyy8ei4axUeafKAFXotWbnBd8ynLlFgfGCbZg4JDAwoq8DGKqnLOxw4gaaHyISNxJUgw=
-X-Received: by 2002:a62:2f07:0:b029:1bb:5f75:f985 with SMTP id
- v7-20020a622f070000b02901bb5f75f985mr8783784pfv.76.1613066768263; Thu, 11 Feb
- 2021 10:06:08 -0800 (PST)
+        id S231709AbhBKSUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:20:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232450AbhBKSHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 13:07:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 193CC64DE1;
+        Thu, 11 Feb 2021 18:06:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613066778;
+        bh=th0ftCsf27UJO3jv9zjkAX6s8Y9ezleCWdivAs1DWDM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MyyLbn4gOvdLRAbhOvbe/370fPhQ2+7IAOgDhyQz/kAcYdxhl24ZCTjO5fBGO7LZT
+         Ye8HzN+v7j32VDadLPEMzsy2CG3Xvj341iAV+GPT6KdBSnmPDhMLd81m43/hU0cv+3
+         /YXpGLQhmGg+OWUXT6yyCFSj5kDDu9ni9hDph13OlOIi+0F6PWBmZSDOoXnuS94Qgy
+         YO1umjnxcNQBlJ9MDdMgaztWxKeZNAT/BSycCQ9G+mZ5cbt/eqGPDFY8FKWxhEZ4V/
+         eFl3lYLGqugha/phgQWCBr9YfRLD7j+F3CO+3+aEaYNDS3QxVKLEAuKKao0bKBTFue
+         kjfkxZMfb10Kw==
+Date:   Thu, 11 Feb 2021 13:06:17 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Collins <collinsd@codeaurora.org>
+Subject: Re: [PATCH 4.19 07/24] regulator: core: avoid
+ regulator_resolve_supply() race condition
+Message-ID: <20210211180617.GG4035784@sasha-vm>
+References: <20210211150147.743660073@linuxfoundation.org>
+ <20210211150148.069380965@linuxfoundation.org>
+ <20210211152656.GD5217@sirena.org.uk>
+ <YCVPYEgCIbqDRYLa@kroah.com>
+ <20210211154021.GE5217@sirena.org.uk>
 MIME-Version: 1.0
-References: <20210211061416.3747231-1-masahiroy@kernel.org> <YCUKVyMcVoNDAYJv@gunter>
-In-Reply-To: <YCUKVyMcVoNDAYJv@gunter>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 12 Feb 2021 03:05:31 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARa11O-N_q=m57He7G6-2tmemmhtkwN5UQu6cnf7MtZog@mail.gmail.com>
-Message-ID: <CAK7LNARa11O-N_q=m57He7G6-2tmemmhtkwN5UQu6cnf7MtZog@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: fix CONFIG_TRIM_UNUSED_KSYMS build for ppc64
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210211154021.GE5217@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 7:43 PM Jessica Yu <jeyu@kernel.org> wrote:
+On Thu, Feb 11, 2021 at 03:40:21PM +0000, Mark Brown wrote:
+>On Thu, Feb 11, 2021 at 04:38:08PM +0100, Greg Kroah-Hartman wrote:
+>> On Thu, Feb 11, 2021 at 03:26:56PM +0000, Mark Brown wrote:
 >
-> +++ Masahiro Yamada [11/02/21 15:14 +0900]:
-> >Stephen Rothwell reported a build error on ppc64 when
-> >CONFIG_TRIM_UNUSED_KSYMS is enabled.
-> >
-> >Jessica Yu pointed out the cause of the error with the reference to the
-> >ppc64 elf ABI:
-> >  "Symbol names with a dot (.) prefix are reserved for holding entry
-> >   point addresses. The value of a symbol named ".FN", if it exists,
-> >   is the entry point of the function "FN".
-> >
-> >As it turned out, CONFIG_TRIM_UNUSED_KSYMS has never worked for ppc64,
-> >which has been unnoticed until recently because this option depends on
-> >!UNUSED_SYMBOLS hence is disabled by all{mod,yes}config. (Then, it was
-> >uncovered by another patch removing UNUSED_SYMBOLS.)
-> >
-> >Removing the dot prefix in scripts/gen_autoksyms.sh fixes the issue.
-> >Please note it must be done before 'sort -u', because modules have
-> >both ._mcount and _mcount undefined when CONFIG_FUNCTION_TRACER=y.
-> >
-> >Link: https://lore.kernel.org/lkml/20210209210843.3af66662@canb.auug.org.au/
-> >Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> >Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>> > > The final step in regulator_register() is to call
+>> > > regulator_resolve_supply() for each registered regulator
 >
-> Thanks a lot for the quick fix. This fixes the ppc64 build issue on my end:
+>> > This is buggy without a followup which doesn't seem to have been
+>> > backported here.
 >
->     Tested-by: Jessica Yu <jeyu@kernel.org>
+>> Would that be 14a71d509ac8 ("regulator: Fix lockdep warning resolving
+>> supplies")?  Looks like it made it into the 5.4.y and 5.10.y queues, but
+>> not 4.19.y.
 >
-> Do you plan to take this through the kbuild tree? If so, please let me
-> know when you've applied it, then I can undo the temporary workaround
-> I currently have in modules-next.
->
-> Thank you!
->
-> Jessica
+>Yes, that's the one.
 
+I've grabbed these two additional commits for 4.19:
 
-Applied to linux-kbuild/fixes.
+05f224ca6693 ("regulator: core: Clean enabling always-on regulators + their supplies")
+2bb166636933 ("regulator: core: enable power when setting up constraints")
 
+And queued up 14a71d509ac8. Thanks for the heads-up!
 
 -- 
-Best Regards
-Masahiro Yamada
+Thanks,
+Sasha
