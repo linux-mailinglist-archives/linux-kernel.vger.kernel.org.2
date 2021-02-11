@@ -2,130 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947D23185D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E867F3185D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhBKHmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:42:43 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:51635 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhBKHmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:42:35 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DbpVS0PN0z9v1rF;
-        Thu, 11 Feb 2021 08:41:52 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id bFrpB7c6-TBm; Thu, 11 Feb 2021 08:41:51 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DbpVR5TL4z9v1rC;
-        Thu, 11 Feb 2021 08:41:51 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B0DD58B816;
-        Thu, 11 Feb 2021 08:41:52 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id mA6wpkyYa7gx; Thu, 11 Feb 2021 08:41:52 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 761098B771;
-        Thu, 11 Feb 2021 08:41:52 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 3A63667377; Thu, 11 Feb 2021 07:41:52 +0000 (UTC)
-Message-Id: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/bug: Remove specific powerpc BUG_ON()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 11 Feb 2021 07:41:52 +0000 (UTC)
+        id S229687AbhBKHnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:43:46 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:36866 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229628AbhBKHnm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 02:43:42 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B7dq32049553;
+        Thu, 11 Feb 2021 07:42:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=0EzUuzVkW0/rXj9wIPYoM+D4X4LcJcZYdNeT+Du8Nh4=;
+ b=sOZXSzFAorg/KTCrgwbMqrN+FOUZs2/syZ0I4gwr9MJA+AkGfcU7qqOW0X1euHS1NO3f
+ 977ZhyGJ1qgshpGccLFwnbSy20kV9Pp8n9vQNJ0sfE4B3sWoqAxRAI3sx/NyUqWr1BFI
+ B60Pw73K+Z47Kcb5vU9xuvIPdbVZNAGlPAzzJK0q3wCVyeyxeKdgDipTZZVdkbG5lDgK
+ 665VGkMIJIoVTM6xDqtv+nzS5q6qRWx9Y6pOrqMPSqbAksirFdea39jMdw6HmY7MvNcC
+ OcL+SxC/qv9D9TEL78HDLQs7OSRVrGpT4c0VtfMOR7PJ7m6h8MticcBMQQMtOtLx/bI8 fA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 36hkrn6b0e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 07:42:50 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B7f6EZ027805;
+        Thu, 11 Feb 2021 07:42:49 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 36j51ymyq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 07:42:49 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11B7gj3e000398;
+        Thu, 11 Feb 2021 07:42:45 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 23:42:45 -0800
+Date:   Thu, 11 Feb 2021 10:42:38 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     karthek <mail@karthek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: remove obsolete commented out code
+Message-ID: <20210211074238.GM20820@kadam>
+References: <YCQvsdlnbnQN4Ruf@karthik-strix-linux.karthek.com>
+ <YCQxwl6yfHGeDrAn@karthik-strix-linux.karthek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCQxwl6yfHGeDrAn@karthik-strix-linux.karthek.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110069
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-powerpc BUG_ON() is based on using twnei or tdnei instruction,
-which obliges gcc to format the condition into a 0 or 1 value
-in a register.
+On Thu, Feb 11, 2021 at 12:49:30AM +0530, karthek wrote:
+> Hey dan,
+> check this out too
 
-By using a generic implementation, gcc will generate a branch
-to the unconditional trap generated by BUG().
+I have no idea what you're talking about.
 
-As modern powerpc implement branch folding, that's even more efficient.
+Anyway, I just read my inbox in chronological order.  That means I tend
+to send my replies before reading Greg's comments and before seeing the
+v2 patches.  Just be patient and I will get to it.
 
-See below the difference at the entry of system_call_exception.
-
-With the patch:
-
-	00000000 <system_call_exception>:
-	   0:	81 6a 00 84 	lwz     r11,132(r10)
-	   4:	90 6a 00 88 	stw     r3,136(r10)
-	   8:	71 60 00 02 	andi.   r0,r11,2
-	   c:	41 82 00 70 	beq     7c <system_call_exception+0x7c>
-	  10:	71 60 40 00 	andi.   r0,r11,16384
-	  14:	41 82 00 6c 	beq     80 <system_call_exception+0x80>
-	  18:	71 6b 80 00 	andi.   r11,r11,32768
-	  1c:	41 82 00 68 	beq     84 <system_call_exception+0x84>
-	  20:	94 21 ff e0 	stwu    r1,-32(r1)
-	  24:	93 e1 00 1c 	stw     r31,28(r1)
-	  28:	7d 8c 42 e6 	mftb    r12
-	...
-	  7c:	0f e0 00 00 	twui    r0,0
-	  80:	0f e0 00 00 	twui    r0,0
-	  84:	0f e0 00 00 	twui    r0,0
-
-Without the patch:
-
-	00000000 <system_call_exception>:
-	   0:	94 21 ff e0 	stwu    r1,-32(r1)
-	   4:	93 e1 00 1c 	stw     r31,28(r1)
-	   8:	90 6a 00 88 	stw     r3,136(r10)
-	   c:	81 6a 00 84 	lwz     r11,132(r10)
-	  10:	69 60 00 02 	xori    r0,r11,2
-	  14:	54 00 ff fe 	rlwinm  r0,r0,31,31,31
-	  18:	0f 00 00 00 	twnei   r0,0
-	  1c:	69 60 40 00 	xori    r0,r11,16384
-	  20:	54 00 97 fe 	rlwinm  r0,r0,18,31,31
-	  24:	0f 00 00 00 	twnei   r0,0
-	  28:	69 6b 80 00 	xori    r11,r11,32768
-	  2c:	55 6b 8f fe 	rlwinm  r11,r11,17,31,31
-	  30:	0f 0b 00 00 	twnei   r11,0
-	  34:	7d 8c 42 e6 	mftb    r12
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/bug.h | 10 ----------
- 1 file changed, 10 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
-index d1635ffbb179..21103d3e1f29 100644
---- a/arch/powerpc/include/asm/bug.h
-+++ b/arch/powerpc/include/asm/bug.h
-@@ -69,15 +69,6 @@
- 	unreachable();						\
- } while (0)
- 
--#define BUG_ON(x) do {						\
--	if (__builtin_constant_p(x)) {				\
--		if (x)						\
--			BUG();					\
--	} else {						\
--		BUG_ENTRY(PPC_TLNEI " %4, 0", 0, "r" ((__force long)(x)));	\
--	}							\
--} while (0)
--
- #define __WARN_FLAGS(flags) BUG_ENTRY("twi 31, 0, 0", BUGFLAG_WARNING | (flags))
- 
- #define WARN_ON(x) ({						\
-@@ -94,7 +85,6 @@
- })
- 
- #define HAVE_ARCH_BUG
--#define HAVE_ARCH_BUG_ON
- #define HAVE_ARCH_WARN_ON
- #endif /* __ASSEMBLY __ */
- #else
--- 
-2.25.0
-
+regards,
+dan carpenter
