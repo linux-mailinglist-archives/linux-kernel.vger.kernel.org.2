@@ -2,71 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2E931920D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB6E319212
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231697AbhBKSRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:17:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50240 "EHLO mail.kernel.org"
+        id S232708AbhBKSRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:17:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34226 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230337AbhBKRxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:53:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FD0164DEE;
-        Thu, 11 Feb 2021 17:52:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613065971;
-        bh=2ckM0Itoe8KHQDayjUMGE113zQzsTAROmq2TaKb3RZ4=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=N3WOvXdWJTec/f248/MJlsN5vDROuvvvIHkH/qIuLvyCt20E/DGl8cLqnF8nWoSUr
-         WSJWP/gG2+/13PlPinIy/SufQhClbFn6glTdKWkfjkxxTk1WrZHaj0JzbUH/3DQj3J
-         y/gAd8X67QUlMKhCWoQyOhfY2TXKPl6+ZkgLULMmwduz3skpd5n2w+VuFM5C1jujJy
-         596kX8yIpBUiLSvd05hUvMnmEEbYqt+FCEz8h7tmCSpJb6a1M8kzTQoQYoGg6Sp4hc
-         PHn+W9OrLDZLxQQx+9kCAyoXkI16ryMklXklnINj5QNN2Es2NqGXoQL1aIQgIMoydI
-         zWBwFNJmnmWXw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com
-In-Reply-To: <20210211172106.16258-1-ckeepax@opensource.cirrus.com>
-References: <20210211172106.16258-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: Remove unused control callback structure
-Message-Id: <161306591793.11031.17865587228297741167.b4-ty@kernel.org>
-Date:   Thu, 11 Feb 2021 17:51:57 +0000
+        id S232004AbhBKRyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:54:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613065992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gMijG7NLW9To4N0+pnio697Rv712tGLsXLWAq0jcB1U=;
+        b=U7Q+Tn2H8w5xUm0QcpkoJKlvKLwCgDlbwsSdIITPyN8SNzTUpAFJfKHo20uW5+N4pgSFBL
+        6bCwJB1DeKoGsTTIY6MkyqcI84EsFPYIiT41n3y5mqSu/zFHwpAMzf5qlP5wBH9dMFRdYz
+        WRwNwF9UBtJjJfCTZzRR8ZHOGzHCcA0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3B80EAC69;
+        Thu, 11 Feb 2021 17:53:12 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 18:53:11 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        akpm@linux-foundation.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        akinobu.mita@gmail.com, glider@google.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 3/3] [v3] lib/vsprintf: debug_never_hash_pointers prints
+ all addresses as unhashed
+Message-ID: <YCVvB7skjoN18HKO@alley>
+References: <20210210213453.1504219-1-timur@kernel.org>
+ <20210210213453.1504219-4-timur@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210213453.1504219-4-timur@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021 17:21:06 +0000, Charles Keepax wrote:
-> This callback structure has never been used and it is not clear why it
-> was added in the first place. Remove it to clear up the code a little.
+On Wed 2021-02-10 15:34:53, Timur Tabi wrote:
+> If the debug_never_hash_pointers command line parameter is set, then
+> printk("%p") will print pointers as unhashed, which is useful for
+> debugging purposes.  This also applies to any function that uses
+> vsprintf, such as print_hex_dump() and seq_buf_printf().
+> 
+> A large warning message is displayed if this option is enabled.
+> Unhashed pointers expose kernel addresses, which can be a security
+> risk.
+> 
+> Also update test_printf to skip the hashed pointer tests if the
+> command-line option is set.
+> 
+> Signed-off-by: Timur Tabi <timur@kernel.org>
+> Acked-by: Petr Mladek <pmladek@suse.com>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  .../admin-guide/kernel-parameters.txt         | 15 ++++++++
+>  lib/test_printf.c                             |  8 ++++
+>  lib/vsprintf.c                                | 38 ++++++++++++++++++-
+>  3 files changed, 59 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a10b545c2070..2a97e787f49c 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -810,6 +810,21 @@
+>  			1 will print _a lot_ more information - normally
+>  			only useful to kernel developers.
+>  
+> +	debug_never_hash_pointers
+> +			Force pointers printed to the console or buffers to be
+> +			unhashed.  By default, when a pointer is printed via %p
+> +			format string, that pointer is "hashed", i.e. obscured
+> +			by hashing the pointer value.  This is a security feature
+> +			that hides actual kernel addresses from unprivileged
+> +			users, but it also makes debugging the kernel more
+> +			difficult since unequal pointers can no longer be
+> +			compared.  However, if this command-line option is
+> +			specified, then all normal pointers will have their true
+> +			value printed.  Pointers printed via %pK may still be
+> +			hashed.  This option should only be specified when
+> +			debugging the kernel.  Please do not use on production
+> +			kernels.
 
-Applied to
+I like this description.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 3b53c73580c5..b4e07ecb1cb2 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -2090,6 +2090,34 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+>  	return widen_string(buf, buf - buf_start, end, spec);
+>  }
+>  
+> +/* Disable pointer hashing if requested */
+> +bool debug_never_hash_pointers __ro_after_init;
+> +EXPORT_SYMBOL_GPL(debug_never_hash_pointers);
+> +
+> +static int __init debug_never_hash_pointers_enable(char *str)
+> +{
+> +	debug_never_hash_pointers = true;
+> +
+> +	pr_warn("**********************************************************\n");
+> +	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("** All pointers that are printed to the console will    **\n");
+> +	pr_warn("** be printed as unhashed.                              **\n");
 
-Thanks!
+I would really like to make it clear here that it is not only about
+consoles. Most people will see only this message. Only few people read
+documentation. Many people will learn the parameter name from another
+context by googling.
 
-[1/1] ASoC: wm_adsp: Remove unused control callback structure
-      commit: 6e9586361e145cd688e525880e1f84c0ccf57566
+I know that it is not easy to find good words. Especially because
+pointers printed by %pK might still be hashed.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("** Kernel memory addresses are exposed, which may       **\n");
+> +	pr_warn("** reduce the security of your system.                  **\n");
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+What about replacing the first two paragraphs with something like:
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+"This system shows unhashed kernel memory addresses via logs and
+ other interfaces. It might reduce the security of your system."
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Best Regards,
+Petr
 
-Thanks,
-Mark
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("** If you see this message and you are not debugging    **\n");
+> +	pr_warn("** the kernel, report this immediately to your system   **\n");
+> +	pr_warn("** administrator!                                       **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> +	pr_warn("**********************************************************\n");
+> +
+> +	return 0;
+> +}
+> +early_param("debug_never_hash_pointers", debug_never_hash_pointers_enable);
+> +
+>  /*
+>   * Show a '%p' thing.  A kernel extension is that the '%p' is followed
+>   * by an extra set of alphanumeric characters that are extended format
+> @@ -2297,8 +2325,14 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+>  		}
+>  	}
+>  
+> -	/* default is to _not_ leak addresses, hash before printing */
+> -	return ptr_to_id(buf, end, ptr, spec);
+> +	/*
+> +	 * default is to _not_ leak addresses, so hash before printing,
+> +	 * unless debug_never_hash_pointers is specified on the command line.
+> +	 */
+> +	if (unlikely(debug_never_hash_pointers))
+> +		return pointer_string(buf, end, ptr, spec);
+> +	else
+> +		return ptr_to_id(buf, end, ptr, spec);
+>  }
+>  
+>  /*
+> -- 
+> 2.25.1
