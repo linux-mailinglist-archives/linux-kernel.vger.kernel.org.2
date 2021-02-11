@@ -2,126 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1673194D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2743194D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhBKVDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 16:03:54 -0500
-Received: from pv50p00im-ztdg10012101.me.com ([17.58.6.49]:60446 "EHLO
-        pv50p00im-ztdg10012101.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229517AbhBKVDx (ORCPT
+        id S230046AbhBKVEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 16:04:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59334 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229517AbhBKVEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 16:03:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1613077376;
-        bh=9HqWGB0ly1bUOWj9XC8LrkDsOhqjDPdoBk/DvaHPl6E=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=WWqKF6rGNJGABU7iEs4aAPQb6dt01uTv2FU4yYbtKHn56ywXCg/2P3LuFoBBAN3Az
-         G/D/fD67OjwJzPqlkOg6RhqI6KR7CVJCV5ByawlqHzMF+UVq6IQo+WjIrnKoN5+R9G
-         XwGn9CbDt10mGZyITZkRQYkm7VG8yD5ID9rw50OkCBbqcmd8lkkaJQMYxCfuqOAPdo
-         Hruip9tMVWcKDceu1gsFgnCSgfwqdROfNmgI1SXJR0lJio945rESOsSU2RQuS0I5DI
-         rf76e6R26FdZBGLTJjHwHH5doYnsaDq4rvFx7wSbLQ9Rc5yannrtk1Kb0M2JaQEzO7
-         6k8ohDK98bOrg==
-Received: from [192.168.31.114] (unknown [45.250.50.68])
-        by pv50p00im-ztdg10012101.me.com (Postfix) with ESMTPSA id 3D4FB84021E;
-        Thu, 11 Feb 2021 21:02:53 +0000 (UTC)
-Subject: Re: [PATCH] staging: vt6656: Fixed issue with alignment in rf.c
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     tvboxspy@gmail.com, devel@driverdev.osuosl.org,
-        oscar.carter@gmx.com, forest@alittletooquiet.net,
-        linux-kernel@vger.kernel.org
-References: <20210211152426.10008-1-pritthijit.nath@icloud.com>
- <YCWTlWj4KHT6Okq/@kroah.com>
- <141aa6fe-972c-a9a2-f321-65a98ebccc41@icloud.com>
- <YCWXH1MZy0cbDB3G@kroah.com>
-From:   Pritthijit Nath <pritthijit.nath@icloud.com>
-Message-ID: <a94be58e-b503-1fcf-7c5c-158ce7e2d188@icloud.com>
-Date:   Fri, 12 Feb 2021 02:32:51 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 11 Feb 2021 16:04:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613077391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jaBoUEFNY4Hfsu8q49h7KfWFimnqp7p8cmVy/yVWHcQ=;
+        b=JOO7Dw5eooJTAPyRp0UnoBx6zOxcGxgUT35O+tcUwrooHMmabLNEGUrgDhhP32QgjEzq0K
+        c9FJ4x3S36Daq40GpOTevSdNHdzirCVTuU8LOUI/c/xf1s07PTXQwuoKN4X7z5cyNHQtjv
+        TpWARsJ08yO/dsj/SvGvOv2u/RglAiw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-2_TTrdD2OY25agubiKVEow-1; Thu, 11 Feb 2021 16:03:10 -0500
+X-MC-Unique: 2_TTrdD2OY25agubiKVEow-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C716E80403B;
+        Thu, 11 Feb 2021 21:03:08 +0000 (UTC)
+Received: from x2.localnet (ovpn-118-15.rdu2.redhat.com [10.10.118.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3B31E60636;
+        Thu, 11 Feb 2021 21:02:57 +0000 (UTC)
+From:   Steve Grubb <sgrubb@redhat.com>
+To:     Phil Sutter <phil@nwl.cc>, Richard Guy Briggs <rgb@redhat.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>, fw@strlen.de,
+        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
+        tgraf@infradead.org, Paul Moore <paul@paul-moore.com>
+Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change events
+Date:   Thu, 11 Feb 2021 16:02:55 -0500
+Message-ID: <4087569.ejJDZkT8p0@x2>
+Organization: Red Hat
+In-Reply-To: <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
+References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com> <20210211151606.GX3158@orbyte.nwl.cc> <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YCWXH1MZy0cbDB3G@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2102110166
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/02/21 2:14 am, Greg KH wrote:
-> On Fri, Feb 12, 2021 at 02:07:50AM +0530, Pritthijit Nath wrote:
->> On 12/02/21 1:59 am, Greg KH wrote:
->>> On Thu, Feb 11, 2021 at 08:54:26PM +0530, Pritthijit Nath wrote:
->>>> This change fixes a checkpatch CHECK style issue for "Alignment should match open parenthesis".
->>>>
->>>> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
->>>> ---
->>>>  drivers/staging/vt6656/rf.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
->>>> index 5b8da06e3916..bcd4d467e03a 100644
->>>> --- a/drivers/staging/vt6656/rf.c
->>>> +++ b/drivers/staging/vt6656/rf.c
->>>> @@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
->>>>  
->>>>  			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
->>>>  				ret = vnt_rf_write_embedded(priv,
->>>> -					vt3226d0_lo_current_table[hw_value]);
->>>> +							    vt3226d0_lo_current_table[hw_value]);
->>>>  				if (ret)
->>>>  					return ret;
->>>>  			}
->>>> -- 
->>>> 2.25.1
->>>
->>> Please run this change, with the changelog above, through
->>> checkpatch.pl, fix that, and resend.
->>>
->>> thanks,
->>>
->>> greg k-h
->>>
->>
->> This change fixes a checkpatch CHECK style issue for "Alignment should 
->> match open parenthesis".
->>
->> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
->> ---
->>  drivers/staging/vt6656/rf.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
->> index 5b8da06e3916..bcd4d467e03a 100644
->> --- a/drivers/staging/vt6656/rf.c
->> +++ b/drivers/staging/vt6656/rf.c
->> @@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
->>  
->>  			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
->>  				ret = vnt_rf_write_embedded(priv,
->> -					vt3226d0_lo_current_table[hw_value]);
->> +							    vt3226d0_lo_current_table[hw_value]);
->>  				if (ret)
->>  					return ret;
->>  			}
-> 
-> I can't take this type of submission, do you see other patches submitted
-> this way on the mailing list?
-Actually I am having a hard time since this one's my first. I would really appreciate if you could be a little clear. Should I resend the entire patch as a new thread?
+On Thursday, February 11, 2021 11:29:34 AM EST Paul Moore wrote:
+> > If I'm not mistaken, iptables emits a single audit log per table, ipset
+> > doesn't support audit at all. So I wonder how much audit logging is
+> > required at all (for certification or whatever reason). How much
+> > granularity is desired?
+ 
+  <snip> 
 
-> 
-> Also, you have a trailing space in your changelog text :(
+> I believe the netfilter auditing was mostly a nice-to-have bit of
+> functionality to help add to the completeness of the audit logs, but I
+> could very easily be mistaken.  Richard put together those patches, he
+> can probably provide the background/motivation for the effort.
 
-Thanks for pointing out. Yes, I have fixed the trailing space.
+There are certifications which levy requirements on information flow control. 
+The firewall can decide if information should flow or be blocked. Information 
+flow decisions need to be auditable - which we have with the audit target. 
+That then swings in requirements on the configuration of the information flow 
+policy.
 
-> 
-> thanks,
-> 
-> greg k-h
-> 
+The requirements state a need to audit any management activity - meaning the 
+creation, modification, and/or deletion of a "firewall ruleset". Because it 
+talks constantly about a ruleset and then individual rules, I suspect only 1 
+summary event is needed to say something happened, who did it, and the 
+outcome. This would be in line with how selinux is treated: we have 1 summary 
+event for loading/modifying/unloading selinux policy.
+
+Hope this helps...
+
+-Steve
+
+
