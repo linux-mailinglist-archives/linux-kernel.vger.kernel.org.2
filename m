@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B787318384
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3610831838B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbhBKCVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 21:21:00 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:13061 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhBKCU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 21:20:58 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4DbgMJ6Nxfz80;
-        Thu, 11 Feb 2021 03:20:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1613010015; bh=GmHC768vuaP1liy5q0cWcD0y5WVzLpTLzp28MwacV28=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jr48N7n8S8tiRQCxkrkc6wIAHhlUY4bp3QnkxuhuX6qBr6lnsE0Cx+oOAyXcZdwzf
-         tN/H10cVkgI3P6d3eST88tbroNogxN84qSQAkUcnr0kehvJVvx/jSHgq3z+RqKPpHi
-         aCF7H6wPzRsdpYh7ExeI1PBDvL5HQkPzjoGvYBP5hIPSrbZ28NcrTBrQPXOPn/izO6
-         C8KOctyjyYg9HlPKILqWK6TTSFVx8Cbsz6eqy8WwBblja74qOxuAT9pxpGZgXikMRq
-         F8iT/zQH//eWkryzZyU/sthk6xAcgLecquNP4hWiVtmTCU7CLBdod/NAHFEjHITXS7
-         nm0eg4r8c+Feg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Thu, 11 Feb 2021 03:19:44 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-input@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH RFC] input/elants_i2c: Detect enum overflow
-Message-ID: <20210211021944.GA4933@qmqm.qmqm.pl>
-References: <59e2e82d1e40df11ab38874c03556a31c6b2f484.1612974132.git.jpoimboe@redhat.com>
+        id S229564AbhBKC07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 21:26:59 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2234 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhBKC04 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 21:26:56 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602495c80000>; Wed, 10 Feb 2021 18:26:16 -0800
+Received: from [10.2.50.67] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Feb
+ 2021 02:26:16 +0000
+Subject: Re: [PATCH 0/9] Add support for SVM atomics in Nouveau
+To:     Alistair Popple <apopple@nvidia.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Nouveau Dev <nouveau@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <20210209010722.13839-1-apopple@nvidia.com>
+ <CAKMK7uGwg2-DTU7Zrco=TSkcR4yTqN1AF0hvVYEAbuj4BUYi5Q@mail.gmail.com>
+ <3426910.QXTomnrpqD@nvdebian>
+ <CAKMK7uHp+BzHF1=JhKjv5HYm_j0SVqsGdRqjUxVFYx4GSEPucg@mail.gmail.com>
+ <57fe0deb-8bf6-d3ee-3545-11109e946528@nvidia.com>
+ <YCPYtNeYCuu6i2/d@phenom.ffwll.local>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <2906f445-babb-5f4e-2d99-dc004ae1face@nvidia.com>
+Date:   Wed, 10 Feb 2021 18:26:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <59e2e82d1e40df11ab38874c03556a31c6b2f484.1612974132.git.jpoimboe@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YCPYtNeYCuu6i2/d@phenom.ffwll.local>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613010376; bh=fWiSyOBWsVzyVm55YFwZ6S/xqnjzAJ77D4BJX4IdmYQ=;
+        h=Subject:To:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=leaB4fiXqE16gCtniTXQN7wSpNK6vqgNBnsubO6Sqz20znNTYyS1DivzYTMRS4UV7
+         w5Vir0tdNZkJIZJNa7GWAZkmqVslmOQbbFoYCui9m3qncJPbiLoeAgW6aOlHumrkeb
+         AvqNZnglqc7Brug+AtJ88e4mmqyLBYYytyn9i/agt07SeilKDzj3ypZZzMaPyEc/1f
+         qfcVy3BbtVAyuYqrqLZA+t6jewjnFT5OuJgR0tr56q4bF5w7n5XURdxoT6MgKpdprH
+         LtGPzO04XwunHPGKsOBJRZoELR3w5OcRZukw35gXqIHSILXS8DAoXlexMKrAUC4a98
+         gWaYeMFi1C9IA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:25:28AM -0600, Josh Poimboeuf wrote:
-> If an enum value were to get added without updating this switch
-> statement, the unreachable() annotation would trigger undefined
-> behavior, causing execution to fall through the end of the function,
-> into the next one.
+On 2/10/21 4:59 AM, Daniel Vetter wrote:
+...
+>> GPU atomic operations to sysmem are hard to categorize, because because application
+>> programmers could easily write programs that do a long series of atomic operations.
+>> Such a program would be a little weird, but it's hard to rule out.
 > 
-> Make the error handling more robust for an unexpected enum value, by
-> doing BUG() instead of unreachable().
-> 
-> Fixes the following objtool warning:
-> 
->   drivers/input/touchscreen/elants_i2c.o: warning: objtool: elants_i2c_initialize() falls through to next function elants_i2c_resume()
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Yeah, but we can forcefully break this whenever we feel like by revoking
+> the page, moving it, and then reinstating the gpu pte again and let it
+> continue.
 
-Reviewed-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
+Oh yes, that's true.
 
-> ---
->  drivers/input/touchscreen/elants_i2c.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-> index 6f57ec579f00..4c2b579f6c8b 100644
-> --- a/drivers/input/touchscreen/elants_i2c.c
-> +++ b/drivers/input/touchscreen/elants_i2c.c
-> @@ -656,8 +656,7 @@ static int elants_i2c_initialize(struct elants_data *ts)
->  			error = elants_i2c_query_ts_info_ektf(ts);
->  		break;
->  	default:
-> -		unreachable();
-> -		break;
-> +		BUG();
->  	}
->  
->  	if (error)
-> -- 
-> 2.29.2
-> 
+> If that's no possible then what we need here instead is an mlock() type of
+> thing I think.
+No need for that, then.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
