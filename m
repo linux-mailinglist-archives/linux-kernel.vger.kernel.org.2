@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DE43190FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F8F319101
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhBKRZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:25:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21025 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231769AbhBKQ1I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:27:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613060726;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XQoevciACwPLARu60eJww58zrFl7HrSfeZVa0fo4e3M=;
-        b=Sn4/dsFxxjb/1wqaCoiVIO+exTUhvJc69c0KRFctS6k8VLaoSXqyVAsmlvV3CBVHvVDdRh
-        egPvseD0GnBuKuZ8N0senDgH04HKPTxZ7I/fropbZVTtkYoSt8sR8lDabn9PRvGn2PWZoR
-        nK+z5WMM5mvSLhDVulbxmQGlrs6Tj2Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-598-KCaMI8aPOtSm_ZngdVRuxA-1; Thu, 11 Feb 2021 11:25:24 -0500
-X-MC-Unique: KCaMI8aPOtSm_ZngdVRuxA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6AB3D1005501;
-        Thu, 11 Feb 2021 16:25:22 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-113-187.ams2.redhat.com [10.36.113.187])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C6CEA5C1BD;
-        Thu, 11 Feb 2021 16:25:20 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     stable@vger.kernel.org
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH for 5.10] vdpa_sim: fix param validation in vdpasim_get_config()
-Date:   Thu, 11 Feb 2021 17:25:19 +0100
-Message-Id: <20210211162519.215418-1-sgarzare@redhat.com>
+        id S231547AbhBKR0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:26:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231978AbhBKQ1s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 11:27:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98D7364E95;
+        Thu, 11 Feb 2021 16:27:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613060826;
+        bh=tw9ZxcZmOUYy92B+IooOB7mfJ8Ub+KW+ZN8JlTS9YGM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=OQMCbMwSVvawyRHbxbg3CPIbAr+LX9StLZqrnaPyQ2PVpN6kWa8Q6ZGj5l9xBSt2v
+         OdhK0zCBjY2U+TvFXO3fYqgu6m+u1SxAj1mDTDyZelY6egYgxu490umFZB/k5sy35Q
+         6Uumm8dVLERNNUwKvELQsZinjYPXKOAkLNTUcF92gNWTslxKw/dZDIOjoO3s80A58u
+         /joY/SATay94+JyPZtMSr4gH7dPmtlRuLB9rHsIkfyWD1YaqdRodHbRJXGe5QKPDjf
+         kpu2EiztUt0BYOEH5gcEqfFs2d+nYusyU9dCkeKsK6qoFyf9T2uQV71chiakj5n2wy
+         HTRNpQzWQN/tQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        Pratyush Yadav <p.yadav@ti.com>
+Cc:     zhengxunli@mxic.com.tw, Miquel Raynal <miquel.raynal@bootlin.com>
+In-Reply-To: <20210204141218.32229-1-p.yadav@ti.com>
+References: <20210204141218.32229-1-p.yadav@ti.com>
+Subject: Re: [PATCH 1/2] spi: spi-mem: add spi_mem_dtr_supports_op()
+Message-Id: <161306077271.51686.18172352701549316815.b4-ty@kernel.org>
+Date:   Thu, 11 Feb 2021 16:26:12 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 65b709586e222fa6ffd4166ac7fdb5d5dad113ee upstream.
+On Thu, 4 Feb 2021 19:42:17 +0530, Pratyush Yadav wrote:
+> spi_mem_default_supports_op() rejects DTR ops by default to ensure that
+> the controller drivers that haven't been updated with DTR support
+> continue to reject them. It also makes sure that controllers that don't
+> support DTR mode at all (which is most of them at the moment) also
+> reject them.
+> 
+> This means that controller drivers that want to support DTR mode can't
+> use spi_mem_default_supports_op(). Driver authors have to roll their own
+> supports_op() function and mimic the buswidth checks. See
+> spi-cadence-quadspi.c for example. Or even worse, driver authors might
+> skip it completely or get it wrong.
+> 
+> [...]
 
-Before this patch, if 'offset + len' was equal to
-sizeof(struct virtio_net_config), the entire buffer wasn't filled,
-returning incorrect values to the caller.
+Applied to
 
-Since 'vdpasim->config' type is 'struct virtio_net_config', we can
-safely copy its content under this condition.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Commit 65b709586e22 ("vdpa_sim: add get_config callback in
-vdpasim_dev_attr") unintentionally solved it upstream while
-refactoring vdpa_sim.c to support multiple devices. But we don't want
-to backport it to stable branches as it contains many changes.
+Thanks!
 
-Fixes: 2c53d0f64c06 ("vdpasim: vDPA device simulator")
-Cc: <stable@vger.kernel.org> # 5.10.x
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[1/2] spi: spi-mem: add spi_mem_dtr_supports_op()
+      commit: 539cf68cd51bfcd2987ce1c44e628e9da69de7c8
+[2/2] spi: cadence-quadspi: Use spi_mem_dtr_supports_op()
+      commit: d2275139649bc34b8b5c3e33d26d991ab8a1364c
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 6a90fdb9cbfc..8ca178d7b02f 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -572,7 +572,7 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
- 
--	if (offset + len < sizeof(struct virtio_net_config))
-+	if (offset + len <= sizeof(struct virtio_net_config))
- 		memcpy(buf, (u8 *)&vdpasim->config + offset, len);
- }
- 
--- 
-2.29.2
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
