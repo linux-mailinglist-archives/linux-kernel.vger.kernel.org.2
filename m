@@ -2,322 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C552318764
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4351A31877B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 10:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhBKJv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 04:51:56 -0500
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:35634 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhBKJs4 (ORCPT
+        id S229878AbhBKJyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 04:54:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40921 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229963AbhBKJum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 04:48:56 -0500
-Received: by mail-lf1-f54.google.com with SMTP id u25so7232167lfc.2;
-        Thu, 11 Feb 2021 01:48:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WKpdywKE2i9Y0ehT8fDcGzObdprWyn0AJJwu1jLv3HQ=;
-        b=KIC03EGL7b3EuRLy0GTsBnlbP4j4sqKZPV4UtSbA30mo8UMjJ4SIS78e8Mif63FCGi
-         XDjy3k9HTQz64E94wFQqpPVdWuwiT9zUe2dOG7q9KwyaCyvj3SpEkSD5fzDyLxs8cMcJ
-         oyoKNV4aZfi7b8I4Vzu7IjCchBJJkLyInDW3DI4ny4aikKLvEMlS8MP3FBgHw3m2ehgY
-         PbeMD5OEH9kr1p2lvc09+VBooMSOItgC2t7M9qZGQk6H3YBuJxMYEVRjWRSraU8ZgMHQ
-         03cqrBUwWzKA83neu/yhKjyWYF2i9sSd/drCPPhcHvlBqxc0ShRu5GBXlTeTDhPBYbga
-         KEjQ==
-X-Gm-Message-State: AOAM533oOzl3BrKEHVWyRygwIZxqH+ATD44SJGafqcuXtrFWIC81qcJZ
-        QNh/b98PiJRdkQZhRggInu4=
-X-Google-Smtp-Source: ABdhPJyt909EvsCBsdz6BwiABW1hu4w8Ed0w+3x80LzQTjIIBaK3RQCVIjTM6Psq8qqzkxc63SZS/w==
-X-Received: by 2002:a05:6512:3590:: with SMTP id m16mr4047440lfr.344.1613036892504;
-        Thu, 11 Feb 2021 01:48:12 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id f1sm843939ljj.124.2021.02.11.01.48.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 01:48:11 -0800 (PST)
-Date:   Thu, 11 Feb 2021 11:48:05 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-watchdog@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v8 2/6] mfd: Support ROHM BD9576MUF and BD9573MUF
-Message-ID: <560b9748094392493ebf7af11b6cc558776c4fd5.1613031055.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1613031055.git.matti.vaittinen@fi.rohmeurope.com>
+        Thu, 11 Feb 2021 04:50:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613036945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D4KClAbW7qAjd5KF/8/23pSoF5vXBE09nxYc8TlmEUM=;
+        b=focAmQ/v8mp0bRxPmYQH1aPf4vHVEJrUl0tFegTzn3OuEeRsnJkCwn+dgcXnqGJA3N/BP0
+        4pXY84+aN1SfWXv1q7vk0Ty13ZDRosTJcP6E9D0Wd4WxLIGg4iRpWx0RjT4NIlSthi0eu4
+        Z/ms+V+Ia1l0JT+rsoxNXnWVhhoB53M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-9tsn6XZgPY-p0wHYN_-nmw-1; Thu, 11 Feb 2021 04:49:03 -0500
+X-MC-Unique: 9tsn6XZgPY-p0wHYN_-nmw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6F49280364D;
+        Thu, 11 Feb 2021 09:48:58 +0000 (UTC)
+Received: from [10.36.114.52] (ovpn-114-52.ams2.redhat.com [10.36.114.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4AE5010016F4;
+        Thu, 11 Feb 2021 09:48:49 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-8-rppt@kernel.org> <YCEXMgXItY7xMbIS@dhcp22.suse.cz>
+ <20210208212605.GX242749@kernel.org> <YCJMDBss8Qhha7g9@dhcp22.suse.cz>
+ <20210209090938.GP299309@linux.ibm.com> <YCKLVzBR62+NtvyF@dhcp22.suse.cz>
+ <20210211071319.GF242749@kernel.org> <YCTtSrCEvuBug2ap@dhcp22.suse.cz>
+ <0d66baec-1898-987b-7eaf-68a015c027ff@redhat.com>
+ <YCT6+9YW474IaKrm@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <367808fc-8f5c-10a4-fc0b-a71df616dfce@redhat.com>
+Date:   Thu, 11 Feb 2021 10:48:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1613031055.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <YCT6+9YW474IaKrm@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add core support for ROHM BD9576MUF and BD9573MUF PMICs which are
-mainly used to power the R-Car series processors.
+>> Some random thoughts regarding files.
+>>
+>> What is the page size of secretmem memory? Sometimes we use huge pages,
+>> sometimes we fallback to 4k pages. So I assume huge pages in general?
+> 
+> Unless there is an explicit request for hugetlb I would say the page
+> size is not really important like for any other fds. Huge pages can be
+> used transparently.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-Changes:
- - Comments fixed based on suggestions from Lee
- - Name of regulator cell changed as suggested by Lee
- - Renamed MFD cell variables for better readability
- - Aligned header definitions for better readability
+If everything is currently allocated/mapped on PTE granularity, then yes 
+I agree. I remember previous versions used to "pool 2MB pages", which 
+might have been problematic (thus, my concerns regarding mmap() etc.). 
+If that part is now gone, good!
 
- drivers/mfd/Kconfig              |  11 ++++
- drivers/mfd/Makefile             |   1 +
- drivers/mfd/rohm-bd9576.c        | 109 +++++++++++++++++++++++++++++++
- include/linux/mfd/rohm-bd957x.h  |  59 +++++++++++++++++
- include/linux/mfd/rohm-generic.h |   2 +
- 5 files changed, 182 insertions(+)
- create mode 100644 drivers/mfd/rohm-bd9576.c
- create mode 100644 include/linux/mfd/rohm-bd957x.h
+>   
+>> What are semantics of MADV()/FALLOCATE() etc on such files?
+> 
+> I would expect the same semantic as regular shmem (memfd_create) except
+> the memory doesn't have _any_ backing storage which makes it
+> unevictable. So the reclaim related madv won't work but there shouldn't
+> be any real reason why e.g. MADV_DONTNEED, WILLNEED, DONT_FORK and
+> others don't work.
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index bdfce7b15621..53c7c96283bd 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -1998,6 +1998,17 @@ config MFD_ROHM_BD71828
- 	  Also included is a Coulomb counter, a real-time clock (RTC), and
- 	  a 32.768 kHz clock gate.
- 
-+config MFD_ROHM_BD957XMUF
-+	tristate "ROHM BD9576MUF and BD9573MUF Power Management ICs"
-+	depends on I2C=y
-+	depends on OF
-+	select REGMAP_I2C
-+	select MFD_CORE
-+	help
-+	  Select this option to get support for the ROHM BD9576MUF and
-+	  BD9573MUF Power Management ICs. BD9576 and BD9573 are primarily
-+	  designed to be used to power R-Car series processors.
-+
- config MFD_STM32_LPTIMER
- 	tristate "Support for STM32 Low-Power Timer"
- 	depends on (ARCH_STM32 && OF) || COMPILE_TEST
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 14fdb188af02..e58fae024bb2 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -262,6 +262,7 @@ obj-$(CONFIG_RAVE_SP_CORE)	+= rave-sp.o
- obj-$(CONFIG_MFD_ROHM_BD70528)	+= rohm-bd70528.o
- obj-$(CONFIG_MFD_ROHM_BD71828)	+= rohm-bd71828.o
- obj-$(CONFIG_MFD_ROHM_BD718XX)	+= rohm-bd718x7.o
-+obj-$(CONFIG_MFD_ROHM_BD957XMUF)	+= rohm-bd9576.o
- obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
- obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
- 
-diff --git a/drivers/mfd/rohm-bd9576.c b/drivers/mfd/rohm-bd9576.c
-new file mode 100644
-index 000000000000..efd439677c9e
---- /dev/null
-+++ b/drivers/mfd/rohm-bd9576.c
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2020 ROHM Semiconductors
-+ *
-+ * ROHM BD9576MUF and BD9573MUF PMIC driver
-+ */
-+
-+#include <linux/i2c.h>
-+#include <linux/interrupt.h>
-+#include <linux/ioport.h>
-+#include <linux/irq.h>
-+#include <linux/mfd/core.h>
-+#include <linux/mfd/rohm-bd957x.h>
-+#include <linux/mfd/rohm-generic.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/regmap.h>
-+#include <linux/types.h>
-+
-+static struct mfd_cell bd9573_mfd_cells[] = {
-+	{ .name = "bd9573-regulator", },
-+	{ .name = "bd9576-wdt", },
-+};
-+
-+static struct mfd_cell bd9576_mfd_cells[] = {
-+	{ .name = "bd9576-regulator", },
-+	{ .name = "bd9576-wdt", },
-+};
-+
-+static const struct regmap_range volatile_ranges[] = {
-+	regmap_reg_range(BD957X_REG_SMRB_ASSERT, BD957X_REG_SMRB_ASSERT),
-+	regmap_reg_range(BD957X_REG_PMIC_INTERNAL_STAT,
-+			 BD957X_REG_PMIC_INTERNAL_STAT),
-+	regmap_reg_range(BD957X_REG_INT_THERM_STAT, BD957X_REG_INT_THERM_STAT),
-+	regmap_reg_range(BD957X_REG_INT_OVP_STAT, BD957X_REG_INT_SYS_STAT),
-+	regmap_reg_range(BD957X_REG_INT_MAIN_STAT, BD957X_REG_INT_MAIN_STAT),
-+};
-+
-+static const struct regmap_access_table volatile_regs = {
-+	.yes_ranges = &volatile_ranges[0],
-+	.n_yes_ranges = ARRAY_SIZE(volatile_ranges),
-+};
-+
-+static struct regmap_config bd957x_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.volatile_table = &volatile_regs,
-+	.max_register = BD957X_MAX_REGISTER,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static int bd957x_i2c_probe(struct i2c_client *i2c,
-+			     const struct i2c_device_id *id)
-+{
-+	int ret;
-+	struct regmap *regmap;
-+	struct mfd_cell *cells;
-+	int num_cells;
-+	unsigned long chip_type;
-+
-+	chip_type = (unsigned long)of_device_get_match_data(&i2c->dev);
-+
-+	switch (chip_type) {
-+	case ROHM_CHIP_TYPE_BD9576:
-+		cells = bd9576_mfd_cells;
-+		num_cells = ARRAY_SIZE(bd9576_mfd_cells);
-+		break;
-+	case ROHM_CHIP_TYPE_BD9573:
-+		cells = bd9573_mfd_cells;
-+		num_cells = ARRAY_SIZE(bd9573_mfd_cells);
-+		break;
-+	default:
-+		dev_err(&i2c->dev, "Unknown device type");
-+		return -EINVAL;
-+	}
-+
-+	regmap = devm_regmap_init_i2c(i2c, &bd957x_regmap);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&i2c->dev, "Failed to initialize Regmap\n");
-+		return PTR_ERR(regmap);
-+	}
-+
-+	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO, cells,
-+				   num_cells, NULL, 0, NULL);
-+	if (ret)
-+		dev_err(&i2c->dev, "Failed to create subdevices\n");
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id bd957x_of_match[] = {
-+	{ .compatible = "rohm,bd9576", .data = (void *)ROHM_CHIP_TYPE_BD9576, },
-+	{ .compatible = "rohm,bd9573", .data = (void *)ROHM_CHIP_TYPE_BD9573, },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, bd957x_of_match);
-+
-+static struct i2c_driver bd957x_drv = {
-+	.driver = {
-+		.name = "rohm-bd957x",
-+		.of_match_table = bd957x_of_match,
-+	},
-+	.probe = &bd957x_i2c_probe,
-+};
-+module_i2c_driver(bd957x_drv);
-+
-+MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
-+MODULE_DESCRIPTION("ROHM BD9576MUF and BD9573MUF Power Management IC driver");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/mfd/rohm-bd957x.h b/include/linux/mfd/rohm-bd957x.h
-new file mode 100644
-index 000000000000..ae59c0f7188d
---- /dev/null
-+++ b/include/linux/mfd/rohm-bd957x.h
-@@ -0,0 +1,59 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/* Copyright (C) 2020 ROHM Semiconductors */
-+
-+#ifndef __LINUX_MFD_BD957X_H__
-+#define __LINUX_MFD_BD957X_H__
-+
-+enum {
-+	BD957X_VD50,
-+	BD957X_VD18,
-+	BD957X_VDDDR,
-+	BD957X_VD10,
-+	BD957X_VOUTL1,
-+	BD957X_VOUTS1,
-+};
-+
-+#define BD957X_REG_SMRB_ASSERT		0x15
-+#define BD957X_REG_PMIC_INTERNAL_STAT	0x20
-+#define BD957X_REG_INT_THERM_STAT	0x23
-+#define BD957X_REG_INT_THERM_MASK	0x24
-+#define BD957X_REG_INT_OVP_STAT		0x25
-+#define BD957X_REG_INT_SCP_STAT		0x26
-+#define BD957X_REG_INT_OCP_STAT		0x27
-+#define BD957X_REG_INT_OVD_STAT		0x28
-+#define BD957X_REG_INT_UVD_STAT		0x29
-+#define BD957X_REG_INT_UVP_STAT		0x2a
-+#define BD957X_REG_INT_SYS_STAT		0x2b
-+#define BD957X_REG_INT_SYS_MASK		0x2c
-+#define BD957X_REG_INT_MAIN_STAT	0x30
-+#define BD957X_REG_INT_MAIN_MASK	0x31
-+
-+#define BD957X_REG_WDT_CONF		0x16
-+
-+#define BD957X_REG_POW_TRIGGER1		0x41
-+#define BD957X_REG_POW_TRIGGER2		0x42
-+#define BD957X_REG_POW_TRIGGER3		0x43
-+#define BD957X_REG_POW_TRIGGER4		0x44
-+#define BD957X_REG_POW_TRIGGERL1	0x45
-+#define BD957X_REG_POW_TRIGGERS1	0x46
-+
-+#define BD957X_REGULATOR_EN_MASK	0xff
-+#define BD957X_REGULATOR_DIS_VAL	0xff
-+
-+#define BD957X_VSEL_REG_MASK		0xff
-+
-+#define BD957X_MASK_VOUT1_TUNE		0x87
-+#define BD957X_MASK_VOUT2_TUNE		0x87
-+#define BD957X_MASK_VOUT3_TUNE		0x1f
-+#define BD957X_MASK_VOUT4_TUNE		0x1f
-+#define BD957X_MASK_VOUTL1_TUNE		0x87
-+
-+#define BD957X_REG_VOUT1_TUNE		0x50
-+#define BD957X_REG_VOUT2_TUNE		0x53
-+#define BD957X_REG_VOUT3_TUNE		0x56
-+#define BD957X_REG_VOUT4_TUNE		0x59
-+#define BD957X_REG_VOUTL1_TUNE		0x5c
-+
-+#define BD957X_MAX_REGISTER		0x61
-+
-+#endif
-diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
-index 4283b5b33e04..58b4f1a0f4af 100644
---- a/include/linux/mfd/rohm-generic.h
-+++ b/include/linux/mfd/rohm-generic.h
-@@ -12,6 +12,8 @@ enum rohm_chip_type {
- 	ROHM_CHIP_TYPE_BD71847,
- 	ROHM_CHIP_TYPE_BD70528,
- 	ROHM_CHIP_TYPE_BD71828,
-+	ROHM_CHIP_TYPE_BD9576,
-+	ROHM_CHIP_TYPE_BD9573,
- 	ROHM_CHIP_TYPE_AMOUNT
- };
- 
--- 
-2.25.4
+Agreed if we don't have hugepage semantics.
 
+>> Is userfaultfd() properly fenced? Or does it even work (doubt)?
+>>
+>> How does it behave if I mmap(FIXED) something in between?
+>> In which granularity can I do that (->page-size?)?
+> 
+> Again, nothing really exceptional here. This is a mapping like any
+> other from address space manipulation POV.
+
+Agreed with the PTE mapping approach.
+
+> 
+>> What are other granularity restrictions (->page size)?
+>>
+>> Don't want to open a big discussion here, just some random thoughts.
+>> Maybe it has all been already figured out and most of the answers
+>> above are "Fails with -EINVAL".
+> 
+> I think that the behavior should be really in sync with shmem semantic
+> as much as possible. Most operations should simply work with an
+> aditional direct map manipulation. There is no real reason to be
+> special. Some functionality might be missing, e.g. hugetlb support but
+> that has been traditionally added on top of shmem interface so nothing
+> really new here.
+
+Agreed!
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+Thanks,
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+David / dhildenb
+
