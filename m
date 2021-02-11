@@ -2,176 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D5F318D99
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004A2318E37
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhBKOr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 09:47:56 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8468 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230483AbhBKOjo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:39:44 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11BEWG3A059644;
-        Thu, 11 Feb 2021 09:38:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=6wqPoNT+YWRNhA6XxX5OOG/vz4Y0AUZ5SY3AwKfclKY=;
- b=dsRgkDGiH2343Rp5FmsqnheEWyE5z21HwWdqYRk8+GMTgAoeUZoS6QaTKysfhQrHbkjD
- H48FUeftWVVGh7hOWNJb0rdlYMQPsRs+y6sh44isGx99FxiO93IQFYh7VQs9X/KCSmzx
- MVg4y8jaXs8Xkg197cvrUo5L11D472ikxBLN5jf6CPe9z7eLe+fBndyeItAu1inbwMn7
- Bkry6BSX/cZ4hN49LAuwUOMfKAhjhGeml8KWS32kW9v50nAbIXGYkLnyWLM0plDPg0pi
- Qo6nksbr5NAcbyoBuHWhQF00gCTB9ZJGjklqqVBWaTAIoXeGmPS8rb1C4m074WnW1con oQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36n6dmrfs2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 09:38:45 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11BEWhZ0061795;
-        Thu, 11 Feb 2021 09:38:42 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36n6dmrfg3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 09:38:42 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11BEX3HW029900;
-        Thu, 11 Feb 2021 14:38:36 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma02wdc.us.ibm.com with ESMTP id 36hjr9x80y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 14:38:36 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11BEcaQg31064418
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 14:38:36 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 675B8112062;
-        Thu, 11 Feb 2021 14:38:36 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DF78D112061;
-        Thu, 11 Feb 2021 14:38:35 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.203.235])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Feb 2021 14:38:35 +0000 (GMT)
-Subject: Re: [PATCH 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, kwankhede@nvidia.com, pbonzini@redhat.com,
-        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
-References: <20210209194830.20271-1-akrowiak@linux.ibm.com>
- <20210209194830.20271-2-akrowiak@linux.ibm.com>
- <20210210115334.46635966.cohuck@redhat.com>
- <6e2842e4-334d-6592-a781-5b85ec0ed13c@linux.ibm.com>
- <20210211132306.64249174.cohuck@redhat.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <357fe77e-eee3-9e83-d7bf-e59edf814045@linux.ibm.com>
-Date:   Thu, 11 Feb 2021 09:38:35 -0500
+        id S230476AbhBKPXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:23:16 -0500
+Received: from m12-13.163.com ([220.181.12.13]:48941 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230363AbhBKO5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 09:57:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=Q/+NP
+        hN+99lUgbabLKtXpk35WqE8GnVeyhv0MG+hTYY=; b=W3b4NGNPzNlQV2ms/tD3v
+        jjCEhE8qDKNEEMUbAvL0QfgGOvgQIUh9D8v/EWhDXhxgee7w72zNdLOwLHrcntDK
+        kNspimnZtNlCq49QIiwXxhIHUJMIGoDU7tmAsnfJnPwvQ4+68KtBYBCEqy0NvHIu
+        eNdIxdJ6tZJD1nSMwK2hYQ=
+Received: from [192.168.31.184] (unknown [61.152.197.77])
+        by smtp9 (Coremail) with SMTP id DcCowACH5o5uDiVgMq9qew--.26070S2;
+        Thu, 11 Feb 2021 19:01:03 +0800 (CST)
+Subject: Re: [PATCH] kswapd: no need reclaim cma pages triggered by unmovable
+ allocation
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        rostedt@goodmis.org, mingo@redhat.com, vbabka@suse.cz,
+        rientjes@google.com, willy@linux.intel.com,
+        pankaj.gupta.linux@gmail.com, bhe@redhat.com, ying.huang@intel.com,
+        minchan@kernel.org, ruxian.feng@transsion.com,
+        kai.cheng@transsion.com, zhao.xu@transsion.com,
+        yunfeng.lan@transsion.com, zhouxianrong@tom.com,
+        zhou xianrong <xianrong.zhou@transsion.com>
+References: <20210209082313.21969-1-xianrong_zhou@163.com>
+ <YCJUnWLlcSGoR1sT@dhcp22.suse.cz>
+ <bc294334-eec3-f755-cb51-0e302e82809b@163.com>
+ <YCPcRj/e9NdQIV9S@dhcp22.suse.cz>
+From:   zhou xianrong <xianrong_zhou@163.com>
+Message-ID: <d692865c-82ae-103f-b48e-9b7682de28b6@163.com>
+Date:   Thu, 11 Feb 2021 19:01:02 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210211132306.64249174.cohuck@redhat.com>
+In-Reply-To: <YCPcRj/e9NdQIV9S@dhcp22.suse.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_06:2021-02-10,2021-02-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 clxscore=1015
- spamscore=0 mlxlogscore=999 bulkscore=0 phishscore=0 impostorscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102110122
+X-CM-TRANSID: DcCowACH5o5uDiVgMq9qew--.26070S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7KryfJF4rKrykGryfGr1kGrg_yoW8JFyxpF
+        Z3W3WUKa1kJFW5JrnFvw1FgFyIkw48Kry3J3WUurnIv3sxCrya9395Cr1j9FyFyr1UAF1Y
+        vrWjga47Xr1kZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNUUbUUUUU=
+X-Originating-IP: [61.152.197.77]
+X-CM-SenderInfo: h0ld02prqjs6xkrxqiywtou0bp/xtbBUQ82z1aD95lSwQAAsP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 2/11/21 7:23 AM, Cornelia Huck wrote:
-> On Wed, 10 Feb 2021 15:34:24 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> On 2/10/21 5:53 AM, Cornelia Huck wrote:
->>> On Tue,  9 Feb 2021 14:48:30 -0500
->>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->>>   
->>>> This patch fixes a circular locking dependency in the CI introduced by
->>>> commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
->>>> pointer invalidated"). The lockdep only occurs when starting a Secure
->>>> Execution guest. Crypto virtualization (vfio_ap) is not yet supported for
->>>> SE guests; however, in order to avoid CI errors, this fix is being
->>>> provided.
+On 2021/2/10 下午9:14, Michal Hocko wrote:
+> On Wed 10-02-21 12:07:57, zhou xianrong wrote:
+>> On 2021/2/9 下午5:23, Michal Hocko wrote:
+>>> On Tue 09-02-21 16:23:13, zhou wrote:
+>>>> From: zhou xianrong <xianrong.zhou@transsion.com>
 >>>>
->>>> The circular lockdep was introduced when the masks in the guest's APCB
->>>> were taken under the matrix_dev->lock. While the lock is definitely
->>>> needed to protect the setting/unsetting of the KVM pointer, it is not
->>>> necessarily critical for setting the masks, so this will not be done under
->>>> protection of the matrix_dev->lock.
+>>>> For purpose of better migration cma pages are allocated after
+>>>> failure movalbe allocations and are used normally for file pages
+>>>> or anonymous pages.
 >>>>
->>>> Fixes: f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated")
->>>> Cc: stable@vger.kernel.org
->>>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->>>> ---
->>>>    drivers/s390/crypto/vfio_ap_ops.c | 75 ++++++++++++++++++-------------
->>>>    1 file changed, 45 insertions(+), 30 deletions(-)
+>>>> In reclaim path so many cma pages if configurated are reclaimed
+>>>> from lru lists in kswapd mainly or direct reclaim triggered by
+>>>> unmovable or reclaimable allocations. But these cma pages can not
+>>>> be used by original unmovable or reclaimable allocations. So the
+>>>> reclaim are unnecessary.
 >>>>
->>>>    static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->>>>    {
->>>> -	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
->>>> -	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->>>> -	vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
->>>> -	kvm_put_kvm(matrix_mdev->kvm);
->>>> -	matrix_mdev->kvm = NULL;
->>>> +	if (matrix_mdev->kvm) {
->>> If you're doing setting/unsetting under matrix_dev->lock, is it
->>> possible that matrix_mdev->kvm gets unset between here and the next
->>> line, as you don't hold the lock?
->> That is highly unlikely because the only place the matrix_mdev->kvm
->> pointer is cleared is in this function which is called from only two
->> places: the notifier that handles the VFIO_GROUP_NOTIFY_SET_KVM
->> notification when the KVM pointer is cleared; the vfio_ap_mdev_release()
->> function which is called when the mdev fd is closed (i.e., when the guest
->> is shut down). The fact is, with the only end-to-end implementation
->> currently available, the notifier callback is never invoked to clear
->> the KVM pointer because the vfio_ap_mdev_release callback is
->> invoked first and it unregisters the notifier callback.
->>
->> Having said that, I suppose there is no guarantee that there will not
->> be different userspace clients in the future that do things in a
->> different order. At the very least, it wouldn't hurt to protect against
->> that as you suggest below.
-> Yes, if userspace is able to use the interfaces in the certain way, we
-> should always make sure that nothing bad happens if it does so, even if
-> known userspace applications are well-behaved.
->
-> [Can we make an 'evil userspace' test program, maybe? The hardware
-> dependency makes this hard to run, though.]
-
-Of course it is possible to create such a test program, but off the
-top of my head, I can't come up with an algorithm that would
-result in the scenario you have laid out. I haven't dabbled in the QEMU
-space in quite some time; so, there would also be a bit of a re-learning
-curve. I'm not sure it would be worth the effort to take this on given
-how unlikely it is this scenario can happen, but I will take it into
-consideration as it is a good idea.
-
->
->>> Maybe you could
->>> - grab a reference to kvm while holding the lock
->>> - call the mask handling functions with that kvm reference
->>> - lock again, drop the reference, and do the rest of the processing?
->>>   
->>>> +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
->>>> +		mutex_lock(&matrix_dev->lock);
->>>> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->>>> +		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
->>>> +		kvm_put_kvm(matrix_mdev->kvm);
->>>> +		matrix_mdev->kvm = NULL;
->>>> +		mutex_unlock(&matrix_dev->lock);
->>>> +	}
->>>>    }
+>>>> In a same system if the cma pages were configurated to large then
+>>>> more failture unmovable (vmalloc etc.) or reclaimable (slab etc.)
+>>>> allocations are arised and then more kswapd rounds are triggered
+>>>> and then more cma pages are reclaimed.
+>>> Could you be more specific? Do you have any numbers and an example
+>>> configuration when this is visible?
+>> It should be implicit.
+> Right but the scale of the problem is an important part of _any_ patch
+> justification.
+Sorry. The relative description is  not suitable and should be removed.
 
