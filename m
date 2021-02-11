@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C7D318FFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F05E319003
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhBKQaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:30:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54162 "EHLO mail.kernel.org"
+        id S231797AbhBKQa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:30:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231200AbhBKPZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:25:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A33D264EAA;
-        Thu, 11 Feb 2021 15:03:26 +0000 (UTC)
+        id S230469AbhBKPYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:24:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 822E064EC0;
+        Thu, 11 Feb 2021 15:03:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613055807;
-        bh=V1cGGQRVwnMxGoASW1ReOzrD9iGH4FBinLv7pYIAjKk=;
+        s=korg; t=1613055818;
+        bh=TCV7KUcTSr1en8/CCzAjSD+7rg3xTxSgUfFS669nnVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1NqhjOOwHc1TmO2hTxbHlvb6pnE7xKsccMNQxgUF962wwq5nak576ntz2brhhm6IK
-         YBZ86B7ZvSnjHiwmeTdgGyUAxME5Mecpy4ZpHA9eXz/sStYNwRuS9l/e+k0C/C9k4R
-         zX4xT57YFi0Qrxk9dpzFdXsH4HdpxC6VotE2QYhI=
+        b=WxXc628mxBkKqT8JsFkPy4z6kcRFxhkCo4YA56PGebBSFxIpU5xNLHBO0yLCMGci0
+         OK1fDOse/0NM85vrkX1vWrLuUWk6IchpItvJdxc6X8Oz5nVcuc6TYUYVIu3wrwlwHK
+         xz8IO3fFjPOkyBNTVSt4zqW+3nDBHVUHfpZAX/GE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: [PATCH 5.10 15/54] io_uring: reinforce cancel on flush during exit
-Date:   Thu, 11 Feb 2021 16:01:59 +0100
-Message-Id: <20210211150153.538316844@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+b2bf2652983d23734c5c@syzkaller.appspotmail.com,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 19/54] af_key: relax availability checks for skb size calculation
+Date:   Thu, 11 Feb 2021 16:02:03 +0100
+Message-Id: <20210211150153.714973166@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
 References: <20210211150152.885701259@linuxfoundation.org>
@@ -39,40 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Cong Wang <cong.wang@bytedance.com>
 
-[ Upstream commit 3a7efd1ad269ccaf9c1423364d97c9661ba6dafa ]
+[ Upstream commit afbc293add6466f8f3f0c3d944d85f53709c170f ]
 
-What 84965ff8a84f0 ("io_uring: if we see flush on exit, cancel related tasks")
-really wants is to cancel all relevant REQ_F_INFLIGHT requests reliably.
-That can be achieved by io_uring_cancel_files(), but we'll miss it
-calling io_uring_cancel_task_requests(files=NULL) from io_uring_flush(),
-because it will go through __io_uring_cancel_task_requests().
+xfrm_probe_algs() probes kernel crypto modules and changes the
+availability of struct xfrm_algo_desc. But there is a small window
+where ealg->available and aalg->available get changed between
+count_ah_combs()/count_esp_combs() and dump_ah_combs()/dump_esp_combs(),
+in this case we may allocate a smaller skb but later put a larger
+amount of data and trigger the panic in skb_put().
 
-Just always call io_uring_cancel_files() during cancel, it's good enough
-for now.
+Fix this by relaxing the checks when counting the size, that is,
+skipping the test of ->available. We may waste some memory for a few
+of sizeof(struct sadb_comb), but it is still much better than a panic.
 
-Cc: stable@vger.kernel.org # 5.9+
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot+b2bf2652983d23734c5c@syzkaller.appspotmail.com
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/key/af_key.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -8692,10 +8692,9 @@ static void io_uring_cancel_task_request
- 	io_cancel_defer_files(ctx, task, files);
- 	io_cqring_overflow_flush(ctx, true, task, files);
+diff --git a/net/key/af_key.c b/net/key/af_key.c
+index c12dbc51ef5fe..ef9b4ac03e7b7 100644
+--- a/net/key/af_key.c
++++ b/net/key/af_key.c
+@@ -2902,7 +2902,7 @@ static int count_ah_combs(const struct xfrm_tmpl *t)
+ 			break;
+ 		if (!aalg->pfkey_supported)
+ 			continue;
+-		if (aalg_tmpl_set(t, aalg) && aalg->available)
++		if (aalg_tmpl_set(t, aalg))
+ 			sz += sizeof(struct sadb_comb);
+ 	}
+ 	return sz + sizeof(struct sadb_prop);
+@@ -2920,7 +2920,7 @@ static int count_esp_combs(const struct xfrm_tmpl *t)
+ 		if (!ealg->pfkey_supported)
+ 			continue;
  
-+	io_uring_cancel_files(ctx, task, files);
- 	if (!files)
- 		__io_uring_cancel_task_requests(ctx, task);
--	else
--		io_uring_cancel_files(ctx, task, files);
+-		if (!(ealg_tmpl_set(t, ealg) && ealg->available))
++		if (!(ealg_tmpl_set(t, ealg)))
+ 			continue;
  
- 	if ((ctx->flags & IORING_SETUP_SQPOLL) && ctx->sq_data) {
- 		atomic_dec(&task->io_uring->in_idle);
+ 		for (k = 1; ; k++) {
+@@ -2931,7 +2931,7 @@ static int count_esp_combs(const struct xfrm_tmpl *t)
+ 			if (!aalg->pfkey_supported)
+ 				continue;
+ 
+-			if (aalg_tmpl_set(t, aalg) && aalg->available)
++			if (aalg_tmpl_set(t, aalg))
+ 				sz += sizeof(struct sadb_comb);
+ 		}
+ 	}
+-- 
+2.27.0
+
 
 
