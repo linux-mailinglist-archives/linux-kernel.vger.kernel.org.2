@@ -2,166 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E06319038
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F0231903B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhBKQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbhBKPdF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:33:05 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498F6C061797
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:32:25 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d13so3506361plg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:32:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QgFTmgXQGiqIKd8Yj0TUSai/AxpTkOZablyty8uKeWs=;
-        b=fe9rmSwpPG6/cICUyh5vAqXFbE0rZ2ghlkJ1JD599XlNP1DSCFLWB94x6hp/zCsL3J
-         sta5FsZwxZuxs9EGz6xDKMn3wnwLoqaClFVGiLnCLtQ389h4qulfwQjNVNw3Oj0telzO
-         Pa09qtrpl7PunI9Su2hm7p1bffkTzRmn+eKMTGFm1G36JI5vrj++ds2/8S6QhRdupyJk
-         Mur4RhLxWMQ9q9jHUMEzkXtrEF+cOdREcRQdpnxqOP/avNd+O8SZMJ13XHJW+6u14Ko/
-         QxcN7XvyYkhpaUPsREKxMwvD2KELNdbJOwybrJZNmFPV8qMolK6frgmDAVPStClu1J2H
-         OdcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QgFTmgXQGiqIKd8Yj0TUSai/AxpTkOZablyty8uKeWs=;
-        b=XeAS5cZqJnebxzQgb4iZzHistCwaz40lxAoD8P436Jd8PDZ7uyjrSWQpMQzHMR9Vcz
-         6AlroprroVtN8eXBfvD3gZhqSP0OFGmjgMMeF+UdhmzpatYPLRZpivMFI3uFEihHNB7L
-         rj31IND64iaNwmzJJa74GTM7OOLBLMuXcwlbrGUBrSo3UhUT2pu5oqbLPQ5+AzfeYYQp
-         R3Rh5GEBzIvdoYZxygiCtp6dZkVa2muJGwh12g7bMhwXBpDQGnUC8TAOE62n17flqykz
-         RQF93nROTdC4TMf6Jp9rq5opunuHQ4O8SsbJ3dgUzdMrTNMZhNm62VfJKi2Zo+1X4r7S
-         HDKg==
-X-Gm-Message-State: AOAM533lhVZWu+n4OKlevolvtD6VCRfvcUiJRHKrRXz73ru/sCCtlCvZ
-        mg67BSn6j5ldCOI8Ot9lZsAg
-X-Google-Smtp-Source: ABdhPJwv7fLaLq77pnuho7qi6QrDXBBzzM3uo0EsfxioJXGCbIhZdJv8ths0icJyjaWvsWcKadCoxg==
-X-Received: by 2002:a17:902:b285:b029:e1:5b44:454 with SMTP id u5-20020a170902b285b02900e15b440454mr8152642plr.54.1613057544628;
-        Thu, 11 Feb 2021 07:32:24 -0800 (PST)
-Received: from work ([103.66.79.29])
-        by smtp.gmail.com with ESMTPSA id e7sm4656075pfd.169.2021.02.11.07.32.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 11 Feb 2021 07:32:24 -0800 (PST)
-Date:   Thu, 11 Feb 2021 21:02:20 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     linux@armlinux.org.uk, will@kernel.org, arnd@arndb.de
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: kernel: Fix interrupted SMC calls
-Message-ID: <20210211153220.GB22704@work>
-References: <20210118181040.51238-1-manivannan.sadhasivam@linaro.org>
- <20210201123602.GD108653@thinkpad>
+        id S232051AbhBKQmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:42:53 -0500
+Received: from foss.arm.com ([217.140.110.172]:53486 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230013AbhBKPex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:34:53 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82F0C113E;
+        Thu, 11 Feb 2021 07:34:06 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F3F03F73D;
+        Thu, 11 Feb 2021 07:34:04 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH v13 0/7] arm64: ARMv8.5-A: MTE: Add async mode support
+Date:   Thu, 11 Feb 2021 15:33:46 +0000
+Message-Id: <20210211153353.29094-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201123602.GD108653@thinkpad>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Arnd
+This patchset implements the asynchronous mode support for ARMv8.5-A
+Memory Tagging Extension (MTE), which is a debugging feature that allows
+to detect with the help of the architecture the C and C++ programmatic
+memory errors like buffer overflow, use-after-free, use-after-return, etc.
 
-On Mon, Feb 01, 2021 at 06:06:07PM +0530, Manivannan Sadhasivam wrote:
-> Hi,
-> 
-> On Mon, Jan 18, 2021 at 11:40:40PM +0530, Manivannan Sadhasivam wrote:
-> > On Qualcomm ARM32 platforms, the SMC call can return before it has
-> > completed. If this occurs, the call can be restarted, but it requires
-> > using the returned session ID value from the interrupted SMC call.
-> > 
-> > The ARM32 SMCC code already has the provision to add platform specific
-> > quirks for things like this. So let's make use of it and add the
-> > Qualcomm specific quirk (ARM_SMCCC_QUIRK_QCOM_A6) used by the QCOM_SCM
-> > driver.
-> > 
-> > This change is similar to the below one added for ARM64 a while ago:
-> > commit 82bcd087029f ("firmware: qcom: scm: Fix interrupted SCM calls")
-> > 
-> > Without this change, the Qualcomm ARM32 platforms like SDX55 will return
-> > -EINVAL for SMC calls used for modem firmware loading and validation.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> A gentle ping on this patch!
-> 
+MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+(Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+subset of its address space that is multiple of a 16 bytes granule. MTE
+is based on a lock-key mechanism where the lock is the tag associated to
+the physical memory and the key is the tag associated to the virtual
+address.
+When MTE is enabled and tags are set for ranges of address space of a task,
+the PE will compare the tag related to the physical memory with the tag
+related to the virtual address (tag check operation). Access to the memory
+is granted only if the two tags match. In case of mismatch the PE will raise
+an exception.
 
-Ping again!
+The exception can be handled synchronously or asynchronously. When the
+asynchronous mode is enabled:
+  - Upon fault the PE updates the TFSR_EL1 register.
+  - The kernel detects the change during one of the following:
+    - Context switching
+    - Return to user/EL0
+    - Kernel entry from EL1
+    - Kernel exit to EL1
+  - If the register has been updated by the PE the kernel clears it and
+    reports the error.
 
-Thanks,
-Mani
+The series is based on linux-next/akpm.
 
-> Thanks,
-> Mani
-> 
-> > ---
-> > 
-> > Changes in v2:
-> > 
-> > * Preserved callee saved registers and used the registers r4, r5 which
-> >   are getting pushed onto the stack.
-> > 
-> >  arch/arm/kernel/asm-offsets.c |  3 +++
-> >  arch/arm/kernel/smccc-call.S  | 11 ++++++++++-
-> >  2 files changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-> > index a1570c8bab25..2e2fa6fc2d4f 100644
-> > --- a/arch/arm/kernel/asm-offsets.c
-> > +++ b/arch/arm/kernel/asm-offsets.c
-> > @@ -23,6 +23,7 @@
-> >  #include <asm/vdso_datapage.h>
-> >  #include <asm/hardware/cache-l2x0.h>
-> >  #include <linux/kbuild.h>
-> > +#include <linux/arm-smccc.h>
-> >  #include "signal.h"
-> >  
-> >  /*
-> > @@ -147,6 +148,8 @@ int main(void)
-> >    DEFINE(SLEEP_SAVE_SP_PHYS,	offsetof(struct sleep_save_sp, save_ptr_stash_phys));
-> >    DEFINE(SLEEP_SAVE_SP_VIRT,	offsetof(struct sleep_save_sp, save_ptr_stash));
-> >  #endif
-> > +  DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
-> > +  DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
-> >    BLANK();
-> >    DEFINE(DMA_BIDIRECTIONAL,	DMA_BIDIRECTIONAL);
-> >    DEFINE(DMA_TO_DEVICE,		DMA_TO_DEVICE);
-> > diff --git a/arch/arm/kernel/smccc-call.S b/arch/arm/kernel/smccc-call.S
-> > index 00664c78faca..931df62a7831 100644
-> > --- a/arch/arm/kernel/smccc-call.S
-> > +++ b/arch/arm/kernel/smccc-call.S
-> > @@ -3,7 +3,9 @@
-> >   * Copyright (c) 2015, Linaro Limited
-> >   */
-> >  #include <linux/linkage.h>
-> > +#include <linux/arm-smccc.h>
-> >  
-> > +#include <asm/asm-offsets.h>
-> >  #include <asm/opcodes-sec.h>
-> >  #include <asm/opcodes-virt.h>
-> >  #include <asm/unwind.h>
-> > @@ -27,7 +29,14 @@ UNWIND(	.fnstart)
-> >  UNWIND(	.save	{r4-r7})
-> >  	ldm	r12, {r4-r7}
-> >  	\instr
-> > -	pop	{r4-r7}
-> > +	ldr	r4, [sp, #36]
-> > +	cmp	r4, #0
-> > +	beq	1f			// No quirk structure
-> > +	ldr     r5, [r4, #ARM_SMCCC_QUIRK_ID_OFFS]
-> > +	cmp     r5, #ARM_SMCCC_QUIRK_QCOM_A6
-> > +	bne	1f			// No quirk present
-> > +	str	r6, [r4, #ARM_SMCCC_QUIRK_STATE_OFFS]
-> > +1:	pop	{r4-r7}
-> >  	ldr	r12, [sp, #(4 * 4)]
-> >  	stm	r12, {r0-r3}
-> >  	bx	lr
-> > -- 
-> > 2.25.1
-> > 
+To simplify the testing a tree with the new patches on top has been made
+available at [1].
+
+[1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v11.async.akpm
+
+Changes:
+--------
+v13:
+  - Rebase on the latest linux-next/akpm.
+  - Address review comments.
+v12:
+  - Fixed a bug affecting kernel functions allowed to read
+    beyond buffer boundaries.
+  - Added support for save/restore of TFSR_EL1 register
+    during suspend/resume operations.
+  - Rebased on latest linux-next/akpm.
+v11:
+  - Added patch that disables KUNIT tests in async mode
+v10:
+  - Rebase on the latest linux-next/akpm
+  - Address review comments.
+v9:
+  - Rebase on the latest linux-next/akpm
+  - Address review comments.
+v8:
+  - Address review comments.
+v7:
+  - Fix a warning reported by kernel test robot. This
+    time for real.
+v6:
+  - Drop patches that forbid KASAN KUNIT tests when async
+    mode is enabled.
+  - Fix a warning reported by kernel test robot.
+  - Address review comments.
+v5:
+  - Rebase the series on linux-next/akpm.
+  - Forbid execution for KASAN KUNIT tests when async
+    mode is enabled.
+  - Dropped patch to inline mte_assign_mem_tag_range().
+  - Address review comments.
+v4:
+  - Added support for kasan.mode (sync/async) kernel
+    command line parameter.
+  - Addressed review comments.
+v3:
+  - Exposed kasan_hw_tags_mode to convert the internal
+    KASAN represenetation.
+  - Added dsb() for kernel exit paths in arm64.
+  - Addressed review comments.
+v2:
+  - Fixed a compilation issue reported by krobot.
+  - General cleanup.
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Branislav Rankov <Branislav.Rankov@arm.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+Andrey Konovalov (1):
+  kasan: don't run tests in async mode
+
+Vincenzo Frascino (6):
+  arm64: mte: Add asynchronous mode support
+  kasan: Add KASAN mode kernel parameter
+  kasan: Add report for async mode
+  arm64: mte: Enable TCO in functions that can read beyond buffer limits
+  arm64: mte: Enable async tag check fault
+  arm64: mte: Report async tag faults before suspend
+
+ Documentation/dev-tools/kasan.rst       |  9 +++
+ arch/arm64/include/asm/memory.h         |  3 +-
+ arch/arm64/include/asm/mte-kasan.h      |  9 ++-
+ arch/arm64/include/asm/mte.h            | 36 ++++++++++
+ arch/arm64/include/asm/uaccess.h        | 24 +++++++
+ arch/arm64/include/asm/word-at-a-time.h |  4 ++
+ arch/arm64/kernel/entry-common.c        |  6 ++
+ arch/arm64/kernel/mte.c                 | 91 ++++++++++++++++++++++++-
+ arch/arm64/kernel/suspend.c             |  3 +
+ include/linux/kasan.h                   |  6 ++
+ lib/test_kasan.c                        |  6 +-
+ mm/kasan/hw_tags.c                      | 52 +++++++++++++-
+ mm/kasan/kasan.h                        |  7 +-
+ mm/kasan/report.c                       | 17 ++++-
+ 14 files changed, 262 insertions(+), 11 deletions(-)
+
+-- 
+2.30.0
+
