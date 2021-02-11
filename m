@@ -2,83 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CB1318BF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD9F318BF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhBKNXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:23:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230445AbhBKNBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:01:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C44664E2F;
-        Thu, 11 Feb 2021 13:00:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613048453;
-        bh=R1wXfHp/mtHayjhLTRFV8J+RaQB8xzJF+ECpMM3qItM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T87s8o56OYCjh7+2IySoSf6EQzX/8ghjZ9UEoEO8tL3PT5O/iMYBB6llgADANOEcv
-         veO7DEsSwUQ+cciKl7+wJvOIp7q/FXfpIOgVYudhHYxDo8UX+BV0KUoN1JWCKSmoiY
-         w5GN1sGoLrMTXKprbTvrp9IuvP4D6QUg646ZKY8w=
-Date:   Thu, 11 Feb 2021 14:00:51 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     corbet@lwn.net, rafael@kernel.org, khilman@kernel.org,
-        ulf.hansson@linaro.org, len.brown@intel.com, lenb@kernel.org,
-        pavel@ucw.cz, mturquette@baylibre.com, sboyd@kernel.org,
-        robh+dt@kernel.org, frowand.list@gmail.com, maz@kernel.org,
-        tglx@linutronix.de, saravanak@google.com,
-        nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
-        m.szyprowski@samsung.com, geert@linux-m68k.org,
-        kernel-team@android.com
-Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
-Message-ID: <YCUqgwrCREvPqEz+@kroah.com>
-References: <20210205222644.2357303-9-saravanak@google.com>
- <20210210114435.122242-1-tudor.ambarus@microchip.com>
- <20210210114435.122242-2-tudor.ambarus@microchip.com>
+        id S231362AbhBKNYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:24:01 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:50083 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231685AbhBKNCW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:02:22 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lABam-0004CX-TI; Thu, 11 Feb 2021 13:01:09 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next][V2] fs/jfs: fix potential integer overflow on shift of a int
+Date:   Thu, 11 Feb 2021 13:01:08 +0000
+Message-Id: <20210211130108.171493-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210114435.122242-2-tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:44:35PM +0200, Tudor Ambarus wrote:
-> This is a follow-up for:
-> commit 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
-> 
-> The above commit updated the deprecated of_clk_add_provider(),
-> but missed to update the preferred of_clk_add_hw_provider().
-> Update it now.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/clk/clk.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index 27ff90eacb1f..9370e4dfecae 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -4594,6 +4594,8 @@ int of_clk_add_hw_provider(struct device_node *np,
->  	if (ret < 0)
->  		of_clk_del_provider(np);
->  
-> +	fwnode_dev_initialized(&np->fwnode, true);
-> +
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(of_clk_add_hw_provider);
-> -- 
-> 2.25.1
-> 
+From: Colin Ian King <colin.king@canonical.com>
 
-Any objection for me taking this in my tree as well?
+The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
+arithmetic and then assigned to a signed 64 bit integer. In the case where
+l2nb is 32 or more this can lead to an overflow.  Avoid this by shifting
+the value 1LL instead.
 
-thanks,
+Addresses-Coverity: ("Uninitentional integer overflow")
+Fixes: b40c2e665cd5 ("fs/jfs: TRIM support for JFS Filesystem")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
 
-greg k-h
+V2: shift 1LL rather than using BIT_ULL macro as suggested by
+    Dave Kleikamp.
+
+---
+ fs/jfs/jfs_dmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index 94b7c1cb5ceb..7aee15608619 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -1656,7 +1656,7 @@ s64 dbDiscardAG(struct inode *ip, int agno, s64 minlen)
+ 		} else if (rc == -ENOSPC) {
+ 			/* search for next smaller log2 block */
+ 			l2nb = BLKSTOL2(nblocks) - 1;
+-			nblocks = 1 << l2nb;
++			nblocks = 1LL << l2nb;
+ 		} else {
+ 			/* Trim any already allocated blocks */
+ 			jfs_error(bmp->db_ipbmap->i_sb, "-EIO\n");
+-- 
+2.30.0
+
