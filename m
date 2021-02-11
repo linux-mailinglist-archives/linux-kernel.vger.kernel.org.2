@@ -2,161 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73918318BC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 036D3318BC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhBKNQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:16:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54359 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231640AbhBKM5W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:57:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613048131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S229845AbhBKNPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:15:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38904 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231487AbhBKM4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 07:56:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613048127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DqLEmy352PVSSCnB0NInkDsBA5ICJ08d95eqRxne6SQ=;
-        b=K7seAH5wn60rn4i2Y1fLhIkX9GUFtqVQHJFxX6qRdDWqGDNx0RRrW2VUj8c8I/4FzeC9kz
-        bCi3pSBpE/G48VxbrAFgjbb9beTs5zPuGNylkprSC23wqWCln9XUNJb1ClxAqdlQl6e4wS
-        Lz5eSybEbNXbcy/S1Wm9QBWElZEyEUk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-OloXy9pNNVqG9SOeByEbFg-1; Thu, 11 Feb 2021 07:55:26 -0500
-X-MC-Unique: OloXy9pNNVqG9SOeByEbFg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 23995425C6;
-        Thu, 11 Feb 2021 12:55:12 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 140F67D55D;
-        Thu, 11 Feb 2021 12:55:00 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 13:54:59 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Florian Westphal <fw@strlen.de>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        brouer@redhat.com
-Subject: Re: [PATCH v4 net-next 08/11] skbuff: introduce
- {,__}napi_build_skb() which reuses NAPI cache heads
-Message-ID: <20210211135459.075d954b@carbon>
-In-Reply-To: <20210210162732.80467-9-alobakin@pm.me>
-References: <20210210162732.80467-1-alobakin@pm.me>
-        <20210210162732.80467-9-alobakin@pm.me>
+        bh=tDHyixPZc/hmwJlqM4MC2vKvRBa6s3jBQvaQGvjSoUI=;
+        b=F3z/vrIEVhUfZGwqeG2qCI7qxZnhkSJOrLREdCB8mhjpdG2qgKYyEo/nzk/zyCtGBziZ3L
+        /LS8n/HXbEMlAfueoiMfHhuvmIwReGag+vKuB4IB5Cxs0Nc55uMLZzYyWww2FjRuL2piMz
+        X9XhAl7iTyZD3KcfraFKLVultoWxxi8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D483AAC69;
+        Thu, 11 Feb 2021 12:55:26 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 13:55:25 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH v5 2/4] lib: vsprintf: Fix handling of number field
+ widths in vsscanf
+Message-ID: <YCUpPUDIw7AydY9N@alley>
+References: <20210208140154.10964-1-rf@opensource.cirrus.com>
+ <20210208140154.10964-2-rf@opensource.cirrus.com>
+ <YCFWRp8a0sw3mUSI@smile.fi.intel.com>
+ <2f9f57a3-f0d6-1e07-36f9-682d65b481ad@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f9f57a3-f0d6-1e07-36f9-682d65b481ad@opensource.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 16:30:23 +0000
-Alexander Lobakin <alobakin@pm.me> wrote:
-
-> Instead of just bulk-flushing skbuff_heads queued up through
-> napi_consume_skb() or __kfree_skb_defer(), try to reuse them
-> on allocation path.
-
-Maybe you are already aware of this dynamics, but high speed NICs will
-usually run the TX "cleanup" (opportunistic DMA-completion) in the napi
-poll function call, and often before processing RX packets. Like
-ixgbe_poll[1] calls ixgbe_clean_tx_irq() before ixgbe_clean_rx_irq().
-
-If traffic is symmetric (or is routed-back same interface) then this
-SKB recycle scheme will be highly efficient. (I had this part of my
-initial patchset and tested it on ixgbe).
-
-[1] https://elixir.bootlin.com/linux/v5.11-rc7/source/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c#L3149
-
-> If the cache is empty on allocation, bulk-allocate the first
-> 16 elements, which is more efficient than per-skb allocation.
-> If the cache is full on freeing, bulk-wipe the second half of
-> the cache (32 elements).
-> This also includes custom KASAN poisoning/unpoisoning to be
-> double sure there are no use-after-free cases.
+On Mon 2021-02-08 17:38:29, Richard Fitzgerald wrote:
+> On 08/02/2021 15:18, Andy Shevchenko wrote:
+> > On Mon, Feb 08, 2021 at 02:01:52PM +0000, Richard Fitzgerald wrote:
+> > > The existing code attempted to handle numbers by doing a strto[u]l(),
+> > > ignoring the field width, and then repeatedly dividing to extract the
+> > > field out of the full converted value. If the string contains a run of
+> > > valid digits longer than will fit in a long or long long, this would
+> > > overflow and no amount of dividing can recover the correct value.
+> > > 
+> > > -unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int base)
+> > > +static unsigned long long simple_strntoull(const char *startp, size_t max_chars,
+> > > +					   char **endp, unsigned int base)
+> > >   {
+> > > -	unsigned long long result;
+> > > +	const char *cp;
+> > > +	unsigned long long result = 0ULL;
+> > >   	unsigned int rv;
+> > > -	cp = _parse_integer_fixup_radix(cp, &base);
+> > > -	rv = _parse_integer(cp, base, &result);
+> > > +	cp = _parse_integer_fixup_radix(startp, &base);
+> > > +	if ((cp - startp) >= max_chars) {
+> > > +		cp = startp + max_chars;
+> > > +		goto out;
+> > > +	}
+> > > +
+> > > +	max_chars -= (cp - startp);
+> > > +	rv = _parse_integer_limit(cp, base, &result, max_chars);
+> > >   	/* FIXME */
+> > >   	cp += (rv & ~KSTRTOX_OVERFLOW);
+> > > +out:
+> > >   	if (endp)
+> > >   		*endp = (char *)cp;
+> > >   	return result;
+> > >   }
+> > 
+> > A nit-pick: What if we rewrite above as
+> > 
+> > static unsigned long long simple_strntoull(const char *cp, size_t max_chars,
+> > 					   char **endp, unsigned int base)
+> > {
+> > 	unsigned long long result = 0ULL;
+> > 	const char *startp = cp;
+> > 	unsigned int rv;
+> > 	size_t chars;
+> > 
+> > 	cp = _parse_integer_fixup_radix(cp, &base);
+> > 	chars = cp - startp;
+> > 	if (chars >= max_chars) {
+> > 		/* We hit the limit */
+> > 		cp = startp + max_chars;
+> > 	} else {
+> > 		rv = _parse_integer_limit(cp, base, &result, max_chars - chars);
+> > 		/* FIXME */
+> > 		cp += (rv & ~KSTRTOX_OVERFLOW);
+> > 	}
+> > 
+> > 	if (endp)
+> > 		*endp = (char *)cp;
+> > 
+> > 	return result;
+> > }
+> > 
+> > ...
 > 
-> To not change current behaviour, introduce a new function,
-> napi_build_skb(), to optionally use a new approach later
-> in drivers.
 > 
-> Note on selected bulk size, 16:
->  - this equals to XDP_BULK_QUEUE_SIZE, DEV_MAP_BULK_SIZE
->    and especially VETH_XDP_BATCH, which is also used to
->    bulk-allocate skbuff_heads and was tested on powerful
->    setups;
->  - this also showed the best performance in the actual
->    test series (from the array of {8, 16, 32}).
+> I don't mind rewriting that code if you prefer that way.
+> I am used to working on other kernel subsytems where the preference is
+> to bail out on the error case so that the "normal" case flows without
+> nesting.
+
+Yeah. But in this case Andy's variant looks slightly better redable to me.
+
+...
+
+> > 
+> > > +			val.s = simple_strntoll(str,
+> > > +						field_width > 0 ? field_width : SIZE_MAX,
+> > > +						&next, base);
+> > 
+> > A nit-pick: Wouldn't be negative field_width "big enough" to just being used as
+
+ 
+> field_width is s16 so really should be sign-extended
+
+I guess that Andy just missed that it was a signed type. And it has to be
+because  -1 means SIZE_MAX.
+
+> to make it "very
+> big". I think this would be less readable what the intention is and what
+> assumptions it is based on. There's a risk someone would look at
 > 
-> Suggested-by: Edward Cree <ecree.xilinx@gmail.com> # Divide on two halves
-> Suggested-by: Eric Dumazet <edumazet@google.com>   # KASAN poisoning
-> Cc: Dmitry Vyukov <dvyukov@google.com>             # Help with KASAN
-> Cc: Paolo Abeni <pabeni@redhat.com>                # Reduced batch size
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  include/linux/skbuff.h |  2 +
->  net/core/skbuff.c      | 94 ++++++++++++++++++++++++++++++++++++------
->  2 files changed, 83 insertions(+), 13 deletions(-)
+> (size_t)(long)field_width
 > 
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 0e0707296098..906122eac82a 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -1087,6 +1087,8 @@ struct sk_buff *build_skb(void *data, unsigned int frag_size);
->  struct sk_buff *build_skb_around(struct sk_buff *skb,
->  				 void *data, unsigned int frag_size);
->  
-> +struct sk_buff *napi_build_skb(void *data, unsigned int frag_size);
-> +
->  /**
->   * alloc_skb - allocate a network buffer
->   * @size: size to allocate
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 860a9d4f752f..9e1a8ded4acc 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -120,6 +120,8 @@ static void skb_under_panic(struct sk_buff *skb, unsigned int sz, void *addr)
->  }
->  
->  #define NAPI_SKB_CACHE_SIZE	64
-> +#define NAPI_SKB_CACHE_BULK	16
-> +#define NAPI_SKB_CACHE_HALF	(NAPI_SKB_CACHE_SIZE / 2)
->  
+> and think the (long) is redundant.
+> Perhaps change field_width to int? There I ask myself "if it can be an
+> int, why is it declared s16?" and worry there is something subtle in the
+> code.
+> 
+> My personal preference is to avoid using tricks in code that isn't time
+> critical.
 
+I agree. Let's keep the check with signed type.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+> > is? Also, is field_width == 0 should be treated as "parse to the MAX"?
 
+filed_width == 0 actually means that no characters are read. I should
+return zero value.
+
+> > ...
+> 
+> Earlier code terminates scanning if the width parsed from the format
+> string is <= 0.
+
+To make it clear what earlier code means. vsscanf() bail out earlier
+when field_width == 0. It is handled by this code:
+
+		/* get field width */
+		field_width = -1;
+		if (isdigit(*fmt)) {
+			field_width = skip_atoi(&fmt);
+			if (field_width <= 0)
+				break;
+		}
+
+> So field_width can only be -1 or > 0 here. But now you
+> point it out, that test would be better as field_width >= 0 ... so
+> it deals with 0 if it ever happened to sneak through to here
+> somehow.
+
+It might make sense to be proactive and change it to >= 0.
+But I would do it in a separate patch. The "< 0" condition
+matches the original code.
+
+Best Regards,
+Petr
