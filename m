@@ -2,101 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4DC3185BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6D93185BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhBKHee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:34:34 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18482 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhBKHeC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:34:02 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6024ddbf0000>; Wed, 10 Feb 2021 23:33:19 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Thu, 11 Feb 2021 07:33:17 +0000
-Date:   Thu, 11 Feb 2021 09:33:14 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-CC:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] vdpa/mlx5: defer clear_virtqueues to until
- DRIVER_OK
-Message-ID: <20210211073314.GB100783@mtl-vdi-166.wap.labs.mlnx>
-References: <1612993680-29454-1-git-send-email-si-wei.liu@oracle.com>
- <1612993680-29454-4-git-send-email-si-wei.liu@oracle.com>
+        id S229775AbhBKHfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:35:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229692AbhBKHfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 02:35:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 207C864E7D
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:34:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613028891;
+        bh=4/Q0VnNs4sKzkFI04qi22J3s6PluFlNSVcxbDjnWrU0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cWR5RZSLs3QKr/VFdL4X7zQ9EWerNxrB1V0POdPmfWFCd+BGmdYxdnv3XTV+SZ2eI
+         2UxKO/3Hr21VLDehmdxY8y0k6fTsgL0rRBrckdfdw9JxEVlOEoRABA4fcn3kqf6o3O
+         jUrjTnTVtBt+SkmqBrcBuCjgTcQhhBwP53Y36W556Py09xLDf1E6GhOAJrZ3BqOEl8
+         tTre3tsUYGvdZNnTXSNcrpml73Ysa5L9X1/zdPobbRW/1cBBW1lUdTmzZduNrh7JWh
+         s5T0hGrnSzA/LNSuVYEy/Z7O8U8Lu97aO7ZBjLJ0aCwUuuzi7xf/DOHxhcGgygODK3
+         gEoJU4YIA3MRA==
+Received: by mail-oi1-f175.google.com with SMTP id h6so5109514oie.5
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 23:34:51 -0800 (PST)
+X-Gm-Message-State: AOAM532AdfRjNEbxZdzPIEWkxC5M4XNN/o3Z1TGL/Xz/gzNyda7qNBk3
+        oWlWmkQFr/fONU0BpmqHXDx0NRz9Su90YModZVg=
+X-Google-Smtp-Source: ABdhPJxFdVgzxxSHL4iu3EVGMx4yOsV6qiz70Cj2/1JBqW+f1YCUl6kjWkVWtdif/tPp9xl+JGpD0xaUTIqszAX9mCM=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr1816779oig.11.1613028890530;
+ Wed, 10 Feb 2021 23:34:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1612993680-29454-4-git-send-email-si-wei.liu@oracle.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613028799; bh=z+7b0JpDsftoI1h/7FD7ibwsJMwxhNgGdxyNnKVYs1Q=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=cjXXfxsVNlHxQ5FESuyuXLGg6E875SKaGfvVURvxIy1314hOsrCPR1gdvEGgZhvZe
-         /kRv6TV1tJC+Chh2VeqmLCcYVRhB14+4JY1jbVjeaDBrw/M4mQXUqAVDOUiu9u2U3D
-         uPYLVWmAHA8rov1B9zsytQHer9Ps7+rJTHSNEP0AVo8RczhD0nXdnRFDOKM9DHqP4W
-         AKJCdFRSqvqgpXPwp726h8oJGA0dlMHbatynlVtg0RFGC5JUAAwgBdeMjRHx5tisol
-         boTPkmn2WegcvLnrHp9yEcejqquVr+afZ9mo4EkGTrgQBabNhGNI6F9JTtlPIu9x9Q
-         Hkelr8xSkInvA==
+References: <20210210235243.398810-1-joel@jms.id.au>
+In-Reply-To: <20210210235243.398810-1-joel@jms.id.au>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 11 Feb 2021 08:34:34 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1SMBhqjj=VQgxU6YoVT-c34YYvhFDiGHBSMyX9AhDNnw@mail.gmail.com>
+Message-ID: <CAK8P3a1SMBhqjj=VQgxU6YoVT-c34YYvhFDiGHBSMyX9AhDNnw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: kexec: Remove unused kexec_reinit callback
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:48:00PM -0800, Si-Wei Liu wrote:
-> While virtq is stopped,  get_vq_state() is supposed to
-> be  called to  get  sync'ed  with  the latest internal
-> avail_index from device. The saved avail_index is used
-> to restate  the virtq  once device is started.  Commit
-> b35ccebe3ef7 introduced the clear_virtqueues() routine
-> to  reset  the saved  avail_index,  however, the index
-> gets cleared a bit earlier before get_vq_state() tries
-> to read it. This would cause consistency problems when
-> virtq is restarted, e.g. through a series of link down
-> and link up events. We  could  defer  the  clearing of
-> avail_index  to  until  the  device  is to be started,
-> i.e. until  VIRTIO_CONFIG_S_DRIVER_OK  is set again in
-> set_status().
-> 
-> Fixes: b35ccebe3ef7 ("vdpa/mlx5: Restore the hardware used index after change map")
-> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
+On Thu, Feb 11, 2021 at 12:52 AM Joel Stanley <joel@jms.id.au> wrote:
+>
+> The last (only?) user of this was removed in commit ba364fc752da ("ARM:
+> Kirkwood: Remove mach-kirkwood"), back in v3.17.
+>
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
 
-Acked-by: Eli Cohen <elic@nvidia.com>
-
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 7c1f789..ce6aae8 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1777,7 +1777,6 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
->  	if (!status) {
->  		mlx5_vdpa_info(mvdev, "performing device reset\n");
->  		teardown_driver(ndev);
-> -		clear_virtqueues(ndev);
->  		mlx5_vdpa_destroy_mr(&ndev->mvdev);
->  		ndev->mvdev.status = 0;
->  		++mvdev->generation;
-> @@ -1786,6 +1785,7 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
->  
->  	if ((status ^ ndev->mvdev.status) & VIRTIO_CONFIG_S_DRIVER_OK) {
->  		if (status & VIRTIO_CONFIG_S_DRIVER_OK) {
-> +			clear_virtqueues(ndev);
->  			err = setup_driver(ndev);
->  			if (err) {
->  				mlx5_vdpa_warn(mvdev, "failed to setup driver\n");
-> -- 
-> 1.8.3.1
-> 
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
