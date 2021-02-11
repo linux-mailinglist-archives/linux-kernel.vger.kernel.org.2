@@ -2,168 +2,714 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA0C318B48
+	by mail.lfdr.de (Postfix) with ESMTP id AD76E318B49
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhBKM5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:57:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33418 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229763AbhBKMfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:35:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613046889; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2VY81SAYEzedSESQb03CooHyQXuD8/QJRlDqluCM/Iw=;
-        b=a1DzIuRHjGNkMtX91/tgAzW1IQ3z7iD1tkE+MPzuj2mofBmmDMVPqlST2qGt5yACd5EDNl
-        CriIZR1oqISALt+PFB64rGE0ojsykcR6CNOrGE9A10JQh8HQYESa30or656Cp53JpdRGp5
-        /0sWHD6v+nwWRlc2LBTuVhtfeylmbEM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 96FF4AD29;
-        Thu, 11 Feb 2021 12:34:49 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 13:34:48 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
-Subject: Re: possible deadlock in start_this_handle (2)
-Message-ID: <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
-References: <000000000000563a0205bafb7970@google.com>
- <20210211104947.GL19070@quack2.suse.cz>
- <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
- <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
- <20210211121020.GO19070@quack2.suse.cz>
+        id S231708AbhBKM6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:58:11 -0500
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:34189 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhBKMfy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 07:35:54 -0500
+Received: by mail-lf1-f43.google.com with SMTP id h26so7873123lfm.1;
+        Thu, 11 Feb 2021 04:35:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=60oa+ZnuxS7FMsT+TgYgwtdTMpKdHL7fHJyqcV2Jlvw=;
+        b=m7kiCtac6fEEcWp3N5RNXDcQXrvge+pSKL+LMOFGCX+/xbaU6s2PBCXlcNewJhTis5
+         Mbz952sob8VWQ7eEllyOP4y2DvuDIQF2tweH+PDlSxvdC9K/iLPU2kjsQki7e+2PkA27
+         IOJZxyXYAn+QK8UhM/Lh+gue7hk0CsFPNYEi5JNE6Kn6SJmJ+jMW7th96B4Fxn6lTyr3
+         QjdmyNSS8ngfoHVMBChkSENWnkU625LWgSHnQHTECox34DhJWDsUpEvGVdsUpu0bbr7t
+         D4tiVYnxXDc5W9cPeLTgKWFTRtmz6x73FzsGrkct0AovM+55fSB444IWE/An0v2xJqYX
+         gNxA==
+X-Gm-Message-State: AOAM532Wn0LDYLVkn5VLc8UNd0eZhI+8Zmj3IWrJs7MmwOG//NDCUyCs
+        6O5IJ4TFZajgtMaBhIdeVIg=
+X-Google-Smtp-Source: ABdhPJxTEslsZHSckTPWGdK1A808VNoaPP/FhTfLvv26pXwgHDCDv+0x6cUKJttCR7oFy7sruhpV/A==
+X-Received: by 2002:a05:6512:3743:: with SMTP id a3mr4277514lfs.8.1613046906971;
+        Thu, 11 Feb 2021 04:35:06 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id b7sm892795ljk.52.2021.02.11.04.35.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 04:35:06 -0800 (PST)
+Date:   Thu, 11 Feb 2021 14:35:00 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: [RFC PATCH 3/7] regulator: IRQ based event/error notification helpers
+Message-ID: <3daf0531910c25d8b0da3964778ae2a6c9049d43.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210211121020.GO19070@quack2.suse.cz>
+In-Reply-To: <cover.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11-02-21 13:10:20, Jan Kara wrote:
-> On Thu 11-02-21 12:28:48, Dmitry Vyukov wrote:
-> > On Thu, Feb 11, 2021 at 12:22 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > >
-> > > On Thu, Feb 11, 2021 at 11:49 AM Jan Kara <jack@suse.cz> wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > > added mm guys to CC.
-> > > >
-> > > > On Wed 10-02-21 05:35:18, syzbot wrote:
-> > > > > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
-> > > > > git tree:       upstream
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15cbce90d00000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> > > > > userspace arch: i386
-> > > > >
-> > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > >
-> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
-> > > > >
-> > > > > ======================================================
-> > > > > WARNING: possible circular locking dependency detected
-> > > > > 5.11.0-rc6-syzkaller #0 Not tainted
-> > > > > ------------------------------------------------------
-> > > > > kswapd0/2246 is trying to acquire lock:
-> > > > > ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
-> > > > >
-> > > > > but task is already holding lock:
-> > > > > ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
-> > > > >
-> > > > > which lock already depends on the new lock.
-> > > > >
-> > > > > the existing dependency chain (in reverse order) is:
-> > > > >
-> > > > > -> #2 (fs_reclaim){+.+.}-{0:0}:
-> > > > >        __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
-> > > > >        fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
-> > > > >        might_alloc include/linux/sched/mm.h:193 [inline]
-> > > > >        slab_pre_alloc_hook mm/slab.h:493 [inline]
-> > > > >        slab_alloc_node mm/slub.c:2817 [inline]
-> > > > >        __kmalloc_node+0x5f/0x430 mm/slub.c:4015
-> > > > >        kmalloc_node include/linux/slab.h:575 [inline]
-> > > > >        kvmalloc_node+0x61/0xf0 mm/util.c:587
-> > > > >        kvmalloc include/linux/mm.h:781 [inline]
-> > > > >        ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
-> > > > >        ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
-> > > > >        ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
-> > > > >        ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
-> > > > >        ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
-> > > > >        ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
-> > > > >        ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
-> > > > >        __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
-> > > > >        __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
-> > > > >        __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
-> > > > >        vfs_setxattr+0x135/0x320 fs/xattr.c:291
-> > > > >        setxattr+0x1ff/0x290 fs/xattr.c:553
-> > > > >        path_setxattr+0x170/0x190 fs/xattr.c:572
-> > > > >        __do_sys_setxattr fs/xattr.c:587 [inline]
-> > > > >        __se_sys_setxattr fs/xattr.c:583 [inline]
-> > > > >        __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
-> > > > >        do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
-> > > > >        __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
-> > > > >        do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
-> > > > >        entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> > > >
-> > > > This stacktrace should never happen. ext4_xattr_set() starts a transaction.
-> > > > That internally goes through start_this_handle() which calls:
-> > > >
-> > > >         handle->saved_alloc_context = memalloc_nofs_save();
-> > > >
-> > > > and we restore the allocation context only in stop_this_handle() when
-> > > > stopping the handle. And with this fs_reclaim_acquire() should remove
-> > > > __GFP_FS from the mask and not call __fs_reclaim_acquire().
-> > > >
-> > > > Now I have no idea why something here didn't work out. Given we don't have
-> > > > a reproducer it will be probably difficult to debug this. I'd note that
-> > > > about year and half ago similar report happened (got autoclosed) so it may
-> > > > be something real somewhere but it may also be just some HW glitch or
-> > > > something like that.
-> > >
-> > > HW glitch is theoretically possible. But if we are considering such
-> > > causes, I would say a kernel memory corruption is way more likely, we
-> > > have hundreds of known memory-corruption-capable bugs open. In most
-> > > cases they are caught by KASAN before doing silent damage. But KASAN
-> > > can miss some cases.
-> > >
-> > > I see at least 4 existing bugs with similar stack:
-> > > https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
-> > > https://syzkaller.appspot.com/bug?extid=a7ab8df042baaf42ae3c
-> > > https://syzkaller.appspot.com/bug?id=c814a55a728493959328551c769ede4c8ff72aab
-> > > https://syzkaller.appspot.com/bug?id=426ad9adca053dafcd698f3a48ad5406dccc972b
-> > >
-> > > All in all, I would not assume it's a memory corruption. When we had
-> > > bugs that actually caused silent memory corruption, that caused a
-> > > spike of random one-time crashes all over the kernel. This does not
-> > > look like it.
-> > 
-> > I wonder if memalloc_nofs_save (or any other manipulation of
-> > current->flags) could have been invoked from interrupt context? I
-> > think it could cause the failure mode we observe (extremely rare
-> > disappearing flags). It may be useful to add a check for task context
-> > there.
-> 
-> That's an interesting idea. I'm not sure if anything does manipulate
-> current->flags from inside an interrupt (definitely memalloc_nofs_save()
-> doesn't seem to be) but I'd think that in fully preemtible kernel,
-> scheduler could preempt the task inside memalloc_nofs_save() and the
-> current->flags manipulation could also clash with a manipulation of these
-> flags by the scheduler if there's any?
+Provide helper function for IC's implementing regulator notifications
+when an IRQ fires. The helper also works for IRQs which can not be acked.
+Helper can be set to disable the IRQ at handler and then re-enabling it
+on delayed work later. The helper also adds regulator_get_error_flags()
+errors in cache for the duration of IRQ disabling.
 
-current->flags should be always manipulated from the user context. But
-who knows maybe there is a bug and some interrupt handler is calling it.
-This should be easy to catch no?
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+
+This patch has gone through only a very limited amount of testing. All
+reviews / suggestions / testing is highly appreciated.
+
+ drivers/regulator/Makefile       |   2 +-
+ drivers/regulator/core.c         |  24 +-
+ drivers/regulator/irq_helpers.c  | 396 +++++++++++++++++++++++++++++++
+ include/linux/regulator/driver.h | 129 ++++++++++
+ 4 files changed, 547 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/regulator/irq_helpers.c
+
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 44d2f8bf4b74..e25f1c2d6c9b 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -4,7 +4,7 @@
+ #
+ 
+ 
+-obj-$(CONFIG_REGULATOR) += core.o dummy.o fixed-helper.o helpers.o devres.o
++obj-$(CONFIG_REGULATOR) += core.o dummy.o fixed-helper.o helpers.o devres.o irq_helpers.o
+ obj-$(CONFIG_OF) += of_regulator.o
+ obj-$(CONFIG_REGULATOR_FIXED_VOLTAGE) += fixed.o
+ obj-$(CONFIG_REGULATOR_VIRTUAL_CONSUMER) += virtual.o
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 8f35a3dd4c30..9f06b33ff1e2 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -4366,20 +4366,37 @@ unsigned int regulator_get_mode(struct regulator *regulator)
+ }
+ EXPORT_SYMBOL_GPL(regulator_get_mode);
+ 
++static int rdev_get_cached_err_flags(struct regulator_dev *rdev)
++{
++	int ret = 0;
++
++	if (rdev->use_cached_err) {
++		spin_lock(&rdev->err_lock);
++		ret = rdev->cached_err;
++		spin_unlock(&rdev->err_lock);
++	}
++	return ret;
++}
++
+ static int _regulator_get_error_flags(struct regulator_dev *rdev,
+ 					unsigned int *flags)
+ {
+-	int ret;
++	int ret, tmpret;
+ 
+ 	regulator_lock(rdev);
+ 
++	ret = rdev_get_cached_err_flags(rdev);
++
+ 	/* sanity check */
+-	if (!rdev->desc->ops->get_error_flags) {
++	if (rdev->desc->ops->get_error_flags) {
++		tmpret = rdev->desc->ops->get_error_flags(rdev, flags);
++		if (tmpret > 0)
++			ret |= tmpret;
++	} else if (!rdev->use_cached_err) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+ 
+-	ret = rdev->desc->ops->get_error_flags(rdev, flags);
+ out:
+ 	regulator_unlock(rdev);
+ 	return ret;
+@@ -5214,6 +5231,7 @@ regulator_register(const struct regulator_desc *regulator_desc,
+ 		goto rinse;
+ 	}
+ 	device_initialize(&rdev->dev);
++	spin_lock_init(&rdev->err_lock);
+ 
+ 	/*
+ 	 * Duplicate the config so the driver could override it after
+diff --git a/drivers/regulator/irq_helpers.c b/drivers/regulator/irq_helpers.c
+new file mode 100644
+index 000000000000..57121554de8e
+--- /dev/null
++++ b/drivers/regulator/irq_helpers.c
+@@ -0,0 +1,396 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2020 ROHM Semiconductors
++ * regulator IRQ based event notification helpers
++ *
++ * Logic has been partially adapted from qcom-labibb driver.
++ *
++ * Author: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
++ */
++
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/kernel.h>
++#include <linux/of_irq.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <linux/spinlock.h>
++#include <linux/regulator/driver.h>
++
++struct regulator_irq {
++	struct regulator_irq_data rdata;
++	struct regulator_irq_desc desc;
++	int irq;
++	int retry_cnt;
++	struct delayed_work isr_work;
++};
++
++/*
++ * Should only be called from threaded handler to prevent potential deadlock
++ */
++static void rdev_flag_err(struct regulator_dev *rdev, int err)
++{
++	spin_lock(&rdev->err_lock);
++	rdev->cached_err |= err;
++	spin_unlock(&rdev->err_lock);
++}
++
++static void rdev_clear_err(struct regulator_dev *rdev, int err)
++{
++	spin_lock(&rdev->err_lock);
++	rdev->cached_err &= ~err;
++	spin_unlock(&rdev->err_lock);
++}
++
++static void regulator_notifier_isr_work(struct work_struct *work)
++{
++	struct regulator_irq *h;
++	struct regulator_irq_desc *d;
++	struct regulator_irq_data *rid;
++	int ret = 0;
++	int tmo, i;
++	int num_rdevs;
++
++	h = container_of(work, struct regulator_irq,
++			    isr_work.work);
++
++
++	d = &h->desc;
++	rid = &h->rdata;
++	num_rdevs = rid->num_states;
++
++reread:
++	if (d->fatal_cnt && h->retry_cnt > d->fatal_cnt) {
++		if (d->die)
++			ret = d->die(rid);
++		else
++			BUG();
++
++		/*
++		 * If the 'last resort' IC recovery failed we will have
++		 * nothing else left to do...
++		 */
++		BUG_ON(ret);
++
++		/*
++		 * If h->die() was implemented we assume recovery has been
++		 * attempted (probably regulator was shut down)
++		 * and we just enable IRQ and bail-out.
++		 */
++		goto enable_out;
++	}
++	if (d->renable) {
++		ret = d->renable(rid);
++
++		if (ret == REGULATOR_FAILED_RETRY) {
++			h->retry_cnt++;
++			if (!d->reread_ms)
++				goto reread;
++			/*
++			 * driver indicated problem is still on - let's not enable IRQ
++			 * but just wait a little more
++			 */
++			tmo = d->reread_ms;
++			goto reschedule;
++		}
++
++		if (ret) {
++			/*
++			 * IC status reading succeeded. update error info
++			 * just in case the renable changed it.
++			 */
++			for (i = 0; i < num_rdevs; i++) {
++				struct regulator_err_state *stat;
++				struct regulator_dev *rdev;
++
++				stat = &rid->states[i];
++				rdev = stat->rdev;
++				rdev_clear_err(rdev, (~stat->errors) &
++						      stat->possible_errs);
++			}
++			h->retry_cnt++;
++			/*
++			 * The IC indicated problem is still ON - no point in
++			 * re-enabling the IRQ. Retry later.
++			 */
++			tmo = d->irq_off_ms;
++			goto reschedule;
++		}
++	}
++
++	/*
++	 * Either IC reported problem cleared or no status checker was provided.
++	 * If problems are gone - good. If not - then the IRQ will fire again
++	 * and we'll have new nice loop. In any case we should clear error flags
++	 * here and re-enable IRQs.
++	 */
++	for (i = 0; i < num_rdevs; i++) {
++		struct regulator_err_state *stat;
++		struct regulator_dev *rdev;
++
++		stat = &rid->states[i];
++		rdev = stat->rdev;
++		rdev_clear_err(rdev, stat->possible_errs);
++	}
++
++	/*
++	 * Things have been seemingly successful => zero retry-counter.
++	 */
++	h->retry_cnt = 0;
++
++enable_out:
++	enable_irq(h->irq);
++
++	return;
++
++reschedule:
++	if (!d->high_prio)
++		mod_delayed_work(system_wq, &h->isr_work,
++				 msecs_to_jiffies(tmo));
++	else
++		mod_delayed_work(system_highpri_wq, &h->isr_work,
++				 msecs_to_jiffies(tmo));
++}
++
++static irqreturn_t regulator_notifier_isr(int irq, void *data)
++{
++	struct regulator_irq *h = data;
++	struct regulator_irq_desc *d;
++	struct regulator_irq_data *rid;
++	unsigned long rdev_map = 0;
++	int num_rdevs;
++	int ret, i, j;
++
++	d = &h->desc;
++	rid = &h->rdata;
++	num_rdevs = rid->num_states;
++
++	if (d->fatal_cnt)
++		h->retry_cnt++;
++
++	/*
++	 * we spare few cycles by not clearing statuses prior this call.
++	 * The IC driver must initialize the status buffers for rdevs
++	 * which it indicates having active events via rdev_map.
++	 *
++	 * Maybe we should just to be on a safer side(?)
++	 */
++	if (d->map_event)
++		ret = d->map_event(irq, rid, &rdev_map);
++
++	/*
++	 * If status reading fails (which is unlikely) we don't ack/disable
++	 * IRQ but just increase fail count and retry when IRQ fires again.
++	 * If retry_count exceeds given safety limit we call IC specific die
++	 * handler which can try disabling regulator(s).
++	 *
++	 * If no die handler is given we will just bug() as a last resort.
++	 *
++	 * We could try disabling all associated rdevs - but we might shoot
++	 * ourself in the head and leave problematic regulator enabled. So
++	 * if IC has no die-handler populated we just assume the regulator
++	 * can't be disabled.
++	 */
++	if (unlikely(ret == REGULATOR_FAILED_RETRY))
++		goto fail_out;
++
++	h->retry_cnt = 0;
++	/*
++	 * Let's not disable IRQ if there was no status bits for us. We'd
++	 * better leave spurious IRQ handling to genirq
++	 */
++	if (ret || !rdev_map)
++		return IRQ_NONE;
++
++	/*
++	 * Some events are bogus if regulator is disabled. Skip such events
++	 * if all relevant regulators are disabled
++	 */
++	if (d->skip_off) {
++		int skip = 1;
++
++		for_each_set_bit(i, &rdev_map, num_rdevs) {
++			struct regulator_dev *rdev;
++			const struct regulator_ops *ops;
++
++			rdev = rid->states[i].rdev;
++			ops = rdev->desc->ops;
++
++			/*
++			 * If any of the flagged regulators is enabled we do
++			 * handle this
++			 */
++			if (ops->is_enabled(rdev)) {
++				skip = 0;
++				break;
++			}
++		}
++		if (skip)
++			return IRQ_NONE;
++	}
++
++	/* Disable IRQ if HW keeps line asserted */
++	if (d->irq_off_ms)
++		disable_irq_nosync(irq);
++
++	/*
++	 * IRQ seems to be for us. Let's fire correct notifiers / store error
++	 * flags
++	 */
++	for_each_set_bit(i, &rdev_map, num_rdevs) {
++		struct regulator_err_state *stat;
++		int len;
++		struct regulator_dev *rdev;
++
++		stat = &rid->states[i];
++		len = sizeof(stat->notifs);
++
++		rdev = stat->rdev;
++		for_each_set_bit(j, &stat->notifs, 8 * len)
++			regulator_notifier_call_chain(rdev, 1 << (j - 1), NULL);
++
++		rdev_flag_err(rdev, stat->errors);
++	}
++
++	if (d->irq_off_ms) {
++		if (!d->high_prio)
++			schedule_delayed_work(&h->isr_work,
++					      msecs_to_jiffies(d->irq_off_ms));
++		else
++			mod_delayed_work(system_highpri_wq,
++					 &h->isr_work,
++					 msecs_to_jiffies(d->irq_off_ms));
++	}
++
++	return IRQ_HANDLED;
++
++fail_out:
++	if (d->fatal_cnt && h->retry_cnt > d->fatal_cnt) {
++		if (d->die)
++			ret = d->die(rid);
++
++		/*
++		 * If die() failed or was not implemented just BUG() as last
++		 * attemt to save HW.
++		 */
++		BUG_ON(ret);
++	}
++	return IRQ_NONE;
++}
++
++static void dev_delayed_work_drop(struct device *dev, void *res)
++{
++	cancel_delayed_work_sync(*(struct delayed_work **)res);
++}
++
++int dev_delayed_work_autocancel(struct device *dev, struct delayed_work *w,
++				void (*worker)(struct work_struct *work))
++{
++	struct delayed_work **ptr;
++
++	ptr = devres_alloc(dev_delayed_work_drop, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return -ENOMEM;
++
++	INIT_DELAYED_WORK(w, worker);
++	*ptr = w;
++	devres_add(dev, ptr);
++
++	return 0;
++}
++
++static int init_rdev_state(struct device *dev, struct regulator_irq *h,
++			   struct regulator_dev **rdev, int common_err,
++			   int *rdev_err, int rdev_amount)
++{
++	int i;
++
++	h->rdata.states = devm_kzalloc(dev, sizeof(*h->rdata.states) *
++				       rdev_amount, GFP_KERNEL);
++	if (!h->rdata.states)
++		return -ENOMEM;
++
++	h->rdata.num_states = rdev_amount;
++	h->rdata.data = h->desc.data;
++
++	for (i = 0; i < rdev_amount; i++) {
++		h->rdata.states[i].possible_errs = common_err;
++		if (rdev_err)
++			h->rdata.states[i].possible_errs |= *rdev_err++;
++		h->rdata.states[i].rdev = *rdev++;
++	}
++
++	return 0;
++}
++
++static void init_rdev_errors(struct regulator_irq *h)
++{
++	int i;
++
++	for (i = 0; i < h->rdata.num_states; i++) {
++		if (h->rdata.states[i].possible_errs)
++			/* Can we trust writing this boolean is atomic? */
++			h->rdata.states[i].rdev->use_cached_err = true;
++	}
++}
++
++/**
++ * regulator_irq_helper - register IRQ based regulator event/error notifier
++ *
++ * @dev:		device to which lifetime the helper's lifetime is
++ *			bound.
++ * @d:			IRQ helper descriptor.
++ * @irq:		IRQ used to inform events/errors to be notified.
++ * @irq_flags:		Extra IRQ flags to be OR's with the default IRQF_ONESHOT
++ *			when requesting the (threaded) irq.
++ * @common_errs:	Errors which can be flagged by this IRQ for all rdevs.
++ *			When IRQ is re-enabled these errors will be cleared
++ *			from all associated regulators
++ * @per_rdev_errs:	Optional error flag array describing errors specific
++ *			for only some of the regulators. These errors will be
++ *			or'ed with common erros. If this is given the array
++ *			should contain rdev_amount flags. Can be set to NULL
++ *			if there is no regulator specific error flags for this
++ *			IRQ.
++ * @rdev:		Array of regulators associated with this IRQ.
++ * @rdev_amount:	Amount of regulators associated wit this IRQ.
++ */
++int regulator_irq_helper(struct device *dev, const struct regulator_irq_desc *d,
++			 int irq, int irq_flags, int common_errs,
++			 int *per_rdev_errs, struct regulator_dev **rdev,
++			 int rdev_amount)
++{
++	struct regulator_irq *h;
++	int ret;
++
++	if (!rdev_amount || !d)
++		return -EINVAL;
++
++	h = devm_kzalloc(dev, sizeof(*h), GFP_KERNEL);
++	if (!h)
++		return -ENOMEM;
++
++	if (irq <= 0) {
++		dev_err(dev, "No IRQ\n");
++		return -EINVAL;
++	}
++
++	h->irq = irq;
++	h->desc = *d;
++
++	ret = init_rdev_state(dev, h, rdev, common_errs, per_rdev_errs,
++			      rdev_amount);
++	if (ret)
++		return ret;
++
++	init_rdev_errors(h);
++
++	if (h->desc.irq_off_ms)
++		dev_delayed_work_autocancel(dev, &h->isr_work,
++					    regulator_notifier_isr_work);
++
++	return devm_request_threaded_irq(dev, h->irq, NULL,
++					 regulator_notifier_isr, IRQF_ONESHOT |
++					 irq_flags, h->desc.name, h);
++}
++EXPORT_SYMBOL_GPL(regulator_irq_helper);
+diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
+index d7c77ee370f3..9a9bc0f5dcea 100644
+--- a/include/linux/regulator/driver.h
++++ b/include/linux/regulator/driver.h
+@@ -409,6 +409,128 @@ struct regulator_config {
+ 	struct gpio_desc *ena_gpiod;
+ };
+ 
++/**
++ * struct regulator_err_state - regulator error/notification status
++ *
++ * @rdev:		Regulator which status the struct indicates.
++ * @notifs:		Events which have occurred on regulator.
++ * @errors:		Errors which are active on regulator.
++ * @possible_errs:	Errors which can be signaled (by given IRQ).
++ */
++struct regulator_err_state {
++	struct regulator_dev *rdev;
++	unsigned long notifs;
++	unsigned long errors;
++	int possible_errs;
++};
++
++/**
++ * struct regulator_irq_data - regulator error/notification status date
++ *
++ * @states:	Status structs for each of the associated regulators.
++ * @num_states:	Amount of associated regulators.
++ * @data:	Driver data pointer given at regulator_irq_desc.
++ * @opaque:	Value storage for IC driver. Core does not update this. ICs
++ *		may want to store status register value here at map_event and
++ *		compare contents at renable to see if new problems have been
++ *		added to status. If that is the case it may be desirable to
++ *		return REGULATOR_ERROR_CLEARED and not REGULATOR_ERROR_ON to
++ *		allow IRQ fire again and to generate notifications also for
++ *		the new issues.
++ *
++ * This structure is passed to map_event and renable for reporting reulator
++ * status to core.
++ */
++struct regulator_irq_data {
++	struct regulator_err_state *states;
++	int num_states;
++	void *data;
++	long opaque;
++};
++
++/**
++ * struct regulator_irq_desc - notification sender for IRQ based events.
++ *
++ * @name:	The visible name for the IRQ
++ * @fatal_cnt:	If this IRQ is used to signal HW damaging condition it may be
++ *		best to shut-down regulator(s) or reboot the SOC if error
++ *		handling is repeteadly failing. If fatal_cnt is given the IRQ
++ *		handling is aborted if it fails for fatal_cnt times and die()
++ *		callback (if populated) or BUG() is called to try to prevent
++ *		further damage.
++ * @reread_ms:	The time which is waited before attempting to re-read status
++ *		at the worker if IC reading fails. Immediate re-read is done
++ *		if time is not specified.
++ * @irq_off_ms:	The time which IRQ is kept disabled before re-evaluating the
++ *		status for devices which keep IRQ disabled for duration of the
++ *		error. If this is not given the IRQ is left enabled and renable
++ *		is not called.
++ * @skip_off:	If set to true the IRQ handler will attempt to check if any of
++ *		the associated regulators are enabled prior to taking other
++ *		actions. If no regulators are enabled and this is set to true
++ *		a spurious IRQ is assumed and IRQ_NONE is returned.
++ * @high_prio:	Boolean to indicate that high priority WQ should be used.
++ * @data:	Driver private data pointer which will be passed as such to
++ *		the renable, map_event and die callbacks in regulator_irq_data.
++ * @die:	Protection callback. If IC status reading or recovery actions
++ *		fail fatal_cnt times this callback or BUG() is called. This
++ *		callback should implement final protection attempt like
++ *		disabling the regulator. If protection succeeded this may
++ *		return 0. If anything else is returned the core assumes final
++ *		protection failed and calls BUG() as a last resort.
++ * @map_event:	Driver callback to map IRQ status into regulator devices with
++ *		events / errors. NOTE: callback MUST initialize both the
++ *		errors and notifs for all rdevs which it signals having
++ *		active events as core does not clean the map data.
++ *		REGULATOR_FAILED_RETRY can be returned to indicate that the
++ *		status reading from IC failed. If this is repeated for
++ *		fatal_cnt times the core will call die() callback or BUG()
++ *		as a last resort to protect the HW.
++ * @renable:	Optional callback to check status (if HW supports that) before
++ *		re-enabling IRQ. If implemented this should clear the error
++ *		flags so that errors fetched by regulator_get_error_flags()
++ *		are updated. If callback is not impelemted then errors are
++ *		assumed to be cleared and IRQ is re-enabled.
++ *		REGULATOR_FAILED_RETRY can be returned to
++ *		indicate that the status reading from IC failed. If this is
++ *		repeated for 'fatal_cnt' times the core will call die()
++ *		callback or BUG() as a last resort to protect the HW.
++ *		Returning zero indicates that the problem in HW has been solved
++ *		and IRQ will be re-enabled. Returning REGULATOR_ERROR_ON
++ *		indicates the error condition is still active and keeps IRQ
++ *		disabled. Please note that returning REGULATOR_ERROR_ON does
++ *		not retrigger evaluating what events are active or resending
++ *		notifications. If this is needed you probably want to return
++ *		zero and allow IRQ to retrigger causing events to be
++ *		re-evaluated and re-sent.
++ *
++ * This structure is used for registering regulator IRQ notification helper.
++ */
++struct regulator_irq_desc {
++	const char *name;
++	int irq_flags;
++	int fatal_cnt;
++	int reread_ms;
++	int irq_off_ms;
++	bool skip_off;
++	bool high_prio;
++	void *data;
++
++	int (*die)(struct regulator_irq_data *rid);
++	int (*map_event)(int irq, struct regulator_irq_data *rid,
++			  unsigned long *dev_mask);
++	int (*renable)(struct regulator_irq_data *rid);
++};
++
++/*
++ * Return values for regulator IRQ helpers.
++ */
++enum {
++	REGULATOR_ERROR_CLEARED,
++	REGULATOR_FAILED_RETRY,
++	REGULATOR_ERROR_ON,
++};
++
+ /*
+  * struct coupling_desc
+  *
+@@ -473,6 +595,9 @@ struct regulator_dev {
+ 
+ 	/* time when this regulator was disabled last time */
+ 	unsigned long last_off_jiffy;
++	int cached_err;
++	bool use_cached_err;
++	spinlock_t err_lock;
+ };
+ 
+ struct regulator_dev *
+@@ -487,6 +612,10 @@ void devm_regulator_unregister(struct device *dev, struct regulator_dev *rdev);
+ 
+ int regulator_notifier_call_chain(struct regulator_dev *rdev,
+ 				  unsigned long event, void *data);
++int regulator_irq_helper(struct device *dev, const struct regulator_irq_desc *d,
++			 int irq, int irq_flags, int common_errs,
++			 int *per_rdev_errs, struct regulator_dev **rdev,
++			 int rdev_amount);
+ 
+ void *rdev_get_drvdata(struct regulator_dev *rdev);
+ struct device *rdev_get_dev(struct regulator_dev *rdev);
+-- 
+2.25.4
+
 
 -- 
-Michal Hocko
-SUSE Labs
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
