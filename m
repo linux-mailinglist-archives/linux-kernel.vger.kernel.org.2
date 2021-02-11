@@ -2,100 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86A1319010
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169AC319007
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhBKQdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:33:19 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:6904 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231180AbhBKP2C (ORCPT
+        id S230144AbhBKQb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:31:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231233AbhBKP1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:28:02 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BF55bR011612;
-        Thu, 11 Feb 2021 07:13:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=bOUPWd7NjerE0DDO/8OeF9/+j6LpVJxLpVk7ndXZwIE=;
- b=eTCzgReFZGVOnm08YKQ47oNagyMvzz2SS4JoVDdztb7+Yx01jgrioTHsQ3S+Bhp6dC53
- mKQffuNw7AFARXcPKtarno3+4h3N9qA4pIP1dHN70/rM8yx+kKoiLCgS8PRFdolbPXdi
- ckIFCvTkISbs+NWRUcD9Ebu96vrV/F2cV7zw0RrrsWlTYhtQbFZEptWj0R1Fp3WEJWnM
- t9SbFBi3LBLHwCZzqU42nk2vJ67T3Ok4hAzX0Q3CCh0wEXrhSnWsJ/uQPjUuPrmal0aw
- 0M9Lm9MR4cVIh7vh6qxHxLsW+BF3huSrz6SIZtbR51yyZj3cTijP7bCt7RdnkBt2tpJ8 pw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36hugqf3xx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 07:13:43 -0800
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
- 2021 07:13:41 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
- 2021 07:13:40 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 11 Feb 2021 07:13:40 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id AAE213F7040;
-        Thu, 11 Feb 2021 07:13:37 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [net-next] net: mvpp2: fix interrupt mask/unmask skip condition
-Date:   Thu, 11 Feb 2021 17:13:19 +0200
-Message-ID: <1613056399-18730-1-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 11 Feb 2021 10:27:24 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DFDC061756;
+        Thu, 11 Feb 2021 07:15:57 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id v15so4533264wrx.4;
+        Thu, 11 Feb 2021 07:15:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lZHVApcCWyA/8G+Vaa9rcXK9Y7YUgpJhNCfsVhlO7KQ=;
+        b=scBiQk60X2gk/6gUlWAr734kTE4d6HixZOdJe0nluaRgsNF0KbMoEnYQWoecNX+Aew
+         Rk1ySdDI57G6Cwvv1ojZUqUjPmint5Ig96dNwjhPUzE7Z09YoNHt47YnLmzodhxVQzTM
+         gfOXMIWD186OfkoaVqkD0zrkF3VjNRa7SjpOg8DMZM3IRB8S5+iB47hLGGIxaLgijyYb
+         32sxHBVs2jMHBIvCU661T5GeXkG9xfAG4mpbYYpwc2wR/k2cQGS0LQm2a/lPGdvbTC1W
+         soe3nmYE+NMKfmVR0tiwIgE6gdDNsfaVv2Nl33LiVsSx5y5mJ/5CegsN4ixo79DJ7eHB
+         3+kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZHVApcCWyA/8G+Vaa9rcXK9Y7YUgpJhNCfsVhlO7KQ=;
+        b=osAAMdPecqmJazOLmOkv1OJY7ype/1SXt7rHJZF/DLZP/1nVvWHWp6Zvbt8V2B4Tu7
+         7lC6WDrxFHDD4MEAJnpFLIBYxjbym5FgFg6DtNRMQAIbAYYkKkjrPqUlhoylY/XhT10a
+         9FyTNBTabq51jkYXRrasLob0Z8GNuYdAB89EAyrcnnOrcYYJCgd7aFr2r1/3RN4hem10
+         gqr0gP2HqKc4U/BP+lSYKxzO/VoYqg+nx26CmW8F8bCfVQet9mqpRG24YPeRi1wdoEHN
+         2Ly7p3/7xdzttA5LRgP+kpVRfIH9af3wyNcK+4t7MSjfPv7BxcNmRnaIyUh3F8a8HH0c
+         e6Ww==
+X-Gm-Message-State: AOAM530xlAL5RqIjtHlyFdNSvq3jkEaEObog7hEtP5PMN/5dpSiMoRDj
+        ibXgZU2Ef4PXVnGXx3hIkY9MmTME89hRlI8DNbY=
+X-Google-Smtp-Source: ABdhPJzDHDfUuUKLh422HAass74bwzNGlcpsuleYmnUY24E/Nlt7GA4fbgJZPCUYCYhUSRlPsrFUuvOzJB9anw9UoU8=
+X-Received: by 2002:adf:e511:: with SMTP id j17mr6388594wrm.251.1613056556298;
+ Thu, 11 Feb 2021 07:15:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_06:2021-02-10,2021-02-11 signatures=0
+References: <20210203163348.30686-1-TheSven73@gmail.com> <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
+ <CAGngYiWt9Q4jWksiniC6vqUw29L3mOFuQpw7Dz_BK9Ye9FbQ1Q@mail.gmail.com> <20210211143233.GA1360@pengutronix.de>
+In-Reply-To: <20210211143233.GA1360@pengutronix.de>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Thu, 11 Feb 2021 10:15:45 -0500
+Message-ID: <CAGngYiVKn8P6vPQK65rpVD2h4rD6vbjjTOpEP3nqt3kOiYxpkw@mail.gmail.com>
+Subject: Re: [BUG REPORT] media: coda: mpeg4 decode corruption on i.MX6qp only
+To:     Philipp Zabel <pza@pengutronix.de>
+Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+Hi Philipp, thank you so much for looking into this, I really appreciate it !
 
-The condition should be skipped if CPU ID equal to nthreads.
-The patch doesn't fix any actual issue since
-nthreads = min_t(unsigned int, num_present_cpus(), MVPP2_MAX_THREADS).
-On all current Armada platforms, the number of CPU's is
-less than MVPP2_MAX_THREADS.
+On Thu, Feb 11, 2021 at 9:32 AM Philipp Zabel <pza@pengutronix.de> wrote:
+>
+> Another thing that might help to identify who is writing where might be to
+> clear the whole OCRAM region and dump it after running only decode or only
+> PRE/PRG scanout, for example:
 
-Fixes: e531f76757eb ("net: mvpp2: handle cases where more CPUs are available than s/w threads")
-Reported-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Great idea, I will try that out. This might take a few days. I am also
+dealing with higher priority issues,
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index a07cf60..74613d3 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -1135,7 +1135,7 @@ static void mvpp2_interrupts_mask(void *arg)
- 	struct mvpp2_port *port = arg;
- 
- 	/* If the thread isn't used, don't do anything */
--	if (smp_processor_id() > port->priv->nthreads)
-+	if (smp_processor_id() >= port->priv->nthreads)
- 		return;
- 
- 	mvpp2_thread_write(port->priv,
-@@ -1153,7 +1153,7 @@ static void mvpp2_interrupts_unmask(void *arg)
- 	u32 val;
- 
- 	/* If the thread isn't used, don't do anything */
--	if (smp_processor_id() > port->priv->nthreads)
-+	if (smp_processor_id() >= port->priv->nthreads)
- 		return;
- 
- 	val = MVPP2_CAUSE_MISC_SUM_MASK |
--- 
-1.9.1
+>
+> Could you check /sys/kernel/debug/dri/?/state while running the error case?
 
+dri state in non-error case:
+============================
+
+# cat state
+plane[31]: plane-0
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=0
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[35]: plane-1
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=1
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[38]: plane-2
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=0
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[42]: plane-3
+        crtc=crtc-2
+        fb=59
+                allocated by = X
+                refcount=2
+                format=XR24 little-endian (0x34325258)
+                modifier=0x0
+                size=1280x1088
+                layers:
+                        size[0]=1280x1088
+                        pitch[0]=5120
+                        offset[0]=0
+                        obj[0]:
+                                name=2
+                                refcount=4
+                                start=000105e4
+                                size=5570560
+                                imported=no
+                                paddr=0xee800000
+                                vaddr=78a02004
+        crtc-pos=1280x800+0+0
+        src-pos=1280.000000x800.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=0
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[46]: plane-4
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=1
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[49]: plane-5
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=0
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+crtc[34]: crtc-0
+        enable=0
+        active=0
+        self_refresh_active=0
+        planes_changed=0
+        mode_changed=0
+        active_changed=0
+        connectors_changed=0
+        color_mgmt_changed=0
+        plane_mask=0
+        connector_mask=0
+        encoder_mask=0
+        mode: "": 0 0 0 0 0 0 0 0 0 0 0x0 0x0
+crtc[41]: crtc-1
+        enable=0
+        active=0
+        self_refresh_active=0
+        planes_changed=0
+        mode_changed=0
+        active_changed=0
+        connectors_changed=0
+        color_mgmt_changed=0
+        plane_mask=0
+        connector_mask=0
+        encoder_mask=0
+        mode: "": 0 0 0 0 0 0 0 0 0 0 0x0 0x0
+crtc[45]: crtc-2
+        enable=1
+        active=1
+        self_refresh_active=0
+        planes_changed=0
+        mode_changed=0
+        active_changed=0
+        connectors_changed=0
+        color_mgmt_changed=0
+        plane_mask=8
+        connector_mask=2
+        encoder_mask=2
+        mode: "": 60 67880 1280 1344 1345 1350 800 838 839 841 0x0 0x0
+crtc[52]: crtc-3
+        enable=0
+        active=0
+        self_refresh_active=0
+        planes_changed=0
+        mode_changed=0
+        active_changed=0
+        connectors_changed=0
+        color_mgmt_changed=0
+        plane_mask=0
+        connector_mask=0
+        encoder_mask=0
+        mode: "": 0 0 0 0 0 0 0 0 0 0 0x0 0x0
+connector[54]: HDMI-A-1
+        crtc=(null)
+        self_refresh_aware=0
+connector[57]: LVDS-1
+        crtc=crtc-2
+        self_refresh_aware=0
+
+dri state in error case:
+========================
+# cat state
+plane[31]: plane-0
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=0
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[35]: plane-1
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=1
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[38]: plane-2
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=0
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[42]: plane-3
+        crtc=crtc-2
+        fb=60
+                allocated by = X
+                refcount=2
+                format=XR24 little-endian (0x34325258)
+                modifier=0x0
+                size=3000x1088
+                layers:
+                        size[0]=3000x1088
+                        pitch[0]=12000
+                        offset[0]=0
+                        obj[0]:
+                                name=1
+                                refcount=4
+                                start=00010b34
+                                size=13058048
+                                imported=no
+                                paddr=0xeee00000
+                                vaddr=37dd5aa6
+        crtc-pos=1280x800+0+0
+        src-pos=1280.000000x800.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=0
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[46]: plane-4
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=1
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+plane[49]: plane-5
+        crtc=(null)
+        fb=0
+        crtc-pos=0x0+0+0
+        src-pos=0.000000x0.000000+0.000000+0.000000
+        rotation=1
+        normalized-zpos=0
+        color-encoding=ITU-R BT.601 YCbCr
+        color-range=YCbCr limited range
+crtc[34]: crtc-0
+        enable=0
+        active=0
+        self_refresh_active=0
+        planes_changed=0
+        mode_changed=0
+        active_changed=0
+        connectors_changed=0
+        color_mgmt_changed=0
+        plane_mask=0
+        connector_mask=0
+        encoder_mask=0
+        mode: "": 0 0 0 0 0 0 0 0 0 0 0x0 0x0
+crtc[41]: crtc-1
+        enable=0
+        active=0
+        self_refresh_active=0
+        planes_changed=0
+        mode_changed=0
+        active_changed=0
+        connectors_changed=0
+        color_mgmt_changed=0
+        plane_mask=0
+        connector_mask=0
+        encoder_mask=0
+        mode: "": 0 0 0 0 0 0 0 0 0 0 0x0 0x0
+crtc[45]: crtc-2
+        enable=1
+        active=1
+        self_refresh_active=0
+        planes_changed=0
+        mode_changed=0
+        active_changed=0
+        connectors_changed=0
+        color_mgmt_changed=0
+        plane_mask=8
+        connector_mask=2
+        encoder_mask=2
+        mode: "": 60 67880 1280 1344 1345 1350 800 838 839 841 0x0 0x0
+crtc[52]: crtc-3
+        enable=0
+        active=0
+        self_refresh_active=0
+        planes_changed=0
+        mode_changed=0
+        active_changed=0
+        connectors_changed=0
+        color_mgmt_changed=0
+        plane_mask=0
+        connector_mask=0
+        encoder_mask=0
+        mode: "": 0 0 0 0 0 0 0 0 0 0 0x0 0x0
+connector[54]: HDMI-A-1
+        crtc=(null)
+        self_refresh_aware=0
+connector[57]: LVDS-1
+        crtc=crtc-2
+        self_refresh_aware=0
