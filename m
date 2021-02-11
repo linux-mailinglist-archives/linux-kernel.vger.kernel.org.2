@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F506319435
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 445DC31942C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhBKUTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:19:47 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:45450 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhBKUSV (ORCPT
+        id S231803AbhBKUSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:18:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231728AbhBKUR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:18:21 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11BKGvU8006233;
-        Thu, 11 Feb 2021 14:16:57 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1613074617;
-        bh=kr2SCd91PPpyHaD2qofeEm2a8JukcuL1omeQb1kfYAY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=gItRj/dhG56kIkp+3wnzTMbA3EdhiRuDOmVhfPKCs96JbqFwqbH/I3yis7UEUcjvH
-         ZG5WILnk75vuyD0DSLqdauGsShgcv9plTyxCWM2pFi4iMUE22bGJMZHfp95ggOywyh
-         Si9jHzYxVwu4IdUQJwLOLxDJgTeZ7mFeRU/387kQ=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11BKGvwq105162
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 11 Feb 2021 14:16:57 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 11
- Feb 2021 14:16:56 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 11 Feb 2021 14:16:56 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11BKGrAU029198;
-        Thu, 11 Feb 2021 14:16:54 -0600
-Subject: Re: [PATCH for next v1 1/2] gpio: omap: Replace raw_spin_lock_irqsave
- with raw_spin_lock in omap_gpio_irq_handler()
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Luo Jiaxing <luojiaxing@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
- <1612774577-55943-2-git-send-email-luojiaxing@huawei.com>
- <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
- <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <d5465b81-bb53-49ee-a556-40d208deb765@ti.com>
-Date:   Thu, 11 Feb 2021 22:16:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 11 Feb 2021 15:17:57 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8841C061756;
+        Thu, 11 Feb 2021 12:17:16 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id w1so11948038ejf.11;
+        Thu, 11 Feb 2021 12:17:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7h/P68fi4XyowjoWEA/DZsqBXWvyY+Lwx+kBuaa3z2Q=;
+        b=BrLIhb7FgXeGt4Krf6DDIxY6dUT7v+kxo7nrmPnKPFyFd93HEBYaHtC5cZJPb968zU
+         FyDSZ4SPeUTkTlOwn6HaaRWa4XAiRFN4tWMW2/MTgrgrx0xIpRBo1uO4/blGKa2NlW8y
+         aK7e1BR7xEil47+QoaUzW5NCnT3J5NmT3u+4l3ea24KTGOkG7VaoA3uu+FJX1/0uGDwd
+         e2Q1EpXH9Mu29p5Q5uopJlbP/yyseea/o4QzsayVZm4jVDZHn1lZ5OrVIk8Z6BAZm/pj
+         0wEMzXJYtVXIfJGmArg78JXFl7SdjmvDd3YucpYXvH4civWhHU5s2mQZ57NCFDF00yAc
+         Oo+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7h/P68fi4XyowjoWEA/DZsqBXWvyY+Lwx+kBuaa3z2Q=;
+        b=juImyTrZhGNVnpqXKGXlt504DwC3o97wkXt4owIiydKw2SNMrmioS3mdxfrWefvLXc
+         VYbWj1toOTkw9ERHJa6q6FCld+lHFFMTBOBWCq4K0ACv69rkoEfluNmCiEDRVZXQ24FL
+         LmmSInPur7YABcJEids+i1FeovUtXv24yihQl0X7VnHhPMd6iTzKoyGmB6+oiktlK9FZ
+         fwKu4bKzDS+qxAH9e5/ky1RUStXqaeYWP4AsnW8/QYLfjMc//B9cQWQUQ95a8SPipnEI
+         xvTB67SlTNeVimeykRBrKBL7re2W683HGkGE49N+3lmzVMG2FEmkwptIO/hK7lGvuFyz
+         nVQg==
+X-Gm-Message-State: AOAM531ypXQX/+J1Q8rLZSSrCxRkDUCEyHZt1+uL+wOF13bFk/g6WZCl
+        uA7+rkqQJ1eQEdh/hTw4LK8=
+X-Google-Smtp-Source: ABdhPJz/mCRWkKdWxJbBlnyWVmhf578mEZPXMXD3CInoUq7fpVB1g7s6bZl01dIzevBLvFWG7JOnlw==
+X-Received: by 2002:a17:906:7698:: with SMTP id o24mr9757984ejm.504.1613074635665;
+        Thu, 11 Feb 2021 12:17:15 -0800 (PST)
+Received: from xws.localdomain ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id a1sm4938177edj.6.2021.02.11.12.17.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 12:17:15 -0800 (PST)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Mark Pearson <markpearson@lenovo.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] platform/surface: Add platform profile driver for Surface devices
+Date:   Thu, 11 Feb 2021 21:16:59 +0100
+Message-Id: <20210211201703.658240-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds a driver to provide platform profile support on 5th-
+and later generation Microsoft Surface devices with a Surface System
+Aggregator Module. On those devices, the platform profile can be used to
+influence cooling behavior and power consumption.
 
+To achieve this, a new platform profile is introduced: the
+'balanced-performance' profile.
 
-On 11/02/2021 21:39, Arnd Bergmann wrote:
-> On Thu, Feb 11, 2021 at 7:25 PM Grygorii Strashko
-> <grygorii.strashko@ti.com> wrote:
->> On 08/02/2021 10:56, Luo Jiaxing wrote:
->>> There is no need to use API with _irqsave in omap_gpio_irq_handler(),
->>> because it already be in a irq-disabled context.
->>
->> NACK.
->> Who said that this is always hard IRQ handler?
->> What about RT-kernel or boot with "threadirqs"?
-> 
-> In those cases, the interrupt handler is just a normal thread, so the
-> preempt_disable() that is implied by raw_spin_lock() is sufficient.
-> 
-> Disabling interrupts inside of an interrupt handler is always incorrect,
-> the patch looks like a useful cleanup to me, if only for readability.
+In addition, a couple of fix-ups are performed:
+- Hide CONFIG_ACPI_PLATFORM_PROFILE and change drivers so that it is
+  selected instead of depended on.
+- Fix some references to documentation in a comment.
 
-Note. there is also generic_handle_irq() call inside.
+Note: This series (or more specifically "platform/surface: Add platform
+profile driver") depends on the "platform/surface: Add Surface
+Aggregator device registry" series.
+
+Changes in v2:
+ - Introduce new 'balanced-performance' platform profile and change
+   profile mapping in driver.
+ - Perform some fix-ups for the ACPI platform profile implementation:
+   - Fix some references to documentation in a comment.
+   - Hide CONFIG_ACPI_PLATFORM_PROFILE
+
+Maximilian Luz (4):
+  ACPI: platform: Hide ACPI_PLATFORM_PROFILE option
+  ACPI: platform: Fix file references in comment
+  ACPI: platform: Add balanced-performance platform profile
+  platform/surface: Add platform profile driver
+
+ .../ABI/testing/sysfs-platform_profile        |  18 +-
+ MAINTAINERS                                   |   6 +
+ drivers/acpi/Kconfig                          |  16 +-
+ drivers/acpi/platform_profile.c               |   1 +
+ drivers/platform/surface/Kconfig              |  22 ++
+ drivers/platform/surface/Makefile             |   1 +
+ .../surface/surface_platform_profile.c        | 190 ++++++++++++++++++
+ drivers/platform/x86/Kconfig                  |   4 +-
+ include/linux/platform_profile.h              |   6 +-
+ 9 files changed, 237 insertions(+), 27 deletions(-)
+ create mode 100644 drivers/platform/surface/surface_platform_profile.c
 
 -- 
-Best regards,
-grygorii
+2.30.0
+
