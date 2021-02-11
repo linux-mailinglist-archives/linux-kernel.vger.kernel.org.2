@@ -2,80 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E6C318394
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8899A318397
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhBKC3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 21:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
+        id S229777AbhBKCba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 21:31:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhBKC3b (ORCPT
+        with ESMTP id S229752AbhBKCbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 21:29:31 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2913C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:28:51 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id v19so1925037qvl.7
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:28:51 -0800 (PST)
+        Wed, 10 Feb 2021 21:31:13 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6150AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:30:33 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id gb24so2432802pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:30:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v/JR6cxBec2OO4AyQr8LqOFJlkaTALkaG4hkaa3+jH0=;
-        b=tmRca4PB2kps0fAMgBJNaTQMArARvSx/SfChzgUdm89r1VOxPYGtgjUqVJbGvABQBi
-         b1p0l2nSh7eJd4bBjJyqeqxxzLEQMSvO8U2c8yeds2A1CQZbqXlsRAzJKmGHJukytAFJ
-         m/GJu+/zc7xAK2nEL38pW+FCnNngPCIIy0dc0=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=65eB/aEffg+NC6m9O4O2k2LGrBXfS7B2k/rRczH64E4=;
+        b=DLkCZVlF1J5UOImwOLw0v9TRi6lr0Ke8pCHhUwSC/RQhSV6wLWWtWQL14dIxN24TZq
+         9cEIw5V9slA0ZvFxuIGRbgjJMV8PjAfjcNjIUuukPI6G9Ecj5oIWFvw9f/sUmofp+acU
+         BWgvwpxvrlUYkNtkrWgWhOGvCW8W50eLzFJNF3IbNHYOv+rapmsZ74Yl0PyVNJ1l9fcE
+         HtCBQa4o1/VXKJaphXSu+Q4d9hUqhoScR2CCHUwSJBaDuXKvNchCEC7do/doI4DUz2F0
+         4WQ2xk32eiWlkiaRrd5BV+x+bg4I/0lXCEExs0dLCKW8mGME8pP/JU0NQP1ANMwQRtq+
+         phcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v/JR6cxBec2OO4AyQr8LqOFJlkaTALkaG4hkaa3+jH0=;
-        b=ZLo41lTagGGh7Zfm8lh8eC68S8k5tBBxB3Xa0+/cpq5bCDVcT3YwnSK1YQ8QdvcGMq
-         OMGW6vpxMbyaGwXSBZzsIn+EVP+F5HMO9SMwLLpbc9iDBO6/0ScXuqIpSMZOtzso+LrI
-         Fju1Ysqht6R2bZBonN3SDZ+9pf64f4UQQw5ECWnToRQbF4cd5CYTK1/SPB8g0E2LuEVe
-         7Ivi9VPFyv4JAqadVfhCXOXyQ3wO9t5pLDwOVVk/+t8GxJdIFnuIwDXyOicqZ5OZtMh6
-         jVgFkRXO/VOBNczgvmD8c6giWlGFNzTK+8DYDov3ji+9uGMA4ORosMA4LiINNQ2hBIY2
-         eAww==
-X-Gm-Message-State: AOAM530i+tT5R0t6aeuKpjE5a49tQNSU5Yc3VwEfVnLdgk/XSMMLghqj
-        M1RkMkWhzoz76hm6j9VXjDgEg2iZan5IT9NXtGsD4SLEs92znA==
-X-Google-Smtp-Source: ABdhPJwx4HM5jl8YL/e1RHuGN3F2Bjd7U1tHpztED7tcsPkI5wXPP1SMXIcnSHppZZwsNvyRd5ps9xcpcH8nuzQqmAQ=
-X-Received: by 2002:a0c:ec83:: with SMTP id u3mr5631558qvo.55.1613010530875;
- Wed, 10 Feb 2021 18:28:50 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=65eB/aEffg+NC6m9O4O2k2LGrBXfS7B2k/rRczH64E4=;
+        b=RmTqvBeKjz6a7t2g3rA0yXMcsQcgsZkwx9x1zHKOmp7zkv5onOsNOv2CTrrtNtAgkt
+         123pQDJJM/RuHSmtifiwy7gZY4WDkT33heJUDpYJ2aP1Taz6shrEcsldPAaeh9CXhEQN
+         aemcnFzmw/bqY7K9LPIj11jM1ROapzPpKBeXzBWt3LTm/RuYc1edq6j+Nl/R8KQTQg3U
+         2uNLdBtFuzepkT6+z5UcznE5ZWt+smxfh0+9ILA4s8QAP8xo1t901f2NYbFyN5J/wj/x
+         kz5tDYHPsXMiAzwXIM6Jjhmv/Zn0AGd5Qzli6ChZ2upI3jnfHanOrFQDYMU1NcdVuZC9
+         2PKw==
+X-Gm-Message-State: AOAM533AT1LM+TTEzC69ClYb+xxwbCMJ5tvtr4HBbLkEoBCatf9s366x
+        +TcHlkyy9FslGujlU92DQOQvb3jjU+s=
+X-Google-Smtp-Source: ABdhPJwLnarcijOL4qTg3l5T3HxN4a1FSqfwgxX5H0qoWhVtVOpGrqwBzhm0vT+hBK1IqBaIIyrD0Q==
+X-Received: by 2002:a17:90a:7404:: with SMTP id a4mr1759231pjg.167.1613010632871;
+        Wed, 10 Feb 2021 18:30:32 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:e5b0:be96:1dfb:a1f6])
+        by smtp.gmail.com with ESMTPSA id q2sm3479812pfj.32.2021.02.10.18.30.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 18:30:31 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 10 Feb 2021 18:30:30 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        John Dias <joaodias@google.com>
+Subject: Re: [PATCH] dma-buf: system_heap: do not warn for costly allocation
+Message-ID: <YCSWxknChzEcRo/F@google.com>
+References: <20210210162632.3903128-1-minchan@kernel.org>
+ <CALAqxLXzc3tfsr0hA6GS-zHjupWx++Bhcrs2pjbz00LNKeThOQ@mail.gmail.com>
+ <YCQcfYRQ3eW+QiMz@google.com>
+ <CALAqxLUaiOOrC6kWYSj1yg6qed32rQhfN4k99HNgn_=0kpFRJw@mail.gmail.com>
+ <YCRpclaUOkEWA83o@google.com>
+ <CALAqxLU33Mt_mYXPUxcbZB6whynd2PRPuLHNJmX-mx+od6hXVw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201114135044.724385-1-daniel@0x0f.com> <20201114135044.724385-3-daniel@0x0f.com>
- <160843556037.1580929.13575770228476494246@swboyd.mtv.corp.google.com>
- <CAFr9PX=f=HyHBk4s3e_vnMDC53R1X18m7sKFCLMMjitPm+8oEQ@mail.gmail.com>
- <160848984935.1580929.936824086681978646@swboyd.mtv.corp.google.com>
- <CAFr9PX=oLqQqvykiwOGAGg1H2CG0BTEqn0TuSrijodjxY52LxQ@mail.gmail.com> <161292417080.418021.13416197091150418216@swboyd.mtv.corp.google.com>
-In-Reply-To: <161292417080.418021.13416197091150418216@swboyd.mtv.corp.google.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Thu, 11 Feb 2021 11:28:40 +0900
-Message-ID: <CAFr9PXkGeFUyGCKZgYF+0uJT1ywad42RvPg39ggO8WRngY8uWw@mail.gmail.com>
-Subject: Re: [PATCH 2/6] dt-bindings: clk: mstar msc313 mpll binding description
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     DTML <devicetree@vger.kernel.org>, linux-clk@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALAqxLU33Mt_mYXPUxcbZB6whynd2PRPuLHNJmX-mx+od6hXVw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Wed, Feb 10, 2021 at 06:14:46PM -0800, John Stultz wrote:
+> On Wed, Feb 10, 2021 at 3:17 PM Minchan Kim <minchan@kernel.org> wrote:
+> >
+> > On Wed, Feb 10, 2021 at 01:40:02PM -0800, John Stultz wrote:
+> > > On Wed, Feb 10, 2021 at 9:48 AM Minchan Kim <minchan@kernel.org> wrote:
+> > > >
+> > > > On Wed, Feb 10, 2021 at 09:32:09AM -0800, John Stultz wrote:
+> > > > > On Wed, Feb 10, 2021 at 8:26 AM Minchan Kim <minchan@kernel.org> wrote:
+> > > > > >
+> > > > > > Linux VM is not hard to support PAGE_ALLOC_COSTLY_ODER allocation
+> > > > > > so normally expects driver passes __GFP_NOWARN in that case
+> > > > > > if they has fallback options.
+> > > > > >
+> > > > > > system_heap in dmabuf is the case so do not flood into demsg
+> > > > > > with the warning for recording more precious information logs.
+> > > > > > (below is ION warning example I got but dmabuf system heap is
+> > > > > > nothing different).
+> > > > > >
+> > > > > > [ 1233.911533][  T460] warn_alloc: 11 callbacks suppressed
+> > > > > > [ 1233.911539][  T460] allocator@2.0-s: page allocation failure: order:4, mode:0x140dc2(GFP_HIGHUSER|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
+> > > > > > [ 1233.926235][  T460] Call trace:
+> > > > > > [ 1233.929370][  T460]  dump_backtrace+0x0/0x1d8
+> > > > > > [ 1233.933704][  T460]  show_stack+0x18/0x24
+> > > > > > [ 1233.937701][  T460]  dump_stack+0xc0/0x140
+> > > > > > [ 1233.941783][  T460]  warn_alloc+0xf4/0x148
+> > > > > > [ 1233.945862][  T460]  __alloc_pages_slowpath+0x9fc/0xa10
+> > > > > > [ 1233.951101][  T460]  __alloc_pages_nodemask+0x278/0x2c0
+> > > > > > [ 1233.956285][  T460]  ion_page_pool_alloc+0xd8/0x100
+> > > > > > [ 1233.961144][  T460]  ion_system_heap_allocate+0xbc/0x2f0
+> > > > > > [ 1233.966440][  T460]  ion_buffer_create+0x68/0x274
+> > > > > > [ 1233.971130][  T460]  ion_buffer_alloc+0x8c/0x110
+> > > > > > [ 1233.975733][  T460]  ion_dmabuf_alloc+0x44/0xe8
+> > > > > > [ 1233.980248][  T460]  ion_ioctl+0x100/0x320
+> > > > > > [ 1233.984332][  T460]  __arm64_sys_ioctl+0x90/0xc8
+> > > > > > [ 1233.988934][  T460]  el0_svc_common+0x9c/0x168
+> > > > > > [ 1233.993360][  T460]  do_el0_svc+0x1c/0x28
+> > > > > > [ 1233.997358][  T460]  el0_sync_handler+0xd8/0x250
+> > > > > > [ 1234.001989][  T460]  el0_sync+0x148/0x180
+> > > > > >
+> > > > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > > > > > ---
+> > > > > >  drivers/dma-buf/heaps/system_heap.c | 9 +++++++--
+> > > > > >  1 files changed, 7 insertions(+), 2 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> > > > > > index 29e49ac17251..33c25a5e06f9 100644
+> > > > > > --- a/drivers/dma-buf/heaps/system_heap.c
+> > > > > > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > > > > > @@ -40,7 +40,7 @@ struct dma_heap_attachment {
+> > > > > >         bool mapped;
+> > > > > >  };
+> > > > > >
+> > > > > > -#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
+> > > > > > +#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO \
+> > > > > >                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+> > > > > >                                 | __GFP_COMP)
+> > > > > >  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> > > > > > @@ -315,6 +315,7 @@ static struct page *alloc_largest_available(unsigned long size,
+> > > > > >                                             unsigned int max_order)
+> > > > > >  {
+> > > > > >         struct page *page;
+> > > > > > +       unsigned long gfp_flags;
+> > > > > >         int i;
+> > > > > >
+> > > > > >         for (i = 0; i < NUM_ORDERS; i++) {
+> > > > > > @@ -323,7 +324,11 @@ static struct page *alloc_largest_available(unsigned long size,
+> > > > > >                 if (max_order < orders[i])
+> > > > > >                         continue;
+> > > > > >
+> > > > > > -               page = alloc_pages(order_flags[i], orders[i]);
+> > > > > > +               gfp_flags = order_flags[i];
+> > > > > > +               if (orders[i] > PAGE_ALLOC_COSTLY_ORDER)
+> > > > > > +                       gfp_flags |= __GFP_NOWARN;
+> > > > > > +
+> > > > > > +               page = alloc_pages(gfp_flags, orders[i]);
+> > > > >
+> > > > > Would it be cleaner to just set up the flags properly in the
+> > > > > order_flags array? I'm not sure I understand why your patch does it
+> > > > > dynamically?
+> > > >
+> > > > That's exactly I had in my branch for aosp fix but I wanted to
+> > > > hear it explicitly from dmabuf maintainer since I was worried
+> > > > chaninging order-4 allocation behavior, especially,
+> > > > __GFP_NORETRY and &~__GFP_RECLAIM.
+> > > > (It will make allocation failure easier than old and that's not
+> > > > thing my patch is addressing).
+> > >
+> > > Yea. I might stick to changing just the __GFP_NOWARN.
+> > >
+> > > > If you want this, I am happy to change it. Shall I?
+> > > >
+> > > > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> > > > index 29e49ac17251..865ec847013d 100644
+> > > > --- a/drivers/dma-buf/heaps/system_heap.c
+> > > > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > > > @@ -44,7 +44,7 @@ struct dma_heap_attachment {
+> > > >                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+> > > >                                 | __GFP_COMP)
+> > > >  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> > > > -static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
+> > > > +static gfp_t order_flags[] = {HIGH_ORDER_GFP, HIGH_ORDER_GFP, LOW_ORDER_GFP};
+> > >
+> > > Maybe can you define a MID_ORDER_GFP as LOW_ORDER | __GFP_NOWARN
+> > > (along with a comment in the code as to why) instead ?
+> > >
+> > > That avoids introducing any subtle behavioral change unintentionally.
+> >
+> > How about this one? Feel free to suggest better wording.
+> >
+> > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> > index 29e49ac17251..6e17ff06331e 100644
+> > --- a/drivers/dma-buf/heaps/system_heap.c
+> > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > @@ -44,7 +44,13 @@ struct dma_heap_attachment {
+> >                                 | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+> >                                 | __GFP_COMP)
+> >  #define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> > -static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
+> > +/*
+> > + * order-4 is PAGE_ALLOC_COSTLY_ORDER which is order allocator could fail
+> > + * easier than lower orders. Since we have fallback order-0 allocation,
+> > + * do not add warn.
+> > + */
+> 
+> Maybe: "Avoid warning on order-4 allocation failures as we'll fall
+> back to order-0 in that case."
+> 
+> > +#define MID_ORDER_GFP (LOW_ORDER_GFP | __GFP_NOWARN)
+> 
+> My only other nit is to suggest sorting the LOW/MID/HIGH defines.
 
-On Wed, 10 Feb 2021 at 11:29, Stephen Boyd <sboyd@kernel.org> wrote:
-> The child clks should be using clk_parent_data to point to the parent
-> clks through DT. That way the name of the clk doesn't matter except for
-> debug purposes.
+Yub, let me cook it
 
-I think I get it now. I was using of_clk_parent_fill() to get the
-parent clocks sourced
-from the mpll but I seems like I should be filling out an array of
-struct clk_parent_data
-with the indices of the parents and using
-clk_register_composite_pdata() etc instead.
-
-Thanks!
-
-Daniel
+Thanks for the review, John.
