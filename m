@@ -2,85 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B9B3192A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF9931928C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhBKS6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:58:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57594 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230493AbhBKSzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:55:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 14A0EAD57;
-        Thu, 11 Feb 2021 18:54:29 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 10DDFDA6E9; Thu, 11 Feb 2021 19:52:35 +0100 (CET)
-Date:   Thu, 11 Feb 2021 19:52:34 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V2 4/8] mm/highmem: Add VM_BUG_ON() to mem*_page() calls
-Message-ID: <20210211185234.GG1993@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20210210062221.3023586-1-ira.weiny@intel.com>
- <20210210062221.3023586-5-ira.weiny@intel.com>
- <20210210125502.GD2111784@infradead.org>
- <20210210162901.GB3014244@iweiny-DESK2.sc.intel.com>
- <20210210185606.GF308988@casper.infradead.org>
- <20210210212228.GF3014244@iweiny-DESK2.sc.intel.com>
+        id S230080AbhBKSxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:53:52 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:44482 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229731AbhBKSxc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 13:53:32 -0500
+Date:   Thu, 11 Feb 2021 18:52:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1613069569; bh=NUBZMBqGVXKB5B+mjmbD+QS/7XtCT4xEM8IcD7m5LMY=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=AT1cLTGpSPNlSUo7wlM3MHr3/mUtfDcNTm5+tUuCAxlXfOo+spYEAMl8Rem05T4tx
+         L+UWAfK6vf9eqq1VOeuC+J/566VbdLhSdMZGgjDZ9SuyetlFHN2+WKcwMZQyaTuZdg
+         JekHEfMssGoVCeVCD0+rY8lqQ5p5nqvXsmWPIw2EFOWrbtYdNFHO9V2bYm3wBBs5Cv
+         ZJAADKSaEFr25IEi9+czqr5o86FKhl4MuzjloVLPUAqApBFfNgliWSJNNG5NW/NNii
+         NrXv2ZOat9ekfHLTLiRtBc7YR1TJ7fT5oKh/6jp+a39j+mL7hlE3Wm7RddRRyxMNkd
+         jB8IptKQHEzBg==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v5 net-next 00/11] skbuff: introduce skbuff_heads bulking and reusing
+Message-ID: <20210211185220.9753-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210212228.GF3014244@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:22:28PM -0800, Ira Weiny wrote:
-> On Wed, Feb 10, 2021 at 06:56:06PM +0000, Matthew Wilcox wrote:
-> > On Wed, Feb 10, 2021 at 08:29:01AM -0800, Ira Weiny wrote:
-> > > And I thought it was a good idea.  Any file system development should have
-> > > tests with DEBUG_VM which should cover Matthew's concern while not having the
-> > > overhead in production.  Seemed like a decent compromise?
-> > 
-> > Why do you think these paths are only used during file system development?
-> 
-> I can't guarantee it but right now most of the conversions I have worked on are
-> in FS's.
-> 
-> > They're definitely used by networking, by device drivers of all kinds
-> > and they're probably even used by the graphics system.
-> > 
-> > While developers *should* turn on DEBUG_VM during development, a
-> > shockingly high percentage don't even turn on lockdep.
-> 
-> Honestly, I don't feel strongly enough to argue it.
+Currently, all sorts of skb allocation always do allocate
+skbuff_heads one by one via kmem_cache_alloc().
+On the other hand, we have percpu napi_alloc_cache to store
+skbuff_heads queued up for freeing and flush them by bulks.
 
-I checked my devel config and I don't have DEBUG_VM enabled, while I
-have a bunch of other debugging options related to locking or other
-fine-grained sanity checks. The help text is not very specific what
-exactly is being checked other that it hurts performance, so I read it
-as that it's for MM developers that change the MM code, while in
-filesystem we use the APIs.
+We can use this cache not only for bulk-wiping, but also to obtain
+heads for new skbs and avoid unconditional allocations, as well as
+for bulk-allocating (like XDP's cpumap code and veth driver already
+do).
 
-However, for the this patchset I'll turn it on all testing instances of
-course.
+As this might affect latencies, cache pressure and lots of hardware
+and driver-dependent stuff, this new feature is mostly optional and
+can be issued via:
+ - a new napi_build_skb() function (as a replacement for build_skb());
+ - existing {,__}napi_alloc_skb() and napi_get_frags() functions;
+ - __alloc_skb() with passing SKB_ALLOC_NAPI in flags.
 
-> Andrew?  David?  David this is going through your tree so would you feel more
-> comfortable with 1 or the other?
+iperf3 showed 35-70 Mbps bumps for both TCP and UDP while performing
+VLAN NAT on 1.2 GHz MIPS board. The boost is likely to be bigger
+on more powerful hosts and NICs with tens of Mpps.
 
-I think it's a question for MM people, for now I assume it's supposed to
-be VM_BUG_ON.
+Note on skbuff_heads from distant slabs or pfmemalloc'ed slabs:
+ - kmalloc()/kmem_cache_alloc() itself allows by default allocating
+   memory from the remote nodes to defragment their slabs. This is
+   controlled by sysctl, but according to this, skbuff_head from a
+   remote node is an OK case;
+ - The easiest way to check if the slab of skbuff_head is remote or
+   pfmemalloc'ed is:
+
+=09if (!dev_page_is_reusable(virt_to_head_page(skb)))
+=09=09/* drop it */;
+
+   ...*but*, regarding that most slabs are built of compound pages,
+   virt_to_head_page() will hit unlikely-branch every single call.
+   This check costed at least 20 Mbps in test scenarios and seems
+   like it'd be better to _not_ do this.
+
+Since v4 [3]:
+ - rebase on top of net-next and address kernel build robot issue;
+ - reorder checks a bit in __alloc_skb() to make new condition even
+   more harmless.
+
+Since v3 [2]:
+ - make the feature mostly optional, so driver developers could
+   decide whether to use it or not (Paolo Abeni).
+   This reuses the old flag for __alloc_skb() and introduces
+   a new napi_build_skb();
+ - reduce bulk-allocation size from 32 to 16 elements (also Paolo).
+   This equals to the value of XDP's devmap and veth batch processing
+   (which were tested a lot) and should be sane enough;
+ - don't waste cycles on explicit in_serving_softirq() check.
+
+Since v2 [1]:
+ - also cover {,__}alloc_skb() and {,__}build_skb() cases (became handy
+   after the changes that pass tiny skbs requests to kmalloc layer);
+ - cover the cache with KASAN instrumentation (suggested by Eric
+   Dumazet, help of Dmitry Vyukov);
+ - completely drop redundant __kfree_skb_flush() (also Eric);
+ - lots of code cleanups;
+ - expand the commit message with NUMA and pfmemalloc points (Jakub).
+
+Since v1 [0]:
+ - use one unified cache instead of two separate to greatly simplify
+   the logics and reduce hotpath overhead (Edward Cree);
+ - new: recycle also GRO_MERGED_FREE skbs instead of immediate
+   freeing;
+ - correct performance numbers after optimizations and performing
+   lots of tests for different use cases.
+
+[0] https://lore.kernel.org/netdev/20210111182655.12159-1-alobakin@pm.me
+[1] https://lore.kernel.org/netdev/20210113133523.39205-1-alobakin@pm.me
+[2] https://lore.kernel.org/netdev/20210209204533.327360-1-alobakin@pm.me
+[3] https://lore.kernel.org/netdev/20210210162732.80467-1-alobakin@pm.me
+
+Alexander Lobakin (11):
+  skbuff: move __alloc_skb() next to the other skb allocation functions
+  skbuff: simplify kmalloc_reserve()
+  skbuff: make __build_skb_around() return void
+  skbuff: simplify __alloc_skb() a bit
+  skbuff: use __build_skb_around() in __alloc_skb()
+  skbuff: remove __kfree_skb_flush()
+  skbuff: move NAPI cache declarations upper in the file
+  skbuff: introduce {,__}napi_build_skb() which reuses NAPI cache heads
+  skbuff: allow to optionally use NAPI cache from __alloc_skb()
+  skbuff: allow to use NAPI cache from __napi_alloc_skb()
+  skbuff: queue NAPI_MERGED_FREE skbs into NAPI cache instead of freeing
+
+ include/linux/skbuff.h |   4 +-
+ net/core/dev.c         |  16 +-
+ net/core/skbuff.c      | 429 +++++++++++++++++++++++------------------
+ 3 files changed, 243 insertions(+), 206 deletions(-)
+
+--=20
+2.30.1
+
+
