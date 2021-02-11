@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B31318F34
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75167318F1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhBKPyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 10:54:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52466 "EHLO mail.kernel.org"
+        id S229946AbhBKPsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:48:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230272AbhBKPT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:19:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A19F364F25;
-        Thu, 11 Feb 2021 15:06:41 +0000 (UTC)
+        id S230197AbhBKPSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:18:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA3A964F13;
+        Thu, 11 Feb 2021 15:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613056002;
-        bh=jIHY2Onh9Lf4bc+Q7liJg+mnsJDotpo45TN0MWOgu8U=;
+        s=korg; t=1613055971;
+        bh=rmkHtqdHOAADIqXZNJsn2jznTd52r0jqSpRSJ7qc+mI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qMGTDDK585Gkz2ZpFkNb4gINJCNDNCHYBdprr7/oZDZs4nGYKa5/9GW8xHPMpomgP
-         dbSUUblXXjPn29lWOzsRv8i6i0JfFsymH7x3RRiTq/RmpBuX3YQ66P74MEQeoree7N
-         IdCeggA0zyQu9EsZePEwOaeUeZo03fiMiWczVdow=
+        b=XawiUv3q40RAD6DaFJP93zvrlqsrhF2HaqgHqI+pOsULLotV/NPv6h7F+VToO5GZS
+         jYm66Un13OHomkCVcvAa+jSJjaXWx6Btm0ggpbTJ7zpnAS7eYv7osFkxrkaBixqbQw
+         3b8AXqFx8Xc1ZIzrldin8dEUwPuUF1aPO9+JRE5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 12/24] iwlwifi: pcie: fix context info memory leak
-Date:   Thu, 11 Feb 2021 16:02:46 +0100
-Message-Id: <20210211150148.293917611@linuxfoundation.org>
+        stable@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
+        syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 24/24] squashfs: add more sanity checks in xattr id lookup
+Date:   Thu, 11 Feb 2021 16:02:47 +0100
+Message-Id: <20210211150149.577145041@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210211150147.743660073@linuxfoundation.org>
-References: <20210211150147.743660073@linuxfoundation.org>
+In-Reply-To: <20210211150148.516371325@linuxfoundation.org>
+References: <20210211150148.516371325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +41,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Phillip Lougher <phillip@squashfs.org.uk>
 
-[ Upstream commit 2d6bc752cc2806366d9a4fd577b3f6c1f7a7e04e ]
+commit 506220d2ba21791314af569211ffd8870b8208fa upstream.
 
-If the image loader allocation fails, we leak all the previously
-allocated memory. Fix this.
+Sysbot has reported a warning where a kmalloc() attempt exceeds the
+maximum limit.  This has been identified as corruption of the xattr_ids
+count when reading the xattr id lookup table.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20210115130252.97172cbaa67c.I3473233d0ad01a71aa9400832fb2b9f494d88a11@changeid
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch adds a number of additional sanity checks to detect this
+corruption and others.
+
+1. It checks for a corrupted xattr index read from the inode.  This could
+   be because the metadata block is uncompressed, or because the
+   "compression" bit has been corrupted (turning a compressed block
+   into an uncompressed block).  This would cause an out of bounds read.
+
+2. It checks against corruption of the xattr_ids count.  This can either
+   lead to the above kmalloc failure, or a smaller than expected
+   table to be read.
+
+3. It checks the contents of the index table for corruption.
+
+[phillip@squashfs.org.uk: fix checkpatch issue]
+  Link: https://lkml.kernel.org/r/270245655.754655.1612770082682@webmail.123-reg.co.uk
+
+Link: https://lkml.kernel.org/r/20210204130249.4495-5-phillip@squashfs.org.uk
+Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
+Reported-by: syzbot+2ccea6339d368360800d@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c  | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ fs/squashfs/xattr_id.c |   66 ++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 57 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c b/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c
-index 6783b20d9681b..a1cecf4a0e820 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c
-@@ -159,8 +159,10 @@ int iwl_pcie_ctxt_info_gen3_init(struct iwl_trans *trans,
- 	/* Allocate IML */
- 	iml_img = dma_alloc_coherent(trans->dev, trans->iml_len,
- 				     &trans_pcie->iml_dma_addr, GFP_KERNEL);
--	if (!iml_img)
--		return -ENOMEM;
-+	if (!iml_img) {
-+		ret = -ENOMEM;
-+		goto err_free_ctxt_info;
+--- a/fs/squashfs/xattr_id.c
++++ b/fs/squashfs/xattr_id.c
+@@ -31,10 +31,15 @@ int squashfs_xattr_lookup(struct super_b
+ 	struct squashfs_sb_info *msblk = sb->s_fs_info;
+ 	int block = SQUASHFS_XATTR_BLOCK(index);
+ 	int offset = SQUASHFS_XATTR_BLOCK_OFFSET(index);
+-	u64 start_block = le64_to_cpu(msblk->xattr_id_table[block]);
++	u64 start_block;
+ 	struct squashfs_xattr_id id;
+ 	int err;
+ 
++	if (index >= msblk->xattr_ids)
++		return -EINVAL;
++
++	start_block = le64_to_cpu(msblk->xattr_id_table[block]);
++
+ 	err = squashfs_read_metadata(sb, &id, &start_block, &offset,
+ 							sizeof(id));
+ 	if (err < 0)
+@@ -50,13 +55,17 @@ int squashfs_xattr_lookup(struct super_b
+ /*
+  * Read uncompressed xattr id lookup table indexes from disk into memory
+  */
+-__le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 start,
++__le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 table_start,
+ 		u64 *xattr_table_start, int *xattr_ids)
+ {
+-	unsigned int len;
++	struct squashfs_sb_info *msblk = sb->s_fs_info;
++	unsigned int len, indexes;
+ 	struct squashfs_xattr_id_table *id_table;
++	__le64 *table;
++	u64 start, end;
++	int n;
+ 
+-	id_table = squashfs_read_table(sb, start, sizeof(*id_table));
++	id_table = squashfs_read_table(sb, table_start, sizeof(*id_table));
+ 	if (IS_ERR(id_table))
+ 		return (__le64 *) id_table;
+ 
+@@ -70,13 +79,52 @@ __le64 *squashfs_read_xattr_id_table(str
+ 	if (*xattr_ids == 0)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	/* xattr_table should be less than start */
+-	if (*xattr_table_start >= start)
++	len = SQUASHFS_XATTR_BLOCK_BYTES(*xattr_ids);
++	indexes = SQUASHFS_XATTR_BLOCKS(*xattr_ids);
++
++	/*
++	 * The computed size of the index table (len bytes) should exactly
++	 * match the table start and end points
++	 */
++	start = table_start + sizeof(*id_table);
++	end = msblk->bytes_used;
++
++	if (len != (end - start))
+ 		return ERR_PTR(-EINVAL);
+ 
+-	len = SQUASHFS_XATTR_BLOCK_BYTES(*xattr_ids);
++	table = squashfs_read_table(sb, start, len);
++	if (IS_ERR(table))
++		return table;
++
++	/* table[0], table[1], ... table[indexes - 1] store the locations
++	 * of the compressed xattr id blocks.  Each entry should be less than
++	 * the next (i.e. table[0] < table[1]), and the difference between them
++	 * should be SQUASHFS_METADATA_SIZE or less.  table[indexes - 1]
++	 * should be less than table_start, and again the difference
++	 * shouls be SQUASHFS_METADATA_SIZE or less.
++	 *
++	 * Finally xattr_table_start should be less than table[0].
++	 */
++	for (n = 0; n < (indexes - 1); n++) {
++		start = le64_to_cpu(table[n]);
++		end = le64_to_cpu(table[n + 1]);
++
++		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
++			kfree(table);
++			return ERR_PTR(-EINVAL);
++		}
++	}
++
++	start = le64_to_cpu(table[indexes - 1]);
++	if (start >= table_start || (table_start - start) > SQUASHFS_METADATA_SIZE) {
++		kfree(table);
++		return ERR_PTR(-EINVAL);
 +	}
  
- 	memcpy(iml_img, trans->iml, trans->iml_len);
+-	TRACE("In read_xattr_index_table, length %d\n", len);
++	if (*xattr_table_start >= le64_to_cpu(table[0])) {
++		kfree(table);
++		return ERR_PTR(-EINVAL);
++	}
  
-@@ -177,6 +179,11 @@ int iwl_pcie_ctxt_info_gen3_init(struct iwl_trans *trans,
- 
- 	return 0;
- 
-+err_free_ctxt_info:
-+	dma_free_coherent(trans->dev, sizeof(*trans_pcie->ctxt_info_gen3),
-+			  trans_pcie->ctxt_info_gen3,
-+			  trans_pcie->ctxt_info_dma_addr);
-+	trans_pcie->ctxt_info_gen3 = NULL;
- err_free_prph_info:
- 	dma_free_coherent(trans->dev,
- 			  sizeof(*prph_info),
--- 
-2.27.0
-
+-	return squashfs_read_table(sb, start + sizeof(*id_table), len);
++	return table;
+ }
 
 
