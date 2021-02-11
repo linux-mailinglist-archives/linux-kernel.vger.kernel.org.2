@@ -2,175 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DB2319067
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 334EF31907A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhBKQxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:53:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhBKPlD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:41:03 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C91DC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:40:17 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id o15so4177158wmq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:40:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=BQASuo84wfslsSEivWFaPBGKyJ+9IhWQICA1bAqw9pc=;
-        b=G/UnfUhjvghbtT5LL/ccChqvxR3VGoeJDY0GnhgqREnzARjQQ+nIuF6vtPkRJ67lFU
-         IOrCaSzzOWXuAcKHDhheox4KAPQXkPZ0VlDd70F+0DJpVVTh0rBkQDVTuSHeQ06xKPSb
-         c1cmmAz6bP+t0knwzzSCM+lT37KdOsOWUDOEw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=BQASuo84wfslsSEivWFaPBGKyJ+9IhWQICA1bAqw9pc=;
-        b=KcvQLSW0UhYWdsqbN4qpKmM3WAKbQrxwU2TO68D0SoqAsbXvo+5y/uVaFrliEHJ3sN
-         RU3JJHRFhHy1AJVrvww7e3l+DEVfDhy5SUJ2mP41wGiG1aYnbRfdz8rcw7ZWmzIu2aeY
-         5oMcmYWrsotdUUbPlFu9y0apP/iNdeI5QVVcxw6yum9nXnrv3f+80lqb5v67anVGyZu5
-         tXBeglGrgK3JDhshRAOyA6NLayXUEq0vZqmn9RAe8HtiblLsZK45wKA/b3YXJCwpiwi2
-         EBtuccFyHiu9JeBu9VUdB7yBC6BCkbVAkM+Z5abKGa6hXbr42XgPyK31pLZmh5vrEzLt
-         DJ6g==
-X-Gm-Message-State: AOAM5305ARe3DtmPbybDUAsDf9Ur9kGDLleQVYQXGNOEu+dyx24+MKzx
-        0qOVkDyWxCk6ZKCSqNqrnftPQQ==
-X-Google-Smtp-Source: ABdhPJyEz8KdbutPUEkFdfjjXqFBnVRyCrjCSeZ53ICqWwBwbN6UTPF9mpSKyi9zn1yrCN7w9m+Wqg==
-X-Received: by 2002:a1c:113:: with SMTP id 19mr5676819wmb.7.1613058015846;
-        Thu, 11 Feb 2021 07:40:15 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t2sm5773738wru.53.2021.02.11.07.40.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 07:40:15 -0800 (PST)
-Date:   Thu, 11 Feb 2021 16:40:13 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        kernel-janitors@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-fbdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] video: use getter/setter functions
-Message-ID: <YCVP3ZKBsJUV0m8G@phenom.ffwll.local>
-Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        kernel-janitors@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
-        linux-fbdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210209211325.1261842-1-Julia.Lawall@inria.fr>
- <20210210082341.GH220368@dell>
- <YCPbxSHWMipTz+mB@phenom.ffwll.local>
- <20210210161258.GA124276@x1>
+        id S232008AbhBKQ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:57:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230519AbhBKPmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:42:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48DAD64E95;
+        Thu, 11 Feb 2021 15:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613058074;
+        bh=4buKxeO2cWeF9EKIk1Oq6mWcOvZWGPa916QlK1XW5Os=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yj1wRxUC2ZpHUKleyA6dab5ziYZM3LG0ZTKiVwyyVSwamqDavEbrWoBrxH9/o9Hsr
+         4pAZL7/c/TyM5wOAPATbO9Jh/XIKFSu0RBKOjolyK3NtTtpm+S8sm0IJtPhTcy3ebF
+         R2tVdQv3GKZej0ubsZsDOYiJ1eDWn0NYwZQggPfBy0OSE04kyKi3c56GI8/SMFNtLE
+         OyB8xQzcLvdGtw0RdhkwFUnNT22Zve9OTLmZ2E1BJjYhT7D6p1HEmf10NC0ZrkZwNU
+         okFIwjPMlnaCS3EX+SQDmCC3gYm2wxLHpaNUBpGZOJiVU5kLzjd5xk/XNg0n3x8Sb4
+         gOEHIqwY7uxiA==
+Date:   Thu, 11 Feb 2021 15:40:21 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Collins <collinsd@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 07/24] regulator: core: avoid
+ regulator_resolve_supply() race condition
+Message-ID: <20210211154021.GE5217@sirena.org.uk>
+References: <20210211150147.743660073@linuxfoundation.org>
+ <20210211150148.069380965@linuxfoundation.org>
+ <20210211152656.GD5217@sirena.org.uk>
+ <YCVPYEgCIbqDRYLa@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9l24NVCWtSuIVIod"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210210161258.GA124276@x1>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <YCVPYEgCIbqDRYLa@kroah.com>
+X-Cookie: Do not pick the flowers.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 04:12:58PM +0000, Lee Jones wrote:
-> On Wed, 10 Feb 2021, Daniel Vetter wrote:
-> 
-> > On Wed, Feb 10, 2021 at 08:23:41AM +0000, Lee Jones wrote:
-> > > On Tue, 09 Feb 2021, Julia Lawall wrote:
-> > > 
-> > > > Use getter and setter functions, for platform_device structures and a
-> > > > spi_device structure.
-> > > > 
-> > > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > > > 
-> > > > ---
-> > > >  drivers/video/backlight/qcom-wled.c                                  |    2 +-
-> > > 
-> > > This patch is fine.
-> > > 
-> > > Could you please split it out and submit it separately though please.
-> > 
-> > Or just apply the entire patch through backlight tree, there's nothing
-> > going on in fbdev anyway I think.
-> > 
-> > Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> 
-> I can do that.  Is that an fbdev Ack?
 
-Yeah defacto I'm somehow stuck with that as maintainer of last resort :-)
-Iirc we've got an S: orphaned entry pointing at drm.git trees.
--Daniel
+--9l24NVCWtSuIVIod
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, Feb 11, 2021 at 04:38:08PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Feb 11, 2021 at 03:26:56PM +0000, Mark Brown wrote:
 
-> 
-> > > >  drivers/video/fbdev/amifb.c                                          |    4 ++--
-> > > >  drivers/video/fbdev/da8xx-fb.c                                       |    4 ++--
-> > > >  drivers/video/fbdev/imxfb.c                                          |    2 +-
-> > > >  drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c |    6 +++---
-> > > >  drivers/video/fbdev/omap2/omapfb/dss/dpi.c                           |    4 ++--
-> > > >  drivers/video/fbdev/omap2/omapfb/dss/dsi.c                           |    4 ++--
-> > > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi4.c                         |    2 +-
-> > > >  drivers/video/fbdev/omap2/omapfb/dss/hdmi5.c                         |    2 +-
-> > > >  drivers/video/fbdev/xilinxfb.c                                       |    2 +-
-> > > >  10 files changed, 16 insertions(+), 16 deletions(-)
-> > > 
-> > > ...]
-> > > 
-> > > > diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> > > > index 3bc7800eb0a9..091f07e7c145 100644
-> > > > --- a/drivers/video/backlight/qcom-wled.c
-> > > > +++ b/drivers/video/backlight/qcom-wled.c
-> > > > @@ -1692,7 +1692,7 @@ static int wled_probe(struct platform_device *pdev)
-> > > >  
-> > > >  static int wled_remove(struct platform_device *pdev)
-> > > >  {
-> > > > -	struct wled *wled = dev_get_drvdata(&pdev->dev);
-> > > > +	struct wled *wled = platform_get_drvdata(pdev);
-> > > >  
-> > > >  	mutex_destroy(&wled->lock);
-> > > >  	cancel_delayed_work_sync(&wled->ovp_work);
-> > > 
-> > > For my own reference (apply this as-is to your sign-off block):
-> > > 
-> > >   Acked-for-Backlight-by: Lee Jones <lee.jones@linaro.org>
-> > > 
-> > 
-> 
-> -- 
-> Lee Jones [李琼斯]
-> Senior Technical Lead - Developer Services
-> Linaro.org │ Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > The final step in regulator_register() is to call
+> > > regulator_resolve_supply() for each registered regulator
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> > This is buggy without a followup which doesn't seem to have been
+> > backported here.
+
+> Would that be 14a71d509ac8 ("regulator: Fix lockdep warning resolving
+> supplies")?  Looks like it made it into the 5.4.y and 5.10.y queues, but
+> not 4.19.y.
+
+Yes, that's the one.
+
+--9l24NVCWtSuIVIod
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAlT+QACgkQJNaLcl1U
+h9CwOAf/by0ynXegA8iZtKpqli6cMZKDZpzq2NyEeDRfqDzIq5iG1Cceu0o+Y1ky
+mYppnS95bpPbNdo9Bwq2/Nrg+sVgLjw3XYXl63k+8kdPuQJLxwHZQY18n+/xSPQZ
+JpvKbMF48EHHCvgtM7mIJHiKPQa32SNIH9nsuuvPS3qpG14s7ZKc/uqe3jRURjz6
+yRewW8YEi1CJ01oaX29GiCM3PO0R8I4Y/8OABsW7iwsCpe8HVGYusHm/0tzDJJzj
+4aRJzBDZG3SgtxpYK+4PJpq8gHJ1mmCsbhP1gIXj2kdxWZxYIbMD8NMWmz/hK8FA
+drPHZqBthxf/LccbI5q78VJXhOpWmQ==
+=wI+O
+-----END PGP SIGNATURE-----
+
+--9l24NVCWtSuIVIod--
