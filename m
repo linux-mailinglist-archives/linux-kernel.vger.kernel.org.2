@@ -2,154 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC71318940
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6837A3188FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhBKLSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:18:03 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:57188 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231135AbhBKKzK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:55:10 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BAp92r017018;
-        Thu, 11 Feb 2021 02:54:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=DXjQatTR+FYo0xK3DvzCV6/Fj5dqhPmz90uDt3zfAlI=;
- b=T0z38p58ZfNWJKIsk/ro78YP5sq7SnOQsdpKLvye0EdyKvSq7DeREFEWCFpxFYTs+ceg
- ROp3ZteGIdDQSYdtEPnP2ozuxmReWaZJfZ2U6a8OJc8Qa5fWBrT7UfzGDQU2S9WKcruY
- InDVGrBgt2GsWYZj1n6M/VRGOJFyEa91Am5SH6MIpAkAgj/JSGpyYPjJsXuht4qt1hz4
- aW3YDLWHaxIjzRIySui4FPocLq05CGKTMj7SYhJpZ6Qwg7beODi7r6xHDi9J7ynDW0jE
- aitj7HuzD9f7wgnpUb4mlq4eHPIBa6Lyb/0S0ziMBOG9iePxsSetezoC2WgPINrMaReC sg== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36hugqefhk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 02:54:10 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
- 2021 02:54:08 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 11 Feb 2021 02:54:08 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id A925F3F7041;
-        Thu, 11 Feb 2021 02:54:04 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <sebastian.hesselbarth@gmail.com>,
-        <gregory.clement@bootlin.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v13 net-next 15/15] net: mvpp2: add TX FC firmware check
-Date:   Thu, 11 Feb 2021 12:49:02 +0200
-Message-ID: <1613040542-16500-16-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
-References: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
+        id S231562AbhBKLDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:03:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46988 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230521AbhBKKum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 05:50:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CE92AADA2;
+        Thu, 11 Feb 2021 10:49:47 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 461201E14B2; Thu, 11 Feb 2021 11:49:47 +0100 (CET)
+Date:   Thu, 11 Feb 2021 11:49:47 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, mhocko@suse.cz, linux-mm@kvack.org
+Subject: Re: possible deadlock in start_this_handle (2)
+Message-ID: <20210211104947.GL19070@quack2.suse.cz>
+References: <000000000000563a0205bafb7970@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_05:2021-02-10,2021-02-11 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000563a0205bafb7970@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+Hello,
 
-Patch check that TX FC firmware is running in CM3.
-If not, global TX FC would be disabled.
+added mm guys to CC.
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Acked-by: Marcin Wojtas <mw@semihalf.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  1 +
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 39 ++++++++++++++++----
- 2 files changed, 33 insertions(+), 7 deletions(-)
+On Wed 10-02-21 05:35:18, syzbot wrote:
+> HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15cbce90d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
+> dashboard link: https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
+> userspace arch: i386
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
+> 
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.11.0-rc6-syzkaller #0 Not tainted
+> ------------------------------------------------------
+> kswapd0/2246 is trying to acquire lock:
+> ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
+> 
+> but task is already holding lock:
+> ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
+> 
+> which lock already depends on the new lock.
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #2 (fs_reclaim){+.+.}-{0:0}:
+>        __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
+>        fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
+>        might_alloc include/linux/sched/mm.h:193 [inline]
+>        slab_pre_alloc_hook mm/slab.h:493 [inline]
+>        slab_alloc_node mm/slub.c:2817 [inline]
+>        __kmalloc_node+0x5f/0x430 mm/slub.c:4015
+>        kmalloc_node include/linux/slab.h:575 [inline]
+>        kvmalloc_node+0x61/0xf0 mm/util.c:587
+>        kvmalloc include/linux/mm.h:781 [inline]
+>        ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
+>        ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
+>        ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
+>        ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
+>        ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
+>        ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
+>        ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
+>        __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
+>        __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+>        __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+>        vfs_setxattr+0x135/0x320 fs/xattr.c:291
+>        setxattr+0x1ff/0x290 fs/xattr.c:553
+>        path_setxattr+0x170/0x190 fs/xattr.c:572
+>        __do_sys_setxattr fs/xattr.c:587 [inline]
+>        __se_sys_setxattr fs/xattr.c:583 [inline]
+>        __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
+>        do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
+>        __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
+>        do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
+>        entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index b61a1ba..da87152 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -828,6 +828,7 @@
- 
- #define MSS_THRESHOLD_STOP	768
- #define MSS_THRESHOLD_START	1024
-+#define MSS_FC_MAX_TIMEOUT	5000
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 883d742..4ff195a 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -924,6 +924,34 @@ static void mvpp2_bm_pool_update_fc(struct mvpp2_port *port,
- 	spin_unlock_irqrestore(&port->priv->mss_spinlock, flags);
- }
- 
-+static int mvpp2_enable_global_fc(struct mvpp2 *priv)
-+{
-+	int val, timeout = 0;
-+
-+	/* Enable global flow control. In this stage global
-+	 * flow control enabled, but still disabled per port.
-+	 */
-+	val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+	val |= FLOW_CONTROL_ENABLE_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	/* Check if Firmware running and disable FC if not*/
-+	val |= FLOW_CONTROL_UPDATE_COMMAND_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	while (timeout < MSS_FC_MAX_TIMEOUT) {
-+		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+
-+		if (!(val & FLOW_CONTROL_UPDATE_COMMAND_BIT))
-+			return 0;
-+		usleep_range(10, 20);
-+		timeout++;
-+	}
-+
-+	priv->global_tx_fc = false;
-+	return -EOPNOTSUPP;
-+}
-+
- /* Release buffer to BM */
- static inline void mvpp2_bm_pool_put(struct mvpp2_port *port, int pool,
- 				     dma_addr_t buf_dma_addr,
-@@ -7256,7 +7284,7 @@ static int mvpp2_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *base;
- 	int i, shared;
--	int err, val;
-+	int err;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -7480,13 +7508,10 @@ static int mvpp2_probe(struct platform_device *pdev)
- 		goto err_port_probe;
- 	}
- 
--	/* Enable global flow control. In this stage global
--	 * flow control enabled, but still disabled per port.
--	 */
- 	if (priv->global_tx_fc && priv->hw_version != MVPP21) {
--		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
--		val |= FLOW_CONTROL_ENABLE_BIT;
--		mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+		err = mvpp2_enable_global_fc(priv);
-+		if (err)
-+			dev_warn(&pdev->dev, "Minimum of CM3 firmware 18.09 and chip revision B0 required for flow control\n");
- 	}
- 
- 	mvpp2_dbgfs_init(priv, pdev->name);
+This stacktrace should never happen. ext4_xattr_set() starts a transaction.
+That internally goes through start_this_handle() which calls:
+
+	handle->saved_alloc_context = memalloc_nofs_save();
+
+and we restore the allocation context only in stop_this_handle() when
+stopping the handle. And with this fs_reclaim_acquire() should remove
+__GFP_FS from the mask and not call __fs_reclaim_acquire().
+
+Now I have no idea why something here didn't work out. Given we don't have
+a reproducer it will be probably difficult to debug this. I'd note that
+about year and half ago similar report happened (got autoclosed) so it may
+be something real somewhere but it may also be just some HW glitch or
+something like that.
+
+								Honza
 -- 
-1.9.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
