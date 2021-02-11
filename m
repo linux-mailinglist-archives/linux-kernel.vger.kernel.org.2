@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD24319018
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4E0319039
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbhBKQeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:34:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231311AbhBKP2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:28:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7543964D87;
-        Thu, 11 Feb 2021 15:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613057270;
-        bh=5CaJiFoG/fwUYfQnBEAeBMgRK+ntGqqdbkCchfAnmqc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GFw8GhBxfjdR5BlSWcHkeTPN1ufTNy6ZoFvRY9UAWUt/yCd+T3O89rE+jlB5Lul6O
-         qFQRlq2hEikTIOBZd5hsMqE3U9+mW7YbkjQhcsRHZvUr6FEvX6MQkP7QMxk8dbW/B6
-         /YZ6mzwTScvA52yvP8SzwTmYZzHSkzJZ4LMPvV6AUor6/gaNzUMmlFiZIv8fksyGAQ
-         NT2nKwpMeo03+0yeMOnR7GcDMnymqtLGIliv5JPIu8oOeZSvd5qTYKDMGTkmyabSth
-         Uf3GX8oe0RXr8aSqD0UPDEBpJ7bwBd8cSlvj7Y4scTJ+2tWf06X2q11nF3ggnq0p58
-         ejCWv6CF/66Dw==
-Date:   Thu, 11 Feb 2021 15:26:56 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        David Collins <collinsd@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 07/24] regulator: core: avoid
- regulator_resolve_supply() race condition
-Message-ID: <20210211152656.GD5217@sirena.org.uk>
-References: <20210211150147.743660073@linuxfoundation.org>
- <20210211150148.069380965@linuxfoundation.org>
+        id S230147AbhBKQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:42:24 -0500
+Received: from pv50p00im-ztdg10011301.me.com ([17.58.6.40]:59074 "EHLO
+        pv50p00im-ztdg10011301.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229944AbhBKPbm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:31:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1613057440;
+        bh=JR+lVwt36NeZVokhBbvGDtwHxUoQfVZjR1m7wDVCz1E=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=vmEnUIFWD1znxM/bGg6IxeCaf5PFw5fofPyPpX3XgkOI9FYgAA/V10WT7OkPjkfUQ
+         uMr04VXoIn16yHjb7cVezg18XseT9lnMunUprarjrQjb1AkPlMbD8uo0qoJ8OE2hDJ
+         UtkkDwarjWKy0NqbHc/E6ZRpxkR4WrxvP9os7ZltJccQHSVQ2391O9TOu0dZDsliix
+         sWaY1Lkyn0wnlPhVSBWrHw9KswTJfRh1oJDWbJ9EsYekzAkqevb1Mo3esqLSt+iYYQ
+         dIkfa/tnPYlpTKhelFf0j49Tdq72z5QDFrHDR+BYPtVCZ8ENjUT50ftiwgPh48csCR
+         7d5z2byWGmWEQ==
+Received: from everest.nathzi1505 (unknown [45.250.50.68])
+        by pv50p00im-ztdg10011301.me.com (Postfix) with ESMTPSA id 9F631760552;
+        Thu, 11 Feb 2021 15:30:37 +0000 (UTC)
+From:   Pritthijit Nath <pritthijit.nath@icloud.com>
+To:     vireshk@kernel.org, gregkh@linuxfoundation.org, johan@kernel.org,
+        elder@kernel.org
+Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Pritthijit Nath <pritthijit.nath@icloud.com>
+Subject: [PATCH] staging: greybus: Fixed misspelling and alignment issue in hid.c
+Date:   Thu, 11 Feb 2021 21:00:01 +0530
+Message-Id: <20210211153001.10358-1-pritthijit.nath@icloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OaZoDhBhXzo6bW1J"
-Content-Disposition: inline
-In-Reply-To: <20210211150148.069380965@linuxfoundation.org>
-X-Cookie: Do not pick the flowers.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This change fixes a checkpatch CHECK style issue for "Alignment should match open parenthesis".
+In addition the misspelling of "transferred" also has been fixed.
 
---OaZoDhBhXzo6bW1J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
+---
+ drivers/staging/greybus/hid.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-On Thu, Feb 11, 2021 at 04:02:41PM +0100, Greg Kroah-Hartman wrote:
-> From: David Collins <collinsd@codeaurora.org>
->=20
-> [ Upstream commit eaa7995c529b54d68d97a30f6344cc6ca2f214a7 ]
->=20
-> The final step in regulator_register() is to call
-> regulator_resolve_supply() for each registered regulator
+diff --git a/drivers/staging/greybus/hid.c b/drivers/staging/greybus/hid.c
+index ed706f39e87a..adb91286803a 100644
+--- a/drivers/staging/greybus/hid.c
++++ b/drivers/staging/greybus/hid.c
+@@ -221,8 +221,8 @@ static void gb_hid_init_reports(struct gb_hid *ghid)
+ }
+ 
+ static int __gb_hid_get_raw_report(struct hid_device *hid,
+-		unsigned char report_number, __u8 *buf, size_t count,
+-		unsigned char report_type)
++				   unsigned char report_number, __u8 *buf, size_t count,
++				   unsigned char report_type)
+ {
+ 	struct gb_hid *ghid = hid->driver_data;
+ 	int ret;
+@@ -254,7 +254,7 @@ static int __gb_hid_output_raw_report(struct hid_device *hid, __u8 *buf,
+ 
+ 	ret = gb_hid_set_report(ghid, report_type, report_id, buf, len);
+ 	if (report_id && ret >= 0)
+-		ret++; /* add report_id to the number of transfered bytes */
++		ret++; /* add report_id to the number of transferred bytes */
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
 
-This is buggy without a followup which doesn't seem to have been
-backported here.
-
---OaZoDhBhXzo6bW1J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAlTL8ACgkQJNaLcl1U
-h9DW+gf+IS7hwdAZRY+j1bSIul433VAxLvBks9GcB7EwmixSKg9PC/2IofbYOTpA
-spNvrFMe5vREV5+7KTz6ZzViMLmy5ZQwhGYF8Uyn2SxsOTHhEh90zpvHyKpCeZlR
-owvCoQ2wNg3gbm30658skJQIc6YhstTIrPRWsw9cD3hs/TlhS2RX4HOHSqO17P65
-RE/76uU8/WoauqmcsVUELLrxOWzuasi8c9hJJZHLvpVgHOUvFPiHkBdMlQlqRMZ+
-q0YC/LokZmXIPM+jougbSfF7YUqq9oSKPVTgg0JMPIqAd8+BdKzY8o9HXoJnpsMn
-SaU0KO8G1f7tA+0lIvn3IFS53vYWKg==
-=wJ4/
------END PGP SIGNATURE-----
-
---OaZoDhBhXzo6bW1J--
