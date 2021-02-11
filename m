@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322FF31836D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18649318372
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 03:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhBKCHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 21:07:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
+        id S229837AbhBKCIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 21:08:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhBKCGb (ORCPT
+        with ESMTP id S229777AbhBKCH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 21:06:31 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156E1C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:05:51 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id j5so2632222pgb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:05:51 -0800 (PST)
+        Wed, 10 Feb 2021 21:07:58 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EB6C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:07:18 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id r38so2631262pgk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 18:07:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=GWehHpPBiIbtAUGV973qzMbhfGOacu1gexxk5hpereM=;
-        b=VkI1vNchcTfqZMT8TdeTKNunPyydlTDpaduc777AZXErfTUw+IoNoowB3buQXwB7D2
-         HM2cW4ajkZGMEI9fbbyaG+QS01IhsQO2IvFJRs0rrcX6Aw2nR/Sd0VcHmSULgTNW1OGQ
-         OrJ32pm7uzcNVvPSKZDo8yzfQ3HtJKHFRkXZY=
+        bh=uFmtLVGPRsu+efbO+P3fLDbMMK5+lkfvkJ1xncGvBr0=;
+        b=AivknfLsO0hCCPPDsGkezVd/53chBqyt/2m+W0Zu1IzTWCwEgzLmqiH46zDo3CaS6n
+         +vJwVZpeL6tg7eodNpxuHxJo1wthfiQxdIrEbsXHCWik2NAC2KilSAgEWCvnepGI6VR2
+         RehLL8u2uZ7TmIqMNVWvX3S/+NYVYf8P6mw0lWIETbcBCbacoEGcKRHjcLHKFt4cO16Z
+         7nrnE6N+mCtCVl6dWUw7QNXpfnKNYqicFc/CluBWLscbJKYNIZnnZEGNStAg4dgtvDaW
+         vVQ9KM7u4tXlhZiLCuntTMrNs8zacPKpaXlypMh7IVll0c9pmXK+PhrGG2uU5t5+cBgc
+         5Nyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GWehHpPBiIbtAUGV973qzMbhfGOacu1gexxk5hpereM=;
-        b=VTfsYbEpqAxt9wp9SKGbTE/Z0xMjGCI9IacZ1AZg7Rel1pH5gTsWpT2+satZFImgTa
-         sPSNvVkJiIki03sBzst7sw+UFQHcjS2T97WJzYwyx7xWpSE1ASHdMkat1pO1jYyrcSdw
-         1Qt5D+W93zDOmwFiwxaUIwPXOK3FKYd5NwuWgABXzCNfngqcMnQCLt6ktjdyBt4LKyBX
-         PLTA5SZVD2dWz4yWPtXPX0YBREsH+V0gfrp3vVzkJl7N80tmmEhGUimubibPu+AveQNE
-         0ROOCnZ+W0BbH17m0aXQG8ce6iJMCtsTXKshF6uSwR3KIX4+sBWcWscwM7+Y2De9g+6E
-         mseQ==
-X-Gm-Message-State: AOAM530MlkOilj41OYZi2yXmmg3azsseDeLpjOwCiGSx6zE35QwPNe6F
-        PnYSA9+i1ke9JPAqYrPHpX/ZoA==
-X-Google-Smtp-Source: ABdhPJzsWXbn1Ou/vFtG4NQUWw149O4AAHSFlrE0lP7i2j/RD0O7x0LK3DLeL8X3j84QUwiX06AIsg==
-X-Received: by 2002:a63:6381:: with SMTP id x123mr1570843pgb.177.1613009150490;
-        Wed, 10 Feb 2021 18:05:50 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h8sm3286360pfv.154.2021.02.10.18.05.49
+        bh=uFmtLVGPRsu+efbO+P3fLDbMMK5+lkfvkJ1xncGvBr0=;
+        b=XzZD4VP8ucfNpi3eQQwwIBVMcj5M4dLVXwB1AUhPcZ9mur9fWjslxZMlva7DAcL4NZ
+         IxRPbgQniX59GI/ykmRAVOB7hx7Ew/0nuap82Lc5rA7AHy9IKG6iQiK3GXJboFGZGZkr
+         Vlz6MiI6MHoP5PIpmQetXrt9IQheRjL5K9q1/k/fSqeq1/QWiaN6QBRaVkeLuNiPchj1
+         ypCZcRsR2vkvYxpL4ufuHp8+81ImJ8leczSSIXutWjrj08o5wmPpVunpgOSYC0/7XJSv
+         T18lJot7Tsarzy68wi7iZAG5z9lQN3Nu9Sm+d7CJ5Y5/HCzhNHgTtSQybQzGa42GFpK9
+         2MvQ==
+X-Gm-Message-State: AOAM533FYjn36nS6fde4lSqAWBYe4Si8B/4+05HQhpCuBOpqJee7AyR1
+        hCtBcqytOxRFBjblCrsvfSV1jg==
+X-Google-Smtp-Source: ABdhPJx7nxrAcdnXE3p2lQH5pMA0Nuzh2z+IMHmA4tpsNMqK60zvOC9pRVOU16ea/vpcu+wpHDfggQ==
+X-Received: by 2002:a62:7bd2:0:b029:1e5:3aed:34c with SMTP id w201-20020a627bd20000b02901e53aed034cmr5967082pfc.71.1613009233955;
+        Wed, 10 Feb 2021 18:07:13 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:11fc:33d:bf1:4cb8])
+        by smtp.gmail.com with ESMTPSA id j22sm3565885pff.57.2021.02.10.18.07.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 18:05:49 -0800 (PST)
-Date:   Wed, 10 Feb 2021 18:05:48 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>, haitao.huang@intel.com
-Subject: Re: [PATCH v20 21/25] x86/cet/shstk: Handle signals for shadow stack
-Message-ID: <202102101805.0B98ACA743@keescook>
-References: <20210210175703.12492-1-yu-cheng.yu@intel.com>
- <20210210175703.12492-22-yu-cheng.yu@intel.com>
- <202102101154.CEF2606E@keescook>
- <57dcc827-052a-94cd-31d4-286675f9d506@intel.com>
+        Wed, 10 Feb 2021 18:07:13 -0800 (PST)
+Date:   Wed, 10 Feb 2021 18:07:06 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Makarand Sonare <makarandsonare@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, pshier@google.com, jmattson@google.com,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [RESEND PATCH ] KVM: VMX: Enable/disable PML when dirty logging
+ gets enabled/disabled
+Message-ID: <YCSRSiSNErkC6+9R@google.com>
+References: <20210210212308.2219465-1-makarandsonare@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <57dcc827-052a-94cd-31d4-286675f9d506@intel.com>
+In-Reply-To: <20210210212308.2219465-1-makarandsonare@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:38:10PM -0800, Yu, Yu-cheng wrote:
-> On 2/10/2021 11:58 AM, Kees Cook wrote:
-> > On Wed, Feb 10, 2021 at 09:56:59AM -0800, Yu-cheng Yu wrote:
-> > > To deliver a signal, create a shadow stack restore token and put the token
-> > > and the signal restorer address on the shadow stack.  For sigreturn, verify
-> > > the token and restore from it the shadow stack pointer.
-> > > 
-> > > A shadow stack restore token marks a restore point of the shadow stack.
-> > > The token is distinctively different from any shadow stack address.
-> > 
-> > How is it different? It seems like it just has the last 2 bits
-> > masked/set?
-> > 
-> 
-> For example, for 64-bit apps,
-> 
-> A shadow stack pointer value (*ssp) has to be in some code area, but for a
-> token, (*ptr_of_token) = (ptr_of_token + 8), which has to be within the same
-> shadow stack area.  In cet_verify_rstor_token(), this is checked.
-> 
-> > > In sigreturn, restoring from a token ensures the target address is the
-> > > location pointed by the token.
-> > 
-> > As in, a token (real stack address with 2-bit mask) is checked against
-> > the real stack address? I don't see a comparison -- it only checks that
-> > it is < TASK_SIZE.
-> > 
-> > How does cet_restore_signal() figure into this? (As in, the MSR writes?)
-> > 
-> 
-> The kernel takes the restore address from the token.  It will not mistakenly
-> take a wrong address from the shadow stack.  I will put this in my commit
-> logs.
+On Wed, Feb 10, 2021, Makarand Sonare wrote:
+> Currently, if enable_pml=1 PML remains enabled for the entire lifetime
+> of the VM irrespective of whether dirty logging is enable or disabled.
+> When dirty logging is disabled, all the pages of the VM are manually
+> marked dirty, so that PML is effectively non-operational. Clearing
+> the dirty bits is an expensive operation which can cause severe MMU
+> lock contention in a performance sensitive path when dirty logging
+> is disabled after a failed or canceled live migration. Also, this
+> would break if some other code path clears the dirty bits in which
+> case, PML will actually start logging dirty pages even when dirty
+> logging is disabled incurring unnecessary vmexits when the PML buffer
+> becomes full. In order to avoid this extra overhead, we should
+> enable or disable PML in VMCS when dirty logging gets enabled
+> or disabled instead of keeping it always enabled.
 
-Ah-ha, okay, got it now. Thank you!
+Breaking this up into a few paragraphs would be helpful.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> Tested:
+> 	kvm-unit-tests
+> 	dirty_log_test
+> 	dirty_log_perf_test
 
--- 
-Kees Cook
+Eh, I get that we like these for internal tracking, but for upstream there's an
+assumption that you did your due diligence.  If there's something noteworthy
+about your testing (or lack thereof), throw it in the cover letter or in the
+part that's not recorded in the final commit.
+
+> Signed-off-by: Makarand Sonare <makarandsonare@google.com>
+> Reviewed-by: Ben Gardon <bgardon@google.com>
+> ---
+
+...
+
+> @@ -7517,9 +7531,39 @@ static void vmx_slot_enable_log_dirty(struct kvm *kvm,
+>  static void vmx_slot_disable_log_dirty(struct kvm *kvm,
+>  				       struct kvm_memory_slot *slot)
+>  {
+> +	/*
+> +	 * Check all slots and disable PML if dirty logging
+> +	 * is being disabled for the last slot
+> +	 *
+> +	 */
+> +	if (enable_pml &&
+> +	    kvm->dirty_logging_enable_count == 0 &&
+> +	    kvm->arch.pml_enabled) {
+> +		kvm->arch.pml_enabled = false;
+> +		kvm_make_all_cpus_request(kvm,
+> +			KVM_REQ_UPDATE_VCPU_DIRTY_LOGGING_STATE);
+> +	}
+> +
+>  	kvm_mmu_slot_set_dirty(kvm, slot);
+
+The justification for dynamically toggling PML is that it means KVM can skip
+setting all the dirty bits when logging is disabled, but that code is still here.
+Is there a follow-up planned to reap the reward?
+
+>  }
