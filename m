@@ -2,70 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4DC31913B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0809931913C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbhBKRhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:37:52 -0500
-Received: from ms.lwn.net ([45.79.88.28]:50338 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231910AbhBKQj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:39:58 -0500
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6405C4EB3;
-        Thu, 11 Feb 2021 16:39:13 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6405C4EB3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1613061553; bh=D0AEZkZBdtIfK0g+dvBXWwh92CNH+OXOsoawWY81IkA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jVzO3l39uQAncbOmMLDb05auJMJvZOoWtiwhFe7qRYs548PXCRuvtX7TOm0qMVKTo
-         cCP44/tY67JeIyrWv1oDVAOY0awDEUhifbBaztXZfQOCAPahyewarvVMswLF2Ki8DT
-         zzsyolXWsM4lPcS6RwH2Uk/xFZipA7HZ060Dx1vxc8DpsEtTkXdKjPw/8aFyFEFxph
-         Wr12poLG7r/4KRg2AzzRmRHGy+VV27+zrCP3ArBCJkMdXFn1dh6aq7yj2/N2yLeoqp
-         sOVOjnYVKQQcTDNtxr2QZKa1aur+/jR/YxnpvEsMhJ5ph6tB45509Yrd8LXuxGj21P
-         MpZhz2DaK4oWg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Colin King <colin.king@canonical.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        linux-doc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] doc/admin-guide: fix spelling mistake: "perfomance" ->
- "performance"
-In-Reply-To: <20210210115624.53551-1-colin.king@canonical.com>
-References: <20210210115624.53551-1-colin.king@canonical.com>
-Date:   Thu, 11 Feb 2021 09:39:12 -0700
-Message-ID: <875z2yr233.fsf@meer.lwn.net>
+        id S232512AbhBKRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:37:57 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:35583 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhBKQk1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 11:40:27 -0500
+Received: by mail-oi1-f178.google.com with SMTP id l3so6778181oii.2;
+        Thu, 11 Feb 2021 08:40:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8q2NiznoWVHuUMkmRhG9I02yDUgNpmTMAt3YoQyfIGk=;
+        b=RGLHmA221z8aU7u1IS1sRT8yqYqIJMDyvqois51hPWANv4R8/5f8t0SUtFkqqM6eaz
+         n7+sQ9TRINJMFq9C+S7DapFyzL/JbIUWQ3rf8G3jftUw9pwBozz+7vdwePQf2HV09xp9
+         xltSjFLp9grG2HobDHKMFU3vUGESdGToCREWE9aFIeoutP72Hc3eAB0J48nEHDQ7i4bJ
+         GiwRk6HxzI2A6lyeQ4Xp2vwQ0csDP5mXp1O/MqpvbofZznXOjK4hPpxzsWRE2E2Cw8L1
+         gbQ5fcV7pUirTH2Zak2GGui2v2bdXm/FEYSmVmsVEIMWz6U+HMVPOLH4WEfJlud4raqX
+         yUKw==
+X-Gm-Message-State: AOAM5334z8Lm7aGeMR7nZELnQOUvdIQzliaDjKOoEgY5xxPk6G3lOQe5
+        4a0wbt82usxum/k45o0pcO/Xql9s+VisfN51oR8=
+X-Google-Smtp-Source: ABdhPJzyQFbX0hSlRZwJpCaG0gnL07XQ4sZ9sbCMqGdf1PZ/ue9UJTn+QzFgmJlhxkJqET2zef5RWey55AhZUUOtyWc=
+X-Received: by 2002:aca:3d85:: with SMTP id k127mr3459892oia.157.1613061585919;
+ Thu, 11 Feb 2021 08:39:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210210114320.3478-1-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0hx78JHnP5-5xFTPr0Rh9FvPCzAzTCyBaT6eLZ3Dd-mFA@mail.gmail.com>
+ <3881654.NPl3a4M0kB@kreacher> <1946478.1QpZic6vku@kreacher>
+ <YCPyKjO7XPBFAgbn@smile.fi.intel.com> <CAJZ5v0jq1+q3HKDEzgBUWtZY8H0kaiR=bNi1WUsdg3BTAyiPgw@mail.gmail.com>
+ <YCP+xOuic5fPx+7i@smile.fi.intel.com> <CAJZ5v0iCe=GuauCVzLG83urBHghO0suabHcMg2Kw54XFjBqCbw@mail.gmail.com>
+ <YCVQWgg6L5YcAXO1@smile.fi.intel.com>
+In-Reply-To: <YCVQWgg6L5YcAXO1@smile.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 11 Feb 2021 17:39:34 +0100
+Message-ID: <CAJZ5v0juLyE=vCyw5_qZus3YC65kY=mOhrcb7OoWZQtZNnr_Ag@mail.gmail.com>
+Subject: Re: [PATCH v1 7/7] ACPI: property: Allow counting a single value as
+ an array of 1 element
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin King <colin.king@canonical.com> writes:
-
-> From: Colin Ian King <colin.king@canonical.com>
+On Thu, Feb 11, 2021 at 4:42 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> There is a spelling mistake in the perf-security documentation. Fix it.
+> On Wed, Feb 10, 2021 at 04:44:34PM +0100, Rafael J. Wysocki wrote:
+> > On Wed, Feb 10, 2021 at 4:42 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Wed, Feb 10, 2021 at 04:01:16PM +0100, Rafael J. Wysocki wrote:
+> > > > On Wed, Feb 10, 2021 at 3:48 PM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > On Wed, Feb 10, 2021 at 02:48:09PM +0100, Rafael J. Wysocki wrote:
+> > > > > > On Wednesday, February 10, 2021 2:31:48 PM CET Rafael J. Wysocki wrote:
+> > > > > > > On Wednesday, February 10, 2021 1:36:00 PM CET Rafael J. Wysocki wrote:
+> > > > > > > > On Wed, Feb 10, 2021 at 12:51 PM Andy Shevchenko
+> > > > > > > > <andriy.shevchenko@linux.intel.com> wrote:
 >
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  Documentation/admin-guide/perf-security.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> ...
 >
-> diff --git a/Documentation/admin-guide/perf-security.rst b/Documentation/admin-guide/perf-security.rst
-> index 904e4eb37f99..34aa334320ca 100644
-> --- a/Documentation/admin-guide/perf-security.rst
-> +++ b/Documentation/admin-guide/perf-security.rst
-> @@ -72,7 +72,7 @@ monitoring and observability operations, thus, bypass *scope* permissions
->  checks in the kernel. CAP_PERFMON implements the principle of least
->  privilege [13]_ (POSIX 1003.1e: 2.2.2.39) for performance monitoring and
->  observability operations in the kernel and provides a secure approach to
-> -perfomance monitoring and observability in the system.
-> +performance monitoring and observability in the system.
+> > > > > > > > > -       if (val && nval == 1) {
+> > > > > > > > > +       /* Try to read as a single value first */
+> > > > > > > > > +       if (!val || nval == 1) {
+> > > > > > > > >                 ret = acpi_data_prop_read_single(data, propname, proptype, val);
+> > > > > > > >
+> > > > > > > > This returns -EINVAL if val is NULL.
+> > > > >
+> > > > > Nope. That's why it's a patch 7. Patch 6 solves this.
+> > > >
+> > > > That's my point.  Patch 7 should be the first one in the series.
+> > >
+> > > Ah, okay. Since you want this let me rebase.
+> >
+> > Thanks!
+>
+> I started rebasing and realised that your approach has swapped the error codes,
+> i.e. if it's a single-value and it is, e.g., 16-bit wide, the u8 read will
+> return 1, while it has to return -EOVERFLOW.
 
-Applied, thanks.
+Well, that's a bug in my patch.
 
-jon
+I thought that you would reorder the series to put the fix into the
+front of it, but I didn't really mean to rebase it on top of my patch.
+Sorry for the confusion.
+
+However, not that you have started to do it apparently, let me post
+that patch properly with all of the issues addressed.
+
+> If you prefer, I can move two patches to the beginning, so one will be a good
+> prerequisite for this fix. And I'm still unsure about stable (Fixes tag is okay
+> to me), because the counting never worked from the day 1.
+
+Well, the code has never worked as intended, so why don't we make
+"stable" work as intended too?
