@@ -2,101 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A1031909A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4A631909C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhBKRGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:06:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhBKP6l (ORCPT
+        id S231546AbhBKRHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:07:06 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:31898 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229889AbhBKP7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:58:41 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7E8C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:58:01 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id t29so3925332pfg.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:58:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HeDDVNwJvE2yrKMWyL0hMeAKpq/juTb4nf0aTQ3YIII=;
-        b=fH0h91CR7DhcS+JEg8iSiuH+N9x4F/WdXKyPq5PAwBKI7LgvuJUkYbHy7G0NKYvcb8
-         icBiIuA7sZJ21p0T6EESdBWVxtplnyjpJLaMzvY2e7LpJLbF/fGxE7Gv4P+fz216xcaQ
-         IV5P4qNNp3yCGZA93RPxQTwKrGNn6+3F8frCvuOMyFEmo+hkVhlwWNDR6GO5TP/gDaG9
-         VK6Y0jx1edOGRq3et9wCvW+9RUzEtYy5DGo+1JFJVAAaE2wu7k9R+sz9y7mAyuH0QCRe
-         Kwvvw1Gdy202iKkkvHP26NJJJeNMfUQwXZmj5H8n88cJ5LFSCidwarEUauZjAfAXyllr
-         k1eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HeDDVNwJvE2yrKMWyL0hMeAKpq/juTb4nf0aTQ3YIII=;
-        b=e8vpNSyKjM07w6WMJ1aGy0wMIHfdmxlsuBpWOEVMQ0kN6ZOh6yBsaWIOanj3scRGO2
-         EQkNalCxJqEgi88CFQEcyo/aDKKdMe9NXnMzfM1Dc/ck5sc7uOgXxoKnsiCBly//f9l8
-         L43+2MtJbw5o6RO6nt48Tlu1lZOGvMLT62tVIdr2XefJHT8vW1rtLwvJm3NxgpqCoMsL
-         OvFQE5fiiis4ddmaLHTY+MgXjq+Y1u0w6LTk2CuKoBkxyE3+NtywDUksJdh6poLtR378
-         RvGe2ZZS61GgM34tjaISjRR3a9GmZqaF+3yQb3FJHUR3Hmzy6cDXGSf8IiEEe5TY5ebL
-         /6Gg==
-X-Gm-Message-State: AOAM533lJdLuhlWg9jMaJN6yOkRGeLVYGWvWwsojRzMNzCJPqE4tJVQE
-        8ick3tvKWnTKDHqhgZyE6BhFjQ==
-X-Google-Smtp-Source: ABdhPJwwt6iZiYg/YWGFpf7hhe0xQPXn47jDmvogtEKQdTJszmGhYKWm4muvrz1JXSo51238bX6Jrg==
-X-Received: by 2002:a63:e108:: with SMTP id z8mr8565022pgh.363.1613059080521;
-        Thu, 11 Feb 2021 07:58:00 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:11fc:33d:bf1:4cb8])
-        by smtp.gmail.com with ESMTPSA id c18sm6061906pfi.167.2021.02.11.07.57.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 07:58:00 -0800 (PST)
-Date:   Thu, 11 Feb 2021 07:57:53 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Subject: Re: [PATCH 09/15] KVM: selftests: Move per-VM GPA into perf_test_args
-Message-ID: <YCVUAdx3DYLPNwJU@google.com>
-References: <20210210230625.550939-1-seanjc@google.com>
- <20210210230625.550939-10-seanjc@google.com>
- <CANgfPd8itawTsza-SPSMehUEAAJ4DWtSQX4QRbHg1kX4c6VRBg@mail.gmail.com>
- <YCSOtMzs9OWO2AsR@google.com>
- <756fed52-8151-97ee-11f2-91f150afab42@redhat.com>
+        Thu, 11 Feb 2021 10:59:38 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BFuZWm009103;
+        Thu, 11 Feb 2021 07:58:51 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=8XM9Z1z1KIa3JAI/IomL0njTXksPQI7QgTYHG+XjgEM=;
+ b=DmD7pV2brjvhz+tJ+dH+YJUJ6H5VeppATS7IR6gq00RiN0Vk079sJAM8vNuoRWzbCdoD
+ WAG2Z432HH8+8AoQmcfNsl2GaK4GSvnrb7Ojn52EwfThSYDdu+3SkmXXK+kCt5j9oHna
+ E14k0moTm1dmNRyLeICtGERXVxAQe2DDq5KW+8ltskrLPkyAo3onG1jYvBQu04EXHDxp
+ qIo1wCfy2oD/Y/cqRhHtTCNIhRH3zAXXX0YR0NX/5CIlcwQyLzQEH2AIhA/tmZ6v2tc9
+ KTJNzBW3S2emLgoe79Fuo+AW0a2h5pZGnOh0Gg1Eo3wP2wqb+Q+6lkSn6CAMlqEv8/qA Yg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36hsbrqjg0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 07:58:51 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
+ 2021 07:58:49 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
+ 2021 07:58:48 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 11 Feb 2021 07:58:49 -0800
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 337DD3F703F;
+        Thu, 11 Feb 2021 07:58:44 -0800 (PST)
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <hkelam@marvell.com>,
+        <sbhatta@marvell.com>, <jerinj@marvell.com>,
+        <bbrezillon@kernel.org>, <arno@natisbad.org>,
+        <schalla@marvell.com>, Geetha sowjanya <gakula@marvell.com>
+Subject: [net-next v6 00/14] Add Marvell CN10K support
+Date:   Thu, 11 Feb 2021 21:28:20 +0530
+Message-ID: <20210211155834.31874-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <756fed52-8151-97ee-11f2-91f150afab42@redhat.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021, Paolo Bonzini wrote:
-> On 11/02/21 02:56, Sean Christopherson wrote:
-> > > > +       pta->gpa = (vm_get_max_gfn(vm) - guest_num_pages) * pta->guest_page_size;
-> > > > +       pta->gpa &= ~(pta->host_page_size - 1);
-> > > Also not related to this patch, but another case for align.
-> > > 
-> > > >          if (backing_src == VM_MEM_SRC_ANONYMOUS_THP ||
-> > > >              backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB)
-> > > > -               guest_test_phys_mem &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
-> > > > -
-> > > > +               pta->gpa &= ~(KVM_UTIL_HUGEPAGE_ALIGNMENT - 1);
-> > > also align
-> > > 
-> > > >   #ifdef __s390x__
-> > > >          /* Align to 1M (segment size) */
-> > > > -       guest_test_phys_mem &= ~((1 << 20) - 1);
-> > > > +       pta->gpa &= ~((1 << 20) - 1);
-> > > And here again (oof)
-> > 
-> > Yep, I'll fix all these and the align() comment in v2.
-> 
-> This is not exactly align in fact; it is x & ~y rather than (x + y) & ~y.
-> Are you going to introduce a round-down macro or is it a bug?  (I am
-> lazy...).
+The current admin function (AF) driver and the netdev driver supports
+OcteonTx2 silicon variants. The same OcteonTx2's
+Resource Virtualization Unit (RVU) is carried forward to the next-gen
+silicon ie OcteonTx3, with some changes and feature enhancements.
 
-Good question.  I, too, was lazy.  I didn't look at the guts of align() when I
-moved it, and I didn't look closely at Ben's suggestion.  I'll take a closer
-look today and make sure everything is doing what it's supposed to do.
+This patch set adds support for OcteonTx3 (CN10K) silicon and gets
+the drivers to the same level as OcteonTx2. No new OcteonTx3 specific
+features are added.
+
+Changes cover below HW level differences
+- PCIe BAR address changes wrt shared mailbox memory region
+- Receive buffer freeing to HW
+- Transmit packet's descriptor submission to HW
+- Programmable HW interface identifiers (channels)
+- Increased MTU support
+- A Serdes MAC block (RPM) configuration
+
+v5-v6
+Rebased on top of latest net-next branch.
+
+v4-v5
+Fixed sparse warnings.
+
+v3-v4
+Fixed compiler warnings.
+
+v2-v3
+Reposting as a single thread.
+Rebased on top latest net-next branch.
+
+v1-v2
+Fixed check-patch reported issues.
+
+Geetha sowjanya (5):
+  octeontx2-af: cn10k: Update NIX/NPA context structure
+  octeontx2-af: cn10k: Update NIX and NPA context in debugfs
+  octeontx2-pf: cn10k: Initialise NIX context
+  octeontx2-pf: cn10k: Map LMTST region
+  octeontx2-pf: cn10k: Use LMTST lines for NPA/NIX operations
+
+Hariprasad Kelam (5):
+  octeontx2-af: cn10k: Add RPM MAC support
+  octeontx2-af: cn10K: Add MTU configuration
+  octeontx2-pf: cn10k: Get max mtu supported from admin function
+  octeontx2-af: cn10k: Add RPM Rx/Tx stats support
+  octeontx2-af: cn10k: MAC internal loopback support
+
+Rakesh Babu (1):
+  octeontx2-af: cn10k: Add RPM LMAC pause frame support
+
+Subbaraya Sundeep (3):
+  octeontx2-af: cn10k: Add mbox support for CN10K platform
+  octeontx2-pf: cn10k: Add mbox support for CN10K
+  octeontx2-af: cn10k: Add support for programmable channels
+
+ MAINTAINERS                                   |   2 +
+ .../ethernet/marvell/octeontx2/af/Makefile    |  10 +-
+ .../net/ethernet/marvell/octeontx2/af/cgx.c   | 313 ++++++---
+ .../net/ethernet/marvell/octeontx2/af/cgx.h   |  15 +-
+ .../ethernet/marvell/octeontx2/af/cgx_fw_if.h |   1 +
+ .../ethernet/marvell/octeontx2/af/common.h    |   5 +
+ .../marvell/octeontx2/af/lmac_common.h        | 131 ++++
+ .../net/ethernet/marvell/octeontx2/af/mbox.c  |  59 +-
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  70 +-
+ .../net/ethernet/marvell/octeontx2/af/ptp.c   |  12 +
+ .../net/ethernet/marvell/octeontx2/af/rpm.c   | 272 ++++++++
+ .../net/ethernet/marvell/octeontx2/af/rpm.h   |  57 ++
+ .../net/ethernet/marvell/octeontx2/af/rvu.c   | 159 ++++-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |  71 ++
+ .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 134 +++-
+ .../ethernet/marvell/octeontx2/af/rvu_cn10k.c | 261 ++++++++
+ .../marvell/octeontx2/af/rvu_debugfs.c        | 339 +++++++++-
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 112 +++-
+ .../ethernet/marvell/octeontx2/af/rvu_npc.c   |   4 +-
+ .../ethernet/marvell/octeontx2/af/rvu_reg.h   |  24 +
+ .../marvell/octeontx2/af/rvu_struct.h         | 604 ++++++------------
+ .../ethernet/marvell/octeontx2/nic/Makefile   |  10 +-
+ .../ethernet/marvell/octeontx2/nic/cn10k.c    | 181 ++++++
+ .../ethernet/marvell/octeontx2/nic/cn10k.h    |  17 +
+ .../marvell/octeontx2/nic/otx2_common.c       | 150 +++--
+ .../marvell/octeontx2/nic/otx2_common.h       | 112 +++-
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  73 ++-
+ .../ethernet/marvell/octeontx2/nic/otx2_reg.h |   4 +
+ .../marvell/octeontx2/nic/otx2_struct.h       |  10 +-
+ .../marvell/octeontx2/nic/otx2_txrx.c         |  72 ++-
+ .../marvell/octeontx2/nic/otx2_txrx.h         |   8 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |  52 +-
+ include/linux/soc/marvell/octeontx2/asm.h     |   8 +
+ 33 files changed, 2613 insertions(+), 739 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rpm.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rpm.h
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
+
+-- 
+2.17.1
+
