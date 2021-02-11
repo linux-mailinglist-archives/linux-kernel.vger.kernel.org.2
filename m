@@ -2,208 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D763185F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162413185F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 08:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhBKHzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 02:55:54 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:40137 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhBKHvt (ORCPT
+        id S229937AbhBKH53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 02:57:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhBKHwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 02:51:49 -0500
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 9C21C23E89;
-        Thu, 11 Feb 2021 08:48:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1613029682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ui5fx/T0rquWBokS9L/OlMZLwcq97YO8RgSWRQqYTXo=;
-        b=ncyhZ1+i2JjBOy5p+UiyhgszvTLb63NGSpBKeVeiT/RBCKxH9x5kSacXIUg5QgufXoi55g
-        0x1q5zojkXJW/NgxZeTBh2l6uXamaJs3vQl0nr5Qh8tqTgoQOm/1FWGwbDo1l9xs739YuH
-        GLPnB/2L9DwmanRLF+Av3JFV7EcFFCw=
-From:   Michael Walle <michael@walle.cc>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH net-next v4 9/9] net: phy: icplus: add MDI/MDIX support for IP101A/G
-Date:   Thu, 11 Feb 2021 08:47:50 +0100
-Message-Id: <20210211074750.28674-10-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210211074750.28674-1-michael@walle.cc>
-References: <20210211074750.28674-1-michael@walle.cc>
+        Thu, 11 Feb 2021 02:52:06 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B513C061797
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 23:52:09 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id fa16so2947416pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 23:52:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=06Yprus+hDrW2/xZYx/mlg+VxWu/BiZE+sW68Jmo1RI=;
+        b=Ra6kYfi1+ZunK+HKHgtBU6GmKSsL+3PXTyKBlp2Te91gDQ+k3OFcoTzcZuYbf0YKox
+         g2O7fkQAmi8uN/PS6M6qSqjJ7oroSwB0cG6KYReSyAAaoy4LEl8/T/BRNWoOIZOWWaAn
+         lxRTTfd8BweGMjMB6gP0AZq1xWVOdz1ONAaxnJSVDy2iXF2BqaE9LOA1UJmKlNsoKndj
+         JRSkby1T/HI0M2h/OGKTaxxrWM6rI2LYib9K/ZJB5oz+7bKyXgBFyWa3pPmchZi1GgJP
+         hA8fC03P7H61aIfhoAHk61fSf4rhuUnEgpPsvnKsjMcCWVnaDoBtOwPC5yITh+AfZISA
+         lrmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=06Yprus+hDrW2/xZYx/mlg+VxWu/BiZE+sW68Jmo1RI=;
+        b=lqBZx2l9C5Cn6RG0/SIl/4AmVZyg0aSSKs/P1Mh8F2KbnzJ6yp/YWbSi4/XVcKO3Jc
+         cFX2TxA1ZE1TjOl9DeDu2sgRgUE0F2BANdy63ktMPu8QFdYyccSuI3TJPmMnXavsDDJk
+         D5uOUu7eFq3f085n2nanbqXKj3/iZPr5BRb6J91B5UF0wcDmuvfcN2KA48L4jJgtZu5P
+         pYfrjOOM/0n/WEcCkYtd6UGiVmp4RwDCWLWStbhJI1NoPTJfGe9nUp93HUg4v2cb7KPI
+         bBOvDCRX/LUoY4ydjB5BZ5BVhJzUN3AuAMoa/TlOEpfhtb1M2KsVDDGoJcUkSGndArAK
+         6SAg==
+X-Gm-Message-State: AOAM533Q306/aC48IljtoG6EoCRBH5i5lKurkq/riZLHzP1pLPHwgXgP
+        zPewxKti0dqviOT+B93Ee2EaAEWtjtH5SA==
+X-Google-Smtp-Source: ABdhPJyy0FX3Oitq2i/n8vZ/zcw0IGZLhXbnM/DumP0UFq6ucImVOTkrrFRRQq21ahUAErD/li4k6A==
+X-Received: by 2002:a17:902:fe03:b029:e1:2c46:f3fd with SMTP id g3-20020a170902fe03b02900e12c46f3fdmr6683457plj.62.1613029928698;
+        Wed, 10 Feb 2021 23:52:08 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:3a7f:bbfb:1664:2a63])
+        by smtp.gmail.com with ESMTPSA id r189sm4731832pgr.10.2021.02.10.23.52.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 23:52:08 -0800 (PST)
+Date:   Wed, 10 Feb 2021 23:52:06 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v4 1/2] pinctrl: use to octal permissions for debugfs
+ files
+Message-ID: <20210211075206.GA295123@x1>
+References: <20210210222851.232374-1-drew@beagleboard.org>
+ <20210210222851.232374-2-drew@beagleboard.org>
+ <408ca31f3f43f4db40998f607f582aeb0ffbab1e.camel@perches.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <408ca31f3f43f4db40998f607f582aeb0ffbab1e.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the operations to set desired mode and retrieve the current
-mode.
+On Wed, Feb 10, 2021 at 11:36:39PM -0800, Joe Perches wrote:
+> On Wed, 2021-02-10 at 14:28 -0800, Drew Fustini wrote:
+> > Switch over pinctrl debugfs files to use octal permissions as they are
+> > preferred over symbolic permissions. Refer to commit f90774e1fd27
+> > ("checkpatch: look for symbolic permissions and suggest octal instead").
+> > 
+> > Note: S_IFREG flag is added to the mode by __debugfs_create_file()
+> > in fs/debugfs/inode.c
+> > 
+> > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> > ---
+> >  drivers/pinctrl/core.c    | 6 +++---
+> >  drivers/pinctrl/pinconf.c | 4 ++--
+> >  drivers/pinctrl/pinmux.c  | 4 ++--
+> >  3 files changed, 7 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+> > index 3663d87f51a0..02f8710afb9c 100644
+> > --- a/drivers/pinctrl/core.c
+> > +++ b/drivers/pinctrl/core.c
+> > @@ -1914,11 +1914,11 @@ static void pinctrl_init_debugfs(void)
+> >  		return;
+> >  	}
+> >  
+> > 
+> > -	debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
+> > +	debugfs_create_file("pinctrl-devices", 0444,
+> >  			    debugfs_root, NULL, &pinctrl_devices_fops);
+> > -	debugfs_create_file("pinctrl-maps", S_IFREG | S_IRUGO,
+> > +	debugfs_create_file("pinctrl-maps", 0444,
+> >  			    debugfs_root, NULL, &pinctrl_maps_fops);
+> > -	debugfs_create_file("pinctrl-handles", S_IFREG | S_IRUGO,
+> > +	debugfs_create_file("pinctrl-handles", 0444,
+> >  			    debugfs_root, NULL, &pinctrl_fops);
+> >  }
+> 
+> Why aren't you also converting this block in the same file?
+> 
+> @@ -1890,11 +1890,11 @@ static void pinctrl_init_device_debugfs(struct pinctrl_dev *pctldev)
+>                         dev_name(pctldev->dev));
+>                 return;
+>         }
+> -       debugfs_create_file("pins", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pins", S_IFREG | 0444,
+>                             device_root, pctldev, &pinctrl_pins_fops);
+> -       debugfs_create_file("pingroups", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("pingroups", S_IFREG | 0444,
+>                             device_root, pctldev, &pinctrl_groups_fops);
+> -       debugfs_create_file("gpio-ranges", S_IFREG | S_IRUGO,
+> +       debugfs_create_file("gpio-ranges", S_IFREG | 0444,
+>                             device_root, pctldev, &pinctrl_gpioranges_fops);
+>         if (pctldev->desc->pmxops)
+>                 pinmux_init_device_debugfs(device_root, pctldev);
+> 
+> 
+> 
 
-This feature was tested with an IP101G.
+Thank you, that is a very good point.  I should have included those
+calls to debugfs_create_file() in the patch as well.  I will fix that
+in the next revision.  It looks like I also need to change how sscanf()
+is being handle per the other thread of discussion.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
-Changes since v3:
- - added return code check on phy_select_page()
-
-Changes since v2:
- - none
-
-Changes since v1:
- - none, except that the callbacks are register for both IP101A and IP101G
-   PHY drivers
-
- drivers/net/phy/icplus.c | 97 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 97 insertions(+)
-
-diff --git a/drivers/net/phy/icplus.c b/drivers/net/phy/icplus.c
-index 41bd0fa2ce17..4e15d4d02488 100644
---- a/drivers/net/phy/icplus.c
-+++ b/drivers/net/phy/icplus.c
-@@ -37,12 +37,17 @@ MODULE_LICENSE("GPL");
- #define IP1001_SPEC_CTRL_STATUS_2	20	/* IP1001 Spec. Control Reg 2 */
- #define IP1001_APS_ON			11	/* IP1001 APS Mode  bit */
- #define IP101A_G_APS_ON			BIT(1)	/* IP101A/G APS Mode bit */
-+#define IP101A_G_AUTO_MDIX_DIS		BIT(11)
- #define IP101A_G_IRQ_CONF_STATUS	0x11	/* Conf Info IRQ & Status Reg */
- #define	IP101A_G_IRQ_PIN_USED		BIT(15) /* INTR pin used */
- #define IP101A_G_IRQ_ALL_MASK		BIT(11) /* IRQ's inactive */
- #define IP101A_G_IRQ_SPEED_CHANGE	BIT(2)
- #define IP101A_G_IRQ_DUPLEX_CHANGE	BIT(1)
- #define IP101A_G_IRQ_LINK_CHANGE	BIT(0)
-+#define IP101A_G_PHY_STATUS		18
-+#define IP101A_G_MDIX			BIT(9)
-+#define IP101A_G_PHY_SPEC_CTRL		30
-+#define IP101A_G_FORCE_MDIX		BIT(3)
- 
- #define IP101G_PAGE_CONTROL				0x14
- #define IP101G_PAGE_CONTROL_MASK			GENMASK(4, 0)
-@@ -299,6 +304,94 @@ static int ip101g_config_init(struct phy_device *phydev)
- 	return ip101a_g_config_intr_pin(phydev);
- }
- 
-+static int ip101a_g_read_status(struct phy_device *phydev)
-+{
-+	int oldpage, ret, stat1, stat2;
-+
-+	ret = genphy_read_status(phydev);
-+	if (ret)
-+		return ret;
-+
-+	oldpage = phy_select_page(phydev, IP101G_DEFAULT_PAGE);
-+	if (oldpage < 0)
-+		return oldpage;
-+
-+	ret = __phy_read(phydev, IP10XX_SPEC_CTRL_STATUS);
-+	if (ret < 0)
-+		goto out;
-+	stat1 = ret;
-+
-+	ret = __phy_read(phydev, IP101A_G_PHY_SPEC_CTRL);
-+	if (ret < 0)
-+		goto out;
-+	stat2 = ret;
-+
-+	if (stat1 & IP101A_G_AUTO_MDIX_DIS) {
-+		if (stat2 & IP101A_G_FORCE_MDIX)
-+			phydev->mdix_ctrl = ETH_TP_MDI_X;
-+		else
-+			phydev->mdix_ctrl = ETH_TP_MDI;
-+	} else {
-+		phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
-+	}
-+
-+	if (stat2 & IP101A_G_MDIX)
-+		phydev->mdix = ETH_TP_MDI_X;
-+	else
-+		phydev->mdix = ETH_TP_MDI;
-+
-+	ret = 0;
-+
-+out:
-+	return phy_restore_page(phydev, oldpage, ret);
-+}
-+
-+static int ip101a_g_config_mdix(struct phy_device *phydev)
-+{
-+	u16 ctrl = 0, ctrl2 = 0;
-+	int oldpage, ret;
-+
-+	switch (phydev->mdix_ctrl) {
-+	case ETH_TP_MDI:
-+		ctrl = IP101A_G_AUTO_MDIX_DIS;
-+		break;
-+	case ETH_TP_MDI_X:
-+		ctrl = IP101A_G_AUTO_MDIX_DIS;
-+		ctrl2 = IP101A_G_FORCE_MDIX;
-+		break;
-+	case ETH_TP_MDI_AUTO:
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	oldpage = phy_select_page(phydev, IP101G_DEFAULT_PAGE);
-+	if (oldpage < 0)
-+		return oldpage;
-+
-+	ret = __phy_modify(phydev, IP10XX_SPEC_CTRL_STATUS,
-+			   IP101A_G_AUTO_MDIX_DIS, ctrl);
-+	if (ret)
-+		goto out;
-+
-+	ret = __phy_modify(phydev, IP101A_G_PHY_SPEC_CTRL,
-+			   IP101A_G_FORCE_MDIX, ctrl2);
-+
-+out:
-+	return phy_restore_page(phydev, oldpage, ret);
-+}
-+
-+static int ip101a_g_config_aneg(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	ret = ip101a_g_config_mdix(phydev);
-+	if (ret)
-+		return ret;
-+
-+	return genphy_config_aneg(phydev);
-+}
-+
- static int ip101a_g_ack_interrupt(struct phy_device *phydev)
- {
- 	int err;
-@@ -504,6 +597,8 @@ static struct phy_driver icplus_driver[] = {
- 	.config_intr	= ip101a_g_config_intr,
- 	.handle_interrupt = ip101a_g_handle_interrupt,
- 	.config_init	= ip101a_config_init,
-+	.config_aneg	= ip101a_g_config_aneg,
-+	.read_status	= ip101a_g_read_status,
- 	.soft_reset	= genphy_soft_reset,
- 	.suspend	= genphy_suspend,
- 	.resume		= genphy_resume,
-@@ -516,6 +611,8 @@ static struct phy_driver icplus_driver[] = {
- 	.config_intr	= ip101a_g_config_intr,
- 	.handle_interrupt = ip101a_g_handle_interrupt,
- 	.config_init	= ip101g_config_init,
-+	.config_aneg	= ip101a_g_config_aneg,
-+	.read_status	= ip101a_g_read_status,
- 	.soft_reset	= genphy_soft_reset,
- 	.get_sset_count = ip101g_get_sset_count,
- 	.get_strings	= ip101g_get_strings,
--- 
-2.20.1
-
+Thanks,
+Drew
