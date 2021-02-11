@@ -2,144 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0115931947F
+	by mail.lfdr.de (Postfix) with ESMTP id 71BF1319480
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhBKU2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbhBKU20 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:28:26 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BF2C06178B
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:27:40 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id v3so5164311qtw.4
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:27:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.unc.edu; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vubsqxgo0fEnqEVj8qEmdEXuz9badpnuh2QBKPAa7ik=;
-        b=L0cWHu+kQEIeJQeqgVfSEKeUlAIaAp3+Pfe89/ZQeKN3F3bbYqLy3NJLmNUthnd4qM
-         9lXIZuZcHd/WTVyGpc8G0D9A8cq4FjGHefZkv5/tTR7tWv6mOJlzXD96qRk1d8ZzLMkV
-         T8dMp4h6UkEUEkD/1q9n0TI4Lbac3w9ny5gTo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vubsqxgo0fEnqEVj8qEmdEXuz9badpnuh2QBKPAa7ik=;
-        b=P3VMzffJbG8+hFZaeTC38SO9kPrT57+PLIO6RJq/dEFZ3Up6O25+QokQgP3oOE5T/L
-         K3p4wsOUU6FJdytoucwUCuCEn1zcOkhacJaX8fsLClU8d25Khz3fJkPYcTepUUkwC3Bi
-         je2uuy4BZU5rg6U0ydsDfSEOjn5oMsktwt7VH0u3JUUi9X0DHGekMp6IZ0ydIXaiLnZq
-         h0cZEdYPgYqfW4fmcZnMIblZ8ExSyKhobatc19nOM1fhZrtpGRc1LbdEHoN+La4/L/wj
-         dt0AVXyDNmzUUeQmG3soYvx4Nz5qCi+13AvVA4qHLPCD3mIIOq9bqQAsMc2cr7UhsSlH
-         tkmA==
-X-Gm-Message-State: AOAM532MN4fs6JXDLy7BvTFtaY5wN6JXOXe5L5/SzXBGwpJmBKN2jAEY
-        s0g9wHvvun/2yRpeWkVd50P0SfpD5IwH76I9UVtWC3Oq+orXElazI6ySaAuS8TvRGRTvXeK8DyX
-        WwynuorsWiQ+TM8aY8XoMtY6VaVQeQAEp+QU7EaKgN9yFtJsv/NKdp+BCiMXwbLoS+tTBTAQ4bv
-        wO
-X-Google-Smtp-Source: ABdhPJz1jsXqn0tjNekHrH0oAqIcaYJ91d5jZ3kdxUf4iKzQWMY6sFnNTyUE8YmVpy6mVy1hAuWsBA==
-X-Received: by 2002:ac8:604a:: with SMTP id k10mr8965414qtm.178.1613075258834;
-        Thu, 11 Feb 2021 12:27:38 -0800 (PST)
-Received: from [152.23.151.151] ([152.23.151.151])
-        by smtp.gmail.com with ESMTPSA id f188sm4749827qkj.110.2021.02.11.12.27.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 12:27:37 -0800 (PST)
-Subject: Re: [RESEND,PATCH] fs/binfmt_elf: Fix regression limiting ELF program
- header size
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215034624.1887447-1-jbakita@cs.unc.edu>
-From:   Joshua Bakita <jbakita@cs.unc.edu>
-Message-ID: <7cba1c24-5034-53e1-6014-982973e66ea3@cs.unc.edu>
-Date:   Thu, 11 Feb 2021 15:27:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229997AbhBKU3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:29:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229517AbhBKU3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 15:29:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1590360238;
+        Thu, 11 Feb 2021 20:29:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613075352;
+        bh=8N7onBJ6MH8l7R4/9sQRd0Myu+KRdJMuSZ+/s6LX9hk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gaJZsoosAKGhieJPFOqo0hHVGpZ3f9ctKirm+/FJkBXn1ilmdmuk7Pb5yX22jWqXS
+         JG6m2O2V8sNCSA4myQS70huwR3oAOKeXlGibB8oKBA3qb2UBzFG/U0Z8pfcfgXSvFg
+         qM9YP1Wb6YZ3QPS6blDaQAQO325ZUKJNHUFwIFK4=
+Date:   Thu, 11 Feb 2021 21:29:09 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Pritthijit Nath <pritthijit.nath@icloud.com>
+Cc:     forest@alittletooquiet.net, oscar.carter@gmx.com,
+        tvboxspy@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: vt6656: Fixed issue with alignment in rf.c
+Message-ID: <YCWTlWj4KHT6Okq/@kroah.com>
+References: <20210211152426.10008-1-pritthijit.nath@icloud.com>
 MIME-Version: 1.0
-In-Reply-To: <20201215034624.1887447-1-jbakita@cs.unc.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211152426.10008-1-pritthijit.nath@icloud.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
-
-I raised this patch on #linuxfs on IRC, and I got asked if this actually 
-effects real programs. To demonstrate that it does, I wrote up a simple 
-C program which just does a table lookup of a prime number. The table is 
-stored sparsely, so newer versions of GCC+LD automatically put each 
-table entry in its own program section and segment. This results in over 
-100 ELF program header entries, which Linux since 3.19 will refuse to 
-load with ENOEXEC due to the errant limit fixed in my patch. (The 
-current broken limit is 73, whereas the manpage states a limit of 64k.)
-
-My example program is available at 
-https://www.cs.unc.edu/~jbakita/get_prime.c and should be built as gcc 
-get_prime.c -o get_prime. I know this works with GCC 9.3.0 and LD 2.34 
-(GCC 7.5.0 and LD 2.30 are too old). You can verify it built correctly 
-by checking the "Number of program headers" as printed by readelf -h is 
-at least 100.
-
-I tried to keep this patch small to make it easy to review, but there 
-are a few other bugs (like the 64KB limit) in the ELF loader. Would it 
-be more helpful or make review easier to just fix all the bugs at once? 
-This is my first kernel patch, and I'd really like to make it the first 
-of many.
-
-Best,
-
-Joshua Bakita
-
-On 12/14/20 10:46 PM, Joshua Bakita wrote:
-> Commit 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to a
-> function") merged load_elf_binary and load_elf_interp into
-> load_elf_phdrs. This change imposed a limit that the program headers of
-> all ELF binaries are smaller than ELF_MIN_ALIGN. This is a mistake for
-> two reasons:
-> 1. load_elf_binary previously had no such constraint, meaning that
->     previously valid ELF program headers are now rejected by the kernel as
->     oversize and invalid.
-> 2. The ELF interpreter's program headers should never have been limited to
->     ELF_MIN_ALIGN (and previously PAGE_SIZE) in the first place. Commit
->     057f54fbba73 ("Import 1.1.54") introduced this limit to the ELF
->     interpreter alongside the initial ELF parsing support without any
->     explanation.
-> This patch removes the ELF_MIN_ALIGN size constraint in favor of only
-> relying on an earlier check that the allocation will be less than 64KiB.
-> (It's worth mentioning that the 64KiB limit is also unnecessarily strict,
-> but that's not addressed here for simplicity. The ELF manpage says that
-> the program header size is supposed to have at most 64 thousand entries,
-> not less than 64 thousand bytes.)
+On Thu, Feb 11, 2021 at 08:54:26PM +0530, Pritthijit Nath wrote:
+> This change fixes a checkpatch CHECK style issue for "Alignment should match open parenthesis".
 > 
-> Fixes: 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to a function")
-> Signed-off-by: Joshua Bakita <jbakita@cs.unc.edu>
+> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
 > ---
->   fs/binfmt_elf.c | 4 ----
->   1 file changed, 4 deletions(-)
+>  drivers/staging/vt6656/rf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> index 2472af2798c7..55162056590f 100644
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -412,15 +412,11 @@ static struct elf_phdr *load_elf_phdrs(struct elfhdr *elf_ex,
->   	/* Sanity check the number of program headers... */
->   	if (elf_ex->e_phnum < 1 ||
->   		elf_ex->e_phnum > 65536U / sizeof(struct elf_phdr))
->   		goto out;
->   
-> -	/* ...and their total size. */
->   	size = sizeof(struct elf_phdr) * elf_ex->e_phnum;
-> -	if (size > ELF_MIN_ALIGN)
-> -		goto out;
-> -
->   	elf_phdata = kmalloc(size, GFP_KERNEL);
->   	if (!elf_phdata)
->   		goto out;
->   
->   	/* Read in the program headers */
-> 
+> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
+> index 5b8da06e3916..bcd4d467e03a 100644
+> --- a/drivers/staging/vt6656/rf.c
+> +++ b/drivers/staging/vt6656/rf.c
+> @@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
+>  
+>  			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
+>  				ret = vnt_rf_write_embedded(priv,
+> -					vt3226d0_lo_current_table[hw_value]);
+> +							    vt3226d0_lo_current_table[hw_value]);
+>  				if (ret)
+>  					return ret;
+>  			}
+> -- 
+> 2.25.1
+
+Please run this change, with the changelog above, through
+checkpatch.pl, fix that, and resend.
+
+thanks,
+
+greg k-h
