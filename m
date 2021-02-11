@@ -2,86 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745223187B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F49B3187B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhBKKED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:04:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48114 "EHLO mail.kernel.org"
+        id S230187AbhBKKE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:04:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230154AbhBKKAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:00:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28C9364E92;
-        Thu, 11 Feb 2021 09:59:28 +0000 (UTC)
+        id S230014AbhBKKBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 05:01:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBA3064E95;
+        Thu, 11 Feb 2021 10:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613037569;
-        bh=Zj8EM5Xx2JdkHBzV0ZcjFswDPawBzyPCgGJvYO+nIu8=;
+        s=korg; t=1613037621;
+        bh=jLVPIT2Tb0aqIZLErCoySxXU9jKdMCQPZI74l/yB11M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AWWZoRuP1RODcWAYJNKCM5+kpL3fmGLyr9DvCV/ZQ2eEJ9z2skeQfz363Q4jD0lYz
-         MpLPk2vG4KdlTlTSuyCCd5cDnCUEfeI0AbHRukiZXBQtUL1zLIkwXtcf/TXrA7psuM
-         wR5GQzW5oQqTSOsmK3tCpvjatd85poXQ9XDi/UOU=
-Date:   Thu, 11 Feb 2021 10:59:26 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v5 1/6] misc: Add Synopsys DesignWare xData IP driver
-Message-ID: <YCT//nmQpOJD9row@kroah.com>
-References: <cover.1613034397.git.gustavo.pimentel@synopsys.com>
- <02835da8fc8c9293fecbe666a8db3fb79276fdde.1613034397.git.gustavo.pimentel@synopsys.com>
- <YCT5KDnAWex8fvbz@kroah.com>
- <DM5PR12MB1835A23E60363C730E4D69AFDA8C9@DM5PR12MB1835.namprd12.prod.outlook.com>
+        b=kTEj0WSbvgoVRPTVqdgPpMhypgO6vXabbGifC4nz3VgbAanXm9oV5LZLIyUjWzT97
+         WsOTf5vbxhSRNrgu23K/VFO4ZjobRCPezUxDqVPvUwRYSr6m1NdvS1Bp1CU5pjaoLa
+         923LSWqv+k5JxRLEriDzZfjNzboBiRDS4xcvUnAY=
+Date:   Thu, 11 Feb 2021 11:00:18 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
+Cc:     johan@kernel.org, elder@kernel.org, devel@driverdev.osuosl.org,
+        greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] staging: greybus: Added do - while in multi
+ statement macro
+Message-ID: <YCUAMgFa6i9vl9An@kroah.com>
+References: <20210211095444.54447-1-hemanshagnihotri27@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM5PR12MB1835A23E60363C730E4D69AFDA8C9@DM5PR12MB1835.namprd12.prod.outlook.com>
+In-Reply-To: <20210211095444.54447-1-hemanshagnihotri27@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 09:50:33AM +0000, Gustavo Pimentel wrote:
-> On Thu, Feb 11, 2021 at 9:30:16, Greg Kroah-Hartman 
-> <gregkh@linuxfoundation.org> wrote:
+On Thu, Feb 11, 2021 at 03:24:44PM +0530, Hemansh Agnihotri wrote:
+> This patch add fixes an checkpatch error for "Macros with multiple statements
+> should be enclosed in a do - while loop"
 > 
-> > On Thu, Feb 11, 2021 at 10:08:38AM +0100, Gustavo Pimentel wrote:
-> > > +static ssize_t write_show(struct device *dev, struct device_attribute *attr,
-> > > +			  char *buf)
-> > > +{
-> > > +	struct pci_dev *pdev = to_pci_dev(dev);
-> > > +	struct dw_xdata *dw = pci_get_drvdata(pdev);
-> > > +	u64 rate;
-> > > +
-> > > +	mutex_lock(&dw->mutex);
-> > > +	dw_xdata_perf(dw, &rate, true);
-> > > +	mutex_unlock(&dw->mutex);
-> > > +
-> > > +	return sysfs_emit(buf, "%llu MB/s\n", rate);
-> > 
-> > Do not put units in a sysfs file, that should be in the documentation,
-> > otherwise this forces userspace to "parse" the units which is a mess.
-> 
-> Okay.
-> 
-> > 
-> > Same for the other sysfs file.
-> > 
-> > And why do you need a lock for this show function?
-> 
-> Maybe I understood it wrongly, please correct me in that case. The 
-> dw_xdata_perf() is called on the write_show() and read_show(), to avoid a 
-> possible race condition between those calls, I have added this mutex.
+> Signed-off-by: Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
 
-What race?  If the value changes with a write right after a read, what
-does it matter?
+Any reason you didn't test-build your patch before sending it out?
 
-What exactly are you trying to protect with this lock?
+That's a bit rude to reviewers :(
+
+Please always do that.
 
 thanks,
 
