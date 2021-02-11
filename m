@@ -2,180 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49036318477
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D61ED31847A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbhBKFHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 00:07:03 -0500
-Received: from mga17.intel.com ([192.55.52.151]:55022 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhBKFHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 00:07:02 -0500
-IronPort-SDR: jXiuGZ+880MrrmVl1Wk46Cj4g2xtYTvWam38RViCLeIQjl4CYQzWBuMkwePdnWraPF06EDGNTE
- fpOMJVGPkd8Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="161944238"
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="161944238"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 21:06:21 -0800
-IronPort-SDR: se1U/ziyJXxaoJElrXDhqKg30WjZpu6jfzbhHGZjM31bN2roxtwVp/sU1y5/7lSsNQcEAL5zZ7
- 3bLvuXje85nA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="421327152"
-Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Feb 2021 21:06:20 -0800
-Received: from kbuild by cd560a204411 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lA4BG-0003Wb-Q1; Thu, 11 Feb 2021 05:06:18 +0000
-Date:   Thu, 11 Feb 2021 13:05:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.02.01a] BUILD SUCCESS
- 52a8ca059c5eca36698a33cb16a373a6a1ed8978
-Message-ID: <6024bb31.Dn13GaaYKRwnHicP%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229558AbhBKFIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 00:08:46 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64640 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229499AbhBKFIo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 00:08:44 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11B535q4050007;
+        Thu, 11 Feb 2021 00:07:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=GeKdXRTnblLQLgKS12NhNK/KcHc7JYx6PvJg6YHGkK8=;
+ b=LD4/C3Ci4f2wLKRjATxW5V16aXB4ZjDLC7zxw6RCQuMPJRChLpdLYa+l8u1h2YyuwR65
+ 14h446q9TbbTEKUlYT2Yt1G8L9VAbzDaxYEsONDvNHdEdtxuhVcNKHYb/wsT5fXIU1BS
+ rlRziEOjEKpe+8ytYZ/ExPMV8JBO9j2C7/A08J96kKRHV7oEdi0v1Vqu/2LumK8mwSuL
+ J0o4+taMvEM1zBwyev+ORrP2G+TXfu4N8gy7qilKTYK4MVj9Zq4DRc9MdZBDHZ3lxoKP
+ 36A9bFnSRhia9/YE1uJNw6yqouRYFelR+z2qxrKSdyGuw9i5kUbRtpfBgeVnK5YN/I6/ EA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36mwsygjad-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 00:07:24 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11B53ebk053143;
+        Thu, 11 Feb 2021 00:07:23 -0500
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36mwsygj9w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 00:07:23 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11B53vGC023278;
+        Thu, 11 Feb 2021 05:07:22 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma01wdc.us.ibm.com with ESMTP id 36hjr9k9r4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 05:07:22 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11B57LLW24576256
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 05:07:21 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A62AABE04F;
+        Thu, 11 Feb 2021 05:07:21 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 724F4BE058;
+        Thu, 11 Feb 2021 05:07:12 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.160.95.194])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Thu, 11 Feb 2021 05:07:12 +0000 (GMT)
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210209182200.30606-8-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v17 07/10] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+In-reply-to: <20210209182200.30606-8-nramas@linux.microsoft.com>
+Date:   Thu, 11 Feb 2021 02:07:09 -0300
+Message-ID: <87lfbvnqf6.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_04:2021-02-10,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 clxscore=1015 priorityscore=1501 spamscore=0
+ adultscore=0 phishscore=0 impostorscore=0 mlxlogscore=815 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.02.01a
-branch HEAD: 52a8ca059c5eca36698a33cb16a373a6a1ed8978  fixup! torture: Provide bare-metal modprobe-based advice
 
-elapsed time: 724m
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-configs tested: 118
-configs skipped: 2
+> The functions defined in "arch/powerpc/kexec/ima.c" handle setting up
+> and freeing the resources required to carry over the IMA measurement
+> list from the current kernel to the next kernel across kexec system call.
+> These functions do not have architecture specific code, but are
+> currently limited to powerpc.
+>
+> Move remove_ima_buffer() and setup_ima_buffer() calls into
+> of_kexec_alloc_and_setup_fdt() defined in "drivers/of/kexec.c".
+>
+> Move the remaining architecture independent functions from
+> "arch/powerpc/kexec/ima.c" to "drivers/of/kexec.c".
+> Delete "arch/powerpc/kexec/ima.c" and "arch/powerpc/include/asm/ima.h".
+> Remove references to the deleted files and functions in powerpc and
+> in ima.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  arch/powerpc/include/asm/ima.h    |  27 ----
+>  arch/powerpc/include/asm/kexec.h  |   3 -
+>  arch/powerpc/kexec/Makefile       |   7 -
+>  arch/powerpc/kexec/file_load.c    |  25 ----
+>  arch/powerpc/kexec/file_load_64.c |   4 -
+>  arch/powerpc/kexec/ima.c          | 202 -------------------------
+>  drivers/of/kexec.c                | 239 ++++++++++++++++++++++++++++++
+>  include/linux/of.h                |   2 +
+>  security/integrity/ima/ima.h      |   4 -
+>  9 files changed, 241 insertions(+), 272 deletions(-)
+>  delete mode 100644 arch/powerpc/include/asm/ima.h
+>  delete mode 100644 arch/powerpc/kexec/ima.c
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Tested-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                           sama5_defconfig
-m68k                        mvme147_defconfig
-sh                        dreamcast_defconfig
-sh                                  defconfig
-powerpc                     powernv_defconfig
-arm                         palmz72_defconfig
-mips                       bmips_be_defconfig
-mips                        bcm47xx_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                      obs600_defconfig
-m68k                       m5249evb_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arc                        nsimosci_defconfig
-mips                         tb0219_defconfig
-m68k                            q40_defconfig
-mips                        qi_lb60_defconfig
-arm                           sunxi_defconfig
-xtensa                         virt_defconfig
-arm                        magician_defconfig
-mips                           ip32_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                  mpc885_ads_defconfig
-arc                         haps_hs_defconfig
-arm                          prima2_defconfig
-powerpc                          g5_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                        realview_defconfig
-arm                          badge4_defconfig
-mips                         tb0287_defconfig
-powerpc                    socrates_defconfig
-mips                            ar7_defconfig
-powerpc                     sbc8548_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                          allmodconfig
-arm                             pxa_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                           se7751_defconfig
-powerpc                     sequoia_defconfig
-ia64                         bigsur_defconfig
-ia64                      gensparse_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210209
-x86_64               randconfig-a001-20210209
-x86_64               randconfig-a005-20210209
-x86_64               randconfig-a004-20210209
-x86_64               randconfig-a002-20210209
-x86_64               randconfig-a003-20210209
-i386                 randconfig-a001-20210209
-i386                 randconfig-a005-20210209
-i386                 randconfig-a003-20210209
-i386                 randconfig-a002-20210209
-i386                 randconfig-a006-20210209
-i386                 randconfig-a004-20210209
-i386                 randconfig-a016-20210209
-i386                 randconfig-a013-20210209
-i386                 randconfig-a012-20210209
-i386                 randconfig-a014-20210209
-i386                 randconfig-a011-20210209
-i386                 randconfig-a015-20210209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a013-20210209
-x86_64               randconfig-a014-20210209
-x86_64               randconfig-a015-20210209
-x86_64               randconfig-a012-20210209
-x86_64               randconfig-a016-20210209
-x86_64               randconfig-a011-20210209
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
