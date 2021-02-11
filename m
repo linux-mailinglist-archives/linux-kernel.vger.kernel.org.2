@@ -2,149 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA203194B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BC83194C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhBKUsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:48:37 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12728 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhBKUsb (ORCPT
+        id S229918AbhBKUyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:54:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhBKUyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:48:31 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602597f50000>; Thu, 11 Feb 2021 12:47:49 -0800
-Received: from [10.2.62.148] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
- 2021 20:47:48 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-CC:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 2/2] mm/hugetlb: refactor subpage recording
-Date:   Thu, 11 Feb 2021 15:47:46 -0500
-X-Mailer: MailMate (1.14r5757)
-Message-ID: <68570840-78E9-4B32-BE0B-B6DC60479DB0@nvidia.com>
-In-Reply-To: <b550e766-b0fd-2c99-c82f-80e770e8a496@oracle.com>
-References: <20210128182632.24562-1-joao.m.martins@oracle.com>
- <20210128182632.24562-3-joao.m.martins@oracle.com>
- <b550e766-b0fd-2c99-c82f-80e770e8a496@oracle.com>
+        Thu, 11 Feb 2021 15:54:33 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D99DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:53:53 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id e24so7172212ioc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:53:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z6ZG5Dmpcr3dphEuMXhR4ohnjOhh91pyYZOXK8YBBQ8=;
+        b=SwQEk23nQu49/7zGvXpYbPxTTfQhd6o7wAYudESH1lMiZQYROCK9GrzJrOl2Bh84Zl
+         o/RJiF9S+Nv6YIJsJs9mHanLZCn57L0+7WYavg7+z7foM6R7Jd//qEu+5oJIcCnPjXOf
+         xktxquW2pcwEdLVdDtL00ytKmXKh1pNsWBuGs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z6ZG5Dmpcr3dphEuMXhR4ohnjOhh91pyYZOXK8YBBQ8=;
+        b=T5ts2aiYZtrDlxGtcHRLfK4dkQOOWHP/gGqprvjLUrrhpwL8JPMz75o+rRxXj3cItj
+         pr1BpzJMfHwEfv4pdscp7NZExrGob/lDNWb4dyAWRtJfRVc75wNCop1q5p8tLumHVr4u
+         Fzbpo4+iMRJt6LA7TjyiA2eMRaTE7fcPwy9GGHCpUIM+zEtUM7JC1f9dvs7xEaGsbBQU
+         opjdgNqhtZ9IAw09YpyUL2PlVlSAXkvCr24RGCNraONVX/dPLLytGz0chtL1GJMFnNz6
+         HEwx/du+UBwgp2TWX0gTQUngnZObq3xB5FmWdtgVZbXxEzC4ryNOsNARfPRuRZcAVhoq
+         Lm8A==
+X-Gm-Message-State: AOAM531Qyjwu65VHSECLNv6l9Psl9JTJxyHSbWn9KkVcgbJFTWvbEeyK
+        bw+TAoyL2IEI/v4fdeoxLC2rGA==
+X-Google-Smtp-Source: ABdhPJxS+FbWEJCWFiOb19bw5JWTzO423ZZjhYNmsV3ct5XHCjciv+zdMEIgaDhb4egTqrnav0Krmw==
+X-Received: by 2002:a5d:9586:: with SMTP id a6mr7220881ioo.83.1613076832081;
+        Thu, 11 Feb 2021 12:53:52 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h13sm3006905ioe.40.2021.02.11.12.53.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Feb 2021 12:53:51 -0800 (PST)
+Subject: Re: [PATCH 4/5] ath10k: detect conf_mutex held ath10k_drain_tx()
+ calls
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
+        kuba@kernel.org, davem@davemloft.net,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1612915444.git.skhan@linuxfoundation.org>
+ <a980abfb143f5240375f3f1046f0f26971c695e6.1612915444.git.skhan@linuxfoundation.org>
+ <87lfbwtjls.fsf@codeaurora.org>
+ <d6d8c7b8-f69d-01ef-6d66-8a33ea98920f@linuxfoundation.org>
+ <871rdmu9z9.fsf@codeaurora.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f0905d6c-065f-a29c-2c83-77f55e77d36e@linuxfoundation.org>
+Date:   Thu, 11 Feb 2021 13:53:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed;
-        boundary="=_MailMate_0AF41835-26CA-4A52-94E2-2B9F71480E0E_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613076469; bh=FAs2MweUMgMz3RkofK3eIzkwTspP0Sgpwi0jMsprmgg=;
-        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=VGTNIRlKLRny7vyHrD9ap15OKywYJiSK1gG2U0bDlYRkhnKnGepn6VGZw2Gfnh/OX
-         pLnXUQbfKtJAGdhTtHHo9ukxPW1Pto3QQ2iUz2psi07HVoJyf2fDUp5rpR6gMXIJhT
-         hzGvOHcRZmRDAuzpgFAuRjjlzJnBXZdl6MVOeKMvrDArF7y8UnvjkOCdjUvwp9TU9h
-         l8DOHiSaMrK1uh1IzmQbtZGuFinxxtaj7RwOhkjrfVNqY2N54DSL9WSppSLsGREp4I
-         86m+H2X9eRGjATO792nBbNxQgSBZMx8jNh0lXsH/NqcYhfEhkNSFTxOlmycOh8yxiz
-         YxChCjG2X9IrA==
+In-Reply-To: <871rdmu9z9.fsf@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_0AF41835-26CA-4A52-94E2-2B9F71480E0E_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On 28 Jan 2021, at 16:53, Mike Kravetz wrote:
-
-> On 1/28/21 10:26 AM, Joao Martins wrote:
->> For a given hugepage backing a VA, there's a rather ineficient
->> loop which is solely responsible for storing subpages in GUP
->> @pages/@vmas array. For each subpage we check whether it's within
->> range or size of @pages and keep increment @pfn_offset and a couple
->> other variables per subpage iteration.
+On 2/11/21 4:20 AM, Kalle Valo wrote:
+> Shuah Khan <skhan@linuxfoundation.org> writes:
+> 
+>> On 2/10/21 1:25 AM, Kalle Valo wrote:
+>>> Shuah Khan <skhan@linuxfoundation.org> writes:
+>>>
+>>>> ath10k_drain_tx() must not be called with conf_mutex held as workers can
+>>>> use that also. Add check to detect conf_mutex held calls.
+>>>>
+>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>
+>>> The commit log does not answer to "Why?". How did you find this? What
+>>> actual problem are you trying to solve?
+>>>
 >>
->> Simplify this logic and minimize the cost of each iteration to just
->> store the output page/vma. Instead of incrementing number of @refs
->> iteratively, we do it through pre-calculation of @refs and only
->> with a tight loop for storing pinned subpages/vmas.
+>> I came across the comment block above the ath10k_drain_tx() as I was
+>> reviewing at conf_mutex holds while I was debugging the conf_mutex
+>> lock assert in ath10k_debug_fw_stats_request().
 >>
->> Additionally, retain existing behaviour with using mem_map_offset()
->> when recording the subpages for configurations that don't have a
->> contiguous mem_map.
+>> My reasoning is that having this will help detect incorrect usages
+>> of ath10k_drain_tx() while holding conf_mutex which could lead to
+>> locking problems when async worker routines try to call this routine.
+> 
+> Ok, makes sense. I prefer having this background info in the commit log,
+> for example "found by code review" or something like that. Or just copy
+> what you wrote above :)
+> 
+
+Thanks. I will do that.
+
+>>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>>> @@ -4566,6 +4566,7 @@ static void
+>>>> ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
+>>>>    /* Must not be called with conf_mutex held as workers can use that also. */
+>>>>    void ath10k_drain_tx(struct ath10k *ar)
+>>>>    {
+>>>> +	WARN_ON(lockdep_is_held(&ar->conf_mutex));
+>>>
+>>> Empty line after WARN_ON().
+>>>
 >>
->> pinning consequently improves bringing us close to
->> {pin,get}_user_pages_fast:
+>> Will do.
 >>
->>   - 16G with 1G huge page size
->>   gup_test -f /mnt/huge/file -m 16384 -r 30 -L -S -n 512 -w
+>>> Shouldn't this check debug_locks similarly lockdep_assert_held() does?
+>>>
+>>> #define lockdep_assert_held(l)	do {				\
+>>> 		WARN_ON(debug_locks && !lockdep_is_held(l));	\
+>>> 	} while (0)
+>>>
+>>> And I suspect you need #ifdef CONFIG_LOCKDEP which should fix the kbuild
+>>> bot error.
+>>>
 >>
->> PIN_LONGTERM_BENCHMARK: ~12.8k us -> ~5.8k us
->> PIN_FAST_BENCHMARK: ~3.7k us
+>> Yes.
 >>
->> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
->> ---
->>  mm/hugetlb.c | 49 ++++++++++++++++++++++++++++---------------------
->>  1 file changed, 28 insertions(+), 21 deletions(-)
->
-> Thanks for updating this.
->
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
->
-> I think there still is an open general question about whether we can al=
-ways
-> assume page structs are contiguous for really big pages.  That is outsi=
-de
+>>> But honestly I would prefer to have lockdep_assert_not_held() in
+>>> include/linux/lockdep.h, much cleaner that way. Also
+>>> i915_gem_object_lookup_rcu() could then use the same macro.
+>>>
+>>
+>> Right. This is the right way to go. That was first instinct and
+>> decided to have the discussion evolve in that direction. Now that
+>> it has, I will combine this change with
+>> include/linux/lockdep.h and add lockdep_assert_not_held()
+>>
+>> I think we might have other places in the kernel that could use
+>> lockdep_assert_not_held() in addition to i915_gem_object_lookup_rcu()
+> 
 
-I do not think page structs need to be contiguous, but PFNs within a big =
-page
-need to be contiguous, at least based on existing code like mem_map_offse=
-t() we have.
-The assumption seems valid according to the existing big page allocation =
-methods,
-which use alloc_contig_pages() at the end of the day. alloc_contig_pages(=
-)
-calls pfn_range_valid_contig() to make sure all PFNs are contiguous.
-On the other hand, the buddy allocator only merges contiguous PFNs, so th=
-ere
-will be no problem even if someone configures the buddy allocator to allo=
-cate
-gigantic pages.
+I looked at i915_gem_object_lookup_rcu(). The following can be replaced
+by lockdep_assert_held().
 
-Unless someone comes up with some fancy way of making page allocations fr=
-om
-contiguous page structs in SPARSEMEM_VMEMMAP case, where non-contiguous
-PFNs with contiguous page structs are possible, or out of any adjacent
-pages in !SPARSEMEM_VMEMMAP case, where non-contiguous page structs
-and non-contiguous PFNs are possible, we should be good.
+#ifdef CONFIG_LOCKDEP
+         WARN_ON(debug_locks && !lock_is_held(&rcu_lock_map));
+#endif
 
+> Great, thank you. The only problem is that lockdep.h changes have to go
+> via some other tree, I just don't know which :) I think it would be
+> easiest if also the ath10k patch goes via that other tree, I can ack the
+> ath10k changes.
+> 
+> Another option is that I'll apply the ath10k patch after the lockdep.h
+> change has trickled down to my tree, but that usually happens only after
+> the merge window and means weeks of waiting. Either is fine for me.
+> 
 
-=E2=80=94
-Best Regards,
-Yan Zi
+I will send the include/linux/lockdep.h and ath10k patch together and
+we will take it from there.
 
---=_MailMate_0AF41835-26CA-4A52-94E2-2B9F71480E0E_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmAll/IPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKSP8P/2I97FZPzy/A05J1UHc/C31OtFe3IiNmXB83
-6VQEl5AIyBo+BXmWQ5i7cBLp/ojPhOQLwKO+ygnawFHrw8pH0R0ZaWgkOCagvnuV
-GJ9ZWHzW/PZeDoQO2K9FOvwMns4j59T/pF4AlBTjHWkJQ8284t4idCmnozWrk3MX
-sjpkoO6WOOu20vAXmdsK1lKenOLQt+6mk4nW5wRh+0Py3jDygPRO7zVwegcxdfBA
-0F0/+VzuIo0txlCauM9O4wykRs+TrGKudzpvShnqo/yn1mEcCWe6abIAgIP0mjRr
-/af5ci+mNtHGHxCDPSijYBpW1h3sZifqvjxdmCfi46B5gY+LqgQGAoM6WgDEIkfs
-9ISApkfEjtTdkO4UqM5GfFPxVvWCDR2xTxyISJGf6YGf5hjOvT9BpozcsPqkkyJN
-PXAomnFtwZwfvIv1RKpa9yz64tkq+AEqIxvRvKVOT8wNq1U4Q6BxEx0JbjnD3234
-hCRE3P80UrtXLyOJ8teBzHwx6iN2eTB9Qac1GTQHOqaHCCSqNs9NY8+tg/+X0y03
-W1aoAxp8OGDt+iGElzUAgc3vX0SR0KQdhJBMPcWWVF0VQta4PSrykqs3BIh6ATbl
-vm7dq0HnYI6GCE9MaAQk4aF11t+594NzmvYvvx5Pj3dzT1dQfaqVkQld2PFWWIz8
-HyuA0xf5
-=9RWM
------END PGP SIGNATURE-----
-
---=_MailMate_0AF41835-26CA-4A52-94E2-2B9F71480E0E_=--
+thanks,
+-- Shuah
