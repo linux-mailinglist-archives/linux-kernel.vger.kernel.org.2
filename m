@@ -2,52 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D498631861E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 09:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A11B9318621
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 09:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhBKIKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 03:10:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33406 "EHLO mail.kernel.org"
+        id S229662AbhBKINC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 03:13:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40144 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhBKIKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 03:10:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6786D64E7D;
-        Thu, 11 Feb 2021 08:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613030960;
-        bh=vyMMhB7wPQd8gGS0ecVy6MdwiL8lTI6K+XerVHtB99Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XHnzYfUpxeSOPEybDRAv0ofgKGYTaRh///nVnG/PDSxTrlom+oSixIV2bPAP/ZTGN
-         dU8vpKSfAz4YW7+bH/31HhkWZOx/rx/pARQNu5ePkYv2HeNW1fEHTGaF4ssVD32uPT
-         ClNNdTsl8S7y5vP6rmoPeIRfUP2pspOrG+fZ8S6CQibjRavbOrJcjIQI7iBrk227sZ
-         uHzjUO2gXqT91z8uqqQDdX40DkfMWOVTvO8CFL28L04t8NH7Z+luLYngiiEaIJ4BRo
-         a7VuwH1e4vfxDCDt7UYgWI2rB4tHLZzwb3PpcRMzmyqdoTaZ3+8IsUwWhQ70DvDh8C
-         Gkl5P/kT8Z55g==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lA72d-0004eu-99; Thu, 11 Feb 2021 09:09:35 +0100
-Date:   Thu, 11 Feb 2021 09:09:35 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joe Perches <joe@perches.com>, linux-usb@vger.kernel.org
-Subject: Re: [PATCH] usb: Replace lkml.org links with lore
-Message-ID: <YCTmP9F0XVR8iF19@hovoldconsulting.com>
-References: <20210210235330.3292719-1-keescook@chromium.org>
+        id S229451AbhBKIM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 03:12:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D5B6BAE05;
+        Thu, 11 Feb 2021 08:12:17 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 09:12:14 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/hugetlb: Remove unnecessary VM_BUG_ON_PAGE on
+ putback_active_hugepage()
+Message-ID: <20210211081214.GB4087@localhost.localdomain>
+References: <20210209071151.44731-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210235330.3292719-1-keescook@chromium.org>
+In-Reply-To: <20210209071151.44731-1-linmiaohe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 03:53:30PM -0800, Kees Cook wrote:
-> As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
-> links with lore"), replace lkml.org links with lore to better use a
-> single source that's more likely to stay available long-term.
+On Tue, Feb 09, 2021 at 02:11:51AM -0500, Miaohe Lin wrote:
+> All callers know they are operating on a hugetlb head page. So this
+> VM_BUG_ON_PAGE can not catch anything useful.
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Acked-by: Johan Hovold <johan@kernel.org>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+> ---
+>  mm/hugetlb.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 06719fdf9fd6..cfa06fd1b8d7 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -5577,7 +5577,6 @@ bool isolate_huge_page(struct page *page, struct list_head *list)
+>  
+>  void putback_active_hugepage(struct page *page)
+>  {
+> -	VM_BUG_ON_PAGE(!PageHead(page), page);
+>  	spin_lock(&hugetlb_lock);
+>  	SetHPageMigratable(page);
+>  	list_move_tail(&page->lru, &(page_hstate(page))->hugepage_activelist);
+> -- 
+> 2.19.1
+> 
+> 
+
+-- 
+Oscar Salvador
+SUSE L3
