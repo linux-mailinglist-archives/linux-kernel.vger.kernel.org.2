@@ -2,95 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F7A3190BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE10F3190BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhBKROt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:14:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbhBKQKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 11:10:37 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564C5C061574;
-        Thu, 11 Feb 2021 08:09:53 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id w20so4532544qta.0;
-        Thu, 11 Feb 2021 08:09:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nYkfx6kQ9UjotrPeVcc6dCj9wqjxlvymee7hnOlUZc4=;
-        b=LVPVjtQgeneusnFr+M9czDicODB7ZIFrKpMTHljq/lc7hUOyQL0+w0uTOocM+uDr6n
-         tD/74boY67io539d5+uyKYY+fj+t0QDS5O7JsF6kMnqFZ/WJ/o25Eid7BGiwRvgIvk8u
-         hE004LAgJJ7KP9zdeqI1HF63wvVlGp1ML7GxTUEVQzmvbj4buNdr2enfI8b+gSn7uygo
-         XBGhyAyA/VEjDRWsnlyovv7o87+gzhQT4gz6CB5EaXJsDgLCy5sryboB+ieWHppu8Fan
-         2beGzI6B4F+Go42Y+zQUM1PnAd0uEKVUtezK+pPWvPcYfj6SjvdBMM6OzOBLwi3hHgUh
-         lLnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nYkfx6kQ9UjotrPeVcc6dCj9wqjxlvymee7hnOlUZc4=;
-        b=fvYo2yjNaie0KMTFmzEHUOui3EeR24D08rk0kNs1janN4lbVke4waxM7FX9A3IQIAK
-         q8x+/a4UqdeayqdMWY9f3Kk3CRLWmPeRMDZC9FKQq71Wpo0EsPNxbAPosOMsU6D+gxFc
-         r4MPVwWeavUGYCxqaCzmh4vO0cVYDbxP502qzoWjYFj8IvAYl/ZuCz2Tl2GOxoz/+3o9
-         eoTLPIsE9TFMGpci9rx6w9EhjplSSCKUOnCFovThW86G4MmUOMC+oVyBjCMIcOOwnIv9
-         VmsXvg7gIsTA89ywXHi6VgNldEv5cAN8TD1TaYbEmSCtoT8lUErLSKRb0lWjyRyLUgmy
-         SawQ==
-X-Gm-Message-State: AOAM531PULGXbt9AGVqyumS24G/Gchf4ZkIEfnXu8FaN2ssu/pS5lMeI
-        RUoyuBiAAj+5qCMzbanvPbk=
-X-Google-Smtp-Source: ABdhPJxmo/BeMr4MJyAWSiHztW3MAQ9KoIYjGqXNHnjcFfYgB4/zjZZ/XYKsG5cITco9hyjR02FbnA==
-X-Received: by 2002:aed:2022:: with SMTP id 31mr8161328qta.85.1613059792402;
-        Thu, 11 Feb 2021 08:09:52 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:d9d4:9919:4b2f:f800])
-        by smtp.googlemail.com with ESMTPSA id p188sm4223296qkf.40.2021.02.11.08.09.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 08:09:52 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ztong0001@gmail.com
-Subject: [PATCH] enetc: auto select PHYLIB and MDIO_DEVRES
-Date:   Thu, 11 Feb 2021 11:09:30 -0500
-Message-Id: <20210211160930.1231035-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S229821AbhBKRPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:15:22 -0500
+Received: from mga04.intel.com ([192.55.52.120]:4719 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231477AbhBKQMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 11:12:30 -0500
+IronPort-SDR: 4ZiQKTlxAmdhQdND4fQeeOBeVm9sfXxgtTQ2ktYUSyxtDBvmrbAV85kccFPIG3hXqAa+hwbCoR
+ eDRUqaWt3ZCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="179707358"
+X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
+   d="scan'208";a="179707358"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:11:34 -0800
+IronPort-SDR: AnEqEOS4EETBMPL/ToQ+rFZDaxlzewFj7BulAEU1GsWTwWVRk46wiR+O9PSc1CQE2i+L1Irv8m
+ ltaWIXR1WHhA==
+X-IronPort-AV: E=Sophos;i="5.81,170,1610438400"; 
+   d="scan'208";a="362547479"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.225.14]) ([10.212.225.14])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 08:11:33 -0800
+Subject: Re: [PATCH v3] driver core: auxiliary bus: Fix calling stage for
+ auxiliary bus init
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20210210201611.1611074-1-dave.jiang@intel.com>
+ <YCTgYWEAxiBgq3xz@kroah.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <9896ca8c-f4c3-a4d2-05fd-675cd53069dd@intel.com>
+Date:   Thu, 11 Feb 2021 09:11:32 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YCTgYWEAxiBgq3xz@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FSL_ENETC_MDIO use symbols from PHYLIB and MDIO_DEVRES, however they are
-not auto selected.
 
-ERROR: modpost: "__mdiobus_register" [drivers/net/ethernet/freescale/enetc/fsl-enetc-mdio.ko] undefined!
-ERROR: modpost: "mdiobus_unregister" [drivers/net/ethernet/freescale/enetc/fsl-enetc-mdio.ko] undefined!
-ERROR: modpost: "devm_mdiobus_alloc_size" [drivers/net/ethernet/freescale/enetc/fsl-enetc-mdio.ko] undefined!
+On 2/11/2021 12:44 AM, Greg KH wrote:
+> On Wed, Feb 10, 2021 at 01:16:11PM -0700, Dave Jiang wrote:
+>>   MODULE_LICENSE("GPL v2");
+>>   MODULE_DESCRIPTION("Auxiliary Bus");
+>>   MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
+> As this code can not be built as a module, can you remove these lines as
+> well?  I don't think they do anything, and were never needed.
 
-auto select MDIO_DEVRES and PHYLIB when FSL_ENETC_MDIO is selected.
+Ok I will remove them.
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/net/ethernet/freescale/enetc/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/Kconfig b/drivers/net/ethernet/freescale/enetc/Kconfig
-index d99ea0f4e4a6..2ec3f8065e6d 100644
---- a/drivers/net/ethernet/freescale/enetc/Kconfig
-+++ b/drivers/net/ethernet/freescale/enetc/Kconfig
-@@ -28,6 +28,8 @@ config FSL_ENETC_VF
- config FSL_ENETC_MDIO
- 	tristate "ENETC MDIO driver"
- 	depends on PCI
-+	select MDIO_DEVRES
-+	select PHYLIB
- 	help
- 	  This driver supports NXP ENETC Central MDIO controller as a PCIe
- 	  physical function (PF) device.
--- 
-2.25.1
-
+> thanks,
+>
+> greg k-h
