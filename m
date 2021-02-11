@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BB331949D
+	by mail.lfdr.de (Postfix) with ESMTP id AE73031949E
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbhBKUiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:38:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhBKUiB (ORCPT
+        id S230381AbhBKUjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:39:03 -0500
+Received: from pv50p00im-zteg10021301.me.com ([17.58.6.46]:33844 "EHLO
+        pv50p00im-zteg10021301.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229873AbhBKUi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:38:01 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A997C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:37:19 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d13so3973279plg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:37:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9BHuk3ZYMLLx5jkh2jfjNl/0+0DOqtjeK6vm2BoIWLM=;
-        b=LTxtqY4r6M08Z++xlLlEFgEpj9xnOLzNb2VDxxPGPfaXYDd3hebnYLucoMv+4K3gZf
-         b238WdzxH+CwSavS1QG1gSIset8fIziXAmNEGRm8WcBhHZIc8YqF4r0cySYF0UC91O71
-         jQ6RHwAtVQDykw7pe64D2Kdt4hNuWSgI8fziY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9BHuk3ZYMLLx5jkh2jfjNl/0+0DOqtjeK6vm2BoIWLM=;
-        b=NixNSBnoQ0VkROZGhQKKHKui0nVdg1rg11SmIuizLBwCPa5BSg0elhZZjGAYPF4JEc
-         vSLEihfEUMHgnY7ii78Xrse5wYBVvZJDwzF+KiU3Vobg++e9HEWNKteGG3d7frmWMewA
-         Wh6RimVc3/hJDdRqB8nkYUpzKG+2nbOw2+K30ioFUZAXloPde6ua8LzwdV3ftB6pdNHL
-         SbYUpq22ZTIJkwLv1IXzGW+OEtOLng7BWfEUtsdhLpeOtVX0X8RfkIbE9O+bVi7qAYIk
-         TAHOAqoxV09l7G7TrmxSjgyejEWcEvWf61pZMGbEhSvFCpq7xGhenVr+76RucHLIiRF3
-         e8Wg==
-X-Gm-Message-State: AOAM531oblvYhZ32dekY5s6jEOmQZTPuqEV06ndfGbKATiL27G7RgeSN
-        bNZ15iw/AuDt5eVc0xHgkxabyg==
-X-Google-Smtp-Source: ABdhPJy4mCUr+FLNqbadedEOQ4Ml0HfxCmiOE1ccQ8KAD7UIlNx/XTmTLlNpxAd6je8BoCjpBiIL3w==
-X-Received: by 2002:a17:90a:b26:: with SMTP id 35mr5576902pjq.104.1613075838848;
-        Thu, 11 Feb 2021 12:37:18 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s1sm6009223pjz.42.2021.02.11.12.37.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 12:37:18 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        linux-spi@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] spi: dw: Avoid stack content exposure
-Date:   Thu, 11 Feb 2021 12:37:14 -0800
-Message-Id: <20210211203714.1929862-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 11 Feb 2021 15:38:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1613075876;
+        bh=+UqQfeVaYIVGyWxiq1h9v749UZHZAQFSnLtzkXJ9+PE=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=WO21kUgZgUTk0G7hVFeat58bpckwW2lz+GmBh9Zbk8KKotz9b1pNm9CgtCnrb0kda
+         tMdYdYcm0kp+b3VdqiGzW8zJDMrXF7+dqlmos+Gofv/xRaIQZMtlw/p2hurCaRD4Dc
+         +T/5RIF9Drs2MdtXPPDTU2x9QjwL80fNxoRn7NARb+EANRrDy1Tv1gnf9CRz/h/VSm
+         zuVlh3FbN7ig49oklLVjgBPu9/0/ycxbzaaS+aldYjpVaunm48MRYFXDQ/Wuseqh2b
+         K8w9cPR3yANGI/mQa/o/fwYpKE55lQg6YRNNBfQtkRkS9WjAq8DyHCkGq8z0h3libT
+         tOcnr730kaGvQ==
+Received: from [192.168.31.114] (unknown [45.250.50.68])
+        by pv50p00im-zteg10021301.me.com (Postfix) with ESMTPSA id 11AFACC0562;
+        Thu, 11 Feb 2021 20:37:53 +0000 (UTC)
+Subject: Re: [PATCH] staging: vt6656: Fixed issue with alignment in rf.c
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     forest@alittletooquiet.net, oscar.carter@gmx.com,
+        tvboxspy@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20210211152426.10008-1-pritthijit.nath@icloud.com>
+ <YCWTlWj4KHT6Okq/@kroah.com>
+From:   Pritthijit Nath <pritthijit.nath@icloud.com>
+Message-ID: <141aa6fe-972c-a9a2-f321-65a98ebccc41@icloud.com>
+Date:   Fri, 12 Feb 2021 02:07:50 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=c096925a3c8985c42f6bdce7c1dc78eabf32a678; i=ACsCAAtHySWi4/GyQJ4FPUqzRVqKGJseolXprmVqVo0=; m=ssMcO9+CE4ZCEW+w5qXFX6Gk6yDhsXYySpOVbzwhQXs=; p=4UX3omQoBN9kpGxRRn7MGtHp0PfSA3+8vaFM2wXCPcs=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmAllXoACgkQiXL039xtwCb2nA/9ER3 P8/seL8bh2p+NxuRip48LLX1pasXUciBYzdnQ2gykRsTcWSc74DMtIfQkvibEQwjVS7Fdk6tHg+la pWJAiy9KxO3RYWZiq2Bc42Bv0kITcvQkn9NAxUzmBRMuJzbEFp7lOErLuuPy1GJw9cIFfYDFZo3Ow ky0whXUtjbzVpeSL16pg7pRdJhFvnGguV7Dz+sShfopgUpBVdIW+/hfxhiHiMKhjxzxWQd97+4S6x 4543Ba1XY9ij/P66g9In4Q0pBT+/0C9xCBF+0QrAcW43zPlgzcFjiOdlYu4cxvrwd4Oc1maRihxy/ d7YtuBRnmM/28hzvwG0SkFzKpnOWWBS4aR5A54lVrncQp8csikHnrRh/R4s4Wyrypuhxmcc62FPwX 7o86BzsAzi+0ESiivTyHkPcP3+p4MjEjt/EMpPSJ6xlDoUWGirhLt+380ZiaDpEsUACHMIzvoWATK Oq4gW8T9HNWbYEPlMaQ3MF0Sr9Sj+SfJ7yFspxveplbW1PhG9IgYMGN31pkUFlNgkhSf/jpBIjDZr Ymhc8WMK3axbWNX7rzYiz0VfPBUse30A85+WVfzP0Dwv2lb+UdjHEQl9+f95vZAyAKZ3GS0tRgVbi zebE19BkoKQEhrL6E9yYaWWT36/73azQfHCrWPw++0aJVtPFj0ip/y4BgCh6Xa8E=
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YCWTlWj4KHT6Okq/@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2102110162
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since "data" is u32, &data is a "u32 *" type, which means pointer math
-will move in u32-sized steps. This was meant to be a byte offset, so
-cast &data to "char *" to aim the copy into the correct location.
+On 12/02/21 1:59 am, Greg KH wrote:
+> On Thu, Feb 11, 2021 at 08:54:26PM +0530, Pritthijit Nath wrote:
+>> This change fixes a checkpatch CHECK style issue for "Alignment should match open parenthesis".
+>>
+>> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
+>> ---
+>>  drivers/staging/vt6656/rf.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
+>> index 5b8da06e3916..bcd4d467e03a 100644
+>> --- a/drivers/staging/vt6656/rf.c
+>> +++ b/drivers/staging/vt6656/rf.c
+>> @@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
+>>  
+>>  			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
+>>  				ret = vnt_rf_write_embedded(priv,
+>> -					vt3226d0_lo_current_table[hw_value]);
+>> +							    vt3226d0_lo_current_table[hw_value]);
+>>  				if (ret)
+>>  					return ret;
+>>  			}
+>> -- 
+>> 2.25.1
+> 
+> Please run this change, with the changelog above, through
+> checkpatch.pl, fix that, and resend.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Seen with -Warray-bounds (and found by Coverity):
+This change fixes a checkpatch CHECK style issue for "Alignment should 
+match open parenthesis".
 
-In file included from ./include/linux/string.h:269,
-                 from ./arch/powerpc/include/asm/paca.h:15,
-                 from ./arch/powerpc/include/asm/current.h:13,
-                 from ./include/linux/mutex.h:14,
-                 from ./include/linux/notifier.h:14,
-                 from ./include/linux/clk.h:14,
-                 from drivers/spi/spi-dw-bt1.c:12:
-In function 'memcpy',
-    inlined from 'dw_spi_bt1_dirmap_copy_from_map' at drivers/spi/spi-dw-bt1.c:87:3:
-./include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset 4 is out of the bounds [0, 4] of object 'data' with type 'u32' {aka 'unsigned int'} [-Warray-bounds]
-   20 | #define __underlying_memcpy __builtin_memcpy
-      |                             ^
-./include/linux/fortify-string.h:191:9: note: in expansion of macro '__underlying_memcpy'
-  191 |  return __underlying_memcpy(p, q, size);
-      |         ^~~~~~~~~~~~~~~~~~~
-drivers/spi/spi-dw-bt1.c: In function 'dw_spi_bt1_dirmap_copy_from_map':
-drivers/spi/spi-dw-bt1.c:77:6: note: 'data' declared here
-   77 |  u32 data;
-      |      ^~~~
-
-Addresses-Coverity: CID 1497771 Out-of-bounds access
-Fixes: abf00907538e ("spi: dw: Add Baikal-T1 SPI Controller glue driver")
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
 ---
- drivers/spi/spi-dw-bt1.c | 2 +-
+ drivers/staging/vt6656/rf.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
-index 4aa8596fb1f2..5be6b7b80c21 100644
---- a/drivers/spi/spi-dw-bt1.c
-+++ b/drivers/spi/spi-dw-bt1.c
-@@ -84,7 +84,7 @@ static void dw_spi_bt1_dirmap_copy_from_map(void *to, void __iomem *from, size_t
- 	if (shift) {
- 		chunk = min_t(size_t, 4 - shift, len);
- 		data = readl_relaxed(from - shift);
--		memcpy(to, &data + shift, chunk);
-+		memcpy(to, (char *)&data + shift, chunk);
- 		from += chunk;
- 		to += chunk;
- 		len -= chunk;
+diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
+index 5b8da06e3916..bcd4d467e03a 100644
+--- a/drivers/staging/vt6656/rf.c
++++ b/drivers/staging/vt6656/rf.c
+@@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
+ 
+ 			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
+ 				ret = vnt_rf_write_embedded(priv,
+-					vt3226d0_lo_current_table[hw_value]);
++							    vt3226d0_lo_current_table[hw_value]);
+ 				if (ret)
+ 					return ret;
+ 			}
 -- 
 2.25.1
-
