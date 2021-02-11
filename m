@@ -2,205 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745E731908A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4B931908D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 18:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhBKRCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 12:02:42 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:40088 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231261AbhBKPx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:53:29 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 9ECF1FB05;
-        Thu, 11 Feb 2021 16:51:14 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RS5yTBkyuB6t; Thu, 11 Feb 2021 16:51:12 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 4D6AC4188E; Thu, 11 Feb 2021 16:51:05 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [PATCH v1 4/4] usb: typec: tps6598x: Add trace event for data status
-Date:   Thu, 11 Feb 2021 16:51:05 +0100
-Message-Id: <38b2be2f7bcfc025d6870391e19130dd488a8035.1613058605.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <cover.1613058605.git.agx@sigxcpu.org>
-References: <cover.1613058605.git.agx@sigxcpu.org>
+        id S232172AbhBKRCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 12:02:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhBKPyH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:54:07 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4446C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:53:26 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id x136so3943455pfc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:53:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Vnu2AtQ1spv0GWQmPrlWpgIMMltpVB1H3yMfq69YdQg=;
+        b=U++q29GI0JS9qimHjYxoLWA88JdkGYxzQC7VLD7nkBcz2ogRcyFq0nPvDNcwlztw41
+         49yM34YYFdP/2PbM53WapBfRyvXes0nJUcS3W07w1nGFCAJr/HlXg/mVhgnPMx8PSzkK
+         PaYcgoZR7saPS6cb/fOkpWR7ijvHPNVyb6lGdxxQzfMeo0fMf7rea0d4ku91YWdOFAwJ
+         fN7AgZZFKVbP3ued6lCe2wAnR9/08VK1+s439q/rMoSz0pP3V0LAmfH+LODOGx+5XofR
+         2kPq8+NEGMbkpeh+l1aNjGXo7Y3u7LDD4LXWVmh8rrW+A3t1IEgXzE3I4uX9nUJ+q0ef
+         nPog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Vnu2AtQ1spv0GWQmPrlWpgIMMltpVB1H3yMfq69YdQg=;
+        b=h1hB8hK5Vaf0uBy8gQeNNk+kZuFpEQBe/EpPL/ApdksmlCxur0t1xY/xQTLHkXhaxm
+         mtk56rso8z2l5ZpIh6xcFVvG+u0UMyYhhJ2ujRyqYLt7La+QmfXav8zqV6j929+ABGYn
+         kVsIADcp8IpLhYCajWXmRJEsNnCJsfWuadHXoL9v9+zGUytLA6iBXbKDxRKpUwt5AhdD
+         EVjpW+PCZ73DawfOIX7ImJmwN2i8grE6mHk/rWBf0mLU81KaBpaVKM6LbtqGLF+2CHAe
+         sKFttmq6qzAa+XH9LaOouqMGnG0/vz9OAr+/a727OsZPqHp+x6rtd/cNi0HtCnritFsk
+         m0NA==
+X-Gm-Message-State: AOAM532yzY/jNHij9ZQ6hkWfPPtyQk1IxUb9c0jFlSKMO5BpoGdYOkZC
+        Zv5+FHNZE8+AmcDlbNSkP/HyBh4m/k/YgA==
+X-Google-Smtp-Source: ABdhPJw/TlRtkkNbkn2Zsea8YEd53t9+megM0TMZUVR3RMYIDC7aR4gTj2dH/GDqKoMwhcy5ttBbgQ==
+X-Received: by 2002:a62:35c6:0:b029:1ba:e795:d20e with SMTP id c189-20020a6235c60000b02901bae795d20emr8538633pfa.37.1613058806192;
+        Thu, 11 Feb 2021 07:53:26 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:11fc:33d:bf1:4cb8])
+        by smtp.gmail.com with ESMTPSA id h11sm5341715pjg.46.2021.02.11.07.53.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 07:53:25 -0800 (PST)
+Date:   Thu, 11 Feb 2021 07:53:19 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Makarand Sonare <makarandsonare@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pshier@google.com,
+        jmattson@google.com, Ben Gardon <bgardon@google.com>
+Subject: Re: [RESEND PATCH ] KVM: VMX: Enable/disable PML when dirty logging
+ gets enabled/disabled
+Message-ID: <YCVS79fnRkDRqfL2@google.com>
+References: <20210210212308.2219465-1-makarandsonare@google.com>
+ <7c78c6df-36e7-1473-e834-3786e257ebc5@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c78c6df-36e7-1473-e834-3786e257ebc5@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is useful to debug DP negotiation and pin assignment even
-when the firmware does all the work.
+On Thu, Feb 11, 2021, Paolo Bonzini wrote:
+> On 10/02/21 22:23, Makarand Sonare wrote:
+> > +void vmx_update_pml_in_vmcs(struct kvm_vcpu *vcpu)
+> > +{
+> > +	if (cpu_has_secondary_exec_ctrls()) {
+> > +		if (is_guest_mode(vcpu)) {
+> > +			to_vmx(vcpu)->nested.deferred_update_pml_vmcs = true;
+> > +			return;
+> > +		}
+> > +
+> > +		if (vcpu->kvm->arch.pml_enabled)
+> > +			vmcs_set_bits(SECONDARY_VM_EXEC_CONTROL,
+> > +				SECONDARY_EXEC_ENABLE_PML);
+> > +		else
+> > +			vmcs_clear_bits(SECONDARY_VM_EXEC_CONTROL,
+> > +				SECONDARY_EXEC_ENABLE_PML);
+> > +	}
+> > +}
+> 
+> 
+> Since the execution controls are shadowed, they can be read quite
+> efficiently.  This means that there's no need for
+> vcpu->kvm->arch.pml_enabled, and also that the copy can be done
+> unconditionally in prepare_vmcs02 and nested_vmx_vmexit.
+> 
+> If the above is not true, we should at least combine
+> change_vmcs01_virtual_apic_mode, reload_vmcs01_apic_access_page and the new
+> field in a single bit field, for example vmx->nested.dirty_vmcs01_fields or
+> vmx->nested.vmexit_requests.
+> 
+> In any case I expect Sean to take care of submitting this patch and I have
+> to do nothing more about it, right?
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- drivers/usb/typec/tps6598x.c       | 12 ++++++-
- drivers/usb/typec/tps6598x.h       | 36 ++++++++++++++++++++
- drivers/usb/typec/tps6598x_trace.h | 54 ++++++++++++++++++++++++++++++
- 3 files changed, 101 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
-index 3e6ad3ba7fc8..a4ec8e56c2b9 100644
---- a/drivers/usb/typec/tps6598x.c
-+++ b/drivers/usb/typec/tps6598x.c
-@@ -36,6 +36,7 @@
- #define TPS_REG_CTRL_CONF		0x29
- #define TPS_REG_POWER_STATUS		0x3f
- #define TPS_REG_RX_IDENTITY_SOP		0x48
-+#define TPS_REG_DATA_STATUS		0x5f
- 
- /* TPS_REG_SYSTEM_CONF bits */
- #define TPS_SYSCONF_PORTINFO(c)		((c) & 7)
-@@ -408,7 +409,7 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
- 	struct tps6598x *tps = data;
- 	u64 event1;
- 	u64 event2;
--	u32 status;
-+	u32 status, data_status;
- 	u16 pwr_status;
- 	int ret;
- 
-@@ -438,6 +439,15 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
- 		trace_tps6598x_power_status(pwr_status);
- 	}
- 
-+	if ((event1 | event2) & TPS_REG_INT_DATA_STATUS_UPDATE) {
-+		ret = tps6598x_read32(tps, TPS_REG_DATA_STATUS, &data_status);
-+		if (ret < 0) {
-+			dev_err(tps->dev, "failed to read data status: %d\n", ret);
-+			goto err_clear_ints;
-+		}
-+		trace_tps6598x_data_status(data_status);
-+	}
-+
- 	/* Handle plug insert or removal */
- 	if ((event1 | event2) & TPS_REG_INT_PLUG_EVENT) {
- 		if (status & TPS_STATUS_PLUG_PRESENT) {
-diff --git a/drivers/usb/typec/tps6598x.h b/drivers/usb/typec/tps6598x.h
-index a2b76ee26f53..3794d75ffada 100644
---- a/drivers/usb/typec/tps6598x.h
-+++ b/drivers/usb/typec/tps6598x.h
-@@ -143,4 +143,40 @@
- #define TPS_POWER_STATUS_BC12_STATUS_CDP 2
- #define TPS_POWER_STATUS_BC12_STATUS_DCP 3
- 
-+/* TPS_REG_DATA_STATUS bits */
-+#define TPS_DATA_STATUS_DATA_CONNECTION	     BIT(0)
-+#define TPS_DATA_STATUS_UPSIDE_DOWN	     BIT(1)
-+#define TPS_DATA_STATUS_ACTIVE_CABLE	     BIT(2)
-+#define TPS_DATA_STATUS_USB2_CONNECTION	     BIT(4)
-+#define TPS_DATA_STATUS_USB3_CONNECTION	     BIT(5)
-+#define TPS_DATA_STATUS_USB3_GEN2	     BIT(6)
-+#define TPS_DATA_STATUS_USB_DATA_ROLE	     BIT(7)
-+#define TPS_DATA_STATUS_DP_CONNECTION	     BIT(8)
-+#define TPS_DATA_STATUS_DP_SINK		     BIT(9)
-+#define TPS_DATA_STATUS_TBT_CONNECTION	     BIT(16)
-+#define TPS_DATA_STATUS_TBT_TYPE	     BIT(17)
-+#define TPS_DATA_STATUS_OPTICAL_CABLE	     BIT(18)
-+#define TPS_DATA_STATUS_ACTIVE_LINK_TRAIN    BIT(20)
-+#define TPS_DATA_STATUS_FORCE_LSX	     BIT(23)
-+#define TPS_DATA_STATUS_POWER_MISMATCH	     BIT(24)
-+
-+#define TPS_DATA_STATUS_DP_PIN_ASSIGNMENT_MASK GENMASK(11, 10)
-+#define TPS_DATA_STATUS_DP_PIN_ASSIGNMENT(x) \
-+	FIELD_GET(TPS_DATA_STATUS_DP_PIN_ASSIGNMENT_MASK, (x))
-+#define TPS_DATA_STATUS_TBT_CABLE_SPEED_MASK   GENMASK(27, 25)
-+#define TPS_DATA_STATUS_TBT_CABLE_SPEED	       FIELD_GET(TPS_DATA_STATUS_TBT_CABLE_SPEED_MASK, (x))
-+#define TPS_DATA_STATUS_TBT_CABLE_GEN_MASK     GENMASK(29, 28)
-+#define TPS_DATA_STATUS_TBT_CABLE_GEN	       FIELD_GET(TPS_DATA_STATUS_TBT_CABLE_GEN_MASK, (x))
-+
-+/* Map data status to DP spec assignments */
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT(x) \
-+	((TPS_DATA_STATUS_DP_PIN_ASSIGNMENT(x) << 1) | \
-+		FIELD_GET(TPS_DATA_STATUS_USB3_CONNECTION, (x)))
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_E    0
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_F    BIT(0)
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_C    BIT(1)
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_D    (BIT(1) | BIT(0))
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_A    BIT(2)
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_B    (BIT(2) | BIT(1))
-+
- #endif /* __TPS6598X_H__ */
-diff --git a/drivers/usb/typec/tps6598x_trace.h b/drivers/usb/typec/tps6598x_trace.h
-index c15327bb7bf1..0ec264bb2042 100644
---- a/drivers/usb/typec/tps6598x_trace.h
-+++ b/drivers/usb/typec/tps6598x_trace.h
-@@ -152,6 +152,41 @@
- 		{ TPS_POWER_STATUS_BC12_STATUS_CDP, "cdp" }, \
- 		{ TPS_POWER_STATUS_BC12_STATUS_SDP, "sdp" })
- 
-+#define TPS_DATA_STATUS_FLAGS_MASK (GENMASK(31, 0) ^ (TPS_DATA_STATUS_DP_PIN_ASSIGNMENT_MASK | \
-+						      TPS_DATA_STATUS_TBT_CABLE_SPEED_MASK | \
-+						      TPS_DATA_STATUS_TBT_CABLE_GEN_MASK))
-+
-+#define show_data_status_flags(data_status) \
-+	__print_flags(data_status & TPS_DATA_STATUS_FLAGS_MASK, "|", \
-+		{ TPS_DATA_STATUS_DATA_CONNECTION,	"DATA_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_UPSIDE_DOWN,		"DATA_UPSIDE_DOWN" }, \
-+		{ TPS_DATA_STATUS_ACTIVE_CABLE,		"ACTIVE_CABLE" }, \
-+		{ TPS_DATA_STATUS_USB2_CONNECTION,	"USB2_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_USB3_CONNECTION,	"USB3_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_USB3_GEN2,		"USB3_GEN2" }, \
-+		{ TPS_DATA_STATUS_USB_DATA_ROLE,	"USB_DATA_ROLE" }, \
-+		{ TPS_DATA_STATUS_DP_CONNECTION,	"DP_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_DP_SINK,		"DP_SINK" }, \
-+		{ TPS_DATA_STATUS_TBT_CONNECTION,	"TBT_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_TBT_TYPE,		"TBT_TYPE" }, \
-+		{ TPS_DATA_STATUS_OPTICAL_CABLE,	"OPTICAL_CABLE" }, \
-+		{ TPS_DATA_STATUS_ACTIVE_LINK_TRAIN,	"ACTIVE_LINK_TRAIN" }, \
-+		{ TPS_DATA_STATUS_FORCE_LSX,		"FORCE_LSX" }, \
-+		{ TPS_DATA_STATUS_POWER_MISMATCH,	"POWER_MISMATCH" })
-+
-+#define show_data_status_dp_pin_assignment(data_status) \
-+	__print_symbolic(TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT(data_status), \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_E, "E" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_F, "F" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_C, "C" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_D, "D" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_A, "A" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_B, "B" })
-+
-+#define maybe_show_data_status_dp_pin_assignment(data_status) \
-+	(data_status & TPS_DATA_STATUS_DP_CONNECTION ? \
-+	 show_data_status_dp_pin_assignment(data_status) : "")
-+
- TRACE_EVENT(tps6598x_irq,
- 	    TP_PROTO(u64 event1,
- 		     u64 event2),
-@@ -219,6 +254,25 @@ TRACE_EVENT(tps6598x_power_status,
- 		    )
- );
- 
-+TRACE_EVENT(tps6598x_data_status,
-+	    TP_PROTO(u32 data_status),
-+	    TP_ARGS(data_status),
-+
-+	    TP_STRUCT__entry(
-+			     __field(u32, data_status)
-+			     ),
-+
-+	    TP_fast_assign(
-+			   __entry->data_status = data_status;
-+			   ),
-+
-+	    TP_printk("%s%s%s",
-+		      show_data_status_flags(__entry->data_status),
-+		      __entry->data_status & TPS_DATA_STATUS_DP_CONNECTION ? ", DP pinout " : "",
-+		      maybe_show_data_status_dp_pin_assignment(__entry->data_status)
-+		    )
-+);
-+
- #endif /* _TPS6598X_TRACE_H_ */
- 
- /* This part must be outside protection */
--- 
-2.30.0
-
+Right, we'll sort it out.
