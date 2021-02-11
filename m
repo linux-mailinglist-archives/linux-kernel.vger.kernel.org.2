@@ -2,60 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2F13195C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 23:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8913195D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 23:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhBKWXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 17:23:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhBKWWS (ORCPT
+        id S229946AbhBKW0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 17:26:13 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:37915 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhBKW0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 17:22:18 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3309FC0613D6;
-        Thu, 11 Feb 2021 14:21:38 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id DF1F01F4604B
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     dhowells@redhat.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH 2/2] docs: watch_queue: Fix unit of the notification size field
-Date:   Thu, 11 Feb 2021 17:21:12 -0500
-Message-Id: <20210211222112.1518161-3-krisman@collabora.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210211222112.1518161-1-krisman@collabora.com>
-References: <20210211222112.1518161-1-krisman@collabora.com>
+        Thu, 11 Feb 2021 17:26:10 -0500
+Received: by mail-ot1-f47.google.com with SMTP id e4so6697142ote.5;
+        Thu, 11 Feb 2021 14:25:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NMJ7yLd9O23CBO6jbidyP4gLEKA1R1vMVgKZt27Rrho=;
+        b=LnWcRmismu4YPPd4nfoslW4u23YucqrdHJUotExCT92TrOMjo6E8aAQh4/RKfBXsLy
+         /47PZ336+PytidRHJrBj2wvC+OF8Sm+VYec8OZ+oMVxnLAqj175X9Xe+9vPkGxPJKta+
+         aMxgGossB9rLZbY8kbnJauYXtiAhMI4HWqpCyz0c2H87lll/T3aPukGo2pH1Y5+6SkZA
+         cUF8yOn/ee558FDBASOFGkDINTCv5d5FSgo8vQj7Ww+aXidVyK7PEWK/9p8A3k0OOO2R
+         xlznzws2LUU292BISZIbFsQWKPG2DySW4Z99pY0vRDWBGNIFO9Rz41m28Z0rNFG+Up68
+         odTQ==
+X-Gm-Message-State: AOAM5323IC5SBQ8VkgI4p9nikmRS9pbnEV08QKG5wtuJQA8fXY+bEsiz
+        NhnugMN69PjlzWhHjp1pEg==
+X-Google-Smtp-Source: ABdhPJzRltYMbqkEA5TZcjaBpmfP3dX2bR/krAIyVqt0+CVFo//SIzQQtuDqD4ScQJUbSJBsjy5raQ==
+X-Received: by 2002:a9d:1d04:: with SMTP id m4mr151368otm.354.1613082329194;
+        Thu, 11 Feb 2021 14:25:29 -0800 (PST)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id j25sm978030otn.55.2021.02.11.14.25.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 14:25:28 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org
+Cc:     Paul Mackerras <paulus@samba.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-usb@vger.kernel.org, cocci@systeme.lip6.fr,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: [PATCH 0/2] of: of_device.h cleanups
+Date:   Thu, 11 Feb 2021 16:25:24 -0600
+Message-Id: <20210211222526.1318236-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looking at the code and other documentation, the unit of size is
-bytes.  Previously, the same documentation says bytes.
+This is a couple of cleanups for of_device.h. They fell out from my
+attempt at decoupling of_device.h and of_platform.h which is a mess
+and I haven't finished, but there's no reason to wait on these.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- Documentation/watch_queue.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Rob
 
-diff --git a/Documentation/watch_queue.rst b/Documentation/watch_queue.rst
-index 426038e10276..75adb1874a0f 100644
---- a/Documentation/watch_queue.rst
-+++ b/Documentation/watch_queue.rst
-@@ -215,7 +215,7 @@ the following function should be used::
- 
- The notification should be preformatted and a pointer to the header (``n``)
- should be passed in.  The notification may be larger than this and the size in
--units of buffer slots is noted in ``n->info & WATCH_INFO_LENGTH``.
-+bytes is noted in ``n->info & WATCH_INFO_LENGTH``.
- 
- The ``cred`` struct indicates the credentials of the source (subject) and is
- passed to the LSMs, such as SELinux, to allow or suppress the recording of the
+Rob Herring (2):
+  of: Remove of_dev_{get,put}()
+  driver core: platform: Drop of_device_node_put() wrapper
+
+ arch/powerpc/platforms/pseries/ibmebus.c |  4 ++--
+ drivers/base/platform.c                  |  2 +-
+ drivers/net/ethernet/ibm/emac/core.c     | 15 ++++++++-------
+ drivers/of/device.c                      | 21 ---------------------
+ drivers/of/platform.c                    |  4 ++--
+ drivers/of/unittest.c                    |  2 +-
+ drivers/usb/dwc3/dwc3-st.c               |  2 +-
+ include/linux/of_device.h                | 10 ----------
+ scripts/coccinelle/free/put_device.cocci |  1 -
+ 9 files changed, 15 insertions(+), 46 deletions(-)
+
 -- 
-2.30.0
+2.27.0
 
