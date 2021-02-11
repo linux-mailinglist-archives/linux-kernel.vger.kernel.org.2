@@ -2,86 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B638318D69
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2CD318D6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhBKOai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 09:30:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhBKO1S (ORCPT
+        id S231167AbhBKOcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 09:32:09 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:35124 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231748AbhBKO3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:27:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5F9C061786;
-        Thu, 11 Feb 2021 06:26:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sj97A1FDFENPqakt33g1HE1eopZz9zZrknGdche1pZw=; b=UI6wmsC6f1Q37cjg5BZyBtHJK1
-        NgBK1KBg3ulPKm84h15eY0H938wnq0Ps9/n1u9LO7MNAuB8dO2cSNpEsRRGDMnSFSVqPjkNQNPkxQ
-        0s3dUvDykwFUiS1JgCJvm9e83li1rD3un+G12IdJuH2TPjsskW09hILEgrzLpZez7Nyo+r+e2IkD5
-        xlwul7xkjZAaGtyb8wdEeFwtQaxMKvgVHg3kXLgpz+OWYfTLS4C0Z1po7Fu92QncBpomMIfF2bUjB
-        vVua5Xbw/7u3/EQ/EuCk1PZMqColbfywnDrrRYdO1PmfjzL9XrUbQJX3nWlH7RtmE70CjbeveXerQ
-        XvSyGqLA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lACvO-00ALJC-39; Thu, 11 Feb 2021 14:26:31 +0000
-Date:   Thu, 11 Feb 2021 14:26:30 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jan Kara <jack@suse.cz>, Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
-Subject: Re: possible deadlock in start_this_handle (2)
-Message-ID: <20210211142630.GK308988@casper.infradead.org>
-References: <000000000000563a0205bafb7970@google.com>
- <20210211104947.GL19070@quack2.suse.cz>
- <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
- <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
- <20210211121020.GO19070@quack2.suse.cz>
- <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
- <20210211125717.GH308988@casper.infradead.org>
- <YCUr99//z8hJmnDH@dhcp22.suse.cz>
- <20210211132533.GI308988@casper.infradead.org>
- <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+        Thu, 11 Feb 2021 09:29:38 -0500
+Date:   Thu, 11 Feb 2021 14:28:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1613053726; bh=4xocI6Y84o0C8SN+c5+jodbADfHJzOMvCfknyLO1yME=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=foN/WQKGYThrxBEjRjf9HIes+P7Srf/sw2oVoLyinbcnGYesiyY6tGORnRuVCD7nx
+         N3PaPd5hG1eekN6EF8k+jGzTYuZaenxmM+a3H/WJV0ojuf6VPdZcc8lz560uLFDh+Z
+         rcIbCqBqlL0RzsT0iH080QnjOXBx1unc7YkCXytNXc5SBhpPDs+02+9+FFUrsKKkgL
+         qZK26yY1Si/GZ9qmfXJwxfR6KsmrzSGhdAaWbn41+vgPAS/MN/uMGhrN7zExZ5FfLC
+         GKlSlzrngjiBPogDmysCzFeNHFjzuuLfb6N3E4EWsFogDpKh8iBRzJwKHYe0QhRBBt
+         9i/H0pehl3xfg==
+To:     Paolo Abeni <pabeni@redhat.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v4 net-next 09/11] skbuff: allow to optionally use NAPI cache from __alloc_skb()
+Message-ID: <20210211142811.1813-1-alobakin@pm.me>
+In-Reply-To: <58147c2d36ea7b6e0284d400229cd79185c53463.camel@redhat.com>
+References: <20210210162732.80467-1-alobakin@pm.me> <20210210162732.80467-10-alobakin@pm.me> <58147c2d36ea7b6e0284d400229cd79185c53463.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 03:20:41PM +0100, Michal Hocko wrote:
-> On Thu 11-02-21 13:25:33, Matthew Wilcox wrote:
-> > On Thu, Feb 11, 2021 at 02:07:03PM +0100, Michal Hocko wrote:
-> > > On Thu 11-02-21 12:57:17, Matthew Wilcox wrote:
-> > > > > current->flags should be always manipulated from the user context. But
-> > > > > who knows maybe there is a bug and some interrupt handler is calling it.
-> > > > > This should be easy to catch no?
-> > > > 
-> > > > Why would it matter if it were?
-> > > 
-> > > I was thinking about a clobbered state because updates to ->flags are
-> > > not atomic because this shouldn't ever be updated concurrently. So maybe
-> > > a racing interrupt could corrupt the flags state?
-> > 
-> > I don't think that's possible.  Same-CPU races between interrupt and
-> > process context are simpler because the CPU always observes its own writes
-> > in order and the interrupt handler completes "between" two instructions.
-> 
-> I have to confess I haven't really thought the scenario through. My idea
-> was to simply add a simple check for an irq context into ->flags setting
-> routine because this should never be done in the first place. Not only
-> for scope gfp flags but any other PF_ flags IIRC.
+From: Paolo Abeni <pabeni@redhat.com>
+Date: Thu, 11 Feb 2021 11:16:40 +0100
 
-That's not automatically clear to me.  There are plenty of places
-where an interrupt borrows the context of the task that it happens to
-have interrupted.  Specifically, interrupts should be using GFP_ATOMIC
-anyway, so this doesn't really make a lot of sense, but I don't think
-it's necessarily wrong for an interrupt to call a function that says
-"Definitely don't make GFP_FS allocations between these two points".
+> On Wed, 2021-02-10 at 16:30 +0000, Alexander Lobakin wrote:
+> > Reuse the old and forgotten SKB_ALLOC_NAPI to add an option to get
+> > an skbuff_head from the NAPI cache instead of inplace allocation
+> > inside __alloc_skb().
+> > This implies that the function is called from softirq or BH-off
+> > context, not for allocating a clone or from a distant node.
+> >=20
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  net/core/skbuff.c | 13 +++++++++----
+> >  1 file changed, 9 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > index 9e1a8ded4acc..750fa1825b28 100644
+> > --- a/net/core/skbuff.c
+> > +++ b/net/core/skbuff.c
+> > @@ -397,15 +397,20 @@ struct sk_buff *__alloc_skb(unsigned int size, gf=
+p_t gfp_mask,
+> >  =09struct sk_buff *skb;
+> >  =09u8 *data;
+> >  =09bool pfmemalloc;
+> > +=09bool clone;
+> > =20
+> > -=09cache =3D (flags & SKB_ALLOC_FCLONE)
+> > -=09=09? skbuff_fclone_cache : skbuff_head_cache;
+> > +=09clone =3D !!(flags & SKB_ALLOC_FCLONE);
+> > +=09cache =3D clone ? skbuff_fclone_cache : skbuff_head_cache;
+> > =20
+> >  =09if (sk_memalloc_socks() && (flags & SKB_ALLOC_RX))
+> >  =09=09gfp_mask |=3D __GFP_MEMALLOC;
+> > =20
+> >  =09/* Get the HEAD */
+> > -=09skb =3D kmem_cache_alloc_node(cache, gfp_mask & ~__GFP_DMA, node);
+> > +=09if (!clone && (flags & SKB_ALLOC_NAPI) &&
+> > +=09    likely(node =3D=3D NUMA_NO_NODE || node =3D=3D numa_mem_id()))
+> > +=09=09skb =3D napi_skb_cache_get();
+> > +=09else
+> > +=09=09skb =3D kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DMA, node);
+> >  =09if (unlikely(!skb))
+> >  =09=09return NULL;
+> >  =09prefetchw(skb);
+>=20
+> I hope the opt-in thing would have allowed leaving this code unchanged.
+> I see it's not trivial avoid touching this code path.
+> Still I think it would be nice if you would be able to let the device
+> driver use the cache without touching the above, which is also used
+> e.g. by the TCP xmit path, which in turn will not leverage the cache
+> (as it requires FCLONE skbs).
+>=20
+> If I read correctly, the above chunk is needed to
+> allow __napi_alloc_skb() access the cache even for small skb
+> allocation.
+
+Not only. I wanted to give an ability to access the new feature
+through __alloc_skb() too, not only through napi_build_skb() or
+napi_alloc_skb().
+And not only for drivers. As you may remember, firstly
+napi_consume_skb()'s batching system landed for drivers, but then
+it got used in network core code.
+I think that some core parts may benefit from reusing the NAPI
+caches. We'll only see it later.
+
+It's not as complex as it may seem. NUMA check is cheap and tends
+to be true for the vast majority of cases. Check for fclone is
+already present in baseline code, even two times through the function.
+So it's mostly about (flags & SKB_ALLOC_NAPI).
+
+> Good device drivers should not call alloc_skb() in the fast
+> path.
+
+Not really. Several enterprise NIC drivers use __alloc_skb() and
+alloc_skb(): ChelsIO and Mellanox for inline TLS, Netronome etc.
+Lots of RDMA and wireless drivers (not the legacy ones), too.
+__alloc_skb() gives you more control on NUMA node and needed skb
+headroom, so it's still sometimes useful in drivers.
+
+> What about changing __napi_alloc_skb() to always use
+> the __napi_build_skb(), for both kmalloc and page backed skbs? That is,
+> always doing the 'data' allocation in __napi_alloc_skb() - either via
+> page_frag or via kmalloc() - and than call __napi_build_skb().
+>
+> I think that should avoid adding more checks in __alloc_skb() and
+> should probably reduce the number of conditional used
+> by __napi_alloc_skb().
+
+I thought of this too. But this will introduce conditional branch
+to set or not skb->head_frag. So one branch less in __alloc_skb(),
+one branch more here, and we also lose the ability to __alloc_skb()
+with decached head.
+
+> Thanks!
+>=20
+> Paolo
+
+Thanks,
+Al
+
