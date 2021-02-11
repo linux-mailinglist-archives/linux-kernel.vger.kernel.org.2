@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFBB319491
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C27319496
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhBKUfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:35:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhBKUf1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:35:27 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02566C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:34:46 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id hs11so12113118ejc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:34:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tgwnKmmGdWDCxHejoZP0bKZIVRKg9fBvIThmjXyQsEw=;
-        b=T4khnwoqjyVlyFJZe9yf1Hqe4YwtQNZKtdD3iNfNqQ3nG8ihJ93iGi2kdceUV+6WzP
-         U30lqWYAoU4mnF/BTzmNiDn4M6OkmoL/HSgxMTpuO8yxCwt9b20YfLoT23FpwzW1dGZV
-         bJ9zVra/TCEhEZSE2YLcmboDfhtC1K936PkyqsjxzXjp6koe4GNl9qeIo5TqD11dyDhQ
-         rl8C6iPZN9DWwkPlmqnfjSZEIMNUIg8irYR1gK33qxg7+RjyMrbSLaErpObkBK/eVVOw
-         as5S3Ag8QkadmDt6w065AidBrxpozcVJ5kcqol0urwlsmpCou6dwkfgMj5QHHlihU880
-         k99w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tgwnKmmGdWDCxHejoZP0bKZIVRKg9fBvIThmjXyQsEw=;
-        b=WkdhPo/jM/CQXUX8UdUa/aqTk0LxB47afYWo4RdIGJTI9wOWtG/cEsFcmww1OyIPqA
-         6HZhQCtQnMb2WoUYVe76ux3RmRQxyzkgWF0MkVLvOHFxeHTYjtKeu0OZdiEJvugCb64V
-         Np2g2IL3iMA+ENx7KKpot9FMDquicv6hY2DrhJfVko2VKuE7310lqCW9aXxeXxTp2FHD
-         4FxwzHDkxsdOy4YlgXlM8EdiKunJud2C5vXHPWsjE1BAqqiymD/Kkdkl42ed5M4sPICN
-         L17P2+WO19l/uga4+s1VE6vYBfXUxjfr7foYqYhMBS0oHJ6gRxdSjYBJzitusYlVffQz
-         Gg5w==
-X-Gm-Message-State: AOAM533ay4f6NqTUG9Q79zGqWMBGLkq91SvJz73/lRQKHD+FIyjavp/P
-        gh0s0m5Jr1ix4YFHw7KXts65ubWGZhoYOYWv8Ne58g==
-X-Google-Smtp-Source: ABdhPJyw5zAj09pkfw9O4vZ91q761XWqJWsJYNmylmwXEAFa0RMljdC5RPj7aoX4jj2C6VUAHgj24Ehk/wHibuXDiBo=
-X-Received: by 2002:a17:906:36cc:: with SMTP id b12mr10342308ejc.323.1613075685691;
- Thu, 11 Feb 2021 12:34:45 -0800 (PST)
+        id S231175AbhBKUgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:36:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229617AbhBKUgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 15:36:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89D7C64D73;
+        Thu, 11 Feb 2021 20:35:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613075731;
+        bh=09XWYIqyUCLDxvi5gQzO/ldzLZFs0vKFvLJwHYRvx2k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RqZTSeWhnVoY7SOKERAfHik04eTojWSyJI9La+60zSsB7NNWbmyB1AoTcvmYNseX9
+         f75SCZMW7seTcfe4RvtQzTHv6Si7prB6NF9tUOcCTJ7NegQKmh1Y7b+Kzm9TgZ7GtG
+         plby2Tgd/muiO8noNzKyyxDM85HmLjNs6Al4hlYc=
+Date:   Thu, 11 Feb 2021 21:35:27 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+Cc:     lee.jones@linaro.org, kuba@kernel.org, johannes@sipsolutions.net,
+        colin.king@canonical.com, arnd@arndb.de,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wimax/i2400m: fix some byte order issues found
+ by sparse
+Message-ID: <YCWVD34rU5Lu71/S@kroah.com>
+References: <20210211202908.4604-1-mail@anirudhrb.com>
 MIME-Version: 1.0
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
- <20210210000259.635748-7-ben.widawsky@intel.com> <20210211120215.00007d3d@Huawei.com>
- <20210211174502.72thmdqlh2q5tdu3@intel.com>
-In-Reply-To: <20210211174502.72thmdqlh2q5tdu3@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 11 Feb 2021 12:34:35 -0800
-Message-ID: <CAPcyv4iXYxTc5uu7Jq0=X9C0+5QW8ZbnwebhWAw5c2DhwqY72Q@mail.gmail.com>
-Subject: Re: [PATCH v2 6/8] cxl/mem: Enable commands via CEL
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-cxl@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211202908.4604-1-mail@anirudhrb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 9:45 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
-[..]
-> > > +   if (mbox_cmd.size_out > sizeof(gsl)) {
-> > > +           dev_warn(dev, "%zu excess logs\n",
-> > > +                    (mbox_cmd.size_out - sizeof(gsl)) /
-> > > +                            sizeof(struct gsl_entry));
-> >
-> > This could well happen given spec seems to allow for other
-> > entries defined by other specs.
->
-> Interesting. When I read the spec before (multiple times) I was certain it said
-> other UUIDs aren't allowed. You're correct though that the way it is worded,
-> this is a bad check. AIUI, the spec permits any UUID and as such I think we
-> should remove tainting for unknown UUIDs. Let me put the exact words:
->
-> Table 169 & 170
-> "Log Identifier: UUID representing the log to retrieve data for. The following
->  Log Identifier UUIDs are defined in this specification"
->
-> To me this implies UUIDs from other (not "this") specifications are permitted.
->
-> Dan, I'd like your opinion here. I'm tempted to change the current WARN to a
-> dev_dbg or somesuch.
+On Fri, Feb 12, 2021 at 01:59:08AM +0530, Anirudh Rayabharam wrote:
+> Fix sparse byte-order warnings in the i2400m_bm_cmd_prepare()
+> function:
+> 
+> wimax/i2400m/fw.c:194:36: warning: restricted __le32 degrades to integer
+> wimax/i2400m/fw.c:195:34: warning: invalid assignment: +=
+> wimax/i2400m/fw.c:195:34:    left side has type unsigned int
+> wimax/i2400m/fw.c:195:34:    right side has type restricted __le32
+> wimax/i2400m/fw.c:196:32: warning: restricted __le32 degrades to integer
+> wimax/i2400m/fw.c:196:47: warning: restricted __le32 degrades to integer
+> wimax/i2400m/fw.c:196:66: warning: restricted __le32 degrades to integer
+> 
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> ---
+>  drivers/staging/wimax/i2400m/fw.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/staging/wimax/i2400m/fw.c b/drivers/staging/wimax/i2400m/fw.c
+> index b2fd4bd2c5f9..bce651a6b543 100644
+> --- a/drivers/staging/wimax/i2400m/fw.c
+> +++ b/drivers/staging/wimax/i2400m/fw.c
+> @@ -189,12 +189,16 @@ void i2400m_bm_cmd_prepare(struct i2400m_bootrom_header *cmd)
+>  {
+>  	if (i2400m_brh_get_use_checksum(cmd)) {
+>  		int i;
+> -		u32 checksum = 0;
+> +		__le32 checksum = 0;
 
-Yeah, sounds ok, and the command is well defined to be a read-only,
-zero-side-effect affair. If a vendor did really want to sneak in a
-proprietary protocol over this interface it would be quite awkward.
+__le32 is only for when the data crosses the kernel/user boundry, just
+use le32 in the kernel for stuff like this.
+
+>  		const u32 *checksum_ptr = (void *) cmd->payload;
+
+Add a blank line here, right?
+
+thanks,
+
+greg k-h
