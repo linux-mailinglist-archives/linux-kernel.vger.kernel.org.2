@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616C7318D5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58ABA318D5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbhBKO1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 09:27:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbhBKOTe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:19:34 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B06C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:18:52 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id b3so4351063wrj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 06:18:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4qlsG/vgFwt6W3xkjjlbgx54qKfPJTS+Ij9Sun9FcVs=;
-        b=Xhez2VOzf2UdNPbuCWLRQEl2hhslKG12pJqxv8aIq9KoRKZmoHkeSdKERv69m06izW
-         2gOJ9+Vkzu8+Dzp68kmqcH37PaDSnYewwjZt47GufIzK7zsvHKbsfg3xIxUnQs76N7Bb
-         0na0UlLJhqcfAK1ptfKdCDgPNh5n+QUZxULQmwtNK71bFEBuyJByBKioSDNPbFjsJsEC
-         g5VVj/Lme7FpnUDAziLrEMkwZalVzjBRyW3iqDgUJlU0+a6Sr/zo+SIwiCFI+Q7aKtCA
-         x9YIqQ/wd9f65W6XARNiHq4F0YGNBbRInVepxvH4daNBXuEyXHGP0rG6FIhj7geNd4a2
-         NgsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4qlsG/vgFwt6W3xkjjlbgx54qKfPJTS+Ij9Sun9FcVs=;
-        b=WptKMIsl3noxLgMNJZl91Shs+XpMv5yJoKu6BZWtbtSVsN7Pd0RbqMAh25EUJR08qN
-         4czLYZOHt2F2WBJGspr9xagyU6/QexQeyMewr8Fm8C6299+TAKEl4KnclQKuaXRqKSSn
-         2kKgEDFRovYseh7Q9XNn9JEuHuxDsMQ1o2vk1nA9vxu4kGL2WRVxMeiBkTlmx2rTRt1S
-         u4MOUhRgg6XxT3OSQgqgYPTwaPWfhbGzMWQTqY8XYFtLRqzW6s3MAhR+i82mkriaAO9I
-         dCJ7HEwox3MpM/Zg2uWl1USN74ADa7HZXb+qg06dak/zruJetwBeYMyqjFV+/pMQixaq
-         3UNw==
-X-Gm-Message-State: AOAM533krf0V7VHEGip8FYyMAEiXHh9Vi5BT17e+4h20Qqb+6FxAEEka
-        4cVabbu6AuSXen2TueQeLlD/kw==
-X-Google-Smtp-Source: ABdhPJw/KrCPg+OG007V3Udv45jp1L6+S3wsre2Kua+nluc+0WEdDxFz6eDB3N8qSAESXM6AQAeNvg==
-X-Received: by 2002:a5d:50d2:: with SMTP id f18mr6206045wrt.338.1613053131489;
-        Thu, 11 Feb 2021 06:18:51 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id f8sm4893997wrp.65.2021.02.11.06.18.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 06:18:51 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL] gpio: fixes for v5.11
-Date:   Thu, 11 Feb 2021 15:18:43 +0100
-Message-Id: <20210211141843.32699-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
+        id S232350AbhBKO2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 09:28:15 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:34938 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232218AbhBKOUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 09:20:11 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lACoV-005aey-Jy; Thu, 11 Feb 2021 15:19:23 +0100
+Date:   Thu, 11 Feb 2021 15:19:23 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     David Miller <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
+        "atenart@kernel.org" <atenart@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH v12 net-next 12/15] net: mvpp2: add BM
+ protection underrun feature support
+Message-ID: <YCU864+AH6UioNwQ@lunn.ch>
+References: <1612950500-9682-1-git-send-email-stefanc@marvell.com>
+ <1612950500-9682-13-git-send-email-stefanc@marvell.com>
+ <20210210.152924.767175240247395907.davem@davemloft.net>
+ <CO6PR18MB3873D8B7BE3AE28A1407C05BB08C9@CO6PR18MB3873.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CO6PR18MB3873D8B7BE3AE28A1407C05BB08C9@CO6PR18MB3873.namprd18.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Thu, Feb 11, 2021 at 08:22:19AM +0000, Stefan Chulski wrote:
+> 
+> > 
+> > ----------------------------------------------------------------------
+> > From: <stefanc@marvell.com>
+> > Date: Wed, 10 Feb 2021 11:48:17 +0200
+> > 
+> > >
+> > > +static int bm_underrun_protect = 1;
+> > > +
+> > > +module_param(bm_underrun_protect, int, 0444);
+> > > +MODULE_PARM_DESC(bm_underrun_protect, "Set BM underrun protect
+> > > +feature (0-1), def=1");
+> > 
+> > No new module parameters, please.
+> 
+> Ok, I would remove new module parameters.
+> By the way why new module parameters forbitten?
 
-This is hopefully the last batch of fixes for this release cycle. We
-have a minor fix for a Kconfig regression as well as fixes for older
-bugs in gpio-ep93xx.
+Historically, module parameters are a bad interface for
+configuration. Vendors have stuffed all sorts of random junk into
+module parameters. There is little documentation. Different drivers
+can have similar looking module parameters which do different
+things. Or different module parameters, which actually do the same
+thing. But maybe with slightly different parameters.
 
-Please pull,
-Bartosz
+We get a much better overall result if you stop and think for a
+while. How can this be made a generic configuration knob which
+multiple vendors could use? And then add it to ethtool. Extend the
+ethtool -h text and the man page. Maybe even hack some other vendors
+driver to make use of it.
 
-The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+Or we have also found out, that pushing back on parameters like this,
+the developers goes back and looks at the code, and sometimes figures
+out a way to automatically do the right thing, removing the
+configuration knob, and just making it all simpler for the user to
+use.
 
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.11
-
-for you to fetch changes up to 28dc10eb77a2db7681b08e3b109764bbe469e347:
-
-  gpio: ep93xx: Fix single irqchip with multi gpiochips (2021-02-10 14:47:27 +0100)
-
-----------------------------------------------------------------
-gpio fixes for v5.11
-
-- don't build gpio-mxs unconditionally with COMPILE_TEST enabled
-- fix two problems with interrupt handling in gpio-ep93xx
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      gpio: mxs: GPIO_MXS should not default to y unconditionally
-
-Nikita Shubin (2):
-      gpio: ep93xx: fix BUG_ON port F usage
-      gpio: ep93xx: Fix single irqchip with multi gpiochips
-
- drivers/gpio/Kconfig       |   3 +-
- drivers/gpio/gpio-ep93xx.c | 216 +++++++++++++++++++++++++--------------------
- 2 files changed, 120 insertions(+), 99 deletions(-)
+       Andrew
