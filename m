@@ -2,81 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E78319528
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA54231952A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 22:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhBKV2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 16:28:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35460 "EHLO mail.kernel.org"
+        id S229793AbhBKV3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 16:29:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42118 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229617AbhBKV2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 16:28:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BA5364DAE;
-        Thu, 11 Feb 2021 21:27:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613078876;
-        bh=Ma+0baXQYGzHwmpu/o+V+P8RGsFBSV2ge1JYMP+k4Us=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=PW2bPARqBa9iorLD/O8DdBgYJA3I63KbyP7gre+uklgGbjjXjB9mXpTALafdkWKxm
-         H4DhJupNl6vsqHxXs0CH4nY5pEKT8wmWJosNjlzOdRmUKTw+2ByW8g1vWP+E+gpg6L
-         qgSehhXKkRNUMNSQEyYOnNXjRDXfhplLp8YJkq1ic+ywnJqXflEqUqYmJcnbSIehfZ
-         vJACqLvMDCFIWFxY/XWoUaz8G9Ol2fju2lT4nuIsS/Bs//2gLDrNQP/PrguGQayWZx
-         Eg5ca3+Cy15j+ac+DLfodC1MRrOSHOjnQX7805lNbv//kh2HDa7rY0ssenGnsh5whB
-         qY3rCachPCpsw==
-Message-ID: <8477502be8c33e7d21f1c0facb3c1ad9e4257f90.camel@kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the ftrace tree
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Date:   Thu, 11 Feb 2021 15:27:54 -0600
-In-Reply-To: <20210211162154.33d71924@gandalf.local.home>
-References: <20210212075728.36941e15@canb.auug.org.au>
-         <20210211162154.33d71924@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S229480AbhBKV3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 16:29:45 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E15E9AD19;
+        Thu, 11 Feb 2021 21:29:04 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 22:29:03 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: workingset: clarify eviction order and distance
+ calculation
+Message-ID: <20210211212903.GA3597@localhost.localdomain>
+References: <20210201060651.3781-1-osalvador@suse.de>
+ <20210211212645.GB2872@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211212645.GB2872@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-02-11 at 16:21 -0500, Steven Rostedt wrote:
-> On Fri, 12 Feb 2021 07:57:28 +1100
-> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Thu, Feb 11, 2021 at 10:26:45PM +0100, Oscar Salvador wrote:
+> Hi Andrew,
 > 
-> > Hi all,
-> > 
-> > In commit
-> > 
-> >   b5e7014fe1c4 ("selftests/ftrace: Update synthetic event syntax
-> > errors")
-> > 
-> > Fixes tag
-> > 
-> >   Fixes: 81ff92a93d95 (selftests/ftrace: Add test case for
-> > synthetic
-> > 
-> > has these problem(s):
-> > 
-> >   - Subject has leading but no trailing parentheses
-> > 
-> > Please do not split Fixes tags over more than one line.  Also, keep
-> > all
-> > the commit message tags together at the end of the message.
-> > 
+> is this on your radar?
+
+Please, disregard this, I was obviously blind as I did not spot it
+in mmotm.
+
 > 
-> Thanks, I didn't even notice that :-/
+> Thanks!
 > 
-> Tom, FYI for next time ;-)
+> -- 
+> Oscar Salvador
+> SUSE L3
 > 
 
-Yep, thanks, Stephen, for pointing that out, didn't realize it until
-now either.
-
-Tom
-
-
-> -- Steve
-
+-- 
+Oscar Salvador
+SUSE L3
