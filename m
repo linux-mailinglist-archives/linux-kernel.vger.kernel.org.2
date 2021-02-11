@@ -2,346 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB2431898A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 752F131898D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhBKLb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:31:28 -0500
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:20072 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhBKLBT (ORCPT
+        id S231304AbhBKLc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:32:56 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2899 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230527AbhBKLCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:01:19 -0500
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 3A9AD75FA5;
-        Thu, 11 Feb 2021 14:00:11 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail; t=1613041211;
-        bh=zV4a1zBMI15YFAT2yIMCpxOkJsxgntBwmSEC1EMT4Bo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=Cc2UT/NcypLyU4nf/eSQ6blbXf32P5aK5wfsYT+hvluii5HurcwpesVDEfW/QMsLw
-         pXQAN/HGauGeLLaiUO9W4Pszd3B2V3pk9cTQm6VT0B9UjI7iw7VTgJSM9NtvnXs8Rw
-         TuX6uSwSBmXdT9v7u6ME+139Xfr9ztfGevfc5q5w=
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 2AFCD75FC5;
-        Thu, 11 Feb 2021 14:00:10 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Thu, 11
- Feb 2021 14:00:09 +0300
-Subject: Re: [RFC PATCH v4 12/17] virtio/vsock: rest of SOCK_SEQPACKET support
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Alexander Popov <alex.popov@linux.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Thu, 11 Feb 2021 06:02:30 -0500
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Dbttx0X6dz5QQw;
+        Thu, 11 Feb 2021 18:59:53 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 11 Feb 2021 19:01:40 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 11 Feb 2021 19:01:39 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Thu, 11 Feb 2021 19:01:39 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Finn Thain <fthain@telegraphics.com.au>
+CC:     tanxiaofei <tanxiaofei@huawei.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
- <20210207151747.805754-1-arseny.krasnov@kaspersky.com>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <7e0d5a2d-6aca-f169-8f56-f5e01a0e5520@kaspersky.com>
-Date:   Thu, 11 Feb 2021 14:00:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210207151747.805754-1-arseny.krasnov@kaspersky.com>
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: 7bit
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
+Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
+ drivers
+Thread-Topic: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
+ drivers
+Thread-Index: AdcAYpckfegWyL1RTeK8yhWOZkcCaA==
+Date:   Thu, 11 Feb 2021 11:01:39 +0000
+Message-ID: <417fa728c3ff4418ac87e0d409b5a084@hisilicon.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-X-Originating-IP: [10.64.64.121]
-X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 02/06/2021 23:52:08
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 161679 [Feb 06 2021]
-X-KSE-AntiSpam-Info: LuaCore: 422 422 763e61bea9fcfcd94e075081cb96e065bc0509b4
-X-KSE-AntiSpam-Info: Version: 5.9.16.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
-X-KSE-AntiSpam-Info: {Tracking_date, moscow}
-X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 02/06/2021 23:55:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 2/6/2021 9:17:00 PM
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/02/11 09:58:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/02/11 09:26:00 #16184185
-X-KLMS-AntiVirus-Status: Clean, skipped
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.187]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 07.02.2021 18:17, Arseny Krasnov wrote:
-> This adds rest of logic for SEQPACKET:
-> 1) Packet's type is now set in 'virtio_send_pkt_info()' using
->    type of socket.
-> 2) SEQPACKET specific functions which send SEQ_BEGIN/SEQ_END.
->    Note that both functions may sleep to wait enough space for
->    SEQPACKET header.
-> 3) SEQ_BEGIN/SEQ_END to TAP packet capture.
-> 4) Send SHUTDOWN on socket close for SEQPACKET type.
->
-> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
-> ---
->  include/linux/virtio_vsock.h            |  9 +++
->  net/vmw_vsock/virtio_transport_common.c | 99 +++++++++++++++++++++----
->  2 files changed, 95 insertions(+), 13 deletions(-)
->
-> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
-> index a5e8681bfc6a..c4a39424686d 100644
-> --- a/include/linux/virtio_vsock.h
-> +++ b/include/linux/virtio_vsock.h
-> @@ -41,6 +41,7 @@ struct virtio_vsock_sock {
->  	u32 user_read_seq_len;
->  	u32 user_read_copied;
->  	u32 curr_rx_msg_cnt;
-> +	u32 next_tx_msg_cnt;
->  };
->  
->  struct virtio_vsock_pkt {
-> @@ -85,7 +86,15 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->  			       struct msghdr *msg,
->  			       size_t len, int flags);
->  
-> +int virtio_transport_seqpacket_seq_send_len(struct vsock_sock *vsk, size_t len, int flags);
-> +int virtio_transport_seqpacket_seq_send_eor(struct vsock_sock *vsk, int flags);
->  size_t virtio_transport_seqpacket_seq_get_len(struct vsock_sock *vsk);
-> +int
-> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
-> +				   struct msghdr *msg,
-> +				   int flags,
-> +				   bool *msg_ready);
-> +
->  s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
->  s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
->  
-> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-> index 51b66f8dd7c7..0aa0fd33e9d6 100644
-> --- a/net/vmw_vsock/virtio_transport_common.c
-> +++ b/net/vmw_vsock/virtio_transport_common.c
-> @@ -139,6 +139,8 @@ static struct sk_buff *virtio_transport_build_skb(void *opaque)
->  		break;
->  	case VIRTIO_VSOCK_OP_CREDIT_UPDATE:
->  	case VIRTIO_VSOCK_OP_CREDIT_REQUEST:
-> +	case VIRTIO_VSOCK_OP_SEQ_BEGIN:
-> +	case VIRTIO_VSOCK_OP_SEQ_END:
->  		hdr->op = cpu_to_le16(AF_VSOCK_OP_CONTROL);
->  		break;
->  	default:
-> @@ -165,6 +167,14 @@ void virtio_transport_deliver_tap_pkt(struct virtio_vsock_pkt *pkt)
->  }
->  EXPORT_SYMBOL_GPL(virtio_transport_deliver_tap_pkt);
->  
-> +static u16 virtio_transport_get_type(struct sock *sk)
-> +{
-> +	if (sk->sk_type == SOCK_STREAM)
-> +		return VIRTIO_VSOCK_TYPE_STREAM;
-> +	else
-> +		return VIRTIO_VSOCK_TYPE_SEQPACKET;
-> +}
-> +
->  /* This function can only be used on connecting/connected sockets,
->   * since a socket assigned to a transport is required.
->   *
-> @@ -179,6 +189,13 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->  	struct virtio_vsock_pkt *pkt;
->  	u32 pkt_len = info->pkt_len;
->  
-> +	info->type = virtio_transport_get_type(sk_vsock(vsk));
-> +
-> +	if (info->type == VIRTIO_VSOCK_TYPE_SEQPACKET &&
-> +	    info->msg &&
-> +	    info->msg->msg_flags & MSG_EOR)
-> +		info->flags |= VIRTIO_VSOCK_RW_EOR;
-> +
->  	t_ops = virtio_transport_get_ops(vsk);
->  	if (unlikely(!t_ops))
->  		return -EFAULT;
-> @@ -397,13 +414,61 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->  	return err;
->  }
->  
-> -static u16 virtio_transport_get_type(struct sock *sk)
-> +static int virtio_transport_seqpacket_send_ctrl(struct vsock_sock *vsk,
-> +						int type,
-> +						size_t len,
-> +						int flags)
->  {
-> -	if (sk->sk_type == SOCK_STREAM)
-> -		return VIRTIO_VSOCK_TYPE_STREAM;
-> -	else
-> -		return VIRTIO_VSOCK_TYPE_SEQPACKET;
-> +	struct virtio_vsock_sock *vvs = vsk->trans;
-> +	struct virtio_vsock_pkt_info info = {
-> +		.op = type,
-> +		.vsk = vsk,
-> +		.pkt_len = sizeof(struct virtio_vsock_seq_hdr)
-> +	};
-> +
-> +	struct virtio_vsock_seq_hdr seq_hdr = {
-> +		.msg_cnt = vvs->next_tx_msg_cnt,
-> +		.msg_len = len
-Oops, forgot to use 'cpu_to_le32()'. Will fix in v5
-> +	};
-> +
-> +	struct kvec seq_hdr_kiov = {
-> +		.iov_base = (void *)&seq_hdr,
-> +		.iov_len = sizeof(struct virtio_vsock_seq_hdr)
-> +	};
-> +
-> +	struct msghdr msg = {0};
-> +
-> +	//XXX: do we need 'vsock_transport_send_notify_data' pointer?
-> +	if (vsock_wait_space(sk_vsock(vsk),
-> +			     sizeof(struct virtio_vsock_seq_hdr),
-> +			     flags, NULL))
-> +		return -1;
-> +
-> +	iov_iter_kvec(&msg.msg_iter, WRITE, &seq_hdr_kiov, 1, sizeof(seq_hdr));
-> +
-> +	info.msg = &msg;
-> +	vvs->next_tx_msg_cnt++;
-> +
-> +	return virtio_transport_send_pkt_info(vsk, &info);
-> +}
-> +
-> +int virtio_transport_seqpacket_seq_send_len(struct vsock_sock *vsk, size_t len, int flags)
-> +{
-> +	return virtio_transport_seqpacket_send_ctrl(vsk,
-> +						    VIRTIO_VSOCK_OP_SEQ_BEGIN,
-> +						    len,
-> +						    flags);
->  }
-> +EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_seq_send_len);
-> +
-> +int virtio_transport_seqpacket_seq_send_eor(struct vsock_sock *vsk, int flags)
-> +{
-> +	return virtio_transport_seqpacket_send_ctrl(vsk,
-> +						    VIRTIO_VSOCK_OP_SEQ_END,
-> +						    0,
-> +						    flags);
-> +}
-> +EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_seq_send_eor);
->  
->  static inline void virtio_transport_remove_pkt(struct virtio_vsock_pkt *pkt)
->  {
-> @@ -577,6 +642,18 @@ virtio_transport_stream_dequeue(struct vsock_sock *vsk,
->  }
->  EXPORT_SYMBOL_GPL(virtio_transport_stream_dequeue);
->  
-> +int
-> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
-> +				   struct msghdr *msg,
-> +				   int flags, bool *msg_ready)
-> +{
-> +	if (flags & MSG_PEEK)
-> +		return -EOPNOTSUPP;
-> +
-> +	return virtio_transport_seqpacket_do_dequeue(vsk, msg, msg_ready);
-> +}
-> +EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_dequeue);
-> +
->  int
->  virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->  			       struct msghdr *msg,
-> @@ -658,14 +735,15 @@ EXPORT_SYMBOL_GPL(virtio_transport_do_socket_init);
->  void virtio_transport_notify_buffer_size(struct vsock_sock *vsk, u64 *val)
->  {
->  	struct virtio_vsock_sock *vvs = vsk->trans;
-> +	int type;
->  
->  	if (*val > VIRTIO_VSOCK_MAX_BUF_SIZE)
->  		*val = VIRTIO_VSOCK_MAX_BUF_SIZE;
->  
->  	vvs->buf_alloc = *val;
->  
-> -	virtio_transport_send_credit_update(vsk, VIRTIO_VSOCK_TYPE_STREAM,
-> -					    NULL);
-> +	type = virtio_transport_get_type(sk_vsock(vsk));
-> +	virtio_transport_send_credit_update(vsk, type, NULL);
->  }
->  EXPORT_SYMBOL_GPL(virtio_transport_notify_buffer_size);
->  
-> @@ -792,7 +870,6 @@ int virtio_transport_connect(struct vsock_sock *vsk)
->  {
->  	struct virtio_vsock_pkt_info info = {
->  		.op = VIRTIO_VSOCK_OP_REQUEST,
-> -		.type = VIRTIO_VSOCK_TYPE_STREAM,
->  		.vsk = vsk,
->  	};
->  
-> @@ -804,7 +881,6 @@ int virtio_transport_shutdown(struct vsock_sock *vsk, int mode)
->  {
->  	struct virtio_vsock_pkt_info info = {
->  		.op = VIRTIO_VSOCK_OP_SHUTDOWN,
-> -		.type = VIRTIO_VSOCK_TYPE_STREAM,
->  		.flags = (mode & RCV_SHUTDOWN ?
->  			  VIRTIO_VSOCK_SHUTDOWN_RCV : 0) |
->  			 (mode & SEND_SHUTDOWN ?
-> @@ -833,7 +909,6 @@ virtio_transport_stream_enqueue(struct vsock_sock *vsk,
->  {
->  	struct virtio_vsock_pkt_info info = {
->  		.op = VIRTIO_VSOCK_OP_RW,
-> -		.type = VIRTIO_VSOCK_TYPE_STREAM,
->  		.msg = msg,
->  		.pkt_len = len,
->  		.vsk = vsk,
-> @@ -856,7 +931,6 @@ static int virtio_transport_reset(struct vsock_sock *vsk,
->  {
->  	struct virtio_vsock_pkt_info info = {
->  		.op = VIRTIO_VSOCK_OP_RST,
-> -		.type = VIRTIO_VSOCK_TYPE_STREAM,
->  		.reply = !!pkt,
->  		.vsk = vsk,
->  	};
-> @@ -1001,7 +1075,7 @@ void virtio_transport_release(struct vsock_sock *vsk)
->  	struct sock *sk = &vsk->sk;
->  	bool remove_sock = true;
->  
-> -	if (sk->sk_type == SOCK_STREAM)
-> +	if (sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET)
->  		remove_sock = virtio_transport_close(vsk);
->  
->  	list_for_each_entry_safe(pkt, tmp, &vvs->rx_queue, list) {
-> @@ -1164,7 +1238,6 @@ virtio_transport_send_response(struct vsock_sock *vsk,
->  {
->  	struct virtio_vsock_pkt_info info = {
->  		.op = VIRTIO_VSOCK_OP_RESPONSE,
-> -		.type = VIRTIO_VSOCK_TYPE_STREAM,
->  		.remote_cid = le64_to_cpu(pkt->hdr.src_cid),
->  		.remote_port = le32_to_cpu(pkt->hdr.src_port),
->  		.reply = true,
+PiA+DQo+ID4gT24gV2VkLCAxMCBGZWIgMjAyMSwgU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSB3
+cm90ZToNCj4gPg0KPiA+ID4gPiBPbiBXZWQsIDEwIEZlYiAyMDIxLCBTb25nIEJhbyBIdWEgKEJh
+cnJ5IFNvbmcpIHdyb3RlOg0KPiA+ID4gPg0KPiA+ID4gPiA+ID4gT24gV2VkLCAxMCBGZWIgMjAy
+MSwgU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSB3cm90ZToNCj4gPiA+ID4gPiA+DQo+ID4gPiA+
+ID4gPiA+ID4gVGhlcmUgaXMgbm8gd2FybmluZyBmcm9tIG02OGsgYnVpbGRzLiBUaGF0J3MgYmVj
+YXVzZQ0KPiA+ID4gPiA+ID4gPiA+IGFyY2hfaXJxc19kaXNhYmxlZCgpIHJldHVybnMgdHJ1ZSB3
+aGVuIHRoZSBJUEwgaXMgbm9uLXplcm8uDQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+IFNv
+IGZvciBtNjhrLCB0aGUgY2FzZSBpcyBhcmNoX2lycXNfZGlzYWJsZWQoKSBpcyB0cnVlLCBidXQN
+Cj4gPiA+ID4gPiA+ID4gaW50ZXJydXB0cyBjYW4gc3RpbGwgY29tZT8NCj4gPiA+ID4gPiA+ID4N
+Cj4gPiA+ID4gPiA+ID4gVGhlbiBpdCBzZWVtcyBpdCBpcyB2ZXJ5IGNvbmZ1c2luZy4gSWYgcHJp
+b3JpdGl6ZWQgaW50ZXJydXB0cw0KPiA+ID4gPiA+ID4gPiBjYW4gc3RpbGwgY29tZSB3aGlsZSBh
+cmNoX2lycXNfZGlzYWJsZWQoKSBpcyB0cnVlLA0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IFll
+cywgb24gbTY4ayBDUFVzLCBhbiBJUlEgaGF2aW5nIGEgcHJpb3JpdHkgbGV2ZWwgaGlnaGVyIHRo
+YW4gdGhlDQo+ID4gPiA+ID4gPiBwcmVzZW50IHByaW9yaXR5IG1hc2sgd2lsbCBnZXQgc2Vydmlj
+ZWQuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gTm9uLU1hc2thYmxlIEludGVycnVwdCAoTk1J
+KSBpcyBub3Qgc3ViamVjdCB0byB0aGlzIHJ1bGUgYW5kIGdldHMNCj4gPiA+ID4gPiA+IHNlcnZp
+Y2VkIHJlZ2FyZGxlc3MuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiBob3cgY291bGQgc3Bp
+bl9sb2NrX2lycXNhdmUoKSBibG9jayB0aGUgcHJpb3JpdGl6ZWQgaW50ZXJydXB0cz8NCj4gPiA+
+ID4gPiA+DQo+ID4gPiA+ID4gPiBJdCByYWlzZXMgdGhlIHRoZSBtYXNrIGxldmVsIHRvIDcuIEFn
+YWluLCBwbGVhc2Ugc2VlDQo+ID4gPiA+ID4gPiBhcmNoL202OGsvaW5jbHVkZS9hc20vaXJxZmxh
+Z3MuaA0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gSGkgRmlubiwNCj4gPiA+ID4gPiBUaGFua3MgZm9y
+IHlvdXIgZXhwbGFuYXRpb24gYWdhaW4uDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBUQkgsIHRoYXQg
+aXMgd2h5IG02OGsgaXMgc28gY29uZnVzaW5nLiBpcnFzX2Rpc2FibGVkKCkgb24gbTY4aw0KPiA+
+ID4gPiA+IHNob3VsZCBqdXN0IHJlZmxlY3QgdGhlIHN0YXR1cyBvZiBhbGwgaW50ZXJydXB0cyBo
+YXZlIGJlZW4gZGlzYWJsZWQNCj4gPiA+ID4gPiBleGNlcHQgTk1JLg0KPiA+ID4gPiA+DQo+ID4g
+PiA+ID4gaXJxc19kaXNhYmxlZCgpIHNob3VsZCBiZSBjb25zaXN0ZW50IHdpdGggdGhlIGNhbGxp
+bmcgb2YgQVBJcyBzdWNoDQo+ID4gPiA+ID4gYXMgbG9jYWxfaXJxX2Rpc2FibGUsIGxvY2FsX2ly
+cV9zYXZlLCBzcGluX2xvY2tfaXJxc2F2ZSBldGMuDQo+ID4gPiA+ID4NCj4gPiA+ID4NCj4gPiA+
+ID4gV2hlbiBpcnFzX2Rpc2FibGVkKCkgcmV0dXJucyB0cnVlLCB3ZSBjYW5ub3QgaW5mZXIgdGhh
+dA0KPiA+ID4gPiBhcmNoX2xvY2FsX2lycV9kaXNhYmxlKCkgd2FzIGNhbGxlZC4gQnV0IEkgaGF2
+ZSBub3QgeWV0IGZvdW5kIGRyaXZlcg0KPiA+ID4gPiBjb2RlIG9yIGNvcmUga2VybmVsIGNvZGUg
+YXR0ZW1wdGluZyB0aGF0IGluZmVyZW5jZS4NCj4gPiA+ID4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+
+ID4gPiA+IElzbid0IGFyY2hfaXJxc19kaXNhYmxlZCgpIGEgc3RhdHVzIHJlZmxlY3Rpb24gb2Yg
+aXJxIGRpc2FibGUNCj4gPiA+ID4gPiA+ID4gQVBJPw0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+
+ID4NCj4gPiA+ID4gPiA+IFdoeSBub3Q/DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBJZiBzbywgYXJj
+aF9pcnFzX2Rpc2FibGVkKCkgc2hvdWxkIG1lYW4gYWxsIGludGVycnVwdHMgaGF2ZSBiZWVuDQo+
+ID4gPiA+ID4gbWFza2VkIGV4Y2VwdCBOTUkgYXMgTk1JIGlzIHVubWFza2FibGUuDQo+ID4gPiA+
+ID4NCj4gPiA+ID4NCj4gPiA+ID4gQ2FuIHlvdSBzdXBwb3J0IHRoYXQgY2xhaW0gd2l0aCBhIHJl
+ZmVyZW5jZSB0byBjb3JlIGtlcm5lbCBjb2RlIG9yDQo+ID4gPiA+IGRvY3VtZW50YXRpb24/IChJ
+ZiBzb21lIGFyY2ggY29kZSBhZ3JlZXMgd2l0aCB5b3UsIHRoYXQncyBuZWl0aGVyIGhlcmUNCj4g
+PiA+ID4gbm9yIHRoZXJlLikNCj4gPiA+DQo+ID4gPiBJIHRoaW5rIHRob3NlIGxpbmtzIEkgc2hh
+cmUgeW91IGhhdmUgc3VwcG9ydGVkIHRoaXMuIEp1c3QgeW91IGRvbid0DQo+ID4gPiBiZWxpZXZl
+IDotKQ0KPiA+ID4NCj4gPg0KPiA+IFlvdXIgbGlua3Mgc2hvdyB0aGF0IHRoZSBkaXN0aW5jdGlv
+biBiZXR3ZWVuIGZhc3QgYW5kIHNsb3cgaGFuZGxlcnMgd2FzDQo+ID4gcmVtb3ZlZC4gWW91ciBs
+aW5rcyBkb24ndCBzdXBwb3J0IHlvdXIgY2xhaW0gdGhhdCAiYXJjaF9pcnFzX2Rpc2FibGVkKCkN
+Cj4gPiBzaG91bGQgbWVhbiBhbGwgaW50ZXJydXB0cyBoYXZlIGJlZW4gbWFza2VkIi4gV2hlcmUg
+aXMgdGhlIGNvZGUgdGhhdCBtYWtlcw0KPiA+IHRoYXQgaW5mZXJlbmNlPyBXaGVyZSBpcyB0aGUg
+ZG9jdW1lbnRhdGlvbiB0aGF0IHN1cHBvcnRzIHlvdXIgY2xhaW0/DQo+IA0KPiAoMSkNCj4gaHR0
+cHM6Ly9sd24ubmV0L0FydGljbGVzLzM4MDkzMS8NCj4gTG9va2luZyBhdCBhbGwgdGhlc2Ugd29y
+cmllcywgb25lIG1pZ2h0IHdlbGwgd29uZGVyIGlmIGEgc3lzdGVtIHdoaWNoICpkaXNhYmxlZA0K
+PiBpbnRlcnJ1cHRzIGZvciBhbGwgaGFuZGxlcnMqIHdvdWxkIGZ1bmN0aW9uIHdlbGwgYXQgYWxs
+LiBTbyBpdCBpcyBpbnRlcmVzdGluZw0KPiB0byBub3RlIG9uZSB0aGluZzogYW55IHN5c3RlbSB3
+aGljaCBoYXMgdGhlIGxvY2tkZXAgbG9ja2luZyBjaGVja2VyIGVuYWJsZWQNCj4gaGFzIGJlZW4g
+cnVubmluZyBhbGwgaGFuZGxlcnMgdGhhdCB3YXkgZm9yIHNvbWUgeWVhcnMgbm93LiBNYW55IGRl
+dmVsb3BlcnMNCj4gYW5kIHRlc3RlcnMgcnVuIGxvY2tkZXAtZW5hYmxlZCBrZXJuZWxzLCBhbmQg
+dGhleSBhcmUgYXZhaWxhYmxlIGZvciBzb21lIG9mDQo+IHRoZSBtb3JlIGFkdmVudHVyb3VzIGRp
+c3RyaWJ1dGlvbnMgKFJhd2hpZGUsIGZvciBleGFtcGxlKSBhcyB3ZWxsLiBTbyB3ZQ0KPiBoYXZl
+IHF1aXRlIGEgYml0IG9mIHRlc3QgY292ZXJhZ2UgZm9yIHRoaXMgbW9kZSBvZiBvcGVyYXRpb24g
+YWxyZWFkeS4NCj4gDQo+ICgyKQ0KPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGlu
+dXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0Lw0KPiA/aWQ9YjczOGE1MGEN
+Cj4gDQo+ICJXZSBydW4gYWxsIGhhbmRsZXJzICp3aXRoIGludGVycnVwdHMgZGlzYWJsZWQqIGFu
+ZCBleHBlY3QgdGhlbSBub3QgdG8NCj4gZW5hYmxlIHRoZW0uIFdhcm4gd2hlbiB3ZSBjYXRjaCBv
+bmUgd2hvIGRvZXMuIg0KPiANCj4gKDMpDQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
+bS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvDQo+ID9pZD1lNThh
+YTNkMmQwY2MNCj4gZ2VuaXJxOiBSdW4gaXJxIGhhbmRsZXJzICp3aXRoIGludGVycnVwdHMgZGlz
+YWJsZWQqDQo+IA0KPiBSdW5uaW5nIGludGVycnVwdCBoYW5kbGVycyB3aXRoIGludGVycnVwdHMg
+ZW5hYmxlZCBjYW4gY2F1c2Ugc3RhY2sNCj4gb3ZlcmZsb3dzLiBUaGF0IGhhcyBiZWVuIG9ic2Vy
+dmVkIHdpdGggbXVsdGlxdWV1ZSBOSUNzIGRlbGl2ZXJpbmcgYWxsDQo+IHRoZWlyIGludGVycnVw
+dHMgdG8gYSBzaW5nbGUgY29yZS4gV2UgbWlnaHQgYmFuZCBhaWQgdGhhdCBzb21laG93IGJ5DQo+
+IGNoZWNraW5nIHRoZSBpbnRlcnJ1cHQgc3RhY2tzLCBidXQgdGhlIHJlYWwgc2FmZSBmaXggaXMg
+dG8gKnJ1biB0aGUgaXJxDQo+IGhhbmRsZXJzIHdpdGggaW50ZXJydXB0cyBkaXNhYmxlZCouDQo+
+IA0KPiANCj4gQWxsIHRoZXNlIGRvY3VtZW50cyBzYXkgd2UgYXJlIHJ1bm5pbmcgaXJxIGhhbmRs
+ZXIgd2l0aCBpbnRlcnJ1cHRzDQo+IGRpc2FibGVkLiBidXQgaXQgc2VlbXMgeW91IHRoaW5rIGhp
+Z2gtcHJpbyBpbnRlcnJ1cHRzIGRvbid0IGJlbG9uZw0KPiB0byAiaW50ZXJydXB0cyIgaW4gdGhv
+c2UgZG9jdW1lbnRzIDotKQ0KPiANCj4gdGhhdCBpcyB3aHkgd2UgY2FuJ3QgZ2V0IGFncmVlbWVu
+dC4gSSB0aGluayAiaW50ZXJydXB0cyIgbWVhbg0KPiBhbGwgZXhjZXB0IE5NSSBpbiB0aGVzZSBk
+b2N1bWVudHMsIGJ1dCB5b3UgaW5zaXN0IGhpZ2gtcHJpbyBJUlENCj4gaXMgYW4gZXhjZXB0aW9u
+Lg0KPiANCj4gPg0KPiA+ID4gPg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IEFyZSBhbGwgaW50
+ZXJydXB0cyAoaW5jbHVkaW5nIE5NSSkgbWFza2VkIHdoZW5ldmVyDQo+ID4gPiA+ID4gPiBhcmNo
+X2lycXNfZGlzYWJsZWQoKSByZXR1cm5zIHRydWUgb24geW91ciBwbGF0Zm9ybXM/DQo+ID4gPiA+
+ID4NCj4gPiA+ID4gPiBPbiBteSBwbGF0Zm9ybSwgb25jZSBpcnFzX2Rpc2FibGVkKCkgaXMgdHJ1
+ZSwgYWxsIGludGVycnVwdHMgYXJlDQo+ID4gPiA+ID4gbWFza2VkIGV4Y2VwdCBOTUkuIE5NSSBq
+dXN0IGlnbm9yZSBzcGluX2xvY2tfaXJxc2F2ZSBvcg0KPiA+ID4gPiA+IGxvY2FsX2lycV9kaXNh
+YmxlLg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gT24gQVJNNjQsIHdlIGFsc28gaGF2ZSBoaWdoLXBy
+aW9yaXR5IGludGVycnVwdHMsIGJ1dCB0aGV5IGFyZQ0KPiA+ID4gPiA+IHJ1bm5pbmcgYXMgUEVT
+VURPX05NSToNCj4gPiA+ID4gPiBodHRwczovL2x3bi5uZXQvQXJ0aWNsZXMvNzU1OTA2Lw0KPiA+
+ID4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+IEEgZ2xhbmNlIGF0IHRoZSBBUk0gR0lDIHNwZWNpZmlj
+YXRpb24gc3VnZ2VzdHMgdGhhdCB5b3VyIGhhcmR3YXJlDQo+ID4gPiA+IHdvcmtzIG11Y2ggbGlr
+ZSA2ODAwMCBoYXJkd2FyZS4NCj4gPiA+ID4NCj4gPiA+ID4gICAgV2hlbiBlbmFibGVkLCBhIENQ
+VSBpbnRlcmZhY2UgdGFrZXMgdGhlIGhpZ2hlc3QgcHJpb3JpdHkgcGVuZGluZw0KPiA+ID4gPiAg
+ICBpbnRlcnJ1cHQgZm9yIGl0cyBjb25uZWN0ZWQgcHJvY2Vzc29yIGFuZCBkZXRlcm1pbmVzIHdo
+ZXRoZXIgdGhlDQo+ID4gPiA+ICAgIGludGVycnVwdCBoYXMgc3VmZmljaWVudCBwcmlvcml0eSBm
+b3IgaXQgdG8gc2lnbmFsIHRoZSBpbnRlcnJ1cHQNCj4gPiA+ID4gICAgcmVxdWVzdCB0byB0aGUg
+cHJvY2Vzc29yLiBbLi4uXQ0KPiA+ID4gPg0KPiA+ID4gPiAgICBXaGVuIHRoZSBwcm9jZXNzb3Ig
+YWNrbm93bGVkZ2VzIHRoZSBpbnRlcnJ1cHQgYXQgdGhlIENQVSBpbnRlcmZhY2UsDQo+ID4gPiA+
+ICAgIHRoZSBEaXN0cmlidXRvciBjaGFuZ2VzIHRoZSBzdGF0dXMgb2YgdGhlIGludGVycnVwdCBm
+cm9tIHBlbmRpbmcgdG8NCj4gPiA+ID4gICAgZWl0aGVyIGFjdGl2ZSwgb3IgYWN0aXZlIGFuZCBw
+ZW5kaW5nLiBBdCB0aGlzIHBvaW50IHRoZSBDUFUNCj4gPiA+ID4gICAgaW50ZXJmYWNlIGNhbiBz
+aWduYWwgYW5vdGhlciBpbnRlcnJ1cHQgdG8gdGhlIHByb2Nlc3NvciwgdG8gcHJlZW1wdA0KPiA+
+ID4gPiAgICBpbnRlcnJ1cHRzIHRoYXQgYXJlIGFjdGl2ZSBvbiB0aGUgcHJvY2Vzc29yLiBJZiB0
+aGVyZSBpcyBubyBwZW5kaW5nDQo+ID4gPiA+ICAgIGludGVycnVwdCB3aXRoIHN1ZmZpY2llbnQg
+cHJpb3JpdHkgZm9yIHNpZ25hbGluZyB0byB0aGUgcHJvY2Vzc29yLA0KPiA+ID4gPiAgICB0aGUg
+aW50ZXJmYWNlIGRlYXNzZXJ0cyB0aGUgaW50ZXJydXB0IHJlcXVlc3Qgc2lnbmFsIHRvIHRoZQ0K
+PiA+ID4gPiAgICBwcm9jZXNzb3IuDQo+ID4gPiA+DQo+ID4gPiA+IGh0dHBzOi8vZGV2ZWxvcGVy
+LmFybS5jb20vZG9jdW1lbnRhdGlvbi9paGkwMDQ4L2IvDQo+ID4gPiA+DQo+ID4gPiA+IEhhdmUg
+eW91IGNvbnNpZGVyZWQgdGhhdCBMaW51eC9hcm0gbWlnaHQgYmVuZWZpdCBpZiBpdCBjb3VsZCBm
+dWxseQ0KPiA+ID4gPiBleHBsb2l0IGhhcmR3YXJlIGZlYXR1cmVzIGFscmVhZHkgYXZhaWxhYmxl
+LCBzdWNoIGFzIHRoZSBpbnRlcnJ1cHQNCj4gPiA+ID4gcHJpb3JpdHkgbWFza2luZyBmZWF0dXJl
+IGluIHRoZSBHSUMgaW4gZXhpc3RpbmcgYXJtIHN5c3RlbXM/DQo+ID4gPg0KPiA+ID4gSSBndWVz
+cyBubzotKSB0aGVyZSBhcmUgb25seSB0d28gbGV2ZWxzOiBJUlEgYW5kIE5NSS4gSW5qZWN0aW5n
+IGENCj4gPiA+IGhpZ2gtcHJpbyBJUlEgbGV2ZWwgYmV0d2VlbiB0aGVtIG1ha2VzIG5vIHNlbnNl
+Lg0KPiA+ID4NCj4gPiA+IFRvIG1lLCBhcm02NCdzIGRlc2lnbiBpcyBxdWl0ZSBjbGVhciBhbmQg
+aGFzIG5vIGFueSBjb25mdXNpb24uDQo+ID4gPg0KPiA+DQo+ID4gQXJlIHlvdSBzYXlpbmcgdGhh
+dCB0aGUgQVJNNjQgaGFyZHdhcmUgZGVzaWduIGlzIGNvbmZ1c2luZyBiZWNhdXNlIGl0DQo+ID4g
+aW1wbGVtZW50cyBhIHByaW9yaXR5IG1hc2ssIGFuZCB0aGF0J3Mgd2h5IHlvdSBoYWQgdG8gc2lt
+cGxpZnkgaXQgd2l0aCBhDQo+ID4gcHNldWRvLW5taSBzY2hlbWUgaW4gc29mdHdhcmU/DQo+IA0K
+PiBObywgSSB3YXMgbm90IHNheWluZyB0aGlzLiBJIHRoaW5rIGJvdGggbTY4ayBhbmQgYXJtNjQg
+aGF2ZSBnb29kIGhhcmR3YXJlDQo+IGRlc2lnbi4gSnVzdCBMaW51eCdzIGltcGxlbWVudGF0aW9u
+IGlzIHJ1bm5pbmcgaXJxLWhhbmRsZXJzIHdpdGggaW50ZXJydXB0cw0KPiBkaXNhYmxlZC4gU28g
+QVJNNjQncyBwc2V1ZG8tbm1pIGlzIGFkYXB0ZWQgdG8gTGludXggYmV0dGVyLg0KPiANCj4gPg0K
+PiA+ID4gPg0KPiA+ID4gPiA+IE9uIG02OGssIGl0IHNlZW1zIHlvdSBtZWFu77yaDQo+ID4gPiA+
+ID4gaXJxX2Rpc2FibGVkKCkgaXMgdHJ1ZSwgYnV0IGhpZ2gtcHJpb3JpdHkgaW50ZXJydXB0cyBj
+YW4gc3RpbGwgY29tZTsNCj4gPiA+ID4gPiBsb2NhbF9pcnFfZGlzYWJsZSgpIGNhbiBkaXNhYmxl
+IGhpZ2gtcHJpb3JpdHkgaW50ZXJydXB0cywgYW5kIGF0IHRoYXQNCj4gPiA+ID4gPiB0aW1lLCBp
+cnFfZGlzYWJsZWQoKSBpcyBhbHNvIHRydWUuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBUQkgsIHRo
+aXMgaXMgd3JvbmcgYW5kIGNvbmZ1c2luZyBvbiBtNjhrLg0KPiA+ID4gPiA+DQo+ID4gPiA+DQo+
+ID4gPiA+IExpa2UgeW91LCBJIHdhcyBzdXJwcmlzZWQgd2hlbiBJIGxlYXJuZWQgYWJvdXQgaXQu
+IEJ1dCB0aGF0IGRvZXNuJ3QgbWVhbg0KPiA+ID4gPiBpdCdzIHdyb25nLiBUaGUgZmFjdCB0aGF0
+IGl0IHdvcmtzIHNob3VsZCB0ZWxsIHlvdSBzb21ldGhpbmcuDQo+ID4gPiA+DQo+ID4gPg0KPiA+
+ID4gVGhlIGZhY3QgaXMgdGhhdCBtNjhrIGxldHMgYXJjaF9pcnFfZGlzYWJsZWQoKSByZXR1cm4g
+dHJ1ZSB0byBwcmV0ZW5kDQo+ID4gPiBhbGwgSVJRcyBhcmUgZGlzYWJsZWQgd2hpbGUgaGlnaC1w
+cmlvcml0eSBJUlEgaXMgc3RpbGwgb3BlbiwgdGh1cyAicGFzcyINCj4gPiA+IGFsbCBzYW5pdGl6
+aW5nIGNoZWNrIGluIGdlbmlycSBhbmQga2VybmVsIGNvcmUuDQo+ID4gPg0KPiA+DQo+ID4gVGhl
+IGZhY3QgaXMgdGhhdCBtNjhrIGhhcyBhcmNoX2lycV9kaXNhYmxlZCgpIHJldHVybiBmYWxzZSB3
+aGVuIGFsbCBJUlFzDQo+ID4gYXJlIGVuYWJsZWQuIFNvIHRoZXJlIGlzIG5vIGJ1Zy4NCj4gDQo+
+IEJ1dCBpdCBoYXMgYXJjaF9pcnFfZGlzYWJsZWQoKSByZXR1cm4gdHJ1ZSB3aGlsZSBzb21lIGlu
+dGVycnVwdHMobm90IE5NSSkNCj4gYXJlIHN0aWxsIG9wZW4uDQo+IA0KPiA+DQo+ID4gPiA+IFRo
+aW5ncyBjb3VsZCBhbHdheXMgYmUgbWFkZSBzaW1wbGVyLiBCdXQgZGlzY2FyZGluZyBmZWF0dXJl
+cyBpc24ndA0KPiA+ID4gPiBuZWNlc3NhcmlseSBhbiBpbXByb3ZlbWVudC4NCj4gPiA+DQo+ID4g
+PiBUaGlzIGZlYXR1cmUgY291bGQgYmUgdXNlZCBieSBjYWxsaW5nIGxvY2FsX2lycV9lbmFibGVf
+aW5faGFyZGlycSgpIGluDQo+ID4gPiB0aG9zZSBJUlEgaGFuZGxlcnMgd2hvIGhvcGUgaGlnaC1w
+cmlvcml0eSBpbnRlcnJ1cHRzIHRvIHByZWVtcHQgaXQgZm9yIGENCj4gPiA+IHdoaWxlLg0KPiA+
+ID4NCj4gPg0KPiA+IFNvLCBpZiBvbmUgaGFuZGxlciBpcyBzZW5zaXRpdmUgdG8gaW50ZXJydXB0
+IGxhdGVuY3ksIGFsbCBvdGhlciBoYW5kbGVycw0KPiA+IHNob3VsZCBiZSBtb2RpZmllZD8gSSBk
+b24ndCB0aGluayB0aGF0J3Mgd29ya2FibGUuDQo+IA0KPiBJIHRoaW5rIHdlIGp1c3QgZW5hYmxl
+IHByZWVtcHRfcnQgb3IgZm9yY2UgdGhyZWFkZWRfaXJxLCBhbmQgdGhlbiBpbXByb3ZlDQo+IHRo
+ZSBwcmlvcml0eSBvZiB0aGUgaXJxIHRocmVhZCB3aG8gaXMgc2Vuc2l0aXZlIHRvIGxhdGVuY3ku
+IE5vIG5lZWQgdG8NCj4gdG91Y2ggYWxsIHRocmVhZHMuDQo+IA0KPiBJIGFsc28gdW5kZXJzdGFu
+ZCB5b3VyIHBvaW50LCB3ZSBsZXQgb25lIGhpZ2gtcHJpbyBpbnRlcnJ1cHQgcHJlZW1wdA0KPiBs
+b3cgcHJpb3JpdHkgaW50ZXJydXB0LCB0aGVuIHdlIGRvbid0IG5lZWQgdG8gY2hhbmdlIHRoZSB3
+aG9sZSBzeXN0ZW0uDQo+IEJ1dCBJIHRoaW5rIExpbnV4IHByZWZlcnMgdGhlIG1ldGhvZCBvZiB0
+aHJlYWRlZF9pcnEgb3IgcHJlZW1wdF9ydA0KPiBmb3IgdGhpcyBraW5kIG9mIHByb2JsZW1zLg0K
+PiANCj4gPg0KPiA+IEluIGFueWNhc2UsIHdoYXQgeW91J3JlIGRlc2NyaWJpbmcgaXMgYSBjb21w
+bGV0ZWx5IGRpZmZlcmVudCBuZXN0ZWQNCj4gPiBpbnRlcnJ1cHQgc2NoZW1lIHRoYXQgd291bGQg
+ZGVmZWF0IHRoZSBwcmlvcml0eSBsZXZlbCBtZWNoYW5pc20gdGhhdCB0aGUNCj4gPiBoYXJkd2Fy
+ZSBwcm92aWRlcyB1cyB3aXRoLg0KPiANCj4gWWVzLiBJbmRlZWQuDQo+IA0KPiA+DQo+ID4gPiBJ
+dCBzaG91bGRuJ3QgaGlkZSBzb21ld2hlcmUgYW5kIG1ha2UgY29uZnVzaW9uLg0KPiA+ID4NCj4g
+Pg0KPiA+IFRoZSBwcm9ibGVtIGlzIGhpZGluZyBzbyB3ZWxsIHRoYXQgbm8tb25lIGhhcyBmb3Vu
+ZCBpdCEgSSBzYXkgaXQgZG9lc24ndA0KPiA+IGV4aXN0Lg0KPiANCj4gTG9uZyBsb25nIGFnbyhi
+ZWZvcmUgMi42LjM4KSwgd2UgaGFkIGEga2VybmVsIHN1cHBvcnRpbmcgSVJRRl9ESVNBQkxFRCBh
+bmQNCj4gbmVzdGVkIGludGVycnVwdHMgd2VyZSB3aWRlbHkgc3VwcG9ydGVkLCBidXQgc3lzdGVt
+IGFsc28gcmFuIHdlbGwgaW4gbW9zdA0KPiBjYXNlcy4gVGhhdCBtZWFucyBuZXN0ZWQgaW50ZXJy
+dXB0cyBkb24ndCByZWFsbHkgbWF0dGVyIGluIG1vc3QgY2FzZXMuDQo+IFRoYXQgaXMgd2h5IG02
+OGsgaXMgYWxzbyBydW5uaW5nIHdlbGwgZXZlbiB0aG91Z2ggaXQgaXMgc3RpbGwgbmVzdGluZy4N
+Cj4gDQo+ID4NCj4gPiA+IE9uIHRoZSBvdGhlciBoYW5kLCB0aG9zZSB3aG8gY2FyZSBhYm91dCBy
+ZWFsdGltZSBzaG91bGQgdXNlIHRocmVhZGVkIElSUQ0KPiA+ID4gYW5kIGxldCBJUlEgdGhyZWFk
+cyBwcmVlbXB0IGVhY2ggb3RoZXIuDQo+ID4gPg0KPiA+DQo+ID4gWWVzLiBBbmQgdGhvc2UgdGhy
+ZWFkcyBhbHNvIGhhdmUgcHJpb3JpdHkgbGV2ZWxzLg0KPiANCj4gRmlubiwgSSBhbSBub3QgYSBt
+NjhrIGd1eSwgd291bGQgeW91IGhlbHAgY2hlY2sgaWYgdGhpcyBjb3VsZCBhY3RpdmF0ZSBhDQo+
+IHdhcm5pbmcgb24gbTY4ay4gbWF5YmUgd2UgY2FuIGRpc2N1c3MgdGhpcyBxdWVzdGlvbiBpbiBn
+ZW5pcnEgbWFpbGxpc3QgZnJvbQ0KPiB0aGlzIHdhcm5pbmcgaWYgeW91IGFyZSBoYXBweS4gVGhh
+bmtzIHZlcnkgbXVjaC4NCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2hhcmRpcnEu
+aCBiL2luY2x1ZGUvbGludXgvaGFyZGlycS5oDQo+IGluZGV4IDdjOWQ2YTJkN2U5MC4uYjhjYTI3
+NTU1Yzc2IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2hhcmRpcnEuaA0KPiArKysgYi9p
+bmNsdWRlL2xpbnV4L2hhcmRpcnEuaA0KPiBAQCAtMzIsNiArMzIsNyBAQCBzdGF0aWMgX19hbHdh
+eXNfaW5saW5lIHZvaWQgcmN1X2lycV9lbnRlcl9jaGVja190aWNrKHZvaWQpDQo+ICAgKi8NCj4g
+ICNkZWZpbmUgX19pcnFfZW50ZXIoKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBc
+DQo+ICAgICAgICAgZG8geyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgXA0KPiArICAgICAgICAgICAgICAgV0FSTl9PTkNFKGluX2hhcmRpcnEoKSAmJiBpcnFzX2Rp
+c2FibGVkKCksICJuZXN0ZWQNCj4gaW50ZXJydXB0c1xuIik7IFwNCj4gICAgICAgICAgICAgICAg
+IHByZWVtcHRfY291bnRfYWRkKEhBUkRJUlFfT0ZGU0VUKTsgICAgICBcDQo+ICAgICAgICAgICAg
+ICAgICBsb2NrZGVwX2hhcmRpcnFfZW50ZXIoKTsgICAgICAgICAgICAgICAgXA0KPiAgICAgICAg
+ICAgICAgICAgYWNjb3VudF9oYXJkaXJxX2VudGVyKGN1cnJlbnQpOyAgICAgICAgIFwNCj4gQEAg
+LTQ0LDYgKzQ1LDcgQEAgc3RhdGljIF9fYWx3YXlzX2lubGluZSB2b2lkIHJjdV9pcnFfZW50ZXJf
+Y2hlY2tfdGljayh2b2lkKQ0KPiAgICovDQo+ICAjZGVmaW5lIF9faXJxX2VudGVyX3JhdygpICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KPiAgICAgICAgIGRvIHsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwNCj4gKyAgICAgICAgICAgICAgIFdBUk5f
+T05DRShpbl9oYXJkaXJxKCkgJiYgaXJxc19kaXNhYmxlZCgpLCAibmVzdGVkDQo+IGludGVycnVw
+dHNcbiIpOyBcDQo+ICAgICAgICAgICAgICAgICBwcmVlbXB0X2NvdW50X2FkZChIQVJESVJRX09G
+RlNFVCk7ICAgICAgXA0KPiAgICAgICAgICAgICAgICAgbG9ja2RlcF9oYXJkaXJxX2VudGVyKCk7
+ICAgICAgICAgICAgICAgIFwNCj4gICAgICAgICB9IHdoaWxlICgwKQ0KPiANCg0KSSBhbSBub3Qg
+YSBtNjhrIGd1eSwgaGVyZSBJIGNhbiBzaG93IHlvdSBzb21lIGNvZGUgaW4gY29ydGV4LW0sDQp3
+aGljaCBzdXBwb3J0cyBmdWxsIGludGVycnVwdCBwcmlvcml0eSBwcmVlbXB0aW9uIGluIGhhcmR3
+YXJlLA0KYnV0IGl0cyBhcmNoIGNvZGUganVzdCBkaXNhYmxlcyBpdCB0byBzYXRpc2Z5IExpbnV4
+Og0KDQphcmNoL2FybS9rZXJuZWwvZW50cnktaGVhZGVyLlMNCg0KLm1hY3JvCXY3bV9leGNlcHRp
+b25fZW50cnkNCgkuLi4NCg0KCUAgTGludXggZXhwZWN0cyB0byBoYXZlIGlycXMgb2ZmLiBEbyBp
+dCBoZXJlIGJlZm9yZSB0YWtpbmcgc3RhY2sgc3BhY2UNCgljcHNpZAlpDQoNCmFyY2gvYXJtL2tl
+cm5lbC9lbnRyeS12N20uUw0KDQpfX2lycV9lbnRyeToNCgl2N21fZXhjZXB0aW9uX2VudHJ5DQoN
+CglADQoJQCBJbnZva2UgdGhlIElSUSBoYW5kbGVyDQoJQA0KCS4uLg0KCUAgcm91dGluZSBjYWxs
+ZWQgd2l0aCByMCA9IGlycSBudW1iZXIsIHIxID0gc3RydWN0IHB0X3JlZ3MgKg0KCWJsCW52aWNf
+aGFuZGxlX2lycQ0KDQoJcG9wCXtscn0NCg0KDQpBbm90aGVyIGV4YW1wbGUgaW4gYXJjaC9hcmMv
+a2VybmVsL2VudHJ5LWFyY3YyLlM6DQoNCkVOVFJZKGhhbmRsZV9pbnRlcnJ1cHQpDQoNCglJTlRF
+UlJVUFRfUFJPTE9HVUUNCg0KCSMgaXJxIGNvbnRyb2wgQVBJcyBsb2NhbF9pcnFfc2F2ZS9yZXN0
+b3JlL2Rpc2FibGUvZW5hYmxlIGZpZGRsZSB3aXRoDQoJIyBnbG9iYWwgaW50ZXJydXB0IGVuYWJs
+ZSBiaXRzIGluIFNUQVRVUzMyICguSUUgZm9yIDEgcHJpbywgLkVbXSBmb3IgMiBwcmlvKQ0KCSMg
+SG93ZXZlciBhIHRha2VuIGludGVycnVwdCBkb2Vzbid0IGNsZWFyIHRoZXNlIGJpdHMuIFRodXMg
+aXJxc19kaXNhYmxlZCgpDQoJIyBxdWVyeSBpbiBoYXJkIElTUiBwYXRoIHdvdWxkIHJldHVybiBm
+YWxzZSAoc2luY2UgLklFIGlzIHNldCkgd2hpY2ggd291bGQNCgkjIHRyaXBzIGdlbmlycSBpbnRl
+cnJ1cHQgaGFuZGxpbmcgYXNzZXJ0cy4NCgkjDQoJIyBTbyBkbyBhICJzb2Z0IiBkaXNhYmxlIG9m
+IGludGVycnV0cHMgaGVyZS4NCgkjDQoJIyBOb3RlIHRoaXMgZGlzYWJsZSBpcyBvbmx5IGZvciBj
+b25zaXN0ZW50IGJvb2sta2VlcGluZyBhcyBmdXJ0aGVyIGludGVycnVwdHMNCgkjIHdpbGwgYmUg
+ZGlzYWJsZWQgYW55d2F5cyBldmVuIHcvbyB0aGlzLiBIYXJkd2FyZSB0cmFja3MgYWN0aXZlIGlu
+dGVycnVwdHMNCgkjIHNlcGVyYXRlbHkgaW4gQVVYX0lSUV9BQ1QuYWN0aXZlIGFuZCB3aWxsIG5v
+dCB0YWtlIG5ldyBpbnRlcnJ1cHRzDQoJIyB1bmxlc3MgdGhpcyBvbmUgcmV0dXJucyAob3IgaGln
+aGVyIHByaW8gYmVjb21lcyBwZW5kaW5nIGluIDItcHJpbyBzY2hlbWUpDQoNCglJUlFfRElTQUJM
+RQ0KDQoJOyBpY2F1c2UgaXMgYmFua2VkOiBvbmUgcGVyIHByaW9yaXR5IGxldmVsDQoJOyBzbyBh
+IGhpZ2hlciBwcmlvIGludGVycnVwdCB0YWtlbiBoZXJlIHdvbid0IGNsb2JiZXIgcHJldiBwcmlv
+IGljYXVzZQ0KCWxyICByMCwgW0lDQVVTRV0NCgltb3YgICBibGluaywgcmV0X2Zyb21fZXhjZXB0
+aW9uDQoNCgliLmQgIGFyY2hfZG9fSVJRDQoJbW92IHIxLCBzcA0KDQoNCkFjdHVhbGx5IGluIG02
+OGssIEkgYWxzbyBzYXcgaXRzIElSUSBlbnRyeSBkaXNhYmxlZCBpbnRlcnJ1cHRzIGJ5DQonIG1v
+dmUJIzB4MjcwMCwlc3IJCS8qIGRpc2FibGUgaW50cnMgKi8nDQoNCmFyY2gvbTY4ay9pbmNsdWRl
+L2FzbS9lbnRyeS5oOg0KDQoubWFjcm8gU0FWRV9BTExfU1lTDQoJbW92ZQkjMHgyNzAwLCVzcgkJ
+LyogZGlzYWJsZSBpbnRycyAqLw0KCWJ0c3QJIzUsJXNwQCgyKQkJLyogZnJvbSB1c2VyPyAqLw0K
+CWJuZXMJNmYJCQkvKiBubywgc2tpcCAqLw0KCW1vdmVsCSVzcCxzd191c3AJCS8qIHNhdmUgdXNl
+ciBzcCAqLw0KLi4uDQoNCi5tYWNybyBTQVZFX0FMTF9JTlQNCglTQVZFX0FMTF9TWVMNCgltb3Zl
+cQkjLTEsJWQwCQkJLyogbm90IHN5c3RlbSBjYWxsIGVudHJ5ICovDQoJbW92ZWwJJWQwLCVzcEAo
+UFRfT0ZGX09SSUdfRDApDQouZW5kbQ0KDQphcmNoL202OGsva2VybmVsL2VudHJ5LlM6DQoNCi8q
+IFRoaXMgaXMgdGhlIG1haW4gaW50ZXJydXB0IGhhbmRsZXIgZm9yIGF1dG92ZWN0b3IgaW50ZXJy
+dXB0cyAqLw0KDQpFTlRSWShhdXRvX2ludGhhbmRsZXIpDQoJU0FWRV9BTExfSU5UDQoJR0VUX0NV
+UlJFTlQoJWQwKQ0KCQkJCQl8ICBwdXQgZXhjZXB0aW9uICMgaW4gZDANCgliZmV4dHUJJXNwQChQ
+VF9PRkZfRk9STUFUVkVDKXsjNCwjMTB9LCVkMA0KCXN1YncJI1ZFQ19TUFVSLCVkMA0KDQoJbW92
+ZWwJJXNwLCVzcEAtDQoJbW92ZWwJJWQwLCVzcEAtCQl8ICBwdXQgdmVjdG9yICMgb24gc3RhY2sN
+CmF1dG9faXJxaGFuZGxlcl9maXh1cCA9IC4gKyAyDQoJanNyCWRvX0lSUQkJCXwgIHByb2Nlc3Mg
+dGhlIElSUQ0KCWFkZHFsCSM4LCVzcAkJCXwgIHBvcCBwYXJhbWV0ZXJzIG9mZiBzdGFjaw0KCWpy
+YQlyZXRfZnJvbV9leGNlcHRpb24NCg0KU28gbXkgcXVlc3Rpb24gaXMgdGhhdCAiIG1vdmUJIzB4
+MjcwMCwlc3IiIGlzIGFjdHVhbGx5IGRpc2FibGluZw0KYWxsIGludGVycnVwdHM/IEFuZCBpcyBt
+NjhrIGFjdHVhbGx5IHJ1bm5pbmcgaXJxIGhhbmRsZXJzDQp3aXRoIGludGVycnVwdHMgZGlzYWJs
+ZWQ/DQoNCkJlc3QgUmVnYXJkcw0KQmFycnkNCg==
