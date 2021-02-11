@@ -2,223 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1F131907C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D46931907E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbhBKQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:58:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49578 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231184AbhBKPqu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:46:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613058323;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=39EV7/G2PzTJehWm5IY3xEu3xVTJ2cfFkuLTjx/NCso=;
-        b=Fs0v+FUX0koAuz9/I4KhY1Hw+3Ami1iRWsHdBL9gGdHznXxIF/UWwUgVT3Arxl73U4RKNt
-        qJd4dKf7BDKscAqF1z9EO01CgY05e8BWg7NvwdOwTrUS0L78EGwmR0J0pPbw11MJQvhwmf
-        0A/MoiMBrGq+P373lZX5Ug1wE+htPFM=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-alveBOSSNd-Mdv3rUHL_ig-1; Thu, 11 Feb 2021 10:45:21 -0500
-X-MC-Unique: alveBOSSNd-Mdv3rUHL_ig-1
-Received: by mail-ed1-f71.google.com with SMTP id p18so4700552edr.20
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 07:45:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=39EV7/G2PzTJehWm5IY3xEu3xVTJ2cfFkuLTjx/NCso=;
-        b=qNIyOlH4LgodH/pchM6tXaEAGxQtnbdaWmZjhBk9YtyqlG3tsU69/oYiCNGzdQt0px
-         Mf5YuIHvc0ZdiO2OqGx7UtN4ekVpnKwvbQPNttZUyraw1DS8cQYNhlim8GA5A+2mAbai
-         /CugobgLF4urUOwa7SdUiYUN6eTqN7m+U7RiPySIhH8iQlIFWU/2Hc7oNSHVwtAu7AeW
-         3H9iSNqWDnsH50HM5n2GEVxrsWLmLPWesOyGQER+P+VjtbB5zJEFR9AqHMaDO+Z1W72D
-         FrXNs1LxvY62jVVmlkOaObTP7MK0qsC7aYm/FNX0u8gaDDyFb2sZSvX2WWQhqJRSk+R3
-         CZ5w==
-X-Gm-Message-State: AOAM531Hf6wrh+IpLgfEa6lqi8aESttLQRe+doMbkIxcrw9JvL8MyqIQ
-        7ClrJ0ce1ln2BiISrAIm0NkXc7FT7PXlo9Q2n0E3biuT223jfUqoCuvdpbENXGNss6xTG0R9AJe
-        POmVDk0JQkV1dpynhUbbNpUjg
-X-Received: by 2002:a17:906:c0d7:: with SMTP id bn23mr9025019ejb.94.1613058320167;
-        Thu, 11 Feb 2021 07:45:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyAqoP5eDFW4xcTb4dIWPHhgt73k8gUL/gfI/YINR2uueo6qHqMl/9WQ2OnMwUijI+is8nBSg==
-X-Received: by 2002:a17:906:c0d7:: with SMTP id bn23mr9024980ejb.94.1613058319935;
-        Thu, 11 Feb 2021 07:45:19 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id bk2sm4539280ejb.98.2021.02.11.07.45.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 07:45:19 -0800 (PST)
-Subject: Re: [PATCH v1 0/9] x86/platform: Remove SFI framework and users
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Rapoport <rppt@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        Sumit Gupta <sumitg@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@driverdev.osuosl.org, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-References: <20210211134008.38282-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0gzd0Xwd006P3PUutKcVRqLNxmREBB-QW85BRMBArbBVw@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <bf10026f-13bb-c1c6-2787-d8c9520f8401@redhat.com>
-Date:   Thu, 11 Feb 2021 16:45:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230476AbhBKQ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:58:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53750 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231482AbhBKPr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:47:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1186FACBF;
+        Thu, 11 Feb 2021 15:47:15 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id AAF211E14C6; Thu, 11 Feb 2021 16:47:14 +0100 (CET)
+Date:   Thu, 11 Feb 2021 16:47:14 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: possible deadlock in dquot_commit
+Message-ID: <20210211154714.GR19070@quack2.suse.cz>
+References: <000000000000a05b3b05baf9a856@google.com>
+ <20210211113718.GM19070@quack2.suse.cz>
+ <CACT4Y+b7245_5yjTk5Mw1pFBdV_f2LypAVSAZVym9n1Q0v5c-Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gzd0Xwd006P3PUutKcVRqLNxmREBB-QW85BRMBArbBVw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+b7245_5yjTk5Mw1pFBdV_f2LypAVSAZVym9n1Q0v5c-Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 2/11/21 4:24 PM, Rafael J. Wysocki wrote:
-> On Thu, Feb 11, 2021 at 2:50 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
->>
->> This is last part of Intel MID (SFI based) removal. We have no more users of it
->> in the kernel and since SFI has been marked Obsolete for a few years already,
->> Remove all the stuff altogether.
->>
->> Note, the more recent platforms (Intel Merrifield and Moorefield) still work as
->> long as they provide correct ACPI tables.
->>
->> The series requires two prerequisite branches to be pulled first, i.e.
->> - one form Rafael's PM tree (currently bleeding-edge)
->> - one form TIP tree (x86/platform), actually only one patch is needed from it
->>
->> Due to above it's convenient to proceed all of these via Rafael's PM tree,
->>
->> Note, atomisp change is tagged by Sakari on behalf of media tree maintainers.
->>
->> Andy Shevchenko (9):
->>   media: atomisp: Remove unused header
->>   cpufreq: sfi-cpufreq: Remove driver for deprecated firmware
->>   sfi: Remove framework for deprecated firmware
->>   x86/PCI: Get rid of custom x86 model comparison
->>   x86/PCI: Describe @reg for type1_access_ok()
->>   x86/platform/intel-mid: Get rid of intel_scu_ipc_legacy.h
->>   x86/platform/intel-mid: Drop unused __intel_mid_cpu_chip and Co.
->>   x86/platform/intel-mid: Remove unused header inclusion in intel-mid.h
->>   x86/platform/intel-mid: Update Copyright year and drop file names
->>
->>  Documentation/ABI/testing/sysfs-firmware-sfi  |  15 -
->>  Documentation/ABI/testing/sysfs-platform-kim  |   2 +-
->>  MAINTAINERS                                   |   7 -
->>  arch/x86/Kconfig                              |   7 +-
->>  arch/x86/include/asm/intel-mid.h              |  65 +--
->>  arch/x86/include/asm/intel_scu_ipc.h          |   2 -
->>  arch/x86/include/asm/intel_scu_ipc_legacy.h   |  74 ---
->>  arch/x86/include/asm/platform_sst_audio.h     |   2 -
->>  arch/x86/kernel/apic/io_apic.c                |   4 +-
->>  arch/x86/kernel/setup.c                       |   2 -
->>  arch/x86/pci/intel_mid_pci.c                  |  18 +-
->>  arch/x86/pci/mmconfig-shared.c                |   6 +-
->>  arch/x86/platform/Makefile                    |   1 -
->>  arch/x86/platform/intel-mid/Makefile          |   5 -
->>  .../platform/intel-mid/device_libs/Makefile   |  23 -
->>  .../intel-mid/device_libs/platform_bcm43xx.c  | 101 ----
->>  .../intel-mid/device_libs/platform_bma023.c   |  16 -
->>  .../intel-mid/device_libs/platform_bt.c       | 101 ----
->>  .../intel-mid/device_libs/platform_emc1403.c  |  39 --
->>  .../device_libs/platform_gpio_keys.c          |  81 ---
->>  .../intel-mid/device_libs/platform_lis331.c   |  37 --
->>  .../intel-mid/device_libs/platform_max7315.c  |  77 ---
->>  .../intel-mid/device_libs/platform_mpu3050.c  |  32 --
->>  .../device_libs/platform_mrfld_pinctrl.c      |  39 --
->>  .../device_libs/platform_mrfld_rtc.c          |  44 --
->>  .../intel-mid/device_libs/platform_mrfld_sd.c |  43 --
->>  .../device_libs/platform_mrfld_spidev.c       |  50 --
->>  .../device_libs/platform_pcal9555a.c          |  95 ----
->>  .../intel-mid/device_libs/platform_tc35876x.c |  42 --
->>  .../intel-mid/device_libs/platform_tca6416.c  |  53 --
->>  arch/x86/platform/intel-mid/intel-mid.c       |  27 +-
->>  arch/x86/platform/intel-mid/sfi.c             | 419 --------------
->>  arch/x86/platform/sfi/Makefile                |   2 -
->>  arch/x86/platform/sfi/sfi.c                   | 100 ----
->>  drivers/Makefile                              |   2 +-
->>  drivers/cpufreq/Kconfig.x86                   |  10 -
->>  drivers/cpufreq/Makefile                      |   1 -
->>  drivers/cpufreq/sfi-cpufreq.c                 | 127 -----
->>  drivers/platform/x86/intel_scu_pcidrv.c       |  22 +-
->>  drivers/sfi/Kconfig                           |  18 -
->>  drivers/sfi/Makefile                          |   4 -
->>  drivers/sfi/sfi_acpi.c                        | 214 -------
->>  drivers/sfi/sfi_core.c                        | 522 ------------------
->>  drivers/sfi/sfi_core.h                        |  81 ---
->>  .../atomisp/include/linux/atomisp_platform.h  |   1 -
->>  include/linux/sfi.h                           | 210 -------
->>  include/linux/sfi_acpi.h                      |  93 ----
->>  init/main.c                                   |   2 -
->>  48 files changed, 37 insertions(+), 2901 deletions(-)
->>  delete mode 100644 Documentation/ABI/testing/sysfs-firmware-sfi
->>  delete mode 100644 arch/x86/include/asm/intel_scu_ipc_legacy.h
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/Makefile
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_bcm43xx.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_bma023.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_bt.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_emc1403.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_gpio_keys.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_lis331.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_max7315.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mpu3050.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mrfld_pinctrl.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mrfld_rtc.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mrfld_sd.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mrfld_spidev.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_pcal9555a.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_tc35876x.c
->>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_tca6416.c
->>  delete mode 100644 arch/x86/platform/intel-mid/sfi.c
->>  delete mode 100644 arch/x86/platform/sfi/Makefile
->>  delete mode 100644 arch/x86/platform/sfi/sfi.c
->>  delete mode 100644 drivers/cpufreq/sfi-cpufreq.c
->>  delete mode 100644 drivers/sfi/Kconfig
->>  delete mode 100644 drivers/sfi/Makefile
->>  delete mode 100644 drivers/sfi/sfi_acpi.c
->>  delete mode 100644 drivers/sfi/sfi_core.c
->>  delete mode 100644 drivers/sfi/sfi_core.h
->>  delete mode 100644 include/linux/sfi.h
->>  delete mode 100644 include/linux/sfi_acpi.h
->>
->> --
+On Thu 11-02-21 12:47:18, Dmitry Vyukov wrote:
+> On Thu, Feb 11, 2021 at 12:37 PM Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Wed 10-02-21 03:25:22, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=101cf2f8d00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=e83e68d0a6aba5f6
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3b6f9218b1301ddda3e2
+> > >
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com
+> > >
+> > > loop1: detected capacity change from 4096 to 0
+> > > EXT4-fs (loop1): mounted filesystem without journal. Opts: ,errors=continue. Quota mode: writeback.
+> > > ======================================================
+> > > WARNING: possible circular locking dependency detected
+> > > 5.11.0-rc6-syzkaller #0 Not tainted
+> > > ------------------------------------------------------
+> > > syz-executor.1/16170 is trying to acquire lock:
+> > > ffff8880795f5b28 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_commit+0x4d/0x420 fs/quota/dquot.c:476
+> > >
+> > > but task is already holding lock:
+> > > ffff88807960b438 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x5e1/0x17d0 fs/ext4/inode.c:630
+> > >
+> > > which lock already depends on the new lock.
+> >
+> > <snip>
+> >
+> > All snipped stacktraces look perfectly fine and the lock dependencies are as
+> > expected.
+> >
+> > > 5 locks held by syz-executor.1/16170:
+> > >  #0: ffff88802ad18b70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:947
+> > >  #1: ffff88802fbec460 (sb_writers#5){.+.+}-{0:0}, at: ksys_write+0x12d/0x250 fs/read_write.c:658
+> > >  #2: ffff88807960b648 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
+> > >  #2: ffff88807960b648 (&sb->s_type->i_mutex_key#9){++++}-{3:3}, at: ext4_buffered_write_iter+0xb6/0x4d0 fs/ext4/file.c:264
+> > >  #3: ffff88807960b438 (&ei->i_data_sem/2){++++}-{3:3}, at: ext4_map_blocks+0x5e1/0x17d0 fs/ext4/inode.c:630
+> > >  #4: ffffffff8bf1be58 (dquot_srcu){....}-{0:0}, at: i_dquot fs/quota/dquot.c:926 [inline]
+> > >  #4: ffffffff8bf1be58 (dquot_srcu){....}-{0:0}, at: __dquot_alloc_space+0x1b4/0xb60 fs/quota/dquot.c:1671
+> >
+> > This actually looks problematic: We acquired &ei->i_data_sem/2 (i.e.,
+> > I_DATA_SEM_QUOTA subclass) in ext4_map_blocks() called from
+> > ext4_block_write_begin(). This suggests that the write has been happening
+> > directly to the quota file (or that lockdep annotation of the inode went
+> > wrong somewhere). Now we normally protect quota files with IMMUTABLE flag
+> > so writing it should not be possible. We also don't allow clearing this
+> > flag on used quota file. Finally I'd checked lockdep annotation and
+> > everything looks correct. So at this point the best theory I have is that a
+> > filesystem has been suitably corrupted and quota file supposed to be
+> > inaccessible from userspace got exposed but I'd expect other problems to
+> > hit first in that case. Anyway without a reproducer I have no more ideas...
 > 
-> All of this looks good to me, so I'm going to queue it up for 5.12
-> unless there are objections against doing that.
+> There is a reproducer for 4.19 available on the dashboard. Maybe it will help.
+> I don't why it did not pop up on upstream yet, there lots of potential
+> reasons for this.
 
-That is fine by me (for the drivers/platform/x86 bits) :
+OK, so I've checked the fs images generated by the syzkaller reproducer and
+they indeed have QUOTA feature enabled. Also inodes used by quota files are
+not marked as allocated so there is some potential for surprises. But all
+the possible paths I could think of seem to be covered and return
+EFSCORRUPTED. Also note that the reproducer didn't trigger the
+lockdep splat for me so the problem still isn't clear to me.
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
+								Honza
 
-Regards,
-
-Hans
-
+> > >
+> > > stack backtrace:
+> > > CPU: 0 PID: 16170 Comm: syz-executor.1 Not tainted 5.11.0-rc6-syzkaller #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > > Call Trace:
+> > >  __dump_stack lib/dump_stack.c:79 [inline]
+> > >  dump_stack+0x107/0x163 lib/dump_stack.c:120
+> > >  check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
+> > >  check_prev_add kernel/locking/lockdep.c:2868 [inline]
+> > >  check_prevs_add kernel/locking/lockdep.c:2993 [inline]
+> > >  validate_chain kernel/locking/lockdep.c:3608 [inline]
+> > >  __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
+> > >  lock_acquire kernel/locking/lockdep.c:5442 [inline]
+> > >  lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
+> > >  __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+> > >  __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
+> > >  dquot_commit+0x4d/0x420 fs/quota/dquot.c:476
+> > >  ext4_write_dquot+0x24e/0x310 fs/ext4/super.c:6200
+> > >  ext4_mark_dquot_dirty fs/ext4/super.c:6248 [inline]
+> > >  ext4_mark_dquot_dirty+0x111/0x1b0 fs/ext4/super.c:6242
+> > >  mark_dquot_dirty fs/quota/dquot.c:347 [inline]
+> > >  mark_all_dquot_dirty fs/quota/dquot.c:385 [inline]
+> > >  __dquot_alloc_space+0x5d4/0xb60 fs/quota/dquot.c:1709
+> > >  dquot_alloc_space_nodirty include/linux/quotaops.h:297 [inline]
+> > >  dquot_alloc_space include/linux/quotaops.h:310 [inline]
+> > >  dquot_alloc_block include/linux/quotaops.h:334 [inline]
+> > >  ext4_mb_new_blocks+0x5a9/0x51a0 fs/ext4/mballoc.c:4937
+> > >  ext4_ext_map_blocks+0x20da/0x5fb0 fs/ext4/extents.c:4238
+> > >  ext4_map_blocks+0x653/0x17d0 fs/ext4/inode.c:637
+> > >  _ext4_get_block+0x241/0x590 fs/ext4/inode.c:793
+> > >  ext4_block_write_begin+0x4f8/0x1190 fs/ext4/inode.c:1077
+> > >  ext4_write_begin+0x4b5/0x14b0 fs/ext4/inode.c:1202
+> > >  ext4_da_write_begin+0x672/0x1150 fs/ext4/inode.c:2961
+> > >  generic_perform_write+0x20a/0x4f0 mm/filemap.c:3412
+> > >  ext4_buffered_write_iter+0x244/0x4d0 fs/ext4/file.c:270
+> > >  ext4_file_write_iter+0x423/0x14d0 fs/ext4/file.c:664
+> > >  call_write_iter include/linux/fs.h:1901 [inline]
+> > >  new_sync_write+0x426/0x650 fs/read_write.c:518
+> > >  vfs_write+0x791/0xa30 fs/read_write.c:605
+> > >  ksys_write+0x12d/0x250 fs/read_write.c:658
+> > >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > RIP: 0033:0x465b09
+> > > Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> > > RSP: 002b:00007f8097ffc188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> > > RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465b09
+> > > RDX: 000000000d4ba0ff RSI: 00000000200009c0 RDI: 0000000000000003
+> > > RBP: 00000000004b069f R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+> > > R13: 00007ffefc77f01f R14: 00007f8097ffc300 R15: 0000000000022000
+> > >
+> > >
+> > > ---
+> > > This report is generated by a bot. It may contain errors.
+> > > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > >
+> > > syzbot will keep track of this issue. See:
+> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > >
+> > --
+> > Jan Kara <jack@suse.com>
+> > SUSE Labs, CR
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/20210211113718.GM19070%40quack2.suse.cz.
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
