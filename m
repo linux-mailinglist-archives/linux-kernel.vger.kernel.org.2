@@ -2,194 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA09318C4D
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBDD318C4C
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhBKNlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:41:44 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:32454 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231913AbhBKNVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 08:21:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613049666; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Y/PupSDFI54PfGk5fJZwK971L/Lu0319ZmiSaKec4xM=; b=KiDDtato9jxyGaU468WnKjn5WUFBLnX1fwqUdGPL8dtbwuTsEsA0QCjH1Bt0LvDNzpsjGwUP
- A2A65kwz9ogcob9DPa3lJPiVyvS8MUqY11CWw/ftaLq9FTVD2JNWKAyE0Xe8cyLAVTt5kkGG
- MLgVRp4uPJRMXcM4C+GrxweB/Hg=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60252f26f112b7872cf19191 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Feb 2021 13:20:38
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DDEDDC433CA; Thu, 11 Feb 2021 13:20:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [117.210.187.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 00002C433C6;
-        Thu, 11 Feb 2021 13:20:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 00002C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH v2] drm/msm: a6xx: Make sure the SQE microcode is safe
-To:     Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Eric Anholt <eric@anholt.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Rob Clark <robdclark@gmail.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210210005205.783377-1-jcrouse@codeaurora.org>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <8aa916f9-238a-779c-bcaf-51bfb2b761d2@codeaurora.org>
-Date:   Thu, 11 Feb 2021 18:50:28 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231490AbhBKNlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:41:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231910AbhBKNVZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:21:25 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4E3C061788
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:20:43 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id g9so5030738ilc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:20:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JCKRoPINZ+vg1pxHvLz7YyDZ6J4aOJvyJXVgjObIKG4=;
+        b=mGtVpa0p8+nSp/876Rbyd65LQvkTFLdveKIyns6pGgv6mx2iRe0YWPRl3iis9qOqvg
+         SWS5kLaKLirExWjuhlC2pM8F8OODaHEmGJjxA5or2xmJkXM8I9eOSsM2oHc7TLfOl25g
+         PlNP7gQIMu8xOmSaw+laMsyYggSZn0rR09/To=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JCKRoPINZ+vg1pxHvLz7YyDZ6J4aOJvyJXVgjObIKG4=;
+        b=U1otG0qwgk4dKC8FfdY/E7cgrHSSF7cINnVGqWDsHCRZLINCZN8lTFzW3IjvIOMXtF
+         d5CY011/cYC054HtyjpBbz8se0N4Spo/m81PWz4M8XsQ3z9+QwI6NrgiOils5O1Jlgpo
+         cKP0c2VD/NJ1Qsn7Jxz74lK/CXQjnrTuiNYsdZXyYlxpbP0AliuADWnL095IvK1g/Jgl
+         uGDK0quqIAmBb9JPvjBHiG5KDn3/6c3TGooivNGyaAtjaAd7TsXVBTc3UWX1UcuhMOB/
+         eOjk8gC/F9RKlTvPNVp74oEFTkSb2HHwfPXPnAcd+XN9T0HESrQFCsXUay+VDM/i5r8e
+         VgQQ==
+X-Gm-Message-State: AOAM530eMFdfCVubo5cCzzhcwR263Cid3unyu4IajxkD5IZln56OqtRo
+        kuf/EtNGtlo34e/PN+Yy/lLuB0xp5cMlxw==
+X-Google-Smtp-Source: ABdhPJzlFZJ8EcnsEJYlIjx5CgbSHwUtI628R+5aTXEp35nQpTwfZREBc0H/s4rzbkEJCSfbJqYKHA==
+X-Received: by 2002:a92:730a:: with SMTP id o10mr5703236ilc.160.1613049642222;
+        Thu, 11 Feb 2021 05:20:42 -0800 (PST)
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com. [209.85.166.46])
+        by smtp.gmail.com with ESMTPSA id l7sm2545356iln.74.2021.02.11.05.20.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Feb 2021 05:20:41 -0800 (PST)
+Received: by mail-io1-f46.google.com with SMTP id e24so5631807ioc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 05:20:41 -0800 (PST)
+X-Received: by 2002:a02:8642:: with SMTP id e60mr8507360jai.13.1613049640964;
+ Thu, 11 Feb 2021 05:20:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210210005205.783377-1-jcrouse@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210202095110.1215346-1-hch@lst.de> <20210207184855.GA27553@lst.de>
+ <CAAFQd5BzAvgiTLGFse+ZWUrFtZ1Ysf+p+e-4rW8gq_iP0xhWEA@mail.gmail.com>
+ <20210209082213.GA31902@lst.de> <CANiDSCuzKczCnAdC9b0r-6WVBFYXYnvQHKbxSeYq2QW1uVsDLQ@mail.gmail.com>
+ <CANiDSCvPodsmcOi1fMwvZsyMxWsRQWNT7VkbZs4=XePYXfiXow@mail.gmail.com>
+ <20210209170217.GA10199@lst.de> <CANiDSCs8dXVoWuwkVs=v+=s770MpzH1xiDuj-080-98ynuz97g@mail.gmail.com>
+ <20210211130625.GA20155@lst.de>
+In-Reply-To: <20210211130625.GA20155@lst.de>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Thu, 11 Feb 2021 14:20:30 +0100
+X-Gmail-Original-Message-ID: <CANiDSCupVLQMbJVKrrKBJvJxHgteeVFik7LAJy5zbUi2ESwsGA@mail.gmail.com>
+Message-ID: <CANiDSCupVLQMbJVKrrKBJvJxHgteeVFik7LAJy5zbUi2ESwsGA@mail.gmail.com>
+Subject: Re: add a new dma_alloc_noncontiguous API v2
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/2021 6:22 AM, Jordan Crouse wrote:
-> Most a6xx targets have security issues that were fixed with new versions
-> of the microcode(s). Make sure that we are booting with a safe version of
-> the microcode for the target and print a message and error if not.
-> 
-> v2: Add more informative error messages and fix typos
-> 
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> ---
-> 
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 77 ++++++++++++++++++++++-----
->   1 file changed, 64 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index ba8e9d3cf0fe..064b7face504 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -522,28 +522,73 @@ static int a6xx_cp_init(struct msm_gpu *gpu)
->   	return a6xx_idle(gpu, ring) ? 0 : -EINVAL;
->   }
->   
-> -static void a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
-> +/*
-> + * Check that the microcode version is new enough to include several key
-> + * security fixes. Return true if the ucode is safe.
-> + */
-> +static bool a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
->   		struct drm_gem_object *obj)
->   {
-> +	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
-> +	struct msm_gpu *gpu = &adreno_gpu->base;
->   	u32 *buf = msm_gem_get_vaddr(obj);
-> +	bool ret = false;
->   
->   	if (IS_ERR(buf))
-> -		return;
-> +		return false;
->   
->   	/*
-> -	 * If the lowest nibble is 0xa that is an indication that this microcode
-> -	 * has been patched. The actual version is in dword [3] but we only care
-> -	 * about the patchlevel which is the lowest nibble of dword [3]
-> -	 *
-> -	 * Otherwise check that the firmware is greater than or equal to 1.90
-> -	 * which was the first version that had this fix built in
-> +	 * Targets up to a640 (a618, a630 and a640) need to check for a
-> +	 * microcode version that is patched to support the whereami opcode or
-> +	 * one that is new enough to include it by default.
->   	 */
-> -	if (((buf[0] & 0xf) == 0xa) && (buf[2] & 0xf) >= 1)
-> -		a6xx_gpu->has_whereami = true;
-> -	else if ((buf[0] & 0xfff) > 0x190)
-> -		a6xx_gpu->has_whereami = true;
-> +	if (adreno_is_a618(adreno_gpu) || adreno_is_a630(adreno_gpu) ||
-> +		adreno_is_a640(adreno_gpu)) {
-> +		/*
-> +		 * If the lowest nibble is 0xa that is an indication that this
-> +		 * microcode has been patched. The actual version is in dword
-> +		 * [3] but we only care about the patchlevel which is the lowest
-> +		 * nibble of dword [3]
-> +		 *
-> +		 * Otherwise check that the firmware is greater than or equal
-> +		 * to 1.90 which was the first version that had this fix built
-> +		 * in
-> +		 */
-> +		if ((((buf[0] & 0xf) == 0xa) && (buf[2] & 0xf) >= 1) ||
-> +			(buf[0] & 0xfff) >= 0x190) {
-> +			a6xx_gpu->has_whereami = true;
-> +			ret = true;
-> +			goto out;
-> +		}
->   
-> +		DRM_DEV_ERROR(&gpu->pdev->dev,
-> +			"a630 SQE ucode is too old. Have version %x need at least %x\n",
-> +			buf[0] & 0xfff, 0x190);
-> +	}  else {
-> +		/*
-> +		 * a650 tier targets don't need whereami but still need to be
-> +		 * equal to or newer than 1.95 for other security fixes
-> +		 */
-> +		if (adreno_is_a650(adreno_gpu)) {
-> +			if ((buf[0] & 0xfff) >= 0x195) {
-> +				ret = true;
-> +				goto out;
-> +			}
-> +
-> +			DRM_DEV_ERROR(&gpu->pdev->dev,
-> +				"a650 SQE ucode is too old. Have version %x need at least %x\n",
-> +				buf[0] & 0xfff, 0x195);
-> +		}
-> +
-> +		/*
-> +		 * When a660 is added those targets should return true here
-> +		 * since those have all the critical security fixes built in
-> +		 * from the start
-> +		 */
-Or we can just initialize 'ret' as true.
+HI Christoph
 
--Akhil
-> +	}
-> +out:
->   	msm_gem_put_vaddr(obj);
-> +	return ret;
->   }
->   
->   static int a6xx_ucode_init(struct msm_gpu *gpu)
-> @@ -566,7 +611,13 @@ static int a6xx_ucode_init(struct msm_gpu *gpu)
->   		}
->   
->   		msm_gem_object_set_name(a6xx_gpu->sqe_bo, "sqefw");
-> -		a6xx_ucode_check_version(a6xx_gpu, a6xx_gpu->sqe_bo);
-> +		if (!a6xx_ucode_check_version(a6xx_gpu, a6xx_gpu->sqe_bo)) {
-> +			msm_gem_unpin_iova(a6xx_gpu->sqe_bo, gpu->aspace);
-> +			drm_gem_object_put(a6xx_gpu->sqe_bo);
-> +
-> +			a6xx_gpu->sqe_bo = NULL;
-> +			return -EPERM;
-> +		}
->   	}
->   
->   	gpu_write64(gpu, REG_A6XX_CP_SQE_INSTR_BASE_LO,
-> 
+On Thu, Feb 11, 2021 at 2:06 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Thu, Feb 11, 2021 at 10:08:18AM +0100, Ricardo Ribalda wrote:
+> > Hi Christoph
+> >
+> > What are your merge plans for the uvc change?
+> > http://git.infradead.org/users/hch/dma-mapping.git/commit/3dc47131f8aacc2093f68a9971d24c754e435520
+> >
+> > Are you going to remove the patch on your Merge request and then send
+> > it for review to Laurent? or merge it through your tree with a S-o-B
+> > him?
+>
+> I though I had all the ACKs to queue it up.  Is that not what was
+> intended?  Queueing up the API without a user is generally a bad idea.
+>
 
+I am pretty sure we need the ack from Laurent. He maintains uvc
+
+@Laurent Pinchart what are your thoughts?
+
+Thanks!
+
+
+-- 
+Ricardo Ribalda
