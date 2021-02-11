@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FF031847F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B8D318487
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhBKFNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 00:13:30 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26280 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229455AbhBKFN0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 00:13:26 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11B57SEn158635;
-        Thu, 11 Feb 2021 00:11:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=FLcfNwifqhrzTeWp93O+JRGl4zWmZYqk+KPMF4y22b4=;
- b=Wdr2CGhroDHIXSLZaE9S+6MbaNSRFNZL52DpF9SqSaRJHNtM/RjQMe8WQKspMYmuqhlg
- yELYqBzxY+z60l2hW9ieOTnGXPMvEIiKkRTtMBtUKe8dRrVvtBr4FhOnrcN3kEsDbzr3
- d2ypZ+v4RRR4kYk0DGdiLEoU1nqEkHY6vG6SBNG1hdDvX+XNzwh2P5n8LGcuhdgdDEdL
- gNlJBeV20//dJj1lgWOwT+Zt1DjqlOu6mt0rHbWZXMWKxN1E9jiA6SJBl45aka4jv/kI
- YF0MztakgxcwW2ByHFXJHjcl4MVR7Aq5PcTxu7l3YUfR6218a3pRqKASTdYd+7IUzifD pg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36mwqb8rsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 00:11:59 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11B59WnW173205;
-        Thu, 11 Feb 2021 00:11:59 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36mwqb8rrw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 00:11:59 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11B5AUah030042;
-        Thu, 11 Feb 2021 05:11:57 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma01wdc.us.ibm.com with ESMTP id 36hjr9kajn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 05:11:57 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11B5BuvC30736640
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 05:11:56 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9B0597805E;
-        Thu, 11 Feb 2021 05:11:56 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DAC517805C;
-        Thu, 11 Feb 2021 05:11:46 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.160.95.194])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Thu, 11 Feb 2021 05:11:46 +0000 (GMT)
-References: <20210209182200.30606-1-nramas@linux.microsoft.com>
- <20210209182200.30606-10-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v17 09/10] powerpc: Delete unused function
- delete_fdt_mem_rsv()
-In-reply-to: <20210209182200.30606-10-nramas@linux.microsoft.com>
-Date:   Thu, 11 Feb 2021 02:11:44 -0300
-Message-ID: <87im6znq7j.fsf@manicouagan.localdomain>
+        id S229533AbhBKFTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 00:19:41 -0500
+Received: from mail-bn8nam11on2070.outbound.protection.outlook.com ([40.107.236.70]:4544
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229447AbhBKFTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 00:19:37 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PfFOagcnS+T3j0ZTYaFdIiQi9BTMKA6Dzuvm7psbhLX4fHAR+hv/Mb8WlJwvLwwMrFbu8WVdGxABxG+G01gqR6faSRe6ROnHYDPsWhPPaQKbWOVrPOT9WKaPCbp7H3nJCKE+a3rdDdqdJm0NiaFL3pU5AzXT17/nVK8Ku7c/AunSYBpbbRYuHQTtq3p7/7q4HKqHlY9DANeT71X2a+FQ3QjohjqpCeaagR7xXhWw7Q/RRjZ9WwhRP5gLvxp6OTk6ZXNsZVVgD/HALHSatF57yqxoHcl6AUO1OcETuuIauTLrqm+sO/LYc/REZl02b+RRPTSgocNCwZU4pFZnSpdpig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OJwYcOlHsW07yVF2QLrRsjdR3JDAlwlfsI9fkLH4518=;
+ b=h86qOco7EtfJl+fORol/wtTDlNK8n8fTktDUH4y67C928hH4nc2BwjMylqZarW9QHEAEw/0RzvWeULJPZLnoEykSH5KOzKCQgk2kR0TwbAWv4iQ65wxlMG8I4ReEdhbotEGcNX4Sh5gY7Rf1c9vENdA79MswFwM+d8Pb3/J7TsmM4WPmWnt8220Gz0oA0NFavUFuKApaeTDUrPf5r8Bp4r5ocv2s+Lrt1R9cKfUPpLjbDW7dbe6SQPSe+xIEXp0P1ANdU+hifTu/nuZcObw2nXEg2mQA/bIklf+UdRkCmHrxX2dpct4xQ4vLAgpnuTtzPDFe1NeDSG1LA55eRgCsdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OJwYcOlHsW07yVF2QLrRsjdR3JDAlwlfsI9fkLH4518=;
+ b=rSpkN9oJL6vPJY/HNE4oFmdQyhDd1SHxTBBmojfmGxHIaas/4Btr6TZqLJcgO5ZV1HtuPKoGc/vF2X0ejd1hFVjt2aLdDFLP8XKKY4Aul+6ufhkHMPfoBTsm2hsCNG4epMkoXCR4uNSFjwG3snugKf4eZCzdg6ziWSXWDy7IgHk=
+Received: from SA0PR11CA0074.namprd11.prod.outlook.com (2603:10b6:806:d2::19)
+ by SJ0PR02MB7312.namprd02.prod.outlook.com (2603:10b6:a03:29b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23; Thu, 11 Feb
+ 2021 05:18:44 +0000
+Received: from SN1NAM02FT011.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:d2:cafe::2a) by SA0PR11CA0074.outlook.office365.com
+ (2603:10b6:806:d2::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend
+ Transport; Thu, 11 Feb 2021 05:18:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT011.mail.protection.outlook.com (10.152.72.82) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3846.25 via Frontend Transport; Thu, 11 Feb 2021 05:18:44 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Wed, 10 Feb 2021 21:18:28 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Wed, 10 Feb 2021 21:18:28 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ mdf@kernel.org,
+ trix@redhat.com,
+ robh+dt@kernel.org,
+ linux-fpga@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ chinnikishore369@gmail.com
+Received: from [10.140.6.60] (port=49268 helo=xhdnavam40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <nava.manne@xilinx.com>)
+        id 1lA4N1-0000QK-Pe; Wed, 10 Feb 2021 21:18:28 -0800
+From:   Nava kishore Manne <nava.manne@xilinx.com>
+To:     <mdf@kernel.org>, <trix@redhat.com>, <robh+dt@kernel.org>,
+        <michal.simek@xilinx.com>, <linux-fpga@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <chinnikishore369@gmail.com>
+CC:     <git@xilinx.com>, Nava kishore Manne <nava.manne@xilinx.com>
+Subject: [PATCH v2 0/2] Add DFX AXI Shutdown manager IP support for Xilinx
+Date:   Thu, 11 Feb 2021 10:41:46 +0530
+Message-ID: <20210211051148.16722-1-nava.manne@xilinx.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_04:2021-02-10,2021-02-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=853
- suspectscore=0 spamscore=0 phishscore=0 mlxscore=0 malwarescore=0
- impostorscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102110035
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7e023c88-19f1-4bc5-a34b-08d8ce4c807d
+X-MS-TrafficTypeDiagnostic: SJ0PR02MB7312:
+X-Microsoft-Antispam-PRVS: <SJ0PR02MB73124D1925F335ED8F6A749BC28C9@SJ0PR02MB7312.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i7JQQ2rg+vTKt8r0VXnl/unS/npmLFYjfDMVBCFRAUNYIoJjyOhW04e8M43WahmWN80G4NQDNJIJHF+k1TyMgWd8iHg8kJkoefQgrp/W7XDJ+Axf7vG/LOQXbEO1erXw+R6hd7prpVeqZ+/b6BMKk3NIyh2cXFimYuIYwnaqvAQAaz71f4RytzMfo2jxJf0+KVrb4zdqJulU3s40ij/pRtblxUqC1HnEFOuUwMrG5IeHhGG56ukPY4B//mEo60ZMg0x//alEM52Dhna2X6Vd3MYxVO/LhqMSvMrq/+nHSX/4BV2rTpdmLIBWEvOLJihksSpl/S5E+ZDyT0Mr8yTQcTGNzP6/IXbhoG3g4JykdwfB30JQYM6B5SKeLOAiCLTxamUq8FI4OadP1TvzRvjHtnh5LSywibBOsuCM3WEO1mbf6rdZ8k6p9ASL6fPsarzoMcPQXLQo8hZR7mV/+Ydb3+ganQPM7VA/5d6Cxs5UA11H1ZnvIAQi/dQ2Br2xfIzF7tgVKzx/Udj5O8SjUpp93M09YNqIJQyu5bGFAXr1V7sFBGZ2zTwB3IMcK/q1eS/UZm+Qr1LJYhIZj276l/pgFybm0p79W4hp7Qrh1oRXojNts8hbYZfCn0+H75Z13iFM+bslh6Zxyr6Hdb51l+PmdmZDjAfQ8C31Geehcp9GrnCNn3TJxZ3mCdgGjBJi+VX+6LfGV2wFuVyl38nekgR0fQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(376002)(396003)(36840700001)(46966006)(4326008)(478600001)(36756003)(70206006)(82740400003)(70586007)(186003)(83380400001)(47076005)(26005)(7696005)(6666004)(7636003)(36860700001)(356005)(82310400003)(9786002)(2906002)(8676002)(8936002)(2616005)(54906003)(110136005)(4744005)(336012)(316002)(1076003)(36906005)(107886003)(426003)(5660300002)(102446001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 05:18:44.0679
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e023c88-19f1-4bc5-a34b-08d8ce4c807d
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT011.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7312
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Nava kishore Manne (2):
+  dt-bindings: fpga: Add compatible value for Xilinx DFX AXI shutdown
+    manager
+  fpga: Add support for Xilinx DFX AXI Shutdown manager
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-
-> delete_fdt_mem_rsv() defined in "arch/powerpc/kexec/file_load.c"
-> has been renamed to fdt_find_and_del_mem_rsv(), and moved to
-> "drivers/of/kexec.c".
->
-> Remove delete_fdt_mem_rsv() in "arch/powerpc/kexec/file_load.c".
->
-> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> ---
->  arch/powerpc/include/asm/kexec.h |  1 -
->  arch/powerpc/kexec/file_load.c   | 32 --------------------------------
->  2 files changed, 33 deletions(-)
-
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+ .../bindings/fpga/xilinx-pr-decoupler.txt     | 24 +++++++++++-
+ drivers/fpga/Kconfig                          |  9 ++++-
+ drivers/fpga/xilinx-pr-decoupler.c            | 37 ++++++++++++++++---
+ 3 files changed, 63 insertions(+), 7 deletions(-)
 
 -- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+2.18.0
+
