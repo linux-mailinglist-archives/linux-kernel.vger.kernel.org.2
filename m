@@ -2,187 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0903189BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A873189CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhBKLqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:46:05 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:54572 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhBKLTo (ORCPT
+        id S229756AbhBKLsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:48:50 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2546 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231309AbhBKLVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:19:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613042383; x=1644578383;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=LGdMuUka37QuL+2zF+8P3O7K0yaTCgrOui5DteIgCBI=;
-  b=hR9oMXjNc7Zex2yD2Bmn6omcuZD743QFR+j/fR5Y//AnpkS1M6CxWyzU
-   KTj5PA23yqguDq5dITNiG7fjW5VPybENNhxUYM9BZkrGA4Jz49MoYZOnc
-   0yUbNsNF9lCKUCRXaP4uB1wl16VvebavQ0FDFn1VIL0YpkNjQ5rrQcTz7
-   goQ+RQ34ZBGhRuR6JXDtfHEA7N/tf0LmnVCJ9UcWqBjx3AsMpFJMB7UHX
-   KRFQwjgcPy7WXLflM+0QPpG/6aU41VZmr0Jw+TSCR62hAV5Hl6fC4T3vU
-   5iN5zFu8CX8ENf7DnWpSSKUOwD5cMnUQ0aWWT0vBH7+Qi05ELpaSm/ItH
-   Q==;
-IronPort-SDR: jj6Hoqx10OsA0Syc1FZvhj3SvclncA2/c0+rhtYDbYulrCl3swUAgeH5d9oPenYvqu56zz2cT/
- ZWwMaAD6gBVRCLja3P05tFkdgCfYS1znDliQ2JmtF5E1nuqk0cmF+DEETKS/iunhC1+ZAFGrQu
- aCMKY8zOS4eMZJ0h/mEZRQCrgPb7wmozPS9a6SFF1MbCvDvgF4/6s0aygB+vLTRECsY/m8QS3s
- LQu47cSby31TjNLEZIKWybfEktuQAHVmTHs+9bBao3n6OEacEU+vLUzvzhgKwojfkp/MIE4eiv
- IJw=
-X-IronPort-AV: E=Sophos;i="5.81,170,1610434800"; 
-   d="scan'208";a="106243288"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Feb 2021 04:18:13 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 11 Feb 2021 04:18:13 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Thu, 11 Feb 2021 04:18:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cm9izAfNoKayPGeNb7r889/CHNOJW+CsVmxGdVp50+MqENuWcSIK/qea2WxKkNU+lSfsbkn09dwuHNMYFXBMbbpcJwkxX2vMCrDPQykEEmsLVWWGe4nsvs/mjhKd7V+xkSTkuQapI019SEdPjiGnQNa7SHEGnjlSHnGEcfkk/zRx682RjdaDoYU58j2jjWE3/yUo90LeO5ZyONLs13cTAN7DWvfJB4ptGmNgfxoDOXH3wQrq2XpuNT5a3TR1/xKsBVDeYplcsYYU1DNheYXQDGL9bOzkuloJwAsd55vBp5PMExis4wcqRsft+s2x36S9jS+GRxiH0j9AvRC8RXRMpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LGdMuUka37QuL+2zF+8P3O7K0yaTCgrOui5DteIgCBI=;
- b=EaADV8eWa+H2o+RkZYd+RY2IeDUC5CZen8IzAGIBAdGRX1VWKbsrTPZj2Up6PihRRlusB5sq2Ach37iUUMCHUcY20Zuq0SLpkpVIcuCo+hNzxjOaqP5UMXPzR2TLBTVYfpfxagVPzXtgzREXXPTmrDDE/+u8pKubWTTN25XRS5Akr7MFwQJi4W2finQuAy+5Vvdqp/xClPu3H1diIDnZ8XXyG21fPa+MCm9strkGBc2tZcWnIoXo8Pj3naAXz0syE9LpS1yBdZ9KCe8s0sBJUeDCHJEcbIHAuUCFlYMugRLrO9v7v1aJQsuKqQjtzG9/W5d8BZNYMa0NSouHNi6R/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LGdMuUka37QuL+2zF+8P3O7K0yaTCgrOui5DteIgCBI=;
- b=npTM8zqveSn4TinTX0FJ1PJJhfyJEL6AQi7kRyi3D+VpEsoLA+infwNnz5YFZHILAr0XZ0CuTcz5KBOMgW12iUhdlwnPKE3RphG0cXulnpBb25GtoHwcOk4t6+hififrXeoZFu6em1iUhSjkVk9bF7NS0OdRaF596OmuDNKAgrc=
-Received: from DM6PR11MB3420.namprd11.prod.outlook.com (2603:10b6:5:69::31) by
- DM6PR11MB4595.namprd11.prod.outlook.com (2603:10b6:5:2ac::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3825.23; Thu, 11 Feb 2021 11:18:10 +0000
-Received: from DM6PR11MB3420.namprd11.prod.outlook.com
- ([fe80::b96e:6776:6971:80f4]) by DM6PR11MB3420.namprd11.prod.outlook.com
- ([fe80::b96e:6776:6971:80f4%5]) with mapi id 15.20.3825.030; Thu, 11 Feb 2021
- 11:18:10 +0000
-From:   <Claudiu.Beznea@microchip.com>
-To:     <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <rjw@rjwysocki.net>, <pavel@ucw.cz>
-CC:     <andrew@lunn.ch>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] net: phy: micrel: reconfigure the phy on resume
-Thread-Topic: [PATCH] net: phy: micrel: reconfigure the phy on resume
-Thread-Index: AQHW6Y6UrG2j4PiM1k2BT3XuGZuJHg==
-Date:   Thu, 11 Feb 2021 11:18:10 +0000
-Message-ID: <74922e53-e521-fde3-050a-64dd6bb507fd@microchip.com>
-References: <1610120754-14331-1-git-send-email-claudiu.beznea@microchip.com>
- <25ec943f-ddfc-9bcd-ef30-d0baf3c6b2a2@gmail.com>
- <ce20d4f3-3e43-154a-0f57-2c2d42752597@microchip.com>
- <ee0fd287-c737-faa5-eee1-99ffa120540a@gmail.com>
- <ae4e73e9-109f-fdb9-382c-e33513109d1c@microchip.com>
- <7976f7df-c22f-d444-c910-b0462b3d7f61@gmail.com>
- <d9fcf8da-c0b0-0f18-48e9-a7534948bc93@microchip.com>
- <20210114102508.GO1551@shell.armlinux.org.uk>
- <fe4c31a0-b807-0eb2-1223-c07d7580e1fc@microchip.com>
- <56366231-4a1f-48c3-bc29-6421ed834bdf@gmail.com>
-In-Reply-To: <56366231-4a1f-48c3-bc29-6421ed834bdf@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [86.124.22.121]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 55f88966-6904-4f74-d8f5-08d8ce7eb724
-x-ms-traffictypediagnostic: DM6PR11MB4595:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB459522787102CCE6A80FA3A8878C9@DM6PR11MB4595.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: F21efrkc+kvVMu8C9DM1pHd2rPMj2/UAJIjN/nFrd8g7uJeKqD5rObVoN3DWMn/bR97QMkWiDrPFrJaoryoQoaOcYMyki2wvIqOYuS3l23yjbDK7f0COyMlBy1JjZMa/zWbH8euNAq6TEy2/t9XrWOSVdssg1oiE647b327XAIrzrrsbaLu1ydVEBODPw0gUzHSEQwHEaLh+ErL1rJy82hbDfUl0CZzIva0r8HTavR5kxQJPNGrruHwVGn15UI1LjkmWQvU+xKxxAz0bOPBn+hXIhM3YNPlhHDkIirzMPvCr8IXAvQCFWlGitxIn7jktMZkWXQd0R2vvhdrLF26Mb4VzN4l8f02+31CgKC1ynT8LddbiY9HPjTBTI12S8bi8H7/PfduCnVZOb/SyCKfyd7u4gOkYoUdorhM59rAPmOw+6rqWPtXN7bLqCf7Mephef/mswBu4ksF5Rz+YHx0ml5z3ROMXGaK0FaHHyhkU7FWItLwvl07sA4mhiDL7DkC5ZZzrAmLz3hcjeRPQQ5hpFxr4yvHpS6JgvJra8beSNKQj2HC4/+0GApW3XlvCXvvlsU3r240dAALy0d9cdTce5JHa+/XNvo545b94dWcgT6GkBh1gj03I8FxTnVI58IdsG4pdiYvEUIszlkvpHJN8YS5IGrjdvMO3KAmleUj9JxsnEsbyoh+lhnF/qusWbHXz
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3420.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(396003)(376002)(39860400002)(110136005)(6486002)(54906003)(5660300002)(31686004)(53546011)(7416002)(4326008)(316002)(31696002)(86362001)(8676002)(36756003)(83380400001)(66946007)(66556008)(6506007)(478600001)(66446008)(64756008)(966005)(26005)(66476007)(2906002)(186003)(8936002)(6512007)(76116006)(91956017)(71200400001)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?MUJiN1NLZWt4RDNjYTlZVWpkbG5nSWlCK0V5cHhSUWtmd3hHbWZyV2dZSDIx?=
- =?utf-8?B?MzErTFZyN2cwbkFLbkVnVlNsZmhkMENMVFJSRk1tU3IyRmlidFNLdDRSbnAv?=
- =?utf-8?B?V0ZocjNlWXcwR3NpZUNnTVB2OGdIRUlCOUJRTVJ2LzB5aTlOY0ZqUXBRRWQ5?=
- =?utf-8?B?N0h4ZVlDalI3R1c3azNkNW9BZjJBNmh0d09IWit6dVFPWmk2MWNaZlNaY1Bn?=
- =?utf-8?B?a2NzLzVROFMzSXU1ZGZ2eUpUNHg0b2VNcHVqTFNlT1JSNTl4QkZ3eDhUSEFW?=
- =?utf-8?B?RUFrcEx4WUtGR29jSldtSUYvNTVGNGtJcGc1a3lSQ1RDMGJ6VTFGSXlCOExh?=
- =?utf-8?B?VnF4UVdBcGJzQjdxaWYxMlBOdHJPMlB6L3ZWcE5KK3Z3bWFpVUZZMnBEKzN2?=
- =?utf-8?B?clpxQUZKalVQNkozaXFUVENzVWQ5MUU4NW85RXd2eDBYTy9ya3VhNFNwQkNR?=
- =?utf-8?B?NnVpZXZXRFFlQXFXUUFrSUZjYTRJYmgwRHVFT3BpU2N5MXppQjhPY3Y2YUdn?=
- =?utf-8?B?OW1lc25pbXRmaTZQSmhlTjh0dHdMNHRTNERhaFVtdDFmc3JtT1J6YXhGVTlV?=
- =?utf-8?B?SFc0VmxPTGxORnFOOG1WK2RuZllJQWpGQmlPY1RqeHJRZU9pS0doNWNRdkpo?=
- =?utf-8?B?ZmpxS0R5ZmxZdWswRm9nUS96WTdlZk1uUW5ZWVNmWkZoaDF4MmxXM09uRmVz?=
- =?utf-8?B?MVBIN1Z3UVlzMzlpWnhNQ2s4TThOSU4wSHVxanl5eHV4MnNWOXlobXlBM1Zv?=
- =?utf-8?B?L3VrN1ZZKytJK1lDL1k0WkVXa0oyd3VFVktRUm4xem93QXUyMlhiQzVyMzU3?=
- =?utf-8?B?emp6TjdnaGllU3NJSlBTT3VvTEtjK25Ka0NaemxiREhnZTYybDRrK013MlU1?=
- =?utf-8?B?VEZRMGRHU05nUHRoSE5BRlBKOHQ0a0loM0JQS0hraGJubElRTVB1Uzg2Rllp?=
- =?utf-8?B?bEZoTjB3N3A4V1FMMk1VUXpsbTVKbjAzclQwSGFxallMbHBuNnhzQWtjYkxx?=
- =?utf-8?B?N3c3bkFoK3c1L3BidG5ZR0dRM3BCV25ZMzI2T1Z6K2d5SE1EL1BsQ3VnelJa?=
- =?utf-8?B?eCszSU5BWFh5QyttLzIzZDgrVk0vOVVtQ0pWYXd3cUU0YXdaM3hFaXhPRzYz?=
- =?utf-8?B?dmhIKzBBNEloRnhTbVJzOGVwREFrSkhUcHpkN1NRbGQ2Rlo3STZNd2NFN1BY?=
- =?utf-8?B?MTVhZms4KzBvYjRMYjhiZmxiUGFKdGxwUHB6Q1U0Vlp4N1NQWFp0KzdRR0l6?=
- =?utf-8?B?dTJoOUR5YnN4N0tsSnlsajZZK3dhT2MyZEdtS0MwVEs3KzRQRzVQWHpwd3BO?=
- =?utf-8?B?UXhPUjV3ZklDMlVEUHdhbk5DajVZK1U0U2NuUEFzVUJLSFFOWDhSYmd6OFhw?=
- =?utf-8?B?T0hERlViUEhFNm1SUzJCMmZFWE9RR2RLQzVIczk5SCtUNDNmWkczcmJITmE5?=
- =?utf-8?B?cURRM2x5ZFhTUnVNVDFpUDN3ZWtFREt2elRyQVFXRGQ2cVVsckVEWG9LVGJ4?=
- =?utf-8?B?SXNFMUtpVWs1WEVPR2E1THU0TnRBQWpvM3UxNkxVWDNSNDBGSGxjdXRERyt0?=
- =?utf-8?B?MnppNWVGbXRNSjhnQXNvdytoMlA0VXo5clNiVmNZZGl4VkFtV1NrZGNjVEJw?=
- =?utf-8?B?KzFzUHFtNjVLenpUMXQrT3FtcVZueGo2VXhpTkZISlc3Nkx2MWNDSWJGWFc2?=
- =?utf-8?B?WHJKd0pqaXo4OEpzd20vbnltdHlpTGVmZTJPLzVYblBuanlTYm4ybjk1UWhX?=
- =?utf-8?Q?ZMQ2cN2PWqzuGhkLPA=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <331D8A5BBD19D646A368C5561C8A2BD6@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 11 Feb 2021 06:21:18 -0500
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DbvGN3HQ6z67nD6;
+        Thu, 11 Feb 2021 19:16:44 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 11 Feb 2021 12:20:26 +0100
+Received: from localhost (10.47.31.44) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 11 Feb
+ 2021 11:20:25 +0000
+Date:   Thu, 11 Feb 2021 11:19:24 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        "Chris Browy" <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Jon Masters" <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Ariel Sibley <Ariel.Sibley@microchip.com>
+Subject: Re: [PATCH v2 5/8] cxl/mem: Add a "RAW" send command
+Message-ID: <20210211111924.000019a5@Huawei.com>
+In-Reply-To: <20210210000259.635748-6-ben.widawsky@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+        <20210210000259.635748-6-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3420.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55f88966-6904-4f74-d8f5-08d8ce7eb724
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2021 11:18:10.5558
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UpR6jvpZUB8Cc/w/gWrEFv/VIqOFVtvq3LjNyFQaKOurytDKNSn5j7+yMOBteOc/zpFiHPuoD9z59Akv0SYwxP8sJf2itnydnR2M+t4+wn4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4595
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.31.44]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFJhZmFlbCwgUGF2ZWwsDQoNCkkga25vdyB5b3UgbWF5IGJlIGJ1c3kuIEp1c3QgYSBnZW50
-bGUgcGluZyBvbiB0aGlzIHRvcGljLiBJdCB3b3VsZCBiZSBuaWNlDQp0byBoYXZlIHlvdXIgaW5w
-dXQgaW4gdGhpcy4NCg0KVGhhbmsgeW91LA0KQ2xhdWRpdSBCZXpuZWENCg0KT24gMTQuMDEuMjAy
-MSAxMzowNSwgSGVpbmVyIEthbGx3ZWl0IHdyb3RlOg0KPiBFWFRFUk5BTCBFTUFJTDogRG8gbm90
-IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93IHRoZSBjb250
-ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDE0LjAxLjIwMjEgMTE6NDEsIENsYXVkaXUuQmV6bmVhQG1p
-Y3JvY2hpcC5jb20gd3JvdGU6DQo+Pg0KPj4NCj4+IE9uIDE0LjAxLjIwMjEgMTI6MjUsIFJ1c3Nl
-bGwgS2luZyAtIEFSTSBMaW51eCBhZG1pbiB3cm90ZToNCj4+Pg0KPj4+IEFzIEkndmUgc2FpZCwg
-aWYgcGh5bGliL1BIWSBkcml2ZXIgaXMgbm90IHJlc3RvcmluZyB0aGUgc3RhdGUgb2YgdGhlDQo+
-Pj4gUEhZIG9uIHJlc3VtZSBmcm9tIHN1c3BlbmQtdG8tcmFtLCB0aGVuIHRoYXQncyBhbiBpc3N1
-ZSB3aXRoIHBoeWxpYg0KPj4+IGFuZC9vciB0aGUgcGh5IGRyaXZlci4NCj4+DQo+PiBJbiB0aGUg
-cGF0Y2ggSSBwcm9wb3NlZCBpbiB0aGlzIHRocmVhZCB0aGUgcmVzdG9yaW5nIGlzIGRvbmUgaW4g
-UEhZIGRyaXZlci4NCj4+IERvIHlvdSB0aGluayBJIHNob3VsZCBjb250aW51ZSB0aGUgaW52ZXN0
-aWdhdGlvbiBhbmQgY2hlY2sgaWYgc29tZXRoaW5nDQo+PiBzaG91bGQgYmUgZG9uZSBmcm9tIHRo
-ZSBwaHlsaWIgaXRzZWxmPw0KPj4NCj4gSXQgd2FzIHRoZSByaWdodCBtb3ZlIHRvIGFwcHJvYWNo
-IHRoZSBQTSBtYWludGFpbmVycyB0byBjbGFyaWZ5IHdoZXRoZXINCj4gdGhlIHJlc3VtZSBQTSBj
-YWxsYmFjayBoYXMgdG8gYXNzdW1lIHRoYXQgcG93ZXIgaGFkIGJlZW4gY3V0IG9mZiBhbmQNCj4g
-aXQgaGFzIHRvIGNvbXBsZXRlbHkgcmVjb25maWd1cmUgdGhlIGRldmljZS4gSWYgdGhleSBjb25m
-aXJtIHRoaXMNCj4gdW5kZXJzdGFuZGluZywgdGhlbjoNCj4gLSB0aGUgZ2VuZXJhbCBxdWVzdGlv
-biByZW1haW5zIHdoeSB0aGVyZSdzIHNlcGFyYXRlIHJlc3VtZSBhbmQgcmVzdG9yZQ0KPiAgIGNh
-bGxiYWNrcywgYW5kIHdoYXQgcmVzdG9yZSBpcyBzdXBwb3NlZCB0byBkbyB0aGF0IHJlc3VtZSBk
-b2Vzbid0DQo+ICAgaGF2ZSB0byBkbw0KPiAtIGl0IHNob3VsZCBiZSBzdWZmaWNpZW50IHRvIHVz
-ZSBtZGlvX2J1c19waHlfcmVzdG9yZSBhbHNvIGFzIHJlc3VtZQ0KPiAgIGNhbGxiYWNrIChpbnN0
-ZWFkIG9mIGNoYW5naW5nIGVhY2ggYW5kIGV2ZXJ5IFBIWSBkcml2ZXIncyByZXN1bWUpLA0KPiAg
-IGJlY2F1c2Ugd2UgY2FuIGV4cGVjdCB0aGF0IHNvbWVib2R5IGN1dHRpbmcgb2ZmIHBvd2VyIHRv
-IHRoZSBQSFkNCj4gICBwcm9wZXJseSBzdXNwZW5kcyB0aGUgTURJTyBidXMgYmVmb3JlDQo+IA0K
-Pj4gVGhhbmsgeW91LA0KPj4gQ2xhdWRpdSBCZXpuZWENCj4+DQo+Pj4NCj4+PiAtLQ0KPj4+IFJN
-SydzIFBhdGNoIHN5c3RlbTogaHR0cHM6Ly93d3cuYXJtbGludXgub3JnLnVrL2RldmVsb3Blci9w
-YXRjaGVzLw0KPj4+IEZUVFAgaXMgaGVyZSEgNDBNYnBzIGRvd24gMTBNYnBzIHVwLiBEZWNlbnQg
-Y29ubmVjdGl2aXR5IGF0IGxhc3QhDQo+IA0KDQoNCg==
+On Tue, 9 Feb 2021 16:02:56 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
+
+> The CXL memory device send interface will have a number of supported
+> commands. The raw command is not such a command. Raw commands allow
+> userspace to send a specified opcode to the underlying hardware and
+> bypass all driver checks on the command. This is useful for a couple of
+> usecases, mainly:
+> 1. Undocumented vendor specific hardware commands
+
+This one I get.  There are things we'd love to standardize but often they
+need proving in a generation of hardware before the data is available to
+justify taking it to a standards body.  Stuff like performance stats.
+This stuff will all sit in the vendor defined range.  Maybe there is an
+argument for in driver hooks to allow proper support even for these
+(Ben mentioned this in the other branch of the thread).
+
+> 2. Prototyping new hardware commands not yet supported by the driver
+
+For 2, could just have a convenient place to enable this by one line patch.
+Some subsystems (SPI comes to mind) do this for their equivalent of raw
+commands.  The code is all there to enable it but you need to hook it
+up if you want to use it.  Avoids chance of a distro shipping it.
+
+> 
+> While this all sounds very powerful it comes with a couple of caveats:
+> 1. Bug reports using raw commands will not get the same level of
+>    attention as bug reports using supported commands (via taint).
+> 2. Supported commands will be rejected by the RAW command.
+
+Perhaps I'm missing reading this point 2 (not sure the code actually does it!)
+
+As stated what worries me as it means when we add support for a new
+bit of the spec we just broke the userspace ABI.
+
+> 
+> With this comes new debugfs knob to allow full access to your toes with
+> your weapon of choice.
+
+A few trivial things inline,
+
+Jonathan
+
+> 
+> Cc: Ariel Sibley <Ariel.Sibley@microchip.com>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+>  drivers/cxl/Kconfig          |  18 +++++
+>  drivers/cxl/mem.c            | 125 ++++++++++++++++++++++++++++++++++-
+>  include/uapi/linux/cxl_mem.h |  12 +++-
+>  3 files changed, 152 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> index c4ba3aa0a05d..08eaa8e52083 100644
+> --- a/drivers/cxl/Kconfig
+> +++ b/drivers/cxl/Kconfig
+> @@ -33,6 +33,24 @@ config CXL_MEM
+>  
+>  	  If unsure say 'm'.
+>  
+> +config CXL_MEM_RAW_COMMANDS
+> +	bool "RAW Command Interface for Memory Devices"
+> +	depends on CXL_MEM
+> +	help
+> +	  Enable CXL RAW command interface.
+> +
+> +	  The CXL driver ioctl interface may assign a kernel ioctl command
+> +	  number for each specification defined opcode. At any given point in
+> +	  time the number of opcodes that the specification defines and a device
+> +	  may implement may exceed the kernel's set of associated ioctl function
+> +	  numbers. The mismatch is either by omission, specification is too new,
+> +	  or by design. When prototyping new hardware, or developing / debugging
+> +	  the driver it is useful to be able to submit any possible command to
+> +	  the hardware, even commands that may crash the kernel due to their
+> +	  potential impact to memory currently in use by the kernel.
+> +
+> +	  If developing CXL hardware or the driver say Y, otherwise say N.
+> +
+>  config CXL_MEM_INSECURE_DEBUG
+>  	bool "CXL.mem debugging"
+>  	depends on CXL_MEM
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index ce65630bb75e..6d766a994dce 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -1,6 +1,8 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
+>  #include <uapi/linux/cxl_mem.h>
+> +#include <linux/security.h>
+> +#include <linux/debugfs.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/cdev.h>
+> @@ -41,7 +43,14 @@
+>  
+>  enum opcode {
+>  	CXL_MBOX_OP_INVALID		= 0x0000,
+> +	CXL_MBOX_OP_RAW			= CXL_MBOX_OP_INVALID,
+> +	CXL_MBOX_OP_ACTIVATE_FW		= 0x0202,
+>  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
+> +	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
+> +	CXL_MBOX_OP_SET_LSA		= 0x4103,
+> +	CXL_MBOX_OP_SET_SHUTDOWN_STATE	= 0x4204,
+> +	CXL_MBOX_OP_SCAN_MEDIA		= 0x4304,
+> +	CXL_MBOX_OP_GET_SCAN_MEDIA	= 0x4305,
+>  	CXL_MBOX_OP_MAX			= 0x10000
+>  };
+>  
+> @@ -91,6 +100,8 @@ struct cxl_memdev {
+>  
+>  static int cxl_mem_major;
+>  static DEFINE_IDA(cxl_memdev_ida);
+> +static struct dentry *cxl_debugfs;
+> +static bool raw_allow_all;
+>  
+>  /**
+>   * struct cxl_mem_command - Driver representation of a memory device command
+> @@ -132,6 +143,49 @@ struct cxl_mem_command {
+>   */
+>  static struct cxl_mem_command mem_commands[] = {
+>  	CXL_CMD(IDENTIFY, NONE, 0, 0x43),
+> +#ifdef CONFIG_CXL_MEM_RAW_COMMANDS
+> +	CXL_CMD(RAW, NONE, ~0, ~0),
+> +#endif
+> +};
+> +
+> +/*
+> + * Commands that RAW doesn't permit. The rationale for each:
+> + *
+> + * CXL_MBOX_OP_ACTIVATE_FW: Firmware activation requires adjustment /
+> + * coordination of transaction timeout values at the root bridge level.
+> + *
+> + * CXL_MBOX_OP_SET_PARTITION_INFO: The device memory map may change live
+> + * and needs to be coordinated with HDM updates.
+> + *
+> + * CXL_MBOX_OP_SET_LSA: The label storage area may be cached by the
+> + * driver and any writes from userspace invalidates those contents.
+> + *
+> + * CXL_MBOX_OP_SET_SHUTDOWN_STATE: Set shutdown state assumes no writes
+> + * to the device after it is marked clean, userspace can not make that
+> + * assertion.
+> + *
+> + * CXL_MBOX_OP_[GET_]SCAN_MEDIA: The kernel provides a native error list that
+> + * is kept up to date with patrol notifications and error management.
+> + */
+> +static u16 disabled_raw_commands[] = {
+> +	CXL_MBOX_OP_ACTIVATE_FW,
+> +	CXL_MBOX_OP_SET_PARTITION_INFO,
+> +	CXL_MBOX_OP_SET_LSA,
+> +	CXL_MBOX_OP_SET_SHUTDOWN_STATE,
+> +	CXL_MBOX_OP_SCAN_MEDIA,
+> +	CXL_MBOX_OP_GET_SCAN_MEDIA,
+> +};
+> +
+> +/*
+> + * Command sets that RAW doesn't permit. All opcodes in this set are
+> + * disabled because they pass plain text security payloads over the
+> + * user/kernel boundary. This functionality is intended to be wrapped
+> + * behind the keys ABI which allows for encrypted payloads in the UAPI
+> + */
+> +static u8 security_command_sets[] = {
+> +	0x44, /* Sanitize */
+> +	0x45, /* Persistent Memory Data-at-rest Security */
+> +	0x46, /* Security Passthrough */
+>  };
+>  
+>  #define cxl_for_each_cmd(cmd)                                                  \
+> @@ -162,6 +216,16 @@ static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+>  	return 0;
+>  }
+>  
+> +static bool is_security_command(u16 opcode)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(security_command_sets); i++)
+> +		if (security_command_sets[i] == (opcode >> 8))
+> +			return true;
+> +	return false;
+> +}
+> +
+>  static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+>  				 struct mbox_cmd *mbox_cmd)
+>  {
+> @@ -170,7 +234,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+>  	dev_dbg(dev, "Mailbox command (opcode: %#x size: %zub) timed out\n",
+>  		mbox_cmd->opcode, mbox_cmd->size_in);
+>  
+> -	if (IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
+> +	if (!is_security_command(mbox_cmd->opcode) ||
+> +	    IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
+>  		print_hex_dump_debug("Payload ", DUMP_PREFIX_OFFSET, 16, 1,
+>  				     mbox_cmd->payload_in, mbox_cmd->size_in,
+>  				     true);
+> @@ -434,6 +499,9 @@ static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
+>  		cxl_command_names[cmd->info.id].name, mbox_cmd.opcode,
+>  		cmd->info.size_in);
+>  
+> +	dev_WARN_ONCE(dev, cmd->info.id == CXL_MEM_COMMAND_ID_RAW,
+> +		      "raw command path used\n");
+> +
+>  	rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+>  	cxl_mem_mbox_put(cxlm);
+>  	if (rc)
+> @@ -464,6 +532,29 @@ static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
+>  	return rc;
+>  }
+>  
+> +static bool cxl_mem_raw_command_allowed(u16 opcode)
+> +{
+> +	int i;
+> +
+> +	if (!IS_ENABLED(CONFIG_CXL_MEM_RAW_COMMANDS))
+> +		return false;
+> +
+> +	if (security_locked_down(LOCKDOWN_NONE))
+> +		return false;
+> +
+> +	if (raw_allow_all)
+> +		return true;
+> +
+> +	if (is_security_command(opcode))
+Given we are mixing generic calls like security_locked_down()
+and local cxl specific ones like this one, prefix the
+local versions.
+
+cxl_is_security_command()
+
+I'd also have a slight preference to do it for cxl_disabled_raw_commands
+and cxl_raw_allow_all though they are less important as more obviously
+local by not being function calls.
+
+> +		return false;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(disabled_raw_commands); i++)
+> +		if (disabled_raw_commands[i] == opcode)
+> +			return false;
+> +
+> +	return true;
+> +}
+> +
+>  /**
+>   * cxl_validate_cmd_from_user() - Check fields for CXL_MEM_SEND_COMMAND.
+>   * @cxlm: &struct cxl_mem device whose mailbox will be used.
+> @@ -500,6 +591,29 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
+>  	if (send_cmd->in.size > cxlm->payload_size)
+>  		return -EINVAL;
+>  
+> +	/* Checks are bypassed for raw commands but along comes the taint! */
+> +	if (send_cmd->id == CXL_MEM_COMMAND_ID_RAW) {
+> +		const struct cxl_mem_command temp = {
+> +			.info = {
+> +				.id = CXL_MEM_COMMAND_ID_RAW,
+> +				.flags = CXL_MEM_COMMAND_FLAG_NONE,
+> +				.size_in = send_cmd->in.size,
+> +				.size_out = send_cmd->out.size,
+> +			},
+> +			.opcode = send_cmd->raw.opcode
+> +		};
+> +
+> +		if (send_cmd->raw.rsvd)
+> +			return -EINVAL;
+> +
+> +		if (!cxl_mem_raw_command_allowed(send_cmd->raw.opcode))
+> +			return -EPERM;
+> +
+> +		memcpy(out_cmd, &temp, sizeof(temp));
+> +
+> +		return 0;
+> +	}
+> +
+>  	if (send_cmd->flags & ~CXL_MEM_COMMAND_FLAG_MASK)
+>  		return -EINVAL;
+>  
+> @@ -1123,8 +1237,9 @@ static struct pci_driver cxl_mem_driver = {
+>  
+>  static __init int cxl_mem_init(void)
+>  {
+> -	int rc;
+> +	struct dentry *mbox_debugfs;
+>  	dev_t devt;
+> +	int rc;
+
+Shuffle this back to the place it was introduced to reduce patch noise.
+
+>  
+>  	rc = alloc_chrdev_region(&devt, 0, CXL_MEM_MAX_DEVS, "cxl");
+>  	if (rc)
+> @@ -1139,11 +1254,17 @@ static __init int cxl_mem_init(void)
+>  		return rc;
+>  	}
+>  
+> +	cxl_debugfs = debugfs_create_dir("cxl", NULL);
+> +	mbox_debugfs = debugfs_create_dir("mbox", cxl_debugfs);
+> +	debugfs_create_bool("raw_allow_all", 0600, mbox_debugfs,
+> +			    &raw_allow_all);
+> +
+>  	return 0;
+>  }
+>  
+>  static __exit void cxl_mem_exit(void)
+>  {
+> +	debugfs_remove_recursive(cxl_debugfs);
+>  	pci_unregister_driver(&cxl_mem_driver);
+>  	unregister_chrdev_region(MKDEV(cxl_mem_major, 0), CXL_MEM_MAX_DEVS);
+>  }
+> diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+> index f1f7e9f32ea5..72d1eb601a5d 100644
+> --- a/include/uapi/linux/cxl_mem.h
+> +++ b/include/uapi/linux/cxl_mem.h
+> @@ -22,6 +22,7 @@
+>  #define CXL_CMDS                                                          \
+>  	___C(INVALID, "Invalid Command"),                                 \
+>  	___C(IDENTIFY, "Identify Command"),                               \
+> +	___C(RAW, "Raw device command"),                                  \
+>  	___C(MAX, "Last command")
+>  
+>  #define ___C(a, b) CXL_MEM_COMMAND_ID_##a
+> @@ -112,6 +113,9 @@ struct cxl_mem_query_commands {
+>   * @id: The command to send to the memory device. This must be one of the
+>   *	commands returned by the query command.
+>   * @flags: Flags for the command (input).
+> + * @raw: Special fields for raw commands
+> + * @raw.opcode: Opcode passed to hardware when using the RAW command.
+> + * @raw.rsvd: Must be zero.
+>   * @rsvd: Must be zero.
+>   * @retval: Return value from the memory device (output).
+>   * @in.size: Size of the payload to provide to the device (input).
+> @@ -133,7 +137,13 @@ struct cxl_mem_query_commands {
+>  struct cxl_send_command {
+>  	__u32 id;
+>  	__u32 flags;
+> -	__u32 rsvd;
+> +	union {
+> +		struct {
+> +			__u16 opcode;
+> +			__u16 rsvd;
+> +		} raw;
+> +		__u32 rsvd;
+> +	};
+>  	__u32 retval;
+>  
+>  	struct {
+
