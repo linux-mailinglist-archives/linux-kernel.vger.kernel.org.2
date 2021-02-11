@@ -2,137 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE674319285
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4525731928A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhBKSwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhBKSwo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:52:44 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6776C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:52:04 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id 100so6127815otg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 10:52:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OVkOWiTcef92BZcXSFNKI6urGv4ClWKqZ2aHBAwr9WI=;
-        b=OcKtPxTMPJ/pI5h/KaWloIQ13BI9MrFfYMnPg8duScubygGcThI6E2xXB64LlL6ubT
-         l6A6w3WjIxITYaBdZvnWhSpbX3kEGtxW/lS84byVX6UzXpL78+Suf8SNIYStVsamPob/
-         4TywyNhn7bkqLbDxNxNWkPxWBxOBI/fC0uP/GEZ1JYSJOmrYVAZ7v2mXU2OJVyJJkJfQ
-         FBoBD9I2C2ogJ/YmvzqfQUueaAbKAgNBGXNqO+KWrlNB1Nin66InnfiYX01UFOrA+or2
-         e1ym18sWol82D+9QLEBkjfSrLZcYkk77QtbbSIQn54G4kDYzKphdrSHM/JglFmm8qNvX
-         L2TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OVkOWiTcef92BZcXSFNKI6urGv4ClWKqZ2aHBAwr9WI=;
-        b=YXcosJuZ5ZyvaRW9yFhQVwb8mfhlIPGZfmx5vB0t9V6dNqJMQpSalV4N8PmrZLDueL
-         /IuAoph+YPSUZmaEbj86Z0FGTcza3RXPdZFroEcUzfa1CKFzo6TUp4qHRRsZ24DjeP1t
-         LAO3abt+kUKtLr9hUm6k6gVGhHOXzUmq1iskvR9kckJqaARXB2knERCTuZ+scf1sAT4Q
-         pjppu2lkrkKQen9x4my23KTuw2GKB3G1C8uoWCowh+wPVo/Vwzg9QnLxLPBwhut6v19J
-         HAofaVDCjNTQFvf0ZXIK4Pmb5P51yN24LK/bok/CMh6WtsHKev2eO8GVx6EOl38DTgDu
-         Vuyg==
-X-Gm-Message-State: AOAM533pnyri2X+NVx9pO3qFzqn+5hlcrIQgpz2UGY1rSS9bJ72bsIoK
-        QPmlLk6+M5psv3QD9AckFSf6ig==
-X-Google-Smtp-Source: ABdhPJwf6gkTQIas5Mts7gamBTwBrwhQ9GsZm1U8X195GnlW/kAkgV8Ivieym0/0ILPnR3HQuoP/Vg==
-X-Received: by 2002:a9d:77d6:: with SMTP id w22mr6796757otl.145.1613069523801;
-        Thu, 11 Feb 2021 10:52:03 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b21sm122655otq.4.2021.02.11.10.52.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 10:52:03 -0800 (PST)
-Date:   Thu, 11 Feb 2021 12:52:01 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: remoteproc: qcom: pas: Add SM8350
- remoteprocs
-Message-ID: <YCV80dfkxXEPBveo@builder.lan>
-References: <20210210104539.340349-1-vkoul@kernel.org>
+        id S230046AbhBKSxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:53:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57182 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229553AbhBKSxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 13:53:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4F3B9AE3D;
+        Thu, 11 Feb 2021 18:52:21 +0000 (UTC)
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210209174646.1310591-1-shy828301@gmail.com>
+ <20210209174646.1310591-13-shy828301@gmail.com>
+ <acd1915c-306b-08a8-9e0f-b06c1e09fb4c@suse.cz>
+ <CAHbLzkpF9+NUp2yUf_yKHHngKXGDya4Mj3ZTc-2rm3yFNw_==A@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [v7 PATCH 12/12] mm: vmscan: shrink deferred objects proportional
+ to priority
+Message-ID: <a56fa0f1-3ac6-49f1-31c1-8bfec961d04e@suse.cz>
+Date:   Thu, 11 Feb 2021 19:52:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210104539.340349-1-vkoul@kernel.org>
+In-Reply-To: <CAHbLzkpF9+NUp2yUf_yKHHngKXGDya4Mj3ZTc-2rm3yFNw_==A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 10 Feb 04:45 CST 2021, Vinod Koul wrote:
-
-> Add the SM8350 audio, compute, modem and sensor remoteprocs to the PAS
-> DT binding.
+On 2/11/21 6:29 PM, Yang Shi wrote:
+> On Thu, Feb 11, 2021 at 5:10 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>> >       trace_mm_shrink_slab_start(shrinker, shrinkctl, nr,
+>> >                                  freeable, delta, total_scan, priority);
+>> > @@ -737,10 +708,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>> >               cond_resched();
+>> >       }
+>> >
+>> > -     if (next_deferred >= scanned)
+>> > -             next_deferred -= scanned;
+>> > -     else
+>> > -             next_deferred = 0;
+>> > +     next_deferred = max_t(long, (nr - scanned), 0) + total_scan;
+>>
+>> And here's the bias I think. Suppose we scanned 0 due to e.g. GFP_NOFS. We count
+>> as newly deferred both the "delta" part of total_scan, which is fine, but also
+>> the "nr >> priority" part, where we failed to our share of the "reduce
+>> nr_deferred" work, but I don't think it means we should also increase
+>> nr_deferred by that amount of failed work.
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  .../devicetree/bindings/remoteproc/qcom,adsp.txt     | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+> Here "nr" is the saved deferred work since the last scan, "scanned" is
+> the scanned work in this round, total_scan is the *unscanned" work
+> which is actually "total_scan - scanned" (total_scan is decreased by
+> scanned in each loop). So, the logic is "decrease any scanned work
+> from deferred then add newly unscanned work to deferred". IIUC this is
+> what "deferred" means even before this patch.
+
+Hm I thought the logic was "increase by any new work (delta) that wasn't done,
+decrease by old deferred work that was done now". My examples with scanned = 0
+and scanned = total_work (total_work before subtracting scanned from it) should
+demonstrate that the logic is different with your patch.
+
+>> OTOH if we succeed and scan exactly the whole goal, we are subtracting from
+>> nr_deferred both the "nr >> priority" part, which is correct, but also delta,
+>> which was new work, not deferred one, so that's incorrect IMHO as well.
 > 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-> index 54737024da20..41eaa2466aab 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-> @@ -25,6 +25,10 @@ on the Qualcomm ADSP Hexagon core.
->  		    "qcom,sm8250-adsp-pas"
->  		    "qcom,sm8250-cdsp-pas"
->  		    "qcom,sm8250-slpi-pas"
-> +		    "qcom,sm8350-adsp-pas"
-> +		    "qcom,sm8350-cdsp-pas"
-> +		    "qcom,sm8350-slpi-pas"
-> +		    "qcom,sm8350-mpss-pas"
->  
->  - interrupts-extended:
->  	Usage: required
-> @@ -51,10 +55,14 @@ on the Qualcomm ADSP Hexagon core.
->  	qcom,sm8250-adsp-pas:
->  	qcom,sm8250-cdsp-pas:
->  	qcom,sm8250-slpi-pas:
-> +	qcom,sm8350-adsp-pas:
-> +	qcom,sm8350-cdsp-pas:
-> +	qcom,sm8350-slpi-pas:
->  		    must be "wdog", "fatal", "ready", "handover", "stop-ack"
->  	qcom,qcs404-wcss-pas:
->  	qcom,sc7180-mpss-pas:
->  	qcom,sm8150-mpss-pas:
-> +	qcom,sm8350-mpss-pas:
->  		    must be "wdog", "fatal", "ready", "handover", "stop-ack",
->  		    "shutdown-ack"
->  
-> @@ -113,14 +121,18 @@ on the Qualcomm ADSP Hexagon core.
->  	qcom,sdm845-cdsp-pas:
->  	qcom,sm8150-adsp-pas:
->  	qcom,sm8150-cdsp-pas:
-> +	qcom,sm8250-cdsp-pas:
-
-This should be sm8350, I fixed this up and applied the patch.
-
-Thanks,
-Bjorn
-
->  	qcom,sm8250-cdsp-pas:
->  		    must be "cx", "load_state"
->  	qcom,sc7180-mpss-pas:
->  	qcom,sm8150-mpss-pas:
-> +	qcom,sm8350-mpss-pas:
->  		    must be "cx", "load_state", "mss"
->  	qcom,sm8250-adsp-pas:
-> +	qcom,sm8350-adsp-pas:
->  	qcom,sm8150-slpi-pas:
->  	qcom,sm8250-slpi-pas:
-> +	qcom,sm8350-slpi-pas:
->  		    must be "lcx", "lmx", "load_state"
->  
->  - memory-region:
-> -- 
-> 2.26.2
+> I don't think so. The deferred comes from new work, why not dec new
+> work from deferred?
 > 
+> And, the old code did:
+> 
+> if (next_deferred >= scanned)
+>                 next_deferred -= scanned;
+>         else
+>                 next_deferred = 0;
+> 
+> IIUC, it also decreases the new work (the scanned includes both last
+> deferred and new delata).
+
+Yes, but in the old code, next_deferred starts as
+
+nr = count_nr_deferred()...
+total_scan = nr;
+delta = ... // something based on freeable
+total_scan += delta;
+next_deferred = total_scan; // in the common case total_scan >= 0
+
+... and that's "total_scan" before "scanned" is subtracted from it, so it
+includes the new_work ("delta"), so then it's OK to do "next_deferred -= scanned";
+
+I still think your formula is (unintentionally) changing the logic. You can also
+look at it from different angle, it's effectively (without the max_t() part) "nr
+- scanned + total_scan" where total_scan is actually "total_scan - scanned" as
+you point your yourself. So "scanned" is subtracted twice? That can't be correct...
+
+>> So the calculation should probably be something like this?
+>>
+>>         next_deferred = max_t(long, nr + delta - scanned, 0);
+>>
+>> Thanks,
+>> Vlastimil
+>>
+>> > +     next_deferred = min(next_deferred, (2 * freeable));
+>> > +
+>> >       /*
+>> >        * move the unused scan count back into the shrinker in a
+>> >        * manner that handles concurrent updates.
+>> >
+>>
+> 
+
