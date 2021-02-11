@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6D33187C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669343187D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 11:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhBKKI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 05:08:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbhBKKFm (ORCPT
+        id S229806AbhBKKKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 05:10:38 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2544 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230030AbhBKKIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:05:42 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B1FC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:05:02 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id fa16so3108384pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:05:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=6LL6HEN/TlIvgjV/qKDhMJslAnmqizgu+vOTXyLuIe0=;
-        b=p35Rgaoe/NHzNcM//KvM2suJwdKoGxwyruZkUwP7/rBRzL6qGUex30LwZjonYIYVVM
-         olRdWmBoKpOUDcUIHLlviqP7cQhkV72X1Z1LSjDlZZ2AY2kZuhoNARwR63ePu1iclq4+
-         0lmqreZ3NBi28ZdDjQPSYWjhu8hMP3Qu0L+7vRfyd/7GrDnGuJYPvic2faoCIgNsCD9E
-         DpW4zTOzFqQv635bnW4w+vfbL6M1/ECRZgXlus2Hw/MLc1F0RRjXThszMn1FLrFakFX/
-         YOZC+g2WSazUT9PbfxwkQwWeRcMGqsh/3+DIRzab6kk+4v3FKZ0W6Fe2rWAzezQNa63P
-         lymQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=6LL6HEN/TlIvgjV/qKDhMJslAnmqizgu+vOTXyLuIe0=;
-        b=VwBPaLQ2bMAq3xjStxteaJRqYXfOndzAt6xvkQ26ptlPteCJCgjHfNcS4+RzGys9Kd
-         8/2rbtVXTc8x4EdgYIn1N5FTEGRiZE1cxUf+f02vl+ZuLgtVK5w0TZx66rTRyT0B33BD
-         mRToQJ+Gn41PcEfuDXBN6GuaIlJbZtlKAnW7zJuVaC7qZ8i7u60mC3uLM7kD6FR4D8b+
-         km3tid+X/BbaVumjCIYKQrGnpeXKlG/sy9WN3+M2b4yGAOjYl4Kukf9R2fXPFie8503k
-         ZctFqdBtrpEoIeOfCfSdoJK1U99VyJrLY+7Q7FyEraDpn3fXyrBesg3Rkbn3y+CUTEfZ
-         0b8g==
-X-Gm-Message-State: AOAM530yRegoB4JRF/fMMQslvZF1Oef6jTCvPiPHWkunhbTioVJfmniO
-        Vpfrou3BObWBTahl3lzInI8vlJd/bxo=
-X-Google-Smtp-Source: ABdhPJw7en9Rdip4b1jO8Tx86JajlxFNgYrdaduyMhSqjEH+ic/FoFQBz2ksbyiZuNfN8ricNnsfSA==
-X-Received: by 2002:a17:90a:f00b:: with SMTP id bt11mr3236187pjb.76.1613037902231;
-        Thu, 11 Feb 2021 02:05:02 -0800 (PST)
-Received: from localhost (14-201-150-91.tpgi.com.au. [14.201.150.91])
-        by smtp.gmail.com with ESMTPSA id i10sm4851813pgt.85.2021.02.11.02.05.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 02:05:01 -0800 (PST)
-Date:   Thu, 11 Feb 2021 20:04:55 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH] powerpc/bug: Remove specific powerpc BUG_ON()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <694c7195c81d1bcc781b3c14f452886683d6c524.1613029237.git.christophe.leroy@csgroup.eu>
+        Thu, 11 Feb 2021 05:08:31 -0500
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dbsd6739dz67mrk;
+        Thu, 11 Feb 2021 18:02:50 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 11 Feb 2021 11:07:48 +0100
+Received: from localhost (10.47.31.44) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 11 Feb
+ 2021 10:07:47 +0000
+Date:   Thu, 11 Feb 2021 10:06:46 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     Ben Widawsky <ben.widawsky@intel.com>, <linux-cxl@vger.kernel.org>,
+        "Linux ACPI" <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Chris Browy <cbrowy@avery-design.com>, Christoph Hellwig
+        <hch@infradead.org>, Dan Williams <dan.j.williams@intel.com>, David
+        Hildenbrand <david@redhat.com>, David Rientjes" <rientjes@google.com>,
+        "Jon Masters <jcm@jonmasters.org>, Rafael Wysocki
+        <rafael.j.wysocki@intel.com>, Randy Dunlap" <rdunlap@infradead.org>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        "kernel test robot" <lkp@intel.com>,
+        Dan Williams <dan.j.willams@intel.com>
+Subject: Re: [PATCH v2 4/8] cxl/mem: Add basic IOCTL interface
+Message-ID: <20210211100646.00007dcc@Huawei.com>
+In-Reply-To: <CAPcyv4hRUB3jxdCV06y0kYMbKbGroEW6F9yOQ4KB_z6YgWBZ4Q@mail.gmail.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+        <20210210000259.635748-5-ben.widawsky@intel.com>
+        <20210210184540.00007536@Huawei.com>
+        <CAPcyv4hRUB3jxdCV06y0kYMbKbGroEW6F9yOQ4KB_z6YgWBZ4Q@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Message-Id: <1613036567.zvyupcz926.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.31.44]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of February 11, 2021 5:41 pm:
-> powerpc BUG_ON() is based on using twnei or tdnei instruction,
-> which obliges gcc to format the condition into a 0 or 1 value
-> in a register.
->=20
-> By using a generic implementation, gcc will generate a branch
-> to the unconditional trap generated by BUG().
+On Wed, 10 Feb 2021 20:40:52 -0800
+Dan Williams <dan.j.williams@intel.com> wrote:
 
-We don't want to do this on 64s because that will lose the useful CFAR
-contents.
+> On Wed, Feb 10, 2021 at 10:47 AM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> [..]
+> > > +#define CXL_CMDS                                                          \
+> > > +     ___C(INVALID, "Invalid Command"),                                 \
+> > > +     ___C(IDENTIFY, "Identify Command"),                               \
+> > > +     ___C(MAX, "Last command")
+> > > +
+> > > +#define ___C(a, b) CXL_MEM_COMMAND_ID_##a
+> > > +enum { CXL_CMDS };
+> > > +
+> > > +#undef ___C
+> > > +#define ___C(a, b) { b }
+> > > +static const struct {
+> > > +     const char *name;
+> > > +} cxl_command_names[] = { CXL_CMDS };
+> > > +#undef ___C  
+> >
+> > Unless there are going to be a lot of these, I'd just write them out long hand
+> > as much more readable than the macro magic.  
+> 
+> This macro magic isn't new to Linux it was introduced with ftrace:
+> 
+> See "cpp tricks and treats": https://lwn.net/Articles/383362/
 
-Unfortunately the code generation is not great and the registers that=20
-give some useful information about the condition are often mangled :(
+Yeah. I've dealt with that one a few times. It's very cleaver and compact
+but a PITA to debug build errors related to it.
 
-It would be nice if we could have a __builtin_trap_if that gcc would use=20
-conditional traps with, (and which never assumes following code is=20
-unreachable even for constant true, so we can use it with WARN and put=20
-explicit unreachable for BUG).
+> 
+> >
+> > enum {
+> >         CXL_MEM_COMMAND_ID_INVALID,
+> >         CXL_MEM_COMMAND_ID_IDENTIFY,
+> >         CXL_MEM_COMMAND_ID_MAX
+> > };
+> >
+> > static const struct {
+> >         const char *name;
+> > } cxl_command_names[] = {
+> >         [CXL_MEM_COMMAND_ID_INVALID] = { "Invalid Command" },
+> >         [CXL_MEM_COMMAND_ID_IDENTIFY] = { "Identify Comamnd" },
+> >         /* I hope you never need the Last command to exist in here as that sounds like a bug */
+> > };
+> >
+> > That's assuming I actually figured the macro fun out correctly.
+> > To my mind it's worth doing this stuff for 'lots' no so much for 3.  
+> 
+> The list will continue to expand, and it eliminates the "did you
+> remember to update cxl_command_names" review burden permanently.
 
->=20
-> As modern powerpc implement branch folding, that's even more efficient.
+How about a compromise.  Add a comment giving how the first entry expands to
+avoid people (me at least :) having to think their way through it every time?
 
-I think POWER will speculate conditional traps as non faulting always
-so it should be just as good if not better than the branch.
+Jonathan
 
-Thanks,
-Nick
