@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDE1318EA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEBB318EFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 16:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhBKPbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 10:31:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51650 "EHLO mail.kernel.org"
+        id S230219AbhBKPmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 10:42:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230159AbhBKPLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:11:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19DFA64EDC;
-        Thu, 11 Feb 2021 15:03:59 +0000 (UTC)
+        id S230009AbhBKPNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:13:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6424864EEC;
+        Thu, 11 Feb 2021 15:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613055840;
-        bh=P3ySuIoZiGLqChplEii4dqImlShz5ythlBs/yPIdRFM=;
+        s=korg; t=1613055866;
+        bh=H+McNijkMR/bhxDtYibNQd0KYp1YtnL9gfDDcwOMDNk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=App0+lCnqHC7FHl7+IV+suMCWXk9udXc98gaGRIvQluiuuXU/u3IddHglZWTWoED2
-         DkAP7iNcpvz/E9nC4+f37/L3thBWgeR9aN/oRkDaXFyLt5hT6LrJ7PjLjj1pgtdDIS
-         e7c+wBHIxUZKCnS2UeWGTV5GAPVUtctdADJWDL20=
+        b=wp3tuJcPhLrKuEM0+AS0kR2Rte8nZTESTzyzjAfnNDiNdCng7mYsmzMgOu9r14zYg
+         FNsTAk8bUNMRVCldxLQGCJiUT1okH1tsoat+Dn6w83LYtM1jyYToQA/t8FD55tlwRz
+         DIjfdNCNSksbb9tApYcnf/e9lhYQmwAtFL9IV0oI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Sara Sharon <sara.sharon@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 27/54] pNFS/NFSv4: Improve rejection of out-of-order layouts
-Date:   Thu, 11 Feb 2021 16:02:11 +0100
-Message-Id: <20210211150154.076278196@linuxfoundation.org>
+Subject: [PATCH 5.10 31/54] iwlwifi: mvm: skip power command when unbinding vif during CSA
+Date:   Thu, 11 Feb 2021 16:02:15 +0100
+Message-Id: <20210211150154.242643007@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
 References: <20210211150152.885701259@linuxfoundation.org>
@@ -40,84 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Sara Sharon <sara.sharon@intel.com>
 
-[ Upstream commit d29b468da4f940bd2bff2628ba8d2d652671d244 ]
+[ Upstream commit bf544e9aa570034e094a8a40d5f9e1e2c4916d18 ]
 
-If a layoutget ends up being reordered w.r.t. a layoutreturn, e.g. due
-to a layoutget-on-open not knowing a priori which file to lock, then we
-must assume the layout is no longer being considered valid state by the
-server.
-Incrementally improve our ability to reject such states by using the
-cached old stateid in conjunction with the plh_barrier to try to
-identify them.
+In the new CSA flow, we remain associated during CSA, but
+still do a unbind-bind to the vif. However, sending the power
+command right after when vif is unbound but still associated
+causes FW to assert (0x3400) since it cannot tell the LMAC id.
 
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Just skip this command, we will send it again in a bit, when
+assigning the new context.
+
+Signed-off-by: Sara Sharon <sara.sharon@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20210115130252.64a2254ac5c3.Iaa3a9050bf3d7c9cd5beaf561e932e6defc12ec3@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pnfs.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
-index 2b98286376d40..b8712b835b105 100644
---- a/fs/nfs/pnfs.c
-+++ b/fs/nfs/pnfs.c
-@@ -1000,7 +1000,7 @@ pnfs_layout_stateid_blocked(const struct pnfs_layout_hdr *lo,
- {
- 	u32 seqid = be32_to_cpu(stateid->seqid);
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index b627e7da7ac9d..d42165559df6e 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -4249,6 +4249,9 @@ static void __iwl_mvm_unassign_vif_chanctx(struct iwl_mvm *mvm,
+ 	iwl_mvm_binding_remove_vif(mvm, vif);
  
--	return !pnfs_seqid_is_newer(seqid, lo->plh_barrier);
-+	return !pnfs_seqid_is_newer(seqid, lo->plh_barrier) && lo->plh_barrier;
+ out:
++	if (fw_has_capa(&mvm->fw->ucode_capa, IWL_UCODE_TLV_CAPA_CHANNEL_SWITCH_CMD) &&
++	    switching_chanctx)
++		return;
+ 	mvmvif->phy_ctxt = NULL;
+ 	iwl_mvm_power_update_mac(mvm);
  }
- 
- /* lget is set to 1 if called from inside send_layoutget call chain */
-@@ -1913,6 +1913,11 @@ static void nfs_layoutget_end(struct pnfs_layout_hdr *lo)
- 		wake_up_var(&lo->plh_outstanding);
- }
- 
-+static bool pnfs_is_first_layoutget(struct pnfs_layout_hdr *lo)
-+{
-+	return test_bit(NFS_LAYOUT_FIRST_LAYOUTGET, &lo->plh_flags);
-+}
-+
- static void pnfs_clear_first_layoutget(struct pnfs_layout_hdr *lo)
- {
- 	unsigned long *bitlock = &lo->plh_flags;
-@@ -2387,17 +2392,17 @@ pnfs_layout_process(struct nfs4_layoutget *lgp)
- 		goto out_forget;
- 	}
- 
--	if (!pnfs_layout_is_valid(lo)) {
--		/* We have a completely new layout */
--		pnfs_set_layout_stateid(lo, &res->stateid, lgp->cred, true);
--	} else if (nfs4_stateid_match_other(&lo->plh_stateid, &res->stateid)) {
-+	if (nfs4_stateid_match_other(&lo->plh_stateid, &res->stateid)) {
- 		/* existing state ID, make sure the sequence number matches. */
- 		if (pnfs_layout_stateid_blocked(lo, &res->stateid)) {
-+			if (!pnfs_layout_is_valid(lo) &&
-+			    pnfs_is_first_layoutget(lo))
-+				lo->plh_barrier = 0;
- 			dprintk("%s forget reply due to sequence\n", __func__);
- 			goto out_forget;
- 		}
- 		pnfs_set_layout_stateid(lo, &res->stateid, lgp->cred, false);
--	} else {
-+	} else if (pnfs_layout_is_valid(lo)) {
- 		/*
- 		 * We got an entirely new state ID.  Mark all segments for the
- 		 * inode invalid, and retry the layoutget
-@@ -2410,6 +2415,11 @@ pnfs_layout_process(struct nfs4_layoutget *lgp)
- 		pnfs_mark_matching_lsegs_return(lo, &lo->plh_return_segs,
- 						&range, 0);
- 		goto out_forget;
-+	} else {
-+		/* We have a completely new layout */
-+		if (!pnfs_is_first_layoutget(lo))
-+			goto out_forget;
-+		pnfs_set_layout_stateid(lo, &res->stateid, lgp->cred, true);
- 	}
- 
- 	pnfs_get_lseg(lseg);
 -- 
 2.27.0
 
