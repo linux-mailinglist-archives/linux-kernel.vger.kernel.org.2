@@ -2,70 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FE031B947
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F8931B9AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbhBOMaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:30:35 -0500
-Received: from smtp-42ab.mail.infomaniak.ch ([84.16.66.171]:54005 "EHLO
-        smtp-42ab.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230398AbhBOM1T (ORCPT
+        id S230443AbhBOMsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:48:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhBOMrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:27:19 -0500
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DfNcw6fbpzMppPl;
-        Mon, 15 Feb 2021 13:26:24 +0100 (CET)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DfNcw0xDCzlh8Td;
-        Mon, 15 Feb 2021 13:26:23 +0100 (CET)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     James Morris <jmorris@namei.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Nicolas Iooss <nicolas.iooss@m4x.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH v1 1/3] kconfig: Remove duplicate call to sym_get_string_value()
-Date:   Mon, 15 Feb 2021 13:25:11 +0100
-Message-Id: <20210215122513.1773897-2-mic@digikod.net>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210215122513.1773897-1-mic@digikod.net>
-References: <20210215122513.1773897-1-mic@digikod.net>
+        Mon, 15 Feb 2021 07:47:03 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8339C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:46:22 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id t15so8657542wrx.13
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:46:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=user-agent:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A15rY6Q2dsPIqCz33RJVqDEPuYAVE90BLBpsO2QsoA8=;
+        b=dy4ndi0FVQKHpnWLrvojYRRZ7Z0FSDpbqubvH81x2YHRlPHmYbTtqkOTMOnBqutGCj
+         BAZ/13UZ7n/rm6PlLTonfpvxq7XptthgeWpF9V4h8L8mXIEd4ZuTgWsEB38bBe8tiZrm
+         fEcQxrtunUWIP6miHGn6HGrlsUoR+DdhZKa8vVOznlgZXrHrNWfrq+B6ahocIhdTxWnZ
+         Zen4NTCO6qDdWZ7hr3JJDhAWYqYk5N4o7ZQDfteT3Qu5l3rPrujIuOQVWNayyEfb4piz
+         sCohCf8iJNLsafqyRuhaDrtaQgvHUZrLWGmPxW95JAiDeK69uoj0yggn1b6hRo82C5y2
+         X6aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:user-agent:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=A15rY6Q2dsPIqCz33RJVqDEPuYAVE90BLBpsO2QsoA8=;
+        b=IzH+95L4JZbl26MPsUgVPzr+U1ZWpwQZCEQ14nDqkemlgNEMzw6i8tdNXINk2/q/64
+         hkrmguzFKvkGzfpIuTr+Mx7maXy66A32Wtr48ajINKDnWVC5nusoc4XiBzsk8eAIiyBZ
+         PE4ZXuHQLkXvHbg0YCXPztJhafMvc6GCelY+xUJv6B/Cjxe1pmegSO6Y/vYzvbo81GrM
+         Uw304AerVGTMmWgQCHGmA9B17l2G2V6frF+Xq1fJHJwQlOtgnSYPsCcaPgFrjij6LVw5
+         m7/gf4HKHBn87fE+WJ5CU7lr9iuIA4wa7eLX83eML98q1de81iM/lG7ZEk4qEILig6YS
+         BtNg==
+X-Gm-Message-State: AOAM533hIC1QxP4soRTaD0UXZsAIK41/pQx5kF8fIfQmcHpQQCsvZ3Cy
+        dQigBaDRPijVcBAg7/HWrAXdmQ==
+X-Google-Smtp-Source: ABdhPJwBga4tSgNDKfwze/eJGnZcOM3JW+RCuJZb/Vfyqnk6s3PAP8Z6w77iJRe0ND6ZRWRMu5Z5pg==
+X-Received: by 2002:a5d:50c8:: with SMTP id f8mr5187435wrt.69.1613393181489;
+        Mon, 15 Feb 2021 04:46:21 -0800 (PST)
+Received: from zen.linaroharston ([51.148.130.216])
+        by smtp.gmail.com with ESMTPSA id j71sm25969899wmj.31.2021.02.15.04.46.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 04:46:20 -0800 (PST)
+Received: from zen (localhost [127.0.0.1])
+        by zen.linaroharston (Postfix) with ESMTP id ED01A1FF7E;
+        Mon, 15 Feb 2021 12:46:19 +0000 (GMT)
+User-agent: mu4e 1.5.8; emacs 28.0.50
+From:   Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+Cc:     Tomas Winkler <tomas.winkler@intel.com>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Huang Yang <yang.huang@intel.com>,
+        Ruchika Gupta <ruchika.gupta@linaro.org>
+Subject: RPMB user space ABI
+Date:   Thu, 11 Feb 2021 14:07:00 +0000
+Message-ID: <87mtwashi4.fsf@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+Hi,
 
-Use the saved returned value of sym_get_string_value() instead of
-calling it twice.
+Last year while I was implementing a virtio-rpmb backend for QEMU I
+ended up using patches from the ACRN tree which was based on Thomas'
+patches last posted in 2016:
 
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210215122513.1773897-2-mic@digikod.net
----
- scripts/kconfig/conf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  https://lore.kernel.org/lkml/1478548394-8184-1-git-send-email-tomas.winkl=
+er@intel.com/
 
-diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
-index db03e2f45de4..18a233d27a8d 100644
---- a/scripts/kconfig/conf.c
-+++ b/scripts/kconfig/conf.c
-@@ -137,7 +137,7 @@ static int conf_string(struct menu *menu)
- 		printf("%*s%s ", indent - 1, "", menu->prompt->text);
- 		printf("(%s) ", sym->name);
- 		def = sym_get_string_value(sym);
--		if (sym_get_string_value(sym))
-+		if (def)
- 			printf("[%s] ", def);
- 		if (!conf_askvalue(sym, def))
- 			return 0;
--- 
-2.30.0
+which I bastardised into a testing tree on a more recent kernel:
 
+  https://git.linaro.org/people/alex.bennee/linux.git/log/?h=3Dtesting/virt=
+io-rpmb
+
+The main reason I hacked them around was because the VirtIO spec had
+since been finalised and had a very different framing structure. The
+original proposed ABI provided for an ioctl which sent JDEC frames to
+the underlying device. This was later expanded to support NVME style
+frames. Neither of these frame sequences matched the final VirtIO
+specification.
+
+It seems to me having the ioctl ABI at this level exposes too many
+underlying HW details to user space. With the number of HW devices that
+providing RPMB features likely to grow from the current 3 (eMMC/JDEC,
+NVME, VirtIO) it seems this ABI should operate at a higher level, e.g.:
+
+      PROGRAM_KEY
+      GET_WRITE_COUNTER
+      WRITE_DATA
+      READ_DATA
+
+and I guess some sort of asynchronous result check?
+
+It would then be for the kernel to take the higher level concepts and
+translate them to the final frames required to talk to the actual HW (if
+indeed there is some).
+
+Does this seem reasonable? Is this orthogonal to any access to RPMB
+partitions that file-systems might want to do?
+
+--=20
+Alex Benn=C3=A9e
