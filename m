@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8057531899C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BA531899D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhBKLhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:37:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbhBKLGR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:06:17 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7941C061756;
-        Thu, 11 Feb 2021 03:05:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=aUMOhZ/r6K5pZQMb5adTT2R7mflcUd6gQF1EZlt7rh0=; b=PUhPuNsuYsvXpCGX7J7lZklpk
-        ViW2nNfn6viKIQZYO984pDEFwpaRMcRAOu/BHW7/QP1DqSHqfS4bYC9KzUY64vMYLE7kVPR2k7BMQ
-        wI6B8TRv5yvLsnIBQx8VuPd4UGPzwyKIHhRkWzSXD/iU92dcG/Lo4lbdIa1w4SQ8WSD63auxyYbiO
-        oLv7XYB4/dO5NFJXIqEgOD4hf5QhWUIzjaI9XRlfsfyGZL3qYuDjn6RvHf8zPeicL+XER1v9XzySS
-        w3+kpc6VsfuyDdYKpqFzFF3D1G7qPomAEGtL1c2zuKWJne1jQpnqzI9mrY29xnxP0Z20pnPmZAVtc
-        hN9iNht4w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41988)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lA9mi-000613-7N; Thu, 11 Feb 2021 11:05:20 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lA9mh-00061L-J3; Thu, 11 Feb 2021 11:05:19 +0000
-Date:   Thu, 11 Feb 2021 11:05:19 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
-        andrew@lunn.ch, atenart@kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, sebastian.hesselbarth@gmail.com,
-        gregory.clement@bootlin.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v13 net-next 03/15] net: mvpp2: add CM3 SRAM memory map
-Message-ID: <20210211110519.GA1463@shell.armlinux.org.uk>
-References: <1613040542-16500-1-git-send-email-stefanc@marvell.com>
- <1613040542-16500-4-git-send-email-stefanc@marvell.com>
+        id S231351AbhBKLh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:37:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41968 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231461AbhBKLGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 06:06:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613041552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pMJzRr/L4i/Dq4M8UHSKGZOZ6wJPLPyiWgD0VYdU+Bk=;
+        b=YqY7bmv95n/xGzpd+Q/ZohZU1eDHEHg1lAbKJHPKWusDvnnVZx0TwMvx8zXwdleIGN4raH
+        zciHp1cgtkvgn4WTAsLQm+JfhqrsehAyv/EqbYoqWeWqDqWwuX1RvQC2WjJsv0TdOqQNZC
+        3B2cQkV4gGfFHWQ0lFU8s9wKi4jz2VE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 43CD7AD2B;
+        Thu, 11 Feb 2021 11:05:52 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 12:05:51 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, "J. Avila" <elavila@google.com>
+Subject: Re: [PATCH] printk: avoid prb_first_valid_seq() where possible
+Message-ID: <YCUPj5MK9mA65ST2@alley>
+References: <20210205141728.18117-1-john.ogness@linutronix.de>
+ <YCLKvCNJwabVavAP@alley>
+ <874kij4w59.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1613040542-16500-4-git-send-email-stefanc@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <874kij4w59.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 12:48:50PM +0200, stefanc@marvell.com wrote:
-> +static int mvpp2_get_sram(struct platform_device *pdev,
-> +			  struct mvpp2 *priv)
-> +{
-> +	struct resource *res;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
-> +	if (!res) {
-> +		if (has_acpi_companion(&pdev->dev))
-> +			dev_warn(&pdev->dev, "ACPI is too old, Flow control not supported\n");
-> +		else
-> +			dev_warn(&pdev->dev, "DT is too old, Flow control not supported\n");
-> +		return 0;
-> +	}
-> +
-> +	priv->cm3_base = devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(priv->cm3_base))
-> +		return PTR_ERR(priv->cm3_base);
-> +
-> +	return 0;
+On Wed 2021-02-10 19:32:10, John Ogness wrote:
+> On 2021-02-09, Petr Mladek <pmladek@suse.com> wrote:
+> >> @@ -1629,9 +1631,13 @@ int do_syslog(int type, char __user *buf, int len, int source)
+> >>  	/* Number of chars in the log buffer */
+> >>  	case SYSLOG_ACTION_SIZE_UNREAD:
+> >>  		logbuf_lock_irq();
+> >> -		if (syslog_seq < prb_first_valid_seq(prb)) {
+> >> -			/* messages are gone, move to first one */
+> >> -			syslog_seq = prb_first_valid_seq(prb);
+> >> +		if (prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
+> >> +			if (info.seq != syslog_seq) {
+> >> +				/* messages are gone, move to first one */
+> >> +				syslog_seq = info.seq;
+> >> +				syslog_partial = 0;
+> >> +			}
+> >> +		} else {
+> >>  			syslog_partial = 0;
+> >
+> > I am scratching my head when prb_read_valid_info(prb,
+> > syslog_seq, &info, NULL)) might fail.
+> 
+> It can fail because the descriptor has been invalidated/recycled by
+> writers and perhaps there is no valid record that has yet come after it.
 
-You can clean this up to use:
+I see. From some reasons I though that there should always be at
+least one message in the commited state. But it is enough when
+it is in reusable state. I should have double checked it.
 
-	return PTR_ERR_OR_ZERO(priv->cm3_base);
+> I recommend changing your suggestion to:
+> 
+> > 		if (!prb_read_valid_info(prb, syslog_seq, &info, NULL)) {
+> >			/*
+> >			 * No unread messages. No need to check/reset
+> >			 * syslog_partial. When a reader does read a new
+> >			 * message it will notice and appropriately update
+> >			 * syslog_seq and reset syslog_partial.
+> >			 */
 
-> +
-> +		/* Map CM3 SRAM */
-> +		err = mvpp2_get_sram(pdev, priv);
-> +		if (err)
-> +			dev_warn(&pdev->dev, "Fail to alloc CM3 SRAM\n");
+The following comment might be enough after all.
 
-It looks to me like mvpp2_get_sram() only fails if we are unable to
-_map_ the CM3 SRAM. We are no longer allocating anything from it, so
-I think this message needs to be updated.
+			/* No unread messages. */
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+My main concern was that we cleared syslog_partial and continued.
+I thought that we might miss a bug this way. But it seems to
+be perfectly fine. I just have to update my mental picture.
+
+Otherwise. the fact that syslog_partial will be fixed by the next
+successful call is more or less obvious if we change the code as you
+propose.
+
+Please, send an updated patch.
+
+Best Regards,
+Petr
+
+
+> > 			logbuf_unlock_irq();
+> > 			return 0;
+> > 		}
+> > 		if (info.seq != syslog_seq) {
+> > 			/* messages are gone, move to first one */
+> > 			syslog_seq = info.seq;
+> > 			syslog_partial = 0;
+> > 		}
+> 
+> John Ogness
